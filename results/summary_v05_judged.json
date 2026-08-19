@@ -1,0 +1,1471 @@
+{
+  "judge": "Last logged Mind2Web action is STOP only if the endpoint audit marked the trajectory complete.",
+  "audit_counts": {
+    "complete": 27,
+    "ambiguous": 9,
+    "incomplete": 4
+  },
+  "primary": "complete_endpoints_only",
+  "slices": {
+    "naive_last_row_is_stop": {
+      "n_trajectories": 40,
+      "n_steps": 360,
+      "agent": {
+        "n_steps": 360,
+        "n_trajectories": 40,
+        "terminal_continue_rate": 0.2,
+        "stop_recall": 0.8,
+        "premature_stop_rate": 0.0625,
+        "mean_p_stop_terminal": 0.7447499999999997,
+        "mean_p_stop_nonterminal": 0.12793750000000043,
+        "brier": 0.06998194444444462,
+        "log_loss": 0.254913133606382,
+        "length_ratio": 0.7427128544438337,
+        "mean_terminal_step_error": -2.870450225094104,
+        "stop_late_rate": 0.05,
+        "stop_early_rate": 0.9,
+        "errors_api": 0,
+        "precision": 0.6153846153846154,
+        "recall": 0.8,
+        "f1": 0.6956521739130435,
+        "balanced_accuracy": 0.86875,
+        "tp": 32,
+        "fp": 20,
+        "fn": 8,
+        "tn": 300,
+        "ci95_clustered": {
+          "terminal_continue_rate": [
+            0.075,
+            0.325
+          ],
+          "premature_stop_rate": [
+            0.03867403314917127,
+            0.09124087591240876
+          ],
+          "f1": [
+            0.6105263157894736,
+            0.775
+          ],
+          "balanced_accuracy": [
+            0.8021840148698884,
+            0.9294540229885058
+          ],
+          "length_ratio": [
+            0.6906014683661286,
+            0.798526239573899
+          ],
+          "mean_p_stop_terminal": [
+            0.6424999999999997,
+            0.8444999999999995
+          ],
+          "mean_p_stop_nonterminal": [
+            0.10746913580246949,
+            0.15348591549295817
+          ]
+        },
+        "by_progress": {
+          "0-25%": {
+            "n": 74,
+            "p_stop": 0.07297297297297292,
+            "pred_stop_rate": 0.0,
+            "true_stop_rate": 0.0
+          },
+          "25-50%": {
+            "n": 94,
+            "p_stop": 0.09031914893617009,
+            "pred_stop_rate": 0.02127659574468085,
+            "true_stop_rate": 0.0
+          },
+          "50-75%": {
+            "n": 87,
+            "p_stop": 0.10160919540229871,
+            "pred_stop_rate": 0.034482758620689655,
+            "true_stop_rate": 0.0
+          },
+          "75-100%": {
+            "n": 65,
+            "p_stop": 0.28015384615384603,
+            "pred_stop_rate": 0.23076923076923078,
+            "true_stop_rate": 0.0
+          },
+          "terminal": {
+            "n": 40,
+            "p_stop": 0.7447499999999997,
+            "pred_stop_rate": 0.8,
+            "true_stop_rate": 1.0
+          }
+        },
+        "by_length": {
+          "long": {
+            "n": 185,
+            "p_stop": 0.1559459459459462,
+            "pred_stop_rate": 0.0972972972972973,
+            "true_stop_rate": 0.06486486486486487
+          },
+          "medium": {
+            "n": 127,
+            "p_stop": 0.20874015748031519,
+            "pred_stop_rate": 0.15748031496062992,
+            "true_stop_rate": 0.12598425196850394
+          },
+          "short": {
+            "n": 48,
+            "p_stop": 0.3202083333333333,
+            "pred_stop_rate": 0.2916666666666667,
+            "true_stop_rate": 0.25
+          }
+        },
+        "by_domain": {
+          "Entertainment": {
+            "n": 74,
+            "p_stop": 0.26527027027027017,
+            "pred_stop_rate": 0.21621621621621623,
+            "true_stop_rate": 0.16216216216216217
+          },
+          "Shopping": {
+            "n": 83,
+            "p_stop": 0.18506024096385532,
+            "pred_stop_rate": 0.13253012048192772,
+            "true_stop_rate": 0.13253012048192772
+          },
+          "Travel": {
+            "n": 203,
+            "p_stop": 0.1760591133004929,
+            "pred_stop_rate": 0.12315270935960591,
+            "true_stop_rate": 0.08374384236453201
+          }
+        },
+        "by_prev_op": {
+          "CLICK": {
+            "n": 299,
+            "p_stop": 0.21688963210702372,
+            "pred_stop_rate": 0.16722408026755853,
+            "true_stop_rate": 0.13043478260869565
+          },
+          "SELECT": {
+            "n": 10,
+            "p_stop": 0.07599999999999998,
+            "pred_stop_rate": 0.0,
+            "true_stop_rate": 0.1
+          },
+          "TYPE": {
+            "n": 51,
+            "p_stop": 0.10039215686274502,
+            "pred_stop_rate": 0.0392156862745098,
+            "true_stop_rate": 0.0
+          }
+        },
+        "calibration": [
+          {
+            "bin": "0.0\u20130.2",
+            "n": 308,
+            "mean_p": 0.07707792207792236,
+            "frac_stop": 0.025974025974025976
+          },
+          {
+            "bin": "0.8\u20131.0",
+            "n": 52,
+            "mean_p": 0.9036538461538454,
+            "frac_stop": 0.6153846153846154
+          }
+        ]
+      },
+      "human_sim": {
+        "n_steps": 360,
+        "n_trajectories": 40,
+        "terminal_continue_rate": 0.025,
+        "stop_recall": 0.975,
+        "premature_stop_rate": 0.109375,
+        "mean_p_stop_terminal": 0.8799999999999993,
+        "mean_p_stop_nonterminal": 0.18484375000000045,
+        "brier": 0.08843750000000027,
+        "log_loss": 0.3177082961986108,
+        "length_ratio": 0.6237447608529045,
+        "mean_terminal_step_error": -4.042989054740956,
+        "stop_late_rate": 0.0,
+        "stop_early_rate": 1.0,
+        "errors_api": 0,
+        "precision": 0.527027027027027,
+        "recall": 0.975,
+        "f1": 0.6842105263157895,
+        "balanced_accuracy": 0.9328125,
+        "tp": 39,
+        "fp": 35,
+        "fn": 1,
+        "tn": 285,
+        "ci95_clustered": {
+          "terminal_continue_rate": [
+            0.0,
+            0.075
+          ],
+          "premature_stop_rate": [
+            0.07386363636363637,
+            0.1524822695035461
+          ],
+          "f1": [
+            0.6218487394957983,
+            0.7547169811320755
+          ],
+          "balanced_accuracy": [
+            0.8987179487179487,
+            0.9603825136612022
+          ],
+          "length_ratio": [
+            0.567327747569813,
+            0.6796916797644953
+          ],
+          "mean_p_stop_terminal": [
+            0.8399999999999995,
+            0.8999999999999992
+          ],
+          "mean_p_stop_nonterminal": [
+            0.15685975609756164,
+            0.22019607843137312
+          ]
+        },
+        "by_progress": {
+          "0-25%": {
+            "n": 74,
+            "p_stop": 0.13108108108108088,
+            "pred_stop_rate": 0.04054054054054054,
+            "true_stop_rate": 0.0
+          },
+          "25-50%": {
+            "n": 94,
+            "p_stop": 0.11382978723404237,
+            "pred_stop_rate": 0.02127659574468085,
+            "true_stop_rate": 0.0
+          },
+          "50-75%": {
+            "n": 87,
+            "p_stop": 0.1701149425287355,
+            "pred_stop_rate": 0.09195402298850575,
+            "true_stop_rate": 0.0
+          },
+          "75-100%": {
+            "n": 65,
+            "p_stop": 0.3684615384615385,
+            "pred_stop_rate": 0.3384615384615385,
+            "true_stop_rate": 0.0
+          },
+          "terminal": {
+            "n": 40,
+            "p_stop": 0.8799999999999993,
+            "pred_stop_rate": 0.975,
+            "true_stop_rate": 1.0
+          }
+        },
+        "by_length": {
+          "long": {
+            "n": 185,
+            "p_stop": 0.17837837837837864,
+            "pred_stop_rate": 0.10270270270270271,
+            "true_stop_rate": 0.06486486486486487
+          },
+          "medium": {
+            "n": 127,
+            "p_stop": 0.33661417322834675,
+            "pred_stop_rate": 0.2992125984251969,
+            "true_stop_rate": 0.12598425196850394
+          },
+          "short": {
+            "n": 48,
+            "p_stop": 0.38749999999999996,
+            "pred_stop_rate": 0.3541666666666667,
+            "true_stop_rate": 0.25
+          }
+        },
+        "by_domain": {
+          "Entertainment": {
+            "n": 74,
+            "p_stop": 0.3905405405405407,
+            "pred_stop_rate": 0.36486486486486486,
+            "true_stop_rate": 0.16216216216216217
+          },
+          "Shopping": {
+            "n": 83,
+            "p_stop": 0.24457831325301194,
+            "pred_stop_rate": 0.18072289156626506,
+            "true_stop_rate": 0.13253012048192772
+          },
+          "Travel": {
+            "n": 203,
+            "p_stop": 0.2224137931034486,
+            "pred_stop_rate": 0.15763546798029557,
+            "true_stop_rate": 0.08374384236453201
+          }
+        },
+        "by_prev_op": {
+          "CLICK": {
+            "n": 299,
+            "p_stop": 0.28779264214046824,
+            "pred_stop_rate": 0.23745819397993312,
+            "true_stop_rate": 0.13043478260869565
+          },
+          "SELECT": {
+            "n": 10,
+            "p_stop": 0.17500000000000004,
+            "pred_stop_rate": 0.1,
+            "true_stop_rate": 0.1
+          },
+          "TYPE": {
+            "n": 51,
+            "p_stop": 0.12843137254901948,
+            "pred_stop_rate": 0.0392156862745098,
+            "true_stop_rate": 0.0
+          }
+        },
+        "calibration": [
+          {
+            "bin": "0.0\u20130.2",
+            "n": 284,
+            "mean_p": 0.0973591549295779,
+            "frac_stop": 0.0035211267605633804
+          },
+          {
+            "bin": "0.2\u20130.4",
+            "n": 2,
+            "mean_p": 0.2,
+            "frac_stop": 0.0
+          },
+          {
+            "bin": "0.8\u20131.0",
+            "n": 74,
+            "mean_p": 0.8959459459459451,
+            "frac_stop": 0.527027027027027
+          }
+        ]
+      },
+      "delta_agent_minus_human_sim": {
+        "terminal_continue_rate": {
+          "delta": 0.17500000000000002,
+          "ci95_clustered": [
+            0.075,
+            0.3
+          ]
+        },
+        "premature_stop_rate": {
+          "delta": -0.046875,
+          "ci95_clustered": [
+            -0.08308605341246292,
+            -0.01273885350318471
+          ]
+        },
+        "f1": {
+          "delta": 0.011441647597253968,
+          "ci95_clustered": [
+            -0.08221343873517784,
+            0.09523809523809523
+          ]
+        },
+        "length_ratio": {
+          "delta": 0.11896809359092919,
+          "ci95_clustered": [
+            0.07649812151496005,
+            0.16673422450248288
+          ]
+        },
+        "mean_p_stop_terminal": {
+          "delta": -0.13524999999999965,
+          "ci95_clustered": [
+            -0.2352499999999994,
+            -0.048499999999999766
+          ]
+        }
+      },
+      "examples": {
+        "hyperactivity_agent_only": [
+          {
+            "task": "Find the motorcycle toll fee for the Queens midtown tunnel.",
+            "website": "new.mta.info",
+            "domain": "Travel",
+            "last_action": "[heading]  Bronx-Whitestone, Throgs Neck,\u00a0Robert F. Kennedy, ... -> CLICK",
+            "n_steps": 5,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Find the newest movies for rent  in the Redbox kiosk at any Winn Dixie in Daytona Beach.",
+            "website": "redbox",
+            "domain": "Entertainment",
+            "last_action": "[combobox]  sortBy -> SELECT: Newest",
+            "n_steps": 9,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "check the lowest price ticket for All star stand up comedy event happen 6pm on the 25th March 2023.",
+            "website": "nyc",
+            "domain": "Entertainment",
+            "last_action": "[button]  Done -> CLICK",
+            "n_steps": 7,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Show me the best seller accessories for the Model X",
+            "website": "tesla",
+            "domain": "Shopping",
+            "last_action": "[heading]  Best Sellers -> CLICK",
+            "n_steps": 3,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          }
+        ],
+        "hyperactivity_both": [
+          {
+            "task": "Schedule a demo drive for Model Y for Roy Adams with phone number 123-999-0000, email address RA@gmail.com and zip code 90001 in the United States.",
+            "website": "tesla",
+            "last_action": "[button]  Submit and Continue -> HOVER",
+            "n_steps": 8,
+            "agent_p_stop": 0.1,
+            "human_sim_p_stop": 0.1
+          }
+        ],
+        "premature_human_sim": [
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "action": "[link]  Route map -> CLICK",
+            "step_index": 1,
+            "n_steps": 10,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "action": "[button]  Search -> CLICK",
+            "step_index": 6,
+            "n_steps": 10,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "action": "[input]   -> CLICK",
+            "step_index": 7,
+            "n_steps": 10,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Book parking spot for James SMith at Stewart Hotel in New York for 2 hours. The street address is 133 st avenue in New York. Zip code is 10001 and phone number is 888888888. The email address is buckeye.foobar@gmail.com. Employer's name is Gua AB.",
+            "website": "parking",
+            "action": "[link]  BOOK MONTHLY PARKING -> CLICK",
+            "step_index": 3,
+            "n_steps": 17,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          }
+        ],
+        "both_correct_stop": [
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "last_action": "[button]  Find tickets -> CLICK",
+            "agent_p_stop": 0.9,
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Browse for wall art with a price range of $25 to $50.",
+            "website": "kohls",
+            "last_action": "[link]  $25 to $50 (5,006) -> CLICK",
+            "agent_p_stop": 0.9,
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "From Birmingham (BHX) to Paris search for packages with casinos, restaurant, fitness and a free internet from April 7th to 11th.",
+            "website": "kayak",
+            "last_action": "[checkbox]  Fitness -> CLICK",
+            "agent_p_stop": 0.9,
+            "human_sim_p_stop": 0.9
+          }
+        ]
+      }
+    },
+    "complete_endpoints_only": {
+      "n_trajectories": 27,
+      "n_steps": 242,
+      "agent": {
+        "n_steps": 242,
+        "n_trajectories": 27,
+        "terminal_continue_rate": 0.1111111111111111,
+        "stop_recall": 0.8888888888888888,
+        "premature_stop_rate": 0.046511627906976744,
+        "mean_p_stop_terminal": 0.8181481481481482,
+        "mean_p_stop_nonterminal": 0.11400000000000024,
+        "brier": 0.05055867768595032,
+        "log_loss": 0.20068932182133933,
+        "length_ratio": 0.7422698034821008,
+        "mean_terminal_step_error": -2.8238568642799686,
+        "stop_late_rate": 0.037037037037037035,
+        "stop_early_rate": 0.9259259259259259,
+        "errors_api": 0,
+        "precision": 0.7058823529411765,
+        "recall": 0.8888888888888888,
+        "f1": 0.7868852459016393,
+        "balanced_accuracy": 0.921188630490956,
+        "tp": 24,
+        "fp": 10,
+        "fn": 3,
+        "tn": 205,
+        "ci95_clustered": {
+          "terminal_continue_rate": [
+            0.0,
+            0.25925925925925924
+          ],
+          "premature_stop_rate": [
+            0.020080321285140562,
+            0.08294930875576037
+          ],
+          "f1": [
+            0.6885245901639345,
+            0.8771929824561403
+          ],
+          "balanced_accuracy": [
+            0.8524305555555556,
+            0.9739884393063584
+          ],
+          "length_ratio": [
+            0.6855921419198521,
+            0.8018358555953881
+          ],
+          "mean_p_stop_terminal": [
+            0.7074074074074074,
+            0.9070370370370368
+          ],
+          "mean_p_stop_nonterminal": [
+            0.09244635193133066,
+            0.14425000000000046
+          ]
+        },
+        "by_progress": {
+          "0-25%": {
+            "n": 49,
+            "p_stop": 0.07387755102040819,
+            "pred_stop_rate": 0.0,
+            "true_stop_rate": 0.0
+          },
+          "25-50%": {
+            "n": 64,
+            "p_stop": 0.08531249999999993,
+            "pred_stop_rate": 0.015625,
+            "true_stop_rate": 0.0
+          },
+          "50-75%": {
+            "n": 58,
+            "p_stop": 0.11241379310344819,
+            "pred_stop_rate": 0.05172413793103448,
+            "true_stop_rate": 0.0
+          },
+          "75-100%": {
+            "n": 44,
+            "p_stop": 0.20249999999999993,
+            "pred_stop_rate": 0.13636363636363635,
+            "true_stop_rate": 0.0
+          },
+          "terminal": {
+            "n": 27,
+            "p_stop": 0.8181481481481482,
+            "pred_stop_rate": 0.8888888888888888,
+            "true_stop_rate": 1.0
+          }
+        },
+        "by_length": {
+          "long": {
+            "n": 134,
+            "p_stop": 0.1428358208955224,
+            "pred_stop_rate": 0.08208955223880597,
+            "true_stop_rate": 0.06716417910447761
+          },
+          "medium": {
+            "n": 73,
+            "p_stop": 0.20191780821917799,
+            "pred_stop_rate": 0.1506849315068493,
+            "true_stop_rate": 0.1232876712328767
+          },
+          "short": {
+            "n": 35,
+            "p_stop": 0.3634285714285714,
+            "pred_stop_rate": 0.34285714285714286,
+            "true_stop_rate": 0.2571428571428571
+          }
+        },
+        "by_domain": {
+          "Entertainment": {
+            "n": 37,
+            "p_stop": 0.32648648648648637,
+            "pred_stop_rate": 0.2972972972972973,
+            "true_stop_rate": 0.1891891891891892
+          },
+          "Shopping": {
+            "n": 72,
+            "p_stop": 0.19305555555555545,
+            "pred_stop_rate": 0.1388888888888889,
+            "true_stop_rate": 0.125
+          },
+          "Travel": {
+            "n": 133,
+            "p_stop": 0.15503759398496247,
+            "pred_stop_rate": 0.09774436090225563,
+            "true_stop_rate": 0.08270676691729323
+          }
+        },
+        "by_prev_op": {
+          "CLICK": {
+            "n": 203,
+            "p_stop": 0.21290640394088695,
+            "pred_stop_rate": 0.1625615763546798,
+            "true_stop_rate": 0.1330049261083744
+          },
+          "SELECT": {
+            "n": 4,
+            "p_stop": 0.07750000000000001,
+            "pred_stop_rate": 0.0,
+            "true_stop_rate": 0.0
+          },
+          "TYPE": {
+            "n": 35,
+            "p_stop": 0.08771428571428573,
+            "pred_stop_rate": 0.02857142857142857,
+            "true_stop_rate": 0.0
+          }
+        },
+        "calibration": [
+          {
+            "bin": "0.0\u20130.2",
+            "n": 208,
+            "mean_p": 0.0760096153846152,
+            "frac_stop": 0.014423076923076924
+          },
+          {
+            "bin": "0.8\u20131.0",
+            "n": 34,
+            "mean_p": 0.9055882352941171,
+            "frac_stop": 0.7058823529411765
+          }
+        ]
+      },
+      "human_sim": {
+        "n_steps": 242,
+        "n_trajectories": 27,
+        "terminal_continue_rate": 0.0,
+        "stop_recall": 1.0,
+        "premature_stop_rate": 0.09767441860465116,
+        "mean_p_stop_terminal": 0.8999999999999996,
+        "mean_p_stop_nonterminal": 0.17558139534883752,
+        "brier": 0.07792355371900812,
+        "log_loss": 0.2888160875598117,
+        "length_ratio": 0.6201310010051108,
+        "mean_terminal_step_error": -4.147460313501971,
+        "stop_late_rate": 0.0,
+        "stop_early_rate": 1.0,
+        "errors_api": 0,
+        "precision": 0.5625,
+        "recall": 1.0,
+        "f1": 0.72,
+        "balanced_accuracy": 0.9511627906976744,
+        "tp": 27,
+        "fp": 21,
+        "fn": 0,
+        "tn": 194,
+        "ci95_clustered": {
+          "terminal_continue_rate": [
+            0.0,
+            0.0
+          ],
+          "premature_stop_rate": [
+            0.05737704918032787,
+            0.15048543689320387
+          ],
+          "f1": [
+            0.6428571428571429,
+            0.8181818181818181
+          ],
+          "balanced_accuracy": [
+            0.9257425742574257,
+            0.9724770642201834
+          ],
+          "length_ratio": [
+            0.5420481967902556,
+            0.6965916477399711
+          ],
+          "mean_p_stop_terminal": [
+            0.8999999999999996,
+            0.8999999999999996
+          ],
+          "mean_p_stop_nonterminal": [
+            0.1440000000000003,
+            0.2144654088050319
+          ]
+        },
+        "by_progress": {
+          "0-25%": {
+            "n": 49,
+            "p_stop": 0.14693877551020396,
+            "pred_stop_rate": 0.061224489795918366,
+            "true_stop_rate": 0.0
+          },
+          "25-50%": {
+            "n": 64,
+            "p_stop": 0.10937499999999993,
+            "pred_stop_rate": 0.015625,
+            "true_stop_rate": 0.0
+          },
+          "50-75%": {
+            "n": 58,
+            "p_stop": 0.19310344827586204,
+            "pred_stop_rate": 0.1206896551724138,
+            "true_stop_rate": 0.0
+          },
+          "75-100%": {
+            "n": 44,
+            "p_stop": 0.2806818181818182,
+            "pred_stop_rate": 0.22727272727272727,
+            "true_stop_rate": 0.0
+          },
+          "terminal": {
+            "n": 27,
+            "p_stop": 0.8999999999999996,
+            "pred_stop_rate": 1.0,
+            "true_stop_rate": 1.0
+          }
+        },
+        "by_length": {
+          "long": {
+            "n": 134,
+            "p_stop": 0.1794776119402986,
+            "pred_stop_rate": 0.1044776119402985,
+            "true_stop_rate": 0.06716417910447761
+          },
+          "medium": {
+            "n": 73,
+            "p_stop": 0.33835616438356175,
+            "pred_stop_rate": 0.3013698630136986,
+            "true_stop_rate": 0.1232876712328767
+          },
+          "short": {
+            "n": 35,
+            "p_stop": 0.37999999999999995,
+            "pred_stop_rate": 0.34285714285714286,
+            "true_stop_rate": 0.2571428571428571
+          }
+        },
+        "by_domain": {
+          "Entertainment": {
+            "n": 37,
+            "p_stop": 0.4216216216216216,
+            "pred_stop_rate": 0.40540540540540543,
+            "true_stop_rate": 0.1891891891891892
+          },
+          "Shopping": {
+            "n": 72,
+            "p_stop": 0.2451388888888887,
+            "pred_stop_rate": 0.18055555555555555,
+            "true_stop_rate": 0.125
+          },
+          "Travel": {
+            "n": 133,
+            "p_stop": 0.21654135338345887,
+            "pred_stop_rate": 0.15037593984962405,
+            "true_stop_rate": 0.08270676691729323
+          }
+        },
+        "by_prev_op": {
+          "CLICK": {
+            "n": 203,
+            "p_stop": 0.28300492610837474,
+            "pred_stop_rate": 0.2315270935960591,
+            "true_stop_rate": 0.1330049261083744
+          },
+          "SELECT": {
+            "n": 4,
+            "p_stop": 0.1,
+            "pred_stop_rate": 0.0,
+            "true_stop_rate": 0.0
+          },
+          "TYPE": {
+            "n": 35,
+            "p_stop": 0.12000000000000001,
+            "pred_stop_rate": 0.02857142857142857,
+            "true_stop_rate": 0.0
+          }
+        },
+        "calibration": [
+          {
+            "bin": "0.0\u20130.2",
+            "n": 192,
+            "mean_p": 0.09713541666666668,
+            "frac_stop": 0.0
+          },
+          {
+            "bin": "0.2\u20130.4",
+            "n": 2,
+            "mean_p": 0.2,
+            "frac_stop": 0.0
+          },
+          {
+            "bin": "0.8\u20131.0",
+            "n": 48,
+            "mean_p": 0.8958333333333325,
+            "frac_stop": 0.5625
+          }
+        ]
+      },
+      "delta_agent_minus_human_sim": {
+        "terminal_continue_rate": {
+          "delta": 0.1111111111111111,
+          "ci95_clustered": [
+            0.0,
+            0.25925925925925924
+          ]
+        },
+        "premature_stop_rate": {
+          "delta": -0.05116279069767442,
+          "ci95_clustered": [
+            -0.09569377990430622,
+            -0.008474576271186439
+          ]
+        },
+        "f1": {
+          "delta": 0.06688524590163936,
+          "ci95_clustered": [
+            -0.044117647058823484,
+            0.1747967479674798
+          ]
+        },
+        "length_ratio": {
+          "delta": 0.12213880247699005,
+          "ci95_clustered": [
+            0.06324189110798173,
+            0.18522275995070958
+          ]
+        },
+        "mean_p_stop_terminal": {
+          "delta": -0.0818518518518514,
+          "ci95_clustered": [
+            -0.19703703703703668,
+            0.007037037037037175
+          ]
+        }
+      },
+      "examples": {
+        "hyperactivity_agent_only": [
+          {
+            "task": "Open the Resident evil 4 game guide.",
+            "website": "ign",
+            "domain": "Entertainment",
+            "last_action": "[button]  Open Guide -> CLICK",
+            "n_steps": 3,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Get the lowest priced plus size one piece active swimsuit in color black.",
+            "website": "kohls",
+            "domain": "Shopping",
+            "last_action": "[link]  Active (6) -> CLICK",
+            "n_steps": 10,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Find nearest Sprouts Farmers Market and add two fruits and one sauce from the deals.",
+            "website": "instacart",
+            "domain": "Shopping",
+            "last_action": "[div]  Add -> CLICK",
+            "n_steps": 6,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          }
+        ],
+        "hyperactivity_both": [],
+        "premature_human_sim": [
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "action": "[link]  Route map -> CLICK",
+            "step_index": 1,
+            "n_steps": 10,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "action": "[button]  Search -> CLICK",
+            "step_index": 6,
+            "n_steps": 10,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "action": "[input]   -> CLICK",
+            "step_index": 7,
+            "n_steps": 10,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Book parking spot for James SMith at Stewart Hotel in New York for 2 hours. The street address is 133 st avenue in New York. Zip code is 10001 and phone number is 888888888. The email address is buckeye.foobar@gmail.com. Employer's name is Gua AB.",
+            "website": "parking",
+            "action": "[link]  BOOK MONTHLY PARKING -> CLICK",
+            "step_index": 3,
+            "n_steps": 17,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          }
+        ],
+        "both_correct_stop": [
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "last_action": "[button]  Find tickets -> CLICK",
+            "agent_p_stop": 0.9,
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Browse for wall art with a price range of $25 to $50.",
+            "website": "kohls",
+            "last_action": "[link]  $25 to $50 (5,006) -> CLICK",
+            "agent_p_stop": 0.9,
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "From Birmingham (BHX) to Paris search for packages with casinos, restaurant, fitness and a free internet from April 7th to 11th.",
+            "website": "kayak",
+            "last_action": "[checkbox]  Fitness -> CLICK",
+            "agent_p_stop": 0.9,
+            "human_sim_p_stop": 0.9
+          }
+        ]
+      }
+    },
+    "drop_incomplete": {
+      "n_trajectories": 36,
+      "n_steps": 317,
+      "agent": {
+        "n_steps": 317,
+        "n_trajectories": 36,
+        "terminal_continue_rate": 0.16666666666666666,
+        "stop_recall": 0.8333333333333334,
+        "premature_stop_rate": 0.05693950177935943,
+        "mean_p_stop_terminal": 0.7719444444444442,
+        "mean_p_stop_nonterminal": 0.12533807829181534,
+        "brier": 0.06343943217665614,
+        "log_loss": 0.2382133550488822,
+        "length_ratio": 0.734816234151356,
+        "mean_terminal_step_error": -2.811886224568336,
+        "stop_late_rate": 0.027777777777777776,
+        "stop_early_rate": 0.9166666666666666,
+        "errors_api": 0,
+        "precision": 0.6521739130434783,
+        "recall": 0.8333333333333334,
+        "f1": 0.7317073170731708,
+        "balanced_accuracy": 0.8881969157769869,
+        "tp": 30,
+        "fp": 16,
+        "fn": 6,
+        "tn": 265,
+        "ci95_clustered": {
+          "terminal_continue_rate": [
+            0.05555555555555555,
+            0.3055555555555556
+          ],
+          "premature_stop_rate": [
+            0.03142857142857143,
+            0.09022556390977443
+          ],
+          "f1": [
+            0.65,
+            0.813953488372093
+          ],
+          "balanced_accuracy": [
+            0.8183831672203765,
+            0.9432648401826484
+          ],
+          "length_ratio": [
+            0.6869477052477834,
+            0.7901977507027049
+          ],
+          "mean_p_stop_terminal": [
+            0.6777777777777776,
+            0.8636111111111107
+          ],
+          "mean_p_stop_nonterminal": [
+            0.1032046332046336,
+            0.15340996168582427
+          ]
+        },
+        "by_progress": {
+          "0-25%": {
+            "n": 64,
+            "p_stop": 0.07468749999999998,
+            "pred_stop_rate": 0.0,
+            "true_stop_rate": 0.0
+          },
+          "25-50%": {
+            "n": 83,
+            "p_stop": 0.09530120481927698,
+            "pred_stop_rate": 0.024096385542168676,
+            "true_stop_rate": 0.0
+          },
+          "50-75%": {
+            "n": 76,
+            "p_stop": 0.10815789473684197,
+            "pred_stop_rate": 0.039473684210526314,
+            "true_stop_rate": 0.0
+          },
+          "75-100%": {
+            "n": 58,
+            "p_stop": 0.2467241379310344,
+            "pred_stop_rate": 0.1896551724137931,
+            "true_stop_rate": 0.0
+          },
+          "terminal": {
+            "n": 36,
+            "p_stop": 0.7719444444444442,
+            "pred_stop_rate": 0.8333333333333334,
+            "true_stop_rate": 1.0
+          }
+        },
+        "by_length": {
+          "long": {
+            "n": 153,
+            "p_stop": 0.1476470588235296,
+            "pred_stop_rate": 0.08496732026143791,
+            "true_stop_rate": 0.06535947712418301
+          },
+          "medium": {
+            "n": 119,
+            "p_stop": 0.21176470588235316,
+            "pred_stop_rate": 0.15966386554621848,
+            "true_stop_rate": 0.12605042016806722
+          },
+          "short": {
+            "n": 45,
+            "p_stop": 0.3382222222222222,
+            "pred_stop_rate": 0.3111111111111111,
+            "true_stop_rate": 0.24444444444444444
+          }
+        },
+        "by_domain": {
+          "Entertainment": {
+            "n": 74,
+            "p_stop": 0.26527027027027017,
+            "pred_stop_rate": 0.21621621621621623,
+            "true_stop_rate": 0.16216216216216217
+          },
+          "Shopping": {
+            "n": 72,
+            "p_stop": 0.19305555555555545,
+            "pred_stop_rate": 0.1388888888888889,
+            "true_stop_rate": 0.125
+          },
+          "Travel": {
+            "n": 171,
+            "p_stop": 0.17239766081871366,
+            "pred_stop_rate": 0.11695906432748537,
+            "true_stop_rate": 0.08771929824561403
+          }
+        },
+        "by_prev_op": {
+          "CLICK": {
+            "n": 266,
+            "p_stop": 0.22041353383458676,
+            "pred_stop_rate": 0.16917293233082706,
+            "true_stop_rate": 0.13157894736842105
+          },
+          "SELECT": {
+            "n": 8,
+            "p_stop": 0.08249999999999999,
+            "pred_stop_rate": 0.0,
+            "true_stop_rate": 0.125
+          },
+          "TYPE": {
+            "n": 43,
+            "p_stop": 0.08651162790697677,
+            "pred_stop_rate": 0.023255813953488372,
+            "true_stop_rate": 0.0
+          }
+        },
+        "calibration": [
+          {
+            "bin": "0.0\u20130.2",
+            "n": 271,
+            "mean_p": 0.07904059040590422,
+            "frac_stop": 0.02214022140221402
+          },
+          {
+            "bin": "0.8\u20131.0",
+            "n": 46,
+            "mean_p": 0.904130434782608,
+            "frac_stop": 0.6521739130434783
+          }
+        ]
+      },
+      "human_sim": {
+        "n_steps": 317,
+        "n_trajectories": 36,
+        "terminal_continue_rate": 0.0,
+        "stop_recall": 1.0,
+        "premature_stop_rate": 0.11387900355871886,
+        "mean_p_stop_terminal": 0.8999999999999994,
+        "mean_p_stop_nonterminal": 0.18879003558718896,
+        "brier": 0.08907728706624626,
+        "log_loss": 0.3194695742395888,
+        "length_ratio": 0.6200572220370348,
+        "mean_terminal_step_error": -3.9616491929915703,
+        "stop_late_rate": 0.0,
+        "stop_early_rate": 1.0,
+        "errors_api": 0,
+        "precision": 0.5294117647058824,
+        "recall": 1.0,
+        "f1": 0.6923076923076924,
+        "balanced_accuracy": 0.9430604982206405,
+        "tp": 36,
+        "fp": 32,
+        "fn": 0,
+        "tn": 249,
+        "ci95_clustered": {
+          "terminal_continue_rate": [
+            0.0,
+            0.0
+          ],
+          "premature_stop_rate": [
+            0.07407407407407407,
+            0.16363636363636364
+          ],
+          "f1": [
+            0.631578947368421,
+            0.7659574468085107
+          ],
+          "balanced_accuracy": [
+            0.9194139194139195,
+            0.9631578947368421
+          ],
+          "length_ratio": [
+            0.5590242604152783,
+            0.6809760690523942
+          ],
+          "mean_p_stop_terminal": [
+            0.8999999999999994,
+            0.8999999999999994
+          ],
+          "mean_p_stop_nonterminal": [
+            0.15498489425981948,
+            0.2294117647058829
+          ]
+        },
+        "by_progress": {
+          "0-25%": {
+            "n": 64,
+            "p_stop": 0.13593749999999982,
+            "pred_stop_rate": 0.046875,
+            "true_stop_rate": 0.0
+          },
+          "25-50%": {
+            "n": 83,
+            "p_stop": 0.11686746987951792,
+            "pred_stop_rate": 0.024096385542168676,
+            "true_stop_rate": 0.0
+          },
+          "50-75%": {
+            "n": 76,
+            "p_stop": 0.18157894736842092,
+            "pred_stop_rate": 0.10526315789473684,
+            "true_stop_rate": 0.0
+          },
+          "75-100%": {
+            "n": 58,
+            "p_stop": 0.3594827586206896,
+            "pred_stop_rate": 0.3275862068965517,
+            "true_stop_rate": 0.0
+          },
+          "terminal": {
+            "n": 36,
+            "p_stop": 0.8999999999999994,
+            "pred_stop_rate": 1.0,
+            "true_stop_rate": 1.0
+          }
+        },
+        "by_length": {
+          "long": {
+            "n": 153,
+            "p_stop": 0.1748366013071897,
+            "pred_stop_rate": 0.09803921568627451,
+            "true_stop_rate": 0.06535947712418301
+          },
+          "medium": {
+            "n": 119,
+            "p_stop": 0.34621848739495825,
+            "pred_stop_rate": 0.31092436974789917,
+            "true_stop_rate": 0.12605042016806722
+          },
+          "short": {
+            "n": 45,
+            "p_stop": 0.3888888888888888,
+            "pred_stop_rate": 0.35555555555555557,
+            "true_stop_rate": 0.24444444444444444
+          }
+        },
+        "by_domain": {
+          "Entertainment": {
+            "n": 74,
+            "p_stop": 0.3905405405405407,
+            "pred_stop_rate": 0.36486486486486486,
+            "true_stop_rate": 0.16216216216216217
+          },
+          "Shopping": {
+            "n": 72,
+            "p_stop": 0.2451388888888887,
+            "pred_stop_rate": 0.18055555555555555,
+            "true_stop_rate": 0.125
+          },
+          "Travel": {
+            "n": 171,
+            "p_stop": 0.22748538011695935,
+            "pred_stop_rate": 0.16374269005847952,
+            "true_stop_rate": 0.08771929824561403
+          }
+        },
+        "by_prev_op": {
+          "CLICK": {
+            "n": 266,
+            "p_stop": 0.29642857142857143,
+            "pred_stop_rate": 0.24812030075187969,
+            "true_stop_rate": 0.13157894736842105
+          },
+          "SELECT": {
+            "n": 8,
+            "p_stop": 0.20000000000000004,
+            "pred_stop_rate": 0.125,
+            "true_stop_rate": 0.125
+          },
+          "TYPE": {
+            "n": 43,
+            "p_stop": 0.1162790697674418,
+            "pred_stop_rate": 0.023255813953488372,
+            "true_stop_rate": 0.0
+          }
+        },
+        "calibration": [
+          {
+            "bin": "0.0\u20130.2",
+            "n": 247,
+            "mean_p": 0.09777327935222703,
+            "frac_stop": 0.0
+          },
+          {
+            "bin": "0.2\u20130.4",
+            "n": 2,
+            "mean_p": 0.2,
+            "frac_stop": 0.0
+          },
+          {
+            "bin": "0.8\u20131.0",
+            "n": 68,
+            "mean_p": 0.8955882352941166,
+            "frac_stop": 0.5294117647058824
+          }
+        ]
+      },
+      "delta_agent_minus_human_sim": {
+        "terminal_continue_rate": {
+          "delta": 0.16666666666666666,
+          "ci95_clustered": [
+            0.05555555555555555,
+            0.3055555555555556
+          ]
+        },
+        "premature_stop_rate": {
+          "delta": -0.05693950177935943,
+          "ci95_clustered": [
+            -0.09689922480620156,
+            -0.020979020979020976
+          ]
+        },
+        "f1": {
+          "delta": 0.039399624765478425,
+          "ci95_clustered": [
+            -0.05909955611921369,
+            0.13183915622940012
+          ]
+        },
+        "length_ratio": {
+          "delta": 0.11475901211432116,
+          "ci95_clustered": [
+            0.06667880070982635,
+            0.16568851305988908
+          ]
+        },
+        "mean_p_stop_terminal": {
+          "delta": -0.12805555555555515,
+          "ci95_clustered": [
+            -0.2363888888888881,
+            -0.03638888888888869
+          ]
+        }
+      },
+      "examples": {
+        "hyperactivity_agent_only": [
+          {
+            "task": "Find the motorcycle toll fee for the Queens midtown tunnel.",
+            "website": "new.mta.info",
+            "domain": "Travel",
+            "last_action": "[heading]  Bronx-Whitestone, Throgs Neck,\u00a0Robert F. Kennedy, ... -> CLICK",
+            "n_steps": 5,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Find the newest movies for rent  in the Redbox kiosk at any Winn Dixie in Daytona Beach.",
+            "website": "redbox",
+            "domain": "Entertainment",
+            "last_action": "[combobox]  sortBy -> SELECT: Newest",
+            "n_steps": 9,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "check the lowest price ticket for All star stand up comedy event happen 6pm on the 25th March 2023.",
+            "website": "nyc",
+            "domain": "Entertainment",
+            "last_action": "[button]  Done -> CLICK",
+            "n_steps": 7,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Open the Resident evil 4 game guide.",
+            "website": "ign",
+            "domain": "Entertainment",
+            "last_action": "[button]  Open Guide -> CLICK",
+            "n_steps": 3,
+            "agent": "CONTINUE",
+            "agent_p_stop": 0.1,
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          }
+        ],
+        "hyperactivity_both": [],
+        "premature_human_sim": [
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "action": "[link]  Route map -> CLICK",
+            "step_index": 1,
+            "n_steps": 10,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "action": "[button]  Search -> CLICK",
+            "step_index": 6,
+            "n_steps": 10,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "action": "[input]   -> CLICK",
+            "step_index": 7,
+            "n_steps": 10,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Book parking spot for James SMith at Stewart Hotel in New York for 2 hours. The street address is 133 st avenue in New York. Zip code is 10001 and phone number is 888888888. The email address is buckeye.foobar@gmail.com. Employer's name is Gua AB.",
+            "website": "parking",
+            "action": "[link]  BOOK MONTHLY PARKING -> CLICK",
+            "step_index": 3,
+            "n_steps": 17,
+            "agent": "CONTINUE",
+            "human_sim": "STOP",
+            "human_sim_p_stop": 0.9
+          }
+        ],
+        "both_correct_stop": [
+          {
+            "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+            "website": "us.megabus",
+            "last_action": "[button]  Find tickets -> CLICK",
+            "agent_p_stop": 0.9,
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "Browse for wall art with a price range of $25 to $50.",
+            "website": "kohls",
+            "last_action": "[link]  $25 to $50 (5,006) -> CLICK",
+            "agent_p_stop": 0.9,
+            "human_sim_p_stop": 0.9
+          },
+          {
+            "task": "From Birmingham (BHX) to Paris search for packages with casinos, restaurant, fitness and a free internet from April 7th to 11th.",
+            "website": "kayak",
+            "last_action": "[checkbox]  Fitness -> CLICK",
+            "agent_p_stop": 0.9,
+            "human_sim_p_stop": 0.9
+          }
+        ]
+      }
+    }
+  },
+  "headline": {
+    "agent_terminal_continue": 0.1111111111111111,
+    "human_sim_terminal_continue": 0.0,
+    "delta": {
+      "delta": 0.1111111111111111,
+      "ci95_clustered": [
+        0.0,
+        0.25925925925925924
+      ]
+    },
+    "agent_premature_stop": 0.046511627906976744,
+    "human_sim_premature_stop": 0.09767441860465116,
+    "agent_stop_f1": 0.7868852459016393,
+    "human_sim_stop_f1": 0.72,
+    "agent_length_ratio": 0.7422698034821008,
+    "human_sim_length_ratio": 0.6201310010051108,
+    "naive_agent_terminal_continue": 0.2,
+    "naive_human_sim_terminal_continue": 0.025
+  }
+}

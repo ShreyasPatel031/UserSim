@@ -1,0 +1,510 @@
+{
+  "question": "Do agents continue acting after a human demonstration would stop?",
+  "label": "teacher-forced STOP/CONTINUE on human states, not free-running trajectories",
+  "model": "gemini-2.5-flash",
+  "n_steps": 360,
+  "n_trajectories": 40,
+  "bootstrap": "cluster by trajectory, 2000 resamples",
+  "sft_condition": "skipped \u2014 no checkpoint in this repo",
+  "agent": {
+    "n_steps": 360,
+    "n_trajectories": 40,
+    "terminal_continue_rate": 0.2,
+    "stop_recall": 0.8,
+    "premature_stop_rate": 0.0625,
+    "mean_p_stop_terminal": 0.7447499999999997,
+    "mean_p_stop_nonterminal": 0.12793750000000043,
+    "brier": 0.06998194444444462,
+    "log_loss": 0.254913133606382,
+    "length_ratio": 0.7427128544438337,
+    "mean_terminal_step_error": -2.870450225094104,
+    "stop_late_rate": 0.05,
+    "stop_early_rate": 0.9,
+    "errors_api": 0,
+    "precision": 0.6153846153846154,
+    "recall": 0.8,
+    "f1": 0.6956521739130435,
+    "balanced_accuracy": 0.86875,
+    "tp": 32,
+    "fp": 20,
+    "fn": 8,
+    "tn": 300,
+    "ci95_clustered": {
+      "terminal_continue_rate": [
+        0.1,
+        0.325
+      ],
+      "premature_stop_rate": [
+        0.03768115942028986,
+        0.0932475884244373
+      ],
+      "f1": [
+        0.6122448979591838,
+        0.7777777777777777
+      ],
+      "balanced_accuracy": [
+        0.8014498432601881,
+        0.9273809523809524
+      ],
+      "length_ratio": [
+        0.6895848233150577,
+        0.7975074325871683
+      ],
+      "mean_p_stop_terminal": [
+        0.6424999999999998,
+        0.8424999999999996
+      ],
+      "mean_p_stop_nonterminal": [
+        0.10740437158469979,
+        0.15315960912052162
+      ]
+    },
+    "by_progress": {
+      "0-25%": {
+        "n": 74,
+        "p_stop": 0.07297297297297292,
+        "pred_stop_rate": 0.0,
+        "true_stop_rate": 0.0
+      },
+      "25-50%": {
+        "n": 94,
+        "p_stop": 0.09031914893617009,
+        "pred_stop_rate": 0.02127659574468085,
+        "true_stop_rate": 0.0
+      },
+      "50-75%": {
+        "n": 87,
+        "p_stop": 0.10160919540229871,
+        "pred_stop_rate": 0.034482758620689655,
+        "true_stop_rate": 0.0
+      },
+      "75-100%": {
+        "n": 65,
+        "p_stop": 0.28015384615384603,
+        "pred_stop_rate": 0.23076923076923078,
+        "true_stop_rate": 0.0
+      },
+      "terminal": {
+        "n": 40,
+        "p_stop": 0.7447499999999997,
+        "pred_stop_rate": 0.8,
+        "true_stop_rate": 1.0
+      }
+    },
+    "by_length": {
+      "long": {
+        "n": 185,
+        "p_stop": 0.1559459459459462,
+        "pred_stop_rate": 0.0972972972972973,
+        "true_stop_rate": 0.06486486486486487
+      },
+      "medium": {
+        "n": 127,
+        "p_stop": 0.20874015748031519,
+        "pred_stop_rate": 0.15748031496062992,
+        "true_stop_rate": 0.12598425196850394
+      },
+      "short": {
+        "n": 48,
+        "p_stop": 0.3202083333333333,
+        "pred_stop_rate": 0.2916666666666667,
+        "true_stop_rate": 0.25
+      }
+    },
+    "by_domain": {
+      "Entertainment": {
+        "n": 74,
+        "p_stop": 0.26527027027027017,
+        "pred_stop_rate": 0.21621621621621623,
+        "true_stop_rate": 0.16216216216216217
+      },
+      "Shopping": {
+        "n": 83,
+        "p_stop": 0.18506024096385532,
+        "pred_stop_rate": 0.13253012048192772,
+        "true_stop_rate": 0.13253012048192772
+      },
+      "Travel": {
+        "n": 203,
+        "p_stop": 0.1760591133004929,
+        "pred_stop_rate": 0.12315270935960591,
+        "true_stop_rate": 0.08374384236453201
+      }
+    },
+    "by_prev_op": {
+      "CLICK": {
+        "n": 299,
+        "p_stop": 0.21688963210702372,
+        "pred_stop_rate": 0.16722408026755853,
+        "true_stop_rate": 0.13043478260869565
+      },
+      "SELECT": {
+        "n": 10,
+        "p_stop": 0.07599999999999998,
+        "pred_stop_rate": 0.0,
+        "true_stop_rate": 0.1
+      },
+      "TYPE": {
+        "n": 51,
+        "p_stop": 0.10039215686274502,
+        "pred_stop_rate": 0.0392156862745098,
+        "true_stop_rate": 0.0
+      }
+    },
+    "calibration": [
+      {
+        "bin": "0.0\u20130.2",
+        "n": 308,
+        "mean_p": 0.07707792207792236,
+        "frac_stop": 0.025974025974025976
+      },
+      {
+        "bin": "0.8\u20131.0",
+        "n": 52,
+        "mean_p": 0.9036538461538454,
+        "frac_stop": 0.6153846153846154
+      }
+    ]
+  },
+  "human_sim": {
+    "n_steps": 360,
+    "n_trajectories": 40,
+    "terminal_continue_rate": 0.025,
+    "stop_recall": 0.975,
+    "premature_stop_rate": 0.109375,
+    "mean_p_stop_terminal": 0.8799999999999993,
+    "mean_p_stop_nonterminal": 0.18484375000000045,
+    "brier": 0.08843750000000027,
+    "log_loss": 0.3177082961986108,
+    "length_ratio": 0.6237447608529045,
+    "mean_terminal_step_error": -4.042989054740956,
+    "stop_late_rate": 0.0,
+    "stop_early_rate": 1.0,
+    "errors_api": 0,
+    "precision": 0.527027027027027,
+    "recall": 0.975,
+    "f1": 0.6842105263157895,
+    "balanced_accuracy": 0.9328125,
+    "tp": 39,
+    "fp": 35,
+    "fn": 1,
+    "tn": 285,
+    "ci95_clustered": {
+      "terminal_continue_rate": [
+        0.0,
+        0.075
+      ],
+      "premature_stop_rate": [
+        0.07575757575757576,
+        0.15457413249211358
+      ],
+      "f1": [
+        0.6229508196721312,
+        0.7572815533980581
+      ],
+      "balanced_accuracy": [
+        0.8964219330855019,
+        0.9593023255813953
+      ],
+      "length_ratio": [
+        0.566555584912703,
+        0.6819651929327301
+      ],
+      "mean_p_stop_terminal": [
+        0.8399999999999995,
+        0.8999999999999992
+      ],
+      "mean_p_stop_nonterminal": [
+        0.1563805104408358,
+        0.21973684210526312
+      ]
+    },
+    "by_progress": {
+      "0-25%": {
+        "n": 74,
+        "p_stop": 0.13108108108108088,
+        "pred_stop_rate": 0.04054054054054054,
+        "true_stop_rate": 0.0
+      },
+      "25-50%": {
+        "n": 94,
+        "p_stop": 0.11382978723404237,
+        "pred_stop_rate": 0.02127659574468085,
+        "true_stop_rate": 0.0
+      },
+      "50-75%": {
+        "n": 87,
+        "p_stop": 0.1701149425287355,
+        "pred_stop_rate": 0.09195402298850575,
+        "true_stop_rate": 0.0
+      },
+      "75-100%": {
+        "n": 65,
+        "p_stop": 0.3684615384615385,
+        "pred_stop_rate": 0.3384615384615385,
+        "true_stop_rate": 0.0
+      },
+      "terminal": {
+        "n": 40,
+        "p_stop": 0.8799999999999993,
+        "pred_stop_rate": 0.975,
+        "true_stop_rate": 1.0
+      }
+    },
+    "by_length": {
+      "long": {
+        "n": 185,
+        "p_stop": 0.17837837837837864,
+        "pred_stop_rate": 0.10270270270270271,
+        "true_stop_rate": 0.06486486486486487
+      },
+      "medium": {
+        "n": 127,
+        "p_stop": 0.33661417322834675,
+        "pred_stop_rate": 0.2992125984251969,
+        "true_stop_rate": 0.12598425196850394
+      },
+      "short": {
+        "n": 48,
+        "p_stop": 0.38749999999999996,
+        "pred_stop_rate": 0.3541666666666667,
+        "true_stop_rate": 0.25
+      }
+    },
+    "by_domain": {
+      "Entertainment": {
+        "n": 74,
+        "p_stop": 0.3905405405405407,
+        "pred_stop_rate": 0.36486486486486486,
+        "true_stop_rate": 0.16216216216216217
+      },
+      "Shopping": {
+        "n": 83,
+        "p_stop": 0.24457831325301194,
+        "pred_stop_rate": 0.18072289156626506,
+        "true_stop_rate": 0.13253012048192772
+      },
+      "Travel": {
+        "n": 203,
+        "p_stop": 0.2224137931034486,
+        "pred_stop_rate": 0.15763546798029557,
+        "true_stop_rate": 0.08374384236453201
+      }
+    },
+    "by_prev_op": {
+      "CLICK": {
+        "n": 299,
+        "p_stop": 0.28779264214046824,
+        "pred_stop_rate": 0.23745819397993312,
+        "true_stop_rate": 0.13043478260869565
+      },
+      "SELECT": {
+        "n": 10,
+        "p_stop": 0.17500000000000004,
+        "pred_stop_rate": 0.1,
+        "true_stop_rate": 0.1
+      },
+      "TYPE": {
+        "n": 51,
+        "p_stop": 0.12843137254901948,
+        "pred_stop_rate": 0.0392156862745098,
+        "true_stop_rate": 0.0
+      }
+    },
+    "calibration": [
+      {
+        "bin": "0.0\u20130.2",
+        "n": 284,
+        "mean_p": 0.0973591549295779,
+        "frac_stop": 0.0035211267605633804
+      },
+      {
+        "bin": "0.2\u20130.4",
+        "n": 2,
+        "mean_p": 0.2,
+        "frac_stop": 0.0
+      },
+      {
+        "bin": "0.8\u20131.0",
+        "n": 74,
+        "mean_p": 0.8959459459459451,
+        "frac_stop": 0.527027027027027
+      }
+    ]
+  },
+  "delta_agent_minus_human_sim": {
+    "terminal_continue_rate": {
+      "delta": 0.17500000000000002,
+      "ci95_clustered": [
+        0.075,
+        0.3
+      ]
+    },
+    "premature_stop_rate": {
+      "delta": -0.046875,
+      "ci95_clustered": [
+        -0.08783783783783784,
+        -0.012594458438287152
+      ]
+    },
+    "f1": {
+      "delta": 0.011441647597253968,
+      "ci95_clustered": [
+        -0.07502548419979616,
+        0.09534883720930243
+      ]
+    },
+    "length_ratio": {
+      "delta": 0.11896809359092919,
+      "ci95_clustered": [
+        0.07625520859126556,
+        0.1672192369870945
+      ]
+    },
+    "mean_p_stop_terminal": {
+      "delta": -0.13524999999999965,
+      "ci95_clustered": [
+        -0.23524999999999952,
+        -0.04799999999999971
+      ]
+    }
+  },
+  "examples": {
+    "hyperactivity_agent_only": [
+      {
+        "task": "Find the motorcycle toll fee for the Queens midtown tunnel.",
+        "website": "new.mta.info",
+        "domain": "Travel",
+        "last_action": "[heading]  Bronx-Whitestone, Throgs Neck,\u00a0Robert F. Kennedy, ... -> CLICK",
+        "n_steps": 5,
+        "agent": "CONTINUE",
+        "agent_p_stop": 0.1,
+        "human_sim": "STOP",
+        "human_sim_p_stop": 0.9
+      },
+      {
+        "task": "Find the newest movies for rent  in the Redbox kiosk at any Winn Dixie in Daytona Beach.",
+        "website": "redbox",
+        "domain": "Entertainment",
+        "last_action": "[combobox]  sortBy -> SELECT: Newest",
+        "n_steps": 9,
+        "agent": "CONTINUE",
+        "agent_p_stop": 0.1,
+        "human_sim": "STOP",
+        "human_sim_p_stop": 0.9
+      },
+      {
+        "task": "check the lowest price ticket for All star stand up comedy event happen 6pm on the 25th March 2023.",
+        "website": "nyc",
+        "domain": "Entertainment",
+        "last_action": "[button]  Done -> CLICK",
+        "n_steps": 7,
+        "agent": "CONTINUE",
+        "agent_p_stop": 0.1,
+        "human_sim": "STOP",
+        "human_sim_p_stop": 0.9
+      },
+      {
+        "task": "Show me the best seller accessories for the Model X",
+        "website": "tesla",
+        "domain": "Shopping",
+        "last_action": "[heading]  Best Sellers -> CLICK",
+        "n_steps": 3,
+        "agent": "CONTINUE",
+        "agent_p_stop": 0.1,
+        "human_sim": "STOP",
+        "human_sim_p_stop": 0.9
+      }
+    ],
+    "hyperactivity_both": [
+      {
+        "task": "Schedule a demo drive for Model Y for Roy Adams with phone number 123-999-0000, email address RA@gmail.com and zip code 90001 in the United States.",
+        "website": "tesla",
+        "last_action": "[button]  Submit and Continue -> HOVER",
+        "n_steps": 8,
+        "agent_p_stop": 0.1,
+        "human_sim_p_stop": 0.1
+      }
+    ],
+    "premature_human_sim": [
+      {
+        "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+        "website": "us.megabus",
+        "action": "[link]  Route map -> CLICK",
+        "step_index": 1,
+        "n_steps": 10,
+        "agent": "CONTINUE",
+        "human_sim": "STOP",
+        "human_sim_p_stop": 0.9
+      },
+      {
+        "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+        "website": "us.megabus",
+        "action": "[button]  Search -> CLICK",
+        "step_index": 6,
+        "n_steps": 10,
+        "agent": "CONTINUE",
+        "human_sim": "STOP",
+        "human_sim_p_stop": 0.9
+      },
+      {
+        "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+        "website": "us.megabus",
+        "action": "[input]   -> CLICK",
+        "step_index": 7,
+        "n_steps": 10,
+        "agent": "CONTINUE",
+        "human_sim": "STOP",
+        "human_sim_p_stop": 0.9
+      },
+      {
+        "task": "Book parking spot for James SMith at Stewart Hotel in New York for 2 hours. The street address is 133 st avenue in New York. Zip code is 10001 and phone number is 888888888. The email address is buckeye.foobar@gmail.com. Employer's name is Gua AB.",
+        "website": "parking",
+        "action": "[link]  BOOK MONTHLY PARKING -> CLICK",
+        "step_index": 3,
+        "n_steps": 17,
+        "agent": "CONTINUE",
+        "human_sim": "STOP",
+        "human_sim_p_stop": 0.9
+      }
+    ],
+    "both_correct_stop": [
+      {
+        "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+        "website": "us.megabus",
+        "last_action": "[button]  Find tickets -> CLICK",
+        "agent_p_stop": 0.9,
+        "human_sim_p_stop": 0.9
+      },
+      {
+        "task": "Browse for wall art with a price range of $25 to $50.",
+        "website": "kohls",
+        "last_action": "[link]  $25 to $50 (5,006) -> CLICK",
+        "agent_p_stop": 0.9,
+        "human_sim_p_stop": 0.9
+      },
+      {
+        "task": "From Birmingham (BHX) to Paris search for packages with casinos, restaurant, fitness and a free internet from April 7th to 11th.",
+        "website": "kayak",
+        "last_action": "[checkbox]  Fitness -> CLICK",
+        "agent_p_stop": 0.9,
+        "human_sim_p_stop": 0.9
+      }
+    ]
+  },
+  "spend_usd": {
+    "agent": {
+      "usd": 0.1582,
+      "calls": 360,
+      "prompt_tokens": 461507,
+      "output_tokens": 7915
+    },
+    "human_sim": {
+      "usd": 0.1558,
+      "calls": 360,
+      "prompt_tokens": 456827,
+      "output_tokens": 7501
+    },
+    "total": 0.314
+  }
+}

@@ -1,0 +1,1980 @@
+{
+  "n": 100,
+  "eval_slice": "first 40 after shuffle seed 0",
+  "tasks": [
+    {
+      "eval_index": 0,
+      "annotation_id": "14b5885e-5454-465f-92bf-d8f7315c4a46",
+      "website": "us.megabus",
+      "domain": "Travel",
+      "subdomain": "Ground",
+      "confirmed_task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+      "n_steps": 10,
+      "action_reprs": [
+        "[button]  Explore\ue911 -> CLICK",
+        "[link]  Route map -> CLICK",
+        "[textbox]  Pick an origin Pick a destination -> TYPE: Abbotsford",
+        "[span]  Abbotsford, WI -> CLICK",
+        "[textbox]  Enter a town, city or zipcode -> TYPE: Sheboygan",
+        "[span]  Sheboygan, WI -> CLICK",
+        "[button]  Search -> CLICK",
+        "[input]   -> CLICK",
+        "[gridcell]  March 26, 2023 -> CLICK",
+        "[button]  Find tickets -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 1,
+      "annotation_id": "4b2030ff-b83c-445f-bf87-9c8fbc68498b",
+      "website": "kohls",
+      "domain": "Shopping",
+      "subdomain": "Department",
+      "confirmed_task": "Browse for wall art with a price range of $25 to $50.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[textbox]  Search by keyword or web id -> TYPE: wall art",
+        "[input]   -> CLICK",
+        "[link]  Wall Art -> CLICK",
+        "[div]  Price -> CLICK",
+        "[link]  $25 to $50 (5,006) -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 2,
+      "annotation_id": "d63b1715-688c-4be2-b196-dde9659bc59d",
+      "website": "kayak",
+      "domain": "Travel",
+      "subdomain": "Airlines",
+      "confirmed_task": "From Birmingham (BHX) to Paris search for packages with casinos, restaurant, fitness and a free internet from April 7th to 11th.",
+      "n_steps": 14,
+      "action_reprs": [
+        "[link]  Search for packages -> CLICK",
+        "[textbox]  From -> TYPE: Birmingham",
+        "[span]  Birmingham, England, United Kingdom -> CLICK",
+        "[textbox]  Enter destination or airport -> TYPE: Paris",
+        "[span]  City -> CLICK",
+        "[generic]  Tuesday April 4th -> CLICK",
+        "[div]  7 -> CLICK",
+        "[button]  Tuesday April 11, 2023 -> CLICK",
+        "[svg]   -> CLICK",
+        "[checkbox]  Free internet -> CLICK",
+        "[button]  Amenities -> CLICK",
+        "[checkbox]  Casino -> CLICK",
+        "[checkbox]  Restaurant -> CLICK",
+        "[checkbox]  Fitness -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 3,
+      "annotation_id": "46a3683f-fbe0-40d0-8729-6c7964d994e6",
+      "website": "underarmour",
+      "domain": "Shopping",
+      "subdomain": "Fashion",
+      "confirmed_task": "Find a men's UA outlet T-shirt of XL size and add to cart.",
+      "n_steps": 11,
+      "action_reprs": [
+        "[menuitem]  Outlet -> CLICK",
+        "[link]  Mens -> CLICK",
+        "[div]  Product Category -> CLICK",
+        "[link]  Clothing -> CLICK",
+        "[div]  Product Type -> CLICK",
+        "[link]  Short Sleeves -> CLICK",
+        "[div]  Size -> CLICK",
+        "[link]  XL -> CLICK",
+        "[img]  Men's UA Tech\u2122 2.0 Short Sleeve -> CLICK",
+        "[button]  XL -> CLICK",
+        "[button]  Add to Bag -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 4,
+      "annotation_id": "754c8c29-92b6-4af1-9594-f9d3da37b951",
+      "website": "booking",
+      "domain": "Travel",
+      "subdomain": "General",
+      "confirmed_task": "Find a 3-star rated hostel with balcony and free cancellation option in Udipi, Karnataka for one person under 50 dollars from June 15 to 20, free wifi is compulsory.",
+      "n_steps": 21,
+      "action_reprs": [
+        "[link]  Hostels -> CLICK",
+        "[searchbox]  Please type your destination -> TYPE: udupi",
+        "[option]  Udupi Karnataka,\u00a0India -> CLICK",
+        "[span]  25 -> CLICK",
+        "[svg]   -> CLICK",
+        "[checkbox]  15 June 2023 -> CLICK",
+        "[checkbox]  20 June 2023 -> CLICK",
+        "[span]  2 adults -> CLICK",
+        "[button]  - -> CLICK",
+        "[button]  Search -> CLICK",
+        "[span]   -> CLICK",
+        "[span]   -> CLICK",
+        "[span]   -> CLICK",
+        "[span]   -> CLICK",
+        "[button]  Show all 25 -> CLICK",
+        "[span]   -> CLICK",
+        "[button]  Sort by:Top picks for solo travellers -> CLICK",
+        "[button]  Price (lowest first) -> CLICK",
+        "[link]  See availability -> CLICK",
+        "[button]  Reserve -> CLICK",
+        "[button]  I'll\u00a0reserve -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 5,
+      "annotation_id": "8e849b85-5acc-4d26-ad5e-d24ad24343df",
+      "website": "parking",
+      "domain": "Travel",
+      "subdomain": "Other",
+      "confirmed_task": "Book parking spot for James SMith at Stewart Hotel in New York for 2 hours. The street address is 133 st avenue in New York. Zip code is 10001 and phone number is 888888888. The email address is buckeye.foobar@gmail.com. Employer's name is Gua AB.",
+      "n_steps": 17,
+      "action_reprs": [
+        "[span]  Enter an Address or Venue to find parking -> CLICK",
+        "[span]  Enter an Address or Venue to find parking -> TYPE: stewart hotel",
+        "[option]  STEWART HOTEL\u00a0\u00a0148 W 31st Street, New York Parking... -> CLICK",
+        "[link]  BOOK MONTHLY PARKING -> CLICK",
+        "[textbox]  First Name -> CLICK",
+        "[textbox]  First Name -> TYPE: James",
+        "[textbox]  Last Name -> TYPE: SMith",
+        "[textbox]  Address1 -> TYPE: 133 st avenue",
+        "[textbox]  City Name -> TYPE: New York",
+        "[select]  Alabama -> SELECT: New York",
+        "[textbox]  Zip Code -> TYPE: 10001",
+        "[textbox]  (###) ###-#### -> TYPE: 888888888",
+        "[textbox]  Email Address -> TYPE: buckeye.foobar@gmail.com",
+        "[textbox]  Email Address -> TYPE: buckeye.foobar@gmail.com",
+        "[textbox]  Employer Name -> CLICK",
+        "[textbox]  Employer Name -> TYPE: Gua AB",
+        "[button]  Submit -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 6,
+      "annotation_id": "a6372f23-f462-4706-8455-5b350c46d83c",
+      "website": "exploretock",
+      "domain": "Travel",
+      "subdomain": "Restaurant",
+      "confirmed_task": "Book a winery tour in Napa Valley in a winery which serves Mediterranean cuisine with wine testing for 4 guests on April 15, 10 am in a outdoor setup.",
+      "n_steps": 19,
+      "action_reprs": [
+        "[svg]   -> CLICK",
+        "[svg]   -> CLICK",
+        "[searchbox]  Find a location -> TYPE: NAPA VALLEY",
+        "[span]  Napa Valley -> CLICK",
+        "[combobox]  Reservation type -> SELECT: Wineries",
+        "[svg]   -> CLICK",
+        "[svg]   -> CLICK",
+        "[button]  15 -> CLICK",
+        "[combobox]  Time -> SELECT: 10:00 AM",
+        "[combobox]  Party size -> SELECT: 4 guests",
+        "[svg]   -> CLICK",
+        "[button]  Edit cuisine type filter -> CLICK",
+        "[checkbox]  Mediterranean -> CLICK",
+        "[button]  Submit -> CLICK",
+        "[button]  Open additional search filters -> CLICK",
+        "[checkbox]  Outdoors -> CLICK",
+        "[checkbox]  Wine tasting -> CLICK",
+        "[button]  Update search -> CLICK",
+        "[span]  10:00 AM -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 7,
+      "annotation_id": "b7003092-3e6e-4fac-9867-083cac064f89",
+      "website": "jetblue",
+      "domain": "Travel",
+      "subdomain": "Airlines",
+      "confirmed_task": "Find JetBlue career openings in New York",
+      "n_steps": 4,
+      "action_reprs": [
+        "[link]  CareersExternal Link should open in a new window o... -> CLICK",
+        "[textbox]  Search by Location -> CLICK",
+        "[textbox]  Search by Location -> TYPE: New York",
+        "[button]  Search Jobs -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 8,
+      "annotation_id": "2fc63250-ac9a-4cd4-a29d-6460f0652fa3",
+      "website": "newegg",
+      "domain": "Shopping",
+      "subdomain": "Digital",
+      "confirmed_task": "Find a wireless keyboard and mouse combo under $100.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[searchbox]  Search Site -> TYPE: wireless keyboard mouse",
+        "[button]  \uf002 -> CLICK",
+        "[textbox]  price to -> TYPE: 100",
+        "[button]  APPLY -> CLICK",
+        "[link]  Logitech MK270 Wireless Keyboard And Mouse Combo F... -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 9,
+      "annotation_id": "13f1648c-9de8-497d-bed3-02096206dc5f",
+      "website": "uniqlo",
+      "domain": "Shopping",
+      "subdomain": "Fashion",
+      "confirmed_task": "Add two pairs of women's Pink sweet pants in XXL size to your cart and view your cart.",
+      "n_steps": 13,
+      "action_reprs": [
+        "[link]  WOMEN -> CLICK",
+        "[tab]  Bottoms -> CLICK",
+        "[link]  Pants -> CLICK",
+        "[gridcell]  Category -> CLICK",
+        "[input]   -> CLICK",
+        "[option]  Sweatpants -> CLICK",
+        "[heading]  Sweatpants -> CLICK",
+        "[checkbox]  PINK -> CLICK",
+        "[checkbox]  XXL -> CLICK",
+        "[input]   -> CLICK",
+        "[option]  2 -> CLICK",
+        "[button]  ADD TO CART -> CLICK",
+        "[button]  VIEW CART -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 10,
+      "annotation_id": "a5c1095b-bba1-4029-8b8d-fa5848702827",
+      "website": "parking",
+      "domain": "Travel",
+      "subdomain": "Other",
+      "confirmed_task": "Find parking in New York City from June 5th to 9th.",
+      "n_steps": 10,
+      "action_reprs": [
+        "[span]  Enter an Address or Venue to find parking -> TYPE: New York City",
+        "[option]  New York City\u00a0\u00a0 City -> CLICK",
+        "[span]  Mar 9 -> CLICK",
+        "[i]   -> CLICK",
+        "[i]   -> CLICK",
+        "[i]   -> CLICK",
+        "[gridcell]  5 -> CLICK",
+        "[span]  Jun 5 -> CLICK",
+        "[gridcell]  9 -> CLICK",
+        "[button]  SEARCH -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 11,
+      "annotation_id": "fdc94e3a-caa3-42b0-aa1b-b99f728f6292",
+      "website": "tesla",
+      "domain": "Shopping",
+      "subdomain": "Auto",
+      "confirmed_task": "Schedule a demo drive for Model Y for Roy Adams with phone number 123-999-0000, email address RA@gmail.com and zip code 90001 in the United States.",
+      "n_steps": 8,
+      "action_reprs": [
+        "[link]  Demo Drive -> CLICK",
+        "[button]  Model Y -> CLICK",
+        "[textbox]  Last Name -> TYPE: Adams",
+        "[textbox]  First Name -> TYPE: Roy",
+        "[textbox]  Phone Number -> TYPE: 123-999-0000",
+        "[textbox]  Email Address -> TYPE: RA@gmail.com",
+        "[textbox]  Zip Code -> TYPE: 90001",
+        "[button]  Submit and Continue -> HOVER"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 12,
+      "annotation_id": "549452ab-637a-4997-bce1-5898541bb288",
+      "website": "ticketcenter",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Show me all NFL tickets",
+      "n_steps": 3,
+      "action_reprs": [
+        "[button]  SPORTS -> HOVER",
+        "[tab]  NFL -> HOVER",
+        "[link]  All NFL Tickets -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 13,
+      "annotation_id": "f2f531ff-94d5-4320-8594-7ae5d3a52af5",
+      "website": "imdb",
+      "domain": "Entertainment",
+      "subdomain": "Movie",
+      "confirmed_task": "Show top 50 Movies and TV shows by Sci fi genre.",
+      "n_steps": 6,
+      "action_reprs": [
+        "[path]   -> CLICK",
+        "[span]  Top 250 Movies -> CLICK",
+        "[link]  Sci-Fi -> CLICK",
+        "[button]  Open Navigation Drawer -> CLICK",
+        "[span]  Top 250 TV Shows -> CLICK",
+        "[link]  Sci-Fi -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 14,
+      "annotation_id": "d7c3103a-c195-4503-ab20-ecae4d4ce419",
+      "website": "new.mta.info",
+      "domain": "Travel",
+      "subdomain": "Ground",
+      "confirmed_task": "Find the motorcycle toll fee for the Queens midtown tunnel.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[link]  Fares & Tolls -> CLICK",
+        "[div]  Bridges and Tunnels tolls -> CLICK",
+        "[span]  Toll Rates -> CLICK",
+        "[span]  Motorcycles -> CLICK",
+        "[heading]  Bronx-Whitestone, Throgs Neck,\u00a0Robert F. Kennedy, ... -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 15,
+      "annotation_id": "c0eeead1-f8ea-4819-a6da-ef0108b40c89",
+      "website": "enterprise",
+      "domain": "Travel",
+      "subdomain": "Car rental",
+      "confirmed_task": "Sign Allan Smith for email offers with the email allan.smith@gmail.com and zip code 10001",
+      "n_steps": 7,
+      "action_reprs": [
+        "[a]   -> CLICK",
+        "[textbox]  First Name (required) -> TYPE: Allan",
+        "[textbox]  Last Name (required) -> TYPE: Smith",
+        "[textbox]  Email Address (required) -> TYPE: allan.smith@gmail.com",
+        "[textbox]  Confirm Email Address (required) -> TYPE: allan.smith@gmail.com",
+        "[textbox]  ZIP Code (required) -> TYPE: 10001",
+        "[button]  Submit -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 16,
+      "annotation_id": "c82bd6d6-6f08-4f1d-aeef-351c86694bbc",
+      "website": "redbox",
+      "domain": "Entertainment",
+      "subdomain": "Movie",
+      "confirmed_task": "Find the newest movies for rent  in the Redbox kiosk at any Winn Dixie in Daytona Beach.",
+      "n_steps": 9,
+      "action_reprs": [
+        "[button]  Navigate to Find a kiosk nearby -> CLICK",
+        "[textbox]  City or ZIP Code -> TYPE: Daytona",
+        "[button]  select to search for a kiosk using city or zipcode -> CLICK",
+        "[button]  select to browse a kiosk -> CLICK",
+        "[button]  Show Filters -> CLICK",
+        "[button]  Filter by rent -> CLICK",
+        "[span]  Hide Filters -> CLICK",
+        "[path]   -> CLICK",
+        "[combobox]  sortBy -> SELECT: Newest"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 17,
+      "annotation_id": "86897828-35e8-4002-a98a-4e1dd26c6edb",
+      "website": "nyc",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "check the lowest price ticket for All star stand up comedy event happen 6pm on the 25th March 2023.",
+      "n_steps": 7,
+      "action_reprs": [
+        "[link]  concerts. -> CLICK",
+        "[textbox]  Search by Name -> TYPE: all star stand up comedy",
+        "[p]  All Star Stand Up Comedy -> CLICK",
+        "[link]  View Tickets -> CLICK",
+        "[span]  Filters -> CLICK",
+        "[listbox]  Sort by Price - Low to High -> CLICK",
+        "[button]  Done -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 18,
+      "annotation_id": "bb3e2b61-c14c-4a15-8de4-7c12256d52c7",
+      "website": "seatgeek",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Search for concerts taking place in Los Angeles, CA in the next month.",
+      "n_steps": 8,
+      "action_reprs": [
+        "[button]  Change Location -> CLICK",
+        "[searchbox]  Search by city... -> TYPE: Los Angeles",
+        "[option]  Los Angeles, CA -> CLICK",
+        "[span]  Filter by -> CLICK",
+        "[div]  16 -> CLICK",
+        "[div]  16 -> CLICK",
+        "[button]  Apply -> CLICK",
+        "[img]  Concerts -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 19,
+      "annotation_id": "099a9da4-c8db-4900-ada2-76600f3655a4",
+      "website": "uniqlo",
+      "domain": "Shopping",
+      "subdomain": "Fashion",
+      "confirmed_task": "Show me the list of baby products that are on sale and under 10 dollars.",
+      "n_steps": 4,
+      "action_reprs": [
+        "[link]  BABY -> HOVER",
+        "[link]  Sale -> CLICK",
+        "[heading]  Price -> CLICK",
+        "[label]  $0-$10 -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 20,
+      "annotation_id": "fc21339a-5dc0-489c-b348-2fac79483f76",
+      "website": "amazon",
+      "domain": "Shopping",
+      "subdomain": "General",
+      "confirmed_task": "Find Metformin 1000mg tablet price and details.",
+      "n_steps": 7,
+      "action_reprs": [
+        "[button]  Open Menu -> CLICK",
+        "[link]  See All -> CLICK",
+        "[link]  Amazon Health -> CLICK",
+        "[link]  Amazon Pharmacy -> CLICK",
+        "[span]  Type your medication name -> TYPE: Metformin 1000mg",
+        "[li]  metformin 1000mg tablet -> CLICK",
+        "[img]  Metformin (Generic for Glucophage, Oral Tablet) -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 21,
+      "annotation_id": "cf361c84-6414-4b05-a7a1-77383997150a",
+      "website": "budget",
+      "domain": "Travel",
+      "subdomain": "Car rental",
+      "confirmed_task": "Get an SUV with an additional driver and wifi for pick up in  any rental location near Washington regional airport on June 1, 11 am, and drop off at Washington international airport on June 2, 11 am, and pay for the booking instantly.",
+      "n_steps": 20,
+      "action_reprs": [
+        "[button]  Locations -> HOVER",
+        "[link]  Find a Location -> CLICK",
+        "[textbox]  Search by Airport, City, Zip, Address or Attractio... -> TYPE: washington",
+        "[span]  Washington County Regional Apo -> CLICK",
+        "[link]  Make a Reservation -> CLICK",
+        "[textbox]  mm/dd/yyyy -> CLICK",
+        "[link]  Next -> CLICK",
+        "[link]  1 -> CLICK",
+        "[link]  2 -> CLICK",
+        "[combobox]  Pick Up Time -> SELECT: 11:00 AM",
+        "[combobox]  Return Time -> SELECT: 11:00 AM",
+        "[textbox]  Return to same location -> TYPE: washington",
+        "[div]  Washington Dulles Intl Airport -> CLICK",
+        "[generic]  Vehicle Type * -> CLICK",
+        "[p]  SUVs & Wagons -> CLICK",
+        "[button]  Select My Car -> CLICK",
+        "[link]  Pay Now -> CLICK",
+        "[checkbox]  $21.99/Day -> CLICK",
+        "[checkbox]  $13.00/Day -> CLICK",
+        "[button]  Continue -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 22,
+      "annotation_id": "1538e37b-9c33-48b0-b10e-662e192ad53a",
+      "website": "us.megabus",
+      "domain": "Travel",
+      "subdomain": "Ground",
+      "confirmed_task": "Find bus stops in Alanson, MI",
+      "n_steps": 3,
+      "action_reprs": [
+        "[button]  Explore\ue911 -> CLICK",
+        "[link]  Bus stops -> CLICK",
+        "[button]  Alanson, MI \ue911 -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 23,
+      "annotation_id": "b20e1dc4-651b-46e1-8470-16250657f2a8",
+      "website": "kayak",
+      "domain": "Travel",
+      "subdomain": "Airlines",
+      "confirmed_task": "Find a cheapest SUV in Brooklyn for 1 day.",
+      "n_steps": 12,
+      "action_reprs": [
+        "[link]  Search for cars -> CLICK",
+        "[textbox]  Pick-up location -> CLICK",
+        "[textbox]  Pick-up location -> TYPE: Brooklyn",
+        "[span]  Brooklyn, New York, United States -> CLICK",
+        "[span]  Different drop-off -> CLICK",
+        "[tab]  Same drop-off -> CLICK",
+        "[button]  End date -> CLICK",
+        "[button]  May 22, 2023 -> CLICK",
+        "[svg]   -> CLICK",
+        "[img]  SUV -> CLICK",
+        "[div]  $75 -> CLICK",
+        "[div]  View Deal -> HOVER"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 24,
+      "annotation_id": "cdbd410d-170a-426d-b6d2-60dafaffe853",
+      "website": "tesla",
+      "domain": "Shopping",
+      "subdomain": "Auto",
+      "confirmed_task": "Show me the best seller accessories for the Model X",
+      "n_steps": 3,
+      "action_reprs": [
+        "[link]  Shop -> CLICK",
+        "[link]  Shop Now -> CLICK",
+        "[heading]  Best Sellers -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 25,
+      "annotation_id": "5e47dc3e-2a4a-4273-871d-dfdb33b091d5",
+      "website": "underarmour",
+      "domain": "Shopping",
+      "subdomain": "Fashion",
+      "confirmed_task": "Filter women's sports bras that are purple  with high support that are small size.",
+      "n_steps": 11,
+      "action_reprs": [
+        "[menuitem]  Women -> CLICK",
+        "[link]  Sports Bras -> CLICK",
+        "[div]  Size -> CLICK",
+        "[link]  S -> CLICK",
+        "[div]  Filter -> CLICK",
+        "[RootWebArea]  Women's Sports Bras | Under Armour -> CLICK",
+        "[button]  Show more -> CLICK",
+        "[div]  Color -> CLICK",
+        "[link]  Refine by color: Purple -> CLICK",
+        "[div]  Support Level -> CLICK",
+        "[link]  High Support -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 26,
+      "annotation_id": "5092fad7-ff8a-481e-bb0b-fe83590193ce",
+      "website": "rottentomatoes",
+      "domain": "Entertainment",
+      "subdomain": "Movie",
+      "confirmed_task": "Show reviews of top critics for lowest rated Tom Hanks work",
+      "n_steps": 4,
+      "action_reprs": [
+        "[textbox]  Search -> TYPE: Tom Hanks",
+        "[p]  Tom Hanks -> CLICK",
+        "[link]  My Life in Ruins (2009) -> CLICK",
+        "[link]  Top Critics (49) -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 27,
+      "annotation_id": "1860601a-faef-4dba-8cbb-807ea8434dca",
+      "website": "delta",
+      "domain": "Travel",
+      "subdomain": "Airlines",
+      "confirmed_task": "Check for travel requirements when travelling from New York to Tokyo as US citizen.",
+      "n_steps": 15,
+      "action_reprs": [
+        "[tab]  Travel Info -> CLICK",
+        "[link]  Travel Planning Center -> CLICK",
+        "[button]  Find Your Destination -> CLICK",
+        "[link]  Explore Destinations & Travel Requirements -> CLICK",
+        "[combobox]  Origin -> CLICK",
+        "[combobox]  Origin -> TYPE: New York",
+        "[p]  New York City -> CLICK",
+        "[combobox]  Destination -> CLICK",
+        "[combobox]  Destination -> TYPE: Tokyo",
+        "[span]  (HND) -> CLICK",
+        "[combobox]  Nationality -> CLICK",
+        "[option]  United States of America (USA) -> CLICK",
+        "[combobox]  Vaccination status Vaccination status -> CLICK",
+        "[option]  Fully vaccinated -> CLICK",
+        "[button]  Search -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 28,
+      "annotation_id": "12324b80-88bd-4d48-962c-ae80203e5058",
+      "website": "redbox",
+      "domain": "Entertainment",
+      "subdomain": "Movie",
+      "confirmed_task": "Find $1 movie night film and rent blockers",
+      "n_steps": 4,
+      "action_reprs": [
+        "[link]  Navigate to deals -> CLICK",
+        "[link]  Navigate to 1-Night Kiosk Rentals See More -> CLICK",
+        "[img]  Blockers, MOVIE on , , Comedy, Romance, Special In... -> CLICK",
+        "[button]  select to rent on demand movie -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 29,
+      "annotation_id": "d6dd19a2-c57e-4e4d-b7e1-8919a86f1157",
+      "website": "viator",
+      "domain": "Travel",
+      "subdomain": "Other",
+      "confirmed_task": "Book the cheapest likely to sell out activity in Los Angeles on April 2",
+      "n_steps": 9,
+      "action_reprs": [
+        "[textbox]  Where to? -> TYPE: Los Angeles",
+        "[b]  Los Angeles -> CLICK",
+        "[button]  Next -> CLICK",
+        "[gridcell]  Sun Apr 02 2023 -> CLICK",
+        "[circle]   -> CLICK",
+        "[link]  Likely To Sell Out -> CLICK",
+        "[svg]   -> CLICK",
+        "[span]  Price (Low to High) -> CLICK",
+        "[link]  Hollywood Sign Hiking Tour to Griffith Observatory -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 30,
+      "annotation_id": "c5d1ecbe-f7a6-4d27-9e03-08dcfdcb524f",
+      "website": "jetblue",
+      "domain": "Travel",
+      "subdomain": "Airlines",
+      "confirmed_task": "Book a flight + cruise for two flying from Atlanta in October for vacation starting on October 8 for 6 nights with Miami as the departure port, choose the cheapest flight, hotel, and room in the cruise for booking.",
+      "n_steps": 13,
+      "action_reprs": [
+        "[span]  Flights + Cruise -> CLICK",
+        "[button]  Search flights + cruise External Link should open ... -> CLICK",
+        "[combobox]  Departing from -> TYPE: ATLANTA",
+        "[span]  Atlanta, GA (ATL) -> CLICK",
+        "[span]  Jun 2023 -> CLICK",
+        "[option]  Oct 2023 -> CLICK",
+        "[button]  Search flights + cruise -> CLICK",
+        "[label]  October 08, 2023 -> CLICK",
+        "[span]  Nights -> CLICK",
+        "[label]  Miami -> CLICK",
+        "[button]  View details -> CLICK",
+        "[link]  Select package -> CLICK",
+        "[span]  Checkout -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 31,
+      "annotation_id": "db203a3a-8e62-41aa-ac05-717a8c11508d",
+      "website": "new.mta.info",
+      "domain": "Travel",
+      "subdomain": "Ground",
+      "confirmed_task": "Plan a trip from Brooklyn, NY to Staten Island, NY on March 25th mainly using bus and subway terminal. The trip should arive at 9:45 AM.",
+      "n_steps": 19,
+      "action_reprs": [
+        "[searchbox]  From -> TYPE: brooklyn",
+        "[listitem]  Brooklyn, NY, USA -> CLICK",
+        "[searchbox]  To -> TYPE: staten island",
+        "[listitem]  Staten Island, NY, USA -> CLICK",
+        "[button]  Leave now Change Time -> CLICK",
+        "[textbox]  Select date (format month/day/year) -> CLICK",
+        "[button]  03/18/2023 -> CLICK",
+        "[link]  25, Saturday March 2023 -> CLICK",
+        "[radio]  Arrive by -> CLICK",
+        "[select]  1 -> SELECT: 9",
+        "[select]  00 -> SELECT: 45",
+        "[select]  AM -> SELECT: AM",
+        "[button]  3/25/2023 -> CLICK",
+        "[link]  25, Saturday March 2023 -> CLICK",
+        "[button]  Open Travel Preferences modal. -> CLICK",
+        "[label]  Rail -> CLICK",
+        "[label]  Express Bus -> CLICK",
+        "[button]  Done button - Press enter key to submit travel pre... -> CLICK",
+        "[link]  Plan my Trip - Press enter key to submit the form ... -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 32,
+      "annotation_id": "3be7acd4-c8c4-4e0d-b2b6-f82a4e17de8c",
+      "website": "ign",
+      "domain": "Entertainment",
+      "subdomain": "Game",
+      "confirmed_task": "Open the Resident evil 4 game guide.",
+      "n_steps": 3,
+      "action_reprs": [
+        "[path]   -> CLICK",
+        "[link]  Guides -> CLICK",
+        "[button]  Open Guide -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 33,
+      "annotation_id": "e6643cfb-567e-4e11-8cab-f85483573539",
+      "website": "espn",
+      "domain": "Entertainment",
+      "subdomain": "Sports",
+      "confirmed_task": "Follow one of the team leaders of one of the NHL teams from the Atlantic Division",
+      "n_steps": 6,
+      "action_reprs": [
+        "[link]  ESPN NHL Home Page -> HOVER",
+        "[link]  Teams -> CLICK",
+        "[heading]  Boston Bruins -> CLICK",
+        "[link]  Full Team Statistics -> CLICK",
+        "[heading]  David Pastrnak RW -> CLICK",
+        "[button]  FOLLOW -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 34,
+      "annotation_id": "51221157-cb79-407e-95c8-b2c730e95e01",
+      "website": "eventbrite",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Find a music party in Ohio and follow its organizer",
+      "n_steps": 8,
+      "action_reprs": [
+        "[div]  Search for events -> CLICK",
+        "[textbox]  Search events -> TYPE: music",
+        "[combobox]  autocomplete -> TYPE: ohio",
+        "[div]  Ohio -> CLICK",
+        "[generic]  Run Search -> CLICK",
+        "[label]   -> CLICK",
+        "[div]  RANG BARSEY- HOLI MUSIC FESTIVAL, CINCINNATI -> CLICK",
+        "[button]  Follow -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 35,
+      "annotation_id": "5a15ea92-571d-4a45-ad18-5b4eddbc70a6",
+      "website": "kohls",
+      "domain": "Shopping",
+      "subdomain": "Department",
+      "confirmed_task": "Get the lowest priced plus size one piece active swimsuit in color black.",
+      "n_steps": 10,
+      "action_reprs": [
+        "[link]  Shop by Category -> CLICK",
+        "[link]  Women -> HOVER",
+        "[link]  Swimwear -> CLICK",
+        "[link]  Women's Plus -> CLICK",
+        "[div]  Color -> CLICK",
+        "[link]  Black (294) -> CLICK",
+        "[link]  Sort by: Featured -> CLICK",
+        "[link]  Price Low-High -> CLICK",
+        "[div]  Occasion -> CLICK",
+        "[link]  Active (6) -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 36,
+      "annotation_id": "9b18e5e4-4873-49bf-b422-c3f5bc5d1f33",
+      "website": "ticketcenter",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Book a WWE ticket for price range between $50 to $100.",
+      "n_steps": 7,
+      "action_reprs": [
+        "[link]  WWE Tickets -> CLICK",
+        "[link]  TICKETS -> CLICK",
+        "[p]  $41 - $1,255 -> CLICK",
+        "[input]   -> TYPE: 50",
+        "[input]   -> TYPE: 100",
+        "[button]  Done -> CLICK",
+        "[button]  $50/ea -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 37,
+      "annotation_id": "8aedabbf-a7b4-4da7-8eaf-9e159a3ec99b",
+      "website": "nyc",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "review the dinner menu of La Bergamote restaurant in Hell's Kitchen.",
+      "n_steps": 9,
+      "action_reprs": [
+        "[link]  restaurants. -> CLICK",
+        "[i]   -> CLICK",
+        "[textbox]  Search by restaurant name, cuisine, or anything be... -> TYPE: La Bergamote",
+        "[button]  Search -> CLICK",
+        "[heading]  La Bergamote \u2014 Midtown -> CLICK",
+        "[link]  Reservation -> CLICK",
+        "[button]  Menu -> CLICK",
+        "[tab]  Dinner Menu -> CLICK",
+        "[button]  View full menu -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 38,
+      "annotation_id": "14a4e19d-d82d-45dd-b4f0-6b60ed87d085",
+      "website": "instacart",
+      "domain": "Shopping",
+      "subdomain": "General",
+      "confirmed_task": "Find nearest Sprouts Farmers Market and add two fruits and one sauce from the deals.",
+      "n_steps": 6,
+      "action_reprs": [
+        "[img]   -> CLICK",
+        "[link]  Deals -> CLICK",
+        "[div]  Add -> CLICK",
+        "[span]  Add -> CLICK",
+        "[link]  View More -> CLICK",
+        "[div]  Add -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 39,
+      "annotation_id": "9ed8cd2a-b0f8-4ccf-9d48-1ddfba4f5e58",
+      "website": "parking",
+      "domain": "Travel",
+      "subdomain": "Other",
+      "confirmed_task": "Find motorcycle parking near Radio City Music Hall.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[span]  Enter an Address or Venue to find parking -> TYPE: radio city music hall",
+        "[em]  Music -> CLICK",
+        "[strong]  Filters -> CLICK",
+        "[checkbox]  Motorcycle Parking -> CLICK",
+        "[link]  View Details ROCKEFELLER CENTER -> CLICK"
+      ],
+      "in_v0_eval": true
+    },
+    {
+      "eval_index": 40,
+      "annotation_id": "2879afa9-05f9-4d97-bbfe-f95f5d665174",
+      "website": "redbox",
+      "domain": "Entertainment",
+      "subdomain": "Movie",
+      "confirmed_task": "Play the Wakanda Forever trailer",
+      "n_steps": 4,
+      "action_reprs": [
+        "[link]  Navigate to on-demand -> HOVER",
+        "[link]  select to navigate to Genres -> CLICK",
+        "[img]  Black Panther: Wakanda Forever, MOVIE on , , , Act... -> CLICK",
+        "[path]   -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 41,
+      "annotation_id": "91e18ec8-5eae-4b14-a49e-9ed7ee1ebb10",
+      "website": "gamestop",
+      "domain": "Shopping",
+      "subdomain": "Speciality",
+      "confirmed_task": "Show me the list of playstation 5 games available for pre-orders.",
+      "n_steps": 6,
+      "action_reprs": [
+        "[button]  Main Menu -> CLICK",
+        "[button]  Video Games chevron_right -> CLICK",
+        "[button]  PlayStation 5 -> CLICK",
+        "[link]  Filter -> CLICK",
+        "[checkbox]  Shop Pre-Orders Shop Pre-Orders -> CLICK",
+        "[button]  Done -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 42,
+      "annotation_id": "bf469f30-6628-4017-b963-672645d7feab",
+      "website": "kohls",
+      "domain": "Shopping",
+      "subdomain": "Department",
+      "confirmed_task": "Find the highest rated dog collar under 10 dollar.",
+      "n_steps": 10,
+      "action_reprs": [
+        "[link]  Shop by Category -> CLICK",
+        "[link]  Pet -> CLICK",
+        "[span]  Pet Type -> CLICK",
+        "[link]  Dog (1,338) -> CLICK",
+        "[span]  Category -> CLICK",
+        "[link]  Collars & Leashes (485) -> CLICK",
+        "[link]  Sort by: Featured -> CLICK",
+        "[link]  Highest Rated -> CLICK",
+        "[div]  Price -> CLICK",
+        "[link]  Under $10 (1) -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 43,
+      "annotation_id": "1c8b3d98-ffcf-42b9-ae0b-73d22d87bad7",
+      "website": "kohls",
+      "domain": "Shopping",
+      "subdomain": "Department",
+      "confirmed_task": "Add a pair of diamond stud earrings to the cart.",
+      "n_steps": 4,
+      "action_reprs": [
+        "[textbox]  Search by keyword or web id -> TYPE: diamond stud earrings",
+        "[span]  diamond stud earrings -> CLICK",
+        "[img]  10k Gold 1 Carat T.W. Black Diamond Stud Earrings -> CLICK",
+        "[button]  Add to Cart -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 44,
+      "annotation_id": "a31de393-c6e0-4175-858b-03cdc435d585",
+      "website": "parking",
+      "domain": "Travel",
+      "subdomain": "Other",
+      "confirmed_task": "Browse events happening at Madison Square Garden.",
+      "n_steps": 2,
+      "action_reprs": [
+        "[combobox]  \uf002\u00a0 Enter an Address or Venue to find parking -> TYPE: Madison Square Garden",
+        "[em]  Madison -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 45,
+      "annotation_id": "6407babe-fe48-492a-8211-1f22a81b9ac0",
+      "website": "underarmour",
+      "domain": "Shopping",
+      "subdomain": "Fashion",
+      "confirmed_task": "Find men's running shoes of size 9 with lowest price and add to bag.",
+      "n_steps": 10,
+      "action_reprs": [
+        "[menuitem]  Men -> CLICK",
+        "[link]  Shoes -> CLICK",
+        "[link]  Running -> CLICK",
+        "[div]  Size -> CLICK",
+        "[link]  9 -> CLICK",
+        "[span]  Now Trending -> CLICK",
+        "[li]  Price (Low - High) -> CLICK",
+        "[img]  Men's UA Surge 3 Running Shoes -> CLICK",
+        "[button]  9 -> CLICK",
+        "[button]  Add to Bag -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 46,
+      "annotation_id": "1943febc-0635-4124-871c-578c4d9f5a44",
+      "website": "ultimate-guitar",
+      "domain": "Entertainment",
+      "subdomain": "Music",
+      "confirmed_task": "Find the most popular guitar tab for Absolute Beginners.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[link]  Tabs -> CLICK",
+        "[svg]   -> CLICK",
+        "[link]  Most popular of all time -> CLICK",
+        "[link]  Absolute Beginner 91,138 -> CLICK",
+        "[link]  You Belong With Me (ver\u00a02) -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 47,
+      "annotation_id": "ac59be41-36c3-44c5-8e1f-ffb9461ba980",
+      "website": "seatgeek",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Search for all Alternative Concerts taking place in New York City.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[button]  Change Location -> CLICK",
+        "[searchbox]  Search by city... -> TYPE: New York",
+        "[option]  New York, NY -> CLICK",
+        "[img]  Concerts -> CLICK",
+        "[img]  Alternative -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 48,
+      "annotation_id": "8e7b05d4-7dfb-4345-af2b-3e1dcd1c2ea2",
+      "website": "tesla",
+      "domain": "Shopping",
+      "subdomain": "Auto",
+      "confirmed_task": "Show me a map with charging stations in London.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[button]  Menu -> CLICK",
+        "[link]  Charging -> CLICK",
+        "[link]  Find Us -> CLICK",
+        "[textbox]  search input -> TYPE: London",
+        "[li]  London, UK -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 49,
+      "annotation_id": "122178b3-b5d4-41f0-be38-150ca0e2f5ed",
+      "website": "uniqlo",
+      "domain": "Shopping",
+      "subdomain": "Fashion",
+      "confirmed_task": "Find a black blazer for men with L size and add to wishlist.",
+      "n_steps": 13,
+      "action_reprs": [
+        "[svg]   -> CLICK",
+        "[searchbox]  Search by keyword -> TYPE: blazer",
+        "[span]  blazer -> CLICK",
+        "[heading]  Gender > Category -> CLICK",
+        "[input]   -> CLICK",
+        "[option]  MEN -> CLICK",
+        "[svg]   -> CLICK",
+        "[heading]  Color -> CLICK",
+        "[span]  BLACK -> CLICK",
+        "[svg]   -> CLICK",
+        "[path]   -> CLICK",
+        "[button]  L -> CLICK",
+        "[button]  CLOSE -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 50,
+      "annotation_id": "9cc81f50-465c-4d77-8fd7-d81fe1ffde84",
+      "website": "tvguide",
+      "domain": "Entertainment",
+      "subdomain": "Movie",
+      "confirmed_task": "Find the channel number for the local CBS in Spokane Washington in 99201.",
+      "n_steps": 8,
+      "action_reprs": [
+        "[link]  Live TV -> CLICK",
+        "[button]  Broadcast TV Spokane (3) -> CLICK",
+        "[textbox]  Search -> TYPE: 99201",
+        "[button]  Antenna -> CLICK",
+        "[button]  Broadcast TV Spokane (3) -> CLICK",
+        "[button]  Apply -> CLICK",
+        "[button]  Skip -> CLICK",
+        "[div]  CH 2.1 -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 51,
+      "annotation_id": "4d73937b-3be7-4f5f-950f-b1905244a2ac",
+      "website": "ticketcenter",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Show MLB tickets for this weekend and select the next one.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[button]  SPORTS -> HOVER",
+        "[link]  All MLB Tickets -> CLICK",
+        "[button]  All dates -> CLICK",
+        "[link]  This weekend -> CLICK",
+        "[link]  TICKETS -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 52,
+      "annotation_id": "48ca542f-5346-40b9-b586-9294a2f64519",
+      "website": "soundcloud",
+      "domain": "Entertainment",
+      "subdomain": "Music",
+      "confirmed_task": "Like a game mix album.",
+      "n_steps": 4,
+      "action_reprs": [
+        "[searchbox]  Search -> TYPE: game mix",
+        "[button]  Search -> CLICK",
+        "[link]  Albums -> CLICK",
+        "[button]  Like -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 53,
+      "annotation_id": "21e5c264-df85-4055-a566-ecb65cdd8c63",
+      "website": "us.megabus",
+      "domain": "Travel",
+      "subdomain": "Ground",
+      "confirmed_task": "Add to my basket tickets for 3 people from New York to Alfred.",
+      "n_steps": 10,
+      "action_reprs": [
+        "[textbox]  From (type text or use the arrow keys) -> TYPE: New York",
+        "[span]  New York, NY -> CLICK",
+        "[textbox]  To (type text or use the arrow keys) -> TYPE: Alfred",
+        "[span]  Alfred, NY -> CLICK",
+        "[textbox]  Pick a date -> CLICK",
+        "[gridcell]  March 31, 2023 -> CLICK",
+        "[span]   -> CLICK",
+        "[span]   -> CLICK",
+        "[button]  Find tickets -> CLICK",
+        "[button]  Add to basket -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 54,
+      "annotation_id": "9ea9ac0d-8c31-49bc-aa3d-e85b80580409",
+      "website": "united",
+      "domain": "Travel",
+      "subdomain": "Airlines",
+      "confirmed_task": "Find the flight schedule between London and New York for April 7 and check the upgrade details of the noon flight.",
+      "n_steps": 10,
+      "action_reprs": [
+        "[heading]  Flight status -> CLICK",
+        "[combobox]  Enter your departing city, airport name, or airpor... -> TYPE: london",
+        "[span]  London -> CLICK",
+        "[combobox]  Enter your destination city, airport name, or airp... -> TYPE: new york",
+        "[span]  New York -> CLICK",
+        "[generic]  Apr 6, 2023 -> CLICK",
+        "[option]  Apr 7, 2023 -> CLICK",
+        "[button]  Search -> CLICK",
+        "[link]  View details -> CLICK",
+        "[tab]  Upgrades -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 55,
+      "annotation_id": "277bdab6-e924-45dd-ba26-d659d864d671",
+      "website": "instacart",
+      "domain": "Shopping",
+      "subdomain": "General",
+      "confirmed_task": "Add 2 different flavor dog treats and one dog food with lowest price to cart from Safeway.",
+      "n_steps": 9,
+      "action_reprs": [
+        "[textbox]  Search -> TYPE: dog treats",
+        "[span]  dog treats -> CLICK",
+        "[span]  View all 20+ items -> CLICK",
+        "[span]  Best match -> CLICK",
+        "[option]  Price: lowest first -> CLICK",
+        "[span]  Add -> CLICK",
+        "[span]  Add -> CLICK",
+        "[button]  Load more -> CLICK",
+        "[span]  Add to cart -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 56,
+      "annotation_id": "1fefdb27-882b-481b-97e2-720f4d2338a3",
+      "website": "agoda",
+      "domain": "Travel",
+      "subdomain": "General",
+      "confirmed_task": "Look for activities in Phuket, Thailand.",
+      "n_steps": 4,
+      "action_reprs": [
+        "[path]   -> CLICK",
+        "[combobox]  Search by city or activity -> TYPE: Phuket",
+        "[generic]  Thailand -> CLICK",
+        "[button]  SEARCH -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 57,
+      "annotation_id": "7bda9645-0b5f-470a-8dd7-6af0bff4da68",
+      "website": "exploretock",
+      "domain": "Travel",
+      "subdomain": "Restaurant",
+      "confirmed_task": "Check for pickup restaurant available in Boston, NY on March 18, 5pm with just one guest",
+      "n_steps": 11,
+      "action_reprs": [
+        "[combobox]  Reservation type -> SELECT: Pickup",
+        "[svg]   -> CLICK",
+        "[searchbox]  Find a location -> TYPE: Boston",
+        "[span]  Boston -> CLICK",
+        "[svg]   -> CLICK",
+        "[button]  18 -> CLICK",
+        "[combobox]  Time -> SELECT: 5:00 PM",
+        "[svg]   -> CLICK",
+        "[span]  2 guests -> CLICK",
+        "[combobox]  Size -> SELECT: 1 guest",
+        "[button]  Update search -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 58,
+      "annotation_id": "981fdb06-2352-439f-a6d0-ccaa857c7a54",
+      "website": "gamestop",
+      "domain": "Shopping",
+      "subdomain": "Speciality",
+      "confirmed_task": "Find the trade-in options for PS4.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[link]  repeat Trade-In -> CLICK",
+        "[p]  Consoles -> CLICK",
+        "[link]  Filter -> CLICK",
+        "[generic]  Refine by Category: PlayStation 4 -> CLICK",
+        "[button]  Done -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 59,
+      "annotation_id": "930803d7-4032-4144-89a2-e44f3c5c9ccf",
+      "website": "sixflags",
+      "domain": "Travel",
+      "subdomain": "Other",
+      "confirmed_task": "Buy tickets for a group at Hurricane harbor Phoenix on April 22",
+      "n_steps": 7,
+      "action_reprs": [
+        "[button]  Browse the Parks Below -> CLICK",
+        "[span]  Hurricane Harbor Phoenix -> CLICK",
+        "[button]  Go! -> CLICK",
+        "[link]  Groups \ue92e -> CLICK",
+        "[span]  Buy Now -> CLICK",
+        "[button]  April 22, 2023 -> CLICK",
+        "[button]  Buy Now -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 60,
+      "annotation_id": "9cd20dc6-d2a5-4e8f-9252-549f2c51413c",
+      "website": "tesla",
+      "domain": "Shopping",
+      "subdomain": "Auto",
+      "confirmed_task": "View inventory of Tesla Model S that are blue and new with 19\" wheels within 50 miles of zip code 60602.",
+      "n_steps": 6,
+      "action_reprs": [
+        "[link]  Model S -> CLICK",
+        "[link]  View Inventory -> CLICK",
+        "[image]   -> CLICK",
+        "[checkbox]  19\" Wheels -> CLICK",
+        "[textbox]  Registration Zip Code Where you will register the ... -> TYPE: 60602",
+        "[combobox]  Search within -> SELECT: 50 miles"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 61,
+      "annotation_id": "bdc1f69a-da73-4e51-9dd8-83494d4983c2",
+      "website": "jetblue",
+      "domain": "Travel",
+      "subdomain": "Airlines",
+      "confirmed_task": "Find check-in flight for John Smith having ticket no. 123456780",
+      "n_steps": 6,
+      "action_reprs": [
+        "[link]  Check In -> CLICK",
+        "[textbox]  first name maxlimit is 30 -> TYPE: John",
+        "[textbox]  last name maxlimit is 30 -> TYPE: Smith",
+        "[select]  Confirmation Code -> SELECT: Ticket Number",
+        "[textbox]  ticket number maxlimit is 13 -> TYPE: 123456780",
+        "[button]  FIND FLIGHTS -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 62,
+      "annotation_id": "ce34bc61-e3d2-40c8-b02b-b149efc4b115",
+      "website": "enterprise",
+      "domain": "Travel",
+      "subdomain": "Car rental",
+      "confirmed_task": "Find a mini van at Brooklyn City from April 5th to April 8th for a 22 year old renter.",
+      "n_steps": 11,
+      "action_reprs": [
+        "[searchbox]  Pick-up & Return Location (ZIP, City or Airport) (... -> TYPE: Brooklyn",
+        "[option]  Brooklyn, NY, US Select -> CLICK",
+        "[button]  Selected Pick-Up Date 03/19/2023 -> CLICK",
+        "[button]  04/05/2023 -> CLICK",
+        "[svg]   -> CLICK",
+        "[button]  04/08/2023 -> CLICK",
+        "[combobox]  Renter Age -> SELECT: 22",
+        "[button]  Vehicle Class -> CLICK",
+        "[radio]  Minivans -> CLICK",
+        "[button]  Apply Filter -> CLICK",
+        "[button]  Browse Vehicles -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 63,
+      "annotation_id": "1b17b79c-589f-45eb-b55d-c977d1b9708e",
+      "website": "agoda",
+      "domain": "Travel",
+      "subdomain": "General",
+      "confirmed_task": "Find the cheapest motel for 2 adults in Seattle from 11 May to 18 May",
+      "n_steps": 9,
+      "action_reprs": [
+        "[combobox]  Enter a destination or property -> TYPE: seattle",
+        "[option]  Seattle (WA), United States (City) -> CLICK",
+        "[button]  Next Month -> CLICK",
+        "[span]  11 -> CLICK",
+        "[span]  18 -> CLICK",
+        "[span]  SEARCH -> CLICK",
+        "[span]  SEARCH -> CLICK",
+        "[checkbox]  Motel -> CLICK",
+        "[tab]  Lowest price first -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 64,
+      "annotation_id": "851ed4e6-51ee-47ad-a861-a28bdc61a102",
+      "website": "tesla",
+      "domain": "Shopping",
+      "subdomain": "Auto",
+      "confirmed_task": "Open the page to schedule a Model X test drive.",
+      "n_steps": 3,
+      "action_reprs": [
+        "[button]  Menu -> CLICK",
+        "[link]  Demo Drive -> CLICK",
+        "[button]  Model X -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 65,
+      "annotation_id": "ebae9339-93bf-4f5a-9396-ce30bcec7b49",
+      "website": "underarmour",
+      "domain": "Shopping",
+      "subdomain": "Fashion",
+      "confirmed_task": "Find the price of Boys' INFANT UA SURGE 3 RUNNING SHOES. black color and 9K size",
+      "n_steps": 8,
+      "action_reprs": [
+        "[menuitem]  Kids -> CLICK",
+        "[div]  Product Category -> CLICK",
+        "[link]  Shoes -> CLICK",
+        "[div]  Color -> CLICK",
+        "[link]  Refine by color: Black -> CLICK",
+        "[div]  Size -> CLICK",
+        "[link]  9K -> CLICK",
+        "[img]  Boys' Infant UA Surge 3 AC Running Shoes -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 66,
+      "annotation_id": "8e721b00-f406-449b-9885-0267b47ecfdb",
+      "website": "carmax",
+      "domain": "Shopping",
+      "subdomain": "Auto",
+      "confirmed_task": "Search for used Jaguar XFs with no black exterior color and save the search as Jaguar  to get a notification daily.",
+      "n_steps": 10,
+      "action_reprs": [
+        "[searchbox]  Search make, model, or keyword -> TYPE: jaguar xf",
+        "[link]  Jaguar XF -> CLICK",
+        "[button]  Advanced Search -> CLICK",
+        "[textbox]  Ex. Black exterior -> TYPE: black",
+        "[button]  Black (Exterior Color) -> CLICK",
+        "[button]  SAVE SEARCH -> CLICK",
+        "[textbox]  Custom name your search -> TYPE: Jaguar",
+        "[button]  CONTINUE -> CLICK",
+        "[radio]  Daily summary -> CLICK",
+        "[button]  CONTINUE -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 67,
+      "annotation_id": "de1045f4-14ce-4de9-9aa8-601315b73b0e",
+      "website": "imdb",
+      "domain": "Entertainment",
+      "subdomain": "Movie",
+      "confirmed_task": "Get the most popular documentary tv series sorted by IMDB rating, see the details of the top result.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[button]  Open Navigation Drawer -> CLICK",
+        "[span]  Browse TV Shows by Genre -> CLICK",
+        "[link]  Documentary -> CLICK",
+        "[link]  User Rating -> CLICK",
+        "[link]  Going Postal -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 68,
+      "annotation_id": "1267fbd8-54c8-4f2e-8471-b13c4de332c7",
+      "website": "airbnb",
+      "domain": "Travel",
+      "subdomain": "Hotel",
+      "confirmed_task": "Search for a tiny home anywhere for an adult and 2 pets to stay in from april 10 to april 12",
+      "n_steps": 10,
+      "action_reprs": [
+        "[path]   -> CLICK",
+        "[span]  Tiny homes -> CLICK",
+        "[button]  Check in / Check out Any week -> CLICK",
+        "[button]  10, Monday, April 2023. Available. Select as check... -> CLICK",
+        "[button]  12, Wednesday, April 2023. Available. Select as ch... -> CLICK",
+        "[div]  Add guests -> CLICK",
+        "[svg]   -> CLICK",
+        "[svg]   -> CLICK",
+        "[path]   -> CLICK",
+        "[span]   -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 69,
+      "annotation_id": "a531a379-7770-4b72-a8cc-ee19419536cb",
+      "website": "nyc",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "search for art galleries in midtown",
+      "n_steps": 4,
+      "action_reprs": [
+        "[link]  attractions. -> CLICK",
+        "[li]  Neighborhood -> CLICK",
+        "[link]  Midtown -> CLICK",
+        "[link]  Art Galleries (5) -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 70,
+      "annotation_id": "5fb9730d-f489-4cb7-a220-d406794cef29",
+      "website": "rottentomatoes",
+      "domain": "Entertainment",
+      "subdomain": "Movie",
+      "confirmed_task": "List all George Clooney movies and sort them by box office revenue",
+      "n_steps": 3,
+      "action_reprs": [
+        "[textbox]  Search -> TYPE: George Clooney",
+        "[p]  George Clooney -> CLICK",
+        "[button]  BOX OFFICE -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 71,
+      "annotation_id": "9653dc0d-96d9-414f-a711-3af94bd7cf5b",
+      "website": "gamestop",
+      "domain": "Shopping",
+      "subdomain": "Speciality",
+      "confirmed_task": "sell playstation controller for cash credit on GameStop in 43240.",
+      "n_steps": 8,
+      "action_reprs": [
+        "[link]  repeat Trade-In -> CLICK",
+        "[img]   -> CLICK",
+        "[link]  Sony DUALSHOCK 4 Wireless Controller for PlayStati... -> CLICK",
+        "[div]  Find a Store -> CLICK",
+        "[link]  FIND A STORE -> CLICK",
+        "[textbox]  SEARCH BY CITY, STATE, OR ZIP CODE -> TYPE: 43240",
+        "[button]  SEARCH -> CLICK",
+        "[button]  Polaris Fashion Place Mall - GameStop -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 72,
+      "annotation_id": "e12f51f6-c8c5-4a68-9586-d77927bca79c",
+      "website": "tesla",
+      "domain": "Shopping",
+      "subdomain": "Auto",
+      "confirmed_task": "Add a Tesla Shop Gift Card for April May with the email april.may@gmail.com to my cart",
+      "n_steps": 6,
+      "action_reprs": [
+        "[link]  Shop -> CLICK",
+        "[menuitem]  Lifestyle -> CLICK",
+        "[img]  Tesla Shop Gift Card -> CLICK",
+        "[textbox]  Name of Recipient -> TYPE: April May",
+        "[textbox]  Email Address of Recipient -> TYPE: april.may@gmail.com",
+        "[button]  Add to Cart -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 73,
+      "annotation_id": "39b037ac-0a11-4b05-8919-b4f9863fd0cd",
+      "website": "ign",
+      "domain": "Entertainment",
+      "subdomain": "Game",
+      "confirmed_task": "Show review of Prometheus movie.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[path]   -> CLICK",
+        "[tab]  MOVIES -> CLICK",
+        "[searchbox]  Search -> TYPE: Prometheus",
+        "[div]  Prometheus -> CLICK",
+        "[tab]  Reviews -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 74,
+      "annotation_id": "4bc70fa1-e817-405f-b113-0919e8e94205",
+      "website": "kohls",
+      "domain": "Shopping",
+      "subdomain": "Department",
+      "confirmed_task": "Add the cheapest Women's Sweaters to my shopping cart.",
+      "n_steps": 7,
+      "action_reprs": [
+        "[span]  Shop by Category -> CLICK",
+        "[link]  Women -> HOVER",
+        "[link]  Sweaters & Cardigans -> CLICK",
+        "[link]  Sort by: Featured -> CLICK",
+        "[link]  Price Low-High -> CLICK",
+        "[p]  Women's Sonoma Goods For Life\u00ae All Over Stitch -> CLICK",
+        "[button]  Add to Cart -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 75,
+      "annotation_id": "af6655c8-0047-4c93-8da2-aeb04ff06b17",
+      "website": "rei",
+      "domain": "Shopping",
+      "subdomain": "Speciality",
+      "confirmed_task": "Browse climbing courses within 50 miles of 90028.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[link]  Classes & Events -> CLICK",
+        "[combobox]  Activity -> SELECT: Climbing",
+        "[textbox]  Location -> TYPE: 90028",
+        "[combobox]  Distance -> SELECT: Within 50 miles",
+        "[button]  Search -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 76,
+      "annotation_id": "987b25a8-05af-4b18-bd5b-7e2ccba5fb1e",
+      "website": "newegg",
+      "domain": "Shopping",
+      "subdomain": "Digital",
+      "confirmed_task": "Add Western Digital internal SSD with 1TB storage and 8GB Ram DDR to the cart.",
+      "n_steps": 12,
+      "action_reprs": [
+        "[searchbox]  Search Site -> CLICK",
+        "[searchbox]  Search Site -> TYPE: Western Digital internal SSD 1 TB",
+        "[button]  \uf002 -> CLICK",
+        "[link]  Western Digital WD_BLACK SN770 M.2 2280 1TB PCIe G... -> CLICK",
+        "[button]  ADD TO CART \uf0da -> CLICK",
+        "[button]  NO, THANKS -> CLICK",
+        "[button]  Close -> CLICK",
+        "[searchbox]  Search Site -> TYPE: 8GB Ram",
+        "[button]  \uf002 -> CLICK",
+        "[img]  8GB (1x8GB) DDR3L 1600 (PC3L-12800) Desktop Memory... -> CLICK",
+        "[button]  ADD TO CART \uf0da -> CLICK",
+        "[button]  NO, THANKS -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 77,
+      "annotation_id": "f754d919-2191-464e-a407-0f3da9409081",
+      "website": "amazon",
+      "domain": "Shopping",
+      "subdomain": "General",
+      "confirmed_task": "See today's deals on video games and find the best deal on the lowest-priced mouse.",
+      "n_steps": 9,
+      "action_reprs": [
+        "[button]  Open Menu -> CLICK",
+        "[link]  Movies, Music & Games -> CLICK",
+        "[link]  Video Games -> CLICK",
+        "[link]  Today's Deals -> CLICK",
+        "[link]  PC -> CLICK",
+        "[link]  Accessories -> CLICK",
+        "[link]  Gaming Mice -> CLICK",
+        "[span]  Featured -> CLICK",
+        "[option]  Price: Low to High -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 78,
+      "annotation_id": "b20d38a9-8c0f-4ed5-becc-f0f54fb90798",
+      "website": "seatgeek",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Show me the page with information about the NBA Finals schedule.",
+      "n_steps": 3,
+      "action_reprs": [
+        "[div]  Sports -> HOVER",
+        "[link]  NBA -> HOVER",
+        "[link]  NBA Finals -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 79,
+      "annotation_id": "3e0d115f-9da7-4211-9d99-122912890b40",
+      "website": "soundcloud",
+      "domain": "Entertainment",
+      "subdomain": "Music",
+      "confirmed_task": "Delete the history of what i heard recently.",
+      "n_steps": 4,
+      "action_reprs": [
+        "[link]  Library -> CLICK",
+        "[link]  History -> CLICK",
+        "[button]  Clear all history -> CLICK",
+        "[button]  Clear my history -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 80,
+      "annotation_id": "1a35becb-e07b-4235-8cd3-fc2a29f8dd6f",
+      "website": "ultimate-guitar",
+      "domain": "Entertainment",
+      "subdomain": "Music",
+      "confirmed_task": "Add the most most popular of all time tab to a playlist",
+      "n_steps": 6,
+      "action_reprs": [
+        "[link]  Tabs -> CLICK",
+        "[link]  Tab -> CLICK",
+        "[svg]   -> CLICK",
+        "[link]  Most popular of all time -> CLICK",
+        "[link]  Stairway To Heaven -> CLICK",
+        "[button]   ADD TO PLAYLIST -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 81,
+      "annotation_id": "ab989f1e-bacb-4c37-ab81-c8f24ee3284b",
+      "website": "new.mta.info",
+      "domain": "Travel",
+      "subdomain": "Ground",
+      "confirmed_task": "View the special timetable for Far Rockaway Branch of the Long Island Railroad.",
+      "n_steps": 4,
+      "action_reprs": [
+        "[link]  Schedules -> CLICK",
+        "[heading]  Long Island Rail Road & Metro-North Railroad -> CLICK",
+        "[div]  Long Island Rail Road schedules -> CLICK",
+        "[link]  Far Rockaway Branch -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 82,
+      "annotation_id": "d1942a73-745f-44c5-ba30-0d0c7925f5d2",
+      "website": "rottentomatoes",
+      "domain": "Entertainment",
+      "subdomain": "Movie",
+      "confirmed_task": "Find a comedy movie streaming on Netflix and add to watchlist.",
+      "n_steps": 7,
+      "action_reprs": [
+        "[link]  MOVIES -> HOVER",
+        "[link]  Netflix streaming -> CLICK",
+        "[svg]   -> CLICK",
+        "[div]   -> CLICK",
+        "[button]  APPLY -> CLICK",
+        "[img]  Chris Rock: Selective Outrage -> CLICK",
+        "[button]  WANT TO SEE -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 83,
+      "annotation_id": "2a45ede7-6449-40b2-b032-149ddbe205a9",
+      "website": "eventbrite",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Contact Yeah You Right Events who are the organisers of the Food Fight 2023 event being held in New Orleans on May 25th to ask a question about the event",
+      "n_steps": 7,
+      "action_reprs": [
+        "[combobox]  autocomplete -> TYPE: New Orleans",
+        "[div]  LA, USA -> CLICK",
+        "[button]  Food & Drink -> CLICK",
+        "[div]   -> CLICK",
+        "[button]  Contact -> CLICK",
+        "[button]  Contact the organizer -> CLICK",
+        "[listbox]  Contact reason * (required) -> SELECT: Question about the event"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 84,
+      "annotation_id": "a11022ab-f733-4295-a2f2-0da19cccc1b4",
+      "website": "sixflags",
+      "domain": "Travel",
+      "subdomain": "Other",
+      "confirmed_task": "Sign up for emails using the name Dick Smith and the email smith@gmail.com, select Six Flags Magic Mountain as the Park of Preference,",
+      "n_steps": 5,
+      "action_reprs": [
+        "[textbox]  First Name -> TYPE: Dick",
+        "[textbox]  Last Name -> TYPE: Smith",
+        "[textbox]  Email -> TYPE: smith@gmail.com",
+        "[combobox]  Park of Preference -> SELECT: Six Flags Magic Mountain / Los Angeles, CA",
+        "[button]  Sign Up -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 85,
+      "annotation_id": "b910229f-6133-452c-a640-6a6ec67b668b",
+      "website": "amtrak",
+      "domain": "Travel",
+      "subdomain": "Ground",
+      "confirmed_task": "Get quote for Amtrak vacation for two adults across country while leaving from Chicago on the 22nd of April. It should include Deluxe bedroom. The passenger is named John Mark with email address of johnmark@gmail.com and phone number of 234567890.",
+      "n_steps": 22,
+      "action_reprs": [
+        "[button]  DEALS -> CLICK",
+        "[link]  VACATIONS & RAIL TOURS Train vacation packages thr... -> CLICK",
+        "[img]   -> CLICK",
+        "[link]  Close -> CLICK",
+        "[button]  Instant Quote -> CLICK",
+        "[textbox]  What city would you like to depart from? -> TYPE: Chicago",
+        "[checkbox]  I'm interested in the reverse trip of the selected... -> CLICK",
+        "[checkbox]  Deluxe Bedroom -> CLICK",
+        "[button]  Continue -> CLICK",
+        "[link]  Close -> CLICK",
+        "[textbox]  *Preferred date of travel -> CLICK",
+        "[link]  22 -> CLICK",
+        "[button]  Continue -> CLICK",
+        "[div]  + -> CLICK",
+        "[textbox]  About Your Trip: -> TYPE: Wedding Anniversary",
+        "[button]  Continue -> CLICK",
+        "[textbox]  *First Name -> TYPE: John",
+        "[textbox]  *Last Name -> TYPE: Mark",
+        "[textbox]  *Email Address -> TYPE: Johnmark@gmail.com",
+        "[textbox]  *Phone Number -> TYPE: 234567890",
+        "[label]  I am NOT a Travel Advisor. -> CLICK",
+        "[button]  Submit Quote Request -> HOVER"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 86,
+      "annotation_id": "17fffbee-e41b-46e4-ab75-675b263ca7b7",
+      "website": "newegg",
+      "domain": "Shopping",
+      "subdomain": "Digital",
+      "confirmed_task": "Find the cheapest power supply unit with at least 600W power output.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[searchbox]  Search Site -> TYPE: 600w power supply",
+        "[button]  \uf002 -> CLICK",
+        "[generic]  600 W -> CLICK",
+        "[combobox]  Featured Items \uf0d7 -> SELECT: Lowest Price",
+        "[img]  Hercules DUAL FAN 600w-Max ATX Power Supply SATA, ... -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 87,
+      "annotation_id": "f27bb47e-3aba-439a-b98a-2cf9b0e25e9c",
+      "website": "viator",
+      "domain": "Travel",
+      "subdomain": "Other",
+      "confirmed_task": "Browse Tokyo's best tea related attractions in the morning.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[span]  Explore the World -> HOVER",
+        "[span]  Tokyo -> CLICK",
+        "[link]  Food & Drink -> CLICK",
+        "[link]  Coffee & Tea -> CLICK",
+        "[label]  6am\u201412pm -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 88,
+      "annotation_id": "181e8206-2d04-47ea-bcaf-f701b8c5525a",
+      "website": "airbnb",
+      "domain": "Travel",
+      "subdomain": "Hotel",
+      "confirmed_task": "Search for Castles in Europe for a week next month and price below $1000 per night.",
+      "n_steps": 9,
+      "action_reprs": [
+        "[button]  Location Anywhere -> CLICK",
+        "[div]   -> CLICK",
+        "[button]  1, Saturday, April 2023. Available. Select as chec... -> CLICK",
+        "[button]  8, Saturday, April 2023. Available. Select as chec... -> CLICK",
+        "[span]   -> CLICK",
+        "[span]  Castles -> CLICK",
+        "[button]  Filters -> CLICK",
+        "[textbox]  max price $ -> TYPE: 1000",
+        "[link]  Show 673 stays -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 89,
+      "annotation_id": "15a0ffe5-8462-4a8e-8938-91b05a40756f",
+      "website": "instacart",
+      "domain": "Shopping",
+      "subdomain": "General",
+      "confirmed_task": "Add a new address to the account. The address is 2983 Marietta Street,  APT 2. Business name is Buck.",
+      "n_steps": 6,
+      "action_reprs": [
+        "[span]  171 2nd street -> CLICK",
+        "[textbox]  Add a new address -> TYPE: 2983 Marietta Street",
+        "[span]  2983 Marietta Street -> CLICK",
+        "[textbox]  Apt, floor, suite, etc (optional) -> TYPE: 2",
+        "[textbox]  Business name (optional) -> TYPE: Buck",
+        "[button]  Save Address -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 90,
+      "annotation_id": "e2142cde-5bec-46ee-8d17-9b6ee52a66e8",
+      "website": "tesla",
+      "domain": "Shopping",
+      "subdomain": "Auto",
+      "confirmed_task": "Show me the inventory of the Tesla Model S within 200 miles from 10001",
+      "n_steps": 4,
+      "action_reprs": [
+        "[link]  Model S -> CLICK",
+        "[link]  View Inventory -> CLICK",
+        "[textbox]  Registration Zip Code Where you will register the ... -> TYPE: 10001",
+        "[combobox]  Search within -> SELECT: 200 miles"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 91,
+      "annotation_id": "70b3ef5b-d900-44cf-9b62-9ecece97954c",
+      "website": "rei",
+      "domain": "Shopping",
+      "subdomain": "Speciality",
+      "confirmed_task": "Find climbing gear and sort the results by price high to low.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[button]  Climb -> CLICK",
+        "[button]  Climb -> CLICK",
+        "[link]  Explore Climb -> CLICK",
+        "[link]  Shop all climbing gear -> CLICK",
+        "[combobox]  Sort By -> SELECT: Price: High - Low"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 92,
+      "annotation_id": "5199e802-2fce-448d-8859-3cdf57b8dada",
+      "website": "ticketcenter",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Go to the list of ballet event for the next 30 days.",
+      "n_steps": 4,
+      "action_reprs": [
+        "[textbox]  Search for artists, teams or venues... -> TYPE: Ballet",
+        "[button]  Search -> CLICK",
+        "[button]  All dates -> CLICK",
+        "[link]  Next 30 days -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 93,
+      "annotation_id": "e6bdb364-4327-44f0-a6d8-94eb00b36ca7",
+      "website": "tesla",
+      "domain": "Shopping",
+      "subdomain": "Auto",
+      "confirmed_task": "Go to the page with help in choosing a solar energy product for homes.",
+      "n_steps": 4,
+      "action_reprs": [
+        "[link]  Solar Panels -> CLICK",
+        "[link]  Order Now -> CLICK",
+        "[button]  Help Me Choose Solar -> CLICK",
+        "[button]  Next -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 94,
+      "annotation_id": "08a998f9-82f7-48c8-b6ba-72a58d39b457",
+      "website": "uniqlo",
+      "domain": "Shopping",
+      "subdomain": "Fashion",
+      "confirmed_task": "Find all Uniqlo's located in Chicago, IL.",
+      "n_steps": 5,
+      "action_reprs": [
+        "[link]  Store Locator -> CLICK",
+        "[searchbox]  SEARCH BY KEYWORD -> CLICK",
+        "[searchbox]  SEARCH BY KEYWORD -> TYPE: Chicago",
+        "[input]   -> CLICK",
+        "[option]  IL -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 95,
+      "annotation_id": "904bd858-1c40-4d22-9a5b-e2974c3b5a7e",
+      "website": "ticketcenter",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Find the most expensive ticket for New York Knicks game on April 9",
+      "n_steps": 6,
+      "action_reprs": [
+        "[textbox]  Search for artists, teams or venues... -> CLICK",
+        "[textbox]  Search for artists, teams or venues... -> TYPE: New york knicks",
+        "[option]  New York Knicks -> CLICK",
+        "[link]  TICKETS -> CLICK",
+        "[span]   -> CLICK",
+        "[div]  Price - High to Low -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 96,
+      "annotation_id": "9e035a36-1c77-4014-98ec-4d48ee41d904",
+      "website": "united",
+      "domain": "Travel",
+      "subdomain": "Airlines",
+      "confirmed_task": "Compare the fare types to book a 1-adult ticket from Springfiels, IL to Austin, TX for April 29th 2023",
+      "n_steps": 12,
+      "action_reprs": [
+        "[combobox]  Enter your departing city, airport name, or airpor... -> TYPE: SPRINGFIELD",
+        "[button]  Springfield, IL, US (SPI) -> CLICK",
+        "[combobox]  Enter your destination city, airport name, or airp... -> TYPE: AUSTIN",
+        "[button]  Austin, TX, US (AUS) -> CLICK",
+        "[span]   -> CLICK",
+        "[button]  Find flights -> CLICK",
+        "[textbox]  Date -> CLICK",
+        "[button]  Move backward to switch to the previous month. -> CLICK",
+        "[button]  Saturday, April 29, 2023 -> CLICK",
+        "[button]  Update -> CLICK",
+        "[link]  Details -> CLICK",
+        "[link]  Seats -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 97,
+      "annotation_id": "55631305-2957-4343-b4f7-73aa68acba47",
+      "website": "ticketcenter",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Buy two tickets for the Boston Red Sox vs. New York Yankees game on August 18th, with a total cost of no more than $200.",
+      "n_steps": 10,
+      "action_reprs": [
+        "[textbox]  Search for artists, teams or venues... -> TYPE: red sox vs yankees",
+        "[button]  Search -> CLICK",
+        "[link]  TICKETS -> CLICK",
+        "[span]   -> CLICK",
+        "[label]  2 -> CLICK",
+        "[span]   -> CLICK",
+        "[input]   -> TYPE: 200",
+        "[span]  Prices with Fees -> CLICK",
+        "[button]  Done -> CLICK",
+        "[button]  $83.95/ea -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 98,
+      "annotation_id": "58badcfc-343a-47c1-8aec-f609925eb4ed",
+      "website": "soundcloud",
+      "domain": "Entertainment",
+      "subdomain": "Music",
+      "confirmed_task": "Find a Ricky Kej track to listen and share which has been added in the last year and is between 2 to 10 minutes.",
+      "n_steps": 9,
+      "action_reprs": [
+        "[searchbox]  Search -> TYPE: Ricky Kej",
+        "[link]  Search for \u201cRicky Kej\u201d -> CLICK",
+        "[link]  Tracks -> CLICK",
+        "[link]  Added any time -> CLICK",
+        "[link]  Past year -> CLICK",
+        "[link]  Any length -> CLICK",
+        "[link]  2-10 min -> CLICK",
+        "[link]  To listen to -> CLICK",
+        "[link]  To share -> CLICK"
+      ],
+      "in_v0_eval": false
+    },
+    {
+      "eval_index": 99,
+      "annotation_id": "2bce1096-f573-4752-94a9-e139ce37eb27",
+      "website": "ticketcenter",
+      "domain": "Entertainment",
+      "subdomain": "Event",
+      "confirmed_task": "Find the list of off-Broadway theatre shows on April 19",
+      "n_steps": 8,
+      "action_reprs": [
+        "[button]  THEATRE -> CLICK",
+        "[link]  Off-Broadway -> CLICK",
+        "[button]  All dates -> CLICK",
+        "[textbox]  Select Date Range -> CLICK",
+        "[gridcell]  19 -> CLICK",
+        "[input]   -> CLICK",
+        "[gridcell]  19 -> CLICK",
+        "[button]  Apply -> CLICK"
+      ],
+      "in_v0_eval": false
+    }
+  ]
+}

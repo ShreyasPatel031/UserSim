@@ -1,0 +1,48 @@
+{
+  "task": "Find a hotel in NYC under $300/night",
+  "model": "gemini-2.5-flash",
+  "project": "project-amer-scs-sandbox",
+  "start_url": "https://www.google.com/",
+  "end_url": "https://www.hilton.com/en/locations/usa/new-york/manhattan/",
+  "end_state": "Hilton Manhattan hotels with filter 'Up to $350' applied. List prices from $321–$329; map pins include several under $300.",
+  "steps": [
+    {
+      "n": 1,
+      "page": "google.com",
+      "prediction": "TYPE combobox Search -> hotel in NYC under $300/night",
+      "executed": true
+    },
+    {
+      "n": 2,
+      "page": "google.com (query entered, suggestions open)",
+      "prediction": "CLICK button Google Search",
+      "executed": true
+    },
+    {
+      "n": 3,
+      "page": "Google Search results with sponsored hotels from $128",
+      "prediction": "CLICK link Hilton Hotel in New York hilton.com",
+      "executed": true,
+      "note": "Model preferred the Hilton ad over cheaper hotel cards ($128 Hotel 38)."
+    },
+    {
+      "n": 4,
+      "page": "hilton.com Manhattan hotels, list from $321+",
+      "prediction": "CLICK button Filter by price",
+      "executed": true
+    },
+    {
+      "n": 5,
+      "page": "Hilton price filter modal ($100 / $200 / $350 / $500 / No maximum)",
+      "prediction": "CLICK radio $350",
+      "executed": true,
+      "note": "No $300 option exists. Model chose $350 (closest above budget) instead of $200 (strictly under $300)."
+    },
+    {
+      "n": 6,
+      "page": "Hilton price filter modal",
+      "prediction": "CLICK Apply filters and close",
+      "executed": true
+    }
+  ]
+}
