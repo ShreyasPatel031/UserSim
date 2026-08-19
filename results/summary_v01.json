@@ -1,0 +1,286 @@
+{
+  "question": "What information in history causes the lift?",
+  "model": "gemini-2.5-flash",
+  "n_steps": 250,
+  "n_trajectories": 40,
+  "bootstrap": "cluster by trajectory (40 tasks), 2000 resamples",
+  "conditions": {
+    "baseline": {
+      "n_steps": 250,
+      "n_trajectories": 40,
+      "element_acc": 0.32,
+      "element_acc_ci95_clustered": [
+        0.26693227091633465,
+        0.373015873015873
+      ],
+      "action_acc": 0.78,
+      "action_acc_ci95_clustered": [
+        0.7142857142857143,
+        0.8412698412698413
+      ],
+      "both_acc": 0.292,
+      "both_acc_ci95_clustered": [
+        0.2426470588235294,
+        0.3466135458167331
+      ],
+      "later_steps_n": 211,
+      "later_element_acc": 0.2985781990521327,
+      "later_element_acc_ci95_clustered": [
+        0.24242424242424243,
+        0.3568075117370892
+      ],
+      "errors": 0
+    },
+    "correct": {
+      "n_steps": 250,
+      "n_trajectories": 40,
+      "element_acc": 0.5,
+      "element_acc_ci95_clustered": [
+        0.4235294117647059,
+        0.571969696969697
+      ],
+      "action_acc": 0.9,
+      "action_acc_ci95_clustered": [
+        0.8565891472868217,
+        0.94140625
+      ],
+      "both_acc": 0.476,
+      "both_acc_ci95_clustered": [
+        0.4087301587301587,
+        0.55078125
+      ],
+      "later_steps_n": 211,
+      "later_element_acc": 0.5118483412322274,
+      "later_element_acc_ci95_clustered": [
+        0.42105263157894735,
+        0.5963302752293578
+      ],
+      "errors": 0
+    },
+    "shuffled": {
+      "n_steps": 250,
+      "n_trajectories": 40,
+      "element_acc": 0.48,
+      "element_acc_ci95_clustered": [
+        0.4085603112840467,
+        0.5509433962264151
+      ],
+      "action_acc": 0.872,
+      "action_acc_ci95_clustered": [
+        0.8142292490118577,
+        0.9236641221374046
+      ],
+      "both_acc": 0.452,
+      "both_acc_ci95_clustered": [
+        0.38461538461538464,
+        0.5176470588235295
+      ],
+      "later_steps_n": 211,
+      "later_element_acc": 0.4881516587677725,
+      "later_element_acc_ci95_clustered": [
+        0.40654205607476634,
+        0.5700483091787439
+      ],
+      "errors": 0
+    },
+    "other": {
+      "n_steps": 250,
+      "n_trajectories": 40,
+      "element_acc": 0.328,
+      "element_acc_ci95_clustered": [
+        0.2773109243697479,
+        0.3828125
+      ],
+      "action_acc": 0.772,
+      "action_acc_ci95_clustered": [
+        0.7046413502109705,
+        0.8346774193548387
+      ],
+      "both_acc": 0.296,
+      "both_acc_ci95_clustered": [
+        0.24701195219123506,
+        0.35019455252918286
+      ],
+      "later_steps_n": 211,
+      "later_element_acc": 0.3080568720379147,
+      "later_element_acc_ci95_clustered": [
+        0.2463768115942029,
+        0.37168141592920356
+      ],
+      "errors": 0
+    },
+    "last_only": {
+      "n_steps": 250,
+      "n_trajectories": 40,
+      "element_acc": 0.448,
+      "element_acc_ci95_clustered": [
+        0.37545126353790614,
+        0.5263157894736842
+      ],
+      "action_acc": 0.844,
+      "action_acc_ci95_clustered": [
+        0.782608695652174,
+        0.8995633187772926
+      ],
+      "both_acc": 0.424,
+      "both_acc_ci95_clustered": [
+        0.35658914728682173,
+        0.50187265917603
+      ],
+      "later_steps_n": 211,
+      "later_element_acc": 0.45023696682464454,
+      "later_element_acc_ci95_clustered": [
+        0.3698630136986301,
+        0.5346534653465347
+      ],
+      "errors": 0
+    },
+    "summary": {
+      "n_steps": 250,
+      "n_trajectories": 40,
+      "element_acc": 0.468,
+      "element_acc_ci95_clustered": [
+        0.39097744360902253,
+        0.5465587044534413
+      ],
+      "action_acc": 0.86,
+      "action_acc_ci95_clustered": [
+        0.8087649402390438,
+        0.9083665338645418
+      ],
+      "both_acc": 0.44,
+      "both_acc_ci95_clustered": [
+        0.36909871244635195,
+        0.5169491525423728
+      ],
+      "later_steps_n": 211,
+      "later_element_acc": 0.47393364928909953,
+      "later_element_acc_ci95_clustered": [
+        0.3867924528301887,
+        0.5636363636363636
+      ],
+      "errors": 0
+    },
+    "behavioral": {
+      "n_steps": 250,
+      "n_trajectories": 40,
+      "element_acc": 0.412,
+      "element_acc_ci95_clustered": [
+        0.34710743801652894,
+        0.4795539033457249
+      ],
+      "action_acc": 0.82,
+      "action_acc_ci95_clustered": [
+        0.76171875,
+        0.8728813559322034
+      ],
+      "both_acc": 0.38,
+      "both_acc_ci95_clustered": [
+        0.31620553359683795,
+        0.4425531914893617
+      ],
+      "later_steps_n": 211,
+      "later_element_acc": 0.4075829383886256,
+      "later_element_acc_ci95_clustered": [
+        0.33035714285714285,
+        0.4861111111111111
+      ],
+      "errors": 0
+    }
+  },
+  "deltas_vs_baseline_clustered": {
+    "correct_minus_baseline": {
+      "element_acc": 0.18,
+      "ci95_clustered": [
+        0.11711711711711714,
+        0.23735408560311289
+      ]
+    },
+    "shuffled_minus_baseline": {
+      "element_acc": 0.15999999999999998,
+      "ci95_clustered": [
+        0.10330578512396693,
+        0.21544715447154478
+      ]
+    },
+    "other_minus_baseline": {
+      "element_acc": 0.008000000000000007,
+      "ci95_clustered": [
+        -0.013043478260869601,
+        0.02857142857142858
+      ]
+    },
+    "last_only_minus_baseline": {
+      "element_acc": 0.128,
+      "ci95_clustered": [
+        0.07112970711297073,
+        0.18972332015810284
+      ]
+    },
+    "summary_minus_baseline": {
+      "element_acc": 0.14800000000000002,
+      "ci95_clustered": [
+        0.09243697478991597,
+        0.20717131474103584
+      ]
+    },
+    "behavioral_minus_baseline": {
+      "element_acc": 0.09199999999999997,
+      "ci95_clustered": [
+        0.043103448275862044,
+        0.14342629482071712
+      ]
+    },
+    "correct_minus_other": {
+      "element_acc": 0.172,
+      "ci95_clustered": [
+        0.11814345991561181,
+        0.22924901185770746
+      ]
+    },
+    "correct_minus_summary": {
+      "element_acc": 0.03199999999999997,
+      "ci95_clustered": [
+        -0.00390625,
+        0.06719367588932812
+      ]
+    },
+    "correct_minus_behavioral": {
+      "element_acc": 0.08800000000000002,
+      "ci95_clustered": [
+        0.04597701149425287,
+        0.1295546558704454
+      ]
+    },
+    "correct_minus_last_only": {
+      "element_acc": 0.05199999999999999,
+      "ci95_clustered": [
+        0.023346303501945553,
+        0.08230452674897115
+      ]
+    },
+    "correct_minus_shuffled": {
+      "element_acc": 0.020000000000000018,
+      "ci95_clustered": [
+        -0.008547008547008517,
+        0.048689138576779034
+      ]
+    }
+  },
+  "spend_usd": {
+    "new_calls": 1250,
+    "new_prompt_tokens": 1494710,
+    "new_output_tokens": 27131,
+    "new_usd": 0.5162,
+    "v0_usd": 0.204,
+    "total_usd_approx": 0.7202,
+    "by_condition": {
+      "shuffled": 0.1033,
+      "other": 0.1033,
+      "last_only": 0.1012,
+      "summary": 0.1065,
+      "behavioral": 0.102
+    }
+  },
+  "caveat": "Mind2Web trajectories are crowdsourced tasks, not repeated behavior from identifiable users. Other-trajectory is mismatched-task history, not Alice vs Bob personalization."
+}

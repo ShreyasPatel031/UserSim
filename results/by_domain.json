@@ -1,0 +1,26 @@
+[
+  {
+    "domain": "Travel",
+    "n": 113,
+    "baseline_element": 0.292,
+    "usersim_element": 0.575,
+    "baseline_action": 0.717,
+    "usersim_action": 0.85
+  },
+  {
+    "domain": "Entertainment",
+    "n": 69,
+    "baseline_element": 0.348,
+    "usersim_element": 0.435,
+    "baseline_action": 0.899,
+    "usersim_action": 0.957
+  },
+  {
+    "domain": "Shopping",
+    "n": 68,
+    "baseline_element": 0.338,
+    "usersim_element": 0.441,
+    "baseline_action": 0.765,
+    "usersim_action": 0.926
+  }
+]

@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+data/hf/
+data/mind2web_v0.json
+results/cache/
+*.egg-info/
+.python-version
+secrets/
