@@ -1,0 +1,207 @@
+{
+  "model": "gemini-2.5-flash",
+  "project": "project-amer-scs-sandbox",
+  "n_tasks": 10,
+  "task_ids": [
+    "3be7acd4-c8c4-4e0d-b2b6-f82a4e17de8c",
+    "5092fad7-ff8a-481e-bb0b-fe83590193ce",
+    "e6643cfb-567e-4e11-8cab-f85483573539",
+    "2fc63250-ac9a-4cd4-a29d-6460f0652fa3",
+    "099a9da4-c8db-4900-ada2-76600f3655a4",
+    "1538e37b-9c33-48b0-b10e-662e192ad53a",
+    "b7003092-3e6e-4fac-9867-083cac064f89",
+    "549452ab-637a-4997-bce1-5898541bb288",
+    "5e47dc3e-2a4a-4273-871d-dfdb33b091d5",
+    "51221157-cb79-407e-95c8-b2c730e95e01"
+  ],
+  "websites": [
+    "ign",
+    "rottentomatoes",
+    "espn",
+    "newegg",
+    "uniqlo",
+    "us.megabus",
+    "jetblue",
+    "ticketcenter",
+    "underarmour",
+    "eventbrite"
+  ],
+  "spend_usd": 0.06567869999999999,
+  "calls": 63,
+  "prompt_tokens": 207404,
+  "output_tokens": 1383,
+  "errors_api": 0,
+  "metrics": {
+    "by_condition": {
+      "agent": {
+        "n": 10,
+        "n_ok": 10,
+        "mean_n_actions": 3.5,
+        "mean_length_ratio_vs_human": 0.6806060606060605,
+        "mean_extra_actions": -1.6,
+        "mean_repeats": 0.4,
+        "mean_backtracks": 0.0,
+        "mean_semantic_overlap": 0.18666937229437228,
+        "stop_rate": 1.0,
+        "action_types": {
+          "CLICK": 25,
+          "STOP": 10,
+          "TYPE": 10
+        },
+        "stop_reasons": {
+          "model_stop": 10
+        }
+      },
+      "usersim": {
+        "n": 10,
+        "n_ok": 10,
+        "mean_n_actions": 3.3,
+        "mean_length_ratio_vs_human": 0.7372727272727273,
+        "mean_extra_actions": -1.8,
+        "mean_repeats": 0.3,
+        "mean_backtracks": 0.2,
+        "mean_semantic_overlap": 0.18090858773745805,
+        "stop_rate": 0.9,
+        "action_types": {
+          "CLICK": 26,
+          "STOP": 9,
+          "TYPE": 7
+        },
+        "stop_reasons": {
+          "model_stop": 9,
+          "max_steps": 1
+        }
+      }
+    },
+    "paired_agent_minus_usersim": {
+      "n_paired": 10,
+      "delta_mean_n_actions": 0.2,
+      "delta_mean_length_ratio": -0.056666666666666685,
+      "delta_mean_semantic_overlap": 0.005760784556914239,
+      "delta_stop_rate": 0.1
+    }
+  },
+  "screen": [
+    {
+      "ok": true,
+      "status": 200,
+      "url": "https://www.ign.com/",
+      "title": "Video Game News, Reviews, and Walkthroughs - IGN",
+      "login_wall_likely": false,
+      "error": null,
+      "eval_index": 32,
+      "website": "ign",
+      "task": "Open the Resident evil 4 game guide.",
+      "n_steps": 3
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "url": "https://www.rottentomatoes.com/",
+      "title": "Rotten Tomatoes: Movies | TV Shows | Movie Trailers | Reviews | Rotten Tomatoes",
+      "login_wall_likely": false,
+      "error": null,
+      "eval_index": 26,
+      "website": "rottentomatoes",
+      "task": "Show reviews of top critics for lowest rated Tom Hanks work",
+      "n_steps": 4
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "url": "https://www.espn.com/",
+      "title": "ESPN - Serving Sports Fans. Anytime. Anywhere.",
+      "login_wall_likely": false,
+      "error": null,
+      "eval_index": 33,
+      "website": "espn",
+      "task": "Follow one of the team leaders of one of the NHL teams from the Atlantic Division",
+      "n_steps": 6
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "url": "https://www.newegg.com/",
+      "title": "PC Parts, Computers, Workstations & AI PCs | Newegg",
+      "login_wall_likely": false,
+      "error": null,
+      "eval_index": 8,
+      "website": "newegg",
+      "task": "Find a wireless keyboard and mouse combo under $100.",
+      "n_steps": 5
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "url": "https://www.uniqlo.com/us/en/",
+      "title": "Women's Clothing & Accessories | UNIQLO US",
+      "login_wall_likely": false,
+      "error": null,
+      "eval_index": 19,
+      "website": "uniqlo",
+      "task": "Show me the list of baby products that are on sale and under 10 dollars.",
+      "n_steps": 4
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "url": "https://us.megabus.com/",
+      "title": "Megabus | Low cost bus tickets to more than 500 cities",
+      "login_wall_likely": false,
+      "error": null,
+      "eval_index": 22,
+      "website": "us.megabus",
+      "task": "Find bus stops in Alanson, MI",
+      "n_steps": 3
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "url": "https://www.jetblue.com/",
+      "title": "JetBlue | Flights & travel deals | Book here for low fares | JetBlue",
+      "login_wall_likely": false,
+      "error": null,
+      "eval_index": 7,
+      "website": "jetblue",
+      "task": "Find JetBlue career openings in New York",
+      "n_steps": 4
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "url": "https://www.ticketcenter.com/",
+      "title": "Ticket Center - Buy Cheap Tickets Online | Concert Tickets & Sports Tickets",
+      "login_wall_likely": false,
+      "error": null,
+      "eval_index": 12,
+      "website": "ticketcenter",
+      "task": "Show me all NFL tickets",
+      "n_steps": 3
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "url": "https://www.underarmour.com/en-us/",
+      "title": "Under Armour\u00ae Official Store | FREE Shipping Available",
+      "login_wall_likely": false,
+      "error": null,
+      "eval_index": 25,
+      "website": "underarmour",
+      "task": "Filter women's sports bras that are purple  with high support that are small size.",
+      "n_steps": 11
+    },
+    {
+      "ok": true,
+      "status": 200,
+      "url": "https://www.eventbrite.com/",
+      "title": "Eventbrite - Discover the Best Local Events & Things to Do",
+      "login_wall_likely": false,
+      "error": null,
+      "eval_index": 34,
+      "website": "eventbrite",
+      "task": "Find a music party in Ohio and follow its organizer",
+      "n_steps": 8
+    }
+  ],
+  "note": "Free-running on live sites. Human path similarity is semantic token overlap, not exact DOM match. Live sites differ from 2022\u20132023 Mind2Web snapshots. Task success is not auto-judged in this pass."
+}

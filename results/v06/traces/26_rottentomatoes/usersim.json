@@ -1,0 +1,98 @@
+{
+  "annotation_id": "5092fad7-ff8a-481e-bb0b-fe83590193ce",
+  "eval_index": 26,
+  "website": "rottentomatoes",
+  "domain": "Entertainment",
+  "condition": "usersim",
+  "task": "Show reviews of top critics for lowest rated Tom Hanks work",
+  "start_url": "https://www.rottentomatoes.com/",
+  "end_url": "https://www.rottentomatoes.com/",
+  "end_title": "Rotten Tomatoes: Movies | TV Shows | Movie Trailers | Reviews | Rotten Tomatoes",
+  "human_n_steps": 4,
+  "human_actions": [
+    "[textbox]  Search -> TYPE: Tom Hanks",
+    "[p]  Tom Hanks -> CLICK",
+    "[link]  My Life in Ruins (2009) -> CLICK",
+    "[link]  Top Critics (49) -> CLICK"
+  ],
+  "n_actions": 2,
+  "n_model_steps": 3,
+  "length_ratio_vs_human": 0.5,
+  "extra_actions_vs_human": -2,
+  "repeated_actions": 0,
+  "backtracks": 0,
+  "unique_hosts": [
+    "www.rottentomatoes.com"
+  ],
+  "action_type_counts": {
+    "CLICK": 1,
+    "TYPE": 1,
+    "STOP": 1
+  },
+  "stopped": true,
+  "stop_reason": "model_stop",
+  "semantic_overlap_vs_human": 0.23809523809523808,
+  "steps": [
+    {
+      "i": 0,
+      "url": "https://www.rottentomatoes.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 34,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 34, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3534,
+        "output_tokens": 20
+      },
+      "action_repr": "<button> text=Continue -> CLICK",
+      "screenshot": "v06/traces/26_rottentomatoes/usersim_step0.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 1,
+      "url": "https://www.rottentomatoes.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 5,
+        "action": "TYPE",
+        "value": "Tom Hanks",
+        "raw": "{\"element_index\": 5, \"action\": \"TYPE\", \"value\": \"Tom Hanks\"}",
+        "error": null,
+        "prompt_tokens": 3597,
+        "output_tokens": 21
+      },
+      "action_repr": "<input> type=text name=Search placeholder=Search text=Search -> TYPE: Tom Hanks",
+      "screenshot": "v06/traces/26_rottentomatoes/usersim_step1.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "TYPE",
+        "value": "Tom Hanks"
+      }
+    },
+    {
+      "i": 2,
+      "url": "https://www.rottentomatoes.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 0,
+        "action": "STOP",
+        "value": null,
+        "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3432,
+        "output_tokens": 19
+      },
+      "action_repr": "STOP",
+      "screenshot": "v06/traces/26_rottentomatoes/usersim_step2.png",
+      "executed": false
+    }
+  ]
+}

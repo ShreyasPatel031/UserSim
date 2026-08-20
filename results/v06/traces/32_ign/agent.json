@@ -1,0 +1,74 @@
+{
+  "annotation_id": "3be7acd4-c8c4-4e0d-b2b6-f82a4e17de8c",
+  "eval_index": 32,
+  "website": "ign",
+  "domain": "Entertainment",
+  "condition": "agent",
+  "task": "Open the Resident evil 4 game guide.",
+  "start_url": "https://www.ign.com/",
+  "end_url": "https://www.ign.com/",
+  "end_title": "Video Game News, Reviews, and Walkthroughs - IGN",
+  "human_n_steps": 3,
+  "human_actions": [
+    "[path]   -> CLICK",
+    "[link]  Guides -> CLICK",
+    "[button]  Open Guide -> CLICK"
+  ],
+  "n_actions": 1,
+  "n_model_steps": 2,
+  "length_ratio_vs_human": 0.3333333333333333,
+  "extra_actions_vs_human": -2,
+  "repeated_actions": 0,
+  "backtracks": 0,
+  "unique_hosts": [
+    "www.ign.com"
+  ],
+  "action_type_counts": {
+    "CLICK": 1,
+    "STOP": 1
+  },
+  "stopped": true,
+  "stop_reason": "model_stop",
+  "semantic_overlap_vs_human": 0.18181818181818182,
+  "steps": [
+    {
+      "i": 0,
+      "url": "https://www.ign.com/",
+      "n_candidates": 18,
+      "prediction": {
+        "element_index": 1,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\n  \"element_index\": 1,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+        "error": null,
+        "prompt_tokens": 2652,
+        "output_tokens": 27
+      },
+      "action_repr": "<button> type=button text=Toggle Sidebar -> CLICK",
+      "screenshot": "v06/traces/32_ign/agent_step0.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 1,
+      "url": "https://www.ign.com/",
+      "n_candidates": 18,
+      "prediction": {
+        "element_index": 0,
+        "action": "STOP",
+        "value": null,
+        "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 2666,
+        "output_tokens": 19
+      },
+      "action_repr": "STOP",
+      "screenshot": "v06/traces/32_ign/agent_step1.png",
+      "executed": false
+    }
+  ]
+}

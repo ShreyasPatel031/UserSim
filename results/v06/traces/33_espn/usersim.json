@@ -1,0 +1,165 @@
+{
+  "annotation_id": "e6643cfb-567e-4e11-8cab-f85483573539",
+  "eval_index": 33,
+  "website": "espn",
+  "domain": "Entertainment",
+  "condition": "usersim",
+  "task": "Follow one of the team leaders of one of the NHL teams from the Atlantic Division",
+  "start_url": "https://www.espn.com/",
+  "end_url": "https://www.espn.com/nhl/team/roster/_/name/bos/boston-bruins",
+  "end_title": "Boston Bruins NHL Roster - ESPN",
+  "human_n_steps": 6,
+  "human_actions": [
+    "[link]  ESPN NHL Home Page -> HOVER",
+    "[link]  Teams -> CLICK",
+    "[heading]  Boston Bruins -> CLICK",
+    "[link]  Full Team Statistics -> CLICK",
+    "[heading]  David Pastrnak RW -> CLICK",
+    "[button]  FOLLOW -> CLICK"
+  ],
+  "n_actions": 5,
+  "n_model_steps": 6,
+  "length_ratio_vs_human": 0.8333333333333334,
+  "extra_actions_vs_human": -1,
+  "repeated_actions": 0,
+  "backtracks": 0,
+  "unique_hosts": [
+    "www.espn.com"
+  ],
+  "action_type_counts": {
+    "CLICK": 5,
+    "STOP": 1
+  },
+  "stopped": true,
+  "stop_reason": "model_stop",
+  "semantic_overlap_vs_human": 0.22580645161290322,
+  "steps": [
+    {
+      "i": 0,
+      "url": "https://www.espn.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 10,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 10, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 4493,
+        "output_tokens": 20
+      },
+      "action_repr": "<a> name=&lpos=sitenavdefault+sitenav_nhl href=/nhl/ text=NHL -> CLICK",
+      "screenshot": "v06/traces/33_espn/usersim_step0.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 1,
+      "url": "https://www.espn.com/nhl/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 28,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 28, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3972,
+        "output_tokens": 20
+      },
+      "action_repr": "<a> name=&lpos=subnav+subnav__team_boston_bruins href=/nhl/team/_/name/bos/boston-bruins text=Boston Bruins -> CLICK",
+      "screenshot": "v06/traces/33_espn/usersim_step1.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 2,
+      "url": "https://www.espn.com/nhl/team/_/name/bos/boston-bruins",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 17,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\n  \"element_index\": 17,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+        "error": null,
+        "prompt_tokens": 3742,
+        "output_tokens": 28
+      },
+      "action_repr": "<a> href=/nhl/team/roster/_/name/bos/boston-bruins text=Roster -> CLICK",
+      "screenshot": "v06/traces/33_espn/usersim_step2.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 3,
+      "url": "https://www.espn.com/nhl/team/roster/_/name/bos/boston-bruins",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 16,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\n  \"element_index\": 16,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+        "error": null,
+        "prompt_tokens": 3656,
+        "output_tokens": 28
+      },
+      "action_repr": "<button> type=button text=Follow -> CLICK",
+      "screenshot": "v06/traces/33_espn/usersim_step3.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 4,
+      "url": "https://www.espn.com/nhl/team/roster/_/name/bos/boston-bruins",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 23,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 23, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3719,
+        "output_tokens": 20
+      },
+      "action_repr": "<svg> role=button -> CLICK",
+      "screenshot": "v06/traces/33_espn/usersim_step4.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 5,
+      "url": "https://www.espn.com/nhl/team/roster/_/name/bos/boston-bruins",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 0,
+        "action": "STOP",
+        "value": null,
+        "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3730,
+        "output_tokens": 19
+      },
+      "action_repr": "STOP",
+      "screenshot": "v06/traces/33_espn/usersim_step5.png",
+      "executed": false
+    }
+  ]
+}

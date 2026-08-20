@@ -1,0 +1,146 @@
+{
+  "annotation_id": "51221157-cb79-407e-95c8-b2c730e95e01",
+  "eval_index": 34,
+  "website": "eventbrite",
+  "domain": "Entertainment",
+  "condition": "usersim",
+  "task": "Find a music party in Ohio and follow its organizer",
+  "start_url": "https://www.eventbrite.com/",
+  "end_url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+  "end_title": "Music & Concerts Events in Ashburn, VA - Live Music, Dances | Eventbrite",
+  "human_n_steps": 8,
+  "human_actions": [
+    "[div]  Search for events -> CLICK",
+    "[textbox]  Search events -> TYPE: music",
+    "[combobox]  autocomplete -> TYPE: ohio",
+    "[div]  Ohio -> CLICK",
+    "[generic]  Run Search -> CLICK",
+    "[label]   -> CLICK",
+    "[div]  RANG BARSEY- HOLI MUSIC FESTIVAL, CINCINNATI -> CLICK",
+    "[button]  Follow -> CLICK"
+  ],
+  "n_actions": 4,
+  "n_model_steps": 5,
+  "length_ratio_vs_human": 0.5,
+  "extra_actions_vs_human": -4,
+  "repeated_actions": 0,
+  "backtracks": 2,
+  "unique_hosts": [
+    "www.eventbrite.com"
+  ],
+  "action_type_counts": {
+    "CLICK": 2,
+    "TYPE": 2,
+    "STOP": 1
+  },
+  "stopped": true,
+  "stop_reason": "model_stop",
+  "semantic_overlap_vs_human": 0.23529411764705882,
+  "steps": [
+    {
+      "i": 0,
+      "url": "https://www.eventbrite.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 11,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\n  \"element_index\": 11,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+        "error": null,
+        "prompt_tokens": 3618,
+        "output_tokens": 28
+      },
+      "action_repr": "<a> href=/b/local/music text=Music -> CLICK",
+      "screenshot": "v06/traces/34_eventbrite/usersim_step0.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 1,
+      "url": "https://www.eventbrite.com/b/va--ashburn/music/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 2,
+        "action": "TYPE",
+        "value": "Ohio",
+        "raw": "{\n  \"element_index\": 2,\n  \"action\": \"TYPE\",\n  \"value\": \"Ohio\"\n}",
+        "error": null,
+        "prompt_tokens": 3215,
+        "output_tokens": 29
+      },
+      "action_repr": "<input> role=combobox type=text placeholder=Choose a location -> TYPE: Ohio",
+      "screenshot": "v06/traces/34_eventbrite/usersim_step1.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "TYPE",
+        "value": "Ohio"
+      }
+    },
+    {
+      "i": 2,
+      "url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 12,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\n  \"element_index\": 12,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+        "error": null,
+        "prompt_tokens": 3177,
+        "output_tokens": 28
+      },
+      "action_repr": "<li> role=menuitem text=Ohio USA -> CLICK",
+      "screenshot": "v06/traces/34_eventbrite/usersim_step2.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 3,
+      "url": "https://www.eventbrite.com/b/va--ashburn/music/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 1,
+        "action": "TYPE",
+        "value": "music party",
+        "raw": "{\n  \"element_index\": 1,\n  \"action\": \"TYPE\",\n  \"value\": \"music party\"\n}",
+        "error": null,
+        "prompt_tokens": 3250,
+        "output_tokens": 30
+      },
+      "action_repr": "<input> type=search name=search-autocomplete-input placeholder=Search events -> TYPE: music party",
+      "screenshot": "v06/traces/34_eventbrite/usersim_step3.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "TYPE",
+        "value": "music party"
+      }
+    },
+    {
+      "i": 4,
+      "url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 0,
+        "action": "STOP",
+        "value": null,
+        "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3274,
+        "output_tokens": 19
+      },
+      "action_repr": "STOP",
+      "screenshot": "v06/traces/34_eventbrite/usersim_step4.png",
+      "executed": false
+    }
+  ]
+}

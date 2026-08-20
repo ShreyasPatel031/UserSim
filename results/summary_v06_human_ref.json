@@ -1,0 +1,1061 @@
+{
+  "reference": "recorded Mind2Web human trajectory (2022-23)",
+  "why_rebuilt": "The first v0.6 pass scored token Jaccard over raw action strings. Human reprs and live-extractor reprs share almost no tokens by construction, so that number reflected serialization format, not behavior.",
+  "metrics": {
+    "milestone_coverage": "fraction of human steps matched by any generated step (order-free, token-F1 >= 0.34 on label+value)",
+    "ordered_alignment": "LCS of thresholded step matches / human length (order-sensitive)",
+    "typed_value_recall": "fraction of human TYPE content words also typed by the run (drift-robust)",
+    "length_ratio_vs_human": "generated actions / human actions"
+  },
+  "per_condition_vs_human": {
+    "agent": {
+      "n": 10,
+      "mean_length_ratio_vs_human": 0.6806,
+      "mean_milestone_coverage": 0.3082,
+      "mean_ordered_alignment": 0.3082,
+      "mean_typed_value_recall": 0.75
+    },
+    "usersim": {
+      "n": 10,
+      "mean_length_ratio_vs_human": 0.7373,
+      "mean_milestone_coverage": 0.3748,
+      "mean_ordered_alignment": 0.329,
+      "mean_typed_value_recall": 0.6875
+    }
+  },
+  "paired_delta_agent_minus_usersim": {
+    "milestone_coverage": {
+      "delta": -0.0667,
+      "ci95": [
+        -0.225,
+        0.05
+      ],
+      "n_pairs": 10
+    },
+    "ordered_alignment": {
+      "delta": -0.0208,
+      "ci95": [
+        -0.1208,
+        0.075
+      ],
+      "n_pairs": 10
+    },
+    "length_ratio_vs_human": {
+      "delta": -0.0567,
+      "ci95": [
+        -0.5483,
+        0.37
+      ],
+      "n_pairs": 10
+    },
+    "typed_value_recall": {
+      "delta": 0.0625,
+      "ci95": [
+        0.0,
+        0.1875
+      ],
+      "n_pairs": 4
+    }
+  },
+  "cross_task_control": {
+    "mean_milestone_coverage": 0.03954545454545454,
+    "mean_ordered_alignment": 0.03954545454545454,
+    "n": 20
+  },
+  "per_episode": [
+    {
+      "annotation_id": "3be7acd4-c8c4-4e0d-b2b6-f82a4e17de8c",
+      "website": "ign",
+      "condition": "agent",
+      "task": "Open the Resident evil 4 game guide.",
+      "n_human": 3,
+      "n_gen": 1,
+      "length_ratio_vs_human": 0.3333333333333333,
+      "milestone_coverage": 0.0,
+      "ordered_alignment": 0.0,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Guides",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Open Guide",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "3be7acd4-c8c4-4e0d-b2b6-f82a4e17de8c",
+      "website": "ign",
+      "condition": "usersim",
+      "task": "Open the Resident evil 4 game guide.",
+      "n_human": 3,
+      "n_gen": 1,
+      "length_ratio_vs_human": 0.3333333333333333,
+      "milestone_coverage": 0.0,
+      "ordered_alignment": 0.0,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Guides",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Open Guide",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "5092fad7-ff8a-481e-bb0b-fe83590193ce",
+      "website": "rottentomatoes",
+      "condition": "agent",
+      "task": "Show reviews of top critics for lowest rated Tom Hanks work",
+      "n_human": 4,
+      "n_gen": 5,
+      "length_ratio_vs_human": 1.25,
+      "milestone_coverage": 0.5,
+      "ordered_alignment": 0.5,
+      "typed_value_recall": 1.0,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": 0,
+          "sim": 1.0,
+          "human": "Search",
+          "gen": "Search"
+        },
+        {
+          "human_i": 1,
+          "gen_j": 4,
+          "sim": 0.64,
+          "human": "Tom Hanks",
+          "gen": "Search"
+        },
+        {
+          "human_i": 2,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "My Life in Ruins (2009)",
+          "gen": null
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Top Critics (49)",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "5092fad7-ff8a-481e-bb0b-fe83590193ce",
+      "website": "rottentomatoes",
+      "condition": "usersim",
+      "task": "Show reviews of top critics for lowest rated Tom Hanks work",
+      "n_human": 4,
+      "n_gen": 2,
+      "length_ratio_vs_human": 0.5,
+      "milestone_coverage": 0.25,
+      "ordered_alignment": 0.25,
+      "typed_value_recall": 1.0,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": 1,
+          "sim": 1.0,
+          "human": "Search",
+          "gen": "Search"
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Tom Hanks",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "My Life in Ruins (2009)",
+          "gen": null
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Top Critics (49)",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "e6643cfb-567e-4e11-8cab-f85483573539",
+      "website": "espn",
+      "condition": "agent",
+      "task": "Follow one of the team leaders of one of the NHL teams from the Atlantic Division",
+      "n_human": 6,
+      "n_gen": 4,
+      "length_ratio_vs_human": 0.6666666666666666,
+      "milestone_coverage": 0.3333333333333333,
+      "ordered_alignment": 0.3333333333333333,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.32,
+          "human": "ESPN NHL Home Page",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Teams",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": 1,
+          "sim": 1.0,
+          "human": "Boston Bruins",
+          "gen": "Boston Bruins"
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Full Team Statistics",
+          "gen": null
+        },
+        {
+          "human_i": 4,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "David Pastrnak RW",
+          "gen": null
+        },
+        {
+          "human_i": 5,
+          "gen_j": 2,
+          "sim": 1.0,
+          "human": "FOLLOW",
+          "gen": "Follow"
+        }
+      ]
+    },
+    {
+      "annotation_id": "e6643cfb-567e-4e11-8cab-f85483573539",
+      "website": "espn",
+      "condition": "usersim",
+      "task": "Follow one of the team leaders of one of the NHL teams from the Atlantic Division",
+      "n_human": 6,
+      "n_gen": 5,
+      "length_ratio_vs_human": 0.8333333333333334,
+      "milestone_coverage": 0.3333333333333333,
+      "ordered_alignment": 0.3333333333333333,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.32,
+          "human": "ESPN NHL Home Page",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Teams",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": 1,
+          "sim": 1.0,
+          "human": "Boston Bruins",
+          "gen": "Boston Bruins"
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Full Team Statistics",
+          "gen": null
+        },
+        {
+          "human_i": 4,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "David Pastrnak RW",
+          "gen": null
+        },
+        {
+          "human_i": 5,
+          "gen_j": 3,
+          "sim": 1.0,
+          "human": "FOLLOW",
+          "gen": "Follow"
+        }
+      ]
+    },
+    {
+      "annotation_id": "2fc63250-ac9a-4cd4-a29d-6460f0652fa3",
+      "website": "newegg",
+      "condition": "agent",
+      "task": "Find a wireless keyboard and mouse combo under $100.",
+      "n_human": 5,
+      "n_gen": 6,
+      "length_ratio_vs_human": 1.2,
+      "milestone_coverage": 0.4,
+      "ordered_alignment": 0.4,
+      "typed_value_recall": 1.0,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": 0,
+          "sim": 0.657,
+          "human": "Search Site",
+          "gen": "Search. Enter keywords, model number or item number"
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "\uf002",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": 3,
+          "sim": 0.733,
+          "human": "price to",
+          "gen": "100"
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "APPLY",
+          "gen": null
+        },
+        {
+          "human_i": 4,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Logitech MK270 Wireless Keyboard And Mouse Combo F...",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "2fc63250-ac9a-4cd4-a29d-6460f0652fa3",
+      "website": "newegg",
+      "condition": "usersim",
+      "task": "Find a wireless keyboard and mouse combo under $100.",
+      "n_human": 5,
+      "n_gen": 3,
+      "length_ratio_vs_human": 0.6,
+      "milestone_coverage": 0.4,
+      "ordered_alignment": 0.4,
+      "typed_value_recall": 0.75,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": 0,
+          "sim": 0.657,
+          "human": "Search Site",
+          "gen": "Search. Enter keywords, model number or item number"
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "\uf002",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": 2,
+          "sim": 0.6,
+          "human": "price to",
+          "gen": "price from"
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "APPLY",
+          "gen": null
+        },
+        {
+          "human_i": 4,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Logitech MK270 Wireless Keyboard And Mouse Combo F...",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "099a9da4-c8db-4900-ada2-76600f3655a4",
+      "website": "uniqlo",
+      "condition": "agent",
+      "task": "Show me the list of baby products that are on sale and under 10 dollars.",
+      "n_human": 4,
+      "n_gen": 2,
+      "length_ratio_vs_human": 0.5,
+      "milestone_coverage": 0.5,
+      "ordered_alignment": 0.5,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": 0,
+          "sim": 0.8,
+          "human": "BABY",
+          "gen": "BABY"
+        },
+        {
+          "human_i": 1,
+          "gen_j": 1,
+          "sim": 1.0,
+          "human": "Sale",
+          "gen": "Sale"
+        },
+        {
+          "human_i": 2,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "Price",
+          "gen": null
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "$0-$10",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "099a9da4-c8db-4900-ada2-76600f3655a4",
+      "website": "uniqlo",
+      "condition": "usersim",
+      "task": "Show me the list of baby products that are on sale and under 10 dollars.",
+      "n_human": 4,
+      "n_gen": 8,
+      "length_ratio_vs_human": 2.0,
+      "milestone_coverage": 0.75,
+      "ordered_alignment": 0.75,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": 0,
+          "sim": 0.8,
+          "human": "BABY",
+          "gen": "BABY"
+        },
+        {
+          "human_i": 1,
+          "gen_j": 1,
+          "sim": 1.0,
+          "human": "Sale",
+          "gen": "Sale"
+        },
+        {
+          "human_i": 2,
+          "gen_j": 3,
+          "sim": 1.0,
+          "human": "Price",
+          "gen": "Price"
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "$0-$10",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "1538e37b-9c33-48b0-b10e-662e192ad53a",
+      "website": "us.megabus",
+      "condition": "agent",
+      "task": "Find bus stops in Alanson, MI",
+      "n_human": 3,
+      "n_gen": 2,
+      "length_ratio_vs_human": 0.6666666666666666,
+      "milestone_coverage": 0.3333333333333333,
+      "ordered_alignment": 0.3333333333333333,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Explore\ue911",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Bus stops",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": 1,
+          "sim": 1.0,
+          "human": "Alanson, MI \ue911",
+          "gen": "Alanson, MI"
+        }
+      ]
+    },
+    {
+      "annotation_id": "1538e37b-9c33-48b0-b10e-662e192ad53a",
+      "website": "us.megabus",
+      "condition": "usersim",
+      "task": "Find bus stops in Alanson, MI",
+      "n_human": 3,
+      "n_gen": 1,
+      "length_ratio_vs_human": 0.3333333333333333,
+      "milestone_coverage": 0.3333333333333333,
+      "ordered_alignment": 0.3333333333333333,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "Explore\ue911",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "Bus stops",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": 0,
+          "sim": 0.533,
+          "human": "Alanson, MI \ue911",
+          "gen": "Enter a town or city"
+        }
+      ]
+    },
+    {
+      "annotation_id": "b7003092-3e6e-4fac-9867-083cac064f89",
+      "website": "jetblue",
+      "condition": "agent",
+      "task": "Find JetBlue career openings in New York",
+      "n_human": 4,
+      "n_gen": 0,
+      "length_ratio_vs_human": 0.0,
+      "milestone_coverage": 0.0,
+      "ordered_alignment": 0.0,
+      "typed_value_recall": 0.0,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "CareersExternal Link should open in a new window o...",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "Search by Location",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "Search by Location",
+          "gen": null
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "Search Jobs",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "b7003092-3e6e-4fac-9867-083cac064f89",
+      "website": "jetblue",
+      "condition": "usersim",
+      "task": "Find JetBlue career openings in New York",
+      "n_human": 4,
+      "n_gen": 0,
+      "length_ratio_vs_human": 0.0,
+      "milestone_coverage": 0.0,
+      "ordered_alignment": 0.0,
+      "typed_value_recall": 0.0,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "CareersExternal Link should open in a new window o...",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "Search by Location",
+          "gen": null
+        },
+        {
+          "human_i": 2,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "Search by Location",
+          "gen": null
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "Search Jobs",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "549452ab-637a-4997-bce1-5898541bb288",
+      "website": "ticketcenter",
+      "condition": "agent",
+      "task": "Show me all NFL tickets",
+      "n_human": 3,
+      "n_gen": 2,
+      "length_ratio_vs_human": 0.6666666666666666,
+      "milestone_coverage": 0.3333333333333333,
+      "ordered_alignment": 0.3333333333333333,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "SPORTS",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": 0,
+          "sim": 0.533,
+          "human": "NFL",
+          "gen": "query"
+        },
+        {
+          "human_i": 2,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "All NFL Tickets",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "549452ab-637a-4997-bce1-5898541bb288",
+      "website": "ticketcenter",
+      "condition": "usersim",
+      "task": "Show me all NFL tickets",
+      "n_human": 3,
+      "n_gen": 6,
+      "length_ratio_vs_human": 2.0,
+      "milestone_coverage": 1.0,
+      "ordered_alignment": 0.6666666666666666,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": 3,
+          "sim": 0.8,
+          "human": "SPORTS",
+          "gen": "SPORTS"
+        },
+        {
+          "human_i": 1,
+          "gen_j": 0,
+          "sim": 0.533,
+          "human": "NFL",
+          "gen": "query"
+        },
+        {
+          "human_i": 2,
+          "gen_j": 1,
+          "sim": 0.52,
+          "human": "All NFL Tickets",
+          "gen": "NFL Preseason"
+        }
+      ]
+    },
+    {
+      "annotation_id": "5e47dc3e-2a4a-4273-871d-dfdb33b091d5",
+      "website": "underarmour",
+      "condition": "agent",
+      "task": "Filter women's sports bras that are purple  with high support that are small size.",
+      "n_human": 11,
+      "n_gen": 3,
+      "length_ratio_vs_human": 0.2727272727272727,
+      "milestone_coverage": 0.18181818181818182,
+      "ordered_alignment": 0.18181818181818182,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": 0,
+          "sim": 1.0,
+          "human": "Women",
+          "gen": "Women"
+        },
+        {
+          "human_i": 1,
+          "gen_j": 1,
+          "sim": 1.0,
+          "human": "Sports Bras",
+          "gen": "Sports Bras"
+        },
+        {
+          "human_i": 2,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Size",
+          "gen": null
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "S",
+          "gen": null
+        },
+        {
+          "human_i": 4,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Filter",
+          "gen": null
+        },
+        {
+          "human_i": 5,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Women's Sports Bras | Under Armour",
+          "gen": null
+        },
+        {
+          "human_i": 6,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Show more",
+          "gen": null
+        },
+        {
+          "human_i": 7,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Color",
+          "gen": null
+        },
+        {
+          "human_i": 8,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Refine by color: Purple",
+          "gen": null
+        },
+        {
+          "human_i": 9,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Support Level",
+          "gen": null
+        },
+        {
+          "human_i": 10,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "High Support",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "5e47dc3e-2a4a-4273-871d-dfdb33b091d5",
+      "website": "underarmour",
+      "condition": "usersim",
+      "task": "Filter women's sports bras that are purple  with high support that are small size.",
+      "n_human": 11,
+      "n_gen": 3,
+      "length_ratio_vs_human": 0.2727272727272727,
+      "milestone_coverage": 0.18181818181818182,
+      "ordered_alignment": 0.18181818181818182,
+      "typed_value_recall": null,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": 0,
+          "sim": 1.0,
+          "human": "Women",
+          "gen": "Women"
+        },
+        {
+          "human_i": 1,
+          "gen_j": 2,
+          "sim": 1.0,
+          "human": "Sports Bras",
+          "gen": "Sports Bras"
+        },
+        {
+          "human_i": 2,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Size",
+          "gen": null
+        },
+        {
+          "human_i": 3,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "S",
+          "gen": null
+        },
+        {
+          "human_i": 4,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Filter",
+          "gen": null
+        },
+        {
+          "human_i": 5,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Women's Sports Bras | Under Armour",
+          "gen": null
+        },
+        {
+          "human_i": 6,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Show more",
+          "gen": null
+        },
+        {
+          "human_i": 7,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Color",
+          "gen": null
+        },
+        {
+          "human_i": 8,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Refine by color: Purple",
+          "gen": null
+        },
+        {
+          "human_i": 9,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Support Level",
+          "gen": null
+        },
+        {
+          "human_i": 10,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "High Support",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "51221157-cb79-407e-95c8-b2c730e95e01",
+      "website": "eventbrite",
+      "condition": "agent",
+      "task": "Find a music party in Ohio and follow its organizer",
+      "n_human": 8,
+      "n_gen": 10,
+      "length_ratio_vs_human": 1.25,
+      "milestone_coverage": 0.5,
+      "ordered_alignment": 0.5,
+      "typed_value_recall": 1.0,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.267,
+          "human": "Search for events",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": 5,
+          "sim": 0.657,
+          "human": "Search events",
+          "gen": "search-autocomplete-input"
+        },
+        {
+          "human_i": 2,
+          "gen_j": 1,
+          "sim": 0.6,
+          "human": "autocomplete",
+          "gen": "locationPicker"
+        },
+        {
+          "human_i": 3,
+          "gen_j": 2,
+          "sim": 1.0,
+          "human": "Ohio",
+          "gen": "Ohio"
+        },
+        {
+          "human_i": 4,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Run Search",
+          "gen": null
+        },
+        {
+          "human_i": 5,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "",
+          "gen": null
+        },
+        {
+          "human_i": 6,
+          "gen_j": 4,
+          "sim": 0.429,
+          "human": "RANG BARSEY- HOLI MUSIC FESTIVAL, CINCINNATI",
+          "gen": "Music"
+        },
+        {
+          "human_i": 7,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Follow",
+          "gen": null
+        }
+      ]
+    },
+    {
+      "annotation_id": "51221157-cb79-407e-95c8-b2c730e95e01",
+      "website": "eventbrite",
+      "condition": "usersim",
+      "task": "Find a music party in Ohio and follow its organizer",
+      "n_human": 8,
+      "n_gen": 4,
+      "length_ratio_vs_human": 0.5,
+      "milestone_coverage": 0.5,
+      "ordered_alignment": 0.375,
+      "typed_value_recall": 1.0,
+      "matches": [
+        {
+          "human_i": 0,
+          "gen_j": null,
+          "sim": 0.267,
+          "human": "Search for events",
+          "gen": null
+        },
+        {
+          "human_i": 1,
+          "gen_j": 3,
+          "sim": 0.657,
+          "human": "Search events",
+          "gen": "search-autocomplete-input"
+        },
+        {
+          "human_i": 2,
+          "gen_j": 1,
+          "sim": 0.52,
+          "human": "autocomplete",
+          "gen": "Choose a location"
+        },
+        {
+          "human_i": 3,
+          "gen_j": 2,
+          "sim": 0.733,
+          "human": "Ohio",
+          "gen": "Ohio USA"
+        },
+        {
+          "human_i": 4,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "Run Search",
+          "gen": null
+        },
+        {
+          "human_i": 5,
+          "gen_j": null,
+          "sim": 0.2,
+          "human": "",
+          "gen": null
+        },
+        {
+          "human_i": 6,
+          "gen_j": 0,
+          "sim": 0.429,
+          "human": "RANG BARSEY- HOLI MUSIC FESTIVAL, CINCINNATI",
+          "gen": "Music"
+        },
+        {
+          "human_i": 7,
+          "gen_j": null,
+          "sim": 0.0,
+          "human": "Follow",
+          "gen": null
+        }
+      ]
+    }
+  ]
+}

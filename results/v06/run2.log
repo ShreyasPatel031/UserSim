@@ -1,0 +1,100 @@
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+screen ign                ok=True login=False status=200 err=None
+screen rottentomatoes     ok=True login=False status=200 err=None
+screen espn               ok=True login=False status=200 err=None
+screen newegg             ok=True login=False status=200 err=None
+screen uniqlo             ok=True login=False status=200 err=None
+screen us.megabus         ok=True login=False status=200 err=None
+screen jetblue            ok=True login=False status=200 err=None
+screen ticketcenter       ok=True login=False status=200 err=None
+screen underarmour        ok=True login=False status=200 err=None
+screen eventbrite         ok=True login=False status=200 err=None
+running 10 tasks × 2 conditions
+== agent | ign | cached actions=1
+== usersim | ign | cached actions=1
+== agent | rottentomatoes | cached actions=5
+== usersim | rottentomatoes | cached actions=2
+== agent | espn | cached actions=4
+== usersim | espn | cached actions=5
+== agent | newegg | Find a wireless keyboard and mouse combo under $100.
+   actions=6 stop=model_stop overlap=0.36666666666666664 err=None
+== usersim | newegg | Find a wireless keyboard and mouse combo under $100.
+   actions=3 stop=model_stop overlap=0.3448275862068966 err=None
+== agent | uniqlo | Show me the list of baby products that are on sale and under
+   actions=2 stop=model_stop overlap=0.15 err=None
+== usersim | uniqlo | Show me the list of baby products that are on sale and under
+   actions=8 stop=max_steps overlap=0.15384615384615385 err=None
+== agent | us.megabus | Find bus stops in Alanson, MI
+   actions=2 stop=model_stop overlap=0.1875 err=None
+== usersim | us.megabus | Find bus stops in Alanson, MI
+   actions=1 stop=model_stop overlap=0.125 err=None
+== agent | jetblue | Find JetBlue career openings in New York
+   actions=0 stop=model_stop overlap=0.0 err=None
+== usersim | jetblue | Find JetBlue career openings in New York
+   actions=0 stop=model_stop overlap=0.0 err=None
+== agent | ticketcenter | Show me all NFL tickets
+   actions=2 stop=model_stop overlap=0.13636363636363635 err=None
+== usersim | ticketcenter | Show me all NFL tickets
+   actions=6 stop=model_stop overlap=0.14814814814814814 err=None
+== agent | underarmour | Filter women's sports bras that are purple  with high suppor
+   actions=3 stop=model_stop overlap=0.15625 err=None
+== usersim | underarmour | Filter women's sports bras that are purple  with high suppor
+   actions=3 stop=model_stop overlap=0.15625 err=None
+== agent | eventbrite | Find a music party in Ohio and follow its organizer
+   actions=10 stop=model_stop overlap=0.2 err=None
+== usersim | eventbrite | Find a music party in Ohio and follow its organizer
+   actions=4 stop=model_stop overlap=0.23529411764705882 err=None
+{
+  "spend": 0.06567869999999999,
+  "calls": 63,
+  "metrics": {
+    "by_condition": {
+      "agent": {
+        "n": 10,
+        "n_ok": 10,
+        "mean_n_actions": 3.5,
+        "mean_length_ratio_vs_human": 0.6806060606060605,
+        "mean_extra_actions": -1.6,
+        "mean_repeats": 0.4,
+        "mean_backtracks": 0.0,
+        "mean_semantic_overlap": 0.18666937229437228,
+        "stop_rate": 1.0,
+        "action_types": {
+          "CLICK": 25,
+          "STOP": 10,
+          "TYPE": 10
+        },
+        "stop_reasons": {
+          "model_stop": 10
+        }
+      },
+      "usersim": {
+        "n": 10,
+        "n_ok": 10,
+        "mean_n_actions": 3.3,
+        "mean_length_ratio_vs_human": 0.7372727272727273,
+        "mean_extra_actions": -1.8,
+        "mean_repeats": 0.3,
+        "mean_backtracks": 0.2,
+        "mean_semantic_overlap": 0.18090858773745805,
+        "stop_rate": 0.9,
+        "action_types": {
+          "CLICK": 26,
+          "STOP": 9,
+          "TYPE": 7
+        },
+        "stop_reasons": {
+          "model_stop": 9,
+          "max_steps": 1
+        }
+      }
+    },
+    "paired_agent_minus_usersim": {
+      "n_paired": 10,
+      "delta_mean_n_actions": 0.2,
+      "delta_mean_length_ratio": -0.056666666666666685,
+      "delta_mean_semantic_overlap": 0.005760784556914239,
+      "delta_stop_rate": 0.1
+    }
+  }
+}
