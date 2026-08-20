@@ -12,18 +12,6 @@
     "n_steps": 3
   },
   {
-    "ok": false,
-    "status": 403,
-    "url": "https://www.kohls.com/",
-    "title": "Access Denied",
-    "login_wall_likely": false,
-    "error": null,
-    "eval_index": 1,
-    "website": "kohls",
-    "task": "Browse for wall art with a price range of $25 to $50.",
-    "n_steps": 5
-  },
-  {
     "ok": true,
     "status": 200,
     "url": "https://www.rottentomatoes.com/",
@@ -34,18 +22,6 @@
     "website": "rottentomatoes",
     "task": "Show reviews of top critics for lowest rated Tom Hanks work",
     "n_steps": 4
-  },
-  {
-    "ok": false,
-    "status": 403,
-    "url": "https://www.imdb.com/",
-    "title": "403 Forbidden",
-    "login_wall_likely": false,
-    "error": null,
-    "eval_index": 13,
-    "website": "imdb",
-    "task": "Show top 50 Movies and TV shows by Sci fi genre.",
-    "n_steps": 6
   },
   {
     "ok": true,
@@ -84,18 +60,6 @@
     "n_steps": 4
   },
   {
-    "ok": false,
-    "status": 403,
-    "url": "https://new.mta.info/",
-    "title": "Access Denied",
-    "login_wall_likely": false,
-    "error": null,
-    "eval_index": 14,
-    "website": "new.mta.info",
-    "task": "Find the motorcycle toll fee for the Queens midtown tunnel.",
-    "n_steps": 5
-  },
-  {
     "ok": true,
     "status": 200,
     "url": "https://us.megabus.com/",
@@ -108,15 +72,51 @@
     "n_steps": 3
   },
   {
-    "ok": false,
-    "status": 403,
-    "url": "https://www.tesla.com/",
-    "title": "Access Denied",
+    "ok": true,
+    "status": 200,
+    "url": "https://www.jetblue.com/",
+    "title": "JetBlue | Flights & travel deals | Book here for low fares | JetBlue",
     "login_wall_likely": false,
     "error": null,
-    "eval_index": 24,
-    "website": "tesla",
-    "task": "Show me the best seller accessories for the Model X",
+    "eval_index": 7,
+    "website": "jetblue",
+    "task": "Find JetBlue career openings in New York",
+    "n_steps": 4
+  },
+  {
+    "ok": true,
+    "status": 200,
+    "url": "https://www.ticketcenter.com/",
+    "title": "Ticket Center - Buy Cheap Tickets Online | Concert Tickets & Sports Tickets",
+    "login_wall_likely": false,
+    "error": null,
+    "eval_index": 12,
+    "website": "ticketcenter",
+    "task": "Show me all NFL tickets",
     "n_steps": 3
+  },
+  {
+    "ok": true,
+    "status": 200,
+    "url": "https://www.underarmour.com/en-us/",
+    "title": "Under Armour\u00ae Official Store | FREE Shipping Available",
+    "login_wall_likely": false,
+    "error": null,
+    "eval_index": 25,
+    "website": "underarmour",
+    "task": "Filter women's sports bras that are purple  with high support that are small size.",
+    "n_steps": 11
+  },
+  {
+    "ok": true,
+    "status": 200,
+    "url": "https://www.eventbrite.com/",
+    "title": "Eventbrite - Discover the Best Local Events & Things to Do",
+    "login_wall_likely": false,
+    "error": null,
+    "eval_index": 34,
+    "website": "eventbrite",
+    "task": "Find a music party in Ohio and follow its organizer",
+    "n_steps": 8
   }
 ]

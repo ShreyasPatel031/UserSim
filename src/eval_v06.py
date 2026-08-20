@@ -432,13 +432,42 @@ def main() -> None:
         for cond in ("agent", "usersim"):
             ep_dir = out_root / "traces" / f"{t['eval_index']}_{t['website']}"
             ep_dir.mkdir(parents=True, exist_ok=True)
+            cache_path = ep_dir / f"{cond}.json"
+            if cache_path.exists():
+                ep = json.loads(cache_path.read_text())
+                if not ep.get("error") and ep.get("stop_reason") != "episode_crash":
+                    episodes.append(ep)
+                    print(f"== {cond} | {t['website']} | cached actions={ep.get('n_actions')}")
+                    continue
             print(f"== {cond} | {t['website']} | {t['confirmed_task'][:60]}")
-            ep = run_episode(t, cond, client, meter, ep_dir)
+            try:
+                ep = run_episode(t, cond, client, meter, ep_dir)
+            except Exception as exc:  # noqa: BLE001
+                ep = {
+                    "annotation_id": t["annotation_id"],
+                    "eval_index": t.get("eval_index"),
+                    "website": t["website"],
+                    "condition": cond,
+                    "task": t["confirmed_task"],
+                    "error": str(exc)[:400],
+                    "steps": [],
+                    "n_actions": 0,
+                    "stopped": False,
+                    "stop_reason": "episode_crash",
+                    "human_n_steps": t.get("n_steps"),
+                    "human_actions": t.get("action_reprs") or [],
+                    "length_ratio_vs_human": None,
+                    "extra_actions_vs_human": None,
+                    "repeated_actions": 0,
+                    "backtracks": 0,
+                    "semantic_overlap_vs_human": 0.0,
+                    "action_type_counts": {},
+                }
             episodes.append(ep)
-            (ep_dir / f"{cond}.json").write_text(json.dumps(ep, indent=2))
+            cache_path.write_text(json.dumps(ep, indent=2))
             print(
                 f"   actions={ep.get('n_actions')} stop={ep.get('stop_reason')} "
-                f"overlap={ep.get('semantic_overlap_vs_human')}"
+                f"overlap={ep.get('semantic_overlap_vs_human')} err={ep.get('error')}"
             )
 
     summary = {

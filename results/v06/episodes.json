@@ -1,0 +1,2569 @@
+[
+  {
+    "annotation_id": "3be7acd4-c8c4-4e0d-b2b6-f82a4e17de8c",
+    "eval_index": 32,
+    "website": "ign",
+    "domain": "Entertainment",
+    "condition": "agent",
+    "task": "Open the Resident evil 4 game guide.",
+    "start_url": "https://www.ign.com/",
+    "end_url": "https://www.ign.com/",
+    "end_title": "Video Game News, Reviews, and Walkthroughs - IGN",
+    "human_n_steps": 3,
+    "human_actions": [
+      "[path]   -> CLICK",
+      "[link]  Guides -> CLICK",
+      "[button]  Open Guide -> CLICK"
+    ],
+    "n_actions": 1,
+    "n_model_steps": 2,
+    "length_ratio_vs_human": 0.3333333333333333,
+    "extra_actions_vs_human": -2,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.ign.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 1,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.18181818181818182,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.ign.com/",
+        "n_candidates": 18,
+        "prediction": {
+          "element_index": 1,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\n  \"element_index\": 1,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 2652,
+          "output_tokens": 27
+        },
+        "action_repr": "<button> type=button text=Toggle Sidebar -> CLICK",
+        "screenshot": "v06/traces/32_ign/agent_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.ign.com/",
+        "n_candidates": 18,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2666,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/32_ign/agent_step1.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "3be7acd4-c8c4-4e0d-b2b6-f82a4e17de8c",
+    "eval_index": 32,
+    "website": "ign",
+    "domain": "Entertainment",
+    "condition": "usersim",
+    "task": "Open the Resident evil 4 game guide.",
+    "start_url": "https://www.ign.com/",
+    "end_url": "https://www.ign.com/",
+    "end_title": "Video Game News, Reviews, and Walkthroughs - IGN",
+    "human_n_steps": 3,
+    "human_actions": [
+      "[path]   -> CLICK",
+      "[link]  Guides -> CLICK",
+      "[button]  Open Guide -> CLICK"
+    ],
+    "n_actions": 1,
+    "n_model_steps": 2,
+    "length_ratio_vs_human": 0.3333333333333333,
+    "extra_actions_vs_human": -2,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.ign.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 1,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.18181818181818182,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.ign.com/",
+        "n_candidates": 18,
+        "prediction": {
+          "element_index": 1,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 1, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2663,
+          "output_tokens": 19
+        },
+        "action_repr": "<button> type=button text=Toggle Sidebar -> CLICK",
+        "screenshot": "v06/traces/32_ign/usersim_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.ign.com/",
+        "n_candidates": 18,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2677,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/32_ign/usersim_step1.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "5092fad7-ff8a-481e-bb0b-fe83590193ce",
+    "eval_index": 26,
+    "website": "rottentomatoes",
+    "domain": "Entertainment",
+    "condition": "agent",
+    "task": "Show reviews of top critics for lowest rated Tom Hanks work",
+    "start_url": "https://www.rottentomatoes.com/",
+    "end_url": "https://www.rottentomatoes.com/",
+    "end_title": "Rotten Tomatoes: Movies | TV Shows | Movie Trailers | Reviews | Rotten Tomatoes",
+    "human_n_steps": 4,
+    "human_actions": [
+      "[textbox]  Search -> TYPE: Tom Hanks",
+      "[p]  Tom Hanks -> CLICK",
+      "[link]  My Life in Ruins (2009) -> CLICK",
+      "[link]  Top Critics (49) -> CLICK"
+    ],
+    "n_actions": 5,
+    "n_model_steps": 6,
+    "length_ratio_vs_human": 1.25,
+    "extra_actions_vs_human": 1,
+    "repeated_actions": 1,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.rottentomatoes.com"
+    ],
+    "action_type_counts": {
+      "TYPE": 2,
+      "CLICK": 3,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.23809523809523808,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.rottentomatoes.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 5,
+          "action": "TYPE",
+          "value": "Tom Hanks",
+          "raw": "{\"element_index\": 5, \"action\": \"TYPE\", \"value\": \"Tom Hanks\"}",
+          "error": null,
+          "prompt_tokens": 3523,
+          "output_tokens": 21
+        },
+        "action_repr": "<input> type=text name=Search placeholder=Search text=Search -> TYPE: Tom Hanks",
+        "screenshot": "v06/traces/26_rottentomatoes/agent_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "Tom Hanks"
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.rottentomatoes.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 34,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 34, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3541,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> text=Continue -> CLICK",
+        "screenshot": "v06/traces/26_rottentomatoes/agent_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.rottentomatoes.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 6,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 6, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3585,
+          "output_tokens": 19
+        },
+        "action_repr": "<input> type=text name=Search placeholder=Search text=Search -> CLICK",
+        "screenshot": "v06/traces/26_rottentomatoes/agent_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.rottentomatoes.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 5,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 5, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3629,
+          "output_tokens": 19
+        },
+        "action_repr": "<input> type=text name=Search placeholder=Search text=Search -> CLICK",
+        "screenshot": "v06/traces/26_rottentomatoes/agent_step3.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 4,
+        "url": "https://www.rottentomatoes.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 5,
+          "action": "TYPE",
+          "value": "Tom Hanks",
+          "raw": "{\"element_index\": 5, \"action\": \"TYPE\", \"value\": \"Tom Hanks\"}",
+          "error": null,
+          "prompt_tokens": 3630,
+          "output_tokens": 21
+        },
+        "action_repr": "<input> type=text name=Search placeholder=Search text=Search -> TYPE: Tom Hanks",
+        "screenshot": "v06/traces/26_rottentomatoes/agent_step4.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "Tom Hanks"
+        }
+      },
+      {
+        "i": 5,
+        "url": "https://www.rottentomatoes.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3616,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/26_rottentomatoes/agent_step5.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "5092fad7-ff8a-481e-bb0b-fe83590193ce",
+    "eval_index": 26,
+    "website": "rottentomatoes",
+    "domain": "Entertainment",
+    "condition": "usersim",
+    "task": "Show reviews of top critics for lowest rated Tom Hanks work",
+    "start_url": "https://www.rottentomatoes.com/",
+    "end_url": "https://www.rottentomatoes.com/",
+    "end_title": "Rotten Tomatoes: Movies | TV Shows | Movie Trailers | Reviews | Rotten Tomatoes",
+    "human_n_steps": 4,
+    "human_actions": [
+      "[textbox]  Search -> TYPE: Tom Hanks",
+      "[p]  Tom Hanks -> CLICK",
+      "[link]  My Life in Ruins (2009) -> CLICK",
+      "[link]  Top Critics (49) -> CLICK"
+    ],
+    "n_actions": 2,
+    "n_model_steps": 3,
+    "length_ratio_vs_human": 0.5,
+    "extra_actions_vs_human": -2,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.rottentomatoes.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 1,
+      "TYPE": 1,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.23809523809523808,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.rottentomatoes.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 34,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 34, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3534,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> text=Continue -> CLICK",
+        "screenshot": "v06/traces/26_rottentomatoes/usersim_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.rottentomatoes.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 5,
+          "action": "TYPE",
+          "value": "Tom Hanks",
+          "raw": "{\"element_index\": 5, \"action\": \"TYPE\", \"value\": \"Tom Hanks\"}",
+          "error": null,
+          "prompt_tokens": 3597,
+          "output_tokens": 21
+        },
+        "action_repr": "<input> type=text name=Search placeholder=Search text=Search -> TYPE: Tom Hanks",
+        "screenshot": "v06/traces/26_rottentomatoes/usersim_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "Tom Hanks"
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.rottentomatoes.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3432,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/26_rottentomatoes/usersim_step2.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "e6643cfb-567e-4e11-8cab-f85483573539",
+    "eval_index": 33,
+    "website": "espn",
+    "domain": "Entertainment",
+    "condition": "agent",
+    "task": "Follow one of the team leaders of one of the NHL teams from the Atlantic Division",
+    "start_url": "https://www.espn.com/",
+    "end_url": "https://www.espn.com/nhl/team/_/name/bos/boston-bruins",
+    "end_title": "Boston Bruins Scores, Stats and Highlights - ESPN",
+    "human_n_steps": 6,
+    "human_actions": [
+      "[link]  ESPN NHL Home Page -> HOVER",
+      "[link]  Teams -> CLICK",
+      "[heading]  Boston Bruins -> CLICK",
+      "[link]  Full Team Statistics -> CLICK",
+      "[heading]  David Pastrnak RW -> CLICK",
+      "[button]  FOLLOW -> CLICK"
+    ],
+    "n_actions": 4,
+    "n_model_steps": 5,
+    "length_ratio_vs_human": 0.6666666666666666,
+    "extra_actions_vs_human": -2,
+    "repeated_actions": 1,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.espn.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 4,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.25,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.espn.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 10,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 10, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 4513,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> name=&lpos=sitenavdefault+sitenav_nhl href=/nhl/ text=NHL -> CLICK",
+        "screenshot": "v06/traces/33_espn/agent_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.espn.com/nhl/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 28,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 28, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3961,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> name=&lpos=subnav+subnav__team_boston_bruins href=/nhl/team/_/name/bos/boston-bruins text=Boston Bruins -> CLICK",
+        "screenshot": "v06/traces/33_espn/agent_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.espn.com/nhl/team/_/name/bos/boston-bruins",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 16,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 16, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3676,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> type=button text=Follow -> CLICK",
+        "screenshot": "v06/traces/33_espn/agent_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.espn.com/nhl/team/_/name/bos/boston-bruins",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 24,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 24, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3689,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> type=button text=Follow -> CLICK",
+        "screenshot": "v06/traces/33_espn/agent_step3.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 4,
+        "url": "https://www.espn.com/nhl/team/_/name/bos/boston-bruins",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3703,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/33_espn/agent_step4.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "e6643cfb-567e-4e11-8cab-f85483573539",
+    "eval_index": 33,
+    "website": "espn",
+    "domain": "Entertainment",
+    "condition": "usersim",
+    "task": "Follow one of the team leaders of one of the NHL teams from the Atlantic Division",
+    "start_url": "https://www.espn.com/",
+    "end_url": "https://www.espn.com/nhl/team/roster/_/name/bos/boston-bruins",
+    "end_title": "Boston Bruins NHL Roster - ESPN",
+    "human_n_steps": 6,
+    "human_actions": [
+      "[link]  ESPN NHL Home Page -> HOVER",
+      "[link]  Teams -> CLICK",
+      "[heading]  Boston Bruins -> CLICK",
+      "[link]  Full Team Statistics -> CLICK",
+      "[heading]  David Pastrnak RW -> CLICK",
+      "[button]  FOLLOW -> CLICK"
+    ],
+    "n_actions": 5,
+    "n_model_steps": 6,
+    "length_ratio_vs_human": 0.8333333333333334,
+    "extra_actions_vs_human": -1,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.espn.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 5,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.22580645161290322,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.espn.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 10,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 10, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 4493,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> name=&lpos=sitenavdefault+sitenav_nhl href=/nhl/ text=NHL -> CLICK",
+        "screenshot": "v06/traces/33_espn/usersim_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.espn.com/nhl/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 28,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 28, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3972,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> name=&lpos=subnav+subnav__team_boston_bruins href=/nhl/team/_/name/bos/boston-bruins text=Boston Bruins -> CLICK",
+        "screenshot": "v06/traces/33_espn/usersim_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.espn.com/nhl/team/_/name/bos/boston-bruins",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 17,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\n  \"element_index\": 17,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 3742,
+          "output_tokens": 28
+        },
+        "action_repr": "<a> href=/nhl/team/roster/_/name/bos/boston-bruins text=Roster -> CLICK",
+        "screenshot": "v06/traces/33_espn/usersim_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.espn.com/nhl/team/roster/_/name/bos/boston-bruins",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 16,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\n  \"element_index\": 16,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 3656,
+          "output_tokens": 28
+        },
+        "action_repr": "<button> type=button text=Follow -> CLICK",
+        "screenshot": "v06/traces/33_espn/usersim_step3.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 4,
+        "url": "https://www.espn.com/nhl/team/roster/_/name/bos/boston-bruins",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 23,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 23, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3719,
+          "output_tokens": 20
+        },
+        "action_repr": "<svg> role=button -> CLICK",
+        "screenshot": "v06/traces/33_espn/usersim_step4.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 5,
+        "url": "https://www.espn.com/nhl/team/roster/_/name/bos/boston-bruins",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3730,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/33_espn/usersim_step5.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "2fc63250-ac9a-4cd4-a29d-6460f0652fa3",
+    "eval_index": 8,
+    "website": "newegg",
+    "domain": "Shopping",
+    "condition": "agent",
+    "task": "Find a wireless keyboard and mouse combo under $100.",
+    "start_url": "https://www.newegg.com/",
+    "end_url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo&SrchInDesc=100",
+    "end_title": "wireless keyboard and mouse combo | Newegg.com",
+    "human_n_steps": 5,
+    "human_actions": [
+      "[searchbox]  Search Site -> TYPE: wireless keyboard mouse",
+      "[button]  \uf002 -> CLICK",
+      "[textbox]  price to -> TYPE: 100",
+      "[button]  APPLY -> CLICK",
+      "[link]  Logitech MK270 Wireless Keyboard And Mouse Combo F... -> CLICK"
+    ],
+    "n_actions": 6,
+    "n_model_steps": 7,
+    "length_ratio_vs_human": 1.2,
+    "extra_actions_vs_human": 1,
+    "repeated_actions": 1,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.newegg.com"
+    ],
+    "action_type_counts": {
+      "TYPE": 3,
+      "CLICK": 3,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.36666666666666664,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.newegg.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 7,
+          "action": "TYPE",
+          "value": "wireless keyboard and mouse combo",
+          "raw": "{\"element_index\": 7, \"action\": \"TYPE\", \"value\": \"wireless keyboard and mouse combo\"}",
+          "error": null,
+          "prompt_tokens": 3701,
+          "output_tokens": 24
+        },
+        "action_repr": "<input> type=search name=Search. Enter keywords, model number or item number text=Search. Enter keywords, model number or item number -> TYPE: wireless keyboard and mouse combo",
+        "screenshot": "v06/traces/8_newegg/agent_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "wireless keyboard and mouse combo"
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.newegg.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 8,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 8, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3797,
+          "output_tokens": 19
+        },
+        "action_repr": "<button> name=Search text=Search -> CLICK",
+        "screenshot": "v06/traces/8_newegg/agent_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 50,
+          "action": "TYPE",
+          "value": "0",
+          "raw": "{\"element_index\": 50, \"action\": \"TYPE\", \"value\": \"0\"}",
+          "error": null,
+          "prompt_tokens": 3747,
+          "output_tokens": 21
+        },
+        "action_repr": "<input> type=text name=price from text=price from -> TYPE: 0",
+        "screenshot": "v06/traces/8_newegg/agent_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "0"
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 27,
+          "action": "TYPE",
+          "value": "100",
+          "raw": "{\"element_index\": 27, \"action\": \"TYPE\", \"value\": \"100\"}",
+          "error": null,
+          "prompt_tokens": 3789,
+          "output_tokens": 23
+        },
+        "action_repr": "<input> type=search -> TYPE: 100",
+        "screenshot": "v06/traces/8_newegg/agent_step3.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "100"
+        }
+      },
+      {
+        "i": 4,
+        "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 30,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 30, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3810,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> type=button text=GO -> CLICK",
+        "screenshot": "v06/traces/8_newegg/agent_step4.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 5,
+        "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 29,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 29, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3736,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> type=button text=GO -> CLICK",
+        "screenshot": "v06/traces/8_newegg/agent_step5.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 6,
+        "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo&SrchInDesc=100",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3752,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/8_newegg/agent_step6.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "2fc63250-ac9a-4cd4-a29d-6460f0652fa3",
+    "eval_index": 8,
+    "website": "newegg",
+    "domain": "Shopping",
+    "condition": "usersim",
+    "task": "Find a wireless keyboard and mouse combo under $100.",
+    "start_url": "https://www.newegg.com/",
+    "end_url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+    "end_title": "wireless keyboard and mouse combo | Newegg.com",
+    "human_n_steps": 5,
+    "human_actions": [
+      "[searchbox]  Search Site -> TYPE: wireless keyboard mouse",
+      "[button]  \uf002 -> CLICK",
+      "[textbox]  price to -> TYPE: 100",
+      "[button]  APPLY -> CLICK",
+      "[link]  Logitech MK270 Wireless Keyboard And Mouse Combo F... -> CLICK"
+    ],
+    "n_actions": 3,
+    "n_model_steps": 4,
+    "length_ratio_vs_human": 0.6,
+    "extra_actions_vs_human": -2,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.newegg.com"
+    ],
+    "action_type_counts": {
+      "TYPE": 2,
+      "CLICK": 1,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.3448275862068966,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.newegg.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 7,
+          "action": "TYPE",
+          "value": "wireless keyboard and mouse combo",
+          "raw": "{\"element_index\": 7, \"action\": \"TYPE\", \"value\": \"wireless keyboard and mouse combo\"}",
+          "error": null,
+          "prompt_tokens": 3712,
+          "output_tokens": 24
+        },
+        "action_repr": "<input> type=search name=Search. Enter keywords, model number or item number text=Search. Enter keywords, model number or item number -> TYPE: wireless keyboard and mouse combo",
+        "screenshot": "v06/traces/8_newegg/usersim_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "wireless keyboard and mouse combo"
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.newegg.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 8,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 8, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3808,
+          "output_tokens": 19
+        },
+        "action_repr": "<button> name=Search text=Search -> CLICK",
+        "screenshot": "v06/traces/8_newegg/usersim_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 50,
+          "action": "TYPE",
+          "value": "0",
+          "raw": "{\"element_index\": 50, \"action\": \"TYPE\", \"value\": \"0\"}",
+          "error": null,
+          "prompt_tokens": 3758,
+          "output_tokens": 21
+        },
+        "action_repr": "<input> type=text name=price from text=price from -> TYPE: 0",
+        "screenshot": "v06/traces/8_newegg/usersim_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "0"
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3800,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/8_newegg/usersim_step3.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "099a9da4-c8db-4900-ada2-76600f3655a4",
+    "eval_index": 19,
+    "website": "uniqlo",
+    "domain": "Shopping",
+    "condition": "agent",
+    "task": "Show me the list of baby products that are on sale and under 10 dollars.",
+    "start_url": "https://www.uniqlo.com/us/en/",
+    "end_url": "https://www.uniqlo.com/us/en/feature/sale/baby",
+    "end_title": "Baby Clothing Sale | Everyday Essentials at Special Prices | UNIQLO US",
+    "human_n_steps": 4,
+    "human_actions": [
+      "[link]  BABY -> HOVER",
+      "[link]  Sale -> CLICK",
+      "[heading]  Price -> CLICK",
+      "[label]  $0-$10 -> CLICK"
+    ],
+    "n_actions": 2,
+    "n_model_steps": 3,
+    "length_ratio_vs_human": 0.5,
+    "extra_actions_vs_human": -2,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.uniqlo.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 2,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.15,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.uniqlo.com/us/en/",
+        "n_candidates": 33,
+        "prediction": {
+          "element_index": 5,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 5, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2862,
+          "output_tokens": 19
+        },
+        "action_repr": "<a> role=tab href=/us/en/baby text=BABY -> CLICK",
+        "screenshot": "v06/traces/19_uniqlo/agent_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.uniqlo.com/us/en/baby",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 29,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 29, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3414,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> href=https://www.uniqlo.com/us/en/feature/sale/baby text=Sale -> CLICK",
+        "screenshot": "v06/traces/19_uniqlo/agent_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.uniqlo.com/us/en/baby",
+        "n_candidates": 22,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\n  \"element_index\": 0,\n  \"action\": \"STOP\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 2537,
+          "output_tokens": 27
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/19_uniqlo/agent_step2.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "099a9da4-c8db-4900-ada2-76600f3655a4",
+    "eval_index": 19,
+    "website": "uniqlo",
+    "domain": "Shopping",
+    "condition": "usersim",
+    "task": "Show me the list of baby products that are on sale and under 10 dollars.",
+    "start_url": "https://www.uniqlo.com/us/en/",
+    "end_url": "https://www.uniqlo.com/us/en/feature/sale/baby",
+    "end_title": "Baby Clothing Sale | Everyday Essentials at Special Prices | UNIQLO US",
+    "human_n_steps": 4,
+    "human_actions": [
+      "[link]  BABY -> HOVER",
+      "[link]  Sale -> CLICK",
+      "[heading]  Price -> CLICK",
+      "[label]  $0-$10 -> CLICK"
+    ],
+    "n_actions": 8,
+    "n_model_steps": 8,
+    "length_ratio_vs_human": 2.0,
+    "extra_actions_vs_human": 4,
+    "repeated_actions": 3,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.uniqlo.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 8
+    },
+    "stopped": false,
+    "stop_reason": "max_steps",
+    "semantic_overlap_vs_human": 0.15384615384615385,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.uniqlo.com/us/en/",
+        "n_candidates": 33,
+        "prediction": {
+          "element_index": 5,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 5, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2873,
+          "output_tokens": 19
+        },
+        "action_repr": "<a> role=tab href=/us/en/baby text=BABY -> CLICK",
+        "screenshot": "v06/traces/19_uniqlo/usersim_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.uniqlo.com/us/en/baby",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 29,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 29, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3425,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> href=https://www.uniqlo.com/us/en/feature/sale/baby text=Sale -> CLICK",
+        "screenshot": "v06/traces/19_uniqlo/usersim_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.uniqlo.com/us/en/feature/sale/baby",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 32,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 32, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3231,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> text=Filter -> CLICK",
+        "screenshot": "v06/traces/19_uniqlo/usersim_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.uniqlo.com/us/en/feature/sale/baby",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 21,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\n  \"element_index\": 21,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 3242,
+          "output_tokens": 28
+        },
+        "action_repr": "<button> type=button text=Price -> CLICK",
+        "screenshot": "v06/traces/19_uniqlo/usersim_step3.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 4,
+        "url": "https://www.uniqlo.com/us/en/feature/sale/baby",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 21,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 21, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3256,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> type=button text=Price -> CLICK",
+        "screenshot": "v06/traces/19_uniqlo/usersim_step4.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 5,
+        "url": "https://www.uniqlo.com/us/en/feature/sale/baby",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 21,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 21, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3270,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> type=button text=Price -> CLICK",
+        "screenshot": "v06/traces/19_uniqlo/usersim_step5.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 6,
+        "url": "https://www.uniqlo.com/us/en/feature/sale/baby",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 21,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\n  \"element_index\": 21,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 3284,
+          "output_tokens": 28
+        },
+        "action_repr": "<button> type=button text=Price -> CLICK",
+        "screenshot": "v06/traces/19_uniqlo/usersim_step6.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 7,
+        "url": "https://www.uniqlo.com/us/en/feature/sale/baby",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 47,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 47, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3298,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> text=VIEW ITEMS (22) -> CLICK",
+        "screenshot": "v06/traces/19_uniqlo/usersim_step7.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      }
+    ]
+  },
+  {
+    "annotation_id": "1538e37b-9c33-48b0-b10e-662e192ad53a",
+    "eval_index": 22,
+    "website": "us.megabus",
+    "domain": "Travel",
+    "condition": "agent",
+    "task": "Find bus stops in Alanson, MI",
+    "start_url": "https://us.megabus.com/",
+    "end_url": "https://us.megabus.com/",
+    "end_title": "Megabus | Low cost bus tickets to more than 500 cities",
+    "human_n_steps": 3,
+    "human_actions": [
+      "[button]  Explore\ue911 -> CLICK",
+      "[link]  Bus stops -> CLICK",
+      "[button]  Alanson, MI \ue911 -> CLICK"
+    ],
+    "n_actions": 2,
+    "n_model_steps": 3,
+    "length_ratio_vs_human": 0.6666666666666666,
+    "extra_actions_vs_human": -1,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "us.megabus.com"
+    ],
+    "action_type_counts": {
+      "TYPE": 1,
+      "CLICK": 1,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.1875,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://us.megabus.com/",
+        "n_candidates": 20,
+        "prediction": {
+          "element_index": 10,
+          "action": "TYPE",
+          "value": "Alanson, MI",
+          "raw": "{\n  \"element_index\": 10,\n  \"action\": \"TYPE\",\n  \"value\": \"Alanson, MI\"\n}",
+          "error": null,
+          "prompt_tokens": 2341,
+          "output_tokens": 33
+        },
+        "action_repr": "<input> type=text placeholder=Enter a town or city -> TYPE: Alanson, MI",
+        "screenshot": "v06/traces/22_us.megabus/agent_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "Alanson, MI"
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://us.megabus.com/",
+        "n_candidates": 21,
+        "prediction": {
+          "element_index": 10,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 10, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2379,
+          "output_tokens": 20
+        },
+        "action_repr": "<input> type=text placeholder=Enter a town or city text=Alanson, MI -> CLICK",
+        "screenshot": "v06/traces/22_us.megabus/agent_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://us.megabus.com/",
+        "n_candidates": 21,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2403,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/22_us.megabus/agent_step2.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "1538e37b-9c33-48b0-b10e-662e192ad53a",
+    "eval_index": 22,
+    "website": "us.megabus",
+    "domain": "Travel",
+    "condition": "usersim",
+    "task": "Find bus stops in Alanson, MI",
+    "start_url": "https://us.megabus.com/",
+    "end_url": "https://us.megabus.com/",
+    "end_title": "Megabus | Low cost bus tickets to more than 500 cities",
+    "human_n_steps": 3,
+    "human_actions": [
+      "[button]  Explore\ue911 -> CLICK",
+      "[link]  Bus stops -> CLICK",
+      "[button]  Alanson, MI \ue911 -> CLICK"
+    ],
+    "n_actions": 1,
+    "n_model_steps": 2,
+    "length_ratio_vs_human": 0.3333333333333333,
+    "extra_actions_vs_human": -2,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "us.megabus.com"
+    ],
+    "action_type_counts": {
+      "TYPE": 1,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.125,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://us.megabus.com/",
+        "n_candidates": 20,
+        "prediction": {
+          "element_index": 10,
+          "action": "TYPE",
+          "value": "Alanson, MI",
+          "raw": "{\n  \"element_index\": 10,\n  \"action\": \"TYPE\",\n  \"value\": \"Alanson, MI\"\n}",
+          "error": null,
+          "prompt_tokens": 2352,
+          "output_tokens": 33
+        },
+        "action_repr": "<input> type=text placeholder=Enter a town or city -> TYPE: Alanson, MI",
+        "screenshot": "v06/traces/22_us.megabus/usersim_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "Alanson, MI"
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://us.megabus.com/",
+        "n_candidates": 21,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2390,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/22_us.megabus/usersim_step1.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "b7003092-3e6e-4fac-9867-083cac064f89",
+    "eval_index": 7,
+    "website": "jetblue",
+    "domain": "Travel",
+    "condition": "agent",
+    "task": "Find JetBlue career openings in New York",
+    "start_url": "https://www.jetblue.com/",
+    "end_url": "https://www.jetblue.com/",
+    "end_title": "JetBlue | Flights & travel deals | Book here for low fares | JetBlue",
+    "human_n_steps": 4,
+    "human_actions": [
+      "[link]  CareersExternal Link should open in a new window o... -> CLICK",
+      "[textbox]  Search by Location -> CLICK",
+      "[textbox]  Search by Location -> TYPE: New York",
+      "[button]  Search Jobs -> CLICK"
+    ],
+    "n_actions": 0,
+    "n_model_steps": 1,
+    "length_ratio_vs_human": 0.0,
+    "extra_actions_vs_human": -4,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.jetblue.com"
+    ],
+    "action_type_counts": {
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.0,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.jetblue.com/",
+        "n_candidates": 21,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2367,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/7_jetblue/agent_step0.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "b7003092-3e6e-4fac-9867-083cac064f89",
+    "eval_index": 7,
+    "website": "jetblue",
+    "domain": "Travel",
+    "condition": "usersim",
+    "task": "Find JetBlue career openings in New York",
+    "start_url": "https://www.jetblue.com/",
+    "end_url": "https://www.jetblue.com/",
+    "end_title": "JetBlue | Flights & travel deals | Book here for low fares | JetBlue",
+    "human_n_steps": 4,
+    "human_actions": [
+      "[link]  CareersExternal Link should open in a new window o... -> CLICK",
+      "[textbox]  Search by Location -> CLICK",
+      "[textbox]  Search by Location -> TYPE: New York",
+      "[button]  Search Jobs -> CLICK"
+    ],
+    "n_actions": 0,
+    "n_model_steps": 1,
+    "length_ratio_vs_human": 0.0,
+    "extra_actions_vs_human": -4,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.jetblue.com"
+    ],
+    "action_type_counts": {
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.0,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.jetblue.com/",
+        "n_candidates": 21,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\n  \"element_index\": 0,\n  \"action\": \"STOP\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 2378,
+          "output_tokens": 27
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/7_jetblue/usersim_step0.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "549452ab-637a-4997-bce1-5898541bb288",
+    "eval_index": 12,
+    "website": "ticketcenter",
+    "domain": "Entertainment",
+    "condition": "agent",
+    "task": "Show me all NFL tickets",
+    "start_url": "https://www.ticketcenter.com/",
+    "end_url": "https://www.ticketcenter.com/Search?query=NFL",
+    "end_title": "Ticket Center - Buy Cheap Tickets Online | Concert Tickets & Sports Tickets",
+    "human_n_steps": 3,
+    "human_actions": [
+      "[button]  SPORTS -> HOVER",
+      "[tab]  NFL -> HOVER",
+      "[link]  All NFL Tickets -> CLICK"
+    ],
+    "n_actions": 2,
+    "n_model_steps": 3,
+    "length_ratio_vs_human": 0.6666666666666666,
+    "extra_actions_vs_human": -1,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.ticketcenter.com"
+    ],
+    "action_type_counts": {
+      "TYPE": 1,
+      "CLICK": 1,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.13636363636363635,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.ticketcenter.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 12,
+          "action": "TYPE",
+          "value": "NFL",
+          "raw": "{\"element_index\": 12, \"action\": \"TYPE\", \"value\": \"NFL\"}",
+          "error": null,
+          "prompt_tokens": 3230,
+          "output_tokens": 21
+        },
+        "action_repr": "<input> type=text name=query placeholder=Search for artists, teams or venues... -> TYPE: NFL",
+        "screenshot": "v06/traces/12_ticketcenter/agent_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "NFL"
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.ticketcenter.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 13,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 13, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3156,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> type=submit text=Search -> CLICK",
+        "screenshot": "v06/traces/12_ticketcenter/agent_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.ticketcenter.com/Search?query=NFL",
+        "n_candidates": 35,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\n  \"element_index\": 0,\n  \"action\": \"STOP\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 3525,
+          "output_tokens": 27
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/12_ticketcenter/agent_step2.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "549452ab-637a-4997-bce1-5898541bb288",
+    "eval_index": 12,
+    "website": "ticketcenter",
+    "domain": "Entertainment",
+    "condition": "usersim",
+    "task": "Show me all NFL tickets",
+    "start_url": "https://www.ticketcenter.com/",
+    "end_url": "https://www.ticketcenter.com/sports/football/nfl",
+    "end_title": "NFL Football Tickets 2026",
+    "human_n_steps": 3,
+    "human_actions": [
+      "[button]  SPORTS -> HOVER",
+      "[tab]  NFL -> HOVER",
+      "[link]  All NFL Tickets -> CLICK"
+    ],
+    "n_actions": 6,
+    "n_model_steps": 7,
+    "length_ratio_vs_human": 2.0,
+    "extra_actions_vs_human": 3,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.ticketcenter.com"
+    ],
+    "action_type_counts": {
+      "TYPE": 1,
+      "CLICK": 5,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.14814814814814814,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.ticketcenter.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 12,
+          "action": "TYPE",
+          "value": "NFL",
+          "raw": "{\"element_index\": 12, \"action\": \"TYPE\", \"value\": \"NFL\"}",
+          "error": null,
+          "prompt_tokens": 3241,
+          "output_tokens": 21
+        },
+        "action_repr": "<input> type=text name=query placeholder=Search for artists, teams or venues... -> TYPE: NFL",
+        "screenshot": "v06/traces/12_ticketcenter/usersim_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "NFL"
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.ticketcenter.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 14,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 14, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3148,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> role=option href=# text=NFL Preseason -> CLICK",
+        "screenshot": "v06/traces/12_ticketcenter/usersim_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.ticketcenter.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 9,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 9, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3637,
+          "output_tokens": 19
+        },
+        "action_repr": "<button> type=submit text=Search -> CLICK",
+        "screenshot": "v06/traces/12_ticketcenter/usersim_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.ticketcenter.com/Search?query=",
+        "n_candidates": 19,
+        "prediction": {
+          "element_index": 5,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 5, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2376,
+          "output_tokens": 19
+        },
+        "action_repr": "<a> role=button href=/sports text=SPORTS -> CLICK",
+        "screenshot": "v06/traces/12_ticketcenter/usersim_step3.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 4,
+        "url": "https://www.ticketcenter.com/sports",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 14,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 14, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 2977,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> href=/sports/football text=Football -> CLICK",
+        "screenshot": "v06/traces/12_ticketcenter/usersim_step4.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 5,
+        "url": "https://www.ticketcenter.com/sports/football",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 13,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 13, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3115,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> href=/sports/football/nfl text=NFL Football -> CLICK",
+        "screenshot": "v06/traces/12_ticketcenter/usersim_step5.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 6,
+        "url": "https://www.ticketcenter.com/sports/football/nfl",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3112,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/12_ticketcenter/usersim_step6.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "5e47dc3e-2a4a-4273-871d-dfdb33b091d5",
+    "eval_index": 25,
+    "website": "underarmour",
+    "domain": "Shopping",
+    "condition": "agent",
+    "task": "Filter women's sports bras that are purple  with high support that are small size.",
+    "start_url": "https://www.underarmour.com/",
+    "end_url": "https://www.underarmour.com/en-us/c/womens/",
+    "end_title": "Women's Athletic Clothes, Shoes & Gear | Under Armour",
+    "human_n_steps": 11,
+    "human_actions": [
+      "[menuitem]  Women -> CLICK",
+      "[link]  Sports Bras -> CLICK",
+      "[div]  Size -> CLICK",
+      "[link]  S -> CLICK",
+      "[div]  Filter -> CLICK",
+      "[RootWebArea]  Women's Sports Bras | Under Armour -> CLICK",
+      "[button]  Show more -> CLICK",
+      "[div]  Color -> CLICK",
+      "[link]  Refine by color: Purple -> CLICK",
+      "[div]  Support Level -> CLICK",
+      "[link]  High Support -> CLICK"
+    ],
+    "n_actions": 3,
+    "n_model_steps": 4,
+    "length_ratio_vs_human": 0.2727272727272727,
+    "extra_actions_vs_human": -8,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.underarmour.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 3,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.15625,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.underarmour.com/en-us/",
+        "n_candidates": 44,
+        "prediction": {
+          "element_index": 11,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 11, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3047,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> href=/en-us/c/womens/ text=Women -> CLICK",
+        "screenshot": "v06/traces/25_underarmour/agent_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.underarmour.com/en-us/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 48,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 48, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3515,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> href=/en-us/c/womens/clothing/sports-bras/ text=Sports Bras -> CLICK",
+        "screenshot": "v06/traces/25_underarmour/agent_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.underarmour.com/en-us/c/womens/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 27,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 27, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3541,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> type=button name=Close Dialog text=Close Dialog -> CLICK",
+        "screenshot": "v06/traces/25_underarmour/agent_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.underarmour.com/en-us/c/womens/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\n  \"element_index\": 0,\n  \"action\": \"STOP\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 3565,
+          "output_tokens": 27
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/25_underarmour/agent_step3.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "5e47dc3e-2a4a-4273-871d-dfdb33b091d5",
+    "eval_index": 25,
+    "website": "underarmour",
+    "domain": "Shopping",
+    "condition": "usersim",
+    "task": "Filter women's sports bras that are purple  with high support that are small size.",
+    "start_url": "https://www.underarmour.com/",
+    "end_url": "https://www.underarmour.com/en-us/c/womens/",
+    "end_title": "Women's Athletic Clothes, Shoes & Gear | Under Armour",
+    "human_n_steps": 11,
+    "human_actions": [
+      "[menuitem]  Women -> CLICK",
+      "[link]  Sports Bras -> CLICK",
+      "[div]  Size -> CLICK",
+      "[link]  S -> CLICK",
+      "[div]  Filter -> CLICK",
+      "[RootWebArea]  Women's Sports Bras | Under Armour -> CLICK",
+      "[button]  Show more -> CLICK",
+      "[div]  Color -> CLICK",
+      "[link]  Refine by color: Purple -> CLICK",
+      "[div]  Support Level -> CLICK",
+      "[link]  High Support -> CLICK"
+    ],
+    "n_actions": 3,
+    "n_model_steps": 4,
+    "length_ratio_vs_human": 0.2727272727272727,
+    "extra_actions_vs_human": -8,
+    "repeated_actions": 0,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.underarmour.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 3,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.15625,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.underarmour.com/en-us/",
+        "n_candidates": 44,
+        "prediction": {
+          "element_index": 11,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 11, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3058,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> href=/en-us/c/womens/ text=Women -> CLICK",
+        "screenshot": "v06/traces/25_underarmour/usersim_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.underarmour.com/en-us/c/womens/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 26,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\n  \"element_index\": 26,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 3507,
+          "output_tokens": 28
+        },
+        "action_repr": "<button> type=button name=Close Dialog text=Close Dialog -> CLICK",
+        "screenshot": "v06/traces/25_underarmour/usersim_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.underarmour.com/en-us/c/womens/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 50,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\n  \"element_index\": 50,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 3521,
+          "output_tokens": 28
+        },
+        "action_repr": "<a> href=/en-us/c/womens/clothing/sports-bras/ text=Sports Bras -> CLICK",
+        "screenshot": "v06/traces/25_underarmour/usersim_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.underarmour.com/en-us/c/womens/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3553,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/25_underarmour/usersim_step3.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "51221157-cb79-407e-95c8-b2c730e95e01",
+    "eval_index": 34,
+    "website": "eventbrite",
+    "domain": "Entertainment",
+    "condition": "agent",
+    "task": "Find a music party in Ohio and follow its organizer",
+    "start_url": "https://www.eventbrite.com/",
+    "end_url": "https://www.eventbrite.com/d/va--ashburn/music--events/toledo-ohio/?page=1",
+    "end_title": "Ashburn, VA Toledo Ohio Events | Eventbrite",
+    "human_n_steps": 8,
+    "human_actions": [
+      "[div]  Search for events -> CLICK",
+      "[textbox]  Search events -> TYPE: music",
+      "[combobox]  autocomplete -> TYPE: ohio",
+      "[div]  Ohio -> CLICK",
+      "[generic]  Run Search -> CLICK",
+      "[label]   -> CLICK",
+      "[div]  RANG BARSEY- HOLI MUSIC FESTIVAL, CINCINNATI -> CLICK",
+      "[button]  Follow -> CLICK"
+    ],
+    "n_actions": 10,
+    "n_model_steps": 11,
+    "length_ratio_vs_human": 1.25,
+    "extra_actions_vs_human": 2,
+    "repeated_actions": 1,
+    "backtracks": 0,
+    "unique_hosts": [
+      "www.eventbrite.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 7,
+      "TYPE": 3,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.2,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.eventbrite.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 19,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 19, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3607,
+          "output_tokens": 20
+        },
+        "action_repr": "<input> role=combobox type=text name=locationPicker text=Ashburn -> CLICK",
+        "screenshot": "v06/traces/34_eventbrite/agent_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.eventbrite.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 19,
+          "action": "TYPE",
+          "value": "Ohio",
+          "raw": "{\"element_index\": 19, \"action\": \"TYPE\", \"value\": \"Ohio\"}",
+          "error": null,
+          "prompt_tokens": 3494,
+          "output_tokens": 21
+        },
+        "action_repr": "<input> role=combobox type=text name=locationPicker placeholder=Ashburn -> TYPE: Ohio",
+        "screenshot": "v06/traces/34_eventbrite/agent_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "Ohio"
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.eventbrite.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 19,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 19, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3408,
+          "output_tokens": 20
+        },
+        "action_repr": "<input> role=combobox type=text name=locationPicker text=Ohio -> CLICK",
+        "screenshot": "v06/traces/34_eventbrite/agent_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.eventbrite.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 19,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 19, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3430,
+          "output_tokens": 20
+        },
+        "action_repr": "<input> role=combobox type=text name=locationPicker text=Ohio -> CLICK",
+        "screenshot": "v06/traces/34_eventbrite/agent_step3.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 4,
+        "url": "https://www.eventbrite.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 11,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 11, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3452,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> href=/b/local/music text=Music -> CLICK",
+        "screenshot": "v06/traces/34_eventbrite/agent_step4.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 5,
+        "url": "https://www.eventbrite.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 1,
+          "action": "TYPE",
+          "value": "music party",
+          "raw": "{\"element_index\": 1, \"action\": \"TYPE\", \"value\": \"music party\"}",
+          "error": null,
+          "prompt_tokens": 3286,
+          "output_tokens": 21
+        },
+        "action_repr": "<input> type=search name=search-autocomplete-input placeholder=Search events -> TYPE: music party",
+        "screenshot": "v06/traces/34_eventbrite/agent_step5.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "music party"
+        }
+      },
+      {
+        "i": 6,
+        "url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 2,
+          "action": "TYPE",
+          "value": "Ohio",
+          "raw": "{\"element_index\": 2, \"action\": \"TYPE\", \"value\": \"Ohio\"}",
+          "error": null,
+          "prompt_tokens": 3319,
+          "output_tokens": 20
+        },
+        "action_repr": "<input> type=search name=search-autocomplete-input text=music party -> TYPE: Ohio",
+        "screenshot": "v06/traces/34_eventbrite/agent_step6.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "Ohio"
+        }
+      },
+      {
+        "i": 7,
+        "url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 26,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 26, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3260,
+          "output_tokens": 20
+        },
+        "action_repr": "<button> type=button text=toledo Ohio -> CLICK",
+        "screenshot": "v06/traces/34_eventbrite/agent_step7.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 8,
+        "url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 25,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 25, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3926,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> href=/d/va--ashburn/music--events/ text=Music -> CLICK",
+        "screenshot": "v06/traces/34_eventbrite/agent_step8.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 9,
+        "url": "https://www.eventbrite.com/d/va--ashburn/music--events/toledo-ohio/?page=1",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 19,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\"element_index\": 19, \"action\": \"CLICK\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 4046,
+          "output_tokens": 20
+        },
+        "action_repr": "<a> name=View After The Fest href=https://www.eventbrite.com/e/after-the-fest-tickets-1993960159513?aff=ebdssbdest text=After The Fest -> CLICK",
+        "screenshot": "v06/traces/34_eventbrite/agent_step9.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 10,
+        "url": "https://www.eventbrite.com/d/va--ashburn/music--events/toledo-ohio/?page=1",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 4106,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/34_eventbrite/agent_step10.png",
+        "executed": false
+      }
+    ]
+  },
+  {
+    "annotation_id": "51221157-cb79-407e-95c8-b2c730e95e01",
+    "eval_index": 34,
+    "website": "eventbrite",
+    "domain": "Entertainment",
+    "condition": "usersim",
+    "task": "Find a music party in Ohio and follow its organizer",
+    "start_url": "https://www.eventbrite.com/",
+    "end_url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+    "end_title": "Music & Concerts Events in Ashburn, VA - Live Music, Dances | Eventbrite",
+    "human_n_steps": 8,
+    "human_actions": [
+      "[div]  Search for events -> CLICK",
+      "[textbox]  Search events -> TYPE: music",
+      "[combobox]  autocomplete -> TYPE: ohio",
+      "[div]  Ohio -> CLICK",
+      "[generic]  Run Search -> CLICK",
+      "[label]   -> CLICK",
+      "[div]  RANG BARSEY- HOLI MUSIC FESTIVAL, CINCINNATI -> CLICK",
+      "[button]  Follow -> CLICK"
+    ],
+    "n_actions": 4,
+    "n_model_steps": 5,
+    "length_ratio_vs_human": 0.5,
+    "extra_actions_vs_human": -4,
+    "repeated_actions": 0,
+    "backtracks": 2,
+    "unique_hosts": [
+      "www.eventbrite.com"
+    ],
+    "action_type_counts": {
+      "CLICK": 2,
+      "TYPE": 2,
+      "STOP": 1
+    },
+    "stopped": true,
+    "stop_reason": "model_stop",
+    "semantic_overlap_vs_human": 0.23529411764705882,
+    "steps": [
+      {
+        "i": 0,
+        "url": "https://www.eventbrite.com/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 11,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\n  \"element_index\": 11,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 3618,
+          "output_tokens": 28
+        },
+        "action_repr": "<a> href=/b/local/music text=Music -> CLICK",
+        "screenshot": "v06/traces/34_eventbrite/usersim_step0.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 1,
+        "url": "https://www.eventbrite.com/b/va--ashburn/music/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 2,
+          "action": "TYPE",
+          "value": "Ohio",
+          "raw": "{\n  \"element_index\": 2,\n  \"action\": \"TYPE\",\n  \"value\": \"Ohio\"\n}",
+          "error": null,
+          "prompt_tokens": 3215,
+          "output_tokens": 29
+        },
+        "action_repr": "<input> role=combobox type=text placeholder=Choose a location -> TYPE: Ohio",
+        "screenshot": "v06/traces/34_eventbrite/usersim_step1.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "Ohio"
+        }
+      },
+      {
+        "i": 2,
+        "url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 12,
+          "action": "CLICK",
+          "value": null,
+          "raw": "{\n  \"element_index\": 12,\n  \"action\": \"CLICK\",\n  \"value\": null\n}",
+          "error": null,
+          "prompt_tokens": 3177,
+          "output_tokens": 28
+        },
+        "action_repr": "<li> role=menuitem text=Ohio USA -> CLICK",
+        "screenshot": "v06/traces/34_eventbrite/usersim_step2.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "CLICK",
+          "value": null
+        }
+      },
+      {
+        "i": 3,
+        "url": "https://www.eventbrite.com/b/va--ashburn/music/",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 1,
+          "action": "TYPE",
+          "value": "music party",
+          "raw": "{\n  \"element_index\": 1,\n  \"action\": \"TYPE\",\n  \"value\": \"music party\"\n}",
+          "error": null,
+          "prompt_tokens": 3250,
+          "output_tokens": 30
+        },
+        "action_repr": "<input> type=search name=search-autocomplete-input placeholder=Search events -> TYPE: music party",
+        "screenshot": "v06/traces/34_eventbrite/usersim_step3.png",
+        "executed": true,
+        "exec": {
+          "ok": true,
+          "action": "TYPE",
+          "value": "music party"
+        }
+      },
+      {
+        "i": 4,
+        "url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+        "n_candidates": 50,
+        "prediction": {
+          "element_index": 0,
+          "action": "STOP",
+          "value": null,
+          "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+          "error": null,
+          "prompt_tokens": 3274,
+          "output_tokens": 19
+        },
+        "action_repr": "STOP",
+        "screenshot": "v06/traces/34_eventbrite/usersim_step4.png",
+        "executed": false
+      }
+    ]
+  }
+]

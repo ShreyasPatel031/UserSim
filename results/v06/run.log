@@ -1,0 +1,53 @@
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+screen ign                ok=True login=False status=200 err=None
+screen rottentomatoes     ok=True login=False status=200 err=None
+screen espn               ok=True login=False status=200 err=None
+screen newegg             ok=True login=False status=200 err=None
+screen uniqlo             ok=True login=False status=200 err=None
+screen us.megabus         ok=True login=False status=200 err=None
+screen jetblue            ok=True login=False status=200 err=None
+screen ticketcenter       ok=True login=False status=200 err=None
+screen underarmour        ok=True login=False status=200 err=None
+screen eventbrite         ok=True login=False status=200 err=None
+running 10 tasks × 2 conditions
+== agent | ign | Open the Resident evil 4 game guide.
+   actions=1 stop=model_stop overlap=0.18181818181818182
+== usersim | ign | Open the Resident evil 4 game guide.
+   actions=1 stop=model_stop overlap=0.18181818181818182
+== agent | rottentomatoes | Show reviews of top critics for lowest rated Tom Hanks work
+   actions=5 stop=model_stop overlap=0.23809523809523808
+== usersim | rottentomatoes | Show reviews of top critics for lowest rated Tom Hanks work
+   actions=2 stop=model_stop overlap=0.23809523809523808
+== agent | espn | Follow one of the team leaders of one of the NHL teams from 
+   actions=4 stop=model_stop overlap=0.25
+== usersim | espn | Follow one of the team leaders of one of the NHL teams from 
+   actions=5 stop=model_stop overlap=0.22580645161290322
+== agent | newegg | Find a wireless keyboard and mouse combo under $100.
+Traceback (most recent call last):
+  File "/workspace/src/eval_v06.py", line 469, in <module>
+    main()
+  File "/workspace/src/eval_v06.py", line 436, in main
+    ep = run_episode(t, cond, client, meter, ep_dir)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/src/eval_v06.py", line 187, in run_episode
+    cands = extract_candidates(page, max_n=50)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/src/live_browser.py", line 58, in extract_candidates
+    raw = page.evaluate(
+          ^^^^^^^^^^^^^^
+  File "/workspace/.venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 9385, in evaluate
+    self._sync(
+  File "/workspace/.venv/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/workspace/.venv/lib/python3.12/site-packages/playwright/_impl/_page.py", line 472, in evaluate
+    return await self._main_frame.evaluate(expression, arg)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/.venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 345, in evaluate
+    await self._channel.send(
+  File "/workspace/.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/.venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.evaluate: Execution context was destroyed, most likely because of a navigation
