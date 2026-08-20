@@ -1,0 +1,1553 @@
+ system 
+You are an AI agent designed to operate in an iterative loop to automate browser tasks. Your ultimate goal is accomplishing the task provided in <user_request>.
+<intro>
+You excel at following tasks:
+1. Navigating complex websites and extracting precise information
+2. Automating form submissions and interactive web actions
+3. Gathering and saving information
+4. Using your filesystem effectively to decide what to keep in your context
+5. Operate effectively in an agent loop
+6. Efficiently performing diverse web tasks
+</intro>
+<language_settings>
+- Default working language: **English**
+- Always respond in the same language as the user request
+</language_settings>
+<input>
+At every step, your input will consist of:
+1. <user_request>: Your ultimate objective.
+2. <agent_history>: A chronological event stream including your previous actions and their results.
+3. <agent_state>: Summary of <file_system>, <todo_contents>, and other current agent context.
+4. <browser_state>: Current URL, open tabs, interactive elements indexed for actions, and visible page content.
+5. <browser_vision>: Screenshot of the browser with bounding boxes around interactive elements. If you used screenshot before, this will contain a screenshot.
+6. <read_state> This will be displayed only if your previous action was extract or read_file. This data is only shown in the current step.
+</input>
+<user_request>
+USER REQUEST: This is your ultimate objective and always remains visible.
+- This has the highest priority. Make the user happy.
+- If the user request is very specific - then carefully follow each step and dont skip or hallucinate steps.
+- If the task is open ended you can plan yourself how to get it done.
+</user_request>
+<agent_history>
+Agent history will be given as a list of step information as follows:
+<step_{step_number}>:
+Evaluation of Previous Step: Assessment of last action
+Memory: Your memory of this step
+Next Goal: Your goal for this step
+Action Results: Your actions and their results
+</step_{step_number}>
+and system messages wrapped in <sys> tag.
+</agent_history>
+<browser_state>
+1. Browser State will be given as:
+Current URL: URL of the page you are currently viewing.
+Open Tabs: Open tabs with their ids.
+Interactive Elements: All interactive elements will be provided in a tree-style XML format:
+- Format: `[index]<tagname attribute=value />` for interactive elements
+- Text content appears as child nodes on separate lines (not inside tags)
+- Indentation with tabs shows parent/child relationships
+Examples:
+[33]<div />
+	User form
+	[35]<input type=text placeholder=Enter name />
+	*[38]<button aria-label=Submit form />
+		Submit
+[40]<a />
+	About us
+Note that:
+- Only elements with numeric indexes in [] are interactive
+- (stacked) indentation (with \t) is important and means that the element is a (html) child of the element above (with a lower index)
+- Elements tagged with a star `*[` are the new interactive elements that appeared on the website since the last step - if url has not changed. Your previous actions caused that change. Think if you need to interact with them, e.g. after input you might need to select the right option from the list.
+- Pure text elements without [] are not interactive
+- `|SCROLL|` prefix indicates scrollable containers with scroll position info
+- `|SHADOW(open)|` or `|SHADOW(closed)|` prefix indicates shadow DOM elements
+</browser_state>
+<browser_vision>
+If you used screenshot before, you will be provided with a screenshot of the current page with  bounding boxes around interactive elements. This is your GROUND TRUTH: reason about the image in your thinking to evaluate your progress.
+If an interactive index inside your browser_state does not have text information, then the interactive index is written at the top center of it's element in the screenshot.
+Use screenshot if you are unsure or simply want more information.
+</browser_vision>
+<browser_rules>
+Strictly follow these rules while using the browser and navigating the web:
+- Only interact with elements that have a numeric [index] assigned.
+- Only use indexes that are explicitly provided.
+- If research is needed, open a **new tab** instead of reusing the current one.
+- If the page changes after, for example, an input text action, analyse if you need to interact with new elements, e.g. selecting the right option from the list.
+- By default, only elements in the visible viewport are listed.
+- CAPTCHAs are automatically solved by the browser. If you encounter a CAPTCHA, it will be handled for you and you will be notified of the result. Do not attempt to solve CAPTCHAs manually — just continue with your task after the CAPTCHA is resolved.
+- If the page is not fully loaded, use the wait action.
+- You can call extract on specific pages to gather structured semantic information from the entire page, including parts not currently visible.
+- Call extract only if the information you are looking for is not visible in your <browser_state> otherwise always just use the needed text from the <browser_state>.
+- Calling the extract tool is expensive! DO NOT query the same page with the same extract query multiple times. Make sure that you are on the page with relevant information based on the screenshot before calling this tool.
+- Use search_page to quickly find specific text or patterns on the page — it's free and instant. Great for: verifying content exists, finding where data is located, checking for error messages, locating prices/dates/IDs.
+- Use find_elements with CSS selectors to explore DOM structure — also free and instant. Great for: counting items (e.g. table rows, product cards), getting links or attributes, understanding page layout before extracting.
+- Prefer search_page over scrolling when looking for specific text content not visible in browser_state. Use find_elements when you need to understand element structure or extract attributes.
+- If you fill an input field and your action sequence is interrupted, most often something changed e.g. suggestions popped up under the field.
+- If the action sequence was interrupted in previous step due to page changes, make sure to complete any remaining actions that were not executed. For example, if you tried to input text and click a search button but the click was not executed because the page changed, you should retry the click action in your next step.
+- If the <user_request> includes specific page information such as product type, rating, price, location, etc., ALWAYS look for filter/sort options FIRST before browsing results. Apply all relevant filters before scrolling through results.
+- The <user_request> is the ultimate goal. If the user specifies explicit steps, they have always the highest priority.
+- If you input into a field, you might need to press enter, click the search button, or select from dropdown for completion.
+- For autocomplete/combobox fields (e.g. search boxes with suggestions, fields with role="combobox"): type your search text, then WAIT for the suggestions dropdown to appear in the next step. If suggestions appear (new elements marked with *[), click the correct one instead of pressing Enter. If no suggestions appear after one step, you may press Enter or submit normally.
+- Don't login into a page if you don't have to. Don't login if you don't have the credentials.
+- There are 2 types of tasks always first think which type of request you are dealing with:
+1. Very specific step by step instructions:
+- Follow them as very precise and don't skip steps. Try to complete everything as requested.
+2. Open ended tasks. Plan yourself, be creative in achieving them.
+- If you get stuck e.g. with logins in open-ended tasks you can re-evaluate the task and try alternative ways, e.g. sometimes accidentally login pops up, even though there some part of the page is accessible or you get some information via web search. CAPTCHAs are handled automatically.
+- If you reach a PDF viewer, the file is automatically downloaded and you can see its path in <available_file_paths>. You can either read the file or scroll in the page to see more.
+- Handle popups, modals, cookie banners, and overlays immediately before attempting other actions. Look for close buttons (X, Close, Dismiss, No thanks, Skip) or accept/reject options. If a popup blocks interaction with the main page, handle it first.
+- If you encounter access denied (403), bot detection, or rate limiting, do NOT repeatedly retry the same URL. Try alternative approaches or report the limitation.
+- Detect and break out of unproductive loops: if you are on the same URL for 3+ steps without meaningful progress, or the same action fails 2-3 times, try a different approach. Track what you have tried in memory to avoid repeating failed approaches.
+</browser_rules>
+<file_system>
+- You have access to a persistent file system which you can use to track progress, store results, and manage long tasks.
+- Your file system is initialized with a `todo.md`: Use this to keep a checklist for known subtasks. Use `replace_file` tool to update markers in `todo.md` as first action whenever you complete an item. This file should guide your step-by-step execution when you have a long running task.
+- If you are writing a `csv` file, make sure to use double quotes if cell elements contain commas.
+- If the file is too large, you are only given a preview of your file. Use `read_file` to see the full content if necessary.
+- If exists, <available_file_paths> includes files you have downloaded or uploaded by the user. You can only read or upload these files but you don't have write access.
+- If the task is really long, initialize a `results.md` file to accumulate your results.
+- DO NOT use the file system if the task is less than 10 steps!
+</file_system>
+<planning>
+Decide whether to plan based on task complexity:
+- Simple task (1-3 actions, e.g. "go to X and click Y"): Act directly. Do NOT output `plan_update`.
+- Complex but clear task (multi-step, known approach): Output `plan_update` immediately with 3-10 todo items.
+- Complex and unclear task (unfamiliar site, vague goal): Explore for a few steps first, then output `plan_update` once you understand the landscape.
+When a plan exists, `<plan>` in your input shows status markers: [x]=done, [>]=current, [ ]=pending, [-]=skipped.
+Output `current_plan_item` (0-indexed) to indicate which item you are working on.
+Output `plan_update` again only to revise the plan after unexpected obstacles or after exploration.
+Completing all plan items does NOT mean the task is done. Always verify against the original <user_request> before calling `done`.
+</planning>
+<task_completion_rules>
+You must call the `done` action in one of two cases:
+- When you have fully completed the USER REQUEST.
+- When you reach the final allowed step (`max_steps`), even if the task is incomplete.
+- If it is ABSOLUTELY IMPOSSIBLE to continue.
+The `done` action is your opportunity to terminate and share your findings with the user.
+- Set `success` to `true` only if the full USER REQUEST has been completed with no missing components.
+- If any part of the request is missing, incomplete, or uncertain, set `success` to `false`.
+- You can use the `text` field of the `done` action to communicate your findings and `files_to_display` to send file attachments to the user, e.g. `["results.md"]`.
+- Put ALL the relevant information you found so far in the `text` field when you call `done` action.
+- Combine `text` and `files_to_display` to provide a coherent reply to the user and fulfill the USER REQUEST.
+- You are ONLY ALLOWED to call `done` as a single action. Don't call it together with other actions.
+- If the user asks for specified format, such as "return JSON with following structure", "return a list of format...", MAKE sure to use the right format in your answer.
+- If the user asks for a structured output, your `done` action's schema will be modified. Take this schema into account when solving the task!
+- When you reach 75% of your step budget, critically evaluate whether you can complete the full task in the remaining steps.
+  If completion is unlikely, shift strategy: focus on the highest-value remaining items and consolidate your results (save progress to files if the file system is in use).
+  This ensures that when you do call `done` (at max_steps or earlier), you have meaningful partial results to deliver.
+- For large multi-item tasks (e.g. "search 50 items"), estimate the per-item cost from the first few items.
+  If the task will exceed your budget, prioritize the most important items and save results incrementally.
+<pre_done_verification>
+BEFORE calling `done` with `success=true`, you MUST perform this verification:
+1. **Re-read the USER REQUEST** — list every concrete requirement (items to find, actions to perform, format to use, filters to apply).
+2. **Check each requirement against your results:**
+   - Did you extract the CORRECT number of items? (e.g., "list 5 items" → count them)
+   - Did you apply ALL specified filters/criteria? (e.g., price range, date, location)
+   - Does your output match the requested format exactly?
+3. **Verify actions actually completed:**
+   - If you submitted a form, posted a comment, or saved a file — check the page state or screenshot to confirm it happened.
+   - If you took a screenshot or downloaded a file — verify it exists in your file system.
+4. **Verify data grounding:** Every URL, price, name, and value must appear verbatim in your tool outputs or browser_state. Do NOT use your training knowledge to fill gaps — if information was not found on the page during this session, say so explicitly. Never fabricate or invent values.
+5. **Blocking error check:** If you hit an unresolved blocker (payment declined, login failed without credentials, email/verification wall, required paywall, access denied not bypassed) → set `success=false`. Temporary obstacles you overcame (auto-solved CAPTCHAs, dismissed popups, retried errors) do NOT count.
+6. **If ANY requirement is unmet, uncertain, or unverifiable — set `success` to `false`.**
+   Partial results with `success=false` are more valuable than overclaiming success.
+</pre_done_verification>
+</task_completion_rules>
+<action_rules>
+- You are allowed to use a maximum of 3 actions per step.
+If you are allowed multiple actions, you can specify multiple actions in the list to be executed sequentially (one after another).
+- If the page changes after an action, the remaining actions are automatically skipped and you get the new state.
+Check the browser state each step to verify your previous action achieved its goal.
+</action_rules>
+<efficiency_guidelines>
+You can output multiple actions in one step. Try to be efficient where it makes sense. Do not predict actions which do not make sense for the current page.
+
+**Action categories:**
+- **Page-changing (always last):** `navigate`, `search`, `go_back`, `switch`, `evaluate` — these always change the page. Remaining actions after them are skipped automatically. Note: `evaluate` runs arbitrary JS that can modify the DOM, so it is never safe to chain other actions after it.
+- **Potentially page-changing:** `click` (on links/buttons that navigate) — monitored at runtime; if the page changes, remaining actions are skipped.
+- **Safe to chain:** `input`, `scroll`, `find_text`, `extract`, `search_page`, `find_elements`, file operations — these do not change the page and can be freely combined.
+
+**Shadow DOM:** Elements inside shadow DOM that have `[index]` markers are directly clickable with `click(index)`. Do NOT use `evaluate` to click them.
+
+**Recommended combinations:**
+- `input` + `input` + `input` + `click` → Fill multiple form fields then submit
+- `input` + `input` → Fill multiple form fields
+- `scroll` + `scroll` → Scroll further down the page
+- `click` + `click` → Navigate multi-step flows (only when clicks do not navigate)
+- File operations + browser actions
+
+Do not try multiple different paths in one step. Always have one clear goal per step.
+Place any page-changing action **last** in your action list, since actions after it will not run.
+</efficiency_guidelines>
+<reasoning_rules>
+You must reason explicitly and systematically at every step in your `thinking` block.
+Exhibit the following reasoning patterns to successfully achieve the <user_request>:
+- Reason about <agent_history> to track progress and context toward <user_request>.
+- Analyze the most recent "Next Goal" and "Action Result" in <agent_history> and clearly state what you previously tried to achieve.
+- Analyze all relevant items in <agent_history>, <browser_state>, <read_state>, <file_system>, <read_state> and the screenshot to understand your state.
+- Explicitly judge success/failure/uncertainty of the last action. Never assume an action succeeded just because it appears to be executed in your last step in <agent_history>. For example, you might have "Action 1/1: Input '2025-05-05' into element 3." in your history even though inputting text failed. Always verify using <browser_vision> (screenshot) as the primary ground truth. If a screenshot is unavailable, fall back to <browser_state>. If the expected change is missing, mark the last action as failed (or uncertain) and plan a recovery.
+- If todo.md is empty and the task is multi-step, generate a stepwise plan in todo.md using file tools.
+- Analyze `todo.md` to guide and track your progress.
+- If any todo.md items are finished, mark them as complete in the file.
+- Analyze whether you are stuck, e.g. when you repeat the same actions multiple times without any progress. Then consider alternative approaches.
+- Analyze the <read_state> where one-time information are displayed due to your previous action. Reason about whether you want to keep this information in memory and plan writing them into a file if applicable using the file tools.
+- If you see information relevant to <user_request>, plan saving the information into a file.
+- Before writing data into a file, analyze the <file_system> and check if the file already has some content to avoid overwriting.
+- Decide what concise, actionable context should be stored in memory to inform future reasoning.
+- When ready to finish, state you are preparing to call done and communicate completion/results to the user.
+- Before done, use read_file to verify file contents intended for user output.
+- Always reason about the <user_request>. Make sure to carefully analyze the specific steps and information required. E.g. specific filters, specific form fields, specific information to search. Make sure to always compare the current trajectory with the user request.
+</reasoning_rules>
+<examples>
+Here are examples of good output patterns. Use them as reference but never copy them directly.
+<todo_examples>
+  "write_file": {
+    "file_name": "todo.md",
+    "content": "# ArXiv CS.AI Recent Papers Collection Task\n\n## Goal: Collect metadata for 20 most recent papers\n\n## Tasks:\n- [ ] Navigate to https://arxiv.org/list/cs.AI/recent\n- [ ] Initialize papers.md file for storing paper data\n- [ ] Collect paper 1/20: The Automated LLM Speedrunning Benchmark\n- [x] Collect paper 2/20: AI Model Passport\n- [ ] Collect paper 3/20: Embodied AI Agents\n- [ ] Collect paper 4/20: Conceptual Topic Aggregation\n- [ ] Collect paper 5/20: Artificial Intelligent Disobedience\n- [ ] Continue collecting remaining papers from current page\n- [ ] Navigate through subsequent pages if needed\n- [ ] Continue until 20 papers are collected\n- [ ] Verify all 20 papers have complete metadata\n- [ ] Final review and completion"
+  }
+</todo_examples>
+<evaluation_examples>
+- Positive Examples:
+"evaluation_previous_goal": "Successfully navigated to the product page and found the target information. Verdict: Success"
+"evaluation_previous_goal": "Clicked the login button and user authentication form appeared. Verdict: Success"
+- Negative Examples:
+"evaluation_previous_goal": "Failed to input text into the search bar as I cannot see it in the image. Verdict: Failure"
+"evaluation_previous_goal": "Clicked the submit button with index 15 but the form was not submitted successfully. Verdict: Failure"
+</evaluation_examples>
+<memory_examples>
+"memory": "Visited 2 of 5 target websites. Collected pricing data from Amazon ($39.99) and eBay ($42.00). Still need to check Walmart, Target, and Best Buy for the laptop comparison."
+"memory": "Found many pending reports that need to be analyzed in the main page. Successfully processed the first 2 reports on quarterly sales data and moving on to inventory analysis and customer feedback reports."
+"memory": "Search returned results but no filter applied yet. User wants items under $50 with 4+ stars. Will apply price filter first, then rating filter."
+"memory": "Popup appeared blocking the page. Need to close it first before continuing with search."
+"memory": "Previous click on search button failed - page did not change. Will try pressing Enter in the search field instead."
+"memory": "Captcha appeared twice on this site. Will try alternative approach via search engine instead of direct navigation."
+"memory": "403 error on main product page. Will try searching for the product on a different site instead of retrying."
+</memory_examples>
+<next_goal_examples>
+"next_goal": "Click on the 'Add to Cart' button to proceed with the purchase flow."
+"next_goal": "Extract details from the first item on the page."
+"next_goal": "Close the popup that appeared blocking the main content."
+"next_goal": "Apply price filter to narrow results to items under $50."
+</next_goal_examples>
+</examples>
+<output>
+You must ALWAYS respond with a valid JSON in this exact format:
+{
+  "thinking": "A structured <think>-style reasoning block that applies the <reasoning_rules> provided above.",
+  "evaluation_previous_goal": "Concise one-sentence analysis of your last action. Clearly state success, failure, or uncertain.",
+  "memory": "1-3 sentences of specific memory of this step and overall progress. You should put here everything that will help you track progress in future steps. Like counting pages visited, items found, etc.",
+  "next_goal": "State the next immediate goal and action to achieve it, in one clear sentence.",
+  "current_plan_item": 0,
+  "plan_update": ["Todo item 1", "Todo item 2", "Todo item 3"],
+  "action":[{"navigate": { "url": "url_value"}}, // ... more actions in sequence]
+}
+Action list should NEVER be empty.
+`current_plan_item` and `plan_update` are optional. See <planning> for details.
+</output>
+<critical_reminders>
+1. ALWAYS verify action success using the screenshot before proceeding
+2. ALWAYS handle popups/modals/cookie banners before other actions
+3. ALWAYS apply filters when user specifies criteria (price, rating, location, etc.)
+4. NEVER repeat the same failing action more than 2-3 times - try alternatives
+5. NEVER assume success - always verify from screenshot or browser state
+6. CAPTCHAs are solved automatically. If blocked by login/403, try alternative approaches rather than retrying
+7. Put ALL relevant findings in done action's text field
+8. Match user's requested output format exactly
+9. Track progress in memory to avoid loops
+10. When at max_steps, call done with whatever results you have
+11. Always compare current trajectory against the user's original request
+12. Be efficient - combine actions when possible but verify results between major steps
+</critical_reminders>
+<error_recovery>
+When encountering errors or unexpected states:
+1. First, verify the current state using screenshot as ground truth
+2. Check if a popup, modal, or overlay is blocking interaction
+3. If an element is not found, scroll to reveal more content
+4. If an action fails repeatedly (2-3 times), try an alternative approach
+5. If blocked by login/403, consider alternative sites or search engines. CAPTCHAs are solved automatically.
+6. If the page structure is different than expected, re-analyze and adapt
+7. If stuck in a loop, explicitly acknowledge it in memory and change strategy
+8. If max_steps is approaching, prioritize completing the most important parts of the task
+</error_recovery>
+
+You are optimizing for task completion, not human imitation. Apply all required filters and finish the stated goal.
+
+ user 
+<user_request>
+You are a capable web agent. Complete the user's task fully. Satisfy every constraint in the task (filters, values, final actions). Do not stop early once you reach a related category page. Use up to the allowed number of browser actions. When the task is fully complete, stop and briefly state what you accomplished.
+
+Open https://www.espn.com/ if not already there.
+Task: Follow one of the team leaders of one of the NHL teams from the Atlantic Division
+Satisfy every constraint. Stop only when fully done.
+</user_request>
+
+<agent_history>
+Agent initialized
+<step>
+Result
+Found initial url and automatically loaded it. Navigated to https://www.espn.com/
+<step>
+Navigated to ESPN home page successfully. Verdict: Success
+Started task. Target: Follow a team leader from an NHL Atlantic Division team.
+Navigate to the NHL teams page on ESPN.
+Result
+Navigated to https://www.espn.com/nhl/teams
+<step>
+Navigated to the NHL teams page on ESPN successfully. Verdict: Success
+Navigated to ESPN NHL teams page. Target: Select an Atlantic Division team (Boston Bruins).
+Click on Boston Bruins to open the team page.
+Result
+Clicked a "Boston Bruins"
+<step>
+Successfully navigated to Boston Bruins page. Verdict: Success
+On Boston Bruins page. Need to find team leaders, click on a team leader to go to their profile, and follow them.
+Search for team leaders or scroll down to find the Team Leaders section on the page.
+Result
+Searched page for "Leader": 18 matches found.
+<step>
+Searched page for 'Leader' and found 18 matches. Verdict: Success
+Currently on Boston Bruins team page. Need to navigate to a team leader's profile page and click 'Follow'.
+Search page for 'Leader' context or click Stats page to find team leaders.
+Result
+Searched page for "Leader": 18 matches found.
+<step>
+Searched page for 'Leader' and found matches, but didn't click a leader yet. Verdict: Success
+On Boston Bruins team page. Boston Bruins is in the Atlantic Division. Next step is to find a team leader via the Stats tab.
+Click on the Stats tab to view Boston Bruins team leaders.
+Result
+Clicked a "Stats" id=nav-link-nav-menu-it
+</agent_history>
+
+<agent_state>
+<file_system>
+
+</file_system>
+<todo_contents>
+[empty todo.md, fill it when applicable]
+</todo_contents>
+<plan>
+[>] 0: Navigate to NHL teams page
+[ ] 1: Select an Atlantic Division team (Boston Bruins)
+[ ] 2: Find team leaders on the team page or stats page
+[ ] 3: Go to the player profile of a team leader
+[ ] 4: Click the 'Follow' button for that team leader
+</plan>
+</agent_state>
+<browser_state>
+<page_stats>99 links, 857 interactive, 1 iframes, 4 shadow(open), 0 shadow(closed), 10 images, 1952 total elements</page_stats>
+Current tab: A6A6
+Available tabs:
+Tab A6A6: https://www.espn.com/nhl/team/stats/_/name/bos/boston-bruins - Boston Bruins 2025-26 NHL Regu
+
+<page_info>0.0 pages above, 3.1 pages below — scroll down to reveal more content</page_info>
+
+Interactive elements:
+[Start of page]
+*[16478]<div id=espnfitt />
+	*[18133]<svg /> <!-- SVG content collapsed -->
+	|SHADOW(open)|*[16470]<select aria-label=Filter by league or sport name=sportsDropdown expanded=false compound_components=(name=Dropdown Toggle,role=button),(name=Options,role=listbox,count=1,options=Selected) />
+	*[16484]<nav aria-label=Global Navigation />
+		*[16485]<a aria-label=ESPN Home Page />
+		*[18161]<li level=1 />
+			*[16486]<a aria-label=ESPN NFL Home Page id=nav-link-nav-menu-item-6558 />
+				NFL
+			*[18166]<button aria-label=NFL id=nav-menu-item-6558 expanded=false />
+		*[18171]<li level=1 />
+			*[16487]<a aria-label=ESPN NBA Home Page id=nav-link-nav-menu-item-9537 />
+				NBA
+			*[18176]<button aria-label=NBA id=nav-menu-item-9537 expanded=false />
+		*[18181]<li level=1 />
+			*[16488]<a aria-label=ESPN MLB Home Page id=nav-link-nav-menu-item-4566 />
+				MLB
+			*[18186]<button aria-label=MLB id=nav-menu-item-4566 expanded=false />
+		*[18191]<li level=1 />
+			*[16489]<a aria-label=ESPN Soccer Home Page id=nav-link-nav-menu-item-559 />
+				Soccer
+			*[18196]<button aria-label=Soccer id=nav-menu-item-559 expanded=false />
+		*[18201]<li level=1 />
+			*[16490]<a aria-label=ESPN WNBA Home Page id=nav-link-nav-menu-item-2241 />
+				WNBA
+			*[18206]<button aria-label=WNBA id=nav-menu-item-2241 expanded=false />
+		*[18211]<li level=1 />
+			*[16468]<a aria-label=ESPN NHL Home Page id=nav-link-nav-menu-item-6423 />
+				NHL
+			*[18216]<button aria-label=NHL id=nav-menu-item-6423 expanded=false />
+		*[18221]<li level=1 />
+			*[16491]<a aria-label=ESPN NCAAF Home Page id=nav-link-nav-menu-item-1700 />
+				NCAAF
+			*[18226]<button aria-label=NCAAF id=nav-menu-item-1700 expanded=false />
+		*[16469]<a aria-label=ESPN More Sports Home Page id=nav-link-nav-menu-item-5512 />
+			More Sports
+		*[18235]<button aria-label=More Sports id=nav-menu-item-5512 expanded=false />
+		*[16492]<a id=nav-link-nav-menu-item-4521 />
+			Watch
+		*[18247]<button aria-label=Watch id=nav-menu-item-4521 expanded=false />
+		*[16494]<a id=nav-link-nav-menu-item-6910 />
+			Fantasy
+		*[18258]<button aria-label=Fantasy id=nav-menu-item-6910 expanded=false />
+		*[16496]<a id=nav-link-undefined />
+			Where to Watch
+		*[18273]<li level=1 />
+			*[16497]<div />
+				*[18274]<svg role=button expanded=false /> <!-- SVG content collapsed -->
+		*[18278]<li level=1 />
+			*[18280]<button id=navuserbutton expanded=false />
+	*[18293]<main id=fittPageContainer />
+		*[16498]<img alt=Bruins />
+		Boston
+		Bruins
+		*[16499]<button />
+			Follow
+		4th in Atlantic Division
+		*[18323]<span />
+		*[16502]<a id=nav-link-nav-menu-item-2449 />
+			Home
+		*[18327]<li level=1 />
+			*[16503]<a id=nav-link-nav-menu-item-8274 />
+				Stats
+		*[16504]<a id=nav-link-nav-menu-item-6587 />
+			Schedule
+		*[16505]<a id=nav-link-nav-menu-item-104 />
+			Roster
+		*[16506]<a id=nav-link-nav-menu-item-1486 />
+			Injuries
+		*[16507]<a id=nav-link-nav-menu-item-2465 />
+			Transactions
+		*[16508]<a id=nav-link-nav-menu-item-2691 />
+			Tickets
+			*[18345]<svg role=img aria-label=External Link /> <!-- SVG content collapsed -->
+		Boston Bruins Skating Stats 2025-26
+		*[18364]<svg /> <!-- SVG content collapsed -->
+		|SHADOW(open)|*[16459]<select name=1787208489426::e0a0000::62cb2945:7533:cd96:4bc6:0653e1aa565f expanded=false compound_components=(name=Dropdown Toggle,role=button),(name=Options,role=listbox,count=33,options=More NHL Teams|Boston Bruins|Buffalo Sabres|Detroit Red Wings) />
+		*[18437]<li role=tab title=Skating selected=true />
+			*[16509]<a />
+				Skating
+		*[18439]<li role=tab title=Goaltending selected=false />
+			*[16510]<a />
+				Goaltending
+		*[18445]<svg /> <!-- SVG content collapsed -->
+		|SHADOW(open)|*[16461]<select name=1787208489426::e350000::a2e8060e:eb4d:e673:6839:339b4ff4f107 expanded=false compound_components=(name=Dropdown Toggle,role=button),(name=Options,role=listbox,count=48,options=2025-26 Postseason|2025-26 Regular Season|2024-25 Postseason|2024-25 Regular Season) />
+		*[18547]<svg /> <!-- SVG content collapsed -->
+		|SHADOW(open)|*[16463]<select name=1787208489426::e600000::05d3e2ed:ccaa:b953:605d:eeb87a902165 expanded=false compound_components=(name=Dropdown Toggle,role=button),(name=Options,role=listbox,count=56,options=All Splits|Home|Away|Boston Bruins,format=numeric) />
+		Team leaders
+		*[18677]<a />
+			Points
+			David Pastrnak
+			RW
+			*[18691]<div />
+			100
+		*[18695]<a />
+			Goals
+			Morgan Geekie
+			*[18709]<div />
+			39
+		*[18713]<a />
+			Assists
+			David Pastrnak
+			RW
+			*[18727]<div />
+			71
+		*[18731]<a />
+			Penalty Minutes
+			Nikita Zadorov
+			*[18745]<div />
+			152
+		*[18749]<a />
+			Plus/Minus
+			Jonathan Aspirot
+			*[18763]<div />
+			30
+		Player Skating Stats - All Splits
+		*[18775]<tr />
+		*[18777]<tr />
+			Name
+		*[18781]<tr />
+			*[18782]<td />
+				*[18784]<a />
+					David Pastrnak
+				*[18786]<span />
+					RW
+		*[18790]<tr />
+			*[18791]<td />
+				*[18793]<a />
+					Morgan Geekie
+		*[18799]<tr />
+			*[18800]<td />
+				*[18802]<a />
+					Pavel Zacha
+		*[18844]<tr />
+			*[18845]<td />
+				*[18847]<a />
+					Fraser Minten
+		*[18853]<tr />
+			*[18854]<td />
+				*[18856]<a />
+					Marat Khusnutdinov
+		*[18862]<tr />
+			*[18863]<td />
+				*[18865]<a />
+					Hampus Lindholm
+		*[18871]<tr />
+			*[18872]<td />
+				*[18874]<a />
+					Mason Lohrei
+		*[18880]<tr />
+			*[18881]<td />
+				*[18883]<a />
+					Tanner Jeannot
+				*[18885]<span />
+					LW
+		*[18889]<tr />
+			*[18890]<td />
+				*[18892]<a />
+					Sean Kuraly
+		*[18898]<tr />
+			*[18899]<td />
+				*[18901]<a />
+					Nikita Zadorov
+		*[18907]<tr />
+			*[18908]<td />
+				*[18910]<a />
+					Mark Kastelic
+		*[18916]<tr />
+			*[18917]<td />
+				*[18919]<a />
+					Michael Eyssimont
+		*[18925]<tr />
+			*[18926]<td />
+				*[18928]<a />
+					Alex Steeves
+		*[18934]<tr />
+			*[18935]<td />
+				*[18937]<a />
+					Henri Jokiharju
+		*[18943]<tr />
+			*[18944]<td />
+				*[18946]<a />
+					Andrew Peeke
+		*[18952]<tr />
+			*[18953]<td />
+				*[18955]<a />
+					Jonathan Aspirot
+		*[18961]<tr />
+			*[18962]<td />
+				*[18964]<a />
+					Jordan Harris
+		*[18970]<tr />
+			*[18971]<td />
+				*[18973]<a />
+					Lukas Reichel
+				*[18975]<span />
+					LW
+		*[18981]<tr />
+			*[18982]<td />
+				*[18984]<a />
+					Matthew Poitras
+		*[18990]<tr />
+			*[18991]<td />
+				*[18993]<a />
+					James Hagens
+		*[18999]<tr />
+			*[19000]<td />
+				*[19002]<a />
+					John Beecher
+		*[19010]<tr />
+			*[19011]<td />
+				*[19013]<a />
+					Victor Soderstrom
+		*[19019]<tr />
+			*[19020]<td />
+				*[19022]<a />
+					Riley Tufte
+				*[19024]<span />
+					LW
+		*[19028]<tr />
+			*[19029]<td />
+				*[19031]<a />
+					Michael Callahan
+		*[19037]<tr />
+			*[19038]<td />
+				*[19040]<a />
+					Jeffrey Viel
+				*[19042]<span />
+					LW
+		*[19048]<tr />
+			*[19049]<td />
+				*[19051]<a />
+					Vladislav Kolyachonok
+		*[19059]<tr />
+			*[19060]<td />
+				*[19062]<a />
+					Matej Blumel
+				*[19064]<span />
+					RW
+		*[19068]<tr />
+			*[19069]<td />
+				*[19071]<a />
+					Georgii Merkulov
+		*[19077]<tr />
+			*[19078]<td />
+				*[19079]<span />
+					Total
+		*[19082]<div role=region />
+			*[19099]<tr />
+			*[19102]<tr />
+				*[16517]<a />
+					GP
+				*[16518]<a />
+				*[16519]<a />
+				*[16520]<a />
+					PTS
+				*[16521]<a />
+					+/-
+				*[16522]<a />
+					PIM
+				*[16523]<a />
+					TOI/G
+				*[16524]<a />
+					PPG
+				*[16525]<a />
+					PPA
+				*[16526]<a />
+					SHG
+				*[16527]<a />
+					SHA
+				*[16528]<a />
+				*[16529]<a />
+					SPCT
+			*[19144]<tr />
+				*[19145]<td />
+					*[19146]<span />
+						77
+				*[19148]<td />
+					*[19149]<span />
+						29
+				*[19151]<td />
+					*[19152]<span />
+						71
+				*[19154]<td />
+					*[19155]<span />
+						100
+				*[19157]<td />
+				*[19160]<td />
+					*[19161]<span />
+						72
+				*[19163]<td />
+					*[19164]<span />
+						20:39
+				*[19166]<td />
+					*[19167]<span />
+						10
+				*[19169]<td />
+					*[19170]<span />
+						23
+				*[19172]<td />
+				*[19175]<td />
+				*[19178]<td />
+					*[19179]<span />
+						261
+				*[19181]<td />
+					*[19182]<span />
+						11.1
+			*[19184]<tr />
+				*[19185]<td />
+					*[19186]<span />
+						81
+				*[19188]<td />
+					*[19189]<span />
+						39
+				*[19191]<td />
+					*[19192]<span />
+						29
+				*[19194]<td />
+					*[19195]<span />
+						68
+				*[19197]<td />
+					*[19198]<span />
+						-5
+				*[19200]<td />
+					*[19201]<span />
+						22
+				*[19203]<td />
+					*[19204]<span />
+						17:24
+				*[19206]<td />
+					*[19207]<span />
+						12
+				*[19209]<td />
+					*[19210]<span />
+						12
+				*[19212]<td />
+				*[19215]<td />
+				*[19218]<td />
+					*[19219]<span />
+						181
+				*[19221]<td />
+					*[19222]<span />
+						21.5
+			*[19224]<tr />
+				*[19225]<td />
+					*[19226]<span />
+						78
+				*[19228]<td />
+					*[19229]<span />
+						30
+				*[19231]<td />
+					*[19232]<span />
+						35
+				*[19234]<td />
+					*[19235]<span />
+						65
+				*[19237]<td />
+				*[19240]<td />
+					*[19241]<span />
+						28
+				*[19243]<td />
+					*[19244]<span />
+						16:50
+				*[19246]<td />
+					*[19247]<span />
+						11
+				*[19249]<td />
+					*[19250]<span />
+						11
+				*[19252]<td />
+				*[19255]<td />
+				*[19258]<td />
+					*[19259]<span />
+						131
+				*[19261]<td />
+					*[19262]<span />
+						22.9
+			*[19424]<tr />
+				*[19425]<td />
+					*[19426]<span />
+						82
+				*[19428]<td />
+					*[19429]<span />
+						17
+				*[19431]<td />
+					*[19432]<span />
+						18
+				*[19434]<td />
+					*[19435]<span />
+						35
+				*[19437]<td />
+					*[19438]<span />
+						21
+				*[19440]<td />
+					*[19441]<span />
+						20
+				*[19443]<td />
+					*[19444]<span />
+						15:33
+				*[19446]<td />
+				*[19449]<td />
+				*[19452]<td />
+				*[19455]<td />
+				*[19458]<td />
+					*[19459]<span />
+						116
+				*[19461]<td />
+					*[19462]<span />
+						14.7
+			*[19464]<tr />
+				*[19465]<td />
+					*[19466]<span />
+						77
+				*[19468]<td />
+					*[19469]<span />
+						15
+				*[19471]<td />
+					*[19472]<span />
+						18
+				*[19474]<td />
+					*[19475]<span />
+						33
+				*[19477]<td />
+					*[19478]<span />
+						12
+				*[19480]<td />
+					*[19481]<span />
+						16
+				*[19483]<td />
+					*[19484]<span />
+						14:30
+				*[19486]<td />
+				*[19489]<td />
+				*[19492]<td />
+				*[19495]<td />
+				*[19498]<td />
+					*[19499]<span />
+						78
+				*[19501]<td />
+					*[19502]<span />
+						19.2
+			*[19504]<tr />
+				*[19505]<td />
+					*[19506]<span />
+						67
+				*[19508]<td />
+				*[19511]<td />
+					*[19512]<span />
+						21
+				*[19514]<td />
+					*[19515]<span />
+						26
+				*[19517]<td />
+				*[19520]<td />
+					*[19521]<span />
+						58
+				*[19523]<td />
+					*[19524]<span />
+						21:37
+				*[19526]<td />
+				*[19529]<td />
+				*[19532]<td />
+				*[19535]<td />
+				*[19538]<td />
+					*[19539]<span />
+						100
+				*[19541]<td />
+					*[19542]<span />
+						5.0
+			*[19544]<tr />
+				*[19545]<td />
+					*[19546]<span />
+						73
+				*[19548]<td />
+				*[19551]<td />
+					*[19552]<span />
+						19
+				*[19554]<td />
+					*[19555]<span />
+						26
+				*[19557]<td />
+					*[19558]<span />
+						17
+				*[19560]<td />
+					*[19561]<span />
+						20
+				*[19563]<td />
+					*[19564]<span />
+						16:54
+				*[19566]<td />
+				*[19569]<td />
+				*[19572]<td />
+				*[19575]<td />
+				*[19578]<td />
+					*[19579]<span />
+						72
+				*[19581]<td />
+					*[19582]<span />
+						9.7
+			*[19584]<tr />
+				*[19585]<td />
+					*[19586]<span />
+						77
+				*[19588]<td />
+				*[19591]<td />
+					*[19592]<span />
+						16
+				*[19594]<td />
+					*[19595]<span />
+						22
+				*[19597]<td />
+					*[19598]<span />
+						-4
+				*[19600]<td />
+					*[19601]<span />
+						66
+				*[19603]<td />
+					*[19604]<span />
+						12:38
+				*[19606]<td />
+				*[19609]<td />
+				*[19612]<td />
+				*[19615]<td />
+				*[19618]<td />
+					*[19619]<span />
+						78
+				*[19621]<td />
+					*[19622]<span />
+						7.7
+			*[19624]<tr />
+				*[19625]<td />
+					*[19626]<span />
+						82
+				*[19628]<td />
+				*[19631]<td />
+					*[19632]<span />
+						16
+				*[19634]<td />
+					*[19635]<span />
+						22
+				*[19637]<td />
+				*[19640]<td />
+					*[19641]<span />
+						41
+				*[19643]<td />
+					*[19644]<span />
+						13:19
+				*[19646]<td />
+				*[19649]<td />
+				*[19652]<td />
+				*[19655]<td />
+				*[19658]<td />
+					*[19659]<span />
+						110
+				*[19661]<td />
+					*[19662]<span />
+						5.5
+			*[19664]<tr />
+				*[19665]<td />
+					*[19666]<span />
+						81
+				*[19668]<td />
+				*[19671]<td />
+					*[19672]<span />
+						20
+				*[19674]<td />
+					*[19675]<span />
+						22
+				*[19677]<td />
+					*[19678]<span />
+						18
+				*[19680]<td />
+					*[19681]<span />
+						152
+				*[19683]<td />
+					*[19684]<span />
+						20:52
+				*[19686]<td />
+				*[19689]<td />
+				*[19692]<td />
+				*[19695]<td />
+				*[19698]<td />
+					*[19699]<span />
+						107
+				*[19701]<td />
+					*[19702]<span />
+						1.9
+			*[19704]<tr />
+				*[19705]<td />
+					*[19706]<span />
+						82
+				*[19708]<td />
+					*[19709]<span />
+						12
+				*[19711]<td />
+					*[19712]<span />
+						10
+				*[19714]<td />
+					*[19715]<span />
+						22
+				*[19717]<td />
+				*[19720]<td />
+					*[19721]<span />
+						140
+				*[19723]<td />
+					*[19724]<span />
+						12:37
+				*[19726]<td />
+				*[19729]<td />
+				*[19732]<td />
+				*[19735]<td />
+				*[19738]<td />
+					*[19739]<span />
+						100
+				*[19741]<td />
+					*[19742]<span />
+						12.0
+			*[19744]<tr />
+				*[19745]<td />
+					*[19746]<span />
+						56
+				*[19748]<td />
+				*[19751]<td />
+					*[19752]<span />
+						10
+				*[19754]<td />
+					*[19755]<span />
+						18
+				*[19757]<td />
+					*[19758]<span />
+						-3
+				*[19760]<td />
+					*[19761]<span />
+						31
+				*[19763]<td />
+					*[19764]<span />
+						10:54
+				*[19766]<td />
+				*[19769]<td />
+				*[19772]<td />
+				*[19775]<td />
+				*[19778]<td />
+					*[19779]<span />
+						109
+				*[19781]<td />
+					*[19782]<span />
+						7.3
+			*[19784]<tr />
+				*[19785]<td />
+					*[19786]<span />
+						43
+				*[19788]<td />
+				*[19791]<td />
+				*[19794]<td />
+					*[19795]<span />
+						16
+				*[19797]<td />
+				*[19800]<td />
+					*[19801]<span />
+						34
+				*[19803]<td />
+					*[19804]<span />
+						11:55
+				*[19806]<td />
+				*[19809]<td />
+				*[19812]<td />
+				*[19815]<td />
+				*[19818]<td />
+					*[19819]<span />
+						55
+				*[19821]<td />
+					*[19822]<span />
+						16.4
+			*[19824]<tr />
+				*[19825]<td />
+					*[19826]<span />
+						41
+				*[19828]<td />
+				*[19831]<td />
+					*[19832]<span />
+						13
+				*[19834]<td />
+					*[19835]<span />
+						15
+				*[19837]<td />
+				*[19840]<td />
+					*[19841]<span />
+						14
+				*[19843]<td />
+					*[19844]<span />
+						17:48
+				*[19846]<td />
+				*[19849]<td />
+				*[19852]<td />
+				*[19855]<td />
+				*[19858]<td />
+					*[19859]<span />
+						40
+				*[19861]<td />
+					*[19862]<span />
+						5.0
+			*[19864]<tr />
+				*[19865]<td />
+					*[19866]<span />
+						77
+				*[19868]<td />
+				*[19871]<td />
+				*[19874]<td />
+					*[19875]<span />
+						14
+				*[19877]<td />
+					*[19878]<span />
+						-12
+				*[19880]<td />
+					*[19881]<span />
+						22
+				*[19883]<td />
+					*[19884]<span />
+						19:23
+				*[19886]<td />
+				*[19889]<td />
+				*[19892]<td />
+				*[19895]<td />
+				*[19898]<td />
+					*[19899]<span />
+						82
+				*[19901]<td />
+					*[19902]<span />
+						6.1
+			*[19904]<tr />
+				*[19905]<td />
+					*[19906]<span />
+						61
+				*[19908]<td />
+				*[19911]<td />
+					*[19912]<span />
+						10
+				*[19914]<td />
+					*[19915]<span />
+						13
+				*[19917]<td />
+					*[19918]<span />
+						30
+				*[19920]<td />
+					*[19921]<span />
+						43
+				*[19923]<td />
+					*[19924]<span />
+						16:44
+				*[19926]<td />
+				*[19929]<td />
+				*[19932]<td />
+				*[19935]<td />
+				*[19938]<td />
+					*[19939]<span />
+						47
+				*[19941]<td />
+					*[19942]<span />
+						6.4
+			*[19944]<tr />
+				*[19945]<td />
+				*[19948]<td />
+				*[19951]<td />
+				*[19954]<td />
+				*[19957]<td />
+				*[19960]<td />
+				*[19963]<td />
+					*[19964]<span />
+						15:53
+				*[19966]<td />
+				*[19969]<td />
+				*[19972]<td />
+				*[19975]<td />
+				*[19978]<td />
+					*[19979]<span />
+						12
+				*[19981]<td />
+					*[19982]<span />
+						8.3
+			*[19984]<tr />
+				*[19985]<td />
+					*[19986]<span />
+						10
+				*[19988]<td />
+				*[19991]<td />
+				*[19994]<td />
+				*[19997]<td />
+				*[20000]<td />
+				*[20003]<td />
+					*[20004]<span />
+						12:49
+				*[20006]<td />
+				*[20009]<td />
+				*[20012]<td />
+				*[20015]<td />
+				*[20018]<td />
+				*[20021]<td />
+					*[20022]<span />
+						11.1
+			*[20024]<tr />
+				*[20025]<td />
+				*[20028]<td />
+				*[20031]<td />
+				*[20034]<td />
+				*[20037]<td />
+				*[20040]<td />
+				*[20043]<td />
+					*[20044]<span />
+						12:07
+				*[20046]<td />
+				*[20049]<td />
+				*[20052]<td />
+				*[20055]<td />
+				*[20058]<td />
+				*[20061]<td />
+					*[20062]<span />
+						12.5
+			*[20064]<tr />
+				*[20065]<td />
+				*[20068]<td />
+				*[20071]<td />
+				*[20074]<td />
+				*[20077]<td />
+				*[20080]<td />
+				*[20083]<td />
+					*[20084]<span />
+						14:33
+				*[20086]<td />
+				*[20089]<td />
+				*[20092]<td />
+				*[20095]<td />
+				*[20098]<td />
+				*[20101]<td />
+					*[20102]<span />
+						0.0
+			*[20104]<tr />
+				*[20105]<td />
+				*[20108]<td />
+				*[20111]<td />
+				*[20114]<td />
+				*[20117]<td />
+					*[20118]<span />
+						-1
+				*[20120]<td />
+				*[20123]<td />
+					*[20124]<span />
+						10:24
+				*[20126]<td />
+				*[20129]<td />
+				*[20132]<td />
+				*[20135]<td />
+				*[20138]<td />
+				*[20141]<td />
+					*[20142]<span />
+						16.7
+			*[20144]<tr />
+				*[20145]<td />
+				*[20148]<td />
+				*[20151]<td />
+				*[20154]<td />
+				*[20157]<td />
+				*[20160]<td />
+				*[20163]<td />
+					*[20164]<span />
+						13:40
+				*[20166]<td />
+				*[20169]<td />
+				*[20172]<td />
+				*[20175]<td />
+				*[20178]<td />
+				*[20181]<td />
+					*[20182]<span />
+						0.0
+			*[20184]<tr />
+				*[20185]<td />
+				*[20188]<td />
+				*[20191]<td />
+				*[20194]<td />
+				*[20197]<td />
+					*[20198]<span />
+						-1
+				*[20200]<td />
+				*[20203]<td />
+					*[20204]<span />
+						11:40
+				*[20206]<td />
+				*[20209]<td />
+				*[20212]<td />
+				*[20215]<td />
+				*[20218]<td />
+				*[20221]<td />
+					*[20222]<span />
+						25.0
+			*[20224]<tr />
+				*[20225]<td />
+				*[20228]<td />
+				*[20231]<td />
+				*[20234]<td />
+				*[20237]<td />
+					*[20238]<span />
+						-1
+				*[20240]<td />
+				*[20243]<td />
+					*[20244]<span />
+						12:59
+				*[20246]<td />
+				*[20249]<td />
+				*[20252]<td />
+				*[20255]<td />
+				*[20258]<td />
+				*[20261]<td />
+					*[20262]<span />
+						0.0
+			*[20264]<tr />
+				*[20265]<td />
+					*[20266]<span />
+						10
+				*[20268]<td />
+				*[20271]<td />
+				*[20274]<td />
+				*[20277]<td />
+					*[20278]<span />
+						-1
+				*[20280]<td />
+					*[20281]<span />
+						30
+				*[20283]<td />
+					*[20284]<span />
+						9:30
+				*[20286]<td />
+				*[20289]<td />
+				*[20292]<td />
+				*[20295]<td />
+				*[20298]<td />
+					*[20299]<span />
+						11
+				*[20301]<td />
+					*[20302]<span />
+						0.0
+			*[20304]<tr />
+				*[20305]<td />
+				*[20308]<td />
+				*[20311]<td />
+				*[20314]<td />
+				*[20317]<td />
+					*[20318]<span />
+						-1
+				*[20320]<td />
+				*[20323]<td />
+					*[20324]<span />
+						12:05
+				*[20326]<td />
+				*[20329]<td />
+				*[20332]<td />
+				*[20335]<td />
+				*[20338]<td />
+				*[20341]<td />
+					*[20342]<span />
+						0.0
+			*[20344]<tr />
+				*[20345]<td />
+				*[20348]<td />
+				*[20351]<td />
+				*[20354]<td />
+				*[20357]<td />
+					*[20358]<span />
+						-3
+				*[20360]<td />
+				*[20363]<td />
+					*[20364]<span />
+						10:52
+				*[20366]<td />
+				*[20369]<td />
+				*[20372]<td />
+				*[20375]<td />
+				*[20378]<td />
+				*[20381]<td />
+					*[20382]<span />
+						0.0
+			*[20384]<tr />
+				*[20385]<td />
+				*[20388]<td />
+				*[20391]<td />
+				*[20394]<td />
+				*[20397]<td />
+					*[20398]<span />
+						-1
+				*[20400]<td />
+				*[20403]<td />
+					*[20404]<span />
+						10:35
+				*[20406]<td />
+				*[20409]<td />
+				*[20412]<td />
+				*[20415]<td />
+				*[20418]<td />
+				*[20421]<td />
+					*[20422]<span />
+						0.0
+			*[20424]<tr />
+				*[20425]<td />
+					*[20426]<span />
+						82
+				*[20428]<td />
+					*[20429]<span />
+						268
+				*[20431]<td />
+					*[20432]<span />
+						465
+				*[20434]<td />
+					*[20435]<span />
+						733
+				*[20437]<td />
+				*[20439]<td />
+					*[20440]<span />
+						978
+				*[20442]<td />
+				*[20444]<td />
+					*[20445]<span />
+						55
+				*[20447]<td />
+					*[20448]<span />
+						109
+				*[20450]<td />
+				*[20453]<td />
+				*[20456]<td />
+					*[20457]<span />
+						2216
+				*[20459]<td />
+					*[20460]<span />
+						12.1
+		Expanded Skating Stats - All Splits
+		*[20471]<tr />
+		*[20473]<tr />
+			Name
+		*[20477]<tr />
+			*[20478]<td />
+				*[20480]<a />
+					David Pastrnak
+				*[20482]<span />
+					RW
+		*[20486]<tr />
+			*[20487]<td />
+				*[20489]<a />
+					Morgan Geekie
+		*[20778]<div role=region />
+			*[20798]<tr />
+				Shootouts
+			*[20803]<tr />
+				*[16531]<a />
+					GP
+				*[16532]<a />
+				*[16533]<a />
+				*[16534]<a />
+					PTS
+				*[16535]<a />
+					+/-
+				*[16536]<a />
+					PIM
+				*[16537]<a />
+					SHFT
+				*[16538]<a />
+					GWG
+				*[16539]<a />
+					FW
+				*[16540]<a />
+					FL
+				*[16541]<a />
+					FO%
+				*[16542]<a />
+					PROD
+				*[16543]<a />
+					SOA
+				*[16544]<a />
+					SOG
+				*[16545]<a />
+					SOPCT
+			*[20852]<tr />
+				*[20853]<td />
+					*[20854]<span />
+						77
+				*[20856]<td />
+					*[20857]<span />
+						29
+				*[20859]<td />
+					*[20860]<span />
+						71
+				*[20862]<td />
+					*[20863]<span />
+						100
+				*[20865]<td />
+				*[20868]<td />
+					*[20869]<span />
+						72
+				*[20871]<td />
+					*[20872]<span />
+						1626
+				*[20874]<td />
+				*[20877]<td />
+				*[20880]<td />
+				*[20883]<td />
+					*[20884]<span />
+						22.2
+				*[20886]<td />
+					*[20887]<span />
+						15:54
+				*[20889]<td />
+				*[20892]<td />
+				*[20895]<td />
+					*[20896]<span />
+						0.0
+			*[20898]<tr />
+				*[20899]<td />
+					*[20900]<span />
+						81
+				*[20902]<td />
+					*[20903]<span />
+						39
+				*[20905]<td />
+					*[20906]<span />
+						29
+				*[20908]<td />
+					*[20909]<span />
+						68
+				*[20911]<td />
+					*[20912]<span />
+						-5
+				*[20914]<td />
+					*[20915]<span />
+						22
+				*[20917]<td />
+					*[20918]<span />
+						1533
+				*[20920]<td />
+				*[20923]<td />
+					*[20924]<span />
+						73
+				*[20926]<td />
+					*[20927]<span />
+						87
+				*[20929]<td />
+					*[20930]<span />
+						45.6
+				*[20932]<td />
+					*[20933]<span />
+						20:44
+				*[20935]<td />
+				*[20938]<td />
+				*[20941]<td />
+					*[20942]<span />
+						0.0
+		*[16546]<img alt=ESPN />
+		*[22591]<a />
+			Terms of Use
+		*[22595]<a />
+			Privacy Policy
+		*[22599]<a />
+			Your US State Privacy Rights
+		*[22603]<a />
+			Children's Online Privacy Policy
+		*[22607]<a />
+			Interest-Based Ads
+		*[22611]<a />
+			About Nielsen Measurement
+		*[22613]<li level=1 />
+		*[22618]<a />
+			Contact Us
+		*[22622]<a />
+			Disney Ad Sales Site
+		*[22626]<a />
+			Work for ESPN
+		*[22630]<a />
+			Corrections
+		GAMBLING PROBLEM? CALL 1-800-GAMBLER or 1-800-MY-RESET, (800) 327-5050 or visit gamblinghelplinema.org (MA). Call 877-8-HOPENY/text HOPENY (467369) (NY). Call 888-789-7777/visit ccpg.org (CT), or visit www.mdgamblinghelp.org (MD), 1-800-981-0023 (PR). 21+ and present in most states. (18+ DC/KY/NH/PR/WY). Void in ONT. Eligibility restrictions apply. Terms: draftkings.com/sportsbook. On behalf of Boot Hill Casino (KS). Pass-thru of per wager tax may apply in IL.
+		Copyright: © 2026 ESPN Enterprises, LLC. All rights reserved.
+|scroll element|<iframe id=oneid-iframe /> (scroll)
+	*|scroll element[22691]<div /> (0.0 pages above, 0.0 pages below horizontal 0%)
+... (4 more elements below - scroll to reveal):
+    <div> "(no label)" ~0 pages down
+    <div> "(no label)" ~0 pages down
+    <div> "(no label)" ~0 pages down
+    <div> "(no label)" ~0 pages down
+</browser_state>
+<step_info>Step6 maximum:20
+Today:2026-08-20</step_info>
+
+Current screenshot:
+
+{
+  "thinking": "We are currently on the Boston Bruins (Atlantic Division) stats page. The 'Team Leaders' section shows David Pastrnak as the leader in Points (100) and Assists (71). I will click on David Pastrnak's profile link (index 18784) to open his player profile page, where I can then click the 'Follow' button.",
+  "evaluation_previous_goal": "Successfully navigated to the Boston Bruins stats page where team leaders are listed. Verdict: Success",
+  "memory": "Navigated to Boston Bruins (Atlantic Division) stats page. Identified David Pastrnak as a team leader (Points/Assists leader). Now navigating to his player profile page.",
+  "next_goal": "Click on David Pastrnak's link to open his player profile page.",
+  "current_plan_item": 3,
+  "plan_update": [
+    "Navigate to NHL teams page",
+    "Select an Atlantic Division team (Boston Bruins)",
+    "Find team leaders on the team page or stats page",
+    "Go to the player profile of a team leader",
+    "Click the 'Follow' button for that team leader"
+  ],
+  "action": [
+    {
+      "click": {
+        "index": 18784
+      }
+    }
+  ]
+}
