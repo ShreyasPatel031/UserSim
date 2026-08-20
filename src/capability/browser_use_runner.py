@@ -12,7 +12,6 @@ from browser_use.browser.profile import BrowserProfile
 
 from auth import vertex_credentials
 from capability import (
-    BAKEOFF_LOCATION,
     BAKEOFF_MODEL,
     CAPABLE_AGENT_PREAMBLE,
     MAX_ACTIONS,
@@ -20,6 +19,7 @@ from capability import (
     USER_AGENT,
     VIEWPORT,
     cost_usd,
+    location_for,
 )
 from capability.judge import judge_task
 from config import GCP_PROJECT
@@ -58,9 +58,12 @@ def _history_to_actions(history) -> list[dict]:
     return actions
 
 
-async def _run_async(task: dict, model: str, max_actions: int, run_dir: Path) -> dict:
+async def _run_async(
+    task: dict, model: str, max_actions: int, run_dir: Path, location: str | None = None
+) -> dict:
     run_id = f"bu_{task['eval_index']}_{uuid.uuid4().hex[:8]}"
     run_dir.mkdir(parents=True, exist_ok=True)
+    loc = location or location_for(model)
 
     creds = vertex_credentials()
     llm = ChatGoogle(
@@ -68,7 +71,7 @@ async def _run_async(task: dict, model: str, max_actions: int, run_dir: Path) ->
         vertexai=True,
         credentials=creds,
         project=GCP_PROJECT,
-        location=BAKEOFF_LOCATION,
+        location=loc,
         temperature=0,
     )
     profile = BrowserProfile(
@@ -205,6 +208,7 @@ def run_browser_use(
     model: str = BAKEOFF_MODEL,
     max_actions: int = MAX_ACTIONS,
     run_dir: Path | None = None,
+    location: str | None = None,
 ) -> dict:
     run_dir = run_dir or (OUT_DIR / "traces" / f"bu_{task['eval_index']}_{uuid.uuid4().hex[:8]}")
-    return asyncio.run(_run_async(task, model, max_actions, run_dir))
+    return asyncio.run(_run_async(task, model, max_actions, run_dir, location=location))
