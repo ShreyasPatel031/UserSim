@@ -20,20 +20,26 @@ SMOKE_INDICES = [8, 25]
 # 5-task bakeoff covering search / filter / select / final-goal
 BAKEOFF5_INDICES = [25, 8, 34, 26, 19]  # UA, Newegg, Eventbrite, RT, Uniqlo
 
+# All Mind2Web tasks shipped in data/mind2web_tasks.json
+ALL_INDICES = sorted(_BY_IDX.keys())
+
 
 def load_tasks(indices: list[int] | None = None) -> list[dict]:
     idxs = indices or TASK_INDICES
     out = []
     for i in idxs:
         t = _BY_IDX[i]
+        website = t["website"]
+        if website not in SITE_URLS:
+            raise KeyError(f"No start URL for website={website!r} (eval_index={i})")
         out.append(
             {
                 "task_id": t["annotation_id"],
                 "eval_index": i,
-                "website": t["website"],
+                "website": website,
                 "domain": t.get("domain"),
                 "task": t["confirmed_task"],
-                "start_url": SITE_URLS[t["website"]],
+                "start_url": SITE_URLS[website],
                 "human_n_steps": t["n_steps"],
                 "human_actions": list(t.get("action_reprs") or []),
             }
