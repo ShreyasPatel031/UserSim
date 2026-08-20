@@ -13,14 +13,30 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from auth import vertex_credentials
 from config import GCP_LOCATION, GCP_PROJECT, MODEL
-from model import PredictResult, SYSTEM, _parse
+from model import PredictResult, TokenMeter, _parse
 
 
-LIVE_SYSTEM = SYSTEM + """
-The page may also include a screenshot. Use the screenshot and the numbered element list together.
-Prefer visible, task-relevant controls a human would actually click next.
-If the task is complete, return {"element_index": 0, "action": "STOP", "value": null}.
-"""
+AGENT_LIVE_SYSTEM = """You are a web agent. Your goal is to successfully complete the user's task on this live website.
+You see a screenshot and a numbered list of interactive elements.
+Pick exactly one next action: CLICK, TYPE, SELECT, or STOP.
+For TYPE, set value to the text to type. For SELECT, set value to the option. For CLICK/STOP, value must be null.
+Use element_index 0 only with STOP.
+Keep going if more interaction could help finish the task. Reply STOP only when the task is complete.
+Return JSON only."""
+
+USERSIM_LIVE_SYSTEM = """You simulate a normal human using a public website.
+You see a screenshot and a numbered list of interactive elements.
+Predict the next action that person would take: CLICK, TYPE, SELECT, or STOP.
+For TYPE, set value to the text they would type. For SELECT, set value to the option. For CLICK/STOP, value must be null.
+Use element_index 0 only with STOP.
+Do not optimize for task completion. Humans often stop once they believe they have done enough, even if a thorough agent would keep going.
+Prefer obvious, visible controls a person would actually use.
+Return JSON only."""
+
+CONDITIONS = {
+    "agent": AGENT_LIVE_SYSTEM,
+    "usersim": USERSIM_LIVE_SYSTEM,
+}
 
 
 def predict_live(
@@ -29,8 +45,11 @@ def predict_live(
     candidates: list[str],
     history: list[str],
     screenshot_png: bytes | None = None,
+    condition: str = "usersim",
+    client: genai.Client | None = None,
 ) -> PredictResult:
-    client = genai.Client(
+    system = CONDITIONS.get(condition, USERSIM_LIVE_SYSTEM)
+    cli = client or genai.Client(
         vertexai=True,
         project=GCP_PROJECT,
         location=GCP_LOCATION,
@@ -46,7 +65,7 @@ def predict_live(
         text.append(f"{i}. {cand}")
     text.append("")
     if history:
-        text.append("This person's previous actions:")
+        text.append("Actions taken so far:")
         for i, h in enumerate(history, start=1):
             text.append(f"{i}. {h}")
     else:
@@ -60,11 +79,11 @@ def predict_live(
     if screenshot_png:
         parts.insert(0, types.Part.from_bytes(data=screenshot_png, mime_type="image/png"))
     try:
-        resp = client.models.generate_content(
+        resp = cli.models.generate_content(
             model=MODEL,
             contents=parts,
             config=types.GenerateContentConfig(
-                system_instruction=LIVE_SYSTEM,
+                system_instruction=system,
                 temperature=0,
                 max_output_tokens=192,
                 thinking_config=types.ThinkingConfig(thinking_budget=0),
@@ -77,8 +96,23 @@ def predict_live(
     raw = resp.text or ""
     usage = resp.usage_metadata
     idx, action, value = _parse(raw)
-    if action is None and "STOP" in raw.upper():
-        action = "STOP"
+    # Allow STOP in live parse (offline _parse rejects it)
+    if action is None:
+        try:
+            obj = json.loads(raw)
+            a = str(obj.get("action") or "").upper()
+            if a == "STOP":
+                action = "STOP"
+                idx = 0
+            if value is None and obj.get("value") is not None:
+                value = str(obj.get("value"))
+            if idx is None and obj.get("element_index") is not None:
+                idx = int(obj["element_index"])
+        except Exception:  # noqa: BLE001
+            if "STOP" in raw.upper():
+                action = "STOP"
+                idx = 0
+    if action == "STOP":
         idx = 0
     return PredictResult(
         element_index=idx,
@@ -102,6 +136,7 @@ if __name__ == "__main__":
         candidates=payload["candidates"],
         history=payload.get("history") or [],
         screenshot_png=png,
+        condition=payload.get("condition", "usersim"),
     )
     print(
         json.dumps(
