@@ -1,0 +1,126 @@
+{
+  "annotation_id": "5e47dc3e-2a4a-4273-871d-dfdb33b091d5",
+  "eval_index": 25,
+  "website": "underarmour",
+  "domain": "Shopping",
+  "condition": "agent",
+  "task": "Filter women's sports bras that are purple  with high support that are small size.",
+  "start_url": "https://www.underarmour.com/",
+  "end_url": "https://www.underarmour.com/en-us/c/womens/",
+  "end_title": "Women's Athletic Clothes, Shoes & Gear | Under Armour",
+  "human_n_steps": 11,
+  "human_actions": [
+    "[menuitem]  Women -> CLICK",
+    "[link]  Sports Bras -> CLICK",
+    "[div]  Size -> CLICK",
+    "[link]  S -> CLICK",
+    "[div]  Filter -> CLICK",
+    "[RootWebArea]  Women's Sports Bras | Under Armour -> CLICK",
+    "[button]  Show more -> CLICK",
+    "[div]  Color -> CLICK",
+    "[link]  Refine by color: Purple -> CLICK",
+    "[div]  Support Level -> CLICK",
+    "[link]  High Support -> CLICK"
+  ],
+  "n_actions": 3,
+  "n_model_steps": 4,
+  "length_ratio_vs_human": 0.2727272727272727,
+  "extra_actions_vs_human": -8,
+  "repeated_actions": 0,
+  "backtracks": 0,
+  "unique_hosts": [
+    "www.underarmour.com"
+  ],
+  "action_type_counts": {
+    "CLICK": 3,
+    "STOP": 1
+  },
+  "stopped": true,
+  "stop_reason": "model_stop",
+  "semantic_overlap_vs_human": 0.15625,
+  "steps": [
+    {
+      "i": 0,
+      "url": "https://www.underarmour.com/en-us/",
+      "n_candidates": 44,
+      "prediction": {
+        "element_index": 11,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 11, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3047,
+        "output_tokens": 20
+      },
+      "action_repr": "<a> href=/en-us/c/womens/ text=Women -> CLICK",
+      "screenshot": "v06/traces/25_underarmour/agent_step0.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 1,
+      "url": "https://www.underarmour.com/en-us/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 48,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 48, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3515,
+        "output_tokens": 20
+      },
+      "action_repr": "<a> href=/en-us/c/womens/clothing/sports-bras/ text=Sports Bras -> CLICK",
+      "screenshot": "v06/traces/25_underarmour/agent_step1.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 2,
+      "url": "https://www.underarmour.com/en-us/c/womens/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 27,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 27, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3541,
+        "output_tokens": 20
+      },
+      "action_repr": "<button> type=button name=Close Dialog text=Close Dialog -> CLICK",
+      "screenshot": "v06/traces/25_underarmour/agent_step2.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 3,
+      "url": "https://www.underarmour.com/en-us/c/womens/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 0,
+        "action": "STOP",
+        "value": null,
+        "raw": "{\n  \"element_index\": 0,\n  \"action\": \"STOP\",\n  \"value\": null\n}",
+        "error": null,
+        "prompt_tokens": 3565,
+        "output_tokens": 27
+      },
+      "action_repr": "STOP",
+      "screenshot": "v06/traces/25_underarmour/agent_step3.png",
+      "executed": false
+    }
+  ]
+}

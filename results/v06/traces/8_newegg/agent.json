@@ -1,0 +1,187 @@
+{
+  "annotation_id": "2fc63250-ac9a-4cd4-a29d-6460f0652fa3",
+  "eval_index": 8,
+  "website": "newegg",
+  "domain": "Shopping",
+  "condition": "agent",
+  "task": "Find a wireless keyboard and mouse combo under $100.",
+  "start_url": "https://www.newegg.com/",
+  "end_url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo&SrchInDesc=100",
+  "end_title": "wireless keyboard and mouse combo | Newegg.com",
+  "human_n_steps": 5,
+  "human_actions": [
+    "[searchbox]  Search Site -> TYPE: wireless keyboard mouse",
+    "[button]  \uf002 -> CLICK",
+    "[textbox]  price to -> TYPE: 100",
+    "[button]  APPLY -> CLICK",
+    "[link]  Logitech MK270 Wireless Keyboard And Mouse Combo F... -> CLICK"
+  ],
+  "n_actions": 6,
+  "n_model_steps": 7,
+  "length_ratio_vs_human": 1.2,
+  "extra_actions_vs_human": 1,
+  "repeated_actions": 1,
+  "backtracks": 0,
+  "unique_hosts": [
+    "www.newegg.com"
+  ],
+  "action_type_counts": {
+    "TYPE": 3,
+    "CLICK": 3,
+    "STOP": 1
+  },
+  "stopped": true,
+  "stop_reason": "model_stop",
+  "semantic_overlap_vs_human": 0.36666666666666664,
+  "steps": [
+    {
+      "i": 0,
+      "url": "https://www.newegg.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 7,
+        "action": "TYPE",
+        "value": "wireless keyboard and mouse combo",
+        "raw": "{\"element_index\": 7, \"action\": \"TYPE\", \"value\": \"wireless keyboard and mouse combo\"}",
+        "error": null,
+        "prompt_tokens": 3701,
+        "output_tokens": 24
+      },
+      "action_repr": "<input> type=search name=Search. Enter keywords, model number or item number text=Search. Enter keywords, model number or item number -> TYPE: wireless keyboard and mouse combo",
+      "screenshot": "v06/traces/8_newegg/agent_step0.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "TYPE",
+        "value": "wireless keyboard and mouse combo"
+      }
+    },
+    {
+      "i": 1,
+      "url": "https://www.newegg.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 8,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 8, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3797,
+        "output_tokens": 19
+      },
+      "action_repr": "<button> name=Search text=Search -> CLICK",
+      "screenshot": "v06/traces/8_newegg/agent_step1.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 2,
+      "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 50,
+        "action": "TYPE",
+        "value": "0",
+        "raw": "{\"element_index\": 50, \"action\": \"TYPE\", \"value\": \"0\"}",
+        "error": null,
+        "prompt_tokens": 3747,
+        "output_tokens": 21
+      },
+      "action_repr": "<input> type=text name=price from text=price from -> TYPE: 0",
+      "screenshot": "v06/traces/8_newegg/agent_step2.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "TYPE",
+        "value": "0"
+      }
+    },
+    {
+      "i": 3,
+      "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 27,
+        "action": "TYPE",
+        "value": "100",
+        "raw": "{\"element_index\": 27, \"action\": \"TYPE\", \"value\": \"100\"}",
+        "error": null,
+        "prompt_tokens": 3789,
+        "output_tokens": 23
+      },
+      "action_repr": "<input> type=search -> TYPE: 100",
+      "screenshot": "v06/traces/8_newegg/agent_step3.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "TYPE",
+        "value": "100"
+      }
+    },
+    {
+      "i": 4,
+      "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 30,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 30, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3810,
+        "output_tokens": 20
+      },
+      "action_repr": "<button> type=button text=GO -> CLICK",
+      "screenshot": "v06/traces/8_newegg/agent_step4.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 5,
+      "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 29,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 29, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3736,
+        "output_tokens": 20
+      },
+      "action_repr": "<button> type=button text=GO -> CLICK",
+      "screenshot": "v06/traces/8_newegg/agent_step5.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 6,
+      "url": "https://www.newegg.com/p/pl?d=wireless+keyboard+and+mouse+combo&SrchInDesc=100",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 0,
+        "action": "STOP",
+        "value": null,
+        "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3752,
+        "output_tokens": 19
+      },
+      "action_repr": "STOP",
+      "screenshot": "v06/traces/8_newegg/agent_step6.png",
+      "executed": false
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "annotation_id": "b7003092-3e6e-4fac-9867-083cac064f89",
+  "eval_index": 7,
+  "website": "jetblue",
+  "domain": "Travel",
+  "condition": "agent",
+  "task": "Find JetBlue career openings in New York",
+  "start_url": "https://www.jetblue.com/",
+  "end_url": "https://www.jetblue.com/",
+  "end_title": "JetBlue | Flights & travel deals | Book here for low fares | JetBlue",
+  "human_n_steps": 4,
+  "human_actions": [
+    "[link]  CareersExternal Link should open in a new window o... -> CLICK",
+    "[textbox]  Search by Location -> CLICK",
+    "[textbox]  Search by Location -> TYPE: New York",
+    "[button]  Search Jobs -> CLICK"
+  ],
+  "n_actions": 0,
+  "n_model_steps": 1,
+  "length_ratio_vs_human": 0.0,
+  "extra_actions_vs_human": -4,
+  "repeated_actions": 0,
+  "backtracks": 0,
+  "unique_hosts": [
+    "www.jetblue.com"
+  ],
+  "action_type_counts": {
+    "STOP": 1
+  },
+  "stopped": true,
+  "stop_reason": "model_stop",
+  "semantic_overlap_vs_human": 0.0,
+  "steps": [
+    {
+      "i": 0,
+      "url": "https://www.jetblue.com/",
+      "n_candidates": 21,
+      "prediction": {
+        "element_index": 0,
+        "action": "STOP",
+        "value": null,
+        "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 2367,
+        "output_tokens": 19
+      },
+      "action_repr": "STOP",
+      "screenshot": "v06/traces/7_jetblue/agent_step0.png",
+      "executed": false
+    }
+  ]
+}

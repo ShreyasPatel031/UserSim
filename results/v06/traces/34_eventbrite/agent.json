@@ -1,0 +1,278 @@
+{
+  "annotation_id": "51221157-cb79-407e-95c8-b2c730e95e01",
+  "eval_index": 34,
+  "website": "eventbrite",
+  "domain": "Entertainment",
+  "condition": "agent",
+  "task": "Find a music party in Ohio and follow its organizer",
+  "start_url": "https://www.eventbrite.com/",
+  "end_url": "https://www.eventbrite.com/d/va--ashburn/music--events/toledo-ohio/?page=1",
+  "end_title": "Ashburn, VA Toledo Ohio Events | Eventbrite",
+  "human_n_steps": 8,
+  "human_actions": [
+    "[div]  Search for events -> CLICK",
+    "[textbox]  Search events -> TYPE: music",
+    "[combobox]  autocomplete -> TYPE: ohio",
+    "[div]  Ohio -> CLICK",
+    "[generic]  Run Search -> CLICK",
+    "[label]   -> CLICK",
+    "[div]  RANG BARSEY- HOLI MUSIC FESTIVAL, CINCINNATI -> CLICK",
+    "[button]  Follow -> CLICK"
+  ],
+  "n_actions": 10,
+  "n_model_steps": 11,
+  "length_ratio_vs_human": 1.25,
+  "extra_actions_vs_human": 2,
+  "repeated_actions": 1,
+  "backtracks": 0,
+  "unique_hosts": [
+    "www.eventbrite.com"
+  ],
+  "action_type_counts": {
+    "CLICK": 7,
+    "TYPE": 3,
+    "STOP": 1
+  },
+  "stopped": true,
+  "stop_reason": "model_stop",
+  "semantic_overlap_vs_human": 0.2,
+  "steps": [
+    {
+      "i": 0,
+      "url": "https://www.eventbrite.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 19,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 19, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3607,
+        "output_tokens": 20
+      },
+      "action_repr": "<input> role=combobox type=text name=locationPicker text=Ashburn -> CLICK",
+      "screenshot": "v06/traces/34_eventbrite/agent_step0.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 1,
+      "url": "https://www.eventbrite.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 19,
+        "action": "TYPE",
+        "value": "Ohio",
+        "raw": "{\"element_index\": 19, \"action\": \"TYPE\", \"value\": \"Ohio\"}",
+        "error": null,
+        "prompt_tokens": 3494,
+        "output_tokens": 21
+      },
+      "action_repr": "<input> role=combobox type=text name=locationPicker placeholder=Ashburn -> TYPE: Ohio",
+      "screenshot": "v06/traces/34_eventbrite/agent_step1.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "TYPE",
+        "value": "Ohio"
+      }
+    },
+    {
+      "i": 2,
+      "url": "https://www.eventbrite.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 19,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 19, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3408,
+        "output_tokens": 20
+      },
+      "action_repr": "<input> role=combobox type=text name=locationPicker text=Ohio -> CLICK",
+      "screenshot": "v06/traces/34_eventbrite/agent_step2.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 3,
+      "url": "https://www.eventbrite.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 19,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 19, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3430,
+        "output_tokens": 20
+      },
+      "action_repr": "<input> role=combobox type=text name=locationPicker text=Ohio -> CLICK",
+      "screenshot": "v06/traces/34_eventbrite/agent_step3.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 4,
+      "url": "https://www.eventbrite.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 11,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 11, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3452,
+        "output_tokens": 20
+      },
+      "action_repr": "<a> href=/b/local/music text=Music -> CLICK",
+      "screenshot": "v06/traces/34_eventbrite/agent_step4.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 5,
+      "url": "https://www.eventbrite.com/",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 1,
+        "action": "TYPE",
+        "value": "music party",
+        "raw": "{\"element_index\": 1, \"action\": \"TYPE\", \"value\": \"music party\"}",
+        "error": null,
+        "prompt_tokens": 3286,
+        "output_tokens": 21
+      },
+      "action_repr": "<input> type=search name=search-autocomplete-input placeholder=Search events -> TYPE: music party",
+      "screenshot": "v06/traces/34_eventbrite/agent_step5.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "TYPE",
+        "value": "music party"
+      }
+    },
+    {
+      "i": 6,
+      "url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 2,
+        "action": "TYPE",
+        "value": "Ohio",
+        "raw": "{\"element_index\": 2, \"action\": \"TYPE\", \"value\": \"Ohio\"}",
+        "error": null,
+        "prompt_tokens": 3319,
+        "output_tokens": 20
+      },
+      "action_repr": "<input> type=search name=search-autocomplete-input text=music party -> TYPE: Ohio",
+      "screenshot": "v06/traces/34_eventbrite/agent_step6.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "TYPE",
+        "value": "Ohio"
+      }
+    },
+    {
+      "i": 7,
+      "url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 26,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 26, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3260,
+        "output_tokens": 20
+      },
+      "action_repr": "<button> type=button text=toledo Ohio -> CLICK",
+      "screenshot": "v06/traces/34_eventbrite/agent_step7.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 8,
+      "url": "https://www.eventbrite.com/b/va--ashburn/music/#search",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 25,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 25, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3926,
+        "output_tokens": 20
+      },
+      "action_repr": "<a> href=/d/va--ashburn/music--events/ text=Music -> CLICK",
+      "screenshot": "v06/traces/34_eventbrite/agent_step8.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 9,
+      "url": "https://www.eventbrite.com/d/va--ashburn/music--events/toledo-ohio/?page=1",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 19,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 19, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 4046,
+        "output_tokens": 20
+      },
+      "action_repr": "<a> name=View After The Fest href=https://www.eventbrite.com/e/after-the-fest-tickets-1993960159513?aff=ebdssbdest text=After The Fest -> CLICK",
+      "screenshot": "v06/traces/34_eventbrite/agent_step9.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 10,
+      "url": "https://www.eventbrite.com/d/va--ashburn/music--events/toledo-ohio/?page=1",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 0,
+        "action": "STOP",
+        "value": null,
+        "raw": "{\"element_index\": 0, \"action\": \"STOP\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 4106,
+        "output_tokens": 19
+      },
+      "action_repr": "STOP",
+      "screenshot": "v06/traces/34_eventbrite/agent_step10.png",
+      "executed": false
+    }
+  ]
+}

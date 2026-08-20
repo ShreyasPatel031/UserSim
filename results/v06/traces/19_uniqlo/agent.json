@@ -1,0 +1,97 @@
+{
+  "annotation_id": "099a9da4-c8db-4900-ada2-76600f3655a4",
+  "eval_index": 19,
+  "website": "uniqlo",
+  "domain": "Shopping",
+  "condition": "agent",
+  "task": "Show me the list of baby products that are on sale and under 10 dollars.",
+  "start_url": "https://www.uniqlo.com/us/en/",
+  "end_url": "https://www.uniqlo.com/us/en/feature/sale/baby",
+  "end_title": "Baby Clothing Sale | Everyday Essentials at Special Prices | UNIQLO US",
+  "human_n_steps": 4,
+  "human_actions": [
+    "[link]  BABY -> HOVER",
+    "[link]  Sale -> CLICK",
+    "[heading]  Price -> CLICK",
+    "[label]  $0-$10 -> CLICK"
+  ],
+  "n_actions": 2,
+  "n_model_steps": 3,
+  "length_ratio_vs_human": 0.5,
+  "extra_actions_vs_human": -2,
+  "repeated_actions": 0,
+  "backtracks": 0,
+  "unique_hosts": [
+    "www.uniqlo.com"
+  ],
+  "action_type_counts": {
+    "CLICK": 2,
+    "STOP": 1
+  },
+  "stopped": true,
+  "stop_reason": "model_stop",
+  "semantic_overlap_vs_human": 0.15,
+  "steps": [
+    {
+      "i": 0,
+      "url": "https://www.uniqlo.com/us/en/",
+      "n_candidates": 33,
+      "prediction": {
+        "element_index": 5,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 5, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 2862,
+        "output_tokens": 19
+      },
+      "action_repr": "<a> role=tab href=/us/en/baby text=BABY -> CLICK",
+      "screenshot": "v06/traces/19_uniqlo/agent_step0.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 1,
+      "url": "https://www.uniqlo.com/us/en/baby",
+      "n_candidates": 50,
+      "prediction": {
+        "element_index": 29,
+        "action": "CLICK",
+        "value": null,
+        "raw": "{\"element_index\": 29, \"action\": \"CLICK\", \"value\": null}",
+        "error": null,
+        "prompt_tokens": 3414,
+        "output_tokens": 20
+      },
+      "action_repr": "<a> href=https://www.uniqlo.com/us/en/feature/sale/baby text=Sale -> CLICK",
+      "screenshot": "v06/traces/19_uniqlo/agent_step1.png",
+      "executed": true,
+      "exec": {
+        "ok": true,
+        "action": "CLICK",
+        "value": null
+      }
+    },
+    {
+      "i": 2,
+      "url": "https://www.uniqlo.com/us/en/baby",
+      "n_candidates": 22,
+      "prediction": {
+        "element_index": 0,
+        "action": "STOP",
+        "value": null,
+        "raw": "{\n  \"element_index\": 0,\n  \"action\": \"STOP\",\n  \"value\": null\n}",
+        "error": null,
+        "prompt_tokens": 2537,
+        "output_tokens": 27
+      },
+      "action_repr": "STOP",
+      "screenshot": "v06/traces/19_uniqlo/agent_step2.png",
+      "executed": false
+    }
+  ]
+}

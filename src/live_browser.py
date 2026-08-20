@@ -55,8 +55,17 @@ def _clean(s: str | None, n: int = 120) -> str:
 
 def extract_candidates(page: Page, max_n: int = 50) -> list[Candidate]:
     """Visible interactive elements, top-left ordered, capped at max_n."""
-    raw = page.evaluate(
-        """(sel) => {
+    raw = None
+    last_err: Exception | None = None
+    for _ in range(3):
+        try:
+            try:
+                page.wait_for_load_state("domcontentloaded", timeout=5000)
+            except PlaywrightTimeout:
+                pass
+            page.wait_for_timeout(300)
+            raw = page.evaluate(
+                """(sel) => {
           const nodes = Array.from(document.querySelectorAll(sel));
           const out = [];
           for (const el of nodes) {
@@ -83,8 +92,15 @@ def extract_candidates(page: Page, max_n: int = 50) -> list[Candidate]:
           out.sort((a, b) => (a.y - b.y) || (a.x - b.x));
           return out;
         }""",
-        INTERACTIVE,
-    )
+                INTERACTIVE,
+            )
+            break
+        except Exception as exc:  # noqa: BLE001
+            last_err = exc
+            page.wait_for_timeout(800)
+    if raw is None:
+        raise RuntimeError(f"extract_candidates failed: {last_err}")
+
     cands: list[Candidate] = []
     for i, item in enumerate(raw[:max_n], start=1):
         # Prefer bounding-box click; also keep a rough CSS path via nth-match of tag+text
