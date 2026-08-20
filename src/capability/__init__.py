@@ -11,6 +11,18 @@ MAX_ACTIONS = 20
 BAKEOFF_MODEL = "gemini-3.6-flash"
 BAKEOFF_LOCATION = "global"  # 3.6 Flash is served from global, not us-central1
 
+# Prefer regional for 2.5 Flash; fall back to global for 3.x
+MODEL_LOCATION = {
+    "gemini-3.6-flash": "global",
+    "gemini-3-flash-preview": "global",
+    "gemini-3.1-pro-preview": "global",
+    "gemini-2.5-flash": "us-central1",
+}
+
+
+def location_for(model: str) -> str:
+    return MODEL_LOCATION.get(model, BAKEOFF_LOCATION)
+
 # Vertex list prices USD / 1M tokens (from user brief)
 PRICE = {
     "gemini-3.6-flash": {"in": 1.50, "out": 7.50},
