@@ -8,3 +8,7 @@ results/cache/
 *.egg-info/
 .python-version
 secrets/
+vendor/
+# Large third-party clones / decrypted HAL traces (local only)
+vendor/
+results/capability/logs/
