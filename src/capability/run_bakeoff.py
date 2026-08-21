@@ -12,12 +12,20 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from capability import BAKEOFF_MODEL, OUT_DIR, location_for
+from capability import (
+    ACTION_BUFFER,
+    BAKEOFF_MODEL,
+    MAX_ACTIONS,
+    MAX_HUMAN_STEPS,
+    OUT_DIR,
+    location_for,
+)
 from capability.browser_use_runner import run_browser_use
 from capability.native_cu import run_native_cu
 from capability.tasks import (
     ALL_INDICES,
     BAKEOFF5_INDICES,
+    GENUINE_FAIL_INDICES,
     HARD20_INDICES,
     SMOKE_INDICES,
     TASK_INDICES,
@@ -35,6 +43,28 @@ def _model_slug(model: str) -> str:
     return model.replace(".", "").replace("/", "-")
 
 
+def _err_result(task: dict, model: str, h: str, exc: Exception) -> dict:
+    return {
+        "run_id": f"err_{task['eval_index']}",
+        "task_id": task["task_id"],
+        "eval_index": task["eval_index"],
+        "task": task["task"],
+        "website": task["website"],
+        "model": model,
+        "harness": h,
+        "success": False,
+        "status": "FAILURE",
+        "failure_category": "HARNESS",
+        "stop_reason": f"exception:{exc}"[:400],
+        "num_actions": 0,
+        "actions": [],
+        "estimated_cost_usd": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "final_url": "",
+    }
+
+
 def _save_manifest(name: str, runs: list[dict], *, model: str, stage: str, harness: str) -> Path:
     path = OUT_DIR / f"{name}.json"
     eligible = [r for r in runs if r.get("status") != "BLOCKED"]
@@ -44,6 +74,9 @@ def _save_manifest(name: str, runs: list[dict], *, model: str, stage: str, harne
         "harness": harness if harness != "browser_use" else "browser_use_oss",
         "model": model,
         "location": location_for(model),
+        "max_actions_budget": (runs[0].get("max_actions_budget") if runs else MAX_ACTIONS),
+        "max_human_steps": MAX_HUMAN_STEPS,
+        "action_buffer": ACTION_BUFFER,
         "n": len(runs),
         "n_total": len(runs),
         "n_eligible": len(eligible),
@@ -73,6 +106,7 @@ def _save_manifest(name: str, runs: list[dict], *, model: str, stage: str, harne
                 k: summary[k]
                 for k in (
                     "model",
+                    "max_actions_budget",
                     "n",
                     "n_eligible",
                     "successes",
@@ -89,53 +123,28 @@ def _save_manifest(name: str, runs: list[dict], *, model: str, stage: str, harne
     return path
 
 
-def _run_one(h: str, task: dict, model: str) -> dict:
-    print(f"START {h} | {task['website']} | idx={task['eval_index']}", flush=True)
+def _run_one(h: str, task: dict, model: str, max_actions: int) -> dict:
+    print(
+        f"START {h} | {task['website']} | idx={task['eval_index']} | max_actions={max_actions}",
+        flush=True,
+    )
     try:
-        result = RUNNERS[h](task, model=model, location=location_for(model))
+        result = RUNNERS[h](
+            task, model=model, location=location_for(model), max_actions=max_actions
+        )
     except TypeError:
         try:
-            result = RUNNERS[h](task, model=model)
+            result = RUNNERS[h](task, model=model, max_actions=max_actions)
+        except TypeError:
+            try:
+                result = RUNNERS[h](task, model=model)
+            except Exception as exc:  # noqa: BLE001
+                result = _err_result(task, model, h, exc)
         except Exception as exc:  # noqa: BLE001
-            result = {
-                "run_id": f"err_{task['eval_index']}",
-                "task_id": task["task_id"],
-                "eval_index": task["eval_index"],
-                "task": task["task"],
-                "website": task["website"],
-                "model": model,
-                "harness": h,
-                "success": False,
-                "status": "FAILURE",
-                "failure_category": "HARNESS",
-                "stop_reason": f"exception:{exc}"[:400],
-                "num_actions": 0,
-                "actions": [],
-                "estimated_cost_usd": 0,
-                "input_tokens": 0,
-                "output_tokens": 0,
-                "final_url": "",
-            }
+            result = _err_result(task, model, h, exc)
     except Exception as exc:  # noqa: BLE001
-        result = {
-            "run_id": f"err_{task['eval_index']}",
-            "task_id": task["task_id"],
-            "eval_index": task["eval_index"],
-            "task": task["task"],
-            "website": task["website"],
-            "model": model,
-            "harness": h,
-            "success": False,
-            "status": "FAILURE",
-            "failure_category": "HARNESS",
-            "stop_reason": f"exception:{exc}"[:400],
-            "num_actions": 0,
-            "actions": [],
-            "estimated_cost_usd": 0,
-            "input_tokens": 0,
-            "output_tokens": 0,
-            "final_url": "",
-        }
+        result = _err_result(task, model, h, exc)
+    result["max_actions_budget"] = max_actions
     print(
         f"DONE  {h} | {task['website']} | idx={task['eval_index']} | {result.get('status')} "
         f"success={result.get('success')} actions={result.get('num_actions')} "
@@ -149,29 +158,30 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument(
         "--stage",
-        choices=["smoke", "bakeoff5", "full10", "full100", "hard20", "one"],
+        choices=["smoke", "bakeoff5", "full10", "full100", "hard20", "genuine27", "one"],
         required=True,
     )
     ap.add_argument("--harness", choices=["native_cu", "browser_use", "both"], default="both")
     ap.add_argument("--model", default=BAKEOFF_MODEL)
     ap.add_argument("--eval-index", type=int, default=None)
     ap.add_argument(
-        "--workers",
+        "--max-actions",
         type=int,
-        default=1,
-        help="Parallel task workers (ThreadPool).",
-    )
-    ap.add_argument(
-        "--tag",
         default=None,
-        help="Optional suffix for output filename (default: model slug).",
+        help=(
+            f"Override step budget (default derived: max_human={MAX_HUMAN_STEPS}"
+            f"+buffer={ACTION_BUFFER} => {MAX_ACTIONS})."
+        ),
     )
+    ap.add_argument("--workers", type=int, default=1, help="Parallel task workers (ThreadPool).")
+    ap.add_argument("--tag", default=None, help="Optional suffix for output filename.")
     ap.add_argument(
         "--resume",
         action="store_true",
         help="Skip eval_index+harness pairs already present in the output manifest.",
     )
     args = ap.parse_args()
+    max_actions = args.max_actions if args.max_actions is not None else MAX_ACTIONS
 
     if args.stage == "smoke":
         indices = SMOKE_INDICES
@@ -183,6 +193,8 @@ def main() -> None:
         indices = ALL_INDICES
     elif args.stage == "hard20":
         indices = HARD20_INDICES
+    elif args.stage == "genuine27":
+        indices = GENUINE_FAIL_INDICES
     else:
         if args.eval_index is None:
             raise SystemExit("--eval-index required for --stage one")
@@ -194,16 +206,8 @@ def main() -> None:
     )
 
     jobs = [(h, task) for task in tasks for h in harnesses]
-    tag = args.tag or _model_slug(args.model)
-    if (
-        args.model == BAKEOFF_MODEL
-        and args.harness != "both"
-        and args.workers <= 1
-        and args.stage != "full100"
-    ):
-        out_name = f"{args.stage}_{args.harness}"
-    else:
-        out_name = f"{args.stage}_{args.harness}_{tag}"
+    tag = args.tag or f"{_model_slug(args.model)}_m{max_actions}"
+    out_name = f"{args.stage}_{args.harness}_{tag}"
 
     out_path = OUT_DIR / f"{out_name}.json"
     runs: list[dict] = []
@@ -212,8 +216,6 @@ def main() -> None:
         prev = json.loads(out_path.read_text())
         runs = list(prev.get("runs") or [])
         for r in runs:
-            done_keys.add((r.get("eval_index"), r.get("harness") if r.get("harness") != "browser_use_oss" else "browser_use"))
-            # normalize: browser_use_oss stored as harness in results
             h = r.get("harness")
             if h == "browser_use_oss":
                 done_keys.add((r.get("eval_index"), "browser_use"))
@@ -225,7 +227,8 @@ def main() -> None:
     workers = max(1, min(args.workers, max(1, len(pending))))
     print(
         f"Running {len(pending)}/{len(jobs)} jobs with {workers} workers | model={args.model} "
-        f"location={location_for(args.model)} -> {out_name}.json",
+        f"location={location_for(args.model)} max_actions={max_actions} "
+        f"(human_max={MAX_HUMAN_STEPS}+buffer={ACTION_BUFFER}) -> {out_name}.json",
         flush=True,
     )
 
@@ -265,10 +268,12 @@ def main() -> None:
 
     if workers == 1:
         for h, task in pending:
-            _on_done(_run_one(h, task, args.model))
+            _on_done(_run_one(h, task, args.model, max_actions))
     else:
         with ThreadPoolExecutor(max_workers=workers) as pool:
-            futs = [pool.submit(_run_one, h, task, args.model) for h, task in pending]
+            futs = [
+                pool.submit(_run_one, h, task, args.model, max_actions) for h, task in pending
+            ]
             for fut in as_completed(futs):
                 _on_done(fut.result())
 
