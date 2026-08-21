@@ -61,7 +61,7 @@ def _history_to_actions(history) -> list[dict]:
 async def _run_async(
     task: dict, model: str, max_actions: int, run_dir: Path, location: str | None = None
 ) -> dict:
-    run_id = f"bu_{task['eval_index']}_{uuid.uuid4().hex[:8]}"
+    run_id = run_dir.name
     run_dir.mkdir(parents=True, exist_ok=True)
     loc = location or location_for(model)
 
