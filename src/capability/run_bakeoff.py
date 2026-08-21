@@ -18,6 +18,7 @@ from capability.native_cu import run_native_cu
 from capability.tasks import (
     ALL_INDICES,
     BAKEOFF5_INDICES,
+    HARD20_INDICES,
     SMOKE_INDICES,
     TASK_INDICES,
     load_tasks,
@@ -148,7 +149,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument(
         "--stage",
-        choices=["smoke", "bakeoff5", "full10", "full100", "one"],
+        choices=["smoke", "bakeoff5", "full10", "full100", "hard20", "one"],
         required=True,
     )
     ap.add_argument("--harness", choices=["native_cu", "browser_use", "both"], default="both")
@@ -180,6 +181,8 @@ def main() -> None:
         indices = TASK_INDICES
     elif args.stage == "full100":
         indices = ALL_INDICES
+    elif args.stage == "hard20":
+        indices = HARD20_INDICES
     else:
         if args.eval_index is None:
             raise SystemExit("--eval-index required for --stage one")

@@ -1,69 +1,49 @@
-# Capability backbone — FROZEN
+# Capability backbone — UNFROZEN (cheap baseline retained)
 
-**Date:** 2026-08-20  
-**Decision:** Freeze **Gemini 3.6 Flash + open-source Browser Use (Vertex)** as the UserSim capability backbone.
+**Date:** 2026-08-21 (updated)  
+**Prior freeze:** 2026-08-20 on curated-10 (8/8 eligible) — **superseded** by full-100 evidence.
 
-Do not resume model/harness search until human-calibration experiments need it.
+## Decision
+
+| Role | Stack |
+|---|---|
+| **Cheap baseline** | `gemini-3.6-flash` @ Vertex `global` + Browser Use OSS |
+| **Capability status** | **UNFROZEN** — do not treat curated-10 as sufficiency |
+| **Do not** | Another 100-task sweep; human-calibration until Hard-20 moves |
+
+Curated-10 was misleading. Full-100 raw eligible success was **25/73 ≈ 34%**. After auditing the 45 FAILURES ($0 model spend), **18/45** are site/harness — corrected eligible ≈ **25/52 ≈ 48%**. Still too weak for UserSim human-calibration (would mostly measure inability to operate sites).
 
 ## Access notes
 
 | Resource | Status |
 |---|---|
-| `gemini-3.6-flash` | Works on Vertex **`location=global`** only (404 in `us-central1`) |
-| Native Computer Use tool | Accepted on 3.6 Flash @ global |
+| `gemini-3.6-flash` | Works on Vertex **`location=global`** only |
 | Browser Use OSS + `ChatGoogle(vertexai=True)` | Works |
-| Browser Use Cloud / ChatBrowserUse | Not used |
+| Browser Use Cloud | Not used |
+| Cheaper models (2.5 Flash, 3 Flash preview) | Full-10 only; **worse** than 3.6 (3/10 and 4/10) |
 
-## Smoke (Newegg + Under Armour)
-
-| Stack | Newegg | Under Armour |
-|---|---|---|
-| Native Computer Use + 3.6 Flash | FAILURE (premature stop / incomplete filters) | FAILURE (20 actions, filters incomplete) |
-| Browser Use OSS + 3.6 Flash | **SUCCESS** | **SUCCESS** |
-
-→ Eliminated native Computer Use for this bakeoff.
-
-## Full 10 (Browser Use + 3.6 Flash)
-
-| Result | Count |
-|---|---:|
-| SUCCESS | **8** |
-| BLOCKED (login required for Follow) | **2** (Eventbrite, ESPN) |
-| Eligible success rate | **8/8 = 100%** |
-
-Blocked tasks reached the Follow control but sites require authentication. Per bakeoff rules these are not model failures.
-
-Raw if counting blocked as failures: 8/10. Gate was ≥9/10 *or* approximately 9–10; with BLOCKED excluded from the capability denominator the stack clears the freeze gate cleanly.
-
-## Cost
-
-~**$3.25** Vertex for the full-10 Browser Use runs (plus earlier smoke/native CU).
-
-## Frozen stack
+## Baseline stack (unchanged harness)
 
 ```text
 MODEL:        gemini-3.6-flash
 LOCATION:     global
 HARNESS:      browser-use OSS (NOT Browser Use Cloud)
 LLM ADAPTER:  ChatGoogle(vertexai=True, project=..., credentials=ADC)
-OBSERVATION:  Browser Use DOM + vision
-MAX_ACTIONS:  20
+MAX_ACTIONS:  20  (try 40 on STEP_CAP Hard-20 subset)
 VIEWPORT:     1280x800
 ```
 
-Code entry points:
+## Evidence ladder
 
-- `src/capability/browser_use_runner.py`
-- `src/capability/run_bakeoff.py`
-- Results: `results/capability/full10_browser_use.json`
+1. Curated-10 freeze candidate → 8/8 eligible (~$3.25)  
+2. Full-100 live → 25 SUCCESS / 27 BLOCKED / 3 SITE_CHANGED / 45 FAILURE (~$41)  
+3. Failure audit → `results/capability/FAILURE_AUDIT.md`  
+4. **Hard-20** → `results/capability/hard20.json` — Flash **0/20** by construction  
 
-## Next (UserSim research — not capability)
+## Next (capability, not UserSim yet)
 
-Run the **same frozen stack** under:
+1. Optional: 40-step rerun on Hard-20 `STEP_CAP` tasks only  
+2. Stronger Vertex model on Hard-20 + Browser Use  
+3. Resume UserSim human-calibration **only after** Hard-20 shows real site operation  
 
-1. Capable agent (this policy)
-2. Human-sim prompt
-3. UserSim SFT (when available)
-4. Calibrated STOP
-
-Compare trajectories to Mind2Web humans on path metrics. Do not change model/harness while doing that.
+See also: `results/capability/failure_audit_45.json`

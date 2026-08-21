@@ -23,6 +23,31 @@ BAKEOFF5_INDICES = [25, 8, 34, 26, 19]  # UA, Newegg, Eventbrite, RT, Uniqlo
 # All Mind2Web tasks shipped in data/mind2web_tasks.json
 ALL_INDICES = sorted(_BY_IDX.keys())
 
+# Hard-20: genuine model failures from full100 Flash audit (see results/capability/hard20.json).
+# Flash baseline is 0/20 by construction — selected from failures; no Flash rerun needed.
+HARD20_INDICES = [
+    4,
+    6,
+    25,
+    30,
+    68,
+    88,
+    55,
+    85,  # long multi-filter / step-cap heavy
+    3,
+    9,
+    76,
+    53,
+    12,  # final-action
+    57,
+    19,
+    50,
+    5,  # navigation/search
+    35,
+    42,
+    94,  # recovery
+]
+
 
 def load_tasks(indices: list[int] | None = None) -> list[dict]:
     idxs = indices or TASK_INDICES
