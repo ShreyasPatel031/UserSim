@@ -12,3 +12,6 @@ vendor/
 # Large third-party clones / decrypted HAL traces (local only)
 vendor/
 results/capability/logs/
+.venv-seeact/
+.venv-webvoyager/
+.venv-proxy/
