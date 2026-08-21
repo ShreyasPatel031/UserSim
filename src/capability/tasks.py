@@ -48,6 +48,26 @@ HARD20_INDICES = [
     94,  # recovery
 ]
 
+# All 27 genuine model failures from failure_audit_45.json (excludes site/harness).
+_GENUINE_CAUSES = {
+    "STEP_CAP",
+    "PREMATURE_DONE",
+    "PLANNING",
+    "PERCEPTION",
+    "GROUNDING",
+    "RECOVERY",
+}
+_AUDIT_PATH = ROOT / "results" / "capability" / "failure_audit_45.json"
+if _AUDIT_PATH.exists():
+    _audit = json.loads(_AUDIT_PATH.read_text())
+    GENUINE_FAIL_INDICES = sorted(
+        f["eval_index"]
+        for f in _audit["failures"]
+        if f.get("primary_cause") in _GENUINE_CAUSES
+    )
+else:
+    GENUINE_FAIL_INDICES = list(HARD20_INDICES)
+
 
 def load_tasks(indices: list[int] | None = None) -> list[dict]:
     idxs = indices or TASK_INDICES

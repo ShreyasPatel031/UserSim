@@ -2,12 +2,21 @@
 
 from __future__ import annotations
 
+import json
+import math
 from pathlib import Path
 
 from config import RESULTS_DIR, ROOT
 
 VIEWPORT = {"width": 1280, "height": 800}
-MAX_ACTIONS = 20
+
+# Step budget is derived from Mind2Web human trajectories — not an arbitrary round number.
+_TASKS = json.loads((ROOT / "data" / "mind2web_tasks.json").read_text())["tasks"]
+MAX_HUMAN_STEPS = max(int(t.get("n_steps") or 0) for t in _TASKS)
+# Buffer: +50% of the longest human path, at least +10 steps.
+ACTION_BUFFER = max(10, math.ceil(0.5 * MAX_HUMAN_STEPS))
+MAX_ACTIONS = MAX_HUMAN_STEPS + ACTION_BUFFER  # 22 + 11 = 33 on current 100-task set
+
 BAKEOFF_MODEL = "gemini-3.6-flash"
 BAKEOFF_LOCATION = "global"  # 3.6 Flash is served from global, not us-central1
 
@@ -22,6 +31,7 @@ MODEL_LOCATION = {
 
 def location_for(model: str) -> str:
     return MODEL_LOCATION.get(model, BAKEOFF_LOCATION)
+
 
 # Vertex list prices USD / 1M tokens (from user brief)
 PRICE = {
