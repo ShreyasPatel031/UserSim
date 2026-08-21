@@ -28,22 +28,19 @@ PROXY_BASE = "http://127.0.0.1:4000/v1"
 PROXY_KEY = "sk-usersim-local"
 
 
-def write_task_file(path: Path) -> list[dict]:
+def build_tasks() -> list[dict]:
     from capability.mini2_tasks import MINI2_TASKS
 
-    tasks = []
-    for i, t in enumerate(MINI2_TASKS):
-        tasks.append(
-            {
-                "web_name": t["website"],
-                "id": f"mini2--{i}",
-                "ques": t["task"],
-                "web": t["start_url"],
-                "task_id": t["task_id"],
-            }
-        )
-    path.write_text("\n".join(json.dumps(t) for t in tasks) + "\n")
-    return tasks
+    return [
+        {
+            "web_name": t["website"],
+            "id": f"mini2--{i}",
+            "ques": t["task"],
+            "web": t["start_url"],
+            "task_id": t["task_id"],
+        }
+        for i, t in enumerate(MINI2_TASKS)
+    ]
 
 
 def main() -> None:
@@ -57,32 +54,55 @@ def main() -> None:
         raise SystemExit(f"Missing {VENDOR}; run setup_webvoyager.sh first")
 
     out_dir = Path(args.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    task_file = out_dir / "mini2_tasks.jsonl"
-    tasks = write_task_file(task_file)
-    print(f"Wrote {len(tasks)} tasks to {task_file}", flush=True)
+    download_dir = out_dir / "downloads"
+    download_dir.mkdir(parents=True, exist_ok=True)
 
     env = dict(os.environ)
     env["OPENAI_BASE_URL"] = PROXY_BASE
     env["OPENAI_API_KEY"] = PROXY_KEY
 
-    cmd = [
-        str(VENV_PY),
-        "run.py",
-        "--test_file", str(task_file),
-        "--api_key", PROXY_KEY,
-        "--api_model", args.model,
-        "--max_iter", str(args.max_iter),
-        "--max_attached_imgs", "3",
-        "--temperature", "0",
-        "--seed", "42",
-        "--headless",
-        "--output_dir", str(out_dir / "runs"),
-        "--download_dir", str(out_dir / "downloads"),
-    ]
-    print("RUN:", " ".join(cmd), flush=True)
-    proc = subprocess.run(cmd, cwd=str(VENDOR), env=env)
-    raise SystemExit(proc.returncode)
+    # One process per task: upstream run.py lets a Selenium exception escape the
+    # task loop, so a crash on one site would otherwise abort the rest.
+    outcomes = []
+    for task in build_tasks():
+        task_file = out_dir / f"task_{task['id'].replace('--', '_')}.jsonl"
+        task_file.write_text(json.dumps(task) + "\n")
+        run_dir = out_dir / "runs" / task["id"].replace("--", "_")
+        cmd = [
+            str(VENV_PY),
+            "run.py",
+            "--test_file", str(task_file),
+            "--api_key", PROXY_KEY,
+            "--api_model", args.model,
+            "--max_iter", str(args.max_iter),
+            "--max_attached_imgs", "3",
+            "--temperature", "0",
+            "--seed", "42",
+            "--headless",
+            "--output_dir", str(run_dir),
+            "--download_dir", str(download_dir),
+        ]
+        print(f"START webvoyager | {task['web_name']} | {task['id']}", flush=True)
+        proc = subprocess.run(cmd, cwd=str(VENDOR), env=env)
+        print(
+            f"DONE  webvoyager | {task['web_name']} | {task['id']} | exit={proc.returncode}",
+            flush=True,
+        )
+        outcomes.append(
+            {
+                "task_id": task["task_id"],
+                "eval_index": task["id"],
+                "website": task["web_name"],
+                "task": task["ques"],
+                "start_url": task["web"],
+                "exit_code": proc.returncode,
+                "run_dir": str(run_dir),
+            }
+        )
+
+    manifest = out_dir / "mini2_outcomes.json"
+    manifest.write_text(json.dumps({"model": args.model, "runs": outcomes}, indent=2))
+    print(f"Wrote {manifest}", flush=True)
 
 
 if __name__ == "__main__":

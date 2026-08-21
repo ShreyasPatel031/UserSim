@@ -20,7 +20,7 @@ if [ ! -d "$VENV" ]; then
 fi
 
 "$VENV/bin/pip" install --upgrade pip
-"$VENV/bin/pip" install "openai>=1.40" "selenium>=4.20" "pillow>=10"
+"$VENV/bin/pip" install "openai>=1.40" "selenium>=4.20" "pillow>=10" numpy
 
 # Selenium locates the browser by name; reuse the Playwright Chromium already
 # on disk instead of installing a second Chrome.
