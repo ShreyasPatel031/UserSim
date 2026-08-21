@@ -1,5 +1,7 @@
 # UI-TARS-2: open code vs open weights (correction)
 
+> Full bakeoff re-check of all models: `OPEN_CUA_MODEL_ASSESSMENT.md`.
+
 **Verdict:** UI-TARS *project* code is open. **UI-TARS-2 model weights are not on Hugging Face / ModelScope.** Do not confuse with **UI-TARS-2B** (2B-parameter v1 checkpoint).
 
 ## Naming trap
