@@ -1,0 +1,14 @@
+model_list:
+  # Exposes Vertex gemini-3.6-flash over an OpenAI-compatible /v1 endpoint so
+  # unmodified OpenAI-based harnesses (WebVoyager et al.) can run against it.
+  - model_name: gemini-3.6-flash
+    litellm_params:
+      model: vertex_ai/gemini-3.6-flash
+      vertex_project: project-amer-scs-sandbox
+      vertex_location: global
+
+litellm_settings:
+  drop_params: true
+
+general_settings:
+  master_key: sk-usersim-local
