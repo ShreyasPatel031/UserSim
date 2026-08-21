@@ -1,0 +1,516 @@
+{
+  "stage": "mini2_harness",
+  "model": "gemini-3.6-flash",
+  "location": "global",
+  "max_actions_budget": 33,
+  "selection": "HAL-validated Online-Mind2Web (see mini2_tasks.py)",
+  "n": 4,
+  "successes": 3,
+  "by_harness": {
+    "browser_use_oss": {
+      "n": 2,
+      "success": 2,
+      "by_status": {
+        "SUCCESS": 2
+      },
+      "avg_actions": 8.0,
+      "cost_usd": 0.403,
+      "failures": {}
+    },
+    "seeact_lite": {
+      "n": 2,
+      "success": 1,
+      "by_status": {
+        "SUCCESS": 1,
+        "FAILURE": 1
+      },
+      "avg_actions": 11.0,
+      "cost_usd": 0.0557,
+      "failures": {
+        "HARNESS": 1
+      }
+    }
+  },
+  "total_cost_usd": 0.4586,
+  "runs": [
+    {
+      "run_id": "bu_mini2_0_91d6f547",
+      "task_id": "c698ff3fc0f6cbce39947c597ab5749b",
+      "eval_index": "mini2_0",
+      "task": "Browse the page with event planning tips on Eventbrite.",
+      "website": "eventbrite",
+      "model": "gemini-3.6-flash",
+      "harness": "browser_use_oss",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://www.eventbrite.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.eventbrite.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.eventbrite.com/', extracted_content='\ud83d\udd17 Navigated to https://www.eventbrite.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=ScrollActionModel(scroll=ScrollAction(down=True, pages=3.0, index=None))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Scrolled down 3.0 pages', extracted_content='\ud83d\udd0d Scrolled down 3.0 pages', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=1968))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Help\"', include_extracted_content_only_once=False, metadata={'click_x': 614.2265625, 'click_y': 747.25}, include_in_memory=False)]",
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=3236))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Blog\". Automatically switched to new tab (tab_id: 5146).', include_extracted_content_only_once=False, metadata={'click_x': 361.328125, 'click_y': 660.390625}, include_in_memory=False)]",
+          "url": "https://www.eventbrite.com/help/en-us/"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=4060))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Tips & Guides\" id=menu-item-dropdown-3', include_extracted_content_only_once=False, metadata={'click_x': 381.6640625, 'click_y': 29.9921875}, include_in_memory=False)]",
+          "url": "https://www.eventbrite.com/blog/"
+        },
+        {
+          "i": 6,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=4092))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Event Planning\"', include_extracted_content_only_once=False, metadata={'click_x': 401.84375, 'click_y': 130.8359375}, include_in_memory=False)]",
+          "url": "https://www.eventbrite.com/blog/"
+        },
+        {
+          "i": 7,
+          "action": [
+            "root=ScrollActionModel(scroll=ScrollAction(down=True, pages=1.5, index=None))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Scrolled down 1.5 pages', extracted_content='\ud83d\udd0d Scrolled down 1.5 pages', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.eventbrite.com/blog/category/event-planning/"
+        },
+        {
+          "i": 8,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text='Navigated to Eventbrite, accessed the Blog section, and successfully opened and browsed the Event Planning tips page (https://www.eventbrite.com/blog/category/event-planning/) featuring various guides, articles, and event management resources.', success=True, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=True, judgement=JudgementResult(reasoning=\"The agent successfully navigated to Eventbrite, found the Blog section via the footer/help area, navigated to 'Tips & Guides' -> 'Event Planning', and scrolled through the page containing event planning tips and articles. All requirements of the user prompt were met concisely and accurately.\", verdict=True, failure_reason='', impossible_task=False, reached_captcha=False), error=None, attachments=[], images=None, long_",
+          "url": "https://www.eventbrite.com/blog/category/event-planning/"
+        }
+      ],
+      "num_actions": 8,
+      "stop_reason": "agent_done",
+      "success": true,
+      "status": "SUCCESS",
+      "judge_reason": "The agent successfully navigated to the Eventbrite blog, then to the 'Event Planning' category page, which displays various tips and guides related to event planning. The final URL and page content match the task's requirements.",
+      "judge_evidence": "The final URL is 'https://www.eventbrite.com/blog/category/event-planning/' and the page title is 'Event Planning Archives - Eventbrite Blog'. The screenshot clearly shows 'EVENT PLANNING' as the main heading and articles related to event planning, confirming the task was completed.",
+      "failure_category": null,
+      "final_url": "https://www.eventbrite.com/blog/category/event-planning/",
+      "final_title": "Event Planning Archives - Eventbrite Blog",
+      "input_tokens": 113265,
+      "output_tokens": 5133,
+      "estimated_cost_usd": 0.2096711,
+      "trace_dir": "/workspace/results/capability/traces/bu_mini2_0_91d6f547",
+      "created_at": "2026-08-21T08:04:55.092679+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "bu_mini2_1_041fdf29",
+      "task_id": "b320c68bffc1f3c7f2a8dc9d5478fb27",
+      "eval_index": "mini2_1",
+      "task": "Find a walkthrough for the game \"The Legend of Zelda: Breath of the Wild\" on ign.",
+      "website": "ign",
+      "model": "gemini-3.6-flash",
+      "harness": "browser_use_oss",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://www.ign.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.ign.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.ign.com/', extracted_content='\ud83d\udd17 Navigated to https://www.ign.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=151))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button', include_extracted_content_only_once=False, metadata={'click_x': 29.5, 'click_y': 32.0}, include_in_memory=False)]",
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=89))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button \"Search\"', include_extracted_content_only_once=False, metadata={'click_x': 147.0, 'click_y': 427.640625}, include_in_memory=False)]",
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=InputActionModel(input=InputTextAction(index=2826, text='The Legend of Zelda Breath of the Wild walkthrough', clear=True))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Typed 'The Legend of Zelda Breath of the Wild walkthrough'\", extracted_content=\"Typed 'The Legend of Zelda Breath of the Wild walkthrough'\", include_extracted_content_only_once=False, metadata={'input_x': 640.0, 'input_y': 254.0390625}, include_in_memory=False)]",
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=SendKeysActionModel(send_keys=SendKeysAction(keys='Enter'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Sent keys: Enter', extracted_content='Sent keys: Enter', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 6,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=3274))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Zelda: Breath of the Wild\\nNint...\"', include_extracted_content_only_once=False, metadata={'click_x': 637.0, 'click_y': 360.234375}, include_in_memory=False)]",
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 7,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=4430))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Walkthrough\"', include_extracted_content_only_once=False, metadata={'click_x': 707.8359375, 'click_y': 399.53125}, include_in_memory=False)]",
+          "url": "https://www.ign.com/games/the-legend-of-zelda-breath-of-the-wild"
+        },
+        {
+          "i": 8,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I have found and navigated to the walkthrough for 'The Legend of Zelda: Breath of the Wild' on IGN at https://www.ign.com/wikis/the-legend-of-zelda-breath-of-the-wild/Walkthrough.\", success=True, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=True, judgement=JudgementResult(reasoning=\"The agent navigated to IGN, searched for 'The Legend of Zelda: Breath of the Wild', selected the game, and navigated directly to its Walkthrough page. The final screenshot confirms that the agent reached the official Walkthrough guide page for the specified game on IGN.\", verdict=True, failure_reason='', impossible_task=False, reached_captcha=False), error=None, attachments=[], images=None, long_term_memory=\"Task comp",
+          "url": "https://www.ign.com/wikis/the-legend-of-zelda-breath-of-the-wild/Walkthrough"
+        }
+      ],
+      "num_actions": 8,
+      "stop_reason": "agent_done",
+      "success": true,
+      "status": "SUCCESS",
+      "judge_reason": "The agent successfully navigated to the walkthrough page for 'The Legend of Zelda: Breath of the Wild' on IGN. The final URL and page title confirm this.",
+      "judge_evidence": "The final URL is 'https://www.ign.com/wikis/the-legend-of-zelda-breath-of-the-wild/Walkthrough' and the page title is 'Walkthrough - The Legend of Zelda: Breath of the Wild Guide - IGN'. The screenshot also clearly shows 'Walkthrough' as the main heading and 'The Legend of Zelda: Breath of the Wild' in the breadcrumbs.",
+      "failure_category": null,
+      "final_url": "https://www.ign.com/wikis/the-legend-of-zelda-breath-of-the-wild/Walkthrough",
+      "final_title": "Walkthrough - The Legend of Zelda: Breath of the Wild Guide - IGN",
+      "input_tokens": 107052,
+      "output_tokens": 4185,
+      "estimated_cost_usd": 0.1932935,
+      "trace_dir": "/workspace/results/capability/traces/bu_mini2_1_041fdf29",
+      "created_at": "2026-08-21T08:04:41.492189+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "sa_mini2_0_25eeb2d9",
+      "task_id": "c698ff3fc0f6cbce39947c597ab5749b",
+      "eval_index": "mini2_0",
+      "task": "Browse the page with event planning tips on Eventbrite.",
+      "website": "eventbrite",
+      "model": "gemini-3.6-flash",
+      "harness": "seeact_lite",
+      "observation_mode": "seeact_lite_axtree",
+      "start_url": "https://www.eventbrite.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": {
+            "action": "SCROLL",
+            "element_index": null,
+            "text": null,
+            "reason": "Scroll down to find footer links for event planning resources or blog."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 2,
+          "action": {
+            "action": "SCROLL",
+            "element_index": null,
+            "text": null,
+            "reason": "Scroll down to find footer links or organizer resources for event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 3,
+          "action": {
+            "action": "SCROLL",
+            "element_index": null,
+            "text": null,
+            "reason": "Scroll down to locate resource links or footer for event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 4,
+          "action": {
+            "action": "SCROLL",
+            "element_index": null,
+            "text": null,
+            "reason": "Scroll down to locate footer links for blog, resources, or event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 5,
+          "action": {
+            "action": "SCROLL",
+            "element_index": null,
+            "text": null,
+            "reason": "Scroll down to see footer links or organizer resources for event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 6,
+          "action": {
+            "action": "SCROLL",
+            "element_index": null,
+            "reason": "Scroll down to look for footer links or resources section related to event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 7,
+          "action": {
+            "action": "SCROLL",
+            "element_index": null,
+            "text": null,
+            "reason": "Scroll down to check footer for blog or resources related to event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 8,
+          "action": {
+            "action": "SCROLL",
+            "element_index": null,
+            "text": null,
+            "reason": "Scroll down to look for footer links related to event planning tips or blog/resources."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 9,
+          "action": {
+            "action": "SCROLL",
+            "element_index": null,
+            "text": null,
+            "reason": "Scroll down to check footer links or resources for event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 10,
+          "action": {
+            "action": "SCROLL",
+            "element_index": null,
+            "text": null,
+            "reason": "Scroll down to see footer links or organizer resources related to event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 11,
+          "action": {
+            "action": "CLICK",
+            "element_index": 6,
+            "text": null,
+            "reason": "Navigate to organizer overview to find event planning tips and resources."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/"
+        },
+        {
+          "i": 12,
+          "action": {
+            "action": "CLICK",
+            "element_index": 4,
+            "text": null,
+            "reason": "Click Resources dropdown menu to look for event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/organizer/overview/"
+        },
+        {
+          "i": 13,
+          "action": {
+            "action": "CLICK",
+            "element_index": 6,
+            "text": null,
+            "reason": "Navigate to the Organizer Resource Hub which contains event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/organizer/overview/"
+        },
+        {
+          "i": 14,
+          "action": {
+            "action": "CLICK",
+            "element_index": 8,
+            "text": null,
+            "reason": "Navigate to the Event Planning resources page."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/resources/"
+        },
+        {
+          "i": 15,
+          "action": {
+            "action": "CLICK",
+            "element_index": 8,
+            "text": null,
+            "reason": "Click on Event Planning link to browse event planning tips."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/resources/"
+        },
+        {
+          "i": 16,
+          "action": {
+            "action": "DONE",
+            "element_index": null,
+            "text": null,
+            "reason": "Successfully navigated to the Eventbrite event planning tips page."
+          },
+          "result": null,
+          "url": "https://www.eventbrite.com/resources/event-planning/"
+        }
+      ],
+      "num_actions": 16,
+      "stop_reason": "agent_done",
+      "success": true,
+      "status": "SUCCESS",
+      "judge_reason": "The final URL and page content clearly indicate that the agent successfully navigated to the Eventbrite page dedicated to event planning tips, as requested by the task.",
+      "judge_evidence": "The final URL is 'https://www.eventbrite.com/resources/event-planning/' and the page title is 'Event Planning: Getting Started Today | Eventbrite'. The screenshot also shows a page titled 'Event Planning' with articles related to event planning.",
+      "failure_category": null,
+      "final_url": "https://www.eventbrite.com/resources/event-planning/",
+      "final_title": "Event Planning: Getting Started Today | Eventbrite",
+      "input_tokens": 21763,
+      "output_tokens": 669,
+      "estimated_cost_usd": 0.038778,
+      "trace_dir": "/workspace/results/capability/traces/sa_mini2_0_25eeb2d9",
+      "created_at": "2026-08-21T08:05:26.690066+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "sa_mini2_1_081b77b9",
+      "task_id": "b320c68bffc1f3c7f2a8dc9d5478fb27",
+      "eval_index": "mini2_1",
+      "task": "Find a walkthrough for the game \"The Legend of Zelda: Breath of the Wild\" on ign.",
+      "website": "ign",
+      "model": "gemini-3.6-flash",
+      "harness": "seeact_lite",
+      "observation_mode": "seeact_lite_axtree",
+      "start_url": "https://www.ign.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": {
+            "action": "CLICK",
+            "element_index": 0,
+            "text": null,
+            "reason": "Click search or menu button to find the search bar for the walkthrough."
+          },
+          "result": null,
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 2,
+          "action": {
+            "action": "CLICK",
+            "element_index": 2,
+            "text": null,
+            "reason": "Click search/menu button to search for Breath of the Wild walkthrough"
+          },
+          "result": null,
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 3,
+          "action": {
+            "action": "CLICK",
+            "element_index": 9,
+            "text": null,
+            "reason": "Click search button to open the search bar."
+          },
+          "result": null,
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 4,
+          "action": {
+            "action": "CLICK",
+            "element_index": 2,
+            "text": null,
+            "reason": "Click on the button near header to open search/menu bar."
+          },
+          "result": null,
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 5,
+          "action": {
+            "action": "CLICK",
+            "element_index": 9,
+            "text": null,
+            "reason": "Click search button to open search input for game walkthrough."
+          },
+          "result": null,
+          "url": "https://www.ign.com/"
+        },
+        {
+          "i": 6,
+          "action": {
+            "action": "FAIL",
+            "reason": "bad_json:{\"action\": \"CLICK\", \"element_index\": 2"
+          },
+          "result": null,
+          "url": "https://www.ign.com/"
+        }
+      ],
+      "num_actions": 6,
+      "stop_reason": "model_fail:bad_json:{\"action\": \"CLICK\", \"element_index\": 2",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The agent did not successfully search for or navigate to a walkthrough for \"The Legend of Zelda: Breath of the Wild\". The final screenshot shows a search bar, but no search has been performed.",
+      "judge_evidence": "The final screenshot shows a search overlay with a search bar, but no text has been entered into the search bar, and no search results are displayed. The task requires finding a walkthrough, which has not been achieved.",
+      "failure_category": "HARNESS",
+      "final_url": "https://www.ign.com/",
+      "final_title": "Video Game News, Reviews, and Walkthroughs - IGN",
+      "input_tokens": 9185,
+      "output_tokens": 289,
+      "estimated_cost_usd": 0.0169006,
+      "trace_dir": "/workspace/results/capability/traces/sa_mini2_1_081b77b9",
+      "created_at": "2026-08-21T08:05:20.009226+00:00",
+      "max_actions_budget": 33
+    }
+  ]
+}
