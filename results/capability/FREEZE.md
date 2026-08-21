@@ -40,10 +40,14 @@ VIEWPORT:     1280x800
 3. Failure audit → `results/capability/FAILURE_AUDIT.md`  
 4. **Hard-20** → `results/capability/hard20.json` — Flash **0/20** by construction  
 
-## Next (capability, not UserSim yet)
+## Next (capability, not UserSim yet) — UPDATED 2026-08-21
 
-1. Optional: 40-step rerun on Hard-20 `STEP_CAP` tasks only  
-2. Stronger Vertex model on Hard-20 + Browser Use  
-3. Resume UserSim human-calibration **only after** Hard-20 shows real site operation  
+**Do not** escalate Browser Use → Pro/Sonnet as the default path.
 
-See also: `results/capability/failure_audit_45.json`
+1. **$0:** Exploit open ecosystem — SeeAct code, Online-Mind2Web tasks/WebJudge, HAL leaderboard traces  
+   → see `results/capability/open_ecosystem/OPEN_ECOSYSTEM_ANALYSIS.md`  
+2. Smallest test: SeeAct + 3.6 Flash (or ported two-stage/SoM grounding) on **2–3** multi-filter tasks  
+3. Switch eval set to **Online-Mind2Web** (maintained; CAPTCHA/outdated tasks replaced)  
+4. Resume UserSim human-calibration **only after** the borrowed capability layer works  
+
+See also: `results/capability/failure_audit_45.json`, `hard20.json`
