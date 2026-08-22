@@ -6,7 +6,7 @@ import json
 import math
 from pathlib import Path
 
-from config import RESULTS_DIR, ROOT
+from config import GCP_LOCATION, MODEL, RESULTS_DIR, ROOT
 
 VIEWPORT = {"width": 1280, "height": 800}
 
@@ -17,10 +17,10 @@ MAX_HUMAN_STEPS = max(int(t.get("n_steps") or 0) for t in _TASKS)
 ACTION_BUFFER = max(10, math.ceil(0.5 * MAX_HUMAN_STEPS))
 MAX_ACTIONS = MAX_HUMAN_STEPS + ACTION_BUFFER  # 22 + 11 = 33 on current 100-task set
 
-BAKEOFF_MODEL = "gemini-3.6-flash"
-BAKEOFF_LOCATION = "global"  # 3.6 Flash is served from global, not us-central1
+# Default agent model for all capability testing (matches config.MODEL / judge).
+BAKEOFF_MODEL = MODEL
+BAKEOFF_LOCATION = GCP_LOCATION  # us-central1 for 2.5 Flash
 
-# Prefer regional for 2.5 Flash; fall back to global for 3.x
 MODEL_LOCATION = {
     "gemini-3.6-flash": "global",
     "gemini-3-flash-preview": "global",
@@ -46,7 +46,7 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def cost_usd(model: str, prompt_tokens: int, output_tokens: int) -> float:
-    p = PRICE.get(model, PRICE["gemini-3.6-flash"])
+    p = PRICE.get(model, PRICE[MODEL])
     return prompt_tokens / 1e6 * p["in"] + output_tokens / 1e6 * p["out"]
 
 

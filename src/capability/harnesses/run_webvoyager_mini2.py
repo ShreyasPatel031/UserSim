@@ -1,4 +1,4 @@
-"""Run upstream WebVoyager on Mini-2 against Vertex gemini-3.6-flash.
+"""Run upstream WebVoyager on Mini-2 against Vertex gemini-2.5-flash.
 
 WebVoyager talks plain OpenAI, so it needs no patching at all: a litellm proxy
 (see litellm_vertex_proxy.yaml) exposes Vertex on an OpenAI-compatible endpoint
@@ -21,6 +21,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "src"))
+
+from capability import BAKEOFF_MODEL  # noqa: E402
 
 VENDOR = ROOT / "vendor" / "WebVoyager"
 VENV_PY = ROOT / ".venv-webvoyager" / "bin" / "python"
@@ -45,7 +47,7 @@ def build_tasks() -> list[dict]:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Upstream WebVoyager on Mini-2")
-    ap.add_argument("--model", default="gemini-3.6-flash")
+    ap.add_argument("--model", default=BAKEOFF_MODEL)
     ap.add_argument("--max-iter", type=int, default=33)
     ap.add_argument("--out-dir", default=str(ROOT / "results" / "capability" / "webvoyager"))
     args = ap.parse_args()

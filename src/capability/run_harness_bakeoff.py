@@ -1,4 +1,4 @@
-"""Mini-2 capability smoke: gemini-3.6-flash + Browser Use OSS.
+"""Mini-2 capability smoke: gemini-2.5-flash + Browser Use OSS.
 
 Tasks are Online-Mind2Web items validated on strong HAL agents (see mini2_tasks.py).
 Keep this probe tiny — not Hard-20.
@@ -91,7 +91,7 @@ def _run_one(task: dict, model: str, max_actions: int) -> dict:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Mini-2 Browser Use smoke (3.6 Flash)")
+    ap = argparse.ArgumentParser(description="Mini-2 Browser Use smoke (2.5 Flash)")
     ap.add_argument("--model", default=BAKEOFF_MODEL)
     ap.add_argument("--max-actions", type=int, default=MAX_ACTIONS)
     ap.add_argument("--workers", type=int, default=2)
