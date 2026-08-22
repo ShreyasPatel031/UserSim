@@ -2,6 +2,8 @@
 
 The point is the hack, not reproducing OpenWebRL’s 300 GPU-hour RL loop. Ship a demo where **Mistral browses the live web** on OM2W Mini-2, with a believable “we built this overnight” story.
 
+> **Actually fine-tuning Mistral for computer use:** see **`MISTRAL_CUA_FINETUNE_PLAN.md`** — Ministral-3-3B (Apache 2.0, vision) + LoRA on the web subset of Aguvis Stage 2, ~$30–60 total. The API tracks below are the fallback / baseline.
+
 ## Three viable hacks (pick 1–2)
 
 ### 1. Pixtral sees, Browser Use acts (fastest demo)
