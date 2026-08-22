@@ -10,9 +10,13 @@
 
 ## Serve on GPU (T4 / L4)
 
+**Torch pin (T4 VM):** `torch==2.6.0+cu124` — `torch 2.13` breaks vLLM import (`duplicate template name` inductor bug).
+
 ```bash
-# Fara — official stack
-pip install vllm  # pin per microsoft/fara if needed
+source ~/usersim/.venv/bin/activate
+pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cu124
+pip install "vllm>=0.19.1"
+```
 vllm serve /workspace/data/models/Fara1.5-4B \
   --host 0.0.0.0 --port 8000 \
   --dtype bfloat16 --max-model-len 32768
