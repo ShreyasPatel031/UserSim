@@ -2,13 +2,22 @@
 
 Everything from the cloud agent is on GitHub. **You** open it on your machine; the cloud VM cannot do that for you.
 
-## 1. Clone + branch (30 seconds)
+## 1. Clone + branch (fast — ~3 MB)
+
+**Cancel a slow full clone** (Ctrl+C) and use shallow clone instead:
 
 ```bash
-git clone https://github.com/ShreyasPatel031/UserSim.git
+git clone --depth 1 --branch cursor/capability-bakeoff-781d \
+  https://github.com/ShreyasPatel031/UserSim.git
 cd UserSim
+```
+
+Or if you already cloned:
+
+```bash
 git fetch origin cursor/capability-bakeoff-781d
 git checkout cursor/capability-bakeoff-781d
+git pull
 ```
 
 ## 2. Bootstrap (venv, deps, Playwright)
