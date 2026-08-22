@@ -299,6 +299,22 @@ def main() -> int:
                 c.should_training_stop = True
             return c
 
+    class LossLog(TrainerCallback):
+        """Transformers' progress callback drops metrics when stdout is not a TTY."""
+
+        def __init__(self, path):
+            self.path = Path(path)
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+
+        def on_log(self, a, s, c, logs=None, **kw):
+            if not logs:
+                return c
+            row = {"step": s.global_step, **logs}
+            log("METRICS " + json.dumps(row))
+            with self.path.open("a") as f:
+                f.write(json.dumps(row) + "\n")
+            return c
+
     total_steps = max(1, int(len(train_ds) / (args.micro_batch * args.grad_accum) * args.epochs))
     targs = TrainingArguments(
         output_dir=args.out,
@@ -319,6 +335,7 @@ def main() -> int:
         dataloader_num_workers=4,
         remove_unused_columns=False,
         label_names=["labels"],
+        disable_tqdm=True,
         report_to="none",
     )
     trainer = Trainer(
@@ -326,7 +343,7 @@ def main() -> int:
         args=targs,
         train_dataset=train_ds,
         data_collator=make_collate(pad_id),
-        callbacks=[TimeBudget()],
+        callbacks=[TimeBudget(), LossLog(Path.home() / "usersim" / "logs" / "loss.jsonl")],
     )
     steps = len(train_ds) // (args.micro_batch * args.grad_accum)
     log(f"begin training | ~{steps} optimizer steps")

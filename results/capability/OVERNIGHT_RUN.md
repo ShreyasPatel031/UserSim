@@ -1,6 +1,8 @@
 # Overnight SFT run — Ministral-3-3B → web CUA
 
-**Launched:** 2026-08-22 10:55 UTC · **ETA:** ~15:30 UTC (~4.5 h train + merge/eval/upload)
+**Launched:** 2026-08-22 11:03 UTC · **ETA:** ~15:50 UTC (~4.5 h train + merge/eval/upload)
+
+**Early health check:** loss 1.51 → 1.01 over the first 20 steps, GPU pinned at 100%. Learning.
 
 ## What is running
 
@@ -33,6 +35,10 @@ export CLOUDSDK_CORE_PROJECT=project-amer-scs-sandbox
 
 # Fastest signal: did the weights land?
 gsutil ls gs://ai-studio-bucket-347838016394-us-east1/usersim-models/Ministral3-3B-CUA-web
+
+# Loss curve (written every 10 steps, independent of transformers' logger)
+gcloud compute ssh usersim-a100-sft --zone=us-central1-b --tunnel-through-iap \
+  --command='tail -20 ~/usersim/logs/loss.jsonl'
 
 # Held-out grounding score
 gsutil cat gs://.../Ministral3-3B-CUA-web/eval_summary.json
@@ -89,3 +95,5 @@ normalized `[0,1]`, so multiply by the real viewport to get pixels.
   unconditionally, so it was pinned back to 2.9.1
 - Fixed-size 200-sample holdout consumed the entire smoke set → holdout is now proportional
 - `TrainingArguments.warmup_ratio` was removed in transformers 5 → `warmup_steps`
+- transformers 5's progress callback drops metrics when stdout is not a TTY, so nothing was
+  logged overnight → added a `LossLog` callback writing `loss.jsonl` plus `disable_tqdm=True`
