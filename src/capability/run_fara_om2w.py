@@ -95,7 +95,12 @@ async def _run_one(
         if final_answer:
             summary += f"\nFinal answer: {final_answer}"
         try:
-            final_url = env.page.url if getattr(env, "page", None) else task["start_url"]
+            url = ""
+            for ev in run_context.solver_log.events:
+                u = getattr(ev, "url", None)
+                if u:
+                    url = u
+            final_url = url or task["start_url"]
         except Exception:
             final_url = task["start_url"]
         shots = sorted(run_dir.glob("screenshot_*.png"))
