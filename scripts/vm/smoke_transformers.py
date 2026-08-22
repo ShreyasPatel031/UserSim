@@ -33,8 +33,13 @@ def main() -> int:
 
     messages = [{"role": "user", "content": content}]
     inputs = processor.apply_chat_template(
-        messages, tokenize=True, add_generation_prompt=True, return_tensors="pt"
-    ).to(model.device)
+        messages,
+        tokenize=True,
+        add_generation_prompt=True,
+        return_dict=True,
+        return_tensors="pt",
+    )
+    inputs = {k: v.to(model.device) for k, v in inputs.items()}
     out = model.generate(**inputs, max_new_tokens=32, do_sample=False)
     text = processor.decode(out[0], skip_special_tokens=True)
     print(text)
