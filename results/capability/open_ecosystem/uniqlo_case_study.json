@@ -1,0 +1,80 @@
+{
+  "case_study": "uniqlo",
+  "hal_success": {
+    "hal_source": "seeact_gpt5",
+    "task_id": "b7a9a6b5d451164c09bbd27b670bc2ae",
+    "website": "https://www.uniqlo.com/",
+    "task": "Show me the list of Men's Blazers, Black, Size M on Uniqlo.",
+    "num_step": 12,
+    "exit_by": "The model determined a completion.",
+    "action_history": [
+      "[a role=\"tab\"] men -> CLICK",
+      "[button] Outerwear -> CLICK",
+      "[button] parent_node: Innerwear & Underwear aria-label=\"back\" -> CLICK",
+      "[button] Outerwear -> CLICK",
+      "[a] Blazers -> CLICK",
+      "[button] Close dialog -> CLICK",
+      "[div] Category -> CLICK",
+      "[div] Color -> CLICK",
+      "[span] BLACK -> CLICK",
+      "[div] Size -> CLICK",
+      "[span] M -> CLICK",
+      "[button] parent_node: Results: 1 items -> CLICK"
+    ],
+    "key_points": "\n1. Category: Men's Blazers\n2. Color: Black\n3. Size: M\n4. Platform: Uniqlo",
+    "thought_step0_generation": "(Current Webpage Identification)\n- I\u2019m on the Uniqlo homepage with the top navigation showing WOMEN, MEN, KIDS, BABY.\n\n(Previous Action Analysis)\n- No prior actions are listed/evident, so I\u2019m starting from the homepage. No typing occurred that would require confirmation.\n\n(Screenshot Details Analysis)\n- The top nav is visible. To find Men\u2019s Blazers, the first step is to go to the MEN section.\n\n(Next Action Based on Webpage and Analysis)\n- Target element: \u201cMEN\u201d link in the top navigation bar (top center of the page, between WOMEN and KIDS).\n- Operation: click()\n\nAction: click on the \u201cMEN\u201d navigation link at the top center.",
+    "thought_step0_grounding": "(Reiteration)\n- Target element: \u201cMEN\u201d navigation link.\n- Location: Top navigation bar, centered near the top of the page, between \u201cWOMEN\u201d and \u201cKIDS\u201d.\n- Operation: CLICK.\n\n(Multichoice Question)\nThe element that matches the target is E. It is the \u201cmen\u201d tab link in the top navigation.\n\nELEMENT: E\nACTION: CLICK\nVALUE: None"
+  },
+  "our_failures": [
+    {
+      "eval_index": 9,
+      "task": "Add two pairs of women's Pink sweet pants in XXL size to your cart and view your cart.",
+      "primary_cause": "GROUNDING",
+      "rationale": "Claimed add-to-cart \u00d72 but cart page empty \u2014 click/add did not stick",
+      "num_actions": 14,
+      "human_n_steps": 13
+    },
+    {
+      "eval_index": 19,
+      "task": "Show me the list of baby products that are on sale and under 10 dollars.",
+      "primary_cause": "PREMATURE_DONE",
+      "rationale": "Baby sale page without under-$10 filter; agent claimed list complete",
+      "num_actions": 6,
+      "human_n_steps": 4
+    },
+    {
+      "eval_index": 94,
+      "task": "Find all Uniqlo's located in Chicago, IL.",
+      "primary_cause": "RECOVERY",
+      "rationale": "Left Uniqlo store locator; hallucinated store list via DuckDuckGo",
+      "num_actions": 9,
+      "human_n_steps": 5
+    }
+  ],
+  "leaderboard_snapshot": [
+    {
+      "scaffold": "SeeAct",
+      "model": "GPT-5 Medium",
+      "acc": 0.4233,
+      "cost_usd": 171.07
+    },
+    {
+      "scaffold": "Browser-Use",
+      "model": "Claude Sonnet 4",
+      "acc": 0.4,
+      "cost_usd": 1577.26
+    },
+    {
+      "scaffold": "SeeAct",
+      "model": "Gemini 2.0 Flash",
+      "acc": 0.2667,
+      "cost_usd": 5.03
+    },
+    {
+      "scaffold": "Browser-Use",
+      "model": "Gemini 2.0 Flash",
+      "acc": 0.29,
+      "cost_usd": 8.83
+    }
+  ]
+}

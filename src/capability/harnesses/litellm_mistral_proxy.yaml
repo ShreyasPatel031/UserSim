@@ -1,0 +1,15 @@
+model_list:
+  - model_name: pixtral-large-2411
+    litellm_params:
+      model: mistral/pixtral-large-2411
+      api_key: os.environ/MISTRAL_API_KEY
+  - model_name: mistral-medium-2508
+    litellm_params:
+      model: mistral/mistral-medium-2508
+      api_key: os.environ/MISTRAL_API_KEY
+
+litellm_settings:
+  drop_params: true
+
+general_settings:
+  master_key: sk-usersim-local
