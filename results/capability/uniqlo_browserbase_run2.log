@@ -1,0 +1,182 @@
+Mistral bakeoff | 1/1 tasks | workers=1 | model=mistral-small-2603 -> one_mistral_browserbase-smoke2.json
+START mistral | uniqlo | idx=19 | model=mistral-small-2603
+INFO     [service] Using anonymized telemetry, see https://docs.browser-use.com/development/monitoring/telemetry.
+INFO     [Agent] 🔗 Found URL in task: https://www.uniqlo.com/us/en/, adding as initial action...
+INFO     [Agent] 💬 Saving conversation to ~/Desktop/Code/UserSim/results/capability/traces/mistral_19_ce625d78/conversation
+INFO     [Agent] [34m🎯 Task: You are a capable web agent. Complete the user's task fully. Satisfy every constraint in the task (filters, values, final actions). Do not stop early once you reach a related category page. Use up to the allowed number of browser actions. When the task is fully complete, stop and briefly state what you accomplished.
+
+Open https://www.uniqlo.com/us/en/ if not already there.
+Task: Show me the list of baby products that are on sale and under 10 dollars.
+Satisfy every constraint. Stop only when fully done.[0m
+INFO     [Agent] Starting a browser-use agent with version 0.13.8, with provider=openai and model=mistral-small-2603
+INFO     [BrowserSession] Setting viewport to 1280x800 with device scale factor 1.0 whereas original device scale factor was 1.0
+INFO     [Agent]   ▶️   [34mnavigate[0m: [35murl[0m: https://www.uniqlo.com/us/en/, [35mnew_tab[0m: False
+WARNING  [BrowserSession] ⚠️ Page readiness timeout (8.0s, 8438ms) for https://www.uniqlo.com/us/en/
+WARNING  [bubus] ⚠️ EventBus_64bc494b🟢(⏳ 0 | ▶️ 2 | ✅ 8 ➡️ 31 👂) handler browser_use.browser.watchdog_base.BrowserSession.on_NavigateToUrlEvent() has been running for >15s on event. Possible slow processing or deadlock.
+(handler could be trying to await its own result or could be blocked by another async task).
+browser_use.browser.watchdog_base.BrowserSession.on_NavigateToUrlEvent(?▶ NavigateToUrlEvent#55e7 🏃)
+WARNING  [bubus] ================================================================================
+WARNING  [bubus] ⏱️  TIMEOUT ERROR - Handling took more than 10.0s for EventBus_64bc494b.browser_use.browser.watchdog_base.BrowserSession.on_AgentFocusChangedEvent(?▶ AgentFocusChangedEvent#690d 🏃)
+WARNING  [bubus] ================================================================================
+WARNING  [bubus] 📣 NavigateToUrlEvent#55e7                                             [93m18s[0m
+WARNING  [bubus]    ➡️ browser_use.browser.watchdog_base.BrowserSession.on_NavigateToUrlEvent(#55e7) ⏳ [93m18s[0m/30s  
+WARNING  [bubus]       📣 NavigationStartedEvent#fac1                                   [91m18s[0m
+WARNING  [bubus]       📣 NavigationCompleteEvent#961d                                  [93m10s[0m
+WARNING  [bubus]          ☑️ browser_use.browser.watchdog_base.DownloadsWatchdog.on_NavigationCompleteEvent(#961d)    [92m 0s[0m/30s   ✓
+WARNING  [bubus]          ☑️ browser_use.browser.watchdog_base.SecurityWatchdog.on_NavigationCompleteEvent(#961d)    [92m 0s[0m/30s   ✓
+WARNING  [bubus]       📣 AgentFocusChangedEvent#690d                                   [93m10s[0m
+WARNING  [bubus]          ⏰ browser_use.browser.watchdog_base.BrowserSession.on_AgentFocusChangedEvent(#690d) ⌛️ [91m10s[0m/[91m10s[0m   ⬅️ [91mTIMEOUT HERE[0m ⏰
+WARNING  [bubus]          🔜 browser_use.browser.watchdog_base.RecordingWatchdog.on_AgentFocusChangedEvent(#690d) 🔜    /10s  
+WARNING  [bubus]    🔜 browser_use.browser.watchdog_base.SecurityWatchdog.on_NavigateToUrlEvent(#55e7) 🔜    /30s  
+WARNING  [bubus] 
+================================================================================
+
+WARNING  [bubus] ⚠️ EventBus_64bc494b🟢(⏳ 1 | ▶️ 1 | ✅ 10 ➡️ 31 👂) handler browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent() has been running for >15s on event. Possible slow processing or deadlock.
+(handler could be trying to await its own result or could be blocked by another async task).
+browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent(?▶ BrowserStateRequestEvent#c2ed 🏃)
+WARNING  [BrowserSession] 🔌 CDP WebSocket message handler exited unexpectedly (connection closed)
+WARNING  [BrowserSession] 🔄 WebSocket reconnection attempt 1/3...
+Future exception was never retrieved
+future: <Future finished exception=ConnectionError('Client is stopping')>
+ConnectionError: Client is stopping
+Future exception was never retrieved
+future: <Future finished exception=ConnectionError('Client is stopping')>
+ConnectionError: Client is stopping
+Future exception was never retrieved
+future: <Future finished exception=ConnectionError('Client is stopping')>
+ConnectionError: Client is stopping
+INFO     [BrowserSession] [SessionManager] Cleared all owned data (targets, sessions, mappings)
+WARNING  [utils] Exception in background task [get_snapshot]: ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+Traceback (most recent call last):
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/cdp_use/cdp/domsnapshot/library.py", line 84, in captureSnapshot
+    await self._client.send_raw(
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/browser/_cdp_timeout.py", line 115, in send_raw
+    return await asyncio.wait_for(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/cdp_use/client.py", line 386, in send_raw
+    await self.ws.send(json.dumps(msg))
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/websockets/asyncio/connection.py", line 476, in send
+    async with self.send_context():
+               ^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/websockets/asyncio/connection.py", line 957, in send_context
+    raise self.protocol.close_exc from original_exc
+websockets.exceptions.ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+WARNING  [utils] Exception in background task [get_dom_tree]: ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+Traceback (most recent call last):
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/cdp_use/cdp/dom/library.py", line 277, in getDocument
+    await self._client.send_raw(
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/browser/_cdp_timeout.py", line 115, in send_raw
+    return await asyncio.wait_for(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/cdp_use/client.py", line 386, in send_raw
+    await self.ws.send(json.dumps(msg))
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/websockets/asyncio/connection.py", line 476, in send
+    async with self.send_context():
+               ^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/websockets/asyncio/connection.py", line 957, in send_context
+    raise self.protocol.close_exc from original_exc
+websockets.exceptions.ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+WARNING  [utils] Exception in background task [get_ax_tree]: ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+Traceback (most recent call last):
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/dom/service.py", line 361, in _get_ax_tree_for_all_frames
+    frame_tree = await cdp_session.cdp_client.send.Page.getFrameTree(session_id=cdp_session.session_id)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/cdp_use/cdp/page/library.py", line 351, in getFrameTree
+    await self._client.send_raw(
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/browser/_cdp_timeout.py", line 115, in send_raw
+    return await asyncio.wait_for(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/cdp_use/client.py", line 386, in send_raw
+    await self.ws.send(json.dumps(msg))
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/websockets/asyncio/connection.py", line 476, in send
+    async with self.send_context():
+               ^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/websockets/asyncio/connection.py", line 957, in send_context
+    raise self.protocol.close_exc from original_exc
+websockets.exceptions.ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+WARNING  [BrowserSession] CDP request snapshot failed with exception: sent 1011 (internal error) keepalive ping timeout; no close frame received
+WARNING  [BrowserSession] CDP request dom_tree failed with exception: sent 1011 (internal error) keepalive ping timeout; no close frame received
+WARNING  [BrowserSession] CDP request ax_tree failed with exception: sent 1011 (internal error) keepalive ping timeout; no close frame received
+ERROR    [BrowserSession] Failed to build DOM tree without highlights: CDP requests failed or timed out: snapshot, dom_tree
+ERROR    [BrowserSession] Exception in background task [build_dom_tree]: TimeoutError: CDP requests failed or timed out: snapshot, dom_tree
+Traceback (most recent call last):
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/utils.py", line 459, in wrapper
+    result = await func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/observability.py", line 73, in async_wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/browser/watchdogs/dom_watchdog.py", line 570, in _build_dom_tree_without_highlights
+    self.current_dom_state, self.enhanced_dom_tree, timing_info = await self._dom_service.get_serialized_dom_tree(
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/observability.py", line 73, in async_wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/dom/service.py", line 1115, in get_serialized_dom_tree
+    enhanced_dom_tree, dom_tree_timing = await self.get_dom_tree(
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/observability.py", line 73, in async_wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/dom/service.py", line 733, in get_dom_tree
+    trees = await self._get_all_trees(target_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/dom/service.py", line 654, in _get_all_trees
+    raise TimeoutError(f'CDP requests failed or timed out: {", ".join(failed)}')
+TimeoutError: CDP requests failed or timed out: snapshot, dom_tree
+WARNING  [BrowserSession] 🔍 DOMWatchdog.on_BrowserStateRequestEvent: DOM build failed: CDP requests failed or timed out: snapshot, dom_tree, using minimal state
+WARNING  [BrowserSession] 🔄 Reconnection attempt 1 failed: InvalidStatus: server rejected WebSocket connection: HTTP 410
+WARNING  [BrowserSession] 🔄 WebSocket reconnection attempt 2/3...
+WARNING  [BrowserSession] 🔄 Reconnection attempt 2 failed: InvalidStatus: server rejected WebSocket connection: HTTP 410
+WARNING  [BrowserSession] 🔄 WebSocket reconnection attempt 3/3...
+WARNING  [BrowserSession] 🔄 Reconnection attempt 3 failed: InvalidStatus: server rejected WebSocket connection: HTTP 410
+ERROR    [BrowserSession] 🔄 All 3 reconnection attempts failed
+ERROR    [bubus] ❌ EventBus_64bc494b🟢(⏳ 5 | ▶️ 1 | ✅ 11 ➡️ 31 👂) Error in event handler browser_use.browser.watchdog_base.DownloadsWatchdog.on_NavigationCompleteEvent(?▶ NavigationCompleteEvent#7212 🏃) -> 
+[91mConnectionError([DownloadsWatchdog.on_NavigationCompleteEvent] Reconnection failed — CDP still not connected)[0m
+ConnectionError: [DownloadsWatchdog.on_NavigationCompleteEvent] Reconnection failed — CDP still not connected
+
+WARNING  [BrowserSession] ⚠️ Empty DOM detected after navigation to https://www.uniqlo.com/us/en/, waiting 3s and rechecking...
+ERROR    [BrowserSession] ❌ Navigation failed: Expected at least one handler to return a non-None result, but none did! ?▶ BrowserStateRequestEvent#f833 ✅ -> {'4683398896.4691936416': browser_use.browser.watchdog_base.DownloadsWatchdog.on_BrowserStateRequestEvent#6416() ✅, '4683398896.4691945856': browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent#5856() ✅}
+WARNING  [Agent] ❌ Result failed 1/6 times: Expected at least one handler to return a non-None result, but none did! ?▶ BrowserStateRequestEvent#4768 ✅ -> {'4683398896.4691936416': browser_use.browser.watchdog_base.DownloadsWatchdog.on_BrowserStateRequestEvent#6416() ✅, '4683398896.4691945856': browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent#5856() ✅}
+WARNING  [Agent] ❌ Result failed 2/6 times: Expected at least one handler to return a non-None result, but none did! ?▶ BrowserStateRequestEvent#4195 ✅ -> {'4683398896.4691936416': browser_use.browser.watchdog_base.DownloadsWatchdog.on_BrowserStateRequestEvent#6416() ✅, '4683398896.4691945856': browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent#5856() ✅}
+WARNING  [Agent] ❌ Result failed 3/6 times: Expected at least one handler to return a non-None result, but none did! ?▶ BrowserStateRequestEvent#febc ✅ -> {'4683398896.4691936416': browser_use.browser.watchdog_base.DownloadsWatchdog.on_BrowserStateRequestEvent#6416() ✅, '4683398896.4691945856': browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent#5856() ✅}
+WARNING  [Agent] ❌ Result failed 4/6 times: Expected at least one handler to return a non-None result, but none did! ?▶ BrowserStateRequestEvent#6f52 ✅ -> {'4683398896.4691936416': browser_use.browser.watchdog_base.DownloadsWatchdog.on_BrowserStateRequestEvent#6416() ✅, '4683398896.4691945856': browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent#5856() ✅}
+WARNING  [Agent] ❌ Result failed 5/6 times: Expected at least one handler to return a non-None result, but none did! ?▶ BrowserStateRequestEvent#33aa ✅ -> {'4683398896.4691936416': browser_use.browser.watchdog_base.DownloadsWatchdog.on_BrowserStateRequestEvent#6416() ✅, '4683398896.4691945856': browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent#5856() ✅}
+ERROR    [Agent] ❌ Result failed 6/6 times: Expected at least one handler to return a non-None result, but none did! ?▶ BrowserStateRequestEvent#0f34 ✅ -> {'4683398896.4691936416': browser_use.browser.watchdog_base.DownloadsWatchdog.on_BrowserStateRequestEvent#6416() ✅, '4683398896.4691945856': browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent#5856() ✅}
+ERROR    [Agent] ❌ Stopping due to 5 consecutive failures
+INFO     [Agent] 
+INFO     [Agent] Did the Agent not work as expected? Let us fix this!
+INFO     [Agent]    Open a short issue on GitHub: https://github.com/browser-use/browser-use/issues
+INFO     [BrowserSession] 📢 on_BrowserStopEvent - Calling reset() (force=True, keep_alive=None)
+INFO     [BrowserSession] ✅ Browser session reset complete
+INFO     [BrowserSession] ✅ Browser session reset complete
+Future exception was never retrieved
+future: <Future finished exception=ConnectionError('Client is stopping')>
+ConnectionError: Client is stopping
+Future exception was never retrieved
+future: <Future finished exception=ConnectionError('Client is stopping')>
+ConnectionError: Client is stopping
+Future exception was never retrieved
+future: <Future finished exception=ConnectionError('Client is stopping')>
+ConnectionError: Client is stopping
+DONE  mistral | uniqlo | idx=19 | BLOCKED success=False actions=1 cost=$0.0013
+PROGRESS 1/1 success=0 cost=$0.00
+Wrote /Users/shreyaspatel/Desktop/Code/UserSim/results/capability/one_mistral_browserbase-smoke2.json

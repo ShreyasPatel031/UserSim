@@ -1,0 +1,862 @@
+{
+  "stage": "full100",
+  "harness": "browser_use_oss",
+  "provider": "mistral",
+  "model": "mistral-small-2603",
+  "max_actions_budget": 33,
+  "harness_config": {
+    "stage1": true,
+    "use_judge": false,
+    "extraction_model": "ministral-8b-latest",
+    "max_actions_per_step": 2,
+    "max_history_items": 6,
+    "llm_max_retries": 8
+  },
+  "n": 12,
+  "n_eligible": 10,
+  "n_scored": 10,
+  "successes": 0,
+  "successes_eligible": 0,
+  "success_rate_eligible": 0.0,
+  "success_rate_scored": 0.0,
+  "judge_errors": 0,
+  "judge_error_rate": 0.0,
+  "by_status": {
+    "FAILURE": 10,
+    "BLOCKED": 2
+  },
+  "by_failure_category": {
+    "MODEL_REASONING": 10,
+    "BLOCKED": 2
+  },
+  "total_cost_usd": 0.0693,
+  "runs": [
+    {
+      "run_id": "mistral_0_63d4cbea",
+      "task_id": "14b5885e-5454-465f-92bf-d8f7315c4a46",
+      "eval_index": 0,
+      "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+      "website": "us.megabus",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "harness_config": {
+        "stage1": true,
+        "use_judge": false,
+        "extraction_model": "ministral-8b-latest",
+        "max_actions_per_step": 2,
+        "max_history_items": 6,
+        "llm_max_retries": 8
+      },
+      "allowed_domains": [
+        "*.megabus.com",
+        "us.megabus.com"
+      ],
+      "start_url": "https://us.megabus.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://us.megabus.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://us.megabus.com/', extracted_content='\ud83d\udd17 Navigated to https://us.megabus.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://us.megabus.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://us.megabus.com/"
+        }
+      ],
+      "num_actions": 2,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The task required finding a ticket from Abbotsford to Sheboygan on March 26, 2023. The agent only navigated to the Megabus homepage and did not perform any search or selection of dates/locations.",
+      "judge_evidence": "The final URL is the Megabus homepage. The action summary shows only navigation and a wait action, with no interaction with search forms or results.",
+      "failure_category": "MODEL_REASONING",
+      "final_url": "https://us.megabus.com/",
+      "final_title": "",
+      "input_tokens": 6337,
+      "output_tokens": 452,
+      "estimated_cost_usd": 0.0016253499999999998,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_0_63d4cbea",
+      "created_at": "2026-08-22T20:11:18.147466+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_1_22e8488c",
+      "task_id": "4b2030ff-b83c-445f-bf87-9c8fbc68498b",
+      "eval_index": 1,
+      "task": "Browse for wall art with a price range of $25 to $50.",
+      "website": "kohls",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "harness_config": {
+        "stage1": true,
+        "use_judge": false,
+        "extraction_model": "ministral-8b-latest",
+        "max_actions_per_step": 2,
+        "max_history_items": 6,
+        "llm_max_retries": 8
+      },
+      "allowed_domains": [
+        "*.kohls.com",
+        "www.kohls.com"
+      ],
+      "start_url": "https://www.kohls.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.kohls.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.kohls.com/', extracted_content='\ud83d\udd17 Navigated to https://www.kohls.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.kohls.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.kohls.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://www.kohls.com/', extracted_content='\ud83d\udd17 Navigated to https://www.kohls.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.kohls.com/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.kohls.com/shop-wall-art.jsp', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://www.kohls.com/shop-wall-art.jsp', extracted_content='\ud83d\udd17 Navigated to https://www.kohls.com/shop-wall-art.jsp', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.kohls.com/"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.kohls.com/catalog', new_tab=False))",
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error='Page loaded but returned empty content for https://www.kohls.com/catalog. The page may require JavaScript that failed to render, use anti-bot measures, or have a connection issue (e.g. tunnel/proxy error). Try a different URL or approach.', attachments=None, images=None, long_term_memory=None, extracted_content=None, include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.kohls.com/shop-wall-art.jsp"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.kohls.com/', new_tab=False))",
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://www.kohls.com/', extracted_content='\ud83d\udd17 Navigated to https://www.kohls.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.kohls.com/catalog"
+        },
+        {
+          "i": 6,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I attempted to complete your task of browsing wall art on Kohls.com within the $25-$50 price range, but encountered persistent service errors that prevented access to the website:\\n\\n**Errors Encountered:**\\n- Access Denied error on homepage (reference #18.954ddb17.1787429367.6a0363c9)\\n- DNS failure on category page\\n- Empty content returned on catalog page\\n\\n**Result:** Kohls.com is currently inaccessible due to these service errors across multiple URLs and connection attempts. Without access to the website, I cannot browse wall art products or apply price filters as requested.\\n\\n**Recommendation:** Please try again later when Kohls.com's services are restored, or consider using an alternative shopping platform for your wall art search.\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=None, error=None, attachments=[], images=None, long_term_memory='Task completed: False - I attempted to complete your task of browsing wall art on Kohls.com within the $25-$50 price range,  - 641 more characters', extracted_content=\"I attempted to complete your task of browsing wall art on Kohls.com within the $25-$50 price range, but encountered persistent service errors that prevented access to the website:\\n\\n**Errors Encountered:**\\n- Acce",
+          "url": "about:blank"
+        }
+      ],
+      "num_actions": 6,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent encountered persistent service errors and was unable to access the website to complete the task.",
+      "judge_evidence": "The action summary indicates multiple navigation attempts to kohls.com and related pages resulted in errors like \"Access Denied\", \"DNS failure\", and \"Empty content returned\".",
+      "failure_category": "BLOCKED",
+      "final_url": "about:blank",
+      "final_title": "",
+      "input_tokens": 33800,
+      "output_tokens": 2572,
+      "estimated_cost_usd": 0.007733899999999998,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_1_22e8488c",
+      "created_at": "2026-08-22T20:13:00.052271+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_2_26d42f6d",
+      "task_id": "d63b1715-688c-4be2-b196-dde9659bc59d",
+      "eval_index": 2,
+      "task": "From Birmingham (BHX) to Paris search for packages with casinos, restaurant, fitness and a free internet from April 7th to 11th.",
+      "website": "kayak",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "start_url": "https://www.kayak.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.kayak.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error='Page loaded but returned empty content for https://www.kayak.com/. The page may require JavaScript that failed to render, use anti-bot measures, or have a connection issue (e.g. tunnel/proxy error). Try a different URL or approach.', attachments=None, images=None, long_term_memory=None, extracted_content=None, include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.kayak.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.kayak.com/', new_tab=False))",
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error='Page loaded but returned empty content for https://www.kayak.com/. The page may require JavaScript that failed to render, use anti-bot measures, or have a connection issue (e.g. tunnel/proxy error). Try a different URL or approach.', attachments=None, images=None, long_term_memory=None, extracted_content=None, include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.kayak.com/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.kayak.com/"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=10))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 10 seconds', extracted_content='Waited for 10 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.kayak.com/"
+        }
+      ],
+      "num_actions": 4,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The agent did not navigate to the packages section or perform any search for packages. The final page is the Kayak homepage, which does not show any search results for packages with the specified criteria.",
+      "judge_evidence": "The final URL is https://www.kayak.com/ and the page title is 'Search Flights, Hotels & Rental Cars | KAYAK'. The screenshot shows the Kayak homepage with 'Flights' selected, not 'Packages'. No search parameters (origin, destination, dates, or filters) have been applied.",
+      "failure_category": "MODEL_REASONING",
+      "final_url": "https://www.kayak.com/",
+      "final_title": "Search Flights, Hotels & Rental Cars | KAYAK",
+      "input_tokens": 20509,
+      "output_tokens": 1345,
+      "estimated_cost_usd": 0.004976049999999999,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_2_26d42f6d",
+      "created_at": "2026-08-22T20:02:32.307372+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_3_3c7ce16b",
+      "task_id": "46a3683f-fbe0-40d0-8729-6c7964d994e6",
+      "eval_index": 3,
+      "task": "Find a men's UA outlet T-shirt of XL size and add to cart.",
+      "website": "underarmour",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "start_url": "https://www.underarmour.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.underarmour.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=\"Navigation failed: Expected at least one handler to return a non-None result, but none did! ?\u25b6 BrowserStateRequestEvent#1f21 \u2705 -> {'4709753936.4720441152': browser_use.browser.watchdog_base.DownloadsWatchdog.on_BrowserStateRequestEvent#1152() \u2705, '4709753936.4720364896': browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent#4896() \u2705}\", attachments=None, images=None, long_term_memory=None, extracted_content=None,",
+          "url": "https://www.underarmour.com/"
+        }
+      ],
+      "num_actions": 1,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The task requires finding a specific item (men's UA outlet T-shirt of XL size) and adding it to the cart. The final screenshot shows the homepage of the website, with no indication that any search or filtering has been performed, nor that an item has been added to the cart.",
+      "judge_evidence": "The final URL is the homepage, and the screenshot shows the homepage. There is no evidence of a search, filtering, or adding an item to the cart.",
+      "failure_category": "MODEL_REASONING",
+      "final_url": "https://www.underarmour.com/",
+      "final_title": "Under Armour\u00ae Official Store | FREE Shipping Available",
+      "input_tokens": 2294,
+      "output_tokens": 115,
+      "estimated_cost_usd": 0.0013888,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_3_3c7ce16b",
+      "created_at": "2026-08-22T19:58:57.384561+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_4_257d6797",
+      "task_id": "754c8c29-92b6-4af1-9594-f9d3da37b951",
+      "eval_index": 4,
+      "task": "Find a 3-star rated hostel with balcony and free cancellation option in Udipi, Karnataka for one person under 50 dollars from June 15 to 20, free wifi is compulsory.",
+      "website": "booking",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "harness_config": {
+        "stage1": true,
+        "use_judge": false,
+        "extraction_model": "ministral-8b-latest",
+        "max_actions_per_step": 2,
+        "max_history_items": 6,
+        "llm_max_retries": 8
+      },
+      "allowed_domains": [
+        "*.booking.com",
+        "www.booking.com"
+      ],
+      "start_url": "https://www.booking.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.booking.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.booking.com/', extracted_content='\ud83d\udd17 Navigated to https://www.booking.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.booking.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "about:blank"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.booking.com/"
+        },
+        {
+          "i": 4,
+          "action": null,
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error='LLM call timed out after 75 seconds. Keep your thinking and output short.', attachments=None, images=None, long_term_memory=None, extracted_content=None, include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.booking.com/"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=8))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 8 seconds', extracted_content='Waited for 8 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.booking.com/"
+        }
+      ],
+      "num_actions": 5,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The agent did not perform any actions to fulfill the task. The final URL is the homepage of booking.com, and no search or filtering was done.",
+      "judge_evidence": "The action summary shows only navigation to booking.com and waiting. No search or filtering actions were performed.",
+      "failure_category": "MODEL_REASONING",
+      "final_url": "https://www.booking.com/",
+      "final_title": "",
+      "input_tokens": 20690,
+      "output_tokens": 1524,
+      "estimated_cost_usd": 0.0049689,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_4_257d6797",
+      "created_at": "2026-08-22T20:15:01.688684+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_5_78f8c441",
+      "task_id": "8e849b85-5acc-4d26-ad5e-d24ad24343df",
+      "eval_index": 5,
+      "task": "Book parking spot for James SMith at Stewart Hotel in New York for 2 hours. The street address is 133 st avenue in New York. Zip code is 10001 and phone number is 888888888. The email address is buckeye.foobar@gmail.com. Employer's name is Gua AB.",
+      "website": "parking",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "harness_config": {
+        "stage1": true,
+        "use_judge": false,
+        "extraction_model": "ministral-8b-latest",
+        "max_actions_per_step": 2,
+        "max_history_items": 6,
+        "llm_max_retries": 8
+      },
+      "allowed_domains": [
+        "*.parking.com",
+        "parking.com"
+      ],
+      "start_url": "https://parking.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://parking.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://parking.com/', extracted_content='\ud83d\udd17 Navigated to https://parking.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=WriteFileActionModel(write_file=write_file_Params(file_name='todo.md', content='# Parking.com Booking Task\\n\\n## Goal: Book parking for James SMITH at Stewart Hotel NYC for 2 hours today\\n\\n## Tasks:\\n- [ ] Initialize todo.md and plan steps\\n- [ ] Input location \"Stewart Hotel\" into search combobox\\n- [ ] Select correct location suggestion from dropdown\\n- [ ] Set entrance time (today)\\n- [ ] Set exit time (+2 hours)\\n- [ ] Click \"Find parking\"\\n- [ ] Select a parking spot from results\\n- [ ] Proceed to checkout page\\n- [ ] Fill personal details: James SMITH, email buckeye.foobar@gmail.com, phone 888888888, employer Gua AB\\n- [ ] Complete booking submission', append=False, trailing_newline=True, leading_newline=False))",
+            "root=InputActionModel(input=InputTextAction(index=85, text='Stewart Hotel', clear=True))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Data written to file todo.md successfully.', extracted_content='Data written to file todo.md successfully.', include_extracted_content_only_once=False, metadata=None, include_in_memory=False), ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Typed 'Stewart Hotel'\\n\ud83d\udca1 This is an autocomplete field. Wait for sug",
+          "url": "https://parking.com/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=3))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 3 seconds', extracted_content='Waited for 3 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=10))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 10 seconds', extracted_content='Waited for 10 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        },
+        {
+          "i": 6,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://parking.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error='Page loaded but returned empty content for https://parking.com/. The page may require JavaScript that failed to render, use anti-bot measures, or have a connection issue (e.g. tunnel/proxy error). Try a different URL or approach.', attachments=None, images=None, long_term_memory=None, extracted_content=None, include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        }
+      ],
+      "num_actions": 6,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The agent was unable to complete the task. It failed to navigate to the parking.com website after multiple attempts and did not book the parking spot.",
+      "judge_evidence": "The action summary shows multiple attempts to navigate to https://parking.com/ and a final error message: 'Page loaded but returned empty content for https://parking.com/. The page may require JavaScript that failed to render, use anti-bot measures, or have a connection issue (e.g. tunnel/proxy error). Try a different URL or approach.' This indicates the agent was blocked or encountered a technical issue preventing it from accessing the site and proceeding with the booking.",
+      "failure_category": "MODEL_REASONING",
+      "final_url": "https://parking.com/",
+      "final_title": "",
+      "input_tokens": 35597,
+      "output_tokens": 3296,
+      "estimated_cost_usd": 0.00808325,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_5_78f8c441",
+      "created_at": "2026-08-22T20:17:28.826897+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_6_1da96b72",
+      "task_id": "a6372f23-f462-4706-8455-5b350c46d83c",
+      "eval_index": 6,
+      "task": "Book a winery tour in Napa Valley in a winery which serves Mediterranean cuisine with wine testing for 4 guests on April 15, 10 am in a outdoor setup.",
+      "website": "exploretock",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "start_url": "https://www.exploretock.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.exploretock.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.exploretock.com/', extracted_content='\ud83d\udd17 Navigated to https://www.exploretock.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.exploretock.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=InputActionModel(input=InputTextAction(index=222, text='Napa Valley', clear=True))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Typed 'Napa Valley'\\n\u26a0\ufe0f Note: the field's actual value 'Yakima' differs from typed text 'Napa Valley'. The page may have reformatted or autocompleted your input.\", extracted_content=\"Typed 'Napa Valley'\\n\u26a0\ufe0f Note: the field's actual value 'Yakima' differs from typed text 'Napa Valley'. The page may have reformatted or autocompleted your input.\", include_extracted_content_only_on",
+          "url": "https://www.exploretock.com/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=InputActionModel(input=InputTextAction(index=222, text='', clear=True))",
+            "root=InputActionModel(input=InputTextAction(index=222, text='Napa Valley', clear=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Typed ''\\n\u26a0\ufe0f Note: the field's actual value 'Yakima' differs from typed text ''. The page may have reformatted or autocompleted your input.\", extracted_content=\"Typed ''\\n\u26a0\ufe0f Note: the field's actual value 'Yakima' differs from typed text ''. The page may have reformatted or autocompleted your input.\", include_extracted_content_only_once=False, metadata={'input_x': 439.1015625, ",
+          "url": "https://www.exploretock.com/"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code='(function(){\\ntry {\\n  const shadowHost = document.querySelector(\\'div[name=\"location\"]\\');\\n  if (!shadowHost) return {error: \\'Location div not found\\'};\\n  \\n  // Find shadow root\\n  const shadowRoot = shadowHost.shadowRoot || shadowHost.openShadowRoot;\\n  if (!shadowRoot) return {error: \\'Shadow root not accessible\\'};\\n  \\n  // Find input element inside shadow DOM\\n  const input = shadowRoot.querySelector(\\'input#city-search-location\\');\\n  if (!input) return {error: \\'Input element not found in shadow DOM\\'};\\n  \\n  // Clear the input\\n  input.value = \\'\\';\\n  \\n  // Trigger input event\\n  const event = new Event(\\'input\\', { bubbles: true });\\n  input.dispatchEvent(event);\\n   \\n  return {success: true, message: \\'Location field cleared\\'};\\n} catch(e) {\\n  return {error: e.message};\\n}\\n})()'))",
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code='(function(){\\ntry {\\n  const shadowHost = document.querySelector(\\'div[name=\"location\"]\\');\\n  if (!shadowHost) return {error: \\'Location div not found\\'};\\n   \\n  const shadowRoot = shadowHost.shadowRoot || shadowHost.openShadowRoot;\\n  if (!shadowRoot) return {error: \\'Shadow root not accessible\\'};\\n   \\n  const input = shadowRoot.querySelector(\\'input#city-search-location\\');\\n  if (!input) return {error: \\'Input element not found in shadow DOM\\'};\\n   \\n  // Set value directly\\n  input.value = \\'Napa Valley\\';\\n   \\n  // Trigger input event\\n  const event = new Event(\\'input\\', { bubbles: true });\\n  input.dispatchEvent(event);\\n   \\nreturn {success: true, message: \\'Location set to Napa Valley\\'};\\nexcept(e) {\\nturn {error: e.message}\\nt}\\nt})()'))",
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code='(function(){\\nttry {\\ntconst reservationTypeDiv = document.querySelector(\\'div[name=\"Reservation type\"]\\');\\ntif (!reservationTypeDiv) return {error: \\'Reservation type div not found\\'};\\nt\\t\\nconst shadowRoot = reservationTypeDiv.shadowRoot || reservationTypeDiv.openShadowRoot;\\ntif (!shadowRoot) return {error: \\'Reservation type shadow root not accessible\\'};\\nt\\t\\nconst select = shadowRoot.querySelector(\\'select#reservations-city-search-type\\');\\ntif (!select) return {error: \\'Select element not found in reservation type shadow DOM\\'};\\nt\\t\\n// Change from Dine in (first option) to Events (need to find correct option)\\ntselect.value = select.options[3].value; // Events should be at index around events options list\\n\\t\\nconst changeEvent = new Event(\\'change\\', { bubbles: true });\\ntselect.dispatchEvent(changeEvent);\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\treturn {success: true, message: `Changed reservation type`};\\nt} catch(e) {\\ntreturn {error: e.message}\\nt}\\nt})()'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='{\"error\": \"Location div not found\"}', extracted_content='{\"error\": \"Location div not found\"}', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.exploretock.com/"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code=\"(function(){\\ntry {\\n  const locationDiv = document.querySelector('div#city-search-location');\\n  if (!locationDiv) return {error: 'Location div not found'};\\n  \\n  // Get the shadow root\\n  const shadowRoot = locationDiv.shadowRoot;\\n  if (!shadowRoot) return {error: 'Shadow root not found'};\\n  \\n  // Get the input element inside shadow DOM\\n  const input = shadowRoot.querySelector('input#city-search-location');\\n  if (!input) return {error: 'Input element not found'};\\n  \\n  // Clear the field\\n  input.value = '';\\n  \\n  // Trigger input event\\n  const event = new Event('input', { bubbles: true });\\n  input.dispatchEvent(event);\\n  \\n  // Set new value\\n  input.value = 'Napa Valley';\\n  \\n  // Trigger change event\\n  const changeEvent = new Event('change', { bubbles: true });\\n  input.dispatchEvent(changeEvent);\\n  \\n  return {success: true, message: 'Location set successfully'};\\n} catch(e) {\\n  return {error: e.message};\\n}\\n})()\"))",
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code=\"(function(){\\ntry {\\n  const reservationTypeDiv = document.querySelector('div#reservations-city-search-type');\\n  if (!reservationTypeDiv) return {error: 'Reservation type div not found'};\\n   \\n  const shadowRoot = reservationTypeDiv.shadowRoot;\\n  if (!shadowRoot) return {error: 'Reservation type shadow root not found'};\\n   \\n  const select = shadowRoot.querySelector('select#reservations-city-search-type');\\n  if (!select) return {error: 'Select element not found'};\\n   \\n  // Change from Dine in (first option) to Events (need to find Events option)\\n  // Options are: Dine in|Pickup|Delivery|Events based on browser_state\\n   \\ntry {\\t\\tselect.value = 'Events';\\t\\tconst event = new Event('change', { bubbles: true });\\t\\tselect.dispatchEvent(event);\\t\\treturn {success: true, message: 'Reservation type changed successfully'};\\t} catch(e) {\\t\\treturn {error: e.message};\\t}\\t\\n} catch(e) {\\treturn {error: e.message};\\t}\\t})()\"))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='{\"error\": \"Location div not found\"}', extracted_content='{\"error\": \"Location div not found\"}', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.exploretock.com/"
+        },
+        {
+          "i": 6,
+          "action": [
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code='(function(){\\ntry {\\n    // Find the location input within shadow DOM\\n    const locationDiv = document.querySelector(\\'div\\').querySelector(\\'div\\');\\n    if (!locationDiv) return {error: \"Location div not found\"};\\n    \\n    // Find the shadow root\\n    const shadowRoot = locationDiv.shadowRoot;\\n    if (!shadowRoot) return {error: \"Shadow root not found\"};\\n    \\n    // Find the input element within shadow DOM\\n    const input = shadowRoot.querySelector(\\'input#city-search-location\\');\\n    if (!input) return {error: \"Input element not found\"};\\n    \\n    // Set the value directly\\n    input.value = \\'Napa Valley\\';\\n    \\n    // Dispatch change event\\n    const event = new Event(\\'input\\', { bubbles: true });\\n    input.dispatchEvent(event);\\n    \\n    return {success: true, message: \"Location set successfully\"};\\n} catch(e) {\\n    return {error: e.message};\\n}\\n})()'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='{\"error\": \"Location div not found\"}', extracted_content='{\"error\": \"Location div not found\"}', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.exploretock.com/"
+        },
+        {
+          "i": 7,
+          "action": [
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code=\"(function(){\\ntry {\\nconst shadowHost = document.querySelector('div#city-search-location');\\nif (!shadowHost) {\\nreturn {error: 'Location div not found'};\\n}\\nconst shadowRoot = shadowHost.shadowRoot || shadowHost.openShadowRoot();\\nconst input = shadowRoot.querySelector('input#city-search-location');\\nif (!input) {\\nreturn {error: 'Location input not found'};\\n}\\ninput.value = 'Napa Valley';\\ndispatchEvent(new Event('input', {bubbles: true}));\\ndispatchEvent(new Event('change', {bubbles: true}));\\ndispatchEvent(new Event('blur', {bubbles: true}));\\nreturn {success: true, message: 'Location set successfully'};\\n} catch(e) {\\nreturn {error: e.message};\\n}\\n})()\"))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='{\"error\": \"Location div not found\"}', extracted_content='{\"error\": \"Location div not found\"}', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.exploretock.com/"
+        },
+        {
+          "i": 8,
+          "action": [
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code=\"(function(){\\ntry {\\nconst locationInput = document.querySelector('div#city-search-location').shadowRoot.querySelector('input#city-search-location');\\nif (locationInput) {\\nlocationInput.value = 'Napa Valley';\\ndispatchEvent(new Event('input', { bubbles: true }));\\ndispatchEvent(new Event('change', { bubbles: true }));\\nreturn {success: true, message: 'Location set successfully'};\\n} else {\\nreturn {success: false, message: 'Location input not found'};\\n}\\n} catch(e) {\\nreturn {success: false, message: e.message};\\n}\\n})()\"))",
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code=\"(function(){\\ntry {\\nconst select = document.querySelector('div#reservations-city-search-type').shadowRoot.querySelector('select#reservations-city-search-type');\\nif (select) {\\ntoggleDropdown(select);\\ntype = select.options[3].text; // Events option\\nfor(let i=0; i<select.options.length; i++) {\\nif(select.options[i].text === type) {\\ntype = select.options[i].text;\\nbreak;\\n}\\n}\\ndispatchEvent(new Event('change', { bubbles: true }));\\ndispatchEvent(new Event('input', { bubbles: true }));\\ndispatchEvent(new Event('blur', { bubbles: true }));\\ndispatchEvent(new Event('click', { bubbles: true }));\\ndispatchEvent(new CustomEvent('select-option', { detail: { value: type }, bubbles: true }));\\ndispatchEvent(new Event('change', { bubbles: true }));\\ndispatchEvent(new Event('input', { bubbles: true }));\\ndispatchEvent(new Event('blur', { bubbles: true }));\\ndispatchEvent(new CustomEvent('dropdown-close'));\\ndispatchEvent(new CustomEvent('dropdown-select'));\\ndispatchEvent(new CustomEvent('dropdown-complete'));\\ndispatchEvent(new CustomEvent('form-update'));\\ndispatchEvent(new CustomEvent('search-form-change'));\\ndispatchEvent(new CustomEvent('reservation-type-changed'));\\ndispatchEvent(new CustomEvent('tock-reservation-type-change'));\\ndispatchEvent(new CustomEvent('tock-form-update'));\\ndispatchEvent(new CustomEvent('tock-search-update'));\\ndispatchElementUpdate();\\ntype = select.options[3].text; // Events option\\nreturn {success: true, message: `Reservation type changed to ${type}`};\\n} else {\\ntype = select.options[3].text; // Events option\\nselect.value = type.split(/\\\\s+/)[0];\\ntype = select.options[3].text; // Events option\\nfor(let i=0; i<select.options.length; i++) {\\ntype = select.options[i].text.toLowerCase();\\ntype = select.options[i].value.toLowerCase();\\ntype = select.options[i].label.toLowerCase();\\ntype = select.options[i].innerText.toLowerCase();\\ntype = select.options[i].textContent.toLowerCase();\\ntype = select.options[i].innerHTML.toLowerCase();\\ntype = Array.from(select.options).find(o => o.text.toLowerCase().includes(type)).textContent.toLowerCase();\\ntype = Array.from(select.options).find(o => o.value.toLowerCase().includes(type)).value.toLowerCase();\\ntype = Array.from(select.options).find(o => o.label.toLowerCase().includes(type)).label.toLowerCase();\\ntype = Array.from(select).find(o => o.textContent.trim().toLowerCase().includes(type)).textContent.trim().toLowerCase();\\ntype = Array.from(select.selectedOptions).map(o => o.textContent.trim().toLowerCase()).join(',').toLowerCase();\\ntype = Array.from(select).map(o => o.textContent.trim().toLowerCase()).join(',').toLowerCase();\\ntype = Array.from(document.querySelectorAll('#reservations-city-search-type option')).map(o => o.textContent.trim().toLowerCase()).join(',').toLowerCase();\\ntype = Array.from(document.querySelectorAll('#reservations-city-search-type option')).filter(o => o.textContent.trim().toLocaleLowerCase().includes(type)).map(o => o.textContent.trim()).join(',') || '' ;\\ntype=Array.from(document.querySelectorAll('#reservations-city-search-type option')).find(o=>o.textContent.includes(type)).textContent.trim() || '' ; \\ntype=Array.from(document.querySelectorAll('#reservations-city-search-type option')).find(o=>o.value.includes(type)).value || '' ; \\ntype=Array.from(document.querySelectorAll('#reservations-city-search-type option')).find(o=>o.label.includes(type)).label || '' ; \\ntype=Array.from(document.querySelectorAll('#reservations-city-search-type option')).find(o=>o.innerText.includes(type)).innerText.trim() || '' ; \\ntype=Array.from(document.querySelectorAll('#reservations-city-search-type option')).find(o=>o.text.includes(type)).text || '' ; \\ntyped='events';type='events';type='Events';type='EVENTS';type='events';type='EVENTS';type='Events';type='events';type=select.selectedOptions[0]?.text || '' ; \\ntyped='events';type='events';type='Events';type=select.value || '' ; \\nswitch(type){\\ndefault:\\nbreak;case'dinein':case'dine in':case'dine-in':case'dining':case'dine':case'in person':case'in-person':case'inperson':break;case'pickup':break;case'delivery':break;case'events':case'event':selected=true;break;}\\nswitch(type){\\ndefault:\\nbreak;case'dinein':case'dine in':case'dine-in':case'dining':case'dine':case'in person':case'in-person':case'inperson':break;case'pickup':break;case'delivery':break;}\\nswitch(Array.from(select.selectedOptions).map(s=>s.text).join(',').toLocaleLowerCase()){\\ndefault:\\nbreak;}\\nswitch(Array.from(select.selectedOptions).map(s=>s.value).join(',').toLocaleLowerCase()){\\ndefault:\\nbreak;}\\nswitch(Array.from(select.selectedOptions).map(s=>s.label).join(',').toLocaleLowerCase()){\\ndefault:\\nbreak;}\\nswitch(Array.from(select.selectedOptions).map(s=>s.innerText).join(',').toLocaleLow\"))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='{\"success\": false, \"message\": \"Cannot read properties of null (reading \\'shadowRoot\\')\"}', extracted_content='{\"success\": false, \"message\": \"Cannot read properties of null (reading \\'shadowRoot\\')\"}', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.exploretock.com/"
+        },
+        {
+          "i": 9,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.exploretock.com/"
+        },
+        {
+          "i": 10,
+          "action": [
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code=\"(function(){\\ntry {\\n  // Set location via shadow DOM input element by ID\\n  const locationInput = document.getElementById('city-search-location');\\n  if (locationInput && locationInput.shadowRoot) {\\n    const actualInput = locationInput.shadowRoot.querySelector('input');\\n    if (actualInput) {\\n      actualInput.value = 'Napa Valley';\\n      actualInput.dispatchEvent(new Event('input', { bubbles: true }));\\n      actualInput.dispatchEvent(new Event('change', { bubbles: true }));\\n      return { success: true, message: 'Location set successfully', value: actualInput.value };\\n    }\\n  }\\n  return { success: false, message: 'Location input not found in shadow DOM or no shadowRoot', elementFound: !!locationInput };\\n} catch(e) {\\n  return { success: false, message: e.message };\\n}\\n})()\"))",
+            "root=EvaluateActionModel(evaluate=evaluate_Params(code=\"(function(){\\ntry {\\n  // Change reservation type from Dine in to Events\\n  const selectElement = document.getElementById('reservations-city-search-type');\\n  if (selectElement && selectElement.shadowRoot) {\\n    const optionsList = selectElement.shadowRoot.querySelector('[role=listbox]');\\n    if (optionsList) {\\n      // Find Events option by text content\\n      const options = Array.from(optionsList.children);\\n      const eventsOption = options.find(opt => opt.textContent.includes('Events'));\\n      if (eventsOption) {\\n        eventsOption.click();\\n        return { success: true, message: 'Reservation type changed to Events', selectedText: eventsOption.textContent };\\n      }\\n      return { success: false, message: 'Events option not found', optionsCount: options.length };\\n    }\\n    return { success: false, message: 'Options list not found in shadow DOM' };\\n  }\\n  return { success: false, message: 'Reservation type select not found or no shadowRoot', elementFound: !!selectElement };\\n} catch(e) {\\n  return { success: false, message: e.message };\\n}\\n})()\"))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error='Error executing action evaluate: SessionManager not initialized', attachments=None, images=None, long_term_memory=None, extracted_content=None, include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.exploretock.com/"
+        }
+      ],
+      "num_actions": 10,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The agent failed to set the location to 'Napa Valley' and change the reservation type to 'Events'. The action summary shows multiple attempts to interact with shadow DOM elements, but all resulted in errors or did not successfully update the fields. The final screenshot still shows 'Dine in' as the reservation type and 'Loading' for the location, indicating no progress was made on these critical task constraints.",
+      "judge_evidence": "The action summary shows repeated errors like \"Location div not found\" and \"Cannot read properties of null (reading 'shadowRoot')\" when attempting to set the location and reservation type. The final screenshot clearly shows 'Dine in' for 'Reservation type' and 'Loading' for the location, confirming the failure to apply the required filters.",
+      "failure_category": "MODEL_REASONING",
+      "final_url": "https://www.exploretock.com/",
+      "final_title": "Tock - Reservations - Restaurants, Bars, and Wineries | Tock",
+      "input_tokens": 77846,
+      "output_tokens": 10157,
+      "estimated_cost_usd": 0.0203916,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_6_1da96b72",
+      "created_at": "2026-08-22T20:04:18.784027+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_7_2b81d7fc",
+      "task_id": "b7003092-3e6e-4fac-9867-083cac064f89",
+      "eval_index": 7,
+      "task": "Find JetBlue career openings in New York",
+      "website": "jetblue",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "start_url": "https://www.jetblue.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.jetblue.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=\"Navigation failed: Expected at least one handler to return a non-None result, but none did! ?\u25b6 BrowserStateRequestEvent#d080 \u2705 -> {'4710071520.4720434592': browser_use.browser.watchdog_base.DownloadsWatchdog.on_BrowserStateRequestEvent#4592() \u2705, '4710071520.4720440192': browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent#0192() \u2705}\", attachments=None, images=None, long_term_memory=None, extracted_content=None,",
+          "url": "https://www.jetblue.com/"
+        }
+      ],
+      "num_actions": 1,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The task was to find career openings, but the final page is the JetBlue flight booking page. There is no evidence of career openings or a search for them.",
+      "judge_evidence": "The final URL is https://www.jetblue.com/, which is the main page for flight bookings. The screenshot shows the flight booking interface. There is no indication of career openings or a search for them.",
+      "failure_category": "MODEL_REASONING",
+      "final_url": "https://www.jetblue.com/",
+      "final_title": "JetBlue | Flights & travel deals | Book here for low fares | JetBlue",
+      "input_tokens": 2288,
+      "output_tokens": 99,
+      "estimated_cost_usd": 0.0013365,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_7_2b81d7fc",
+      "created_at": "2026-08-22T19:58:52.742292+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_8_4d7ef3e0",
+      "task_id": "2fc63250-ac9a-4cd4-a29d-6460f0652fa3",
+      "eval_index": 8,
+      "task": "Find a wireless keyboard and mouse combo under $100.",
+      "website": "newegg",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "harness_config": {
+        "stage1": true,
+        "use_judge": false,
+        "extraction_model": "ministral-8b-latest",
+        "max_actions_per_step": 2,
+        "max_history_items": 6,
+        "llm_max_retries": 8
+      },
+      "allowed_domains": [
+        "*.newegg.com",
+        "www.newegg.com"
+      ],
+      "start_url": "https://www.newegg.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.newegg.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.newegg.com/', extracted_content='\ud83d\udd17 Navigated to https://www.newegg.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.newegg.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "about:blank"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=10))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 10 seconds', extracted_content='Waited for 10 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.newegg.com/"
+        }
+      ],
+      "num_actions": 3,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The agent did not perform any search or filtering actions to find a wireless keyboard and mouse combo under $100. The final URL is just the homepage of Newegg.com.",
+      "judge_evidence": "The final URL is the Newegg homepage, and no search or filter actions were performed.",
+      "failure_category": "MODEL_REASONING",
+      "final_url": "https://www.newegg.com/",
+      "final_title": "",
+      "input_tokens": 12348,
+      "output_tokens": 763,
+      "estimated_cost_usd": 0.0026582999999999997,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_8_4d7ef3e0",
+      "created_at": "2026-08-22T20:15:17.743215+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_10_ba0b1af1",
+      "task_id": "a5c1095b-bba1-4029-8b8d-fa5848702827",
+      "eval_index": 10,
+      "task": "Find parking in New York City from June 5th to 9th.",
+      "website": "parking",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "start_url": "https://parking.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://parking.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://parking.com/', extracted_content='\ud83d\udd17 Navigated to https://parking.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=135))",
+            "root=InputActionModel(input=InputTextAction(index=56, text='', clear=True))",
+            "root=InputActionModel(input=InputTextAction(index=56, text='June 5,', clear=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error='Failed to click element 135: Event handler browser_use.browser.watchdog_base.DefaultActionWatchdog.on_ClickElementEvent#6640(?\u25b6 ClickElementEvent#2e16 \ud83c\udfc3) timed out after 15.0s', attachments=None, images=None, long_term_memory=None, extracted_content=None, include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://parking.com/', new_tab=False))",
+            "root=WaitActionModel(wait=wait_Params(seconds=8))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://parking.com/', extracted_content='\ud83d\udd17 Navigated to https://parking.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        },
+        {
+          "i": 6,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://parking.com/', new_tab=True))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Opened new tab with URL https://parking.com/', extracted_content='\ud83d\udd17  Opened new tab with url https://parking.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "about:blank"
+        },
+        {
+          "i": 7,
+          "action": [
+            "root=SearchActionModel(search=SearchAction(query='parking in New York City June 5-9', engine='duckduckgo'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Searched Duckduckgo for 'parking in New York City June 5-9'\", extracted_content=\"Searched Duckduckgo for 'parking in New York City June 5-9'\", include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://parking.com/"
+        }
+      ],
+      "num_actions": 7,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The agent did not successfully find parking in New York City for the specified dates. The final action was a search on DuckDuckGo, not a successful search on the parking.com website.",
+      "judge_evidence": "The final URL is parking.com, but the action summary shows the agent performed a search on DuckDuckGo. There is no indication that the parking search was completed on parking.com.",
+      "failure_category": "MODEL_REASONING",
+      "final_url": "https://parking.com/",
+      "final_title": "Parking.com - Park. Better. Period. \u2122 - Find Parking Now",
+      "input_tokens": 40796,
+      "output_tokens": 2820,
+      "estimated_cost_usd": 0.0089521,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_10_ba0b1af1",
+      "created_at": "2026-08-22T20:04:47.984307+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_24_39472316",
+      "task_id": "cdbd410d-170a-426d-b6d2-60dafaffe853",
+      "eval_index": 24,
+      "task": "Show me the best seller accessories for the Model X",
+      "website": "tesla",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "start_url": "https://www.tesla.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.tesla.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.tesla.com/', extracted_content='\ud83d\udd17 Navigated to https://www.tesla.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.tesla.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "about:blank"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=10))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 10 seconds', extracted_content='Waited for 10 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.tesla.com/"
+        }
+      ],
+      "num_actions": 3,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent was blocked from accessing the Tesla website, as indicated by the 'Access Denied' message on the final page.",
+      "judge_evidence": "The final page displays 'Access Denied' and states 'You don't have permission to access \"http://www.tesla.com/\" on this server.'",
+      "failure_category": "BLOCKED",
+      "final_url": "https://www.tesla.com/",
+      "final_title": "Access Denied",
+      "input_tokens": 14017,
+      "output_tokens": 687,
+      "estimated_cost_usd": 0.00341525,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_24_39472316",
+      "created_at": "2026-08-22T20:03:47.171647+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "mistral_30_9a548289",
+      "task_id": "c5d1ecbe-f7a6-4d27-9e03-08dcfdcb524f",
+      "eval_index": 30,
+      "task": "Book a flight + cruise for two flying from Atlanta in October for vacation starting on October 8 for 6 nights with Miami as the departure port, choose the cheapest flight, hotel, and room in the cruise for booking.",
+      "website": "jetblue",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_dom",
+      "start_url": "https://www.jetblue.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.jetblue.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.jetblue.com/', extracted_content='\ud83d\udd17 Navigated to https://www.jetblue.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.jetblue.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "about:blank"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=10))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 10 seconds', extracted_content='Waited for 10 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.jetblue.com/"
+        }
+      ],
+      "num_actions": 3,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The task requires booking a flight + cruise, but the agent is on the JetBlue flight booking page. There is no indication of cruise booking options or a combined flight+cruise search.",
+      "judge_evidence": "The final URL is jetblue.com, which is a flight booking website. The screenshot shows a flight search form, not a flight+cruise search. The task explicitly asks for a 'flight + cruise'.",
+      "failure_category": "MODEL_REASONING",
+      "final_url": "https://www.jetblue.com/",
+      "final_title": "JetBlue | Flights & travel deals | Book here for low fares | JetBlue",
+      "input_tokens": 14355,
+      "output_tokens": 960,
+      "estimated_cost_usd": 0.0037234499999999997,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_30_9a548289",
+      "created_at": "2026-08-22T20:06:00.215338+00:00",
+      "max_actions_budget": 33
+    }
+  ]
+}

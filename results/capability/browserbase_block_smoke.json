@@ -1,0 +1,65 @@
+{
+  "proxies": false,
+  "results": [
+    {
+      "site": "example.com",
+      "url": "https://example.com/",
+      "backend": "local",
+      "blocked": false,
+      "reason": "ok",
+      "title": "Example Domain",
+      "final_url": "https://example.com/",
+      "session_url": null
+    },
+    {
+      "site": "example.com",
+      "url": "https://example.com/",
+      "backend": "browserbase",
+      "blocked": false,
+      "reason": "ok",
+      "title": "Example Domain",
+      "final_url": "https://example.com/",
+      "session_url": "https://www.browserbase.com/sessions/cfc2ff3b-7730-48f2-8902-5e5e2487dccd"
+    },
+    {
+      "site": "uniqlo",
+      "url": "https://www.uniqlo.com/us/en/",
+      "backend": "local",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied",
+      "title": "Access Denied",
+      "final_url": "https://www.uniqlo.com/us/en/",
+      "session_url": null
+    },
+    {
+      "site": "uniqlo",
+      "url": "https://www.uniqlo.com/us/en/",
+      "backend": "browserbase",
+      "blocked": false,
+      "reason": "ok",
+      "title": "Women's Clothing & Accessories | UNIQLO US",
+      "final_url": "https://www.uniqlo.com/us/en/",
+      "session_url": "https://www.browserbase.com/sessions/2c33ed93-7510-422b-88d3-33e4b3e60979"
+    },
+    {
+      "site": "apartments",
+      "url": "https://www.apartments.com/",
+      "backend": "local",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied",
+      "title": "Access Denied",
+      "final_url": "https://www.apartments.com/",
+      "session_url": null
+    },
+    {
+      "site": "apartments",
+      "url": "https://www.apartments.com/",
+      "backend": "browserbase",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied",
+      "title": "Access Denied",
+      "final_url": "https://www.apartments.com/",
+      "session_url": "https://www.browserbase.com/sessions/6bbb8141-a56b-4511-9442-a52882b148aa"
+    }
+  ]
+}

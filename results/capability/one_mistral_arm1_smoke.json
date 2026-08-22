@@ -1,0 +1,89 @@
+{
+  "stage": "one",
+  "harness": "browser_use_oss",
+  "provider": "mistral",
+  "model": "mistral-small-2603",
+  "max_actions_budget": 60,
+  "harness_config": {
+    "arm": "1",
+    "stage1": true,
+    "use_judge": false,
+    "extraction_model": "ministral-8b-latest",
+    "max_actions_per_step": 2,
+    "max_history_items": null,
+    "allowed_domains_enabled": true,
+    "llm_max_retries": 8,
+    "fast_bakeoff": false,
+    "step_timeout": 180,
+    "widget_tools": false,
+    "code_actions": false,
+    "code_action_timeout_s": 15,
+    "code_result_max_chars": 8000
+  },
+  "n": 1,
+  "n_eligible": 1,
+  "n_scored": 1,
+  "successes": 0,
+  "successes_eligible": 0,
+  "success_rate_eligible": 0.0,
+  "success_rate_scored": 0.0,
+  "judge_errors": 0,
+  "judge_error_rate": 0.0,
+  "by_status": {
+    "FAILURE": 1
+  },
+  "by_failure_category": {
+    "PREMATURE_STOP": 1
+  },
+  "total_cost_usd": 0.0122,
+  "runs": [
+    {
+      "run_id": "mistral_0_c3e02c70",
+      "task_id": "14b5885e-5454-465f-92bf-d8f7315c4a46",
+      "eval_index": 0,
+      "task": "Find a ticket from Abbotsford to Sheboygan on March 26, 2023.",
+      "website": "us.megabus",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_vision",
+      "harness_config": {
+        "arm": "1",
+        "stage1": true,
+        "use_judge": false,
+        "extraction_model": "ministral-8b-latest",
+        "max_actions_per_step": 2,
+        "max_history_items": null,
+        "allowed_domains_enabled": true,
+        "llm_max_retries": 8,
+        "fast_bakeoff": false,
+        "step_timeout": 180,
+        "widget_tools": false,
+        "code_actions": false,
+        "code_action_timeout_s": 15,
+        "code_result_max_chars": 8000
+      },
+      "allowed_domains": [
+        "*.megabus.com",
+        "us.megabus.com"
+      ],
+      "start_url": "https://us.megabus.com/",
+      "num_actions": 7,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The agent was unable to find a ticket for the specified date. The agent's final action summary indicates that the form submission was blocked due to a minimum date constraint, as the requested date (March 26, 2023) is in the past relative to the current date (August 15, 2015, as stated by the agent). The task requires finding a ticket for a specific date, which the agent failed to do.",
+      "judge_evidence": "The agent's final action summary explicitly states: \"The Megabus booking system has a minimum travel date requirement of August 22, 2026. March 26, 2013 is in the past relative to today's date (August 15, 2015), so no tickets are available for that date.\" This confirms the agent could not fulfill the date constraint.",
+      "failure_category": "PREMATURE_STOP",
+      "final_url": "https://us.megabus.com/",
+      "final_title": "Megabus | Low cost bus tickets to more than 500 cities",
+      "input_tokens": 52779,
+      "output_tokens": 4516,
+      "estimated_cost_usd": 0.01220805,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_0_c3e02c70",
+      "created_at": "2026-08-22T23:03:04.501030+00:00",
+      "max_actions_budget": 60,
+      "actions": []
+    }
+  ]
+}

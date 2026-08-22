@@ -20,6 +20,7 @@ def main() -> int:
     p.add_argument("--model", default=DEFAULT_MISTRAL_MODEL)
     p.add_argument("--max-actions", type=int, default=MAX_ACTIONS)
     p.add_argument("--task-index", type=int, default=None, help="Run one task (0 or 1)")
+    p.add_argument("--headed", action="store_true", help="Show Chromium window (not headless)")
     args = p.parse_args()
 
     tasks = MINI2_TASKS
@@ -31,7 +32,12 @@ def main() -> int:
         task = {**t, "eval_index": f"mini2_{i}"}
         print(f"START mistral | {task['website']} | {task['eval_index']}", flush=True)
         try:
-            row = run_mistral_browser_use(task, model=args.model, max_actions=args.max_actions)
+            row = run_mistral_browser_use(
+                task,
+                model=args.model,
+                max_actions=args.max_actions,
+                headed=True if args.headed else None,
+            )
         except Exception as exc:  # noqa: BLE001
             row = {
                 "eval_index": task["eval_index"],

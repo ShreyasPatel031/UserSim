@@ -1,0 +1,34 @@
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+full10_mistral_mistral-small-2603_m33_stage1_fleet_shard0.json: 3/3 runs to re-score
+  idx=7        jetblue          JUDGE_ERROR  -> SUCCESS
+  idx=32       ign              JUDGE_ERROR  -> FAILURE
+  idx=34       eventbrite       JUDGE_ERROR  -> FAILURE
+
+changed=3  scored=3/3  success_rate_scored=0.3333  success_rate_eligible=0.3333  judge_error_rate=0.0
+by_status={'SUCCESS': 1, 'FAILURE': 2}
+by_failure_category={'PLANNING': 2}
+
+Wrote /home/shreyaspatel/usersim/results/capability/full10_mistral_mistral-small-2603_m33_stage1_fleet_shard0.json
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+full10_mistral_mistral-small-2603_m33_stage1_fleet_shard1.json: 2/3 runs to re-score
+  idx=12       ticketcenter     JUDGE_ERROR  -> SUCCESS
+  idx=26       rottentomatoes   JUDGE_ERROR  -> FAILURE
+
+changed=2  scored=2/3  success_rate_scored=0.5  success_rate_eligible=0.5  judge_error_rate=0.0
+by_status={'SUCCESS': 1, 'BLOCKED': 1, 'FAILURE': 1}
+by_failure_category={'BLOCKED': 1, 'PLANNING': 1}
+
+Wrote /home/shreyaspatel/usersim/results/capability/full10_mistral_mistral-small-2603_m33_stage1_fleet_shard1.json
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+

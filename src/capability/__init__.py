@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from pathlib import Path
 
 from config import GCP_LOCATION, MODEL, RESULTS_DIR, ROOT
@@ -15,7 +16,17 @@ _TASKS = json.loads((ROOT / "data" / "mind2web_tasks.json").read_text())["tasks"
 MAX_HUMAN_STEPS = max(int(t.get("n_steps") or 0) for t in _TASKS)
 # Buffer: +50% of the longest human path, at least +10 steps.
 ACTION_BUFFER = max(10, math.ceil(0.5 * MAX_HUMAN_STEPS))
-MAX_ACTIONS = MAX_HUMAN_STEPS + ACTION_BUFFER  # 22 + 11 = 33 on current 100-task set
+# 1.5x the longest human path (33) turned out to be far too tight for a small model, which
+# needs recovery headroom a human does not: on full100 it cut off 93% of failures and 3 of 6
+# successes finished right at the cap. Webwright's published curve knees around 50 steps.
+LEGACY_MAX_ACTIONS = MAX_HUMAN_STEPS + ACTION_BUFFER  # 22 + 11 = 33
+# Parallel-arm default: 60 steps (see contributions/mistral-vibe/PARALLEL_ARMS_PLAN.md).
+PARALLEL_ARM_MAX_ACTIONS = 60
+MAX_ACTIONS = int(
+    os.environ.get("CAPABILITY_MAX_ACTIONS")
+    or os.environ.get("BROWSER_USE_MAX_ACTIONS")
+    or PARALLEL_ARM_MAX_ACTIONS
+)
 
 # Default agent model for all capability testing (matches config.MODEL / judge).
 BAKEOFF_MODEL = MODEL

@@ -8,6 +8,7 @@ results/cache/
 *.egg-info/
 .python-version
 secrets/
+mvp/runs/
 vendor/
 # Large third-party clones / decrypted HAL traces (local only)
 vendor/
@@ -17,8 +18,14 @@ results/v06/traces/
 results/**/*.png
 results/capability/full*_browser_use_*.json
 results/capability/genuine*_browser_use_*.json
+results/capability/fleet_*.log
+results/capability/*_run.log
+results/capability/browserbase_probe.log
+results/capability/*_rejudge.log
+results/capability/*_launch.log
 data/models/
 .venv-seeact/
 .venv-webvoyager/
 .venv-proxy/
 data/hackathon/
+.vercel

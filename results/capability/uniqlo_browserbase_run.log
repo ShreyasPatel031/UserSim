@@ -1,0 +1,84 @@
+Mistral bakeoff | 1/1 tasks | workers=1 | model=mistral-small-2603 -> one_mistral_browserbase-smoke.json
+START mistral | uniqlo | idx=19 | model=mistral-small-2603
+INFO     [service] Using anonymized telemetry, see https://docs.browser-use.com/development/monitoring/telemetry.
+INFO     [Agent] 🔗 Found URL in task: https://www.uniqlo.com/us/en/, adding as initial action...
+INFO     [Agent] 💬 Saving conversation to ~/Desktop/Code/UserSim/results/capability/traces/mistral_19_15516c12/conversation
+INFO     [Agent] [34m🎯 Task: You are a capable web agent. Complete the user's task fully. Satisfy every constraint in the task (filters, values, final actions). Do not stop early once you reach a related category page. Use up to the allowed number of browser actions. When the task is fully complete, stop and briefly state what you accomplished.
+
+Open https://www.uniqlo.com/us/en/ if not already there.
+Task: Show me the list of baby products that are on sale and under 10 dollars.
+Satisfy every constraint. Stop only when fully done.[0m
+INFO     [Agent] Starting a browser-use agent with version 0.13.8, with provider=openai and model=mistral-small-2603
+ERROR    [BrowserSession] ❌ FATAL: Failed to setup CDP connection: server rejected WebSocket connection: HTTP 410
+ERROR    [BrowserSession] ❌ Browser cannot continue without CDP connection
+WARNING  [BrowserSession] Local browser failed to start. Cloud browsers require no local install and work out of the box.
+         Try: Browser(use_cloud=True)  |  Get an API key: https://cloud.browser-use.com?utm_source=oss&utm_medium=browser_launch_failure
+ERROR    [BrowserSession] 🚌 [BrowserSession.on_BrowserStartEvent(#a221)]           ❌ Failed (0.40s): RuntimeError: Failed to establish CDP connection to browser: server rejected WebSocket connection: HTTP 410
+ERROR    [BrowserSession] 🚌 [BrowserSession.on_BrowserStartEvent(#a221)]           ❌ CDP connected but failed to re-create CDP session after error "RuntimeError: Failed to establish CDP connection to browser: server rejected WebSocket connection: HTTP 410" in on_BrowserStartEvent(BrowserStartEvent#a221): due to AssertionError: Root CDP client not initialized
+
+ERROR    [Agent] Agent run failed with exception: Failed to establish CDP connection to browser: server rejected WebSocket connection: HTTP 410
+Traceback (most recent call last):
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/browser/session.py", line 1898, in connect
+    await self._cdp_client_root.start()
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/cdp_use/client.py", line 277, in start
+    self.ws = await websockets.connect(self.url, **connect_kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/websockets/asyncio/client.py", line 543, in __await_impl__
+    await self.connection.handshake(
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/websockets/asyncio/client.py", line 114, in handshake
+    raise self.protocol.handshake_exc
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/websockets/client.py", line 325, in parse
+    self.process_response(response)
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/websockets/client.py", line 142, in process_response
+    raise InvalidStatus(response)
+websockets.exceptions.InvalidStatus: server rejected WebSocket connection: HTTP 410
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/agent/service.py", line 2566, in run
+    await self.browser_session.start()
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/observability.py", line 73, in async_wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/browser/session.py", line 726, in start
+    await start_event.event_result(raise_if_any=True, raise_if_none=False)
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/bubus/models.py", line 574, in event_result
+    valid_results = await self.event_results_filtered(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/bubus/models.py", line 516, in event_results_filtered
+    raise original_error
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/bubus/models.py", line 490, in event_results_filtered
+    await event_result
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/bubus/models.py", line 889, in wait_for_handler_to_complete_and_return_result
+    raise self.error if isinstance(self.error, BaseException) else Exception(self.error)  # pyright: ignore[reportUnnecessaryIsInstance]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/bubus/service.py", line 1128, in execute_handler
+    result_value: Any = await asyncio.wait_for(handler_task, timeout=event_result.timeout)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/browser/watchdog_base.py", line 153, in unique_handler
+    result = await actual_handler(event)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/observability.py", line 73, in async_wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/browser/session.py", line 831, in on_BrowserStartEvent
+    await asyncio.wait_for(self.connect(cdp_url=self.cdp_url), timeout=15.0)
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/browser/session.py", line 2016, in connect
+    raise RuntimeError(f'Failed to establish CDP connection to browser: {e}') from e
+RuntimeError: Failed to establish CDP connection to browser: server rejected WebSocket connection: HTTP 410
+INFO     [Agent] 
+INFO     [Agent] Did the Agent not work as expected? Let us fix this!
+INFO     [Agent]    Open a short issue on GitHub: https://github.com/browser-use/browser-use/issues
+INFO     [BrowserSession] 📢 on_BrowserStopEvent - Calling reset() (force=True, keep_alive=None)
+INFO     [BrowserSession] ✅ Browser session reset complete
+INFO     [BrowserSession] ✅ Browser session reset complete
+DONE  mistral | uniqlo | idx=19 | FAILURE success=False actions=0 cost=$0.0000
+PROGRESS 1/1 success=0 cost=$0.00
+Wrote /Users/shreyaspatel/Desktop/Code/UserSim/results/capability/one_mistral_browserbase-smoke.json
