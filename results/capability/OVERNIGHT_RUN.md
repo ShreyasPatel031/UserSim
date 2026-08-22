@@ -1,8 +1,33 @@
 # Overnight SFT run — Ministral-3-3B → web CUA
 
-**Launched:** 2026-08-22 11:03 UTC · **ETA:** ~15:50 UTC (~4.5 h train + merge/eval/upload)
+**Status: COMPLETE.** Ran 11:03 → 15:40 UTC. A100 deleted; billing stopped.
 
-**Early health check:** loss 1.51 → 1.01 over the first 20 steps, GPU pinned at 100%. Learning.
+## Result
+
+| Metric | Value |
+|---|---|
+| Training loss | 1.51 → **0.66** |
+| Steps | 1,369 (1 epoch, 21,891 samples) |
+| Throughput | 1.34 samples/s · 4.52 h |
+| **Action parse rate** | **100%** (25/25) |
+| **Click within 5% of canvas** | **48%** (12/25) |
+
+The model reliably emits the trained `Thought / Action / pyautogui.click(x, y)` format and lands
+roughly half its clicks within 5% of the gold target. Sample output:
+
+```
+PRED: Thought: To achieve the goal of searching for thriller movies directed by Wilcox from 2016,
+      I need to enter 'thriller' in the genre field...
+      pyautogui.click(x=0.6323, y=0.6881)
+GOLD: pyautogui.click(x=0.6625, y=0.6405)     -> hit
+```
+
+**These are single-step grounding numbers, not OM2W task success.** Real OM2W requires the
+coordinate harness (`MISTRAL_CUA_FINETUNE_PLAN.md` Phase 5).
+
+> **`eval_summary.json` in the bucket reports `parsed: 0` — ignore it.** The in-training eval
+> capped generation at 128 tokens, which truncates before the `pyautogui` line whenever the
+> Thought block runs long. `eval_full.json` has the correct numbers at 384 tokens.
 
 ## What is running
 
@@ -71,10 +96,18 @@ not an OM2W score.
 A healthy run lands parse rate near 100% and click accuracy well above zero. Real OM2W numbers
 need the coordinate harness (not yet built — see `MISTRAL_CUA_FINETUNE_PLAN.md` Phase 5).
 
-## Cost
+## Cost (final)
 
-A100 on-demand ≈ $3.67/h × ~5 h ≈ **$18**, then auto-off. The old T4
-(`oprior-1787208583-uscentral1a`) is untouched and still running its own workload.
+| Item | Cost |
+|---|---|
+| A100 `a2-highgpu-1g`, ~5.2 h @ $3.67/h | $19.10 |
+| T4 VM (shared with the parallel agent's Fara proxy) | ~$4.50 |
+| Boot disk, egress, GCS storage | ~$0.80 |
+| **Total** | **~$24** |
+
+A100 instance and its 300 GB disk are **deleted** — no further charge. The T4
+(`oprior-1787208583-uscentral1a`) is still up and is not ours to stop; another agent is serving
+Fara on it at ~$0.73/h.
 
 ## Serve it
 
