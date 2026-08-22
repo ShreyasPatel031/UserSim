@@ -153,34 +153,23 @@ async def _run_one(
     return out
 
 
-async def _main_async(args: argparse.Namespace) -> int:
-    tasks = load_om2w_tasks(
-        limit=args.limit,
-        mini2_only=args.mini2,
-        task_ids=args.task_ids.split(",") if args.task_ids else None,
-    )
-    endpoint = {
-        "model": args.model,
-        "base_url": args.base_url,
-        "api_key": args.api_key,
-    }
-    out_root = Path(args.out_dir)
-    out_root.mkdir(parents=True, exist_ok=True)
+def _load_prior_results(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text())
+    except (json.JSONDecodeError, OSError):
+        return []
+    return list(data.get("results") or [])
 
-    results = []
-    for task in tasks:
-        print(f"START {task['eval_index']} | {task['website']} | {task['task_id']}", flush=True)
-        r = await _run_one(
-            task,
-            endpoint,
-            out_root,
-            max_rounds=args.max_rounds,
-            browserbase=args.browserbase,
-            headless=not args.headful,
-        )
-        results.append(r)
-        print(f"DONE  {task['eval_index']} | {r['status']} | success={r['success']}", flush=True)
 
+def _write_summary(
+    results: list[dict],
+    *,
+    endpoint: dict,
+    args: argparse.Namespace,
+    out_path: Path,
+) -> dict:
     n = len(results)
     succ = sum(1 for r in results if r["success"])
     blocked = sum(1 for r in results if r["status"] == "BLOCKED")
@@ -197,10 +186,63 @@ async def _main_async(args: argparse.Namespace) -> int:
         "max_rounds": args.max_rounds,
         "mini2": args.mini2,
         "results": results,
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
     }
-    out_path = OUT_DIR / args.summary_name
     out_path.write_text(json.dumps(summary, indent=2))
+    return summary
+
+
+async def _main_async(args: argparse.Namespace) -> int:
+    tasks = load_om2w_tasks(
+        limit=args.limit,
+        mini2_only=args.mini2,
+        task_ids=args.task_ids.split(",") if args.task_ids else None,
+    )
+    endpoint = {
+        "model": args.model,
+        "base_url": args.base_url,
+        "api_key": args.api_key,
+    }
+    out_root = Path(args.out_dir)
+    out_root.mkdir(parents=True, exist_ok=True)
+    out_path = OUT_DIR / args.summary_name
+
+    results: list[dict] = []
+    done_ids: set[str] = set()
+    if args.resume:
+        results = _load_prior_results(out_path)
+        done_ids = {r["task_id"] for r in results}
+        if done_ids:
+            print(f"RESUME skip {len(done_ids)} task(s) from {out_path}", flush=True)
+
+    summary = _write_summary(results, endpoint=endpoint, args=args, out_path=out_path) if results else {
+        "success_rate": 0.0,
+    }
+
+    for task in tasks:
+        if task["task_id"] in done_ids:
+            print(f"SKIP  {task['eval_index']} | {task['website']} | {task['task_id']}", flush=True)
+            continue
+        print(f"START {task['eval_index']} | {task['website']} | {task['task_id']}", flush=True)
+        r = await _run_one(
+            task,
+            endpoint,
+            out_root,
+            max_rounds=args.max_rounds,
+            browserbase=args.browserbase,
+            headless=not args.headful,
+        )
+        results.append(r)
+        done_ids.add(task["task_id"])
+        summary = _write_summary(results, endpoint=endpoint, args=args, out_path=out_path)
+        print(
+            f"DONE  {task['eval_index']} | {r['status']} | success={r['success']} | "
+            f"rate={summary['success_rate']}",
+            flush=True,
+        )
+
+    n = len(results)
+    succ = sum(1 for r in results if r["success"])
     print(json.dumps({"n": n, "successes": succ, "rate": summary["success_rate"], "out": str(out_path)}))
     return 0
 
@@ -218,6 +260,11 @@ def main() -> int:
     p.add_argument("--headful", action="store_true")
     p.add_argument("--out-dir", default=str(OUT_DIR / "fara_om2w_traces"))
     p.add_argument("--summary-name", default="fara_om2w_results.json")
+    p.add_argument(
+        "--resume",
+        action="store_true",
+        help="Skip task_ids already present in summary JSON; save after each task",
+    )
     args = p.parse_args()
     return asyncio.run(_main_async(args))
 
