@@ -7,6 +7,9 @@
 |-------|------|------|-----|
 | **Fara1.5-4B** | `/workspace/data/models/Fara1.5-4B` | ~8.5 GB | [microsoft/Fara1.5-4B](https://huggingface.co/microsoft/Fara1.5-4B) |
 | **OpenWebRL-4B** | `/workspace/data/models/OpenWebRL-4B` | ~8.3 GB | [OpenWebRL/OpenWebRL-4B](https://huggingface.co/OpenWebRL/OpenWebRL-4B) |
+| **Ministral3-3B-CUA-web** (ours) | GCS only | ~7.2 GB | `gs://ai-studio-bucket-347838016394-us-east1/usersim-models/Ministral3-3B-CUA-web` |
+
+See `results/capability/ministral3_cua_results.json` for eval numbers.
 
 ## On T4 VM (`~/usersim/models/`)
 
