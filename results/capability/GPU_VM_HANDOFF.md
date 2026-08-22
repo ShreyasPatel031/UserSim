@@ -22,7 +22,23 @@ gcloud compute ssh "$VM" --zone="$ZONE" --tunnel-through-iap --command='nvidia-s
 - Don't set heavy batches that OOM the T4 (16GB)
 - Prefer **Fara1.5-4B** on T4; 7B only with 4-bit quantization
 
-## Verified 2026-08-21
+## Verified 2026-08-22
 - Tesla T4, 15360 MiB, **0 MiB used**, GPU free
-- Disk: ~73G free on `/`
+- Disk: ~67G free on `/`
 - IAP SSH works from cloud agent as `shreyas.patel@searce.com`
+- VM **RUNNING** (`35.194.10.67`)
+
+## Models on VM (from GCS)
+```bash
+gsutil -m cp -r gs://ai-studio-bucket-347838016394-us-east1/usersim-models/Fara1.5-4B ~/usersim/models/
+gsutil -m cp -r gs://ai-studio-bucket-347838016394-us-east1/usersim-models/OpenWebRL-4B ~/usersim/models/
+```
+
+## Serve + smoke (T4-safe settings)
+```bash
+# Copy scripts from repo: scripts/vm/serve_fara.sh, smoke_vllm.py
+bash ~/usersim/scripts/serve_fara.sh   # port 8000
+python ~/usersim/scripts/smoke_vllm.py --base-url http://127.0.0.1:8000/v1
+```
+
+Colab alternative: `notebooks/colab_cua_models.ipynb`
