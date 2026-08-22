@@ -18,7 +18,7 @@ def _load_messages(conv_dir: Path) -> list[dict] | None:
     files = sorted(conv_dir.glob("conversation_*.txt"))
     if not files:
         return None
-  # Browser Use saves human-readable logs, not strict JSON — pack as single user turn.
+    # Browser Use saves human-readable logs, not strict JSON — pack as single user turn.
     text = files[-1].read_text(errors="replace")[:120_000]
     return [
         {
