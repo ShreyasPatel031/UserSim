@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "vendor" / "fara" / "src"))
 
 from fara.agents.fara.fara15_agent import Fara15Agent, Fara15AgentConfig
-from fara.core.data_point import SolverStatus, Task, UserMessage, UserMessageType
+from fara.core.data_point import SolverStatus, Task, UserMessage, UserMessageType, get_actions
 from fara.core.run_context import RunContext
 from fara.environments.playwright.environment import PlaywrightEnvironment
 
@@ -26,9 +26,9 @@ from capability.om2w_tasks import load_om2w_tasks
 
 def _action_summary(run_context) -> str:
     lines = []
-    for i, step in enumerate(run_context.solver_log.actions or [], start=1):
-        act = getattr(step, "action", None) or step
-        lines.append(f"{i}. {act}")
+    for i, step in enumerate(get_actions(run_context.solver_log.events), start=1):
+        name = getattr(step, "action_name", None) or getattr(step, "content", step)
+        lines.append(f"{i}. {name}")
     return "\n".join(lines) or "(no actions logged)"
 
 
@@ -91,20 +91,19 @@ async def _run_one(
             )
             final_answer, _, _ = await agent.run(run_context)
 
+        summary = _action_summary(run_context)
+        if final_answer:
+            summary += f"\nFinal answer: {final_answer}"
         try:
-            final_url = await env.page.url() if hasattr(env, "page") else task["start_url"]
+            final_url = env.page.url if getattr(env, "page", None) else task["start_url"]
         except Exception:
             final_url = task["start_url"]
-
         shots = sorted(run_dir.glob("screenshot_*.png"))
         if shots:
             screenshot = shots[-1].read_bytes()
         elif (run_dir / "final.png").exists():
             screenshot = (run_dir / "final.png").read_bytes()
 
-        summary = _action_summary(run_context)
-        if final_answer:
-            summary += f"\nFinal answer: {final_answer}"
         judgment = judge_task(task["task"], final_url, summary, screenshot)
         status = judgment["status"]
         success = status == "SUCCESS"
