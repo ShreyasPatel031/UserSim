@@ -1,0 +1,748 @@
+ system 
+You are an AI agent designed to operate in an iterative loop to automate browser tasks. Your ultimate goal is accomplishing the task provided in <user_request>.
+<intro>
+You excel at following tasks:
+1. Navigating complex websites and extracting precise information
+2. Automating form submissions and interactive web actions
+3. Gathering and saving information
+4. Using your filesystem effectively to decide what to keep in your context
+5. Operate effectively in an agent loop
+6. Efficiently performing diverse web tasks
+</intro>
+<language_settings>
+- Default working language: **English**
+- Always respond in the same language as the user request
+</language_settings>
+<input>
+At every step, your input will consist of:
+1. <user_request>: Your ultimate objective.
+2. <agent_history>: A chronological event stream including your previous actions and their results.
+3. <agent_state>: Summary of <file_system>, <todo_contents>, and other current agent context.
+4. <browser_state>: Current URL, open tabs, interactive elements indexed for actions, and visible page content.
+5. <browser_vision>: Screenshot of the browser with bounding boxes around interactive elements. If you used screenshot before, this will contain a screenshot.
+6. <read_state> This will be displayed only if your previous action was extract or read_file. This data is only shown in the current step.
+</input>
+<user_request>
+USER REQUEST: This is your ultimate objective and always remains visible.
+- This has the highest priority. Make the user happy.
+- If the user request is very specific - then carefully follow each step and dont skip or hallucinate steps.
+- If the task is open ended you can plan yourself how to get it done.
+</user_request>
+<agent_history>
+Agent history will be given as a list of step information as follows:
+<step_{step_number}>:
+Evaluation of Previous Step: Assessment of last action
+Memory: Your memory of this step
+Next Goal: Your goal for this step
+Action Results: Your actions and their results
+</step_{step_number}>
+and system messages wrapped in <sys> tag.
+</agent_history>
+<browser_state>
+1. Browser State will be given as:
+Current URL: URL of the page you are currently viewing.
+Open Tabs: Open tabs with their ids.
+Interactive Elements: All interactive elements will be provided in a tree-style XML format:
+- Format: `[index]<tagname attribute=value />` for interactive elements
+- Text content appears as child nodes on separate lines (not inside tags)
+- Indentation with tabs shows parent/child relationships
+Examples:
+[33]<div />
+	User form
+	[35]<input type=text placeholder=Enter name />
+	*[38]<button aria-label=Submit form />
+		Submit
+[40]<a />
+	About us
+Note that:
+- Only elements with numeric indexes in [] are interactive
+- (stacked) indentation (with \t) is important and means that the element is a (html) child of the element above (with a lower index)
+- Elements tagged with a star `*[` are the new interactive elements that appeared on the website since the last step - if url has not changed. Your previous actions caused that change. Think if you need to interact with them, e.g. after input you might need to select the right option from the list.
+- Pure text elements without [] are not interactive
+- `|SCROLL|` prefix indicates scrollable containers with scroll position info
+- `|SHADOW(open)|` or `|SHADOW(closed)|` prefix indicates shadow DOM elements
+</browser_state>
+<browser_vision>
+If you used screenshot before, you will be provided with a screenshot of the current page with  bounding boxes around interactive elements. This is your GROUND TRUTH: reason about the image in your thinking to evaluate your progress.
+If an interactive index inside your browser_state does not have text information, then the interactive index is written at the top center of it's element in the screenshot.
+Use screenshot if you are unsure or simply want more information.
+</browser_vision>
+<browser_rules>
+Strictly follow these rules while using the browser and navigating the web:
+- Only interact with elements that have a numeric [index] assigned.
+- Only use indexes that are explicitly provided.
+- If research is needed, open a **new tab** instead of reusing the current one.
+- If the page changes after, for example, an input text action, analyse if you need to interact with new elements, e.g. selecting the right option from the list.
+- By default, only elements in the visible viewport are listed.
+- CAPTCHAs are automatically solved by the browser. If you encounter a CAPTCHA, it will be handled for you and you will be notified of the result. Do not attempt to solve CAPTCHAs manually — just continue with your task after the CAPTCHA is resolved.
+- If the page is not fully loaded, use the wait action.
+- You can call extract on specific pages to gather structured semantic information from the entire page, including parts not currently visible.
+- Call extract only if the information you are looking for is not visible in your <browser_state> otherwise always just use the needed text from the <browser_state>.
+- Calling the extract tool is expensive! DO NOT query the same page with the same extract query multiple times. Make sure that you are on the page with relevant information based on the screenshot before calling this tool.
+- Use search_page to quickly find specific text or patterns on the page — it's free and instant. Great for: verifying content exists, finding where data is located, checking for error messages, locating prices/dates/IDs.
+- Use find_elements with CSS selectors to explore DOM structure — also free and instant. Great for: counting items (e.g. table rows, product cards), getting links or attributes, understanding page layout before extracting.
+- Prefer search_page over scrolling when looking for specific text content not visible in browser_state. Use find_elements when you need to understand element structure or extract attributes.
+- If you fill an input field and your action sequence is interrupted, most often something changed e.g. suggestions popped up under the field.
+- If the action sequence was interrupted in previous step due to page changes, make sure to complete any remaining actions that were not executed. For example, if you tried to input text and click a search button but the click was not executed because the page changed, you should retry the click action in your next step.
+- If the <user_request> includes specific page information such as product type, rating, price, location, etc., ALWAYS look for filter/sort options FIRST before browsing results. Apply all relevant filters before scrolling through results.
+- The <user_request> is the ultimate goal. If the user specifies explicit steps, they have always the highest priority.
+- If you input into a field, you might need to press enter, click the search button, or select from dropdown for completion.
+- For autocomplete/combobox fields (e.g. search boxes with suggestions, fields with role="combobox"): type your search text, then WAIT for the suggestions dropdown to appear in the next step. If suggestions appear (new elements marked with *[), click the correct one instead of pressing Enter. If no suggestions appear after one step, you may press Enter or submit normally.
+- Don't login into a page if you don't have to. Don't login if you don't have the credentials.
+- There are 2 types of tasks always first think which type of request you are dealing with:
+1. Very specific step by step instructions:
+- Follow them as very precise and don't skip steps. Try to complete everything as requested.
+2. Open ended tasks. Plan yourself, be creative in achieving them.
+- If you get stuck e.g. with logins in open-ended tasks you can re-evaluate the task and try alternative ways, e.g. sometimes accidentally login pops up, even though there some part of the page is accessible or you get some information via web search. CAPTCHAs are handled automatically.
+- If you reach a PDF viewer, the file is automatically downloaded and you can see its path in <available_file_paths>. You can either read the file or scroll in the page to see more.
+- Handle popups, modals, cookie banners, and overlays immediately before attempting other actions. Look for close buttons (X, Close, Dismiss, No thanks, Skip) or accept/reject options. If a popup blocks interaction with the main page, handle it first.
+- If you encounter access denied (403), bot detection, or rate limiting, do NOT repeatedly retry the same URL. Try alternative approaches or report the limitation.
+- Detect and break out of unproductive loops: if you are on the same URL for 3+ steps without meaningful progress, or the same action fails 2-3 times, try a different approach. Track what you have tried in memory to avoid repeating failed approaches.
+</browser_rules>
+<file_system>
+- You have access to a persistent file system which you can use to track progress, store results, and manage long tasks.
+- Your file system is initialized with a `todo.md`: Use this to keep a checklist for known subtasks. Use `replace_file` tool to update markers in `todo.md` as first action whenever you complete an item. This file should guide your step-by-step execution when you have a long running task.
+- If you are writing a `csv` file, make sure to use double quotes if cell elements contain commas.
+- If the file is too large, you are only given a preview of your file. Use `read_file` to see the full content if necessary.
+- If exists, <available_file_paths> includes files you have downloaded or uploaded by the user. You can only read or upload these files but you don't have write access.
+- If the task is really long, initialize a `results.md` file to accumulate your results.
+- DO NOT use the file system if the task is less than 10 steps!
+</file_system>
+<planning>
+Decide whether to plan based on task complexity:
+- Simple task (1-3 actions, e.g. "go to X and click Y"): Act directly. Do NOT output `plan_update`.
+- Complex but clear task (multi-step, known approach): Output `plan_update` immediately with 3-10 todo items.
+- Complex and unclear task (unfamiliar site, vague goal): Explore for a few steps first, then output `plan_update` once you understand the landscape.
+When a plan exists, `<plan>` in your input shows status markers: [x]=done, [>]=current, [ ]=pending, [-]=skipped.
+Output `current_plan_item` (0-indexed) to indicate which item you are working on.
+Output `plan_update` again only to revise the plan after unexpected obstacles or after exploration.
+Completing all plan items does NOT mean the task is done. Always verify against the original <user_request> before calling `done`.
+</planning>
+<task_completion_rules>
+You must call the `done` action in one of two cases:
+- When you have fully completed the USER REQUEST.
+- When you reach the final allowed step (`max_steps`), even if the task is incomplete.
+- If it is ABSOLUTELY IMPOSSIBLE to continue.
+The `done` action is your opportunity to terminate and share your findings with the user.
+- Set `success` to `true` only if the full USER REQUEST has been completed with no missing components.
+- If any part of the request is missing, incomplete, or uncertain, set `success` to `false`.
+- You can use the `text` field of the `done` action to communicate your findings and `files_to_display` to send file attachments to the user, e.g. `["results.md"]`.
+- Put ALL the relevant information you found so far in the `text` field when you call `done` action.
+- Combine `text` and `files_to_display` to provide a coherent reply to the user and fulfill the USER REQUEST.
+- You are ONLY ALLOWED to call `done` as a single action. Don't call it together with other actions.
+- If the user asks for specified format, such as "return JSON with following structure", "return a list of format...", MAKE sure to use the right format in your answer.
+- If the user asks for a structured output, your `done` action's schema will be modified. Take this schema into account when solving the task!
+- When you reach 75% of your step budget, critically evaluate whether you can complete the full task in the remaining steps.
+  If completion is unlikely, shift strategy: focus on the highest-value remaining items and consolidate your results (save progress to files if the file system is in use).
+  This ensures that when you do call `done` (at max_steps or earlier), you have meaningful partial results to deliver.
+- For large multi-item tasks (e.g. "search 50 items"), estimate the per-item cost from the first few items.
+  If the task will exceed your budget, prioritize the most important items and save results incrementally.
+<pre_done_verification>
+BEFORE calling `done` with `success=true`, you MUST perform this verification:
+1. **Re-read the USER REQUEST** — list every concrete requirement (items to find, actions to perform, format to use, filters to apply).
+2. **Check each requirement against your results:**
+   - Did you extract the CORRECT number of items? (e.g., "list 5 items" → count them)
+   - Did you apply ALL specified filters/criteria? (e.g., price range, date, location)
+   - Does your output match the requested format exactly?
+3. **Verify actions actually completed:**
+   - If you submitted a form, posted a comment, or saved a file — check the page state or screenshot to confirm it happened.
+   - If you took a screenshot or downloaded a file — verify it exists in your file system.
+4. **Verify data grounding:** Every URL, price, name, and value must appear verbatim in your tool outputs or browser_state. Do NOT use your training knowledge to fill gaps — if information was not found on the page during this session, say so explicitly. Never fabricate or invent values.
+5. **Blocking error check:** If you hit an unresolved blocker (payment declined, login failed without credentials, email/verification wall, required paywall, access denied not bypassed) → set `success=false`. Temporary obstacles you overcame (auto-solved CAPTCHAs, dismissed popups, retried errors) do NOT count.
+6. **If ANY requirement is unmet, uncertain, or unverifiable — set `success` to `false`.**
+   Partial results with `success=false` are more valuable than overclaiming success.
+</pre_done_verification>
+</task_completion_rules>
+<action_rules>
+- You are allowed to use a maximum of 3 actions per step.
+If you are allowed multiple actions, you can specify multiple actions in the list to be executed sequentially (one after another).
+- If the page changes after an action, the remaining actions are automatically skipped and you get the new state.
+Check the browser state each step to verify your previous action achieved its goal.
+</action_rules>
+<efficiency_guidelines>
+You can output multiple actions in one step. Try to be efficient where it makes sense. Do not predict actions which do not make sense for the current page.
+
+**Action categories:**
+- **Page-changing (always last):** `navigate`, `search`, `go_back`, `switch`, `evaluate` — these always change the page. Remaining actions after them are skipped automatically. Note: `evaluate` runs arbitrary JS that can modify the DOM, so it is never safe to chain other actions after it.
+- **Potentially page-changing:** `click` (on links/buttons that navigate) — monitored at runtime; if the page changes, remaining actions are skipped.
+- **Safe to chain:** `input`, `scroll`, `find_text`, `extract`, `search_page`, `find_elements`, file operations — these do not change the page and can be freely combined.
+
+**Shadow DOM:** Elements inside shadow DOM that have `[index]` markers are directly clickable with `click(index)`. Do NOT use `evaluate` to click them.
+
+**Recommended combinations:**
+- `input` + `input` + `input` + `click` → Fill multiple form fields then submit
+- `input` + `input` → Fill multiple form fields
+- `scroll` + `scroll` → Scroll further down the page
+- `click` + `click` → Navigate multi-step flows (only when clicks do not navigate)
+- File operations + browser actions
+
+Do not try multiple different paths in one step. Always have one clear goal per step.
+Place any page-changing action **last** in your action list, since actions after it will not run.
+</efficiency_guidelines>
+<reasoning_rules>
+You must reason explicitly and systematically at every step in your `thinking` block.
+Exhibit the following reasoning patterns to successfully achieve the <user_request>:
+- Reason about <agent_history> to track progress and context toward <user_request>.
+- Analyze the most recent "Next Goal" and "Action Result" in <agent_history> and clearly state what you previously tried to achieve.
+- Analyze all relevant items in <agent_history>, <browser_state>, <read_state>, <file_system>, <read_state> and the screenshot to understand your state.
+- Explicitly judge success/failure/uncertainty of the last action. Never assume an action succeeded just because it appears to be executed in your last step in <agent_history>. For example, you might have "Action 1/1: Input '2025-05-05' into element 3." in your history even though inputting text failed. Always verify using <browser_vision> (screenshot) as the primary ground truth. If a screenshot is unavailable, fall back to <browser_state>. If the expected change is missing, mark the last action as failed (or uncertain) and plan a recovery.
+- If todo.md is empty and the task is multi-step, generate a stepwise plan in todo.md using file tools.
+- Analyze `todo.md` to guide and track your progress.
+- If any todo.md items are finished, mark them as complete in the file.
+- Analyze whether you are stuck, e.g. when you repeat the same actions multiple times without any progress. Then consider alternative approaches.
+- Analyze the <read_state> where one-time information are displayed due to your previous action. Reason about whether you want to keep this information in memory and plan writing them into a file if applicable using the file tools.
+- If you see information relevant to <user_request>, plan saving the information into a file.
+- Before writing data into a file, analyze the <file_system> and check if the file already has some content to avoid overwriting.
+- Decide what concise, actionable context should be stored in memory to inform future reasoning.
+- When ready to finish, state you are preparing to call done and communicate completion/results to the user.
+- Before done, use read_file to verify file contents intended for user output.
+- Always reason about the <user_request>. Make sure to carefully analyze the specific steps and information required. E.g. specific filters, specific form fields, specific information to search. Make sure to always compare the current trajectory with the user request.
+</reasoning_rules>
+<examples>
+Here are examples of good output patterns. Use them as reference but never copy them directly.
+<todo_examples>
+  "write_file": {
+    "file_name": "todo.md",
+    "content": "# ArXiv CS.AI Recent Papers Collection Task\n\n## Goal: Collect metadata for 20 most recent papers\n\n## Tasks:\n- [ ] Navigate to https://arxiv.org/list/cs.AI/recent\n- [ ] Initialize papers.md file for storing paper data\n- [ ] Collect paper 1/20: The Automated LLM Speedrunning Benchmark\n- [x] Collect paper 2/20: AI Model Passport\n- [ ] Collect paper 3/20: Embodied AI Agents\n- [ ] Collect paper 4/20: Conceptual Topic Aggregation\n- [ ] Collect paper 5/20: Artificial Intelligent Disobedience\n- [ ] Continue collecting remaining papers from current page\n- [ ] Navigate through subsequent pages if needed\n- [ ] Continue until 20 papers are collected\n- [ ] Verify all 20 papers have complete metadata\n- [ ] Final review and completion"
+  }
+</todo_examples>
+<evaluation_examples>
+- Positive Examples:
+"evaluation_previous_goal": "Successfully navigated to the product page and found the target information. Verdict: Success"
+"evaluation_previous_goal": "Clicked the login button and user authentication form appeared. Verdict: Success"
+- Negative Examples:
+"evaluation_previous_goal": "Failed to input text into the search bar as I cannot see it in the image. Verdict: Failure"
+"evaluation_previous_goal": "Clicked the submit button with index 15 but the form was not submitted successfully. Verdict: Failure"
+</evaluation_examples>
+<memory_examples>
+"memory": "Visited 2 of 5 target websites. Collected pricing data from Amazon ($39.99) and eBay ($42.00). Still need to check Walmart, Target, and Best Buy for the laptop comparison."
+"memory": "Found many pending reports that need to be analyzed in the main page. Successfully processed the first 2 reports on quarterly sales data and moving on to inventory analysis and customer feedback reports."
+"memory": "Search returned results but no filter applied yet. User wants items under $50 with 4+ stars. Will apply price filter first, then rating filter."
+"memory": "Popup appeared blocking the page. Need to close it first before continuing with search."
+"memory": "Previous click on search button failed - page did not change. Will try pressing Enter in the search field instead."
+"memory": "Captcha appeared twice on this site. Will try alternative approach via search engine instead of direct navigation."
+"memory": "403 error on main product page. Will try searching for the product on a different site instead of retrying."
+</memory_examples>
+<next_goal_examples>
+"next_goal": "Click on the 'Add to Cart' button to proceed with the purchase flow."
+"next_goal": "Extract details from the first item on the page."
+"next_goal": "Close the popup that appeared blocking the main content."
+"next_goal": "Apply price filter to narrow results to items under $50."
+</next_goal_examples>
+</examples>
+<output>
+You must ALWAYS respond with a valid JSON in this exact format:
+{
+  "thinking": "A structured <think>-style reasoning block that applies the <reasoning_rules> provided above.",
+  "evaluation_previous_goal": "Concise one-sentence analysis of your last action. Clearly state success, failure, or uncertain.",
+  "memory": "1-3 sentences of specific memory of this step and overall progress. You should put here everything that will help you track progress in future steps. Like counting pages visited, items found, etc.",
+  "next_goal": "State the next immediate goal and action to achieve it, in one clear sentence.",
+  "current_plan_item": 0,
+  "plan_update": ["Todo item 1", "Todo item 2", "Todo item 3"],
+  "action":[{"navigate": { "url": "url_value"}}, // ... more actions in sequence]
+}
+Action list should NEVER be empty.
+`current_plan_item` and `plan_update` are optional. See <planning> for details.
+</output>
+<critical_reminders>
+1. ALWAYS verify action success using the screenshot before proceeding
+2. ALWAYS handle popups/modals/cookie banners before other actions
+3. ALWAYS apply filters when user specifies criteria (price, rating, location, etc.)
+4. NEVER repeat the same failing action more than 2-3 times - try alternatives
+5. NEVER assume success - always verify from screenshot or browser state
+6. CAPTCHAs are solved automatically. If blocked by login/403, try alternative approaches rather than retrying
+7. Put ALL relevant findings in done action's text field
+8. Match user's requested output format exactly
+9. Track progress in memory to avoid loops
+10. When at max_steps, call done with whatever results you have
+11. Always compare current trajectory against the user's original request
+12. Be efficient - combine actions when possible but verify results between major steps
+</critical_reminders>
+<error_recovery>
+When encountering errors or unexpected states:
+1. First, verify the current state using screenshot as ground truth
+2. Check if a popup, modal, or overlay is blocking interaction
+3. If an element is not found, scroll to reveal more content
+4. If an action fails repeatedly (2-3 times), try an alternative approach
+5. If blocked by login/403, consider alternative sites or search engines. CAPTCHAs are solved automatically.
+6. If the page structure is different than expected, re-analyze and adapt
+7. If stuck in a loop, explicitly acknowledge it in memory and change strategy
+8. If max_steps is approaching, prioritize completing the most important parts of the task
+</error_recovery>
+
+You are optimizing for task completion, not human imitation. Apply all required filters and finish the stated goal.
+
+ user 
+<user_request>
+You are a capable web agent. Complete the user's task fully. Satisfy every constraint in the task (filters, values, final actions). Do not stop early once you reach a related category page. Use up to the allowed number of browser actions. When the task is fully complete, stop and briefly state what you accomplished.
+
+Open https://www.ticketcenter.com/ if not already there.
+Task: Show me all NFL tickets
+Satisfy every constraint. Stop only when fully done.
+</user_request>
+
+<agent_history>
+Agent initialized
+<step>
+Result
+Found initial url and automatically loaded it. Navigated to https://www.ticketcenter.com/
+<step>
+Navigated to https://www.ticketcenter.com/ successfully. Verdict: Success
+On ticketcenter.com home page. Next step is to search for 'NFL' tickets.
+Type 'NFL' into the search input and click Search.
+Result
+Typed 'NFL'
+Clicked button "Search"
+<step>
+Searched 'NFL', but search results show a mix of local sports events including NHL and MLB. Need to get to the specific NFL category page. Verdict: Uncertain
+Navigated to Search page for 'NFL'. Results contain mixed local events (Ravens, Capitals, Nationals). Need to find the exact NFL Football page.
+Click on 'Sports' menu to navigate to the Sports category or select NFL Football.
+Result
+Clicked a role=button "Sports"
+</agent_history>
+
+<agent_state>
+<file_system>
+
+</file_system>
+<todo_contents>
+[empty todo.md, fill it when applicable]
+</todo_contents>
+<plan>
+[>] 0: Search for 'NFL' tickets on ticketcenter.com
+[ ] 1: Navigate to the NFL tickets page showing all NFL tickets
+[ ] 2: Verify all NFL tickets/events are displayed
+</plan>
+</agent_state>
+<browser_state>
+<page_stats>123 links, 197 interactive, 0 iframes, 1 shadow(open), 0 shadow(closed), 3 images, 690 total elements</page_stats>
+Current tab: C777
+Available tabs:
+Tab C777: https://www.ticketcenter.com/sports - ticketcenter.com/sports
+
+<page_info>0.0 pages above, 4.7 pages below — scroll down to reveal more content</page_info>
+
+Interactive elements:
+[Start of page]
+*[9057]<a />
+	*[9058]<img alt=Ticket Center />
+*[9066]<a />
+	*[9067]<img />
+*[9140]<a />
+	Home
+*[8874]<a role=button expanded=false />
+	Concerts
+*[8876]<a role=button expanded=false />
+	Sports
+*[8887]<a role=button expanded=false />
+	Theatre
+*[8889]<a role=button expanded=false />
+	City Guides
+*[11105]<div />
+	*[11108]<i />
+	|SHADOW(open)|*[8857]<input type=text name=query autocomplete=off placeholder=Search for artists, teams or venues... />
+	*[11114]<button type=submit />
+		Search
+*[11128]<a />
+	Baseball
+*[11131]<a />
+	Basketball
+*[11134]<a />
+	Boxing
+*[11137]<a />
+	Cricket
+*[11140]<a />
+	Football
+*[11143]<a />
+	Golf
+*[11146]<a />
+	Gymnastics
+*[11149]<a />
+	Hockey
+*[11152]<a />
+	Lacrosse
+*[11155]<a />
+	MMA
+*[11158]<a />
+	Other Sports
+*[11164]<a />
+	Racing
+*[11167]<a />
+	Rodeo
+*[11170]<a />
+	Rugby
+*[11173]<a />
+	Skating
+*[11176]<a />
+	Soccer
+*[11179]<a />
+	Softball
+*[11182]<a />
+	Summer / Winter Games
+*[11185]<a />
+	Tennis
+*[11188]<a />
+	Volleyball
+*[11191]<a />
+	Wrestling
+Sports
+Tickets
+Sporting events always draw large crowds and fans of certain teams will travel all over to watch their team play for the win. Almost everyone has a favorite sports team and here, we can provide you with a great opportunity to score sports tickets at the best possible price. If you are one of those diehard fans, this is the place for you. We provide the most up to date schedules to cover all major sports so you can find your favorite team and purchase tickets to home and away games. Get ready to watch your team live and feel the excitement of other fans as you grab tickets to some of the hottest sports events.
+There is no need to go on a mad hunt for the greatest tickets at the greatest prices. We have it all covered right here and you will be able to search for tickets to amazing games for the NHL, NBA, MLB, NFL and more. In addition to major professional sports, we also provide tickets to mixed martial arts events and many racing events like Monster Jam and Nascar.
+There are many ways to buy tickets to these types of events and while some will prefer to hit the box office to score their tickets, buying online offers many benefits. You can choose from seating selections and find the absolute lowest prices when buying online. Good seats often sell out fast through a box office, so when you search for your favorite team and games coming up, you will find we still hold some of the best seats in the arena, so you have a great chance of enjoying the action up close and personal. Get ready enjoy the best sports events with tickets from us at the lowest possible price online.
+*[8890]<a />
+	Show More
+NFL / NHL Tickets
+NFL
+*[11247]<a />
+	- Pittsburgh Steelers
+*[11251]<a />
+	- Seattle Seahawks
+*[8851]<a />
+	- Houston Texans
+*[11258]<a />
+	- Kansas City Chiefs
+*[11262]<a />
+	- Dallas Cowboys
+*[11266]<a />
+	- Green Bay Packers
+*[11270]<a />
+	- Atlanta Falcons
+NHL
+*[11280]<a />
+	- Chicago Blackhawks
+*[11284]<a />
+	- Detroit Red Wings
+*[11288]<a />
+	- Minnesota Wild
+*[11292]<a />
+	- New York Rangers
+*[11296]<a />
+	- Philadelphia Flyers
+NBA Tickets
+*[11311]<a />
+	- Golden State Warriors
+*[11315]<a />
+	- Los Angeles Lakers
+*[11319]<a />
+	- Chicago Bulls
+*[11323]<a />
+	- New York Knicks
+*[11327]<a />
+	- Los Angeles Clippers
+*[11331]<a />
+	- Philadelphia 76ers
+*[11335]<a />
+	- Houston Rockets
+*[11339]<a />
+	- Cleveland Cavaliers
+*[11343]<a />
+	- San Antonio Spurs
+*[11347]<a />
+	- Boston Celtics
+*[11351]<a />
+	- Brooklyn Nets
+*[11355]<a />
+	- Oklahoma City Thunder
+*[11359]<a />
+	- Denver Nuggets
+*[11363]<a />
+	- Miami Heat
+Other Tickets
+*[11378]<a />
+	- Kentucky Wildcats Basketball
+*[11382]<a />
+	- UCLA Bruins Basketball
+*[11386]<a />
+	- Iowa State Cyclones Basketball
+*[11390]<a />
+	- UFC - Ultimate Fighting Championship
+*[11394]<a />
+	- Kansas State Wildcats
+*[11398]<a />
+	- Indiana Hoosiers Basketball
+*[11402]<a />
+	- Michigan State Spartans
+*[11406]<a />
+	- Duke Blue Devils
+*[11410]<a />
+	- Ohio State Buckeyes
+*[11414]<a />
+	- WWE
+*[11418]<a />
+	- Monster Jam
+*[11422]<a />
+	- Marquette Golden Eagles
+*[11426]<a />
+	- Florida State Seminoles
+*[11430]<a />
+	- Texas Longhorns Basketball
+All
+Events
+*[11457]<button id=mobile-dropdown-link expanded=true />
+	Ashburn, VA
+*[8891]<a title=All categories expanded=true />
+	All
+	categories
+*[11728]<a title=All days expanded=true />
+	All
+	days
+*[11762]<a title=All times expanded=true />
+	All
+	times
+*[11775]<a title=All performers expanded=true />
+	All
+	performers
+*[12088]<a title=All months expanded=true />
+	All
+	months
+*[12137]<a title=All venues expanded=true />
+	All
+	venues
+*[12449]<div />
+	*[12450]<a aria-expanded=true title=All dates />
+*[12536]<tr role=row />
+	Date
+	Event
+*[12546]<tr role=row />
+	*[12547]<td />
+		Local Events
+*[12549]<tr role=row />
+	*[12550]<td />
+		Thu
+		Aug 20
+		6:30pm
+	*[12559]<td />
+		*[12560]<a />
+			Hagerstown Flying Boxcars vs. Southern Maryland Blue Crabs
+			Meritus Park
+			Hagerstown, MD
+	*[12569]<td />
+		*[12570]<a />
+			Tickets
+*[12575]<tr role=row />
+	*[12576]<td />
+		Thu
+		Aug 20
+		6:35pm
+	*[12585]<td />
+		*[12586]<a />
+			Baltimore Orioles vs. New York Yankees
+			Oriole Park At Camden Yards
+			Baltimore, MD
+	*[12595]<td />
+		*[12596]<a />
+			Tickets
+*[12601]<tr role=row />
+	*[12602]<td />
+		Thu
+		Aug 20
+		6:35pm
+	*[12611]<td />
+		*[12612]<a />
+			Chesapeake Baysox vs. Richmond Flying Squirrels
+			Prince Georges Stadium
+			Bowie, MD
+	*[12621]<td />
+		*[12622]<a />
+			Tickets
+*[12627]<tr role=row />
+	*[12628]<td />
+		Thu
+		Aug 20
+		7:30pm
+	*[12637]<td />
+		*[12638]<a />
+			Redeye Rodeo
+			Montgomery County Agricultural Fair
+			Gaithersburg, MD
+	*[12647]<td />
+		*[12648]<a />
+			Tickets
+*[12653]<tr role=row />
+	*[12654]<td />
+		Fri
+		Aug 21
+		6:30pm
+	*[12663]<td />
+		*[12664]<a />
+			Hagerstown Flying Boxcars vs. Southern Maryland Blue Crabs
+			Meritus Park
+			Hagerstown, MD
+	*[12673]<td />
+		*[12674]<a />
+			Tickets
+*[12679]<tr role=row />
+	*[12680]<td />
+		Fri
+		Aug 21
+		7:05pm
+	*[12689]<td />
+		*[12690]<a />
+			Chesapeake Baysox vs. Richmond Flying Squirrels
+			Prince Georges Stadium
+			Bowie, MD
+	*[12699]<td />
+		*[12700]<a />
+			Tickets
+*[12705]<tr role=row />
+	*[12706]<td />
+		Fri
+		Aug 21
+	*[12715]<td />
+		*[12716]<a />
+			Baltimore Orioles vs. Tampa Bay Rays (Post Game Concert by 90's Show)
+			Oriole Park At Camden Yards
+	*[12725]<td />
+		*[12726]<a />
+			Tickets
+Popular
+Events
+*[13553]<a />
+	Nitro Circus
+*[13557]<a />
+	WWE
+*[13561]<a />
+	Los Angeles Chargers
+*[13565]<a />
+	Coke Zero Sugar 400
+*[13569]<a />
+	Ellensburg Rodeo
+*[13573]<a />
+	Mexico
+*[13577]<a />
+	Houston Texans
+*[13581]<a />
+	Canby Rodeo
+*[13585]<a />
+	Tampa Bay Buccaneers
+*[13589]<a />
+	Dallas Cowboys
+Ashburn, VA
+Events
+*[13614]<a role=tab selected=false />
+	*[13619]<div />
+	Concerts
+*[13628]<a role=tab selected=false />
+	*[13633]<div />
+	Sports
+*[13642]<a role=tab selected=false />
+	*[13647]<div />
+	Theatre
+*[13665]<tr />
+	*[13667]<td title=2026-08-20T20:00 />
+		*[13670]<a />
+			Jason Isbell and the 400 Unit
+		Thu Aug 20 -  8:00PM
+		*[13679]<a />
+			Wolf Trap National Park for the Performing Arts
+		*[13682]<span />
+			Vienna
+		*[13685]<span />
+			VA
+	*[13690]<td />
+		*[13692]<a />
+			Buy Now
+*[13700]<tr />
+	*[13702]<td title=2026-08-21T20:00 />
+		*[13705]<a />
+			Jon Batiste & The National Symphony Orchestra
+		Fri Aug 21 -  8:00PM
+		*[13714]<a />
+			Wolf Trap National Park for the Performing Arts
+		*[13717]<span />
+			Vienna
+		*[13720]<span />
+			VA
+	*[13725]<td />
+		*[13727]<a />
+			Buy Now
+*[13735]<tr />
+	*[13737]<td title=2026-08-22T20:00 />
+		*[13740]<a />
+			Josh Groban
+		Sat Aug 22 -  8:00PM
+		*[13749]<a />
+			Wolf Trap National Park for the Performing Arts
+		*[13752]<span />
+			Vienna
+		*[13755]<span />
+			VA
+	*[13760]<td />
+		*[13762]<a />
+			Buy Now
+*[13770]<tr />
+	*[13772]<td title=2026-08-23T20:00 />
+		*[13775]<a />
+			Gipsy Kings & Nicolas Reyes
+		Sun Aug 23 -  8:00PM
+		*[8852]<a />
+			Wolf Trap National Park for the Performing Arts
+		*[13786]<span />
+			Vienna
+		*[13789]<span />
+			VA
+	*[13794]<td />
+		*[13796]<a />
+			Buy Now
+*[13804]<tr />
+	*[13806]<td title=2026-08-28T19:00 />
+		*[13809]<a />
+			Tedeschi Trucks Band & Lukas Nelson
+		Fri Aug 28 -  7:00PM
+		*[13818]<a />
+			Wolf Trap National Park for the Performing Arts
+		*[13821]<span />
+			Vienna
+		*[13824]<span />
+			VA
+	*[13829]<td />
+		*[13831]<a />
+			Buy Now
+*[13839]<tr />
+	*[13841]<td title=2026-08-29T19:00 />
+		*[13844]<a />
+			Tedeschi Trucks Band & Lukas Nelson
+		Sat Aug 29 -  7:00PM
+		*[13853]<a />
+			Wolf Trap National Park for the Performing Arts
+		*[13856]<span />
+			Vienna
+		*[13859]<span />
+			VA
+	*[13864]<td />
+		*[13866]<a />
+			Buy Now
+Our Pledge
+To You
+*[14345]<a />
+	*[14346]<img alt=Our 100% Guarantee insures that: />
+*[14350]<a />
+	Our 100% Guarantee insures that:
+*[14358]<i />
+Your tickets will arrive before the event.
+</browser_state>
+<step_info>Step3 maximum:20
+Today:2026-08-20</step_info>
+
+Current screenshot:
+
+{
+  "thinking": "The user wants to see all NFL tickets on TicketCenter. Currently I am on the Sports category page (https://www.ticketcenter.com/sports). There is a subcategory link for 'Football' (index 11140) or I can search specifically for 'NFL Football'. Let's click on the 'Football' category link to navigate towards NFL tickets.",
+  "evaluation_previous_goal": "Successfully clicked Sports menu and navigated to the Sports page. Verdict: Success",
+  "memory": "Navigated to https://www.ticketcenter.com/sports. Looking for NFL tickets page.",
+  "next_goal": "Click on the 'Football' link under Sports to access Football/NFL tickets page.",
+  "current_plan_item": 1,
+  "plan_update": [
+    "Search for 'NFL' tickets on ticketcenter.com",
+    "Navigate to the NFL tickets page showing all NFL tickets",
+    "Verify all NFL tickets/events are displayed"
+  ],
+  "action": [
+    {
+      "click": {
+        "index": 11140
+      }
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "stage": "bakeoff5",
+  "harness": "browser_use_oss",
+  "model": "gemini-3.6-flash",
+  "n": 5,
+  "successes": 4,
+  "total_cost_usd": 1.8053,
+  "runs": [
+    {
+      "website": "underarmour",
+      "eval_index": 25,
+      "status": "SUCCESS",
+      "success": true,
+      "num_actions": 18,
+      "failure_category": null,
+      "stop_reason": "agent_done",
+      "final_url": "https://www.underarmour.com/en-us/c/womens/clothing/sports-bras/?prefn1=size&prefv1=S&prefn2=subsubsilhouette&prefv2=High%20Impact&prefn3=colorgroup&prefv3=Purple",
+      "judge_reason": "The agent successfully navigated to the Women's Sports Bras category page and applied all the specified filters: 'Purple' for color, 'High Impact' for support, and 'S' for size. The URL and the page title confirm these filters are active.",
+      "estimated_cost_usd": 0.6280809,
+      "run_id": "bu_25_1a0b6e4e"
+    },
+    {
+      "website": "newegg",
+      "eval_index": 8,
+      "status": "SUCCESS",
+      "success": true,
+      "num_actions": 6,
+      "failure_category": null,
+      "stop_reason": "agent_done",
+      "final_url": "https://www.newegg.com/logitech-wireless-combo-mk270-920-004536-usb-2-0-rf-wireless/p/N82E16823126332",
+      "judge_reason": "The agent successfully navigated to Newegg, searched for 'wireless keyboard and mouse combo', applied a price filter under $100, selected a valid wireless keyboard and mouse combo (Logitech MK270 for $29.99), navigated to the product page, and reported all requested details accurately.",
+      "estimated_cost_usd": 0.1941668,
+      "run_id": "bu_8_c9a5049f"
+    },
+    {
+      "website": "eventbrite",
+      "eval_index": 34,
+      "status": "FAILURE",
+      "success": false,
+      "num_actions": 12,
+      "failure_category": "PREMATURE_STOP",
+      "stop_reason": "agent_done",
+      "final_url": "https://www.eventbrite.com/e/music-for-you-soul-tickets-1988577582079?aff=ebdssbdestsearch",
+      "judge_reason": "The task required the agent to 'follow its organizer'. While the agent clicked the 'Follow' button, it was redirected to a sign-in page, indicating that the action was not completed. The final screenshot shows the 'Follow' button still present, confirming the organizer was not successfully followed.",
+      "estimated_cost_usd": 0.3598424,
+      "run_id": "bu_34_b3948ec9"
+    },
+    {
+      "website": "rottentomatoes",
+      "eval_index": 26,
+      "status": "SUCCESS",
+      "success": true,
+      "num_actions": 10,
+      "failure_category": null,
+      "stop_reason": "agent_done",
+      "final_url": "https://www.rottentomatoes.com/m/my_life_in_ruins/reviews/top-critics",
+      "judge_reason": "The agent successfully identified Tom Hanks' lowest-rated work ('My Life in Ruins'), navigated to its reviews page, and filtered the reviews to show only 'Top Critics'. The final URL and the screenshot confirm this.",
+      "estimated_cost_usd": 0.3409231999999999,
+      "run_id": "bu_26_262d4425"
+    },
+    {
+      "website": "uniqlo",
+      "eval_index": 19,
+      "status": "SUCCESS",
+      "success": true,
+      "num_actions": 9,
+      "failure_category": null,
+      "stop_reason": "agent_done",
+      "final_url": "https://www.uniqlo.com/us/en/feature/sale/baby?priceRanges=0-10",
+      "judge_reason": "The agent successfully navigated to the baby sale section and applied the price filter for items under $10. The final URL and screenshot confirm that the page displays 'Babies' Summer Sale ($0-$10)' and 'Results: 18 items', indicating the correct filters were applied. The agent also extracted the product details as requested.",
+      "estimated_cost_usd": 0.2823322,
+      "run_id": "bu_19_2bcdc87a"
+    }
+  ]
+}
