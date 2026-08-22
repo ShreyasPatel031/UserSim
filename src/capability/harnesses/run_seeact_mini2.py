@@ -1,4 +1,4 @@
-"""Run the real upstream SeeAct agent on Mini-2, backed by Vertex gemini-3.6-flash.
+"""Run the real upstream SeeAct agent on Mini-2, backed by Vertex gemini-2.5-flash.
 
 Runs inside .venv-seeact (see setup_seeact.sh) — NOT the main venv.
 
@@ -31,8 +31,9 @@ os.environ.setdefault(
     "GOOGLE_APPLICATION_CREDENTIALS", str(ROOT / "secrets" / "vertex_adc.json")
 )
 
+from capability import BAKEOFF_MODEL, location_for  # noqa: E402
+
 GCP_PROJECT = "project-amer-scs-sandbox"
-VERTEX_LOCATION = "global"  # 3.6 Flash is not served from us-central1
 
 litellm.suppress_debug_info = True
 
@@ -48,8 +49,11 @@ class VertexGeminiEngine(Engine):
     return type. Only the transport and the image encoding differ.
     """
 
-    def __init__(self, model: str, temperature: float = 0.0, **kwargs) -> None:
+    def __init__(
+        self, model: str, temperature: float = 0.0, vertex_location: str | None = None, **kwargs
+    ) -> None:
         super().__init__(model=model, temperature=temperature, **kwargs)
+        self.vertex_location = vertex_location or location_for(model)
         self.prompt_tokens = 0
         self.completion_tokens = 0
         self.calls = 0
@@ -95,7 +99,7 @@ class VertexGeminiEngine(Engine):
                     max_tokens=max_new_tokens or 4096,
                     temperature=self.temperature if temperature is None else temperature,
                     vertex_project=GCP_PROJECT,
-                    vertex_location=VERTEX_LOCATION,
+                    vertex_location=self.vertex_location,
                     **kwargs,
                 )
                 self.calls += 1
@@ -195,7 +199,7 @@ async def run_one(task: dict, model: str, max_ops: int, out_dir: Path) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Upstream SeeAct on Mini-2 via Vertex")
-    ap.add_argument("--model", default="gemini-3.6-flash")
+    ap.add_argument("--model", default=BAKEOFF_MODEL)
     ap.add_argument("--max-ops", type=int, default=33)
     ap.add_argument("--out", default=str(ROOT / "results" / "capability" / "seeact_mini2_raw.json"))
     ap.add_argument("--task-ids", nargs="*", default=None)

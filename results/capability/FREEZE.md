@@ -7,11 +7,17 @@
 
 | Role | Stack |
 |---|---|
-| **Cheap baseline** | `gemini-3.6-flash` @ Vertex `global` + Browser Use OSS |
+| **Cheap baseline** | `gemini-2.5-flash` @ Vertex `us-central1` + Browser Use OSS |
 | **Capability status** | **UNFROZEN** — do not treat curated-10 as sufficiency |
 | **Do not** | Another 100-task sweep; human-calibration until Hard-20 moves |
 
 Curated-10 was misleading. Full-100 raw eligible success was **25/73 ≈ 34%**. After auditing the 45 FAILURES ($0 model spend), **18/45** are site/harness — corrected eligible ≈ **25/52 ≈ 48%**. Still too weak for UserSim human-calibration (would mostly measure inability to operate sites).
+
+## Testing model policy (2026-08-22)
+
+**All capability runs use `gemini-2.5-flash`** (`config.MODEL` / `capability.BAKEOFF_MODEL`) on Vertex `us-central1` — agent and judge. Do not default to 3.6 Flash for new tests (5× input / 3× output price).
+
+Override only explicitly: `--model gemini-3.6-flash` (needs `location=global`).
 
 ## Access notes
 
@@ -25,11 +31,12 @@ Curated-10 was misleading. Full-100 raw eligible success was **25/73 ≈ 34%**. 
 ## Baseline stack (unchanged harness)
 
 ```text
-MODEL:        gemini-3.6-flash
-LOCATION:     global
+MODEL:        gemini-2.5-flash   # config.MODEL — all testing
+LOCATION:     us-central1
 HARNESS:      browser-use OSS (NOT Browser Use Cloud)
 LLM ADAPTER:  ChatGoogle(vertexai=True, project=..., credentials=ADC)
-MAX_ACTIONS:  20  (try 40 on STEP_CAP Hard-20 subset)
+JUDGE:        gemini-2.5-flash   # same as config.MODEL
+MAX_ACTIONS:  33  (Mind2Web-derived budget)
 VIEWPORT:     1280x800
 ```
 

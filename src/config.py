@@ -10,6 +10,7 @@ GCP_PROJECT = "project-amer-scs-sandbox"
 GCP_LOCATION = "us-central1"
 GCP_ACCOUNT = "shreyas.patel@searce.com"
 MODEL = "gemini-2.5-flash"
+# All capability / bakeoff agent + judge runs use MODEL (cheap). Do not default to 3.6.
 
 # Vertex Gemini 2.5 Flash list prices (USD / 1M tokens). Used for spend tracking.
 PRICE_INPUT_PER_M = 0.30

@@ -7,7 +7,7 @@ Selection rules:
 Dropped (HAL-valid but blocked here): apartments.com, uniqlo.com — both return
 Akamai Access Denied from this environment (Mini-2 attempt 1, both harnesses BLOCKED).
 
-Keep small — harness comparison with gemini-3.6-flash, not another Hard-20.
+Keep small — harness comparison with gemini-2.5-flash, not another Hard-20.
 """
 
 from __future__ import annotations
