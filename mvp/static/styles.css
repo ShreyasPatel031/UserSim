@@ -1,18 +1,23 @@
 :root {
-  --bg: #0c0d10;
-  --bg-elevated: #14161c;
-  --bg-card: #1a1d26;
-  --border: rgba(255, 255, 255, 0.08);
-  --text: #f2f0eb;
-  --text-muted: #9a968c;
-  --accent: #ff6b4a;
-  --accent-soft: rgba(255, 107, 74, 0.15);
-  --green: #5dd39e;
-  --yellow: #f4c95d;
-  --red: #ff6b6b;
-  --radius: 14px;
-  --font: "DM Sans", system-ui, sans-serif;
-  --serif: "Instrument Serif", Georgia, serif;
+  --bg: #ffffff;
+  --bg-elevated: #f8fafc;
+  --bg-card: #f2f4f7;
+  --border: #e3e8ef;
+  --text: #101828;
+  --text-muted: #667085;
+  --accent: #0345d9;
+  --accent-rgb: 3, 69, 217;
+  --accent-soft: #eff4ff;
+  --green: #067647;
+  --green-soft: #ecfdf3;
+  --green-border: #abefc6;
+  --yellow: #b54708;
+  --yellow-soft: #fffaeb;
+  --red: #b42318;
+  --red-soft: #fef3f2;
+  --radius: 10px;
+  --font: "Public Sans", system-ui, sans-serif;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
 }
 
 *,
@@ -34,15 +39,6 @@ body {
   line-height: 1.55;
 }
 
-.grain {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  z-index: 0;
-}
-
 .site-header {
   position: relative;
   z-index: 1;
@@ -50,6 +46,7 @@ body {
   align-items: center;
   gap: 0.75rem;
   padding: 1.25rem 2rem;
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
 
@@ -92,17 +89,17 @@ main {
 }
 
 h1 {
-  font-family: var(--serif);
-  font-size: clamp(2.4rem, 6vw, 3.6rem);
-  font-weight: 400;
-  line-height: 1.08;
+  font-family: var(--font);
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 500;
+  line-height: 1.15;
   margin: 0 0 1rem;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 h1 em {
-  font-style: italic;
-  color: var(--text-muted);
+  font-style: normal;
+  color: var(--accent);
 }
 
 .lede {
@@ -247,18 +244,18 @@ button[type="submit"] {
   justify-content: center;
   gap: 0.5rem;
   font: inherit;
-  font-weight: 600;
-  color: var(--bg);
+  font-weight: 500;
+  color: #ffffff;
   background: var(--accent);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius);
   padding: 0.85rem 1.5rem;
   cursor: pointer;
-  transition: transform 0.12s, opacity 0.12s;
+  transition: opacity 0.12s;
 }
 
 button[type="submit"]:hover:not(:disabled) {
-  transform: translateY(-1px);
+  opacity: 0.9;
 }
 
 button[type="submit"]:disabled {
@@ -269,8 +266,8 @@ button[type="submit"]:disabled {
 .btn-spinner {
   width: 1rem;
   height: 1rem;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  border-top-color: var(--bg);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -306,7 +303,7 @@ button[type="submit"]:disabled {
 #progress-fill {
   height: 100%;
   width: 8%;
-  background: linear-gradient(90deg, var(--accent), #ff9a7a);
+  background: linear-gradient(90deg, var(--accent), #6aa1ff);
   border-radius: 999px;
   transition: width 0.6s ease;
 }
@@ -345,7 +342,7 @@ button[type="submit"]:disabled {
   overflow-y: auto;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--bg-elevated);
 }
 
 .activity-item {
@@ -377,7 +374,7 @@ button[type="submit"]:disabled {
 .activity-agent_step .activity-kind,
 .activity-agent_start .activity-kind,
 .activity-agent_done .activity-kind {
-  color: #7eb8ff;
+  color: #175cd3;
 }
 
 .activity-persona .activity-kind {
@@ -393,15 +390,15 @@ button[type="submit"]:disabled {
 .persona-session-card {
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-elevated);
   overflow: hidden;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .persona-session-card.expanded,
 .persona-session-card.active {
-  border-color: rgba(255, 107, 74, 0.45);
-  box-shadow: 0 0 0 1px rgba(255, 107, 74, 0.15);
+  border-color: rgba(var(--accent-rgb), 0.4);
+  box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.12);
 }
 
 .persona-session-header {
@@ -445,7 +442,7 @@ button[type="submit"]:disabled {
 .persona-task {
   margin: 0 0 1rem;
   padding: 0.75rem 1rem;
-  background: rgba(0, 0, 0, 0.22);
+  background: var(--bg-card);
   border-radius: 8px;
   border: 1px solid var(--border);
   font-size: 0.9rem;
@@ -463,7 +460,6 @@ button[type="submit"]:disabled {
   font-size: 0.85rem;
   color: var(--accent);
   line-height: 1.4;
-  font-style: italic;
 }
 
 .persona-trace {
@@ -482,14 +478,14 @@ button[type="submit"]:disabled {
   margin-top: 0.75rem;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: #000;
+  background: var(--bg-card);
 }
 
 .trace-step-body .thought-details {
   margin: 0.65rem 0 0.25rem;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.18);
+  background: var(--bg-card);
   overflow: hidden;
 }
 
@@ -564,7 +560,7 @@ button[type="submit"]:disabled {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-elevated);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
@@ -575,24 +571,25 @@ button[type="submit"]:disabled {
 }
 
 .tag.status-pending { color: var(--text-muted); }
-.tag.status-running { color: #7eb8ff; }
-.tag.status-summarizing { color: #e8b84a; }
+.tag.status-running { color: #175cd3; }
+.tag.status-summarizing { color: var(--yellow); }
 .tag.status-complete { color: var(--green); }
 .tag.status-error { color: var(--red); }
 
 .headline {
-  font-family: var(--serif);
-  font-size: 1.5rem;
+  font-family: var(--font);
+  font-weight: 500;
+  font-size: 1.4rem;
   margin: 0 0 1.25rem;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .access-info {
   margin: 0 0 1rem;
   padding: 0.65rem 0.85rem;
   border-radius: 8px;
-  background: rgba(93, 211, 158, 0.1);
-  border: 1px solid rgba(93, 211, 158, 0.22);
+  background: var(--green-soft);
+  border: 1px solid var(--green-border);
   color: var(--green);
   font-size: 0.85rem;
 }
@@ -680,9 +677,9 @@ button[type="submit"]:disabled {
   height: fit-content;
 }
 
-.priority.high { background: rgba(255, 107, 107, 0.2); color: var(--red); }
-.priority.medium { background: rgba(244, 201, 93, 0.2); color: var(--yellow); }
-.priority.low { background: rgba(93, 211, 158, 0.2); color: var(--green); }
+.priority.high { background: var(--red-soft); color: var(--red); }
+.priority.medium { background: var(--yellow-soft); color: var(--yellow); }
+.priority.low { background: var(--green-soft); color: var(--green); }
 
 .tasks-grid,
 .agents-grid {
@@ -722,13 +719,13 @@ button[type="submit"]:disabled {
   font-size: 0.72rem;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-card);
   color: var(--text-muted);
 }
 
-.tag.difficulty-easy { color: var(--green); background: rgba(93, 211, 158, 0.12); }
-.tag.difficulty-medium { color: var(--yellow); background: rgba(244, 201, 93, 0.12); }
-.tag.difficulty-hard { color: var(--red); background: rgba(255, 107, 107, 0.12); }
+.tag.difficulty-easy { color: var(--green); background: var(--green-soft); }
+.tag.difficulty-medium { color: var(--yellow); background: var(--yellow-soft); }
+.tag.difficulty-hard { color: var(--red); background: var(--red-soft); }
 
 .quote {
   margin-top: 0.75rem;
@@ -800,13 +797,13 @@ button[type="submit"]:disabled {
 }
 
 .trace-tab:hover {
-  border-color: rgba(255, 107, 74, 0.4);
+  border-color: rgba(var(--accent-rgb), 0.35);
   color: var(--text);
 }
 
 .trace-tab.active {
   background: var(--accent-soft);
-  border-color: rgba(255, 107, 74, 0.45);
+  border-color: rgba(var(--accent-rgb), 0.4);
   color: var(--accent);
 }
 
@@ -959,7 +956,7 @@ button[type="submit"]:disabled {
 
 .step-pill.active,
 .step-pill:hover {
-  border-color: rgba(255, 107, 74, 0.45);
+  border-color: rgba(var(--accent-rgb), 0.4);
   color: var(--accent);
 }
 
@@ -967,7 +964,7 @@ button[type="submit"]:disabled {
   width: 100%;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: #000;
+  background: var(--bg-card);
 }
 
 .trace-step.clickable {
@@ -979,7 +976,7 @@ button[type="submit"]:disabled {
 }
 
 .error-panel {
-  border-color: rgba(255, 107, 107, 0.35);
+  border-color: rgba(180, 35, 24, 0.3);
 }
 
 .error-panel h2 {
