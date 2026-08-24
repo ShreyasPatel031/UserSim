@@ -1,4 +1,4 @@
-"""Page access for MVP — local fetch, then Browserbase; fail if still blocked."""
+"""Page access for MVP — plain HTTP fetch, then local headless Chromium; fail if still blocked."""
 
 from __future__ import annotations
 
@@ -8,7 +8,6 @@ from dataclasses import dataclass
 import httpx
 
 from capability import USER_AGENT, VIEWPORT
-from capability.browserbase_client import close_session, create_session
 from capability.site_preflight import classify_page_block
 
 
@@ -109,33 +108,12 @@ async def _try_httpx(url: str) -> tuple[str, str, str, bool, str]:
 
 
 async def fetch_page_access(url: str) -> PageAccessResult:
-    """Try HTTP, then Browserbase (with optional local Playwright). Raise if all blocked."""
-    body, final_url, title, blocked, _reason = await _try_httpx(url)
+    """Try a plain HTTP fetch, then a local headless Chromium. Raise if both are blocked."""
+    body, final_url, title, blocked, reason = await _try_httpx(url)
     if not blocked and body:
         return PageAccessResult(text=body, final_url=final_url, title=title, backend="http")
 
-    try:
-        body, final_url, title, blocked, _reason = await _playwright_body(connect_url=None, url=url)
-        if not blocked and body:
-            return PageAccessResult(
-                text=body, final_url=final_url, title=title, backend="local_playwright"
-            )
-    except Exception:
-        pass
-
-    session = create_session(proxies=False)
-    try:
-        body, final_url, title, blocked, reason = await _playwright_body(
-            connect_url=session.connect_url, url=url
-        )
-        if blocked or not body:
-            raise SiteAccessBlockedError(reason, session_url=session.session_url)
-        return PageAccessResult(
-            text=body,
-            final_url=final_url,
-            title=title,
-            backend="browserbase",
-            session_url=session.session_url,
-        )
-    finally:
-        close_session(session.id)
+    body, final_url, title, blocked, reason = await _playwright_body(connect_url=None, url=url)
+    if blocked or not body:
+        raise SiteAccessBlockedError(reason)
+    return PageAccessResult(text=body, final_url=final_url, title=title, backend="local_playwright")

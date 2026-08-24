@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UserSim — Synthetic user research</title>
+  <title>UserSim — AI testing agent</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
@@ -14,16 +14,17 @@
 
   <header class="site-header">
     <div class="logo">UserSim</div>
-    <span class="badge">MVP</span>
+    <span class="badge">Testing Agent</span>
   </header>
 
   <main>
     <section class="hero">
-      <p class="eyebrow">Parallel synthetic users</p>
-      <h1>Drop a URL.<br /><em>Watch your segment struggle.</em></h1>
+      <p class="eyebrow">Parallel AI testing agents</p>
+      <h1>Drop a URL.<br /><em>Watch AI agents test it live.</em></h1>
       <p class="lede">
-        UserSim spins up persona agents for your customer segment, runs realistic tasks on your site,
-        and returns friction maps, quotes, and an executive summary.
+        UserSim spins up AI testing agents for your customer segment, each one driving a real
+        browser through realistic tasks on your live site, and returns friction maps, quotes,
+        and an executive summary.
       </p>
     </section>
 
@@ -36,11 +37,11 @@
       <article class="step">
         <span class="step-num">2</span>
         <h3>Tasks</h3>
-        <p>Model generates personas & on-site goals</p>
+        <p>Gemini 2.5 Flash generates personas & on-site goals</p>
       </article>
       <article class="step">
         <span class="step-num">3</span>
-        <h3>Agents</h3>
+        <h3>Testing agents</h3>
         <p>Live browser runs — easy vs hard, likes vs friction</p>
       </article>
       <article class="step">
@@ -78,7 +79,7 @@
         <span id="progress-agents">0 / 4 agents finished</span>
       </div>
       <p id="progress-hint" class="progress-hint">
-        Four live browser agents browse your site in parallel (Browserbase). Each session takes 2–4 minutes — a full study is usually 5–8 minutes. Results appear below as each agent finishes.
+        Four live browser testing agents (Gemini 2.5 Flash), each driving a local Chromium browser, browse your site in parallel. Each session takes 1–3 minutes — a full study is usually 3–6 minutes. Results appear below as each agent finishes.
       </p>
     </section>
 

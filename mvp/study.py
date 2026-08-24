@@ -11,18 +11,21 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-import httpx
+from google import genai
+from google.genai import types
 
-from capability.mistral_config import MISTRAL_API_BASE, mistral_api_key
-from capability.browserbase_client import create_session
+from auth import vertex_credentials
+from config import GCP_LOCATION, GCP_PROJECT, MODEL as GEMINI_MODEL
 from mvp.browser_agent import run_browser_agent
 from mvp.page_access import SiteAccessBlockedError, fetch_page_access
 
-# Parallel Mistral calls (rate-limit safe). Not browser sessions.
+# Parallel Gemini calls (rate-limit safe). Not browser sessions.
 _AGENT_SEMAPHORE = asyncio.Semaphore(int(os.environ.get("MVP_AGENT_CONCURRENCY", "4")))
 
-# Live browser sessions. Browserbase free tier caps concurrent sessions at 3.
+# Local Chromium instances. Cap so we don't overload the machine running the study.
 _BROWSER_SEMAPHORE = asyncio.Semaphore(int(os.environ.get("MVP_BROWSER_CONCURRENCY", "3")))
+
+_genai_client: genai.Client | None = None
 
 
 def _now() -> str:
@@ -36,43 +39,49 @@ def _extract_json(text: str) -> dict:
     return json.loads(match.group(0))
 
 
-async def _mistral_chat(
+def _gemini_client() -> genai.Client:
+    global _genai_client
+    if _genai_client is None:
+        _genai_client = genai.Client(
+            vertexai=True,
+            project=GCP_PROJECT,
+            location=GCP_LOCATION,
+            credentials=vertex_credentials(),
+        )
+    return _genai_client
+
+
+async def _gemini_chat(
     messages: list[dict[str, str]],
     *,
-    model: str = "mistral-small-2603",
+    model: str = GEMINI_MODEL,
     temperature: float = 0.4,
     max_retries: int = 5,
 ) -> str:
-    headers = {
-        "Authorization": f"Bearer {mistral_api_key()}",
-        "Content-Type": "application/json",
-    }
-    payload = {
-        "model": model,
-        "messages": messages,
-        "temperature": temperature,
-        "response_format": {"type": "json_object"},
-    }
-    async with httpx.AsyncClient(timeout=120.0) as client:
-        for attempt in range(max_retries):
-            resp = await client.post(
-                f"{MISTRAL_API_BASE}/chat/completions",
-                headers=headers,
-                json=payload,
+    system = "\n".join(m["content"] for m in messages if m["role"] == "system")
+    user = "\n".join(m["content"] for m in messages if m["role"] == "user")
+    client = _gemini_client()
+    for attempt in range(max_retries):
+        try:
+            resp = await asyncio.to_thread(
+                client.models.generate_content,
+                model=model,
+                contents=user,
+                config=types.GenerateContentConfig(
+                    system_instruction=system or None,
+                    temperature=temperature,
+                    response_mime_type="application/json",
+                ),
             )
-            if resp.status_code in (429, 503) and attempt < max_retries - 1:
-                # Sustained rate limits outlast a short exponential ramp, so honour
-                # Retry-After when the API sends it.
-                try:
-                    delay = float(resp.headers.get("retry-after", ""))
-                except ValueError:
-                    delay = min(60.0, 5.0 * (2**attempt))
-                await asyncio.sleep(delay)
+            return resp.text or ""
+        except Exception as exc:  # noqa: BLE001
+            msg = str(exc).lower()
+            retryable = "429" in msg or "resource exhausted" in msg or "503" in msg or "500" in msg
+            if retryable and attempt < max_retries - 1:
+                await asyncio.sleep(min(60.0, 5.0 * (2**attempt)))
                 continue
-            resp.raise_for_status()
-            data = resp.json()
-            return data["choices"][0]["message"]["content"]
-    raise RuntimeError("Mistral request failed after retries")
+            raise
+    raise RuntimeError("Gemini request failed after retries")
 
 
 @dataclass
@@ -108,19 +117,6 @@ def _ordered_live_sessions(study: StudyState) -> list[dict[str, Any]]:
     order = {t.get("id"): i for i, t in enumerate(study.tasks)}
     sessions = list(study.live_sessions.values())
     sessions.sort(key=lambda s: order.get(s.get("agent_id"), 99))
-    return sessions
-
-
-async def _prefetch_browser_sessions(n: int) -> list[Any]:
-    """Stagger Browserbase session creates so the first N agents can start together."""
-    if n <= 0:
-        return []
-    interval = float(os.environ.get("BROWSERBASE_CREATE_INTERVAL_S", "13"))
-    sessions: list[Any] = []
-    for i in range(n):
-        if i:
-            await asyncio.sleep(interval)
-        sessions.append(await asyncio.to_thread(create_session, proxies=False, keep_alive=False))
     return sessions
 
 
@@ -185,7 +181,7 @@ Critical rules:
   write the task the persona would really attempt given what IS on the page.
 - Create exactly 4 personas that fit the segment (diverse within the segment).
 - Create exactly 4 tasks (one primary task per persona)."""
-    raw = await _mistral_chat(
+    raw = await _gemini_chat(
         [
             {
                 "role": "system",
@@ -254,7 +250,7 @@ Rules for trace:
 Page snapshot:
 {page_text[:8000]}"""
     async with _AGENT_SEMAPHORE:
-        raw = await _mistral_chat(
+        raw = await _gemini_chat(
             [
                 {"role": "system", "content": "You are a realistic user, not an optimizer. Be specific."},
                 {"role": "user", "content": prompt},
@@ -318,7 +314,7 @@ Rules:
 - Include one step_outcomes entry for every recorded step, using its step number.
 - Judge the product for what it actually is, not for lacking features of a different product."""
     async with _AGENT_SEMAPHORE:
-        raw = await _mistral_chat(
+        raw = await _gemini_chat(
             [
                 {
                     "role": "system",
@@ -381,7 +377,7 @@ Return JSON only:
   "segment_fit_score": 1-10,
   "segment_fit_rationale": "2 sentences"
 }}"""
-    raw = await _mistral_chat(
+    raw = await _gemini_chat(
         [
             {"role": "system", "content": "You are a senior UX researcher. JSON only."},
             {"role": "user", "content": prompt},
@@ -468,22 +464,6 @@ async def run_study(study_id: str) -> None:
             }
 
         touch(f"Live browser agents — 0/{len(study.tasks)} done · 0 active · {len(study.tasks)} queued · 0 steps")
-        pool = min(len(study.tasks), int(os.environ.get("MVP_BROWSER_CONCURRENCY", "3")))
-        if pool:
-            log_activity(
-                study,
-                "browser",
-                f"Preparing {pool} browser sessions (Browserbase allows {pool} at once on free tier)",
-            )
-            touch(f"Preparing browser sessions — 0/{pool} ready")
-        prefetched_sessions = await _prefetch_browser_sessions(pool)
-        for i, _ in enumerate(prefetched_sessions, start=1):
-            log_activity(study, "browser", f"Browser session {i}/{pool} ready")
-            touch(f"Preparing browser sessions — {i}/{pool} ready")
-        prefetch_q: asyncio.Queue[Any] = asyncio.Queue()
-        for session in prefetched_sessions:
-            await prefetch_q.put(session)
-
         log_activity(study, "agents", f"Launching {len(study.tasks)} live browser agents")
         done_count = 0
 
@@ -513,12 +493,6 @@ async def run_study(study_id: str) -> None:
                 step=step.get("step"),
             )
 
-        async def _take_prefetched_session() -> Any | None:
-            try:
-                return prefetch_q.get_nowait()
-            except asyncio.QueueEmpty:
-                return None
-
         async def _run_one(task: dict[str, Any]) -> dict[str, Any]:
             nonlocal done_count
             persona = persona_by_id.get(task.get("persona_id")) or study.personas[0]
@@ -532,9 +506,6 @@ async def run_study(study_id: str) -> None:
                     "trace": [],
                 },
             )
-            prefetched = await _take_prefetched_session()
-            if prefetched:
-                sess["status"] = "running"
             log_activity(
                 study,
                 "agent_start",
@@ -545,9 +516,8 @@ async def run_study(study_id: str) -> None:
             refresh_agent_phase()
             try:
                 async with _BROWSER_SEMAPHORE:
-                    if not prefetched:
-                        sess["status"] = "running"
-                        refresh_agent_phase()
+                    sess["status"] = "running"
+                    refresh_agent_phase()
                     run = await run_browser_agent(
                         study_id=study.id,
                         agent_id=agent_id,
@@ -556,7 +526,6 @@ async def run_study(study_id: str) -> None:
                         persona=persona,
                         segment=study.segment,
                         on_step=lambda step: _on_agent_step(agent_id, step),
-                        bb_session=prefetched,
                     )
                 sess["status"] = "summarizing"
                 refresh_agent_phase()

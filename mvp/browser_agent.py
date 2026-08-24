@@ -10,9 +10,9 @@ from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Any
 
+from auth import vertex_credentials
 from capability import CAPABLE_AGENT_PREAMBLE, USER_AGENT, VIEWPORT
-from capability.browserbase_client import close_session, create_session
-from capability.mistral_config import MISTRAL_API_BASE, mistral_api_key, mistral_model
+from config import GCP_LOCATION, GCP_PROJECT, MODEL as GEMINI_MODEL
 
 from mvp.paths import MVP_RUNS_DIR
 
@@ -55,12 +55,11 @@ def _history_to_actions(history) -> list[dict]:
     return actions
 
 
-def _mvp_browser_profile(cdp_url: str):
+def _mvp_browser_profile():
     from browser_use.browser.profile import BrowserProfile
 
     return BrowserProfile(
-        cdp_url=cdp_url,
-        is_local=False,
+        headless=os.environ.get("MVP_BROWSER_HEADLESS", "true").lower() not in {"0", "false", "no"},
         viewport=VIEWPORT,
         user_agent=USER_AGENT,
         disable_security=True,
@@ -69,8 +68,8 @@ def _mvp_browser_profile(cdp_url: str):
         captcha_solver=False,
         highlight_elements=False,
         dom_highlight_elements=True,
-        minimum_wait_page_load_time=float(os.environ.get("BROWSERBB_MIN_WAIT", "2.0")),
-        wait_for_network_idle_page_load_time=float(os.environ.get("BROWSERBB_NETWORK_IDLE", "2.0")),
+        minimum_wait_page_load_time=float(os.environ.get("MVP_MIN_WAIT", "2.0")),
+        wait_for_network_idle_page_load_time=float(os.environ.get("MVP_NETWORK_IDLE", "2.0")),
         wait_between_actions=0.5,
     )
 
@@ -87,6 +86,12 @@ def _trace_step_from_history_item(
     state = getattr(h, "state", None)
     url = getattr(state, "url", None) if state else None
     shot_src = getattr(state, "screenshot_path", None) if state else None
+
+    raw_action = None
+    if model_out is not None:
+        raw_action = getattr(model_out, "action", None) or getattr(model_out, "actions", None)
+    action = _action_label(raw_action)
+    observation = _result_text(getattr(h, "result", None))
 
     screenshot_name = None
     if (screenshot_dir / f"bbox_{step_no}.png").exists():
@@ -258,14 +263,12 @@ async def run_browser_agent(
     model: str | None = None,
     max_steps: int = MVP_MAX_STEPS,
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
-    bb_session: Any | None = None,
 ) -> dict[str, Any]:
-    """Run Browser Use via Browserbase; return actions + bbox screenshot trace."""
-    from browser_use import Agent, ChatOpenAI
+    """Run Browser Use with a local Chromium session; return actions + bbox screenshot trace."""
+    from browser_use import Agent
+    from browser_use.llm.google import ChatGoogle
 
-    model = model or mistral_model()
-    os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", "120")
-    os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", "240")
+    model = model or GEMINI_MODEL
     os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", "240")
 
     run_dir = MVP_RUNS_DIR / study_id / agent_id
@@ -273,65 +276,55 @@ async def run_browser_agent(
     run_dir.mkdir(parents=True, exist_ok=True)
     screenshot_dir.mkdir(parents=True, exist_ok=True)
 
-    # create_session/close_session block on a threading semaphore and time.sleep for the
-    # Browserbase create-rate limit; off-loop or they freeze every other agent.
-    owns_session = bb_session is None
-    if owns_session:
-        bb_session = await asyncio.to_thread(create_session, proxies=False, keep_alive=False)
-    session_url = bb_session.session_url
-    try:
-        llm = ChatOpenAI(
-            model=model,
-            api_key=mistral_api_key(),
-            base_url=MISTRAL_API_BASE,
-            temperature=0,
-            # Concurrent agents burst against the Mistral rate limit; without retries a
-            # single 429 drops the whole session into snapshot fallback.
-            max_retries=int(os.environ.get("MVP_LLM_MAX_RETRIES", "6")),
-            timeout=120.0,
-        )
-        profile = _mvp_browser_profile(bb_session.connect_url)
-        persona_line = f"You are {persona.get('name')}: {persona.get('bio')}"
-        agent_task = (
-            f"{CAPABLE_AGENT_PREAMBLE}\n\n"
-            f"{persona_line}\n"
-            f"Customer segment: {segment}\n"
-            f"Open {url} if not already there.\n"
-            f"Task: {task_prompt}\n"
-            f"Behave like this persona would — note confusion, pricing concerns, and UX friction.\n"
-            f"Do not judge the site from the landing page alone. If the answer is not visible, "
-            f"click into the nav links (blog, docs, use cases, about, pricing) and read the real "
-            f"pages before forming an opinion. Only conclude something is missing after you have "
-            f"actually looked for it.\n"
-            f"Stop when the task is done or you would realistically give up."
-        )
-        agent = Agent(
-            task=agent_task,
-            llm=llm,
-            browser_profile=profile,
-            use_vision=True,
-            use_judge=False,
-            max_actions_per_step=2,
-            calculate_cost=True,
-            file_system_path=str(run_dir),
-            save_conversation_path=str(run_dir / "conversation"),
-            extend_system_message=(
-                "You are a real user in a usability study, not an optimizer. "
-                "Prefer obvious UI paths; comment on clarity and trust."
-            ),
-        )
-        history = await agent.run(
-            max_steps=max_steps,
-            on_step_end=_make_step_hooks(
-                screenshot_dir,
-                study_id=study_id,
-                agent_id=agent_id,
-                on_step=on_step,
-            ),
-        )
-    finally:
-        if owns_session:
-            await asyncio.to_thread(close_session, bb_session.id)
+    session_url = None
+    llm = ChatGoogle(
+        model=model,
+        vertexai=True,
+        project=GCP_PROJECT,
+        location=GCP_LOCATION,
+        credentials=vertex_credentials(),
+        temperature=0,
+        max_retries=int(os.environ.get("MVP_LLM_MAX_RETRIES", "6")),
+    )
+    profile = _mvp_browser_profile()
+    persona_line = f"You are {persona.get('name')}: {persona.get('bio')}"
+    agent_task = (
+        f"{CAPABLE_AGENT_PREAMBLE}\n\n"
+        f"{persona_line}\n"
+        f"Customer segment: {segment}\n"
+        f"Open {url} if not already there.\n"
+        f"Task: {task_prompt}\n"
+        f"Behave like this persona would — note confusion, pricing concerns, and UX friction.\n"
+        f"Do not judge the site from the landing page alone. If the answer is not visible, "
+        f"click into the nav links (blog, docs, use cases, about, pricing) and read the real "
+        f"pages before forming an opinion. Only conclude something is missing after you have "
+        f"actually looked for it.\n"
+        f"Stop when the task is done or you would realistically give up."
+    )
+    agent = Agent(
+        task=agent_task,
+        llm=llm,
+        browser_profile=profile,
+        use_vision=True,
+        use_judge=False,
+        max_actions_per_step=2,
+        calculate_cost=True,
+        file_system_path=str(run_dir),
+        save_conversation_path=str(run_dir / "conversation"),
+        extend_system_message=(
+            "You are a real user in a usability study, not an optimizer. "
+            "Prefer obvious UI paths; comment on clarity and trust."
+        ),
+    )
+    history = await agent.run(
+        max_steps=max_steps,
+        on_step_end=_make_step_hooks(
+            screenshot_dir,
+            study_id=study_id,
+            agent_id=agent_id,
+            on_step=on_step,
+        ),
+    )
 
     actions = _history_to_actions(history)
     trace = _history_to_trace(
