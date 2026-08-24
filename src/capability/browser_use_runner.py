@@ -21,8 +21,47 @@ from capability import (
     cost_usd,
     location_for,
 )
-from capability.judge import judge_task
+from capability.judge import JUDGE_ERROR, judge_task
 from config import GCP_PROJECT
+from capability.site_preflight import PreflightResult, preflight_start_url
+
+
+def _preflight_blocked_result(
+    task: dict,
+    model: str,
+    run_dir: Path,
+    pf: PreflightResult,
+    *,
+    run_id: str,
+) -> dict:
+    if pf.screenshot:
+        (run_dir / "preflight.png").write_bytes(pf.screenshot)
+    return {
+        "run_id": run_id,
+        "task_id": task["task_id"],
+        "eval_index": task["eval_index"],
+        "task": task["task"],
+        "website": task["website"],
+        "model": model,
+        "harness": "browser_use_oss",
+        "observation_mode": "browser_use_dom_vision",
+        "start_url": task["start_url"],
+        "actions": [],
+        "num_actions": 0,
+        "stop_reason": f"preflight_blocked:{pf.reason}",
+        "success": False,
+        "status": "BLOCKED",
+        "judge_reason": pf.reason,
+        "judge_evidence": pf.title or pf.final_url,
+        "failure_category": "BLOCKED",
+        "final_url": pf.final_url,
+        "final_title": pf.title,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "estimated_cost_usd": 0.0,
+        "trace_dir": str(run_dir),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 def _history_to_actions(history) -> list[dict]:
@@ -59,11 +98,18 @@ def _history_to_actions(history) -> list[dict]:
 
 
 async def _run_async(
-    task: dict, model: str, max_actions: int, run_dir: Path, location: str | None = None
+    task: dict, model: str, max_actions: int, run_dir: Path, location: str | None = None, *, preflight: bool = True
 ) -> dict:
     run_id = run_dir.name
     run_dir.mkdir(parents=True, exist_ok=True)
     loc = location or location_for(model)
+
+    if preflight:
+        pf = await preflight_start_url(task["start_url"])
+        if pf.blocked:
+            out = _preflight_blocked_result(task, model, run_dir, pf, run_id=run_id)
+            (run_dir / "run.json").write_text(__import__("json").dumps(out, indent=2, default=str))
+            return out
 
     creds = vertex_credentials()
     llm = ChatGoogle(
@@ -158,7 +204,7 @@ async def _run_async(
 
     failure_category = None
     if not success:
-        if status in {"BLOCKED", "SITE_CHANGED"}:
+        if status in {"BLOCKED", "SITE_CHANGED", JUDGE_ERROR}:
             failure_category = status
         elif len(actions) >= max_actions:
             failure_category = "PLANNING"
@@ -179,7 +225,13 @@ async def _run_async(
         "start_url": task["start_url"],
         "actions": actions,
         "num_actions": len(actions),
-        "stop_reason": "agent_done" if is_done else ("max_actions" if len(actions) >= max_actions else "unknown"),
+        "stop_reason": (
+            "max_actions"
+            if len(actions) >= max_actions
+            else "agent_done"
+            if is_done
+            else "unknown"
+        ),
         "success": success,
         "status": status,
         "judge_reason": judgment.get("reason"),
@@ -209,6 +261,8 @@ def run_browser_use(
     max_actions: int = MAX_ACTIONS,
     run_dir: Path | None = None,
     location: str | None = None,
+    *,
+    preflight: bool = True,
 ) -> dict:
     run_dir = run_dir or (OUT_DIR / "traces" / f"bu_{task['eval_index']}_{uuid.uuid4().hex[:8]}")
-    return asyncio.run(_run_async(task, model, max_actions, run_dir, location=location))
+    return asyncio.run(_run_async(task, model, max_actions, run_dir, location=location, preflight=preflight))
