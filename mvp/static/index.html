@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UserSim — AI testing agent</title>
+  <title>UserSim — Internal QA testing tool</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
@@ -14,17 +14,17 @@
 
   <header class="site-header">
     <div class="logo">UserSim</div>
-    <span class="badge">Testing Agent</span>
+    <span class="badge">Internal QA</span>
   </header>
 
   <main>
     <section class="hero">
-      <p class="eyebrow">Parallel AI testing agents</p>
-      <h1>Drop a URL.<br /><em>Watch AI agents test it live.</em></h1>
+      <p class="eyebrow">Internal QA testing tool</p>
+      <h1>Automated QA agents.<br /><em>Real browser, real test cases.</em></h1>
       <p class="lede">
-        UserSim spins up AI testing agents for your customer segment, each one driving a real
-        browser through realistic tasks on your live site, and returns friction maps, quotes,
-        and an executive summary.
+        UserSim runs a batch of QA agents against a target URL, each one completing a defined
+        test case in a real browser, and reports back broken flows, friction points, and
+        prioritized fixes for the team.
       </p>
     </section>
 
@@ -32,37 +32,44 @@
       <article class="step">
         <span class="step-num">1</span>
         <h3>Target</h3>
-        <p>Public URL + who you’re building for</p>
+        <p>URL under test + the user profile to test as</p>
       </article>
       <article class="step">
         <span class="step-num">2</span>
-        <h3>Tasks</h3>
-        <p>Gemini 2.5 Flash generates personas & on-site goals</p>
+        <h3>Test cases</h3>
+        <p>Gemini 2.5 Flash generates test cases from the page's real content</p>
       </article>
       <article class="step">
         <span class="step-num">3</span>
-        <h3>Testing agents</h3>
-        <p>Live browser runs — easy vs hard, likes vs friction</p>
+        <h3>QA agents</h3>
+        <p>Live browser runs against each test case — pass, fail, or friction</p>
       </article>
       <article class="step">
         <span class="step-num">4</span>
-        <h3>Summary</h3>
-        <p>Ranked recommendations for your segment</p>
+        <h3>Report</h3>
+        <p>Prioritized findings and fixes for the team</p>
       </article>
     </section>
 
     <section class="panel form-panel">
       <form id="study-form">
         <label>
-          <span>Product URL</span>
-          <input type="url" name="url" required placeholder="https://useagency.dev/" value="https://useagency.dev/" />
+          <span>URL under test</span>
+          <input type="url" name="url" required placeholder="https://www.cloud.com/" value="https://www.cloud.com/" />
         </label>
         <label>
-          <span>Customer segment</span>
-          <textarea name="segment" required rows="3" placeholder="e.g. Startup founder, technical, 20–45, based in the bay area">Startup founder, technical, 20–45, based in the bay area</textarea>
+          <span>User profile to test as</span>
+          <textarea name="segment" required rows="3" placeholder="e.g. Compliance officer at a global bank evaluating secure access and integration platforms">Compliance officer at a global bank evaluating secure access and integration platforms</textarea>
         </label>
+        <div class="segment-chips">
+          <span class="segment-chips-label">Or pick a segment:</span>
+          <button type="button" class="segment-chip" data-segment="Compliance officer at a global bank evaluating secure access and integration platforms">Banking &amp; finance</button>
+          <button type="button" class="segment-chip" data-segment="IT director at a national healthcare provider evaluating secure application delivery and analytics">Healthcare</button>
+          <button type="button" class="segment-chip" data-segment="Airline IT operations lead evaluating event-driven integration and messaging platforms">Transportation</button>
+          <button type="button" class="segment-chip" data-segment="Government agency IT administrator evaluating secure, compliant hybrid cloud infrastructure">Government</button>
+        </div>
         <button type="submit" id="submit-btn">
-          <span class="btn-label">Run study</span>
+          <span class="btn-label">Run QA test</span>
           <span class="btn-spinner" hidden></span>
         </button>
       </form>
@@ -70,7 +77,7 @@
 
     <section id="progress" class="panel progress-panel" hidden>
       <div class="progress-header">
-        <h2>Study in progress</h2>
+        <h2>QA run in progress</h2>
         <span id="phase-label" class="phase">Starting…</span>
       </div>
       <div class="progress-bar"><div id="progress-fill"></div></div>
@@ -79,48 +86,48 @@
         <span id="progress-agents">0 / 4 agents finished</span>
       </div>
       <p id="progress-hint" class="progress-hint">
-        Four live browser testing agents (Gemini 2.5 Flash), each driving a local Chromium browser, browse your site in parallel. Each session takes 1–3 minutes — a full study is usually 3–6 minutes. Results appear below as each agent finishes.
+        Four QA agents (Gemini 2.5 Flash), each driving a local Chromium browser, run test cases against the target URL in parallel. Each session takes 1–3 minutes — a full run is usually 3–6 minutes. Results appear below as each agent finishes.
       </p>
     </section>
 
     <section id="live-panel" class="results live-panel" hidden>
       <section class="panel activity-panel">
-        <h2>Study activity</h2>
+        <h2>Run activity</h2>
         <p class="section-sub">What the orchestrator and agents are doing right now</p>
         <ol id="activity-log" class="activity-log"></ol>
       </section>
 
       <section id="personas-section" class="panel" hidden>
-        <h2>Generated personas</h2>
-        <p class="section-sub">Click a persona to expand their live session trace</p>
+        <h2>Generated test cases</h2>
+        <p class="section-sub">Click a test case to expand its agent trace</p>
         <div id="personas-grid" class="personas-grid"></div>
       </section>
     </section>
 
     <section id="results" class="results" hidden>
       <section class="panel summary-panel">
-        <h2>Executive summary</h2>
+        <h2>QA report</h2>
         <p id="access-info" class="access-info" hidden></p>
         <p id="headline" class="headline"></p>
         <div class="summary-grid">
           <div>
-            <h4>Top friction</h4>
+            <h4>Top issues found</h4>
             <ul id="top-friction"></ul>
           </div>
           <div>
-            <h4>Top strengths</h4>
+            <h4>What works well</h4>
             <ul id="top-strengths"></ul>
           </div>
         </div>
         <div class="fit-score">
           <span id="fit-score">—</span>
           <div>
-            <strong>Segment fit</strong>
+            <strong>Persona fit</strong>
             <p id="fit-rationale"></p>
           </div>
         </div>
         <div class="conversion">
-          <h4>Conversion outlook</h4>
+          <h4>Readiness outlook</h4>
           <p id="conversion-outlook"></p>
         </div>
         <div class="recommendations">
@@ -142,9 +149,9 @@
   </main>
 
   <footer>
-  <p>UserSim MVP — simulated research, not a substitute for real user interviews.</p>
+  <p>UserSim — internal QA testing tool. Automated results; not a substitute for manual QA sign-off.</p>
   </footer>
 
-  <script src="/static/app.js?v=7"></script>
+  <script src="/static/app.js?v=8"></script>
 </body>
 </html>

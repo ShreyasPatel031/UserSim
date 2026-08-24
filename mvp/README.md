@@ -1,10 +1,10 @@
-# UserSim — AI testing agent
+# UserSim — internal QA testing tool
 
-Local tool for synthetic user testing: give it a public URL + a customer segment, and it
-spins up parallel AI testing agents (Gemini 2.5 Flash, driving real local Chromium browsers via
-[browser-use](https://github.com/browser-use/browser-use)) that browse the live site, then
-returns friction maps, quotes, and an executive summary. Two ways to run it: a web UI, or a
-terminal CLI that streams progress and opens screenshots as they land.
+Local tool for automated QA testing: give it a target URL + a user profile to test as, and it
+spins up parallel QA agents (Gemini 2.5 Flash, driving real local Chromium browsers via
+[browser-use](https://github.com/browser-use/browser-use)) that run test cases against the live
+site, then reports back issues found, what works, and prioritized fixes. Two ways to run it: a
+web UI, or a terminal CLI that streams progress and opens screenshots as they land.
 
 ## Setup (once)
 
@@ -39,8 +39,8 @@ missing, click the card once to make sure the trace is expanded, not collapsed.
 
 ```bash
 PYTHONPATH=src .venv/bin/python mvp/cli.py \
-  --url "https://www.python.org" \
-  --segment "students new to programming who want to download Python and find a beginner tutorial"
+  --url "https://www.cloud.com/" \
+  --segment "Compliance officer at a global bank evaluating secure access and integration platforms"
 ```
 
 This prints the activity log live and opens each step screenshot (macOS `open` / Linux

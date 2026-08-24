@@ -157,31 +157,30 @@ function updateProgressUI(data, startedAt) {
   );
   if (liveMatch) {
     const [, done, total, active, queued, steps] = liveMatch;
-    progressAgents.textContent = `${done} / ${total} done · ${active} browsing · ${steps} steps`;
+    progressAgents.textContent = `${done} / ${total} done · ${active} running · ${steps} steps`;
     if (Number(queued) > 0) {
-      progressHint.textContent = `${active} agents browsing in parallel (${queued} waiting for a browser slot — free tier allows 3 at once). First step takes ~1–2 min.`;
+      progressHint.textContent = `${active} QA agents running in parallel (${queued} waiting for a local browser slot). First step takes ~1–2 min.`;
     } else if (Number(active) > 0) {
-      progressHint.textContent = `${active} agents browsing in parallel. Steps stream below as they act.`;
+      progressHint.textContent = `${active} QA agents running in parallel. Steps stream below as they act.`;
     } else if (Number(done) > 0) {
-      progressHint.textContent = "Sessions are finishing — select a persona below to watch their trace.";
+      progressHint.textContent = "Runs are finishing — select a test case below to view its trace.";
     } else {
       progressHint.textContent = "Agents starting — first browser step can take 1–2 minutes.";
     }
   } else if (phase.startsWith("Preparing browser sessions")) {
     progressAgents.textContent = `Warming browser pool (${phase.split("—")[1]?.trim() || ""})`;
-    progressHint.textContent =
-      "Creating Browserbase sessions so the first 3 agents can browse in parallel…";
+    progressHint.textContent = "Starting local Chromium sessions so the first agents can run in parallel…";
   } else {
     progressAgents.textContent = `${finished} / ${totalAgents} agents finished`;
     if (finished > 0) {
-      progressHint.textContent = "Sessions are finishing — select a persona below to watch their trace.";
+      progressHint.textContent = "Runs are finishing — select a test case below to view its trace.";
     } else if (phase.includes("Live browser agents")) {
       progressHint.textContent =
-        "Live browser sessions running (2–4 min each). Steps stream in below as agents browse.";
+        "Local browser sessions running (1–3 min each). Steps stream in below as agents run.";
     } else if (phase === "Generating personas & tasks") {
-      progressHint.textContent = "Planner is reading your site and creating personas & tasks…";
+      progressHint.textContent = "Planner is reading the page and generating test cases…";
     } else if (phase === "Fetching site") {
-      progressHint.textContent = "Fetching the page (HTTP → Playwright → Browserbase if needed)…";
+      progressHint.textContent = "Fetching the page (HTTP → local Chromium if needed)…";
     }
   }
   progressElapsed.textContent = formatElapsed(Math.floor((Date.now() - startedAt) / 1000));
@@ -519,6 +518,14 @@ async function pollStudy(studyId) {
   if (!res.ok) throw new Error("Failed to fetch study status");
   return res.json();
 }
+
+document.querySelectorAll(".segment-chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    form.segment.value = chip.dataset.segment;
+    document.querySelectorAll(".segment-chip").forEach((c) => c.classList.remove("active"));
+    chip.classList.add("active");
+  });
+});
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
