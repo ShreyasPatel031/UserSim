@@ -55,11 +55,14 @@ def _history_to_actions(history) -> list[dict]:
     return actions
 
 
-def _mvp_browser_profile():
+def _mvp_browser_profile(headless: bool | None = None):
     from browser_use.browser.profile import BrowserProfile
 
+    if headless is None:
+        headless = os.environ.get("MVP_BROWSER_HEADLESS", "true").lower() not in {"0", "false", "no"}
+
     return BrowserProfile(
-        headless=os.environ.get("MVP_BROWSER_HEADLESS", "true").lower() not in {"0", "false", "no"},
+        headless=headless,
         viewport=VIEWPORT,
         user_agent=USER_AGENT,
         disable_security=True,
@@ -261,7 +264,8 @@ async def run_browser_agent(
     persona: dict[str, Any],
     segment: str,
     model: str | None = None,
-    max_steps: int = MVP_MAX_STEPS,
+    max_steps: int | None = None,
+    headless: bool | None = None,
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
 ) -> dict[str, Any]:
     """Run Browser Use with a local Chromium session; return actions + bbox screenshot trace."""
@@ -269,6 +273,8 @@ async def run_browser_agent(
     from browser_use.llm.google import ChatGoogle
 
     model = model or GEMINI_MODEL
+    if max_steps is None:
+        max_steps = MVP_MAX_STEPS
     os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", "240")
 
     run_dir = MVP_RUNS_DIR / study_id / agent_id
@@ -286,7 +292,7 @@ async def run_browser_agent(
         temperature=0,
         max_retries=int(os.environ.get("MVP_LLM_MAX_RETRIES", "6")),
     )
-    profile = _mvp_browser_profile()
+    profile = _mvp_browser_profile(headless)
     persona_line = f"You are {persona.get('name')}: {persona.get('bio')}"
     agent_task = (
         f"{CAPABLE_AGENT_PREAMBLE}\n\n"

@@ -51,15 +51,41 @@ PYTHONPATH=src .venv/bin/uvicorn mvp.server:app --port 8787
 ```
 Open http://127.0.0.1:8787.
 
-**CLI** (no server needed, streams progress + opens screenshots as they land):
+**CLI** — streams progress in the terminal and opens a browser **viewer** showing the exact
+same UI as the web app (`http://<host>/?study=<id>`: live personas, trace, bbox screenshots, QA
+report). If a UserSim server is already running on `--port` (default 8787), the CLI talks to it
+directly and the viewer is that same running server. Otherwise it starts one itself, in-process:
 ```bash
-PYTHONPATH=src .venv/bin/python mvp/cli.py \
+.venv/bin/python mvp/cli.py \
   --url "https://www.cloud.com/" \
   --segment "Compliance officer at a global bank evaluating secure access and integration platforms"
 ```
-Cheap smoke test: add `--agents 1 --max-steps 5`.
+Cheap smoke test: add `--agents 1 --max-steps 5`. No display to open a browser on (a sandbox,
+CI, a coding agent)? Add `--no-viewer` — the viewer URL still prints, just isn't auto-opened.
 
-## Verify it's actually working
+## Running this for a user, as a coding agent
+
+If you're an agent (not a human at a terminal) running this on someone's behalf — you have no
+display, so `--no-viewer`'s auto-open is a no-op anyway, but the CLI still gives you everything
+you need to show the user real progress via your own browser/screenshot tool:
+
+1. Run the CLI with `--no-viewer` so it doesn't try (and fail silently) to pop a native browser:
+   ```bash
+   .venv/bin/python mvp/cli.py --url "<url>" --segment "<segment>" --no-viewer
+   ```
+   For a first smoke test before spending a full run, add `--agents 1 --max-steps 5`.
+2. The first thing it prints is a `viewer: http://127.0.0.1:8787/?study=<id>` line — grab that
+   URL immediately, before the study finishes.
+3. Open that URL with your own browser tool and take a screenshot to show the user real
+   progress (personas being generated, agents browsing live, bbox screenshots landing). The
+   page polls itself, so re-navigating and re-screenshotting later shows fresh state — you don't
+   need to resubmit anything.
+4. The CLI process blocks until the study is done, then prints the QA report and the same
+   viewer URL again. Take one final screenshot of the viewer at that point — it now shows the
+   complete report — and paste it into the conversation as the result.
+5. If the terminal output shows an agent "using snapshot fallback", the live browser-use run
+   crashed (see "Verify it's actually working" below) — say so; don't present a fallback run as
+   a real browser test.
 
 ```bash
 curl -s http://127.0.0.1:8787/health   # -> {"ok":true}

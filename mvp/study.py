@@ -102,6 +102,9 @@ class StudyState:
     error: str | None = None
     access_backend: str | None = None
     browserbase_session_url: str | None = None
+    agent_count: int | None = None
+    max_steps: int | None = None
+    headless: bool | None = None
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -417,7 +420,7 @@ async def run_study(study_id: str) -> None:
         plan = await generate_plan(study.url, study.segment, page_text)
         study.personas = plan.get("personas") or []
         study.tasks = plan.get("tasks") or []
-        agent_cap = int(os.environ.get("MVP_AGENT_COUNT", "4"))
+        agent_cap = study.agent_count if study.agent_count is not None else int(os.environ.get("MVP_AGENT_COUNT", "4"))
         if agent_cap > 0 and len(study.tasks) > agent_cap:
             study.tasks = study.tasks[:agent_cap]
             used_persona_ids = {t.get("persona_id") for t in study.tasks}
@@ -525,6 +528,8 @@ async def run_study(study_id: str) -> None:
                         task_prompt=task.get("prompt") or task.get("title") or "",
                         persona=persona,
                         segment=study.segment,
+                        max_steps=study.max_steps,
+                        headless=study.headless,
                         on_step=lambda step: _on_agent_step(agent_id, step),
                     )
                 sess["status"] = "summarizing"
@@ -622,9 +627,23 @@ async def run_study(study_id: str) -> None:
         study.updated_at = _now()
 
 
-def create_study(url: str, segment: str) -> StudyState:
+def create_study(
+    url: str,
+    segment: str,
+    *,
+    agent_count: int | None = None,
+    max_steps: int | None = None,
+    headless: bool | None = None,
+) -> StudyState:
     study_id = str(uuid.uuid4())
-    study = StudyState(id=study_id, url=url.strip(), segment=segment.strip())
+    study = StudyState(
+        id=study_id,
+        url=url.strip(),
+        segment=segment.strip(),
+        agent_count=agent_count,
+        max_steps=max_steps,
+        headless=headless,
+    )
     STUDIES[study_id] = study
     return study
 

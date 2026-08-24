@@ -519,6 +519,41 @@ async function pollStudy(studyId) {
   return res.json();
 }
 
+async function watchStudy(studyId, startedAt) {
+  hideError();
+  setLoading(true);
+  try {
+    let data;
+    while (true) {
+      data = await pollStudy(studyId);
+      updateProgressUI(data, startedAt);
+      renderLiveStudy(data);
+      if (data.status === "complete") break;
+      if (data.status === "error") throw new Error(data.error || "Study failed");
+      await new Promise((r) => setTimeout(r, 1500));
+    }
+
+    if (!data.summary && (!data.agent_results || !data.agent_results.length)) {
+      throw new Error("Study finished but returned no results. Check server logs.");
+    }
+
+    progressFill.style.width = "100%";
+    phaseLabel.textContent = "Complete";
+    renderLiveStudy(data);
+    renderSummary(data.summary, data.access_backend, data.browserbase_session_url);
+    renderAgents(data.agent_results);
+    resultsSection.hidden = false;
+
+    await new Promise((r) => setTimeout(r, 600));
+    progressPanel.hidden = true;
+  } catch (err) {
+    progressPanel.hidden = true;
+    showError(err.message || String(err));
+  } finally {
+    setLoading(false);
+  }
+}
+
 document.querySelectorAll(".segment-chip").forEach((chip) => {
   chip.addEventListener("click", () => {
     form.segment.value = chip.dataset.segment;
@@ -552,61 +587,22 @@ form.addEventListener("submit", async (e) => {
 
     const payload = await startRes.json();
     const studyId = payload.study_id || payload.id;
-    const startedAt = Date.now();
     livePanel.scrollIntoView({ behavior: "smooth" });
-
-    let data = payload;
-    // Vercel runs the full study synchronously in POST — response is already complete.
-    if (!data?.personas && studyId) {
-      data = await pollStudy(studyId);
-    }
-
-    if (data.status === "complete" || data.summary || data.agent_results?.length) {
-      updateProgressUI({ ...data, phase: "Complete", status: "complete" }, startedAt);
-      renderLiveStudy(data);
-      if (!data.summary && (!data.agent_results || !data.agent_results.length)) {
-        throw new Error("Study finished but returned no results.");
-      }
-      progressFill.style.width = "100%";
-      phaseLabel.textContent = "Complete";
-      renderSummary(data.summary, data.access_backend, data.browserbase_session_url);
-      renderAgents(data.agent_results);
-      resultsSection.hidden = false;
-      await new Promise((r) => setTimeout(r, 600));
-      progressPanel.hidden = true;
-      setLoading(false);
-      return;
-    }
-
-    let pollData;
-    while (true) {
-      pollData = await pollStudy(studyId);
-      data = pollData;
-      updateProgressUI(data, startedAt);
-      renderLiveStudy(data);
-
-      if (data.status === "complete") break;
-      if (data.status === "error") throw new Error(data.error || "Study failed");
-      await new Promise((r) => setTimeout(r, 1500));
-    }
-
-    if (!data.summary && (!data.agent_results || !data.agent_results.length)) {
-      throw new Error("Study finished but returned no results. Check server logs.");
-    }
-
-    progressFill.style.width = "100%";
-    phaseLabel.textContent = "Complete";
-    renderLiveStudy(data);
-    renderSummary(data.summary, data.access_backend, data.browserbase_session_url);
-    renderAgents(data.agent_results);
-    resultsSection.hidden = false;
-
-    await new Promise((r) => setTimeout(r, 600));
-    progressPanel.hidden = true;
+    history.replaceState(null, "", `?study=${studyId}`);
+    await watchStudy(studyId, Date.now());
   } catch (err) {
     progressPanel.hidden = true;
     showError(err.message || String(err));
-  } finally {
     setLoading(false);
   }
 });
+
+(function initFromQuery() {
+  const studyId = new URLSearchParams(location.search).get("study");
+  if (!studyId) return;
+  document.querySelector(".form-panel").hidden = true;
+  resultsSection.hidden = true;
+  livePanel.hidden = false;
+  progressPanel.hidden = false;
+  watchStudy(studyId, Date.now());
+})();

@@ -29,6 +29,9 @@ app.mount("/static", StaticFiles(directory=STATIC), name="static")
 class StudyRequest(BaseModel):
     url: HttpUrl
     segment: str = Field(min_length=8, max_length=500)
+    agent_count: int | None = Field(default=None, ge=1, le=8)
+    max_steps: int | None = Field(default=None, ge=1, le=60)
+    headless: bool | None = None
 
 
 @app.get("/")
@@ -38,7 +41,13 @@ async def index() -> FileResponse:
 
 @app.post("/api/studies")
 async def start_study(body: StudyRequest, background: BackgroundTasks):
-    study = create_study(str(body.url), body.segment)
+    study = create_study(
+        str(body.url),
+        body.segment,
+        agent_count=body.agent_count,
+        max_steps=body.max_steps,
+        headless=body.headless,
+    )
     # Serverless: no reliable background workers — run the study in this request
     # (requires Vercel Pro for maxDuration up to 300s; full studies may need a worker host).
     if IS_VERCEL:

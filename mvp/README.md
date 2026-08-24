@@ -38,13 +38,19 @@ missing, click the card once to make sure the trace is expanded, not collapsed.
 ## Run the CLI
 
 ```bash
-PYTHONPATH=src .venv/bin/python mvp/cli.py \
+.venv/bin/python mvp/cli.py \
   --url "https://www.cloud.com/" \
   --segment "Compliance officer at a global bank evaluating secure access and integration platforms"
 ```
 
-This prints the activity log live and opens each step screenshot (macOS `open` / Linux
-`xdg-open`) as soon as it's captured, then prints the executive summary at the end.
+This prints the activity log live in the terminal, opens a browser **viewer** at
+`http://127.0.0.1:8787/?study=<id>` — the exact same UI as the web app, deep-linked straight to
+this study (personas, live trace, bbox screenshots, QA report) — and prints the QA report at
+the end.
+
+If a UserSim server is already running on `--port` (default 8787), the CLI talks to it directly
+over HTTP instead of starting its own — the viewer and the CLI end up watching the same study on
+the same server. Only if nothing answers on that port does it start one itself, in-process.
 
 Flags:
 
@@ -52,12 +58,15 @@ Flags:
 |---|---|---|
 | `--agents` | 4 | Number of persona/task agents to run |
 | `--max-steps` | 12 | Max browser-use steps per agent |
-| `--browser-concurrency` | 3 | Concurrent local Chromium sessions |
+| `--browser-concurrency` | 3 | Concurrent local Chromium sessions — **only takes effect if the CLI starts its own server**; an already-running server keeps the concurrency it was started with |
 | `--show-browser` | off | Show the Chromium windows instead of headless |
-| `--no-open` | off | Don't auto-open each screenshot as it lands |
+| `--port` | 8787 | UserSim server port — reused if already running |
+| `--no-viewer` | off | Don't auto-open the viewer URL in a browser (it still prints) |
 | `--poll` | 1.5 | Seconds between progress polls |
 
-For a quick, cheap smoke test: `--agents 1 --max-steps 5`.
+For a quick, cheap smoke test: `--agents 1 --max-steps 5`. See the root
+[README's coding-agent section](../README.md#running-this-for-a-user-as-a-coding-agent) if
+you're an agent running this on someone's behalf rather than a human at a terminal.
 
 ## Flow
 
@@ -77,7 +86,11 @@ LLM conversation). Nothing here is committed — the whole `mvp/runs/` dir is gi
 
 ## Env vars
 
-All optional; set before starting the server or CLI:
+All optional; set before starting the server or CLI. Note: the CLI always sends `agent_count`,
+`max_steps`, and `headless` explicitly in its API request (from `--agents`/`--max-steps`/
+`--show-browser`), so `MVP_AGENT_COUNT`/`MVP_MAX_BROWSER_STEPS`/`MVP_BROWSER_HEADLESS` only
+govern studies started from the **web UI** (which has no such fields) or a raw API call that
+omits them.
 
 | Var | Default | Meaning |
 |---|---|---|
