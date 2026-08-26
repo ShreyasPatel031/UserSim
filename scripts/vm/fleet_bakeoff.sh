@@ -28,7 +28,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
 PROJECT="${GCP_PROJECT:-project-amer-scs-sandbox}"
-ZONE="${GCP_ZONE:-us-central1-a}"
+ZONE="${GCP_ZONE:-us-central1-b}"
 MACHINE="${GCP_MACHINE:-e2-standard-2}"
 STAGE="${STAGE:-full10}"
 WORKERS="${WORKERS:-4}"
@@ -51,9 +51,9 @@ EXTRA_ENV="${EXTRA_ENV:-}"
 EVAL_INDICES="${EVAL_INDICES:-}"
 
 case "$STAGE" in
-  full8)   NUM_SHARDS="${NUM_SHARDS:-1}";  PREFIX="${FLEET_PREFIX:-usersim-bu-f8}" ;;
+  full8)   NUM_SHARDS="${NUM_SHARDS:-1}";  PREFIX="${FLEET_PREFIX:-usersim-bu-f8}"; MACHINE="${GCP_MACHINE:-e2-standard-8}"; WORKERS="${WORKERS:-8}" ;;
   full10)  NUM_SHARDS="${NUM_SHARDS:-3}";  PREFIX="${FLEET_PREFIX:-usersim-bu-f10}" ;;
-  full80)  NUM_SHARDS="${NUM_SHARDS:-10}"; PREFIX="${FLEET_PREFIX:-usersim-bu-f80}" ;;
+  full80)  NUM_SHARDS="${NUM_SHARDS:-10}"; PREFIX="${FLEET_PREFIX:-usersim-bu-f80}"; WORKERS="${WORKERS:-8}"; MACHINE="${GCP_MACHINE:-e2-standard-8}" ;;
   full100) NUM_SHARDS="${NUM_SHARDS:-25}"; PREFIX="${FLEET_PREFIX:-usersim-bu-f100}" ;;
   retry)   NUM_SHARDS="${NUM_SHARDS:-2}";  PREFIX="${FLEET_PREFIX:-usersim-bu-retry}" ;;
   *) echo "Unknown STAGE=$STAGE"; exit 1 ;;
@@ -290,6 +290,7 @@ nohup env \
   MODEL=${MODEL} WORKERS=${WORKERS} GCS_PREFIX=${GCS_PREFIX} \
   FAST=${FAST} ACTIONS_PER_STEP=${ACTIONS_PER_STEP} \
   RESUME=${RESUME} KEEP_VM=${KEEP_VM} MAX_ACTIONS=${MAX_ACTIONS} \
+  SKIP_KNOWN_BLOCKED=${SKIP_KNOWN_BLOCKED} \
   EVAL_INDICES='${EVAL_INDICES}' \
   EXTRA_ENV='${EXTRA_ENV}' \
   bash scripts/vm/shard_runner.sh > ~/bakeoff_shard${i}.log 2>&1 &
