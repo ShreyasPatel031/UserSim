@@ -45,6 +45,7 @@ RESUME="${RESUME:-1}"
 KEEP_VM="${KEEP_VM:-0}"
 # 0 = harness default (60). Set MAX_ACTIONS=33 to reproduce the old 12% baseline.
 MAX_ACTIONS="${MAX_ACTIONS:-0}"
+SKIP_KNOWN_BLOCKED="${SKIP_KNOWN_BLOCKED:-0}"
 # Space-separated KEY=VALUE pairs forwarded to the shard, for arm-specific flags.
 EXTRA_ENV="${EXTRA_ENV:-}"
 EVAL_INDICES="${EVAL_INDICES:-}"
