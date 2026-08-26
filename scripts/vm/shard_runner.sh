@@ -24,6 +24,7 @@ MAX_ACTIONS="${MAX_ACTIONS:-0}"
 EXTRA_ENV="${EXTRA_ENV:-}"
 EVAL_INDICES="${EVAL_INDICES:-}"
 PREFLIGHT="${PREFLIGHT:-0}"
+SKIP_KNOWN_BLOCKED="${SKIP_KNOWN_BLOCKED:-0}"
 
 SHARD_TAG="${TAG}_shard${SHARD_ID}"
 MANIFEST="results/capability/${STAGE}_browser_use_${SHARD_TAG}.json"
@@ -46,6 +47,8 @@ budget_flag=()
 [[ "$MAX_ACTIONS" != "0" ]] && budget_flag=(--max-actions "$MAX_ACTIONS")
 preflight_flag=()
 [[ "$PREFLIGHT" == "0" ]] && preflight_flag=(--no-preflight)
+skip_blocked_flag=()
+[[ "$SKIP_KNOWN_BLOCKED" == "0" ]] && skip_blocked_flag=(--no-skip-known-blocked)
 
 if [[ -n "$EXTRA_ENV" ]]; then
   for kv in $EXTRA_ENV; do export "${kv?}"; done
@@ -68,7 +71,7 @@ PYTHONPATH=src .venv/bin/python -m capability.run_bakeoff \
   --stage "$STAGE" --harness browser_use --model "$MODEL" --workers "$WORKERS" \
   --num-shards "$NUM_SHARDS" --shard-id "$SHARD_ID" \
   --tag "$SHARD_TAG" "${budget_flag[@]}" "${eval_flag[@]}" "${resume_flag[@]}" \
-  "${preflight_flag[@]}"
+  "${preflight_flag[@]}" "${skip_blocked_flag[@]}"
 rc=$?
 echo "BAKEOFF_EXIT=$rc"
 

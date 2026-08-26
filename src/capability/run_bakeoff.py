@@ -431,8 +431,8 @@ def main() -> int:
     ap.add_argument(
         "--skip-known-blocked",
         action=argparse.BooleanOptionalAction,
-        default=True,
-        help="Skip websites known blocked from this IP (uniqlo, apartments)",
+        default=False,
+        help="Skip websites on KNOWN_BLOCKED_WEBSITES (uniqlo, apartments) without trying",
     )
     ap.add_argument(
         "--preflight",
