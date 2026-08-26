@@ -80,7 +80,8 @@ STAGE1_MAX_HISTORY_ITEMS = _history_items_setting()
 STAGE1_MAX_ACTIONS_PER_STEP = _actions_per_step_setting()
 STAGE1_USE_ALLOWED_DOMAINS = _use_allowed_domains()
 STAGE1_LLM_MAX_RETRIES = int(os.environ.get("MISTRAL_LLM_MAX_RETRIES", "8"))
-STAGE1_STEP_TIMEOUT = int(os.environ.get("BROWSER_USE_STEP_TIMEOUT", "90" if FAST_BAKEOFF else "180"))
+# 180s/step lets a single hung page burn 90+ min across 30 steps. Default 90s.
+STAGE1_STEP_TIMEOUT = int(os.environ.get("BROWSER_USE_STEP_TIMEOUT", "90"))
 
 
 def stage1_enabled() -> bool:

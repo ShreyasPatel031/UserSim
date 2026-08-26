@@ -10,8 +10,9 @@ import argparse
 import json
 import sys
 import threading
+import time
 import uuid
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -19,15 +20,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from capability import MAX_ACTIONS, OUT_DIR
 from capability.browser_use_harness import browser_use_arm, stage1_enabled
+from capability.gcs_checkpoint import restore_manifest, restore_traces, upload_trace_dir
 from capability.manifest import rebuild_manifest, upsert_run, write_manifest
 from capability.manifest_writer import ManifestWriter
-from capability.mistral_browser_use_runner import run_mistral_browser_use
+from capability.mistral_browser_use_runner import run_mistral_browser_use, task_wall_timeout_s
 from capability.mistral_config import DEFAULT_MISTRAL_MODEL
 from capability.browserbase_client import browserbase_enabled, browserbase_max_workers
 from capability.site_preflight import KNOWN_BLOCKED_WEBSITES
 from capability.tasks import (
     ALL_INDICES,
     BAKEOFF5_INDICES,
+    FULL8_INDICES,
+    FULL80_INDICES,
     SMOKE_INDICES,
     TASK_INDICES,
     load_tasks,
@@ -111,11 +115,43 @@ def _known_blocked_stub(task: dict, model: str) -> dict:
     }
 
 
+def _wall_timeout_stub(task: dict, model: str, timeout_s: float) -> dict:
+    """Worker-pool kill: asyncio timeout inside the runner did not return in time."""
+    run_id = f"wall_{task['eval_index']}_{uuid.uuid4().hex[:8]}"
+    run_dir = OUT_DIR / "traces" / f"mistral_{task['eval_index']}_{uuid.uuid4().hex[:8]}"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    out = {
+        "run_id": run_id,
+        "task_id": task["task_id"],
+        "eval_index": task["eval_index"],
+        "task": task["task"],
+        "website": task["website"],
+        "model": model,
+        "harness": "browser_use_oss",
+        "provider": "mistral",
+        "start_url": task["start_url"],
+        "success": False,
+        "status": "FAILURE",
+        "failure_category": "HARNESS",
+        "stop_reason": f"worker_wall_timeout:{int(timeout_s)}s",
+        "num_actions": 0,
+        "actions": [],
+        "estimated_cost_usd": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "final_url": task["start_url"],
+        "trace_dir": str(run_dir),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    (run_dir / "run.json").write_text(json.dumps(out, indent=2, default=str))
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Mistral + Browser Use capability bakeoff")
     ap.add_argument(
         "--stage",
-        choices=["smoke", "bakeoff5", "full10", "full100", "one", "retry"],
+        choices=["smoke", "bakeoff5", "full8", "full10", "full80", "full100", "one", "retry"],
         default="full10",
     )
     ap.add_argument("--model", default=DEFAULT_MISTRAL_MODEL)
@@ -156,8 +192,12 @@ def main() -> int:
         indices = SMOKE_INDICES
     elif args.stage == "bakeoff5":
         indices = BAKEOFF5_INDICES
+    elif args.stage == "full8":
+        indices = FULL8_INDICES
     elif args.stage == "full10":
         indices = TASK_INDICES
+    elif args.stage == "full80":
+        indices = FULL80_INDICES
     elif args.stage == "full100":
         indices = ALL_INDICES
     else:
@@ -184,6 +224,11 @@ def main() -> int:
     out_name = f"{args.stage}_mistral_{tag}"
     out_path = OUT_DIR / f"{out_name}.json"
     log_path = OUT_DIR / f"{out_name}_run.log"
+
+    # Spot resume: pull any prior checkpoint before --resume reads local disk.
+    if args.resume or args.rebuild:
+        restore_manifest(out_path)
+        restore_traces(OUT_DIR / "traces")
 
     runs: list[dict] = []
     if args.resume or args.rebuild:
@@ -264,6 +309,10 @@ def main() -> int:
             cost = sum(float(r.get("estimated_cost_usd") or 0) for r in runs)
         print(f"PROGRESS {n}/{len(tasks)} success={ok} cost=${cost:.2f}", flush=True)
         writer.request_save()
+        try:
+            upload_trace_dir(row.get("trace_dir"))
+        except Exception as exc:  # noqa: BLE001
+            print(f"WARN trace checkpoint failed: {exc}", flush=True)
 
     if not pending:
         writer.flush()
@@ -274,13 +323,50 @@ def main() -> int:
         for t in pending:
             _on_done(_run_one(t, args.model, args.max_actions, preflight=args.preflight))
     else:
-        with ThreadPoolExecutor(max_workers=workers) as pool:
-            futs = [
-                pool.submit(_run_one, t, args.model, args.max_actions, preflight=args.preflight)
-                for t in pending
-            ]
-            for fut in as_completed(futs):
-                _on_done(fut.result())
+        wall_s = task_wall_timeout_s(args.max_actions)
+        grace_s = 60.0
+        deadline_by_fut: dict = {}
+        pool = ThreadPoolExecutor(max_workers=workers)
+        try:
+            futs = []
+            for t in pending:
+                fut = pool.submit(
+                    _run_one, t, args.model, args.max_actions, preflight=args.preflight
+                )
+                deadline_by_fut[fut] = time.monotonic() + wall_s + grace_s
+                fut._task_ref = t  # type: ignore[attr-defined]
+                futs.append(fut)
+            pending_futs = set(futs)
+            while pending_futs:
+                done_futs, pending_futs = wait(
+                    pending_futs, timeout=15.0, return_when=FIRST_COMPLETED
+                )
+                now = time.monotonic()
+                for fut in done_futs:
+                    deadline_by_fut.pop(fut, None)
+                    try:
+                        _on_done(fut.result())
+                    except Exception as exc:  # noqa: BLE001
+                        t = getattr(fut, "_task_ref", None)
+                        if t is not None:
+                            _on_done(_err(t, args.model, exc))
+                overdue = [f for f in list(pending_futs) if now > deadline_by_fut.get(f, now)]
+                for fut in overdue:
+                    pending_futs.discard(fut)
+                    deadline_by_fut.pop(fut, None)
+                    t = getattr(fut, "_task_ref", None)
+                    fut.cancel()
+                    if t is not None:
+                        print(
+                            f"KILL   mistral | {t['website']} | idx={t['eval_index']} | "
+                            f"worker_wall_timeout={int(wall_s)}s",
+                            flush=True,
+                        )
+                        stub = _wall_timeout_stub(t, args.model, wall_s)
+                        stub["max_actions_budget"] = args.max_actions
+                        _on_done(stub)
+        finally:
+            pool.shutdown(wait=False, cancel_futures=True)
 
     writer.flush()
     print(f"Wrote {out_path}", flush=True)

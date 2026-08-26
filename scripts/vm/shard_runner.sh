@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Runs one bakeoff shard on a fleet VM, then reports to GCS and deletes the VM.
 #
-# The VM is the only thing that knows when it is finished, so it does the whole
-# tail itself: rejudge -> upload -> self-delete. Nothing on the operator side
-# needs to poll over SSH, which is what used to make status checks take minutes.
+# Spot-safe resume: progress is checkpointed to GCS after every completed task.
+# On start (or --relaunch after preemption) we restore that checkpoint before
+# --resume, so only unfinished eval_indices re-run.
 #
 # Expected env: STAGE TAG SHARD_ID NUM_SHARDS MODEL WORKERS GCS_PREFIX
 #               FAST ACTIONS_PER_STEP RESUME KEEP_VM MAX_ACTIONS EXTRA_ENV EVAL_INDICES
@@ -15,7 +15,7 @@ cd "$HOME/usersim"
 : "${WORKERS:?}" "${GCS_PREFIX:?}"
 FAST="${FAST:-0}"
 ACTIONS_PER_STEP="${ACTIONS_PER_STEP:-3}"
-RESUME="${RESUME:-0}"
+RESUME="${RESUME:-1}"
 KEEP_VM="${KEEP_VM:-0}"
 # 0 = leave the harness default (MAX_ACTIONS in capability/__init__).
 MAX_ACTIONS="${MAX_ACTIONS:-0}"
@@ -27,6 +27,7 @@ EVAL_INDICES="${EVAL_INDICES:-}"
 SHARD_TAG="${TAG}_shard${SHARD_ID}"
 MANIFEST="results/capability/${STAGE}_mistral_${SHARD_TAG}.json"
 LOG="$HOME/bakeoff_shard${SHARD_ID}.log"
+DEST="${GCS_PREFIX}/${STAGE}/${TAG}"
 
 set -a
 # shellcheck disable=SC1091
@@ -34,6 +35,9 @@ source secrets/env
 set +a
 export BROWSER_USE_FAST="$FAST"
 export BROWSER_USE_MAX_ACTIONS_PER_STEP="$ACTIONS_PER_STEP"
+# Incremental checkpoints for Spot resume (see capability.gcs_checkpoint).
+export CAPABILITY_GCS_CHECKPOINT="$DEST"
+export CAPABILITY_SHARD_ID="$SHARD_ID"
 
 resume_flag=()
 [[ "$RESUME" == "1" ]] && resume_flag=(--resume)
@@ -47,6 +51,16 @@ fi
 eval_flag=()
 [[ -n "$EVAL_INDICES" ]] && eval_flag=(--eval-indices "$EVAL_INDICES")
 
+mkdir -p results/capability/traces
+
+# Restore prior progress before bakeoff so --resume has something to skip.
+echo "Restoring checkpoint from ${DEST} (if any)..."
+gcloud storage cp "${DEST}/manifests/$(basename "$MANIFEST")" "$MANIFEST" --quiet 2>/dev/null \
+  && echo "  restored $(basename "$MANIFEST")" \
+  || echo "  no prior manifest"
+gcloud storage rsync --recursive "${DEST}/traces/shard${SHARD_ID}" results/capability/traces --quiet 2>/dev/null \
+  || true
+
 PYTHONPATH=src .venv/bin/python -m capability.run_mistral_bakeoff \
   --stage "$STAGE" --model "$MODEL" --workers "$WORKERS" --no-preflight \
   --num-shards "$NUM_SHARDS" --shard-id "$SHARD_ID" \
@@ -57,12 +71,12 @@ echo "BAKEOFF_EXIT=$rc"
 # Judge creds are bundled on the VM, so re-score here rather than over SSH later.
 PYTHONPATH=src .venv/bin/python -m capability.rejudge --manifest "$MANIFEST" || true
 
-dest="${GCS_PREFIX}/${STAGE}/${TAG}"
-gcloud storage cp "$MANIFEST" "${dest}/manifests/" --quiet || true
-gcloud storage cp "$LOG" "${dest}/logs/" --quiet || true
+# Final sync (incremental checkpoints already ran per-task).
+gcloud storage cp "$MANIFEST" "${DEST}/manifests/" --quiet || true
+gcloud storage cp "$LOG" "${DEST}/logs/" --quiet || true
 if [[ -d results/capability/traces ]]; then
-  gcloud storage cp --recursive results/capability/traces \
-    "${dest}/traces/shard${SHARD_ID}/" --quiet || true
+  gcloud storage rsync --recursive results/capability/traces \
+    "${DEST}/traces/shard${SHARD_ID}" --quiet || true
 fi
 
 marker="/tmp/shard${SHARD_ID}.done"
@@ -71,7 +85,7 @@ marker="/tmp/shard${SHARD_ID}.done"
   echo "exit=$rc"
   echo "finished=$(date -Is)"
 } > "$marker"
-gcloud storage cp "$marker" "${dest}/_done/" --quiet || true
+gcloud storage cp "$marker" "${DEST}/_done/" --quiet || true
 
 if [[ "$KEEP_VM" == "1" ]]; then
   echo "KEEP_VM=1, leaving instance up"

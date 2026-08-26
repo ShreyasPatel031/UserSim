@@ -14,6 +14,9 @@ _BY_IDX = {t["eval_index"]: t for t in _TASKS}
 # Same 10 as v0.6 free-run PREFERRED
 TASK_INDICES = [32, 26, 33, 8, 19, 22, 7, 12, 25, 34]
 
+# 8-task slice (full10 minus Under Armour + Eventbrite)
+FULL8_INDICES = TASK_INDICES[:8]
+
 # Smoke: one search+filter (Newegg), one multi-filter (Under Armour)
 SMOKE_INDICES = [8, 25]
 
@@ -22,6 +25,9 @@ BAKEOFF5_INDICES = [25, 8, 34, 26, 19]  # UA, Newegg, Eventbrite, RT, Uniqlo
 
 # All Mind2Web tasks shipped in data/mind2web_tasks.json
 ALL_INDICES = sorted(_BY_IDX.keys())
+
+# First 80 Mind2Web tasks (eval_index 0–79)
+FULL80_INDICES = ALL_INDICES[:80]
 
 # Hard-20: genuine model failures from full100 Flash audit (see results/capability/hard20.json).
 # Flash baseline is 0/20 by construction — selected from failures; no Flash rerun needed.

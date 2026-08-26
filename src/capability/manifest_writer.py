@@ -6,6 +6,7 @@ import queue
 import threading
 from pathlib import Path
 
+from capability.gcs_checkpoint import upload_manifest
 from capability.manifest import write_manifest
 
 
@@ -19,6 +20,7 @@ class ManifestWriter:
         max_actions: int,
         runs: list[dict],
         lock: threading.Lock,
+        gcs_checkpoint: bool = True,
     ) -> None:
         self._path = path
         self._stage = stage
@@ -26,6 +28,7 @@ class ManifestWriter:
         self._max_actions = max_actions
         self._runs = runs
         self._lock = lock
+        self._gcs_checkpoint = gcs_checkpoint
         self._queue: queue.Queue[bool | None] = queue.Queue()
         self._thread = threading.Thread(target=self._worker, name="manifest-writer", daemon=True)
         self._thread.start()
@@ -59,3 +62,9 @@ class ManifestWriter:
             )
         except OSError as exc:
             print(f"WARN manifest save failed: {exc}", flush=True)
+            return
+        if self._gcs_checkpoint:
+            try:
+                upload_manifest(self._path)
+            except Exception as exc:  # noqa: BLE001
+                print(f"WARN gcs manifest checkpoint failed: {exc}", flush=True)
