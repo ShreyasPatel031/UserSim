@@ -13,13 +13,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from browser_use import Agent, ChatOpenAI
+from browser_use import Agent, ChatGoogle
 
-from capability import CAPABLE_AGENT_PREAMBLE, MAX_ACTIONS, OUT_DIR, USER_AGENT, VIEWPORT
+from auth import vertex_credentials
+from capability import CAPABLE_AGENT_PREAMBLE, MAX_ACTIONS, OUT_DIR, USER_AGENT, VIEWPORT, location_for
 from capability.browser_use_runner import _history_to_actions
 from capability.browserbase_client import close_session, create_session
-from capability.mistral_config import MISTRAL_API_BASE, mistral_api_key
 from capability.tasks import load_tasks
+from config import GCP_PROJECT
 
 
 @dataclass(frozen=True)
@@ -76,10 +77,13 @@ async def _run_variant(task: dict, v: Variant, *, max_steps: int) -> ProbeResult
             wait_between_actions=v.wait_between_actions,
             captcha_solver=False,
         )
-        llm = ChatOpenAI(
-            model=os.environ.get("MISTRAL_MODEL", "mistral-small-2603"),
-            api_key=mistral_api_key(),
-            base_url=MISTRAL_API_BASE,
+        model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-lite")
+        llm = ChatGoogle(
+            model=model,
+            vertexai=True,
+            credentials=vertex_credentials(),
+            project=GCP_PROJECT,
+            location=location_for(model),
             temperature=0,
         )
         agent_task = (

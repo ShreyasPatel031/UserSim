@@ -14,10 +14,12 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-from browser_use import ChatOpenAI
+from browser_use import ChatGoogle
 from browser_use.llm.messages import ContentPartImageParam, ContentPartTextParam, ImageURL, SystemMessage, UserMessage
 
-from capability.mistral_config import MISTRAL_API_BASE, mistral_api_key
+from auth import vertex_credentials
+from capability import location_for
+from config import GCP_PROJECT
 
 _MAX_REJECTIONS = int(os.environ.get("BROWSER_USE_VERIFY_MAX_REJECTIONS", "2"))
 
@@ -62,20 +64,21 @@ Be strict on filters: if a filter must be applied, it must be visibly reflected 
 If the page shows no matching results but the agent correctly applied filters, still pass."""
 
 
-def _cheap_llm() -> ChatOpenAI:
-    model = os.environ.get("MISTRAL_EXTRACTION_MODEL", "ministral-8b-latest")
-    return ChatOpenAI(
+def _cheap_llm() -> ChatGoogle:
+    model = os.environ.get("BROWSER_USE_EXTRACTION_MODEL", "gemini-2.5-flash-lite")
+    return ChatGoogle(
         model=model,
-        api_key=mistral_api_key(),
-        base_url=MISTRAL_API_BASE,
+        vertexai=True,
+        credentials=vertex_credentials(),
+        project=GCP_PROJECT,
+        location=location_for(model),
         temperature=0,
-        max_retries=4,
     )
 
 
 def _model_supports_vision(model: str) -> bool:
     m = model.lower()
-    return any(x in m for x in ("pixtral", "vision", "large-2411"))
+    return "gemini" in m or any(x in m for x in ("pixtral", "vision"))
 
 
 def _parse_json(text: str) -> dict:
@@ -83,7 +86,7 @@ def _parse_json(text: str) -> dict:
     return json.loads(match.group(0) if match else text)
 
 
-async def extract_constraints(task: str, llm: ChatOpenAI | None = None) -> list[str]:
+async def extract_constraints(task: str, llm: ChatGoogle | None = None) -> list[str]:
     llm = llm or _cheap_llm()
     resp = await llm.ainvoke(
         [
@@ -122,7 +125,7 @@ async def verify_page(
     url: str,
     title: str,
     browser_session: Any,
-    llm: ChatOpenAI | None = None,
+    llm: ChatGoogle | None = None,
 ) -> tuple[bool, list[str]]:
     if not constraints:
         return True, []
@@ -164,7 +167,7 @@ def _reject_done(agent: Any) -> None:
 def make_verify_done_hook(
     task: str,
     *,
-    llm: ChatOpenAI | None = None,
+    llm: ChatGoogle | None = None,
 ) -> tuple[Any, VerifyDoneStats]:
     stats = VerifyDoneStats()
     llm = llm or _cheap_llm()

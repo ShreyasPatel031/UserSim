@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# GCP Spot fleet for Mistral bakeoff (full8 / full10 / full80 / full100).
+# GCP Spot fleet for Gemini Browser Use bakeoff (full8 / full10 / full80 / full100).
 #
 # full8:   NUM_SHARDS=1  WORKERS=8  e2-standard-8  → 8 tasks, one VM
 # full10:  NUM_SHARDS=3  WORKERS=4  → 10 tasks, ~8–12 min wall
@@ -32,8 +32,8 @@ ZONE="${GCP_ZONE:-us-central1-a}"
 MACHINE="${GCP_MACHINE:-e2-standard-2}"
 STAGE="${STAGE:-full10}"
 WORKERS="${WORKERS:-4}"
-MODEL="${MISTRAL_MODEL:-mistral-small-2603}"
-TAG="${FLEET_TAG:-mistral-small-2603_m33_stage1_fleet}"
+MODEL="${GEMINI_MODEL:-gemini-2.5-flash-lite}"
+TAG="${FLEET_TAG:-gemini-25-flash-lite_m60_fleet}"
 # flash_mode strips evaluation_previous_goal / next_goal / thinking / planning from
 # the agent schema. It cost 3 tasks on full10 and made agents burn the whole step
 # budget, so it stays off unless explicitly requested.
@@ -78,20 +78,20 @@ from capability.metrics import sort_runs, summarize
 stage = "${STAGE}"
 tag = "${TAG}"
 out_dir = Path("results/capability")
-shards = sorted(out_dir.glob(f"{stage}_mistral_{tag}_shard*.json"))
+shards = sorted(out_dir.glob(f"{stage}_browser_use_{tag}_shard*.json"))
 if not shards:
-    shards = sorted(out_dir.glob(f"{stage}_mistral_*_fleet_shard*.json"))
+    shards = sorted(out_dir.glob(f"{stage}_browser_use_*_fleet_shard*.json"))
 if not shards:
     raise SystemExit("No shard files found in results/capability/")
 runs = []
 for p in shards:
     runs.extend(json.loads(p.read_text()).get("runs") or [])
 merged_name = {
-    "full8": f"full8_mistral_{tag}.json",
-    "full10": "full10_mistral_mistral-small-2603_m33_stage1_fleet.json",
-    "full80": f"full80_mistral_{tag}.json",
-    "full100": "full100_mistral_mistral-small-2603_m33_stage1_fleet.json",
-}.get(stage, f"{stage}_mistral_{tag}.json")
+    "full8": f"full8_browser_use_{tag}.json",
+    "full10": f"full10_browser_use_{tag}.json",
+    "full80": f"full80_browser_use_{tag}.json",
+    "full100": f"full100_browser_use_{tag}.json",
+}.get(stage, f"{stage}_browser_use_{tag}.json")
 merged = out_dir / merged_name
 base = json.loads(shards[0].read_text())
 base.update(summarize(runs))
@@ -123,7 +123,7 @@ for p in sorted(out_dir.glob("*_fleet_shard*.json")):
         td = run.get("trace_dir") or ""
         if td.startswith("/home/"):
             idx = run.get("eval_index")
-            local = out_dir / "traces" / f"mistral_{idx}_fleet"
+            local = out_dir / "traces" / f"bu_{idx}_fleet"
             if local.is_dir():
                 run["trace_dir"] = str(local)
         before = run.get("status")

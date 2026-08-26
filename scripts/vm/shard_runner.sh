@@ -23,9 +23,10 @@ MAX_ACTIONS="${MAX_ACTIONS:-0}"
 # without this script needing to know about them.
 EXTRA_ENV="${EXTRA_ENV:-}"
 EVAL_INDICES="${EVAL_INDICES:-}"
+PREFLIGHT="${PREFLIGHT:-0}"
 
 SHARD_TAG="${TAG}_shard${SHARD_ID}"
-MANIFEST="results/capability/${STAGE}_mistral_${SHARD_TAG}.json"
+MANIFEST="results/capability/${STAGE}_browser_use_${SHARD_TAG}.json"
 LOG="$HOME/bakeoff_shard${SHARD_ID}.log"
 DEST="${GCS_PREFIX}/${STAGE}/${TAG}"
 
@@ -43,6 +44,8 @@ resume_flag=()
 [[ "$RESUME" == "1" ]] && resume_flag=(--resume)
 budget_flag=()
 [[ "$MAX_ACTIONS" != "0" ]] && budget_flag=(--max-actions "$MAX_ACTIONS")
+preflight_flag=()
+[[ "$PREFLIGHT" == "0" ]] && preflight_flag=(--no-preflight)
 
 if [[ -n "$EXTRA_ENV" ]]; then
   for kv in $EXTRA_ENV; do export "${kv?}"; done
@@ -61,10 +64,11 @@ gcloud storage cp "${DEST}/manifests/$(basename "$MANIFEST")" "$MANIFEST" --quie
 gcloud storage rsync --recursive "${DEST}/traces/shard${SHARD_ID}" results/capability/traces --quiet 2>/dev/null \
   || true
 
-PYTHONPATH=src .venv/bin/python -m capability.run_mistral_bakeoff \
-  --stage "$STAGE" --model "$MODEL" --workers "$WORKERS" --no-preflight \
+PYTHONPATH=src .venv/bin/python -m capability.run_bakeoff \
+  --stage "$STAGE" --harness browser_use --model "$MODEL" --workers "$WORKERS" \
   --num-shards "$NUM_SHARDS" --shard-id "$SHARD_ID" \
-  --tag "$SHARD_TAG" "${budget_flag[@]}" "${eval_flag[@]}" "${resume_flag[@]}"
+  --tag "$SHARD_TAG" "${budget_flag[@]}" "${eval_flag[@]}" "${resume_flag[@]}" \
+  "${preflight_flag[@]}"
 rc=$?
 echo "BAKEOFF_EXIT=$rc"
 

@@ -11,11 +11,10 @@ import re
 from pathlib import Path
 
 from capability import OUT_DIR
-from capability.browser_use_harness import stage1_config_snapshot
 from capability.metrics import sort_runs, summarize
 
 DONE_RE = re.compile(
-    r"^DONE  mistral \| (\S+) \| idx=(\d+) \| (\S+) success=(\S+) actions=(\d+) cost=\$([0-9.]+)"
+    r"^DONE  (\S+) \| (\S+) \| idx=(\d+) \| (\S+) success=(\S+) actions=(\d+) cost=\$([0-9.]+)"
 )
 
 
@@ -53,7 +52,7 @@ def load_runs_from_traces(model: str, traces_dir: Path = OUT_DIR / "traces") -> 
     runs: list[dict] = []
     if not traces_dir.is_dir():
         return runs
-    for p in traces_dir.glob("mistral_*/run.json"):
+    for p in traces_dir.glob("**/run.json"):
         try:
             r = json.loads(p.read_text())
         except (json.JSONDecodeError, OSError):
@@ -76,6 +75,8 @@ def stub_from_log_line(
     cost: float,
     model: str,
     task_lookup: dict[int, dict],
+    *,
+    harness: str = "browser_use",
 ) -> dict | None:
     task = task_lookup.get(eval_index)
     if not task:
@@ -95,8 +96,8 @@ def stub_from_log_line(
         "task": task["task"],
         "website": website,
         "model": model,
-        "harness": "browser_use_oss",
-        "provider": "mistral",
+        "harness": "browser_use_oss" if harness == "browser_use" else harness,
+        "provider": "vertex",
         "start_url": task["start_url"],
         "actions": [],
         "num_actions": num_actions,
@@ -115,6 +116,8 @@ def load_runs_from_log(
     log_path: Path,
     model: str,
     task_lookup: dict[int, dict],
+    *,
+    harness: str = "browser_use",
 ) -> list[dict]:
     if not log_path.is_file():
         return []
@@ -123,9 +126,10 @@ def load_runs_from_log(
         m = DONE_RE.match(line.strip())
         if not m:
             continue
-        website, idx_s, status, success_s, actions_s, cost_s = m.groups()
+        harness_s, website, idx_s, status, success_s, actions_s, cost_s = m.groups()
         idx = int(idx_s)
         last[idx] = (
+            harness_s,
             website,
             status,
             success_s == "True",
@@ -133,8 +137,11 @@ def load_runs_from_log(
             float(cost_s),
         )
     runs: list[dict] = []
-    for idx, (website, status, success, num_actions, cost) in last.items():
-        stub = stub_from_log_line(website, idx, status, success, num_actions, cost, model, task_lookup)
+    for idx, (harness_s, website, status, success, num_actions, cost) in last.items():
+        h = "browser_use" if harness_s == "browser_use" else harness_s
+        stub = stub_from_log_line(
+            website, idx, status, success, num_actions, cost, model, task_lookup, harness=h
+        )
         if stub:
             runs.append(stub)
     return runs
@@ -147,17 +154,17 @@ def write_manifest(
     stage: str,
     model: str,
     max_actions: int,
+    harness: str = "browser_use",
     slim: bool = True,
 ) -> None:
     merged = merge_runs_by_eval_index(runs)
     rows = [slim_run(r) for r in merged] if slim else merged
     payload = {
         "stage": stage,
-        "harness": "browser_use_oss",
-        "provider": "mistral",
+        "harness": "browser_use_oss" if harness == "browser_use" else harness,
+        "provider": "vertex",
         "model": model,
         "max_actions_budget": max_actions,
-        "harness_config": stage1_config_snapshot(),
         **summarize(merged),
         "runs": rows,
     }
@@ -174,6 +181,7 @@ def rebuild_manifest(
     max_actions: int,
     tasks: list[dict],
     log_path: Path | None = None,
+    harness: str = "browser_use",
 ) -> list[dict]:
     """Merge manifest file, trace run.json files, and optional log DONE lines."""
     task_lookup = {t["eval_index"]: t for t in tasks}
@@ -188,6 +196,6 @@ def rebuild_manifest(
 
     merged.extend(load_runs_from_traces(model))
     if log_path:
-        merged.extend(load_runs_from_log(log_path, model, task_lookup))
+        merged.extend(load_runs_from_log(log_path, model, task_lookup, harness=harness))
 
     return merge_runs_by_eval_index(merged)

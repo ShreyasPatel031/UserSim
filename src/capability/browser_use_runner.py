@@ -26,6 +26,11 @@ from config import GCP_PROJECT
 from capability.site_preflight import PreflightResult, preflight_start_url
 
 
+def task_wall_timeout_s(max_actions: int) -> float:
+    """Per-task wall clock cap so hung Chromium does not freeze a shard."""
+    return float(max_actions) * 40.0 + 120.0
+
+
 def _preflight_blocked_result(
     task: dict,
     model: str,
@@ -44,6 +49,7 @@ def _preflight_blocked_result(
         "website": task["website"],
         "model": model,
         "harness": "browser_use_oss",
+        "provider": "vertex",
         "observation_mode": "browser_use_dom_vision",
         "start_url": task["start_url"],
         "actions": [],
@@ -145,7 +151,41 @@ async def _run_async(
         ),
         save_conversation_path=str(run_dir / "conversation"),
     )
-    history = await agent.run(max_steps=max_actions)
+    wall_s = task_wall_timeout_s(max_actions)
+    try:
+        history = await asyncio.wait_for(agent.run(max_steps=max_actions), timeout=wall_s)
+    except asyncio.TimeoutError:
+        out = {
+            "run_id": run_id,
+            "task_id": task["task_id"],
+            "eval_index": task["eval_index"],
+            "task": task["task"],
+            "website": task["website"],
+            "model": model,
+            "harness": "browser_use_oss",
+            "provider": "vertex",
+            "observation_mode": "browser_use_dom_vision",
+            "start_url": task["start_url"],
+            "actions": [],
+            "num_actions": 0,
+            "stop_reason": f"task_wall_timeout:{int(wall_s)}s",
+            "success": False,
+            "status": "FAILURE",
+            "failure_category": "HARNESS",
+            "final_url": task["start_url"],
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "estimated_cost_usd": 0.0,
+            "trace_dir": str(run_dir),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        (run_dir / "run.json").write_text(__import__("json").dumps(out, indent=2, default=str))
+        print(
+            f"TIMEOUT browser_use | {task['website']} | idx={task['eval_index']} | "
+            f"task_wall_timeout:{int(wall_s)}s",
+            flush=True,
+        )
+        return out
 
     actions = _history_to_actions(history)
     # Extract URLs / final state
@@ -221,6 +261,7 @@ async def _run_async(
         "website": task["website"],
         "model": model,
         "harness": "browser_use_oss",
+        "provider": "vertex",
         "observation_mode": "browser_use_dom_vision",
         "start_url": task["start_url"],
         "actions": actions,
