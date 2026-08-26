@@ -28,7 +28,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
 PROJECT="${GCP_PROJECT:-project-amer-scs-sandbox}"
-ZONE="${GCP_ZONE:-us-central1-b}"
+# Optional single zone (disables round-robin). Otherwise GCP_ZONE_CANDIDATES is tried in order.
 MACHINE="${GCP_MACHINE:-e2-standard-2}"
 STAGE="${STAGE:-full10}"
 WORKERS="${WORKERS:-4}"
@@ -169,6 +169,118 @@ PY
 )
 export TASKS_PER_SHARD
 
+# --- Zone round-robin (Spot stockouts are per-zone, not project quota) ---
+ZONE_CANDIDATES_ARR=()
+ZONE_CACHE_DIR=""
+
+parse_zone_candidates() {
+  ZONE_CANDIDATES_ARR=()
+  if [[ -n "${GCP_ZONE:-}" ]]; then
+    ZONE_CANDIDATES_ARR=("$GCP_ZONE")
+    return
+  fi
+  local raw="${GCP_ZONE_CANDIDATES:-us-central1-a,us-central1-b,us-central1-c,us-central1-f}"
+  local part
+  IFS=',' read -ra _parts <<< "$raw"
+  for part in "${_parts[@]}"; do
+    part="${part//[[:space:]]/}"
+    [[ -n "$part" ]] && ZONE_CANDIDATES_ARR+=("$part")
+  done
+  if ((${#ZONE_CANDIDATES_ARR[@]} == 0)); then
+    echo "ERROR: no zones in GCP_ZONE_CANDIDATES" >&2
+    exit 1
+  fi
+}
+
+init_zone_cache() {
+  ZONE_CACHE_DIR="${ROOT}/results/capability/fleet_zones/${PREFIX}_${TAG}"
+  mkdir -p "$ZONE_CACHE_DIR"
+}
+
+shard_zone_cache_file() {
+  echo "${ZONE_CACHE_DIR}/shard${1}.zone"
+}
+
+save_shard_zone() {
+  echo "$2" > "$(shard_zone_cache_file "$1")"
+}
+
+read_shard_zone_cache() {
+  local f
+  f="$(shard_zone_cache_file "$1")"
+  [[ -f "$f" ]] && tr -d '[:space:]' < "$f" || true
+}
+
+# Locate an existing fleet VM across candidate zones (updates cache).
+find_shard_zone() {
+  local i="$1"
+  local name="${PREFIX}-${i}"
+  local z cached
+  cached=$(read_shard_zone_cache "$i")
+  if [[ -n "$cached" ]]; then
+    if gcloud compute instances describe "$name" --zone="$cached" --project="$PROJECT" &>/dev/null; then
+      echo "$cached"
+      return 0
+    fi
+  fi
+  for z in "${ZONE_CANDIDATES_ARR[@]}"; do
+    if gcloud compute instances describe "$name" --zone="$z" --project="$PROJECT" &>/dev/null; then
+      save_shard_zone "$i" "$z"
+      echo "$z"
+      return 0
+    fi
+  done
+  return 1
+}
+
+is_zone_stockout_error() {
+  local log="$1"
+  grep -qiE 'ZONE_RESOURCE_POOL_EXHAUSTED|stockout|does not have enough resources' "$log"
+}
+
+# Create Spot VM in candidate zones, round-robin start index = shard id.
+create_shard_vm() {
+  local i="$1"
+  local name="${PREFIX}-${i}"
+  local n=${#ZONE_CANDIDATES_ARR[@]}
+  local start=$((i % n))
+  local offset z log
+  log="/tmp/gcloud-create-${PREFIX}-${i}-$$.log"
+  for offset in $(seq 0 $((n - 1))); do
+    z="${ZONE_CANDIDATES_ARR[$(( (start + offset) % n ))]}"
+    echo "    Trying ${name} (${MACHINE}) in ${z}..."
+    if gcloud compute instances create "$name" \
+        --project="$PROJECT" --zone="$z" \
+        --machine-type="$MACHINE" \
+        --provisioning-model=SPOT \
+        --instance-termination-action=STOP \
+        --boot-disk-size=30GB --boot-disk-type=pd-balanced \
+        --network=main-vpc --subnet=primary-subnet \
+        --scopes=cloud-platform \
+        --tags=allow-iap-ssh \
+        --quiet 2>"$log"; then
+      save_shard_zone "$i" "$z"
+      echo "    Created ${name} in ${z}"
+      rm -f "$log"
+      return 0
+    fi
+    if is_zone_stockout_error "$log"; then
+      echo "    ${z}: no capacity (stockout), trying next zone..."
+      rm -f "$log"
+      continue
+    fi
+    echo "    ${z}: create failed:" >&2
+    tail -5 "$log" >&2 || true
+    rm -f "$log"
+    return 1
+  done
+  echo "    ERROR: no zone had Spot capacity for ${name} (tried: ${ZONE_CANDIDATES_ARR[*]})" >&2
+  return 1
+}
+
+parse_zone_candidates
+init_zone_cache
+
 # Status and pull go through GCS. The old versions walked every VM over IAP
 # serially, which took minutes for a 25-shard fleet and usually timed out.
 fleet_status() {
@@ -201,17 +313,18 @@ pull_traces() {
 }
 
 fleet_down() {
-  local names
-  names=$(gcloud compute instances list --project="$PROJECT" \
-    --filter="name~^${PREFIX}-[0-9]+$" --format='value(name)' 2>/dev/null || true)
-  if [[ -z "$names" ]]; then
+  local rows name zone
+  rows=$(gcloud compute instances list --project="$PROJECT" \
+    --filter="name~^${PREFIX}-[0-9]+$" --format="value(name,zone)" 2>/dev/null || true)
+  if [[ -z "$rows" ]]; then
     echo "no ${PREFIX} instances left"
     return 0
   fi
-  echo "deleting: $(echo "$names" | tr '\n' ' ')"
-  # One batched call; gcloud deletes these concurrently.
-  # shellcheck disable=SC2086
-  gcloud compute instances delete $names --zone="$ZONE" --project="$PROJECT" --quiet
+  while read -r name zone; do
+    [[ -z "$name" ]] && continue
+    echo "deleting ${name} (${zone})"
+    gcloud compute instances delete "$name" --zone="$zone" --project="$PROJECT" --quiet
+  done <<< "$rows"
 }
 
 shard_done_in_gcs() {
@@ -252,8 +365,9 @@ shard_cleanup_stale_done() {
 shard_process_alive() {
   local i="$1"
   local name="${PREFIX}-${i}"
-  local out
-  out=$(gcloud compute ssh "$name" --zone="$ZONE" --project="$PROJECT" \
+  local zone out
+  zone=$(find_shard_zone "$i") || return 1
+  out=$(gcloud compute ssh "$name" --zone="$zone" --project="$PROJECT" \
     --tunnel-through-iap --quiet --command="pgrep -f '[s]hard_runner.sh' >/dev/null && echo ALIVE || echo DEAD" \
     2>/dev/null | tr -d '[:space:]')
   [[ "$out" == *ALIVE* ]]
@@ -262,38 +376,41 @@ shard_process_alive() {
 ensure_shard_vm() {
   local i="$1"
   local name="${PREFIX}-${i}"
-  if gcloud compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" &>/dev/null; then
-    local cur_mt
-    cur_mt=$(gcloud compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" \
+  local zone status cur_mt
+  zone=$(find_shard_zone "$i") || true
+  if [[ -n "$zone" ]]; then
+    cur_mt=$(gcloud compute instances describe "$name" --zone="$zone" --project="$PROJECT" \
       --format='value(machineType)' 2>/dev/null || echo "")
     if [[ -n "$cur_mt" && "$cur_mt" != *"/${MACHINE}" ]]; then
-      echo "    ${name}: wrong machine (${cur_mt##*/} != ${MACHINE}), recreating..."
-      gcloud compute instances delete "$name" --zone="$ZONE" --project="$PROJECT" --quiet
+      echo "    ${name} in ${zone}: wrong machine (${cur_mt##*/} != ${MACHINE}), recreating..."
+      gcloud compute instances delete "$name" --zone="$zone" --project="$PROJECT" --quiet
+      zone=""
       sleep 5
     fi
   fi
-  if ! gcloud compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" &>/dev/null; then
-    echo "    Creating ${name} (${MACHINE} in ${ZONE})..."
-    gcloud compute instances create "$name" \
-      --project="$PROJECT" --zone="$ZONE" \
-      --machine-type="$MACHINE" \
-      --provisioning-model=SPOT \
-      --instance-termination-action=STOP \
-      --boot-disk-size=30GB --boot-disk-type=pd-balanced \
-      --network=main-vpc --subnet=primary-subnet \
-      --scopes=cloud-platform \
-      --tags=allow-iap-ssh \
-      --quiet
+  if [[ -z "$zone" ]]; then
+    create_shard_vm "$i" || return 1
+    zone=$(find_shard_zone "$i")
     sleep 20
-    return 0
   fi
-  local status
-  status=$(gcloud compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" \
+  status=$(gcloud compute instances describe "$name" --zone="$zone" --project="$PROJECT" \
     --format='value(status)' 2>/dev/null || echo UNKNOWN)
   if [[ "$status" != "RUNNING" ]]; then
-    echo "    Starting ${name} (was ${status})..."
-    gcloud compute instances start "$name" --zone="$ZONE" --project="$PROJECT" --quiet
-    sleep 15
+    echo "    Starting ${name} in ${zone} (was ${status})..."
+    if ! gcloud compute instances start "$name" --zone="$zone" --project="$PROJECT" --quiet 2>/tmp/start-${i}.log; then
+      if is_zone_stockout_error "/tmp/start-${i}.log"; then
+        echo "    ${zone}: start stockout, recreating in another zone..."
+        gcloud compute instances delete "$name" --zone="$zone" --project="$PROJECT" --quiet 2>/dev/null || true
+        rm -f "$(shard_zone_cache_file "$i")"
+        create_shard_vm "$i" || return 1
+        zone=$(find_shard_zone "$i")
+        sleep 15
+      else
+        return 1
+      fi
+    else
+      sleep 15
+    fi
   fi
 }
 
@@ -310,9 +427,10 @@ fleet_relaunch() {
       continue
     fi
     local name="${PREFIX}-${i}"
-    local status=MISSING
-    if gcloud compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" &>/dev/null; then
-      status=$(gcloud compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" \
+    local status=MISSING zone
+    zone=$(find_shard_zone "$i") || true
+    if [[ -n "$zone" ]]; then
+      status=$(gcloud compute instances describe "$name" --zone="$zone" --project="$PROJECT" \
         --format='value(status)' 2>/dev/null || echo UNKNOWN)
     fi
     if [[ "$status" == "RUNNING" ]] && shard_process_alive "$i"; then
@@ -345,11 +463,15 @@ fleet_relaunch() {
 install_and_run_shard() {
   local i="$1"
   local name="${PREFIX}-${i}"
-  local attempt ok=0
+  local zone attempt ok=0
+  zone=$(find_shard_zone "$i") || {
+    echo "    ERROR: shard $i has no VM zone (create failed?)"
+    return 1
+  }
   for attempt in 1 2 3; do
     if gcloud compute scp "$TARBALL" "${name}:~/usersim.tgz" \
-      --zone="$ZONE" --project="$PROJECT" --tunnel-through-iap --quiet \
-      && gcloud compute ssh "$name" --zone="$ZONE" --project="$PROJECT" --tunnel-through-iap --quiet \
+      --zone="$zone" --project="$PROJECT" --tunnel-through-iap --quiet \
+      && gcloud compute ssh "$name" --zone="$zone" --project="$PROJECT" --tunnel-through-iap --quiet \
       --command="set -eux
 mkdir -p ~/usersim && cd ~/usersim
 rm -rf src data scripts secrets    # keep .venv so warm VMs skip the 90s install
@@ -398,30 +520,15 @@ case "${1:-}" in
 esac
 
 echo "==> Fleet ${STAGE}: ${NUM_SHARDS}× ${MACHINE} @ workers=${WORKERS}"
+echo "    zones: ${ZONE_CANDIDATES_ARR[*]} (round-robin per shard; override with GCP_ZONE or GCP_ZONE_CANDIDATES)"
 
 TARBALL="/tmp/usersim-fleet-$$.tgz"
 tar czf "$TARBALL" -C "$ROOT" src data scripts/vm/shard_runner.sh \
   secrets/env secrets/vertex_adc.json
 
 for i in $(seq 0 $((NUM_SHARDS - 1))); do
-  name="${PREFIX}-${i}"
-  if ! gcloud compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" &>/dev/null; then
-    echo "    Creating ${name}..."
-    gcloud compute instances create "$name" \
-      --project="$PROJECT" --zone="$ZONE" \
-      --machine-type="$MACHINE" \
-      --provisioning-model=SPOT \
-      --instance-termination-action=STOP \
-      --boot-disk-size=30GB --boot-disk-type=pd-balanced \
-      --network=main-vpc --subnet=primary-subnet \
-      --scopes=cloud-platform \
-      --tags=allow-iap-ssh \
-      --quiet &
-    # throttle creates to avoid API burst
-    if (( i % DEPLOY_PARALLEL == DEPLOY_PARALLEL - 1 )); then wait; fi
-  else
-    gcloud compute instances start "$name" --zone="$ZONE" --project="$PROJECT" --quiet 2>/dev/null || true
-  fi
+  ensure_shard_vm "$i" &
+  if (( i % DEPLOY_PARALLEL == DEPLOY_PARALLEL - 1 )); then wait; fi
 done
 wait
 
