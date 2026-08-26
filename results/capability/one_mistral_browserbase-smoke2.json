@@ -1,0 +1,55 @@
+{
+  "stage": "one",
+  "harness": "browser_use_oss",
+  "provider": "mistral",
+  "model": "mistral-small-2603",
+  "max_actions_budget": 33,
+  "n": 1,
+  "n_eligible": 0,
+  "successes": 0,
+  "successes_eligible": 0,
+  "success_rate_eligible": 0.0,
+  "by_status": {
+    "BLOCKED": 1
+  },
+  "total_cost_usd": 0.0013,
+  "runs": [
+    {
+      "run_id": "mistral_19_ce625d78",
+      "task_id": "099a9da4-c8db-4900-ada2-76600f3655a4",
+      "eval_index": 19,
+      "task": "Show me the list of baby products that are on sale and under 10 dollars.",
+      "website": "uniqlo",
+      "model": "mistral-small-2603",
+      "harness": "browser_use_oss",
+      "provider": "mistral",
+      "observation_mode": "browser_use_vision",
+      "start_url": "https://www.uniqlo.com/us/en/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.uniqlo.com/us/en/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=\"Navigation failed: Expected at least one handler to return a non-None result, but none did! ?\u25b6 BrowserStateRequestEvent#f833 \u2705 -> {'4683398896.4691936416': browser_use.browser.watchdog_base.DownloadsWatchdog.on_BrowserStateRequestEvent#6416() \u2705, '4683398896.4691945856': browser_use.browser.watchdog_base.DOMWatchdog.on_BrowserStateRequestEvent#5856() \u2705}\", attachments=None, images=None, long_term_memory=None, extracted_content=None,",
+          "url": "https://www.uniqlo.com/us/en/"
+        }
+      ],
+      "num_actions": 1,
+      "stop_reason": "unknown",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent was blocked from accessing the website, as indicated by the 'Access Denied' message on the final page.",
+      "judge_evidence": "The final page displays 'Access Denied' and states 'You don't have permission to access \"http://www.uniqlo.com/us/en/\" on this server.'",
+      "failure_category": "BLOCKED",
+      "final_url": "https://www.uniqlo.com/us/en/",
+      "final_title": "Access Denied",
+      "input_tokens": 2297,
+      "output_tokens": 79,
+      "estimated_cost_usd": 0.00127855,
+      "trace_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/results/capability/traces/mistral_19_ce625d78",
+      "created_at": "2026-08-22T19:14:09.561952+00:00",
+      "max_actions_budget": 33
+    }
+  ]
+}

@@ -1,0 +1,626 @@
+{
+  "snapshot_utc": "2026-08-26T05:27:50.800967+00:00",
+  "config": {
+    "max_actions": 30,
+    "workers": 8,
+    "machine": "e2-standard-8",
+    "model": "mistral-small-2603"
+  },
+  "full8": {
+    "load_1m": 0.06,
+    "load_5m": 0.26,
+    "ncpu": 8,
+    "cpu_util_est": 0.8,
+    "chrome_procs": 24,
+    "mem_total_mb": 32105,
+    "mem_avail_mb": 30057,
+    "mem_used_pct": 6.4,
+    "log_wall_s": 0,
+    "progress": {
+      "done": 6,
+      "total": 8,
+      "success": 1,
+      "cost": 0.2
+    },
+    "done_lines": 5,
+    "pending_at_start": 8,
+    "n_runs": 6,
+    "status": {
+      "FAILURE": 4,
+      "SUCCESS": 1,
+      "BLOCKED": 1
+    },
+    "cost": 0.2,
+    "actions": {
+      "median": 16,
+      "mean": 17.2,
+      "max": 31
+    },
+    "tasks": [
+      {
+        "idx": 19,
+        "status": "BLOCKED",
+        "actions": 0,
+        "stop": "known_blocked_website",
+        "cost": 0.0,
+        "finished": "2026-08-26T05:08:35"
+      },
+      {
+        "idx": 22,
+        "status": "FAILURE",
+        "actions": 0,
+        "stop": "Event handler browser_use.browser.watchdog_base.BrowserSession.on_BrowserStartEvent#5200(?\u25b6 BrowserStartEvent#8c4c \ud83c\udfc3) timed out after 30.0s and interrupted any processing of 4 child events",
+        "cost": 0.0,
+        "finished": "2026-08-26T05:09:12"
+      },
+      {
+        "idx": 8,
+        "status": "FAILURE",
+        "actions": 8,
+        "stop": "agent_done",
+        "cost": 0.017,
+        "finished": "2026-08-26T05:10:40"
+      },
+      {
+        "idx": 12,
+        "status": "SUCCESS",
+        "actions": 16,
+        "stop": "agent_done",
+        "cost": 0.04,
+        "finished": "2026-08-26T05:12:14"
+      },
+      {
+        "idx": 32,
+        "status": "FAILURE",
+        "actions": 31,
+        "stop": "max_actions",
+        "cost": 0.063,
+        "finished": "2026-08-26T05:15:43"
+      },
+      {
+        "idx": 26,
+        "status": "FAILURE",
+        "actions": 31,
+        "stop": "max_actions",
+        "cost": 0.081,
+        "finished": "2026-08-26T05:16:07"
+      }
+    ],
+    "trace_durations": [],
+    "shard": 0,
+    "vm": "usersim-bu-f8-0",
+    "vm_meta": {
+      "created": "2026-08-25T22:06:05.888-07:00",
+      "status": "RUNNING",
+      "machine": "e2-standard-8"
+    }
+  },
+  "full80": {
+    "shards": [
+      {
+        "load_1m": 1.21,
+        "load_5m": 1.97,
+        "ncpu": 8,
+        "cpu_util_est": 15.1,
+        "chrome_procs": 18,
+        "mem_total_mb": 32105,
+        "mem_avail_mb": 29017,
+        "mem_used_pct": 9.6,
+        "log_wall_s": 0,
+        "progress": {
+          "done": 6,
+          "total": 8,
+          "success": 0,
+          "cost": 0.3
+        },
+        "done_lines": 6,
+        "pending_at_start": 8,
+        "n_runs": 6,
+        "status": {
+          "FAILURE": 4,
+          "BLOCKED": 2
+        },
+        "cost": 0.296,
+        "actions": {
+          "median": 31.0,
+          "mean": 31,
+          "max": 31
+        },
+        "tasks": [
+          {
+            "idx": 60,
+            "status": "BLOCKED",
+            "actions": 2,
+            "stop": "agent_done",
+            "cost": 0.003,
+            "finished": "2026-08-26T05:15:29"
+          },
+          {
+            "idx": 40,
+            "status": "BLOCKED",
+            "actions": 10,
+            "stop": "agent_done",
+            "cost": 0.016,
+            "finished": "2026-08-26T05:19:46"
+          },
+          {
+            "idx": 20,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.08,
+            "finished": "2026-08-26T05:24:17"
+          },
+          {
+            "idx": 30,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.067,
+            "finished": "2026-08-26T05:24:32"
+          },
+          {
+            "idx": 0,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.07,
+            "finished": "2026-08-26T05:24:59"
+          },
+          {
+            "idx": 50,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.061,
+            "finished": "2026-08-26T05:25:19"
+          }
+        ],
+        "trace_durations": [],
+        "shard": 0,
+        "vm": "usersim-bu-f80-0",
+        "vm_meta": {
+          "created": "2026-08-25T22:08:28.516-07:00",
+          "status": "RUNNING",
+          "machine": "e2-standard-8"
+        }
+      },
+      {
+        "shard": 1,
+        "error": "",
+        "vm_meta": {}
+      },
+      {
+        "load_1m": 0.74,
+        "load_5m": 1.18,
+        "ncpu": 8,
+        "cpu_util_est": 9.2,
+        "chrome_procs": 37,
+        "mem_total_mb": 32105,
+        "mem_avail_mb": 29857,
+        "mem_used_pct": 7.0,
+        "log_wall_s": 0,
+        "progress": {
+          "done": 5,
+          "total": 8,
+          "success": 1,
+          "cost": 0.2
+        },
+        "done_lines": 5,
+        "pending_at_start": 8,
+        "n_runs": 5,
+        "status": {
+          "FAILURE": 3,
+          "SUCCESS": 1,
+          "BLOCKED": 1
+        },
+        "cost": 0.201,
+        "actions": {
+          "median": 19.5,
+          "mean": 17.5,
+          "max": 31
+        },
+        "tasks": [
+          {
+            "idx": 32,
+            "status": "FAILURE",
+            "actions": 0,
+            "stop": "Event handler browser_use.browser.watchdog_base.BrowserSession.on_BrowserStartEvent#2304(?\u25b6 BrowserStartEvent#e42f \ud83c\udfc3) timed out after 30.0s and interrupted any processing of 4 child events",
+            "cost": 0.0,
+            "finished": "2026-08-26T05:16:04"
+          },
+          {
+            "idx": 22,
+            "status": "SUCCESS",
+            "actions": 8,
+            "stop": "agent_done",
+            "cost": 0.017,
+            "finished": "2026-08-26T05:18:14"
+          },
+          {
+            "idx": 72,
+            "status": "BLOCKED",
+            "actions": 22,
+            "stop": "agent_done",
+            "cost": 0.037,
+            "finished": "2026-08-26T05:21:02"
+          },
+          {
+            "idx": 2,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.078,
+            "finished": "2026-08-26T05:24:52"
+          },
+          {
+            "idx": 62,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.07,
+            "finished": "2026-08-26T05:24:55"
+          }
+        ],
+        "trace_durations": [],
+        "shard": 2,
+        "vm": "usersim-bu-f80-2",
+        "vm_meta": {
+          "created": "2026-08-25T22:08:30.337-07:00",
+          "status": "RUNNING",
+          "machine": "e2-standard-8"
+        }
+      },
+      {
+        "load_1m": 0.39,
+        "load_5m": 1.07,
+        "ncpu": 8,
+        "cpu_util_est": 4.9,
+        "chrome_procs": 12,
+        "mem_total_mb": 32105,
+        "mem_avail_mb": 30226,
+        "mem_used_pct": 5.9,
+        "log_wall_s": 0,
+        "progress": {
+          "done": 7,
+          "total": 8,
+          "success": 1,
+          "cost": 0.32
+        },
+        "done_lines": 7,
+        "pending_at_start": 8,
+        "n_runs": 7,
+        "status": {
+          "BLOCKED": 2,
+          "FAILURE": 4,
+          "SUCCESS": 1
+        },
+        "cost": 0.318,
+        "actions": {
+          "median": 31,
+          "mean": 20,
+          "max": 31
+        },
+        "tasks": [
+          {
+            "idx": 73,
+            "status": "FAILURE",
+            "actions": 0,
+            "stop": "Event handler browser_use.browser.watchdog_base.BrowserSession.on_BrowserStartEvent#2320(?\u25b6 BrowserStartEvent#c455 \ud83c\udfc3) timed out after 30.0s and interrupted any processing of 4 child events",
+            "cost": 0.0,
+            "finished": "2026-08-26T05:16:25"
+          },
+          {
+            "idx": 43,
+            "status": "BLOCKED",
+            "actions": 7,
+            "stop": "agent_done",
+            "cost": 0.01,
+            "finished": "2026-08-26T05:17:28"
+          },
+          {
+            "idx": 33,
+            "status": "SUCCESS",
+            "actions": 7,
+            "stop": "agent_done",
+            "cost": 0.017,
+            "finished": "2026-08-26T05:18:29"
+          },
+          {
+            "idx": 53,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.064,
+            "finished": "2026-08-26T05:24:14"
+          },
+          {
+            "idx": 63,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.075,
+            "finished": "2026-08-26T05:24:55"
+          },
+          {
+            "idx": 23,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.086,
+            "finished": "2026-08-26T05:25:26"
+          },
+          {
+            "idx": 13,
+            "status": "BLOCKED",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.066,
+            "finished": "2026-08-26T05:25:33"
+          }
+        ],
+        "trace_durations": [],
+        "shard": 3,
+        "vm": "usersim-bu-f80-3",
+        "vm_meta": {
+          "created": "2026-08-25T22:08:31.173-07:00",
+          "status": "RUNNING",
+          "machine": "e2-standard-8"
+        }
+      },
+      {
+        "shard": 4,
+        "error": "",
+        "vm_meta": {
+          "created": "2026-08-25T22:08:31.955-07:00",
+          "status": "TERMINATED",
+          "machine": "e2-standard-8"
+        }
+      },
+      {
+        "load_1m": 0.2,
+        "load_5m": 1.81,
+        "ncpu": 8,
+        "cpu_util_est": 2.5,
+        "chrome_procs": 13,
+        "mem_total_mb": 32105,
+        "mem_avail_mb": 29311,
+        "mem_used_pct": 8.7,
+        "log_wall_s": 0,
+        "progress": {
+          "done": 7,
+          "total": 8,
+          "success": 1,
+          "cost": 0.41
+        },
+        "done_lines": 7,
+        "pending_at_start": 8,
+        "n_runs": 7,
+        "status": {
+          "FAILURE": 4,
+          "SUCCESS": 1,
+          "BLOCKED": 2
+        },
+        "cost": 0.411,
+        "actions": {
+          "median": 31,
+          "mean": 28.6,
+          "max": 31
+        },
+        "tasks": [
+          {
+            "idx": 35,
+            "status": "BLOCKED",
+            "actions": 8,
+            "stop": "agent_done",
+            "cost": 0.012,
+            "finished": "2026-08-26T05:17:16"
+          },
+          {
+            "idx": 5,
+            "status": "FAILURE",
+            "actions": 19,
+            "stop": "agent_done",
+            "cost": 0.035,
+            "finished": "2026-08-26T05:22:32"
+          },
+          {
+            "idx": 75,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.065,
+            "finished": "2026-08-26T05:23:50"
+          },
+          {
+            "idx": 55,
+            "status": "BLOCKED",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.065,
+            "finished": "2026-08-26T05:24:38"
+          },
+          {
+            "idx": 45,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.069,
+            "finished": "2026-08-26T05:24:44"
+          },
+          {
+            "idx": 25,
+            "status": "SUCCESS",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.082,
+            "finished": "2026-08-26T05:25:18"
+          },
+          {
+            "idx": 65,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.083,
+            "finished": "2026-08-26T05:25:19"
+          }
+        ],
+        "trace_durations": [],
+        "shard": 5,
+        "vm": "usersim-bu-f80-5",
+        "vm_meta": {
+          "created": "2026-08-25T22:08:32.516-07:00",
+          "status": "RUNNING",
+          "machine": "e2-standard-8"
+        }
+      },
+      {
+        "load_1m": 0.68,
+        "load_5m": 1.82,
+        "ncpu": 8,
+        "cpu_util_est": 8.5,
+        "chrome_procs": 12,
+        "mem_total_mb": 32105,
+        "mem_avail_mb": 29575,
+        "mem_used_pct": 7.9,
+        "log_wall_s": 0,
+        "progress": {
+          "done": 7,
+          "total": 8,
+          "success": 0,
+          "cost": 0.33
+        },
+        "done_lines": 7,
+        "pending_at_start": 8,
+        "n_runs": 7,
+        "status": {
+          "FAILURE": 5,
+          "BLOCKED": 2
+        },
+        "cost": 0.335,
+        "actions": {
+          "median": 31,
+          "mean": 20.8,
+          "max": 31
+        },
+        "tasks": [
+          {
+            "idx": 36,
+            "status": "FAILURE",
+            "actions": 0,
+            "stop": "Event handler browser_use.browser.watchdog_base.BrowserSession.on_BrowserStartEvent#5424(?\u25b6 BrowserStartEvent#b249 \ud83c\udfc3) timed out after 30.0s and interrupted any processing of 4 child events",
+            "cost": 0.0,
+            "finished": "2026-08-26T05:16:26"
+          },
+          {
+            "idx": 16,
+            "status": "BLOCKED",
+            "actions": 10,
+            "stop": "agent_done",
+            "cost": 0.015,
+            "finished": "2026-08-26T05:22:55"
+          },
+          {
+            "idx": 6,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.068,
+            "finished": "2026-08-26T05:24:22"
+          },
+          {
+            "idx": 26,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.079,
+            "finished": "2026-08-26T05:24:55"
+          },
+          {
+            "idx": 66,
+            "status": "BLOCKED",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.074,
+            "finished": "2026-08-26T05:24:58"
+          },
+          {
+            "idx": 76,
+            "status": "FAILURE",
+            "actions": 31,
+            "stop": "max_actions",
+            "cost": 0.082,
+            "finished": "2026-08-26T05:25:12"
+          },
+          {
+            "idx": 46,
+            "status": "FAILURE",
+            "actions": 11,
+            "stop": "agent_done",
+            "cost": 0.018,
+            "finished": "2026-08-26T05:26:44"
+          }
+        ],
+        "trace_durations": [
+          {
+            "idx": 36,
+            "dur_s": 0,
+            "status": "FAILURE",
+            "actions": 0
+          }
+        ],
+        "dur_stats": {
+          "min": 0,
+          "median": 0,
+          "mean": 0,
+          "max": 0
+        },
+        "shard": 6,
+        "vm": "usersim-bu-f80-6",
+        "vm_meta": {
+          "created": "2026-08-25T22:08:33.569-07:00",
+          "status": "RUNNING",
+          "machine": "e2-standard-8"
+        }
+      },
+      {
+        "shard": 7,
+        "error": "",
+        "vm_meta": {
+          "created": "2026-08-25T22:08:34.245-07:00",
+          "status": "RUNNING",
+          "machine": "e2-standard-8"
+        }
+      },
+      {
+        "shard": 8,
+        "error": "",
+        "vm_meta": {
+          "created": "2026-08-25T22:08:34.935-07:00",
+          "status": "RUNNING",
+          "machine": "e2-standard-8"
+        }
+      },
+      {
+        "shard": 9,
+        "error": "",
+        "vm_meta": {}
+      }
+    ],
+    "aggregate": {
+      "tasks_in_manifest": 32,
+      "tasks_done_in_log": 32,
+      "total_of": 80,
+      "status": {
+        "FAILURE": 20,
+        "BLOCKED": 9,
+        "SUCCESS": 3
+      },
+      "cost_usd": 1.561,
+      "load_1m_avg": 0.32,
+      "load_1m_max": 1.21,
+      "cpu_util_est_avg_pct": 4.0,
+      "cpu_util_est_max_pct": 15.1
+    }
+  }
+}

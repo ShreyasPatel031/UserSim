@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# GCP Spot fleet for Mistral bakeoff (full10 / full100).
+# GCP Spot fleet for Mistral bakeoff (full8 / full10 / full80 / full100).
 #
+# full8:   NUM_SHARDS=1  WORKERS=8  e2-standard-8  → 8 tasks, one VM
 # full10:  NUM_SHARDS=3  WORKERS=4  → 10 tasks, ~8–12 min wall
+# full80:  NUM_SHARDS=10 WORKERS=8  e2-standard-8  → 80 tasks, ~10–15 min wall
 # full100: NUM_SHARDS=25 WORKERS=4  → 100 tasks, ~8–12 min wall (one wave)
 #
 # Each VM rejudges, uploads to GCS, and deletes itself when its shard is done,
@@ -15,7 +17,10 @@
 #   ./scripts/vm/fleet_bakeoff.sh --pull      # GCS -> local, then merge
 #   ./scripts/vm/fleet_bakeoff.sh --merge
 #   ./scripts/vm/fleet_bakeoff.sh --down      # delete every fleet VM
-#   ./scripts/vm/fleet_bakeoff.sh --relaunch  # restart preempted/missing shards (not in GCS _done)
+#   ./scripts/vm/fleet_bakeoff.sh --relaunch  # restart preempted/missing shards;
+#                                            # restores GCS checkpoints, skips finished tasks
+# Spot resume: each completed task checkpoints manifest+trace to GCS. Relaunch
+# pulls that checkpoint before --resume so you continue mid-shard, not from zero.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -44,7 +49,9 @@ EXTRA_ENV="${EXTRA_ENV:-}"
 EVAL_INDICES="${EVAL_INDICES:-}"
 
 case "$STAGE" in
+  full8)   NUM_SHARDS="${NUM_SHARDS:-1}";  PREFIX="${FLEET_PREFIX:-usersim-bu-f8}" ;;
   full10)  NUM_SHARDS="${NUM_SHARDS:-3}";  PREFIX="${FLEET_PREFIX:-usersim-bu-f10}" ;;
+  full80)  NUM_SHARDS="${NUM_SHARDS:-10}"; PREFIX="${FLEET_PREFIX:-usersim-bu-f80}" ;;
   full100) NUM_SHARDS="${NUM_SHARDS:-25}"; PREFIX="${FLEET_PREFIX:-usersim-bu-f100}" ;;
   retry)   NUM_SHARDS="${NUM_SHARDS:-2}";  PREFIX="${FLEET_PREFIX:-usersim-bu-retry}" ;;
   *) echo "Unknown STAGE=$STAGE"; exit 1 ;;
@@ -79,9 +86,11 @@ runs = []
 for p in shards:
     runs.extend(json.loads(p.read_text()).get("runs") or [])
 merged_name = {
+    "full8": f"full8_mistral_{tag}.json",
     "full10": "full10_mistral_mistral-small-2603_m33_stage1_fleet.json",
+    "full80": f"full80_mistral_{tag}.json",
     "full100": "full100_mistral_mistral-small-2603_m33_stage1_fleet.json",
-}[stage]
+}.get(stage, f"{stage}_mistral_{tag}.json")
 merged = out_dir / merged_name
 base = json.loads(shards[0].read_text())
 base.update(summarize(runs))

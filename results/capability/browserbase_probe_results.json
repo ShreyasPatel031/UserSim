@@ -1,0 +1,13 @@
+{
+  "eval_index": 19,
+  "results": [
+    {
+      "variant": "dom-skip-preflight",
+      "actions": 9,
+      "final_url": "https://www.uniqlo.com/us/en/feature/sale/baby",
+      "error_hint": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.uniqlo.c",
+      "session_url": "https://www.browserbase.com/sessions/f020cdb2-fc6b-42f2-b8c4-630f3202eadb",
+      "ok": true
+    }
+  ]
+}

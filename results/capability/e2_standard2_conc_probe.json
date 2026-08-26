@@ -1,0 +1,209 @@
+{
+  "host": {
+    "platform": "Linux-6.1.0-52-cloud-amd64-x86_64-with-glibc2.36",
+    "cpu_count": 2,
+    "mem_total_gb": 7.8
+  },
+  "probes": [
+    {
+      "workers": 1,
+      "url": "https://example.com",
+      "screenshot_rounds": 8,
+      "wall_elapsed_s": 10.12,
+      "workers_ok": 1,
+      "workers_failed": 0,
+      "total_timeouts": 0,
+      "total_screenshots_ok": 8,
+      "passed": true,
+      "results": [
+        {
+          "worker_id": 0,
+          "elapsed_s": 10.04,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        }
+      ]
+    },
+    {
+      "workers": 2,
+      "url": "https://example.com",
+      "screenshot_rounds": 8,
+      "wall_elapsed_s": 11.23,
+      "workers_ok": 2,
+      "workers_failed": 0,
+      "total_timeouts": 0,
+      "total_screenshots_ok": 16,
+      "passed": true,
+      "results": [
+        {
+          "worker_id": 0,
+          "elapsed_s": 11.13,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        },
+        {
+          "worker_id": 1,
+          "elapsed_s": 10.96,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        }
+      ]
+    },
+    {
+      "workers": 3,
+      "url": "https://example.com",
+      "screenshot_rounds": 8,
+      "wall_elapsed_s": 15.15,
+      "workers_ok": 3,
+      "workers_failed": 0,
+      "total_timeouts": 0,
+      "total_screenshots_ok": 24,
+      "passed": true,
+      "results": [
+        {
+          "worker_id": 0,
+          "elapsed_s": 14.91,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        },
+        {
+          "worker_id": 1,
+          "elapsed_s": 14.17,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        },
+        {
+          "worker_id": 2,
+          "elapsed_s": 14.96,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        }
+      ]
+    },
+    {
+      "workers": 4,
+      "url": "https://example.com",
+      "screenshot_rounds": 8,
+      "wall_elapsed_s": 29.08,
+      "workers_ok": 4,
+      "workers_failed": 0,
+      "total_timeouts": 0,
+      "total_screenshots_ok": 32,
+      "passed": true,
+      "results": [
+        {
+          "worker_id": 0,
+          "elapsed_s": 25.62,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        },
+        {
+          "worker_id": 1,
+          "elapsed_s": 20.81,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        },
+        {
+          "worker_id": 2,
+          "elapsed_s": 18.64,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        },
+        {
+          "worker_id": 3,
+          "elapsed_s": 28.86,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        }
+      ]
+    },
+    {
+      "workers": 5,
+      "url": "https://example.com",
+      "screenshot_rounds": 8,
+      "wall_elapsed_s": 33.08,
+      "workers_ok": 4,
+      "workers_failed": 1,
+      "total_timeouts": 0,
+      "total_screenshots_ok": 32,
+      "passed": false,
+      "results": [
+        {
+          "worker_id": 0,
+          "elapsed_s": 23.17,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        },
+        {
+          "worker_id": 1,
+          "elapsed_s": 32.51,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        },
+        {
+          "worker_id": 2,
+          "elapsed_s": 24.12,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        },
+        {
+          "worker_id": 3,
+          "elapsed_s": 18.53,
+          "screenshots_ok": 0,
+          "errors": 1,
+          "timeouts": 0,
+          "ok": false,
+          "sample_error": "fatal: dictionary changed size during iteration"
+        },
+        {
+          "worker_id": 4,
+          "elapsed_s": 32.86,
+          "screenshots_ok": 8,
+          "errors": 0,
+          "timeouts": 0,
+          "ok": true,
+          "sample_error": null
+        }
+      ]
+    }
+  ]
+}

@@ -139,6 +139,89 @@ def _skip_browserbase_preflight() -> bool:
     return os.environ.get("BROWSERBASE_SKIP_PREFLIGHT", "1").lower() in {"1", "true", "yes"}
 
 
+def task_wall_timeout_s(max_actions: int) -> float:
+    """Hard wall-clock budget for one agent run.
+
+    browser-use's per-step timeout alone is not enough: BrowserStartEvent / CDP /
+    LLM retries can hang outside the step loop and freeze a worker forever
+    (seen repeatedly on JetBlue / ESPN at 8-way concurrency).
+    Default: ~40s/step + 2 min start buffer, overridable via CAPABILITY_TASK_TIMEOUT_S.
+    """
+    raw = (os.environ.get("CAPABILITY_TASK_TIMEOUT_S") or "").strip()
+    if raw:
+        return max(60.0, float(raw))
+    return float(max(max_actions * 40, 300) + 120)
+
+
+def _timeout_result(
+    task: dict,
+    model: str,
+    run_dir: Path,
+    *,
+    use_vision: bool,
+    run_id: str,
+    max_actions: int,
+    timeout_s: float,
+    actions: list | None = None,
+) -> dict:
+    actions = actions or []
+    return {
+        "run_id": run_id,
+        "task_id": task["task_id"],
+        "eval_index": task["eval_index"],
+        "task": task["task"],
+        "website": task["website"],
+        "model": model,
+        "harness": "browser_use_oss",
+        "provider": "mistral",
+        "observation_mode": "browser_use_vision" if use_vision else "browser_use_dom",
+        "start_url": task["start_url"],
+        "actions": actions,
+        "num_actions": len(actions),
+        "stop_reason": f"task_wall_timeout:{int(timeout_s)}s",
+        "success": False,
+        "status": "FAILURE",
+        "judge_reason": f"Agent exceeded hard wall timeout of {int(timeout_s)}s",
+        "judge_evidence": None,
+        "failure_category": "HARNESS",
+        "final_url": task["start_url"],
+        "final_title": "",
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "estimated_cost_usd": 0.0,
+        "max_actions_budget": max_actions,
+        "trace_dir": str(run_dir),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+async def _close_agent(agent: Agent | None) -> None:
+    if agent is None:
+        return
+    for name in ("close", "stop"):
+        fn = getattr(agent, name, None)
+        if callable(fn):
+            try:
+                result = fn()
+                if asyncio.iscoroutine(result):
+                    await asyncio.wait_for(result, timeout=15)
+                return
+            except Exception:
+                pass
+    session = getattr(agent, "browser_session", None) or getattr(agent, "browser", None)
+    if session is not None:
+        for name in ("kill", "stop", "close", "reset"):
+            fn = getattr(session, name, None)
+            if callable(fn):
+                try:
+                    result = fn()
+                    if asyncio.iscoroutine(result):
+                        await asyncio.wait_for(result, timeout=10)
+                    return
+                except Exception:
+                    pass
+
+
 async def _run_async(
     task: dict,
     model: str,
@@ -235,8 +318,32 @@ async def _run_async(
     if verify_done_enabled():
         on_step_end, verify_stats = make_verify_done_hook(task["task"], llm=extraction_llm)
     agent = Agent(**agent_kwargs)
+    wall_s = task_wall_timeout_s(max_actions)
+    history = None
     try:
-        history = await agent.run(max_steps=max_actions, on_step_end=on_step_end)
+        try:
+            history = await asyncio.wait_for(
+                agent.run(max_steps=max_actions, on_step_end=on_step_end),
+                timeout=wall_s,
+            )
+        except asyncio.TimeoutError:
+            print(
+                f"TIMEOUT mistral | {task['website']} | idx={task['eval_index']} | "
+                f"wall={int(wall_s)}s — killing agent",
+                flush=True,
+            )
+            await _close_agent(agent)
+            out = _timeout_result(
+                task,
+                model,
+                run_dir,
+                use_vision=use_vision,
+                run_id=run_id,
+                max_actions=max_actions,
+                timeout_s=wall_s,
+            )
+            (run_dir / "run.json").write_text(__import__("json").dumps(out, indent=2, default=str))
+            return out
     finally:
         if bb_session:
             close_session(bb_session.id)
