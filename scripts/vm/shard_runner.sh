@@ -24,7 +24,7 @@ MAX_ACTIONS="${MAX_ACTIONS:-0}"
 EXTRA_ENV="${EXTRA_ENV:-}"
 EVAL_INDICES="${EVAL_INDICES:-}"
 PREFLIGHT="${PREFLIGHT:-0}"
-SKIP_KNOWN_BLOCKED="${SKIP_KNOWN_BLOCKED:-0}"
+EXPECTED_TASKS="${EXPECTED_TASKS:-8}"
 
 SHARD_TAG="${TAG}_shard${SHARD_ID}"
 MANIFEST="results/capability/${STAGE}_browser_use_${SHARD_TAG}.json"
@@ -79,20 +79,47 @@ echo "BAKEOFF_EXIT=$rc"
 PYTHONPATH=src .venv/bin/python -m capability.rejudge --manifest "$MANIFEST" || true
 
 # Final sync (incremental checkpoints already ran per-task).
-gcloud storage cp "$MANIFEST" "${DEST}/manifests/" --quiet || true
+manifest_uploaded=0
+if [[ -f "$MANIFEST" ]]; then
+  if gcloud storage cp "$MANIFEST" "${DEST}/manifests/" --quiet; then
+    manifest_uploaded=1
+  else
+    echo "WARN manifest upload failed" >&2
+  fi
+fi
 gcloud storage cp "$LOG" "${DEST}/logs/" --quiet || true
 if [[ -d results/capability/traces ]]; then
   gcloud storage rsync --recursive results/capability/traces \
     "${DEST}/traces/shard${SHARD_ID}" --quiet || true
 fi
 
+run_count=0
+if [[ -f "$MANIFEST" ]]; then
+  run_count=$(PYTHONPATH=src .venv/bin/python -c "import json; print(len(json.load(open('$MANIFEST')).get('runs') or []))" 2>/dev/null || echo 0)
+fi
+
 marker="/tmp/shard${SHARD_ID}.done"
+shard_complete=0
+if [[ "$rc" -eq 0 && "$manifest_uploaded" -eq 1 && "$run_count" -ge "$EXPECTED_TASKS" ]]; then
+  shard_complete=1
+fi
+
 {
   echo "shard=$SHARD_ID"
   echo "exit=$rc"
+  echo "runs=$run_count"
+  echo "expected=$EXPECTED_TASKS"
+  echo "manifest_uploaded=$manifest_uploaded"
   echo "finished=$(date -Is)"
 } > "$marker"
-gcloud storage cp "$marker" "${DEST}/_done/" --quiet || true
+
+if [[ "$shard_complete" -eq 1 ]]; then
+  gcloud storage cp "$marker" "${DEST}/_done/" --quiet || true
+  echo "SHARD_COMPLETE runs=$run_count/$EXPECTED_TASKS"
+else
+  echo "SHARD_INCOMPLETE rc=$rc runs=$run_count/$EXPECTED_TASKS manifest_uploaded=$manifest_uploaded (no done marker — relaunch will resume)" >&2
+  rm -f "$marker"
+fi
 
 if [[ "$KEEP_VM" == "1" ]]; then
   echo "KEEP_VM=1, leaving instance up"

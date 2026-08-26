@@ -139,16 +139,53 @@ PY
 }
 
 DEST_GCS="${GCS_PREFIX}/${STAGE}/${TAG}"
+MANIFEST_BASENAME="${STAGE}_browser_use_${TAG}"
+
+# Tasks each shard should finish (used for done-marker validation + relaunch).
+TASKS_PER_SHARD=$(PYTHONPATH=src python3 <<PY
+import os
+from capability.tasks import (
+    ALL_INDICES, BAKEOFF5_INDICES, FULL8_INDICES, FULL80_INDICES,
+    SMOKE_INDICES, TASK_INDICES,
+)
+stage = os.environ.get("STAGE", "full10")
+num = int(os.environ.get("NUM_SHARDS", "1"))
+if stage == "smoke":
+    n = len(SMOKE_INDICES)
+elif stage == "bakeoff5":
+    n = len(BAKEOFF5_INDICES)
+elif stage == "full8":
+    n = len(FULL8_INDICES)
+elif stage == "full10":
+    n = len(TASK_INDICES)
+elif stage == "full80":
+    n = len(FULL80_INDICES)
+elif stage == "full100":
+    n = len(ALL_INDICES)
+else:
+    n = num
+print((n + num - 1) // num)
+PY
+)
+export TASKS_PER_SHARD
 
 # Status and pull go through GCS. The old versions walked every VM over IAP
 # serially, which took minutes for a 25-shard fleet and usually timed out.
 fleet_status() {
-  local done_n
+  local done_n complete_n
   done_n=$(gcloud storage ls "${DEST_GCS}/_done/**" 2>/dev/null | grep -c '\.done$' || true)
-  echo "reported: ${done_n:-0}/${NUM_SHARDS} shards  (${DEST_GCS})"
+  complete_n=0
+  for i in $(seq 0 $((NUM_SHARDS - 1))); do
+    if shard_complete_in_gcs "$i"; then
+      ((complete_n++)) || true
+    fi
+  done
+  echo "complete: ${complete_n:-0}/${NUM_SHARDS} shards (manifest + exit=0)"
+  echo "done markers: ${done_n:-0} (may include failed/stale)"
+  echo "tasks/shard: ${TASKS_PER_SHARD}  (${DEST_GCS})"
   echo ""
   gcloud compute instances list --project="$PROJECT" \
-    --filter="name~^${PREFIX}-[0-9]+$" --format='table(name,status)' 2>/dev/null || true
+    --filter="name~^${PREFIX}-[0-9]+$" --format='table(name,status,zone,machineType.basename())' 2>/dev/null || true
 }
 
 pull_shards() {
@@ -182,6 +219,34 @@ shard_done_in_gcs() {
   gcloud storage ls "${DEST_GCS}/_done/shard${i}.done" &>/dev/null
 }
 
+shard_manifest_in_gcs() {
+  local i="$1"
+  gcloud storage ls "${DEST_GCS}/manifests/${MANIFEST_BASENAME}_shard${i}.json" &>/dev/null
+}
+
+# Done marker alone is not enough — shard 6 uploaded exit=1 with no manifest.
+shard_complete_in_gcs() {
+  local i="$1"
+  local tmp="/tmp/shard${i}.done.$$"
+  if ! gcloud storage cp "${DEST_GCS}/_done/shard${i}.done" "$tmp" --quiet 2>/dev/null; then
+    return 1
+  fi
+  if ! grep -q '^exit=0$' "$tmp"; then
+    rm -f "$tmp"
+    return 1
+  fi
+  rm -f "$tmp"
+  shard_manifest_in_gcs "$i"
+}
+
+shard_cleanup_stale_done() {
+  local i="$1"
+  if shard_done_in_gcs "$i" && ! shard_complete_in_gcs "$i"; then
+    echo "    Removing stale done marker (shard $i: missing manifest or exit!=0)"
+    gcloud storage rm "${DEST_GCS}/_done/shard${i}.done" --quiet 2>/dev/null || true
+  fi
+}
+
 # A preempted VM that GCP brings back reports RUNNING with no work on it, so
 # instance status alone is not evidence the shard is alive. Ask the box.
 shard_process_alive() {
@@ -197,8 +262,18 @@ shard_process_alive() {
 ensure_shard_vm() {
   local i="$1"
   local name="${PREFIX}-${i}"
+  if gcloud compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" &>/dev/null; then
+    local cur_mt
+    cur_mt=$(gcloud compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" \
+      --format='value(machineType)' 2>/dev/null || echo "")
+    if [[ -n "$cur_mt" && "$cur_mt" != *"/${MACHINE}" ]]; then
+      echo "    ${name}: wrong machine (${cur_mt##*/} != ${MACHINE}), recreating..."
+      gcloud compute instances delete "$name" --zone="$ZONE" --project="$PROJECT" --quiet
+      sleep 5
+    fi
+  fi
   if ! gcloud compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" &>/dev/null; then
-    echo "    Creating ${name}..."
+    echo "    Creating ${name} (${MACHINE} in ${ZONE})..."
     gcloud compute instances create "$name" \
       --project="$PROJECT" --zone="$ZONE" \
       --machine-type="$MACHINE" \
@@ -209,6 +284,7 @@ ensure_shard_vm() {
       --scopes=cloud-platform \
       --tags=allow-iap-ssh \
       --quiet
+    sleep 20
     return 0
   fi
   local status
@@ -217,7 +293,7 @@ ensure_shard_vm() {
   if [[ "$status" != "RUNNING" ]]; then
     echo "    Starting ${name} (was ${status})..."
     gcloud compute instances start "$name" --zone="$ZONE" --project="$PROJECT" --quiet
-    sleep 10
+    sleep 15
   fi
 }
 
@@ -228,8 +304,9 @@ fleet_relaunch() {
     secrets/env secrets/vertex_adc.json
   local relaunch=()
   for i in $(seq 0 $((NUM_SHARDS - 1))); do
-    if shard_done_in_gcs "$i"; then
-      echo "  shard $i: done (GCS)"
+    shard_cleanup_stale_done "$i"
+    if shard_complete_in_gcs "$i"; then
+      echo "  shard $i: complete (GCS)"
       continue
     fi
     local name="${PREFIX}-${i}"
@@ -268,10 +345,12 @@ fleet_relaunch() {
 install_and_run_shard() {
   local i="$1"
   local name="${PREFIX}-${i}"
-  gcloud compute scp "$TARBALL" "${name}:~/usersim.tgz" \
-    --zone="$ZONE" --project="$PROJECT" --tunnel-through-iap --quiet
-  gcloud compute ssh "$name" --zone="$ZONE" --project="$PROJECT" --tunnel-through-iap --quiet \
-    --command="set -eux
+  local attempt ok=0
+  for attempt in 1 2 3; do
+    if gcloud compute scp "$TARBALL" "${name}:~/usersim.tgz" \
+      --zone="$ZONE" --project="$PROJECT" --tunnel-through-iap --quiet \
+      && gcloud compute ssh "$name" --zone="$ZONE" --project="$PROJECT" --tunnel-through-iap --quiet \
+      --command="set -eux
 mkdir -p ~/usersim && cd ~/usersim
 rm -rf src data scripts secrets    # keep .venv so warm VMs skip the 90s install
 tar xzf ~/usersim.tgz -C ~/usersim
@@ -290,12 +369,22 @@ nohup env \
   MODEL=${MODEL} WORKERS=${WORKERS} GCS_PREFIX=${GCS_PREFIX} \
   FAST=${FAST} ACTIONS_PER_STEP=${ACTIONS_PER_STEP} \
   RESUME=${RESUME} KEEP_VM=${KEEP_VM} MAX_ACTIONS=${MAX_ACTIONS} \
-  SKIP_KNOWN_BLOCKED=${SKIP_KNOWN_BLOCKED} \
+  SKIP_KNOWN_BLOCKED=${SKIP_KNOWN_BLOCKED} EXPECTED_TASKS=${TASKS_PER_SHARD} \
   EVAL_INDICES='${EVAL_INDICES}' \
   EXTRA_ENV='${EXTRA_ENV}' \
   bash scripts/vm/shard_runner.sh > ~/bakeoff_shard${i}.log 2>&1 &
 echo STARTED_${STAGE}_SHARD_${i}
-"
+"; then
+      ok=1
+      break
+    fi
+    echo "    deploy shard $i attempt $attempt failed, retrying in 30s..."
+    sleep 30
+  done
+  if [[ "$ok" != "1" ]]; then
+    echo "    ERROR: deploy shard $i failed after 3 attempts"
+    return 1
+  fi
 }
 
 case "${1:-}" in
@@ -335,6 +424,9 @@ for i in $(seq 0 $((NUM_SHARDS - 1))); do
   fi
 done
 wait
+
+echo "==> Waiting 25s for VMs to accept SSH before deploy..."
+sleep 25
 
 echo "==> Deploying shards (parallel batches of ${DEPLOY_PARALLEL})..."
 for i in $(seq 0 $((NUM_SHARDS - 1))); do
