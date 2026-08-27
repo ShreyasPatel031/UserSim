@@ -110,7 +110,7 @@ case "$ACTION" in
       echo "======== pull ${plat} ========"
       run_platform_fleet "$plat" --pull || true
     done
-    PYTHONPATH=src python3 - <<PY
+    PYTHONPATH=src "${ROOT}/.venv/bin/python" - <<PY
 import json
 from pathlib import Path
 from capability.metrics import sort_runs, summarize

@@ -100,3 +100,17 @@ Fleet mechanics worked (**36/36 shards, 270 runs, ~$5**). Outcome quality did **
 | Metadata | Timeout stubs keep persona/goal/seed |
 | Verify | bland/vapi/retell **logged_in** after refresh (2026-08-27) |
 | Fleet | 36 Spot VMs launched; watcher relaunches preempted shards |
+
+### Result (`full270_flash_m40`) — **DONE**
+
+| | Flash-Lite (prior) | **2.5 Flash (this run)** |
+|--|--:|--:|
+| SUCCESS (raw) | 25 / 270 (9%) | **96 / 270 (36%)** |
+| SUCCESS (scored, excl BLOCKED) | 13% | **47%** |
+| BLOCKED | 79 | 63 |
+| FAILURE | 166 | 110 |
+| Cost | ~$5 | **~$30** |
+
+By platform (SUCCESS/90): Bland **38** (was 9), Vapi **18** (was 3), Retell **40** (was 13).
+
+Merged manifest: `results/capability/product_full270_browser_use_full270_flash_m40.json`
