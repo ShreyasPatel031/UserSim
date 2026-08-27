@@ -5,6 +5,7 @@
 # full10:  NUM_SHARDS=3  WORKERS=4  → 10 tasks, ~8–12 min wall
 # full80:  NUM_SHARDS=10 WORKERS=8  e2-standard-8  → 80 tasks
 # full100: NUM_SHARDS=25 WORKERS=4  → 100 tasks, ~8–12 min wall (one wave)
+# product_full270_{bland,vapi,retell}: 12×8 workers → 90 tasks/platform (see fleet_full270.sh)
 #
 # Each VM rejudges, uploads to GCS, and deletes itself when its shard is done
 # (KEEP_VM=0 default), so the fleet costs nothing once the work is finished.
@@ -60,6 +61,16 @@ case "$STAGE" in
   product_retell) NUM_SHARDS="${NUM_SHARDS:-1}"; PREFIX="${FLEET_PREFIX:-usersim-bu-retell}"; MACHINE="${GCP_MACHINE:-e2-standard-4}"; WORKERS="${WORKERS:-1}" ;;
   product_vapi) NUM_SHARDS="${NUM_SHARDS:-1}"; PREFIX="${FLEET_PREFIX:-usersim-bu-vapi}"; MACHINE="${GCP_MACHINE:-e2-standard-4}"; WORKERS="${WORKERS:-1}" ;;
   product_retell_vapi) NUM_SHARDS="${NUM_SHARDS:-2}"; PREFIX="${FLEET_PREFIX:-usersim-bu-rv}"; MACHINE="${GCP_MACHINE:-e2-standard-4}"; WORKERS="${WORKERS:-1}" ;;
+  product_full270_bland|product_full270_vapi|product_full270_retell)
+    NUM_SHARDS="${NUM_SHARDS:-12}"
+    PREFIX="${FLEET_PREFIX:-usersim-bu-f270-${STAGE##*_}}"
+    MACHINE="${GCP_MACHINE:-e2-standard-8}"
+    WORKERS="${WORKERS:-8}"
+    ;;
+  product_full270)
+    echo "ERROR: launch via ./scripts/vm/fleet_full270.sh (three platform fleets)"
+    exit 1
+    ;;
   *) echo "Unknown STAGE=$STAGE"; exit 1 ;;
 esac
 
@@ -69,6 +80,10 @@ if [[ "$STAGE" == product_* ]]; then
     product_retell) need="retell" ;;
     product_vapi) need="vapi" ;;
     product_retell_vapi) need="retell vapi" ;;
+    product_full270_bland) need="bland" ;;
+    product_full270_vapi) need="vapi" ;;
+    product_full270_retell) need="retell" ;;
+    *) need="bland vapi retell" ;;
   esac
   for k in $need; do
     if [[ ! -f "secrets/voice_ai_sessions/${k}.json" ]]; then
@@ -160,6 +175,8 @@ PY
 DEST_GCS="${GCS_PREFIX}/${STAGE}/${TAG}"
 MANIFEST_BASENAME="${STAGE}_browser_use_${TAG}"
 
+export STAGE NUM_SHARDS TAG PROJECT MODEL WORKERS GCS_PREFIX
+
 # Tasks each shard should finish (used for done-marker validation + relaunch).
 TASKS_PER_SHARD=$(PYTHONPATH=src python3 <<PY
 import os
@@ -193,6 +210,9 @@ elif stage == "product_vapi":
 elif stage == "product_retell_vapi":
     from capability.tasks import load_product_tasks
     n = len(load_product_tasks("product_retell_vapi"))
+elif stage.startswith("product_full270"):
+    from capability.tasks import load_product_tasks
+    n = len(load_product_tasks(stage))
 else:
     n = num
 print((n + num - 1) // num)
@@ -495,6 +515,29 @@ install_and_run_shard() {
   local i="$1"
   local name="${PREFIX}-${i}"
   local zone attempt ok=0
+  local expected
+  # Exact task count for this shard (ceil formula can overestimate for remainder shards).
+  expected=$(STAGE="$STAGE" NUM_SHARDS="$NUM_SHARDS" SHARD_ID="$i" PYTHONPATH=src python3 - <<'PY'
+import os
+from capability.tasks import load_product_tasks, FULL80_INDICES, ALL_INDICES, TASK_INDICES, FULL8_INDICES
+stage = os.environ["STAGE"]
+num = int(os.environ["NUM_SHARDS"])
+sid = int(os.environ["SHARD_ID"])
+if stage.startswith("product_"):
+    n = len(load_product_tasks(stage))
+elif stage == "full80":
+    n = len(FULL80_INDICES)
+elif stage == "full100":
+    n = len(ALL_INDICES)
+elif stage == "full10":
+    n = len(TASK_INDICES)
+elif stage == "full8":
+    n = len(FULL8_INDICES)
+else:
+    n = num
+print(len([j for j in range(n) if j % num == sid]))
+PY
+)
   zone=$(find_shard_zone "$i") || {
     echo "    ERROR: shard $i has no VM zone (create failed?)"
     return 1
@@ -512,7 +555,7 @@ if [[ ! -d .venv ]]; then
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3-venv python3-pip
   python3 -m venv .venv
   .venv/bin/pip install -q -U pip wheel
-  .venv/bin/pip install -q 'browser-use==0.13.8' playwright google-genai google-auth httpx pydantic PyYAML requests tenacity browserbase openai
+  .venv/bin/pip install -q 'browser-use==0.13.8' playwright google-genai google-auth httpx pydantic PyYAML requests tenacity browserbase openai pillow
   .venv/bin/playwright install chromium
   sudo .venv/bin/playwright install-deps chromium 2>/dev/null || true
 fi
@@ -522,7 +565,7 @@ nohup env \
   MODEL=${MODEL} WORKERS=${WORKERS} GCS_PREFIX=${GCS_PREFIX} \
   FAST=${FAST} ACTIONS_PER_STEP=${ACTIONS_PER_STEP} \
   RESUME=${RESUME} KEEP_VM=${KEEP_VM} MAX_ACTIONS=${MAX_ACTIONS} \
-  SKIP_KNOWN_BLOCKED=${SKIP_KNOWN_BLOCKED} EXPECTED_TASKS=${TASKS_PER_SHARD} \
+  SKIP_KNOWN_BLOCKED=${SKIP_KNOWN_BLOCKED} EXPECTED_TASKS=${expected} \
   EVAL_INDICES='${EVAL_INDICES}' \
   EXTRA_ENV='${EXTRA_ENV}' \
   bash scripts/vm/shard_runner.sh > ~/bakeoff_shard${i}.log 2>&1 &

@@ -76,6 +76,10 @@ else:
 
 
 def load_product_tasks(stage: str) -> list[dict]:
+    if stage.startswith("product_full270"):
+        from capability.voice_ai_full270 import load_full270_stage
+
+        return load_full270_stage(stage)
     if stage.startswith("product_persona"):
         from capability.voice_ai_personas import load_persona_stage
 

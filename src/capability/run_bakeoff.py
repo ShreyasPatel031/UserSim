@@ -392,7 +392,7 @@ def main() -> int:
         required=True,
         help=(
             "smoke|bakeoff5|full8|...|product_all|product_persona|"
-            "product_persona_p1|product_persona_p1_t1|..."
+            "product_persona_p1|product_full270|product_full270_bland|..."
         ),
     )
     ap.add_argument("--harness", choices=["native_cu", "browser_use", "both"], default="both")
