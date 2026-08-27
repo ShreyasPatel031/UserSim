@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UserSim — Synthetic user research</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="grain"></div>
+
+  <header class="site-header">
+    <div class="logo">UserSim</div>
+    <span class="badge">MVP</span>
+    <a href="/bakeoff" style="margin-left:1rem;font-size:0.9rem;opacity:0.75;text-decoration:none;color:inherit;">Persona bakeoff →</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Parallel synthetic users</p>
+      <h1>Drop a URL.<br /><em>Watch your segment struggle.</em></h1>
+      <p class="lede">
+        UserSim spins up persona agents for your customer segment, runs realistic tasks on your site,
+        and returns friction maps, quotes, and an executive summary.
+      </p>
+    </section>
+
+    <section class="steps">
+      <article class="step">
+        <span class="step-num">1</span>
+        <h3>Target</h3>
+        <p>Public URL + who you’re building for</p>
+      </article>
+      <article class="step">
+        <span class="step-num">2</span>
+        <h3>Tasks</h3>
+        <p>Model generates personas & on-site goals</p>
+      </article>
+      <article class="step">
+        <span class="step-num">3</span>
+        <h3>Agents</h3>
+        <p>Live browser runs — easy vs hard, likes vs friction</p>
+      </article>
+      <article class="step">
+        <span class="step-num">4</span>
+        <h3>Summary</h3>
+        <p>Ranked recommendations for your segment</p>
+      </article>
+    </section>
+
+    <section class="panel form-panel">
+      <form id="study-form">
+        <label>
+          <span>Product URL</span>
+          <input type="url" name="url" required placeholder="https://useagency.dev/" value="https://useagency.dev/" />
+        </label>
+        <label>
+          <span>Customer segment</span>
+          <textarea name="segment" required rows="3" placeholder="e.g. Startup founder, technical, 20–45, based in the bay area">Startup founder, technical, 20–45, based in the bay area</textarea>
+        </label>
+        <button type="submit" id="submit-btn">
+          <span class="btn-label">Run study</span>
+          <span class="btn-spinner" hidden></span>
+        </button>
+      </form>
+    </section>
+
+    <section id="progress" class="panel progress-panel" hidden>
+      <div class="progress-header">
+        <h2>Study in progress</h2>
+        <span id="phase-label" class="phase">Starting…</span>
+      </div>
+      <div class="progress-bar"><div id="progress-fill"></div></div>
+      <div class="progress-meta">
+        <span id="progress-elapsed">0:00 elapsed</span>
+        <span id="progress-agents">0 / 4 agents finished</span>
+      </div>
+      <p id="progress-hint" class="progress-hint">
+        Four live browser agents browse your site in parallel (Browserbase). Each session takes 2–4 minutes — a full study is usually 5–8 minutes. Results appear below as each agent finishes.
+      </p>
+    </section>
+
+    <section id="live-panel" class="results live-panel" hidden>
+      <section class="panel activity-panel">
+        <h2>Study activity</h2>
+        <p class="section-sub">What the orchestrator and agents are doing right now</p>
+        <ol id="activity-log" class="activity-log"></ol>
+      </section>
+
+      <section id="personas-section" class="panel" hidden>
+        <h2>Generated personas</h2>
+        <p class="section-sub">Click a persona to expand their live session trace</p>
+        <div id="personas-grid" class="personas-grid"></div>
+      </section>
+    </section>
+
+    <section id="results" class="results" hidden>
+      <section class="panel summary-panel">
+        <h2>Executive summary</h2>
+        <p id="access-info" class="access-info" hidden></p>
+        <p id="headline" class="headline"></p>
+        <div class="summary-grid">
+          <div>
+            <h4>Top friction</h4>
+            <ul id="top-friction"></ul>
+          </div>
+          <div>
+            <h4>Top strengths</h4>
+            <ul id="top-strengths"></ul>
+          </div>
+        </div>
+        <div class="fit-score">
+          <span id="fit-score">—</span>
+          <div>
+            <strong>Segment fit</strong>
+            <p id="fit-rationale"></p>
+          </div>
+        </div>
+        <div class="conversion">
+          <h4>Conversion outlook</h4>
+          <p id="conversion-outlook"></p>
+        </div>
+        <div class="recommendations">
+          <h4>Recommendations</h4>
+          <div id="recommendations"></div>
+        </div>
+      </section>
+
+      <section id="agents-section-final" class="panel" hidden>
+        <h2>Agent sessions</h2>
+        <div id="agents-grid" class="agents-grid"></div>
+      </section>
+    </section>
+
+    <section id="error-panel" class="panel error-panel" hidden>
+      <h2>Something went wrong</h2>
+      <p id="error-message"></p>
+    </section>
+  </main>
+
+  <footer>
+  <p>UserSim MVP — simulated research, not a substitute for real user interviews.</p>
+  </footer>
+
+  <script src="/static/app.js?v=8"></script>
+</body>
+</html>

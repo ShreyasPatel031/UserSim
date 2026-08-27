@@ -1,0 +1,23 @@
+{
+  "model": "Ministral-3-3B-CUA-web",
+  "base": "mistralai/Ministral-3-3B-Base-2512",
+  "license": "Apache-2.0",
+  "trained": "2026-08-22",
+  "train_samples": 21891,
+  "training_loss_final": 0.66,
+  "gcs": "gs://ai-studio-bucket-347838016394-us-east1/usersim-models/Ministral3-3B-CUA-web",
+  "eval": {
+    "note": "Use eval_full.json in GCS; eval_summary.json used 128 max_new_tokens and is wrong",
+    "max_new_tokens": 384,
+    "n": 25,
+    "parse_rate": 1.0,
+    "click_within_5pct": 12,
+    "accuracy": 0.48
+  },
+  "serve": {
+    "image_size": [1008, 784],
+    "vllm": "vllm serve ./Ministral3-3B-CUA-web --dtype bfloat16 --max-model-len 16384 --limit-mm-per-prompt image=5 --trust-remote-code"
+  },
+  "train_script": "scripts/train/train_ministral3_cua.py",
+  "eval_script": "scripts/train/eval_ministral3_cua.py"
+}

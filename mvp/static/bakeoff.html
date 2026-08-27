@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UserSim — Persona bakeoff traces</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <style>
+    main { max-width: 100%; padding-left: 1.25rem; padding-right: 1.25rem; }
+    .bakeoff-toolbar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; margin-bottom: 1rem; }
+    .bakeoff-toolbar label { display: flex; flex-direction: column; gap: 0.35rem; min-width: 180px; }
+    .view-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .view-tab {
+      font: inherit; font-size: 0.85rem; padding: 0.45rem 0.85rem; border-radius: 8px;
+      border: 1px solid #444; background: #151515; color: #ccc; cursor: pointer;
+    }
+    .view-tab.active { border-color: #ff6b4a; background: #ff6b4a18; color: #ff6b4a; }
+    .analytics-panel { margin-bottom: 1.25rem; }
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .analytics-card {
+      border: 1px solid var(--border, #2a2a2a);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.02);
+    }
+    .analytics-card h4 { margin: 0 0 0.65rem; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.75; font-weight: 600; }
+    .stat-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.35rem; font-size: 0.88rem; }
+    .stat-row .label { opacity: 0.85; }
+    .stat-row .value { font-weight: 600; }
+    .bar-chart { display: flex; flex-direction: column; gap: 0.45rem; }
+    .bar-row { display: grid; grid-template-columns: 4.5rem 1fr 2.5rem; gap: 0.5rem; align-items: center; font-size: 0.8rem; }
+    .bar-track { height: 0.55rem; background: #222; border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+    .bar-fill.bland { background: #6b9fff; }
+    .bar-fill.vapi { background: #b07cff; }
+    .bar-fill.retell { background: #3d9a6a; }
+    .bar-fill.success { background: #3d9a6a; }
+    .bar-fill.pref { background: #ff6b4a; }
+    .heatmap-wrap { overflow-x: auto; }
+    .heatmap { border-collapse: collapse; font-size: 0.75rem; width: 100%; min-width: 320px; }
+    .heatmap th, .heatmap td { padding: 0.35rem 0.5rem; text-align: center; border: 1px solid #333; }
+    .heatmap th { font-weight: 600; opacity: 0.8; background: #111; }
+    .heatmap .row-label { text-align: left; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .heat-cell { border-radius: 2px; font-weight: 600; }
+    .journey-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .journey-row {
+      display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; align-items: center;
+      padding: 0.45rem 0; border-bottom: 1px solid #222; font-size: 0.82rem;
+    }
+    .journey-row:last-child { border-bottom: none; }
+    .mini-pills { display: flex; gap: 0.25rem; flex-wrap: wrap; justify-content: flex-end; }
+    .mini-pill { font-size: 0.68rem; padding: 0.15rem 0.4rem; border-radius: 4px; background: #222; opacity: 0.9; }
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      align-items: stretch;
+    }
+    @media (max-width: 960px) {
+      .platform-grid { grid-template-columns: 1fr; }
+    }
+    .platform-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border, #2a2a2a);
+      border-radius: 12px;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.02);
+      min-width: 0;
+    }
+    .platform-card.winner { border-color: #3d9a6a; box-shadow: inset 0 0 0 1px #3d9a6a55; }
+    .platform-card.preferred { border-color: #ff6b4a; box-shadow: inset 0 0 0 1px #ff6b4a44; }
+    .platform-card .col-header {
+      flex-shrink: 0;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .platform-card h3 { margin: 0 0 0.35rem; font-size: 1rem; display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap; }
+    .step-viewer {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      border: 1px solid #333;
+      border-radius: 10px;
+      background: #0a0a0a;
+      overflow: hidden;
+    }
+    .step-viewer-empty { min-height: 200px; align-items: center; justify-content: center; padding: 1rem; }
+    .step-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.5rem;
+      border-bottom: 1px solid #2a2a2a;
+      background: rgba(255,255,255,0.03);
+      flex-shrink: 0;
+    }
+    .step-arrow {
+      font: inherit;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #151515;
+      color: #eee;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .step-arrow:hover:not(:disabled) { border-color: #ff6b4a; color: #ff6b4a; }
+    .step-arrow:disabled { opacity: 0.35; cursor: default; }
+    .step-nums {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      justify-content: center;
+    }
+    .step-num {
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      min-width: 1.75rem;
+      height: 1.75rem;
+      padding: 0 0.35rem;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #151515;
+      color: #bbb;
+      cursor: pointer;
+    }
+    .step-num:hover { border-color: #ff6b4a88; color: #ff6b4a; }
+    .step-num.active { border-color: #ff6b4a; background: #ff6b4a22; color: #ff6b4a; }
+    .step-shot {
+      flex: 1 1 auto;
+      margin: 0;
+      min-height: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      overflow: auto;
+      background: #000;
+    }
+    .step-shot .trace-screenshot {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 48vh;
+      object-fit: contain;
+      object-position: top;
+    }
+    .step-detail {
+      flex-shrink: 0;
+      padding: 0.55rem 0.65rem;
+      border-top: 1px solid #2a2a2a;
+      font-size: 0.82rem;
+      max-height: 28vh;
+      overflow-y: auto;
+    }
+    .step-action { margin: 0 0 0.35rem; line-height: 1.4; }
+    .step-meta { margin: 0.2rem 0; color: #aaa; word-break: break-all; }
+    .step-meta span {
+      display: inline-block;
+      min-width: 3.5rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      opacity: 0.75;
+    }
+    .step-caption {
+      margin: 0;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.7rem;
+      color: #777;
+      border-top: 1px solid #222;
+      flex-shrink: 0;
+    }
+    .feedback-details {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+    }
+    .feedback-details summary {
+      cursor: pointer;
+      opacity: 0.75;
+      padding: 0.25rem 0;
+    }
+    .feedback-details .likes-dislikes {
+      margin-top: 0.35rem;
+      max-height: 18vh;
+      overflow-y: auto;
+    }
+    .feedback-details ul { margin: 0.2rem 0 0.4rem 0.9rem; padding: 0; }
+    .screenshot-missing {
+      color: #888;
+      font-size: 0.8rem;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .compare-banner { padding: 0.65rem 0.85rem; border-radius: 8px; background: #1a2a1f; margin-bottom: 0.75rem; font-size: 0.9rem; }
+    .drill-section { margin-top: 0.5rem; }
+    .drill-section h3 { margin: 0 0 0.75rem; font-size: 1rem; }
+    .nav-link { color: inherit; opacity: 0.7; text-decoration: none; margin-left: 1rem; font-size: 0.9rem; }
+    .nav-link:hover { opacity: 1; }
+    .hero { padding-bottom: 0.75rem !important; }
+    .hero h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+    .hidden { display: none !important; }
+    #study-headline { margin: 0.25rem 0 0; font-size: 0.95rem; opacity: 0.85; }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="site-header">
+    <div class="logo">UserSim</div>
+    <span class="badge">Persona bakeoff</span>
+    <a class="nav-link" href="/">← Live studies</a>
+  </header>
+
+  <main>
+    <section class="hero" style="padding-bottom: 1rem;">
+      <p class="eyebrow">Bland · Vapi · Retell</p>
+      <h1>Watch each persona<br /><em>use the product consoles.</em></h1>
+      <p class="lede">Success breakdowns, platform preferences, and step-by-step traces per persona and journey.</p>
+      <p id="study-headline"></p>
+    </section>
+
+    <section class="panel">
+      <div class="bakeoff-toolbar">
+        <label>
+          <span>Study</span>
+          <select id="study-select"></select>
+        </label>
+        <label id="persona-filter-wrap" class="hidden">
+          <span>Persona</span>
+          <select id="persona-select"></select>
+        </label>
+        <label id="journey-filter-wrap" class="hidden">
+          <span>Journey / task type</span>
+          <select id="journey-select"></select>
+        </label>
+        <label id="seed-filter-wrap" class="hidden">
+          <span>Seed</span>
+          <select id="seed-select"></select>
+        </label>
+        <label id="goal-filter-wrap">
+          <span>Task / goal</span>
+          <select id="goal-select"></select>
+        </label>
+      </div>
+
+      <div class="view-tabs">
+        <button type="button" class="view-tab active" data-view="overview">Overview &amp; analytics</button>
+        <button type="button" class="view-tab" data-view="traces">Trace drill-down</button>
+      </div>
+
+      <div id="overview-panel" class="analytics-panel">
+        <div id="analytics-root"></div>
+      </div>
+
+      <div id="traces-panel" class="drill-section hidden">
+        <h3>Side-by-side platform traces</h3>
+        <div id="compare-banner" class="compare-banner" hidden></div>
+        <div id="goal-prompt" class="section-sub"></div>
+        <div id="platform-grid" class="platform-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/bakeoff.js?v=5"></script>
+</body>
+</html>
