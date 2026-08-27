@@ -87,3 +87,16 @@ Harder journeys (integration / routing / test) succeed less. Rapid setup has the
 
 ## Bottom line
 Fleet mechanics worked (**36/36 shards, 270 runs, ~$5**). Outcome quality did **not**: auth TTL + Vapi load failures + timeouts + premature done against hard journeys crushed SUCCESS to ~9–13%. This is **not** “87% site-blocked.”
+
+---
+
+## Re-run (in flight): `full270_flash_m40`
+
+| Change | Detail |
+|--------|--------|
+| Model | `gemini-2.5-flash` (~$19 API est. same tokens) |
+| Concurrency | **WORKERS=4** (was 8) |
+| Auth | Sanitized `storage_state` dict; Vapi WorkOS refresh via `workos_rt` before pack/relaunch |
+| Metadata | Timeout stubs keep persona/goal/seed |
+| Verify | bland/vapi/retell **logged_in** after refresh (2026-08-27) |
+| Fleet | 36 Spot VMs launched; watcher relaunches preempted shards |
