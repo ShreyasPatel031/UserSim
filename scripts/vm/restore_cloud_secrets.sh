@@ -4,12 +4,20 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
-GCS_URI="${1:-gs://usersim-bakeoff-347838016394/secrets/usersim-cloud-secrets-latest.tgz}"
-TMP="$(mktemp -t usersim-secrets.XXXXXX.tgz)"
+SRC="${1:-${CLOUD_SECRETS_URL:-gs://usersim-bakeoff-347838016394/secrets/usersim-cloud-secrets-latest.tgz}}"
+TMP="$(mktemp /tmp/usersim-secrets.XXXXXX.tgz)"
 trap 'rm -f "$TMP"' EXIT
 
-echo "Pulling $GCS_URI ..."
-gsutil cp "$GCS_URI" "$TMP"
+echo "Pulling $SRC ..."
+if [[ "$SRC" == https://* || "$SRC" == http://* ]]; then
+  curl -fsSL "$SRC" -o "$TMP"
+elif command -v gsutil >/dev/null 2>&1; then
+  gsutil cp "$SRC" "$TMP"
+else
+  echo "ERROR: no gsutil and SRC is not an https URL. Pass a signed URL:" >&2
+  echo "  CLOUD_SECRETS_URL='https://...' ./scripts/vm/restore_cloud_secrets.sh" >&2
+  exit 1
+fi
 mkdir -p secrets
 tar xzf "$TMP" -C "$ROOT"
 chmod 600 secrets/vertex_adc.json secrets/env 2>/dev/null || true
