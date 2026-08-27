@@ -2,8 +2,9 @@
 # Full270 matched-triplet fleet: 6 personas × 5 journeys × 3 seeds × 3 platforms = 270.
 #
 # Equal concurrency per platform (like full80 wall-clock ≈ longest task):
-#   12 Spot VMs × 8 workers × 3 platforms = 36 VMs
-#   90 tasks/platform ÷ 12 shards ≈ 7–8 tasks/VM → one wave with WORKERS=8
+#   Default (post-audit): 12 Spot VMs × 4 workers × 3 platforms = 36 VMs
+#   90 tasks/platform ÷ 12 shards ≈ 7–8 tasks/VM → ~2 waves with WORKERS=4
+#   (WORKERS=8 overloaded Chromium/SPA loads → many 0-action harness timeouts.)
 #
 # Matched blocks (persona×journey×seed) are identical prompts on Bland/Vapi/Retell.
 # Journeys 2–5 start from an existing baseline agent.
@@ -15,7 +16,7 @@
 # do not casually expand the primary 270 mid-run.
 #
 # Usage:
-#   ./scripts/vm/fleet_full270.sh                  # launch all 36 VMs
+#   GEMINI_MODEL=gemini-2.5-flash FLEET_TAG=full270_flash_m40 ./scripts/vm/fleet_full270.sh
 #   ./scripts/vm/fleet_full270.sh --status
 #   ./scripts/vm/fleet_full270.sh --relaunch
 #   ./scripts/vm/fleet_full270.sh --pull
@@ -27,9 +28,9 @@ cd "$ROOT"
 
 ACTION="${1:-}"
 PROJECT="${GCP_PROJECT:-project-amer-scs-sandbox}"
-MODEL="${GEMINI_MODEL:-gemini-2.5-flash-lite}"
-TAG="${FLEET_TAG:-full270_flashlite_m40}"
-WORKERS="${WORKERS:-8}"
+MODEL="${GEMINI_MODEL:-gemini-2.5-flash}"
+TAG="${FLEET_TAG:-full270_flash_m40}"
+WORKERS="${WORKERS:-4}"
 MACHINE="${GCP_MACHINE:-e2-standard-8}"
 NUM_SHARDS_PER_PLATFORM="${NUM_SHARDS_PER_PLATFORM:-12}"
 MAX_ACTIONS="${MAX_ACTIONS:-40}"
@@ -48,6 +49,20 @@ for f in secrets/env secrets/vertex_adc.json \
     exit 1
   fi
 done
+
+# Refresh short-lived Vapi WorkOS JWTs before packaging secrets onto VMs.
+# Skip for status/pull/down/merge — only when we may create/relaunch shards.
+if [[ -z "$ACTION" || "$ACTION" == "--relaunch" ]]; then
+  echo "Refreshing Vapi WorkOS access tokens…"
+  PYTHONPATH=src python3 - <<'PY'
+from capability.voice_ai_dashboards import refresh_vapi_workos_session, write_sanitized_session
+import json
+print(json.dumps(refresh_vapi_workos_session(), indent=2))
+for k in ("bland", "vapi", "retell"):
+    write_sanitized_session(k)
+print("sanitized sessions ok")
+PY
+fi
 
 # Sanity: 270 cells
 PYTHONPATH=src python3 - <<'PY'

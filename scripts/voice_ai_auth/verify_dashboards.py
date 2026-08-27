@@ -28,10 +28,13 @@ async def verify(keys: list[str] | None) -> list[dict]:
             if not sp.is_file():
                 results.append({"key": dash.key, "state": "no_session"})
                 continue
+            from capability.voice_ai_dashboards import load_storage_state
+
+            state = load_storage_state(dash.key)
             context = await browser.new_context(
                 viewport=VIEWPORT,
                 user_agent=USER_AGENT,
-                storage_state=str(sp),
+                storage_state=state if state is not None else str(sp),
             )
             page = await context.new_page()
             try:

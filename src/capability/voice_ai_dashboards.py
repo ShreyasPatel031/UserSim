@@ -142,6 +142,116 @@ def write_sanitized_session(key: str) -> None:
     sp.write_text(json.dumps(data, indent=2))
 
 
+def _jwt_claims(token: str) -> dict:
+    import base64
+
+    segment = token.split(".")[1]
+    pad = "=" * (-len(segment) % 4)
+    return json.loads(base64.urlsafe_b64decode(segment + pad))
+
+
+def refresh_vapi_workos_session(
+    *,
+    client_id: str = "client_01JS5DFXFQRR9DVGVCG18WKT2T",
+    organization_id: str | None = None,
+) -> dict:
+    """Exchange workos_rt cookie for fresh Vapi localStorage JWTs (~1h TTL).
+
+    Call immediately before fleet pack / at Vapi shard start so agents do not
+    begin on expired WorkOS access tokens.
+    """
+    import shutil
+    import time
+    import urllib.request
+    from datetime import datetime, timezone
+
+    sp = session_path("vapi")
+    if not sp.is_file():
+        raise FileNotFoundError(sp)
+    raw = json.loads(sp.read_text())
+    rt_cookie = next((c for c in raw.get("cookies") or [] if c.get("name") == "workos_rt"), None)
+    if not rt_cookie or not rt_cookie.get("value"):
+        raise RuntimeError("vapi session missing workos_rt cookie — re-export from browser")
+
+    org_id = organization_id
+    if not org_id:
+        for o in raw.get("origins") or []:
+            for e in o.get("localStorage") or []:
+                if e.get("name") == "ORG_TOKEN" and e.get("value"):
+                    try:
+                        org_id = _jwt_claims(e["value"]).get("org_id") or org_id
+                    except Exception:
+                        pass
+    org_id = org_id or "org_01M109ECMA5WJQ3GAZKERY86EH"
+
+    def _auth(refresh_token: str, organization_id: str | None) -> dict:
+        body: dict = {
+            "client_id": client_id,
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+        }
+        if organization_id:
+            body["organization_id"] = organization_id
+        req = urllib.request.Request(
+            "https://api.workos.com/user_management/authenticate",
+            data=json.dumps(body).encode(),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            return json.loads(resp.read().decode())
+
+    first = _auth(rt_cookie["value"], None)
+    rt2 = first.get("refresh_token") or rt_cookie["value"]
+    org = _auth(rt2, org_id)
+    access = org["access_token"]
+    final_rt = org.get("refresh_token") or rt2
+    claims = _jwt_claims(access)
+    exp = datetime.fromtimestamp(claims["exp"], tz=timezone.utc)
+
+    bak = sp.with_suffix(f".json.bak_refresh_{int(time.time())}")
+    shutil.copy(sp, bak)
+    for o in raw.get("origins") or []:
+        if o.get("origin") != "https://dashboard.vapi.ai":
+            continue
+        ls = o.setdefault("localStorage", [])
+        by_name = {e["name"]: e for e in ls}
+        for name in ("USER_TOKEN", "ORG_TOKEN", "WORKOS_ACCESS_TOKEN"):
+            if name in by_name:
+                by_name[name]["value"] = access
+            else:
+                ls.append({"name": name, "value": access})
+    for c in raw.get("cookies") or []:
+        if c.get("name") == "workos_rt":
+            c["value"] = final_rt
+            c["expires"] = time.time() + 30 * 86400
+            break
+
+    cleaned = sanitize_storage_state_dict(raw)
+    for c in cleaned.get("cookies") or []:
+        if c.get("name") == "workos_rt":
+            c["value"] = final_rt
+            c["expires"] = time.time() + 30 * 86400
+    for o in cleaned.get("origins") or []:
+        if o.get("origin") != "https://dashboard.vapi.ai":
+            continue
+        ls = o.setdefault("localStorage", [])
+        by_name = {e["name"]: e for e in ls}
+        for name in ("USER_TOKEN", "ORG_TOKEN", "WORKOS_ACCESS_TOKEN"):
+            if name in by_name:
+                by_name[name]["value"] = access
+            else:
+                ls.append({"name": name, "value": access})
+    sp.write_text(json.dumps(cleaned, indent=2))
+    return {
+        "exp": exp.isoformat(),
+        "org_id": claims.get("org_id"),
+        "email": claims.get("email"),
+        "backup": str(bak),
+        "session": str(sp),
+    }
+
+
 def has_saved_session(key: str) -> bool:
     return session_path(key).is_file()
 
@@ -235,9 +345,10 @@ def browser_profile_overrides(start_url: str) -> dict:
     if os.environ.get("VOICE_AI_AUTH", "1").lower() in {"0", "false", "no"}:
         return {}
     overrides: dict = {}
-    sp = session_path(dash.key)
-    if sp.is_file():
-        overrides["storage_state"] = str(sp)
+    state = load_storage_state(dash.key)
+    if state:
+        # Prefer sanitized dict (origins always have localStorage) over raw path.
+        overrides["storage_state"] = state
     elif PROFILE_DIR.is_dir():
         overrides["user_data_dir"] = str(PROFILE_DIR)
         overrides["channel"] = "chrome"

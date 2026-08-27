@@ -52,6 +52,18 @@ def _model_slug(model: str) -> str:
     return model.replace(".", "").replace("/", "-")
 
 
+def _persona_fields(task: dict) -> dict:
+    return {
+        "persona_id": task.get("persona_id"),
+        "persona_name": task.get("persona_name"),
+        "goal_key": task.get("goal_key"),
+        "goal_title": task.get("goal_title"),
+        "comparative_group": task.get("comparative_group"),
+        "seed": task.get("seed"),
+        "matched_block": task.get("matched_block"),
+    }
+
+
 def _err_result(task: dict, model: str, h: str, exc: Exception) -> dict:
     return {
         "run_id": f"err_{task['eval_index']}",
@@ -59,6 +71,7 @@ def _err_result(task: dict, model: str, h: str, exc: Exception) -> dict:
         "eval_index": task["eval_index"],
         "task": task["task"],
         "website": task["website"],
+        **_persona_fields(task),
         "model": model,
         "harness": h,
         "success": False,
@@ -142,6 +155,7 @@ def _known_blocked_stub(task: dict, model: str, harness: str) -> dict:
         "eval_index": task["eval_index"],
         "task": task["task"],
         "website": task["website"],
+        **_persona_fields(task),
         "model": model,
         "harness": "browser_use_oss" if harness == "browser_use" else harness,
         "provider": "vertex",
@@ -167,6 +181,7 @@ def _wall_timeout_stub(task: dict, model: str, harness: str, timeout_s: float) -
         "eval_index": task["eval_index"],
         "task": task["task"],
         "website": task["website"],
+        **_persona_fields(task),
         "model": model,
         "harness": "browser_use_oss" if harness == "browser_use" else harness,
         "provider": "vertex",
