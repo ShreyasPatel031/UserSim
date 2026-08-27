@@ -1,0 +1,66 @@
+{
+  "n": 1,
+  "reviews": [
+    {
+      "goal": "As ops, open the main call logs or call history view so I can scan recent inbound/outbound activity for my agents.",
+      "per_platform": {
+        "bland": {
+          "liked": [
+            "clear list of call logs",
+            "explicit 'Agent' column for scanning team activity",
+            "explicit 'Issues' column for quick problem identification",
+            "detailed columns including 'Recording', 'Timeline', 'Direction', 'To', 'From', 'Duration', 'Status', and 'Created At'"
+          ],
+          "disliked": [],
+          "ease": "medium",
+          "would_complete_again": true
+        },
+        "vapi": {
+          "liked": [
+            "expected call log interface with filters and column headers",
+            "tabs for different log types ('Calls' selected by default)",
+            "clear empty-state message"
+          ],
+          "disliked": [],
+          "ease": "easy",
+          "would_complete_again": true
+        },
+        "retell": {
+          "liked": [
+            "relevant call log columns",
+            "explicit 'User Sentiment' column for quality assessment",
+            "explicit 'Cost' column for operational efficiency tracking",
+            "columns for 'Time', 'Duration', 'Channel Type', 'Session ID', 'End Reason', and 'Session Status'"
+          ],
+          "disliked": [],
+          "ease": "medium",
+          "would_complete_again": true
+        }
+      },
+      "most_likely_to_use": "bland",
+      "runner_up": "retell",
+      "why_winner": "Bland is the most likely choice for an Operations Manager like Maya because it explicitly includes an 'Agent' column, which is critical for scanning activity specific to her team. The 'Issues' column also provides immediate, actionable insights into call quality and problems, directly supporting her goal of monitoring agent performance and call health.",
+      "bland_gaps_vs_winner": "To further enhance its offering, Bland could consider adding a 'User Sentiment' score to its call logs. This would provide an even more comprehensive view of call quality and customer satisfaction, complementing its existing 'Issues' column and providing deeper insights for agent coaching.",
+      "confidence": "high",
+      "persona_id": "p1_ops",
+      "goal_key": "p1_t1_call_logs_overview",
+      "runs": {
+        "bland": {
+          "success": true,
+          "final_url": "https://app.bland.ai/dashboard/call-logs",
+          "status": "SUCCESS"
+        },
+        "vapi": {
+          "success": true,
+          "final_url": "https://dashboard.vapi.ai/logs?datePreset=last7d",
+          "status": "SUCCESS"
+        },
+        "retell": {
+          "success": true,
+          "final_url": "https://dashboard.retellai.com/call-history",
+          "status": "SUCCESS"
+        }
+      }
+    }
+  ]
+}

@@ -38,6 +38,7 @@ from capability.tasks import (
     SMOKE_INDICES,
     TASK_INDICES,
     load_tasks,
+    load_product_tasks,
 )
 
 
@@ -388,18 +389,11 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument(
         "--stage",
-        choices=[
-            "smoke",
-            "bakeoff5",
-            "full8",
-            "full10",
-            "full80",
-            "full100",
-            "hard20",
-            "genuine27",
-            "one",
-        ],
         required=True,
+        help=(
+            "smoke|bakeoff5|full8|...|product_all|product_persona|"
+            "product_persona_p1|product_persona_p1_t1|..."
+        ),
     )
     ap.add_argument("--harness", choices=["native_cu", "browser_use", "both"], default="both")
     ap.add_argument("--model", default=BAKEOFF_MODEL)
@@ -461,6 +455,29 @@ def main() -> int:
         indices = HARD20_INDICES
     elif args.stage == "genuine27":
         indices = GENUINE_FAIL_INDICES
+    elif args.stage.startswith("product_"):
+        tasks = load_product_tasks(args.stage)
+        if args.shard_id is not None:
+            tasks = [t for i, t in enumerate(tasks) if i % args.num_shards == args.shard_id]
+        tag = args.tag or f"{_model_slug(args.model)}_m{max_actions}"
+        out_name = f"{args.stage}_{args.harness}_{tag}"
+        out_path = OUT_DIR / f"{out_name}.json"
+        log_path = OUT_DIR / f"{out_name}_run.log"
+        if args.harness in ("both", "browser_use"):
+            return _run_browser_use_fleet(
+                tasks,
+                stage=args.stage,
+                model=args.model,
+                max_actions=max_actions,
+                workers=args.workers,
+                out_path=out_path,
+                log_path=log_path,
+                preflight=False,
+                skip_known_blocked=False,
+                resume=args.resume,
+                rebuild=args.rebuild,
+            )
+        indices = [t["eval_index"] for t in tasks]
     else:
         if args.eval_index is None:
             raise SystemExit("--eval-index required for --stage one")

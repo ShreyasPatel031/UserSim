@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UserSim — Persona bakeoff traces</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <style>
+    main { max-width: 100%; padding-left: 1.25rem; padding-right: 1.25rem; }
+    .bakeoff-toolbar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; margin-bottom: 1rem; }
+    .bakeoff-toolbar label { display: flex; flex-direction: column; gap: 0.35rem; min-width: 220px; }
+    /* Always three columns for direct comparison */
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      align-items: stretch;
+    }
+    @media (max-width: 960px) {
+      .platform-grid { grid-template-columns: 1fr; }
+    }
+    .platform-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border, #2a2a2a);
+      border-radius: 12px;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.02);
+      min-width: 0;
+    }
+    .platform-card.winner { border-color: #3d9a6a; box-shadow: inset 0 0 0 1px #3d9a6a55; }
+    .platform-card .col-header {
+      flex-shrink: 0;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .platform-card h3 { margin: 0 0 0.35rem; font-size: 1rem; display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap; }
+    .step-viewer {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      border: 1px solid #333;
+      border-radius: 10px;
+      background: #0a0a0a;
+      overflow: hidden;
+    }
+    .step-viewer-empty { min-height: 200px; align-items: center; justify-content: center; padding: 1rem; }
+    .step-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.5rem;
+      border-bottom: 1px solid #2a2a2a;
+      background: rgba(255,255,255,0.03);
+      flex-shrink: 0;
+    }
+    .step-arrow {
+      font: inherit;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #151515;
+      color: #eee;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .step-arrow:hover:not(:disabled) { border-color: #ff6b4a; color: #ff6b4a; }
+    .step-arrow:disabled { opacity: 0.35; cursor: default; }
+    .step-nums {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      justify-content: center;
+    }
+    .step-num {
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      min-width: 1.75rem;
+      height: 1.75rem;
+      padding: 0 0.35rem;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #151515;
+      color: #bbb;
+      cursor: pointer;
+    }
+    .step-num:hover { border-color: #ff6b4a88; color: #ff6b4a; }
+    .step-num.active { border-color: #ff6b4a; background: #ff6b4a22; color: #ff6b4a; }
+    .step-shot {
+      flex: 1 1 auto;
+      margin: 0;
+      min-height: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      overflow: auto;
+      background: #000;
+    }
+    .step-shot .trace-screenshot {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 48vh;
+      object-fit: contain;
+      object-position: top;
+    }
+    .step-detail {
+      flex-shrink: 0;
+      padding: 0.55rem 0.65rem;
+      border-top: 1px solid #2a2a2a;
+      font-size: 0.82rem;
+      max-height: 28vh;
+      overflow-y: auto;
+    }
+    .step-action { margin: 0 0 0.35rem; line-height: 1.4; }
+    .step-meta { margin: 0.2rem 0; color: #aaa; word-break: break-all; }
+    .step-meta span {
+      display: inline-block;
+      min-width: 3.5rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      opacity: 0.75;
+    }
+    .step-caption {
+      margin: 0;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.7rem;
+      color: #777;
+      border-top: 1px solid #222;
+      flex-shrink: 0;
+    }
+    .feedback-details {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+    }
+    .feedback-details summary {
+      cursor: pointer;
+      opacity: 0.75;
+      padding: 0.25rem 0;
+    }
+    .feedback-details .likes-dislikes {
+      margin-top: 0.35rem;
+      max-height: 18vh;
+      overflow-y: auto;
+    }
+    .feedback-details ul { margin: 0.2rem 0 0.4rem 0.9rem; padding: 0; }
+    .screenshot-missing {
+      color: #888;
+      font-size: 0.8rem;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .compare-banner { padding: 0.65rem 0.85rem; border-radius: 8px; background: #1a2a1f; margin-bottom: 0.75rem; font-size: 0.9rem; }
+    .nav-link { color: inherit; opacity: 0.7; text-decoration: none; margin-left: 1rem; font-size: 0.9rem; }
+    .nav-link:hover { opacity: 1; }
+    .hero { padding-bottom: 0.75rem !important; }
+    .hero h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="site-header">
+    <div class="logo">UserSim</div>
+    <span class="badge">Persona bakeoff</span>
+    <a class="nav-link" href="/">← Live studies</a>
+  </header>
+
+  <main>
+    <section class="hero" style="padding-bottom: 1rem;">
+      <p class="eyebrow">Bland · Vapi · Retell</p>
+      <h1>Watch each persona<br /><em>use the product consoles.</em></h1>
+      <p class="lede">Step-by-step browser agent traces with likes, dislikes, and comparative picks per goal.</p>
+    </section>
+
+    <section class="panel">
+      <div class="bakeoff-toolbar">
+        <label>
+          <span>Persona study</span>
+          <select id="study-select"></select>
+        </label>
+        <label>
+          <span>Task / goal</span>
+          <select id="goal-select"></select>
+        </label>
+      </div>
+      <div id="compare-banner" class="compare-banner" hidden></div>
+      <div id="goal-prompt" class="section-sub"></div>
+      <div id="platform-grid" class="platform-grid"></div>
+    </section>
+  </main>
+
+  <script src="/static/bakeoff.js?v=4"></script>
+</body>
+</html>

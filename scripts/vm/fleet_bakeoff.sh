@@ -56,8 +56,27 @@ case "$STAGE" in
   full80)  NUM_SHARDS="${NUM_SHARDS:-10}"; PREFIX="${FLEET_PREFIX:-usersim-bu-f80}"; WORKERS="${WORKERS:-8}"; MACHINE="${GCP_MACHINE:-e2-standard-8}" ;;
   full100) NUM_SHARDS="${NUM_SHARDS:-25}"; PREFIX="${FLEET_PREFIX:-usersim-bu-f100}" ;;
   retry)   NUM_SHARDS="${NUM_SHARDS:-2}";  PREFIX="${FLEET_PREFIX:-usersim-bu-retry}" ;;
+  product_bland) NUM_SHARDS="${NUM_SHARDS:-1}"; PREFIX="${FLEET_PREFIX:-usersim-bu-bland}"; MACHINE="${GCP_MACHINE:-e2-standard-4}"; WORKERS="${WORKERS:-1}" ;;
+  product_retell) NUM_SHARDS="${NUM_SHARDS:-1}"; PREFIX="${FLEET_PREFIX:-usersim-bu-retell}"; MACHINE="${GCP_MACHINE:-e2-standard-4}"; WORKERS="${WORKERS:-1}" ;;
+  product_vapi) NUM_SHARDS="${NUM_SHARDS:-1}"; PREFIX="${FLEET_PREFIX:-usersim-bu-vapi}"; MACHINE="${GCP_MACHINE:-e2-standard-4}"; WORKERS="${WORKERS:-1}" ;;
+  product_retell_vapi) NUM_SHARDS="${NUM_SHARDS:-2}"; PREFIX="${FLEET_PREFIX:-usersim-bu-rv}"; MACHINE="${GCP_MACHINE:-e2-standard-4}"; WORKERS="${WORKERS:-1}" ;;
   *) echo "Unknown STAGE=$STAGE"; exit 1 ;;
 esac
+
+if [[ "$STAGE" == product_* ]]; then
+  case "$STAGE" in
+    product_bland) need="bland" ;;
+    product_retell) need="retell" ;;
+    product_vapi) need="vapi" ;;
+    product_retell_vapi) need="retell vapi" ;;
+  esac
+  for k in $need; do
+    if [[ ! -f "secrets/voice_ai_sessions/${k}.json" ]]; then
+      echo "ERROR: secrets/voice_ai_sessions/${k}.json missing — sign in and run save_sessions.sh"
+      exit 1
+    fi
+  done
+fi
 
 if [[ ! -f secrets/env ]]; then
   echo "ERROR: secrets/env missing"
@@ -162,6 +181,18 @@ elif stage == "full80":
     n = len(FULL80_INDICES)
 elif stage == "full100":
     n = len(ALL_INDICES)
+elif stage == "product_bland":
+    from capability.tasks import load_product_tasks
+    n = len(load_product_tasks("product_bland"))
+elif stage == "product_retell":
+    from capability.tasks import load_product_tasks
+    n = len(load_product_tasks("product_retell"))
+elif stage == "product_vapi":
+    from capability.tasks import load_product_tasks
+    n = len(load_product_tasks("product_vapi"))
+elif stage == "product_retell_vapi":
+    from capability.tasks import load_product_tasks
+    n = len(load_product_tasks("product_retell_vapi"))
 else:
     n = num
 print((n + num - 1) // num)
@@ -418,7 +449,7 @@ fleet_relaunch() {
   echo "==> Relaunch missing/preempted shards (${DEST_GCS})"
   TARBALL="/tmp/usersim-fleet-relaunch-$$.tgz"
   tar czf "$TARBALL" -C "$ROOT" src data scripts/vm/shard_runner.sh \
-    secrets/env secrets/vertex_adc.json
+    secrets/env secrets/vertex_adc.json secrets/voice_ai_sessions
   local relaunch=()
   for i in $(seq 0 $((NUM_SHARDS - 1))); do
     shard_cleanup_stale_done "$i"
@@ -524,7 +555,7 @@ echo "    zones: ${ZONE_CANDIDATES_ARR[*]} (round-robin per shard; override with
 
 TARBALL="/tmp/usersim-fleet-$$.tgz"
 tar czf "$TARBALL" -C "$ROOT" src data scripts/vm/shard_runner.sh \
-  secrets/env secrets/vertex_adc.json
+  secrets/env secrets/vertex_adc.json secrets/voice_ai_sessions
 
 for i in $(seq 0 $((NUM_SHARDS - 1))); do
   ensure_shard_vm "$i" &

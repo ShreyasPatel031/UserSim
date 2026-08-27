@@ -97,3 +97,56 @@ async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
 @app.get("/health")
 async def health():
     return {"ok": True}
+
+
+@app.get("/bakeoff")
+async def bakeoff_page() -> FileResponse:
+    path = STATIC / "bakeoff.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Bakeoff viewer not bundled")
+    return FileResponse(path)
+
+
+@app.get("/api/bakeoff/studies")
+async def list_bakeoff_studies():
+    from mvp.bakeoff_view import list_studies
+
+    return {"studies": list_studies()}
+
+
+@app.get("/api/bakeoff/studies/{study_id}")
+async def get_bakeoff_study(study_id: str):
+    from mvp.bakeoff_view import load_study
+
+    if not re.fullmatch(r"[\w.-]+", study_id):
+        raise HTTPException(status_code=400, detail="Invalid study id")
+    try:
+        return load_study(study_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Study not found") from None
+
+
+@app.get("/api/bakeoff/traces/{trace_name}/final.png")
+async def get_bakeoff_final_screenshot(trace_name: str):
+    if not re.fullmatch(r"bu_\d+_[0-9a-f]+", trace_name):
+        raise HTTPException(status_code=400, detail="Invalid trace id")
+    from config import ROOT
+
+    path = ROOT / "results" / "capability" / "traces" / trace_name / "final.png"
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Screenshot not found")
+    return FileResponse(path, media_type="image/png")
+
+
+@app.get("/api/bakeoff/traces/{trace_name}/screenshots/{filename}")
+async def get_bakeoff_step_screenshot(trace_name: str, filename: str):
+    if not re.fullmatch(r"bu_\d+_[0-9a-f]+", trace_name):
+        raise HTTPException(status_code=400, detail="Invalid trace id")
+    if not re.fullmatch(r"(?:step|bbox)_\d+\.png", filename):
+        raise HTTPException(status_code=400, detail="Invalid screenshot name")
+    from config import ROOT
+
+    path = ROOT / "results" / "capability" / "traces" / trace_name / "screenshots" / filename
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Screenshot not found")
+    return FileResponse(path, media_type="image/png")

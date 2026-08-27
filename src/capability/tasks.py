@@ -75,6 +75,19 @@ else:
     GENUINE_FAIL_INDICES = list(HARD20_INDICES)
 
 
+def load_product_tasks(stage: str) -> list[dict]:
+    if stage.startswith("product_persona"):
+        from capability.voice_ai_personas import load_persona_stage
+
+        return load_persona_stage(stage)
+
+    from capability.voice_ai_dashboards import PRODUCT_STAGE_TASKS
+
+    if stage not in PRODUCT_STAGE_TASKS:
+        raise ValueError(f"Unknown product stage: {stage}")
+    return [dict(t) for t in PRODUCT_STAGE_TASKS[stage]]
+
+
 def load_tasks(indices: list[int] | None = None) -> list[dict]:
     idxs = indices or TASK_INDICES
     out = []

@@ -24,6 +24,7 @@ from capability import (
 from capability.judge import JUDGE_ERROR, judge_task
 from config import GCP_PROJECT
 from capability.site_preflight import PreflightResult, preflight_start_url
+from capability.voice_ai_dashboards import browser_profile_overrides, dashboard_for_url, load_storage_state
 
 
 def task_wall_timeout_s(max_actions: int) -> float:
@@ -110,7 +111,8 @@ async def _run_async(
     run_dir.mkdir(parents=True, exist_ok=True)
     loc = location or location_for(model)
 
-    if preflight:
+    voice_dash = dashboard_for_url(task["start_url"])
+    if preflight and not voice_dash:
         pf = await preflight_start_url(task["start_url"])
         if pf.blocked:
             out = _preflight_blocked_result(task, model, run_dir, pf, run_id=run_id)
@@ -126,18 +128,31 @@ async def _run_async(
         location=loc,
         temperature=0,
     )
-    profile = BrowserProfile(
-        headless=True,
-        viewport=VIEWPORT,
-        user_agent=USER_AGENT,
-        disable_security=True,
-    )
+    profile_kw: dict = {
+        "headless": True,
+        "viewport": VIEWPORT,
+        "user_agent": USER_AGENT,
+        "disable_security": True,
+    }
+    profile_kw.update(browser_profile_overrides(task["start_url"]))
+    profile = BrowserProfile(**profile_kw)
+    nav_hint = task["start_url"]
+    if voice_dash:
+        nav_hint = voice_dash.dashboard_url
     agent_task = (
         f"{CAPABLE_AGENT_PREAMBLE}\n\n"
-        f"Open {task['start_url']} if not already there.\n"
+        f"You are already signed in. Navigate directly to {nav_hint} — do not use Google search.\n"
         f"Task: {task['task']}\n"
         f"Satisfy every constraint. Stop only when fully done."
     )
+
+    async def _on_new_step(browser_state, _agent_output, step_n: int) -> None:
+        from capability.trace_screenshots import save_bbox_from_base64
+
+        shot = getattr(browser_state, "screenshot", None)
+        if shot:
+            save_bbox_from_base64(run_dir, step_n, shot)
+
     agent = Agent(
         task=agent_task,
         llm=llm,
@@ -150,6 +165,7 @@ async def _run_async(
             "Apply all required filters and finish the stated goal."
         ),
         save_conversation_path=str(run_dir / "conversation"),
+        register_new_step_callback=_on_new_step,
     )
     wall_s = task_wall_timeout_s(max_actions)
     try:
@@ -216,15 +232,23 @@ async def _run_async(
     try:
         from playwright.async_api import async_playwright
 
+        auth_kw = browser_profile_overrides(task["start_url"])
+        dash = dashboard_for_url(task["start_url"])
+        storage_state = load_storage_state(dash.key) if dash else None
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
-            page = await browser.new_page(viewport=VIEWPORT, user_agent=USER_AGENT)
+            ctx_kw: dict = {"viewport": VIEWPORT, "user_agent": USER_AGENT}
+            if storage_state:
+                ctx_kw["storage_state"] = storage_state
+            context = await browser.new_context(**ctx_kw)
+            page = await context.new_page()
             if final_url:
                 await page.goto(final_url, wait_until="domcontentloaded", timeout=20000)
                 await page.wait_for_timeout(500)
                 end_title = await page.title()
                 screenshot = await page.screenshot(type="png")
                 (run_dir / "final.png").write_bytes(screenshot)
+            await context.close()
             await browser.close()
     except Exception as exc:  # noqa: BLE001
         (run_dir / "screenshot_error.txt").write_text(str(exc)[:400])
@@ -259,6 +283,11 @@ async def _run_async(
         "eval_index": task["eval_index"],
         "task": task["task"],
         "website": task["website"],
+        "persona_id": task.get("persona_id"),
+        "persona_name": task.get("persona_name"),
+        "goal_key": task.get("goal_key"),
+        "goal_title": task.get("goal_title"),
+        "comparative_group": task.get("comparative_group"),
         "model": model,
         "harness": "browser_use_oss",
         "provider": "vertex",
