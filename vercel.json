@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/bakeoff-traces/(.*)", "destination": "/bakeoff-traces/$1" },
+    { "source": "/(.*)", "destination": "/api/index" }
+  ],
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 300,
+      "excludeFiles": "public/**"
+    }
+  },
+  "env": {
+    "VERCEL": "1",
+    "MVP_MAX_STEPS": "8",
+    "MVP_BROWSER_CONCURRENCY": "2",
+    "MVP_AGENT_COUNT": "2",
+    "BROWSERBASE_CREATE_INTERVAL_S": "8"
+  }
+}
