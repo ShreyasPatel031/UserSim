@@ -3,50 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UserSim — Synthetic user research</title>
+  <title>UserSim — Simulate customers before they show up</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css?v=15" />
 </head>
 <body>
-  <div class="grain"></div>
-
   <header class="site-header">
     <div class="logo">UserSim</div>
-    <span class="badge">MVP</span>
   </header>
 
   <main>
     <section class="hero">
-      <p class="eyebrow">Parallel synthetic users</p>
-      <h1>Drop a URL.<br /><em>Watch your segment struggle.</em></h1>
+      <p class="eyebrow">Synthetic user research</p>
+      <h1>Run user simulations<br /><em>before real users ever show up.</em></h1>
       <p class="lede">
-        UserSim spins up persona agents for your customer segment, runs realistic tasks on your site,
-        and returns friction maps, quotes, and an executive summary.
+        Drop a product URL. We research who it’s for, invent personas and tasks, find competitors,
+        and run the same goals across all of them.
       </p>
     </section>
 
     <section class="steps">
       <article class="step">
         <span class="step-num">1</span>
-        <h3>Target</h3>
-        <p>Public URL + who you’re building for</p>
+        <h3>Research</h3>
+        <p>Web search your URL for targeting and category</p>
       </article>
       <article class="step">
         <span class="step-num">2</span>
-        <h3>Tasks</h3>
-        <p>Model generates personas & on-site goals</p>
+        <h3>Simulate</h3>
+        <p>Personas, tasks, and competitors — or use yours</p>
       </article>
       <article class="step">
         <span class="step-num">3</span>
-        <h3>Agents</h3>
-        <p>Live browser runs — easy vs hard, likes vs friction</p>
+        <h3>Run</h3>
+        <p>Same tasks across your product and every rival</p>
       </article>
       <article class="step">
         <span class="step-num">4</span>
-        <h3>Summary</h3>
-        <p>Ranked recommendations for your segment</p>
+        <h3>Report</h3>
+        <p>Elimination results when the run finishes</p>
       </article>
     </section>
 
@@ -54,14 +51,32 @@
       <form id="study-form">
         <label>
           <span>Product URL</span>
-          <input type="url" name="url" required placeholder="https://useagency.dev/" value="https://useagency.dev/" />
+          <input type="url" name="url" required placeholder="https://yourproduct.com" value="https://example.com" />
         </label>
-        <label>
-          <span>Customer segment</span>
-          <textarea name="segment" required rows="3" placeholder="e.g. Startup founder, technical, 20–45, based in the bay area">Startup founder, technical, 20–45, based in the bay area</textarea>
+
+        <label class="test-mode-row">
+          <input type="checkbox" name="test_mode" value="1" checked />
+          <span>Test mode — 1 persona, 1 task, no competitors</span>
         </label>
+
+        <details class="optional-block">
+          <summary>Optional — customers, competitors, tasks</summary>
+          <label>
+            <span>Who are you targeting?</span>
+            <textarea name="customers" rows="2" placeholder="Leave blank — we’ll research this from your URL"></textarea>
+          </label>
+          <label>
+            <span>Competitors (one URL or name per line)</span>
+            <textarea name="competitors" rows="2" placeholder="Leave blank — we’ll find them"></textarea>
+          </label>
+          <label>
+            <span>Tasks (one goal per line)</span>
+            <textarea name="tasks" rows="2" placeholder="Leave blank — we’ll invent tasks that eliminate"></textarea>
+          </label>
+        </details>
+
         <button type="submit" id="submit-btn">
-          <span class="btn-label">Run study</span>
+          <span class="btn-label">Run simulation</span>
           <span class="btn-spinner" hidden></span>
         </button>
       </form>
@@ -69,29 +84,29 @@
 
     <section id="progress" class="panel progress-panel" hidden>
       <div class="progress-header">
-        <h2>Study in progress</h2>
+        <h2>Simulation in progress</h2>
         <span id="phase-label" class="phase">Starting…</span>
       </div>
       <div class="progress-bar"><div id="progress-fill"></div></div>
       <div class="progress-meta">
         <span id="progress-elapsed">0:00 elapsed</span>
-        <span id="progress-agents">0 / 4 agents finished</span>
+        <span id="progress-agents">0 / 0 agents finished</span>
       </div>
       <p id="progress-hint" class="progress-hint">
-        Four live browser agents browse your site in parallel (Browserbase). Each session takes 2–4 minutes — a full study is usually 5–8 minutes. Results appear below as each agent finishes.
+        Personas are browsing your product in parallel.
       </p>
     </section>
 
     <section id="live-panel" class="results live-panel" hidden>
       <section class="panel activity-panel">
-        <h2>Study activity</h2>
-        <p class="section-sub">What the orchestrator and agents are doing right now</p>
+        <h2>Simulation activity</h2>
+        <p class="section-sub">What the orchestrator and persona agents are doing</p>
         <ol id="activity-log" class="activity-log"></ol>
       </section>
 
       <section id="personas-section" class="panel" hidden>
         <h2>Generated personas</h2>
-        <p class="section-sub">Click a persona to expand their live session trace</p>
+        <p class="section-sub">Click a persona to expand their live session</p>
         <div id="personas-grid" class="personas-grid"></div>
       </section>
     </section>
@@ -141,9 +156,9 @@
   </main>
 
   <footer>
-  <p>UserSim MVP — simulated research, not a substitute for real user interviews.</p>
+    <p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p>
   </footer>
 
-  <script src="/static/app.js?v=8"></script>
+  <script src="/static/app.js?v=15"></script>
 </body>
 </html>

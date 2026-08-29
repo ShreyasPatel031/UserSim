@@ -1,9 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }],
+  "rewrites": [
+    { "source": "/bakeoff-traces/(.*)", "destination": "/bakeoff-traces/$1" },
+    { "source": "/(.*)", "destination": "/api/index" }
+  ],
   "functions": {
     "api/index.py": {
-      "maxDuration": 300
+      "maxDuration": 300,
+      "excludeFiles": "public/**"
     }
   },
   "env": {
