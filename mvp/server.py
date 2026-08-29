@@ -24,6 +24,13 @@ IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 app = FastAPI(title="UserSim MVP", version="0.1.0")
 if STATIC.is_dir():
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
+_TRACE_PUBLIC = ROOT / "public" / "bakeoff-traces"
+if _TRACE_PUBLIC.is_dir() and not IS_VERCEL:
+    app.mount(
+        "/bakeoff-traces",
+        StaticFiles(directory=_TRACE_PUBLIC),
+        name="bakeoff_traces",
+    )
 
 
 @app.exception_handler(Exception)
@@ -36,7 +43,12 @@ async def unhandled_exception(_request, exc: Exception):
 
 class StudyRequest(BaseModel):
     url: HttpUrl
-    segment: str = Field(min_length=8, max_length=500)
+    email: str | None = Field(default=None, max_length=200)
+    segment: str | None = Field(default=None, max_length=2000)
+    customers: str | None = Field(default=None, max_length=2000)
+    competitors: list[str] = Field(default_factory=list)
+    tasks: list[str] = Field(default_factory=list)
+    test_mode: bool = False
 
 
 @app.get("/")
@@ -50,7 +62,30 @@ async def index() -> FileResponse:
 async def start_study(body: StudyRequest, background: BackgroundTasks):
     from mvp.study import STUDIES, create_study, run_study, study_to_dict
 
-    study = create_study(str(body.url), body.segment)
+    segment = (body.segment or body.customers or "").strip()
+    if not segment:
+        segment = (
+            "Auto-research target customers from the product URL "
+            "and invent a mixed panel of 6 personas."
+        )
+    if body.test_mode:
+        segment = (body.customers or body.segment or "Curious first-time visitor").strip()
+    if len(segment) < 8:
+        raise HTTPException(status_code=400, detail="Segment / customers description is too short")
+
+    study = create_study(str(body.url), segment)
+    # Stash optional inputs for the upcoming agent-loop planner.
+    study.email = body.email
+    study.customers = body.customers
+    study.test_mode = bool(body.test_mode)
+    study.competitors = (
+        []
+        if study.test_mode
+        else [c.strip() for c in body.competitors if c and c.strip()]
+    )
+    study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
+    if study.test_mode and not study.tasks_override:
+        study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
     # Serverless: no reliable background workers — run the study in this request
     # (requires Vercel Pro for maxDuration up to 300s; full studies may need a worker host).
     if IS_VERCEL:
@@ -97,3 +132,77 @@ async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
 @app.get("/health")
 async def health():
     return {"ok": True}
+
+
+@app.get("/blandai")
+async def blandai_page() -> FileResponse:
+    path = STATIC / "bakeoff.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Bland AI study viewer not bundled")
+    return FileResponse(path)
+
+
+@app.get("/bakeoff")
+async def bakeoff_page_redirect():
+    from fastapi.responses import RedirectResponse
+
+    return RedirectResponse(url="/blandai", status_code=302)
+
+
+@app.get("/api/bakeoff/studies")
+async def list_bakeoff_studies():
+    from mvp.bakeoff_view import list_studies
+
+    return {"studies": list_studies()}
+
+
+@app.get("/api/bakeoff/analytics")
+async def get_bakeoff_analytics():
+    from mvp.bakeoff_analytics import build_analytics
+
+    return build_analytics()
+
+
+@app.get("/api/bakeoff/studies/{study_id}")
+async def get_bakeoff_study(study_id: str):
+    from mvp.bakeoff_view import load_study
+
+    if not re.fullmatch(r"[\w.-]+", study_id):
+        raise HTTPException(status_code=400, detail="Invalid study id")
+    try:
+        return load_study(study_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Study not found") from None
+
+
+@app.get("/api/bakeoff/traces/{trace_name}/final.png")
+async def get_bakeoff_final_screenshot(trace_name: str):
+    if not re.fullmatch(r"bu_\d+_[0-9a-f]+", trace_name):
+        raise HTTPException(status_code=400, detail="Invalid trace id")
+    path = _resolve_trace_asset(trace_name, "final.png")
+    if not path:
+        raise HTTPException(status_code=404, detail="Screenshot not found")
+    return FileResponse(path, media_type="image/png")
+
+
+@app.get("/api/bakeoff/traces/{trace_name}/screenshots/{filename}")
+async def get_bakeoff_step_screenshot(trace_name: str, filename: str):
+    if not re.fullmatch(r"bu_\d+_[0-9a-f]+", trace_name):
+        raise HTTPException(status_code=400, detail="Invalid trace id")
+    if not re.fullmatch(r"(?:step|bbox)_\d+\.png", filename):
+        raise HTTPException(status_code=400, detail="Invalid screenshot name")
+    path = _resolve_trace_asset(trace_name, f"screenshots/{filename}")
+    if not path:
+        raise HTTPException(status_code=404, detail="Screenshot not found")
+    return FileResponse(path, media_type="image/png")
+
+
+def _resolve_trace_asset(trace_name: str, rel: str) -> Path | None:
+    candidates = [
+        ROOT / "public" / "bakeoff-traces" / trace_name / rel,
+        ROOT / "results" / "capability" / "traces" / trace_name / rel,
+    ]
+    for path in candidates:
+        if path.is_file():
+            return path
+    return None

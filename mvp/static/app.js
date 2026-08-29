@@ -48,6 +48,7 @@ function studyProgress(phase) {
 }
 
 let _traceResults = [];
+let _shotIdx = {};
 let _activeTraceIdx = 0;
 let _userPickedTrace = false;
 let _activityRendered = 0;
@@ -122,7 +123,7 @@ function statusLabel(status) {
 function setLoading(loading) {
   submitBtn.disabled = loading;
   btnSpinner.hidden = !loading;
-  btnLabel.textContent = loading ? "Running study…" : "Run study";
+  btnLabel.textContent = loading ? "Running…" : "Run simulation";
 }
 
 function showError(msg) {
@@ -274,6 +275,42 @@ function renderThoughtHtml(step) {
     </details>`;
 }
 
+
+function stepsWithScreenshots(trace) {
+  return (trace || []).filter((s) => s.screenshot_url);
+}
+
+function renderScreenshotPanel(trace, sessionKey) {
+  const shots = stepsWithScreenshots(trace);
+  if (!shots.length) {
+    return `<div class="trace-screenshot-panel empty">
+      <p class="trace-empty">No step screenshots yet — live browser frames appear here as the persona browses.</p>
+    </div>`;
+  }
+  const key = String(sessionKey || "0");
+  if (_shotIdx[key] == null || _shotIdx[key] >= shots.length) _shotIdx[key] = 0;
+  const idx = _shotIdx[key];
+  const step = shots[idx];
+  return `<div class="trace-screenshot-panel" data-shot-key="${escapeHtml(key)}">
+    <div class="trace-shot-header">
+      <h3>Live session screenshots</h3>
+      <div class="trace-step-pills">
+        ${shots
+          .map(
+            (s, i) =>
+              `<button type="button" class="step-pill${i === idx ? " active" : ""}" data-shot-key="${escapeHtml(key)}" data-shot-idx="${i}">${escapeHtml(s.step)}</button>`
+          )
+          .join("")}
+      </div>
+    </div>
+    <figure class="trace-shot-figure">
+      <img class="trace-screenshot" src="${escapeHtml(step.screenshot_url)}" alt="Step ${escapeHtml(step.step)} screenshot" />
+      <figcaption class="trace-step-screenshot-caption">Step ${escapeHtml(step.step)} · boxes = clickable elements</figcaption>
+    </figure>
+    <p class="step-shot-action"><strong>${escapeHtml(step.step)}.</strong> ${escapeHtml(step.action || "Action")}</p>
+  </div>`;
+}
+
 function renderTraceStepsHtml(trace, status) {
   if (!trace?.length) {
     const msg =
@@ -366,6 +403,7 @@ function renderPersonas(personas, sessions) {
               ? `<div class="meta">
             <span class="tag status-${session.status || "pending"}">${escapeHtml(statusLabel(session.status))}</span>
             <span class="tag">${trace.length} steps</span>
+            ${session.site_label ? `<span class="tag site">${escapeHtml(session.site_label)}</span>` : ""}
             ${session.difficulty ? `<span class="tag difficulty-${session.difficulty}">${escapeHtml(session.difficulty)}</span>` : ""}
             ${session.would_convert ? `<span class="tag">convert: ${escapeHtml(session.would_convert)}</span>` : ""}
           </div>`
@@ -380,7 +418,7 @@ function renderPersonas(personas, sessions) {
         ${liveHint ? `<p class="persona-live-hint">${escapeHtml(liveHint)}</p>` : ""}
         ${
           expanded
-            ? `<div class="persona-trace trace-timeline">${renderTraceStepsHtml(trace, session?.status)}</div>${feedbackBlock}`
+            ? `${renderScreenshotPanel(trace, sessionIdx)}<div class="persona-trace trace-timeline">${renderTraceStepsHtml(trace, session?.status)}</div>${feedbackBlock}`
             : ""
         }
       </div>
@@ -520,6 +558,14 @@ async function pollStudy(studyId) {
   return res.json();
 }
 
+function lines(value) {
+  return String(value || "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
@@ -530,13 +576,26 @@ form.addEventListener("submit", async (e) => {
   setLoading(true);
 
   const url = form.url.value.trim();
-  const segment = form.segment.value.trim();
+  const customers = form.customers?.value?.trim() || "";
+  const competitors = lines(form.competitors?.value);
+  const tasks = lines(form.tasks?.value);
+  const testMode = Boolean(form.test_mode?.checked);
+  const segment =
+    customers ||
+    "Auto-research target customers from the product URL and invent a mixed panel of 6 personas.";
 
   try {
     const startRes = await fetch("/api/studies", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, segment }),
+      body: JSON.stringify({
+        url,
+        segment,
+        customers: customers || null,
+        competitors: testMode ? [] : competitors,
+        tasks,
+        test_mode: testMode,
+      }),
     });
     const raw = await startRes.text();
     if (!startRes.ok) {
@@ -609,5 +668,18 @@ form.addEventListener("submit", async (e) => {
     showError(err.message || String(err));
   } finally {
     setLoading(false);
+  }
+});
+
+// shot-pill-delegate: bakeoff-style screenshot pills in persona traces
+document.addEventListener("click", (ev) => {
+  const btn = ev.target.closest(".step-pill[data-shot-key]");
+  if (!btn) return;
+  const key = btn.getAttribute("data-shot-key");
+  const idx = Number(btn.getAttribute("data-shot-idx"));
+  if (!key || Number.isNaN(idx)) return;
+  _shotIdx[key] = idx;
+  if (_lastStudyData) {
+    renderPersonas(_lastStudyData.personas, mergeSessions(_lastStudyData));
   }
 });
