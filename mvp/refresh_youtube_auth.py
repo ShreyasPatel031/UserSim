@@ -28,10 +28,27 @@ OUT_SIGNED = SECRETS / "youtube_storage_state.json.signed"
 PROFILE = SECRETS / "youtube_browser_profile"
 CHECK_PNG = SECRETS / "youtube_auth_check.png"
 CDP_PORT = int(os.environ.get("MVP_YT_AUTH_CDP_PORT", "9222"))
-CHROME = os.environ.get(
-    "MVP_CHROME_PATH",
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-)
+
+
+def _find_chrome() -> str:
+    override = os.environ.get("MVP_CHROME_PATH")
+    if override:
+        return override
+    candidates = [
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "/usr/local/bin/google-chrome",
+        "/usr/bin/google-chrome",
+        "/usr/bin/google-chrome-stable",
+        "/usr/bin/chromium",
+        "/usr/bin/chromium-browser",
+    ]
+    for path in candidates:
+        if Path(path).exists():
+            return path
+    return candidates[0]
+
+
+CHROME = _find_chrome()
 
 
 def _kill_port(port: int) -> None:
@@ -219,6 +236,11 @@ def main() -> int:
         default=float(os.environ.get("MVP_YT_AUTH_TIMEOUT", "1800")),
     )
     ap.add_argument("--verify-only", action="store_true")
+    ap.add_argument(
+        "--attach",
+        action="store_true",
+        help="Use a Chrome already listening on CDP_PORT instead of launching one.",
+    )
     args = ap.parse_args()
 
     if args.verify_only:
@@ -229,8 +251,12 @@ def main() -> int:
             mark_youtube_auth_ok(True)
         return 0 if ok else 1
 
-    proc = _launch_chrome()
-    print(f"Launched Chrome pid={proc.pid} profile={PROFILE}", flush=True)
+    proc = None
+    if args.attach:
+        print(f"Attaching to Chrome already on CDP port {CDP_PORT}", flush=True)
+    else:
+        proc = _launch_chrome()
+        print(f"Launched Chrome pid={proc.pid} profile={PROFILE}", flush=True)
     result = asyncio.run(_wait_signed_in(args.timeout))
 
     if not result.get("ok"):
@@ -241,21 +267,23 @@ def main() -> int:
         )
         return 1
 
-    # Let Chrome flush cookies to the profile, then quit cleanly.
+    # Let Chrome flush cookies to the profile, then quit cleanly so the profile unlocks.
     time.sleep(2)
-    try:
-        proc.terminate()
-        proc.wait(timeout=8)
-    except Exception:
+    if proc is not None:
         try:
-            proc.kill()
+            proc.terminate()
+            proc.wait(timeout=8)
         except Exception:
-            pass
-    _kill_port(CDP_PORT)
-    time.sleep(1.5)
+            try:
+                proc.kill()
+            except Exception:
+                pass
+        _kill_port(CDP_PORT)
+        time.sleep(1.5)
 
     ok = asyncio.run(_verify_with_saved_state())
-    if not ok:
+    if not ok and proc is not None:
+        # Skip when attached: the live Chrome still holds a lock on the profile dir.
         ok = asyncio.run(_verify_with_profile())
     if not ok:
         print(
