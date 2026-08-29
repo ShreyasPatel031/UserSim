@@ -88,15 +88,22 @@ def run_split(
         system, user = _generate_prompt(row)
         keys = list(row["human_answer"].keys())
         try:
+            # thinking_budget=0: Flash 2.5 otherwise burns ~200–1000 thought
+            # tokens into the output budget and truncates the JSON (also blows $).
+            gen_cfg = types.GenerateContentConfig(
+                system_instruction=system,
+                temperature=temperature,
+                max_output_tokens=512,
+                response_mime_type="application/json",
+            )
+            try:
+                gen_cfg.thinking_config = types.ThinkingConfig(thinking_budget=0)
+            except Exception:
+                pass
             resp = client.models.generate_content(
                 model=model,
                 contents=user,
-                config=types.GenerateContentConfig(
-                    system_instruction=system,
-                    temperature=temperature,
-                    max_output_tokens=250,
-                    response_mime_type="application/json",
-                ),
+                config=gen_cfg,
             )
             raw = (resp.text or "").strip()
             usage = getattr(resp, "usage_metadata", None)
