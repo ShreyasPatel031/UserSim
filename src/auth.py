@@ -32,6 +32,16 @@ def _adc_path() -> Path | None:
         str(ROOT / "secrets" / "vertex_adc.json"),
         os.environ.get("VERTEX_ADC"),
         os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"),
+        # gcloud writes an authorized-user JSON (with a refresh token) per account.
+        # Preferred over `print-access-token`, whose bare token cannot be refreshed.
+        str(
+            Path.home()
+            / ".config"
+            / "gcloud"
+            / "legacy_credentials"
+            / GCP_ACCOUNT
+            / "adc.json"
+        ),
     ]
     for item in raw:
         if not item:
@@ -60,6 +70,18 @@ def _from_gcloud() -> Credentials:
     return Credentials(token=token)
 
 
+def invalidate_credentials() -> None:
+    """Drop the cached token so the next call re-mints one.
+
+    Callers that see 401 UNAUTHENTICATED should invalidate and retry once:
+    a bare `gcloud` access token has no refresh handle, so a long-running
+    process will otherwise keep replaying a dead token.
+    """
+    global _cached, _expires
+    _cached = None
+    _expires = None
+
+
 def vertex_credentials() -> Credentials:
     global _cached, _expires
     now = datetime.now(timezone.utc)
@@ -77,7 +99,9 @@ def vertex_credentials() -> Credentials:
         _expires = (expiry - timedelta(minutes=5)) if expiry else now + timedelta(minutes=45)
         return _cached
 
+    # No refresh token available: access tokens live ~1h, so keep the cache well
+    # inside that window rather than assuming a run finishes before expiry.
     creds = _from_gcloud()
     _cached = creds
-    _expires = now + timedelta(minutes=45)
+    _expires = now + timedelta(minutes=20)
     return _cached
