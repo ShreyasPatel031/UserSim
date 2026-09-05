@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_playback_dailymotion",
+  "eval_index": 20453,
+  "website": "dailymotion",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "playback",
+  "goal_title": "Evaluate consumption UX",
+  "comparative_group": "p4_marketer_playback",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:35.588809+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 47.398,
+  "final_result": "I have opened and inspected the organic educational video titled 'How A Galactic Center Sonification Was Turned Into Sheet Music' on Dailymotion.\n\n**Title:** How A Galactic Center Sonification Was Turned Into Sheet Music\n**Creator/Channel:** Space.com\n\n**Visible Viewing Controls/Context:**\n- Like button\n- Share button\n- Bookmark button\n- More options button\n- Follow button (for the channel)\n- Transcript link\n- Recommended videos sidebar\n\n**UX Likes:**\n- Clear and prominent video title.\n- Easy access to core social actions (Like, Share, Bookmark).\n- Availability of a video transcript.\n\n**UX Dislikes:**\n- Prominent 'Connect' button at the top right.\n- 'Follow' button for the channel is quite visible, potentially encouraging interaction beyond read-only.\n- The large black area where the video would play, while expected, is visually dominant.\n\n**Ease:** Easy",
+  "final_url": "https://www.dailymotion.com/video/xb013u2",
+  "ok": true,
+  "finished_at": "2026-08-29T23:37:29.687857+00:00"
+}

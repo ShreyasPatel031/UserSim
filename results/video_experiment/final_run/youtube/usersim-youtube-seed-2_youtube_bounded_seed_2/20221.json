@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p2_student_filters_youtube",
+  "eval_index": 20221,
+  "website": "youtube",
+  "persona_id": "p2_student",
+  "persona_name": "Noah Kim",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p2_student_filters",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 2,
+  "started_at": "2026-08-30T00:39:05.530475+00:00",
+  "elapsed_s": 245.857,
+  "final_result": "I have successfully searched for 'home workout videos' on YouTube and applied filters for 'Upload date' (This week) and 'Duration' (3 - 20 minutes) to narrow down the results toward recent beginner content. \n\nAvailable refinement controls included:\n- Upload date (selected 'This week')\n- Duration (selected '3 - 20 minutes')\n- Features (e.g., 4K, HD, CC, etc. - not directly relevant to beginner content)\n- Prioritize (e.g., Relevance, Rating, View count, Upload date - not directly for beginner content)\n\nThere was no direct filter for 'beginner' content, so the duration and upload date filters were used as proxies.\n\nThe best matching result found was: 'FAT BURN FULL BODY PILATES WORKOUT \ud83d\udd25 Sculpt an Hourglass Body | 8 min' by Lilly Sabri.\n\nUX Likes:\n1. Easy access to filters via the 'Filters' button.\n2. Clear categorization of filter options (Upload date, Duration, Features, Prioritize).\n3. Applied filters are clearly visible on the results page.\n4. Search results display useful metadata such as title, views, upload date, and channel.\n\nUX Dislikes:\n1. Lack of a direct filter for 'beginner' content, requiring inference.\n2. Some 'Features' filter options (e.g., 4K, HD) are not relevant for finding beginner workout videos.\n3. 'Prioritize' filter options like 'Rating' and 'View count' are not ideal for identifying beginner-friendly content.\n4. Previous issues with search suggestions leading to incorrect navigation.\n\nEase: Medium.",
+  "final_url": "https://www.youtube.com/results?search_query=home+workout+videos&sp=EgIYBQ%253D%253D",
+  "ok": true,
+  "finished_at": "2026-08-30T00:43:14.967432+00:00"
+}

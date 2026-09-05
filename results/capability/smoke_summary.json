@@ -1,0 +1,41 @@
+{
+  "stage": "smoke",
+  "stacks": {
+    "browser_use_oss": {
+      "underarmour": {
+        "status": "SUCCESS",
+        "success": true,
+        "num_actions": 18,
+        "failure_category": null,
+        "cost": 0.6280809,
+        "judge_reason": "The agent successfully navigated to the Women's Sports Bras category page and applied all the specified filters: 'Purple' for color, 'High Impact' for support, and 'S' for size. The URL and the page title confirm these filters are active."
+      },
+      "newegg": {
+        "status": "SUCCESS",
+        "success": true,
+        "num_actions": 6,
+        "failure_category": null,
+        "cost": 0.1941668,
+        "judge_reason": "The agent successfully navigated to Newegg, searched for 'wireless keyboard and mouse combo', applied a price filter under $100, selected a valid wireless keyboard and mouse combo (Logitech MK270 for $29.99), navigated to the product page, and reported all requested details accurately."
+      }
+    },
+    "native_computer_use": {
+      "newegg": {
+        "status": "FAILURE",
+        "success": false,
+        "num_actions": 15,
+        "failure_category": "PREMATURE_STOP",
+        "cost": 0.3184111,
+        "judge_reason": "The task was to find a wireless keyboard and mouse combo under $100. While the agent successfully searched for the combo, it did not apply any price filter to ensure the results were under $100. The final page shows a product for $89.99, which is under $100, but there is no guarantee that all products on the page meet this criteria, and the agent did not explicitly filter for this price range."
+      },
+      "underarmour": {
+        "status": "FAILURE",
+        "success": false,
+        "num_actions": 20,
+        "failure_category": "PLANNING",
+        "cost": 0.4737436,
+        "judge_reason": "The task requires filtering by color (purple), support level (high), and size (small). The final page only shows the general 'Women's Sports Bras' category and does not have any of the specified filters applied. The agent attempted to click 'High Impact' but then navigated back, and no other filters were applied."
+      }
+    }
+  }
+}

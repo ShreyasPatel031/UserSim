@@ -32,6 +32,16 @@ def _adc_path() -> Path | None:
         str(ROOT / "secrets" / "vertex_adc.json"),
         os.environ.get("VERTEX_ADC"),
         os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"),
+        # gcloud writes an authorized-user JSON (with a refresh token) per account.
+        # Preferred over `print-access-token`, whose bare token cannot be refreshed.
+        str(
+            Path.home()
+            / ".config"
+            / "gcloud"
+            / "legacy_credentials"
+            / GCP_ACCOUNT
+            / "adc.json"
+        ),
     ]
     for item in raw:
         if not item:
@@ -52,12 +62,42 @@ def _from_authorized_user(path: Path) -> Credentials:
     return creds
 
 
+def _from_service_account(path: Path):
+    from google.oauth2 import service_account
+
+    return service_account.Credentials.from_service_account_file(
+        str(path), scopes=_CLOUD_SCOPES
+    )
+
+
+def _from_credentials_file(path: Path):
+    info = json.loads(path.read_text())
+    ctype = (info.get("type") or "").strip()
+    if ctype == "service_account":
+        return _from_service_account(path)
+    if ctype == "authorized_user":
+        return _from_authorized_user(path)
+    raise RuntimeError(f"Unsupported credentials type {ctype!r} in {path}")
+
+
 def _from_gcloud() -> Credentials:
     token = subprocess.check_output(
         ["gcloud", "auth", "print-access-token", f"--account={GCP_ACCOUNT}"],
         text=True,
     ).strip()
     return Credentials(token=token)
+
+
+def invalidate_credentials() -> None:
+    """Drop the cached token so the next call re-mints one.
+
+    Callers that see 401 UNAUTHENTICATED should invalidate and retry once:
+    a bare `gcloud` access token has no refresh handle, so a long-running
+    process will otherwise keep replaying a dead token.
+    """
+    global _cached, _expires
+    _cached = None
+    _expires = None
 
 
 def vertex_credentials() -> Credentials:
@@ -68,16 +108,20 @@ def vertex_credentials() -> Credentials:
 
     path = _adc_path()
     if path is not None:
-        creds = _from_authorized_user(path)
-        # Refresh tokens are long-lived; cache the access token briefly.
-        expiry = creds.expiry
+        creds = _from_credentials_file(path)
+        if not getattr(creds, "valid", True):
+            creds.refresh(Request())
+        # Refresh tokens / SA keys are long-lived; cache the access token briefly.
+        expiry = getattr(creds, "expiry", None)
         if expiry is not None and expiry.tzinfo is None:
             expiry = expiry.replace(tzinfo=timezone.utc)
         _cached = creds
         _expires = (expiry - timedelta(minutes=5)) if expiry else now + timedelta(minutes=45)
         return _cached
 
+    # No refresh token available: access tokens live ~1h, so keep the cache well
+    # inside that window rather than assuming a run finishes before expiry.
     creds = _from_gcloud()
     _cached = creds
-    _expires = now + timedelta(minutes=45)
+    _expires = now + timedelta(minutes=20)
     return _cached

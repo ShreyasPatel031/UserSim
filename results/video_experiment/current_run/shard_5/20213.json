@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p2_student_search_dailymotion",
+  "eval_index": 20213,
+  "website": "dailymotion",
+  "persona_id": "p2_student",
+  "persona_name": "Noah Kim",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p2_student_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:05.067899+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 295.24,
+  "final_result": "The agent was terminated due to repeated failures in interacting with the Dailymotion website. It was unable to search for videos on personal productivity or inspect the results as requested. The core functionality of searching on the site could not be accessed.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:06:06.411937+00:00"
+}

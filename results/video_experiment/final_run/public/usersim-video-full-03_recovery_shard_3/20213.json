@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p2_student_search_dailymotion",
+  "eval_index": 20213,
+  "website": "dailymotion",
+  "persona_id": "p2_student",
+  "persona_name": "Noah Kim",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p2_student_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-30T00:22:24.020842+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 111.333,
+  "final_result": "I was unable to find any videos related to 'personal productivity' on Dailymotion. The search returned no results, and a 'Something went wrong' message was displayed.\n\nUX Likes:\n- The website interface is generally clean and easy to navigate.\n- The filtering by 'Videos' tab was functional after an initial retry.\n\nUX Dislikes:\n- The search input field was not initially available or indexed, requiring a direct navigation to search results.\n- The search query yielded zero results, which is a significant failure for the task.\n- A 'Something went wrong' popup appeared on the results page.\n\nEase: Hard.",
+  "final_url": "https://www.dailymotion.com/search/personal%20productivity/videos?retry",
+  "ok": true,
+  "finished_at": "2026-08-30T00:24:21.610659+00:00"
+}

@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p1_viewer_discovery_vimeo",
+  "eval_index": 20142,
+  "website": "vimeo",
+  "persona_id": "p1_viewer",
+  "persona_name": "Avery Brooks",
+  "goal_key": "discovery",
+  "goal_title": "Evaluate discovery",
+  "comparative_group": "p1_viewer_discovery",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:35.620579+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 338.533,
+  "final_result": "The task to find a promising cooking or recipe video on Vimeo could not be completed. Despite multiple attempts to navigate and scroll through the homepage and its menus ('Learn', 'Use cases'), no relevant categories or videos for cooking or recipes were found. Vimeo's interface appears to be heavily geared towards enterprise solutions, which hinders general content discovery for a casual viewer.\n\nUX Likes:\n- The overall interface of Vimeo is clean and modern.\n\nUX Dislikes:\n- Lack of clear general content browsing categories for casual viewers.\n- The strong enterprise focus makes it difficult to discover non-business-related content.\n\nEase: Hard",
+  "final_url": "https://vimeo.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T23:42:25.096474+00:00"
+}

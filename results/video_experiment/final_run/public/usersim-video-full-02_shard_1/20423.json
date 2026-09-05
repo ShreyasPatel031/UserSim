@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_filters_dailymotion",
+  "eval_index": 20423,
+  "website": "dailymotion",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p4_marketer_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:32.596553+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 173.327,
+  "final_result": "I was unable to complete the task. I navigated to Dailymotion.com and attempted to search for 'home workout videos'. However, due to repeated formatting errors and explicit instructions to terminate and use only the 'done' tool, I could not proceed to search results, apply filters, or identify any matching content. Therefore, I cannot report on refinement controls, best matching results, UX likes/dislikes, or ease.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T23:39:32.055878+00:00"
+}

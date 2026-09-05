@@ -1,0 +1,12 @@
+2026-09-05 09:27:25                                        │
+│   708 │   │   │   )                                                          │
+│   709 │   │                                                                  │
+│   710 │   │   except (ProtocolError, OSError) as err:                        │
+│ ❱ 711 │   │   │   raise ConnectionError(err, request=request)                │
+│   712 │   │                                                                  │
+│   713 │   │   except MaxRetryError as e:                                     │
+│   714 │   │   │   if isinstance(e.reason, ConnectTimeoutError):              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed 
+connection without response'))
+

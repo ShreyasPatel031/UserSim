@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p3_creator_creator_dailymotion",
+  "eval_index": 20333,
+  "website": "dailymotion",
+  "persona_id": "p3_creator",
+  "persona_name": "Maya Patel",
+  "goal_key": "creator",
+  "goal_title": "Inspect creator information",
+  "comparative_group": "p3_creator_creator",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:32.596427+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 280.528,
+  "final_result": "The task could not be completed. Previous attempts to search on Dailymotion failed, and the subsequent search on DuckDuckGo was blocked by a CAPTCHA. Due to these persistent issues and the limited remaining steps, it is impossible to find a science explainer video, assess its creator, or report on credibility signals. Success is false.",
+  "final_url": "https://duckduckgo.com/?q=site%3Adailymotion.com+science+explainer",
+  "ok": true,
+  "finished_at": "2026-08-29T23:41:19.416935+00:00"
+}

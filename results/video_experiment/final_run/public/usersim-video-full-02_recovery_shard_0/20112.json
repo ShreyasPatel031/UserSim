@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p1_viewer_search_vimeo",
+  "eval_index": 20112,
+  "website": "vimeo",
+  "persona_id": "p1_viewer",
+  "persona_name": "Avery Brooks",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p1_viewer_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-30T00:22:23.765990+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 348.615,
+  "final_result": "I was unable to complete the task of finding beginner-friendly videos on personal productivity on Vimeo. My attempts to search for the term were unsuccessful due to issues with locating the search functionality on the page and the lack of results from attempted searches. Consequently, I could not inspect any organic results, report video titles and creators, or provide UX feedback and an assessment of ease. The agent has reached its maximum step limit and is being terminated.",
+  "final_url": "https://vimeo.com/",
+  "ok": true,
+  "finished_at": "2026-08-30T00:28:21.579373+00:00"
+}

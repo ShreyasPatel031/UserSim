@@ -1,0 +1,9 @@
+alive True summary False
++ /usr/bin/python3 -m pip install -q -U pip
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 30.7 MB/s eta 0:00:00
++ /usr/bin/python3 -m pip install -q torch transformers accelerate bitsandbytes datasets huggingface_hub scipy numpy sentencepiece protobuf
+unseen studies: 40
+Loading model socratesft/socrates-qwen2.5-14b-sft (4-bit → fits T4/L4)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]

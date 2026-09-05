@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p3_creator_playback_dailymotion",
+  "eval_index": 20353,
+  "website": "dailymotion",
+  "persona_id": "p3_creator",
+  "persona_name": "Maya Patel",
+  "goal_key": "playback",
+  "goal_title": "Evaluate consumption UX",
+  "comparative_group": "p3_creator_playback",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:03.441127+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 246.207,
+  "final_result": "The task could not be completed due to repeated failures in interacting with the Dailymotion website's search functionality and persistent format errors. The agent was unable to find an educational video, inspect its viewing page, or provide the requested UX feedback. Therefore, the user's request was not fulfilled.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:05:15.324471+00:00"
+}

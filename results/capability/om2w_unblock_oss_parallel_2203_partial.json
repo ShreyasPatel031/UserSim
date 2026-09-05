@@ -1,0 +1,1808 @@
+{
+  "created_at": "2026-09-05T05:16:55.331838+00:00",
+  "status": "partial_camoufox_crash",
+  "note": "camoufox/patchright not finished; chromium_* complete from log parse",
+  "summary": {
+    "chromium_headless": {
+      "n": 145,
+      "ok": 113,
+      "blocked": 32,
+      "ok_rate": 0.7793,
+      "blocked_hosts": [
+        "accuweather.com",
+        "allrecipes.com",
+        "apartments.com",
+        "bestbuy.com",
+        "bhphotovideo.com",
+        "carmax.com",
+        "cars.com",
+        "carvana.com",
+        "dillards.com",
+        "discogs.com",
+        "disney.com",
+        "drugs.com",
+        "fandom.com",
+        "fedex.com",
+        "jcpenney.com",
+        "kaggle.com",
+        "kbb.com",
+        "landwatch.com",
+        "marriott.com",
+        "mayoclinic.org",
+        "microcenter.com",
+        "nba.com",
+        "new.mta.info",
+        "qatarairways.com",
+        "sec.gov",
+        "sourceforge.net",
+        "superlawyers.com",
+        "traderjoes.com",
+        "united.com",
+        "ups.com",
+        "us-appliance.com",
+        "zara.com"
+      ]
+    },
+    "chromium_headful": {
+      "n": 141,
+      "ok": 129,
+      "blocked": 12,
+      "ok_rate": 0.9149,
+      "blocked_hosts": [
+        "allrecipes.com",
+        "apartments.com",
+        "bhphotovideo.com",
+        "cars.com",
+        "carvana.com",
+        "fandom.com",
+        "kaggle.com",
+        "marriott.com",
+        "microcenter.com",
+        "sourceforge.net",
+        "umich.edu",
+        "us-appliance.com"
+      ],
+      "rescued_vs_chromium_headless": [
+        "accuweather.com",
+        "bestbuy.com",
+        "carmax.com",
+        "dillards.com",
+        "discogs.com",
+        "disney.com",
+        "drugs.com",
+        "fedex.com",
+        "jcpenney.com",
+        "kbb.com",
+        "landwatch.com",
+        "mayoclinic.org",
+        "nba.com",
+        "new.mta.info",
+        "qatarairways.com",
+        "sec.gov",
+        "superlawyers.com",
+        "traderjoes.com",
+        "united.com",
+        "ups.com"
+      ],
+      "n_rescued_vs_chromium_headless": 20
+    }
+  },
+  "rows": [
+    {
+      "backend": "chromium_headless",
+      "host": "accuweather.com",
+      "blocked": true,
+      "reason": "navigation_error:Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.accuwea"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "allrecipes.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "4shared.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "akc.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "airbnb.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "adoptapet.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "9gag.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "amazon.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "amazon.jobs",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "apartments.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "americashealthrankings.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "arxiv.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "apple.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "americanexpress.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "backcountry.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "babycenter.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "bandcamp.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "bbb.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "berkeley.edu",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "amtrak.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "bhphotovideo.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ca.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "boardgamegeek.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "carmax.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "booking.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "careers.walmart.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "azure.microsoft.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "birkenstock.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "cars.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "carvana.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "cbp.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "chase.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "cboe.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "chess.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "carnival.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "compass.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "coolmath4kids.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "cookpad.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "coursera.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "craigslist.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "dillards.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "coinmarketcap.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "discogs.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "disney.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "dblp.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "drugs.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "dmv.virginia.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "doctor.webmd.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "espn.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "fandom.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "cvs.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "eventbrite.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "fedex.com",
+      "blocked": true,
+      "reason": "blocked_body:waf_or_captcha"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "flightaware.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "healthgrades.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "google.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "gov.uk",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "finance.yahoo.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "github.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "bestbuy.com",
+      "blocked": true,
+      "reason": "navigation_error:Page.goto: Timeout 25000ms exceeded."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "healthline.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ikea.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "foxsports.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "imdb.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "iclr.cc",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "jcpenney.com",
+      "blocked": true,
+      "reason": "navigation_error:Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.jcpenne"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ign.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "irs.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "imgur.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "kaggle.com",
+      "blocked": true,
+      "reason": "blocked_body:waf_or_captcha"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "instructure.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "kbb.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "landwatch.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "jobs.chronicle.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "justice.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "mayoclinic.org",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "marriott.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "leagueoflegends.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "microcenter.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "macyswineshop.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "nba.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "medicare.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "merriam-webster.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "new.mta.info",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "mega.io",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "nyse.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ohio.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "nvidia.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "osu.edu",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "nfl.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "michaels.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "petfinder.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ohiomeansjobs.ohio.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "parkers.co.uk",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "phys.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "porsche.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "qatarairways.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "publicstorage.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "remax.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "raisingcanes.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "recreation.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "phet.colorado.edu",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ryanair.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "sec.gov",
+      "blocked": true,
+      "reason": "blocked_body:waf_or_captcha"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "smartasset.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "rottentomatoes.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "sourceforge.net",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "redbull.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "samsung.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "soundcloud.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "spothero.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "stanford.edu",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "statista.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "superlawyers.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "store.steampowered.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "stubhub.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "student.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "theweathernetwork.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "thumbtack.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "traderjoes.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ted.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ticketmaster.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "tourradar.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "tumblr.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "united.com",
+      "blocked": true,
+      "reason": "navigation_error:Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.united."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ups.com",
+      "blocked": true,
+      "reason": "navigation_error:Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.ups.com"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "umich.edu",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "us-appliance.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "target.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "us.megabus.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "uscis.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "versus.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "verizon.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "usps.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "us.speedo.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "us.trip.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "wanderlog.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "uniqlo.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "weather.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "zara.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "wineaccess.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "webmd.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ycombinator.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "ziprecruiter.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "youtube.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "4shared.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "accuweather.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "9gag.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "adoptapet.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "airbnb.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "allrecipes.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "akc.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "americashealthrankings.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "amazon.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "amazon.jobs",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "apartments.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "americanexpress.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "arxiv.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "apple.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "backcountry.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "babycenter.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "bandcamp.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "berkeley.edu",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "amtrak.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "bbb.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "bhphotovideo.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "ca.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "boardgamegeek.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "bestbuy.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "azure.microsoft.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "careers.walmart.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "booking.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "birkenstock.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "cars.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "carvana.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "carmax.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "chase.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "cbp.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "chess.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "carnival.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "cboe.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "compass.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "coolmath4kids.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "cookpad.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "craigslist.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "coursera.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "coinmarketcap.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "disney.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "discogs.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "dillards.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "cvs.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "dblp.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "dmv.virginia.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "doctor.webmd.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "drugs.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "fandom.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "espn.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "flightaware.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "fedex.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "eventbrite.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "google.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "gov.uk",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "finance.yahoo.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "healthgrades.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "github.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "iclr.cc",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "foxsports.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "ikea.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "healthline.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "ign.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "imdb.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "imgur.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "irs.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "instructure.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "kaggle.com",
+      "blocked": true,
+      "reason": "blocked_body:waf_or_captcha"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "jobs.chronicle.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "justice.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "landwatch.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "jcpenney.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "marriott.com",
+      "blocked": true,
+      "reason": "blocked_title:Access Denied"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "leagueoflegends.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "macyswineshop.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "kbb.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "mayoclinic.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "medicare.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "microcenter.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "merriam-webster.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "mega.io",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "new.mta.info",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "nfl.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "nyse.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "nvidia.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "nba.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "ohio.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "michaels.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "osu.edu",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "phys.org",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "ohiomeansjobs.ohio.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "petfinder.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "parkers.co.uk",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "porsche.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "publicstorage.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "phet.colorado.edu",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "raisingcanes.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "remax.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "recreation.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "qatarairways.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "ryanair.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "rottentomatoes.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "smartasset.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "samsung.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "sec.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "redbull.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "soundcloud.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "sourceforge.net",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "spothero.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "statista.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "stanford.edu",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "stubhub.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "store.steampowered.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "student.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "superlawyers.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "thumbtack.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "theweathernetwork.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "ted.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "ticketmaster.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "tourradar.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "traderjoes.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "tumblr.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "umich.edu",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "target.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "us-appliance.com",
+      "blocked": true,
+      "reason": "blocked_title:Just a moment..."
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "us.megabus.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "ups.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "uscis.gov",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "usps.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "verizon.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "united.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "versus.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "uniqlo.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "us.trip.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "us.speedo.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "wanderlog.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "weather.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "webmd.com",
+      "blocked": false,
+      "reason": "ok"
+    },
+    {
+      "backend": "chromium_headful",
+      "host": "wineaccess.com",
+      "blocked": false,
+      "reason": "ok"
+    }
+  ]
+}

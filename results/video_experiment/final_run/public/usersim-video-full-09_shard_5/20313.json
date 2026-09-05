@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p3_creator_search_dailymotion",
+  "eval_index": 20313,
+  "website": "dailymotion",
+  "persona_id": "p3_creator",
+  "persona_name": "Maya Patel",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p3_creator_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:37.633070+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 275.512,
+  "final_result": "The agent was unable to complete the task of searching for personal productivity videos on Dailymotion. Repeated attempts to interact with the website's search interface failed, preventing the retrieval of any video titles or creator information. Therefore, the task could not be successfully finished.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T23:41:21.590719+00:00"
+}

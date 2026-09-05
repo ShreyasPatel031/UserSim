@@ -1,0 +1,22 @@
+{
+  "total": 90,
+  "ok": 90,
+  "with_final_result": 90,
+  "by_site": {
+    "youtube": {
+      "count": 30,
+      "ok": 30,
+      "final_result": 30
+    },
+    "dailymotion": {
+      "count": 30,
+      "ok": 30,
+      "final_result": 30
+    },
+    "vimeo": {
+      "count": 30,
+      "ok": 30,
+      "final_result": 30
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_search_vimeo",
+  "eval_index": 20412,
+  "website": "vimeo",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p4_marketer_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:03.207904+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 318.302,
+  "final_result": "I was unable to find a search bar or search icon on the Vimeo homepage. This prevented me from searching for 'personal productivity' videos and inspecting the results as requested. Therefore, I cannot provide the video titles, creators, UX feedback, or ease rating.",
+  "final_url": "https://vimeo.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:06:30.404369+00:00"
+}

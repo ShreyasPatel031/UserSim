@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p5_parent_filters_dailymotion",
+  "eval_index": 20523,
+  "website": "dailymotion",
+  "persona_id": "p5_parent",
+  "persona_name": "Taylor Morgan",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p5_parent_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-30T00:22:24.021162+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 206.107,
+  "final_result": "The agent was terminated due to repeated failures in output formatting. The task could not be completed. The Dailymotion homepage was successfully navigated to, but no search for 'home workout' videos or application of filters was performed. Therefore, no results, UX feedback, or ease assessment could be gathered.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-30T00:25:57.059522+00:00"
+}

@@ -1,0 +1,49 @@
+{
+  "elapsed_s": 56.69,
+  "workers": 2,
+  "passed": 2,
+  "results": [
+    {
+      "worker": 0,
+      "query": "motivational videos",
+      "devbox_id": "dbx_34Fna4ZMvguuCPfbFZ1D4",
+      "create_s": 0.765,
+      "browse_s": 10.071,
+      "exit_code": 0,
+      "evidence": {
+        "url": "https://www.youtube.com/results?search_query=motivational+videos",
+        "title": "motivational videos - YouTube",
+        "video_titles": [
+          "YOU GOTTA F*CKING WORK - Motivational Speech",
+          "IT\u2019S TIME TO RESET, RESTART, AND REFOCUS - Best Motivational Speeches Compilation | Marcus A. Taylor",
+          "IT'S SUPPOSED TO BE HARD 3.0 - The Most Powerful Motivational Speeches Compilation",
+          "NO EXCUSES - Best Motivational Video",
+          "Les Brown - CHANGE THE WAY YOU SEE YOURSELF (Les Brown Motivation)"
+        ],
+        "video_count": 5
+      },
+      "stderr_tail": ""
+    },
+    {
+      "worker": 1,
+      "query": "personal productivity videos",
+      "devbox_id": "dbx_34Fna4ZYpCcr767B02EKS",
+      "create_s": 0.751,
+      "browse_s": 9.576,
+      "exit_code": 0,
+      "evidence": {
+        "url": "https://www.youtube.com/results?search_query=personal+productivity+videos",
+        "title": "personal productivity videos - YouTube",
+        "video_titles": [
+          "How to Be So Productive it Feels ILLEGAL",
+          "The Unexpected Key to Boosting Your Productivity | The Way We Work, a TED series",
+          "HOW TO MAKE TIME FOR EVERYTHING (seriously): staying productive, time management, planning tips",
+          "Give Me 12 Minutes and I\u2019ll Give You 30 Years of Productivity Advice",
+          "How to Be So Productive It Feels ILLEGAL (No Motivation Needed)"
+        ],
+        "video_count": 5
+      },
+      "stderr_tail": ""
+    }
+  ]
+}

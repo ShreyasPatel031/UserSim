@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p6_educator_filters_youtube",
+  "eval_index": 20621,
+  "website": "youtube",
+  "persona_id": "p6_educator",
+  "persona_name": "Elena Garcia",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p6_educator_filters",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 2,
+  "started_at": "2026-08-30T00:49:38.715478+00:00",
+  "elapsed_s": 333.356,
+  "final_result": "I have searched for 'home workout videos' on YouTube. The available refinement controls included Type (Videos, Shorts, Channels, Playlists, Movies), Duration (Under 3 minutes, 3 - 20 minutes, Over 20 minutes), Upload date (Today, This week, This month, This year), Features (Live, 4K, HD, Subtitles/CC, etc.), and Prioritize (Relevance, Popularity).\n\nI attempted to filter for recent beginner content by applying the 'This year' upload date filter and the '3 - 20 minutes' duration filter. However, the 'This year' filter did not function as expected, showing videos older than one year. The '3 - 20 minutes' duration filter appeared to be applied.\n\nThe best matching result found, prioritizing beginner-friendliness due to the filter issue, is '11 Min Easy Workout To Do At Home Everyday' by Roberta's Gym. This video is 11 minutes long and explicitly described as 'easy'. It was uploaded 7 years ago.\n\nUX Likes:\n1. Clear categorization of filters.\n2. Specific duration options like '3 - 20 minutes'.\n3. Video titles and descriptions provide good initial information.\n\nUX Dislikes:\n1. The 'Upload date' filter ('This year') failed to apply correctly.\n2. The filter dialog remained open after applying filters, requiring an extra step to close.\n3. The search results page can be overwhelming without effective filtering.\n\nEase: Medium.",
+  "final_url": "https://www.youtube.com/results?search_query=home+workout+videos&sp=EgIYBQ%253D%253D",
+  "ok": true,
+  "finished_at": "2026-08-30T00:55:12.692759+00:00"
+}

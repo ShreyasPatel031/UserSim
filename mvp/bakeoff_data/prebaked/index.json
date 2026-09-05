@@ -1,0 +1,52 @@
+{
+  "studies": [
+    {
+      "id": "product_persona_p1_browser_use_p1_all_v1",
+      "persona_id": "p1_ops",
+      "persona_name": "Maya Chen",
+      "n_runs": 15,
+      "successes": 15,
+      "stage": "product_persona_p1"
+    },
+    {
+      "id": "product_persona_p2_browser_use_p2_all_v1",
+      "persona_id": "p2_fde",
+      "persona_name": "Jordan Blake",
+      "n_runs": 15,
+      "successes": 15,
+      "stage": "product_persona_p2"
+    },
+    {
+      "id": "product_persona_p3_browser_use_p3_all_v1",
+      "persona_id": "p3_outbound",
+      "persona_name": "Priya Nair",
+      "n_runs": 15,
+      "successes": 15,
+      "stage": "product_persona_p3"
+    },
+    {
+      "id": "product_persona_p4_browser_use_p4_all_v1",
+      "persona_id": "p4_eng",
+      "persona_name": "Alex Rivera",
+      "n_runs": 15,
+      "successes": 14,
+      "stage": "product_persona_p4"
+    },
+    {
+      "id": "product_persona_p5_browser_use_p5_all_v1",
+      "persona_id": "p5_compliance",
+      "persona_name": "Sam Okonkwo",
+      "n_runs": 15,
+      "successes": 15,
+      "stage": "product_persona_p5"
+    },
+    {
+      "id": "product_persona_p6_browser_use_p6_all_v1",
+      "persona_id": "p6_founder",
+      "persona_name": "Elena Park",
+      "n_runs": 15,
+      "successes": 15,
+      "stage": "product_persona_p6"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+0:19<00:00, 23.14it/s]
+Loading weights:  99%|█████████▊| 287/291 [00:20<00:00, 21.32it/s]
+Loading weights: 100%|██████████| 291/291 [00:20<00:00, 14.52it/s]
+Unsloth: Will load unsloth/Meta-Llama-3.1-8B-bnb-4bit as a legacy tokenizer.
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/constants.py:299: FutureWarning: The `HF_HUB_ENABLE_HF_TRANSFER` environment variable is deprecated as 'hf_transfer' is not used anymore. Please use `HF_XET_HIGH_PERFORMANCE` instead to enable high performance transfer with Xet. Visit https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfxethighperformance for more details.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Unsloth 2026.9.2 patched 32 layers with 32 QKV layers, 32 O layers and 32 MLP layers.
+loaded 6561 test rows
+`use_return_dict` is deprecated! Use `return_dict` instead!
+Traceback (most recent call last):
+  File "/content/fm_baselines/scripts/colab_minitaur_psych101_nll.py", line 138, in <module>
+    main()
+    ~~~~^^
+  File "/content/fm_baselines/scripts/colab_minitaur_psych101_nll.py", line 118, in main
+    val = nll_for_text(r["text"])
+  File "/content/fm_baselines/scripts/colab_minitaur_psych101_nll.py", line 102, in nll_for_text
+    log_probs = torch.log_softmax(shift_logits, dim=-1)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.55 GiB. GPU 0 has a total capacity of 14.56 GiB of which 3.45 GiB is free. Including non-PyTorch memory, this process has 11.11 GiB memory in use. Of the allocated memory 10.90 GiB is allocated by PyTorch, and 62.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+

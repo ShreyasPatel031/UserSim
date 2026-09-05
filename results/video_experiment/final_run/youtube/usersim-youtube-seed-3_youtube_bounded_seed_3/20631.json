@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p6_educator_creator_youtube",
+  "eval_index": 20631,
+  "website": "youtube",
+  "persona_id": "p6_educator",
+  "persona_name": "Elena Garcia",
+  "goal_key": "creator",
+  "goal_title": "Inspect creator information",
+  "comparative_group": "p6_educator_creator",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 3,
+  "started_at": "2026-08-30T00:50:43.039087+00:00",
+  "elapsed_s": 309.823,
+  "final_result": "I was unable to complete the task. I repeatedly searched for science explainer videos on YouTube, but each video I attempted to select was unavailable. Due to this persistent issue, I could not find a suitable video, assess its creator's credibility, or gather the requested information (video, creator, credibility signals, UX likes/dislikes, ease).",
+  "final_url": "https://www.youtube.com/results?search_query=science+explainer+video",
+  "ok": true,
+  "finished_at": "2026-08-30T00:55:53.620845+00:00"
+}

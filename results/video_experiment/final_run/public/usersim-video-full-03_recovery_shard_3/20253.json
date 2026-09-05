@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p2_student_playback_dailymotion",
+  "eval_index": 20253,
+  "website": "dailymotion",
+  "persona_id": "p2_student",
+  "persona_name": "Noah Kim",
+  "goal_key": "playback",
+  "goal_title": "Evaluate consumption UX",
+  "comparative_group": "p2_student_playback",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-30T00:22:24.020933+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 308.912,
+  "final_result": "The agent was unable to complete the task. It successfully navigated to the Dailymotion homepage but could not find or interact with the search functionality to locate an educational video. Therefore, no video was inspected, and no information regarding title, creator, viewing controls, UX likes/dislikes, or ease rating could be gathered.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-30T00:27:39.081812+00:00"
+}
