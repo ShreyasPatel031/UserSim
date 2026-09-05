@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.usersim.fm-baselines</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/opt/python@3.10/libexec/bin/python3</string>
+    <string>-u</string>
+    <string>/Users/shreyaspatel/Desktop/Code/UserSim/scripts/fm_baselines/resilient_fm_supervisor.py</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/shreyaspatel/Desktop/Code/UserSim</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/supervisor.launchd.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/supervisor.launchd.err.log</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/Users/shreyaspatel/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <key>HOME</key>
+    <string>/Users/shreyaspatel</string>
+  </dict>
+  <key>ThrottleInterval</key>
+  <integer>30</integer>
+</dict>
+</plist>

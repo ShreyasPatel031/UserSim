@@ -420,7 +420,7 @@ ensure_shard_vm() {
 fleet_relaunch() {
   echo "==> Relaunch missing/preempted shards (${DEST_GCS})"
   TARBALL="/tmp/usersim-fleet-relaunch-$$.tgz"
-  tar czf "$TARBALL" -C "$ROOT" src data scripts/vm/shard_runner.sh \
+  tar czf "$TARBALL" -C "$ROOT" src data/om2w scripts/vm/shard_runner.sh \
     secrets/env secrets/vertex_adc.json
   local relaunch=()
   for i in $(seq 0 $((NUM_SHARDS - 1))); do
@@ -526,7 +526,9 @@ echo "==> Fleet ${STAGE}: ${NUM_SHARDS}× ${MACHINE} @ workers=${WORKERS}"
 echo "    zones: ${ZONE_CANDIDATES_ARR[*]} (round-robin per shard; override with GCP_ZONE or GCP_ZONE_CANDIDATES)"
 
 TARBALL="/tmp/usersim-fleet-$$.tgz"
-tar czf "$TARBALL" -C "$ROOT" src data scripts/vm/shard_runner.sh \
+# Only ship what shards need — full data/ is 200MB+ of unrelated corpora and
+# stalls IAP SCP across dozens of VMs.
+tar czf "$TARBALL" -C "$ROOT" src data/om2w scripts/vm/shard_runner.sh \
   secrets/env secrets/vertex_adc.json
 
 for i in $(seq 0 $((NUM_SHARDS - 1))); do

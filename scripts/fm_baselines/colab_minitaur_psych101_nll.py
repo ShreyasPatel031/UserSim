@@ -14,7 +14,8 @@ ROOT = Path("/content/fm_baselines")
 DATA = ROOT / "data" / "Psych-101-test" / "prompts_testing_t1.jsonl"
 RESULTS = ROOT / "results" / "minitaur"
 MODEL = "marcelbinz/Llama-3.1-Minitaur-8B-adapter"
-MAX_SEQ = 8192  # L4-safe; paper uses up to 32768 on A100
+# T4 OOM'd at 8192; 4096 fits T4. Override with MAX_SEQ env. Paper uses up to 32768 on A100.
+MAX_SEQ = int(os.environ.get("MAX_SEQ", "4096"))
 
 
 def sh(cmd: str) -> None:
@@ -122,6 +123,9 @@ def main() -> None:
         counts[exp] += 1
         if (i + 1) % 50 == 0:
             print(f"scored {i+1}/{len(use_rows)}", flush=True)
+            (RESULTS / "PROGRESS.json").write_text(
+                json.dumps({"scored": i + 1, "total": len(use_rows), "max_seq": MAX_SEQ})
+            )
 
     for exp in experiments:
         if counts[exp]:
