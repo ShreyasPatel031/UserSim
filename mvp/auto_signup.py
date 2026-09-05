@@ -235,10 +235,13 @@ def _build_signup_tools(ctx: dict[str, Any]):
                 error="No verification code arrived in email within timeout",
                 include_in_memory=True,
             )
+        # The literal code MUST be in long_term_memory. extracted_content is
+        # trimmed from history after a few steps, and the agent then invents a
+        # placeholder (observed: it typed "123456").
         return ActionResult(
             extracted_content=code,
             include_in_memory=True,
-            long_term_memory="Received email verification code",
+            long_term_memory=f"Email verification code (type exactly): {code}",
         )
 
     @tools.registry.action(
@@ -263,7 +266,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
         return ActionResult(
             extracted_content=link,
             include_in_memory=True,
-            long_term_memory=f"Received email confirmation link for {host}",
+            long_term_memory=f"Email confirmation link for {host} (open exactly): {link}",
         )
 
     @tools.registry.action(
@@ -307,7 +310,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
         return ActionResult(
             extracted_content=json.dumps({"phone": number.phone, "code": code}),
             include_in_memory=True,
-            long_term_memory="Received SMS verification code",
+            long_term_memory=f"SMS code for {number.phone} (type exactly): {code}",
         )
 
     @tools.registry.action(
@@ -534,6 +537,9 @@ async def sign_up(
                 f"3. Accept terms if required. Skip optional marketing checkboxes.\n"
                 f"4. If email verification is required: call mark_email_requested(), "
                 f"then get_email_code() or get_email_link() and complete verification.\n"
+                f"   NEVER invent a verification code. Type the exact digits the tool "
+                f"returned. If you cannot see a real code, call the tool again — do not "
+                f"guess placeholders like 123456.\n"
                 f"5. If SMS is required: call get_sms_code() and enter the code.\n"
                 f"6. If a CAPTCHA/Cloudflare challenge blocks you: call solve_captcha() once. "
                 f"If it fails, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
@@ -585,11 +591,21 @@ async def sign_up(
             except Exception:
                 pass
 
+            # Onboarding often ends on a "Getting ready…" splash that redirects a
+            # few seconds later, so a single probe reports a fresh account as
+            # not_signed_in. Re-probe for a short window before giving up.
             signed = False
-            try:
-                signed = await _looks_signed_in(page)
-            except Exception:
-                signed = False
+            settle_deadline = time.time() + float(
+                os.environ.get("MVP_SIGNUP_SETTLE_S", "30")
+            )
+            while True:
+                try:
+                    signed = await _looks_signed_in(page)
+                except Exception:
+                    signed = False
+                if signed or time.time() >= settle_deadline:
+                    break
+                await asyncio.sleep(3)
 
             if ctx.get("blocker"):
                 update_identity(
