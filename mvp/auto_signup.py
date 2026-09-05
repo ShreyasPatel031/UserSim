@@ -207,10 +207,14 @@ def _build_signup_tools(ctx: dict[str, Any]):
             "company": identity.company,
             "phone": identity.phone,
         }
+        # Put the FULL payload in long_term_memory — browser-use often surfaces
+        # that field to the model more reliably than extracted_content alone.
+        # (Previously only the email was remembered → agent looped on get_identity.)
+        blob = json.dumps(payload)
         return ActionResult(
-            extracted_content=json.dumps(payload),
+            extracted_content=blob,
             include_in_memory=True,
-            long_term_memory=f"Using signup email {identity.email}",
+            long_term_memory=f"Signup identity (use exactly): {blob}",
         )
 
     @tools.registry.action(
@@ -401,9 +405,11 @@ async def sign_up(
     cdp_port: int | None = None,
 ) -> dict[str, Any]:
     """Create an account on ``url`` and persist the signed-in Chrome profile."""
-    from browser_use import Agent, ChatOpenAI
+    from browser_use import Agent, ChatGoogle
     from browser_use.browser.profile import BrowserProfile
-    from capability.mistral_config import MISTRAL_API_BASE, mistral_api_key, mistral_model
+    from auth import vertex_credentials
+    from capability import location_for
+    from config import GCP_PROJECT, MODEL
     from playwright.async_api import async_playwright
 
     host = host_for_url(url)
@@ -415,9 +421,21 @@ async def sign_up(
     port = int(cdp_port or os.environ.get("MVP_SIGNUP_CDP_PORT") or CDP_PORT_DEFAULT)
 
     start_url = url if urlparse(url).scheme else f"https://{url}"
-    # Prefer a signup deep-link when the caller passed a bare homepage.
-    if re.search(r"/(signup|sign-up|register|join)(/|$)", start_url, re.I) is None:
-        # Agent will find Sign up; starting at homepage is fine.
+    # Known signup deep-links — skip marketing homepage so we don't burn steps.
+    _SIGNUP_START = {
+        "linear.app": "https://linear.app/signup",
+        "notion.so": "https://www.notion.so/signup",
+        "www.notion.so": "https://www.notion.so/signup",
+    }
+    host_key = (urlparse(start_url).hostname or host or "").lower()
+    if host_key.startswith("www."):
+        host_key = host_key[4:]
+    if host_key in _SIGNUP_START and not re.search(
+        r"/(signup|sign-up|register|join)(/|$)", start_url, re.I
+    ):
+        start_url = _SIGNUP_START[host_key]
+    elif re.search(r"/(signup|sign-up|register|join)(/|$)", start_url, re.I) is None:
+        # Agent will find Sign up; starting at homepage is fine for unknown hosts.
         pass
 
     max_steps = max_steps or int(os.environ.get("MVP_SIGNUP_MAX_STEPS", "40"))
@@ -475,13 +493,15 @@ async def sign_up(
                 return result
 
             tools = _build_signup_tools(ctx)
-            llm = ChatOpenAI(
-                model=mistral_model(),
-                api_key=mistral_api_key(),
-                base_url=MISTRAL_API_BASE,
+            # Always Gemini 2.5 Flash via Vertex — never Mistral (rate-limits killed signup).
+            model = (os.environ.get("MVP_SIGNUP_MODEL") or MODEL or "gemini-2.5-flash").strip()
+            llm = ChatGoogle(
+                model=model,
+                vertexai=True,
+                credentials=vertex_credentials(),
+                project=GCP_PROJECT,
+                location=location_for(model),
                 temperature=0,
-                max_retries=4,
-                timeout=120.0,
             )
             # Attach to the already-running Chrome via CDP so the persistent
             # profile is the one we launched (not a throwaway browser-use profile).
@@ -494,13 +514,23 @@ async def sign_up(
                 captcha_solver=os.environ.get("MVP_CAPTCHA_SOLVER", "").lower()
                 in {"1", "true", "yes"},
             )
+            id_blob = json.dumps(
+                {
+                    "email": identity.email,
+                    "password": identity.password,
+                    "full_name": identity.full_name,
+                    "company": identity.company,
+                    "phone": identity.phone,
+                }
+            )
             task = (
                 f"Create a free account on {start_url} for product host {host}.\n"
-                f"CRITICAL: Call get_identity() and use ONLY the returned JSON values for "
-                f"email/password/full_name/company/phone. Never invent or alter credentials.\n"
+                f"IDENTITY (use these exact values; do not invent credentials):\n{id_blob}\n"
+                f"You may call get_identity() once to confirm — do NOT call it repeatedly.\n"
                 f"Flow:\n"
-                f"1. Find and open Sign up / Create account / Get started (not Sign in).\n"
-                f"2. Call get_identity(), then fill the registration form with those exact values.\n"
+                f"1. You should already be on a signup page. If not, open Sign up / Create account "
+                f"(not Sign in).\n"
+                f"2. Fill the registration form with the IDENTITY values above.\n"
                 f"3. Accept terms if required. Skip optional marketing checkboxes.\n"
                 f"4. If email verification is required: call mark_email_requested(), "
                 f"then get_email_code() or get_email_link() and complete verification.\n"

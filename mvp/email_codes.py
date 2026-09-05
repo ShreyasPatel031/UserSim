@@ -178,7 +178,22 @@ _SKIP_LINK_HINTS = (
 
 
 def _imap_creds() -> tuple[str, str] | None:
-    """Base Gmail username + app_password from the vault (plus-aliases land here)."""
+    """Base Gmail username + app_password.
+
+    Prefer env (cloud-agent secrets), then ``secrets/credentials.json``.
+    Plus-aliases all land in the same inbox.
+    """
+    import os
+
+    env_user = (os.environ.get("GMAIL_USER") or os.environ.get("MVP_GMAIL_USER") or "").strip()
+    env_app = (
+        os.environ.get("GMAIL_APP_PASSWORD")
+        or os.environ.get("MVP_GMAIL_APP_PASSWORD")
+        or ""
+    ).strip()
+    if env_user and env_app and "@" in env_user:
+        return env_user, env_app
+
     from mvp.credentials import _load_vault
 
     vault = _load_vault()
@@ -193,6 +208,20 @@ def _imap_creds() -> tuple[str, str] | None:
         user = (site.get("username") or "").strip()
         if user and app and "@" in user:
             return user, app
+    # Env password + vault username (or vice versa).
+    if env_app:
+        for site in vault.get("sites") or []:
+            user = (site.get("username") or "").strip()
+            if user and "@" in user:
+                return user, env_app
+    if env_user and "@" in env_user:
+        for site in vault.get("sites") or []:
+            app = (site.get("app_password") or "").strip()
+            if app:
+                return env_user, app
+        app = (vault.get("app_password") or "").strip()
+        if app:
+            return env_user, app
     return None
 
 
@@ -344,6 +373,11 @@ def wait_for_signup_code(
     newer_than: float | None = None,
     poll_s: float = 5.0,
 ) -> str | None:
+    if _imap_creds() is None:
+        # Fail fast — hanging 180s+ with no app_password just burns the agent budget.
+        raise RuntimeError(
+            "No Gmail app_password in secrets/credentials.json — cannot read signup codes"
+        )
     started = time.time()
     floor = newer_than if newer_than is not None else started
     while time.time() - started < timeout_s:
@@ -362,6 +396,10 @@ def wait_for_signup_link(
     newer_than: float | None = None,
     poll_s: float = 5.0,
 ) -> str | None:
+    if _imap_creds() is None:
+        raise RuntimeError(
+            "No Gmail app_password in secrets/credentials.json — cannot read signup links"
+        )
     started = time.time()
     floor = newer_than if newer_than is not None else started
     while time.time() - started < timeout_s:

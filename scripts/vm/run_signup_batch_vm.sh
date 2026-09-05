@@ -72,12 +72,13 @@ tar -C "$ROOT" -czf "$TAR" \
   --no-xattrs \
   --disable-copyfile \
   src mvp requirements.txt pyproject.toml \
-  secrets/env secrets/credentials.json 2>/dev/null \
+  secrets/env secrets/credentials.json secrets/identities.json 2>/dev/null \
 || tar -C "$ROOT" -czf "$TAR" \
   --exclude='mvp/runs' \
   --exclude='**/__pycache__' \
   --exclude='.venv' \
   src mvp requirements.txt pyproject.toml \
+  secrets/env secrets/credentials.json secrets/identities.json \
   secrets/env secrets/credentials.json
 ls -lh "$TAR"
 
@@ -130,7 +131,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 export PATH="\$HOME/.local/bin:\$PATH"
 uv venv .venv --python 3.12
 uv pip install -q 'fastapi>=0.115' 'uvicorn[standard]>=0.32' 'httpx>=0.28' 'pyotp>=2.9' \
-  playwright 'browser-use==0.13.8' 'browserbase>=1.0' pydantic
+  playwright 'browser-use==0.13.8' 'browserbase>=1.0' pydantic \
+  'google-genai' 'google-auth' 'google-auth-httplib2' requests
 
 echo "==> playwright chromium"
 .venv/bin/playwright install chromium
@@ -151,6 +153,10 @@ set -a
 # shellcheck disable=SC1091
 source secrets/env
 set +a
+# Never use Mistral for signup — Vertex Gemini 2.5 Flash on the VM service account.
+unset MISTRAL_API_KEY MISTRAL_API_BASE MISTRAL_MODEL || true
+export MVP_SIGNUP_MODEL=gemini-2.5-flash
+export MVP_BROWSER_MODEL=gemini-2.5-flash
 export SIGNUP_PARALLEL=${PARALLEL}
 export SIGNUP_TIMEOUT_S=${TIMEOUT_S}
 export SIGNUP_MAX_STEPS=${MAX_STEPS}
@@ -158,6 +164,7 @@ export SIGNUP_LIMIT=${LIMIT}
 export SIGNUP_HEADLESS=\$HEADLESS_FLAG
 export MVP_CAPTCHA_ALLOW_HUMAN=0
 export MVP_BROWSER_HEADLESS=\$HEADLESS_FLAG
+export MVP_CAPTCHA_SOLVER=0
 # Prefer Playwright Chromium when Google Chrome is absent.
 # NOTE: escape \$ and \$( so they expand on the VM, not locally.
 CHROME_CAND=\$(find "\$HOME/.cache/ms-playwright" \\( -type f -o -type l \\) -name chrome -path '*/chrome-linux*/chrome' 2>/dev/null | head -1 || true)

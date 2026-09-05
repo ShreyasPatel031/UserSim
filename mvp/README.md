@@ -18,7 +18,7 @@ Same behavior as production (snapshot agents, sync POST):
 
 Open [http://127.0.0.1:3000](http://127.0.0.1:3000).
 
-Requires `MISTRAL_API_KEY` in `secrets/env` or `.env.local`.
+Uses Gemini 2.5 Flash via Vertex (`config.MODEL`). Do not set MISTRAL_API_KEY for signup.
 
 ## Full local mode (live Browserbase)
 

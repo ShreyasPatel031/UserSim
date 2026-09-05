@@ -62,6 +62,24 @@ def _from_authorized_user(path: Path) -> Credentials:
     return creds
 
 
+def _from_service_account(path: Path):
+    from google.oauth2 import service_account
+
+    return service_account.Credentials.from_service_account_file(
+        str(path), scopes=_CLOUD_SCOPES
+    )
+
+
+def _from_credentials_file(path: Path):
+    info = json.loads(path.read_text())
+    ctype = (info.get("type") or "").strip()
+    if ctype == "service_account":
+        return _from_service_account(path)
+    if ctype == "authorized_user":
+        return _from_authorized_user(path)
+    raise RuntimeError(f"Unsupported credentials type {ctype!r} in {path}")
+
+
 def _from_gcloud() -> Credentials:
     token = subprocess.check_output(
         ["gcloud", "auth", "print-access-token", f"--account={GCP_ACCOUNT}"],
@@ -90,9 +108,11 @@ def vertex_credentials() -> Credentials:
 
     path = _adc_path()
     if path is not None:
-        creds = _from_authorized_user(path)
-        # Refresh tokens are long-lived; cache the access token briefly.
-        expiry = creds.expiry
+        creds = _from_credentials_file(path)
+        if not getattr(creds, "valid", True):
+            creds.refresh(Request())
+        # Refresh tokens / SA keys are long-lived; cache the access token briefly.
+        expiry = getattr(creds, "expiry", None)
         if expiry is not None and expiry.tzinfo is None:
             expiry = expiry.replace(tzinfo=timezone.utc)
         _cached = creds
