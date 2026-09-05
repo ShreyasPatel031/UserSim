@@ -77,6 +77,22 @@ def push_topic() -> str | None:
     )
 
 
+def push_sms_topic() -> str | None:
+    """Topic the phone forwards incoming SMS to, so a VM can read codes.
+
+    Kept separate from :func:`push_topic` by default: that topic carries outbound
+    alerts to the phone, and mixing forwarded SMS into it would let an agent
+    scrape a code out of one of our own notifications.
+    """
+    explicit = os.environ.get("MVP_NTFY_SMS_TOPIC") or (
+        _load_vault().get("push") or {}
+    ).get("ntfy_sms_topic")
+    if explicit:
+        return explicit
+    base = push_topic()
+    return f"{base}-sms" if base else None
+
+
 def vault_status() -> dict[str, Any]:
     """Non-secret summary, safe to log."""
     vault = _load_vault()
