@@ -1,7 +1,6 @@
 """Gemini 2.5 Flash (Vertex) helpers for MVP agents.
 
-Single LLM provider for the whole repo. Replaces the old Mistral path,
-which rate-limited hard enough to break signup and study runs.
+The single LLM provider for this repo. Every inference call goes through here.
 """
 
 from __future__ import annotations

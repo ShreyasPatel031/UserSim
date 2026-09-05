@@ -11,6 +11,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
+import httpx
+
 from capability.gemini_config import gemini_chat
 from mvp.page_access import SiteAccessBlockedError, fetch_page_access
 
@@ -199,24 +201,96 @@ Critical rules:
 
 
 
+async def _duckduckgo_search(query: str, *, limit: int = 8) -> list[dict[str, str]]:
+    """Best-effort public web search for competitor discovery (no API key)."""
+    from urllib.parse import quote_plus
+
+    results: list[dict[str, str]] = []
+    url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
+    try:
+        async with httpx.AsyncClient(timeout=12.0, follow_redirects=True) as client:
+            resp = await client.get(
+                url,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                    )
+                },
+            )
+            html = resp.text or ""
+    except Exception:
+        return results
+
+    # DuckDuckGo HTML result links look like:
+    # <a rel="nofollow" class="result__a" href="https://...">Title</a>
+    for match in re.finditer(
+        r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
+        html,
+        flags=re.I | re.S,
+    ):
+        href = match.group(1).strip()
+        title = re.sub(r"<[^>]+>", "", match.group(2)).strip()
+        if not href.startswith("http"):
+            continue
+        results.append({"title": title[:120], "url": href})
+        if len(results) >= limit:
+            break
+    return results
+
+
 async def invent_competitors(url: str, site_summary: str, page_text: str) -> list[str]:
-    """Ask the planner for 2 real public competitor URLs (homepage roots)."""
+    """Find 2 real competitor homepage URLs via web search + LLM selection."""
+    from urllib.parse import urlparse
+
+    host = (urlparse(url).hostname or "").replace("www.", "")
+    product_hint = (site_summary or host or url).strip()[:120]
+    queries = [
+        f"{product_hint} competitors",
+        f"{product_hint} alternatives",
+        f"best alternatives to {host}" if host else f"alternatives to {product_hint}",
+    ]
+    search_hits: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for q in queries:
+        for hit in await _duckduckgo_search(q, limit=6):
+            u = (hit.get("url") or "").rstrip("/")
+            key = u.lower()
+            if not u or key in seen:
+                continue
+            if host and host in key:
+                continue
+            seen.add(key)
+            search_hits.append(hit)
+        if len(search_hits) >= 12:
+            break
+
     prompt = f"""Product under study: {url}
 What it is: {site_summary}
 Page excerpt:
-{page_text[:4000]}
+{page_text[:2500]}
+
+Live web search results (use these — do not invent domains):
+{json.dumps(search_hits[:12], indent=2)}
 
 Return JSON only:
 {{"competitors": [{{"name": "...", "url": "https://..."}}, {{"name": "...", "url": "https://..."}}]}}
 
 Rules:
 - Exactly 2 direct product competitors a real user would also evaluate.
-- Public marketing homepages only (https), no app login URLs, no Google/YouTube unless the product IS video hosting adjacent.
-- Prefer well-known live sites. Never invent fake domains.
+- Prefer URLs from the search results above. Only use other well-known live public sites if search is empty.
+- Public marketing homepages only (https), no app login URLs.
+- Never invent fake domains.
 """
     raw = await _llm_chat(
         [
-            {"role": "system", "content": "You output valid JSON only with real public competitor URLs."},
+            {
+                "role": "system",
+                "content": (
+                    "You output valid JSON only. Prefer competitor URLs from the provided "
+                    "web search results. Never invent fake domains."
+                ),
+            },
             {"role": "user", "content": prompt},
         ]
     )
@@ -226,6 +300,14 @@ Rules:
         u = (row.get("url") if isinstance(row, dict) else str(row) or "").strip()
         if u.startswith("http") and u.rstrip("/") != url.rstrip("/"):
             urls.append(u)
+    if not urls and search_hits:
+        # Fallback: first two distinct search result hosts.
+        for hit in search_hits:
+            u = hit.get("url") or ""
+            if u.startswith("http") and u.rstrip("/") != url.rstrip("/"):
+                urls.append(u)
+            if len(urls) >= 2:
+                break
     return urls[:2]
 
 
@@ -449,7 +531,11 @@ Return JSON only:
     return _extract_json(raw)
 
 
-async def run_study(study_id: str) -> None:
+async def run_study(
+    study_id: str,
+    *,
+    on_update: Any | None = None,
+) -> None:
     study = STUDIES[study_id]
 
     def touch(phase: str, status: str | None = None) -> None:
@@ -457,6 +543,11 @@ async def run_study(study_id: str) -> None:
         if status:
             study.status = status
         study.updated_at = _now()
+        if on_update:
+            try:
+                on_update(study)
+            except Exception:
+                pass
 
     try:
         log_activity(study, "phase", "Study queued")
@@ -473,6 +564,7 @@ async def run_study(study_id: str) -> None:
             backend=access.backend,
             title=access.title,
         )
+        touch("Fetching site")
 
         # Step 0: provision a signed-in product account when enabled.
         # Skipped on SNAPSHOT_ONLY (Vercel / quick) — no live browser there.
@@ -494,8 +586,6 @@ async def run_study(study_id: str) -> None:
                     auth_status=status,
                     email=access_result.get("email"),
                 )
-                # Re-fetch page text from a signed-in perspective when possible —
-                # the interesting friction is post-signup. Best-effort only.
                 try:
                     access = await fetch_page_access(study.url)
                     page_text = (
@@ -514,25 +604,74 @@ async def run_study(study_id: str) -> None:
                     blocker=blocker,
                     detail=access_result.get("detail"),
                 )
-                # card_required / sso_only / etc. — continue signed-out and
-                # surface the gate as a research finding in the summary later.
                 study.auth_status = status
                 study.auth_blocker = str(blocker) if blocker else status
 
-        touch("Generating personas & tasks")
-        log_activity(study, "plan", "Reading page content and generating personas & tasks")
-        if study.test_mode:
-            study.competitors = []
-            log_activity(study, "plan", "Test mode — 1 persona, 1 task, no competitors")
-        plan = await generate_plan(
-            study.url, study.segment, page_text, test_mode=study.test_mode
+        # Fast path: invent competitors from the web in parallel with user/task planning.
+        touch("Finding competitors & simulated users")
+        log_activity(
+            study,
+            "plan",
+            "Searching the web for competitors and inventing simulated users & tasks",
         )
+        if study.test_mode:
+            log_activity(
+                study,
+                "plan",
+                "Quick preview — 1 simulated user, 1 task (competitors still researched)",
+            )
+
+        site_hint = (page_text.split("\n", 1)[0] if page_text else study.url)[:160]
+
+        async def _competitors_job() -> list[str]:
+            if study.competitors:
+                return list(study.competitors)
+            try:
+                return await invent_competitors(study.url, site_hint, page_text)
+            except Exception as exc:  # noqa: BLE001
+                log_activity(
+                    study,
+                    "plan",
+                    f"Competitor research failed ({str(exc)[:120]}) — continuing",
+                )
+                return []
+
+        plan_task = asyncio.create_task(
+            generate_plan(study.url, study.segment, page_text, test_mode=study.test_mode)
+        )
+        comp_task = asyncio.create_task(_competitors_job())
+        plan, competitors = await asyncio.gather(plan_task, comp_task)
+
+        study.competitors = competitors or list(study.competitors or [])
+        site_summary = plan.get("site_summary", "")
+        # If web search came up empty, retry with the richer site summary from the planner.
+        if not study.competitors and site_summary:
+            try:
+                study.competitors = await invent_competitors(
+                    study.url, site_summary, page_text
+                )
+            except Exception as exc:  # noqa: BLE001
+                log_activity(
+                    study,
+                    "plan",
+                    f"Competitor retry failed ({str(exc)[:120]})",
+                )
+        if study.competitors:
+            log_activity(
+                study,
+                "plan",
+                "Competitors: " + ", ".join(study.competitors),
+            )
+            touch("Finding competitors & simulated users")
+
         study.personas = plan.get("personas") or []
         study.tasks = plan.get("tasks") or []
+        if site_summary:
+            log_activity(study, "plan", f"Site: {site_summary}")
+
         # Apply optional task overrides.
         if study.tasks_override:
             if study.test_mode:
-                # Test mode: force a single task.
                 prompt = study.tasks_override[0]
                 if study.tasks:
                     study.tasks[0]["prompt"] = prompt
@@ -543,7 +682,6 @@ async def run_study(study_id: str) -> None:
                     if study.tasks:
                         study.tasks[0]["persona_id"] = study.personas[0].get("id")
             else:
-                # Full mode: one task per override, paired with personas in order.
                 rebuilt: list[dict[str, Any]] = []
                 for i, prompt in enumerate(study.tasks_override):
                     persona = (
@@ -561,10 +699,9 @@ async def run_study(study_id: str) -> None:
                         }
                     )
                 study.tasks = rebuilt
-                # Keep only personas referenced by tasks.
                 used = {t.get("persona_id") for t in study.tasks}
                 study.personas = [p for p in study.personas if p.get("id") in used] or study.personas
-        # Cap base tasks/personas before competitor expansion.
+
         base_cap = int(
             os.environ.get(
                 "MVP_AGENT_COUNT",
@@ -577,32 +714,10 @@ async def run_study(study_id: str) -> None:
             study.personas = [p for p in study.personas if p.get("id") in used_persona_ids][
                 :base_cap
             ]
-        site_summary = plan.get("site_summary", "")
-        if site_summary:
-            log_activity(study, "plan", f"Site: {site_summary}")
 
-        # Full studies compare the product against competitors (user-supplied or invented).
-        if not study.test_mode:
-            if not study.competitors:
-                touch("Finding competitors")
-                log_activity(study, "plan", "No competitors provided — researching rivals")
-                try:
-                    study.competitors = await invent_competitors(
-                        study.url, site_summary or study.url, page_text
-                    )
-                except Exception as exc:  # noqa: BLE001
-                    log_activity(
-                        study,
-                        "plan",
-                        f"Competitor research failed ({str(exc)[:120]}) — continuing with product only",
-                    )
-                    study.competitors = []
-            if study.competitors:
-                log_activity(
-                    study,
-                    "plan",
-                    "Competitors: " + ", ".join(study.competitors),
-                )
+        # Full studies expand tasks across competitor sites; quick preview keeps
+        # competitors visible in the brief without expanding every run.
+        if study.competitors and not study.test_mode:
             before = len(study.tasks)
             study.tasks = expand_tasks_for_sites(
                 study.tasks, product_url=study.url, competitors=study.competitors
@@ -614,10 +729,20 @@ async def run_study(study_id: str) -> None:
             )
 
         for persona in study.personas:
+            demos = ", ".join(
+                x
+                for x in (
+                    persona.get("age_range"),
+                    persona.get("occupation"),
+                    persona.get("location"),
+                )
+                if x
+            )
             log_activity(
                 study,
                 "persona",
-                f"Persona: {persona.get('name')}",
+                f"Simulated user: {persona.get('name')}"
+                + (f" ({demos})" if demos else ""),
                 persona_id=persona.get("id"),
                 name=persona.get("name"),
                 bio=persona.get("bio"),
@@ -630,6 +755,16 @@ async def run_study(study_id: str) -> None:
                 task_id=task.get("id"),
                 title=task.get("title"),
             )
+
+        # Brief is ready — surface competitors / users / tasks before browsers start.
+        touch("Brief ready")
+        if on_update:
+            try:
+                on_update(study, event="brief")
+            except TypeError:
+                on_update(study)
+            except Exception:
+                pass
 
         persona_by_id = {p["id"]: p for p in study.personas}
         study.live_sessions = {}
