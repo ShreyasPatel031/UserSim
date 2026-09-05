@@ -349,29 +349,64 @@ async def _try_click_cloudflare_checkbox(page: Any) -> bool:
     return False
 
 
+async def _challenge_visible(page: Any) -> bool:
+    """Is a captcha / interstitial still on screen?"""
+    try:
+        return bool(
+            await page.evaluate(
+                """() => {
+                  const t = (document.body && document.body.innerText || '').toLowerCase();
+                  if (/verify you are human|checking your browser|just a moment|are you a robot|complete the security check|press and hold/.test(t))
+                    return true;
+                  const f = document.querySelector(
+                    'iframe[src*="challenges.cloudflare.com"], iframe[src*="turnstile"],' +
+                    'iframe[src*="recaptcha/api2/bframe"], iframe[title*="challenge"],' +
+                    '.cf-turnstile, #cf-turnstile'
+                  );
+                  if (!f) return false;
+                  // An invisible/0-size recaptcha bframe is not actually blocking.
+                  const r = f.getBoundingClientRect ? f.getBoundingClientRect() : null;
+                  if (r && (r.width < 20 || r.height < 20)) return false;
+                  return true;
+                }"""
+            )
+        )
+    except Exception:
+        return False
+
+
+async def wait_for_challenge_to_clear(page: Any, timeout_s: float | None = None) -> bool:
+    """Poll until the challenge disappears.
+
+    Invisible reCAPTCHA and Cloudflare Turnstile usually pass on their own in a
+    real headed browser, but only after a few seconds of scoring. Reporting
+    captcha_unsolved on the first look throws away most of those wins.
+    """
+    import asyncio as _asyncio
+
+    if timeout_s is None:
+        timeout_s = float(os.environ.get("MVP_CAPTCHA_SETTLE_S", "35"))
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        if not await _challenge_visible(page):
+            return True
+        await _asyncio.sleep(2.5)
+    return not await _challenge_visible(page)
+
+
 async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
-    """Full stack: click challenge → detect sitekey → solver API → inject → else human.
+    """Full stack: settle → click challenge → solver API → inject → else human.
 
     Returns ``{ok, method, detail}``.
     """
-    # Free first: just click the Cloudflare / Turnstile checkbox when present.
+    # Cheapest win: give the challenge a few seconds to score us and vanish.
+    if await wait_for_challenge_to_clear(page):
+        return {"ok": True, "method": "self_cleared", "detail": "challenge_passed"}
+
+    # Free next: just click the Cloudflare / Turnstile checkbox when present.
     if await _try_click_cloudflare_checkbox(page):
-        # Recheck whether a challenge is still visible.
-        still = False
-        try:
-            still = await page.evaluate(
-                """() => {
-                  const t = (document.body && document.body.innerText || '').toLowerCase();
-                  if (/verify you are human|checking your browser|cf-turnstile|just a moment/.test(t))
-                    return true;
-                  return !!document.querySelector(
-                    'iframe[src*="challenges.cloudflare.com"], iframe[src*="turnstile"], .cf-turnstile'
-                  );
-                }"""
-            )
-        except Exception:
-            still = True
-        if not still:
+        # The checkbox posts a token asynchronously; give it time to land.
+        if await wait_for_challenge_to_clear(page):
             return {"ok": True, "method": "click", "detail": "cloudflare_checkbox"}
 
     page_url = getattr(page, "url", "") or ""

@@ -16,6 +16,9 @@ PARALLEL="${SIGNUP_PARALLEL:-1}"
 TIMEOUT_S="${SIGNUP_TIMEOUT_S:-120}"
 MAX_STEPS="${SIGNUP_MAX_STEPS:-18}"
 LIMIT="${SIGNUP_LIMIT:-3}"
+# Space-separated hosts. When set, run scripts/local/signup_targets.py on just
+# these instead of walking the hardcoded PRODUCTS list.
+TARGETS="${TARGETS:-}"
 KEEP_VM="${KEEP_VM:-0}"
 DISK_GB="${GCP_DISK_GB:-30}"
 GCS_PREFIX="${GCS_PREFIX:-gs://usersim-bakeoff-347838016394}"
@@ -25,6 +28,7 @@ SCP=(gcloud compute scp --project="$PROJECT" --zone="$ZONE" --tunnel-through-iap
 
 [[ -f secrets/env ]] || { echo "ERROR: secrets/env missing"; exit 1; }
 [[ -f secrets/credentials.json ]] || { echo "ERROR: secrets/credentials.json missing"; exit 1; }
+[[ -f secrets/sa.json ]] || { echo "ERROR: secrets/sa.json missing (Vertex service account)"; exit 1; }
 
 echo "==> Creating $NAME ($MACHINE, disk=${DISK_GB}G, limit=${LIMIT})"
 gcloud compute instances create "$NAME" \
@@ -71,14 +75,14 @@ tar -C "$ROOT" -czf "$TAR" \
   --exclude='.venv' \
   --no-xattrs \
   --disable-copyfile \
-  src mvp requirements.txt pyproject.toml \
-  secrets/env secrets/credentials.json 2>/dev/null \
+  src mvp scripts requirements.txt pyproject.toml \
+  secrets/env secrets/credentials.json secrets/sa.json secrets/identities.json 2>/dev/null \
 || tar -C "$ROOT" -czf "$TAR" \
   --exclude='mvp/runs' \
   --exclude='**/__pycache__' \
   --exclude='.venv' \
-  src mvp requirements.txt pyproject.toml \
-  secrets/env secrets/credentials.json
+  src mvp scripts requirements.txt pyproject.toml \
+  secrets/env secrets/credentials.json secrets/sa.json secrets/identities.json
 ls -lh "$TAR"
 
 echo "==> Uploading tarball"
@@ -177,10 +181,16 @@ echo "==> MVP_CHROME_PATH=\$MVP_CHROME_PATH"
 mkdir -p results/signup_batch secrets/product_profiles secrets/site_states secrets/signup_steps
 [[ -f secrets/identities.json ]] || echo '{"products":{}}' > secrets/identities.json
 
-echo "==> START signup batch limit=${LIMIT} parallel=${PARALLEL}"
+TARGETS="${TARGETS}"
+echo "==> START signup batch limit=${LIMIT} parallel=${PARALLEL} targets='\$TARGETS'"
 # Batch returns 1 when all fail — do not abort before DONE (set -e).
 set +e
-PYTHONPATH=src:. .venv/bin/python mvp/signup_batch_parallel.py
+if [[ -n "\$TARGETS" ]]; then
+  PYTHONPATH=src:. .venv/bin/python scripts/local/signup_targets.py \
+    --parallel ${PARALLEL} --timeout ${TIMEOUT_S} --max-steps ${MAX_STEPS} \$TARGETS
+else
+  PYTHONPATH=src:. .venv/bin/python mvp/signup_batch_parallel.py
+fi
 BATCH_RC=\$?
 set -e
 echo "==> DONE signup batch rc=\$BATCH_RC"
@@ -199,7 +209,7 @@ mkdir -p "$OUT"
 "${SSH[@]}" --command="tail -120 /tmp/auto_signup_chrome.log 2>/dev/null; ls -la ~/usersim/results/signup_batch 2>/dev/null" \
   >"$OUT/remote_chrome_tail.txt" 2>/dev/null || true
 
-LATEST="$(ls -t "$OUT"/batch_parallel_*_summary.json 2>/dev/null | head -1 || true)"
+LATEST="$(ls -t "$OUT"/targets_*_summary.json "$OUT"/batch_parallel_*_summary.json 2>/dev/null | head -1 || true)"
 if [[ -n "$LATEST" ]]; then
   gcloud storage cp "$LATEST" "${GCS_PREFIX}/signup_batch/$(basename "$LATEST")" --quiet || true
   echo "DONE → $LATEST"

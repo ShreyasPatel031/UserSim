@@ -136,8 +136,46 @@ def _launch_chrome(
         ]
     if not headed:
         cmd.insert(1, "--headless=new")
+    elif os.environ.get("MVP_CHROME_OFFSCREEN", "").lower() in {"1", "true", "yes"}:
+        # Headless Chrome is fingerprinted and draws a CAPTCHA on figma, loom and
+        # dropbox where headed does not. Keep the headed browser but park the
+        # window off-screen so a batch run does not take over the desktop.
+        cmd.insert(-1, "--window-position=-3000,-3000")
     log = open("/tmp/auto_signup_chrome.log", "ab")
     return subprocess.Popen(cmd, stdout=log, stderr=log, start_new_session=True)
+
+
+# Signup deep-links, keyed by bare host. Starting on the marketing homepage
+# burns several steps hunting for "Sign up" and, on slow sites, the agent
+# re-navigates in a loop (dropbox spent 6 of 20 steps that way).
+SIGNUP_START: dict[str, str] = {
+    "airtable.com": "https://airtable.com/signup",
+    "bitwarden.com": "https://vault.bitwarden.com/#/register",
+    "buffer.com": "https://login.buffer.com/signup",
+    "calendly.com": "https://calendly.com/signup",
+    "canva.com": "https://www.canva.com/signup",
+    "clickup.com": "https://app.clickup.com/signup",
+    "coda.io": "https://coda.io/signup",
+    "dropbox.com": "https://www.dropbox.com/register",
+    "figma.com": "https://www.figma.com/signup",
+    "github.com": "https://github.com/signup",
+    "gitlab.com": "https://gitlab.com/users/sign_up",
+    "linear.app": "https://linear.app/signup",
+    "loom.com": "https://www.loom.com/signup",
+    "medium.com": "https://medium.com/m/signin",
+    "miro.com": "https://miro.com/signup/",
+    "notion.so": "https://www.notion.so/signup",
+    "reddit.com": "https://www.reddit.com/register/",
+    "todoist.com": "https://todoist.com/auth/signup",
+    "webflow.com": "https://webflow.com/signup",
+    "zoom.us": "https://www.zoom.us/signup",
+}
+
+
+def signup_start_url(host: str) -> str:
+    """Deep signup link for ``host``, else its https homepage."""
+    key = (host or "").lower().removeprefix("www.")
+    return SIGNUP_START.get(key, f"https://www.{key}" if key else "")
 
 
 def site_state_path(host: str) -> Path:
@@ -364,10 +402,23 @@ def _build_signup_tools(ctx: dict[str, Any]):
                 include_in_memory=True,
                 long_term_memory=f"CAPTCHA solved via {result.get('method')}",
             )
+        # Allow exactly one retry: scoring-based challenges often pass on a
+        # second look a few seconds later. Only the second failure is terminal.
+        attempts = int(ctx.get("captcha_attempts") or 0) + 1
+        ctx["captcha_attempts"] = attempts
+        if attempts < 2:
+            return ActionResult(
+                error=(
+                    f"CAPTCHA not cleared yet ({result.get('method')}). "
+                    "Wait ~5s, then call solve_captcha() ONE more time. "
+                    "If it fails again, call report_blocked(captcha_unsolved)."
+                ),
+                include_in_memory=True,
+            )
         ctx["blocker"] = "captcha_unsolved"
         return ActionResult(
             error=(
-                f"CAPTCHA unsolved ({result}). "
+                f"CAPTCHA unsolved after {attempts} attempts ({result}). "
                 "Call report_blocked with reason captcha_unsolved now — do not retry wait loops."
             ),
             include_in_memory=True,
@@ -424,22 +475,13 @@ async def sign_up(
     port = int(cdp_port or os.environ.get("MVP_SIGNUP_CDP_PORT") or CDP_PORT_DEFAULT)
 
     start_url = url if urlparse(url).scheme else f"https://{url}"
-    # Known signup deep-links — skip marketing homepage so we don't burn steps.
-    _SIGNUP_START = {
-        "linear.app": "https://linear.app/signup",
-        "notion.so": "https://www.notion.so/signup",
-        "www.notion.so": "https://www.notion.so/signup",
-    }
     host_key = (urlparse(start_url).hostname or host or "").lower()
     if host_key.startswith("www."):
         host_key = host_key[4:]
-    if host_key in _SIGNUP_START and not re.search(
-        r"/(signup|sign-up|register|join)(/|$)", start_url, re.I
+    if host_key in SIGNUP_START and not re.search(
+        r"/(signup|sign-up|sign_up|register|join)(/|$|#)", start_url, re.I
     ):
-        start_url = _SIGNUP_START[host_key]
-    elif re.search(r"/(signup|sign-up|register|join)(/|$)", start_url, re.I) is None:
-        # Agent will find Sign up; starting at homepage is fine for unknown hosts.
-        pass
+        start_url = SIGNUP_START[host_key]
 
     max_steps = max_steps or int(os.environ.get("MVP_SIGNUP_MAX_STEPS", "40"))
     proc = _launch_chrome(start_url, profile, headed=headed, cdp_port=port)
