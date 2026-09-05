@@ -18,7 +18,7 @@ Same behavior as production (snapshot agents, sync POST):
 
 Open [http://127.0.0.1:3000](http://127.0.0.1:3000).
 
-Requires `MISTRAL_API_KEY` in `secrets/env` or `.env.local`.
+Uses Gemini 2.5 Flash via Vertex (`config.MODEL`).
 
 ## Full local mode (live Browserbase)
 
@@ -91,6 +91,6 @@ Two things worth knowing before changing this:
 
 1. User enters a public URL and customer segment.
 2. (Live mode + `MVP_AUTO_SIGNUP=1`) Provision / reuse a signed-in product account.
-3. Mistral generates personas and on-site tasks (from signed-in page text when available).
+3. Gemini 2.5 Flash generates personas and on-site tasks (from signed-in page text when available).
 4. Agents run in parallel, each cloning the product profile.
-5. Mistral synthesizes friction themes, strengths, and recommendations.
+5. Gemini 2.5 Flash synthesizes friction themes, strengths, and recommendations.

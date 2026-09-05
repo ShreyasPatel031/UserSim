@@ -283,11 +283,97 @@ def wait_for_human_solve(*, timeout_s: float | None = None) -> bool:
     return False
 
 
+async def _try_click_cloudflare_checkbox(page: Any) -> bool:
+    """Best-effort click on Cloudflare Turnstile / challenge checkbox.
+
+    Many challenges are literally a checkbox in a cross-origin iframe; Playwright
+    can still hit the iframe body / checkbox in headed mode sometimes. This is
+    free and should run before paid solvers.
+    """
+    # 1) Same-origin / shadow widget hosts
+    try:
+        clicked = await page.evaluate(
+            """() => {
+              const hosts = [
+                ...document.querySelectorAll(
+                  'iframe[src*="challenges.cloudflare.com"], iframe[src*="turnstile"], .cf-turnstile, #cf-turnstile'
+                ),
+              ];
+              for (const h of hosts) {
+                try { h.scrollIntoView({block:'center'}); } catch (e) {}
+              }
+              // Visible checkbox-looking controls outside iframes
+              const btns = [...document.querySelectorAll(
+                'input[type="checkbox"], label, div[role="checkbox"], button'
+              )];
+              for (const b of btns) {
+                const t = ((b.innerText || b.getAttribute('aria-label') || '') + '').toLowerCase();
+                if (/human|verify|not a robot|cloudflare|turnstile|captcha/.test(t)) {
+                  b.click();
+                  return true;
+                }
+              }
+              return false;
+            }"""
+        )
+        if clicked:
+            await page.wait_for_timeout(2500)
+            return True
+    except Exception:
+        pass
+
+    # 2) Frame walk — click body / checkbox inside challenge iframes
+    try:
+        for frame in page.frames:
+            url = (frame.url or "").lower()
+            if "cloudflare" not in url and "turnstile" not in url and "challenge" not in url:
+                continue
+            for sel in (
+                "input[type=checkbox]",
+                "label",
+                ".ctp-checkbox-label",
+                "#challenge-stage",
+                "body",
+            ):
+                try:
+                    loc = frame.locator(sel).first
+                    if await loc.count() == 0:
+                        continue
+                    await loc.click(timeout=2000, force=True)
+                    await page.wait_for_timeout(3000)
+                    return True
+                except Exception:
+                    continue
+    except Exception:
+        pass
+    return False
+
+
 async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
-    """Full stack: detect sitekey → solver API → inject token → else human.
+    """Full stack: click challenge → detect sitekey → solver API → inject → else human.
 
     Returns ``{ok, method, detail}``.
     """
+    # Free first: just click the Cloudflare / Turnstile checkbox when present.
+    if await _try_click_cloudflare_checkbox(page):
+        # Recheck whether a challenge is still visible.
+        still = False
+        try:
+            still = await page.evaluate(
+                """() => {
+                  const t = (document.body && document.body.innerText || '').toLowerCase();
+                  if (/verify you are human|checking your browser|cf-turnstile|just a moment/.test(t))
+                    return true;
+                  return !!document.querySelector(
+                    'iframe[src*="challenges.cloudflare.com"], iframe[src*="turnstile"], .cf-turnstile'
+                  );
+                }"""
+            )
+        except Exception:
+            still = True
+        if not still:
+            return {"ok": True, "method": "click", "detail": "cloudflare_checkbox"}
+
     page_url = getattr(page, "url", "") or ""
     info = await detect_sitekey(page)
     if info and info.get("sitekey"):

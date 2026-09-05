@@ -10,9 +10,10 @@ from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Any
 
-from capability import CAPABLE_AGENT_PREAMBLE, USER_AGENT, VIEWPORT
+from capability import CAPABLE_AGENT_PREAMBLE, USER_AGENT, VIEWPORT, location_for
 from capability.browserbase_client import close_session, create_session
-from capability.mistral_config import MISTRAL_API_BASE, mistral_api_key, mistral_model
+from auth import vertex_credentials
+from config import GCP_PROJECT, MODEL
 
 from mvp.paths import MVP_RUNS_DIR
 
@@ -362,9 +363,9 @@ async def run_browser_agent(
     local: bool = False,
 ) -> dict[str, Any]:
     """Run Browser Use (Browserbase or local Chromium) and return a bbox screenshot trace."""
-    from browser_use import Agent, ChatOpenAI
+    from browser_use import Agent, ChatGoogle
 
-    model = model or mistral_model()
+    model = model or os.environ.get("MVP_BROWSER_MODEL") or MODEL or "gemini-2.5-flash"
     os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", "120")
     os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", "240")
 
@@ -449,15 +450,13 @@ async def run_browser_agent(
     history = None
     browser_session = None
     try:
-        llm = ChatOpenAI(
+        llm = ChatGoogle(
             model=model,
-            api_key=mistral_api_key(),
-            base_url=MISTRAL_API_BASE,
+            vertexai=True,
+            credentials=vertex_credentials(),
+            project=GCP_PROJECT,
+            location=location_for(model),
             temperature=0,
-            # Concurrent agents burst against the Mistral rate limit; without retries a
-            # single 429 drops the whole session into snapshot fallback.
-            max_retries=int(os.environ.get("MVP_LLM_MAX_RETRIES", "6")),
-            timeout=120.0,
         )
         persona_line = f"You are {persona.get('name')}: {persona.get('bio')}"
         agent_task = (

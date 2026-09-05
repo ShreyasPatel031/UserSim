@@ -10,10 +10,15 @@ if os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"):
 else:
     RESULTS_DIR = ROOT / "results"
 
-GCP_PROJECT = "project-amer-scs-sandbox"
-GCP_LOCATION = "us-central1"
-GCP_ACCOUNT = "shreyas.patel@searce.com"
-MODEL = "gemini-2.5-flash"
+GCP_PROJECT = (
+    os.environ.get("GOOGLE_CLOUD_PROJECT")
+    or os.environ.get("GCP_PROJECT")
+    or os.environ.get("GCLOUD_PROJECT")
+    or ""
+)
+GCP_LOCATION = os.environ.get("VERTEX_LOCATION") or os.environ.get("GCP_LOCATION") or ""
+GCP_ACCOUNT = os.environ.get("GOOGLE_CLOUD_ACCOUNT") or ""
+MODEL = os.environ.get("MVP_SIGNUP_MODEL") or "gemini-2.5-flash"
 # All capability / bakeoff agent + judge runs use MODEL (cheap). Do not default to 3.6.
 
 # Vertex Gemini 2.5 Flash list prices (USD / 1M tokens). Used for spend tracking.

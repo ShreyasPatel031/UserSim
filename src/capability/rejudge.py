@@ -8,7 +8,7 @@ re-running the agent for dollars.
 Usage:
     # recover only the runs that could not be scored
     PYTHONPATH=src python -m capability.rejudge \
-        --manifest results/capability/full10_mistral_mistral-small-2603_m33.json
+        --manifest results/capability/full10_gemini_gemini-2.5-flash_m33.json
 
     # re-score everything (e.g. after editing the judge prompt)
     PYTHONPATH=src python -m capability.rejudge --manifest <path> --all

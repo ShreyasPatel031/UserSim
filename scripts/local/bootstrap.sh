@@ -38,7 +38,7 @@ echo "==> secrets/env"
 mkdir -p secrets
 if [[ ! -f secrets/env ]]; then
   cp scripts/local/env.example secrets/env
-  echo "    Created secrets/env from template — edit before running Vertex/Gemini/Mistral."
+  echo "    Created secrets/env from template — edit before running Vertex/Gemini."
 else
   echo "    secrets/env already exists (not overwritten)."
 fi

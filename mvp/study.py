@@ -11,9 +11,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-import httpx
-
-from capability.mistral_config import MISTRAL_API_BASE, mistral_api_key
+from capability.gemini_config import gemini_chat
 from mvp.page_access import SiteAccessBlockedError, fetch_page_access
 
 IS_VERCEL_ENV = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
@@ -23,7 +21,7 @@ SNAPSHOT_FORCE = os.environ.get("MVP_SNAPSHOT_ONLY", "").lower() in ("1", "true"
 # Serverless: live Browserbase sessions exceed timeout/memory; use grounded LLM snapshots.
 SNAPSHOT_ONLY = SNAPSHOT_FORCE or QUICK_MODE or (IS_VERCEL_ENV and not USE_LIVE_BROWSER)
 
-# Parallel Mistral calls (rate-limit safe). Not browser sessions.
+# Parallel Gemini calls (rate-limit safe). Not browser sessions.
 _AGENT_SEMAPHORE = asyncio.Semaphore(int(os.environ.get("MVP_AGENT_CONCURRENCY", "4")))
 
 # Live browser sessions. Browserbase free tier caps concurrent sessions at 3.
@@ -41,43 +39,20 @@ def _extract_json(text: str) -> dict:
     return json.loads(match.group(0))
 
 
-async def _mistral_chat(
+async def _llm_chat(
     messages: list[dict[str, str]],
     *,
-    model: str = "mistral-small-2603",
+    model: str | None = None,
     temperature: float = 0.4,
     max_retries: int = 5,
 ) -> str:
-    headers = {
-        "Authorization": f"Bearer {mistral_api_key()}",
-        "Content-Type": "application/json",
-    }
-    payload = {
-        "model": model,
-        "messages": messages,
-        "temperature": temperature,
-        "response_format": {"type": "json_object"},
-    }
-    async with httpx.AsyncClient(timeout=120.0) as client:
-        for attempt in range(max_retries):
-            resp = await client.post(
-                f"{MISTRAL_API_BASE}/chat/completions",
-                headers=headers,
-                json=payload,
-            )
-            if resp.status_code in (429, 503) and attempt < max_retries - 1:
-                # Sustained rate limits outlast a short exponential ramp, so honour
-                # Retry-After when the API sends it.
-                try:
-                    delay = float(resp.headers.get("retry-after", ""))
-                except ValueError:
-                    delay = min(60.0, 5.0 * (2**attempt))
-                await asyncio.sleep(delay)
-                continue
-            resp.raise_for_status()
-            data = resp.json()
-            return data["choices"][0]["message"]["content"]
-    raise RuntimeError("Mistral request failed after retries")
+    return await gemini_chat(
+        messages,
+        model=model,
+        temperature=temperature,
+        json_mode=True,
+        max_retries=max_retries,
+    )
 
 
 @dataclass
@@ -207,7 +182,7 @@ Critical rules:
   write the task the persona would really attempt given what IS on the page.
 - Create exactly {persona_count} personas that fit the segment (diverse within the segment).
 - Create exactly {persona_count} tasks (one primary task per persona)."""
-    raw = await _mistral_chat(
+    raw = await _llm_chat(
         [
             {
                 "role": "system",
@@ -239,7 +214,7 @@ Rules:
 - Public marketing homepages only (https), no app login URLs, no Google/YouTube unless the product IS video hosting adjacent.
 - Prefer well-known live sites. Never invent fake domains.
 """
-    raw = await _mistral_chat(
+    raw = await _llm_chat(
         [
             {"role": "system", "content": "You output valid JSON only with real public competitor URLs."},
             {"role": "user", "content": prompt},
@@ -334,7 +309,7 @@ Rules for trace:
 Page snapshot:
 {page_text[:8000]}"""
     async with _AGENT_SEMAPHORE:
-        raw = await _mistral_chat(
+        raw = await _llm_chat(
             [
                 {"role": "system", "content": "You are a realistic user, not an optimizer. Be specific."},
                 {"role": "user", "content": prompt},
@@ -401,7 +376,7 @@ Rules:
 - Include one step_outcomes entry for every recorded step, using its step number.
 - Judge the product for what it actually is, not for lacking features of a different product."""
     async with _AGENT_SEMAPHORE:
-        raw = await _mistral_chat(
+        raw = await _llm_chat(
             [
                 {
                     "role": "system",
@@ -464,7 +439,7 @@ Return JSON only:
   "segment_fit_score": 1-10,
   "segment_fit_rationale": "2 sentences"
 }}"""
-    raw = await _mistral_chat(
+    raw = await _llm_chat(
         [
             {"role": "system", "content": "You are a senior UX researcher. JSON only."},
             {"role": "user", "content": prompt},
