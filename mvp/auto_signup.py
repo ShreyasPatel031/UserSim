@@ -468,7 +468,17 @@ async def sign_up(
 
     host = host_for_url(url)
     identity = identity or provision_identity(url)
-    profile = Path(identity.profile_dir or (PRODUCT_PROFILES / safe_host(host)))
+    # identities.json travels between machines (laptop -> VM) and stores an
+    # absolute profile_dir. Honour it only when it belongs to this checkout,
+    # otherwise a macOS path is replayed on Linux and mkdir dies on /Users.
+    profile = PRODUCT_PROFILES / safe_host(host)
+    stored = (identity.profile_dir or "").strip()
+    if stored:
+        candidate = Path(stored)
+        if candidate.is_absolute() and candidate.is_relative_to(ROOT):
+            profile = candidate
+        elif not candidate.is_absolute():
+            profile = ROOT / candidate
     profile.mkdir(parents=True, exist_ok=True)
     step_dir = STEP_DIR_ROOT / safe_host(host)
     step_dir.mkdir(parents=True, exist_ok=True)
