@@ -17,6 +17,7 @@ import email
 import email.utils
 import imaplib
 import re
+from html import unescape
 import time
 from email.header import decode_header
 from typing import Any
@@ -46,16 +47,91 @@ def _decode(value: str | None) -> str:
     return "".join(out)
 
 
+def _strip_html(raw: str) -> str:
+    """Drop markup so digits inside tags/URLs are not mistaken for codes."""
+    out = re.sub(r"(?is)<(script|style|head)\b.*?</\1>", " ", raw)
+    out = re.sub(r"(?i)<br\s*/?>|</(p|div|td|tr|h[1-6])>", "\n", out)
+    out = re.sub(r"(?s)<[^>]+>", " ", out)
+    out = unescape(out)
+    out = re.sub(r"[ \t\xa0]+", " ", out)
+    return re.sub(r"\n{2,}", "\n", out)
+
+
 def _body_text(msg: email.message.Message) -> str:
+    """Readable text of the message, preferring text/plain over HTML."""
     if not msg.is_multipart():
         payload = msg.get_payload(decode=True) or b""
-        return payload.decode("utf-8", errors="replace")
-    chunks = []
+        text = payload.decode("utf-8", errors="replace")
+        return _strip_html(text) if msg.get_content_type() == "text/html" else text
+
+    plain: list[str] = []
+    html: list[str] = []
     for part in msg.walk():
-        if part.get_content_type() in ("text/plain", "text/html"):
-            payload = part.get_payload(decode=True) or b""
-            chunks.append(payload.decode("utf-8", errors="replace"))
-    return "\n".join(chunks)
+        ctype = part.get_content_type()
+        if ctype not in ("text/plain", "text/html"):
+            continue
+        payload = part.get_payload(decode=True) or b""
+        text = payload.decode("utf-8", errors="replace")
+        (plain if ctype == "text/plain" else html).append(text)
+    # text/plain first: the HTML alternative carries tracking ids and inline
+    # styles whose digits look exactly like a 6-digit code.
+    if plain:
+        return "\n".join(plain)
+    return _strip_html("\n".join(html))
+
+
+# Placeholders and obviously-not-a-code runs seen in real signup mail.
+_CODE_REJECT = re.compile(r"^(\d)\1+$|^(?:012345|123456|654321|999999|000000)\d*$")
+_CODE_NEAR = re.compile(
+    r"(?is)(?:"
+    r"(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in)\s+code[^0-9]{0,40}(\d{4,8})"
+    r"|code\s*(?:is|:)\s*(\d{4,8})"
+    r"|(\d{4,8})\s*(?:is\s+your|is\s+the)\b"
+    r"|enter\s+(?:this\s+)?(?:code\s*)?[^0-9]{0,20}(\d{4,8})"
+    r")"
+)
+
+
+def _find_code(subject: str, body: str) -> str | None:
+    """Best-effort verification code from one message.
+
+    A bare "first 6-8 digits" scan picks up tracking ids and CSS values; loom
+    signup failed on a code of "999999" lifted out of the HTML part.
+    """
+    subject = subject or ""
+    body = body or ""
+
+    google = re.search(r"\bG-(\d{6})\b", f"{subject}\n{body}")
+    if google:
+        return google.group(1)
+
+    def _ok(value: str | None) -> str | None:
+        if value and not _CODE_REJECT.match(value):
+            return value
+        return None
+
+    # 1) Subject lines usually read "123456 is your code".
+    for cand in re.findall(r"\b(\d{4,8})\b", subject):
+        if _ok(cand):
+            return cand
+
+    # 2) Digits sitting next to code-ish wording.
+    for match in _CODE_NEAR.finditer(f"{subject}\n{body}"):
+        for group in match.groups():
+            if _ok(group):
+                return group
+
+    # 3) A line that is nothing but the code.
+    for line in body.splitlines():
+        stripped = line.strip()
+        if re.fullmatch(r"\d{4,8}", stripped) and _ok(stripped):
+            return stripped
+
+    # 4) Last resort: any standalone 6-8 digit run.
+    for cand in re.findall(r"\b(\d{6,8})\b", body):
+        if _ok(cand):
+            return cand
+    return None
 
 
 def imap_ready(username: str, app_password: str | None) -> tuple[bool, str]:
@@ -106,10 +182,9 @@ def latest_code(
                         continue
                 except Exception:
                     pass
-            text = f"{subject}\n{_body_text(msg)}"
-            match = re.search(r"\bG-(\d{6})\b", text) or _CODE_RE.search(text)
-            if match:
-                return match.group(1)
+            code = _find_code(subject, _body_text(msg))
+            if code:
+                return code
         return None
     finally:
         try:
@@ -303,13 +378,13 @@ def latest_signup_code(
             if ts is not None and ts < newer_than - 60:
                 continue
         subject = _decode(msg.get("Subject"))
-        text = f"{subject}\n{_body_text(msg)}"
-        low = text.lower()
-        if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_RE.search(text):
+        body = _body_text(msg)
+        low = f"{subject}\n{body}".lower()
+        if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_RE.search(low):
             continue
-        match = re.search(r"\bG-(\d{6})\b", text) or _CODE_RE.search(text)
-        if match:
-            return match.group(1)
+        code = _find_code(subject, body)
+        if code:
+            return code
     return None
 
 

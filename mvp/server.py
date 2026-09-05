@@ -8,10 +8,11 @@ import re
 import sys
 from pathlib import Path
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field
+import json
 
 from mvp.paths import MVP_RUNS_DIR
 
@@ -42,14 +43,23 @@ async def unhandled_exception(_request, exc: Exception):
 
 
 class StudyRequest(BaseModel):
-    url: HttpUrl
+    url: str = Field(min_length=3, max_length=2000)
     email: str | None = Field(default=None, max_length=200)
     segment: str | None = Field(default=None, max_length=2000)
     customers: str | None = Field(default=None, max_length=2000)
     competitors: list[str] = Field(default_factory=list)
     tasks: list[str] = Field(default_factory=list)
     test_mode: bool = False
-    backend: str = Field(default="default", pattern="^(default|runloop)$")
+    backend: str = Field(default="default", pattern="^(default)$")
+
+
+def _normalize_url(raw: str) -> str:
+    url = (raw or "").strip()
+    if not url:
+        raise HTTPException(status_code=400, detail="Product URL is required")
+    if not re.match(r"^https?://", url, flags=re.I):
+        url = "https://" + url
+    return url
 
 
 @app.get("/")
@@ -59,62 +69,97 @@ async def index() -> FileResponse:
     return FileResponse(STATIC / "index.html")
 
 
-@app.get("/runloop")
-async def runloop_page() -> FileResponse:
-    path = STATIC / "runloop.html"
-    if not path.is_file():
-        raise HTTPException(status_code=503, detail="Runloop edition not bundled")
-    return FileResponse(path)
-
-
 @app.post("/api/studies")
-async def start_study(body: StudyRequest, background: BackgroundTasks):
+async def start_study(body: StudyRequest, background: BackgroundTasks, request: Request):
     from mvp.study import STUDIES, create_study, run_study, study_to_dict
 
+    url = _normalize_url(body.url)
     segment = (body.segment or body.customers or "").strip()
     if not segment:
         segment = (
             "Auto-research target customers from the product URL "
-            "and invent a mixed panel of 6 personas."
+            "and invent a mixed panel of directed simulated users."
         )
-    if body.test_mode:
-        segment = (body.customers or body.segment or "Curious first-time visitor").strip()
-    if len(segment) < 8:
-        raise HTTPException(status_code=400, detail="Segment / customers description is too short")
+    if body.test_mode and not (body.customers or body.segment):
+        segment = "Curious first-time visitor"
 
-    study = create_study(str(body.url), segment)
+    study = create_study(url, segment)
     # Stash optional inputs for the upcoming agent-loop planner.
     study.email = body.email
     study.customers = body.customers
     study.test_mode = bool(body.test_mode)
-    study.backend = body.backend
-    study.competitors = (
-        []
-        if study.test_mode
-        else [c.strip() for c in body.competitors if c and c.strip()]
-    )
+    # Browser agents use Gemini on Vertex (GCP). Live Chromium is Browserbase
+    # when available; serverless falls back to grounded Vertex snapshots.
+    study.backend = body.backend or "default"
+    # Keep user-pinned competitors even in quick preview.
+    study.competitors = [c.strip() for c in body.competitors if c and c.strip()]
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
     if study.test_mode and not study.tasks_override:
         study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
-    # Serverless: no reliable background workers — run the study in this request
-    # (requires Vercel Pro for maxDuration up to 300s; full studies may need a worker host).
-    if IS_VERCEL:
-        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "90"))
-        try:
-            await asyncio.wait_for(run_study(study.id), timeout=timeout_s)
-            return study_to_dict(STUDIES[study.id])
-        except asyncio.TimeoutError:
-            study = STUDIES[study.id]
-            study.status = "error"
-            study.error = f"Study timed out after {int(timeout_s)}s"
-            study.phase = "Timed out"
-            return JSONResponse(study_to_dict(study), status_code=504)
-        except Exception as exc:  # noqa: BLE001
-            study = STUDIES[study.id]
-            study.status = "error"
-            study.error = (str(exc) or repr(exc))[:500]
-            study.phase = "Failed"
-            return JSONResponse(study_to_dict(study), status_code=500)
+
+    want_stream = "text/event-stream" in (request.headers.get("accept") or "") or (
+        request.headers.get("x-usersim-stream") == "1"
+    )
+
+    # Serverless: stream NDJSON so the brief (competitors / users / tasks) arrives
+    # before browser agents finish — cuts perceived time-to-first-content.
+    if IS_VERCEL or want_stream:
+        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "180"))
+        queue: asyncio.Queue[dict | None] = asyncio.Queue()
+
+        def _push(study_obj, event: str = "progress") -> None:
+            payload = study_to_dict(study_obj)
+            payload["stream_event"] = event
+            queue.put_nowait(payload)
+
+        async def _runner() -> None:
+            try:
+                await asyncio.wait_for(
+                    run_study(study.id, on_update=_push),
+                    timeout=timeout_s,
+                )
+                final = study_to_dict(STUDIES[study.id])
+                final["stream_event"] = "complete"
+                await queue.put(final)
+            except asyncio.TimeoutError:
+                study_obj = STUDIES[study.id]
+                study_obj.status = "error"
+                study_obj.error = f"Study timed out after {int(timeout_s)}s"
+                study_obj.phase = "Timed out"
+                payload = study_to_dict(study_obj)
+                payload["stream_event"] = "error"
+                await queue.put(payload)
+            except Exception as exc:  # noqa: BLE001
+                study_obj = STUDIES[study.id]
+                study_obj.status = "error"
+                study_obj.error = (str(exc) or repr(exc))[:500]
+                study_obj.phase = "Failed"
+                payload = study_to_dict(study_obj)
+                payload["stream_event"] = "error"
+                await queue.put(payload)
+            finally:
+                await queue.put(None)
+
+        async def _gen():
+            task = asyncio.create_task(_runner())
+            try:
+                while True:
+                    item = await queue.get()
+                    if item is None:
+                        break
+                    yield json.dumps(item) + "\n"
+            finally:
+                await task
+
+        return StreamingResponse(
+            _gen(),
+            media_type="application/x-ndjson",
+            headers={
+                "Cache-Control": "no-cache",
+                "X-Accel-Buffering": "no",
+            },
+        )
+
     background.add_task(run_study, study.id)
     return {"study_id": study.id, "status": study.status}
 

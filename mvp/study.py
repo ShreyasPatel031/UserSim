@@ -23,11 +23,25 @@ SNAPSHOT_FORCE = os.environ.get("MVP_SNAPSHOT_ONLY", "").lower() in ("1", "true"
 # Serverless: live Browserbase sessions exceed timeout/memory; use grounded LLM snapshots.
 SNAPSHOT_ONLY = SNAPSHOT_FORCE or QUICK_MODE or (IS_VERCEL_ENV and not USE_LIVE_BROWSER)
 
-# Parallel Gemini calls (rate-limit safe). Not browser sessions.
-_AGENT_SEMAPHORE = asyncio.Semaphore(int(os.environ.get("MVP_AGENT_CONCURRENCY", "4")))
+# Parallel Gemini (Vertex / GCP) feedback calls.
+_AGENT_SEMAPHORE = asyncio.Semaphore(
+    int(
+        os.environ.get(
+            "MVP_AGENT_CONCURRENCY",
+            "24" if IS_VERCEL_ENV else "4",
+        )
+    )
+)
 
-# Live browser sessions. Browserbase free tier caps concurrent sessions at 3.
-_BROWSER_SEMAPHORE = asyncio.Semaphore(int(os.environ.get("MVP_BROWSER_CONCURRENCY", "3")))
+# Live Browserbase / local Chromium sessions.
+_BROWSER_SEMAPHORE = asyncio.Semaphore(
+    int(
+        os.environ.get(
+            "MVP_BROWSER_CONCURRENCY",
+            "8" if IS_VERCEL_ENV else "2",
+        )
+    )
+)
 
 
 def _now() -> str:
@@ -119,7 +133,11 @@ async def _prefetch_browser_sessions(n: int) -> list[Any]:
 def _agent_phase_label(study: StudyState) -> str:
     total = len(study.tasks) or 4
     done = len(study.agent_results)
-    running = sum(1 for s in study.live_sessions.values() if s.get("status") == "running")
+    running = sum(
+        1
+        for s in study.live_sessions.values()
+        if s.get("status") in ("running", "starting")
+    )
     summarizing = sum(
         1 for s in study.live_sessions.values() if s.get("status") == "summarizing"
     )
@@ -128,7 +146,7 @@ def _agent_phase_label(study: StudyState) -> str:
     active = running + summarizing
     parts = [f"{done}/{total} done", f"{active} active"]
     if queued:
-        parts.append(f"{queued} queued")
+        parts.append(f"{queued} waiting")
     parts.append(f"{steps} steps")
     return "Live browser agents — " + " · ".join(parts)
 
@@ -136,19 +154,27 @@ def _agent_phase_label(study: StudyState) -> str:
 STUDIES: dict[str, StudyState] = {}
 
 
-async def generate_plan(
+async def generate_personas(
     url: str,
     segment: str,
     page_text: str,
     *,
     test_mode: bool = False,
+    competitors: list[str] | None = None,
 ) -> dict[str, Any]:
-    persona_count = 1 if (QUICK_MODE or test_mode) else int(os.environ.get("MVP_PERSONA_COUNT", "3"))
-    prompt = f"""You are designing a synthetic user-research study for a product team.
+    """LLM call 2/3 — site summary + simulated users only (no tasks)."""
+    if QUICK_MODE or test_mode:
+        persona_count = 1
+    else:
+        persona_count = int(os.environ.get("MVP_PERSONA_COUNT", "5"))
+    rival_line = ""
+    if competitors:
+        rival_line = "Known competitors: " + ", ".join(competitors[:4]) + "\n"
+    prompt = f"""You are inventing simulated users for a product research study.
 
 Target site: {url}
 Customer segment: {segment}
-
+{rival_line}
 ACTUAL PAGE CONTENT (ground truth — this is what the site really offers):
 {page_text[:9000]}
 
@@ -160,9 +186,78 @@ Return JSON only with this shape:
       "id": "p1",
       "name": "short label",
       "bio": "2 sentences: who they are and what they care about",
+      "age_range": "e.g. 28–34",
+      "occupation": "job title",
+      "location": "city/region",
       "goals": ["goal1", "goal2"]
     }}
-  ],
+  ]
+}}
+
+Critical rules:
+- Derive what the product does ONLY from the page content above. Never infer it from the
+  domain name or guess an industry.
+- Create exactly {persona_count} personas that fit the segment (diverse within the segment).
+- Do NOT invent tasks — personas and site_summary only."""
+    raw = await _llm_chat(
+        [
+            {
+                "role": "system",
+                "content": (
+                    "You output valid JSON only. You never invent product features or "
+                    "industries that are absent from the supplied page content. "
+                    "Return personas only — never tasks."
+                ),
+            },
+            {"role": "user", "content": prompt},
+        ]
+    )
+    data = _extract_json(raw)
+    data.pop("tasks", None)
+    return data
+
+
+async def generate_tasks(
+    url: str,
+    segment: str,
+    page_text: str,
+    personas: list[dict[str, Any]],
+    *,
+    site_summary: str = "",
+    test_mode: bool = False,
+) -> list[dict[str, Any]]:
+    """LLM call 3/3 — tasks mapped onto the personas already chosen."""
+    if QUICK_MODE or test_mode:
+        task_count = 1
+    else:
+        task_count = int(os.environ.get("MVP_TASK_COUNT", "6"))
+    persona_blob = json.dumps(
+        [
+            {
+                "id": p.get("id"),
+                "name": p.get("name"),
+                "bio": p.get("bio"),
+                "goals": p.get("goals") or [],
+                "occupation": p.get("occupation"),
+            }
+            for p in (personas or [])
+        ],
+        indent=2,
+    )
+    prompt = f"""You are writing browsing tasks for a synthetic user-research study.
+
+Target site: {url}
+Customer segment: {segment}
+Site summary: {site_summary or "(see page content)"}
+
+Simulated users already chosen (assign every task to one of these ids):
+{persona_blob}
+
+ACTUAL PAGE CONTENT (ground truth):
+{page_text[:9000]}
+
+Return JSON only:
+{{
   "tasks": [
     {{
       "id": "t1",
@@ -175,28 +270,50 @@ Return JSON only with this shape:
 }}
 
 Critical rules:
-- Derive what the product does ONLY from the page content above. Never infer it from the
-  domain name or guess an industry. If the page is about AI infrastructure, do not write
-  tasks about branding or design.
+- Create exactly {task_count} tasks total. Map them across the personas above.
+- Every task must use a persona_id from the list above.
 - Every task must target something that actually appears on the page (a real nav item,
   section, CTA, or feature name). Quote or reference that element in the task prompt.
-- If the page has no pricing page, do not create a "find the pricing page" task. Instead
-  write the task the persona would really attempt given what IS on the page.
-- Create exactly {persona_count} personas that fit the segment (diverse within the segment).
-- Create exactly {persona_count} tasks (one primary task per persona)."""
+- If the page has no pricing page, do not create a "find the pricing page" task.
+- Do not invent new personas."""
     raw = await _llm_chat(
         [
             {
                 "role": "system",
                 "content": (
-                    "You output valid JSON only. You never invent product features or "
-                    "industries that are absent from the supplied page content."
+                    "You output valid JSON only. Tasks must reference real page content "
+                    "and existing persona ids. Never invent personas."
                 ),
             },
             {"role": "user", "content": prompt},
         ]
     )
-    return _extract_json(raw)
+    data = _extract_json(raw)
+    return list(data.get("tasks") or [])
+
+
+async def generate_plan(
+    url: str,
+    segment: str,
+    page_text: str,
+    *,
+    test_mode: bool = False,
+) -> dict[str, Any]:
+    """Compatibility wrapper — prefer generate_personas + generate_tasks."""
+    users = await generate_personas(url, segment, page_text, test_mode=test_mode)
+    tasks = await generate_tasks(
+        url,
+        segment,
+        page_text,
+        users.get("personas") or [],
+        site_summary=users.get("site_summary") or "",
+        test_mode=test_mode,
+    )
+    return {
+        "site_summary": users.get("site_summary") or "",
+        "personas": users.get("personas") or [],
+        "tasks": tasks,
+    }
 
 
 
@@ -308,6 +425,33 @@ Rules:
                 urls.append(u)
             if len(urls) >= 2:
                 break
+    # Still short? Ask the model for well-known public alternatives without search.
+    if len(urls) < 2:
+        try:
+            raw2 = await _llm_chat(
+                [
+                    {
+                        "role": "system",
+                        "content": "JSON only. Return real public competitor homepage URLs.",
+                    },
+                    {
+                        "role": "user",
+                        "content": (
+                            f"Product: {url}\nSummary: {site_summary}\n"
+                            f"Need {2 - len(urls)} more competitor homepage URL(s). "
+                            'Return {"competitors":[{"name":"...","url":"https://..."}]}'
+                        ),
+                    },
+                ]
+            )
+            for row in (_extract_json(raw2).get("competitors") or []):
+                u = (row.get("url") if isinstance(row, dict) else str(row) or "").strip()
+                if u.startswith("http") and u.rstrip("/") != url.rstrip("/") and u not in urls:
+                    urls.append(u)
+                if len(urls) >= 2:
+                    break
+        except Exception:
+            pass
     return urls[:2]
 
 
@@ -336,6 +480,7 @@ def expand_tasks_for_sites(
                 clone["title"] = f"{title} (vs {site_url})"
             expanded.append(clone)
     return expanded
+
 
 async def simulate_agent(
     *,
@@ -551,8 +696,8 @@ async def run_study(
 
     try:
         log_activity(study, "phase", "Study queued")
-        touch("Fetching site", "running")
-        log_activity(study, "fetch", f"Fetching {study.url}")
+        touch("Understanding context of product", "running")
+        log_activity(study, "fetch", f"Understanding context of {study.url}")
         access = await fetch_page_access(study.url)
         study.access_backend = access.backend
         study.browserbase_session_url = access.session_url
@@ -564,7 +709,7 @@ async def run_study(
             backend=access.backend,
             title=access.title,
         )
-        touch("Fetching site")
+        touch("Understanding context of product")
 
         # Step 0: provision a signed-in product account when enabled.
         # Skipped on SNAPSHOT_ONLY (Vercel / quick) — no live browser there.
@@ -607,12 +752,12 @@ async def run_study(
                 study.auth_status = status
                 study.auth_blocker = str(blocker) if blocker else status
 
-        # Fast path: invent competitors from the web in parallel with user/task planning.
-        touch("Finding competitors & simulated users")
+        # Strict sequence: competitors → users → tasks (separate LLM calls, stream each).
+        touch("Finding competitors")
         log_activity(
             study,
             "plan",
-            "Searching the web for competitors and inventing simulated users & tasks",
+            "Finding competitors, then simulated users, then tasks — one step at a time",
         )
         if study.test_mode:
             log_activity(
@@ -623,51 +768,99 @@ async def run_study(
 
         site_hint = (page_text.split("\n", 1)[0] if page_text else study.url)[:160]
 
-        async def _competitors_job() -> list[str]:
-            if study.competitors:
-                return list(study.competitors)
+        def _push_brief(event: str = "brief") -> None:
+            if not on_update:
+                return
             try:
-                return await invent_competitors(study.url, site_hint, page_text)
+                on_update(study, event=event)
+            except TypeError:
+                on_update(study)
+            except Exception:
+                pass
+
+        # 1) Competitors
+        if not study.competitors:
+            try:
+                study.competitors = await invent_competitors(
+                    study.url, site_hint, page_text
+                )
             except Exception as exc:  # noqa: BLE001
                 log_activity(
                     study,
                     "plan",
                     f"Competitor research failed ({str(exc)[:120]}) — continuing",
                 )
-                return []
-
-        plan_task = asyncio.create_task(
-            generate_plan(study.url, study.segment, page_text, test_mode=study.test_mode)
-        )
-        comp_task = asyncio.create_task(_competitors_job())
-        plan, competitors = await asyncio.gather(plan_task, comp_task)
-
-        study.competitors = competitors or list(study.competitors or [])
-        site_summary = plan.get("site_summary", "")
-        # If web search came up empty, retry with the richer site summary from the planner.
-        if not study.competitors and site_summary:
-            try:
-                study.competitors = await invent_competitors(
-                    study.url, site_summary, page_text
-                )
-            except Exception as exc:  # noqa: BLE001
-                log_activity(
-                    study,
-                    "plan",
-                    f"Competitor retry failed ({str(exc)[:120]})",
-                )
+                study.competitors = []
         if study.competitors:
             log_activity(
                 study,
                 "plan",
                 "Competitors: " + ", ".join(study.competitors),
             )
-            touch("Finding competitors & simulated users")
+        touch("Finding competitors")
+        _push_brief("brief")
 
-        study.personas = plan.get("personas") or []
-        study.tasks = plan.get("tasks") or []
+        # 2) Simulated users (own agent call)
+        touch("Building simulated users")
+        study.personas = []
+        study.tasks = []
+        _push_brief("brief")
+        try:
+            users_plan = await generate_personas(
+                study.url,
+                study.segment,
+                page_text,
+                test_mode=study.test_mode,
+                competitors=study.competitors,
+            )
+        except Exception as exc:  # noqa: BLE001
+            log_activity(study, "plan", f"User generation failed ({str(exc)[:120]})")
+            users_plan = {"site_summary": "", "personas": []}
+
+        site_summary = users_plan.get("site_summary") or ""
+        study.personas = users_plan.get("personas") or []
         if site_summary:
             log_activity(study, "plan", f"Site: {site_summary}")
+
+        # Retry competitors with richer summary if the first pass was empty.
+        if not study.competitors and site_summary:
+            try:
+                study.competitors = await invent_competitors(
+                    study.url, site_summary, page_text
+                )
+                if study.competitors:
+                    log_activity(
+                        study,
+                        "plan",
+                        "Competitors: " + ", ".join(study.competitors),
+                    )
+            except Exception as exc:  # noqa: BLE001
+                log_activity(
+                    study,
+                    "plan",
+                    f"Competitor retry failed ({str(exc)[:120]})",
+                )
+
+        touch("Building simulated users")
+        _push_brief("brief")
+
+        # 3) Tasks (own agent call — only after users are visible)
+        touch("Writing tasks")
+        _push_brief("brief")
+        try:
+            study.tasks = await generate_tasks(
+                study.url,
+                study.segment,
+                page_text,
+                study.personas,
+                site_summary=site_summary,
+                test_mode=study.test_mode,
+            )
+        except Exception as exc:  # noqa: BLE001
+            log_activity(study, "plan", f"Task generation failed ({str(exc)[:120]})")
+            study.tasks = []
+        touch("Writing tasks")
+        _push_brief("brief")
 
         # Apply optional task overrides.
         if study.tasks_override:
@@ -705,28 +898,42 @@ async def run_study(
         base_cap = int(
             os.environ.get(
                 "MVP_AGENT_COUNT",
-                "1" if (QUICK_MODE or study.test_mode) else "3",
+                "1" if (QUICK_MODE or study.test_mode) else "6",
             )
         )
         if base_cap > 0 and len(study.tasks) > base_cap:
             study.tasks = study.tasks[:base_cap]
-            used_persona_ids = {t.get("persona_id") for t in study.tasks}
-            study.personas = [p for p in study.personas if p.get("id") in used_persona_ids][
-                :base_cap
+
+        # Keep the full persona panel in the brief (not only personas that still
+        # have a task after the base cap).
+        if study.personas and study.tasks:
+            used = {t.get("persona_id") for t in study.tasks}
+            ordered = [p for p in study.personas if p.get("id") in used]
+            extras = [p for p in study.personas if p.get("id") not in used]
+            study.personas = (ordered + extras)[
+                : max(len(ordered), int(os.environ.get("MVP_PERSONA_COUNT", "5")))
             ]
 
-        # Full studies expand tasks across competitor sites; quick preview keeps
-        # competitors visible in the brief without expanding every run.
+        # Full studies: every task × (product + each competitor), all parallel.
+        # Quick preview keeps competitors in the brief without expanding runs.
         if study.competitors and not study.test_mode:
             before = len(study.tasks)
             study.tasks = expand_tasks_for_sites(
-                study.tasks, product_url=study.url, competitors=study.competitors
+                study.tasks,
+                product_url=study.url,
+                competitors=study.competitors,
             )
             log_activity(
                 study,
                 "plan",
-                f"Expanded to {len(study.tasks)} runs ({before} tasks × {1 + len(study.competitors)} sites)",
+                f"Expanded to {len(study.tasks)} parallel runs "
+                f"({before} tasks × {1 + len(study.competitors)} sites)",
             )
+        elif not study.test_mode:
+            for task in study.tasks:
+                task.setdefault("site_key", "product")
+                task.setdefault("site_url", study.url)
+                task.setdefault("site_label", "Product")
 
         for persona in study.personas:
             demos = ", ".join(
@@ -782,94 +989,20 @@ async def run_study(
                 "site_key": task.get("site_key") or "product",
                 "site_url": task.get("site_url") or study.url,
                 "site_label": task.get("site_label") or "Product",
-                "status": "pending",
+                "status": "starting",
                 "trace": [],
                 "num_steps": 0,
             }
 
-        touch(f"Live browser agents — 0/{len(study.tasks)} done · 0 active · {len(study.tasks)} queued · 0 steps")
+        touch(
+            f"Live browser agents — 0/{len(study.tasks)} done · {len(study.tasks)} active · 0 queued · 0 steps"
+        )
         done_count = 0
 
         def refresh_agent_phase() -> None:
             touch(_agent_phase_label(study))
 
-        if study.backend == "runloop":
-            from mvp.runloop_backend import run_task_in_devbox
-
-            log_activity(study, "agents", f"Launching {len(study.tasks)} Runloop Devboxes")
-            touch(f"Runloop Devboxes — 0/{len(study.tasks)} finished")
-
-            async def _run_runloop(task: dict[str, Any]) -> dict[str, Any]:
-                nonlocal done_count
-                persona = persona_by_id.get(task.get("persona_id")) or study.personas[0]
-                agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
-                sess = study.live_sessions[agent_id]
-                sess["status"] = "running"
-                log_activity(
-                    study,
-                    "agent_start",
-                    f"{persona.get('name')} Devbox provisioning",
-                    agent_id=agent_id,
-                )
-                evidence = await run_task_in_devbox(
-                    url=task.get("site_url") or study.url,
-                    task_prompt=task.get("prompt") or task.get("title") or "",
-                    agent_id=agent_id,
-                )
-                page_snapshot = (
-                    f"Title: {evidence.get('title', '')}\n"
-                    f"URL: {evidence.get('url', '')}\n\n"
-                    f"Visible page text:\n{evidence.get('body_text', '')}\n\n"
-                    f"Visible links:\n{json.dumps(evidence.get('links') or [], indent=2)}"
-                )
-                result = await simulate_agent(
-                    url=task.get("site_url") or study.url,
-                    segment=study.segment,
-                    persona=persona,
-                    task=task,
-                    page_text=page_snapshot,
-                    study_id=study.id,
-                    agent_id=agent_id,
-                )
-                trace = result.get("trace") or []
-                if trace and evidence.get("screenshot_url"):
-                    # This is the browser frame we actually observed. Inferred
-                    # follow-up steps must not masquerade as captured frames.
-                    trace[0]["screenshot_url"] = evidence["screenshot_url"]
-                    trace[0]["evidence_label"] = "Captured in Runloop Devbox"
-                    result["trace"] = trace
-                result.update(
-                    mode="runloop_devbox",
-                    runloop_devbox_id=evidence.get("devbox_id"),
-                    browser_evidence={
-                        "url": evidence.get("url"),
-                        "title": evidence.get("title"),
-                        "links": (evidence.get("links") or [])[:20],
-                        "elapsed_s": evidence.get("elapsed_s"),
-                        "screenshot_url": evidence.get("screenshot_url"),
-                    },
-                    persona_id=persona.get("id"),
-                    persona_name=persona.get("name"),
-                    persona_bio=persona.get("bio"),
-                    task_id=task.get("id"),
-                    task_title=task.get("title"),
-                    task_prompt=task.get("prompt"),
-                    site_key=task.get("site_key") or "product",
-                    site_url=task.get("site_url") or study.url,
-                    site_label=task.get("site_label") or "Product",
-                )
-                sess["status"] = "complete"
-                sess["trace"] = result.get("trace") or []
-                sess["num_steps"] = len(sess["trace"])
-                done_count += 1
-                study.agent_results.append(result)
-                touch(f"Runloop Devboxes — {done_count}/{len(study.tasks)} finished")
-                log_activity(study, "agent_done", f"{persona.get('name')} Devbox complete", agent_id=agent_id)
-                return result
-
-            study.agent_results = []
-            await asyncio.gather(*[_run_runloop(t) for t in study.tasks])
-        elif SNAPSHOT_ONLY:
+        if SNAPSHOT_ONLY:
             log_activity(
                 study,
                 "agents",
@@ -929,28 +1062,50 @@ async def run_study(
         else:
             use_live_browser = True
             force_local_browser = False
-            pool = min(len(study.tasks), int(os.environ.get("MVP_BROWSER_CONCURRENCY", "3")))
+            pool = min(
+                len(study.tasks),
+                int(
+                    os.environ.get(
+                        "MVP_BROWSER_CONCURRENCY",
+                        "8" if IS_VERCEL_ENV else "2",
+                    )
+                ),
+            )
             prefetched_sessions: list[Any] = []
             if pool:
                 log_activity(
                     study,
                     "browser",
-                    f"Preparing {pool} browser sessions (Browserbase allows {pool} at once on free tier)",
+                    f"Preparing {pool} browser sessions (Browser Use + Vertex Gemini on GCP)",
                 )
                 touch(f"Preparing browser sessions — 0/{pool} ready")
                 try:
                     prefetched_sessions = await _prefetch_browser_sessions(pool)
                 except Exception as exc:  # noqa: BLE001
-                    use_live_browser = True
-                    force_local_browser = True
-                    log_activity(
-                        study,
-                        "browser",
-                        f"Browserbase unavailable ({str(exc)[:160]}) — using local Chromium for live traces",
-                    )
-                    touch("Browserbase unavailable — using local browser agents")
+                    if IS_VERCEL_ENV:
+                        # Serverless cannot launch local Chromium — fall back to
+                        # grounded Vertex (GCP) snapshots from the fetched page.
+                        use_live_browser = False
+                        force_local_browser = False
+                        log_activity(
+                            study,
+                            "browser",
+                            f"Browserbase unavailable ({str(exc)[:160]}) — "
+                            "using Vertex Gemini snapshots on GCP",
+                        )
+                        touch("Live browser unavailable — Vertex snapshot agents")
+                    else:
+                        use_live_browser = True
+                        force_local_browser = True
+                        log_activity(
+                            study,
+                            "browser",
+                            f"Browserbase unavailable ({str(exc)[:160]}) — "
+                            "using local Chromium for live traces",
+                        )
+                        touch("Browserbase unavailable — using local browser agents")
 
-            if False and not use_live_browser:
+            if not use_live_browser:
                 log_activity(
                     study,
                     "agents",
@@ -1038,6 +1193,13 @@ async def run_study(
                     sess["last_action"] = step.get("action") or ""
                     refresh_agent_phase()
                     study.updated_at = _now()
+                    if on_update:
+                        try:
+                            on_update(study, event="progress")
+                        except TypeError:
+                            on_update(study)
+                        except Exception:
+                            pass
                     log_activity(
                         study,
                         "agent_step",
@@ -1063,26 +1225,24 @@ async def run_study(
                         {
                             "agent_id": agent_id,
                             "persona_name": persona.get("name"),
-                            "status": "pending",
+                            "status": "starting",
                             "trace": [],
                         },
                     )
+                    sess["status"] = "starting"
                     prefetched = await _take_prefetched_session()
-                    if prefetched:
-                        sess["status"] = "running"
                     log_activity(
                         study,
                         "agent_start",
-                        f"{persona.get('name')} started browsing",
+                        f"{persona.get('name')} launching browser",
                         agent_id=agent_id,
                         persona_name=persona.get("name"),
                     )
                     refresh_agent_phase()
                     try:
                         async with _BROWSER_SEMAPHORE:
-                            if not prefetched:
-                                sess["status"] = "running"
-                                refresh_agent_phase()
+                            sess["status"] = "running"
+                            refresh_agent_phase()
                             run = await run_browser_agent(
                                 study_id=study.id,
                                 agent_id=agent_id,
