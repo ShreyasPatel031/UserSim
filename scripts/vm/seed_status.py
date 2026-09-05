@@ -68,8 +68,7 @@ def session_cookies(profile: Path, host: str) -> list[str]:
         return []
 
     want = _registrable(host)
-    found: set[str] = []  # type: ignore[assignment]
-    found = set()
+    found: set[str] = set()
     for host_key, name in rows:
         if _registrable(str(host_key)) != want:
             continue
@@ -78,6 +77,20 @@ def session_cookies(profile: Path, host: str) -> list[str]:
             continue
         if any(h in low for h in AUTH_HINTS):
             found.add(str(name))
+    return sorted(found)
+
+
+def _auth_names_from_storage(state: dict, host: str) -> list[str]:
+    want = _registrable(host)
+    found: set[str] = set()
+    for cookie in state.get("cookies") or []:
+        if _registrable(str(cookie.get("domain") or "")) != want:
+            continue
+        low = str(cookie.get("name") or "").lower()
+        if any(n in low for n in NOISE):
+            continue
+        if any(h in low for h in AUTH_HINTS):
+            found.add(str(cookie.get("name")))
     return sorted(found)
 
 
@@ -91,6 +104,7 @@ def main() -> int:
         seed_root = candidates[0]
 
     profiles_dir = seed_root / "profiles"
+    states_dir = seed_root / "site_states"
     servable: dict[str, list[str]] = {}
     empty: list[str] = []
     if profiles_dir.is_dir():
@@ -102,6 +116,25 @@ def main() -> int:
                 servable[prof.name] = names
             else:
                 empty.append(prof.name)
+
+    # Browserbase signups persist Playwright storage_state, not a Chrome profile.
+    if states_dir.is_dir():
+        for state_path in sorted(states_dir.glob("*.json")):
+            host = state_path.stem
+            if host in servable:
+                continue
+            try:
+                state = json.loads(state_path.read_text())
+            except Exception:
+                continue
+            names = _auth_names_from_storage(state, host)
+            if names:
+                servable[host] = names
+            elif host not in empty and host not in servable:
+                empty.append(host)
+
+    # Don't list a host as empty if site_states already proved a session.
+    empty = [h for h in empty if h not in servable]
 
     health_path = seed_root / "state" / "health.json"
     try:

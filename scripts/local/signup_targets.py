@@ -60,10 +60,10 @@ def _run_one(host: str, idx: int, timeout_s: int, max_steps: int, headed: bool) 
                 timeout=timeout_s + 180,
             )
         out = proc.stdout.decode(errors="ignore")
-        log.write_bytes(log.read_bytes() + out.encode())
-        start = out.rfind("{")
-        if start >= 0:
-            row.update(json.loads(out[start:]))
+        log.write_bytes(log.read_bytes() + b"\n--- stdout ---\n" + out.encode())
+        parsed = _parse_result_json(out)
+        if parsed:
+            row.update(parsed)
         else:
             row.update({"ok": False, "reason": "no_result"})
         row["exit_code"] = proc.returncode
@@ -72,6 +72,31 @@ def _run_one(host: str, idx: int, timeout_s: int, max_steps: int, headed: bool) 
     except Exception as exc:  # noqa: BLE001
         row.update({"ok": False, "reason": "driver_error", "detail": str(exc)[:200]})
     return row
+
+
+def _parse_result_json(out: str) -> dict | None:
+    """Pick the last JSON object that looks like an auto_signup result.
+
+    Pretty-printed multi-line JSON plus earlier brace-y log noise used to make
+    ``rfind('{')`` + ``json.loads`` throw ``Extra data`` and report every win as
+    ``driver_error``.
+    """
+    decoder = json.JSONDecoder()
+    last: dict | None = None
+    idx = 0
+    while True:
+        start = out.find("{", idx)
+        if start < 0:
+            break
+        try:
+            obj, end = decoder.raw_decode(out, start)
+        except json.JSONDecodeError:
+            idx = start + 1
+            continue
+        if isinstance(obj, dict) and "ok" in obj and "host" in obj:
+            last = obj
+        idx = end
+    return last
 
 
 def main() -> int:

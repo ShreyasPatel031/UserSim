@@ -101,6 +101,60 @@ def _kill_port(port: int) -> None:
     time.sleep(0.8)
 
 
+def _create_signup_browserbase_session():
+    """Create the best Browserbase session this account's plan allows.
+
+    Ideal: residential proxies + captcha solve + advanced stealth. Free tier
+    rejects proxies (402) and verified/advanced stealth (403), so walk down the
+    ladder instead of failing the whole signup.
+    """
+    from capability.browserbase_client import create_session
+
+    attempts = [
+        {"proxies": True, "solve_captchas": True, "advanced_stealth": True},
+        {"proxies": True, "solve_captchas": True, "advanced_stealth": False},
+        {"proxies": False, "solve_captchas": True, "advanced_stealth": False},
+        {"proxies": False, "solve_captchas": False, "advanced_stealth": False},
+    ]
+    last_exc: BaseException | None = None
+    for kwargs in attempts:
+        try:
+            session = create_session(keep_alive=False, **kwargs)
+            print(
+                f"Browserbase create ok with {kwargs}",
+                flush=True,
+                file=__import__("sys").stderr,
+            )
+            return session, kwargs
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+            print(
+                f"Browserbase create refused {kwargs}: {type(exc).__name__}: {exc}"[:240],
+                flush=True,
+                file=__import__("sys").stderr,
+            )
+    assert last_exc is not None
+    raise last_exc
+
+
+def _signup_uses_browserbase() -> bool:
+    """Signup via Browserbase when enabled and not forced local.
+
+    Local Chrome on a GCP seed shares a datacenter ASN and fails captchas that a
+    residential Browserbase session often clears. Opt in with
+    ``MVP_SIGNUP_BROWSERBASE=1`` (or ``USE_BROWSERBASE=1``); ``MVP_FORCE_LOCAL_BROWSER=1``
+    always wins for debugging.
+    """
+    if os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {"1", "true", "yes"}:
+        return False
+    raw = (
+        os.environ.get("MVP_SIGNUP_BROWSERBASE")
+        or os.environ.get("USE_BROWSERBASE")
+        or ""
+    )
+    return raw.strip().lower() in {"1", "true", "yes"}
+
+
 def _launch_chrome(
     start_url: str,
     profile: Path,
@@ -202,6 +256,40 @@ VERIFY_URLS: dict[str, list[str]] = {
     "medium.com": ["https://medium.com/me/stories/public"],
     "bitwarden.com": ["https://vault.bitwarden.com/#/vault"],
 }
+
+
+def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
+    """True if Playwright storage_state carries an auth-looking cookie for host.
+
+    Used when the live DOM heuristic lags SPA onboarding. Same idea as
+    ``scripts/vm/seed_status.py``, kept local so signup doesn't import the VM tool.
+    """
+    want = (host or "").lower().removeprefix("www.")
+    if "." in want:
+        want = ".".join(want.split(".")[-2:])
+    auth_hints = ("sess", "auth", "token", "login", "sid", "jwt", "credential")
+    noise = (
+        "analytics",
+        "ab.storage",
+        "_ga",
+        "_gid",
+        "csrf",
+        "xsrf",
+        "anti_forgery",
+        "intercom",
+    )
+    for cookie in state.get("cookies") or []:
+        domain = str(cookie.get("domain") or "").lstrip(".").lower()
+        parts = domain.split(".")
+        etld = ".".join(parts[-2:]) if len(parts) >= 2 else domain
+        if etld != want and want not in domain:
+            continue
+        name = str(cookie.get("name") or "").lower()
+        if any(n in name for n in noise):
+            continue
+        if any(h in name for h in auth_hints):
+            return True
+    return False
 
 
 async def verify_signed_in(page: Any, host: str) -> bool:
@@ -587,12 +675,41 @@ async def sign_up(
         start_url = SIGNUP_START[host_key]
 
     max_steps = max_steps or int(os.environ.get("MVP_SIGNUP_MAX_STEPS", "40"))
-    proc = _launch_chrome(start_url, profile, headed=headed, cdp_port=port)
-    print(
-        f"Chrome pid={proc.pid} profile={profile} port={port}",
-        flush=True,
-        file=__import__("sys").stderr,
-    )
+    use_bb = _signup_uses_browserbase()
+    proc: subprocess.Popen | None = None
+    bb_session = None
+    cdp_url = f"http://127.0.0.1:{port}"
+    result: dict[str, Any] = {
+        "ok": False,
+        "host": host,
+        "email": identity.email,
+        "profile_dir": str(profile),
+        "actions": [],
+        "backend": "local_chrome",
+    }
+
+    if use_bb:
+        from capability.browserbase_client import close_session
+
+        # Best available session for this Browserbase plan (proxies may 402 on free).
+        bb_session, bb_flags = await asyncio.to_thread(_create_signup_browserbase_session)
+        cdp_url = bb_session.connect_url
+        result["backend"] = "browserbase"
+        result["browserbase_session_url"] = bb_session.session_url
+        result["browserbase_flags"] = bb_flags
+        print(
+            f"Browserbase session={bb_session.id} url={bb_session.session_url} flags={bb_flags}",
+            flush=True,
+            file=__import__("sys").stderr,
+        )
+    else:
+        proc = _launch_chrome(start_url, profile, headed=headed, cdp_port=port)
+        result["backend"] = "local_chrome"
+        print(
+            f"Chrome pid={proc.pid} profile={profile} port={port}",
+            flush=True,
+            file=__import__("sys").stderr,
+        )
 
     ctx: dict[str, Any] = {
         "identity": identity,
@@ -604,23 +721,13 @@ async def sign_up(
         "sms_number": None,
     }
 
-    result: dict[str, Any] = {
-        "ok": False,
-        "host": host,
-        "email": identity.email,
-        "profile_dir": str(profile),
-        "actions": [],
-    }
-
     try:
         async with async_playwright() as p:
             browser = None
             deadline = time.time() + min(60.0, timeout_s)
             while browser is None and time.time() < deadline:
                 try:
-                    browser = await p.chromium.connect_over_cdp(
-                        f"http://127.0.0.1:{port}"
-                    )
+                    browser = await p.chromium.connect_over_cdp(cdp_url)
                 except Exception:
                     await asyncio.sleep(1)
             if browser is None:
@@ -629,6 +736,14 @@ async def sign_up(
 
             pw_ctx = browser.contexts[0] if browser.contexts else await browser.new_context()
             page = pw_ctx.pages[0] if pw_ctx.pages else await pw_ctx.new_page()
+            # Browserbase starts on about:blank — land on the signup URL ourselves.
+            if use_bb:
+                try:
+                    await page.goto(start_url, wait_until="domcontentloaded", timeout=60000)
+                except Exception as exc:
+                    result["reason"] = f"navigate_failed:{type(exc).__name__}"
+                    result["detail"] = str(exc)[:200]
+                    return result
             ctx["page_getter"] = lambda: page
 
             # Already signed in from a previous run?
@@ -654,13 +769,15 @@ async def sign_up(
             # Attach to the already-running Chrome via CDP so the persistent
             # profile is the one we launched (not a throwaway browser-use profile).
             bu_profile = BrowserProfile(
-                cdp_url=f"http://127.0.0.1:{port}",
+                cdp_url=cdp_url,
                 is_local=False,
                 viewport={"width": 1440, "height": 900},
                 disable_security=True,
                 highlight_elements=False,
-                captcha_solver=os.environ.get("MVP_CAPTCHA_SOLVER", "").lower()
-                in {"1", "true", "yes"},
+                captcha_solver=True if use_bb else (
+                    os.environ.get("MVP_CAPTCHA_SOLVER", "").lower()
+                    in {"1", "true", "yes"}
+                ),
             )
             id_blob = json.dumps(
                 {
@@ -694,6 +811,23 @@ async def sign_up(
                 f"or a waitlist, call report_blocked with the matching reason.\n"
                 f"Do NOT try to pay. Prefer email signup; use Google/GitHub SSO only if email signup is absent."
             )
+            # Used to exercise the phone→ntfy SMS path end-to-end. Optional phone
+            # prompts (Zoom "Skip" / "No thanks") otherwise get dismissed and never
+            # produce a text — which is correct for normal signup, wrong for a relay test.
+            if os.environ.get("MVP_SIGNUP_REQUIRE_SMS", "").strip().lower() in {
+                "1",
+                "true",
+                "yes",
+            }:
+                phone = identity.phone or "the vault phone"
+                task += (
+                    f"\n\nCRITICAL — SMS REQUIRED FOR THIS RUN:\n"
+                    f"- You MUST enter phone number {phone} and complete SMS verification "
+                    f"via get_sms_code().\n"
+                    f"- Do NOT click Skip / Not now / No thanks on any phone or text prompts.\n"
+                    f"- If the product offers optional phone linking, take it and finish SMS OTP.\n"
+                    f"- Do not call done() until SMS verification has succeeded."
+                )
             agent = Agent(
                 task=task,
                 llm=llm,
@@ -736,6 +870,17 @@ async def sign_up(
             except Exception:
                 pass
 
+            # Always snapshot cookies before judging — Browserbase sessions die in
+            # ``finally``, so a false-negative signed-in heuristic used to throw away
+            # a real account (Todoist completed signup then reported not_signed_in).
+            state: dict[str, Any] | None = None
+            try:
+                state = await pw_ctx.storage_state()
+                SITE_STATES.mkdir(parents=True, exist_ok=True)
+                site_state_path(host).write_text(json.dumps(state, indent=2))
+            except Exception as exc:
+                result["state_error"] = str(exc)[:200]
+
             # Onboarding often ends on a "Getting ready…" splash that redirects a
             # few seconds later, so a single probe reports a fresh account as
             # not_signed_in. Re-probe for a short window before giving up.
@@ -751,6 +896,12 @@ async def sign_up(
                 if signed or time.time() >= settle_deadline:
                     break
                 await asyncio.sleep(3)
+
+            if not signed and state is not None:
+                # Cookie-jar fallback: SPA chrome is flaky right after signup.
+                signed = _storage_state_looks_authed(state, host)
+                if signed:
+                    result["signed_via"] = "storage_state"
 
             if ctx.get("blocker"):
                 update_identity(
@@ -769,12 +920,6 @@ async def sign_up(
                 return result
 
             if signed:
-                try:
-                    state = await pw_ctx.storage_state()
-                    SITE_STATES.mkdir(parents=True, exist_ok=True)
-                    site_state_path(host).write_text(json.dumps(state, indent=2))
-                except Exception as exc:
-                    result["state_error"] = str(exc)[:200]
                 update_identity(
                     url,
                     status="signed_up",
@@ -804,7 +949,14 @@ async def sign_up(
                 await asyncio.to_thread(release, number)
             except Exception:
                 pass
-        if proc and proc.poll() is None:
+        if bb_session is not None:
+            try:
+                from capability.browserbase_client import close_session
+
+                await asyncio.to_thread(close_session, bb_session.id)
+            except Exception:
+                pass
+        if proc is not None and proc.poll() is None:
             try:
                 proc.terminate()
                 proc.wait(timeout=5)
