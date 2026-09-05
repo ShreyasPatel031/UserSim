@@ -94,6 +94,7 @@ class StudyState:
     competitors: list[str] = field(default_factory=list)
     tasks_override: list[str] = field(default_factory=list)
     test_mode: bool = False
+    backend: str = "default"
     personas: list[dict[str, Any]] = field(default_factory=list)
     tasks: list[dict[str, Any]] = field(default_factory=list)
     agent_results: list[dict[str, Any]] = field(default_factory=list)
@@ -103,6 +104,8 @@ class StudyState:
     error: str | None = None
     access_backend: str | None = None
     browserbase_session_url: str | None = None
+    auth_status: str | None = None
+    auth_blocker: str | None = None
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -344,7 +347,7 @@ Page snapshot:
     result["task_title"] = task.get("title")
     result["task_prompt"] = task.get("prompt")
     result["site_key"] = task.get("site_key") or "product"
-    result["site_url"] = task.get("site_url") or study.url
+    result["site_url"] = task.get("site_url") or url
     result["site_label"] = task.get("site_label") or "Product"
     result["agent_id"] = agent_id
     return result
@@ -496,6 +499,51 @@ async def run_study(study_id: str) -> None:
             title=access.title,
         )
 
+        # Step 0: provision a signed-in product account when enabled.
+        # Skipped on SNAPSHOT_ONLY (Vercel / quick) — no live browser there.
+        if (
+            not SNAPSHOT_ONLY
+            and os.environ.get("MVP_AUTO_SIGNUP", "").lower() in {"1", "true", "yes"}
+        ):
+            touch("Provisioning account")
+            log_activity(study, "auth", f"Ensuring signed-in access for {study.url}")
+            from mvp.auth_state import ensure_product_access
+
+            access_result = await asyncio.to_thread(ensure_product_access, study.url)
+            status = access_result.get("status") or "unknown"
+            if access_result.get("ok"):
+                log_activity(
+                    study,
+                    "auth",
+                    f"Product access ready ({status})",
+                    auth_status=status,
+                    email=access_result.get("email"),
+                )
+                # Re-fetch page text from a signed-in perspective when possible —
+                # the interesting friction is post-signup. Best-effort only.
+                try:
+                    access = await fetch_page_access(study.url)
+                    page_text = (
+                        f"Title: {access.title}\nURL: {access.final_url}\n\n{access.text}"
+                    )
+                    study.access_backend = access.backend
+                except Exception:
+                    pass
+            else:
+                blocker = access_result.get("blocker") or access_result.get("reason")
+                log_activity(
+                    study,
+                    "auth",
+                    f"Product access incomplete ({status}): {blocker}",
+                    auth_status=status,
+                    blocker=blocker,
+                    detail=access_result.get("detail"),
+                )
+                # card_required / sso_only / etc. — continue signed-out and
+                # surface the gate as a research finding in the summary later.
+                study.auth_status = status
+                study.auth_blocker = str(blocker) if blocker else status
+
         touch("Generating personas & tasks")
         log_activity(study, "plan", "Reading page content and generating personas & tasks")
         if study.test_mode:
@@ -635,7 +683,83 @@ async def run_study(study_id: str) -> None:
         def refresh_agent_phase() -> None:
             touch(_agent_phase_label(study))
 
-        if SNAPSHOT_ONLY:
+        if study.backend == "runloop":
+            from mvp.runloop_backend import run_task_in_devbox
+
+            log_activity(study, "agents", f"Launching {len(study.tasks)} Runloop Devboxes")
+            touch(f"Runloop Devboxes — 0/{len(study.tasks)} finished")
+
+            async def _run_runloop(task: dict[str, Any]) -> dict[str, Any]:
+                nonlocal done_count
+                persona = persona_by_id.get(task.get("persona_id")) or study.personas[0]
+                agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
+                sess = study.live_sessions[agent_id]
+                sess["status"] = "running"
+                log_activity(
+                    study,
+                    "agent_start",
+                    f"{persona.get('name')} Devbox provisioning",
+                    agent_id=agent_id,
+                )
+                evidence = await run_task_in_devbox(
+                    url=task.get("site_url") or study.url,
+                    task_prompt=task.get("prompt") or task.get("title") or "",
+                    agent_id=agent_id,
+                )
+                page_snapshot = (
+                    f"Title: {evidence.get('title', '')}\n"
+                    f"URL: {evidence.get('url', '')}\n\n"
+                    f"Visible page text:\n{evidence.get('body_text', '')}\n\n"
+                    f"Visible links:\n{json.dumps(evidence.get('links') or [], indent=2)}"
+                )
+                result = await simulate_agent(
+                    url=task.get("site_url") or study.url,
+                    segment=study.segment,
+                    persona=persona,
+                    task=task,
+                    page_text=page_snapshot,
+                    study_id=study.id,
+                    agent_id=agent_id,
+                )
+                trace = result.get("trace") or []
+                if trace and evidence.get("screenshot_url"):
+                    # This is the browser frame we actually observed. Inferred
+                    # follow-up steps must not masquerade as captured frames.
+                    trace[0]["screenshot_url"] = evidence["screenshot_url"]
+                    trace[0]["evidence_label"] = "Captured in Runloop Devbox"
+                    result["trace"] = trace
+                result.update(
+                    mode="runloop_devbox",
+                    runloop_devbox_id=evidence.get("devbox_id"),
+                    browser_evidence={
+                        "url": evidence.get("url"),
+                        "title": evidence.get("title"),
+                        "links": (evidence.get("links") or [])[:20],
+                        "elapsed_s": evidence.get("elapsed_s"),
+                        "screenshot_url": evidence.get("screenshot_url"),
+                    },
+                    persona_id=persona.get("id"),
+                    persona_name=persona.get("name"),
+                    persona_bio=persona.get("bio"),
+                    task_id=task.get("id"),
+                    task_title=task.get("title"),
+                    task_prompt=task.get("prompt"),
+                    site_key=task.get("site_key") or "product",
+                    site_url=task.get("site_url") or study.url,
+                    site_label=task.get("site_label") or "Product",
+                )
+                sess["status"] = "complete"
+                sess["trace"] = result.get("trace") or []
+                sess["num_steps"] = len(sess["trace"])
+                done_count += 1
+                study.agent_results.append(result)
+                touch(f"Runloop Devboxes — {done_count}/{len(study.tasks)} finished")
+                log_activity(study, "agent_done", f"{persona.get('name')} Devbox complete", agent_id=agent_id)
+                return result
+
+            study.agent_results = []
+            await asyncio.gather(*[_run_runloop(t) for t in study.tasks])
+        elif SNAPSHOT_ONLY:
             log_activity(
                 study,
                 "agents",
@@ -997,6 +1121,10 @@ async def run_study(study_id: str) -> None:
             study.summary["access_backend"] = study.access_backend
         if study.browserbase_session_url:
             study.summary["browserbase_session_url"] = study.browserbase_session_url
+        if study.auth_status:
+            study.summary["auth_status"] = study.auth_status
+        if study.auth_blocker:
+            study.summary["auth_blocker"] = study.auth_blocker
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
     except SiteAccessBlockedError as exc:
@@ -1036,6 +1164,9 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
         "error": study.error,
         "access_backend": study.access_backend,
         "browserbase_session_url": study.browserbase_session_url,
+        "auth_status": study.auth_status,
+        "auth_blocker": study.auth_blocker,
         "competitors": study.competitors,
         "test_mode": study.test_mode,
+        "backend": study.backend,
     }

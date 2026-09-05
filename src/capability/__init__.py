@@ -11,19 +11,16 @@ from config import GCP_LOCATION, MODEL, RESULTS_DIR, ROOT
 
 VIEWPORT = {"width": 1280, "height": 800}
 
-# Step budget is derived from Mind2Web human trajectories — not an arbitrary round number.
-_tasks_path = ROOT / "data" / "mind2web_tasks.json"
+# Step budget from Online-Mind2Web reference lengths (human paths), not an arbitrary round number.
+_tasks_path = ROOT / "data" / "om2w" / "om2w_tasks.json"
 if _tasks_path.is_file():
     _TASKS = json.loads(_tasks_path.read_text())["tasks"]
 else:
     _TASKS = [{"n_steps": 22}]
-MAX_HUMAN_STEPS = max(int(t.get("n_steps") or 0) for t in _TASKS)
+MAX_HUMAN_STEPS = max(int(t.get("n_steps") or t.get("reference_length") or 0) for t in _TASKS)
 # Buffer: +50% of the longest human path, at least +10 steps.
 ACTION_BUFFER = max(10, math.ceil(0.5 * MAX_HUMAN_STEPS))
-# 1.5x the longest human path (33) turned out to be far too tight for a small model, which
-# needs recovery headroom a human does not: on full100 it cut off 93% of failures and 3 of 6
-# successes finished right at the cap. Webwright's published curve knees around 50 steps.
-LEGACY_MAX_ACTIONS = MAX_HUMAN_STEPS + ACTION_BUFFER  # 22 + 11 = 33
+LEGACY_MAX_ACTIONS = MAX_HUMAN_STEPS + ACTION_BUFFER
 # Default step budget for Browser Use fleet runs (override with --max-actions / MAX_ACTIONS).
 PARALLEL_ARM_MAX_ACTIONS = 60
 MAX_ACTIONS = int(

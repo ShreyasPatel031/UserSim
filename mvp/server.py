@@ -49,6 +49,7 @@ class StudyRequest(BaseModel):
     competitors: list[str] = Field(default_factory=list)
     tasks: list[str] = Field(default_factory=list)
     test_mode: bool = False
+    backend: str = Field(default="default", pattern="^(default|runloop)$")
 
 
 @app.get("/")
@@ -56,6 +57,14 @@ async def index() -> FileResponse:
     if not (STATIC / "index.html").is_file():
         raise HTTPException(status_code=503, detail="Frontend not bundled")
     return FileResponse(STATIC / "index.html")
+
+
+@app.get("/runloop")
+async def runloop_page() -> FileResponse:
+    path = STATIC / "runloop.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Runloop edition not bundled")
+    return FileResponse(path)
 
 
 @app.post("/api/studies")
@@ -78,6 +87,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks):
     study.email = body.email
     study.customers = body.customers
     study.test_mode = bool(body.test_mode)
+    study.backend = body.backend
     study.competitors = (
         []
         if study.test_mode
@@ -140,6 +150,45 @@ async def blandai_page() -> FileResponse:
     if not path.is_file():
         raise HTTPException(status_code=503, detail="Bland AI study viewer not bundled")
     return FileResponse(path)
+
+
+@app.get("/video-platforms")
+async def video_platforms_page() -> FileResponse:
+    path = STATIC / "video_platforms.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Video platform study viewer not bundled")
+    return FileResponse(path)
+
+
+@app.get("/api/video-platforms/results")
+async def video_platform_results() -> FileResponse:
+    path = Path(__file__).resolve().parent / "video_data" / "all_90_results.json"
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Video platform results not found")
+    return FileResponse(path, media_type="application/json")
+
+
+@app.get("/api/video-study/analytics")
+async def video_study_analytics():
+    from mvp.video_study import analytics
+    return analytics()
+
+
+@app.get("/api/video-study/studies")
+async def video_study_list():
+    from mvp.video_study import studies
+    return {"studies": studies()}
+
+
+@app.get("/api/video-study/studies/{study_id}")
+async def video_study_detail(study_id: str):
+    from mvp.video_study import study
+    if not re.fullmatch(r"p\d+_[a-z]+", study_id):
+        raise HTTPException(status_code=400, detail="Invalid study id")
+    try:
+        return study(study_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Study not found") from None
 
 
 @app.get("/bakeoff")

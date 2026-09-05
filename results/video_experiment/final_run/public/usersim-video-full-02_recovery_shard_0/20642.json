@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p6_educator_discovery_vimeo",
+  "eval_index": 20642,
+  "website": "vimeo",
+  "persona_id": "p6_educator",
+  "persona_name": "Elena Garcia",
+  "goal_key": "discovery",
+  "goal_title": "Evaluate discovery",
+  "comparative_group": "p6_educator_discovery",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-30T00:22:23.766967+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 213.328,
+  "final_result": "I was unable to find a cooking or recipe video on Vimeo because I encountered a CAPTCHA challenge that I could not resolve. The platform presented a verification step, but there were no interactive elements available to complete it, and the CAPTCHA was not automatically resolved. Therefore, I could not proceed to search results or select a video.",
+  "final_url": "https://vimeo.com/search?q=cooking",
+  "ok": true,
+  "finished_at": "2026-08-30T00:26:06.077702+00:00"
+}

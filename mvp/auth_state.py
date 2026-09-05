@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -16,6 +17,7 @@ sanitize_storage_state = sanitize_storage_state_dict
 ROOT = Path(__file__).resolve().parents[1]
 SECRETS = ROOT / "secrets"
 YOUTUBE_STATE = SECRETS / "youtube_storage_state.json"
+SITE_STATES = SECRETS / "site_states"
 VAPI_STATE = SECRETS / "voice_ai_sessions" / "vapi.json"
 RETELL_STATE = SECRETS / "voice_ai_sessions" / "retell.json"
 
@@ -34,6 +36,25 @@ def _load_json(path: Path) -> dict[str, Any] | None:
     return sanitize_storage_state_dict(data)
 
 
+def _normalize_cookie(cookie: dict[str, Any]) -> dict[str, Any] | None:
+    """Coerce a cookie into a shape both Playwright and CDP accept.
+
+    partitionKey is the trap: Playwright's storage_state wants a string while
+    CDP Network.setCookies wants a map, and either side rejects the *entire*
+    cookie list on mismatch — which silently drops the agent to signed-out.
+    Google's auth cookies are unpartitioned, so dropping the field is safe.
+    """
+    if not cookie.get("name"):
+        return None
+    out = dict(cookie)
+    out.pop("partitionKey", None)
+    if out.get("sameSite") not in {"Strict", "Lax", "None"}:
+        out["sameSite"] = "Lax"
+    if out["sameSite"] == "None" and not out.get("secure"):
+        out["sameSite"] = "Lax"
+    return out
+
+
 def _merge_states(*states: dict[str, Any] | None) -> dict[str, Any] | None:
     cookies: list[dict[str, Any]] = []
     origins: list[dict[str, Any]] = []
@@ -46,8 +67,11 @@ def _merge_states(*states: dict[str, Any] | None) -> dict[str, Any] | None:
             key = (c.get("domain") or "", c.get("path") or "/", c.get("name") or "")
             if key in seen_cookie:
                 continue
+            normalized = _normalize_cookie(c)
+            if not normalized:
+                continue
             seen_cookie.add(key)
-            cookies.append(c)
+            cookies.append(normalized)
         for o in state.get("origins") or []:
             origin = o.get("origin") or ""
             if not origin or origin in seen_origin:
@@ -67,6 +91,7 @@ def _cookie_has_login(state: dict[str, Any] | None) -> bool:
 
 YOUTUBE_PROFILE = SECRETS / "youtube_browser_profile"
 YOUTUBE_AUTH_OK = SECRETS / "youtube_auth_ok"
+YOUTUBE_STATE_SIGNED = SECRETS / "youtube_storage_state.json.signed"
 
 
 def mark_youtube_auth_ok(ok: bool = True) -> None:
@@ -84,7 +109,9 @@ def youtube_auth_capture_ready() -> bool:
     """
     if not YOUTUBE_AUTH_OK.is_file():
         return False
-    return _cookie_has_login(_load_json(YOUTUBE_STATE))
+    return _cookie_has_login(_load_json(YOUTUBE_STATE_SIGNED)) or _cookie_has_login(
+        _load_json(YOUTUBE_STATE)
+    )
 
 
 def storage_state_for_url(url: str) -> dict[str, Any] | None:
@@ -96,7 +123,12 @@ def storage_state_for_url(url: str) -> dict[str, Any] | None:
     if "youtube.com" in host or "google." in host:
         # Only the interactive capture (mvp.refresh_youtube_auth) produces a
         # storage_state that actually signs Playwright into YouTube.
+        states.append(_load_json(YOUTUBE_STATE_SIGNED))
         states.append(_load_json(YOUTUBE_STATE))
+        if youtube_auth_capture_ready():
+            # A verified session is self-sufficient; stale Google cookies from other
+            # dumps only risk conflicting with it.
+            return _merge_states(*states)
         # Voice-AI dumps: useful for some Google surfaces, not YouTube home auth.
         for path in (VAPI_STATE, RETELL_STATE):
             raw = _load_json(path)
@@ -119,12 +151,174 @@ def storage_state_for_url(url: str) -> dict[str, Any] | None:
             }
             states.append(sanitize_storage_state_dict(filtered))
     else:
-        # Generic: allow an explicit per-host dump at secrets/{host}_storage_state.json
-        safe = re.sub(r"[^a-z0-9.-]+", "_", host)
-        states.append(_load_json(SECRETS / f"{safe}_storage_state.json"))
-        states.append(_load_json(YOUTUBE_STATE))
+        bare = host[4:] if host.startswith("www.") else host
+        candidates = []
+        for h in (host, bare, f"www.{bare}"):
+            safe = re.sub(r"[^a-z0-9.-]+", "_", h)
+            if safe and safe not in candidates:
+                candidates.append(safe)
+        for safe in candidates:
+            # Sessions captured by mvp.auto_signin / mvp.auto_signup.
+            states.append(_load_json(SITE_STATES / f"{safe}.json"))
+            # Legacy/manual per-host dump.
+            states.append(_load_json(SECRETS / f"{safe}_storage_state.json"))
 
     return _merge_states(*states)
+
+
+_AUTH_ATTEMPTED: set[str] = set()
+_ACCESS_ATTEMPTED: set[str] = set()
+
+
+def ensure_product_access(url: str) -> dict[str, Any]:
+    """Guarantee a signed-in session for ``url`` when auto-signup/signin is on.
+
+    Order:
+      1. Reuse a healthy existing profile / storage_state
+      2. Sign in when the vault already has credentials for this host
+      3. Sign up (provision identity + create account) otherwise
+
+    Opt-in via ``MVP_AUTO_SIGNUP=1`` (preferred) or ``MVP_AUTO_SIGNIN=1``.
+    Returns a status dict: ``{ok, status, storage_state, reason?, blocker?}``.
+    """
+    existing = storage_state_for_url(url)
+    auto_signup = os.environ.get("MVP_AUTO_SIGNUP", "").lower() in {"1", "true", "yes"}
+    auto_signin = os.environ.get("MVP_AUTO_SIGNIN", "").lower() in {"1", "true", "yes"}
+    if not auto_signup and not auto_signin:
+        return {
+            "ok": bool(existing),
+            "status": "storage_only",
+            "storage_state": existing,
+            "reason": "auto_access_disabled",
+        }
+
+    host = (urlparse(url).hostname or "").lower()
+    if not host:
+        return {"ok": False, "status": "error", "storage_state": None, "reason": "bad_url"}
+    if host in _ACCESS_ATTEMPTED:
+        return {
+            "ok": bool(existing),
+            "status": "already_attempted",
+            "storage_state": existing,
+        }
+    _ACCESS_ATTEMPTED.add(host)
+    _AUTH_ATTEMPTED.add(host)
+
+    import asyncio
+
+    from mvp.credentials import credentials_for_url
+    from mvp.session_health import profile_signed_in
+
+    try:
+        healthy = asyncio.run(profile_signed_in(url))
+    except Exception:
+        healthy = None
+    if healthy is True:
+        return {
+            "ok": True,
+            "status": "reused",
+            "storage_state": existing or storage_state_for_url(url),
+        }
+
+    # Vault credentials → sign in.
+    if credentials_for_url(url) and (auto_signin or auto_signup):
+        try:
+            from mvp.auto_signin import sign_in
+
+            budget = float(os.environ.get("MVP_SIGNIN_TIMEOUT_S", "420"))
+            result = asyncio.run(sign_in(url, timeout_s=budget))
+            if result.get("ok"):
+                return {
+                    "ok": True,
+                    "status": "signed_in",
+                    "storage_state": storage_state_for_url(url),
+                }
+            signin_reason = result.get("reason")
+        except Exception as exc:
+            signin_reason = f"signin_error:{type(exc).__name__}"
+    else:
+        signin_reason = None
+
+    # No vault creds (or sign-in failed) → sign up when enabled.
+    if auto_signup:
+        try:
+            from mvp.auto_signup import sign_up
+            from mvp.identity import provision_identity
+
+            identity = provision_identity(url)
+            budget = float(os.environ.get("MVP_SIGNUP_TIMEOUT_S", "900"))
+            result = asyncio.run(sign_up(url, identity=identity, timeout_s=budget))
+            if result.get("ok"):
+                return {
+                    "ok": True,
+                    "status": "signed_up",
+                    "storage_state": storage_state_for_url(url),
+                    "email": identity.email,
+                }
+            return {
+                "ok": False,
+                "status": "blocked",
+                "storage_state": storage_state_for_url(url),
+                "reason": result.get("reason") or "signup_failed",
+                "blocker": result.get("reason"),
+                "detail": result.get("detail"),
+                "signin_reason": signin_reason,
+            }
+        except Exception as exc:
+            return {
+                "ok": False,
+                "status": "error",
+                "storage_state": existing,
+                "reason": f"signup_error:{type(exc).__name__}:{exc}"[:300],
+                "signin_reason": signin_reason,
+            }
+
+    return {
+        "ok": False,
+        "status": "unavailable",
+        "storage_state": existing,
+        "reason": signin_reason or "no_credentials",
+    }
+
+
+def ensure_site_auth(url: str) -> dict[str, Any] | None:
+    """Back-compat wrapper used by browser_agent.
+
+    When ``MVP_AUTO_SIGNUP`` is on, delegates to :func:`ensure_product_access`
+    and returns only the storage_state (matching the historical return type).
+    Otherwise preserves the original sign-in-only behaviour.
+    """
+    if os.environ.get("MVP_AUTO_SIGNUP", "").lower() in {"1", "true", "yes"}:
+        return ensure_product_access(url).get("storage_state")
+
+    if os.environ.get("MVP_AUTO_SIGNIN", "").lower() not in {"1", "true", "yes"}:
+        return storage_state_for_url(url)
+
+    from mvp.credentials import credentials_for_url
+
+    host = (urlparse(url).hostname or "").lower()
+    existing = storage_state_for_url(url)
+    if not host or host in _AUTH_ATTEMPTED or not credentials_for_url(url):
+        return existing
+    _AUTH_ATTEMPTED.add(host)
+
+    import asyncio
+
+    from mvp.auto_signin import sign_in
+    from mvp.session_health import profile_signed_in
+
+    try:
+        # A stale profile is worse than none: agents silently measure the
+        # signed-out experience instead.
+        if asyncio.run(profile_signed_in(url)):
+            return existing
+        budget = float(os.environ.get("MVP_SIGNIN_TIMEOUT_S", "420"))
+        result = asyncio.run(sign_in(url, timeout_s=budget))
+    except Exception:
+        return existing
+    if not result.get("ok"):
+        return existing
+    return storage_state_for_url(url)
 
 
 def youtube_is_signed_in(state: dict[str, Any] | None = None) -> bool:

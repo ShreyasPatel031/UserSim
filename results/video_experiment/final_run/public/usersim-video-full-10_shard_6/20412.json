@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_search_vimeo",
+  "eval_index": 20412,
+  "website": "vimeo",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p4_marketer_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:35.621360+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 403.883,
+  "final_result": "The agent was unable to complete the task. Multiple attempts were made to find a search bar on the Vimeo homepage by scrolling up and down, but none was found. Consequently, the search for 'personal productivity' videos could not be initiated, and no video titles, creators, UX feedback, or ease rating could be gathered. The task is considered unsuccessful.",
+  "final_url": "https://vimeo.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T23:43:29.802559+00:00"
+}

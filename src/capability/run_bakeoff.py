@@ -29,8 +29,9 @@ from capability.manifest_writer import ManifestWriter
 from capability.native_cu import run_native_cu
 from capability.site_preflight import KNOWN_BLOCKED_WEBSITES
 from capability.tasks import (
-    ALL_INDICES,
     BAKEOFF5_INDICES,
+    FULL100_INDICES,
+    FULL300_INDICES,
     FULL8_INDICES,
     FULL80_INDICES,
     GENUINE_FAIL_INDICES,
@@ -395,6 +396,7 @@ def main() -> int:
             "full10",
             "full80",
             "full100",
+            "full300",
             "hard20",
             "genuine27",
             "one",
@@ -456,11 +458,17 @@ def main() -> int:
     elif args.stage == "full80":
         indices = FULL80_INDICES
     elif args.stage == "full100":
-        indices = ALL_INDICES
+        indices = FULL100_INDICES
+    elif args.stage == "full300":
+        indices = FULL300_INDICES
     elif args.stage == "hard20":
         indices = HARD20_INDICES
+        if not indices:
+            raise SystemExit("hard20 empty — recompute after an OM2W failure audit")
     elif args.stage == "genuine27":
         indices = GENUINE_FAIL_INDICES
+        if not indices:
+            raise SystemExit("genuine27 empty — recompute after an OM2W failure audit")
     else:
         if args.eval_index is None:
             raise SystemExit("--eval-index required for --stage one")

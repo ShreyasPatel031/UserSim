@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p2_student_filters_dailymotion",
+  "eval_index": 20223,
+  "website": "dailymotion",
+  "persona_id": "p2_student",
+  "persona_name": "Noah Kim",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p2_student_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:03.440956+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 227.333,
+  "final_result": "The agent successfully navigated to Dailymotion.com. However, due to repeated formatting errors and an inability to proceed with the search and filtering steps, the task of finding home workout videos and reporting on refinement controls could not be completed. The agent was unable to identify any UX likes or dislikes or assess the ease of the task as the core functionality could not be executed.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:04:56.247455+00:00"
+}

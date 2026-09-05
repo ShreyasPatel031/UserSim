@@ -55,6 +55,7 @@ case "$STAGE" in
   full10)  NUM_SHARDS="${NUM_SHARDS:-3}";  PREFIX="${FLEET_PREFIX:-usersim-bu-f10}" ;;
   full80)  NUM_SHARDS="${NUM_SHARDS:-10}"; PREFIX="${FLEET_PREFIX:-usersim-bu-f80}"; WORKERS="${WORKERS:-8}"; MACHINE="${GCP_MACHINE:-e2-standard-8}" ;;
   full100) NUM_SHARDS="${NUM_SHARDS:-25}"; PREFIX="${FLEET_PREFIX:-usersim-bu-f100}" ;;
+  full300) NUM_SHARDS="${NUM_SHARDS:-30}"; PREFIX="${FLEET_PREFIX:-usersim-bu-f300}"; WORKERS="${WORKERS:-8}"; MACHINE="${GCP_MACHINE:-e2-standard-8}" ;;
   retry)   NUM_SHARDS="${NUM_SHARDS:-2}";  PREFIX="${FLEET_PREFIX:-usersim-bu-retry}" ;;
   *) echo "Unknown STAGE=$STAGE"; exit 1 ;;
 esac
@@ -145,8 +146,8 @@ MANIFEST_BASENAME="${STAGE}_browser_use_${TAG}"
 TASKS_PER_SHARD=$(PYTHONPATH=src python3 <<PY
 import os
 from capability.tasks import (
-    ALL_INDICES, BAKEOFF5_INDICES, FULL8_INDICES, FULL80_INDICES,
-    SMOKE_INDICES, TASK_INDICES,
+    FULL100_INDICES, FULL300_INDICES, FULL8_INDICES, FULL80_INDICES,
+    BAKEOFF5_INDICES, SMOKE_INDICES, TASK_INDICES,
 )
 stage = os.environ.get("STAGE", "full10")
 num = int(os.environ.get("NUM_SHARDS", "1"))
@@ -161,7 +162,9 @@ elif stage == "full10":
 elif stage == "full80":
     n = len(FULL80_INDICES)
 elif stage == "full100":
-    n = len(ALL_INDICES)
+    n = len(FULL100_INDICES)
+elif stage == "full300":
+    n = len(FULL300_INDICES)
 else:
     n = num
 print((n + num - 1) // num)

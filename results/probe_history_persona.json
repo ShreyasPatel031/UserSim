@@ -1,0 +1,85 @@
+{
+  "model": "gemini-2.5-flash",
+  "n": 94,
+  "n_sessions": 7,
+  "max_spend": 5.0,
+  "conditions": [
+    {
+      "name": "history_only",
+      "elapsed_s": 4.63,
+      "spent_usd": 0.5699,
+      "prompt_tokens": 1878989,
+      "output_tokens": 2495,
+      "n_ok": 94,
+      "metrics": {
+        "n_examples": 94,
+        "n_sessions": 7,
+        "n_correct": 16,
+        "n_illegal": 0,
+        "micro_accuracy": 0.1702127659574468,
+        "session_macro_accuracy": 0.11880711880711879,
+        "action_type_accuracy": 0.8723404255319149,
+        "session_outcome_accuracy": 0.5714285714285714,
+        "by_action_type": {
+          "click": {
+            "n": 89.0,
+            "exact_accuracy": 0.16853932584269662
+          },
+          "terminate": {
+            "n": 3.0,
+            "exact_accuracy": 0.3333333333333333
+          },
+          "type_and_submit": {
+            "n": 2.0,
+            "exact_accuracy": 0.0
+          }
+        }
+      },
+      "action_type_acc": 0.8723404255319149,
+      "terminate_n": 3,
+      "terminate_type_recall": 0.3333333333333333,
+      "budget_stop": false
+    },
+    {
+      "name": "history_plus_persona",
+      "elapsed_s": 5.86,
+      "spent_usd": 0.5786,
+      "prompt_tokens": 1907659,
+      "output_tokens": 2511,
+      "n_ok": 94,
+      "metrics": {
+        "n_examples": 94,
+        "n_sessions": 7,
+        "n_correct": 16,
+        "n_illegal": 0,
+        "micro_accuracy": 0.1702127659574468,
+        "session_macro_accuracy": 0.07383357383357383,
+        "action_type_accuracy": 0.9148936170212766,
+        "session_outcome_accuracy": 0.42857142857142855,
+        "by_action_type": {
+          "click": {
+            "n": 89.0,
+            "exact_accuracy": 0.1797752808988764
+          },
+          "terminate": {
+            "n": 3.0,
+            "exact_accuracy": 0.0
+          },
+          "type_and_submit": {
+            "n": 2.0,
+            "exact_accuracy": 0.0
+          }
+        }
+      },
+      "action_type_acc": 0.9148936170212766,
+      "terminate_n": 3,
+      "terminate_type_recall": 0.0,
+      "budget_stop": false
+    }
+  ],
+  "elapsed_s": 10.5,
+  "total_spend_usd": 1.1485,
+  "delta_session_macro": -0.04497354497354496,
+  "delta_action_type": 0.04255319148936165,
+  "delta_terminate_recall": -0.3333333333333333
+}

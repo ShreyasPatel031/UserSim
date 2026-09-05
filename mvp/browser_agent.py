@@ -103,6 +103,8 @@ def _result_text(result: Any) -> str:
 def _browserbase_profile(cdp_url: str):
     from browser_use.browser.profile import BrowserProfile
 
+    from mvp.captcha import captcha_solver_enabled
+
     return BrowserProfile(
         cdp_url=cdp_url,
         is_local=False,
@@ -111,7 +113,7 @@ def _browserbase_profile(cdp_url: str):
         disable_security=True,
         cross_origin_iframes=False,
         enable_default_extensions=False,
-        captcha_solver=False,
+        captcha_solver=captcha_solver_enabled(),
         highlight_elements=False,
         dom_highlight_elements=True,
         minimum_wait_page_load_time=float(os.environ.get("BROWSERBB_MIN_WAIT", "2.0")),
@@ -120,18 +122,31 @@ def _browserbase_profile(cdp_url: str):
     )
 
 
-def _local_browser_profile(*, storage_state: Any | None = None):
+def _local_browser_profile(
+    *,
+    storage_state: Any | None = None,
+    headless: bool | None = None,
+    user_data_dir: str | None = None,
+):
     from browser_use.browser.profile import BrowserProfile
 
+    from mvp.captcha import captcha_solver_enabled
+
+    if headless is None:
+        headless = os.environ.get("MVP_BROWSER_HEADLESS", "1").lower() not in {
+            "0",
+            "false",
+            "no",
+        }
     kwargs: dict[str, Any] = {
         "is_local": True,
-        "headless": True,
+        "headless": headless,
         "viewport": VIEWPORT,
         "user_agent": USER_AGENT,
         "disable_security": True,
         "cross_origin_iframes": False,
         "enable_default_extensions": False,
-        "captcha_solver": False,
+        "captcha_solver": captcha_solver_enabled(),
         "highlight_elements": False,
         "dom_highlight_elements": True,
         "minimum_wait_page_load_time": float(os.environ.get("MVP_LOCAL_MIN_WAIT", "1.0")),
@@ -143,12 +158,59 @@ def _local_browser_profile(*, storage_state: Any | None = None):
     # Prefer real Chrome when available — YouTube treats stock Chromium more harshly.
     if os.environ.get("MVP_BROWSER_CHANNEL", "chrome").lower() not in {"", "0", "none"}:
         kwargs["channel"] = os.environ.get("MVP_BROWSER_CHANNEL", "chrome")
-    if storage_state:
+    if user_data_dir:
+        # A cloned signed-in profile: the only thing Google accepts.
+        kwargs["user_data_dir"] = user_data_dir
+    elif storage_state:
         kwargs["storage_state"] = storage_state
         # browser-use warns and fights itself if both storage_state and a temp
         # user_data_dir are set — keep cookies-only for parallel agents.
         kwargs["user_data_dir"] = None
     return BrowserProfile(**kwargs)
+
+
+def _cdp_cookies(state: dict[str, Any] | None) -> list[dict[str, Any]]:
+    """Convert a Playwright storage_state into CDP Network.setCookies params.
+
+    browser-use 0.13 drives Chrome over CDP, so the profile's ``storage_state``
+    is never read — cookies have to be pushed in by hand once the session is up.
+    Note this is a fallback: Google binds its session cookies to the profile, so
+    only a cloned profile (see mvp.profile_pool) actually signs in there.
+    """
+    out: list[dict[str, Any]] = []
+    for c in (state or {}).get("cookies") or []:
+        if not c.get("name"):
+            continue
+        cookie: dict[str, Any] = {
+            "name": c["name"],
+            "value": c.get("value") or "",
+            "domain": c.get("domain") or "",
+            "path": c.get("path") or "/",
+            "secure": bool(c.get("secure")),
+            "httpOnly": bool(c.get("httpOnly")),
+        }
+        if c.get("sameSite") in {"Strict", "Lax", "None"}:
+            cookie["sameSite"] = c["sameSite"]
+        expires = c.get("expires")
+        # -1 marks a session cookie; CDP wants the field omitted entirely.
+        if isinstance(expires, (int, float)) and expires > 0:
+            cookie["expires"] = float(expires)
+        out.append(cookie)
+    return out
+
+
+async def _inject_cookies(session: Any, state: dict[str, Any] | None) -> int:
+    cookies = _cdp_cookies(state)
+    if not cookies:
+        return 0
+    try:
+        cdp = await session.get_or_create_cdp_session()
+        await cdp.cdp_client.send.Network.setCookies(
+            {"cookies": cookies}, session_id=cdp.session_id
+        )
+    except Exception:
+        return 0
+    return len(cookies)
 
 
 def _trace_step_from_history_item(
@@ -311,15 +373,18 @@ async def run_browser_agent(
     run_dir.mkdir(parents=True, exist_ok=True)
     screenshot_dir.mkdir(parents=True, exist_ok=True)
 
+    from mvp.profile_pool import clone_for_url, discard as discard_profile
+
     from mvp.auth_state import (
-        storage_state_for_url,
+        ensure_site_auth,
         youtube_bootstrap_url,
         youtube_is_signed_in,
         youtube_needs_content_bootstrap,
     )
 
     # Load auth first so YouTube can use a real signed-in home feed when available.
-    storage_state = storage_state_for_url(url)
+    # With MVP_AUTO_SIGNIN=1 this also performs the login when the vault has creds.
+    storage_state = await asyncio.to_thread(ensure_site_auth, url)
     start_url = url
     yt_hint = ""
     if youtube_needs_content_bootstrap(url, storage_state):
@@ -336,6 +401,7 @@ async def run_browser_agent(
             "home feed, subscriptions, and account UI as a real logged-in user would.\n"
         )
 
+    cookie_state = storage_state if isinstance(storage_state, dict) else None
     if storage_state:
         state_path = run_dir / "storage_state.json"
         state_path.write_text(json.dumps(storage_state))
@@ -349,8 +415,23 @@ async def run_browser_agent(
 
     owns_session = False
     session_url: str | None = None
+    profile_clone = None
     if force_local:
-        profile = _local_browser_profile(storage_state=storage_state)
+        # A cloned signed-in profile beats cookie injection: Google binds session
+        # cookies to the profile, so transplanted cookies report LOGGED_IN=false.
+        profile_clone = await asyncio.to_thread(clone_for_url, url)
+        if profile_clone:
+            cookie_state = None
+            # Signed in, so the real home feed works — no search-results detour.
+            start_url = url
+            yt_hint = (
+                "You are signed in on this site. Use the personalized home feed, "
+                "subscriptions, and account UI as a real logged-in user would.\n"
+            )
+        profile = _local_browser_profile(
+            storage_state=None if profile_clone else storage_state,
+            user_data_dir=str(profile_clone) if profile_clone else None,
+        )
         backend = "local_playwright"
     else:
         # create_session/close_session block on a threading semaphore + sleep for the
@@ -366,6 +447,7 @@ async def run_browser_agent(
         backend = "browserbase"
 
     history = None
+    browser_session = None
     try:
         llm = ChatOpenAI(
             model=model,
@@ -392,10 +474,19 @@ async def run_browser_agent(
             f"actually looked for it.\n"
             f"Stop when the task is done or you would realistically give up."
         )
+        if cookie_state:
+            from browser_use import BrowserSession
+
+            browser_session = BrowserSession(browser_profile=profile)
+            await browser_session.start()
+            injected = await _inject_cookies(browser_session, cookie_state)
+            print(f"[{agent_id}] injected {injected} cookies via CDP", flush=True)
+
         agent = Agent(
             task=agent_task,
             llm=llm,
-            browser_profile=profile,
+            browser_session=browser_session,
+            browser_profile=None if browser_session else profile,
             use_vision=True,
             use_judge=False,
             max_actions_per_step=2,
@@ -417,6 +508,13 @@ async def run_browser_agent(
             ),
         )
     finally:
+        if browser_session is not None:
+            try:
+                await browser_session.kill()
+            except Exception:
+                pass
+        if profile_clone is not None:
+            await asyncio.to_thread(discard_profile, profile_clone)
         if owns_session and bb_session is not None:
             sid = getattr(bb_session, "id", None)
             if sid:

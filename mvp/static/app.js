@@ -329,17 +329,23 @@ function renderTraceStepsHtml(trace, status) {
       <div class="trace-step-num">${escapeHtml(step.step ?? "")}</div>
       <div class="trace-step-body">
         <h4>${escapeHtml(step.action || "Action")}</h4>
-        ${step.url ? `<p><strong>URL:</strong> ${escapeHtml(step.url)}</p>` : ""}
-        <p><strong>Sees:</strong> ${escapeHtml(step.observation || "")}</p>
+        ${step.url ? `<p class="trace-step-url"><strong>URL:</strong> ${escapeHtml(step.url)}</p>` : ""}
         ${renderThoughtHtml(step)}
         ${
           step.screenshot_url
             ? `<figure class="trace-step-figure">
             <img class="trace-step-screenshot" src="${escapeHtml(step.screenshot_url)}" alt="Step ${escapeHtml(step.step)} screenshot" loading="lazy" />
-            <figcaption class="trace-step-screenshot-caption">Boxes = clickable elements in view</figcaption>
+            <figcaption class="trace-step-screenshot-caption">${escapeHtml(step.evidence_label || "Captured browser evidence")}</figcaption>
           </figure>`
-            : ""
+            : `<div class="trace-step-visual" role="img" aria-label="Visual evidence summary for step ${escapeHtml(step.step)}">
+                <div class="trace-visual-chrome"><span></span><span></span><span></span><strong>STEP ${escapeHtml(step.step)}</strong></div>
+                <div class="trace-visual-content">
+                  <span class="trace-visual-badge">TEXT EVIDENCE</span>
+                  <p>${escapeHtml(step.observation || "No browser frame was captured for this inferred step.")}</p>
+                </div>
+              </div>`
         }
+        <p class="trace-step-observation"><strong>What they saw:</strong> ${escapeHtml(step.observation || "No observation recorded.")}</p>
       </div>
     </article>`
     )
@@ -595,6 +601,7 @@ form.addEventListener("submit", async (e) => {
         competitors: testMode ? [] : competitors,
         tasks,
         test_mode: testMode,
+        backend: document.body.classList.contains("runloop-edition") ? "runloop" : "default",
       }),
     });
     const raw = await startRes.text();

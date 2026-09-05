@@ -1,0 +1,41 @@
+
+DevTools listening on ws://127.0.0.1:9400/devtools/browser/2d358618-385d-4d0d-948b-086fac742095
+[4128:4128:0905/080446.572157:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files
+[4128:4152:0905/080716.085556:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4128:4152:0905/080716.097883:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[4128:4152:0905/080716.109200:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+Warning: maxDynamicUniformBuffersPerPipelineLayout artificially reduced from 500000 to 16 to fit dynamic offset allocation limit.
+Warning: maxDynamicStorageBuffersPerPipelineLayout artificially reduced from 500000 to 16 to fit dynamic offset allocation limit.
+Warning: Couldn't get proc eglChooseConfig
+ - While trying to discover a BackendType::OpenGLES adapter.
+    at LoadClientProcs (../../third_party/dawn/src/dawn/native/opengl/EGLFunctions.cpp:121)
+
+
+DevTools listening on ws://127.0.0.1:9401/devtools/browser/dab2a023-2ae6-4efb-9a76-d81cf968d65d
+[4476:4476:0905/080725.426285:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files
+[4128:4152:0905/080744.406179:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4476:4500:0905/080803.905373:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4476:4500:0905/080803.921075:ERROR:google_apis/gcm/engine/mcs_client.cc:702]   Error code: 401  Error message: Authentication Failed: wrong_secret
+[4476:4500:0905/080803.921123:ERROR:google_apis/gcm/engine/mcs_client.cc:704] Failed to log in to GCM, resetting connection.
+[4476:4500:0905/080824.444082:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4128:4152:0905/080831.996044:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4476:4500:0905/080919.615006:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+Warning: maxDynamicUniformBuffersPerPipelineLayout artificially reduced from 500000 to 16 to fit dynamic offset allocation limit.
+Warning: maxDynamicStorageBuffersPerPipelineLayout artificially reduced from 500000 to 16 to fit dynamic offset allocation limit.
+Warning: Couldn't get proc eglChooseConfig
+ - While trying to discover a BackendType::OpenGLES adapter.
+    at LoadClientProcs (../../third_party/dawn/src/dawn/native/opengl/EGLFunctions.cpp:121)
+
+
+DevTools listening on ws://127.0.0.1:9402/devtools/browser/fd70c517-b2bf-42ff-8e84-e3deab420ad9
+[4759:4759:0905/081000.277807:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files
+[4759:4781:0905/081011.469196:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4759:4781:0905/081011.479867:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[4128:4152:0905/081015.011462:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4759:4781:0905/081035.145016:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[4759:4781:0905/081123.943006:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+total 16
+drwxrwxr-x 2 shreyaspatel shreyaspatel 4096 Sep  5 08:11 .
+drwxrwxr-x 4 shreyaspatel shreyaspatel 4096 Sep  5 08:04 ..
+-rw-rw-r-- 1 shreyaspatel shreyaspatel  788 Sep  5 08:11 batch_parallel_20260905T080420Z.jsonl
+-rw-rw-r-- 1 shreyaspatel shreyaspatel 1183 Sep  5 08:11 batch_parallel_20260905T080420Z_summary.json

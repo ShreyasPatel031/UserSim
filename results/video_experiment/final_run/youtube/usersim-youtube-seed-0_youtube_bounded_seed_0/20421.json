@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p4_marketer_filters_youtube",
+  "eval_index": 20421,
+  "website": "youtube",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p4_marketer_filters",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 0,
+  "started_at": "2026-08-30T00:45:48.668888+00:00",
+  "elapsed_s": 343.748,
+  "final_result": "The agent was terminated due to repeated formatting errors. Progress made includes navigating to YouTube, searching for 'home workout videos', opening the filter menu, selecting 'Videos' as the type, and selecting '3 - 20 minutes' as the duration. The task of finding recent beginner content, identifying the best matching result, confirming account presence, and reporting on UX aspects remains incomplete. \n\nUX Likes:\n- The filter menu is comprehensive and allows for detailed refinement.\n- The 'Videos' type filter is a good starting point for narrowing down results.\n\nUX Dislikes:\n- The repeated formatting errors prevented task completion.\n- The lack of a clear 'beginner' filter requires manual assessment of results.\n- The agent was not signed in, which might limit some functionalities or personalization.\n\nEase: Medium (task complexity) but rendered impossible by agent failures.",
+  "final_url": "https://www.youtube.com/results?search_query=educational+videos",
+  "ok": true,
+  "finished_at": "2026-08-30T00:51:33.038282+00:00"
+}

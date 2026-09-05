@@ -76,7 +76,13 @@ def _is_rate_limit(exc: BaseException) -> bool:
     return "429" in msg or "too many requests" in msg or "rate limit" in msg
 
 
-def create_session(*, proxies: bool = False, keep_alive: bool = False) -> BrowserbaseSession:
+def create_session(
+    *,
+    proxies: bool = False,
+    keep_alive: bool = False,
+    solve_captchas: bool | None = None,
+    advanced_stealth: bool | None = None,
+) -> BrowserbaseSession:
     """Create a Browserbase session respecting concurrent + burst limits."""
     _SLOT.acquire()
     client = Browserbase(api_key=browserbase_api_key())
@@ -87,6 +93,29 @@ def create_session(*, proxies: bool = False, keep_alive: bool = False) -> Browse
     if proxies:
         kwargs["proxies"] = True
 
+    # Captcha / stealth: env default, explicit kwargs override.
+    try:
+        from mvp.captcha import browserbase_captcha_kwargs, captcha_solver_enabled
+
+        if solve_captchas is None and advanced_stealth is None and captcha_solver_enabled():
+            kwargs.update(browserbase_captcha_kwargs())
+    except Exception:
+        pass
+    if solve_captchas is not None:
+        kwargs["solve_captchas"] = bool(solve_captchas)
+    if advanced_stealth is not None:
+        kwargs["advanced_stealth"] = bool(advanced_stealth)
+
+    # Prefer Browserbase's nested ``browser_settings`` when the SDK accepts it;
+    # fall back to flat kwargs for older clients.
+    browser_settings: dict[str, Any] = {}
+    if "solve_captchas" in kwargs:
+        browser_settings["solveCaptchas"] = kwargs.pop("solve_captchas")
+    if "advanced_stealth" in kwargs:
+        browser_settings["advancedStealth"] = kwargs.pop("advanced_stealth")
+    if browser_settings:
+        kwargs["browser_settings"] = browser_settings
+
     try:
         for attempt in range(8):
             try:
@@ -95,7 +124,30 @@ def create_session(*, proxies: bool = False, keep_alive: bool = False) -> Browse
                     wait = _MIN_CREATE_INTERVAL_S - (time.monotonic() - _LAST_CREATE_MONO)
                     if wait > 0:
                         time.sleep(wait)
-                    session = client.sessions.create(**kwargs)
+                    try:
+                        session = client.sessions.create(**kwargs)
+                    except TypeError:
+                        # Older SDK: strip unknown nested settings and retry flat.
+                        flat = {
+                            k: v
+                            for k, v in kwargs.items()
+                            if k != "browser_settings"
+                        }
+                        if browser_settings.get("solveCaptchas"):
+                            flat["solve_captchas"] = True
+                        if browser_settings.get("advancedStealth"):
+                            flat["advanced_stealth"] = True
+                        try:
+                            session = client.sessions.create(**flat)
+                        except TypeError:
+                            # Last resort: create without captcha flags.
+                            basic = {
+                                k: v
+                                for k, v in flat.items()
+                                if k
+                                in {"keep_alive", "project_id", "proxies"}
+                            }
+                            session = client.sessions.create(**basic)
                     _LAST_CREATE_MONO = time.monotonic()
                 sid = session.id
                 return BrowserbaseSession(

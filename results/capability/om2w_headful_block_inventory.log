@@ -1,0 +1,37 @@
+Creating usersim-om2w-hf-block-260905-002524 (e2-standard-8) workers=12 — headful Chromium BLOCK inventory (no LLM)...
+Created [https://www.googleapis.com/compute/v1/projects/project-amer-scs-sandbox/zones/us-central1-b/instances/usersim-om2w-hf-block-260905-002524].
+WARNING: Some requests generated warnings:
+ - Disk size: '40 GB' is larger than image size: '10 GB'. You might need to resize the root repartition manually if the operating system does not support automatic resizing. See https://cloud.google.com/compute/docs/disks/add-persistent-disk#resize_pd for details.
+ - You are creating a global DNS VM. VM instances using global DNS are vulnerable to cross-regional outages. To reduce the risk of widespread service disruption, use zonal DNS instead. Learn more at https://cloud.google.com/compute/docs/networking/zonal-dns?utm_id=vm-insert
+
+NAME                                 ZONE           MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP  STATUS
+usersim-om2w-hf-block-260905-002524  us-central1-b  e2-standard-8               10.0.1.22    34.67.35.79  RUNNING
+Waiting for SSH...
+up
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+WARNING: 
+
+To increase the performance of the tunnel, consider installing NumPy. For instructions,
+please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
+
+bash: line 3:  1972 Killed                  sudo apt-get update -qq
+Deleting usersim-om2w-hf-block-260905-002524...

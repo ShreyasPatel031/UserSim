@@ -1,0 +1,46 @@
+{
+  "products": {
+    "linear.app": {
+      "host": "linear.app",
+      "email": "shreyashfs+linear@gmail.com",
+      "password": "Arm_YG^nP%FJd0ai_Ws6rprL",
+      "full_name": "Shreyas Patel",
+      "company": "UserSim",
+      "phone": "3177172607",
+      "alias_tag": "linear",
+      "status": "provisioned",
+      "blocker": null,
+      "profile_dir": "/home/shreyaspatel/usersim/secrets/product_profiles/linear.app",
+      "created_at": "2026-09-05T07:45:09.015227+00:00",
+      "updated_at": "2026-09-05T07:45:09.015227+00:00"
+    },
+    "notion.so": {
+      "host": "notion.so",
+      "email": "shreyashfs+notion@gmail.com",
+      "password": "&^eDdP@m%VI%PQ5E0v#MUbvN",
+      "full_name": "Shreyas Patel",
+      "company": "UserSim",
+      "phone": "3177172607",
+      "alias_tag": "notion",
+      "status": "provisioned",
+      "blocker": null,
+      "profile_dir": "/home/shreyaspatel/usersim/secrets/product_profiles/notion.so",
+      "created_at": "2026-09-05T07:45:16.041184+00:00",
+      "updated_at": "2026-09-05T07:45:16.041184+00:00"
+    },
+    "todoist.com": {
+      "host": "todoist.com",
+      "email": "shreyashfs+todoist@gmail.com",
+      "password": "a4z%Eni-29eaAS_@st00BpKf",
+      "full_name": "Shreyas Patel",
+      "company": "UserSim",
+      "phone": "3177172607",
+      "alias_tag": "todoist",
+      "status": "provisioned",
+      "blocker": null,
+      "profile_dir": "/home/shreyaspatel/usersim/secrets/product_profiles/todoist.com",
+      "created_at": "2026-09-05T07:45:23.260942+00:00",
+      "updated_at": "2026-09-05T07:45:23.260942+00:00"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+total 16
+drwxrwxr-x 2 shreyaspatel shreyaspatel 4096 Sep  5 07:45 .
+drwxrwxr-x 4 shreyaspatel shreyaspatel 4096 Sep  5 07:45 ..
+-rw-rw-r-- 1 shreyaspatel shreyaspatel 1981 Sep  5 07:45 batch_parallel_20260905T074502Z.jsonl
+-rw-rw-r-- 1 shreyaspatel shreyaspatel 2305 Sep  5 07:45 batch_parallel_20260905T074502Z_summary.json

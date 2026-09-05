@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_discovery_dailymotion",
+  "eval_index": 20443,
+  "website": "dailymotion",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "discovery",
+  "goal_title": "Evaluate discovery",
+  "comparative_group": "p4_marketer_discovery",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:03.441200+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 64.091,
+  "final_result": "I have successfully found a cooking/recipe video on Dailymotion. The selected video is: 'How baklava is made at the oldest restaurant in Turkey's culinary capital'.\n\nPlatform helped discovery by providing an 'Explore' section which led to trending content, and the 'Recommended' sidebar was useful for pivoting to a more specific recipe video after an initial food business-related video was selected.\n\nUX Likes:\n1. The 'Explore' section is a good starting point for trend discovery.\n2. The 'Recommended' videos sidebar effectively suggests related content, aiding in refining searches.\n3. Clear video metadata (title, age, channel) is readily available.\n\nUX Dislikes:\n1. The initial exploration led to a video about a restaurant's business operations rather than a direct recipe, requiring an extra step to find a suitable video.\n2. The 'Explore' page lacks specific filters for categories like 'cooking' or 'recipe', making the search process less direct.\n3. The title of the first video clicked was slightly ambiguous regarding its content as a recipe.\n\nEase: Medium",
+  "final_url": "https://www.dailymotion.com/video/xa4a876",
+  "ok": true,
+  "finished_at": "2026-08-29T21:02:13.511145+00:00"
+}

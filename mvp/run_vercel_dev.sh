@@ -29,4 +29,5 @@ export PYTHONPATH="${ROOT}/src:${ROOT}"
 PORT="${PORT:-3000}"
 echo "UserSim Vercel-mode dev → http://127.0.0.1:${PORT}"
 echo "  VERCEL=1  MVP_QUICK=${MVP_QUICK}  MVP_AGENT_COUNT=${MVP_AGENT_COUNT}  (snapshot, no live browser)"
-exec "${ROOT}/.venv/bin/uvicorn" mvp.server:app --host 127.0.0.1 --port "$PORT" --reload
+exec "${ROOT}/.venv/bin/uvicorn" mvp.server:app --host 127.0.0.1 --port "$PORT" --reload \
+  --reload-exclude '.vercel/*' --reload-exclude 'results/*' --reload-exclude 'mvp/runs/*'

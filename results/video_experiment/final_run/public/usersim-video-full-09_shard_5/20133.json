@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p1_viewer_creator_dailymotion",
+  "eval_index": 20133,
+  "website": "dailymotion",
+  "persona_id": "p1_viewer",
+  "persona_name": "Avery Brooks",
+  "goal_key": "creator",
+  "goal_title": "Inspect creator information",
+  "comparative_group": "p1_viewer_creator",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:37.632605+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 165.49,
+  "final_result": "The task could not be completed due to repeated formatting errors that prevented the agent from proceeding. The agent successfully navigated to the Dailymotion homepage but was unable to perform the search for a science explainer video, identify a creator, or assess credibility.\nUX Likes: None observed.\nUX Dislikes: The agent repeatedly failed to output in the correct format, leading to task termination.\nEase: Hard.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T23:39:31.293688+00:00"
+}

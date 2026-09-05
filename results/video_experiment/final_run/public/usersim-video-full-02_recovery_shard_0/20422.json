@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_filters_vimeo",
+  "eval_index": 20422,
+  "website": "vimeo",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p4_marketer_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-30T00:22:23.766457+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 239.186,
+  "final_result": "The task could not be completed because a CAPTCHA challenge appeared on Vimeo after searching for 'home workout videos'. The agent was unable to proceed past the CAPTCHA, and manual interaction with CAPTCHAs is not permitted. Therefore, no search results, refinement controls, or UX feedback could be gathered.",
+  "final_url": "https://vimeo.com/search?q=home%20workout%20videos",
+  "ok": true,
+  "finished_at": "2026-08-30T00:26:31.580090+00:00"
+}

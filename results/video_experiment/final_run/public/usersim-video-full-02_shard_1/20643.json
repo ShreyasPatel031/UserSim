@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p6_educator_discovery_dailymotion",
+  "eval_index": 20643,
+  "website": "dailymotion",
+  "persona_id": "p6_educator",
+  "persona_name": "Elena Garcia",
+  "goal_key": "discovery",
+  "goal_title": "Evaluate discovery",
+  "comparative_group": "p6_educator_discovery",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:32.597006+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 179.724,
+  "final_result": "The agent was terminated due to repeated failures. I successfully navigated to the Dailymotion homepage and explored the 'Explore' section. However, I was unable to find a search input field on the page, which prevented me from searching for cooking or recipe videos. Consequently, I could not complete the primary goal of selecting a video and reporting on the user experience. No UX likes/dislikes or ease of discovery can be reported as no video was found.",
+  "final_url": "https://www.dailymotion.com/us",
+  "ok": true,
+  "finished_at": "2026-08-29T23:39:38.313809+00:00"
+}
