@@ -178,36 +178,129 @@ def signup_start_url(host: str) -> str:
     return SIGNUP_START.get(key, f"https://www.{key}" if key else "")
 
 
+# Authenticated landing routes, tried when the agent finishes on a marketing
+# page. Signing up for canva ends on canva.com, which looks logged out.
+VERIFY_URLS: dict[str, list[str]] = {
+    "canva.com": ["https://www.canva.com/projects"],
+    "todoist.com": ["https://app.todoist.com/app/inbox"],
+    "notion.so": ["https://www.notion.so/"],
+    "clickup.com": ["https://app.clickup.com/"],
+    "figma.com": ["https://www.figma.com/files"],
+    "miro.com": ["https://miro.com/app/dashboard/"],
+    "loom.com": ["https://www.loom.com/looms/videos"],
+    "coda.io": ["https://coda.io/docs"],
+    "dropbox.com": ["https://www.dropbox.com/home"],
+    "airtable.com": ["https://airtable.com/workspaces"],
+    "calendly.com": ["https://calendly.com/event_types/user/me"],
+    "buffer.com": ["https://publish.buffer.com/"],
+    "webflow.com": ["https://webflow.com/dashboard"],
+    "zoom.us": ["https://zoom.us/profile"],
+    "linear.app": ["https://linear.app/"],
+    "github.com": ["https://github.com/"],
+    "gitlab.com": ["https://gitlab.com/dashboard"],
+    "reddit.com": ["https://www.reddit.com/"],
+    "medium.com": ["https://medium.com/me/stories/public"],
+    "bitwarden.com": ["https://vault.bitwarden.com/#/vault"],
+}
+
+
+async def verify_signed_in(page: Any, host: str) -> bool:
+    """Probe the current page, then the product's authenticated routes."""
+    if await _looks_signed_in(page):
+        return True
+    key = (host or "").lower().removeprefix("www.")
+    for url in VERIFY_URLS.get(key, []):
+        try:
+            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            await asyncio.sleep(4)
+        except Exception:
+            continue
+        if await _looks_signed_in(page):
+            return True
+    return False
+
+
 def site_state_path(host: str) -> Path:
     return SITE_STATES / f"{safe_host(host)}.json"
 
 
+_AUTH_COOKIE_RE = re.compile(
+    r"(session|token|auth|sid|login|_user|account)", re.I
+)
+# Cookies every visitor gets; they say nothing about being logged in.
+_AUTH_COOKIE_SKIP = re.compile(
+    r"(csrf|xsrf|consent|cookie|gdpr|locale|lang|theme|device|visitor|anon|"
+    r"^_ga|^_gid|^_fbp|^ajs_anonymous|amplitude|segment|intercom|hubspot|optimizely)",
+    re.I,
+)
+
+
 async def _looks_signed_in(page: Any) -> bool:
-    """Heuristic: real account chrome — ignore marketing-page false positives."""
+    """Whether the page is an authenticated app view.
+
+    The old version only matched logout links and avatars, so SPAs that keep
+    the account menu behind a canvas or a custom widget (todoist, canva) were
+    reported not_signed_in even though the account had just been created.
+    Combine DOM evidence with the URL and a session cookie check.
+    """
     script = """
     (() => {
-      const hasAccountUi = !!(
-        document.querySelector(
-          'a[href*="logout"], a[href*="signout"], a[href*="sign-out"],' +
-          'button[aria-label*="Account"], button[aria-label*="account"],' +
-          'img[alt*="avatar"], [data-testid*="avatar"], [data-testid*="user-menu"],' +
-          '[data-testid*="UserMenu"], [aria-label*="User menu"]'
-        )
-      );
+      const q = (s) => document.querySelector(s);
       const body = (document.body && document.body.innerText || '').toLowerCase();
-      const hasLogoutText = /\\blog\\s*out\\b|\\bsign\\s*out\\b/.test(body);
-      const loginForm = !!(
-        document.querySelector('input[type="password"], input[name="password"]')
-        || document.querySelector('form[action*="login"], form[action*="signin"]')
+
+      const hasAccountUi = !!q(
+        'a[href*="logout"], a[href*="signout"], a[href*="sign-out"],' +
+        'a[href*="/account"], a[href*="/settings"],' +
+        'button[aria-label*="Account" i], button[aria-label*="account" i],' +
+        'img[alt*="avatar" i], [data-testid*="avatar" i], [data-testid*="user-menu" i],' +
+        '[data-testid*="UserMenu" i], [aria-label*="User menu" i],' +
+        '[class*="avatar" i], [data-testid*="profile" i]'
       );
-      if (loginForm && !hasAccountUi) return false;
-      return !!(hasAccountUi || hasLogoutText);
+      const hasLogoutText = /\\blog\\s*out\\b|\\bsign\\s*out\\b/.test(body);
+
+      // A visible password box means we are still on an auth screen.
+      const pw = q('input[type="password"]');
+      const pwVisible = !!(pw && pw.offsetParent !== null);
+      const authForm = !!q('form[action*="login"], form[action*="signin"], form[action*="signup"]');
+
+      // Authenticated app routes.
+      const u = location.href.toLowerCase();
+      const appUrl = /(^https?:\\/\\/app\\.)|(\\/app(\\/|$))|\\/dashboard|\\/workspace|\\/home(\\/|$)|\\/projects|\\/inbox|\\/onboarding/.test(u);
+      const authUrl = /\\/(login|signin|sign-in|signup|sign-up|register|join)(\\/|$|\\?|#)/.test(u);
+
+      return {
+        hasAccountUi, hasLogoutText, pwVisible, authForm, appUrl, authUrl,
+        marketing: /get started free|sign up free|start for free|request a demo/.test(body),
+      };
     })()
     """
     try:
-        return bool(await page.evaluate(script))
+        info = await page.evaluate(script)
     except Exception:
         return False
+    if not isinstance(info, dict):
+        return False
+
+    # Still on an auth screen -> definitely not in.
+    if info.get("pwVisible") or (info.get("authUrl") and not info.get("hasAccountUi")):
+        return False
+    if info.get("hasAccountUi") or info.get("hasLogoutText"):
+        return True
+
+    # No obvious account chrome: fall back to a real session cookie on an app route.
+    if not info.get("appUrl"):
+        return False
+    try:
+        cookies = await page.context.cookies()
+    except Exception:
+        cookies = []
+    for cookie in cookies:
+        name = cookie.get("name") or ""
+        if _AUTH_COOKIE_SKIP.search(name):
+            continue
+        if _AUTH_COOKIE_RE.search(name) and len(str(cookie.get("value") or "")) >= 16:
+            return True
+    return False
 
 
 def _build_signup_tools(ctx: dict[str, Any]):
@@ -652,7 +745,7 @@ async def sign_up(
             )
             while True:
                 try:
-                    signed = await _looks_signed_in(page)
+                    signed = await verify_signed_in(page, host)
                 except Exception:
                     signed = False
                 if signed or time.time() >= settle_deadline:
