@@ -653,8 +653,9 @@ def _build_signup_tools(ctx: dict[str, Any]):
                                 flush=True,
                             )
 
-                # Cancel agent_task from this thread if the event loop is still
-                # wedged inside agent.run (Notion hang after escalate).
+                # Cancel agent_task if the loop can still schedule work. If the
+                # loop is wedged in a sync/C call, also inject InterruptedError
+                # into the main thread so the attempt can exit into antibot retry.
                 if i in (8, 12, 16, 20):
                     loop = ctx.get("event_loop")
                     task = ctx.get("agent_task")
@@ -676,6 +677,34 @@ def _build_signup_tools(ctx: dict[str, Any]):
                                 f"==> agent_task cancel schedule failed: {exc}",
                                 flush=True,
                             )
+
+                    if i in (12, 20) and (
+                        ctx.get("escalate_requested")
+                        or (ctx.get("done") and ctx.get("blocker"))
+                    ):
+                        main_id = ctx.get("main_thread_id")
+                        if main_id:
+                            import ctypes
+
+                            try:
+                                n_aff = ctypes.pythonapi.PyThreadState_SetAsyncExc(
+                                    ctypes.c_ulong(main_id),
+                                    ctypes.py_object(InterruptedError),
+                                )
+                                if n_aff > 1:
+                                    ctypes.pythonapi.PyThreadState_SetAsyncExc(
+                                        ctypes.c_ulong(main_id), None
+                                    )
+                                print(
+                                    f"==> injected InterruptedError into main "
+                                    f"thread (i={i}, {reason}, affected={n_aff})",
+                                    flush=True,
+                                )
+                            except Exception as exc:  # noqa: BLE001
+                                print(
+                                    f"==> main-thread interrupt failed: {exc}",
+                                    flush=True,
+                                )
 
         threading.Thread(target=_kick, name="antibot-stop-kick", daemon=True).start()
 
@@ -1606,6 +1635,18 @@ async def sign_up(
                         if ctx.get("escalate_requested"):
                             result["reason"] = result.get("reason") or "antibot_escalate"
                             result["escalate_kind"] = ctx.get("escalate_kind")
+                except InterruptedError:
+                    # Kick thread unwedged a stuck agent.run after escalate.
+                    print("==> main thread interrupted to unwedge escalate", flush=True)
+                    if not agent_task.done():
+                        agent_task.cancel()
+                        try:
+                            await agent_task
+                        except (asyncio.CancelledError, Exception):
+                            pass
+                    if ctx.get("escalate_requested"):
+                        result["reason"] = result.get("reason") or "antibot_escalate"
+                        result["escalate_kind"] = ctx.get("escalate_kind")
                 except Exception as exc:
                     result["reason"] = f"agent_error:{type(exc).__name__}:{exc}"[:300]
                     if not agent_task.done():
