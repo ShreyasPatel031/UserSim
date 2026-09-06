@@ -25,6 +25,10 @@ results/capability/*_run.log
 results/capability/browserbase_probe.log
 results/capability/*_rejudge.log
 results/capability/*_launch.log
+# Local FM baseline runner appends these; never block branch checkouts.
+results/fm_baselines/*.log
+results/fm_baselines/*.out
+results/fm_baselines/**/*.log
 data/models/
 .venv-seeact/
 .venv-webvoyager/
