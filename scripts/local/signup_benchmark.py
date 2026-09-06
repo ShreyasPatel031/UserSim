@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Signup benchmark — 20 products, skip already-servable hosts.
+"""Signup benchmark — 40 products, skip already-servable hosts.
 
   python scripts/local/signup_benchmark.py status
   python scripts/local/signup_benchmark.py next
@@ -24,7 +24,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-BENCH_PATH = ROOT / "mvp" / "signup_benchmark20.json"
+_BENCH_40 = ROOT / "mvp" / "signup_benchmark40.json"
+_BENCH_20 = ROOT / "mvp" / "signup_benchmark20.json"
+BENCH_PATH = _BENCH_40 if _BENCH_40.is_file() else _BENCH_20
 OUT_DIR = ROOT / "results" / "signup_benchmark"
 SITE_STATES = ROOT / "secrets" / "site_states"
 PROGRESS_PATH = OUT_DIR / "progress.json"
