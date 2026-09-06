@@ -174,14 +174,29 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
 
         async def _gen():
             task = asyncio.create_task(_runner())
+
+            async def _keep(t: asyncio.Task) -> None:
+                try:
+                    await t
+                except Exception:
+                    pass
+
             try:
                 while True:
                     item = await queue.get()
                     if item is None:
                         break
-                    yield json.dumps(item) + "\n"
+                    try:
+                        yield json.dumps(item, default=str) + "\n"
+                    except Exception:
+                        # Never kill the study because one frame failed to encode.
+                        continue
             finally:
-                await task
+                # Keep the study alive after client disconnect / encode errors.
+                if not task.done():
+                    asyncio.create_task(_keep(task))
+                else:
+                    await task
 
         return StreamingResponse(
             _gen(),

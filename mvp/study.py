@@ -1275,13 +1275,16 @@ async def run_study(
             refresh_agent_phase()
         else:
             use_live_browser = True
-            # Prefer GCP fleet above; local Chromium only when fleet disabled.
-            force_local = (
-                os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower()
-                in {"1", "true", "yes"}
-                or not IS_VERCEL_ENV
-            )
-            force_local_browser = force_local
+            # Prefer GCP fleet above; Browserbase when USE_BROWSERBASE=1 (Vercel or local);
+            # otherwise headed Chromium on a laptop.
+            force_local_browser = os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {
+                "1",
+                "true",
+                "yes",
+            }
+            if not force_local_browser and not IS_VERCEL_ENV:
+                bb = os.environ.get("USE_BROWSERBASE", "").lower() in {"1", "true", "yes"}
+                force_local_browser = not bb
             pool = min(
                 len(study.tasks),
                 int(
@@ -1417,6 +1420,7 @@ async def run_study(
                     sess = study.live_sessions.get(agent_id)
                     if not sess:
                         return
+                    step = _json_safe(step)
                     # Persist screenshots to GCS so subsequent serverless
                     # invocations can serve /api/.../screenshots/*.png.
                     shot = step.get("screenshot_url") or ""
@@ -1686,31 +1690,56 @@ def create_study(url: str, segment: str) -> StudyState:
     return study
 
 
+def _json_safe(value: Any) -> Any:
+    """Coerce browser-use ActionModel / nested objects into JSON-safe data."""
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_safe(v) for v in value]
+    model_dump = getattr(value, "model_dump", None)
+    if callable(model_dump):
+        try:
+            return _json_safe(model_dump())
+        except Exception:
+            pass
+    dict_fn = getattr(value, "dict", None)
+    if callable(dict_fn):
+        try:
+            return _json_safe(dict_fn())
+        except Exception:
+            pass
+    return str(value)
+
+
 def study_to_dict(study: StudyState) -> dict[str, Any]:
-    return {
-        "id": study.id,
-        "url": study.url,
-        "segment": study.segment,
-        "status": study.status,
-        "phase": study.phase,
-        "created_at": study.created_at,
-        "updated_at": study.updated_at,
-        "personas": study.personas,
-        "tasks": study.tasks,
-        "agent_results": study.agent_results,
-        "live_sessions": _ordered_live_sessions(study),
-        "activity_log": study.activity_log,
-        "summary": study.summary,
-        "error": study.error,
-        "access_backend": study.access_backend,
-        "browserbase_session_url": study.browserbase_session_url,
-        "auth_status": study.auth_status,
-        "auth_blocker": study.auth_blocker,
-        "competitors": study.competitors,
-        "test_mode": study.test_mode,
-        "backend": study.backend,
-        "email": study.email,
-    }
+    return _json_safe(
+        {
+            "id": study.id,
+            "url": study.url,
+            "segment": study.segment,
+            "status": study.status,
+            "phase": study.phase,
+            "created_at": study.created_at,
+            "updated_at": study.updated_at,
+            "personas": study.personas,
+            "tasks": study.tasks,
+            "agent_results": study.agent_results,
+            "live_sessions": _ordered_live_sessions(study),
+            "activity_log": study.activity_log,
+            "summary": study.summary,
+            "error": study.error,
+            "access_backend": study.access_backend,
+            "browserbase_session_url": study.browserbase_session_url,
+            "auth_status": study.auth_status,
+            "auth_blocker": study.auth_blocker,
+            "competitors": study.competitors,
+            "test_mode": study.test_mode,
+            "backend": study.backend,
+            "email": study.email,
+        }
+    )
 
 
 def persist_study(study: StudyState) -> None:
