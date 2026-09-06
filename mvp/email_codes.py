@@ -547,7 +547,7 @@ def wait_for_signup_link(
     floor = newer_than if newer_than is not None else started
     fallback_after = started + max(20.0, timeout_s * 0.45)
     # 48h lookback for prior verify/finish links on the same alias.
-    prior_floor = time.time() - 48 * 3600
+    prior_floor = time.time() - 20 * 60  # only cover mark_email_requested races, not dead tokens
     while time.time() - started < timeout_s:
         link = latest_signup_link(alias, host=host, newer_than=floor)
         if link:
