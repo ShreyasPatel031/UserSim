@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 # Substrings that indicate a session rather than analytics or consent state.
-AUTH_HINTS = ("sess", "auth", "token", "login", "sid", "jwt", "credential")
+AUTH_HINTS = ("auth_token", "access_token", "refresh_token", "id_token", "jwt", "credential", "logged_in", "session_token", "_auth")
 
 # Analytics vendors mint cookies with "session" in the name on any page view;
 # counting those is how a marketing page gets mistaken for a signed-in app.
@@ -43,6 +43,15 @@ NOISE = (
     "logout",
     "anonymous",
     "guest",
+    "session_id",
+    "fpgsid",
+    "__ssid",
+    "_uetsid",
+    "phpsessid",
+    "jsessionid",
+    "browser_sess",
+    "monolith-login",
+    "unauth",
 )
 
 
