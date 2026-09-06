@@ -1338,9 +1338,9 @@ document.getElementById("stage-user-select")?.addEventListener("change", syncSta
 
 if (typeof IS_LOCAL_HOST !== "undefined" && IS_LOCAL_HOST) {
   const smokeRow = document.getElementById("local-smoke-row");
-  const smokeInput = document.getElementById("test-mode-input") || (typeof form !== "undefined" ? form?.test_mode : null);
   const localNav = document.getElementById("local-nav");
   if (smokeRow) smokeRow.hidden = false;
-  if (smokeInput) smokeInput.checked = true;
   if (localNav) localNav.hidden = false;
+  // Do not auto-check Quick preview — that made local e2e look like the
+  // broken "0 / 1 sessions" production hang. Opt in explicitly when needed.
 }

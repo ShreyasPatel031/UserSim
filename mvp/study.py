@@ -33,6 +33,16 @@ SNAPSHOT_FORCE = os.environ.get("MVP_SNAPSHOT_ONLY", "").lower() in ("1", "true"
 
 
 def _fleet_preferred() -> bool:
+    # Browserbase is the Vercel / Developer-plan live path. Cloud secrets often
+    # still inject MVP_GCP_FLEET=1; that steals the run and fails without the
+    # compute client / seed VMs. Opt into fleet with MVP_PREFER_GCP_FLEET=1.
+    if os.environ.get("USE_BROWSERBASE", "").lower() in {"1", "true", "yes"}:
+        if os.environ.get("MVP_PREFER_GCP_FLEET", "").lower() not in {
+            "1",
+            "true",
+            "yes",
+        }:
+            return False
     try:
         from mvp.gcp_fleet import gcp_fleet_enabled
 
