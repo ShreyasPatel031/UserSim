@@ -96,6 +96,18 @@ def _auth_names_from_storage(state: dict, host: str) -> list[str]:
             continue
         if any(h in low for h in AUTH_HINTS):
             found.add(str(cookie.get("name")))
+    # Bitwarden keeps account keys in localStorage rather than cookies.
+    for origin in state.get("origins") or []:
+        origin_host = str(origin.get("origin") or "").lower()
+        if want not in origin_host:
+            continue
+        for item in origin.get("localStorage") or []:
+            name = str(item.get("name") or "")
+            low = name.lower()
+            if low.startswith("user_") and (
+                "vault" in low or "account" in low or "token" in low
+            ):
+                found.add(name)
     return sorted(found)
 
 

@@ -316,6 +316,18 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
             continue
         if any(h in name for h in auth_hints):
             return True
+    # Bitwarden (and similar) keep account records in localStorage, not cookies.
+    for origin in state.get("origins") or []:
+        origin_host = str(origin.get("origin") or "").lower()
+        if want not in origin_host and not origin_host.endswith(want):
+            continue
+        for item in origin.get("localStorage") or []:
+            name = str(item.get("name") or "")
+            low = name.lower()
+            if low.startswith("user_") and ("vault" in low or "account" in low or "token" in low):
+                return True
+            if "access_token" in low or "refreshtoken" in low or "authtoken" in low:
+                return True
     return False
 
 

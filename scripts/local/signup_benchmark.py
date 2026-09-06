@@ -92,6 +92,17 @@ def _site_state_authed(path: Path, host: str) -> bool:
             continue
         if any(h in name for h in auth_hints):
             return True
+    # Bitwarden-style SPA auth lives in localStorage, not cookies.
+    for origin in state.get("origins") or []:
+        origin_host = str(origin.get("origin") or "").lower()
+        if want not in origin_host:
+            continue
+        for item in origin.get("localStorage") or []:
+            name = str(item.get("name") or "").lower()
+            if name.startswith("user_") and (
+                "vault" in name or "account" in name or "token" in name
+            ):
+                return True
     return False
 
 
