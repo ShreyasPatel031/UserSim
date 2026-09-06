@@ -80,6 +80,10 @@ def _bb_flag_bool(name: str, default: bool = False) -> bool:
     return default
 
 
+class AntibotUnwedge(BaseException):
+    """Injected to break a wedged agent.run after escalate (not an Exception)."""
+
+
 def _cheap_bb_flags() -> dict[str, bool]:
     """Default Browserbase create flags — no paid antibot until needed."""
     return {
@@ -689,14 +693,14 @@ def _build_signup_tools(ctx: dict[str, Any]):
                             try:
                                 n_aff = ctypes.pythonapi.PyThreadState_SetAsyncExc(
                                     ctypes.c_ulong(main_id),
-                                    ctypes.py_object(InterruptedError),
+                                    ctypes.py_object(AntibotUnwedge),
                                 )
                                 if n_aff > 1:
                                     ctypes.pythonapi.PyThreadState_SetAsyncExc(
                                         ctypes.c_ulong(main_id), None
                                     )
                                 print(
-                                    f"==> injected InterruptedError into main "
+                                    f"==> injected AntibotUnwedge into main "
                                     f"thread (i={i}, {reason}, affected={n_aff})",
                                     flush=True,
                                 )
@@ -1638,9 +1642,9 @@ async def sign_up(
                         if ctx.get("escalate_requested"):
                             result["reason"] = result.get("reason") or "antibot_escalate"
                             result["escalate_kind"] = ctx.get("escalate_kind")
-                except InterruptedError:
+                except AntibotUnwedge:
                     # Kick thread unwedged a stuck agent.run after escalate.
-                    print("==> main thread interrupted to unwedge escalate", flush=True)
+                    print("==> main thread AntibotUnwedge to unwedge escalate", flush=True)
                     if not agent_task.done():
                         agent_task.cancel()
                         try:
