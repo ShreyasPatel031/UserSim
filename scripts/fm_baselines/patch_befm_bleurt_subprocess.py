@@ -16,41 +16,26 @@ _bleurt_gpu_freed = False
 
 
 def _befm_free_gpu_before_bleurt() -> None:
-    """vLLM + TF/BLEURT segfault on shared T4; kill GPU holders before scoring."""
+    """Prepare for BLEURT. Do NOT kill vLLM by default.
+
+    BLEURT runs in an isolated CPU subprocess, so the GPU can stay with vLLM.
+    Killing vLLM mid-metrics races the orchestrator/systemd restart loop and
+    aborts scoring before results are written. Opt in via BEFM_KILL_VLLM_BEFORE_BLEURT=1.
+    """
     global _bleurt_gpu_freed
     import os
-    import subprocess
-    import time
 
-    if os.environ.get("BEFM_KEEP_VLLM_FOR_BLEURT", "").strip() in {"1", "true", "TRUE"}:
-        return
-    if _bleurt_gpu_freed:
-        return
-    print("BEFM: freeing GPU before BLEURT/TF metrics...", flush=True)
-    for pat in (
-        "vllm serve",
-        "VLLM::EngineCore",
-        "vllm.entrypoints",
-        "vllm.worker",
-        "multiproc_worker",
-    ):
-        subprocess.run(["pkill", "-9", "-f", pat], check=False, capture_output=True)
-    try:
-        out = subprocess.check_output(
-            ["nvidia-smi", "--query-compute-apps=pid", "--format=csv,noheader"],
-            text=True,
-        )
-        for line in out.splitlines():
-            pid = (line.strip().split(",")[0] if line.strip() else "").strip()
-            if pid.isdigit():
-                subprocess.run(["kill", "-9", pid], check=False, capture_output=True)
-    except Exception as e:  # noqa: BLE001
-        print(f"BEFM: nvidia-smi kill skipped: {e}", flush=True)
-    time.sleep(5)
-    os.environ["CUDA_VISIBLE_DEVICES"] = ""
-    os.environ["NVIDIA_VISIBLE_DEVICES"] = "void"
-    _bleurt_gpu_freed = True
-    print("BEFM: GPU free attempt done", flush=True)
+    if os.environ.get("BEFM_KILL_VLLM_BEFORE_BLEURT", "").strip() in {"1", "true", "TRUE"}:
+        import subprocess
+        import time
+
+        print("BEFM: BEFM_KILL_VLLM_BEFORE_BLEURT=1 — killing GPU holders", flush=True)
+        for pat in ("vllm serve", "VLLM::EngineCore", "vllm.entrypoints"):
+            subprocess.run(["pkill", "-9", "-f", pat], check=False, capture_output=True)
+        time.sleep(3)
+    if not _bleurt_gpu_freed:
+        print("BEFM: BLEURT will score in CPU subprocess (vLLM left running)", flush=True)
+        _bleurt_gpu_freed = True
 
 
 def _bleurt_score_subprocess(predictions: list[str], references: list[str]) -> float:
