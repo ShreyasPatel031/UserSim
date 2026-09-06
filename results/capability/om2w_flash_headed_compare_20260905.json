@@ -1,0 +1,48 @@
+{
+  "date": "2026-09-05",
+  "arms": {
+    "flash_lite_headless_full300": {
+      "tag": "om2w_flashlite_20260905_1849",
+      "model": "gemini-2.5-flash-lite",
+      "browser": "chromium_headless",
+      "successes": 65,
+      "n": 300,
+      "success_rate": 0.2167,
+      "successes_eligible": 65,
+      "n_eligible": 222,
+      "success_rate_eligible": 0.2928,
+      "blocked": 78,
+      "cost_usd": 6.54
+    },
+    "flash_lite_plus_headed_adjusted": {
+      "basis": "lite headless full300 + headed rescue on its BLOCKED hosts",
+      "model": "gemini-2.5-flash-lite",
+      "browser": "chromium_headed (block adjustment only)",
+      "rescue_artifact": "results/capability/om2w_unblock_headed_rescue_1355.json",
+      "successes": 65,
+      "n": 300,
+      "success_rate": 0.2167,
+      "n_eligible": 255,
+      "successes_eligible": 65,
+      "success_rate_eligible": 0.2549,
+      "blocked": 45,
+      "blocked_headless": 78,
+      "headed_rescued_tasks": 33,
+      "note": "Same Lite full300 agent run (om2w_flashlite_20260905_1849). Headed Chromium opens 33 previously BLOCKED tasks' hosts (rescue 1355); blocked/eligible adjusted. Successes unchanged \u2014 tasks not re-run.",
+      "cost_usd": 6.54
+    },
+    "flash_headed_full300": {
+      "tag": "om2w_flash_headed_20260905_2155",
+      "model": "gemini-2.5-flash",
+      "browser": "chromium_headed_xvfb",
+      "successes": 113,
+      "n": 300,
+      "success_rate": 0.3767,
+      "successes_eligible": 113,
+      "n_eligible": 263,
+      "success_rate_eligible": 0.4297,
+      "blocked": 37,
+      "cost_usd": 54.91
+    }
+  }
+}

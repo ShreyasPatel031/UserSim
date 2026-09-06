@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from capability import USER_AGENT, VIEWPORT
+from capability import USER_AGENT, VIEWPORT, browser_headless
 
 # Confirmed Akamai/WAF blocks from datacenter IP (see mini2_tasks.py, HOW_TO_RUN_OM2W.md).
 KNOWN_BLOCKED_WEBSITES: frozenset[str] = frozenset({"uniqlo", "apartments"})
@@ -47,7 +47,7 @@ async def preflight_start_url(start_url: str, *, timeout_ms: int = 25000) -> Pre
     from playwright.async_api import async_playwright
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(headless=browser_headless())
         page = await browser.new_page(viewport=VIEWPORT, user_agent=USER_AGENT)
         try:
             await page.goto(start_url, wait_until="domcontentloaded", timeout=timeout_ms)

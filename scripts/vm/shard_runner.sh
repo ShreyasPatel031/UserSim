@@ -37,6 +37,20 @@ source secrets/env
 set +a
 export BROWSER_USE_FAST="$FAST"
 export BROWSER_USE_MAX_ACTIONS_PER_STEP="$ACTIONS_PER_STEP"
+# Headed Chromium by default (headless causes many WAF blocks). Needs Xvfb on VMs.
+export BROWSER_HEADLESS="${BROWSER_HEADLESS:-0}"
+export DISPLAY="${DISPLAY:-:99}"
+if [[ "$BROWSER_HEADLESS" != "1" ]]; then
+  if ! pgrep -f "Xvfb ${DISPLAY}" >/dev/null 2>&1; then
+    if command -v Xvfb >/dev/null 2>&1; then
+      Xvfb "$DISPLAY" -screen 0 1440x900x24 >/tmp/xvfb.log 2>&1 &
+      sleep 1
+      echo "Started Xvfb on $DISPLAY"
+    else
+      echo "WARN: Xvfb missing — headed Chromium may fail; install xvfb or set BROWSER_HEADLESS=1"
+    fi
+  fi
+fi
 # Incremental checkpoints for Spot resume (see capability.gcs_checkpoint).
 export CAPABILITY_GCS_CHECKPOINT="$DEST"
 export CAPABILITY_SHARD_ID="$SHARD_ID"

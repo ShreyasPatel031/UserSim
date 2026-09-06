@@ -20,8 +20,21 @@ IS_VERCEL_ENV = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 USE_LIVE_BROWSER = os.environ.get("MVP_VERCEL_BROWSER", "").lower() in ("1", "true", "yes")
 QUICK_MODE = os.environ.get("MVP_QUICK", "").lower() in ("1", "true", "yes")
 SNAPSHOT_FORCE = os.environ.get("MVP_SNAPSHOT_ONLY", "").lower() in ("1", "true", "yes")
-# Serverless: live Browserbase sessions exceed timeout/memory; use grounded LLM snapshots.
-SNAPSHOT_ONLY = SNAPSHOT_FORCE or QUICK_MODE or (IS_VERCEL_ENV and not USE_LIVE_BROWSER)
+
+
+def _fleet_preferred() -> bool:
+    try:
+        from mvp.gcp_fleet import gcp_fleet_enabled
+
+        return gcp_fleet_enabled()
+    except Exception:
+        return False
+
+
+# Snapshot-only when forced/quick, or on Vercel when the GCP seed fleet is unavailable.
+SNAPSHOT_ONLY = SNAPSHOT_FORCE or QUICK_MODE or (
+    IS_VERCEL_ENV and not USE_LIVE_BROWSER and not _fleet_preferred()
+)
 
 # Parallel Gemini (Vertex / GCP) feedback calls.
 _AGENT_SEMAPHORE = asyncio.Semaphore(
@@ -778,8 +791,13 @@ async def run_study(
             except Exception:
                 pass
 
-        # 1) Competitors
-        if not study.competitors:
+        # 1) Competitors (skipped in local smoke — product site only)
+        if study.test_mode:
+            study.competitors = []
+            log_activity(study, "plan", "Smoke mode — product site only, skipping rivals")
+            touch("Building simulated users")
+            _push_brief("brief")
+        elif not study.competitors:
             try:
                 study.competitors = await invent_competitors(
                     study.url, site_hint, page_text
@@ -797,14 +815,15 @@ async def run_study(
                 "plan",
                 "Competitors: " + ", ".join(study.competitors),
             )
-        touch("Finding competitors")
-        _push_brief("brief")
+            touch("Finding competitors")
+            _push_brief("brief")
 
         # 2) Simulated users (own agent call)
-        touch("Building simulated users")
-        study.personas = []
-        study.tasks = []
-        _push_brief("brief")
+        if not study.test_mode:
+            touch("Building simulated users")
+            study.personas = []
+            study.tasks = []
+            _push_brief("brief")
         try:
             users_plan = await generate_personas(
                 study.url,
@@ -823,7 +842,7 @@ async def run_study(
             log_activity(study, "plan", f"Site: {site_summary}")
 
         # Retry competitors with richer summary if the first pass was empty.
-        if not study.competitors and site_summary:
+        if not study.test_mode and not study.competitors and site_summary:
             try:
                 study.competitors = await invent_competitors(
                     study.url, site_summary, page_text
@@ -915,7 +934,7 @@ async def run_study(
             ]
 
         # Full studies: every task × (product + each competitor), all parallel.
-        # Quick preview keeps competitors in the brief without expanding runs.
+        # Smoke / quick preview: product site only (1 user × 1 task × 1 site).
         if study.competitors and not study.test_mode:
             before = len(study.tasks)
             study.tasks = expand_tasks_for_sites(
@@ -929,11 +948,15 @@ async def run_study(
                 f"Expanded to {len(study.tasks)} parallel runs "
                 f"({before} tasks × {1 + len(study.competitors)} sites)",
             )
-        elif not study.test_mode:
+        else:
             for task in study.tasks:
-                task.setdefault("site_key", "product")
-                task.setdefault("site_url", study.url)
-                task.setdefault("site_label", "Product")
+                task["site_key"] = "product"
+                task["site_url"] = study.url
+                task["site_label"] = "Product"
+
+        if study.test_mode and study.personas and study.tasks:
+            used = {t.get("persona_id") for t in study.tasks}
+            study.personas = [p for p in study.personas if p.get("id") in used] or study.personas[:1]
 
         for persona in study.personas:
             demos = ", ".join(
@@ -1002,7 +1025,7 @@ async def run_study(
         def refresh_agent_phase() -> None:
             touch(_agent_phase_label(study))
 
-        if SNAPSHOT_ONLY:
+        if SNAPSHOT_ONLY and not _fleet_preferred():
             log_activity(
                 study,
                 "agents",
@@ -1059,32 +1082,209 @@ async def run_study(
 
             study.agent_results = []
             await asyncio.gather(*[_run_snapshot(t) for t in study.tasks])
+        elif _fleet_preferred():
+            from mvp.gcp_fleet import run_study_on_gcp_fleet
+
+            workers = min(
+                8,
+                len(study.tasks),
+                int(os.environ.get("MVP_GCP_WORKERS", "8")),
+            )
+            log_activity(
+                study,
+                "agents",
+                f"Launching GCP seed-image fleet — headed Chromium, {workers}/VM, copies self-delete",
+            )
+            touch(
+                f"Live browser agents — 0/{len(study.tasks)} done · {len(study.tasks)} active · 0 queued · 0 steps"
+            )
+
+            async def _push_fleet_frame(agent_id: str, frame: dict[str, Any]) -> None:
+                sess = study.live_sessions.get(agent_id)
+                if not sess:
+                    return
+                step = {
+                    "step": frame.get("step"),
+                    "action": frame.get("action") or "Browser step",
+                    "observation": frame.get("observation") or "",
+                    "thought": frame.get("thought") or "",
+                    "thought_detail": frame.get("thought_detail") or {},
+                    "url": frame.get("url"),
+                    "screenshot_url": frame.get("screenshot_url"),
+                    "boxes": frame.get("boxes") or [],
+                    "highlight_index": frame.get("highlight_index"),
+                    "outcome": frame.get("outcome") or "neutral",
+                    "evidence_label": frame.get("evidence_label")
+                    or "Live GCP fleet frame · headed Chromium",
+                }
+                if not step.get("screenshot_url") and step.get("step") is None:
+                    return
+                sess["status"] = "running"
+                sess["trace"] = list(sess.get("trace") or [])
+                existing = {s.get("step"): i for i, s in enumerate(sess["trace"])}
+                if step.get("step") in existing:
+                    sess["trace"][existing[step["step"]]] = step
+                else:
+                    sess["trace"].append(step)
+                sess["num_steps"] = len(sess["trace"])
+                sess["last_action"] = step.get("action") or ""
+                refresh_agent_phase()
+                study.updated_at = _now()
+                persist_study(study)
+                if on_update:
+                    try:
+                        on_update(study, event="progress")
+                    except TypeError:
+                        on_update(study)
+                    except Exception:
+                        pass
+
+            async def _fleet_status(msg: str) -> None:
+                log_activity(study, "browser", msg)
+                touch(msg if msg.startswith("Live") else f"GCP fleet — {msg}")
+                # Reflect seed vs Spot in the stage waiting copy.
+                hint = msg
+                low = msg.lower()
+                if "warm seed" in low or "on warm seed" in low:
+                    hint = "Starting warm seed…"
+                elif "spot copy" in low or "creating" in low and "spot" in low:
+                    hint = "Provisioning GCP Spot copy…"
+                elif "booting" in low or "polling" in low:
+                    hint = "Seed booting — waiting for first frame…"
+                for sess in study.live_sessions.values():
+                    if sess.get("status") in {"starting", "pending"} and not (sess.get("trace") or []):
+                        sess["last_action"] = hint
+                persist_study(study)
+                if on_update:
+                    try:
+                        on_update(study, event="progress")
+                    except TypeError:
+                        on_update(study)
+                    except Exception:
+                        pass
+
+            for sess in study.live_sessions.values():
+                sess["status"] = "starting"
+                sess["last_action"] = "Starting warm seed…"
+
+            study.agent_results = []
+            persist_study(study)
+            # On Vercel, detach after dispatch+first frames so the function can
+            # return; Spot copies finish the study and write study.json / done.json.
+            fleet_timeout = float(
+                os.environ.get(
+                    "MVP_GCP_FLEET_TIMEOUT_S",
+                    "120" if IS_VERCEL_ENV else "900",
+                )
+            )
+            prev_timeout = os.environ.get("MVP_GCP_FLEET_TIMEOUT_S")
+            os.environ["MVP_GCP_FLEET_TIMEOUT_S"] = str(int(fleet_timeout))
+            try:
+                results = await run_study_on_gcp_fleet(
+                    study_id=study.id,
+                    url=study.url,
+                    segment=study.segment,
+                    personas=study.personas,
+                    tasks=study.tasks,
+                    live_sessions=study.live_sessions,
+                    on_frame=_push_fleet_frame,
+                    on_status=_fleet_status,
+                    workers=workers,
+                    keep_vm=False,
+                    study_snapshot=study_to_dict(study),
+                )
+            except TimeoutError:
+                if IS_VERCEL_ENV:
+                    study.status = "running"
+                    study.phase = "Agents running on GCP fleet — reconnecting via poll"
+                    persist_study(study)
+                    if on_update:
+                        try:
+                            on_update(study, event="progress")
+                        except TypeError:
+                            on_update(study)
+                        except Exception:
+                            pass
+                    # Spot copies continue; finisher writes final study.json.
+                    if prev_timeout is None:
+                        os.environ.pop("MVP_GCP_FLEET_TIMEOUT_S", None)
+                    else:
+                        os.environ["MVP_GCP_FLEET_TIMEOUT_S"] = prev_timeout
+                    return
+                raise
+            finally:
+                if prev_timeout is None:
+                    os.environ.pop("MVP_GCP_FLEET_TIMEOUT_S", None)
+                else:
+                    os.environ["MVP_GCP_FLEET_TIMEOUT_S"] = prev_timeout
+
+            for result in results:
+                agent_id = result.get("agent_id") or result.get("task_id")
+                sess = study.live_sessions.get(agent_id) if agent_id else None
+                if sess:
+                    sess["status"] = "complete"
+                    incoming = result.get("trace") or []
+                    existing = list(sess.get("trace") or [])
+                    if incoming:
+                        by_step: dict[Any, dict[str, Any]] = {}
+                        for s in existing:
+                            if isinstance(s, dict) and s.get("step") is not None:
+                                by_step[s.get("step")] = s
+                        for s in incoming:
+                            if isinstance(s, dict) and s.get("step") is not None:
+                                by_step[s.get("step")] = s
+                        sess["trace"] = [
+                            by_step[k]
+                            for k in sorted(by_step.keys(), key=lambda x: int(x or 0))
+                        ]
+                    else:
+                        sess["trace"] = existing
+                    sess["num_steps"] = len(sess["trace"])
+                study.agent_results.append(result)
+                log_activity(
+                    study,
+                    "agent_done",
+                    f"{result.get('persona_name') or agent_id} finished ({result.get('difficulty', '?')})",
+                    agent_id=agent_id,
+                )
+            # Prefer summary from fleet finisher when present.
+            from mvp.gcs_store import gcs_download_json, study_gcs_root
+
+            done = gcs_download_json(f"{study_gcs_root(study.id)}/done.json")
+            if isinstance(done, dict) and done.get("summary"):
+                study.summary = done["summary"]
+            persist_study(study)
+            refresh_agent_phase()
         else:
             use_live_browser = True
-            force_local_browser = False
+            # Prefer GCP fleet above; local Chromium only when fleet disabled.
+            force_local = (
+                os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower()
+                in {"1", "true", "yes"}
+                or not IS_VERCEL_ENV
+            )
+            force_local_browser = force_local
             pool = min(
                 len(study.tasks),
                 int(
                     os.environ.get(
                         "MVP_BROWSER_CONCURRENCY",
-                        "8" if IS_VERCEL_ENV else "2",
+                        "2" if force_local_browser else ("8" if IS_VERCEL_ENV else "2"),
                     )
                 ),
             )
             prefetched_sessions: list[Any] = []
-            if pool:
+            if pool and not force_local_browser:
                 log_activity(
                     study,
                     "browser",
-                    f"Preparing {pool} browser sessions (Browser Use + Vertex Gemini on GCP)",
+                    f"Preparing {pool} browser sessions (Browserbase)",
                 )
                 touch(f"Preparing browser sessions — 0/{pool} ready")
                 try:
                     prefetched_sessions = await _prefetch_browser_sessions(pool)
                 except Exception as exc:  # noqa: BLE001
                     if IS_VERCEL_ENV:
-                        # Serverless cannot launch local Chromium — fall back to
-                        # grounded Vertex (GCP) snapshots from the fetched page.
                         use_live_browser = False
                         force_local_browser = False
                         log_activity(
@@ -1101,9 +1301,26 @@ async def run_study(
                             study,
                             "browser",
                             f"Browserbase unavailable ({str(exc)[:160]}) — "
-                            "using local Chromium for live traces",
+                            "using headed local Chromium",
                         )
-                        touch("Browserbase unavailable — using local browser agents")
+                        touch("Browserbase unavailable — headed Chromium agents")
+            elif force_local_browser:
+                use_live_browser = True
+                headed = os.environ.get("MVP_BROWSER_HEADLESS", "0").lower() not in {
+                    "1",
+                    "true",
+                    "yes",
+                }
+                mode = "headed" if headed else "headless"
+                log_activity(
+                    study,
+                    "browser",
+                    f"Launching {pool} local Chromium sessions ({mode}, concurrency={pool})",
+                )
+                touch(f"Local Chromium ({mode}) — {len(study.tasks)} agents")
+                # Cap concurrency for headed windows so the laptop stays usable.
+                if headed and pool > 2:
+                    pool = min(pool, int(os.environ.get("MVP_BROWSER_CONCURRENCY", "2")))
 
             if not use_live_browser:
                 log_activity(
@@ -1361,8 +1578,16 @@ async def run_study(
         order = {t.get("id"): i for i, t in enumerate(study.tasks)}
         study.agent_results.sort(key=lambda r: order.get(r.get("task_id"), 99))
 
+        # Fleet detach on Vercel: Spot copies finish + write summary themselves.
+        if study.status == "running":
+            persist_study(study)
+            return
+
         touch("Writing executive summary")
-        if QUICK_MODE or study.test_mode:
+        if study.summary and study.summary.get("headline"):
+            # Already written by fleet finisher.
+            pass
+        elif QUICK_MODE or study.test_mode:
             if study.agent_results:
                 first = study.agent_results[0]
                 study.summary = {
@@ -1386,6 +1611,8 @@ async def run_study(
                 site_summary=site_summary,
                 agent_results=study.agent_results,
             )
+        if not study.summary:
+            study.summary = {}
         study.summary["site_summary"] = site_summary
         if study.access_backend:
             study.summary["access_backend"] = study.access_backend
@@ -1397,16 +1624,19 @@ async def run_study(
             study.summary["auth_blocker"] = study.auth_blocker
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
+        persist_study(study)
     except SiteAccessBlockedError as exc:
         study.status = "error"
         study.error = (str(exc) or repr(exc))[:500]
         study.phase = "Site blocked"
         study.updated_at = _now()
+        persist_study(study)
     except Exception as exc:  # noqa: BLE001
         study.status = "error"
         study.error = (str(exc) or repr(exc))[:500]
         study.phase = "Failed"
         study.updated_at = _now()
+        persist_study(study)
 
 
 def create_study(url: str, segment: str) -> StudyState:
@@ -1439,4 +1669,24 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
         "competitors": study.competitors,
         "test_mode": study.test_mode,
         "backend": study.backend,
+        "email": study.email,
     }
+
+
+def persist_study(study: StudyState) -> None:
+    """Best-effort write of study state to GCS so Vercel clients can reconnect."""
+    try:
+        from mvp.gcs_store import write_study_state
+
+        write_study_state(study.id, study_to_dict(study))
+    except Exception:
+        pass
+
+
+def load_study_from_gcs(study_id: str) -> dict[str, Any] | None:
+    try:
+        from mvp.gcs_store import read_study_state
+
+        return read_study_state(study_id)
+    except Exception:
+        return None

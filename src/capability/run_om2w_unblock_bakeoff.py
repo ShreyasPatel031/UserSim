@@ -1,7 +1,7 @@
 """OM2W OSS Browserbase-class unblock bakeoff (preflight only, no LLM).
 
-Baseline: chromium_headless (current fleet default).
-Alternatives: camoufox (anti-detect Firefox), steel (self-host Docker CDP),
+Baseline: chromium_headful (fleet default going forward — headless causes many WAFs).
+Alternatives: chromium_headless, camoufox (anti-detect Firefox), steel (self-host Docker CDP),
 patchright (patched Chromium), chromium_headful (Xvfb control).
 """
 

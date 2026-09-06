@@ -11,6 +11,16 @@ from config import GCP_LOCATION, MODEL, RESULTS_DIR, ROOT
 
 VIEWPORT = {"width": 1280, "height": 800}
 
+
+def browser_headless() -> bool:
+    """Default headed Chromium — headless triggers many WAF/Access Denied blocks.
+
+    Override with BROWSER_HEADLESS=1 only for debugging / forced headless.
+    Fleet VMs should run under Xvfb so headed works without a real display.
+    """
+    v = (os.environ.get("BROWSER_HEADLESS") or "0").strip().lower()
+    return v in {"1", "true", "yes", "on"}
+
 # Step budget from Online-Mind2Web reference lengths (human paths), not an arbitrary round number.
 _tasks_path = ROOT / "data" / "om2w" / "om2w_tasks.json"
 if _tasks_path.is_file():

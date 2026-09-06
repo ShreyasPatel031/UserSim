@@ -37,6 +37,13 @@ from mvp.identity import (
     safe_host,
     update_identity,
 )
+from mvp.signup_lessons import (
+    loop_detector_signal,
+    loop_tips_followup,
+    lookup_tips,
+    record_observation,
+    should_inject_loop_tips,
+)
 from mvp.sms_provider import Number, lease_number, release, wait_for_sms
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -110,9 +117,11 @@ def _create_signup_browserbase_session():
     """
     from capability.browserbase_client import create_session
 
+    # advanced_stealth / verified mode is Enterprise-only (403 on Developer).
+    # Prefer proxies + captcha solve first so we do not burn a create on 403.
     attempts = [
-        {"proxies": True, "solve_captchas": True, "advanced_stealth": True},
         {"proxies": True, "solve_captchas": True, "advanced_stealth": False},
+        {"proxies": True, "solve_captchas": True, "advanced_stealth": True},
         {"proxies": False, "solve_captchas": True, "advanced_stealth": False},
         {"proxies": False, "solve_captchas": False, "advanced_stealth": False},
     ]
@@ -410,6 +419,24 @@ def _build_signup_tools(ctx: dict[str, Any]):
         )
         detail: str = Field(default="", description="Short human-readable explanation")
 
+    class SignupTipsParams(BaseModel):
+        symptom: str = Field(
+            default="",
+            description=(
+                "Short phrase for the current blocker, e.g. 'submit does nothing', "
+                "'captcha', 'email already used', 'SSO only'. Empty returns a small "
+                "default tip set for this host."
+            ),
+        )
+
+    class NoteFailureParams(BaseModel):
+        symptom: str = Field(description="What failed, in one short phrase")
+        detail: str = Field(default="", description="Optional page/context detail")
+        mode_id: str = Field(
+            default="",
+            description="Optional matching tip id from get_signup_tips, if known",
+        )
+
     class EmptyParams(BaseModel):
         pass
 
@@ -606,6 +633,43 @@ def _build_signup_tools(ctx: dict[str, Any]):
         )
 
     @tools.registry.action(
+        "Look up short tips for a common signup failure mode. Call when stuck "
+        "(same click twice with no progress, captcha, OTP, SSO, etc.). "
+        "Pass a short symptom phrase — do not dump the whole catalog into memory.",
+        param_model=SignupTipsParams,
+    )
+    async def get_signup_tips(params: SignupTipsParams):
+        tip_text = lookup_tips(host=host, query=params.symptom or "", limit=5)
+        return ActionResult(
+            extracted_content=tip_text,
+            include_in_memory=True,
+            long_term_memory=tip_text[:500],
+        )
+
+    @tools.registry.action(
+        "Record a new signup failure observation for later curation into the "
+        "shared failure-modes JSON. Call when you hit a novel blocker or before "
+        "report_blocked. Does not stop the run.",
+        param_model=NoteFailureParams,
+    )
+    async def note_signup_failure(params: NoteFailureParams):
+        try:
+            obs = record_observation(
+                host=host,
+                symptom=params.symptom,
+                detail=params.detail or "",
+                mode_id=params.mode_id or None,
+                source="agent",
+            )
+        except ValueError as exc:
+            return ActionResult(error=str(exc), include_in_memory=True)
+        return ActionResult(
+            extracted_content=json.dumps(obs),
+            include_in_memory=True,
+            long_term_memory=f"Recorded signup failure observation: {params.symptom}",
+        )
+
+    @tools.registry.action(
         "Stop signup — the product requires something we cannot automate "
         "(card_required, sso_only, invite_only, waitlist, captcha_unsolved, unknown). "
         "Call this instead of looping when blocked.",
@@ -619,6 +683,16 @@ def _build_signup_tools(ctx: dict[str, Any]):
         ctx["blocker"] = reason
         ctx["blocker_detail"] = params.detail or ""
         ctx["done"] = True
+        try:
+            record_observation(
+                host=host,
+                symptom=f"blocked:{reason}",
+                detail=params.detail or "",
+                mode_id=None,
+                source="report_blocked",
+            )
+        except Exception:
+            pass
         return ActionResult(
             is_done=True,
             success=False,
@@ -809,7 +883,10 @@ async def sign_up(
                 f"8. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
                 f"If the product requires a credit card, SSO-only, invite-only access, "
                 f"or a waitlist, call report_blocked with the matching reason.\n"
-                f"Do NOT try to pay. Prefer email signup; use Google/GitHub SSO only if email signup is absent."
+                f"Do NOT try to pay. Prefer email signup; use Google/GitHub SSO only if email signup is absent.\n"
+                f"If the same action fails twice with no progress, call "
+                f"get_signup_tips(symptom=...) once, apply a matching tip, then continue. "
+                f"For a novel blocker, call note_signup_failure before report_blocked."
             )
             # Used to exercise the phone→ntfy SMS path end-to-end. Optional phone
             # prompts (Zoom "Skip" / "No thanks") otherwise get dismissed and never
@@ -842,15 +919,66 @@ async def sign_up(
                 extend_system_message=(
                     "You are signing up for a product so usability agents can study the "
                     "authenticated experience. Prefer the email/password path. Be decisive; "
-                    "do not loop on the same form. Call report_blocked when stuck on a "
-                    "hard gate (card, SSO-only, invite, waitlist)."
+                    "do not loop on the same form. If an AUTO TIP follow-up appears, apply it "
+                    "immediately. Otherwise on repeated failure call get_signup_tips once. "
+                    "Call report_blocked when stuck on a hard gate (card, SSO-only, invite, "
+                    "waitlist)."
                 ),
             )
+
+            # Flash rarely calls get_signup_tips on its own. When browser-use
+            # reports loop/stagnation, inject host-matched tips as a follow-up
+            # task (still from the JSON catalog — not baked into the main prompt).
+            tip_injects = {"count": 0}
+
+            async def _inject_tips_on_loop(ag) -> None:  # noqa: ANN001
+                detector = getattr(getattr(ag, "state", None), "loop_detector", None)
+                if detector is None:
+                    return
+                sig = loop_detector_signal(detector)
+                if not should_inject_loop_tips(
+                    repetition=sig["repetition"],
+                    stagnation=sig["stagnation"],
+                    inject_count=tip_injects["count"],
+                ):
+                    return
+                followup = loop_tips_followup(
+                    host=host,
+                    repetition=sig["repetition"],
+                    stagnation=sig["stagnation"],
+                    inject_count=tip_injects["count"],
+                )
+                tip_injects["count"] += 1
+                print(
+                    f"==> auto-injected signup tips "
+                    f"(n={tip_injects['count']} stagnation={sig['stagnation']} "
+                    f"repetition={sig['repetition']})",
+                    flush=True,
+                )
+                try:
+                    ag.add_new_task(followup)
+                except Exception as exc:  # noqa: BLE001
+                    print(f"==> tip inject failed: {exc}", flush=True)
+                    return
+                try:
+                    record_observation(
+                        host=host,
+                        symptom="auto_inject_loop_tips",
+                        detail=(
+                            f"stagnation={sig['stagnation']} "
+                            f"repetition={sig['repetition']} "
+                            f"inject={tip_injects['count']}"
+                        ),
+                        mode_id=None,
+                        source="loop_auto_inject",
+                    )
+                except Exception:
+                    pass
 
             history = None
             try:
                 history = await asyncio.wait_for(
-                    agent.run(max_steps=max_steps),
+                    agent.run(max_steps=max_steps, on_step_end=_inject_tips_on_loop),
                     timeout=timeout_s,
                 )
             except asyncio.TimeoutError:

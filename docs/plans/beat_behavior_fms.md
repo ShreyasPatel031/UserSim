@@ -1,6 +1,8 @@
 # Program plan: one human-cognition foundation model that beats Centaur, Socrates and Be.FM on their home benchmarks
 
-Status: draft v1, 2026-09-04. Single goal, nothing else on the roadmap until this ships.
+Status: draft v1, 2026-09-04 (gates made enforceable 2026-09-05). Single goal, nothing else on the roadmap until this ships.
+
+**Enforcement:** `docs/plans/gates.yaml` is the definition of done. A gate is met only when `python scripts/gates/verify.py --gate N` exits 0. See `AGENTS.md`. If YAML and this prose disagree, the YAML wins.
 
 ## 0. The goal, stated so it can fail
 
@@ -37,17 +39,25 @@ Nobody has trained one model on the union. That is the single largest lever, and
 
 ## 3. Phases and gates
 
+Executable criteria live in [`docs/plans/gates.yaml`](gates.yaml). Each gate below is a pointer + command; do not treat the prose as a looser substitute.
+
 ### Phase 0: reproduce all three baselines (weeks 1-2)
 
-Gate 0: all three reproduced within 2% relative (or documented reason). Output: `results/fm_baselines/`.
+**Gate 0** (`gates.yaml` id 0) — reproduce Minitaur / Socrates-14B / Be.FM-4B within 2% relative (Centaur-70B skipped by contract).
+
+```bash
+python scripts/gates/verify.py --gate 0
+```
+
+Output artifacts: `results/fm_baselines/` + `results/gates/gate0.json` + generated `SUMMARY.md`.
 
 See **§8 Phase 0 ops** below for the step-by-step and Colab vs GCP routing.
 
 #### Phase 0 checklist (summary)
 
-- Pull Minitaur (`marcelbinz/Llama-3.1-Minitaur-8B-adapter`) and Psych-101-test. Run NLL on held-out participants. **Centaur-70B deferred / skipped** (user: don't run; needs 80GB anyway).
-- Pull Socrates weights (`socratesft/socrates-qwen2.5-14b-sft` and `-dpo`, plus the 8B pair) and SocSci210. Reproduce W = 0.151 on unseen studies. **Run on Colab L4 (4-bit).**
-- Pull Be.FM-1.5-4B (`befm/BeFM1.5-4B`) and BehaviorBench harness. Reproduce 4B win rates. **Run on Colab T4.** Defer Be.FM-70B.
+- Pull Minitaur (`marcelbinz/Llama-3.1-Minitaur-8B-adapter`) and Psych-101-test. Run NLL on **all** held-out participants (6561). **Centaur-70B skipped** (contract).
+- Pull Socrates weights (`socratesft/socrates-qwen2.5-14b-sft` and `-dpo`, plus the 8B pair) and SocSci210. Reproduce W = 0.151 on **all 40** unseen studies. **Run on Colab T4/L4 (4-bit).**
+- Pull Be.FM-1.5-4B (`befm/BeFM1.5-4B`) and BehaviorBench harness. Reproduce 4B win rates on the **full** task set in `gates.yaml` / `DEFAULT_DATA_PATHS` (not an 8-task smoke). **Run on Colab T4.** Defer Be.FM-70B.
 - Compute human noise ceilings where the data allows (split-half TVD per study on SocSci210, empirical bound already 0.125).
 
 ### Phase 1: unified corpus (weeks 2-5)
@@ -68,7 +78,11 @@ Each record carries: source, domain tag, individual ID, group/condition ID, and 
 - Recipe: identical to Centaur (QLoRA all linear, 1 epoch, CE masked to responses, lr 5e-5), only the data changes.
 - Runs: (a) Psych-101 only, (b) SocSci210 only, (c) union. Evaluate every run on all three benchmarks.
 
-Gate 1: union at 8B beats at least one target on its home benchmark and does not lose more than the eval noise on the other two versus single-source. If union shows negative transfer, pivot to domain-tagged prompts and data reweighting before touching architecture.
+**Gate 1** (`gates.yaml` id 1, currently `pending_definition` → verifier **FAIL** until numbers are filled after Gate 0): union at 8B beats at least one target on its home benchmark and does not lose more than eval noise on the other two versus single-source. If union shows negative transfer, pivot to domain-tagged prompts and data reweighting before touching architecture.
+
+```bash
+python scripts/gates/verify.py --gate 1
+```
 
 ### Phase 3: objective (weeks 9-14)
 
@@ -80,7 +94,11 @@ Ablate on 8B, union data, each evaluated on all three:
 - D. DPO contrastive on individual responses (Socrates recipe) for individual-level accuracy.
 - E. Sequence: SFT (A+B) then C then D.
 
-Gate 2: distributional metrics (Socrates W, BehaviorBench distributional board) and individual metrics (Psych-101 NLL, BehaviorBench individual board) both improve over v0. If a method trades one for the other, it is reported, not shipped.
+**Gate 2** (`gates.yaml` id 2, `pending_definition` → FAIL until defined): distributional and individual metrics both improve over v0. A trade is reported, not shipped.
+
+```bash
+python scripts/gates/verify.py --gate 2
+```
 
 ### Phase 4: capability and entropy preservation (weeks 14-17)
 
@@ -88,11 +106,23 @@ Gate 2: distributional metrics (Socrates W, BehaviorBench distributional board) 
 - Compare: base-start vs instruct-start; adapter merge at 1:1 with the instruct model (HumanLLM recipe); small replay of general instruction data.
 - BehaviorBench knowledge and workflow tasks are where frontier models win; this phase is what closes the individual-level board.
 
+**Gate 3** (`gates.yaml` id 3, `pending_definition` → FAIL until defined): entropy vs human + capability retention.
+
+```bash
+python scripts/gates/verify.py --gate 3
+```
+
 ### Phase 5: scale and ship (weeks 17-22)
 
 - Final recipe at 70B-class (Llama-3.3-70B or Qwen3 large base). One run, seeds fixed, budget below.
 - Submit to the BehaviorBench live leaderboard. Publish Psych-101 and SocSci210 tables side by side with reproduced baselines. Report SimBench and OmniBehavior as additional evals.
 - Release: weights, dataset card, leakage log, eval scripts. Reproducibility is the credibility of the claim.
+
+**Gate 4** (`gates.yaml` id 4, `pending_definition` → FAIL until defined): leaderboard submission + release artifacts.
+
+```bash
+python scripts/gates/verify.py --gate 4
+```
 
 ## 4. Compute
 
@@ -203,7 +233,7 @@ Accept Meta Llama licenses on HF before Centaur-70B / Be.FM-70B base downloads w
 1. Reuse `~/Centaur/colab_minitaur/setup_minitaur.py`. Smoke: load Minitaur 4-bit, generate one `<<…>>` choice. Already written.
 2. Wire Psych-101-test (once approved) into their eval script; compute Minitaur NLL on held-out participants. Save `results/fm_baselines/minitaur_psych101.json`.
 3. Load Socrates-8B-SFT; run their unseen-study eval; save Wasserstein + accuracy.
-4. Load Be.FM-1.5-4B + `behaviorbench_eval`; produce the JSON the leaderboard expects. Save alongside.
+4. Load Be.FM-1.5-4B + `behaviorbench_eval`; run the **full** task set from `gates.yaml` / `DEFAULT_DATA_PATHS`; produce board-level win rates. Save `results/fm_baselines/befm4b/SUMMARY.json`. An 8-task smoke is not Gate 0.
 
 If Day 1 numbers are within ~5% of published for the 8B/4B models, the pipeline is real. Only then spend on 14B / 70B.
 
@@ -219,12 +249,12 @@ If Day 1 numbers are within ~5% of published for the 8B/4B models, the pipeline 
 4. Optional cheap add-on: CogBench if their script is in the repo; not a Phase 0 blocker.
 
 **Day 5–7 — package Gate 0**
-Write `results/fm_baselines/SUMMARY.md` with one table:
 
-| Benchmark | Their published | Our reproduction | Δ | Hardware | Commit |
-|---|---|---|---|---|---|
+```bash
+python scripts/gates/verify.py --gate 0
+```
 
-If any cell is blank because access was denied, say so explicitly. Do not invent a proxy metric.
+That regenerates `results/fm_baselines/SUMMARY.md` and `results/gates/gate0.json`. Do not hand-write STATUS.md. If any cell is blank because access was denied, record it in `gates.yaml` (skipped reason) and re-verify. Do not invent a proxy metric.
 
 ### 8.5 GCP sandbox recipe (when Colab fails)
 
@@ -250,11 +280,9 @@ Always: attach a persistent disk for HF cache (`~/.cache/huggingface`), so killi
 
 ### 8.6 What "reproduced" means operationally
 
-- Same weights ID + revision hash.
-- Same split file (SocSci210 `metadata/*_mapping.json`, BehaviorBench `behaviorbench_indices.json`, Psych-101-test as released).
-- Same metric code from their repo, not a reimplementation.
-- Temperature / sampling: Centaur NLL is deterministic (logprobs). Socrates / Be.FM generation: match their paper settings (Socrates used `temperature=0.6, top_p=0.9`; Be.FM recommends `0.6 / 0.95 / top_k=20`). Seed and average if they did.
-- Tolerance: aggregate within 2% relative, or per-experiment Spearman ρ > 0.95 against their Table 1 values.
+Canonical copy: `docs/plans/gates.yaml` → `reproduction:` (weights ID, split files, upstream metric code, sampling, `tolerance_relative: 0.02`).
+
+Do not weaken those criteria in chat or in STATUS.md. Change them only by editing the contract, then re-running `verify.py`.
 
 ### 8.7 Kill / escalate rules during Phase 0
 

@@ -1,0 +1,156 @@
+{
+  "version": 1,
+  "description": "Curated signup failure modes + append-only observations. Agents pull tips via get_signup_tips(); do not dump this whole file into the task prompt.",
+  "modes": [
+    {
+      "id": "submit_noop_or_disabled",
+      "category": "form",
+      "hosts": [],
+      "symptoms": [
+        "Sign Up / Create account / Continue click does nothing",
+        "same submit button clicked 2+ times with no navigation",
+        "evaluate() used to force-click submit"
+      ],
+      "tip": "After two failed submits, stop clicking. Read the form for red validation text, required empty fields, unchecked terms, or a disabled button (aria-disabled / opacity). Fix the field, then submit once.",
+      "status": "active"
+    },
+    {
+      "id": "modal_or_cookie_overlay",
+      "category": "form",
+      "hosts": [],
+      "symptoms": [
+        "clicks miss the intended button",
+        "cookie banner / consent modal visible",
+        "element index exists but click has no effect"
+      ],
+      "tip": "Dismiss cookie/consent/newsletter overlays first, then retry the signup control. Prefer Accept / Close over leaving the modal open.",
+      "status": "active"
+    },
+    {
+      "id": "captcha_wait_loop",
+      "category": "captcha",
+      "hosts": [],
+      "symptoms": [
+        "Cloudflare / Turnstile / reCAPTCHA checkbox",
+        "waiting for challenge to clear",
+        "repeated wait actions on captcha"
+      ],
+      "tip": "Call solve_captcha() at most twice. If it still fails, call report_blocked(captcha_unsolved). Do not wait-loop or click the challenge yourself.",
+      "status": "active"
+    },
+    {
+      "id": "invented_otp",
+      "category": "verification",
+      "hosts": [],
+      "symptoms": [
+        "typed a placeholder code like 123456",
+        "verification failed with wrong code",
+        "code not visible in memory"
+      ],
+      "tip": "Never invent OTP digits. Call get_email_code / get_sms_code / get_totp_code and type the exact returned value. If the tool errors, report that \u2014 do not guess.",
+      "status": "active"
+    },
+    {
+      "id": "email_wait_without_mark",
+      "category": "verification",
+      "hosts": [],
+      "symptoms": [
+        "get_email_code before Send / Verify clicked",
+        "no email arrived",
+        "stale inbox poll"
+      ],
+      "tip": "Call mark_email_requested() immediately after clicking Send code / Verify email / Continue, then call get_email_code or get_email_link once.",
+      "status": "active"
+    },
+    {
+      "id": "email_already_used",
+      "category": "account",
+      "hosts": [],
+      "symptoms": [
+        "email already registered",
+        "account already exists",
+        "use a different email"
+      ],
+      "tip": "Do not invent a new email. Switch to Sign in with the same IDENTITY password, or call report_blocked(unknown) with detail email_already_used.",
+      "status": "active"
+    },
+    {
+      "id": "sso_only_or_sso_trap",
+      "category": "account",
+      "hosts": [],
+      "symptoms": [
+        "only Continue with Google / GitHub / SSO",
+        "email form hidden behind SSO",
+        "agent bouncing between SSO buttons"
+      ],
+      "tip": "Prefer email/password. Look for 'Sign up with email' / 'Continue with email'. If truly SSO-only, call report_blocked(sso_only).",
+      "status": "active"
+    },
+    {
+      "id": "onboarding_tour_trap",
+      "category": "post_signup",
+      "hosts": [],
+      "symptoms": [
+        "product tour / checklist after account created",
+        "Skip / Maybe later / Not now available",
+        "agent filling optional setup forever"
+      ],
+      "tip": "Once the account exists, dismiss tours with Skip / Not now and stop when an account menu, dashboard, or Logout is visible.",
+      "status": "active"
+    },
+    {
+      "id": "wrong_auth_host_identity",
+      "category": "identity",
+      "hosts": [
+        "buffer.com",
+        "login.buffer.com",
+        "accounts.google.com"
+      ],
+      "symptoms": [
+        "login.* subdomain treated as product host",
+        "email alias looks wrong for the product",
+        "redirected to IdP and lost signup context"
+      ],
+      "tip": "Stay on the product signup flow. Use the IDENTITY email already provided \u2014 do not derive a new alias from the current subdomain.",
+      "status": "active"
+    },
+    {
+      "id": "bitwarden_email_link_hang",
+      "category": "verification",
+      "hosts": [
+        "bitwarden.com",
+        "vault.bitwarden.com"
+      ],
+      "symptoms": [
+        "waiting on get_email_link for a long time",
+        "step timeout during email verify"
+      ],
+      "tip": "After mark_email_requested(), call get_email_link once and navigate to the returned URL. Do not interleave other long actions while waiting.",
+      "status": "active"
+    },
+    {
+      "id": "buffer_signup_click_loop",
+      "category": "form",
+      "hosts": [
+        "buffer.com",
+        "login.buffer.com"
+      ],
+      "symptoms": [
+        "Sign Up button visible but repeated clicks fail",
+        "stuck on Buffer create-account page"
+      ],
+      "tip": "Check terms checkbox and required fields. If Sign Up stays inert after a fix attempt, inspect validation text once \u2014 do not spam evaluate() clicks.",
+      "status": "active"
+    }
+  ],
+  "observations": [
+    {
+      "ts": "2026-09-06T00:31:11Z",
+      "host": "login.buffer.com",
+      "symptom": "submit does nothing / Sign Up click loop",
+      "detail": "BB developer proxies+captcha; filled form; 10 steps; never called get_signup_tips; not_signed_in",
+      "mode_id": "buffer_signup_click_loop",
+      "source": "run_20260906_bb_dev"
+    }
+  ]
+}

@@ -55,14 +55,22 @@ function studyProgress(phase) {
 
 let _traceResults = [];
 let _shotIdx = {};
+let _shotFollowLatest = {};
 let _activeTraceIdx = 0;
 let _userPickedTrace = false;
+/** Stable focus keys — indices reshuffle when sessions rebuild on each poll. */
+let _focusAgentId = "";
+let _focusPersonaId = "";
+let _focusTaskBase = "";
+let _focusSiteKey = "";
 let _activityRendered = 0;
 let _lastStudyData = null;
 let _notifyEmail = "";
 let _emailCaptureSubmitted = false;
 let _briefScrollStep = "";
+let _lastStageFingerprint = "";
 const BRIEF_SCROLL_ORDER = ["products", "users", "tasks", "live"];
+const IS_LOCAL_HOST = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
 
 function scrollBriefTo(elOrId, step) {
   const order = BRIEF_SCROLL_ORDER;
@@ -168,9 +176,15 @@ function resetLiveUI() {
   _traceResults = [];
   _activeTraceIdx = 0;
   _userPickedTrace = false;
+  _focusAgentId = "";
+  _focusPersonaId = "";
+  _focusTaskBase = "";
+  _focusSiteKey = "";
   _activityRendered = 0;
   _lastStudyData = null;
+  _lastStageFingerprint = "";
   _shotIdx = {};
+  _shotFollowLatest = {};
   _notifyEmail = "";
   _emailCaptureSubmitted = false;
   _briefScrollStep = "";
@@ -185,6 +199,8 @@ function resetLiveUI() {
   }
   const emailForm = document.getElementById("email-capture-form");
   if (emailForm) emailForm.hidden = false;
+  const reportLink = document.getElementById("view-report-link");
+  if (reportLink) reportLink.hidden = true;
   document.getElementById("products-list").innerHTML = "";
   document.getElementById("tasks-list").innerHTML = "";
   const usersRail = document.getElementById("users-rail");
@@ -350,7 +366,11 @@ function renderFocusStage(session, sessionIdx) {
   const trace = session?.trace || [];
   const shots = stepsWithScreenshots(trace);
   const key = String(sessionIdx ?? 0);
-  if (_shotIdx[key] == null || _shotIdx[key] >= Math.max(shots.length, 1)) {
+  // Follow the newest frame as the agent progresses (0 → 1 → …) unless the
+  // user scrubbed away from the tip with Prev / a step pill.
+  if (_shotFollowLatest[key] !== false) {
+    _shotIdx[key] = Math.max(0, shots.length - 1);
+  } else if (_shotIdx[key] == null || _shotIdx[key] >= shots.length) {
     _shotIdx[key] = Math.max(0, shots.length - 1);
   }
   const idx = shots.length ? _shotIdx[key] : 0;
@@ -392,6 +412,7 @@ function renderFocusStage(session, sessionIdx) {
         <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="1" ${idx >= shots.length - 1 ? "disabled" : ""}>Next →</button>
       </div>`;
   } else {
+    const phaseHint = String(session?._phase || _lastStudyData?.phase || "").replace(/^GCP fleet — /, "");
     const waitingMsg =
       session?.status === "starting" || session?.status === "pending"
         ? "Starting browser session…"
@@ -404,11 +425,22 @@ function renderFocusStage(session, sessionIdx) {
             : lastAction
               ? lastAction
               : "Waiting for the first browser frame…";
+    // Prefer live fleet/progress text so the spinner doesn't look frozen on a
+    // generic "warm seed" line while the VM is already running Chromium.
+    const waitingDetail =
+      session?.status === "starting" || session?.status === "pending"
+        ? lastAction || phaseHint || "Warm seed reset → Chromium → first frame (~1–2 min)"
+        : lastObs && session?.status !== "starting"
+          ? lastObs
+          : phaseHint || "";
     visual = `
       <div class="stage-waiting">
         <div class="stage-waiting-chrome"><span></span><span></span><span></span><strong>${escapeHtml(statusLabel(session?.status))}</strong></div>
-        <p>${escapeHtml(waitingMsg)}</p>
-        ${lastObs ? `<p class="stage-waiting-sub">${escapeHtml(lastObs)}</p>` : ""}
+        <div class="stage-waiting-body">
+          <span class="stage-waiting-spin" aria-hidden="true"></span>
+          <p>${escapeHtml(waitingMsg)}</p>
+          ${waitingDetail ? `<p class="stage-waiting-sub">${escapeHtml(waitingDetail)}</p>` : ""}
+        </div>
       </div>`;
   }
 
@@ -651,6 +683,7 @@ function renderBrief(data, sessions) {
       rail.innerHTML = `<p class="brief-empty brief-loading-row"><span class="product-search-spin" aria-hidden="true"></span> Building simulated users…</p>`;
     } else {
       const activePersonaId =
+        _focusPersonaId ||
         sessions[_activeTraceIdx]?.persona_id ||
         sessions.find((s) => (s.trace || []).length)?.persona_id ||
         "";
@@ -736,18 +769,10 @@ function renderStage(sessions) {
   document.querySelector("main")?.classList.add("live-wide");
   scrollBriefTo("stage-section", "live");
 
-  if (!_userPickedTrace) {
-    const firstWithTrace = sessions.findIndex((s) => (s.trace || []).length > 0);
-    const firstRunning = sessions.findIndex((s) => s.status === "running");
-    if (firstWithTrace >= 0) _activeTraceIdx = firstWithTrace;
-    else if (firstRunning >= 0) _activeTraceIdx = firstRunning;
-    else _activeTraceIdx = 0;
-  } else if (_activeTraceIdx >= sessions.length) {
-    _activeTraceIdx = Math.max(0, sessions.length - 1);
-  }
-
+  _activeTraceIdx = resolveFocusIdx(sessions);
   const idx = Math.max(0, _activeTraceIdx);
   const session = sessions[idx];
+  if (!_userPickedTrace) rememberFocus(session);
   const activeBase = baseTaskId(session?.task_id || session?.agent_id);
   const activeSite =
     session?.site_key ||
@@ -832,36 +857,54 @@ function renderStage(sessions) {
   }
 
   if (taskSelect) {
-    taskSelect.innerHTML = taskOpts
+    const nextTaskHtml = taskOpts
       .map((t) => {
         const selected = activeBase === t.id ? " selected" : "";
         return `<option value="${escapeHtml(t.id)}"${selected}>${escapeHtml(t.title || "Task")}</option>`;
       })
       .join("");
+    if (taskSelect.innerHTML !== nextTaskHtml) taskSelect.innerHTML = nextTaskHtml;
+    else if (activeBase) taskSelect.value = activeBase;
   }
 
   if (userSelect) {
-    userSelect.innerHTML = personas
+    const nextUserHtml = personas
       .map((p) => {
         const id = p.id || p.name || "";
         const selected = activePersona === id ? " selected" : "";
         return `<option value="${escapeHtml(id)}"${selected}>${escapeHtml(p.name || "Simulated user")}</option>`;
       })
       .join("");
+    if (userSelect.innerHTML !== nextUserHtml) userSelect.innerHTML = nextUserHtml;
+    else if (activePersona) userSelect.value = activePersona;
   }
 
-  body.innerHTML = renderFocusStage(session, idx);
+  const shot = latestShotUrl(session);
+  const fp = `${session?.agent_id || idx}|${session?.status || ""}|${(session?.trace || []).length}|${shot || ""}`;
+  if (fp !== _lastStageFingerprint) {
+    _lastStageFingerprint = fp;
+    body.innerHTML = renderFocusStage(session, idx);
+  }
+}
+
+function latestShotUrl(session) {
+  const shots = stepsWithScreenshots(session?.trace);
+  if (!shots.length) return "";
+  const key = String(_activeTraceIdx);
+  const i = _shotIdx[key] ?? shots.length - 1;
+  return shots[Math.max(0, Math.min(shots.length - 1, i))]?.screenshot_url || "";
 }
 
 function findSessionIdx(sessions, { taskBase, siteKey, siteUrl, personaId }) {
   const wantUrl = String(siteUrl || "")
     .replace(/\/$/, "")
     .toLowerCase();
+  const wantBase = baseTaskId(taskBase) || taskBase;
   let best = -1;
   for (let i = 0; i < sessions.length; i++) {
     const s = sessions[i];
     const base = baseTaskId(s.task_id || s.agent_id);
-    if (taskBase && base !== taskBase) continue;
+    if (wantBase && base !== wantBase) continue;
     if (personaId && s.persona_id && s.persona_id !== personaId) continue;
     const sUrl = String(s.site_url || "")
       .replace(/\/$/, "")
@@ -874,8 +917,10 @@ function findSessionIdx(sessions, { taskBase, siteKey, siteUrl, personaId }) {
     if (keyOk && urlOk) return i;
     if (keyOk || urlOk) best = i;
   }
-  if (taskBase) {
-    const byTask = sessions.findIndex((s) => baseTaskId(s.task_id || s.agent_id) === taskBase);
+  if (wantBase) {
+    const byTask = sessions.findIndex(
+      (s) => baseTaskId(s.task_id || s.agent_id) === wantBase
+    );
     if (byTask >= 0) return byTask;
   }
   if (personaId) {
@@ -885,17 +930,58 @@ function findSessionIdx(sessions, { taskBase, siteKey, siteUrl, personaId }) {
   return best;
 }
 
+function rememberFocus(session) {
+  if (!session) return;
+  _focusAgentId = session.agent_id || session.task_id || "";
+  _focusPersonaId = session.persona_id || "";
+  _focusTaskBase = baseTaskId(session.task_id || session.agent_id);
+  _focusSiteKey =
+    session.site_key ||
+    (session.site_label === "Product" ? "product" : session.site_url || "product");
+}
+
+function resolveFocusIdx(sessions) {
+  if (!sessions?.length) return 0;
+  if (_focusAgentId) {
+    const byAgent = sessions.findIndex(
+      (s) => (s.agent_id || s.task_id) === _focusAgentId
+    );
+    if (byAgent >= 0) return byAgent;
+  }
+  if (_userPickedTrace && (_focusPersonaId || _focusTaskBase || _focusSiteKey)) {
+    const idx = findSessionIdx(sessions, {
+      taskBase: _focusTaskBase,
+      siteKey: _focusSiteKey,
+      siteUrl: "",
+      personaId: _focusPersonaId,
+    });
+    if (idx >= 0) return idx;
+  }
+  if (!_userPickedTrace) {
+    const firstWithTrace = sessions.findIndex((s) => (s.trace || []).length > 0);
+    if (firstWithTrace >= 0) return firstWithTrace;
+    const firstRunning = sessions.findIndex((s) => s.status === "running");
+    if (firstRunning >= 0) return firstRunning;
+  }
+  return Math.min(_activeTraceIdx, sessions.length - 1);
+}
+
 function selectTrace(idx, userInitiated = false) {
+  const sessions = _traceResults?.length
+    ? _traceResults
+    : _lastStudyData
+      ? mergeSessions(_lastStudyData)
+      : [];
+  const session = sessions[idx];
   if (userInitiated) {
     _userPickedTrace = true;
-    _activeTraceIdx = idx;
-  } else {
-    _activeTraceIdx = idx;
   }
+  _activeTraceIdx = idx;
+  rememberFocus(session);
   if (_lastStudyData) {
-    const sessions = mergeSessions(_lastStudyData);
-    renderBrief(_lastStudyData, sessions);
-    renderStage(sessions);
+    const fresh = mergeSessions(_lastStudyData);
+    renderBrief(_lastStudyData, fresh);
+    renderStage(fresh);
   }
 }
 
@@ -948,7 +1034,33 @@ function renderList(el, items) {
   });
 }
 
+function saveReportAndOfferLink(data) {
+  try {
+    sessionStorage.setItem(
+      "usersim_report",
+      JSON.stringify({
+        summary: data.summary,
+        agent_results: data.agent_results || [],
+        access_backend: data.access_backend,
+        browserbase_session_url: data.browserbase_session_url,
+        notify_email: _notifyEmail || "",
+        url: data.url,
+        saved_at: new Date().toISOString(),
+      })
+    );
+  } catch {
+    /* ignore quota */
+  }
+  const link = document.getElementById("view-report-link");
+  if (link) {
+    link.hidden = false;
+    link.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+}
+
 function renderSummary(summary, accessBackend, browserbaseSessionUrl) {
+  // Report lives on /report — keep helper for any inline callers.
+  if (!document.getElementById("headline")) return;
   if (!summary) return;
   const infoEl = document.getElementById("access-info");
   const backend = accessBackend || summary.access_backend;
@@ -1053,7 +1165,7 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
   resetLiveUI();
-  resultsSection.hidden = true;
+  if (resultsSection) resultsSection.hidden = true;
   livePanel.hidden = false;
   progressPanel.hidden = false;
   setLoading(true);
@@ -1154,6 +1266,28 @@ form.addEventListener("submit", async (e) => {
         }
       }
       if (!data) throw new Error("Study stream ended with no data");
+      // Fleet detach: stream closes while Spot copies keep running — poll GCS-backed state.
+      const studyId = data.id || data.study_id;
+      if (studyId) {
+        try {
+          localStorage.setItem("usersim_last_study", studyId);
+        } catch (_) {}
+      }
+      if (
+        studyId &&
+        data.status !== "complete" &&
+        data.status !== "error" &&
+        !(data.summary && data.agent_results?.length)
+      ) {
+        while (true) {
+          data = await pollStudy(studyId);
+          updateProgressUI(data, startedAt);
+          renderLiveStudy(data);
+          if (data.status === "complete") break;
+          if (data.status === "error") throw new Error(data.error || "Study failed");
+          await new Promise((r) => setTimeout(r, 2000));
+        }
+      }
     } else {
       const raw = await startRes.text();
       const payload = JSON.parse(raw);
@@ -1184,9 +1318,7 @@ form.addEventListener("submit", async (e) => {
     progressFill.style.width = "100%";
     phaseLabel.textContent = "Complete";
     renderLiveStudy(data);
-    renderSummary(data.summary, data.access_backend, data.browserbase_session_url);
-    renderAgents(data.agent_results);
-    resultsSection.hidden = false;
+    saveReportAndOfferLink(data);
 
     await new Promise((r) => setTimeout(r, 600));
     progressPanel.hidden = true;
@@ -1242,6 +1374,7 @@ document.addEventListener("click", (ev) => {
     else if (personaId && _lastStudyData) {
       // No live session yet — still mark card selected in the brief.
       _userPickedTrace = true;
+      _focusPersonaId = personaId;
       document.querySelectorAll(".user-card").forEach((el) => {
         const on = el.getAttribute("data-persona-id") === personaId;
         el.classList.toggle("is-selected", on);
@@ -1261,6 +1394,7 @@ document.addEventListener("click", (ev) => {
     if (!shots.length) return;
     const cur = _shotIdx[key] ?? 0;
     _shotIdx[key] = Math.max(0, Math.min(shots.length - 1, cur + delta));
+    _shotFollowLatest[key] = _shotIdx[key] >= shots.length - 1;
     if (_lastStudyData) renderStage(mergeSessions(_lastStudyData));
     return;
   }
@@ -1271,6 +1405,10 @@ document.addEventListener("click", (ev) => {
   const idx = Number(btn.getAttribute("data-shot-idx"));
   if (!key || Number.isNaN(idx)) return;
   _shotIdx[key] = idx;
+  const sessions2 = _traceResults || [];
+  const session2 = sessions2[Number(key)] || sessions2[_activeTraceIdx];
+  const shots2 = stepsWithScreenshots(session2?.trace);
+  _shotFollowLatest[key] = idx >= Math.max(shots2.length - 1, 0);
   if (_lastStudyData) {
     renderStage(mergeSessions(_lastStudyData));
   }
@@ -1310,9 +1448,22 @@ function syncStageFromControls() {
     activeBtn?.getAttribute("data-stage-site-key") || cur.site_key || "product";
   const siteUrl =
     activeBtn?.getAttribute("data-stage-site-url") || cur.site_url || "";
+  _focusTaskBase = baseTaskId(taskBase) || taskBase;
+  _focusPersonaId = personaId;
+  _focusSiteKey = siteKey;
+  _userPickedTrace = true;
   const idx = findSessionIdx(sessions, { taskBase, siteKey, siteUrl, personaId });
   if (idx >= 0) selectTrace(idx, true);
 }
 
 document.getElementById("stage-task-select")?.addEventListener("change", syncStageFromControls);
 document.getElementById("stage-user-select")?.addEventListener("change", syncStageFromControls);
+
+if (IS_LOCAL_HOST) {
+  const smokeRow = document.getElementById("local-smoke-row");
+  const smokeInput = document.getElementById("test-mode-input") || form?.test_mode;
+  const localNav = document.getElementById("local-nav");
+  if (smokeRow) smokeRow.hidden = false;
+  if (smokeInput) smokeInput.checked = true;
+  if (localNav) localNav.hidden = false;
+}

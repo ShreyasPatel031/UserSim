@@ -178,9 +178,9 @@ def ensure_session(job: Job) -> str:
 def _runners_for(job: Job) -> list[Path]:
     """Boot + eval scripts that must exist under /content/fm_baselines/scripts/."""
     mapping = {
-        "socrates": ["boot_socrates_l4.py", "colab_socrates_wass.py"],
-        "minitaur": ["boot_minitaur_t4.py", "colab_minitaur_psych101_nll.py"],
-        "befm": ["boot_befm_t4.py", "colab_befm4b_serve_and_eval.py"],
+        "socrates": ["boot_socrates_l4.py", "colab_socrates_wass.py", "gate_contract.py"],
+        "minitaur": ["boot_minitaur_t4.py", "colab_minitaur_psych101_nll.py", "gate_contract.py"],
+        "befm": ["boot_befm_t4.py", "colab_befm4b_serve_and_eval.py", "gate_contract.py"],
     }
     out: list[Path] = []
     for name in mapping.get(job.name, [job.boot_py.name]):
@@ -189,6 +189,10 @@ def _runners_for(job: Job) -> list[Path]:
             out.append(p)
     if job.boot_py not in out and job.boot_py.exists():
         out.append(job.boot_py)
+    # Also push the gate contract so Colab workers share the same definition of done.
+    gates = ROOT / "docs" / "plans" / "gates.yaml"
+    if gates.exists():
+        out.append(gates)
     return out
 
 
@@ -202,7 +206,10 @@ def push_and_boot(job: Job) -> None:
     writes = []
     for p in files:
         b64 = base64.b64encode(p.read_bytes()).decode()
-        remote = f"/content/fm_baselines/scripts/{p.name}"
+        if p.name == "gates.yaml":
+            remote = "/content/fm_baselines/gates.yaml"
+        else:
+            remote = f"/content/fm_baselines/scripts/{p.name}"
         writes.append(
             f"Path({remote!r}).write_bytes(base64.b64decode('{b64}'))\n"
             f"print('WROTE', {remote!r}, Path({remote!r}).stat().st_size, flush=True)"

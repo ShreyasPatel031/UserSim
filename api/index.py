@@ -10,6 +10,14 @@ sys.path.insert(0, str(ROOT))
 
 os.environ.setdefault("VERCEL", "1")
 
+# Materialize Vertex ADC from env before any Gemini calls (secrets/ is not deployed).
+try:
+    from auth import _materialize_adc_from_env
+
+    _materialize_adc_from_env()
+except Exception:
+    pass
+
 from mvp.server import app  # noqa: E402
 
 # vercel dev uses ASGI `app` directly; production Lambda needs Mangum.

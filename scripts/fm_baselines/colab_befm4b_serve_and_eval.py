@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Serve Be.FM-1.5-4B and run BehaviorBench tasks on Colab L4."""
+"""Serve Be.FM-1.5-4B and run full BehaviorBench (Gate 0).
+
+Subsetting requires ALLOW_PARTIAL=1 and writes PARTIAL.*.json, never SUMMARY.json.
+"""
 from __future__ import annotations
 
 import json
@@ -18,6 +21,87 @@ BB_DATA = DATA / "BehaviorBench"
 BB_REPO = ROOT / "behaviorbench_eval"
 PORT = 8000
 
+# Make local repo helpers importable when running from UserSim checkout.
+_REPO = Path(__file__).resolve().parents[2]
+if (_REPO / "scripts" / "fm_baselines").is_dir():
+    sys.path.insert(0, str(_REPO / "scripts" / "fm_baselines"))
+if (ROOT / "scripts").is_dir():
+    sys.path.insert(0, str(ROOT / "scripts"))
+
+try:
+    from gate_contract import (  # type: ignore
+        allow_partial,
+        behaviorbench_expected_tasks,
+        coverage_block,
+        require_full_or_allow,
+        write_summary_or_partial,
+    )
+except ImportError:
+    # Minimal inline fallback for Colab if gate_contract.py was not uploaded.
+    def allow_partial() -> bool:
+        return os.environ.get("ALLOW_PARTIAL", "").strip() in {"1", "true", "TRUE", "yes"}
+
+    def require_full_or_allow(kind: str, detail: str) -> None:
+        if allow_partial():
+            print(f"ALLOW_PARTIAL=1 — PARTIAL {kind}: {detail}", flush=True)
+            return
+        raise SystemExit(
+            f"Refusing subset ({kind}: {detail}). Set ALLOW_PARTIAL=1 or run the full task set."
+        )
+
+    def behaviorbench_expected_tasks() -> list[str]:
+        # Keep in sync with docs/plans/gates.yaml / DEFAULT_DATA_PATHS (39 tasks).
+        return [
+            "pers_score_pred", "surv_resp_pred", "missing_surv_resp", "seq_surv_resp",
+            "demo_pred_age", "acrossdim_pers_score",
+            "workflow_idea_generation", "workflow_method_recommendation",
+            "workflow_outcome_prediction", "workflow_title_prediction",
+            "workflow_impact_prediction", "ieo_economics",
+            "game_behavior_dictator", "game_behavior_ultimatum_proposer",
+            "game_behavior_ultimatum_responder", "game_behavior_trust_investor",
+            "game_behavior_trust_banker", "game_behavior_public_goods",
+            "game_behavior_bomb", "game_behavior_guessing", "game_behavior_push_pull",
+            "multiround_behavior_dictator", "multiround_behavior_trust_investor",
+            "multiround_behavior_trust_banker_inv50", "multiround_behavior_trust_banker_inv100",
+            "multiround_behavior_public_goods", "multiround_behavior_bomb",
+            "multiround_behavior_guessing", "multiround_behavior_push_pull",
+            "acrossgame_behavior_dictator", "acrossgame_behavior_ultimatum_proposer",
+            "acrossgame_behavior_ultimatum_responder", "acrossgame_behavior_trust_investor",
+            "acrossgame_behavior_trust_banker", "acrossgame_behavior_public_goods",
+            "acrossgame_behavior_bomb", "acrossgame_behavior_guessing",
+            "acrossgame_behavior_push_pull", "strategic_gameplay_guessing",
+        ]
+
+    def coverage_block(**kwargs):
+        failed = list(kwargs.get("failed") or [])
+        complete = bool(kwargs.get("complete")) and not failed
+        return {
+            "actual": kwargs["actual"],
+            "expected": kwargs["expected"],
+            "unit": kwargs.get("unit", "tasks"),
+            "complete": complete,
+            "failed": failed,
+            "tasks": kwargs.get("extra", {}).get("tasks") if kwargs.get("extra") else None,
+        }
+
+    def write_summary_or_partial(results_dir, summary, *, complete, reason=None):
+        results_dir.mkdir(parents=True, exist_ok=True)
+        if not complete:
+            safe = (reason or "incomplete").replace(" ", "_")[:64]
+            path = results_dir / f"PARTIAL.{safe}.json"
+            summary = dict(summary)
+            summary["complete"] = False
+            path.write_text(json.dumps(summary, indent=2))
+            return path
+        path = results_dir / "SUMMARY.json"
+        summary = dict(summary)
+        summary["complete"] = True
+        path.write_text(json.dumps(summary, indent=2))
+        done = results_dir / "DONE.json"
+        if done.exists():
+            done.unlink()
+        return path
+
 
 def sh(cmd: str, check: bool = True) -> subprocess.CompletedProcess:
     print("+", cmd, flush=True)
@@ -32,136 +116,121 @@ def install() -> None:
         "openai datasets pyyaml python-dotenv numpy scipy scikit-learn "
         "huggingface_hub"
     )
-    # Colab sometimes ships an old torchao that peft rejects
     sh(f"{sys.executable} -m pip install -q -U 'torchao>=0.16'")
     if not BB_REPO.exists():
         sh(f"git clone --depth 1 https://github.com/umich-foreseer/behaviorbench_eval.git {BB_REPO}")
     sh(f"{sys.executable} -m pip install -q -e {BB_REPO}")
 
 
-def write_server() -> Path:
-    server = ROOT / "befm_server.py"
-    server.write_text(
-        r'''
-import os
-from pathlib import Path
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import Optional, List, Any
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from peft import PeftModel
+def start_server() -> subprocess.Popen:
+    """Serve Be.FM via vLLM continuous batching + LoRA (not per-request generate())."""
+    base = os.environ.get("BEFM_BASE", "Qwen/Qwen3-4B-Instruct-2507")
+    max_seqs = os.environ.get("BEFM_MAX_NUM_SEQS", "64")
+    gpu_util = os.environ.get("BEFM_GPU_MEM_UTIL", "0.90")
+    max_len = os.environ.get("BEFM_MAX_MODEL_LEN", "4096")
+    log = ROOT / "logs" / "befm_vllm.log"
+    log.parent.mkdir(parents=True, exist_ok=True)
 
-ADAPTER = Path(os.environ.get("BEFM_ADAPTER", "/content/fm_baselines/models/BeFM1.5-4B"))
-BASE = "Qwen/Qwen3-4B-Instruct-2507"
+    # Prefer the vllm CLI; fall back to python -m.
+    vllm_bin = None
+    for cand in (
+        Path(sys.executable).parent / "vllm",
+        Path.home() / ".local" / "bin" / "vllm",
+    ):
+        if cand.is_file():
+            vllm_bin = str(cand)
+            break
+    if vllm_bin:
+        cmd = [
+            vllm_bin, "serve", base,
+            "--host", "127.0.0.1", "--port", str(PORT),
+            "--dtype", "half",
+            "--gpu-memory-utilization", gpu_util,
+            "--max-model-len", max_len,
+            "--max-num-seqs", max_seqs,
+            "--enable-lora",
+            "--max-lora-rank", "16",
+            "--lora-modules", f"befm-1.5-4b={ADAPTER}",
+            "--trust-remote-code",
+        ]
+    else:
+        cmd = [
+            sys.executable, "-m", "vllm.entrypoints.openai.api_server",
+            "--model", base,
+            "--host", "127.0.0.1", "--port", str(PORT),
+            "--dtype", "half",
+            "--gpu-memory-utilization", gpu_util,
+            "--max-model-len", max_len,
+            "--max-num-seqs", max_seqs,
+            "--enable-lora",
+            "--max-lora-rank", "16",
+            "--lora-modules", f"befm-1.5-4b={ADAPTER}",
+            "--trust-remote-code",
+        ]
 
-print("Loading base", BASE, flush=True)
-tok = AutoTokenizer.from_pretrained(str(ADAPTER), trust_remote_code=True)
-base = AutoModelForCausalLM.from_pretrained(
-    BASE, torch_dtype=torch.bfloat16, device_map="auto", trust_remote_code=True
-)
-print("Loading adapter", ADAPTER, flush=True)
-model = PeftModel.from_pretrained(base, str(ADAPTER))
-model.eval()
-print("READY", flush=True)
-
-app = FastAPI()
-
-class Msg(BaseModel):
-    role: str
-    content: str
-
-class ChatReq(BaseModel):
-    model: str = "befm-1.5-4b"
-    messages: List[Msg]
-    max_tokens: Optional[int] = 64
-    temperature: Optional[float] = 0.6
-    top_p: Optional[float] = 0.95
-    top_k: Optional[int] = 20
-
-@app.get("/v1/models")
-def models():
-    return {"data": [{"id": "befm-1.5-4b", "object": "model"}]}
-
-@app.post("/v1/chat/completions")
-def chat(req: ChatReq):
-    messages = [{"role": m.role, "content": m.content} for m in req.messages]
-    prompt = tok.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    inputs = tok(prompt, return_tensors="pt").to(model.device)
-    gen_kwargs = dict(
-        max_new_tokens=req.max_tokens or 64,
-        do_sample=True,
-        temperature=req.temperature if req.temperature is not None else 0.6,
-        top_p=req.top_p if req.top_p is not None else 0.95,
-    )
-    if req.top_k:
-        gen_kwargs["top_k"] = req.top_k
-    with torch.no_grad():
-        out = model.generate(**inputs, **gen_kwargs)
-    text = tok.decode(out[0][inputs.input_ids.shape[1]:], skip_special_tokens=True)
-    return {
-        "id": "chatcmpl-befm",
-        "object": "chat.completion",
-        "model": "befm-1.5-4b",
-        "choices": [{"index": 0, "message": {"role": "assistant", "content": text}, "finish_reason": "stop"}],
-        "usage": {"prompt_tokens": int(inputs.input_ids.shape[1]), "completion_tokens": 0, "total_tokens": 0},
-    }
-'''
-    )
-    return server
-
-
-def start_server(server: Path) -> subprocess.Popen:
-    env = os.environ.copy()
-    env["BEFM_ADAPTER"] = str(ADAPTER)
-    # run uvicorn
+    print("+", " ".join(cmd), flush=True)
     proc = subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "befm_server:app", "--host", "127.0.0.1", "--port", str(PORT)],
+        cmd,
         cwd=str(ROOT),
-        env=env,
-        stdout=subprocess.PIPE,
+        stdout=log.open("w"),
         stderr=subprocess.STDOUT,
         text=True,
     )
 
-    def pump():
-        assert proc.stdout is not None
-        for line in proc.stdout:
-            print("[server]", line.rstrip(), flush=True)
-
-    threading.Thread(target=pump, daemon=True).start()
-
-    # wait until healthy
     import urllib.request
 
-    deadline = time.time() + 900
+    deadline = time.time() + 1200
     while time.time() < deadline:
         if proc.poll() is not None:
-            raise RuntimeError(f"server exited early with {proc.returncode}")
+            raise RuntimeError(
+                f"vLLM exited early rc={proc.returncode}; see {log}"
+            )
         try:
             urllib.request.urlopen(f"http://127.0.0.1:{PORT}/v1/models", timeout=2)
-            print("server healthy", flush=True)
+            print("vLLM server healthy", flush=True)
             return proc
         except Exception:
             time.sleep(3)
-    raise TimeoutError("server did not become healthy")
+    raise TimeoutError(f"vLLM did not become healthy; see {log}")
 
 
 def symlink_data() -> None:
-    # behaviorbench expects data/ under repo
     link = BB_REPO / "data"
     if link.exists() or link.is_symlink():
         if link.is_symlink() or link.is_file():
             link.unlink()
         else:
-            # leave existing dir
             return
     link.symlink_to(BB_DATA)
 
 
-def run_tasks(tasks: list[str]) -> None:
+def resolve_tasks() -> list[str]:
+    expected = behaviorbench_expected_tasks()
+    override = os.environ.get("BEFM_TASKS", "").strip()
+    if override:
+        tasks = [t.strip() for t in override.split(",") if t.strip()]
+        if set(tasks) != set(expected):
+            require_full_or_allow("befm_tasks", f"{len(tasks)}/{len(expected)} tasks")
+        return tasks
+    return list(expected)
+
+
+def task_already_done(task: str) -> bool:
+    out = RESULTS / task
+    if not out.is_dir():
+        return False
+    return any(p.is_file() and p.stat().st_size > 0 for p in out.glob("*.json"))
+
+
+def run_tasks(tasks: list[str]) -> list[str]:
+    """Run tasks; return list of failed task names. Failures are recorded, not swallowed."""
     RESULTS.mkdir(parents=True, exist_ok=True)
+    concurrency = int(os.environ.get("BEFM_CONCURRENCY", "16"))
+    failed: list[str] = []
     for task in tasks:
+        if task_already_done(task):
+            print(f"=== SKIP {task} (existing result) ===", flush=True)
+            continue
         out = RESULTS / task
         out.mkdir(parents=True, exist_ok=True)
         cmd = (
@@ -173,37 +242,32 @@ def run_tasks(tasks: list[str]) -> None:
             f"--model-name befm-1.5-4b "
             f"--api-base http://127.0.0.1:{PORT}/v1 "
             f"--temperature 0.6 --top-p 0.95 --top-k 20 "
-            f"--max-tokens 64 --concurrency 1 "
+            f"--max-tokens 64 --concurrency {concurrency} "
             f"--output-dir {out}"
         )
-        # survey/game tasks may need more tokens; leave default override via env later
-        print(f"=== TASK {task} ===", flush=True)
-        sh(cmd, check=False)
+        print(f"=== TASK {task} concurrency={concurrency} ===", flush=True)
+        r = sh(cmd, check=False)
+        if r.returncode != 0:
+            print(f"TASK_FAILED {task} rc={r.returncode}", flush=True)
+            failed.append(task)
+    return failed
 
 
 def main() -> None:
     assert ADAPTER.exists(), f"missing adapter at {ADAPTER}"
     assert BB_DATA.exists(), f"missing BehaviorBench at {BB_DATA}"
-    install()
+    if os.environ.get("SKIP_INSTALL", "").strip() not in {"1", "true", "TRUE", "yes"}:
+        install()
+        sh(f"{sys.executable} -m pip install -q -U 'vllm>=0.6.0'")
     symlink_data()
-    server = write_server()
-    print("wrote", server, flush=True)
-    proc = start_server(server)
+    proc = start_server()
 
-    # Start with core distributional/individual tasks that define the boards.
-    # Full 12-capability suite can be expanded after smoke.
-    tasks = [
-        "pers_score_pred",
-        "surv_resp_pred",
-        "seq_surv_resp",
-        "missing_surv_resp",
-        "demo_pred_age",
-        "acrossdim_pers_score",
-        "game_behavior_dictator",
-        "strategic_gameplay_guessing",
-    ]
+    tasks = resolve_tasks()
+    expected = behaviorbench_expected_tasks()
+    print(f"running {len(tasks)}/{len(expected)} BehaviorBench tasks", flush=True)
+
     try:
-        run_tasks(tasks)
+        failed = run_tasks(tasks)
     finally:
         proc.terminate()
         try:
@@ -211,18 +275,35 @@ def main() -> None:
         except Exception:
             proc.kill()
 
-    # summarize outputs
-    summary = {}
-    for p in RESULTS.rglob("*.json"):
-        try:
-            summary[str(p.relative_to(RESULTS))] = json.loads(p.read_text())[:1] if False else "ok"
-        except Exception:
-            pass
-    (RESULTS / "DONE.json").write_text(json.dumps({"tasks": tasks, "files": [str(p) for p in RESULTS.rglob('*')]}, indent=2))
-    print("DONE", RESULTS, flush=True)
-    for p in sorted(RESULTS.rglob("*")):
-        if p.is_file():
-            print(" ", p, p.stat().st_size, flush=True)
+    cov = coverage_block(
+        actual=len(tasks) - len(failed),
+        expected=len(expected),
+        unit="tasks",
+        complete=set(tasks) == set(expected) and not failed,
+        failed=failed,
+        extra={"tasks": tasks},
+    )
+    # Board-level win rates must be filled by a separate aggregation step when available.
+    summary = {
+        "model": "befm/BeFM1.5-4B",
+        "tasks": tasks,
+        "failed": failed,
+        "coverage": cov,
+        "distributional_win_rate": None,
+        "individual_win_rate": None,
+        "note": "Board win rates must be computed from full task metrics before Gate 0 can pass.",
+    }
+    complete = bool(cov["complete"])
+    reason = None
+    if not complete:
+        if failed:
+            reason = f"failed_{len(failed)}_tasks"
+        elif set(tasks) != set(expected):
+            reason = f"subset_{len(tasks)}_of_{len(expected)}"
+        else:
+            reason = "incomplete"
+    write_summary_or_partial(RESULTS, summary, complete=complete, reason=reason)
+    print("complete", complete, "failed", failed, flush=True)
 
 
 if __name__ == "__main__":

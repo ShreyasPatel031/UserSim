@@ -1,0 +1,45 @@
+{
+  "stamp": "20260905T211727Z",
+  "total": 3,
+  "ok": 0,
+  "fail": 3,
+  "by_reason": {
+    "unknown": 1,
+    "not_signed_in": 2
+  },
+  "results": [
+    {
+      "host": "canva.com",
+      "url": "https://www.canva.com/signup",
+      "ok": false,
+      "email": "shreyashfs+canva@gmail.com",
+      "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/canva.com",
+      "actions": [],
+      "reason": "not_signed_in",
+      "steps": 12,
+      "exit_code": 1
+    },
+    {
+      "host": "coda.io",
+      "url": "https://coda.io/signup",
+      "ok": false,
+      "email": "shreyashfs+coda@gmail.com",
+      "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/coda.io",
+      "actions": [],
+      "reason": "unknown",
+      "detail": "The email address 'shreyashfs+coda@gmail.com' is already registered, preventing account creation.",
+      "exit_code": 1
+    },
+    {
+      "host": "todoist.com",
+      "url": "https://todoist.com/auth/signup",
+      "ok": false,
+      "email": "shreyashfs+todoist@gmail.com",
+      "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/todoist.com",
+      "actions": [],
+      "reason": "not_signed_in",
+      "steps": 30,
+      "exit_code": 1
+    }
+  ]
+}

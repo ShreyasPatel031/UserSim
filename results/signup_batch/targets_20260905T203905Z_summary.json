@@ -1,0 +1,43 @@
+{
+  "stamp": "20260905T203905Z",
+  "total": 3,
+  "ok": 1,
+  "by_reason": {
+    "captcha_unsolved": 2,
+    "signed_up": 1
+  },
+  "results": [
+    {
+      "host": "dropbox.com",
+      "url": "https://www.dropbox.com/register",
+      "ok": true,
+      "email": "shreyashfs+dropbox@gmail.com",
+      "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/dropbox.com",
+      "actions": [],
+      "reason": "signed_up",
+      "exit_code": 0
+    },
+    {
+      "host": "figma.com",
+      "url": "https://www.figma.com/signup",
+      "ok": false,
+      "email": "shreyashfs+figma@gmail.com",
+      "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/figma.com",
+      "actions": [],
+      "reason": "captcha_unsolved",
+      "detail": "CAPTCHA solving timed out and could not be completed.",
+      "exit_code": 1
+    },
+    {
+      "host": "loom.com",
+      "url": "https://www.loom.com/signup",
+      "ok": false,
+      "email": "shreyashfs+loom@gmail.com",
+      "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/loom.com",
+      "actions": [],
+      "reason": "captcha_unsolved",
+      "detail": "reCAPTCHA verification failed and timed out, preventing further progress in the signup process.",
+      "exit_code": 1
+    }
+  ]
+}

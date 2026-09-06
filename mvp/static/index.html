@@ -7,78 +7,63 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/styles.css?v=15" />
+  <link rel="stylesheet" href="/static/styles.css?v=46" />
 </head>
 <body>
   <header class="site-header">
-    <div class="logo">UserSim</div>
+    <a class="logo" href="/">UserSim</a>
+    <nav class="site-nav" id="local-nav" hidden>
+      <a href="/live">Live</a>
+    </nav>
   </header>
 
-  <main>
-    <section class="hero">
-      <p class="eyebrow">Synthetic user research</p>
-      <h1>Run user simulations<br /><em>before real users ever show up.</em></h1>
-      <p class="lede">
-        Drop a product URL. We research who it’s for, invent personas and tasks, find competitors,
-        and run the same goals across all of them.
-      </p>
-    </section>
+  <main class="main-url-first">
+    <section class="url-hero">
+      <p class="url-hero-brand">UserSim</p>
+      <h1 class="url-hero-title">Paste a product URL</h1>
+      <p class="url-hero-sub">We’ll invent ~5 simulated users, find 2 competitors, and run each task on your product and every competitor — all in parallel.</p>
 
-    <section class="steps">
-      <article class="step">
-        <span class="step-num">1</span>
-        <h3>Research</h3>
-        <p>Web search your URL for targeting and category</p>
-      </article>
-      <article class="step">
-        <span class="step-num">2</span>
-        <h3>Simulate</h3>
-        <p>Personas, tasks, and competitors — or use yours</p>
-      </article>
-      <article class="step">
-        <span class="step-num">3</span>
-        <h3>Run</h3>
-        <p>Same tasks across your product and every rival</p>
-      </article>
-      <article class="step">
-        <span class="step-num">4</span>
-        <h3>Report</h3>
-        <p>Elimination results when the run finishes</p>
-      </article>
-    </section>
+      <form id="study-form" class="url-hero-form">
+        <div class="url-bar">
+          <input
+            type="text"
+            name="url"
+            required
+            autofocus
+            inputmode="url"
+            autocomplete="url"
+            value="https://www.youtube.com/"
+            placeholder="https://yourproduct.com"
+            aria-label="Product URL"
+          />
+          <button type="submit" id="submit-btn">
+            <span class="btn-label">Run</span>
+            <span class="btn-spinner" hidden></span>
+          </button>
+        </div>
 
-    <section class="panel form-panel">
-      <form id="study-form">
-        <label>
-          <span>Product URL</span>
-          <input type="url" name="url" required placeholder="https://yourproduct.com" value="https://example.com" />
-        </label>
-
-        <label class="test-mode-row">
-          <input type="checkbox" name="test_mode" value="1" checked />
-          <span>Test mode — 1 persona, 1 task, no competitors</span>
-        </label>
-
-        <details class="optional-block">
-          <summary>Optional — customers, competitors, tasks</summary>
-          <label>
-            <span>Who are you targeting?</span>
-            <textarea name="customers" rows="2" placeholder="Leave blank — we’ll research this from your URL"></textarea>
-          </label>
-          <label>
-            <span>Competitors (one URL or name per line)</span>
-            <textarea name="competitors" rows="2" placeholder="Leave blank — we’ll find them"></textarea>
-          </label>
-          <label>
-            <span>Tasks (one goal per line)</span>
-            <textarea name="tasks" rows="2" placeholder="Leave blank — we’ll invent tasks that eliminate"></textarea>
-          </label>
+        <details class="optional-block url-more">
+          <summary>Add competitors, tasks, or audience</summary>
+          <div class="setup-grid">
+            <label>
+              <span>Who should we simulate?</span>
+              <textarea name="customers" rows="2" placeholder="e.g. US product managers, 28–45, evaluating AI research tools"></textarea>
+            </label>
+            <label>
+              <span>Competitors <em>(one per line)</em></span>
+              <textarea name="competitors" rows="2" placeholder="Leave blank — we’ll find at least 2 rivals"></textarea>
+            </label>
+            <label class="setup-full">
+              <span>Tasks <em>(one goal per line)</em></span>
+              <textarea name="tasks" rows="2" placeholder="Leave blank — we’ll invent goals from the page"></textarea>
+            </label>
+          </div>
         </details>
 
-        <button type="submit" id="submit-btn">
-          <span class="btn-label">Run simulation</span>
-          <span class="btn-spinner" hidden></span>
-        </button>
+        <label class="test-mode-row" id="local-smoke-row" hidden>
+          <input type="checkbox" name="test_mode" id="test-mode-input" value="1" />
+          <span>Local smoke — 1 user × 1 task × 1 site (fleet/UI testing)</span>
+        </label>
       </form>
     </section>
 
@@ -90,68 +75,108 @@
       <div class="progress-bar"><div id="progress-fill"></div></div>
       <div class="progress-meta">
         <span id="progress-elapsed">0:00 elapsed</span>
-        <span id="progress-agents">0 / 0 agents finished</span>
+        <span id="progress-agents">0 / 0 sessions finished</span>
       </div>
       <p id="progress-hint" class="progress-hint">
-        Personas are browsing your product in parallel.
+        Building the brief — simulated users, competitors, and tasks appear first.
       </p>
+      <p id="email-status" class="email-status" hidden></p>
     </section>
 
     <section id="live-panel" class="results live-panel" hidden>
-      <section class="panel activity-panel">
-        <h2>Simulation activity</h2>
-        <p class="section-sub">What the orchestrator and persona agents are doing</p>
-        <ol id="activity-log" class="activity-log"></ol>
-      </section>
-
-      <section id="personas-section" class="panel" hidden>
-        <h2>Generated personas</h2>
-        <p class="section-sub">Click a persona to expand their live session</p>
-        <div id="personas-grid" class="personas-grid"></div>
-      </section>
-    </section>
-
-    <section id="results" class="results" hidden>
-      <section class="panel summary-panel">
-        <h2>Executive summary</h2>
-        <p id="access-info" class="access-info" hidden></p>
-        <p id="headline" class="headline"></p>
-        <div class="summary-grid">
-          <div>
-            <h4>Top friction</h4>
-            <ul id="top-friction"></ul>
+      <section id="brief-section" class="brief-stack" hidden>
+        <section class="panel brief-card" id="products-panel">
+          <h2>Products</h2>
+          <p class="section-sub">Each task runs on all of these</p>
+          <div id="products-list" class="products-rail">
+            <p class="brief-empty">Resolving product &amp; rivals…</p>
           </div>
-          <div>
-            <h4>Top strengths</h4>
-            <ul id="top-strengths"></ul>
+        </section>
+        <section class="panel brief-card" id="users-panel" hidden>
+          <div class="brief-card-head">
+            <div>
+              <h2>Simulated users</h2>
+              <p class="section-sub">Who will browse — select a card to read their story</p>
+            </div>
+            <span id="users-searching" class="brief-searching" hidden>
+              <span class="product-search-spin" aria-hidden="true"></span>
+              Building users…
+            </span>
           </div>
-        </div>
-        <div class="fit-score">
-          <span id="fit-score">—</span>
-          <div>
-            <strong>Segment fit</strong>
-            <p id="fit-rationale"></p>
+          <div id="users-rail" class="users-rail"></div>
+        </section>
+        <section class="panel brief-card" id="tasks-panel" hidden>
+          <div class="brief-card-head">
+            <div>
+              <h2>Tasks</h2>
+              <p class="section-sub">Each goal runs once per product above</p>
+            </div>
+            <span id="tasks-searching" class="brief-searching" hidden>
+              <span class="product-search-spin" aria-hidden="true"></span>
+              Writing tasks…
+            </span>
           </div>
-        </div>
-        <div class="conversion">
-          <h4>Conversion outlook</h4>
-          <p id="conversion-outlook"></p>
-        </div>
-        <div class="recommendations">
-          <h4>Recommendations</h4>
-          <div id="recommendations"></div>
-        </div>
+          <ul id="tasks-list" class="brief-list"></ul>
+        </section>
       </section>
 
-      <section id="agents-section-final" class="panel" hidden>
-        <h2>Agent sessions</h2>
-        <div id="agents-grid" class="agents-grid"></div>
-      </section>
-    </section>
+      <section id="stage-section" class="panel stage-panel" hidden>
+        <div class="stage-header">
+          <div>
+            <p class="eyebrow">Live session</p>
+            <h2 id="stage-title">Watching…</h2>
+            <p id="stage-meta" class="section-sub"></p>
+          </div>
+        </div>
 
-    <section id="error-panel" class="panel error-panel" hidden>
-      <h2>Something went wrong</h2>
-      <p id="error-message"></p>
+        <div id="stage-controls" class="stage-controls">
+          <div class="stage-control-block">
+            <label class="stage-control-label" for="stage-site-select">Site</label>
+            <div id="stage-site-switch" class="stage-chip-row"></div>
+          </div>
+          <div class="stage-control-block">
+            <label class="stage-control-label" for="stage-task-select">Task</label>
+            <select id="stage-task-select" class="stage-select"></select>
+          </div>
+          <div class="stage-control-block">
+            <label class="stage-control-label" for="stage-user-select">Simulated user</label>
+            <select id="stage-user-select" class="stage-select"></select>
+          </div>
+        </div>
+
+        <div id="stage-body" class="stage-body"></div>
+
+        <section id="email-capture" class="email-capture email-capture-card" hidden>
+          <div class="email-capture-card-inner">
+            <div class="email-capture-copy">
+              <p class="eyebrow">Stay in the loop</p>
+              <h2>Get user feedback by email</h2>
+              <p class="section-sub">Leave an email and we’ll send the simulated-user feedback when the session finishes.</p>
+            </div>
+            <form id="email-capture-form" class="email-capture-form">
+              <input
+                type="email"
+                name="late_email"
+                id="late-email"
+                placeholder="you@company.com"
+                autocomplete="email"
+                aria-label="Email for user feedback"
+              />
+              <button type="submit">Send me feedback</button>
+            </form>
+            <p id="email-capture-done" class="email-status" hidden></p>
+          </div>
+        </section>
+
+        <a id="view-report-link" class="view-report-card" href="/report" hidden>
+          <div>
+            <p class="eyebrow">Ready</p>
+            <strong>View full report</strong>
+            <span class="section-sub">Executive summary, friction, and recommendations</span>
+          </div>
+          <span class="view-report-arrow" aria-hidden="true">→</span>
+        </a>
+      </section>
     </section>
   </main>
 
@@ -159,6 +184,6 @@
     <p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p>
   </footer>
 
-  <script src="/static/app.js?v=15"></script>
+  <script src="/static/app.js?v=49"></script>
 </body>
 </html>

@@ -69,6 +69,34 @@ async def index() -> FileResponse:
     return FileResponse(STATIC / "index.html")
 
 
+@app.get("/live")
+async def live_page() -> FileResponse:
+    path = STATIC / "live.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Live dashboard not bundled")
+    return FileResponse(path)
+
+
+@app.get("/api/studies")
+async def list_studies(limit: int = 40):
+    """List recent GCS-backed studies (developer live dashboard)."""
+    from mvp.gcs_store import list_mvp_studies
+
+    try:
+        studies = await asyncio.to_thread(list_mvp_studies, limit=limit)
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=503, detail=f"GCS list failed: {exc}") from exc
+    return {"studies": studies}
+
+
+@app.get("/report")
+async def report_page() -> FileResponse:
+    path = STATIC / "report.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Report page not bundled")
+    return FileResponse(path)
+
+
 @app.post("/api/studies")
 async def start_study(body: StudyRequest, background: BackgroundTasks, request: Request):
     from mvp.study import STUDIES, create_study, run_study, study_to_dict
@@ -166,22 +194,142 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
 
 @app.get("/api/studies/{study_id}")
 async def get_study(study_id: str):
-    from mvp.study import STUDIES, study_to_dict
+    from mvp.gcs_store import hydrate_live_sessions_from_gcs
+    from mvp.study import STUDIES, load_study_from_gcs, study_to_dict
 
     study = STUDIES.get(study_id)
-    if not study:
-        raise HTTPException(status_code=404, detail="Study not found")
-    return study_to_dict(study)
+    if study:
+        data = study_to_dict(study)
+        # Merge fresher GCS state when fleet is still running / finished off-box.
+        # Prefer in-memory live_sessions when they already have frames — a stale
+        # study.json (written mid-provision) must not wipe them.
+        if data.get("status") in {"running", "pending"} or not data.get("summary"):
+            remote = await asyncio.to_thread(load_study_from_gcs, study_id)
+            if remote:
+                local_live = data.get("live_sessions")
+                data = {**data, **remote, "id": study_id}
+                remote_live = data.get("live_sessions")
+                local_steps = _live_step_count(local_live)
+                remote_steps = _live_step_count(remote_live)
+                if local_steps > remote_steps:
+                    data["live_sessions"] = local_live
+        # Hydrate can do many GCS reads — never block the event loop (Live dash
+        # polls this every few seconds and was stalling new Runs).
+        data["live_sessions"] = await asyncio.to_thread(
+            hydrate_live_sessions_from_gcs, study_id, data.get("live_sessions")
+        )
+        return data
+    remote = await asyncio.to_thread(load_study_from_gcs, study_id)
+    if remote:
+        remote["live_sessions"] = await asyncio.to_thread(
+            hydrate_live_sessions_from_gcs, study_id, remote.get("live_sessions")
+        )
+        return remote
+    raise HTTPException(status_code=404, detail="Study not found")
+
+
+def _live_step_count(live_sessions: object) -> int:
+    if isinstance(live_sessions, dict):
+        items = live_sessions.values()
+    elif isinstance(live_sessions, list):
+        items = live_sessions
+    else:
+        return 0
+    total = 0
+    for sess in items:
+        if isinstance(sess, dict):
+            total += len(sess.get("trace") or [])
+    return total
 
 
 @app.get("/api/studies/{study_id}/agents/{agent_id}/screenshots/{filename}")
 async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
-    if not re.fullmatch(r"(?:step|bbox)_\d+\.png", filename):
+    if not re.fullmatch(r"(?:step|bbox)_\d+\.(?:png|jpg|jpeg)", filename):
         raise HTTPException(status_code=400, detail="Invalid screenshot name")
     path = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / filename
-    if not path.is_file():
-        raise HTTPException(status_code=404, detail="Screenshot not found")
-    return FileResponse(path, media_type="image/png")
+    if path.is_file():
+        return FileResponse(path, media_type="image/png" if filename.endswith(".png") else "image/jpeg")
+    # Fleet / Vercel: proxy from GCS.
+    try:
+        from mvp.gcs_store import gcs_download_bytes, screenshot_gcs_uri
+
+        uri = screenshot_gcs_uri(study_id, agent_id, filename)
+        raw = gcs_download_bytes(uri)
+        if raw:
+            from fastapi.responses import Response
+
+            ctype = "image/png" if filename.endswith(".png") else "image/jpeg"
+            return Response(content=raw, media_type=ctype)
+    except Exception:
+        pass
+    raise HTTPException(status_code=404, detail="Screenshot not found")
+
+
+@app.post("/api/internal/live-frame")
+async def post_live_frame(request: Request):
+    """Seed → UI critical path. GCS archival happens on the seed in the background."""
+    from mvp.live_frames import check_live_token, publish_live_frame
+    from mvp.study import STUDIES
+
+    form = await request.form()
+    study_id = str(form.get("study_id") or "")
+    agent_id = str(form.get("agent_id") or "")
+    token = str(
+        form.get("token")
+        or request.headers.get("x-usersim-live-token")
+        or ""
+    )
+    if not study_id or not agent_id:
+        raise HTTPException(status_code=400, detail="study_id and agent_id required")
+    if not check_live_token(study_id, token):
+        raise HTTPException(status_code=401, detail="Invalid live token")
+
+    step: dict = {}
+    raw_step = form.get("step_json")
+    if raw_step:
+        try:
+            step = json.loads(str(raw_step))
+        except json.JSONDecodeError:
+            step = {}
+    png_bytes: bytes | None = None
+    upload = form.get("png")
+    if upload is not None and hasattr(upload, "read"):
+        png_bytes = await upload.read()  # type: ignore[misc]
+    elif isinstance(upload, (bytes, bytearray)):
+        png_bytes = bytes(upload)
+
+    if not png_bytes:
+        raise HTTPException(status_code=400, detail="png required")
+
+    step.setdefault("step", 0)
+    step.setdefault("action", "Live frame")
+    published = publish_live_frame(
+        study_id=study_id, agent_id=agent_id, step=step, png=png_bytes
+    )
+
+    # Patch in-memory study so NDJSON stream / GET see the frame immediately.
+    study = STUDIES.get(study_id)
+    if study is not None:
+        live = getattr(study, "live_sessions", None)
+        sess = None
+        if isinstance(live, dict):
+            sess = live.get(agent_id)
+        if isinstance(sess, dict):
+            sess["status"] = "running"
+            trace = list(sess.get("trace") or [])
+            existing = {s.get("step"): i for i, s in enumerate(trace)}
+            if published.get("step") in existing:
+                trace[existing[published["step"]]] = published
+            else:
+                trace.append(published)
+            sess["trace"] = trace
+            sess["num_steps"] = len(trace)
+            sess["last_action"] = published.get("action") or ""
+            study.updated_at = __import__("datetime").datetime.now(
+                __import__("datetime").timezone.utc
+            )
+
+    return {"ok": True, "screenshot_url": published.get("screenshot_url")}
 
 
 @app.get("/health")

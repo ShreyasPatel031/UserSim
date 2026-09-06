@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 """Reproduce Socrates Wasserstein on SocSci210 unseen studies (paper §5.3).
 
-Metric (paper): for each (condition, outcome) cell, standardize responses to
-[0,1] with human rmin/rmax, compute Wasserstein-1 between human and model
-response arrays, average over cells in a study, then average over studies.
-Target: W≈0.151 for socrates-qwen2.5-14b-sft on unseen studies.
-Inference: temperature=0.6, top_p=0.9.
+Full run: all 40 unseen studies. Subsetting (SMOKE_STUDIES / MAX_PER_CELL)
+requires ALLOW_PARTIAL=1 and writes PARTIAL.*.json, never SUMMARY.json.
 """
 from __future__ import annotations
 
@@ -25,10 +22,60 @@ META = ROOT / "data" / "SocSci210_meta" / "metadata" / "participant_mapping.json
 MODEL = os.environ.get("SOCRATES_MODEL", "socratesft/socrates-qwen2.5-14b-sft")
 SMOKE_STUDIES = int(os.environ.get("SMOKE_STUDIES", "0"))  # 0 = all 40 unseen
 MAX_PER_CELL = int(os.environ.get("MAX_PER_CELL", "0"))  # 0 = all humans in cell
+EXPECTED_STUDIES = 40
 SYSTEM = (
     "You are simulating a survey respondent. Answer exactly as instructed, "
     "following the specified response format without additional commentary."
 )
+
+_REPO = Path(__file__).resolve().parents[2]
+if (_REPO / "scripts" / "fm_baselines").is_dir():
+    sys.path.insert(0, str(_REPO / "scripts" / "fm_baselines"))
+if (ROOT / "scripts").is_dir():
+    sys.path.insert(0, str(ROOT / "scripts"))
+
+try:
+    from gate_contract import (  # type: ignore
+        coverage_block,
+        require_full_or_allow,
+        write_summary_or_partial,
+    )
+except ImportError:
+
+    def require_full_or_allow(kind: str, detail: str) -> None:
+        if os.environ.get("ALLOW_PARTIAL", "").strip() in {"1", "true", "TRUE", "yes"}:
+            print(f"ALLOW_PARTIAL=1 — PARTIAL {kind}: {detail}", flush=True)
+            return
+        raise SystemExit(
+            f"Refusing subset ({kind}: {detail}). Set ALLOW_PARTIAL=1 or run the full split."
+        )
+
+    def coverage_block(**kwargs):
+        failed = list(kwargs.get("failed") or [])
+        return {
+            "actual": kwargs["actual"],
+            "expected": kwargs["expected"],
+            "unit": kwargs.get("unit", "studies"),
+            "complete": bool(kwargs.get("complete")) and not failed,
+            "failed": failed,
+        }
+
+    def write_summary_or_partial(results_dir, summary, *, complete, reason=None):
+        results_dir.mkdir(parents=True, exist_ok=True)
+        if not complete:
+            safe = (reason or "incomplete").replace(" ", "_")[:64]
+            path = results_dir / f"PARTIAL.{safe}.json"
+            summary = dict(summary)
+            summary["complete"] = False
+            path.write_text(json.dumps(summary, indent=2))
+            print(f"WROTE_PARTIAL {path}", flush=True)
+            return path
+        path = results_dir / "SUMMARY.json"
+        summary = dict(summary)
+        summary["complete"] = True
+        path.write_text(json.dumps(summary, indent=2))
+        print(f"WROTE_SUMMARY {path}", flush=True)
+        return path
 
 
 def sh(cmd: str) -> None:
@@ -41,7 +88,7 @@ def install() -> None:
     sh(
         f"{sys.executable} -m pip install -q "
         "torch transformers accelerate bitsandbytes datasets huggingface_hub "
-        "scipy numpy sentencepiece protobuf"
+        "scipy numpy sentencepiece protobuf pyyaml 'jinja2>=3.1.0'"
     )
 
 
@@ -49,7 +96,6 @@ def parse_numeric(text: str) -> float | None:
     if text is None:
         return None
     t = text.strip()
-    # common formats: "5", "5.", "Answer: 5", "I choose 2"
     m = re.search(r"(?<![\d.])(-?\d+(?:\.\d+)?)(?![\d])", t)
     if not m:
         return None
@@ -60,10 +106,8 @@ def parse_numeric(text: str) -> float | None:
 
 
 def wasserstein_1d(a: np.ndarray, b: np.ndarray) -> float:
-    # Pure numpy 1D Wasserstein (Earth Mover) for 1D samples
     a = np.sort(a.astype(float))
     b = np.sort(b.astype(float))
-    # quantile matching
     n = 256
     qa = np.quantile(a, np.linspace(0, 1, n))
     qb = np.quantile(b, np.linspace(0, 1, n))
@@ -71,15 +115,19 @@ def wasserstein_1d(a: np.ndarray, b: np.ndarray) -> float:
 
 
 def main() -> None:
+    if SMOKE_STUDIES > 0:
+        require_full_or_allow("SMOKE_STUDIES", f"{SMOKE_STUDIES} studies")
+    if MAX_PER_CELL > 0:
+        require_full_or_allow("MAX_PER_CELL", f"cap={MAX_PER_CELL}")
+
     install()
     RESULTS.mkdir(parents=True, exist_ok=True)
 
     import torch
     from datasets import load_dataset
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
     from huggingface_hub import hf_hub_download
 
-    # mapping
     if META.exists():
         mapping = json.loads(META.read_text())
     else:
@@ -93,8 +141,6 @@ def main() -> None:
     print(f"unseen studies: {len(unseen)}", flush=True)
 
     print(f"Loading model {MODEL} (4-bit → fits T4/L4)", flush=True)
-    from transformers import BitsAndBytesConfig
-
     tok = AutoTokenizer.from_pretrained(MODEL, trust_remote_code=True)
     quant = BitsAndBytesConfig(
         load_in_4bit=True,
@@ -117,13 +163,11 @@ def main() -> None:
     rows = [r for r in ds if r["study_id"] in unseen]
     print(f"unseen rows: {len(rows)}", flush=True)
 
-    # optional smoke: first N studies
     if SMOKE_STUDIES > 0:
         keep = set(sorted(unseen)[:SMOKE_STUDIES])
         rows = [r for r in rows if r["study_id"] in keep]
         print(f"smoke studies={SMOKE_STUDIES} rows={len(rows)}", flush=True)
 
-    # group by (study, condition, task/outcome)
     cells: dict[tuple, list] = defaultdict(list)
     for r in rows:
         key = (r["study_id"], str(r["condition_num"]), str(r["task_num"]))
@@ -131,7 +175,6 @@ def main() -> None:
     print(f"cells: {len(cells)}", flush=True)
 
     preds_path = RESULTS / "predictions.jsonl"
-    # resume support
     done_ids = set()
     if preds_path.exists():
         for line in preds_path.read_text().splitlines():
@@ -184,7 +227,6 @@ def main() -> None:
                 if n_gen % 25 == 0:
                     print(f"generated {n_gen}", flush=True)
 
-    # load all preds
     preds = [json.loads(l) for l in preds_path.read_text().splitlines() if l.strip()]
     by_cell: dict[tuple, list] = defaultdict(list)
     for p in preds:
@@ -212,7 +254,6 @@ def main() -> None:
             continue
         h_s = (h - rmin) / (rmax - rmin)
         m_s = (m - rmin) / (rmax - rmin)
-        # clip model to scale (paper standardizes with human bounds)
         m_s = np.clip(m_s, 0.0, 1.0)
         w = wasserstein_1d(h_s, m_s)
         study_scores[key[0]].append(w)
@@ -220,18 +261,38 @@ def main() -> None:
 
     per_study = {s: float(np.mean(v)) for s, v in study_scores.items() if v}
     overall = float(np.mean(list(per_study.values()))) if per_study else None
+    n_studies = len(per_study)
+    is_partial = SMOKE_STUDIES > 0 or MAX_PER_CELL > 0 or n_studies < EXPECTED_STUDIES
+    cov = coverage_block(
+        actual=n_studies,
+        expected=EXPECTED_STUDIES,
+        unit="studies",
+        complete=not is_partial and n_studies >= EXPECTED_STUDIES,
+        failed=[],
+    )
     summary = {
         "model": MODEL,
-        "n_studies": len(per_study),
+        "n_studies": n_studies,
         "n_cells": len(cell_rows),
         "n_preds": len(preds),
         "wasserstein_mean": overall,
         "target_paper": 0.151,
         "empirical_best_paper": 0.125,
         "per_study": per_study,
+        "coverage": cov,
+        "smoke_studies": SMOKE_STUDIES,
+        "max_per_cell": MAX_PER_CELL,
     }
-    (RESULTS / "SUMMARY.json").write_text(json.dumps(summary, indent=2))
     (RESULTS / "cells.json").write_text(json.dumps(cell_rows, indent=2))
+    reason = None
+    if is_partial:
+        if SMOKE_STUDIES > 0:
+            reason = f"smoke_{SMOKE_STUDIES}_studies"
+        elif MAX_PER_CELL > 0:
+            reason = f"max_per_cell_{MAX_PER_CELL}"
+        else:
+            reason = f"n_studies_{n_studies}_of_{EXPECTED_STUDIES}"
+    write_summary_or_partial(RESULTS, summary, complete=bool(cov["complete"]), reason=reason)
     print(json.dumps({k: summary[k] for k in summary if k != "per_study"}, indent=2), flush=True)
 
 

@@ -16,12 +16,16 @@
 #   STAGE=full10  ./scripts/vm/fleet_bakeoff.sh
 #   STAGE=full80  ./scripts/vm/fleet_bakeoff.sh
 #   STAGE=full100 ./scripts/vm/fleet_bakeoff.sh
-#   ./scripts/vm/fleet_bakeoff.sh --status    # GCS done-markers, no SSH
+#   ./scripts/vm/fleet_bakeoff.sh --status    # GCS done-markers + reap completed VMs
 #   ./scripts/vm/fleet_bakeoff.sh --pull      # GCS -> local, then merge
 #   ./scripts/vm/fleet_bakeoff.sh --merge
+#   ./scripts/vm/fleet_bakeoff.sh --reap      # delete VMs whose shards are complete in GCS
 #   ./scripts/vm/fleet_bakeoff.sh --down      # delete every fleet VM
 #   ./scripts/vm/fleet_bakeoff.sh --relaunch  # restart preempted/missing shards;
 #                                            # restores GCS checkpoints, skips finished tasks
+#
+# Completed shards ALWAYS tear down their VMs (self-delete on the box + orchestrator
+# --reap safety net). KEEP_VM is ignored unless ALLOW_KEEP_VM=1.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -479,9 +483,11 @@ install_and_run_shard() {
 mkdir -p ~/usersim && cd ~/usersim
 rm -rf src data scripts secrets    # keep .venv so warm VMs skip the 90s install
 tar xzf ~/usersim.tgz -C ~/usersim
+# Always ensure Xvfb for headed Chromium (default; headless causes WAF blocks).
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq xvfb 2>/dev/null || true
 if [[ ! -d .venv ]]; then
   sudo apt-get update -qq
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3-venv python3-pip
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3-venv python3-pip xvfb
   python3 -m venv .venv
   .venv/bin/pip install -q -U pip wheel
   .venv/bin/pip install -q 'browser-use==0.13.8' playwright google-genai google-auth httpx pydantic PyYAML requests tenacity browserbase openai
@@ -497,6 +503,7 @@ nohup env \
   SKIP_KNOWN_BLOCKED=${SKIP_KNOWN_BLOCKED} EXPECTED_TASKS=${TASKS_PER_SHARD} \
   EVAL_INDICES='${EVAL_INDICES}' \
   EXTRA_ENV='${EXTRA_ENV}' \
+  BROWSER_HEADLESS=0 DISPLAY=:99 \
   bash scripts/vm/shard_runner.sh > ~/bakeoff_shard${i}.log 2>&1 &
 echo STARTED_${STAGE}_SHARD_${i}
 "; then

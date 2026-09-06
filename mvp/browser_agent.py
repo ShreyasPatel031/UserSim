@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 from capability import CAPABLE_AGENT_PREAMBLE, USER_AGENT, VIEWPORT, location_for
-from capability.browserbase_client import close_session, create_session
 from auth import vertex_credentials
 from config import GCP_PROJECT, MODEL
 
@@ -19,6 +18,29 @@ from mvp.paths import MVP_RUNS_DIR
 
 # Enough steps to leave the landing page: land, scroll, open a nav item, read, come back.
 MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
+
+
+def _json_safe(value: Any) -> Any:
+    """Recursively coerce browser-use / pydantic objects into JSON-serializable data."""
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_safe(v) for v in value]
+    if hasattr(value, "model_dump"):
+        try:
+            return _json_safe(value.model_dump(exclude_none=True))
+        except Exception:
+            pass
+    if hasattr(value, "dict"):
+        try:
+            return _json_safe(value.dict())
+        except Exception:
+            pass
+    return str(value)[:500]
 
 
 def _history_to_actions(history) -> list[dict]:
@@ -37,18 +59,10 @@ def _history_to_actions(history) -> list[dict]:
         act = None
         if model_out is not None:
             act = getattr(model_out, "action", None) or getattr(model_out, "actions", None)
-            if act is not None and not isinstance(act, (str, dict, list)):
-                try:
-                    act = [
-                        a.model_dump() if hasattr(a, "model_dump") else str(a)
-                        for a in (act if isinstance(act, list) else [act])
-                    ]
-                except Exception:
-                    act = str(act)
         actions.append(
             {
                 "i": i,
-                "action": act,
+                "action": _json_safe(act),
                 "result": str(result)[:500] if result is not None else None,
                 "url": url,
             }
@@ -133,11 +147,34 @@ def _local_browser_profile(
 
     from mvp.captcha import captcha_solver_enabled
 
+    warm_cdp = (os.environ.get("MVP_WARM_CDP") or "").strip()
+    if warm_cdp:
+        # Reuse standing Chromium on the seed — do not cold-launch.
+        return BrowserProfile(
+            cdp_url=warm_cdp,
+            is_local=True,
+            viewport=VIEWPORT,
+            user_agent=USER_AGENT,
+            disable_security=True,
+            cross_origin_iframes=False,
+            enable_default_extensions=False,
+            captcha_solver=captcha_solver_enabled(),
+            highlight_elements=False,
+            dom_highlight_elements=True,
+            minimum_wait_page_load_time=float(os.environ.get("MVP_LOCAL_MIN_WAIT", "0.3")),
+            wait_for_network_idle_page_load_time=float(
+                os.environ.get("MVP_LOCAL_NETWORK_IDLE", "0.5")
+            ),
+            wait_between_actions=0.3,
+        )
+
     if headless is None:
-        headless = os.environ.get("MVP_BROWSER_HEADLESS", "1").lower() not in {
-            "0",
-            "false",
-            "no",
+        # Local Chromium: headed by default so you can watch the simulation.
+        # Set MVP_BROWSER_HEADLESS=1 for headless batch runs.
+        headless = os.environ.get("MVP_BROWSER_HEADLESS", "0").lower() in {
+            "1",
+            "true",
+            "yes",
         }
     kwargs: dict[str, Any] = {
         "is_local": True,
@@ -157,8 +194,16 @@ def _local_browser_profile(
         "wait_between_actions": 0.4,
     }
     # Prefer real Chrome when available — YouTube treats stock Chromium more harshly.
+    # Fleet / CI VMs usually only have Playwright Chromium: set MVP_BROWSER_CHANNEL=0.
     if os.environ.get("MVP_BROWSER_CHANNEL", "chrome").lower() not in {"", "0", "none"}:
         kwargs["channel"] = os.environ.get("MVP_BROWSER_CHANNEL", "chrome")
+    if os.environ.get("MVP_CHROMIUM_NO_SANDBOX", "").lower() in {"1", "true", "yes"}:
+        kwargs["chromium_sandbox"] = False
+        kwargs["args"] = [
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu",
+        ]
     if user_data_dir:
         # A cloned signed-in profile: the only thing Google accepts.
         kwargs["user_data_dir"] = user_data_dir
@@ -214,6 +259,20 @@ async def _inject_cookies(session: Any, state: dict[str, Any] | None) -> int:
     return len(cookies)
 
 
+def _screenshot_data_url(path: Path) -> str | None:
+    try:
+        if not path.is_file():
+            return None
+        import base64
+
+        raw = path.read_bytes()
+        if not raw:
+            return None
+        return "data:image/png;base64," + base64.b64encode(raw).decode("ascii")
+    except Exception:
+        return None
+
+
 def _trace_step_from_history_item(
     h: Any,
     step_no: int,
@@ -228,11 +287,14 @@ def _trace_step_from_history_item(
     shot_src = getattr(state, "screenshot_path", None) if state else None
 
     screenshot_name = None
+    shot_path = None
     if (screenshot_dir / f"bbox_{step_no}.png").exists():
         screenshot_name = f"bbox_{step_no}.png"
+        shot_path = screenshot_dir / screenshot_name
     elif shot_src and Path(shot_src).exists():
         screenshot_name = f"step_{step_no}.png"
-        shutil.copy2(shot_src, screenshot_dir / screenshot_name)
+        shot_path = screenshot_dir / screenshot_name
+        shutil.copy2(shot_src, shot_path)
 
     act_raw = None
     if model_out is not None:
@@ -253,6 +315,15 @@ def _trace_step_from_history_item(
         or ""
     )
 
+    # Prefer inline data URLs so the live UI can render while the study stream
+    # is still holding the request (API screenshot GETs often stall locally).
+    inline = _screenshot_data_url(shot_path) if shot_path else None
+    api_url = (
+        f"/api/studies/{study_id}/agents/{agent_id}/screenshots/{screenshot_name}"
+        if screenshot_name
+        else None
+    )
+
     return {
         "step": step_no,
         "action": action,
@@ -260,11 +331,7 @@ def _trace_step_from_history_item(
         "thought": thought_summary,
         "thought_detail": thought_fields,
         "url": url,
-        "screenshot_url": (
-            f"/api/studies/{study_id}/agents/{agent_id}/screenshots/{screenshot_name}"
-            if screenshot_name
-            else None
-        ),
+        "screenshot_url": inline or api_url,
         "outcome": "neutral",
     }
 
@@ -348,6 +415,121 @@ def _history_to_trace(
     ]
 
 
+async def capture_landing_frame(
+    *,
+    study_id: str,
+    agent_id: str,
+    url: str,
+    screenshot_dir: Path,
+    on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
+    user_data_dir: str | None = None,
+) -> dict[str, Any] | None:
+    """Fast first frame (with clickable boxes) so the live stage isn't empty."""
+    try:
+        from playwright.async_api import async_playwright
+    except Exception:
+        return None
+
+    screenshot_dir.mkdir(parents=True, exist_ok=True)
+    shot_path = screenshot_dir / "bbox_0.png"
+    boxes: list[dict[str, Any]] = []
+    title = ""
+    warm_cdp = (os.environ.get("MVP_WARM_CDP") or "").strip()
+    try:
+        async with async_playwright() as p:
+            launch_kwargs: dict[str, Any] = {
+                # Match the main agent: headed when MVP_BROWSER_HEADLESS=0.
+                "headless": os.environ.get("MVP_BROWSER_HEADLESS", "0").lower()
+                in {"1", "true", "yes"},
+            }
+            browser = None
+            if warm_cdp:
+                browser = await p.chromium.connect_over_cdp(warm_cdp)
+                context = browser.contexts[0] if browser.contexts else await browser.new_context(
+                    viewport={"width": 1440, "height": 900}
+                )
+                page = context.pages[0] if context.pages else await context.new_page()
+            elif user_data_dir:
+                context = await p.chromium.launch_persistent_context(
+                    user_data_dir,
+                    **launch_kwargs,
+                    viewport={"width": 1440, "height": 900},
+                    args=["--no-sandbox"],
+                )
+                page = context.pages[0] if context.pages else await context.new_page()
+            else:
+                browser = await p.chromium.launch(**launch_kwargs, args=["--no-sandbox"])
+                context = await browser.new_context(viewport={"width": 1440, "height": 900})
+                page = await context.new_page()
+            await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            await page.wait_for_timeout(200 if warm_cdp else 1500)
+            title = (await page.title()) or url
+            boxes = await page.evaluate(
+                """() => {
+                  const sels = 'a[href], button, input, textarea, select, [role="button"], [role="link"], [onclick]';
+                  const els = Array.from(document.querySelectorAll(sels));
+                  const items = [];
+                  let i = 0;
+                  for (const el of els) {
+                    const r = el.getBoundingClientRect();
+                    if (r.width < 10 || r.height < 10) continue;
+                    if (r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
+                    i += 1;
+                    if (i > 36) break;
+                    const label = ((el.innerText || el.getAttribute('aria-label') || el.getAttribute('placeholder') || el.getAttribute('name') || el.tagName) + '').trim().slice(0, 80);
+                    items.push({index: i, label, tag: el.tagName.toLowerCase()});
+                    const box = document.createElement('div');
+                    box.style.cssText = [
+                      'position:fixed',
+                      `left:${r.left}px`,
+                      `top:${r.top}px`,
+                      `width:${r.width}px`,
+                      `height:${r.height}px`,
+                      'border:2px solid #ef4444',
+                      'box-sizing:border-box',
+                      'z-index:2147483646',
+                      'pointer-events:none',
+                      'background:rgba(239,68,68,.06)',
+                    ].join(';');
+                    const badge = document.createElement('div');
+                    badge.textContent = String(i);
+                    badge.style.cssText = 'position:absolute;top:-2px;left:-2px;background:#ef4444;color:#fff;font:700 11px/14px ui-sans-serif,system-ui,sans-serif;padding:1px 5px;border-radius:2px';
+                    box.appendChild(badge);
+                    document.documentElement.appendChild(box);
+                  }
+                  return items;
+                }"""
+            )
+            await page.screenshot(path=str(shot_path), type="png", full_page=False)
+            # Warm CDP Chromium must stay up for the agent — only close cold launches.
+            if not warm_cdp:
+                await context.close()
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] landing frame failed: {exc}", flush=True)
+        return None
+
+    if not shot_path.is_file():
+        return None
+    inline = _screenshot_data_url(shot_path)
+    step = {
+        "step": 0,
+        "action": "Landed on page — red numbered boxes = clickable elements",
+        "observation": title or url,
+        "thought": "",
+        "url": url,
+        "screenshot_url": inline
+        or f"/api/studies/{study_id}/agents/{agent_id}/screenshots/bbox_0.png",
+        "boxes": boxes or [],
+        "outcome": "easy",
+        "evidence_label": "Landing frame",
+    }
+    if on_step is not None:
+        maybe = on_step(step)
+        if asyncio.iscoroutine(maybe):
+            await maybe
+    return step
+
+
 async def run_browser_agent(
     *,
     study_id: str,
@@ -383,9 +565,15 @@ async def run_browser_agent(
         youtube_needs_content_bootstrap,
     )
 
+    # Public / anonymous browsing when profile pool is disabled (fleet default).
+    disable_profiles = os.environ.get("MVP_DISABLE_PROFILE_POOL", "").lower() in {
+        "1",
+        "true",
+        "yes",
+    }
     # Load auth first so YouTube can use a real signed-in home feed when available.
     # With MVP_AUTO_SIGNIN=1 this also performs the login when the vault has creds.
-    storage_state = await asyncio.to_thread(ensure_site_auth, url)
+    storage_state = None if disable_profiles else await asyncio.to_thread(ensure_site_auth, url)
     start_url = url
     yt_hint = ""
     if youtube_needs_content_bootstrap(url, storage_state):
@@ -420,7 +608,8 @@ async def run_browser_agent(
     if force_local:
         # A cloned signed-in profile beats cookie injection: Google binds session
         # cookies to the profile, so transplanted cookies report LOGGED_IN=false.
-        profile_clone = await asyncio.to_thread(clone_for_url, url)
+        if not disable_profiles:
+            profile_clone = await asyncio.to_thread(clone_for_url, url)
         if profile_clone:
             cookie_state = None
             # Signed in, so the real home feed works — no search-results detour.
@@ -435,6 +624,8 @@ async def run_browser_agent(
         )
         backend = "local_playwright"
     else:
+        from capability.browserbase_client import close_session, create_session
+
         # create_session/close_session block on a threading semaphore + sleep for the
         # Browserbase create-rate limit; off-loop or they freeze every other agent.
         owns_session = bb_session is None
@@ -481,6 +672,24 @@ async def run_browser_agent(
             injected = await _inject_cookies(browser_session, cookie_state)
             print(f"[{agent_id}] injected {injected} cookies via CDP", flush=True)
 
+        # Immediate landing frame so the live stage has a screenshot before the
+        # vision agent finishes its first slow reasoning step.
+        # Skipped when the seed already pushed a warm-CDP first frame.
+        skip_landing = os.environ.get("MVP_SKIP_LANDING_FRAME", "").lower() in {
+            "1",
+            "true",
+            "yes",
+        }
+        if not skip_landing:
+            await capture_landing_frame(
+                study_id=study_id,
+                agent_id=agent_id,
+                url=start_url,
+                screenshot_dir=screenshot_dir,
+                on_step=on_step,
+                user_data_dir=str(profile_clone) if profile_clone else None,
+            )
+
         agent = Agent(
             task=agent_task,
             llm=llm,
@@ -508,8 +717,15 @@ async def run_browser_agent(
         )
     finally:
         if browser_session is not None:
+            # Never kill standing warm Chromium — only disconnect the session.
+            warm = bool((os.environ.get("MVP_WARM_CDP") or "").strip())
             try:
-                await browser_session.kill()
+                if warm:
+                    stop = getattr(browser_session, "stop", None)
+                    if callable(stop):
+                        await stop()
+                else:
+                    await browser_session.kill()
             except Exception:
                 pass
         if profile_clone is not None:

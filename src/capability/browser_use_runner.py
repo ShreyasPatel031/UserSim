@@ -18,6 +18,7 @@ from capability import (
     OUT_DIR,
     USER_AGENT,
     VIEWPORT,
+    browser_headless,
     cost_usd,
     location_for,
 )
@@ -127,7 +128,7 @@ async def _run_async(
         temperature=0,
     )
     profile = BrowserProfile(
-        headless=True,
+        headless=browser_headless(),
         viewport=VIEWPORT,
         user_agent=USER_AGENT,
         disable_security=True,
@@ -217,7 +218,7 @@ async def _run_async(
         from playwright.async_api import async_playwright
 
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
+            browser = await p.chromium.launch(headless=browser_headless())
             page = await browser.new_page(viewport=VIEWPORT, user_agent=USER_AGENT)
             if final_url:
                 await page.goto(final_url, wait_until="domcontentloaded", timeout=20000)

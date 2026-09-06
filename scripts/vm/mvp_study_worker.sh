@@ -16,8 +16,13 @@ GOOGLE_AUTH_VERSION="2.41.1"
 GOOGLE_AUTH_PIN="google-auth==${GOOGLE_AUTH_VERSION}"
 
 # Absolute TTL backup (startup script also arms shutdown -h).
+# Standing seeds must NOT schedule poweroff — they stay warm for the next job.
 TTL_MIN="${MVP_GCP_FLEET_TTL_MIN:-25}"
-shutdown -h "+${TTL_MIN}" 2>/dev/null || true
+if [[ "${KEEP_VM:-0}" != "1" ]]; then
+  shutdown -h "+${TTL_MIN}" 2>/dev/null || true
+else
+  echo "KEEP_VM=1 — skipping shutdown -h timer"
+fi
 
 echo "==> stop apt noise"
 sudo systemctl stop unattended-upgrades.service 2>/dev/null || true
@@ -59,9 +64,14 @@ else
   # request.session on a transport that has none), which kills ADC on copies.
   have=$(.venv/bin/python -c 'import importlib.metadata as m; print(m.version("google-auth"))' 2>/dev/null || echo 0)
   if [[ "$have" != "$GOOGLE_AUTH_VERSION" ]]; then
+    echo "==> pinning google-auth $GOOGLE_AUTH_VERSION (have $have)"
     .venv/bin/pip install -q "$GOOGLE_AUTH_PIN" || echo "WARN: google-auth pin failed (have $have)"
   fi
-  .venv/bin/pip install -q 'google-cloud-storage>=2.14' 'google-cloud-compute>=1.19' 2>/dev/null || true
+  # Do not pip-install on every boot — that alone costs tens of seconds.
+  if ! .venv/bin/python -c "import google.cloud.storage, google.cloud.compute_v1" 2>/dev/null; then
+    echo "==> installing missing google-cloud libs"
+    .venv/bin/pip install -q 'google-cloud-storage>=2.14' 'google-cloud-compute>=1.19' 2>/dev/null || true
+  fi
 fi
 
 if ! pgrep -f "Xvfb ${DISPLAY}" >/dev/null 2>&1; then
@@ -108,6 +118,8 @@ if [[ -f "${HOME}/usersim/secrets/sa.json" ]]; then
   export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/usersim/secrets/sa.json"
   export CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE="${HOME}/usersim/secrets/sa.json"
 fi
+export MVP_WARM_CDP="${MVP_WARM_CDP:-}"
+export MVP_SKIP_LANDING_FRAME="${MVP_SKIP_LANDING_FRAME:-0}"
 export MVP_BROWSER_HEADLESS=0
 export MVP_FORCE_LOCAL_BROWSER=1
 export MVP_BROWSER_CHANNEL="${MVP_BROWSER_CHANNEL:-0}"
@@ -115,7 +127,10 @@ export MVP_CHROMIUM_NO_SANDBOX=1
 export BROWSER_HEADLESS=0
 export DISPLAY
 
-JOB="${HOME}/usersim/job.json"
+JOB="${MVP_JOB_JSON:-${HOME}/usersim/job.json}"
+if [[ ! -f "$JOB" && -f /tmp/usersim_inbox_job.json ]]; then
+  JOB=/tmp/usersim_inbox_job.json
+fi
 .venv/bin/python scripts/vm/mvp_study_worker.py --job "$JOB"
 rc=$?
 echo "WORKER_EXIT=$rc"
