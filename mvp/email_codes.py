@@ -417,7 +417,6 @@ def latest_signup_code(
     if not creds:
         return None
     username, app_password = creds
-    fallback: str | None = None
     for msg in _iter_recent_messages(username, app_password, lookback=lookback):
         if not _alias_match(_recipients(msg), alias):
             continue
@@ -461,6 +460,7 @@ def latest_signup_link(
     if host_l.endswith(".bitwarden.com"):
         host_needles.add("bitwarden.com")
 
+    fallback: str | None = None
     for msg in _iter_recent_messages(username, app_password, lookback=lookback):
         if not _alias_match(_recipients(msg), alias):
             continue
