@@ -149,12 +149,12 @@ def _create_signup_browserbase_session():
 
 
 def _signup_uses_browserbase() -> bool:
-    """Signup via Browserbase when enabled and not forced local.
+    """Signup via Browserbase when available and not forced local.
 
     Local Chrome on a GCP seed shares a datacenter ASN and fails captchas that a
-    residential Browserbase session often clears. Opt in with
-    ``MVP_SIGNUP_BROWSERBASE=1`` (or ``USE_BROWSERBASE=1``); ``MVP_FORCE_LOCAL_BROWSER=1``
-    always wins for debugging.
+    residential Browserbase session often clears. Default ON when
+    ``BROWSERBASE_API_KEY`` is present. Explicit ``MVP_SIGNUP_BROWSERBASE=0`` /
+    ``USE_BROWSERBASE=0`` or ``MVP_FORCE_LOCAL_BROWSER=1`` disables it.
     """
     if os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {"1", "true", "yes"}:
         return False
@@ -162,8 +162,16 @@ def _signup_uses_browserbase() -> bool:
         os.environ.get("MVP_SIGNUP_BROWSERBASE")
         or os.environ.get("USE_BROWSERBASE")
         or ""
+    ).strip().lower()
+    if raw in {"0", "false", "no", "off"}:
+        return False
+    if raw in {"1", "true", "yes", "on"}:
+        return True
+    # Auto-enable on seeds that already carry Browserbase credentials.
+    return bool(
+        (os.environ.get("BROWSERBASE_API_KEY") or "").strip()
+        and (os.environ.get("BROWSERBASE_PROJECT_ID") or "").strip()
     )
-    return raw.strip().lower() in {"1", "true", "yes"}
 
 
 def _launch_chrome(
@@ -199,8 +207,10 @@ def _launch_chrome(
             "--disable-dev-shm-usage",
             "--disable-gpu",
         ]
-    if not headed:
-        cmd.insert(1, "--headless=new")
+    if not headed or not os.environ.get("DISPLAY"):
+        # Seed VMs have no X server; headed Chrome exits with "Missing X server".
+        if "--headless=new" not in cmd:
+            cmd.insert(1, "--headless=new")
     elif os.environ.get("MVP_CHROME_OFFSCREEN", "").lower() in {"1", "true", "yes"}:
         # Headless Chrome is fingerprinted and draws a CAPTCHA on figma, loom and
         # dropbox where headed does not. Keep the headed browser but park the
