@@ -83,83 +83,132 @@ def create_session(
     solve_captchas: bool | None = None,
     advanced_stealth: bool | None = None,
 ) -> BrowserbaseSession:
-    """Create a Browserbase session respecting concurrent + burst limits."""
+    """Create a Browserbase session respecting concurrent + burst limits.
+
+    Walks down feature flags on 402/403 so Hobby plans still get a session:
+    proxies / advanced stealth / captcha-solve are optional.
+    """
     _SLOT.acquire()
     client = Browserbase(api_key=browserbase_api_key())
-    kwargs: dict[str, Any] = {"keep_alive": keep_alive}
     pid = browserbase_project_id()
-    if pid:
-        kwargs["project_id"] = pid
-    if proxies:
-        kwargs["proxies"] = True
 
     # Captcha / stealth: env default, explicit kwargs override.
+    default_solve: bool | None = None
+    default_stealth: bool | None = None
     try:
         from mvp.captcha import browserbase_captcha_kwargs, captcha_solver_enabled
 
         if solve_captchas is None and advanced_stealth is None and captcha_solver_enabled():
-            kwargs.update(browserbase_captcha_kwargs())
+            caps = browserbase_captcha_kwargs()
+            default_solve = bool(caps.get("solve_captchas"))
+            default_stealth = bool(caps.get("advanced_stealth"))
     except Exception:
         pass
-    if solve_captchas is not None:
-        kwargs["solve_captchas"] = bool(solve_captchas)
-    if advanced_stealth is not None:
-        kwargs["advanced_stealth"] = bool(advanced_stealth)
 
-    # Prefer Browserbase's nested ``browser_settings`` when the SDK accepts it;
-    # fall back to flat kwargs for older clients.
-    browser_settings: dict[str, Any] = {}
-    if "solve_captchas" in kwargs:
-        browser_settings["solveCaptchas"] = kwargs.pop("solve_captchas")
-    if "advanced_stealth" in kwargs:
-        browser_settings["advancedStealth"] = kwargs.pop("advanced_stealth")
-    if browser_settings:
-        kwargs["browser_settings"] = browser_settings
+    want_solve = default_solve if solve_captchas is None else bool(solve_captchas)
+    want_stealth = default_stealth if advanced_stealth is None else bool(advanced_stealth)
 
-    try:
-        for attempt in range(8):
+    # Ordered attempts: richest → bare session. Enterprise flags first so paid
+    # plans keep them; Hobby gets a working basic session after 402/403.
+    attempts: list[dict[str, Any]] = []
+    if proxies or want_solve or want_stealth:
+        attempts.append(
+            {"proxies": bool(proxies), "solve_captchas": bool(want_solve), "advanced_stealth": bool(want_stealth)}
+        )
+    if proxies or want_solve:
+        attempts.append(
+            {"proxies": bool(proxies), "solve_captchas": bool(want_solve), "advanced_stealth": False}
+        )
+    if proxies:
+        attempts.append({"proxies": True, "solve_captchas": False, "advanced_stealth": False})
+    attempts.append({"proxies": False, "solve_captchas": False, "advanced_stealth": False})
+    # De-dupe while preserving order.
+    seen: set[tuple[Any, ...]] = set()
+    unique_attempts: list[dict[str, Any]] = []
+    for a in attempts:
+        key = (a["proxies"], a["solve_captchas"], a["advanced_stealth"])
+        if key in seen:
+            continue
+        seen.add(key)
+        unique_attempts.append(a)
+
+    def _build_kwargs(flags: dict[str, Any]) -> dict[str, Any]:
+        kwargs: dict[str, Any] = {"keep_alive": keep_alive}
+        if pid:
+            kwargs["project_id"] = pid
+        if flags.get("proxies"):
+            kwargs["proxies"] = True
+        browser_settings: dict[str, Any] = {}
+        if flags.get("solve_captchas"):
+            browser_settings["solveCaptchas"] = True
+        if flags.get("advanced_stealth"):
+            browser_settings["advancedStealth"] = True
+        if browser_settings:
+            kwargs["browser_settings"] = browser_settings
+        return kwargs
+
+    def _create_once(kwargs: dict[str, Any]) -> Any:
+        try:
+            return client.sessions.create(**kwargs)
+        except TypeError:
+            flat = {k: v for k, v in kwargs.items() if k != "browser_settings"}
+            bs = kwargs.get("browser_settings") or {}
+            if bs.get("solveCaptchas"):
+                flat["solve_captchas"] = True
+            if bs.get("advancedStealth"):
+                flat["advanced_stealth"] = True
             try:
-                global _LAST_CREATE_MONO
-                with _CREATE_LOCK:
-                    wait = _MIN_CREATE_INTERVAL_S - (time.monotonic() - _LAST_CREATE_MONO)
-                    if wait > 0:
-                        time.sleep(wait)
-                    try:
-                        session = client.sessions.create(**kwargs)
-                    except TypeError:
-                        # Older SDK: strip unknown nested settings and retry flat.
-                        flat = {
-                            k: v
-                            for k, v in kwargs.items()
-                            if k != "browser_settings"
-                        }
-                        if browser_settings.get("solveCaptchas"):
-                            flat["solve_captchas"] = True
-                        if browser_settings.get("advancedStealth"):
-                            flat["advanced_stealth"] = True
-                        try:
-                            session = client.sessions.create(**flat)
-                        except TypeError:
-                            # Last resort: create without captcha flags.
-                            basic = {
-                                k: v
-                                for k, v in flat.items()
-                                if k
-                                in {"keep_alive", "project_id", "proxies"}
-                            }
-                            session = client.sessions.create(**basic)
-                    _LAST_CREATE_MONO = time.monotonic()
-                sid = session.id
-                return BrowserbaseSession(
-                    id=sid,
-                    connect_url=session.connect_url,
-                    session_url=f"https://www.browserbase.com/sessions/{sid}",
-                )
-            except Exception as exc:  # noqa: BLE001
-                if _is_rate_limit(exc) and attempt < 7:
-                    time.sleep(min(65, 8 * (attempt + 1)))
-                    continue
-                raise BrowserbaseRateLimitError(str(exc)[:400]) from exc
+                return client.sessions.create(**flat)
+            except TypeError:
+                basic = {
+                    k: v
+                    for k, v in flat.items()
+                    if k in {"keep_alive", "project_id", "proxies"}
+                }
+                return client.sessions.create(**basic)
+
+    last_exc: BaseException | None = None
+    try:
+        for flags in unique_attempts:
+            kwargs = _build_kwargs(flags)
+            for attempt in range(8):
+                try:
+                    global _LAST_CREATE_MONO
+                    with _CREATE_LOCK:
+                        wait = _MIN_CREATE_INTERVAL_S - (time.monotonic() - _LAST_CREATE_MONO)
+                        if wait > 0:
+                            time.sleep(wait)
+                        session = _create_once(kwargs)
+                        _LAST_CREATE_MONO = time.monotonic()
+                    sid = session.id
+                    return BrowserbaseSession(
+                        id=sid,
+                        connect_url=session.connect_url,
+                        session_url=f"https://www.browserbase.com/sessions/{sid}",
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    last_exc = exc
+                    msg = str(exc).lower()
+                    # Plan / feature refusal → try next (weaker) flag set.
+                    if any(
+                        s in msg
+                        for s in (
+                            "403",
+                            "402",
+                            "forbidden",
+                            "payment required",
+                            "verified mode",
+                            "enterprise",
+                            "not available",
+                            "upgrade",
+                        )
+                    ):
+                        break
+                    if _is_rate_limit(exc) and attempt < 7:
+                        time.sleep(min(65, 8 * (attempt + 1)))
+                        continue
+                    raise BrowserbaseRateLimitError(str(exc)[:400]) from exc
+        raise BrowserbaseRateLimitError(str(last_exc)[:400] if last_exc else "session create failed")
     except Exception:
         _SLOT.release()
         raise

@@ -54,13 +54,16 @@ def _api_key() -> str:
 
 
 def browserbase_captcha_kwargs() -> dict[str, Any]:
-    """Extra kwargs for Browserbase session create when captcha solving is on."""
+    """Extra kwargs for Browserbase session create when captcha solving is on.
+
+    Do NOT enable ``advanced_stealth`` by default — Browserbase returns 403
+    ("Verified mode is only available on the Enterprise plan") on Hobby/Startup.
+    """
     if not captcha_solver_enabled():
         return {}
-    # Browserbase API field names have evolved; pass both common shapes.
     return {
         "solve_captchas": True,
-        "advanced_stealth": True,
+        "advanced_stealth": False,
     }
 
 
