@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "description": "Fixed 20-product signup benchmark. Score = cookie-verified sessions on the seed. Skip hosts already servable; do not re-run wins.",
+  "skip_hosts": [
+    "calendly.com",
+    "todoist.com",
+    "buffer.com",
+    "login.buffer.com"
+  ],
+  "products": [
+    {"host": "clickup.com", "priority": 1, "note": "Mac signed_up; good BB candidate"},
+    {"host": "linear.app", "priority": 2, "note": "Mac signed_up"},
+    {"host": "notion.so", "priority": 3, "note": "Mac signed_up"},
+    {"host": "dropbox.com", "priority": 4, "note": "Mac signed_up"},
+    {"host": "zoom.us", "priority": 5, "note": "Mac signed_up; may prompt SMS"},
+    {"host": "canva.com", "priority": 6, "note": "Mac signed_up"},
+    {"host": "reddit.com", "priority": 7, "note": "Mac signed_up"},
+    {"host": "bitwarden.com", "priority": 8, "note": "Email-link hang; non-captcha"},
+    {"host": "coda.io", "priority": 9, "note": "Prior unknown block"},
+    {"host": "medium.com", "priority": 10, "note": "Auth UX quirky"},
+    {"host": "airtable.com", "priority": 11, "note": "Prior captcha_unsolved"},
+    {"host": "figma.com", "priority": 12, "note": "Prior captcha_unsolved"},
+    {"host": "miro.com", "priority": 13, "note": "Prior captcha_unsolved"},
+    {"host": "loom.com", "priority": 14, "note": "Prior captcha_unsolved"},
+    {"host": "webflow.com", "priority": 15, "note": "Prior captcha_unsolved"},
+    {"host": "github.com", "priority": 16, "note": "Prior captcha_unsolved"},
+    {"host": "gitlab.com", "priority": 17, "note": "Prior captcha_unsolved"},
+    {"host": "todoist.com", "priority": 90, "note": "DONE on seed — skip"},
+    {"host": "calendly.com", "priority": 91, "note": "DONE on seed — skip"},
+    {"host": "buffer.com", "priority": 92, "note": "DONE on seed as login.buffer.com — skip"}
+  ]
+}

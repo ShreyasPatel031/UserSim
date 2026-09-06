@@ -26,9 +26,23 @@ sys.path.insert(0, str(ROOT / "src"))
 from mvp.auto_signup import signup_start_url as _url  # noqa: E402
 
 
+def _free_port(preferred: int) -> int:
+    """Bind-check so parallel/zombie Chrome does not collide on 9500."""
+    import socket
+
+    for port in range(preferred, preferred + 80):
+        with socket.socket() as sock:
+            try:
+                sock.bind(("127.0.0.1", port))
+                return port
+            except OSError:
+                continue
+    return preferred
+
+
 def _run_one(host: str, idx: int, timeout_s: int, max_steps: int, headed: bool) -> dict:
     url = _url(host)
-    port = 9500 + idx
+    port = _free_port(9500 + idx * 10)
     log = OUT_DIR / f"targets_{host}.log"
     cmd = [
         str(ROOT / ".venv" / "bin" / "python"),

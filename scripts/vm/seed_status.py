@@ -38,6 +38,11 @@ NOISE = (
     "anti_forgery",
     "csrf",
     "xsrf",
+    "logged-out",
+    "logged_out",
+    "logout",
+    "anonymous",
+    "guest",
 )
 
 

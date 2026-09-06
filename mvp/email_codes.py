@@ -84,11 +84,16 @@ def _body_text(msg: email.message.Message) -> str:
 _CODE_REJECT = re.compile(r"^(\d)\1+$|^(?:012345|123456|654321|999999|000000)\d*$")
 _CODE_NEAR = re.compile(
     r"(?is)(?:"
-    r"(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in)\s+code[^0-9]{0,40}(\d{4,8})"
-    r"|code\s*(?:is|:)\s*(\d{4,8})"
-    r"|(\d{4,8})\s*(?:is\s+your|is\s+the)\b"
-    r"|enter\s+(?:this\s+)?(?:code\s*)?[^0-9]{0,20}(\d{4,8})"
+    r"(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in|temporary)\s+code[^0-9A-Za-z]{0,40}([0-9A-Za-z]{4,8})"
+    r"|code\s*(?:is|:)\s*([0-9A-Za-z]{4,8})"
+    r"|([0-9A-Za-z]{4,8})\s*(?:is\s+your|is\s+the)\b"
+    r"|enter\s+(?:this\s+)?(?:code\s*)?[^0-9A-Za-z]{0,20}([0-9A-Za-z]{4,8})"
     r")"
+)
+# Notion (and some others) now send alphanumeric OTPs on their own line, e.g. "ND4wwu".
+_ALNUM_LINE = re.compile(r"(?m)^[ \t]*([A-Za-z0-9]{6,8})[ \t]*$")
+_ALNUM_REJECT = re.compile(
+    r"(?i)^(password|username|notion|welcome|verify|confirm|account|message)$"
 )
 
 
@@ -96,7 +101,9 @@ def _find_code(subject: str, body: str) -> str | None:
     """Best-effort verification code from one message.
 
     A bare "first 6-8 digits" scan picks up tracking ids and CSS values; loom
-    signup failed on a code of "999999" lifted out of the HTML part.
+    signup failed on a code of "999999" lifted out of the HTML part. Notion
+    also ships alphanumeric login codes (``ND4wwu``) — accept those when they
+    sit alone on a line or next to code-ish wording.
     """
     subject = subject or ""
     body = body or ""
@@ -110,16 +117,38 @@ def _find_code(subject: str, body: str) -> str | None:
             return value
         return None
 
+    def _ok_alnum(value: str | None) -> str | None:
+        if not value:
+            return None
+        if _ALNUM_REJECT.match(value):
+            return None
+        # Prefer mixed / non-trivial tokens; pure words rejected above.
+        if value.isalpha() and value.lower() == value and len(value) >= 6:
+            # all-lowercase alpha often a normal word; require a digit OR uppercase
+            return None
+        return value
+
+    # 0) Lone alphanumeric OTP line (Notion temporary login codes).
+    for match in _ALNUM_LINE.finditer(body.replace("\r\n", "\n")):
+        cand = _ok_alnum(match.group(1))
+        if cand:
+            return cand
+
     # 1) Subject lines usually read "123456 is your code".
     for cand in re.findall(r"\b(\d{4,8})\b", subject):
         if _ok(cand):
             return cand
 
-    # 2) Digits sitting next to code-ish wording.
+    # 2) Digits / alnum sitting next to code-ish wording.
     for match in _CODE_NEAR.finditer(f"{subject}\n{body}"):
         for group in match.groups():
-            if _ok(group):
-                return group
+            if group and group.isdigit():
+                if _ok(group):
+                    return group
+            else:
+                cand = _ok_alnum(group)
+                if cand:
+                    return cand
 
     # 3) A line that is nothing but the code.
     for line in body.splitlines():
@@ -234,6 +263,11 @@ _SIGNUP_HINTS = (
     "signup",
     "welcome",
     "magic link",
+    "login code",
+    "temporary",
+    "your code",
+    "bitwarden",
+    "master password",
 )
 _URL_RE = re.compile(r"https?://[^\s<>\"']+", re.IGNORECASE)
 _SKIP_LINK_HINTS = (
@@ -363,7 +397,7 @@ def latest_signup_code(
     alias: str,
     *,
     newer_than: float | None = None,
-    lookback: int = 40,
+    lookback: int = 80,
 ) -> str | None:
     """Newest verification code emailed to ``alias`` (any sender)."""
     creds = _imap_creds()
@@ -380,7 +414,7 @@ def latest_signup_code(
         subject = _decode(msg.get("Subject"))
         body = _body_text(msg)
         low = f"{subject}\n{body}".lower()
-        if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_RE.search(low):
+        if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_RE.search(low) and not _ALNUM_LINE.search(body):
             continue
         code = _find_code(subject, body)
         if code:
@@ -393,7 +427,7 @@ def latest_signup_link(
     *,
     host: str | None = None,
     newer_than: float | None = None,
-    lookback: int = 40,
+    lookback: int = 80,
 ) -> str | None:
     """Newest confirmation / magic link emailed to ``alias``.
 
@@ -406,6 +440,12 @@ def latest_signup_link(
     host_l = (host or "").lower().lstrip(".")
     if host_l.startswith("www."):
         host_l = host_l[4:]
+    # Product marketing host vs app/vault host (Bitwarden, etc.).
+    host_needles = {host_l} if host_l else set()
+    if host_l == "bitwarden.com":
+        host_needles.update({"bitwarden.com", "vault.bitwarden.com"})
+    if host_l.endswith(".bitwarden.com"):
+        host_needles.add("bitwarden.com")
 
     for msg in _iter_recent_messages(username, app_password, lookback=lookback):
         if not _alias_match(_recipients(msg), alias):
@@ -427,7 +467,7 @@ def latest_signup_link(
             if any(skip in low_u for skip in _SKIP_LINK_HINTS):
                 continue
             candidates.append(clean)
-            if host_l and host_l in low_u:
+            if host_needles and any(h in low_u for h in host_needles):
                 preferred.append(clean)
         if preferred:
             return preferred[0]

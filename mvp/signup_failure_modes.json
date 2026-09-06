@@ -141,6 +141,84 @@
       ],
       "tip": "Check terms checkbox and required fields. If Sign Up stays inert after a fix attempt, inspect validation text once \u2014 do not spam evaluate() clicks.",
       "status": "active"
+    },
+    {
+      "id": "email_code_slow_kills_session",
+      "category": "verification",
+      "hosts": [
+        "notion.so",
+        "bitwarden.com",
+        "vault.bitwarden.com"
+      ],
+      "symptoms": [
+        "get_email_code timeout",
+        "get_email_link timeout",
+        "browser has been closed after email wait",
+        "verification code not arriving"
+      ],
+      "tip": "Call mark_email_requested() right after Continue/Send. Then call get_email_code or get_email_link ONCE. If it times out: Resend once, mark_email_requested again, one more get_email_*. Never stack three long waits.",
+      "status": "active"
+    },
+    {
+      "id": "reddit_ip_rate_limit",
+      "category": "blocked",
+      "hosts": [
+        "reddit.com"
+      ],
+      "symptoms": [
+        "whoa there, pardner",
+        "too many requests come from your IP",
+        "blocked from signing up"
+      ],
+      "tip": "If Reddit shows an IP rate-limit / 'too many requests' page, call report_blocked(unknown) with detail reddit_ip_rate_limit. Do not solve_captcha-loop.",
+      "status": "active"
+    },
+    {
+      "id": "loom_webflow_captcha_hard",
+      "category": "captcha",
+      "hosts": [
+        "loom.com",
+        "webflow.com"
+      ],
+      "symptoms": [
+        "Continue disabled due to captcha",
+        "bot confirmation page",
+        "solve_captcha failed twice"
+      ],
+      "tip": "Call solve_captcha() at most twice. After each solve, wait ~3s and check if Continue enables. If still blocked, report_blocked(captcha_unsolved).",
+      "status": "active"
+    },
+    {
+      "id": "sso_plus_alias_trap",
+      "category": "identity",
+      "hosts": [
+        "notion.so",
+        "notion.com"
+      ],
+      "symptoms": [
+        "Please try again later",
+        "clicked Google SSO",
+        "creating a Google account",
+        "Microsoft signup",
+        "Couldn't find your Google Account"
+      ],
+      "tip": "Never use Google/Microsoft/Apple SSO with a plus-alias identity. Stay on email Continue. On 'Please try again later', wait ~5s, retry email once, then report_blocked(rate_limited).",
+      "status": "active"
+    },
+    {
+      "id": "bitwarden_verify_is_link",
+      "category": "verification",
+      "hosts": [
+        "bitwarden.com",
+        "vault.bitwarden.com"
+      ],
+      "symptoms": [
+        "get_email_code on Bitwarden",
+        "no verification code",
+        "check your email after register"
+      ],
+      "tip": "Bitwarden sends a VERIFY LINK, not a numeric code. After register: mark_email_requested(), get_email_link() once, go_to_url the link. Do not call get_email_code.",
+      "status": "active"
     }
   ],
   "observations": [
@@ -151,6 +229,54 @@
       "detail": "BB developer proxies+captcha; filled form; 10 steps; never called get_signup_tips; not_signed_in",
       "mode_id": "buffer_signup_click_loop",
       "source": "run_20260906_bb_dev"
+    },
+    {
+      "ts": "2026-09-06T01:04:33Z",
+      "host": "notion.so",
+      "symptom": "email code timeout then CDP closed",
+      "detail": "get_email_code failed twice after resend; storage_state closed; not_signed_in",
+      "mode_id": "email_code_slow_kills_session",
+      "source": "benchmark_run"
+    },
+    {
+      "ts": "2026-09-06T02:18:00Z",
+      "host": "reddit.com",
+      "symptom": "IP rate limit",
+      "detail": "too many requests",
+      "mode_id": "reddit_ip_rate_limit",
+      "source": "benchmark_parallel"
+    },
+    {
+      "ts": "2026-09-06T02:18:00Z",
+      "host": "loom.com",
+      "symptom": "captcha_unsolved",
+      "detail": "solve_captcha x2",
+      "mode_id": "loom_webflow_captcha_hard",
+      "source": "benchmark_parallel"
+    },
+    {
+      "ts": "2026-09-06T02:18:00Z",
+      "host": "webflow.com",
+      "symptom": "bot confirmation captcha",
+      "detail": "solve_captcha x2",
+      "mode_id": "loom_webflow_captcha_hard",
+      "source": "benchmark_parallel"
+    },
+    {
+      "ts": "2026-09-06T02:52:00Z",
+      "host": "notion.so",
+      "symptom": "Please try again later then SSO rabbit hole",
+      "detail": "email continue rate-limited; agent created Google/Microsoft accounts; burned 26 steps",
+      "mode_id": "sso_plus_alias_trap",
+      "source": "benchmark_notion_force"
+    },
+    {
+      "ts": "2026-09-06T02:37:00Z",
+      "host": "bitwarden.com",
+      "symptom": "get_email_link then get_email_code",
+      "detail": "link timeout; agent fell back to code; browser closed; empty jar",
+      "mode_id": "bitwarden_verify_is_link",
+      "source": "benchmark_parallel"
     }
   ]
 }

@@ -128,7 +128,9 @@ def _create_signup_browserbase_session():
     last_exc: BaseException | None = None
     for kwargs in attempts:
         try:
-            session = create_session(keep_alive=False, **kwargs)
+            # keep_alive so we can snapshot cookies after browser-use tears
+            # down its BrowserSession (otherwise Linear/etc. win then lose state).
+            session = create_session(keep_alive=True, **kwargs)
             print(
                 f"Browserbase create ok with {kwargs}",
                 flush=True,
@@ -286,6 +288,12 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
         "xsrf",
         "anti_forgery",
         "intercom",
+        "logged-out",
+        "logged_out",
+        "logout",
+        "anonymous",
+        "guest",
+        "marketing",
     )
     for cookie in state.get("cookies") or []:
         domain = str(cookie.get("domain") or "").lstrip(".").lower()
@@ -414,7 +422,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
         reason: str = Field(
             description=(
                 "One of: card_required, sso_only, invite_only, waitlist, "
-                "captcha_unsolved, unknown"
+                "captcha_unsolved, rate_limited, unknown"
             )
         )
         detail: str = Field(default="", description="Short human-readable explanation")
@@ -465,20 +473,28 @@ def _build_signup_tools(ctx: dict[str, Any]):
 
     @tools.registry.action(
         "Wait for a verification CODE emailed to the signup alias. "
-        "Call this after requesting email verification. Returns the code digits.",
+        "Call mark_email_requested() first, then this. Returns the code digits.",
         param_model=EmptyParams,
     )
     async def get_email_code(params: EmptyParams):
-        newer = ctx.get("email_requested_at") or time.time()
+        # If the agent forgot mark_email_requested, still search recent mail
+        # instead of anchoring at "now" (which misses the just-sent message).
+        if not ctx.get("email_requested_at"):
+            ctx["email_requested_at"] = time.time() - 90
+        newer = ctx["email_requested_at"]
         code = await asyncio.to_thread(
             wait_for_signup_code,
             identity.email,
-            timeout_s=float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240")),
+            # Serial runs can afford ~90s; keep under step_timeout (180).
+            timeout_s=float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "90")),
             newer_than=newer,
         )
         if not code:
             return ActionResult(
-                error="No verification code arrived in email within timeout",
+                error=(
+                    "No verification code arrived in email within timeout. "
+                    "Click Resend once, call mark_email_requested(), then get_email_code() again."
+                ),
                 include_in_memory=True,
             )
         # The literal code MUST be in long_term_memory. extracted_content is
@@ -492,21 +508,26 @@ def _build_signup_tools(ctx: dict[str, Any]):
 
     @tools.registry.action(
         "Wait for a confirmation / magic LINK emailed to the signup alias. "
-        "Returns the URL — navigate to it with go_to_url.",
+        "Call mark_email_requested() first. Returns the URL — open with go_to_url.",
         param_model=EmptyParams,
     )
     async def get_email_link(params: EmptyParams):
-        newer = ctx.get("email_requested_at") or time.time()
+        if not ctx.get("email_requested_at"):
+            ctx["email_requested_at"] = time.time() - 90
+        newer = ctx["email_requested_at"]
         link = await asyncio.to_thread(
             wait_for_signup_link,
             identity.email,
             host=host,
-            timeout_s=float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240")),
+            timeout_s=float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "90")),
             newer_than=newer,
         )
         if not link:
             return ActionResult(
-                error="No confirmation link arrived in email within timeout",
+                error=(
+                    "No confirmation link arrived in email within timeout. "
+                    "Click Resend once, call mark_email_requested(), then get_email_link() again."
+                ),
                 include_in_memory=True,
             )
         return ActionResult(
@@ -543,7 +564,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
             code = await asyncio.to_thread(
                 wait_for_sms,
                 number,
-                timeout_s=float(os.environ.get("MVP_SIGNUP_SMS_TIMEOUT_S", "180")),
+                timeout_s=float(os.environ.get("MVP_SIGNUP_SMS_TIMEOUT_S", "90")),
                 newer_than=ctx.get("sms_requested_at") or time.time(),
             )
         except Exception as exc:
@@ -883,7 +904,12 @@ async def sign_up(
                 f"8. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
                 f"If the product requires a credit card, SSO-only, invite-only access, "
                 f"or a waitlist, call report_blocked with the matching reason.\n"
-                f"Do NOT try to pay. Prefer email signup; use Google/GitHub SSO only if email signup is absent.\n"
+                f"Do NOT try to pay.\n"
+                f"EMAIL PATH ONLY: never click Google / Microsoft / Apple / GitHub / SSO. "
+                f"The IDENTITY email is a plus-alias — SSO will fail and burning steps creating "
+                f"IdP accounts is forbidden. If Continue shows 'try again later' / rate limit: "
+                f"wait ~5s, retry the email path once, then report_blocked(rate_limited). "
+                f"Do not pivot to SSO.\n"
                 f"If the same action fails twice with no progress, call "
                 f"get_signup_tips(symptom=...) once, apply a matching tip, then continue. "
                 f"For a novel blocker, call note_signup_failure before report_blocked."
@@ -918,11 +944,13 @@ async def sign_up(
                 save_conversation_path=str(step_dir / "conversation"),
                 extend_system_message=(
                     "You are signing up for a product so usability agents can study the "
-                    "authenticated experience. Prefer the email/password path. Be decisive; "
-                    "do not loop on the same form. If an AUTO TIP follow-up appears, apply it "
-                    "immediately. Otherwise on repeated failure call get_signup_tips once. "
-                    "Call report_blocked when stuck on a hard gate (card, SSO-only, invite, "
-                    "waitlist)."
+                    "authenticated experience. Use email/password only — never Google, "
+                    "Microsoft, Apple, or GitHub SSO (the identity is a plus-alias). "
+                    "Be decisive; do not loop on the same form. On 'try again later', retry "
+                    "email once then report_blocked(rate_limited). If an AUTO TIP follow-up "
+                    "appears, apply it immediately. Otherwise on repeated failure call "
+                    "get_signup_tips once. Call report_blocked when stuck on a hard gate "
+                    "(card, SSO-only, invite, waitlist, captcha, rate limit)."
                 ),
             )
 
@@ -930,8 +958,27 @@ async def sign_up(
             # reports loop/stagnation, inject host-matched tips as a follow-up
             # task (still from the JSON catalog — not baked into the main prompt).
             tip_injects = {"count": 0}
+            # Mid-run cookie snapshots: browser-use closes its CDP view on done(),
+            # so a post-run storage_state() often fails with "browser has been closed".
+            live_state: dict[str, Any] = {"state": None}
 
-            async def _inject_tips_on_loop(ag) -> None:  # noqa: ANN001
+            async def _snapshot_cookies(label: str) -> None:
+                try:
+                    snap = await pw_ctx.storage_state()
+                except Exception as exc:  # noqa: BLE001
+                    print(f"==> cookie snapshot ({label}) missed: {exc}"[:200], flush=True)
+                    return
+                live_state["state"] = snap
+                try:
+                    SITE_STATES.mkdir(parents=True, exist_ok=True)
+                    site_state_path(host).write_text(json.dumps(snap, indent=2))
+                except Exception:
+                    pass
+
+            async def _on_step_end(ag) -> None:  # noqa: ANN001
+                # Always try to persist cookies while the Browserbase session lives.
+                await _snapshot_cookies("step")
+
                 detector = getattr(getattr(ag, "state", None), "loop_detector", None)
                 if detector is None:
                     return
@@ -978,7 +1025,7 @@ async def sign_up(
             history = None
             try:
                 history = await asyncio.wait_for(
-                    agent.run(max_steps=max_steps, on_step_end=_inject_tips_on_loop),
+                    agent.run(max_steps=max_steps, on_step_end=_on_step_end),
                     timeout=timeout_s,
                 )
             except asyncio.TimeoutError:
@@ -998,16 +1045,23 @@ async def sign_up(
             except Exception:
                 pass
 
-            # Always snapshot cookies before judging — Browserbase sessions die in
-            # ``finally``, so a false-negative signed-in heuristic used to throw away
-            # a real account (Todoist completed signup then reported not_signed_in).
-            state: dict[str, Any] | None = None
+            # Prefer a final snapshot; fall back to the last mid-run snapshot when
+            # browser-use already closed the page (common with Browserbase).
+            state: dict[str, Any] | None = live_state.get("state")
             try:
                 state = await pw_ctx.storage_state()
+                live_state["state"] = state
                 SITE_STATES.mkdir(parents=True, exist_ok=True)
                 site_state_path(host).write_text(json.dumps(state, indent=2))
             except Exception as exc:
                 result["state_error"] = str(exc)[:200]
+                if state is not None:
+                    result["state_fallback"] = "mid_run_snapshot"
+                    try:
+                        SITE_STATES.mkdir(parents=True, exist_ok=True)
+                        site_state_path(host).write_text(json.dumps(state, indent=2))
+                    except Exception:
+                        pass
 
             # Onboarding often ends on a "Getting ready…" splash that redirects a
             # few seconds later, so a single probe reports a fresh account as
@@ -1030,6 +1084,21 @@ async def sign_up(
                 signed = _storage_state_looks_authed(state, host)
                 if signed:
                     result["signed_via"] = "storage_state"
+
+            # Agent claimed success and we held host cookies from mid-run.
+            if (
+                not signed
+                and state is not None
+                and history is not None
+                and getattr(history, "is_successful", None)
+            ):
+                try:
+                    claimed = bool(history.is_successful())
+                except Exception:
+                    claimed = False
+                if claimed and (state.get("cookies") or []):
+                    signed = True
+                    result["signed_via"] = "agent_success_plus_cookies"
 
             if ctx.get("blocker"):
                 update_identity(
