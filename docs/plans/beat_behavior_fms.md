@@ -2,6 +2,8 @@
 
 Status: draft v1, 2026-09-04. Single goal, nothing else on the roadmap until this ships.
 
+Superseded for strategy by `behavior_fm_end_to_end.md` (v2, 2026-09-06). §8 below remains the Phase 0 operational reference.
+
 ## 0. The goal, stated so it can fail
 
 One set of weights (one base + one adapter, no per-benchmark fine-tune) that, on each target's own benchmark, own split and own metric, scores better than the published number:
