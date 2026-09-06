@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_playback_dailymotion",
+  "eval_index": 20453,
+  "website": "dailymotion",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "playback",
+  "goal_title": "Evaluate consumption UX",
+  "comparative_group": "p4_marketer_playback",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:04.957308+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 333.454,
+  "final_result": "The agent was terminated due to repeated failures in finding the search bar on Dailymotion.com. As a result, the task of finding an educational video, inspecting its viewing page, and reporting findings could not be completed. No progress was made.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:06:44.932719+00:00"
+}

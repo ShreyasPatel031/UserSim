@@ -1,0 +1,9 @@
+# GPU inference / Ministral CUA eval (install after requirements.txt)
+torch>=2.5.0
+torchvision
+transformers>=4.49.0
+accelerate>=1.2.0
+peft>=0.14.0
+safetensors
+sentencepiece
+protobuf

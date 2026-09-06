@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p3_creator_filters_vimeo",
+  "eval_index": 20322,
+  "website": "vimeo",
+  "persona_id": "p3_creator",
+  "persona_name": "Maya Patel",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p3_creator_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:35.621217+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 236.13,
+  "final_result": "I was unable to complete the task because I encountered a persistent CAPTCHA challenge on Vimeo after searching for 'home workout videos'. I attempted to resolve the CAPTCHA by clicking the 'Verify you are human' checkbox and waiting for automatic resolution, but it did not resolve. As a result, I could not access the search results page, apply filters, identify a matching video, or provide any UX feedback. The task could not be completed due to this blocking issue.",
+  "final_url": "https://vimeo.com/search?q=home%20workout%20videos",
+  "ok": true,
+  "finished_at": "2026-08-29T23:40:42.204669+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/bakeoff-traces/(.*)", "destination": "/bakeoff-traces/$1" },
+    { "source": "/(.*)", "destination": "/api/index" }
+  ],
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 300,
+      "excludeFiles": "public/**"
+    }
+  },
+  "env": {
+    "VERCEL": "1",
+    "MVP_MAX_STEPS": "8",
+    "MVP_BROWSER_CONCURRENCY": "8",
+    "MVP_AGENT_COUNT": "6",
+    "MVP_PERSONA_COUNT": "5",
+    "MVP_TASK_COUNT": "6",
+    "MVP_STUDY_TIMEOUT_S": "240",
+    "MVP_AGENT_CONCURRENCY": "24",
+    "BROWSERBASE_CREATE_INTERVAL_S": "8",
+    "GOOGLE_CLOUD_PROJECT": "project-amer-scs-sandbox",
+    "GCP_PROJECT": "project-amer-scs-sandbox",
+    "VERTEX_LOCATION": "us-central1"
+  }
+}

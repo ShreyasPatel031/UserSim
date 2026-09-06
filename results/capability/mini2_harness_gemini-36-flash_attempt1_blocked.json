@@ -1,0 +1,317 @@
+{
+  "stage": "mini2_harness",
+  "model": "gemini-3.6-flash",
+  "location": "global",
+  "max_actions_budget": 33,
+  "selection": "HAL-validated Online-Mind2Web (see mini2_tasks.py)",
+  "n": 4,
+  "successes": 0,
+  "by_harness": {
+    "browser_use_oss": {
+      "n": 2,
+      "success": 0,
+      "by_status": {
+        "BLOCKED": 2
+      },
+      "avg_actions": 9.0,
+      "cost_usd": 0.5357,
+      "failures": {
+        "BLOCKED": 2
+      }
+    },
+    "seeact_lite": {
+      "n": 2,
+      "success": 0,
+      "by_status": {
+        "BLOCKED": 2
+      },
+      "avg_actions": 1.0,
+      "cost_usd": 0.0098,
+      "failures": {
+        "BLOCKED": 2
+      }
+    }
+  },
+  "total_cost_usd": 0.5456,
+  "runs": [
+    {
+      "run_id": "bu_mini2_0_949d234f",
+      "task_id": "c0fa2c0e622971955cabf5bcf7b777e8",
+      "eval_index": "mini2_0",
+      "task": "Search for rentals in Corning, CA with a maximum price of $1500.",
+      "website": "apartments",
+      "model": "gemini-3.6-flash",
+      "harness": "browser_use_oss",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://www.apartments.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.apartments.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.apartments.com/', extracted_content='\ud83d\udd17 Navigated to https://www.apartments.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.apartments.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=SearchActionModel(search=SearchAction(query='apartments.com corning ca under 1500', engine='duckduckgo'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Searched Duckduckgo for 'apartments.com corning ca under 1500'\", extracted_content=\"Searched Duckduckgo for 'apartments.com corning ca under 1500'\", include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.apartments.com/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=1022))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Houses for Rent under $1,500 i...\"', include_extracted_content_only_once=False, metadata={'click_x': 424.0, 'click_y': 397.3828125}, include_in_memory=False)]",
+          "url": "https://duckduckgo.com/?q=apartments.com+corning+ca+under+1500&ia=web"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=GoBackActionModel(go_back=NoParamsAction(description='Return to DuckDuckGo search results page'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Navigated back', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.apartments.com/houses/corning-ca/under-1500/"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=SearchActionModel(search=SearchAction(query='apartments.com corning ca under 1500', engine='google'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Searched Google for 'apartments.com corning ca under 1500'\", extracted_content=\"Searched Google for 'apartments.com corning ca under 1500'\", include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://duckduckgo.com/?q=apartments.com+corning+ca+under+1500&ia=web"
+        },
+        {
+          "i": 6,
+          "action": [
+            "root=SearchActionModel(search=SearchAction(query='site:apartments.com Corning CA under 1500', engine='duckduckgo'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Searched Duckduckgo for 'site:apartments.com Corning CA under 1500'\", extracted_content=\"Searched Duckduckgo for 'site:apartments.com Corning CA under 1500'\", include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Dapartments.com%2Bcorning%2Bca%2Bunder%2B1500%26udm%3D14%26sei%3DrgWIauHlGpjkiLMP6YDy-Qk&q=EgQN3kiOGK6LoNQGIjA7n7SUGDUsEziPpFkeWwM1TuG6sqWmMVx3LUg5GtghIjh-tusPONJ-rl68fkoCVvEyAVJaAUM"
+        },
+        {
+          "i": 7,
+          "action": [
+            "root=InputActionModel(input=InputTextAction(index=4155, text='site:apartments.com \"Corning, CA\" \"$\"', clear=True))",
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=4172))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Typed \\'site:apartments.com \"Corning, CA\" \"$\"\\'\\n\ud83d\udca1 This is an autocomplete field. Wait for suggestions to appear, then click the correct suggestion instead of pressing Enter.', extracted_content='Typed \\'site:apartments.com \"Corning, CA\" \"$\"\\'\\n\ud83d\udca1 This is an autocomplete field. Wait for suggestions to appear, then click the correct suggestion instead of pressing Enter.', include",
+          "url": "https://duckduckgo.com/?q=site%3Aapartments.com+Corning+CA+under+1500"
+        },
+        {
+          "i": 8,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=5769))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button \"More results\" id=more-results', include_extracted_content_only_once=False, metadata={'click_x': 436.0, 'click_y': 521.109375}, include_in_memory=False)]",
+          "url": "https://duckduckgo.com/?q=site%3Aapartments.com+%22Corning%2C+CA%22+%22%24%22"
+        },
+        {
+          "i": 9,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=6833))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button \"More results\" id=more-results', include_extracted_content_only_once=False, metadata={'click_x': 436.0, 'click_y': 520.9375}, include_in_memory=False)]",
+          "url": "https://duckduckgo.com/?q=site%3Aapartments.com+%22Corning%2C+CA%22+%22%24%22&ia=web"
+        },
+        {
+          "i": 10,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text='Direct browser navigation to Apartments.com (https://www.apartments.com/) is blocked by Akamai WAF bot protection (403 Access Denied). However, using search engine indexing, the following verified rental listings from Apartments.com for Corning, CA under $1,500 were retrieved:\\n\\n1. **1515 Highway 99 W**\\n   - Address: 1515 Highway 99 W, Corning, CA 96021\\n   - Price: Starting at $900/month\\n   - Size: 500 - 800 sq ft\\n\\n2. **Spring Mountain**\\n   - Address: 240 Edith Ave, Corning, CA 96021\\n   - Price: Starting at $1,350/month\\n   - Size: 930 - 960 sq ft\\n\\n3. **Corning West Apartments**\\n   - Address: 1960 Butte St, Corning, CA 96021\\n   - Price: Starting at $550/month\\n\\n4. **Salado Orchards Apartments**\\n   - Address: 250 N Toomes Ave, Corning, CA 96021\\n   - Price: Starting at $581/month\\n   - Size: 964 - 1,200 sq ft\\n\\n5. **Fairview Terrace**\\n   - Address: 650 Fairview Ave, Corning, CA 96021\\n   - Price: Starting at $800/month', success=True, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=True, judgement=JudgementResult(reasoning=\"The user requested to navigate to Apartments.com and search for rentals in Corning, CA with a max price of $1500. Upon navigating to Apartments.com, the browser was immediately blocked by Akamai WAF with a '403 Access Denied' error. The agent then tried using search engines to bypass the block, but encountered a reCAPTCHA challenge on Google and could only read cached snippets on DuckDuckGo. Because the target website",
+          "url": "https://duckduckgo.com/?q=site%3Aapartments.com+%22Corning%2C+CA%22+%22%24%22&ia=web"
+        }
+      ],
+      "num_actions": 10,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent was blocked by Akamai WAF bot protection when trying to access Apartments.com directly. Subsequent attempts to use search engines were also unsuccessful due to CAPTCHA challenges or an 'Unexpected error' on DuckDuckGo.",
+      "judge_evidence": "The final screenshot shows an 'Unexpected error' page on DuckDuckGo, indicating the search could not be completed. The action summary also mentions being blocked by Akamai WAF and encountering a reCAPTCHA on Google.",
+      "failure_category": "BLOCKED",
+      "final_url": "https://duckduckgo.com/?q=site%3Aapartments.com+%22Corning%2C+CA%22+%22%24%22&ia=web",
+      "final_title": "DuckDuckGo - Protection. Privacy. Peace of mind.",
+      "input_tokens": 151848,
+      "output_tokens": 10807,
+      "estimated_cost_usd": 0.31038430000000006,
+      "trace_dir": "/workspace/results/capability/traces/bu_mini2_0_949d234f",
+      "created_at": "2026-08-21T08:01:49.105260+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "bu_mini2_1_e380b557",
+      "task_id": "b7a9a6b5d451164c09bbd27b670bc2ae",
+      "eval_index": "mini2_1",
+      "task": "Show me the list of Men's Blazers, Black, Size M on Uniqlo.",
+      "website": "uniqlo",
+      "model": "gemini-3.6-flash",
+      "harness": "browser_use_oss",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://www.uniqlo.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.uniqlo.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://www.uniqlo.com/', extracted_content='\ud83d\udd17 Navigated to https://www.uniqlo.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.uniqlo.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=SearchActionModel(search=SearchAction(query='uniqlo us men blazers', engine='duckduckgo'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Searched Duckduckgo for 'uniqlo us men blazers'\", extracted_content=\"Searched Duckduckgo for 'uniqlo us men blazers'\", include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.uniqlo.com/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=172))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Men\\'s Blazers - UNIQLO US\"', include_extracted_content_only_once=False, metadata={'click_x': 424.0, 'click_y': 216.5546875}, include_in_memory=False)]",
+          "url": "https://duckduckgo.com/?q=uniqlo+us+men+blazers&ia=web"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=SearchActionModel(search=SearchAction(query='uniqlo us men blazers black size m', engine='google'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Searched Google for 'uniqlo us men blazers black size m'\", extracted_content=\"Searched Google for 'uniqlo us men blazers black size m'\", include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.uniqlo.com/us/en/men/outerwear-and-blazers/blazers"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=SearchActionModel(search=SearchAction(query='uniqlo men blazers black size m', engine='duckduckgo'))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=\"Searched Duckduckgo for 'uniqlo men blazers black size m'\", extracted_content=\"Searched Duckduckgo for 'uniqlo men blazers black size m'\", include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Duniqlo%2Bus%2Bmen%2Bblazers%2Bblack%2Bsize%2Bm%26udm%3D14%26sei%3DpAWIaumKGPrU5NoP-szQ0Qw&q=EgQS1gSQGKSLoNQGIjDI0Q4rsv1awqB7uiFN4o2U5VE8MlT1ttMmHLFA5-9fFG17QuIKiva_WwsRmSXBvscyAVJaAUM"
+        },
+        {
+          "i": 6,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=2344))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Shopping\"', include_extracted_content_only_once=False, metadata={'click_x': 251.8828125, 'click_y': 87.265625}, include_in_memory=False)]",
+          "url": "https://duckduckgo.com/?q=uniqlo+men+blazers+black+size+m&ia=web"
+        },
+        {
+          "i": 7,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://www.uniqlo.com/us/en/men/outerwear', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://www.uniqlo.com/us/en/men/outerwear', extracted_content='\ud83d\udd17 Navigated to https://www.uniqlo.com/us/en/men/outerwear', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://duckduckgo.com/?q=uniqlo+men+blazers+black+size+m&ia=shopping&iax=shopping"
+        },
+        {
+          "i": 8,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"Unable to display Men's Blazers, Black, Size M on Uniqlo because www.uniqlo.com is protected by Akamai EdgeSuite bot detection, which consistently returns an 'Access Denied' error for all automated browser interactions (direct URLs, search referral links, and subpath navigations).\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The agent attempted to access www.uniqlo.com directly and via search engine links, but the target website consistently blocked access with an Akamai EdgeSuite 'Access Denied' error due to bot protection. Additionally, the agent encountered a reCAPTCHA challenge on Google during its search attempts. Because the website was completely inaccessible to the automated browser, the task could not be completed.\", verdict=Fal",
+          "url": "https://www.uniqlo.com/us/en/men/outerwear"
+        }
+      ],
+      "num_actions": 8,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent was blocked by the website (Akamai EdgeSuite bot detection) and could not access the content. The final page shows 'Access Denied'.",
+      "judge_evidence": "The final URL is https://www.uniqlo.com/us/en/men/outerwear and the page title is 'Access Denied'. The screenshot clearly shows 'Access Denied' and a message indicating lack of permission to access the URL.",
+      "failure_category": "BLOCKED",
+      "final_url": "https://www.uniqlo.com/us/en/men/outerwear",
+      "final_title": "Access Denied",
+      "input_tokens": 109302,
+      "output_tokens": 8014,
+      "estimated_cost_usd": 0.22536099999999998,
+      "trace_dir": "/workspace/results/capability/traces/bu_mini2_1_e380b557",
+      "created_at": "2026-08-21T08:01:27.012889+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "sa_mini2_0_9bc43c44",
+      "task_id": "c0fa2c0e622971955cabf5bcf7b777e8",
+      "eval_index": "mini2_0",
+      "task": "Search for rentals in Corning, CA with a maximum price of $1500.",
+      "website": "apartments",
+      "model": "gemini-3.6-flash",
+      "harness": "seeact_lite",
+      "observation_mode": "seeact_lite_axtree",
+      "start_url": "https://www.apartments.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": {
+            "action": "FAIL",
+            "element_index": null,
+            "text": null,
+            "reason": "Access denied by website."
+          },
+          "result": null,
+          "url": "https://www.apartments.com/"
+        }
+      ],
+      "num_actions": 1,
+      "stop_reason": "model_fail:Access denied by website.",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The website returned an 'Access Denied' error, preventing any interaction with the site.",
+      "judge_evidence": "The screenshot clearly shows 'Access Denied' and a message indicating no permission to access the URL.",
+      "failure_category": "BLOCKED",
+      "final_url": "https://www.apartments.com/",
+      "final_title": "Access Denied",
+      "input_tokens": 2382,
+      "output_tokens": 79,
+      "estimated_cost_usd": 0.0049275,
+      "trace_dir": "/workspace/results/capability/traces/sa_mini2_0_9bc43c44",
+      "created_at": "2026-08-21T08:01:32.077522+00:00",
+      "max_actions_budget": 33
+    },
+    {
+      "run_id": "sa_mini2_1_f7743e82",
+      "task_id": "b7a9a6b5d451164c09bbd27b670bc2ae",
+      "eval_index": "mini2_1",
+      "task": "Show me the list of Men's Blazers, Black, Size M on Uniqlo.",
+      "website": "uniqlo",
+      "model": "gemini-3.6-flash",
+      "harness": "seeact_lite",
+      "observation_mode": "seeact_lite_axtree",
+      "start_url": "https://www.uniqlo.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": {
+            "action": "FAIL",
+            "element_index": null,
+            "text": null,
+            "reason": "Access denied by the website (blocked)."
+          },
+          "result": null,
+          "url": "https://www.uniqlo.com/"
+        }
+      ],
+      "num_actions": 1,
+      "stop_reason": "model_fail:Access denied by the website (blocked).",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The website denied access, preventing any interaction or task completion.",
+      "judge_evidence": "The final page displays an \"Access Denied\" message, indicating the website blocked the agent.",
+      "failure_category": "BLOCKED",
+      "final_url": "https://www.uniqlo.com/",
+      "final_title": "Access Denied",
+      "input_tokens": 2390,
+      "output_tokens": 74,
+      "estimated_cost_usd": 0.004884100000000001,
+      "trace_dir": "/workspace/results/capability/traces/sa_mini2_1_f7743e82",
+      "created_at": "2026-08-21T08:01:37.015676+00:00",
+      "max_actions_budget": 33
+    }
+  ]
+}

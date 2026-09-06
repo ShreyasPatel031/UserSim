@@ -1,0 +1,84 @@
+2026-09-05 09:22:28 SUPERVISOR_START jobs=['socrates', 'minitaur']
+2026-09-05 09:22:28 + colab --auth=adc download -s fm-socrates /content/fm_baselines/results/socrates/SUMMARY.json /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/socrates/SUMMARY.json
+2026-09-05 09:22:29 + colab --auth=adc download -s fm-socrates /content/fm_baselines/results/socrates/SUMMARY.json /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/socrates/SUMMARY.json
+2026-09-05 09:22:29 + colab --auth=adc status -s fm-socrates
+2026-09-05 09:22:30 + colab --auth=adc sessions
+2026-09-05 09:22:31 fm-socrates unhealthy — respawning
+2026-09-05 09:22:31 + colab --auth=adc stop -s fm-socrates
+2026-09-05 09:22:35 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 09:22:37 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 09:22:58 SUPERVISOR_START jobs=['socrates', 'minitaur']
+2026-09-05 09:22:58 + colab --auth=adc download -s fm-socrates /content/fm_baselines/results/socrates/SUMMARY.json /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/socrates/SUMMARY.json
+2026-09-05 09:22:59 + colab --auth=adc download -s fm-socrates /content/fm_baselines/results/socrates/SUMMARY.json /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/socrates/SUMMARY.json
+2026-09-05 09:22:59 + colab --auth=adc status -s fm-socrates
+2026-09-05 09:23:00 + colab --auth=adc sessions
+2026-09-05 09:23:02 fm-socrates unhealthy — respawning
+2026-09-05 09:23:02 + colab --auth=adc stop -s fm-socrates
+2026-09-05 09:23:06 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 09:23:07 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 09:23:29 SUPERVISOR_START jobs=['socrates', 'minitaur']
+2026-09-05 09:23:29 + colab --auth=adc download -s fm-socrates /content/fm_baselines/results/socrates/SUMMARY.json /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/socrates/SUMMARY.json
+2026-09-05 09:23:30 + colab --auth=adc download -s fm-socrates /content/fm_baselines/results/socrates/SUMMARY.json /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/socrates/SUMMARY.json
+2026-09-05 09:23:30 + colab --auth=adc status -s fm-socrates
+2026-09-05 09:23:31 + colab --auth=adc sessions
+2026-09-05 09:23:32 fm-socrates unhealthy — respawning
+2026-09-05 09:23:32 + colab --auth=adc stop -s fm-socrates
+2026-09-05 09:23:36 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 09:23:50 [colab] Creating session 'fm-socrates'...
+[colab] Session READY.
+
+2026-09-05 09:23:50 + colab --auth=adc status -s fm-socrates
+2026-09-05 09:23:51 + colab --auth=adc upload -s fm-socrates /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/_fs_probe.txt /content/_fs_probe.txt
+2026-09-05 09:23:52 + colab --auth=adc download -s fm-socrates /content/_fs_probe.txt /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/_fs_probe.fm-socrates.remote.txt
+2026-09-05 09:24:15 fm-socrates got GPU=T4
+2026-09-05 09:24:15 + colab --auth=adc exec -s fm-socrates --timeout 45
+2026-09-05 09:24:18 ANY_ALIVE False
+
+2026-09-05 09:24:18 socrates: worker dead — booting on T4
+2026-09-05 09:24:18 + colab --auth=adc exec -s fm-socrates --timeout 600
+2026-09-05 09:24:35 WROTE /content/fm_baselines/scripts/boot_socrates_l4.py 2515
+WROTE /content/fm_baselines/scripts/colab_socrates_wass.py 8534
+0
+
+2026-09-05 09:24:35 + colab --auth=adc download -s fm-minitaur /content/fm_baselines/results/minitaur/SUMMARY.json /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/minitaur/SUMMARY.json
+2026-09-05 09:24:35 + colab --auth=adc download -s fm-minitaur /content/fm_baselines/results/minitaur/SUMMARY.json /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/minitaur/SUMMARY.json
+2026-09-05 09:24:36 + colab --auth=adc status -s fm-minitaur
+2026-09-05 09:24:37 + colab --auth=adc sessions
+2026-09-05 09:24:37 fm-minitaur unhealthy — respawning
+2026-09-05 09:24:37 + colab --auth=adc stop -s fm-minitaur
+2026-09-05 09:24:42 + colab --auth=adc new -s fm-minitaur --gpu T4
+2026-09-05 09:24:44 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=73f833ee_66cf_4b4e_84ae_1ecea
+e3cc914........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 09:25:14 + colab --auth=adc new -s fm-minitaur --gpu L4
+2026-09-05 09:25:16 [colab] Creating session 'fm-minitaur'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 09:25:16 fm-minitaur: L4 unavailable — trying next
+2026-09-05 09:25:18 + colab --auth=adc new -s fm-minitaur --gpu T4
+2026-09-05 09:25:19 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=91bee5d8_3d2e_4b13_ab5a_8a776
+e8344d6........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 09:26:49 + colab --auth=adc new -s fm-minitaur --gpu L4

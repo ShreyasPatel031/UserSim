@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p5_parent_filters_youtube",
+  "eval_index": 20521,
+  "website": "youtube",
+  "persona_id": "p5_parent",
+  "persona_name": "Taylor Morgan",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p5_parent_filters",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 1,
+  "started_at": "2026-08-30T00:49:03.486500+00:00",
+  "elapsed_s": 494.41,
+  "final_result": "I was able to navigate to YouTube and search for 'home workout videos'. I also opened the filter dialog and identified that 'Upload date' and 'Duration' were available refinement controls. However, I was unable to successfully apply these filters or confirm the account avatar as I am not signed in. The task could not be fully completed due to repeated failures in applying filters and the agent not being signed in as per the user's premise. Therefore, success is false.",
+  "final_url": "https://www.youtube.com/results?search_query=educational+videos",
+  "ok": true,
+  "finished_at": "2026-08-30T00:57:18.539898+00:00"
+}

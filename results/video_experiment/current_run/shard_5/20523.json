@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p5_parent_filters_dailymotion",
+  "eval_index": 20523,
+  "website": "dailymotion",
+  "persona_id": "p5_parent",
+  "persona_name": "Taylor Morgan",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p5_parent_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:05.068405+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 271.756,
+  "final_result": "The task could not be completed. The agent attempted to search for 'home workout videos' on Dailymotion but repeatedly failed to activate the search input field by clicking the 'Search' button (index 333). Due to these persistent failures, no videos were searched for, no filters were applied, and no results were found. Therefore, I cannot report on available controls, best matching results, UX likes/dislikes, or ease.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:05:43.214912+00:00"
+}

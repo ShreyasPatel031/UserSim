@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p4_marketer_playback_youtube",
+  "eval_index": 20451,
+  "website": "youtube",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "playback",
+  "goal_title": "Evaluate consumption UX",
+  "comparative_group": "p4_marketer_playback",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 3,
+  "started_at": "2026-08-30T00:44:39.606617+00:00",
+  "elapsed_s": 362.107,
+  "final_result": "I have found and inspected an organic educational video on YouTube. The video is titled 'Is Organic Really Better? Healthy Food or Trendy Scam?' by the creator 'Kurzgesagt \u2013 In a Nutshell'.\n\nAlthough the video player indicated 'Video unavailable', the following viewing controls and context were visible around the player:\n\nViewing Controls:\n- Play/Pause button\n- Volume control\n- Seek slider\n- Time display (0:00 / 8:20)\n- Autoplay toggle\n- Subtitles/closed captions button\n- Settings button\n- Theater mode button\n- Full screen button\n\nContext around the player:\n- Like/Dislike/Share/Save buttons\n- Subscriber count (25.5M subscribers)\n- Video title and creator channel name\n- View count (12M views)\n- Upload date (7 years ago)\n- Video description\n- Comments section\n\nUX Likes:\n1. Clear separation of video player and related content.\n2. Prominent display of like/dislike/share buttons.\n3. Detailed metadata (views, upload date, channel info).\n4. Well-organized comments section with sorting options.\n\nUX Dislikes:\n1. The video player showing 'Video unavailable' is a significant issue.\n2. The search results were inconsistent, with multiple unavailable videos encountered.\n3. The 'Subscribe' button is very prominent, which could be distracting for a read-only user.\n\nEase: Medium, due to the repeated difficulty in finding an available video.",
+  "final_url": "https://www.youtube.com/watch?v=8PmM6SUn7Es",
+  "ok": true,
+  "finished_at": "2026-08-30T00:50:43.037084+00:00"
+}

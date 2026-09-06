@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p5_parent_search_dailymotion",
+  "eval_index": 20513,
+  "website": "dailymotion",
+  "persona_id": "p5_parent",
+  "persona_name": "Taylor Morgan",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p5_parent_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:04.031468+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 368.232,
+  "final_result": "The task could not be completed because the agent was unable to find a functional search input field on the Dailymotion website after multiple attempts. Previous attempts to search were either blocked by a CAPTCHA or failed to interact with the site's search interface. Therefore, no video titles, creators, UX likes/dislikes, or ease rating could be gathered.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:07:18.738851+00:00"
+}

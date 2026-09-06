@@ -1,0 +1,59 @@
+{
+  "stamp": "20260905T050602Z",
+  "total": 6,
+  "ok": 0,
+  "fail": 6,
+  "by_reason": {
+    "no_json": 6
+  },
+  "results": [
+    {
+      "url": "https://linear.app",
+      "ok": false,
+      "reason": "no_json",
+      "elapsed_s": 5,
+      "exit_code": 1,
+      "raw": "Chrome pid=67685 profile=/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/linear.app port=9333\n"
+    },
+    {
+      "url": "https://www.notion.so",
+      "ok": false,
+      "reason": "no_json",
+      "elapsed_s": 2,
+      "exit_code": 0,
+      "raw": "Chrome pid=67852 profile=/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/notion.so port=9333\n{\n  \"ok\": true,\n  \"host\": \"notion.so\",\n  \"email\": \"shreyashfs+notion@gmail.com\",\n  \"profile_dir\": \"/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/notion.so\",\n  \"actions\": [],\n  \"reason\": \"already_signed_in\"\n}\n"
+    },
+    {
+      "url": "https://todoist.com",
+      "ok": false,
+      "reason": "no_json",
+      "elapsed_s": 4,
+      "exit_code": 1,
+      "raw": "Chrome pid=67976 profile=/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/todoist.com port=9333\n"
+    },
+    {
+      "url": "https://clickup.com",
+      "ok": false,
+      "reason": "no_json",
+      "elapsed_s": 3,
+      "exit_code": 1,
+      "raw": "Chrome pid=68146 profile=/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/clickup.com port=9333\n"
+    },
+    {
+      "url": "https://calendly.com",
+      "ok": false,
+      "reason": "no_json",
+      "elapsed_s": 3,
+      "exit_code": 1,
+      "raw": "Chrome pid=68230 profile=/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/calendly.com port=9333\n"
+    },
+    {
+      "url": "https://airtable.com",
+      "ok": false,
+      "reason": "no_json",
+      "elapsed_s": 4,
+      "exit_code": 1,
+      "raw": "Chrome pid=68349 profile=/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/airtable.com port=9333\n"
+    }
+  ]
+}

@@ -1,0 +1,934 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "examples": {
+      "@id": "cr:examples",
+      "@type": "@json"
+    },
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform",
+    "equivalentProperty": "cr:equivalentProperty",
+    "samplingRate": "cr:samplingRate"
+  },
+  "@type": "sc:Dataset",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "name": "BehaviorBench",
+  "description": "BehaviorBench is a benchmark for evaluating large language models on behavioral science tasks. It bundles four data sources covering personality and survey response prediction (Big Five), economic-game decision making (MobLab), scientific-workflow prediction (Workflows), and economics-contest problem solving (IEO). All examples are released as chat-formatted {system, user, assistant} JSONL records using a fixed evaluation split.",
+  "url": "https://huggingface.co/datasets/befm/BehaviorBench",
+  "version": "1.0.0",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "creator": {
+    "@type": "Organization",
+    "name": "BeFM Authors"
+  },
+  "datePublished": "2026-05-07",
+  "keywords": [
+    "behavioral science",
+    "foundation models",
+    "benchmark",
+    "personality",
+    "economic games",
+    "scientific workflows"
+  ],
+  "citeAs": "@misc{behaviorbench2026,\n  title  = {BehaviorBench: Benchmarking Foundation Models for Behavioral Science Tasks},\n  author = {BeFM Authors},\n  year   = {2026}\n}",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "repo",
+      "name": "repo",
+      "description": "The Hugging Face dataset git repository hosting the JSONL files.",
+      "contentUrl": "https://huggingface.co/datasets/befm/BehaviorBench",
+      "encodingFormat": "git+https",
+      "sha256": "https://github.com/mlcommons/croissant/issues/80"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "behaviorbench_indices",
+      "name": "behaviorbench_indices",
+      "contentUrl": "behaviorbench_indices.json",
+      "encodingFormat": "application/json",
+      "sha256": "6076f201396c160bc26beb809e459c4ebcf8d77d1e6244b90ae2a2fbeed8e1fe",
+      "contentSize": "177292",
+      "description": "Fixed evaluation indices defining the released subset for each task. Used to reproduce the exact split sampled from the upstream sources."
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "bigfive_pers_score_pred_files",
+      "name": "bigfive_pers_score_pred_files",
+      "description": "Personality score prediction given demographics (Demo. To Pers.).",
+      "encodingFormat": "application/jsonlines",
+      "includes": "big_five/pers_score_pred/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "bigfive_surv_resp_pred_files",
+      "name": "bigfive_surv_resp_pred_files",
+      "description": "Survey response prediction given demographics (Demo. To Resp.).",
+      "encodingFormat": "application/jsonlines",
+      "includes": "big_five/surv_resp_pred/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "bigfive_missing_surv_resp_files",
+      "name": "bigfive_missing_surv_resp_files",
+      "description": "Masked survey response prediction (Masked Resp. Pred.).",
+      "encodingFormat": "application/jsonlines",
+      "includes": "big_five/missing_surv_resp/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "bigfive_seq_surv_resp_files",
+      "name": "bigfive_seq_surv_resp_files",
+      "description": "Sequential survey response prediction (Seq. Resp. Pred.).",
+      "encodingFormat": "application/jsonlines",
+      "includes": "big_five/seq_surv_resp/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "bigfive_acrossdim_pers_score_files",
+      "name": "bigfive_acrossdim_pers_score_files",
+      "description": "Personality score prediction given scores from other dimensions (Across-Dim Pers. Pred.).",
+      "encodingFormat": "application/jsonlines",
+      "includes": "big_five/acrossdim_pers_score/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "bigfive_demo_pred_age_files",
+      "name": "bigfive_demo_pred_age_files",
+      "description": "Age prediction given personality scores (Pers. To Demo.).",
+      "encodingFormat": "application/jsonlines",
+      "includes": "big_five/demo_pred_age/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "moblab_game_behavior_files",
+      "name": "moblab_game_behavior_files",
+      "description": "First-round game behavior simulation (Game Behav. Sim.).",
+      "encodingFormat": "application/jsonlines",
+      "includes": "moblab/game_behavior/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "moblab_multiround_behavior_files",
+      "name": "moblab_multiround_behavior_files",
+      "description": "Multi-round game behavior prediction (Multi-Round Pred.).",
+      "encodingFormat": "application/jsonlines",
+      "includes": "moblab/multiround_behavior/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "moblab_acrossgame_behavior_files",
+      "name": "moblab_acrossgame_behavior_files",
+      "description": "First-round game behavior prediction given observations from other games (Across-Ctx Pred.).",
+      "encodingFormat": "application/jsonlines",
+      "includes": "moblab/acrossgame_behavior/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "moblab_strategic_gameplay_files",
+      "name": "moblab_strategic_gameplay_files",
+      "description": "Strategic game play.",
+      "encodingFormat": "application/jsonlines",
+      "includes": "moblab/strategic_gameplay/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "workflows_files",
+      "name": "workflows_files",
+      "description": "Scientific workflow prediction.",
+      "encodingFormat": "application/jsonlines",
+      "includes": "workflows/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "economics_contests_files",
+      "name": "economics_contests_files",
+      "description": "Economics contest problem solving.",
+      "encodingFormat": "application/jsonlines",
+      "includes": "economics_contests/*.jsonl",
+      "containedIn": {
+        "@id": "repo"
+      }
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "bigfive_pers_score_pred",
+      "name": "bigfive_pers_score_pred",
+      "description": "Personality score prediction given demographics (Demo. To Pers.).",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_pers_score_pred/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_pers_score_pred_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_pers_score_pred/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_pers_score_pred_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_pers_score_pred/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_pers_score_pred_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "bigfive_surv_resp_pred",
+      "name": "bigfive_surv_resp_pred",
+      "description": "Survey response prediction given demographics (Demo. To Resp.).",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_surv_resp_pred/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_surv_resp_pred_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_surv_resp_pred/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_surv_resp_pred_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_surv_resp_pred/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_surv_resp_pred_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "bigfive_missing_surv_resp",
+      "name": "bigfive_missing_surv_resp",
+      "description": "Masked survey response prediction (Masked Resp. Pred.).",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_missing_surv_resp/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_missing_surv_resp_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_missing_surv_resp/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_missing_surv_resp_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_missing_surv_resp/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_missing_surv_resp_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "bigfive_seq_surv_resp",
+      "name": "bigfive_seq_surv_resp",
+      "description": "Sequential survey response prediction (Seq. Resp. Pred.).",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_seq_surv_resp/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_seq_surv_resp_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_seq_surv_resp/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_seq_surv_resp_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_seq_surv_resp/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_seq_surv_resp_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "bigfive_acrossdim_pers_score",
+      "name": "bigfive_acrossdim_pers_score",
+      "description": "Personality score prediction given scores from other dimensions (Across-Dim Pers. Pred.).",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_acrossdim_pers_score/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_acrossdim_pers_score_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_acrossdim_pers_score/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_acrossdim_pers_score_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_acrossdim_pers_score/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_acrossdim_pers_score_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "bigfive_demo_pred_age",
+      "name": "bigfive_demo_pred_age",
+      "description": "Age prediction given personality scores (Pers. To Demo.).",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_demo_pred_age/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_demo_pred_age_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_demo_pred_age/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_demo_pred_age_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "bigfive_demo_pred_age/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "bigfive_demo_pred_age_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "moblab_game_behavior",
+      "name": "moblab_game_behavior",
+      "description": "First-round game behavior simulation (Game Behav. Sim.).",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_game_behavior/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_game_behavior_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_game_behavior/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_game_behavior_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_game_behavior/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_game_behavior_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "moblab_multiround_behavior",
+      "name": "moblab_multiround_behavior",
+      "description": "Multi-round game behavior prediction (Multi-Round Pred.).",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_multiround_behavior/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_multiround_behavior_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_multiround_behavior/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_multiround_behavior_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_multiround_behavior/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_multiround_behavior_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "moblab_acrossgame_behavior",
+      "name": "moblab_acrossgame_behavior",
+      "description": "First-round game behavior prediction given observations from other games (Across-Ctx Pred.).",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_acrossgame_behavior/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_acrossgame_behavior_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_acrossgame_behavior/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_acrossgame_behavior_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_acrossgame_behavior/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_acrossgame_behavior_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "moblab_strategic_gameplay",
+      "name": "moblab_strategic_gameplay",
+      "description": "Strategic game play.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_strategic_gameplay/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_strategic_gameplay_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_strategic_gameplay/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_strategic_gameplay_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "moblab_strategic_gameplay/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "moblab_strategic_gameplay_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "workflows",
+      "name": "workflows",
+      "description": "Scientific workflow prediction.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "workflows/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "workflows_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "workflows/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "workflows_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "workflows/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "workflows_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "economics_contests",
+      "name": "economics_contests",
+      "description": "Economics contest problem solving.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "economics_contests/system",
+          "name": "system",
+          "description": "System prompt establishing the task framing.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "economics_contests_files"
+            },
+            "extract": {
+              "column": "system"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "economics_contests/user",
+          "name": "user",
+          "description": "User turn containing the input/question.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "economics_contests_files"
+            },
+            "extract": {
+              "column": "user"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "economics_contests/assistant",
+          "name": "assistant",
+          "description": "Reference target (gold answer or empirical outcome).",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "economics_contests_files"
+            },
+            "extract": {
+              "column": "assistant"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "prov:wasDerivedFrom": [
+    {
+      "@type": "prov:Entity",
+      "@id": "https://www.kaggle.com/datasets/lucasgreenwell/ocean-five-factor-personality-test-responses",
+      "prov:label": "Open-Source Psychometrics Big Five Personality Test",
+      "url": "https://www.kaggle.com/datasets/lucasgreenwell/ocean-five-factor-personality-test-responses",
+      "description": "Open-Source Psychometrics Big Five Personality Test. Big Five Personality Test responses (~19,630 subjects, 50 OCEAN items) with self-reported demographics, released by the Open-Source Psychometrics Project. Source for the Big Five subset."
+    },
+    {
+      "@type": "prov:Entity",
+      "@id": "https://doi.org/10.1073/pnas.2313925121",
+      "prov:label": "MobLab economic-games gameplay logs",
+      "url": "https://www.moblab.com/",
+      "description": "MobLab economic-games gameplay logs. Anonymized student gameplay across canonical economic games (Dictator, Ultimatum, Trust, Public Goods, Bomb Risk, Beauty Contest, Push/Pull) released with Mei et al., 'A Turing test of whether AI chatbots are behaviorally similar to humans', PNAS 121(9):e2313925121, 2024 (https://doi.org/10.1073/pnas.2313925121). Source for the MobLab subset."
+    },
+    {
+      "@type": "prov:Entity",
+      "@id": "https://www.aeaweb.org/journals/aer",
+      "prov:label": "American Economic Review (AER), 2025 articles",
+      "url": "https://www.aeaweb.org/journals/aer",
+      "description": "American Economic Review (AER), 2025 articles. Open-access article-level metadata (title, abstract) for AER articles published in 2025. Source for part of the Workflows subset."
+    },
+    {
+      "@type": "prov:Entity",
+      "@id": "https://www.nature.com/nathumbehav/",
+      "prov:label": "Nature Human Behaviour (NHB), 2025 articles",
+      "url": "https://www.nature.com/nathumbehav/",
+      "description": "Nature Human Behaviour (NHB), 2025 articles. Open-access article-level metadata (title, abstract) for NHB articles published in 2025. Source for part of the Workflows subset."
+    },
+    {
+      "@type": "prov:Entity",
+      "@id": "https://ieo-official.org/",
+      "prov:label": "International Economics Olympiad (IEO) problems",
+      "url": "https://ieo-official.org/",
+      "description": "International Economics Olympiad (IEO) problems. Publicly available multiple-choice contest problems from recent IEO rounds. Source for the economics-contests (IEO) subset."
+    }
+  ],
+  "prov:wasGeneratedBy": [
+    {
+      "@type": "prov:Activity",
+      "@id": "#activity-collection",
+      "prov:label": "Collection",
+      "description": "Curation from pre-existing public sources rather than new collection. Big Five examples come from the Open-Source Psychometrics Big Five Personality Test dataset; MobLab examples come from anonymized MobLab gameplay logs released with Mei et al. (PNAS 2024); Workflows examples come from open-access AER and NHB article-level metadata for 2025; IEO examples come from publicly available International Economics Olympiad multiple-choice problems. No new human subjects were recruited and no new gameplay was elicited for this benchmark."
+    },
+    {
+      "@type": "prov:Activity",
+      "@id": "#activity-preprocessing",
+      "prov:label": "Preprocessing",
+      "description": "All upstream records were converted to a unified chat-formatted {system, user, assistant} JSONL schema. For the Workflows subset, each (title, abstract) pair was decomposed into a five-field structured workflow (context, key idea, method, outcome, projected impact) using GPT-5 following the MASSW protocol. A fixed evaluation index (behaviorbench_indices.json) records the sampled subset for each task to ensure reproducibility across runs and across model providers."
+    },
+    {
+      "@type": "prov:Activity",
+      "@id": "#activity-annotation",
+      "prov:label": "Annotation",
+      "description": "No new human annotations were collected. Reference answers in the 'assistant' field are taken from the upstream sources: empirical personality scores and survey responses for Big Five, observed gameplay decisions for MobLab, paper-derived workflow fields for Workflows, and official answer keys for IEO problems."
+    }
+  ],
+  "rai:dataCollection": "All four subsets are curated from pre-existing sources rather than newly collected. Big Five examples are derived from the Open-Source Psychometrics Project's Big Five Personality Test dataset, which pairs Big Five item responses with self-reported demographics. MobLab examples are derived from MobLab, an academic economic-games teaching platform that records anonymized student gameplay across canonical economic games. Workflows examples are derived from research articles published in 2025 in the American Economic Review (AER) and Nature Human Behaviour (NHB), using only article-level metadata (title and abstract) and structured-summary fields needed to formulate the prediction tasks. The IEO subset is derived from publicly available multiple-choice problems from the International Economics Olympiad.",
+  "rai:dataCollectionType": [
+    "Curated from public sources"
+  ],
+  "rai:dataCollectionRawData": "Big Five subset: the Open-Source Psychometrics Project's Big Five Personality Test dataset (Kaggle: lucasgreenwell/ocean-five-factor-personality-test-responses), comprising ~19,630 subjects' responses to 50 items across the five OCEAN dimensions together with self-reported demographic attributes (age, gender, race, country/region, native language, handedness). MobLab subset: anonymized gameplay logs from MobLab (https://www.moblab.com/), released with Mei et al., 'A Turing test of whether AI chatbots are behaviorally similar to humans', PNAS 121(9):e2313925121, 2024 (https://doi.org/10.1073/pnas.2313925121); covers seven classic economic games across nine scenarios: Dictator, Ultimatum (Proposer and Responder), Trust (Investor and Banker), Public Goods, Bomb Risk, Beauty Contest, and Push/Pull (Prisoner's Dilemma). Workflows subset: open-access article metadata (title and abstract) from the American Economic Review and Nature Human Behaviour, restricted to articles published in 2025, decomposed following the MASSW protocol into a five-field structured workflow (context, key idea, method, outcome, projected impact). IEO economics subset: publicly available multiple-choice contest problems from recent International Economics Olympiad rounds.",
+  "rai:dataCollectionTimeframe": "Subset assembly was performed in 2025 to 2026. Upstream collection windows: Big Five upstream survey responses span multiple years prior to release; MobLab gameplay logs span 2015 to 2023; Workflows article metadata is restricted to articles published in 2025; IEO problems cover recent contest years available at time of curation.",
+  "rai:dataPreprocessingProtocol": "All upstream records were converted to a unified chat-formatted {system, user, assistant} JSONL schema. For Workflows, each title and abstract pair was decomposed into the five-field structured workflow using GPT-5 following the MASSW protocol. A fixed evaluation index (behaviorbench_indices.json) records the sampled subset for each task to ensure reproducibility across runs and across model providers.",
+  "rai:dataAnnotationProtocol": "No new human annotations were collected. Reference answers ('assistant' field) are taken from the upstream sources.",
+  "rai:personalSensitiveInformation": "The Big Five subset includes self-reported demographic attributes that are present in the upstream public dataset: age, gender, race/ethnicity, native language, and country/region. No direct identifiers (names, emails, IP addresses, geocoordinates, account IDs) are present, and no free-text fields that could re-identify participants are released. The MobLab, Workflows, and IEO subsets do not contain personal information.",
+  "rai:dataBiases": "Known and likely biases. Big Five participants may skew Western, English-speaking, and self-selected respondents of online personality surveys.",
+  "rai:dataLimitations": "English-only.",
+  "rai:dataUseCases": "Intended uses: (1) academic benchmarking of foundation models on behavioral-science tasks; (2) studying generalization of large language models to human behavior prediction; (3) comparing distributional alignment between model and human responses. Out-of-scope uses: clinical psychology diagnosis, employment screening, credit or insurance scoring, legal proceedings, surveillance, and any individual-level prediction or scoring of real persons.",
+  "rai:dataSocialImpact": "This benchmark studies how foundation models simulate or predict human behavioral data. Anticipated positive impacts: enabling reproducible evaluation of foundation models on behavioral-science tasks, surfacing systematic differences between model and human behavior, and providing a shared yardstick for the community. Anticipated risks: misuse of behavior-prediction systems for individual-level inference. To mitigate these risks, the benchmark reports distributional rather than identifying metrics, releases test-only splits to deter training on individual labels, and explicitly excludes clinical, hiring, and legal use cases in the data use statement.",
+  "rai:hasSyntheticData": false,
+  "rai:dataReleaseMaintenancePlan": "Versioned releases on the dataset hosting platform. Bug fixes that change evaluation behavior will result in a new minor version; the current release is 1.0.0."
+}

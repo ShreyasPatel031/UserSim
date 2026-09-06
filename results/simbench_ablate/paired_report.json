@@ -1,0 +1,154 @@
+[
+  {
+    "arm": "base",
+    "S": 28.61,
+    "delta_vs_base_paired": 0.0,
+    "ci95": [
+      0.0,
+      0.0
+    ],
+    "n_scored": 981,
+    "n_paired": 981,
+    "cost_usd": 0.1453,
+    "fail": 0,
+    "S_by_split": {
+      "Grouped": 38.82,
+      "Pop": 18.0
+    },
+    "best_shrink_lambda": 0.15,
+    "S_with_shrink": 30.35
+  },
+  {
+    "arm": "no_persona",
+    "S": 10.64,
+    "delta_vs_base_paired": -17.97,
+    "ci95": [
+      -21.52,
+      -14.55
+    ],
+    "n_scored": 981,
+    "n_paired": 981,
+    "cost_usd": 0.1369,
+    "fail": 0,
+    "S_by_split": {
+      "Grouped": 9.59,
+      "Pop": 11.74
+    },
+    "best_shrink_lambda": 0.35,
+    "S_with_shrink": 16.18
+  },
+  {
+    "arm": "swap_persona",
+    "S": 13.68,
+    "delta_vs_base_paired": -14.93,
+    "ci95": [
+      -18.23,
+      -11.69
+    ],
+    "n_scored": 981,
+    "n_paired": 981,
+    "cost_usd": 0.1456,
+    "fail": 0,
+    "S_by_split": {
+      "Grouped": 12.66,
+      "Pop": 14.74
+    },
+    "best_shrink_lambda": 0.3,
+    "S_with_shrink": 18.2
+  },
+  {
+    "arm": "cot",
+    "S": 27.87,
+    "delta_vs_base_paired": -3.54,
+    "ci95": [
+      -6.66,
+      -0.26
+    ],
+    "n_scored": 761,
+    "n_paired": 761,
+    "cost_usd": 2.4932,
+    "fail": 220,
+    "S_by_split": {
+      "Grouped": 33.98,
+      "Pop": 21.71
+    },
+    "best_shrink_lambda": 0.2,
+    "S_with_shrink": 30.29
+  },
+  {
+    "arm": "plural",
+    "S": 35.71,
+    "delta_vs_base_paired": 7.09,
+    "ci95": [
+      4.97,
+      9.38
+    ],
+    "n_scored": 981,
+    "n_paired": 981,
+    "cost_usd": 0.159,
+    "fail": 0,
+    "S_by_split": {
+      "Grouped": 44.47,
+      "Pop": 26.6
+    },
+    "best_shrink_lambda": 0.05,
+    "S_with_shrink": 35.72
+  },
+  {
+    "arm": "fewshot",
+    "S": 41.56,
+    "delta_vs_base_paired": 12.95,
+    "ci95": [
+      9.65,
+      16.37
+    ],
+    "n_scored": 981,
+    "n_paired": 981,
+    "cost_usd": 0.2658,
+    "fail": 0,
+    "S_by_split": {
+      "Grouped": 47.16,
+      "Pop": 35.74
+    },
+    "best_shrink_lambda": 0.0,
+    "S_with_shrink": 41.56
+  },
+  {
+    "arm": "plural_fewshot",
+    "S": 41.53,
+    "delta_vs_base_paired": 12.92,
+    "ci95": [
+      9.98,
+      16.06
+    ],
+    "n_scored": 981,
+    "n_paired": 981,
+    "cost_usd": 0.279,
+    "fail": 0,
+    "S_by_split": {
+      "Grouped": 47.05,
+      "Pop": 35.8
+    },
+    "best_shrink_lambda": 0.0,
+    "S_with_shrink": 41.53
+  },
+  {
+    "arm": "ensemble",
+    "S": 30.68,
+    "delta_vs_base_paired": 2.07,
+    "ci95": [
+      0.18,
+      3.99
+    ],
+    "n_scored": 981,
+    "n_paired": 981,
+    "cost_usd": 0.7315,
+    "fail": 0,
+    "S_by_split": {
+      "Grouped": 38.79,
+      "Pop": 22.26
+    },
+    "best_shrink_lambda": 0.1,
+    "S_with_shrink": 31.67
+  }
+]

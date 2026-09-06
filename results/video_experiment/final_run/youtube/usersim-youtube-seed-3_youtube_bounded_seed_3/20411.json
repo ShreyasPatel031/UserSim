@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p4_marketer_search_youtube",
+  "eval_index": 20411,
+  "website": "youtube",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p4_marketer_search",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 3,
+  "started_at": "2026-08-30T00:44:37.122466+00:00",
+  "elapsed_s": 74.507,
+  "final_result": "Here are the top three beginner-friendly personal productivity videos found on YouTube:\n\n1.  **Title:** Creating a Productivity System That Fits Your Personality\n    **Channel:** Banq Official\n\n2.  **Title:** being productive is easy, actually\n    **Channel:** easy, actually\n\n3.  **Title:** My Simple Productivity System (for normal people)!\n    **Channel:** Jeff Su\n\n**UX Likes:**\n*   Clear and relevant search results displayed.\n*   Easy access to video titles and channel names.\n*   Filtering options available on the search results page.\n*   Thumbnails are visually appealing and informative.\n\n**UX Dislikes:**\n*   Prominent \"Sign in\" prompt on the left sidebar.\n*   Left sidebar navigation takes up considerable screen space.\n*   Video descriptions are often truncated.\n*   A \"Video unavailable\" alert was present on the page.\n\n**Ease:** Easy",
+  "final_url": "https://www.youtube.com/results?search_query=personal+productivity+beginner+friendly",
+  "ok": true,
+  "finished_at": "2026-08-30T00:45:53.938308+00:00"
+}

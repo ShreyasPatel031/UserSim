@@ -53,3 +53,5 @@ urllib3==2.7.0
 websockets==16.1.1
 xxhash==4.0.1
 yarl==1.24.5
+browser-use==0.13.8
+browserbase>=1.0.0

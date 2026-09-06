@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p5_parent_playback_youtube",
+  "eval_index": 20551,
+  "website": "youtube",
+  "persona_id": "p5_parent",
+  "persona_name": "Taylor Morgan",
+  "goal_key": "playback",
+  "goal_title": "Evaluate consumption UX",
+  "comparative_group": "p5_parent_playback",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 0,
+  "started_at": "2026-08-30T00:50:27.284700+00:00",
+  "elapsed_s": 326.542,
+  "final_result": "I was unable to complete the task of finding and inspecting an educational video on YouTube. Despite multiple attempts to search for 'educational videos' and select a video, I repeatedly encountered 'Video unavailable' errors. My attempts to navigate back and manage tabs were also inconsistent. At the time of reaching the maximum steps, I was on the YouTube homepage and had just initiated a new search for 'educational videos'. Due to these persistent issues, I could not gather the requested information such as the video title, creator, viewing controls, UX likes/dislikes, or ease rating.",
+  "final_url": "https://www.youtube.com/",
+  "ok": true,
+  "finished_at": "2026-08-30T00:55:54.622207+00:00"
+}

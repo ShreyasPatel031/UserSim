@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p1_viewer_playback_dailymotion",
+  "eval_index": 20153,
+  "website": "dailymotion",
+  "persona_id": "p1_viewer",
+  "persona_name": "Avery Brooks",
+  "goal_key": "playback",
+  "goal_title": "Evaluate consumption UX",
+  "comparative_group": "p1_viewer_playback",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:32.595923+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 39.52,
+  "final_result": "Video Title: How A Galactic Center Sonification Was Turned Into Sheet Music\nCreator/Channel: Space.com (Verified Partner)\n\nVisible Controls/Context:\n- Like button\n- Share button\n- Bookmark button\n- More options button\n- Follow button for the channel\n- Expandable transcript section\n- Recommended videos sidebar\n\nUX Likes:\n- Clear and prominent display of video title and channel name.\n- Verified partner badge adds credibility to the channel.\n- Easy access to social sharing and bookmarking features.\n\nUX Dislikes:\n- The video player area is black, indicating it's not currently playing or there's a loading issue.\n- The video transcript is collapsed by default, requiring an extra click to access.\n\nEase: Easy",
+  "final_url": "https://www.dailymotion.com/video/xb013u2",
+  "ok": true,
+  "finished_at": "2026-08-29T23:37:18.327497+00:00"
+}

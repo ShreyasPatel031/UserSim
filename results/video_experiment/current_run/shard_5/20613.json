@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p6_educator_search_dailymotion",
+  "eval_index": 20613,
+  "website": "dailymotion",
+  "persona_id": "p6_educator",
+  "persona_name": "Elena Garcia",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p6_educator_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:05.068500+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 99.098,
+  "final_result": "The task could not be completed because the search input field on Dailymotion.com is not indexed, preventing me from entering search terms. Therefore, I could not find any videos related to personal productivity.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:02:50.771549+00:00"
+}

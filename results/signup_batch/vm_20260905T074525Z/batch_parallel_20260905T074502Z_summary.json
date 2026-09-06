@@ -1,0 +1,42 @@
+{
+  "stamp": "20260905T074502Z",
+  "parallel": 1,
+  "total": 3,
+  "ok": 0,
+  "fail": 3,
+  "by_reason": {
+    "no_json": 3
+  },
+  "results": [
+    {
+      "ok": false,
+      "reason": "no_json",
+      "raw": "",
+      "stderr_tail": "n sign_up\n    proc = _launch_chrome(start_url, profile, headed=headed, cdp_port=port)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/shreyaspatel/usersim/mvp/auto_signup.py\", line 116, in _launch_chrome\n    _find_chrome(),\n    ^^^^^^^^^^^^^^\n  File \"/home/shreyaspatel/usersim/mvp/auto_signup.py\", line 83, in _find_chrome\n    raise RuntimeError(\"Chrome/Chromium not found; set MVP_CHROME_PATH\")\nRuntimeError: Chrome/Chromium not found; set MVP_CHROME_PATH\n",
+      "url": "https://linear.app",
+      "elapsed_s": 7,
+      "exit_code": 1,
+      "cdp_port": 9400
+    },
+    {
+      "ok": false,
+      "reason": "no_json",
+      "raw": "",
+      "stderr_tail": "n sign_up\n    proc = _launch_chrome(start_url, profile, headed=headed, cdp_port=port)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/shreyaspatel/usersim/mvp/auto_signup.py\", line 116, in _launch_chrome\n    _find_chrome(),\n    ^^^^^^^^^^^^^^\n  File \"/home/shreyaspatel/usersim/mvp/auto_signup.py\", line 83, in _find_chrome\n    raise RuntimeError(\"Chrome/Chromium not found; set MVP_CHROME_PATH\")\nRuntimeError: Chrome/Chromium not found; set MVP_CHROME_PATH\n",
+      "url": "https://todoist.com",
+      "elapsed_s": 7,
+      "exit_code": 1,
+      "cdp_port": 9402
+    },
+    {
+      "ok": false,
+      "reason": "no_json",
+      "raw": "",
+      "stderr_tail": "n sign_up\n    proc = _launch_chrome(start_url, profile, headed=headed, cdp_port=port)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/shreyaspatel/usersim/mvp/auto_signup.py\", line 116, in _launch_chrome\n    _find_chrome(),\n    ^^^^^^^^^^^^^^\n  File \"/home/shreyaspatel/usersim/mvp/auto_signup.py\", line 83, in _find_chrome\n    raise RuntimeError(\"Chrome/Chromium not found; set MVP_CHROME_PATH\")\nRuntimeError: Chrome/Chromium not found; set MVP_CHROME_PATH\n",
+      "url": "https://www.notion.so",
+      "elapsed_s": 7,
+      "exit_code": 1,
+      "cdp_port": 9401
+    }
+  ]
+}

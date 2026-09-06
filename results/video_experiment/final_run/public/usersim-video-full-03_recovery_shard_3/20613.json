@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p6_educator_search_dailymotion",
+  "eval_index": 20613,
+  "website": "dailymotion",
+  "persona_id": "p6_educator",
+  "persona_name": "Elena Garcia",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p6_educator_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-30T00:22:24.021288+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 126.821,
+  "final_result": "I am unable to complete the request to search for videos on Dailymotion. The website's search input field does not have an assigned index, which is required for me to input text. Without the ability to search, I cannot find videos on personal productivity or report on the results. Therefore, the task cannot be completed.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-30T00:24:37.339590+00:00"
+}

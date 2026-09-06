@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p3_creator_discovery_dailymotion",
+  "eval_index": 20343,
+  "website": "dailymotion",
+  "persona_id": "p3_creator",
+  "persona_name": "Maya Patel",
+  "goal_key": "discovery",
+  "goal_title": "Evaluate discovery",
+  "comparative_group": "p3_creator_discovery",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:05.068073+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 222.453,
+  "final_result": "The task could not be completed due to repeated errors and an inability to find a suitable cooking or recipe video on Dailymotion. The agent navigated to the homepage and the 'Explore' section, scrolling extensively, but relevant content was not discovered. The process was interrupted by multiple output format errors, preventing further progress or analysis of the platform's UX, UX likes/dislikes, or ease of discovery.",
+  "final_url": "https://www.dailymotion.com/us",
+  "ok": true,
+  "finished_at": "2026-08-29T21:04:54.234555+00:00"
+}

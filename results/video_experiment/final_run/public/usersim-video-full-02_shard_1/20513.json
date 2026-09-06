@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p5_parent_search_dailymotion",
+  "eval_index": 20513,
+  "website": "dailymotion",
+  "persona_id": "p5_parent",
+  "persona_name": "Taylor Morgan",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p5_parent_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:32.596713+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 360.895,
+  "final_result": "I was unable to complete the task of finding a beginner-friendly video about personal productivity on Dailymotion. I encountered repeated difficulties interacting with the Dailymotion website, including being redirected to external search engines, facing CAPTCHAs, and failing to locate or input text into the search bar. Consequently, I could not find any relevant video titles or creators. The task is marked as unsuccessful due to these technical limitations.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T23:42:40.096413+00:00"
+}

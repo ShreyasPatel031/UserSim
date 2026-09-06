@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_search_dailymotion",
+  "eval_index": 20413,
+  "website": "dailymotion",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p4_marketer_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:35.588479+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 178.013,
+  "final_result": "I was unable to complete the request because the Dailymotion website does not provide an indexed search input field. According to the rules, I can only interact with elements that have a numeric index assigned. Without an indexed search input, I cannot search for videos. Therefore, I cannot find the requested beginner-friendly video about personal productivity.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T23:39:39.951274+00:00"
+}
