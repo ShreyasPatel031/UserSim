@@ -32,6 +32,11 @@ def test_captcha_ladder():
     n3 = _next_antibot_flags(n2, "captcha")
     assert n3["advanced_stealth"] is True
     assert _next_antibot_flags(n3, "captcha") is None
+    # Default MVP_SIGNUP_ANTIBOT_MAX_ATTEMPTS=4 covers:
+    # attempt0 cheap → 1 captcha → 2 proxies → 3 Verified.
+    steps = [cur, n1, n2, n3]
+    assert len(steps) == 4
+    assert steps[-1]["advanced_stealth"] is True
 
 
 def test_rate_limit_enables_proxies_and_captcha():

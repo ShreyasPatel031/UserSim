@@ -1151,7 +1151,8 @@ async def sign_up(
     use_bb = _signup_uses_browserbase()
     max_antibot = 1
     if use_bb:
-        max_antibot = max(1, int(os.environ.get("MVP_SIGNUP_ANTIBOT_MAX_ATTEMPTS", "3")))
+        # Captcha ladder needs 4 attempts: cheap → captcha → proxies → Verified.
+        max_antibot = max(1, int(os.environ.get("MVP_SIGNUP_ANTIBOT_MAX_ATTEMPTS", "4")))
     bb_flags = _cheap_bb_flags()
     antibot_log: list[dict[str, Any]] = []
     final_result: dict[str, Any] | None = None
@@ -1390,6 +1391,17 @@ async def sign_up(
                     # Always try to persist cookies while the Browserbase session lives.
                     await _snapshot_cookies("step")
 
+                    # If escalate/block tools already armed, force-stop so agent.run
+                    # cannot hang after terminates_sequence (observed on Notion/Reddit).
+                    if ctx.get("escalate_requested") or (
+                        ctx.get("done") and ctx.get("blocker")
+                    ):
+                        try:
+                            ag.stop()
+                        except Exception as exc:  # noqa: BLE001
+                            print(f"==> agent.stop on escalate missed: {exc}", flush=True)
+                        return
+
                     detector = getattr(getattr(ag, "state", None), "loop_detector", None)
                     if detector is None:
                         return
@@ -1434,15 +1446,99 @@ async def sign_up(
                         pass
 
                 history = None
+                agent_task = asyncio.create_task(
+                    agent.run(max_steps=max_steps, on_step_end=_on_step_end)
+                )
+
+                async def _force_stop_if_armed() -> bool:
+                    """Return True once escalate/block is armed and stop was requested.
+
+                    browser-use sometimes never returns from agent.run after
+                    request_antibot_escalation (terminates_sequence + is_done) —
+                    especially when paired with another action in the same step.
+                    Poll ctx (set inside the tool) and force-stop so the outer
+                    antibot retry loop can resume.
+                    """
+                    while not agent_task.done():
+                        if ctx.get("escalate_requested") or (
+                            ctx.get("done") and ctx.get("blocker")
+                        ):
+                            print(
+                                "==> agent stop armed "
+                                f"escalate={ctx.get('escalate_kind')} "
+                                f"blocker={ctx.get('blocker')}",
+                                flush=True,
+                            )
+                            try:
+                                agent.stop()
+                            except Exception as exc:  # noqa: BLE001
+                                print(f"==> agent.stop failed: {exc}", flush=True)
+                            try:
+                                await asyncio.wait_for(
+                                    asyncio.shield(agent_task), timeout=5.0
+                                )
+                            except (asyncio.TimeoutError, asyncio.CancelledError, Exception):
+                                pass
+                            return True
+                        await asyncio.sleep(0.25)
+                    return False
+
+                stop_watcher = asyncio.create_task(_force_stop_if_armed())
                 try:
-                    history = await asyncio.wait_for(
-                        agent.run(max_steps=max_steps, on_step_end=_on_step_end),
+                    done, _pending = await asyncio.wait(
+                        {agent_task, stop_watcher},
+                        return_when=asyncio.FIRST_COMPLETED,
                         timeout=timeout_s,
                     )
-                except asyncio.TimeoutError:
-                    result["reason"] = "timeout"
+                    if not done:
+                        result["reason"] = "timeout"
+                        try:
+                            agent.stop()
+                        except Exception:
+                            pass
+                        if not agent_task.done():
+                            agent_task.cancel()
+                            try:
+                                await agent_task
+                            except (asyncio.CancelledError, Exception):
+                                pass
+                    elif agent_task in done:
+                        try:
+                            history = agent_task.result()
+                        except Exception as exc:  # noqa: BLE001
+                            result["reason"] = (
+                                f"agent_error:{type(exc).__name__}:{exc}"[:300]
+                            )
+                    else:
+                        # Escalate/block armed — ensure agent_task is finished.
+                        if not agent_task.done():
+                            try:
+                                agent.stop()
+                            except Exception:
+                                pass
+                            agent_task.cancel()
+                            try:
+                                await agent_task
+                            except (asyncio.CancelledError, Exception):
+                                pass
+                        if ctx.get("escalate_requested"):
+                            result["reason"] = result.get("reason") or "antibot_escalate"
+                            result["escalate_kind"] = ctx.get("escalate_kind")
                 except Exception as exc:
                     result["reason"] = f"agent_error:{type(exc).__name__}:{exc}"[:300]
+                    if not agent_task.done():
+                        agent_task.cancel()
+                        try:
+                            await agent_task
+                        except (asyncio.CancelledError, Exception):
+                            pass
+                finally:
+                    if not stop_watcher.done():
+                        stop_watcher.cancel()
+                        try:
+                            await stop_watcher
+                        except (asyncio.CancelledError, Exception):
+                            pass
 
                 # Refresh page handle after agent activity.
                 try:
@@ -1477,10 +1573,14 @@ async def sign_up(
                 # Onboarding often ends on a "Getting ready…" splash that redirects a
                 # few seconds later, so a single probe reports a fresh account as
                 # not_signed_in. Re-probe for a short window before giving up.
+                # Skip settle when escalating — we are about to tear down and retry.
                 signed = False
-                settle_deadline = time.time() + float(
-                    os.environ.get("MVP_SIGNUP_SETTLE_S", "30")
-                )
+                if ctx.get("escalate_requested"):
+                    settle_deadline = time.time()
+                else:
+                    settle_deadline = time.time() + float(
+                        os.environ.get("MVP_SIGNUP_SETTLE_S", "30")
+                    )
                 while True:
                     try:
                         signed = await verify_signed_in(page, host)
