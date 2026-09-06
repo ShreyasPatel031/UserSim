@@ -125,7 +125,7 @@
         "waiting on get_email_link for a long time",
         "step timeout during email verify"
       ],
-      "tip": "After mark_email_requested(), call get_email_link once and navigate to the returned URL. Do not interleave other long actions while waiting.",
+      "tip": "Bitwarden verifies via email LINK (finish-signup), not a numeric code. After Continue: mark_email_requested(), get_email_link() once, open the URL. If no fresh mail arrives, the prior Verify Your Email / finish-signup link for this alias is still valid \u2014 open that, then set the master password. Do not call get_email_code.",
       "status": "active"
     },
     {
@@ -217,7 +217,7 @@
         "no verification code",
         "check your email after register"
       ],
-      "tip": "Bitwarden sends a VERIFY LINK, not a numeric code. After register: mark_email_requested(), get_email_link() once, go_to_url the link. Do not call get_email_code.",
+      "tip": "Bitwarden verifies via email LINK (finish-signup), not a numeric code. After Continue: mark_email_requested(), get_email_link() once, open the URL. If no fresh mail arrives, the prior Verify Your Email / finish-signup link for this alias is still valid \u2014 open that, then set the master password. Do not call get_email_code.",
       "status": "active"
     }
   ],
@@ -277,6 +277,14 @@
       "detail": "link timeout; agent fell back to code; browser closed; empty jar",
       "mode_id": "bitwarden_verify_is_link",
       "source": "benchmark_parallel"
+    },
+    {
+      "ts": "2026-09-06T03:15:00Z",
+      "host": "bitwarden.com",
+      "symptom": "get_email_link timeout despite prior Verify Your Email",
+      "detail": "Inbox already had finish-signup for +vault from prior day; newer_than floor hid it",
+      "mode_id": "bitwarden_verify_is_link",
+      "source": "benchmark_retry"
     }
   ]
 }

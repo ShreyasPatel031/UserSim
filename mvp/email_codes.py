@@ -511,15 +511,28 @@ def wait_for_signup_link(
     newer_than: float | None = None,
     poll_s: float = 5.0,
 ) -> str | None:
+    """Poll for a fresh link; after half the timeout, also accept recent prior mail.
+
+    Retries (Bitwarden) often re-hit an already-sent verify link. Requiring
+    ``newer_than=mark_email_requested`` then times out forever even though a
+    valid finish-signup URL is sitting in the inbox from the prior attempt.
+    """
     if _imap_creds() is None:
         raise RuntimeError(
             "No Gmail app_password in secrets/credentials.json — cannot read signup links"
         )
     started = time.time()
     floor = newer_than if newer_than is not None else started
+    fallback_after = started + max(20.0, timeout_s * 0.45)
+    # 48h lookback for prior verify/finish links on the same alias.
+    prior_floor = time.time() - 48 * 3600
     while time.time() - started < timeout_s:
         link = latest_signup_link(alias, host=host, newer_than=floor)
         if link:
             return link
+        if time.time() >= fallback_after:
+            link = latest_signup_link(alias, host=host, newer_than=prior_floor)
+            if link:
+                return link
         time.sleep(poll_s)
     return None
