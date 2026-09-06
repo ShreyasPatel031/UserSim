@@ -25,6 +25,8 @@ results/capability/*_run.log
 results/capability/browserbase_probe.log
 results/capability/*_rejudge.log
 results/capability/*_launch.log
+results/fm_baselines/*.log
+results/fm_baselines/**/*.log
 data/models/
 .venv-seeact/
 .venv-webvoyager/
