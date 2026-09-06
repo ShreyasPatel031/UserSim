@@ -33,7 +33,7 @@ _materialized_adc: Path | None = None
 
 
 def _materialize_adc_from_env() -> Path | None:
-    """Write VERTEX_ADC_JSON / GOOGLE_ADC_JSON to /tmp once per process."""
+    """Write VERTEX_ADC_JSON / GOOGLE_ADC_JSON / *_B64 to /tmp once per process."""
     global _materialized_adc
     if _materialized_adc is not None and _materialized_adc.is_file():
         return _materialized_adc
@@ -43,6 +43,19 @@ def _materialize_adc_from_env() -> Path | None:
         or os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
         or ""
     ).strip()
+    if not raw:
+        b64 = (
+            os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_B64")
+            or os.environ.get("VERTEX_ADC_JSON_B64")
+            or ""
+        ).strip()
+        if b64:
+            import base64
+
+            try:
+                raw = base64.b64decode(b64).decode("utf-8")
+            except Exception as exc:  # noqa: BLE001
+                raise RuntimeError("GOOGLE_APPLICATION_CREDENTIALS_B64 is not valid base64") from exc
     if not raw:
         return None
     try:

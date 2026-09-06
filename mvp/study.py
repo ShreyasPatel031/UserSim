@@ -96,6 +96,7 @@ class StudyState:
     email: str | None = None
     customers: str | None = None
     competitors: list[str] = field(default_factory=list)
+    skip_competitors: bool = False
     tasks_override: list[str] = field(default_factory=list)
     test_mode: bool = False
     backend: str = "default"
@@ -792,9 +793,15 @@ async def run_study(
                 pass
 
         # 1) Competitors (skipped in local smoke — product site only)
-        if study.test_mode:
+        if study.test_mode or study.skip_competitors:
             study.competitors = []
-            log_activity(study, "plan", "Smoke mode — product site only, skipping rivals")
+            log_activity(
+                study,
+                "plan",
+                "Product-only run — skipping rivals"
+                if study.skip_competitors and not study.test_mode
+                else "Smoke mode — product site only, skipping rivals",
+            )
             touch("Building simulated users")
             _push_brief("brief")
         elif not study.competitors:
@@ -842,7 +849,12 @@ async def run_study(
             log_activity(study, "plan", f"Site: {site_summary}")
 
         # Retry competitors with richer summary if the first pass was empty.
-        if not study.test_mode and not study.competitors and site_summary:
+        if (
+            not study.test_mode
+            and not study.skip_competitors
+            and not study.competitors
+            and site_summary
+        ):
             try:
                 study.competitors = await invent_competitors(
                     study.url, site_summary, page_text
@@ -1405,6 +1417,27 @@ async def run_study(
                     sess = study.live_sessions.get(agent_id)
                     if not sess:
                         return
+                    # Persist screenshots to GCS so subsequent serverless
+                    # invocations can serve /api/.../screenshots/*.png.
+                    shot = step.get("screenshot_url") or ""
+                    if isinstance(shot, str) and "/screenshots/" in shot:
+                        try:
+                            from pathlib import Path as _Path
+
+                            from mvp.gcs_store import gcs_upload_file, screenshot_gcs_uri
+                            from mvp.paths import MVP_RUNS_DIR
+
+                            name = _Path(shot.split("?", 1)[0]).name
+                            local = MVP_RUNS_DIR / study.id / agent_id / "screenshots" / name
+                            if local.is_file() and local.stat().st_size > 100:
+                                await asyncio.to_thread(
+                                    gcs_upload_file,
+                                    local,
+                                    screenshot_gcs_uri(study.id, agent_id, name),
+                                    content_type="image/png",
+                                )
+                        except Exception:  # noqa: BLE001
+                            pass
                     sess["status"] = "running"
                     sess["trace"] = list(sess.get("trace") or [])
                     existing = {s.get("step"): i for i, s in enumerate(sess["trace"])}
@@ -1416,6 +1449,7 @@ async def run_study(
                     sess["last_action"] = step.get("action") or ""
                     refresh_agent_phase()
                     study.updated_at = _now()
+                    persist_study(study)
                     if on_update:
                         try:
                             on_update(study, event="progress")

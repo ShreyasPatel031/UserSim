@@ -50,6 +50,7 @@ class StudyRequest(BaseModel):
     competitors: list[str] = Field(default_factory=list)
     tasks: list[str] = Field(default_factory=list)
     test_mode: bool = False
+    skip_competitors: bool = False
     backend: str = Field(default="default", pattern="^(default)$")
 
 
@@ -121,6 +122,9 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     study.backend = body.backend or "default"
     # Keep user-pinned competitors even in quick preview.
     study.competitors = [c.strip() for c in body.competitors if c and c.strip()]
+    study.skip_competitors = bool(body.skip_competitors) or (
+        body.competitors is not None and len(body.competitors) == 0 and bool(body.tasks)
+    )
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
     if study.test_mode and not study.tasks_override:
         study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
