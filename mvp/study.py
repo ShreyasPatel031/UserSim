@@ -867,12 +867,19 @@ async def run_study(
                 study.auth_blocker = str(blocker) if blocker else status
 
         # Strict sequence: competitors → users → tasks (separate LLM calls, stream each).
-        touch("Finding competitors")
-        log_activity(
-            study,
-            "plan",
-            "Finding competitors, then simulated users, then tasks — one step at a time",
-        )
+        if study.skip_competitors:
+            log_activity(
+                study,
+                "plan",
+                "Product-only — rivals skipped unless pasted in setup",
+            )
+        else:
+            touch("Finding competitors")
+            log_activity(
+                study,
+                "plan",
+                "Finding competitors, then simulated users, then tasks — one step at a time",
+            )
         if study.test_mode:
             log_activity(
                 study,
@@ -1855,6 +1862,7 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "auth_status": study.auth_status,
             "auth_blocker": study.auth_blocker,
             "competitors": study.competitors,
+            "skip_competitors": study.skip_competitors,
             "test_mode": study.test_mode,
             "backend": study.backend,
             "email": study.email,

@@ -567,6 +567,8 @@ function productSites(data) {
 }
 
 function isSearchingCompetitors(data) {
+  // Product-only runs (empty competitors box) never invent rivals — don't spin.
+  if (data?.skip_competitors) return false;
   const phase = String(data?.phase || "");
   const hasComps = (data?.competitors || []).length > 0;
   if (hasComps) return false;
