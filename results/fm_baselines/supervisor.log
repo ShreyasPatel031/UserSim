@@ -82,3 +82,731 @@ https://colab.research.google.com/tun/m/assign?nbh=91bee5d8_3d2e_4b13_ab5a_8a776
 e8344d6........&variant=GPU&accelerator=T4: Service Unavailable
 
 2026-09-05 09:26:49 + colab --auth=adc new -s fm-minitaur --gpu L4
+2026-09-05 17:44:56 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:44:59 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:44:59 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:45:01 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:45:03 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=0168dad3_e5e1_4804_ac6c_c9db9
+32922eb........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:45:03 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:45:33 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:45:35 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:45:35 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:45:37 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:45:38 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=e403bcfc_05e5_4de0_b477_73815
+bfc6689........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:45:38 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:46:08 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:46:10 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:46:10 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:46:12 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:46:14 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=015fb29c_2062_485d_827f_ecc34
+a2dad46........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:46:14 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:46:44 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:46:45 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:46:45 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:46:47 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:46:48 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=de7cbe9b_b1a9_4aea_817c_bad33
+e8003d9........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:46:48 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:47:18 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:47:20 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:47:20 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:47:22 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:47:23 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=e8d05a3a_9627_4154_9949_dae01
+92f9d7c........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:47:23 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:47:53 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:47:54 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:47:54 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:47:56 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:47:58 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=3197e0f8_453d_487f_88e4_757e5
+9e6662a........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:47:58 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:48:28 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:48:29 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:48:29 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:48:31 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:48:33 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=4aa2253e_7c07_45bb_8905_5d6a7
+32cb8a4........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:48:33 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:49:03 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:49:05 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:49:05 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:49:07 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:49:08 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=d0bb32d9_7cde_4af4_a308_39f09
+77ad30d........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:49:08 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:49:38 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:49:39 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:49:39 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:49:41 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:49:42 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=b9989428_fb0d_4786_89ad_56b9a
+ef732b6........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:49:42 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:50:12 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:50:14 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:50:14 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:50:16 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:50:17 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=e7497a5c_c21c_4f3d_afcc_2027b
+286dc27........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:50:17 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:50:47 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:50:49 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:50:49 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:50:51 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:50:52 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=b4c79711_8b94_4d1a_8269_c76de
+cbbd791........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:50:52 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:51:22 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:51:23 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:51:23 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:51:25 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:51:27 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=b750a6a1_4b81_4053_a22b_5ea03
+b5e8add........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:51:27 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:51:57 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:51:58 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:51:58 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:52:00 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:52:01 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=3e663f58_a233_40ef_807f_7cb89
+a548636........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:52:01 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:52:31 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:52:33 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:52:33 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:52:35 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:52:36 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=197bf1e0_4ecf_48fb_8463_005c8
+ab4e1e3........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:52:36 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:53:06 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:53:07 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:53:07 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:53:09 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:53:10 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=079337cf_15dd_45de_89e7_cf5d5
+5c5cfe8........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:53:10 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:53:40 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:53:42 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:53:42 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:53:44 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:53:45 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=6925bf9c_ea3e_42ec_b0c4_76175
+af0e24a........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:53:45 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:54:15 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:54:17 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:54:17 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:54:19 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:54:20 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=7976efe9_4cde_4070_8b33_72ba5
+a98ac52........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:54:20 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:54:50 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:54:52 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:54:52 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:54:54 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:54:55 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=26833b76_71c3_40a8_ba93_a4f40
+1e97c9f........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:54:55 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:55:25 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:55:26 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:55:26 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:55:28 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:55:30 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=31785bfe_88db_4281_b6f3_6d1d3
+2f2a008........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:55:30 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:56:00 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:56:01 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:56:01 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:56:03 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:56:04 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=6b461d20_a9ee_42f5_955b_56515
+90f6a11........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:56:04 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:56:34 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:56:36 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:56:36 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:56:38 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:56:39 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=1ef537ea_4176_4ae5_be11_d4bb4
+4e61178........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:56:39 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:57:09 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:57:10 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:57:10 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:57:12 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:57:14 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=9f502e22_d24b_4b79_b312_a1a1d
+25f8bae........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:57:14 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:57:44 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:57:46 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:57:46 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:57:48 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:57:49 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=bb041b32_3a24_4279_8548_56260
+e484526........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:57:49 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:58:19 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:58:21 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:58:21 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:58:23 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:58:24 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=8999ca86_50f1_422f_bf67_ba8d8
+6a864c1........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:58:24 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:58:54 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:58:55 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:58:55 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:58:57 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:58:58 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=b987f344_f03a_4b4e_8b65_40945
+328b7c8........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:58:58 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 17:59:28 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 17:59:30 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 17:59:30 fm-socrates: L4 unavailable — trying next
+2026-09-05 17:59:32 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 17:59:33 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=e6479c96_654f_4614_84c3_821c9
+5a1f4c5........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 17:59:33 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:00:03 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:00:04 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:00:04 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:00:06 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:00:08 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=88251aea_5bc8_4176_b665_90507
+9b24114........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:00:08 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:00:38 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:00:42 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:00:42 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:00:44 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:00:45 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=cc4bb86e_1613_4c17_8cdb_215e1
+2874c78........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:00:45 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:01:15 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:01:16 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:01:16 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:01:19 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:01:20 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=226376af_5f22_4176_96e0_3bc4c
+535a5f3........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:01:20 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:01:50 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:01:51 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:01:51 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:01:53 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:01:54 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=c001c491_6bd7_4d4c_b286_845ff
+265a5ac........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:01:54 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:02:24 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:02:26 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:02:26 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:02:28 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:02:29 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=58bd1377_c5f9_4b80_a870_e0c46
+6d99d1a........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:02:29 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:02:59 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:03:00 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:03:00 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:03:02 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:03:04 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=26b17950_df26_49b7_bd2b_98f2b
+e26ade2........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:03:04 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:03:34 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:03:35 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:03:35 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:03:37 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:03:38 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=80d88c0b_d671_4714_9adf_f2381
+0256a3e........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:03:38 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:04:08 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:04:10 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:04:10 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:04:12 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:04:13 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=c4b24aed_f849_4460_8c05_41e75
+4744a84........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:04:13 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:04:43 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:04:44 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:04:44 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:04:46 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:04:47 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=16f59b40_aad2_47de_a7a0_cb816
+0eac704........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:04:47 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:05:17 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:05:19 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:05:19 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:05:21 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:05:22 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=5d9e35ac_ca44_4848_b063_673cf
+3109ea4........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:05:22 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:05:52 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:05:53 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:05:53 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:05:55 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:05:56 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=41938d7d_c1c7_44ec_b7b2_a67c2
+36afdf8........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:05:56 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:06:26 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:06:28 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:06:28 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:06:30 + colab --auth=adc new -s fm-socrates --gpu T4
+2026-09-05 18:06:31 se Body: {response.text}")           │
+│   195 │   │   if not response.ok:                                            │
+│ ❱ 196 │   │   │   raise ColabRequestError(                                   │
+│   197 │   │   │   │   f"Failed to issue request {method} {endpoint}:         │
+│       {response.reason}",                                                    │
+│   198 │   │   │   │   request=response.request,                              │
+│   199 │   │   │   │   response=response,                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ColabRequestError: Failed to issue request POST 
+https://colab.research.google.com/tun/m/assign?nbh=1ab6a96b_ed8c_46de_9d5d_5fd31
+fafc613........&variant=GPU&accelerator=T4: Service Unavailable
+
+2026-09-05 18:06:31 fm-socrates: assign T4 flaky — retry in 30s
+2026-09-05 18:07:01 + colab --auth=adc new -s fm-socrates --gpu L4
+2026-09-05 18:07:02 [colab] Creating session 'fm-socrates'...
+[colab] Backend rejected accelerator 'L4'. You may not have quota or entitlement for this accelerator on your account. Try a different one (e.g. --gpu T4) or omit --gpu/--tpu for a CPU runtime.
+
+2026-09-05 18:07:02 fm-socrates: L4 unavailable — trying next
+2026-09-05 18:07:04 + colab --auth=adc new -s fm-socrates --gpu T4

@@ -55,6 +55,7 @@ function studyProgress(phase) {
 
 let _traceResults = [];
 let _shotIdx = {};
+let _shotFollowLatest = {};
 let _activeTraceIdx = 0;
 let _userPickedTrace = false;
 let _activityRendered = 0;
@@ -63,6 +64,7 @@ let _notifyEmail = "";
 let _emailCaptureSubmitted = false;
 let _briefScrollStep = "";
 const BRIEF_SCROLL_ORDER = ["products", "users", "tasks", "live"];
+const IS_LOCAL_HOST = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
 
 function scrollBriefTo(elOrId, step) {
   const order = BRIEF_SCROLL_ORDER;
@@ -171,6 +173,7 @@ function resetLiveUI() {
   _activityRendered = 0;
   _lastStudyData = null;
   _shotIdx = {};
+  _shotFollowLatest = {};
   _notifyEmail = "";
   _emailCaptureSubmitted = false;
   _briefScrollStep = "";
@@ -350,7 +353,10 @@ function renderFocusStage(session, sessionIdx) {
   const trace = session?.trace || [];
   const shots = stepsWithScreenshots(trace);
   const key = String(sessionIdx ?? 0);
-  if (_shotIdx[key] == null || _shotIdx[key] >= Math.max(shots.length, 1)) {
+  // Follow newest frame (0 → 1 → …) unless user scrubbed away.
+  if (_shotFollowLatest[key] !== false) {
+    _shotIdx[key] = Math.max(0, shots.length - 1);
+  } else if (_shotIdx[key] == null || _shotIdx[key] >= shots.length) {
     _shotIdx[key] = Math.max(0, shots.length - 1);
   }
   const idx = shots.length ? _shotIdx[key] : 0;
@@ -1261,6 +1267,7 @@ document.addEventListener("click", (ev) => {
     if (!shots.length) return;
     const cur = _shotIdx[key] ?? 0;
     _shotIdx[key] = Math.max(0, Math.min(shots.length - 1, cur + delta));
+    _shotFollowLatest[key] = _shotIdx[key] >= shots.length - 1;
     if (_lastStudyData) renderStage(mergeSessions(_lastStudyData));
     return;
   }
@@ -1271,6 +1278,10 @@ document.addEventListener("click", (ev) => {
   const idx = Number(btn.getAttribute("data-shot-idx"));
   if (!key || Number.isNaN(idx)) return;
   _shotIdx[key] = idx;
+  const sessions2 = _traceResults || [];
+  const session2 = sessions2[Number(key)] || sessions2[_activeTraceIdx];
+  const shots2 = stepsWithScreenshots(session2?.trace);
+  _shotFollowLatest[key] = idx >= Math.max(shots2.length - 1, 0);
   if (_lastStudyData) {
     renderStage(mergeSessions(_lastStudyData));
   }
@@ -1316,3 +1327,12 @@ function syncStageFromControls() {
 
 document.getElementById("stage-task-select")?.addEventListener("change", syncStageFromControls);
 document.getElementById("stage-user-select")?.addEventListener("change", syncStageFromControls);
+
+if (typeof IS_LOCAL_HOST !== "undefined" && IS_LOCAL_HOST) {
+  const smokeRow = document.getElementById("local-smoke-row");
+  const smokeInput = document.getElementById("test-mode-input") || (typeof form !== "undefined" ? form?.test_mode : null);
+  const localNav = document.getElementById("local-nav");
+  if (smokeRow) smokeRow.hidden = false;
+  if (smokeInput) smokeInput.checked = true;
+  if (localNav) localNav.hidden = false;
+}

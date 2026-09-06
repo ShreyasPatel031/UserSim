@@ -72,22 +72,73 @@ def _write_status(gcs_root: str, message: str, **extra: Any) -> None:
     _upload_json(f"{gcs_root.rstrip('/')}/status.json", {"message": message, **extra})
 
 
+def _screenshot_candidates(
+    study_id: str, agent_id: str, filename: str, live_dir: Path
+) -> list[Path]:
+    """Where browser_agent / first-frame scripts may have written the PNG on the VM."""
+    from mvp.paths import MVP_RUNS_DIR
+
+    return [
+        MVP_RUNS_DIR / study_id / agent_id / "screenshots" / filename,
+        live_dir / filename,
+        Path(f"/tmp/usersim-runs/{study_id}/{agent_id}/screenshots/{filename}"),
+        Path(f"/home/shreyaspatel/usersim/mvp/runs/{study_id}/{agent_id}/screenshots/{filename}"),
+        Path(f"/home/shreyaspatel/usersim/live/{agent_id}/{filename}"),
+    ]
+
+
 def _persist_screenshot(study_id: str, agent_id: str, step: dict[str, Any], live_dir: Path) -> None:
-    """If step has a data-URL screenshot, upload PNG to GCS and rewrite URL to API proxy path."""
+    """Upload step PNG to GCS and rewrite URL to the API proxy path.
+
+    browser_agent writes files under MVP_RUNS_DIR and sets an /api/... URL (not a data
+    URL). Older code only uploaded data URLs, so step>=1 screenshots never reached GCS
+    and the local/Vercel UI got 404s for bbox_N.png.
+    """
     shot = step.get("screenshot_url") or ""
-    if not isinstance(shot, str) or not shot.startswith("data:image"):
-        return
-    m = re.match(r"data:image/(png|jpeg|jpg);base64,(.+)", shot, flags=re.I | re.S)
-    if not m:
-        return
-    ext = "png" if m.group(1).lower() == "png" else "jpg"
     step_no = int(step.get("step") or 0)
-    filename = f"bbox_{step_no}.{ext}" if step_no else f"step_{step_no}.{ext}"
-    raw = base64.b64decode(m.group(2))
-    local = live_dir / filename
-    local.write_bytes(raw)
-    gcs_uri = f"gs://{os.environ.get('MVP_GCS_BUCKET', 'usersim-bakeoff-347838016394')}/mvp_studies/{study_id}/screenshots/{agent_id}/{filename}"
-    # Prefer study gcs root derived from env job.
+    local: Path | None = None
+    filename: str | None = None
+    ext = "png"
+
+    if isinstance(shot, str) and shot.startswith("data:image"):
+        m = re.match(r"data:image/(png|jpeg|jpg);base64,(.+)", shot, flags=re.I | re.S)
+        if not m:
+            return
+        ext = "png" if m.group(1).lower() == "png" else "jpg"
+        filename = f"bbox_{step_no}.{ext}" if step_no else f"step_{step_no}.{ext}"
+        local = live_dir / filename
+        local.write_bytes(base64.b64decode(m.group(2)))
+    else:
+        if isinstance(shot, str) and "/screenshots/" in shot:
+            filename = Path(shot.split("?", 1)[0]).name
+        else:
+            filename = f"bbox_{step_no}.png" if step_no else "step_0.png"
+        if not re.fullmatch(r"(?:step|bbox)_\d+\.(?:png|jpe?g)", filename, flags=re.I):
+            return
+        ext = "jpg" if filename.lower().endswith((".jpg", ".jpeg")) else "png"
+        for cand in _screenshot_candidates(study_id, agent_id, filename, live_dir):
+            if cand.is_file() and cand.stat().st_size > 100:
+                local = cand
+                break
+        if local is None:
+            # Last resort: browser-use may have only written bbox_N when step URL was None.
+            for alt in (f"bbox_{step_no}.png", f"step_{step_no}.png"):
+                if alt == filename:
+                    continue
+                for cand in _screenshot_candidates(study_id, agent_id, alt, live_dir):
+                    if cand.is_file() and cand.stat().st_size > 100:
+                        local = cand
+                        filename = alt
+                        break
+                if local is not None:
+                    break
+        if local is None:
+            return
+
+    gcs_uri = (
+        f"gs://{os.environ.get('MVP_GCS_BUCKET', 'usersim-bakeoff-347838016394')}"
+        f"/mvp_studies/{study_id}/screenshots/{agent_id}/{filename}"
+    )
     try:
         from mvp.gcs_store import screenshot_gcs_uri
 
@@ -97,7 +148,6 @@ def _persist_screenshot(study_id: str, agent_id: str, step: dict[str, Any], live
     _upload(local, gcs_uri, content_type=f"image/{'png' if ext == 'png' else 'jpeg'}")
     step["screenshot_url"] = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/{filename}"
     step["screenshot_gcs"] = gcs_uri
-
 
 async def _run_one(
     *,
