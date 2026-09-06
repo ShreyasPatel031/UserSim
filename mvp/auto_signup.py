@@ -1554,6 +1554,9 @@ async def sign_up(
                 )
                 ctx["agent_task"] = agent_task
                 ctx["event_loop"] = asyncio.get_running_loop()
+                import threading as _threading
+
+                ctx["main_thread_id"] = _threading.get_ident()
 
                 async def _force_stop_if_armed() -> bool:
                     """Return True once escalate/block is armed and stop was requested.
