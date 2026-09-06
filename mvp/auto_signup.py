@@ -328,7 +328,7 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
     want = (host or "").lower().removeprefix("www.")
     if "." in want:
         want = ".".join(want.split(".")[-2:])
-    auth_hints = ("auth_token", "access_token", "refresh_token", "id_token", "jwt", "credential", "logged_in", "session_token", "_auth")
+    auth_hints = ("sess", "auth", "token", "login", "sid", "jwt", "credential")
     noise = (
         "analytics",
         "ab.storage",

@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 # Substrings that indicate a session rather than analytics or consent state.
-AUTH_HINTS = ("auth_token", "access_token", "refresh_token", "id_token", "jwt", "credential", "logged_in", "session_token", "_auth")
+AUTH_HINTS = ("sess", "auth", "token", "login", "sid", "jwt", "credential")
 
 # Analytics vendors mint cookies with "session" in the name on any page view;
 # counting those is how a marketing page gets mistaken for a signed-in app.
