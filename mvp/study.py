@@ -141,10 +141,11 @@ async def _prefetch_browser_sessions(n: int) -> list[Any]:
     from capability.browserbase_client import create_session, ensure_browserbase_full_parallel
 
     ensure_browserbase_full_parallel()
-    # Create all sessions at once — no stagger on Developer (concurrency 25).
+    # keep_alive=True: without it Browserbase closes the CDP socket under parallel
+    # load (HTTP 410), agents reconnect-fail, then fall back to local Chrome.
     return list(
         await asyncio.gather(
-            *[asyncio.to_thread(create_session, proxies=False, keep_alive=False) for _ in range(n)]
+            *[asyncio.to_thread(create_session, proxies=False, keep_alive=True) for _ in range(n)]
         )
     )
 
@@ -1555,10 +1556,13 @@ async def run_study(
                         result = {**run, **feedback, "mode": "browser"}
                     except Exception as exc:  # noqa: BLE001
                         sess["status"] = "error"
+                        # Prefer a fresh Browserbase session over local Chrome.
+                        # Local fallback was attaching to the UserSim debug Chrome
+                        # and agents got stuck on http://127.0.0.1:8787/live.
                         log_activity(
                             study,
                             "agent_error",
-                            f"{persona.get('name')} browser failed — retrying with local Chromium",
+                            f"{persona.get('name')} browser failed — retrying Browserbase",
                             agent_id=agent_id,
                             error=str(exc)[:200],
                         )
@@ -1571,7 +1575,8 @@ async def run_study(
                                 persona=persona,
                                 segment=study.segment,
                                 on_step=lambda step: _on_agent_step(agent_id, step),
-                                local=True,
+                                bb_session=None,
+                                local=False,
                             )
                             sess["status"] = "summarizing"
                             feedback = await summarize_agent_feedback(
@@ -1587,15 +1592,15 @@ async def run_study(
                             }
                             for step in run.get("trace") or []:
                                 step["outcome"] = outcomes.get(step.get("step")) or "neutral"
-                            result = {**run, **feedback, "mode": "local_browser"}
+                            result = {**run, **feedback, "mode": "browser_retry"}
                             result["browser_error"] = (str(exc) or repr(exc))[:300]
-                        except Exception as local_exc:  # noqa: BLE001
+                        except Exception as retry_exc:  # noqa: BLE001
                             log_activity(
                                 study,
                                 "agent_error",
-                                f"{persona.get('name')} local browser failed — snapshot fallback",
+                                f"{persona.get('name')} Browserbase retry failed — snapshot fallback",
                                 agent_id=agent_id,
-                                error=str(local_exc)[:200],
+                                error=str(retry_exc)[:200],
                             )
                             result = await simulate_agent(
                                 url=study.url,
@@ -1607,7 +1612,7 @@ async def run_study(
                                 agent_id=agent_id,
                             )
                             result["mode"] = "fallback_snapshot"
-                            result["browser_error"] = (str(local_exc) or repr(local_exc))[:300]
+                            result["browser_error"] = (str(retry_exc) or repr(retry_exc))[:300]
 
                     result["persona_id"] = persona.get("id")
                     result["persona_name"] = persona.get("name")
@@ -1638,10 +1643,10 @@ async def run_study(
         order = {t.get("id"): i for i, t in enumerate(study.tasks)}
         study.agent_results.sort(key=lambda r: order.get(r.get("task_id"), 99))
 
-        # Fleet detach on Vercel: Spot copies finish + write summary themselves.
-        if study.status == "running":
-            persist_study(study)
-            return
+        # NOTE: do not early-return while status=="running". That aborted every
+        # successful local/Browserbase study before the executive summary and
+        # left the UI stuck at "N/N done" forever. GCP fleet detach returns
+        # earlier in the fleet branch.
 
         touch("Writing executive summary")
         if study.summary and study.summary.get("headline"):

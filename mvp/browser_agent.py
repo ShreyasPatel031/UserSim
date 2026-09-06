@@ -156,9 +156,12 @@ def _local_browser_profile(
         ),
         "wait_between_actions": 0.4,
     }
-    # Prefer real Chrome when available — YouTube treats stock Chromium more harshly.
-    if os.environ.get("MVP_BROWSER_CHANNEL", "chrome").lower() not in {"", "0", "none"}:
-        kwargs["channel"] = os.environ.get("MVP_BROWSER_CHANNEL", "chrome")
+    # Default: bundled Chromium. channel=chrome will attach to an already-open
+    # Google Chrome (e.g. the UserSim debug window on :9222) and agents get stuck
+    # on http://127.0.0.1:8787/live. Opt in with MVP_BROWSER_CHANNEL=chrome.
+    channel = os.environ.get("MVP_BROWSER_CHANNEL", "").lower()
+    if channel and channel not in {"", "0", "none", "chromium"}:
+        kwargs["channel"] = channel
     if user_data_dir:
         # A cloned signed-in profile: the only thing Google accepts.
         kwargs["user_data_dir"] = user_data_dir
@@ -167,6 +170,12 @@ def _local_browser_profile(
         # browser-use warns and fights itself if both storage_state and a temp
         # user_data_dir are set — keep cookies-only for parallel agents.
         kwargs["user_data_dir"] = None
+    else:
+        # Isolated temp profile so parallel local fallbacks never share cookies
+        # or attach to an existing Chrome user-data dir.
+        import tempfile
+
+        kwargs["user_data_dir"] = tempfile.mkdtemp(prefix="usersim-local-")
     return BrowserProfile(**kwargs)
 
 
@@ -439,7 +448,8 @@ async def run_browser_agent(
         # so parallel agents keep making progress together.
         owns_session = bb_session is None
         if owns_session:
-            bb_session = await asyncio.to_thread(create_session, proxies=False, keep_alive=False)
+            # keep_alive=True so parallel agents don't lose CDP mid-run (410 Gone).
+            bb_session = await asyncio.to_thread(create_session, proxies=False, keep_alive=True)
         session_url = getattr(bb_session, "session_url", None)
         connect = getattr(bb_session, "connect_url", None)
         if not connect:

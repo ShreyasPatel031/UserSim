@@ -167,7 +167,18 @@ def create_session(
         unique_attempts.append(a)
 
     def _build_kwargs(flags: dict[str, Any]) -> dict[str, Any]:
-        kwargs: dict[str, Any] = {"keep_alive": keep_alive}
+        # Project defaultTimeout is often 300s — parallel agents + LLM steps
+        # overrun that and Browserbase kills the CDP socket (HTTP 410).
+        try:
+            session_timeout_s = int(os.environ.get("BROWSERBASE_SESSION_TIMEOUT_S", "1800"))
+        except ValueError:
+            session_timeout_s = 1800
+        session_timeout_s = max(60, min(21600, session_timeout_s))
+        kwargs: dict[str, Any] = {
+            "keep_alive": keep_alive,
+            # SDK Python name; serialized as "timeout" for the API.
+            "api_timeout": session_timeout_s,
+        }
         if pid:
             kwargs["project_id"] = pid
         if flags.get("proxies"):
@@ -186,6 +197,9 @@ def create_session(
             return client.sessions.create(**kwargs)
         except TypeError:
             flat = {k: v for k, v in kwargs.items() if k != "browser_settings"}
+            # Older SDKs may want timeout= instead of api_timeout=.
+            if "api_timeout" in flat and "timeout" not in flat:
+                flat["timeout"] = flat.pop("api_timeout")
             bs = kwargs.get("browser_settings") or {}
             if bs.get("solveCaptchas"):
                 flat["solve_captchas"] = True
@@ -197,7 +211,7 @@ def create_session(
                 basic = {
                     k: v
                     for k, v in flat.items()
-                    if k in {"keep_alive", "project_id", "proxies"}
+                    if k in {"keep_alive", "project_id", "proxies", "api_timeout", "timeout"}
                 }
                 return client.sessions.create(**basic)
 

@@ -219,9 +219,13 @@ async def get_study(study_id: str):
     study = STUDIES.get(study_id)
     if study:
         data = study_to_dict(study)
-        # Merge fresher GCS state when fleet is still running / finished off-box.
-        # Prefer in-memory live_sessions when they already have frames — a stale
-        # study.json (written mid-provision) must not wipe them.
+        # In-memory live studies: return immediately. Hydrating GCS on every UI
+        # poll while 6 Browserbase agents are writing was starving the event
+        # loop (study GET timeouts / list 503s under parallel load).
+        live = data.get("live_sessions") or {}
+        if data.get("status") in {"running", "pending"} and live:
+            return data
+        # Merge fresher GCS state when fleet finished off-box / no local frames.
         if data.get("status") in {"running", "pending"} or not data.get("summary"):
             remote = await asyncio.to_thread(load_study_from_gcs, study_id)
             if remote:

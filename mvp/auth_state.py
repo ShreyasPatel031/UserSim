@@ -342,11 +342,69 @@ def youtube_needs_content_bootstrap(url: str, storage_state: dict[str, Any] | No
     return True
 
 
+def _short_youtube_query(persona_name: str = "", task_prompt: str = "") -> str:
+    """Build a short YouTube search seed — never dump the full task instruction.
+
+    Putting the whole persona task into ``search_query`` (80 chars of "As a Teen
+    Shorts Browser, you want to…") makes every agent navigate to garbage URLs,
+    burn steps on empty/timeout pages, and look "stuck" for 15+ minutes.
+    """
+    blob = f"{persona_name} {task_prompt}".lower()
+    if any(k in blob for k in ("short", "shorts", "tiktok")):
+        return "trending youtube shorts"
+    if any(k in blob for k in ("cartoon", "kids", "parent", "child")):
+        return "kids cartoons"
+    if any(k in blob for k in ("music", "song", "musician", "artist")):
+        return "new music videos"
+    if "news" in blob or "junkie" in blob:
+        return "today news headlines"
+    if any(k in blob for k in ("fitness", "workout", "coach", "gym")):
+        return "workout routines"
+    stop = {
+        "a",
+        "an",
+        "the",
+        "to",
+        "and",
+        "or",
+        "for",
+        "of",
+        "in",
+        "on",
+        "as",
+        "you",
+        "your",
+        "want",
+        "find",
+        "with",
+        "from",
+        "that",
+        "this",
+        "into",
+        "about",
+        "how",
+        "what",
+        "when",
+        "where",
+        "open",
+        "go",
+        "try",
+        "look",
+        "locate",
+        "review",
+        "explore",
+        "search",
+        "browse",
+        "navigate",
+    }
+    tokens = re.findall(r"[a-z0-9]+", (persona_name or task_prompt or "videos").lower())
+    keep = [t for t in tokens if t not in stop and len(t) > 1][:5]
+    return " ".join(keep) or "interesting videos"
+
+
 def youtube_bootstrap_url(task_prompt: str = "", persona_name: str = "") -> str:
     """Search results always render video tiles even when the home feed is empty."""
-    seed = (task_prompt or persona_name or "interesting videos").strip()
-    # Keep query short and concrete.
-    seed = re.sub(r"\s+", " ", seed)[:80]
+    seed = _short_youtube_query(persona_name, task_prompt)
     return f"https://www.youtube.com/results?search_query={quote_plus(seed)}"
 
 
