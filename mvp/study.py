@@ -1067,6 +1067,31 @@ async def run_study(
                 f"Expanded to {len(study.tasks)} parallel runs "
                 f"({before} tasks × {1 + len(study.competitors)} sites)",
             )
+            # Cap total Browserbase sessions so Vercel survives product+rivals.
+            # Round-robin by site so competitors aren't all truncated away.
+            max_sessions = int(
+                os.environ.get(
+                    "MVP_MAX_SESSIONS",
+                    "9" if IS_VERCEL_ENV else "18",
+                )
+            )
+            if max_sessions > 0 and len(study.tasks) > max_sessions:
+                by_site: dict[str, list[dict[str, Any]]] = {}
+                for task in study.tasks:
+                    by_site.setdefault(str(task.get("site_key") or "product"), []).append(task)
+                picked: list[dict[str, Any]] = []
+                while len(picked) < max_sessions and any(by_site.values()):
+                    for key in list(by_site.keys()):
+                        bucket = by_site.get(key) or []
+                        if bucket and len(picked) < max_sessions:
+                            picked.append(bucket.pop(0))
+                study.tasks = picked
+                log_activity(
+                    study,
+                    "plan",
+                    f"Capped to {len(study.tasks)} parallel sessions "
+                    f"(MVP_MAX_SESSIONS={max_sessions})",
+                )
         else:
             for task in study.tasks:
                 task["site_key"] = "product"

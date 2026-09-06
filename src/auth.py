@@ -138,6 +138,13 @@ def _from_credentials_file(path: Path):
 
 
 def _from_gcloud() -> Credentials:
+    import shutil
+
+    if shutil.which("gcloud") is None:
+        raise RuntimeError(
+            "Vertex credentials missing. Set VERTEX_ADC_JSON (or "
+            "GOOGLE_APPLICATION_CREDENTIALS) — gcloud is not installed here."
+        )
     token = subprocess.check_output(
         ["gcloud", "auth", "print-access-token", f"--account={GCP_ACCOUNT}"],
         text=True,
@@ -208,9 +215,15 @@ def vertex_credentials() -> Credentials:
     except Exception:
         pass
 
-    # No refresh token available: access tokens live ~1h, so keep the cache well
-    # inside that window rather than assuming a run finishes before expiry.
-    creds = _from_gcloud()
+    # Last resort for local laptops with gcloud login. Serverless (Vercel) must
+    # use VERTEX_ADC_JSON — never FileNotFoundError on a missing gcloud binary.
+    try:
+        creds = _from_gcloud()
+    except FileNotFoundError as exc:
+        raise RuntimeError(
+            "Vertex credentials missing. Set VERTEX_ADC_JSON on Vercel "
+            "(gcloud CLI is not available in serverless)."
+        ) from exc
     _cached = creds
     _expires = now + timedelta(minutes=20)
     return _cached

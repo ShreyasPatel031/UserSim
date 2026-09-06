@@ -122,10 +122,9 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     study.backend = body.backend or "default"
     # Keep user-pinned competitors even in quick preview.
     study.competitors = [c.strip() for c in body.competitors if c and c.strip()]
-    # Empty competitors box = product-only. Inventing 2 rivals × 5 personas × N
-    # tasks creates 15–30 Browserbase sessions and dies on Vercel’s time budget.
-    # Users who want rivals can paste them (or we’ll add an explicit opt-in later).
-    study.skip_competitors = bool(body.skip_competitors) or not study.competitors
+    # Default: invent ~2 rivals when the box is blank (product + rivals in Products).
+    # Only skip when the client explicitly opts out.
+    study.skip_competitors = bool(body.skip_competitors)
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
     if study.test_mode and not study.tasks_override:
         study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
