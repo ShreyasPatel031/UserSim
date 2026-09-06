@@ -1,0 +1,278 @@
+2026-09-05 18:07:15 fm-gate0-befm: worker dead — relaunching
+2026-09-05 18:08:01 fm-gate0-befm: relaunch issued
+2026-09-05 18:08:20 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 18:08:22 fm-gate0-minitaur: status=RUNNING
+2026-09-05 18:08:27 fm-gate0-minitaur: worker healthy
+2026-09-05 18:30:25 fm-gate0-socrates-l4: describe failed: ERROR: gcloud crashed (ConnectionError): HTTPSConnectionPool(host='compute.googleapis.com', port=443): Max retries exceeded with url: /compute/v1/projects/project-amer-scs-sandbox/zones/us-central1-a/
+2026-09-05 18:30:25 fm-gate0-socrates-l4: status=UNKNOWN
+2026-09-05 18:30:25 fm-gate0-socrates-l4: not RUNNING yet (UNKNOWN), will retry next poll
+2026-09-05 18:30:28 fm-gate0-socrates-l4: describe failed: ERROR: gcloud crashed (ConnectionError): HTTPSConnectionPool(host='compute.googleapis.com', port=443): Max retries exceeded with url: /compute/v1/projects/project-amer-scs-sandbox/zones/us-central1-a/
+2026-09-05 18:30:31 fm-gate0-befm: describe failed: ERROR: gcloud crashed (ConnectionError): HTTPSConnectionPool(host='compute.googleapis.com', port=443): Max retries exceeded with url: /compute/v1/projects/project-amer-scs-sandbox/zones/us-central1-b/
+2026-09-05 18:30:31 fm-gate0-befm: status=UNKNOWN
+2026-09-05 18:30:31 fm-gate0-befm: not RUNNING yet (UNKNOWN), will retry next poll
+2026-09-05 18:30:33 fm-gate0-befm: describe failed: ERROR: gcloud crashed (ConnectionError): HTTPSConnectionPool(host='compute.googleapis.com', port=443): Max retries exceeded with url: /compute/v1/projects/project-amer-scs-sandbox/zones/us-central1-b/
+2026-09-05 18:30:36 fm-gate0-minitaur: describe failed: ERROR: gcloud crashed (ConnectionError): HTTPSConnectionPool(host='compute.googleapis.com', port=443): Max retries exceeded with url: /compute/v1/projects/project-amer-scs-sandbox/zones/us-central1-b/
+2026-09-05 18:30:36 fm-gate0-minitaur: status=UNKNOWN
+2026-09-05 18:30:36 fm-gate0-minitaur: not RUNNING yet (UNKNOWN), will retry next poll
+2026-09-05 18:37:36 fm-gate0-minitaur: describe failed: ERROR: gcloud crashed (ConnectionError): HTTPSConnectionPool(host='compute.googleapis.com', port=443): Max retries exceeded with url: /compute/v1/projects/project-amer-scs-sandbox/zones/us-central1-b/
+2026-09-05 18:58:14 fm-gate0-socrates-l4: status=TERMINATED
+2026-09-05 18:58:14 fm-gate0-socrates-l4: starting (was preempted/stopped)
+2026-09-05 18:58:17 fm-gate0-socrates-l4: start FAILED: Starting instance(s) fm-gate0-socrates-l4...
+.....failed.
+ERROR: (gcloud.compute.instances.start) ---
+code: ZONE_RESOURCE_POOL_EXHAUSTED_WITH_DETAILS
+errorDetails:
+- help:
+    links:
+    - description: Troubleshooting documentation
+      url: https://cloud.google.com/compute/docs/resource-error
+- lo
+2026-09-05 18:58:19 fm-gate0-befm: status=RUNNING
+2026-09-05 18:58:25 fm-gate0-befm: worker dead — relaunching
+2026-09-05 18:58:27 fm-gate0-befm: relaunch issued
+2026-09-05 18:58:45 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 18:58:47 fm-gate0-minitaur: status=RUNNING
+2026-09-05 18:58:53 fm-gate0-minitaur: worker healthy
+2026-09-05 19:00:55 fm-gate0-socrates-l4: status=TERMINATED
+2026-09-05 19:00:55 fm-gate0-socrates-l4: starting (was preempted/stopped)
+2026-09-05 19:01:04 fm-gate0-socrates-l4: start requested OK
+2026-09-05 19:01:41 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:01:43 fm-gate0-befm: status=RUNNING
+2026-09-05 19:01:48 fm-gate0-befm: worker healthy
+2026-09-05 19:01:51 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:01:57 fm-gate0-minitaur: worker healthy
+2026-09-05 19:03:59 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:04:04 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:04:06 fm-gate0-befm: status=RUNNING
+2026-09-05 19:04:12 fm-gate0-befm: worker dead — relaunching
+2026-09-05 19:04:42 fm-gate0-befm: relaunch issued
+2026-09-05 19:05:01 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 19:05:03 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:05:11 fm-gate0-minitaur: worker healthy
+2026-09-05 19:07:14 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:07:21 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:07:23 fm-gate0-befm: status=RUNNING
+2026-09-05 19:07:31 fm-gate0-befm: worker healthy
+2026-09-05 19:07:33 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:07:41 fm-gate0-minitaur: worker healthy
+2026-09-05 19:09:43 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:09:48 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:09:50 fm-gate0-befm: status=RUNNING
+2026-09-05 19:09:55 fm-gate0-befm: worker dead — relaunching
+2026-09-05 19:10:58 fm-gate0-befm: relaunch issued
+2026-09-05 19:11:15 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 19:11:17 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:11:23 fm-gate0-minitaur: worker healthy
+2026-09-05 19:13:25 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:13:30 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:13:32 fm-gate0-befm: status=RUNNING
+2026-09-05 19:13:38 fm-gate0-befm: worker healthy
+2026-09-05 19:14:38 fm-gate0-befm: timeout
+2026-09-05 19:14:39 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:14:45 fm-gate0-minitaur: worker healthy
+2026-09-05 19:16:48 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:16:54 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:16:55 fm-gate0-befm: status=RUNNING
+2026-09-05 19:17:00 fm-gate0-befm: worker dead — relaunching
+2026-09-05 19:17:13 fm-gate0-befm: relaunch issued
+2026-09-05 19:17:31 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 19:17:33 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:17:39 fm-gate0-minitaur: worker healthy
+2026-09-05 19:19:42 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:19:49 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:19:51 fm-gate0-befm: status=RUNNING
+2026-09-05 19:19:56 fm-gate0-befm: worker healthy
+2026-09-05 19:20:02 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:20:09 fm-gate0-minitaur: worker healthy
+2026-09-05 19:22:13 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:22:21 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:22:24 fm-gate0-befm: status=RUNNING
+2026-09-05 19:22:29 fm-gate0-befm: worker dead — relaunching
+2026-09-05 19:23:28 fm-gate0-befm: relaunch issued
+2026-09-05 19:23:46 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 19:23:48 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:23:54 fm-gate0-minitaur: worker healthy
+2026-09-05 19:25:56 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:26:02 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:26:04 fm-gate0-befm: status=RUNNING
+2026-09-05 19:26:09 fm-gate0-befm: worker healthy
+2026-09-05 19:26:11 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:26:17 fm-gate0-minitaur: worker healthy
+2026-09-05 19:28:24 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:28:31 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:28:33 fm-gate0-befm: status=RUNNING
+2026-09-05 19:28:39 fm-gate0-befm: worker dead — relaunching
+2026-09-05 19:28:42 fm-gate0-befm: relaunch issued
+2026-09-05 19:29:00 fm-gate0-befm: post-relaunch healthy=False
+2026-09-05 19:29:03 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:29:09 fm-gate0-minitaur: worker healthy
+2026-09-05 19:31:11 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:31:16 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:31:18 fm-gate0-befm: status=RUNNING
+2026-09-05 19:31:23 fm-gate0-befm: worker healthy
+2026-09-05 19:31:25 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:31:30 fm-gate0-minitaur: worker healthy
+2026-09-05 19:33:33 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:33:38 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:33:40 fm-gate0-befm: status=RUNNING
+2026-09-05 19:33:45 fm-gate0-befm: worker healthy
+2026-09-05 19:33:47 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:33:53 fm-gate0-minitaur: worker healthy
+2026-09-05 19:35:55 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:36:01 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:36:03 fm-gate0-befm: status=RUNNING
+2026-09-05 19:36:10 fm-gate0-befm: worker healthy
+2026-09-05 19:36:11 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:36:18 fm-gate0-minitaur: worker healthy
+2026-09-05 19:38:20 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:38:26 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:38:30 fm-gate0-befm: status=RUNNING
+2026-09-05 19:38:36 fm-gate0-befm: worker healthy
+2026-09-05 19:38:38 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:38:47 fm-gate0-minitaur: worker healthy
+2026-09-05 19:40:49 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:40:55 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:40:56 fm-gate0-befm: status=RUNNING
+2026-09-05 19:41:03 fm-gate0-befm: worker dead — relaunching
+2026-09-05 19:41:06 fm-gate0-befm: relaunch issued
+2026-09-05 19:41:25 fm-gate0-befm: post-relaunch healthy=False
+2026-09-05 19:41:32 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:41:40 fm-gate0-minitaur: worker healthy
+2026-09-05 19:43:44 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:43:50 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:43:53 fm-gate0-befm: status=RUNNING
+2026-09-05 19:44:00 fm-gate0-befm: worker healthy
+2026-09-05 19:44:02 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:44:08 fm-gate0-minitaur: worker healthy
+2026-09-05 19:46:11 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:46:21 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:46:25 fm-gate0-befm: status=RUNNING
+2026-09-05 19:46:31 fm-gate0-befm: worker healthy
+2026-09-05 19:46:34 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:46:47 fm-gate0-minitaur: worker healthy
+2026-09-05 19:48:51 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:49:34 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:49:36 fm-gate0-befm: status=RUNNING
+2026-09-05 19:49:44 fm-gate0-befm: worker healthy
+2026-09-05 19:49:46 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:49:51 fm-gate0-minitaur: worker healthy
+2026-09-05 19:51:53 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:51:59 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:52:01 fm-gate0-befm: status=RUNNING
+2026-09-05 19:52:14 fm-gate0-befm: worker healthy
+2026-09-05 19:52:19 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:52:26 fm-gate0-minitaur: worker healthy
+2026-09-05 19:54:29 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:54:35 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:54:36 fm-gate0-befm: status=RUNNING
+2026-09-05 19:54:41 fm-gate0-befm: worker dead — relaunching
+2026-09-05 19:54:45 fm-gate0-befm: relaunch issued
+2026-09-05 19:55:04 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 19:55:05 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:55:11 fm-gate0-minitaur: worker healthy
+2026-09-05 19:57:14 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:57:21 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:57:23 fm-gate0-befm: status=RUNNING
+2026-09-05 19:57:33 fm-gate0-befm: worker healthy
+2026-09-05 19:57:37 fm-gate0-minitaur: status=RUNNING
+2026-09-05 19:57:49 fm-gate0-minitaur: worker healthy
+2026-09-05 19:59:52 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 19:59:57 fm-gate0-socrates-l4: worker healthy
+2026-09-05 19:59:59 fm-gate0-befm: status=RUNNING
+2026-09-05 20:00:06 fm-gate0-befm: worker dead — relaunching
+2026-09-05 20:01:00 fm-gate0-befm: relaunch issued
+2026-09-05 20:01:18 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 20:01:20 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:01:25 fm-gate0-minitaur: worker healthy
+2026-09-05 20:03:27 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:03:33 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:03:36 fm-gate0-befm: status=RUNNING
+2026-09-05 20:03:48 fm-gate0-befm: worker healthy
+2026-09-05 20:03:50 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:03:58 fm-gate0-minitaur: worker healthy
+2026-09-05 20:06:00 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:06:07 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:06:11 fm-gate0-befm: status=RUNNING
+2026-09-05 20:06:17 fm-gate0-befm: worker dead — relaunching
+2026-09-05 20:07:15 fm-gate0-befm: relaunch issued
+2026-09-05 20:07:33 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 20:07:35 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:07:40 fm-gate0-minitaur: worker healthy
+2026-09-05 20:09:42 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:09:50 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:09:52 fm-gate0-befm: status=RUNNING
+2026-09-05 20:09:58 fm-gate0-befm: worker healthy
+2026-09-05 20:10:00 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:10:06 fm-gate0-minitaur: worker healthy
+2026-09-05 20:12:08 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:12:14 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:12:18 fm-gate0-befm: status=RUNNING
+2026-09-05 20:12:24 fm-gate0-befm: worker dead — relaunching
+2026-09-05 20:12:27 fm-gate0-befm: relaunch issued
+2026-09-05 20:12:45 fm-gate0-befm: post-relaunch healthy=False
+2026-09-05 20:12:51 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:12:57 fm-gate0-minitaur: worker healthy
+2026-09-05 20:14:59 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:15:04 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:15:06 fm-gate0-befm: status=RUNNING
+2026-09-05 20:15:11 fm-gate0-befm: worker healthy
+2026-09-05 20:15:13 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:15:18 fm-gate0-minitaur: worker healthy
+2026-09-05 20:17:21 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:17:28 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:17:30 fm-gate0-befm: status=RUNNING
+2026-09-05 20:17:37 fm-gate0-befm: worker healthy
+2026-09-05 20:17:39 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:17:44 fm-gate0-minitaur: worker healthy
+2026-09-05 20:19:46 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:19:52 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:19:54 fm-gate0-befm: status=RUNNING
+2026-09-05 20:20:01 fm-gate0-befm: worker healthy
+2026-09-05 20:20:04 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:20:09 fm-gate0-minitaur: worker healthy
+2026-09-05 20:22:12 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:22:32 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:22:39 fm-gate0-befm: status=RUNNING
+2026-09-05 20:23:16 fm-gate0-befm: worker healthy
+2026-09-05 20:23:18 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:23:24 fm-gate0-minitaur: worker healthy
+2026-09-05 20:25:30 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:25:46 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:25:50 fm-gate0-befm: status=RUNNING
+2026-09-05 20:25:59 fm-gate0-befm: worker dead — relaunching
+2026-09-05 20:26:03 fm-gate0-befm: relaunch issued
+2026-09-05 20:26:24 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 20:26:27 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:26:38 fm-gate0-minitaur: worker healthy
+2026-09-05 20:28:41 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:28:47 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:28:48 fm-gate0-befm: status=RUNNING
+2026-09-05 20:28:54 fm-gate0-befm: worker healthy
+2026-09-05 20:28:56 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:29:02 fm-gate0-minitaur: worker healthy
+2026-09-05 20:31:04 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:31:10 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:31:12 fm-gate0-befm: status=RUNNING
+2026-09-05 20:31:17 fm-gate0-befm: worker dead — relaunching
+2026-09-05 20:32:16 fm-gate0-befm: relaunch issued
+2026-09-05 20:32:36 fm-gate0-befm: post-relaunch healthy=True
+2026-09-05 20:32:39 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:32:46 fm-gate0-minitaur: worker healthy
+2026-09-05 20:34:49 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:35:00 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:35:01 fm-gate0-befm: status=RUNNING
+2026-09-05 20:35:07 fm-gate0-befm: worker healthy
+2026-09-05 20:35:08 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:35:14 fm-gate0-minitaur: worker healthy
+2026-09-05 20:37:17 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:37:27 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:37:31 fm-gate0-befm: status=RUNNING
+2026-09-05 20:37:38 fm-gate0-befm: worker healthy
+2026-09-05 20:37:42 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:37:51 fm-gate0-minitaur: worker healthy
+2026-09-05 20:39:55 fm-gate0-socrates-l4: status=RUNNING
+2026-09-05 20:40:06 fm-gate0-socrates-l4: worker healthy
+2026-09-05 20:40:08 fm-gate0-befm: status=RUNNING
+2026-09-05 20:40:14 fm-gate0-befm: worker healthy
+2026-09-05 20:40:16 fm-gate0-minitaur: status=RUNNING
+2026-09-05 20:40:23 fm-gate0-minitaur: worker healthy

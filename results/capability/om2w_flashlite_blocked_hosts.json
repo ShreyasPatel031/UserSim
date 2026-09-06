@@ -1,0 +1,222 @@
+{
+  "n_blocked_tasks": 78,
+  "n_hosts": 33,
+  "hosts": [
+    "apartments.com",
+    "babycenter.com",
+    "backcountry.com",
+    "bandcamp.com",
+    "carmax.com",
+    "cars.com",
+    "carvana.com",
+    "dillards.com",
+    "drugs.com",
+    "eventbrite.com",
+    "fedex.com",
+    "google.com",
+    "healthgrades.com",
+    "imdb.com",
+    "kaggle.com",
+    "kbb.com",
+    "landwatch.com",
+    "marriott.com",
+    "mayoclinic.org",
+    "microcenter.com",
+    "nba.com",
+    "new.mta.info",
+    "petfinder.com",
+    "porsche.com",
+    "recreation.gov",
+    "remax.com",
+    "sec.gov",
+    "sourceforge.net",
+    "spothero.com",
+    "target.com",
+    "uniqlo.com",
+    "zara.com",
+    "ziprecruiter.com"
+  ],
+  "host_start_urls": {
+    "carvana.com": "https://www.carvana.com/",
+    "cars.com": "https://www.cars.com/",
+    "apartments.com": "https://www.apartments.com/",
+    "healthgrades.com": "https://www.healthgrades.com/",
+    "porsche.com": "https://www.porsche.com/",
+    "google.com": "https://www.google.com/shopping?udm=28",
+    "drugs.com": "https://www.drugs.com/",
+    "petfinder.com": "https://www.petfinder.com/",
+    "target.com": "https://www.target.com/",
+    "recreation.gov": "https://www.recreation.gov/",
+    "carmax.com": "https://www.carmax.com/",
+    "new.mta.info": "https://new.mta.info/",
+    "landwatch.com": "https://www.landwatch.com/",
+    "uniqlo.com": "https://www.uniqlo.com/",
+    "dillards.com": "https://www.dillards.com/",
+    "sourceforge.net": "https://sourceforge.net/",
+    "fedex.com": "https://www.fedex.com/en-us/home.html",
+    "backcountry.com": "https://www.backcountry.com/",
+    "microcenter.com": "https://www.microcenter.com/",
+    "marriott.com": "https://www.marriott.com/",
+    "nba.com": "https://www.nba.com/",
+    "mayoclinic.org": "https://www.mayoclinic.org/",
+    "spothero.com": "https://spothero.com/",
+    "ziprecruiter.com": "https://ziprecruiter.com/",
+    "babycenter.com": "https://www.babycenter.com/",
+    "eventbrite.com": "https://www.eventbrite.com/",
+    "imdb.com": "https://www.imdb.com/",
+    "sec.gov": "https://www.sec.gov/",
+    "bandcamp.com": "https://bandcamp.com/",
+    "kbb.com": "https://www.kbb.com/",
+    "remax.com": "https://www.remax.com/",
+    "zara.com": "https://zara.com/us",
+    "kaggle.com": "https://www.kaggle.com/"
+  },
+  "blocked_eval_indices_by_host": {
+    "carvana.com": [
+      7
+    ],
+    "cars.com": [
+      177,
+      38,
+      44,
+      144,
+      278,
+      149
+    ],
+    "apartments.com": [
+      277,
+      187,
+      191,
+      179,
+      113,
+      199
+    ],
+    "healthgrades.com": [
+      46,
+      47,
+      176,
+      189,
+      43,
+      48
+    ],
+    "porsche.com": [
+      246
+    ],
+    "google.com": [
+      60,
+      51,
+      70,
+      105
+    ],
+    "drugs.com": [
+      160,
+      101,
+      151,
+      153,
+      152,
+      93,
+      143,
+      112
+    ],
+    "petfinder.com": [
+      147,
+      173,
+      188,
+      274
+    ],
+    "target.com": [
+      30
+    ],
+    "recreation.gov": [
+      180
+    ],
+    "carmax.com": [
+      26,
+      33,
+      5
+    ],
+    "new.mta.info": [
+      6,
+      19,
+      263
+    ],
+    "landwatch.com": [
+      56,
+      71,
+      135,
+      103
+    ],
+    "uniqlo.com": [
+      17
+    ],
+    "dillards.com": [
+      267
+    ],
+    "sourceforge.net": [
+      237
+    ],
+    "fedex.com": [
+      36,
+      136,
+      133
+    ],
+    "backcountry.com": [
+      236
+    ],
+    "microcenter.com": [
+      20,
+      15
+    ],
+    "marriott.com": [
+      16
+    ],
+    "nba.com": [
+      39,
+      169,
+      62,
+      182
+    ],
+    "mayoclinic.org": [
+      139,
+      155,
+      163
+    ],
+    "spothero.com": [
+      289
+    ],
+    "ziprecruiter.com": [
+      265
+    ],
+    "babycenter.com": [
+      142
+    ],
+    "eventbrite.com": [
+      23
+    ],
+    "imdb.com": [
+      252,
+      13
+    ],
+    "sec.gov": [
+      293
+    ],
+    "bandcamp.com": [
+      225
+    ],
+    "kbb.com": [
+      12,
+      32
+    ],
+    "remax.com": [
+      54
+    ],
+    "zara.com": [
+      224
+    ],
+    "kaggle.com": [
+      282
+    ]
+  },
+  "headed_rescued_hosts": [],
+  "headed_still_blocked_hosts": []
+}

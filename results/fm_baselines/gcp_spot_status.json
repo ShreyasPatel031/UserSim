@@ -1,0 +1,8 @@
+{
+  "ts": "2026-09-05T20:39:54",
+  "jobs": {
+    "fm-gate0-socrates-l4": "RUNNING",
+    "fm-gate0-befm": "RUNNING",
+    "fm-gate0-minitaur": "RUNNING"
+  }
+}
