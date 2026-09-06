@@ -603,6 +603,48 @@ def _build_signup_tools(ctx: dict[str, Any]):
     host: str = ctx["host"]
     page_getter = ctx["page_getter"]  # callable () -> page
 
+    def _request_stop(reason: str = "") -> None:
+        """Best-effort agent.stop from inside a tool (event-loop may be wedged)."""
+        import threading
+        import time as _t
+
+        stop = ctx.get("stop_agent")
+        if callable(stop):
+            try:
+                stop()
+                print(f"==> stop_agent from tool ({reason})", flush=True)
+            except Exception as exc:  # noqa: BLE001
+                print(f"==> stop_agent from tool failed: {exc}", flush=True)
+
+        def _kick() -> None:
+            for _ in range(20):
+                _t.sleep(0.25)
+                if not (
+                    ctx.get("escalate_requested")
+                    or (ctx.get("done") and ctx.get("blocker"))
+                ):
+                    return
+                stop2 = ctx.get("stop_agent")
+                if not callable(stop2):
+                    continue
+                try:
+                    stop2()
+                    print(f"==> stop_agent re-kick ({reason})", flush=True)
+                except Exception:
+                    pass
+
+        threading.Thread(target=_kick, name="antibot-stop-kick", daemon=True).start()
+
+
+    def _arm_escalate(kind: str, detail: str = "") -> None:
+        ctx["escalate_kind"] = kind
+        ctx["escalate_requested"] = True
+        ctx["escalate_detail"] = detail or ""
+        ctx["blocker"] = None
+        ctx["done"] = True
+        _request_stop(f"escalate:{kind}")
+
+
     class ReportBlockedParams(BaseModel):
         reason: str = Field(
             description=(
@@ -794,9 +836,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
         bb_flags = ctx.get("bb_flags") or {}
         # Cheap session: do not burn CapSolver/human quota until BB captcha is armed.
         if ctx.get("use_bb") and not bb_flags.get("solve_captchas"):
-            ctx["escalate_kind"] = "captcha"
-            ctx["escalate_requested"] = True
-            ctx["done"] = True
+            _arm_escalate("captcha", "solve_captcha:escalate")
             return ActionResult(
                 is_done=True,
                 success=False,
@@ -860,9 +900,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
         if ctx.get("use_bb") and (
             not bb_flags.get("proxies") or not bb_flags.get("advanced_stealth")
         ):
-            ctx["escalate_kind"] = "captcha"
-            ctx["escalate_requested"] = True
-            ctx["done"] = True
+            _arm_escalate("captcha", "solve_captcha:escalate")
             return ActionResult(
                 is_done=True,
                 success=False,
@@ -910,7 +948,6 @@ def _build_signup_tools(ctx: dict[str, Any]):
         "steps in wait loops. Soft product gates (card/SSO/invite/waitlist) use "
         "report_blocked instead.",
         param_model=EscalateAntibotParams,
-        terminates_sequence=True,
     )
     async def request_antibot_escalation(params: EscalateAntibotParams):
         kind = (params.kind or "").strip().lower().replace("-", "_")
@@ -941,6 +978,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
             ctx["blocker"] = mapped
             ctx["blocker_detail"] = params.detail or f"escalate_ceiling:{kind}"
             ctx["done"] = True
+            _request_stop(f"ceiling:{kind}")
             return ActionResult(
                 is_done=True,
                 success=False,
@@ -954,11 +992,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
                 include_in_memory=True,
                 long_term_memory=f"Antibot ceiling for {kind}; treat as blocked.",
             )
-        ctx["escalate_kind"] = kind
-        ctx["escalate_requested"] = True
-        ctx["escalate_detail"] = params.detail or ""
-        ctx["blocker"] = None
-        ctx["done"] = True
+        _arm_escalate(kind, params.detail or "")
         try:
             record_observation(
                 host=host,
@@ -1030,7 +1064,6 @@ def _build_signup_tools(ctx: dict[str, Any]):
         "antibot is still OFF, prefer request_antibot_escalation first. "
         "Call this instead of looping when blocked.",
         param_model=ReportBlockedParams,
-        terminates_sequence=True,
     )
     async def report_blocked(params: ReportBlockedParams):
         reason = (params.reason or "unknown").strip().lower()
@@ -1039,11 +1072,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
         bb_flags = ctx.get("bb_flags") or {}
         if ctx.get("use_bb"):
             if reason == "captcha_unsolved" and _next_antibot_flags(bb_flags, "captcha"):
-                ctx["escalate_kind"] = "captcha"
-                ctx["escalate_requested"] = True
-                ctx["escalate_detail"] = params.detail or "report_blocked:captcha_unsolved"
-                ctx["blocker"] = None
-                ctx["done"] = True
+                _arm_escalate("captcha", params.detail or "report_blocked:captcha_unsolved")
                 return ActionResult(
                     is_done=True,
                     success=False,
@@ -1057,11 +1086,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
                     include_in_memory=True,
                 )
             if reason == "rate_limited" and _next_antibot_flags(bb_flags, "rate_limit"):
-                ctx["escalate_kind"] = "rate_limit"
-                ctx["escalate_requested"] = True
-                ctx["escalate_detail"] = params.detail or "report_blocked:rate_limited"
-                ctx["blocker"] = None
-                ctx["done"] = True
+                _arm_escalate("rate_limit", params.detail or "report_blocked:rate_limited")
                 return ActionResult(
                     is_done=True,
                     success=False,
@@ -1076,6 +1101,7 @@ def _build_signup_tools(ctx: dict[str, Any]):
         ctx["blocker"] = reason
         ctx["blocker_detail"] = params.detail or ""
         ctx["done"] = True
+        _request_stop(f"blocked:{reason}")
         try:
             record_observation(
                 host=host,
@@ -1365,6 +1391,8 @@ async def sign_up(
                         "get_signup_tips once."
                     ),
                 )
+                ctx["stop_agent"] = agent.stop
+
 
                 # Flash rarely calls get_signup_tips on its own. When browser-use
                 # reports loop/stagnation, inject host-matched tips as a follow-up
