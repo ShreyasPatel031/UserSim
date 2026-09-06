@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p5_parent_filters_vimeo",
+  "eval_index": 20522,
+  "website": "vimeo",
+  "persona_id": "p5_parent",
+  "persona_name": "Taylor Morgan",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p5_parent_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:35.730507+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 152.744,
+  "final_result": "I am unable to complete the request because the search on DuckDuckGo led to a CAPTCHA page. The interactive image elements required to solve the CAPTCHA do not have assigned indices, which prevents me from interacting with them and proceeding to the search results. Therefore, I cannot search for home workout videos on Vimeo or apply any filters.",
+  "final_url": "https://duckduckgo.com/?q=site%3Avimeo.com+home+workout+videos",
+  "ok": true,
+  "finished_at": "2026-08-29T23:39:21.259096+00:00"
+}

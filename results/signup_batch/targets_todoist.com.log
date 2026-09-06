@@ -1,0 +1,302 @@
+Chrome pid=14743 profile=/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/todoist.com port=9500
+INFO     [service] Using anonymized telemetry, see https://docs.browser-use.com/development/monitoring/telemetry.
+INFO     [Agent] 💬 Saving conversation to ~/Desktop/Code/UserSim/secrets/signup_steps/todoist.com/conversation
+INFO     [Agent] [34m🎯 Task: Create a free account on https://todoist.com/auth/signup for product host todoist.com.
+IDENTITY (use these exact values; do not invent credentials):
+{"email": "shreyashfs+todoist@gmail.com", "password": "BEP@pLQmqWA8Vkdxe!B$qO%%", "full_name": "Shreyas Patel", "company": "UserSim", "phone": "3177172607"}
+You may call get_identity() once to confirm — do NOT call it repeatedly.
+Flow:
+1. You should already be on a signup page. If not, open Sign up / Create account (not Sign in).
+2. Fill the registration form with the IDENTITY values above.
+3. Accept terms if required. Skip optional marketing checkboxes.
+4. If email verification is required: call mark_email_requested(), then get_email_code() or get_email_link() and complete verification.
+   NEVER invent a verification code. Type the exact digits the tool returned. If you cannot see a real code, call the tool again — do not guess placeholders like 123456.
+5. If SMS is required: call get_sms_code() and enter the code.
+6. If a CAPTCHA/Cloudflare challenge blocks you: call solve_captcha() once. If it fails, immediately call report_blocked(captcha_unsolved). Do not wait-loop.
+7. Skip or dismiss onboarding tours once the account exists.
+8. Stop when you are clearly signed in (account menu / dashboard / logout).
+If the product requires a credit card, SSO-only, invite-only access, or a waitlist, call report_blocked with the matching reason.
+Do NOT try to pay. Prefer email signup; use Google/GitHub SSO only if email signup is absent.[0m
+INFO     [Agent] 📦 Newer version available: 0.13.10 (current: 0.13.8). Upgrade with: uv add browser-use==0.13.10
+INFO     [Agent] Starting a browser-use agent with version 0.13.8, with provider=google and model=gemini-2.5-flash
+WARNING  [BrowserSession] [SessionManager] Initialization timeout after 2.0s: 0/1 sessions ready
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 1:
+INFO     [Agent]   [32m👍 Eval: Agent initialized. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Currently on the Todoist signup page, waiting for it to load.
+INFO     [Agent]   [34m🎯 Next goal: Wait for the page to load to reveal interactive elements, then create a plan for the signup process.[0m
+INFO     [Agent]   ▶️   [34mwait[0m: [35mseconds[0m: 3
+INFO     [tools] 🕒 waited for 3 seconds
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 2:
+INFO     [Agent]   [32m👍 Eval: The page was empty, so waiting for 3 seconds was a necessary step to allow it to load. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: The page is still loading. I need to wait for it to load before I can proceed with the signup process.
+INFO     [Agent]   [34m🎯 Next goal: Wait for the page to load to reveal interactive elements, then create a plan for the signup process.[0m
+INFO     [Agent]   ▶️   [34mwait[0m: [35mseconds[0m: 3
+INFO     [tools] 🕒 waited for 3 seconds
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 3:
+INFO     [Agent]   [31m⚠️ Eval: The page remained empty after waiting for 3 seconds. Verdict: Failure[0m
+INFO     [Agent]   🧠 Memory: The Todoist signup page is not loading correctly. I have waited twice for 3 seconds, and the DOM is still empty.
+INFO     [Agent]   [34m🎯 Next goal: Wait for another 3 seconds to see if the page loads. If not, I will navigate to the URL again.[0m
+INFO     [Agent]   ▶️   [34mwait[0m: [35mseconds[0m: 3
+INFO     [tools] 🕒 waited for 3 seconds
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 4:
+INFO     [Agent]   [31m⚠️ Eval: The page remained empty after waiting for 3 seconds. Verdict: Failure[0m
+INFO     [Agent]   🧠 Memory: The Todoist signup page is not loading. I have waited multiple times, and the DOM is still empty. I will try navigating to the URL again.
+INFO     [Agent]   [34m🎯 Next goal: Navigate to the Todoist signup URL again to attempt to load the page correctly.[0m
+INFO     [Agent]   ▶️   [34mnavigate[0m: [35murl[0m: https://todoist.com/auth/signup, [35mnew_tab[0m: False
+INFO     [tools] 🔗 Navigated to https://todoist.com/auth/signup
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 5:
+INFO     [Agent] 📋 Exploration nudge injected after 5 steps without a plan
+INFO     [Agent]   [31m⚠️ Eval: Navigating to the URL again did not resolve the page loading issue. Verdict: Failure[0m
+INFO     [Agent]   🧠 Memory: The Todoist signup page is not loading. I have tried navigating to the URL multiple times and waiting, but the page remains empty with a loading spinner.
+INFO     [Agent]   [34m🎯 Next goal: Wait for the page to load to reveal interactive elements. If it doesn't load after another wait, I will consider reporting it as blocked.[0m
+INFO     [Agent]   ▶️   [34mwait[0m: [35mseconds[0m: 3
+INFO     [tools] 🕒 waited for 3 seconds
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 6:
+INFO     [Agent] 📋 Exploration nudge injected after 6 steps without a plan
+INFO     [Agent]   [32m👍 Eval: The page finally loaded after multiple attempts. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: The Todoist signup page is now visible with interactive elements. I need to get the identity and fill the form.
+INFO     [Agent]   [34m🎯 Next goal: Get the identity information to fill the signup form.[0m
+INFO     [Agent]   ▶️   [34mget_identity[0m:
+INFO     [Agent] 📋 Plan updated with 7 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 7:
+INFO     [Agent]   [32m👍 Eval: Successfully retrieved the identity information. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Identity information retrieved. Ready to fill the signup form.
+INFO     [Agent]   [34m🎯 Next goal: Fill the email field with the provided email address.[0m
+INFO     [Agent]   ▶️   [34minput[0m: [35mindex[0m: 149, [35mtext[0m: shreyashfs+todoist@gmail.com, [35mclear[0m: True
+INFO     [BrowserSession] ⌨️ Typed "shreyashfs+todoist@gmail.com" into element with index 149
+INFO     [Agent] 📋 Plan updated with 7 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 8:
+INFO     [Agent]   [32m👍 Eval: Successfully input the email address into the designated field. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email address has been entered. Next, I need to enter the password and then click the sign up button.
+INFO     [Agent]   [34m🎯 Next goal: Fill the password field with the provided password.[0m
+INFO     [Agent]   ▶️   [34minput[0m: [35mindex[0m: 164, [35mtext[0m: BEP@pLQmqWA8Vkdxe!B$qO%%, [35mclear[0m: True
+INFO     [BrowserSession] ⌨️ Typed "BEP@pLQmqWA8Vkdxe!B$qO%%" into element with index 164
+INFO     [Agent] 📋 Plan updated with 7 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 9:
+INFO     [Agent]   [32m👍 Eval: Successfully input the password into the designated field. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password have been entered into the signup form.
+INFO     [Agent]   [34m🎯 Next goal: Click the 'Sign up with Email' button to submit the registration form.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 174
+INFO     [tools] 🖱️ Clicked button "Sign up with Email"
+INFO     [Agent] 📋 Plan updated with 7 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 10:
+INFO     [Agent]   [32m👍 Eval: Successfully clicked the 'Sign up with Email' button, and the page is now loading. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password have been entered, and the signup button has been clicked. The page is currently loading.
+INFO     [Agent]   [34m🎯 Next goal: Wait for the page to finish loading to proceed with the next step of the signup process, which might involve email verification or direct access to the dashboard.[0m
+INFO     [Agent]   ▶️   [34mwait[0m: [35mseconds[0m: 3
+INFO     [tools] 🕒 waited for 3 seconds
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 11:
+INFO     [Agent]   [32m👍 Eval: Successfully clicked the 'Sign up with Email' button, and the page is now loading. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password have been entered, and the signup button has been clicked. The page is currently loading.
+INFO     [Agent]   [34m🎯 Next goal: Wait for the page to finish loading to proceed with the next step of the signup process, which might involve email verification or direct access to the dashboard.[0m
+INFO     [Agent]   ▶️   [34mwait[0m: [35mseconds[0m: 3
+INFO     [tools] 🕒 waited for 3 seconds
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 12:
+INFO     [Agent]   [32m👍 Eval: Successfully clicked the 'Sign up with Email' button, and the page is still loading. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password have been entered, and the signup button has been clicked. The page is currently loading.
+INFO     [Agent]   [34m🎯 Next goal: Wait for the page to finish loading to proceed with the next step of the signup process, which might involve email verification or direct access to the dashboard.[0m
+INFO     [Agent]   ▶️   [34mwait[0m: [35mseconds[0m: 3
+INFO     [tools] 🕒 waited for 3 seconds
+WARNING  [cdp_use.client] Received duplicate response for request 458 - ignoring
+WARNING  [cdp_use.client] Received duplicate response for request 460 - ignoring
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 13:
+INFO     [Agent]   [32m👍 Eval: The page is still loading after clicking the 'Sign up with Email' button. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password have been entered, and the signup button has been clicked. The page is currently loading the onboarding screen.
+INFO     [Agent]   [34m🎯 Next goal: Wait for the onboarding page to finish loading to proceed with the next step, which might involve skipping onboarding or verifying successful sign-in.[0m
+INFO     [Agent]   ▶️   [34mwait[0m: [35mseconds[0m: 3
+INFO     [tools] 🕒 waited for 3 seconds
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 14:
+INFO     [Agent]   [32m👍 Eval: The page is still loading after clicking the 'Sign up with Email' button. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password have been entered, and the signup button has been clicked. The page is currently loading the onboarding screen. Now I need to handle email verification.
+INFO     [Agent]   [34m🎯 Next goal: Call mark_email_requested() to indicate that an email verification has been sent, then call get_email_link() to retrieve the verification link.[0m
+INFO     [Agent]   ▶️   [34mmark_email_requested[0m:
+INFO     [Agent] 📋 Plan updated with 7 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 15:
+INFO     [Agent]   [32m👍 Eval: Successfully marked that an email verification was requested. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password have been entered, and the signup button has been clicked. The page is now asking for email verification. I have requested the email verification.
+INFO     [Agent]   [34m🎯 Next goal: Retrieve the email verification link using get_email_link() to complete the signup process.[0m
+INFO     [Agent]   ▶️   [34mget_email_link[0m:
+INFO     [Agent] 📋 Plan updated with 7 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 16:
+INFO     [Agent]   [32m👍 Eval: Successfully retrieved the email verification link. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email verification link has been obtained. Ready to navigate to the link to complete the verification.
+INFO     [Agent]   [34m🎯 Next goal: Navigate to the retrieved email verification link to complete the email verification.[0m
+INFO     [Agent]   ▶️   [34mnavigate[0m: [35murl[0m: https://app.todoist.com/api/v1.4/verify_email?email_token=9df867ae-4e3a-493d-9cda-aecd46e0b98a, [35mnew_tab[0m: False
+INFO     [tools] 🔗 Navigated to https://app.todoist.com/api/v1.4/verify_email?email_token=9df867ae-4e3a-493d-9cda-aecd46e0b98a
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 17:
+INFO     [Agent]   [32m👍 Eval: Successfully navigated to the email verification link. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email verification link has been used. The page is currently loading after verification.
+INFO     [Agent]   [34m🎯 Next goal: Wait for the page to finish loading after email verification to determine the next steps, such as onboarding or direct access to the dashboard.[0m
+INFO     [Agent]   ▶️   [34mwait[0m: [35mseconds[0m: 3
+INFO     [tools] 🕒 waited for 3 seconds
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 18:
+INFO     [Agent]   [32m👍 Eval: Successfully navigated to the email verification link and the page loaded a welcome screen. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password have been entered, email verified. Currently on the welcome/onboarding page.
+INFO     [Agent]   [34m🎯 Next goal: Find and click a button to proceed past the welcome screen to the main application.[0m
+INFO     [Agent]   ▶️   [34mscroll[0m: [35mdown[0m: True, [35mpages[0m: 1.0, [35mindex[0m: None
+INFO     [tools] 🔍 Scrolled down 900px
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 19:
+INFO     [Agent]   [32m👍 Eval: Successfully scrolled down the page to reveal more content. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified. Currently on the welcome/onboarding page. Need to click 'Let's go!' to proceed.
+INFO     [Agent]   [34m🎯 Next goal: Click the 'Let's go!' button to proceed past the welcome screen.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 1198
+INFO     [tools] 🖱️ Clicked button "Let’s go!"
+INFO     [Agent] 📋 Plan updated with 7 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 20:
+INFO     [Agent]   [32m👍 Eval: Successfully navigated to the email verification link and the page loaded a welcome screen. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified. Currently on the welcome/onboarding page. Need to input the full name and click 'Next'.
+INFO     [Agent]   [34m🎯 Next goal: Input the full name 'Shreyas Patel' into the name field and then click the 'Next' button.[0m
+INFO     [Agent]   ▶️  [1/2] [34minput[0m: [35mindex[0m: 1204, [35mtext[0m: Shreyas Patel, [35mclear[0m: True
+INFO     [BrowserSession] ⌨️ Typed "Shreyas Patel" into element with index 1204
+INFO     [Agent]   ▶️  [2/2] [34mclick[0m: [35mindex[0m: 1231
+INFO     [tools] 🖱️ Clicked button "Next"
+INFO     [Agent] 📋 Plan updated with 7 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 21:
+INFO     [Agent]   [32m👍 Eval: Successfully input the full name and clicked 'Next', which led to the current onboarding page. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified, and full name provided. Currently on the 'How do you plan to use Todoist?' onboarding screen.
+INFO     [Agent]   [34m🎯 Next goal: Select 'For myself' to proceed with the onboarding process.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 1267
+INFO     [tools] 🖱️ Clicked div role=radio "For myself
+I want a personal s..."
+INFO     [Agent] 📋 Plan updated with 8 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 22:
+INFO     [Agent]   [32m👍 Eval: The previous action to click 'For myself' was not successful, as the page presented a new onboarding question. Verdict: Failure[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified, and full name provided. Currently on the 'How do you currently manage tasks?' onboarding screen. Need to select an option to proceed.
+INFO     [Agent]   [34m🎯 Next goal: Select 'I write them on paper or in a digital note' to continue the onboarding process.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 1292
+INFO     [tools] 🖱️ Clicked div role=radio "A
+I write them on paper or in ..."
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 23:
+INFO     [Agent]   [32m👍 Eval: The previous action to click 'For myself' was not successful, as the page presented a new onboarding question. Verdict: Failure[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified, and full name provided. Currently on the 'How do you currently manage tasks?' onboarding screen. Need to select an option to proceed.
+INFO     [Agent]   [34m🎯 Next goal: Select 'I write them on paper or in a digital note' to continue the onboarding process.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 1292
+WARNING  [BrowserSession] Could not get element geometry from any method, falling back to JavaScript click
+INFO     [tools] 🖱️ Clicked div role=radio "A
+I write them on paper or in ..."
+INFO     [Agent] 📋 Plan updated with 8 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 24:
+INFO     [Agent]   [32m👍 Eval: The previous action to click 'I write them on paper or in a digital note' was not successful, as the page presented a new onboarding question. Verdict: Failure[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified, and full name provided. Currently on the 'How do you manage events?' onboarding screen. I need to skip this step.
+INFO     [Agent]   [34m🎯 Next goal: Click the 'Skip' button to proceed past the current onboarding screen.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 1325
+INFO     [tools] 🖱️ Clicked button "Skip"
+INFO     [Agent] 📋 Plan updated with 8 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 25:
+INFO     [Agent]   [32m👍 Eval: Successfully skipped the previous onboarding screen. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified, and full name provided. Currently on the 'You're all set!' onboarding screen. Need to skip this to get to the main dashboard.
+INFO     [Agent]   [34m🎯 Next goal: Click the 'Not now' button to skip the current onboarding screen.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 1334
+INFO     [tools] 🖱️ Clicked button "Not now"
+INFO     [Agent] 📋 Plan updated with 8 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 26:
+INFO     [Agent]   [32m👍 Eval: Successfully skipped the previous onboarding screen. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified, and full name provided. Currently on the 'You're all set!' onboarding screen. Need to skip this to get to the main dashboard.
+INFO     [Agent]   [34m🎯 Next goal: Click the 'Skip' button to proceed past the current onboarding screen.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 1726
+INFO     [tools] 🖱️ Clicked button "Skip"
+INFO     [Agent] 📋 Plan updated with 8 steps
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 27:
+INFO     [Agent]   [32m👍 Eval: Successfully skipped the previous onboarding screen, but a 'Try Pro for free' modal appeared. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified, and full name provided. Currently on a 'Try Pro for free' modal. Need to close this modal to get to the main dashboard.
+INFO     [Agent]   [34m🎯 Next goal: Click the 'Close modal' button to dismiss the 'Try Pro for free' modal.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 2021
+INFO     [tools] 🖱️ Clicked button aria-label=Close modal
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 28:
+INFO     [Agent]   [32m👍 Eval: Successfully closed the 'Try Pro for free' modal. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified, and full name provided. Currently on the main dashboard with a 'Finish your setup' modal. Need to dismiss this modal.
+INFO     [Agent]   [34m🎯 Next goal: Click the 'I'll check later' button to dismiss the 'Finish your setup' modal.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 2219
+INFO     [tools] 🖱️ Clicked button "I’ll check later"
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 29:
+INFO     [Agent]   [32m👍 Eval: Successfully skipped the previous onboarding screen, but a 'Try Pro for free' modal appeared. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified, and full name provided. Currently on the main dashboard with a 'Finish your setup' modal. Need to dismiss this modal.
+INFO     [Agent]   [34m🎯 Next goal: Click the 'X' button to dismiss the 'Finish your setup' modal.[0m
+INFO     [Agent]   ▶️   [34mclick[0m: [35mindex[0m: 1493
+INFO     [tools] 🖱️ Clicked button aria-label=Dismiss
+INFO     [Agent] 
+
+INFO     [Agent] 📍 Step 30:
+INFO     [Agent] Step budget warning: 30/40 (75%)
+INFO     [Agent]   [32m👍 Eval: Successfully dismissed the 'Finish your setup' modal. Verdict: Success[0m
+INFO     [Agent]   🧠 Memory: Email and password entered, email verified, and full name provided. All onboarding modals have been dismissed. I am now on the main Todoist dashboard.
+INFO     [Agent]   [34m🎯 Next goal: Verify successful sign-in and call done.[0m
+INFO     [Agent]   ▶️   [34mdone[0m: [35mtext[0m: Successfully created a free account on Todoist.com with the provided identity. Email verification was completed, and all onboarding steps/modals were ..., [35msuccess[0m: True, [35mfiles_to_display[0m: []
+INFO     [Agent] 📋 Plan updated with 8 steps
+INFO     [Agent] 
+📄 [32m Final Result:[0m 
+Successfully created a free account on Todoist.com with the provided identity. Email verification was completed, and all onboarding steps/modals were dismissed. The agent is now on the main Todoist dashboard.
+
+
+INFO     [Agent] ✅ Task completed successfully
+INFO     [BrowserSession] 📢 on_BrowserStopEvent - Calling reset() (force=True, keep_alive=None)
+INFO     [BrowserSession] [SessionManager] Cleared all owned data (targets, sessions, mappings)
+INFO     [BrowserSession] ✅ Browser session reset complete
+INFO     [BrowserSession] ✅ Browser session reset complete
+{
+  "ok": false,
+  "host": "todoist.com",
+  "email": "shreyashfs+todoist@gmail.com",
+  "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/todoist.com",
+  "actions": [],
+  "reason": "not_signed_in",
+  "steps": 30
+}

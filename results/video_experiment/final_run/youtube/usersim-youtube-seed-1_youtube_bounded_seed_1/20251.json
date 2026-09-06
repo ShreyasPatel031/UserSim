@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p2_student_playback_youtube",
+  "eval_index": 20251,
+  "website": "youtube",
+  "persona_id": "p2_student",
+  "persona_name": "Noah Kim",
+  "goal_key": "playback",
+  "goal_title": "Evaluate consumption UX",
+  "comparative_group": "p2_student_playback",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 1,
+  "started_at": "2026-08-30T00:40:23.830712+00:00",
+  "elapsed_s": 347.373,
+  "final_result": "I was unable to complete the task. I searched for educational videos on YouTube, but every video I attempted to access was unavailable. I could not inspect any video viewing pages to gather the requested information (title, creator, viewing controls, UX likes/dislikes, ease).",
+  "final_url": "https://www.youtube.com/watch?v=9dgmp3KmwGg",
+  "ok": true,
+  "finished_at": "2026-08-30T00:46:18.598604+00:00"
+}

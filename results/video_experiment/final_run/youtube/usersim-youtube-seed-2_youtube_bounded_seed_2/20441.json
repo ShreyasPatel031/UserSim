@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p4_marketer_discovery_youtube",
+  "eval_index": 20441,
+  "website": "youtube",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "discovery",
+  "goal_title": "Evaluate discovery",
+  "comparative_group": "p4_marketer_discovery",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 2,
+  "started_at": "2026-08-30T00:43:14.968984+00:00",
+  "elapsed_s": 383.151,
+  "final_result": "I was unable to find a promising cooking or recipe video on YouTube as requested. Multiple attempts to search for 'cooking' resulted in landing on 'Video unavailable' pages or encountering issues with search results and tab navigation. The platform's search and video availability hindered the discovery process. \n\nUX Likes:\n- The search bar is prominent and easy to locate.\n- Autocomplete suggestions in the search bar are helpful.\n\nUX Dislikes:\n- Frequent 'Video unavailable' errors significantly impede content discovery.\n- Inconsistent navigation after search actions.\n- The platform did not effectively assist in finding a functional, promising video.\n\nEase: Hard",
+  "final_url": "https://www.youtube.com/watch?v=9SGLviW38ok",
+  "ok": true,
+  "finished_at": "2026-08-30T00:49:38.713500+00:00"
+}

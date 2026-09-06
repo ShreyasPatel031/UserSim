@@ -1,0 +1,22 @@
+{
+  "model_access": {
+    "gemini-3.6-flash": {
+      "location": "global",
+      "generate_content": true,
+      "us-central1": false
+    },
+    "gemini-2.5-flash": {
+      "location": "us-central1",
+      "generate_content": true
+    },
+    "computer_use_tool": {
+      "accepted_on": "gemini-3.6-flash@global",
+      "probe": true
+    },
+    "browser_use_oss": {
+      "installed": true,
+      "ChatGoogle_vertexai": true
+    }
+  },
+  "decision": "Proceed with Stack A/B using gemini-3.6-flash via location=global"
+}

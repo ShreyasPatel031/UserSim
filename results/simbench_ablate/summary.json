@@ -1,0 +1,70 @@
+[
+  {
+    "arm": "plural_fewshot",
+    "n_scored": 981,
+    "S": 41.53,
+    "mean_TVD": 0.1908,
+    "S_by_split": {
+      "Grouped": 47.05,
+      "Pop": 35.8
+    },
+    "S_by_dataset": {
+      "Afrobarometer": 55.12,
+      "ChaosNLI": 41.86,
+      "Choices13k": 18.37,
+      "ConspiracyCorr": 30.01,
+      "DICES": 87.08,
+      "ESS": 44.1,
+      "GlobalOpinionQA": 27.16,
+      "ISSP": 44.15,
+      "Jester": 3.69,
+      "LatinoBarometro": 18.16,
+      "MoralMachine": 21.44,
+      "MoralMachineClassic": 59.38,
+      "NumberGame": 4.0,
+      "OSPsychBig5": 42.64,
+      "OSPsychMACH": 19.93,
+      "OSPsychMGKT": 27.38,
+      "OSPsychRWAS": 59.12,
+      "OpinionQA": 70.83,
+      "TISP": 21.41,
+      "WisdomOfCrowds": 49.72
+    },
+    "cost_usd": 0.279,
+    "fail": 0
+  },
+  {
+    "arm": "ensemble",
+    "n_scored": 981,
+    "S": 30.68,
+    "mean_TVD": 0.2265,
+    "S_by_split": {
+      "Grouped": 38.79,
+      "Pop": 22.26
+    },
+    "S_by_dataset": {
+      "Afrobarometer": 40.92,
+      "ChaosNLI": 43.84,
+      "Choices13k": 4.33,
+      "ConspiracyCorr": 21.71,
+      "DICES": 79.27,
+      "ESS": 41.1,
+      "GlobalOpinionQA": 14.54,
+      "ISSP": 44.2,
+      "Jester": -47.77,
+      "LatinoBarometro": 1.35,
+      "MoralMachine": -25.5,
+      "MoralMachineClassic": 29.52,
+      "NumberGame": -1.49,
+      "OSPsychBig5": 42.8,
+      "OSPsychMACH": -1.44,
+      "OSPsychMGKT": 20.58,
+      "OSPsychRWAS": 24.25,
+      "OpinionQA": 59.44,
+      "TISP": 33.48,
+      "WisdomOfCrowds": 52.07
+    },
+    "cost_usd": 0.7315,
+    "fail": 0
+  }
+]

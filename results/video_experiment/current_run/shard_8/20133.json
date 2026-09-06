@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p1_viewer_creator_dailymotion",
+  "eval_index": 20133,
+  "website": "dailymotion",
+  "persona_id": "p1_viewer",
+  "persona_name": "Avery Brooks",
+  "goal_key": "creator",
+  "goal_title": "Inspect creator information",
+  "comparative_group": "p1_viewer_creator",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:03.440733+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 225.709,
+  "final_result": "The agent was unable to complete the task due to repeated failures in interacting with the Dailymotion search functionality. Initial navigation to Dailymotion was successful. An attempt to search externally was blocked by a CAPTCHA. Subsequent attempts to use the Dailymotion search interface resulted in errors and did not allow for searching for videos. Consequently, no video, creator, or credibility signals could be found. As the task could not be completed, UX likes/dislikes and ease cannot be assessed.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:04:54.907834+00:00"
+}

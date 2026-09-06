@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p6_educator_filters_dailymotion",
+  "eval_index": 20623,
+  "website": "dailymotion",
+  "persona_id": "p6_educator",
+  "persona_name": "Elena Garcia",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p6_educator_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:03.441582+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 154.105,
+  "final_result": "I was unable to complete the task because the search input field on Dailymotion.com is not indexed, and I am only allowed to interact with elements that have a numeric index assigned. Therefore, I could not input the search query 'home workout' to find videos.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:03:44.330779+00:00"
+}

@@ -1,0 +1,171 @@
+# Machine-readable gate contract for beat_behavior_fms.md
+# If this file and the prose disagree, THIS FILE WINS.
+# A gate is met only when: python scripts/gates/verify.py --gate N  exits 0.
+
+version: 1
+program: beat_behavior_fms
+tolerance_relative_default: 0.02
+
+# Operational definition of "reproduced" (was §8.6 prose).
+reproduction:
+  same_weights_id: true
+  same_split_files: true
+  same_metric_code_from_upstream: true
+  sampling:
+    socrates: {temperature: 0.6, top_p: 0.9}
+    befm: {temperature: 0.6, top_p: 0.95, top_k: 20}
+    minitaur_nll: {deterministic: true}
+  tolerance_relative: 0.02
+  # Centaur Table 1 alternative: per-experiment Spearman ρ > 0.95
+
+benchmarks:
+  psych101_test:
+    artifact: results/fm_baselines/minitaur/SUMMARY.json
+    expected:
+      n_items: 6561
+      # n_experiments derived from data at verify time when possible
+    data_path: data/psych101/Psych-101-test/prompts_testing_t1.jsonl
+    model: marcelbinz/Llama-3.1-Minitaur-8B-adapter
+    metric_key: total_nll_sum
+    # Published Minitaur aggregate NLL is per-experiment in paper Table 1;
+    # Gate 0 requires full coverage first. Metric target filled when we have
+    # a reproduced aggregate from a complete run (or paper Table 1 dump).
+    metric_target: null
+    higher_is_better: false
+
+  socsci210_unseen:
+    artifact: results/fm_baselines/socrates/SUMMARY.json
+    expected:
+      n_studies: 40
+      n_rows: 482642
+    mapping_path: data/fm_baselines/SocSci210_meta/metadata/participant_mapping.json
+    model: socratesft/socrates-qwen2.5-14b-sft
+    metric_key: wasserstein_mean
+    metric_target: 0.151
+    empirical_bound: 0.125
+    higher_is_better: false  # lower W is better; within 2% relative of 0.151
+
+  behaviorbench:
+    artifact: results/fm_baselines/befm4b/SUMMARY.json
+    # Task IDs = DEFAULT_DATA_PATHS keys in behaviorbench_eval (excludes stub game_behavior).
+    # Verifier derives the live list from third_party when available; this list is the fallback.
+    expected_tasks:
+      - pers_score_pred
+      - surv_resp_pred
+      - missing_surv_resp
+      - seq_surv_resp
+      - demo_pred_age
+      - acrossdim_pers_score
+      - workflow_idea_generation
+      - workflow_method_recommendation
+      - workflow_outcome_prediction
+      - workflow_title_prediction
+      - workflow_impact_prediction
+      - ieo_economics
+      - game_behavior_dictator
+      - game_behavior_ultimatum_proposer
+      - game_behavior_ultimatum_responder
+      - game_behavior_trust_investor
+      - game_behavior_trust_banker
+      - game_behavior_public_goods
+      - game_behavior_bomb
+      - game_behavior_guessing
+      - game_behavior_push_pull
+      - multiround_behavior_dictator
+      - multiround_behavior_trust_investor
+      - multiround_behavior_trust_banker_inv50
+      - multiround_behavior_trust_banker_inv100
+      - multiround_behavior_public_goods
+      - multiround_behavior_bomb
+      - multiround_behavior_guessing
+      - multiround_behavior_push_pull
+      - acrossgame_behavior_dictator
+      - acrossgame_behavior_ultimatum_proposer
+      - acrossgame_behavior_ultimatum_responder
+      - acrossgame_behavior_trust_investor
+      - acrossgame_behavior_trust_banker
+      - acrossgame_behavior_public_goods
+      - acrossgame_behavior_bomb
+      - acrossgame_behavior_guessing
+      - acrossgame_behavior_push_pull
+      - strategic_gameplay_guessing
+    expected:
+      n_tasks: 39
+      n_jsonl_files: 48
+      n_rows: 20977
+    data_root: data/fm_baselines/BehaviorBench
+    model: befm/BeFM1.5-4B
+    metric_targets:
+      distributional_win_rate: 0.953
+      individual_win_rate: 0.665
+    higher_is_better: true
+
+  centaur_70b:
+    skipped: true
+    reason: "User request: skip Centaur-70B in Phase 0 (needs ~80GB A100)."
+    artifact: null
+
+gates:
+  - id: 0
+    phase: 0
+    name: reproduce_baselines
+    status: defined
+    blocking: true
+    description: >
+      Reproduce Minitaur Psych-101-test NLL, Socrates-14B SocSci210 Wasserstein,
+      and Be.FM-1.5-4B full BehaviorBench within 2% relative of published numbers
+      (or document a skipped/denied reason in the contract).
+    verify: "python scripts/gates/verify.py --gate 0"
+    required:
+      - psych101_test
+      - socsci210_unseen
+      - behaviorbench
+    optional_skipped:
+      - centaur_70b
+
+  - id: 1
+    phase: 2
+    name: union_beats_one_no_catastrophic_transfer
+    status: pending_definition
+    blocking: true
+    description: >
+      Union at 8B beats at least one target on its home benchmark and does not
+      lose more than eval noise on the other two versus single-source.
+      Numeric thresholds require Gate 0 baselines.
+    verify: "python scripts/gates/verify.py --gate 1"
+    depends_on: [0]
+
+  - id: 2
+    phase: 3
+    name: distributional_and_individual_both_improve
+    status: pending_definition
+    blocking: true
+    description: >
+      Distributional metrics (Socrates W, BehaviorBench distributional board) and
+      individual metrics (Psych-101 NLL, BehaviorBench individual board) both
+      improve over v0. A trade is reported, not shipped.
+    verify: "python scripts/gates/verify.py --gate 2"
+    depends_on: [1]
+
+  - id: 3
+    phase: 4
+    name: entropy_and_capability_retained
+    status: pending_definition
+    blocking: true
+    description: >
+      Response entropy vs human entropy per cell; general capability
+      (MMLU-Pro slice, metabench) and CogBench retained vs v0/base.
+    verify: "python scripts/gates/verify.py --gate 3"
+    depends_on: [2]
+
+  - id: 4
+    phase: 5
+    name: scale_ship_leaderboard
+    status: pending_definition
+    blocking: true
+    description: >
+      70B-class run submitted to BehaviorBench live leaderboard; Psych-101 and
+      SocSci210 tables published beside reproduced baselines; weights, dataset
+      card, leakage log, and eval scripts released.
+    verify: "python scripts/gates/verify.py --gate 4"
+    depends_on: [3]

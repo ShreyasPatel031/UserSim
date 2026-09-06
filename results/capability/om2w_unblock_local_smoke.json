@@ -1,0 +1,59 @@
+{
+  "created_at": "2026-09-05T04:59:54.174439+00:00",
+  "benchmark": "Online-Mind2Web",
+  "n_hosts": 3,
+  "backends": [
+    "chromium_headless"
+  ],
+  "workers": 3,
+  "summary": {
+    "chromium_headless": {
+      "n": 3,
+      "ok": 2,
+      "blocked": 1,
+      "backend_unavailable": 0,
+      "ok_rate": 0.6667,
+      "blocked_hosts": [
+        "accuweather.com"
+      ]
+    }
+  },
+  "rows": [
+    {
+      "backend": "chromium_headless",
+      "host": "4shared.com",
+      "start_url": "https://www.4shared.com/",
+      "example_eval_index": 239,
+      "example_task_id": "c8c1ff115879b3afd14280beb1559b13",
+      "blocked": false,
+      "reason": "ok",
+      "final_url": "https://www.4shared.com/",
+      "title": "4shared - free file sharing and storage",
+      "elapsed_s": 5.85
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "9gag.com",
+      "start_url": "https://9gag.com/",
+      "example_eval_index": 162,
+      "example_task_id": "8f80e64e44e1fada018997b2fe869683_110325",
+      "blocked": false,
+      "reason": "ok",
+      "final_url": "https://9gag.com/",
+      "title": "9GAG - Best Funny Memes and Breaking News",
+      "elapsed_s": 4.96
+    },
+    {
+      "backend": "chromium_headless",
+      "host": "accuweather.com",
+      "start_url": "https://www.accuweather.com/",
+      "example_eval_index": 74,
+      "example_task_id": "853afd530c72f4b00ffc32ae854efaf8",
+      "blocked": true,
+      "reason": "navigation_error:Page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.accuweather.com/\nCall log:\n  - navigating to \"https://www.accuweather.com/\", waiting until \"domcontentloaded\"\n",
+      "final_url": "https://www.accuweather.com/",
+      "title": "",
+      "elapsed_s": 3.88
+    }
+  ]
+}

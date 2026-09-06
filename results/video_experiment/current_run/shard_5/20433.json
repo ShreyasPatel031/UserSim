@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_creator_dailymotion",
+  "eval_index": 20433,
+  "website": "dailymotion",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "creator",
+  "goal_title": "Inspect creator information",
+  "comparative_group": "p4_marketer_creator",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:05.068142+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 282.862,
+  "final_result": "The task could not be completed. The agent was unable to interact with the Dailymotion website due to persistent JSON output format errors, preventing the search for a science explainer video and subsequent analysis of creator credibility. The agent successfully navigated to the Dailymotion homepage but was unable to proceed further.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:05:55.888055+00:00"
+}

@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p1_viewer_filters_dailymotion",
+  "eval_index": 20123,
+  "website": "dailymotion",
+  "persona_id": "p1_viewer",
+  "persona_name": "Avery Brooks",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p1_viewer_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-30T00:22:24.020661+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 50.723,
+  "final_result": "I was unable to proceed with the task because after clicking the search button, no indexed search input field was found on the page. This prevents me from entering the search query 'home workout' and continuing with the task.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-30T00:23:21.345681+00:00"
+}

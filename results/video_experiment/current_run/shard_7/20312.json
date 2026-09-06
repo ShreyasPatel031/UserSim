@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p3_creator_search_vimeo",
+  "eval_index": 20312,
+  "website": "vimeo",
+  "persona_id": "p3_creator",
+  "persona_name": "Maya Patel",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p3_creator_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:04.352154+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 368.027,
+  "final_result": "The task could not be completed because Vimeo.com presented a CAPTCHA challenge on the search results page for 'personal productivity'. This prevented inspection of the organic results and retrieval of video titles, creators, or channels. Consequently, a UX assessment and ease rating could not be provided. Previous attempts to search via external engines also failed due to CAPTCHAs.",
+  "final_url": "https://vimeo.com/search?q=personal+productivity",
+  "ok": true,
+  "finished_at": "2026-08-29T21:07:23.142793+00:00"
+}

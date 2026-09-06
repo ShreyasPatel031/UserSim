@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UserSim — Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css?v=42" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="/">UserSim</a>
+    <a class="header-back" href="/">← Back to simulation</a>
+  </header>
+
+  <main class="main-url-first report-main">
+    <p id="report-empty" class="brief-empty" hidden>
+      No report yet. <a href="/">Run a simulation</a> first.
+    </p>
+
+    <section id="results" class="results" hidden>
+      <section class="panel summary-panel">
+        <h2>Executive summary</h2>
+        <p id="access-info" class="access-info" hidden></p>
+        <p id="report-email-note" class="email-status" hidden></p>
+        <p id="headline" class="headline"></p>
+        <div class="summary-grid">
+          <div>
+            <h4>Top friction</h4>
+            <ul id="top-friction"></ul>
+          </div>
+          <div>
+            <h4>Top strengths</h4>
+            <ul id="top-strengths"></ul>
+          </div>
+        </div>
+        <div class="fit-score">
+          <span id="fit-score">—</span>
+          <div>
+            <strong>Segment fit</strong>
+            <p id="fit-rationale"></p>
+          </div>
+        </div>
+        <div class="conversion">
+          <h4>Conversion outlook</h4>
+          <p id="conversion-outlook"></p>
+        </div>
+        <div class="recommendations">
+          <h4>Recommendations</h4>
+          <div id="recommendations"></div>
+        </div>
+      </section>
+
+      <section id="agents-section-final" class="panel" hidden>
+        <h2>Session recaps</h2>
+        <div id="agents-grid" class="agents-grid"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p>
+  </footer>
+
+  <script src="/static/report.js?v=42"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p6_educator_discovery_youtube",
+  "eval_index": 20641,
+  "website": "youtube",
+  "persona_id": "p6_educator",
+  "persona_name": "Elena Garcia",
+  "goal_key": "discovery",
+  "goal_title": "Evaluate discovery",
+  "comparative_group": "p6_educator_discovery",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 0,
+  "started_at": "2026-08-30T00:51:33.040410+00:00",
+  "elapsed_s": 414.216,
+  "final_result": null,
+  "final_url": "https://www.youtube.com/@CookingCorner-DN",
+  "ok": false,
+  "finished_at": "2026-08-30T00:58:27.994550+00:00"
+}

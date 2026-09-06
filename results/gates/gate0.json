@@ -1,0 +1,58 @@
+{
+  "gate": 0,
+  "name": "reproduce_baselines",
+  "pass": false,
+  "status": "defined",
+  "blocking": true,
+  "tolerance_relative": 0.02,
+  "contract_sha": "b926a1aa3f149e8c6037af7a134887828bde4c01034c614d843be479b2e17302",
+  "git_sha": "1d6a42f5245d0dc80678a4453da6e24074f0f214",
+  "timestamp": "2026-09-05T21:15:33.891640+00:00",
+  "benchmarks": [
+    {
+      "benchmark": "psych101_test",
+      "pass": false,
+      "checks": [
+        {
+          "name": "artifact_present",
+          "pass": false,
+          "detail": "missing /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/minitaur/SUMMARY.json"
+        }
+      ]
+    },
+    {
+      "benchmark": "socsci210_unseen",
+      "pass": false,
+      "checks": [
+        {
+          "name": "artifact_present",
+          "pass": false,
+          "detail": "missing /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/socrates/SUMMARY.json; found SUMMARY_smoke.json with n_studies=2 (smoke \u2260 Gate 0)"
+        }
+      ]
+    },
+    {
+      "benchmark": "behaviorbench",
+      "pass": false,
+      "checks": [
+        {
+          "name": "artifact_present",
+          "pass": false,
+          "detail": "missing /Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/befm4b/SUMMARY.json"
+        }
+      ]
+    },
+    {
+      "benchmark": "centaur_70b",
+      "pass": true,
+      "skipped": true,
+      "checks": [
+        {
+          "name": "skipped_by_contract",
+          "pass": true,
+          "detail": "User request: skip Centaur-70B in Phase 0 (needs ~80GB A100)."
+        }
+      ]
+    }
+  ]
+}

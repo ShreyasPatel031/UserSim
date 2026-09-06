@@ -1,0 +1,303 @@
+{
+  "version": 1,
+  "description": "Curated signup failure modes + append-only observations. Agents pull tips via get_signup_tips(); do not dump this whole file into the task prompt.",
+  "modes": [
+    {
+      "id": "submit_noop_or_disabled",
+      "category": "form",
+      "hosts": [],
+      "symptoms": [
+        "Sign Up / Create account / Continue click does nothing",
+        "same submit button clicked 2+ times with no navigation",
+        "evaluate() used to force-click submit"
+      ],
+      "tip": "After two failed submits, stop clicking. Read the form for red validation text, required empty fields, unchecked terms, or a disabled button (aria-disabled / opacity). Fix the field, then submit once.",
+      "status": "active"
+    },
+    {
+      "id": "modal_or_cookie_overlay",
+      "category": "form",
+      "hosts": [],
+      "symptoms": [
+        "clicks miss the intended button",
+        "cookie banner / consent modal visible",
+        "element index exists but click has no effect"
+      ],
+      "tip": "Dismiss cookie/consent/newsletter overlays first, then retry the signup control. Prefer Accept / Close over leaving the modal open.",
+      "status": "active"
+    },
+    {
+      "id": "captcha_wait_loop",
+      "category": "captcha",
+      "hosts": [],
+      "symptoms": [
+        "Cloudflare / Turnstile / reCAPTCHA checkbox",
+        "waiting for challenge to clear",
+        "repeated wait actions on captcha"
+      ],
+      "tip": "On a cheap Browserbase session (captcha OFF): call request_antibot_escalation(kind=captcha) or solve_captcha() once \u2014 the runner restarts with captcha ON. After captcha is ON: solve_captcha at most twice; if still blocked call request_antibot_escalation(kind=captcha) for proxies/Verified, else report_blocked(captcha_unsolved). Do not wait-loop.",
+      "status": "active"
+    },
+    {
+      "id": "conditional_antibot_escalate",
+      "category": "blocked",
+      "hosts": [],
+      "symptoms": [
+        "CAPTCHA / Turnstile / Cloudflare challenge",
+        "Please try again later after email Continue",
+        "whoa there / too many requests from your IP",
+        "bot confirmation / fingerprint wall"
+      ],
+      "tip": "Do not enable proxies/Verified preemptively. Recognize the event then escalate once: captcha \u2192 request_antibot_escalation(captcha); rate limit after one email retry \u2192 rate_limit; IP wall \u2192 ip_block; persistent bot wall \u2192 bot_block. Soft gates (card/SSO/invite/waitlist) use report_blocked only.",
+      "status": "active"
+    },
+    {
+      "id": "invented_otp",
+      "category": "verification",
+      "hosts": [],
+      "symptoms": [
+        "typed a placeholder code like 123456",
+        "verification failed with wrong code",
+        "code not visible in memory"
+      ],
+      "tip": "Never invent OTP digits. Call get_email_code / get_sms_code / get_totp_code and type the exact returned value. If the tool errors, report that \u2014 do not guess.",
+      "status": "active"
+    },
+    {
+      "id": "email_wait_without_mark",
+      "category": "verification",
+      "hosts": [],
+      "symptoms": [
+        "get_email_code before Send / Verify clicked",
+        "no email arrived",
+        "stale inbox poll"
+      ],
+      "tip": "Call mark_email_requested() immediately after clicking Send code / Verify email / Continue, then call get_email_code or get_email_link once.",
+      "status": "active"
+    },
+    {
+      "id": "email_already_used",
+      "category": "account",
+      "hosts": [],
+      "symptoms": [
+        "email already registered",
+        "account already exists",
+        "use a different email"
+      ],
+      "tip": "Do not invent a new email. Switch to Sign in with the same IDENTITY password, or call report_blocked(unknown) with detail email_already_used.",
+      "status": "active"
+    },
+    {
+      "id": "sso_only_or_sso_trap",
+      "category": "account",
+      "hosts": [],
+      "symptoms": [
+        "only Continue with Google / GitHub / SSO",
+        "email form hidden behind SSO",
+        "agent bouncing between SSO buttons"
+      ],
+      "tip": "Prefer email/password. Look for 'Sign up with email' / 'Continue with email'. If truly SSO-only, call report_blocked(sso_only).",
+      "status": "active"
+    },
+    {
+      "id": "onboarding_tour_trap",
+      "category": "post_signup",
+      "hosts": [],
+      "symptoms": [
+        "product tour / checklist after account created",
+        "Skip / Maybe later / Not now available",
+        "agent filling optional setup forever"
+      ],
+      "tip": "Once the account exists, dismiss tours with Skip / Not now and stop when an account menu, dashboard, or Logout is visible.",
+      "status": "active"
+    },
+    {
+      "id": "wrong_auth_host_identity",
+      "category": "identity",
+      "hosts": [
+        "buffer.com",
+        "login.buffer.com",
+        "accounts.google.com"
+      ],
+      "symptoms": [
+        "login.* subdomain treated as product host",
+        "email alias looks wrong for the product",
+        "redirected to IdP and lost signup context"
+      ],
+      "tip": "Stay on the product signup flow. Use the IDENTITY email already provided \u2014 do not derive a new alias from the current subdomain.",
+      "status": "active"
+    },
+    {
+      "id": "bitwarden_email_link_hang",
+      "category": "verification",
+      "hosts": [
+        "bitwarden.com",
+        "vault.bitwarden.com"
+      ],
+      "symptoms": [
+        "waiting on get_email_link for a long time",
+        "step timeout during email verify"
+      ],
+      "tip": "Bitwarden verifies via email LINK (finish-signup), not a numeric code. After Continue: mark_email_requested(), get_email_link() once, open the URL. If no fresh mail arrives, the prior Verify Your Email / finish-signup link for this alias is still valid \u2014 open that, then set the master password. Do not call get_email_code.",
+      "status": "active"
+    },
+    {
+      "id": "buffer_signup_click_loop",
+      "category": "form",
+      "hosts": [
+        "buffer.com",
+        "login.buffer.com"
+      ],
+      "symptoms": [
+        "Sign Up button visible but repeated clicks fail",
+        "stuck on Buffer create-account page"
+      ],
+      "tip": "Check terms checkbox and required fields. If Sign Up stays inert after a fix attempt, inspect validation text once \u2014 do not spam evaluate() clicks.",
+      "status": "active"
+    },
+    {
+      "id": "email_code_slow_kills_session",
+      "category": "verification",
+      "hosts": [
+        "notion.so",
+        "bitwarden.com",
+        "vault.bitwarden.com"
+      ],
+      "symptoms": [
+        "get_email_code timeout",
+        "get_email_link timeout",
+        "browser has been closed after email wait",
+        "verification code not arriving"
+      ],
+      "tip": "Call mark_email_requested() right after Continue/Send. Then call get_email_code or get_email_link ONCE. If it times out: Resend once, mark_email_requested again, one more get_email_*. Never stack three long waits.",
+      "status": "active"
+    },
+    {
+      "id": "reddit_ip_rate_limit",
+      "category": "blocked",
+      "hosts": [
+        "reddit.com"
+      ],
+      "symptoms": [
+        "whoa there, pardner",
+        "too many requests come from your IP",
+        "blocked from signing up"
+      ],
+      "tip": "If Reddit shows an IP rate-limit / 'too many requests' / 'whoa there' page, call request_antibot_escalation(kind=ip_block). Do not solve_captcha-loop. Only after escalate ceiling: report_blocked(rate_limited) with detail reddit_ip_rate_limit.",
+      "status": "active"
+    },
+    {
+      "id": "loom_webflow_captcha_hard",
+      "category": "captcha",
+      "hosts": [
+        "loom.com",
+        "webflow.com"
+      ],
+      "symptoms": [
+        "Continue disabled due to captcha",
+        "bot confirmation page",
+        "solve_captcha failed twice"
+      ],
+      "tip": "Hard reCAPTCHA: call solve_captcha() (escalates cheap sessions automatically). After captcha ON, solve at most twice; if still blocked request_antibot_escalation(kind=captcha) for proxies/Verified. After escalate ceiling, report_blocked(captcha_unsolved).",
+      "status": "active"
+    },
+    {
+      "id": "sso_plus_alias_trap",
+      "category": "identity",
+      "hosts": [
+        "notion.so",
+        "notion.com"
+      ],
+      "symptoms": [
+        "Please try again later",
+        "clicked Google SSO",
+        "creating a Google account",
+        "Microsoft signup",
+        "Couldn't find your Google Account"
+      ],
+      "tip": "Never use Google/Microsoft/Apple SSO with a plus-alias identity. Stay on email Continue. On 'Please try again later', wait ~5s, retry email once, then request_antibot_escalation(kind=rate_limit) (not SSO). After escalate ceiling, report_blocked(rate_limited).",
+      "status": "active"
+    },
+    {
+      "id": "bitwarden_verify_is_link",
+      "category": "verification",
+      "hosts": [
+        "bitwarden.com",
+        "vault.bitwarden.com"
+      ],
+      "symptoms": [
+        "get_email_code on Bitwarden",
+        "no verification code",
+        "check your email after register"
+      ],
+      "tip": "Bitwarden verifies via email LINK (finish-signup), not a numeric code. After Continue: mark_email_requested(), get_email_link() once, open the URL. If no fresh mail arrives, the prior Verify Your Email / finish-signup link for this alias is still valid \u2014 open that, then set the master password. Do not call get_email_code.",
+      "status": "active"
+    }
+  ],
+  "observations": [
+    {
+      "ts": "2026-09-06T00:31:11Z",
+      "host": "login.buffer.com",
+      "symptom": "submit does nothing / Sign Up click loop",
+      "detail": "BB developer proxies+captcha; filled form; 10 steps; never called get_signup_tips; not_signed_in",
+      "mode_id": "buffer_signup_click_loop",
+      "source": "run_20260906_bb_dev"
+    },
+    {
+      "ts": "2026-09-06T01:04:33Z",
+      "host": "notion.so",
+      "symptom": "email code timeout then CDP closed",
+      "detail": "get_email_code failed twice after resend; storage_state closed; not_signed_in",
+      "mode_id": "email_code_slow_kills_session",
+      "source": "benchmark_run"
+    },
+    {
+      "ts": "2026-09-06T02:18:00Z",
+      "host": "reddit.com",
+      "symptom": "IP rate limit",
+      "detail": "too many requests",
+      "mode_id": "reddit_ip_rate_limit",
+      "source": "benchmark_parallel"
+    },
+    {
+      "ts": "2026-09-06T02:18:00Z",
+      "host": "loom.com",
+      "symptom": "captcha_unsolved",
+      "detail": "solve_captcha x2",
+      "mode_id": "loom_webflow_captcha_hard",
+      "source": "benchmark_parallel"
+    },
+    {
+      "ts": "2026-09-06T02:18:00Z",
+      "host": "webflow.com",
+      "symptom": "bot confirmation captcha",
+      "detail": "solve_captcha x2",
+      "mode_id": "loom_webflow_captcha_hard",
+      "source": "benchmark_parallel"
+    },
+    {
+      "ts": "2026-09-06T02:52:00Z",
+      "host": "notion.so",
+      "symptom": "Please try again later then SSO rabbit hole",
+      "detail": "email continue rate-limited; agent created Google/Microsoft accounts; burned 26 steps",
+      "mode_id": "sso_plus_alias_trap",
+      "source": "benchmark_notion_force"
+    },
+    {
+      "ts": "2026-09-06T02:37:00Z",
+      "host": "bitwarden.com",
+      "symptom": "get_email_link then get_email_code",
+      "detail": "link timeout; agent fell back to code; browser closed; empty jar",
+      "mode_id": "bitwarden_verify_is_link",
+      "source": "benchmark_parallel"
+    },
+    {
+      "ts": "2026-09-06T03:15:00Z",
+      "host": "bitwarden.com",
+      "symptom": "get_email_link timeout despite prior Verify Your Email",
+      "detail": "Inbox already had finish-signup for +vault from prior day; newer_than floor hid it",
+      "mode_id": "bitwarden_verify_is_link",
+      "source": "benchmark_retry"
+    }
+  ]
+}

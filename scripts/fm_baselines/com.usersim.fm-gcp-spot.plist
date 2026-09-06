@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.usersim.fm-gcp-spot</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/env</string>
+    <string>python3</string>
+    <string>-u</string>
+    <string>/Users/shreyaspatel/Desktop/Code/UserSim/scripts/fm_baselines/gcp_spot_supervisor.py</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/shreyaspatel/Desktop/Code/UserSim</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/gcp_spot_supervisor.launchd.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/shreyaspatel/Desktop/Code/UserSim/results/fm_baselines/gcp_spot_supervisor.launchd.err.log</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/Users/shreyaspatel/Downloads/google-cloud-sdk/bin:/Users/shreyaspatel/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <key>HOME</key>
+    <string>/Users/shreyaspatel</string>
+    <key>GCP_PROJECT</key>
+    <string>project-amer-scs-sandbox</string>
+    <key>SPOT_POLL_SEC</key>
+    <string>120</string>
+    <key>CLOUDSDK_CORE_DISABLE_PROMPTS</key>
+    <string>1</string>
+  </dict>
+  <key>ThrottleInterval</key>
+  <integer>30</integer>
+</dict>
+</plist>

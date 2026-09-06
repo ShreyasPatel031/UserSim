@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_search_dailymotion",
+  "eval_index": 20413,
+  "website": "dailymotion",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p4_marketer_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:04.957210+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 266.279,
+  "final_result": "The task could not be completed because the agent was unable to interact with the Dailymotion website's search functionality. Multiple attempts to search for 'personal productivity' failed due to errors with the search input field. As a result, no video titles, creators, UX likes/dislikes, or ease ratings were found.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:05:37.650433+00:00"
+}

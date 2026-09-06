@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_discovery_vimeo",
+  "eval_index": 20442,
+  "website": "vimeo",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "discovery",
+  "goal_title": "Evaluate discovery",
+  "comparative_group": "p4_marketer_discovery",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:04.352303+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 310.744,
+  "final_result": "I was unable to find a cooking or recipe video on Vimeo. The platform's content appears to be heavily focused on enterprise solutions and professional video creation, making general content discovery, such as cooking tutorials, very difficult. I explored several sections including the homepage, 'Learn', 'Blog', 'Inspiration', 'Video School', and 'Use cases', but none led to the desired content. The 'Inspiration' link also led to an error page.\n\nUX Likes:\n1. Clear navigation bar with distinct sections.\n2. Comprehensive footer with links to product, resources, and company information.\n\nUX Dislikes:\n1. Homepage and initial navigation heavily promote enterprise solutions, obscuring general content.\n2. Several navigation paths led to errors or dead ends, hindering discovery.\n3. Lack of clear categories or a prominent search for general content types like 'cooking' or 'recipes'.\n\nEase: Hard",
+  "final_url": "https://vimeo.com/vimeo-academy",
+  "ok": true,
+  "finished_at": "2026-08-29T21:06:26.075042+00:00"
+}

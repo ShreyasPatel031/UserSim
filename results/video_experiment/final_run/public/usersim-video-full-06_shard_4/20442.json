@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_discovery_vimeo",
+  "eval_index": 20442,
+  "website": "vimeo",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "discovery",
+  "goal_title": "Evaluate discovery",
+  "comparative_group": "p4_marketer_discovery",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:38.176678+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 251.717,
+  "final_result": "I was unable to find a promising cooking or recipe video on Vimeo because the search results page presented a CAPTCHA challenge, blocking further progress. I explored the 'Watch' tab and 'Categories' section, but a dedicated 'Food' or 'Cooking' category was not readily apparent. My search for 'cooking' was then met with a CAPTCHA.\n\nUX Likes:\n1. The 'Watch' tab provides a good starting point for exploring content.\n2. The 'Categories' section, when accessible, is a standard and useful way to browse content.\n\nUX Dislikes:\n1. The repeated need to scroll extensively on category pages to find relevant content is inefficient.\n2. Encountering a CAPTCHA immediately after a search query significantly hinders the discovery process and user experience.\n3. The lack of a prominent 'Food' or 'Cooking' category made discovery difficult.\n\nEase: Medium (due to initial navigation) to Hard (due to CAPTCHA and lack of clear category).\n\nI could not identify a specific video or provide detailed metadata due to the CAPTCHA.",
+  "final_url": "https://vimeo.com/search?q=cooking",
+  "ok": true,
+  "finished_at": "2026-08-29T23:41:00.472751+00:00"
+}

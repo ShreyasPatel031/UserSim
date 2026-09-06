@@ -1,0 +1,12 @@
+{
+  "gate": 1,
+  "name": "union_beats_one_no_catastrophic_transfer",
+  "pass": false,
+  "status": "pending_definition",
+  "blocking": true,
+  "detail": "Gate is pending_definition \u2014 unknown must never silently pass.",
+  "contract_sha": "0cc390ee8481d39964e5fb1ea44ca43073d9ee0c98560cf6d15c31d238a821b4",
+  "git_sha": "f235c8142ac4685f99a5d201cf8c055f5a7cd2b8",
+  "timestamp": "2026-09-05T19:37:13.117800+00:00",
+  "benchmarks": []
+}

@@ -1,0 +1,55 @@
+{
+  "stamp": "20260905T203616Z",
+  "total": 4,
+  "ok": 0,
+  "by_reason": {
+    "captcha_unsolved": 3,
+    "not_signed_in": 1
+  },
+  "results": [
+    {
+      "host": "dropbox.com",
+      "url": "https://www.dropbox.com/register",
+      "ok": false,
+      "email": "shreyashfs+dropbox@gmail.com",
+      "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/dropbox.com",
+      "actions": [],
+      "reason": "captcha_unsolved",
+      "detail": "CAPTCHA could not be solved after clicking 'Start Puzzle' and timed out.",
+      "exit_code": 1
+    },
+    {
+      "host": "figma.com",
+      "url": "https://www.figma.com/signup",
+      "ok": false,
+      "email": "shreyashfs+figma@gmail.com",
+      "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/figma.com",
+      "actions": [],
+      "reason": "captcha_unsolved",
+      "detail": "CAPTCHA could not be solved after attempting to create an account.",
+      "exit_code": 1
+    },
+    {
+      "host": "loom.com",
+      "url": "https://www.loom.com/signup",
+      "ok": false,
+      "email": "shreyashfs+loom@gmail.com",
+      "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/loom.com",
+      "actions": [],
+      "reason": "captcha_unsolved",
+      "detail": "The reCAPTCHA could not be solved and timed out, preventing further progress in the signup process.",
+      "exit_code": 1
+    },
+    {
+      "host": "vault.bitwarden.com",
+      "url": "https://vault.bitwarden.com/#/register",
+      "ok": false,
+      "email": "shreyashfs+vault@gmail.com",
+      "profile_dir": "/Users/shreyaspatel/Desktop/Code/UserSim/secrets/product_profiles/vault.bitwarden.com",
+      "actions": [],
+      "reason": "not_signed_in",
+      "steps": 15,
+      "exit_code": 1
+    }
+  ]
+}
