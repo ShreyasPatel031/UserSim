@@ -626,6 +626,8 @@ def _build_signup_tools(ctx: dict[str, Any]):
             # Browserbase session to force CDP disconnect and unwedge.
             for i in range(24):
                 _t.sleep(0.25)
+                if ctx.get("kick_stop"):
+                    return
                 if not (
                     ctx.get("escalate_requested")
                     or (ctx.get("done") and ctx.get("blocker"))
@@ -709,6 +711,26 @@ def _build_signup_tools(ctx: dict[str, Any]):
                                     f"==> main-thread interrupt failed: {exc}",
                                     flush=True,
                                 )
+
+                if i == 22 and ctx.get("escalate_requested") and not ctx.get("kick_stop"):
+                    esc_path = os.environ.get("MVP_ANTIBOT_ESCALATE_PATH")
+                    if esc_path:
+                        try:
+                            Path(esc_path).write_text(
+                                json.dumps(
+                                    {
+                                        "escalate_kind": ctx.get("escalate_kind"),
+                                        "bb_flags": ctx.get("bb_flags"),
+                                    }
+                                )
+                            )
+                        except Exception as exc:  # noqa: BLE001
+                            print(f"==> escalate path write failed: {exc}", flush=True)
+                    print(
+                        f"==> hard-exit 78 for antibot supervisor unwedge ({reason})",
+                        flush=True,
+                    )
+                    os._exit(78)
 
         threading.Thread(target=_kick, name="antibot-stop-kick", daemon=True).start()
 
@@ -1257,6 +1279,13 @@ async def sign_up(
         # Captcha ladder needs 4 attempts: cheap → captcha → proxies → Verified.
         max_antibot = max(1, int(os.environ.get("MVP_SIGNUP_ANTIBOT_MAX_ATTEMPTS", "4")))
     bb_flags = _cheap_bb_flags()
+    _flags_json = os.environ.get("MVP_BB_FLAGS_JSON", "").strip()
+    if _flags_json:
+        try:
+            bb_flags = {**bb_flags, **json.loads(_flags_json)}
+        except Exception:
+            pass
+
     antibot_log: list[dict[str, Any]] = []
     final_result: dict[str, Any] | None = None
 
@@ -1302,6 +1331,7 @@ async def sign_up(
             )
 
         ctx: dict[str, Any] = {
+            "bb_flags": dict(bb_flags) if use_bb else {},
             "identity": identity,
             "host": host,
             "page_getter": lambda: None,
@@ -1642,9 +1672,11 @@ async def sign_up(
                         if ctx.get("escalate_requested"):
                             result["reason"] = result.get("reason") or "antibot_escalate"
                             result["escalate_kind"] = ctx.get("escalate_kind")
+                            ctx["kick_stop"] = True
                 except AntibotUnwedge:
                     # Kick thread unwedged a stuck agent.run after escalate.
                     print("==> main thread AntibotUnwedge to unwedge escalate", flush=True)
+                    ctx["kick_stop"] = True
                     if not agent_task.done():
                         agent_task.cancel()
                         try:
@@ -1891,15 +1923,7 @@ async def sign_up(
 
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser(description="Sign up for a product and capture the session")
-    ap.add_argument("--url", required=True, help="Product URL to sign up on")
-    ap.add_argument("--timeout", type=float, default=900.0)
-    ap.add_argument("--headed", action="store_true", default=True)
-    ap.add_argument("--headless", action="store_true")
-    ap.add_argument("--max-steps", type=int, default=None)
-    ap.add_argument("--cdp-port", type=int, default=None)
-    args = ap.parse_args()
+def _run_signup_once(args: argparse.Namespace) -> dict[str, Any]:
     headed = not args.headless
     result = asyncio.run(
         sign_up(
@@ -1910,10 +1934,82 @@ def main() -> None:
             cdp_port=args.cdp_port,
         )
     )
-    # Never print the password.
-    safe = {k: v for k, v in result.items() if k != "password"}
-    print(json.dumps(safe, indent=2))
-    raise SystemExit(0 if result.get("ok") else 1)
+    return result
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="Sign up for a product and capture the session")
+    ap.add_argument("--url", required=True, help="Product URL to sign up on")
+    ap.add_argument("--timeout", type=float, default=900.0)
+    ap.add_argument("--headed", action="store_true", default=True)
+    ap.add_argument("--headless", action="store_true")
+    ap.add_argument("--max-steps", type=int, default=None)
+    ap.add_argument("--cdp-port", type=int, default=None)
+    args = ap.parse_args()
+
+    # Inner worker: single attempt (supervisor sets MVP_SIGNUP_ANTIBOT_MAX_ATTEMPTS=1).
+    if os.environ.get("MVP_ANTIBOT_INNER") == "1":
+        result = _run_signup_once(args)
+        esc_path = os.environ.get("MVP_ANTIBOT_ESCALATE_PATH")
+        if result.get("reason") == "antibot_escalate" and esc_path:
+            Path(esc_path).write_text(
+                json.dumps(
+                    {
+                        "escalate_kind": result.get("escalate_kind"),
+                        "bb_flags": result.get("browserbase_flags"),
+                    }
+                )
+            )
+            safe = {k: v for k, v in result.items() if k != "password"}
+            print(json.dumps(safe, indent=2))
+            raise SystemExit(78)
+        safe = {k: v for k, v in result.items() if k != "password"}
+        print(json.dumps(safe, indent=2))
+        raise SystemExit(0 if result.get("ok") else 1)
+
+    # Supervisor: restart worker on escalate (exit 78), including hard-unwedge exits.
+    max_ab = max(1, int(os.environ.get("MVP_SIGNUP_ANTIBOT_MAX_ATTEMPTS", "4")))
+    flags: dict[str, bool] | None = None
+    last_code = 1
+    for attempt in range(max_ab):
+        esc = Path(os.environ.get("TMPDIR", "/tmp")) / f"antibot_esc_{os.getpid()}.json"
+        if esc.exists():
+            esc.unlink()
+        env = os.environ.copy()
+        env["MVP_ANTIBOT_INNER"] = "1"
+        env["MVP_ANTIBOT_ESCALATE_PATH"] = str(esc)
+        env["MVP_SIGNUP_ANTIBOT_MAX_ATTEMPTS"] = "1"
+        if flags is not None:
+            env["MVP_BB_FLAGS_JSON"] = json.dumps(flags)
+        print(
+            f"==> antibot supervisor attempt={attempt} flags={flags or 'cheap'}",
+            flush=True,
+        )
+        proc = subprocess.run(
+            [sys.executable, "-u", "-m", "mvp.auto_signup", *sys.argv[1:]],
+            env=env,
+            check=False,
+        )
+        last_code = int(proc.returncode or 0)
+        if last_code == 78 and esc.exists():
+            data = json.loads(esc.read_text())
+            kind = data.get("escalate_kind") or "captcha"
+            cur = data.get("bb_flags") or _cheap_bb_flags()
+            nxt = _next_antibot_flags(cur, kind)
+            if not nxt:
+                print(
+                    f"==> antibot supervisor ceiling kind={kind} flags={cur}",
+                    flush=True,
+                )
+                raise SystemExit(1)
+            flags = nxt
+            print(
+                f"==> antibot supervisor escalate kind={kind} -> {flags}",
+                flush=True,
+            )
+            continue
+        raise SystemExit(last_code)
+    raise SystemExit(last_code)
 
 
 if __name__ == "__main__":
