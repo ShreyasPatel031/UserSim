@@ -283,6 +283,11 @@ _SKIP_LINK_HINTS = (
     "twitter.com",
     "linkedin.com",
     "instagram.com",
+    "/download",
+    "/pricing",
+    "/blog",
+    "/help/",
+    "mailto:",
 )
 
 
@@ -461,6 +466,7 @@ def latest_signup_link(
             continue
         candidates: list[str] = []
         preferred: list[str] = []
+        verify_keys = ("verify", "confirm", "activate", "magic", "token", "invite", "finish-signup", "email-verification")
         for url in _URL_RE.findall(text):
             clean = url.rstrip(").,;\"'>]")
             low_u = clean.lower()
@@ -469,13 +475,19 @@ def latest_signup_link(
             candidates.append(clean)
             if host_needles and any(h in low_u for h in host_needles):
                 preferred.append(clean)
+        def _verifyish(urls: list[str]) -> str | None:
+            for url in urls:
+                low_u = url.lower()
+                if any(k in low_u for k in verify_keys):
+                    return url
+            return None
+        # Prefer verify/finish-signup even among host matches (Welcome mail
+        # often has bitwarden.com/download which would otherwise win).
+        hit = _verifyish(preferred) or _verifyish(candidates)
+        if hit:
+            return hit
         if preferred:
             return preferred[0]
-        # Heuristic: prefer links that look like verify/confirm/activate.
-        for url in candidates:
-            low_u = url.lower()
-            if any(k in low_u for k in ("verify", "confirm", "activate", "magic", "token", "invite")):
-                return url
         if candidates:
             return candidates[0]
     return None
