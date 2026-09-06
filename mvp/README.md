@@ -27,7 +27,7 @@ pip install -r mvp/requirements.txt
 PYTHONPATH=src uvicorn mvp.server:app --reload --port 8787
 ```
 
-Open [http://127.0.0.1:8787](http://127.0.0.1:8787). Needs `BROWSERBASE_API_KEY` (Browserbase free tier may hit minute limits).
+Open [http://127.0.0.1:8787](http://127.0.0.1:8787). Needs `BROWSERBASE_API_KEY` (Developer project concurrency is 25; sessions run fully in parallel).
 
 Blocked sites (403, WAF, empty JS shells) are retried via Browserbase. If still blocked, the study stops — no inferred fallback.
 

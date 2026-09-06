@@ -435,8 +435,8 @@ async def run_browser_agent(
         )
         backend = "local_playwright"
     else:
-        # create_session/close_session block on a threading semaphore + sleep for the
-        # Browserbase create-rate limit; off-loop or they freeze every other agent.
+# create_session/close_session may briefly contend on a threading lock; off-loop
+        # so parallel agents keep making progress together.
         owns_session = bb_session is None
         if owns_session:
             bb_session = await asyncio.to_thread(create_session, proxies=False, keep_alive=False)

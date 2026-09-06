@@ -16,6 +16,16 @@ import httpx
 from capability.gemini_config import gemini_chat
 from mvp.page_access import SiteAccessBlockedError, fetch_page_access
 
+# Ignore free-tier Browserbase pacing secrets before any semaphore is sized.
+try:
+    from capability.browserbase_client import ensure_browserbase_full_parallel
+
+    ensure_browserbase_full_parallel()
+except Exception:
+    os.environ.setdefault("BROWSERBASE_CREATE_INTERVAL_S", "0")
+    os.environ.setdefault("BROWSERBASE_MAX_CONCURRENT", "25")
+    os.environ.setdefault("MVP_BROWSER_CONCURRENCY", "25")
+
 IS_VERCEL_ENV = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 USE_LIVE_BROWSER = os.environ.get("MVP_VERCEL_BROWSER", "").lower() in ("1", "true", "yes")
 QUICK_MODE = os.environ.get("MVP_QUICK", "").lower() in ("1", "true", "yes")
@@ -46,14 +56,9 @@ _AGENT_SEMAPHORE = asyncio.Semaphore(
     )
 )
 
-# Live Browserbase / local Chromium sessions.
+# Live Browserbase / local Chromium — match Developer project concurrency (25).
 _BROWSER_SEMAPHORE = asyncio.Semaphore(
-    int(
-        os.environ.get(
-            "MVP_BROWSER_CONCURRENCY",
-            "8" if IS_VERCEL_ENV else "2",
-        )
-    )
+    int(os.environ.get("MVP_BROWSER_CONCURRENCY", "25"))
 )
 
 
@@ -130,18 +135,18 @@ def _ordered_live_sessions(study: StudyState) -> list[dict[str, Any]]:
 
 
 async def _prefetch_browser_sessions(n: int) -> list[Any]:
-    """Stagger Browserbase session creates so the first N agents can start together."""
+    """Create Browserbase sessions in parallel so all agents can start together."""
     if n <= 0:
         return []
-    from capability.browserbase_client import create_session
+    from capability.browserbase_client import create_session, ensure_browserbase_full_parallel
 
-    interval = float(os.environ.get("BROWSERBASE_CREATE_INTERVAL_S", "13"))
-    sessions: list[Any] = []
-    for i in range(n):
-        if i:
-            await asyncio.sleep(interval)
-        sessions.append(await asyncio.to_thread(create_session, proxies=False, keep_alive=False))
-    return sessions
+    ensure_browserbase_full_parallel()
+    # Create all sessions at once — no stagger on Developer (concurrency 25).
+    return list(
+        await asyncio.gather(
+            *[asyncio.to_thread(create_session, proxies=False, keep_alive=False) for _ in range(n)]
+        )
+    )
 
 
 def _agent_phase_label(study: StudyState) -> str:
@@ -1283,14 +1288,25 @@ async def run_study(
                 "yes",
             }
             if not force_local_browser and not IS_VERCEL_ENV:
-                bb = os.environ.get("USE_BROWSERBASE", "").lower() in {"1", "true", "yes"}
+                bb = os.environ.get("USE_BROWSERBASE", "").lower() in {
+                    "1",
+                    "true",
+                    "yes",
+                }
                 force_local_browser = not bb
+            if not force_local_browser:
+                try:
+                    from capability.browserbase_client import ensure_browserbase_full_parallel
+
+                    ensure_browserbase_full_parallel()
+                except Exception:
+                    pass
             pool = min(
                 len(study.tasks),
                 int(
                     os.environ.get(
                         "MVP_BROWSER_CONCURRENCY",
-                        "2" if force_local_browser else ("8" if IS_VERCEL_ENV else "2"),
+                        "2" if force_local_browser else "25",
                     )
                 ),
             )

@@ -21,11 +21,42 @@ class BrowserbaseRateLimitError(RuntimeError):
     pass
 
 
-# Free tier: 3 concurrent sessions, ~5 session creates / minute.
-_SLOT = threading.Semaphore(int(os.environ.get("BROWSERBASE_MAX_CONCURRENT", "3")))
+def ensure_browserbase_full_parallel() -> None:
+    """Force Developer-plan parallelism (project concurrency is 25).
+
+    Cursor/cloud secrets often still inject free-tier pacing
+    (BROWSERBASE_CREATE_INTERVAL_S=8, low MVP_BROWSER_CONCURRENCY). Those
+    serialize session creates and make studies look stuck. Opt into throttling
+    only with BROWSERBASE_THROTTLE=1.
+    """
+    if os.environ.get("BROWSERBASE_THROTTLE", "").lower() in {"1", "true", "yes"}:
+        return
+    os.environ["BROWSERBASE_CREATE_INTERVAL_S"] = "0"
+    try:
+        max_c = int(os.environ.get("BROWSERBASE_MAX_CONCURRENT") or "25")
+    except ValueError:
+        max_c = 25
+    os.environ["BROWSERBASE_MAX_CONCURRENT"] = str(max(25, max_c))
+    try:
+        browser_c = int(os.environ.get("MVP_BROWSER_CONCURRENCY") or "25")
+    except ValueError:
+        browser_c = 25
+    os.environ["MVP_BROWSER_CONCURRENCY"] = str(max(25, browser_c))
+
+
+ensure_browserbase_full_parallel()
+
+# Developer project default is 25 concurrent (see Browserbase project.concurrency).
+# Create pacing is off unless BROWSERBASE_THROTTLE=1.
+_SLOT = threading.Semaphore(int(os.environ.get("BROWSERBASE_MAX_CONCURRENT", "25")))
 _CREATE_LOCK = threading.Lock()
 _LAST_CREATE_MONO = 0.0
-_MIN_CREATE_INTERVAL_S = float(os.environ.get("BROWSERBASE_CREATE_INTERVAL_S", "13"))
+
+
+def _create_interval_s() -> float:
+    if os.environ.get("BROWSERBASE_THROTTLE", "").lower() in {"1", "true", "yes"}:
+        return float(os.environ.get("BROWSERBASE_CREATE_INTERVAL_S", "8") or "8")
+    return 0.0
 
 
 def _read_secret(name: str) -> str:
@@ -60,7 +91,8 @@ def browserbase_enabled() -> bool:
 def browserbase_max_workers(requested: int) -> int:
     if not browserbase_enabled():
         return max(1, requested)
-    cap = int(os.environ.get("BROWSERBASE_MAX_CONCURRENT", "3"))
+    ensure_browserbase_full_parallel()
+    cap = int(os.environ.get("BROWSERBASE_MAX_CONCURRENT", "25"))
     return max(1, min(requested, cap))
 
 
@@ -83,11 +115,13 @@ def create_session(
     solve_captchas: bool | None = None,
     advanced_stealth: bool | None = None,
 ) -> BrowserbaseSession:
-    """Create a Browserbase session respecting concurrent + burst limits.
+    """Create a Browserbase session at full Developer concurrency.
 
     Walks down feature flags on 402/403 so Hobby plans still get a session:
-    proxies / advanced stealth / captcha-solve are optional.
+    proxies / advanced stealth / captcha-solve are optional. Session create
+    pacing is off unless BROWSERBASE_THROTTLE=1.
     """
+    ensure_browserbase_full_parallel()
     _SLOT.acquire()
     client = Browserbase(api_key=browserbase_api_key())
     pid = browserbase_project_id()
@@ -175,9 +209,11 @@ def create_session(
                 try:
                     global _LAST_CREATE_MONO
                     with _CREATE_LOCK:
-                        wait = _MIN_CREATE_INTERVAL_S - (time.monotonic() - _LAST_CREATE_MONO)
-                        if wait > 0:
-                            time.sleep(wait)
+                        interval = _create_interval_s()
+                        if interval > 0:
+                            wait = interval - (time.monotonic() - _LAST_CREATE_MONO)
+                            if wait > 0:
+                                time.sleep(wait)
                         session = _create_once(kwargs)
                         _LAST_CREATE_MONO = time.monotonic()
                     sid = session.id
