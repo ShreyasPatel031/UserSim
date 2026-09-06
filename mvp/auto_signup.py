@@ -653,6 +653,30 @@ def _build_signup_tools(ctx: dict[str, Any]):
                                 flush=True,
                             )
 
+                # Cancel agent_task from this thread if the event loop is still
+                # wedged inside agent.run (Notion hang after escalate).
+                if i in (8, 12, 16, 20):
+                    loop = ctx.get("event_loop")
+                    task = ctx.get("agent_task")
+                    if loop is not None and task is not None and not task.done():
+
+                        def _cancel(t=task, r=reason, n=i) -> None:
+                            if not t.done():
+                                t.cancel()
+                                print(
+                                    f"==> cancelled agent_task from kick "
+                                    f"(i={n}, {r})",
+                                    flush=True,
+                                )
+
+                        try:
+                            loop.call_soon_threadsafe(_cancel)
+                        except Exception as exc:  # noqa: BLE001
+                            print(
+                                f"==> agent_task cancel schedule failed: {exc}",
+                                flush=True,
+                            )
+
         threading.Thread(target=_kick, name="antibot-stop-kick", daemon=True).start()
 
 
@@ -1499,6 +1523,8 @@ async def sign_up(
                 agent_task = asyncio.create_task(
                     agent.run(max_steps=max_steps, on_step_end=_on_step_end)
                 )
+                ctx["agent_task"] = agent_task
+                ctx["event_loop"] = asyncio.get_running_loop()
 
                 async def _force_stop_if_armed() -> bool:
                     """Return True once escalate/block is armed and stop was requested.
