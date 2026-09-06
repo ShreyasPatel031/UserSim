@@ -68,7 +68,23 @@ def _site_state_authed(path: Path, host: str) -> bool:
     except Exception:
         return False
     want = _registrable(host)
-    auth_hints = ("sess", "auth", "token", "login", "sid", "jwt", "credential")
+    # Require strong auth signals. Bare "sess"/"sid" matches analytics noise
+    # (analytics_session_id, _gd_session, __ssid) and inflated skip_servable.
+    auth_hints = (
+        "auth_token",
+        "access_token",
+        "refresh_token",
+        "id_token",
+        "jwt",
+        "credential",
+        "logged_in",
+        "is_logged",
+        "_auth",
+        "session_token",
+        "sid_token",
+    )
+    # Also allow short exact-ish names common in real sessions.
+    auth_exact = {"session", "sid", "token", "auth", "login"}
     noise = (
         "analytics",
         "ab.storage",
@@ -82,6 +98,17 @@ def _site_state_authed(path: Path, host: str) -> bool:
         "logout",
         "anonymous",
         "guest",
+        "session_id",  # amplitude/segment style
+        "fpgsid",
+        "__ssid",
+        "_uetsid",
+        "phpsessid",
+        "jsessionid",
+        "browser_sess",
+        "monolith-login",  # Evernote pre-auth
+        "login-state",
+        "login-code",
+        "unauth",
     )
     for cookie in state.get("cookies") or []:
         domain = str(cookie.get("domain") or "").lstrip(".").lower()
@@ -92,8 +119,10 @@ def _site_state_authed(path: Path, host: str) -> bool:
         name = str(cookie.get("name") or "").lower()
         if any(n in name for n in noise):
             continue
-        if any(h in name for h in auth_hints):
-            return True
+        if name in auth_exact or any(h in name for h in auth_hints):
+            # Require a non-trivial value so empty marketing flags do not count.
+            if len(str(cookie.get("value") or "")) >= 12:
+                return True
     # Bitwarden-style SPA auth lives in localStorage, not cookies.
     for origin in state.get("origins") or []:
         origin_host = str(origin.get("origin") or "").lower()
