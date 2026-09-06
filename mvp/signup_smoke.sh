@@ -20,8 +20,13 @@ echo "→ import modules"
 from mvp import identity, email_codes, sms_provider, captcha, auto_signup, access_report, auth_state, profile_pool, session_health
 from mvp.auth_state import ensure_product_access, ensure_site_auth
 from mvp.identity import provision_identity, list_identities
-from mvp.auto_signup import BLOCK_REASONS
+from mvp.auto_signup import BLOCK_REASONS, _cheap_bb_flags, _next_antibot_flags
 assert "card_required" in BLOCK_REASONS
+assert "rate_limited" in BLOCK_REASONS
+cheap = _cheap_bb_flags()
+assert cheap["proxies"] is False and cheap["solve_captchas"] is False
+assert _next_antibot_flags(cheap, "captcha")["solve_captchas"] is True
+assert _next_antibot_flags(cheap, "rate_limit")["proxies"] is True
 print("imports ok")
 PY
 

@@ -35,7 +35,20 @@
         "waiting for challenge to clear",
         "repeated wait actions on captcha"
       ],
-      "tip": "Call solve_captcha() at most twice. If it still fails, call report_blocked(captcha_unsolved). Do not wait-loop or click the challenge yourself.",
+      "tip": "On a cheap Browserbase session (captcha OFF): call request_antibot_escalation(kind=captcha) or solve_captcha() once \u2014 the runner restarts with captcha ON. After captcha is ON: solve_captcha at most twice; if still blocked call request_antibot_escalation(kind=captcha) for proxies/Verified, else report_blocked(captcha_unsolved). Do not wait-loop.",
+      "status": "active"
+    },
+    {
+      "id": "conditional_antibot_escalate",
+      "category": "blocked",
+      "hosts": [],
+      "symptoms": [
+        "CAPTCHA / Turnstile / Cloudflare challenge",
+        "Please try again later after email Continue",
+        "whoa there / too many requests from your IP",
+        "bot confirmation / fingerprint wall"
+      ],
+      "tip": "Do not enable proxies/Verified preemptively. Recognize the event then escalate once: captcha \u2192 request_antibot_escalation(captcha); rate limit after one email retry \u2192 rate_limit; IP wall \u2192 ip_block; persistent bot wall \u2192 bot_block. Soft gates (card/SSO/invite/waitlist) use report_blocked only.",
       "status": "active"
     },
     {
@@ -170,7 +183,7 @@
         "too many requests come from your IP",
         "blocked from signing up"
       ],
-      "tip": "If Reddit shows an IP rate-limit / 'too many requests' page, call report_blocked(unknown) with detail reddit_ip_rate_limit. Do not solve_captcha-loop.",
+      "tip": "If Reddit shows an IP rate-limit / 'too many requests' / 'whoa there' page, call request_antibot_escalation(kind=ip_block). Do not solve_captcha-loop. Only after escalate ceiling: report_blocked(rate_limited) with detail reddit_ip_rate_limit.",
       "status": "active"
     },
     {
@@ -185,7 +198,7 @@
         "bot confirmation page",
         "solve_captcha failed twice"
       ],
-      "tip": "Call solve_captcha() at most twice. After each solve, wait ~3s and check if Continue enables. If still blocked, report_blocked(captcha_unsolved).",
+      "tip": "Hard reCAPTCHA: call solve_captcha() (escalates cheap sessions automatically). After captcha ON, solve at most twice; if still blocked request_antibot_escalation(kind=captcha) for proxies/Verified. After escalate ceiling, report_blocked(captcha_unsolved).",
       "status": "active"
     },
     {
@@ -202,7 +215,7 @@
         "Microsoft signup",
         "Couldn't find your Google Account"
       ],
-      "tip": "Never use Google/Microsoft/Apple SSO with a plus-alias identity. Stay on email Continue. On 'Please try again later', wait ~5s, retry email once, then report_blocked(rate_limited).",
+      "tip": "Never use Google/Microsoft/Apple SSO with a plus-alias identity. Stay on email Continue. On 'Please try again later', wait ~5s, retry email once, then request_antibot_escalation(kind=rate_limit) (not SSO). After escalate ceiling, report_blocked(rate_limited).",
       "status": "active"
     },
     {
