@@ -617,7 +617,10 @@ def _build_signup_tools(ctx: dict[str, Any]):
                 print(f"==> stop_agent from tool failed: {exc}", flush=True)
 
         def _kick() -> None:
-            for _ in range(20):
+            # browser-use can block the event loop after escalate tools, so the
+            # asyncio stop_watcher never runs. Re-call stop, then close the
+            # Browserbase session to force CDP disconnect and unwedge.
+            for i in range(24):
                 _t.sleep(0.25)
                 if not (
                     ctx.get("escalate_requested")
@@ -625,13 +628,30 @@ def _build_signup_tools(ctx: dict[str, Any]):
                 ):
                     return
                 stop2 = ctx.get("stop_agent")
-                if not callable(stop2):
-                    continue
-                try:
-                    stop2()
-                    print(f"==> stop_agent re-kick ({reason})", flush=True)
-                except Exception:
-                    pass
+                if callable(stop2) and i < 6:
+                    try:
+                        stop2()
+                        if i in (0, 2, 5):
+                            print(f"==> stop_agent re-kick ({reason})", flush=True)
+                    except Exception:
+                        pass
+                if i == 6 and not ctx.get("unwedge_bb_closed"):
+                    sid = ctx.get("bb_session_id")
+                    if sid:
+                        try:
+                            from capability.browserbase_client import close_session
+
+                            close_session(sid)
+                            ctx["unwedge_bb_closed"] = True
+                            print(
+                                f"==> closed Browserbase session {sid} to unwedge after {reason}",
+                                flush=True,
+                            )
+                        except Exception as exc:  # noqa: BLE001
+                            print(
+                                f"==> BB session close for unwedge failed: {exc}",
+                                flush=True,
+                            )
 
         threading.Thread(target=_kick, name="antibot-stop-kick", daemon=True).start()
 
@@ -1238,6 +1258,8 @@ async def sign_up(
             "escalate_kind": None,
             "escalate_detail": None,
             "captcha_attempts": 0,
+            "bb_session_id": getattr(bb_session, "id", None) if bb_session else None,
+            "unwedge_bb_closed": False,
         }
 
         try:
@@ -1503,10 +1525,16 @@ async def sign_up(
                                 print(f"==> agent.stop failed: {exc}", flush=True)
                             try:
                                 await asyncio.wait_for(
-                                    asyncio.shield(agent_task), timeout=5.0
+                                    asyncio.shield(agent_task), timeout=2.0
                                 )
                             except (asyncio.TimeoutError, asyncio.CancelledError, Exception):
                                 pass
+                            if not agent_task.done():
+                                agent_task.cancel()
+                                try:
+                                    await asyncio.wait_for(agent_task, timeout=2.0)
+                                except (asyncio.TimeoutError, asyncio.CancelledError, Exception):
+                                    pass
                             return True
                         await asyncio.sleep(0.25)
                     return False
