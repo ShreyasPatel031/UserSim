@@ -122,9 +122,10 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     study.backend = body.backend or "default"
     # Keep user-pinned competitors even in quick preview.
     study.competitors = [c.strip() for c in body.competitors if c and c.strip()]
-    study.skip_competitors = bool(body.skip_competitors) or (
-        body.competitors is not None and len(body.competitors) == 0 and bool(body.tasks)
-    )
+    # Empty competitors box = product-only. Inventing 2 rivals × 5 personas × N
+    # tasks creates 15–30 Browserbase sessions and dies on Vercel’s time budget.
+    # Users who want rivals can paste them (or we’ll add an explicit opt-in later).
+    study.skip_competitors = bool(body.skip_competitors) or not study.competitors
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
     if study.test_mode and not study.tasks_override:
         study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
@@ -136,7 +137,8 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     # Serverless: stream NDJSON so the brief (competitors / users / tasks) arrives
     # before browser agents finish — cuts perceived time-to-first-content.
     if IS_VERCEL or want_stream:
-        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "180"))
+        # Match vercel.json maxDuration (300s) with a little headroom for cleanup.
+        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "280" if IS_VERCEL else "180"))
         queue: asyncio.Queue[dict | None] = asyncio.Queue()
 
         def _push(study_obj, event: str = "progress") -> None:

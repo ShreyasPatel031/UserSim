@@ -134,20 +134,48 @@ def _ordered_live_sessions(study: StudyState) -> list[dict[str, Any]]:
     return sessions
 
 
-async def _prefetch_browser_sessions(n: int) -> list[Any]:
-    """Create Browserbase sessions in parallel so all agents can start together."""
+async def _prefetch_browser_sessions(
+    n: int,
+    *,
+    on_progress=None,
+) -> list[Any]:
+    """Create Browserbase sessions in parallel with per-session progress + timeout."""
     if n <= 0:
         return []
     from capability.browserbase_client import create_session, ensure_browserbase_full_parallel
 
     ensure_browserbase_full_parallel()
-    # keep_alive=True: without it Browserbase closes the CDP socket under parallel
-    # load (HTTP 410), agents reconnect-fail, then fall back to local Chrome.
-    return list(
-        await asyncio.gather(
-            *[asyncio.to_thread(create_session, proxies=False, keep_alive=True) for _ in range(n)]
-        )
-    )
+    ready: list[Any] = []
+    timeout_s = float(os.environ.get("BROWSERBASE_PREFETCH_TIMEOUT_S", "45"))
+
+    async def _one(i: int) -> Any | None:
+        try:
+            session = await asyncio.wait_for(
+                asyncio.to_thread(create_session, proxies=False, keep_alive=True),
+                timeout=timeout_s,
+            )
+            return session
+        except Exception as exc:  # noqa: BLE001
+            print(f"browserbase prefetch {i+1}/{n} failed: {exc!r}", flush=True)
+            return None
+
+    tasks = [asyncio.create_task(_one(i)) for i in range(n)]
+    done_count = 0
+    for fut in asyncio.as_completed(tasks):
+        session = await fut
+        done_count += 1
+        if session is not None:
+            ready.append(session)
+        if on_progress:
+            try:
+                on_progress(len(ready), n)
+            except Exception:
+                pass
+        elif done_count:
+            pass
+    if not ready:
+        raise RuntimeError(f"Browserbase prefetch failed for all {n} sessions")
+    return ready
 
 
 def _agent_phase_label(study: StudyState) -> str:
@@ -250,7 +278,9 @@ async def generate_tasks(
     if QUICK_MODE or test_mode:
         task_count = 1
     else:
-        task_count = int(os.environ.get("MVP_TASK_COUNT", "6"))
+        # At least one task per persona so every simulated user actually runs.
+        requested = int(os.environ.get("MVP_TASK_COUNT", "6"))
+        task_count = max(requested, len(personas) or 1)
     persona_blob = json.dumps(
         [
             {
@@ -309,7 +339,54 @@ Critical rules:
         ]
     )
     data = _extract_json(raw)
-    return list(data.get("tasks") or [])
+    tasks = list(data.get("tasks") or [])
+    # LLMs sometimes under-deliver. Guarantee ≥1 task per persona so the stage
+    # shows every simulated user, not a single orphaned session.
+    if not (QUICK_MODE or test_mode) and personas:
+        covered = {str(t.get("persona_id") or "") for t in tasks}
+        next_n = len(tasks) + 1
+        for persona in personas:
+            pid = str(persona.get("id") or "")
+            if not pid or pid in covered:
+                continue
+            name = persona.get("name") or pid
+            tasks.append(
+                {
+                    "id": f"t{next_n}",
+                    "title": f"Explore as {name}",
+                    "prompt": (
+                        f"Browse the site as {name}. Open the main navigation, "
+                        "find something relevant to your goals, and try one concrete action."
+                    ),
+                    "persona_id": pid,
+                    "difficulty_hint": "medium",
+                }
+            )
+            covered.add(pid)
+            next_n += 1
+        # If still short of requested count, round-robin personas so the
+        # parallel stage stays sized for multi-user UX.
+        while len(tasks) < task_count and personas:
+            persona = personas[len(tasks) % len(personas)]
+            pid = persona.get("id") or f"p{(len(tasks) % len(personas)) + 1}"
+            seed = tasks[len(tasks) % max(len(tasks), 1)] if tasks else None
+            prompt = (seed or {}).get("prompt") or (
+                f"Browse the homepage as {persona.get('name') or pid} and complete one goal."
+            )
+            tasks.append(
+                {
+                    "id": f"t{next_n}",
+                    "title": (seed or {}).get("title")
+                    or f"Follow-up for {persona.get('name') or pid}",
+                    "prompt": prompt,
+                    "persona_id": pid,
+                    "difficulty_hint": "medium",
+                }
+            )
+            next_n += 1
+            if next_n > task_count + len(personas) + 2:
+                break
+    return tasks
 
 
 async def generate_plan(
@@ -711,6 +788,13 @@ async def run_study(
         if on_update:
             try:
                 on_update(study)
+            except Exception:
+                pass
+        # Serverless: persist often so GET /api/studies/{id} still works if this
+        # invocation dies mid-run (Vercel freezes the process when the stream ends).
+        if IS_VERCEL_ENV:
+            try:
+                persist_study(study)
             except Exception:
                 pass
 
@@ -1320,7 +1404,12 @@ async def run_study(
                 )
                 touch(f"Preparing browser sessions — 0/{pool} ready")
                 try:
-                    prefetched_sessions = await _prefetch_browser_sessions(pool)
+                    def _prefetch_progress(ready_n: int, total_n: int) -> None:
+                        touch(f"Preparing browser sessions — {ready_n}/{total_n} ready")
+
+                    prefetched_sessions = await _prefetch_browser_sessions(
+                        pool, on_progress=_prefetch_progress
+                    )
                 except Exception as exc:  # noqa: BLE001
                     if IS_VERCEL_ENV:
                         use_live_browser = False

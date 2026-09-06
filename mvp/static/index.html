@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/styles.css?v=52" />
+  <link rel="stylesheet" href="/static/styles.css?v=54" />
 </head>
 <body>
   <header class="site-header">
@@ -21,7 +21,7 @@
     <section class="url-hero">
       <p class="url-hero-brand">UserSim</p>
       <h1 class="url-hero-title">Paste a product URL</h1>
-      <p class="url-hero-sub">We’ll invent ~5 simulated users, find 2 competitors, and run each task on your product and every competitor — all in parallel.</p>
+      <p class="url-hero-sub">We’ll invent ~5 simulated users and run each task on your product in parallel live browsers. Paste rivals under “Add competitors” to include them.</p>
 
       <form id="study-form" class="url-hero-form">
         <div class="url-bar">
@@ -51,16 +51,16 @@
             </label>
             <label>
               <span>Competitors <em>(one per line)</em></span>
-              <textarea name="competitors" rows="2" placeholder="Leave blank — we’ll find at least 2 rivals"></textarea>
+              <textarea name="competitors" rows="2" placeholder="Optional — paste rivals to include; leave blank for your product only"></textarea>
             </label>
             <label class="setup-full">
               <span>Tasks <em>(one goal per line)</em></span>
-              <textarea name="tasks" rows="2" placeholder="Leave blank — we’ll invent goals from the page"></textarea>
+              <textarea name="tasks" rows="2" placeholder="Optional — leave blank and we’ll invent goals from the page"></textarea>
             </label>
           </div>
           <label class="test-mode-row">
             <input type="checkbox" name="test_mode" value="1" />
-            <span>Quick preview — 1 simulated user, 1 task (full run is 5 users × 6 tasks × every site, all parallel)</span>
+            <span>Quick preview — 1 simulated user, 1 task (full run is ~5 users on your product in parallel; add rivals below to include them)</span>
           </label>
         </details>
       </form>
@@ -208,6 +208,6 @@
     <p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p>
   </footer>
 
-  <script src="/static/app.js?v=52"></script>
+  <script src="/static/app.js?v=54"></script>
 </body>
 </html>

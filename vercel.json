@@ -1,8 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/bakeoff-traces/(.*)", "destination": "/bakeoff-traces/$1" },
-    { "source": "/(.*)", "destination": "/api/index" }
+    {
+      "source": "/bakeoff-traces/(.*)",
+      "destination": "/bakeoff-traces/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/api/index"
+    }
   ],
   "functions": {
     "api/index.py": {
@@ -14,13 +20,15 @@
     "VERCEL": "1",
     "MVP_MAX_STEPS": "8",
     "MVP_BROWSER_CONCURRENCY": "25",
-    "MVP_AGENT_COUNT": "6",
+    "MVP_AGENT_COUNT": "5",
     "MVP_PERSONA_COUNT": "5",
-    "MVP_TASK_COUNT": "6",
-    "MVP_STUDY_TIMEOUT_S": "240",
+    "MVP_TASK_COUNT": "5",
+    "MVP_STUDY_TIMEOUT_S": "280",
     "MVP_AGENT_CONCURRENCY": "24",
     "BROWSERBASE_MAX_CONCURRENT": "25",
     "BROWSERBASE_CREATE_INTERVAL_S": "0",
+    "BROWSERBASE_SESSION_TIMEOUT_S": "1800",
+    "USE_BROWSERBASE": "1",
     "MVP_VERCEL_BROWSER": "1",
     "MVP_GCP_FLEET": "0",
     "GOOGLE_CLOUD_PROJECT": "project-amer-scs-sandbox",

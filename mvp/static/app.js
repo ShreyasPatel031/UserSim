@@ -221,7 +221,7 @@ function updateProgressUI(data, startedAt) {
   phaseLabel.textContent = phase;
   progressFill.style.width = `${studyProgress(phase)}%`;
 
-  const totalAgents = (data.tasks || []).length || 1;
+  const totalAgents = (data.tasks || []).length;
   const finished = (data.agent_results || []).length;
   const liveMatch = phase.match(
     /(\d+)\/(\d+) done · (\d+) active(?: · (\d+) queued)? · (\d+) steps/
@@ -242,7 +242,11 @@ function updateProgressUI(data, startedAt) {
     progressAgents.textContent = `Warming browser pool (${phase.split("—")[1]?.trim() || ""})`;
     progressHint.textContent = "Opening a real browser for the simulated user…";
   } else {
-    progressAgents.textContent = `${finished} / ${totalAgents} sessions finished`;
+    if (!totalAgents) {
+      progressAgents.textContent = "Planning sessions…";
+    } else {
+      progressAgents.textContent = `${finished} / ${totalAgents} sessions finished`;
+    }
     if (phase === "Understanding context of product" || phase === "Fetching site") {
       progressHint.textContent = "Understanding context of the product…";
     } else if (phase === "Finding competitors") {
@@ -259,10 +263,14 @@ function updateProgressUI(data, startedAt) {
       progressHint.textContent = "Writing tasks…";
     } else if (phase === "Brief ready") {
       progressHint.textContent = "Brief ready — launching browsers…";
+    } else if (phase === "Writing executive summary") {
+      progressHint.textContent = "All sessions done — writing the report…";
     } else if (phase.includes("Live browser") || phase.includes("Simulating")) {
-      progressHint.textContent = "Watch the stage — one user, one task, one screenshot at a time.";
+      progressHint.textContent = "Watch the stage — screenshots update as each persona browses.";
     } else if (finished > 0) {
       progressHint.textContent = "Wrapping up sessions…";
+    } else if (!totalAgents) {
+      progressHint.textContent = "Building the brief — personas and tasks appear first.";
     }
   }
   progressElapsed.textContent = formatElapsed(Math.floor((Date.now() - startedAt) / 1000));
