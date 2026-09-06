@@ -20,6 +20,8 @@ ADAPTER = ROOT / "models" / "BeFM1.5-4B"
 BB_DATA = DATA / "BehaviorBench"
 BB_REPO = ROOT / "behaviorbench_eval"
 PORT = 8000
+os.environ.setdefault("BEHAVIORBENCH_BLEURT_PATH", "/opt/usersim_fm/models/BLEURT-20")
+os.environ.setdefault("BEFM_BLEURT_PATH", "/opt/usersim_fm/models/BLEURT-20")
 
 # Make local repo helpers importable when running from UserSim checkout.
 _REPO = Path(__file__).resolve().parents[2]
@@ -110,6 +112,7 @@ def sh(cmd: str, check: bool = True) -> subprocess.CompletedProcess:
 
 def install() -> None:
     sh(f"{sys.executable} -m pip install -q -U pip")
+    sh(f"{sys.executable} -m pip uninstall -y tensorflow 2>/dev/null || true")
     sh(f"{sys.executable} -m pip install -q -U 'tensorflow-cpu>=2.15' 'evaluate>=0.4.0' 'rouge-score>=0.1.2' 'git+https://github.com/google-research/bleurt.git'")
 
     sh(
