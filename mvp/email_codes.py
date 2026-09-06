@@ -288,6 +288,14 @@ _SKIP_LINK_HINTS = (
     "/blog",
     "/help/",
     "mailto:",
+    "community.bitwarden.com",
+    "reddit.com",
+    "github.com",
+    "youtube.com",
+    "linkedin.com",
+    "facebook.com",
+    "x.com/",
+    "twitter.com",
 )
 
 
@@ -409,6 +417,7 @@ def latest_signup_code(
     if not creds:
         return None
     username, app_password = creds
+    fallback: str | None = None
     for msg in _iter_recent_messages(username, app_password, lookback=lookback):
         if not _alias_match(_recipients(msg), alias):
             continue
@@ -481,16 +490,17 @@ def latest_signup_link(
                 if any(k in low_u for k in verify_keys):
                     return url
             return None
-        # Prefer verify/finish-signup even among host matches (Welcome mail
-        # often has bitwarden.com/download which would otherwise win).
+        # Prefer verify/finish-signup. Do NOT return a marketing host match
+        # from a newer Welcome email before older Verify messages are scanned.
         hit = _verifyish(preferred) or _verifyish(candidates)
         if hit:
             return hit
-        if preferred:
-            return preferred[0]
-        if candidates:
-            return candidates[0]
-    return None
+        if fallback is None:
+            if preferred:
+                fallback = preferred[0]
+            elif candidates:
+                fallback = candidates[0]
+    return fallback
 
 
 def wait_for_signup_code(
