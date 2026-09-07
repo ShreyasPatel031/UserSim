@@ -96,26 +96,67 @@ function renderAgents(results) {
   });
 }
 
-try {
-  const raw = sessionStorage.getItem("usersim_report");
-  const data = raw ? JSON.parse(raw) : null;
+function showReport(data) {
   const empty = document.getElementById("report-empty");
   const results = document.getElementById("results");
   if (!data?.summary) {
     empty.hidden = false;
     results.hidden = true;
-  } else {
-    empty.hidden = true;
-    results.hidden = false;
-    renderSummary(
-      data.summary,
-      data.access_backend,
-      data.browserbase_session_url,
-      data.notify_email || ""
-    );
-    renderAgents(data.agent_results || []);
+    return;
   }
-} catch {
-  document.getElementById("report-empty").hidden = false;
-  document.getElementById("results").hidden = true;
+  empty.hidden = true;
+  results.hidden = false;
+  const title = document.querySelector(".summary-panel h2");
+  if (title && data.url) {
+    title.textContent = `Executive summary — ${data.url}`;
+  }
+  renderSummary(
+    data.summary,
+    data.access_backend,
+    data.browserbase_session_url,
+    data.notify_email || ""
+  );
+  renderAgents(data.agent_results || []);
 }
+
+async function loadReport() {
+  const params = new URLSearchParams(location.search);
+  const studyId = params.get("study") || "";
+  const empty = document.getElementById("report-empty");
+  const results = document.getElementById("results");
+
+  if (studyId) {
+    empty.hidden = false;
+    empty.textContent = "Loading report…";
+    results.hidden = true;
+    try {
+      const res = await fetch(`/api/studies/${encodeURIComponent(studyId)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      showReport(data);
+      if (!data?.summary) {
+        empty.hidden = false;
+        empty.innerHTML = `No summary on this study yet. <a href="/live?study=${encodeURIComponent(studyId)}">Open live view</a>`;
+        results.hidden = true;
+      }
+      return;
+    } catch (err) {
+      empty.hidden = false;
+      empty.textContent = `Couldn’t load study ${studyId}: ${err.message || err}`;
+      results.hidden = true;
+      return;
+    }
+  }
+
+  try {
+    const raw = sessionStorage.getItem("usersim_report");
+    const data = raw ? JSON.parse(raw) : null;
+    showReport(data);
+  } catch {
+    empty.hidden = false;
+    results.hidden = true;
+  }
+}
+
+loadReport();
+
