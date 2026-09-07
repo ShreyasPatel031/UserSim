@@ -54,7 +54,7 @@ WORKFLOW_MAX_TOKENS = int(os.environ.get("WORKFLOW_MAX_TOKENS", "512"))
 SKIP_WORKFLOW = os.environ.get("SKIP_WORKFLOW", "0") == "1"
 CONCURRENCY = int(os.environ.get("CONCURRENCY", "32"))
 MAX_NUM_SEQS = int(os.environ.get("MAX_NUM_SEQS", "64"))
-GPU_MEM_UTIL = os.environ.get("GPU_MEM_UTIL", "0.90")
+GPU_MEM_UTIL = os.environ.get("GPU_MEM_UTIL", "0.92")
 MAX_MODEL_LEN = int(os.environ.get("MAX_MODEL_LEN", "4096"))
 MODE = os.environ.get("MODE", "full").strip().lower()
 SMOKE_N = int(os.environ.get("SMOKE_N", "8"))

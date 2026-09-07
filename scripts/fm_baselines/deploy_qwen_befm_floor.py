@@ -61,6 +61,9 @@ def main() -> None:
             ]
         )
     install = (
+        "sudo systemctl stop usersim-floor-befm.service || true; "
+        "sudo pkill -f vllm.entrypoints || true; "
+        "sudo pkill -f colab_qwen3_8b_floor_befm.py || true; "
         f"sudo mkdir -p /opt/usersim_fm/scripts /opt/usersim_fm && "
         f"sudo cp {remote}/*.py {remote}/*.sh {remote}/*.service /opt/usersim_fm/scripts/ && "
         "sudo cp /opt/usersim_fm/scripts/usersim-floor-befm.service /etc/systemd/system/ && "

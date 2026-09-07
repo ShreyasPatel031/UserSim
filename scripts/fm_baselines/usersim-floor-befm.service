@@ -11,6 +11,7 @@ Environment=FLOOR_MODEL=Qwen/Qwen3-8B-Base
 Environment=ROOT=/opt/usersim_fm
 Environment=CONCURRENCY=32
 Environment=MAX_NUM_SEQS=64
+Environment=GPU_MEM_UTIL=0.92
 Environment=MAX_TOKENS=64
 Environment=WORKFLOW_MAX_TOKENS=512
 Environment=MODE=full
