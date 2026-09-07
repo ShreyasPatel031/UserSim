@@ -3,3 +3,6 @@ uvicorn[standard]>=0.32.0
 httpx>=0.28.0
 # Autonomous sign-in: TOTP codes for 2-step verification.
 pyotp>=2.9.0
+# Optional local captcha solvers (import-guarded in mvp/captcha.py).
+ddddocr>=1.5.0
+captcha-solver-ai>=0.1.0

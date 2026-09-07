@@ -2,21 +2,27 @@
 
 Layers (cheapest first):
 
-1. Browserbase native — session flags ``solveCaptchas`` / advanced stealth
-   (wired in ``capability.browserbase_client``).
-2. Solver API — CapSolver or 2Captcha for sitekey-based reCAPTCHA / hCaptcha /
+1. Settle / click — wait for invisible scoring, click Cloudflare checkbox.
+2. Browserbase native — listen for ``browserbase-solving-started/finished``
+   console events (solveCaptchas is on by default for BB sessions).
+3. Open-source local solvers — optional ``captcha-solver-ai`` (reCAPTCHA image
+   grids) and ``ddddocr`` (simple distorted-text captchas).
+4. Solver API — CapSolver or 2Captcha for sitekey-based reCAPTCHA / hCaptcha /
    Turnstile. Returns a token the agent injects into the page.
-3. Human push — ntfy + desktop notification; wait for ``secrets/captcha_done.txt``.
+5. Human push — ntfy + desktop notification; wait for ``secrets/captcha_done.txt``.
 
 Env:
   MVP_CAPTCHA_SOLVER=1          # enable browser-use captcha_solver flag
   MVP_CAPTCHA_API=capsolver|2captcha
   MVP_CAPTCHA_API_KEY=...
+  MVP_CAPTCHA_OSS=1             # try local OSS solvers (default on)
+  MVP_CAPTCHA_BB_WAIT_S=45      # max wait for Browserbase native solver
   MVP_CAPTCHA_HUMAN_TIMEOUT_S=300
 """
 
 from __future__ import annotations
 
+import asyncio
 import os
 import time
 from pathlib import Path
@@ -29,6 +35,10 @@ from mvp.notify import push
 ROOT = Path(__file__).resolve().parents[1]
 SECRETS = ROOT / "secrets"
 DONE_FILE = SECRETS / "captcha_done.txt"
+
+# Console lines Browserbase emits while its built-in solver runs.
+_BB_SOLVING_STARTED = "browserbase-solving-started"
+_BB_SOLVING_FINISHED = "browserbase-solving-finished"
 
 
 def captcha_solver_enabled() -> bool:
@@ -397,25 +407,333 @@ async def wait_for_challenge_to_clear(page: Any, timeout_s: float | None = None)
     return not await _challenge_visible(page)
 
 
+def _oss_enabled() -> bool:
+    raw = os.environ.get("MVP_CAPTCHA_OSS", "1").strip().lower()
+    return raw not in {"0", "false", "no", "off"}
+
+
+async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
+    """Fast signal for the agent: is a captcha / bot-check blocking the page?"""
+    if await _recaptcha_solved(page):
+        return {
+            "blocked": False,
+            "challenge_visible": False,
+            "widget_present": True,
+            "sitekey": None,
+            "type": None,
+            "action": "continue",
+            "solved": True,
+        }
+    visible = await _challenge_visible(page)
+    info = await detect_sitekey(page)
+    widget = False
+    try:
+        widget = bool(
+            await page.evaluate(
+                """() => !!document.querySelector(
+                  'iframe[src*="recaptcha"], iframe[src*="hcaptcha"], iframe[src*="turnstile"],' +
+                  'iframe[src*="challenges.cloudflare.com"], .g-recaptcha, .h-captcha, .cf-turnstile'
+                )"""
+            )
+        )
+    except Exception:
+        pass
+    text_block = False
+    try:
+        text_block = bool(
+            await page.evaluate(
+                """() => {
+                  const t = (document.body && document.body.innerText || '').toLowerCase();
+                  return /verify you are human|checking your browser|just a moment|complete the security check|press and hold|are you a robot/.test(t);
+                }"""
+            )
+        )
+    except Exception:
+        pass
+    # A marketing page that merely mentions captchas is not blocking. Require a
+    # live challenge, sitekey widget, or interstitial copy.
+    blocked = bool(visible or (info and info.get("sitekey")) or text_block or (widget and visible))
+    if widget and not blocked:
+        # Widget present but not yet challenged — agent should still be ready.
+        action = "ready_call_solve_captcha_if_stuck"
+    else:
+        action = "call_solve_captcha" if blocked else "continue"
+    return {
+        "blocked": blocked,
+        "challenge_visible": visible,
+        "widget_present": widget,
+        "sitekey": (info or {}).get("sitekey"),
+        "type": (info or {}).get("type"),
+        "action": action,
+    }
+
+
+async def wait_for_browserbase_solver(page: Any, timeout_s: float | None = None) -> bool:
+    """Wait for Browserbase's native solver console events, then settle.
+
+    See https://www.browserbase.com/blog/what-is-a-captcha-solver — sessions emit
+    ``browserbase-solving-started`` / ``browserbase-solving-finished``. Racing
+    ahead while solving is in flight is a common false failure.
+    """
+    if timeout_s is None:
+        timeout_s = float(os.environ.get("MVP_CAPTCHA_BB_WAIT_S", "45"))
+    state = {"started": False, "finished": False}
+
+    def _on_console(msg: Any) -> None:
+        try:
+            text = msg.text if callable(getattr(msg, "text", None)) else getattr(msg, "text", "")
+            if callable(text):
+                text = text()
+            text = str(text or "")
+        except Exception:
+            return
+        if _BB_SOLVING_STARTED in text:
+            state["started"] = True
+        if _BB_SOLVING_FINISHED in text:
+            state["finished"] = True
+
+    try:
+        page.on("console", _on_console)
+    except Exception:
+        # No console hook — fall through to settle polling only.
+        return await wait_for_challenge_to_clear(page, timeout_s=min(timeout_s, 20.0))
+
+    deadline = time.time() + timeout_s
+    try:
+        # Nudge BB / the widget by focusing the challenge area.
+        try:
+            await page.evaluate(
+                """() => {
+                  const f = document.querySelector(
+                    'iframe[src*="recaptcha"], iframe[src*="hcaptcha"], iframe[src*="turnstile"], .g-recaptcha, .h-captcha, .cf-turnstile'
+                  );
+                  if (f) try { f.scrollIntoView({block:'center'}); } catch (e) {}
+                }"""
+            )
+        except Exception:
+            pass
+
+        while time.time() < deadline:
+            if state["finished"]:
+                await asyncio.sleep(1.5)
+                if not await _challenge_visible(page):
+                    return True
+            if not await _challenge_visible(page) and not state["started"]:
+                return True
+            await asyncio.sleep(1.0)
+        return not await _challenge_visible(page)
+    finally:
+        try:
+            page.remove_listener("console", _on_console)
+        except Exception:
+            pass
+
+
+async def _try_oss_image_solver(page: Any) -> dict[str, Any] | None:
+    """Optional local reCAPTCHA image-grid solver (captcha-solver-ai)."""
+    if not _oss_enabled():
+        return None
+    try:
+        from captcha_solver import CaptchaSolver  # type: ignore
+    except Exception as exc:
+        return {"ok": False, "method": "oss_image", "detail": f"import_failed:{exc}"}
+    try:
+        solver = CaptchaSolver()
+        solved = await solver.solve_on_page(page, max_rounds=5)
+        if solved and not await _challenge_visible(page):
+            return {"ok": True, "method": "oss_image", "detail": "captcha_solver_ai"}
+        if solved:
+            return {"ok": True, "method": "oss_image", "detail": "captcha_solver_ai_claimed"}
+        return {"ok": False, "method": "oss_image", "detail": "unsolved"}
+    except Exception as exc:
+        return {"ok": False, "method": "oss_image", "detail": f"{type(exc).__name__}:{exc}"[:200]}
+
+
+async def _try_oss_text_ocr(page: Any) -> dict[str, Any] | None:
+    """Optional ddddocr pass for simple same-origin text/image captchas."""
+    if not _oss_enabled():
+        return None
+    try:
+        import ddddocr  # type: ignore
+    except Exception as exc:
+        return {"ok": False, "method": "oss_ocr", "detail": f"import_failed:{exc}"}
+
+    try:
+        targets = await page.evaluate(
+            """() => {
+              const out = [];
+              for (const img of document.querySelectorAll('img[src], img[data-src]')) {
+                const src = img.getAttribute('src') || img.getAttribute('data-src') || '';
+                const alt = (img.getAttribute('alt') || img.getAttribute('title') || '').toLowerCase();
+                const cls = (img.className || '').toLowerCase();
+                const id = (img.id || '').toLowerCase();
+                const hint = alt + ' ' + cls + ' ' + id + ' ' + src.toLowerCase();
+                if (!/captcha|verify|code|challenge|secure/.test(hint)) continue;
+                const r = img.getBoundingClientRect();
+                if (r.width < 40 || r.height < 15 || r.width > 600) continue;
+                out.push({src, w: r.width, h: r.height});
+              }
+              return out.slice(0, 3);
+            }"""
+        )
+    except Exception as exc:
+        return {"ok": False, "method": "oss_ocr", "detail": f"detect_failed:{exc}"}
+
+    if not targets:
+        return None
+
+    ocr = ddddocr.DdddOcr(show_ad=False)
+    for item in targets:
+        src = item.get("src") or ""
+        try:
+            if src.startswith("data:"):
+                import base64
+                import re as _re
+
+                m = _re.search(r"base64,(.+)", src)
+                if not m:
+                    continue
+                raw = base64.b64decode(m.group(1))
+            elif src.startswith("http"):
+                async with httpx.AsyncClient(timeout=20.0) as client:
+                    resp = await client.get(src)
+                    raw = resp.content
+            else:
+                # Relative / blob — screenshot the element instead.
+                loc = page.locator(f'img[src="{src}"]').first
+                raw = await loc.screenshot(type="png")
+            text = (ocr.classification(raw) or "").strip()
+            if not text or len(text) < 3:
+                continue
+            # Fill the nearest empty input near a captcha-ish label.
+            filled = await page.evaluate(
+                """(code) => {
+                  const inputs = [...document.querySelectorAll('input[type=text], input:not([type])')];
+                  for (const inp of inputs) {
+                    const name = ((inp.name||'') + ' ' + (inp.id||'') + ' ' + (inp.placeholder||'')).toLowerCase();
+                    if (/captcha|verify|code|challenge/.test(name) || !inp.value) {
+                      inp.focus();
+                      inp.value = code;
+                      inp.dispatchEvent(new Event('input', {bubbles:true}));
+                      inp.dispatchEvent(new Event('change', {bubbles:true}));
+                      return true;
+                    }
+                  }
+                  return false;
+                }""",
+                text,
+            )
+            if filled:
+                return {"ok": True, "method": "oss_ocr", "detail": f"ddddocr:{text[:12]}"}
+        except Exception:
+            continue
+    return {"ok": False, "method": "oss_ocr", "detail": "no_text_captcha"}
+
+
+async def _recaptcha_solved(page: Any) -> bool:
+    """True when a response token is present or the checkbox is checked."""
+    try:
+        return bool(
+            await page.evaluate(
+                """() => {
+                  const t = document.querySelector(
+                    '#g-recaptcha-response, textarea[name="g-recaptcha-response"], textarea[name="h-captcha-response"], input[name="cf-turnstile-response"]'
+                  );
+                  if (t && (t.value || '').length > 20) return true;
+                  return false;
+                }"""
+            )
+        )
+    except Exception:
+        return False
+
+
+async def _click_recaptcha_checkbox(page: Any) -> bool:
+    """Click the reCAPTCHA v2 anchor checkbox when present."""
+    try:
+        for frame in page.frames:
+            url = (frame.url or "").lower()
+            if "recaptcha/api2/anchor" not in url and "recaptcha/enterprise/anchor" not in url:
+                continue
+            for sel in ("#recaptcha-anchor", ".recaptcha-checkbox-border", "[role=checkbox]"):
+                try:
+                    loc = frame.locator(sel).first
+                    if await loc.count() == 0:
+                        continue
+                    await loc.click(timeout=3000, force=True)
+                    await page.wait_for_timeout(2000)
+                    return True
+                except Exception:
+                    continue
+    except Exception:
+        pass
+    try:
+        frame = page.frame_locator('iframe[src*="recaptcha"][src*="anchor"]').first
+        await frame.locator("#recaptcha-anchor").first.click(timeout=4000)
+        await page.wait_for_timeout(2000)
+        return True
+    except Exception:
+        return False
+
+
 async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
-    """Full stack: settle → click challenge → solver API → inject → else human.
+    """Full stack: settle → BB wait → click → OSS → solver API → human.
 
     Returns ``{ok, method, detail}``.
     """
-    # Cheapest win: give the challenge a few seconds to score us and vanish.
-    if await wait_for_challenge_to_clear(page):
-        return {"ok": True, "method": "self_cleared", "detail": "challenge_passed"}
+    if await _recaptcha_solved(page):
+        return {"ok": True, "method": "already_solved", "detail": "token_present"}
+
+    # Click the checkbox first so Browserbase / Google scoring can engage.
+    clicked = await _click_recaptcha_checkbox(page)
+    if clicked and await _recaptcha_solved(page):
+        return {"ok": True, "method": "checkbox", "detail": "anchor_checked"}
+
+    # Browserbase native solver (console events) — free when session has solveCaptchas.
+    if await wait_for_browserbase_solver(page):
+        if await _recaptcha_solved(page) or not await _challenge_visible(page):
+            # Prefer token proof; accept cleared challenge only if widget no longer blocks.
+            if await _recaptcha_solved(page):
+                return {"ok": True, "method": "browserbase", "detail": "token_after_bb"}
+            if not await _challenge_visible(page) and clicked:
+                # Checkbox-only pass (no image grid). Confirm with a short settle.
+                await asyncio.sleep(1.5)
+                if await _recaptcha_solved(page) or not await _challenge_visible(page):
+                    return {
+                        "ok": True,
+                        "method": "browserbase",
+                        "detail": "challenge_cleared",
+                    }
+
+    # Cheapest remaining: give an interstitial a few seconds to vanish.
+    if await wait_for_challenge_to_clear(page, timeout_s=8.0):
+        if await _recaptcha_solved(page):
+            return {"ok": True, "method": "self_cleared", "detail": "token_present"}
+        blocked_info = await page_looks_captcha_blocked(page)
+        if not blocked_info.get("blocked") and not blocked_info.get("widget_present"):
+            return {"ok": True, "method": "self_cleared", "detail": "challenge_passed"}
+
+    if await _recaptcha_solved(page):
+        return {"ok": True, "method": "self_cleared", "detail": "token_present"}
 
     # Free next: just click the Cloudflare / Turnstile checkbox when present.
     if await _try_click_cloudflare_checkbox(page):
-        # The checkbox posts a token asynchronously; give it time to land.
         if await wait_for_challenge_to_clear(page):
             return {"ok": True, "method": "click", "detail": "cloudflare_checkbox"}
+
+    # Open-source local solvers (optional deps).
+    oss_img = await _try_oss_image_solver(page)
+    if oss_img and oss_img.get("ok"):
+        if await _recaptcha_solved(page) or not await _challenge_visible(page):
+            return oss_img
+    oss_ocr = await _try_oss_text_ocr(page)
+    if oss_ocr and oss_ocr.get("ok"):
+        return oss_ocr
 
     page_url = getattr(page, "url", "") or ""
     info = await detect_sitekey(page)
     if info and info.get("sitekey"):
-        token = await __import__("asyncio").to_thread(
+        token = await asyncio.to_thread(
             solve_sitekey,
             sitekey=info["sitekey"],
             page_url=page_url,
@@ -425,16 +743,25 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
         if token:
             injected = await _inject_token(page, token, info.get("type") or "recaptcha")
             if injected:
-                return {"ok": True, "method": "solver_api", "detail": info.get("type")}
+                if await wait_for_challenge_to_clear(page, timeout_s=15.0) or await _recaptcha_solved(
+                    page
+                ):
+                    return {"ok": True, "method": "solver_api", "detail": info.get("type")}
+                return {"ok": True, "method": "solver_api", "detail": f"{info.get('type')}_injected"}
             return {"ok": False, "method": "solver_api", "detail": "inject_failed", "token": token}
 
     # Human fallback.
-    await __import__("asyncio").to_thread(request_human_solve, page_url)
-    ok = await __import__("asyncio").to_thread(wait_for_human_solve)
+    await asyncio.to_thread(request_human_solve, page_url)
+    ok = await asyncio.to_thread(wait_for_human_solve)
+    detail = "solved" if ok else "timeout"
+    if oss_img and not oss_img.get("ok"):
+        detail = f"{detail};oss_image={oss_img.get('detail')}"
+    if oss_ocr and not oss_ocr.get("ok"):
+        detail = f"{detail};oss_ocr={oss_ocr.get('detail')}"
     return {
         "ok": ok,
         "method": "human",
-        "detail": "solved" if ok else "timeout",
+        "detail": detail,
     }
 
 
@@ -478,8 +805,22 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
 
 
 def status() -> dict[str, Any]:
+    oss: dict[str, bool] = {"enabled": _oss_enabled()}
+    try:
+        import captcha_solver  # noqa: F401
+
+        oss["captcha_solver_ai"] = True
+    except Exception:
+        oss["captcha_solver_ai"] = False
+    try:
+        import ddddocr  # noqa: F401
+
+        oss["ddddocr"] = True
+    except Exception:
+        oss["ddddocr"] = False
     return {
         "captcha_solver_enabled": captcha_solver_enabled(),
         "api": _api_name(),
         "api_key_set": bool(_api_key()),
+        "oss": oss,
     }

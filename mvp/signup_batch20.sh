@@ -23,7 +23,7 @@ PRODUCTS=(
   "https://linear.app"
   "https://www.notion.so"
   "https://todoist.com"
-  "https://clickup.com"
+  "https://codepen.io"
   "https://calendly.com"
   "https://airtable.com"
   "https://www.canva.com"
@@ -38,8 +38,8 @@ PRODUCTS=(
   "https://webflow.com"
   "https://github.com"
   "https://gitlab.com"
-  "https://www.reddit.com"
-  "https://medium.com"
+  "https://stackblitz.com"
+  "https://hashnode.com"
 )
 
 TIMEOUT_S="${SIGNUP_TIMEOUT_S:-300}"

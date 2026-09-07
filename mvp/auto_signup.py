@@ -27,7 +27,7 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field
 
-from mvp.captcha import solve_captcha_on_page
+from mvp.captcha import page_looks_captcha_blocked, solve_captcha_on_page
 from mvp.credentials import totp_code
 from mvp.email_codes import wait_for_signup_code, wait_for_signup_link
 from mvp.identity import (
@@ -208,22 +208,36 @@ SIGNUP_START: dict[str, str] = {
     "buffer.com": "https://login.buffer.com/signup",
     "calendly.com": "https://calendly.com/signup",
     "canva.com": "https://www.canva.com/signup",
-    "clickup.com": "https://app.clickup.com/signup",
     "coda.io": "https://coda.io/signup",
+    "codepen.io": "https://codepen.io/accounts/signup/user/free",
     "dropbox.com": "https://www.dropbox.com/register",
     "figma.com": "https://www.figma.com/signup",
     "github.com": "https://github.com/signup",
     "gitlab.com": "https://gitlab.com/users/sign_up",
+    "hashnode.com": "https://hashnode.com/onboard",
     "linear.app": "https://linear.app/signup",
     "loom.com": "https://www.loom.com/signup",
     "medium.com": "https://medium.com/m/signin",
     "miro.com": "https://miro.com/signup/",
     "notion.so": "https://www.notion.so/signup",
     "reddit.com": "https://www.reddit.com/register/",
+    "stackblitz.com": "https://stackblitz.com/register",
     "todoist.com": "https://todoist.com/auth/signup",
+    "trello.com": "https://trello.com/signup",
     "webflow.com": "https://webflow.com/signup",
     "zoom.us": "https://www.zoom.us/signup",
 }
+
+# Already have a live account on the base mailbox — do not burn signup budget.
+RETIRED_HOSTS: frozenset[str] = frozenset(
+    {
+        "clickup.com",
+        "app.clickup.com",
+        "replit.com",
+        "posthog.com",
+        "us.posthog.com",
+    }
+)
 
 
 def signup_start_url(host: str) -> str:
@@ -255,6 +269,10 @@ VERIFY_URLS: dict[str, list[str]] = {
     "reddit.com": ["https://www.reddit.com/"],
     "medium.com": ["https://medium.com/me/stories/public"],
     "bitwarden.com": ["https://vault.bitwarden.com/#/vault"],
+    "codepen.io": ["https://codepen.io/"],
+    "stackblitz.com": ["https://stackblitz.com/"],
+    "hashnode.com": ["https://hashnode.com/"],
+    "trello.com": ["https://trello.com/"],
 }
 
 
@@ -550,9 +568,37 @@ def _build_signup_tools(ctx: dict[str, Any]):
         return ActionResult(extracted_content=code, include_in_memory=True)
 
     @tools.registry.action(
-        "Attempt to solve a CAPTCHA on the current page (solver API, then human ping). "
-        "Call when a captcha/checkbox/challenge is blocking progress. "
-        "If this returns an error, call report_blocked(captcha_unsolved) immediately — do not wait/loop.",
+        "Check whether a CAPTCHA / Cloudflare / bot-check is currently blocking the page. "
+        "If blocked=true, immediately call solve_captcha() — do not click through blindly.",
+        param_model=EmptyParams,
+    )
+    async def detect_captcha(params: EmptyParams, browser_session):  # noqa: ANN001
+        page = None
+        try:
+            page = await browser_session.get_current_page()
+        except Exception:
+            page = page_getter()
+        if page is None:
+            return ActionResult(
+                error="No active page",
+                include_in_memory=True,
+            )
+        info = await page_looks_captcha_blocked(page)
+        return ActionResult(
+            extracted_content=json.dumps(info),
+            include_in_memory=True,
+            long_term_memory=(
+                "CAPTCHA blocking — call solve_captcha() now"
+                if info.get("blocked")
+                else "No captcha blocking the page"
+            ),
+        )
+
+    @tools.registry.action(
+        "Attempt to solve a CAPTCHA on the current page "
+        "(Browserbase native solver, open-source local solvers, CapSolver/2Captcha, then human). "
+        "Call when detect_captcha says blocked, or when you see a checkbox/image challenge. "
+        "If this returns an error twice, call report_blocked(captcha_unsolved) — do not wait-loop.",
         param_model=EmptyParams,
     )
     async def solve_captcha(params: EmptyParams, browser_session):  # noqa: ANN001 — injected special arg
@@ -648,6 +694,21 @@ async def sign_up(
     from playwright.async_api import async_playwright
 
     host = host_for_url(url)
+    if host in RETIRED_HOSTS or host.removeprefix("www.") in RETIRED_HOSTS:
+        try:
+            update_identity(
+                f"https://{host}",
+                status="blocked",
+                blocker="already_have_account",
+            )
+        except Exception:
+            pass
+        return {
+            "ok": False,
+            "host": host,
+            "reason": "already_have_account",
+            "detail": "Retired — live account exists on base mailbox; pick a new product",
+        }
     identity = identity or provision_identity(url)
     # identities.json travels between machines (laptop -> VM) and stores an
     # absolute profile_dir. Honour it only when it belongs to this checkout,
@@ -803,8 +864,9 @@ async def sign_up(
                 f"returned. If you cannot see a real code, call the tool again — do not "
                 f"guess placeholders like 123456.\n"
                 f"5. If SMS is required: call get_sms_code() and enter the code.\n"
-                f"6. If a CAPTCHA/Cloudflare challenge blocks you: call solve_captcha() once. "
-                f"If it fails, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
+                f"6. If a CAPTCHA/Cloudflare challenge blocks you: call detect_captcha(), "
+                f"then solve_captcha() once. Wait for the solver to finish before typing more. "
+                f"If it fails twice, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
                 f"7. Skip or dismiss onboarding tours once the account exists.\n"
                 f"8. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
                 f"If the product requires a credit card, SSO-only, invite-only access, "
@@ -843,7 +905,11 @@ async def sign_up(
                     "You are signing up for a product so usability agents can study the "
                     "authenticated experience. Prefer the email/password path. Be decisive; "
                     "do not loop on the same form. Call report_blocked when stuck on a "
-                    "hard gate (card, SSO-only, invite, waitlist)."
+                    "hard gate (card, SSO-only, invite, waitlist). "
+                    "CAPTCHA: whenever you see 'I'm not a robot', image grids, Cloudflare "
+                    "'verify you are human', Turnstile, or a blocked submit button, call "
+                    "detect_captcha() then solve_captcha() before any other action. "
+                    "Do not keep clicking the checkbox yourself — the solver stack handles it."
                 ),
             )
 
