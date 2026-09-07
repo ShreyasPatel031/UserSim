@@ -16,6 +16,10 @@ Environment=WORKFLOW_MAX_TOKENS=512
 Environment=MODE=full
 Environment=WATCHDOG_ARMED=1
 Environment=HOME=/home/shreyaspatel
+Environment=SKIP_INSTALL=0
+Environment=VLLM_ENGINE_READY_TIMEOUT_S=600
+Environment=VLLM_ENGINE_ITERATION_TIMEOUT_S=300
+Environment=VLLM_WORKER_MULTIPROC_METHOD=spawn
 ExecStartPre=/bin/bash -lc 'pkill -f qwen_openai_server.py || true'
 ExecStart=/bin/bash /opt/usersim_fm/scripts/run_qwen_befm_full.sh
 Restart=on-failure

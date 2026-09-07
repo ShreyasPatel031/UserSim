@@ -148,25 +148,38 @@ def _torchaudio_stub(py: str) -> None:
         print("torchaudio stub skip", e, flush=True)
 
 
+def _module_ok(py: str, mod: str) -> bool:
+    return subprocess.run([py, "-c", f"import {mod}"], capture_output=True).returncode == 0
+
+
 def install(eval_py: str, server_py: str) -> None:
-    sh(f"{eval_py} -m pip install -q -U pip")
-    sh(
-        f"{eval_py} -m pip install -q "
-        "openai python-dotenv pyyaml numpy scipy scikit-learn "
-        "pandas tenacity rouge-score"
-    )
-    if not BB_REPO.exists():
-        sh(f"git clone --depth 1 https://github.com/umich-foreseer/behaviorbench_eval.git {BB_REPO}")
-    sh(f"{eval_py} -m pip install -q -e {BB_REPO}")
-    if not SKIP_WORKFLOW:
-        sh(f"{eval_py} -m pip install -q evaluate", check=False)
+    if os.environ.get("SKIP_INSTALL", "").strip() in {"1", "true", "TRUE"}:
+        print("SKIP_INSTALL=1", flush=True)
+        return
+    if not _module_ok(eval_py, "behaviorbench.eval.main"):
+        sh(f"{eval_py} -m pip install -q -U pip")
         sh(
             f"{eval_py} -m pip install -q "
-            "'bleurt @ git+https://github.com/google-research/bleurt.git'",
-            check=False,
+            "openai python-dotenv pyyaml numpy scipy scikit-learn "
+            "pandas tenacity rouge-score"
         )
+        if not BB_REPO.exists():
+            sh(f"git clone --depth 1 https://github.com/umich-foreseer/behaviorbench_eval.git {BB_REPO}")
+        sh(f"{eval_py} -m pip install -q -e {BB_REPO}")
+        if not SKIP_WORKFLOW:
+            sh(f"{eval_py} -m pip install -q evaluate", check=False)
+            sh(
+                f"{eval_py} -m pip install -q "
+                "'bleurt @ git+https://github.com/google-research/bleurt.git'",
+                check=False,
+            )
+    else:
+        print("eval deps already present", flush=True)
     _torchaudio_stub(server_py)
-    sh(f"{server_py} -m pip install -q -U 'vllm>=0.6.0'", check=False)
+    if _module_ok(server_py, "vllm"):
+        print("vllm already present", flush=True)
+    else:
+        sh(f"{server_py} -m pip install -q -U 'vllm>=0.6.0'", check=False)
 
 
 def symlink_data() -> None:
@@ -224,10 +237,15 @@ def start_vllm(server_py: str) -> subprocess.Popen:
     if tok.exists():
         env["HF_TOKEN"] = tok.read_text().strip()
         env["HUGGING_FACE_HUB_TOKEN"] = env["HF_TOKEN"]
+    env["VLLM_WORKER_MULTIPROC_METHOD"] = "spawn"
+    env.setdefault("VLLM_ENGINE_READY_TIMEOUT_S", "600")
+    env.setdefault("VLLM_ENGINE_ITERATION_TIMEOUT_S", "300")
 
     RESULTS.mkdir(parents=True, exist_ok=True)
     log_path = RESULTS / "vllm.log"
-    logf = open(log_path, "w")
+    logf = open(log_path, "a")
+    logf.write(f"\n===== start {datetime.now(timezone.utc).isoformat()} =====\n")
+    logf.flush()
     cmd = [
         server_py,
         "-m",
@@ -241,7 +259,7 @@ def start_vllm(server_py: str) -> subprocess.Popen:
         "--port",
         str(PORT),
         "--dtype",
-        "bfloat16",
+        os.environ.get("DTYPE", "bfloat16"),
         "--max-model-len",
         str(MAX_MODEL_LEN),
         "--gpu-memory-utilization",
@@ -249,13 +267,14 @@ def start_vllm(server_py: str) -> subprocess.Popen:
         "--max-num-seqs",
         str(MAX_NUM_SEQS),
         "--trust-remote-code",
+        "--enforce-eager",
     ]
     print("+", " ".join(cmd), flush=True)
     proc = subprocess.Popen(cmd, cwd=str(ROOT), env=env, stdout=logf, stderr=subprocess.STDOUT)
     deadline = time.time() + 1800
     while time.time() < deadline:
         if proc.poll() is not None:
-            print(log_path.read_text()[-4000:], flush=True)
+            print(log_path.read_text()[-20000:], flush=True)
             raise RuntimeError(f"vLLM exited early rc={proc.returncode}")
         try:
             urllib.request.urlopen(f"http://127.0.0.1:{PORT}/v1/models", timeout=2)
