@@ -21,8 +21,9 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-DEFAULT_STUDY = "1372ccfb-d99f-4c54-b5af-606e5f3952cc"
+DEFAULT_STUDY = "d7884443-203e-4080-9dda-4347346d86ef"  # langchain.com e2e
 ARTIFACT_DIR = Path(os.environ.get("CURSOR_ARTIFACTS_DIR", "/opt/cursor/artifacts"))
+DEFAULT_SMOKE_URL = os.environ.get("SMOKE_URL", "https://useagency.dev/")
 
 
 def _get(url: str, timeout: float = 30) -> dict:
@@ -143,13 +144,13 @@ def verify_study(base: str, study_id: str) -> dict:
 
 def run_new_study(base: str, timeout_s: int) -> str:
     payload = {
-        "url": "https://example.com",
+        "url": DEFAULT_SMOKE_URL,
         "test_mode": True,
         "skip_competitors": True,
-        "segment": "Curious first-time visitor",
-        "tasks": ["Skim the homepage and note what the site is for"],
+        "segment": "Curious first-time visitor evaluating the product",
+        "tasks": ["Explore the homepage and decide if this product is worth trying"],
     }
-    print(f"→ POST {base}/api/studies (test_mode)")
+    print(f"→ POST {base}/api/studies (test_mode url={DEFAULT_SMOKE_URL})")
     started = _post(f"{base.rstrip('/')}/api/studies", payload, timeout=90)
     study_id = started.get("study_id") or started.get("id")
     if not study_id:

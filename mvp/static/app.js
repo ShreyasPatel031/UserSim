@@ -1491,7 +1491,7 @@ if (typeof IS_LOCAL_HOST !== "undefined" && IS_LOCAL_HOST) {
       if (smokeInput) smokeInput.checked = true;
       const urlInput = form?.url;
       if (urlInput && !String(urlInput.value || "").trim()) {
-        urlInput.value = "https://example.com/";
+        urlInput.value = "https://useagency.dev/";
       }
       if (typeof form?.requestSubmit === "function") form.requestSubmit();
       else form?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));

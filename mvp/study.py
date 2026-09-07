@@ -816,6 +816,53 @@ Return JSON only:
     return _extract_json(raw)
 
 
+def _summary_from_agent_results(agent_results: list[dict[str, Any]]) -> dict[str, Any]:
+    """Deterministic fallback when LLM synthesis is unavailable."""
+    if not agent_results:
+        return {
+            "headline": "Study finished with no agent results",
+            "top_friction": [],
+            "top_strengths": [],
+            "conversion_outlook": "",
+            "recommendations": [],
+            "segment_fit_score": 0,
+            "segment_fit_rationale": "",
+        }
+    friction: list[str] = []
+    strengths: list[str] = []
+    for r in agent_results:
+        for item in r.get("friction_points") or []:
+            if item and item not in friction:
+                friction.append(str(item))
+        for item in r.get("what_was_easy") or []:
+            if item and item not in strengths:
+                strengths.append(str(item))
+    first = agent_results[0]
+    converts = sum(
+        1
+        for r in agent_results
+        if str(r.get("would_convert") or "").lower() in {"yes", "true", "likely"}
+    )
+    score = max(1, min(10, round(10 * converts / max(1, len(agent_results)))))
+    return {
+        "headline": (first.get("quote") or first.get("product_feedback") or "Study complete")[:200],
+        "top_friction": friction[:5],
+        "top_strengths": strengths[:5],
+        "conversion_outlook": (
+            f"{converts}/{len(agent_results)} simulated users said they would convert."
+        ),
+        "recommendations": [
+            {
+                "priority": "medium",
+                "action": "Review session recaps for the highest-friction steps",
+                "rationale": "Fallback summary — LLM synthesis was unavailable.",
+            }
+        ],
+        "segment_fit_score": score,
+        "segment_fit_rationale": "Score derived from would-convert answers across sessions.",
+    }
+
+
 async def run_study(
     study_id: str,
     *,
@@ -1917,30 +1964,21 @@ async def run_study(
         if study.summary and study.summary.get("headline"):
             # Already written by fleet finisher.
             pass
-        elif QUICK_MODE or study.test_mode:
-            if study.agent_results:
-                first = study.agent_results[0]
-                study.summary = {
-                    "headline": (first.get("quote") or first.get("product_feedback") or "Quick run")[:200],
-                    "top_friction": (first.get("friction_points") or [])[:3],
-                    "segment_fit_score": 7,
-                    "quick_mode": True,
-                }
-            else:
-                study.summary = {
-                    "headline": "Quick run finished with no agent results",
-                    "top_friction": [],
-                    "segment_fit_score": 0,
-                    "quick_mode": True,
-                }
         else:
             log_activity(study, "summary", "Synthesizing executive summary from all sessions")
-            study.summary = await synthesize_summary(
-                url=study.url,
-                segment=study.segment,
-                site_summary=site_summary,
-                agent_results=study.agent_results,
-            )
+            try:
+                study.summary = await synthesize_summary(
+                    url=study.url,
+                    segment=study.segment,
+                    site_summary=site_summary,
+                    agent_results=study.agent_results,
+                )
+            except Exception as summary_exc:  # noqa: BLE001
+                print(f"synthesize_summary failed: {summary_exc!r}", flush=True)
+                study.summary = None
+            # Fallback if the LLM summary is missing — still fill from agent recaps.
+            if not (study.summary and study.summary.get("headline")):
+                study.summary = _summary_from_agent_results(study.agent_results)
         if not study.summary:
             study.summary = {}
         study.summary["site_summary"] = site_summary
