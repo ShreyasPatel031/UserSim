@@ -47,7 +47,19 @@ def main() -> None:
     st = colab("status", "-s", SESSION)
     blob = ((st.stdout or "") + (st.stderr or "")).lower()
     if st.returncode != 0 or "not found" in blob:
-        print(must(colab("new", "-s", SESSION, "--gpu", "T4", timeout=300), "new T4")[-400:])
+        created = colab("new", "-s", SESSION, "--gpu", "T4", timeout=300)
+        out = ((created.stdout or "") + (created.stderr or ""))
+        if created.returncode != 0:
+            if "TooManyAssignments" in out or "Precondition Failed" in out:
+                print(
+                    "QUEUED_AFTER_PSYCH101: this Colab identity only assigns one T4. "
+                    "Supervisor --floor-remaining will start Socrates when Psych-101 finishes.",
+                    flush=True,
+                )
+                return
+            print(out[-2000:], flush=True)
+            raise SystemExit("new T4 failed")
+        print(out[-400:], flush=True)
     else:
         print("reusing", SESSION, flush=True)
 

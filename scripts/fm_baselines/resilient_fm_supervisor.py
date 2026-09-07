@@ -457,7 +457,8 @@ def make_jobs(
     floor_remaining: bool = False,
 ) -> list[Job]:
     if floor_remaining or floor:
-        # Remaining Colab floors: Psych-101 + Socrates. Be.FM stays on GCP L4.
+        # Remaining Colab floors, one T4 at a time (2nd GPU assign 412s).
+        # Psych-101 first, then Socrates. Be.FM stays on the GCP L4.
         return [_floor_psych101_job(), _floor_socrates_job()]
     if floor_socrates:
         return [_floor_socrates_job()]
@@ -542,7 +543,7 @@ def main() -> None:
     ap.add_argument(
         "--floor-remaining",
         action="store_true",
-        help="Remaining Colab floors: Psych-101 + Socrates on two T4s. Be.FM stays on GCP.",
+        help="Remaining Colab floors, one T4 at a time: Psych-101 then Socrates. Be.FM stays on GCP.",
     )
     ap.add_argument("--poll", type=int, default=POLL_SEC)
     args = ap.parse_args()
@@ -555,12 +556,25 @@ def main() -> None:
         floor_socrates=args.floor_socrates,
         floor_remaining=args.floor_remaining,
     )
-    log(f"SUPERVISOR_START jobs={[j.name for j in jobs]}")
+    # This Colab identity 412s a second T4. Run remaining floors one GPU at a time.
+    sequential = bool(args.floor_remaining or args.floor)
+    log(f"SUPERVISOR_START jobs={[j.name for j in jobs]} sequential={sequential}")
 
+    prev_name: str | None = None
     while True:
-        for job in jobs:
-            if job_done(job):
-                continue
+        pending = [j for j in jobs if not job_done(j)]
+        if not pending:
+            log("ALL_JOBS_DONE")
+            break
+        to_run = [pending[0]] if sequential else pending
+        if sequential and prev_name and prev_name != to_run[0].name:
+            old = next(j for j in jobs if j.name == prev_name)
+            log(f"sequential: freeing {old.session} before starting {to_run[0].name}")
+            try:
+                force_stop(old.session)
+            except Exception as e:
+                log(f"stop {old.session} failed: {e}")
+        for job in to_run:
             try:
                 tick(job)
             except Exception as e:
@@ -570,9 +584,7 @@ def main() -> None:
                         force_stop(job.session)
                 except Exception:
                     pass
-        if all(job_done(j) for j in jobs):
-            log("ALL_JOBS_DONE")
-            break
+        prev_name = to_run[0].name
         if args.once:
             break
         time.sleep(args.poll)
