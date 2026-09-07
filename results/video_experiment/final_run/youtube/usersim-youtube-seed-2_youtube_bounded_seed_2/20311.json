@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p3_creator_search_youtube",
+  "eval_index": 20311,
+  "website": "youtube",
+  "persona_id": "p3_creator",
+  "persona_name": "Maya Patel",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p3_creator_search",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 2,
+  "started_at": "2026-08-30T00:41:54.082144+00:00",
+  "elapsed_s": 44.053,
+  "final_result": "I have searched for beginner-friendly personal productivity videos on YouTube and inspected the first organic results. Here are three relevant videos:\n\n1. **Title:** My Simple Productivity System (for normal people)!\n   **Creator:** Jeff Su\n\n2. **Title:** being productive is easy, actually\n   **Creator:** easy, actually\n\n3. **Title:** Beginner-Friendly Workflow for Work & Life | Stay Organized with TickTick\n   **Creator:** TickTick\n\n**UX Likes:**\n- The search results page is well-organized, clearly displaying video titles, creators, view counts, and upload dates.\n- The filtering options (All, Shorts, Videos, etc.) are easily accessible at the top of the results page.\n- The video titles are descriptive and give a good indication of the content.\n\n**UX Dislikes:**\n- The 'Sign in' prompt is prominent on the left sidebar, which can be distracting for users who are not looking to sign in.\n- Some video descriptions or additional metadata are truncated and require clicking to expand, which adds an extra step.\n\n**Ease:** Easy",
+  "final_url": "https://www.youtube.com/results?search_query=beginner-friendly+personal+productivity",
+  "ok": true,
+  "finished_at": "2026-08-30T00:42:38.692271+00:00"
+}

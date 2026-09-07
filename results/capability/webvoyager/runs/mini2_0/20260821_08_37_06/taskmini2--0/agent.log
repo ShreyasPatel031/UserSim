@@ -1,0 +1,78 @@
+INFO - ########## TASKmini2--0 ##########
+INFO - Iter: 0
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 2326; Completion Tokens: 215
+INFO - Accumulate Prompt Tokens: 2326; Accumulate Completion Tokens: 215
+INFO - API call complete...
+INFO - Num of interactive elements: 30
+ERROR - 
+INFO - Iter: 1
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 2350; Completion Tokens: 227
+INFO - Accumulate Prompt Tokens: 4676; Accumulate Completion Tokens: 442
+INFO - API call complete...
+INFO - Iter: 2
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 3930; Completion Tokens: 132
+INFO - Accumulate Prompt Tokens: 8606; Accumulate Completion Tokens: 574
+INFO - API call complete...
+INFO - Num of interactive elements: 36
+INFO - Iter: 3
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 5451; Completion Tokens: 78
+INFO - Accumulate Prompt Tokens: 14057; Accumulate Completion Tokens: 652
+INFO - API call complete...
+INFO - Num of interactive elements: 30
+INFO - Iter: 4
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 5600; Completion Tokens: 27
+INFO - Accumulate Prompt Tokens: 19657; Accumulate Completion Tokens: 679
+INFO - API call complete...
+INFO - Num of interactive elements: 36
+INFO - Iter: 5
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 5567; Completion Tokens: 24
+INFO - Accumulate Prompt Tokens: 25224; Accumulate Completion Tokens: 703
+INFO - API call complete...
+INFO - Num of interactive elements: 32
+INFO - Iter: 6
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 5582; Completion Tokens: 23
+INFO - Accumulate Prompt Tokens: 30806; Accumulate Completion Tokens: 726
+INFO - API call complete...
+INFO - Num of interactive elements: 28
+INFO - Iter: 7
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 5485; Completion Tokens: 29
+INFO - Accumulate Prompt Tokens: 36291; Accumulate Completion Tokens: 755
+INFO - API call complete...
+INFO - Num of interactive elements: 21
+INFO - Iter: 8
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 5448; Completion Tokens: 45
+INFO - Accumulate Prompt Tokens: 41739; Accumulate Completion Tokens: 800
+INFO - API call complete...
+INFO - Num of interactive elements: 29
+INFO - Iter: 9
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 5272; Completion Tokens: 98
+INFO - Accumulate Prompt Tokens: 47011; Accumulate Completion Tokens: 898
+INFO - API call complete...
+INFO - Num of interactive elements: 13
+INFO - Iter: 10
+INFO - Calling gpt4v API...
+INFO - HTTP Request: POST http://127.0.0.1:4000/v1/chat/completions "HTTP/1.1 200 OK"
+INFO - Prompt Tokens: 5202; Completion Tokens: 31
+INFO - Accumulate Prompt Tokens: 52213; Accumulate Completion Tokens: 929
+INFO - API call complete...
+INFO - Num of interactive elements: 13

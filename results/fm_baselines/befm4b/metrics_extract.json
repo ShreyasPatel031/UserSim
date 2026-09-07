@@ -1,0 +1,1038 @@
+{
+  "acrossdim_pers_score/befm-1.5-4b/acrossdim_pers_score_20260905_094354.json": {
+    "metrics": {
+      "acrossdim_pers_score": {
+        "MAE_averaged": 6.989838582047248,
+        "Spearman_with_pvalue_correlation_averaged": 0.2072194342448721,
+        "Spearman_with_pvalue_pvalue_averaged": 0.07099382251969573,
+        "Spearman_with_pvalue_all_significant": 0,
+        "Wasserstein_with_ks_distance_averaged": 1.3832613829520901,
+        "Wasserstein_with_ks_distance_raw_averaged": 1.3832613829520901,
+        "Wasserstein_with_ks_all_ks_pass_test": 1,
+        "Wasserstein_with_ks_ks_pvalue_averaged": 0.8142984093884216,
+        "Wasserstein_with_ks_ks_statistic_averaged": 0.06309697827305616,
+        "_per_group": {
+          "Agreeableness": {
+            "MAE": 5.658031088082901,
+            "Spearman_with_pvalue_correlation": 0.24688978792201638,
+            "Spearman_with_pvalue_pvalue": 0.000537451292316471,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 1.005181347150259,
+            "Wasserstein_with_ks_distance_raw": 1.005181347150259,
+            "Wasserstein_with_ks_ks_statistic": 0.06217616580310881,
+            "Wasserstein_with_ks_ks_pvalue": 0.8510123863172906,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "Conscientiousness": {
+            "MAE": 6.64390243902439,
+            "Spearman_with_pvalue_correlation": 0.19796011499062266,
+            "Spearman_with_pvalue_pvalue": 0.004437823422263382,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 1.3170731707317076,
+            "Wasserstein_with_ks_distance_raw": 1.3170731707317076,
+            "Wasserstein_with_ks_ks_statistic": 0.06341463414634146,
+            "Wasserstein_with_ks_ks_pvalue": 0.8055607060543253,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "Extraversion": {
+            "MAE": 8.525,
+            "Spearman_with_pvalue_correlation": 0.26625284163436846,
+            "Spearman_with_pvalue_pvalue": 0.00013851741682468762,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 1.1450000000000005,
+            "Wasserstein_with_ks_distance_raw": 1.1450000000000005,
+            "Wasserstein_with_ks_ks_statistic": 0.055,
+            "Wasserstein_with_ks_ks_pvalue": 0.9238374197330625,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "Neuroticism": {
+            "MAE": 8.025641025641026,
+            "Spearman_with_pvalue_correlation": 0.25965704604296697,
+            "Spearman_with_pvalue_pvalue": 0.00024668595068008485,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 1.9128205128205131,
+            "Wasserstein_with_ks_distance_raw": 1.9128205128205131,
+            "Wasserstein_with_ks_ks_statistic": 0.07692307692307693,
+            "Wasserstein_with_ks_ks_pvalue": 0.6123806161875094,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "Openness": {
+            "MAE": 6.096618357487923,
+            "Spearman_with_pvalue_correlation": 0.06533738063438607,
+            "Spearman_with_pvalue_pvalue": 0.349608634516394,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 1.5362318840579712,
+            "Wasserstein_with_ks_distance_raw": 1.5362318840579712,
+            "Wasserstein_with_ks_ks_statistic": 0.057971014492753624,
+            "Wasserstein_with_ks_ks_pvalue": 0.87870091864992,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          }
+        }
+      }
+    }
+  },
+  "demo_pred_age/befm-1.5-4b/demo_pred_age_20260905_092504.json": {
+    "metrics": {
+      "demo_pred_age": {
+        "MAE": 9.494,
+        "Spearman_with_pvalue_correlation": 0.09559032728780026,
+        "Spearman_with_pvalue_pvalue": 0.0024782670371578815,
+        "Spearman_with_pvalue_significant": 1,
+        "Wasserstein_with_ks_distance": 4.732000000000001,
+        "Wasserstein_with_ks_distance_raw": 4.732000000000001,
+        "Wasserstein_with_ks_ks_statistic": 0.186,
+        "Wasserstein_with_ks_ks_pvalue": 1.5702401851850447e-15,
+        "Wasserstein_with_ks_ks_pass_test": 0
+      }
+    }
+  },
+  "game_behavior_dictator/befm-1.5-4b/game_behavior_dictator_20260905_095745.json": {
+    "metrics": {
+      "game_behavior_dictator": {
+        "Wasserstein_with_ks_distance": 3.5600000000000005,
+        "Wasserstein_with_ks_distance_raw": 3.5600000000000005,
+        "Wasserstein_with_ks_ks_statistic": 0.106,
+        "Wasserstein_with_ks_ks_pvalue": 0.044953483954671906,
+        "Wasserstein_with_ks_ks_pass_test": 0
+      }
+    }
+  },
+  "missing_surv_resp/befm-1.5-4b/missing_surv_resp_20260905_090636.json": {
+    "metrics": {
+      "missing_surv_resp": {
+        "Accuracy_averaged": 0.440047355703242,
+        "f1_macro_averaged": 0.3433529984728881,
+        "_per_group": {
+          "A1": {
+            "MAE": 0.8666666666666667,
+            "Spearman_with_pvalue_correlation": 0.46014403653702185,
+            "Spearman_with_pvalue_pvalue": 0.0843674337869453,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.6,
+            "Wasserstein_with_ks_distance_raw": 0.6,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A10": {
+            "MAE": 1.2,
+            "Spearman_with_pvalue_correlation": 0.1951773475625039,
+            "Spearman_with_pvalue_pvalue": 0.48574665427476205,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.6666666666666667,
+            "Wasserstein_with_ks_distance_raw": 0.6666666666666667,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A2": {
+            "MAE": 0.43478260869565216,
+            "Spearman_with_pvalue_correlation": 0.6708131327318467,
+            "Spearman_with_pvalue_pvalue": 0.0004593760291185408,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.0869565217391304,
+            "Wasserstein_with_ks_distance_raw": 0.0869565217391304,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A3": {
+            "MAE": 0.2777777777777778,
+            "Spearman_with_pvalue_correlation": 0.7503083185777553,
+            "Spearman_with_pvalue_pvalue": 0.0003348162481770751,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.2777777777777777,
+            "Wasserstein_with_ks_distance_raw": 0.2777777777777777,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A4": {
+            "MAE": 0.6666666666666666,
+            "Spearman_with_pvalue_correlation": 0.6000217304697475,
+            "Spearman_with_pvalue_pvalue": 0.004034236079725938,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.28571428571428575,
+            "Wasserstein_with_ks_distance_raw": 0.28571428571428575,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A5": {
+            "MAE": 0.4117647058823529,
+            "Spearman_with_pvalue_correlation": 0.7264372993949557,
+            "Spearman_with_pvalue_pvalue": 0.0009579854975334461,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.2941176470588236,
+            "Wasserstein_with_ks_distance_raw": 0.2941176470588236,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A6": {
+            "MAE": 0.9230769230769231,
+            "Spearman_with_pvalue_correlation": 0.7267486362195072,
+            "Spearman_with_pvalue_pvalue": 0.004892094123451392,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.7692307692307694,
+            "Wasserstein_with_ks_distance_raw": 0.7692307692307694,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A7": {
+            "MAE": 0.6521739130434783,
+            "Spearman_with_pvalue_correlation": 0.5045344337748084,
+            "Spearman_with_pvalue_pvalue": 0.014082745770029015,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.30434782608695643,
+            "Wasserstein_with_ks_distance_raw": 0.30434782608695643,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A8": {
+            "MAE": 0.9523809523809523,
+            "Spearman_with_pvalue_correlation": 0.16639427842146157,
+            "Spearman_with_pvalue_pvalue": 0.4709879460418349,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.47619047619047616,
+            "Wasserstein_with_ks_distance_raw": 0.47619047619047616,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A9": {
+            "MAE": 0.8235294117647058,
+            "Spearman_with_pvalue_correlation": 0.3830139188362239,
+            "Spearman_with_pvalue_pvalue": 0.12914573205644764,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.47058823529411764,
+            "Wasserstein_with_ks_distance_raw": 0.47058823529411764,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C1": {
+            "MAE": 0.9411764705882353,
+            "Spearman_with_pvalue_correlation": 0.045010335192102895,
+            "Spearman_with_pvalue_pvalue": 0.8638050896167012,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.3529411764705883,
+            "Wasserstein_with_ks_distance_raw": 0.3529411764705883,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C10": {
+            "MAE": 0.5714285714285714,
+            "Spearman_with_pvalue_correlation": 0.5621181398600902,
+            "Spearman_with_pvalue_pvalue": 0.0018509004962380586,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.2857142857142857,
+            "Wasserstein_with_ks_distance_raw": 0.2857142857142857,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C2": {
+            "MAE": 0.9583333333333334,
+            "Spearman_with_pvalue_correlation": 0.5089084088839861,
+            "Spearman_with_pvalue_pvalue": 0.011096203200351328,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.2916666666666667,
+            "Wasserstein_with_ks_distance_raw": 0.2916666666666667,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C3": {
+            "MAE": 1.0,
+            "Spearman_with_pvalue_correlation": 0.3848551517381184,
+            "Spearman_with_pvalue_pvalue": 0.10372838695545934,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.8947368421052632,
+            "Wasserstein_with_ks_distance_raw": 0.8947368421052632,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C4": {
+            "MAE": 0.625,
+            "Spearman_with_pvalue_correlation": 0.6291130033823152,
+            "Spearman_with_pvalue_pvalue": 0.009030641857519917,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.375,
+            "Wasserstein_with_ks_distance_raw": 0.375,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C5": {
+            "MAE": 0.8,
+            "Spearman_with_pvalue_correlation": 0.5650318450562345,
+            "Spearman_with_pvalue_pvalue": 0.009432931746232937,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.39999999999999986,
+            "Wasserstein_with_ks_distance_raw": 0.39999999999999986,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C6": {
+            "MAE": 1.0,
+            "Spearman_with_pvalue_correlation": 0.4683388158411195,
+            "Spearman_with_pvalue_pvalue": 0.02420045734676611,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.3913043478260869,
+            "Wasserstein_with_ks_distance_raw": 0.3913043478260869,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C7": {
+            "MAE": 1.0,
+            "Spearman_with_pvalue_correlation": 0.41860917913946066,
+            "Spearman_with_pvalue_pvalue": 0.10658335763104494,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.25,
+            "Wasserstein_with_ks_distance_raw": 0.25,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C8": {
+            "MAE": 1.1764705882352942,
+            "Spearman_with_pvalue_correlation": 0.2768946278291345,
+            "Spearman_with_pvalue_pvalue": 0.2819628606548419,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.3529411764705882,
+            "Wasserstein_with_ks_distance_raw": 0.3529411764705882,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C9": {
+            "MAE": 0.5909090909090909,
+            "Spearman_with_pvalue_correlation": 0.6364080613664153,
+            "Spearman_with_pvalue_pvalue": 0.0014514279404761476,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.22727272727272724,
+            "Wasserstein_with_ks_distance_raw": 0.22727272727272724,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E1": {
+            "MAE": 0.95,
+            "Spearman_with_pvalue_correlation": 0.304530385763537,
+            "Spearman_with_pvalue_pvalue": 0.19173016708930393,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.24999999999999994,
+            "Wasserstein_with_ks_distance_raw": 0.24999999999999994,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E10": {
+            "MAE": 1.125,
+            "Spearman_with_pvalue_correlation": 0.13032443617861386,
+            "Spearman_with_pvalue_pvalue": 0.6304654990014206,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.25,
+            "Wasserstein_with_ks_distance_raw": 0.25,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E2": {
+            "MAE": 1.2,
+            "Spearman_with_pvalue_correlation": 0.17688002350118998,
+            "Spearman_with_pvalue_pvalue": 0.45566133152397303,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.3999999999999998,
+            "Wasserstein_with_ks_distance_raw": 0.3999999999999998,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E3": {
+            "MAE": 0.6551724137931034,
+            "Spearman_with_pvalue_correlation": 0.5765286897226796,
+            "Spearman_with_pvalue_pvalue": 0.0010622130052201995,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.24137931034482754,
+            "Wasserstein_with_ks_distance_raw": 0.24137931034482754,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E4": {
+            "MAE": 0.3888888888888889,
+            "Spearman_with_pvalue_correlation": 0.768897071450463,
+            "Spearman_with_pvalue_pvalue": 0.00019223941040152426,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.2777777777777778,
+            "Wasserstein_with_ks_distance_raw": 0.2777777777777778,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E5": {
+            "MAE": 0.5,
+            "Spearman_with_pvalue_correlation": 0.6560272726659189,
+            "Spearman_with_pvalue_pvalue": 0.0004999149980942878,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.25000000000000006,
+            "Wasserstein_with_ks_distance_raw": 0.25000000000000006,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E6": {
+            "MAE": 0.6,
+            "Spearman_with_pvalue_correlation": 0.459889652452511,
+            "Spearman_with_pvalue_pvalue": 0.020720626364398555,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.2799999999999999,
+            "Wasserstein_with_ks_distance_raw": 0.2799999999999999,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E7": {
+            "MAE": 0.8235294117647058,
+            "Spearman_with_pvalue_correlation": 0.6283131055104435,
+            "Spearman_with_pvalue_pvalue": 0.006910583412712598,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.11764705882352941,
+            "Wasserstein_with_ks_distance_raw": 0.11764705882352941,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E8": {
+            "MAE": 0.6153846153846154,
+            "Spearman_with_pvalue_correlation": 0.7194408392481456,
+            "Spearman_with_pvalue_pvalue": 3.441946035831759e-05,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.23076923076923078,
+            "Wasserstein_with_ks_distance_raw": 0.23076923076923078,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E9": {
+            "MAE": 0.9333333333333333,
+            "Spearman_with_pvalue_correlation": 0.4762548096188448,
+            "Spearman_with_pvalue_pvalue": 0.07270681290600883,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.5333333333333333,
+            "Wasserstein_with_ks_distance_raw": 0.5333333333333333,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "N1": {
+            "MAE": 0.65,
+            "Spearman_with_pvalue_correlation": 0.7562687657461238,
+            "Spearman_with_pvalue_pvalue": 0.0001143010725875365,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.35,
+            "Wasserstein_with_ks_distance_raw": 0.35,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "N10": {
+            "MAE": 0.9130434782608695,
+            "Spearman_with_pvalue_correlation": 0.34791340277284805,
+            "Spearman_with_pvalue_pvalue": 0.10378527629784248,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.39130434782608714,
+            "Wasserstein_with_ks_distance_raw": 0.39130434782608714,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "N2": {
+            "MAE": 1.0,
+            "Spearman_with_pvalue_correlation": 0.3760199521288319,
+            "Spearman_with_pvalue_pvalue": 0.1671851110360918,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.33333333333333337,
+            "Wasserstein_with_ks_distance_raw": 0.33333333333333337,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "N3": {
+            "MAE": 0.6363636363636364,
+            "Spearman_with_pvalue_correlation": 0.30835341502580316,
+            "Spearman_with_pvalue_pvalue": 0.16266073084573068,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.2727272727272727,
+            "Wasserstein_with_ks_distance_raw": 0.2727272727272727,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "N4": {
+            "MAE": 1.3076923076923077,
+            "Spearman_with_pvalue_correlation": 0.06195477121485274,
+            "Spearman_with_pvalue_pvalue": 0.7636732317655444,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.3076923076923077,
+            "Wasserstein_with_ks_distance_raw": 0.3076923076923077,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "N5": {
+            "MAE": 1.588235294117647,
+            "Spearman_with_pvalue_correlation": -0.07258771623594391,
+            "Spearman_with_pvalue_pvalue": 0.7818913970011641,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.7647058823529411,
+            "Wasserstein_with_ks_distance_raw": 0.7647058823529411,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "N6": {
+            "MAE": 1.2,
+            "Spearman_with_pvalue_correlation": 0.273879142300195,
+            "Spearman_with_pvalue_pvalue": 0.32326743843791395,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.2666666666666666,
+            "Wasserstein_with_ks_distance_raw": 0.2666666666666666,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "N7": {
+            "MAE": 1.2105263157894737,
+            "Spearman_with_pvalue_correlation": 0.14884809356303552,
+            "Spearman_with_pvalue_pvalue": 0.543074706387251,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.5789473684210527,
+            "Wasserstein_with_ks_distance_raw": 0.5789473684210527,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "N8": {
+            "MAE": 0.7916666666666666,
+            "Spearman_with_pvalue_correlation": 0.6551679418170261,
+            "Spearman_with_pvalue_pvalue": 0.0005114653104112474,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.29166666666666663,
+            "Wasserstein_with_ks_distance_raw": 0.29166666666666663,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "N9": {
+            "MAE": 0.5909090909090909,
+            "Spearman_with_pvalue_correlation": 0.7429629927244411,
+            "Spearman_with_pvalue_pvalue": 7.464657830166195e-05,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.4090909090909091,
+            "Wasserstein_with_ks_distance_raw": 0.4090909090909091,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "O1": {
+            "MAE": 0.6666666666666666,
+            "Spearman_with_pvalue_correlation": 0.5103204139563781,
+            "Spearman_with_pvalue_pvalue": 0.010837919685546264,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.16666666666666666,
+            "Wasserstein_with_ks_distance_raw": 0.16666666666666666,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "O10": {
+            "MAE": 0.4,
+            "Spearman_with_pvalue_correlation": 0.8013972055888222,
+            "Spearman_with_pvalue_pvalue": 0.00032820685561226257,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.1333333333333333,
+            "Wasserstein_with_ks_distance_raw": 0.1333333333333333,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "O2": {
+            "MAE": 0.8125,
+            "Spearman_with_pvalue_correlation": 0.28449196206722205,
+            "Spearman_with_pvalue_pvalue": 0.285554344405261,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.1875,
+            "Wasserstein_with_ks_distance_raw": 0.1875,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "O3": {
+            "MAE": 0.5,
+            "Spearman_with_pvalue_correlation": 0.6652022680467334,
+            "Spearman_with_pvalue_pvalue": 0.0003899787071040837,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.33333333333333326,
+            "Wasserstein_with_ks_distance_raw": 0.33333333333333326,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "O4": {
+            "MAE": 0.7391304347826086,
+            "Spearman_with_pvalue_correlation": 0.36444122071829177,
+            "Spearman_with_pvalue_pvalue": 0.08732105488029035,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.13043478260869557,
+            "Wasserstein_with_ks_distance_raw": 0.13043478260869557,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "O5": {
+            "MAE": 0.782608695652174,
+            "Spearman_with_pvalue_correlation": 0.2982116619533985,
+            "Spearman_with_pvalue_pvalue": 0.16693980387893603,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.17391304347826095,
+            "Wasserstein_with_ks_distance_raw": 0.17391304347826095,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "O6": {
+            "MAE": 1.0555555555555556,
+            "Spearman_with_pvalue_correlation": 0.20942226787828666,
+            "Spearman_with_pvalue_pvalue": 0.4042673222663966,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.6111111111111113,
+            "Wasserstein_with_ks_distance_raw": 0.6111111111111113,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "O7": {
+            "MAE": 0.9411764705882353,
+            "Spearman_with_pvalue_correlation": 0.004958305175136986,
+            "Spearman_with_pvalue_pvalue": 0.9849317470123,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.5882352941176471,
+            "Wasserstein_with_ks_distance_raw": 0.5882352941176471,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "O8": {
+            "MAE": 1.2105263157894737,
+            "Spearman_with_pvalue_correlation": 0.4102213592480135,
+            "Spearman_with_pvalue_pvalue": 0.08108015157225161,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.6842105263157895,
+            "Wasserstein_with_ks_distance_raw": 0.6842105263157895,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "O9": {
+            "MAE": 0.7391304347826086,
+            "Spearman_with_pvalue_correlation": 0.11925374471145817,
+            "Spearman_with_pvalue_pvalue": 0.5878410487321701,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.2173913043478261,
+            "Wasserstein_with_ks_distance_raw": 0.2173913043478261,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          }
+        },
+        "MAE_averaged": 0.8279835541446273,
+        "Spearman_with_pvalue_correlation_averaged": 0.4368533631465622,
+        "Spearman_with_pvalue_pvalue_averaged": 0.18887729934508513,
+        "Spearman_with_pvalue_all_significant": 0,
+        "Wasserstein_with_ks_distance_averaged": 0.3615267657884762,
+        "Wasserstein_with_ks_distance_raw_averaged": 0.3615267657884762,
+        "Wasserstein_with_ks_all_ks_pass_test": 1,
+        "Wasserstein_with_ks_ks_pvalue_averaged": 1.0,
+        "Wasserstein_with_ks_ks_statistic_averaged": 0.0
+      }
+    }
+  },
+  "pers_score_pred/befm-1.5-4b/pers_score_pred_20260905_071137.json": {
+    "metrics": {
+      "pers_score_pred": {
+        "MAE_averaged": 7.688140400521709,
+        "Spearman_with_pvalue_correlation_averaged": 0.08104947098686759,
+        "Spearman_with_pvalue_pvalue_averaged": 0.2955609680710739,
+        "Spearman_with_pvalue_all_significant": 0,
+        "Wasserstein_with_ks_distance_averaged": 1.7737363718058958,
+        "Wasserstein_with_ks_distance_raw_averaged": 1.7737363718058958,
+        "Wasserstein_with_ks_all_ks_pass_test": 1,
+        "Wasserstein_with_ks_ks_pvalue_averaged": 0.4652179880561868,
+        "Wasserstein_with_ks_ks_statistic_averaged": 0.08832013569403555,
+        "_per_group": {
+          "Agreeableness": {
+            "MAE": 7.067415730337078,
+            "Spearman_with_pvalue_correlation": 0.08178499437729941,
+            "Spearman_with_pvalue_pvalue": 0.2777978007486749,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 2.3370786516853936,
+            "Wasserstein_with_ks_distance_raw": 2.3370786516853936,
+            "Wasserstein_with_ks_ks_statistic": 0.11235955056179775,
+            "Wasserstein_with_ks_ks_pvalue": 0.21149029464674662,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "Conscientiousness": {
+            "MAE": 7.111111111111111,
+            "Spearman_with_pvalue_correlation": 0.0742603797935431,
+            "Spearman_with_pvalue_pvalue": 0.28759151265439886,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 1.4106280193236715,
+            "Wasserstein_with_ks_distance_raw": 1.4106280193236715,
+            "Wasserstein_with_ks_ks_statistic": 0.06280193236714976,
+            "Wasserstein_with_ks_ks_pvalue": 0.8102519437693014,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "Extraversion": {
+            "MAE": 9.817708333333334,
+            "Spearman_with_pvalue_correlation": 0.05229099394610127,
+            "Spearman_with_pvalue_pvalue": 0.4713237725109167,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 2.421875,
+            "Wasserstein_with_ks_distance_raw": 2.421875,
+            "Wasserstein_with_ks_ks_statistic": 0.109375,
+            "Wasserstein_with_ks_ks_pvalue": 0.20123358072798259,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "Neuroticism": {
+            "MAE": 8.488584474885844,
+            "Spearman_with_pvalue_correlation": 0.057920826152506336,
+            "Spearman_with_pvalue_pvalue": 0.3936809335105891,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 1.2922374429223744,
+            "Wasserstein_with_ks_distance_raw": 1.2922374429223744,
+            "Wasserstein_with_ks_ks_statistic": 0.0639269406392694,
+            "Wasserstein_with_ks_ks_pvalue": 0.7633529645288388,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "Openness": {
+            "MAE": 5.955882352941177,
+            "Spearman_with_pvalue_correlation": 0.1389901606648878,
+            "Spearman_with_pvalue_pvalue": 0.04741082093079016,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 1.4068627450980395,
+            "Wasserstein_with_ks_distance_raw": 1.4068627450980395,
+            "Wasserstein_with_ks_ks_statistic": 0.09313725490196079,
+            "Wasserstein_with_ks_ks_pvalue": 0.33976115660806483,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          }
+        }
+      }
+    }
+  },
+  "seq_surv_resp/befm-1.5-4b/seq_surv_resp_20260905_080413.json": {
+    "metrics": {
+      "seq_surv_resp": {
+        "Accuracy_averaged": 0.4114755189772703,
+        "f1_macro_averaged": 0.31115808984324816,
+        "_per_group": {
+          "A1": {
+            "MAE": 1.6428571428571428,
+            "Spearman_with_pvalue_correlation": -0.23184218309748075,
+            "Spearman_with_pvalue_pvalue": 0.4251295273549802,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.9285714285714285,
+            "Wasserstein_with_ks_distance_raw": 0.9285714285714285,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A10": {
+            "MAE": 0.6,
+            "Spearman_with_pvalue_correlation": 0.3389897369045666,
+            "Spearman_with_pvalue_pvalue": 0.14371497569178057,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.30000000000000004,
+            "Wasserstein_with_ks_distance_raw": 0.30000000000000004,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A2": {
+            "MAE": 0.72,
+            "Spearman_with_pvalue_correlation": 0.22640418995461745,
+            "Spearman_with_pvalue_pvalue": 0.2764739844160392,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.15999999999999992,
+            "Wasserstein_with_ks_distance_raw": 0.15999999999999992,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A3": {
+            "MAE": 0.782608695652174,
+            "Spearman_with_pvalue_correlation": 0.41161890459363987,
+            "Spearman_with_pvalue_pvalue": 0.05100071920917714,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.2608695652173912,
+            "Wasserstein_with_ks_distance_raw": 0.2608695652173912,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A4": {
+            "MAE": 0.6666666666666666,
+            "Spearman_with_pvalue_correlation": 0.5203117454537123,
+            "Spearman_with_pvalue_pvalue": 0.00539962373110959,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.2222222222222222,
+            "Wasserstein_with_ks_distance_raw": 0.2222222222222222,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A5": {
+            "MAE": 0.7142857142857143,
+            "Spearman_with_pvalue_correlation": 0.261815654551995,
+            "Spearman_with_pvalue_pvalue": 0.3658848188634354,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.4285714285714286,
+            "Wasserstein_with_ks_distance_raw": 0.4285714285714286,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A6": {
+            "MAE": 1.0,
+            "Spearman_with_pvalue_correlation": 0.1782892490313812,
+            "Spearman_with_pvalue_pvalue": 0.4393914397147566,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.42857142857142855,
+            "Wasserstein_with_ks_distance_raw": 0.42857142857142855,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A7": {
+            "MAE": 0.6071428571428571,
+            "Spearman_with_pvalue_correlation": 0.6658779274230774,
+            "Spearman_with_pvalue_pvalue": 0.00010996203807521028,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.2500000000000001,
+            "Wasserstein_with_ks_distance_raw": 0.2500000000000001,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A8": {
+            "MAE": 0.6875,
+            "Spearman_with_pvalue_correlation": 0.7013619056295591,
+            "Spearman_with_pvalue_pvalue": 0.002465599783338744,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.1875,
+            "Wasserstein_with_ks_distance_raw": 0.1875,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "A9": {
+            "MAE": 0.15789473684210525,
+            "Spearman_with_pvalue_correlation": 0.8829785868307966,
+            "Spearman_with_pvalue_pvalue": 5.553470625642933e-07,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.1578947368421052,
+            "Wasserstein_with_ks_distance_raw": 0.1578947368421052,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C1": {
+            "MAE": 1.2352941176470589,
+            "Spearman_with_pvalue_correlation": 0.22990797293095305,
+            "Spearman_with_pvalue_pvalue": 0.3746979379003694,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.5294117647058824,
+            "Wasserstein_with_ks_distance_raw": 0.5294117647058824,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C10": {
+            "MAE": 0.8095238095238095,
+            "Spearman_with_pvalue_correlation": 0.5329091704043604,
+            "Spearman_with_pvalue_pvalue": 0.012868663982828408,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.1428571428571429,
+            "Wasserstein_with_ks_distance_raw": 0.1428571428571429,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C2": {
+            "MAE": 1.5217391304347827,
+            "Spearman_with_pvalue_correlation": 0.07330022084063376,
+            "Spearman_with_pvalue_pvalue": 0.7396029940891908,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.391304347826087,
+            "Wasserstein_with_ks_distance_raw": 0.391304347826087,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C3": {
+            "MAE": 0.782608695652174,
+            "Spearman_with_pvalue_correlation": 0.14139799675868606,
+            "Spearman_with_pvalue_pvalue": 0.5198669499279671,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.5217391304347825,
+            "Wasserstein_with_ks_distance_raw": 0.5217391304347825,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C4": {
+            "MAE": 0.8571428571428571,
+            "Spearman_with_pvalue_correlation": 0.68941382492494,
+            "Spearman_with_pvalue_pvalue": 4.9539414809843756e-05,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.28571428571428575,
+            "Wasserstein_with_ks_distance_raw": 0.28571428571428575,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C5": {
+            "MAE": 0.875,
+            "Spearman_with_pvalue_correlation": 0.3170848557159068,
+            "Spearman_with_pvalue_pvalue": 0.13111065038954353,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.12500000000000006,
+            "Wasserstein_with_ks_distance_raw": 0.12500000000000006,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C6": {
+            "MAE": 1.2941176470588236,
+            "Spearman_with_pvalue_correlation": 0.10286514282430484,
+            "Spearman_with_pvalue_pvalue": 0.6944204121156748,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.8235294117647058,
+            "Wasserstein_with_ks_distance_raw": 0.8235294117647058,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C7": {
+            "MAE": 0.8461538461538461,
+            "Spearman_with_pvalue_correlation": 0.4654877882919807,
+            "Spearman_with_pvalue_pvalue": 0.016556633304901838,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.3076923076923077,
+            "Wasserstein_with_ks_distance_raw": 0.3076923076923077,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C8": {
+            "MAE": 0.9090909090909091,
+            "Spearman_with_pvalue_correlation": 0.5125256269220351,
+            "Spearman_with_pvalue_pvalue": 0.10696184061226495,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.7272727272727272,
+            "Wasserstein_with_ks_distance_raw": 0.7272727272727272,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "C9": {
+            "MAE": 1.0,
+            "Spearman_with_pvalue_correlation": 0.49846490911110386,
+            "Spearman_with_pvalue_pvalue": 0.011208933461349938,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.36,
+            "Wasserstein_with_ks_distance_raw": 0.36,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E10": {
+            "MAE": 0.8636363636363636,
+            "Spearman_with_pvalue_correlation": 0.6263639562295096,
+            "Spearman_with_pvalue_pvalue": 0.0018158641243210827,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.40909090909090906,
+            "Wasserstein_with_ks_distance_raw": 0.40909090909090906,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E2": {
+            "MAE": 1.0,
+            "Spearman_with_pvalue_correlation": 0.1841001088248474,
+            "Spearman_with_pvalue_pvalue": 0.5113029867073151,
+            "Spearman_with_pvalue_significant": 0,
+            "Wasserstein_with_ks_distance": 0.2,
+            "Wasserstein_with_ks_distance_raw": 0.2,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E3": {
+            "MAE": 0.7391304347826086,
+            "Spearman_with_pvalue_correlation": 0.6906561601487285,
+            "Spearman_with_pvalue_pvalue": 0.00026411570709735245,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.47826086956521735,
+            "Wasserstein_with_ks_distance_raw": 0.47826086956521735,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E4": {
+            "MAE": 0.7777777777777778,
+            "Spearman_with_pvalue_correlation": 0.5133149686516303,
+            "Spearman_with_pvalue_pvalue": 0.029352928529135937,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.44444444444444453,
+            "Wasserstein_with_ks_distance_raw": 0.44444444444444453,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E5": {
+            "MAE": 0.9090909090909091,
+            "Spearman_with_pvalue_correlation": 0.545750653054194,
+            "Spearman_with_pvalue_pvalue": 0.008606838418015454,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.7272727272727273,
+            "Wasserstein_with_ks_distance_raw": 0.7272727272727273,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E6": {
+            "MAE": 0.76,
+            "Spearman_with_pvalue_correlation": 0.4958677411819649,
+            "Spearman_with_pvalue_pvalue": 0.011707696187518648,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_distance": 0.1999999999999999,
+            "Wasserstein_with_ks_distance_raw": 0.1999999999999999,
+            "Wasserstein_with_ks_ks_statistic": 0.0,
+            "Wasserstein_with_ks_ks_pvalue": 1.0,
+            "Wasserstein_with_ks_ks_pass_test": 1
+          },
+          "E7": {
+            "MAE": 0.9523809523809523,
+            "Spearman_with_pvalue_correlation": 0.5811427619994548,
+            "Spearman_with_pvalue_pvalue": 0.005730173708777922,
+            "Spearman_with_pvalue_significant": 1,
+            "Wasserstein_with_ks_dista

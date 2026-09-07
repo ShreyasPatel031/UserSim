@@ -1,0 +1,14 @@
+.venv
+.git
+mvp/runs
+contributions
+results
+scripts/local
+**/__pycache__
+**/*.pyc
+secrets
+*.md
+agent-transcripts
+requirements.txt
+requirements-local-gpu.txt
+mvp/requirements.txt

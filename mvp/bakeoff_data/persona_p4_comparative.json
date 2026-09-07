@@ -1,0 +1,309 @@
+{
+  "n": 5,
+  "reviews": [
+    {
+      "goal": "Locate API keys",
+      "per_platform": {
+        "bland": {
+          "liked": [
+            "Successfully found the API keys page.",
+            "Clear path once the 'Settings' page was reached."
+          ],
+          "disliked": [
+            "Required an extra click on 'Shreyas's Personal Org' before accessing settings, adding unnecessary steps.",
+            "More actions (8) compared to other platforms to reach the goal."
+          ],
+          "ease": "medium",
+          "would_complete_again": true
+        },
+        "vapi": {
+          "liked": [
+            "Most direct path to API keys via a sidebar link.",
+            "Fewest actions (4) to reach the target page.",
+            "Explicit confirmation of 'Private API keys', 'Public API keys' sections, and 'Add Key' buttons, indicating a complete UI for key management."
+          ],
+          "disliked": [],
+          "ease": "easy",
+          "would_complete_again": true
+        },
+        "retell": {
+          "liked": [
+            "Direct click to 'API Keys' to reach the page.",
+            "Efficient navigation with only 5 actions."
+          ],
+          "disliked": [
+            "Slightly more actions than Vapi, making it marginally less efficient."
+          ],
+          "ease": "easy",
+          "would_complete_again": true
+        }
+      },
+      "most_likely_to_use": "vapi",
+      "runner_up": "retell",
+      "why_winner": "As a platform engineer, I prioritize efficiency and direct access to critical resources like API keys. Vapi provided the most straightforward and fastest path, requiring the fewest clicks and offering a clear sidebar link. The explicit mention of key management UI elements also assures a complete developer experience.",
+      "bland_gaps_vs_winner": "Bland's navigation involved an additional, seemingly unnecessary step of clicking into a 'Personal Org' before accessing settings. For an engineer, direct access to API keys is paramount, and Bland could significantly improve by streamlining this path to fewer clicks and making the API keys option more immediately discoverable.",
+      "confidence": "high",
+      "persona_id": "p4_eng",
+      "goal_key": "p4_t1_api_keys",
+      "runs": {
+        "bland": {
+          "success": true,
+          "final_url": "https://app.bland.ai/dashboard/settings",
+          "status": "SUCCESS"
+        },
+        "vapi": {
+          "success": true,
+          "final_url": "https://dashboard.vapi.ai/org/api-keys",
+          "status": "SUCCESS"
+        },
+        "retell": {
+          "success": true,
+          "final_url": "https://dashboard.retellai.com/settings/api-keys",
+          "status": "SUCCESS"
+        }
+      }
+    },
+    {
+      "goal": "Open organization / account settings relevant to multi-env setup.",
+      "per_platform": {
+        "bland": {
+          "liked": [
+            "Clear and logical navigation path to organization settings",
+            "Directly landed on a relevant settings page"
+          ],
+          "disliked": [
+            "Slightly more actions required compared to Vapi"
+          ],
+          "ease": "easy",
+          "would_complete_again": true
+        },
+        "vapi": {
+          "liked": [
+            "Most efficient path to organization settings (4 actions)",
+            "Directly landed on an explicit 'organization' settings URL",
+            "Clear and intuitive navigation"
+          ],
+          "disliked": [],
+          "ease": "easy",
+          "would_complete_again": true
+        },
+        "retell": {
+          "liked": [
+            "Successfully found a relevant settings page (workspace settings)"
+          ],
+          "disliked": [
+            "Required significantly more actions (9 actions) than other platforms",
+            "Landed on 'workspace' settings, which might be less specific than 'organization' for multi-env needs"
+          ],
+          "ease": "medium",
+          "would_complete_again": true
+        }
+      },
+      "most_likely_to_use": "vapi",
+      "runner_up": "bland",
+      "why_winner": "As a platform engineer, I prioritize efficiency and direct access to organization-level configurations for managing multi-environment setups. Vapi provided the most direct path with the fewest actions, landing on an explicit 'organization' settings page. This clarity and speed are crucial for quick configuration changes and potential automation scripting.",
+      "bland_gaps_vs_winner": "Bland could improve by making its organization settings even more prominent or by providing a more explicit 'organization' specific URL path, similar to Vapi. While its navigation was logical, it required one more action and its URL was less specific than the winner's.",
+      "confidence": "high",
+      "persona_id": "p4_eng",
+      "goal_key": "p4_t2_org_settings",
+      "runs": {
+        "bland": {
+          "success": true,
+          "final_url": "https://app.bland.ai/dashboard/settings",
+          "status": "SUCCESS"
+        },
+        "vapi": {
+          "success": true,
+          "final_url": "https://dashboard.vapi.ai/settings/organization",
+          "status": "SUCCESS"
+        },
+        "retell": {
+          "success": true,
+          "final_url": "https://dashboard.retellai.com/settings/workspace",
+          "status": "SUCCESS"
+        }
+      }
+    },
+    {
+      "goal": "Find where assistants register custom functions/tools for live API calls.",
+      "per_platform": {
+        "bland": {
+          "liked": [
+            "The final URL clearly indicates creation of a REST API tool, which is exactly what I'm looking for.",
+            "The path, though a few steps, is logical: Dashboard -> Tools -> Add tool -> Custom API."
+          ],
+          "disliked": [
+            "It took 6 actions to get to the creation page, which is a bit more than ideal for a core function."
+          ],
+          "ease": "medium",
+          "would_complete_again": true
+        },
+        "vapi": {
+          "liked": [
+            "Extremely direct, only 3 actions to reach the 'Tools' section.",
+            "The URL `/tools` suggests a central, dedicated place for managing functions/tools, which is efficient."
+          ],
+          "disliked": [
+            "The URL is general `/tools`, so I might need one more click to actually 'create' a new tool, but it's the correct starting point for registration."
+          ],
+          "ease": "easy",
+          "would_complete_again": true
+        },
+        "retell": {
+          "liked": [
+            "Ultimately found a dedicated 'Custom Function' configuration area, confirming the capability exists."
+          ],
+          "disliked": [
+            "The process was very nested and took 11 actions, which is inefficient.",
+            "Tools are registered under a specific agent, which might be good for agent-specific tools but less ideal for general, reusable functions."
+          ],
+          "ease": "hard",
+          "would_complete_again": true
+        }
+      },
+      "most_likely_to_use": "vapi",
+      "runner_up": "bland",
+      "why_winner": "As a platform engineer, I prioritize direct and efficient access to core functionalities. Vapi's dashboard provides a clear, top-level 'Tools' section, requiring minimal clicks to reach the function registration area. This streamlined approach saves time and reduces cognitive load, which is crucial when managing multiple integrations and iterating quickly.",
+      "bland_gaps_vs_winner": "Bland could improve by reducing the number of clicks to reach the 'Create Custom API Tool' interface. While the current path is logical, Vapi demonstrates that a more direct, fewer-click approach is achievable and preferred for quick tool registration, aligning better with an engineer's need for efficiency.",
+      "confidence": "high",
+      "persona_id": "p4_eng",
+      "goal_key": "p4_t3_tools_for_functions",
+      "runs": {
+        "bland": {
+          "success": true,
+          "final_url": "https://app.bland.ai/dashboard/tools/create?integration=rest_api",
+          "status": "SUCCESS"
+        },
+        "vapi": {
+          "success": true,
+          "final_url": "https://dashboard.vapi.ai/tools",
+          "status": "SUCCESS"
+        },
+        "retell": {
+          "success": true,
+          "final_url": "https://dashboard.retellai.com/agents/agent_d1d1c89edf9b27126e08a9cb8f",
+          "status": "SUCCESS"
+        }
+      }
+    },
+    {
+      "goal": "Find webhook, event, or post-call callback configuration if exposed in UI.",
+      "per_platform": {
+        "bland": {
+          "liked": [
+            "Clearly labeled 'Post-call webhook' trigger.",
+            "Found within 'Automations' which is a logical section for event configuration."
+          ],
+          "disliked": [
+            "Difficulty in accessing the specific configuration options after identifying the trigger."
+          ],
+          "ease": "medium",
+          "would_complete_again": true
+        },
+        "vapi": {
+          "liked": [
+            "Systematic exploration of logical sections like 'Logs' (with a 'Webhooks' tab) and 'Integrations'."
+          ],
+          "disliked": [
+            "Explicit UI for webhook, event, or post-call callback configuration was not found.",
+            "Required extensive searching without a clear positive result."
+          ],
+          "ease": "hard",
+          "would_complete_again": true
+        },
+        "retell": {
+          "liked": [
+            "Directly located 'Webhook Settings' within an agent's details.",
+            "Includes specific and relevant fields like 'Agent Level Webhook URL', 'Webhook Timeout', and 'Webhook Events'.",
+            "Logical placement and easy to discover by scrolling."
+          ],
+          "disliked": [],
+          "ease": "easy",
+          "would_complete_again": true
+        }
+      },
+      "most_likely_to_use": "retell",
+      "runner_up": "bland",
+      "why_winner": "As a platform engineer, I prioritize direct and explicit configuration options for event delivery. Retell provides a clearly labeled 'Webhook Settings' section within agent details, offering specific fields like URL, timeout, and events. This straightforward approach minimizes friction and allows for quick integration, which is crucial for building reliable systems.",
+      "bland_gaps_vs_winner": "Bland needs to improve the accessibility and completeness of its webhook configuration UI. While it has a 'Post-call webhook' trigger, the inability to access or configure its details makes it unusable for a platform engineer. It should expose the actual webhook URL, event types, and other relevant settings directly in the UI, similar to how Retell does.",
+      "confidence": "high",
+      "persona_id": "p4_eng",
+      "goal_key": "p4_t4_webhook_or_events",
+      "runs": {
+        "bland": {
+          "success": true,
+          "final_url": "https://app.bland.ai/dashboard/automations/new",
+          "status": "SUCCESS"
+        },
+        "vapi": {
+          "success": true,
+          "final_url": "https://dashboard.vapi.ai/settings/integrations",
+          "status": "SUCCESS"
+        },
+        "retell": {
+          "success": true,
+          "final_url": "https://dashboard.retellai.com/agents/agent_d1d1c89edf9b27126e08a9cb8f",
+          "status": "SUCCESS"
+        }
+      }
+    },
+    {
+      "goal": "Open assistant config that looks API-editable",
+      "per_platform": {
+        "bland": {
+          "liked": [
+            "Clear path to agent configuration",
+            "Identified developer-oriented controls"
+          ],
+          "disliked": [],
+          "ease": "easy",
+          "would_complete_again": true
+        },
+        "vapi": {
+          "liked": [
+            "Explicit 'Advanced' tab for configuration",
+            "Direct mentions of 'model' and 'provider' controls",
+            "Support for 'OpenAI spec syntax'",
+            "Dedicated 'Tools' and 'Custom Functions' sections"
+          ],
+          "disliked": [],
+          "ease": "medium",
+          "would_complete_again": true
+        },
+        "retell": {
+          "liked": [],
+          "disliked": [
+            "Unable to open a specific agent configuration",
+            "Lack of clear discoverability for developer-oriented controls from the main agents list"
+          ],
+          "ease": "hard",
+          "would_complete_again": false
+        }
+      },
+      "most_likely_to_use": "vapi",
+      "runner_up": "bland",
+      "why_winner": "Vapi's platform explicitly highlighted features like 'model,' 'provider,' 'OpenAI spec syntax,' 'Tools,' and 'Custom Functions' within the assistant configuration. As a platform engineer, these are critical indicators of a robust, API-editable, and developer-friendly system, offering the granular control and extensibility I'd look for. The direct exposure of these advanced settings makes it highly appealing for integration and customization.",
+      "bland_gaps_vs_winner": "Bland should provide more explicit details about the advanced configuration options available, such as direct API access, custom function definitions, or specific model/provider selection. While it succeeded in showing developer controls, the summary didn't highlight the same level of granular, API-centric features that Vapi did, which is crucial for a platform engineer.",
+      "confidence": "high",
+      "persona_id": "p4_eng",
+      "goal_key": "p4_t5_assistant_jsonish",
+      "runs": {
+        "bland": {
+          "success": true,
+          "final_url": "https://app.bland.ai/dashboard/personas/cef80068-5249-4bad-9163-a2d3612951f6",
+          "status": "SUCCESS"
+        },
+        "vapi": {
+          "success": true,
+          "final_url": "https://dashboard.vapi.ai/tools",
+          "status": "SUCCESS"
+        },
+        "retell": {
+          "success": false,
+          "final_url": "https://dashboard.retellai.com/agents",
+          "status": "FAILURE"
+        }
+      }
+    }
+  ]
+}

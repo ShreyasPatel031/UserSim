@@ -1,0 +1,231 @@
+{
+  "task_success": {
+    "ok": 89,
+    "n": 90
+  },
+  "comparative_winner_counts": {
+    "bland": 15,
+    "retell": 5,
+    "vapi": 10
+  },
+  "persona_task_scores": {
+    "p1": "15/15",
+    "p2": "15/15",
+    "p3": "15/15",
+    "p4": "14/15",
+    "p5": "15/15",
+    "p6": "15/15"
+  },
+  "goals": [
+    {
+      "persona": "p1_ops",
+      "goal": "p1_t1_call_logs_overview",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "As an Ops Manager, I need to quickly see who called whom, how long it lasted, and the associated cost. Bland's call log view explicitly provides 'From', 'To', 'Duration', 'Status', 'Cost', and 'Date' "
+    },
+    {
+      "persona": "p1_ops",
+      "goal": "p1_t2_open_call_detail",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "As a Contact Center Operations Manager, my priority is quickly accessing detailed call information, especially transcripts and recordings, to understand agent performance and customer interactions. Bl"
+    },
+    {
+      "persona": "p1_ops",
+      "goal": "p1_t3_filter_or_search_calls",
+      "winner": "retell",
+      "runner_up": "vapi",
+      "why": "Retell provided the most comprehensive and detailed description of available filter controls, including date ranges and various categories like 'Base', 'Post Call Analysis', 'Metadata', and 'Dynamic V"
+    },
+    {
+      "persona": "p1_ops",
+      "goal": "p1_t4_triage_or_qa",
+      "winner": "retell",
+      "runner_up": "bland",
+      "why": "As a Contact Center Operations Manager, my primary concern is ensuring call quality and quickly identifying issues. Retell's 'Quality Assurance' page is explicitly designed for call quality assessment"
+    },
+    {
+      "persona": "p1_ops",
+      "goal": "p1_t5_analytics_glance",
+      "winner": "bland",
+      "runner_up": "retell",
+      "why": "As a Contact Center Operations Manager, Maya needs specific insights for her weekly ops reviews, and Bland's direct navigation to call-specific analytics is invaluable. This saves her time searching f"
+    },
+    {
+      "persona": "p2_fde",
+      "goal": "p2_t1_agents_list",
+      "winner": "vapi",
+      "runner_up": "retell",
+      "why": "As a Solutions Engineer, my priority is efficient and direct access to customer configurations. Vapi provided the most straightforward path to the 'Assistants' list with no unexpected interruptions or"
+    },
+    {
+      "persona": "p2_fde",
+      "goal": "p2_t2_create_agent_entry",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "Bland's 'Pathways' and 'Create from Scratch' terminology directly aligns with the solution engineering mindset of building custom workflows. The clear, direct path to a blank canvas for development is"
+    },
+    {
+      "persona": "p2_fde",
+      "goal": "p2_t3_open_existing_config",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "Bland's 'Conversational pathways' terminology and the option to 'Start with a Template' are particularly appealing. As a Solutions Engineer, I value platforms that offer clear, structured approaches t"
+    },
+    {
+      "persona": "p2_fde",
+      "goal": "p2_t4_tools_webhooks",
+      "winner": "vapi",
+      "runner_up": "bland",
+      "why": "Vapi offers the most direct and efficient path to configuring custom tools, functions, and webhooks, requiring minimal navigation. As a Solutions Engineer, Jordan prioritizes quick access to integrati"
+    },
+    {
+      "persona": "p2_fde",
+      "goal": "p2_t5_test_or_simulate",
+      "winner": "vapi",
+      "runner_up": "bland",
+      "why": "Vapi provided the most direct path to a comprehensive testing environment, requiring the fewest actions to initiate a test call. As a solutions engineer, I need to quickly validate configurations and "
+    },
+    {
+      "persona": "p3_outbound",
+      "goal": "p3_t1_phone_numbers",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "As an Outbound Campaign Lead, quick and efficient access to our phone number inventory is critical for daily operations. Bland.ai allowed me to reach the target page in the fewest clicks, which saves "
+    },
+    {
+      "persona": "p3_outbound",
+      "goal": "p3_t2_batch_or_outbound",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "As an Outbound Campaign Lead, I need to quickly find and set up various types of calling campaigns. Bland clearly presented both 'Send call' and 'Batch calls' entry points, directly addressing my need"
+    },
+    {
+      "persona": "p3_outbound",
+      "goal": "p3_t3_outbound_in_logs",
+      "winner": "bland",
+      "runner_up": "retell",
+      "why": "As an Outbound Campaign Lead, my priority is quickly segmenting and analyzing calls by direction and campaign. Bland directly offers filterable options for 'Direction', 'Batch ID', and 'Pathway', whic"
+    },
+    {
+      "persona": "p3_outbound",
+      "goal": "p3_t4_voice_persona",
+      "winner": "vapi",
+      "runner_up": "bland",
+      "why": "As an Outbound Campaign Lead, my priority is quickly and precisely tuning the brand voice for various campaigns. Vapi's extremely low action count to reach the 'Voice Settings' within an agent's confi"
+    },
+    {
+      "persona": "p3_outbound",
+      "goal": "p3_t5_campaign_metrics",
+      "winner": "vapi",
+      "runner_up": "bland",
+      "why": "Vapi clearly outlines specific metrics like 'Number of Calls', 'Reason Call Ended', and 'Average Call Duration', which are crucial for evaluating outbound campaign performance and optimizing strategie"
+    },
+    {
+      "persona": "p4_eng",
+      "goal": "p4_t1_api_keys",
+      "winner": "vapi",
+      "runner_up": "retell",
+      "why": "As a platform engineer, I prioritize efficiency and direct access to critical resources like API keys. Vapi provided the most straightforward and fastest path, requiring the fewest clicks and offering"
+    },
+    {
+      "persona": "p4_eng",
+      "goal": "p4_t2_org_settings",
+      "winner": "vapi",
+      "runner_up": "bland",
+      "why": "As a platform engineer, I prioritize efficiency and direct access to organization-level configurations for managing multi-environment setups. Vapi provided the most direct path with the fewest actions"
+    },
+    {
+      "persona": "p4_eng",
+      "goal": "p4_t3_tools_for_functions",
+      "winner": "vapi",
+      "runner_up": "bland",
+      "why": "As a platform engineer, I prioritize direct and efficient access to core functionalities. Vapi's dashboard provides a clear, top-level 'Tools' section, requiring minimal clicks to reach the function r"
+    },
+    {
+      "persona": "p4_eng",
+      "goal": "p4_t4_webhook_or_events",
+      "winner": "retell",
+      "runner_up": "bland",
+      "why": "As a platform engineer, I prioritize direct and explicit configuration options for event delivery. Retell provides a clearly labeled 'Webhook Settings' section within agent details, offering specific "
+    },
+    {
+      "persona": "p4_eng",
+      "goal": "p4_t5_assistant_jsonish",
+      "winner": "vapi",
+      "runner_up": "bland",
+      "why": "Vapi's platform explicitly highlighted features like 'model,' 'provider,' 'OpenAI spec syntax,' 'Tools,' and 'Custom Functions' within the assistant configuration. As a platform engineer, these are cr"
+    },
+    {
+      "persona": "p5_compliance",
+      "goal": "p5_t1_recording_access",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "As a Compliance & Risk Lead, my priority is efficient and unambiguous access to audit trails. Bland provided the most direct path to both call recordings and transcripts, with clear download options a"
+    },
+    {
+      "persona": "p5_compliance",
+      "goal": "p5_t2_billing_usage",
+      "winner": "retell",
+      "runner_up": "bland",
+      "why": "Retell's direct path to a dedicated 'usage' section within billing is ideal for a Compliance Lead. It clearly separates billing from usage, which is essential for monitoring spend controls and providi"
+    },
+    {
+      "persona": "p5_compliance",
+      "goal": "p5_t3_team_access",
+      "winner": "retell",
+      "runner_up": "vapi",
+      "why": "As a Compliance & Risk Lead, the explicit separation of 'Users' and 'Roles' into distinct tabs within Retell's settings is paramount. This structure indicates a robust and granular approach to access "
+    },
+    {
+      "persona": "p5_compliance",
+      "goal": "p5_t4_privacy_settings",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "Bland AI directly addresses the core needs of a Compliance & Risk Lead by providing a dedicated 'Compliance' section. It clearly outlines settings for recording disclosure, opt-out, AI disclosure, and"
+    },
+    {
+      "persona": "p5_compliance",
+      "goal": "p5_t5_export_or_download",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "As a Compliance & Risk Lead, my priority is the reliable and straightforward extraction of data for auditing and reporting. Bland AI provides a clear and easily accessible 'Export Calls' function dire"
+    },
+    {
+      "persona": "p6_founder",
+      "goal": "p6_t1_first_agent",
+      "winner": "bland",
+      "runner_up": "retell",
+      "why": "As a Head of Product, Elena prioritizes a clear, efficient, and unconstrained path to understanding core functionality. Bland's 'Blank canvas' approach is ideal for an initial evaluation, allowing exp"
+    },
+    {
+      "persona": "p6_founder",
+      "goal": "p6_t2_pricing_billing",
+      "winner": "bland",
+      "runner_up": "retell",
+      "why": "As a Founder/Head of Product, Elena needs clear, comprehensive cost information quickly to make informed decisions. Bland provided 'comprehensive information regarding billing, plans, and usage' direc"
+    },
+    {
+      "persona": "p6_founder",
+      "goal": "p6_t3_buy_or_import_number",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "As a Head of Product, I prioritize clarity and comprehensiveness for my team. Bland.ai explicitly presented all three critical actions\u2014buying, importing from Twilio, and connecting via SIP\u2014without req"
+    },
+    {
+      "persona": "p6_founder",
+      "goal": "p6_t4_knowledge_upload",
+      "winner": "bland",
+      "runner_up": "vapi",
+      "why": "Bland AI provided the most intuitive and comprehensive experience for uploading knowledge. The clear 'Knowledge base' section, followed by an explicit '+ Add sources' button that immediately presented"
+    },
+    {
+      "persona": "p6_founder",
+      "goal": "p6_t5_help_onboarding",
+      "winner": "vapi",
+      "runner_up": "bland",
+      "why": "As a Founder/Head of Product, my time is extremely valuable. Vapi provided the most direct and efficient path to a dedicated help and documentation section, requiring only 5 actions. This indicates a "
+    }
+  ]
+}

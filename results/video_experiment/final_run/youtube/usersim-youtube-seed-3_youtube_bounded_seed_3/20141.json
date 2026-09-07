@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p1_viewer_discovery_youtube",
+  "eval_index": 20141,
+  "website": "youtube",
+  "persona_id": "p1_viewer",
+  "persona_name": "Avery Brooks",
+  "goal_key": "discovery",
+  "goal_title": "Evaluate discovery",
+  "comparative_group": "p1_viewer_discovery",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 3,
+  "started_at": "2026-08-30T00:39:06.164004+00:00",
+  "elapsed_s": 268.847,
+  "final_result": "I was unable to find a promising cooking or recipe video on YouTube. I attempted to navigate the homepage and explore categories within the guide menu by scrolling. However, I repeatedly scrolled the wrong element within the guide menu and did not find a specific 'Cooking' or 'Food' category. As a result, I could not select a video, provide UX feedback (likes/dislikes), or assess the ease of discovery. The platform's discovery surface did not readily present relevant categories without explicit search, hindering the goal.",
+  "final_url": "https://www.youtube.com/",
+  "ok": true,
+  "finished_at": "2026-08-30T00:43:38.752943+00:00"
+}

@@ -1,0 +1,30 @@
+INFO     [service] Using anonymized telemetry, see https://docs.browser-use.com/development/monitoring/telemetry.
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/mvp/auto_signup.py", line 617, in <module>
+    main()
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/mvp/auto_signup.py", line 602, in main
+    result = asyncio.run(
+             ^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 686, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/mvp/auto_signup.py", line 443, in sign_up
+    tools = _build_signup_tools(ctx)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/mvp/auto_signup.py", line 299, in _build_signup_tools
+    @tools.registry.action(
+     ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/tools/registry/service.py", line 312, in decorator
+    normalized_func, actual_param_model = self._normalize_action_function_signature(func, description, param_model)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/shreyaspatel/Desktop/Code/UserSim/.venv/lib/python3.12/site-packages/browser_use/tools/registry/service.py", line 141, in _normalize_action_function_signature
+    raise ValueError(
+ValueError: Action 'solve_captcha' parameter 'browser_session: Any' conflicts with special argument injected by tools: 'browser_session: BrowserSession'

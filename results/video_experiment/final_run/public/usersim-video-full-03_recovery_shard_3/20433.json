@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_creator_dailymotion",
+  "eval_index": 20433,
+  "website": "dailymotion",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "creator",
+  "goal_title": "Inspect creator information",
+  "comparative_group": "p4_marketer_creator",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-30T00:22:24.021082+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 155.887,
+  "final_result": "The task could not be completed due to repeated failures. The agent successfully navigated to the Dailymotion homepage and initiated a search for 'science explainer' videos, but no further progress was made before the session was terminated. Therefore, no video, creator, credibility signals, UX likes/dislikes, or ease assessment can be reported.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-30T00:25:06.617355+00:00"
+}

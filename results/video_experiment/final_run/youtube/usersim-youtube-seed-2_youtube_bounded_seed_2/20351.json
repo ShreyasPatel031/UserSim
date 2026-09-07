@@ -1,0 +1,18 @@
+{
+  "task_id": "video_p3_creator_playback_youtube",
+  "eval_index": 20351,
+  "website": "youtube",
+  "persona_id": "p3_creator",
+  "persona_name": "Maya Patel",
+  "goal_key": "playback",
+  "goal_title": "Evaluate consumption UX",
+  "comparative_group": "p3_creator_playback",
+  "model": "gemini-2.5-flash-lite",
+  "seed": 2,
+  "started_at": "2026-08-30T00:42:38.693354+00:00",
+  "elapsed_s": 306.181,
+  "final_result": "I was unable to complete the task of finding and inspecting an organic educational video on YouTube. Despite multiple attempts to search for 'organic educational video' and select a video, I encountered persistent issues with unavailable videos and incorrect page navigation, frequently landing on YouTube Shorts pages instead of the intended video viewing pages. Due to these persistent issues and the limited remaining steps, I could not gather the requested information.",
+  "final_url": "https://www.youtube.com/shorts/IIgENosgHNE",
+  "ok": true,
+  "finished_at": "2026-08-30T00:47:45.449022+00:00"
+}

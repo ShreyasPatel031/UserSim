@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p1_viewer_search_dailymotion",
+  "eval_index": 20113,
+  "website": "dailymotion",
+  "persona_id": "p1_viewer",
+  "persona_name": "Avery Brooks",
+  "goal_key": "search",
+  "goal_title": "Find relevant content",
+  "comparative_group": "p1_viewer_search",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:04.030543+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 171.313,
+  "final_result": "The agent was terminated due to repeated failures in outputting the correct format. The task to find and report on beginner-friendly personal productivity videos on Dailymotion could not be completed. The agent successfully navigated to Dailymotion and initiated a search for 'personal productivity', but the search results were not accessed due to the agent's inability to proceed. Therefore, no video titles, creators, UX likes/dislikes, or ease rating could be determined.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:04:02.854119+00:00"
+}

@@ -1,0 +1,15 @@
+---
+description: Mandatory protocol for any FM GPU eval (Be.FM, Psych-101, Socrates, floors)
+alwaysApply: true
+---
+
+# FM GPU eval protocol
+
+When starting or resuming any foundation-model GPU eval (BehaviorBench, Psych-101 NLL, SocSci210, floors):
+
+1. **Smoke first.** Same harness, same parse, small slice. Require `SMOKE_OK.json` / `SMOKE_PASSED` before a full run. If format/parse is wrong, stop.
+2. **vLLM only, max concurrency.** OpenAI server or `vllm.LLM`. Client concurrency ≥ 32, `--max-num-seqs` ≥ 64. Never transformers `generate` or `--concurrency 1`. If a concurrency-1 job is already running, kill it and continue remaining tasks at 32 — do not let it finish.
+3. **Watchdog armed before the long job.** Label the VM `usersim-spot-watch=true`, enable systemd, confirm the spot watchdog VM or `watch_qwen_befm_floor.sh` is up.
+4. **GCP secrets are already injected.** `GOOGLE_APPLICATION_CREDENTIALS` is often a stub path that does not exist — that is not “no creds.” Write ADC from `GOOGLE_APPLICATION_CREDENTIALS_B64` via `scripts/fm_baselines/gcp_auth.py`. Use `CLOUDSDK_CORE_PROJECT` / `GOOGLE_CLOUD_PROJECT` / `GCP_PROJECT`. Never ask the user to paste a key, project id, or zone. Never claim “this box has no GCP creds.”
+
+Entry points: `docs/plans/fm_gpu_eval_protocol.md`, `scripts/fm_baselines/preflight_gpu_eval.py`, `MODE=smoke|full` on `colab_qwen3_8b_floor_befm.py`.

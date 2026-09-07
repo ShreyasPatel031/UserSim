@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p4_marketer_filters_dailymotion",
+  "eval_index": 20423,
+  "website": "dailymotion",
+  "persona_id": "p4_marketer",
+  "persona_name": "Jordan Lee",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p4_marketer_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T21:01:04.031179+00:00",
+  "preflight": {
+    "url": "https://www.dailymotion.com/",
+    "title": "Dailymotion \u2013 Social video"
+  },
+  "elapsed_s": 315.135,
+  "final_result": "The agent was terminated due to repeated failures in interacting with the Dailymotion website. I was unable to locate or interact with the search bar to search for 'home workout videos'. Multiple attempts to click the search button and find the input field using various selectors failed, and the page did not change. Consequently, I could not proceed with filtering, finding results, or assessing UX elements. The task is incomplete.",
+  "final_url": "https://www.dailymotion.com/",
+  "ok": true,
+  "finished_at": "2026-08-29T21:06:26.760280+00:00"
+}

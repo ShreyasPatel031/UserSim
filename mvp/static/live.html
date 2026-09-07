@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UserSim — Live studies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css?v=53" />
+</head>
+<body class="live-dash">
+  <header class="site-header">
+    <a class="logo" href="/">UserSim</a>
+    <nav class="site-nav">
+      <a href="/">New run</a>
+      <a href="/live" aria-current="page">Live</a>
+    </nav>
+  </header>
+
+  <main class="live-main">
+    <aside class="live-sidebar">
+      <div class="live-sidebar-head">
+        <h1>Studies</h1>
+        <button type="button" id="refresh-list" class="ghost-btn">Refresh</button>
+      </div>
+      <div class="live-kill-bar" id="kill-bar">
+        <p class="live-runtime" id="runtime-status">Checking what’s running…</p>
+        <button type="button" id="kill-agents" class="kill-btn">Kill all agents</button>
+        <button type="button" id="kill-agents-vms" class="kill-btn kill-btn-warn">Kill agents + VMs</button>
+        <button type="button" id="kill-everything" class="kill-btn kill-btn-danger">Kill agents + VMs + seeds</button>
+      </div>
+      <p class="live-sidebar-hint">In-memory + GCS studies. Auto-refreshes; pick the top running row.</p>
+      <ul id="study-list" class="live-study-list"></ul>
+    </aside>
+
+    <section class="live-detail" id="live-detail">
+      <div class="live-empty" id="live-empty">
+        <h2>Pick a study</h2>
+        <p>Select a running or finished study on the left to watch live agent frames.</p>
+      </div>
+      <div id="live-watch" hidden>
+        <header class="live-watch-head">
+          <div>
+            <p class="live-watch-id" id="watch-id"></p>
+            <h2 id="watch-url"></h2>
+            <p class="live-watch-phase" id="watch-phase"></p>
+          </div>
+          <div class="live-watch-meta" id="watch-meta"></div>
+        </header>
+        <div class="live-agent-grid" id="agent-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/live.js?v=62"></script>
+</body>
+</html>

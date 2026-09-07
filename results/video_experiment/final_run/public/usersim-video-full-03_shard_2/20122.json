@@ -1,0 +1,21 @@
+{
+  "task_id": "video_p1_viewer_filters_vimeo",
+  "eval_index": 20122,
+  "website": "vimeo",
+  "persona_id": "p1_viewer",
+  "persona_name": "Avery Brooks",
+  "goal_key": "filters",
+  "goal_title": "Evaluate search refinement",
+  "comparative_group": "p1_viewer_filters",
+  "model": "gemini-2.5-flash-lite",
+  "started_at": "2026-08-29T23:36:35.729638+00:00",
+  "preflight": {
+    "url": "https://vimeo.com/",
+    "title": "Vimeo - All-in-One Video Platform"
+  },
+  "elapsed_s": 249.588,
+  "final_result": "I encountered a Cloudflare CAPTCHA after searching for 'home workout' videos on Vimeo. Despite multiple attempts to interact with the CAPTCHA elements and waiting, the CAPTCHA was not automatically resolved by the browser as expected, and I was unable to proceed. Consequently, I could not search for refinement controls, identify matching results, or provide UX feedback. The task could not be completed due to this blocking CAPTCHA.",
+  "final_url": "https://vimeo.com/search?q=home+workout",
+  "ok": true,
+  "finished_at": "2026-08-29T23:40:56.763561+00:00"
+}

@@ -1,0 +1,13 @@
+{
+  "model": "socratesft/socrates-qwen2.5-14b-sft",
+  "n_studies": 2,
+  "n_cells": 90,
+  "n_preds": 1800,
+  "wasserstein_mean": 0.18379373352087047,
+  "target_paper": 0.151,
+  "empirical_best_paper": 0.125,
+  "per_study": {
+    "3muqx": 0.12688523562834225,
+    "326nv": 0.24070223141339867
+  }
+}
