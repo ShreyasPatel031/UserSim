@@ -60,19 +60,17 @@ def main() -> None:
                 "--tunnel-through-iap",
             ]
         )
-    install = (
-        "sudo systemctl stop usersim-floor-befm.service || true; "
-        "sudo pkill -f vllm.entrypoints || true; "
-        "sudo pkill -f colab_qwen3_8b_floor_befm.py || true; "
-        f"sudo mkdir -p /opt/usersim_fm/scripts /opt/usersim_fm && "
-        f"sudo cp {remote}/*.py {remote}/*.sh {remote}/*.service /opt/usersim_fm/scripts/ && "
-        "sudo cp /opt/usersim_fm/scripts/usersim-floor-befm.service /etc/systemd/system/ && "
-        "sudo chmod +x /opt/usersim_fm/scripts/*.sh && "
-        "sudo touch /opt/usersim_fm/WATCHDOG_ARMED && sudo chmod 666 /opt/usersim_fm/WATCHDOG_ARMED && "
-        "sudo systemctl daemon-reload && "
-        "sudo systemctl enable usersim-floor-befm.service && "
-        "sudo systemctl restart usersim-floor-befm.service && "
-        "echo DEPLOY_OK && sudo systemctl is-active usersim-floor-befm.service"
+    sh(
+        [
+            g,
+            "compute",
+            "scp",
+            str(HERE / "install_floor.sh"),
+            f"{vm}:{remote}/install_floor.sh",
+            f"--zone={z}",
+            f"--project={p}",
+            "--tunnel-through-iap",
+        ]
     )
     sh(
         [
@@ -83,7 +81,7 @@ def main() -> None:
             f"--zone={z}",
             f"--project={p}",
             "--tunnel-through-iap",
-            f"--command={install}",
+            "--command=bash /tmp/usersim_floor_scripts/install_floor.sh",
         ]
     )
 
