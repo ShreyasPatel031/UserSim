@@ -13,7 +13,7 @@ BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:3000"
 OUT = Path("/tmp/usersim_e2e_three.json")
 
 URLS = [
-    "https://example.com/",
+    "https://useagency.dev/",
     "https://recurse.run/",
     "https://www.langchain.com/",
 ]
