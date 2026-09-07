@@ -49,9 +49,9 @@ SCRIPTS = ROOT / "scripts" / "fm_baselines"
 LOCAL = ROOT / "results" / "fm_baselines"
 LOG = LOCAL / "supervisor.log"
 AUTH = ["colab", "--auth=adc"]
-POLL_SEC = 90
-STALL_MIN = 45  # no artifact growth after grace
-GRACE_MIN = 30  # allow model download/load
+POLL_SEC = 60
+STALL_MIN = 25  # no real progress after grace → force stop + respawn
+GRACE_MIN = 25  # allow model download/load
 FS_PROBE = LOCAL / "_fs_probe.txt"
 
 
@@ -64,14 +64,40 @@ def log(msg: str) -> None:
 
 
 def run(cmd: list[str], timeout: int | None = 120, input_text: str | None = None) -> subprocess.CompletedProcess:
+    """Run a command; on timeout hard-kill the process group.
+
+    colab CLI has hung past subprocess.run(..., timeout=N) before (SIGTERM
+    ignored). That froze this supervisor for hours while Colab died. Always
+    start a new session group and SIGKILL on timeout.
+    """
     log("+ " + " ".join(cmd)[:200])
-    return subprocess.run(
+    if timeout is None:
+        return subprocess.run(cmd, text=True, capture_output=True, input=input_text)
+    proc = subprocess.Popen(
         cmd,
         text=True,
-        capture_output=True,
-        timeout=timeout,
-        input=input_text,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        stdin=subprocess.PIPE if input_text is not None else None,
+        start_new_session=True,
     )
+    try:
+        out, err = proc.communicate(input=input_text, timeout=timeout)
+        return subprocess.CompletedProcess(cmd, proc.returncode, out, err)
+    except subprocess.TimeoutExpired:
+        log(f"TIMEOUT {timeout}s — SIGKILL process group for: {' '.join(cmd)[:120]}")
+        try:
+            os.killpg(proc.pid, 9)
+        except Exception:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+        try:
+            out, err = proc.communicate(timeout=5)
+        except Exception:
+            out, err = "", ""
+        return subprocess.CompletedProcess(cmd, 124, out or "", (err or "") + f"\nTIMEOUT:{timeout}s\n")
 
 
 @dataclass
@@ -86,9 +112,12 @@ class Job:
     boot_py: Path  # local python that gets base64-pushed and sets up+launches nohup worker
     # optional: progress is line count of jsonl
     progress_is_lines: bool = False
+    # resume artifacts pulled every poll and re-pushed on boot (survive Colab death)
+    remote_resume: list[str] = field(default_factory=list)
     last_progress: float = 0.0
     last_change_ts: float = field(default_factory=time.time)
     started_ts: float = 0.0
+    consecutive_cmd_timeouts: int = 0
 
 
 def sessions_text() -> str:
@@ -215,6 +244,16 @@ def push_and_boot(job: Job) -> None:
     if not files:
         raise RuntimeError(f"no boot/runner scripts found for {job.name}")
 
+    # Restore resume artifacts from local disk before boot (Colab disk dies with the session).
+    for remote in job.remote_resume:
+        local = job.local_dir / Path(remote).name
+        if local.exists() and local.stat().st_size > 0:
+            r = run(
+                AUTH + ["upload", "-s", job.session, str(local), remote],
+                timeout=180,
+            )
+            log(f"restore {local.name} -> {remote} rc={r.returncode} bytes={local.stat().st_size}")
+
     writes = []
     for p in files:
         b64 = base64.b64encode(p.read_bytes()).decode()
@@ -255,12 +294,56 @@ def push_and_boot(job: Job) -> None:
         raise RuntimeError(f"boot failed for {job.name}: rc={r.returncode}")
     job.started_ts = time.time()
     job.last_change_ts = time.time()
+    job.consecutive_cmd_timeouts = 0
+
+
+def _progress_from_file(path: Path, progress_is_lines: bool) -> float | None:
+    if not path.exists() or path.stat().st_size <= 0:
+        return None
+    if progress_is_lines or path.suffix == ".jsonl":
+        return float(sum(1 for l in path.read_text().splitlines() if l.strip()))
+    # PROGRESS.json / similar — prefer scored count, never raw byte size
+    try:
+        d = json.loads(path.read_text())
+        if isinstance(d, dict):
+            for key in ("scored", "n_preds", "done_n", "n_done"):
+                if key in d and d[key] is not None:
+                    return float(d[key])
+            done = d.get("done")
+            if isinstance(done, list):
+                return float(len(done))
+    except Exception:
+        pass
+    return None
+
+
+def pull_resume_artifacts(job: Job) -> None:
+    """Copy resume files to local disk every poll so a dead Colab does not erase work."""
+    for remote in job.remote_resume:
+        local = job.local_dir / Path(remote).name
+        tmp = local.with_suffix(local.suffix + ".pull")
+        r = run(
+            AUTH + ["download", "-s", job.session, remote, str(tmp)],
+            timeout=180,
+        )
+        if r.returncode == 0 and tmp.exists() and tmp.stat().st_size > 0:
+            tmp.replace(local)
+        else:
+            if tmp.exists():
+                tmp.unlink()
+            # Do not delete a good local resume copy on a flaky download — but
+            # never invent progress from a stale local when remote is gone.
+            if r.returncode == 124:
+                job.consecutive_cmd_timeouts += 1
 
 
 def pull_progress(job: Job) -> float:
-    """Pull remote progress file; return numeric progress (bytes or lines)."""
+    """Pull remote progress; return a monotonic numeric score (items/lines), never bytes."""
     job.local_dir.mkdir(parents=True, exist_ok=True)
+    pull_resume_artifacts(job)
+
     local_path = job.local_dir / Path(job.remote_progress).name
+    tmp = local_path.with_suffix(local_path.suffix + ".pull")
     r = run(
         AUTH
         + [
@@ -268,51 +351,99 @@ def pull_progress(job: Job) -> float:
             "-s",
             job.session,
             job.remote_progress,
-            str(local_path),
+            str(tmp),
         ],
-        timeout=180,
+        timeout=120,
     )
-    if r.returncode != 0 or not local_path.exists():
-        # try exec wc as fallback
+    if r.returncode == 124:
+        job.consecutive_cmd_timeouts += 1
+        log(f"{job.name}: progress download timed out ({job.consecutive_cmd_timeouts})")
+        if tmp.exists():
+            tmp.unlink()
+        return job.last_progress
+
+    remote_ok = r.returncode == 0 and tmp.exists() and tmp.stat().st_size > 0
+    if remote_ok:
+        tmp.replace(local_path)
+        job.consecutive_cmd_timeouts = 0
+    else:
+        if tmp.exists():
+            tmp.unlink()
+
+    parsed = _progress_from_file(local_path, job.progress_is_lines) if remote_ok else None
+    if parsed is not None:
+        return parsed
+
+    # Prefer freshly pulled resume artifact line count
+    if remote_ok or job.remote_resume:
+        for remote in job.remote_resume:
+            local = job.local_dir / Path(remote).name
+            # only trust resume files that were updated this poll (mtime recent)
+            if not local.exists():
+                continue
+            age = time.time() - local.stat().st_mtime
+            if age > 180:
+                continue
+            n = _progress_from_file(local, progress_is_lines=True)
+            if n is not None:
+                job.consecutive_cmd_timeouts = 0
+                return n
+
+    if not remote_ok:
         code = f"""
 from pathlib import Path
+import json
 p=Path({job.remote_progress!r})
 print('EXISTS', p.exists())
 if p.exists():
-  print('BYTES', p.stat().st_size)
   if p.suffix=='.jsonl':
     print('LINES', sum(1 for _ in open(p) if _.strip()))
+  else:
+    try:
+      d=json.loads(p.read_text())
+      print('SCORED', d.get('scored', d.get('n_preds', -1)))
+    except Exception:
+      print('BYTES', p.stat().st_size)
+for rel in {job.remote_resume!r}:
+  q=Path(rel)
+  if q.exists() and q.suffix=='.jsonl':
+    print('RESUME_LINES', sum(1 for _ in open(q) if _.strip()))
 """
         r2 = run(
-            AUTH + ["exec", "-s", job.session, "--timeout", "60"],
-            timeout=90,
+            AUTH + ["exec", "-s", job.session, "--timeout", "45"],
+            timeout=70,
             input_text=code,
         )
+        if r2.returncode == 124:
+            job.consecutive_cmd_timeouts += 1
         out = (r2.stdout or "") + (r2.stderr or "")
-        if "LINES" in out:
-            for line in out.splitlines():
-                if line.startswith("LINES"):
-                    return float(line.split()[1])
-        if "BYTES" in out:
-            for line in out.splitlines():
-                if line.startswith("BYTES"):
-                    return float(line.split()[1])
-        return job.last_progress
+        for line in out.splitlines():
+            if line.startswith("LINES") or line.startswith("SCORED") or line.startswith("RESUME_LINES"):
+                try:
+                    val = float(line.split()[1])
+                    if val >= 0:
+                        return val
+                except Exception:
+                    pass
+        # Remote missing: live progress is 0, keep last_progress for stall math only
+        log(f"{job.name}: remote progress missing; not using stale local")
+        return 0.0 if job.last_progress == 0 else job.last_progress
 
-    if job.progress_is_lines:
-        return float(sum(1 for l in local_path.read_text().splitlines() if l.strip()))
-    return float(local_path.stat().st_size)
+    return job.last_progress
 
 
 def job_done(job: Job) -> bool:
     if not job.remote_done:
         return False
     local_done = job.local_dir / Path(job.remote_done).name
-    # try pull done marker
-    run(
+    # Prefer already-pulled local marker; only hit the network briefly.
+    r = run(
         AUTH + ["download", "-s", job.session, job.remote_done, str(local_done)],
-        timeout=120,
+        timeout=60,
     )
+    if r.returncode == 124:
+        job.consecutive_cmd_timeouts += 1
+        return False
     if local_done.exists() and local_done.stat().st_size > 0:
         try:
             d = json.loads(local_done.read_text())
@@ -324,25 +455,14 @@ def job_done(job: Job) -> bool:
                     return bool(cov.get("complete"))
                 if d.get("mode") == "smoke" or d.get("smoke_studies"):
                     return False
-                if "wasserstein_mean" in d or "total_nll_sum" in d:
-                    return True
+                # Legacy summaries without an explicit complete flag: not done.
+                return False
         except Exception:
-            if job.name != "floor_befm":
-                return True
+            return False
     return False
 
 
 def worker_alive(job: Job) -> bool:
-    code = f"""
-import os
-from pathlib import Path
-for name in {json.dumps([job.name + '_smoke', job.name + '_full', job.name + '_run', 'minitaur_full', 'socrates_smoke', 'socrates_full', 'befm_run'])}:
-  p=Path('/content/fm_baselines/results')/f'{{name}}.pid'
-  if p.exists():
-    pid=p.read_text().strip()
-    print(name, 'alive', os.path.exists(f'/proc/{{pid}}'), 'pid', pid)
-"""
-    # simpler dedicated probe per job type:
     probes = {
         "socrates": ["socrates_smoke", "socrates_full"],
         "minitaur": ["minitaur_full", "minitaur_smoke"],
@@ -366,13 +486,20 @@ for name in {names!r}:
 print('ANY_ALIVE', alive)
 """
     r = run(
-        AUTH + ["exec", "-s", job.session, "--timeout", "45"],
-        timeout=70,
+        AUTH + ["exec", "-s", job.session, "--timeout", "30"],
+        timeout=50,
         input_text=code,
     )
     out = (r.stdout or "") + (r.stderr or "")
     log(out[-500:])
-    return "ANY_ALIVE True" in out
+    if r.returncode == 124:
+        job.consecutive_cmd_timeouts += 1
+        log(f"{job.name}: worker probe timed out ({job.consecutive_cmd_timeouts})")
+        return job.consecutive_cmd_timeouts < 3
+    if "ANY_ALIVE True" in out:
+        job.consecutive_cmd_timeouts = 0
+        return True
+    return False
 
 
 def tick(job: Job) -> None:
@@ -380,9 +507,16 @@ def tick(job: Job) -> None:
         log(f"{job.name}: DONE (local marker present)")
         return
 
+    # Repeated hard timeouts ⇒ treat session as dead even if status lies.
+    if job.consecutive_cmd_timeouts >= 3:
+        log(f"{job.name}: {job.consecutive_cmd_timeouts} cmd timeouts — force stop + respawn")
+        force_stop(job.session)
+        job.consecutive_cmd_timeouts = 0
+        job.last_change_ts = time.time()
+        return
+
     gpu = ensure_session(job)
 
-    # if worker dead, boot
     try:
         alive = worker_alive(job)
     except Exception as e:
@@ -394,7 +528,6 @@ def tick(job: Job) -> None:
         push_and_boot(job)
         return
 
-    # pull progress
     try:
         prog = pull_progress(job)
     except Exception as e:
@@ -408,7 +541,6 @@ def tick(job: Job) -> None:
         job.last_change_ts = now
         return
 
-    # stall detection
     age_min = (now - job.last_change_ts) / 60.0
     since_start = (now - job.started_ts) / 60.0 if job.started_ts else 999
     if since_start < GRACE_MIN:
@@ -419,7 +551,7 @@ def tick(job: Job) -> None:
         force_stop(job.session)
         job.last_change_ts = now
         return
-    log(f"{job.name}: alive, no growth yet ({age_min:.0f}m / stall={STALL_MIN}m)")
+    log(f"{job.name}: alive, no growth yet ({age_min:.0f}m / stall={STALL_MIN}m) progress={prog}")
 
 
 def _floor_psych101_job() -> Job:
@@ -432,6 +564,11 @@ def _floor_psych101_job() -> Job:
         local_dir=LOCAL / "qwen3_8b_floor_psych101",
         boot_py=SCRIPTS / "boot_qwen3_floor_psych101.py",
         progress_is_lines=False,
+        remote_resume=[
+            "/content/fm_baselines/results/qwen3_8b_floor_psych101/scores.jsonl",
+            "/content/fm_baselines/results/qwen3_8b_floor_psych101/SMOKE_OK.json",
+            "/content/fm_baselines/results/qwen3_8b_floor_psych101/PROGRESS.json",
+        ],
     )
 
 
@@ -445,6 +582,11 @@ def _floor_socrates_job() -> Job:
         local_dir=LOCAL / "qwen3_8b_floor_socrates",
         boot_py=SCRIPTS / "boot_qwen3_floor_socrates.py",
         progress_is_lines=True,
+        remote_resume=[
+            "/content/fm_baselines/results/qwen3_8b_floor_socrates/predictions.jsonl",
+            "/content/fm_baselines/results/qwen3_8b_floor_socrates/SMOKE_OK.json",
+            "/content/fm_baselines/results/qwen3_8b_floor_socrates/PROGRESS.json",
+        ],
     )
 
 
@@ -562,7 +704,12 @@ def main() -> None:
 
     prev_name: str | None = None
     while True:
-        pending = [j for j in jobs if not job_done(j)]
+        try:
+            pending = [j for j in jobs if not job_done(j)]
+        except Exception as e:
+            log(f"job_done sweep ERROR: {type(e).__name__}: {e}")
+            time.sleep(args.poll)
+            continue
         if not pending:
             log("ALL_JOBS_DONE")
             break
@@ -579,9 +726,11 @@ def main() -> None:
                 tick(job)
             except Exception as e:
                 log(f"{job.name} ERROR: {type(e).__name__}: {e}")
+                job.consecutive_cmd_timeouts += 1
                 try:
-                    if not session_healthy(job.session):
+                    if job.consecutive_cmd_timeouts >= 3 or not session_healthy(job.session):
                         force_stop(job.session)
+                        job.consecutive_cmd_timeouts = 0
                 except Exception:
                     pass
         prev_name = to_run[0].name
