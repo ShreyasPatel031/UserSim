@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 import json
@@ -127,8 +127,137 @@ async def live_page() -> FileResponse:
     return FileResponse(path)
 
 
+def _escape_html(value: object) -> str:
+    return (
+        str(value or "")
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
+
+def _render_report_html(data: dict) -> str:
+    """Server-rendered report so /report?study= works even if JS fails."""
+    summary = data.get("summary") or {}
+    if not isinstance(summary, dict) or not (
+        summary.get("headline")
+        or summary.get("recommendations")
+        or summary.get("top_friction")
+        or summary.get("segment_fit_score") is not None
+    ):
+        study_id = _escape_html(data.get("id"))
+        return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><title>UserSim — Report</title>
+<link rel="stylesheet" href="/static/styles.css?v=64" /></head><body>
+<header class="site-header"><a class="logo" href="/">UserSim</a>
+<a class="header-back" href="/">← Back to simulation</a></header>
+<main class="main-url-first report-main"><p class="brief-empty">No summary on this study yet.
+<a href="/live?study={study_id}">Open live view</a></p></main></body></html>"""
+
+    def lis(items: object) -> str:
+        rows = items if isinstance(items, list) else []
+        if not rows:
+            return "<li>—</li>"
+        return "".join(f"<li>{_escape_html(x)}</li>" for x in rows)
+
+    recs = summary.get("recommendations") or []
+    rec_html = []
+    for rec in recs if isinstance(recs, list) else []:
+        if not isinstance(rec, dict):
+            continue
+        rec_html.append(
+            '<div class="rec-card">'
+            f'<span class="priority {_escape_html(rec.get("priority") or "medium")}">'
+            f'{_escape_html(rec.get("priority") or "medium")}</span>'
+            "<div>"
+            f"<strong>{_escape_html(rec.get('action'))}</strong>"
+            f'<p style="margin:0.25rem 0 0;color:var(--text-muted);font-size:0.9rem">'
+            f"{_escape_html(rec.get('rationale'))}</p>"
+            "</div></div>"
+        )
+
+    agents = data.get("agent_results") or []
+    agent_html = []
+    for r in agents if isinstance(agents, list) else []:
+        if not isinstance(r, dict):
+            continue
+        friction = "".join(
+            f"<li>{_escape_html(x)}</li>" for x in (r.get("friction_points") or [])
+        ) or "<li>—</li>"
+        easy = "".join(
+            f"<li>{_escape_html(x)}</li>" for x in (r.get("what_was_easy") or [])
+        ) or "<li>—</li>"
+        agent_html.append(
+            '<article class="agent-card">'
+            f"<h3>{_escape_html(r.get('persona_name') or 'Simulated user')} — "
+            f"{_escape_html(r.get('task_title') or 'Task')}</h3>"
+            f'<div class="meta"><span class="tag difficulty-{_escape_html(r.get("difficulty") or "medium")}">'
+            f'{_escape_html(r.get("difficulty") or "medium")}</span>'
+            f'<span class="tag">would convert: {_escape_html(r.get("would_convert") or "?")}</span>'
+            f'<span class="tag">{len(r.get("trace") or [])} steps</span></div>'
+            f'<p style="margin-top:0.75rem">{_escape_html(r.get("product_feedback"))}</p>'
+            f'<blockquote class="quote">"{_escape_html(r.get("quote"))}"</blockquote>'
+            f'<div class="agent-lists"><div><h4>Friction</h4><ul>{friction}</ul></div>'
+            f"<div><h4>Easy</h4><ul>{easy}</ul></div></div></article>"
+        )
+
+    title = (
+        f"Executive summary — {_escape_html(data.get('url'))}"
+        if data.get("url")
+        else "Executive summary"
+    )
+    fit = summary.get("segment_fit_score")
+    fit_txt = _escape_html(fit if fit is not None else "—")
+    return f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UserSim — Report</title>
+<link rel="stylesheet" href="/static/styles.css?v=64" />
+</head><body>
+<header class="site-header"><a class="logo" href="/">UserSim</a>
+<a class="header-back" href="/">← Back to simulation</a></header>
+<main class="main-url-first report-main">
+<section id="results" class="results">
+<section class="panel summary-panel">
+<h2>{title}</h2>
+<p id="headline" class="headline">{_escape_html(summary.get("headline"))}</p>
+<div class="summary-grid">
+<div><h4>Top friction</h4><ul>{lis(summary.get("top_friction"))}</ul></div>
+<div><h4>Top strengths</h4><ul>{lis(summary.get("top_strengths"))}</ul></div>
+</div>
+<div class="fit-score"><span id="fit-score">{fit_txt}</span>
+<div><strong>Segment fit</strong><p>{_escape_html(summary.get("segment_fit_rationale"))}</p></div></div>
+<div class="conversion"><h4>Conversion outlook</h4><p>{_escape_html(summary.get("conversion_outlook") or "—")}</p></div>
+<div class="recommendations"><h4>Recommendations</h4><div id="recommendations">{"".join(rec_html) or "—"}</div></div>
+</section>
+<section class="panel"><h2>Session recaps</h2>
+<div class="agents-grid">{"".join(agent_html) or "<p>—</p>"}</div>
+</section>
+</section>
+</main>
+<footer><p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p></footer>
+</body></html>"""
+
+
 @app.get("/report")
-async def report_page() -> FileResponse:
+async def report_page(request: Request):
+    """Serve report UI. When ?study= is set, SSR from GCS so links work without sessionStorage."""
+    study_id = (request.query_params.get("study") or "").strip()
+    if study_id:
+        from mvp.study import STUDIES, load_study_from_gcs, study_to_dict
+
+        data = None
+        study = STUDIES.get(study_id)
+        if study:
+            data = study_to_dict(study)
+        if not data or not data.get("summary"):
+            remote = await asyncio.to_thread(load_study_from_gcs, study_id)
+            if remote:
+                data = remote
+        if not data:
+            raise HTTPException(status_code=404, detail="Study not found")
+        return HTMLResponse(_render_report_html(data))
+
     path = STATIC / "report.html"
     if not path.is_file():
         raise HTTPException(status_code=503, detail="Report page not bundled")
