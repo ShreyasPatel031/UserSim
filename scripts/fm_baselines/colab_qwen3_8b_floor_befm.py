@@ -46,6 +46,14 @@ if not ROOT.exists():
 
 RESULTS = ROOT / "results" / "qwen3_8b_base_befm"
 BB_DATA = ROOT / "data" / "BehaviorBench"
+if not BB_DATA.exists():
+    for cand in (
+        Path("/content/UserSim/data/fm_baselines/BehaviorBench"),
+        Path("/workspace/data/fm_baselines/BehaviorBench"),
+    ):
+        if cand.exists():
+            BB_DATA = cand
+            break
 BB_REPO = ROOT / "behaviorbench_eval"
 PORT = int(os.environ.get("PORT", "8000"))
 MODEL_NAME = os.environ.get("SERVED_MODEL_NAME", "qwen3-8b-base")

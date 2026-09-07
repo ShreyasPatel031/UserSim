@@ -40,9 +40,8 @@ python3 scripts/fm_baselines/preflight_gpu_eval.py --vm fm-floor-qwen-l4
 `scripts/fm_baselines/gcp_auth.py` + `protocol.require_injected_gcp()` do this.
 
 ## 4. Watchdog before any long job
-- VM label `usersim-spot-watch=true` (Eventarc + poller ignore unlabeled VMs).
-- systemd unit enabled so boot after preempt resumes the job.
-- Confirm `fm-gate0-spot-watchdog` is RUNNING, or start `watch_qwen_befm_floor.sh`.
+- **GCP:** VM label `usersim-spot-watch=true`, systemd enabled, `fm-gate0-spot-watchdog` RUNNING.
+- **Colab Pro:** `scripts/fm_baselines/resilient_fm_supervisor.py --floor-befm` (filesystem canary + pull + respawn). One L4 only — do not also start A100 or a second floor GPU. Full run **refuses** if `WATCHDOG_ARMED` is unset.
 - Full run **refuses** if watchdog is not armed.
 
 ## Agent command

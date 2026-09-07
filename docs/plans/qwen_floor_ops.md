@@ -5,6 +5,14 @@ This file is the VM-specific notes.
 
 GCP is already on the cloud box (`GOOGLE_APPLICATION_CREDENTIALS_B64` + project env). Never ask for a paste.
 
+Colab Pro (remaining Qwen Be.FM floor — more conservative than GCP):
+```bash
+# one L4, smoke then vLLM 32, supervisor watchdog. Resume completed tasks.
+python3 scripts/fm_baselines/launch_colab_qwen_befm.py
+python3 -u scripts/fm_baselines/resilient_fm_supervisor.py --floor-befm
+```
+Do not run this in parallel with the GCP L4 on the same remaining tasks.
+
 ```bash
 python3 scripts/fm_baselines/gcp_auth.py --status
 python3 scripts/fm_baselines/preflight_gpu_eval.py --vm fm-floor-qwen-l4

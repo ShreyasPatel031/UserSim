@@ -44,7 +44,7 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
-ROOT = Path("/Users/shreyaspatel/Desktop/Code/UserSim")
+ROOT = Path(os.environ.get("USERSIM_ROOT", Path(__file__).resolve().parents[2]))
 SCRIPTS = ROOT / "scripts" / "fm_baselines"
 LOCAL = ROOT / "results" / "fm_baselines"
 LOG = LOCAL / "supervisor.log"
@@ -191,6 +191,12 @@ def _runners_for(job: Job) -> list[Path]:
             "boot_qwen3_floor_socrates.py",
             "colab_qwen3_8b_floor_socrates_vllm.py",
         ],
+        "floor_befm": [
+            "boot_qwen3_floor_befm.py",
+            "colab_qwen3_8b_floor_befm.py",
+            "protocol.py",
+            "run_qwen_befm_colab.sh",
+        ],
     }
     out: list[Path] = []
     for name in mapping.get(job.name, [job.boot_py.name]):
@@ -295,15 +301,15 @@ def job_done(job: Job) -> bool:
         timeout=120,
     )
     if local_done.exists() and local_done.stat().st_size > 0:
-        return True
-    # also check pulled SUMMARY content for socrates/minitaur
-    if local_done.exists():
         try:
             d = json.loads(local_done.read_text())
-            if "wasserstein_mean" in d or "total_nll_sum" in d or "tasks" in d:
+            if isinstance(d, dict) and "complete" in d:
+                return bool(d.get("complete"))
+            if "wasserstein_mean" in d or "total_nll_sum" in d:
                 return True
         except Exception:
-            pass
+            if job.name != "floor_befm":
+                return True
     return False
 
 
@@ -324,6 +330,7 @@ for name in {json.dumps([job.name + '_smoke', job.name + '_full', job.name + '_r
         "befm": ["befm_run"],
         "floor_psych101": ["floor_psych101_full"],
         "floor_socrates": ["floor_socrates_full"],
+        "floor_befm": ["floor_befm_full"],
     }
     names = probes.get(job.name, [job.name])
     code = f"""
@@ -396,7 +403,25 @@ def tick(job: Job) -> None:
     log(f"{job.name}: alive, no growth yet ({age_min:.0f}m / stall={STALL_MIN}m)")
 
 
-def make_jobs(with_befm: bool, floor: bool = False) -> list[Job]:
+def make_jobs(
+    with_befm: bool,
+    floor: bool = False,
+    floor_befm: bool = False,
+) -> list[Job]:
+    if floor_befm:
+        # One L4 only. Do not also start psych101/socrates on a second GPU.
+        return [
+            Job(
+                name="floor_befm",
+                session="fm-floor-befm",
+                gpus=["L4"],
+                remote_progress="/content/fm_baselines/results/qwen3_8b_base_befm/PROGRESS.json",
+                remote_done="/content/fm_baselines/results/qwen3_8b_base_befm/SUMMARY.json",
+                local_dir=LOCAL / "qwen3_8b_base_befm",
+                boot_py=SCRIPTS / "boot_qwen3_floor_befm.py",
+                progress_is_lines=False,
+            )
+        ]
     if floor:
         # Qwen3-8B-Base zero-shot floors. L4-only: keep retrying until Colab assigns L4.
         return [
@@ -468,10 +493,17 @@ def main() -> None:
         action="store_true",
         help="Qwen3-8B-Base floor on Psych-101 NLL + Socrates W (not baseline models)",
     )
+    ap.add_argument(
+        "--floor-befm",
+        action="store_true",
+        help="One Colab L4: remaining Qwen3-8B-Base BehaviorBench floor (smoke+vLLM+watchdog)",
+    )
     ap.add_argument("--poll", type=int, default=POLL_SEC)
     args = ap.parse_args()
 
-    jobs = make_jobs(with_befm=args.with_befm, floor=args.floor)
+    jobs = make_jobs(
+        with_befm=args.with_befm, floor=args.floor, floor_befm=args.floor_befm
+    )
     log(f"SUPERVISOR_START jobs={[j.name for j in jobs]}")
 
     while True:
