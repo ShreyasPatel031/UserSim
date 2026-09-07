@@ -4,7 +4,7 @@
 Usage (laptop/cloud agent with gcloud):
   python3 scripts/fm_baselines/preflight_gpu_eval.py --vm fm-floor-qwen-l4
 
-Requires env PROJECT and ZONE (or --project / --zone).
+Reads injected secrets via gcp_auth (never ask the user to paste).
 Writes WATCHDOG_ARMED on the VM and prints PREFLIGHT_OK.
 """
 from __future__ import annotations
@@ -13,25 +13,42 @@ import argparse
 import os
 import subprocess
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gcp_auth import (  # noqa: E402
+    activate_service_account,
+    ensure_adc,
+    gcloud_bin,
+    gcloud_env,
+    project_id,
+    watchdog_zone,
+    zone,
+)
+from protocol import require_injected_gcp  # noqa: E402
 
 
 def sh(cmd: list[str], check: bool = True) -> subprocess.CompletedProcess:
     print("+", " ".join(cmd), flush=True)
-    return subprocess.run(cmd, check=check)
+    return subprocess.run(cmd, check=check, env=gcloud_env())
 
 
 def main() -> None:
+    require_injected_gcp()
+    ensure_adc()
+    activate_service_account()
     ap = argparse.ArgumentParser()
     ap.add_argument("--vm", required=True)
-    ap.add_argument("--project", default=os.environ.get("PROJECT") or os.environ.get("CLOUDSDK_CORE_PROJECT"))
-    ap.add_argument("--zone", default=os.environ.get("ZONE"))
+    ap.add_argument("--project", default=None)
+    ap.add_argument("--zone", default=None)
     ap.add_argument("--watchdog-vm", default="fm-gate0-spot-watchdog")
-    ap.add_argument("--watchdog-zone", default=os.environ.get("WATCHDOG_ZONE"))
+    ap.add_argument("--watchdog-zone", default=None)
     args = ap.parse_args()
-    if not args.project or not args.zone:
-        raise SystemExit("set --project/--zone or PROJECT and ZONE")
+    args.project = args.project or project_id()
+    args.zone = args.zone or zone()
+    args.watchdog_zone = args.watchdog_zone or watchdog_zone()
 
-    g = ["gcloud", "compute"]
+    g = [gcloud_bin(), "compute"]
     sh(
         g
         + [
@@ -56,6 +73,7 @@ def main() -> None:
             "--format=value(status)",
         ],
         text=True,
+        env=gcloud_env(),
     ).strip()
     if desc != "RUNNING":
         sh(
@@ -81,6 +99,7 @@ def main() -> None:
                 "--format=value(status)",
             ],
             text=True,
+            env=gcloud_env(),
         ).strip()
         if wstatus != "RUNNING":
             sh(

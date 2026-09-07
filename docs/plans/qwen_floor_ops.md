@@ -1,7 +1,9 @@
 # Qwen floor ops — do not babysit
 
-Canonical protocol: `docs/plans/fm_gpu_eval_protocol.md` (smoke → vLLM max concurrency → watchdog).
+Canonical protocol: `docs/plans/fm_gpu_eval_protocol.md` (smoke → vLLM max concurrency → watchdog → **use injected GCP secrets**).
 This file is the VM-specific notes.
+
+GCP is already on the cloud box (`GOOGLE_APPLICATION_CREDENTIALS_B64` + project env). Never ask for a paste. `python3 scripts/fm_baselines/gcp_auth.py --status` then `preflight_gpu_eval.py`.
 
 ## Machine
 - VM: `fm-floor-qwen-l4` (`g2-standard-8` + L4, Spot)

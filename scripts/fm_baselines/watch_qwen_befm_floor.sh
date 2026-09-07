@@ -1,8 +1,11 @@
 #!/bin/bash
 # Keep fm-floor-qwen-l4 up and the Be.FM floor job running until SUMMARY.complete.
 set -u
-PROJECT="${PROJECT:?set PROJECT to the GCP project id}"
-ZONE="${ZONE:?set ZONE to the VM zone}"
+PROJECT="${PROJECT:-${CLOUDSDK_CORE_PROJECT:-${GOOGLE_CLOUD_PROJECT:-${GCP_PROJECT:-${GCLOUD_PROJECT:-}}}}}"
+ZONE="${ZONE:-${GCP_ZONE:-${COMPUTE_ZONE:-}}}"
+# Secrets are injected. Never prompt for project/zone/key.
+eval "$(python3 "$(dirname "$0")/gcp_auth.py" --export)"
+PROJECT="${PROJECT:-${CLOUDSDK_CORE_PROJECT:-}}"
 VM="${VM:-fm-floor-qwen-l4}"
 ROOT="${USERSIM_ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}"
 LOG="${LOG:-$ROOT/results/fm_baselines/qwen_befm_watchdog.log}"

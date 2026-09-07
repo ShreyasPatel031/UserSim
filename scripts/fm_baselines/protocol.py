@@ -7,6 +7,30 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+# Cloud-agent secrets. A stub GOOGLE_APPLICATION_CREDENTIALS path is not "no creds".
+INJECTED_GCP_ENV = (
+    "CLOUDSDK_CORE_PROJECT",
+    "GOOGLE_CLOUD_PROJECT",
+    "GCP_PROJECT",
+    "GCLOUD_PROJECT",
+    "GOOGLE_APPLICATION_CREDENTIALS",
+    "GOOGLE_APPLICATION_CREDENTIALS_B64",
+    "GOOGLE_APPLICATION_CREDENTIALS_JSON",
+)
+
+
+def require_injected_gcp() -> None:
+    """Refuse to babysit: materialize ADC from secrets already on this box."""
+    from gcp_auth import ensure_adc, present_secret_names
+
+    if not present_secret_names():
+        raise SystemExit(
+            "PROTOCOL: expected injected GCP secrets "
+            f"({', '.join(INJECTED_GCP_ENV)}). "
+            "Do not ask the user to paste a key — check the cloud-agent secret store."
+        )
+    ensure_adc()
+
 MIN_CONCURRENCY = 32
 MIN_MAX_NUM_SEQS = 64
 REQUIRED_ENGINE = "vllm"
