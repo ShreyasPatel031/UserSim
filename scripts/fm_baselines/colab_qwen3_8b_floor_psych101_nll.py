@@ -149,20 +149,20 @@ def main() -> None:
                 counts[exp] += 1
             scored = len(done) + 1
             done.add(i)
-            if scored % 25 == 0 or i + 1 == len(rows):
-                print(f"scored {len(done)}/{len(rows)}", flush=True)
-                (RESULTS / "PROGRESS.json").write_text(
-                    json.dumps(
-                        {
-                            "scored": len(done),
-                            "total": len(rows),
-                            "max_seq": MAX_SEQ,
-                            "model": MODEL,
-                            "engine": "transformers-4bit",
-                            "mode": MODE,
-                        }
-                    )
+            (RESULTS / "PROGRESS.json").write_text(
+                json.dumps(
+                    {
+                        "scored": len(done),
+                        "total": len(rows),
+                        "max_seq": MAX_SEQ,
+                        "model": MODEL,
+                        "engine": "transformers-4bit",
+                        "mode": MODE,
+                    }
                 )
+            )
+            if scored % 5 == 0 or i + 1 == len(rows):
+                print(f"scored {len(done)}/{len(rows)}", flush=True)
 
     per_exp = {
         exp: {
