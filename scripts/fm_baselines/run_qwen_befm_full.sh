@@ -22,7 +22,7 @@ SMOKE_OK="$ROOT/results/qwen3_8b_base_befm/SMOKE_OK.json"
 RUNNER="$ROOT/scripts/colab_qwen3_8b_floor_befm.py"
 # Disable the old HF-generate server so a reboot cannot revive concurrency 1.
 if [[ -f /opt/usersim_fm/scripts/qwen_openai_server.py ]]; then
-  mv /opt/usersim_fm/scripts/qwen_openai_server.py \
+  sudo mv /opt/usersim_fm/scripts/qwen_openai_server.py \
     /opt/usersim_fm/scripts/qwen_openai_server.py.DISABLED || true
 fi
 rm -f /opt/usersim_fm/results/qwen_befm_full.pid /opt/usersim_fm/results/qwen_befm_smoke.pid
