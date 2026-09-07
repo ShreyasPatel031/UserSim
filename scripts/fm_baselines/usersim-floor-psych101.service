@@ -1,0 +1,27 @@
+[Unit]
+Description=UserSim Qwen3-8B-Base Psych-101 NLL floor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/usersim_fm
+Environment=FM_ROOT=/opt/usersim_fm
+Environment=WATCHDOG_ARMED=1
+Environment=WATCHDOG_MARKER=/opt/usersim_fm/WATCHDOG_ARMED
+Environment=BATCH_SIZE=4
+Environment=MAX_SEQ=4096
+Environment=FLOOR_MODEL=Qwen/Qwen3-8B-Base
+Environment=NUM_SHARDS=1
+Environment=SHARD_ID=0
+Environment=HF_HOME=/opt/usersim_fm/hf_home
+ExecStart=/bin/bash /opt/usersim_fm/scripts/run_qwen_psych101_full.sh
+Restart=on-failure
+RestartSec=30
+TimeoutStartSec=0
+StandardOutput=append:/opt/usersim_fm/logs/psych101-systemd.log
+StandardError=append:/opt/usersim_fm/logs/psych101-systemd.log
+
+[Install]
+WantedBy=multi-user.target
