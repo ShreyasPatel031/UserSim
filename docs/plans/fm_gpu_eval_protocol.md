@@ -16,6 +16,7 @@ If parse/format is wrong, **stop**. Do not burn a full run.
 - Client `--concurrency` **≥ 32**.
 - vLLM `--max-num-seqs` **≥ 64**.
 - **Forbidden:** transformers `generate` loops, FastAPI toy servers, `--concurrency 1`.
+- If a concurrency-1 job is already running, **kill it**. Do not attach, resume, or “just let it finish.” Resume remaining tasks on vLLM at concurrency ≥ 32.
 - L4 + vLLM 0.28 needs `ninja` on PATH (`apt-get install ninja-build`) or FlashInfer warmup dies.
 
 ## 3. Use injected GCP secrets — never ask the user
