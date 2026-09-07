@@ -16,6 +16,7 @@ If parse/format is wrong, **stop**. Do not burn a full run.
 - Client `--concurrency` **≥ 32**.
 - vLLM `--max-num-seqs` **≥ 64**.
 - **Forbidden:** transformers `generate` loops, FastAPI toy servers, `--concurrency 1`.
+- L4 + vLLM 0.28 needs `ninja` on PATH (`apt-get install ninja-build`) or FlashInfer warmup dies.
 
 ## 3. Use injected GCP secrets — never ask the user
 Cloud-agent boxes **already have the key**. `GOOGLE_APPLICATION_CREDENTIALS` is often a **15-char stub path that does not exist**. That is not “no creds.” The real key is `GOOGLE_APPLICATION_CREDENTIALS_B64`.
