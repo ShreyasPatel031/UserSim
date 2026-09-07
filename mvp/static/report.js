@@ -1,4 +1,4 @@
-/** Report page — reads the last completed study from sessionStorage. */
+/** Report page — loads a persisted study via ?study=<id>, else sessionStorage. */
 
 function escapeHtml(str) {
   return String(str)

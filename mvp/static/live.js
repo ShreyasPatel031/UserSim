@@ -169,6 +169,17 @@ function renderWatch(data) {
   watchId.textContent = data.id || selectedId;
   watchUrl.textContent = data.url || "Study";
   watchPhase.textContent = `${data.status || "?"} · ${data.phase || ""}`;
+  const reportLink = document.getElementById("open-report-link");
+  const studyId = data.id || selectedId || "";
+  const reportReady = data.status === "complete" && Boolean(data.summary);
+  if (reportLink) {
+    if (reportReady && studyId) {
+      reportLink.href = `/report?study=${encodeURIComponent(studyId)}`;
+      reportLink.hidden = false;
+    } else {
+      reportLink.hidden = true;
+    }
+  }
   const live = data.live_sessions || [];
   const items = Array.isArray(live) ? live : Object.values(live);
   const steps = items.reduce((n, s) => n + (s.trace?.length || 0), 0);

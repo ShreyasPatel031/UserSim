@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/styles.css?v=53" />
+  <link rel="stylesheet" href="/static/styles.css?v=63" />
 </head>
 <body class="live-dash">
   <header class="site-header">
@@ -46,13 +46,16 @@
             <h2 id="watch-url"></h2>
             <p class="live-watch-phase" id="watch-phase"></p>
           </div>
-          <div class="live-watch-meta" id="watch-meta"></div>
+          <div class="live-watch-actions">
+            <a id="open-report-link" class="ghost-btn live-report-link" href="/report" hidden>Open report →</a>
+            <div class="live-watch-meta" id="watch-meta"></div>
+          </div>
         </header>
         <div class="live-agent-grid" id="agent-grid"></div>
       </div>
     </section>
   </main>
 
-  <script src="/static/live.js?v=62"></script>
+  <script src="/static/live.js?v=63"></script>
 </body>
 </html>

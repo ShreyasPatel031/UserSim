@@ -1043,6 +1043,7 @@ function renderList(el, items) {
 }
 
 function saveReportAndOfferLink(data) {
+  const studyId = data.id || data.study_id || "";
   try {
     sessionStorage.setItem(
       "usersim_report",
@@ -1052,7 +1053,9 @@ function saveReportAndOfferLink(data) {
         access_backend: data.access_backend,
         browserbase_session_url: data.browserbase_session_url,
         notify_email: _notifyEmail || "",
-        study_id: data.id || data.study_id || "",
+        study_id: studyId,
+        url: data.url || "",
+        status: data.status || "",
       })
     );
   } catch {
@@ -1068,6 +1071,8 @@ function updateReportCta(data) {
   const stageVisible = !document.getElementById("stage-section")?.hidden;
   if (fullyDone) {
     if (link) {
+      const studyId = data.id || data.study_id || "";
+      link.href = studyId ? `/report?study=${encodeURIComponent(studyId)}` : "/report";
       link.hidden = false;
       link.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }

@@ -2053,8 +2053,8 @@ def persist_study(study: StudyState) -> None:
         from mvp.gcs_store import write_study_state
 
         write_study_state(study.id, study_to_dict(study))
-    except Exception:
-        pass
+    except Exception as exc:  # noqa: BLE001
+        print(f"persist_study failed for {study.id}: {exc!r}", flush=True)
 
 
 def load_study_from_gcs(study_id: str) -> dict[str, Any] | None:
