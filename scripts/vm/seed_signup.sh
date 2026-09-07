@@ -74,8 +74,13 @@ if [[ "${MVP_SIGNUP_BROWSERBASE}" != "1" ]]; then
   echo "==> display :99 live"
 fi
 
+SIGNIN_FLAG=()
+if [[ "${SIGNIN:-0}" == "1" ]]; then
+  SIGNIN_FLAG=(--signin)
+fi
 .venv/bin/python scripts/local/signup_targets.py \
-  --parallel "$PARALLEL" --timeout "$TIMEOUT_S" --max-steps "$MAX_STEPS" "$@"
+  --parallel "$PARALLEL" --timeout "$TIMEOUT_S" --max-steps "$MAX_STEPS" \
+  "${SIGNIN_FLAG[@]}" "$@"
 
 # Record what this seed can actually serve, verified against its own cookie jars
 # rather than the global credential registry.

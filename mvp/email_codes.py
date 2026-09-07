@@ -234,6 +234,10 @@ _SIGNUP_HINTS = (
     "signup",
     "welcome",
     "magic link",
+    "sign in",
+    "sign into",
+    "reset",
+    "login code",
 )
 _URL_RE = re.compile(r"https?://[^\s<>\"']+", re.IGNORECASE)
 _SKIP_LINK_HINTS = (
@@ -362,6 +366,7 @@ def _alias_match(recipients: str, alias: str) -> bool:
 def latest_signup_code(
     alias: str,
     *,
+    host: str | None = None,
     newer_than: float | None = None,
     lookback: int = 40,
 ) -> str | None:
@@ -370,6 +375,10 @@ def latest_signup_code(
     if not creds:
         return None
     username, app_password = creds
+    host_l = (host or "").lower().lstrip(".")
+    if host_l.startswith("www."):
+        host_l = host_l[4:]
+    host_token = host_l.split(".")[0] if host_l else ""
     for msg in _iter_recent_messages(username, app_password, lookback=lookback):
         if not _alias_match(_recipients(msg), alias):
             continue
@@ -379,7 +388,10 @@ def latest_signup_code(
                 continue
         subject = _decode(msg.get("Subject"))
         body = _body_text(msg)
-        low = f"{subject}\n{body}".lower()
+        sender = _decode(msg.get("From"))
+        low = f"{subject}\n{body}\n{sender}".lower()
+        if host_token and host_token not in low and host_l not in low:
+            continue
         if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_RE.search(low):
             continue
         code = _find_code(subject, body)
@@ -444,6 +456,7 @@ def latest_signup_link(
 def wait_for_signup_code(
     alias: str,
     *,
+    host: str | None = None,
     timeout_s: float = 240.0,
     newer_than: float | None = None,
     poll_s: float = 5.0,
@@ -456,7 +469,7 @@ def wait_for_signup_code(
     started = time.time()
     floor = newer_than if newer_than is not None else started
     while time.time() - started < timeout_s:
-        code = latest_signup_code(alias, newer_than=floor)
+        code = latest_signup_code(alias, host=host, newer_than=floor)
         if code:
             return code
         time.sleep(poll_s)

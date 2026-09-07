@@ -39,16 +39,18 @@ def _browserbase_configured() -> bool:
 
 
 def _fleet_preferred() -> bool:
-    # Browserbase is the Vercel / Developer-plan live path. Cloud secrets often
-    # still inject MVP_GCP_FLEET=1; that steals the run and fails without the
-    # compute client / seed VMs. Opt into fleet with MVP_PREFER_GCP_FLEET=1.
-    if os.environ.get("USE_BROWSERBASE", "").lower() in {"1", "true", "yes"}:
-        if os.environ.get("MVP_PREFER_GCP_FLEET", "").lower() not in {
-            "1",
-            "true",
-            "yes",
-        }:
+    # Explicit opt-in always wins (local warm-seed path).
+    if os.environ.get("MVP_PREFER_GCP_FLEET", "").lower() in {"1", "true", "yes"}:
+        try:
+            from mvp.gcp_fleet import gcp_fleet_enabled
+
+            return gcp_fleet_enabled()
+        except Exception:
             return False
+    # Browserbase is the Vercel production path. Cloud secrets often still inject
+    # MVP_GCP_FLEET=1; that steals the run and fails without seed VMs.
+    if os.environ.get("USE_BROWSERBASE", "").lower() in {"1", "true", "yes"}:
+        return False
     try:
         from mvp.gcp_fleet import gcp_fleet_enabled
 
@@ -610,6 +612,12 @@ def expand_tasks_for_sites(
             title = task.get("title") or "Task"
             if site_key != "product":
                 clone["title"] = f"{title} (vs {site_url})"
+                prompt = str(task.get("prompt") or title)
+                clone["prompt"] = (
+                    f"{prompt}\n\n"
+                    f"You are evaluating the competitor site {site_url} only. "
+                    f"Stay on that site — do not open the original product or other rivals."
+                )
             expanded.append(clone)
     return expanded
 
@@ -1094,29 +1102,47 @@ async def run_study(
                 f"({before} tasks × {1 + len(study.competitors)} sites)",
             )
             # Cap total Browserbase sessions so Vercel survives product+rivals.
-            # Round-robin by site so competitors aren't all truncated away.
+            # Prefer distinct product-site personas first so user/task dropdowns
+            # aren't stuck on a single simulated user (old round-robin-by-site
+            # always kept task t1 × every site).
             max_sessions = int(
                 os.environ.get(
                     "MVP_MAX_SESSIONS",
-                    "9" if IS_VERCEL_ENV else "18",
+                    "9" if IS_VERCEL_ENV else "15",
                 )
             )
             if max_sessions > 0 and len(study.tasks) > max_sessions:
-                by_site: dict[str, list[dict[str, Any]]] = {}
-                for task in study.tasks:
-                    by_site.setdefault(str(task.get("site_key") or "product"), []).append(task)
+                product = [
+                    t
+                    for t in study.tasks
+                    if str(t.get("site_key") or "product") == "product"
+                ]
+                rivals = [
+                    t
+                    for t in study.tasks
+                    if str(t.get("site_key") or "product") != "product"
+                ]
                 picked: list[dict[str, Any]] = []
-                while len(picked) < max_sessions and any(by_site.values()):
-                    for key in list(by_site.keys()):
-                        bucket = by_site.get(key) or []
-                        if bucket and len(picked) < max_sessions:
-                            picked.append(bucket.pop(0))
+                for t in product:
+                    if len(picked) >= max_sessions:
+                        break
+                    picked.append(t)
+                if len(picked) < max_sessions:
+                    # Fill with competitors for personas already included, then others.
+                    have = {p.get("persona_id") for p in picked}
+                    primary = [t for t in rivals if t.get("persona_id") in have]
+                    secondary = [t for t in rivals if t.get("persona_id") not in have]
+                    for t in primary + secondary:
+                        if len(picked) >= max_sessions:
+                            break
+                        picked.append(t)
                 study.tasks = picked
                 log_activity(
                     study,
                     "plan",
                     f"Capped to {len(study.tasks)} parallel sessions "
-                    f"(MVP_MAX_SESSIONS={max_sessions})",
+                    f"(MVP_MAX_SESSIONS={max_sessions}; "
+                    f"{sum(1 for t in picked if (t.get('site_key') or 'product') == 'product')} on product)",
                 )
         else:
             for task in study.tasks:
@@ -1588,6 +1614,54 @@ async def run_study(
                 for session in prefetched_sessions:
                     await prefetch_q.put(session)
 
+                # Attach live views immediately so the main site stage can embed
+                # Browserbase's live iframe — don't wait until agents start stepping.
+                try:
+                    from capability.browserbase_client import session_live_view_url
+
+                    agent_ids = [
+                        t.get("id") or f"agent_{uuid.uuid4().hex[:8]}" for t in study.tasks
+                    ]
+
+                    async def _attach_live(i: int, session: Any) -> None:
+                        sid = getattr(session, "id", None)
+                        if not sid or i >= len(agent_ids):
+                            return
+                        aid = agent_ids[i]
+                        sess = study.live_sessions.get(aid)
+                        if not sess:
+                            return
+                        sess["browserbase_session_id"] = sid
+                        sess["browserbase_session_url"] = getattr(session, "session_url", None)
+                        try:
+                            live_url = await asyncio.to_thread(session_live_view_url, sid)
+                        except Exception:
+                            live_url = None
+                        if live_url:
+                            sess["live_view_url"] = live_url
+                            sess["last_action"] = "Live browser connected — watching…"
+                            sess["status"] = "starting"
+
+                    await asyncio.gather(
+                        *[
+                            _attach_live(i, session)
+                            for i, session in enumerate(prefetched_sessions)
+                        ]
+                    )
+                    touch(
+                        f"Live browser agents — 0/{len(study.tasks)} done · "
+                        f"{len(study.tasks)} active · 0 queued · 0 steps"
+                    )
+                    if on_update:
+                        try:
+                            on_update(study, event="progress")
+                        except TypeError:
+                            on_update(study)
+                        except Exception:
+                            pass
+                except Exception as live_exc:  # noqa: BLE001
+                    print(f"attach live views failed: {live_exc!r}", flush=True)
+
                 log_activity(study, "agents", f"Launching {len(study.tasks)} live browser agents")
 
                 async def _on_agent_step(agent_id: str, step: dict[str, Any]) -> None:
@@ -1672,6 +1746,33 @@ async def run_study(
                         sid = getattr(prefetched, "id", None)
                         if sid:
                             sess["browserbase_session_id"] = sid
+                            sess["browserbase_session_url"] = getattr(
+                                prefetched, "session_url", None
+                            )
+                            try:
+                                from capability.browserbase_client import (
+                                    session_live_view_url,
+                                )
+
+                                live_url = await asyncio.to_thread(
+                                    session_live_view_url, sid
+                                )
+                                if live_url:
+                                    sess["live_view_url"] = live_url
+                                    sess["last_action"] = "Live browser connected — watching…"
+                                    study.updated_at = _now()
+                                    if on_update:
+                                        try:
+                                            on_update(study, event="progress")
+                                        except TypeError:
+                                            on_update(study)
+                                        except Exception:
+                                            pass
+                            except Exception as live_exc:  # noqa: BLE001
+                                print(
+                                    f"live_view_url failed for {sid}: {live_exc!r}",
+                                    flush=True,
+                                )
                     log_activity(
                         study,
                         "agent_start",

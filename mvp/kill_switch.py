@@ -113,18 +113,28 @@ def abandon_local_studies(*, study_id: str | None = None) -> dict[str, Any]:
             cancelled_tasks += 1
 
     # Always patch GCS too — after a server restart memory is empty but /live
-    # still lists GCS study.json as "running".
+    # still lists GCS study.json as "running". Do this off the critical path so
+    # Kill buttons return immediately after Browserbase is released.
     gcs_abandoned: list[str] = []
     try:
         from mvp.gcs_store import abandon_running_studies_in_gcs
+        import threading
 
-        gcs_abandoned = abandon_running_studies_in_gcs(study_id=study_id)
+        def _gcs() -> None:
+            nonlocal gcs_abandoned
+            try:
+                gcs_abandoned = abandon_running_studies_in_gcs(study_id=study_id)
+            except Exception as exc:  # noqa: BLE001
+                print(f"abandon_running_studies_in_gcs failed: {exc!r}", flush=True)
+
+        threading.Thread(target=_gcs, name="gcs-abandon", daemon=True).start()
     except Exception as exc:  # noqa: BLE001
         print(f"abandon_running_studies_in_gcs failed: {exc!r}", flush=True)
     return {
         "abandoned": abandoned,
         "gcs_abandoned": gcs_abandoned,
         "cancelled_tasks": cancelled_tasks,
+        "gcs_abandon_async": True,
     }
 
 

@@ -1,0 +1,61 @@
+{
+  "model": "Qwen/Qwen3-8B-Base",
+  "smoke_n": 8,
+  "smoke_game_n": 8,
+  "reports": [
+    {
+      "file": "/opt/usersim_fm/results/qwen3_8b_base_befm/smoke_pers_score_pred/qwen3-8b-base/pers_score_pred_20260907_070329.json",
+      "task": "pers_score_pred",
+      "n_preds": 8,
+      "parsed_non_null": 7,
+      "num_failed_parses": 1,
+      "failed_parse_rate": 0.125,
+      "metric_keys": [
+        "MAE_averaged",
+        "Spearman_with_pvalue_all_significant",
+        "Spearman_with_pvalue_correlation_averaged",
+        "Spearman_with_pvalue_pvalue_averaged",
+        "Wasserstein_with_ks_all_ks_pass_test",
+        "Wasserstein_with_ks_distance_averaged",
+        "Wasserstein_with_ks_distance_raw_averaged",
+        "Wasserstein_with_ks_ks_pvalue_averaged",
+        "Wasserstein_with_ks_ks_statistic_averaged"
+      ],
+      "metrics_sample": {
+        "MAE_averaged": 12.291666666666666,
+        "Spearman_with_pvalue_correlation_averaged": 0.46650635094610965,
+        "Spearman_with_pvalue_pvalue_averaged": 0.08333333333333331,
+        "Spearman_with_pvalue_all_significant": 0,
+        "Wasserstein_with_ks_distance_averaged": 12.291666666666666,
+        "Wasserstein_with_ks_distance_raw_averaged": 12.291666666666666,
+        "Wasserstein_with_ks_all_ks_pass_test": 1,
+        "Wasserstein_with_ks_ks_pvalue_averaged": 0.9
+      },
+      "raw_sample": " [25]\nASSISTANT: Based on the provided demographics, I estimate this 20-year-old Caucasian female's *Openness* dimension"
+    },
+    {
+      "file": "/opt/usersim_fm/results/qwen3_8b_base_befm/smoke_game_behavior_dictator/qwen3-8b-base/game_behavior_dictator_20260907_070354.json",
+      "task": "game_behavior_dictator",
+      "n_preds": 8,
+      "parsed_non_null": 8,
+      "num_failed_parses": 0,
+      "failed_parse_rate": 0.0,
+      "metric_keys": [
+        "Wasserstein_with_ks_distance",
+        "Wasserstein_with_ks_distance_raw",
+        "Wasserstein_with_ks_ks_pass_test",
+        "Wasserstein_with_ks_ks_pvalue",
+        "Wasserstein_with_ks_ks_statistic"
+      ],
+      "metrics_sample": {
+        "Wasserstein_with_ks_distance": 18.085000000000004,
+        "Wasserstein_with_ks_distance_raw": 18.085000000000004,
+        "Wasserstein_with_ks_ks_statistic": 0.45,
+        "Wasserstein_with_ks_ks_pvalue": 0.06321612392838073,
+        "Wasserstein_with_ks_ks_pass_test": 1
+      },
+      "raw_sample": " As the player, I would like to divide the money in a way that reflects a fair and mutually beneficial distribution. Her"
+    }
+  ],
+  "schema_ok": true
+}

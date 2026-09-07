@@ -68,6 +68,13 @@ OPAQUE_AUTH_COOKIES: dict[str, frozenset[str]] = {
     "canva.com": frozenset({"CDI", "CAZ", "CID", "CUI", "CUL", "CB", "CAU", "CL", "CS"}),
 }
 
+# Notion logs into app.notion.com and sets cookies on notion.com, while the
+# seed key / profile name stays notion.so.
+COOKIE_HOST_ALIASES: dict[str, frozenset[str]] = {
+    "notion.so": frozenset({"notion.so", "notion.com"}),
+    "notion.com": frozenset({"notion.so", "notion.com"}),
+}
+
 
 def _cookie_db(profile: Path) -> Path | None:
     for rel in ("Default/Cookies", "Default/Network/Cookies", "Cookies"):
@@ -103,9 +110,10 @@ def session_cookies(profile: Path, host: str) -> list[str]:
         return []
 
     want = _registrable(host)
+    want_set = COOKIE_HOST_ALIASES.get(want, frozenset({want}))
     found: set[str] = set()
     for host_key, name in rows:
-        if _registrable(str(host_key)) != want:
+        if _registrable(str(host_key)) not in want_set:
             continue
         if _is_auth_cookie_name(str(name)):
             found.add(str(name))
@@ -114,12 +122,13 @@ def session_cookies(profile: Path, host: str) -> list[str]:
 
 def _auth_names_from_storage(state: dict, host: str) -> list[str]:
     want = _registrable(host)
+    want_set = COOKIE_HOST_ALIASES.get(want, frozenset({want}))
     found: set[str] = set()
     opaque_hits: set[str] = set()
     opaque_want = OPAQUE_AUTH_COOKIES.get(want, frozenset())
 
     for cookie in state.get("cookies") or []:
-        if _registrable(str(cookie.get("domain") or "")) != want:
+        if _registrable(str(cookie.get("domain") or "")) not in want_set:
             continue
         name = str(cookie.get("name") or "")
         if _is_auth_cookie_name(name):
@@ -133,7 +142,7 @@ def _auth_names_from_storage(state: dict, host: str) -> list[str]:
     # SPA auth often lives in localStorage (Canva login_stamp, Bitwarden vault keys).
     for origin in state.get("origins") or []:
         origin_host = str(origin.get("origin") or "").lower()
-        if want not in origin_host:
+        if not any(alias in origin_host for alias in want_set):
             continue
         for item in origin.get("localStorage") or []:
             name = str(item.get("name") or "")

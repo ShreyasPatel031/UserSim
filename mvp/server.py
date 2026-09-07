@@ -242,7 +242,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     # before browser agents finish — cuts perceived time-to-first-content.
     if IS_VERCEL or want_stream:
         # Match vercel.json maxDuration (300s) with a little headroom for cleanup.
-        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "280" if IS_VERCEL else "180"))
+        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "280" if IS_VERCEL else "900"))
         queue: asyncio.Queue[dict | None] = asyncio.Queue()
 
         def _push(study_obj, event: str = "progress") -> None:

@@ -9,6 +9,7 @@ import shutil
 from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 from capability import CAPABLE_AGENT_PREAMBLE, USER_AGENT, VIEWPORT, location_for
 from capability.browserbase_client import close_session, create_session
@@ -341,6 +342,61 @@ def _make_step_hooks(
     return on_step_end
 
 
+async def _emit_opening_frame(
+    browser_session: Any,
+    *,
+    screenshot_dir: Path,
+    study_id: str,
+    agent_id: str,
+    url: str,
+    on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
+) -> None:
+    """Navigate + screenshot before the LLM agent loop — screen exists without waiting on the model."""
+    try:
+        await asyncio.wait_for(browser_session.navigate_to(url), timeout=30)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] opening navigate failed: {exc!r}", flush=True)
+    # Brief settle so first paint isn't blank.
+    await asyncio.sleep(0.4)
+    shot_name = "bbox_0.png"
+    shot_path = screenshot_dir / shot_name
+    try:
+        await asyncio.wait_for(
+            browser_session.take_screenshot(path=str(shot_path)),
+            timeout=15,
+        )
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
+        return
+    if not shot_path.is_file() or shot_path.stat().st_size < 100:
+        return
+    final_url = url
+    try:
+        got = browser_session.get_current_page_url()
+        if asyncio.iscoroutine(got):
+            got = await asyncio.wait_for(got, timeout=5)
+        if got:
+            final_url = got
+    except Exception:
+        pass
+    step = {
+        "step": 0,
+        "action": f"Opened {final_url}",
+        "observation": "Landing page loaded — agent starting…",
+        "thought": "",
+        "thought_detail": {},
+        "url": final_url,
+        "screenshot_url": f"/api/studies/{study_id}/agents/{agent_id}/screenshots/{shot_name}",
+        "boxes": [],
+        "outcome": "neutral",
+        "evidence_label": "Opening frame · before agent steps",
+    }
+    if on_step is not None:
+        maybe = on_step(step)
+        if asyncio.iscoroutine(maybe):
+            await maybe
+
+
 def _history_to_trace(
     history,
     *,
@@ -397,7 +453,11 @@ async def run_browser_agent(
     storage_state = await asyncio.to_thread(ensure_site_auth, url)
     start_url = url
     yt_hint = ""
-    if youtube_needs_content_bootstrap(url, storage_state):
+    host = (urlparse(url).hostname or "").lower()
+    is_youtube = "youtube.com" in host or "youtu.be" in host
+    # Never attach YouTube-signed-in hints (or YouTube cookie bootstrap) to
+    # competitor sites — that made Vimeo/Dailymotion agents jump to YouTube.
+    if is_youtube and youtube_needs_content_bootstrap(url, storage_state):
         # Signed-out home/feed is empty in automation Chromium. Search always has tiles.
         start_url = youtube_bootstrap_url(task_prompt, persona.get("name") or "")
         yt_hint = (
@@ -405,7 +465,9 @@ async def run_browser_agent(
             "search results with real videos — use those, refine the query, or open a video. "
             "If you can sign in / avatar is visible, you may also open Home afterward.\n"
         )
-    elif youtube_is_signed_in(storage_state if isinstance(storage_state, dict) else None):
+    elif is_youtube and youtube_is_signed_in(
+        storage_state if isinstance(storage_state, dict) else None
+    ):
         yt_hint = (
             "You are signed into YouTube (Gmail session cookies loaded). Use the personalized "
             "home feed, subscriptions, and account UI as a real logged-in user would.\n"
@@ -460,6 +522,25 @@ async def run_browser_agent(
     history = None
     browser_session = None
     try:
+        from browser_use import BrowserSession
+
+        # Own the session before agent.run so we can navigate + show a frame
+        # without waiting on the LLM's first thought.
+        browser_session = BrowserSession(browser_profile=profile)
+        await browser_session.start()
+        if cookie_state:
+            injected = await _inject_cookies(browser_session, cookie_state)
+            print(f"[{agent_id}] injected {injected} cookies via CDP", flush=True)
+
+        await _emit_opening_frame(
+            browser_session,
+            screenshot_dir=screenshot_dir,
+            study_id=study_id,
+            agent_id=agent_id,
+            url=start_url,
+            on_step=on_step,
+        )
+
         llm = ChatGoogle(
             model=model,
             vertexai=True,
@@ -469,12 +550,19 @@ async def run_browser_agent(
             temperature=0,
         )
         persona_line = f"You are {persona.get('name')}: {persona.get('bio')}"
+        stay_put = (
+            f"CRITICAL: Stay on {start_url} and its own pages/subdomains only. "
+            f"Do not navigate to other products or competitors (especially not YouTube, "
+            f"Vimeo, or Dailymotion unless that is exactly this site). "
+            f"Evaluate the task using THIS site’s UI, search, and docs.\n"
+        )
         agent_task = (
             f"{CAPABLE_AGENT_PREAMBLE}\n\n"
             f"{persona_line}\n"
             f"Customer segment: {segment}\n"
             f"{yt_hint}"
-            f"Open {start_url} if not already there (product URL: {url}).\n"
+            f"{stay_put}"
+            f"You are already on {start_url}. Continue from this page.\n"
             f"Task: {task_prompt}\n"
             f"Behave like this persona would — note confusion, pricing concerns, and UX friction.\n"
             f"Do not judge the site from the landing page alone. If the answer is not visible, "
@@ -483,19 +571,12 @@ async def run_browser_agent(
             f"actually looked for it.\n"
             f"Stop when the task is done or you would realistically give up."
         )
-        if cookie_state:
-            from browser_use import BrowserSession
-
-            browser_session = BrowserSession(browser_profile=profile)
-            await browser_session.start()
-            injected = await _inject_cookies(browser_session, cookie_state)
-            print(f"[{agent_id}] injected {injected} cookies via CDP", flush=True)
 
         agent = Agent(
             task=agent_task,
             llm=llm,
             browser_session=browser_session,
-            browser_profile=None if browser_session else profile,
+            browser_profile=None,
             use_vision=True,
             use_judge=False,
             max_actions_per_step=2,
@@ -537,6 +618,35 @@ async def run_browser_agent(
         if history is not None
         else []
     )
+    # Keep the pre-agent landing frame (bbox_0) ahead of LLM steps.
+    opening = screenshot_dir / "bbox_0.png"
+    if opening.is_file() and opening.stat().st_size > 100:
+        open_url = url
+        try:
+            if history is not None and hasattr(history, "urls"):
+                urls0 = history.urls() or []
+                if urls0:
+                    open_url = urls0[0]
+        except Exception:
+            pass
+        if not any(s.get("step") == 0 for s in trace):
+            trace = [
+                {
+                    "step": 0,
+                    "action": f"Opened {open_url}",
+                    "observation": "Landing page loaded — agent starting…",
+                    "thought": "",
+                    "thought_detail": {},
+                    "url": open_url,
+                    "screenshot_url": (
+                        f"/api/studies/{study_id}/agents/{agent_id}/screenshots/bbox_0.png"
+                    ),
+                    "boxes": [],
+                    "outcome": "neutral",
+                    "evidence_label": "Opening frame · before agent steps",
+                },
+                *trace,
+            ]
 
     final_url = ""
     try:

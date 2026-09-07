@@ -98,7 +98,10 @@ function mergeSessions(data) {
   const tasks = data.tasks || [];
   const personas = data.personas || [];
   const personaById = Object.fromEntries(personas.map((p) => [p.id, p]));
-  const live = data.live_sessions || [];
+  const liveRaw = data.live_sessions || [];
+  const live = Array.isArray(liveRaw)
+    ? liveRaw
+    : Object.values(liveRaw || {});
   const completed = data.agent_results || [];
   const byId = {};
 
@@ -115,19 +118,24 @@ function mergeSessions(data) {
     const persona = personaById[t.persona_id];
     const base = byId[id] || {
       agent_id: id,
-      task_id: id,
-      task_title: t.title,
-      task_prompt: t.prompt,
-      persona_id: t.persona_id,
-      persona_name: persona?.name,
-      persona_bio: persona?.bio,
       status: "pending",
       trace: [],
     };
-    if (!base.persona_name && persona) base.persona_name = persona.name;
-    if (!base.persona_bio && persona) base.persona_bio = persona.bio;
-    base._persona = persona || null;
-    return base;
+    const merged = {
+      ...base,
+      agent_id: base.agent_id || id,
+      task_id: base.task_id || id,
+      task_title: base.task_title || t.title,
+      task_prompt: base.task_prompt || t.prompt,
+      persona_id: base.persona_id || t.persona_id,
+      persona_name: base.persona_name || persona?.name,
+      persona_bio: base.persona_bio || persona?.bio,
+      site_key: base.site_key || t.site_key || "product",
+      site_url: base.site_url || t.site_url || data.url || "",
+      site_label: base.site_label || t.site_label || "Product",
+      _persona: persona || null,
+    };
+    return merged;
   });
 }
 
@@ -179,14 +187,16 @@ function resetLiveUI() {
   _briefScrollStep = "";
   document.getElementById("brief-section").hidden = true;
   document.getElementById("stage-section").hidden = true;
-  const emailCapture = document.getElementById("email-capture");
-  if (emailCapture) emailCapture.hidden = true;
-  const emailDone = document.getElementById("email-capture-done");
-  if (emailDone) {
-    emailDone.hidden = true;
-    emailDone.textContent = "";
+  const reportLink = document.getElementById("view-report-link");
+  if (reportLink) reportLink.hidden = true;
+  const emailPrompt = document.getElementById("report-email-prompt");
+  if (emailPrompt) emailPrompt.hidden = true;
+  const emailSaved = document.getElementById("report-email-saved");
+  if (emailSaved) {
+    emailSaved.hidden = true;
+    emailSaved.textContent = "";
   }
-  const emailForm = document.getElementById("email-capture-form");
+  const emailForm = document.getElementById("report-email-form");
   if (emailForm) emailForm.hidden = false;
   document.getElementById("products-list").innerHTML = "";
   document.getElementById("tasks-list").innerHTML = "";
@@ -240,7 +250,7 @@ function updateProgressUI(data, startedAt) {
     }
   } else if (phase.startsWith("Preparing browser sessions")) {
     progressAgents.textContent = `Warming browser pool (${phase.split("—")[1]?.trim() || ""})`;
-    progressHint.textContent = "Opening a real browser for the simulated user…";
+    progressHint.textContent = "Opening live Browserbase windows — they appear in the stage as soon as each is ready…";
   } else {
     if (!totalAgents) {
       progressAgents.textContent = "Planning sessions…";
@@ -354,12 +364,25 @@ function stepsWithScreenshots(trace) {
   return (trace || []).filter((s) => s.screenshot_url);
 }
 
+/** Prefer the newest frame that is still on the assigned site (agents sometimes wander). */
+function preferredShots(session) {
+  const shots = stepsWithScreenshots(session?.trace);
+  if (!shots.length) return shots;
+  const host = siteHostname(session?.site_url);
+  if (!host) return shots;
+  const onSite = shots.filter((s) => {
+    const h = siteHostname(s.url);
+    return h && (h === host || h.endsWith(`.${host}`) || host.endsWith(`.${h}`));
+  });
+  return onSite.length ? onSite : shots;
+}
+
 function renderFocusStage(session, sessionIdx) {
   const persona = session?._persona;
   const demos = demographicLine(persona);
   const taskText = session?.task_prompt || session?.task_title || "";
   const trace = session?.trace || [];
-  const shots = stepsWithScreenshots(trace);
+  const shots = preferredShots(session);
   const key = String(sessionIdx ?? 0);
   // Follow newest frame (0 → 1 → …) unless user scrubbed away.
   if (_shotFollowLatest[key] !== false) {
@@ -371,9 +394,27 @@ function renderFocusStage(session, sessionIdx) {
   const step = shots[idx];
   const lastAction = session?.last_action || trace[trace.length - 1]?.action || "";
   const lastObs = trace[trace.length - 1]?.observation || "";
+  const siteName = prettySiteName(session?.site_url, session?.site_label);
 
   let visual = "";
-  if (step?.screenshot_url) {
+  const liveView = session?.live_view_url;
+  const showLive =
+    liveView &&
+    ["starting", "pending", "running"].includes(String(session?.status || ""));
+  if (showLive) {
+    visual = `
+      <div class="stage-live-wrap">
+        <iframe
+          class="stage-live-frame"
+          src="${escapeHtml(liveView)}"
+          title="Live browser — ${escapeHtml(siteName)}"
+          sandbox="allow-same-origin allow-scripts"
+          allow="clipboard-read; clipboard-write"
+          referrerpolicy="no-referrer"
+        ></iframe>
+        <p class="stage-live-caption">Live on ${escapeHtml(siteName)} — updates as the simulated user browses</p>
+      </div>`;
+  } else if (step?.screenshot_url) {
     const boxes = step.boxes || [];
     const boxLegend = boxes.length
       ? `<details class="stage-box-details"><summary><span class="box-swatch box-red"></span> ${boxes.length} click targets${
@@ -406,18 +447,21 @@ function renderFocusStage(session, sessionIdx) {
         <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="1" ${idx >= shots.length - 1 ? "disabled" : ""}>Next →</button>
       </div>`;
   } else {
+    const last = String(session?.last_action || "");
     const waitingMsg =
-      session?.status === "starting" || session?.status === "pending"
-        ? "Starting browser session…"
-        : session?.status === "summarizing"
-          ? "Page captured — writing feedback…"
-          : session?.status === "running"
-            ? trace.length
-              ? `Step ${trace.length} recorded — next frame coming…`
-              : "Loading first page frame…"
-            : lastAction
-              ? lastAction
-              : "Waiting for the first browser frame…";
+      /warm|seed|cdp|chromium|live browser/i.test(last)
+        ? last
+        : session?.status === "starting" || session?.status === "pending"
+          ? last || "Starting browser session…"
+          : session?.status === "summarizing"
+            ? "Page captured — writing feedback…"
+            : session?.status === "running"
+              ? trace.length
+                ? `Step ${trace.length} recorded — next frame coming…`
+                : last || "Loading first page frame…"
+              : lastAction
+                ? lastAction
+                : "Waiting for the first browser frame…";
     visual = `
       <div class="stage-waiting">
         <div class="stage-waiting-chrome"><span></span><span></span><span></span><strong>${escapeHtml(statusLabel(session?.status))}</strong></div>
@@ -556,13 +600,18 @@ function productSites(data) {
         : rawLabel,
       host: siteHostname(href),
       kind,
+      site_key: kind === "product" ? "product" : undefined,
     });
   };
   add(data?.url, "Your product", "product");
-  for (const c of data?.competitors || []) {
+  (data?.competitors || []).forEach((c, i) => {
     if (typeof c === "string") add(c, c, "competitor");
     else add(c?.url, c?.name || c?.url, "competitor");
-  }
+    const last = sites[sites.length - 1];
+    if (last && last.kind === "competitor" && !last.site_key) {
+      last.site_key = `competitor_${i + 1}`;
+    }
+  });
   return sites;
 }
 
@@ -808,21 +857,19 @@ function renderStage(sessions) {
     }))
   );
 
-  const personas = (_lastStudyData?.personas || []).length
-    ? _lastStudyData.personas
-    : Array.from(
-        new Map(
-          sessions
-            .filter((s) => s.persona_id || s.persona_name)
-            .map((s) => [
-              s.persona_id || s.persona_name,
-              {
-                id: s.persona_id,
-                name: s.persona_name || s._persona?.name || "Simulated user",
-              },
-            ])
-        ).values()
-      );
+  const personas = Array.from(
+    new Map(
+      sessions
+        .filter((s) => s.persona_id || s.persona_name)
+        .map((s) => [
+          s.persona_id || s.persona_name,
+          {
+            id: s.persona_id,
+            name: s.persona_name || s._persona?.name || "Simulated user",
+          },
+        ])
+    ).values()
+  );
 
   if (siteSwitch) {
     siteSwitch.innerHTML = products
@@ -847,58 +894,89 @@ function renderStage(sessions) {
       .join("");
   }
 
-  if (taskSelect) {
-    taskSelect.innerHTML = taskOpts
-      .map((t) => {
-        const selected = activeBase === t.id ? " selected" : "";
-        return `<option value="${escapeHtml(t.id)}"${selected}>${escapeHtml(t.title || "Task")}</option>`;
-      })
-      .join("");
-  }
-
-  if (userSelect) {
-    userSelect.innerHTML = personas
-      .map((p) => {
-        const id = p.id || p.name || "";
-        const selected = activePersona === id ? " selected" : "";
-        return `<option value="${escapeHtml(id)}"${selected}>${escapeHtml(p.name || "Simulated user")}</option>`;
-      })
-      .join("");
-  }
+  setSelectOptions(
+    taskSelect,
+    taskOpts.map((t) => ({ value: t.id, label: t.title || "Task" })),
+    activeBase
+  );
+  setSelectOptions(
+    userSelect,
+    personas.map((p) => ({
+      value: p.id || p.name || "",
+      label: p.name || "Simulated user",
+    })),
+    activePersona
+  );
 
   body.innerHTML = renderFocusStage(session, idx);
 }
 
-function findSessionIdx(sessions, { taskBase, siteKey, siteUrl, personaId }) {
+function siteMatches(session, siteKey, siteUrl) {
   const wantUrl = String(siteUrl || "")
     .replace(/\/$/, "")
     .toLowerCase();
-  let best = -1;
+  const sUrl = String(session?.site_url || "")
+    .replace(/\/$/, "")
+    .toLowerCase();
+  const keyOk =
+    !siteKey ||
+    session?.site_key === siteKey ||
+    (siteKey === "product" &&
+      (session?.site_key === "product" || session?.site_label === "Product"));
+  const urlOk = !wantUrl || sUrl === wantUrl;
+  return { keyOk, urlOk, ok: keyOk && urlOk };
+}
+
+function findSessionIdx(sessions, { taskBase, siteKey, siteUrl, personaId, prefer } = {}) {
+  // Tasks are usually 1:1 with a persona. Prefer the control the user just changed
+  // so Task/User dropdowns don't snap back when the exact combo doesn't exist.
+  const ranked = [];
   for (let i = 0; i < sessions.length; i++) {
     const s = sessions[i];
     const base = baseTaskId(s.task_id || s.agent_id);
-    if (taskBase && base !== taskBase) continue;
-    if (personaId && s.persona_id && s.persona_id !== personaId) continue;
-    const sUrl = String(s.site_url || "")
-      .replace(/\/$/, "")
-      .toLowerCase();
-    const keyOk =
-      !siteKey ||
-      s.site_key === siteKey ||
-      (siteKey === "product" && (s.site_key === "product" || s.site_label === "Product"));
-    const urlOk = !wantUrl || sUrl === wantUrl;
-    if (keyOk && urlOk) return i;
-    if (keyOk || urlOk) best = i;
+    const taskOk = !taskBase || base === taskBase;
+    const personaOk = !personaId || !s.persona_id || s.persona_id === personaId;
+    const site = siteMatches(s, siteKey, siteUrl);
+    let score = -1;
+    if (taskOk && personaOk && site.ok) score = 100;
+    else if (prefer === "site" && site.ok && (taskOk || personaOk)) score = 95;
+    else if (prefer === "site" && site.ok) score = 88;
+    else if (prefer === "persona" && personaOk && site.ok) score = 90;
+    else if (prefer === "task" && taskOk && site.ok) score = 90;
+    else if (prefer === "persona" && personaOk) score = 80;
+    else if (prefer === "task" && taskOk) score = 80;
+    else if (taskOk && personaOk && (site.keyOk || site.urlOk)) score = 70;
+    else if (taskOk && site.ok) score = 60;
+    else if (personaOk && site.ok) score = 55;
+    else if (taskOk) score = 40;
+    else if (personaOk) score = 35;
+    if (score >= 0) ranked.push({ i, score });
   }
-  if (taskBase) {
-    const byTask = sessions.findIndex((s) => baseTaskId(s.task_id || s.agent_id) === taskBase);
-    if (byTask >= 0) return byTask;
+  ranked.sort((a, b) => b.score - a.score);
+  if (ranked.length) return ranked[0].i;
+  return -1;
+}
+
+function setSelectOptions(select, options, selectedValue) {
+  if (!select) return;
+  const next = options || [];
+  const same =
+    select.options.length === next.length &&
+    next.every((o, i) => select.options[i]?.value === String(o.value));
+  if (!same) {
+    select.innerHTML = next
+      .map(
+        (o) =>
+          `<option value="${escapeHtml(o.value)}">${escapeHtml(o.label)}</option>`
+      )
+      .join("");
   }
-  if (personaId) {
-    const byUser = sessions.findIndex((s) => s.persona_id === personaId);
-    if (byUser >= 0) return byUser;
+  const values = next.map((o) => String(o.value));
+  if (values.includes(String(selectedValue ?? ""))) {
+    select.value = String(selectedValue);
+  } else if (values.length) {
+    select.value = values[0];
   }
-  return best;
 }
 
 function selectTrace(idx, userInitiated = false) {
@@ -964,7 +1042,59 @@ function renderList(el, items) {
   });
 }
 
+function saveReportAndOfferLink(data) {
+  try {
+    sessionStorage.setItem(
+      "usersim_report",
+      JSON.stringify({
+        summary: data.summary,
+        agent_results: data.agent_results || [],
+        access_backend: data.access_backend,
+        browserbase_session_url: data.browserbase_session_url,
+        notify_email: _notifyEmail || "",
+        study_id: data.id || data.study_id || "",
+      })
+    );
+  } catch {
+    /* ignore quota */
+  }
+  updateReportCta(data);
+}
+
+function updateReportCta(data) {
+  const fullyDone = data?.status === "complete" && Boolean(data?.summary);
+  const link = document.getElementById("view-report-link");
+  const emailPrompt = document.getElementById("report-email-prompt");
+  const stageVisible = !document.getElementById("stage-section")?.hidden;
+  if (fullyDone) {
+    if (link) {
+      link.hidden = false;
+      link.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    if (emailPrompt) emailPrompt.hidden = true;
+    return;
+  }
+  if (link) link.hidden = true;
+  if (emailPrompt) {
+    emailPrompt.hidden = !stageVisible;
+    const saved = document.getElementById("report-email-saved");
+    const formEl = document.getElementById("report-email-form");
+    if (_emailCaptureSubmitted && _notifyEmail) {
+      if (formEl) formEl.hidden = true;
+      if (saved) {
+        saved.hidden = false;
+        saved.textContent = `We’ll email the report to ${_notifyEmail} when it’s ready.`;
+      }
+    } else {
+      if (formEl) formEl.hidden = false;
+      if (saved) saved.hidden = true;
+    }
+  }
+}
+
 function renderSummary(summary, accessBackend, browserbaseSessionUrl) {
+  // Full report lives on /report — only fill inline nodes if present/visible.
+  if (!document.getElementById("headline")) return;
   if (!summary) return;
   const infoEl = document.getElementById("access-info");
   const backend = accessBackend || summary.access_backend;
@@ -1011,21 +1141,8 @@ function renderSummary(summary, accessBackend, browserbaseSessionUrl) {
 }
 
 function maybeShowEmailCapture(sessions) {
-  const panel = document.getElementById("email-capture");
-  if (!panel) return;
-  if (_emailCaptureSubmitted && _notifyEmail) {
-    panel.hidden = false;
-    return;
-  }
-  const watching = (sessions || []).some(
-    (s) =>
-      s.status === "running" ||
-      s.status === "summarizing" ||
-      s.status === "complete" ||
-      (s.trace || []).some((step) => step.screenshot_url) ||
-      (s.trace || []).length > 0
-  );
-  panel.hidden = !watching;
+  // Email prompt lives in #report-cta via updateReportCta.
+  updateReportCta(_lastStudyData || {});
 }
 
 function renderLiveStudy(data) {
@@ -1034,7 +1151,7 @@ function renderLiveStudy(data) {
   renderActivityLog(data.activity_log);
   renderBrief(data, sessions);
   renderStage(sessions);
-  maybeShowEmailCapture(sessions);
+  updateReportCta(data);
 }
 
 function escapeHtml(str) {
@@ -1200,9 +1317,8 @@ form.addEventListener("submit", async (e) => {
     progressFill.style.width = "100%";
     phaseLabel.textContent = "Complete";
     renderLiveStudy(data);
-    renderSummary(data.summary, data.access_backend, data.browserbase_session_url);
-    renderAgents(data.agent_results);
-    resultsSection.hidden = false;
+    saveReportAndOfferLink(data);
+    if (resultsSection) resultsSection.hidden = true;
 
     await new Promise((r) => setTimeout(r, 600));
     progressPanel.hidden = true;
@@ -1232,6 +1348,7 @@ document.addEventListener("click", (ev) => {
       siteKey,
       siteUrl,
       personaId: cur.persona_id,
+      prefer: "site",
     });
     if (idx >= 0) selectTrace(idx, true);
     return;
@@ -1273,7 +1390,7 @@ document.addEventListener("click", (ev) => {
     const delta = Number(nav.getAttribute("data-shot-delta") || 0);
     const sessions = _traceResults || [];
     const session = sessions[Number(key)] || sessions[_activeTraceIdx];
-    const shots = stepsWithScreenshots(session?.trace);
+    const shots = preferredShots(session);
     if (!shots.length) return;
     const cur = _shotIdx[key] ?? 0;
     _shotIdx[key] = Math.max(0, Math.min(shots.length - 1, cur + delta));
@@ -1290,48 +1407,66 @@ document.addEventListener("click", (ev) => {
   _shotIdx[key] = idx;
   const sessions2 = _traceResults || [];
   const session2 = sessions2[Number(key)] || sessions2[_activeTraceIdx];
-  const shots2 = stepsWithScreenshots(session2?.trace);
+  const shots2 = preferredShots(session2);
   _shotFollowLatest[key] = idx >= Math.max(shots2.length - 1, 0);
   if (_lastStudyData) {
     renderStage(mergeSessions(_lastStudyData));
   }
 });
 
-document.getElementById("email-capture-form")?.addEventListener("submit", (e) => {
+document.getElementById("report-email-form")?.addEventListener("submit", (e) => {
   e.preventDefault();
-  const input = document.getElementById("late-email");
+  const input = document.getElementById("report-email-input");
   const email = input?.value?.trim() || "";
   if (!email) return;
   _notifyEmail = email;
   _emailCaptureSubmitted = true;
-  const formEl = document.getElementById("email-capture-form");
-  const done = document.getElementById("email-capture-done");
+  const formEl = document.getElementById("report-email-form");
+  const done = document.getElementById("report-email-saved");
   if (formEl) formEl.hidden = true;
   if (done) {
     done.hidden = false;
-    done.textContent = `Got it — we’ll email feedback to ${email} when it’s ready.`;
+    done.textContent = `We’ll email the report to ${email} when it’s ready.`;
   }
   const progressNote = document.getElementById("email-status");
   if (progressNote) {
     progressNote.hidden = false;
-    progressNote.textContent = `Feedback will be emailed to ${email} when ready.`;
+    progressNote.textContent = `Report will be emailed to ${email} when ready.`;
   }
 });
 
-function syncStageFromControls() {
+function syncStageFromControls(ev) {
   const sessions = _traceResults || [];
   if (!sessions.length) return;
   const cur = sessions[_activeTraceIdx] || sessions[0] || {};
   const taskSelect = document.getElementById("stage-task-select");
   const userSelect = document.getElementById("stage-user-select");
-  const taskBase = taskSelect?.value || baseTaskId(cur.task_id || cur.agent_id);
-  const personaId = userSelect?.value || cur.persona_id || "";
+  const prefer =
+    ev?.target?.id === "stage-user-select"
+      ? "persona"
+      : ev?.target?.id === "stage-task-select"
+        ? "task"
+        : null;
+  // When switching user/task, don't require the other dimension — sessions are
+  // usually one persona per task.
+  const taskBase =
+    prefer === "persona"
+      ? ""
+      : taskSelect?.value || baseTaskId(cur.task_id || cur.agent_id);
+  const personaId =
+    prefer === "task" ? "" : userSelect?.value || cur.persona_id || "";
   const activeBtn = document.querySelector("#stage-site-switch .stage-chip.active");
   const siteKey =
     activeBtn?.getAttribute("data-stage-site-key") || cur.site_key || "product";
   const siteUrl =
     activeBtn?.getAttribute("data-stage-site-url") || cur.site_url || "";
-  const idx = findSessionIdx(sessions, { taskBase, siteKey, siteUrl, personaId });
+  const idx = findSessionIdx(sessions, {
+    taskBase,
+    siteKey,
+    siteUrl,
+    personaId,
+    prefer,
+  });
   if (idx >= 0) selectTrace(idx, true);
 }
 
@@ -1340,9 +1475,21 @@ document.getElementById("stage-user-select")?.addEventListener("change", syncSta
 
 if (typeof IS_LOCAL_HOST !== "undefined" && IS_LOCAL_HOST) {
   const smokeRow = document.getElementById("local-smoke-row");
+  const smokeBtn = document.getElementById("smoke-btn");
+  const smokeInput = document.getElementById("test-mode-input");
   const localNav = document.getElementById("local-nav");
   if (smokeRow) smokeRow.hidden = false;
   if (localNav) localNav.hidden = false;
-  // Do not auto-check Quick preview — that made local e2e look like the
-  // broken "0 / 1 sessions" production hang. Opt in explicitly when needed.
+  if (smokeBtn) {
+    smokeBtn.hidden = false;
+    smokeBtn.addEventListener("click", () => {
+      if (smokeInput) smokeInput.checked = true;
+      const urlInput = form?.url;
+      if (urlInput && !String(urlInput.value || "").trim()) {
+        urlInput.value = "https://example.com/";
+      }
+      if (typeof form?.requestSubmit === "function") form.requestSubmit();
+      else form?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    });
+  }
 }

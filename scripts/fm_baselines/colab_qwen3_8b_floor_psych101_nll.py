@@ -35,42 +35,58 @@ def install() -> None:
 
 
 def nll_for_text(model, tokenizer, text: str) -> float | None:
+    """NLL on response tokens inside <<...>> (Centaur/Minitaur metric).
+
+    Uses char offsets so Qwen/Llama tokenization of '<<'/'>>' cannot miss spans.
+    """
+    import re
+
     if "<<" not in text or ">>" not in text:
         return None
-    l_id = tokenizer(" <<").input_ids[1:]
-    r_id = tokenizer(">>").input_ids[1:]
-    enc = tokenizer(text, return_tensors="pt", truncation=True, max_length=MAX_SEQ)
+    # Prefer offset mapping (fast tokenizers). Fall back without specials if needed.
+    try:
+        enc = tokenizer(
+            text,
+            return_tensors="pt",
+            truncation=True,
+            max_length=MAX_SEQ,
+            return_offsets_mapping=True,
+        )
+    except Exception:
+        enc = tokenizer(text, return_tensors="pt", truncation=True, max_length=MAX_SEQ)
+        enc["offset_mapping"] = None
+
     input_ids = enc.input_ids.to(model.device)
     with torch.no_grad():
         logits = model(input_ids=input_ids).logits
     shift_logits = logits[:, :-1, :].float()
     shift_labels = input_ids[:, 1:]
-    ids = input_ids[0].tolist()
-
-    def find_subseq(hay, needle):
-        hits = []
-        n = len(needle)
-        for i in range(len(hay) - n + 1):
-            if hay[i : i + n] == needle:
-                hits.append(i)
-        return hits
-
-    lefts = find_subseq(ids, l_id)
-    rights = find_subseq(ids, r_id)
     mask = torch.zeros_like(shift_labels, dtype=torch.bool)
-    ri = 0
-    for li in lefts:
-        start = li + len(l_id)
-        while ri < len(rights) and rights[ri] < start:
-            ri += 1
-        if ri >= len(rights):
-            break
-        end = rights[ri]
-        a = max(start - 1, 0)
-        b = max(end - 1, 0)
-        if b > a:
-            mask[0, a:b] = True
-        ri += 1
+
+    truncated = tokenizer.decode(input_ids[0], skip_special_tokens=False)
+    # Work in original `text` char space up to truncation length via offsets.
+    offsets = enc.get("offset_mapping")
+    if offsets is None:
+        # Slow path: rebuild offsets manually is hard; use decode alignment via
+        # scanning decoded pieces — still better than brittle multi-token needles.
+        return None
+    offsets = offsets[0].tolist()
+
+    # Content inside <<...>> only (same as Minitaur: after <<, before >>).
+    for m in re.finditer(r"<<(.*?)>>", text, flags=re.DOTALL):
+        a, b = m.start(1), m.end(1)
+        if a >= b:
+            continue
+        tok_idxs = [
+            ti
+            for ti, (s, e) in enumerate(offsets)
+            if not (e <= a or s >= b) and not (s == 0 and e == 0)
+        ]
+        for ti in tok_idxs:
+            # shift_labels[t] predicts token at t+1 → to score token ti, mask ti-1
+            if ti >= 1:
+                mask[0, ti - 1] = True
+
     if not mask.any():
         return None
     log_probs = torch.log_softmax(shift_logits, dim=-1)
@@ -86,7 +102,11 @@ def main() -> None:
     from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
     RESULTS.mkdir(parents=True, exist_ok=True)
-    scores_path = RESULTS / "scores.jsonl"
+    smoke_n = int(os.environ.get("SMOKE_N", "0"))
+    scores_path = RESULTS / ("scores.smoke.jsonl" if smoke_n > 0 else "scores.jsonl")
+    if os.environ.get("FORCE_RESCORE", "").strip() in {"1", "true", "TRUE"} and scores_path.exists():
+        scores_path.unlink()
+        print(f"FORCE_RESCORE cleared {scores_path}", flush=True)
 
     done: set[int] = set()
     if scores_path.exists():
@@ -112,7 +132,6 @@ def main() -> None:
     model.eval()
 
     rows = [json.loads(l) for l in DATA.read_text().splitlines() if l.strip()]
-    smoke_n = int(os.environ.get("SMOKE_N", "0"))
     if smoke_n > 0:
         rows = rows[:smoke_n]
     print(f"rows={len(rows)} already={len(done)}", flush=True)

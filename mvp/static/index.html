@@ -7,13 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/styles.css?v=57" />
+  <link rel="stylesheet" href="/static/styles.css?v=62" />
 </head>
 <body>
   <header class="site-header">
     <a class="logo" href="/">UserSim</a>
     <nav class="site-nav" id="local-nav" hidden>
       <a href="/live">Live</a>
+      <a href="/report">Report</a>
     </nav>
   </header>
 
@@ -40,7 +41,15 @@
             <span class="btn-label">Run</span>
             <span class="btn-spinner" hidden></span>
           </button>
+          <button type="button" id="smoke-btn" class="smoke-btn" hidden title="1 user × 1 task × product only">
+            Smoke
+          </button>
         </div>
+
+        <label class="test-mode-row" id="local-smoke-row" hidden>
+          <input type="checkbox" name="test_mode" id="test-mode-input" value="1" />
+          <span>Smoke — 1 user × 1 task × product only (local testing)</span>
+        </label>
 
         <details class="optional-block url-more">
           <summary>Add competitors, tasks, or audience</summary>
@@ -58,10 +67,6 @@
               <textarea name="tasks" rows="2" placeholder="Optional — leave blank and we’ll invent goals from the page"></textarea>
             </label>
           </div>
-          <label class="test-mode-row">
-            <input type="checkbox" name="test_mode" value="1" />
-            <span>Quick preview — 1 simulated user, 1 task (full run is ~5 users on your product in parallel; add rivals below to include them)</span>
-          </label>
         </details>
       </form>
     </section>
@@ -145,26 +150,41 @@
 
         <div id="stage-body" class="stage-body"></div>
 
-        <section id="email-capture" class="email-capture email-capture-inline" hidden>
-          <h2>Get user feedback by email</h2>
-          <p class="section-sub">Leave an email and we’ll send the simulated-user feedback when the session finishes.</p>
-          <form id="email-capture-form" class="email-capture-form">
-            <input
-              type="email"
-              name="late_email"
-              id="late-email"
-              placeholder="you@company.com"
-              autocomplete="email"
-              aria-label="Email for user feedback"
-            />
-            <button type="submit">Send me feedback</button>
-          </form>
-          <p id="email-capture-done" class="email-status" hidden></p>
-        </section>
+        <div id="report-cta" class="report-cta">
+          <div id="report-email-prompt" class="report-email-prompt" hidden>
+            <div>
+              <p class="eyebrow">While you wait</p>
+              <strong>Get the full report by email</strong>
+              <span class="section-sub">We’ll send it when every session finishes</span>
+            </div>
+            <form id="report-email-form" class="report-email-form">
+              <input
+                type="email"
+                name="report_email"
+                id="report-email-input"
+                placeholder="you@company.com"
+                autocomplete="email"
+                aria-label="Email for full report"
+                required
+              />
+              <button type="submit">Notify me</button>
+            </form>
+            <p id="report-email-saved" class="email-status" hidden></p>
+          </div>
+          <a id="view-report-link" class="view-report-card" href="/report" hidden>
+            <div>
+              <p class="eyebrow">Ready</p>
+              <strong>View full report</strong>
+              <span class="section-sub">Executive summary, friction, and recommendations</span>
+            </div>
+            <span class="view-report-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
       </section>
     </section>
 
-    <section id="results" class="results" hidden>
+    <section id="results" class="results" hidden aria-hidden="true">
+      <!-- Full report renders on /report; kept for DOM ids used by helpers. -->
       <section class="panel summary-panel">
         <h2>Executive summary</h2>
         <p id="access-info" class="access-info" hidden></p>
@@ -208,6 +228,6 @@
     <p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p>
   </footer>
 
-  <script src="/static/app.js?v=57"></script>
+  <script src="/static/app.js?v=64"></script>
 </body>
 </html>

@@ -23,11 +23,14 @@ OUT_DIR = ROOT / "results" / "signup_batch"
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
-from mvp.auto_signup import signup_start_url as _url  # noqa: E402
+from mvp.auto_signup import SIGNIN_START, signup_start_url as _url  # noqa: E402
 
 
-def _run_one(host: str, idx: int, timeout_s: int, max_steps: int, headed: bool) -> dict:
-    url = _url(host)
+def _run_one(
+    host: str, idx: int, timeout_s: int, max_steps: int, headed: bool, signin: bool
+) -> dict:
+    key = (host or "").lower().removeprefix("www.")
+    url = SIGNIN_START[key] if signin and key in SIGNIN_START else _url(host)
     port = 9500 + idx
     log = OUT_DIR / f"targets_{host}.log"
     cmd = [
@@ -45,6 +48,8 @@ def _run_one(host: str, idx: int, timeout_s: int, max_steps: int, headed: bool) 
     ]
     if not headed:
         cmd.append("--headless")
+    if signin:
+        cmd.append("--signin")
 
     env = dict(os.environ)
     env["PYTHONPATH"] = f"{ROOT / 'src'}:{ROOT}"
@@ -106,6 +111,11 @@ def main() -> int:
     ap.add_argument("--timeout", type=int, default=300)
     ap.add_argument("--max-steps", type=int, default=30)
     ap.add_argument("--headless", action="store_true")
+    ap.add_argument(
+        "--signin",
+        action="store_true",
+        help="Log into existing identities instead of signing up",
+    )
     args = ap.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -117,7 +127,7 @@ def main() -> int:
     with ThreadPoolExecutor(max_workers=args.parallel) as pool:
         futures = {
             pool.submit(
-                _run_one, h, i, args.timeout, args.max_steps, not args.headless
+                _run_one, h, i, args.timeout, args.max_steps, not args.headless, args.signin
             ): h
             for i, h in enumerate(args.hosts)
         }

@@ -272,3 +272,19 @@ def close_session(session_id: str) -> None:
         pass
     finally:
         _SLOT.release()
+
+
+def session_live_view_url(session_id: str) -> str | None:
+    """Embeddable live view of a running Browserbase session (fullscreen debugger)."""
+    if not session_id:
+        return None
+    try:
+        client = Browserbase(api_key=browserbase_api_key())
+        urls = client.sessions.debug(session_id)
+        return (
+            getattr(urls, "debugger_fullscreen_url", None)
+            or getattr(urls, "debuggerFullscreenUrl", None)
+            or (urls.get("debuggerFullscreenUrl") if isinstance(urls, dict) else None)
+        )
+    except Exception:
+        return None
