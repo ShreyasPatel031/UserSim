@@ -1,4 +1,4 @@
-/** Developer live dashboard — lists GCS studies and polls frames by study id. */
+/** Developer live dashboard — lists studies and polls frames by study id. */
 
 const listEl = document.getElementById("study-list");
 const emptyEl = document.getElementById("live-empty");
@@ -8,11 +8,15 @@ const watchId = document.getElementById("watch-id");
 const watchUrl = document.getElementById("watch-url");
 const watchPhase = document.getElementById("watch-phase");
 const watchMeta = document.getElementById("watch-meta");
+const runtimeEl = document.getElementById("runtime-status");
 
 const params = new URLSearchParams(location.search);
 let selectedId = params.get("study") || localStorage.getItem("usersim_last_study") || "";
 let listTimer = null;
 let watchTimer = null;
+let runtimeTimer = null;
+let bootDone = false;
+let killing = false;
 
 function escapeHtml(str) {
   return String(str ?? "")
@@ -25,7 +29,7 @@ function escapeHtml(str) {
 function statusClass(status) {
   const s = String(status || "").toLowerCase();
   if (s === "complete") return "ok";
-  if (s === "error" || s === "abandoned") return "err";
+  if (s === "error" || s === "abandoned" || s === "killed") return "err";
   if (s === "running" || s === "pending") return "run";
   return "";
 }
@@ -43,10 +47,94 @@ async function fetchStudy(id) {
   return res.json();
 }
 
+async function fetchRuntime() {
+  const res = await fetch("/api/runtime/status");
+  if (!res.ok) throw new Error("runtime status failed");
+  return res.json();
+}
+
+function renderRuntime(data) {
+  if (!runtimeEl) return;
+  const bb = data.browserbase_running ?? 0;
+  const studies = data.local_studies_running ?? 0;
+  const vms = data.vms || [];
+  const fleet = vms.filter((v) => v.kind === "fleet").length;
+  const seeds = vms.filter((v) => v.kind === "seed").length;
+  runtimeEl.textContent = `${bb} Browserbase · ${studies} local studies · ${fleet} fleet VMs · ${seeds} seed VMs`;
+}
+
+async function refreshRuntime() {
+  try {
+    renderRuntime(await fetchRuntime());
+  } catch (err) {
+    if (runtimeEl) runtimeEl.textContent = err.message || "runtime check failed";
+  }
+}
+
+async function killNow({ agents = true, vms = false, seeds = false } = {}) {
+  if (killing) return;
+  killing = true;
+  const buttons = ["kill-agents", "kill-agents-vms", "kill-everything"]
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
+  buttons.forEach((b) => {
+    b.disabled = true;
+  });
+  if (runtimeEl) runtimeEl.textContent = "Killing…";
+  try {
+    const res = await fetch("/api/runtime/kill", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ agents, vms, seeds }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || "Kill failed");
+    if (data.status) renderRuntime(data.status);
+    else await refreshRuntime();
+    await refreshList();
+    if (selectedId) await refreshWatch();
+  } catch (err) {
+    if (runtimeEl) runtimeEl.textContent = err.message || "Kill failed";
+  } finally {
+    killing = false;
+    buttons.forEach((b) => {
+      b.disabled = false;
+    });
+  }
+}
+
+function dedupeStudiesOnePerUrl(studies) {
+  const rank = { running: 0, pending: 1, queued: 2, complete: 3, error: 4, abandoned: 5 };
+  const best = new Map();
+  for (const s of studies) {
+    let key = s.url || s.id || "";
+    try {
+      const u = new URL(key.startsWith("http") ? key : `https://${key}`);
+      const host = u.hostname.replace(/^www\./, "");
+      const path = (u.pathname || "/").replace(/\/$/, "") || "/";
+      key = `${host}${path}`;
+    } catch {
+      key = String(s.id || key);
+    }
+    const cur = best.get(key);
+    if (!cur) {
+      best.set(key, s);
+      continue;
+    }
+    const rn = rank[String(s.status || "")] ?? 9;
+    const ro = rank[String(cur.status || "")] ?? 9;
+    if (rn < ro || (rn === ro && String(s.updated_at || "") >= String(cur.updated_at || ""))) {
+      best.set(key, s);
+    }
+  }
+  return [...best.values()].sort((a, b) => String(b.updated_at || "").localeCompare(String(a.updated_at || "")));
+}
+
 function renderList(studies) {
   listEl.innerHTML = "";
+  studies = dedupeStudiesOnePerUrl(studies);
   if (!studies.length) {
-    listEl.innerHTML = `<li class="live-study-empty">No studies in GCS yet.</li>`;
+    listEl.innerHTML = `<li class="live-study-empty">No studies yet — start one from New run.</li>`;
     return;
   }
   for (const s of studies) {
@@ -84,14 +172,19 @@ function renderWatch(data) {
   const live = data.live_sessions || [];
   const items = Array.isArray(live) ? live : Object.values(live);
   const steps = items.reduce((n, s) => n + (s.trace?.length || 0), 0);
+  const withShots = items.filter((s) => latestShot(s)).length;
   watchMeta.innerHTML = `
     <span>${items.length} agents</span>
+    <span>${withShots} with screenshots</span>
     <span>${steps} frames</span>
     <span>${(data.personas || []).length} users</span>
     <span>${(data.tasks || []).length} tasks</span>`;
 
   agentGrid.innerHTML = "";
   const sorted = [...items].sort((a, b) => {
+    const as = latestShot(a) ? 0 : 1;
+    const bs = latestShot(b) ? 0 : 1;
+    if (as !== bs) return as - bs;
     const ar = a.status === "running" ? 0 : a.status === "starting" ? 1 : 2;
     const br = b.status === "running" ? 0 : b.status === "starting" ? 1 : 2;
     if (ar !== br) return ar - br;
@@ -101,41 +194,71 @@ function renderWatch(data) {
     const shot = latestShot(sess);
     const card = document.createElement("article");
     card.className = "live-agent-card";
+    const site = sess.site_label || sess.site_key || "";
     const img = shot?.screenshot_url
       ? `<img src="${escapeHtml(shot.screenshot_url)}?t=${Date.now()}" alt="" loading="lazy" />`
-      : `<div class="live-agent-waiting">${escapeHtml(sess.last_action || sess.status || "waiting")}</div>`;
+      : `<div class="live-agent-waiting">${escapeHtml(sess.last_action || sess.status || "waiting for first frame…")}</div>`;
     card.innerHTML = `
       <header>
         <strong>${escapeHtml(sess.persona_name || sess.agent_id || "agent")}</strong>
         <span class="live-study-status ${statusClass(sess.status)}">${escapeHtml(sess.status || "")}</span>
       </header>
-      <p class="live-agent-task">${escapeHtml(sess.task_title || sess.site_label || "")}</p>
+      <p class="live-agent-task">${escapeHtml(sess.task_title || "")}${
+        site ? ` · <em>${escapeHtml(site)}</em>` : ""
+      }</p>
       <div class="live-agent-frame">${img}</div>
-      <p class="live-agent-step">${shot ? `step ${escapeHtml(shot.step)} · ${escapeHtml(shot.action || "")}` : "no frame yet"}</p>`;
+      <p class="live-agent-step">${
+        shot
+          ? `step ${escapeHtml(shot.step)} · ${escapeHtml(shot.action || "")}`
+          : "no frame yet"
+      }</p>`;
     agentGrid.appendChild(card);
   }
 }
 
-async function selectStudy(id) {
-  if (!id) return;
+function rememberStudy(id) {
   selectedId = id;
   localStorage.setItem("usersim_last_study", id);
   const url = new URL(location.href);
   url.searchParams.set("study", id);
   history.replaceState({}, "", url);
-  await refreshList();
-  await refreshWatch();
+}
+
+function startWatchPolling() {
   if (watchTimer) clearInterval(watchTimer);
-  watchTimer = setInterval(refreshWatch, 4000);
+  watchTimer = setInterval(refreshWatch, 3000);
+}
+
+async function selectStudy(id) {
+  if (!id) return;
+  rememberStudy(id);
+  // Load frames immediately — do NOT wait on the slow study list.
+  await refreshWatch();
+  startWatchPolling();
+  refreshList().catch(() => {});
 }
 
 async function refreshList() {
   try {
+    if (!listEl.querySelector(".live-study-item") && !listEl.querySelector(".live-study-empty")) {
+      listEl.innerHTML = `<li class="live-study-empty">Loading studies…</li>`;
+    }
     const studies = await fetchList();
-    renderList(studies);
+    const newestRunning = studies.find((s) => s.status === "running" || s.status === "pending");
+    if (selectedId) {
+      const stillThere = studies.some((s) => s.id === selectedId);
+      if (!stillThere && newestRunning) selectedId = newestRunning.id;
+    }
     if (!selectedId && studies.length) {
-      const running = studies.find((s) => s.status === "running");
-      await selectStudy((running || studies[0]).id);
+      selectedId = (newestRunning || studies[0]).id;
+    }
+    renderList(studies);
+    if (selectedId) {
+      rememberStudy(selectedId);
+      if (!bootDone || watchEl.hidden) {
+        await refreshWatch();
+        startWatchPolling();
+      }
     }
   } catch (err) {
     listEl.innerHTML = `<li class="live-study-empty">${escapeHtml(err.message)}</li>`;
@@ -148,14 +271,37 @@ async function refreshWatch() {
     const data = await fetchStudy(selectedId);
     renderWatch(data);
   } catch (err) {
+    emptyEl.hidden = true;
+    watchEl.hidden = false;
     watchPhase.textContent = err.message;
   }
 }
 
-document.getElementById("refresh-list").addEventListener("click", refreshList);
+document.getElementById("refresh-list").addEventListener("click", () => {
+  refreshList();
+  refreshRuntime();
+});
 
-refreshList();
-listTimer = setInterval(refreshList, 12000);
-if (selectedId) {
-  selectStudy(selectedId);
-}
+document.getElementById("kill-agents")?.addEventListener("click", () => {
+  killNow({ agents: true, vms: false, seeds: false });
+});
+document.getElementById("kill-agents-vms")?.addEventListener("click", () => {
+  killNow({ agents: true, vms: true, seeds: false });
+});
+document.getElementById("kill-everything")?.addEventListener("click", () => {
+  killNow({ agents: true, vms: true, seeds: true });
+});
+
+listEl.innerHTML = `<li class="live-study-empty">Loading studies…</li>`;
+
+(async function boot() {
+  // If we already know the study id, show frames first (list can lag on GCS).
+  if (selectedId) {
+    await refreshWatch();
+    startWatchPolling();
+  }
+  await Promise.all([refreshList(), refreshRuntime()]);
+  bootDone = true;
+  listTimer = setInterval(refreshList, 12000);
+  runtimeTimer = setInterval(refreshRuntime, 8000);
+})();

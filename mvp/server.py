@@ -63,6 +63,55 @@ def _normalize_url(raw: str) -> str:
     return url
 
 
+def _study_list_key(url: str | None, study_id: str | None = None) -> str:
+    """One sidebar row per product URL (host + path), not per historical run id."""
+    from urllib.parse import urlparse
+
+    raw = (url or "").strip()
+    if not raw:
+        return f"id:{(study_id or '').strip()}"
+    try:
+        p = urlparse(raw if re.match(r"^https?://", raw, flags=re.I) else "https://" + raw)
+    except Exception:
+        return f"id:{(study_id or raw).strip()}"
+    host = (p.netloc or "").lower()
+    if host.startswith("www."):
+        host = host[4:]
+    path = (p.path or "/").rstrip("/") or "/"
+    return f"{host}{path}"
+
+
+def _dedupe_studies_one_per_url(rows: list[dict]) -> list[dict]:
+    """Keep a single latest run per product URL for /live."""
+    rank = {
+        "running": 0,
+        "pending": 1,
+        "queued": 2,
+        "complete": 3,
+        "error": 4,
+        "abandoned": 5,
+    }
+    best: dict[str, dict] = {}
+    for row in rows:
+        key = _study_list_key(row.get("url"), str(row.get("id") or ""))
+        cur = best.get(key)
+        if cur is None:
+            best[key] = row
+            continue
+        r_new = rank.get(str(row.get("status") or ""), 9)
+        r_old = rank.get(str(cur.get("status") or ""), 9)
+        if r_new < r_old:
+            best[key] = row
+            continue
+        if r_new > r_old:
+            continue
+        if str(row.get("updated_at") or "") >= str(cur.get("updated_at") or ""):
+            best[key] = row
+    out = list(best.values())
+    out.sort(key=lambda r: str(r.get("updated_at") or ""), reverse=True)
+    return out
+
+
 @app.get("/")
 async def index() -> FileResponse:
     if not (STATIC / "index.html").is_file():
@@ -88,14 +137,70 @@ async def report_page() -> FileResponse:
 
 @app.get("/api/studies")
 async def list_studies(limit: int = 40):
-    """List recent GCS-backed studies (developer live dashboard)."""
+    """List recent studies (in-memory first, then GCS) for the live dashboard."""
     from mvp.gcs_store import list_mvp_studies
+    from mvp.study import STUDIES, study_to_dict
 
+    rows: list[dict] = []
+    seen: set[str] = set()
+    # Local / current process runs first — /live should show what's actually running.
+    for study in sorted(
+        STUDIES.values(),
+        key=lambda s: s.updated_at or s.created_at or "",
+        reverse=True,
+    ):
+        data = study_to_dict(study)
+        live = data.get("live_sessions") or []
+        if isinstance(live, dict):
+            live_items = list(live.values())
+        else:
+            live_items = list(live or [])
+        rows.append(
+            {
+                "id": study.id,
+                "url": study.url,
+                "segment": study.segment,
+                "status": study.status,
+                "phase": study.phase,
+                "updated_at": study.updated_at,
+                "agents": len(live_items) or len(study.tasks or []),
+                "steps": sum(len(s.get("trace") or []) for s in live_items if isinstance(s, dict)),
+                "running_agents": sum(
+                    1
+                    for s in live_items
+                    if isinstance(s, dict) and s.get("status") in {"running", "starting"}
+                ),
+                "persona_count": len(study.personas or []),
+                "task_count": len(study.tasks or []),
+                "has_done": study.status == "complete",
+                "source": "memory",
+            }
+        )
+        seen.add(study.id)
+
+    # Pull enough GCS history that dedupe-by-URL still surfaces recent products
+    # (mass kill rewrites many study.json blobs and can bury a fresh run).
     try:
-        studies = await asyncio.to_thread(list_mvp_studies, limit=limit)
+        remote = await asyncio.wait_for(
+            asyncio.to_thread(list_mvp_studies, limit=max(limit * 5, 100)),
+            timeout=20.0,
+        )
     except Exception as exc:  # noqa: BLE001
-        raise HTTPException(status_code=503, detail=f"GCS list failed: {exc}") from exc
-    return {"studies": studies}
+        print(f"list_mvp_studies failed/timeout: {exc!r}", flush=True)
+        remote = []
+    for s in remote or []:
+        sid = str((s or {}).get("id") or "")
+        if not sid or sid in seen:
+            continue
+        s = dict(s)
+        s.setdefault("source", "gcs")
+        rows.append(s)
+        seen.add(sid)
+
+    rows.sort(key=lambda r: str(r.get("updated_at") or ""), reverse=True)
+    # /live should show one row per product, not every historical GCS run.
+    rows = _dedupe_studies_one_per_url(rows)
+    return {"studies": rows[: max(1, min(limit, 100))]}
 
 
 @app.post("/api/studies")
@@ -159,6 +264,14 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 study_obj.status = "error"
                 study_obj.error = f"Study timed out after {int(timeout_s)}s"
                 study_obj.phase = "Timed out"
+                study_obj.kill_requested = True
+                try:
+                    from mvp.kill_switch import kill_now_async
+
+                    # Release orphan Browserbase sessions immediately on timeout.
+                    await kill_now_async(agents=True, vms=False, seeds=False, study_id=study.id)
+                except Exception as kill_exc:  # noqa: BLE001
+                    print(f"timeout kill failed: {kill_exc!r}", flush=True)
                 payload = study_to_dict(study_obj)
                 payload["stream_event"] = "error"
                 await queue.put(payload)
@@ -175,12 +288,17 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
 
         async def _gen():
             task = asyncio.create_task(_runner())
+            from mvp.study import STUDY_TASKS
+
+            STUDY_TASKS[study.id] = task
 
             async def _keep(t: asyncio.Task) -> None:
                 try:
                     await t
                 except Exception:
                     pass
+                finally:
+                    STUDY_TASKS.pop(study.id, None)
 
             try:
                 while True:
@@ -198,6 +316,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                     asyncio.create_task(_keep(task))
                 else:
                     await task
+                    STUDY_TASKS.pop(study.id, None)
 
         return StreamingResponse(
             _gen(),
@@ -208,8 +327,44 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
             },
         )
 
-    background.add_task(run_study, study.id)
+    from mvp.study import STUDY_TASKS
+
+    async def _bg() -> None:
+        try:
+            await run_study(study.id)
+        finally:
+            STUDY_TASKS.pop(study.id, None)
+
+    STUDY_TASKS[study.id] = asyncio.create_task(_bg())
     return {"study_id": study.id, "status": study.status}
+
+
+class KillRequest(BaseModel):
+    agents: bool = True
+    vms: bool = False
+    seeds: bool = False
+    study_id: str | None = None
+
+
+@app.get("/api/runtime/status")
+async def runtime_status():
+    from mvp.kill_switch import runtime_status as _status
+
+    return await asyncio.to_thread(_status)
+
+
+@app.post("/api/runtime/kill")
+async def runtime_kill(body: KillRequest | None = None):
+    """Kill Browserbase agents and/or UserSim VMs immediately."""
+    from mvp.kill_switch import kill_now_async
+
+    req = body or KillRequest()
+    return await kill_now_async(
+        agents=bool(req.agents),
+        vms=bool(req.vms),
+        seeds=bool(req.seeds),
+        study_id=req.study_id,
+    )
 
 
 @app.get("/api/studies/{study_id}")

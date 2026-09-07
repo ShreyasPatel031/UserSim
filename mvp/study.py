@@ -32,6 +32,12 @@ QUICK_MODE = os.environ.get("MVP_QUICK", "").lower() in ("1", "true", "yes")
 SNAPSHOT_FORCE = os.environ.get("MVP_SNAPSHOT_ONLY", "").lower() in ("1", "true", "yes")
 
 
+def _browserbase_configured() -> bool:
+    if os.environ.get("USE_BROWSERBASE", "").lower() not in {"1", "true", "yes"}:
+        return False
+    return bool((os.environ.get("BROWSERBASE_API_KEY") or "").strip())
+
+
 def _fleet_preferred() -> bool:
     # Browserbase is the Vercel / Developer-plan live path. Cloud secrets often
     # still inject MVP_GCP_FLEET=1; that steals the run and fails without the
@@ -51,9 +57,14 @@ def _fleet_preferred() -> bool:
         return False
 
 
-# Snapshot-only when forced/quick, or on Vercel when the GCP seed fleet is unavailable.
+# Snapshot-only when forced/quick, or on Vercel with no live browser path.
+# Browserbase keys ⇒ real screenshots (same as vercel.json MVP_VERCEL_BROWSER=1).
+# Do NOT silently invent text-only "steps" when Browserbase is configured.
 SNAPSHOT_ONLY = SNAPSHOT_FORCE or QUICK_MODE or (
-    IS_VERCEL_ENV and not USE_LIVE_BROWSER and not _fleet_preferred()
+    IS_VERCEL_ENV
+    and not USE_LIVE_BROWSER
+    and not _fleet_preferred()
+    and not _browserbase_configured()
 )
 
 # Parallel Gemini (Vertex / GCP) feedback calls.
@@ -126,6 +137,7 @@ class StudyState:
     browserbase_session_url: str | None = None
     auth_status: str | None = None
     auth_blocker: str | None = None
+    kill_requested: bool = False
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -210,6 +222,19 @@ def _agent_phase_label(study: StudyState) -> str:
 
 
 STUDIES: dict[str, StudyState] = {}
+# Cancelable asyncio tasks for in-process studies (kill switch).
+STUDY_TASKS: dict[str, asyncio.Task] = {}
+
+
+def study_was_killed(study: StudyState) -> bool:
+    return bool(getattr(study, "kill_requested", False))
+
+
+def raise_if_killed(study: StudyState) -> None:
+    if study_was_killed(study):
+        from mvp.kill_switch import StudyKilled
+
+        raise StudyKilled(f"study {study.id} killed")
 
 
 async def generate_personas(
@@ -809,6 +834,7 @@ async def run_study(
                 pass
 
     try:
+        raise_if_killed(study)
         log_activity(study, "phase", "Study queued")
         touch("Understanding context of product", "running")
         log_activity(study, "fetch", f"Understanding context of {study.url}")
@@ -1173,7 +1199,7 @@ async def run_study(
             log_activity(
                 study,
                 "agents",
-                f"Running {len(study.tasks)} persona simulations (Vercel snapshot mode)",
+                f"Running {len(study.tasks)} persona simulations (Vercel snapshot mode — no live screenshots)",
             )
             touch(f"Simulating agents — 0/{len(study.tasks)} finished")
 
@@ -1565,6 +1591,7 @@ async def run_study(
                 log_activity(study, "agents", f"Launching {len(study.tasks)} live browser agents")
 
                 async def _on_agent_step(agent_id: str, step: dict[str, Any]) -> None:
+                    raise_if_killed(study)
                     sess = study.live_sessions.get(agent_id)
                     if not sess:
                         return
@@ -1638,8 +1665,13 @@ async def run_study(
                             "trace": [],
                         },
                     )
+                    raise_if_killed(study)
                     sess["status"] = "starting"
                     prefetched = await _take_prefetched_session()
+                    if prefetched is not None:
+                        sid = getattr(prefetched, "id", None)
+                        if sid:
+                            sess["browserbase_session_id"] = sid
                     log_activity(
                         study,
                         "agent_start",
@@ -1650,6 +1682,7 @@ async def run_study(
                     refresh_agent_phase()
                     try:
                         async with _BROWSER_SEMAPHORE:
+                            raise_if_killed(study)
                             sess["status"] = "running"
                             refresh_agent_phase()
                             run = await run_browser_agent(
@@ -1827,7 +1860,24 @@ async def run_study(
         study.phase = "Site blocked"
         study.updated_at = _now()
         persist_study(study)
+    except asyncio.CancelledError:
+        study.kill_requested = True
+        study.status = "abandoned"
+        study.phase = "Killed"
+        study.error = "Killed by operator"
+        study.updated_at = _now()
+        persist_study(study)
+        raise
     except Exception as exc:  # noqa: BLE001
+        from mvp.kill_switch import StudyKilled
+
+        if isinstance(exc, StudyKilled) or study_was_killed(study):
+            study.status = "abandoned"
+            study.phase = "Killed"
+            study.error = "Killed by operator"
+            study.updated_at = _now()
+            persist_study(study)
+            return
         study.status = "error"
         study.error = (str(exc) or repr(exc))[:500]
         study.phase = "Failed"
@@ -1891,6 +1941,7 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "test_mode": study.test_mode,
             "backend": study.backend,
             "email": study.email,
+            "kill_requested": study.kill_requested,
         }
     )
 
@@ -1907,8 +1958,11 @@ def persist_study(study: StudyState) -> None:
 
 def load_study_from_gcs(study_id: str) -> dict[str, Any] | None:
     try:
-        from mvp.gcs_store import read_study_state
+        from mvp.gcs_store import normalize_study_display, read_study_state
 
-        return read_study_state(study_id)
+        data = read_study_state(study_id)
+        if isinstance(data, dict):
+            return normalize_study_display(data)
+        return None
     except Exception:
         return None

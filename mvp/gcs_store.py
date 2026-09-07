@@ -19,6 +19,129 @@ DEFAULT_GCS = os.environ.get(
 _LIST_CACHE: dict[str, tuple[float, list]] = {}
 _HYDRATE_CACHE: dict[str, tuple[float, object]] = {}
 
+# Studies left "running" in GCS after Browserbase/process death look zombie in /live.
+STALE_RUNNING_MIN = float(os.environ.get("MVP_STALE_RUNNING_MIN", "10"))
+
+
+def clear_list_cache() -> None:
+    _LIST_CACHE.clear()
+
+
+def _parse_iso(ts: str | None):
+    if not ts:
+        return None
+    from datetime import datetime, timezone
+
+    try:
+        return datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def normalize_study_display(data: dict[str, Any]) -> dict[str, Any]:
+    """Fix zombie running status for UI (GCS leftovers after kill / crash)."""
+    if not isinstance(data, dict):
+        return data
+    out = dict(data)
+    status = str(out.get("status") or "")
+    if status not in {"running", "pending", "queued"}:
+        return out
+    if out.get("kill_requested"):
+        out["status"] = "abandoned"
+        out["phase"] = out.get("phase") if out.get("phase") == "Killed" else "Killed"
+        return out
+
+    from datetime import datetime, timezone
+
+    updated = _parse_iso(out.get("updated_at"))
+    if updated is not None:
+        age_min = (datetime.now(timezone.utc) - updated).total_seconds() / 60.0
+        if age_min >= STALE_RUNNING_MIN:
+            out["status"] = "abandoned"
+            out["phase"] = f"Stale (no updates for {int(age_min)}m)"
+            live = out.get("live_sessions")
+            if isinstance(live, dict):
+                for sess in live.values():
+                    if isinstance(sess, dict) and sess.get("status") in {
+                        "running",
+                        "starting",
+                        "pending",
+                        "summarizing",
+                    }:
+                        sess["status"] = "killed"
+            elif isinstance(live, list):
+                for sess in live:
+                    if isinstance(sess, dict) and sess.get("status") in {
+                        "running",
+                        "starting",
+                        "pending",
+                        "summarizing",
+                    }:
+                        sess["status"] = "killed"
+    return out
+
+
+def abandon_running_studies_in_gcs(*, study_id: str | None = None, limit: int = 80) -> list[str]:
+    """Persist abandoned status onto GCS study.json for killed/zombie runs."""
+    from datetime import datetime, timezone
+
+    abandoned: list[str] = []
+    now = datetime.now(timezone.utc).isoformat()
+    rows = list_mvp_studies(limit=limit)
+    # Bypass display normalize for discovering raw targets — use cache-bust.
+    clear_list_cache()
+    # Re-list without normalize would still apply after we add normalize to list —
+    # so scan blobs by reading each candidate id from the previous rows + optional id.
+    ids: list[str] = []
+    if study_id:
+        ids = [study_id]
+    else:
+        ids = [str(r.get("id") or "") for r in rows if r.get("id")]
+
+    for sid in ids:
+        if not sid:
+            continue
+        data = read_study_state(sid)
+        if not isinstance(data, dict):
+            continue
+        status = str(data.get("status") or "")
+        if status not in {"running", "pending", "queued"} and not data.get("kill_requested"):
+            continue
+        data["kill_requested"] = True
+        data["status"] = "abandoned"
+        data["phase"] = "Killed"
+        data["error"] = data.get("error") or "Killed by operator"
+        data["updated_at"] = now
+        live = data.get("live_sessions")
+        if isinstance(live, dict):
+            for sess in live.values():
+                if isinstance(sess, dict) and sess.get("status") in {
+                    "running",
+                    "starting",
+                    "pending",
+                    "summarizing",
+                }:
+                    sess["status"] = "killed"
+        elif isinstance(live, list):
+            for sess in live:
+                if isinstance(sess, dict) and sess.get("status") in {
+                    "running",
+                    "starting",
+                    "pending",
+                    "summarizing",
+                }:
+                    sess["status"] = "killed"
+            data["live_sessions"] = {
+                str(s.get("agent_id") or i): s for i, s in enumerate(live) if isinstance(s, dict)
+            }
+        try:
+            write_study_state(sid, data)
+            abandoned.append(sid)
+        except Exception as exc:  # noqa: BLE001
+            print(f"abandon gcs {sid}: {exc}", flush=True)
+    clear_list_cache()
+    return abandoned
+
 def parse_gs_uri(uri: str) -> tuple[str, str]:
     raw = (uri or "").strip()
     if raw.startswith("gs://"):
@@ -200,8 +323,16 @@ def list_mvp_studies(*, limit: int = 40) -> list[dict[str, Any]]:
                         "persona_count": len(data.get("personas") or []),
                         "task_count": len(data.get("tasks") or []),
                         "has_done": study_id in done_ids,
+                        "kill_requested": bool(data.get("kill_requested")),
+                        "live_sessions": data.get("live_sessions"),
                     }
                 )
+                payload = normalize_study_display(payload)
+                # List rows don't need full live_sessions blobs.
+                payload.pop("live_sessions", None)
+                # Recount running after normalize may have flipped agent statuses.
+                if payload.get("status") == "abandoned":
+                    payload["running_agents"] = 0
         except Exception:
             pass
         if blob.updated is not None:

@@ -2033,6 +2033,15 @@ footer p {
 .live-sidebar-head h1{margin:0;font-size:1.1rem}
 .ghost-btn{border:1px solid var(--border);background:#fff;border-radius:6px;padding:0.35rem 0.65rem;cursor:pointer;font:inherit;font-size:0.85rem}
 .live-sidebar-hint{color:var(--text-muted);font-size:0.8rem;margin:0.5rem 0 1rem}
+.live-kill-bar{display:flex;flex-direction:column;gap:0.4rem;margin:0 0 0.85rem;padding:0.65rem;border:1px solid var(--border);border-radius:8px;background:#fff}
+.live-runtime{margin:0 0 0.25rem;font-size:0.75rem;color:var(--text-muted);line-height:1.35}
+.kill-btn{border:1px solid #b91c1c;background:#fff;color:#b91c1c;border-radius:6px;padding:0.4rem 0.65rem;cursor:pointer;font:inherit;font-size:0.8rem;font-weight:600;text-align:left}
+.kill-btn:hover{background:#fef2f2}
+.kill-btn:disabled{opacity:0.55;cursor:wait}
+.kill-btn-warn{border-color:#c2410c;color:#c2410c}
+.kill-btn-warn:hover{background:#fff7ed}
+.kill-btn-danger{border-color:#7f1d1d;background:#7f1d1d;color:#fff}
+.kill-btn-danger:hover{background:#991b1b}
 .live-study-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.5rem}
 .live-study-item{width:100%;text-align:left;border:1px solid var(--border);background:#fff;border-radius:8px;padding:0.75rem;cursor:pointer;display:flex;flex-direction:column;gap:0.25rem;font:inherit}
 .live-study-item.active,.live-study-item:hover{border-color:var(--border-strong);background:var(--bg-card)}

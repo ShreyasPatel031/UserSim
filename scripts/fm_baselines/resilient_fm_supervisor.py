@@ -160,14 +160,16 @@ def ensure_session(job: Job) -> str:
             log("GPU quota full — waiting 60s")
             time.sleep(60)
             continue
-        # entitlement / wrong accelerator → rotate immediately
+        # entitlement / capacity: keep retrying (esp. L4-only floor jobs)
         if "rejected accelerator" in out.lower() or "not have quota" in out.lower():
-            log(f"{job.session}: {gpu} unavailable — trying next")
-            time.sleep(2)
+            wait = min(30 + 15 * (attempt - 1), 300)
+            log(f"{job.session}: {gpu} unavailable — retry in {wait}s (attempt {attempt})")
+            time.sleep(wait)
             continue
         if "Service Unavailable" in out or "ColabRequestError" in out:
-            log(f"{job.session}: assign {gpu} flaky — retry in 30s")
-            time.sleep(30)
+            wait = min(30 * attempt, 300)
+            log(f"{job.session}: assign {gpu} flaky — retry in {wait}s (attempt {attempt})")
+            time.sleep(wait)
             continue
         if r.returncode == 0 and session_healthy(job.session):
             log(f"{job.session} got GPU={gpu}")
@@ -181,6 +183,14 @@ def _runners_for(job: Job) -> list[Path]:
         "socrates": ["boot_socrates_l4.py", "colab_socrates_wass.py"],
         "minitaur": ["boot_minitaur_t4.py", "colab_minitaur_psych101_nll.py"],
         "befm": ["boot_befm_t4.py", "colab_befm4b_serve_and_eval.py"],
+        "floor_psych101": [
+            "boot_qwen3_floor_psych101.py",
+            "colab_qwen3_8b_floor_psych101_nll.py",
+        ],
+        "floor_socrates": [
+            "boot_qwen3_floor_socrates.py",
+            "colab_qwen3_8b_floor_socrates_vllm.py",
+        ],
     }
     out: list[Path] = []
     for name in mapping.get(job.name, [job.boot_py.name]):
@@ -312,6 +322,8 @@ for name in {json.dumps([job.name + '_smoke', job.name + '_full', job.name + '_r
         "socrates": ["socrates_smoke", "socrates_full"],
         "minitaur": ["minitaur_full", "minitaur_smoke"],
         "befm": ["befm_run"],
+        "floor_psych101": ["floor_psych101_full"],
+        "floor_socrates": ["floor_socrates_full"],
     }
     names = probes.get(job.name, [job.name])
     code = f"""
@@ -384,7 +396,31 @@ def tick(job: Job) -> None:
     log(f"{job.name}: alive, no growth yet ({age_min:.0f}m / stall={STALL_MIN}m)")
 
 
-def make_jobs(with_befm: bool) -> list[Job]:
+def make_jobs(with_befm: bool, floor: bool = False) -> list[Job]:
+    if floor:
+        # Qwen3-8B-Base zero-shot floors. L4-only: keep retrying until Colab assigns L4.
+        return [
+            Job(
+                name="floor_psych101",
+                session="fm-floor-psych101",
+                gpus=["L4"],
+                remote_progress="/content/fm_baselines/results/qwen3_8b_floor_psych101/PROGRESS.json",
+                remote_done="/content/fm_baselines/results/qwen3_8b_floor_psych101/SUMMARY.json",
+                local_dir=LOCAL / "qwen3_8b_floor_psych101",
+                boot_py=SCRIPTS / "boot_qwen3_floor_psych101.py",
+                progress_is_lines=False,
+            ),
+            Job(
+                name="floor_socrates",
+                session="fm-floor-socrates",
+                gpus=["L4"],
+                remote_progress="/content/fm_baselines/results/qwen3_8b_floor_socrates/predictions.jsonl",
+                remote_done="/content/fm_baselines/results/qwen3_8b_floor_socrates/SUMMARY.json",
+                local_dir=LOCAL / "qwen3_8b_floor_socrates",
+                boot_py=SCRIPTS / "boot_qwen3_floor_socrates.py",
+                progress_is_lines=True,
+            ),
+        ]
     jobs = [
         Job(
             name="socrates",
@@ -427,10 +463,15 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--with-befm", action="store_true", help="also babysit BeFM (uses 3rd GPU if quota allows)")
+    ap.add_argument(
+        "--floor",
+        action="store_true",
+        help="Qwen3-8B-Base floor on Psych-101 NLL + Socrates W (not baseline models)",
+    )
     ap.add_argument("--poll", type=int, default=POLL_SEC)
     args = ap.parse_args()
 
-    jobs = make_jobs(with_befm=args.with_befm)
+    jobs = make_jobs(with_befm=args.with_befm, floor=args.floor)
     log(f"SUPERVISOR_START jobs={[j.name for j in jobs]}")
 
     while True:

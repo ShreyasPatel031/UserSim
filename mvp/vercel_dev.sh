@@ -27,9 +27,13 @@ fi
 PORT="${PORT:-3000}"
 export PATH="${HOME}/.local/bin:${PATH}"
 
-if [[ "${USE_REAL_VERCEL_DEV:-0}" == "1" ]] && command -v vercel >/dev/null 2>&1; then
-  echo "UserSim → vercel dev --local --listen 127.0.0.1:${PORT}"
-  exec vercel dev --local --listen "127.0.0.1:${PORT}" --yes
+if command -v vercel >/dev/null 2>&1 && [[ "${USE_VERCEL_SHIM:-0}" != "1" ]]; then
+  echo "UserSim → vercel dev --listen 127.0.0.1:${PORT}"
+  export MVP_GCP_FLEET="${MVP_GCP_FLEET:-0}"
+  export MVP_PREFER_GCP_FLEET="${MVP_PREFER_GCP_FLEET:-0}"
+  export USE_BROWSERBASE="${USE_BROWSERBASE:-1}"
+  export MVP_QUICK="${MVP_QUICK:-0}"
+  exec vercel dev --listen "127.0.0.1:${PORT}" --yes
 fi
 
 echo "UserSim → Vercel-mode shim (VERCEL=1, same env as vercel.json)"

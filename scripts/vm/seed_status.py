@@ -38,7 +38,35 @@ NOISE = (
     "anti_forgery",
     "csrf",
     "xsrf",
+    "logged-out",
+    "logged_out",
+    "logout",
+    "anonymous",
+    "guest",
+    "session_id",
+    "fpgsid",
+    "__ssid",
+    "_uetsid",
+    "phpsessid",
+    "jsessionid",
+    "browser_sess",
+    "monolith-login",
+    "unauth",
+    # TikTok / ads pixels contain "sid" but are not product sessions.
+    "ttcsid",
+    "_ttp",
+    "_tt_enable",
+    "preauth",
+    # Consent / CMP (Usercentrics `_uc_current_session` contains "sess").
+    "_uc_",
+    "usercentrics",
 )
+
+# Products that mint opaque httpOnly session cookies (no auth-hint substring).
+# Require ≥2 hits so a stray marketing cookie does not count.
+OPAQUE_AUTH_COOKIES: dict[str, frozenset[str]] = {
+    "canva.com": frozenset({"CDI", "CAZ", "CID", "CUI", "CUL", "CB", "CAU", "CL", "CS"}),
+}
 
 
 def _cookie_db(profile: Path) -> Path | None:
@@ -53,6 +81,13 @@ def _registrable(host: str) -> str:
     """Crude eTLD+1 so app.todoist.com matches todoist.com."""
     parts = host.lstrip(".").split(".")
     return ".".join(parts[-2:]) if len(parts) >= 2 else host
+
+
+def _is_auth_cookie_name(name: str) -> bool:
+    low = str(name or "").lower()
+    if any(n in low for n in NOISE):
+        return False
+    return any(h in low for h in AUTH_HINTS)
 
 
 def session_cookies(profile: Path, host: str) -> list[str]:
@@ -72,10 +107,7 @@ def session_cookies(profile: Path, host: str) -> list[str]:
     for host_key, name in rows:
         if _registrable(str(host_key)) != want:
             continue
-        low = str(name).lower()
-        if any(n in low for n in NOISE):
-            continue
-        if any(h in low for h in AUTH_HINTS):
+        if _is_auth_cookie_name(str(name)):
             found.add(str(name))
     return sorted(found)
 
@@ -83,14 +115,50 @@ def session_cookies(profile: Path, host: str) -> list[str]:
 def _auth_names_from_storage(state: dict, host: str) -> list[str]:
     want = _registrable(host)
     found: set[str] = set()
+    opaque_hits: set[str] = set()
+    opaque_want = OPAQUE_AUTH_COOKIES.get(want, frozenset())
+
     for cookie in state.get("cookies") or []:
         if _registrable(str(cookie.get("domain") or "")) != want:
             continue
-        low = str(cookie.get("name") or "").lower()
-        if any(n in low for n in NOISE):
+        name = str(cookie.get("name") or "")
+        if _is_auth_cookie_name(name):
+            found.add(name)
+        if name in opaque_want:
+            opaque_hits.add(name)
+
+    if len(opaque_hits) >= 2:
+        found.update(opaque_hits)
+
+    # SPA auth often lives in localStorage (Canva login_stamp, Bitwarden vault keys).
+    for origin in state.get("origins") or []:
+        origin_host = str(origin.get("origin") or "").lower()
+        if want not in origin_host:
             continue
-        if any(h in low for h in AUTH_HINTS):
-            found.add(str(cookie.get("name")))
+        for item in origin.get("localStorage") or []:
+            name = str(item.get("name") or "")
+            low = name.lower()
+            # Feature-flag SDKs embed "access_token" in key paths (Box SplitIO).
+            if "split" in low or "splitio" in low:
+                continue
+            if low in {"login_stamp", "login_mode"} or low.startswith("login_stamp"):
+                found.add(name)
+                continue
+            if low.startswith("user_") and (
+                "vault" in low or "account" in low or "token" in low
+            ):
+                found.add(name)
+                continue
+            # Prefer exact-ish key names over substring hits in long feature keys.
+            base = low.rsplit(".", 1)[-1]
+            if base in {
+                "access_token",
+                "refresh_token",
+                "refreshtoken",
+                "auth_token",
+                "authtoken",
+            }:
+                found.add(name)
     return sorted(found)
 
 

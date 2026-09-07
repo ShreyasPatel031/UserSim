@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/styles.css?v=51" />
+  <link rel="stylesheet" href="/static/styles.css?v=53" />
 </head>
 <body class="live-dash">
   <header class="site-header">
@@ -24,7 +24,13 @@
         <h1>Studies</h1>
         <button type="button" id="refresh-list" class="ghost-btn">Refresh</button>
       </div>
-      <p class="live-sidebar-hint">GCS-backed — survives page refresh. Auto-refreshes every 5s.</p>
+      <div class="live-kill-bar" id="kill-bar">
+        <p class="live-runtime" id="runtime-status">Checking what’s running…</p>
+        <button type="button" id="kill-agents" class="kill-btn">Kill all agents</button>
+        <button type="button" id="kill-agents-vms" class="kill-btn kill-btn-warn">Kill agents + VMs</button>
+        <button type="button" id="kill-everything" class="kill-btn kill-btn-danger">Kill agents + VMs + seeds</button>
+      </div>
+      <p class="live-sidebar-hint">In-memory + GCS studies. Auto-refreshes; pick the top running row.</p>
       <ul id="study-list" class="live-study-list"></ul>
     </aside>
 
@@ -47,6 +53,6 @@
     </section>
   </main>
 
-  <script src="/static/live.js?v=51"></script>
+  <script src="/static/live.js?v=62"></script>
 </body>
 </html>
