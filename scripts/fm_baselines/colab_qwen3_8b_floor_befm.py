@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -176,6 +177,9 @@ def install(eval_py: str, server_py: str) -> None:
     else:
         print("eval deps already present", flush=True)
     _torchaudio_stub(server_py)
+    if shutil.which("ninja") is None:
+        sh("sudo apt-get install -y -qq ninja-build", check=False)
+        sh(f"{server_py} -m pip install -q ninja", check=False)
     if _module_ok(server_py, "vllm"):
         print("vllm already present", flush=True)
     else:
@@ -240,6 +244,12 @@ def start_vllm(server_py: str) -> subprocess.Popen:
     env["VLLM_WORKER_MULTIPROC_METHOD"] = "spawn"
     env.setdefault("VLLM_ENGINE_READY_TIMEOUT_S", "600")
     env.setdefault("VLLM_ENGINE_ITERATION_TIMEOUT_S", "300")
+    extra_path = [
+        str(Path.home() / ".local" / "bin"),
+        "/usr/bin",
+        "/usr/local/bin",
+    ]
+    env["PATH"] = os.pathsep.join(extra_path + [env.get("PATH", "")])
 
     RESULTS.mkdir(parents=True, exist_ok=True)
     log_path = RESULTS / "vllm.log"
