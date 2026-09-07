@@ -558,7 +558,7 @@ def _floor_psych101_job() -> Job:
     return Job(
         name="floor_psych101",
         session="fm-floor-psych101",
-        gpus=["T4"],
+        gpus=["L4", "T4"],
         remote_progress="/content/fm_baselines/results/qwen3_8b_floor_psych101/PROGRESS.json",
         remote_done="/content/fm_baselines/results/qwen3_8b_floor_psych101/SUMMARY.json",
         local_dir=LOCAL / "qwen3_8b_floor_psych101",

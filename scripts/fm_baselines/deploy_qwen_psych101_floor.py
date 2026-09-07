@@ -35,6 +35,8 @@ NUM_SHARDS = int(os.environ.get("PSYCH101_NUM_SHARDS", "2"))
 BATCH_SIZE = int(os.environ.get("BATCH_SIZE", "4"))
 MACHINE = os.environ.get("PSYCH101_MACHINE", "n1-standard-8")
 ACCEL = os.environ.get("PSYCH101_ACCEL", "nvidia-tesla-t4")
+IMAGE_FAMILY = os.environ.get("PSYCH101_IMAGE_FAMILY", "pytorch-2-9-cu129-ubuntu-2204-nvidia-580")
+IMAGE_PROJECT = os.environ.get("PSYCH101_IMAGE_PROJECT", "deeplearning-platform-release")
 
 
 def sh(cmd: list[str], check: bool = True) -> subprocess.CompletedProcess:
@@ -67,12 +69,9 @@ def ensure_vm(g: str, p: str, z: str, name: str) -> None:
         """#!/bin/bash
 set -eux
 exec > /var/log/fm-psych101-startup.log 2>&1
-apt-get update
-apt-get install -y python3-pip python3-venv git curl
-curl -fsSL https://raw.githubusercontent.com/GoogleCloudPlatform/compute-gpu-installation/main/linux/install_gpu_driver.py -o /tmp/install_gpu_driver.py
-python3 /tmp/install_gpu_driver.py || true
-nvidia-smi || true
 mkdir -p /opt/usersim_fm/scripts /opt/usersim_fm/data /opt/usersim_fm/results /opt/usersim_fm/logs /opt/usersim_fm/hf_home
+# DL image already has NVIDIA drivers; just confirm.
+nvidia-smi || true
 touch /opt/usersim_fm/READY
 """
     )
@@ -90,10 +89,14 @@ touch /opt/usersim_fm/READY
         "--provisioning-model=SPOT",
         "--instance-termination-action=STOP",
         "--boot-disk-size=200GB",
-        "--image-family=ubuntu-2204-lts",
-        "--image-project=ubuntu-os-cloud",
+        f"--image-family={IMAGE_FAMILY}",
+        f"--image-project={IMAGE_PROJECT}",
         "--scopes=cloud-platform",
+        "--network=main-vpc",
+        "--subnet=primary-subnet",
+        "--tags=allow-iap-ssh,ssh-enabled",
         "--labels=usersim-fleet=floor,usersim-spot-watch=true",
+        "--metadata=install-nvidia-driver=True",
         f"--metadata-from-file=startup-script={startup_path}",
     ]
     try:

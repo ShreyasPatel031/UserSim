@@ -84,9 +84,17 @@ def main() -> None:
 
     log = ROOT / "results" / "floor_psych101_full.log"
     smoke = ROOT / "results" / "qwen3_8b_floor_psych101" / "SMOKE_OK.json"
+    env_file = ROOT / "results" / ".psych_env"
+    extra_env = ""
+    if env_file.exists():
+        for line in env_file.read_text().splitlines():
+            if "=" in line:
+                k, v = line.split("=", 1)
+                extra_env += f" {k}={v}"
+    # Defaults: BATCH_SIZE auto from GPU mem inside runner unless overridden.
     cmd = (
         "export WATCHDOG_ARMED=1 WATCHDOG_MARKER=/content/fm_baselines/WATCHDOG_ARMED "
-        "MAX_SEQ=4096 FLOOR_MODEL=Qwen/Qwen3-8B-Base; "
+        f"MAX_SEQ=4096 FLOOR_MODEL=Qwen/Qwen3-8B-Base{extra_env}; "
         "if [ -f ~/.cache/huggingface/token ]; then "
         "export HF_TOKEN=$(cat ~/.cache/huggingface/token); "
         "export HUGGING_FACE_HUB_TOKEN=$HF_TOKEN; fi; "

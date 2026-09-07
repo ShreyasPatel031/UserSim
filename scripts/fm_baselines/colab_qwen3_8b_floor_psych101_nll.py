@@ -41,6 +41,36 @@ SMOKE_N = int(os.environ.get("SMOKE_N", "20"))
 BATCH_SIZE = int(os.environ.get("BATCH_SIZE", "4"))
 NUM_SHARDS = max(1, int(os.environ.get("NUM_SHARDS", "1")))
 SHARD_ID = int(os.environ.get("SHARD_ID", "0"))
+# On L4/A100 (>=20GB): prefer bf16 full precision for speed. T4 stays 4-bit.
+FORCE_4BIT = os.environ.get("FORCE_4BIT", "").strip() in {"1", "true", "TRUE"}
+FORCE_BF16 = os.environ.get("FORCE_BF16", "").strip() in {"1", "true", "TRUE"}
+GPU_MEM_BF16_GB = 20.0
+
+
+def gpu_mem_gb() -> float:
+    try:
+        return torch.cuda.get_device_properties(0).total_memory / 1e9
+    except Exception:
+        return 0.0
+
+
+def use_4bit() -> bool:
+    if FORCE_BF16:
+        return False
+    if FORCE_4BIT:
+        return True
+    return gpu_mem_gb() < GPU_MEM_BF16_GB
+
+
+def default_batch_size() -> int:
+    if os.environ.get("BATCH_SIZE"):
+        return BATCH_SIZE
+    mem = gpu_mem_gb()
+    if mem >= 40:
+        return 16
+    if mem >= 20:
+        return 8
+    return 4
 
 
 def sh(cmd: str) -> None:
@@ -73,8 +103,9 @@ def mask_from_offsets(offsets: list[tuple[int, int]], spans: list[tuple[int, int
 
 
 @torch.inference_mode()
-def nll_batch(model, tokenizer, texts: list[str]) -> list[float | None]:
+def nll_batch(model, tokenizer, texts: list[str], batch_size: int | None = None) -> list[float | None]:
     """Batched NLL with char-offset <<...>> masks. Do not use tokenizer(' <<')."""
+    bs = batch_size or BATCH_SIZE
     outs: list[float | None] = []
     # Drop empty / no-span early
     prepared: list[tuple[int, str, list[tuple[int, int]]]] = []
@@ -107,8 +138,8 @@ def nll_batch(model, tokenizer, texts: list[str]) -> list[float | None]:
     order = sorted(range(len(enc_single)), key=lambda j: len(enc_single[j][0]["input_ids"]))
     device = next(model.parameters()).device
 
-    for start in range(0, len(order), BATCH_SIZE):
-        idxs = order[start : start + BATCH_SIZE]
+    for start in range(0, len(order), bs):
+        idxs = order[start : start + bs]
         batch_enc = [enc_single[j][0] for j in idxs]
         batch_spans = [enc_single[j][1] for j in idxs]
         max_len = max(len(e["input_ids"]) for e in batch_enc)
@@ -151,15 +182,15 @@ def nll_batch(model, tokenizer, texts: list[str]) -> list[float | None]:
     return outs
 
 
-def write_progress(scored: int, total: int, extra: dict | None = None) -> None:
+def write_progress(scored: int, total: int, extra: dict | None = None, engine: str = "transformers-4bit-batched", batch_size: int = BATCH_SIZE) -> None:
     payload = {
         "scored": scored,
         "total": total,
         "max_seq": MAX_SEQ,
         "model": MODEL,
-        "engine": "transformers-4bit-batched",
+        "engine": engine,
         "mode": MODE,
-        "batch_size": BATCH_SIZE,
+        "batch_size": batch_size,
         "shard_id": SHARD_ID,
         "num_shards": NUM_SHARDS,
         "updated_at": datetime.now(timezone.utc).isoformat(),
@@ -202,26 +233,56 @@ def main() -> None:
                 done.add(json.loads(line)["i"])
         print(f"resuming: {len(done)} scored", flush=True)
 
-    print("Loading", MODEL, "BATCH_SIZE", BATCH_SIZE, "shard", SHARD_ID, "/", NUM_SHARDS, flush=True)
+    batch_size = default_batch_size()
+    fourbit = use_4bit()
+    engine = "transformers-4bit-batched" if fourbit else "transformers-bf16-batched"
+    print(
+        "Loading",
+        MODEL,
+        "GPU",
+        torch.cuda.get_device_name(0),
+        f"{gpu_mem_gb():.1f}GB",
+        "4bit" if fourbit else "bf16",
+        "BATCH_SIZE",
+        batch_size,
+        "shard",
+        SHARD_ID,
+        "/",
+        NUM_SHARDS,
+        flush=True,
+    )
     tok = AutoTokenizer.from_pretrained(MODEL, trust_remote_code=True)
     if tok.pad_token_id is None:
         tok.pad_token = tok.eos_token
-    quant = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.bfloat16,
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_quant_type="nf4",
-    )
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL,
-        quantization_config=quant,
-        device_map="auto",
-        trust_remote_code=True,
-        attn_implementation="sdpa",
-    )
+    if fourbit:
+        quant = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_compute_dtype=torch.bfloat16,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4",
+        )
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL,
+            quantization_config=quant,
+            device_map="auto",
+            trust_remote_code=True,
+            attn_implementation="sdpa",
+        )
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL,
+            torch_dtype=torch.bfloat16,
+            device_map="auto",
+            trust_remote_code=True,
+            attn_implementation="sdpa",
+        )
     model.eval()
     torch.backends.cuda.matmul.allow_tf32 = True
     torch.backends.cudnn.allow_tf32 = True
+
+    # monkeypatch BATCH_SIZE used inside the scoring loop via closure
+    global BATCH_SIZE
+    BATCH_SIZE = batch_size
 
     rows = [json.loads(l) for l in DATA.read_text().splitlines() if l.strip()]
     smoke_n = SMOKE_N if MODE == "smoke" else 0
@@ -264,7 +325,7 @@ def main() -> None:
                 pos += 1
             texts = [rows[i]["text"] for i in batch_idx]
             t0 = time.time()
-            vals = nll_batch(model, tok, texts)
+            vals = nll_batch(model, tok, texts, batch_size=batch_size)
             dt = time.time() - t0
             for i, val in zip(batch_idx, vals):
                 exp = rows[i]["experiment"].split("/")[0]
@@ -280,6 +341,8 @@ def main() -> None:
                 scored=len(done),
                 total=len(indices) if MODE == "full" else len(rows),
                 extra={"items_per_min": rate, "last_batch": len(batch_idx), "last_batch_s": round(dt, 2)},
+                engine=engine,
+                batch_size=batch_size,
             )
             print(
                 f"scored {len(done)}/{len(indices)} batch={len(batch_idx)} "
@@ -307,8 +370,8 @@ def main() -> None:
         "n_items": total_n,
         "n_experiments": len(per_exp),
         "max_seq": MAX_SEQ,
-        "engine": "transformers-4bit-batched",
-        "batch_size": BATCH_SIZE,
+        "engine": engine,
+        "batch_size": batch_size,
         "shard_id": SHARD_ID,
         "num_shards": NUM_SHARDS,
         "per_experiment": per_exp,
@@ -336,10 +399,10 @@ def main() -> None:
             json.dumps(
                 {
                     "passed": True,
-                    "engine": "transformers-4bit-batched",
+                    "engine": engine,
                     "valid_nll": valid,
                     "n": len(rows),
-                    "batch_size": BATCH_SIZE,
+                    "batch_size": batch_size,
                     "items_per_min": scored_session / max((time.time() - t_wall0) / 60.0, 1e-6),
                     "updated_at": datetime.now(timezone.utc).isoformat(),
                 },
