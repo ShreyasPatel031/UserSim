@@ -7,9 +7,11 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 
 import torch
@@ -19,6 +21,8 @@ DATA = ROOT / "data" / "Psych-101-test" / "prompts_testing_t1.jsonl"
 RESULTS = ROOT / "results" / "qwen3_8b_floor_psych101"
 MODEL = os.environ.get("FLOOR_MODEL", "Qwen/Qwen3-8B-Base")
 MAX_SEQ = int(os.environ.get("MAX_SEQ", "4096"))
+MODE = os.environ.get("MODE", "full").strip().lower()
+SMOKE_N = int(os.environ.get("SMOKE_N", "20"))
 
 
 def sh(cmd: str) -> None:
@@ -35,42 +39,34 @@ def install() -> None:
 
 
 def nll_for_text(model, tokenizer, text: str) -> float | None:
+    """Char-offset <<...>> mask. Do not search tokenizer(' <<') subsequences."""
     if "<<" not in text or ">>" not in text:
         return None
-    l_id = tokenizer(" <<").input_ids[1:]
-    r_id = tokenizer(">>").input_ids[1:]
-    enc = tokenizer(text, return_tensors="pt", truncation=True, max_length=MAX_SEQ)
+    spans = [(m.start(1), m.end(1)) for m in re.finditer(r"<<(.*?)>>", text, flags=re.S)]
+    if not spans:
+        return None
+    enc = tokenizer(
+        text,
+        return_tensors="pt",
+        truncation=True,
+        max_length=MAX_SEQ,
+        return_offsets_mapping=True,
+    )
+    offsets = enc.pop("offset_mapping")[0].tolist()
     input_ids = enc.input_ids.to(model.device)
     with torch.no_grad():
         logits = model(input_ids=input_ids).logits
     shift_logits = logits[:, :-1, :].float()
     shift_labels = input_ids[:, 1:]
-    ids = input_ids[0].tolist()
-
-    def find_subseq(hay, needle):
-        hits = []
-        n = len(needle)
-        for i in range(len(hay) - n + 1):
-            if hay[i : i + n] == needle:
-                hits.append(i)
-        return hits
-
-    lefts = find_subseq(ids, l_id)
-    rights = find_subseq(ids, r_id)
     mask = torch.zeros_like(shift_labels, dtype=torch.bool)
-    ri = 0
-    for li in lefts:
-        start = li + len(l_id)
-        while ri < len(rights) and rights[ri] < start:
-            ri += 1
-        if ri >= len(rights):
-            break
-        end = rights[ri]
-        a = max(start - 1, 0)
-        b = max(end - 1, 0)
-        if b > a:
-            mask[0, a:b] = True
-        ri += 1
+    for ts, te in spans:
+        for i, (s, e) in enumerate(offsets):
+            if i == 0:
+                continue
+            if e <= s:
+                continue
+            if s >= ts and e <= te:
+                mask[0, i - 1] = True
     if not mask.any():
         return None
     log_probs = torch.log_softmax(shift_logits, dim=-1)
@@ -84,6 +80,16 @@ def main() -> None:
         install()
 
     from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+
+    if MODE not in {"smoke", "full"}:
+        raise SystemExit(f"MODE must be smoke|full, got {MODE}")
+    if MODE == "full":
+        smoke_ok = RESULTS / "SMOKE_OK.json"
+        if not smoke_ok.exists():
+            raise SystemExit("PROTOCOL: missing SMOKE_OK.json. Run MODE=smoke first.")
+        if os.environ.get("WATCHDOG_ARMED", "").strip() not in {"1", "true", "TRUE"}:
+            if not Path(os.environ.get("WATCHDOG_MARKER", "/content/fm_baselines/WATCHDOG_ARMED")).exists():
+                raise SystemExit("PROTOCOL: watchdog not armed.")
 
     RESULTS.mkdir(parents=True, exist_ok=True)
     scores_path = RESULTS / "scores.jsonl"
@@ -112,7 +118,7 @@ def main() -> None:
     model.eval()
 
     rows = [json.loads(l) for l in DATA.read_text().splitlines() if l.strip()]
-    smoke_n = int(os.environ.get("SMOKE_N", "0"))
+    smoke_n = SMOKE_N if MODE == "smoke" else 0
     if smoke_n > 0:
         rows = rows[:smoke_n]
     print(f"rows={len(rows)} already={len(done)}", flush=True)
@@ -152,6 +158,8 @@ def main() -> None:
                             "total": len(rows),
                             "max_seq": MAX_SEQ,
                             "model": MODEL,
+                            "engine": "transformers-4bit",
+                            "mode": MODE,
                         }
                     )
                 )
@@ -183,6 +191,23 @@ def main() -> None:
     }
     (RESULTS / "SUMMARY.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps({k: summary[k] for k in summary if k != "per_experiment"}, indent=2), flush=True)
+    if MODE == "smoke":
+        valid = sum(1 for rec in (json.loads(l) for l in scores_path.read_text().splitlines() if l.strip()) if rec.get("nll") is not None)
+        if valid < 1:
+            raise SystemExit("PROTOCOL: smoke produced zero valid NLLs")
+        (RESULTS / "SMOKE_OK.json").write_text(
+            json.dumps(
+                {
+                    "passed": True,
+                    "engine": "transformers-4bit",
+                    "valid_nll": valid,
+                    "n": len(rows),
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                },
+                indent=2,
+            )
+        )
+        print("SMOKE_PASSED", flush=True)
 
 
 if __name__ == "__main__":

@@ -40,6 +40,9 @@ def main() -> None:
         )
     print("rows", sum(1 for _ in open(data)), flush=True)
 
+    marker = ROOT / "WATCHDOG_ARMED"
+    marker.write_text("colab-supervisor\n")
+
     for name in ("floor_psych101_full",):
         pid_p = ROOT / "results" / f"{name}.pid"
         if pid_p.exists():
@@ -50,15 +53,29 @@ def main() -> None:
 
     summary = ROOT / "results" / "qwen3_8b_floor_psych101" / "SUMMARY.json"
     if summary.exists() and summary.stat().st_size > 50:
-        print("ALREADY_DONE", summary, flush=True)
-        return
+        try:
+            import json
+
+            d = json.loads(summary.read_text())
+            if (d.get("coverage") or {}).get("complete"):
+                print("ALREADY_DONE", summary, flush=True)
+                return
+        except Exception:
+            pass
 
     log = ROOT / "results" / "floor_psych101_full.log"
+    smoke = ROOT / "results" / "qwen3_8b_floor_psych101" / "SMOKE_OK.json"
     cmd = (
-        "nohup env SMOKE_N=0 MAX_SEQ=4096 FLOOR_MODEL=Qwen/Qwen3-8B-Base "
-        f"python3 -u {runner} > {log} 2>&1 & echo $! > {ROOT}/results/floor_psych101_full.pid"
+        "export WATCHDOG_ARMED=1 WATCHDOG_MARKER=/content/fm_baselines/WATCHDOG_ARMED "
+        "MAX_SEQ=4096 FLOOR_MODEL=Qwen/Qwen3-8B-Base; "
+        f"if [ ! -f {smoke} ]; then echo PROTOCOL: smoke first; "
+        f"MODE=smoke python3 -u {runner} >> {log} 2>&1; fi; "
+        f"MODE=full python3 -u {runner} >> {log} 2>&1"
     )
-    subprocess.run(["bash", "-lc", cmd], check=True)
+    subprocess.run(
+        ["bash", "-lc", f"nohup bash -lc {cmd!r} > {log}.boot 2>&1 & echo $! > {ROOT}/results/floor_psych101_full.pid"],
+        check=True,
+    )
     time.sleep(2)
     print("STARTED", (ROOT / "results" / "floor_psych101_full.pid").read_text().strip(), flush=True)
 

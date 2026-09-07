@@ -407,7 +407,21 @@ def make_jobs(
     with_befm: bool,
     floor: bool = False,
     floor_befm: bool = False,
+    floor_psych101: bool = False,
 ) -> list[Job]:
+    if floor_psych101:
+        return [
+            Job(
+                name="floor_psych101",
+                session="fm-floor-psych101",
+                gpus=["T4"],
+                remote_progress="/content/fm_baselines/results/qwen3_8b_floor_psych101/PROGRESS.json",
+                remote_done="/content/fm_baselines/results/qwen3_8b_floor_psych101/SUMMARY.json",
+                local_dir=LOCAL / "qwen3_8b_floor_psych101",
+                boot_py=SCRIPTS / "boot_qwen3_floor_psych101.py",
+                progress_is_lines=False,
+            )
+        ]
     if floor_befm:
         # One L4 only. Do not also start psych101/socrates on a second GPU.
         return [
@@ -498,11 +512,19 @@ def main() -> None:
         action="store_true",
         help="One Colab L4: remaining Qwen3-8B-Base BehaviorBench floor (smoke+vLLM+watchdog)",
     )
+    ap.add_argument(
+        "--floor-psych101",
+        action="store_true",
+        help="One Colab T4: Qwen3-8B-Base Psych-101 NLL floor (smoke+watchdog). T4 cannot host 8B vLLM bf16.",
+    )
     ap.add_argument("--poll", type=int, default=POLL_SEC)
     args = ap.parse_args()
 
     jobs = make_jobs(
-        with_befm=args.with_befm, floor=args.floor, floor_befm=args.floor_befm
+        with_befm=args.with_befm,
+        floor=args.floor,
+        floor_befm=args.floor_befm,
+        floor_psych101=args.floor_psych101,
     )
     log(f"SUPERVISOR_START jobs={[j.name for j in jobs]}")
 
