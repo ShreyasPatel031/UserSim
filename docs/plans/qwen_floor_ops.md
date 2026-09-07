@@ -1,6 +1,7 @@
 # Qwen floor ops — do not babysit
 
-Rule: **vLLM + concurrency ≥ 32 + spot-watch + systemd**. Never transformers `generate` one-at-a-time.
+Canonical protocol: `docs/plans/fm_gpu_eval_protocol.md` (smoke → vLLM max concurrency → watchdog).
+This file is the VM-specific notes.
 
 ## Machine
 - VM: `fm-floor-qwen-l4` (`g2-standard-8` + L4, Spot)

@@ -13,13 +13,16 @@ Environment=CONCURRENCY=32
 Environment=MAX_NUM_SEQS=64
 Environment=MAX_TOKENS=64
 Environment=WORKFLOW_MAX_TOKENS=512
+Environment=MODE=full
+Environment=WATCHDOG_ARMED=1
 Environment=HOME=/home/shreyaspatel
-ExecStartPre=/bin/bash -lc 'pkill -f qwen_openai_server.py || true; pkill -f vllm.entrypoints.openai || true'
-ExecStart=/usr/bin/python3 -u /opt/usersim_fm/scripts/colab_qwen3_8b_floor_befm.py
+ExecStartPre=/bin/bash -lc 'pkill -f qwen_openai_server.py || true'
+ExecStart=/bin/bash /opt/usersim_fm/scripts/run_qwen_befm_full.sh
 Restart=on-failure
 RestartSec=20
 StandardOutput=append:/opt/usersim_fm/results/qwen_befm_full.log
 StandardError=append:/opt/usersim_fm/results/qwen_befm_full.log
+KillMode=control-group
 
 [Install]
 WantedBy=multi-user.target

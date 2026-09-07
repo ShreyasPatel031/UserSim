@@ -1,0 +1,14 @@
+---
+description: Mandatory protocol for any FM GPU eval (Be.FM, Psych-101, Socrates, floors)
+alwaysApply: true
+---
+
+# FM GPU eval protocol
+
+When starting or resuming any foundation-model GPU eval (BehaviorBench, Psych-101 NLL, SocSci210, floors):
+
+1. **Smoke first.** Same harness, same parse, small slice. Require `SMOKE_OK.json` / `SMOKE_PASSED` before a full run. If format/parse is wrong, stop.
+2. **vLLM only, max concurrency.** OpenAI server or `vllm.LLM`. Client concurrency ≥ 32, `--max-num-seqs` ≥ 64. Never transformers `generate` or `--concurrency 1`.
+3. **Watchdog armed before the long job.** Label the VM `usersim-spot-watch=true`, enable systemd, confirm the spot watchdog VM or `watch_qwen_befm_floor.sh` is up.
+
+Entry points: `docs/plans/fm_gpu_eval_protocol.md`, `scripts/fm_baselines/preflight_gpu_eval.py`, `MODE=smoke|full` on `colab_qwen3_8b_floor_befm.py`.

@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
-"""Qwen3-8B-Base full BehaviorBench floor via vLLM (not transformers generate).
+"""Qwen3-8B-Base BehaviorBench floor via vLLM.
 
-Starts an OpenAI-compatible vLLM server, then runs the official harness
-with high concurrency. Resumes completed tasks.
+Protocol (docs/plans/fm_gpu_eval_protocol.md):
+  MODE=smoke  small representative slice, write SMOKE_OK.json
+  MODE=full   refuse unless smoke passed + watchdog armed + concurrency>=32
 
 Env:
+  MODE                 smoke | full  (default full)
   FLOOR_MODEL          default Qwen/Qwen3-8B-Base
   ROOT                 /opt/usersim_fm or /content/fm_baselines
-  CONCURRENCY          client threads (default 32)
-  MAX_NUM_SEQS         vLLM in-flight seqs (default 64)
+  CONCURRENCY          client threads (default 32, minimum 32)
+  MAX_NUM_SEQS         vLLM in-flight seqs (default 64, minimum 64)
   MAX_TOKENS           default 64
   WORKFLOW_MAX_TOKENS  default 512
   GPU_MEM_UTIL         default 0.90
   MAX_MODEL_LEN        default 4096
   SKIP_WORKFLOW        1 to skip BLEURT workflow group
+  SMOKE_N              survey samples in smoke (default 8)
+  SMOKE_GAME_N         game samples in smoke (default 8)
 """
 from __future__ import annotations
 
@@ -25,6 +29,15 @@ import time
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from protocol import (  # noqa: E402
+    require_smoke,
+    require_vllm_concurrency,
+    require_watchdog,
+    validate_harness_json,
+    write_smoke_ok,
+)
 
 ROOT = Path(os.environ.get("ROOT", "/opt/usersim_fm"))
 if not ROOT.exists():
@@ -43,6 +56,9 @@ CONCURRENCY = int(os.environ.get("CONCURRENCY", "32"))
 MAX_NUM_SEQS = int(os.environ.get("MAX_NUM_SEQS", "64"))
 GPU_MEM_UTIL = os.environ.get("GPU_MEM_UTIL", "0.90")
 MAX_MODEL_LEN = int(os.environ.get("MAX_MODEL_LEN", "4096"))
+MODE = os.environ.get("MODE", "full").strip().lower()
+SMOKE_N = int(os.environ.get("SMOKE_N", "8"))
+SMOKE_GAME_N = int(os.environ.get("SMOKE_GAME_N", "8"))
 
 WORKFLOW_TASKS = [
     "workflow_idea_generation",
@@ -250,8 +266,9 @@ def start_vllm(server_py: str) -> subprocess.Popen:
     raise TimeoutError("vLLM did not become healthy")
 
 
-def run_eval(py: str, tasks: list[str], out_dir: Path, max_tokens: int) -> None:
+def run_eval(py: str, tasks: list[str], out_dir: Path, max_tokens: int, extra: list[str] | None = None) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
+    extra_s = " ".join(extra or [])
     cmd = (
         f"cd {BB_REPO} && "
         f"MODEL_NAME={MODEL_NAME} API_BASE=http://127.0.0.1:{PORT}/v1 "
@@ -262,10 +279,53 @@ def run_eval(py: str, tasks: list[str], out_dir: Path, max_tokens: int) -> None:
         f"--api-base http://127.0.0.1:{PORT}/v1 "
         f"--temperature 0.6 --top-p 0.95 --top-k 20 "
         f"--max-tokens {max_tokens} --concurrency {CONCURRENCY} "
-        f"--output-dir {out_dir}"
+        f"--output-dir {out_dir} {extra_s}"
     )
     print(f"=== EVAL {tasks} max_tokens={max_tokens} concurrency={CONCURRENCY} ===", flush=True)
     sh(cmd, check=True)
+
+
+def latest_json(out_dir: Path) -> Path:
+    files = sorted(out_dir.rglob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    files = [p for p in files if p.name not in {"SMOKE_OK.json", "SUMMARY.json", "PROGRESS.json"}]
+    if not files:
+        raise FileNotFoundError(f"no result json under {out_dir}")
+    return files[0]
+
+
+def run_smoke(eval_py: str) -> None:
+    reports = []
+    survey_out = RESULTS / "smoke_pers_score_pred"
+    run_eval(
+        eval_py,
+        ["pers_score_pred"],
+        survey_out,
+        MAX_TOKENS,
+        [f"--num-samples {SMOKE_N}", "--seed 0"],
+    )
+    reports.append(validate_harness_json(latest_json(survey_out), "pers_score_pred"))
+    game_out = RESULTS / "smoke_game_behavior_dictator"
+    run_eval(
+        eval_py,
+        ["game_behavior_dictator"],
+        game_out,
+        MAX_TOKENS,
+        [f"--num-samples-per-game {SMOKE_GAME_N}", "--seed 0"],
+    )
+    reports.append(validate_harness_json(latest_json(game_out), "game_behavior_dictator"))
+    write_smoke_ok(
+        RESULTS,
+        reports,
+        {
+            "model": FLOOR_MODEL,
+            "concurrency": CONCURRENCY,
+            "max_num_seqs": MAX_NUM_SEQS,
+            "smoke_n": SMOKE_N,
+            "smoke_game_n": SMOKE_GAME_N,
+        },
+    )
+    print(json.dumps({"smoke": reports}, indent=2), flush=True)
+    print("SMOKE_PASSED", flush=True)
 
 
 def collect_summary(done: list[str], failed: list[str]) -> dict:
@@ -341,10 +401,18 @@ def completed_so_far() -> list[str]:
 def main() -> None:
     RESULTS.mkdir(parents=True, exist_ok=True)
     assert BB_DATA.exists(), f"missing {BB_DATA}"
+    if MODE not in {"smoke", "full"}:
+        raise SystemExit(f"MODE must be smoke|full, got {MODE}")
+    require_vllm_concurrency(CONCURRENCY, MAX_NUM_SEQS)
+    if MODE == "full":
+        require_watchdog()
+        require_smoke(RESULTS)
 
     eval_py = ensure_python311()
     server_py = ensure_server_python()
     print(
+        "mode",
+        MODE,
         "eval_py",
         eval_py,
         "server_py",
@@ -358,13 +426,20 @@ def main() -> None:
     install(eval_py, server_py)
     symlink_data()
 
-    done = completed_so_far()
-    failed: list[str] = []
-    write_progress(done, failed, None)
-    print("resume done", done, flush=True)
+    if MODE == "full":
+        done = completed_so_far()
+        failed: list[str] = []
+        write_progress(done, failed, None)
+        print("resume done", done, flush=True)
+    else:
+        done = []
+        failed = []
 
     proc = start_vllm(server_py)
     try:
+        if MODE == "smoke":
+            run_smoke(eval_py)
+            return
         for g in TASK_GROUPS:
             if g == WORKFLOW_TASKS:
                 if all(t in done for t in WORKFLOW_TASKS):
