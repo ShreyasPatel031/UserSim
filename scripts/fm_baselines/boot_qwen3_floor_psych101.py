@@ -15,8 +15,27 @@ def sh(cmd: str) -> None:
     subprocess.run(cmd, shell=True, check=True)
 
 
+def write_hf_token() -> None:
+    import os
+
+    tok = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN") or ""
+    if not tok:
+        cached = Path.home() / ".cache" / "huggingface" / "token"
+        if cached.exists():
+            tok = cached.read_text().strip()
+    if not tok:
+        return
+    os.environ["HF_TOKEN"] = tok
+    os.environ["HUGGING_FACE_HUB_TOKEN"] = tok
+    p = Path.home() / ".cache" / "huggingface"
+    p.mkdir(parents=True, exist_ok=True)
+    (p / "token").write_text(tok)
+
+
 def main() -> None:
     import torch
+
+    write_hf_token()
 
     print(
         "GPU",
@@ -68,6 +87,9 @@ def main() -> None:
     cmd = (
         "export WATCHDOG_ARMED=1 WATCHDOG_MARKER=/content/fm_baselines/WATCHDOG_ARMED "
         "MAX_SEQ=4096 FLOOR_MODEL=Qwen/Qwen3-8B-Base; "
+        "if [ -f ~/.cache/huggingface/token ]; then "
+        "export HF_TOKEN=$(cat ~/.cache/huggingface/token); "
+        "export HUGGING_FACE_HUB_TOKEN=$HF_TOKEN; fi; "
         f"if [ ! -f {smoke} ]; then echo PROTOCOL: smoke first; "
         f"MODE=smoke python3 -u {runner} >> {log} 2>&1; fi; "
         f"MODE=full python3 -u {runner} >> {log} 2>&1"

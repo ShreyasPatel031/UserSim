@@ -174,9 +174,11 @@ def main() -> None:
         if counts[exp]
     }
     total_n = sum(counts.values())
+    complete = bool(total_n >= len(rows) and smoke_n == 0)
     summary = {
         "model": MODEL,
         "role": "base_floor",
+        "complete": complete,
         "total_nll_sum": sum(sums.values()),
         "n_items": total_n,
         "n_experiments": len(per_exp),
@@ -186,7 +188,7 @@ def main() -> None:
             "actual": total_n,
             "expected": len(rows),
             "unit": "items",
-            "complete": total_n >= len(rows) and smoke_n == 0,
+            "complete": complete,
         },
     }
     (RESULTS / "SUMMARY.json").write_text(json.dumps(summary, indent=2))

@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""One Colab T4 for the Qwen3-8B-Base Psych-101 NLL floor.
+"""One Colab T4 for the Qwen3-8B-Base Socrates / SocSci210 Wasserstein floor.
 
-This Colab account only entitles T4 (L4/A100 rejected). 8B vLLM bf16 cannot
-fit, so NLL uses 4-bit with the char-offset mask. Smoke first, then full.
-Supervisor is the watchdog. Socrates may use the second T4; do not start Be.FM.
+Account entitles T4 only. 8B vLLM fp16 does not fit, so this uses vLLM 4-bit.
+Smoke (32 rows, ≥1 parsed number) then full 40 unseen studies. Resume via
+predictions.jsonl. Supervisor is the watchdog.
+
+Do not start Be.FM here — that floor is on the GCP L4.
 """
 from __future__ import annotations
 
@@ -17,7 +19,7 @@ from gcp_auth import activate_service_account, ensure_adc  # noqa: E402
 from protocol import require_injected_gcp  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
-SESSION = "fm-floor-psych101"
+SESSION = "fm-floor-socrates"
 AUTH = ["colab", "--auth=adc"]
 REMOTE = "/content/fm_baselines"
 
@@ -65,7 +67,7 @@ def main() -> None:
         ),
         "mkdir",
     )
-    for name in ("boot_qwen3_floor_psych101.py", "colab_qwen3_8b_floor_psych101_nll.py"):
+    for name in ("boot_qwen3_floor_socrates.py", "colab_qwen3_8b_floor_socrates_vllm.py"):
         must(colab("upload", "-s", SESSION, str(HERE / name), f"{REMOTE}/scripts/{name}"), f"upload {name}")
 
     hf = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN") or ""
@@ -98,12 +100,12 @@ def main() -> None:
                 SESSION,
                 "--timeout",
                 "600",
-                input_text=f"import subprocess,sys\nsubprocess.check_call([sys.executable,'-u','{REMOTE}/scripts/boot_qwen3_floor_psych101.py'])\n",
+                input_text=f"import subprocess,sys\nsubprocess.check_call([sys.executable,'-u','{REMOTE}/scripts/boot_qwen3_floor_socrates.py'])\n",
             ),
             "boot",
         )[-1500:]
     )
-    print("COLAB_PSYCH101_BOOTED", SESSION, flush=True)
+    print("COLAB_SOCRATES_BOOTED", SESSION, flush=True)
 
 
 if __name__ == "__main__":

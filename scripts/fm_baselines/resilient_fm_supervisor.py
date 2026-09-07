@@ -224,11 +224,24 @@ def push_and_boot(job: Job) -> None:
             f"print('WROTE', {remote!r}, Path({remote!r}).stat().st_size, flush=True)"
         )
     boot_remote = f"/content/fm_baselines/scripts/{job.boot_py.name}"
+    hf = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN") or ""
+    hf_setup = ""
+    if hf:
+        hf_setup = (
+            "import os\n"
+            f"os.environ['HF_TOKEN']={hf!r}\n"
+            "os.environ['HUGGING_FACE_HUB_TOKEN']=os.environ['HF_TOKEN']\n"
+            "p=Path.home()/'.cache'/'huggingface'\n"
+            "p.mkdir(parents=True, exist_ok=True)\n"
+            "(p/'token').write_text(os.environ['HF_TOKEN'])\n"
+            "print('hf_ok', flush=True)\n"
+        )
     code = (
         "import base64, subprocess, sys\n"
         "from pathlib import Path\n"
         "Path('/content/fm_baselines/scripts').mkdir(parents=True, exist_ok=True)\n"
         "Path('/content/fm_baselines/results').mkdir(parents=True, exist_ok=True)\n"
+        + hf_setup
         + "\n".join(writes)
         + f"\nsubprocess.check_call([sys.executable, '-u', {boot_remote!r}])\n"
     )
@@ -303,10 +316,16 @@ def job_done(job: Job) -> bool:
     if local_done.exists() and local_done.stat().st_size > 0:
         try:
             d = json.loads(local_done.read_text())
-            if isinstance(d, dict) and "complete" in d:
-                return bool(d.get("complete"))
-            if "wasserstein_mean" in d or "total_nll_sum" in d:
-                return True
+            if isinstance(d, dict):
+                if "complete" in d:
+                    return bool(d.get("complete"))
+                cov = d.get("coverage") or {}
+                if isinstance(cov, dict) and "complete" in cov:
+                    return bool(cov.get("complete"))
+                if d.get("mode") == "smoke" or d.get("smoke_studies"):
+                    return False
+                if "wasserstein_mean" in d or "total_nll_sum" in d:
+                    return True
         except Exception:
             if job.name != "floor_befm":
                 return True
@@ -403,25 +422,47 @@ def tick(job: Job) -> None:
     log(f"{job.name}: alive, no growth yet ({age_min:.0f}m / stall={STALL_MIN}m)")
 
 
+def _floor_psych101_job() -> Job:
+    return Job(
+        name="floor_psych101",
+        session="fm-floor-psych101",
+        gpus=["T4"],
+        remote_progress="/content/fm_baselines/results/qwen3_8b_floor_psych101/PROGRESS.json",
+        remote_done="/content/fm_baselines/results/qwen3_8b_floor_psych101/SUMMARY.json",
+        local_dir=LOCAL / "qwen3_8b_floor_psych101",
+        boot_py=SCRIPTS / "boot_qwen3_floor_psych101.py",
+        progress_is_lines=False,
+    )
+
+
+def _floor_socrates_job() -> Job:
+    return Job(
+        name="floor_socrates",
+        session="fm-floor-socrates",
+        gpus=["T4"],
+        remote_progress="/content/fm_baselines/results/qwen3_8b_floor_socrates/predictions.jsonl",
+        remote_done="/content/fm_baselines/results/qwen3_8b_floor_socrates/SUMMARY.json",
+        local_dir=LOCAL / "qwen3_8b_floor_socrates",
+        boot_py=SCRIPTS / "boot_qwen3_floor_socrates.py",
+        progress_is_lines=True,
+    )
+
+
 def make_jobs(
     with_befm: bool,
     floor: bool = False,
     floor_befm: bool = False,
     floor_psych101: bool = False,
+    floor_socrates: bool = False,
+    floor_remaining: bool = False,
 ) -> list[Job]:
+    if floor_remaining or floor:
+        # Remaining Colab floors: Psych-101 + Socrates. Be.FM stays on GCP L4.
+        return [_floor_psych101_job(), _floor_socrates_job()]
+    if floor_socrates:
+        return [_floor_socrates_job()]
     if floor_psych101:
-        return [
-            Job(
-                name="floor_psych101",
-                session="fm-floor-psych101",
-                gpus=["T4"],
-                remote_progress="/content/fm_baselines/results/qwen3_8b_floor_psych101/PROGRESS.json",
-                remote_done="/content/fm_baselines/results/qwen3_8b_floor_psych101/SUMMARY.json",
-                local_dir=LOCAL / "qwen3_8b_floor_psych101",
-                boot_py=SCRIPTS / "boot_qwen3_floor_psych101.py",
-                progress_is_lines=False,
-            )
-        ]
+        return [_floor_psych101_job()]
     if floor_befm:
         # One L4 only. Do not also start psych101/socrates on a second GPU.
         return [
@@ -435,30 +476,6 @@ def make_jobs(
                 boot_py=SCRIPTS / "boot_qwen3_floor_befm.py",
                 progress_is_lines=False,
             )
-        ]
-    if floor:
-        # Qwen3-8B-Base zero-shot floors. L4-only: keep retrying until Colab assigns L4.
-        return [
-            Job(
-                name="floor_psych101",
-                session="fm-floor-psych101",
-                gpus=["L4"],
-                remote_progress="/content/fm_baselines/results/qwen3_8b_floor_psych101/PROGRESS.json",
-                remote_done="/content/fm_baselines/results/qwen3_8b_floor_psych101/SUMMARY.json",
-                local_dir=LOCAL / "qwen3_8b_floor_psych101",
-                boot_py=SCRIPTS / "boot_qwen3_floor_psych101.py",
-                progress_is_lines=False,
-            ),
-            Job(
-                name="floor_socrates",
-                session="fm-floor-socrates",
-                gpus=["L4"],
-                remote_progress="/content/fm_baselines/results/qwen3_8b_floor_socrates/predictions.jsonl",
-                remote_done="/content/fm_baselines/results/qwen3_8b_floor_socrates/SUMMARY.json",
-                local_dir=LOCAL / "qwen3_8b_floor_socrates",
-                boot_py=SCRIPTS / "boot_qwen3_floor_socrates.py",
-                progress_is_lines=True,
-            ),
         ]
     jobs = [
         Job(
@@ -517,6 +534,16 @@ def main() -> None:
         action="store_true",
         help="One Colab T4: Qwen3-8B-Base Psych-101 NLL floor (smoke+watchdog). T4 cannot host 8B vLLM bf16.",
     )
+    ap.add_argument(
+        "--floor-socrates",
+        action="store_true",
+        help="One Colab T4: Qwen3-8B-Base Socrates Wasserstein floor (vLLM 4-bit, smoke+watchdog).",
+    )
+    ap.add_argument(
+        "--floor-remaining",
+        action="store_true",
+        help="Remaining Colab floors: Psych-101 + Socrates on two T4s. Be.FM stays on GCP.",
+    )
     ap.add_argument("--poll", type=int, default=POLL_SEC)
     args = ap.parse_args()
 
@@ -525,6 +552,8 @@ def main() -> None:
         floor=args.floor,
         floor_befm=args.floor_befm,
         floor_psych101=args.floor_psych101,
+        floor_socrates=args.floor_socrates,
+        floor_remaining=args.floor_remaining,
     )
     log(f"SUPERVISOR_START jobs={[j.name for j in jobs]}")
 
