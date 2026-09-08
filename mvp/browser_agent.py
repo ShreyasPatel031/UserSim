@@ -636,6 +636,8 @@ async def run_browser_agent(
 
     # YouTube needs auth/bootstrap before the first paint. Everyone else: open the
     # chosen URL immediately and paint pixels; finish auth in parallel.
+    # Warm path: skip blocking auth entirely — public sites don't need cookies for
+    # first actions, and deferred vault I/O was the main TTFT killer.
     auth_task: asyncio.Task | None = None
     storage_state: Any = None
     if is_youtube:
@@ -654,7 +656,7 @@ async def run_browser_agent(
                 "You are signed into YouTube (Gmail session cookies loaded). Use the personalized "
                 "home feed, subscriptions, and account UI as a real logged-in user would.\n"
             )
-    else:
+    elif not use_warm:
         auth_task = asyncio.create_task(asyncio.to_thread(ensure_site_auth, url))
 
     cookie_state = storage_state if isinstance(storage_state, dict) else None
@@ -669,6 +671,8 @@ async def run_browser_agent(
     browser_session = None
     history = None
     backend = "browserbase"
+    warm_live_url = None
+    warm_bb_id = None
 
     if use_warm:
         browser_session = warm["browser_session"]
@@ -676,6 +680,8 @@ async def run_browser_agent(
         owns_session = bool(warm.get("owns_session", True))
         session_url = getattr(bb_session, "session_url", None) if bb_session else None
         backend = "browserbase"
+        warm_live_url = warm.get("live_view_url")
+        warm_bb_id = warm.get("browserbase_session_id") or getattr(bb_session, "id", None)
         # Publish warm pixels under this agent id immediately.
         dest = screenshot_dir / "bbox_0.png"
         try:
@@ -684,6 +690,8 @@ async def run_browser_agent(
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] warm shot copy failed: {exc!r}", flush=True)
             use_warm = False
+            if not is_youtube and auth_task is None:
+                auth_task = asyncio.create_task(asyncio.to_thread(ensure_site_auth, url))
         if use_warm:
             step = {
                 "step": 0,
@@ -701,6 +709,31 @@ async def run_browser_agent(
             }
             if on_step is not None:
                 maybe = on_step(step)
+                if asyncio.iscoroutine(maybe):
+                    await maybe
+            # Live + thought immediately — do not wait for ChatGoogle / Agent().
+            if on_step is not None and (warm_live_url or bb_session is not None):
+                maybe = on_step(
+                    {
+                        "step": None,
+                        "progress_only": True,
+                        "live_active": True,
+                        "live_view_url": warm_live_url,
+                        "browserbase_session_id": warm_bb_id,
+                        "action": "Agent started — live browser on",
+                        "thought": "I'm on the page. Looking around before I click…",
+                        "thought_detail": {
+                            "thinking": (
+                                "Landing page is open. Reading what's visible and "
+                                "choosing a first action."
+                            )
+                        },
+                        "observation": "",
+                        "url": url,
+                        "screenshot_url": None,
+                        "outcome": "neutral",
+                    }
+                )
                 if asyncio.iscoroutine(maybe):
                     await maybe
             print(f"[{agent_id}] warm opening frame published immediately", flush=True)
@@ -781,10 +814,35 @@ async def run_browser_agent(
             raise
 
     try:
-        # Auth/cookies after first pixels (non-YouTube). Agent loop still gets them.
+        # Auth/cookies after first pixels (non-YouTube, non-warm).
+        # Warm sessions skip this — first click should not wait on vault I/O.
+        # Build the LLM in parallel with any remaining auth wait.
+        def _build_llm() -> Any:
+            from browser_use import ChatGoogle
+
+            return ChatGoogle(
+                model=model,
+                vertexai=True,
+                credentials=vertex_credentials(),
+                project=GCP_PROJECT,
+                location=location_for(model),
+                temperature=0,
+            )
+
+        llm_task = asyncio.create_task(asyncio.to_thread(_build_llm))
+
         if auth_task is not None:
             try:
-                storage_state = await auth_task
+                # Cap wait so a slow vault never owns TTFT; skip cookies if late.
+                storage_state = await asyncio.wait_for(auth_task, timeout=2.5)
+            except asyncio.TimeoutError:
+                print(f"[{agent_id}] deferred auth timed out — starting without cookies", flush=True)
+                auth_task.cancel()
+                try:
+                    await auth_task
+                except Exception:
+                    pass
+                storage_state = None
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] deferred auth failed: {exc!r}", flush=True)
                 storage_state = None
@@ -798,16 +856,9 @@ async def run_browser_agent(
             injected = await _inject_cookies(browser_session, cookie_state)
             print(f"[{agent_id}] injected {injected} cookies via CDP", flush=True)
 
-        from browser_use import Agent, ChatGoogle
+        from browser_use import Agent
 
-        llm = ChatGoogle(
-            model=model,
-            vertexai=True,
-            credentials=vertex_credentials(),
-            project=GCP_PROJECT,
-            location=location_for(model),
-            temperature=0,
-        )
+        llm = await llm_task
         persona_line = f"You are {persona.get('name')}: {persona.get('bio')}"
         stay_put = (
             f"CRITICAL: Stay on {start_url} and its own pages/subdomains only. "
@@ -850,16 +901,18 @@ async def run_browser_agent(
             ),
         )
         # Signal UI: agent loop is starting — show live Browserbase view now.
-        if on_step is not None and bb_session is not None:
-            live_url = None
-            try:
-                from capability.browserbase_client import session_live_view_url
+        # Warm path already flipped live_active; skip the extra live-view HTTP round-trip.
+        if on_step is not None and bb_session is not None and not use_warm:
+            live_url = warm_live_url
+            if not live_url:
+                try:
+                    from capability.browserbase_client import session_live_view_url
 
-                sid = getattr(bb_session, "id", None)
-                if sid:
-                    live_url = await asyncio.to_thread(session_live_view_url, str(sid))
-            except Exception:
-                live_url = None
+                    sid = getattr(bb_session, "id", None)
+                    if sid:
+                        live_url = await asyncio.to_thread(session_live_view_url, str(sid))
+                except Exception:
+                    live_url = None
             maybe = on_step(
                 {
                     "step": None,
@@ -886,6 +939,7 @@ async def run_browser_agent(
             agent_id=agent_id,
             on_step=on_step,
         )
+        print(f"[{agent_id}] agent.run starting (warm={use_warm})", flush=True)
         history = await agent.run(
             max_steps=max_steps,
             on_step_start=on_step_start,

@@ -922,6 +922,13 @@ async def run_study(
                 "browser",
                 f"Warming first screenshot for {study.url} during brief",
             )
+            # Prewarm Vertex ADC so agent.run isn't blocked on first credential load.
+            try:
+                from auth import vertex_credentials
+
+                asyncio.create_task(asyncio.to_thread(vertex_credentials))
+            except Exception:
+                pass
 
         access = await fetch_page_access(study.url)
         study.access_backend = access.backend
@@ -1348,19 +1355,26 @@ async def run_study(
                     sess["trace"] = [step0]
                     sess["num_steps"] = 1
                     sess["last_action"] = step0["action"]
-                    # Stash live URL early; UI only mounts the iframe when live_active.
+                    # Flip live view on with the first pixels when we already have a
+                    # Browserbase debugger URL — TTFT UX should not wait for Agent().
                     if warm_opening.get("live_view_url"):
                         sess["live_view_url"] = warm_opening["live_view_url"]
+                        sess["live_active"] = True
+                    else:
+                        sess["live_active"] = False
                     if warm_opening.get("browserbase_session_id"):
                         sess["browserbase_session_id"] = warm_opening[
                             "browserbase_session_id"
                         ]
-                    sess["live_active"] = False
                     sess["live_thoughts"] = [
                         {
                             "at": _now(),
-                            "text": f"Opened {site} — waiting for the simulated user to start…",
-                            "kind": "status",
+                            "text": (
+                                "I'm on the page. Looking around before I click…"
+                                if sess.get("live_active")
+                                else f"Opened {site} — starting the simulated user…"
+                            ),
+                            "kind": "thinking" if sess.get("live_active") else "status",
                         }
                     ]
                     study.updated_at = _now()
@@ -1775,8 +1789,8 @@ async def run_study(
                 study.agent_results = []
                 await asyncio.gather(*[_run_snapshot_fallback(t) for t in study.tasks])
             else:
-                # Mark each agent with its chosen URL and launch immediately —
-                # opening-frame pixels should arrive before the LLM agent loop.
+                # Mark each agent with its chosen URL and launch immediately.
+                # Do not clobber a warm session that already has pixels / live view.
                 for task in study.tasks:
                     aid = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
                     sess = study.live_sessions.get(aid)
@@ -1784,8 +1798,13 @@ async def run_study(
                         continue
                     site = task.get("site_url") or study.url
                     sess["site_url"] = site
-                    sess["status"] = "starting"
-                    sess["last_action"] = f"Opening {site}"
+                    if sess.get("trace") or sess.get("live_active"):
+                        sess["status"] = "running"
+                        if not sess.get("last_action"):
+                            sess["last_action"] = f"Opened {site}"
+                    else:
+                        sess["status"] = "starting"
+                        sess["last_action"] = f"Opening {site}"
                 touch(
                     f"Live browser agents — 0/{len(study.tasks)} done · "
                     f"{len(study.tasks)} active · 0 queued · 0 steps"
@@ -1802,7 +1821,7 @@ async def run_study(
                     study,
                     "agents",
                     f"Launching {len(study.tasks)} live browser agents "
-                    "(first screenshot as soon as each URL opens)",
+                    "(live view on with first pixels)",
                 )
 
                 async def _on_agent_step(agent_id: str, step: dict[str, Any]) -> None:
@@ -1924,9 +1943,13 @@ async def run_study(
                         },
                     )
                     raise_if_killed(study)
-                    sess["status"] = "starting"
                     sess["site_url"] = site
-                    sess["last_action"] = f"Opening {site}"
+                    # Keep warm pixels / live_active visible — don't flash "starting".
+                    if not (sess.get("trace") or sess.get("live_active")):
+                        sess["status"] = "starting"
+                        sess["last_action"] = f"Opening {site}"
+                    else:
+                        sess["status"] = "running"
                     study.updated_at = _now()
                     if on_update:
                         try:
@@ -1942,15 +1965,20 @@ async def run_study(
                         agent_id=agent_id,
                         persona_name=persona.get("name"),
                     )
+                    name = persona.get("name") or "User"
                     thoughts = list(sess.get("live_thoughts") or [])
-                    thoughts.append(
-                        {
-                            "at": _now(),
-                            "text": f"{persona.get('name') or 'User'} is starting — reading {site}…",
-                            "kind": "status",
-                        }
+                    already = any(
+                        name in (t.get("text") or "") for t in thoughts[-3:]
                     )
-                    sess["live_thoughts"] = thoughts[-24:]
+                    if not already:
+                        thoughts.append(
+                            {
+                                "at": _now(),
+                                "text": f"{name} is acting — reading {site}…",
+                                "kind": "thinking",
+                            }
+                        )
+                        sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
                     try:
                         async with _BROWSER_SEMAPHORE:

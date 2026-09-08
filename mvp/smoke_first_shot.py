@@ -71,6 +71,28 @@ def first_shot(data: dict) -> tuple[str | None, str | None, int]:
     return None, None, len(items)
 
 
+def live_active_at(data: dict) -> tuple[bool, str | None]:
+    live = data.get("live_sessions") or {}
+    items = list(live.values()) if isinstance(live, dict) else list(live or [])
+    for sess in items:
+        if sess.get("live_active") and sess.get("live_view_url"):
+            return True, sess.get("live_view_url")
+    return False, None
+
+
+def first_acting_thought(data: dict) -> str | None:
+    live = data.get("live_sessions") or {}
+    items = list(live.values()) if isinstance(live, dict) else list(live or [])
+    skip = ("waiting", "opened ")
+    for sess in items:
+        for th in sess.get("live_thoughts") or []:
+            text = (th.get("text") or "").strip()
+            low = text.lower()
+            if text and not any(low.startswith(s) for s in skip):
+                return text
+    return None
+
+
 def main() -> int:
     t0 = time.time()
     print(f"→ POST study base={BASE} url={URL}")
@@ -81,8 +103,11 @@ def main() -> int:
     t_sessions = None
     t_url = None
     t_shot = None
+    t_live = None
+    t_thought = None
     shot_url = None
     shot_action = None
+    thought_text = None
     last_phase = ""
 
     while time.time() - t0 < MAX_SHOT_S + 60:
@@ -115,18 +140,34 @@ def main() -> int:
                         print(f"  url_chosen(task)={site}  (+{t_url - t0:.1f}s from start)")
                         break
         url, action, _ = first_shot(data)
+        if t_live is None:
+            active, _ = live_active_at(data)
+            if active:
+                t_live = time.time()
+                print(f"  live_active  (+{t_live - t0:.1f}s from start)")
+        if t_thought is None:
+            th = first_acting_thought(data)
+            if th:
+                t_thought = time.time()
+                thought_text = th
+                print(f"  first_thought (+{t_thought - t0:.1f}s): {th[:80]}")
         if phase != last_phase:
             print(
                 f"  [{time.time() - t0:5.1f}s] status={data.get('status')} "
-                f"phase={phase} sessions={n} shot={bool(url)}"
+                f"phase={phase} sessions={n} shot={bool(url)} "
+                f"live={bool(t_live)} thought={bool(t_thought)}"
             )
             last_phase = phase
-        if url:
+        if url and t_shot is None:
             t_shot = time.time()
             shot_url = url
             shot_action = action
+        # Need shot + live for TTFT UX check; don't wait forever for thought.
+        if t_shot and t_live:
             break
-        time.sleep(0.5)
+        if url and time.time() - t0 > MAX_SHOT_S + 20:
+            break
+        time.sleep(0.35)
 
     # Kill to save Browserbase $
     try:
@@ -156,10 +197,17 @@ def main() -> int:
             print(f"gap_url_to_shot: {t_shot - t_url:.1f}s  ← after task URL chosen")
         if t_sessions:
             print(f"gap_sessions_to_shot: {t_shot - t_sessions:.1f}s")
-        # Stage should only appear with pixels; require first shot soon after URL.
+    if t_live and t_url:
+        print(f"gap_url_to_live: {t_live - t_url:.1f}s  ← TTFT UX (live browser on)")
+    if t_thought and t_url:
+        print(f"gap_url_to_thought: {t_thought - t_url:.1f}s  ({(thought_text or '')[:60]})")
+    if t_shot:
         gap = (t_shot - t_url) if t_url else (t_shot - t0)
+        live_gap = (t_live - t_url) if (t_live and t_url) else None
         if gap <= MAX_SHOT_S and t_shot - t0 <= MAX_SHOT_S + 60:
             print(f"OK first screenshot {gap:.1f}s after URL known")
+            if live_gap is not None:
+                print(f"OK live_active {live_gap:.1f}s after URL known")
             return 0
         print(f"FAIL first screenshot gap {gap:.1f}s > {MAX_SHOT_S:.0f}s")
         return 1
