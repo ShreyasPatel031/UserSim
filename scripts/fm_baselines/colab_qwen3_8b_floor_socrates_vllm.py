@@ -20,8 +20,12 @@ import numpy as np
 ROOT = Path(os.environ.get("ROOT", "/opt/usersim_fm"))
 if not ROOT.exists():
     ROOT = Path("/content/fm_baselines")
-RESULTS = ROOT / "results" / "qwen3_8b_floor_socrates"
+RESULTS = Path(
+    os.environ.get("RESULTS_DIR", str(ROOT / "results" / "qwen3_8b_floor_socrates"))
+)
 MODEL = os.environ.get("FLOOR_MODEL", "Qwen/Qwen3-8B-Base")
+# Optional LoRA adapter: same metric, same prompts, adapter-served weights.
+LORA_PATH = os.environ.get("LORA_PATH", "").strip()
 SYSTEM = (
     "You are a participant in a survey experiment. "
     "Answer with a single number only when a numeric response is required."
@@ -143,6 +147,17 @@ def main() -> None:
     if todo:
         tok = AutoTokenizer.from_pretrained(MODEL, trust_remote_code=True)
         print("Starting vLLM", MODEL, flush=True)
+        lora_request = None
+        llm_kwargs = {}
+        if LORA_PATH:
+            from vllm.lora.request import LoRARequest
+
+            print("with LoRA adapter", LORA_PATH, flush=True)
+            llm_kwargs = {
+                "enable_lora": True,
+                "max_lora_rank": int(os.environ.get("MAX_LORA_RANK", "64")),
+            }
+            lora_request = LoRARequest("socrates_sft", 1, LORA_PATH)
         llm = LLM(
             model=MODEL,
             trust_remote_code=True,
@@ -150,6 +165,7 @@ def main() -> None:
             gpu_memory_utilization=float(os.environ.get("GPU_MEM_UTIL", "0.90")),
             max_num_seqs=MAX_NUM_SEQS,
             dtype="half",
+            **llm_kwargs,
         )
         sampling = SamplingParams(temperature=0.6, top_p=0.9, max_tokens=32)
 
@@ -167,7 +183,9 @@ def main() -> None:
                     )
                     prompts.append(text)
                 t0 = time.time()
-                outs = llm.generate(prompts, sampling, use_tqdm=False)
+                outs = llm.generate(
+                    prompts, sampling, use_tqdm=False, lora_request=lora_request
+                )
                 dt = time.time() - t0
                 for r, out in zip(batch, outs):
                     gen = out.outputs[0].text if out.outputs else ""
@@ -217,7 +235,8 @@ def main() -> None:
     )
     summary = {
         "model": MODEL,
-        "role": "base_floor",
+        "lora": LORA_PATH or None,
+        "role": "sft_adapter" if LORA_PATH else "base_floor",
         "n_studies": n_studies,
         "n_cells": agg["n_cells"],
         "n_preds": n_preds,
