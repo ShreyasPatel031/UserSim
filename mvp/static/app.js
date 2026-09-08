@@ -409,10 +409,25 @@ function renderFocusStage(session, sessionIdx) {
   let visual = "";
   const browsing = ["starting", "pending", "running"].includes(String(session?.status || ""));
   const liveView = session?.live_view_url;
+  // XOR: live iframe when agent is up; otherwise screenshot; never both.
   const showLive = Boolean(liveView && session?.live_active && browsing);
-  const shotSrc = step ? stepShotSrc(step) : "";
-  // Screenshot on first touch; live Browserbase iframe once the agent starts.
-  if (shotSrc || showLive) {
+  const shotSrc = !showLive && step ? stepShotSrc(step) : "";
+  if (showLive) {
+    visual = `
+      <div class="stage-visuals">
+        <div class="stage-live-wrap" data-live-src="${escapeHtml(liveView)}">
+          <iframe
+            class="stage-live-frame"
+            src="${escapeHtml(liveView)}"
+            title="Live browser — ${escapeHtml(siteName)}"
+            sandbox="allow-same-origin allow-scripts"
+            allow="clipboard-read; clipboard-write"
+            referrerpolicy="no-referrer"
+          ></iframe>
+          <p class="stage-live-caption">Live browser · ${escapeHtml(siteName)} · agent acting</p>
+        </div>
+      </div>`;
+  } else if (shotSrc) {
     const boxes = step?.boxes || [];
     const boxLegend = boxes.length
       ? `<details class="stage-box-details"><summary><span class="box-swatch box-red"></span> ${boxes.length} click targets${
@@ -426,31 +441,14 @@ function renderFocusStage(session, sessionIdx) {
            )
            .join("")}${boxes.length > 12 ? `<li>… +${boxes.length - 12} more</li>` : ""}</ol></details>`
       : "";
-    const shotBlock = shotSrc
-      ? `<figure class="stage-shot">
-        <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="Step ${escapeHtml(step?.step ?? 0)} screenshot" loading="eager" />
-        <figcaption><strong>Step ${escapeHtml(step?.step ?? 0)}</strong> — ${escapeHtml(step?.action || "Opened page")}${
-          browsing ? " · captured" : ""
-        }</figcaption>
-      </figure>`
-      : "";
-    const liveBlock = showLive
-      ? `<div class="stage-live-wrap" data-live-src="${escapeHtml(liveView)}">
-          <iframe
-            class="stage-live-frame"
-            src="${escapeHtml(liveView)}"
-            title="Live browser — ${escapeHtml(siteName)}"
-            sandbox="allow-same-origin allow-scripts"
-            allow="clipboard-read; clipboard-write"
-            referrerpolicy="no-referrer"
-          ></iframe>
-          <p class="stage-live-caption">Live browser · ${escapeHtml(siteName)}</p>
-        </div>`
-      : "";
     visual = `
-      <div class="stage-visuals${showLive && shotSrc ? " stage-visuals-split" : ""}">
-        ${shotBlock}
-        ${liveBlock}
+      <div class="stage-visuals">
+        <figure class="stage-shot">
+          <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="Step ${escapeHtml(step?.step ?? 0)} screenshot" loading="eager" />
+          <figcaption><strong>Step ${escapeHtml(step?.step ?? 0)}</strong> — ${escapeHtml(step?.action || "Opened page")}${
+            browsing ? " · waiting for agent…" : ""
+          }</figcaption>
+        </figure>
       </div>
       ${boxLegend}
       ${
@@ -474,7 +472,11 @@ function renderFocusStage(session, sessionIdx) {
       session?.status === "summarizing"
         ? "Page captured — writing feedback…"
         : browsing
-          ? session?.last_action || "Opening the page…"
+          ? session?.last_action ||
+            (Array.isArray(session?.live_thoughts) && session.live_thoughts.length
+              ? session.live_thoughts[session.live_thoughts.length - 1].text
+              : null) ||
+            "Opening the page…"
           : "Waiting for the first browser frame…";
     visual = `
       <div class="stage-waiting">
@@ -1021,33 +1023,27 @@ function paintStageBody(body, session, idx) {
     }
   };
 
+  // Mode switch shot ↔ live requires a full repaint (never side-by-side).
+  const haveShot = Boolean(liveImg);
+  const haveLive = Boolean(liveFrame);
+  if (
+    sameAgent &&
+    ((wantLive && haveShot && !haveLive) || (!wantLive && haveLive && Boolean(nextSrc)))
+  ) {
+    body.innerHTML = nextHtml;
+    body.dataset.agentId = String(session?.agent_id || idx);
+    return;
+  }
   if (sameAgent && (liveImg || liveFrame)) {
     // Keep iframe mounted — remounting blanks the live view.
-    if (wantLive && liveSrc) {
-      if (liveFrame) {
-        const cur = liveWrap?.dataset.liveSrc || liveFrame.getAttribute("src") || "";
-        if (cur !== liveSrc) {
-          liveFrame.src = liveSrc;
-          if (liveWrap) liveWrap.dataset.liveSrc = liveSrc;
-        }
-      } else if (liveImg) {
-        // Screenshot was alone; now inject live pane without wiping the shot.
-        const visuals = body.querySelector(".stage-visuals") || liveImg.closest(".stage-visuals");
-        if (visuals && !visuals.querySelector(".stage-live-wrap")) {
-          visuals.classList.add("stage-visuals-split");
-          visuals.insertAdjacentHTML(
-            "beforeend",
-            `<div class="stage-live-wrap" data-live-src="${escapeHtml(liveSrc)}">
-              <iframe class="stage-live-frame" src="${escapeHtml(liveSrc)}" title="Live browser"
-                sandbox="allow-same-origin allow-scripts" allow="clipboard-read; clipboard-write"
-                referrerpolicy="no-referrer"></iframe>
-              <p class="stage-live-caption">Live browser</p>
-            </div>`
-          );
-        }
+    if (wantLive && liveSrc && liveFrame) {
+      const cur = liveWrap?.dataset.liveSrc || liveFrame.getAttribute("src") || "";
+      if (cur !== liveSrc) {
+        liveFrame.src = liveSrc;
+        if (liveWrap) liveWrap.dataset.liveSrc = liveSrc;
       }
     }
-    if (liveImg && nextSrc) {
+    if (liveImg && nextSrc && !wantLive) {
       const shown = liveImg.dataset.shotSrc || liveImg.getAttribute("src") || "";
       if (shown.split("?")[0] !== nextSrc && !String(nextSrc).startsWith("data:")) {
         const pre = new Image();

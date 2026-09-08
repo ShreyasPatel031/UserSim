@@ -1305,6 +1305,19 @@ async def run_study(
                 "status": "starting",
                 "trace": [],
                 "num_steps": 0,
+                "live_active": False,
+                "live_thoughts": [
+                    {
+                        "at": _now(),
+                        "text": (
+                            f"Preparing browser for {task.get('site_label') or task.get('site_url') or study.url}…"
+                        ),
+                        "kind": "status",
+                    }
+                ],
+                "last_action": (
+                    f"Preparing browser for {task.get('site_label') or 'site'}…"
+                ),
             }
 
         # If warm screenshot is already on disk, publish it onto the first product
@@ -1355,26 +1368,20 @@ async def run_study(
                     sess["trace"] = [step0]
                     sess["num_steps"] = 1
                     sess["last_action"] = step0["action"]
-                    # Flip live view on with the first pixels when we already have a
-                    # Browserbase debugger URL — TTFT UX should not wait for Agent().
+                    # Stash live URL early but keep live_active OFF — UI shows
+                    # screenshot until the agent loop actually starts.
                     if warm_opening.get("live_view_url"):
                         sess["live_view_url"] = warm_opening["live_view_url"]
-                        sess["live_active"] = True
-                    else:
-                        sess["live_active"] = False
                     if warm_opening.get("browserbase_session_id"):
                         sess["browserbase_session_id"] = warm_opening[
                             "browserbase_session_id"
                         ]
+                    sess["live_active"] = False
                     sess["live_thoughts"] = [
                         {
                             "at": _now(),
-                            "text": (
-                                "I'm on the page. Looking around before I click…"
-                                if sess.get("live_active")
-                                else f"Opened {site} — starting the simulated user…"
-                            ),
-                            "kind": "thinking" if sess.get("live_active") else "status",
+                            "text": f"Opened {site} — waiting for the simulated user to start…",
+                            "kind": "status",
                         }
                     ]
                     study.updated_at = _now()
