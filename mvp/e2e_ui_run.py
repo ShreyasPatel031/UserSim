@@ -171,7 +171,17 @@ def assert_agents_alive(study: dict) -> list[str]:
     fails: list[str] = []
     if study.get("status") != "complete":
         fails.append(f"status={study.get('status')!r} want complete")
-    if not (study.get("summary") or "").strip():
+    summary = study.get("summary")
+    if isinstance(summary, dict):
+        has_summary = bool(
+            summary.get("headline")
+            or summary.get("executive_summary")
+            or summary.get("overview")
+            or summary
+        )
+    else:
+        has_summary = bool(str(summary or "").strip())
+    if not has_summary:
         fails.append("missing summary")
     results = study.get("agent_results") or []
     tasks = study.get("tasks") or []
@@ -190,10 +200,12 @@ def assert_agents_alive(study: dict) -> list[str]:
             for step in (r.get("trace") or [])
             if step.get("screenshot_url") or step.get("screenshot_data_url")
         ]
-        has_summary = bool(
-            (r.get("summary") or r.get("final_summary") or r.get("outcome") or "")
-        )
-        if not shots and not has_summary:
+        agent_summary = r.get("summary") or r.get("final_summary") or r.get("outcome")
+        if isinstance(agent_summary, dict):
+            has_agent_summary = bool(agent_summary)
+        else:
+            has_agent_summary = bool(str(agent_summary or "").strip())
+        if not shots and not has_agent_summary:
             fails.append(f"agent {aid} has no screenshots and no summary")
     return fails
 
