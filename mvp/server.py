@@ -442,7 +442,12 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                     timeout=timeout_s,
                 )
                 final = study_to_dict(STUDIES[study.id])
-                final["stream_event"] = "complete"
+                # GCP fleet may return early while Spot workers keep running.
+                # Do NOT mark stream "complete" — client must poll until done.
+                if final.get("status") in {"running", "starting", "pending"}:
+                    final["stream_event"] = "detached"
+                else:
+                    final["stream_event"] = "complete"
                 await queue.put(final)
             except asyncio.TimeoutError:
                 study_obj = STUDIES[study.id]

@@ -1533,6 +1533,31 @@ form.addEventListener("submit", async (e) => {
         }
       }
       if (!data) throw new Error("Study stream ended with no data");
+      // Fleet detach / proxy cut: stream ends while agents still run on GCP.
+      // Keep polling until complete — otherwise the stage freezes mid-brief.
+      {
+        const studyId = data.id || data.study_id;
+        const needsPoll = Boolean(
+          studyId &&
+            (data.stream_event === "detached" ||
+              (data.status !== "complete" &&
+                data.status !== "error" &&
+                data.status !== "abandoned" &&
+                !(data.summary && (data.agent_results || []).length)))
+        );
+        if (needsPoll) {
+          while (true) {
+            data = await pollStudy(studyId);
+            updateProgressUI(data, startedAt);
+            renderLiveStudy(data);
+            if (data.status === "complete") break;
+            if (data.status === "error" || data.status === "abandoned") {
+              throw new Error(data.error || data.phase || "Study failed");
+            }
+            await new Promise((r) => setTimeout(r, 2000));
+          }
+        }
+      }
     } else {
       const raw = await startRes.text();
       const payload = JSON.parse(raw);
