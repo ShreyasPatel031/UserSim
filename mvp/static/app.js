@@ -106,7 +106,12 @@ function mergeSessions(data) {
   const byId = {};
 
   for (const s of live) {
-    if (s?.agent_id) byId[s.agent_id] = { ...s };
+    if (!s?.agent_id) continue;
+    const copy = { ...s };
+    delete copy.live_view_url;
+    delete copy.live_url;
+    delete copy.debugger_url;
+    byId[s.agent_id] = copy;
   }
   for (const r of completed) {
     const id = r.agent_id || r.task_id;
@@ -360,8 +365,14 @@ function demographicLine(p) {
   return p.demographics || "";
 }
 
+function stepShotSrc(step) {
+  const inline = step?.screenshot_data_url || "";
+  if (typeof inline === "string" && inline.startsWith("data:image/")) return inline;
+  return step?.screenshot_url || "";
+}
+
 function stepsWithScreenshots(trace) {
-  return (trace || []).filter((s) => s.screenshot_url);
+  return (trace || []).filter((s) => stepShotSrc(s));
 }
 
 /** Prefer the newest frame that is still on the assigned site (agents sometimes wander). */
@@ -397,10 +408,8 @@ function renderFocusStage(session, sessionIdx) {
   const siteName = prettySiteName(session?.site_url, session?.site_label);
 
   let visual = "";
-  const liveView = session?.live_view_url;
   const browsing = ["starting", "pending", "running"].includes(String(session?.status || ""));
-  // Screenshots are real page pixels (incl. opening frame). Prefer them whenever
-  // present — Browserbase live iframes often look blank/"watching" with no page.
+  // Real screenshots only — Browserbase "live" iframes are blank/"watching" noise.
   if (step?.screenshot_url) {
     const boxes = step.boxes || [];
     const boxLegend = boxes.length
@@ -415,11 +424,10 @@ function renderFocusStage(session, sessionIdx) {
            )
            .join("")}${boxes.length > 12 ? `<li>… +${boxes.length - 12} more</li>` : ""}</ol></details>`
       : "";
-    const bust =
-      browsing && _shotFollowLatest[key] !== false ? `?t=${Date.now()}` : "";
+    const shotSrc = stepShotSrc(step);
     visual = `
       <figure class="stage-shot">
-        <img class="trace-screenshot" src="${escapeHtml(step.screenshot_url)}${bust}" alt="Step ${escapeHtml(step.step)} screenshot with click targets" loading="eager" />
+        <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="Step ${escapeHtml(step.step)} screenshot" loading="eager" />
         <figcaption><strong>Step ${escapeHtml(step.step)}</strong> — ${escapeHtml(step.action || "Action")}${
           browsing ? " · live" : ""
         }</figcaption>
@@ -437,40 +445,17 @@ function renderFocusStage(session, sessionIdx) {
         </div>
         <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="1" ${idx >= shots.length - 1 ? "disabled" : ""}>Next →</button>
       </div>`;
-  } else if (liveView && browsing) {
-    visual = `
-      <div class="stage-live-wrap">
-        <iframe
-          class="stage-live-frame"
-          src="${escapeHtml(liveView)}"
-          title="Live browser — ${escapeHtml(siteName)}"
-          sandbox="allow-same-origin allow-scripts"
-          allow="clipboard-read; clipboard-write"
-          referrerpolicy="no-referrer"
-        ></iframe>
-        <p class="stage-live-caption">Live on ${escapeHtml(siteName)} — first screenshot arriving…</p>
-      </div>`;
   } else {
-    const last = String(session?.last_action || "");
     const waitingMsg =
-      /warm|seed|cdp|chromium|live browser/i.test(last)
-        ? last
-        : session?.status === "starting" || session?.status === "pending"
-          ? last || "Starting browser session…"
-          : session?.status === "summarizing"
-            ? "Page captured — writing feedback…"
-            : session?.status === "running"
-              ? trace.length
-                ? `Step ${trace.length} recorded — next frame coming…`
-                : last || "Loading first page frame…"
-              : lastAction
-                ? lastAction
-                : "Waiting for the first browser frame…";
+      session?.status === "summarizing"
+        ? "Page captured — writing feedback…"
+        : browsing
+          ? "Capturing first page screenshot…"
+          : "Waiting for the first browser frame…";
     visual = `
       <div class="stage-waiting">
         <div class="stage-waiting-chrome"><span></span><span></span><span></span><strong>${escapeHtml(statusLabel(session?.status))}</strong></div>
         <p>${escapeHtml(waitingMsg)}</p>
-        ${lastObs ? `<p class="stage-waiting-sub">${escapeHtml(lastObs)}</p>` : ""}
       </div>`;
   }
 
@@ -796,7 +781,12 @@ function renderStage(sessions) {
   const userSelect = document.getElementById("stage-user-select");
   _traceResults = sessions || [];
 
-  if (!sessions?.length) {
+  const hasPixels = (s) =>
+    (s?.trace || []).some((t) => t && stepShotSrc(t));
+
+  // Never show an empty "watching/capturing" browser pane — only open the
+  // stage once at least one real screenshot exists.
+  if (!sessions?.length || !sessions.some(hasPixels)) {
     section.hidden = true;
     document.querySelector("main")?.classList.remove("live-wide");
     return;
@@ -806,10 +796,10 @@ function renderStage(sessions) {
   scrollBriefTo("stage-section", "live");
 
   if (!_userPickedTrace) {
+    const firstWithShot = sessions.findIndex(hasPixels);
     const firstWithTrace = sessions.findIndex((s) => (s.trace || []).length > 0);
-    const firstRunning = sessions.findIndex((s) => s.status === "running");
-    if (firstWithTrace >= 0) _activeTraceIdx = firstWithTrace;
-    else if (firstRunning >= 0) _activeTraceIdx = firstRunning;
+    if (firstWithShot >= 0) _activeTraceIdx = firstWithShot;
+    else if (firstWithTrace >= 0) _activeTraceIdx = firstWithTrace;
     else _activeTraceIdx = 0;
   } else if (_activeTraceIdx >= sessions.length) {
     _activeTraceIdx = Math.max(0, sessions.length - 1);
@@ -912,7 +902,66 @@ function renderStage(sessions) {
     activePersona
   );
 
-  body.innerHTML = renderFocusStage(session, idx);
+  paintStageBody(body, session, idx);
+}
+
+function paintStageBody(body, session, idx) {
+  const nextHtml = renderFocusStage(session, idx);
+  const nextShots = preferredShots(session);
+  const nextSrc = nextShots.length
+    ? stepShotSrc(
+        nextShots[
+          Math.max(
+            0,
+            _shotFollowLatest[String(idx)] !== false
+              ? nextShots.length - 1
+              : Math.min(_shotIdx[String(idx)] ?? 0, nextShots.length - 1)
+          )
+        ]
+      )
+    : "";
+  const liveImg = body.querySelector("img.trace-screenshot");
+  const sameAgent = body.dataset.agentId === String(session?.agent_id || idx);
+  if (liveImg && sameAgent && nextSrc) {
+    const shown = liveImg.dataset.shotSrc || liveImg.getAttribute("src") || "";
+    if (shown.split("?")[0] === nextSrc) {
+      const actionEl = body.querySelector(".step-shot-action");
+      const obsEl = body.querySelector(".trace-step-observation");
+      const cap = body.querySelector(".stage-shot figcaption");
+      const step = (session?.trace || []).find((t) => t?.screenshot_url === nextSrc) ||
+        preferredShots(session).at(-1);
+      if (cap && step) {
+        cap.innerHTML = `<strong>Step ${escapeHtml(step.step)}</strong> — ${escapeHtml(step.action || "Action")}`;
+      }
+      if (actionEl && step) {
+        actionEl.innerHTML = `<strong>Now doing:</strong> ${escapeHtml(step.action || "Action")}`;
+      }
+      if (obsEl && step?.observation) {
+        obsEl.innerHTML = `<strong>They see:</strong> ${escapeHtml(step.observation)}`;
+      }
+      return;
+    }
+    const pre = new Image();
+    pre.onload = () => {
+      if (!liveImg.isConnected) return;
+      liveImg.src = nextSrc;
+      liveImg.dataset.shotSrc = nextSrc;
+      body.innerHTML = nextHtml;
+      body.dataset.agentId = String(session?.agent_id || idx);
+    };
+    pre.onerror = () => {
+      /* Keep the last painted frame — do not blank the stage on a 404. */
+    };
+    pre.src = nextSrc;
+    const actionEl = body.querySelector(".step-shot-action");
+    const step = preferredShots(session).find((s) => s.screenshot_url === nextSrc);
+    if (actionEl && step) {
+      actionEl.innerHTML = `<strong>Now doing:</strong> ${escapeHtml(step.action || "Action")}`;
+    }
+    return;
+  }
+  body.dataset.agentId = String(session?.agent_id || idx);
+  body.innerHTML = nextHtml;
 }
 
 function siteMatches(session, siteKey, siteUrl) {

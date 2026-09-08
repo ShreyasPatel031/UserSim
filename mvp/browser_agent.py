@@ -351,24 +351,44 @@ async def _emit_opening_frame(
     url: str,
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
 ) -> None:
-    """Navigate + screenshot before the LLM agent loop — screen exists without waiting on the model."""
+    """Navigate + full-viewport screenshot before the LLM agent loop."""
     try:
         await asyncio.wait_for(browser_session.navigate_to(url), timeout=30)
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening navigate failed: {exc!r}", flush=True)
-    # Brief settle so first paint isn't blank.
-    await asyncio.sleep(0.8)
+    # Scroll to top so we don't capture a footer-only viewport.
+    try:
+        page = await asyncio.wait_for(browser_session.get_current_page(), timeout=8)
+        if page is not None:
+            await asyncio.wait_for(
+                page.evaluate("() => window.scrollTo(0, 0)"),
+                timeout=5,
+            )
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] opening scrollTop failed: {exc!r}", flush=True)
+    await asyncio.sleep(0.2)
     shot_name = "bbox_0.png"
     shot_path = screenshot_dir / shot_name
     try:
         await asyncio.wait_for(
-            browser_session.take_screenshot(path=str(shot_path)),
-            timeout=15,
+            browser_session.take_screenshot(path=str(shot_path), full_page=False),
+            timeout=20,
         )
+    except TypeError:
+        # Older browser-use: no full_page kwarg.
+        try:
+            await asyncio.wait_for(
+                browser_session.take_screenshot(path=str(shot_path)),
+                timeout=20,
+            )
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
+            return
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
         return
     if not shot_path.is_file() or shot_path.stat().st_size < 100:
+        print(f"[{agent_id}] opening screenshot missing/empty", flush=True)
         return
     final_url = url
     try:
@@ -382,7 +402,7 @@ async def _emit_opening_frame(
     step = {
         "step": 0,
         "action": f"Opened {final_url}",
-        "observation": "Landing page loaded — agent starting…",
+        "observation": "Landing page screenshot",
         "thought": "",
         "thought_detail": {},
         "url": final_url,
@@ -395,6 +415,10 @@ async def _emit_opening_frame(
         maybe = on_step(step)
         if asyncio.iscoroutine(maybe):
             await maybe
+    print(
+        f"[{agent_id}] opening frame ready ({shot_path.stat().st_size} bytes) {final_url}",
+        flush=True,
+    )
 
 
 def _history_to_trace(
@@ -413,6 +437,98 @@ def _history_to_trace(
     ]
 
 
+def _urls_match(a: str, b: str) -> bool:
+    def norm(u: str) -> str:
+        p = urlparse((u or "").strip())
+        host = (p.hostname or "").lower().removeprefix("www.")
+        path = (p.path or "/").rstrip("/") or "/"
+        return f"{host}{path}"
+
+    return bool(a and b and norm(a) == norm(b))
+
+
+async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | None:
+    """Create Browserbase + navigate + screenshot while brief LLMs run.
+
+    Returns a live browser_session already on ``url`` with bbox_0.png written under
+    ``MVP_RUNS_DIR / study_id / _warm``. Caller must either hand this to
+    ``run_browser_agent(..., warm=...)`` or ``close_warm_opening``.
+    """
+    if os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {"1", "true", "yes"}:
+        return None
+    run_dir = MVP_RUNS_DIR / study_id / "_warm"
+    screenshot_dir = run_dir / "screenshots"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    screenshot_dir.mkdir(parents=True, exist_ok=True)
+    bb_session = None
+    browser_session = None
+    try:
+        from browser_use import BrowserSession
+
+        bb_session = await asyncio.to_thread(create_session, proxies=False, keep_alive=True)
+        connect = getattr(bb_session, "connect_url", None)
+        if not connect:
+            raise RuntimeError("Browserbase session missing connect_url")
+        browser_session = BrowserSession(browser_profile=_browserbase_profile(connect))
+        await browser_session.start()
+        await _emit_opening_frame(
+            browser_session,
+            screenshot_dir=screenshot_dir,
+            study_id=study_id,
+            agent_id="_warm",
+            url=url,
+            on_step=None,
+        )
+        shot = screenshot_dir / "bbox_0.png"
+        if not shot.is_file() or shot.stat().st_size < 100:
+            raise RuntimeError("warm opening screenshot missing")
+        print(f"[warm] first pixels ready for {url}", flush=True)
+        return {
+            "url": url,
+            "bb_session": bb_session,
+            "browser_session": browser_session,
+            "shot_path": shot,
+            "owns_session": True,
+        }
+    except Exception as exc:  # noqa: BLE001
+        print(f"[warm] opening session failed: {exc!r}", flush=True)
+        if browser_session is not None:
+            try:
+                await browser_session.kill()
+            except Exception:
+                pass
+        if bb_session is not None:
+            sid = getattr(bb_session, "id", None)
+            if sid:
+                try:
+                    await asyncio.to_thread(close_session, sid)
+                except Exception:
+                    pass
+        return None
+
+
+async def close_warm_opening(warm: dict[str, Any] | None) -> None:
+    if not warm:
+        return
+    browser_session = warm.get("browser_session")
+    bb_session = warm.get("bb_session")
+    if browser_session is not None:
+        try:
+            await browser_session.kill()
+        except Exception:
+            pass
+        warm["browser_session"] = None
+    if warm.get("owns_session") and bb_session is not None:
+        sid = getattr(bb_session, "id", None)
+        if sid:
+            try:
+                await asyncio.to_thread(close_session, sid)
+            except Exception:
+                pass
+        warm["bb_session"] = None
+        warm["owns_session"] = False
+
+
 async def run_browser_agent(
     *,
     study_id: str,
@@ -426,10 +542,15 @@ async def run_browser_agent(
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
     bb_session: Any | None = None,
     local: bool = False,
+    warm: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Run Browser Use (Browserbase or local Chromium) and return a bbox screenshot trace."""
-    from browser_use import Agent, ChatGoogle
+    """Run Browser Use (Browserbase or local Chromium) and return a bbox screenshot trace.
 
+    First real pixels are emitted as soon as the target URL is open — before the
+    LLM agent loop, and (for non-YouTube) before waiting on auth vault I/O.
+    If ``warm`` is a matching pre-opened session from ``warm_opening_session``,
+    the landing screenshot is published immediately and the LLM continues on it.
+    """
     model = model or os.environ.get("MVP_BROWSER_MODEL") or MODEL or "gemini-2.5-flash"
     os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", "120")
     os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", "240")
@@ -448,36 +569,10 @@ async def run_browser_agent(
         youtube_needs_content_bootstrap,
     )
 
-    # Load auth first so YouTube can use a real signed-in home feed when available.
-    # With MVP_AUTO_SIGNIN=1 this also performs the login when the vault has creds.
-    storage_state = await asyncio.to_thread(ensure_site_auth, url)
     start_url = url
     yt_hint = ""
     host = (urlparse(url).hostname or "").lower()
     is_youtube = "youtube.com" in host or "youtu.be" in host
-    # Never attach YouTube-signed-in hints (or YouTube cookie bootstrap) to
-    # competitor sites — that made Vimeo/Dailymotion agents jump to YouTube.
-    if is_youtube and youtube_needs_content_bootstrap(url, storage_state):
-        # Signed-out home/feed is empty in automation Chromium. Search always has tiles.
-        start_url = youtube_bootstrap_url(task_prompt, persona.get("name") or "")
-        yt_hint = (
-            "YouTube's signed-out home feed is often empty in automation. You were opened on "
-            "search results with real videos — use those, refine the query, or open a video. "
-            "If you can sign in / avatar is visible, you may also open Home afterward.\n"
-        )
-    elif is_youtube and youtube_is_signed_in(
-        storage_state if isinstance(storage_state, dict) else None
-    ):
-        yt_hint = (
-            "You are signed into YouTube (Gmail session cookies loaded). Use the personalized "
-            "home feed, subscriptions, and account UI as a real logged-in user would.\n"
-        )
-
-    cookie_state = storage_state if isinstance(storage_state, dict) else None
-    if storage_state:
-        state_path = run_dir / "storage_state.json"
-        state_path.write_text(json.dumps(storage_state))
-        storage_state = str(state_path)
 
     force_local = local or os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {
         "1",
@@ -485,61 +580,181 @@ async def run_browser_agent(
         "yes",
     }
 
+    use_warm = (
+        not force_local
+        and not is_youtube
+        and isinstance(warm, dict)
+        and warm.get("browser_session") is not None
+        and _urls_match(str(warm.get("url") or ""), url)
+        and warm.get("shot_path")
+        and Path(warm["shot_path"]).is_file()
+    )
+
+    # YouTube needs auth/bootstrap before the first paint. Everyone else: open the
+    # chosen URL immediately and paint pixels; finish auth in parallel.
+    auth_task: asyncio.Task | None = None
+    storage_state: Any = None
+    if is_youtube:
+        storage_state = await asyncio.to_thread(ensure_site_auth, url)
+        if youtube_needs_content_bootstrap(url, storage_state):
+            start_url = youtube_bootstrap_url(task_prompt, persona.get("name") or "")
+            yt_hint = (
+                "YouTube's signed-out home feed is often empty in automation. You were opened on "
+                "search results with real videos — use those, refine the query, or open a video. "
+                "If you can sign in / avatar is visible, you may also open Home afterward.\n"
+            )
+        elif youtube_is_signed_in(
+            storage_state if isinstance(storage_state, dict) else None
+        ):
+            yt_hint = (
+                "You are signed into YouTube (Gmail session cookies loaded). Use the personalized "
+                "home feed, subscriptions, and account UI as a real logged-in user would.\n"
+            )
+    else:
+        auth_task = asyncio.create_task(asyncio.to_thread(ensure_site_auth, url))
+
+    cookie_state = storage_state if isinstance(storage_state, dict) else None
+    if storage_state and isinstance(storage_state, dict):
+        state_path = run_dir / "storage_state.json"
+        state_path.write_text(json.dumps(storage_state))
+        storage_state = str(state_path)
+
     owns_session = False
     session_url: str | None = None
     profile_clone = None
-    if force_local:
-        # A cloned signed-in profile beats cookie injection: Google binds session
-        # cookies to the profile, so transplanted cookies report LOGGED_IN=false.
-        profile_clone = await asyncio.to_thread(clone_for_url, url)
-        if profile_clone:
-            cookie_state = None
-            # Signed in, so the real home feed works — no search-results detour.
-            start_url = url
-            yt_hint = (
-                "You are signed in on this site. Use the personalized home feed, "
-                "subscriptions, and account UI as a real logged-in user would.\n"
-            )
-        profile = _local_browser_profile(
-            storage_state=None if profile_clone else storage_state,
-            user_data_dir=str(profile_clone) if profile_clone else None,
-        )
-        backend = "local_playwright"
-    else:
-# create_session/close_session may briefly contend on a threading lock; off-loop
-        # so parallel agents keep making progress together.
-        owns_session = bb_session is None
-        if owns_session:
-            # keep_alive=True so parallel agents don't lose CDP mid-run (410 Gone).
-            bb_session = await asyncio.to_thread(create_session, proxies=False, keep_alive=True)
-        session_url = getattr(bb_session, "session_url", None)
-        connect = getattr(bb_session, "connect_url", None)
-        if not connect:
-            raise RuntimeError("Browserbase session missing connect_url")
-        profile = _browserbase_profile(connect)
-        backend = "browserbase"
-
-    history = None
     browser_session = None
-    try:
-        from browser_use import BrowserSession
+    history = None
+    backend = "browserbase"
 
-        # Own the session before agent.run so we can navigate + show a frame
-        # without waiting on the LLM's first thought.
-        browser_session = BrowserSession(browser_profile=profile)
-        await browser_session.start()
-        if cookie_state:
+    if use_warm:
+        browser_session = warm["browser_session"]
+        bb_session = warm.get("bb_session") or bb_session
+        owns_session = bool(warm.get("owns_session", True))
+        session_url = getattr(bb_session, "session_url", None) if bb_session else None
+        backend = "browserbase"
+        # Publish warm pixels under this agent id immediately.
+        dest = screenshot_dir / "bbox_0.png"
+        try:
+            if Path(warm["shot_path"]) != dest:
+                shutil.copy2(warm["shot_path"], dest)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] warm shot copy failed: {exc!r}", flush=True)
+            use_warm = False
+        if use_warm:
+            step = {
+                "step": 0,
+                "action": f"Opened {url}",
+                "observation": "Landing page screenshot",
+                "thought": "",
+                "thought_detail": {},
+                "url": url,
+                "screenshot_url": (
+                    f"/api/studies/{study_id}/agents/{agent_id}/screenshots/bbox_0.png"
+                ),
+                "boxes": [],
+                "outcome": "neutral",
+                "evidence_label": "Opening frame · before agent steps",
+            }
+            if on_step is not None:
+                maybe = on_step(step)
+                if asyncio.iscoroutine(maybe):
+                    await maybe
+            print(f"[{agent_id}] warm opening frame published immediately", flush=True)
+            # Prevent double-close if caller also holds the warm dict.
+            warm["browser_session"] = None
+            warm["bb_session"] = None
+            warm["owns_session"] = False
+
+    if not use_warm:
+        if force_local:
+            # A cloned signed-in profile beats cookie injection: Google binds session
+            # cookies to the profile, so transplanted cookies report LOGGED_IN=false.
+            profile_clone = await asyncio.to_thread(clone_for_url, url)
+            if profile_clone:
+                cookie_state = None
+                if auth_task is not None and not auth_task.done():
+                    auth_task.cancel()
+                    try:
+                        await auth_task
+                    except Exception:
+                        pass
+                    auth_task = None
+                start_url = url
+                yt_hint = (
+                    "You are signed in on this site. Use the personalized home feed, "
+                    "subscriptions, and account UI as a real logged-in user would.\n"
+                )
+            profile = _local_browser_profile(
+                storage_state=None
+                if profile_clone
+                else (storage_state if isinstance(storage_state, str) else None),
+                user_data_dir=str(profile_clone) if profile_clone else None,
+            )
+            backend = "local_playwright"
+        else:
+            # create_session may contend on a threading lock; off-loop so parallel agents progress.
+            owns_session = bb_session is None
+            if owns_session:
+                # keep_alive=True so parallel agents don't lose CDP mid-run (410 Gone).
+                bb_session = await asyncio.to_thread(
+                    create_session, proxies=False, keep_alive=True
+                )
+            session_url = getattr(bb_session, "session_url", None)
+            connect = getattr(bb_session, "connect_url", None)
+            if not connect:
+                raise RuntimeError("Browserbase session missing connect_url")
+            profile = _browserbase_profile(connect)
+            backend = "browserbase"
+
+        try:
+            from browser_use import BrowserSession
+
+            # Own the session before agent.run so we navigate + show a frame
+            # the moment the task URL is known — not after the LLM's first thought.
+            browser_session = BrowserSession(browser_profile=profile)
+            await browser_session.start()
+
+            await _emit_opening_frame(
+                browser_session,
+                screenshot_dir=screenshot_dir,
+                study_id=study_id,
+                agent_id=agent_id,
+                url=start_url,
+                on_step=on_step,
+            )
+        except Exception:
+            if browser_session is not None:
+                try:
+                    await browser_session.kill()
+                except Exception:
+                    pass
+            if profile_clone is not None:
+                await asyncio.to_thread(discard_profile, profile_clone)
+            if owns_session and bb_session is not None:
+                sid = getattr(bb_session, "id", None)
+                if sid:
+                    await asyncio.to_thread(close_session, sid)
+            raise
+
+    try:
+        # Auth/cookies after first pixels (non-YouTube). Agent loop still gets them.
+        if auth_task is not None:
+            try:
+                storage_state = await auth_task
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{agent_id}] deferred auth failed: {exc!r}", flush=True)
+                storage_state = None
+            cookie_state = storage_state if isinstance(storage_state, dict) else None
+            if storage_state and isinstance(storage_state, dict):
+                state_path = run_dir / "storage_state.json"
+                state_path.write_text(json.dumps(storage_state))
+                storage_state = str(state_path)
+
+        if cookie_state and browser_session is not None:
             injected = await _inject_cookies(browser_session, cookie_state)
             print(f"[{agent_id}] injected {injected} cookies via CDP", flush=True)
 
-        await _emit_opening_frame(
-            browser_session,
-            screenshot_dir=screenshot_dir,
-            study_id=study_id,
-            agent_id=agent_id,
-            url=start_url,
-            on_step=on_step,
-        )
+        from browser_use import Agent, ChatGoogle
 
         llm = ChatGoogle(
             model=model,

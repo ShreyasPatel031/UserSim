@@ -554,7 +554,9 @@ async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
         raise HTTPException(status_code=400, detail="Invalid screenshot name")
     path = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / filename
     if path.is_file():
-        return FileResponse(path, media_type="image/png" if filename.endswith(".png") else "image/jpeg")
+        resp = FileResponse(path, media_type="image/png" if filename.endswith(".png") else "image/jpeg")
+        resp.headers["Cache-Control"] = "public, max-age=3600"
+        return resp
     try:
         from mvp.gcs_store import gcs_download_bytes, screenshot_gcs_uri
 
@@ -569,7 +571,11 @@ async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
             from fastapi.responses import Response
 
             ctype = "image/png" if filename.endswith(".png") else "image/jpeg"
-            return Response(content=raw, media_type=ctype)
+            return Response(
+                content=raw,
+                media_type=ctype,
+                headers={"Cache-Control": "public, max-age=3600"},
+            )
     except Exception:
         pass
     raise HTTPException(status_code=404, detail="Screenshot not found")
