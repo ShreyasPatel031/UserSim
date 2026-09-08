@@ -101,6 +101,38 @@ def aggregate(preds: list[dict]) -> dict:
     }
 
 
+def read_predictions(path: Path) -> list[dict]:
+    """Read predictions, tolerating the partial line a preemption leaves behind.
+
+    Spot VMs die mid-write, so the last record can be truncated or NUL-padded.
+    Crashing here means systemd restarts into the same corrupt file forever, so
+    unreadable lines are dropped and the run rewrites those samples instead.
+    """
+    records: list[dict] = []
+    skipped = 0
+    with path.open("r", errors="replace") as f:
+        for raw in f:
+            line = raw.strip().rstrip("\x00")
+            if not line:
+                # A killed append leaves the block NUL-padded; those bytes are
+                # valid UTF-8, so only json.loads notices, at "char 0".
+                if raw.strip():
+                    skipped += 1
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                skipped += 1
+                continue
+            if isinstance(rec, dict) and "sample_id" in rec:
+                records.append(rec)
+            else:
+                skipped += 1
+    if skipped:
+        print(f"skipped {skipped} unreadable prediction line(s) in {path}", flush=True)
+    return records
+
+
 def main() -> None:
     RESULTS.mkdir(parents=True, exist_ok=True)
     if os.environ.get("SKIP_INSTALL", "").strip() not in {"1", "true", "TRUE"}:
@@ -138,9 +170,8 @@ def main() -> None:
     preds_path = RESULTS / "predictions.jsonl"
     done: set[str] = set()
     if preds_path.exists():
-        for line in preds_path.read_text().splitlines():
-            if line.strip():
-                done.add(json.loads(line)["sample_id"])
+        for rec in read_predictions(preds_path):
+            done.add(rec["sample_id"])
         print(f"resuming: {len(done)}", flush=True)
 
     todo = [r for r in rows if sample_id(r) not in done]
@@ -218,10 +249,7 @@ def main() -> None:
                     )
                 )
 
-    preds = []
-    for line in preds_path.read_text().splitlines():
-        if line.strip():
-            preds.append(json.loads(line))
+    preds = read_predictions(preds_path)
     # dedupe
     by_id = {p["sample_id"]: p for p in preds}
     preds = list(by_id.values())
