@@ -85,6 +85,44 @@ function formatElapsed(seconds) {
   return `${m}:${String(s).padStart(2, "0")} elapsed`;
 }
 
+function formatEta(secondsLeft) {
+  const s = Math.max(0, Math.round(secondsLeft));
+  if (s < 45) return "Less than a minute left";
+  if (s < 90) return "About 1 min left";
+  const m = Math.round(s / 60);
+  return `About ${m} min left`;
+}
+
+/** Wall-clock study ETA — not agent completion count. */
+function estimateStudySeconds(data) {
+  const tasks = data?.tasks || [];
+  const n = Math.max(tasks.length, 1);
+  const testMode =
+    Boolean(data?.test_mode) ||
+    (n <= 1 && (data?.personas || []).length <= 1 && !(data?.competitors || []).length);
+  if (testMode) return 150; // ~2.5 min smoke
+  const parallel = Math.min(25, n);
+  const waves = Math.ceil(n / Math.max(parallel, 1));
+  // Brief ~45s + ~100s per concurrent wave (open + steps) + summary ~30s
+  return 45 + waves * 100 + 30;
+}
+
+function studyStillRunning(data) {
+  const status = String(data?.status || "");
+  if (["complete", "error", "failed", "abandoned", "killed"].includes(status)) {
+    return false;
+  }
+  // No status yet / explicitly running / in-progress phases.
+  if (!status || status === "running" || status === "pending" || status === "queued") {
+    return true;
+  }
+  const phase = String(data?.phase || "");
+  if (phase && !/^(Complete|Failed|Site blocked|Killed)/i.test(phase)) {
+    return true;
+  }
+  return false;
+}
+
 function formatTime(iso) {
   if (!iso) return "";
   try {
@@ -193,6 +231,8 @@ function resetLiveUI() {
   document.getElementById("stage-section").hidden = true;
   const reportLink = document.getElementById("view-report-link");
   if (reportLink) reportLink.hidden = true;
+  const runningCard = document.getElementById("report-running");
+  if (runningCard) runningCard.hidden = true;
   const emailPrompt = document.getElementById("report-email-prompt");
   if (emailPrompt) emailPrompt.hidden = true;
   const emailSaved = document.getElementById("report-email-saved");
@@ -233,61 +273,56 @@ function resetLiveUI() {
 function updateProgressUI(data, startedAt) {
   const phase = data.phase || data.status || "Starting";
   phaseLabel.textContent = phase;
-  progressFill.style.width = `${studyProgress(phase)}%`;
 
-  const totalAgents = (data.tasks || []).length;
-  const finished = (data.agent_results || []).length;
-  const liveMatch = phase.match(
-    /(\d+)\/(\d+) done · (\d+) active(?: · (\d+) queued)? · (\d+) steps/
-  );
-  if (liveMatch) {
-    const [, done, total, active, queued, steps] = liveMatch;
-    progressAgents.textContent = `${done} / ${total} done · ${active} browsing · ${steps} steps`;
-    if (Number(queued) > 0) {
-      progressHint.textContent = `${active} simulated users browsing (${queued} waiting). Watch the stage below.`;
-    } else if (Number(active) > 0) {
-      progressHint.textContent = `Watching one simulated user click through — step screenshots update below.`;
-    } else if (Number(done) > 0) {
-      progressHint.textContent = "Sessions finishing — report coming next.";
-    } else {
-      progressHint.textContent = "Browser starting — first screenshot in ~1–2 min.";
-    }
-  } else if (phase.startsWith("Preparing browser sessions")) {
-    progressAgents.textContent = `Warming browser pool (${phase.split("—")[1]?.trim() || ""})`;
-    progressHint.textContent = "Opening live Browserbase windows — they appear in the stage as soon as each is ready…";
+  const elapsedSec = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+  const totalEst = estimateStudySeconds(data);
+  // Time-based bar (not agent completions). Cap at 92% until truly done.
+  const timePct = Math.min(92, Math.round((elapsedSec / Math.max(totalEst, 1)) * 100));
+  const phasePct = studyProgress(phase);
+  const pct =
+    data.status === "complete" || phase === "Complete"
+      ? 100
+      : Math.max(phasePct, timePct);
+  progressFill.style.width = `${pct}%`;
+
+  const left = Math.max(20, totalEst - elapsedSec);
+  progressElapsed.textContent = formatElapsed(elapsedSec);
+  // ETA — not "3/9 sessions finished"
+  if (data.status === "complete" || phase === "Complete") {
+    progressAgents.textContent = "Done";
   } else {
-    if (!totalAgents) {
-      progressAgents.textContent = "Planning sessions…";
-    } else {
-      progressAgents.textContent = `${finished} / ${totalAgents} sessions finished`;
-    }
-    if (phase === "Understanding context of product" || phase === "Fetching site") {
-      progressHint.textContent = "Understanding context of the product…";
-    } else if (phase === "Finding competitors") {
-      progressHint.textContent = "Searching the web for competitors…";
-    } else if (
-      phase === "Building simulated users" ||
-      phase === "Building simulated users & tasks" ||
-      phase === "Inventing simulated users & tasks" ||
-      phase === "Generating personas & tasks" ||
-      phase === "Finding competitors & simulated users"
-    ) {
-      progressHint.textContent = "Building simulated users…";
-    } else if (phase === "Writing tasks") {
-      progressHint.textContent = "Writing tasks…";
-    } else if (phase === "Brief ready") {
-      progressHint.textContent = "Brief ready — launching browsers…";
-    } else if (phase === "Writing executive summary") {
-      progressHint.textContent = "All sessions done — writing the report…";
-    } else if (phase.includes("Live browser") || phase.includes("Simulating")) {
-      progressHint.textContent = "Watch the stage — screenshots update as each persona browses.";
-    } else if (finished > 0) {
-      progressHint.textContent = "Wrapping up sessions…";
-    } else if (!totalAgents) {
-      progressHint.textContent = "Building the brief — personas and tasks appear first.";
-    }
+    progressAgents.textContent = formatEta(left);
   }
-  progressElapsed.textContent = formatElapsed(Math.floor((Date.now() - startedAt) / 1000));
+
+  if (phase.startsWith("Preparing browser sessions")) {
+    progressHint.textContent = "Opening live browsers…";
+  } else if (phase === "Understanding context of product" || phase === "Fetching site") {
+    progressHint.textContent = "Understanding the product…";
+  } else if (phase === "Finding competitors") {
+    progressHint.textContent = "Finding competitors…";
+  } else if (
+    phase === "Building simulated users" ||
+    phase === "Building simulated users & tasks" ||
+    phase === "Inventing simulated users & tasks" ||
+    phase === "Generating personas & tasks" ||
+    phase === "Finding competitors & simulated users"
+  ) {
+    progressHint.textContent = "Building simulated users…";
+  } else if (phase === "Writing tasks") {
+    progressHint.textContent = "Writing tasks…";
+  } else if (phase === "Brief ready") {
+    progressHint.textContent = "Brief ready — launching browsers…";
+  } else if (phase === "Writing executive summary") {
+    progressHint.textContent = "Writing the report…";
+  } else if (String(phase).includes("Live browser") || String(phase).includes("Simulating")) {
+    progressHint.textContent = `${formatEta(left)} · watch the live stage below`;
+  } else if (!data.tasks?.length) {
+    progressHint.textContent = "Building the brief…";
+  } else {
+    progressHint.textContent = `${formatEta(left)} · study still running`;
+  }
+
+  updateReportCta(data, startedAt);
 }
 
 function renderActivityLog(log) {
@@ -1219,23 +1254,44 @@ function saveReportAndOfferLink(data) {
   updateReportCta(data);
 }
 
-function updateReportCta(data) {
-  const fullyDone = data?.status === "complete" && Boolean(data?.summary);
+function updateReportCta(data, startedAt) {
   const link = document.getElementById("view-report-link");
   const emailPrompt = document.getElementById("report-email-prompt");
+  const runningCard = document.getElementById("report-running");
   const stageVisible = !document.getElementById("stage-section")?.hidden;
+  const running = studyStillRunning(data);
+  const fullyDone =
+    data?.status === "complete" && Boolean(data?.summary) && !running;
+
   if (fullyDone) {
+    if (runningCard) runningCard.hidden = true;
     if (link) {
       const studyId = data.id || data.study_id || "";
       link.href = studyId ? `/report?study=${encodeURIComponent(studyId)}` : "/report";
       link.hidden = false;
-      link.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
     if (emailPrompt) emailPrompt.hidden = true;
     return;
   }
+
+  // Never show Ready while the study is still going.
   if (link) link.hidden = true;
+
+  const elapsedSec = startedAt
+    ? Math.max(0, Math.floor((Date.now() - startedAt) / 1000))
+    : 0;
+  const left = Math.max(20, estimateStudySeconds(data) - elapsedSec);
+  const etaTitle = document.getElementById("report-eta-title");
+  const etaSub = document.getElementById("report-eta-sub");
+  if (etaTitle) etaTitle.textContent = "Study in progress";
+  if (etaSub) etaSub.textContent = `${formatEta(left)} · not done yet`;
+
+  if (runningCard) {
+    const progressOpen = progressPanel && !progressPanel.hidden;
+    runningCard.hidden = !(stageVisible || progressOpen || running);
+  }
   if (emailPrompt) {
+    // Keep email capture under the loading card while running.
     emailPrompt.hidden = !stageVisible;
     const saved = document.getElementById("report-email-saved");
     const formEl = document.getElementById("report-email-form");

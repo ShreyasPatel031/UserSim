@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/styles.css?v=67" />
+  <link rel="stylesheet" href="/static/styles.css?v=68" />
 </head>
 <body>
   <header class="site-header">
@@ -151,11 +151,19 @@
         <div id="stage-body" class="stage-body"></div>
 
         <div id="report-cta" class="report-cta">
+          <div id="report-running" class="report-running-card" hidden>
+            <span class="report-spin" aria-hidden="true"></span>
+            <div>
+              <p class="eyebrow">Running</p>
+              <strong id="report-eta-title">Study in progress</strong>
+              <span class="section-sub" id="report-eta-sub">Estimating time left…</span>
+            </div>
+          </div>
           <div id="report-email-prompt" class="report-email-prompt" hidden>
             <div>
               <p class="eyebrow">While you wait</p>
               <strong>Get the full report by email</strong>
-              <span class="section-sub">We’ll send it when every session finishes</span>
+              <span class="section-sub">We’ll send it when the study finishes</span>
             </div>
             <form id="report-email-form" class="report-email-form">
               <input
@@ -228,6 +236,6 @@
     <p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p>
   </footer>
 
-  <script src="/static/app.js?v=76"></script>
+  <script src="/static/app.js?v=77"></script>
 </body>
 </html>

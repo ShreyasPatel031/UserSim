@@ -227,6 +227,50 @@ main {
   padding: 0 1.25rem;
 }
 
+.report-running-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.15rem 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-card);
+}
+
+.report-running-card .eyebrow {
+  margin: 0 0 0.15rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.report-running-card strong {
+  display: block;
+  font-size: 1.05rem;
+}
+
+.report-running-card .section-sub {
+  margin: 0.2rem 0 0;
+  display: block;
+}
+
+.report-spin {
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent, #2f6fed);
+  border-radius: 50%;
+  flex: 0 0 auto;
+  animation: report-spin 0.8s linear infinite;
+}
+
+@keyframes report-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .report-email-prompt {
   display: flex;
   flex-wrap: wrap;
