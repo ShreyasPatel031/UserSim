@@ -595,7 +595,7 @@ async def run_browser_agent(
         Path(os.environ["XDG_CONFIG_HOME"]).mkdir(parents=True, exist_ok=True)
         Path(os.environ["XDG_CACHE_HOME"]).mkdir(parents=True, exist_ok=True)
 
-    model = model or os.environ.get("MVP_BROWSER_MODEL") or MODEL or "gemini-2.5-flash"
+    model = model or os.environ.get("MVP_BROWSER_MODEL") or MODEL or "gemini-2.5-flash-lite"
     os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", "120")
     os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", "240")
 
