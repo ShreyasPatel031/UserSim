@@ -607,32 +607,38 @@ def _live_step_count(live_sessions: object) -> int:
 async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
     if not re.fullmatch(r"(?:step|bbox)_\d+\.png", filename):
         raise HTTPException(status_code=400, detail="Invalid screenshot name")
-    path = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / filename
-    if path.is_file():
-        resp = FileResponse(path, media_type="image/png" if filename.endswith(".png") else "image/jpeg")
-        resp.headers["Cache-Control"] = "public, max-age=3600"
-        return resp
-    try:
-        from mvp.gcs_store import gcs_download_bytes, screenshot_gcs_uri
+    names = [filename]
+    m = re.fullmatch(r"(step|bbox)_(\d+)\.png", filename)
+    if m:
+        kind, num = m.group(1), m.group(2)
+        names.append(("bbox" if kind == "step" else "step") + f"_{num}.png")
+        if num != "0":
+            names.append("step_0.png")
+    from fastapi.responses import Response
 
-        uri = screenshot_gcs_uri(study_id, agent_id, filename)
-        raw = gcs_download_bytes(uri)
-        if raw:
+    from mvp.gcs_store import gcs_download_bytes, screenshot_gcs_uri
+
+    for name in names:
+        path = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / name
+        if path.is_file() and path.stat().st_size > 200:
+            resp = FileResponse(path, media_type="image/png")
+            resp.headers["Cache-Control"] = "public, max-age=3600"
+            return resp
+        try:
+            raw = gcs_download_bytes(screenshot_gcs_uri(study_id, agent_id, name))
+        except Exception:
+            raw = None
+        if raw and len(raw) > 200:
             try:
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes(raw)
             except Exception:
                 pass
-            from fastapi.responses import Response
-
-            ctype = "image/png" if filename.endswith(".png") else "image/jpeg"
             return Response(
                 content=raw,
-                media_type=ctype,
+                media_type="image/png",
                 headers={"Cache-Control": "public, max-age=3600"},
             )
-    except Exception:
-        pass
     raise HTTPException(status_code=404, detail="Screenshot not found")
 
 
