@@ -202,12 +202,90 @@ def _runners_for(job: Job) -> list[Path]:
     return out
 
 
+def rehydrate_progress(job: Job) -> None:
+    """Push local progress back onto a fresh Colab VM before boot.
+
+    Colab /content dies on preemption. The supervisor already *pulls*
+    predictions/scores locally; without this push, every respawn cold-starts
+    at 0 even when we have tens of thousands of lines on disk. That made the
+    watchdog mostly theater.
+    """
+    local_path = job.local_dir / Path(job.remote_progress).name
+    if not local_path.exists() or local_path.stat().st_size < 32:
+        log(f"{job.name}: no local progress to rehydrate ({local_path})")
+        return
+
+    remote = job.remote_progress
+    remote_dir = str(Path(remote).parent)
+    size = local_path.stat().st_size
+    log(f"{job.name}: rehydrating {local_path.name} ({size} bytes) -> {remote}")
+
+    # Prefer CLI upload when it works; fall back to chunked base64 exec.
+    r = run(
+        AUTH + ["upload", "-s", job.session, str(local_path), remote],
+        timeout=600,
+    )
+    if r.returncode == 0:
+        log(f"{job.name}: rehydrate upload ok")
+        return
+
+    log(f"{job.name}: upload failed (rc={r.returncode}); chunked exec fallback")
+    raw = local_path.read_bytes()
+    # Keep chunks small enough for exec stdin.
+    chunk_n = 600_000
+    chunks = [raw[i : i + chunk_n] for i in range(0, len(raw), chunk_n)]
+    init = (
+        "import base64\n"
+        "from pathlib import Path\n"
+        f"Path({remote_dir!r}).mkdir(parents=True, exist_ok=True)\n"
+        f"Path({remote!r}).write_bytes(b'')\n"
+        f"print('REHYDRATE_INIT', {remote!r}, flush=True)\n"
+    )
+    r0 = run(
+        AUTH + ["exec", "-s", job.session, "--timeout", "120"],
+        timeout=180,
+        input_text=init,
+    )
+    if r0.returncode != 0:
+        raise RuntimeError(f"rehydrate init failed for {job.name}")
+    for i, ch in enumerate(chunks):
+        b64 = base64.b64encode(ch).decode()
+        code = (
+            "import base64\n"
+            "from pathlib import Path\n"
+            f"Path({remote!r}).write_bytes(Path({remote!r}).read_bytes() + "
+            f"base64.b64decode('{b64}'))\n"
+            f"print('REHYDRATE_CHUNK', {i}, Path({remote!r}).stat().st_size, flush=True)\n"
+        )
+        rc = run(
+            AUTH + ["exec", "-s", job.session, "--timeout", "300"],
+            timeout=360,
+            input_text=code,
+        )
+        if rc.returncode != 0:
+            raise RuntimeError(f"rehydrate chunk {i} failed for {job.name}")
+    # Also push sibling scores.jsonl / predictions companions if present.
+    for sib in ("scores.jsonl", "predictions.jsonl", "PROGRESS.json"):
+        sp = job.local_dir / sib
+        if sp == local_path or not sp.exists() or sp.stat().st_size < 8:
+            continue
+        remote_sib = str(Path(remote_dir) / sib)
+        run(
+            AUTH + ["upload", "-s", job.session, str(sp), remote_sib],
+            timeout=600,
+        )
+    log(f"{job.name}: rehydrate complete ({len(chunks)} chunks)")
+
+
 def push_and_boot(job: Job) -> None:
     """Push boot + runners via base64 exec (upload often SSL-fails on large files)."""
     job.local_dir.mkdir(parents=True, exist_ok=True)
     files = _runners_for(job)
     if not files:
         raise RuntimeError(f"no boot/runner scripts found for {job.name}")
+
+    # CRITICAL: put local checkpoint back on the new VM before starting work.
+    rehydrate_progress(job)
 
     writes = []
     for p in files:

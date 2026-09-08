@@ -17,7 +17,9 @@ from pathlib import Path
 
 import numpy as np
 
-ROOT = Path("/content/fm_baselines")
+ROOT = Path(os.environ.get("ROOT", "/opt/usersim_fm"))
+if not ROOT.exists():
+    ROOT = Path("/content/fm_baselines")
 RESULTS = ROOT / "results" / "qwen3_8b_floor_socrates"
 MODEL = os.environ.get("FLOOR_MODEL", "Qwen/Qwen3-8B-Base")
 SYSTEM = (

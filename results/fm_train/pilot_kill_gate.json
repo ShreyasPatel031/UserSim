@@ -1,0 +1,21 @@
+{
+  "verdict": "PENDING",
+  "reason": [
+    "eval not run yet \u2014 adapter/metrics missing"
+  ],
+  "adapter": "/opt/usersim_fm/adapters/qwen3_8b_base_pilot",
+  "base_model": "Qwen/Qwen3-8B-Base",
+  "tasks": [
+    "strategic_gameplay_guessing",
+    "surv_resp_pred",
+    "game_behavior_dictator",
+    "game_behavior_ultimatum_proposer",
+    "game_behavior_ultimatum_responder",
+    "game_behavior_trust_investor",
+    "game_behavior_trust_banker",
+    "game_behavior_public_goods",
+    "game_behavior_bomb",
+    "game_behavior_guessing",
+    "game_behavior_push_pull"
+  ]
+}

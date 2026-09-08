@@ -1,0 +1,35 @@
+{
+  "name": "qwen3_8b_base_befm_pilot",
+  "created_at": "2026-09-08T05:52:24.570917+00:00",
+  "n_examples": 39003,
+  "schema": [
+    "system",
+    "user",
+    "assistant",
+    "text",
+    "source",
+    "metadata"
+  ],
+  "sources": {
+    "bigfive_surv_resp": 17690,
+    "bigfive_masked": 3516,
+    "bigfive_pers_score": 8797,
+    "game_public_goods": 1250,
+    "game_dictator": 1250,
+    "game_bomb": 1250,
+    "game_push_pull": 1250,
+    "game_trust_banker": 1000,
+    "game_ultimatum_proposer": 1000,
+    "game_trust_investor": 1000,
+    "game_ultimatum_responder": 1000
+  },
+  "exclusions": [
+    "BehaviorBench eval exact (system,user,assistant) triples",
+    "Big Five subject_idx present in eval metadata",
+    "Big Five demographic fingerprints matching eval personas",
+    "IEO / workflows / Psych-101 / SocSci210",
+    "Beauty Contest / guessing (no public individual source)"
+  ],
+  "path": "/workspace/data/fm_train/pilot_corpus.jsonl",
+  "filter_log": "/workspace/results/fm_train/pilot_filter_log.json"
+}

@@ -1,0 +1,25 @@
+{
+  "model": "marcelbinz/Llama-3.1-Minitaur-8B-adapter",
+  "base": "unsloth/Meta-Llama-3.1-8B",
+  "total_nll_sum": 320904.07391355943,
+  "n_items": 6561,
+  "n_experiments": 46,
+  "max_seq": 4096,
+  "coverage": {
+    "actual": 6561,
+    "expected": 6561,
+    "unit": "items",
+    "complete": true,
+    "failed": [],
+    "contract_sha": "b926a1aa3f149e8c",
+    "git_sha": null,
+    "partial_allowed": false,
+    "skipped_no_span": 0,
+    "engine": "vllm"
+  },
+  "smoke_n": 0,
+  "skipped_no_span": 0,
+  "engine": "vllm",
+  "max_num_seqs": 32,
+  "complete": true
+}

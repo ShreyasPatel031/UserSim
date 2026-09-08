@@ -34,5 +34,14 @@ data/models/
 .venv-webvoyager/
 .venv-proxy/
 data/hackathon/
+# FM SFT pilot raw dumps + rebuilt corpus (regenerate via scripts/fm_train/)
+data/fm_train/raw/
+data/fm_train/pilot_corpus.jsonl
+data/fm_train/*.jsonl
+# Large FM eval artifacts (regenerate on GPU; keep SUMMARY only)
+results/fm_baselines/**/predictions.jsonl
+results/fm_baselines/**/scores.jsonl
+results/fm_baselines/leakage_registry.jsonl
+results/fm_baselines/**/oom_tail.txt
 .vercel
 .env*.local

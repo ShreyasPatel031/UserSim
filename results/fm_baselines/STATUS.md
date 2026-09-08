@@ -1,24 +1,21 @@
-# Phase 0 baseline status — 2026-09-05
+# Phase 0 / Socrates pivot status — 2026-09-08
 
-Centaur-70B: SKIPPED (user request).
+## Live jobs
 
-## Be.FM-1.5-4B — PARTIAL COMPLETE
-8/8 tasked subset finished (`DONE.json`). Not full BehaviorBench board.
-Highlights:
-- strategic_gameplay_guessing win_rate: **0.485** (paper ~48% for 4B)
-- pers_score_pred MAE_averaged: 7.69
-- demo_pred_age MAE: 9.49
-- game_behavior_dictator W: 3.56
-Sessions: orphaned overnight but results still on disk when reattached.
+| Job | VM | Status |
+|---|---|---|
+| Qwen3-8B-Base Socrates floor | `fm-floor-qwen-l4` (L4 Spot) | **RUNNING** — resumed from 40192 preds; ~1.2k/min toward 482642 |
+| Minitaur / Centaur Psych-101 | `fm-gate0-minitaur` (T4) | **STOPPED** — SUMMARY complete (6561/6561); watch label removed |
+| Spot watchdog | `fm-gate0-spot-watchdog` | Running (will revive labeled Spot VMs only) |
 
-## Socrates-Qwen-14B-SFT — SMOKE ONLY
-2/40 unseen studies done.
-- W = **0.184** (paper target **0.151**, empirical best 0.125)
-- n_preds=1800, n_cells=90
-Full unseen (~482k rows) NOT started.
+## Baselines
 
-## Minitaur Psych-101-test — FAILED
-CUDA OOM on T4 at max_seq=8192 during NLL. No SUMMARY.
+- **Socrates-14B-SFT** (paper repro): W≈**0.150** on 40 unseen studies (`results/fm_baselines/socrates/SUMMARY.json`). STATUS previously said smoke-only — that was stale.
+- **Minitaur**: complete (`results/fm_baselines/minitaur/SUMMARY.json`).
+- **Qwen3-8B-Base Socrates floor**: in progress; local checkpoint 40k+ preds under `results/fm_baselines/qwen3_8b_floor_socrates/`.
+- **Psych-101 Qwen floor**: invalid (null NLLs) — parked.
+- **Be.FM train clone**: deprioritized (train mix not public).
 
-## Sessions
-All three GPUs still assigned but kernels were orphaned; reattached for readout.
+## Next
+
+See `docs/plans/socrates_finetune.md` — finish floor → seen-study corpus → QLoRA SFT kill-test → full SFT vs W=0.151.

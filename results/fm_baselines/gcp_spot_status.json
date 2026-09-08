@@ -1,8 +1,12 @@
 {
-  "ts": "2026-09-07T22:41:15",
-  "jobs": {
-    "fm-gate0-socrates-l4": "MISSING",
-    "fm-gate0-befm": "MISSING",
-    "fm-gate0-minitaur": "RUNNING"
+  "updated": "2026-09-08T06:35:00Z",
+  "instances": {
+    "fm-floor-qwen-l4": "RUNNING",
+    "fm-gate0-minitaur": "TERMINATED",
+    "fm-gate0-spot-watchdog": "RUNNING"
+  },
+  "notes": {
+    "fm-gate0-minitaur": "Minitaur complete; usersim-spot-watch label removed so watchdog will not restart",
+    "fm-floor-qwen-l4": "Socrates 8B-Base floor eval; keep usersim-spot-watch=true"
   }
 }
