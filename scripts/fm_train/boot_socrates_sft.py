@@ -155,13 +155,24 @@ def main() -> None:
                 "CHUNK": "256",
                 "GPU_MEM_UTIL": "0.88",
                 "SKIP_INSTALL": "1",
+                # A 20-step adapter is not expected to reach the paper's 0.151,
+                # but it must emit bare numbers and beat uniform guessing. The
+                # runner aborts on failure; these are the thresholds it uses.
+                "GATE": "1",
+                "MIN_PARSE_RATE": "0.98",
+                "MIN_BARE_NUMERIC_RATE": "0.90",
+                "MAX_W_VS_CONTROL": "0.95",
             },
         )
         summ = json.loads((RESULTS / "eval_smoke" / "SUMMARY.json").read_text())
         w = summ.get("wasserstein_mean")
-        if w is None or not (0 < w < 1):
-            raise SystemExit(f"eval smoke produced implausible W={w}")
-        log(f"eval smoke W={w:.4f} (adapter is only 20 steps; sanity not quality)")
+        ctl = summ.get("uniform_control")
+        parse = summ.get("parse") or {}
+        log(
+            f"eval smoke W={w:.4f} vs uniform_control={ctl:.4f} "
+            f"parse_rate={parse.get('parse_rate')} "
+            f"bare_numeric_rate={parse.get('bare_numeric_rate')}"
+        )
         stamp("eval_smoke")
     if stop_here("eval_smoke"):
         return
@@ -200,6 +211,10 @@ def main() -> None:
                 "CHUNK": "256",
                 "GPU_MEM_UTIL": "0.88",
                 "SKIP_INSTALL": "1",
+                "GATE": "1",
+                "MIN_PARSE_RATE": "0.98",
+                "MIN_BARE_NUMERIC_RATE": "0.90",
+                "MAX_W_VS_CONTROL": "0.95",
             },
         )
         stamp("eval_full")
@@ -207,16 +222,21 @@ def main() -> None:
     summary_path = RESULTS / "eval_full" / "SUMMARY.json"
     if summary_path.exists():
         summ = json.loads(summary_path.read_text())
-        gate = {
-            "wasserstein_mean": summ.get("wasserstein_mean"),
+        w = summ.get("wasserstein_mean")
+        parse = summ.get("parse") or {}
+        result = {
+            "wasserstein_mean": w,
+            "uniform_control": summ.get("uniform_control"),
             "paper_socrates_14b_sft": 0.151,
             "empirical_best": 0.125,
-            "beats_paper": (summ.get("wasserstein_mean") or 9) < 0.151,
+            "beats_paper": w is not None and w < 0.151,
+            "parse_rate": parse.get("parse_rate"),
+            "bare_numeric_rate": parse.get("bare_numeric_rate"),
             "n_studies": summ.get("n_studies"),
             "complete": summ.get("coverage", {}).get("complete"),
         }
-        (RESULTS / "GATE.json").write_text(json.dumps(gate, indent=2) + "\n")
-        print(json.dumps(gate, indent=2), flush=True)
+        (RESULTS / "RESULT.json").write_text(json.dumps(result, indent=2) + "\n")
+        print(json.dumps(result, indent=2), flush=True)
     log("ALL STAGES COMPLETE")
 
 
