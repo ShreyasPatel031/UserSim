@@ -22,7 +22,9 @@ ROOT = Path(os.environ.get("ROOT", "/opt/usersim_fm"))
 RESULTS = ROOT / "results" / "socrates_sft"
 LOG = ROOT / "results" / "socrates_sft.log"
 SERVICE = os.environ.get("SFT_SERVICE", "usersim-sft-socrates.service")
-STALL_MIN = float(os.environ.get("STALL_MIN", "30"))
+# The trainer logs every 10 optimizer steps, which is ~8 min on an L4, so the
+# stall window has to be several heartbeats wide to avoid false alarms.
+STALL_MIN = float(os.environ.get("STALL_MIN", "45"))
 GRACE_MIN = float(os.environ.get("GRACE_MIN", "40"))
 STATE = RESULTS / "WATCHDOG.json"
 ALERT = RESULTS / "ALERT.json"
