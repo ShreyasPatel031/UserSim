@@ -591,6 +591,15 @@ Rules:
     return urls[:2]
 
 
+def _site_pairs(product_url: str, competitors: list[str]) -> list[tuple[str, str]]:
+    sites: list[tuple[str, str]] = [("product", product_url)]
+    for i, c in enumerate(competitors, start=1):
+        raw = c if isinstance(c, str) else (c or {}).get("url") or ""
+        if raw:
+            sites.append((f"competitor_{i}", raw))
+    return sites
+
+
 def expand_tasks_for_sites(
     tasks: list[dict[str, Any]],
     *,
@@ -598,15 +607,13 @@ def expand_tasks_for_sites(
     competitors: list[str],
 ) -> list[dict[str, Any]]:
     """Duplicate each persona task across the product and every competitor site."""
-    sites: list[tuple[str, str]] = [("product", product_url)]
-    for i, c in enumerate(competitors, start=1):
-        sites.append((f"competitor_{i}", c))
+    sites = _site_pairs(product_url, competitors)
 
     expanded: list[dict[str, Any]] = []
     for task in tasks:
         for site_key, site_url in sites:
             clone = dict(task)
-            base_id = task.get("id") or "t"
+            base_id = str(task.get("id") or "t").split("__")[0]
             clone["id"] = f"{base_id}__{site_key}"
             clone["site_key"] = site_key
             clone["site_url"] = site_url
@@ -621,6 +628,56 @@ def expand_tasks_for_sites(
                     f"Stay on that site — do not open the original product or other rivals."
                 )
             expanded.append(clone)
+    return expanded
+
+
+def expand_full_matrix(
+    tasks: list[dict[str, Any]],
+    personas: list[dict[str, Any]],
+    *,
+    product_url: str,
+    competitors: list[str],
+) -> list[dict[str, Any]]:
+    """Every persona × every unique task × every site (5×5×3 → 75)."""
+    sites = _site_pairs(product_url, competitors)
+    if not sites:
+        sites = [("product", product_url)]
+    people = [p for p in (personas or []) if p.get("id")] or [{"id": "p1"}]
+    seen_task: set[str] = set()
+    unique_tasks: list[dict[str, Any]] = []
+    for task in tasks or []:
+        base = str(task.get("id") or "").split("__")[0] or (task.get("title") or "")
+        if not base or base in seen_task:
+            continue
+        seen_task.add(base)
+        unique_tasks.append({**task, "id": base})
+    if not unique_tasks:
+        return []
+    expanded: list[dict[str, Any]] = []
+    for persona in people:
+        pid = str(persona.get("id"))
+        for task in unique_tasks:
+            base_id = str(task.get("id") or "t")
+            for site_key, site_url in sites:
+                clone = dict(task)
+                clone["id"] = f"{base_id}__{pid}__{site_key}"
+                clone["persona_id"] = pid
+                clone["site_key"] = site_key
+                clone["site_url"] = site_url
+                clone["site_label"] = "Product" if site_key == "product" else site_url
+                title = task.get("title") or "Task"
+                prompt = str(task.get("prompt") or title)
+                if site_key != "product":
+                    clone["title"] = f"{title} (vs {site_url})"
+                    clone["prompt"] = (
+                        f"{prompt}\n\n"
+                        f"You are evaluating the competitor site {site_url} only. "
+                        f"Stay on that site — do not open the original product or other rivals."
+                    )
+                else:
+                    clone["title"] = title
+                    clone["prompt"] = prompt
+                expanded.append(clone)
     return expanded
 
 
@@ -1172,20 +1229,23 @@ async def run_study(
                 : max(len(ordered), int(os.environ.get("MVP_PERSONA_COUNT", "5")))
             ]
 
-        # Full studies: every task × (product + each competitor), all parallel.
+        # Full studies: every persona × every task × (product + each competitor).
         # Smoke / quick preview: product site only (1 user × 1 task × 1 site).
-        if study.competitors and not study.test_mode:
+        if not study.test_mode:
             before = len(study.tasks)
-            study.tasks = expand_tasks_for_sites(
+            n_users = len(study.personas or [])
+            n_sites = 1 + len(study.competitors or [])
+            study.tasks = expand_full_matrix(
                 study.tasks,
+                study.personas,
                 product_url=study.url,
-                competitors=study.competitors,
+                competitors=study.competitors or [],
             )
             log_activity(
                 study,
                 "plan",
                 f"Expanded to {len(study.tasks)} parallel runs "
-                f"({before} tasks × {1 + len(study.competitors)} sites) "
+                f"({n_users} users × {before} tasks × {n_sites} sites) "
                 f"— extras queue behind Browserbase concurrency "
                 f"({os.environ.get('MVP_BROWSER_CONCURRENCY', '25')})",
             )

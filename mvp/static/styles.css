@@ -204,6 +204,13 @@ main {
   justify-content: center;
 }
 
+/* Class display:flex beats the UA [hidden] rule (same specificity, later). */
+.view-report-card[hidden],
+.report-running-card[hidden],
+.report-email-prompt[hidden] {
+  display: none !important;
+}
+
 .view-report-card {
   display: flex;
   align-items: center;

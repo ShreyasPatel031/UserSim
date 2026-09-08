@@ -107,24 +107,42 @@ function estimateStudySeconds(data) {
   return 45 + waves * 120 + 30;
 }
 
+function studySessions(data) {
+  const live = data?.live_sessions;
+  if (Array.isArray(live)) return live;
+  if (live && typeof live === "object") return Object.values(live);
+  return [];
+}
+
 function studyStillRunning(data) {
   const status = String(data?.status || "");
-  if (
-    ["complete", "error", "failed", "abandoned", "killed", "timed_out"].includes(status)
-  ) {
-    return false;
-  }
   const phase = String(data?.phase || "");
-  if (/timed out|killed|failed|complete|site blocked/i.test(phase)) {
+  if (["error", "failed", "abandoned", "killed", "timed_out"].includes(status)) {
     return false;
   }
-  // No status yet / explicitly running / in-progress phases.
+  if (/timed out|killed|failed|site blocked/i.test(phase) && !/complete/i.test(phase)) {
+    return false;
+  }
+  const sessions = studySessions(data);
+  const liveBusy = sessions.some((s) =>
+    ["running", "starting", "pending", "queued", "summarizing"].includes(
+      String(s?.status || "")
+    )
+  );
+  if (liveBusy) return true;
+  const tasks = data?.tasks || [];
+  const results = data?.agent_results || [];
+  if (status === "complete" && data?.summary && results.length >= tasks.length && tasks.length) {
+    return false;
+  }
+  // No status yet / explicitly running / in-progress phases / incomplete agents.
   if (!status || status === "running" || status === "pending" || status === "queued") {
     return true;
   }
-  if (phase && !/^(Complete|Failed|Site blocked|Killed|Timed out)/i.test(phase)) {
+  if (phase && !/^(Complete|Failed|Site blocked|Killed|Timed out)$/i.test(phase)) {
     return true;
   }
+  if (tasks.length && results.length < tasks.length) return true;
   return false;
 }
 
@@ -1301,8 +1319,14 @@ function updateReportCta(data, startedAt) {
   const runningCard = document.getElementById("report-running");
   const stageVisible = !document.getElementById("stage-section")?.hidden;
   const running = studyStillRunning(data);
+  const results = data?.agent_results || [];
+  const tasks = data?.tasks || [];
   const fullyDone =
-    data?.status === "complete" && Boolean(data?.summary) && !running;
+    data?.status === "complete" &&
+    Boolean(data?.summary?.headline || data?.summary) &&
+    !running &&
+    results.length > 0 &&
+    (!tasks.length || results.length >= tasks.length);
 
   if (fullyDone) {
     if (runningCard) runningCard.hidden = true;
@@ -1561,23 +1585,15 @@ form.addEventListener("submit", async (e) => {
       }
       if (!data) throw new Error("Study stream ended with no data");
       // Fleet detach / proxy cut: stream ends while agents still run on GCP.
-      // Keep polling until complete — otherwise the stage freezes mid-brief.
+      // Keep polling until truly done — never flip Ready mid-run.
       {
         const studyId = data.id || data.study_id;
-        const needsPoll = Boolean(
-          studyId &&
-            (data.stream_event === "detached" ||
-              (data.status !== "complete" &&
-                data.status !== "error" &&
-                data.status !== "abandoned" &&
-                !(data.summary && (data.agent_results || []).length)))
-        );
-        if (needsPoll) {
+        if (studyId && studyStillRunning(data)) {
           while (true) {
             data = await pollStudy(studyId);
             updateProgressUI(data, startedAt);
             renderLiveStudy(data);
-            if (data.status === "complete") break;
+            if (!studyStillRunning(data) && data.status === "complete") break;
             if (data.status === "error" || data.status === "abandoned") {
               throw new Error(data.error || data.phase || "Study failed");
             }
@@ -1593,21 +1609,24 @@ form.addEventListener("submit", async (e) => {
       if (!data?.personas && studyId) {
         data = await pollStudy(studyId);
       }
-      if (!(data.status === "complete" || data.summary || data.agent_results?.length)) {
+      if (studyId && studyStillRunning(data)) {
         while (true) {
           data = await pollStudy(studyId);
           updateProgressUI(data, startedAt);
           renderLiveStudy(data);
-          if (data.status === "complete") break;
+          if (!studyStillRunning(data) && data.status === "complete") break;
           if (data.status === "error") throw new Error(data.error || "Study failed");
           await new Promise((r) => setTimeout(r, 1500));
         }
-      } else {
-        updateProgressUI({ ...data, phase: "Complete", status: "complete" }, startedAt);
-        renderLiveStudy(data);
+      }
+      if (data.status !== "complete") {
+        throw new Error(data.error || data.phase || "Study did not complete");
       }
     }
 
+    if (data.status !== "complete" || studyStillRunning(data)) {
+      throw new Error("Study stream ended while still running.");
+    }
     if (!data.summary && (!data.agent_results || !data.agent_results.length)) {
       throw new Error("Study finished but returned no results.");
     }
