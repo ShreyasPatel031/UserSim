@@ -608,6 +608,7 @@ async def run_browser_agent(
 
     from mvp.auth_state import (
         ensure_site_auth,
+        storage_state_for_url,
         youtube_bootstrap_url,
         youtube_is_signed_in,
         youtube_needs_content_bootstrap,
@@ -634,14 +635,39 @@ async def run_browser_agent(
         and Path(warm["shot_path"]).is_file()
     )
 
-    # YouTube needs auth/bootstrap before the first paint. Everyone else: open the
-    # chosen URL immediately and paint pixels; finish auth in parallel.
-    # Warm path: skip blocking auth entirely — public sites don't need cookies for
-    # first actions, and deferred vault I/O was the main TTFT killer.
+    # YouTube: never block the UI on vault I/O before first pixels.
+    # Load disk cookies fast → open browser → screenshot; refresh auth in parallel.
     auth_task: asyncio.Task | None = None
     storage_state: Any = None
+
+    async def _pulse(text: str, *, thinking: bool = False) -> None:
+        if on_step is None:
+            return
+        maybe = on_step(
+            {
+                "step": None,
+                "progress_only": True,
+                "action": text,
+                "thought": text,
+                "thought_detail": {"thinking": text} if thinking else {},
+                "observation": "",
+                "url": start_url,
+                "screenshot_url": None,
+                "outcome": "neutral",
+            }
+        )
+        if asyncio.iscoroutine(maybe):
+            await maybe
+
     if is_youtube:
-        storage_state = await asyncio.to_thread(ensure_site_auth, url)
+        await _pulse(f"Preparing YouTube session for {url}…")
+        # Instant disk cookies so we can open a browser without waiting on sign-in.
+        storage_state = storage_state_for_url(url)
+        # Background refresh only when auto sign-in/sign-up is enabled.
+        if os.environ.get("MVP_AUTO_SIGNUP", "").lower() in {"1", "true", "yes"} or os.environ.get(
+            "MVP_AUTO_SIGNIN", ""
+        ).lower() in {"1", "true", "yes"}:
+            auth_task = asyncio.create_task(asyncio.to_thread(ensure_site_auth, url))
         if youtube_needs_content_bootstrap(url, storage_state):
             start_url = youtube_bootstrap_url(task_prompt, persona.get("name") or "")
             yt_hint = (
@@ -649,6 +675,7 @@ async def run_browser_agent(
                 "search results with real videos — use those, refine the query, or open a video. "
                 "If you can sign in / avatar is visible, you may also open Home afterward.\n"
             )
+            await _pulse(f"Opening search results — {start_url.split('search_query=')[-1][:40]}…")
         elif youtube_is_signed_in(
             storage_state if isinstance(storage_state, dict) else None
         ):
@@ -656,7 +683,11 @@ async def run_browser_agent(
                 "You are signed into YouTube (Gmail session cookies loaded). Use the personalized "
                 "home feed, subscriptions, and account UI as a real logged-in user would.\n"
             )
+            await _pulse("Signed-in cookies ready — opening YouTube…")
+        else:
+            await _pulse("Opening YouTube…")
     elif not use_warm:
+        await _pulse(f"Opening {url}…")
         auth_task = asyncio.create_task(asyncio.to_thread(ensure_site_auth, url))
 
     cookie_state = storage_state if isinstance(storage_state, dict) else None
@@ -711,23 +742,18 @@ async def run_browser_agent(
                 maybe = on_step(step)
                 if asyncio.iscoroutine(maybe):
                     await maybe
-            # Live + thought immediately — do not wait for ChatGoogle / Agent().
+            # Stash live URL only — live_active flips when agent.run starts.
             if on_step is not None and (warm_live_url or bb_session is not None):
                 maybe = on_step(
                     {
                         "step": None,
                         "progress_only": True,
-                        "live_active": True,
+                        "live_active": False,
                         "live_view_url": warm_live_url,
                         "browserbase_session_id": warm_bb_id,
-                        "action": "Agent started — live browser on",
-                        "thought": "I'm on the page. Looking around before I click…",
-                        "thought_detail": {
-                            "thinking": (
-                                "Landing page is open. Reading what's visible and "
-                                "choosing a first action."
-                            )
-                        },
+                        "action": "Page open — starting simulated user",
+                        "thought": "Page is open. Starting the simulated user…",
+                        "thought_detail": {},
                         "observation": "",
                         "url": url,
                         "screenshot_url": None,
@@ -782,6 +808,7 @@ async def run_browser_agent(
                 raise RuntimeError("Browserbase session missing connect_url")
             profile = _browserbase_profile(connect)
             backend = "browserbase"
+            await _pulse("Browser ready — loading the page…")
 
         try:
             from browser_use import BrowserSession
@@ -799,6 +826,7 @@ async def run_browser_agent(
                 url=start_url,
                 on_step=on_step,
             )
+            await _pulse("First screenshot captured — starting the simulated user…", thinking=True)
         except Exception:
             if browser_session is not None:
                 try:
@@ -900,9 +928,8 @@ async def run_browser_agent(
                 "current screenshot/DOM. Stay on the product site you were given."
             ),
         )
-        # Signal UI: agent loop is starting — show live Browserbase view now.
-        # Warm path already flipped live_active; skip the extra live-view HTTP round-trip.
-        if on_step is not None and bb_session is not None and not use_warm:
+        # Signal UI: agent loop is starting — replace screenshot with live view now.
+        if on_step is not None and bb_session is not None:
             live_url = warm_live_url
             if not live_url:
                 try:
@@ -919,7 +946,7 @@ async def run_browser_agent(
                     "progress_only": True,
                     "live_active": True,
                     "live_view_url": live_url,
-                    "browserbase_session_id": getattr(bb_session, "id", None),
+                    "browserbase_session_id": getattr(bb_session, "id", None) or warm_bb_id,
                     "action": "Agent started — live browser on",
                     "thought": "I'm on the page now. Looking around before I click…",
                     "thought_detail": {
