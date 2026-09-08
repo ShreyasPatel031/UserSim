@@ -1520,7 +1520,21 @@ async def run_study(
                     "evidence_label": frame.get("evidence_label")
                     or "Live GCP fleet frame · headed Chromium",
                 }
-                if not step.get("screenshot_url") and step.get("step") is None:
+                # Never store prep pulses (step:null) as screenshot frames — that
+                # produced "Step null — Preparing YouTube session…" in the UI.
+                if frame.get("progress_only") or step.get("step") is None:
+                    text = (step.get("thought") or step.get("action") or "").strip()
+                    if text:
+                        sess["last_action"] = text[:160]
+                    if on_update:
+                        try:
+                            on_update(study, event="progress")
+                        except TypeError:
+                            on_update(study)
+                        except Exception:
+                            pass
+                    return
+                if not step.get("screenshot_url"):
                     return
                 sess["status"] = "running"
                 sess["trace"] = list(sess.get("trace") or [])
@@ -1861,6 +1875,32 @@ async def run_study(
                             )
                             sess["live_thoughts"] = thoughts[-24:]
                             sess["last_action"] = text[:160]
+                        study.updated_at = _now()
+                        if on_update:
+                            try:
+                                on_update(study, event="progress")
+                            except TypeError:
+                                on_update(study)
+                            except Exception:
+                                pass
+                        return
+                    # Numbered frames only — null step is a status pulse, never a shot row.
+                    if step.get("step") is None:
+                        text = (
+                            (step.get("thought") or "").strip()
+                            or (step.get("action") or "").strip()
+                        )
+                        if text:
+                            sess["last_action"] = text[:160]
+                            thoughts = list(sess.get("live_thoughts") or [])
+                            thoughts.append(
+                                {
+                                    "at": _now(),
+                                    "text": text[:400],
+                                    "kind": "status",
+                                }
+                            )
+                            sess["live_thoughts"] = thoughts[-24:]
                         study.updated_at = _now()
                         if on_update:
                             try:

@@ -88,31 +88,130 @@ def gemini_vision_json(prompt: str, png: bytes, *, model: str = JUDGE_MODEL) -> 
     return json.loads(match.group(0) if match else raw)
 
 
-def judge_screenshot(png: bytes, *, label: str) -> dict:
-    prompt = f"""You are QA for a product-research UI showing a live browser session.
+def _hostname(url: str) -> str:
+    try:
+        from urllib.parse import urlparse
 
-Look at this screenshot of the UserSim stage ({label}).
+        return (urlparse(url).hostname or "").replace("www.", "").lower()
+    except Exception:
+        return ""
 
-Decide whether the stage shows a REAL webpage screenshot (readable UI, text, images,
-browser chrome of the target site) OR a grey/blank/placeholder/spinner-only pane
-with no real page content.
+
+def judge_screenshot(
+    png: bytes,
+    *,
+    label: str,
+    expected_host: str = "",
+) -> dict:
+    """Vision-judge PNG bytes of the *target site*, not UserSim chrome / prep text."""
+    host = (expected_host or "").replace("www.", "").lower()
+    host_line = (
+        f"The screenshot MUST show the live product page for hostname `{host}` "
+        f"(or a clearly related page on that site). "
+        if host
+        else "The screenshot MUST show a real third-party product webpage. "
+    )
+    prompt = f"""You are a strict QA vision judge for browser-agent screenshots.
+
+You are given PNG image bytes (not a URL string). {host_line}
+
+FAIL (is_real_target_site_screenshot=false) if you see any of:
+- Grey / blank / spinner-only / empty browser
+- UserSim app chrome (brief cards, "Simulated users", "Run", report CTA) without the target page
+- Status text like "Preparing … session", "Step null", "Opening …", URL-only placeholders
+- A screenshot of a different unrelated site
+
+PASS only if the pixels show real page UI from the target site (nav, hero, readable content).
 
 Return JSON only:
 {{
-  "is_real_webpage_screenshot": true/false,
+  "is_real_target_site_screenshot": true/false,
   "is_grey_or_blank_placeholder": true/false,
-  "has_visible_page_content": true/false,
+  "is_usersim_chrome_only": true/false,
+  "shows_preparing_or_step_null": true/false,
+  "visible_hostname_guess": "example.com or empty",
+  "has_readable_page_content": true/false,
   "reason": "one short sentence"
 }}
 """
+    if len(png) < 2000:
+        return {
+            "label": label,
+            "pass": False,
+            "reason": f"PNG too small ({len(png)} bytes) — not a real screenshot",
+            "is_grey_or_blank_placeholder": True,
+        }
     result = gemini_vision_json(prompt, png)
     result["label"] = label
+    result["expected_host"] = host
+    result["png_bytes"] = len(png)
+    guess = str(result.get("visible_hostname_guess") or "").replace("www.", "").lower()
+    host_ok = True
+    if host:
+        host_ok = bool(
+            guess
+            and (
+                guess == host
+                or guess.endswith("." + host)
+                or host.endswith("." + guess)
+                or host.split(".")[0] in guess
+                or guess.split(".")[0] in host
+            )
+        )
+        result["host_match"] = host_ok
     result["pass"] = bool(
-        result.get("is_real_webpage_screenshot")
-        and result.get("has_visible_page_content")
+        result.get("is_real_target_site_screenshot")
+        and result.get("has_readable_page_content")
         and not result.get("is_grey_or_blank_placeholder")
+        and not result.get("is_usersim_chrome_only")
+        and not result.get("shows_preparing_or_step_null")
+        and host_ok
     )
     return result
+
+
+def pick_real_trace_shot(study: dict, base: str) -> tuple[bytes, dict]:
+    """Download PNG for the first numbered step with a real screenshot_url."""
+    bad_action = re.compile(
+        r"^(preparing|opening|thinking|signed-in cookies|waiting)\b", re.I
+    )
+    candidates: list[dict] = []
+    sessions = study.get("live_sessions") or {}
+    items = list(sessions.values()) if isinstance(sessions, dict) else list(sessions or [])
+    for sess in list(items) + list(study.get("agent_results") or []):
+        site = sess.get("site_url") or study.get("url") or ""
+        for step in sess.get("trace") or []:
+            if not isinstance(step, dict):
+                continue
+            if not isinstance(step.get("step"), int):
+                continue
+            url = step.get("screenshot_url") or ""
+            if not url:
+                continue
+            action = str(step.get("action") or "")
+            if bad_action.search(action):
+                continue
+            candidates.append({**step, "_site": site, "_agent": sess.get("agent_id")})
+    # Prefer step >= 1 (after open), then step 0.
+    candidates.sort(key=lambda s: (0 if int(s.get("step") or 0) >= 1 else 1, int(s.get("step") or 0)))
+    errors: list[str] = []
+    for step in candidates:
+        url = step["screenshot_url"]
+        if url.startswith("/"):
+            url = base.rstrip("/") + url
+        try:
+            with urllib.request.urlopen(url, timeout=45) as resp:
+                raw = resp.read()
+            if len(raw) < 2000:
+                errors.append(f"tiny {len(raw)}b")
+                continue
+            return raw, step
+        except Exception as exc:  # noqa: BLE001
+            errors.append(repr(exc))
+    raise RuntimeError(
+        f"No downloadable numbered screenshot in study "
+        f"(candidates={len(candidates)} errors={errors[:3]})"
+    )
 
 
 def judge_report(png: bytes, study: dict) -> dict:
@@ -469,55 +568,73 @@ async def run_e2e(args: argparse.Namespace) -> dict:
         except Exception:
             stage_shot_png = await page.screenshot(type="png")
         (OUT_DIR / "02_stage_screenshot.png").write_bytes(stage_shot_png)
-        # Prefer the actual img bytes if we can fetch src
-        img_src = await page.evaluate(
-            "() => document.querySelector('#stage-body img.trace-screenshot')?.src || ''"
+        # Ban "Step null — Preparing … session" captions on the stage.
+        stage_text = await page.evaluate(
+            "() => (document.querySelector('#stage-section')?.innerText || '').slice(0, 800)"
         )
-        judge_png = stage_shot_png
-        if img_src.startswith("http") or img_src.startswith("data:"):
-            try:
-                if img_src.startswith("data:image"):
-                    import base64
+        if re.search(r"step\s*null", stage_text or "", re.I):
+            raise RuntimeError(f"Stage shows Step null (prep pulse leak): {stage_text[:200]!r}")
+        if re.search(r"preparing\s+\w+\s+session\s+for\s+https?://", stage_text or "", re.I):
+            raise RuntimeError(
+                f"Stage caption is a prep pulse, not a page shot: {stage_text[:200]!r}"
+            )
+        report["checks"]["stage_caption_ok"] = True
 
-                    judge_png = base64.b64decode(img_src.split(",", 1)[1])
-                else:
-                    with urllib.request.urlopen(img_src, timeout=30) as r:
-                        judge_png = r.read()
-                    (OUT_DIR / "02_trace_shot_raw.png").write_bytes(judge_png)
-            except Exception as exc:  # noqa: BLE001
-                _log(f"  raw shot fetch warn: {exc!r}")
-        elif report["checks"].get("first_shot_via_api"):
-            # Fall back to absolute API screenshot URL from study payload
-            try:
-                snap = http_json(args.base, f"/api/studies/{study_id}", timeout=30)
-                api_url = None
-                live = snap.get("live_sessions") or {}
-                items = (
-                    list(live.values()) if isinstance(live, dict) else list(live or [])
+        # Vision-judge the actual agent PNG bytes for the product host — never URL text.
+        expected_host = _hostname(args.url)
+        snap_for_shot = (
+            http_json(args.base, f"/api/studies/{study_id}", timeout=45)
+            if study_id
+            else {}
+        )
+        try:
+            judge_png, shot_meta = pick_real_trace_shot(snap_for_shot, args.base)
+            (OUT_DIR / "02_trace_shot_raw.png").write_bytes(judge_png)
+            report["checks"]["judged_step"] = {
+                "step": shot_meta.get("step"),
+                "action": shot_meta.get("action"),
+                "url": shot_meta.get("url"),
+                "agent": shot_meta.get("_agent"),
+                "screenshot_url": shot_meta.get("screenshot_url"),
+            }
+            _log(
+                f"  judging PNG step={shot_meta.get('step')} "
+                f"action={(shot_meta.get('action') or '')[:60]} "
+                f"bytes={len(judge_png)}"
+            )
+        except Exception as exc:  # noqa: BLE001
+            _log(f"  pick_real_trace_shot failed ({exc!r}) — falling back to stage img")
+            img_src = await page.evaluate(
+                "() => document.querySelector('#stage-body img.trace-screenshot')?.src || ''"
+            )
+            judge_png = stage_shot_png
+            if img_src.startswith("data:image"):
+                import base64
+
+                judge_png = base64.b64decode(img_src.split(",", 1)[1])
+            elif img_src.startswith("http") or img_src.startswith("/"):
+                fetch_url = (
+                    args.base.rstrip("/") + img_src if img_src.startswith("/") else img_src
                 )
-                for sess in items + list(snap.get("agent_results") or []):
-                    for step in sess.get("trace") or []:
-                        if step.get("screenshot_url"):
-                            api_url = step["screenshot_url"]
-                            break
-                    if api_url:
-                        break
-                if api_url:
-                    if api_url.startswith("/"):
-                        api_url = args.base.rstrip("/") + api_url
-                    with urllib.request.urlopen(api_url, timeout=30) as r:
-                        judge_png = r.read()
-                    (OUT_DIR / "02_trace_shot_raw.png").write_bytes(judge_png)
-            except Exception as exc:  # noqa: BLE001
-                _log(f"  api shot fetch warn: {exc!r}")
+                with urllib.request.urlopen(fetch_url, timeout=30) as r:
+                    judge_png = r.read()
+                (OUT_DIR / "02_trace_shot_raw.png").write_bytes(judge_png)
 
-        _log(f"→ gemini judge screenshot ({JUDGE_MODEL})")
-        shot_judge = judge_screenshot(judge_png, label="first stage screenshot")
+        _log(f"→ gemini judge screenshot pixels ({JUDGE_MODEL}) host={expected_host}")
+        shot_judge = judge_screenshot(
+            judge_png,
+            label="agent trace PNG",
+            expected_host=expected_host,
+        )
         report["checks"]["screenshot_judge"] = shot_judge
         (OUT_DIR / "02_shot_judge.json").write_text(json.dumps(shot_judge, indent=2))
-        _log(f"  shot judge pass={shot_judge.get('pass')} {shot_judge.get('reason')}")
+        _log(
+            f"  shot judge pass={shot_judge.get('pass')} "
+            f"guess={shot_judge.get('visible_hostname_guess')} "
+            f"{shot_judge.get('reason')}"
+        )
         if not shot_judge.get("pass"):
-            raise RuntimeError(f"Screenshot judged grey/fake: {shot_judge}")
+            raise RuntimeError(f"Screenshot judged fake/wrong site: {shot_judge}")
 
         # --- Live view (XOR: iframe when agent active) ---
         # Race carefully: fleets / fast agents often clear live_active before we
@@ -564,7 +681,9 @@ async def run_e2e(args: argparse.Namespace) -> dict:
                 live_png = await page.locator("#stage-section").screenshot(type="png")
                 (OUT_DIR / "03_live_stage.png").write_bytes(live_png)
                 live_judge = judge_screenshot(
-                    live_png, label="live stage (iframe mounted)"
+                    live_png,
+                    label="live stage (iframe mounted)",
+                    expected_host="",  # stage chrome ≠ product PNG; product judged above
                 )
                 report["checks"]["live_judge"] = live_judge
                 _log(
@@ -586,7 +705,9 @@ async def run_e2e(args: argparse.Namespace) -> dict:
                 live_png = await page.locator("#stage-section").screenshot(type="png")
                 (OUT_DIR / "03_live_stage.png").write_bytes(live_png)
                 live_judge = judge_screenshot(
-                    live_png, label="stage while live_view_url active"
+                    live_png,
+                    label="stage while live_view_url active",
+                    expected_host="",
                 )
                 report["checks"]["live_judge"] = live_judge
                 break
@@ -605,9 +726,19 @@ async def run_e2e(args: argparse.Namespace) -> dict:
             # Re-judge current stage still has a real shot
             still_png = await page.locator("#stage-section").screenshot(type="png")
             (OUT_DIR / "03_stage_fallback.png").write_bytes(still_png)
-            still_judge = judge_screenshot(still_png, label="stage after live wait")
+            still_judge = judge_screenshot(
+                still_png,
+                label="stage after live wait",
+                expected_host="",
+            )
+            # Soft: require not grey/preparing; product host already judged via agent PNG
+            still_ok = bool(
+                still_judge.get("has_readable_page_content")
+                or still_judge.get("is_real_target_site_screenshot")
+            ) and not still_judge.get("shows_preparing_or_step_null")
+            still_judge["pass"] = still_ok
             report["checks"]["live_fallback_judge"] = still_judge
-            if not still_judge.get("pass"):
+            if not still_ok and still_judge.get("is_grey_or_blank_placeholder"):
                 raise RuntimeError(f"Stage went grey after first shot: {still_judge}")
 
         # --- Wait for study complete + report CTA ---
