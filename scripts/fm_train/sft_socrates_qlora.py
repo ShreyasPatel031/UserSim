@@ -177,9 +177,17 @@ def main() -> None:
     class Heartbeat(TrainerCallback):
         """Progress file for the watchdog + hard stop on divergence."""
 
+        last_loss: float | None = None
+
         def on_log(self, cfg, state, control, logs=None, **kw):
             logs = logs or {}
-            loss = logs.get("loss")
+            # The final log carries summary metrics with no "loss" key; keep the
+            # last real value so health checks do not see a phantom None.
+            loss = logs.get("loss", logs.get("train_loss"))
+            if loss is None:
+                loss = self.last_loss
+            else:
+                self.last_loss = loss
             payload = {
                 "step": state.global_step,
                 "max_steps": state.max_steps,

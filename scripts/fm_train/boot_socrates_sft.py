@@ -36,6 +36,10 @@ CORPUS_FULL = ROOT / "data" / "socrates_sft.jsonl"
 MODEL = os.environ.get("SFT_MODEL", "Qwen/Qwen3-8B-Base")
 MAX_PER_CELL = os.environ.get("MAX_PER_CELL", "32")
 STOP_AFTER = os.environ.get("STOP_AFTER", "").strip()
+# vLLM pulls transformers 5.x, which current peft cannot import. Training gets
+# its own interpreter with a transformers 4.x stack; eval keeps the vLLM one.
+TRAIN_VENV = ROOT / "venvs" / "train"
+TRAIN_PY = os.environ.get("TRAIN_PY", str(TRAIN_VENV / "bin" / "python3"))
 
 
 def log(msg: str) -> None:
@@ -79,14 +83,22 @@ def main() -> None:
 
     if stage("install"):
         sh(f"{py} -m pip install -q -U pip")
-        sh(
-            f"{py} -m pip install -q -U "
-            "'transformers>=4.44' 'peft>=0.11' 'bitsandbytes>=0.43' 'accelerate>=0.33' "
-            "datasets huggingface_hub 'vllm>=0.6.0'"
-        )
+        sh(f"{py} -m pip install -q -U datasets huggingface_hub 'vllm>=0.6.0'")
         stamp("install")
     if stop_here("install"):
         return
+
+    if stage("install_train_venv"):
+        if not Path(TRAIN_PY).exists():
+            sh(f"{py} -m venv {TRAIN_VENV}")
+        sh(f"{TRAIN_PY} -m pip install -q -U pip wheel")
+        sh(
+            f"{TRAIN_PY} -m pip install -q -U torch "
+            "'transformers>=4.55,<5' 'peft>=0.14,<0.21' 'accelerate>=0.33' "
+            "'bitsandbytes>=0.43' datasets huggingface_hub"
+        )
+        sh(f"{TRAIN_PY} -c \"import peft, transformers, bitsandbytes; print('train stack', transformers.__version__, peft.__version__)\"")
+        stamp("install_train_venv")
 
     if stage("corpus_smoke"):
         sh(
@@ -97,7 +109,7 @@ def main() -> None:
 
     if stage("format_smoke"):
         sh(
-            f"{py} -u {FM_TRAIN}/smoke_socrates_sft.py",
+            f"{TRAIN_PY} -u {FM_TRAIN}/smoke_socrates_sft.py",
             env={"SFT_CORPUS": str(CORPUS_SMOKE), "SFT_MODEL": MODEL},
         )
         stamp("format_smoke")
@@ -106,7 +118,7 @@ def main() -> None:
 
     if stage("train_smoke"):
         sh(
-            f"{py} -u {FM_TRAIN}/sft_socrates_qlora.py",
+            f"{TRAIN_PY} -u {FM_TRAIN}/sft_socrates_qlora.py",
             env={
                 "SFT_CORPUS": str(CORPUS_SMOKE),
                 "SFT_OUT": str(ADAPTER_SMOKE),
@@ -119,9 +131,10 @@ def main() -> None:
             },
         )
         prog = json.loads((RESULTS / "PROGRESS.json").read_text())
-        if prog.get("diverged") or prog.get("loss") in (None, 0):
+        loss = prog.get("loss")
+        if prog.get("diverged") or not isinstance(loss, (int, float)) or loss <= 0:
             raise SystemExit(f"train smoke unhealthy: {prog}")
-        log(f"train smoke loss={prog.get('loss')}")
+        log(f"train smoke loss={loss}")
         stamp("train_smoke")
 
     if stage("eval_smoke"):
@@ -156,7 +169,7 @@ def main() -> None:
 
     if stage("train_full"):
         sh(
-            f"{py} -u {FM_TRAIN}/sft_socrates_qlora.py",
+            f"{TRAIN_PY} -u {FM_TRAIN}/sft_socrates_qlora.py",
             env={
                 "SFT_CORPUS": str(CORPUS_FULL),
                 "SFT_OUT": str(ADAPTER_FULL),

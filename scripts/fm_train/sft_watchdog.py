@@ -74,6 +74,7 @@ def current_stage() -> str:
     stamps = RESULTS / "stamps"
     order = [
         "install",
+        "install_train_venv",
         "corpus_smoke",
         "format_smoke",
         "train_smoke",
