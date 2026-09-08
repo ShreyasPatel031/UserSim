@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-08T06:35:00Z",
+  "updated": "2026-09-08T06:50:00Z",
   "instances": {
     "fm-floor-qwen-l4": "RUNNING",
     "fm-gate0-minitaur": "TERMINATED",
     "fm-gate0-spot-watchdog": "RUNNING"
   },
   "notes": {
-    "fm-gate0-minitaur": "Minitaur complete; usersim-spot-watch label removed so watchdog will not restart",
-    "fm-floor-qwen-l4": "Socrates 8B-Base floor eval; keep usersim-spot-watch=true"
+    "fm-gate0-minitaur": "COMPLETE baseline; TERMINATED; usersim-do-not-start=true; spot-watch label removed; systemd usersim-minitaur disabled",
+    "fm-floor-qwen-l4": "Socrates floor via usersim-floor-socrates.service; BeFM/Psych systemd disabled"
   }
 }
