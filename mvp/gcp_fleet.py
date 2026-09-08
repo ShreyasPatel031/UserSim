@@ -1114,18 +1114,36 @@ async def run_study_on_gcp_fleet(
         from mvp.paths import MVP_RUNS_DIR
 
         dest = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / name
-        out["screenshot_url"] = (
-            f"/api/studies/{study_id}/agents/{agent_id}/screenshots/{name}"
-        )
+        api = f"/api/studies/{study_id}/agents/{agent_id}/screenshots"
         if dest.is_file() and dest.stat().st_size > 100:
+            out["screenshot_url"] = f"{api}/{name}"
             return out
         try:
             raw = gcs_download_bytes(screenshot_gcs_uri(study_id, agent_id, name))
             if raw and len(raw) > 100:
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 dest.write_bytes(raw)
+                out["screenshot_url"] = f"{api}/{name}"
+                return out
         except Exception:  # noqa: BLE001
             pass
+        # Don't publish a 404 bbox_N URL — landing frame is the reliable pixel.
+        landing = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / "step_0.png"
+        if landing.is_file() and landing.stat().st_size > 100:
+            out["screenshot_url"] = f"{api}/step_0.png"
+        else:
+            try:
+                raw0 = gcs_download_bytes(
+                    screenshot_gcs_uri(study_id, agent_id, "step_0.png")
+                )
+            except Exception:
+                raw0 = None
+            if raw0 and len(raw0) > 100:
+                landing.parent.mkdir(parents=True, exist_ok=True)
+                landing.write_bytes(raw0)
+                out["screenshot_url"] = f"{api}/step_0.png"
+            else:
+                out["screenshot_url"] = f"{api}/step_0.png"
         return out
 
     async def _emit_frame(agent_id: str, fr: dict[str, Any]) -> None:
