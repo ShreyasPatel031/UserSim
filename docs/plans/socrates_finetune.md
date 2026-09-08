@@ -6,12 +6,24 @@ Status: draft 2026-09-08. Pivot off Be.FM train cloning. Centaur/Minitaur parked
 
 On SocSci210 **unseen-study** split (`participant_mapping.json`: 170 seen train / 40 unseen eval), with the same eval harness we already use (`colab_qwen3_8b_floor_socrates_vllm.py` / `colab_socrates_wass.py`):
 
+All W values are on the paper's [0,1] standardization, computed by the one
+shared scorer `scripts/fm_baselines/socrates_metric.py`. Any W quoted without
+that standardization is not comparable to 0.151 — see the metric post-mortem
+below.
+
 | Checkpoint | Metric | Target |
 |---|---|---|
-| Qwen3-8B-Base floor (in flight) | mean Wasserstein W | measure (paper Qwen2.5-14B base ≈ 0.205) |
-| Paper Socrates-14B-SFT (reproduced) | W | **0.150** (paper 0.151) ✓ |
-| Our SFT on Qwen3-8B-Base | W | **&lt; 0.151** (beat paper) and clear lift vs our own floor |
+| Qwen3-8B-Base floor | mean Wasserstein W | **0.2186 — measured, and worse than the 0.1973 uniform-guessing control** |
+| Paper Socrates-14B-SFT (reproduced) | W | **0.1499** (paper 0.151) ✓ |
+| Our SFT on Qwen3-8B-Base | W | **&lt; 0.151** (beat paper) |
 | Stretch | W | approach empirical bound **0.125** |
+
+The base floor came in *worse than random guessing*, so "clear lift vs our own
+floor" is not a meaningful bar and has been dropped. Qwen3-8B-Base emits a bare
+number on only 47.8% of items and nothing parseable on 20.7%: it is a raw
+pretrained LM, whereas the paper's base was **instruction-tuned**, which is why
+theirs obeyed "a single number only". The bars that matter are the uniform
+control (0.1973) and the paper (0.151).
 
 Secondary: individual accuracy (paper DPO path). Do not optimize accuracy if it worsens W.
 
@@ -35,11 +47,14 @@ From Socrates EMNLP 2025 / site:
 
 ## Stages
 
-### S0 — Finish floor (blocking)
+### S0 — Floor: DONE
 
-1. Let L4 finish ~482k preds; pull `predictions.jsonl` + write SUMMARY.
-2. Spot watchdog keeps `fm-floor-qwen-l4` (`usersim-spot-watch=true`). Minitaur watch label **removed**; VM TERMINATED.
-3. Deliverable: `results/fm_baselines/qwen3_8b_floor_socrates/SUMMARY.json`.
+1. Generation complete at 482642/482642; re-scored on CPU with the shared metric.
+2. W = **0.2186** vs uniform control 0.1973 → below chance, invalid as a baseline.
+   Recorded in `results/fm_baselines/socrates_floor_qwen3_8b_base.json`.
+3. Floor VM stopped once generation was confirmed complete, then reused as a
+   parallel eval box. Minitaur **deleted** (disk snapshotted) after being revived
+   five times; a deleted instance cannot be revived.
 
 ### S1 — Train corpus (SocSci210 only)
 
@@ -123,6 +138,39 @@ for divergence, OOM, repeated restarts and stalled stages.
 Known non-blocking observation: the CUDA allocator logged one soft OOM retry
 at step 1 and recovered. If hard OOMs appear, drop micro batch to 2 and raise
 accumulation to 32 for the same effective batch.
+
+### Metric post-mortem (2026-09-08) — why the floor read 5.7e27
+
+Two bugs, either of which alone would have invalidated the number:
+
+1. The floor runner scored Wasserstein on the **raw response scale** and printed
+   it beside the paper's 0.151, which is defined on the paper's [0,1]
+   standardization. The two were never comparable. And with no clipping into the
+   human range, one out-of-range generation (a base model answering "1997" on a
+   1-7 scale) moves the cell mean without bound — hence 1e27 rather than a
+   number in [0,1].
+2. The eval smoke gate was `0 < W < 1`. After standardization W is *always* in
+   [0,1], so the predicate is vacuous: it passed a smoke W of 0.670 against a
+   target of 0.151.
+
+Three copies of the scorer existed and had drifted: the floor runner's
+raw-scale one, a correct standardized one in `colab_socrates_wass.py` that
+nothing called, and a third Wasserstein using 256-point quantile matching. All
+callers now import `socrates_metric.py`, covered by 12 unit tests including
+scale invariance and boundedness under absurd predictions.
+
+The gate now checks parse rate, bare-numeric adherence, and W against a
+`uniform_control` — the same metric scored with uniform draws. The control is
+the load-bearing check: an absolute W threshold cannot separate a working model
+from a broken one, because W's scale depends on the response distribution.
+
+Cost of the bugs: the floor's 482,642 generations were *not* wasted (they
+re-scored on CPU for free, and the run had in fact completed), but a day of L4
+time went to a baseline that turned out to be below chance, and the signal that
+would have revealed it was visible in the smoke result hours earlier.
+
+Rule going forward: **no full eval sweep without a gated smoke on the same
+scorer**, and no new copy of a metric.
 
 ### Environment traps hit on the way (all fixed in-repo)
 
