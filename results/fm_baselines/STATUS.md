@@ -20,6 +20,13 @@
   restarted from step 0 because no checkpoint existed yet — checkpoints
   tightened from every 100 steps to every 25 (~20 min of exposure).
 
+- **2026-09-08 12:00Z** — Checkpoint resume validated under real preemption: the
+  SFT VM was preempted twice more and restarted from `checkpoint-50` and then
+  `checkpoint-75`, losing under 25 steps each time. Effective throughput is
+  ~75% of ideal (72 steps per 80 min against 96 ideal), so the 2588-step epoch
+  lands nearer 46 h than 36 h. Floor at 184832/482642, ~850 preds/min, no
+  restarts.
+
 ### Socrates SFT smoke gates (all passed before the full run)
 
 | Gate | Result |
