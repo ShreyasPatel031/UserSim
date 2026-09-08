@@ -69,7 +69,7 @@ if [[ ! -f secrets/vertex_adc.json ]]; then
   exit 1
 fi
 
-gcloud config set account shreyas.patel@searce.com 2>/dev/null || true
+gcloud config set account "${CLOUDSDK_CORE_ACCOUNT:-usersim-cloud-agent@project-amer-scs-sandbox.iam.gserviceaccount.com}" 2>/dev/null || true
 
 merge_shards() {
   PYTHONPATH=src python3 - <<PY
@@ -151,23 +151,34 @@ from capability.tasks import (
 )
 stage = os.environ.get("STAGE", "full10")
 num = int(os.environ.get("NUM_SHARDS", "1"))
-if stage == "smoke":
+eval_indices = os.environ.get("EVAL_INDICES", "").strip()
+if eval_indices:
+    n = len([x for x in eval_indices.split(",") if x.strip()])
+    # Floor so shards with n%num fewer tasks still mark done when finished.
+    print(max(1, n // num) if num else n)
+elif stage == "smoke":
     n = len(SMOKE_INDICES)
+    print((n + num - 1) // num)
 elif stage == "bakeoff5":
     n = len(BAKEOFF5_INDICES)
+    print((n + num - 1) // num)
 elif stage == "full8":
     n = len(FULL8_INDICES)
+    print((n + num - 1) // num)
 elif stage == "full10":
     n = len(TASK_INDICES)
+    print((n + num - 1) // num)
 elif stage == "full80":
     n = len(FULL80_INDICES)
+    print((n + num - 1) // num)
 elif stage == "full100":
     n = len(FULL100_INDICES)
+    print((n + num - 1) // num)
 elif stage == "full300":
     n = len(FULL300_INDICES)
+    print((n + num - 1) // num)
 else:
-    n = num
-print((n + num - 1) // num)
+    print(num)
 PY
 )
 export TASKS_PER_SHARD
@@ -238,6 +249,7 @@ find_shard_zone() {
 
 is_zone_stockout_error() {
   local log="$1"
+  [[ -s "$log" ]] || return 1
   grep -qiE 'ZONE_RESOURCE_POOL_EXHAUSTED|stockout|does not have enough resources' "$log"
 }
 
@@ -365,10 +377,14 @@ shard_cleanup_stale_done() {
 
 # A preempted VM that GCP brings back reports RUNNING with no work on it, so
 # instance status alone is not evidence the shard is alive. Ask the box.
+# SKIP_ALIVE_CHECK=1 trusts RUNNING (avoids serial IAP hangs during mass recreate).
 shard_process_alive() {
   local i="$1"
   local name="${PREFIX}-${i}"
   local zone out
+  if [[ "${SKIP_ALIVE_CHECK:-0}" == "1" ]]; then
+    return 0
+  fi
   zone=$(find_shard_zone "$i") || return 1
   out=$(gcloud compute ssh "$name" --zone="$zone" --project="$PROJECT" \
     --tunnel-through-iap --quiet --command="pgrep -f '[s]hard_runner.sh' >/dev/null && echo ALIVE || echo DEAD" \
@@ -393,7 +409,7 @@ ensure_shard_vm() {
   fi
   if [[ -z "$zone" ]]; then
     create_shard_vm "$i" || return 1
-    zone=$(find_shard_zone "$i")
+    zone=$(find_shard_zone "$i") || return 1
     sleep 20
   fi
   status=$(gcloud compute instances describe "$name" --zone="$zone" --project="$PROJECT" \
@@ -406,7 +422,7 @@ ensure_shard_vm() {
         gcloud compute instances delete "$name" --zone="$zone" --project="$PROJECT" --quiet 2>/dev/null || true
         rm -f "$(shard_zone_cache_file "$i")"
         create_shard_vm "$i" || return 1
-        zone=$(find_shard_zone "$i")
+        zone=$(find_shard_zone "$i") || return 1
         sleep 15
       else
         return 1
@@ -423,7 +439,16 @@ fleet_relaunch() {
   tar czf "$TARBALL" -C "$ROOT" src data/om2w scripts/vm/shard_runner.sh \
     secrets/env secrets/vertex_adc.json
   local relaunch=()
-  for i in $(seq 0 $((NUM_SHARDS - 1))); do
+  local shard_ids=()
+  if [[ -n "${RELAUNCH_SHARDS:-}" ]]; then
+    # shellcheck disable=SC2206
+    shard_ids=(${RELAUNCH_SHARDS})
+    echo "    scoped to shards: ${shard_ids[*]}"
+  else
+    shard_ids=($(seq 0 $((NUM_SHARDS - 1))))
+  fi
+  local i
+  for i in "${shard_ids[@]}"; do
     shard_cleanup_stale_done "$i"
     if shard_complete_in_gcs "$i"; then
       echo "  shard $i: complete (GCS)"
@@ -445,7 +470,10 @@ fleet_relaunch() {
     else
       echo "  shard $i: relaunch (${status})"
     fi
-    ensure_shard_vm "$i"
+    if ! ensure_shard_vm "$i"; then
+      echo "  shard $i: ensure_shard_vm failed — will retry later"
+      continue
+    fi
     relaunch+=("$i")
   done
   if ((${#relaunch[@]} == 0)); then

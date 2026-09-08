@@ -1313,6 +1313,10 @@ button[type="submit"]:disabled {
   color: var(--accent);
 }
 
+.step-pill.is-pending {
+  opacity: 0.4;
+}
+
 .trace-screenshot {
   width: 100%;
   border-radius: 8px;
@@ -2142,6 +2146,15 @@ footer p {
 .stage-waiting-sub {
   padding-top: 0 !important;
   font-size: 0.82rem;
+}
+
+.stage-live-probe {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
 }
 
 .stage-live-wrap {

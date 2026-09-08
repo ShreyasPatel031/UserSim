@@ -133,17 +133,8 @@ def _persist_screenshot(study_id: str, agent_id: str, step: dict[str, Any], live
                 if local is not None:
                     break
         if local is None:
-            # Never leave a bbox_N URL that 404s in the UI — fall back to landing frame.
-            for alt in ("step_0.png", "bbox_0.png"):
-                for cand in _screenshot_candidates(study_id, agent_id, alt, live_dir):
-                    if cand.is_file() and cand.stat().st_size > 100:
-                        step["screenshot_url"] = (
-                            f"/api/studies/{study_id}/agents/{agent_id}/screenshots/step_0.png"
-                        )
-                        return
-            step["screenshot_url"] = (
-                f"/api/studies/{study_id}/agents/{agent_id}/screenshots/step_0.png"
-            )
+            # No real file for this step — wait in the UI. Do not reuse step_0.
+            step.pop("screenshot_url", None)
             return
 
     gcs_uri = (

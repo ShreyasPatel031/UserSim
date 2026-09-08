@@ -56,32 +56,77 @@ def http_json(base: str, path: str, timeout: float = 60) -> dict:
         return json.loads(raw) if raw else {}
 
 
-def gemini_vision_json(prompt: str, png: bytes, *, model: str = JUDGE_MODEL) -> dict:
-    """Judge an image with Vertex gemini-2.5-flash-lite; return parsed JSON."""
+_GEMINI = None
+
+
+def _gemini_client():
+    global _GEMINI
+    if _GEMINI is not None:
+        return _GEMINI
     from google import genai
-    from google.genai import types
 
     from auth import vertex_credentials
     from config import GCP_PROJECT
 
-    client = genai.Client(
+    _GEMINI = genai.Client(
         vertexai=True,
         project=os.environ.get("GCP_PROJECT") or GCP_PROJECT,
         location=os.environ.get("VERTEX_LOCATION", "us-central1"),
         credentials=vertex_credentials(),
     )
+    return _GEMINI
+
+
+def _gemini_json_config():
+    from google.genai import types
+
+    return types.GenerateContentConfig(
+        temperature=0,
+        max_output_tokens=512,
+        thinking_config=types.ThinkingConfig(thinking_budget=0),
+        response_mime_type="application/json",
+    )
+
+
+def gemini_vision_json(prompt: str, png: bytes, *, model: str = JUDGE_MODEL) -> dict:
+    """Judge an image with Vertex gemini-2.5-flash-lite; return parsed JSON."""
+    from google.genai import types
+
+    client = _gemini_client()
     resp = client.models.generate_content(
         model=model,
         contents=[
             types.Part.from_text(text=prompt),
             types.Part.from_bytes(data=png, mime_type="image/png"),
         ],
-        config=types.GenerateContentConfig(
-            temperature=0,
-            max_output_tokens=512,
-            thinking_config=types.ThinkingConfig(thinking_budget=0),
-            response_mime_type="application/json",
-        ),
+        config=_gemini_json_config(),
+    )
+    raw = (resp.text or "").strip()
+    match = re.search(r"\{.*\}", raw, re.S)
+    return json.loads(match.group(0) if match else raw)
+
+
+def gemini_vision_pair(
+    prompt: str,
+    prev_png: bytes,
+    new_png: bytes,
+    *,
+    model: str = JUDGE_MODEL,
+) -> dict:
+    """Judge two images (previous vs new) with flash-lite."""
+    from google.genai import types
+
+    client = _gemini_client()
+    resp = client.models.generate_content(
+        model=model,
+        contents=[
+            types.Part.from_text(text=prompt),
+            types.Part.from_text(text="IMAGE 1 — PREVIOUS screen:"),
+            types.Part.from_bytes(data=prev_png, mime_type="image/png"),
+            types.Part.from_text(text="IMAGE 2 — NEW screen after the claimed action:"),
+            types.Part.from_bytes(data=new_png, mime_type="image/png"),
+        ],
+        config=_gemini_json_config(),
     )
     raw = (resp.text or "").strip()
     match = re.search(r"\{.*\}", raw, re.S)
@@ -167,6 +212,76 @@ Return JSON only:
         and not result.get("shows_preparing_or_step_null")
         and host_ok
     )
+    return result
+
+
+def judge_progress(
+    prev_png: bytes,
+    new_png: bytes,
+    *,
+    label: str,
+    persona: str = "",
+    task: str = "",
+    action: str = "",
+    expected_host: str = "",
+) -> dict:
+    """Vision-judge whether NEW pixels progress vs PREVIOUS toward the task."""
+    host = (expected_host or "").replace("www.", "").lower()
+    if len(prev_png) < 2000 or len(new_png) < 2000:
+        return {
+            "label": label,
+            "pass": False,
+            "stuck": True,
+            "screens_look_the_same": True,
+            "progressing_toward_task": False,
+            "reason": (
+                f"PNG too small to judge progress "
+                f"(prev={len(prev_png)}b new={len(new_png)}b)"
+            ),
+        }
+    prompt = f"""You are a strict QA vision judge for a browser-agent session.
+
+You are given TWO screenshots of the same agent on `{host or "the target site"}`:
+- IMAGE 1 = PREVIOUS screen
+- IMAGE 2 = NEW screen after the claimed action
+
+Persona: {persona or "unknown"}
+Task: {task or "unknown"}
+Claimed action this step: {action or "unknown"}
+
+Decide if IMAGE 2 is progressing in the right direction toward the task
+(selecting a button, opening a new page, scrolling to new content, revealing
+pricing / signup / a modal, highlighting a control, etc.).
+
+FAIL (stuck / not progressing) if:
+- The two frames look the same, or only a clock/cursor/spinner changed
+- Still the same landing/homepage when the action should have changed the view
+- IMAGE 2 is blank, a placeholder, or UserSim chrome without the site
+- The change is unrelated or going backwards for no reason
+
+PASS only if a human would see a meaningful visual change that matches this
+action and moves the task forward.
+
+Return JSON only:
+{{
+  "screens_look_the_same": true/false,
+  "visible_change": "none|scroll|click_highlight|new_page|modal|form|other",
+  "matches_claimed_action": true/false,
+  "progressing_toward_task": true/false,
+  "stuck": true/false,
+  "what_changed": "short description or 'nothing'",
+  "reason": "one short sentence"
+}}
+"""
+    result = gemini_vision_pair(prompt, prev_png, new_png)
+    result["label"] = label
+    result["expected_host"] = host
+    result["action"] = action
+    result["prev_bytes"] = len(prev_png)
+    result["new_bytes"] = len(new_png)
+    same = bool(result.get("screens_look_the_same") or result.get("stuck"))
+    progressing = bool(result.get("progressing_toward_task"))
+    result["pass"] = bool(progressing and not same)
     return result
 
 
