@@ -1847,7 +1847,7 @@ async def run_study(
                     )
 
                 async def _run_one(task: dict[str, Any]) -> dict[str, Any]:
-                    nonlocal done_count
+                    nonlocal done_count, warm_used
                     from mvp.browser_agent import run_browser_agent
 
                     persona = persona_by_id.get(task.get("persona_id")) or study.personas[0]
@@ -1999,7 +1999,25 @@ async def run_study(
                     result["site_url"] = task.get("site_url") or study.url
                     result["site_label"] = task.get("site_label") or "Product"
                     sess["status"] = "complete"
-                    sess["trace"] = result.get("trace") or sess.get("trace") or []
+                    # Never wipe a real opening screenshot with text-only snapshot steps.
+                    snap_trace = result.get("trace") or []
+                    existing = sess.get("trace") or []
+                    has_pixels = any(
+                        (s or {}).get("screenshot_url") or (s or {}).get("screenshot_data_url")
+                        for s in existing
+                    )
+                    snap_has_pixels = any(
+                        (s or {}).get("screenshot_url") or (s or {}).get("screenshot_data_url")
+                        for s in snap_trace
+                    )
+                    if has_pixels and not snap_has_pixels:
+                        sess["trace"] = existing + [
+                            s for s in snap_trace if (s or {}).get("step") not in {
+                                e.get("step") for e in existing if isinstance(e, dict)
+                            }
+                        ]
+                    else:
+                        sess["trace"] = snap_trace or existing
                     sess["num_steps"] = len(sess["trace"])
                     done_count += 1
                     study.agent_results.append(result)

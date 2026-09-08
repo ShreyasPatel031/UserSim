@@ -551,6 +551,16 @@ async def run_browser_agent(
     If ``warm`` is a matching pre-opened session from ``warm_opening_session``,
     the landing screenshot is published immediately and the LLM continues on it.
     """
+    if os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"):
+        home = Path("/tmp/usersim-home")
+        home.mkdir(parents=True, exist_ok=True)
+        os.environ.setdefault("HOME", str(home))
+        os.environ.setdefault("TMPDIR", "/tmp")
+        os.environ.setdefault("XDG_CONFIG_HOME", str(home / ".config"))
+        os.environ.setdefault("XDG_CACHE_HOME", str(home / ".cache"))
+        Path(os.environ["XDG_CONFIG_HOME"]).mkdir(parents=True, exist_ok=True)
+        Path(os.environ["XDG_CACHE_HOME"]).mkdir(parents=True, exist_ok=True)
+
     model = model or os.environ.get("MVP_BROWSER_MODEL") or MODEL or "gemini-2.5-flash"
     os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", "120")
     os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", "240")
