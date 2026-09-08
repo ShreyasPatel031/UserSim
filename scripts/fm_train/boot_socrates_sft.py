@@ -83,7 +83,13 @@ def main() -> None:
 
     if stage("install"):
         sh(f"{py} -m pip install -q -U pip")
-        sh(f"{py} -m pip install -q -U datasets huggingface_hub 'vllm>=0.6.0'")
+        # ninja: flashinfer JIT-compiles its sampling kernels at engine start.
+        sh(f"{py} -m pip install -q -U datasets huggingface_hub ninja 'vllm>=0.6.0'")
+        # Installing vLLM moves torch to a newer CUDA build than the image's
+        # torchaudio, and the version guard then blocks every vLLM import. This
+        # workload is text-only, so drop torchaudio rather than pin torch.
+        sh(f"{py} -c \"from vllm import LLM\" || sudo {py} -m pip uninstall -y -q torchaudio")
+        sh(f"{py} -c \"from vllm import LLM; print('vllm import ok')\"")
         stamp("install")
     if stop_here("install"):
         return
