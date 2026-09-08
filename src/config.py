@@ -18,8 +18,8 @@ GCP_PROJECT = (
 )
 GCP_LOCATION = os.environ.get("VERTEX_LOCATION") or os.environ.get("GCP_LOCATION") or ""
 GCP_ACCOUNT = os.environ.get("GOOGLE_CLOUD_ACCOUNT") or ""
-MODEL = os.environ.get("MVP_SIGNUP_MODEL") or "gemini-2.5-flash"
-# All capability / bakeoff agent + judge runs use MODEL (cheap). Do not default to 3.6.
+MODEL = os.environ.get("MVP_SIGNUP_MODEL") or os.environ.get("MVP_LLM_MODEL") or "gemini-2.5-flash-lite"
+# Default: flash-lite for cheap smoke / debug. Override with MVP_*_MODEL for heavier runs.
 
 # Vertex Gemini 2.5 Flash list prices (USD / 1M tokens). Used for spend tracking.
 PRICE_INPUT_PER_M = 0.30

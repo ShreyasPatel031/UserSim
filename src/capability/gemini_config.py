@@ -18,7 +18,7 @@ from config import GCP_LOCATION, GCP_PROJECT, MODEL
 
 
 def gemini_model() -> str:
-    return (os.environ.get("MVP_LLM_MODEL") or MODEL or "gemini-2.5-flash").strip()
+    return (os.environ.get("MVP_LLM_MODEL") or MODEL or "gemini-2.5-flash-lite").strip()
 
 
 def gemini_project() -> str:
