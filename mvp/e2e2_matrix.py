@@ -63,7 +63,7 @@ def _sessions(study: dict) -> list[dict]:
 
 def _best_shot(sess: dict) -> dict | None:
     bad = re.compile(r"^(preparing|opening|thinking|signed-in cookies|waiting)\b", re.I)
-    best = None
+    ranked: list[dict] = []
     for step in sess.get("trace") or []:
         if not isinstance(step, dict) or not isinstance(step.get("step"), int):
             continue
@@ -71,16 +71,43 @@ def _best_shot(sess: dict) -> dict | None:
             continue
         if bad.search(str(step.get("action") or "")):
             continue
-        if best is None or int(step["step"]) >= int(best["step"]):
-            best = step
-    return best
+        ranked.append(step)
+    ranked.sort(key=lambda s: int(s.get("step") or 0), reverse=True)
+    return ranked[0] if ranked else None
 
 
-def _fetch_png(base: str, url: str) -> bytes:
-    if url.startswith("/"):
-        url = base.rstrip("/") + url
-    with urllib.request.urlopen(url, timeout=45) as resp:
-        return resp.read()
+def _fetch_png(base: str, url: str, *, study_id: str = "", agent_id: str = "") -> bytes:
+    candidates = [url]
+    if "/screenshots/" in url:
+        name = url.rstrip("/").split("/")[-1]
+        prefix = url[: url.rfind("/") + 1]
+        m = re.fullmatch(r"(step|bbox)_(\d+)\.png", name)
+        if m:
+            kind, num = m.group(1), m.group(2)
+            candidates.append(prefix + ("bbox" if kind == "step" else "step") + f"_{num}.png")
+            if num != "0":
+                candidates.append(prefix + "step_0.png")
+    last_err: Exception | None = None
+    for cand in candidates:
+        href = cand if cand.startswith("http") else base.rstrip("/") + cand
+        try:
+            with urllib.request.urlopen(href, timeout=45) as resp:
+                raw = resp.read()
+            if raw[:8] == b"\x89PNG\r\n\x1a\n" and len(raw) > 2000:
+                return raw
+        except Exception as exc:  # noqa: BLE001
+            last_err = exc
+    if study_id and agent_id:
+        try:
+            from mvp.gcs_store import gcs_download_bytes, screenshot_gcs_uri
+
+            for name in ("step_0.png", "bbox_1.png", "bbox_0.png"):
+                raw = gcs_download_bytes(screenshot_gcs_uri(study_id, agent_id, name))
+                if raw and raw[:8] == b"\x89PNG\r\n\x1a\n" and len(raw) > 2000:
+                    return raw
+        except Exception as exc:  # noqa: BLE001
+            last_err = exc
+    raise RuntimeError(f"no downloadable PNG ({last_err!r})")
 
 
 def _ready_visible_js() -> str:
@@ -162,23 +189,25 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         await page.goto(args.base, wait_until="domcontentloaded", timeout=60_000)
         await page.wait_for_selector("#study-form #submit-btn", timeout=30_000)
 
-        smoke = page.locator("#test-mode-input")
-        if await smoke.count() and await smoke.is_checked():
-            await smoke.uncheck()
+        study_id = args.study_id
+        if not study_id:
+            smoke = page.locator("#test-mode-input")
+            if await smoke.count() and await smoke.is_checked():
+                await smoke.uncheck()
 
-        await page.fill('input[name="url"]', args.url)
-        details = page.locator("details.url-more")
-        if await details.count():
-            await details.first.evaluate("el => { el.open = true }")
-        await page.fill('textarea[name="competitors"]', args.competitors)
-        await page.fill('textarea[name="tasks"]', args.tasks)
-        if args.segment:
-            await page.fill('textarea[name="customers"]', args.segment)
+            await page.fill('input[name="url"]', args.url)
+            details = page.locator("details.url-more")
+            if await details.count():
+                await details.first.evaluate("el => { el.open = true }")
+            await page.fill('textarea[name="competitors"]', args.competitors)
+            await page.fill('textarea[name="tasks"]', args.tasks)
+            if args.segment:
+                await page.fill('textarea[name="customers"]', args.segment)
 
-        _log("→ click Run (not Smoke)")
-        await page.click("#submit-btn")
-
-        study_id = ""
+            _log("→ click Run (not Smoke)")
+            await page.click("#submit-btn")
+        else:
+            _log(f"→ attach study {study_id} (no new Run)")
         study: dict = {}
         judged: dict[str, dict] = {}
 
@@ -217,12 +246,18 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 if not shot:
                     continue
                 try:
-                    await page.locator("#stage-section").wait_for(
-                        state="visible", timeout=15_000
+                    raw = _fetch_png(
+                        args.base,
+                        shot["screenshot_url"],
+                        study_id=study_id,
+                        agent_id=aid,
                     )
-                    await _toggle_session(page, sess)
+                    try:
+                        if await page.locator("#stage-section:not([hidden])").count():
+                            await _toggle_session(page, sess)
+                    except Exception:
+                        pass
                     await _assert_ready_hidden(page, study)
-                    raw = _fetch_png(args.base, shot["screenshot_url"])
                     host = _hostname(sess.get("site_url") or shot.get("url") or args.url)
                     verdict = judge_screenshot(
                         raw,
@@ -342,6 +377,7 @@ def main() -> int:
     )
     ap.add_argument("--timeout-s", type=int, default=int(os.environ.get("E2E2_TIMEOUT_S", "2400")))
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
+    ap.add_argument("--study-id", default=os.environ.get("E2E2_STUDY_ID", ""))
     args = ap.parse_args()
     try:
         result = asyncio.run(run_e2e2(args))

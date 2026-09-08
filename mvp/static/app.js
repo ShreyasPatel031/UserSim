@@ -434,6 +434,26 @@ function stepShotSrc(step) {
   return step?.screenshot_url || "";
 }
 
+/** Fleet often advertises bbox_N.png before GCS has it. step_0 is the landing frame. */
+function shotFallbackSrc(src) {
+  const raw = String(src || "");
+  if (!raw || raw.startsWith("data:")) return "";
+  return raw.replace(/\/(?:bbox|step)_\d+\.png(?:\?.*)?$/i, "/step_0.png");
+}
+
+function bindShotFallback(img) {
+  if (!img || img.dataset.fbBound) return;
+  img.dataset.fbBound = "1";
+  img.addEventListener("error", () => {
+    if (img.dataset.fbApplied) return;
+    const next = shotFallbackSrc(img.getAttribute("src") || img.dataset.shotSrc || "");
+    if (!next || next === (img.getAttribute("src") || "")) return;
+    img.dataset.fbApplied = "1";
+    img.src = next;
+    img.dataset.shotSrc = next;
+  });
+}
+
 function stepsWithScreenshots(trace) {
   // Only real numbered browser frames with image pixels — never prep pulses (step:null).
   return (trace || []).filter(
@@ -449,11 +469,13 @@ function formatStepCaption(step) {
       : n != null && String(n) !== "null"
         ? `Step ${n}`
         : "Screenshot";
-  const action = String(step?.action || "Opened page").trim();
+  let action = String(step?.action || "Opened page").trim();
   // Never promote prep pulses into the shot caption.
   if (/^preparing\b/i.test(action) || /\bsession for https?:/i.test(action)) {
     return `${label} — page capture`;
   }
+  // "scroll — down=True, pages=1.0" → "scroll"
+  action = action.replace(/\s*—\s*[\w]+=.+$/, "").trim() || action;
   return `${label} — ${action}`;
 }
 
@@ -534,7 +556,7 @@ function renderFocusStage(session, sessionIdx) {
     visual = `
       <div class="stage-visuals">
         <figure class="stage-shot">
-          <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="${escapeHtml(caption)}" loading="eager" />
+          <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="${escapeHtml(caption)}" loading="eager" onerror="if(!this.dataset.fbApplied){const n=(this.src||'').replace(/\\/(?:bbox|step)_\\d+\\.png(?:\\?.*)?$/i,'/step_0.png');if(n&&n!==this.src){this.dataset.fbApplied='1';this.src=n;this.dataset.shotSrc=n;}}" />
           <figcaption>${escapeHtml(caption)}${
             browsing ? " · waiting for agent…" : ""
           }</figcaption>
@@ -1138,13 +1160,19 @@ function paintStageBody(body, session, idx) {
       }
     }
     if (liveImg && nextSrc && !wantLive) {
+      bindShotFallback(liveImg);
       const shown = liveImg.dataset.shotSrc || liveImg.getAttribute("src") || "";
       if (shown.split("?")[0] !== nextSrc && !String(nextSrc).startsWith("data:")) {
         const pre = new Image();
-        pre.onload = () => {
+        const apply = (src) => {
           if (!liveImg.isConnected) return;
-          liveImg.src = nextSrc;
-          liveImg.dataset.shotSrc = nextSrc;
+          liveImg.src = src;
+          liveImg.dataset.shotSrc = src;
+        };
+        pre.onload = () => apply(nextSrc);
+        pre.onerror = () => {
+          const fb = shotFallbackSrc(nextSrc);
+          if (fb && fb !== nextSrc) apply(fb);
         };
         pre.src = nextSrc;
       } else if (String(nextSrc).startsWith("data:") && shown !== nextSrc) {
