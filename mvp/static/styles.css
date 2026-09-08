@@ -2231,6 +2231,7 @@ footer p {
 .live-agent-task{margin:0;padding:0 0.75rem 0.5rem;font-size:0.8rem;color:var(--text-muted)}
 .live-agent-frame{aspect-ratio:16/10;background:#111;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .live-agent-frame img{width:100%;height:100%;object-fit:contain;display:block}
+.live-agent-frame iframe,.live-agent-iframe{width:100%;height:100%;border:0;background:#0a0a0a;pointer-events:none}
 .live-agent-waiting{color:#bbb;font-size:0.85rem;padding:1rem;text-align:center}
 .live-agent-step{margin:0;padding:0.5rem 0.75rem;font-size:0.75rem;color:var(--text-muted);border-top:1px solid var(--border)}
 @media (max-width:900px){.live-dash .live-main{grid-template-columns:1fr}.live-sidebar{border-right:0;border-bottom:1px solid var(--border);max-height:40vh}}

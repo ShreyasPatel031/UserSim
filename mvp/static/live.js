@@ -206,9 +206,15 @@ function renderWatch(data) {
     const card = document.createElement("article");
     card.className = "live-agent-card";
     const site = sess.site_label || sess.site_key || "";
-    const img = shot?.screenshot_url
-      ? `<img src="${escapeHtml(shot.screenshot_url)}?t=${Date.now()}" alt="" loading="lazy" />`
-      : `<div class="live-agent-waiting">${escapeHtml(sess.last_action || sess.status || "waiting for first frame…")}</div>`;
+    const browsing = ["starting", "pending", "running"].includes(String(sess.status || ""));
+    let frame;
+    if (shot?.screenshot_url) {
+      frame = `<img src="${escapeHtml(shot.screenshot_url)}?t=${Date.now()}" alt="" loading="eager" />`;
+    } else if (browsing && sess.live_view_url) {
+      frame = `<iframe class="live-agent-iframe" src="${escapeHtml(sess.live_view_url)}" title="live" sandbox="allow-same-origin allow-scripts" referrerpolicy="no-referrer"></iframe>`;
+    } else {
+      frame = `<div class="live-agent-waiting">${escapeHtml(sess.last_action || sess.status || "waiting for first frame…")}</div>`;
+    }
     card.innerHTML = `
       <header>
         <strong>${escapeHtml(sess.persona_name || sess.agent_id || "agent")}</strong>
@@ -217,11 +223,13 @@ function renderWatch(data) {
       <p class="live-agent-task">${escapeHtml(sess.task_title || "")}${
         site ? ` · <em>${escapeHtml(site)}</em>` : ""
       }</p>
-      <div class="live-agent-frame">${img}</div>
+      <div class="live-agent-frame">${frame}</div>
       <p class="live-agent-step">${
         shot
           ? `step ${escapeHtml(shot.step)} · ${escapeHtml(shot.action || "")}`
-          : "no frame yet"
+          : browsing && sess.live_view_url
+            ? "live view — waiting for screenshot"
+            : "no frame yet"
       }</p>`;
     agentGrid.appendChild(card);
   }

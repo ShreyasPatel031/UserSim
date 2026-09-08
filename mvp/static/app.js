@@ -398,23 +398,10 @@ function renderFocusStage(session, sessionIdx) {
 
   let visual = "";
   const liveView = session?.live_view_url;
-  const showLive =
-    liveView &&
-    ["starting", "pending", "running"].includes(String(session?.status || ""));
-  if (showLive) {
-    visual = `
-      <div class="stage-live-wrap">
-        <iframe
-          class="stage-live-frame"
-          src="${escapeHtml(liveView)}"
-          title="Live browser — ${escapeHtml(siteName)}"
-          sandbox="allow-same-origin allow-scripts"
-          allow="clipboard-read; clipboard-write"
-          referrerpolicy="no-referrer"
-        ></iframe>
-        <p class="stage-live-caption">Live on ${escapeHtml(siteName)} — updates as the simulated user browses</p>
-      </div>`;
-  } else if (step?.screenshot_url) {
+  const browsing = ["starting", "pending", "running"].includes(String(session?.status || ""));
+  // Screenshots are real page pixels (incl. opening frame). Prefer them whenever
+  // present — Browserbase live iframes often look blank/"watching" with no page.
+  if (step?.screenshot_url) {
     const boxes = step.boxes || [];
     const boxLegend = boxes.length
       ? `<details class="stage-box-details"><summary><span class="box-swatch box-red"></span> ${boxes.length} click targets${
@@ -428,10 +415,14 @@ function renderFocusStage(session, sessionIdx) {
            )
            .join("")}${boxes.length > 12 ? `<li>… +${boxes.length - 12} more</li>` : ""}</ol></details>`
       : "";
+    const bust =
+      browsing && _shotFollowLatest[key] !== false ? `?t=${Date.now()}` : "";
     visual = `
       <figure class="stage-shot">
-        <img class="trace-screenshot" src="${escapeHtml(step.screenshot_url)}" alt="Step ${escapeHtml(step.step)} screenshot with click targets" loading="eager" />
-        <figcaption><strong>Step ${escapeHtml(step.step)}</strong> — ${escapeHtml(step.action || "Action")}</figcaption>
+        <img class="trace-screenshot" src="${escapeHtml(step.screenshot_url)}${bust}" alt="Step ${escapeHtml(step.step)} screenshot with click targets" loading="eager" />
+        <figcaption><strong>Step ${escapeHtml(step.step)}</strong> — ${escapeHtml(step.action || "Action")}${
+          browsing ? " · live" : ""
+        }</figcaption>
       </figure>
       ${boxLegend}
       <div class="stage-shot-nav">
@@ -445,6 +436,19 @@ function renderFocusStage(session, sessionIdx) {
             .join("")}
         </div>
         <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="1" ${idx >= shots.length - 1 ? "disabled" : ""}>Next →</button>
+      </div>`;
+  } else if (liveView && browsing) {
+    visual = `
+      <div class="stage-live-wrap">
+        <iframe
+          class="stage-live-frame"
+          src="${escapeHtml(liveView)}"
+          title="Live browser — ${escapeHtml(siteName)}"
+          sandbox="allow-same-origin allow-scripts"
+          allow="clipboard-read; clipboard-write"
+          referrerpolicy="no-referrer"
+        ></iframe>
+        <p class="stage-live-caption">Live on ${escapeHtml(siteName)} — first screenshot arriving…</p>
       </div>`;
   } else {
     const last = String(session?.last_action || "");

@@ -357,7 +357,7 @@ async def _emit_opening_frame(
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening navigate failed: {exc!r}", flush=True)
     # Brief settle so first paint isn't blank.
-    await asyncio.sleep(0.4)
+    await asyncio.sleep(0.8)
     shot_name = "bbox_0.png"
     shot_path = screenshot_dir / shot_name
     try:
@@ -585,7 +585,9 @@ async def run_browser_agent(
             save_conversation_path=str(run_dir / "conversation"),
             extend_system_message=(
                 "You are a real user in a usability study, not an optimizer. "
-                "Prefer obvious UI paths; comment on clarity and trust."
+                "Prefer obvious UI paths; comment on clarity and trust. "
+                "Never claim to see content that is only 'implied' or absent from the "
+                "current screenshot/DOM. Stay on the product site you were given."
             ),
         )
         history = await agent.run(
