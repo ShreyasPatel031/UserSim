@@ -156,7 +156,7 @@ function statusLabel(status) {
     case "error":
       return "Fallback";
     case "pending":
-      return "Starting";
+      return "Queued";
     default:
       return status || "…";
   }
