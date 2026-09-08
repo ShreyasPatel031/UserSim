@@ -152,10 +152,8 @@ def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> No
 
 
 def _ordered_live_sessions(study: StudyState) -> list[dict[str, Any]]:
-    from mvp.opening_shot import strip_live_view
-
     order = {t.get("id"): i for i, t in enumerate(study.tasks)}
-    sessions = [strip_live_view(dict(s)) for s in study.live_sessions.values()]
+    sessions = [dict(s) for s in study.live_sessions.values()]
     sessions.sort(key=lambda s: order.get(s.get("agent_id"), 99))
     return sessions
 
@@ -1350,6 +1348,21 @@ async def run_study(
                     sess["trace"] = [step0]
                     sess["num_steps"] = 1
                     sess["last_action"] = step0["action"]
+                    # Stash live URL early; UI only mounts the iframe when live_active.
+                    if warm_opening.get("live_view_url"):
+                        sess["live_view_url"] = warm_opening["live_view_url"]
+                    if warm_opening.get("browserbase_session_id"):
+                        sess["browserbase_session_id"] = warm_opening[
+                            "browserbase_session_id"
+                        ]
+                    sess["live_active"] = False
+                    sess["live_thoughts"] = [
+                        {
+                            "at": _now(),
+                            "text": f"Opened {site} — waiting for the simulated user to start…",
+                            "kind": "status",
+                        }
+                    ]
                     study.updated_at = _now()
                     log_activity(
                         study,
@@ -1798,6 +1811,42 @@ async def run_study(
                     if not sess:
                         return
                     step = _json_safe(step)
+                    # Progress-only pulses (thinking / live-active) — do not invent a
+                    # screenshot trace row; stream into live_thoughts for the UI ticker.
+                    if step.get("progress_only"):
+                        if step.get("live_view_url"):
+                            sess["live_view_url"] = step["live_view_url"]
+                        if step.get("browserbase_session_id"):
+                            sess["browserbase_session_id"] = step["browserbase_session_id"]
+                        if step.get("live_active"):
+                            sess["live_active"] = True
+                        text = (
+                            (step.get("thought") or "").strip()
+                            or (step.get("action") or "").strip()
+                        )
+                        if text:
+                            thoughts = list(sess.get("live_thoughts") or [])
+                            thoughts.append(
+                                {
+                                    "at": _now(),
+                                    "text": text[:400],
+                                    "kind": "thinking"
+                                    if "think" in (step.get("action") or "").lower()
+                                    or step.get("thought_detail")
+                                    else "status",
+                                }
+                            )
+                            sess["live_thoughts"] = thoughts[-24:]
+                            sess["last_action"] = text[:160]
+                        study.updated_at = _now()
+                        if on_update:
+                            try:
+                                on_update(study, event="progress")
+                            except TypeError:
+                                on_update(study)
+                            except Exception:
+                                pass
+                        return
                     # Persist screenshots to GCS *before* the client can GET them.
                     # Step 0 also gets an inline data URL so the stream paints immediately.
                     shot = step.get("screenshot_url") or ""
@@ -1825,6 +1874,18 @@ async def run_study(
                         sess["trace"].append(step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
+                    thought = (step.get("thought") or "").strip()
+                    if thought:
+                        thoughts = list(sess.get("live_thoughts") or [])
+                        thoughts.append(
+                            {
+                                "at": _now(),
+                                "text": thought[:400],
+                                "kind": "thinking",
+                                "step": step.get("step"),
+                            }
+                        )
+                        sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
                     study.updated_at = _now()
                     if on_update:
@@ -1881,6 +1942,15 @@ async def run_study(
                         agent_id=agent_id,
                         persona_name=persona.get("name"),
                     )
+                    thoughts = list(sess.get("live_thoughts") or [])
+                    thoughts.append(
+                        {
+                            "at": _now(),
+                            "text": f"{persona.get('name') or 'User'} is starting — reading {site}…",
+                            "kind": "status",
+                        }
+                    )
+                    sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
                     try:
                         async with _BROWSER_SEMAPHORE:

@@ -44,8 +44,9 @@ def test_drop_inline_and_live_view() -> None:
     cleaned = drop_inline_shots(payload)
     assert "screenshot_data_url" not in cleaned["live_sessions"][0]["trace"][0]
     assert cleaned["live_sessions"][0]["trace"][0]["screenshot_url"] == "/api/x.png"
-    stripped = strip_live_view(dict(payload["live_sessions"][0]))
-    assert "live_view_url" not in stripped
+    # live view is kept for agent-start UI (screenshot still primary until live_active).
+    kept = strip_live_view(dict(payload["live_sessions"][0]))
+    assert kept.get("live_view_url")
     drop_inline_shots_inplace(payload)
     assert "screenshot_data_url" not in payload["live_sessions"][0]["trace"][0]
 

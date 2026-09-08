@@ -40,11 +40,25 @@ def drop_inline_shots_inplace(payload: Any) -> None:
 
 
 def strip_live_view(session: dict[str, Any]) -> dict[str, Any]:
-    """Browserbase live iframes render about:blank / 'watching…' — never send them."""
-    session.pop("live_view_url", None)
-    session.pop("live_url", None)
-    session.pop("debugger_url", None)
+    """Deprecated no-op kept for callers — live view is shown after agent start."""
     return session
+
+
+def attach_live_view(session: dict[str, Any], bb_session: Any) -> str | None:
+    """Resolve Browserbase debugger URL onto the live session (for agent-start UI)."""
+    sid = getattr(bb_session, "id", None) if bb_session is not None else None
+    if not sid:
+        return None
+    try:
+        from capability.browserbase_client import session_live_view_url
+
+        url = session_live_view_url(str(sid))
+    except Exception:
+        url = None
+    if url:
+        session["live_view_url"] = url
+        session["browserbase_session_id"] = str(sid)
+    return url
 
 
 async def upload_screenshot(study_id: str, agent_id: str, local: Path) -> bool:
