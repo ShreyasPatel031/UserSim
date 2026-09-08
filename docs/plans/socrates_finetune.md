@@ -97,6 +97,45 @@ In order of expected W gain:
 ## Immediate next actions
 
 1. Monitor floor preds → SUMMARY.
-2. Implement `build_socrates_seen_corpus.py` + leakage assert.
-3. Wire `sft_qwen3_8b_base_socrates.py` from pilot trainer.
-4. Smoke-eval loop on 5 unseen studies before full epoch.
+2. Gate the SFT adapter's full-unseen W against the floor and against 0.151.
+3. If the gate clears, decide 14B scale-up vs. soft-label objective (S4).
+
+## Run log — full QLoRA on L4 (started 2026-09-08)
+
+Live on `fm-sft-socrates-l4` (L4 24 GB Spot, same region as the floor VM), driven by
+`scripts/fm_train/boot_socrates_sft.py` under `usersim-sft-socrates.service`.
+
+| Setting | Value | Why |
+|---|---|---|
+| Corpus | 165624 rows, 170 seen studies, 32 per cell | A true all-rows epoch (2.3M rows) is ~5–15 days on one L4; capping participants per cell keeps every study/condition/task while fitting the box |
+| Adapter | QLoRA r=16, alpha 32, all attn+MLP projections, 43.6M trainable (0.53%) | Fits nf4 8B in 14 GB with room for 1536-token batches |
+| Batch | micro 4 x accum 16 = 64 | Paper used 256 on 8xA100; 64 is what one L4 sustains |
+| LR / schedule | 1e-4, cosine, warmup 0.05, wd 0.1 | LoRA wants ~10x the paper's full-FT 1e-5 |
+| Steps | 2588 (1 epoch) at ~54 s/step | ~39 h of GPU time, longer in wall clock with preemptions |
+| Checkpoints | every 50 steps, keep 2 | Caps preemption loss near 45 min |
+
+Resilience: the spot watchdog VM restarts a preempted instance, the boot
+script's startup metadata re-enables the training unit, stage stamps skip
+completed work, and the Trainer resumes from the newest checkpoint.
+`sft_watchdog.py` polls every 5 min and writes `WATCHDOG.json` / `ALERT.json`
+for divergence, OOM, repeated restarts and stalled stages.
+
+Known non-blocking observation: the CUDA allocator logged one soft OOM retry
+at step 1 and recovered. If hard OOMs appear, drop micro batch to 2 and raise
+accumulation to 32 for the same effective batch.
+
+### Environment traps hit on the way (all fixed in-repo)
+
+- Building the corpus with `Dataset.to_list()` on 2.3M long prompts took 16 GB
+  and was OOM-killed; the builder now streams Arrow batches.
+- vLLM upgrades transformers to 5.x, which current peft cannot import, so
+  training runs from `venvs/train` (transformers 4.x) while eval keeps the
+  vLLM interpreter.
+- That same upgrade moves torch ahead of the image's torchaudio, whose CUDA
+  version guard blocks every vLLM import — torchaudio is removed instead.
+- flashinfer JIT-builds sampling kernels at engine start, so `ninja` must be
+  installed or the adapter eval dies in engine init.
+- The plain Ubuntu image failed to build the NVIDIA kernel module; use the
+  same `pytorch-2-9-cu129-ubuntu-2204-nvidia-580` DLVM image as the floor VM.
+- Colab is not usable from the cloud agent: the service-account entitlement
+  grants T4 only, and L4/A100/G4 are rejected outright.
