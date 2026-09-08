@@ -42,7 +42,9 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--lora-alpha", type=int, default=int(os.environ.get("LORA_ALPHA", "32")))
     ap.add_argument("--lora-dropout", type=float, default=0.05)
     ap.add_argument("--max-steps", type=int, default=int(os.environ.get("MAX_STEPS", "-1")))
-    ap.add_argument("--save-steps", type=int, default=int(os.environ.get("SAVE_STEPS", "200")))
+    # Spot preemption on the L4 lands roughly every 2 h; at ~50 s/step a
+    # 25-step checkpoint caps lost work near 20 min.
+    ap.add_argument("--save-steps", type=int, default=int(os.environ.get("SAVE_STEPS", "25")))
     ap.add_argument("--log-steps", type=int, default=int(os.environ.get("LOG_STEPS", "10")))
     ap.add_argument("--limit-rows", type=int, default=int(os.environ.get("LIMIT_ROWS", "0")))
     ap.add_argument("--seed", type=int, default=7)

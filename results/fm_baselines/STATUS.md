@@ -9,6 +9,17 @@
 | Minitaur / Centaur Psych-101 | `fm-gate0-minitaur` (T4) | **STOPPED** — SUMMARY complete (6561/6561); watch label removed |
 | Spot watchdog | `fm-gate0-spot-watchdog` | Running (revives both L4s; polls ~70 s) |
 
+### Log
+
+- **2026-09-08 10:15Z** — The floor had been dead for 3 h: a preemption at 07:01
+  left a NUL-padded line in `predictions.jsonl`, the resume reader raised
+  `JSONDecodeError`, and systemd restarted into the same file 63 times. The
+  runner now skips unreadable lines; floor is back at ~1000 preds/min from
+  67072/482642. The adapter eval shares that runner and would have hit the same
+  trap. Separately, the SFT VM was preempted at 10:02 and auto-recovered, but
+  restarted from step 0 because no checkpoint existed yet — checkpoints
+  tightened from every 100 steps to every 25 (~20 min of exposure).
+
 ### Socrates SFT smoke gates (all passed before the full run)
 
 | Gate | Result |
