@@ -152,8 +152,10 @@ def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> No
 
 
 def _ordered_live_sessions(study: StudyState) -> list[dict[str, Any]]:
+    from mvp.opening_shot import strip_live_view
+
     order = {t.get("id"): i for i, t in enumerate(study.tasks)}
-    sessions = list(study.live_sessions.values())
+    sessions = [strip_live_view(dict(s)) for s in study.live_sessions.values()]
     sessions.sort(key=lambda s: order.get(s.get("agent_id"), 99))
     return sessions
 
@@ -1321,6 +1323,8 @@ async def run_study(
                 try:
                     import shutil as _shutil
 
+                    from mvp.opening_shot import attach_opening_pixels
+
                     _shutil.copy2(warm_opening["shot_path"], dest)
                     step0 = {
                         "step": 0,
@@ -1336,12 +1340,17 @@ async def run_study(
                         "outcome": "neutral",
                         "evidence_label": "Opening frame · before agent steps",
                     }
+                    await attach_opening_pixels(
+                        study_id=study.id,
+                        agent_id=aid,
+                        local=dest,
+                        step=step0,
+                    )
                     sess["status"] = "running"
                     sess["trace"] = [step0]
                     sess["num_steps"] = 1
                     sess["last_action"] = step0["action"]
                     study.updated_at = _now()
-                    persist_study(study)
                     log_activity(
                         study,
                         "browser",
@@ -1362,6 +1371,10 @@ async def run_study(
                 on_update(study)
             except Exception:
                 pass
+        from mvp.opening_shot import drop_inline_shots_inplace
+
+        for _sess in study.live_sessions.values():
+            drop_inline_shots_inplace(_sess)
         done_count = 0
 
         def refresh_agent_phase() -> None:
@@ -1785,27 +1798,24 @@ async def run_study(
                     if not sess:
                         return
                     step = _json_safe(step)
-                    # Persist screenshots to GCS so subsequent serverless
-                    # invocations can serve /api/.../screenshots/*.png.
+                    # Persist screenshots to GCS *before* the client can GET them.
+                    # Step 0 also gets an inline data URL so the stream paints immediately.
                     shot = step.get("screenshot_url") or ""
                     if isinstance(shot, str) and "/screenshots/" in shot:
-                        try:
-                            from pathlib import Path as _Path
+                        from pathlib import Path as _Path
 
-                            from mvp.gcs_store import gcs_upload_file, screenshot_gcs_uri
-                            from mvp.paths import MVP_RUNS_DIR
+                        from mvp.opening_shot import attach_opening_pixels
+                        from mvp.paths import MVP_RUNS_DIR
 
-                            name = _Path(shot.split("?", 1)[0]).name
-                            local = MVP_RUNS_DIR / study.id / agent_id / "screenshots" / name
-                            if local.is_file() and local.stat().st_size > 100:
-                                await asyncio.to_thread(
-                                    gcs_upload_file,
-                                    local,
-                                    screenshot_gcs_uri(study.id, agent_id, name),
-                                    content_type="image/png",
-                                )
-                        except Exception:  # noqa: BLE001
-                            pass
+                        name = _Path(shot.split("?", 1)[0]).name
+                        local = MVP_RUNS_DIR / study.id / agent_id / "screenshots" / name
+                        if local.is_file() and local.stat().st_size > 100:
+                            await attach_opening_pixels(
+                                study_id=study.id,
+                                agent_id=agent_id,
+                                local=local,
+                                step=step,
+                            )
                     sess["status"] = "running"
                     sess["trace"] = list(sess.get("trace") or [])
                     existing = {s.get("step"): i for i, s in enumerate(sess["trace"])}
@@ -1817,7 +1827,6 @@ async def run_study(
                     sess["last_action"] = step.get("action") or ""
                     refresh_agent_phase()
                     study.updated_at = _now()
-                    persist_study(study)
                     if on_update:
                         try:
                             on_update(study, event="progress")
@@ -1825,6 +1834,10 @@ async def run_study(
                             on_update(study)
                         except Exception:
                             pass
+                    from mvp.opening_shot import drop_inline_shots_inplace
+
+                    drop_inline_shots_inplace(sess)
+                    persist_study(study)
                     log_activity(
                         study,
                         "agent_step",
@@ -2144,8 +2157,9 @@ def persist_study(study: StudyState) -> None:
     """Best-effort write of study state to GCS so Vercel clients can reconnect."""
     try:
         from mvp.gcs_store import write_study_state
+        from mvp.opening_shot import drop_inline_shots
 
-        write_study_state(study.id, study_to_dict(study))
+        write_study_state(study.id, drop_inline_shots(study_to_dict(study)))
     except Exception as exc:  # noqa: BLE001
         print(f"persist_study failed for {study.id}: {exc!r}", flush=True)
 

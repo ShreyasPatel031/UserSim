@@ -158,7 +158,11 @@ function renderList(studies) {
 function latestShot(session) {
   const trace = session?.trace || [];
   for (let i = trace.length - 1; i >= 0; i--) {
-    if (trace[i]?.screenshot_url) return trace[i];
+    const step = trace[i];
+    const inline = step?.screenshot_data_url || "";
+    if ((typeof inline === "string" && inline.startsWith("data:image/")) || step?.screenshot_url) {
+      return step;
+    }
   }
   return null;
 }
@@ -226,30 +230,33 @@ function renderWatch(data) {
       }</p>`;
     const img = card.querySelector("img");
     const shown = img?.dataset.shotSrc || img?.getAttribute("src") || "";
-    if (shot?.screenshot_url && shown.split("?")[0] === shot.screenshot_url) {
+    const shotSrc =
+      typeof shot?.screenshot_data_url === "string" && shot.screenshot_data_url.startsWith("data:image/")
+        ? shot.screenshot_data_url
+        : shot?.screenshot_url || "";
+    if (shotSrc && shown.split("?")[0] === shotSrc) {
       const stepEl = card.querySelector(".live-agent-step");
       if (stepEl) stepEl.textContent = stepText;
-      const headWrap = card.querySelector("header")?.parentElement;
       if (!card.querySelector("header")) {
         card.insertAdjacentHTML("afterbegin", header);
       }
       continue;
     }
-    if (shot?.screenshot_url && img) {
+    if (shotSrc && img) {
       const pre = new Image();
       pre.onload = () => {
         if (!img.isConnected) return;
-        img.src = shot.screenshot_url;
-        img.dataset.shotSrc = shot.screenshot_url;
+        img.src = shotSrc;
+        img.dataset.shotSrc = shotSrc;
       };
-      pre.src = shot.screenshot_url;
+      pre.src = shotSrc;
       const stepEl = card.querySelector(".live-agent-step");
       if (stepEl) stepEl.textContent = stepText;
       continue;
     }
     let frame;
-    if (shot?.screenshot_url) {
-      frame = `<img src="${escapeHtml(shot.screenshot_url)}" data-shot-src="${escapeHtml(shot.screenshot_url)}" alt="" loading="eager" />`;
+    if (shotSrc) {
+      frame = `<img src="${escapeHtml(shotSrc)}" data-shot-src="${escapeHtml(shotSrc)}" alt="" loading="eager" />`;
     } else if (img) {
       continue;
     } else {

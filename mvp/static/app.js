@@ -106,7 +106,12 @@ function mergeSessions(data) {
   const byId = {};
 
   for (const s of live) {
-    if (s?.agent_id) byId[s.agent_id] = { ...s };
+    if (!s?.agent_id) continue;
+    const copy = { ...s };
+    delete copy.live_view_url;
+    delete copy.live_url;
+    delete copy.debugger_url;
+    byId[s.agent_id] = copy;
   }
   for (const r of completed) {
     const id = r.agent_id || r.task_id;
@@ -360,8 +365,14 @@ function demographicLine(p) {
   return p.demographics || "";
 }
 
+function stepShotSrc(step) {
+  const inline = step?.screenshot_data_url || "";
+  if (typeof inline === "string" && inline.startsWith("data:image/")) return inline;
+  return step?.screenshot_url || "";
+}
+
 function stepsWithScreenshots(trace) {
-  return (trace || []).filter((s) => s.screenshot_url);
+  return (trace || []).filter((s) => stepShotSrc(s));
 }
 
 /** Prefer the newest frame that is still on the assigned site (agents sometimes wander). */
@@ -413,9 +424,10 @@ function renderFocusStage(session, sessionIdx) {
            )
            .join("")}${boxes.length > 12 ? `<li>… +${boxes.length - 12} more</li>` : ""}</ol></details>`
       : "";
+    const shotSrc = stepShotSrc(step);
     visual = `
       <figure class="stage-shot">
-        <img class="trace-screenshot" data-shot-src="${escapeHtml(step.screenshot_url)}" src="${escapeHtml(step.screenshot_url)}" alt="Step ${escapeHtml(step.step)} screenshot" loading="eager" />
+        <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="Step ${escapeHtml(step.step)} screenshot" loading="eager" />
         <figcaption><strong>Step ${escapeHtml(step.step)}</strong> — ${escapeHtml(step.action || "Action")}${
           browsing ? " · live" : ""
         }</figcaption>
@@ -770,7 +782,7 @@ function renderStage(sessions) {
   _traceResults = sessions || [];
 
   const hasPixels = (s) =>
-    (s?.trace || []).some((t) => t && t.screenshot_url);
+    (s?.trace || []).some((t) => t && stepShotSrc(t));
 
   // Never show an empty "watching/capturing" browser pane — only open the
   // stage once at least one real screenshot exists.
@@ -895,15 +907,18 @@ function renderStage(sessions) {
 
 function paintStageBody(body, session, idx) {
   const nextHtml = renderFocusStage(session, idx);
-  const nextSrc = preferredShots(session).length
-    ? preferredShots(session)[
-        Math.max(
-          0,
-          _shotFollowLatest[String(idx)] !== false
-            ? preferredShots(session).length - 1
-            : Math.min(_shotIdx[String(idx)] ?? 0, preferredShots(session).length - 1)
-        )
-      ]?.screenshot_url
+  const nextShots = preferredShots(session);
+  const nextSrc = nextShots.length
+    ? stepShotSrc(
+        nextShots[
+          Math.max(
+            0,
+            _shotFollowLatest[String(idx)] !== false
+              ? nextShots.length - 1
+              : Math.min(_shotIdx[String(idx)] ?? 0, nextShots.length - 1)
+          )
+        ]
+      )
     : "";
   const liveImg = body.querySelector("img.trace-screenshot");
   const sameAgent = body.dataset.agentId === String(session?.agent_id || idx);
