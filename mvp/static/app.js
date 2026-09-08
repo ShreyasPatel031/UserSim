@@ -408,13 +408,35 @@ function demographicLine(p) {
 }
 
 function stepShotSrc(step) {
+  if (!step || step.progress_only) return "";
+  // Progress pulses use step:null — never treat them as screenshot frames.
+  if (step.step == null && !step.screenshot_url && !step.screenshot_data_url) return "";
   const inline = step?.screenshot_data_url || "";
   if (typeof inline === "string" && inline.startsWith("data:image/")) return inline;
   return step?.screenshot_url || "";
 }
 
 function stepsWithScreenshots(trace) {
-  return (trace || []).filter((s) => stepShotSrc(s));
+  // Only real numbered browser frames with image pixels — never prep pulses (step:null).
+  return (trace || []).filter(
+    (s) => s && !s.progress_only && typeof s.step === "number" && Boolean(stepShotSrc(s))
+  );
+}
+
+function formatStepCaption(step) {
+  const n = step?.step;
+  const label =
+    typeof n === "number" && Number.isFinite(n)
+      ? `Step ${n}`
+      : n != null && String(n) !== "null"
+        ? `Step ${n}`
+        : "Screenshot";
+  const action = String(step?.action || "Opened page").trim();
+  // Never promote prep pulses into the shot caption.
+  if (/^preparing\b/i.test(action) || /\bsession for https?:/i.test(action)) {
+    return `${label} — page capture`;
+  }
+  return `${label} — ${action}`;
 }
 
 /** Prefer the newest frame that is still on the assigned site (agents sometimes wander). */
@@ -478,6 +500,7 @@ function renderFocusStage(session, sessionIdx) {
       </div>`;
   } else if (shotSrc) {
     const boxes = step?.boxes || [];
+    const caption = formatStepCaption(step);
     const boxLegend = boxes.length
       ? `<details class="stage-box-details"><summary><span class="box-swatch box-red"></span> ${boxes.length} click targets${
           step.highlight_index != null ? ` · green = #${escapeHtml(step.highlight_index)}` : ""
@@ -493,8 +516,8 @@ function renderFocusStage(session, sessionIdx) {
     visual = `
       <div class="stage-visuals">
         <figure class="stage-shot">
-          <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="Step ${escapeHtml(step?.step ?? 0)} screenshot" loading="eager" />
-          <figcaption><strong>Step ${escapeHtml(step?.step ?? 0)}</strong> — ${escapeHtml(step?.action || "Opened page")}${
+          <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="${escapeHtml(caption)}" loading="eager" />
+          <figcaption>${escapeHtml(caption)}${
             browsing ? " · waiting for agent…" : ""
           }</figcaption>
         </figure>
@@ -508,7 +531,9 @@ function renderFocusStage(session, sessionIdx) {
           ${shots
             .map(
               (s, i) =>
-                `<button type="button" class="step-pill${i === idx ? " active" : ""}" data-shot-key="${escapeHtml(key)}" data-shot-idx="${i}">${escapeHtml(s.step)}</button>`
+                `<button type="button" class="step-pill${i === idx ? " active" : ""}" data-shot-key="${escapeHtml(key)}" data-shot-idx="${i}">${escapeHtml(
+                  typeof s.step === "number" ? s.step : i
+                )}</button>`
             )
             .join("")}
         </div>
@@ -1045,15 +1070,17 @@ function paintStageBody(body, session, idx) {
     const latestThought = thoughts.length
       ? thoughts[thoughts.length - 1]?.text
       : step?.thought || "";
-    if (cap && step) {
-      cap.innerHTML = `<strong>Step ${escapeHtml(step.step)}</strong> — ${escapeHtml(
-        step.action || "Action"
-      )}`;
+    if (cap && step && typeof step.step === "number") {
+      cap.textContent = formatStepCaption(step);
     }
     if (actionEl) {
-      actionEl.innerHTML = `<strong>Now doing:</strong> ${escapeHtml(
-        step?.action || session?.last_action || "Browsing"
-      )}`;
+      const doing =
+        (typeof step?.step === "number" && step?.action) ||
+        (session?.last_action && !/^preparing\b/i.test(String(session.last_action))
+          ? session.last_action
+          : "") ||
+        "Browsing";
+      actionEl.innerHTML = `<strong>Now doing:</strong> ${escapeHtml(doing)}`;
     }
     if (obsEl && latestThought) {
       obsEl.innerHTML = `<strong>Thinking:</strong> ${escapeHtml(latestThought)}`;
