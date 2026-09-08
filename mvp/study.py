@@ -1183,18 +1183,13 @@ async def run_study(
                 study,
                 "plan",
                 f"Expanded to {len(study.tasks)} parallel runs "
-                f"({before} tasks × {1 + len(study.competitors)} sites)",
+                f"({before} tasks × {1 + len(study.competitors)} sites) "
+                f"— extras queue behind Browserbase concurrency "
+                f"({os.environ.get('MVP_BROWSER_CONCURRENCY', '25')})",
             )
-            # Cap total Browserbase sessions so Vercel survives product+rivals.
-            # Prefer distinct product-site personas first so user/task dropdowns
-            # aren't stuck on a single simulated user (old round-robin-by-site
-            # always kept task t1 × every site).
-            max_sessions = int(
-                os.environ.get(
-                    "MVP_MAX_SESSIONS",
-                    "9" if IS_VERCEL_ENV else "15",
-                )
-            )
+            # Never silently drop agents. MVP_MAX_SESSIONS>0 is an explicit
+            # emergency brake only (0 / unset = run everything; queue on semaphore).
+            max_sessions = int(os.environ.get("MVP_MAX_SESSIONS", "0") or "0")
             if max_sessions > 0 and len(study.tasks) > max_sessions:
                 product = [
                     t
@@ -1212,7 +1207,6 @@ async def run_study(
                         break
                     picked.append(t)
                 if len(picked) < max_sessions:
-                    # Fill with competitors for personas already included, then others.
                     have = {p.get("persona_id") for p in picked}
                     primary = [t for t in rivals if t.get("persona_id") in have]
                     secondary = [t for t in rivals if t.get("persona_id") not in have]
@@ -1220,13 +1214,13 @@ async def run_study(
                         if len(picked) >= max_sessions:
                             break
                         picked.append(t)
+                dropped = len(study.tasks) - len(picked)
                 study.tasks = picked
                 log_activity(
                     study,
                     "plan",
-                    f"Capped to {len(study.tasks)} parallel sessions "
-                    f"(MVP_MAX_SESSIONS={max_sessions}; "
-                    f"{sum(1 for t in picked if (t.get('site_key') or 'product') == 'product')} on product)",
+                    f"Emergency cap: kept {len(study.tasks)}, dropped {dropped} "
+                    f"(MVP_MAX_SESSIONS={max_sessions})",
                 )
         else:
             for task in study.tasks:
@@ -1951,10 +1945,10 @@ async def run_study(
                     )
                     raise_if_killed(study)
                     sess["site_url"] = site
-                    # Keep warm pixels / live_active visible — don't flash "starting".
+                    # Queue behind Browserbase concurrency — never drop.
                     if not (sess.get("trace") or sess.get("live_active")):
-                        sess["status"] = "starting"
-                        sess["last_action"] = f"Opening {site}"
+                        sess["status"] = "pending"
+                        sess["last_action"] = f"Queued — waiting for a browser slot ({site})"
                     else:
                         sess["status"] = "running"
                     study.updated_at = _now()
@@ -1968,21 +1962,22 @@ async def run_study(
                     log_activity(
                         study,
                         "agent_start",
-                        f"{persona.get('name')} opening {site}",
+                        f"{persona.get('name')} queued for {site}",
                         agent_id=agent_id,
                         persona_name=persona.get("name"),
                     )
                     name = persona.get("name") or "User"
                     thoughts = list(sess.get("live_thoughts") or [])
                     already = any(
-                        name in (t.get("text") or "") for t in thoughts[-3:]
+                        "Queued" in (t.get("text") or "") or name in (t.get("text") or "")
+                        for t in thoughts[-3:]
                     )
                     if not already:
                         thoughts.append(
                             {
                                 "at": _now(),
-                                "text": f"{name} is acting — reading {site}…",
-                                "kind": "thinking",
+                                "text": f"{name} queued — waiting for a free browser slot…",
+                                "kind": "status",
                             }
                         )
                         sess["live_thoughts"] = thoughts[-24:]
@@ -1991,7 +1986,25 @@ async def run_study(
                         async with _BROWSER_SEMAPHORE:
                             raise_if_killed(study)
                             sess["status"] = "running"
+                            if not (sess.get("trace") or []):
+                                sess["last_action"] = f"Opening {site}"
+                            thoughts = list(sess.get("live_thoughts") or [])
+                            thoughts.append(
+                                {
+                                    "at": _now(),
+                                    "text": f"{name} got a browser — opening {site}…",
+                                    "kind": "status",
+                                }
+                            )
+                            sess["live_thoughts"] = thoughts[-24:]
                             refresh_agent_phase()
+                            if on_update:
+                                try:
+                                    on_update(study, event="progress")
+                                except TypeError:
+                                    on_update(study)
+                                except Exception:
+                                    pass
                             agent_warm = None
                             if (
                                 not warm_used
