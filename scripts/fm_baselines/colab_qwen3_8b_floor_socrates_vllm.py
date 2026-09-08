@@ -12,10 +12,12 @@ import re
 import subprocess
 import sys
 import time
-from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from socrates_metric import PAPER_TARGET, parse_numeric, score  # noqa: E402
 
 ROOT = Path(os.environ.get("ROOT", "/opt/usersim_fm"))
 if not ROOT.exists():
@@ -42,63 +44,11 @@ def sh(cmd: str) -> None:
     subprocess.run(cmd, shell=True, check=True)
 
 
-def parse_numeric(text: str) -> float | None:
-    m = re.search(r"[-+]?\d*\.?\d+", text.replace(",", ""))
-    if not m:
-        return None
-    try:
-        return float(m.group(0))
-    except ValueError:
-        return None
-
-
-def wasserstein_1d(a: np.ndarray, b: np.ndarray) -> float:
-    a = np.sort(a.astype(float))
-    b = np.sort(b.astype(float))
-    n = max(len(a), len(b))
-    if len(a) != n:
-        a = np.interp(np.linspace(0, 1, n), np.linspace(0, 1, len(a)), a)
-    if len(b) != n:
-        b = np.interp(np.linspace(0, 1, n), np.linspace(0, 1, len(b)), b)
-    return float(np.mean(np.abs(a - b)))
-
-
 def sample_id(r: dict) -> str:
     return (
         f"{r['study_id']}|{r['sample_id']}|{r['condition_num']}|"
         f"{r['task_num']}|{r['participant']}"
     )
-
-
-def aggregate(preds: list[dict]) -> dict:
-    cells: dict[tuple, list] = defaultdict(list)
-    for p in preds:
-        if p.get("pred") is None:
-            continue
-        key = (p["study_id"], str(p["condition_num"]), str(p["task_num"]))
-        cells[key].append(p)
-    per_study: dict[str, list] = defaultdict(list)
-    skipped = {"cell_degenerate_range": 0}
-    cell_rows = []
-    for key, items in cells.items():
-        h = np.array([x["human"] for x in items], dtype=float)
-        m = np.array([x["pred"] for x in items], dtype=float)
-        if len(h) < 2 or (h.max() - h.min() == 0 and m.max() - m.min() == 0):
-            skipped["cell_degenerate_range"] += 1
-            continue
-        w = wasserstein_1d(h, m)
-        per_study[key[0]].append(w)
-        cell_rows.append({"study_id": key[0], "condition_num": key[1], "task_num": key[2], "w": w, "n": len(items)})
-    study_means = {s: float(np.mean(ws)) for s, ws in per_study.items() if ws}
-    overall = float(np.mean(list(study_means.values()))) if study_means else float("nan")
-    return {
-        "n_studies": len(study_means),
-        "n_cells": len(cell_rows),
-        "wasserstein_mean": overall,
-        "per_study": study_means,
-        "cell_rows": cell_rows,
-        "skipped": skipped,
-    }
 
 
 def read_predictions(path: Path) -> list[dict]:
@@ -131,6 +81,62 @@ def read_predictions(path: Path) -> list[dict]:
     if skipped:
         print(f"skipped {skipped} unreadable prediction line(s) in {path}", flush=True)
     return records
+
+
+def check_gate(summary: dict) -> None:
+    """Refuse to call a run valid when the generations or the score are junk.
+
+    A W threshold alone can't distinguish a working model from a broken one, so
+    the binding check is against `uniform_control` -- the same metric scored
+    with uniform draws. Anything that fails to beat random guessing is not a
+    measurement, and burning a full sweep on it wastes the GPU. Defaults are
+    tuned to pass a sane run and fail loudly otherwise; set GATE=0 to inspect a
+    known-bad run without aborting.
+    """
+    if os.environ.get("GATE", "1").strip() in {"0", "false", "FALSE"}:
+        print("gate disabled (GATE=0)", flush=True)
+        return
+
+    min_parse = float(os.environ.get("MIN_PARSE_RATE", "0.98"))
+    min_bare = float(os.environ.get("MIN_BARE_NUMERIC_RATE", "0.90"))
+    max_vs_ctl = float(os.environ.get("MAX_W_VS_CONTROL", "0.95"))
+
+    parse = summary.get("parse") or {}
+    w = summary.get("wasserstein_mean")
+    ctl = summary.get("uniform_control")
+    fail: list[str] = []
+
+    rate = parse.get("parse_rate")
+    if rate is None or rate < min_parse:
+        fail.append(f"parse_rate={rate} < {min_parse}")
+    bare = parse.get("bare_numeric_rate")
+    if bare is not None and bare < min_bare:
+        fail.append(
+            f"bare_numeric_rate={bare:.3f} < {min_bare} "
+            "(model is not obeying 'a single number only')"
+        )
+    if w is None or not np.isfinite(w):
+        fail.append(f"wasserstein_mean={w} is not finite")
+    elif w > 1.0:
+        fail.append(f"wasserstein_mean={w:.4f} > 1.0 on a [0,1] scale")
+    elif ctl is not None and w > max_vs_ctl * ctl:
+        fail.append(
+            f"wasserstein_mean={w:.4f} does not beat uniform guessing "
+            f"(control={ctl:.4f}, need <= {max_vs_ctl * ctl:.4f})"
+        )
+
+    verdict = {
+        "gate": "fail" if fail else "pass",
+        "wasserstein_mean": w,
+        "uniform_control": ctl,
+        "paper_target": PAPER_TARGET,
+        "parse": parse,
+        "failures": fail,
+    }
+    (RESULTS / "GATE.json").write_text(json.dumps(verdict, indent=2))
+    print(json.dumps(verdict, indent=2), flush=True)
+    if fail:
+        raise SystemExit("EVAL GATE FAILED: " + "; ".join(fail))
 
 
 def main() -> None:
@@ -253,7 +259,7 @@ def main() -> None:
     # dedupe
     by_id = {p["sample_id"]: p for p in preds}
     preds = list(by_id.values())
-    agg = aggregate(preds)
+    agg = score(preds)
     n_studies = agg["n_studies"]
     n_preds = len(preds)
     complete = (
@@ -269,7 +275,9 @@ def main() -> None:
         "n_cells": agg["n_cells"],
         "n_preds": n_preds,
         "wasserstein_mean": agg["wasserstein_mean"],
-        "target_paper_socrates": 0.151,
+        "uniform_control": agg["uniform_control"],
+        "target_paper_socrates": PAPER_TARGET,
+        "parse": agg["parse"],
         "per_study": agg["per_study"],
         "skipped": agg["skipped"],
         "smoke_studies": smoke,
@@ -283,10 +291,16 @@ def main() -> None:
         },
     }
     (RESULTS / "SUMMARY.json").write_text(json.dumps(summary, indent=2))
+    (RESULTS / "cells.json").write_text(json.dumps(agg["cell_rows"], indent=2))
     print(
-        json.dumps({k: summary[k] for k in summary if k != "per_study"}, indent=2),
+        json.dumps(
+            {k: summary[k] for k in summary if k not in ("per_study", "parse")},
+            indent=2,
+        ),
         flush=True,
     )
+    print(json.dumps({"parse": agg["parse"]}, indent=2), flush=True)
+    check_gate(summary)
 
 
 if __name__ == "__main__":
