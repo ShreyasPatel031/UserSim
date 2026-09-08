@@ -38,8 +38,11 @@ def _browserbase_configured() -> bool:
     return bool((os.environ.get("BROWSERBASE_API_KEY") or "").strip())
 
 
-def _fleet_preferred() -> bool:
-    # Explicit opt-in always wins (local warm-seed path).
+def _fleet_preferred(*, test_mode: bool = False) -> bool:
+    # Smoke / quick preview stays on Browserbase (or snapshot) — don't spin VMs.
+    if test_mode:
+        return False
+    # Explicit opt-in always wins (local warm-seed path / Vercel long studies).
     if os.environ.get("MVP_PREFER_GCP_FLEET", "").lower() in {"1", "true", "yes"}:
         try:
             from mvp.gcp_fleet import gcp_fleet_enabled
@@ -47,8 +50,7 @@ def _fleet_preferred() -> bool:
             return gcp_fleet_enabled()
         except Exception:
             return False
-    # Browserbase is the Vercel production path. Cloud secrets often still inject
-    # MVP_GCP_FLEET=1; that steals the run and fails without seed VMs.
+    # Browserbase is the default Vercel path unless prefer-fleet is set.
     if os.environ.get("USE_BROWSERBASE", "").lower() in {"1", "true", "yes"}:
         return False
     try:
@@ -901,9 +903,9 @@ async def run_study(
         warm_used = False
 
         def _should_warm_browserbase() -> bool:
-            if SNAPSHOT_ONLY and not _fleet_preferred():
+            if SNAPSHOT_ONLY and not _fleet_preferred(test_mode=bool(study.test_mode)):
                 return False
-            if _fleet_preferred():
+            if _fleet_preferred(test_mode=bool(study.test_mode)):
                 return False
             if os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {"1", "true", "yes"}:
                 return False
@@ -1408,7 +1410,7 @@ async def run_study(
         def refresh_agent_phase() -> None:
             touch(_agent_phase_label(study))
 
-        if SNAPSHOT_ONLY and not _fleet_preferred():
+        if SNAPSHOT_ONLY and not _fleet_preferred(test_mode=bool(study.test_mode)):
             if warm_task is not None:
                 warm_task.cancel()
                 warm_task = None
@@ -1473,7 +1475,7 @@ async def run_study(
 
             study.agent_results = []
             await asyncio.gather(*[_run_snapshot(t) for t in study.tasks])
-        elif _fleet_preferred():
+        elif _fleet_preferred(test_mode=bool(study.test_mode)):
             from mvp.gcp_fleet import run_study_on_gcp_fleet
 
             if warm_task is not None:
@@ -1493,7 +1495,8 @@ async def run_study(
             log_activity(
                 study,
                 "agents",
-                f"Launching on GCP warm seed — headed Chromium (reuse CDP), {workers} workers/VM",
+                f"Launching on GCP warm seed — headed Chromium (reuse CDP), {workers} workers/VM "
+                f"(Vercel detaches; agents keep running up to ~15 min)",
             )
             touch(
                 f"Live browser agents — 0/{len(study.tasks)} done · {len(study.tasks)} active · 0 queued · 0 steps"

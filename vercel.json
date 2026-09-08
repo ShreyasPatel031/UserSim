@@ -12,7 +12,7 @@
   ],
   "functions": {
     "api/index.py": {
-      "maxDuration": 800,
+      "maxDuration": 300,
       "excludeFiles": "public/**"
     }
   },
@@ -24,15 +24,18 @@
     "MVP_PERSONA_COUNT": "5",
     "MVP_TASK_COUNT": "5",
     "MVP_MAX_SESSIONS": "0",
-    "MVP_STUDY_TIMEOUT_S": "780",
+    "MVP_STUDY_TIMEOUT_S": "280",
     "MVP_AGENT_CONCURRENCY": "24",
     "BROWSERBASE_MAX_CONCURRENT": "25",
     "BROWSERBASE_CREATE_INTERVAL_S": "0",
     "BROWSERBASE_SESSION_TIMEOUT_S": "1800",
     "USE_BROWSERBASE": "1",
     "MVP_VERCEL_BROWSER": "1",
-    "MVP_GCP_FLEET": "0",
-    "MVP_PREFER_GCP_FLEET": "0",
+    "MVP_GCP_FLEET": "1",
+    "MVP_PREFER_GCP_FLEET": "1",
+    "MVP_GCP_FLEET_TIMEOUT_S": "120",
+    "MVP_GCP_USE_SEEDS": "1",
+    "MVP_GCP_ALLOW_SPOT": "1",
     "GOOGLE_CLOUD_PROJECT": "project-amer-scs-sandbox",
     "GCP_PROJECT": "project-amer-scs-sandbox",
     "VERTEX_LOCATION": "us-central1",
