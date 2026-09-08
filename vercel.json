@@ -12,7 +12,7 @@
   ],
   "functions": {
     "api/index.py": {
-      "maxDuration": 300,
+      "maxDuration": 800,
       "excludeFiles": "public/**"
     }
   },
@@ -24,7 +24,7 @@
     "MVP_PERSONA_COUNT": "5",
     "MVP_TASK_COUNT": "5",
     "MVP_MAX_SESSIONS": "0",
-    "MVP_STUDY_TIMEOUT_S": "280",
+    "MVP_STUDY_TIMEOUT_S": "780",
     "MVP_AGENT_CONCURRENCY": "24",
     "BROWSERBASE_MAX_CONCURRENT": "25",
     "BROWSERBASE_CREATE_INTERVAL_S": "0",

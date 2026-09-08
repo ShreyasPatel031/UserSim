@@ -94,15 +94,16 @@ def abandon_local_studies(*, study_id: str | None = None) -> dict[str, Any]:
         ):
             # Still allow force-kill of lingering sessions belonging to finished studies.
             pass
-        study.kill_requested = True
-        if study.status in {"running", "pending", "queued"}:
-            study.status = "abandoned"
-            study.phase = "Killed"
-            study.error = "Killed by operator"
-            for sess in (study.live_sessions or {}).values():
-                if sess.get("status") in {"running", "starting", "pending", "summarizing"}:
-                    sess["status"] = "killed"
-            abandoned.append(study.id)
+            study.kill_requested = True
+            if study.status in {"running", "pending", "queued"}:
+                study.status = "abandoned"
+                study.phase = "Killed"
+                study.error = "Killed by operator"
+                for sess in (study.live_sessions or {}).values():
+                    if sess.get("status") in {"running", "starting", "pending", "summarizing"}:
+                        sess["status"] = "killed"
+                    sess["live_active"] = False
+                abandoned.append(study.id)
             try:
                 persist_study(study)
             except Exception:

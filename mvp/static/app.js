@@ -100,24 +100,29 @@ function estimateStudySeconds(data) {
   const testMode =
     Boolean(data?.test_mode) ||
     (n <= 1 && (data?.personas || []).length <= 1 && !(data?.competitors || []).length);
-  if (testMode) return 150; // ~2.5 min smoke
+  if (testMode) return 180; // ~3 min smoke with flash-lite
   const parallel = Math.min(25, n);
   const waves = Math.ceil(n / Math.max(parallel, 1));
-  // Brief ~45s + ~100s per concurrent wave (open + steps) + summary ~30s
-  return 45 + waves * 100 + 30;
+  // Brief ~45s + ~120s per concurrent wave + summary ~30s (fits ~8–12 min studies)
+  return 45 + waves * 120 + 30;
 }
 
 function studyStillRunning(data) {
   const status = String(data?.status || "");
-  if (["complete", "error", "failed", "abandoned", "killed"].includes(status)) {
+  if (
+    ["complete", "error", "failed", "abandoned", "killed", "timed_out"].includes(status)
+  ) {
+    return false;
+  }
+  const phase = String(data?.phase || "");
+  if (/timed out|killed|failed|complete|site blocked/i.test(phase)) {
     return false;
   }
   // No status yet / explicitly running / in-progress phases.
   if (!status || status === "running" || status === "pending" || status === "queued") {
     return true;
   }
-  const phase = String(data?.phase || "");
-  if (phase && !/^(Complete|Failed|Site blocked|Killed)/i.test(phase)) {
+  if (phase && !/^(Complete|Failed|Site blocked|Killed|Timed out)/i.test(phase)) {
     return true;
   }
   return false;
@@ -192,7 +197,10 @@ function statusLabel(status) {
     case "complete":
       return "Done";
     case "error":
-      return "Fallback";
+      return "Failed";
+    case "abandoned":
+    case "killed":
+      return "Stopped";
     case "pending":
       return "Queued";
     default:
@@ -445,7 +453,13 @@ function renderFocusStage(session, sessionIdx) {
   const browsing = ["starting", "pending", "running"].includes(String(session?.status || ""));
   const liveView = session?.live_view_url;
   // XOR: live iframe when agent is up; otherwise screenshot; never both.
-  const showLive = Boolean(liveView && session?.live_active && browsing);
+  // Never show live DevTools for killed/abandoned/dead sessions.
+  const showLive = Boolean(
+    liveView &&
+      session?.live_active &&
+      browsing &&
+      !["killed", "complete", "error", "abandoned"].includes(String(session?.status || ""))
+  );
   const shotSrc = !showLive && step ? stepShotSrc(step) : "";
   if (showLive) {
     visual = `
@@ -1497,8 +1511,24 @@ form.addEventListener("submit", async (e) => {
           data = chunk;
           updateProgressUI(data, startedAt);
           renderLiveStudy(data);
-          if (chunk.stream_event === "error" || data.status === "error") {
-            throw new Error(data.error || "Study failed");
+          if (
+            chunk.stream_event === "error" ||
+            data.status === "error" ||
+            data.status === "abandoned"
+          ) {
+            // Flip live panes off immediately so DevTools doesn't sit on a dead WS.
+            const live = data.live_sessions;
+            const items = Array.isArray(live)
+              ? live
+              : live && typeof live === "object"
+                ? Object.values(live)
+                : [];
+            items.forEach((s) => {
+              if (s && typeof s === "object") s.live_active = false;
+            });
+            updateProgressUI(data, startedAt);
+            renderLiveStudy(data);
+            throw new Error(data.error || data.phase || "Study failed");
           }
         }
       }

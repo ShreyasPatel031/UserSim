@@ -13,6 +13,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Streamin
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 import json
+from datetime import datetime, timezone
 
 from mvp.paths import MVP_RUNS_DIR
 
@@ -370,14 +371,69 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     # Serverless: stream NDJSON so the brief (competitors / users / tasks) arrives
     # before browser agents finish — cuts perceived time-to-first-content.
     if IS_VERCEL or want_stream:
-        # Match vercel.json maxDuration (300s) with a little headroom for cleanup.
-        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "280" if IS_VERCEL else "900"))
+        # Pro plan GA max is 800s — give studies ~13 min (8–12 min typical)
+        # with a little headroom for kill/persist cleanup.
+        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "780" if IS_VERCEL else "900"))
         queue: asyncio.Queue[dict | None] = asyncio.Queue()
 
         def _push(study_obj, event: str = "progress") -> None:
             payload = study_to_dict(study_obj)
             payload["stream_event"] = event
             queue.put_nowait(payload)
+
+        async def _abandon_timeout(study_obj, timeout_s: float) -> dict:
+            """Persist abandoned state, kill zombie Browserbase, clear live UI."""
+            from mvp.study import persist_study
+
+            study_obj.kill_requested = True
+            study_obj.status = "abandoned"
+            study_obj.error = (
+                f"Study timed out after {int(timeout_s)}s on Vercel — "
+                "agents stopped and browsers released."
+            )
+            study_obj.phase = "Timed out"
+            study_obj.updated_at = datetime.now(timezone.utc).isoformat()
+            for sess in (study_obj.live_sessions or {}).values():
+                if not isinstance(sess, dict):
+                    continue
+                if sess.get("status") in {
+                    "running",
+                    "starting",
+                    "pending",
+                    "summarizing",
+                }:
+                    sess["status"] = "killed"
+                sess["live_active"] = False
+                thoughts = list(sess.get("live_thoughts") or [])
+                thoughts.append(
+                    {
+                        "at": study_obj.updated_at,
+                        "text": "Timed out — live browser closed.",
+                        "kind": "status",
+                    }
+                )
+                sess["live_thoughts"] = thoughts[-24:]
+                sess["last_action"] = "Timed out — browser closed"
+            try:
+                persist_study(study_obj)
+            except Exception as persist_exc:  # noqa: BLE001
+                print(f"timeout persist failed: {persist_exc!r}", flush=True)
+            try:
+                from mvp.kill_switch import kill_now_async
+
+                await kill_now_async(
+                    agents=True, vms=False, seeds=False, study_id=study_obj.id
+                )
+            except Exception as kill_exc:  # noqa: BLE001
+                print(f"timeout kill failed: {kill_exc!r}", flush=True)
+            # Re-persist after kill so GCS shows abandoned, not running.
+            try:
+                persist_study(study_obj)
+            except Exception:
+                pass
+            payload = study_to_dict(study_obj)
+            payload["stream_event"] = "error"
+            return payload
 
         async def _runner() -> None:
             try:
@@ -390,25 +446,19 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 await queue.put(final)
             except asyncio.TimeoutError:
                 study_obj = STUDIES[study.id]
-                study_obj.status = "error"
-                study_obj.error = f"Study timed out after {int(timeout_s)}s"
-                study_obj.phase = "Timed out"
-                study_obj.kill_requested = True
-                try:
-                    from mvp.kill_switch import kill_now_async
-
-                    # Release orphan Browserbase sessions immediately on timeout.
-                    await kill_now_async(agents=True, vms=False, seeds=False, study_id=study.id)
-                except Exception as kill_exc:  # noqa: BLE001
-                    print(f"timeout kill failed: {kill_exc!r}", flush=True)
-                payload = study_to_dict(study_obj)
-                payload["stream_event"] = "error"
+                payload = await _abandon_timeout(study_obj, timeout_s)
                 await queue.put(payload)
             except Exception as exc:  # noqa: BLE001
                 study_obj = STUDIES[study.id]
                 study_obj.status = "error"
                 study_obj.error = (str(exc) or repr(exc))[:500]
                 study_obj.phase = "Failed"
+                try:
+                    from mvp.study import persist_study
+
+                    persist_study(study_obj)
+                except Exception:
+                    pass
                 payload = study_to_dict(study_obj)
                 payload["stream_event"] = "error"
                 await queue.put(payload)
