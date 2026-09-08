@@ -11,13 +11,15 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from socrates_metric import parse_numeric, score  # noqa: E402
 
 ROOT = Path("/content/fm_baselines")
 RESULTS = ROOT / "results" / "socrates"
@@ -43,31 +45,6 @@ def install() -> None:
         "torch transformers accelerate bitsandbytes datasets huggingface_hub "
         "scipy numpy sentencepiece protobuf"
     )
-
-
-def parse_numeric(text: str) -> float | None:
-    if text is None:
-        return None
-    t = text.strip()
-    # common formats: "5", "5.", "Answer: 5", "I choose 2"
-    m = re.search(r"(?<![\d.])(-?\d+(?:\.\d+)?)(?![\d])", t)
-    if not m:
-        return None
-    try:
-        return float(m.group(1))
-    except ValueError:
-        return None
-
-
-def wasserstein_1d(a: np.ndarray, b: np.ndarray) -> float:
-    # Pure numpy 1D Wasserstein (Earth Mover) for 1D samples
-    a = np.sort(a.astype(float))
-    b = np.sort(b.astype(float))
-    # quantile matching
-    n = 256
-    qa = np.quantile(a, np.linspace(0, 1, n))
-    qb = np.quantile(b, np.linspace(0, 1, n))
-    return float(np.mean(np.abs(qa - qb)))
 
 
 def main() -> None:
@@ -186,53 +163,17 @@ def main() -> None:
 
     # load all preds
     preds = [json.loads(l) for l in preds_path.read_text().splitlines() if l.strip()]
-    by_cell: dict[tuple, list] = defaultdict(list)
-    for p in preds:
-        by_cell[(p["study_id"], p["condition_num"], p["task_num"])].append(p)
-
-    study_scores: dict[str, list[float]] = defaultdict(list)
-    cell_rows = []
-    for key, items in by_cell.items():
-        humans, models = [], []
-        for it in items:
-            try:
-                h = float(it["human"])
-            except Exception:
-                continue
-            if it["pred"] is None:
-                continue
-            humans.append(h)
-            models.append(float(it["pred"]))
-        if len(humans) < 2 or len(models) < 2:
-            continue
-        h = np.array(humans, dtype=float)
-        m = np.array(models, dtype=float)
-        rmin, rmax = float(h.min()), float(h.max())
-        if rmax <= rmin:
-            continue
-        h_s = (h - rmin) / (rmax - rmin)
-        m_s = (m - rmin) / (rmax - rmin)
-        # clip model to scale (paper standardizes with human bounds)
-        m_s = np.clip(m_s, 0.0, 1.0)
-        w = wasserstein_1d(h_s, m_s)
-        study_scores[key[0]].append(w)
-        cell_rows.append({"study_id": key[0], "condition": key[1], "task": key[2], "W": w, "n": len(h)})
-
-    per_study = {s: float(np.mean(v)) for s, v in study_scores.items() if v}
-    overall = float(np.mean(list(per_study.values()))) if per_study else None
-    summary = {
-        "model": MODEL,
-        "n_studies": len(per_study),
-        "n_cells": len(cell_rows),
-        "n_preds": len(preds),
-        "wasserstein_mean": overall,
-        "target_paper": 0.151,
-        "empirical_best_paper": 0.125,
-        "per_study": per_study,
-    }
+    agg = score(preds)
+    summary = {"model": MODEL, **{k: v for k, v in agg.items() if k != "cell_rows"}}
     (RESULTS / "SUMMARY.json").write_text(json.dumps(summary, indent=2))
-    (RESULTS / "cells.json").write_text(json.dumps(cell_rows, indent=2))
-    print(json.dumps({k: summary[k] for k in summary if k != "per_study"}, indent=2), flush=True)
+    (RESULTS / "cells.json").write_text(json.dumps(agg["cell_rows"], indent=2))
+    print(
+        json.dumps(
+            {k: summary[k] for k in summary if k not in ("per_study", "cell_rows")},
+            indent=2,
+        ),
+        flush=True,
+    )
 
 
 if __name__ == "__main__":
