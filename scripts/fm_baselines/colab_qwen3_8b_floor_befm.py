@@ -1,17 +1,29 @@
 #!/usr/bin/env python3
-"""Qwen3-8B-Base full BehaviorBench floor (same 39 tasks as Be.FM Gate 0).
+"""Qwen3-8B-Base BehaviorBench floor via vLLM.
+
+Protocol (docs/plans/fm_gpu_eval_protocol.md):
+  MODE=smoke  small representative slice, write SMOKE_OK.json
+  MODE=full   refuse unless smoke passed + watchdog armed + concurrency>=32
 
 Env:
-  FLOOR_MODEL   default Qwen/Qwen3-8B-Base
-  ROOT          /opt/usersim_fm or /content/fm_baselines
-  MAX_TOKENS    default 64 (non-workflow)
+  MODE                 smoke | full  (default full)
+  FLOOR_MODEL          default Qwen/Qwen3-8B-Base
+  ROOT                 /opt/usersim_fm or /content/fm_baselines
+  CONCURRENCY          client threads (default 32, minimum 32)
+  MAX_NUM_SEQS         vLLM in-flight seqs (default 64, minimum 64)
+  MAX_TOKENS           default 64
   WORKFLOW_MAX_TOKENS  default 512
-  SKIP_WORKFLOW 1 to skip the 5 workflow tasks (no BLEURT)
+  GPU_MEM_UTIL         default 0.90
+  MAX_MODEL_LEN        default 4096
+  SKIP_WORKFLOW        1 to skip BLEURT workflow group
+  SMOKE_N              survey samples in smoke (default 8)
+  SMOKE_GAME_N         game samples in smoke (default 8)
 """
 from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -19,21 +31,43 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from protocol import (  # noqa: E402
+    require_smoke,
+    require_vllm_concurrency,
+    require_watchdog,
+    validate_harness_json,
+    write_smoke_ok,
+)
+
 ROOT = Path(os.environ.get("ROOT", "/opt/usersim_fm"))
 if not ROOT.exists():
     ROOT = Path("/content/fm_baselines")
 
 RESULTS = ROOT / "results" / "qwen3_8b_base_befm"
 BB_DATA = ROOT / "data" / "BehaviorBench"
+if not BB_DATA.exists():
+    for cand in (
+        Path("/content/UserSim/data/fm_baselines/BehaviorBench"),
+        Path("/workspace/data/fm_baselines/BehaviorBench"),
+    ):
+        if cand.exists():
+            BB_DATA = cand
+            break
 BB_REPO = ROOT / "behaviorbench_eval"
-SERVER = ROOT / "scripts" / "qwen_openai_server.py"
 PORT = int(os.environ.get("PORT", "8000"))
-MODEL_NAME = "qwen3-8b-base"
+MODEL_NAME = os.environ.get("SERVED_MODEL_NAME", "qwen3-8b-base")
 FLOOR_MODEL = os.environ.get("FLOOR_MODEL", "Qwen/Qwen3-8B-Base")
 MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "64"))
 WORKFLOW_MAX_TOKENS = int(os.environ.get("WORKFLOW_MAX_TOKENS", "512"))
 SKIP_WORKFLOW = os.environ.get("SKIP_WORKFLOW", "0") == "1"
-CONCURRENCY = int(os.environ.get("CONCURRENCY", "1"))
+CONCURRENCY = int(os.environ.get("CONCURRENCY", "32"))
+MAX_NUM_SEQS = int(os.environ.get("MAX_NUM_SEQS", "64"))
+GPU_MEM_UTIL = os.environ.get("GPU_MEM_UTIL", "0.92")
+MAX_MODEL_LEN = int(os.environ.get("MAX_MODEL_LEN", "4096"))
+MODE = os.environ.get("MODE", "full").strip().lower()
+SMOKE_N = int(os.environ.get("SMOKE_N", "8"))
+SMOKE_GAME_N = int(os.environ.get("SMOKE_GAME_N", "8"))
 
 WORKFLOW_TASKS = [
     "workflow_idea_generation",
@@ -43,7 +77,6 @@ WORKFLOW_TASKS = [
     "workflow_impact_prediction",
 ]
 
-# Same 39-task set as Be.FM Gate 0 SUMMARY (workflow run as one group).
 TASK_GROUPS: list[list[str]] = [
     ["pers_score_pred"],
     ["surv_resp_pred"],
@@ -86,9 +119,12 @@ if not SKIP_WORKFLOW:
 EXPECTED_TASKS = sorted({t for g in TASK_GROUPS for t in g})
 
 
-def sh(cmd: str, check: bool = True) -> subprocess.CompletedProcess:
+def sh(cmd: str, check: bool = True, env: dict | None = None) -> subprocess.CompletedProcess:
     print("+", cmd, flush=True)
-    return subprocess.run(cmd, shell=True, check=check)
+    run_env = os.environ.copy()
+    if env:
+        run_env.update(env)
+    return subprocess.run(cmd, shell=True, check=check, env=run_env)
 
 
 def ensure_python311() -> str:
@@ -109,17 +145,7 @@ def ensure_python311() -> str:
 
 
 def ensure_server_python() -> str:
-    for cand in ("python3", sys.executable):
-        try:
-            subprocess.check_call(
-                [cand, "-c", "from transformers import AutoModelForCausalLM; import torch"],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-            return cand
-        except Exception:
-            continue
-    return "python3"
+    return os.environ.get("SERVER_PY", "python3")
 
 
 def _torchaudio_stub(py: str) -> None:
@@ -134,26 +160,41 @@ def _torchaudio_stub(py: str) -> None:
         print("torchaudio stub skip", e, flush=True)
 
 
+def _module_ok(py: str, mod: str) -> bool:
+    return subprocess.run([py, "-c", f"import {mod}"], capture_output=True).returncode == 0
+
+
 def install(eval_py: str, server_py: str) -> None:
-    sh(f"{eval_py} -m pip install -q -U pip")
-    sh(
-        f"{eval_py} -m pip install -q "
-        "openai python-dotenv pyyaml numpy scipy scikit-learn "
-        "pandas tenacity rouge-score"
-    )
-    if not BB_REPO.exists():
-        sh(f"git clone --depth 1 https://github.com/umich-foreseer/behaviorbench_eval.git {BB_REPO}")
-    sh(f"{eval_py} -m pip install -q -e {BB_REPO}")
-    if not SKIP_WORKFLOW:
-        # Best-effort BLEURT/ROUGE stack for workflow metrics.
-        sh(f"{eval_py} -m pip install -q evaluate", check=False)
+    if os.environ.get("SKIP_INSTALL", "").strip() in {"1", "true", "TRUE"}:
+        print("SKIP_INSTALL=1", flush=True)
+        return
+    if not _module_ok(eval_py, "behaviorbench.eval.main"):
+        sh(f"{eval_py} -m pip install -q -U pip")
         sh(
             f"{eval_py} -m pip install -q "
-            "'bleurt @ git+https://github.com/google-research/bleurt.git'",
-            check=False,
+            "openai python-dotenv pyyaml numpy scipy scikit-learn "
+            "pandas tenacity rouge-score"
         )
-    sh(f"{server_py} -m pip install -q fastapi uvicorn pydantic")
+        if not BB_REPO.exists():
+            sh(f"git clone --depth 1 https://github.com/umich-foreseer/behaviorbench_eval.git {BB_REPO}")
+        sh(f"{eval_py} -m pip install -q -e {BB_REPO}")
+        if not SKIP_WORKFLOW:
+            sh(f"{eval_py} -m pip install -q evaluate", check=False)
+            sh(
+                f"{eval_py} -m pip install -q "
+                "'bleurt @ git+https://github.com/google-research/bleurt.git'",
+                check=False,
+            )
+    else:
+        print("eval deps already present", flush=True)
     _torchaudio_stub(server_py)
+    if shutil.which("ninja") is None:
+        sh("sudo apt-get install -y -qq ninja-build", check=False)
+        sh(f"{server_py} -m pip install -q ninja", check=False)
+    if _module_ok(server_py, "vllm"):
+        print("vllm already present", flush=True)
+    else:
+        sh(f"{server_py} -m pip install -q -U 'vllm>=0.6.0'", check=False)
 
 
 def symlink_data() -> None:
@@ -170,6 +211,9 @@ def symlink_data() -> None:
 def write_progress(done: list[str], failed: list[str], current: list[str] | None) -> None:
     payload = {
         "model": FLOOR_MODEL,
+        "engine": "vllm",
+        "concurrency": CONCURRENCY,
+        "max_num_seqs": MAX_NUM_SEQS,
         "done": done,
         "failed": failed,
         "current": current,
@@ -177,24 +221,24 @@ def write_progress(done: list[str], failed: list[str], current: list[str] | None
         "n_expected": len(EXPECTED_TASKS),
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }
+    RESULTS.mkdir(parents=True, exist_ok=True)
     (RESULTS / "PROGRESS.json").write_text(json.dumps(payload, indent=2))
 
 
 def task_already_done(task: str) -> bool:
-    out = RESULTS / "full" / task
+    out = RESULTS / "full" / ("workflow" if task.startswith("workflow_") else task)
     if not out.exists():
         return False
     for p in out.rglob("*.json"):
-        if p.name == "SMOKE_SUMMARY.json":
-            continue
         try:
             d = json.loads(p.read_text())
-            tasks = d.get("tasks") or []
-            names = {t.get("task_name") for t in tasks if isinstance(t, dict)}
-            if task in names and d.get("metrics"):
-                return True
         except Exception:
             continue
+        tasks = d.get("tasks") or []
+        names = {t.get("task_name") for t in tasks if isinstance(t, dict)}
+        metrics = d.get("metrics") or {}
+        if task in names or task in metrics:
+            return True
     return False
 
 
@@ -202,42 +246,76 @@ def workflow_already_done() -> bool:
     return all(task_already_done(t) for t in WORKFLOW_TASKS)
 
 
-def start_server(server_py: str) -> subprocess.Popen:
+def start_vllm(server_py: str) -> subprocess.Popen:
     env = os.environ.copy()
-    env["FLOOR_MODEL"] = FLOOR_MODEL
-    env["PORT"] = str(PORT)
     tok = Path.home() / ".cache" / "huggingface" / "token"
     if tok.exists():
         env["HF_TOKEN"] = tok.read_text().strip()
         env["HUGGING_FACE_HUB_TOKEN"] = env["HF_TOKEN"]
+    env["VLLM_WORKER_MULTIPROC_METHOD"] = "spawn"
+    env.setdefault("VLLM_ENGINE_READY_TIMEOUT_S", "600")
+    env.setdefault("VLLM_ENGINE_ITERATION_TIMEOUT_S", "300")
+    extra_path = [
+        str(Path.home() / ".local" / "bin"),
+        "/usr/bin",
+        "/usr/local/bin",
+    ]
+    env["PATH"] = os.pathsep.join(extra_path + [env.get("PATH", "")])
 
     RESULTS.mkdir(parents=True, exist_ok=True)
-    log_path = RESULTS / "server_full.log"
-    logf = open(log_path, "w")
-    proc = subprocess.Popen(
-        [server_py, "-u", str(SERVER)],
-        cwd=str(ROOT),
-        env=env,
-        stdout=logf,
-        stderr=subprocess.STDOUT,
-        text=True,
-    )
-    deadline = time.time() + 1200
+    log_path = RESULTS / "vllm.log"
+    logf = open(log_path, "a")
+    logf.write(f"\n===== start {datetime.now(timezone.utc).isoformat()} =====\n")
+    logf.flush()
+    cmd = [
+        server_py,
+        "-m",
+        "vllm.entrypoints.openai.api_server",
+        "--model",
+        FLOOR_MODEL,
+        "--served-model-name",
+        MODEL_NAME,
+        "--host",
+        "127.0.0.1",
+        "--port",
+        str(PORT),
+        "--dtype",
+        os.environ.get("DTYPE", "bfloat16"),
+        "--max-model-len",
+        str(MAX_MODEL_LEN),
+        "--gpu-memory-utilization",
+        GPU_MEM_UTIL,
+        "--max-num-seqs",
+        str(MAX_NUM_SEQS),
+        "--trust-remote-code",
+        "--enforce-eager",
+    ]
+    print("+", " ".join(cmd), flush=True)
+    proc = subprocess.Popen(cmd, cwd=str(ROOT), env=env, stdout=logf, stderr=subprocess.STDOUT)
+    deadline = time.time() + 1800
     while time.time() < deadline:
         if proc.poll() is not None:
-            print(log_path.read_text()[-3000:], flush=True)
-            raise RuntimeError(f"server exited early rc={proc.returncode}")
+            print(log_path.read_text()[-20000:], flush=True)
+            raise RuntimeError(f"vLLM exited early rc={proc.returncode}")
         try:
             urllib.request.urlopen(f"http://127.0.0.1:{PORT}/v1/models", timeout=2)
-            print("server healthy", flush=True)
+            print("vllm healthy", flush=True)
             return proc
         except Exception:
             time.sleep(3)
-    raise TimeoutError("server did not become healthy")
+    raise TimeoutError("vLLM did not become healthy")
 
 
-def run_eval(py: str, tasks: list[str], out_dir: Path, max_tokens: int) -> None:
+def run_eval(
+    py: str,
+    tasks: list[str],
+    out_dir: Path,
+    max_tokens: int,
+    extra: list[str] | None = None,
+    hide_gpu: bool = False,
+) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
+    extra_s = " ".join(extra or [])
     cmd = (
         f"cd {BB_REPO} && "
         f"MODEL_NAME={MODEL_NAME} API_BASE=http://127.0.0.1:{PORT}/v1 "
@@ -248,10 +326,71 @@ def run_eval(py: str, tasks: list[str], out_dir: Path, max_tokens: int) -> None:
         f"--api-base http://127.0.0.1:{PORT}/v1 "
         f"--temperature 0.6 --top-p 0.95 --top-k 20 "
         f"--max-tokens {max_tokens} --concurrency {CONCURRENCY} "
-        f"--output-dir {out_dir}"
+        f"--output-dir {out_dir} {extra_s}"
     )
-    print(f"=== EVAL {tasks} max_tokens={max_tokens} ===", flush=True)
-    sh(cmd, check=True)
+    # BLEURT via `evaluate.load` segfaults (exit 139) on this stack. Prefer the
+    # direct bleurt.BleurtScorer path (BEHAVIORBENCH_BLEURT_PATH). Also hide the
+    # GPU from TF so it cannot fight vLLM; generation still hits localhost.
+    env = None
+    if hide_gpu or any(t.startswith("workflow_") for t in tasks):
+        bleurt = os.environ.get("BEHAVIORBENCH_BLEURT_PATH") or str(
+            ROOT / "data" / "BLEURT-20"
+        )
+        env = {
+            "CUDA_VISIBLE_DEVICES": "",
+            "TF_CPP_MIN_LOG_LEVEL": "2",
+            "TF_ENABLE_ONEDNN_OPTS": "0",
+            "BEHAVIORBENCH_BLEURT_PATH": bleurt,
+        }
+        print(
+            f"eval env: CUDA_VISIBLE_DEVICES= BLEURT_PATH={bleurt}",
+            flush=True,
+        )
+    print(f"=== EVAL {tasks} max_tokens={max_tokens} concurrency={CONCURRENCY} ===", flush=True)
+    sh(cmd, check=True, env=env)
+
+
+def latest_json(out_dir: Path) -> Path:
+    files = sorted(out_dir.rglob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    files = [p for p in files if p.name not in {"SMOKE_OK.json", "SUMMARY.json", "PROGRESS.json"}]
+    if not files:
+        raise FileNotFoundError(f"no result json under {out_dir}")
+    return files[0]
+
+
+def run_smoke(eval_py: str) -> None:
+    reports = []
+    survey_out = RESULTS / "smoke_pers_score_pred"
+    run_eval(
+        eval_py,
+        ["pers_score_pred"],
+        survey_out,
+        MAX_TOKENS,
+        [f"--num-samples {SMOKE_N}", "--seed 0"],
+    )
+    reports.append(validate_harness_json(latest_json(survey_out), "pers_score_pred"))
+    game_out = RESULTS / "smoke_game_behavior_dictator"
+    run_eval(
+        eval_py,
+        ["game_behavior_dictator"],
+        game_out,
+        MAX_TOKENS,
+        [f"--num-samples-per-game {SMOKE_GAME_N}", "--seed 0"],
+    )
+    reports.append(validate_harness_json(latest_json(game_out), "game_behavior_dictator"))
+    write_smoke_ok(
+        RESULTS,
+        reports,
+        {
+            "model": FLOOR_MODEL,
+            "concurrency": CONCURRENCY,
+            "max_num_seqs": MAX_NUM_SEQS,
+            "smoke_n": SMOKE_N,
+            "smoke_game_n": SMOKE_GAME_N,
+        },
+    )
+    print(json.dumps({"smoke": reports}, indent=2), flush=True)
+    print("SMOKE_PASSED", flush=True)
 
 
 def collect_summary(done: list[str], failed: list[str]) -> dict:
@@ -285,6 +424,8 @@ def collect_summary(done: list[str], failed: list[str]) -> dict:
 
     summary = {
         "model": FLOOR_MODEL,
+        "engine": "vllm",
+        "concurrency": CONCURRENCY,
         "tasks": sorted(done),
         "failed": failed,
         "coverage": {
@@ -311,54 +452,97 @@ def collect_summary(done: list[str], failed: list[str]) -> dict:
     return summary
 
 
+def completed_so_far() -> list[str]:
+    done: list[str] = []
+    for g in TASK_GROUPS:
+        if g == WORKFLOW_TASKS:
+            if workflow_already_done():
+                done.extend(WORKFLOW_TASKS)
+        elif len(g) == 1 and task_already_done(g[0]):
+            done.append(g[0])
+    return done
+
+
 def main() -> None:
     RESULTS.mkdir(parents=True, exist_ok=True)
-    assert SERVER.exists(), f"missing {SERVER}"
     assert BB_DATA.exists(), f"missing {BB_DATA}"
+    if MODE not in {"smoke", "full"}:
+        raise SystemExit(f"MODE must be smoke|full, got {MODE}")
+    require_vllm_concurrency(CONCURRENCY, MAX_NUM_SEQS)
+    if MODE == "full":
+        require_watchdog()
+        require_smoke(RESULTS)
 
     eval_py = ensure_python311()
     server_py = ensure_server_python()
-    print("eval_py", eval_py, "server_py", server_py, "n_groups", len(TASK_GROUPS), flush=True)
+    print(
+        "mode",
+        MODE,
+        "eval_py",
+        eval_py,
+        "server_py",
+        server_py,
+        "concurrency",
+        CONCURRENCY,
+        "max_num_seqs",
+        MAX_NUM_SEQS,
+        flush=True,
+    )
     install(eval_py, server_py)
     symlink_data()
 
-    done: list[str] = []
-    failed: list[str] = []
-    for g in TASK_GROUPS:
-        if g == WORKFLOW_TASKS:
-            if workflow_already_done():
-                done.extend(WORKFLOW_TASKS)
-                print("SKIP workflow already done", flush=True)
-                continue
-        elif len(g) == 1 and task_already_done(g[0]):
-            done.append(g[0])
-            print("SKIP", g[0], flush=True)
-            continue
+    if MODE == "full":
+        done = completed_so_far()
+        failed: list[str] = []
+        write_progress(done, failed, None)
+        print("resume done", done, flush=True)
+    else:
+        done = []
+        failed = []
 
-    # recompute skip set from disk each resume
-    done = []
-    for g in TASK_GROUPS:
-        if g == WORKFLOW_TASKS:
-            if workflow_already_done():
-                done.extend(WORKFLOW_TASKS)
-        elif len(g) == 1 and task_already_done(g[0]):
-            done.append(g[0])
-    write_progress(done, failed, None)
-
-    proc = start_server(server_py)
+    proc = start_vllm(server_py)
     try:
+        if MODE == "smoke":
+            run_smoke(eval_py)
+            return
         for g in TASK_GROUPS:
-            if g == WORKFLOW_TASKS:
+            if g == WORKFLOW_TASKS or (len(g) == len(WORKFLOW_TASKS) and set(g) == set(WORKFLOW_TASKS)):
                 if all(t in done for t in WORKFLOW_TASKS):
+                    print("SKIP workflow", flush=True)
                     continue
                 out_dir = RESULTS / "full" / "workflow"
-                max_tok = WORKFLOW_MAX_TOKENS
-            else:
-                task = g[0]
-                if task in done:
-                    continue
-                out_dir = RESULTS / "full" / task
-                max_tok = MAX_TOKENS
+                write_progress(done, failed, list(WORKFLOW_TASKS))
+                try:
+                    # All five must run together (BehaviorBench enforces). Hide GPU so
+                    # TensorFlow BLEURT cannot fight vLLM (was segfault exit 139).
+                    run_eval(
+                        eval_py,
+                        list(WORKFLOW_TASKS),
+                        out_dir,
+                        WORKFLOW_MAX_TOKENS,
+                        hide_gpu=True,
+                    )
+                    for t in WORKFLOW_TASKS:
+                        if t not in done:
+                            done.append(t)
+                    failed = [f for f in failed if f not in WORKFLOW_TASKS]
+                    write_progress(done, failed, None)
+                    collect_summary(done, failed)
+                except Exception as e:
+                    print(f"FAILED {WORKFLOW_TASKS}: {e}", flush=True)
+                    for t in WORKFLOW_TASKS:
+                        if t not in failed:
+                            failed.append(t)
+                    write_progress(done, failed, None)
+                    collect_summary(done, failed)
+                continue
+
+            task = g[0]
+            if task in done:
+                print("SKIP", task, flush=True)
+                continue
+            out_dir = RESULTS / "full" / task
+            max_tok = MAX_TOKENS
 
             write_progress(done, failed, g)
             try:
@@ -383,7 +567,13 @@ def main() -> None:
             proc.kill()
 
     summary = collect_summary(done, failed)
-    print(json.dumps({k: summary[k] for k in ("coverage", "workflow", "failed", "complete")}, indent=2), flush=True)
+    print(
+        json.dumps(
+            {k: summary[k] for k in ("coverage", "workflow", "failed", "complete", "engine")},
+            indent=2,
+        ),
+        flush=True,
+    )
     if summary["complete"]:
         print("FULL_PASSED", flush=True)
     else:

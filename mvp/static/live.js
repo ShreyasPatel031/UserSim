@@ -191,7 +191,6 @@ function renderWatch(data) {
     <span>${(data.personas || []).length} users</span>
     <span>${(data.tasks || []).length} tasks</span>`;
 
-  agentGrid.innerHTML = "";
   const sorted = [...items].sort((a, b) => {
     const as = latestShot(a) ? 0 : 1;
     const bs = latestShot(b) ? 0 : 1;
@@ -201,37 +200,70 @@ function renderWatch(data) {
     if (ar !== br) return ar - br;
     return (b.trace?.length || 0) - (a.trace?.length || 0);
   });
+  const keep = new Set();
   for (const sess of sorted) {
+    const aid = String(sess.agent_id || sess.task_id || "");
+    keep.add(aid);
     const shot = latestShot(sess);
-    const card = document.createElement("article");
-    card.className = "live-agent-card";
     const site = sess.site_label || sess.site_key || "";
     const browsing = ["starting", "pending", "running"].includes(String(sess.status || ""));
-    let frame;
-    if (shot?.screenshot_url) {
-      frame = `<img src="${escapeHtml(shot.screenshot_url)}?t=${Date.now()}" alt="" loading="eager" />`;
-    } else if (browsing && sess.live_view_url) {
-      frame = `<iframe class="live-agent-iframe" src="${escapeHtml(sess.live_view_url)}" title="live" sandbox="allow-same-origin allow-scripts" referrerpolicy="no-referrer"></iframe>`;
-    } else {
-      frame = `<div class="live-agent-waiting">${escapeHtml(sess.last_action || sess.status || "waiting for first frame…")}</div>`;
+    let card = agentGrid.querySelector(`[data-agent-id="${CSS.escape(aid)}"]`);
+    if (!card) {
+      card = document.createElement("article");
+      card.className = "live-agent-card";
+      card.dataset.agentId = aid;
+      agentGrid.appendChild(card);
     }
-    card.innerHTML = `
-      <header>
+    const stepText = shot
+      ? `step ${shot.step} · ${shot.action || ""}`
+      : "no screenshot yet";
+    const header = `<header>
         <strong>${escapeHtml(sess.persona_name || sess.agent_id || "agent")}</strong>
         <span class="live-study-status ${statusClass(sess.status)}">${escapeHtml(sess.status || "")}</span>
       </header>
       <p class="live-agent-task">${escapeHtml(sess.task_title || "")}${
         site ? ` · <em>${escapeHtml(site)}</em>` : ""
-      }</p>
-      <div class="live-agent-frame">${frame}</div>
-      <p class="live-agent-step">${
-        shot
-          ? `step ${escapeHtml(shot.step)} · ${escapeHtml(shot.action || "")}`
-          : browsing && sess.live_view_url
-            ? "live view — waiting for screenshot"
-            : "no frame yet"
       }</p>`;
-    agentGrid.appendChild(card);
+    const img = card.querySelector("img");
+    const shown = img?.dataset.shotSrc || img?.getAttribute("src") || "";
+    if (shot?.screenshot_url && shown.split("?")[0] === shot.screenshot_url) {
+      const stepEl = card.querySelector(".live-agent-step");
+      if (stepEl) stepEl.textContent = stepText;
+      const headWrap = card.querySelector("header")?.parentElement;
+      if (!card.querySelector("header")) {
+        card.insertAdjacentHTML("afterbegin", header);
+      }
+      continue;
+    }
+    if (shot?.screenshot_url && img) {
+      const pre = new Image();
+      pre.onload = () => {
+        if (!img.isConnected) return;
+        img.src = shot.screenshot_url;
+        img.dataset.shotSrc = shot.screenshot_url;
+      };
+      pre.src = shot.screenshot_url;
+      const stepEl = card.querySelector(".live-agent-step");
+      if (stepEl) stepEl.textContent = stepText;
+      continue;
+    }
+    let frame;
+    if (shot?.screenshot_url) {
+      frame = `<img src="${escapeHtml(shot.screenshot_url)}" data-shot-src="${escapeHtml(shot.screenshot_url)}" alt="" loading="eager" />`;
+    } else if (img) {
+      continue;
+    } else {
+      frame = `<div class="live-agent-waiting">${
+        browsing ? "Capturing first page screenshot…" : escapeHtml(sess.last_action || sess.status || "waiting…")
+      }</div>`;
+    }
+    card.innerHTML = `
+      ${header}
+      <div class="live-agent-frame">${frame}</div>
+      <p class="live-agent-step">${escapeHtml(stepText)}</p>`;
+  }
+  for (const el of [...agentGrid.children]) {
+    if (!keep.has(el.dataset.agentId || "")) el.remove();
   }
 }
 
