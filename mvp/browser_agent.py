@@ -294,6 +294,32 @@ def _make_step_hooks(
     """
     state = {"step": 0}
 
+    async def _emit(step: dict[str, Any]) -> None:
+        if on_step is None:
+            return
+        maybe = on_step(step)
+        if asyncio.iscoroutine(maybe):
+            await maybe
+
+    async def on_step_start(agent: Any) -> None:
+        nxt = state["step"] + 1
+        # Stream a thinking pulse before the LLM finishes this step's tokens.
+        await _emit(
+            {
+                "step": None,
+                "progress_only": True,
+                "action": f"Thinking — step {nxt}",
+                "observation": "",
+                "thought": f"Deciding what to do next (step {nxt})…",
+                "thought_detail": {
+                    "thinking": f"Looking at the page and choosing the next action for step {nxt}."
+                },
+                "url": None,
+                "screenshot_url": None,
+                "outcome": "neutral",
+            }
+        )
+
     async def on_step_end(agent: Any) -> None:
         state["step"] += 1
         step_no = state["step"]
@@ -334,12 +360,9 @@ def _make_step_hooks(
             agent_id=agent_id,
             screenshot_dir=screenshot_dir,
         )
-        if on_step is not None:
-            maybe = on_step(step)
-            if asyncio.iscoroutine(maybe):
-                await maybe
+        await _emit(step)
 
-    return on_step_end
+    return on_step_start, on_step_end
 
 
 async def _emit_opening_frame(
@@ -482,6 +505,15 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
         shot = screenshot_dir / "bbox_0.png"
         if not shot.is_file() or shot.stat().st_size < 100:
             raise RuntimeError("warm opening screenshot missing")
+        live_view = None
+        try:
+            from capability.browserbase_client import session_live_view_url
+
+            sid = getattr(bb_session, "id", None)
+            if sid:
+                live_view = await asyncio.to_thread(session_live_view_url, str(sid))
+        except Exception as live_exc:  # noqa: BLE001
+            print(f"[warm] live view url failed: {live_exc!r}", flush=True)
         print(f"[warm] first pixels ready for {url}", flush=True)
         return {
             "url": url,
@@ -489,6 +521,8 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
             "browser_session": browser_session,
             "shot_path": shot,
             "owns_session": True,
+            "live_view_url": live_view,
+            "browserbase_session_id": getattr(bb_session, "id", None),
         }
     except Exception as exc:  # noqa: BLE001
         print(f"[warm] opening session failed: {exc!r}", flush=True)
@@ -815,14 +849,47 @@ async def run_browser_agent(
                 "current screenshot/DOM. Stay on the product site you were given."
             ),
         )
+        # Signal UI: agent loop is starting — show live Browserbase view now.
+        if on_step is not None and bb_session is not None:
+            live_url = None
+            try:
+                from capability.browserbase_client import session_live_view_url
+
+                sid = getattr(bb_session, "id", None)
+                if sid:
+                    live_url = await asyncio.to_thread(session_live_view_url, str(sid))
+            except Exception:
+                live_url = None
+            maybe = on_step(
+                {
+                    "step": None,
+                    "progress_only": True,
+                    "live_active": True,
+                    "live_view_url": live_url,
+                    "browserbase_session_id": getattr(bb_session, "id", None),
+                    "action": "Agent started — live browser on",
+                    "thought": "I'm on the page now. Looking around before I click…",
+                    "thought_detail": {
+                        "thinking": "Landing page is open. Reading what's visible and choosing a first action."
+                    },
+                    "observation": "",
+                    "url": start_url,
+                    "screenshot_url": None,
+                    "outcome": "neutral",
+                }
+            )
+            if asyncio.iscoroutine(maybe):
+                await maybe
+        on_step_start, on_step_end = _make_step_hooks(
+            screenshot_dir,
+            study_id=study_id,
+            agent_id=agent_id,
+            on_step=on_step,
+        )
         history = await agent.run(
             max_steps=max_steps,
-            on_step_end=_make_step_hooks(
-                screenshot_dir,
-                study_id=study_id,
-                agent_id=agent_id,
-                on_step=on_step,
-            ),
+            on_step_start=on_step_start,
+            on_step_end=on_step_end,
         )
     finally:
         if browser_session is not None:

@@ -108,8 +108,7 @@ function mergeSessions(data) {
   for (const s of live) {
     if (!s?.agent_id) continue;
     const copy = { ...s };
-    delete copy.live_view_url;
-    delete copy.live_url;
+    // Keep live_view_url — UI mounts it only after live_active.
     delete copy.debugger_url;
     byId[s.agent_id] = copy;
   }
@@ -409,9 +408,12 @@ function renderFocusStage(session, sessionIdx) {
 
   let visual = "";
   const browsing = ["starting", "pending", "running"].includes(String(session?.status || ""));
-  // Real screenshots only — Browserbase "live" iframes are blank/"watching" noise.
-  if (step?.screenshot_url) {
-    const boxes = step.boxes || [];
+  const liveView = session?.live_view_url;
+  const showLive = Boolean(liveView && session?.live_active && browsing);
+  const shotSrc = step ? stepShotSrc(step) : "";
+  // Screenshot on first touch; live Browserbase iframe once the agent starts.
+  if (shotSrc || showLive) {
+    const boxes = step?.boxes || [];
     const boxLegend = boxes.length
       ? `<details class="stage-box-details"><summary><span class="box-swatch box-red"></span> ${boxes.length} click targets${
           step.highlight_index != null ? ` · green = #${escapeHtml(step.highlight_index)}` : ""
@@ -424,16 +426,36 @@ function renderFocusStage(session, sessionIdx) {
            )
            .join("")}${boxes.length > 12 ? `<li>… +${boxes.length - 12} more</li>` : ""}</ol></details>`
       : "";
-    const shotSrc = stepShotSrc(step);
-    visual = `
-      <figure class="stage-shot">
-        <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="Step ${escapeHtml(step.step)} screenshot" loading="eager" />
-        <figcaption><strong>Step ${escapeHtml(step.step)}</strong> — ${escapeHtml(step.action || "Action")}${
-          browsing ? " · live" : ""
+    const shotBlock = shotSrc
+      ? `<figure class="stage-shot">
+        <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="Step ${escapeHtml(step?.step ?? 0)} screenshot" loading="eager" />
+        <figcaption><strong>Step ${escapeHtml(step?.step ?? 0)}</strong> — ${escapeHtml(step?.action || "Opened page")}${
+          browsing ? " · captured" : ""
         }</figcaption>
-      </figure>
+      </figure>`
+      : "";
+    const liveBlock = showLive
+      ? `<div class="stage-live-wrap" data-live-src="${escapeHtml(liveView)}">
+          <iframe
+            class="stage-live-frame"
+            src="${escapeHtml(liveView)}"
+            title="Live browser — ${escapeHtml(siteName)}"
+            sandbox="allow-same-origin allow-scripts"
+            allow="clipboard-read; clipboard-write"
+            referrerpolicy="no-referrer"
+          ></iframe>
+          <p class="stage-live-caption">Live browser · ${escapeHtml(siteName)}</p>
+        </div>`
+      : "";
+    visual = `
+      <div class="stage-visuals${showLive && shotSrc ? " stage-visuals-split" : ""}">
+        ${shotBlock}
+        ${liveBlock}
+      </div>
       ${boxLegend}
-      <div class="stage-shot-nav">
+      ${
+        shots.length
+          ? `<div class="stage-shot-nav">
         <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="-1" ${idx <= 0 ? "disabled" : ""}>← Prev</button>
         <div class="trace-step-pills">
           ${shots
@@ -444,13 +466,15 @@ function renderFocusStage(session, sessionIdx) {
             .join("")}
         </div>
         <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="1" ${idx >= shots.length - 1 ? "disabled" : ""}>Next →</button>
-      </div>`;
+      </div>`
+          : ""
+      }`;
   } else {
     const waitingMsg =
       session?.status === "summarizing"
         ? "Page captured — writing feedback…"
         : browsing
-          ? "Capturing first page screenshot…"
+          ? session?.last_action || "Opening the page…"
           : "Waiting for the first browser frame…";
     visual = `
       <div class="stage-waiting">
@@ -458,6 +482,27 @@ function renderFocusStage(session, sessionIdx) {
         <p>${escapeHtml(waitingMsg)}</p>
       </div>`;
   }
+
+  const thoughts = Array.isArray(session?.live_thoughts) ? session.live_thoughts : [];
+  const thoughtPanel = thoughts.length
+    ? `<div class="stage-thoughts" aria-live="polite">
+        <p class="stage-label">Live thoughts</p>
+        <ul class="stage-thought-list">
+          ${thoughts
+            .slice(-8)
+            .map(
+              (t) =>
+                `<li class="stage-thought stage-thought-${escapeHtml(t.kind || "status")}">${escapeHtml(
+                  t.text || ""
+                )}</li>`
+            )
+            .join("")}
+        </ul>
+      </div>`
+    : "";
+
+  const latestThought =
+    thoughts.length ? thoughts[thoughts.length - 1]?.text : step?.thought || "";
 
   return `
     <div class="stage-card">
@@ -479,10 +524,19 @@ function renderFocusStage(session, sessionIdx) {
         </div>
       </div>
       ${visual}
+      ${thoughtPanel}
       ${
-        step
-          ? `<p class="step-shot-action"><strong>Now doing:</strong> ${escapeHtml(step.action || "Action")}</p>
-             ${step.observation ? `<p class="trace-step-observation"><strong>They see:</strong> ${escapeHtml(step.observation)}</p>` : ""}`
+        step || latestThought
+          ? `<p class="step-shot-action"><strong>Now doing:</strong> ${escapeHtml(
+              step?.action || session?.last_action || "Browsing"
+            )}</p>
+             ${
+               latestThought
+                 ? `<p class="trace-step-observation"><strong>Thinking:</strong> ${escapeHtml(latestThought)}</p>`
+                 : step?.observation
+                   ? `<p class="trace-step-observation"><strong>They see:</strong> ${escapeHtml(step.observation)}</p>`
+                   : ""
+             }`
           : ""
       }
       ${
@@ -921,45 +975,97 @@ function paintStageBody(body, session, idx) {
       )
     : "";
   const liveImg = body.querySelector("img.trace-screenshot");
+  const liveFrame = body.querySelector("iframe.stage-live-frame");
+  const liveWrap = body.querySelector(".stage-live-wrap");
   const sameAgent = body.dataset.agentId === String(session?.agent_id || idx);
-  if (liveImg && sameAgent && nextSrc) {
-    const shown = liveImg.dataset.shotSrc || liveImg.getAttribute("src") || "";
-    if (shown.split("?")[0] === nextSrc) {
-      const actionEl = body.querySelector(".step-shot-action");
-      const obsEl = body.querySelector(".trace-step-observation");
-      const cap = body.querySelector(".stage-shot figcaption");
-      const step = (session?.trace || []).find((t) => t?.screenshot_url === nextSrc) ||
-        preferredShots(session).at(-1);
-      if (cap && step) {
-        cap.innerHTML = `<strong>Step ${escapeHtml(step.step)}</strong> — ${escapeHtml(step.action || "Action")}`;
-      }
-      if (actionEl && step) {
-        actionEl.innerHTML = `<strong>Now doing:</strong> ${escapeHtml(step.action || "Action")}`;
-      }
-      if (obsEl && step?.observation) {
-        obsEl.innerHTML = `<strong>They see:</strong> ${escapeHtml(step.observation)}`;
-      }
-      return;
-    }
-    const pre = new Image();
-    pre.onload = () => {
-      if (!liveImg.isConnected) return;
-      liveImg.src = nextSrc;
-      liveImg.dataset.shotSrc = nextSrc;
-      body.innerHTML = nextHtml;
-      body.dataset.agentId = String(session?.agent_id || idx);
-    };
-    pre.onerror = () => {
-      /* Keep the last painted frame — do not blank the stage on a 404. */
-    };
-    pre.src = nextSrc;
+  const wantLive =
+    Boolean(session?.live_view_url && session?.live_active) &&
+    ["starting", "pending", "running"].includes(String(session?.status || ""));
+  const liveSrc = session?.live_view_url || "";
+
+  const patchMeta = () => {
     const actionEl = body.querySelector(".step-shot-action");
-    const step = preferredShots(session).find((s) => s.screenshot_url === nextSrc);
-    if (actionEl && step) {
-      actionEl.innerHTML = `<strong>Now doing:</strong> ${escapeHtml(step.action || "Action")}`;
+    const obsEl = body.querySelector(".trace-step-observation");
+    const cap = body.querySelector(".stage-shot figcaption");
+    const step =
+      (session?.trace || []).find((t) => stepShotSrc(t) === nextSrc) ||
+      preferredShots(session).at(-1);
+    const thoughts = Array.isArray(session?.live_thoughts) ? session.live_thoughts : [];
+    const latestThought = thoughts.length
+      ? thoughts[thoughts.length - 1]?.text
+      : step?.thought || "";
+    if (cap && step) {
+      cap.innerHTML = `<strong>Step ${escapeHtml(step.step)}</strong> — ${escapeHtml(
+        step.action || "Action"
+      )}`;
     }
+    if (actionEl) {
+      actionEl.innerHTML = `<strong>Now doing:</strong> ${escapeHtml(
+        step?.action || session?.last_action || "Browsing"
+      )}`;
+    }
+    if (obsEl && latestThought) {
+      obsEl.innerHTML = `<strong>Thinking:</strong> ${escapeHtml(latestThought)}`;
+    }
+    const list = body.querySelector(".stage-thought-list");
+    if (list && thoughts.length) {
+      list.innerHTML = thoughts
+        .slice(-8)
+        .map(
+          (t) =>
+            `<li class="stage-thought stage-thought-${escapeHtml(t.kind || "status")}">${escapeHtml(
+              t.text || ""
+            )}</li>`
+        )
+        .join("");
+    }
+  };
+
+  if (sameAgent && (liveImg || liveFrame)) {
+    // Keep iframe mounted — remounting blanks the live view.
+    if (wantLive && liveSrc) {
+      if (liveFrame) {
+        const cur = liveWrap?.dataset.liveSrc || liveFrame.getAttribute("src") || "";
+        if (cur !== liveSrc) {
+          liveFrame.src = liveSrc;
+          if (liveWrap) liveWrap.dataset.liveSrc = liveSrc;
+        }
+      } else if (liveImg) {
+        // Screenshot was alone; now inject live pane without wiping the shot.
+        const visuals = body.querySelector(".stage-visuals") || liveImg.closest(".stage-visuals");
+        if (visuals && !visuals.querySelector(".stage-live-wrap")) {
+          visuals.classList.add("stage-visuals-split");
+          visuals.insertAdjacentHTML(
+            "beforeend",
+            `<div class="stage-live-wrap" data-live-src="${escapeHtml(liveSrc)}">
+              <iframe class="stage-live-frame" src="${escapeHtml(liveSrc)}" title="Live browser"
+                sandbox="allow-same-origin allow-scripts" allow="clipboard-read; clipboard-write"
+                referrerpolicy="no-referrer"></iframe>
+              <p class="stage-live-caption">Live browser</p>
+            </div>`
+          );
+        }
+      }
+    }
+    if (liveImg && nextSrc) {
+      const shown = liveImg.dataset.shotSrc || liveImg.getAttribute("src") || "";
+      if (shown.split("?")[0] !== nextSrc && !String(nextSrc).startsWith("data:")) {
+        const pre = new Image();
+        pre.onload = () => {
+          if (!liveImg.isConnected) return;
+          liveImg.src = nextSrc;
+          liveImg.dataset.shotSrc = nextSrc;
+        };
+        pre.src = nextSrc;
+      } else if (String(nextSrc).startsWith("data:") && shown !== nextSrc) {
+        liveImg.src = nextSrc;
+        liveImg.dataset.shotSrc = nextSrc;
+      }
+    }
+    patchMeta();
     return;
   }
+
   body.dataset.agentId = String(session?.agent_id || idx);
   body.innerHTML = nextHtml;
 }
