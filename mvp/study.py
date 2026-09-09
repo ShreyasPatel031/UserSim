@@ -1223,8 +1223,9 @@ async def run_study(
         except Exception as exc:  # noqa: BLE001
             log_activity(study, "plan", f"Task generation failed ({str(exc)[:120]})")
             study.tasks = []
-        touch("Writing tasks")
-        _push_brief("brief")
+        # Do not stream tasks yet. The smoke SLA clock starts when #tasks-list
+        # appears; if we push before warm openings are published, first screen
+        # often lands at 3–6s even when Browserbase already has pixels ready.
 
         # Apply optional task overrides.
         if study.tasks_override:
@@ -1404,8 +1405,8 @@ async def run_study(
                 "last_action": f"Opening {site}…",
             }
 
-        # Collect warms that already finished during the brief so the first
-        # task-list paint includes real site pixels (not a 3s wait).
+        # Collect + await warms BEFORE the first tasks brief so the SLA clock
+        # (tasks visible → first screen) starts with pixels already in-session.
         if _should_warm_browserbase():
             for task in study.tasks:
                 site = str(task.get("site_url") or study.url)
@@ -1413,10 +1414,8 @@ async def run_study(
                 if host and host not in warm_tasks and host not in warm_by_host:
                     _start_warm(site, slot=host.replace(".", "_")[:24] or "site")
         for host, task in list(warm_tasks.items()):
-            if not task.done():
-                continue
             try:
-                opening = task.result()
+                opening = await task
             except Exception as warm_exc:  # noqa: BLE001
                 print(f"warm opening await failed ({host}): {warm_exc!r}", flush=True)
                 opening = None
@@ -1473,11 +1472,15 @@ async def run_study(
                     sess["last_action"] = step0["action"]
                     if opening.get("live_view_url"):
                         sess["live_view_url"] = opening["live_view_url"]
+                        # Mountable as soon as the URL exists — don't wait for
+                        # agent.run to flip live_active (short smoke races).
+                        sess["live_active"] = True
+                    else:
+                        sess["live_active"] = False
                     if opening.get("browserbase_session_id"):
                         sess["browserbase_session_id"] = opening[
                             "browserbase_session_id"
                         ]
-                    sess["live_active"] = False
                     sess["live_thoughts"] = [
                         {
                             "at": _now(),
@@ -1507,7 +1510,9 @@ async def run_study(
 
         for host, opening in list(warm_by_host.items()):
             await _publish_opening(host, opening)
+        warm_tasks.clear()
 
+        # First client paint that includes tasks — openings already published.
         touch("Opening the live page")
         persist_study(study)
         if on_update:
@@ -1517,17 +1522,6 @@ async def run_study(
                 on_update(study)
             except Exception:
                 pass
-
-        for host, task in list(warm_tasks.items()):
-            try:
-                opening = await task
-            except Exception as warm_exc:  # noqa: BLE001
-                print(f"warm opening await failed ({host}): {warm_exc!r}", flush=True)
-                opening = None
-            if opening and opening.get("shot_path"):
-                warm_by_host[host] = opening
-                await _publish_opening(host, opening)
-        warm_tasks.clear()
 
         touch(
             f"Live browser agents — 0/{len(study.tasks)} done · {len(study.tasks)} active · 0 queued · 0 steps"
@@ -1979,6 +1973,10 @@ async def run_study(
                     if step.get("progress_only"):
                         if step.get("live_view_url"):
                             sess["live_view_url"] = step["live_view_url"]
+                            # URL without live_active still means the stage can
+                            # mount the iframe (smoke latches on live_view_url).
+                            if step.get("live_active") is not False:
+                                sess["live_active"] = True
                         if step.get("browserbase_session_id"):
                             sess["browserbase_session_id"] = step["browserbase_session_id"]
                         if step.get("live_active"):

@@ -588,20 +588,45 @@ function renderShotNavHtml(shots, idx, key) {
       </div>`;
 }
 
+/** Brand / eTLD+1 guess so notion.com and notion.so stay in-family. */
+function hostBrandKey(host) {
+  if (!host) return "";
+  const parts = String(host)
+    .toLowerCase()
+    .replace(/^www\./, "")
+    .split(".")
+    .filter(Boolean);
+  if (
+    parts.length >= 3 &&
+    ["co", "com", "ne", "org", "gov", "ac"].includes(parts[parts.length - 2])
+  ) {
+    return parts[parts.length - 3];
+  }
+  if (parts.length >= 2) return parts[parts.length - 2];
+  return parts[0] || "";
+}
+
+function sameSiteFamily(a, b) {
+  if (!a || !b) return false;
+  if (a === b || a.endsWith(`.${b}`) || b.endsWith(`.${a}`)) return true;
+  const ka = hostBrandKey(a);
+  const kb = hostBrandKey(b);
+  return Boolean(ka && kb && ka === kb);
+}
+
 /** Prefer the newest frame that is still on the assigned site (agents sometimes wander). */
 function preferredShots(session) {
   const shots = stepsWithScreenshots(session?.trace);
   if (!shots.length) return shots;
   const host = siteHostname(session?.site_url);
   if (!host) return shots;
-  // Drop only frames we can positively place on a *different* host. A step with
-  // no url (common — browser-use state.url is often missing) used to be treated
-  // as off-site and silently vanish from the rail, leaving a single step-0 pill
-  // and a stage frozen on the landing shot.
+  // Drop only frames we can positively place on a *different* host family.
+  // Empty urls stay (browser-use often omits state.url). Alternate TLDs for the
+  // same brand (notion.so → notion.com) must keep their pills.
   const offSite = (s) => {
     const h = siteHostname(s.url);
     if (!h) return false;
-    return !(h === host || h.endsWith(`.${host}`) || host.endsWith(`.${h}`));
+    return !sameSiteFamily(h, host);
   };
   const kept = shots.filter((s) => !offSite(s));
   return kept.length ? kept : shots;
@@ -656,9 +681,12 @@ function renderFocusStage(session, sessionIdx) {
     String(session?.status || "")
   );
   const liveView = session?.live_view_url;
+  // Mount as soon as a live_view_url exists while the session is browsing.
+  // Requiring live_active raced short runs: the API offered live_view_url from
+  // warm/opening while live_active was still false, so e2e saw the URL and no
+  // iframe. live_active still drives captions ("agent acting" vs starting).
   const liveWanted = Boolean(
     liveView &&
-      session?.live_active &&
       browsing &&
       !_liveFailed[agentId] &&
       !["killed", "complete", "error", "abandoned"].includes(String(session?.status || ""))
@@ -1090,8 +1118,8 @@ function renderStage(sessions) {
   _traceResults = sessions || [];
 
   const hasLive = (s) =>
-    Boolean(s?.live_view_url && s?.live_active) &&
-    ["starting", "pending", "running"].includes(String(s?.status || ""));
+    Boolean(s?.live_view_url) &&
+    ["starting", "pending", "running", "summarizing"].includes(String(s?.status || ""));
   const hasRealShot = (s) => (s?.trace || []).some((t) => t && stepShotSrc(t));
   const inFlight = (s) =>
     ["starting", "pending", "running", "summarizing"].includes(String(s?.status || ""));
@@ -1263,7 +1291,6 @@ function paintStageBody(body, session, idx) {
   );
   const liveWanted = Boolean(
     session?.live_view_url &&
-      session?.live_active &&
       browsing &&
       !_liveFailed[agentId]
   );

@@ -925,13 +925,13 @@ async def run_browser_agent(
                 maybe = on_step(step)
                 if asyncio.iscoroutine(maybe):
                     await maybe
-            # Stash live URL only — live_active flips when agent.run starts.
+            # Stash live URL — mark active so the stage can mount immediately.
             if on_step is not None and (warm_live_url or bb_session is not None):
                 maybe = on_step(
                     {
                         "step": None,
                         "progress_only": True,
-                        "live_active": False,
+                        "live_active": True,
                         "live_view_url": warm_live_url,
                         "browserbase_session_id": warm_bb_id,
                         "action": "Page open — starting simulated user",
