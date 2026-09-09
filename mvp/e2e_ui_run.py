@@ -475,6 +475,49 @@ FETCH_PROBE = """
 """
 
 
+# The stage unmounts .stage-live-frame as soon as the session leaves
+# starting|pending|running, so polling from Playwright races short runs and
+# reports "never mounted live" for studies that did show it. Observe the DOM
+# continuously instead and latch what we saw, per agent.
+LIVE_OBSERVER = """
+(() => {
+  if (window.__e2eLiveInstalled) return;
+  window.__e2eLiveInstalled = true;
+  window.__e2eLive = { seen: false, byAgent: {}, mounts: 0, lastSrc: '' };
+  const scan = () => {
+    try {
+      const frame = document.querySelector('iframe.stage-live-frame');
+      if (!frame) return;
+      const src = frame.src || frame.getAttribute('src') || '';
+      if (!src) return;
+      const agent = document.getElementById('stage-body')?.dataset?.agentId || '';
+      if (!window.__e2eLive.seen) window.__e2eLive.mounts += 1;
+      window.__e2eLive.seen = true;
+      window.__e2eLive.lastSrc = src;
+      if (agent) window.__e2eLive.byAgent[agent] = true;
+    } catch (_) {}
+  };
+  const start = () => {
+    scan();
+    try {
+      new MutationObserver(scan).observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['src', 'data-agent-id'],
+      });
+    } catch (_) {}
+    setInterval(scan, 100);
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+})();
+"""
+
+
 async def run_e2e(args: argparse.Namespace) -> dict:
     from playwright.async_api import async_playwright
 
