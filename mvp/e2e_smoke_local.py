@@ -33,6 +33,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 import time
 import urllib.request
@@ -382,6 +383,13 @@ async def run(args: argparse.Namespace) -> dict:
         live_first_seen_t: float | None = None
         live_last_change_t: float | None = None
         live_moved = False
+        live_max_static_gap = 0.0
+        # Fold-proof accounting. The server may drop visually-identical frames
+        # so they never become numbered steps, which hides a frozen agent from
+        # the progress judge. Thoughts/pulses keep flowing when that happens, so
+        # thought-growth far outpacing step-growth is the tell.
+        thought_texts: set[str] = set()
+        fold_markers = 0
         # Hang guard: steps must keep arriving while the study says it is running.
         last_step_t = time.time()
         stall_reported = False
@@ -418,6 +426,21 @@ async def run(args: argparse.Namespace) -> dict:
             if await page.evaluate("() => Boolean(window.__e2eLive && window.__e2eLive.seen)"):
                 saw_live = True
 
+            for t in sess.get("live_thoughts") or []:
+                if not isinstance(t, dict):
+                    continue
+                txt = str(t.get("text") or "").strip()
+                if not txt:
+                    continue
+                if txt not in thought_texts:
+                    thought_texts.add(txt)
+                    if re.search(
+                        r"no visual change|waiting —|identical|nothing changed|no change",
+                        txt,
+                        re.I,
+                    ):
+                        fold_markers += 1
+
             # Sample the live view on every poll and require its pixels to move.
             sample = await _live_frame_png(page)
             now = time.time()
@@ -436,12 +459,19 @@ async def run(args: argparse.Namespace) -> dict:
                     if len(live_hashes) > 1:
                         live_moved = True
 
-            # A live view that has not changed a pixel for this long while the
-            # study still claims to be running is the hang, not slowness.
+            # Longest static gap, not a boolean. Gating this on `not live_moved`
+            # meant one early pixel change disabled the freeze check for the
+            # rest of the run — the same sticky-exemption bug this suite flags
+            # elsewhere. An agent that moves once and then hangs must still fail.
             if (
                 live_first_seen_t is not None
                 and live_last_change_t is not None
-                and not live_moved
+                and str(snap.get("status") or "") in {"running", "pending", "queued", ""}
+            ):
+                live_max_static_gap = max(live_max_static_gap, now - live_last_change_t)
+            if (
+                live_first_seen_t is not None
+                and live_last_change_t is not None
                 and now - live_last_change_t > args.live_motion_s
                 and str(snap.get("status") or "") in {"running", "pending", "queued", ""}
             ):
@@ -551,6 +581,7 @@ async def run(args: argparse.Namespace) -> dict:
         report["checks"]["api_poll_errors"] = last_api_error or None
         report["checks"]["live_moved"] = live_moved
         report["checks"]["live_distinct_frames"] = len(live_hashes)
+        report["checks"]["live_max_static_gap_s"] = round(live_max_static_gap, 1)
         if live_offered and not saw_live:
             report["fails"].append(
                 "backend offered live_view_url but the stage never mounted the live iframe"
@@ -577,6 +608,27 @@ async def run(args: argparse.Namespace) -> dict:
         if final_status != "complete":
             report["fails"].append(
                 f"study did not complete (status={final_status!r}, phase={snap.get('phase')!r})"
+            )
+
+        # Folding is only honest if the dropped frames were genuinely redundant.
+        # If the agent kept thinking while the step rail barely grew, steps were
+        # suppressed rather than earned.
+        report["checks"]["distinct_thoughts"] = len(thought_texts)
+        report["checks"]["fold_markers"] = fold_markers
+        steps_landed = len([n for n in seen if isinstance(n, int)])
+        report["checks"]["thought_to_step_ratio"] = (
+            round(len(thought_texts) / steps_landed, 2) if steps_landed else None
+        )
+        if fold_markers >= args.max_folds:
+            report["fails"].append(
+                f"{fold_markers} no-visual-change pulses — the agent stalled and the "
+                "frames were folded out of the step rail instead of being reported"
+            )
+        if steps_landed and len(thought_texts) >= args.fold_ratio * steps_landed:
+            report["fails"].append(
+                f"{len(thought_texts)} thoughts but only {steps_landed} numbered steps "
+                f"(ratio {round(len(thought_texts)/steps_landed, 1)}x) — steps are being "
+                "suppressed, not earned"
             )
 
         # And the agent must have moved more than once.
@@ -728,6 +780,18 @@ def main() -> int:
         type=float,
         default=30.0,
         help="fail if the live iframe never changes a pixel for this long",
+    )
+    ap.add_argument(
+        "--max-folds",
+        type=int,
+        default=2,
+        help="fail if this many no-visual-change pulses are seen (folded stalls)",
+    )
+    ap.add_argument(
+        "--fold-ratio",
+        type=float,
+        default=6.0,
+        help="fail if distinct thoughts exceed this multiple of numbered steps",
     )
     ap.add_argument(
         "--min-steps",
