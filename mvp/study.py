@@ -1279,25 +1279,32 @@ async def run_study(
                 : max(len(ordered), int(os.environ.get("MVP_PERSONA_COUNT", "5")))
             ]
 
-        # Full studies: every persona × every task × (product + each competitor).
+        # Full studies: each persona's own task × (product + each competitor).
         # Smoke / quick preview: product site only (1 user × 1 task × 1 site).
+        #
+        # NOT the full persona×task cross product. The brief writes tasks that
+        # are already bound to one persona ("As Alex, explore the Creators
+        # section"), so pairing every persona with every task ran Alex's script
+        # as Ben, Chloe and David — 5x the agents, most of them incoherent.
+        # It also overran Browserbase concurrency (plan limit 25), forcing
+        # 4 waves whose ETA exceeded MVP_STUDY_TIMEOUT_S, so every study was
+        # aborted before it could finish.
         if not study.test_mode:
             before = len(study.tasks)
-            n_users = len(study.personas or [])
             n_sites = 1 + len(study.competitors or [])
-            study.tasks = expand_full_matrix(
+            study.tasks = expand_tasks_for_sites(
                 study.tasks,
-                study.personas,
                 product_url=study.url,
                 competitors=study.competitors or [],
             )
+            bb_concurrency = os.environ.get("MVP_BROWSER_CONCURRENCY", "25")
+            waves = -(-len(study.tasks) // max(int(bb_concurrency or "25"), 1))
             log_activity(
                 study,
                 "plan",
                 f"Expanded to {len(study.tasks)} parallel runs "
-                f"({n_users} users × {before} tasks × {n_sites} sites) "
-                f"— extras queue behind Browserbase concurrency "
-                f"({os.environ.get('MVP_BROWSER_CONCURRENCY', '25')})",
+                f"({before} persona tasks × {n_sites} sites) "
+                f"— {waves} wave(s) at Browserbase concurrency {bb_concurrency}",
             )
             # Never silently drop agents. MVP_MAX_SESSIONS>0 is an explicit
             # emergency brake only (0 / unset = run everything; queue on semaphore).

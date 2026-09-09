@@ -99,7 +99,8 @@ def _image_stats(png: bytes) -> dict:
     from PIL import Image
 
     im = Image.open(io.BytesIO(png)).convert("L")
-    px = list(im.getdata())
+    # getdata() is deprecated in Pillow 14; tobytes() is stable and faster.
+    px = list(im.tobytes())
     if not px:
         return {"mean": 0.0, "stdev": 0.0, "unique": 0}
     mean = sum(px) / len(px)
