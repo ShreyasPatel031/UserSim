@@ -193,6 +193,24 @@ async def _dismiss_consent_banners(browser_session: Any, *, agent_id: str) -> No
         print(f"[{agent_id}] consent dismiss skipped: {exc!r}", flush=True)
 
 
+def _host_brand_key(host: str) -> str:
+    parts = [p for p in (host or "").lower().removeprefix("www.").split(".") if p]
+    if len(parts) >= 3 and parts[-2] in {"co", "com", "ne", "org", "gov", "ac"}:
+        return parts[-3]
+    if len(parts) >= 2:
+        return parts[-2]
+    return parts[0] if parts else ""
+
+
+def _same_site_family(a: str, b: str) -> bool:
+    if not a or not b:
+        return False
+    if a == b or a.endswith(f".{b}") or b.endswith(f".{a}"):
+        return True
+    ka, kb = _host_brand_key(a), _host_brand_key(b)
+    return bool(ka and kb and ka == kb)
+
+
 async def _ensure_on_host(browser_session: Any, *, target_url: str, agent_id: str) -> None:
     """If the agent wandered off-host, navigate back to the assigned URL."""
     want = (urlparse(target_url).hostname or "").lower().removeprefix("www.")
@@ -206,7 +224,8 @@ async def _ensure_on_host(browser_session: Any, *, target_url: str, agent_id: st
             page = await asyncio.wait_for(browser_session.get_current_page(), timeout=5)
             current = str(getattr(page, "url", "") or "") if page is not None else ""
         host = (urlparse(current).hostname or "").lower().removeprefix("www.")
-        if not host or host == want or host.endswith(f".{want}") or want.endswith(f".{host}"):
+        # Same brand alternate TLDs (notion.so ↔ notion.com) stay in-family.
+        if not host or _same_site_family(host, want):
             return
         print(f"[{agent_id}] off-site {host!r} → returning to {target_url}", flush=True)
         await asyncio.wait_for(browser_session.navigate_to(target_url), timeout=30)
@@ -1082,6 +1101,13 @@ async def run_browser_agent(
             "clear it first the way a normal user would (prefer Accept all / Agree when "
             "that is the obvious path), then continue the task. Do not stop on the banner.\n"
         )
+        auth_rule = (
+            "Do NOT open or complete signup/login/paywalls unless the task explicitly "
+            "asks you to create an account or sign in. If identifying a CTA is enough, "
+            "read the button label and call done — do not click through into an auth "
+            "modal. If a signup/login modal appears anyway, close it (X / Escape / "
+            "Not now) and finish from the underlying product page.\n"
+        )
         agent_task = (
             f"{CAPABLE_AGENT_PREAMBLE}\n\n"
             f"{persona_line}\n"
@@ -1089,6 +1115,7 @@ async def run_browser_agent(
             f"{signed_hint}"
             f"{stay_put}"
             f"{consent_rule}"
+            f"{auth_rule}"
             f"You are already on {start_url}. Continue from this page.\n"
             f"Task: {task_prompt}\n"
             f"Behave like this persona would — note confusion, pricing concerns, and UX friction.\n"
@@ -1115,7 +1142,8 @@ async def run_browser_agent(
                 "Prefer obvious UI paths; comment on clarity and trust. "
                 "Never claim to see content that is only 'implied' or absent from the "
                 "current screenshot/DOM. Stay on the product site you were given. "
-                "Dismiss cookie/consent/login interstitials before judging the product."
+                "Dismiss cookie/consent banners. Do not enter signup/login flows unless "
+                "the task explicitly requires an account."
             ),
         )
         # Signal UI: agent loop is starting — replace screenshot with live view now.
