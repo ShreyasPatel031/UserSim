@@ -155,7 +155,11 @@ def _shots_visually_same(a: Path, b: Path) -> bool:
 
 
 def _shot_looks_blank(path: Path) -> bool:
-    """True for missing, tiny, or near-uniform frames (pre-paint / black flash)."""
+    """True for missing, tiny, near-uniform, or skeleton-loader frames.
+
+    Dark-but-real pages (signed-out YouTube) must NOT match — only true
+    pre-paint flashes and grey skeleton cards.
+    """
     try:
         if not path.is_file() or path.stat().st_size < 2500:
             return True
@@ -170,13 +174,14 @@ def _shot_looks_blank(path: Path) -> bool:
         if uniq < 8:
             return True
         var = sum((x - mean) ** 2 for x in px) / float(len(px))
-        # Pre-paint black/white flashes: tiny file + dark/light + low structure.
         size = path.stat().st_size
-        if size < 50000 and mean < 22 and var < 250:
-            return True
-        if mean < 18 and var < 200:
+        # True black / white flash (almost no structure).
+        if mean < 8 and var < 50:
             return True
         if mean > 245 and var < 80:
+            return True
+        # YouTube-style skeleton cards: small file, few greys, no real content.
+        if size < 35000 and mean < 35 and uniq < 45 and var < 200:
             return True
         return False
     except Exception:
@@ -629,27 +634,48 @@ async def _emit_opening_frame(
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening navigate failed: {exc!r}", flush=True)
     await _dismiss_consent_banners(browser_session, agent_id=agent_id)
-    # Wait for first paint — SPAs often flash black/empty before hydration.
+    # Wait for real content — SPAs (esp. YouTube) flash a dark skeleton before
+    # search/thumbnails hydrate. innerText alone is not enough.
     try:
         page = await asyncio.wait_for(browser_session.get_current_page(), timeout=8)
         if page is not None:
             try:
                 await asyncio.wait_for(
                     page.evaluate(
-                        """async () => {
+                        """(...args) => (async () => {
                           if (document.readyState === 'loading') {
-                            await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+                            await new Promise((r) =>
+                              document.addEventListener('DOMContentLoaded', r, { once: true })
+                            );
                           }
-                          await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-                          const hasText = () => ((document.body && document.body.innerText) || '').trim().length > 40;
+                          await new Promise((r) =>
+                            requestAnimationFrame(() => requestAnimationFrame(r))
+                          );
+                          const ready = () => {
+                            const text = ((document.body && document.body.innerText) || '')
+                              .trim();
+                            const search = document.querySelector(
+                              'input#search, input[name="search_query"], ' +
+                              'input[type="search"], [aria-label*="Search" i], ' +
+                              'form[action*="search" i] input'
+                            );
+                            const imgs = [...document.images].filter(
+                              (i) => i.complete && i.naturalWidth > 48
+                            );
+                            if (search && text.length > 20) return true;
+                            if (imgs.length >= 4 && text.length > 60) return true;
+                            if (text.length > 200) return true;
+                            return false;
+                          };
                           const t0 = Date.now();
-                          while (!hasText() && Date.now() - t0 < 4000) {
-                            await new Promise((r) => setTimeout(r, 200));
+                          while (!ready() && Date.now() - t0 < 12000) {
+                            await new Promise((r) => setTimeout(r, 250));
                           }
                           window.scrollTo(0, 0);
-                        }"""
+                          return ready();
+                        })()"""
                     ),
-                    timeout=8,
+                    timeout=14,
                 )
             except Exception as wait_exc:  # noqa: BLE001
                 print(f"[{agent_id}] opening paint wait failed: {wait_exc!r}", flush=True)
@@ -662,7 +688,7 @@ async def _emit_opening_frame(
                     pass
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening scrollTop failed: {exc!r}", flush=True)
-    await asyncio.sleep(0.35)
+    await asyncio.sleep(0.45)
     shot_name = "bbox_0.png"
     shot_path = screenshot_dir / shot_name
 
@@ -683,15 +709,21 @@ async def _emit_opening_frame(
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
         return
-    # Retry blank/pre-paint frames a few times before giving up.
-    for attempt in range(4):
+    # Retry blank / skeleton frames until content lands (or attempts exhaust).
+    for attempt in range(8):
         if not _shot_looks_blank(shot_path):
             break
         print(
-            f"[{agent_id}] opening frame looks blank — retry {attempt + 1}/4",
+            f"[{agent_id}] opening frame looks blank/skeleton — retry {attempt + 1}/8",
             flush=True,
         )
-        await asyncio.sleep(0.6 + attempt * 0.4)
+        await asyncio.sleep(0.7 + attempt * 0.35)
+        try:
+            page = await asyncio.wait_for(browser_session.get_current_page(), timeout=5)
+            if page is not None:
+                await _dismiss_consent_banners(browser_session, agent_id=agent_id)
+        except Exception:
+            pass
         try:
             await _take()
         except Exception as exc:  # noqa: BLE001
