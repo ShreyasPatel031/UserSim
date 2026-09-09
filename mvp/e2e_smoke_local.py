@@ -475,10 +475,21 @@ async def run(args: argparse.Namespace) -> dict:
         # reason to raise the number.
         n_agents = max(1, len(tasks_snapshot)) if full else 1
         waves = -(-n_agents // max(1, args.concurrency))
+        # Agents inside a wave contend for the same LLM and browser backend, so
+        # one agent's step latency stretches with the number running beside it,
+        # not just with the number of waves queued behind it. Sizing the
+        # per-agent clock by waves alone collapsed to the smoke constant at
+        # waves=1 and reported all 8 agents of a healthy 8-agent study as hung.
+        concurrent = max(1, min(n_agents, args.concurrency))
         stall_s = (
             args.stall_s
             if args.stall_s is not None
             else max(45.0, args.per_step_latency_s * waves)
+        )
+        agent_stall_s = (
+            args.stall_s
+            if args.stall_s is not None
+            else max(stall_s, args.per_step_latency_s * concurrent)
         )
         steps_timeout_s = (
             args.steps_timeout_s
@@ -489,13 +500,16 @@ async def run(args: argparse.Namespace) -> dict:
             "n_agents": n_agents,
             "concurrency": args.concurrency,
             "waves": waves,
+            "concurrent": concurrent,
             "stall_s": stall_s,
+            "agent_stall_s": agent_stall_s,
             "steps_timeout_s": steps_timeout_s,
             "min_steps_per_started_agent": args.min_steps,
         }
         _log(
             f"  budget agents={n_agents} concurrency={args.concurrency} waves={waves} "
-            f"stall_s={stall_s} steps_timeout_s={steps_timeout_s}"
+            f"stall_s={stall_s} agent_stall_s={agent_stall_s} "
+            f"steps_timeout_s={steps_timeout_s}"
         )
 
         raw0 = None
@@ -546,6 +560,8 @@ async def run(args: argparse.Namespace) -> dict:
                     "prev_raw": None,
                     "last_step_t": time.time(),
                     "stall_reported": False,
+                    "finished_action": False,
+                    "missing": set(),
                     "started": False,
                     "status": "",
                     "judge_queue": [],
@@ -714,20 +730,27 @@ async def run(args: argparse.Namespace) -> dict:
                         state["started"] = True
                         state["last_step_t"] = now
 
+                # An agent that has emitted its terminal `done` is writing its
+                # recap, not hanging: no further numbered step is coming.
+                if str(sess.get("last_action") or "").strip().lower().startswith("done"):
+                    state["finished_action"] = True
+
                 # Per-agent hang guard. A global clock let 14 agents freeze as
                 # long as any one of them kept stepping.
                 if (
                     state["started"]
                     and not state["stall_reported"]
+                    and not state.get("finished_action")
                     and not _sess_done(sess)
                     and study_running
-                    and now - state["last_step_t"] > stall_s
+                    and now - state["last_step_t"] > agent_stall_s
                 ):
                     state["stall_reported"] = True
                     thoughts = (sess.get("live_thoughts") or [])[-1:]
                     report["fails"].append(
                         f"agent {key} hung — no new step for "
-                        f"{round(now - state['last_step_t'])}s (budget {round(stall_s)}s) at "
+                        f"{round(now - state['last_step_t'])}s "
+                        f"(budget {round(agent_stall_s)}s) at "
                         f"steps {sorted(state['seen'])}, "
                         f"last_action={sess.get('last_action')!r}, "
                         f"last_thought="
@@ -749,15 +772,26 @@ async def run(args: argparse.Namespace) -> dict:
                             state["prev_raw"] = base_raw
                             (OUT_DIR / f"{key}_step0.png").write_bytes(base_raw)
                         continue
-                    if n in state["seen"] or n < 1:
+                    if n < 1:
                         continue
-                    state["seen"].add(n)
-                    seen.add(n)
-                    state["last_step_t"] = time.time()
+                    is_new = n not in state["seen"]
+                    if not is_new and n not in state["missing"]:
+                        continue
+                    if is_new:
+                        state["seen"].add(n)
+                        seen.add(n)
+                        state["last_step_t"] = time.time()
                     raw = _download(
                         args.base,
                         step.get("screenshot_data_url") or step.get("screenshot_url") or "",
                     )
+                    if not raw:
+                        # The step can be published a beat before its frame is
+                        # uploaded. Retry on later polls and only fail at the
+                        # end if the frame never arrives.
+                        state["missing"].add(n)
+                        continue
+                    state["missing"].discard(n)
                     st = await page.evaluate(_stage_js())
                     if st.get("liveOk") or await page.evaluate(
                         "() => Boolean(window.__e2eLive && window.__e2eLive.seen)"
@@ -789,13 +823,6 @@ async def run(args: argparse.Namespace) -> dict:
                                 "site": str(sess.get("site_url") or args.url),
                             }
                         )
-                    elif not raw:
-                        # No site pixels for this step is itself the bug; say so
-                        # instead of silently judging UserSim chrome.
-                        report["fails"].append(
-                            f"agent {key} step {n}: no site screenshot to judge "
-                            "(screenshot_url missing or 404)"
-                        )
                     if raw:
                         state["prev_raw"] = raw
                         prev_site_raw = raw
@@ -804,6 +831,15 @@ async def run(args: argparse.Namespace) -> dict:
             # No early exit. Breaking as soon as one step landed meant an agent
             # that froze at "1 steps" for the rest of the run still passed.
             await page.wait_for_timeout(1500)
+
+        # A frame that never arrived, after every retry, is the bug the
+        # immediate check was reaching for — without failing on publish lag.
+        for key, state in sorted(agents.items()):
+            for n in sorted(state["missing"]):
+                report["fails"].append(
+                    f"agent {key} step {n}: no site screenshot to judge "
+                    "(screenshot_url missing or 404 for the whole run)"
+                )
 
         # --- Deferred vision judging ---------------------------------------
         # Same assertions as before, run once the polling loop is done so that
@@ -1019,6 +1055,16 @@ async def run(args: argparse.Namespace) -> dict:
             # Only count screenshot-backed steps: the UI builds pills from
             # stepsWithScreenshots(), so a step with no screenshot legitimately
             # has no pill and must not be reported as broken nav.
+            # Scope to the agent the stage is actually showing. The rail belongs
+            # to one session, so comparing it against every agent's steps
+            # reported "8 agents' steps vs 1 agent's pills" as broken nav.
+            shown_agent = await page.evaluate(
+                """() => document.getElementById('stage-body')?.dataset?.agentId
+                       || document.querySelector('#stage-body img.trace-screenshot')
+                            ?.getAttribute('data-agent-id')
+                       || ''"""
+            )
+            report["checks"]["stage_agent_id"] = shown_agent
             api_steps = set()
             shot_steps = set()
             fresh, _err = _poll_study(args.base, study_id)
@@ -1026,6 +1072,9 @@ async def run(args: argparse.Namespace) -> dict:
                 snap = fresh
             live = snap.get("live_sessions") or {}
             items = list(live.values()) if isinstance(live, dict) else list(live or [])
+            if shown_agent:
+                scoped = [s for s in items if str(s.get("agent_id") or "") == shown_agent]
+                items = scoped or items
             for sess in items:
                 for step in sess.get("trace") or []:
                     if not isinstance(step, dict) or not isinstance(step.get("step"), int):
