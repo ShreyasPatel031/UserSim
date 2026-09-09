@@ -475,32 +475,54 @@ async def run(args: argparse.Namespace) -> dict:
         # reason to raise the number.
         n_agents = max(1, len(tasks_snapshot)) if full else 1
         waves = -(-n_agents // max(1, args.concurrency))
-        # Agents inside a wave contend for the same LLM and browser backend, so
-        # one agent's step latency stretches with the number running beside it,
-        # not just with the number of waves queued behind it. Sizing the
-        # per-agent clock by waves alone collapsed to the smoke constant at
-        # waves=1 and reported all 8 agents of a healthy 8-agent study as hung.
         concurrent = max(1, min(n_agents, args.concurrency))
+        # A wave is one agent's whole run, not one step: budgeting 120s for a
+        # wave of agents each allowed max_steps steps cut the loop off at 195s
+        # while the study was still at 7/8 done, which also starved the frame
+        # retries. A generous run budget costs nothing — the loop exits as soon
+        # as the study reaches a terminal status, and hangs are caught by the
+        # stall guards, not by cutting the run short.
+        wave_budget_s = (
+            args.wave_budget_s
+            if args.wave_budget_s is not None
+            else args.max_steps * args.per_step_latency_s
+        )
         stall_s = (
             args.stall_s
             if args.stall_s is not None
             else max(45.0, args.per_step_latency_s * waves)
         )
+        # Tie the per-agent clock to the wave budget rather than to a made-up
+        # contention factor: a wave is what a whole agent run is budgeted, so an
+        # agent silent for longer than an entire wave is hung by any reading.
+        # Sizing it by waves alone collapsed to the smoke constant at waves=1
+        # and called all 8 agents of a healthy study hung; sizing it by the
+        # number running concurrently pushed it past steps_timeout_s on the
+        # 15-agent shape, which disables the check instead of calibrating it.
         agent_stall_s = (
             args.stall_s
             if args.stall_s is not None
-            else max(stall_s, args.per_step_latency_s * concurrent)
+            else max(stall_s, wave_budget_s)
         )
         steps_timeout_s = (
             args.steps_timeout_s
             if args.steps_timeout_s is not None
-            else int(args.brief_budget_s + waves * args.wave_budget_s + args.summary_budget_s)
+            else int(args.brief_budget_s + waves * wave_budget_s + args.summary_budget_s)
         )
+        # A stall budget longer than the run budget is a check that can never
+        # fire. Keep the run long enough for both guards to mean something.
+        if agent_stall_s >= steps_timeout_s:
+            report["fails"].append(
+                f"budget derivation is incoherent: agent_stall_s={agent_stall_s} "
+                f">= steps_timeout_s={steps_timeout_s}, so the hang guard can "
+                "never fire"
+            )
         report["checks"]["budget"] = {
             "n_agents": n_agents,
             "concurrency": args.concurrency,
             "waves": waves,
             "concurrent": concurrent,
+            "wave_budget_s": wave_budget_s,
             "stall_s": stall_s,
             "agent_stall_s": agent_stall_s,
             "steps_timeout_s": steps_timeout_s,
@@ -1153,7 +1175,18 @@ def main() -> int:
         help="expected worst-case latency of one agent step, per wave",
     )
     ap.add_argument("--brief-budget-s", type=float, default=45.0)
-    ap.add_argument("--wave-budget-s", type=float, default=120.0)
+    ap.add_argument(
+        "--max-steps",
+        type=int,
+        default=int(os.environ.get("MVP_MAX_STEPS", "8")),
+        help="steps the server allows one agent — sizes a wave's duration",
+    )
+    ap.add_argument(
+        "--wave-budget-s",
+        type=float,
+        default=None,
+        help="seconds for one wave of agents (default: max_steps x per-step latency)",
+    )
     ap.add_argument("--summary-budget-s", type=float, default=30.0)
     ap.add_argument(
         "--judge-workers",
