@@ -436,7 +436,19 @@ FETCH_PROBE = """
 (() => {
   if (window.__e2eInstalled) return;
   window.__e2eInstalled = true;
-  window.__e2e = { studyId: null, chunks: 0, lastStatus: null };
+  window.__e2e = { studyId: null, chunks: 0, lastStatus: null, liveViewSeen: false };
+  // Did the *page* ever receive a live_view_url? Without this, a stage that
+  // never mounts a live iframe is ambiguous: the UI may be ignoring a URL it
+  // has, or may never have been sent one. Those are different bugs.
+  window.__e2eNoteLive = (j) => {
+    try {
+      const live = (j && j.live_sessions) || {};
+      const items = Array.isArray(live) ? live : Object.values(live);
+      for (const s of items) {
+        if (s && s.live_view_url) { window.__e2e.liveViewSeen = true; return; }
+      }
+    } catch (_) {}
+  };
   const orig = window.fetch.bind(window);
   window.fetch = async (...args) => {
     const res = await orig(...args);
@@ -465,6 +477,7 @@ FETCH_PROBE = """
                     window.__e2e.chunks += 1;
                     window.__e2e.studyId = j.id || j.study_id || window.__e2e.studyId;
                     window.__e2e.lastStatus = j.status || window.__e2e.lastStatus;
+                    window.__e2eNoteLive(j);
                   } catch (_) {}
                 }
               }
@@ -474,6 +487,7 @@ FETCH_PROBE = """
           const j = await clone.json();
           window.__e2e.studyId = j.id || j.study_id || window.__e2e.studyId;
           window.__e2e.lastStatus = j.status || window.__e2e.lastStatus;
+          window.__e2eNoteLive(j);
         }
       }
     } catch (_) {}

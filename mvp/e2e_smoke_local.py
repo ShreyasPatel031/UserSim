@@ -954,9 +954,22 @@ async def run(args: argparse.Namespace) -> dict:
         report["checks"]["live_moved"] = live_moved
         report["checks"]["live_distinct_frames"] = len(live_hashes)
         report["checks"]["live_max_static_gap_s"] = round(live_max_static_gap, 1)
+        page_saw_live_url = bool(
+            await page.evaluate("() => Boolean(window.__e2e && window.__e2e.liveViewSeen)")
+        )
+        report["checks"]["page_received_live_view_url"] = page_saw_live_url
         if live_offered and not saw_live:
+            # Name which bug it is: the UI ignoring a live_view_url it was sent
+            # is a different defect from the UI never being sent one.
+            where = (
+                "the page received live_view_url and did not mount it"
+                if page_saw_live_url
+                else "the page's own study feed never carried live_view_url, "
+                "though the API had one"
+            )
             report["fails"].append(
-                "backend offered live_view_url but the stage never mounted the live iframe"
+                "backend offered live_view_url but the stage never mounted the "
+                f"live iframe — {where}"
             )
         elif live_offered and saw_live and not live_painted:
             report["fails"].append(
