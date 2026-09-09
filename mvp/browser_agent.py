@@ -21,6 +21,38 @@ from mvp.paths import MVP_RUNS_DIR
 
 # Enough steps to leave the landing page: land, scroll, open a nav item, read, come back.
 MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
+# Consecutive unchanged viewports before we stop the agent as stalled.
+MVP_STALL_AFTER_NOOPS = int(os.environ.get("MVP_STALL_AFTER_NOOPS", "3") or "3")
+
+
+class AgentStalled(RuntimeError):
+    """Raised from on_step_end after N consecutive stuck/unchanged frames."""
+
+    def __init__(self, streak: int):
+        self.streak = streak
+        super().__init__(f"agent stalled after {streak} consecutive unchanged frames")
+
+
+async def _stop_browser_use_agent(agent: Any) -> None:
+    """Best-effort halt of a browser-use Agent mid-run."""
+    try:
+        stop = getattr(agent, "stop", None)
+        if callable(stop):
+            maybe = stop()
+            if asyncio.iscoroutine(maybe):
+                await maybe
+            return
+    except Exception:
+        pass
+    state_obj = getattr(agent, "state", None)
+    if state_obj is None:
+        return
+    for attr, value in (("stopped", True), ("stop", True), ("paused", True)):
+        if hasattr(state_obj, attr):
+            try:
+                setattr(state_obj, attr, value)
+            except Exception:
+                pass
 
 
 def _history_to_actions(history) -> list[dict]:
@@ -384,6 +416,7 @@ def _make_step_hooks(
     agent_id: str,
     target_url: str = "",
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
+    stall_after: int = MVP_STALL_AFTER_NOOPS,
 ):
     """Capture a screenshot with DOM bounding boxes drawn on it, once per step.
 
@@ -468,38 +501,67 @@ def _make_step_hooks(
             prev_shot = screenshot_dir / "bbox_0.png"
         cur_shot = screenshot_dir / f"bbox_{step_no}.png"
         same_pixels = _shots_visually_same(prev_shot, cur_shot)
-        # Empty "—" actions with identical frames are freezes, not progress.
-        # Fold them (and duplicate done rows) into pulses so the progress judge
-        # and step rail stay honest.
-        fold = False
+
+        # Only fold a *second* browser-use "done" history row (re-capture with
+        # highlights off). Never discard a freeze — those must stay numbered and
+        # judgeable as outcome=stuck.
         if action.lower().startswith("done"):
             if state.get("emitted_done"):
-                fold = True
-            else:
-                state["emitted_done"] = True
-        if _is_noop_action(action) and same_pixels:
-            fold = True
-        # Any claimed action that left the viewport unchanged is not a new step.
+                await _emit(
+                    {
+                        "step": None,
+                        "progress_only": True,
+                        "action": action,
+                        "thought": step.get("thought") or "",
+                        "thought_detail": step.get("thought_detail") or {},
+                        "observation": step.get("observation") or "",
+                        "url": step.get("url"),
+                        "screenshot_url": None,
+                        "outcome": "neutral",
+                    }
+                )
+                return
+            state["emitted_done"] = True
+            state["noop_streak"] = 0
+            await _emit(step)
+            return
+
         if same_pixels and step_no > 0:
-            fold = True
-        if fold:
+            step["outcome"] = "stuck"
             state["noop_streak"] = int(state.get("noop_streak") or 0) + 1
+            print(
+                f"[{agent_id}] stuck frame step={step_no} action={action!r} "
+                f"streak={state['noop_streak']}",
+                flush=True,
+            )
+        else:
+            state["noop_streak"] = 0
+
+        await _emit(step)
+
+        limit = max(1, int(stall_after or MVP_STALL_AFTER_NOOPS))
+        if int(state.get("noop_streak") or 0) >= limit:
             await _emit(
                 {
                     "step": None,
                     "progress_only": True,
-                    "action": action if not _is_noop_action(action) else "waiting — no visual change",
-                    "thought": step.get("thought") or "",
-                    "thought_detail": step.get("thought_detail") or {},
-                    "observation": step.get("observation") or "",
+                    "action": f"Stalled — {state['noop_streak']} unchanged frames in a row",
+                    "thought": (
+                        f"Stopping: the page did not change for {state['noop_streak']} "
+                        "steps (agent froze)."
+                    ),
+                    "thought_detail": {
+                        "thinking": "Viewport unchanged across consecutive steps — aborting run."
+                    },
+                    "observation": "",
                     "url": step.get("url"),
                     "screenshot_url": None,
-                    "outcome": "neutral",
+                    "outcome": "stuck",
+                    "stalled": True,
                 }
             )
-            return
-        state["noop_streak"] = 0
-        await _emit(step)
+            await _stop_browser_use_agent(agent)
+            raise AgentStalled(int(state["noop_streak"]))
 
     return on_step_start, on_step_end
 
@@ -602,14 +664,13 @@ def _history_to_trace(
         action = str(step.get("action") or "")
         cur_path = screenshot_dir / f"bbox_{i}.png"
         same = bool(prev_path and _shots_visually_same(prev_path, cur_path))
+        # Skip only a duplicate trailing "done" row — keep freezes visible.
         if action.lower().startswith("done"):
             if seen_done:
                 continue
             seen_done = True
-        if same:
-            continue
-        if _is_noop_action(action) and same:
-            continue
+        elif same:
+            step["outcome"] = "stuck"
         out.append(step)
         if cur_path.is_file():
             prev_path = cur_path
@@ -821,6 +882,8 @@ async def run_browser_agent(
     profile_clone = None
     browser_session = None
     history = None
+    stalled = False
+    stall_streak = 0
     backend = "browserbase"
     warm_live_url = None
     warm_bb_id = None
@@ -1095,11 +1158,20 @@ async def run_browser_agent(
             on_step=on_step,
         )
         print(f"[{agent_id}] agent.run starting (warm={use_warm})", flush=True)
-        history = await agent.run(
-            max_steps=max_steps,
-            on_step_start=on_step_start,
-            on_step_end=on_step_end,
-        )
+        try:
+            history = await agent.run(
+                max_steps=max_steps,
+                on_step_start=on_step_start,
+                on_step_end=on_step_end,
+            )
+        except AgentStalled as stall_exc:
+            stalled = True
+            stall_streak = int(stall_exc.streak)
+            history = getattr(agent, "history", None)
+            print(
+                f"[{agent_id}] agent.run aborted — stalled after {stall_streak} unchanged frames",
+                flush=True,
+            )
     finally:
         if browser_session is not None:
             try:
@@ -1165,6 +1237,8 @@ async def run_browser_agent(
         )
     except Exception:
         pass
+    if stalled:
+        is_done = False
 
     visited_urls: list[str] = []
     for step in trace:
@@ -1184,6 +1258,8 @@ async def run_browser_agent(
                 "final_url": final_url,
                 "visited_urls": visited_urls,
                 "completed": is_done,
+                "stalled": stalled,
+                "stall_streak": stall_streak,
                 "backend": backend,
                 "browserbase_session_url": session_url,
             },
@@ -1197,6 +1273,8 @@ async def run_browser_agent(
         "persona_id": persona.get("id"),
         "task_id": agent_id,
         "completed": is_done,
+        "stalled": stalled,
+        "stall_streak": stall_streak,
         "final_url": final_url,
         "visited_urls": visited_urls,
         "actions": actions,

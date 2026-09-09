@@ -2114,11 +2114,6 @@ async def run_study(
                     )
                     raise_if_killed(study)
                     sess["site_url"] = site
-                    agent_max_steps = (
-                        int(os.environ.get("MVP_SMOKE_BROWSER_STEPS", "6") or "6")
-                        if study.test_mode
-                        else int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12") or "12")
-                    )
                     # Queue behind Browserbase concurrency — never drop.
                     if not (sess.get("trace") or sess.get("live_active")):
                         sess["status"] = "pending"
@@ -2198,7 +2193,6 @@ async def run_study(
                                 bb_session=None,
                                 local=force_local_browser,
                                 warm=agent_warm,
-                                max_steps=agent_max_steps,
                             )
                         sess["status"] = "summarizing"
                         refresh_agent_phase()
@@ -2220,7 +2214,23 @@ async def run_study(
                             for o in feedback.pop("step_outcomes", []) or []
                         }
                         for step in run.get("trace") or []:
+                            # Never wipe an instrumented freeze — feedback LLM
+                            # outcomes are softer than pixel-level stuck detection.
+                            if (step or {}).get("outcome") == "stuck":
+                                continue
                             step["outcome"] = outcomes.get(step.get("step")) or "neutral"
+                        if run.get("stalled"):
+                            sess["last_action"] = (
+                                f"Stalled after {run.get('stall_streak') or '?'} "
+                                "unchanged frames"
+                            )
+                            log_activity(
+                                study,
+                                "agent_stalled",
+                                f"{persona.get('name')} stalled — viewport unchanged",
+                                agent_id=agent_id,
+                                stall_streak=run.get("stall_streak"),
+                            )
                         result = {**run, **feedback, "mode": "browser"}
                     except Exception as exc:  # noqa: BLE001
                         sess["status"] = "error"
@@ -2245,7 +2255,6 @@ async def run_study(
                                 on_step=lambda step: _on_agent_step(agent_id, step),
                                 bb_session=None,
                                 local=False,
-                                max_steps=agent_max_steps,
                             )
                             sess["status"] = "summarizing"
                             feedback = await summarize_agent_feedback(
@@ -2260,6 +2269,8 @@ async def run_study(
                                 for o in feedback.pop("step_outcomes", []) or []
                             }
                             for step in run.get("trace") or []:
+                                if (step or {}).get("outcome") == "stuck":
+                                    continue
                                 step["outcome"] = outcomes.get(step.get("step")) or "neutral"
                             result = {**run, **feedback, "mode": "browser_retry"}
                             result["browser_error"] = (str(exc) or repr(exc))[:300]
