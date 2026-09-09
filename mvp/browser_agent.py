@@ -166,13 +166,15 @@ def _shot_looks_blank(path: Path) -> bool:
         if not px:
             return True
         mean = sum(px) / float(len(px))
-        # Near-black or near-white flash with almost no structure.
         uniq = len(set(px))
         if uniq < 8:
             return True
-        # Extremely dark frames with little variance are usually pre-paint.
         var = sum((x - mean) ** 2 for x in px) / float(len(px))
-        if mean < 18 and var < 80:
+        # Pre-paint black/white flashes: tiny file + dark/light + low structure.
+        size = path.stat().st_size
+        if size < 50000 and mean < 22 and var < 250:
+            return True
+        if mean < 18 and var < 200:
             return True
         if mean > 245 and var < 80:
             return True
