@@ -1,0 +1,59 @@
+{
+  "base": "https://usersim.vercel.app",
+  "sites": [
+    {
+      "url": "https://useagency.dev/",
+      "name": "agency",
+      "fails": [],
+      "pass": true,
+      "loading": true,
+      "study_id": "b9236093-9e14-43da-8533-6487d5ec775a",
+      "ready_cta": true,
+      "report_href": "/report?study=b9236093-9e14-43da-8533-6487d5ec775a",
+      "report": {
+        "empty": false,
+        "results": true,
+        "headline": "Users find the core AI promise compelling but lack clarity on pricing and tangible value, hindering conversion.",
+        "friction": 0,
+        "recs": 3
+      }
+    },
+    {
+      "url": "https://recurse.run/",
+      "name": "recurse",
+      "fails": [],
+      "pass": true,
+      "loading": true,
+      "study_id": "c0190796-48e4-4739-a823-48f574e7dffc",
+      "ready_cta": true,
+      "report_href": "/report?study=c0190796-48e4-4739-a823-48f574e7dffc",
+      "report": {
+        "empty": false,
+        "results": true,
+        "headline": "Recurse.run offers a compelling serverless harness for creating specialized AI agents, but its private alpha status and waitlist create accessibility concerns for potential users.",
+        "friction": 0,
+        "recs": 3
+      }
+    },
+    {
+      "url": "https://www.langchain.com/",
+      "name": "langchain",
+      "fails": [],
+      "pass": true,
+      "loading": true,
+      "study_id": "e87b4169-1ec5-48ed-9a27-987d3809ac9e",
+      "ready_cta": true,
+      "report_href": "/report?study=e87b4169-1ec5-48ed-9a27-987d3809ac9e",
+      "report": {
+        "empty": false,
+        "results": true,
+        "headline": "LangChain's platform effectively communicates its value proposition for accelerating AI agent development, with a clear path to documentation for technical users.",
+        "friction": 0,
+        "recs": 2
+      }
+    }
+  ],
+  "fails": [],
+  "pass": true,
+  "elapsed_s": 310.4
+}

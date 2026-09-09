@@ -115,53 +115,27 @@ def youtube_auth_capture_ready() -> bool:
 
 
 def storage_state_for_url(url: str) -> dict[str, Any] | None:
-    """Best-effort signed-in storage for the target host."""
-    host = (urlparse(url).hostname or "").lower()
-    states: list[dict[str, Any] | None] = []
+    """Best-effort signed-in storage for the target host.
 
-    # Prefer a dedicated YouTube/Google export when present.
-    if "youtube.com" in host or "google." in host:
-        # Only the interactive capture (mvp.refresh_youtube_auth) produces a
-        # storage_state that actually signs Playwright into YouTube.
-        states.append(_load_json(YOUTUBE_STATE_SIGNED))
-        states.append(_load_json(YOUTUBE_STATE))
-        if youtube_auth_capture_ready():
-            # A verified session is self-sufficient; stale Google cookies from other
-            # dumps only risk conflicting with it.
-            return _merge_states(*states)
-        # Voice-AI dumps: useful for some Google surfaces, not YouTube home auth.
-        for path in (VAPI_STATE, RETELL_STATE):
-            raw = _load_json(path)
-            if not raw:
-                continue
-            filtered = {
-                "cookies": [
-                    c
-                    for c in (raw.get("cookies") or [])
-                    if any(
-                        x in (c.get("domain") or "").lower()
-                        for x in ("google", "youtube", "gstatic", "ggpht")
-                    )
-                ],
-                "origins": [
-                    o
-                    for o in (raw.get("origins") or [])
-                    if any(x in (o.get("origin") or "").lower() for x in ("google", "youtube"))
-                ],
-            }
-            states.append(sanitize_storage_state_dict(filtered))
-    else:
-        bare = host[4:] if host.startswith("www.") else host
-        candidates = []
-        for h in (host, bare, f"www.{bare}"):
-            safe = re.sub(r"[^a-z0-9.-]+", "_", h)
-            if safe and safe not in candidates:
-                candidates.append(safe)
-        for safe in candidates:
-            # Sessions captured by mvp.auto_signin / mvp.auto_signup.
-            states.append(_load_json(SITE_STATES / f"{safe}.json"))
-            # Legacy/manual per-host dump.
-            states.append(_load_json(SECRETS / f"{safe}_storage_state.json"))
+    Same lookup for every host (including YouTube/Google): per-host files under
+    ``site_states/`` and ``secrets/{host}_storage_state.json``. No special-case
+    cookie vault for a single product.
+    """
+    host = (urlparse(url).hostname or "").lower()
+    if not host:
+        return None
+    states: list[dict[str, Any] | None] = []
+    bare = host[4:] if host.startswith("www.") else host
+    candidates: list[str] = []
+    for h in (host, bare, f"www.{bare}"):
+        safe = re.sub(r"[^a-z0-9.-]+", "_", h)
+        if safe and safe not in candidates:
+            candidates.append(safe)
+    for safe in candidates:
+        # Sessions captured by mvp.auto_signin / mvp.auto_signup.
+        states.append(_load_json(SITE_STATES / f"{safe}.json"))
+        # Legacy/manual per-host dump.
+        states.append(_load_json(SECRETS / f"{safe}_storage_state.json"))
 
     return _merge_states(*states)
 

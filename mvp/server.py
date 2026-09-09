@@ -52,6 +52,7 @@ class StudyRequest(BaseModel):
     tasks: list[str] = Field(default_factory=list)
     test_mode: bool = False
     skip_competitors: bool = False
+    max_agents: int | None = Field(default=None, ge=1, le=75)
     backend: str = Field(default="default", pattern="^(default)$")
 
 
@@ -360,6 +361,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     # Default: invent ~2 rivals when the box is blank (product + rivals in Products).
     # Only skip when the client explicitly opts out.
     study.skip_competitors = bool(body.skip_competitors)
+    study.max_agents = int(body.max_agents or 0)
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
     if study.test_mode and not study.tasks_override:
         study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
@@ -563,8 +565,20 @@ async def get_study(study_id: str):
         # poll while 6 Browserbase agents are writing was starving the event
         # loop (study GET timeouts / list 503s under parallel load).
         live = data.get("live_sessions") or {}
-        if data.get("status") in {"running", "pending"} and live:
+        empty = _empty_live_sessions(live)
+        if data.get("status") in {"running", "pending"} and live and _live_step_count(live) > 0:
+            # Product warm shots must not hide competitor (or later) GCS frames.
+            if empty:
+                data["live_sessions"] = await asyncio.to_thread(
+                    hydrate_live_sessions_from_gcs, study_id, live
+                )
             return data
+        if data.get("status") in {"running", "pending"} and live:
+            data["live_sessions"] = await asyncio.to_thread(
+                hydrate_live_sessions_from_gcs, study_id, live
+            )
+            if _live_step_count(data.get("live_sessions")) > 0:
+                return data
         # Merge fresher GCS state when fleet finished off-box / no local frames.
         if data.get("status") in {"running", "pending"} or not data.get("summary"):
             remote = await asyncio.to_thread(load_study_from_gcs, study_id)
@@ -587,6 +601,19 @@ async def get_study(study_id: str):
         )
         return remote
     raise HTTPException(status_code=404, detail="Study not found")
+
+
+def _empty_live_sessions(live_sessions: object) -> bool:
+    if isinstance(live_sessions, dict):
+        items = live_sessions.values()
+    elif isinstance(live_sessions, list):
+        items = live_sessions
+    else:
+        return False
+    for sess in items:
+        if isinstance(sess, dict) and not (sess.get("trace") or []):
+            return True
+    return False
 
 
 def _live_step_count(live_sessions: object) -> int:
@@ -612,8 +639,6 @@ async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
     if m:
         kind, num = m.group(1), m.group(2)
         names.append(("bbox" if kind == "step" else "step") + f"_{num}.png")
-        if num != "0":
-            names.append("step_0.png")
     from fastapi.responses import Response
 
     from mvp.gcs_store import gcs_download_bytes, screenshot_gcs_uri

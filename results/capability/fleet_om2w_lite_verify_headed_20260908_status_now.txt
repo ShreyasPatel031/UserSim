@@ -1,0 +1,17 @@
+complete: 0/25 shards (manifest + exit=0)
+done markers: 0 (may include failed/stale)
+tasks/shard: 6  (gs://usersim-bakeoff-347838016394/full300/om2w_lite_verify_headed_20260908)
+
+NAME                      STATUS   ZONE           MACHINE_TYPE
+usersim-bu-liteverify-0   RUNNING  us-central1-a  e2-standard-8
+usersim-bu-liteverify-4   RUNNING  us-central1-a  e2-standard-8
+usersim-bu-liteverify-8   RUNNING  us-central1-a  e2-standard-8
+usersim-bu-liteverify-1   RUNNING  us-central1-b  e2-standard-8
+usersim-bu-liteverify-5   RUNNING  us-central1-b  e2-standard-8
+usersim-bu-liteverify-9   RUNNING  us-central1-b  e2-standard-8
+usersim-bu-liteverify-10  RUNNING  us-central1-c  e2-standard-8
+usersim-bu-liteverify-14  RUNNING  us-central1-c  e2-standard-8
+usersim-bu-liteverify-2   RUNNING  us-central1-c  e2-standard-8
+usersim-bu-liteverify-6   RUNNING  us-central1-c  e2-standard-8
+usersim-bu-liteverify-11  RUNNING  us-central1-f  e2-standard-8
+usersim-bu-liteverify-3   RUNNING  us-central1-f  e2-standard-8

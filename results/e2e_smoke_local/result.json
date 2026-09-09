@@ -1,0 +1,115 @@
+{
+  "base": "http://127.0.0.1:3000",
+  "product_url": "https://useagency.dev/",
+  "judge_model": "gemini-2.5-flash-lite",
+  "mode": "smoke",
+  "fails": [],
+  "checks": {
+    "smoke_on": true,
+    "after_tasks_s": 1.01,
+    "step0_judge": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "useagency.dev",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows the homepage of useagency.dev with visible navigation, headings, and descriptive text.",
+      "label": "step0",
+      "expected_host": "useagency.dev",
+      "png_bytes": 116826,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The main product page content is visible and readable, with no blocking elements."
+      }
+    },
+    "progress_1": {
+      "screens_look_the_same": false,
+      "visible_change": "click_highlight",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "The 'See the loop' button is now highlighted, indicating it was clicked.",
+      "reason": "The agent clicked on 'See the loop' which is a logical next step to understand the main promise of the website.",
+      "label": "step0\u21921",
+      "expected_host": "useagency.dev",
+      "action": "done \u2014 text=The main promise of useagency.dev is that they engineer AI systems that adapt and reason within specific work domains, ensuring reliable outcomes by continuously measuring actions, feedback, and truth. As a creative marketer, I find the concept of 'loops engineered' and 'domain-specific ",
+      "prev_bytes": 116826,
+      "new_bytes": 123149,
+      "pass": true
+    },
+    "usable_1": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "useagency.dev",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows the homepage of useagency.dev with readable content and navigation.",
+      "label": "step1",
+      "expected_host": "useagency.dev",
+      "png_bytes": 123149,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The main product page content is visible and readable, with navigation and hero text."
+      }
+    },
+    "live_offered_by_api": true,
+    "saw_live_mounted": true,
+    "live_painted": true,
+    "blank_live_samples": 0,
+    "api_poll_errors": null,
+    "live_moved": true,
+    "live_distinct_frames": 6,
+    "final_status": "complete",
+    "steps_seen": [
+      0,
+      1
+    ],
+    "ui_error_state": {
+      "phase": "Complete",
+      "hint": "About 3 min left \u00b7 study still running"
+    },
+    "pills": [
+      {
+        "text": "0",
+        "active": false,
+        "disabled": false
+      },
+      {
+        "text": "1",
+        "active": true,
+        "disabled": false
+      }
+    ],
+    "step_nav_changed": true,
+    "step_nav_judge": {
+      "screens_look_the_same": false,
+      "visible_change": "scroll",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "scrolled down to reveal more content",
+      "reason": "The user scrolled down to reveal more of the page content, which is a progression when navigating through steps.",
+      "label": "step-nav",
+      "expected_host": "useagency.dev",
+      "action": "navigate step history",
+      "prev_bytes": 236431,
+      "new_bytes": 259233,
+      "pass": true
+    }
+  },
+  "pass": true,
+  "study_id": "70e72620-2fd3-450e-b5f7-dc776111f2b0",
+  "elapsed_s": 30.8
+}
