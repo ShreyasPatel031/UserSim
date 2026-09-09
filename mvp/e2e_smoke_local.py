@@ -499,16 +499,25 @@ async def run(args: argparse.Namespace) -> dict:
         # and called all 8 agents of a healthy study hung; sizing it by the
         # number running concurrently pushed it past steps_timeout_s on the
         # 15-agent shape, which disables the check instead of calibrating it.
+        # Contention is what stretches a step, and it is bounded by the agent's
+        # own run budget: it cannot reasonably be silent longer than a whole
+        # wave. With one agent there is no contention, so this stays at the
+        # single-agent per-step budget and smoke keeps its original tight guard
+        # rather than silently inheriting a 360s one.
         agent_stall_s = (
             args.stall_s
             if args.stall_s is not None
-            else max(stall_s, wave_budget_s)
+            else max(stall_s, min(wave_budget_s, args.per_step_latency_s * concurrent))
         )
-        steps_timeout_s = (
-            args.steps_timeout_s
-            if args.steps_timeout_s is not None
-            else int(args.brief_budget_s + waves * wave_budget_s + args.summary_budget_s)
-        )
+        if args.steps_timeout_s is not None:
+            steps_timeout_s = args.steps_timeout_s
+        elif not full:
+            # Smoke keeps the budget it always had; only full mode derives one.
+            steps_timeout_s = 240
+        else:
+            steps_timeout_s = int(
+                args.brief_budget_s + waves * wave_budget_s + args.summary_budget_s
+            )
         # A stall budget longer than the run budget is a check that can never
         # fire. Keep the run long enough for both guards to mean something.
         if agent_stall_s >= steps_timeout_s:
