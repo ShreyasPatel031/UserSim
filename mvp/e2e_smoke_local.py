@@ -365,8 +365,25 @@ async def run(args: argparse.Namespace) -> dict:
         await page.add_init_script(FETCH_PROBE)
         await page.add_init_script(LIVE_OBSERVER)
 
-        _log(f"→ smoke open {args.base}")
-        await page.goto(args.base, wait_until="domcontentloaded", timeout=60_000)
+        _log(f"→ {'full' if full else 'smoke'} open {args.base}")
+        # Opening the app is setup, not an assertion: a transient network blip
+        # here says nothing about the product, and losing a whole study run to
+        # one is pure noise. Retries are counted into the report so a base URL
+        # that is genuinely flaky stays visible rather than being smoothed over.
+        open_attempts = 0
+        for attempt in range(1, args.open_retries + 2):
+            open_attempts = attempt
+            try:
+                await page.goto(args.base, wait_until="domcontentloaded", timeout=60_000)
+                break
+            except Exception as exc:  # noqa: BLE001
+                if attempt > args.open_retries:
+                    raise
+                _log(f"  open failed ({exc!r}) — retry {attempt}/{args.open_retries}")
+                await page.wait_for_timeout(3000 * attempt)
+        report["checks"]["open_attempts"] = open_attempts
+        if open_attempts > 1:
+            report["checks"]["open_retried"] = True
         await page.wait_for_selector("#study-form #submit-btn", timeout=30_000)
 
         # Smoke drives test_mode ON (1 user × 1 task × product). Full drives it
@@ -1202,6 +1219,12 @@ def main() -> int:
         type=int,
         default=6,
         help="parallel flash-lite judge calls in the post-run pass",
+    )
+    ap.add_argument(
+        "--open-retries",
+        type=int,
+        default=2,
+        help="retries for the initial page load only (setup, not an assertion)",
     )
     ap.add_argument("--brief-timeout-s", type=int, default=120)
     # A public URL must paint fast. This is a product requirement, not a knob to
