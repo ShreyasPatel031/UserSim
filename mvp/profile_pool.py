@@ -1,17 +1,11 @@
 """Per-agent clones of a signed-in Chrome profile.
 
-Transplanting cookies into a fresh browser no longer authenticates Google:
-Chrome binds session cookies to the profile (device-bound session
-credentials), so a copied ``LOGIN_INFO``/``SID`` set yields ``LOGGED_IN:
-false`` even though every cookie is present. Cloning the profile directory
-carries the binding material along, which does authenticate.
-
-Chrome also refuses to share one ``user_data_dir`` across processes, so each
+Chrome refuses to share one ``user_data_dir`` across processes, so each
 parallel agent needs its own clone. Caches are skipped — they are ~85% of the
 bytes and none of the auth.
 
-Profiles live under ``secrets/product_profiles/{host}/`` (any product) with
-legacy aliases for the YouTube/Google profile used by early experiments.
+Profiles live under ``secrets/product_profiles/{host}/`` for any product.
+There is no hardcoded YouTube/Google profile shortcut.
 """
 
 from __future__ import annotations
@@ -26,15 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SECRETS = ROOT / "secrets"
 PRODUCT_PROFILES = SECRETS / "product_profiles"
 
-# Legacy aliases kept so existing YouTube sessions keep working.
-_LEGACY_PROFILES: dict[str, Path] = {
-    "youtube.com": SECRETS / "youtube_browser_profile",
-    "google.com": SECRETS / "youtube_browser_profile",
-    "gmail.com": SECRETS / "youtube_browser_profile",
-}
-
 # Back-compat for anything that still imports PROFILES.
-PROFILES: dict[str, Path] = dict(_LEGACY_PROFILES)
+PROFILES: dict[str, Path] = {}
 
 # Caches and models: large, regenerable, and irrelevant to being signed in.
 _SKIP = {
@@ -85,11 +72,6 @@ def profile_for_url(url: str) -> Path | None:
         if path.is_dir() and any(path.iterdir()):
             return path
 
-    # Legacy YouTube / Google aliases.
-    for key, path in _LEGACY_PROFILES.items():
-        if key in host and path.is_dir():
-            return path
-
     # Subdomain match: app.linear.app → linear.app profile.
     parts = host.split(".")
     for i in range(1, max(1, len(parts) - 1)):
@@ -97,9 +79,6 @@ def profile_for_url(url: str) -> Path | None:
         path = PRODUCT_PROFILES / _safe_host(parent)
         if path.is_dir() and any(path.iterdir()):
             return path
-        for key, legacy in _LEGACY_PROFILES.items():
-            if key == parent and legacy.is_dir():
-                return legacy
     return None
 
 

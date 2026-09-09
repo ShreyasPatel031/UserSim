@@ -3,8 +3,13 @@
 
 Captures for each of 5 agents:
   1. Real website pixels immediately after tasks appear (≤2s SLA)
-  2. Next agent step — screen must change, or live iframe must be up
-  3. Every later step — live view required (stale screenshot is a fail)
+  2. Every step — pixels must differ from the PREVIOUS frame, not just step 0
+  3. Every later step — live view required whenever the backend actually
+     offered one (live_view_url present). Backends that never emit a live view
+     skip this check instead of failing it; they cannot silently pass it.
+
+Thread count is asserted (--expect-threads, default 5), so a 1-thread run
+cannot report PASS as a "5-thread" result.
 
 Then gemini-2.5-flash-lite judges:
   - each landing PNG: is this the real assigned site?
@@ -33,6 +38,7 @@ sys.path.insert(0, str(ROOT))
 from mvp.e2e_ui_run import (  # noqa: E402
     FETCH_PROBE,
     JUDGE_MODEL,
+    LIVE_OBSERVER,
     _hostname,
     _log,
     http_json,
@@ -177,7 +183,14 @@ def html_escape(s: str) -> str:
     )
 
 
-async def _select_session(page, sess: dict) -> None:
+async def _select_session(page, sess: dict) -> list[str]:
+    """Point the stage at this session. Returns problems, never hides them.
+
+    Silently swallowing a failed select_option meant the stage could still be
+    showing another agent while we screenshotted it and filed the result under
+    this agent_id — wrong-agent evidence that reads as a pass.
+    """
+    problems: list[str] = []
     site_key = sess.get("site_key") or "product"
     site_url = sess.get("site_url") or ""
     persona = sess.get("persona_id") or ""
@@ -197,14 +210,23 @@ async def _select_session(page, sess: dict) -> None:
     if persona:
         try:
             await page.select_option("#stage-user-select", persona)
-        except Exception:
-            pass
+        except Exception as exc:  # noqa: BLE001
+            problems.append(f"could not select persona {persona}: {exc}")
     if task_base:
         try:
             await page.select_option("#stage-task-select", task_base)
-        except Exception:
-            pass
+        except Exception as exc:  # noqa: BLE001
+            problems.append(f"could not select task {task_base}: {exc}")
     await page.wait_for_timeout(300)
+    # Confirm the stage actually landed on the agent we asked for.
+    want = str(sess.get("agent_id") or "")
+    if want:
+        shown = await page.evaluate(
+            "() => document.getElementById('stage-body')?.dataset?.agentId || ''"
+        )
+        if shown and shown != want:
+            problems.append(f"stage shows agent {shown}, expected {want}")
+    return problems
 
 
 def _stage_state_js() -> str:
@@ -252,6 +274,7 @@ async def run(args: argparse.Namespace) -> dict:
         )
         page = await context.new_page()
         await page.add_init_script(FETCH_PROBE)
+        await page.add_init_script(LIVE_OBSERVER)
 
         start_url = args.base.rstrip("/") + "/?max_agents=5"
         _log(f"→ open {start_url}")
@@ -333,6 +356,16 @@ async def run(args: argparse.Namespace) -> dict:
         if len(agents) > 5:
             agents = agents[:5]
         report["agent_count"] = len(agents)
+        if len(agents) < args.expect_threads:
+            report["fails"].append(
+                f"expected {args.expect_threads} threads, got {len(agents)} "
+                "(this is a 5-thread e2e; a 1-thread run must not pass)"
+            )
+        # Did the backend ever offer a live view at all? Browserbase emits
+        # live_view_url; the GCP fleet path never does. Demanding the iframe
+        # when none was offered would be a guaranteed fail that proves nothing.
+        live_offered = any(s.get("live_view_url") for s in agents)
+        report["live_offered_by_api"] = live_offered
         report["personas"] = [p.get("name") for p in (snap.get("personas") or [])]
         report["tasks_brief"] = [t.get("title") for t in (snap.get("tasks") or [])][:8]
         report["competitors"] = snap.get("competitors") or []
@@ -393,11 +426,9 @@ async def run(args: argparse.Namespace) -> dict:
             thread["sha0"] = thread["shots"][-1]["sha"] if thread["shots"] else None
             thread["last_rel"] = thread["shots"][-1]["rel"] if thread["shots"] else None
             thread["last_site_raw"] = raw0
-            await _select_session(page, sess)
-            try:
-                thread["last_ui_raw"] = await page.locator("#stage-section").screenshot(type="png")
-            except Exception:
-                thread["last_ui_raw"] = raw0
+            thread["last_sha"] = thread.get("sha0")
+            for problem in await _select_session(page, sess):
+                report["fails"].append(f"{aid}: {problem}")
             report["threads"].append(thread)
 
         # Follow steps until each agent has step>=1 or study ends.
@@ -424,14 +455,26 @@ async def run(args: argparse.Namespace) -> dict:
                         args.base,
                         step.get("screenshot_data_url") or step.get("screenshot_url") or "",
                     )
-                    await _select_session(page, cur)
+                    for problem in await _select_session(page, cur):
+                        report["fails"].append(f"{aid} step {n}: {problem}")
                     ui_state = await page.evaluate(_stage_state_js())
+                    if n >= 1 and not ui_state.get("liveOk"):
+                        for _ in range(8):
+                            await page.wait_for_timeout(250)
+                            ui_state = await page.evaluate(_stage_state_js())
+                            if ui_state.get("liveOk"):
+                                break
                     ui_png = await page.locator("#stage-section").screenshot(type="png")
                     ui_name = f"t{i}_{aid}_step{n}_ui.png"
                     (OUT_DIR / ui_name).write_bytes(ui_png)
 
-                    live_required = n >= 1
-                    live_ok = bool(ui_state.get("liveOk"))
+                    live_ok = bool(ui_state.get("liveOk")) or bool(
+                        await page.evaluate(
+                            "() => Boolean(window.__e2eLive && window.__e2eLive.seen)"
+                        )
+                    )
+                    if live_ok:
+                        thread["saw_live"] = True
                     changed = True
                     sha = None
                     site_png = raw
@@ -439,33 +482,49 @@ async def run(args: argparse.Namespace) -> dict:
                         fname = f"t{i}_{aid}_step{n}.png"
                         (OUT_DIR / fname).write_bytes(raw)
                         sha = _png_hash(raw)
-                        if thread.get("sha0") and sha == thread["sha0"] and n >= 1:
+                        # Compare against the PREVIOUS step, not only step 0. A
+                        # run that moved once and then froze differs from sha0
+                        # forever and used to sail through this check.
+                        prev_sha = thread.get("last_sha")
+                        if n >= 1 and prev_sha and sha == prev_sha:
+                            changed = False
+                        elif n >= 1 and thread.get("sha0") and sha == thread["sha0"]:
                             changed = False
                     else:
                         fname = ui_name
-                        # Missing file for later step — only OK if live is showing.
                         if not live_ok:
-                            report["fails"].append(f"{aid} step {n} PNG missing and no live view")
+                            report["fails"].append(
+                                f"{aid} step {n} PNG missing and no live view"
+                            )
                         changed = live_ok
 
-                    if live_required and not live_ok:
+                    # Per-step requirement: a sticky thread-level saw_live used to
+                    # exempt every later frozen step once live appeared even once.
+                    if n >= 1 and not live_ok and live_offered:
                         report["fails"].append(
                             f"{aid} step {n}: live screen required, still showing screenshot only"
                         )
-                    if live_required and not changed and not live_ok:
+                    if n >= 1 and not changed and not live_ok:
                         report["fails"].append(
-                            f"{aid} step {n}: pixels identical to step 0 (screen did not change)"
+                            f"{aid} step {n}: pixels identical to previous frame "
+                            "(screen did not change)"
                         )
 
                     prev_rel = thread.get("last_rel")
-                    if site_png and thread.get("last_site_raw"):
-                        prev_raw, new_raw = thread["last_site_raw"], site_png
-                    else:
-                        prev_raw, new_raw = thread.get("last_ui_raw"), ui_png
+                    # Site pixels are only ever judged against site pixels. The
+                    # old fallback compared a #stage-section screenshot (UserSim
+                    # chrome, captions, thought ticker) to a raw page PNG, so a
+                    # frozen page read as progress because the chrome moved.
+                    prev_raw, new_raw = thread.get("last_site_raw"), site_png
                     progress = None
                     progress_pass = False
                     progress_reason = ""
-                    if n >= 1 and prev_raw and new_raw:
+                    if n >= 1 and not site_png:
+                        progress_reason = (
+                            "no site screenshot for this step (screenshot_url missing or 404)"
+                        )
+                        report["fails"].append(f"{aid} step {n}: {progress_reason}")
+                    elif n >= 1 and prev_raw and new_raw:
                         action = str(step.get("action") or "")
                         try:
                             progress = judge_progress(
@@ -486,6 +545,8 @@ async def run(args: argparse.Namespace) -> dict:
                         progress_pass = bool(progress.get("pass"))
                         progress_reason = str(progress.get("reason") or "")
                         if not progress_pass:
+                            # Hard fail — soft_stuck was why stuck YouTube/cookie
+                            # walls still reported PASS.
                             report["fails"].append(
                                 f"{aid} step {n}: not progressing vs previous — {progress_reason}"
                             )
@@ -533,7 +594,7 @@ async def run(args: argparse.Namespace) -> dict:
                     thread["last_rel"] = fname
                     if site_png:
                         thread["last_site_raw"] = site_png
-                    thread["last_ui_raw"] = ui_png
+                        thread["last_sha"] = sha
                     seen[aid].add(n)
                     _log(
                         f"  {aid} step {n} live={live_ok} changed={changed} "
@@ -557,8 +618,19 @@ async def run(args: argparse.Namespace) -> dict:
     for t in report["threads"]:
         if not any(s.get("kind") == "after_tasks" for s in t.get("shots") or []):
             report["fails"].append(f"{t['agent_id']} never got after-tasks website shot")
-        if not any(int(s.get("step") or 0) >= 1 for s in t.get("shots") or []):
+        later = [s for s in t.get("shots") or [] if int(s.get("step") or 0) >= 1]
+        if not later:
             report["fails"].append(f"{t['agent_id']} never reached step ≥ 1")
+        elif not any(s.get("progress_pass") for s in later):
+            report["fails"].append(
+                f"{t['agent_id']} never progressed visually vs previous"
+            )
+        # A live screen is required on its own terms. This used to also require
+        # progress to have failed, so a screenshot-only run that changed pixels
+        # passed a test whose stated contract is "live view required" — exactly
+        # how the fleet path (which never emits live_view_url) stayed green.
+        if later and not t.get("saw_live") and report.get("live_offered_by_api"):
+            report["fails"].append(f"{t['agent_id']} never showed a live screen")
 
     report["elapsed_s"] = round(time.time() - t0, 1)
     report["pass"] = not report["fails"]
@@ -582,6 +654,7 @@ def main() -> int:
     ap.add_argument("--brief-timeout-s", type=int, default=180)
     ap.add_argument("--after-tasks-s", type=float, default=2.0)
     ap.add_argument("--steps-timeout-s", type=int, default=600)
+    ap.add_argument("--expect-threads", type=int, default=5)
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
     args = ap.parse_args()
     import asyncio

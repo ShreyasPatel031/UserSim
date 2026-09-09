@@ -38,6 +38,26 @@ def _browserbase_configured() -> bool:
     return bool((os.environ.get("BROWSERBASE_API_KEY") or "").strip())
 
 
+def _site_host(url: str) -> str:
+    from urllib.parse import urlparse
+
+    try:
+        return (urlparse(url or "").hostname or "").replace("www.", "").lower()
+    except Exception:
+        return (url or "").strip().lower()
+
+
+def _prefer_browserbase_live(study: StudyState | None = None) -> bool:
+    """Every interactive study needs a real Browserbase live iframe.
+
+    The GCP fleet path uses local Chromium on seeds and never emits
+    live_view_url / live_active, so studies routed there can only ever show
+    screenshots. Browserbase is the only backend the stage can switch from
+    opening PNG → live on, so it wins at any study size.
+    """
+    return _browserbase_configured()
+
+
 def _fleet_preferred(*, test_mode: bool = False) -> bool:
     # Smoke / quick preview stays on Browserbase (or snapshot) — don't spin VMs.
     if test_mode:
@@ -954,29 +974,46 @@ async def run_study(
         touch("Understanding context of product", "running")
         log_activity(study, "fetch", f"Understanding context of {study.url}")
 
-        # Warm Browserbase + first screenshot of the product URL in parallel with
-        # page fetch + persona/task LLMs so pixels are ready when the URL locks in.
-        warm_task: asyncio.Task | None = None
-        warm_opening: dict[str, Any] | None = None
-        warm_used = False
+        # Warm Browserbase + first screenshot per unique site URL in parallel
+        # with page fetch + persona/task LLMs so pixels are ready when tasks lock.
+        warm_tasks: dict[str, asyncio.Task] = {}
+        warm_by_host: dict[str, dict[str, Any]] = {}
+        warm_used_hosts: set[str] = set()
 
         def _should_warm_browserbase() -> bool:
             if SNAPSHOT_ONLY and not _fleet_preferred(test_mode=bool(study.test_mode)):
                 return False
-            # Fleet still needs an immediate product-site PNG. One Browserbase
-            # landing capture is what the stage shows while seeds boot.
+            # Fleet still needs an immediate landing PNG while seeds boot.
             if os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {"1", "true", "yes"}:
                 return False
             if IS_VERCEL_ENV:
                 return USE_LIVE_BROWSER and _browserbase_configured()
             return _browserbase_configured()
 
-        if _should_warm_browserbase():
+        def _start_warm(url: str, *, slot: str) -> None:
+            host = _site_host(url)
+            if not host or host in warm_tasks:
+                return
             from mvp.browser_agent import warm_opening_session
 
-            warm_task = asyncio.create_task(
-                warm_opening_session(study_id=study.id, url=study.url)
+            warm_tasks[host] = asyncio.create_task(
+                warm_opening_session(study_id=study.id, url=url, slot=slot)
             )
+
+        async def _close_unused_warms() -> None:
+            from mvp.browser_agent import close_warm_opening
+
+            for host, opening in list(warm_by_host.items()):
+                if host in warm_used_hosts:
+                    continue
+                try:
+                    await close_warm_opening(opening)
+                except Exception:
+                    pass
+                warm_by_host.pop(host, None)
+
+        if _should_warm_browserbase():
+            _start_warm(study.url, slot="product")
             log_activity(
                 study,
                 "browser",
@@ -1159,6 +1196,17 @@ async def run_study(
 
         touch("Building simulated users")
         _push_brief("brief")
+
+        if _should_warm_browserbase():
+            for i, rival in enumerate(study.competitors or [], start=1):
+                _start_warm(str(rival), slot=f"rival_{i}")
+            if study.competitors:
+                log_activity(
+                    study,
+                    "browser",
+                    "Warming first screenshots for "
+                    + ", ".join(str(c) for c in study.competitors),
+                )
 
         # 3) Tasks (own agent call — only after users are visible)
         touch("Writing tasks")
@@ -1356,40 +1404,40 @@ async def run_study(
                 "last_action": f"Opening {site}…",
             }
 
-        touch("Opening the live page")
-        persist_study(study)
-        if on_update:
+        # Collect warms that already finished during the brief so the first
+        # task-list paint includes real site pixels (not a 3s wait).
+        if _should_warm_browserbase():
+            for task in study.tasks:
+                site = str(task.get("site_url") or study.url)
+                host = _site_host(site)
+                if host and host not in warm_tasks and host not in warm_by_host:
+                    _start_warm(site, slot=host.replace(".", "_")[:24] or "site")
+        for host, task in list(warm_tasks.items()):
+            if not task.done():
+                continue
             try:
-                on_update(study, event="brief")
-            except TypeError:
-                on_update(study)
-            except Exception:
-                pass
-
-        # Warm capture may already be done; if not, stage is already visible.
-        if warm_task is not None:
-            try:
-                warm_opening = await warm_task
+                opening = task.result()
             except Exception as warm_exc:  # noqa: BLE001
-                print(f"warm opening await failed: {warm_exc!r}", flush=True)
-                warm_opening = None
-            warm_task = None
+                print(f"warm opening await failed ({host}): {warm_exc!r}", flush=True)
+                opening = None
+            if opening and opening.get("shot_path"):
+                warm_by_host[host] = opening
+            warm_tasks.pop(host, None)
 
-        # Publish the product-site landing shot onto every product task NOW so
-        # the stage shows the website as soon as tasks exist (not just agent 0).
-        if warm_opening and warm_opening.get("shot_path"):
-            from pathlib import Path as _Path
-
+        async def _publish_opening(host: str, opening: dict[str, Any]) -> None:
+            if not opening or not opening.get("shot_path"):
+                return
             from mvp.paths import MVP_RUNS_DIR
 
+            published = False
             for task in study.tasks:
-                if str(task.get("site_key") or "product") != "product":
-                    continue
                 aid = task.get("id") or ""
                 sess = study.live_sessions.get(aid)
                 if not sess:
                     continue
                 site = task.get("site_url") or study.url
+                if _site_host(site) != host:
+                    continue
                 dest_dir = MVP_RUNS_DIR / study.id / aid / "screenshots"
                 dest_dir.mkdir(parents=True, exist_ok=True)
                 dest = dest_dir / "bbox_0.png"
@@ -1398,7 +1446,7 @@ async def run_study(
 
                     from mvp.opening_shot import attach_opening_pixels
 
-                    _shutil.copy2(warm_opening["shot_path"], dest)
+                    _shutil.copy2(opening["shot_path"], dest)
                     step0 = {
                         "step": 0,
                         "action": f"Opened {site}",
@@ -1423,12 +1471,10 @@ async def run_study(
                     sess["trace"] = [step0]
                     sess["num_steps"] = 1
                     sess["last_action"] = step0["action"]
-                    # Stash live URL early but keep live_active OFF — UI shows
-                    # screenshot until the agent loop actually starts.
-                    if warm_opening.get("live_view_url"):
-                        sess["live_view_url"] = warm_opening["live_view_url"]
-                    if warm_opening.get("browserbase_session_id"):
-                        sess["browserbase_session_id"] = warm_opening[
+                    if opening.get("live_view_url"):
+                        sess["live_view_url"] = opening["live_view_url"]
+                    if opening.get("browserbase_session_id"):
+                        sess["browserbase_session_id"] = opening[
                             "browserbase_session_id"
                         ]
                     sess["live_active"] = False
@@ -1439,7 +1485,7 @@ async def run_study(
                             "kind": "status",
                         }
                     ]
-                    study.updated_at = _now()
+                    published = True
                     log_activity(
                         study,
                         "browser",
@@ -1448,7 +1494,40 @@ async def run_study(
                     )
                 except Exception as pub_exc:  # noqa: BLE001
                     print(f"warm publish failed: {pub_exc!r}", flush=True)
-            persist_study(study)
+            if published:
+                study.updated_at = _now()
+                persist_study(study)
+                if on_update:
+                    try:
+                        on_update(study, event="progress")
+                    except TypeError:
+                        on_update(study)
+                    except Exception:
+                        pass
+
+        for host, opening in list(warm_by_host.items()):
+            await _publish_opening(host, opening)
+
+        touch("Opening the live page")
+        persist_study(study)
+        if on_update:
+            try:
+                on_update(study, event="brief")
+            except TypeError:
+                on_update(study)
+            except Exception:
+                pass
+
+        for host, task in list(warm_tasks.items()):
+            try:
+                opening = await task
+            except Exception as warm_exc:  # noqa: BLE001
+                print(f"warm opening await failed ({host}): {warm_exc!r}", flush=True)
+                opening = None
+            if opening and opening.get("shot_path"):
+                warm_by_host[host] = opening
+                await _publish_opening(host, opening)
+        warm_tasks.clear()
 
         touch(
             f"Live browser agents — 0/{len(study.tasks)} done · {len(study.tasks)} active · 0 queued · 0 steps"
@@ -1470,14 +1549,10 @@ async def run_study(
             touch(_agent_phase_label(study))
 
         if SNAPSHOT_ONLY and not _fleet_preferred(test_mode=bool(study.test_mode)):
-            if warm_task is not None:
-                warm_task.cancel()
-                warm_task = None
-            if warm_opening is not None:
-                from mvp.browser_agent import close_warm_opening
-
-                await close_warm_opening(warm_opening)
-                warm_opening = None
+            for t in warm_tasks.values():
+                t.cancel()
+            warm_tasks.clear()
+            await _close_unused_warms()
             log_activity(
                 study,
                 "agents",
@@ -1534,17 +1609,13 @@ async def run_study(
 
             study.agent_results = []
             await asyncio.gather(*[_run_snapshot(t) for t in study.tasks])
-        elif _fleet_preferred(test_mode=bool(study.test_mode)):
+        elif _fleet_preferred(test_mode=bool(study.test_mode)) and not _prefer_browserbase_live(study):
             from mvp.gcp_fleet import run_study_on_gcp_fleet
 
-            if warm_task is not None:
-                warm_task.cancel()
-                warm_task = None
-            if warm_opening is not None:
-                from mvp.browser_agent import close_warm_opening
-
-                await close_warm_opening(warm_opening)
-                warm_opening = None
+            for t in warm_tasks.values():
+                t.cancel()
+            warm_tasks.clear()
+            await _close_unused_warms()
 
             workers = min(
                 8,
@@ -1798,11 +1869,7 @@ async def run_study(
                     pool = min(pool, int(os.environ.get("MVP_BROWSER_CONCURRENCY", "2")))
 
             if not use_live_browser:
-                if warm_opening is not None:
-                    from mvp.browser_agent import close_warm_opening
-
-                    await close_warm_opening(warm_opening)
-                    warm_opening = None
+                await _close_unused_warms()
                 log_activity(
                     study,
                     "agents",
@@ -1897,8 +1964,8 @@ async def run_study(
                 log_activity(
                     study,
                     "agents",
-                    f"Launching {len(study.tasks)} live browser agents "
-                    "(live view on with first pixels)",
+                    f"Launching {len(study.tasks)} live Browserbase agents "
+                    "(per-site opening shot + live view once the agent starts)",
                 )
 
                 async def _on_agent_step(agent_id: str, step: dict[str, Any]) -> None:
@@ -2030,7 +2097,7 @@ async def run_study(
                     )
 
                 async def _run_one(task: dict[str, Any]) -> dict[str, Any]:
-                    nonlocal done_count, warm_used
+                    nonlocal done_count
                     from mvp.browser_agent import run_browser_agent
 
                     persona = persona_by_id.get(task.get("persona_id")) or study.personas[0]
@@ -2047,6 +2114,11 @@ async def run_study(
                     )
                     raise_if_killed(study)
                     sess["site_url"] = site
+                    agent_max_steps = (
+                        int(os.environ.get("MVP_SMOKE_BROWSER_STEPS", "6") or "6")
+                        if study.test_mode
+                        else int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12") or "12")
+                    )
                     # Queue behind Browserbase concurrency — never drop.
                     if not (sess.get("trace") or sess.get("live_active")):
                         sess["status"] = "pending"
@@ -2108,13 +2180,13 @@ async def run_study(
                                 except Exception:
                                     pass
                             agent_warm = None
-                            if (
-                                not warm_used
-                                and warm_opening is not None
-                                and str(task.get("site_key") or "product") == "product"
-                            ):
-                                agent_warm = warm_opening
-                                warm_used = True
+                            host = _site_host(site)
+                            if host and host not in warm_used_hosts and host in warm_by_host:
+                                agent_warm = warm_by_host[host]
+                                warm_used_hosts.add(host)
+                                if agent_warm.get("live_view_url"):
+                                    sess["live_view_url"] = agent_warm["live_view_url"]
+                                    sess["live_active"] = True
                             run = await run_browser_agent(
                                 study_id=study.id,
                                 agent_id=agent_id,
@@ -2126,6 +2198,7 @@ async def run_study(
                                 bb_session=None,
                                 local=force_local_browser,
                                 warm=agent_warm,
+                                max_steps=agent_max_steps,
                             )
                         sess["status"] = "summarizing"
                         refresh_agent_phase()
@@ -2172,6 +2245,7 @@ async def run_study(
                                 on_step=lambda step: _on_agent_step(agent_id, step),
                                 bb_session=None,
                                 local=False,
+                                max_steps=agent_max_steps,
                             )
                             sess["status"] = "summarizing"
                             feedback = await summarize_agent_feedback(
@@ -2230,15 +2304,34 @@ async def run_study(
                         (s or {}).get("screenshot_url") or (s or {}).get("screenshot_data_url")
                         for s in snap_trace
                     )
-                    if has_pixels and not snap_has_pixels:
-                        sess["trace"] = existing + [
-                            s for s in snap_trace if (s or {}).get("step") not in {
-                                e.get("step") for e in existing if isinstance(e, dict)
-                            }
-                        ]
+                    if has_pixels:
+                        # Live stream is what the UI already showed — keep it, and
+                        # only fill gaps from the history rebuild (never reintroduce
+                        # duplicate "done" frames the hook already folded away).
+                        by_step: dict[Any, dict[str, Any]] = {}
+                        for s in existing:
+                            if isinstance(s, dict) and isinstance(s.get("step"), int):
+                                by_step[s["step"]] = s
+                        for s in snap_trace:
+                            if not isinstance(s, dict) or not isinstance(s.get("step"), int):
+                                continue
+                            n = s["step"]
+                            if n not in by_step:
+                                by_step[n] = s
+                                continue
+                            cur = by_step[n]
+                            cur_shot = cur.get("screenshot_url") or cur.get("screenshot_data_url")
+                            new_shot = s.get("screenshot_url") or s.get("screenshot_data_url")
+                            if new_shot and not cur_shot:
+                                by_step[n] = s
+                        sess["trace"] = [by_step[k] for k in sorted(by_step)]
+                    elif snap_has_pixels or snap_trace:
+                        sess["trace"] = snap_trace
                     else:
-                        sess["trace"] = snap_trace or existing
+                        sess["trace"] = existing
                     sess["num_steps"] = len(sess["trace"])
+                    result["trace"] = list(sess["trace"])
+                    result["num_steps"] = sess["num_steps"]
                     done_count += 1
                     study.agent_results.append(result)
                     refresh_agent_phase()
@@ -2252,11 +2345,7 @@ async def run_study(
 
                 study.agent_results = []
                 await asyncio.gather(*[_run_one(t) for t in study.tasks])
-                if warm_opening is not None and not warm_used:
-                    from mvp.browser_agent import close_warm_opening
-
-                    await close_warm_opening(warm_opening)
-                    warm_opening = None
+                await _close_unused_warms()
 
         order = {t.get("id"): i for i, t in enumerate(study.tasks)}
         study.agent_results.sort(key=lambda r: order.get(r.get("task_id"), 99))

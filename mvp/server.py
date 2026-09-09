@@ -565,7 +565,13 @@ async def get_study(study_id: str):
         # poll while 6 Browserbase agents are writing was starving the event
         # loop (study GET timeouts / list 503s under parallel load).
         live = data.get("live_sessions") or {}
+        empty = _empty_live_sessions(live)
         if data.get("status") in {"running", "pending"} and live and _live_step_count(live) > 0:
+            # Product warm shots must not hide competitor (or later) GCS frames.
+            if empty:
+                data["live_sessions"] = await asyncio.to_thread(
+                    hydrate_live_sessions_from_gcs, study_id, live
+                )
             return data
         if data.get("status") in {"running", "pending"} and live:
             data["live_sessions"] = await asyncio.to_thread(
@@ -595,6 +601,19 @@ async def get_study(study_id: str):
         )
         return remote
     raise HTTPException(status_code=404, detail="Study not found")
+
+
+def _empty_live_sessions(live_sessions: object) -> bool:
+    if isinstance(live_sessions, dict):
+        items = live_sessions.values()
+    elif isinstance(live_sessions, list):
+        items = live_sessions
+    else:
+        return False
+    for sess in items:
+        if isinstance(sess, dict) and not (sess.get("trace") or []):
+            return True
+    return False
 
 
 def _live_step_count(live_sessions: object) -> int:

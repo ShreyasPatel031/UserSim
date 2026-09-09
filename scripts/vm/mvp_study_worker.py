@@ -19,12 +19,12 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
 
-def _upload(local: Path, remote: str, *, content_type: str | None = None) -> None:
+def _upload(local: Path, remote: str, *, content_type: str | None = None) -> bool:
     try:
         from mvp.gcs_store import gcs_upload_file
 
         gcs_upload_file(local, remote, content_type=content_type)
-        return
+        return True
     except Exception as exc:  # noqa: BLE001
         print(f"gcs_store upload failed, trying gcloud: {exc}", flush=True)
     env = os.environ.copy()
@@ -43,6 +43,8 @@ def _upload(local: Path, remote: str, *, content_type: str | None = None) -> Non
     if r.returncode != 0:
         err = (r.stderr or r.stdout or "").strip()[-300:]
         print(f"GCS upload failed {local} -> {remote}: {err}", flush=True)
+        return False
+    return True
 
 
 def _upload_json(uri: str, payload: Any) -> None:
@@ -147,7 +149,10 @@ def _persist_screenshot(study_id: str, agent_id: str, step: dict[str, Any], live
         gcs_uri = screenshot_gcs_uri(study_id, agent_id, filename)
     except Exception:
         pass
-    _upload(local, gcs_uri, content_type=f"image/{'png' if ext == 'png' else 'jpeg'}")
+    ok = _upload(local, gcs_uri, content_type=f"image/{'png' if ext == 'png' else 'jpeg'}")
+    if not ok:
+        step.pop("screenshot_url", None)
+        return
     step["screenshot_url"] = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/{filename}"
     step["screenshot_gcs"] = gcs_uri
 
@@ -171,6 +176,8 @@ async def _run_one(
     manifest_steps: list[dict[str, Any]] = []
 
     async def on_step(step: dict[str, Any]) -> None:
+        if step.get("progress_only") or step.get("step") is None:
+            return
         step_no = int(step.get("step") or 0)
         _persist_screenshot(study_id, agent_id, step, live_dir)
         # Keep a slim copy for the manifest (drop huge thought_detail if needed).

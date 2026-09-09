@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/styles.css?v=72" />
+  <link rel="stylesheet" href="/static/styles.css?v=74" />
 </head>
 <body>
   <header class="site-header">
@@ -33,7 +33,7 @@
             autofocus
             inputmode="url"
             autocomplete="url"
-            value="https://www.youtube.com/"
+            value="https://useagency.dev/"
             placeholder="https://yourproduct.com"
             aria-label="Product URL"
           />
@@ -152,32 +152,34 @@
 
         <div id="report-cta" class="report-cta">
           <div id="report-running" class="report-running-card" hidden>
-            <span class="report-spin" aria-hidden="true"></span>
-            <div>
-              <p class="eyebrow">Running</p>
-              <strong id="report-eta-title">Study in progress</strong>
-              <span class="section-sub" id="report-eta-sub">Estimating time left…</span>
+            <div class="report-running-head">
+              <span class="report-spin" aria-hidden="true"></span>
+              <div>
+                <p class="eyebrow">Running</p>
+                <strong id="report-eta-title">Study in progress</strong>
+                <span class="section-sub" id="report-eta-sub">Estimating time left…</span>
+              </div>
             </div>
-          </div>
-          <div id="report-email-prompt" class="report-email-prompt" hidden>
-            <div>
-              <p class="eyebrow">While you wait</p>
-              <strong>Get the full report by email</strong>
-              <span class="section-sub">We’ll send it when the study finishes</span>
+            <div id="report-email-prompt" class="report-email-prompt">
+              <div>
+                <p class="eyebrow">While you wait</p>
+                <strong>Get the full report by email</strong>
+                <span class="section-sub">We’ll send it when the study finishes</span>
+              </div>
+              <form id="report-email-form" class="report-email-form">
+                <input
+                  type="email"
+                  name="report_email"
+                  id="report-email-input"
+                  placeholder="you@company.com"
+                  autocomplete="email"
+                  aria-label="Email for full report"
+                  required
+                />
+                <button type="submit">Notify me</button>
+              </form>
+              <p id="report-email-saved" class="email-status" hidden></p>
             </div>
-            <form id="report-email-form" class="report-email-form">
-              <input
-                type="email"
-                name="report_email"
-                id="report-email-input"
-                placeholder="you@company.com"
-                autocomplete="email"
-                aria-label="Email for full report"
-                required
-              />
-              <button type="submit">Notify me</button>
-            </form>
-            <p id="report-email-saved" class="email-status" hidden></p>
           </div>
           <a id="view-report-link" class="view-report-card" href="/report" hidden>
             <div>
@@ -236,6 +238,6 @@
     <p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p>
   </footer>
 
-  <script src="/static/app.js?v=86"></script>
+  <script src="/static/app.js?v=89"></script>
 </body>
 </html>

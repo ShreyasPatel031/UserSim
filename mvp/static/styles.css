@@ -236,12 +236,18 @@ main {
 
 .report-running-card {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 1rem;
   padding: 1.15rem 1.35rem;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: var(--bg-card);
+}
+
+.report-running-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .report-running-card .eyebrow {
@@ -284,10 +290,11 @@ main {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.15rem 1.35rem;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--bg-card);
+  padding: 1rem 0 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
 }
 
 .report-email-prompt strong {

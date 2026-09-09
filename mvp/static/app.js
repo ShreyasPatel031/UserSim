@@ -162,6 +162,26 @@ function formatTime(iso) {
   }
 }
 
+function mergeTraceSteps(a, b) {
+  /** Prefer screenshot-backed frames; keep the richer of live vs completed. */
+  const byStep = new Map();
+  for (const src of [a || [], b || []]) {
+    for (const step of src) {
+      if (!step || typeof step.step !== "number") continue;
+      const prev = byStep.get(step.step);
+      if (!prev) {
+        byStep.set(step.step, step);
+        continue;
+      }
+      const prevShot = Boolean(prev.screenshot_url || prev.screenshot_data_url);
+      const nextShot = Boolean(step.screenshot_url || step.screenshot_data_url);
+      if (nextShot && !prevShot) byStep.set(step.step, step);
+      else if (nextShot === prevShot) byStep.set(step.step, { ...prev, ...step });
+    }
+  }
+  return [...byStep.values()].sort((x, y) => x.step - y.step);
+}
+
 function mergeSessions(data) {
   const tasks = data.tasks || [];
   const personas = data.personas || [];
@@ -182,7 +202,16 @@ function mergeSessions(data) {
   }
   for (const r of completed) {
     const id = r.agent_id || r.task_id;
-    byId[id] = { ...byId[id], ...r, status: "complete" };
+    const prev = byId[id] || {};
+    byId[id] = {
+      ...prev,
+      ...r,
+      status: "complete",
+      // agent_results rebuild can drop bbox frames that live_sessions still has.
+      trace: mergeTraceSteps(prev.trace, r.trace),
+      live_view_url: r.live_view_url || prev.live_view_url,
+      live_active: false,
+    };
   }
 
   return tasks.map((t) => {
@@ -270,7 +299,10 @@ function resetLiveUI() {
   const reportLink = document.getElementById("view-report-link");
   if (reportLink) reportLink.hidden = true;
   const runningCard = document.getElementById("report-running");
-  if (runningCard) runningCard.hidden = true;
+  if (runningCard) {
+    runningCard.hidden = true;
+    delete runningCard.dataset.scrolled;
+  }
   const emailPrompt = document.getElementById("report-email-prompt");
   if (emailPrompt) emailPrompt.hidden = true;
   const emailSaved = document.getElementById("report-email-saved");
@@ -536,17 +568,43 @@ function formatStepCaption(step) {
   return `${label} — ${action}`;
 }
 
+function renderShotNavHtml(shots, idx, key) {
+  if (!shots?.length) return "";
+  return `<div class="stage-shot-nav">
+        <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="-1" ${idx <= 0 ? "disabled" : ""}>← Prev</button>
+        <div class="trace-step-pills">
+          ${shots
+            .map(
+              (s, i) =>
+                `<button type="button" class="step-pill${i === idx ? " active" : ""}${
+                  stepShotSrc(s) ? "" : " is-pending"
+                }" data-shot-key="${escapeHtml(key)}" data-shot-idx="${i}">${escapeHtml(
+                  typeof s.step === "number" ? s.step : i
+                )}</button>`
+            )
+            .join("")}
+        </div>
+        <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="1" ${idx >= shots.length - 1 ? "disabled" : ""}>Next →</button>
+      </div>`;
+}
+
 /** Prefer the newest frame that is still on the assigned site (agents sometimes wander). */
 function preferredShots(session) {
   const shots = stepsWithScreenshots(session?.trace);
   if (!shots.length) return shots;
   const host = siteHostname(session?.site_url);
   if (!host) return shots;
-  const onSite = shots.filter((s) => {
+  // Drop only frames we can positively place on a *different* host. A step with
+  // no url (common — browser-use state.url is often missing) used to be treated
+  // as off-site and silently vanish from the rail, leaving a single step-0 pill
+  // and a stage frozen on the landing shot.
+  const offSite = (s) => {
     const h = siteHostname(s.url);
-    return h && (h === host || h.endsWith(`.${host}`) || host.endsWith(`.${h}`));
-  });
-  return onSite.length ? onSite : shots;
+    if (!h) return false;
+    return !(h === host || h.endsWith(`.${host}`) || host.endsWith(`.${h}`));
+  };
+  const kept = shots.filter((s) => !offSite(s));
+  return kept.length ? kept : shots;
 }
 
 function pickVisibleShot(session, sessionIdx) {
@@ -592,7 +650,11 @@ function renderFocusStage(session, sessionIdx) {
   const agentId = String(session?.agent_id || "");
 
   let visual = "";
-  const browsing = ["starting", "pending", "running"].includes(String(session?.status || ""));
+  // Keep live through summarizing — short smoke runs leave "running" in <1s
+  // and the e2e latch only sees .stage-live-frame while it is mounted.
+  const browsing = ["starting", "pending", "running", "summarizing"].includes(
+    String(session?.status || "")
+  );
   const liveView = session?.live_view_url;
   const liveWanted = Boolean(
     liveView &&
@@ -601,8 +663,11 @@ function renderFocusStage(session, sessionIdx) {
       !_liveFailed[agentId] &&
       !["killed", "complete", "error", "abandoned"].includes(String(session?.status || ""))
   );
-  // Screenshot of the website first. Live replaces it only after the iframe paints.
-  const showLive = liveWanted && Boolean(_liveReady[agentId]);
+  // Scrubbing history (Prev / an older pill) must show screenshots even while
+  // the agent is still live — otherwise the pill rail disappears whenever live
+  // is mounted, and step nav can never change pixels.
+  const reviewingHistory = _shotFollowLatest[key] === false;
+  const showLive = liveWanted && !reviewingHistory;
   const shotSrc = !showLive ? pickedSrc : "";
   if (showLive) {
     visual = `
@@ -667,25 +732,9 @@ function renderFocusStage(session, sessionIdx) {
       </div>`;
   }
 
-  const shotNav =
-    !showLive && shots.length
-      ? `<div class="stage-shot-nav">
-        <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="-1" ${idx <= 0 ? "disabled" : ""}>← Prev</button>
-        <div class="trace-step-pills">
-          ${shots
-            .map(
-              (s, i) =>
-                `<button type="button" class="step-pill${i === idx ? " active" : ""}${
-                  stepShotSrc(s) ? "" : " is-pending"
-                }" data-shot-key="${escapeHtml(key)}" data-shot-idx="${i}">${escapeHtml(
-                  typeof s.step === "number" ? s.step : i
-                )}</button>`
-            )
-            .join("")}
-        </div>
-        <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="1" ${idx >= shots.length - 1 ? "disabled" : ""}>Next →</button>
-      </div>`
-      : "";
+  // Always keep the step rail when we have screenshots — including during live.
+  // Hiding it behind !showLive made e2e see API steps [0..N] with 0 pills.
+  const shotNav = renderShotNavHtml(shots, idx, key);
 
   const thoughts = Array.isArray(session?.live_thoughts) ? session.live_thoughts : [];
   const thoughtPanel = thoughts.length
@@ -1209,17 +1258,23 @@ function paintStageBody(body, session, idx) {
   const liveWrap = body.querySelector(".stage-live-wrap");
   const agentId = String(session?.agent_id || idx);
   const sameAgent = body.dataset.agentId === agentId;
-  const browsing = ["starting", "pending", "running"].includes(String(session?.status || ""));
+  const browsing = ["starting", "pending", "running", "summarizing"].includes(
+    String(session?.status || "")
+  );
   const liveWanted = Boolean(
     session?.live_view_url &&
       session?.live_active &&
       browsing &&
       !_liveFailed[agentId]
   );
-  const wantLive = liveWanted && Boolean(_liveReady[agentId]);
+  const reviewingHistory = _shotFollowLatest[String(idx)] === false;
+  const wantLive = liveWanted && !reviewingHistory;
   const liveSrc = session?.live_view_url || "";
+  const nextShotCount = preferredShots(session).length;
   const finishPaint = () => {
     body.dataset.agentId = agentId;
+    body.dataset.shotCount = String(nextShotCount);
+    body.dataset.reviewing = reviewingHistory ? "1" : "0";
     body.innerHTML = nextHtml;
     const painted = body.querySelector("img.trace-screenshot");
     if (painted) bindAgentShot(painted, session?.agent_id);
@@ -1270,13 +1325,16 @@ function paintStageBody(body, session, idx) {
   };
 
   // Mode switch shot ↔ live requires a full repaint (never side-by-side).
-  // Keep the website screenshot up until live actually paints.
   const haveShot = Boolean(liveImg);
   const haveLive = Boolean(liveFrame);
+  const prevShotCount = Number(body.dataset.shotCount || 0);
+  const wasReviewing = body.dataset.reviewing === "1";
   if (
     sameAgent &&
-    ((wantLive && haveShot && !haveLive) ||
+    ((wantLive && !haveLive) ||
       (!wantLive && haveLive) ||
+      reviewingHistory !== wasReviewing ||
+      (!wantLive && haveShot && nextShotCount !== prevShotCount) ||
       (!wantLive && haveShot && !nextSrc && !picked.shots.length))
   ) {
     finishPaint();
@@ -1292,6 +1350,24 @@ function paintStageBody(body, session, idx) {
       }
     }
     if (liveWanted && liveProbe) bindLiveProbe(liveProbe, agentId);
+    // Refresh the pill rail in place when new screenshot steps arrive during live.
+    if (nextShotCount !== prevShotCount || !body.querySelector(".stage-shot-nav")) {
+      const navHtml = renderShotNavHtml(picked.shots, picked.idx, String(idx));
+      const existingNav = body.querySelector(".stage-shot-nav");
+      if (navHtml && existingNav) {
+        existingNav.outerHTML = navHtml;
+      } else if (navHtml) {
+        const card = body.querySelector(".stage-card");
+        const thoughts = body.querySelector(".stage-thoughts");
+        if (card && thoughts) thoughts.insertAdjacentHTML("beforebegin", navHtml);
+        else if (card) card.insertAdjacentHTML("beforeend", navHtml);
+      }
+      body.dataset.shotCount = String(nextShotCount);
+    } else {
+      // Keep active pill in sync while following latest.
+      const pills = body.querySelectorAll(".step-pill");
+      pills.forEach((p, i) => p.classList.toggle("active", i === picked.idx));
+    }
     if (liveImg && nextSrc && !wantLive) {
       bindAgentShot(liveImg, session?.agent_id);
       const shown = liveImg.dataset.shotSrc || liveImg.getAttribute("src") || "";
@@ -1491,12 +1567,12 @@ function updateReportCta(data, startedAt) {
 
   if (fullyDone) {
     if (runningCard) runningCard.hidden = true;
+    if (emailPrompt) emailPrompt.hidden = true;
     if (link) {
       const studyId = data.id || data.study_id || "";
       link.href = studyId ? `/report?study=${encodeURIComponent(studyId)}` : "/report";
       link.hidden = false;
     }
-    if (emailPrompt) emailPrompt.hidden = true;
     return;
   }
 
@@ -1514,11 +1590,17 @@ function updateReportCta(data, startedAt) {
 
   if (runningCard) {
     const progressOpen = progressPanel && !progressPanel.hidden;
-    runningCard.hidden = !(stageVisible || progressOpen || running);
+    const show = Boolean(stageVisible || progressOpen || running);
+    runningCard.hidden = !show;
+    if (show && !runningCard.dataset.scrolled) {
+      runningCard.dataset.scrolled = "1";
+      runningCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    if (!show) delete runningCard.dataset.scrolled;
   }
   if (emailPrompt) {
-    // Keep email capture under the loading card while running.
-    emailPrompt.hidden = !stageVisible;
+    // Email lives on the loading card; hide only the form after they submit.
+    emailPrompt.hidden = Boolean(runningCard?.hidden);
     const saved = document.getElementById("report-email-saved");
     const formEl = document.getElementById("report-email-form");
     if (_emailCaptureSubmitted && _notifyEmail) {
@@ -1664,6 +1746,7 @@ form.addEventListener("submit", async (e) => {
   scrollBriefTo("products-panel", "products");
   const startedAt = Date.now();
   updateProgressUI({ phase: "Understanding context of product", status: "running" }, startedAt);
+  updateReportCta({ status: "running", phase: "Understanding context of product" }, startedAt);
 
   try {
     const startRes = await fetch("/api/studies", {

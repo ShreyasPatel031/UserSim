@@ -1,0 +1,283 @@
+{
+  "base": "http://127.0.0.1:3000",
+  "product_url": "https://www.youtube.com/",
+  "judge_model": "gemini-2.5-flash-lite",
+  "mode": "smoke",
+  "fails": [
+    "first screen 7.4s after tasks (need \u22643.0s)",
+    "step0 not usable real site: The screenshot shows a cookie consent dialog on the YouTube website, which is the target site. | A cookie consent wall is present, blocking access to the main content.",
+    "step 1: not progressing \u2014 The agent was expected to interact with YouTube, but the action resulted in navigating to a completely different website.",
+    "step 1: unusable/blocked page \u2014 The screenshot shows the website gong.io, not youtube.com. | A cookie consent wall is present and blocks interaction with the page.",
+    "UI text still shows consent/blocker: \"Step 5 \u2014 done\\nDeciding what to do next (step 1)\u2026\\nClick on the 'AI-powered Guidance To Help You Win More' video to watch it.\\nDeciding what to do next (step 2)\u2026\\nA\""
+  ],
+  "checks": {
+    "smoke_on": true,
+    "after_tasks_s": 7.4,
+    "step0_judge": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "youtube.com",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows a cookie consent dialog on the YouTube website, which is the target site. | A cookie consent wall is present, blocking access to the main content.",
+      "label": "step0",
+      "expected_host": "youtube.com",
+      "png_bytes": 142865,
+      "host_match": true,
+      "pass": false,
+      "blocker": {
+        "is_cookie_or_consent_wall": true,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": false,
+        "blocker_text_guess": "Before you continue to YouTube",
+        "reason": "A cookie consent wall is present, blocking access to the main content."
+      }
+    },
+    "progress_1": {
+      "screens_look_the_same": false,
+      "visible_change": "new_page",
+      "matches_claimed_action": false,
+      "progressing_toward_task": false,
+      "stuck": true,
+      "what_changed": "The page changed from YouTube to a different website (Gong.io) with a cookie consent modal.",
+      "reason": "The agent was expected to interact with YouTube, but the action resulted in navigating to a completely different website.",
+      "label": "step0\u21921",
+      "expected_host": "youtube.com",
+      "action": "click \u2014 index=281",
+      "prev_bytes": 142865,
+      "new_bytes": 366618,
+      "pass": false
+    },
+    "usable_1": {
+      "is_real_target_site_screenshot": false,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "gong.io",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows the website gong.io, not youtube.com. | A cookie consent wall is present and blocks interaction with the page.",
+      "label": "step1",
+      "expected_host": "youtube.com",
+      "png_bytes": 366618,
+      "host_match": false,
+      "pass": false,
+      "blocker": {
+        "is_cookie_or_consent_wall": true,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": false,
+        "blocker_text_guess": "Accept All Cookies",
+        "reason": "A cookie consent wall is present and blocks interaction with the page."
+      }
+    },
+    "progress_2": {
+      "screens_look_the_same": false,
+      "visible_change": "new_page",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "The page changed from a marketing website to the YouTube homepage.",
+      "reason": "The agent successfully navigated to the YouTube homepage, which is the correct starting point for the task of finding something interesting to watch.",
+      "label": "step1\u21922",
+      "expected_host": "youtube.com",
+      "action": "click \u2014 index=11839; navigate \u2014 url=https://www.youtube.com/",
+      "prev_bytes": 366618,
+      "new_bytes": 665103,
+      "pass": true
+    },
+    "usable_2": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "youtube.com",
+      "has_readable_page_content": true,
+      "reason": "The screenshot clearly shows the YouTube homepage with video thumbnails and navigation elements.",
+      "label": "step2",
+      "expected_host": "youtube.com",
+      "png_bytes": 665103,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The main YouTube page content is visible and navigable without any blocking elements."
+      }
+    },
+    "progress_3": {
+      "screens_look_the_same": false,
+      "visible_change": "click_highlight",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "A sponsored ad for Base44 is now highlighted and expanded.",
+      "reason": "The user clicked on a sponsored ad, which expanded to show more details and a 'Start now' button, progressing the browsing task.",
+      "label": "step2\u21923",
+      "expected_host": "youtube.com",
+      "action": "click \u2014 index=16993",
+      "prev_bytes": 665103,
+      "new_bytes": 354191,
+      "pass": true
+    },
+    "usable_3": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "youtube.com",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows the YouTube homepage with video content and UI elements.",
+      "label": "step3",
+      "expected_host": "youtube.com",
+      "png_bytes": 354191,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The main YouTube video content and related information are visible and accessible."
+      }
+    },
+    "progress_4": {
+      "screens_look_the_same": false,
+      "visible_change": "scroll",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "scrolled down the page to reveal more content",
+      "reason": "The user scrolled down the page, revealing more content which is a natural progression for browsing a homepage.",
+      "label": "step3\u21924",
+      "expected_host": "youtube.com",
+      "action": "done \u2014 text=I have completed the task by finding a relevant video on YouTube for a creative marketer. The video is titled 'The Supply and Demand of AI Tokens | Dylan Patel Interview' and discusses AI tokens, which is a topic of interest for understanding current trends and potential marketing applic",
+      "prev_bytes": 354191,
+      "new_bytes": 588478,
+      "pass": true
+    },
+    "usable_4": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "youtube.com",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows the YouTube homepage with video content and UI elements.",
+      "label": "step4",
+      "expected_host": "youtube.com",
+      "png_bytes": 588478,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The main content of the YouTube page is visible and usable, including video titles, descriptions, and related content."
+      }
+    },
+    "progress_5": {
+      "screens_look_the_same": false,
+      "visible_change": "scroll",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "Scrolled down to reveal the video player and comments section.",
+      "reason": "The agent scrolled down the page, revealing the video content and comments, which is a logical step after finding a video.",
+      "label": "step4\u21925",
+      "expected_host": "youtube.com",
+      "action": "done \u2014 text=I have completed the task by finding a relevant video on YouTube for a creative marketer. The video is titled 'The Supply and Demand of AI Tokens | Dylan Patel Interview' and discusses AI tokens, which is a topic of interest for understanding current trends and potential marketing applic",
+      "prev_bytes": 588478,
+      "new_bytes": 637243,
+      "pass": true
+    },
+    "usable_5": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "youtube.com",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows a YouTube video page with a visible YouTube logo, search bar, and video content.",
+      "label": "step5",
+      "expected_host": "youtube.com",
+      "png_bytes": 637243,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The page content is fully visible and usable without any blocking elements."
+      }
+    },
+    "live_offered_by_api": true,
+    "saw_live_mounted": true,
+    "live_painted": true,
+    "blank_live_samples": 1,
+    "live_moved": true,
+    "live_distinct_frames": 13,
+    "final_status": "complete",
+    "steps_seen": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "ui_error_state": {
+      "phase": "Complete",
+      "hint": "About 1 min left \u00b7 study still running"
+    },
+    "pills": [
+      {
+        "text": "0",
+        "active": false,
+        "disabled": false
+      },
+      {
+        "text": "1",
+        "active": false,
+        "disabled": false
+      },
+      {
+        "text": "3",
+        "active": false,
+        "disabled": false
+      },
+      {
+        "text": "4",
+        "active": false,
+        "disabled": false
+      },
+      {
+        "text": "5",
+        "active": true,
+        "disabled": false
+      }
+    ],
+    "step_nav_changed": true,
+    "step_nav_judge": {
+      "screens_look_the_same": false,
+      "visible_change": "new_page",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "The screen changed from a YouTube cookie consent page to a YouTube video page.",
+      "reason": "The user clicked the 'Next step' pill, which navigated them to a new YouTube video page, progressing the task.",
+      "label": "step-nav",
+      "expected_host": "youtube.com",
+      "action": "navigate step history",
+      "prev_bytes": 247049,
+      "new_bytes": 597325,
+      "pass": true
+    }
+  },
+  "pass": false,
+  "study_id": "49433d8c-0fe5-4750-989f-dac04db6cd39",
+  "elapsed_s": 117.2
+}

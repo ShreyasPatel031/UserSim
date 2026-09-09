@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import re
 import shutil
 from collections.abc import Awaitable, Callable
 from pathlib import Path
@@ -82,6 +83,103 @@ def _action_label(action: Any) -> str:
             return (f"{name} — {detail}" if detail else str(name))[:300]
         return f"{name}: {args}"[:300]
     return str(action)[:300]
+
+
+def _is_noop_action(action: str | None) -> bool:
+    a = (action or "").strip()
+    return (not a) or a in {"—", "-", "–", "None", "null", "none"}
+
+
+def _png_bytes_equal(a: Path, b: Path) -> bool:
+    try:
+        if not a.is_file() or not b.is_file():
+            return False
+        if a.stat().st_size < 100 or b.stat().st_size < 100:
+            return False
+        return a.read_bytes() == b.read_bytes()
+    except OSError:
+        return False
+
+
+def _shots_visually_same(a: Path, b: Path) -> bool:
+    """True when two PNGs are the same viewport (ignore tiny highlight noise)."""
+    if _png_bytes_equal(a, b):
+        return True
+    try:
+        from PIL import Image
+
+        if not a.is_file() or not b.is_file():
+            return False
+        ia = Image.open(a).convert("L").resize((64, 36))
+        ib = Image.open(b).convert("L").resize((64, 36))
+        pa, pb = ia.getdata(), ib.getdata()
+        if len(pa) != len(pb) or not pa:
+            return False
+        # Mean absolute difference on a tiny grayscale thumb.
+        mad = sum(abs(x - y) for x, y in zip(pa, pb)) / float(len(pa))
+        return mad < 2.0
+    except Exception:
+        return False
+
+
+_CONSENT_CLICK_JS = """
+() => {
+  const texts = [
+    'accept all', 'accept all cookies', 'accept cookies', 'i agree', 'agree',
+    'allow all', 'got it', 'ok', 'okay', 'continue', 'consent', 'alle akzeptieren',
+  ];
+  const nodes = [
+    ...document.querySelectorAll('button, [role="button"], input[type="button"], input[type="submit"], a'),
+  ];
+  for (const el of nodes) {
+    const label = ((el.innerText || el.value || el.getAttribute('aria-label') || '') + '').trim().toLowerCase();
+    if (!label || label.length > 48) continue;
+    if (!texts.some((t) => label === t || label.startsWith(t))) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 8 || r.height < 8) continue;
+    el.click();
+    return label;
+  }
+  return '';
+}
+"""
+
+
+async def _dismiss_consent_banners(browser_session: Any, *, agent_id: str) -> None:
+    """Best-effort click through common cookie/consent interstitials (any site)."""
+    try:
+        page = await asyncio.wait_for(browser_session.get_current_page(), timeout=8)
+        if page is None:
+            return
+        for _ in range(2):
+            clicked = await asyncio.wait_for(page.evaluate(_CONSENT_CLICK_JS), timeout=5)
+            if not clicked:
+                break
+            print(f"[{agent_id}] dismissed consent control: {clicked!r}", flush=True)
+            await asyncio.sleep(0.4)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] consent dismiss skipped: {exc!r}", flush=True)
+
+
+async def _ensure_on_host(browser_session: Any, *, target_url: str, agent_id: str) -> None:
+    """If the agent wandered off-host, navigate back to the assigned URL."""
+    want = (urlparse(target_url).hostname or "").lower().removeprefix("www.")
+    if not want:
+        return
+    try:
+        current = ""
+        try:
+            current = str(browser_session.get_current_page_url() or "")
+        except Exception:
+            page = await asyncio.wait_for(browser_session.get_current_page(), timeout=5)
+            current = str(getattr(page, "url", "") or "") if page is not None else ""
+        host = (urlparse(current).hostname or "").lower().removeprefix("www.")
+        if not host or host == want or host.endswith(f".{want}") or want.endswith(f".{host}"):
+            return
+        print(f"[{agent_id}] off-site {host!r} → returning to {target_url}", flush=True)
+        await asyncio.wait_for(browser_session.navigate_to(target_url), timeout=30)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] host lock failed: {exc!r}", flush=True)
 
 
 def _result_text(result: Any) -> str:
@@ -284,6 +382,7 @@ def _make_step_hooks(
     *,
     study_id: str,
     agent_id: str,
+    target_url: str = "",
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
 ):
     """Capture a screenshot with DOM bounding boxes drawn on it, once per step.
@@ -292,7 +391,7 @@ def _make_step_hooks(
     screenshots are always clean. Re-injecting the overlay here is the only way to
     get boxed frames like the Bland bakeoff traces.
     """
-    state = {"step": 0}
+    state = {"step": 0, "emitted_done": False, "noop_streak": 0}
 
     async def _emit(step: dict[str, Any]) -> None:
         if on_step is None:
@@ -326,6 +425,9 @@ def _make_step_hooks(
         session = getattr(agent, "browser_session", None)
         if session is None:
             return
+        if target_url:
+            await _ensure_on_host(session, target_url=target_url, agent_id=agent_id)
+            await _dismiss_consent_banners(session, agent_id=agent_id)
         try:
             # Cached selector map is stale after the step action (often empty post-nav).
             summary = await asyncio.wait_for(session.get_browser_state_summary(), timeout=25)
@@ -360,6 +462,43 @@ def _make_step_hooks(
             agent_id=agent_id,
             screenshot_dir=screenshot_dir,
         )
+        action = str(step.get("action") or "")
+        prev_shot = screenshot_dir / f"bbox_{step_no - 1}.png"
+        if step_no == 1:
+            prev_shot = screenshot_dir / "bbox_0.png"
+        cur_shot = screenshot_dir / f"bbox_{step_no}.png"
+        same_pixels = _shots_visually_same(prev_shot, cur_shot)
+        # Empty "—" actions with identical frames are freezes, not progress.
+        # Fold them (and duplicate done rows) into pulses so the progress judge
+        # and step rail stay honest.
+        fold = False
+        if action.lower().startswith("done"):
+            if state.get("emitted_done"):
+                fold = True
+            else:
+                state["emitted_done"] = True
+        if _is_noop_action(action) and same_pixels:
+            fold = True
+        # Any claimed action that left the viewport unchanged is not a new step.
+        if same_pixels and step_no > 0:
+            fold = True
+        if fold:
+            state["noop_streak"] = int(state.get("noop_streak") or 0) + 1
+            await _emit(
+                {
+                    "step": None,
+                    "progress_only": True,
+                    "action": action if not _is_noop_action(action) else "waiting — no visual change",
+                    "thought": step.get("thought") or "",
+                    "thought_detail": step.get("thought_detail") or {},
+                    "observation": step.get("observation") or "",
+                    "url": step.get("url"),
+                    "screenshot_url": None,
+                    "outcome": "neutral",
+                }
+            )
+            return
+        state["noop_streak"] = 0
         await _emit(step)
 
     return on_step_start, on_step_end
@@ -379,6 +518,7 @@ async def _emit_opening_frame(
         await asyncio.wait_for(browser_session.navigate_to(url), timeout=30)
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening navigate failed: {exc!r}", flush=True)
+    await _dismiss_consent_banners(browser_session, agent_id=agent_id)
     # Scroll to top so we don't capture a footer-only viewport.
     try:
         page = await asyncio.wait_for(browser_session.get_current_page(), timeout=8)
@@ -452,12 +592,28 @@ def _history_to_trace(
     screenshot_dir: Path,
 ) -> list[dict[str, Any]]:
     items = list(getattr(history, "history", None) or [])
-    return [
-        _trace_step_from_history_item(
+    out: list[dict[str, Any]] = []
+    seen_done = False
+    prev_path: Path | None = screenshot_dir / "bbox_0.png"
+    for i, h in enumerate(items, start=1):
+        step = _trace_step_from_history_item(
             h, i, study_id=study_id, agent_id=agent_id, screenshot_dir=screenshot_dir
         )
-        for i, h in enumerate(items, start=1)
-    ]
+        action = str(step.get("action") or "")
+        cur_path = screenshot_dir / f"bbox_{i}.png"
+        same = bool(prev_path and _shots_visually_same(prev_path, cur_path))
+        if action.lower().startswith("done"):
+            if seen_done:
+                continue
+            seen_done = True
+        if same:
+            continue
+        if _is_noop_action(action) and same:
+            continue
+        out.append(step)
+        if cur_path.is_file():
+            prev_path = cur_path
+    return out
 
 
 def _urls_match(a: str, b: str) -> bool:
@@ -470,16 +626,19 @@ def _urls_match(a: str, b: str) -> bool:
     return bool(a and b and norm(a) == norm(b))
 
 
-async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | None:
+async def warm_opening_session(
+    *, study_id: str, url: str, slot: str = "product"
+) -> dict[str, Any] | None:
     """Create Browserbase + navigate + screenshot while brief LLMs run.
 
     Returns a live browser_session already on ``url`` with bbox_0.png written under
-    ``MVP_RUNS_DIR / study_id / _warm``. Caller must either hand this to
+    ``MVP_RUNS_DIR / study_id / _warm_{slot}``. Caller must either hand this to
     ``run_browser_agent(..., warm=...)`` or ``close_warm_opening``.
     """
     if os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {"1", "true", "yes"}:
         return None
-    run_dir = MVP_RUNS_DIR / study_id / "_warm"
+    safe_slot = re.sub(r"[^a-zA-Z0-9._-]+", "_", slot or "product")[:48] or "product"
+    run_dir = MVP_RUNS_DIR / study_id / f"_warm_{safe_slot}"
     screenshot_dir = run_dir / "screenshots"
     run_dir.mkdir(parents=True, exist_ok=True)
     screenshot_dir.mkdir(parents=True, exist_ok=True)
@@ -581,9 +740,12 @@ async def run_browser_agent(
     """Run Browser Use (Browserbase or local Chromium) and return a bbox screenshot trace.
 
     First real pixels are emitted as soon as the target URL is open — before the
-    LLM agent loop, and (for non-YouTube) before waiting on auth vault I/O.
+    LLM agent loop and before waiting on optional auth vault I/O.
     If ``warm`` is a matching pre-opened session from ``warm_opening_session``,
     the landing screenshot is published immediately and the LLM continues on it.
+
+    Same path for every host — no site-specific bootstrap, signed-in cookie
+    shortcuts, or prompt hints.
     """
     if os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"):
         home = Path("/tmp/usersim-home")
@@ -606,18 +768,10 @@ async def run_browser_agent(
 
     from mvp.profile_pool import clone_for_url, discard as discard_profile
 
-    from mvp.auth_state import (
-        ensure_site_auth,
-        storage_state_for_url,
-        youtube_bootstrap_url,
-        youtube_is_signed_in,
-        youtube_needs_content_bootstrap,
-    )
+    from mvp.auth_state import ensure_site_auth
 
     start_url = url
-    yt_hint = ""
-    host = (urlparse(url).hostname or "").lower()
-    is_youtube = "youtube.com" in host or "youtu.be" in host
+    signed_hint = ""
 
     force_local = local or os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {
         "1",
@@ -627,7 +781,6 @@ async def run_browser_agent(
 
     use_warm = (
         not force_local
-        and not is_youtube
         and isinstance(warm, dict)
         and warm.get("browser_session") is not None
         and _urls_match(str(warm.get("url") or ""), url)
@@ -635,10 +788,10 @@ async def run_browser_agent(
         and Path(warm["shot_path"]).is_file()
     )
 
-    # YouTube: never block the UI on vault I/O before first pixels.
-    # Load disk cookies fast → open browser → screenshot; refresh auth in parallel.
+    # Same for every site: open first, optionally refresh vault auth in parallel.
     auth_task: asyncio.Task | None = None
     storage_state: Any = None
+    cookie_state: dict[str, Any] | None = None
 
     async def _pulse(text: str, *, thinking: bool = False) -> None:
         if on_step is None:
@@ -659,42 +812,9 @@ async def run_browser_agent(
         if asyncio.iscoroutine(maybe):
             await maybe
 
-    if is_youtube:
-        await _pulse(f"Preparing YouTube session for {url}…")
-        # Instant disk cookies so we can open a browser without waiting on sign-in.
-        storage_state = storage_state_for_url(url)
-        # Background refresh only when auto sign-in/sign-up is enabled.
-        if os.environ.get("MVP_AUTO_SIGNUP", "").lower() in {"1", "true", "yes"} or os.environ.get(
-            "MVP_AUTO_SIGNIN", ""
-        ).lower() in {"1", "true", "yes"}:
-            auth_task = asyncio.create_task(asyncio.to_thread(ensure_site_auth, url))
-        if youtube_needs_content_bootstrap(url, storage_state):
-            start_url = youtube_bootstrap_url(task_prompt, persona.get("name") or "")
-            yt_hint = (
-                "YouTube's signed-out home feed is often empty in automation. You were opened on "
-                "search results with real videos — use those, refine the query, or open a video. "
-                "If you can sign in / avatar is visible, you may also open Home afterward.\n"
-            )
-            await _pulse(f"Opening search results — {start_url.split('search_query=')[-1][:40]}…")
-        elif youtube_is_signed_in(
-            storage_state if isinstance(storage_state, dict) else None
-        ):
-            yt_hint = (
-                "You are signed into YouTube (Gmail session cookies loaded). Use the personalized "
-                "home feed, subscriptions, and account UI as a real logged-in user would.\n"
-            )
-            await _pulse("Signed-in cookies ready — opening YouTube…")
-        else:
-            await _pulse("Opening YouTube…")
-    elif not use_warm:
+    if not use_warm:
         await _pulse(f"Opening {url}…")
         auth_task = asyncio.create_task(asyncio.to_thread(ensure_site_auth, url))
-
-    cookie_state = storage_state if isinstance(storage_state, dict) else None
-    if storage_state and isinstance(storage_state, dict):
-        state_path = run_dir / "storage_state.json"
-        state_path.write_text(json.dumps(storage_state))
-        storage_state = str(state_path)
 
     owns_session = False
     session_url: str | None = None
@@ -721,7 +841,7 @@ async def run_browser_agent(
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] warm shot copy failed: {exc!r}", flush=True)
             use_warm = False
-            if not is_youtube and auth_task is None:
+            if auth_task is None:
                 auth_task = asyncio.create_task(asyncio.to_thread(ensure_site_auth, url))
         if use_warm:
             step = {
@@ -770,8 +890,7 @@ async def run_browser_agent(
 
     if not use_warm:
         if force_local:
-            # A cloned signed-in profile beats cookie injection: Google binds session
-            # cookies to the profile, so transplanted cookies report LOGGED_IN=false.
+            # Optional per-host profile from secrets/product_profiles — generic, any site.
             profile_clone = await asyncio.to_thread(clone_for_url, url)
             if profile_clone:
                 cookie_state = None
@@ -783,9 +902,9 @@ async def run_browser_agent(
                         pass
                     auth_task = None
                 start_url = url
-                yt_hint = (
-                    "You are signed in on this site. Use the personalized home feed, "
-                    "subscriptions, and account UI as a real logged-in user would.\n"
+                signed_hint = (
+                    "You appear signed in on this site. Use the account UI as a real "
+                    "logged-in user would.\n"
                 )
             profile = _local_browser_profile(
                 storage_state=None
@@ -842,9 +961,9 @@ async def run_browser_agent(
             raise
 
     try:
-        # Auth/cookies after first pixels (non-YouTube, non-warm).
-        # Warm sessions skip this — first click should not wait on vault I/O.
-        # Build the LLM in parallel with any remaining auth wait.
+        # Warm openings skipped the consent pass above — clear banners before acting.
+        if use_warm and browser_session is not None:
+            await _dismiss_consent_banners(browser_session, agent_id=agent_id)
         def _build_llm() -> Any:
             from browser_use import ChatGoogle
 
@@ -875,9 +994,9 @@ async def run_browser_agent(
                 print(f"[{agent_id}] deferred auth failed: {exc!r}", flush=True)
                 storage_state = None
             cookie_state = storage_state if isinstance(storage_state, dict) else None
-            if storage_state and isinstance(storage_state, dict):
+            if cookie_state:
                 state_path = run_dir / "storage_state.json"
-                state_path.write_text(json.dumps(storage_state))
+                state_path.write_text(json.dumps(cookie_state))
                 storage_state = str(state_path)
 
         if cookie_state and browser_session is not None:
@@ -888,18 +1007,25 @@ async def run_browser_agent(
 
         llm = await llm_task
         persona_line = f"You are {persona.get('name')}: {persona.get('bio')}"
+        site_host = (urlparse(start_url).hostname or start_url).lower()
         stay_put = (
-            f"CRITICAL: Stay on {start_url} and its own pages/subdomains only. "
-            f"Do not navigate to other products or competitors (especially not YouTube, "
-            f"Vimeo, or Dailymotion unless that is exactly this site). "
+            f"CRITICAL: Stay on {start_url} and its own pages/subdomains only "
+            f"({site_host}). Do not navigate to unrelated products or competitors. "
             f"Evaluate the task using THIS site’s UI, search, and docs.\n"
+        )
+        consent_rule = (
+            "If a cookie/consent/privacy banner, age gate, 'Before you continue', "
+            "Accept all / Reject all / Agree, or similar interstitial blocks the page, "
+            "clear it first the way a normal user would (prefer Accept all / Agree when "
+            "that is the obvious path), then continue the task. Do not stop on the banner.\n"
         )
         agent_task = (
             f"{CAPABLE_AGENT_PREAMBLE}\n\n"
             f"{persona_line}\n"
             f"Customer segment: {segment}\n"
-            f"{yt_hint}"
+            f"{signed_hint}"
             f"{stay_put}"
+            f"{consent_rule}"
             f"You are already on {start_url}. Continue from this page.\n"
             f"Task: {task_prompt}\n"
             f"Behave like this persona would — note confusion, pricing concerns, and UX friction.\n"
@@ -925,7 +1051,8 @@ async def run_browser_agent(
                 "You are a real user in a usability study, not an optimizer. "
                 "Prefer obvious UI paths; comment on clarity and trust. "
                 "Never claim to see content that is only 'implied' or absent from the "
-                "current screenshot/DOM. Stay on the product site you were given."
+                "current screenshot/DOM. Stay on the product site you were given. "
+                "Dismiss cookie/consent/login interstitials before judging the product."
             ),
         )
         # Signal UI: agent loop is starting — replace screenshot with live view now.
@@ -964,6 +1091,7 @@ async def run_browser_agent(
             screenshot_dir,
             study_id=study_id,
             agent_id=agent_id,
+            target_url=start_url,
             on_step=on_step,
         )
         print(f"[{agent_id}] agent.run starting (warm={use_warm})", flush=True)
