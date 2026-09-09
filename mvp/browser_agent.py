@@ -154,6 +154,33 @@ def _shots_visually_same(a: Path, b: Path) -> bool:
         return False
 
 
+def _shot_looks_blank(path: Path) -> bool:
+    """True for missing, tiny, or near-uniform frames (pre-paint / black flash)."""
+    try:
+        if not path.is_file() or path.stat().st_size < 2500:
+            return True
+        from PIL import Image
+
+        im = Image.open(path).convert("L").resize((64, 36))
+        px = list(im.getdata())
+        if not px:
+            return True
+        mean = sum(px) / float(len(px))
+        # Near-black or near-white flash with almost no structure.
+        uniq = len(set(px))
+        if uniq < 8:
+            return True
+        # Extremely dark frames with little variance are usually pre-paint.
+        var = sum((x - mean) ** 2 for x in px) / float(len(px))
+        if mean < 18 and var < 80:
+            return True
+        if mean > 245 and var < 80:
+            return True
+        return False
+    except Exception:
+        return False
+
+
 _CONSENT_CLICK_JS = """
 () => {
   const texts = [
@@ -600,37 +627,74 @@ async def _emit_opening_frame(
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening navigate failed: {exc!r}", flush=True)
     await _dismiss_consent_banners(browser_session, agent_id=agent_id)
-    # Scroll to top so we don't capture a footer-only viewport.
+    # Wait for first paint — SPAs often flash black/empty before hydration.
     try:
         page = await asyncio.wait_for(browser_session.get_current_page(), timeout=8)
         if page is not None:
-            await asyncio.wait_for(
-                page.evaluate("() => window.scrollTo(0, 0)"),
-                timeout=5,
-            )
+            try:
+                await asyncio.wait_for(
+                    page.evaluate(
+                        """async () => {
+                          if (document.readyState === 'loading') {
+                            await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+                          }
+                          await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+                          const hasText = () => ((document.body && document.body.innerText) || '').trim().length > 40;
+                          const t0 = Date.now();
+                          while (!hasText() && Date.now() - t0 < 4000) {
+                            await new Promise((r) => setTimeout(r, 200));
+                          }
+                          window.scrollTo(0, 0);
+                        }"""
+                    ),
+                    timeout=8,
+                )
+            except Exception as wait_exc:  # noqa: BLE001
+                print(f"[{agent_id}] opening paint wait failed: {wait_exc!r}", flush=True)
+                try:
+                    await asyncio.wait_for(
+                        page.evaluate("() => window.scrollTo(0, 0)"),
+                        timeout=5,
+                    )
+                except Exception:
+                    pass
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening scrollTop failed: {exc!r}", flush=True)
-    await asyncio.sleep(0.2)
+    await asyncio.sleep(0.35)
     shot_name = "bbox_0.png"
     shot_path = screenshot_dir / shot_name
-    try:
-        await asyncio.wait_for(
-            browser_session.take_screenshot(path=str(shot_path), full_page=False),
-            timeout=20,
-        )
-    except TypeError:
-        # Older browser-use: no full_page kwarg.
+
+    async def _take() -> None:
         try:
+            await asyncio.wait_for(
+                browser_session.take_screenshot(path=str(shot_path), full_page=False),
+                timeout=20,
+            )
+        except TypeError:
             await asyncio.wait_for(
                 browser_session.take_screenshot(path=str(shot_path)),
                 timeout=20,
             )
-        except Exception as exc:  # noqa: BLE001
-            print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
-            return
+
+    try:
+        await _take()
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
         return
+    # Retry blank/pre-paint frames a few times before giving up.
+    for attempt in range(4):
+        if not _shot_looks_blank(shot_path):
+            break
+        print(
+            f"[{agent_id}] opening frame looks blank — retry {attempt + 1}/4",
+            flush=True,
+        )
+        await asyncio.sleep(0.6 + attempt * 0.4)
+        try:
+            await _take()
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] opening screenshot retry failed: {exc!r}", flush=True)
+            break
     if not shot_path.is_file() or shot_path.stat().st_size < 100:
         print(f"[{agent_id}] opening screenshot missing/empty", flush=True)
         return
@@ -1119,9 +1183,12 @@ async def run_browser_agent(
             f"You are already on {start_url}. Continue from this page.\n"
             f"Task: {task_prompt}\n"
             f"Behave like this persona would — note confusion, pricing concerns, and UX friction.\n"
-            f"Do not judge the site from the landing page alone. If the answer is not visible, "
-            f"click into the nav links (blog, docs, use cases, about, pricing) and read the real "
-            f"pages before forming an opinion. Only conclude something is missing after you have "
+            f"If the task is about the homepage/landing page itself (headline, CTA label, "
+            f"how the product describes itself), answer from what is already visible and "
+            f"call done — do not keep scrolling or clicking once you have the answer. "
+            f"For deeper tasks, if the answer is not visible, click into the nav "
+            f"(blog, docs, use cases, about, pricing) and read the real pages before "
+            f"forming an opinion. Only conclude something is missing after you have "
             f"actually looked for it.\n"
             f"Stop when the task is done or you would realistically give up."
         )
