@@ -193,17 +193,25 @@ Return JSON only:
     guess = str(result.get("visible_hostname_guess") or "").replace("www.", "").lower()
     host_ok = True
     if host:
-        host_ok = bool(
-            guess
-            and (
+        if guess:
+            host_ok = bool(
                 guess == host
                 or guess.endswith("." + host)
                 or host.endswith("." + guess)
                 or host.split(".")[0] in guess
                 or guess.split(".")[0] in host
             )
-        )
+        else:
+            # A screenshot has no browser chrome, so most pages never render
+            # their own hostname. Treating an unreadable hostname as a mismatch
+            # failed real pages the judge had just confirmed were the target
+            # site. Absence of evidence is not evidence of the wrong site — and
+            # a genuinely wrong site still fails via
+            # is_real_target_site_screenshot, which is how the off-host drift
+            # onto a scheduling page was caught.
+            host_ok = bool(result.get("is_real_target_site_screenshot"))
         result["host_match"] = host_ok
+        result["host_match_basis"] = "visible_hostname" if guess else "judge_target_call"
     result["pass"] = bool(
         result.get("is_real_target_site_screenshot")
         and result.get("has_readable_page_content")
