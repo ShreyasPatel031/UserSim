@@ -44,6 +44,7 @@ from mvp.e2e_ui_run import (  # noqa: E402
     http_json,
     judge_progress,
     judge_screenshot,
+    launch_chromium,
 )
 
 sa = ROOT / "secrets" / "sa.json"
@@ -267,7 +268,7 @@ async def run(args: argparse.Namespace) -> dict:
     }
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=not args.headed)
+        browser = await launch_chromium(p, headed=args.headed)
         context = await browser.new_context(
             viewport={"width": 1440, "height": 1100},
             device_scale_factor=1,

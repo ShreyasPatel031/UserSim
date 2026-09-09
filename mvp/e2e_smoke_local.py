@@ -1,7 +1,20 @@
 #!/usr/bin/env python3
-"""STRICT local smoke e2e — must FAIL on stuck screens.
+"""STRICT e2e — must FAIL on stuck screens. Smoke by default, --full for real.
 
-Smoke mode (1 user × 1 task × product). Uses gemini-2.5-flash-lite.
+Smoke mode (1 user × 1 task × product) is cheap and forces test_mode ON, which
+means it skips every server path behind `if not study.test_mode`: the task ×
+site fan-out, competitors, more than one agent, and contention for browser
+slots. A green smoke run says one agent on one site works — nothing more.
+
+--full drives test_mode OFF and asserts the rest: fan-out shape (the guard
+against the persona × task cross product that produced 90 agents), every
+planned agent starting, and per-agent progress. Its budgets are derived from
+the wave count (agents ÷ browser concurrency), because with N agents against
+the semaphore an agent legitimately sits idle for whole waves.
+
+  --full --competitor https://rival.example/   (repeatable)
+
+Uses gemini-2.5-flash-lite.
 
 SITE-AGNOSTIC BY CONTRACT. Every check derives from --url at runtime: the
 expected host comes from the URL you pass, gate/consent detection is
@@ -50,6 +63,7 @@ from mvp.e2e_ui_run import (  # noqa: E402
     _hostname,
     _log,
     http_json,
+    launch_chromium,
     judge_progress,
     judge_screenshot,
 )
@@ -66,6 +80,19 @@ TASK = os.environ.get(
     "E2E_SMOKE_TASK",
     "Skim the homepage and say the main promise in one sentence",
 )
+SMOKE_SEGMENT = "One person only: a creative marketer evaluating the product."
+# Full mode: several personas, several tasks, and at least one competitor, so
+# the task × site fan-out and the browser semaphore are actually exercised.
+FULL_SEGMENT = os.environ.get(
+    "E2E_SEGMENT_FULL",
+    "Prospective customers evaluating this product against alternatives",
+)
+FULL_TASKS = os.environ.get(
+    "E2E_FULL_TASKS",
+    "Skim the homepage and say the main promise in one sentence\n"
+    "Find how much it costs or how to get started",
+)
+DEFAULT_COMPETITOR = os.environ.get("E2E_COMPETITORS", "https://recurse.run/")
 
 
 def _download(base: str, url: str) -> bytes | None:
@@ -230,6 +257,82 @@ Return JSON only:
     return base
 
 
+def check_fanout(tasks: list, competitors: list[str]) -> tuple[dict, list[str]]:
+    """Assert task fan-out is personas' own tasks × sites — never the cross product.
+
+    `expand_full_matrix` (persona × task × site) produced 75-90 agents, ran each
+    persona's script as every other persona, and overran the browser semaphore
+    so no study finished. `expand_tasks_for_sites` is the correct shape. The
+    difference is only visible in the task count and in whether one base task
+    carries more than one persona, so both are asserted here.
+    """
+    fails: list[str] = []
+    n_sites = 1 + len(competitors)
+    # Ids are `{task}__{persona}__{site}`. The brief's task identity is the
+    # first segment: that is what must belong to exactly one persona.
+    roots: dict[str, set[str]] = {}
+    pairs: dict[tuple[str, str], list[dict]] = {}
+    per_site: dict[str, int] = {}
+    for t in tasks:
+        if not isinstance(t, dict):
+            continue
+        tid = str(t.get("id") or "t")
+        root = tid.split("__")[0]
+        persona = str(t.get("persona_id") or "")
+        site = str(t.get("site_key") or "product")
+        roots.setdefault(root, set()).add(persona)
+        pairs.setdefault((root, persona), []).append(t)
+        per_site[site] = per_site.get(site, 0) + 1
+    expected = len(pairs) * n_sites
+    stats = {
+        "task_count": len(tasks),
+        "brief_tasks": len(roots),
+        "persona_tasks": len(pairs),
+        "sites": n_sites,
+        "expected_task_count": expected,
+        "per_site_counts": per_site,
+    }
+    if not tasks:
+        fails.append("study has no tasks")
+        return stats, fails
+
+    # The cross product's signature: one brief task run by several personas.
+    # Counting alone cannot see it — personas × tasks × sites and
+    # persona-tasks × sites give the same total — so ownership is the check.
+    for root, personas in sorted(roots.items()):
+        real = {p for p in personas if p}
+        if len(real) > 1:
+            fails.append(
+                f"brief task {root} is assigned to {len(real)} personas "
+                f"{sorted(real)} — the persona×task cross product is back "
+                "(each brief task is written for one persona)"
+            )
+    if len(pairs) != len(roots) and len(roots):
+        stats["persona_tasks_per_brief_task"] = round(len(pairs) / len(roots), 2)
+
+    if len(tasks) != expected:
+        fails.append(
+            f"task fan-out is {len(tasks)}, expected {len(pairs)} persona tasks "
+            f"× {n_sites} sites = {expected}"
+        )
+    # Every persona task must appear once per site, and no more.
+    for (root, persona), clones in sorted(pairs.items()):
+        if len(clones) != n_sites:
+            fails.append(
+                f"task {root} (persona {persona or '?'}) fanned out to {len(clones)} "
+                f"runs, expected {n_sites} (one per site)"
+            )
+    # Even site coverage: no site may be starved or double-served.
+    if per_site and len(set(per_site.values())) > 1:
+        fails.append(f"uneven site coverage: {per_site}")
+    if competitors and len(per_site) < n_sites:
+        fails.append(
+            f"only {len(per_site)} site(s) in the fan-out {sorted(per_site)}, "
+            f"expected {n_sites} — competitors were dropped"
+        )
+    return stats, fails
+
+
 async def run(args: argparse.Namespace) -> dict:
     from playwright.async_api import async_playwright
 
@@ -238,19 +341,22 @@ async def run(args: argparse.Namespace) -> dict:
         if old.is_file():
             old.unlink()
 
+    full = bool(args.full)
+    competitors = [c.strip() for c in (args.competitors or []) if c.strip()] if full else []
     t0 = time.time()
     report: dict = {
         "base": args.base,
         "product_url": args.url,
         "judge_model": JUDGE_MODEL,
-        "mode": "smoke",
+        "mode": "full" if full else "smoke",
+        "competitors": competitors,
         "fails": [],
         "checks": {},
         "pass": False,
     }
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=not args.headed)
+        browser = await launch_chromium(p, headed=args.headed)
         context = await browser.new_context(
             viewport={"width": 1440, "height": 1100},
             device_scale_factor=1,
@@ -263,29 +369,42 @@ async def run(args: argparse.Namespace) -> dict:
         await page.goto(args.base, wait_until="domcontentloaded", timeout=60_000)
         await page.wait_for_selector("#study-form #submit-btn", timeout=30_000)
 
-        # Force Smoke ON for cheap local runs.
+        # Smoke drives test_mode ON (1 user × 1 task × product). Full drives it
+        # OFF, which is the whole point: everything that fans out — tasks ×
+        # sites, competitors, multi-agent contention, the browser semaphore —
+        # lives behind `if not study.test_mode` server-side, so a harness that
+        # forces the checkbox can never exercise any of it.
         smoke = page.locator("#test-mode-input")
         row = page.locator("#local-smoke-row")
         if await row.count():
             await row.evaluate("el => { el.hidden = false }")
-        if await smoke.count() and not await smoke.is_checked():
-            await smoke.check()
-        if not await smoke.count() or not await smoke.is_checked():
-            report["fails"].append("smoke checkbox not available/checked")
-        report["checks"]["smoke_on"] = bool(await smoke.count() and await smoke.is_checked())
+        has_smoke = bool(await smoke.count())
+        if full:
+            # Never fail on the checkbox in full mode — unchecked is the goal,
+            # and an absent checkbox already means test_mode is off.
+            if has_smoke and await smoke.is_checked():
+                await smoke.uncheck()
+            report["checks"]["test_mode_off"] = not (
+                has_smoke and await smoke.is_checked()
+            )
+            if not report["checks"]["test_mode_off"]:
+                report["fails"].append("could not turn Smoke off — study would be test_mode")
+        else:
+            if has_smoke and not await smoke.is_checked():
+                await smoke.check()
+            if not has_smoke or not await smoke.is_checked():
+                report["fails"].append("smoke checkbox not available/checked")
+            report["checks"]["smoke_on"] = bool(has_smoke and await smoke.is_checked())
 
         await page.fill('input[name="url"]', args.url)
         details = page.locator("details.url-more")
         if await details.count():
             await details.first.evaluate("el => { el.open = true }")
-        await page.fill('textarea[name="competitors"]', "")
+        await page.fill('textarea[name="competitors"]', "\n".join(competitors))
         await page.fill('textarea[name="tasks"]', args.task)
-        await page.fill(
-            'textarea[name="customers"]',
-            "One person only: a creative marketer evaluating the product.",
-        )
+        await page.fill('textarea[name="customers"]', args.segment)
 
-        _log("→ click Run (SMOKE)")
+        _log(f"→ click Run ({'FULL' if full else 'SMOKE'})")
         await page.click("#submit-btn")
 
         await page.wait_for_selector("#tasks-list li.task-row", timeout=args.brief_timeout_s * 1000)
@@ -327,6 +446,58 @@ async def run(args: argparse.Namespace) -> dict:
             return report
 
         host = _hostname(args.url)
+
+        # --- Fan-out shape, then budgets derived from it --------------------
+        # In full mode the server expands tasks × sites after the brief, so wait
+        # for the expanded list before asserting on it or sizing any threshold.
+        tasks_snapshot: list = []
+        fanout_deadline = time.time() + args.brief_timeout_s
+        while time.time() < fanout_deadline:
+            fresh, _err = _poll_study(args.base, study_id)
+            if fresh is not None:
+                tasks_snapshot = [t for t in (fresh.get("tasks") or []) if isinstance(t, dict)]
+                if tasks_snapshot and (
+                    not full or any(t.get("site_key") for t in tasks_snapshot)
+                ):
+                    break
+            await page.wait_for_timeout(1000)
+
+        if full:
+            fanout_stats, fanout_fails = check_fanout(tasks_snapshot, competitors)
+            report["checks"]["fanout"] = fanout_stats
+            report["fails"].extend(fanout_fails)
+            _log(f"  fan-out {fanout_stats}")
+
+        # Smoke defaults do not transfer. With N agents against a semaphore of
+        # `concurrency`, agents legitimately sit idle for whole waves, so every
+        # budget is derived from the wave count rather than guessed — and a
+        # threshold that fires on real queueing is a derivation bug, not a
+        # reason to raise the number.
+        n_agents = max(1, len(tasks_snapshot)) if full else 1
+        waves = -(-n_agents // max(1, args.concurrency))
+        stall_s = (
+            args.stall_s
+            if args.stall_s is not None
+            else max(45.0, args.per_step_latency_s * waves)
+        )
+        steps_timeout_s = (
+            args.steps_timeout_s
+            if args.steps_timeout_s is not None
+            else int(args.brief_budget_s + waves * args.wave_budget_s + args.summary_budget_s)
+        )
+        report["checks"]["budget"] = {
+            "n_agents": n_agents,
+            "concurrency": args.concurrency,
+            "waves": waves,
+            "stall_s": stall_s,
+            "steps_timeout_s": steps_timeout_s,
+            "min_steps_per_started_agent": args.min_steps,
+        }
+        _log(
+            f"  budget agents={n_agents} concurrency={args.concurrency} waves={waves} "
+            f"stall_s={stall_s} steps_timeout_s={steps_timeout_s}"
+        )
+
         raw0 = None
         step0 = None
         for _ in range(40):
@@ -362,6 +533,44 @@ async def run(args: argparse.Namespace) -> dict:
             if not j0.get("pass"):
                 report["fails"].append(f"step0 not usable real site: {j0.get('reason')}")
 
+        # Per-agent state. The loop used to read items[0] only, which is correct
+        # for smoke's single session and blind for every other agent in a full
+        # study — 14 of 15 agents could hang and the run still scored clean.
+        agents: dict[str, dict] = {}
+
+        def _agent(key: str) -> dict:
+            return agents.setdefault(
+                key,
+                {
+                    "seen": set(),
+                    "prev_raw": None,
+                    "last_step_t": time.time(),
+                    "stall_reported": False,
+                    "started": False,
+                    "status": "",
+                    "judge_queue": [],
+                },
+            )
+
+        def _sess_key(sess: dict, idx: int) -> str:
+            return str(
+                sess.get("agent_id")
+                or sess.get("task_id")
+                or sess.get("id")
+                or f"agent{idx}"
+            )
+
+        def _sess_done(sess: dict) -> bool:
+            return str(sess.get("status") or "").lower() in {
+                "complete",
+                "done",
+                "success",
+                "error",
+                "failed",
+                "killed",
+                "abandoned",
+            }
+
         # Follow until step ≥ 1 or timeout — REQUIRE live + progressing pixels.
         saw_live = False
         # Mounted is not painted. Track them separately so a black box cannot
@@ -391,10 +600,7 @@ async def run(args: argparse.Namespace) -> dict:
         # thought-growth far outpacing step-growth is the tell.
         thought_texts: set[str] = set()
         fold_markers = 0
-        # Hang guard: steps must keep arriving while the study says it is running.
-        last_step_t = time.time()
-        stall_reported = False
-        follow_deadline = time.time() + args.steps_timeout_s
+        follow_deadline = time.time() + steps_timeout_s
         seen: set[int] = {0} if step0 is not None else set()
         api_errors = 0
         last_api_error = ""
@@ -415,11 +621,12 @@ async def run(args: argparse.Namespace) -> dict:
             api_errors = 0
             snap = fresh
             live = snap.get("live_sessions") or {}
-            items = list(live.values()) if isinstance(live, dict) else list(live or [])
-            sess = items[0] if items else {}
-            if any(
-                isinstance(s, dict) and s.get("live_view_url") for s in items
-            ):
+            items = [
+                s
+                for s in (list(live.values()) if isinstance(live, dict) else list(live or []))
+                if isinstance(s, dict)
+            ]
+            if any(s.get("live_view_url") for s in items):
                 live_offered = True
             # Latch continuously: the stage unmounts the iframe the moment the
             # session stops browsing, so a short smoke run can finish between
@@ -427,20 +634,21 @@ async def run(args: argparse.Namespace) -> dict:
             if await page.evaluate("() => Boolean(window.__e2eLive && window.__e2eLive.seen)"):
                 saw_live = True
 
-            for t in sess.get("live_thoughts") or []:
-                if not isinstance(t, dict):
-                    continue
-                txt = str(t.get("text") or "").strip()
-                if not txt:
-                    continue
-                if txt not in thought_texts:
-                    thought_texts.add(txt)
-                    if re.search(
-                        r"no visual change|waiting —|identical|nothing changed|no change",
-                        txt,
-                        re.I,
-                    ):
-                        fold_markers += 1
+            for sess in items:
+                for t in sess.get("live_thoughts") or []:
+                    if not isinstance(t, dict):
+                        continue
+                    txt = str(t.get("text") or "").strip()
+                    if not txt:
+                        continue
+                    if txt not in thought_texts:
+                        thought_texts.add(txt)
+                        if re.search(
+                            r"no visual change|waiting —|identical|nothing changed|no change",
+                            txt,
+                            re.I,
+                        ):
+                            fold_markers += 1
 
             # Sample the live view on every poll and require its pixels to move.
             sample = await _live_frame_png(page)
@@ -483,92 +691,171 @@ async def run(args: argparse.Namespace) -> dict:
                 )
                 break
 
-            # No new numbered step for this long, while still 'running'.
-            if (
-                not stall_reported
-                and now - last_step_t > args.stall_s
-                and str(snap.get("status") or "") in {"running", "pending", "queued", ""}
-            ):
-                stall_reported = True
-                thoughts = (sess.get("live_thoughts") or [])[-1:]
-                report["fails"].append(
-                    f"agent hung — no new step for {round(now - last_step_t)}s at "
-                    f"steps {sorted(seen)}, last_action={sess.get('last_action')!r}, "
-                    f"last_thought={(thoughts[0] or {}).get('text') if thoughts else None!r}"
-                )
-                break
+            study_running = str(snap.get("status") or "") in {
+                "running",
+                "pending",
+                "queued",
+                "",
+            }
 
-            for step in sess.get("trace") or []:
-                if not isinstance(step, dict):
-                    continue
-                if not isinstance(step.get("step"), int):
-                    continue
-                n = int(step["step"])
-                if n in seen or n < 1:
-                    continue
-                seen.add(n)
-                last_step_t = time.time()
-                raw = _download(
-                    args.base,
-                    step.get("screenshot_data_url") or step.get("screenshot_url") or "",
-                )
-                st = await page.evaluate(_stage_js())
-                ui_png = await page.locator("#stage-section").screenshot(type="png")
-                (OUT_DIR / f"step{n}_ui.png").write_bytes(ui_png)
-                if st.get("liveOk") or await page.evaluate(
-                    "() => Boolean(window.__e2eLive && window.__e2eLive.seen)"
+            for idx, sess in enumerate(items):
+                key = _sess_key(sess, idx)
+                state = _agent(key)
+                state["status"] = str(sess.get("status") or "")
+                sess_trace = [
+                    s
+                    for s in (sess.get("trace") or [])
+                    if isinstance(s, dict) and isinstance(s.get("step"), int)
+                ]
+                # An agent that never got a browser slot is queued, not hung —
+                # min_steps and the stall clock only apply once it starts.
+                if sess_trace or str(sess.get("status") or "").lower() == "running":
+                    if not state["started"]:
+                        state["started"] = True
+                        state["last_step_t"] = now
+
+                # Per-agent hang guard. A global clock let 14 agents freeze as
+                # long as any one of them kept stepping.
+                if (
+                    state["started"]
+                    and not state["stall_reported"]
+                    and not _sess_done(sess)
+                    and study_running
+                    and now - state["last_step_t"] > stall_s
                 ):
-                    saw_live = True
-                live_png = await _live_frame_png(page)
-                if live_png:
-                    (OUT_DIR / f"step{n}_live.png").write_bytes(live_png)
-                    if _looks_blank(live_png):
-                        blank_live += 1
-                    else:
-                        live_painted = True
-                if raw:
-                    (OUT_DIR / f"step{n}.png").write_bytes(raw)
-                if prev_site_raw and raw:
-                    prog = judge_progress(
-                        prev_site_raw,
-                        raw,
-                        label=f"step{n-1}→{n}",
-                        persona="smoke user",
-                        task=args.task,
-                        action=str(step.get("action") or ""),
-                        expected_host=host,
-                    )
-                    report["checks"][f"progress_{n}"] = prog
-                    _log(
-                        f"  step {n} progress={prog.get('pass')} "
-                        f"same={prog.get('screens_look_the_same')} {prog.get('reason')}"
-                    )
-                    if prog.get("pass"):
-                        saw_progress = True
-                    else:
-                        report["fails"].append(
-                            f"step {n}: not progressing — {prog.get('reason')}"
-                        )
-                    prev_site_raw = raw
-                elif not raw:
-                    # No site pixels for this step is itself the bug; say so
-                    # instead of silently judging UserSim chrome.
+                    state["stall_reported"] = True
+                    thoughts = (sess.get("live_thoughts") or [])[-1:]
                     report["fails"].append(
-                        f"step {n}: no site screenshot to judge (screenshot_url missing or 404)"
+                        f"agent {key} hung — no new step for "
+                        f"{round(now - state['last_step_t'])}s (budget {round(stall_s)}s) at "
+                        f"steps {sorted(state['seen'])}, "
+                        f"last_action={sess.get('last_action')!r}, "
+                        f"last_thought="
+                        f"{(thoughts[0] or {}).get('text') if thoughts else None!r}"
                     )
-                # Cookie wall check on the new frame bytes.
-                if raw:
-                    ju = judge_usable_page(raw, label=f"step{n}", expected_host=host)
-                    report["checks"][f"usable_{n}"] = ju
-                    if not ju.get("pass"):
-                        report["fails"].append(
-                            f"step {n}: unusable/blocked page — {ju.get('reason')}"
+
+                for step in sess_trace:
+                    n = int(step["step"])
+                    if n == 0 and state["prev_raw"] is None:
+                        # Each agent needs its own landing frame as the baseline
+                        # for its first transition, or step 1 goes unjudged.
+                        base_raw = _download(
+                            args.base,
+                            step.get("screenshot_data_url")
+                            or step.get("screenshot_url")
+                            or "",
                         )
+                        if base_raw:
+                            state["prev_raw"] = base_raw
+                            (OUT_DIR / f"{key}_step0.png").write_bytes(base_raw)
+                        continue
+                    if n in state["seen"] or n < 1:
+                        continue
+                    state["seen"].add(n)
+                    seen.add(n)
+                    state["last_step_t"] = time.time()
+                    raw = _download(
+                        args.base,
+                        step.get("screenshot_data_url") or step.get("screenshot_url") or "",
+                    )
+                    st = await page.evaluate(_stage_js())
+                    if st.get("liveOk") or await page.evaluate(
+                        "() => Boolean(window.__e2eLive && window.__e2eLive.seen)"
+                    ):
+                        saw_live = True
+                    live_png = await _live_frame_png(page)
+                    if live_png:
+                        (OUT_DIR / f"{key}_step{n}_live.png").write_bytes(live_png)
+                        if _looks_blank(live_png):
+                            blank_live += 1
+                        else:
+                            live_painted = True
+                    if raw:
+                        (OUT_DIR / f"{key}_step{n}.png").write_bytes(raw)
+                    prev_raw = state["prev_raw"] or (prev_site_raw if not full else None)
+                    if prev_raw and raw:
+                        # Judge after the run. A vision call per step inside the
+                        # poll loop stalls polling for seconds at a time, and with
+                        # N agents that self-inflicted delay reads as agents hanging.
+                        state["judge_queue"].append(
+                            {
+                                "agent": key,
+                                "step": n,
+                                "prev": prev_raw,
+                                "new": raw,
+                                "action": str(step.get("action") or ""),
+                                "persona": str(sess.get("persona_name") or "user"),
+                                "task": str(sess.get("task_title") or args.task),
+                                "site": str(sess.get("site_url") or args.url),
+                            }
+                        )
+                    elif not raw:
+                        # No site pixels for this step is itself the bug; say so
+                        # instead of silently judging UserSim chrome.
+                        report["fails"].append(
+                            f"agent {key} step {n}: no site screenshot to judge "
+                            "(screenshot_url missing or 404)"
+                        )
+                    if raw:
+                        state["prev_raw"] = raw
+                        prev_site_raw = raw
             if snap.get("status") in {"complete", "error", "abandoned"}:
                 break
             # No early exit. Breaking as soon as one step landed meant an agent
             # that froze at "1 steps" for the rest of the run still passed.
             await page.wait_for_timeout(1500)
+
+        # --- Deferred vision judging ---------------------------------------
+        # Same assertions as before, run once the polling loop is done so that
+        # judge latency can never be mistaken for an agent stalling.
+        pending = [item for state in agents.values() for item in state["judge_queue"]]
+        report["checks"]["judged_pairs"] = len(pending)
+        if pending:
+            _log(f"→ judging {len(pending)} step transitions ({JUDGE_MODEL})")
+
+            def _judge_one(item: dict) -> dict:
+                label = f"{item['agent']} step{item['step']-1}→{item['step']}"
+                prog = judge_progress(
+                    item["prev"],
+                    item["new"],
+                    label=label,
+                    persona=item["persona"],
+                    task=item["task"],
+                    action=item["action"],
+                    expected_host=_hostname(item["site"]) or host,
+                )
+                usable = judge_usable_page(
+                    item["new"],
+                    label=f"{item['agent']} step{item['step']}",
+                    expected_host=_hostname(item["site"]) or host,
+                )
+                return {"item": item, "progress": prog, "usable": usable}
+
+            from concurrent.futures import ThreadPoolExecutor
+
+            with ThreadPoolExecutor(max_workers=args.judge_workers) as pool:
+                judged = list(pool.map(_judge_one, pending))
+
+            for res in judged:
+                item = res["item"]
+                key, n = item["agent"], item["step"]
+                prog, usable = res["progress"], res["usable"]
+                report["checks"][f"progress_{key}_{n}"] = prog
+                report["checks"][f"usable_{key}_{n}"] = usable
+                _log(
+                    f"  {key} step {n} progress={prog.get('pass')} "
+                    f"same={prog.get('screens_look_the_same')} {prog.get('reason')}"
+                )
+                if prog.get("pass"):
+                    saw_progress = True
+                else:
+                    report["fails"].append(
+                        f"agent {key} step {n}: not progressing — {prog.get('reason')}"
+                    )
+                if not usable.get("pass"):
+                    report["fails"].append(
+                        f"agent {key} step {n}: unusable/blocked page — {usable.get('reason')}"
+                    )
 
         if await page.evaluate("() => Boolean(window.__e2eLive && window.__e2eLive.seen)"):
             saw_live = True
@@ -632,13 +919,32 @@ async def run(args: argparse.Namespace) -> dict:
                 "suppressed, not earned"
             )
 
-        # And the agent must have moved more than once.
+        # And every agent that started must have moved more than once. Counted
+        # per started agent, not globally: a global count lets one busy agent
+        # cover for every agent that never moved.
         shot_steps_seen = sorted(n for n in seen if isinstance(n, int))
         report["checks"]["steps_seen"] = shot_steps_seen
-        if len(shot_steps_seen) < args.min_steps:
+        started = {k: s for k, s in agents.items() if s["started"]}
+        report["checks"]["agents_seen"] = len(agents)
+        report["checks"]["agents_started"] = len(started)
+        report["checks"]["steps_by_agent"] = {
+            k: sorted(s["seen"]) for k, s in sorted(agents.items())
+        }
+        if not started:
             report["fails"].append(
-                f"agent only reached steps {shot_steps_seen} "
-                f"(need ≥{args.min_steps} screenshot-backed steps — it stalled)"
+                f"no agent ever started ({len(agents)} session(s) seen) — "
+                "nothing was scheduled onto a browser"
+            )
+        for key, state in sorted(started.items()):
+            if len(state["seen"]) < args.min_steps:
+                report["fails"].append(
+                    f"agent {key} only reached steps {sorted(state['seen'])} "
+                    f"(need ≥{args.min_steps} screenshot-backed steps — it stalled)"
+                )
+        if full and n_agents and len(started) < n_agents:
+            report["fails"].append(
+                f"only {len(started)} of {n_agents} planned agents ever started — "
+                "the rest never got a browser slot within the run budget"
             )
 
         # Surface the visible error banner instead of scoring around it.
@@ -760,20 +1066,65 @@ async def run(args: argparse.Namespace) -> dict:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="STRICT local smoke e2e")
+    ap = argparse.ArgumentParser(description="STRICT e2e — smoke by default, --full for a real study")
     ap.add_argument("--base", default=os.environ.get("E2E_BASE", "http://127.0.0.1:3000"))
     ap.add_argument("--url", default=PRODUCT)
     ap.add_argument("--task", default=TASK)
+    ap.add_argument(
+        "--full",
+        action="store_true",
+        default=os.environ.get("E2E_FULL") == "1",
+        help=(
+            "run a real study with test_mode OFF: task × site fan-out, "
+            "competitors, multiple agents contending for browser slots"
+        ),
+    )
+    ap.add_argument(
+        "--competitor",
+        dest="competitors",
+        action="append",
+        default=None,
+        help="competitor URL to include (repeatable; full mode only)",
+    )
+    ap.add_argument(
+        "--segment",
+        default=os.environ.get("E2E_SEGMENT", ""),
+        help="customer segment prompt; smoke pins it to a single persona",
+    )
+    ap.add_argument(
+        "--concurrency",
+        type=int,
+        default=int(os.environ.get("MVP_BROWSER_CONCURRENCY", "25")),
+        help="browser slots the server can run at once — sizes the wave count",
+    )
+    ap.add_argument(
+        "--per-step-latency-s",
+        type=float,
+        default=45.0,
+        help="expected worst-case latency of one agent step, per wave",
+    )
+    ap.add_argument("--brief-budget-s", type=float, default=45.0)
+    ap.add_argument("--wave-budget-s", type=float, default=120.0)
+    ap.add_argument("--summary-budget-s", type=float, default=30.0)
+    ap.add_argument(
+        "--judge-workers",
+        type=int,
+        default=6,
+        help="parallel flash-lite judge calls in the post-run pass",
+    )
     ap.add_argument("--brief-timeout-s", type=int, default=120)
     # A public URL must paint fast. This is a product requirement, not a knob to
     # loosen when it fails: warm runs already hit ~1.2s, so >2s is a real
     # regression (the Browserbase warm lost its race with the brief).
     ap.add_argument("--after-tasks-s", type=float, default=2.0)
-    ap.add_argument("--steps-timeout-s", type=int, default=240)
+    # Left unset these are derived from the wave count at runtime. Pass a value
+    # only to tighten one deliberately — raising one until it stops complaining
+    # is how a harness stops testing anything.
+    ap.add_argument("--steps-timeout-s", type=int, default=None)
     ap.add_argument(
         "--stall-s",
         type=float,
-        default=45.0,
+        default=None,
         help="fail if no new numbered step arrives for this long while running",
     )
     ap.add_argument(
@@ -802,6 +1153,21 @@ def main() -> int:
     )
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
     args = ap.parse_args()
+
+    if args.full:
+        if args.competitors is None:
+            args.competitors = [
+                c for c in os.environ.get("E2E_COMPETITORS", DEFAULT_COMPETITOR).split() if c
+            ]
+        if not args.segment:
+            args.segment = FULL_SEGMENT
+        if args.task == TASK:
+            args.task = FULL_TASKS
+    else:
+        args.competitors = []
+        if not args.segment:
+            args.segment = SMOKE_SEGMENT
+
     import asyncio
 
     try:

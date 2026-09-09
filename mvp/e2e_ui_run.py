@@ -518,6 +518,26 @@ LIVE_OBSERVER = """
 """
 
 
+async def launch_chromium(p, *, headed: bool):
+    """Launch the driving browser, honouring sandbox egress constraints.
+
+    Some CI/agent sandboxes reach the internet only through an HTTP proxy and
+    ship Chromium at a fixed path; Chromium reads neither from the environment
+    on its own.
+    """
+    kwargs: dict = {"headless": not headed}
+    executable = os.environ.get("E2E_CHROMIUM_EXECUTABLE_PATH", "")
+    if executable:
+        kwargs["executable_path"] = executable
+    proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+    if proxy:
+        kwargs["proxy"] = {"server": proxy}
+    extra_args = [a for a in os.environ.get("E2E_CHROMIUM_ARGS", "").split() if a]
+    if extra_args:
+        kwargs["args"] = extra_args
+    return await p.chromium.launch(**kwargs)
+
+
 async def run_e2e(args: argparse.Namespace) -> dict:
     from playwright.async_api import async_playwright
 
@@ -532,7 +552,7 @@ async def run_e2e(args: argparse.Namespace) -> dict:
     }
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=not args.headed)
+        browser = await launch_chromium(p, headed=args.headed)
         context = await browser.new_context(
             viewport={"width": 1440, "height": 1100},
             device_scale_factor=1,
