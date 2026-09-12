@@ -15,6 +15,8 @@ cat > /etc/systemd/system/usersim-dpo-socrates.service <<'EOF'
 Description=UserSim Socrates QLoRA DPO from ckpt-425
 Wants=network-online.target
 After=network-online.target
+# systemd on this image wants StartLimit* under [Unit], not [Service].
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple
@@ -30,7 +32,8 @@ Environment=LR=1e-6
 # micro=2 fits L4 ~14→~20GB; keeps effective batch 64 while cutting epoch wall time ~2x.
 Environment=MICRO_BATCH=2
 Environment=GRAD_ACCUM=32
-Environment=SAVE_STEPS=25
+# Checkpoint every ~10 min so Spot preemption does not wipe an hour of work.
+Environment=SAVE_STEPS=5
 Environment=LOG_STEPS=1
 Environment=LIMIT_ROWS=24576
 Environment=EPOCHS=1
@@ -41,7 +44,6 @@ Environment=PATH=/opt/usersim_fm/venvs/train/bin:/home/ubuntu/.local/bin:/opt/co
 ExecStart=/usr/bin/python3 -u /opt/usersim_fm/scripts/fm_train/boot_socrates_dpo.py
 Restart=on-failure
 RestartSec=60
-StartLimitIntervalSec=0
 Nice=5
 StandardOutput=append:/opt/usersim_fm/results/socrates_dpo.log
 StandardError=append:/opt/usersim_fm/results/socrates_dpo.log
