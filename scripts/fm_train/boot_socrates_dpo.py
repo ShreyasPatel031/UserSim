@@ -33,17 +33,23 @@ PAIRS_SMOKE = ROOT / "data" / "socrates_dpo_pairs_smoke.jsonl"
 PAIRS_FULL = ROOT / "data" / "socrates_dpo_pairs.jsonl"
 ADAPTER_SMOKE = ROOT / "adapters" / "socrates_dpo_smoke"
 ADAPTER_FULL = ROOT / "adapters" / "socrates_qwen3_8b_dpo"
-SFT_ADAPTER = Path(
-    os.environ.get(
-        "SFT_ADAPTER",
-        str(ROOT / "adapters" / "socrates_qwen3_8b_qlora" / "checkpoint-425"),
-    )
-)
+# Prefer exact checkpoint-425; also accept the eval alias ckpt425.
+_DEFAULT_ADAPTER = ROOT / "adapters" / "socrates_qwen3_8b_qlora" / "checkpoint-425"
+if not _DEFAULT_ADAPTER.exists() and (ROOT / "adapters" / "ckpt425").exists():
+    _DEFAULT_ADAPTER = ROOT / "adapters" / "ckpt425"
+SFT_ADAPTER = Path(os.environ.get("SFT_ADAPTER", str(_DEFAULT_ADAPTER)))
 MODEL = os.environ.get("SFT_MODEL", "Qwen/Qwen3-8B-Base")
 STOP_AFTER = os.environ.get("STOP_AFTER", "").strip()
-RUN_EVAL = os.environ.get("RUN_EVAL", "0") == "1"
+RUN_EVAL = os.environ.get("RUN_EVAL", "1") == "1"
 TRAIN_VENV = ROOT / "venvs" / "train"
 TRAIN_PY = os.environ.get("TRAIN_PY", str(TRAIN_VENV / "bin" / "python3"))
+# Eval runner lives next to scripts/ on this VM (not under fm_baselines/).
+EVAL_RUNNER = Path(
+    os.environ.get(
+        "EVAL_RUNNER",
+        str(SCRIPTS / "colab_qwen3_8b_floor_socrates_vllm.py"),
+    )
+)
 
 
 def log(msg: str) -> None:
@@ -54,6 +60,7 @@ def sh(cmd: str, env: dict | None = None, timeout: int | None = None) -> None:
     log("+ " + cmd)
     full = dict(os.environ)
     full["PYTHONPATH"] = f"{FM_TRAIN}:{full.get('PYTHONPATH', '')}"
+    full["ROOT"] = str(ROOT)
     if env:
         full.update(env)
     subprocess.run(cmd, shell=True, check=True, env=full, timeout=timeout)
@@ -83,9 +90,8 @@ def stop_here(name: str) -> bool:
 def require_ckpt425() -> None:
     if not SFT_ADAPTER.exists():
         raise SystemExit(f"SFT adapter missing: {SFT_ADAPTER}")
-    if "1175" in str(SFT_ADAPTER):
-        raise SystemExit("refusing DPO from ckpt-1175")
-    # Prefer exact checkpoint-425 directory name when present.
+    if "1175" in str(SFT_ADAPTER) or "1550" in str(SFT_ADAPTER) or "1525" in str(SFT_ADAPTER):
+        raise SystemExit(f"refusing DPO from non-425 ckpt: {SFT_ADAPTER}")
     log(f"SFT adapter OK: {SFT_ADAPTER}")
 
 
@@ -99,7 +105,6 @@ def main() -> None:
 
     if stage("install_train_deps"):
         sh(f"{TRAIN_PY} -m pip install -q -U pip wheel")
-        # TRL + matching stack; keep transformers 4.x for peft.
         sh(
             f"{TRAIN_PY} -m pip install -q "
             "'transformers>=4.44,<5' 'peft>=0.12' 'trl>=0.9' "
@@ -129,7 +134,8 @@ def main() -> None:
             env={
                 "DPO_CORPUS": str(PAIRS_SMOKE),
                 "SFT_MODEL": MODEL,
-                "EVAL_RUNNER": str(SCRIPTS / "colab_qwen3_8b_floor_socrates_vllm.py"),
+                "EVAL_RUNNER": str(EVAL_RUNNER),
+                "ROOT": str(ROOT),
             },
         )
         stamp("format_smoke")
@@ -182,11 +188,10 @@ def main() -> None:
     if RUN_EVAL and stage("eval_full"):
         eval_dir = RESULTS / "eval_full"
         eval_dir.mkdir(parents=True, exist_ok=True)
-        # Copy adapter to a stable path the floor-style runner expects.
         dest = ROOT / "adapters" / "ckpt425_dpo"
         sh(f"rm -rf {dest} && cp -a {ADAPTER_FULL} {dest}")
         sh(
-            f"{sys.executable} -u {SCRIPTS}/colab_qwen3_8b_floor_socrates_vllm.py",
+            f"{sys.executable} -u {EVAL_RUNNER}",
             env={
                 "RESULTS_DIR": str(eval_dir),
                 "LORA_PATH": str(dest),
@@ -195,9 +200,54 @@ def main() -> None:
                 "SMOKE_STUDIES": "0",
                 "GATE": "1",
                 "SKIP_INSTALL": "1",
+                "MAX_NUM_SEQS": "64",
+                "CHUNK": "256",
+                "GPU_MEM_UTIL": "0.88",
             },
         )
         stamp("eval_full")
+
+    # Kill rules vs ckpt-425 champion: Acc must clearly beat ~0.61 and W ≤ 0.16.
+    summary_path = RESULTS / "eval_full" / "SUMMARY.json"
+    if summary_path.exists() and stage("decision"):
+        summ = json.loads(summary_path.read_text())
+        w = summ.get("wasserstein_mean")
+        parse = summ.get("parse") or {}
+        acc = summ.get("accuracy")
+        if acc is None:
+            acc = parse.get("accuracy") or summ.get("individual_accuracy")
+        baseline_w, baseline_acc = 0.1418, 0.606
+        w_ok = w is not None and float(w) <= 0.16
+        acc_ok = acc is not None and float(acc) > 0.61
+        keep = bool(w_ok and acc_ok)
+        decision = {
+            "keep": keep,
+            "kill": not keep,
+            "wasserstein_mean": w,
+            "accuracy": acc,
+            "baseline_ckpt425": {"wasserstein_mean": baseline_w, "accuracy": baseline_acc},
+            "rules": {"acc_must_clearly_beat": 0.61, "w_max": 0.16},
+            "reasons": [
+                *([] if w_ok else [f"W={w} > 0.16 (ckpt-425 had {baseline_w})"]),
+                *(
+                    []
+                    if acc_ok
+                    else [
+                        f"Acc={acc} does not clearly beat 0.61 (ckpt-425 had {baseline_acc})"
+                    ]
+                ),
+            ],
+            "parse": parse,
+            "n_studies": summ.get("n_studies"),
+            "finished_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        }
+        (RESULTS / "DECISION.json").write_text(json.dumps(decision, indent=2) + "\n")
+        log(json.dumps(decision, indent=2))
+        stamp("decision")
+        if not keep:
+            log("KILL: DPO does not beat ckpt-425 on Acc/W rules")
+        else:
+            log("KEEP: DPO clears Acc/W kill rules")
 
     log("DPO boot complete")
     (RESULTS / "BOOT_DONE.json").write_text(

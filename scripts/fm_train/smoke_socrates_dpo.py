@@ -20,7 +20,8 @@ from socrates_format import SYSTEM, build_messages, render_prompt
 ROOT = Path(os.environ.get("ROOT", "/opt/usersim_fm"))
 EVAL_RUNNER = Path(
     os.environ.get(
-        "EVAL_RUNNER", str(ROOT / "scripts" / "colab_qwen3_8b_floor_socrates_vllm.py")
+        "EVAL_RUNNER",
+        str(ROOT / "scripts" / "colab_qwen3_8b_floor_socrates_vllm.py"),
     )
 )
 MODEL = os.environ.get("SFT_MODEL", "Qwen/Qwen3-8B-Base")

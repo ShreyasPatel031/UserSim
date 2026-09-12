@@ -117,22 +117,29 @@ def build_policy(args: argparse.Namespace):
         tok.pad_token = tok.eos_token
     tok.padding_side = "left"
 
+    # L4 + Qwen3: bf16 compute. fp16+GradScaler crashes with
+    # NotImplementedError on bf16 grads that Qwen3 leaves in the graph.
+    compute_dtype = torch.bfloat16
     quant = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
         bnb_4bit_use_double_quant=True,
-        bnb_4bit_compute_dtype=torch.float16,
+        bnb_4bit_compute_dtype=compute_dtype,
     )
     base = AutoModelForCausalLM.from_pretrained(
         args.model,
         quantization_config=quant,
-        torch_dtype=torch.float16,
+        torch_dtype=compute_dtype,
         device_map={"": 0},
         trust_remote_code=True,
     )
     base = prepare_model_for_kbit_training(base, use_gradient_checkpointing=True)
     base.config.use_cache = False
     model = PeftModel.from_pretrained(base, str(adapter), is_trainable=True)
+    # Trainable LoRA weights must be fp32 for stable Adam; bf16 autocast handles matmuls.
+    for p in model.parameters():
+        if p.requires_grad and p.dtype != torch.float32:
+            p.data = p.data.float()
     model.print_trainable_parameters()
     return model, tok
 
@@ -206,8 +213,8 @@ def main() -> None:
         logging_steps=args.log_steps,
         save_steps=args.save_steps,
         save_total_limit=2,
-        fp16=True,
-        bf16=False,
+        fp16=False,
+        bf16=True,
         optim="paged_adamw_8bit",
         gradient_checkpointing=True,
         report_to=[],
@@ -216,8 +223,8 @@ def main() -> None:
         max_grad_norm=1.0,
         remove_unused_columns=False,
         beta=args.beta,
+        # TRL >=0.13: single max_length covers prompt+completion; max_prompt_length removed.
         max_length=args.max_seq,
-        max_prompt_length=args.max_seq - 32,
         dataset_num_proc=1,
     )
 
