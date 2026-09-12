@@ -32,6 +32,7 @@ Environment=MICRO_BATCH=2
 Environment=GRAD_ACCUM=32
 Environment=SAVE_STEPS=25
 Environment=LOG_STEPS=1
+Environment=LIMIT_ROWS=24576
 Environment=EPOCHS=1
 Environment=RUN_EVAL=1
 Environment=PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
