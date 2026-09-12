@@ -1,0 +1,7 @@
+{
+  "pass": false,
+  "error": "Page.wait_for_selector: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#study-form #submit-btn\") to be visible\n",
+  "fails": [
+    "run aborted: Page.wait_for_selector: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#study-form #submit-btn\") to be visible\n"
+  ]
+}

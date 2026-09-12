@@ -1,14 +1,8 @@
 {
-  "updated": "2026-09-08T09:05:00Z",
-  "instances": {
-    "fm-floor-qwen-l4": "RUNNING",
-    "fm-sft-socrates-l4": "RUNNING",
-    "fm-gate0-minitaur": "TERMINATED",
-    "fm-gate0-spot-watchdog": "RUNNING"
-  },
-  "notes": {
-    "fm-gate0-minitaur": "COMPLETE baseline; TERMINATED; usersim-do-not-start=true; spot-watch label removed; systemd usersim-minitaur disabled",
-    "fm-floor-qwen-l4": "Socrates floor via usersim-floor-socrates.service; BeFM/Psych systemd disabled",
-    "fm-sft-socrates-l4": "Socrates QLoRA SFT via usersim-sft-socrates.service (g2-standard-8 + L4, DLVM pytorch-2-9-cu129 image, 300GB); usersim-sft-watchdog.timer polls every 5min; startup-script re-enables both units after preemption; usersim-spot-watch=true"
+  "ts": "2026-09-11T17:41:42",
+  "jobs": {
+    "fm-gate0-socrates-l4": "MISSING",
+    "fm-gate0-befm": "MISSING",
+    "fm-gate0-minitaur": "MISSING"
   }
 }
