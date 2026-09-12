@@ -1,0 +1,119 @@
+{
+  "base": "http://127.0.0.1:3000",
+  "product_url": "https://www.useagency.dev/",
+  "judge_model": "gemini-2.5-flash-lite",
+  "mode": "smoke",
+  "fails": [],
+  "checks": {
+    "smoke_on": true,
+    "after_tasks_s": 0.1,
+    "step0_judge": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "useagency.dev",
+      "has_readable_page_content": true,
+      "reason": "The screenshot displays the homepage of useagency.dev with visible navigation, headings, and descriptive text.",
+      "label": "step0",
+      "expected_host": "useagency.dev",
+      "png_bytes": 116972,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The main product page content is visible and readable without any blocking elements."
+      }
+    },
+    "progress_1": {
+      "screens_look_the_same": false,
+      "visible_change": "click_highlight",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "The 'Book a discovery call' button is highlighted.",
+      "reason": "The agent correctly identified and highlighted the main call-to-action button as described in the claimed action.",
+      "label": "step0\u21921",
+      "expected_host": "useagency.dev",
+      "action": "done \u2014 text=I have browsed the homepage and identified the main call-to-action as the 'Book a discovery call' button. The website describes its service as 'Loop engineering for work that has to hold', using AI systems to adapt to specific domains. The primary CTA is clearly presented to encourage po",
+      "prev_bytes": 116972,
+      "new_bytes": 123814,
+      "pass": true
+    },
+    "usable_1": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "useagency.dev",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows the live product page for useagency.dev with readable content and UI elements.",
+      "label": "step1",
+      "expected_host": "useagency.dev",
+      "png_bytes": 123814,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": null,
+        "reason": "The main product page content is visible and readable."
+      }
+    },
+    "live_offered_by_api": true,
+    "saw_live_mounted": true,
+    "live_painted": true,
+    "blank_live_samples": 0,
+    "api_poll_errors": null,
+    "live_moved": true,
+    "live_distinct_frames": 4,
+    "live_max_static_gap_s": 0.0,
+    "final_status": "complete",
+    "distinct_thoughts": 7,
+    "fold_markers": 0,
+    "thought_to_step_ratio": 3.5,
+    "steps_seen": [
+      0,
+      1
+    ],
+    "ui_error_state": {
+      "phase": "Complete",
+      "hint": "About 3 min left \u00b7 study still running"
+    },
+    "pills": [
+      {
+        "text": "0",
+        "active": false,
+        "disabled": false
+      },
+      {
+        "text": "1",
+        "active": true,
+        "disabled": false
+      }
+    ],
+    "step_nav_changed": true,
+    "step_nav_judge": {
+      "screens_look_the_same": false,
+      "visible_change": "click_highlight",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "The 'Next' button in the step history was clicked and highlighted, and the step indicator changed from '0' to '1'.",
+      "reason": "The agent successfully navigated to the next step in the history, indicating progress.",
+      "label": "step-nav",
+      "expected_host": "useagency.dev",
+      "action": "navigate step history",
+      "prev_bytes": 234950,
+      "new_bytes": 260074,
+      "pass": true
+    }
+  },
+  "pass": true,
+  "study_id": "c19a03db-e790-4d6d-a66d-bf7ebce9c542",
+  "elapsed_s": 24.1
+}

@@ -1,0 +1,161 @@
+{
+  "base": "http://127.0.0.1:3000",
+  "product_url": "https://www.youtube.com/",
+  "judge_model": "gemini-2.5-flash-lite",
+  "mode": "smoke",
+  "fails": [],
+  "checks": {
+    "smoke_on": true,
+    "after_tasks_s": 0.08,
+    "step0_judge": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "youtube.com",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows the YouTube homepage with navigation elements and a \"Try searching to get started\" message.",
+      "label": "step0",
+      "expected_host": "youtube.com",
+      "png_bytes": 44927,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The page displays a prompt to search for videos, but the main navigation and interface are visible and usable."
+      }
+    },
+    "progress_1": {
+      "screens_look_the_same": false,
+      "visible_change": "new_page",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "Search results page displayed",
+      "reason": "The agent successfully searched for the requested video and the search results page is displayed.",
+      "label": "step0\u21921",
+      "expected_host": "youtube.com",
+      "action": "input \u2014 index=74, text=never gonna give you up, clear=True; click \u2014 index=79",
+      "prev_bytes": 44927,
+      "new_bytes": 504364,
+      "pass": true
+    },
+    "usable_1": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "youtube.com",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows the YouTube homepage with search results for 'never gonna give you up'.",
+      "label": "step1",
+      "expected_host": "youtube.com",
+      "png_bytes": 504364,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The main YouTube page content is visible and usable, showing search results and video previews without any blocking elements."
+      }
+    },
+    "progress_2": {
+      "screens_look_the_same": false,
+      "visible_change": "new_page",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "Search results for 'never gonna give you up' are displayed.",
+      "reason": "The new screen displays search results for the requested song, which is the expected outcome of the claimed action.",
+      "label": "step1\u21922",
+      "expected_host": "youtube.com",
+      "action": "done \u2014 text=I have searched for 'never gonna give you up' on YouTube. The search results are now displayed on the page., success=True, files_to_display=[]",
+      "prev_bytes": 504364,
+      "new_bytes": 508562,
+      "pass": true
+    },
+    "usable_2": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "youtube.com",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows the YouTube homepage with search results for 'never gonna give you up'.",
+      "label": "step2",
+      "expected_host": "youtube.com",
+      "png_bytes": 508562,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The main content of the YouTube page, including videos and navigation, is visible and usable without any blocking elements."
+      }
+    },
+    "live_offered_by_api": true,
+    "saw_live_mounted": true,
+    "live_painted": true,
+    "blank_live_samples": 0,
+    "api_poll_errors": null,
+    "live_moved": true,
+    "live_distinct_frames": 14,
+    "live_max_static_gap_s": 1.7,
+    "final_status": "complete",
+    "distinct_thoughts": 9,
+    "fold_markers": 0,
+    "thought_to_step_ratio": 3.0,
+    "steps_seen": [
+      0,
+      1,
+      2
+    ],
+    "ui_error_state": {
+      "phase": "Complete",
+      "hint": "About 2 min left \u00b7 study still running"
+    },
+    "pills": [
+      {
+        "text": "0",
+        "active": false,
+        "disabled": false
+      },
+      {
+        "text": "1",
+        "active": false,
+        "disabled": false
+      },
+      {
+        "text": "2",
+        "active": true,
+        "disabled": false
+      }
+    ],
+    "step_nav_changed": true,
+    "step_nav_judge": {
+      "screens_look_the_same": false,
+      "visible_change": "scroll",
+      "matches_claimed_action": false,
+      "progressing_toward_task": false,
+      "stuck": true,
+      "what_changed": "The page content has scrolled down, revealing more videos, but the step indicator remains at 'Step 1'.",
+      "reason": "The claimed action was to navigate step history, but the screen shows a scroll action and no change in the step history indicator, indicating the agent is stuck.",
+      "label": "step-nav",
+      "expected_host": "youtube.com",
+      "action": "navigate step history",
+      "prev_bytes": 123053,
+      "new_bytes": 541092,
+      "pass": false
+    }
+  },
+  "pass": true,
+  "study_id": "f0bb116d-db2a-4ff7-8ab4-cd0caf896186",
+  "elapsed_s": 58.2
+}

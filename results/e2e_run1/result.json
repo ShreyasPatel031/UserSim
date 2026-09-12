@@ -1,0 +1,119 @@
+{
+  "base": "http://127.0.0.1:3000",
+  "product_url": "https://useagency.dev/",
+  "judge_model": "gemini-2.5-flash-lite",
+  "mode": "smoke",
+  "fails": [],
+  "checks": {
+    "smoke_on": true,
+    "after_tasks_s": 0.07,
+    "step0_judge": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "useagency.dev",
+      "has_readable_page_content": true,
+      "reason": "The screenshot displays the homepage of useagency.dev with visible navigation, headings, and descriptive text.",
+      "label": "step0",
+      "expected_host": "useagency.dev",
+      "png_bytes": 117053,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The main product page content is visible and readable without any blocking elements."
+      }
+    },
+    "progress_1": {
+      "screens_look_the_same": false,
+      "visible_change": "scroll",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "scrolled down the page",
+      "reason": "The user scrolled down the page, revealing more content and new interactive elements, which is a progression towards understanding the website's offerings.",
+      "label": "step0\u21921",
+      "expected_host": "useagency.dev",
+      "action": "done \u2014 text=As a Creative Strategist, I've skimmed the homepage and the main promise of Agency is that they provide AI systems engineered with adaptive reasoning loops that continuously measure actions, feedback, and truth within a specific domain to ensure consequential work passes., success=True, ",
+      "prev_bytes": 117053,
+      "new_bytes": 123963,
+      "pass": true
+    },
+    "usable_1": {
+      "is_real_target_site_screenshot": true,
+      "is_grey_or_blank_placeholder": false,
+      "is_usersim_chrome_only": false,
+      "shows_preparing_or_step_null": false,
+      "visible_hostname_guess": "useagency.dev",
+      "has_readable_page_content": true,
+      "reason": "The screenshot shows the live product page for useagency.dev with readable content and UI elements.",
+      "label": "step1",
+      "expected_host": "useagency.dev",
+      "png_bytes": 123963,
+      "host_match": true,
+      "pass": true,
+      "blocker": {
+        "is_cookie_or_consent_wall": false,
+        "is_login_gate_blocking": false,
+        "page_is_usable_for_browsing": true,
+        "blocker_text_guess": "",
+        "reason": "The main product page content is visible and readable, with navigation and hero text."
+      }
+    },
+    "live_offered_by_api": true,
+    "saw_live_mounted": true,
+    "live_painted": true,
+    "blank_live_samples": 0,
+    "api_poll_errors": null,
+    "live_moved": true,
+    "live_distinct_frames": 4,
+    "live_max_static_gap_s": 0.0,
+    "final_status": "complete",
+    "distinct_thoughts": 7,
+    "fold_markers": 0,
+    "thought_to_step_ratio": 3.5,
+    "steps_seen": [
+      0,
+      1
+    ],
+    "ui_error_state": {
+      "phase": "Complete",
+      "hint": "About 3 min left \u00b7 study still running"
+    },
+    "pills": [
+      {
+        "text": "0",
+        "active": false,
+        "disabled": false
+      },
+      {
+        "text": "1",
+        "active": true,
+        "disabled": false
+      }
+    ],
+    "step_nav_changed": true,
+    "step_nav_judge": {
+      "screens_look_the_same": false,
+      "visible_change": "click_highlight",
+      "matches_claimed_action": true,
+      "progressing_toward_task": true,
+      "stuck": false,
+      "what_changed": "The 'Done' pill is now highlighted, indicating the step is complete.",
+      "reason": "The agent clicked the 'Next step' pill, which changed to 'Done' and became highlighted, indicating progress in the task.",
+      "label": "step-nav",
+      "expected_host": "useagency.dev",
+      "action": "navigate step history",
+      "prev_bytes": 239409,
+      "new_bytes": 265120,
+      "pass": true
+    }
+  },
+  "pass": true,
+  "study_id": "ed07aaa7-91b4-4d8f-9e99-1e362ecd0b07",
+  "elapsed_s": 25.9
+}
