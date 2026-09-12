@@ -166,38 +166,45 @@ def main() -> None:
 
     started = time.time()
 
-    class Heartbeat(TrainerCallback):
-        last_loss: float | None = None
-
-        def on_log(self, cfg, state, control, logs=None, **kw):
-            logs = logs or {}
-            loss = logs.get("loss", logs.get("train_loss"))
-            if loss is None:
-                loss = self.last_loss
-            else:
-                self.last_loss = loss
-            payload = {
-                "step": state.global_step,
-                "max_steps": state.max_steps,
-                "epoch": state.epoch,
-                "loss": loss,
-                "rewards/accuracies": logs.get("rewards/accuracies"),
-                "rewards/margins": logs.get("rewards/margins"),
-                "lr": logs.get("learning_rate"),
-                "grad_norm": logs.get("grad_norm"),
-                "elapsed_s": round(time.time() - started, 1),
-                "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                "pairs": len(rows),
-                "effective_batch": effective,
-                "sft_adapter": args.sft_adapter,
-                "diverged": False,
-                "role": "dpo",
-            }
-            if loss is not None and (math.isnan(loss) or math.isinf(loss)):
-                payload["diverged"] = True
-                (RESULTS / "PROGRESS.json").write_text(json.dumps(payload, indent=2))
-                raise SystemExit(f"DPO loss diverged at step {state.global_step}: {loss}")
+    def write_progress(step: int, max_steps: int | None, epoch: float | None, logs: dict | None = None) -> None:
+        logs = logs or {}
+        loss = logs.get("loss", logs.get("train_loss"))
+        payload = {
+            "step": step,
+            "max_steps": max_steps,
+            "epoch": epoch,
+            "loss": loss,
+            "rewards/accuracies": logs.get("rewards/accuracies"),
+            "rewards/margins": logs.get("rewards/margins"),
+            "lr": logs.get("learning_rate"),
+            "grad_norm": logs.get("grad_norm"),
+            "elapsed_s": round(time.time() - started, 1),
+            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "pairs": len(rows),
+            "effective_batch": effective,
+            "micro_batch": args.micro_batch,
+            "grad_accum": args.grad_accum,
+            "sft_adapter": args.sft_adapter,
+            "diverged": False,
+            "role": "dpo",
+        }
+        if loss is not None and (math.isnan(loss) or math.isinf(loss)):
+            payload["diverged"] = True
             (RESULTS / "PROGRESS.json").write_text(json.dumps(payload, indent=2))
+            raise SystemExit(f"DPO loss diverged at step {step}: {loss}")
+        (RESULTS / "PROGRESS.json").write_text(json.dumps(payload, indent=2))
+
+    # Wipe stale smoke heartbeat so the watchdog does not treat train_full as stalled.
+    write_progress(0, None, 0.0)
+
+    class Heartbeat(TrainerCallback):
+        def on_log(self, cfg, state, control, logs=None, **kw):
+            write_progress(state.global_step, state.max_steps, state.epoch, logs)
+
+        def on_step_end(self, cfg, state, control, **kw):
+            # Keep PROGRESS fresh every optimizer step (~minutes) for Spot watchdog.
+            if state.global_step > 0 and state.global_step % 1 == 0:
+                write_progress(state.global_step, state.max_steps, state.epoch)
 
     # DPOConfig subclasses TrainingArguments in recent TRL.
     targs = DPOConfig(
@@ -210,7 +217,7 @@ def main() -> None:
         weight_decay=args.wd,
         warmup_ratio=args.warmup_ratio,
         lr_scheduler_type="cosine",
-        logging_steps=args.log_steps,
+        logging_steps=max(1, args.log_steps),
         save_steps=args.save_steps,
         save_total_limit=2,
         fp16=False,

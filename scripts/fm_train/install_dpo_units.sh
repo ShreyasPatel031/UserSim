@@ -27,9 +27,11 @@ Environment=SFT_ADAPTER=/opt/usersim_fm/adapters/socrates_qwen3_8b_qlora/checkpo
 Environment=TRAIN_PY=/opt/usersim_fm/venvs/train/bin/python3
 Environment=RESUME=1
 Environment=LR=1e-6
-Environment=MICRO_BATCH=1
-Environment=GRAD_ACCUM=64
+# micro=2 fits L4 ~14→~20GB; keeps effective batch 64 while cutting epoch wall time ~2x.
+Environment=MICRO_BATCH=2
+Environment=GRAD_ACCUM=32
 Environment=SAVE_STEPS=25
+Environment=LOG_STEPS=1
 Environment=EPOCHS=1
 Environment=RUN_EVAL=1
 Environment=PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
