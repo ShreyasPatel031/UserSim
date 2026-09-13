@@ -1,0 +1,5 @@
+{
+  "pass": false,
+  "error": "STALL: no new steps/dones for 90s (steps=0, done=0/9, phase='Opening the live page')",
+  "product_url": "https://www.youtube.com/"
+}

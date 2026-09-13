@@ -365,6 +365,44 @@ def _make_step_hooks(
     return on_step_start, on_step_end
 
 
+_CONSENT_CLICK_JS = """
+() => {
+  const texts = [
+    'accept all', 'accept all cookies', 'accept cookies', 'i agree', 'agree',
+    'allow all', 'got it', 'ok', 'okay', 'continue', 'consent',
+  ];
+  const nodes = [
+    ...document.querySelectorAll('button, [role="button"], input[type="button"], input[type="submit"], a'),
+  ];
+  for (const el of nodes) {
+    const label = ((el.innerText || el.value || el.getAttribute('aria-label') || '') + '').trim().toLowerCase();
+    if (!label || label.length > 48) continue;
+    if (!texts.some((t) => label === t || label.startsWith(t))) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 8 || r.height < 8) continue;
+    el.click();
+    return label;
+  }
+  return '';
+}
+"""
+
+
+async def _dismiss_consent_banners(browser_session: Any, *, agent_id: str) -> None:
+    try:
+        page = await asyncio.wait_for(browser_session.get_current_page(), timeout=8)
+        if page is None:
+            return
+        for _ in range(2):
+            clicked = await asyncio.wait_for(page.evaluate(_CONSENT_CLICK_JS), timeout=5)
+            if not clicked:
+                break
+            print(f"[{agent_id}] dismissed consent: {clicked!r}", flush=True)
+            await asyncio.sleep(0.4)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] consent dismiss skipped: {exc!r}", flush=True)
+
+
 async def _emit_opening_frame(
     browser_session: Any,
     *,
@@ -379,6 +417,7 @@ async def _emit_opening_frame(
         await asyncio.wait_for(browser_session.navigate_to(url), timeout=30)
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening navigate failed: {exc!r}", flush=True)
+    await _dismiss_consent_banners(browser_session, agent_id=agent_id)
     # Scroll to top so we don't capture a footer-only viewport.
     try:
         page = await asyncio.wait_for(browser_session.get_current_page(), timeout=8)
@@ -627,7 +666,6 @@ async def run_browser_agent(
 
     use_warm = (
         not force_local
-        and not is_youtube
         and isinstance(warm, dict)
         and warm.get("browser_session") is not None
         and _urls_match(str(warm.get("url") or ""), url)
@@ -921,11 +959,17 @@ async def run_browser_agent(
             calculate_cost=True,
             file_system_path=str(run_dir),
             save_conversation_path=str(run_dir / "conversation"),
+            # We already navigated + screenshotted. Default True makes browser-use
+            # re-navigate to the URL in the task text BEFORE the first hooked step —
+            # live iframe up, step rail stuck at opening, looks frozen on YouTube.
+            directly_open_url=False,
             extend_system_message=(
                 "You are a real user in a usability study, not an optimizer. "
                 "Prefer obvious UI paths; comment on clarity and trust. "
                 "Never claim to see content that is only 'implied' or absent from the "
-                "current screenshot/DOM. Stay on the product site you were given."
+                "current screenshot/DOM. Stay on the product site you were given. "
+                "If a cookie/consent banner blocks the page, Accept all / Agree first, "
+                "then continue the task."
             ),
         )
         # Signal UI: agent loop is starting — replace screenshot with live view now.
@@ -967,23 +1011,52 @@ async def run_browser_agent(
             on_step=on_step,
         )
         print(f"[{agent_id}] agent.run starting (warm={use_warm})", flush=True)
-        history = await agent.run(
-            max_steps=max_steps,
-            on_step_start=on_step_start,
-            on_step_end=on_step_end,
+        wall_s = float(os.environ.get("MVP_AGENT_WALL_S", "420") or "420")
+        # Do NOT use asyncio.wait_for alone: on timeout it cancels agent.run and
+        # waits forever if browser-use/EventBus ignores CancelledError. Race a
+        # hard deadline so hung agents cannot wedge the whole study gather.
+        run_task = asyncio.create_task(
+            agent.run(
+                max_steps=max_steps,
+                on_step_start=on_step_start,
+                on_step_end=on_step_end,
+            )
         )
+        try:
+            history = await asyncio.wait_for(asyncio.shield(run_task), timeout=wall_s)
+        except asyncio.TimeoutError:
+            print(f"[{agent_id}] agent.run wall timeout {wall_s}s — stopping", flush=True)
+            run_task.cancel()
+            try:
+                await asyncio.wait_for(run_task, timeout=8)
+            except (asyncio.TimeoutError, asyncio.CancelledError, Exception):
+                pass
+            history = getattr(agent, "history", None)
+        except asyncio.CancelledError:
+            run_task.cancel()
+            raise
     finally:
         if browser_session is not None:
             try:
-                await browser_session.kill()
+                await asyncio.wait_for(browser_session.kill(), timeout=8)
             except Exception:
                 pass
         if profile_clone is not None:
-            await asyncio.to_thread(discard_profile, profile_clone)
+            try:
+                await asyncio.wait_for(
+                    asyncio.to_thread(discard_profile, profile_clone), timeout=5
+                )
+            except Exception:
+                pass
         if owns_session and bb_session is not None:
             sid = getattr(bb_session, "id", None)
             if sid:
-                await asyncio.to_thread(close_session, sid)
+                try:
+                    await asyncio.wait_for(
+                        asyncio.to_thread(close_session, sid), timeout=8
+                    )
+                except Exception:
+                    pass
 
     actions = _history_to_actions(history) if history is not None else []
     trace = (
