@@ -974,6 +974,21 @@ async def run_study(
         if _should_warm_browserbase():
             from mvp.browser_agent import warm_opening_session
 
+            # Free zombie Browserbase sessions from abandoned studies so
+            # create_session doesn't hang on a leaked local slot / 429.
+            try:
+                from capability.browserbase_client import reset_local_slots
+                from mvp.kill_switch import kill_all_browserbase
+
+                released = await asyncio.wait_for(
+                    asyncio.to_thread(kill_all_browserbase),
+                    timeout=12,
+                )
+                reset_local_slots()
+                print(f"pre-study browserbase release: {released}", flush=True)
+            except Exception as rel_exc:  # noqa: BLE001
+                print(f"pre-study browserbase release skipped: {rel_exc!r}", flush=True)
+
             warm_task = asyncio.create_task(
                 warm_opening_session(study_id=study.id, url=study.url)
             )
@@ -1366,10 +1381,22 @@ async def run_study(
             except Exception:
                 pass
 
-        # Warm capture may already be done; if not, stage is already visible.
+        # Warm capture may already be done; if not, do not block agent launch.
+        # YouTube e2e was stalling here forever when Browserbase create hung.
         if warm_task is not None:
             try:
-                warm_opening = await warm_task
+                warm_opening = await asyncio.wait_for(warm_task, timeout=20)
+            except asyncio.TimeoutError:
+                print(
+                    "warm opening timed out — launching agents without warm session",
+                    flush=True,
+                )
+                warm_task.cancel()
+                try:
+                    await warm_task
+                except Exception:
+                    pass
+                warm_opening = None
             except Exception as warm_exc:  # noqa: BLE001
                 print(f"warm opening await failed: {warm_exc!r}", flush=True)
                 warm_opening = None
