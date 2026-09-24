@@ -33,7 +33,15 @@ set +a
 # even when the form itself was fine. Override with MVP_FORCE_LOCAL_BROWSER=1.
 export MVP_SIGNUP_BROWSERBASE="${MVP_SIGNUP_BROWSERBASE:-1}"
 export USE_BROWSERBASE="${USE_BROWSERBASE:-1}"
-export MVP_CAPTCHA_SOLVER="${MVP_CAPTCHA_SOLVER:-1}"
+# secrets/env may pin MVP_CAPTCHA_SOLVER=0; force-on for seed signup unless
+# the operator explicitly sets MVP_CAPTCHA_SOLVER_FORCE=0.
+if [[ "${MVP_CAPTCHA_SOLVER_FORCE:-1}" == "1" ]]; then
+  export MVP_CAPTCHA_SOLVER=1
+else
+  export MVP_CAPTCHA_SOLVER="${MVP_CAPTCHA_SOLVER:-1}"
+fi
+export MVP_CAPTCHA_OSS="${MVP_CAPTCHA_OSS:-1}"
+export MVP_CAPTCHA_AUDIO="${MVP_CAPTCHA_AUDIO:-1}"
 export MVP_CAPTCHA_ALLOW_HUMAN=0
 export MVP_SMS_BACKEND="${MVP_SMS_BACKEND:-ntfy}"
 # Only force local Chrome when explicitly requested — that path is the debug fallback.
