@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""e2e2: real Run button → 5 users × 5 tasks × 3 sites → 75 flash-lite YESes.
+"""e2e2: real Run button → matrix of users × tasks × sites → flash-lite YESes.
 
 Clicks Run (never Smoke). While agents run, Ready/View-full-report must stay
 hidden. Then toggles every site × task × user control and vision-judges the
@@ -7,6 +7,8 @@ hidden. Then toggles every site × task × user control and vision-judges the
 Preparing pulse, not a grey pane).
 
   PYTHONPATH=src:. python mvp/e2e2_matrix.py --base https://usersim.vercel.app
+  E2E2_URL=https://www.youtube.com/ E2E2_EXPECTED=9 E2E2_MAX_AGENTS=9 \\
+    ./mvp/run_e2e2.sh http://127.0.0.1:3000
 """
 
 from __future__ import annotations
@@ -38,7 +40,8 @@ if sa.is_file():
     os.environ.setdefault("GOOGLE_APPLICATION_CREDENTIALS", str(sa))
 
 OUT_DIR = Path(os.environ.get("E2E2_OUT_DIR", "/tmp/usersim_e2e2"))
-EXPECTED = 75  # 5 personas × 5 tasks × 3 sites
+# Default full matrix; override with E2E2_EXPECTED / --expected for smaller runs.
+DEFAULT_EXPECTED = int(os.environ.get("E2E2_EXPECTED", "75") or "75")
 
 
 def _log(msg: str) -> None:
@@ -167,12 +170,18 @@ async def _toggle_session(page, sess: dict) -> None:
 async def run_e2e2(args: argparse.Namespace) -> dict:
     from playwright.async_api import async_playwright
 
+    expected = int(args.expected)
+    want_personas = int(args.min_personas)
+    want_tasks = int(args.min_tasks)
+    want_sites = int(args.min_sites)
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
     report: dict = {
         "base": args.base,
+        "product_url": args.url,
         "judge_model": JUDGE_MODEL,
-        "expected": EXPECTED,
+        "expected": expected,
         "pass": False,
         "yeses": 0,
         "judgements": [],
@@ -185,8 +194,11 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         )).new_page()
         await page.add_init_script(FETCH_PROBE)
 
-        _log(f"→ open {args.base}")
-        await page.goto(args.base, wait_until="domcontentloaded", timeout=60_000)
+        start = args.base.rstrip("/")
+        if args.max_agents and args.max_agents > 0:
+            start = f"{start}/?max_agents={int(args.max_agents)}"
+        _log(f"→ open {start} url={args.url}")
+        await page.goto(start, wait_until="domcontentloaded", timeout=60_000)
         await page.wait_for_selector("#study-form #submit-btn", timeout=30_000)
 
         study_id = args.study_id
@@ -210,6 +222,9 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             _log(f"→ attach study {study_id} (no new Run)")
         study: dict = {}
         judged: dict[str, dict] = {}
+        last_steps = -1
+        last_done = -1
+        last_move_t = time.time()
 
         while time.time() - t0 < args.timeout_s:
             e2e = await page.evaluate("() => window.__e2e || {}")
@@ -230,12 +245,31 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             n_unique_tasks = len({
                 str(t.get("id") or "").split("__")[0] for t in tasks if t.get("id")
             })
+            done_n = sum(1 for s in sessions if s.get("status") == "complete")
+            step_n = sum(
+                1
+                for s in sessions
+                for st in (s.get("trace") or [])
+                if isinstance(st, dict) and isinstance(st.get("step"), int)
+            )
+            if step_n > last_steps or done_n > last_done:
+                last_steps = step_n
+                last_done = done_n
+                last_move_t = time.time()
             _log(
                 f"  [{int(time.time()-t0)}s] status={study.get('status')} "
                 f"users={len(personas)} tasks={n_unique_tasks} "
                 f"sites={1+len(comps)} agents={len(sessions)} "
                 f"yeses={len(judged)} phase={(study.get('phase') or '')[:50]}"
             )
+
+            # Stall fail-fast: frozen fleet must not burn the full timeout.
+            if sessions and (time.time() - last_move_t) > args.stall_s:
+                raise RuntimeError(
+                    f"STALL: no new steps/dones for {args.stall_s:.0f}s "
+                    f"(steps={step_n}, done={done_n}/{len(sessions)}, "
+                    f"phase={study.get('phase')!r})"
+                )
 
             # Toggle + judge any session that now has a real numbered shot.
             for sess in sessions:
@@ -273,7 +307,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                         **verdict,
                     }
                     _log(
-                        f"  judge {len(judged)}/{EXPECTED} {aid} "
+                        f"  judge {len(judged)}/{expected} {aid} "
                         f"host={host} pass={verdict.get('pass')} "
                         f"{verdict.get('reason')}"
                     )
@@ -287,8 +321,8 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             if (
                 study.get("status") == "complete"
                 and study.get("summary")
-                and len(sessions) >= EXPECTED
-                and len(judged) >= EXPECTED
+                and len(sessions) >= expected
+                and len(judged) >= expected
             ):
                 break
             if study.get("status") in {"error", "abandoned"}:
@@ -310,16 +344,16 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         report["elapsed_s"] = round(time.time() - t0, 1)
 
         fails = []
-        if report["personas"] < 5:
-            fails.append(f"personas={report['personas']} want 5")
-        if report["task_bases"] < 5:
-            fails.append(f"tasks={report['task_bases']} want 5")
-        if report["sites"] < 3:
-            fails.append(f"sites={report['sites']} want 3")
-        if report["agents"] < EXPECTED:
-            fails.append(f"agents={report['agents']} want {EXPECTED}")
-        if report["yeses"] < EXPECTED:
-            fails.append(f"yeses={report['yeses']} want {EXPECTED}")
+        if report["personas"] < want_personas:
+            fails.append(f"personas={report['personas']} want {want_personas}")
+        if report["task_bases"] < want_tasks:
+            fails.append(f"tasks={report['task_bases']} want {want_tasks}")
+        if report["sites"] < want_sites:
+            fails.append(f"sites={report['sites']} want {want_sites}")
+        if report["agents"] < expected:
+            fails.append(f"agents={report['agents']} want {expected}")
+        if report["yeses"] < expected:
+            fails.append(f"yeses={report['yeses']} want {expected}")
         if study.get("status") != "complete":
             fails.append(f"status={study.get('status')}")
         if not study.get("summary"):
@@ -375,22 +409,45 @@ def main() -> int:
         "--segment",
         default=os.environ.get("E2E2_SEGMENT", "Founders evaluating AI research tools"),
     )
+    ap.add_argument(
+        "--expected",
+        type=int,
+        default=DEFAULT_EXPECTED,
+        help="Required agent / YES count (env E2E2_EXPECTED, default 75)",
+    )
+    ap.add_argument("--min-personas", type=int, default=int(os.environ.get("E2E2_MIN_PERSONAS", "5")))
+    ap.add_argument("--min-tasks", type=int, default=int(os.environ.get("E2E2_MIN_TASKS", "5")))
+    ap.add_argument("--min-sites", type=int, default=int(os.environ.get("E2E2_MIN_SITES", "3")))
+    ap.add_argument(
+        "--max-agents",
+        type=int,
+        default=int(os.environ.get("E2E2_MAX_AGENTS", "0") or "0"),
+        help="Cap via /?max_agents=N (0 = uncapped full matrix)",
+    )
     ap.add_argument("--timeout-s", type=int, default=int(os.environ.get("E2E2_TIMEOUT_S", "2400")))
+    ap.add_argument(
+        "--stall-s",
+        type=float,
+        default=float(os.environ.get("E2E2_STALL_S", "90")),
+        help="Fail if no new steps/dones for this many seconds",
+    )
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
     ap.add_argument("--study-id", default=os.environ.get("E2E2_STUDY_ID", ""))
     args = ap.parse_args()
+    expected = int(args.expected)
     try:
         result = asyncio.run(run_e2e2(args))
     except Exception as exc:  # noqa: BLE001
         _log(f"FAIL: {exc}")
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         (OUT_DIR / "result.json").write_text(
-            json.dumps({"pass": False, "error": str(exc)}, indent=2)
+            json.dumps({"pass": False, "error": str(exc), "product_url": args.url}, indent=2)
         )
         return 1
     _log(
         f"ALL_PASS study={result.get('study_id')} "
-        f"yeses={result.get('yeses')}/{EXPECTED} elapsed={result.get('elapsed_s')}s"
+        f"yeses={result.get('yeses')}/{expected} elapsed={result.get('elapsed_s')}s "
+        f"url={args.url}"
     )
     return 0
 
