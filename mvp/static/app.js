@@ -61,6 +61,11 @@ let _shotLoaded = {};
 /** Live iframe painted for this agent — only then hide the website screenshot. */
 let _liveReady = {};
 let _liveFailed = {};
+/** Last live_view_url we mounted per agent — remount when BB refreshes the debugger. */
+let _liveMountedSrc = {};
+/** Periodic remount timers — BB DevTools WS dies mid-run without a remount. */
+let _liveKeepAlive = {};
+const LIVE_RECONNECT_MS = 28000;
 let _activeTraceIdx = 0;
 let _userPickedTrace = false;
 let _activityRendered = 0;
@@ -495,8 +500,10 @@ function bindLiveProbe(iframe, agentId) {
   if (!iframe || !agentId || iframe.dataset.boundLive) return;
   iframe.dataset.boundLive = "1";
   iframe.addEventListener("load", () => {
-    if (_liveFailed[agentId] || _liveReady[agentId]) return;
+    // Any successful paint clears a prior disconnect — keep trying.
+    _liveFailed[agentId] = false;
     _liveReady[agentId] = true;
+    _liveMountedSrc[agentId] = iframe.getAttribute("src") || _liveMountedSrc[agentId] || "";
     if (_lastStudyData) renderStage(mergeSessions(_lastStudyData));
   });
   iframe.addEventListener("error", () => {
@@ -504,6 +511,38 @@ function bindLiveProbe(iframe, agentId) {
     _liveReady[agentId] = false;
     if (_lastStudyData) renderStage(mergeSessions(_lastStudyData));
   });
+}
+
+function ensureLiveKeepAlive(agentId, liveSrc) {
+  if (!agentId || !liveSrc) return;
+  if (_liveKeepAlive[agentId]) return;
+  _liveKeepAlive[agentId] = setInterval(() => {
+    if (!_lastStudyData) return;
+    const sessions = mergeSessions(_lastStudyData);
+    const sess = (sessions || []).find((s) => String(s?.agent_id || "") === String(agentId));
+    if (!sess || !["starting", "pending", "running"].includes(String(sess.status || ""))) {
+      clearInterval(_liveKeepAlive[agentId]);
+      delete _liveKeepAlive[agentId];
+      return;
+    }
+    // Force remount — Browserbase DevTools WS dies with "WebSocket disconnected"
+    // and the overlay cannot be clicked cross-origin.
+    _liveFailed[agentId] = false;
+    _liveReady[agentId] = false;
+    const bust = String(sess.live_view_url || liveSrc);
+    const joiner = bust.includes("?") ? "&" : "?";
+    _liveMountedSrc[agentId] = `${bust}${joiner}_r=${Date.now()}`;
+    // Temporarily clear so paintStageBody sees a URL change.
+    sess.live_view_url = _liveMountedSrc[agentId];
+    renderStage(sessions);
+  }, LIVE_RECONNECT_MS);
+}
+
+function stopLiveKeepAlive(agentId) {
+  if (_liveKeepAlive[agentId]) {
+    clearInterval(_liveKeepAlive[agentId]);
+    delete _liveKeepAlive[agentId];
+  }
 }
 
 function stepsWithScreenshots(trace) {
@@ -598,19 +637,29 @@ function renderFocusStage(session, sessionIdx) {
     liveView &&
       session?.live_active &&
       browsing &&
-      !_liveFailed[agentId] &&
       !["killed", "complete", "error", "abandoned"].includes(String(session?.status || ""))
   );
-  // Screenshot of the website first. Live replaces it only after the iframe paints.
-  const showLive = liveWanted && Boolean(_liveReady[agentId]);
-  const shotSrc = !showLive ? pickedSrc : "";
+  // Show live as soon as we have a URL — don't wait on a probe that doubles the WS
+  // and often dies with "WebSocket disconnected". Screenshot stays underneath until load.
+  const showLive = liveWanted;
+  if (liveWanted) ensureLiveKeepAlive(agentId, liveView);
+  else stopLiveKeepAlive(agentId);
+  const shotSrc = !showLive || !_liveReady[agentId] ? pickedSrc : "";
   if (showLive) {
+    const frameSrc = _liveMountedSrc[agentId] || liveView;
     visual = `
       <div class="stage-visuals">
-        <div class="stage-live-wrap" data-live-src="${escapeHtml(liveView)}">
+        ${
+          shotSrc && !_liveReady[agentId]
+            ? `<figure class="stage-shot stage-shot-under-live">
+          <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="Opening" loading="eager" data-agent-id="${escapeHtml(agentId)}" />
+        </figure>`
+            : ""
+        }
+        <div class="stage-live-wrap" data-live-src="${escapeHtml(frameSrc)}">
           <iframe
             class="stage-live-frame"
-            src="${escapeHtml(liveView)}"
+            src="${escapeHtml(frameSrc)}"
             title="Live browser — ${escapeHtml(siteName)}"
             sandbox="allow-same-origin allow-scripts"
             allow="clipboard-read; clipboard-write"
@@ -619,7 +668,8 @@ function renderFocusStage(session, sessionIdx) {
           <p class="stage-live-caption">Live browser · ${escapeHtml(siteName)} · agent acting</p>
         </div>
       </div>`;
-  } else if (shotSrc) {
+  } else if (shotSrc || pickedSrc) {
+    const src = shotSrc || pickedSrc;
     const boxes = step?.boxes || [];
     const caption = formatStepCaption(step);
     const boxLegend = boxes.length
@@ -637,16 +687,11 @@ function renderFocusStage(session, sessionIdx) {
     visual = `
       <div class="stage-visuals">
         <figure class="stage-shot">
-          <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="${escapeHtml(caption)}" loading="eager" data-agent-id="${escapeHtml(agentId)}" />
+          <img class="trace-screenshot" data-shot-src="${escapeHtml(src)}" src="${escapeHtml(src)}" alt="${escapeHtml(caption)}" loading="eager" data-agent-id="${escapeHtml(agentId)}" />
           <figcaption>${escapeHtml(caption)}${
-            browsing ? (liveWanted ? " · starting live agent…" : " · waiting for agent…") : ""
+            browsing ? " · opening live browser…" : ""
           }</figcaption>
         </figure>
-        ${
-          liveWanted
-            ? `<iframe class="stage-live-probe" src="${escapeHtml(liveView)}" title="Live browser probe" sandbox="allow-same-origin allow-scripts" referrerpolicy="no-referrer"></iframe>`
-            : ""
-        }
       </div>
       ${boxLegend}`;
   } else {
@@ -1213,20 +1258,22 @@ function paintStageBody(body, session, idx) {
   const liveWanted = Boolean(
     session?.live_view_url &&
       session?.live_active &&
-      browsing &&
-      !_liveFailed[agentId]
+      browsing
   );
-  const wantLive = liveWanted && Boolean(_liveReady[agentId]);
+  const wantLive = liveWanted;
   const liveSrc = session?.live_view_url || "";
   const finishPaint = () => {
     body.dataset.agentId = agentId;
     body.innerHTML = nextHtml;
     const painted = body.querySelector("img.trace-screenshot");
     if (painted) bindAgentShot(painted, session?.agent_id);
-    const probe = body.querySelector("iframe.stage-live-probe");
-    if (probe) bindLiveProbe(probe, agentId);
     const frame = body.querySelector("iframe.stage-live-frame");
-    if (frame) bindLiveProbe(frame, agentId);
+    if (frame) {
+      bindLiveProbe(frame, agentId);
+      if (liveWanted) ensureLiveKeepAlive(agentId, liveSrc);
+    } else {
+      stopLiveKeepAlive(agentId);
+    }
   };
 
   const patchMeta = () => {
@@ -1283,15 +1330,22 @@ function paintStageBody(body, session, idx) {
     return;
   }
   if (sameAgent && (liveImg || liveFrame)) {
-    // Keep iframe mounted — remounting blanks the live view.
+    // Remount when BB refreshes the debugger URL or keep-alive busts it —
+    // otherwise the iframe stays on a dead WebSocket ("Reconnect DevTools").
     if (wantLive && liveSrc && liveFrame) {
       const cur = liveWrap?.dataset.liveSrc || liveFrame.getAttribute("src") || "";
-      if (cur !== liveSrc) {
+      const mounted = _liveMountedSrc[agentId] || "";
+      if (cur !== liveSrc && mounted !== liveSrc && !String(cur).startsWith(String(liveSrc).split("?")[0])) {
         liveFrame.src = liveSrc;
         if (liveWrap) liveWrap.dataset.liveSrc = liveSrc;
+        _liveMountedSrc[agentId] = liveSrc;
+        _liveReady[agentId] = false;
+      } else if (mounted && mounted !== cur) {
+        liveFrame.src = mounted;
+        if (liveWrap) liveWrap.dataset.liveSrc = mounted;
       }
+      ensureLiveKeepAlive(agentId, liveSrc);
     }
-    if (liveWanted && liveProbe) bindLiveProbe(liveProbe, agentId);
     if (liveImg && nextSrc && !wantLive) {
       bindAgentShot(liveImg, session?.agent_id);
       const shown = liveImg.dataset.shotSrc || liveImg.getAttribute("src") || "";

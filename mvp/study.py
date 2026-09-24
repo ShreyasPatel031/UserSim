@@ -6,6 +6,7 @@ import asyncio
 import json
 import os
 import re
+import time
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -254,7 +255,7 @@ async def generate_personas(
     if QUICK_MODE or test_mode:
         persona_count = 1
     else:
-        persona_count = int(os.environ.get("MVP_PERSONA_COUNT", "5"))
+        persona_count = int(os.environ.get("MVP_PERSONA_COUNT", "4"))
     rival_line = ""
     if competitors:
         rival_line = "Known competitors: " + ", ".join(competitors[:4]) + "\n"
@@ -318,9 +319,9 @@ async def generate_tasks(
     if QUICK_MODE or test_mode:
         task_count = 1
     else:
-        # At least one task per persona so every simulated user actually runs.
-        requested = int(os.environ.get("MVP_TASK_COUNT", "6"))
-        task_count = max(requested, len(personas) or 1)
+        # Exact task count — full matrix already crosses every persona × task × site.
+        # Do NOT inflate to len(personas) (that blew 4 users → 4 tasks → 48 agents).
+        task_count = max(1, int(os.environ.get("MVP_TASK_COUNT", "2") or "2"))
     persona_blob = json.dumps(
         [
             {
@@ -380,32 +381,11 @@ Critical rules:
     )
     data = _extract_json(raw)
     tasks = list(data.get("tasks") or [])
-    # LLMs sometimes under-deliver. Guarantee ≥1 task per persona so the stage
-    # shows every simulated user, not a single orphaned session.
-    if not (QUICK_MODE or test_mode) and personas:
-        covered = {str(t.get("persona_id") or "") for t in tasks}
+    # Trim / pad to the exact requested count. Full matrix (persona × task × site)
+    # already covers every user — do not invent one task per persona.
+    if not (QUICK_MODE or test_mode):
+        tasks = tasks[:task_count]
         next_n = len(tasks) + 1
-        for persona in personas:
-            pid = str(persona.get("id") or "")
-            if not pid or pid in covered:
-                continue
-            name = persona.get("name") or pid
-            tasks.append(
-                {
-                    "id": f"t{next_n}",
-                    "title": f"Explore as {name}",
-                    "prompt": (
-                        f"Browse the site as {name}. Open the main navigation, "
-                        "find something relevant to your goals, and try one concrete action."
-                    ),
-                    "persona_id": pid,
-                    "difficulty_hint": "medium",
-                }
-            )
-            covered.add(pid)
-            next_n += 1
-        # If still short of requested count, round-robin personas so the
-        # parallel stage stays sized for multi-user UX.
         while len(tasks) < task_count and personas:
             persona = personas[len(tasks) % len(personas)]
             pid = persona.get("id") or f"p{(len(tasks) % len(personas)) + 1}"
@@ -417,14 +397,14 @@ Critical rules:
                 {
                     "id": f"t{next_n}",
                     "title": (seed or {}).get("title")
-                    or f"Follow-up for {persona.get('name') or pid}",
+                    or f"Task for {persona.get('name') or pid}",
                     "prompt": prompt,
                     "persona_id": pid,
                     "difficulty_hint": "medium",
                 }
             )
             next_n += 1
-            if next_n > task_count + len(personas) + 2:
+            if next_n > task_count + 3:
                 break
     return tasks
 
@@ -639,7 +619,7 @@ def expand_full_matrix(
     product_url: str,
     competitors: list[str],
 ) -> list[dict[str, Any]]:
-    """Every persona × every unique task × every site (5×5×3 → 75)."""
+    """Every persona × every unique task × every site (default 4×2×3 → 24)."""
     sites = _site_pairs(product_url, competitors)
     if not sites:
         sites = [("product", product_url)]
@@ -1242,7 +1222,7 @@ async def run_study(
             ordered = [p for p in study.personas if p.get("id") in used]
             extras = [p for p in study.personas if p.get("id") not in used]
             study.personas = (ordered + extras)[
-                : max(len(ordered), int(os.environ.get("MVP_PERSONA_COUNT", "5")))
+                    : max(len(ordered), int(os.environ.get("MVP_PERSONA_COUNT", "4")))
             ]
 
         # Full studies: every persona × every task × (product + each competitor).
@@ -1450,19 +1430,19 @@ async def run_study(
                     sess["trace"] = [step0]
                     sess["num_steps"] = 1
                     sess["last_action"] = step0["action"]
-                    # Stash live URL early but keep live_active OFF — UI shows
-                    # screenshot until the agent loop actually starts.
+                    # Stash live URL and flip live_active ON as soon as pixels exist —
+                    # UI must not sit on "waiting for agent" while BB session is live.
                     if warm_opening.get("live_view_url"):
                         sess["live_view_url"] = warm_opening["live_view_url"]
                     if warm_opening.get("browserbase_session_id"):
                         sess["browserbase_session_id"] = warm_opening[
                             "browserbase_session_id"
                         ]
-                    sess["live_active"] = False
+                    sess["live_active"] = bool(sess.get("live_view_url"))
                     sess["live_thoughts"] = [
                         {
                             "at": _now(),
-                            "text": f"Opened {site} — waiting for the simulated user to start…",
+                            "text": f"Opened {site} — live browser on, agent starting…",
                             "kind": "status",
                         }
                     ]
@@ -1941,8 +1921,30 @@ async def run_study(
                             sess["live_view_url"] = step["live_view_url"]
                         if step.get("browserbase_session_id"):
                             sess["browserbase_session_id"] = step["browserbase_session_id"]
-                        if step.get("live_active"):
+                        if step.get("live_active") or sess.get("live_view_url"):
                             sess["live_active"] = True
+                        # Refresh debugger URL periodically — BB live WS dies silently.
+                        sid = sess.get("browserbase_session_id")
+                        now_mono = time.monotonic()
+                        last_live = float(sess.get("_live_url_refresh_mono") or 0)
+                        if (
+                            sid
+                            and sess.get("live_active")
+                            and (now_mono - last_live) > 20
+                        ):
+                            try:
+                                from capability.browserbase_client import (
+                                    session_live_view_url,
+                                )
+
+                                fresh = await asyncio.to_thread(
+                                    session_live_view_url, str(sid)
+                                )
+                                if fresh:
+                                    sess["live_view_url"] = fresh
+                                    sess["_live_url_refresh_mono"] = now_mono
+                            except Exception:
+                                pass
                         text = (
                             (step.get("thought") or "").strip()
                             or (step.get("action") or "").strip()
@@ -2074,12 +2076,11 @@ async def run_study(
                     )
                     raise_if_killed(study)
                     sess["site_url"] = site
-                    # Queue behind Browserbase concurrency — never drop.
-                    if not (sess.get("trace") or sess.get("live_active")):
-                        sess["status"] = "pending"
-                        sess["last_action"] = f"Queued — waiting for a browser slot ({site})"
-                    else:
-                        sess["status"] = "running"
+                    # Start immediately — with ≤25 Browserbase slots we should not
+                    # park agents behind a "waiting for a browser slot" fake queue.
+                    sess["status"] = "running"
+                    if not (sess.get("trace") or []):
+                        sess["last_action"] = f"Opening {site}"
                     study.updated_at = _now()
                     if on_update:
                         try:
@@ -2091,25 +2092,20 @@ async def run_study(
                     log_activity(
                         study,
                         "agent_start",
-                        f"{persona.get('name')} queued for {site}",
+                        f"{persona.get('name')} opening {site}",
                         agent_id=agent_id,
                         persona_name=persona.get("name"),
                     )
                     name = persona.get("name") or "User"
                     thoughts = list(sess.get("live_thoughts") or [])
-                    already = any(
-                        "Queued" in (t.get("text") or "") or name in (t.get("text") or "")
-                        for t in thoughts[-3:]
+                    thoughts.append(
+                        {
+                            "at": _now(),
+                            "text": f"{name} starting — opening {site}…",
+                            "kind": "status",
+                        }
                     )
-                    if not already:
-                        thoughts.append(
-                            {
-                                "at": _now(),
-                                "text": f"{name} queued — waiting for a free browser slot…",
-                                "kind": "status",
-                            }
-                        )
-                        sess["live_thoughts"] = thoughts[-24:]
+                    sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
                     try:
                         async with _BROWSER_SEMAPHORE:

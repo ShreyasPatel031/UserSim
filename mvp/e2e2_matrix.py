@@ -40,8 +40,12 @@ if sa.is_file():
     os.environ.setdefault("GOOGLE_APPLICATION_CREDENTIALS", str(sa))
 
 OUT_DIR = Path(os.environ.get("E2E2_OUT_DIR", "/tmp/usersim_e2e2"))
-# Default full matrix; override with E2E2_EXPECTED / --expected for smaller runs.
-DEFAULT_EXPECTED = int(os.environ.get("E2E2_EXPECTED", "75") or "75")
+# Default: 4 personas × 2 tasks × 3 sites = 24 (fits Browserbase 25-slot budget).
+DEFAULT_EXPECTED = int(os.environ.get("E2E2_EXPECTED", "24") or "24")
+# Prior YouTube 9-agent run was ~408s — full 24-agent budget must still be faster.
+DEFAULT_MAX_ELAPSED_S = float(os.environ.get("E2E2_MAX_ELAPSED_S", "360") or "360")
+# After agents exist, first real screenshot must land quickly (no queue theatre).
+DEFAULT_FIRST_SHOT_S = float(os.environ.get("E2E2_FIRST_SHOT_S", "45") or "45")
 
 
 def _log(msg: str) -> None:
@@ -243,6 +247,9 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         last_steps = -1
         last_done = -1
         last_move_t = time.time()
+        t_agents_ready: float | None = None
+        t_first_shot: float | None = None
+        queued_hits = 0
 
         while time.time() - t0 < args.timeout_s:
             e2e = await page.evaluate("() => window.__e2e || {}")
@@ -270,6 +277,38 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 for st in (s.get("trace") or [])
                 if isinstance(st, dict) and isinstance(st.get("step"), int)
             )
+            if sessions and t_agents_ready is None and len(sessions) >= max(1, expected // 2):
+                t_agents_ready = time.time()
+                _log(f"  agents_ready +{t_agents_ready - t0:.1f}s n={len(sessions)}")
+            if step_n > 0 and t_first_shot is None:
+                t_first_shot = time.time()
+                _log(f"  first_shot +{t_first_shot - t0:.1f}s steps={step_n}")
+            # No excuse for queue theatre when fleet ≤ Browserbase concurrency.
+            queued = [
+                s
+                for s in sessions
+                if s.get("status") == "pending"
+                or "waiting for a browser slot" in str(s.get("last_action") or "").lower()
+                or "queued — waiting" in str(s.get("last_action") or "").lower()
+            ]
+            if queued and t_agents_ready is not None and (time.time() - t_agents_ready) > 8:
+                queued_hits += 1
+                if queued_hits >= 3:
+                    raise RuntimeError(
+                        "IMMEDIATE_START: "
+                        f"{len(queued)}/{len(sessions)} agents still queued "
+                        "more than 8s after agents existed "
+                        "(no excuse with 25 Browserbase slots)"
+                    )
+            if (
+                t_agents_ready is not None
+                and t_first_shot is None
+                and (time.time() - t_agents_ready) > args.first_shot_s
+            ):
+                raise RuntimeError(
+                    f"IMMEDIATE_START: no screenshots within {args.first_shot_s:.0f}s "
+                    f"of agents existing (agents={len(sessions)})"
+                )
             if step_n > last_steps or done_n > last_done:
                 last_steps = step_n
                 last_done = done_n
@@ -379,6 +418,12 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         })
         report["sites"] = 1 + len(study.get("competitors") or [])
         report["elapsed_s"] = round(time.time() - t0, 1)
+        report["t_agents_ready_s"] = (
+            round(t_agents_ready - t0, 1) if t_agents_ready else None
+        )
+        report["t_first_shot_s"] = (
+            round(t_first_shot - t0, 1) if t_first_shot else None
+        )
 
         fails = []
         if report["personas"] < want_personas:
@@ -395,6 +440,18 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             fails.append(f"status={study.get('status')}")
         if not study.get("summary"):
             fails.append("missing summary")
+        if report["elapsed_s"] > args.max_elapsed_s:
+            fails.append(
+                f"elapsed={report['elapsed_s']}s want ≤{args.max_elapsed_s:.0f}s "
+                f"(prior YouTube baseline ~408s)"
+            )
+        if t_first_shot is None:
+            fails.append("never got a first screenshot")
+        elif t_agents_ready is not None and (t_first_shot - t_agents_ready) > args.first_shot_s:
+            fails.append(
+                f"first_shot_gap={t_first_shot - t_agents_ready:.1f}s "
+                f"want ≤{args.first_shot_s:.0f}s after agents ready"
+            )
         nos = [v["agent_id"] for v in judged.values() if not v.get("pass")]
         if nos:
             fails.append(f"flash-lite NO: {nos[:8]}")
@@ -433,40 +490,49 @@ def main() -> int:
             "E2E2_TASKS",
             "\n".join(
                 [
-                    "Skim the homepage and note the main value prop",
-                    "Find pricing or how to get started",
-                    "Look for a sign-up, demo, or contact path",
-                    "Scan navigation and name the main product areas",
-                    "Find social proof, customers, or examples",
+                    "Skim the homepage and note what stands out",
+                    "Find something to open or watch and try it",
                 ]
             ),
         ),
     )
     ap.add_argument(
         "--segment",
-        default=os.environ.get("E2E2_SEGMENT", "Founders evaluating AI research tools"),
+        default=os.environ.get("E2E2_SEGMENT", "People looking for videos to watch"),
     )
     ap.add_argument(
         "--expected",
         type=int,
         default=DEFAULT_EXPECTED,
-        help="Required agent / YES count (env E2E2_EXPECTED, default 75)",
+        help="Required agent / YES count (env E2E2_EXPECTED, default 24 = 4×2×3)",
     )
-    ap.add_argument("--min-personas", type=int, default=int(os.environ.get("E2E2_MIN_PERSONAS", "5")))
-    ap.add_argument("--min-tasks", type=int, default=int(os.environ.get("E2E2_MIN_TASKS", "5")))
+    ap.add_argument("--min-personas", type=int, default=int(os.environ.get("E2E2_MIN_PERSONAS", "4")))
+    ap.add_argument("--min-tasks", type=int, default=int(os.environ.get("E2E2_MIN_TASKS", "2")))
     ap.add_argument("--min-sites", type=int, default=int(os.environ.get("E2E2_MIN_SITES", "3")))
     ap.add_argument(
         "--max-agents",
         type=int,
-        default=int(os.environ.get("E2E2_MAX_AGENTS", "0") or "0"),
-        help="Cap via /?max_agents=N (0 = uncapped full matrix)",
+        default=int(os.environ.get("E2E2_MAX_AGENTS", "24") or "24"),
+        help="Cap via /?max_agents=N (default 24 for Browserbase budget)",
     )
-    ap.add_argument("--timeout-s", type=int, default=int(os.environ.get("E2E2_TIMEOUT_S", "2400")))
+    ap.add_argument("--timeout-s", type=int, default=int(os.environ.get("E2E2_TIMEOUT_S", "1800")))
     ap.add_argument(
         "--stall-s",
         type=float,
         default=float(os.environ.get("E2E2_STALL_S", "90")),
         help="Fail if no new steps/dones for this many seconds",
+    )
+    ap.add_argument(
+        "--max-elapsed-s",
+        type=float,
+        default=DEFAULT_MAX_ELAPSED_S,
+        help="Hard ceiling vs prior ~408s YouTube baseline",
+    )
+    ap.add_argument(
+        "--first-shot-s",
+        type=float,
+        default=DEFAULT_FIRST_SHOT_S,
+        help="Max seconds from agents-ready to first screenshot",
     )
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
     ap.add_argument("--study-id", default=os.environ.get("E2E2_STUDY_ID", ""))

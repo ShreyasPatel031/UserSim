@@ -845,16 +845,16 @@ async def run_browser_agent(
                 maybe = on_step(step)
                 if asyncio.iscoroutine(maybe):
                     await maybe
-            # Stash live URL only — live_active flips when agent.run starts.
+            # Stash live URL and turn live view ON immediately — page is open.
             if on_step is not None and (warm_live_url or bb_session is not None):
                 maybe = on_step(
                     {
                         "step": None,
                         "progress_only": True,
-                        "live_active": False,
+                        "live_active": True,
                         "live_view_url": warm_live_url,
                         "browserbase_session_id": warm_bb_id,
-                        "action": "Page open — starting simulated user",
+                        "action": "Page open — live browser on",
                         "thought": "Page is open. Starting the simulated user…",
                         "thought_detail": {},
                         "observation": "",
@@ -929,6 +929,35 @@ async def run_browser_agent(
                 url=start_url,
                 on_step=on_step,
             )
+            # Flip live view ON immediately — don't wait for LLM / agent.run.
+            if on_step is not None and bb_session is not None and not force_local:
+                live_url = None
+                try:
+                    from capability.browserbase_client import session_live_view_url
+
+                    sid = getattr(bb_session, "id", None)
+                    if sid:
+                        live_url = await asyncio.to_thread(session_live_view_url, str(sid))
+                except Exception:
+                    live_url = None
+                maybe = on_step(
+                    {
+                        "step": None,
+                        "progress_only": True,
+                        "live_active": True,
+                        "live_view_url": live_url,
+                        "browserbase_session_id": getattr(bb_session, "id", None),
+                        "action": "Live browser on",
+                        "thought": "Page is open — live view connected.",
+                        "thought_detail": {},
+                        "observation": "",
+                        "url": start_url,
+                        "screenshot_url": None,
+                        "outcome": "neutral",
+                    }
+                )
+                if asyncio.iscoroutine(maybe):
+                    await maybe
             await _pulse("First screenshot captured — starting the simulated user…", thinking=True)
         except Exception:
             if browser_session is not None:
