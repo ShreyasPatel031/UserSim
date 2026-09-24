@@ -79,6 +79,25 @@ def _best_shot(sess: dict) -> dict | None:
     return ranked[0] if ranked else None
 
 
+def _png_looks_blank(raw: bytes) -> bool:
+    """Skip judging pure-black / splash frames while the agent is still painting."""
+    if len(raw) < 2500:
+        return True
+    try:
+        from io import BytesIO
+
+        from PIL import Image
+
+        im = Image.open(BytesIO(raw)).convert("RGB").resize((64, 40))
+        pixels = list(im.getdata())
+        lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
+        mean = sum(lums) / max(1, len(lums))
+        var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
+        return mean < 28 and var < 350
+    except Exception:
+        return len(raw) < 12000
+
+
 def _fetch_png(base: str, url: str, *, study_id: str = "", agent_id: str = "") -> bytes:
     candidates = [url]
     if "/screenshots/" in url:
@@ -286,6 +305,14 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                         study_id=study_id,
                         agent_id=aid,
                     )
+                    # Don't fail the whole matrix on a black splash while the
+                    # agent is still browsing — wait for a real paint.
+                    if _png_looks_blank(raw) and study.get("status") == "running":
+                        _log(
+                            f"  skip blankish shot {aid} step={shot.get('step')} "
+                            f"({len(raw)} bytes) — waiting for paint"
+                        )
+                        continue
                     try:
                         if await page.locator("#stage-section:not([hidden])").count():
                             await _toggle_session(page, sess)

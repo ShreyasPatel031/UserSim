@@ -22,6 +22,31 @@ from mvp.paths import MVP_RUNS_DIR
 MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
 
 
+def _png_is_blankish(path: Path) -> bool:
+    """True when the shot is basically black / empty (loading splash)."""
+    try:
+        if not path.is_file() or path.stat().st_size < 2500:
+            return True
+    except OSError:
+        return True
+    try:
+        from PIL import Image
+
+        im = Image.open(path).convert("RGB").resize((64, 40))
+        pixels = list(im.getdata())
+        lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
+        mean = sum(lums) / max(1, len(lums))
+        var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
+        # Near-black splash (Vimeo) or flat grey pane.
+        return mean < 28 and var < 350
+    except Exception:
+        # No Pillow — treat tiny/small files as blank.
+        try:
+            return path.stat().st_size < 12000
+        except OSError:
+            return True
+
+
 def _history_to_actions(history) -> list[dict]:
     actions: list[dict] = []
     try:
@@ -376,43 +401,116 @@ async def _emit_opening_frame(
 ) -> None:
     """Navigate + full-viewport screenshot before the LLM agent loop."""
     try:
-        await asyncio.wait_for(browser_session.navigate_to(url), timeout=30)
+        await asyncio.wait_for(browser_session.navigate_to(url), timeout=45)
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening navigate failed: {exc!r}", flush=True)
-    # Scroll to top so we don't capture a footer-only viewport.
+
+    # Wait for real paint — 0.2s was capturing Vimeo/Dailymotion black splashes.
+    page = None
     try:
         page = await asyncio.wait_for(browser_session.get_current_page(), timeout=8)
-        if page is not None:
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] opening get_current_page failed: {exc!r}", flush=True)
+    if page is not None:
+        try:
+            await asyncio.wait_for(page.wait_for_load_state("domcontentloaded"), timeout=15)
+        except Exception:
+            pass
+        try:
+            await asyncio.wait_for(
+                page.wait_for_function(
+                    "() => document.body && (document.body.innerText || '').trim().length > 40",
+                    timeout=8000,
+                ),
+                timeout=10,
+            )
+        except Exception:
+            pass
+        try:
             await asyncio.wait_for(
                 page.evaluate("() => window.scrollTo(0, 0)"),
                 timeout=5,
             )
-    except Exception as exc:  # noqa: BLE001
-        print(f"[{agent_id}] opening scrollTop failed: {exc!r}", flush=True)
-    await asyncio.sleep(0.2)
-    shot_name = "bbox_0.png"
-    shot_path = screenshot_dir / shot_name
-    try:
-        await asyncio.wait_for(
-            browser_session.take_screenshot(path=str(shot_path), full_page=False),
-            timeout=20,
-        )
-    except TypeError:
-        # Older browser-use: no full_page kwarg.
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] opening scrollTop failed: {exc!r}", flush=True)
+        # Cookie / consent banners that cover the page.
         try:
             await asyncio.wait_for(
-                browser_session.take_screenshot(path=str(shot_path)),
+                page.evaluate(
+                    """() => {
+                      const labels = ['accept all','accept','agree','got it','i agree','allow all','ok'];
+                      const els = [...document.querySelectorAll('button,[role=button],a')];
+                      for (const el of els) {
+                        const t = (el.innerText || el.textContent || '').trim().toLowerCase();
+                        if (!t || t.length > 40) continue;
+                        if (!labels.some(l => t === l || t.startsWith(l))) continue;
+                        const r = el.getBoundingClientRect();
+                        if (r.width < 8 || r.height < 8) continue;
+                        el.click();
+                        return t;
+                      }
+                      return '';
+                    }"""
+                ),
+                timeout=5,
+            )
+        except Exception:
+            pass
+
+    shot_name = "bbox_0.png"
+    shot_path = screenshot_dir / shot_name
+
+    async def _snap_once() -> bool:
+        try:
+            await asyncio.wait_for(
+                browser_session.take_screenshot(path=str(shot_path), full_page=False),
                 timeout=20,
             )
+            return True
+        except TypeError:
+            try:
+                await asyncio.wait_for(
+                    browser_session.take_screenshot(path=str(shot_path)),
+                    timeout=20,
+                )
+                return True
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
+                return False
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
+            return False
+
+    ok = False
+    for attempt in range(4):
+        await asyncio.sleep(0.6 if attempt == 0 else 1.4)
+        if not await _snap_once():
+            continue
+        if not _png_is_blankish(shot_path):
+            ok = True
+            break
+        print(
+            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/4) — waiting for paint",
+            flush=True,
+        )
+        if page is not None:
+            try:
+                await asyncio.wait_for(page.reload(wait_until="domcontentloaded"), timeout=20)
+            except Exception:
+                try:
+                    await asyncio.wait_for(browser_session.navigate_to(url), timeout=30)
+                except Exception:
+                    pass
+
+    if not ok:
+        if not shot_path.is_file() or shot_path.stat().st_size < 100:
+            print(f"[{agent_id}] opening screenshot missing/empty", flush=True)
             return
-    except Exception as exc:  # noqa: BLE001
-        print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
-        return
-    if not shot_path.is_file() or shot_path.stat().st_size < 100:
-        print(f"[{agent_id}] opening screenshot missing/empty", flush=True)
-        return
+        print(
+            f"[{agent_id}] opening frame still blankish — publishing best effort",
+            flush=True,
+        )
+
     final_url = url
     try:
         got = browser_session.get_current_page_url()
