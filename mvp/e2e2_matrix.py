@@ -92,8 +92,7 @@ def _png_looks_blank(raw: bytes) -> bool:
         pixels = list(im.getdata())
         lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
         mean = sum(lums) / max(1, len(lums))
-        var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
-        return mean < 28 and var < 350
+        return mean < 15.0
     except Exception:
         return len(raw) < 12000
 

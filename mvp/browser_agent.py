@@ -36,11 +36,10 @@ def _png_is_blankish(path: Path) -> bool:
         pixels = list(im.getdata())
         lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
         mean = sum(lums) / max(1, len(lums))
-        var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
-        # Near-black splash (Vimeo) or flat grey pane.
-        return mean < 28 and var < 350
+        # Near-black splash (Vimeo / YouTube logo-on-black). Real dark UIs
+        # with content sit well above ~30 mean luminance at 64×40.
+        return mean < 15.0
     except Exception:
-        # No Pillow — treat tiny/small files as blank.
         try:
             return path.stat().st_size < 12000
         except OSError:
@@ -506,8 +505,14 @@ async def _emit_opening_frame(
         if not shot_path.is_file() or shot_path.stat().st_size < 100:
             print(f"[{agent_id}] opening screenshot missing/empty", flush=True)
             return
+        if _png_is_blankish(shot_path):
+            print(
+                f"[{agent_id}] opening frame still blank — not publishing step 0",
+                flush=True,
+            )
+            return
         print(
-            f"[{agent_id}] opening frame still blankish — publishing best effort",
+            f"[{agent_id}] opening frame marginal — publishing best effort",
             flush=True,
         )
 
