@@ -338,6 +338,17 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                         f"{verdict.get('reason')}"
                     )
                     if not verdict.get("pass"):
+                        # Opening frames can still be a splash for a beat —
+                        # keep waiting for a later real step while running.
+                        if (
+                            study.get("status") == "running"
+                            and int(shot.get("step") or 0) == 0
+                        ):
+                            _log(
+                                f"  defer NO on opening frame {aid}: "
+                                f"{verdict.get('reason')}"
+                            )
+                            continue
                         raise RuntimeError(f"flash-lite NO for {aid}: {verdict}")
                 except RuntimeError:
                     raise
