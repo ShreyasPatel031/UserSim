@@ -517,12 +517,33 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
     }
 
 
+async def _captcha_widget_present(page: Any) -> bool:
+    """True when a captcha iframe/widget is in the DOM (incl. invisible)."""
+    try:
+        return bool(
+            await page.evaluate(
+                """() => !!document.querySelector(
+                  'iframe[src*="recaptcha"], iframe[src*="hcaptcha"], iframe[src*="turnstile"],' +
+                  'iframe[src*="challenges.cloudflare.com"], iframe[src*="newassets.hcaptcha"],' +
+                  '.g-recaptcha, .h-captcha, .cf-turnstile, [data-sitekey]'
+                )"""
+            )
+        )
+    except Exception:
+        return False
+
+
 async def wait_for_browserbase_solver(page: Any, timeout_s: float | None = None) -> bool:
     """Wait for Browserbase's native solver console events, then settle.
 
     See https://www.browserbase.com/blog/what-is-a-captcha-solver — sessions emit
     ``browserbase-solving-started`` / ``browserbase-solving-finished``. Racing
     ahead while solving is in flight is a common false failure.
+
+    Invisible hCaptcha/Turnstile often have **no visible challenge UI**. Do not
+    treat "challenge not visible" as success while a widget/sitekey is present
+    and no response token has been written yet — that was aborting the BB wait
+    on Supabase in ~1s.
     """
     if timeout_s is None:
         timeout_s = float(os.environ.get("MVP_CAPTCHA_BB_WAIT_S", "45"))
@@ -541,10 +562,19 @@ async def wait_for_browserbase_solver(page: Any, timeout_s: float | None = None)
         if _BB_SOLVING_FINISHED in text:
             state["finished"] = True
 
+    widget = await _captcha_widget_present(page)
     try:
         page.on("console", _on_console)
     except Exception:
         # No console hook — fall through to settle polling only.
+        if widget:
+            # Still wait for a token when the widget is invisible.
+            deadline = time.time() + timeout_s
+            while time.time() < deadline:
+                if await _recaptcha_solved(page):
+                    return True
+                await asyncio.sleep(1.0)
+            return await _recaptcha_solved(page)
         return await wait_for_challenge_to_clear(page, timeout_s=min(timeout_s, 20.0))
 
     deadline = time.time() + timeout_s
@@ -563,14 +593,27 @@ async def wait_for_browserbase_solver(page: Any, timeout_s: float | None = None)
             pass
 
         while time.time() < deadline:
+            if await _recaptcha_solved(page):
+                return True
             if state["finished"]:
                 await asyncio.sleep(1.5)
-                if not await _challenge_visible(page):
+                if await _recaptcha_solved(page):
                     return True
-            if not await _challenge_visible(page) and not state["started"]:
+                # Finished with no token is only OK when no widget remains.
+                if not await _captcha_widget_present(page) and not await _challenge_visible(page):
+                    return True
+            # Early exit only when there was never a widget and nothing visible.
+            if (
+                not widget
+                and not state["started"]
+                and not await _challenge_visible(page)
+                and not await _captcha_widget_present(page)
+            ):
                 return True
             await asyncio.sleep(1.0)
-        return not await _challenge_visible(page)
+        return await _recaptcha_solved(page) or (
+            not await _captcha_widget_present(page) and not await _challenge_visible(page)
+        )
     finally:
         try:
             page.remove_listener("console", _on_console)
@@ -932,6 +975,42 @@ async def _click_recaptcha_checkbox(page: Any) -> bool:
         return False
 
 
+async def _arm_hcaptcha_execute(page: Any) -> bool:
+    """Trigger invisible hCaptcha via ``hcaptcha.execute()`` when present.
+
+    Supabase (and similar) keep Sign up disabled until a token lands. Clicking a
+    disabled CTA does nothing — execute() arms Browserbase / the challenge UI.
+    """
+    try:
+        armed = await page.evaluate(
+            """() => {
+              try {
+                if (!window.hcaptcha || typeof window.hcaptcha.execute !== 'function') return false;
+                // Prefer explicit widget ids from .h-captcha nodes.
+                const nodes = [...document.querySelectorAll('.h-captcha, [data-sitekey]')];
+                let ran = false;
+                for (const n of nodes) {
+                  const id = n.getAttribute('data-hcaptcha-widget-id')
+                    || n.getAttribute('data-widget-id');
+                  try {
+                    if (id) { window.hcaptcha.execute(id); ran = true; }
+                    else { window.hcaptcha.execute(); ran = true; }
+                  } catch (e) {}
+                }
+                if (!ran) {
+                  try { window.hcaptcha.execute(); ran = true; } catch (e) {}
+                }
+                return ran;
+              } catch (e) { return false; }
+            }"""
+        )
+        if armed:
+            await page.wait_for_timeout(2000)
+        return bool(armed)
+    except Exception:
+        return False
+
+
 async def _click_hcaptcha_checkbox(page: Any) -> bool:
     """Click an hCaptcha checkbox (visible or invisible host) when present."""
     try:
@@ -1024,11 +1103,15 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
         # Invisible hCaptcha often only arms after the signup CTA is pressed.
         await _trigger_signup_submit(page)
         hc_clicked = await _click_hcaptcha_checkbox(page)
+    # Force-arm invisible widgets — disabled Sign up never reaches hcaptcha.
+    hc_armed = await _arm_hcaptcha_execute(page)
 
     # Longer BB wait when an hCaptcha iframe is present.
     info_early = await detect_sitekey(page)
     is_hcaptcha = bool(
         (info_early or {}).get("type") == "hcaptcha"
+        or hc_clicked
+        or hc_armed
         or await page.evaluate(
             """() => !!document.querySelector('iframe[src*="hcaptcha"], .h-captcha')"""
         )
@@ -1050,9 +1133,11 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
                 for x in ("github.com", "accounts.google", "login.microsoft", "apple.com")
             )
             captcha_type = (info or {}).get("type") or ""
+            widget_still = await _captcha_widget_present(page)
             if (
                 not left_for_oauth
                 and captcha_type not in {"recaptcha", "recaptcha_v2", "hcaptcha"}
+                and not widget_still
                 and not await _recaptcha_solved(page)
             ):
                 blocked = await page_looks_captcha_blocked(page)
@@ -1177,11 +1262,48 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
           /* token already set on input */
         }
       } catch (e) {}
+      try {
+        if (window.hcaptcha) {
+          // Fire data-callback / registered widget callbacks so React enables Sign up.
+          const nodes = [...document.querySelectorAll('.h-captcha, [data-sitekey], [data-callback]')];
+          for (const n of nodes) {
+            const cbName = n.getAttribute('data-callback');
+            if (cbName && typeof window[cbName] === 'function') {
+              try { window[cbName](token); } catch (e) {}
+            }
+          }
+          try {
+            if (typeof window.hcaptcha.getResponse === 'function') {
+              /* response fields already set above */
+            }
+          } catch (e) {}
+        }
+      } catch (e) {}
       return true;
     }
     """
     try:
         await page.evaluate(script, token)
+        # After token inject, re-enable / click Sign up so the form submits.
+        try:
+            await page.evaluate(
+                """() => {
+                  const btns = [...document.querySelectorAll('button[type=submit], button')];
+                  for (const b of btns) {
+                    const label = ((b.innerText || '') + '').toLowerCase().trim();
+                    if (/github|google|gitlab|sso|chatgpt|apple/.test(label)) continue;
+                    if (!(/sign\\s*up|create\\s*account|register/.test(label) || b.type === 'submit')) continue;
+                    b.disabled = false;
+                    b.removeAttribute('disabled');
+                    b.setAttribute('aria-disabled', 'false');
+                    try { b.click(); } catch (e) {}
+                    return true;
+                  }
+                  return false;
+                }"""
+            )
+        except Exception:
+            pass
         return True
     except Exception:
         return False

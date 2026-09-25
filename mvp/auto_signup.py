@@ -826,6 +826,47 @@ def _build_signup_tools(ctx: dict[str, Any]):
         reason = (params.reason or "unknown").strip().lower()
         if reason not in BLOCK_REASONS:
             reason = "unknown"
+        # Refuse premature "unknown" when a captcha is clearly holding Sign up —
+        # force one solve_captcha pass before accepting the block.
+        if reason in {"unknown", "captcha_unsolved"} and int(ctx.get("auto_captcha_runs") or 0) < 1:
+            page = None
+            try:
+                page = page_getter()
+            except Exception:
+                page = None
+            if page is not None:
+                try:
+                    info = await page_looks_captcha_blocked(page)
+                except Exception:
+                    info = {}
+                if info.get("blocked") or info.get("submit_disabled") or info.get("widget_present"):
+                    ctx["auto_captcha_runs"] = int(ctx.get("auto_captcha_runs") or 0) + 1
+                    result = await solve_captcha_on_page(page)
+                    if result.get("ok"):
+                        return ActionResult(
+                            extracted_content=json.dumps(
+                                {"auto_solved_before_block": result}
+                            ),
+                            include_in_memory=True,
+                            long_term_memory=(
+                                f"CAPTCHA auto-solved via {result.get('method')} — "
+                                "retry Sign up, do not report_blocked yet."
+                            ),
+                        )
+                    reason = "captcha_unsolved"
+                    detail = (params.detail or "").strip() or json.dumps(result)[:300]
+                    ctx["blocker"] = reason
+                    ctx["blocker_detail"] = detail
+                    ctx["done"] = True
+                    return ActionResult(
+                        is_done=True,
+                        success=False,
+                        extracted_content=json.dumps(
+                            {"blocked": reason, "detail": detail}
+                        ),
+                        long_term_memory=f"Signup blocked: {reason}",
+                        include_in_memory=True,
+                    )
         ctx["blocker"] = reason
         ctx["blocker_detail"] = params.detail or ""
         ctx["done"] = True
@@ -1065,8 +1106,10 @@ async def sign_up(
                     f"returned. If you cannot see a real code, call the tool again — do not "
                     f"guess placeholders like 123456.\n"
                     f"5. If SMS is required: call get_sms_code() and enter the code.\n"
-                    f"6. If a CAPTCHA/Cloudflare challenge blocks you: call detect_captcha(), "
-                    f"then solve_captcha() once. Wait for the solver to finish before typing more. "
+                    f"6. If a CAPTCHA/Cloudflare challenge blocks you OR Sign up stays disabled "
+                    f"after email+password are filled: IMMEDIATELY call detect_captcha(), then "
+                    f"solve_captcha() once. Do NOT hunt for full_name/company/phone — those are "
+                    f"NOT on this form. Wait for the solver to finish before typing more. "
                     f"If it fails twice, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
                     f"7. Skip or dismiss onboarding tours once the account exists. Prefer Escape, "
                     f"Skip, 'Not now', 'I'll do this later', or navigate to "
@@ -1123,23 +1166,79 @@ async def sign_up(
                 ),
             )
 
-            async def _checkpoint_cookies(_agent: Any = None) -> None:
-                """Persist storage_state every step — BB sessions die on agent stop."""
+            async def _on_step_end(_agent: Any = None) -> None:
+                """Persist cookies + auto-run captcha solver when Sign up is stuck.
+
+                The LLM often burns 20+ steps hunting phantom fields instead of
+                calling solve_captcha(). Detect disabled signup CTA / hCaptcha and
+                invoke the solver stack deterministically (max 2 times per run).
+                """
                 try:
                     snap = await pw_ctx.storage_state()
-                except Exception:
-                    return
-                try:
                     SITE_STATES.mkdir(parents=True, exist_ok=True)
                     site_state_path(host).write_text(json.dumps(snap, indent=2))
                     ctx["last_state"] = snap
                 except Exception:
                     pass
 
+                if ctx.get("done") or ctx.get("blocker"):
+                    return
+                runs = int(ctx.get("auto_captcha_runs") or 0)
+                if runs >= 2:
+                    return
+                page_now = None
+                try:
+                    page_now = pw_ctx.pages[0] if pw_ctx.pages else None
+                except Exception:
+                    page_now = None
+                if page_now is None:
+                    try:
+                        getter = ctx.get("page_getter")
+                        page_now = getter() if callable(getter) else None
+                    except Exception:
+                        return
+                if page_now is None:
+                    return
+                try:
+                    info = await page_looks_captcha_blocked(page_now)
+                except Exception:
+                    return
+                if not (
+                    info.get("blocked")
+                    or info.get("submit_disabled")
+                    or (info.get("widget_present") and info.get("type") == "hcaptcha")
+                ):
+                    return
+                # Only auto-solve after the agent has had a couple steps to fill fields.
+                step_n = 0
+                try:
+                    step_n = int(getattr(getattr(_agent, "state", None), "n_steps", 0) or 0)
+                except Exception:
+                    step_n = runs + 1
+                if step_n < 2 and runs == 0:
+                    return
+                ctx["auto_captcha_runs"] = runs + 1
+                try:
+                    result = await solve_captcha_on_page(page_now)
+                    ctx["last_auto_captcha"] = result
+                    print(
+                        f"[auto_captcha] run={ctx['auto_captcha_runs']} "
+                        f"blocked={info.get('blocked')} submit_disabled={info.get('submit_disabled')} "
+                        f"sitekey={info.get('sitekey')} -> {result}",
+                        flush=True,
+                    )
+                except Exception as exc:
+                    ctx["last_auto_captcha"] = {
+                        "ok": False,
+                        "method": "auto_hook",
+                        "detail": f"{type(exc).__name__}:{exc}"[:200],
+                    }
+                    print(f"[auto_captcha] error: {exc}", flush=True)
+
             history = None
             try:
                 history = await asyncio.wait_for(
-                    agent.run(max_steps=max_steps, on_step_end=_checkpoint_cookies),
+                    agent.run(max_steps=max_steps, on_step_end=_on_step_end),
                     timeout=timeout_s,
                 )
             except asyncio.TimeoutError:
