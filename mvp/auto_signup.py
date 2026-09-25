@@ -119,7 +119,7 @@ def _create_signup_browserbase_session():
     last_exc: BaseException | None = None
     for kwargs in attempts:
         try:
-            session = create_session(keep_alive=False, **kwargs)
+            session = create_session(keep_alive=True, **kwargs)
             print(
                 f"Browserbase create ok with {kwargs}",
                 flush=True,

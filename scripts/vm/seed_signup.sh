@@ -44,6 +44,9 @@ export MVP_CAPTCHA_OSS="${MVP_CAPTCHA_OSS:-1}"
 export MVP_CAPTCHA_AUDIO="${MVP_CAPTCHA_AUDIO:-1}"
 export MVP_CAPTCHA_ALLOW_HUMAN=0
 export MVP_SMS_BACKEND="${MVP_SMS_BACKEND:-ntfy}"
+# Browserbase project defaultTimeout is often 300s; signup agents overrun that
+# and CDP dies with HTTP 410 mid-onboarding. Keep sessions alive for the run.
+export BROWSERBASE_SESSION_TIMEOUT_S="${BROWSERBASE_SESSION_TIMEOUT_S:-1800}"
 # Only force local Chrome when explicitly requested — that path is the debug fallback.
 if [[ "${MVP_FORCE_LOCAL_BROWSER:-0}" == "1" ]]; then
   export MVP_BROWSER_HEADLESS="${MVP_BROWSER_HEADLESS:-0}"
