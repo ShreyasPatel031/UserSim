@@ -394,10 +394,10 @@
       "updated_at": "2026-09-25T11:57:54.962772+00:00"
     },
     "notion.so": {
-      "reproducible": false,
-      "last_reason": "unknown",
-      "last_detail": "The `get_email_code()` tool consistently returns an incorrect verification code ('NOTION'), preventing successful email verification and signup completion.",
-      "last_alias_tag": "notione731c90",
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "notionnfix399c0",
       "attempts": [
         {
           "host": "notion.so",
@@ -428,9 +428,24 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/372aca70-b952-41f2-b326-5750e18516b5",
           "at": "2026-09-25T13:12:28.647182+00:00"
+        },
+        {
+          "host": "notion.so",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 209.5,
+          "alias_tag": "notionnfix399c0",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/af9cc74e-be6a-44cb-aa13-31f9323ffab1",
+          "at": "2026-09-25T20:26:10.568278+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:12:28.647182+00:00"
+      "updated_at": "2026-09-25T20:26:10.568278+00:00"
     },
     "dropbox.com": {
       "reproducible": true,
@@ -1105,7 +1120,7 @@
       "updated_at": "2026-09-25T14:25:11.670454+00:00"
     }
   },
-  "updated_at": "2026-09-25T14:25:11.671036+00:00",
+  "updated_at": "2026-09-25T20:26:10.568844+00:00",
   "reproducible": [
     "airtable.com",
     "asana.com",
@@ -1130,6 +1145,7 @@
     "mixpanel.com",
     "monday.com",
     "netlify.com",
+    "notion.so",
     "pinterest.com",
     "smartsheet.com",
     "stackblitz.com",
@@ -1147,13 +1163,12 @@
     "github.com",
     "intercom.com",
     "linear.app",
-    "notion.so",
     "reddit.com",
     "shopify.com",
     "todoist.com",
     "trello.com",
     "whimsical.com"
   ],
-  "score": "34/60",
-  "reproducible_count": 34
+  "score": "35/60",
+  "reproducible_count": 35
 }
