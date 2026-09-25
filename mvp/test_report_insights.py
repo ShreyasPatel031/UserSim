@@ -85,8 +85,8 @@ class WorkMetricTests(unittest.TestCase):
     def test_canvas_drag_changes_page_state_without_a_url_change(self) -> None:
         run = _run("a", steps=2, final="https://excalidraw.com/")
         run["site_url"] = "https://excalidraw.com/"
-        blank = "900x600:" + ",".join(["10"] * 64)
-        drawn = "900x600:" + ",".join(["10"] * 20 + ["200"] * 44)
+        blank = "900x600:dark=0/2304;"
+        drawn = "900x600:dark=40/2304;"
         run["trace"][0]["url"] = "https://excalidraw.com/"
         run["trace"][0]["state_sig"] = {"text": "excalidraw canvas", "canvas": blank}
         run["trace"][1]["action"] = "drag — start_x=120 start_y=180 end_x=400 end_y=320"
@@ -104,8 +104,8 @@ class WorkMetricTests(unittest.TestCase):
     def test_one_canvas_sample_is_not_a_page_change(self) -> None:
         run = _run("a", steps=2, final="https://excalidraw.com/")
         run["site_url"] = "https://excalidraw.com/"
-        base = "900x600:" + ",".join(["10"] * 64)
-        flicker = "900x600:" + ",".join(["10"] * 63 + ["11"])
+        base = "900x600:dark=2/2304;"
+        flicker = "900x600:dark=4/2304;"
         run["trace"][0]["state_sig"] = {"text": "excalidraw", "canvas": base}
         run["trace"][1]["action"] = "click — index=29"
         run["trace"][1]["state_sig"] = {"text": "excalidraw", "canvas": flicker}

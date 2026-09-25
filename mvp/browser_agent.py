@@ -307,18 +307,18 @@ _PAGE_STATE_JS = """() => {
       if (w < 2 || h < 2) continue;
       const ctx = c.getContext('2d');
       if (!ctx) continue;
-      const cols = 8, rows = 8;
-      const samples = [];
       const data = ctx.getImageData(0, 0, w, h).data;
-      for (let gy = 0; gy < rows; gy++) {
-        for (let gx = 0; gx < cols; gx++) {
-          const x = Math.min(w - 1, Math.floor((gx + 0.5) * w / cols));
-          const y = Math.min(h - 1, Math.floor((gy + 0.5) * h / rows));
+      // A thin stroke misses an 8x8 grid. Count non-white pixels on a denser grid.
+      const step = Math.max(4, Math.floor(Math.min(w, h) / 48));
+      let dark = 0, total = 0;
+      for (let y = 0; y < h; y += step) {
+        for (let x = 0; x < w; x += step) {
           const i = (y * w + x) * 4;
-          samples.push(data[i] + data[i + 1] + data[i + 2]);
+          if ((data[i] + data[i + 1] + data[i + 2]) < 700) dark++;
+          total++;
         }
       }
-      canvas += w + 'x' + h + ':' + samples.join(',') + ';';
+      canvas += w + 'x' + h + ':dark=' + dark + '/' + total + ';';
     } catch (e) {
       canvas += 'taint;';
     }

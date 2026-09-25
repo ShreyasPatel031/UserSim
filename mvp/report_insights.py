@@ -195,30 +195,28 @@ def _action_name(step: dict[str, Any]) -> str:
     return label.split("—")[0].split(":")[0].strip()
 
 
-def _canvas_samples(raw: str) -> list[int]:
-    out: list[int] = []
-    for part in (raw or "").split(";"):
-        if ":" not in part or "taint" in part:
+def _canvas_dark(raw: str) -> int | None:
+    """Sum of non-white samples. None when the signature is missing or tainted."""
+    if not raw or "taint" in raw:
+        return None
+    total = 0
+    found = False
+    for part in raw.split(";"):
+        if "dark=" not in part:
             continue
-        nums = part.split(":", 1)[1]
-        for token in nums.split(","):
-            token = token.strip()
-            if token.lstrip("-").isdigit():
-                out.append(int(token))
-    return out
+        found = True
+        num = part.split("dark=", 1)[1].split("/", 1)[0]
+        if num.lstrip("-").isdigit():
+            total += int(num)
+    return total if found else None
 
 
 def _canvas_changed(a: str, b: str) -> bool:
-    """A drawing changes many canvas samples. A cursor blink does not."""
-    if not a or not b or "taint" in a or "taint" in b or a == b:
+    """A stroke adds non-white pixels. A cursor blink does not."""
+    da, db = _canvas_dark(a), _canvas_dark(b)
+    if da is None or db is None:
         return False
-    sa, sb = _canvas_samples(a), _canvas_samples(b)
-    if not sa or not sb:
-        return False
-    n = max(len(sa), len(sb), 1)
-    overlap = min(len(sa), len(sb))
-    differ = sum(1 for i in range(overlap) if sa[i] != sb[i]) + abs(len(sa) - len(sb))
-    return differ >= 3 and differ / n >= 0.08
+    return abs(da - db) >= 8
 
 
 def _text_tokens(text: str) -> set[str]:
