@@ -434,7 +434,8 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
             await page.evaluate(
                 """() => !!document.querySelector(
                   'iframe[src*="recaptcha"], iframe[src*="hcaptcha"], iframe[src*="turnstile"],' +
-                  'iframe[src*="challenges.cloudflare.com"], .g-recaptcha, .h-captcha, .cf-turnstile'
+                  'iframe[src*="challenges.cloudflare.com"], iframe[src*="newassets.hcaptcha"],' +
+                  '.g-recaptcha, .h-captcha, .cf-turnstile, [data-sitekey]'
                 )"""
             )
         )
@@ -452,11 +453,40 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
         )
     except Exception:
         pass
+    # Signup submit stuck disabled often means an invisible Turnstile/hCaptcha
+    # scored the session as bot — treat as blocked so solve_captcha runs.
+    submit_disabled = False
+    try:
+        submit_disabled = bool(
+            await page.evaluate(
+                """() => {
+                  const btns = [...document.querySelectorAll('button[type=submit], button')];
+                  for (const b of btns) {
+                    const label = ((b.innerText || b.getAttribute('aria-label') || '') + '').toLowerCase();
+                    if (!/sign\\s*up|create\\s*account|register|continue|join/.test(label)) continue;
+                    if (b.disabled || b.getAttribute('aria-disabled') === 'true') return true;
+                    const style = window.getComputedStyle(b);
+                    if (style && (style.pointerEvents === 'none' || Number(style.opacity) < 0.4)) return true;
+                  }
+                  return false;
+                }"""
+            )
+        )
+    except Exception:
+        pass
     # A marketing page that merely mentions captchas is not blocking. Require a
-    # live challenge, sitekey widget, or interstitial copy.
-    blocked = bool(visible or (info and info.get("sitekey")) or text_block or (widget and visible))
+    # live challenge, sitekey widget, interstitial copy, or disabled signup CTA
+    # while a widget/sitekey is present.
+    # Disabled signup CTA alone is enough — invisible Turnstile/hCaptcha often
+    # leave no visible challenge but keep the button dead.
+    blocked = bool(
+        visible
+        or (info and info.get("sitekey"))
+        or text_block
+        or (widget and visible)
+        or submit_disabled
+    )
     if widget and not blocked:
-        # Widget present but not yet challenged — agent should still be ready.
         action = "ready_call_solve_captcha_if_stuck"
     else:
         action = "call_solve_captcha" if blocked else "continue"
@@ -464,6 +494,7 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
         "blocked": blocked,
         "challenge_visible": visible,
         "widget_present": widget,
+        "submit_disabled": submit_disabled,
         "sitekey": (info or {}).get("sitekey"),
         "type": (info or {}).get("type"),
         "action": action,
