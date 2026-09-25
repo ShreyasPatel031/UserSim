@@ -496,15 +496,17 @@ async def _emit_opening_frame(
             return False
 
     ok = False
-    for attempt in range(5):
-        await asyncio.sleep(0.8 if attempt == 0 else 2.0)
+    # Heavy marketing / SPA landings (Linear, etc.) often stay on a ~32KB logo
+    # splash for several seconds under parallel Browserbase load — wait longer.
+    for attempt in range(8):
+        await asyncio.sleep(1.2 if attempt == 0 else 2.5)
         if not await _snap_once():
             continue
         if not _png_is_blankish(shot_path):
             ok = True
             break
         print(
-            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/5) — waiting for paint",
+            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/8) — waiting for paint",
             flush=True,
         )
         if page is not None:
@@ -522,14 +524,17 @@ async def _emit_opening_frame(
             return
         if _png_is_blankish(shot_path):
             print(
-                f"[{agent_id}] opening frame still blank — not publishing step 0",
+                f"[{agent_id}] opening frame still blank after extended wait — "
+                "publishing best effort so same-site backfill can replace it",
                 flush=True,
             )
-            return
-        print(
-            f"[{agent_id}] opening frame marginal — publishing best effort",
-            flush=True,
-        )
+            # Fall through and publish — backfill_site_opening_shots can replace
+            # blank splash from a same-site donor once any agent gets real paint.
+        else:
+            print(
+                f"[{agent_id}] opening frame marginal — publishing best effort",
+                flush=True,
+            )
 
     final_url = url
     try:
