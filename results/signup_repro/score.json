@@ -370,10 +370,10 @@
       "updated_at": "2026-09-25T11:41:41.075550+00:00"
     },
     "linear.app": {
-      "reproducible": false,
-      "last_reason": "unknown",
-      "last_detail": "Failed to receive email verification code after multiple attempts.",
-      "last_alias_tag": "linearff2dac3",
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "linearcfbb20",
       "attempts": [
         {
           "host": "linear.app",
@@ -389,9 +389,24 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/603c7ab6-fb50-458b-a135-a5e747fb88cd",
           "at": "2026-09-25T11:57:54.962772+00:00"
+        },
+        {
+          "host": "linear.app",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 197.4,
+          "alias_tag": "linearcfbb20",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/ceca8189-7f90-40cd-ba34-9c217602aa13",
+          "at": "2026-09-25T21:00:27.200750+00:00"
         }
       ],
-      "updated_at": "2026-09-25T11:57:54.962772+00:00"
+      "updated_at": "2026-09-25T21:00:27.200750+00:00"
     },
     "notion.so": {
       "reproducible": true,
@@ -1120,7 +1135,7 @@
       "updated_at": "2026-09-25T14:25:11.670454+00:00"
     }
   },
-  "updated_at": "2026-09-25T20:26:10.568844+00:00",
+  "updated_at": "2026-09-25T21:00:27.201228+00:00",
   "reproducible": [
     "airtable.com",
     "asana.com",
@@ -1138,6 +1153,7 @@
     "hashnode.com",
     "hubspot.com",
     "jotform.com",
+    "linear.app",
     "mailchimp.com",
     "make.com",
     "medium.com",
@@ -1162,13 +1178,12 @@
     "bitwarden.com",
     "github.com",
     "intercom.com",
-    "linear.app",
     "reddit.com",
     "shopify.com",
     "todoist.com",
     "trello.com",
     "whimsical.com"
   ],
-  "score": "35/60",
-  "reproducible_count": 35
+  "score": "36/60",
+  "reproducible_count": 36
 }
