@@ -65,6 +65,8 @@ NOISE = (
     "waf-token",
     "_grecaptcha",
     "recaptcha",
+    # Consent / short marketing markers that contain auth substrings.
+    "atl-bsc-consent",
 )
 
 # Products that mint opaque httpOnly session cookies (no auth-hint substring).
@@ -104,6 +106,9 @@ def _registrable(host: str) -> str:
 def _is_auth_cookie_name(name: str) -> bool:
     low = str(name or "").lower()
     if any(n in low for n in NOISE):
+        return False
+    # Short Atlassian marketing cookies contain "sess"/"token" but are not login.
+    if low in {"atl_session", "atl-bsc-consent-token"}:
         return False
     return any(h in low for h in AUTH_HINTS)
 

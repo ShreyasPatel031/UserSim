@@ -71,6 +71,7 @@ echo "==> signup backend: browserbase=$([[ "${MVP_SIGNUP_BROWSERBASE}" == "1" ]]
 echo "==> signup: $* (parallel=${PARALLEL})"
 
 # Reclaim leaked Browserbase sessions before creating more (cap is easy to hit).
+# Only release sessions we tagged owner=signup — never touch e2e/demo sessions.
 if [[ "${MVP_SIGNUP_BROWSERBASE}" == "1" && "${MVP_BB_RELEASE_STALE:-1}" == "1" ]]; then
   .venv/bin/python - <<'PY' || true
 import os, time
@@ -78,13 +79,26 @@ try:
     from browserbase import Browserbase
     c = Browserbase(api_key=os.environ.get("BROWSERBASE_API_KEY", ""))
     items = list(getattr(c.sessions.list(status="RUNNING"), "data", []) or [])
+    released = 0
     for s in items:
+        meta = getattr(s, "user_metadata", None) or getattr(s, "userMetadata", None) or {}
+        if isinstance(meta, str):
+            try:
+                import json
+                meta = json.loads(meta)
+            except Exception:
+                meta = {}
+        if not isinstance(meta, dict):
+            meta = {}
+        if meta.get("owner") != "signup":
+            continue
         try:
             c.sessions.update(s.id, status="REQUEST_RELEASE")
+            released += 1
         except Exception:
             pass
-    if items:
-        print(f"==> released {len(items)} stale Browserbase session(s)", flush=True)
+    if released:
+        print(f"==> released {released} stale signup Browserbase session(s)", flush=True)
         time.sleep(1.5)
 except Exception as exc:
     print(f"==> bb release skipped: {exc}", flush=True)

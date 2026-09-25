@@ -393,6 +393,8 @@ _AUTH_COOKIE_NOISE = (
     "__cuid",
     "g_state",
     "bifrost",
+    "session_id",  # analytics session markers (Supabase marketing, etc.)
+    "atl-bsc-consent",
 )
 
 
@@ -414,6 +416,8 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
         "session.token",
         "descope",
         "refresh",
+        "sb-",
+        "auth-token",
     )
     for cookie in state.get("cookies") or []:
         domain = str(cookie.get("domain") or "").lstrip(".").lower()
@@ -431,7 +435,7 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
             # Require httpOnly or a non-empty value so marketing tokens don't count.
             if cookie.get("httpOnly") or (cookie.get("value") or ""):
                 # Skip short opaque WAF-ish values without session semantics.
-                if low in {"token", "sid"} and len(str(cookie.get("value") or "")) < 20:
+                if low in {"token", "sid", "atl_session"} and len(str(cookie.get("value") or "")) < 40:
                     continue
                 return True
     return False

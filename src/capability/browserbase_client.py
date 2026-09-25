@@ -210,6 +210,9 @@ def create_session(
             kwargs["project_id"] = pid
         if flags.get("proxies"):
             kwargs["proxies"] = True
+        # Tag signup sessions so sibling agents can spare e2e sessions on cleanup.
+        owner = (os.environ.get("BROWSERBASE_SESSION_OWNER") or "signup").strip() or "signup"
+        kwargs["user_metadata"] = {"owner": owner, "purpose": "signup"}
         browser_settings: dict[str, Any] = {}
         if flags.get("solve_captchas"):
             browser_settings["solveCaptchas"] = True
@@ -238,7 +241,15 @@ def create_session(
                 basic = {
                     k: v
                     for k, v in flat.items()
-                    if k in {"keep_alive", "project_id", "proxies", "api_timeout", "timeout"}
+                    if k
+                    in {
+                        "keep_alive",
+                        "project_id",
+                        "proxies",
+                        "api_timeout",
+                        "timeout",
+                        "user_metadata",
+                    }
                 }
                 return client.sessions.create(**basic)
 
