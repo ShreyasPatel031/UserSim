@@ -27,11 +27,29 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field
 
-from mvp.captcha import solve_captcha_on_page
+from mvp.captcha import page_looks_captcha_blocked, solve_captcha_on_page
+
+
+async def _page_has_captcha_token(page: Any) -> bool:
+    """True when a captcha response textarea/input carries a real token."""
+    try:
+        return bool(
+            await page.evaluate(
+                """() => {
+                  const t = document.querySelector(
+                    '#g-recaptcha-response, textarea[name="g-recaptcha-response"], textarea[name="h-captcha-response"], input[name="cf-turnstile-response"], [name="h-captcha-response"]'
+                  );
+                  return !!(t && (t.value || '').length > 20);
+                }"""
+            )
+        )
+    except Exception:
+        return False
 from mvp.credentials import totp_code
-from mvp.email_codes import wait_for_signup_code, wait_for_signup_link
+from mvp.email_codes import latest_signup_code, latest_signup_link
 from mvp.identity import (
     Identity,
+    canonical_alias_email,
     host_for_url,
     provision_identity,
     safe_host,
@@ -111,11 +129,25 @@ def _create_signup_browserbase_session():
     from capability.browserbase_client import create_session
 
     attempts = [
-        {"proxies": True, "solve_captchas": True, "advanced_stealth": True},
         {"proxies": True, "solve_captchas": True, "advanced_stealth": False},
         {"proxies": False, "solve_captchas": True, "advanced_stealth": False},
         {"proxies": False, "solve_captchas": False, "advanced_stealth": False},
     ]
+    # Invisible hCaptcha (Supabase) often fails on datacenter/proxy fingerprints;
+    # allow forcing no-proxy first via MVP_BB_PROXIES=0.
+    prefer = (os.environ.get("MVP_BB_PROXIES") or "").strip().lower()
+    if prefer in {"0", "false", "no", "off"}:
+        attempts = [
+            {"proxies": False, "solve_captchas": True, "advanced_stealth": False},
+            {"proxies": True, "solve_captchas": True, "advanced_stealth": False},
+            {"proxies": False, "solve_captchas": False, "advanced_stealth": False},
+        ]
+    elif prefer in {"1", "true", "yes", "on"}:
+        attempts = [
+            {"proxies": True, "solve_captchas": True, "advanced_stealth": False},
+            {"proxies": False, "solve_captchas": True, "advanced_stealth": False},
+            {"proxies": False, "solve_captchas": False, "advanced_stealth": False},
+        ]
     last_exc: BaseException | None = None
     for kwargs in attempts:
         try:
@@ -212,55 +244,56 @@ SIGNUP_START: dict[str, str] = {
     "buffer.com": "https://login.buffer.com/signup",
     "calendly.com": "https://calendly.com/signup",
     "canva.com": "https://www.canva.com/signup",
-    "clickup.com": "https://app.clickup.com/signup",
     "coda.io": "https://coda.io/signup",
+    "codepen.io": "https://codepen.io/accounts/signup/user/free",
     "dropbox.com": "https://www.dropbox.com/register",
     "figma.com": "https://www.figma.com/signup",
     "github.com": "https://github.com/signup",
     "gitlab.com": "https://gitlab.com/users/sign_up",
+    "hashnode.com": "https://hashnode.com/onboard",
     "linear.app": "https://linear.app/signup",
     "loom.com": "https://www.loom.com/signup",
     "medium.com": "https://medium.com/m/signin",
     "miro.com": "https://miro.com/signup/",
     "notion.so": "https://www.notion.so/signup",
     "reddit.com": "https://www.reddit.com/register/",
+    "stackblitz.com": "https://stackblitz.com/register",
     "todoist.com": "https://todoist.com/auth/signup",
+    "trello.com": "https://trello.com/signup",
     "webflow.com": "https://webflow.com/signup",
     "zoom.us": "https://www.zoom.us/signup",
-    "trello.com": "https://trello.com/signup",
-    "replit.com": "https://replit.com/signup",
-    "posthog.com": "https://us.posthog.com/signup",
+    "zapier.com": "https://zapier.com/sign-up",
+    "make.com": "https://www.make.com/en/register",
+    "shopify.com": "https://accounts.shopify.com/signup",
+    "grammarly.com": "https://www.grammarly.com/signup",
+    "cal.com": "https://app.cal.com/signup",
+    "jotform.com": "https://www.jotform.com/signup",
+    "hotjar.com": "https://app.contentsquare.com/signup?app=hotjar",
+    "mixpanel.com": "https://mixpanel.com/register/",
+    "intercom.com": "https://app.intercom.com/admins/sign_up",
+    "zendesk.com": "https://www.zendesk.com/register/",
+    "1password.com": "https://start.1password.com/sign-up/password",
+    "toggl.com": "https://accounts.toggl.com/track/signup",
+    "render.com": "https://dashboard.render.com/register",
+    "cloudflare.com": "https://dash.cloudflare.com/sign-up",
+    "twilio.com": "https://www.twilio.com/try-twilio",
+    "resend.com": "https://resend.com/signup",
+    "beehiiv.com": "https://app.beehiiv.com/signup",
+    "whimsical.com": "https://whimsical.com/signup",
+    "ticktick.com": "https://ticktick.com/signup",
+    "huggingface.co": "https://huggingface.co/join",
+    "discord.com": "https://discord.com/register",
     "supabase.com": "https://supabase.com/dashboard/sign-up",
     "evernote.com": "https://www.evernote.com/Registration.action",
     "typeform.com": "https://admin.typeform.com/signup",
-    "discord.com": "https://discord.com/register",
-    "wix.com": "https://users.wix.com/signin?loginCompName=SignUp",
     "box.com": "https://account.box.com/signup/n/personal",
+    "wix.com": "https://users.wix.com/signin?loginCompName=SignUp",
+    "users.wix.com": "https://users.wix.com/signin?loginCompName=SignUp",
+    "id.atlassian.com": "https://id.atlassian.com/signup",
 }
 
-
-# Marketing / app subdomains that must share the product identity + cookie jar.
-HOST_CANON: dict[str, str] = {
-    "app.notion.com": "notion.so",
-    "www.notion.so": "notion.so",
-    "app.clickup.com": "clickup.com",
-    "app.todoist.com": "todoist.com",
-    "login.buffer.com": "buffer.com",
-    "login.mailchimp.com": "mailchimp.com",
-    "account.box.com": "box.com",
-    "admin.typeform.com": "typeform.com",
-    "users.wix.com": "wix.com",
-    "us.posthog.com": "posthog.com",
-    "auth.monday.com": "monday.com",
-    "app.asana.com": "asana.com",
-    "app.hubspot.com": "hubspot.com",
-    "app.netlify.com": "netlify.com",
-    "app.smartsheet.com": "smartsheet.com",
-    "cloud.digitalocean.com": "digitalocean.com",
-    "vault.bitwarden.com": "bitwarden.com",
-}
-
-
+# Login deep-links for recovering sessions when signup created the account
+# but the cookie jar was lost (common with Browserbase close races).
 SIGNIN_START: dict[str, str] = {
     "notion.so": "https://www.notion.so/login",
     "clickup.com": "https://app.clickup.com/login",
@@ -268,7 +301,7 @@ SIGNIN_START: dict[str, str] = {
     "dropbox.com": "https://www.dropbox.com/login",
     "todoist.com": "https://todoist.com/auth/login",
     "linear.app": "https://linear.app/login",
-    "trello.com": "https://trello.com/login",
+    "trello.com": "https://id.atlassian.com/login",
     "replit.com": "https://replit.com/login",
     "posthog.com": "https://us.posthog.com/login",
     "supabase.com": "https://supabase.com/dashboard/sign-in",
@@ -276,9 +309,42 @@ SIGNIN_START: dict[str, str] = {
     "typeform.com": "https://admin.typeform.com/login",
     "discord.com": "https://discord.com/login",
     "wix.com": "https://users.wix.com/signin",
+    "users.wix.com": "https://users.wix.com/signin",
     "box.com": "https://account.box.com/login",
     "loom.com": "https://www.loom.com/login",
+    "id.atlassian.com": "https://id.atlassian.com/login",
+    "zapier.com": "https://zapier.com/app/login",
+    "make.com": "https://www.make.com/en/login",
+    "shopify.com": "https://accounts.shopify.com/store-login",
+    "grammarly.com": "https://login.grammarly.com/",
+    "cal.com": "https://app.cal.com/auth/login",
+    "jotform.com": "https://www.jotform.com/login",
+    "hotjar.com": "https://insights.hotjar.com/login",
+    "mixpanel.com": "https://mixpanel.com/login/",
+    "intercom.com": "https://app.intercom.com/admins/sign_in",
+    "zendesk.com": "https://www.zendesk.com/login/",
+    "1password.com": "https://my.1password.com/signin",
+    "toggl.com": "https://accounts.toggl.com/track/login",
+    "render.com": "https://dashboard.render.com/login",
+    "cloudflare.com": "https://dash.cloudflare.com/login",
+    "twilio.com": "https://www.twilio.com/login",
+    "resend.com": "https://resend.com/login",
+    "beehiiv.com": "https://app.beehiiv.com/login",
+    "whimsical.com": "https://whimsical.com/login",
+    "ticktick.com": "https://ticktick.com/signin",
+    "huggingface.co": "https://huggingface.co/login",
 }
+
+# Already have a live account on the base mailbox — do not burn signup budget.
+RETIRED_HOSTS: frozenset[str] = frozenset(
+    {
+        "clickup.com",
+        "app.clickup.com",
+        "replit.com",
+        "posthog.com",
+        "us.posthog.com",
+    }
+)
 
 
 def signup_start_url(host: str) -> str:
@@ -292,7 +358,7 @@ def signup_start_url(host: str) -> str:
 VERIFY_URLS: dict[str, list[str]] = {
     "canva.com": ["https://www.canva.com/projects"],
     "todoist.com": ["https://app.todoist.com/app/inbox"],
-    "notion.so": ["https://www.notion.so/", "https://app.notion.com/"],
+    "notion.so": ["https://www.notion.so/"],
     "clickup.com": ["https://app.clickup.com/"],
     "figma.com": ["https://www.figma.com/files"],
     "miro.com": ["https://miro.com/app/dashboard/"],
@@ -310,27 +376,69 @@ VERIFY_URLS: dict[str, list[str]] = {
     "reddit.com": ["https://www.reddit.com/"],
     "medium.com": ["https://medium.com/me/stories/public"],
     "bitwarden.com": ["https://vault.bitwarden.com/#/vault"],
+    "codepen.io": ["https://codepen.io/"],
+    "stackblitz.com": ["https://stackblitz.com/"],
+    "hashnode.com": ["https://hashnode.com/"],
     "trello.com": ["https://trello.com/"],
-    "replit.com": ["https://replit.com/~"],
-    "posthog.com": ["https://us.posthog.com/"],
     "supabase.com": ["https://supabase.com/dashboard"],
-    "evernote.com": ["https://www.evernote.com/client/web"],
-    "typeform.com": ["https://admin.typeform.com/accounts"],
+    "discord.com": ["https://discord.com/channels/@me"],
+    "zapier.com": ["https://zapier.com/app/zaps"],
+    "make.com": ["https://www.make.com/"],
+    "shopify.com": ["https://admin.shopify.com/"],
+    "grammarly.com": ["https://app.grammarly.com/"],
+    "cal.com": ["https://app.cal.com/event-types"],
+    "jotform.com": ["https://www.jotform.com/workspace/"],
+    "hotjar.com": ["https://insights.hotjar.com/"],
+    "mixpanel.com": ["https://mixpanel.com/project/"],
+    "intercom.com": ["https://app.intercom.com/"],
+    "zendesk.com": ["https://www.zendesk.com/"],
+    "1password.com": ["https://my.1password.com/"],
+    "toggl.com": ["https://track.toggl.com/timer"],
+    "render.com": ["https://dashboard.render.com/"],
+    "cloudflare.com": ["https://dash.cloudflare.com/"],
+    "twilio.com": ["https://console.twilio.com/"],
+    "resend.com": ["https://resend.com/emails"],
+    "beehiiv.com": ["https://app.beehiiv.com/"],
+    "whimsical.com": ["https://whimsical.com/"],
+    "ticktick.com": ["https://ticktick.com/webapp"],
+    "huggingface.co": ["https://huggingface.co/settings/profile"],
 }
 
 
-# Products that mint auth cookies on a sibling registrable domain.
-COOKIE_HOST_ALIASES: dict[str, frozenset[str]] = {
+# Sibling registrable domains that often hold the real auth cookie.
+_COOKIE_HOST_ALIASES: dict[str, frozenset[str]] = {
     "notion.so": frozenset({"notion.so", "notion.com"}),
     "notion.com": frozenset({"notion.so", "notion.com"}),
+    "trello.com": frozenset({"trello.com", "atlassian.com", "atlassian.net"}),
+    "loom.com": frozenset({"loom.com", "atlassian.com", "atlassian.net"}),
+    "shopify.com": frozenset({"shopify.com", "myshopify.com"}),
+    "make.com": frozenset({"make.com", "integromat.com"}),
 }
 
-
-def _cookie_hosts_for(host: str) -> frozenset[str]:
-    want = (host or "").lower().removeprefix("www.")
-    if "." in want:
-        want = ".".join(want.split(".")[-2:])
-    return COOKIE_HOST_ALIASES.get(want, frozenset({want}))
+# Names that look auth-y but are bot/WAF/consent noise (keep in sync with seed_status).
+_AUTH_COOKIE_NOISE = (
+    "analytics",
+    "ab.storage",
+    "_ga",
+    "_gid",
+    "csrf",
+    "xsrf",
+    "anti_forgery",
+    "intercom",
+    "anonymous",
+    "guest",
+    "logged-out",
+    "logged_out",
+    "waf",
+    "aws-waf",
+    "recaptcha",
+    "ajs_anonymous",
+    "__cuid",
+    "g_state",
+    "bifrost",
+    "session_id",  # analytics session markers (Supabase marketing, etc.)
+    "atl-bsc-consent",
+)
 
 
 def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
@@ -339,29 +447,40 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
     Used when the live DOM heuristic lags SPA onboarding. Same idea as
     ``scripts/vm/seed_status.py``, kept local so signup doesn't import the VM tool.
     """
-    aliases = _cookie_hosts_for(host)
+    want = (host or "").lower().removeprefix("www.")
+    if "." in want:
+        want = ".".join(want.split(".")[-2:])
+    aliases = _COOKIE_HOST_ALIASES.get(want, frozenset({want}))
+    # Prefer real product session markers over WAF / marketing tokens.
     auth_hints = ("sess", "auth", "token", "login", "sid", "jwt", "credential")
-    noise = (
-        "analytics",
-        "ab.storage",
-        "_ga",
-        "_gid",
-        "csrf",
-        "xsrf",
-        "anti_forgery",
-        "intercom",
+    strong = (
+        "cloud.session.token",
+        "atl.session",
+        "session.token",
+        "descope",
+        "refresh",
+        "sb-",
+        "auth-token",
     )
     for cookie in state.get("cookies") or []:
         domain = str(cookie.get("domain") or "").lstrip(".").lower()
         parts = domain.split(".")
         etld = ".".join(parts[-2:]) if len(parts) >= 2 else domain
-        if etld not in aliases and not any(alias in domain for alias in aliases):
+        if etld not in aliases and not any(a in domain for a in aliases):
             continue
-        name = str(cookie.get("name") or "").lower()
-        if any(n in name for n in noise):
+        name = str(cookie.get("name") or "")
+        low = name.lower()
+        if any(n in low for n in _AUTH_COOKIE_NOISE):
             continue
-        if any(h in name for h in auth_hints):
+        if any(s in low for s in strong):
             return True
+        if any(h in low for h in auth_hints):
+            # Require httpOnly or a non-empty value so marketing tokens don't count.
+            if cookie.get("httpOnly") or (cookie.get("value") or ""):
+                # Skip short opaque WAF-ish values without session semantics.
+                if low in {"token", "sid", "atl_session"} and len(str(cookie.get("value") or "")) < 40:
+                    continue
+                return True
     return False
 
 
@@ -443,7 +562,9 @@ async def _looks_signed_in(page: Any) -> bool:
         return False
 
     # Still on an auth screen -> definitely not in.
-    if info.get("pwVisible") or (info.get("authUrl") and not info.get("hasAccountUi")):
+    # Make.com register (and similar) can show marketing "account"/avatar chrome
+    # while still on /register — never treat authUrl as signed-in.
+    if info.get("authUrl") or info.get("pwVisible"):
         return False
     if info.get("hasAccountUi") or info.get("hasLogoutText"):
         return True
@@ -516,14 +637,49 @@ def _build_signup_tools(ctx: dict[str, Any]):
     )
     async def get_email_code(params: EmptyParams):
         newer = ctx.get("email_requested_at") or time.time()
-        code = await asyncio.to_thread(
-            wait_for_signup_code,
-            identity.email,
-            host=host,
-            timeout_s=float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240")),
-            newer_than=newer,
-        )
+        # Prefer the live identity email, but also try the canonical plus-tag
+        # alias. Shared IdPs (id.atlassian.com ↔ trello) have overwritten
+        # identity.email to a sibling product alias while mail still lands on
+        # the original +id/+tag address — wrong-alias lookups return None even
+        # though INBOX already has the OTP.
+        aliases: list[str] = []
+        for cand in (identity.email, canonical_alias_email(identity)):
+            if cand and cand not in aliases:
+                aliases.append(cand)
+        timeout_s = float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240"))
+
+        def _wait_any() -> str | None:
+            started = time.time()
+            while time.time() - started < timeout_s:
+                for alias in aliases:
+                    code = latest_signup_code(alias, host=host, newer_than=newer)
+                    if code:
+                        return code
+                time.sleep(4.0)
+            return None
+
+        code = await asyncio.to_thread(_wait_any)
         if not code:
+            # Many products (Intercom, etc.) email a magic link, not digits.
+            # Surface the link so the agent can navigate instead of looping
+            # get_email_code until timeout.
+            def _link_fallback() -> str | None:
+                for alias in aliases:
+                    link = latest_signup_link(alias, host=host, newer_than=newer)
+                    if link:
+                        return link
+                return None
+
+            link = await asyncio.to_thread(_link_fallback)
+            if link:
+                return ActionResult(
+                    extracted_content=link,
+                    include_in_memory=True,
+                    long_term_memory=(
+                        f"No numeric code; email verification LINK "
+                        f"(navigate to it exactly): {link}"
+                    ),
+                )
             return ActionResult(
                 error="No verification code arrived in email within timeout",
                 include_in_memory=True,
@@ -544,13 +700,25 @@ def _build_signup_tools(ctx: dict[str, Any]):
     )
     async def get_email_link(params: EmptyParams):
         newer = ctx.get("email_requested_at") or time.time()
-        link = await asyncio.to_thread(
-            wait_for_signup_link,
-            identity.email,
-            host=host,
-            timeout_s=float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240")),
-            newer_than=newer,
-        )
+        aliases: list[str] = []
+        for cand in (identity.email, canonical_alias_email(identity)):
+            if cand and cand not in aliases:
+                aliases.append(cand)
+        timeout_s = float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240"))
+
+        def _wait_any_link() -> str | None:
+            started = time.time()
+            while time.time() - started < timeout_s:
+                for alias in aliases:
+                    link = latest_signup_link(
+                        alias, host=host, newer_than=newer
+                    )
+                    if link:
+                        return link
+                time.sleep(4.0)
+            return None
+
+        link = await asyncio.to_thread(_wait_any_link)
         if not link:
             return ActionResult(
                 error="No confirmation link arrived in email within timeout",
@@ -617,9 +785,6 @@ def _build_signup_tools(ctx: dict[str, Any]):
         creds = credentials_for_url(f"https://{host}/") or {}
         code = totp_code(creds.get("totp_secret"))
         if not code:
-            google = credentials_for_url("https://accounts.google.com") or {}
-            code = totp_code(google.get("totp_secret"))
-        if not code:
             return ActionResult(
                 error="No totp_secret available for this host",
                 include_in_memory=True,
@@ -627,9 +792,40 @@ def _build_signup_tools(ctx: dict[str, Any]):
         return ActionResult(extracted_content=code, include_in_memory=True)
 
     @tools.registry.action(
-        "Attempt to solve a CAPTCHA on the current page (solver API, then human ping). "
-        "Call when a captcha/checkbox/challenge is blocking progress. "
-        "If this returns an error, call report_blocked(captcha_unsolved) immediately — do not wait/loop.",
+        "Check whether a CAPTCHA / Cloudflare / bot-check is currently blocking the page. "
+        "If blocked=true, immediately call solve_captcha() — do not click through blindly.",
+        param_model=EmptyParams,
+    )
+    async def detect_captcha(params: EmptyParams, browser_session):  # noqa: ANN001
+        page = None
+        try:
+            page = await browser_session.get_current_page()
+        except Exception:
+            page = page_getter()
+        if page is None:
+            return ActionResult(
+                error="No active page",
+                include_in_memory=True,
+            )
+        info = await page_looks_captcha_blocked(page)
+        blob = json.dumps(info)
+        # Always surface the JSON — "No captcha" was lying when Sign up was
+        # disabled / Supabase printed "missing captcha token".
+        if info.get("blocked") or info.get("submit_disabled") or info.get("sitekey"):
+            tip = "CAPTCHA blocking — call solve_captcha() now"
+        else:
+            tip = "No captcha signal — if Sign up stays disabled, still call solve_captcha()"
+        return ActionResult(
+            extracted_content=blob,
+            include_in_memory=True,
+            long_term_memory=f"{tip} | {blob}",
+        )
+
+    @tools.registry.action(
+        "Attempt to solve a CAPTCHA on the current page "
+        "(Browserbase native solver, open-source local solvers, CapSolver/2Captcha, then human). "
+        "Call when detect_captcha says blocked, or when you see a checkbox/image challenge. "
+        "If this returns an error twice, call report_blocked(captcha_unsolved) — do not wait-loop.",
         param_model=EmptyParams,
     )
     async def solve_captcha(params: EmptyParams, browser_session):  # noqa: ANN001 — injected special arg
@@ -654,6 +850,22 @@ def _build_signup_tools(ctx: dict[str, Any]):
                 include_in_memory=True,
             )
         result = await solve_captcha_on_page(page)
+        # Prefer hard proof: a response token. Soft "cleared" claims often leave
+        # the Sign up button disabled on Atlassian / Supabase / Discord.
+        if result.get("ok") and not await _page_has_captcha_token(page):
+            # Downgrade soft clears so the agent retries / reports blocked.
+            if (result.get("method") or "") in {
+                "browserbase",
+                "self_cleared",
+                "click",
+                "checkbox",
+                "oss_image",
+            }:
+                result = {
+                    "ok": False,
+                    "method": result.get("method"),
+                    "detail": f"no_token_after_{result.get('detail')}",
+                }
         if result.get("ok"):
             return ActionResult(
                 extracted_content=json.dumps(result),
@@ -693,6 +905,73 @@ def _build_signup_tools(ctx: dict[str, Any]):
         reason = (params.reason or "unknown").strip().lower()
         if reason not in BLOCK_REASONS:
             reason = "unknown"
+        # Refuse premature "unknown" when a captcha is clearly holding Sign up —
+        # force one solve_captcha pass before accepting the block.
+        # Refuse premature captcha_unsolved if the agent never called solve_captcha.
+        if reason == "captcha_unsolved" and int(ctx.get("captcha_attempts") or 0) < 1:
+            page = None
+            try:
+                page = page_getter()
+            except Exception:
+                page = None
+            if page is not None:
+                ctx["captcha_attempts"] = 1
+                result = await solve_captcha_on_page(page)
+                if result.get("ok") and await _page_has_captcha_token(page):
+                    return ActionResult(
+                        extracted_content=json.dumps({"forced_solve": result}),
+                        include_in_memory=True,
+                        long_term_memory=(
+                            f"CAPTCHA solved via {result.get('method')} — "
+                            "click Continue/Sign up now; do not report_blocked yet."
+                        ),
+                    )
+                return ActionResult(
+                    error=(
+                        f"CAPTCHA still unsolved ({result}). Call solve_captcha() once more, "
+                        "then report_blocked(captcha_unsolved) only if it fails again."
+                    ),
+                    include_in_memory=True,
+                )
+        if reason in {"unknown", "captcha_unsolved"} and int(ctx.get("auto_captcha_runs") or 0) < 1:
+            page = None
+            try:
+                page = page_getter()
+            except Exception:
+                page = None
+            if page is not None:
+                try:
+                    info = await page_looks_captcha_blocked(page)
+                except Exception:
+                    info = {}
+                if info.get("blocked") or info.get("submit_disabled") or info.get("widget_present"):
+                    ctx["auto_captcha_runs"] = int(ctx.get("auto_captcha_runs") or 0) + 1
+                    result = await solve_captcha_on_page(page)
+                    if result.get("ok"):
+                        return ActionResult(
+                            extracted_content=json.dumps(
+                                {"auto_solved_before_block": result}
+                            ),
+                            include_in_memory=True,
+                            long_term_memory=(
+                                f"CAPTCHA auto-solved via {result.get('method')} — "
+                                "retry Sign up, do not report_blocked yet."
+                            ),
+                        )
+                    reason = "captcha_unsolved"
+                    detail = (params.detail or "").strip() or json.dumps(result)[:300]
+                    ctx["blocker"] = reason
+                    ctx["blocker_detail"] = detail
+                    ctx["done"] = True
+                    return ActionResult(
+                        is_done=True,
+                        success=False,
+                        extracted_content=json.dumps(
+                            {"blocked": reason, "detail": detail}
+                        ),
+                        long_term_memory=f"Signup blocked: {reason}",
+                        include_in_memory=True,
+                    )
         ctx["blocker"] = reason
         ctx["blocker_detail"] = params.detail or ""
         ctx["done"] = True
@@ -707,31 +986,6 @@ def _build_signup_tools(ctx: dict[str, Any]):
     return tools
 
 
-def _signup_system_message(host: str, signin: bool) -> str:
-    verb = "signing in to" if signin else "signing up for"
-    base = (
-        f"You are {verb} a product so usability agents can study the "
-        "authenticated experience. Prefer the email/password path. Be decisive; "
-        "do not loop on the same form. Call report_blocked when stuck on a "
-        "hard gate (card, SSO-only, invite, waitlist)."
-    )
-    if "trello" in (host or "") or "atlassian" in (host or ""):
-        base += (
-            " TRELLO/ATLASSIAN: once any board or workspace is visible, stop immediately "
-            "(done/success). Dismiss onboarding overlays with Escape ONCE. "
-            "Do not click Close/X repeatedly. Do not create extra boards."
-        )
-    if "clickup" in (host or "") and signin:
-        base += (
-            " CLICKUP: the plus-alias password is usually wrong. Prefer Continue with Google "
-            "using the IDENTITY email. If Google asks for a 2FA/authenticator code, call "
-            "get_totp_code(). If staying on email login, request the emailed login code and "
-            "call get_email_code() — ClickUp sends a short numeric code, not always a link. "
-            "Do not retry a rejected password."
-        )
-    return base
-
-
 async def sign_up(
     url: str,
     *,
@@ -740,12 +994,14 @@ async def sign_up(
     headed: bool = True,
     max_steps: int | None = None,
     cdp_port: int | None = None,
-    mode: str = "signup",
+    signin: bool = False,
+    product_host: str | None = None,
 ) -> dict[str, Any]:
-    """Create or reopen an account on ``url`` and persist the signed-in profile.
+    """Create an account on ``url`` and persist the signed-in Chrome profile.
 
-    ``mode="signin"`` uses stored identity passwords and login URLs — for hosts
-    already marked signed_up on another machine (cookie rehydrate).
+    When ``signin`` is True, log into an existing identity instead of registering.
+    ``product_host`` pins the identity / cookie jar when ``url`` is on a shared
+    IdP (e.g. id.atlassian.com for Trello).
     """
     from browser_use import Agent, ChatGoogle
     from browser_use.browser.profile import BrowserProfile
@@ -754,7 +1010,22 @@ async def sign_up(
     from config import GCP_PROJECT, MODEL
     from playwright.async_api import async_playwright
 
-    host = HOST_CANON.get(host_for_url(url), host_for_url(url))
+    host = (product_host or "").strip().lower().removeprefix("www.") or host_for_url(url)
+    if host in RETIRED_HOSTS or host.removeprefix("www.") in RETIRED_HOSTS:
+        try:
+            update_identity(
+                f"https://{host}",
+                status="blocked",
+                blocker="already_have_account",
+            )
+        except Exception:
+            pass
+        return {
+            "ok": False,
+            "host": host,
+            "reason": "already_have_account",
+            "detail": "Retired — live account exists on base mailbox; pick a new product",
+        }
     identity = identity or provision_identity(f"https://{host}")
     # identities.json travels between machines (laptop -> VM) and stores an
     # absolute profile_dir. Honour it only when it belongs to this checkout,
@@ -773,27 +1044,19 @@ async def sign_up(
     port = int(cdp_port or os.environ.get("MVP_SIGNUP_CDP_PORT") or CDP_PORT_DEFAULT)
 
     start_url = url if urlparse(url).scheme else f"https://{url}"
-    want_signin = (mode or "signup").strip().lower() == "signin"
-    override_email = (os.environ.get("MVP_SIGNIN_EMAIL") or "").strip()
-    if want_signin and override_email:
-        identity.email = override_email
-    if want_signin:
-        from mvp.credentials import credentials_for_url as _creds_for_url
-
-        vault = _creds_for_url("https://accounts.google.com") or {}
-        vault_user = (vault.get("username") or "").strip().lower()
-        if vault_user and vault_user == identity.email.lower() and vault.get("password"):
-            identity.password = vault["password"]
-    deep = SIGNIN_START if want_signin else SIGNUP_START
-    path_re = (
-        r"/(login|signin|sign-in|log-in)(/|$|#|\?)"
-        if want_signin
-        else r"/(signup|sign-up|sign_up|register|join)(/|$|#)"
-    )
-    # Use the canonical product host — callers often pass app.clickup.com/signup
-    # while SIGNIN_START is keyed as clickup.com.
-    if host in deep and not re.search(path_re, start_url, re.I):
-        start_url = deep[host]
+    host_key = (urlparse(start_url).hostname or host or "").lower()
+    if host_key.startswith("www."):
+        host_key = host_key[4:]
+    if signin:
+        if host_key in SIGNIN_START:
+            start_url = SIGNIN_START[host_key]
+        elif host_key not in SIGNIN_START:
+            # Fall through to whatever URL was passed (often already a login deep link).
+            pass
+    elif host_key in SIGNUP_START and not re.search(
+        r"/(signup|sign-up|sign_up|register|join)(/|$|#)", start_url, re.I
+    ):
+        start_url = SIGNUP_START[host_key]
 
     max_steps = max_steps or int(os.environ.get("MVP_SIGNUP_MAX_STEPS", "40"))
     use_bb = _signup_uses_browserbase()
@@ -807,6 +1070,7 @@ async def sign_up(
         "profile_dir": str(profile),
         "actions": [],
         "backend": "local_chrome",
+        "mode": "signin" if signin else "signup",
     }
 
     if use_bb:
@@ -862,17 +1126,75 @@ async def sign_up(
                 try:
                     await page.goto(start_url, wait_until="domcontentloaded", timeout=60000)
                 except Exception as exc:
-                    result["reason"] = f"navigate_failed:{type(exc).__name__}"
-                    result["detail"] = str(exc)[:200]
-                    return result
+                    detail = str(exc)
+                    tunnelish = any(
+                        tok in detail
+                        for tok in (
+                            "ERR_TUNNEL_CONNECTION_FAILED",
+                            "ERR_PROXY_CONNECTION_FAILED",
+                            "ERR_SOCKS_CONNECTION_FAILED",
+                            "ERR_CONNECTION_CLOSED",
+                            "ERR_CONNECTION_RESET",
+                        )
+                    )
+                    # Residential proxy often black-holes signup.* CDNs (Grammarly).
+                    # Recreate the Browserbase session without proxies once.
+                    used_proxy = bool((result.get("browserbase_flags") or {}).get("proxies"))
+                    if tunnelish and used_proxy and bb_session is not None:
+                        print(
+                            f"navigate tunnel fail with proxies; retrying no-proxy: {detail[:120]}",
+                            flush=True,
+                            file=__import__("sys").stderr,
+                        )
+                        try:
+                            from capability.browserbase_client import (
+                                close_session,
+                                create_session,
+                            )
+
+                            await asyncio.to_thread(close_session, bb_session.id)
+                        except Exception:
+                            pass
+                        try:
+                            bb_session = await asyncio.to_thread(
+                                create_session,
+                                proxies=False,
+                                solve_captchas=True,
+                                advanced_stealth=False,
+                            )
+                            cdp_url = bb_session.connect_url
+                            result["browserbase_session_url"] = bb_session.session_url
+                            result["browserbase_flags"] = {
+                                "proxies": False,
+                                "solve_captchas": True,
+                                "advanced_stealth": False,
+                            }
+                            browser = await p.chromium.connect_over_cdp(cdp_url)
+                            pw_ctx = (
+                                browser.contexts[0]
+                                if browser.contexts
+                                else await browser.new_context()
+                            )
+                            page = (
+                                pw_ctx.pages[0]
+                                if pw_ctx.pages
+                                else await pw_ctx.new_page()
+                            )
+                            await page.goto(
+                                start_url, wait_until="domcontentloaded", timeout=60000
+                            )
+                        except Exception as exc2:
+                            result["reason"] = f"navigate_failed:{type(exc2).__name__}"
+                            result["detail"] = str(exc2)[:200]
+                            return result
+                    else:
+                        result["reason"] = f"navigate_failed:{type(exc).__name__}"
+                        result["detail"] = detail[:200]
+                        return result
             ctx["page_getter"] = lambda: page
 
-            # Already signed in from a previous run? Login/signup URLs often
-            # match account-menu heuristics and must not count.
-            on_auth = bool(
-                re.search(r"/(login|signin|sign-in|signup|sign-up|register)(/|$|\?|#)", page.url or "", re.I)
-            )
-            if not on_auth and await _looks_signed_in(page):
+            # Already signed in from a previous run?
+            if await _looks_signed_in(page):
                 state = await pw_ctx.storage_state()
                 SITE_STATES.mkdir(parents=True, exist_ok=True)
                 site_state_path(host).write_text(json.dumps(state, indent=2))
@@ -896,7 +1218,6 @@ async def sign_up(
             bu_profile = BrowserProfile(
                 cdp_url=cdp_url,
                 is_local=False,
-                keep_alive=False,
                 viewport={"width": 1440, "height": 900},
                 disable_security=True,
                 highlight_elements=False,
@@ -914,44 +1235,28 @@ async def sign_up(
                     "phone": identity.phone,
                 }
             )
-            if want_signin:
+            if signin:
                 task = (
-                    f"Sign IN to an existing account on {start_url} for product host {host}.\n"
+                    f"Sign in to an EXISTING account on {start_url} for product host {host}.\n"
                     f"IDENTITY (use these exact values; do not invent credentials):\n{id_blob}\n"
                     f"You may call get_identity() once to confirm — do NOT call it repeatedly.\n"
                     f"Flow:\n"
-                    f"1. You should already be on a login page. If not, open Sign in / Log in "
-                    f"(not Create account).\n"
-                    f"2. Enter the IDENTITY email and password. Prefer email/password over SSO.\n"
-                    f"3. If email verification / magic link is required: call mark_email_requested(), "
-                    f"then get_email_code() or get_email_link() and complete it.\n"
+                    f"1. You should already be on a login / sign-in page. If not, open Sign in "
+                    f"(not Sign up / Create account).\n"
+                    f"2. Enter the IDENTITY email and password.\n"
+                    f"3. If email verification / magic link / OTP is required: call "
+                    f"mark_email_requested(), then get_email_code() or get_email_link().\n"
                     f"   NEVER invent a verification code.\n"
                     f"4. If SMS is required: call get_sms_code() and enter the code.\n"
-                    f"5. If a CAPTCHA/Cloudflare challenge blocks you: call solve_captcha() once. "
-                    f"If it fails, immediately call report_blocked(captcha_unsolved).\n"
-                    f"6. Skip or dismiss onboarding tours. Stop when you see the logged-in app "
-                    f"(account menu / dashboard / workspace).\n"
-                    f"If the password is rejected, try magic-link / emailed code "
-                    f"(Forgot password or Email me a link), then get_email_code()/get_email_link(). "
-                    f"Only call report_blocked(unknown) if email login also fails.\n"
-                    f"Do NOT create a new account."
+                    f"5. If a CAPTCHA/Cloudflare challenge blocks you: call detect_captcha(), "
+                    f"then solve_captcha() once. Wait for the solver. If it fails twice, "
+                    f"call report_blocked(captcha_unsolved).\n"
+                    f"6. Skip or dismiss onboarding tours. Prefer Escape, Skip, 'Not now', "
+                    f"'I'll do this later', or navigate directly to the product home "
+                    f"({VERIFY_URLS.get(host_key, [f'https://{host}'])[0]}).\n"
+                    f"7. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
+                    f"Do NOT create a new account. Do NOT try to pay."
                 )
-                if "clickup" in (host or ""):
-                    task = (
-                        f"Sign IN to an existing ClickUp account on {start_url}.\n"
-                        f"IDENTITY email: {identity.email}\n"
-                        f"Flow:\n"
-                        f"1. Click Continue with Google (do NOT type email/password into ClickUp first — "
-                        f"that triggers a CAPTCHA).\n"
-                        f"2. On Google, sign in as {identity.email}. Use get_identity() once if you need "
-                        f"the password. If Google asks for an authenticator code, call get_totp_code().\n"
-                        f"3. After Google redirects back, stop when a ClickUp workspace/home is visible.\n"
-                        f"4. If Google SSO is absent, request an emailed login code and call "
-                        f"mark_email_requested() then get_email_code().\n"
-                        f"5. If a CAPTCHA blocks you: call solve_captcha() once, then "
-                        f"report_blocked(captcha_unsolved) if it fails.\n"
-                        f"Do NOT create a new account. Do NOT retry a rejected ClickUp password."
-                    )
             else:
                 task = (
                     f"Create a free account on {start_url} for product host {host}.\n"
@@ -968,9 +1273,15 @@ async def sign_up(
                     f"returned. If you cannot see a real code, call the tool again — do not "
                     f"guess placeholders like 123456.\n"
                     f"5. If SMS is required: call get_sms_code() and enter the code.\n"
-                    f"6. If a CAPTCHA/Cloudflare challenge blocks you: call solve_captcha() once. "
-                    f"If it fails, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
-                    f"7. Skip or dismiss onboarding tours once the account exists.\n"
+                    f"6. If a CAPTCHA/Cloudflare challenge blocks you OR Sign up stays disabled "
+                    f"after email+password are filled: IMMEDIATELY call detect_captcha(), then "
+                    f"solve_captcha() once. Do NOT hunt for full_name/company/phone — those are "
+                    f"NOT on this form. Wait for the solver to finish before typing more. "
+                    f"If it fails twice, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
+                    f"7. Skip or dismiss onboarding tours once the account exists. Prefer Escape, "
+                    f"Skip, 'Not now', 'I'll do this later', or navigate to "
+                    f"{VERIFY_URLS.get(host_key, [f'https://{host}'])[0]} — do not burn steps "
+                    f"clicking the same tour Close button.\n"
                     f"8. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
                     f"If the product requires a credit card, SSO-only, invite-only access, "
                     f"or a waitlist, call report_blocked with the matching reason.\n"
@@ -993,6 +1304,7 @@ async def sign_up(
                     f"- If the product offers optional phone linking, take it and finish SMS OTP.\n"
                     f"- Do not call done() until SMS verification has succeeded."
                 )
+            role = "signing in" if signin else "signing up"
             agent = Agent(
                 task=task,
                 llm=llm,
@@ -1004,46 +1316,162 @@ async def sign_up(
                 calculate_cost=True,
                 file_system_path=str(step_dir),
                 save_conversation_path=str(step_dir / "conversation"),
-                extend_system_message=_signup_system_message(host, want_signin),
+                extend_system_message=(
+                    f"You are {role} for a product so usability agents can study the "
+                    "authenticated experience. Prefer the email/password path. Be decisive; "
+                    "do not loop on the same form. Call report_blocked when stuck on a "
+                    "hard gate (card, SSO-only, invite, waitlist). "
+                    "CAPTCHA: whenever you see 'I'm not a robot', image grids, Cloudflare "
+                    "'verify you are human', Turnstile, or a blocked submit button, call "
+                    "detect_captcha() then solve_captcha() before any other action. "
+                    "If Sign up / Continue / Create account stays disabled after filling the "
+                    "form, IMMEDIATELY call detect_captcha() then solve_captcha() — do not "
+                    "scroll hunting for terms for more than one step. "
+                    "Do not keep clicking the checkbox yourself — the solver stack handles it. "
+                    "Once the account exists, leave onboarding quickly — navigate to the "
+                    "product home rather than fighting tour modals."
+                ),
             )
 
-            history = None
-            snap_stop = asyncio.Event()
+            async def _on_step_end(_agent: Any = None) -> None:
+                """Persist cookies + auto-run captcha solver when Sign up is stuck.
 
-            async def _persist_loop() -> None:
-                # browser-use teardown often closes Browserbase before the
-                # post-run dump, so write cookies while CDP is still alive.
-                while not snap_stop.is_set():
+                The LLM often burns 20+ steps hunting phantom fields instead of
+                calling solve_captcha(). Detect disabled signup CTA / hCaptcha and
+                invoke the solver stack deterministically (max 2 times per run).
+                """
+                try:
+                    snap = await pw_ctx.storage_state()
+                    SITE_STATES.mkdir(parents=True, exist_ok=True)
+                    site_state_path(host).write_text(json.dumps(snap, indent=2))
+                    ctx["last_state"] = snap
+                except Exception:
+                    pass
+
+                if ctx.get("done") or ctx.get("blocker"):
+                    return
+                runs = int(ctx.get("auto_captcha_runs") or 0)
+                if runs >= 2:
+                    return
+                page_now = None
+                try:
+                    page_now = pw_ctx.pages[0] if pw_ctx.pages else None
+                except Exception:
+                    page_now = None
+                if page_now is None:
                     try:
-                        snap = await pw_ctx.storage_state()
-                        SITE_STATES.mkdir(parents=True, exist_ok=True)
-                        site_state_path(host).write_text(json.dumps(snap, indent=2))
-                        result["_snap_cookies"] = len(snap.get("cookies") or [])
-                        if _storage_state_looks_authed(snap, host):
-                            result["_snap_authed"] = True
+                        getter = ctx.get("page_getter")
+                        page_now = getter() if callable(getter) else None
                     except Exception:
-                        pass
-                    try:
-                        await asyncio.wait_for(snap_stop.wait(), timeout=8)
-                    except asyncio.TimeoutError:
-                        continue
+                        return
+                if page_now is None:
+                    return
+                try:
+                    info = await page_looks_captcha_blocked(page_now)
+                except Exception as exc:
+                    info = {"blocked": False, "error": str(exc)[:120]}
+                # Also treat signup URLs with a disabled primary submit as stuck,
+                # even if evaluate on the browser-use page wrapper lied earlier.
+                force = False
+                try:
+                    url_now = (getattr(page_now, "url", "") or "").lower()
+                    force = any(
+                        x in url_now
+                        for x in ("sign-up", "signup", "register", "supabase.com")
+                    )
+                    if force:
+                        disabled = await page_now.evaluate(
+                            """() => {
+                              const b = document.querySelector('button[type=submit]');
+                              return !!(b && b.disabled);
+                            }"""
+                        )
+                        force = bool(disabled)
+                except Exception:
+                    force = "supabase.com" in (getattr(page_now, "url", "") or "").lower()
+                if not (
+                    info.get("blocked")
+                    or info.get("submit_disabled")
+                    or info.get("sitekey")
+                    or (info.get("widget_present") and info.get("type") == "hcaptcha")
+                    or force
+                ):
+                    return
+                # Only auto-solve after the agent has had a couple steps to fill fields.
+                step_n = 0
+                try:
+                    step_n = int(getattr(getattr(_agent, "state", None), "n_steps", 0) or 0)
+                except Exception:
+                    step_n = runs + 1
+                if step_n < 2 and runs == 0:
+                    return
+                ctx["auto_captcha_runs"] = runs + 1
+                try:
+                    result = await solve_captcha_on_page(page_now)
+                    # Match solve_captcha tool: soft BB clears without a real
+                    # response token are not success (Loom/Supabase reject them).
+                    if result.get("ok") and not await _page_has_captcha_token(page_now):
+                        if (result.get("method") or "") in {
+                            "browserbase",
+                            "self_cleared",
+                            "click",
+                            "checkbox",
+                            "oss_image",
+                        }:
+                            result = {
+                                "ok": False,
+                                "method": result.get("method"),
+                                "detail": f"no_token_after_{result.get('detail')}",
+                            }
+                    ctx["last_auto_captcha"] = result
+                    print(
+                        f"[auto_captcha] run={ctx['auto_captcha_runs']} "
+                        f"blocked={info.get('blocked')} submit_disabled={info.get('submit_disabled')} "
+                        f"force={force} sitekey={info.get('sitekey')} -> {result}",
+                        flush=True,
+                    )
+                    # If we have a real token, nudge the primary submit so the
+                    # agent does not race report_blocked on a stale error banner.
+                    if result.get("ok"):
+                        try:
+                            await page_now.evaluate(
+                                """() => {
+                                  const btns = [...document.querySelectorAll(
+                                    'button[type=submit], button#email-signup-submit, button'
+                                  )];
+                                  for (const b of btns) {
+                                    const label = ((b.innerText || b.id || '') + '').toLowerCase();
+                                    if (/github|google|sso|apple/.test(label)) continue;
+                                    if (!(b.type === 'submit' || /sign\\s*up|continue|create|register/.test(label)))
+                                      continue;
+                                    b.disabled = false;
+                                    b.removeAttribute('disabled');
+                                    try { b.click(); } catch (e) {}
+                                    return true;
+                                  }
+                                  return false;
+                                }"""
+                            )
+                        except Exception:
+                            pass
+                except Exception as exc:
+                    ctx["last_auto_captcha"] = {
+                        "ok": False,
+                        "method": "auto_hook",
+                        "detail": f"{type(exc).__name__}:{exc}"[:200],
+                    }
+                    print(f"[auto_captcha] error: {exc}", flush=True)
 
-            snap_task = asyncio.create_task(_persist_loop())
+            history = None
             try:
                 history = await asyncio.wait_for(
-                    agent.run(max_steps=max_steps),
+                    agent.run(max_steps=max_steps, on_step_end=_on_step_end),
                     timeout=timeout_s,
                 )
             except asyncio.TimeoutError:
                 result["reason"] = "timeout"
             except Exception as exc:
                 result["reason"] = f"agent_error:{type(exc).__name__}:{exc}"[:300]
-            finally:
-                snap_stop.set()
-                try:
-                    await asyncio.wait_for(snap_task, timeout=3)
-                except Exception:
-                    snap_task.cancel()
 
             # Refresh page handle after agent activity.
             try:
@@ -1060,13 +1488,17 @@ async def sign_up(
             # Always snapshot cookies before judging — Browserbase sessions die in
             # ``finally``, so a false-negative signed-in heuristic used to throw away
             # a real account (Todoist completed signup then reported not_signed_in).
-            state: dict[str, Any] | None = None
+            state: dict[str, Any] | None = ctx.get("last_state")
             try:
                 state = await pw_ctx.storage_state()
                 SITE_STATES.mkdir(parents=True, exist_ok=True)
                 site_state_path(host).write_text(json.dumps(state, indent=2))
             except Exception as exc:
                 result["state_error"] = str(exc)[:200]
+                if state is not None:
+                    result["state_error"] = (
+                        f"{result['state_error']};recovered_checkpoint=1"
+                    )
 
             # Onboarding often ends on a "Getting ready…" splash that redirects a
             # few seconds later, so a single probe reports a fresh account as
@@ -1084,9 +1516,6 @@ async def sign_up(
                     break
                 await asyncio.sleep(3)
 
-            if not signed and result.get("_snap_authed"):
-                signed = True
-                result["signed_via"] = "mid_run_storage_state"
             if not signed and state is not None:
                 # Cookie-jar fallback: SPA chrome is flaky right after signup.
                 signed = _storage_state_looks_authed(state, host)
@@ -1116,7 +1545,12 @@ async def sign_up(
                     blocker=None,
                     profile_dir=str(profile),
                 )
-                result.update({"ok": True, "reason": "signed_up"})
+                result.update(
+                    {
+                        "ok": True,
+                        "reason": "signed_in" if signin else "signed_up",
+                    }
+                )
                 return result
 
             result["reason"] = result.get("reason") or "not_signed_in"
@@ -1125,12 +1559,17 @@ async def sign_up(
                     result["steps"] = getattr(history, "number_of_steps", lambda: None)()
                 except Exception:
                     pass
-            update_identity(
-                f"https://{host}",
-                status="provisioned",
-                blocker=result.get("reason"),
-                profile_dir=str(profile),
-            )
+            # Always pin the product host (e.g. shopify.com), never the IdP URL host
+            # (accounts.shopify.com) — registry keys are product hosts.
+            try:
+                update_identity(
+                    f"https://{host}",
+                    status="provisioned",
+                    blocker=result.get("reason"),
+                    profile_dir=str(profile),
+                )
+            except KeyError as exc:
+                result["identity_error"] = str(exc)[:120]
             return result
     finally:
         number = ctx.get("sms_number")
@@ -1160,6 +1599,11 @@ async def sign_up(
 def main() -> None:
     ap = argparse.ArgumentParser(description="Sign up for a product and capture the session")
     ap.add_argument("--url", required=True, help="Product URL to sign up on")
+    ap.add_argument(
+        "--host",
+        default=None,
+        help="Pin product host for identity/cookies when URL is a shared IdP",
+    )
     ap.add_argument("--timeout", type=float, default=900.0)
     ap.add_argument("--headed", action="store_true", default=True)
     ap.add_argument("--headless", action="store_true")
@@ -1179,7 +1623,8 @@ def main() -> None:
             headed=headed,
             max_steps=args.max_steps,
             cdp_port=args.cdp_port,
-            mode="signin" if args.signin else "signup",
+            signin=args.signin,
+            product_host=args.host,
         )
     )
     # Never print the password.

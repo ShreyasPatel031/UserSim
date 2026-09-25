@@ -318,6 +318,10 @@ STUDY_TASKS: dict[str, asyncio.Task] = {}
 
 
 def study_was_killed(study: StudyState) -> bool:
+    # Emergency escape hatch: competing local servers / GCS abandon-all races
+    # were falsely setting kill_requested ("Killed by operator" with no click).
+    if os.environ.get("MVP_DISABLE_KILL", "").lower() in {"1", "true", "yes"}:
+        return False
     return bool(getattr(study, "kill_requested", False))
 
 
@@ -2071,7 +2075,15 @@ async def run_study(
                 return result
 
             study.agent_results = []
-            await asyncio.gather(*[_run_snapshot(t) for t in study.tasks])
+            snap_out = await asyncio.gather(
+                *[_run_snapshot(t) for t in study.tasks],
+                return_exceptions=True,
+            )
+            for item in snap_out:
+                if isinstance(item, Exception) and not isinstance(
+                    item, asyncio.CancelledError
+                ):
+                    print(f"snapshot agent failed: {item!r}", flush=True)
         elif _fleet_preferred(test_mode=bool(study.test_mode)):
             from mvp.gcp_fleet import run_study_on_gcp_fleet
 
@@ -2404,7 +2416,15 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                await asyncio.gather(*[_run_snapshot_fallback(t) for t in study.tasks])
+                snap_out = await asyncio.gather(
+                    *[_run_snapshot_fallback(t) for t in study.tasks],
+                    return_exceptions=True,
+                )
+                for item in snap_out:
+                    if isinstance(item, Exception) and not isinstance(
+                        item, asyncio.CancelledError
+                    ):
+                        print(f"snapshot fallback agent failed: {item!r}", flush=True)
             else:
                 # Mark each agent with its chosen URL and launch immediately.
                 # Do not clobber a warm session that already has pixels / live view.
@@ -2923,7 +2943,16 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                await asyncio.gather(*[_run_one(t) for t in study.tasks])
+                # return_exceptions=True: one cancelled/failed agent must not
+                # CancelledError the whole gather ("Killed by operator").
+                agent_out = await asyncio.gather(
+                    *[_run_one(t) for t in study.tasks],
+                    return_exceptions=True,
+                )
+                for item in agent_out:
+                    if isinstance(item, Exception):
+                        print(f"live agent failed: {item!r}", flush=True)
+                        continue
                 try:
                     await backfill_site_opening_shots(study)
                     if study.live_sessions:
@@ -3008,10 +3037,23 @@ async def run_study(
         study.updated_at = _now()
         persist_study(study)
     except asyncio.CancelledError:
-        study.kill_requested = True
-        study.status = "abandoned"
-        study.phase = "Killed"
-        study.error = "Killed by operator"
+        # Only label as operator-kill when the kill switch was actually armed.
+        # Bare task cancellation (server restart, gather teardown) used to
+        # stamp every interrupted study as "Killed by operator".
+        if study_was_killed(study) or getattr(study, "kill_requested", False):
+            study.kill_requested = True
+            study.status = "abandoned"
+            study.phase = "Killed"
+            study.error = "Killed by operator"
+        else:
+            study.status = "abandoned"
+            study.phase = "Cancelled"
+            study.error = study.error or "Study task cancelled"
+            print(
+                f"study {study.id} CancelledError without kill_requested "
+                f"(not treating as operator kill)",
+                flush=True,
+            )
         study.updated_at = _now()
         persist_study(study)
         raise

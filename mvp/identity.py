@@ -75,6 +75,53 @@ def alias_tag_for_host(host: str) -> str:
     return (tag or "product")[:32]
 
 
+# Sites that reject Gmail plus-aliases (``user+tag@gmail.com``). Use a dotted
+# local-part instead — Gmail still delivers to the same inbox.
+_NO_PLUS_ALIAS_HOSTS = frozenset(
+    {
+        "ticktick.com",
+    }
+)
+
+
+def email_for_host(base_username: str, host: str, *, tag: str | None = None) -> str:
+    """Build the per-product mailbox for ``host`` from the vault username."""
+    if "@" not in (base_username or ""):
+        raise ValueError(f"base_username must be an email, got {base_username!r}")
+    local, domain = base_username.rsplit("@", 1)
+    # Strip any existing plus-tag / dots we might re-apply.
+    local_base = local.split("+", 1)[0]
+    tag = tag or alias_tag_for_host(host)
+    if host_for_url(host) in _NO_PLUS_ALIAS_HOSTS or host in _NO_PLUS_ALIAS_HOSTS:
+        # shreyashfs.ticktick@gmail.com — accepted by TickTick, lands in inbox.
+        return f"{local_base}.{tag}@{domain}"
+    return f"{local_base}+{tag}@{domain}"
+
+
+def canonical_alias_email(identity: Identity | dict[str, Any]) -> str | None:
+    """Rebuild the canonical mailbox from ``alias_tag``.
+
+    Shared IdPs sometimes leave ``alias_tag`` as ``id`` while ``email`` was
+    overwritten to a sibling product alias (``+trello``). OTP mail still lands
+    on the canonical tag address — callers should try both.
+    """
+    if isinstance(identity, Identity):
+        email = identity.email or ""
+        tag = identity.alias_tag or ""
+        host = identity.host or ""
+    else:
+        email = str(identity.get("email") or "")
+        tag = str(identity.get("alias_tag") or "")
+        host = str(identity.get("host") or "")
+    if not email or "@" not in email or not tag:
+        return None
+    try:
+        rebuilt = email_for_host(email, host or "product.local", tag=tag)
+    except ValueError:
+        return None
+    return rebuilt if rebuilt.lower() != email.lower() else None
+
+
 def _generate_password(length: int = 24) -> str:
     alphabet = string.ascii_letters + string.digits + "!@#$%^&*-_"
     # Guarantee mixed classes so sites with silly password rules accept it.
@@ -180,9 +227,8 @@ def provision_identity(url: str) -> Identity:
         raise RuntimeError(
             "No base email in secrets/credentials.json — add a vault site with username"
         )
-    local, domain = base["username"].rsplit("@", 1)
     tag = alias_tag_for_host(host)
-    email = f"{local}+{tag}@{domain}"
+    email = email_for_host(base["username"], host, tag=tag)
     now = datetime.now(timezone.utc).isoformat()
     profile = PRODUCT_PROFILES / safe_host(host)
     identity = Identity(
@@ -213,8 +259,11 @@ def update_identity(url: str, **fields: Any) -> Identity:
     if not raw:
         raise KeyError(f"No identity for host={host}")
     for key, value in fields.items():
-        if key == "password":
-            continue  # never overwrite via public update path accidentally
+        if key in {"password", "email", "alias_tag"}:
+            # Never clobber the signup mailbox via the public update path —
+            # id.atlassian OTP mail landed on +id while email was rewritten to
+            # +trello and IMAP lookups silently returned None.
+            continue
         if key in raw or key in {
             "status",
             "blocker",

@@ -320,6 +320,25 @@ def create_session(
             raise box["exc"]
         return box["session"]
 
+    def _create_once_bounded(kwargs: dict[str, Any], *, timeout_s: float) -> Any:
+        """Don't let the Browserbase SDK retry loop block a study forever."""
+        box: dict[str, Any] = {}
+
+        def _run() -> None:
+            try:
+                box["session"] = _create_once(kwargs)
+            except Exception as exc:  # noqa: BLE001
+                box["exc"] = exc
+
+        worker = threading.Thread(target=_run, daemon=True, name="bb-create")
+        worker.start()
+        worker.join(max(5.0, timeout_s))
+        if worker.is_alive():
+            raise TimeoutError(f"Browserbase session create timed out after {timeout_s:.0f}s")
+        if "exc" in box:
+            raise box["exc"]
+        return box["session"]
+
     last_exc: BaseException | None = None
     try:
         for flags in unique_attempts:
@@ -363,7 +382,16 @@ def create_session(
                     ):
                         break
                     if _is_rate_limit(exc) and attempt < 2:
-                        time.sleep(min(8, 2 * (attempt + 1)))
+                        # Shared project with e2e (needs up to 24/25). Back off
+                        # hard instead of hammering creates or freeing strangers.
+                        delay = float(os.environ.get("BROWSERBASE_429_BACKOFF_S", "45"))
+                        delay = min(120.0, max(15.0, delay) * (attempt + 1))
+                        print(
+                            f"Browserbase 429/concurrency — backing off {delay:.0f}s "
+                            f"(attempt {attempt + 1}/3)",
+                            flush=True,
+                        )
+                        time.sleep(delay)
                         continue
                     raise BrowserbaseRateLimitError(str(exc)[:400]) from exc
         raise BrowserbaseRateLimitError(str(last_exc)[:400] if last_exc else "session create failed")

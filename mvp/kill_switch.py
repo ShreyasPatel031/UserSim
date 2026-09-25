@@ -163,27 +163,58 @@ def kill_all_browserbase(
 
 def abandon_local_studies(*, study_id: str | None = None) -> dict[str, Any]:
     """Mark in-memory studies killed and cancel their asyncio tasks."""
+    import os
+    import traceback
+
     from mvp.study import STUDIES, STUDY_TASKS, persist_study
 
-    targets = [STUDIES[study_id]] if study_id and study_id in STUDIES else list(STUDIES.values())
+    if os.environ.get("MVP_DISABLE_KILL", "").lower() in {"1", "true", "yes"}:
+        print(
+            "abandon_local_studies skipped (MVP_DISABLE_KILL=1)\n"
+            + "".join(traceback.format_stack(limit=8)),
+            flush=True,
+        )
+        return {
+            "abandoned": [],
+            "gcs_abandoned": [],
+            "cancelled_tasks": 0,
+            "gcs_abandon_async": False,
+            "target_ids": [],
+            "skipped": "MVP_DISABLE_KILL",
+        }
+
+    # Snapshot targets NOW. A later GCS re-list was racing newly-started studies
+    # and writing kill_requested onto them ("Killed by operator" with no click).
+    if study_id and study_id in STUDIES:
+        targets = [STUDIES[study_id]]
+    else:
+        targets = list(STUDIES.values())
+    target_ids = [s.id for s in targets if getattr(s, "id", None)]
+    print(
+        f"abandon_local_studies targets={target_ids} study_id={study_id!r}\n"
+        + "".join(traceback.format_stack(limit=6)),
+        flush=True,
+    )
+
     abandoned: list[str] = []
     cancelled_tasks = 0
     for study in targets:
-        if study.status in {"complete", "error", "abandoned"} and not getattr(
-            study, "kill_requested", False
-        ):
-            # Still allow force-kill of lingering sessions belonging to finished studies.
-            pass
-            study.kill_requested = True
-            if study.status in {"running", "pending", "queued"}:
-                study.status = "abandoned"
-                study.phase = "Killed"
-                study.error = "Killed by operator"
-                for sess in (study.live_sessions or {}).values():
-                    if sess.get("status") in {"running", "starting", "pending", "summarizing"}:
-                        sess["status"] = "killed"
+        study.kill_requested = True
+        if study.status in {"running", "pending", "queued"}:
+            study.status = "abandoned"
+            study.phase = "Killed"
+            study.error = "Killed by operator"
+            for sess in (study.live_sessions or {}).values():
+                if isinstance(sess, dict) and sess.get("status") in {
+                    "running",
+                    "starting",
+                    "pending",
+                    "summarizing",
+                }:
+                    sess["status"] = "killed"
+                if isinstance(sess, dict):
                     sess["live_active"] = False
-                abandoned.append(study.id)
+            abandoned.append(study.id)
             try:
                 persist_study(study)
             except Exception:
@@ -193,18 +224,20 @@ def abandon_local_studies(*, study_id: str | None = None) -> dict[str, Any]:
             task.cancel()
             cancelled_tasks += 1
 
-    # Always patch GCS too — after a server restart memory is empty but /live
-    # still lists GCS study.json as "running". Do this off the critical path so
-    # Kill buttons return immediately after Browserbase is released.
+    # Patch only the snapshotted ids in GCS — never re-list "all running".
     gcs_abandoned: list[str] = []
     try:
         from mvp.gcs_store import abandon_running_studies_in_gcs
         import threading
 
+        ids_for_gcs = list(target_ids)
+        if study_id and study_id not in ids_for_gcs:
+            ids_for_gcs.append(study_id)
+
         def _gcs() -> None:
             nonlocal gcs_abandoned
             try:
-                gcs_abandoned = abandon_running_studies_in_gcs(study_id=study_id)
+                gcs_abandoned = abandon_running_studies_in_gcs(study_ids=ids_for_gcs)
             except Exception as exc:  # noqa: BLE001
                 print(f"abandon_running_studies_in_gcs failed: {exc!r}", flush=True)
 
@@ -216,6 +249,7 @@ def abandon_local_studies(*, study_id: str | None = None) -> dict[str, Any]:
         "gcs_abandoned": gcs_abandoned,
         "cancelled_tasks": cancelled_tasks,
         "gcs_abandon_async": True,
+        "target_ids": target_ids,
     }
 
 
