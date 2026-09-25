@@ -813,10 +813,13 @@ async def sign_up(
     max_steps: int | None = None,
     cdp_port: int | None = None,
     signin: bool = False,
+    product_host: str | None = None,
 ) -> dict[str, Any]:
     """Create an account on ``url`` and persist the signed-in Chrome profile.
 
     When ``signin`` is True, log into an existing identity instead of registering.
+    ``product_host`` pins the identity / cookie jar when ``url`` is on a shared
+    IdP (e.g. id.atlassian.com for Trello).
     """
     from browser_use import Agent, ChatGoogle
     from browser_use.browser.profile import BrowserProfile
@@ -825,7 +828,7 @@ async def sign_up(
     from config import GCP_PROJECT, MODEL
     from playwright.async_api import async_playwright
 
-    host = host_for_url(url)
+    host = (product_host or "").strip().lower().removeprefix("www.") or host_for_url(url)
     if host in RETIRED_HOSTS or host.removeprefix("www.") in RETIRED_HOSTS:
         try:
             update_identity(
@@ -841,7 +844,7 @@ async def sign_up(
             "reason": "already_have_account",
             "detail": "Retired — live account exists on base mailbox; pick a new product",
         }
-    identity = identity or provision_identity(url)
+    identity = identity or provision_identity(f"https://{host}")
     # identities.json travels between machines (laptop -> VM) and stores an
     # absolute profile_dir. Honour it only when it belongs to this checkout,
     # otherwise a macOS path is replayed on Linux and mkdir dies on /Users.
@@ -951,7 +954,7 @@ async def sign_up(
                 state = await pw_ctx.storage_state()
                 SITE_STATES.mkdir(parents=True, exist_ok=True)
                 site_state_path(host).write_text(json.dumps(state, indent=2))
-                update_identity(url, status="signed_up", blocker=None, profile_dir=str(profile))
+                update_identity(f"https://{host}", status="signed_up", blocker=None, profile_dir=str(profile))
                 result.update({"ok": True, "reason": "already_signed_in"})
                 return result
 
@@ -1156,7 +1159,7 @@ async def sign_up(
 
             if ctx.get("blocker"):
                 update_identity(
-                    url,
+                    f"https://{host}",
                     status="blocked",
                     blocker=ctx["blocker"],
                     profile_dir=str(profile),
@@ -1172,7 +1175,7 @@ async def sign_up(
 
             if signed:
                 update_identity(
-                    url,
+                    f"https://{host}",
                     status="signed_up",
                     blocker=None,
                     profile_dir=str(profile),
@@ -1226,6 +1229,11 @@ async def sign_up(
 def main() -> None:
     ap = argparse.ArgumentParser(description="Sign up for a product and capture the session")
     ap.add_argument("--url", required=True, help="Product URL to sign up on")
+    ap.add_argument(
+        "--host",
+        default=None,
+        help="Pin product host for identity/cookies when URL is a shared IdP",
+    )
     ap.add_argument("--timeout", type=float, default=900.0)
     ap.add_argument("--headed", action="store_true", default=True)
     ap.add_argument("--headless", action="store_true")
@@ -1246,6 +1254,7 @@ def main() -> None:
             max_steps=args.max_steps,
             cdp_port=args.cdp_port,
             signin=args.signin,
+            product_host=args.host,
         )
     )
     # Never print the password.
