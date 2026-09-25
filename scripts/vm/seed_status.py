@@ -76,6 +76,7 @@ OPAQUE_AUTH_COOKIES: dict[str, frozenset[str]] = {
     # Atlassian Cloud session for Trello / Loom (via id.atlassian.com).
     "trello.com": frozenset({"cloud.session.token", "tenant.session.token"}),
     "loom.com": frozenset({"cloud.session.token", "tenant.session.token"}),
+    "shopify.com": frozenset({"_shopify_essential_", "_merchant_essential", "_merchant_analytics"}),
 }
 
 # Notion logs into app.notion.com and sets cookies on notion.com, while the
