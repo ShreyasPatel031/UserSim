@@ -246,7 +246,53 @@ SIGNUP_START: dict[str, str] = {
     "whimsical.com": "https://whimsical.com/signup",
     "ticktick.com": "https://ticktick.com/signup",
     "huggingface.co": "https://huggingface.co/join",
+    "discord.com": "https://discord.com/register",
+    "supabase.com": "https://supabase.com/dashboard/sign-up",
+    "evernote.com": "https://www.evernote.com/Registration.action",
+    "typeform.com": "https://admin.typeform.com/signup",
+    "box.com": "https://account.box.com/signup/n/personal",
+    "wix.com": "https://users.wix.com/signin?loginCompName=SignUp",
+}
 
+# Login deep-links for recovering sessions when signup created the account
+# but the cookie jar was lost (common with Browserbase close races).
+SIGNIN_START: dict[str, str] = {
+    "notion.so": "https://www.notion.so/login",
+    "clickup.com": "https://app.clickup.com/login",
+    "canva.com": "https://www.canva.com/login",
+    "dropbox.com": "https://www.dropbox.com/login",
+    "todoist.com": "https://todoist.com/auth/login",
+    "linear.app": "https://linear.app/login",
+    "trello.com": "https://trello.com/login",
+    "replit.com": "https://replit.com/login",
+    "posthog.com": "https://us.posthog.com/login",
+    "supabase.com": "https://supabase.com/dashboard/sign-in",
+    "evernote.com": "https://www.evernote.com/Login.action",
+    "typeform.com": "https://admin.typeform.com/login",
+    "discord.com": "https://discord.com/login",
+    "wix.com": "https://users.wix.com/signin",
+    "box.com": "https://account.box.com/login",
+    "loom.com": "https://www.loom.com/login",
+    "zapier.com": "https://zapier.com/app/login",
+    "make.com": "https://www.make.com/en/login",
+    "shopify.com": "https://accounts.shopify.com/store-login",
+    "grammarly.com": "https://login.grammarly.com/",
+    "cal.com": "https://app.cal.com/auth/login",
+    "jotform.com": "https://www.jotform.com/login",
+    "hotjar.com": "https://insights.hotjar.com/login",
+    "mixpanel.com": "https://mixpanel.com/login/",
+    "intercom.com": "https://app.intercom.com/admins/sign_in",
+    "zendesk.com": "https://www.zendesk.com/login/",
+    "1password.com": "https://my.1password.com/signin",
+    "toggl.com": "https://accounts.toggl.com/track/login",
+    "render.com": "https://dashboard.render.com/login",
+    "cloudflare.com": "https://dash.cloudflare.com/login",
+    "twilio.com": "https://www.twilio.com/login",
+    "resend.com": "https://resend.com/login",
+    "beehiiv.com": "https://app.beehiiv.com/login",
+    "whimsical.com": "https://whimsical.com/login",
+    "ticktick.com": "https://ticktick.com/signin",
+    "huggingface.co": "https://huggingface.co/login",
 }
 
 # Already have a live account on the base mailbox — do not burn signup budget.
@@ -294,6 +340,37 @@ VERIFY_URLS: dict[str, list[str]] = {
     "stackblitz.com": ["https://stackblitz.com/"],
     "hashnode.com": ["https://hashnode.com/"],
     "trello.com": ["https://trello.com/"],
+    "supabase.com": ["https://supabase.com/dashboard"],
+    "discord.com": ["https://discord.com/channels/@me"],
+    "zapier.com": ["https://zapier.com/app/zaps"],
+    "make.com": ["https://www.make.com/"],
+    "shopify.com": ["https://admin.shopify.com/"],
+    "grammarly.com": ["https://app.grammarly.com/"],
+    "cal.com": ["https://app.cal.com/event-types"],
+    "jotform.com": ["https://www.jotform.com/workspace/"],
+    "hotjar.com": ["https://insights.hotjar.com/"],
+    "mixpanel.com": ["https://mixpanel.com/project/"],
+    "intercom.com": ["https://app.intercom.com/"],
+    "zendesk.com": ["https://www.zendesk.com/"],
+    "1password.com": ["https://my.1password.com/"],
+    "toggl.com": ["https://track.toggl.com/timer"],
+    "render.com": ["https://dashboard.render.com/"],
+    "cloudflare.com": ["https://dash.cloudflare.com/"],
+    "twilio.com": ["https://console.twilio.com/"],
+    "resend.com": ["https://resend.com/emails"],
+    "beehiiv.com": ["https://app.beehiiv.com/"],
+    "whimsical.com": ["https://whimsical.com/"],
+    "ticktick.com": ["https://ticktick.com/webapp"],
+    "huggingface.co": ["https://huggingface.co/settings/profile"],
+}
+
+
+# Sibling registrable domains that often hold the real auth cookie.
+_COOKIE_HOST_ALIASES: dict[str, frozenset[str]] = {
+    "notion.so": frozenset({"notion.so", "notion.com"}),
+    "notion.com": frozenset({"notion.so", "notion.com"}),
+    "trello.com": frozenset({"trello.com", "atlassian.com", "atlassian.net"}),
+    "loom.com": frozenset({"loom.com", "atlassian.com", "atlassian.net"}),
 }
 
 
@@ -306,7 +383,8 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
     want = (host or "").lower().removeprefix("www.")
     if "." in want:
         want = ".".join(want.split(".")[-2:])
-    auth_hints = ("sess", "auth", "token", "login", "sid", "jwt", "credential")
+    aliases = _COOKIE_HOST_ALIASES.get(want, frozenset({want}))
+    auth_hints = ("sess", "auth", "token", "login", "sid", "jwt", "credential", "cloud")
     noise = (
         "analytics",
         "ab.storage",
@@ -321,7 +399,7 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
         domain = str(cookie.get("domain") or "").lstrip(".").lower()
         parts = domain.split(".")
         etld = ".".join(parts[-2:]) if len(parts) >= 2 else domain
-        if etld != want and want not in domain:
+        if etld not in aliases and not any(a in domain for a in aliases):
             continue
         name = str(cookie.get("name") or "").lower()
         if any(n in name for n in noise):
@@ -705,8 +783,12 @@ async def sign_up(
     headed: bool = True,
     max_steps: int | None = None,
     cdp_port: int | None = None,
+    signin: bool = False,
 ) -> dict[str, Any]:
-    """Create an account on ``url`` and persist the signed-in Chrome profile."""
+    """Create an account on ``url`` and persist the signed-in Chrome profile.
+
+    When ``signin`` is True, log into an existing identity instead of registering.
+    """
     from browser_use import Agent, ChatGoogle
     from browser_use.browser.profile import BrowserProfile
     from auth import vertex_credentials
@@ -751,7 +833,13 @@ async def sign_up(
     host_key = (urlparse(start_url).hostname or host or "").lower()
     if host_key.startswith("www."):
         host_key = host_key[4:]
-    if host_key in SIGNUP_START and not re.search(
+    if signin:
+        if host_key in SIGNIN_START:
+            start_url = SIGNIN_START[host_key]
+        elif host_key not in SIGNIN_START:
+            # Fall through to whatever URL was passed (often already a login deep link).
+            pass
+    elif host_key in SIGNUP_START and not re.search(
         r"/(signup|sign-up|sign_up|register|join)(/|$|#)", start_url, re.I
     ):
         start_url = SIGNUP_START[host_key]
@@ -768,6 +856,7 @@ async def sign_up(
         "profile_dir": str(profile),
         "actions": [],
         "backend": "local_chrome",
+        "mode": "signin" if signin else "signup",
     }
 
     if use_bb:
@@ -870,30 +959,56 @@ async def sign_up(
                     "phone": identity.phone,
                 }
             )
-            task = (
-                f"Create a free account on {start_url} for product host {host}.\n"
-                f"IDENTITY (use these exact values; do not invent credentials):\n{id_blob}\n"
-                f"You may call get_identity() once to confirm — do NOT call it repeatedly.\n"
-                f"Flow:\n"
-                f"1. You should already be on a signup page. If not, open Sign up / Create account "
-                f"(not Sign in).\n"
-                f"2. Fill the registration form with the IDENTITY values above.\n"
-                f"3. Accept terms if required. Skip optional marketing checkboxes.\n"
-                f"4. If email verification is required: call mark_email_requested(), "
-                f"then get_email_code() or get_email_link() and complete verification.\n"
-                f"   NEVER invent a verification code. Type the exact digits the tool "
-                f"returned. If you cannot see a real code, call the tool again — do not "
-                f"guess placeholders like 123456.\n"
-                f"5. If SMS is required: call get_sms_code() and enter the code.\n"
-                f"6. If a CAPTCHA/Cloudflare challenge blocks you: call detect_captcha(), "
-                f"then solve_captcha() once. Wait for the solver to finish before typing more. "
-                f"If it fails twice, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
-                f"7. Skip or dismiss onboarding tours once the account exists.\n"
-                f"8. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
-                f"If the product requires a credit card, SSO-only, invite-only access, "
-                f"or a waitlist, call report_blocked with the matching reason.\n"
-                f"Do NOT try to pay. Prefer email signup; use Google/GitHub SSO only if email signup is absent."
-            )
+            if signin:
+                task = (
+                    f"Sign in to an EXISTING account on {start_url} for product host {host}.\n"
+                    f"IDENTITY (use these exact values; do not invent credentials):\n{id_blob}\n"
+                    f"You may call get_identity() once to confirm — do NOT call it repeatedly.\n"
+                    f"Flow:\n"
+                    f"1. You should already be on a login / sign-in page. If not, open Sign in "
+                    f"(not Sign up / Create account).\n"
+                    f"2. Enter the IDENTITY email and password.\n"
+                    f"3. If email verification / magic link / OTP is required: call "
+                    f"mark_email_requested(), then get_email_code() or get_email_link().\n"
+                    f"   NEVER invent a verification code.\n"
+                    f"4. If SMS is required: call get_sms_code() and enter the code.\n"
+                    f"5. If a CAPTCHA/Cloudflare challenge blocks you: call detect_captcha(), "
+                    f"then solve_captcha() once. Wait for the solver. If it fails twice, "
+                    f"call report_blocked(captcha_unsolved).\n"
+                    f"6. Skip or dismiss onboarding tours. Prefer Escape, Skip, 'Not now', "
+                    f"'I'll do this later', or navigate directly to the product home "
+                    f"({VERIFY_URLS.get(host_key, [f'https://{host}'])[0]}).\n"
+                    f"7. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
+                    f"Do NOT create a new account. Do NOT try to pay."
+                )
+            else:
+                task = (
+                    f"Create a free account on {start_url} for product host {host}.\n"
+                    f"IDENTITY (use these exact values; do not invent credentials):\n{id_blob}\n"
+                    f"You may call get_identity() once to confirm — do NOT call it repeatedly.\n"
+                    f"Flow:\n"
+                    f"1. You should already be on a signup page. If not, open Sign up / Create account "
+                    f"(not Sign in).\n"
+                    f"2. Fill the registration form with the IDENTITY values above.\n"
+                    f"3. Accept terms if required. Skip optional marketing checkboxes.\n"
+                    f"4. If email verification is required: call mark_email_requested(), "
+                    f"then get_email_code() or get_email_link() and complete verification.\n"
+                    f"   NEVER invent a verification code. Type the exact digits the tool "
+                    f"returned. If you cannot see a real code, call the tool again — do not "
+                    f"guess placeholders like 123456.\n"
+                    f"5. If SMS is required: call get_sms_code() and enter the code.\n"
+                    f"6. If a CAPTCHA/Cloudflare challenge blocks you: call detect_captcha(), "
+                    f"then solve_captcha() once. Wait for the solver to finish before typing more. "
+                    f"If it fails twice, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
+                    f"7. Skip or dismiss onboarding tours once the account exists. Prefer Escape, "
+                    f"Skip, 'Not now', 'I'll do this later', or navigate to "
+                    f"{VERIFY_URLS.get(host_key, [f'https://{host}'])[0]} — do not burn steps "
+                    f"clicking the same tour Close button.\n"
+                    f"8. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
+                    f"If the product requires a credit card, SSO-only, invite-only access, "
+                    f"or a waitlist, call report_blocked with the matching reason.\n"
+                    f"Do NOT try to pay. Prefer email signup; use Google/GitHub SSO only if email signup is absent."
+                )
             # Used to exercise the phone→ntfy SMS path end-to-end. Optional phone
             # prompts (Zoom "Skip" / "No thanks") otherwise get dismissed and never
             # produce a text — which is correct for normal signup, wrong for a relay test.
@@ -911,6 +1026,7 @@ async def sign_up(
                     f"- If the product offers optional phone linking, take it and finish SMS OTP.\n"
                     f"- Do not call done() until SMS verification has succeeded."
                 )
+            role = "signing in" if signin else "signing up"
             agent = Agent(
                 task=task,
                 llm=llm,
@@ -923,21 +1039,36 @@ async def sign_up(
                 file_system_path=str(step_dir),
                 save_conversation_path=str(step_dir / "conversation"),
                 extend_system_message=(
-                    "You are signing up for a product so usability agents can study the "
+                    f"You are {role} for a product so usability agents can study the "
                     "authenticated experience. Prefer the email/password path. Be decisive; "
                     "do not loop on the same form. Call report_blocked when stuck on a "
                     "hard gate (card, SSO-only, invite, waitlist). "
                     "CAPTCHA: whenever you see 'I'm not a robot', image grids, Cloudflare "
                     "'verify you are human', Turnstile, or a blocked submit button, call "
                     "detect_captcha() then solve_captcha() before any other action. "
-                    "Do not keep clicking the checkbox yourself — the solver stack handles it."
+                    "Do not keep clicking the checkbox yourself — the solver stack handles it. "
+                    "Once the account exists, leave onboarding quickly — navigate to the "
+                    "product home rather than fighting tour modals."
                 ),
             )
+
+            async def _checkpoint_cookies(_agent: Any = None) -> None:
+                """Persist storage_state every step — BB sessions die on agent stop."""
+                try:
+                    snap = await pw_ctx.storage_state()
+                except Exception:
+                    return
+                try:
+                    SITE_STATES.mkdir(parents=True, exist_ok=True)
+                    site_state_path(host).write_text(json.dumps(snap, indent=2))
+                    ctx["last_state"] = snap
+                except Exception:
+                    pass
 
             history = None
             try:
                 history = await asyncio.wait_for(
-                    agent.run(max_steps=max_steps),
+                    agent.run(max_steps=max_steps, on_step_end=_checkpoint_cookies),
                     timeout=timeout_s,
                 )
             except asyncio.TimeoutError:
@@ -960,13 +1091,17 @@ async def sign_up(
             # Always snapshot cookies before judging — Browserbase sessions die in
             # ``finally``, so a false-negative signed-in heuristic used to throw away
             # a real account (Todoist completed signup then reported not_signed_in).
-            state: dict[str, Any] | None = None
+            state: dict[str, Any] | None = ctx.get("last_state")
             try:
                 state = await pw_ctx.storage_state()
                 SITE_STATES.mkdir(parents=True, exist_ok=True)
                 site_state_path(host).write_text(json.dumps(state, indent=2))
             except Exception as exc:
                 result["state_error"] = str(exc)[:200]
+                if state is not None:
+                    result["state_error"] = (
+                        f"{result['state_error']};recovered_checkpoint=1"
+                    )
 
             # Onboarding often ends on a "Getting ready…" splash that redirects a
             # few seconds later, so a single probe reports a fresh account as
@@ -1013,7 +1148,12 @@ async def sign_up(
                     blocker=None,
                     profile_dir=str(profile),
                 )
-                result.update({"ok": True, "reason": "signed_up"})
+                result.update(
+                    {
+                        "ok": True,
+                        "reason": "signed_in" if signin else "signed_up",
+                    }
+                )
                 return result
 
             result["reason"] = result.get("reason") or "not_signed_in"
@@ -1062,6 +1202,11 @@ def main() -> None:
     ap.add_argument("--headless", action="store_true")
     ap.add_argument("--max-steps", type=int, default=None)
     ap.add_argument("--cdp-port", type=int, default=None)
+    ap.add_argument(
+        "--signin",
+        action="store_true",
+        help="Log into an existing identity instead of creating a new account",
+    )
     args = ap.parse_args()
     headed = not args.headless
     result = asyncio.run(
@@ -1071,6 +1216,7 @@ def main() -> None:
             headed=headed,
             max_steps=args.max_steps,
             cdp_port=args.cdp_port,
+            signin=args.signin,
         )
     )
     # Never print the password.
