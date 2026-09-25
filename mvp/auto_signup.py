@@ -304,8 +304,10 @@ SIGNIN_START: dict[str, str] = {
     "typeform.com": "https://admin.typeform.com/login",
     "discord.com": "https://discord.com/login",
     "wix.com": "https://users.wix.com/signin",
+    "users.wix.com": "https://users.wix.com/signin",
     "box.com": "https://account.box.com/login",
-    "loom.com": "https://id.atlassian.com/login",
+    "loom.com": "https://www.loom.com/login",
+    "id.atlassian.com": "https://id.atlassian.com/login",
     "zapier.com": "https://zapier.com/app/login",
     "make.com": "https://www.make.com/en/login",
     "shopify.com": "https://accounts.shopify.com/store-login",
@@ -553,7 +555,9 @@ async def _looks_signed_in(page: Any) -> bool:
         return False
 
     # Still on an auth screen -> definitely not in.
-    if info.get("pwVisible") or (info.get("authUrl") and not info.get("hasAccountUi")):
+    # Make.com register (and similar) can show marketing "account"/avatar chrome
+    # while still on /register — never treat authUrl as signed-in.
+    if info.get("authUrl") or info.get("pwVisible"):
         return False
     if info.get("hasAccountUi") or info.get("hasLogoutText"):
         return True
