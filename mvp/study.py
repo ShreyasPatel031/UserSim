@@ -1125,6 +1125,23 @@ async def run_study(
 
         site_summary = users_plan.get("site_summary") or ""
         study.personas = users_plan.get("personas") or []
+        # Guarantee exact persona count — LLM under-delivery must not shrink the matrix.
+        if not study.test_mode:
+            want_p = max(1, int(os.environ.get("MVP_PERSONA_COUNT", "4") or "4"))
+            while len(study.personas) < want_p:
+                n = len(study.personas) + 1
+                study.personas.append(
+                    {
+                        "id": f"p{n}",
+                        "name": f"Simulated user {n}",
+                        "bio": f"A {study.segment or 'target customer'} evaluating the product.",
+                        "age_range": "25–40",
+                        "occupation": "Professional",
+                        "location": "Remote",
+                        "goals": ["Understand the product", "Decide whether to use it"],
+                    }
+                )
+            study.personas = study.personas[:want_p]
         if site_summary:
             log_activity(study, "plan", f"Site: {site_summary}")
 
@@ -1186,12 +1203,15 @@ async def run_study(
                     if study.tasks:
                         study.tasks[0]["persona_id"] = study.personas[0].get("id")
             else:
+                # Task overrides are templates — full matrix expands them across
+                # EVERY persona × site. Do not shrink the persona panel to the
+                # few personas that happen to own the override rows.
                 rebuilt: list[dict[str, Any]] = []
                 for i, prompt in enumerate(study.tasks_override):
                     persona = (
-                        study.personas[i]
-                        if i < len(study.personas)
-                        else (study.personas[-1] if study.personas else {"id": f"p{i+1}"})
+                        study.personas[i % len(study.personas)]
+                        if study.personas
+                        else {"id": f"p{i+1}"}
                     )
                     rebuilt.append(
                         {
@@ -1203,13 +1223,11 @@ async def run_study(
                         }
                     )
                 study.tasks = rebuilt
-                used = {t.get("persona_id") for t in study.tasks}
-                study.personas = [p for p in study.personas if p.get("id") in used] or study.personas
 
         base_cap = int(
             os.environ.get(
                 "MVP_AGENT_COUNT",
-                "1" if (QUICK_MODE or study.test_mode) else "6",
+                "1" if (QUICK_MODE or study.test_mode) else "0",
             )
         )
         if base_cap > 0 and len(study.tasks) > base_cap:
