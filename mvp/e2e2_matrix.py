@@ -84,11 +84,12 @@ def _best_shot(sess: dict) -> dict | None:
 
 
 def _png_looks_blank(raw: bytes) -> bool:
-    """Skip judging pure-black / splash frames while the agent is still painting."""
+    """Skip judging pure-black / splash frames while the agent is still painting.
+
+    Dark SaaS themes (Linear, etc.) are real pages with low mean luminance but
+    substantial PNG payloads — only treat those as blank when nearly uniform.
+    """
     if len(raw) < 2500:
-        return True
-    # Logo-on-black splashes hover ~32KB; real pages are much larger.
-    if len(raw) < 48000:
         return True
     try:
         from io import BytesIO
@@ -100,9 +101,16 @@ def _png_looks_blank(raw: bytes) -> bool:
         lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
         mean = sum(lums) / max(1, len(lums))
         var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
-        if mean < 25.0:
-            return True
-        if mean < 40.0 and var < 250.0:
+        # Small payloads: logo-on-black splash (~32KB) or empty pane.
+        if len(raw) < 48000:
+            if mean < 25.0:
+                return True
+            if mean < 40.0 and var < 250.0:
+                return True
+            return False
+        # Large payloads: only reject near-uniform near-black (empty canvas),
+        # not dark but textured product UIs.
+        if mean < 12.0 and var < 80.0:
             return True
         return False
     except Exception:
