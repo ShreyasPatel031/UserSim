@@ -104,8 +104,12 @@ def _mentions(text: str, bit: str) -> bool:
 
 _NEGATIVE_RE = re.compile(
     r"couldn'?t|could not|can'?t|cannot|hard to|confus|unclear|no clear|"
-    r"didn'?t|did not|no immediate|no path|stuck|difficult|not enough|"
-    r"haven'?t seen|too early|where to start|can(?:no|')t even",
+    r"didn'?t|did not|no immediate|no path|stuck|difficult|where to start|"
+    r"can(?:no|')t even",
+    re.I,
+)
+_HEDGE_RE = re.compile(
+    r"too early|haven'?t seen|not sure|need to find|how easy|looking for|just starting",
     re.I,
 )
 _POSITIVE_RE = re.compile(
@@ -115,7 +119,13 @@ _POSITIVE_RE = re.compile(
 
 
 def _sentiment(text: str) -> str:
-    """pos, neg, or neutral. A complaint is never a strength."""
+    """pos, neg, or neutral. A complaint is never a strength.
+
+    Hedged lines ("too early to tell", "how easy is it") are not claims.
+    """
+    complaint = bool(re.search(r"couldn'?t|could not|can'?t|cannot|no clear|no immediate", text, re.I))
+    if _HEDGE_RE.search(text) and not complaint:
+        return "neutral"
     if _NEGATIVE_RE.search(text):
         return "neg"
     if _POSITIVE_RE.search(text):
@@ -558,9 +568,17 @@ def _persona_key(run: dict[str, Any]) -> str:
     return str(run.get("persona_id") or run.get("persona_name") or "persona")
 
 
+_VS_SUFFIX = re.compile(r"\s*\(vs\s+https?://[^)]+\)\s*$", re.I)
+
+
+def _task_title(run: dict[str, Any]) -> str:
+    raw = _VS_SUFFIX.sub("", str(run.get("task_title") or "")).strip()
+    return " ".join(raw.split())
+
+
 def _task_key(run: dict[str, Any]) -> str:
     """Group the same goal across sites. Expanded task ids are unique per site."""
-    title = " ".join(str(run.get("task_title") or "").split()).lower()
+    title = _task_title(run).lower()
     if title:
         return title[:120]
     raw = str(run.get("task_id") or "task")
@@ -788,7 +806,7 @@ def _layout(
             tk,
             {
                 "task_id": tk,
-                "title": str(run.get("task_title") or tk),
+                "title": _task_title(run) or tk,
                 "prompt": str(run.get("task_prompt") or ""),
                 "sites": {},
             },
@@ -811,7 +829,7 @@ def _layout(
             tk,
             {
                 "task_id": tk,
-                "title": str(run.get("task_title") or tk),
+                "title": _task_title(run) or tk,
                 "prompt": str(run.get("task_prompt") or ""),
                 "success": {},
                 "steps": {},

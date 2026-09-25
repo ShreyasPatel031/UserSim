@@ -372,11 +372,20 @@ function goalMeta(personaId, taskId) {
   return (persona?.goals || []).find((g) => g.task_id === taskId) || null;
 }
 
+function taskKeyOf(run) {
+  const title = String(run.task_title || "")
+    .replace(/\s*\(vs\s+https?:\/\/[^)]+\)\s*$/i, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+  if (title) return title.slice(0, 120);
+  return String(run.task_id || "task").split("__")[0];
+}
+
 function runsFor(personaId, taskId) {
   return runs().filter((r) => {
     const pk = String(r.persona_id || r.persona_name || "persona");
-    const tk = String(r.task_id || r.task_title || "task");
-    return pk === personaId && tk === taskId;
+    return pk === personaId && taskKeyOf(r) === taskId;
   });
 }
 
@@ -480,7 +489,7 @@ function fillGoals(personaId, preferTask) {
   for (const goal of persona?.goals || []) map.set(goal.task_id, goal);
   for (const run of runs()) {
     if (String(run.persona_id || run.persona_name || "persona") !== personaId) continue;
-    const id = String(run.task_id || run.task_title || "task");
+    const id = taskKeyOf(run);
     if (!map.has(id)) map.set(id, { task_id: id, title: run.task_title || id });
   }
   const goals = [...map.values()];
@@ -507,7 +516,7 @@ function openTrace(agentId, step) {
   const idx = shots.findIndex((s) => Number(s.step) === Number(step));
   _activeIdx[agentId] = idx >= 0 ? idx : 0;
   const personaId = String(run.persona_id || run.persona_name || "persona");
-  const taskId = String(run.task_id || run.task_title || "task");
+  const taskId = taskKeyOf(run);
   openGoal(personaId, taskId);
   goStep(agentId, _activeIdx[agentId]);
   const card = document.querySelector(`.platform-card[data-agent="${CSS.escape(agentId)}"]`);
