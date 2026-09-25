@@ -22,6 +22,9 @@ def classify_failure(result: dict) -> str:
     
     if failure_cat == "HARNESS":
         return "HARNESS"
+
+    if status == "JUDGE_ERROR" or failure_cat == "JUDGE_ERROR":
+        return "JUDGE_ERROR"
     
     if "timeout" in stop_reason.lower() or "wall" in stop_reason.lower():
         return "HARNESS"
@@ -82,7 +85,8 @@ def transform_proven_harness_results(data: dict) -> dict:
                 "success": 0,
                 "harness_failure": 0,
                 "bot_wall": 0,
-                "product_failure": 0
+                "product_failure": 0,
+                "judge_error_excluded": 0,
             }
         
         if cls == "SUCCESS":
@@ -91,6 +95,8 @@ def transform_proven_harness_results(data: dict) -> dict:
             by_product[prod]["harness_failure"] += 1
         elif cls == "BOT_WALL":
             by_product[prod]["bot_wall"] += 1
+        elif cls == "JUDGE_ERROR":
+            by_product[prod]["judge_error_excluded"] += 1
         else:
             by_product[prod]["product_failure"] += 1
         

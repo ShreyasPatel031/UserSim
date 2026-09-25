@@ -970,6 +970,13 @@ async def get_experiment(experiment_id: str):
     
     # Special handling for "voice-bakeoff" - load latest bakeoff study
     if experiment_id == "voice-bakeoff" or experiment_id == "bakeoff":
+        committed = ROOT / "mvp" / "experiment_results" / "voice-public-d28b7070_result.synthesized.json"
+        if committed.is_file():
+            try:
+                return json.loads(committed.read_text())
+            except Exception as e:
+                print(f"Error loading committed voice bakeoff: {e}", flush=True)
+
         # First try proven harness results
         capability_results = ROOT / "results" / "capability"
         if capability_results.is_dir():
@@ -988,18 +995,6 @@ async def get_experiment(experiment_id: str):
                 except Exception as e:
                     print(f"Error loading proven harness results: {e}", flush=True)
         
-        # Fall back to old format
-        live = _load_latest_live_study("voice-bakeoff")
-        if live:
-            # Try to synthesize insights if not already done
-            if not live.get("summary", {}).get("insights_synthesized"):
-                try:
-                    from mvp.synthesize_bakeoff import add_bakeoff_insights
-                    live = add_bakeoff_insights(live)
-                except Exception as e:
-                    live.setdefault("summary", {})["synthesis_error"] = str(e)
-            return live
-    
     # Special handling for "voice-dashboard" - logged-in dashboard traces
     if experiment_id == "voice-dashboard" or experiment_id == "dashboard":
         dashboard_path = ROOT / "mvp" / "bakeoff_data" / "voice_dashboard_browser_use_all_v1.json"

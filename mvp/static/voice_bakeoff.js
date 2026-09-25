@@ -162,8 +162,24 @@ function renderAnalytics(study) {
     </tr>`;
   }).join("");
 
-  const retellStrengths = (summary.retell_strengths || []).map(s => `<li>${escapeHtml(s)}</li>`).join("");
-  const retellWeaknesses = (summary.retell_weaknesses || []).map(s => `<li>${escapeHtml(s)}</li>`).join("");
+  function insightLi(item) {
+    if (!item) return "";
+    const text = typeof item === "string" ? item : item.text;
+    const runId = item.run_id || "";
+    const shot = item.screenshot_url || "";
+    const ev = runId
+      ? ` <a href="${escapeHtml(shot)}" target="_blank" rel="noopener" style="font-size:0.75rem">evidence: ${escapeHtml(runId)}</a>`
+      : "";
+    return `<li>${escapeHtml(text || "")}${ev}</li>`;
+  }
+  const strengthsRaw = summary.retell_strengths?.length
+    ? summary.retell_strengths
+    : (summary.retell_strengths_text || []).map((t) => ({ text: t }));
+  const weaknessesRaw = summary.retell_weaknesses?.length
+    ? summary.retell_weaknesses
+    : (summary.retell_weaknesses_text || []).map((t) => ({ text: t }));
+  const retellStrengths = strengthsRaw.map(insightLi).join("");
+  const retellWeaknesses = weaknessesRaw.map(insightLi).join("");
   const blandStrengths = (summary.bland_strengths || []).map(s => `<li>${escapeHtml(s)}</li>`).join("");
   const blandWeaknesses = (summary.bland_weaknesses || []).map(s => `<li>${escapeHtml(s)}</li>`).join("");
   const vapiStrengths = (summary.vapi_strengths || []).map(s => `<li>${escapeHtml(s)}</li>`).join("");
@@ -175,9 +191,9 @@ function renderAnalytics(study) {
       <span><strong>3</strong> platforms compared</span>
       <span><strong>3</strong> personas × <strong>5</strong> tasks</span>
     </div>
+    ${summary.headline ? `<p class="metric-note"><strong>${escapeHtml(summary.headline)}</strong></p>` : ""}
     <p class="metric-note">
-      Harness timeouts (8 min wall clock) are counted separately from product failures. 
-      A timeout means the test harness hit its limit, not necessarily a product issue.
+      ${escapeHtml(summary.metric_note || "Harness failures and judge errors are not counted as product failures.")}
     </p>
 
     <div class="analytics-grid">
@@ -195,7 +211,8 @@ function renderAnalytics(study) {
           return `<div style="margin-bottom:0.75rem">
             <strong>${escapeHtml(PLAT_LABEL[p])}</strong>
             <div style="font-size:0.85rem;color:var(--text-muted)">
-              ✓ ${prod.success || 0} success · ⏱ ${prod.harness_timeout || 0} timeout · ✗ ${prod.failure || 0} fail
+              ✓ ${prod.success || 0} success · ⏱ ${prod.harness_failure || prod.harness_timeout || 0} harness · 
+              ⚖ ${prod.judge_error_excluded || 0} judge err · ✗ ${prod.product_failure || prod.failure || 0} product fail
             </div>
           </div>`;
         }).join("")}

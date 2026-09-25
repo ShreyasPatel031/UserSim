@@ -1,0 +1,1300 @@
+{
+  "id": "voice-public-d28b7070",
+  "product_name": "Voice AI Bakeoff",
+  "url": "",
+  "personas": [
+    {
+      "id": "p3_founder",
+      "name": "Startup Founder"
+    },
+    {
+      "id": "p1_engineer",
+      "name": "Platform Engineer"
+    },
+    {
+      "id": "p2_pm",
+      "name": "Product Manager"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t4_integrations",
+      "title": "Find integration and webhook info"
+    },
+    {
+      "id": "t2_docs",
+      "title": "Find and evaluate API documentation"
+    },
+    {
+      "id": "t3_features",
+      "title": "Explore voice agent capabilities"
+    },
+    {
+      "id": "t1_pricing",
+      "title": "Find and evaluate pricing"
+    },
+    {
+      "id": "t5_getting_started",
+      "title": "Evaluate getting started experience"
+    }
+  ],
+  "agent_results": [
+    {
+      "agent_id": "bu_362_4f83c9c1",
+      "product": "bland",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t4_integrations",
+      "task_title": "Find integration and webhook info",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find information about integrations, webhooks, or connecting to other systems.\n\nSUCCESS CRITERIA: Found integrations page, webhook docs, or third-party connection information.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 8,
+      "elapsed_s": 0,
+      "final_url": "https://docs.bland.ai/tutorials/webhooks",
+      "judge_reason": "The agent successfully navigated to the Bland AI website and found the detailed documentation for webhooks, which is a key aspect of integrations and connecting to other systems. The final URL and screenshot confirm that the agent reached the correct page and extracted relevant information.",
+      "judge_evidence": "The final URL is 'https://docs.bland.ai/tutorials/webhooks' and the final page title is 'Webhooks - Bland'. The screenshot clearly shows the 'Webhooks' documentation page with details about configuring outbound API requests, which directly addresses the user's goal of finding information about integrations, webhooks, or connecting to other systems.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_362_4f83c9c1/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_906_77e522e4",
+      "product": "vapi",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t2_docs",
+      "task_title": "Find and evaluate API documentation",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find the API documentation or developer docs to understand how to integrate.\n\nSUCCESS CRITERIA: Reached API docs, developer documentation, or integration guides page.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 15,
+      "elapsed_s": 0,
+      "final_url": "https://docs.vapi.ai/quickstart/introduction",
+      "judge_reason": "The user's goal was to find the API documentation or developer docs on the Vapi website. The agent successfully navigated to the Vapi website and, after some exploration, located and clicked on the 'Docs' link under the 'Platform' menu. This led to the official documentation portal at `https://docs.vapi.ai/quickstart/introduction`, which satisfies the success criteria. The agent then provided a comprehensive summary and analysis of the experience, as requested in the instructions.",
+      "judge_evidence": "The final URL `https://docs.vapi.ai/quickstart/introduction` and the page title 'Introduction | Vapi' clearly indicate that the agent reached the API documentation. The screenshot also shows the 'Documentation' section highlighted, confirming the success.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_906_77e522e4/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_8294_e471488a",
+      "product": "bland",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t3_features",
+      "task_title": "Explore voice agent capabilities",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find information about what voice agents can do - features, capabilities, use cases.\n\nSUCCESS CRITERIA: Found a features page, capabilities overview, or use cases section with details.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 25,
+      "elapsed_s": 0,
+      "final_url": "https://www.bland.ai/solutions",
+      "judge_reason": "The agent successfully navigated to the Bland AI website and explored various sections to find information about voice agent features, capabilities, and use cases. It correctly identified and clicked on 'Product' and 'Solutions' sections, which are relevant to the task. The agent also explored specific use cases ('Refi qualifier', 'Roadside dispatcher') and delved into the 'Frequently asked questions' section under 'Solutions', where it found direct answers regarding voice agent capabilities. Th",
+      "judge_evidence": "The agent's final action summary and 'Done' action text clearly indicate that it found information about voice agent capabilities and use cases on the 'Solutions' page, specifically within the 'Frequently asked questions' section. The agent also explored the 'Product' page and specific use cases, demonstrating a thorough search for the requested information. The final URL 'https://www.bland.ai/solutions' confirms the agent reached a relevant page.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_8294_e471488a/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_12391_1efe3405",
+      "product": "retell",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t4_integrations",
+      "task_title": "Find integration and webhook info",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find information about integrations, webhooks, or connecting to other systems.\n\nSUCCESS CRITERIA: Found integrations page, webhook docs, or third-party connection information.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 26,
+      "elapsed_s": 0,
+      "final_url": "https://docs.retellai.com/api-references/overview",
+      "judge_reason": "The agent successfully navigated to the 'API Reference' documentation, which provides information about connecting to other systems programmatically. This fulfills the user's goal of finding information about integrations, webhooks, or connecting to other systems.",
+      "judge_evidence": "The final URL is 'https://docs.retellai.com/api-references/overview' and the page title is 'Retell AI API Reference - Retell AI'. The content of the page clearly states 'Reference for the Retell AI API: authentication, base URL, SDKs, and endpoints for building and managing voice and chat agents programmatically.' and lists 'Integrate custom telephony and custom LLM workflows' under 'What you can do'. This directly addresses the user's goal of finding information about connecting to other system",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_12391_1efe3405/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_13188_b7eae5ef",
+      "product": "bland",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t3_features",
+      "task_title": "Explore voice agent capabilities",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find information about what voice agents can do - features, capabilities, use cases.\n\nSUCCESS CRITERIA: Found a features page, capabilities overview, or use cases section with details.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": false,
+      "harness_timeout": false,
+      "failure_category": "PRODUCT_FAILURE",
+      "num_steps": 26,
+      "elapsed_s": 0,
+      "final_url": "https://www.bland.ai/pricing",
+      "judge_reason": "The agent's final URL is the pricing page, which does not fully satisfy the user's goal of finding a features page, capabilities overview, or use cases section with details. While the agent's summary mentions finding some use cases and general capabilities, the final page itself is not a dedicated features or capabilities page. The task explicitly states 'SUCCESS only if all stated constraints appear satisfied on the final page.'",
+      "judge_evidence": "The final URL is 'https://www.bland.ai/pricing' and the final page title is 'Pricing | Bland AI'. The task's success criteria was to find a 'features page, capabilities overview, or use cases section with details'. While the agent's summary indicates it found some of this information on other pages, the final page does not meet this criteria.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_13188_b7eae5ef/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_17968_acc6039a",
+      "product": "vapi",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t4_integrations",
+      "task_title": "Find integration and webhook info",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find information about integrations, webhooks, or connecting to other systems.\n\nSUCCESS CRITERIA: Found integrations page, webhook docs, or third-party connection information.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 12,
+      "elapsed_s": 0,
+      "final_url": "https://docs.vapi.ai/server-url",
+      "judge_reason": "The agent successfully navigated to the Vapi website and then to its documentation. It correctly identified 'Webhooks' as a relevant section for finding information about integrations and connecting to other systems. The agent then clicked on 'Webhooks' and extracted detailed information about 'Server URLs', which directly addresses the user's goal. The final output is well-structured, providing the requested details about what was found, likes, dislikes, and overall difficulty.",
+      "judge_evidence": "The final URL is https://docs.vapi.ai/server-url, and the page title is 'Server URLs | Vapi'. The content of the page clearly describes how applications can receive and communicate data with Vapi, which directly relates to integrations and connecting to other systems. The agent's summary accurately reflects the content found on this page, including details about conversation events and the distinction between Server URLs and webhooks.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_17968_acc6039a/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_21906_56bde7f1",
+      "product": "bland",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t1_pricing",
+      "task_title": "Find and evaluate pricing",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find the pricing page and understand the cost structure for voice AI calls.\n\nSUCCESS CRITERIA: Reached a pricing page with visible pricing tiers, per-minute costs, or plan comparison.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 4,
+      "elapsed_s": 0,
+      "final_url": "https://www.bland.ai/pricing",
+      "judge_reason": "The agent successfully navigated to the Bland AI pricing page and found the cost structure for voice AI calls. It correctly identified the pricing tiers and extracted relevant cost information, including per-minute costs, platform fees, and plan features. The agent also provided a comprehensive final answer, detailing what was found, what it liked and disliked about the experience, and the overall difficulty, fulfilling all user instructions.",
+      "judge_evidence": "The final URL is 'https://www.bland.ai/pricing', and the screenshot clearly shows pricing tiers ('Start', 'Build', 'Enterprise') with visible per-minute costs and platform fees for the 'Start' and 'Build' plans. The 'Enterprise' plan is marked as 'Custom', which is a valid cost structure for such a tier.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_21906_56bde7f1/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_25518_a774ff4d",
+      "product": "vapi",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t4_integrations",
+      "task_title": "Find integration and webhook info",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find information about integrations, webhooks, or connecting to other systems.\n\nSUCCESS CRITERIA: Found integrations page, webhook docs, or third-party connection information.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 22,
+      "elapsed_s": 0,
+      "final_url": "https://docs.vapi.ai/api-reference/assistants/list",
+      "judge_reason": "The agent successfully navigated to the API Reference documentation and found information related to 'Hooks' and 'Webhooks', which are key aspects of integrations. It also identified other integration-related details within the documentation, fulfilling the user's goal.",
+      "judge_evidence": "The final URL is https://docs.vapi.ai/api-reference/assistants/list, which is within the documentation. The agent's summary explicitly states it found 'Hooks' and 'Webhooks' information, and other integration-related details like 'Observability Plan' (Langfuse), 'Transport Configurations' (Twilio), 'Tools' (API requests), 'Knowledge Bases' (custom providers), and 'Credentials'. The search for 'Webhooks|Integrations' on the page yielded 88 matches, indicating relevant content was present.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_25518_a774ff4d/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_26441_ddfb10d7",
+      "product": "retell",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t2_docs",
+      "task_title": "Find and evaluate API documentation",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find the API documentation or developer docs to understand how to integrate.\n\nSUCCESS CRITERIA: Reached API docs, developer documentation, or integration guides page.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 5,
+      "elapsed_s": 0,
+      "final_url": "https://docs.retellai.com/api-references/overview",
+      "judge_reason": "The agent successfully navigated to the Retell AI website and then proceeded to find the API documentation. It correctly identified the 'Developers' dropdown, then the 'Documentation' link, and finally the 'API Reference' section, which directly fulfills the user's goal. The agent's final output is comprehensive, detailing what was found, what was liked and disliked about the experience, and the overall difficulty.",
+      "judge_evidence": "The final URL is 'https://docs.retellai.com/api-references/overview' and the page title is 'Retell AI API Reference - Retell AI', which clearly indicates that the agent reached the API documentation page. The screenshot also confirms this.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_26441_ddfb10d7/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_26476_e396b55a",
+      "product": "vapi",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t3_features",
+      "task_title": "Explore voice agent capabilities",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find information about what voice agents can do - features, capabilities, use cases.\n\nSUCCESS CRITERIA: Found a features page, capabilities overview, or use cases section with details.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 26,
+      "elapsed_s": 0,
+      "final_url": "https://vapi.ai/#",
+      "judge_reason": "The agent successfully identified and reported on sections of the Vapi website that describe voice agent capabilities and features, such as 'Enterprise-ready capabilities' and 'Integrations'. The agent also provided a detailed report as requested in the instructions, including likes, dislikes, and overall difficulty.",
+      "judge_evidence": "The agent's final action summary and the 'Done' action text clearly indicate that it found relevant information on the main page under 'Enterprise-ready capabilities' and 'Integrations'. The agent also provided a comprehensive report as requested by the task.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_26476_e396b55a/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_31966_26853013",
+      "product": "vapi",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t5_getting_started",
+      "task_title": "Evaluate getting started experience",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find the getting started guide or quick start to understand onboarding.\n\nSUCCESS CRITERIA: Found getting started guide, quickstart, or clear path to begin using the platform.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 15,
+      "elapsed_s": 0,
+      "final_url": "https://docs.vapi.ai/assistants/quickstart",
+      "judge_reason": "The agent successfully completed the task by finding the 'Assistants quickstart' guide on the Vapi.ai website. It navigated through various sections of the website, including 'Resources', 'Solutions', and 'Platform', before locating the documentation. Although the initial attempt to click 'Get started' led to a registration page (which the agent correctly identified as a 'dislike'), it persevered and found the correct 'Quickstart' guide under the 'Assistants' section of the documentation. The fi",
+      "judge_evidence": "The final URL is 'https://docs.vapi.ai/assistants/quickstart' and the final page title is 'Assistants quickstart | Vapi'. The screenshot clearly shows the 'Assistants quickstart' page with an overview and prerequisites for building a voice assistant, which directly addresses the user's goal of finding a guide to understand onboarding.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_31966_26853013/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_34211_3a337d3c",
+      "product": "retell",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t1_pricing",
+      "task_title": "Find and evaluate pricing",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find the pricing page and understand the cost structure for voice AI calls.\n\nSUCCESS CRITERIA: Reached a pricing page with visible pricing tiers, per-minute costs, or plan comparison.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 5,
+      "elapsed_s": 0,
+      "final_url": "https://www.retellai.com/pricing#pricing_breakdown",
+      "judge_reason": "The agent successfully navigated to the Retell AI website and located the pricing page. It accurately identified the cost structure for voice AI calls, including the 'Pay-as-you-go' and 'Enterprise' plans, and noted the per-minute costs and plan comparison. The agent then provided a detailed report as requested, outlining what was found, 3 things liked, 3 things disliked/confusing, and the overall difficulty. The agent's final URL and screenshot confirm that it reached a pricing page with visibl",
+      "judge_evidence": "The final URL is 'https://www.retellai.com/pricing#pricing_breakdown' and the screenshot shows 'Detailed Component Pricing' with per-minute costs for 'Retell Voice Infra' and 'Text-to-speech'. The agent's summary also explicitly mentions finding 'Pay-as-you-go' pricing at '$0.07-$0.31/minute' and 'Enterprise' with 'Custom Pricing', along with a comparison table.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_34211_3a337d3c/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_45796_33f1c470",
+      "product": "retell",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t1_pricing",
+      "task_title": "Find and evaluate pricing",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find the pricing page and understand the cost structure for voice AI calls.\n\nSUCCESS CRITERIA: Reached a pricing page with visible pricing tiers, per-minute costs, or plan comparison.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 7,
+      "elapsed_s": 0,
+      "final_url": "https://www.retellai.com/pricing",
+      "judge_reason": "The agent successfully navigated to the Retell AI website and then to the pricing page. It then scrolled down to gather all the necessary information regarding pricing tiers, per-minute costs, and plan comparisons. The agent accurately extracted the requested information and provided a comprehensive report, including what was found, liked aspects, disliked/confusing aspects, and overall difficulty, fulfilling all the task requirements.",
+      "judge_evidence": "The final URL is 'https://www.retellai.com/pricing' and the final page title is 'AI Phone Agent Pricing | Retell AI', which confirms the agent reached the correct pricing page. The action summary shows the agent clicked on 'Pricing' and then scrolled multiple times, indicating an effort to gather all pricing details. The agent's final 'Done' action provides a detailed breakdown of pricing tiers, per-minute costs, and plan comparisons, directly addressing the success criteria.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_45796_33f1c470/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_48605_4ee1d452",
+      "product": "retell",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t4_integrations",
+      "task_title": "Find integration and webhook info",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find information about integrations, webhooks, or connecting to other systems.\n\nSUCCESS CRITERIA: Found integrations page, webhook docs, or third-party connection information.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 9,
+      "elapsed_s": 0,
+      "final_url": "https://docs.retellai.com/integrations/overview",
+      "judge_reason": "The agent successfully navigated to the Integrations overview page, which provides information about integrations and mentions webhooks. This fulfills the success criteria of finding information about integrations, webhooks, or connecting to other systems.",
+      "judge_evidence": "The final URL is https://docs.retellai.com/integrations/overview, and the page title is \"Connect your CRM, calendar, helpdesk, and knowledge sources to Retell AI\". The screenshot shows the \"Integrations overview\" page with details about connecting various systems and a table of current integrations. The agent's summary also confirms finding information about supported providers, how to connect a provider, and a mention of webhooks.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_48605_4ee1d452/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_48933_9b431a6e",
+      "product": "retell",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t1_pricing",
+      "task_title": "Find and evaluate pricing",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find the pricing page and understand the cost structure for voice AI calls.\n\nSUCCESS CRITERIA: Reached a pricing page with visible pricing tiers, per-minute costs, or plan comparison.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 6,
+      "elapsed_s": 0,
+      "final_url": "https://www.retellai.com/pricing#pricing_breakdown",
+      "judge_reason": "The agent successfully navigated to the pricing page and identified the cost structure for voice AI calls, including per-minute costs and plan comparisons, as required by the success criteria.",
+      "judge_evidence": "The final URL is https://www.retellai.com/pricing#pricing_breakdown, which is a pricing page. The agent's summary explicitly mentions finding 'pricing tiers, per-minute costs, or plan comparison' with details like '$0.07-$0.31/minute' and an 'interactive 'Pay as you go estimate' tool', fulfilling the success criteria.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_48933_9b431a6e/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_49187_33afe017",
+      "product": "vapi",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t2_docs",
+      "task_title": "Find and evaluate API documentation",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find the API documentation or developer docs to understand how to integrate.\n\nSUCCESS CRITERIA: Reached API docs, developer documentation, or integration guides page.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 16,
+      "elapsed_s": 0,
+      "final_url": "https://docs.vapi.ai/quickstart/introduction",
+      "judge_reason": "The agent successfully navigated to the Vapi.ai documentation page and specifically clicked on the 'API Reference' section, which directly fulfills the user's goal of finding API documentation or developer docs to understand integration.",
+      "judge_evidence": "The final URL is 'https://docs.vapi.ai/quickstart/introduction' and the final page title is 'Introduction | Vapi'. The action summary shows that the agent clicked on 'Docs' and then clicked on 'API Reference'. The screenshot also shows 'API Reference' as a selected tab.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_49187_33afe017/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_50648_0a116f81",
+      "product": "vapi",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t5_getting_started",
+      "task_title": "Evaluate getting started experience",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find the getting started guide or quick start to understand onboarding.\n\nSUCCESS CRITERIA: Found getting started guide, quickstart, or clear path to begin using the platform.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 26,
+      "elapsed_s": 0,
+      "final_url": "https://docs.vapi.ai/assistants/quickstart",
+      "judge_reason": "The agent successfully navigated to the Vapi.ai website and, after some detours, located the 'Assistants quickstart' guide within the documentation. The final URL and screenshot confirm the agent is on a quickstart guide page, which satisfies the task's success criteria.",
+      "judge_evidence": "The final URL is 'https://docs.vapi.ai/assistants/quickstart' and the page title is 'Assistants quickstart | Vapi'. The screenshot clearly shows a 'Quickstart' guide under 'Assistants' in the left navigation, with an 'Overview' and 'Prerequisites' section, indicating a clear path to begin using the platform.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_50648_0a116f81/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_50990_041f8b80",
+      "product": "bland",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t5_getting_started",
+      "task_title": "Evaluate getting started experience",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find the getting started guide or quick start to understand onboarding.\n\nSUCCESS CRITERIA: Found getting started guide, quickstart, or clear path to begin using the platform.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 16,
+      "elapsed_s": 0,
+      "final_url": "https://docs.bland.ai/build-your-first-agent",
+      "judge_reason": "The agent successfully navigated to the 'Build your first agent' guide, which serves as a clear 'getting started' resource. The final URL and page title confirm this.",
+      "judge_evidence": "The final URL is 'https://docs.bland.ai/build-your-first-agent' and the page title is 'Build your first agent - Bland'. The action summary shows the agent clicked on a 'Get started' link which led to this page. This directly fulfills the success criteria of finding a getting started guide or quickstart.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_50990_041f8b80/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_51920_e2065b9a",
+      "product": "bland",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t1_pricing",
+      "task_title": "Find and evaluate pricing",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find the pricing page and understand the cost structure for voice AI calls.\n\nSUCCESS CRITERIA: Reached a pricing page with visible pricing tiers, per-minute costs, or plan comparison.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 9,
+      "elapsed_s": 0,
+      "final_url": "https://www.bland.ai/pricing",
+      "judge_reason": "The agent successfully navigated to the pricing page, which clearly displays pricing tiers and per-minute costs for different plans. The page also includes a comparison of features and an FAQ section that further clarifies the cost structure, fulfilling all success criteria.",
+      "judge_evidence": "The final URL is 'https://www.bland.ai/pricing' and the screenshot shows a pricing page with 'Start' and 'Build' plans displaying '$0.14/min' and '$0.12/min' respectively, along with an 'Enterprise' plan. This directly addresses the requirement for visible pricing tiers and per-minute costs.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_51920_e2065b9a/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_53776_40452122",
+      "product": "vapi",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t1_pricing",
+      "task_title": "Find and evaluate pricing",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find the pricing page and understand the cost structure for voice AI calls.\n\nSUCCESS CRITERIA: Reached a pricing page with visible pricing tiers, per-minute costs, or plan comparison.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 5,
+      "elapsed_s": 0,
+      "final_url": "https://vapi.ai/pricing",
+      "judge_reason": "The agent successfully navigated to the Vapi website and then to the pricing page. It accurately extracted all the requested information regarding pricing tiers, per-minute costs for various components (Transcriber, Intelligence Model, Voice, Transport Fee), and add-ons. The final output meticulously followed the instructions, detailing what was found, where it was found, 2-3 liked aspects, 2-3 disliked/confusing aspects, and the overall difficulty.",
+      "judge_evidence": "The final URL is https://vapi.ai/pricing, which is the pricing page. The agent's detailed summary of pricing tiers, per-minute costs, and add-ons, along with its analysis of liked/disliked aspects, confirms it successfully gathered the required information.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_53776_40452122/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_57149_9e84fcb8",
+      "product": "retell",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t2_docs",
+      "task_title": "Find and evaluate API documentation",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find the API documentation or developer docs to understand how to integrate.\n\nSUCCESS CRITERIA: Reached API docs, developer documentation, or integration guides page.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 5,
+      "elapsed_s": 0,
+      "final_url": "https://docs.retellai.com/api-references/overview",
+      "judge_reason": "The agent successfully navigated to the Retell AI API Reference page, which fulfills the success criteria of reaching API documentation or integration guides. The final URL and page title confirm this.",
+      "judge_evidence": "The final URL is 'https://docs.retellai.com/api-references/overview' and the page title is 'Retell AI API Reference - Retell AI'. The screenshot clearly shows a page titled 'Retell AI API Reference' with sections like 'What you can do', 'Base URL', 'Authentication', 'SDKs', and 'Getting started', all indicative of API documentation.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_57149_9e84fcb8/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_58491_64cb4e18",
+      "product": "bland",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t1_pricing",
+      "task_title": "Find and evaluate pricing",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find the pricing page and understand the cost structure for voice AI calls.\n\nSUCCESS CRITERIA: Reached a pricing page with visible pricing tiers, per-minute costs, or plan comparison.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 6,
+      "elapsed_s": 0,
+      "final_url": "https://www.bland.ai/pricing",
+      "judge_reason": "The agent successfully navigated to the Bland AI pricing page, which clearly displays pricing tiers and per-minute costs for voice AI calls, fulfilling all success criteria.",
+      "judge_evidence": "The final URL is 'https://www.bland.ai/pricing' and the screenshot shows a page titled 'Clear pricing across every call' with visible pricing for 'Start' ($0.14/min) and 'Build' ($0.12/min + $299/month platform fee) plans, as well as an 'Enterprise' plan with custom pricing. This directly addresses the success criteria of reaching a pricing page with visible pricing tiers and per-minute costs.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_58491_64cb4e18/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_59859_5d457932",
+      "product": "vapi",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t1_pricing",
+      "task_title": "Find and evaluate pricing",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find the pricing page and understand the cost structure for voice AI calls.\n\nSUCCESS CRITERIA: Reached a pricing page with visible pricing tiers, per-minute costs, or plan comparison.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 5,
+      "elapsed_s": 0,
+      "final_url": "https://vapi.ai/pricing",
+      "judge_reason": "The agent successfully navigated to the Vapi pricing page, which clearly displays pricing tiers, per-minute costs for various components (Transcriber, Intelligence Model, Voice), and information about transport fees and add-ons. This fully satisfies the success criteria.",
+      "judge_evidence": "The final URL is 'https://vapi.ai/pricing' and the screenshot shows a 'Pricing aligned to your needs' header, a calculator, and an 'YOUR ESTIMATE' section with detailed cost breakdowns for different services. The agent's summary also confirms the presence of pricing tiers ('No Success Package', 'Core', 'Pro', 'Premier'), per-minute costs, transport fees, and add-ons.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_59859_5d457932/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_61892_ce767a03",
+      "product": "bland",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t4_integrations",
+      "task_title": "Find integration and webhook info",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find information about integrations, webhooks, or connecting to other systems.\n\nSUCCESS CRITERIA: Found integrations page, webhook docs, or third-party connection information.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 13,
+      "elapsed_s": 0,
+      "final_url": "https://docs.bland.ai/api-v1/post/calls-simple-pathway",
+      "judge_reason": "The agent successfully navigated to the Bland AI website and systematically explored relevant sections to find information about integrations, webhooks, and connecting to other systems. It correctly identified and clicked on the 'Browse all integrations' link, then proceeded to the 'Documentation' section. Within the documentation, the agent thoroughly investigated 'Webhooks', 'Custom Twilio Integration', 'Post Call Webhooks', and 'Webhook Signing', which directly addresses the user's goal of fi",
+      "judge_evidence": "The agent's actions clearly show a path from the homepage to the integrations page, then into the documentation, and finally to specific pages detailing webhooks and API references. The final URL 'https://docs.bland.ai/api-v1/post/calls-simple-pathway' is an API reference page, which is a form of connecting to other systems. The agent's summary also confirms finding the requested information.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_61892_ce767a03/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_63182_e876fceb",
+      "product": "vapi",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t3_features",
+      "task_title": "Explore voice agent capabilities",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find information about what voice agents can do - features, capabilities, use cases.\n\nSUCCESS CRITERIA: Found a features page, capabilities overview, or use cases section with details.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 15,
+      "elapsed_s": 0,
+      "final_url": "https://docs.vapi.ai/quickstart/introduction",
+      "judge_reason": "The agent successfully navigated to the documentation page which contains detailed information about what Vapi voice agents can do, including features, capabilities, and use cases. The final URL and the content on the page directly address the user's goal and the success criteria.",
+      "judge_evidence": "The final URL is 'https://docs.vapi.ai/quickstart/introduction' and the page title is 'Introduction | Vapi'. The screenshot and OCR confirm that this page contains sections like 'What is Vapi?', 'How voice agents work', 'Key capabilities', and 'Popular use cases', which directly provide the requested information about features, capabilities, and use cases of voice agents.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_63182_e876fceb/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_63828_eed32994",
+      "product": "vapi",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t4_integrations",
+      "task_title": "Find integration and webhook info",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find information about integrations, webhooks, or connecting to other systems.\n\nSUCCESS CRITERIA: Found integrations page, webhook docs, or third-party connection information.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 8,
+      "elapsed_s": 0,
+      "final_url": "https://docs.vapi.ai/server-url",
+      "judge_reason": "The agent successfully navigated to the Vapi.ai website and then proceeded to find information about webhooks, which was a key part of the user's goal. It correctly identified that 'Server URLs' documentation was the relevant section for webhooks. The agent then extracted the necessary information and provided a comprehensive report as requested, including what was found, where, likes, dislikes, and overall difficulty.",
+      "judge_evidence": "The final URL is https://docs.vapi.ai/server-url, which is a documentation page detailing 'Server URLs' that function as webhooks. The page content clearly explains how Vapi uses these URLs to send real-time conversation data and query for data, covering the core aspects of webhooks and integrations. The agent's summary also confirms that it found the relevant information.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_63828_eed32994/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_64422_a0a5804a",
+      "product": "retell",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t3_features",
+      "task_title": "Explore voice agent capabilities",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find information about what voice agents can do - features, capabilities, use cases.\n\nSUCCESS CRITERIA: Found a features page, capabilities overview, or use cases section with details.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 20,
+      "elapsed_s": 0,
+      "final_url": "https://www.retellai.com/use-cases",
+      "judge_reason": "The agent successfully navigated to the 'Use Cases' page, which directly addresses the user's goal of finding information about what voice agents can do, including features, capabilities, and use cases. The agent then extracted the relevant information and provided a detailed summary as requested in the instructions.",
+      "judge_evidence": "The final URL is 'https://www.retellai.com/use-cases' and the final page title is 'Use Cases'. The action summary shows that the agent clicked on 'Overview' which led to this page. The agent then scrolled down and extracted information about 'Use Cases' and 'Features/Capabilities' from this page, which directly fulfills the success criteria.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_64422_a0a5804a/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_65818_02ce6196",
+      "product": "vapi",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t3_features",
+      "task_title": "Explore voice agent capabilities",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find information about what voice agents can do - features, capabilities, use cases.\n\nSUCCESS CRITERIA: Found a features page, capabilities overview, or use cases section with details.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 25,
+      "elapsed_s": 0,
+      "final_url": "https://vapi.ai/playbook",
+      "judge_reason": "The agent successfully navigated to the 'Playbook' page, which provides comprehensive information about voice agent features, capabilities, and use cases, directly addressing the user's goal. The agent's final extraction confirms that the page contains the requested details.",
+      "judge_evidence": "The final URL is https://vapi.ai/playbook, and the agent's extraction from this page includes details on 'Features & Capabilities of Voice Agents' and 'Core Functionality', which aligns with the success criteria of finding information about what voice agents can do - features, capabilities, and use cases.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_65818_02ce6196/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_67132_48611811",
+      "product": "bland",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t5_getting_started",
+      "task_title": "Evaluate getting started experience",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find the getting started guide or quick start to understand onboarding.\n\nSUCCESS CRITERIA: Found getting started guide, quickstart, or clear path to begin using the platform.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 8,
+      "elapsed_s": 0,
+      "final_url": "https://docs.bland.ai/build-your-first-agent",
+      "judge_reason": "The agent successfully navigated to the Bland AI website and located the 'Build your first agent' guide, which serves as the getting started guide. It correctly identified the path to this guide through the 'Resources' and 'Documentation' menus. The agent then provided a comprehensive summary as requested, including the location of the guide, aspects it liked and disliked about the experience, and an overall difficulty.",
+      "judge_evidence": "The final URL is 'https://docs.bland.ai/build-your-first-agent' and the page title is 'Build your first agent - Bland'. The screenshot clearly shows a 'Getting Started' section with 'Build your first agent' highlighted, indicating that the agent found the requested information.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_67132_48611811/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_67366_b1b75fb6",
+      "product": "bland",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t4_integrations",
+      "task_title": "Find integration and webhook info",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find information about integrations, webhooks, or connecting to other systems.\n\nSUCCESS CRITERIA: Found integrations page, webhook docs, or third-party connection information.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 8,
+      "elapsed_s": 0,
+      "final_url": "https://docs.bland.ai/tutorials/webhooks",
+      "judge_reason": "The agent successfully navigated to the Bland AI website and found detailed information about webhooks, which directly addresses the user's goal of understanding integrations and connecting to other systems. The final URL is a webhook documentation page, which satisfies the success criteria.",
+      "judge_evidence": "The final URL is 'https://docs.bland.ai/tutorials/webhooks' and the page title is 'Webhooks - Bland'. The screenshot clearly shows the 'Webhooks' documentation page with sections like 'Introduction', 'Node Configuration', 'Webhook Configuration', 'Advanced Settings', 'Response Data Mapping', 'Pathway Routing After Response', and 'Speech During Webhook'. This content directly provides information about integrations and connecting to other systems via webhooks.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_67366_b1b75fb6/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_74519_79f68a4e",
+      "product": "retell",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t5_getting_started",
+      "task_title": "Evaluate getting started experience",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find the getting started guide or quick start to understand onboarding.\n\nSUCCESS CRITERIA: Found getting started guide, quickstart, or clear path to begin using the platform.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 7,
+      "elapsed_s": 0,
+      "final_url": "https://docs.retellai.com/get-started/quick-start",
+      "judge_reason": "The agent successfully navigated to the Retell AI website and then proceeded to find the documentation. It correctly identified the 'Build your first phone agent in 15 minutes' guide as the 'getting started' or 'quick start' information the user was looking for. The agent then provided a detailed report, including what was found, where it was found, likes, dislikes, and overall difficulty, fulfilling all aspects of the task.",
+      "judge_evidence": "The final URL is https://docs.retellai.com/get-started/quick-start, and the page title is 'Build your first Retell AI phone agent in 15 minutes', which clearly indicates a getting started guide or quick start. The agent's summary also confirms this.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_74519_79f68a4e/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_75347_c47e8452",
+      "product": "retell",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t4_integrations",
+      "task_title": "Find integration and webhook info",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find information about integrations, webhooks, or connecting to other systems.\n\nSUCCESS CRITERIA: Found integrations page, webhook docs, or third-party connection information.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 24,
+      "elapsed_s": 0,
+      "final_url": "https://docs.retellai.com/features/register-webhook",
+      "judge_reason": "Manual re-score after judge JSON parse error: agent reached webhook registration docs with detailed integration content.",
+      "judge_evidence": "https://docs.retellai.com/features/register-webhook",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_75347_c47e8452/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_77317_5b56085a",
+      "product": "bland",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t2_docs",
+      "task_title": "Find and evaluate API documentation",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find the API documentation or developer docs to understand how to integrate.\n\nSUCCESS CRITERIA: Reached API docs, developer documentation, or integration guides page.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 10,
+      "elapsed_s": 0,
+      "final_url": "https://docs.bland.ai/api-v1/post/calls-simple-pathway",
+      "judge_reason": "The agent successfully navigated to the Bland AI website, accepted the cookie policy, and then located the API documentation. It correctly identified the 'Resources' menu, then 'Documentation', and finally 'API Reference' to reach the target page. The final report accurately describes what was found, where it was found, and provides insightful observations regarding the user experience, including both positive aspects and areas for improvement. The final URL and page title confirm that the agent",
+      "judge_evidence": "The final URL is https://docs.bland.ai/api-v1/post/calls-simple-pathway and the page title is 'Send Call using Pathways (Simple) - Bland', which is clearly API documentation. The screenshot shows detailed API request and response examples.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_77317_5b56085a/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_79679_e4cb6c0b",
+      "product": "retell",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t3_features",
+      "task_title": "Explore voice agent capabilities",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find information about what voice agents can do - features, capabilities, use cases.\n\nSUCCESS CRITERIA: Found a features page, capabilities overview, or use cases section with details.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 26,
+      "elapsed_s": 0,
+      "final_url": "https://www.retellai.com/use-cases",
+      "judge_reason": "The agent successfully navigated to the 'Use Cases' page, which directly addresses the user's goal of finding information about what voice agents can do, including features, capabilities, and use cases. The final URL and page title confirm this.",
+      "judge_evidence": "The final URL is 'https://www.retellai.com/use-cases' and the final page title is 'Use Cases'. The action summary shows the agent clicked on 'Solutions' and then 'Overview' which led to this page. The agent also explored individual features under the 'Product' dropdown before landing on the use cases page, indicating a thorough search for the requested information.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_79679_e4cb6c0b/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_82574_9a6ddddc",
+      "product": "vapi",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t5_getting_started",
+      "task_title": "Evaluate getting started experience",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find the getting started guide or quick start to understand onboarding.\n\nSUCCESS CRITERIA: Found getting started guide, quickstart, or clear path to begin using the platform.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 24,
+      "elapsed_s": 0,
+      "final_url": "https://docs.vapi.ai/assistants/quickstart",
+      "judge_reason": "The agent successfully navigated to the 'Assistants quickstart' guide, which serves as a clear 'getting started guide' for onboarding, fulfilling the user's goal.",
+      "judge_evidence": "The final URL is 'https://docs.vapi.ai/assistants/quickstart' and the page title is 'Assistants quickstart | Vapi'. The screenshot clearly shows a 'Quickstart' guide under 'Assistants' in the left navigation, with an 'Overview' and 'Prerequisites' section, indicating a clear path to begin using the platform.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_82574_9a6ddddc/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_84087_5aa92665",
+      "product": "bland",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t2_docs",
+      "task_title": "Find and evaluate API documentation",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find the API documentation or developer docs to understand how to integrate.\n\nSUCCESS CRITERIA: Reached API docs, developer documentation, or integration guides page.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 13,
+      "elapsed_s": 0,
+      "final_url": "https://docs.bland.ai/welcome-to-bland",
+      "judge_reason": "The agent successfully navigated to the Bland AI website and located the API documentation. It followed a logical path by first clicking on 'Resources' and then scrolling to find the 'Documentation' link in the footer. The final page reached (`https://docs.bland.ai/welcome-to-bland`) clearly serves as the main documentation hub, with explicit links to 'API Reference' and 'Agents API', fulfilling the user's goal.",
+      "judge_evidence": "The final URL is https://docs.bland.ai/welcome-to-bland, and the page title is 'Bland documentation - Bland'. The screenshot shows 'Bland documentation' as the main heading and 'API Reference' and 'Agents API' in the header, confirming the presence of API documentation.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_84087_5aa92665/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_84644_1e8088c8",
+      "product": "vapi",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t1_pricing",
+      "task_title": "Find and evaluate pricing",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find the pricing page and understand the cost structure for voice AI calls.\n\nSUCCESS CRITERIA: Reached a pricing page with visible pricing tiers, per-minute costs, or plan comparison.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 7,
+      "elapsed_s": 0,
+      "final_url": "https://vapi.ai/pricing",
+      "judge_reason": "The agent successfully navigated to the Vapi.ai website and located the pricing page. It then meticulously extracted all the requested information, including pricing tiers, per-minute costs for various components, transport fees, and add-on costs. The agent also correctly identified the presence or absence of information regarding API documentation, integration guides, and webhooks on the pricing page. The final output clearly demonstrates that the success criteria were met.",
+      "judge_evidence": "The final URL is https://vapi.ai/pricing, which is the pricing page. The agent's detailed summary of findings confirms that pricing tiers, per-minute costs, and plan comparisons were visible and extracted. The screenshot also shows a pricing calculator and estimated total, indicating the presence of cost structure information.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_84644_1e8088c8/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_85218_1e69609e",
+      "product": "bland",
+      "persona_id": "p1_engineer",
+      "persona_name": "Platform Engineer",
+      "task_id": "t5_getting_started",
+      "task_title": "Evaluate getting started experience",
+      "task_prompt": "PERSONA: Platform Engineer \u2014 Senior engineer evaluating voice AI APIs for integration into a SaaS product.\nYou care about: API documentation, integration guides, webhooks, pricing per call.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find the getting started guide or quick start to understand onboarding.\n\nSUCCESS CRITERIA: Found getting started guide, quickstart, or clear path to begin using the platform.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 9,
+      "elapsed_s": 0,
+      "final_url": "https://docs.bland.ai/build-your-first-agent",
+      "judge_reason": "The agent successfully navigated to the Bland AI website and located the 'Build your first agent' guide, which serves as the getting started guide. It correctly identified the path to this guide through the 'Resources' and 'Documentation' sections. The agent then extracted the content of this guide and analyzed it for the persona's key interests (API documentation, integration guides, webhooks, pricing per call). The final URL and page title confirm that the agent reached the correct destination",
+      "judge_evidence": "The final URL is 'https://docs.bland.ai/build-your-first-agent' and the final page title is 'Build your first agent - Bland', which directly matches the task's success criteria of finding a 'getting started guide' or 'quick start'. The agent's summary also explicitly states that it found the 'Build your first agent' page and describes its content as a clear path to begin using the platform.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_85218_1e69609e/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_85658_6c744f9e",
+      "product": "retell",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t5_getting_started",
+      "task_title": "Evaluate getting started experience",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find the getting started guide or quick start to understand onboarding.\n\nSUCCESS CRITERIA: Found getting started guide, quickstart, or clear path to begin using the platform.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 6,
+      "elapsed_s": 0,
+      "final_url": "https://docs.retellai.com/get-started/quick-start",
+      "judge_reason": "The agent successfully navigated to the Retell AI website and located the 'getting started guide' as requested by the user. The agent correctly identified the relevant section ('Developers' -> 'Documentation') and then clicked on the 'Build your first phone agent in 15 minutes' guide, which perfectly aligns with the user's goal of understanding onboarding. The final output provided by the agent is comprehensive, detailing what was found, likes, dislikes, and overall difficulty.",
+      "judge_evidence": "The final URL is 'https://docs.retellai.com/get-started/quick-start' and the page title is 'Build your first Retell AI phone agent in 15 minutes', which is a clear 'getting started' guide.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_85658_6c744f9e/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_85904_bbb40de2",
+      "product": "vapi",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t2_docs",
+      "task_title": "Find and evaluate API documentation",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Vapi public website (not logged in).\nStart URL: https://vapi.ai/\n\nUSER GOAL: Find the API documentation or developer docs to understand how to integrate.\n\nSUCCESS CRITERIA: Reached API docs, developer documentation, or integration guides page.\n\nINSTRUCTIONS:\n1. Navigate the Vapi website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 8,
+      "elapsed_s": 0,
+      "final_url": "https://docs.vapi.ai/quickstart/introduction",
+      "judge_reason": "The user's goal was to find the API documentation or developer docs on the Vapi.ai website, acting as a technical founder. The agent successfully navigated to the Vapi.ai website and, after an initial attempt to use the 'Resources' button which did not function as expected, scrolled down to find a 'Docs' link in the footer. Clicking this link led the agent to `https://docs.vapi.ai/quickstart/introduction`, which is clearly a developer documentation page. The page title 'Introduction | Vapi' and ",
+      "judge_evidence": "The final URL `https://docs.vapi.ai/quickstart/introduction` and the screenshot clearly show a documentation page with sections like 'API Reference' and 'SDKs', which are relevant for understanding how to integrate a platform.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_85904_bbb40de2/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_86280_a127eda4",
+      "product": "retell",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t5_getting_started",
+      "task_title": "Evaluate getting started experience",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find the getting started guide or quick start to understand onboarding.\n\nSUCCESS CRITERIA: Found getting started guide, quickstart, or clear path to begin using the platform.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 6,
+      "elapsed_s": 0,
+      "final_url": "https://docs.retellai.com/get-started/quick-start",
+      "judge_reason": "The agent successfully navigated to the Retell AI website and, following a logical path, found the 'Build your first phone agent in 15 minutes' guide within the documentation section. This guide perfectly aligns with the user's goal of finding a 'getting started guide' or 'quick start' to understand onboarding. The agent's final output is well-structured, providing the requested details about what was found, where, likes, dislikes, and overall difficulty.",
+      "judge_evidence": "The final URL is 'https://docs.retellai.com/get-started/quick-start' and the page title is 'Build your first Retell AI phone agent in 15 minutes', which directly addresses the task's success criteria of finding a 'getting started guide, quickstart, or clear path to begin using the platform.' The screenshot confirms the presence of this guide and its content, which includes steps like 'Create your account' and mentions 'free trial credits', indicating a clear onboarding path.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_86280_a127eda4/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_91461_ae8058b7",
+      "product": "retell",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t3_features",
+      "task_title": "Explore voice agent capabilities",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find information about what voice agents can do - features, capabilities, use cases.\n\nSUCCESS CRITERIA: Found a features page, capabilities overview, or use cases section with details.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 22,
+      "elapsed_s": 0,
+      "final_url": "https://docs.retellai.com/general/introduction",
+      "judge_reason": "The agent successfully completed the task by navigating the Retell AI website to find information about the capabilities, features, and use cases of their voice agents. The agent initially explored the 'Product' and 'Solutions' sections, which led to specific use cases rather than a general overview. However, the agent then correctly identified and navigated to the 'Documentation' section under 'Developers', which provided a comprehensive overview of the platform's features, capabilities, and ho",
+      "judge_evidence": "The final URL is https://docs.retellai.com/general/introduction, which is a documentation page titled \"Introduction to Retell\". The screenshot shows a detailed page with sections like \"Build\", \"Test\", and \"Deploy\", and a sidebar with various topics related to agent configuration, functionality, and pricing. The agent's summary also details the specific information found on this page, confirming the success criteria were met.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_91461_ae8058b7/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_93380_3ccc348d",
+      "product": "retell",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t2_docs",
+      "task_title": "Find and evaluate API documentation",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Retell AI public website (not logged in).\nStart URL: https://www.retell.ai/\n\nUSER GOAL: Find the API documentation or developer docs to understand how to integrate.\n\nSUCCESS CRITERIA: Reached API docs, developer documentation, or integration guides page.\n\nINSTRUCTIONS:\n1. Navigate the Retell AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 5,
+      "elapsed_s": 0,
+      "final_url": "https://docs.retellai.com/api-references/overview",
+      "judge_reason": "The agent successfully navigated to the Retell AI website and, following a logical path, located the API documentation. It correctly identified the 'Developers' dropdown, then 'Documentation', and finally 'API Reference' to reach the target page. The final output provided by the agent fully addresses all aspects of the user's request, including a description of what was found, where it was found, specific likes and dislikes, and overall difficulty.",
+      "judge_evidence": "The final URL is 'https://docs.retellai.com/api-references/overview' and the page title is 'Retell AI API Reference - Retell AI', which directly matches the success criteria of reaching the API documentation page.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_93380_3ccc348d/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_94250_d0be6456",
+      "product": "bland",
+      "persona_id": "p2_pm",
+      "persona_name": "Product Manager",
+      "task_id": "t2_docs",
+      "task_title": "Find and evaluate API documentation",
+      "task_prompt": "PERSONA: Product Manager \u2014 PM at a mid-size company exploring voice AI for customer support automation.\nYou care about: features, use cases, pricing, demos, getting started.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find the API documentation or developer docs to understand how to integrate.\n\nSUCCESS CRITERIA: Reached API docs, developer documentation, or integration guides page.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 8,
+      "elapsed_s": 0,
+      "final_url": "https://docs.bland.ai/api-v1/post/calls-simple-pathway",
+      "judge_reason": "The agent successfully navigated to the Bland AI website and then proceeded to find the API documentation. It correctly identified the 'Resources' menu, then 'Documentation', and finally 'API Reference' to reach the target page. The final output includes all the requested elements: what was found, things liked, things disliked, and overall difficulty. The agent's observations about the navigation experience (double click needed for 'Resources' dropdown) and the documentation itself are relevant ",
+      "judge_evidence": "The final URL is 'https://docs.bland.ai/api-v1/post/calls-simple-pathway', which is clearly an API documentation page. The page title 'Send Call using Pathways (Simple) - Bland' further confirms this. The screenshot shows API request and response examples, which is characteristic of API documentation.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_94250_d0be6456/final.png"
+        }
+      ]
+    },
+    {
+      "agent_id": "bu_96166_14ec4d07",
+      "product": "bland",
+      "persona_id": "p3_founder",
+      "persona_name": "Startup Founder",
+      "task_id": "t3_features",
+      "task_title": "Explore voice agent capabilities",
+      "task_prompt": "PERSONA: Startup Founder \u2014 Technical founder evaluating voice AI platforms for a new product.\nYou care about: pricing, capabilities, ease of integration, time to first agent.\n\nPLATFORM: Bland AI public website (not logged in).\nStart URL: https://www.bland.ai/\n\nUSER GOAL: Find information about what voice agents can do - features, capabilities, use cases.\n\nSUCCESS CRITERIA: Found a features page, capabilities overview, or use cases section with details.\n\nINSTRUCTIONS:\n1. Navigate the Bland AI website to accomplish the goal.\n2. Click links, scroll, and explore to find the information.\n3. When you find what you're looking for, stop and report what you found.\n4. In your final answer, describe:\n   - What you found and where\n   - 2-3 things you LIKED about the experience\n   - 2-3 things you DISLIKED or found confusing\n   - Overall difficulty (easy/medium/hard)",
+      "success": true,
+      "harness_timeout": false,
+      "failure_category": "SUCCESS",
+      "num_steps": 25,
+      "elapsed_s": 0,
+      "final_url": "https://www.bland.ai/solutions",
+      "judge_reason": "The agent successfully completed the task by navigating the Bland AI website to find information about voice agent capabilities, features, and use cases. It correctly identified the 'Frequently asked questions' section under 'Resources' as a source for this information. The agent extracted relevant details about complex multi-turn conversations, agent escalation paths, pricing, and security, which directly addresses the user's goal.",
+      "judge_evidence": "The agent's final action was to signal 'done' with a detailed explanation of what was found, where it was found, and a self-assessment of the experience. This explanation clearly indicates that the success criteria were met by finding information about voice agent capabilities and use cases within the 'Frequently asked questions' section on the 'Solutions' page.",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Final state",
+          "screenshot_url": "/bakeoff-traces/bu_96166_14ec4d07/final.png"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_runs": 45,
+    "by_product": {
+      "bland": {
+        "name": "Bland AI",
+        "success": 14,
+        "harness_failure": 0,
+        "bot_wall": 0,
+        "product_failure": 1,
+        "judge_error_excluded": 0
+      },
+      "vapi": {
+        "name": "Vapi",
+        "success": 15,
+        "harness_failure": 0,
+        "bot_wall": 0,
+        "product_failure": 0,
+        "judge_error_excluded": 0
+      },
+      "retell": {
+        "name": "Retell AI",
+        "success": 15,
+        "harness_failure": 0,
+        "bot_wall": 0,
+        "product_failure": 0,
+        "judge_error_excluded": 0
+      }
+    },
+    "by_task": {
+      "t4_integrations": {
+        "bland": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        },
+        "retell": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        },
+        "vapi": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        }
+      },
+      "t2_docs": {
+        "vapi": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        },
+        "retell": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        },
+        "bland": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        }
+      },
+      "t3_features": {
+        "bland": {
+          "success": 2,
+          "harness": 0,
+          "product_failure": 1,
+          "total": 3
+        },
+        "vapi": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        },
+        "retell": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        }
+      },
+      "t1_pricing": {
+        "bland": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        },
+        "retell": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        },
+        "vapi": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        }
+      },
+      "t5_getting_started": {
+        "vapi": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        },
+        "bland": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        },
+        "retell": {
+          "success": 3,
+          "harness": 0,
+          "product_failure": 0,
+          "total": 3
+        }
+      }
+    },
+    "task_winners": {
+      "t4_integrations": "tie:bland,retell,vapi",
+      "t2_docs": "tie:bland,retell,vapi",
+      "t3_features": "tie:retell,vapi",
+      "t1_pricing": "tie:bland,retell,vapi",
+      "t5_getting_started": "tie:bland,retell,vapi"
+    },
+    "insights_synthesized": true,
+    "headline": "On public-site tasks, success rates are a tie: Retell 15/15, Vapi 15/15, Bland 14/15 (one Bland capabilities run ended on pricing after the step cap). Retell is faster to API docs and getting started, and slower to a capabilities page and to webhook docs.",
+    "metric_note": "Audited harness run voice-public-d28b7070. Zero harness timeouts. Three former judge-JSON errors were re-scored from saved traces as successes (Retell capabilities, Retell webhooks, Vapi webhooks). The only product failure is Bland capabilities (planning: final page was pricing).",
+    "retell_strengths": [
+      {
+        "text": "API docs is a 3/3 tie, but Retell reached the API overview in 5 steps on every persona (median 5) versus Bland median 10 (8\u201313) and Vapi median 15 (8\u201316). Engineer run ended on docs.retellai.com/api-references/overview.",
+        "run_id": "bu_26441_ddfb10d7",
+        "screenshot_url": "/bakeoff-traces/bu_26441_ddfb10d7/final.png"
+      },
+      {
+        "text": "Getting started is a 3/3 tie. Retell median was 6 steps (6, 6, 7) to the quick-start doc, versus Bland median 9 (8\u201316) and Vapi median 24 (15\u201326). PM run finished on docs.retellai.com/get-started/quick-start.",
+        "run_id": "bu_85658_6c744f9e",
+        "screenshot_url": "/bakeoff-traces/bu_85658_6c744f9e/final.png"
+      },
+      {
+        "text": "Voice-agent capabilities: Retell and Vapi both 3/3; Bland is 2/3 because one Bland run hit the 25-step cap and stopped on bland.ai/pricing (bu_13188_b7eae5ef). Retell's engineer run reached retellai.com/use-cases in 20 steps; Bland's successes took 25.",
+        "run_id": "bu_64422_a0a5804a",
+        "screenshot_url": "/bakeoff-traces/bu_64422_a0a5804a/final.png"
+      }
+    ],
+    "retell_weaknesses": [
+      {
+        "text": "Capabilities is a 3/3 tie with Vapi, but Retell's median was 22 steps (20, 22, 26) versus Vapi's fastest path at 15 steps to docs.vapi.ai/quickstart. The founder run spent 22 steps and finished on docs.retellai.com/general/introduction, not a marketing use-cases page.",
+        "run_id": "bu_91461_ae8058b7",
+        "screenshot_url": "/bakeoff-traces/bu_91461_ae8058b7/final.png"
+      },
+      {
+        "text": "Integrations is a 3/3 tie, but Retell's median was 24 steps (9, 24, 26) versus Bland median 8 (all three Bland runs on docs.bland.ai/tutorials/webhooks or the calls API) and Vapi median 12 (server-url docs). The founder Retell run took 26 steps and stopped on the API overview, not the integrations page.",
+        "run_id": "bu_12391_1efe3405",
+        "screenshot_url": "/bakeoff-traces/bu_12391_1efe3405/final.png"
+      },
+      {
+        "text": "Pricing is a 3/3 tie. Vapi was slightly faster (median 5 steps, range 5\u20137) than Retell (median 6, range 5\u20137) and Bland (median 6, range 4\u20139). Retell's founder still needed an extra click from the pricing page into #pricing_breakdown (5 steps, bu_34211_3a337d3c).",
+        "run_id": "bu_45796_33f1c470",
+        "screenshot_url": "/bakeoff-traces/bu_45796_33f1c470/final.png"
+      }
+    ],
+    "source_manifest": "results/capability/voice-public-d28b7070.json"
+  },
+  "created_at": "2026-09-25T12:33:35.368082+00:00"
+}
