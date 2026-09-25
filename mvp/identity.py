@@ -75,6 +75,27 @@ def alias_tag_for_host(host: str) -> str:
     return (tag or "product")[:32]
 
 
+def canonical_alias_email(identity: Identity | dict[str, Any]) -> str | None:
+    """Rebuild ``local+{alias_tag}@domain`` from the stored tag.
+
+    Shared IdPs sometimes leave ``alias_tag`` as ``id`` while ``email`` was
+    overwritten to a sibling product alias (``+trello``). OTP mail still lands
+    on the canonical tag address — callers should try both.
+    """
+    if isinstance(identity, Identity):
+        email = identity.email or ""
+        tag = identity.alias_tag or ""
+    else:
+        email = str(identity.get("email") or "")
+        tag = str(identity.get("alias_tag") or "")
+    if not email or "@" not in email or not tag:
+        return None
+    local, domain = email.rsplit("@", 1)
+    base = local.split("+", 1)[0]
+    rebuilt = f"{base}+{tag}@{domain}"
+    return rebuilt if rebuilt.lower() != email.lower() else None
+
+
 def _generate_password(length: int = 24) -> str:
     alphabet = string.ascii_letters + string.digits + "!@#$%^&*-_"
     # Guarantee mixed classes so sites with silly password rules accept it.
@@ -213,8 +234,11 @@ def update_identity(url: str, **fields: Any) -> Identity:
     if not raw:
         raise KeyError(f"No identity for host={host}")
     for key, value in fields.items():
-        if key == "password":
-            continue  # never overwrite via public update path accidentally
+        if key in {"password", "email", "alias_tag"}:
+            # Never clobber the signup mailbox via the public update path —
+            # id.atlassian OTP mail landed on +id while email was rewritten to
+            # +trello and IMAP lookups silently returned None.
+            continue
         if key in raw or key in {
             "status",
             "blocker",

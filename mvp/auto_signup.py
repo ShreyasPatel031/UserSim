@@ -46,9 +46,10 @@ async def _page_has_captcha_token(page: Any) -> bool:
     except Exception:
         return False
 from mvp.credentials import totp_code
-from mvp.email_codes import wait_for_signup_code, wait_for_signup_link
+from mvp.email_codes import latest_signup_code, latest_signup_link
 from mvp.identity import (
     Identity,
+    canonical_alias_email,
     host_for_url,
     provision_identity,
     safe_host,
@@ -260,7 +261,7 @@ SIGNUP_START: dict[str, str] = {
     "zapier.com": "https://zapier.com/sign-up",
     "make.com": "https://www.make.com/en/register",
     "shopify.com": "https://accounts.shopify.com/signup",
-    "grammarly.com": "https://signup.grammarly.com/",
+    "grammarly.com": "https://www.grammarly.com/signup",
     "cal.com": "https://app.cal.com/signup",
     "jotform.com": "https://www.jotform.com/signup",
     "hotjar.com": "https://insights.hotjar.com/register",
@@ -632,12 +633,28 @@ def _build_signup_tools(ctx: dict[str, Any]):
     )
     async def get_email_code(params: EmptyParams):
         newer = ctx.get("email_requested_at") or time.time()
-        code = await asyncio.to_thread(
-            wait_for_signup_code,
-            identity.email,
-            timeout_s=float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240")),
-            newer_than=newer,
-        )
+        # Prefer the live identity email, but also try the canonical plus-tag
+        # alias. Shared IdPs (id.atlassian.com ↔ trello) have overwritten
+        # identity.email to a sibling product alias while mail still lands on
+        # the original +id/+tag address — wrong-alias lookups return None even
+        # though INBOX already has the OTP.
+        aliases: list[str] = []
+        for cand in (identity.email, canonical_alias_email(identity)):
+            if cand and cand not in aliases:
+                aliases.append(cand)
+        timeout_s = float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240"))
+
+        def _wait_any() -> str | None:
+            started = time.time()
+            while time.time() - started < timeout_s:
+                for alias in aliases:
+                    code = latest_signup_code(alias, host=host, newer_than=newer)
+                    if code:
+                        return code
+                time.sleep(4.0)
+            return None
+
+        code = await asyncio.to_thread(_wait_any)
         if not code:
             return ActionResult(
                 error="No verification code arrived in email within timeout",
@@ -659,13 +676,25 @@ def _build_signup_tools(ctx: dict[str, Any]):
     )
     async def get_email_link(params: EmptyParams):
         newer = ctx.get("email_requested_at") or time.time()
-        link = await asyncio.to_thread(
-            wait_for_signup_link,
-            identity.email,
-            host=host,
-            timeout_s=float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240")),
-            newer_than=newer,
-        )
+        aliases: list[str] = []
+        for cand in (identity.email, canonical_alias_email(identity)):
+            if cand and cand not in aliases:
+                aliases.append(cand)
+        timeout_s = float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240"))
+
+        def _wait_any_link() -> str | None:
+            started = time.time()
+            while time.time() - started < timeout_s:
+                for alias in aliases:
+                    link = latest_signup_link(
+                        alias, host=host, newer_than=newer
+                    )
+                    if link:
+                        return link
+                time.sleep(4.0)
+            return None
+
+        link = await asyncio.to_thread(_wait_any_link)
         if not link:
             return ActionResult(
                 error="No confirmation link arrived in email within timeout",
@@ -1073,9 +1102,71 @@ async def sign_up(
                 try:
                     await page.goto(start_url, wait_until="domcontentloaded", timeout=60000)
                 except Exception as exc:
-                    result["reason"] = f"navigate_failed:{type(exc).__name__}"
-                    result["detail"] = str(exc)[:200]
-                    return result
+                    detail = str(exc)
+                    tunnelish = any(
+                        tok in detail
+                        for tok in (
+                            "ERR_TUNNEL_CONNECTION_FAILED",
+                            "ERR_PROXY_CONNECTION_FAILED",
+                            "ERR_SOCKS_CONNECTION_FAILED",
+                            "ERR_CONNECTION_CLOSED",
+                            "ERR_CONNECTION_RESET",
+                        )
+                    )
+                    # Residential proxy often black-holes signup.* CDNs (Grammarly).
+                    # Recreate the Browserbase session without proxies once.
+                    used_proxy = bool((result.get("browserbase_flags") or {}).get("proxies"))
+                    if tunnelish and used_proxy and bb_session is not None:
+                        print(
+                            f"navigate tunnel fail with proxies; retrying no-proxy: {detail[:120]}",
+                            flush=True,
+                            file=__import__("sys").stderr,
+                        )
+                        try:
+                            from capability.browserbase_client import (
+                                close_session,
+                                create_session,
+                            )
+
+                            await asyncio.to_thread(close_session, bb_session.id)
+                        except Exception:
+                            pass
+                        try:
+                            bb_session = await asyncio.to_thread(
+                                create_session,
+                                proxies=False,
+                                solve_captchas=True,
+                                advanced_stealth=False,
+                            )
+                            cdp_url = bb_session.connect_url
+                            result["browserbase_session_url"] = bb_session.session_url
+                            result["browserbase_flags"] = {
+                                "proxies": False,
+                                "solve_captchas": True,
+                                "advanced_stealth": False,
+                            }
+                            browser = await p.chromium.connect_over_cdp(cdp_url)
+                            pw_ctx = (
+                                browser.contexts[0]
+                                if browser.contexts
+                                else await browser.new_context()
+                            )
+                            page = (
+                                pw_ctx.pages[0]
+                                if pw_ctx.pages
+                                else await pw_ctx.new_page()
+                            )
+                            await page.goto(
+                                start_url, wait_until="domcontentloaded", timeout=60000
+                            )
+                        except Exception as exc2:
+                            result["reason"] = f"navigate_failed:{type(exc2).__name__}"
+                            result["detail"] = str(exc2)[:200]
+                            return result
+                    else:
+                        result["reason"] = f"navigate_failed:{type(exc).__name__}"
+                        result["detail"] = detail[:200]
+                        return result
             ctx["page_getter"] = lambda: page
 
             # Already signed in from a previous run?
