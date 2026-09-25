@@ -3191,6 +3191,12 @@ async def run_study(
             study.summary["auth_status"] = study.auth_status
         if study.auth_blocker:
             study.summary["auth_blocker"] = study.auth_blocker
+        try:
+            from mvp.report_insights import apply_insights
+
+            apply_insights(study)
+        except Exception as insight_exc:  # noqa: BLE001
+            print(f"report insights failed: {insight_exc!r}", flush=True)
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
         persist_study(study)

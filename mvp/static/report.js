@@ -1,122 +1,182 @@
-/** Report page — loads a persisted study via ?study=<id>, else sessionStorage. */
+/** Report page — evidence-backed insights for a finished study. */
 
 function escapeHtml(str) {
-  return String(str)
+  return String(str ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
 
-function renderList(el, items) {
-  el.innerHTML = "";
-  (items || []).forEach((item) => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    el.appendChild(li);
-  });
+let _study = null;
+let _traceAgent = null;
+let _traceStep = 0;
+
+function shotsOf(run) {
+  return (run?.trace || []).filter((s) => s && s.screenshot_url);
 }
 
-function renderSummary(summary, accessBackend, browserbaseSessionUrl, notifyEmail) {
-  if (!summary) return;
-  const infoEl = document.getElementById("access-info");
-  const backend = accessBackend || summary.access_backend;
-  const sessionUrl = browserbaseSessionUrl || summary.browserbase_session_url;
-  if (backend) {
-    infoEl.hidden = false;
-    const msg = `Page loaded via ${backend}.`;
-    infoEl.innerHTML = sessionUrl
-      ? `${msg} <a href="${escapeHtml(sessionUrl)}" target="_blank" rel="noopener">View Browserbase session</a>`
-      : msg;
-  } else {
-    infoEl.hidden = true;
-  }
-
-  const note = document.getElementById("report-email-note");
-  if (notifyEmail) {
-    note.hidden = false;
-    note.textContent = `Feedback ready — we’ll send a copy to ${notifyEmail}.`;
-  } else {
-    note.hidden = true;
-  }
-
-  document.getElementById("headline").textContent = summary.headline || "";
-  renderList(document.getElementById("top-friction"), summary.top_friction);
-  renderList(document.getElementById("top-strengths"), summary.top_strengths);
-  document.getElementById("fit-score").textContent = summary.segment_fit_score ?? "—";
-  document.getElementById("fit-rationale").textContent = summary.segment_fit_rationale || "";
-  document.getElementById("conversion-outlook").textContent = summary.conversion_outlook || "";
-
-  const recEl = document.getElementById("recommendations");
-  recEl.innerHTML = "";
-  (summary.recommendations || []).forEach((rec) => {
-    const div = document.createElement("div");
-    div.className = "rec-card";
-    div.innerHTML = `
-      <span class="priority ${escapeHtml(rec.priority || "medium")}">${escapeHtml(rec.priority || "medium")}</span>
-      <div>
-        <strong>${escapeHtml(rec.action || "")}</strong>
-        <p style="margin:0.25rem 0 0;color:var(--text-muted);font-size:0.9rem">${escapeHtml(rec.rationale || "")}</p>
-      </div>
-    `;
-    recEl.appendChild(div);
-  });
-}
-
-function renderAgents(results) {
-  const grid = document.getElementById("agents-grid");
-  const section = document.getElementById("agents-section-final");
-  if (!grid) return;
-  if (!results?.length) {
-    if (section) section.hidden = true;
+function renderClaims(el, claims, kind) {
+  if (!el) return;
+  if (!claims?.length) {
+    el.innerHTML = `<p class="empty-claim">None. The traces do not support a specific ${kind === "strength" ? "strength" : "weakness"}.</p>`;
     return;
   }
-  if (section) section.hidden = false;
-  grid.innerHTML = "";
-  results.forEach((r) => {
-    const card = document.createElement("article");
-    card.className = "agent-card";
-    const friction = (r.friction_points || []).map((x) => `<li>${escapeHtml(x)}</li>`).join("");
-    const easy = (r.what_was_easy || []).map((x) => `<li>${escapeHtml(x)}</li>`).join("");
-    card.innerHTML = `
-      <h3>${escapeHtml(r.persona_name || "Simulated user")} — ${escapeHtml(r.task_title || "Task")}</h3>
-      <div class="meta">
-        <span class="tag difficulty-${r.difficulty || "medium"}">${escapeHtml(r.difficulty || "medium")}</span>
-        <span class="tag">would convert: ${escapeHtml(r.would_convert || "?")}</span>
-        <span class="tag">${(r.trace || []).length} steps</span>
-      </div>
-      <p style="margin-top:0.75rem">${escapeHtml(r.product_feedback || "")}</p>
-      <blockquote class="quote">"${escapeHtml(r.quote || "")}"</blockquote>
-      <div class="agent-lists">
-        <div><h4>Friction</h4><ul>${friction || "<li>—</li>"}</ul></div>
-        <div><h4>Easy</h4><ul>${easy || "<li>—</li>"}</ul></div>
-      </div>
-    `;
-    grid.appendChild(card);
+  el.innerHTML = claims
+    .map((claim) => {
+      const cites = (claim.evidence || [])
+        .map((ev) => {
+          const shot = ev.screenshot_url
+            ? `<button type="button" class="shot" data-agent="${escapeHtml(ev.agent_id)}" data-step="${Number(ev.step)}"><img src="${escapeHtml(ev.screenshot_url)}" alt="Step ${Number(ev.step)} screenshot" /></button>`
+            : "";
+          const finalUrl = ev.final_url
+            ? `<a href="${escapeHtml(ev.final_url)}" target="_blank" rel="noopener">final URL</a>`
+            : "";
+          return `<div class="cite">
+            ${shot}
+            <div>
+              <p class="who">${escapeHtml(ev.persona_name || "Agent")} · ${escapeHtml(ev.task_title || "")}</p>
+              <p class="detail">${escapeHtml(ev.detail || ev.action || "")}</p>
+              <p class="links">
+                <button type="button" data-agent="${escapeHtml(ev.agent_id)}" data-step="${Number(ev.step)}">Open trace · step ${Number(ev.step)}</button>
+                ${finalUrl}
+              </p>
+            </div>
+          </div>`;
+        })
+        .join("");
+      return `<article class="claim-card ${kind}"><p>${escapeHtml(claim.claim)}</p>${cites}</article>`;
+    })
+    .join("");
+  el.querySelectorAll("[data-agent]").forEach((node) => {
+    node.addEventListener("click", () => {
+      openTrace(node.dataset.agent, Number(node.dataset.step));
+    });
   });
+}
+
+function renderCompare(insights) {
+  const note = document.getElementById("tie-note");
+  const table = document.getElementById("compare-table");
+  const rows = insights?.comparisons || [];
+  if (note) {
+    if (insights?.tie_note) {
+      note.hidden = false;
+      note.textContent = insights.tie_note;
+    } else {
+      note.hidden = false;
+      note.textContent = rows.length
+        ? "Success rates differ, so steps, time, and friction are shown beside the rates and are not used to break a tie."
+        : "No site comparison — the study has no finished runs.";
+    }
+  }
+  if (!table) return;
+  if (!rows.length) {
+    table.innerHTML = "";
+    return;
+  }
+  const body = rows
+    .map((r) => {
+      const time = r.median_time_s == null ? "—" : `${r.median_time_s}s`;
+      const steps = r.median_steps == null ? "—" : Number(r.median_steps).toFixed(1);
+      const pct = Math.round((r.success_rate || 0) * 100);
+      return `<tr>
+        <td>${escapeHtml(r.site_label || r.site_key)}</td>
+        <td>${r.ok}/${r.n} (${pct}%)</td>
+        <td>${steps}</td>
+        <td>${time}</td>
+        <td>${r.friction_n ?? 0}</td>
+      </tr>`;
+    })
+    .join("");
+  table.innerHTML = `<thead><tr><th>Site</th><th>Success</th><th>Median steps</th><th>Median time</th><th>Friction notes</th></tr></thead><tbody>${body}</tbody>`;
+}
+
+function renderTrace() {
+  const panel = document.getElementById("trace-panel");
+  const viewer = document.getElementById("trace-viewer");
+  const meta = document.getElementById("trace-meta");
+  const run = (_study?.agent_results || []).find((r) => r.agent_id === _traceAgent);
+  if (!panel || !viewer || !run) return;
+  const shots = shotsOf(run);
+  if (!shots.length) {
+    panel.hidden = false;
+    viewer.innerHTML = "<p class='empty-claim'>This run has no step screenshots.</p>";
+    return;
+  }
+  let idx = shots.findIndex((s) => s.step === _traceStep);
+  if (idx < 0) idx = shots.length - 1;
+  const step = shots[idx];
+  panel.hidden = false;
+  if (meta) {
+    const final = run.final_url
+      ? ` · <a href="${escapeHtml(run.final_url)}" target="_blank" rel="noopener">${escapeHtml(run.final_url)}</a>`
+      : "";
+    meta.innerHTML = `${escapeHtml(run.persona_name || "")} — ${escapeHtml(run.task_title || "")}${final}`;
+  }
+  viewer.innerHTML = `
+    <div class="step-nav">
+      ${shots
+        .map(
+          (s, i) =>
+            `<button type="button" class="${i === idx ? "active" : ""}" data-idx="${i}">${s.step}</button>`
+        )
+        .join("")}
+    </div>
+    <figure class="trace-shot"><img src="${escapeHtml(step.screenshot_url)}" alt="Step ${step.step}" /></figure>
+    <p class="trace-action"><strong>Step ${step.step}.</strong> ${escapeHtml(step.action || "")}</p>
+  `;
+  viewer.querySelectorAll("[data-idx]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const shot = shots[Number(btn.dataset.idx)];
+      if (shot) {
+        _traceStep = shot.step;
+        renderTrace();
+      }
+    });
+  });
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function openTrace(agentId, step) {
+  _traceAgent = agentId;
+  _traceStep = Number.isFinite(step) ? step : 0;
+  renderTrace();
 }
 
 function showReport(data) {
   const empty = document.getElementById("report-empty");
   const results = document.getElementById("results");
-  if (!data?.summary) {
+  const summary = data?.summary;
+  const insights = summary?.insights;
+  if (!summary || !insights) {
     empty.hidden = false;
+    empty.textContent = "This study has no evidence-backed report yet.";
     results.hidden = true;
     return;
   }
+  _study = data;
   empty.hidden = true;
   results.hidden = false;
-  const title = document.querySelector(".summary-panel h2");
-  if (title && data.url) {
-    title.textContent = `Executive summary — ${data.url}`;
+  const title = document.getElementById("report-title");
+  if (title && data.url) title.textContent = data.url;
+  document.getElementById("headline").textContent = insights.headline || summary.headline || "";
+  const note = document.getElementById("evidence-note");
+  if (insights.evidence_note) {
+    note.hidden = false;
+    note.textContent = insights.evidence_note;
+  } else {
+    note.hidden = true;
   }
-  renderSummary(
-    data.summary,
-    data.access_backend,
-    data.browserbase_session_url,
-    data.notify_email || ""
-  );
-  renderAgents(data.agent_results || []);
+  const infoEl = document.getElementById("access-info");
+  const backend = data.access_backend || summary.access_backend;
+  if (backend && infoEl) {
+    infoEl.hidden = false;
+    infoEl.textContent = `Page loaded via ${backend}.`;
+  }
+  renderClaims(document.getElementById("strength-cards"), insights.strengths, "strength");
+  renderClaims(document.getElementById("weakness-cards"), insights.weaknesses, "weakness");
+  renderCompare(insights);
 }
 
 async function loadReport() {
@@ -124,39 +184,23 @@ async function loadReport() {
   const studyId = params.get("study") || "";
   const empty = document.getElementById("report-empty");
   const results = document.getElementById("results");
-
-  if (studyId) {
+  if (!studyId) {
     empty.hidden = false;
-    empty.textContent = "Loading report…";
     results.hidden = true;
-    try {
-      const res = await fetch(`/api/studies/${encodeURIComponent(studyId)}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      showReport(data);
-      if (!data?.summary) {
-        empty.hidden = false;
-        empty.innerHTML = `No summary on this study yet. <a href="/live?study=${encodeURIComponent(studyId)}">Open live view</a>`;
-        results.hidden = true;
-      }
-      return;
-    } catch (err) {
-      empty.hidden = false;
-      empty.textContent = `Couldn’t load study ${studyId}: ${err.message || err}`;
-      results.hidden = true;
-      return;
-    }
+    return;
   }
-
+  empty.hidden = false;
+  empty.textContent = "Loading report…";
+  results.hidden = true;
   try {
-    const raw = sessionStorage.getItem("usersim_report");
-    const data = raw ? JSON.parse(raw) : null;
-    showReport(data);
-  } catch {
+    const res = await fetch(`/api/studies/${encodeURIComponent(studyId)}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    showReport(await res.json());
+  } catch (err) {
     empty.hidden = false;
+    empty.textContent = `Couldn’t load study ${studyId}: ${err.message || err}`;
     results.hidden = true;
   }
 }
 
 loadReport();
-
