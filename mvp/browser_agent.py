@@ -620,11 +620,13 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
     try:
         from browser_use import BrowserSession
 
+        # Owner tag: use BB_OWNER_TAG env var or default to e2e
+        _owner_tag = os.environ.get("BB_OWNER_TAG", "e2e")
         bb_session = await asyncio.to_thread(
             create_session,
             proxies=False,
             keep_alive=True,
-            owner="e2e",
+            owner=_owner_tag,
             study_id=study_id,
         )
         t_bb_create = time.time() - t0
@@ -973,11 +975,13 @@ async def run_browser_agent(
             owns_session = bb_session is None
             if owns_session:
                 # keep_alive=True so parallel agents don't lose CDP mid-run (410 Gone).
+                # Owner tag: use BB_OWNER_TAG env var or default to e2e
+                _owner_tag = os.environ.get("BB_OWNER_TAG", "e2e")
                 bb_session = await asyncio.to_thread(
                     create_session,
                     proxies=False,
                     keep_alive=True,
-                    owner="e2e",
+                    owner=_owner_tag,
                     study_id=study_id,
                 )
             session_url = getattr(bb_session, "session_url", None)

@@ -896,6 +896,40 @@ async def retell_page() -> FileResponse:
     return FileResponse(path, media_type="text/html")
 
 
+def _load_latest_live_study(prefix: str = "retell-live") -> dict | None:
+    """Load the most recent live study with matching prefix."""
+    from mvp.paths import MVP_RUNS_DIR
+    
+    candidates = []
+    for d in MVP_RUNS_DIR.iterdir():
+        if d.is_dir() and d.name.startswith(prefix):
+            study_json = d / "study.json"
+            if study_json.is_file():
+                candidates.append((d.stat().st_mtime, study_json))
+    
+    if not candidates:
+        return None
+    
+    candidates.sort(reverse=True)  # Most recent first
+    _, path = candidates[0]
+    
+    try:
+        data = json.loads(path.read_text())
+        # Ensure screenshot URLs point to correct location
+        for result in data.get("agent_results") or []:
+            for step in result.get("trace") or []:
+                shot = step.get("screenshot_url") or ""
+                if shot and "/screenshots/" in shot:
+                    # Rewrite to local path
+                    study_id = data.get("id") or path.parent.name
+                    agent_id = result.get("agent_id", "")
+                    filename = shot.split("/")[-1]
+                    step["screenshot_url"] = f"/api/experiment/{study_id}/agents/{agent_id}/screenshots/{filename}"
+        return data
+    except Exception:
+        return None
+
+
 @app.get("/api/experiment/{experiment_id}")
 async def get_experiment(experiment_id: str):
     """Get experiment results by ID."""
@@ -903,6 +937,19 @@ async def get_experiment(experiment_id: str):
     
     if not re.fullmatch(r"[\w.-]+", experiment_id):
         raise HTTPException(status_code=400, detail="Invalid experiment id")
+    
+    # Special handling for "retell" - load latest live study
+    if experiment_id == "retell":
+        live = _load_latest_live_study("retell-live")
+        if live:
+            # Try to synthesize insights if not already done
+            if not live.get("summary", {}).get("insights_synthesized"):
+                try:
+                    from mvp.synthesize_insights import add_insights_to_study
+                    live = add_insights_to_study(live)
+                except Exception as e:
+                    live.setdefault("summary", {})["synthesis_error"] = str(e)
+            return live
     
     result = load_experiment_result(experiment_id)
     if result:
@@ -917,6 +964,11 @@ async def get_experiment(experiment_id: str):
                 return data
         except Exception:
             continue
+    
+    # Check live studies as fallback
+    live = _load_latest_live_study(experiment_id)
+    if live:
+        return live
     
     raise HTTPException(status_code=404, detail="Experiment not found")
 
