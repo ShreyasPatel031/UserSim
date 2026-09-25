@@ -79,6 +79,15 @@ def browserbase_captcha_kwargs() -> dict[str, Any]:
     }
 
 
+# Known product sitekeys when the DOM hides them (invisible widgets).
+_KNOWN_SITEKEYS: dict[str, dict[str, str]] = {
+    "supabase.com": {
+        "type": "hcaptcha",
+        "sitekey": "4ca1fdb9-c9c9-4495-ba50-c85fc0e7ec1f",
+    },
+}
+
+
 async def detect_sitekey(page: Any) -> dict[str, Any] | None:
     """Scrape a visible captcha sitekey + type from the current page DOM."""
     script = """
@@ -119,13 +128,26 @@ async def detect_sitekey(page: Any) -> dict[str, Any] | None:
       }
       if (!out.sitekey && window.grecaptcha) out.type = out.type || 'recaptcha';
       if (!out.sitekey && window.hcaptcha) out.type = out.type || 'hcaptcha';
-      return out.sitekey ? out : null;
+      return out.sitekey ? out : (out.type ? out : null);
     })()
     """
     try:
-        return await page.evaluate(script)
+        info = await page.evaluate(script)
     except Exception:
-        return None
+        info = None
+    if info and info.get("sitekey"):
+        return info
+    try:
+        url = (getattr(page, "url", "") or "").lower()
+    except Exception:
+        url = ""
+    for host, known in _KNOWN_SITEKEYS.items():
+        if host in url:
+            merged = dict(known)
+            if info and info.get("type"):
+                merged["type"] = info["type"]
+            return merged
+    return info
 
 
 def solve_sitekey(
@@ -463,7 +485,7 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
             await page.evaluate(
                 """() => {
                   const t = (document.body && document.body.innerText || '').toLowerCase();
-                  return /verify you are human|checking your browser|just a moment|complete the security check|press and hold|are you a robot/.test(t);
+                  return /verify you are human|checking your browser|just a moment|complete the security check|press and hold|are you a robot|invalid or missing captcha|missing captcha token|captcha token|failed to sign up:.*captcha|hcaptcha|complete the captcha/.test(t);
                 }"""
             )
         )
@@ -478,11 +500,16 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
                 """() => {
                   const btns = [...document.querySelectorAll('button[type=submit], button')];
                   for (const b of btns) {
-                    const label = ((b.innerText || b.getAttribute('aria-label') || '') + '').toLowerCase();
-                    if (!/sign\\s*up|create\\s*account|register|continue|join/.test(label)) continue;
-                    if (b.disabled || b.getAttribute('aria-disabled') === 'true') return true;
-                    const style = window.getComputedStyle(b);
-                    if (style && (style.pointerEvents === 'none' || Number(style.opacity) < 0.4)) return true;
+                    const label = ((b.innerText || b.textContent || b.getAttribute('aria-label') || '') + '').toLowerCase().trim();
+                    const isSubmit = (b.getAttribute('type') || '').toLowerCase() === 'submit';
+                    // Any disabled primary submit counts — label optional for type=submit.
+                    const labelMatch = /sign\\s*up|create\\s*account|register|continue|join/.test(label);
+                    if (!isSubmit && !labelMatch) continue;
+                    if (isSubmit || labelMatch) {
+                      if (b.disabled || b.getAttribute('aria-disabled') === 'true') return true;
+                      const style = window.getComputedStyle(b);
+                      if (style && (style.pointerEvents === 'none' || Number(style.opacity) < 0.4)) return true;
+                    }
                   }
                   return false;
                 }"""
@@ -495,6 +522,7 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
     # while a widget/sitekey is present.
     # Disabled signup CTA alone is enough — invisible Turnstile/hCaptcha often
     # leave no visible challenge but keep the button dead.
+    # Supabase also surfaces "Invalid or missing captcha token" in-page.
     blocked = bool(
         visible
         or (info and info.get("sitekey"))

@@ -732,14 +732,17 @@ def _build_signup_tools(ctx: dict[str, Any]):
                 include_in_memory=True,
             )
         info = await page_looks_captcha_blocked(page)
+        blob = json.dumps(info)
+        # Always surface the JSON — "No captcha" was lying when Sign up was
+        # disabled / Supabase printed "missing captcha token".
+        if info.get("blocked") or info.get("submit_disabled") or info.get("sitekey"):
+            tip = "CAPTCHA blocking — call solve_captcha() now"
+        else:
+            tip = "No captcha signal — if Sign up stays disabled, still call solve_captcha()"
         return ActionResult(
-            extracted_content=json.dumps(info),
+            extracted_content=blob,
             include_in_memory=True,
-            long_term_memory=(
-                "CAPTCHA blocking — call solve_captcha() now"
-                if info.get("blocked")
-                else "No captcha blocking the page"
-            ),
+            long_term_memory=f"{tip} | {blob}",
         )
 
     @tools.registry.action(
@@ -1201,12 +1204,33 @@ async def sign_up(
                     return
                 try:
                     info = await page_looks_captcha_blocked(page_now)
+                except Exception as exc:
+                    info = {"blocked": False, "error": str(exc)[:120]}
+                # Also treat signup URLs with a disabled primary submit as stuck,
+                # even if evaluate on the browser-use page wrapper lied earlier.
+                force = False
+                try:
+                    url_now = (getattr(page_now, "url", "") or "").lower()
+                    force = any(
+                        x in url_now
+                        for x in ("sign-up", "signup", "register", "supabase.com")
+                    )
+                    if force:
+                        disabled = await page_now.evaluate(
+                            """() => {
+                              const b = document.querySelector('button[type=submit]');
+                              return !!(b && b.disabled);
+                            }"""
+                        )
+                        force = bool(disabled)
                 except Exception:
-                    return
+                    force = "supabase.com" in (getattr(page_now, "url", "") or "").lower()
                 if not (
                     info.get("blocked")
                     or info.get("submit_disabled")
+                    or info.get("sitekey")
                     or (info.get("widget_present") and info.get("type") == "hcaptcha")
+                    or force
                 ):
                     return
                 # Only auto-solve after the agent has had a couple steps to fill fields.
@@ -1224,7 +1248,7 @@ async def sign_up(
                     print(
                         f"[auto_captcha] run={ctx['auto_captcha_runs']} "
                         f"blocked={info.get('blocked')} submit_disabled={info.get('submit_disabled')} "
-                        f"sitekey={info.get('sitekey')} -> {result}",
+                        f"force={force} sitekey={info.get('sitekey')} -> {result}",
                         flush=True,
                     )
                 except Exception as exc:
