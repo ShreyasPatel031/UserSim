@@ -368,17 +368,21 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
         study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
 
     want_stream = "text/event-stream" in (request.headers.get("accept") or "") or (
-        request.headers.get("x-usersim-stream") == "1"
-    )
-    # Default OFF: Playwright/browser fetch aborts cancel the request's anyio
-    # cancel scope and were taking STUDY_TASKS with them ("Killed by operator"
-    # ~30s in). Background + client poll is durable; opt into attached stream
-    # only when MVP_ATTACH_STREAM=1 (true serverless edge streaming).
-    attach_stream = os.environ.get("MVP_ATTACH_STREAM", "0").lower() in {
-        "1",
-        "true",
-        "yes",
-    }
+        "application/x-ndjson" in (request.headers.get("accept") or "")
+    ) or (request.headers.get("x-usersim-stream") == "1")
+    # Vercel serverless freezes the isolate when the HTTP handler returns, so a
+    # fire-and-forget asyncio.create_task dies after ~seconds and leaves studies
+    # stuck at "Writing tasks" with orphan Browserbase warms. Keep the study on
+    # an open NDJSON stream whenever the client asks (the UI always does).
+    # Local long-lived uvicorn can still use background+poll when the client
+    # does not request a stream. Explicit MVP_ATTACH_STREAM=0/1 overrides.
+    attach_env = (os.environ.get("MVP_ATTACH_STREAM") or "").strip().lower()
+    if attach_env in {"0", "false", "no"}:
+        attach_stream = False
+    elif attach_env in {"1", "true", "yes"}:
+        attach_stream = True
+    else:
+        attach_stream = bool(IS_VERCEL and want_stream)
 
     # Serverless: stream NDJSON so the brief (competitors / users / tasks) arrives
     # before browser agents finish — cuts perceived time-to-first-content.
