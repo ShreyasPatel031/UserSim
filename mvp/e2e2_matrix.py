@@ -98,18 +98,29 @@ def _sess_created_ts(sess: dict) -> float | None:
     return _parse_ts(sess.get("created_at_ts")) or _parse_ts(sess.get("created_at"))
 
 
+def _sess_has_real_shot(sess: dict) -> bool:
+    """True when trace has a judge-acceptable (non-placeholder, non-blankish) frame."""
+    for step in sess.get("trace") or []:
+        if not isinstance(step, dict):
+            continue
+        if not isinstance(step.get("step"), int) or not step.get("screenshot_url"):
+            continue
+        if step.get("opening_placeholder") or step.get("opening_blankish"):
+            continue
+        return True
+    return False
+
+
 def _sess_first_shot_ts(sess: dict) -> float | None:
+    """First REAL screenshot time — placeholders / blank splash do not count."""
+    if not _sess_has_real_shot(sess):
+        return None
     stamped = _parse_ts(sess.get("first_screenshot_at_ts")) or _parse_ts(
         sess.get("first_screenshot_at")
     )
     if stamped is not None:
         return stamped
-    # Fallback: infer from numbered screenshot rows (older servers).
-    for step in sess.get("trace") or []:
-        if not isinstance(step, dict):
-            continue
-        if isinstance(step.get("step"), int) and step.get("screenshot_url"):
-            return _parse_ts(step.get("at")) or _parse_ts(step.get("ts"))
+    # Fallback for older servers: no step-level timestamp available.
     return None
 
 
@@ -661,7 +672,14 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         report["timing"] = timing
         report["t_first_task_created_s"] = timing["run_click_to_first_task_created_s"]
         report["t_all_tasks_created_s"] = timing["run_click_to_all_tasks_created_s"]
+        report["creation_to_first_real_shot"] = timing["creation_to_first_shot_s"]
         report["creation_to_first_shot"] = timing["creation_to_first_shot_s"]
+        # Surface warm breakdown when present on the study activity log.
+        warm_timing = {}
+        for row in study.get("activity_log") or []:
+            if isinstance(row, dict) and row.get("warm_timing"):
+                warm_timing = row["warm_timing"]
+        report["warm_timing"] = warm_timing or None
         report["t_first_task_poll_s"] = (
             round(t_first_task - t0, 1) if t_first_task else None
         )
@@ -672,10 +690,12 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             "  timing: run→first_task="
             f"{timing['run_click_to_first_task_created_s']}s "
             f"run→all_tasks={timing['run_click_to_all_tasks_created_s']}s "
-            f"shot p50/p95/max="
+            f"REAL shot p50/p95/max="
             f"{timing['creation_to_first_shot_s']['p50']}/"
             f"{timing['creation_to_first_shot_s']['p95']}/"
-            f"{timing['creation_to_first_shot_s']['max']}s"
+            f"{timing['creation_to_first_shot_s']['max']}s "
+            f"missing_real={timing['creation_to_first_shot_s']['missing_shot']} "
+            f"warm={warm_timing or '{}'}"
         )
 
         fails = []

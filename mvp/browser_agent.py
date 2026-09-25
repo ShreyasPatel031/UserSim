@@ -6,6 +6,7 @@ import asyncio
 import json
 import os
 import shutil
+import time
 from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Any
@@ -608,6 +609,10 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
     screenshot_dir.mkdir(parents=True, exist_ok=True)
     bb_session = None
     browser_session = None
+    t0 = time.time()
+    t_bb_create: float | None = None
+    t_navigate_done: float | None = None
+    t_paint: float | None = None
     try:
         from browser_use import BrowserSession
 
@@ -618,11 +623,13 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
             owner="e2e",
             study_id=study_id,
         )
+        t_bb_create = time.time() - t0
         connect = getattr(bb_session, "connect_url", None)
         if not connect:
             raise RuntimeError("Browserbase session missing connect_url")
         browser_session = BrowserSession(browser_profile=_browserbase_profile(connect))
         await browser_session.start()
+        t_nav0 = time.time()
         await _emit_opening_frame(
             browser_session,
             screenshot_dir=screenshot_dir,
@@ -631,9 +638,11 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
             url=url,
             on_step=None,
         )
+        t_navigate_done = time.time() - t_nav0
         shot = screenshot_dir / "bbox_0.png"
         if not shot.is_file() or shot.stat().st_size < 100:
             raise RuntimeError("warm opening screenshot missing")
+        t_paint = time.time() - t0
         live_view = None
         try:
             from capability.browserbase_client import session_live_view_url
@@ -643,7 +652,22 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
                 live_view = await asyncio.to_thread(session_live_view_url, str(sid))
         except Exception as live_exc:  # noqa: BLE001
             print(f"[warm] live view url failed: {live_exc!r}", flush=True)
-        print(f"[warm] first pixels ready for {url}", flush=True)
+        timing = {
+            "bb_create_s": round(t_bb_create, 3) if t_bb_create is not None else None,
+            "navigate_and_paint_s": round(t_navigate_done, 3)
+            if t_navigate_done is not None
+            else None,
+            "first_paint_total_s": round(t_paint, 3) if t_paint is not None else None,
+            "blankish": _png_is_blankish(shot),
+        }
+        print(
+            f"[warm] first pixels ready for {url} "
+            f"bb_create={timing['bb_create_s']}s "
+            f"nav+paint={timing['navigate_and_paint_s']}s "
+            f"total={timing['first_paint_total_s']}s "
+            f"blankish={timing['blankish']}",
+            flush=True,
+        )
         return {
             "url": url,
             "bb_session": bb_session,
@@ -652,6 +676,7 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
             "owns_session": True,
             "live_view_url": live_view,
             "browserbase_session_id": getattr(bb_session, "id", None),
+            "timing": timing,
         }
     except Exception as exc:  # noqa: BLE001
         print(f"[warm] opening session failed: {exc!r}", flush=True)

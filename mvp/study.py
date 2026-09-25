@@ -92,33 +92,49 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def _mark_first_screenshot(sess: dict[str, Any] | None) -> None:
-    """Stamp first real screenshot time once (server-side, for e2e start budget)."""
+def _mark_first_screenshot(
+    sess: dict[str, Any] | None,
+    *,
+    study_id: str | None = None,
+    agent_id: str | None = None,
+) -> None:
+    """Stamp first REAL product screenshot (not placeholder / blank splash).
+
+    Shreyas rule: creation→first-shot counts only a frame the e2e judge would
+    accept — a non-blank paint of the target site. Placeholder PNGs are UI
+    polish only and must not set first_screenshot_at_ts.
+    """
     if not isinstance(sess, dict):
         return
     if sess.get("first_screenshot_at_ts") is not None:
         return
-    # Only count when a numbered trace row already carries a screenshot URL.
-    has_shot = False
+    from pathlib import Path as _Path
+
+    from mvp.browser_agent import _png_is_blankish
+    from mvp.paths import MVP_RUNS_DIR
+
+    aid = agent_id or str(sess.get("agent_id") or sess.get("task_id") or "")
+    sid = study_id or str(sess.get("study_id") or "")
     for step in sess.get("trace") or []:
         if not isinstance(step, dict):
             continue
-        if isinstance(step.get("step"), int) and step.get("screenshot_url"):
-            has_shot = True
-            break
-    if not has_shot:
+        if not isinstance(step.get("step"), int) or not step.get("screenshot_url"):
+            continue
+        if step.get("opening_placeholder") or step.get("opening_blankish"):
+            continue
+        # Confirm on-disk bytes aren't a splash / empty pane.
+        shot_name = _Path(str(step["screenshot_url"]).split("?", 1)[0]).name
+        if sid and aid and shot_name:
+            local = MVP_RUNS_DIR / sid / aid / "screenshots" / shot_name
+            if local.is_file() and _png_is_blankish(local):
+                continue
+        sess["first_screenshot_at"] = _now()
+        sess["first_screenshot_at_ts"] = time.time()
         return
-    sess["first_screenshot_at"] = _now()
-    sess["first_screenshot_at_ts"] = time.time()
 
 
 def _write_immediate_opening_png(dest, *, site: str, site_label: str = "") -> None:
-    """Non-blank first frame so creation→shot is instant when warm is late.
-
-    Flash-lite still waits for a real paint / same-site backfill; this only
-    satisfies the immediate-start timing gate and gives the stage something
-    to show. Sized >48KB so blankish detectors don't discard it.
-    """
+    """UI-only first frame when warm is late — does NOT count for e2e timing."""
     from pathlib import Path as _Path
 
     dest = _Path(dest)
@@ -127,7 +143,6 @@ def _write_immediate_opening_png(dest, *, site: str, site_label: str = "") -> No
 
     im = Image.new("RGB", (1280, 800), (32, 48, 72))
     draw = ImageDraw.Draw(im)
-    # Textured background so size + variance clear blankish heuristics.
     for y in range(0, 800, 2):
         shade = 40 + (y * 90) // 800
         draw.line([(0, y), (1280, y)], fill=(shade, 20 + shade // 2, 80 + shade // 3))
@@ -143,7 +158,6 @@ def _write_immediate_opening_png(dest, *, site: str, site_label: str = "") -> No
     draw.text((64, 70), title, fill=(240, 244, 250))
     draw.text((64, 120), host, fill=(160, 200, 230))
     draw.text((64, 170), "First frame · browser starting…", fill=(140, 160, 190))
-    # Noise strip to push PNG payload well above blankish size floor.
     for i in range(400):
         draw.point(
             ((i * 97) % 1280, (i * 53) % 800),
@@ -725,7 +739,7 @@ async def backfill_site_opening_shots(study: StudyState) -> int:
             if dest.is_file() and not _png_is_blankish(dest):
                 sess = study.live_sessions.get(aid) or {}
                 # Keep non-blank; still ensure first_screenshot stamp exists.
-                _mark_first_screenshot(sess)
+                _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                 continue
             try:
                 shutil.copy2(donor_path, dest)
@@ -758,7 +772,7 @@ async def backfill_site_opening_shots(study: StudyState) -> int:
             )]
             sess["trace"] = [step0, *trace]
             sess["num_steps"] = len(sess["trace"])
-            _mark_first_screenshot(sess)
+            _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
             if not sess.get("last_action"):
                 sess["last_action"] = step0["action"]
             filled += 1
@@ -1508,37 +1522,84 @@ async def run_study(
                 title=task.get("title"),
             )
 
-        # Finish warm captures BEFORE creating live sessions so each agent can
-        # get a first frame at creation (creation→first-shot budget is tight).
-        # Warm ran in parallel with page fetch + persona/task LLMs; wait long
-        # enough for heavy sites (YouTube/Linear) but never cancel late warms
-        # — they can still upgrade placeholders after create.
+        # Finish warm captures BEFORE creating live sessions. Creation→first
+        # REAL shot must be ≤5s, so every site needs a non-blank warm frame
+        # ready at create (placeholders do not count toward that budget).
         pending_warm: dict[str, asyncio.Task] = {}
+        warm_timing: dict[str, Any] = {}
+        needed_site_keys = {"product"}
+        for i, comp in enumerate((study.competitors or [])[:4]):
+            if comp:
+                needed_site_keys.add(f"competitor_{i+1}")
+
+        def _warm_is_real(warm: dict[str, Any] | None) -> bool:
+            if not warm or not warm.get("shot_path"):
+                return False
+            from mvp.browser_agent import _png_is_blankish as _blank
+
+            try:
+                return not _blank(warm["shot_path"])
+            except Exception:
+                return False
+
         if warm_site_tasks:
-            # Opening paint can take 20–40s per site under load; brief already
-            # burned most of that in parallel with LLMs.
-            timeout_s = float(os.environ.get("MVP_WARM_WAIT_S", "55") or "55")
-            done, pending = await asyncio.wait(
-                set(warm_site_tasks.values()), timeout=timeout_s
-            )
-            for key, task in list(warm_site_tasks.items()):
-                if task in pending:
-                    pending_warm[key] = task
-                    continue
-                try:
-                    result = task.result()
-                except Exception as warm_exc:  # noqa: BLE001
-                    print(f"warm {key} failed: {warm_exc!r}", flush=True)
-                    continue
-                if result and result.get("shot_path"):
-                    warm_by_site[key] = result
+            # Brief already ran in parallel; wait out remaining paint so we
+            # publish real product frames at session create.
+            timeout_s = float(os.environ.get("MVP_WARM_WAIT_S", "90") or "90")
+            deadline = time.time() + timeout_s
+            outstanding = dict(warm_site_tasks)
+            while outstanding and time.time() < deadline:
+                wait_s = max(0.1, min(5.0, deadline - time.time()))
+                done, pending = await asyncio.wait(
+                    set(outstanding.values()),
+                    timeout=wait_s,
+                    return_when=asyncio.FIRST_COMPLETED,
+                )
+                for key, task in list(outstanding.items()):
+                    if task not in done:
+                        continue
+                    outstanding.pop(key, None)
+                    try:
+                        result = task.result()
+                    except Exception as warm_exc:  # noqa: BLE001
+                        print(f"warm {key} failed: {warm_exc!r}", flush=True)
+                        continue
+                    if not result:
+                        continue
+                    if result.get("timing"):
+                        warm_timing[key] = result["timing"]
+                    if _warm_is_real(result):
+                        warm_by_site[key] = result
+                    elif result.get("shot_path"):
+                        print(
+                            f"warm {key} still blankish — not counting as real opening",
+                            flush=True,
+                        )
+                        # Keep a blank warm only as last-resort UI donor.
+                        warm_by_site.setdefault(f"_blank_{key}", result)
+                # Stop early when every needed site has a real frame.
+                if needed_site_keys.issubset(set(warm_by_site.keys())):
+                    break
+            for key, task in list(outstanding.items()):
+                pending_warm[key] = task
             if "product" in warm_by_site:
                 warm_opening = warm_by_site["product"]
             warm_task = None
             warm_site_tasks = {}
+            study.activity_log.append(
+                {
+                    "at": _now(),
+                    "kind": "browser",
+                    "message": (
+                        f"Warm ready real={sorted(k for k in warm_by_site if not str(k).startswith('_blank_'))} "
+                        f"pending={sorted(pending_warm.keys())}"
+                    ),
+                    "warm_timing": warm_timing,
+                }
+            )
             print(
-                f"warm ready for sites: {sorted(warm_by_site.keys())} "
-                f"pending={sorted(pending_warm.keys())}",
+                f"warm ready for sites: {sorted(k for k in warm_by_site if not str(k).startswith('_blank_'))} "
+                f"pending={sorted(pending_warm.keys())} timing={warm_timing}",
                 flush=True,
             )
 
@@ -1601,7 +1662,9 @@ async def run_study(
             sess["trace"] = [step0]
             sess["num_steps"] = 1
             sess["last_action"] = step0["action"]
-            _mark_first_screenshot(sess)
+            # Only real, non-blank product frames stamp the e2e timer.
+            if not placeholder and not blankish:
+                _mark_first_screenshot(sess, study_id=study.id, agent_id=agent_id)
             sess["live_thoughts"] = [
                 {
                     "at": _now(),
@@ -1654,7 +1717,7 @@ async def run_study(
             dest_dir.mkdir(parents=True, exist_ok=True)
             dest = dest_dir / "bbox_0.png"
             try:
-                if warm and warm.get("shot_path"):
+                if warm and _warm_is_real(warm):
                     await _publish_opening_to_sess(
                         sess=sess,
                         agent_id=agent_id,
@@ -1663,22 +1726,15 @@ async def run_study(
                         src_path=warm["shot_path"],
                         placeholder=False,
                     )
-                    if sess.get("trace") and (sess["trace"][0] or {}).get(
-                        "opening_blankish"
-                    ):
-                        print(
-                            f"warm publish blankish {agent_id} "
-                            f"({dest.stat().st_size} bytes) — stamped for immediate start",
-                            flush=True,
-                        )
                     log_activity(
                         study,
                         "browser",
-                        f"First screenshot ready for {site}",
+                        f"First real screenshot ready for {site}",
                         agent_id=agent_id,
                     )
                 else:
-                    # Warm still painting or failed — show a first frame NOW.
+                    # Warm still painting or blank — UI placeholder only
+                    # (does not stamp first_screenshot_at_ts).
                     _write_immediate_opening_png(
                         dest, site=site, site_label=site_label
                     )
@@ -1692,13 +1748,14 @@ async def run_study(
                         placeholder=True,
                     )
                     print(
-                        f"immediate placeholder opening {agent_id} for {site_key}",
+                        f"immediate placeholder opening {agent_id} for {site_key} "
+                        f"(real warm pending — timing not stamped)",
                         flush=True,
                     )
                     log_activity(
                         study,
                         "browser",
-                        f"Immediate opening frame for {site}",
+                        f"Placeholder opening for {site} (waiting on real paint)",
                         agent_id=agent_id,
                     )
             except Exception as pub_exc:  # noqa: BLE001
@@ -1771,7 +1828,7 @@ async def run_study(
                     ]
                     sess["trace"] = [step0, *rest]
                     sess["num_steps"] = len(sess["trace"])
-                    _mark_first_screenshot(sess)
+                    _mark_first_screenshot(sess, study_id=study.id, agent_id=aid)
                 except Exception as late_exc:  # noqa: BLE001
                     print(f"late warm apply {aid}: {late_exc!r}", flush=True)
             persist_study(study)
@@ -1977,7 +2034,7 @@ async def run_study(
                     sess["trace"].append(step)
                 sess["num_steps"] = len(sess["trace"])
                 sess["last_action"] = step.get("action") or ""
-                _mark_first_screenshot(sess)
+                _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                 refresh_agent_phase()
                 study.updated_at = _now()
                 persist_study(study)
@@ -2096,7 +2153,7 @@ async def run_study(
                     else:
                         sess["trace"] = existing
                     sess["num_steps"] = len(sess["trace"])
-                    _mark_first_screenshot(sess)
+                    _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                 study.agent_results.append(result)
                 log_activity(
                     study,
@@ -2393,7 +2450,7 @@ async def run_study(
                         sess["trace"].append(step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
-                    _mark_first_screenshot(sess)
+                    _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     thought = (step.get("thought") or "").strip()
                     if thought:
                         thoughts = list(sess.get("live_thoughts") or [])
@@ -2745,7 +2802,7 @@ async def run_study(
                     else:
                         sess["trace"] = snap_trace or existing
                     sess["num_steps"] = len(sess["trace"])
-                    _mark_first_screenshot(sess)
+                    _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     done_count += 1
                     study.agent_results.append(result)
                     refresh_agent_phase()
