@@ -193,16 +193,19 @@ Return JSON only:
     guess = str(result.get("visible_hostname_guess") or "").replace("www.", "").lower()
     host_ok = True
     if host:
-        host_ok = bool(
-            guess
-            and (
+        if guess:
+            host_ok = bool(
                 guess == host
                 or guess.endswith("." + host)
                 or host.endswith("." + guess)
                 or host.split(".")[0] in guess
                 or guess.split(".")[0] in host
             )
-        )
+        else:
+            # In-app / signup views often omit URL chrome from the PNG. When the
+            # vision judge already affirms real target-site content, don't fail
+            # solely on a missing hostname guess.
+            host_ok = bool(result.get("is_real_target_site_screenshot"))
         result["host_match"] = host_ok
     result["pass"] = bool(
         result.get("is_real_target_site_screenshot")

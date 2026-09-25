@@ -411,20 +411,20 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                         f"{verdict.get('reason')}"
                     )
                     if not verdict.get("pass"):
-                        # Opening frames can still be a splash for a beat —
-                        # keep waiting for a later real step while running.
-                        if (
-                            study.get("status") == "running"
-                            and int(shot.get("step") or 0) == 0
-                        ):
+                        # Keep waiting for a later real frame while the study runs.
+                        # Hard-aborting mid-run on one NO kills the whole matrix
+                        # (signup flows often lack hostname chrome in the PNG).
+                        if study.get("status") == "running":
                             _log(
-                                f"  defer NO on opening frame {aid}: "
+                                f"  defer NO {aid} step={shot.get('step')}: "
                                 f"{verdict.get('reason')}"
                             )
+                            judged.pop(aid, None)
                             continue
-                        raise RuntimeError(f"flash-lite NO for {aid}: {verdict}")
-                except RuntimeError:
-                    raise
+                        _log(
+                            f"  NO after complete {aid}: {verdict.get('reason')}"
+                        )
+                        # Keep the NO in judged; final gate counts yeses.
                 except Exception as exc:  # noqa: BLE001
                     _log(f"  judge skip {aid}: {exc!r}")
 
