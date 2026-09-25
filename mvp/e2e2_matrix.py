@@ -87,6 +87,9 @@ def _png_looks_blank(raw: bytes) -> bool:
     """Skip judging pure-black / splash frames while the agent is still painting."""
     if len(raw) < 2500:
         return True
+    # Logo-on-black splashes hover ~32KB; real pages are much larger.
+    if len(raw) < 48000:
+        return True
     try:
         from io import BytesIO
 
@@ -97,13 +100,13 @@ def _png_looks_blank(raw: bytes) -> bool:
         lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
         mean = sum(lums) / max(1, len(lums))
         var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
-        if mean < 22.0:
+        if mean < 25.0:
             return True
-        if mean < 35.0 and var < 180.0:
+        if mean < 40.0 and var < 250.0:
             return True
         return False
     except Exception:
-        return len(raw) < 12000
+        return len(raw) < 48000
 
 
 def _fetch_png(base: str, url: str, *, study_id: str = "", agent_id: str = "") -> bytes:
@@ -351,10 +354,28 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     # Don't fail the whole matrix on a black splash while the
                     # agent is still browsing — wait for a real paint.
                     if _png_looks_blank(raw):
+                        if study.get("status") == "running":
+                            _log(
+                                f"  skip blankish shot {aid} step={shot.get('step')} "
+                                f"({len(raw)} bytes) — waiting for paint"
+                            )
+                            continue
+                        # Study finished with only a splash — count as a miss,
+                        # don't spin forever skipping after complete.
                         _log(
-                            f"  skip blankish shot {aid} step={shot.get('step')} "
-                            f"({len(raw)} bytes) — waiting for paint"
+                            f"  blankish after complete {aid} step={shot.get('step')} "
+                            f"({len(raw)} bytes) — counting as miss"
                         )
+                        judged[aid] = {
+                            "agent_id": aid,
+                            "host": _hostname(
+                                sess.get("site_url") or shot.get("url") or args.url
+                            ),
+                            "step": shot.get("step"),
+                            "bytes": len(raw),
+                            "pass": False,
+                            "reason": "blank/splash frame after study complete",
+                        }
                         continue
                     try:
                         if await page.locator("#stage-section:not([hidden])").count():
@@ -403,7 +424,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 study.get("status") == "complete"
                 and study.get("summary")
                 and len(sessions) >= expected
-                and len(judged) >= expected
+                and (len(judged) >= expected or len(judged) >= len(sessions))
             ):
                 break
             if study.get("status") in {"error", "abandoned"}:

@@ -30,6 +30,10 @@ def _png_is_blankish(path: Path) -> bool:
     try:
         if not path.is_file() or path.stat().st_size < 2500:
             return True
+        # Vimeo/DailyMotion logo-on-black splashes are consistently ~32KB;
+        # real homepages with tiles land well above 80KB at 1280×800.
+        if path.stat().st_size < 48000:
+            return True
     except OSError:
         return True
     try:
@@ -40,16 +44,14 @@ def _png_is_blankish(path: Path) -> bool:
         lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
         mean = sum(lums) / max(1, len(lums))
         var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
-        # Near-black splash (Vimeo / YouTube logo-on-black). Grey logo on black
-        # can sit at mean 15–25 with very low variance — still not a real page.
-        if mean < 22.0:
+        if mean < 25.0:
             return True
-        if mean < 35.0 and var < 180.0:
+        if mean < 40.0 and var < 250.0:
             return True
         return False
     except Exception:
         try:
-            return path.stat().st_size < 12000
+            return path.stat().st_size < 48000
         except OSError:
             return True
 
@@ -422,6 +424,11 @@ async def _emit_opening_frame(
     if page is not None:
         try:
             await asyncio.wait_for(page.wait_for_load_state("domcontentloaded"), timeout=15)
+        except Exception:
+            pass
+        # Extra settle — 24-way Browserbase fleets often still show splash at DOMContentLoaded.
+        try:
+            await asyncio.sleep(1.5)
         except Exception:
             pass
         try:
