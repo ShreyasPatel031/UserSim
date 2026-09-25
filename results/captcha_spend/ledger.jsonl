@@ -57,3 +57,9 @@
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "render.com", "ts": "2026-09-25T23:17:23.539342+00:00", "when": "after"}
 {"attempt": 1, "event": "signup_start", "site": "cloudflare.com", "ts": "2026-09-25T23:17:24.876542+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "cloudflare.com", "ts": "2026-09-25T23:17:24.950357+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "cloudflare.com", "ts": "2026-09-25T23:18:50.709451+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "twilio.com", "ts": "2026-09-25T23:18:52.207231+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "twilio.com", "ts": "2026-09-25T23:18:52.255137+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "twilio.com", "ts": "2026-09-25T23:26:30.237274+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "resend.com", "ts": "2026-09-25T23:26:31.889989+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "resend.com", "ts": "2026-09-25T23:26:32.152055+00:00", "when": "before"}

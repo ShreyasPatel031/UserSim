@@ -1480,9 +1480,65 @@
         }
       ],
       "updated_at": "2026-09-25T23:17:23.786632+00:00"
+    },
+    "cloudflare.com": {
+      "reproducible": false,
+      "last_reason": "unknown",
+      "last_detail": "The provided email address 'shreyashfs+cloudflarefullb10@gmail.com' is already taken or a variation of it is, preventing account creation.",
+      "last_alias_tag": "cloudflarefullb10",
+      "last_ok": false,
+      "attempts": [
+        {
+          "host": "cloudflare.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "unknown",
+          "detail": "The provided email address 'shreyashfs+cloudflarefullb10@gmail.com' is already taken or a variation of it is, preventing account creation.",
+          "elapsed_s": 85.7,
+          "alias_tag": "cloudflarefullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/51571af6-9123-4890-aad3-ff3cee0abe00",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:18:50.938338+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:18:50.938338+00:00"
+    },
+    "twilio.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "twiliofullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "twilio.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 457.9,
+          "alias_tag": "twiliofullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/c5edf6a4-8494-47b6-a8a1-d68938037841",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:26:30.485708+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:26:30.485708+00:00"
     }
   },
-  "updated_at": "2026-09-25T23:17:23.787024+00:00",
+  "updated_at": "2026-09-25T23:26:30.486213+00:00",
   "reproducible": [
     "1password.com",
     "airtable.com",
@@ -1518,6 +1574,7 @@
     "substack.com",
     "toggl.com",
     "trello.com",
+    "twilio.com",
     "vercel.com",
     "webflow.com",
     "wix.com",
@@ -1528,6 +1585,7 @@
   ],
   "failed": [
     "bitwarden.com",
+    "cloudflare.com",
     "discord.com",
     "github.com",
     "hotjar.com",
@@ -1538,6 +1596,6 @@
     "todoist.com",
     "whimsical.com"
   ],
-  "score": "41/60",
-  "reproducible_count": 41
+  "score": "42/60",
+  "reproducible_count": 42
 }
