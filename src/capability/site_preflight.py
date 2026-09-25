@@ -12,13 +12,16 @@ KNOWN_BLOCKED_WEBSITES: frozenset[str] = frozenset({"uniqlo", "apartments"})
 
 _TITLE_BLOCK_RE = re.compile(
     r"access denied|403 forbidden|just a moment|attention required|verify you are human|"
-    r"robot check|pardon our interruption|security check|request blocked",
+    r"robot check|pardon our interruption|security check|request blocked|"
+    r"unable to give you access|access to our site at this time",
     re.I,
 )
 _BODY_BLOCK_RE = re.compile(
     r"access denied|akamai|you don't have permission|verify you are a human|"
     r"unusual traffic|automated access|bot detection|cf-browser-verification|"
-    r"please enable cookies|checking your browser|errors\.edgesuite\.net",
+    r"please enable cookies|checking your browser|errors\.edgesuite\.net|"
+    r"unable to give you access|security issue was automatically identified|"
+    r"prevent bots entering|triggered our security system|reference error:\s*[0-9a-f]",
     re.I,
 )
 _URL_BLOCK_RE = re.compile(r"/sorry/|captcha|challenge|recaptcha", re.I)

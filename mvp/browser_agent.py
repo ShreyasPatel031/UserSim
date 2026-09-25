@@ -598,12 +598,54 @@ def _urls_match(a: str, b: str) -> bool:
     return bool(a and b and norm(a) == norm(b))
 
 
-async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | None:
+async def _page_block_reason(browser_session: Any) -> str | None:
+    """Return a classify_page_block reason if the open tab is a WAF/deny interstitial."""
+    try:
+        from capability.site_preflight import classify_page_block
+
+        page = await asyncio.wait_for(browser_session.get_current_page(), timeout=5)
+        title = ""
+        final_url = ""
+        body = ""
+        try:
+            title = await asyncio.wait_for(page.title(), timeout=3)
+        except Exception:
+            pass
+        try:
+            final_url = str(page.url or "")
+        except Exception:
+            pass
+        try:
+            body = await asyncio.wait_for(
+                page.evaluate(
+                    "() => (document.body && (document.body.innerText || '')) "
+                    ".slice(0, 4000)"
+                ),
+                timeout=5,
+            )
+            body = str(body or "")
+        except Exception:
+            body = ""
+        blocked, reason = classify_page_block(
+            final_url=final_url, title=title or "", body=body or ""
+        )
+        return reason if blocked else None
+    except Exception as exc:  # noqa: BLE001
+        print(f"[warm] block classify skipped: {exc!r}", flush=True)
+        return None
+
+
+async def warm_opening_session(
+    *, study_id: str, url: str, proxies: bool = False
+) -> dict[str, Any] | None:
     """Create Browserbase + navigate + screenshot while brief LLMs run.
 
     Returns a live browser_session already on ``url`` with bbox_0.png written under
     ``MVP_RUNS_DIR / study_id / _warm``. Caller must either hand this to
     ``run_browser_agent(..., warm=...)`` or ``close_warm_opening``.
+
+    If the landing page is a WAF/access-denied interstitial, retries once with
+    residential proxies (generic — not site-specific).
     """
     if os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {"1", "true", "yes"}:
         return None
@@ -622,7 +664,7 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
 
         bb_session = await asyncio.to_thread(
             create_session,
-            proxies=False,
+            proxies=bool(proxies),
             keep_alive=True,
             owner="e2e",
             study_id=study_id,
@@ -659,6 +701,28 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
         shot = screenshot_dir / "bbox_0.png"
         if not shot.is_file() or shot.stat().st_size < 100:
             raise RuntimeError("warm opening screenshot missing")
+        block_reason = await _page_block_reason(browser_session)
+        if block_reason and not proxies:
+            print(
+                f"[warm] blocked interstitial for {url}: {block_reason} — "
+                "retrying with proxies",
+                flush=True,
+            )
+            try:
+                await close_warm_opening(
+                    {
+                        "bb_session": bb_session,
+                        "browser_session": browser_session,
+                        "owns_session": True,
+                    }
+                )
+            except Exception:
+                pass
+            bb_session = None
+            browser_session = None
+            return await warm_opening_session(
+                study_id=study_id, url=url, proxies=True
+            )
         t_paint = time.time() - t0
         live_view = None
         try:
@@ -676,13 +740,17 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
             else None,
             "first_paint_total_s": round(t_paint, 3) if t_paint is not None else None,
             "blankish": _png_is_blankish(shot),
+            "blocked": bool(block_reason),
+            "block_reason": block_reason,
+            "proxies": bool(proxies),
         }
         print(
             f"[warm] first pixels ready for {url} "
             f"bb_create={timing['bb_create_s']}s "
             f"nav+paint={timing['navigate_and_paint_s']}s "
             f"total={timing['first_paint_total_s']}s "
-            f"blankish={timing['blankish']}",
+            f"blankish={timing['blankish']} blocked={timing['blocked']} "
+            f"proxies={timing['proxies']}",
             flush=True,
         )
         return {
@@ -694,6 +762,8 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
             "live_view_url": live_view,
             "browserbase_session_id": getattr(bb_session, "id", None),
             "timing": timing,
+            "blocked": bool(block_reason),
+            "block_reason": block_reason,
         }
     except Exception as exc:  # noqa: BLE001
         print(f"[warm] opening session failed: {exc!r}", flush=True)

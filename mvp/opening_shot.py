@@ -86,10 +86,21 @@ async def attach_opening_pixels(
     local: Path,
     step: dict[str, Any],
 ) -> dict[str, Any]:
-    """Upload first, then add an inline data URL so the stream paints immediately."""
-    await upload_screenshot(study_id, agent_id, local)
+    """Inline data URL first (timing-critical), GCS upload in the background.
+
+    Creation→first-real-shot must stay ≤5s. Awaiting 24 sequential GCS uploads
+    of large marketing PNGs was blowing that budget on otherwise-ready warms.
+    """
     if step.get("step") == 0:
         data = png_data_url(local)
         if data:
             step["screenshot_data_url"] = data
+    # Fire-and-forget archival — local + inline pixels already satisfy e2e/UI.
+    try:
+        asyncio.create_task(
+            upload_screenshot(study_id, agent_id, local),
+            name=f"gcs-open-{study_id[:8]}-{agent_id}",
+        )
+    except Exception:
+        await upload_screenshot(study_id, agent_id, local)
     return step

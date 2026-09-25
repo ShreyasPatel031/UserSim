@@ -1535,6 +1535,10 @@ async def run_study(
         def _warm_is_real(warm: dict[str, Any] | None) -> bool:
             if not warm or not warm.get("shot_path"):
                 return False
+            # WAF / access-denied interstitials are non-blank but not a usable
+            # product frame — never stamp them as the e2e real shot.
+            if warm.get("blocked") or (warm.get("timing") or {}).get("blocked"):
+                return False
             from mvp.browser_agent import _png_is_blankish as _blank
 
             try:
@@ -1571,17 +1575,121 @@ async def run_study(
                     if _warm_is_real(result):
                         warm_by_site[key] = result
                     elif result.get("shot_path"):
+                        why = "blocked" if result.get("blocked") else "blankish"
                         print(
-                            f"warm {key} still blankish — not counting as real opening",
+                            f"warm {key} still {why} — not counting as real opening"
+                            + (
+                                f" ({result.get('block_reason')})"
+                                if result.get("block_reason")
+                                else ""
+                            ),
                             flush=True,
                         )
-                        # Keep a blank warm only as last-resort UI donor.
+                        # Keep a blank/blocked warm only as last-resort UI donor.
                         warm_by_site.setdefault(f"_blank_{key}", result)
                 # Stop early when every needed site has a real frame.
                 if needed_site_keys.issubset(set(warm_by_site.keys())):
                     break
             for key, task in list(outstanding.items()):
                 pending_warm[key] = task
+
+            # Competitors that stayed WAF-blocked after warm (+ proxy retry) cannot
+            # produce flash-lite YESes. Swap them for an alternate rival and re-warm
+            # before we stamp opening frames — generic, not per-site.
+            missing_comp_keys = sorted(
+                k
+                for k in needed_site_keys
+                if k != "product" and k not in warm_by_site
+            )
+            if missing_comp_keys and not study.test_mode:
+                try:
+                    from urllib.parse import urlparse as _urlparse
+
+                    from mvp.browser_agent import (
+                        close_warm_opening,
+                        warm_opening_session,
+                    )
+
+                    def _host(u: str) -> str:
+                        return (_urlparse(u).hostname or "").lower().removeprefix(
+                            "www."
+                        )
+
+                    used_hosts = {_host(study.url)} | {
+                        _host(c) for c in (study.competitors or []) if c
+                    }
+                    # Prefer LLM invent; fall back to skipping the blocked site.
+                    alts: list[str] = []
+                    try:
+                        alts = await invent_competitors(
+                            study.url,
+                            site_summary or study.url,
+                            page_text or "",
+                        )
+                    except Exception as inv_exc:  # noqa: BLE001
+                        print(f"competitor re-invent failed: {inv_exc!r}", flush=True)
+                    alts = [
+                        a
+                        for a in (alts or [])
+                        if a and _host(a) and _host(a) not in used_hosts
+                    ]
+                    for key in missing_comp_keys:
+                        if not alts:
+                            break
+                        idx = int(key.rsplit("_", 1)[-1]) - 1
+                        if idx < 0:
+                            continue
+                        new_url = alts.pop(0)
+                        old = (
+                            (study.competitors or [None] * (idx + 1))[idx]
+                            if study.competitors
+                            else None
+                        )
+                        while len(study.competitors) <= idx:
+                            study.competitors.append("")
+                        study.competitors[idx] = new_url
+                        used_hosts.add(_host(new_url))
+                        # Rewrite already-expanded matrix rows for this site_key.
+                        for t in study.tasks or []:
+                            if str(t.get("site_key") or "") == key:
+                                t["site_url"] = new_url
+                                t["site_label"] = (
+                                    f"Competitor · {_host(new_url) or new_url}"
+                                )
+                        log_activity(
+                            study,
+                            "plan",
+                            f"Swapped blocked competitor {old} → {new_url} ({key})",
+                        )
+                        print(
+                            f"warm swap {key}: {old!r} → {new_url!r}",
+                            flush=True,
+                        )
+                        try:
+                            blank = warm_by_site.pop(f"_blank_{key}", None)
+                            if blank:
+                                await close_warm_opening(blank)
+                        except Exception:
+                            pass
+                        try:
+                            swapped = await asyncio.wait_for(
+                                warm_opening_session(
+                                    study_id=f"{study.id}_{key}", url=new_url
+                                ),
+                                timeout=60,
+                            )
+                        except Exception as swap_exc:  # noqa: BLE001
+                            print(f"warm swap {key} failed: {swap_exc!r}", flush=True)
+                            swapped = None
+                        if swapped and swapped.get("timing"):
+                            warm_timing[key] = swapped["timing"]
+                        if _warm_is_real(swapped):
+                            warm_by_site[key] = swapped
+                        elif swapped:
+                            warm_by_site.setdefault(f"_blank_{key}", swapped)
+                except Exception as swap_all_exc:  # noqa: BLE001
+                    print(f"blocked-competitor swap skipped: {swap_all_exc!r}", flush=True)
+
             if "product" in warm_by_site:
                 warm_opening = warm_by_site["product"]
             warm_task = None
