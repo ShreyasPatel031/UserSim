@@ -28,6 +28,23 @@ from urllib.parse import urlparse
 from pydantic import BaseModel, Field
 
 from mvp.captcha import page_looks_captcha_blocked, solve_captcha_on_page
+
+
+async def _page_has_captcha_token(page: Any) -> bool:
+    """True when a captcha response textarea/input carries a real token."""
+    try:
+        return bool(
+            await page.evaluate(
+                """() => {
+                  const t = document.querySelector(
+                    '#g-recaptcha-response, textarea[name="g-recaptcha-response"], textarea[name="h-captcha-response"], input[name="cf-turnstile-response"], [name="h-captcha-response"]'
+                  );
+                  return !!(t && (t.value || '').length > 20);
+                }"""
+            )
+        )
+    except Exception:
+        return False
 from mvp.credentials import totp_code
 from mvp.email_codes import wait_for_signup_code, wait_for_signup_link
 from mvp.identity import (
@@ -754,6 +771,22 @@ def _build_signup_tools(ctx: dict[str, Any]):
                 include_in_memory=True,
             )
         result = await solve_captcha_on_page(page)
+        # Prefer hard proof: a response token. Soft "cleared" claims often leave
+        # the Sign up button disabled on Atlassian / Supabase / Discord.
+        if result.get("ok") and not await _page_has_captcha_token(page):
+            # Downgrade soft clears so the agent retries / reports blocked.
+            if (result.get("method") or "") in {
+                "browserbase",
+                "self_cleared",
+                "click",
+                "checkbox",
+                "oss_image",
+            }:
+                result = {
+                    "ok": False,
+                    "method": result.get("method"),
+                    "detail": f"no_token_after_{result.get('detail')}",
+                }
         if result.get("ok"):
             return ActionResult(
                 extracted_content=json.dumps(result),
