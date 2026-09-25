@@ -7,8 +7,9 @@ Backends (selected by ``MVP_SMS_BACKEND``):
   on the owner's Mac, and only while it is awake.
 - ``ntfy`` — read codes the phone itself forwards to an ntfy topic. The owner's
   real number, no Mac in the path, so this is the backend a Linux seed uses.
-- ``api`` — lease a disposable number from an HTTP provider (SMS-Activate or
-  TextVerified). Used when a product has already burned the real phone number.
+- ``api`` — lease a disposable number from TextVerified. Used when a product
+  has already burned the real phone number. SMS-Activate shut down on
+  2025-12-29 and is refused if selected.
 
 The default is platform-aware: ``messages`` on macOS, ``ntfy`` elsewhere when a
 topic is configured, because the Messages DB cannot exist on a VM.
@@ -17,9 +18,9 @@ Env:
   MVP_SMS_BACKEND=messages|ntfy|api
   MVP_NTFY_SMS_TOPIC=...   # defaults to "<ntfy_topic>-sms" from the vault
   MVP_NTFY_BASE=https://ntfy.sh
-  MVP_SMS_API=sms-activate|textverified
+  MVP_SMS_API=textverified
   MVP_SMS_API_KEY=...
-  MVP_SMS_COUNTRY=0   # SMS-Activate country id (0 = any/RU default — set explicitly)
+  MVP_SMS_COUNTRY=0   # legacy SMS-Activate country id; unused by the default
 """
 
 from __future__ import annotations
@@ -81,8 +82,17 @@ def _ntfy_headers() -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"} if token else {}
 
 
+# SMS-Activate's public API stopped on 2025-12-29. Do not call it, and do not
+# buy a replacement number from this module — TextVerified is only used when
+# MVP_SMS_BACKEND=api and a key is already configured.
+_SMS_ACTIVATE_SHUTDOWN = (
+    "SMS-Activate shut down on 2025-12-29 and is not a usable provider. "
+    "Set MVP_SMS_API=textverified. This code path does not buy a number."
+)
+
+
 def _api_name() -> str:
-    return (os.environ.get("MVP_SMS_API") or "sms-activate").strip().lower()
+    return (os.environ.get("MVP_SMS_API") or "textverified").strip().lower()
 
 
 def _api_key() -> str:
@@ -108,9 +118,8 @@ def vault_phone() -> str | None:
 def lease_number(service: str = "other") -> Number:
     """Lease (or reuse) a phone number for SMS verification.
 
-    ``service`` is a free-form product hint; SMS-Activate maps common short
-    codes (``go`` = Google, ``tg`` = Telegram, etc.). Unknown services fall
-    back to the ``ot`` (other) category.
+    ``service`` is a free-form product hint. The default HTTP provider is
+    TextVerified. SMS-Activate is refused (shut down 2025-12-29).
     """
     backend = _backend()
     if backend in {"messages", "local", "macos"}:
@@ -153,7 +162,7 @@ def lease_number(service: str = "other") -> Number:
         raise RuntimeError("MVP_SMS_BACKEND=api requires MVP_SMS_API_KEY")
     api = _api_name()
     if api in {"sms-activate", "smsactivate", "sms_activate"}:
-        return _sms_activate_lease(key, service)
+        raise RuntimeError(_SMS_ACTIVATE_SHUTDOWN)
     if api in {"textverified", "text-verified"}:
         return _textverified_lease(key, service)
     raise RuntimeError(f"Unknown MVP_SMS_API={api!r}")

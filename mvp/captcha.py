@@ -8,13 +8,14 @@ Layers (cheapest first):
 3. Open-source local solvers — optional ``captcha-solver-ai`` (reCAPTCHA image
    grids), reCAPTCHA audio + free STT (speech_recognition / vosk), and
    ``ddddocr`` (simple distorted-text captchas).
-4. Solver API — CapSolver or 2Captcha for sitekey-based reCAPTCHA / hCaptcha /
-   Turnstile. Returns a token the agent injects into the page.
+4. Solver API — CapSolver, 2Captcha, or Anti-Captcha for sitekey-based
+   reCAPTCHA (including Enterprise), hCaptcha, Turnstile, and Arkose.
+   Returns a token the agent injects into the page.
 5. Human push — ntfy + desktop notification; wait for ``secrets/captcha_done.txt``.
 
 Env:
   MVP_CAPTCHA_SOLVER=1          # enable browser-use captcha_solver flag
-  MVP_CAPTCHA_API=capsolver|2captcha
+  MVP_CAPTCHA_API=capsolver|2captcha|anti-captcha
   MVP_CAPTCHA_API_KEY=...
   MVP_CAPTCHA_OSS=1             # try local OSS solvers (default on)
   MVP_CAPTCHA_AUDIO=1           # try reCAPTCHA audio + free STT (default on)
@@ -26,9 +27,12 @@ from __future__ import annotations
 
 import asyncio
 import os
+import re
 import time
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 import httpx
 
@@ -80,21 +84,356 @@ def browserbase_captcha_kwargs() -> dict[str, Any]:
 
 
 # Known product sitekeys when the DOM hides them (invisible widgets).
+# Bland's React Turnstile does not put the key on .cf-turnstile; the widget
+# calls onSuccess(token) instead of a hidden g-recaptcha field.
 _KNOWN_SITEKEYS: dict[str, dict[str, str]] = {
     "supabase.com": {
         "type": "hcaptcha",
         "sitekey": "4ca1fdb9-c9c9-4495-ba50-c85fc0e7ec1f",
     },
+    "bland.ai": {
+        "type": "turnstile",
+        "sitekey": "0x4AAAAAAA-wFNpU7mZhDp4F",
+        "callback": "onSuccess",
+        "token_field": 'input[name="cf-turnstile-response"]',
+    },
 }
+
+_TURNSTILE_KEY_RE = re.compile(r"\b(0x4[A-Za-z0-9_-]{10,})\b")
+_ARKOSE_URL_RE = re.compile(
+    r"https?://[^\"'\s>]*arkoselabs\.com/(?:v2|fc)/([A-Za-z0-9-]{8,})/",
+    re.I,
+)
+_WIDGET_SELECTOR = (
+    "iframe[src*='recaptcha'], iframe[src*='hcaptcha'], iframe[src*='turnstile'], "
+    "iframe[src*='challenges.cloudflare.com'], iframe[src*='newassets.hcaptcha'], "
+    "iframe[src*='arkoselabs'], iframe[src*='funcaptcha'], "
+    ".g-recaptcha, .h-captcha, .cf-turnstile, [data-sitekey], "
+    "[data-captcha-sitekey], [data-captcha-provider], [data-pkey], "
+    ".funcaptcha, #funcaptcha, input[name='captcha']"
+)
+
+_CAPSOLVER_TYPES = {
+    "recaptcha": "ReCaptchaV2TaskProxyLess",
+    "recaptcha_v2": "ReCaptchaV2TaskProxyLess",
+    "recaptcha_v3": "ReCaptchaV3TaskProxyLess",
+    "recaptcha_enterprise": "ReCaptchaV2EnterpriseTaskProxyLess",
+    "recaptcha_v2_enterprise": "ReCaptchaV2EnterpriseTaskProxyLess",
+    "recaptcha_v3_enterprise": "ReCaptchaV3EnterpriseTaskProxyLess",
+    "hcaptcha": "HCaptchaTaskProxyLess",
+    "turnstile": "AntiTurnstileTaskProxyLess",
+    "arkose": "FunCaptchaTaskProxyLess",
+    "funcaptcha": "FunCaptchaTaskProxyLess",
+    "arkoselabs": "FunCaptchaTaskProxyLess",
+}
+
+_ANTICAPTCHA_TYPES = {
+    "recaptcha": "RecaptchaV2TaskProxyless",
+    "recaptcha_v2": "RecaptchaV2TaskProxyless",
+    "recaptcha_v3": "RecaptchaV3TaskProxyless",
+    "recaptcha_enterprise": "RecaptchaV2EnterpriseTaskProxyless",
+    "recaptcha_v2_enterprise": "RecaptchaV2EnterpriseTaskProxyless",
+    "recaptcha_v3_enterprise": "RecaptchaV3EnterpriseTaskProxyless",
+    "hcaptcha": "HCaptchaTaskProxyless",
+    "turnstile": "TurnstileTaskProxyless",
+    "arkose": "FunCaptchaTaskProxyless",
+    "funcaptcha": "FunCaptchaTaskProxyless",
+    "arkoselabs": "FunCaptchaTaskProxyless",
+}
+
+
+def _norm_captcha_type(captcha_type: str | None) -> str:
+    return (captcha_type or "recaptcha").strip().lower().replace("-", "_").replace(" ", "_")
+
+
+def capsolver_task_type(captcha_type: str | None) -> str | None:
+    return _CAPSOLVER_TYPES.get(_norm_captcha_type(captcha_type))
+
+
+def anticaptcha_task_type(captcha_type: str | None) -> str | None:
+    return _ANTICAPTCHA_TYPES.get(_norm_captcha_type(captcha_type))
+
+
+def twocaptcha_params(
+    captcha_type: str | None,
+    *,
+    sitekey: str,
+    page_url: str,
+    action: str | None,
+) -> dict[str, Any] | None:
+    """2Captcha in.php fields. None when this provider has no mapping."""
+    ct = _norm_captcha_type(captcha_type)
+    if ct == "hcaptcha":
+        return {"method": "hcaptcha", "sitekey": sitekey, "pageurl": page_url, "json": 1}
+    if ct == "turnstile":
+        return {"method": "turnstile", "sitekey": sitekey, "pageurl": page_url, "json": 1}
+    if ct in {"arkose", "funcaptcha", "arkoselabs"}:
+        return {"method": "funcaptcha", "publickey": sitekey, "pageurl": page_url, "json": 1}
+    if ct in {"recaptcha", "recaptcha_v2", "recaptcha_v3", "recaptcha_enterprise", "recaptcha_v2_enterprise", "recaptcha_v3_enterprise"}:
+        params: dict[str, Any] = {
+            "method": "userrecaptcha",
+            "googlekey": sitekey,
+            "pageurl": page_url,
+            "json": 1,
+        }
+        if "v3" in ct:
+            params["version"] = "v3"
+            if action:
+                params["action"] = action
+        if "enterprise" in ct:
+            params["enterprise"] = 1
+        return params
+    return None
+
+
+def _solver_task(
+    task_type: str,
+    *,
+    sitekey: str,
+    page_url: str,
+    action: str | None,
+) -> dict[str, Any]:
+    task: dict[str, Any] = {"type": task_type, "websiteURL": page_url}
+    if "FunCaptcha" in task_type:
+        # CapSolver and Anti-Captcha both want the Arkose public key here.
+        task["websitePublicKey"] = sitekey
+    else:
+        task["websiteKey"] = sitekey
+    if action and "V3" in task_type:
+        task["pageAction"] = action
+    return task
+
+
+def _host_matches(page_url: str, needle: str) -> bool:
+    host = (urlparse(page_url or "").hostname or "").lower()
+    return host == needle or host.endswith("." + needle)
+
+
+class _TagGrabber(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.tags: list[tuple[str, dict[str, str]]] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.tags.append((tag.lower(), {(k or "").lower(): (v or "") for k, v in attrs}))
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
+
+
+def _info_from_provider(provider: str, sitekey: str, attrs: dict[str, str]) -> dict[str, Any]:
+    action = (attrs.get("data-action") or attrs.get("data-captcha-action") or "").strip() or None
+    p = provider.replace("-", "_")
+    if "enterprise" in p and "v3" in p:
+        ctype = "recaptcha_v3_enterprise"
+    elif "enterprise" in p:
+        ctype = "recaptcha_enterprise"
+    elif "v3" in p and "recaptcha" in p:
+        ctype = "recaptcha_v3"
+    elif "hcaptcha" in p:
+        ctype = "hcaptcha"
+    elif "arkose" in p or "funcaptcha" in p:
+        ctype = "arkose"
+    elif "turnstile" in p:
+        ctype = "turnstile"
+    elif "recaptcha" in p:
+        ctype = "recaptcha"
+    else:
+        ctype = p or "recaptcha"
+    info: dict[str, Any] = {
+        "type": ctype,
+        "sitekey": sitekey or None,
+        "action": action,
+        "token_field": None,
+    }
+    if ctype.startswith("recaptcha"):
+        info["token_field"] = 'input[name="captcha"]'
+    elif ctype == "turnstile":
+        info["token_field"] = 'input[name="cf-turnstile-response"]'
+        info["callback"] = attrs.get("data-callback") or "onSuccess"
+    return info
+
+
+def _known_sitekey(page_url: str) -> dict[str, Any] | None:
+    for host, known in _KNOWN_SITEKEYS.items():
+        if _host_matches(page_url, host):
+            return dict(known)
+    return None
+
+
+def detect_captcha_in_html(html: str, page_url: str = "") -> dict[str, Any] | None:
+    """Find a captcha type + sitekey in saved (or live) page HTML.
+
+    Covers the widgets ``detect_sitekey`` used to miss: Auth0 reCAPTCHA
+    Enterprise (``data-captcha-provider`` / ``data-captcha-sitekey``, token in
+    ``input[name=captcha]``), Arkose/FunCaptcha (``data-pkey``), and Cloudflare
+    Turnstile keys that only appear inside a React bundle (``0x4...``).
+    """
+    raw = html or ""
+    parser = _TagGrabber()
+    try:
+        parser.feed(raw)
+    except Exception:
+        pass
+    tags = parser.tags
+
+    for _tag, attrs in tags:
+        provider = (attrs.get("data-captcha-provider") or "").strip().lower()
+        if not provider:
+            continue
+        sitekey = (attrs.get("data-captcha-sitekey") or attrs.get("data-sitekey") or "").strip()
+        info = _info_from_provider(provider, sitekey, attrs)
+        if info.get("sitekey"):
+            return info
+
+    arkose_key = ""
+    for _tag, attrs in tags:
+        pkey = (attrs.get("data-pkey") or "").strip()
+        blob = f"{attrs.get('class', '')} {attrs.get('id', '')}"
+        src = attrs.get("src") or ""
+        if pkey and re.search(r"arkose|funcaptcha|pkey", blob + " " + src, re.I):
+            arkose_key = pkey
+            break
+        if pkey and (re.search(r"arkose|funcaptcha", blob, re.I) or "arkoselabs" in src.lower()):
+            arkose_key = pkey
+            break
+        if re.search(r"arkoselabs|funcaptcha", src, re.I):
+            found = _ARKOSE_URL_RE.search(src)
+            if found:
+                arkose_key = found.group(1)
+                break
+        if pkey and re.search(r"arkose|funcaptcha", blob, re.I):
+            arkose_key = pkey
+            break
+    if not arkose_key:
+        # A bare data-pkey is Arkose's public key (FunCaptcha).
+        for _tag, attrs in tags:
+            if attrs.get("data-pkey"):
+                arkose_key = attrs["data-pkey"].strip()
+                break
+    if not arkose_key:
+        found = _ARKOSE_URL_RE.search(raw)
+        if found:
+            arkose_key = found.group(1)
+    if arkose_key:
+        return {"type": "arkose", "sitekey": arkose_key, "action": None, "token_field": None}
+
+    turnstile_key = ""
+    callback = None
+    for _tag, attrs in tags:
+        blob = f"{attrs.get('class', '')} {attrs.get('id', '')}"
+        src = attrs.get("src") or ""
+        key = (attrs.get("data-sitekey") or attrs.get("data-captcha-sitekey") or "").strip()
+        looks_turnstile = (
+            "cf-turnstile" in blob
+            or bool(re.search(r"turnstile|challenges\.cloudflare", src, re.I))
+            or key.startswith("0x4")
+        )
+        if not looks_turnstile:
+            continue
+        callback = attrs.get("data-callback") or callback
+        if key:
+            turnstile_key = key
+            break
+    if not turnstile_key:
+        found = _TURNSTILE_KEY_RE.search(raw)
+        if found:
+            turnstile_key = found.group(1)
+    if turnstile_key:
+        return {
+            "type": "turnstile",
+            "sitekey": turnstile_key,
+            "action": None,
+            "token_field": 'input[name="cf-turnstile-response"]',
+            "callback": callback or "onSuccess",
+        }
+
+    for _tag, attrs in tags:
+        blob = f"{attrs.get('class', '')} {attrs.get('id', '')}"
+        src = (attrs.get("src") or "")
+        key = (attrs.get("data-sitekey") or "").strip()
+        if re.search(r"h-?captcha", blob, re.I) or "hcaptcha" in src.lower():
+            if not key:
+                m = re.search(r"sitekey=([0-9a-f-]{36})", src, re.I)
+                key = m.group(1) if m else ""
+            if key:
+                return {"type": "hcaptcha", "sitekey": key, "action": attrs.get("data-action") or None, "token_field": None}
+        if "g-recaptcha" in blob or "recaptcha" in src.lower():
+            enterprise = "enterprise" in src.lower() or "enterprise" in blob.lower()
+            v3 = "render=" in src.lower() or (attrs.get("data-size") or "").lower() == "invisible" and bool(attrs.get("data-action"))
+            if not key:
+                m = re.search(r"[?&](?:render|sitekey)=([A-Za-z0-9_-]{20,})", src)
+                key = m.group(1) if m else ""
+            if key:
+                if enterprise and v3:
+                    ctype = "recaptcha_v3_enterprise"
+                elif enterprise:
+                    ctype = "recaptcha_enterprise"
+                elif v3 and "render=" in src.lower():
+                    ctype = "recaptcha_v3"
+                else:
+                    ctype = "recaptcha"
+                return {
+                    "type": ctype,
+                    "sitekey": key,
+                    "action": attrs.get("data-action") or None,
+                    "token_field": 'textarea[name="g-recaptcha-response"]',
+                }
+        if key and not key.startswith("0x4"):
+            ctype = "hcaptcha" if re.fullmatch(r"[0-9a-f-]{36}", key, re.I) else "recaptcha"
+            return {"type": ctype, "sitekey": key, "action": attrs.get("data-action") or None, "token_field": None}
+
+    known = _known_sitekey(page_url)
+    if known and known.get("sitekey"):
+        known.setdefault("action", None)
+        return known
+    return None
 
 
 async def detect_sitekey(page: Any) -> dict[str, Any] | None:
     """Scrape a visible captcha sitekey + type from the current page DOM."""
+    html = ""
+    url = ""
+    try:
+        content = getattr(page, "content", None)
+        if callable(content):
+            html = await content()
+    except Exception:
+        html = ""
+    try:
+        url = getattr(page, "url", "") or ""
+    except Exception:
+        url = ""
+    if html:
+        parsed = detect_captcha_in_html(str(html), page_url=str(url or ""))
+        if parsed and parsed.get("sitekey"):
+            return parsed
     script = """
     (() => {
-      const out = {type: null, sitekey: null, action: null};
-      const g = document.querySelector('[data-sitekey], .g-recaptcha, .h-captcha, .cf-turnstile');
-      if (g) {
+      const out = {type: null, sitekey: null, action: null, token_field: null, callback: null};
+      const ent = document.querySelector('[data-captcha-provider], [data-captcha-sitekey]');
+      if (ent) {
+        const provider = (ent.getAttribute('data-captcha-provider') || '').toLowerCase();
+        out.sitekey = ent.getAttribute('data-captcha-sitekey') || ent.getAttribute('data-sitekey');
+        if (provider.includes('enterprise') && provider.includes('v3')) out.type = 'recaptcha_v3_enterprise';
+        else if (provider.includes('enterprise')) out.type = 'recaptcha_enterprise';
+        else if (provider.includes('hcaptcha')) out.type = 'hcaptcha';
+        else if (provider.includes('arkose') || provider.includes('funcaptcha')) out.type = 'arkose';
+        else if (provider.includes('turnstile')) out.type = 'turnstile';
+        else if (provider.includes('v3')) out.type = 'recaptcha_v3';
+        else out.type = 'recaptcha';
+        out.action = ent.getAttribute('data-action') || ent.getAttribute('data-captcha-action');
+        if ((out.type || '').indexOf('recaptcha') === 0) out.token_field = 'input[name="captcha"]';
+      }
+      if (!out.sitekey) {
+        const ark = document.querySelector('[data-pkey]');
+        if (ark) {
+          out.sitekey = ark.getAttribute('data-pkey');
+          out.type = 'arkose';
+        }
+      }
+      const g = document.querySelector('[data-sitekey], .g-recaptcha, .h-captcha, .cf-turnstile, [data-captcha-sitekey]');
+      if (g && !out.sitekey) {
         out.sitekey = g.getAttribute('data-sitekey') || g.dataset.sitekey || null;
         const cls = (g.className || '') + ' ' + (g.id || '');
         if (/turnstile|cf-/i.test(cls) || g.tagName === 'DIV' && g.classList.contains('cf-turnstile'))
@@ -126,8 +465,19 @@ async def detect_sitekey(page: Any) -> dict[str, Any] | None:
             : /turnstile|challenges\\.cloudflare/i.test(src) ? 'turnstile' : 'recaptcha'; break; }
         }
       }
+      if (!out.sitekey) {
+        const html = (document.documentElement && document.documentElement.innerHTML) || '';
+        const m = html.match(/\\b(0x4[A-Za-z0-9_-]{10,})\\b/);
+        if (m) {
+          out.sitekey = m[1];
+          out.type = 'turnstile';
+          out.callback = 'onSuccess';
+          out.token_field = 'input[name="cf-turnstile-response"]';
+        }
+      }
       if (!out.sitekey && window.grecaptcha) out.type = out.type || 'recaptcha';
       if (!out.sitekey && window.hcaptcha) out.type = out.type || 'hcaptcha';
+      if (!out.sitekey && window.turnstile) out.type = out.type || 'turnstile';
       return out.sitekey ? out : (out.type ? out : null);
     })()
     """
@@ -141,12 +491,11 @@ async def detect_sitekey(page: Any) -> dict[str, Any] | None:
         url = (getattr(page, "url", "") or "").lower()
     except Exception:
         url = ""
-    for host, known in _KNOWN_SITEKEYS.items():
-        if host in url:
-            merged = dict(known)
-            if info and info.get("type"):
-                merged["type"] = info["type"]
-            return merged
+    known = _known_sitekey(str(url or ""))
+    if known and known.get("sitekey"):
+        if info and info.get("type") and not known.get("type"):
+            known["type"] = info["type"]
+        return known
     return info
 
 
@@ -172,8 +521,17 @@ def solve_sitekey(
             action=action,
             timeout_s=timeout_s,
         )
-    if api in {"2captcha", "twocaptcha", "anti-captcha", "anticaptcha"}:
+    if api in {"2captcha", "twocaptcha", "2-captcha"}:
         return _twocaptcha_solve(
+            key,
+            sitekey=sitekey,
+            page_url=page_url,
+            captcha_type=captcha_type,
+            action=action,
+            timeout_s=timeout_s,
+        )
+    if api in {"anti-captcha", "anticaptcha", "anti_captcha"}:
+        return _anticaptcha_solve(
             key,
             sitekey=sitekey,
             page_url=page_url,
@@ -193,21 +551,10 @@ def _capsolver_solve(
     action: str | None,
     timeout_s: float,
 ) -> str | None:
-    type_map = {
-        "recaptcha": "ReCaptchaV2TaskProxyLess",
-        "recaptcha_v2": "ReCaptchaV2TaskProxyLess",
-        "recaptcha_v3": "ReCaptchaV3TaskProxyLess",
-        "hcaptcha": "HCaptchaTaskProxyLess",
-        "turnstile": "AntiTurnstileTaskProxyLess",
-    }
-    task_type = type_map.get((captcha_type or "recaptcha").lower(), "ReCaptchaV2TaskProxyLess")
-    task: dict[str, Any] = {
-        "type": task_type,
-        "websiteURL": page_url,
-        "websiteKey": sitekey,
-    }
-    if action and "V3" in task_type:
-        task["pageAction"] = action
+    task_type = capsolver_task_type(captcha_type)
+    if not task_type:
+        return None
+    task = _solver_task(task_type, sitekey=sitekey, page_url=page_url, action=action)
     try:
         create = httpx.post(
             "https://api.capsolver.com/createTask",
@@ -247,29 +594,15 @@ def _twocaptcha_solve(
     action: str | None,
     timeout_s: float,
 ) -> str | None:
-    method = "userrecaptcha"
-    extra: dict[str, Any] = {}
-    ct = (captcha_type or "recaptcha").lower()
-    if ct == "hcaptcha":
-        method = "hcaptcha"
-    elif ct == "turnstile":
-        method = "turnstile"
-    elif "v3" in ct:
-        extra["version"] = "v3"
-        if action:
-            extra["action"] = action
+    params = twocaptcha_params(
+        captcha_type, sitekey=sitekey, page_url=page_url, action=action
+    )
+    if not params:
+        return None
     try:
         create = httpx.post(
             "https://2captcha.com/in.php",
-            data={
-                "key": key,
-                "method": method,
-                "googlekey": sitekey,
-                "sitekey": sitekey,
-                "pageurl": page_url,
-                "json": 1,
-                **extra,
-            },
+            data={"key": key, **params},
             timeout=30.0,
         ).json()
     except Exception:
@@ -292,6 +625,52 @@ def _twocaptcha_solve(
             return str(poll.get("request") or "") or None
         if poll.get("request") not in {"CAPCHA_NOT_READY", "CAPTCHA_NOT_READY"}:
             return None
+    return None
+
+
+def _anticaptcha_solve(
+    key: str,
+    *,
+    sitekey: str,
+    page_url: str,
+    captcha_type: str,
+    action: str | None,
+    timeout_s: float,
+) -> str | None:
+    """Anti-Captcha createTask/getTaskResult. Not the 2Captcha in.php API."""
+    task_type = anticaptcha_task_type(captcha_type)
+    if not task_type:
+        return None
+    task = _solver_task(task_type, sitekey=sitekey, page_url=page_url, action=action)
+    try:
+        create = httpx.post(
+            "https://api.anti-captcha.com/createTask",
+            json={"clientKey": key, "task": task},
+            timeout=30.0,
+        ).json()
+    except Exception:
+        return None
+    if create.get("errorId"):
+        return None
+    task_id = create.get("taskId")
+    if not task_id:
+        return None
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        time.sleep(3)
+        try:
+            result = httpx.post(
+                "https://api.anti-captcha.com/getTaskResult",
+                json={"clientKey": key, "taskId": task_id},
+                timeout=30.0,
+            ).json()
+        except Exception:
+            continue
+        if result.get("errorId"):
+            return None
+        if result.get("status") == "ready":
+            sol = result.get("solution") or {}
+            return sol.get("gRecaptchaResponse") or sol.get("token") or sol.get("response")
     return None
 
 
@@ -473,7 +852,9 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
                 """() => !!document.querySelector(
                   'iframe[src*="recaptcha"], iframe[src*="hcaptcha"], iframe[src*="turnstile"],' +
                   'iframe[src*="challenges.cloudflare.com"], iframe[src*="newassets.hcaptcha"],' +
-                  '.g-recaptcha, .h-captcha, .cf-turnstile, [data-sitekey]'
+                  'iframe[src*="arkoselabs"], iframe[src*="funcaptcha"],' +
+                  '.g-recaptcha, .h-captcha, .cf-turnstile, [data-sitekey],' +
+                  '[data-captcha-sitekey], [data-captcha-provider], [data-pkey], .funcaptcha'
                 )"""
             )
         )
@@ -553,7 +934,9 @@ async def _captcha_widget_present(page: Any) -> bool:
                 """() => !!document.querySelector(
                   'iframe[src*="recaptcha"], iframe[src*="hcaptcha"], iframe[src*="turnstile"],' +
                   'iframe[src*="challenges.cloudflare.com"], iframe[src*="newassets.hcaptcha"],' +
-                  '.g-recaptcha, .h-captcha, .cf-turnstile, [data-sitekey]'
+                  'iframe[src*="arkoselabs"], iframe[src*="funcaptcha"],' +
+                  '.g-recaptcha, .h-captcha, .cf-turnstile, [data-sitekey],' +
+                  '[data-captcha-sitekey], [data-captcha-provider], [data-pkey], .funcaptcha'
                 )"""
             )
         )
@@ -964,7 +1347,7 @@ async def _recaptcha_solved(page: Any) -> bool:
             await page.evaluate(
                 """() => {
                   const t = document.querySelector(
-                    '#g-recaptcha-response, textarea[name="g-recaptcha-response"], textarea[name="h-captcha-response"], input[name="cf-turnstile-response"]'
+                    '#g-recaptcha-response, textarea[name="g-recaptcha-response"], textarea[name="h-captcha-response"], input[name="cf-turnstile-response"], input[name="captcha"], textarea[name="captcha"]'
                   );
                   if (t && (t.value || '').length > 20) return true;
                   return false;
@@ -1303,13 +1686,58 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
     script = """
     (token) => {
       const set = (sel) => {
-        const el = document.querySelector(sel);
-        if (el) { el.value = token; el.innerHTML = token; el.dispatchEvent(new Event('input', {bubbles:true})); }
+        const nodes = document.querySelectorAll(sel);
+        nodes.forEach((el) => {
+          const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+          const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+          if (desc && desc.set) desc.set.call(el, token);
+          else el.value = token;
+          el.innerHTML = token;
+          el.dispatchEvent(new Event('input', {bubbles:true}));
+          el.dispatchEvent(new Event('change', {bubbles:true}));
+        });
       };
       set('textarea[name="g-recaptcha-response"]');
       set('textarea[name="h-captcha-response"]');
       set('input[name="cf-turnstile-response"]');
       set('#g-recaptcha-response');
+      // Auth0 Universal Login (Retell) posts the enterprise token in this field.
+      set('input[name="captcha"]');
+      set('textarea[name="captcha"]');
+      set('#captcha');
+      const callNamed = (name) => {
+        if (name && typeof window[name] === 'function') {
+          try { window[name](token); } catch (e) {}
+        }
+      };
+      document.querySelectorAll('[data-callback]').forEach((n) => callNamed(n.getAttribute('data-callback')));
+      callNamed('onTurnstileSuccess');
+      callNamed('onloadTurnstileCallback');
+      // Bland's React Cloudflare Turnstile stores the token handler on props.onSuccess.
+      const callReact = (props) => {
+        if (!props) return false;
+        for (const name of ['onSuccess', 'onVerify']) {
+          if (typeof props[name] === 'function') {
+            try { props[name](token); return true; } catch (e) {}
+          }
+        }
+        return false;
+      };
+      const nodes = document.querySelectorAll('div, form, span');
+      for (const el of nodes) {
+        let keys;
+        try { keys = Object.keys(el); } catch (e) { continue; }
+        for (const k of keys) {
+          if (k.indexOf('__reactProps') === 0 && callReact(el[k])) break;
+          if (k.indexOf('__reactFiber') === 0 || k.indexOf('__reactInternalInstance') === 0) {
+            let fiber = el[k];
+            for (let i = 0; i < 15 && fiber; i++) {
+              if (callReact(fiber.memoizedProps) || callReact(fiber.pendingProps)) break;
+              fiber = fiber.return;
+            }
+          }
+        }
+      }
       try {
         if (window.grecaptcha && window.___grecaptcha_cfg) {
           // best-effort callback fire
