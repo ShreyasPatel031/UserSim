@@ -51,7 +51,12 @@ def provision_fresh(url: str, *, nonce: str) -> Identity:
         raise RuntimeError("No base email in secrets/credentials.json")
     stem = host.split(".")[0]
     tag = f"{stem}{nonce}"[:32]
-    email = email_for_host(base["username"], host, tag=tag, force_dotted=True)
+    email = email_for_host(
+        base["username"],
+        host,
+        tag=tag,
+        force_dotted=uses_dotted_alias(host),
+    )
     now = datetime.now(timezone.utc).isoformat()
     identity = Identity(
         host=host,

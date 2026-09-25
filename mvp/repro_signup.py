@@ -95,7 +95,9 @@ def provision_fresh(host: str, *, nonce: str, force_dotted: bool = False) -> Ide
         raise RuntimeError("No base email in secrets/credentials.json")
     stem = host.split(".")[0]
     tag = f"{stem}{nonce}"[:32]
-    dotted = force_dotted or uses_dotted_alias(host) or True  # always dotted for repro
+    # Only force dotted on hosts that strip/reject '+'; everyone else gets a
+    # unique plus-tag (Notion rejected dotted locals in fresh-alias runs).
+    dotted = force_dotted or uses_dotted_alias(host)
     email = email_for_host(
         base["username"], host, tag=tag, force_dotted=dotted
     )
