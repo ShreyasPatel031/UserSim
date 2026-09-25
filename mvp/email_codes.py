@@ -388,12 +388,18 @@ def _alias_match(recipients: str, alias: str) -> bool:
     alias = (alias or "").strip().lower()
     if not alias:
         return False
-    if alias in recipients:
+    recipients_l = (recipients or "").lower()
+    if alias in recipients_l:
         return True
     # Gmail sometimes rewrites plus-aliases; also accept local+tag without domain.
-    if "+" in alias:
-        local = alias.split("@", 1)[0]
-        return local in recipients
+    local = alias.split("@", 1)[0]
+    if "+" in alias and local in recipients_l:
+        return True
+    # Dotted Gmail locals (ticktick.com rejects '+') — match with/without dots.
+    if "." in local:
+        nodot = local.replace(".", "")
+        if nodot and nodot in recipients_l.replace(".", ""):
+            return True
     return False
 
 
