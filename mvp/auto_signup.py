@@ -111,7 +111,6 @@ def _create_signup_browserbase_session():
     from capability.browserbase_client import create_session
 
     attempts = [
-        {"proxies": True, "solve_captchas": True, "advanced_stealth": True},
         {"proxies": True, "solve_captchas": True, "advanced_stealth": False},
         {"proxies": False, "solve_captchas": True, "advanced_stealth": False},
         {"proxies": False, "solve_captchas": False, "advanced_stealth": False},
@@ -119,7 +118,7 @@ def _create_signup_browserbase_session():
     last_exc: BaseException | None = None
     for kwargs in attempts:
         try:
-            session = create_session(keep_alive=True, **kwargs)
+            session = create_session(keep_alive=False, **kwargs)
             print(
                 f"Browserbase create ok with {kwargs}",
                 flush=True,
