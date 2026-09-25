@@ -342,19 +342,19 @@ _CAPTCHA_JS = """() => {
   if (/access denied|are you a robot|verify you are human|bot detection/i.test(text))
     markers.push('bot-wall');
   let box = null;
-  const nodes = document.querySelectorAll('button, [role=button], div, span, p, a, #px-captcha, .px-captcha');
+  const nodes = document.querySelectorAll('button, [role=button], div, span, p, a, iframe, #px-captcha, .px-captcha, [id*="px-captcha"]');
   for (const el of nodes) {
-    const t = (el.innerText || el.getAttribute('aria-label') || '').trim();
-    const id = ((el.id || '') + ' ' + (el.className || '')).toLowerCase();
-    const hold = /press\\s*(?:&|and)\\s*hold/i.test(t) || id.includes('px-captcha');
+    const t = (el.innerText || el.getAttribute('aria-label') || el.title || '').trim();
+    const id = ((el.id || '') + ' ' + (el.className || '') + ' ' + (el.src || '')).toLowerCase();
+    const hold = /press\\s*(?:&|and)?\\s*hold/i.test(t) || /\\bhold\\b/i.test(t) && t.length < 48 || id.includes('px-captcha') || id.includes('perimeterx');
     if (!hold) continue;
-    if (t.length > 160 && !id.includes('px-captcha')) continue;
+    if (t.length > 180 && !id.includes('px-captcha')) continue;
     const r = el.getBoundingClientRect();
-    if (r.width < 16 || r.height < 10) continue;
+    if (r.width < 24 || r.height < 12) continue;
     if (r.bottom < 0 || r.top > (window.innerHeight || 800)) continue;
     box = {
       x: Math.round(r.x + r.width / 2),
-      y: Math.round(r.y + Math.min(r.height / 2, 48)),
+      y: Math.round(r.y + r.height / 2),
       text: (t || id).slice(0, 80),
     };
     break;
@@ -521,7 +521,8 @@ def _study_tools() -> Any:
     async def press_and_hold(x: int, y: int, browser_session, seconds: int = 10):  # noqa: ANN001
         if browser_session is None:
             return ActionResult(error="No browser session for press_and_hold")
-        hold = max(2.0, min(12.0, float(seconds or MVP_HOLD_S)))
+        # PerimeterX ignores a short press. Always hold about 10s.
+        hold = 10.0
         try:
             await _mouse_path(browser_session, [(int(x), int(y))], hold_s=hold)
         except Exception as exc:  # noqa: BLE001
