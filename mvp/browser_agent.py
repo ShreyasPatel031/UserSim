@@ -27,14 +27,15 @@ MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "120") or "120")
 
 
 def _png_is_blankish(path: Path) -> bool:
-    """True when the shot is basically black / empty (loading splash)."""
+    """True when the shot is basically black / empty (loading splash).
+
+    Align with e2e2 `_png_looks_blank`: small logo-on-black splashes (~32KB)
+    are blank; large dark product UIs (Linear, etc.) with real texture are not.
+    """
     try:
         if not path.is_file() or path.stat().st_size < 2500:
             return True
-        # Vimeo/DailyMotion logo-on-black splashes are consistently ~32KB;
-        # real homepages with tiles land well above 80KB at 1280×800.
-        if path.stat().st_size < 48000:
-            return True
+        size = path.stat().st_size
     except OSError:
         return True
     try:
@@ -45,16 +46,19 @@ def _png_is_blankish(path: Path) -> bool:
         lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
         mean = sum(lums) / max(1, len(lums))
         var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
-        if mean < 25.0:
-            return True
-        if mean < 40.0 and var < 250.0:
+        # Small payloads: logo-on-black splash or empty pane.
+        if size < 48000:
+            if mean < 25.0:
+                return True
+            if mean < 40.0 and var < 250.0:
+                return True
+            return False
+        # Large payloads: only near-uniform near-black (empty canvas).
+        if mean < 12.0 and var < 80.0:
             return True
         return False
     except Exception:
-        try:
-            return path.stat().st_size < 48000
-        except OSError:
-            return True
+        return size < 48000
 
 
 def _history_to_actions(history) -> list[dict]:
@@ -630,12 +634,25 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
         browser_session = BrowserSession(browser_profile=_browserbase_profile(connect))
         await browser_session.start()
         t_nav0 = time.time()
+        # YouTube signed-out home is often an empty splash in automation —
+        # warm a search-results URL so we get a real product frame for e2e.
+        paint_url = url
+        try:
+            host = (urlparse(url).hostname or "").lower()
+            if "youtube.com" in host or "youtu.be" in host:
+                from mvp.auth_state import youtube_bootstrap_url
+
+                paint_url = youtube_bootstrap_url("videos to watch", "warm")
+                print(f"[warm] YouTube bootstrap paint via {paint_url}", flush=True)
+        except Exception as yt_exc:  # noqa: BLE001
+            print(f"[warm] YouTube bootstrap skipped: {yt_exc!r}", flush=True)
+            paint_url = url
         await _emit_opening_frame(
             browser_session,
             screenshot_dir=screenshot_dir,
             study_id=study_id,
             agent_id="_warm",
-            url=url,
+            url=paint_url,
             on_step=None,
         )
         t_navigate_done = time.time() - t_nav0
