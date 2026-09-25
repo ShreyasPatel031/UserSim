@@ -1,0 +1,38 @@
+{
+  "id": "retell-test-minimal",
+  "product_name": "Retell AI",
+  "product_url": "https://www.retellai.com",
+  "lede": "Minimal test run - 2 agents only",
+  "comparison_note": "",
+  "personas": [
+    {
+      "id": "p1_test",
+      "name": "Test User",
+      "bio": "Testing the experiment runner",
+      "occupation": "QA Engineer"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1_pricing",
+      "title": "Find pricing",
+      "prompt": "Find pricing information for Retell AI on their website. Look for pricing page or plans information. Note what you find.",
+      "success_criteria": "Pricing or plans information is visible"
+    },
+    {
+      "id": "t2_docs",
+      "title": "Find documentation",
+      "prompt": "Find the documentation or developer resources for Retell AI. Look for API docs, guides, or developer portal.",
+      "success_criteria": "Documentation or developer resources are visible"
+    }
+  ],
+  "assignments": [
+    {"persona_id": "p1_test", "task_id": "t1_pricing"},
+    {"persona_id": "p1_test", "task_id": "t2_docs"}
+  ],
+  "config": {
+    "max_steps": 15,
+    "timeout_s": 120,
+    "browserbase_owner": "report"
+  }
+}

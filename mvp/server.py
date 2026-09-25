@@ -874,3 +874,82 @@ def _resolve_trace_asset(trace_name: str, rel: str) -> Path | None:
         if path.is_file():
             return path
     return None
+
+
+# ============ Experiment & Study Report Routes ============
+
+@app.get("/study/{slug}")
+async def study_report_page(slug: str) -> FileResponse:
+    """Serve the unified study report page for any experiment."""
+    path = STATIC / "study_report.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Study report page not bundled")
+    return FileResponse(path, media_type="text/html")
+
+
+@app.get("/retell")
+async def retell_page() -> FileResponse:
+    """Serve the Retell AI study page."""
+    path = STATIC / "study_report.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Study report page not bundled")
+    return FileResponse(path, media_type="text/html")
+
+
+@app.get("/api/experiment/{experiment_id}")
+async def get_experiment(experiment_id: str):
+    """Get experiment results by ID."""
+    from mvp.experiment_runner import load_experiment_result, RESULTS_DIR
+    
+    if not re.fullmatch(r"[\w.-]+", experiment_id):
+        raise HTTPException(status_code=400, detail="Invalid experiment id")
+    
+    result = load_experiment_result(experiment_id)
+    if result:
+        return result
+    
+    # Also check for slug-based lookups (e.g., "retell" -> "retell-study-2026")
+    for path in RESULTS_DIR.glob("*.json"):
+        try:
+            data = json.loads(path.read_text())
+            slug = data.get("product_name", "").lower().replace(" ", "-").replace("_", "-")
+            if slug == experiment_id or data.get("id", "").startswith(experiment_id):
+                return data
+        except Exception:
+            continue
+    
+    raise HTTPException(status_code=404, detail="Experiment not found")
+
+
+@app.get("/api/experiments")
+async def list_experiments():
+    """List all available experiments and their results."""
+    from mvp.experiment_runner import list_experiments, list_experiment_results
+    
+    return {
+        "specs": list_experiments(),
+        "results": list_experiment_results(),
+    }
+
+
+@app.get("/api/experiment/{experiment_id}/agents/{agent_id}/screenshots/{filename}")
+async def get_experiment_screenshot(experiment_id: str, agent_id: str, filename: str):
+    """Get a screenshot from an experiment run."""
+    if not re.fullmatch(r"[\w.-]+", experiment_id):
+        raise HTTPException(status_code=400, detail="Invalid experiment id")
+    if not re.fullmatch(r"[\w.-]+", agent_id):
+        raise HTTPException(status_code=400, detail="Invalid agent id")
+    if not re.fullmatch(r"(?:step|bbox)_\d+\.png", filename):
+        raise HTTPException(status_code=400, detail="Invalid screenshot name")
+    
+    study_id = f"exp_{experiment_id}"
+    path = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / filename
+    if path.is_file():
+        return FileResponse(path, media_type="image/png")
+    
+    # Try alternate path without exp_ prefix
+    path = MVP_RUNS_DIR / experiment_id / agent_id / "screenshots" / filename
+    if path.is_file():
+        return FileResponse(path, media_type="image/png")
+    
+    raise HTTPException(status_code=404, detail="Screenshot not found")

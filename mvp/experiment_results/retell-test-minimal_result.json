@@ -1,0 +1,150 @@
+{
+  "id": "retell-test-minimal",
+  "url": "https://www.retellai.com",
+  "product_name": "Retell AI",
+  "lede": "Minimal test run - 2 agents only",
+  "comparison_note": "",
+  "segment": "Minimal test run - 2 agents only",
+  "status": "complete",
+  "phase": "Complete",
+  "created_at": "2026-09-25T08:06:01.532271+00:00",
+  "updated_at": "2026-09-25T08:09:33.984641+00:00",
+  "personas": [
+    {
+      "id": "p1_test",
+      "name": "Test User",
+      "bio": "Testing the experiment runner",
+      "occupation": "QA Engineer"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1_pricing",
+      "title": "Find pricing",
+      "prompt": "Find pricing information for Retell AI on their website. Look for pricing page or plans information. Note what you find.",
+      "persona_id": "p1_test"
+    },
+    {
+      "id": "t2_docs",
+      "title": "Find documentation",
+      "prompt": "Find the documentation or developer resources for Retell AI. Look for API docs, guides, or developer portal.",
+      "persona_id": "p1_test"
+    }
+  ],
+  "agent_results": [
+    {
+      "agent_id": "p1_test_t1_pricing",
+      "task_id": "t1_pricing",
+      "goal_key": "t1_pricing",
+      "persona_id": "p1_test",
+      "persona_name": "Test User",
+      "task_title": "Find pricing",
+      "task_prompt": "Find pricing information for Retell AI on their website. Look for pricing page or plans information. Note what you find.",
+      "platform": "retell_ai",
+      "status": "complete",
+      "success": false,
+      "judge_status": "FAIL",
+      "final_url": "https://www.retellai.com/",
+      "num_actions": 3,
+      "difficulty": "medium",
+      "likes": [],
+      "dislikes": [],
+      "friction_points": [],
+      "what_was_easy": [],
+      "quote": "",
+      "product_feedback": "",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Opened https://www.retellai.com",
+          "observation": "Landing page loaded \u2014 agent starting\u2026",
+          "thought": "",
+          "thought_detail": {},
+          "url": "https://www.retellai.com",
+          "screenshot_url": "/api/studies/exp_retell-test-minimal/agents/p1_test_t1_pricing/screenshots/bbox_0.png",
+          "boxes": [],
+          "outcome": "neutral",
+          "evidence_label": "Opening frame \u00b7 before agent steps"
+        },
+        {
+          "step": 1,
+          "action": "navigate \u2014 url=https://www.retellai.com",
+          "observation": "\ud83d\udd17 Navigated to https://www.retellai.com",
+          "thought": "Initial navigation",
+          "thought_detail": {
+            "evaluation_previous_goal": "Start",
+            "next_goal": "Initial navigation"
+          },
+          "url": "https://www.retellai.com",
+          "screenshot_url": null,
+          "outcome": "neutral"
+        },
+        {
+          "step": 2,
+          "action": "click \u2014 index=4093",
+          "observation": "is_done=False success=None judgement=None error='Failed to click element 4093: [DefaultActionWatchdog.on_ClickElementEvent] Reconnection failed \u2014 CDP still not connected' attachments=None images=None long_term_memory=None extracted_content=None include_extracted_content_only_once=False metadata=None",
+          "thought": "Dismiss the cookie banner by clicking the 'Close' button.",
+          "thought_detail": {
+            "thinking": "The user wants me to find pricing information on the Retell AI website. I am currently on the homepage. I see a 'Pricing' link in the navigation bar. Before clicking on it, I should dismiss the cookie banner that is currently obscuring part of the page. I will click on the 'Close' button for the cookie banner first.",
+            "evaluation_previous_goal": "Agent initialized and navigated to the homepage. Verdict: Success",
+            "next_goal": "Dismiss the cookie banner by clicking the 'Close' button.",
+            "memory": "Currently on the Retell AI homepage. Need to dismiss the cookie banner and then navigate to the pricing page."
+          },
+          "url": "https://www.retellai.com/",
+          "screenshot_url": "/api/studies/exp_retell-test-minimal/agents/p1_test_t1_pricing/screenshots/step_2.png",
+          "outcome": "neutral"
+        }
+      ],
+      "judge_reason": ""
+    },
+    {
+      "agent_id": "p1_test_t2_docs",
+      "task_id": "t2_docs",
+      "goal_key": "t2_docs",
+      "persona_id": "p1_test",
+      "persona_name": "Test User",
+      "task_title": "Find documentation",
+      "task_prompt": "Find the documentation or developer resources for Retell AI. Look for API docs, guides, or developer portal.",
+      "platform": "retell_ai",
+      "status": "complete",
+      "success": false,
+      "judge_status": "FAIL",
+      "final_url": "",
+      "num_actions": 1,
+      "difficulty": "medium",
+      "likes": [],
+      "dislikes": [],
+      "friction_points": [],
+      "what_was_easy": [],
+      "quote": "",
+      "product_feedback": "",
+      "trace": [
+        {
+          "step": 0,
+          "action": "Opened https://www.retellai.com",
+          "observation": "Landing page loaded \u2014 agent starting\u2026",
+          "thought": "",
+          "thought_detail": {},
+          "url": "https://www.retellai.com",
+          "screenshot_url": "/api/studies/exp_retell-test-minimal/agents/p1_test_t2_docs/screenshots/bbox_0.png",
+          "boxes": [],
+          "outcome": "neutral",
+          "evidence_label": "Opening frame \u00b7 before agent steps"
+        }
+      ],
+      "judge_reason": ""
+    }
+  ],
+  "live_sessions": {},
+  "summary": {
+    "headline": "Retell AI study: 0/2 tasks completed",
+    "top_friction": [],
+    "top_strengths": [],
+    "segment_fit_score": 0,
+    "segment_fit_rationale": "Based on 2 simulated user sessions",
+    "conversion_outlook": "0 of 2 users completed their tasks",
+    "recommendations": []
+  },
+  "error": null,
+  "credits_used": {}
+}
