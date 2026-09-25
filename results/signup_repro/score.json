@@ -1396,10 +1396,95 @@
         }
       ],
       "updated_at": "2026-09-25T22:59:58.218165+00:00"
+    },
+    "1password.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "1passwordfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "1password.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 255.1,
+          "alias_tag": "1passwordfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/d2bb0821-531b-4b19-9ae2-ef9bfd7ee2db",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:09:49.992785+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:09:49.992785+00:00"
+    },
+    "toggl.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "togglfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "toggl.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 110.3,
+          "alias_tag": "togglfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/400fd42f-487e-43af-acb3-d76a3fd22ece",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:11:41.911508+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:11:41.911508+00:00"
+    },
+    "render.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "renderfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "render.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 339.8,
+          "alias_tag": "renderfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/6d0d3438-ef5f-4d60-8713-7be908e7f5d0",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:17:23.786632+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:17:23.786632+00:00"
     }
   },
-  "updated_at": "2026-09-25T23:05:33.489469+00:00",
+  "updated_at": "2026-09-25T23:17:23.787024+00:00",
   "reproducible": [
+    "1password.com",
     "airtable.com",
     "asana.com",
     "buffer.com",
@@ -1427,9 +1512,11 @@
     "netlify.com",
     "notion.so",
     "pinterest.com",
+    "render.com",
     "smartsheet.com",
     "stackblitz.com",
     "substack.com",
+    "toggl.com",
     "trello.com",
     "vercel.com",
     "webflow.com",
@@ -1451,6 +1538,6 @@
     "todoist.com",
     "whimsical.com"
   ],
-  "score": "38/60",
-  "reproducible_count": 38
+  "score": "41/60",
+  "reproducible_count": 41
 }

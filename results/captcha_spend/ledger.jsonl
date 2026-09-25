@@ -46,3 +46,14 @@
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "intercom.com", "ts": "2026-09-25T23:05:33.239092+00:00", "when": "after"}
 {"attempt": 1, "event": "signup_start", "site": "1password.com", "ts": "2026-09-25T23:05:34.520337+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "1password.com", "ts": "2026-09-25T23:05:34.557575+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "1password.com", "ts": "2026-09-25T23:09:49.746459+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "toggl.com", "ts": "2026-09-25T23:09:51.292205+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "toggl.com", "ts": "2026-09-25T23:09:51.328621+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "toggl.com", "ts": "2026-09-25T23:11:41.663025+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "render.com", "ts": "2026-09-25T23:11:42.951669+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "render.com", "ts": "2026-09-25T23:11:43.017753+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "render.com", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T23:14:03.838179+00:00"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "render.com", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T23:16:31.815006+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "render.com", "ts": "2026-09-25T23:17:23.539342+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "cloudflare.com", "ts": "2026-09-25T23:17:24.876542+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "cloudflare.com", "ts": "2026-09-25T23:17:24.950357+00:00", "when": "before"}
