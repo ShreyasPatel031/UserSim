@@ -28,6 +28,7 @@ from mvp.identity import (  # noqa: E402
     email_for_host,
     host_for_url,
     profile_path_for_host,
+    uses_dotted_alias,
 )
 from mvp.auto_signup import sign_up  # noqa: E402
 
@@ -109,7 +110,9 @@ def _running_signup_sessions() -> int:
         return -1
 
 
-async def run_one(name: str, url: str, *, nonce: str, timeout: float) -> dict:
+async def run_one(
+    name: str, url: str, *, nonce: str, timeout: float, shot_dir: Path | None = None
+) -> dict:
     from capability.browserbase_client import reset_local_slots
     from mvp.kill_switch import kill_all_browserbase
     try:
@@ -151,6 +154,7 @@ async def run_one(name: str, url: str, *, nonce: str, timeout: float) -> dict:
         timeout_s=timeout,
         headed=False,
         identity=ident,
+        product_host=ident.host,
     )
     elapsed = round(time.time() - t0, 1)
     try:
@@ -164,6 +168,16 @@ async def run_one(name: str, url: str, *, nonce: str, timeout: float) -> dict:
     if "email" in safe and isinstance(safe["email"], str) and "@" in safe["email"]:
         e = safe["email"]
         safe["email"] = e.split("+")[0][:3] + "+…@" + e.split("@")[1]
+    shot = ROOT / "secrets" / "signup_steps" / ident.host / "final.png"
+    shot_rel = ""
+    if shot_dir is not None and shot.is_file():
+        dest = shot_dir / f"{name}.png"
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(shot.read_bytes())
+        try:
+            shot_rel = str(dest.relative_to(ROOT))
+        except ValueError:
+            shot_rel = str(dest)
     out = {
         "site": name,
         "url": url,
@@ -172,8 +186,12 @@ async def run_one(name: str, url: str, *, nonce: str, timeout: float) -> dict:
         "detail": (safe.get("detail") or "")[:240],
         "elapsed_s": elapsed,
         "alias_tag": ident.alias_tag,
+        "email_scheme": "dotted" if "+" not in ident.email else "plus",
+        "signed_via": safe.get("signed_via"),
+        "ignored_blocker": safe.get("ignored_blocker"),
         "backend": safe.get("backend"),
         "bb_session": safe.get("browserbase_session_url"),
+        "screenshot": shot_rel,
         "running_signup_before": running,
         "running_signup_after": running_after,
         "released_after": post,
@@ -202,6 +220,8 @@ def main() -> None:
 
     nonce_base = args.nonce or secrets.token_hex(3)
     sites = [s.strip() for s in args.sites.split(",") if s.strip()]
+    out = Path(args.out)
+    shot_dir = ROOT / "results" / "signup_matrix" / f"{args.branch_label}_{nonce_base}"
     results = []
     for i, name in enumerate(sites):
         url = SITES.get(name)
@@ -210,7 +230,15 @@ def main() -> None:
         nonce = f"{nonce_base}{i:x}"
         try:
             results.append(
-                asyncio.run(run_one(name, url, nonce=nonce, timeout=args.timeout))
+                asyncio.run(
+                    run_one(
+                        name,
+                        url,
+                        nonce=nonce,
+                        timeout=args.timeout,
+                        shot_dir=shot_dir,
+                    )
+                )
             )
         except Exception as exc:  # noqa: BLE001
             results.append(

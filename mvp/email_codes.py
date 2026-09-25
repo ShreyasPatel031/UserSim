@@ -123,7 +123,13 @@ def _find_code(subject: str, body: str) -> str | None:
             return None
         if value.isdigit() and 4 <= len(value) <= 8:
             return value
-        if re.fullmatch(r"[A-Za-z0-9]{6,8}", value) and re.search(r"[A-Za-z]", value):
+        # Alphanumeric OTPs (Atlassian EV7DUU) must contain a digit so product
+        # names in the subject ("Your Notion signup code") are not the code.
+        if (
+            re.fullmatch(r"[A-Za-z0-9]{6,8}", value)
+            and re.search(r"[A-Za-z]", value)
+            and re.search(r"\d", value)
+        ):
             return value.upper()
         return None
 
