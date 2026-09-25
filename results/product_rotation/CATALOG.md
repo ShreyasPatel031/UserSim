@@ -2,14 +2,18 @@
 
 Standing target: live site runs any product URL immediately.
 
-| # | Shape | Product URL | Competitors | Agents | Status | Result dir | Notes |
-|---|-------|-------------|-------------|--------|--------|------------|-------|
-| 1 | Video / media | https://www.youtube.com/ | vimeo, dailymotion | 24 | PASS | `results/e2e2_youtube/` | 24/24 in 287.9s |
-| 2 | Docs / search | https://developer.mozilla.org/ | docs.python.org | 8 → raising 24 | PASS 8 | `results/e2e2_mdn/` | 8/8 in 310s |
-| 3 | E-commerce | https://www.etsy.com/ | ikea.com | 8 → raising 24 | PASS 8 | `results/e2e2_etsy/` | 8/8 in 378s |
-| 4 | SaaS + signup | https://linear.app/ | notion.so | 8 → raising 24 | PASS 8 | `results/e2e2_linear/` | 8/8 in 264.5s |
-| 5 | News / media | https://www.bbc.com/news | npr (+ apnews @24) | 8 + 24 | PASS | `results/e2e2_bbc/` `results/e2e2_bbc24/` | 24/24 in 282.8s |
-| 6 | Heavy JS | https://excalidraw.com/ | tldraw (4×3×2) | 8 + 24 | PASS | `results/e2e2_excalidraw/` `results/e2e2_excalidraw24/` | 24/24 in 289.7s. diagrams.net produced no shots — dropped. |
+| # | Shape | Product | 8 | 24 | Notes |
+|---|-------|---------|---|-----|-------|
+| 1 | Video | youtube.com | — | **PASS** 287.9s | first_shot 23.4s |
+| 2 | Docs | developer.mozilla.org | PASS | **PASS** 267.8s | first_shot 12.8s |
+| 3 | E-commerce | etsy.com | PASS | **PASS** 280.7s | first_shot 17.0s |
+| 4 | SaaS signup | linear.app | PASS | **UNSTABLE** (best 23/24) | 8/8 solid; at 24 some agents stuck on ~33KB logo splash. Auth-judge + longer paint waits shipped; still need stronger same-site backfill. |
+| 5 | News | bbc.com/news | PASS | **PASS** 282.8s | NPR/AP competitors; Reuters bot-walled |
+| 6 | Heavy JS | excalidraw.com | PASS | **PASS** 289.7s | 4×3×2 with tldraw; diagrams.net dropped |
 
 ## Blockers
-- Prod https://usersim.vercel.app/ awaits PR #32 merge (still app.js?v=86).
+- **PR #32 still OPEN** — prod https://usersim.vercel.app/ on `app.js?v=86`. Merge required for prod e2e.
+- Linear@24: intermittent blank opening shots under full concurrency (generic SPA splash).
+
+## GCP
+- No VMs started.
