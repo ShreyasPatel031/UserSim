@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -24,7 +25,7 @@ OUT = Path(os.environ.get("DMOUT", str(ROOT / "adapters" / "qwen3_14b_distmatch"
 RESULTS = Path(os.environ.get("RESULTS_DIR", str(ROOT / "results" / "qwen3_14b_distmatch")))
 MODEL = os.environ.get("BASE_MODEL", "Qwen/Qwen3-14B")
 MAX_STEPS = int(os.environ.get("MAX_STEPS", "300"))
-SAVE_STEPS = int(os.environ.get("SAVE_STEPS", "25"))
+SAVE_STEPS = int(os.environ.get("SAVE_STEPS", "40"))
 LIMIT = int(os.environ.get("LIMIT_ROWS", "4096"))
 LR = float(os.environ.get("LR", "1e-4"))
 UNSEEN = {
@@ -38,6 +39,43 @@ SYSTEM = (
     "You are a participant in a survey experiment. "
     "Answer with a single number only when a numeric response is required."
 )
+
+
+def set_train_state(state: str) -> None:
+    """Best-effort instance label so the Spot watchdog will not restart a finished run."""
+    import urllib.request
+
+    def meta(path: str) -> str:
+        req = urllib.request.Request(
+            "http://metadata.google.internal/computeMetadata/v1/" + path,
+            headers={"Metadata-Flavor": "Google"},
+        )
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            return resp.read().decode()
+
+    try:
+        token = json.loads(meta("instance/service-accounts/default/token"))["access_token"]
+        project = meta("project/project-id")
+        zone = meta("instance/zone").rsplit("/", 1)[-1]
+        name = meta("instance/name")
+        url = f"https://compute.googleapis.com/compute/v1/projects/{project}/zones/{zone}/instances/{name}"
+        req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            inst = json.loads(resp.read().decode())
+        labels = dict(inst.get("labels") or {})
+        labels["usersim-train-state"] = state
+        body = json.dumps({"labels": labels, "labelFingerprint": inst["labelFingerprint"]}).encode()
+        post = urllib.request.Request(
+            url + "/setLabels",
+            data=body,
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(post, timeout=20) as resp:
+            resp.read()
+        print(f"usersim-train-state={state}", flush=True)
+    except Exception as exc:  # noqa: BLE001
+        print(f"label_update_failed {type(exc).__name__}: {exc}", flush=True)
 
 
 def load_examples():
@@ -96,14 +134,33 @@ def main() -> None:
     base = prepare_model_for_kbit_training(base, use_gradient_checkpointing=True)
     base.config.use_cache = False
     step = 0
-    prior = sorted(OUT.glob("checkpoint-*"), key=lambda p: int(p.name.split("-")[-1]))
-    if prior:
-        from peft import PeftModel
+    model = None
+    poisoned = False
+    from peft import PeftModel
 
-        model = PeftModel.from_pretrained(base, str(prior[-1]), is_trainable=True)
-        step = int(prior[-1].name.split("-")[-1])
-        print(f"loaded {prior[-1].name} resume_step={step}", flush=True)
-    else:
+    for path in sorted(OUT.glob("checkpoint-*"), key=lambda p: int(p.name.split("-")[-1]), reverse=True):
+        cfg = path / "adapter_config.json"
+        try:
+            if cfg.stat().st_size <= 0:
+                raise ValueError("empty adapter_config")
+            json.loads(cfg.read_text())
+            model = PeftModel.from_pretrained(base, str(path), is_trainable=True)
+            step = int(path.name.split("-")[-1])
+            print(f"loaded {path.name} resume_step={step}", flush=True)
+            break
+        except (OSError, ValueError, json.JSONDecodeError, RuntimeError, Exception) as exc:
+            print(f"skip corrupt {path.name}: {exc}", flush=True)
+            model = None
+            if getattr(base, "peft_config", None):
+                try:
+                    base = base.unload()
+                except Exception as unload_exc:  # noqa: BLE001
+                    print(f"base_unload_failed {type(unload_exc).__name__}: {unload_exc}", flush=True)
+                    poisoned = True
+                    break
+    if model is None and poisoned:
+        raise SystemExit("resume failed after a partial adapter load; refusing to train from step 0")
+    if model is None:
         model = get_peft_model(
             base,
             LoraConfig(
@@ -194,16 +251,31 @@ def main() -> None:
         (RESULTS / "PROGRESS.json").write_text(json.dumps(payload, indent=2) + "\n")
         print(json.dumps(payload), flush=True)
         if step % SAVE_STEPS == 0:
-            ckpt = OUT / f"checkpoint-{step}"
-            model.save_pretrained(ckpt)
-            tok.save_pretrained(ckpt)
-            print(f"saved {ckpt}", flush=True)
+            final = OUT / f"checkpoint-{step}"
+            partial = OUT / f"checkpoint-{step}.partial"
+            if partial.exists():
+                shutil.rmtree(partial)
+            model.save_pretrained(partial)
+            tok.save_pretrained(partial)
+            cfg = partial / "adapter_config.json"
+            weights = next(
+                (partial / name for name in ("adapter_model.safetensors", "adapter_model.bin") if (partial / name).exists()),
+                None,
+            )
+            if not cfg.exists() or cfg.stat().st_size <= 0 or weights is None or weights.stat().st_size <= 0:
+                print(f"save incomplete {partial.name}; not promoted", flush=True)
+            else:
+                if final.exists():
+                    shutil.rmtree(final)
+                partial.rename(final)
+                print(f"saved {final}", flush=True)
     model.save_pretrained(OUT)
     tok.save_pretrained(OUT)
     (RESULTS / "TRAIN_DONE.json").write_text(
         json.dumps({"adapter": str(OUT), "steps": step, "finished_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, indent=2)
         + "\n"
     )
+    set_train_state("done")
     print("TRAIN_DONE", flush=True)
 
 

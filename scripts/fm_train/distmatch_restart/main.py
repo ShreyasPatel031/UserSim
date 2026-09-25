@@ -454,6 +454,13 @@ def _load_json_body(request) -> dict[str, Any]:
 
 @functions_framework.http
 def distmatch_restart(request):
+    # fm-gate0-spot-watchdog is the only Spot watcher. This function must not start VMs.
+    body = {
+        "status": "disabled",
+        "reason": "fm-gate0-spot-watchdog is the only Spot watcher",
+    }
+    return (json.dumps(body), 200, {"Content-Type": "application/json"})
+
     if request.method == "GET":
         return (
             json.dumps({"ok": True, "service": "usersim-distmatch-restart", "spot": SPOT_NAME}),
