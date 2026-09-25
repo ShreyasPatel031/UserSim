@@ -8,27 +8,30 @@
   "n": 45,
   "successes": 44,
   "by_product": {
+    "retell": {
+      "success": 15,
+      "harness": 0,
+      "bot_wall": 0,
+      "product_failure": 0,
+      "judge_error": 0
+    },
     "bland": {
       "success": 14,
       "harness": 0,
       "bot_wall": 0,
-      "product_failure": 1
-    },
-    "retell": {
-      "success": 13,
-      "harness": 0,
-      "bot_wall": 0,
-      "product_failure": 2
+      "product_failure": 1,
+      "judge_error": 0
     },
     "vapi": {
-      "success": 14,
+      "success": 15,
       "harness": 0,
       "bot_wall": 0,
-      "product_failure": 1
+      "product_failure": 0,
+      "judge_error": 0
     }
   },
   "by_task": {
-    "t1_pricing": {
+    "t4_integrations": {
       "bland": {
         "success": 3,
         "total": 3
@@ -43,7 +46,7 @@
       }
     },
     "t2_docs": {
-      "bland": {
+      "vapi": {
         "success": 3,
         "total": 3
       },
@@ -51,7 +54,7 @@
         "success": 3,
         "total": 3
       },
-      "vapi": {
+      "bland": {
         "success": 3,
         "total": 3
       }
@@ -61,49 +64,49 @@
         "success": 2,
         "total": 3
       },
-      "retell": {
-        "success": 2,
+      "vapi": {
+        "success": 3,
         "total": 3
       },
-      "vapi": {
+      "retell": {
         "success": 3,
         "total": 3
       }
     },
-    "t4_integrations": {
+    "t1_pricing": {
       "bland": {
         "success": 3,
         "total": 3
       },
       "retell": {
-        "success": 2,
+        "success": 3,
         "total": 3
       },
       "vapi": {
-        "success": 2,
+        "success": 3,
         "total": 3
       }
     },
     "t5_getting_started": {
+      "vapi": {
+        "success": 3,
+        "total": 3
+      },
       "bland": {
         "success": 3,
         "total": 3
       },
       "retell": {
-        "success": 3,
-        "total": 3
-      },
-      "vapi": {
         "success": 3,
         "total": 3
       }
     }
   },
   "task_winners": {
-    "t1_pricing": "tie:bland,retell,vapi",
+    "t4_integrations": "tie:bland,retell,vapi",
     "t2_docs": "tie:bland,retell,vapi",
-    "t3_features": "vapi",
-    "t4_integrations": "bland",
+    "t3_features": "tie:retell,vapi",
+    "t1_pricing": "tie:bland,retell,vapi",
     "t5_getting_started": "tie:bland,retell,vapi"
   },
   "by_status": {
@@ -4639,8 +4642,6 @@
       "stop_reason": "agent_done",
       "success": true,
       "status": "SUCCESS",
-      "judge_reason": "Manual re-score after judge JSON parse error: agent reached webhook registration docs with detailed integration content.",
-      "judge_evidence": "https://docs.retellai.com/features/register-webhook",
       "failure_category": null,
       "final_url": "https://docs.retellai.com/features/register-webhook",
       "final_title": "Register and set up a Retell webhook - Retell AI",
@@ -4656,7 +4657,8 @@
       "persona_name": "Product Manager",
       "task_key": "t4_integrations",
       "task_title": "Find integration and webhook info",
-      "rejudge_error": "judge_error: Unterminated string starting at: line 4 column 15 (char 748)"
+      "judge_reason": "The agent successfully navigated to the Retell AI website and systematically explored the documentation to find comprehensive information about webhooks, which directly addresses the user's goal of understanding integrations and connecting to other systems. The agent correctly identified the 'Developers' section and then the 'Documentation' as the most relevant path. It then delved into specific webhook-related pages, including 'Secure the webhook', 'Retell webhooks overview', and 'Register and ",
+      "judge_evidence": "The final URL is 'https://docs.retellai.com/features/register-webhook' and the page title is 'Register and set up a Retell webhook - Retell AI'. The action summary shows the agent navigated through the 'Developers' menu to 'Documentation' and then specifically clicked on links related to webhooks, including 'Register & handle webhooks', 'Secure the webhook', 'Retell webhooks overview', and finally 'Register and set up a Retell webhook'."
     },
     {
       "run_id": "bu_77317_5b56085a",

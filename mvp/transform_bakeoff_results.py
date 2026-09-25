@@ -41,6 +41,49 @@ def classify_failure(result: dict) -> str:
     return "HARNESS"
 
 
+def refresh_manifest_counts(data: dict) -> dict:
+    """Recompute summary fields from runs so they cannot drift from the array."""
+    from collections import Counter
+
+    runs = data.get("runs") or []
+    platforms = ["retell", "bland", "vapi"]
+    by_product = {
+        p: {"success": 0, "harness": 0, "bot_wall": 0, "product_failure": 0, "judge_error": 0}
+        for p in platforms
+    }
+    by_task: dict = {}
+    for r in runs:
+        plat = r.get("website") or r.get("product") or "unknown"
+        task = r.get("task_key") or "unknown"
+        cls = classify_failure(r)
+        by_product.setdefault(
+            plat,
+            {"success": 0, "harness": 0, "bot_wall": 0, "product_failure": 0, "judge_error": 0},
+        )
+        cell = by_task.setdefault(task, {}).setdefault(plat, {"success": 0, "total": 0})
+        cell["total"] += 1
+        if cls == "SUCCESS":
+            by_product[plat]["success"] += 1
+            cell["success"] += 1
+        elif cls == "HARNESS":
+            by_product[plat]["harness"] += 1
+        elif cls == "BOT_WALL":
+            by_product[plat]["bot_wall"] += 1
+        elif cls == "JUDGE_ERROR":
+            by_product[plat]["judge_error"] += 1
+        else:
+            by_product[plat]["product_failure"] += 1
+    data["by_product"] = by_product
+    data["by_task"] = by_task
+    data["task_winners"] = compute_task_winners(by_task)
+    data["successes"] = sum(1 for r in runs if r.get("success"))
+    data["by_status"] = dict(Counter(r.get("status") for r in runs))
+    data["by_failure_category"] = dict(
+        Counter(r.get("failure_category") for r in runs if r.get("failure_category"))
+    )
+    return data
+
+
 def compute_task_winners(by_task: dict) -> dict:
     """Compute winners with tie handling."""
     task_winners = {}

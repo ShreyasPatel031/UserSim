@@ -39,9 +39,11 @@ def main() -> int:
     raw = json.loads(SOURCE.read_text())
     link_traces(raw.get("runs") or [])
 
-    from mvp.transform_bakeoff_results import transform_proven_harness_results
+    from mvp.transform_bakeoff_results import refresh_manifest_counts, transform_proven_harness_results
     from mvp.synthesize_voice_public_insights import attach_public_insights
 
+    raw = refresh_manifest_counts(raw)
+    SOURCE.write_text(json.dumps(raw, indent=2, default=str))
     page = transform_proven_harness_results(raw)
     page["id"] = "voice-public-d28b7070"
     page = attach_public_insights(page, raw.get("runs") or [])

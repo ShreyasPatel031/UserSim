@@ -797,8 +797,8 @@
       "num_steps": 24,
       "elapsed_s": 0,
       "final_url": "https://docs.retellai.com/features/register-webhook",
-      "judge_reason": "Manual re-score after judge JSON parse error: agent reached webhook registration docs with detailed integration content.",
-      "judge_evidence": "https://docs.retellai.com/features/register-webhook",
+      "judge_reason": "The agent successfully navigated to the Retell AI website and systematically explored the documentation to find comprehensive information about webhooks, which directly addresses the user's goal of understanding integrations and connecting to other systems. The agent correctly identified the 'Developers' section and then the 'Documentation' as the most relevant path. It then delved into specific webhook-related pages, including 'Secure the webhook', 'Retell webhooks overview', and 'Register and ",
+      "judge_evidence": "The final URL is 'https://docs.retellai.com/features/register-webhook' and the page title is 'Register and set up a Retell webhook - Retell AI'. The action summary shows the agent navigated through the 'Developers' menu to 'Documentation' and then specifically clicked on links related to webhooks, including 'Register & handle webhooks', 'Secure the webhook', 'Retell webhooks overview', and finally 'Register and set up a Retell webhook'.",
       "trace": [
         {
           "step": 0,
@@ -1258,8 +1258,8 @@
       "t5_getting_started": "tie:bland,retell,vapi"
     },
     "insights_synthesized": true,
-    "headline": "On public-site tasks, success rates are a tie: Retell 15/15, Vapi 15/15, Bland 14/15 (one Bland capabilities run ended on pricing after the step cap). Retell is faster to API docs and getting started, and slower to a capabilities page and to webhook docs.",
-    "metric_note": "Audited harness run voice-public-d28b7070. Zero harness timeouts. Three former judge-JSON errors were re-scored from saved traces as successes (Retell capabilities, Retell webhooks, Vapi webhooks). The only product failure is Bland capabilities (planning: final page was pricing).",
+    "headline": "On public-site tasks, success is a tie: Retell 15/15, Vapi 15/15, Bland 14/15 (one Bland capabilities run ended on pricing after the step cap). Retell has two clear advantages: fewer steps to API docs, and fewer steps to getting started. It is slower than Vapi on capabilities and slower than Bland and Vapi on integrations.",
+    "metric_note": "Audited harness run voice-public-d28b7070. Zero harness timeouts. Judge JSON errors were re-scored by the judge (JSON mode, lenient parse, up to 3 tries), including bu_75347_c47e8452 (Retell webhooks) which is SUCCESS. The only product failure is Bland capabilities (planning: final page was pricing).",
     "retell_strengths": [
       {
         "text": "API docs is a 3/3 tie, but Retell reached the API overview in 5 steps on every persona (median 5) versus Bland median 10 (8\u201313) and Vapi median 15 (8\u201316). Engineer run ended on docs.retellai.com/api-references/overview.",
@@ -1270,11 +1270,6 @@
         "text": "Getting started is a 3/3 tie. Retell median was 6 steps (6, 6, 7) to the quick-start doc, versus Bland median 9 (8\u201316) and Vapi median 24 (15\u201326). PM run finished on docs.retellai.com/get-started/quick-start.",
         "run_id": "bu_85658_6c744f9e",
         "screenshot_url": "/bakeoff-traces/bu_85658_6c744f9e/final.png"
-      },
-      {
-        "text": "Voice-agent capabilities: Retell and Vapi both 3/3; Bland is 2/3 because one Bland run hit the 25-step cap and stopped on bland.ai/pricing (bu_13188_b7eae5ef). Retell's engineer run reached retellai.com/use-cases in 20 steps; Bland's successes took 25.",
-        "run_id": "bu_64422_a0a5804a",
-        "screenshot_url": "/bakeoff-traces/bu_64422_a0a5804a/final.png"
       }
     ],
     "retell_weaknesses": [

@@ -28,12 +28,6 @@ RETELL_STRENGTHS = [
         "PM run finished on docs.retellai.com/get-started/quick-start.",
         "bu_85658_6c744f9e",
     ),
-    _item(
-        "Voice-agent capabilities: Retell and Vapi both 3/3; Bland is 2/3 because one Bland run "
-        "hit the 25-step cap and stopped on bland.ai/pricing (bu_13188_b7eae5ef). "
-        "Retell's engineer run reached retellai.com/use-cases in 20 steps; Bland's successes took 25.",
-        "bu_64422_a0a5804a",
-    ),
 ]
 
 RETELL_WEAKNESSES = [
@@ -63,14 +57,15 @@ RETELL_WEAKNESSES = [
 def attach_public_insights(page: dict, runs: list[dict] | None = None) -> dict:
     summary = page.setdefault("summary", {})
     summary["headline"] = (
-        "On public-site tasks, success rates are a tie: Retell 15/15, Vapi 15/15, Bland 14/15 "
+        "On public-site tasks, success is a tie: Retell 15/15, Vapi 15/15, Bland 14/15 "
         "(one Bland capabilities run ended on pricing after the step cap). "
-        "Retell is faster to API docs and getting started, and slower to a capabilities page and to webhook docs."
+        "Retell has two clear advantages: fewer steps to API docs, and fewer steps to getting started. "
+        "It is slower than Vapi on capabilities and slower than Bland and Vapi on integrations."
     )
     summary["metric_note"] = (
         "Audited harness run voice-public-d28b7070. Zero harness timeouts. "
-        "Three former judge-JSON errors were re-scored from saved traces as successes "
-        "(Retell capabilities, Retell webhooks, Vapi webhooks). "
+        "Judge JSON errors were re-scored by the judge (JSON mode, lenient parse, up to 3 tries), "
+        "including bu_75347_c47e8452 (Retell webhooks) which is SUCCESS. "
         "The only product failure is Bland capabilities (planning: final page was pricing)."
     )
     summary["retell_strengths"] = RETELL_STRENGTHS
