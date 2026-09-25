@@ -428,7 +428,7 @@ async def _emit_opening_frame(
             pass
         # Extra settle — 24-way Browserbase fleets often still show splash at DOMContentLoaded.
         try:
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(2.5)
         except Exception:
             pass
         try:
@@ -496,15 +496,15 @@ async def _emit_opening_frame(
             return False
 
     ok = False
-    for attempt in range(4):
-        await asyncio.sleep(0.5 if attempt == 0 else 1.2)
+    for attempt in range(5):
+        await asyncio.sleep(0.8 if attempt == 0 else 2.0)
         if not await _snap_once():
             continue
         if not _png_is_blankish(shot_path):
             ok = True
             break
         print(
-            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/4) — waiting for paint",
+            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/5) — waiting for paint",
             flush=True,
         )
         if page is not None:

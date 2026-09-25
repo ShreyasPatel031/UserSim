@@ -2163,18 +2163,59 @@ async def run_study(
                                 ):
                                     agent_warm = warm_opening
                                     warm_used = True
-                            run = await run_browser_agent(
-                                study_id=study.id,
-                                agent_id=agent_id,
-                                url=site,
-                                task_prompt=task.get("prompt") or task.get("title") or "",
-                                persona=persona,
-                                segment=study.segment,
-                                on_step=lambda step: _on_agent_step(agent_id, step),
-                                bb_session=None,
-                                local=force_local_browser,
-                                warm=agent_warm,
+                            run = None
+                            _outer_wall = max(
+                                45.0,
+                                float(os.environ.get("MVP_AGENT_WALL_S", "120") or "120")
+                                + 45.0,
                             )
+                            _agent_task = asyncio.create_task(
+                                run_browser_agent(
+                                    study_id=study.id,
+                                    agent_id=agent_id,
+                                    url=site,
+                                    task_prompt=task.get("prompt")
+                                    or task.get("title")
+                                    or "",
+                                    persona=persona,
+                                    segment=study.segment,
+                                    on_step=lambda step: _on_agent_step(agent_id, step),
+                                    bb_session=None,
+                                    local=force_local_browser,
+                                    warm=agent_warm,
+                                )
+                            )
+                            _done, _pending = await asyncio.wait(
+                                {_agent_task}, timeout=_outer_wall
+                            )
+                            if _agent_task in _pending:
+                                print(
+                                    f"[{agent_id}] outer agent wall ({_outer_wall:.0f}s) — "
+                                    "using captured frames",
+                                    flush=True,
+                                )
+                                _agent_task.cancel()
+
+                                async def _drain(t: asyncio.Task) -> None:
+                                    try:
+                                        await t
+                                    except Exception:
+                                        pass
+
+                                asyncio.create_task(_drain(_agent_task))
+                                existing = sess.get("trace") or []
+                                run = {
+                                    "agent_id": agent_id,
+                                    "completed": False,
+                                    "trace": existing,
+                                    "actions": [],
+                                    "num_steps": len(existing),
+                                    "final_url": site,
+                                    "visited_urls": [site],
+                                    "mode": "browser_wall",
+                                }
+                            else:
+                                run = _agent_task.result()
                         sess["status"] = "summarizing"
                         refresh_agent_phase()
                         log_activity(
@@ -2183,13 +2224,30 @@ async def run_study(
                             f"{persona.get('name')} session done — writing feedback",
                             agent_id=agent_id,
                         )
-                        feedback = await summarize_agent_feedback(
-                            url=study.url,
-                            segment=study.segment,
-                            persona=persona,
-                            task=task,
-                            run=run,
-                        )
+                        try:
+                            feedback = await asyncio.wait_for(
+                                summarize_agent_feedback(
+                                    url=study.url,
+                                    segment=study.segment,
+                                    persona=persona,
+                                    task=task,
+                                    run=run,
+                                ),
+                                timeout=45.0,
+                            )
+                        except Exception as sum_exc:  # noqa: BLE001
+                            print(
+                                f"[{agent_id}] summarize failed/timed out: {sum_exc!r}",
+                                flush=True,
+                            )
+                            feedback = {
+                                "difficulty": "medium",
+                                "friction_points": [],
+                                "what_was_easy": [],
+                                "product_feedback": "Session ended before feedback was written.",
+                                "would_convert": "maybe",
+                                "step_outcomes": [],
+                            }
                         outcomes = {
                             o.get("step"): o.get("outcome")
                             for o in feedback.pop("step_outcomes", []) or []
