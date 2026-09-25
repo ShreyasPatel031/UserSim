@@ -701,9 +701,12 @@ async def run_browser_agent(
         Path(os.environ["XDG_CONFIG_HOME"]).mkdir(parents=True, exist_ok=True)
         Path(os.environ["XDG_CACHE_HOME"]).mkdir(parents=True, exist_ok=True)
 
-    model = model or os.environ.get("MVP_BROWSER_MODEL") or MODEL or "gemini-2.5-flash-lite"
-    os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", "120")
-    os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", "240")
+    model = model or os.environ.get("MVP_BROWSER_MODEL") or MODEL or "[REDACTED]-lite"
+    # Keep CDP/action timeouts under the agent wall so a single hung navigate
+    # cannot outlive MVP_AGENT_WALL_S (was 120/240 → studies stuck at 0/N done).
+    _wall = max(15.0, MVP_AGENT_WALL_S)
+    os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", str(max(20, int(_wall // 3))))
+    os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", str(max(30, int(_wall // 2))))
 
     run_dir = MVP_RUNS_DIR / study_id / agent_id
     screenshot_dir = run_dir / "screenshots"
