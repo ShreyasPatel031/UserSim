@@ -420,13 +420,20 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 except Exception as exc:  # noqa: BLE001
                     _log(f"  judge skip {aid}: {exc!r}")
 
-            if (
-                study.get("status") == "complete"
-                and study.get("summary")
-                and len(sessions) >= expected
-                and (len(judged) >= expected or len(judged) >= len(sessions))
-            ):
-                break
+            if study.get("status") == "complete" and study.get("summary"):
+                for sess in sessions:
+                    aid = str(sess.get("agent_id") or sess.get("task_id") or "")
+                    if not aid or aid in judged:
+                        continue
+                    if not _best_shot(sess):
+                        judged[aid] = {
+                            "agent_id": aid,
+                            "host": _hostname(sess.get("site_url") or args.url),
+                            "pass": False,
+                            "reason": "no screenshot after study complete",
+                        }
+                if len(sessions) >= expected and len(judged) >= min(expected, len(sessions)):
+                    break
             if study.get("status") in {"error", "abandoned"}:
                 raise RuntimeError(
                     f"Study {study.get('status')}: {study.get('error') or study.get('phase')}"

@@ -939,6 +939,8 @@ async def run_study(
         warm_task: asyncio.Task | None = None
         warm_opening: dict[str, Any] | None = None
         warm_used = False
+        warm_site_tasks: dict[str, asyncio.Task] = {}
+        warm_by_site: dict[str, dict[str, Any]] = {}
 
         def _should_warm_browserbase() -> bool:
             if SNAPSHOT_ONLY and not _fleet_preferred(test_mode=bool(study.test_mode)):
@@ -972,10 +974,22 @@ async def run_study(
             warm_task = asyncio.create_task(
                 warm_opening_session(study_id=study.id, url=study.url)
             )
+            warm_site_tasks["product"] = warm_task
+            # Warm competitors too — under 24-way load their own opening frames
+            # often stay on logo-on-black splash and never get a flash-lite YES.
+            for i, comp in enumerate((study.competitors or [])[:4]):
+                if not comp:
+                    continue
+                key = f"competitor_{i+1}"
+                warm_site_tasks[key] = asyncio.create_task(
+                    warm_opening_session(
+                        study_id=f"{study.id}_{key}", url=str(comp)
+                    )
+                )
             log_activity(
                 study,
                 "browser",
-                f"Warming first screenshot for {study.url} during brief",
+                f"Warming first screenshots for {1+len(study.competitors or [])} sites during brief",
             )
             # Prewarm Vertex ADC so agent.run isn't blocked on first credential load.
             try:
@@ -1379,37 +1393,49 @@ async def run_study(
             except Exception:
                 pass
 
-        # Warm capture may already be done; if not, do not block agent launch.
-        # Cap wait tightly — blank-frame retries were burning 20s+ before any agent
-        # started (YouTube e2e first_shot landed at +40s).
-        if warm_task is not None:
-            try:
-                warm_opening = await asyncio.wait_for(warm_task, timeout=8)
-            except asyncio.TimeoutError:
-                print(
-                    "warm opening timed out — launching agents without warm session",
-                    flush=True,
-                )
-                warm_task.cancel()
+        # Warm captures may already be done; if not, do not block agent launch.
+        # Wait a bit longer when warming multiple sites (product + rivals).
+        if warm_site_tasks:
+            timeout_s = 14.0 if len(warm_site_tasks) > 1 else 8.0
+            done, pending = await asyncio.wait(
+                set(warm_site_tasks.values()), timeout=timeout_s
+            )
+            for key, task in list(warm_site_tasks.items()):
+                if task in pending:
+                    task.cancel()
+                    try:
+                        await task
+                    except (asyncio.CancelledError, Exception):
+                        pass
+                    continue
                 try:
-                    await warm_task
-                except (asyncio.CancelledError, Exception):
-                    pass
-                warm_opening = None
-            except Exception as warm_exc:  # noqa: BLE001
-                print(f"warm opening await failed: {warm_exc!r}", flush=True)
-                warm_opening = None
+                    result = task.result()
+                except Exception as warm_exc:  # noqa: BLE001
+                    print(f"warm {key} failed: {warm_exc!r}", flush=True)
+                    continue
+                if result and result.get("shot_path"):
+                    warm_by_site[key] = result
+            if "product" in warm_by_site:
+                warm_opening = warm_by_site["product"]
             warm_task = None
+            warm_site_tasks = {}
+            print(
+                f"warm ready for sites: {sorted(warm_by_site.keys())}",
+                flush=True,
+            )
 
-        # Publish the product-site landing shot onto every product task NOW so
-        # the stage shows the website as soon as tasks exist (not just agent 0).
-        if warm_opening and warm_opening.get("shot_path"):
-            from pathlib import Path as _Path
+        # Publish warmed landing shots onto every matching site task NOW so
+        # the stage + e2e judges have real pixels before per-agent sessions boot.
+        if warm_by_site:
+            import shutil as _shutil
 
             from mvp.paths import MVP_RUNS_DIR
+            from mvp.opening_shot import attach_opening_pixels
 
             for task in study.tasks:
-                if str(task.get("site_key") or "product") != "product":
+                site_key = str(task.get("site_key") or "product")
+                warm = warm_by_site.get(site_key)
+                if not warm or not warm.get("shot_path"):
                     continue
                 aid = task.get("id") or ""
                 sess = study.live_sessions.get(aid)
@@ -1420,11 +1446,16 @@ async def run_study(
                 dest_dir.mkdir(parents=True, exist_ok=True)
                 dest = dest_dir / "bbox_0.png"
                 try:
-                    import shutil as _shutil
+                    _shutil.copy2(warm["shot_path"], dest)
+                    # Skip blank warm frames — better to wait for agent paint.
+                    from mvp.browser_agent import _png_is_blankish
 
-                    from mvp.opening_shot import attach_opening_pixels
-
-                    _shutil.copy2(warm_opening["shot_path"], dest)
+                    if _png_is_blankish(dest):
+                        print(
+                            f"warm publish skip blank {aid} ({dest.stat().st_size} bytes)",
+                            flush=True,
+                        )
+                        continue
                     step0 = {
                         "step": 0,
                         "action": f"Opened {site}",
@@ -1449,10 +1480,7 @@ async def run_study(
                     sess["trace"] = [step0]
                     sess["num_steps"] = 1
                     sess["last_action"] = step0["action"]
-                    # Screenshot only — never stamp the warm live_view_url onto every
-                    # product agent. Sharing one Browserbase DevTools URL across N
-                    # iframes (then closing warm) causes "WebSocket disconnected".
-                    # Each agent mounts live view from its own session when it starts.
+                    # Screenshot only — never stamp warm live_view_url onto agents.
                     sess["live_thoughts"] = [
                         {
                             "at": _now(),
@@ -1470,6 +1498,24 @@ async def run_study(
                 except Exception as pub_exc:  # noqa: BLE001
                     print(f"warm publish failed: {pub_exc!r}", flush=True)
             persist_study(study)
+
+            # Free competitor (and YouTube product) warm BB slots before the
+            # 24-agent wave — we only needed their PNGs.
+            from mvp.browser_agent import close_warm_opening
+            from urllib.parse import urlparse as _urlparse
+
+            _prod_host = (_urlparse(study.url).hostname or "").lower()
+            _yt = "youtube.com" in _prod_host or "youtu.be" in _prod_host
+            for key, warm in list(warm_by_site.items()):
+                if key == "product" and not _yt:
+                    continue  # may hand to one non-YouTube product agent
+                try:
+                    await close_warm_opening(warm)
+                except Exception:
+                    pass
+                warm_by_site.pop(key, None)
+            if _yt:
+                warm_opening = None
 
         touch(
             f"Live browser agents — 0/{len(study.tasks)} done · {len(study.tasks)} active · 0 queued · 0 steps"
@@ -2408,6 +2454,18 @@ async def run_study(
 
                     await close_warm_opening(warm_opening)
                     warm_opening = None
+                # Always close competitor warms (never handed to agents).
+                if warm_by_site:
+                    from mvp.browser_agent import close_warm_opening
+
+                    for key, warm in list(warm_by_site.items()):
+                        if key == "product" and warm_used:
+                            continue
+                        try:
+                            await close_warm_opening(warm)
+                        except Exception:
+                            pass
+                    warm_by_site = {}
 
         order = {t.get("id"): i for i, t in enumerate(study.tasks)}
         study.agent_results.sort(key=lambda r: order.get(r.get("task_id"), 99))
