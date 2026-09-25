@@ -1536,13 +1536,70 @@
         }
       ],
       "updated_at": "2026-09-25T23:26:30.485708+00:00"
+    },
+    "resend.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "resendfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "resend.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 405.6,
+          "alias_tag": "resendfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/152d49ae-5074-4018-a5e6-b68e3cf55c51",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:33:18.018728+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:33:18.018728+00:00"
+    },
+    "beehiiv.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "beehiivfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "beehiiv.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 250.5,
+          "alias_tag": "beehiivfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/1066ebe1-4da7-4c3c-ae28-4c2a612be09b",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:37:29.696087+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:37:29.696087+00:00"
     }
   },
-  "updated_at": "2026-09-25T23:26:30.486213+00:00",
+  "updated_at": "2026-09-25T23:37:29.696589+00:00",
   "reproducible": [
     "1password.com",
     "airtable.com",
     "asana.com",
+    "beehiiv.com",
     "buffer.com",
     "cal.com",
     "calendly.com",
@@ -1569,6 +1626,7 @@
     "notion.so",
     "pinterest.com",
     "render.com",
+    "resend.com",
     "smartsheet.com",
     "stackblitz.com",
     "substack.com",
@@ -1596,6 +1654,6 @@
     "todoist.com",
     "whimsical.com"
   ],
-  "score": "42/60",
-  "reproducible_count": 42
+  "score": "44/60",
+  "reproducible_count": 44
 }
