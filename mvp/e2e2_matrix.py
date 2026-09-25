@@ -546,8 +546,26 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         if nos:
             fails.append(f"flash-lite NO: {nos[:8]}")
 
-        # Ready may show only now.
-        ready = await page.evaluate(_ready_visible_js())
+        # Ready may show only now — give the UI a beat to apply the final poll.
+        ready = False
+        for _ in range(5):
+            try:
+                await page.evaluate(
+                    """(data) => {
+                      if (typeof updateReportCta === 'function') {
+                        updateReportCta(data);
+                      } else if (typeof window.applyStudyUpdate === 'function') {
+                        window.applyStudyUpdate(data);
+                      }
+                    }""",
+                    study,
+                )
+            except Exception:
+                pass
+            ready = await page.evaluate(_ready_visible_js())
+            if ready:
+                break
+            await page.wait_for_timeout(1000)
         report["ready_after_complete"] = ready
         if study.get("status") == "complete" and not ready:
             _log("  WARN: Ready still hidden after complete")
