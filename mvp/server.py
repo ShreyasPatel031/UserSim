@@ -1000,6 +1000,22 @@ async def get_experiment(experiment_id: str):
                     live.setdefault("summary", {})["synthesis_error"] = str(e)
             return live
     
+    # Special handling for "voice-dashboard" - logged-in dashboard traces
+    if experiment_id == "voice-dashboard" or experiment_id == "dashboard":
+        dashboard_path = ROOT / "mvp" / "bakeoff_data" / "voice_dashboard_browser_use_all_v1.json"
+        if dashboard_path.is_file():
+            try:
+                data = json.loads(dashboard_path.read_text())
+                # Add signup outcomes from the README info
+                data["signup_outcomes"] = {
+                    "retell": {"ok": False, "reason": "captcha_unsolved", "captcha_friction": True},
+                    "vapi": {"ok": True, "reason": "signed_up", "captcha_friction": False},
+                    "bland": {"ok": False, "reason": "phone_required", "phone_required": True},
+                }
+                return data
+            except Exception as e:
+                print(f"Error loading dashboard data: {e}", flush=True)
+    
     result = load_experiment_result(experiment_id)
     if result:
         return result

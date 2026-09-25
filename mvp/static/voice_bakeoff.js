@@ -446,14 +446,136 @@ taskSelect.addEventListener("change", () => {
   renderTask(taskSelect.value);
 });
 
+let _dashboardData = null;
+
+async function loadDashboardData() {
+  try {
+    const res = await fetch("/api/experiment/voice-dashboard");
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (err) {
+    console.error("Dashboard data not available:", err);
+    return null;
+  }
+}
+
+function renderDashboardSection(data) {
+  const section = document.getElementById("dashboard-section");
+  const content = document.getElementById("dashboard-content");
+  
+  if (!data || !data.runs || data.runs.length === 0) {
+    section.style.display = "none";
+    return;
+  }
+  
+  section.style.display = "block";
+  _dashboardData = data;
+  
+  const signup = data.signup_outcomes || {};
+  const byPlatform = {};
+  
+  for (const r of data.runs) {
+    const plat = r.website || "unknown";
+    if (!byPlatform[plat]) {
+      byPlatform[plat] = { success: 0, product: 0, harness: 0, total: 0, hadAuth: false };
+    }
+    byPlatform[plat].total++;
+    if (r.had_auth) byPlatform[plat].hadAuth = true;
+    
+    if (r.success) {
+      byPlatform[plat].success++;
+    } else if (r.failure_category === "PRODUCT") {
+      byPlatform[plat].product++;
+    } else {
+      byPlatform[plat].harness++;
+    }
+  }
+  
+  const signupRows = PLATFORMS.map(p => {
+    const info = signup[p] || {};
+    const ok = info.ok;
+    const reason = info.reason || "";
+    const friction = info.captcha_friction ? "reCAPTCHA" : info.phone_required ? "Phone required" : "";
+    
+    let statusHtml;
+    if (ok) {
+      statusHtml = '<span class="pill success">Signed up</span>';
+    } else if (reason === "captcha_unsolved") {
+      statusHtml = '<span class="pill timeout">Blocked: reCAPTCHA</span>';
+    } else if (reason === "phone_required") {
+      statusHtml = '<span class="pill timeout">Blocked: Phone required</span>';
+    } else {
+      statusHtml = '<span class="pill fail">Blocked</span>';
+    }
+    
+    return `<tr>
+      <td>${escapeHtml(PLAT_LABEL[p] || p)}</td>
+      <td>${statusHtml}</td>
+      <td>${friction ? escapeHtml(friction) : "—"}</td>
+    </tr>`;
+  }).join("");
+  
+  const taskRows = PLATFORMS.map(p => {
+    const stats = byPlatform[p] || { success: 0, product: 0, harness: 0, total: 0, hadAuth: false };
+    
+    if (!stats.hadAuth && stats.total > 0) {
+      return `<tr>
+        <td>${escapeHtml(PLAT_LABEL[p] || p)}</td>
+        <td colspan="3" style="color:var(--text-muted);font-style:italic">Not reached: signup blocked</td>
+      </tr>`;
+    }
+    
+    return `<tr>
+      <td>${escapeHtml(PLAT_LABEL[p] || p)}</td>
+      <td><strong>${stats.success}/${stats.total}</strong></td>
+      <td>${stats.product}</td>
+      <td>${stats.harness}</td>
+    </tr>`;
+  }).join("");
+  
+  content.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.75rem">
+      <div class="chart-card" style="margin:0">
+        <h3>Signup Outcomes</h3>
+        <p class="sub">Can users create accounts?</p>
+        <table>
+          <thead><tr><th>Platform</th><th>Status</th><th>Friction</th></tr></thead>
+          <tbody>${signupRows}</tbody>
+        </table>
+      </div>
+      <div class="chart-card" style="margin:0">
+        <h3>Dashboard Tasks</h3>
+        <p class="sub">Logged-in product exploration</p>
+        <table>
+          <thead><tr><th>Platform</th><th>Success</th><th>Product Fail</th><th>No Auth</th></tr></thead>
+          <tbody>${taskRows}</tbody>
+        </table>
+      </div>
+    </div>
+    <p class="sub" style="margin-top:0.75rem">
+      <strong>Key findings:</strong> Vapi signup succeeded; 11/15 dashboard tasks passed. 
+      Retell blocked by reCAPTCHA, Bland requires phone verification. 
+      Retell/Bland dashboard failures are "no auth" (not product issues).
+    </p>
+  `;
+}
+
 async function loadStudy() {
   try {
-    const res = await fetch("/api/experiment/voice-bakeoff");
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    _study = await res.json();
+    const [publicRes, dashboardData] = await Promise.all([
+      fetch("/api/experiment/voice-bakeoff"),
+      loadDashboardData()
+    ]);
+    
+    if (!publicRes.ok) throw new Error(`HTTP ${publicRes.status}`);
+    _study = await publicRes.json();
 
     renderAnalytics(_study);
     populateSelects();
+    
+    if (dashboardData) {
+      renderDashboardSection(dashboardData);
+    }
   } catch (err) {
     analyticsRoot.innerHTML = `<p class="error-msg">Failed to load study: ${escapeHtml(err.message)}</p>`;
     statusContent.innerHTML = `<p class="error-msg">Failed to load study</p>`;
