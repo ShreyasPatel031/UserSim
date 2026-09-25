@@ -1,0 +1,104 @@
+{
+  "id": "retell-study-2026",
+  "product_name": "Retell AI",
+  "product_url": "https://www.retellai.com",
+  "lede": "Voice AI platform usability study: How easily can different user types navigate Retell's dashboard to accomplish common voice agent tasks?",
+  "comparison_note": "Insights compared against Bland AI and Vapi data from the existing competitive study. Focus on dashboard UX — no voice credits used.",
+  "personas": [
+    {
+      "id": "p1_eng",
+      "name": "Alex Rivera",
+      "bio": "Platform Engineer at a mid-size SaaS company. Responsible for integrating voice AI into their customer support system. Cares about API quality, webhooks, and developer experience.",
+      "occupation": "Platform Engineer",
+      "age_range": "28-35",
+      "location": "Austin, TX",
+      "goals": ["Find API documentation", "Understand webhook setup", "Evaluate developer experience"]
+    },
+    {
+      "id": "p2_pm",
+      "name": "Sarah Chen",
+      "bio": "Product Manager evaluating voice AI vendors for a new IVR feature. Needs to understand pricing, capabilities, and time-to-value. Will present findings to leadership.",
+      "occupation": "Product Manager",
+      "age_range": "30-38",
+      "location": "San Francisco, CA",
+      "goals": ["Compare pricing models", "Assess ease of setup", "Evaluate feature completeness"]
+    },
+    {
+      "id": "p3_se",
+      "name": "Jordan Taylor",
+      "bio": "Solutions Engineer who deploys voice AI for enterprise customers. Needs to quickly set up agents, configure prompts, and troubleshoot issues.",
+      "occupation": "Solutions Engineer",
+      "age_range": "26-33",
+      "location": "New York, NY",
+      "goals": ["Create agents efficiently", "Configure voice and prompts", "Access call logs for debugging"]
+    },
+    {
+      "id": "p4_founder",
+      "name": "Maya Patel",
+      "bio": "Startup founder building an AI-first customer service tool. Evaluating voice platforms for an investor demo in 48 hours. Needs fast time-to-working-demo.",
+      "occupation": "Founder / CEO",
+      "age_range": "32-40",
+      "location": "Seattle, WA",
+      "goals": ["Get a working agent quickly", "Understand total cost", "Find getting-started resources"]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1_create_agent",
+      "title": "Create a voice agent",
+      "prompt": "As a first-time user exploring Retell AI, navigate to create a new voice agent. Reach the agent creation form or builder and explore what options are available for configuring a new agent. Stop once you can see the creation interface — do NOT actually publish or save an agent.",
+      "success_criteria": "Agent creation form/builder is visible with configuration options",
+      "journey": "J1"
+    },
+    {
+      "id": "t2_configure_voice",
+      "title": "Configure voice and prompt",
+      "prompt": "Find where to configure the voice (voice selection, voice settings) and the prompt/instructions for a voice agent. Explore what voice options are available and how prompts are structured. Note the customization options.",
+      "success_criteria": "Voice selection and prompt configuration UI is visible",
+      "journey": "J1"
+    },
+    {
+      "id": "t3_phone_numbers",
+      "title": "Find phone number management",
+      "prompt": "Locate the phone numbers section. Find where you can view owned numbers, buy new numbers, or import existing numbers. Explore what phone number options are available.",
+      "success_criteria": "Phone numbers page or section is visible",
+      "journey": "J3"
+    },
+    {
+      "id": "t4_pricing",
+      "title": "Find pricing and billing",
+      "prompt": "Find pricing information for Retell AI. Look for pricing page, billing section, or usage/cost information. Understand the cost model (per minute, per call, subscription, etc.).",
+      "success_criteria": "Pricing or billing information is visible",
+      "journey": "J1"
+    },
+    {
+      "id": "t5_api_docs",
+      "title": "Find API and integration docs",
+      "prompt": "Find the API documentation, developer docs, or integration guides. Look for API keys, webhooks, or SDK information. Explore what integration options are available for developers.",
+      "success_criteria": "API documentation or developer resources are visible",
+      "journey": "J4"
+    }
+  ],
+  "assignments": [
+    {"persona_id": "p1_eng", "task_id": "t1_create_agent"},
+    {"persona_id": "p1_eng", "task_id": "t5_api_docs"},
+    {"persona_id": "p1_eng", "task_id": "t2_configure_voice"},
+    
+    {"persona_id": "p2_pm", "task_id": "t4_pricing"},
+    {"persona_id": "p2_pm", "task_id": "t1_create_agent"},
+    {"persona_id": "p2_pm", "task_id": "t3_phone_numbers"},
+    
+    {"persona_id": "p3_se", "task_id": "t1_create_agent"},
+    {"persona_id": "p3_se", "task_id": "t2_configure_voice"},
+    {"persona_id": "p3_se", "task_id": "t3_phone_numbers"},
+    
+    {"persona_id": "p4_founder", "task_id": "t1_create_agent"},
+    {"persona_id": "p4_founder", "task_id": "t4_pricing"},
+    {"persona_id": "p4_founder", "task_id": "t5_api_docs"}
+  ],
+  "config": {
+    "max_steps": 25,
+    "timeout_s": 180,
+    "browserbase_owner": "report"
+  }
+}

@@ -878,3 +878,194 @@ def _resolve_trace_asset(trace_name: str, rel: str) -> Path | None:
         if path.is_file():
             return path
     return None
+
+
+# ============ Experiment & Study Report Routes ============
+
+@app.get("/study/{slug}")
+async def study_report_page(slug: str) -> FileResponse:
+    """Serve the unified study report page for any experiment."""
+    path = STATIC / "study_report.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Study report page not bundled")
+    return FileResponse(path, media_type="text/html")
+
+
+@app.get("/retell")
+async def retell_page() -> FileResponse:
+    """Serve the Voice AI Bakeoff page (Retell vs Bland vs Vapi)."""
+    path = STATIC / "voice_bakeoff.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Voice bakeoff page not bundled")
+    return FileResponse(path, media_type="text/html")
+
+
+def _load_latest_live_study(prefix: str = "retell-live") -> dict | None:
+    """Load the most recent live study with matching prefix."""
+    from mvp.paths import MVP_RUNS_DIR
+    from mvp.experiment_runner import RESULTS_DIR
+    
+    candidates = []
+    
+    # Check runs directory
+    if MVP_RUNS_DIR.is_dir():
+        for d in MVP_RUNS_DIR.iterdir():
+            if d.is_dir() and d.name.startswith(prefix):
+                study_json = d / "study.json"
+                if study_json.is_file():
+                    candidates.append((d.stat().st_mtime, study_json))
+    
+    # Also check experiment_results directory
+    if RESULTS_DIR.is_dir():
+        for f in RESULTS_DIR.glob(f"{prefix}*.json"):
+            if f.is_file():
+                candidates.append((f.stat().st_mtime, f))
+    
+    # Check results/capability for proven harness output
+    capability_results = ROOT / "results" / "capability"
+    if capability_results.is_dir():
+        for f in capability_results.glob(f"{prefix}*.json"):
+            if f.is_file():
+                candidates.append((f.stat().st_mtime, f))
+    
+    if not candidates:
+        return None
+    
+    candidates.sort(reverse=True)  # Most recent first
+    _, path = candidates[0]
+    
+    try:
+        data = json.loads(path.read_text())
+        # Ensure screenshot URLs point to correct location
+        for result in data.get("agent_results") or data.get("runs") or []:
+            for step in result.get("trace") or []:
+                shot = step.get("screenshot_url") or ""
+                if shot and "/screenshots/" in shot:
+                    # Rewrite to local path
+                    study_id = data.get("id") or path.parent.name
+                    agent_id = result.get("agent_id", "")
+                    filename = shot.split("/")[-1]
+                    step["screenshot_url"] = f"/api/experiment/{study_id}/agents/{agent_id}/screenshots/{filename}"
+        return data
+    except Exception:
+        return None
+
+
+@app.get("/api/experiment/{experiment_id}")
+async def get_experiment(experiment_id: str):
+    """Get experiment results by ID."""
+    from mvp.experiment_runner import load_experiment_result, RESULTS_DIR
+    
+    if not re.fullmatch(r"[\w.-]+", experiment_id):
+        raise HTTPException(status_code=400, detail="Invalid experiment id")
+    
+    # Special handling for "retell" - load latest live study
+    if experiment_id == "retell":
+        live = _load_latest_live_study("retell-live")
+        if live:
+            # Try to synthesize insights if not already done
+            if not live.get("summary", {}).get("insights_synthesized"):
+                try:
+                    from mvp.synthesize_insights import add_insights_to_study
+                    live = add_insights_to_study(live)
+                except Exception as e:
+                    live.setdefault("summary", {})["synthesis_error"] = str(e)
+            return live
+    
+    # Special handling for "voice-bakeoff" - load latest bakeoff study
+    if experiment_id == "voice-bakeoff" or experiment_id == "bakeoff":
+        committed = ROOT / "mvp" / "experiment_results" / "voice-public-d28b7070_result.synthesized.json"
+        if committed.is_file():
+            try:
+                return json.loads(committed.read_text())
+            except Exception as e:
+                print(f"Error loading committed voice bakeoff: {e}", flush=True)
+
+        # First try proven harness results
+        capability_results = ROOT / "results" / "capability"
+        if capability_results.is_dir():
+            candidates = []
+            for f in capability_results.glob("voice-public-*.json"):
+                if f.is_file():
+                    candidates.append((f.stat().st_mtime, f))
+            if candidates:
+                candidates.sort(reverse=True)
+                _, path = candidates[0]
+                try:
+                    raw = json.loads(path.read_text())
+                    from mvp.transform_bakeoff_results import transform_proven_harness_results
+                    live = transform_proven_harness_results(raw)
+                    return live
+                except Exception as e:
+                    print(f"Error loading proven harness results: {e}", flush=True)
+        
+    # Special handling for "voice-dashboard" - logged-in dashboard traces
+    if experiment_id == "voice-dashboard" or experiment_id == "dashboard":
+        dashboard_path = ROOT / "mvp" / "bakeoff_data" / "voice_dashboard_browser_use_all_v1.json"
+        if dashboard_path.is_file():
+            try:
+                data = json.loads(dashboard_path.read_text())
+                # Add signup outcomes from the README info
+                data["signup_outcomes"] = {
+                    "retell": {"ok": False, "reason": "captcha_unsolved", "captcha_friction": True},
+                    "vapi": {"ok": True, "reason": "signed_up", "captcha_friction": False},
+                    "bland": {"ok": False, "reason": "phone_required", "phone_required": True},
+                }
+                return data
+            except Exception as e:
+                print(f"Error loading dashboard data: {e}", flush=True)
+    
+    result = load_experiment_result(experiment_id)
+    if result:
+        return result
+    
+    # Also check for slug-based lookups (e.g., "retell" -> "retell-study-2026")
+    for path in RESULTS_DIR.glob("*.json"):
+        try:
+            data = json.loads(path.read_text())
+            slug = data.get("product_name", "").lower().replace(" ", "-").replace("_", "-")
+            if slug == experiment_id or data.get("id", "").startswith(experiment_id):
+                return data
+        except Exception:
+            continue
+    
+    # Check live studies as fallback
+    live = _load_latest_live_study(experiment_id)
+    if live:
+        return live
+    
+    raise HTTPException(status_code=404, detail="Experiment not found")
+
+
+@app.get("/api/experiments")
+async def list_experiments():
+    """List all available experiments and their results."""
+    from mvp.experiment_runner import list_experiments, list_experiment_results
+    
+    return {
+        "specs": list_experiments(),
+        "results": list_experiment_results(),
+    }
+
+
+@app.get("/api/experiment/{experiment_id}/agents/{agent_id}/screenshots/{filename}")
+async def get_experiment_screenshot(experiment_id: str, agent_id: str, filename: str):
+    """Get a screenshot from an experiment run."""
+    if not re.fullmatch(r"[\w.-]+", experiment_id):
+        raise HTTPException(status_code=400, detail="Invalid experiment id")
+    if not re.fullmatch(r"[\w.-]+", agent_id):
+        raise HTTPException(status_code=400, detail="Invalid agent id")
+    if not re.fullmatch(r"(?:step|bbox)_\d+\.png", filename):
+        raise HTTPException(status_code=400, detail="Invalid screenshot name")
+    
+    study_id = f"exp_{experiment_id}"
+    path = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / filename
+    if path.is_file():
+        return FileResponse(path, media_type="image/png")
+    
+    # Try alternate path without exp_ prefix
+    path = MVP_RUNS_DIR / experiment_id / agent_id / "screenshots" / filename
+    if path.is_file():
+        return FileResponse(path, media_type="image/png")
+    
+    raise HTTPException(status_code=404, detail="Screenshot not found")

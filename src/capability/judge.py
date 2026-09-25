@@ -49,6 +49,22 @@ def _is_auth_error(exc: Exception) -> bool:
     return any(marker.lower() in text.lower() for marker in _AUTH_ERROR_MARKERS)
 
 
+def _parse_judge_json(raw: str) -> dict:
+    """Parse judge JSON. Lenient on truncation and trailing commas."""
+    text = (raw or "").strip()
+    match = re.search(r"\{.*\}", text, re.S)
+    blob = match.group(0) if match else text
+    try:
+        return json.loads(blob)
+    except json.JSONDecodeError:
+        fixed = re.sub(r",\s*([}\]])", r"\1", blob)
+        if fixed.count('"') % 2 == 1:
+            fixed += '"'
+        fixed += "]" * max(0, fixed.count("[") - fixed.count("]"))
+        fixed += "}" * max(0, fixed.count("{") - fixed.count("}"))
+        return json.loads(fixed)
+
+
 def judge_task(
     task: str,
     final_url: str,
@@ -56,15 +72,28 @@ def judge_task(
     screenshot_png: bytes | None = None,
     end_title: str = "",
 ) -> dict:
-    """Score one trajectory. Retries once on auth failure with fresh credentials."""
+    """Score one trajectory. Retries auth once, and JSON parse failures up to 3 times."""
     last_exc: Exception | None = None
-    for attempt in (1, 2):
+    json_tries = 0
+    attempt = 0
+    while attempt < 4 and json_tries < 3:
+        attempt += 1
         try:
-            return _judge_once(task, final_url, action_summary, screenshot_png, end_title)
+            return _judge_once(
+                task,
+                final_url,
+                action_summary,
+                screenshot_png,
+                end_title,
+                max_output_tokens=256 * json_tries + 256,
+            )
+        except json.JSONDecodeError as exc:
+            last_exc = exc
+            json_tries += 1
+            continue
         except Exception as exc:  # noqa: BLE001
             last_exc = exc
-            if attempt == 1 and _is_auth_error(exc):
-                # Long runs outlive a bare access token; re-mint and try again.
+            if _is_auth_error(exc):
                 invalidate_credentials()
                 continue
             break
@@ -84,6 +113,7 @@ def _judge_once(
     action_summary: str,
     screenshot_png: bytes | None,
     end_title: str,
+    max_output_tokens: int = 256,
 ) -> dict:
     client = genai.Client(
         vertexai=True,
@@ -106,7 +136,7 @@ def _judge_once(
         config=types.GenerateContentConfig(
             system_instruction=JUDGE_SYSTEM,
             temperature=0,
-            max_output_tokens=256,
+            max_output_tokens=max_output_tokens,
             thinking_config=types.ThinkingConfig(thinking_budget=0),
             response_mime_type="application/json",
         ),
@@ -115,8 +145,7 @@ def _judge_once(
     prompt_tokens = int(getattr(usage, "prompt_token_count", 0) or 0)
     output_tokens = int(getattr(usage, "candidates_token_count", 0) or 0)
     raw = resp.text or ""
-    match = re.search(r"\{.*\}", raw, re.S)
-    obj = json.loads(match.group(0) if match else raw)
+    obj = _parse_judge_json(raw)
     status = str(obj.get("status", "AMBIGUOUS")).upper()
     if status not in VALID_STATUSES:
         status = "AMBIGUOUS"
