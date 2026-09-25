@@ -3,3 +3,46 @@
 {"attempt": 1, "balance_after": 20.0, "balance_before": 20.0, "balance_delta": 0.0, "captcha_type": "recaptcha_v3_enterprise", "cost": 0.003, "event": "createTask", "list_price": 0.003, "note": "", "site": "trello.com", "solved": true, "task_id": "a07f1e5b-4603-4871-881d-d4dd5acc809b", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-25T21:57:00.562363+00:00"}
 {"attempt": 1, "balance_after": 19.997, "balance_before": 19.997, "balance_delta": 0.0, "captcha_type": "recaptcha_v3_enterprise", "cost": 0.003, "event": "createTask", "list_price": 0.003, "note": "", "site": "trello.com", "solved": true, "task_id": "7b4f36dd-5aea-4d7c-88b9-ed22a5ee0a59", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-25T21:59:13.233267+00:00"}
 {"attempt": 1, "balance": 19.994, "event": "balance", "site": "trello.com", "ts": "2026-09-25T22:02:32.399102+00:00", "when": "after"}
+{"attempt": 2, "event": "signup_start", "site": "trello.com", "ts": "2026-09-25T22:04:24.289203+00:00"}
+{"attempt": 2, "balance": 19.994, "event": "balance", "site": "trello.com", "ts": "2026-09-25T22:04:24.387184+00:00", "when": "before"}
+{"attempt": 2, "balance_after": 19.994, "balance_before": 19.994, "balance_delta": 0.0, "captcha_type": "recaptcha_v3_enterprise", "cost": 0.003, "event": "createTask", "list_price": 0.003, "note": "", "site": "trello.com", "solved": true, "task_id": "64370b3e-e945-4d1c-bcdf-52e9d6bb50c3", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-25T22:06:00.472850+00:00"}
+{"attempt": 2, "balance": 19.991, "event": "balance", "site": "trello.com", "ts": "2026-09-25T22:10:31.155756+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "reddit.com", "ts": "2026-09-25T22:10:32.779772+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "reddit.com", "ts": "2026-09-25T22:10:32.821906+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "reddit.com", "ts": "2026-09-25T22:11:37.717443+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "bitwarden.com", "ts": "2026-09-25T22:11:38.999230+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "bitwarden.com", "ts": "2026-09-25T22:11:39.045144+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "bitwarden.com", "ts": "2026-09-25T22:14:20.838918+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "loom.com", "ts": "2026-09-25T22:14:22.306422+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "loom.com", "ts": "2026-09-25T22:14:22.395557+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "loom.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-25T22:16:13.638084+00:00"}
+{"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "loom.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-25T22:19:18.030380+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "loom.com", "ts": "2026-09-25T22:21:12.648402+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "github.com", "ts": "2026-09-25T22:21:14.062979+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "github.com", "ts": "2026-09-25T22:21:14.118894+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "github.com", "ts": "2026-09-25T22:22:56.218839+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "todoist.com", "ts": "2026-09-25T22:22:57.626556+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "todoist.com", "ts": "2026-09-25T22:22:57.665274+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "todoist.com", "ts": "2026-09-25T22:28:20.075277+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "discord.com", "ts": "2026-09-25T22:28:21.303710+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "discord.com", "ts": "2026-09-25T22:28:21.347274+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "discord.com", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T22:33:31.464207+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "discord.com", "ts": "2026-09-25T22:37:19.062706+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "supabase.com", "ts": "2026-09-25T22:37:20.320584+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "supabase.com", "ts": "2026-09-25T22:37:20.362333+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "supabase.com", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T22:39:44.714868+00:00"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "supabase.com", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T22:42:14.034777+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "supabase.com", "ts": "2026-09-25T22:43:17.597960+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "shopify.com", "ts": "2026-09-25T22:43:19.129517+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "shopify.com", "ts": "2026-09-25T22:43:19.169692+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "shopify.com", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T22:47:41.942697+00:00"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "shopify.com", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T22:50:33.992024+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "shopify.com", "ts": "2026-09-25T22:52:00.832628+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "hotjar.com", "ts": "2026-09-25T22:52:02.049626+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "hotjar.com", "ts": "2026-09-25T22:52:02.143835+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "hotjar.com", "ts": "2026-09-25T22:59:57.991051+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "intercom.com", "ts": "2026-09-25T23:01:57.031308+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "intercom.com", "ts": "2026-09-25T23:01:57.070767+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "intercom.com", "ts": "2026-09-25T23:05:33.239092+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "1password.com", "ts": "2026-09-25T23:05:34.520337+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "1password.com", "ts": "2026-09-25T23:05:34.557575+00:00", "when": "before"}
