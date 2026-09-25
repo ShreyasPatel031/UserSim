@@ -6,8 +6,9 @@ Runs on fm-gate0-spot-watchdog (on-demand e2-micro) from a 60s systemd timer.
 A TERMINATED VM is restarted only when the newest stop since lastStartTimestamp
 was a preemption (compute.instances.preempted, a maintenance simulation, or a
 Spot VM that went down with no user/agent stop operation). A stop issued by a
-person or an agent is left alone. usersim-train-state=done and a missing
-usersim-spot-watch label are also left alone.
+person or an agent is left alone. usersim-train-state=done,
+usersim-do-not-start=true, and a missing usersim-spot-watch label are also
+left alone.
 
 This process does not create on-demand instances. After two capacity errors in
 a row it logs that, and it stops trying after MAX_RESTARTS starts per run.
@@ -25,6 +26,7 @@ from pathlib import Path
 LABEL_KEY = os.environ.get("WATCH_LABEL_KEY", "usersim-spot-watch")
 LABEL_VALUE = os.environ.get("WATCH_LABEL_VALUE", "true")
 STATE_LABEL = os.environ.get("TRAIN_STATE_LABEL", "usersim-train-state")
+DENY_LABEL = os.environ.get("DENY_LABEL_KEY", "usersim-do-not-start")
 RESTARTS_LABEL = os.environ.get("RESTARTS_LABEL", "usersim-spot-restarts")
 TEST_LABEL = os.environ.get("TEST_PREEMPT_LABEL", "usersim-spot-test-preempt")
 STATE_DIR = Path(os.environ.get("STATE_DIR", "/var/lib/usersim-spot-watch"))
@@ -98,6 +100,8 @@ def decide(
         return "skip", "not_watched"
     if labels.get(STATE_LABEL) == "done":
         return "skip", "train_state_done"
+    if labels.get(DENY_LABEL) == "true":
+        return "skip", "do_not_start"
     if status == "RUNNING":
         return "skip", "running"
     if status in {"STAGING", "PROVISIONING", "REPAIRING", "SUSPENDING", "STOPPING"}:
