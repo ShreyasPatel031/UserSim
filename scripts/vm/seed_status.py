@@ -86,6 +86,8 @@ COOKIE_HOST_ALIASES: dict[str, frozenset[str]] = {
     "notion.com": frozenset({"notion.so", "notion.com"}),
     "trello.com": frozenset({"trello.com", "atlassian.com", "atlassian.net"}),
     "loom.com": frozenset({"loom.com", "atlassian.com", "atlassian.net"}),
+    "shopify.com": frozenset({"shopify.com", "myshopify.com", "shopifyadmin.com"}),
+    "make.com": frozenset({"make.com", "integromat.com"}),
 }
 
 

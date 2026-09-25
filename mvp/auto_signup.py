@@ -406,6 +406,8 @@ _COOKIE_HOST_ALIASES: dict[str, frozenset[str]] = {
     "notion.com": frozenset({"notion.so", "notion.com"}),
     "trello.com": frozenset({"trello.com", "atlassian.com", "atlassian.net"}),
     "loom.com": frozenset({"loom.com", "atlassian.com", "atlassian.net"}),
+    "shopify.com": frozenset({"shopify.com", "myshopify.com"}),
+    "make.com": frozenset({"make.com", "integromat.com"}),
 }
 
 # Names that look auth-y but are bot/WAF/consent noise (keep in sync with seed_status).
@@ -1442,12 +1444,17 @@ async def sign_up(
                     result["steps"] = getattr(history, "number_of_steps", lambda: None)()
                 except Exception:
                     pass
-            update_identity(
-                url,
-                status="provisioned",
-                blocker=result.get("reason"),
-                profile_dir=str(profile),
-            )
+            # Always pin the product host (e.g. shopify.com), never the IdP URL host
+            # (accounts.shopify.com) — registry keys are product hosts.
+            try:
+                update_identity(
+                    f"https://{host}",
+                    status="provisioned",
+                    blocker=result.get("reason"),
+                    profile_dir=str(profile),
+                )
+            except KeyError as exc:
+                result["identity_error"] = str(exc)[:120]
             return result
     finally:
         number = ctx.get("sms_number")
