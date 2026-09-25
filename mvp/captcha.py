@@ -1236,6 +1236,17 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
     # Human fallback — re-check first; Browserbase often finishes a few seconds late.
     if await _recaptcha_solved(page):
         return {"ok": True, "method": "browserbase", "detail": "token_late"}
+    # Fail fast with an actionable reason when we have a sitekey but no solver API key.
+    if info and info.get("sitekey") and not _api_key():
+        return {
+            "ok": False,
+            "method": "need_solver_api",
+            "detail": (
+                f"hcaptcha/recaptcha sitekey={info.get('sitekey')} type={info.get('type')} "
+                "— Browserbase+OSS could not produce a token; set MVP_CAPTCHA_API_KEY "
+                "(CapSolver/2Captcha) or Browserbase Verified"
+            ),
+        }
     await asyncio.to_thread(request_human_solve, page_url)
     ok = await asyncio.to_thread(wait_for_human_solve)
     if not ok and await _recaptcha_solved(page):

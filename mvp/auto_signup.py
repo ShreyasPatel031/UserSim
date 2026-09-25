@@ -132,6 +132,21 @@ def _create_signup_browserbase_session():
         {"proxies": False, "solve_captchas": True, "advanced_stealth": False},
         {"proxies": False, "solve_captchas": False, "advanced_stealth": False},
     ]
+    # Invisible hCaptcha (Supabase) often fails on datacenter/proxy fingerprints;
+    # allow forcing no-proxy first via MVP_BB_PROXIES=0.
+    prefer = (os.environ.get("MVP_BB_PROXIES") or "").strip().lower()
+    if prefer in {"0", "false", "no", "off"}:
+        attempts = [
+            {"proxies": False, "solve_captchas": True, "advanced_stealth": False},
+            {"proxies": True, "solve_captchas": True, "advanced_stealth": False},
+            {"proxies": False, "solve_captchas": False, "advanced_stealth": False},
+        ]
+    elif prefer in {"1", "true", "yes", "on"}:
+        attempts = [
+            {"proxies": True, "solve_captchas": True, "advanced_stealth": False},
+            {"proxies": False, "solve_captchas": True, "advanced_stealth": False},
+            {"proxies": False, "solve_captchas": False, "advanced_stealth": False},
+        ]
     last_exc: BaseException | None = None
     for kwargs in attempts:
         try:
