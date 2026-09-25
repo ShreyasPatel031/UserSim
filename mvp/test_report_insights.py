@@ -72,6 +72,28 @@ class InsightTests(unittest.TestCase):
         self.assertIn("bbox_0.png", ev["screenshot_url"])
         self.assertEqual(ev["final_url"], "https://linear.app/")
 
+    def test_drawing_canvas_is_a_strength_and_a_bare_load_is_not(self) -> None:
+        study = {
+            "url": "https://excalidraw.com/",
+            "agent_results": [
+                _run(
+                    "t2__p2__product",
+                    final="https://excalidraw.com/",
+                    easy=["The site loaded quickly and presented a clear drawing canvas immediately."],
+                ),
+                _run(
+                    "t1__p1__product",
+                    final="https://excalidraw.com/",
+                    easy=["The page loaded without issues"],
+                ),
+            ],
+            "activity_log": [],
+        }
+        insights = build_report_insights(study)
+        self.assertEqual(len(insights["strengths"]), 1)
+        self.assertIn("drawing canvas", insights["strengths"][0]["claim"])
+        self.assertEqual(insights["strengths"][0]["evidence"][0]["agent_id"], "t2__p2__product")
+
     def test_concrete_quote_cites_the_step_shot(self) -> None:
         study = {
             "url": "https://linear.app/",

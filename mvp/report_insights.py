@@ -68,6 +68,10 @@ _CONCRETE = (
     "cookie",
     "form",
     "button",
+    "canvas",
+    "drawing",
+    "sketch",
+    "whiteboard",
 )
 
 
