@@ -246,9 +246,9 @@ async def _prefetch_browser_sessions(
     if n <= 0:
         return []
     from capability.browserbase_client import (
-        BB_OWNER_E2E,
         create_session,
         ensure_browserbase_full_parallel,
+        study_session_owner,
     )
 
     ensure_browserbase_full_parallel()
@@ -262,7 +262,7 @@ async def _prefetch_browser_sessions(
                     create_session,
                     proxies=False,
                     keep_alive=True,
-                    owner=BB_OWNER_E2E,
+                    owner=study_session_owner(),
                     study_id=study_id,
                 ),
                 timeout=timeout_s,
@@ -318,6 +318,10 @@ STUDY_TASKS: dict[str, asyncio.Task] = {}
 
 
 def study_was_killed(study: StudyState) -> bool:
+    # Emergency escape hatch: competing local servers / GCS abandon-all races
+    # were falsely setting kill_requested ("Killed by operator" with no click).
+    if os.environ.get("MVP_DISABLE_KILL", "").lower() in {"1", "true", "yes"}:
+        return False
     return bool(getattr(study, "kill_requested", False))
 
 
@@ -450,6 +454,9 @@ Critical rules:
 - Every task must use a persona_id from the list above.
 - Every task must target something that actually appears on the page (a real nav item,
   section, CTA, or feature name). Quote or reference that element in the task prompt.
+- A task is not complete when the user describes the landing page. Each prompt must
+  require opening a specific section, searching, or using a control, and must say
+  what "done" looks like (a heading, a result, or a page that is not the homepage).
 - If the page has no pricing page, do not create a "find the pricing page" task.
 - Do not invent new personas."""
     raw = await _llm_chat(
@@ -522,7 +529,10 @@ async def generate_plan(
 
 async def _duckduckgo_search(query: str, *, limit: int = 8) -> list[dict[str, str]]:
     """Best-effort public web search for competitor discovery (no API key)."""
+    from html import unescape
     from urllib.parse import quote_plus
+
+    from mvp.competitor_urls import unwrap_search_url
 
     results: list[dict[str, str]] = []
     url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
@@ -541,14 +551,14 @@ async def _duckduckgo_search(query: str, *, limit: int = 8) -> list[dict[str, st
     except Exception:
         return results
 
-    # DuckDuckGo HTML result links look like:
-    # <a rel="nofollow" class="result__a" href="https://...">Title</a>
+    # DuckDuckGo HTML result links are protocol-relative redirects:
+    # href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fmiro.com%2F&rut=..."
     for match in re.finditer(
         r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
         html,
         flags=re.I | re.S,
     ):
-        href = match.group(1).strip()
+        href = unwrap_search_url(unescape(match.group(1).strip()))
         title = re.sub(r"<[^>]+>", "", match.group(2)).strip()
         if not href.startswith("http"):
             continue
@@ -558,9 +568,23 @@ async def _duckduckgo_search(query: str, *, limit: int = 8) -> list[dict[str, st
     return results
 
 
-async def invent_competitors(url: str, site_summary: str, page_text: str) -> list[str]:
-    """Find 2 real competitor homepage URLs via web search + LLM selection."""
+async def invent_competitors(
+    url: str,
+    site_summary: str,
+    page_text: str,
+    *,
+    exclude_hosts: set[str] | None = None,
+    want: int = 2,
+    dropped_out: list[tuple[str, str]] | None = None,
+) -> list[str]:
+    """Find live competitor homepages via web search, then drop dead or off-site URLs."""
     from urllib.parse import urlparse
+
+    from mvp.competitor_urls import (
+        filter_live_competitor_urls,
+        looks_like_product_page,
+        registrable_host,
+    )
 
     host = (urlparse(url).hostname or "").replace("www.", "")
     product_hint = (site_summary or host or url).strip()[:120]
@@ -589,72 +613,189 @@ What it is: {site_summary}
 Page excerpt:
 {page_text[:2500]}
 
-Live web search results (use these — do not invent domains):
+Web search results (often review articles — name the products they discuss, not the article URL):
 {json.dumps(search_hits[:12], indent=2)}
 
 Return JSON only:
 {{"competitors": [{{"name": "...", "url": "https://..."}}, {{"name": "...", "url": "https://..."}}]}}
 
 Rules:
-- Exactly 2 direct product competitors a real user would also evaluate.
-- Prefer URLs from the search results above. Only use other well-known live public sites if search is empty.
-- Public marketing homepages only (https), no app login URLs.
-- Never invent fake domains.
+- Return 4 direct product competitors a real user would also evaluate, best first. We keep the ones that are live.
+- Each url must be that product's own public homepage (https://example.com/), never a review, blog, or comparison article.
+- The product must be operating today. Never return a shut-down, parked, or redirected domain.
+- Never invent fake domains. Never repeat the product under study.
 """
     raw = await _llm_chat(
         [
             {
                 "role": "system",
                 "content": (
-                    "You output valid JSON only. Prefer competitor URLs from the provided "
-                    "web search results. Never invent fake domains."
+                    "You output valid JSON only. Return real competitor homepages "
+                    "for products that are operating today. Never invent fake domains."
                 ),
             },
             {"role": "user", "content": prompt},
         ]
     )
     data = _extract_json(raw)
-    urls: list[str] = []
-    for row in data.get("competitors") or []:
-        u = (row.get("url") if isinstance(row, dict) else str(row) or "").strip()
-        if u.startswith("http") and u.rstrip("/") != url.rstrip("/"):
-            urls.append(u)
-    if not urls and search_hits:
-        # Fallback: first two distinct search result hosts.
-        for hit in search_hits:
-            u = hit.get("url") or ""
-            if u.startswith("http") and u.rstrip("/") != url.rstrip("/"):
-                urls.append(u)
-            if len(urls) >= 2:
-                break
-    # Still short? Ask the model for well-known public alternatives without search.
-    if len(urls) < 2:
+    candidates: list[str] = []
+    names: list[str] = []
+
+    def _push(raw_url: str) -> None:
+        u = (raw_url or "").strip()
+        if not u.startswith("http"):
+            return
+        if registrable_host(u) == registrable_host(url):
+            return
+        if u not in candidates:
+            candidates.append(u)
+
+    def _take_rows(rows: object) -> None:
+        for row in rows or []:
+            if isinstance(row, dict):
+                name = str(row.get("name") or "").strip()
+                if name and name not in names:
+                    names.append(name)
+                _push(str(row.get("url") or ""))
+            else:
+                _push(str(row or ""))
+
+    _take_rows(data.get("competitors"))
+    # Product-shaped search hits next, so a dead model guess can be replaced.
+    for hit in search_hits:
+        hit_url = hit.get("url") or ""
+        if looks_like_product_page(hit_url):
+            _push(hit_url)
+    blocked = set(exclude_hosts or set())
+    live, dropped = await filter_live_competitor_urls(
+        candidates,
+        product_url=url,
+        exclude_hosts=blocked,
+        limit=max(1, want),
+    )
+    blocked |= {registrable_host(u) for u, _reason in dropped if registrable_host(u)}
+    blocked |= {registrable_host(u) for u in live if registrable_host(u)}
+    # A dead guess (Height.app) or a one-URL model answer must not stop the pair.
+    if len(live) < want:
         try:
             raw2 = await _llm_chat(
                 [
                     {
                         "role": "system",
-                        "content": "JSON only. Return real public competitor homepage URLs.",
+                        "content": (
+                            "JSON only. Return real public competitor homepage URLs "
+                            "for products that are operating today. Never return a "
+                            "shut-down or parked domain. Do not repeat rejected hosts."
+                        ),
                     },
                     {
                         "role": "user",
                         "content": (
                             f"Product: {url}\nSummary: {site_summary}\n"
-                            f"Need {2 - len(urls)} more competitor homepage URL(s). "
-                            'Return {"competitors":[{"name":"...","url":"https://..."}]}'
+                            f"Search titles: {json.dumps([h.get('title') for h in search_hits[:8]])}\n"
+                            f"Already rejected or in use: {', '.join(sorted(h for h in blocked if h)) or 'none'}\n"
+                            f"Need {want - len(live)} more DIFFERENT live competitor homepage URL(s). "
+                            "Return 3 options, best first. "
+                            'JSON: {"competitors":[{"name":"...","url":"https://..."}]}'
                         ),
                     },
                 ]
             )
+            extra: list[str] = []
             for row in (_extract_json(raw2).get("competitors") or []):
-                u = (row.get("url") if isinstance(row, dict) else str(row) or "").strip()
-                if u.startswith("http") and u.rstrip("/") != url.rstrip("/") and u not in urls:
-                    urls.append(u)
-                if len(urls) >= 2:
-                    break
-        except Exception:
-            pass
-    return urls[:2]
+                if isinstance(row, dict):
+                    name = str(row.get("name") or "").strip()
+                    if name and name not in names:
+                        names.append(name)
+                    u = str(row.get("url") or "").strip()
+                else:
+                    u = str(row or "").strip()
+                if u.startswith("http") and u not in candidates and u not in extra:
+                    extra.append(u)
+            more, more_dropped = await filter_live_competitor_urls(
+                extra,
+                product_url=url,
+                exclude_hosts=blocked,
+                limit=want - len(live),
+            )
+            dropped.extend(more_dropped)
+            live.extend(more)
+            blocked |= {registrable_host(u) for u in more if registrable_host(u)}
+            blocked |= {registrable_host(u) for u, _reason in more_dropped if registrable_host(u)}
+        except Exception as exc:  # noqa: BLE001
+            print(f"competitor second pass failed: {exc!r}", flush=True)
+    # Named products whose guessed URL died: look up that name's homepage.
+    if len(live) < want and names:
+        lookups: list[str] = []
+        for name in names:
+            if len(live) + len(lookups) >= want + 2:
+                break
+            try:
+                for hit in await _duckduckgo_search(f"{name} official website", limit=4):
+                    hit_url = hit.get("url") or ""
+                    path = (urlparse(hit_url).path or "/").rstrip("/") or "/"
+                    if path == "/" and looks_like_product_page(hit_url):
+                        lookups.append(hit_url)
+                        break
+            except Exception:
+                continue
+        if lookups:
+            more, more_dropped = await filter_live_competitor_urls(
+                lookups,
+                product_url=url,
+                exclude_hosts=blocked,
+                limit=want - len(live),
+            )
+            dropped.extend(more_dropped)
+            live.extend(more)
+    if dropped_out is not None:
+        dropped_out.extend(dropped)
+    return live[:want]
+
+
+async def resolve_study_competitors(
+    seeds: list[str],
+    *,
+    product_url: str,
+    site_summary: str,
+    page_text: str,
+    limit: int = 2,
+) -> tuple[list[str], list[tuple[str, str]]]:
+    """Keep live seeded rivals and replace defunct ones before tasks are written."""
+    from mvp.competitor_urls import filter_live_competitor_urls, registrable_host
+
+    live, dropped = await filter_live_competitor_urls(
+        list(seeds or []),
+        product_url=product_url,
+        limit=limit,
+    )
+    if len(live) >= limit:
+        return live[:limit], dropped
+    exclude = {registrable_host(u) for u in live}
+    exclude.add(registrable_host(product_url))
+    invented_drops: list[tuple[str, str]] = []
+    try:
+        invented = await invent_competitors(
+            product_url,
+            site_summary,
+            page_text,
+            exclude_hosts=exclude,
+            want=limit,
+            dropped_out=invented_drops,
+        )
+    except Exception:
+        invented = []
+    dropped.extend(invented_drops)
+    used = set(exclude)
+    for url in invented:
+        host = registrable_host(url)
+        if not host or host in used:
+            continue
+        live.append(url)
+        used.add(host)
+        if len(live) >= limit:
+            break
+    return live[:limit], dropped
 
 
 def _site_pairs(product_url: str, competitors: list[str]) -> list[tuple[str, str]]:
@@ -687,11 +828,10 @@ def expand_tasks_for_sites(
             title = task.get("title") or "Task"
             if site_key != "product":
                 clone["title"] = f"{title} (vs {site_url})"
-                prompt = str(task.get("prompt") or title)
-                clone["prompt"] = (
-                    f"{prompt}\n\n"
-                    f"You are evaluating the competitor site {site_url} only. "
-                    f"Stay on that site — do not open the original product or other rivals."
+                from mvp.competitor_urls import competitor_task_prompt
+
+                clone["prompt"] = competitor_task_prompt(
+                    str(task.get("prompt") or title), site_url
                 )
             expanded.append(clone)
     return expanded
@@ -821,11 +961,9 @@ def expand_full_matrix(
                 prompt = str(task.get("prompt") or title)
                 if site_key != "product":
                     clone["title"] = f"{title} (vs {site_url})"
-                    clone["prompt"] = (
-                        f"{prompt}\n\n"
-                        f"You are evaluating the competitor site {site_url} only. "
-                        f"Stay on that site — do not open the original product or other rivals."
-                    )
+                    from mvp.competitor_urls import competitor_task_prompt
+
+                    clone["prompt"] = competitor_task_prompt(prompt, site_url)
                 else:
                     clone["title"] = title
                     clone["prompt"] = prompt
@@ -996,14 +1134,34 @@ async def synthesize_summary(
     site_summary: str,
     agent_results: list[dict[str, Any]],
 ) -> dict[str, Any]:
+    from mvp.competitor_urls import (
+        product_insight_results,
+        run_issue_lines,
+        scrub_product_summary,
+    )
+
+    issues = [
+        r.get("run_issue")
+        for r in agent_results or []
+        if isinstance(r, dict) and r.get("exclude_from_insights") and isinstance(r.get("run_issue"), dict)
+    ]
+    # Re-classify so fleet workers that skip annotate still exclude bad runs.
+    insight_results = product_insight_results(agent_results)
+    if not issues:
+        issues = [
+            r.get("run_issue")
+            for r in agent_results or []
+            if isinstance(r, dict) and isinstance(r.get("run_issue"), dict)
+        ]
+    issue_lines = run_issue_lines([i for i in issues if isinstance(i, dict)])
     prompt = f"""Synthesize a product research report from parallel simulated user sessions.
 
 Site: {url}
 Segment: {segment}
 Site summary: {site_summary}
 
-Agent session results:
-{json.dumps(_slim_results(agent_results), indent=2)[:14000]}
+Agent session results (product evidence only — navigation and infrastructure failures were removed):
+{json.dumps(_slim_results(insight_results), indent=2)[:14000]}
 
 Return JSON only:
 {{
@@ -1016,62 +1174,102 @@ Return JSON only:
   ],
   "segment_fit_score": 1-10,
   "segment_fit_rationale": "2 sentences"
-}}"""
+}}
+
+Rules:
+- Report only what these sessions show about the product at {url} and its live competitors.
+- Never describe a wrong website, a competitor mix-up, a failed navigation, or a harness/infrastructure error as product friction, a weakness, or a user insight.
+- If a session is missing, do not infer why."""
     raw = await _llm_chat(
         [
-            {"role": "system", "content": "You are a senior UX researcher. JSON only."},
+            {
+                "role": "system",
+                "content": (
+                    "You are a senior UX researcher. JSON only. "
+                    "Navigation and infrastructure failures are not product insights."
+                ),
+            },
             {"role": "user", "content": prompt},
         ],
         temperature=0.3,
     )
-    return _extract_json(raw)
+    summary = scrub_product_summary(_extract_json(raw))
+    summary["run_issues"] = issue_lines
+    return summary
 
 
 def _summary_from_agent_results(agent_results: list[dict[str, Any]]) -> dict[str, Any]:
     """Deterministic fallback when LLM synthesis is unavailable."""
-    if not agent_results:
+    from mvp.competitor_urls import (
+        product_insight_results,
+        run_issue_lines,
+        scrub_product_summary,
+    )
+
+    issues = run_issue_lines(
+        [
+            r.get("run_issue")
+            for r in (agent_results or [])
+            if isinstance(r, dict) and isinstance(r.get("run_issue"), dict)
+        ]
+    )
+    # annotate if the caller has not yet, then ignore harness failures.
+    insight_results = product_insight_results(agent_results)
+    if not issues:
+        issues = run_issue_lines(
+            [
+                r.get("run_issue")
+                for r in (agent_results or [])
+                if isinstance(r, dict) and isinstance(r.get("run_issue"), dict)
+            ]
+        )
+    if not insight_results:
         return {
-            "headline": "Study finished with no agent results",
+            "headline": "Study finished with no product sessions",
             "top_friction": [],
             "top_strengths": [],
             "conversion_outlook": "",
             "recommendations": [],
             "segment_fit_score": 0,
             "segment_fit_rationale": "",
+            "run_issues": issues,
         }
     friction: list[str] = []
     strengths: list[str] = []
-    for r in agent_results:
+    for r in insight_results:
         for item in r.get("friction_points") or []:
             if item and item not in friction:
                 friction.append(str(item))
         for item in r.get("what_was_easy") or []:
             if item and item not in strengths:
                 strengths.append(str(item))
-    first = agent_results[0]
+    first = insight_results[0]
     converts = sum(
         1
-        for r in agent_results
+        for r in insight_results
         if str(r.get("would_convert") or "").lower() in {"yes", "true", "likely"}
     )
-    score = max(1, min(10, round(10 * converts / max(1, len(agent_results)))))
-    return {
-        "headline": (first.get("quote") or first.get("product_feedback") or "Study complete")[:200],
-        "top_friction": friction[:5],
-        "top_strengths": strengths[:5],
-        "conversion_outlook": (
-            f"{converts}/{len(agent_results)} simulated users said they would convert."
-        ),
-        "recommendations": [
-            {
-                "priority": "medium",
-                "action": "Review session recaps for the highest-friction steps",
-                "rationale": "Fallback summary — LLM synthesis was unavailable.",
-            }
-        ],
-        "segment_fit_score": score,
-        "segment_fit_rationale": "Score derived from would-convert answers across sessions.",
-    }
+    score = max(1, min(10, round(10 * converts / max(1, len(insight_results)))))
+    return scrub_product_summary(
+        {
+            "headline": (first.get("quote") or first.get("product_feedback") or "Study complete")[:200],
+            "top_friction": friction[:5],
+            "top_strengths": strengths[:5],
+            "conversion_outlook": (
+                f"{converts}/{len(insight_results)} simulated users said they would convert."
+            ),
+            "recommendations": [
+                {
+                    "priority": "medium",
+                    "action": "Review session recaps for the highest-friction steps",
+                    "rationale": "Fallback summary — LLM synthesis was unavailable.",
+                }
+            ],
+            "segment_fit_score": score,
+            "segment_fit_rationale": "Score derived from would-convert answers across sessions.",
+            "run_issues": issues,
+        }
+    )
 
 
 async def run_study(
@@ -1124,6 +1322,9 @@ async def run_study(
                 return USE_LIVE_BROWSER and _browserbase_configured()
             return _browserbase_configured()
 
+        def _schedule_competitor_warms() -> None:
+            return
+
         if _should_warm_browserbase():
             from mvp.browser_agent import warm_opening_session
 
@@ -1131,11 +1332,13 @@ async def run_study(
             # create_session doesn't hang on a leaked local slot / 429.
             # Never touch Sign Up (owner=signup) or untagged foreign sessions.
             try:
-                from capability.browserbase_client import BB_OWNER_E2E, reset_local_slots
+                from capability.browserbase_client import reset_local_slots, study_session_owner
                 from mvp.kill_switch import kill_all_browserbase
 
                 released = await asyncio.wait_for(
-                    asyncio.to_thread(kill_all_browserbase, owner=BB_OWNER_E2E),
+                    asyncio.to_thread(
+                        kill_all_browserbase, owner=study_session_owner()
+                    ),
                     timeout=12,
                 )
                 reset_local_slots()
@@ -1143,25 +1346,46 @@ async def run_study(
             except Exception as rel_exc:  # noqa: BLE001
                 print(f"pre-study browserbase release skipped: {rel_exc!r}", flush=True)
 
+            async def _warm_after(
+                *, key: str, url: str, delay_s: float
+            ) -> dict[str, Any] | None:
+                # Stagger session creates so product + rivals are not one burst.
+                if delay_s > 0:
+                    await asyncio.sleep(delay_s)
+                return await warm_opening_session(study_id=f"{study.id}_{key}", url=url)
+
             warm_task = asyncio.create_task(
-                warm_opening_session(study_id=study.id, url=study.url)
+                _warm_after(key="product", url=study.url, delay_s=0.0)
             )
             warm_site_tasks["product"] = warm_task
-            # Warm competitors too — under 24-way load their own opening frames
-            # often stay on logo-on-black splash and never get a flash-lite YES.
-            for i, comp in enumerate((study.competitors or [])[:4]):
-                if not comp:
-                    continue
-                key = f"competitor_{i+1}"
-                warm_site_tasks[key] = asyncio.create_task(
-                    warm_opening_session(
-                        study_id=f"{study.id}_{key}", url=str(comp)
+
+            def _schedule_competitor_warms() -> None:
+                # Only after URLs are probed. A dead host must not take a slot,
+                # and a later replacement must not inherit the old session.
+                # ~0.6s apart: a thundering herd 429s the shared Browserbase project.
+                for i, comp in enumerate((study.competitors or [])[:4]):
+                    if not comp:
+                        continue
+                    key = f"competitor_{i+1}"
+                    if key in warm_site_tasks:
+                        continue
+                    warm_site_tasks[key] = asyncio.create_task(
+                        _warm_after(
+                            key=key,
+                            url=str(comp),
+                            delay_s=0.55 * (i + 1),
+                        )
                     )
-                )
+                    log_activity(
+                        study,
+                        "browser",
+                        f"Warming competitor screenshot for {comp}",
+                    )
+
             log_activity(
                 study,
                 "browser",
-                f"Warming first screenshots for {1+len(study.competitors or [])} sites during brief",
+                "Warming first screenshot for the product during brief",
             )
             # Prewarm Vertex ADC so agent.run isn't blocked on first credential load.
             try:
@@ -1270,11 +1494,24 @@ async def run_study(
             )
             touch("Building simulated users")
             _push_brief("brief")
-        elif not study.competitors:
+        else:
             try:
-                study.competitors = await invent_competitors(
-                    study.url, site_hint, page_text
+                resolved, dropped = await resolve_study_competitors(
+                    list(study.competitors or []),
+                    product_url=study.url,
+                    site_summary=site_hint,
+                    page_text=page_text,
                 )
+                for old, reason in dropped:
+                    # The warm-time probe may already have logged the same drop.
+                    msg = f"Dropped competitor {old} — {reason}"
+                    if not any(
+                        (row or {}).get("message") == msg
+                        for row in (study.activity_log or [])
+                        if isinstance(row, dict)
+                    ):
+                        log_activity(study, "plan", msg)
+                study.competitors = resolved
             except Exception as exc:  # noqa: BLE001
                 log_activity(
                     study,
@@ -1288,6 +1525,7 @@ async def run_study(
                 "plan",
                 "Competitors: " + ", ".join(study.competitors),
             )
+            _schedule_competitor_warms()
             touch("Finding competitors")
             _push_brief("brief")
 
@@ -1331,23 +1569,37 @@ async def run_study(
         if site_summary:
             log_activity(study, "plan", f"Site: {site_summary}")
 
-        # Retry competitors with richer summary if the first pass was empty.
+        # Top up when the first pass kept fewer than two live rivals.
+        # An empty list and a single URL both shrink the 24-agent matrix.
         if (
             not study.test_mode
             and not study.skip_competitors
-            and not study.competitors
+            and len(study.competitors or []) < 2
             and site_summary
         ):
             try:
-                study.competitors = await invent_competitors(
-                    study.url, site_summary, page_text
+                filled, more_dropped = await resolve_study_competitors(
+                    list(study.competitors or []),
+                    product_url=study.url,
+                    site_summary=site_summary,
+                    page_text=page_text,
                 )
-                if study.competitors:
+                for old, reason in more_dropped:
+                    msg = f"Dropped competitor {old} — {reason}"
+                    if not any(
+                        (row or {}).get("message") == msg
+                        for row in (study.activity_log or [])
+                        if isinstance(row, dict)
+                    ):
+                        log_activity(study, "plan", msg)
+                if len(filled) > len(study.competitors or []):
+                    study.competitors = filled
                     log_activity(
                         study,
                         "plan",
                         "Competitors: " + ", ".join(study.competitors),
                     )
+                    _schedule_competitor_warms()
             except Exception as exc:  # noqa: BLE001
                 log_activity(
                     study,
@@ -1609,6 +1861,7 @@ async def run_study(
                         close_warm_opening,
                         warm_opening_session,
                     )
+                    from mvp.competitor_urls import rewrite_competitor_task
 
                     def _host(u: str) -> str:
                         return (_urlparse(u).hostname or "").lower().removeprefix(
@@ -1625,6 +1878,7 @@ async def run_study(
                             study.url,
                             site_summary or study.url,
                             page_text or "",
+                            exclude_hosts=set(used_hosts),
                         )
                     except Exception as inv_exc:  # noqa: BLE001
                         print(f"competitor re-invent failed: {inv_exc!r}", flush=True)
@@ -1652,10 +1906,7 @@ async def run_study(
                         # Rewrite already-expanded matrix rows for this site_key.
                         for t in study.tasks or []:
                             if str(t.get("site_key") or "") == key:
-                                t["site_url"] = new_url
-                                t["site_label"] = (
-                                    f"Competitor · {_host(new_url) or new_url}"
-                                )
+                                rewrite_competitor_task(t, new_url)
                         log_activity(
                             study,
                             "plan",
@@ -1692,6 +1943,158 @@ async def run_study(
 
             if "product" in warm_by_site:
                 warm_opening = warm_by_site["product"]
+
+            # Retry sites whose warm create 429'd or timed out. This loop
+            # finishes BEFORE live sessions exist, so created_at_ts / the 5s
+            # first-screenshot clock have not started. Do not loosen that clock.
+            if needed_site_keys - set(warm_by_site):
+                import random as _warm_random
+
+                from mvp.browser_agent import warm_opening_session as _warm_retry
+
+                def _warm_url(key: str) -> str | None:
+                    if key == "product":
+                        return study.url
+                    if not str(key).startswith("competitor_"):
+                        return None
+                    try:
+                        idx = int(str(key).rsplit("_", 1)[-1]) - 1
+                    except ValueError:
+                        return None
+                    comps = list(study.competitors or [])
+                    if 0 <= idx < len(comps) and comps[idx]:
+                        return str(comps[idx])
+                    return None
+
+                try:
+                    pre_attempts = int(
+                        os.environ.get("MVP_WARM_PRECLOCK_RETRIES", "3") or "3"
+                    )
+                except ValueError:
+                    pre_attempts = 3
+                pre_attempts = max(1, min(5, pre_attempts))
+                try:
+                    warm_conc = int(
+                        os.environ.get("MVP_WARM_CREATE_CONCURRENCY", "2") or "2"
+                    )
+                except ValueError:
+                    warm_conc = 2
+                warm_conc = max(1, min(3, warm_conc))
+                warm_sem = asyncio.Semaphore(warm_conc)
+
+                # In-flight warms are already retrying inside create_session.
+                # Collect them before opening a second session for the same site.
+                if pending_warm:
+                    try:
+                        grace = float(
+                            os.environ.get("MVP_WARM_PRECLOCK_GRACE_S", "20") or "20"
+                        )
+                    except ValueError:
+                        grace = 20.0
+                    grace_deadline = time.time() + max(1.0, grace)
+                    inflight = dict(pending_warm)
+                    while inflight and time.time() < grace_deadline:
+                        wait_s = max(0.1, min(5.0, grace_deadline - time.time()))
+                        done, _pending = await asyncio.wait(
+                            set(inflight.values()),
+                            timeout=wait_s,
+                            return_when=asyncio.FIRST_COMPLETED,
+                        )
+                        for key, task in list(inflight.items()):
+                            if task not in done:
+                                continue
+                            inflight.pop(key, None)
+                            pending_warm.pop(key, None)
+                            try:
+                                result = task.result()
+                            except Exception as warm_exc:  # noqa: BLE001
+                                print(
+                                    f"pre-clock warm {key} inflight failed: {warm_exc!r}",
+                                    flush=True,
+                                )
+                                continue
+                            if result and result.get("timing"):
+                                warm_timing[key] = result["timing"]
+                            if _warm_is_real(result):
+                                warm_by_site[key] = result
+                            elif result and result.get("shot_path"):
+                                warm_by_site.setdefault(f"_blank_{key}", result)
+
+                async def _retry_key(key: str, attempt: int) -> None:
+                    url = _warm_url(key)
+                    if not url:
+                        return
+                    async with warm_sem:
+                        await asyncio.sleep(_warm_random.uniform(0.05, 0.4))
+                        try:
+                            result = await asyncio.wait_for(
+                                _warm_retry(
+                                    study_id=f"{study.id}_{key}_pre{attempt}",
+                                    url=url,
+                                ),
+                                timeout=float(
+                                    os.environ.get("MVP_WARM_ATTEMPT_TIMEOUT_S", "75")
+                                    or "75"
+                                ),
+                            )
+                        except Exception as retry_exc:  # noqa: BLE001
+                            print(
+                                f"pre-clock warm {key} attempt {attempt + 1} "
+                                f"failed: {retry_exc!r}",
+                                flush=True,
+                            )
+                            return
+                        if result and result.get("timing"):
+                            warm_timing[key] = result["timing"]
+                        if _warm_is_real(result):
+                            # Drop a blank donor so we don't keep two sessions.
+                            blank = warm_by_site.pop(f"_blank_{key}", None)
+                            if blank:
+                                try:
+                                    from mvp.browser_agent import close_warm_opening
+
+                                    await close_warm_opening(blank)
+                                except Exception:
+                                    pass
+                            warm_by_site[key] = result
+                            print(
+                                f"pre-clock warm {key} real on attempt {attempt + 1}",
+                                flush=True,
+                            )
+                        elif result:
+                            warm_by_site.setdefault(f"_blank_{key}", result)
+
+                for attempt in range(pre_attempts):
+                    missing = [
+                        k
+                        for k in sorted(needed_site_keys)
+                        if k not in warm_by_site and k not in pending_warm
+                    ]
+                    if not missing:
+                        break
+                    delay = min(6.0, 0.7 * (2 ** attempt)) + _warm_random.uniform(
+                        0.15, 0.9
+                    )
+                    print(
+                        f"pre-clock warm retry {attempt + 1}/{pre_attempts} "
+                        f"for {missing} after {delay:.1f}s "
+                        f"(not on the 5s screenshot clock)",
+                        flush=True,
+                    )
+                    log_activity(
+                        study,
+                        "browser",
+                        f"Retrying warm screenshots before agents start: {', '.join(missing)}",
+                    )
+                    await asyncio.sleep(delay)
+                    await asyncio.gather(
+                        *[_retry_key(k, attempt) for k in missing],
+                        return_exceptions=True,
+                    )
+
+                if "product" in warm_by_site:
+                    warm_opening = warm_by_site["product"]
+
             warm_task = None
             warm_site_tasks = {}
             study.activity_log.append(
@@ -2071,7 +2474,15 @@ async def run_study(
                 return result
 
             study.agent_results = []
-            await asyncio.gather(*[_run_snapshot(t) for t in study.tasks])
+            snap_out = await asyncio.gather(
+                *[_run_snapshot(t) for t in study.tasks],
+                return_exceptions=True,
+            )
+            for item in snap_out:
+                if isinstance(item, Exception) and not isinstance(
+                    item, asyncio.CancelledError
+                ):
+                    print(f"snapshot agent failed: {item!r}", flush=True)
         elif _fleet_preferred(test_mode=bool(study.test_mode)):
             from mvp.gcp_fleet import run_study_on_gcp_fleet
 
@@ -2404,7 +2815,15 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                await asyncio.gather(*[_run_snapshot_fallback(t) for t in study.tasks])
+                snap_out = await asyncio.gather(
+                    *[_run_snapshot_fallback(t) for t in study.tasks],
+                    return_exceptions=True,
+                )
+                for item in snap_out:
+                    if isinstance(item, Exception) and not isinstance(
+                        item, asyncio.CancelledError
+                    ):
+                        print(f"snapshot fallback agent failed: {item!r}", flush=True)
             else:
                 # Mark each agent with its chosen URL and launch immediately.
                 # Do not clobber a warm session that already has pixels / live view.
@@ -2686,7 +3105,7 @@ async def run_study(
                             run = None
                             _outer_wall = max(
                                 45.0,
-                                float(os.environ.get("MVP_AGENT_WALL_S", "120") or "120")
+                                float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
                                 + 45.0,
                             )
                             _agent_task = asyncio.create_task(
@@ -2923,7 +3342,16 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                await asyncio.gather(*[_run_one(t) for t in study.tasks])
+                # return_exceptions=True: one cancelled/failed agent must not
+                # CancelledError the whole gather ("Killed by operator").
+                agent_out = await asyncio.gather(
+                    *[_run_one(t) for t in study.tasks],
+                    return_exceptions=True,
+                )
+                for item in agent_out:
+                    if isinstance(item, Exception):
+                        print(f"live agent failed: {item!r}", flush=True)
+                        continue
                 try:
                     await backfill_site_opening_shots(study)
                     if study.live_sessions:
@@ -2968,10 +3396,31 @@ async def run_study(
         except Exception as bf_exc:  # noqa: BLE001
             print(f"backfill_site_opening_shots failed: {bf_exc!r}", flush=True)
 
+        from mvp.competitor_urls import annotate_run_issues, run_issue_lines, scrub_product_summary
+
+        run_issues = annotate_run_issues(study.agent_results)
+        if run_issues:
+            log_activity(
+                study,
+                "run_issue",
+                f"{len(run_issues)} run issue(s) excluded from product insights",
+            )
+            for issue in run_issues:
+                log_activity(
+                    study,
+                    "run_issue",
+                    f"{issue.get('persona_name') or issue.get('agent_id')}: "
+                    f"{issue.get('kind')} — {issue.get('reason')}",
+                    agent_id=issue.get("agent_id"),
+                )
+
         touch("Writing executive summary")
         if study.summary and study.summary.get("headline"):
-            # Already written by fleet finisher.
-            pass
+            # Already written by fleet finisher — still strip harness failures.
+            study.summary = scrub_product_summary(study.summary)
+            study.summary["run_issues"] = run_issue_lines(
+                [r.get("run_issue") for r in study.agent_results if isinstance(r, dict) and r.get("run_issue")]
+            )
         else:
             log_activity(study, "summary", "Synthesizing executive summary from all sessions")
             try:
@@ -2998,6 +3447,12 @@ async def run_study(
             study.summary["auth_status"] = study.auth_status
         if study.auth_blocker:
             study.summary["auth_blocker"] = study.auth_blocker
+        try:
+            from mvp.report_insights import apply_insights
+
+            apply_insights(study)
+        except Exception as insight_exc:  # noqa: BLE001
+            print(f"report insights failed: {insight_exc!r}", flush=True)
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
         persist_study(study)
@@ -3008,10 +3463,23 @@ async def run_study(
         study.updated_at = _now()
         persist_study(study)
     except asyncio.CancelledError:
-        study.kill_requested = True
-        study.status = "abandoned"
-        study.phase = "Killed"
-        study.error = "Killed by operator"
+        # Only label as operator-kill when the kill switch was actually armed.
+        # Bare task cancellation (server restart, gather teardown) used to
+        # stamp every interrupted study as "Killed by operator".
+        if study_was_killed(study) or getattr(study, "kill_requested", False):
+            study.kill_requested = True
+            study.status = "abandoned"
+            study.phase = "Killed"
+            study.error = "Killed by operator"
+        else:
+            study.status = "abandoned"
+            study.phase = "Cancelled"
+            study.error = study.error or "Study task cancelled"
+            print(
+                f"study {study.id} CancelledError without kill_requested "
+                f"(not treating as operator kill)",
+                flush=True,
+            )
         study.updated_at = _now()
         persist_study(study)
         raise
@@ -3093,8 +3561,23 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
     )
 
 
+def _local_snapshot_path(study_id: str):
+    from mvp.paths import MVP_RUNS_DIR
+
+    return MVP_RUNS_DIR / "snapshots" / f"{study_id}.json"
+
+
 def persist_study(study: StudyState) -> None:
-    """Best-effort write of study state to GCS so Vercel clients can reconnect."""
+    """Best-effort write of study state so a restarted local server can still serve the report."""
+    try:
+        from mvp.opening_shot import drop_inline_shots
+
+        payload = drop_inline_shots(study_to_dict(study))
+        path = _local_snapshot_path(study.id)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload), encoding="utf-8")
+    except Exception as exc:  # noqa: BLE001
+        print(f"local persist_study failed for {study.id}: {exc!r}", flush=True)
     try:
         from mvp.gcs_store import write_study_state
         from mvp.opening_shot import drop_inline_shots
@@ -3102,6 +3585,27 @@ def persist_study(study: StudyState) -> None:
         write_study_state(study.id, drop_inline_shots(study_to_dict(study)))
     except Exception as exc:  # noqa: BLE001
         print(f"persist_study failed for {study.id}: {exc!r}", flush=True)
+
+
+def load_local_study(study_id: str) -> dict[str, Any] | None:
+    """Study JSON written by this process, or a snapshot saved before a restart."""
+    from pathlib import Path
+
+    candidates = [
+        _local_snapshot_path(study_id),
+        Path("/tmp/usersim-study-snapshots") / f"{study_id}.json",
+    ]
+    for path in candidates:
+        try:
+            if not path.is_file():
+                continue
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if isinstance(data, dict) and (data.get("id") or data.get("summary") or data.get("url")):
+            data.setdefault("id", study_id)
+            return data
+    return None
 
 
 def load_study_from_gcs(study_id: str) -> dict[str, Any] | None:

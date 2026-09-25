@@ -140,102 +140,210 @@ def _escape_html(value: object) -> str:
     )
 
 
+def _trace_anchor(agent_id: object, step: object) -> str:
+    safe = re.sub(r"[^A-Za-z0-9_-]", "-", str(agent_id or "agent"))
+    return f"trace-{safe}-{step}"
+
+
+def _metrics_html(metrics: object) -> str:
+    if not isinstance(metrics, dict) or not metrics.get("n"):
+        return ""
+    steps = metrics.get("median_steps")
+    steps_txt = "—" if steps is None else f"{float(steps):.1f}"
+
+    def _sec(value: object) -> str:
+        if not isinstance(value, (int, float)):
+            return "—"
+        return f"{float(value):.1f}s"
+
+    model = metrics.get("model") or ""
+    provider = metrics.get("model_provider") or ""
+    model_txt = " ".join(part for part in (str(model), str(provider)) if part).strip()
+    model_html = f"<span>{_escape_html(model_txt)}</span>" if model_txt else ""
+    changed_n = metrics.get("changed_page_n", metrics.get("left_start_n", 0))
+    changed_pct = metrics.get("changed_page_pct", metrics.get("left_start_pct", 0))
+    return (
+        '<p class="stat-strip" id="work-metrics">'
+        f"<span><strong>{steps_txt}</strong> median steps</span>"
+        f"<span><strong>{changed_pct}%</strong> changed page state "
+        f"({changed_n}/{metrics.get('n')})</span>"
+        f"<span><strong>{metrics.get('task_success_rate', 0)}%</strong> task success on the final state "
+        f"({metrics.get('task_success_n', 0)}/{metrics.get('n')})</span>"
+        f"<span><strong>{_sec(metrics.get('step_latency_p50'))}</strong> step p50 / "
+        f"<strong>{_sec(metrics.get('step_latency_p95'))}</strong> p95</span>"
+        f"{model_html}"
+        "</p>"
+    )
+
+
 def _render_report_html(data: dict) -> str:
-    """Server-rendered report so /report?study= works even if JS fails."""
+    """Server-rendered report. Claims cite a real step screenshot and final URL."""
+    data = _with_report_insights(data)
     summary = data.get("summary") or {}
-    if not isinstance(summary, dict) or not (
-        summary.get("headline")
-        or summary.get("recommendations")
-        or summary.get("top_friction")
-        or summary.get("segment_fit_score") is not None
-    ):
+    insights = summary.get("insights") if isinstance(summary, dict) else None
+    if not isinstance(insights, dict) or not insights.get("headline"):
         study_id = _escape_html(data.get("id"))
         return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><title>UserSim — Report</title>
-<link rel="stylesheet" href="/static/styles.css?v=64" /></head><body>
+<link rel="stylesheet" href="/static/styles.css?v=65" /></head><body>
 <header class="site-header"><a class="logo" href="/">UserSim</a>
 <a class="header-back" href="/">← Back to simulation</a></header>
 <main class="main-url-first report-main"><p class="brief-empty">No summary on this study yet.
 <a href="/live?study={study_id}">Open live view</a></p></main></body></html>"""
 
-    def lis(items: object) -> str:
-        rows = items if isinstance(items, list) else []
+    runs = {
+        str(r.get("agent_id")): r
+        for r in (data.get("agent_results") or [])
+        if isinstance(r, dict) and r.get("agent_id")
+    }
+
+    def claim_cards(claims: object, kind: str) -> str:
+        rows = claims if isinstance(claims, list) else []
         if not rows:
-            return "<li>—</li>"
-        return "".join(f"<li>{_escape_html(x)}</li>" for x in rows)
+            label = "strength" if kind == "strength" else "weakness"
+            return f'<p class="empty-claim">None. The traces do not support a specific {label}.</p>'
+        cards = []
+        for claim in rows:
+            if not isinstance(claim, dict):
+                continue
+            cites = []
+            for ev in claim.get("evidence") or []:
+                if not isinstance(ev, dict):
+                    continue
+                anchor = _trace_anchor(ev.get("agent_id"), ev.get("step"))
+                shot = ev.get("screenshot_url") or ""
+                img = (
+                    f'<a class="shot" href="#{anchor}"><img src="{_escape_html(shot)}" alt="Step { _escape_html(ev.get("step")) } screenshot" /></a>'
+                    if shot
+                    else ""
+                )
+                final = ev.get("final_url") or ""
+                final_html = (
+                    f'<a href="{_escape_html(final)}" target="_blank" rel="noopener">final URL</a>'
+                    if final
+                    else ""
+                )
+                cites.append(
+                    '<div class="cite">'
+                    f"{img}<div>"
+                    f'<p class="who">{_escape_html(ev.get("persona_name"))} · {_escape_html(ev.get("task_title"))}</p>'
+                    f'<p class="detail">{_escape_html(ev.get("detail") or ev.get("action"))}</p>'
+                    f'<p class="links"><a href="#{anchor}">Open trace · step {_escape_html(ev.get("step"))}</a> {final_html}</p>'
+                    "</div></div>"
+                )
+            cards.append(
+                f'<article class="claim-card {kind}"><p>{_escape_html(claim.get("claim"))}</p>{"".join(cites)}</article>'
+            )
+        return "".join(cards)
 
-    recs = summary.get("recommendations") or []
-    rec_html = []
-    for rec in recs if isinstance(recs, list) else []:
-        if not isinstance(rec, dict):
+    rows = insights.get("comparisons") or []
+    body_rows = []
+    for row in rows if isinstance(rows, list) else []:
+        if not isinstance(row, dict):
             continue
-        rec_html.append(
-            '<div class="rec-card">'
-            f'<span class="priority {_escape_html(rec.get("priority") or "medium")}">'
-            f'{_escape_html(rec.get("priority") or "medium")}</span>'
-            "<div>"
-            f"<strong>{_escape_html(rec.get('action'))}</strong>"
-            f'<p style="margin:0.25rem 0 0;color:var(--text-muted);font-size:0.9rem">'
-            f"{_escape_html(rec.get('rationale'))}</p>"
-            "</div></div>"
+        time = "—" if row.get("median_time_s") is None else f'{row.get("median_time_s")}s'
+        steps = "—" if row.get("median_steps") is None else f'{float(row["median_steps"]):.1f}'
+        pct = int(round(float(row.get("success_rate") or 0) * 100))
+        p50 = "—" if row.get("step_latency_p50") is None else f'{row.get("step_latency_p50")}s'
+        p95 = "—" if row.get("step_latency_p95") is None else f'{row.get("step_latency_p95")}s'
+        changed = row.get("changed_page_pct", row.get("left_start_pct", 0))
+        body_rows.append(
+            "<tr>"
+            f"<td>{_escape_html(row.get('site_label') or row.get('site_key'))}</td>"
+            f"<td>{row.get('ok')}/{row.get('n')} ({pct}%)</td>"
+            f"<td>{changed}%</td>"
+            f"<td>{steps}</td><td>{p50}</td><td>{p95}</td><td>{time}</td>"
+            f"<td>{row.get('friction_n') or 0}</td></tr>"
+        )
+    if insights.get("tie_note"):
+        tie_html = f'<p id="tie-note" class="tie-note">{_escape_html(insights.get("tie_note"))}</p>'
+    elif body_rows:
+        tie_html = (
+            '<p id="tie-note" class="tie-note">Task-success rates differ, so steps, time, and friction '
+            "are listed beside the rates and are not used to break a tie.</p>"
+        )
+    else:
+        tie_html = '<p id="tie-note" class="tie-note">No site comparison — the study has no finished runs.</p>'
+    table = ""
+    if body_rows:
+        table = (
+            '<div class="compare-wrap"><table id="compare-table"><thead><tr>'
+            "<th>Site</th><th>Task success</th><th>Changed page</th><th>Median steps</th><th>Step p50</th><th>Step p95</th><th>Median time</th><th>Friction notes</th>"
+            f"</tr></thead><tbody>{''.join(body_rows)}</tbody></table></div>"
         )
 
-    agents = data.get("agent_results") or []
-    agent_html = []
-    for r in agents if isinstance(agents, list) else []:
-        if not isinstance(r, dict):
+    # One trace section per cited agent step that has a screenshot.
+    cited: list[tuple[str, int]] = []
+    for bucket in ("strengths", "weaknesses"):
+        for claim in insights.get(bucket) or []:
+            if not isinstance(claim, dict):
+                continue
+            for ev in claim.get("evidence") or []:
+                if isinstance(ev, dict) and ev.get("agent_id") is not None:
+                    cited.append((str(ev["agent_id"]), int(ev.get("step") or 0)))
+    traces = []
+    seen_agents: set[str] = set()
+    for agent_id, _step in cited:
+        if agent_id in seen_agents:
             continue
-        friction = "".join(
-            f"<li>{_escape_html(x)}</li>" for x in (r.get("friction_points") or [])
-        ) or "<li>—</li>"
-        easy = "".join(
-            f"<li>{_escape_html(x)}</li>" for x in (r.get("what_was_easy") or [])
-        ) or "<li>—</li>"
-        agent_html.append(
-            '<article class="agent-card">'
-            f"<h3>{_escape_html(r.get('persona_name') or 'Simulated user')} — "
-            f"{_escape_html(r.get('task_title') or 'Task')}</h3>"
-            f'<div class="meta"><span class="tag difficulty-{_escape_html(r.get("difficulty") or "medium")}">'
-            f'{_escape_html(r.get("difficulty") or "medium")}</span>'
-            f'<span class="tag">would convert: {_escape_html(r.get("would_convert") or "?")}</span>'
-            f'<span class="tag">{len(r.get("trace") or [])} steps</span></div>'
-            f'<p style="margin-top:0.75rem">{_escape_html(r.get("product_feedback"))}</p>'
-            f'<blockquote class="quote">"{_escape_html(r.get("quote"))}"</blockquote>'
-            f'<div class="agent-lists"><div><h4>Friction</h4><ul>{friction}</ul></div>'
-            f"<div><h4>Easy</h4><ul>{easy}</ul></div></div></article>"
+        seen_agents.add(agent_id)
+        run = runs.get(agent_id) or {}
+        shots = [
+            s
+            for s in (run.get("trace") or [])
+            if isinstance(s, dict) and s.get("screenshot_url") and isinstance(s.get("step"), int)
+        ]
+        if not shots:
+            continue
+        nav = " ".join(
+            f'<a href="#{_trace_anchor(agent_id, s.get("step"))}">step {s.get("step")}</a>'
+            for s in shots
         )
+        final = run.get("final_url") or ""
+        final_html = (
+            f' · <a href="{_escape_html(final)}" target="_blank" rel="noopener">{_escape_html(final)}</a>'
+            if final
+            else ""
+        )
+        for shot in shots:
+            anchor = _trace_anchor(agent_id, shot.get("step"))
+            traces.append(
+                f'<section id="{anchor}" class="panel trace-target">'
+                f"<h2>Trace</h2>"
+                f'<p class="section-sub">{_escape_html(run.get("persona_name"))} — '
+                f'{_escape_html(run.get("task_title"))}{final_html}</p>'
+                f'<p class="step-nav">{nav}</p>'
+                f'<figure class="trace-shot"><img src="{_escape_html(shot.get("screenshot_url"))}" '
+                f'alt="Step {shot.get("step")}" /></figure>'
+                f'<p class="trace-action"><strong>Step {shot.get("step")}.</strong> '
+                f'{_escape_html(shot.get("action"))}</p></section>'
+            )
 
-    title = (
-        f"Executive summary — {_escape_html(data.get('url'))}"
-        if data.get("url")
-        else "Executive summary"
-    )
-    fit = summary.get("segment_fit_score")
-    fit_txt = _escape_html(fit if fit is not None else "—")
+    note = insights.get("evidence_note") or ""
+    note_html = f'<p id="evidence-note" class="evidence-note">{_escape_html(note)}</p>' if note else ""
+    title = _escape_html(data.get("url") or "Study report")
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UserSim — Report</title>
-<link rel="stylesheet" href="/static/styles.css?v=64" />
+<link rel="stylesheet" href="/static/styles.css?v=65" />
+<style>.trace-target{{display:none}}.trace-target:target{{display:block}}.cite a.shot{{display:block;padding:0;border:1px solid var(--border);border-radius:6px;background:#111;overflow:hidden}}.cite a.shot img{{width:112px;height:72px;object-fit:cover;object-position:top;display:block}}</style>
 </head><body>
 <header class="site-header"><a class="logo" href="/">UserSim</a>
 <a class="header-back" href="/">← Back to simulation</a></header>
 <main class="main-url-first report-main">
 <section id="results" class="results">
 <section class="panel summary-panel">
-<h2>{title}</h2>
-<p id="headline" class="headline">{_escape_html(summary.get("headline"))}</p>
-<div class="summary-grid">
-<div><h4>Top friction</h4><ul>{lis(summary.get("top_friction"))}</ul></div>
-<div><h4>Top strengths</h4><ul>{lis(summary.get("top_strengths"))}</ul></div>
+<h2 id="report-title">{title}</h2>
+<p id="headline" class="headline">{_escape_html(insights.get("headline"))}</p>
+{note_html}
+{_metrics_html(insights.get("work_metrics"))}
+<div class="insight-grid">
+<div><h4>Strengths</h4>{claim_cards(insights.get("strengths"), "strength")}</div>
+<div><h4>Weaknesses</h4>{claim_cards(insights.get("weaknesses"), "weakness")}</div>
 </div>
-<div class="fit-score"><span id="fit-score">{fit_txt}</span>
-<div><strong>Segment fit</strong><p>{_escape_html(summary.get("segment_fit_rationale"))}</p></div></div>
-<div class="conversion"><h4>Conversion outlook</h4><p>{_escape_html(summary.get("conversion_outlook") or "—")}</p></div>
-<div class="recommendations"><h4>Recommendations</h4><div id="recommendations">{"".join(rec_html) or "—"}</div></div>
+<div id="compare-block"><h4>Site comparison</h4>{tie_html}{table}</div>
 </section>
-<section class="panel"><h2>Session recaps</h2>
-<div class="agents-grid">{"".join(agent_html) or "<p>—</p>"}</div>
-</section>
+{"".join(traces)}
 </section>
 </main>
 <footer><p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p></footer>
@@ -244,23 +352,8 @@ def _render_report_html(data: dict) -> str:
 
 @app.get("/report")
 async def report_page(request: Request):
-    """Serve report UI. When ?study= is set, SSR from GCS so links work without sessionStorage."""
-    study_id = (request.query_params.get("study") or "").strip()
-    if study_id:
-        from mvp.study import STUDIES, load_study_from_gcs, study_to_dict
-
-        data = None
-        study = STUDIES.get(study_id)
-        if study:
-            data = study_to_dict(study)
-        if not data or not data.get("summary"):
-            remote = await asyncio.to_thread(load_study_from_gcs, study_id)
-            if remote:
-                data = remote
-        if not data:
-            raise HTTPException(status_code=404, detail="Study not found")
-        return HTMLResponse(_render_report_html(data))
-
+    """Generic study report. The page shell matches /blandai; data comes from the study API."""
+    del request
     path = STATIC / "report.html"
     if not path.is_file():
         raise HTTPException(status_code=503, detail="Report page not bundled")
@@ -568,7 +661,7 @@ async def runtime_kill(body: KillRequest | None = None):
 @app.get("/api/studies/{study_id}")
 async def get_study(study_id: str):
     from mvp.gcs_store import hydrate_live_sessions_from_gcs
-    from mvp.study import STUDIES, load_study_from_gcs, study_to_dict
+    from mvp.study import STUDIES, load_local_study, load_study_from_gcs, study_to_dict
 
     study = STUDIES.get(study_id)
     if study:
@@ -611,14 +704,35 @@ async def get_study(study_id: str):
         data["live_sessions"] = await asyncio.to_thread(
             hydrate_live_sessions_from_gcs, study_id, data.get("live_sessions")
         )
-        return data
+        return _with_report_insights(data)
     remote = await asyncio.to_thread(load_study_from_gcs, study_id)
+    if not remote:
+        remote = load_local_study(study_id)
+        if remote:
+            return _with_report_insights(remote)
     if remote:
         remote["live_sessions"] = await asyncio.to_thread(
             hydrate_live_sessions_from_gcs, study_id, remote.get("live_sessions")
         )
-        return remote
+        return _with_report_insights(remote)
     raise HTTPException(status_code=404, detail="Study not found")
+
+
+def _with_report_insights(data: dict) -> dict:
+    """Attach trace-cited insights on completed studies without mutating the live object."""
+    if data.get("status") != "complete":
+        return data
+    try:
+        from mvp.report_insights import build_report_insights
+
+        insights = build_report_insights(data)
+    except Exception:
+        return data
+    summary = dict(data.get("summary") or {})
+    summary["insights"] = insights
+    if insights.get("headline"):
+        summary["headline"] = insights["headline"]
+    return {**data, "summary": summary}
 
 
 def _live_step_count(live_sessions: object) -> int:
