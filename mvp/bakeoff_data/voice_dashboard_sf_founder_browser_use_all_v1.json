@@ -1,0 +1,1198 @@
+{
+  "stage": "voice_dashboard_sf_founder",
+  "harness": "browser_use_oss",
+  "provider": "vertex",
+  "model": "gemini-bakeoff",
+  "max_actions_budget": 40,
+  "n": 15,
+  "n_eligible": 4,
+  "n_scored": 4,
+  "successes": 3,
+  "successes_eligible": 3,
+  "success_rate_eligible": 0.75,
+  "success_rate_scored": 0.75,
+  "judge_errors": 0,
+  "judge_error_rate": 0.0,
+  "by_status": {
+    "BLOCKED": 11,
+    "SUCCESS": 3,
+    "FAILURE": 1
+  },
+  "by_failure_category": {
+    "HARNESS": 11,
+    "PRODUCT": 1
+  },
+  "total_cost_usd": 0.3927,
+  "runs": [
+    {
+      "run_id": "bu_9913_fea8dfd7",
+      "task_id": "vd_t1_create_agent_retell",
+      "eval_index": 9913,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Retell AI product console (you are already signed in).\nUSER GOAL: Create a first voice agent / assistant / pathway. Stop once the builder or editor is open with a new agent started (do not publish a production agent).\nSUCCESS: Create/new agent form or builder is open, OR a newly created draft agent config is visible. Not stuck on login.\nNav hint (optional): Agents \u2192 Create Agent / New Agent.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Retell AI's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "retell",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t1_create_agent",
+      "goal_title": "Create a first voice agent",
+      "comparative_group": "vd_t1_create_agent",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://dashboard.retellai.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.retellai.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://dashboard.retellai.com/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.retellai.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.retellai.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.retellai.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://dashboard.retellai.com/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.retellai.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBaTXZ4ZU1qTzhLLW9abllpTjRBTklNYU14alhRQTJCbKFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIFlXMmJRZ09hY2pVWXIzVHpvelBON0FEb2lqREs1RndSo2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I am unable to complete the task because I am stuck on a login page for Retell AI, despite the user's instruction that I am already signed in. I do not have the necessary credentials to log in, and the task explicitly forbids actions like creating API keys or spending credits. Therefore, I cannot access the dashboard to create a voice agent. \\n\\n**What I accomplished:** I attempted to navigate to the dashboard URL as instructed, but was blocked by the login page.\\n\\n**Likes about Retell AI's UX (based on the login page):**\\n1. Clean and modern design.\\n2. Clear prompts for email and reCAPTCHA.\\n\\n**Dislikes about Retell AI's UX (based on the login page):**\\n1. Unexpected login requirement despite user being 'signed in'.\\n2. No clear 'forgot password' or alternative login options immediately visible.\\n\\n**Difficulty:** Hard (due to unexpected login block).\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The agent was instructed to navigate to a specific URL and create a voice agent, with the explicit instruction that it was 'already signed in'. However, upon navigating to the URL, the agent encountered a login page requiring an email address and a reCAPTCHA. Since the agent does not have login credentials and the task forbids actions like creating API keys or spending credits, it correctly determined that it could n",
+          "url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBRNXBPU0hDOXgzYkRwakROOFpxQmtqcnZha2Jnc1duUqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIE5UcVZDOEZ5LUJIdHdGRlY0V21XcFRqSHFOdWVnZ0xNo2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY"
+        }
+      ],
+      "num_actions": 3,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent was blocked by an error page, preventing it from accessing the dashboard or any other part of the application. The task explicitly states that the user is already signed in, but the agent encountered an error page instead of the expected dashboard or login page.",
+      "judge_evidence": "The final screenshot clearly shows an error page with the message \"Oops!, something went wrong\" and \"There could be a misconfiguration in the system or a service outage.\" This indicates that the agent was blocked from proceeding with the task due to a system error, not a login wall as the agent's summary suggests.",
+      "failure_category": "HARNESS",
+      "final_url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBRNXBPU0hDOXgzYkRwakROOFpxQmtqcnZha2Jnc1duUqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIE5UcVZDOEZ5LUJIdHdGRlY0V21XcFRqSHFOdWVnZ0xNo2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY",
+      "final_title": "Retell AI",
+      "input_tokens": 27902,
+      "output_tokens": 2464,
+      "estimated_cost_usd": 0.0158612,
+      "trace_dir": "public/bakeoff-traces/bu_9913_fea8dfd7",
+      "created_at": "2026-09-25T11:23:52.474110+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": false
+    },
+    {
+      "run_id": "bu_9912_91f4bd7b",
+      "task_id": "vd_t1_create_agent_vapi",
+      "eval_index": 9912,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Vapi product console (you are already signed in).\nUSER GOAL: Create a first voice agent / assistant / pathway. Stop once the builder or editor is open with a new agent started (do not publish a production agent).\nSUCCESS: Create/new agent form or builder is open, OR a newly created draft agent config is visible. Not stuck on login.\nNav hint (optional): Assistants \u2192 Create Assistant.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Vapi's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "vapi",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t1_create_agent",
+      "goal_title": "Create a first voice agent",
+      "comparative_group": "vd_t1_create_agent",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://dashboard.vapi.ai/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.vapi.ai/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://dashboard.vapi.ai/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.vapi.ai/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=5))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 5 seconds', extracted_content='Waited for 5 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=358))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Assistants\"', include_extracted_content_only_once=False, metadata={'click_x': 125.0, 'click_y': 307.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=1801))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button \"Create Assistant\"', include_extracted_content_only_once=False, metadata={'click_x': 354.5, 'click_y': 145.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"Accomplished: Successfully navigated to the Vapi dashboard, then to the Assistants page, and initiated the creation of a new voice agent. The new agent builder/editor is now open with a draft configuration.\\n\\nLikes about Vapi's UX:\\n1. Clear and intuitive navigation: The sidebar clearly labels sections like 'Assistants', making it easy to find the desired functionality.\\n2. Immediate feedback on actions: Clicking 'Create Assistant' instantly opened the configuration page, providing a smooth workflow.\\n3. Well-organized assistant configuration: The layout for configuring the new assistant, with sections for Transcriber, Model, and Voice, is logical and easy to understand.\\n4. Visual and Code options for System Prompt: Offering both visual and code views for the system prompt is a great feature for different user preferences.\\n\\nDislikes about Vapi's UX:\\n1. The 'New Assistant' entries in the left panel are a bit redundant when a new assistant is being created and edited on the right. It might be better to highlight the currently edited assistant.\\n2. The 'Call recording storage is now access-controlled...' banner at the top is quite large and persistent, taking up valuable screen real estate.\\n3. The 'Drag New Assistant' labels on the left panel are a bit confusing, as it's not immediately clear what can be dragged or why.\\n4. The 'Composer' button at the top right seems to duplicate functionality with the 'Assistant' tab, which could be streamlined.\\n\\nDifficulty: Easy\", success=True, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=True, judgement=JudgementResult(reasoning=\"The agent successfully navigated to the Vapi dashboard, then to the Assistants section, and initiated the creation of a new voice agent by clicking 'Create Assistant'. This action opened the new agent builder/editor, which was the primary goal of the task. The agent correctly identified the stopping point and did not proceed to publish a production agent. All specified rules were followed, and the final output include",
+          "url": "https://dashboard.vapi.ai/assistants/eec7547b-e4de-486e-a385-93214d858eef"
+        }
+      ],
+      "num_actions": 5,
+      "stop_reason": "agent_done",
+      "success": true,
+      "status": "SUCCESS",
+      "judge_reason": "The agent successfully navigated to the Vapi dashboard, then to the Assistants section, and initiated the creation of a new voice agent by clicking 'Create Assistant'. This action opened the new agent builder/editor, which was the primary goal of the task. The agent correctly identified the stopping point and did not proceed to publish a production agent. All specified rules were followed, and the final output included the required information.",
+      "judge_evidence": "The final URL is https://dashboard.vapi.ai/assistants/eec7547b-e4de-486e-a385-93214d858eef, which indicates that a new assistant has been created and its configuration page is open. The action summary shows that the agent clicked 'Assistants' and then 'Create Assistant'. The agent's 'Done' action text explicitly states that the new agent builder/editor is open with a draft configuration.",
+      "failure_category": null,
+      "final_url": "https://dashboard.vapi.ai/assistants/eec7547b-e4de-486e-a385-93214d858eef",
+      "final_title": "Vapi - Dashboard",
+      "input_tokens": 57202,
+      "output_tokens": 2439,
+      "estimated_cost_usd": 0.024769400000000004,
+      "trace_dir": "public/bakeoff-traces/bu_9912_91f4bd7b",
+      "created_at": "2026-09-25T11:23:52.811325+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": true
+    },
+    {
+      "run_id": "bu_9911_10c660fe",
+      "task_id": "vd_t1_create_agent_bland",
+      "eval_index": 9911,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Bland AI product console (you are already signed in).\nUSER GOAL: Create a first voice agent / assistant / pathway. Stop once the builder or editor is open with a new agent started (do not publish a production agent).\nSUCCESS: Create/new agent form or builder is open, OR a newly created draft agent config is visible. Not stuck on login.\nNav hint (optional): Pathways \u2192 Create / New pathway, or Norm builder entry.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Bland AI's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "bland",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t1_create_agent",
+      "goal_title": "Create a first voice agent",
+      "comparative_group": "vd_t1_create_agent",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://app.bland.ai/dashboard",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/dashboard"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I was unable to complete the task. Despite being instructed that I am already signed in and to navigate directly to `https://app.bland.ai/dashboard`, I was repeatedly redirected to the login page (`https://app.bland.ai/login`). As I do not have login credentials, I cannot access the dashboard to create a voice agent. Therefore, I am unable to proceed with the user's request.\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The agent was instructed to navigate directly to a URL, with the premise that it was already signed in. However, upon attempting to navigate, the agent was repeatedly redirected to the login page. The agent correctly identified this issue and concluded that it could not proceed with the task due to the lack of login credentials. The task was impossible for the agent to complete under these circumstances, as it requir",
+          "url": "https://app.bland.ai/login"
+        }
+      ],
+      "num_actions": 5,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The task explicitly stated that the agent was already signed in and should navigate to the dashboard. However, the agent was repeatedly redirected to the login page, preventing it from accessing the dashboard and completing the task. The agent correctly identified this issue and could not proceed without login credentials.",
+      "judge_evidence": "The final URL is 'https://app.bland.ai/login' and the screenshot clearly shows a login page. The action summary indicates multiple attempts to navigate to the dashboard, all resulting in redirection to the login page.",
+      "failure_category": "HARNESS",
+      "final_url": "https://app.bland.ai/login",
+      "final_title": "Bland Console",
+      "input_tokens": 51022,
+      "output_tokens": 2839,
+      "estimated_cost_usd": 0.023639999999999998,
+      "trace_dir": "public/bakeoff-traces/bu_9911_10c660fe",
+      "created_at": "2026-09-25T11:23:53.671610+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": false
+    },
+    {
+      "run_id": "bu_9921_c992c0b0",
+      "task_id": "vd_t2_system_prompt_bland",
+      "eval_index": 9921,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Bland AI product console (you are already signed in).\nUSER GOAL: Open an agent (create one if needed) and find the system prompt / instructions field. Write or edit a short prompt (e.g. 'You are a helpful scheduling assistant.') but do not publish if avoidable.\nSUCCESS: System prompt / instructions editor is visible and you entered or edited text, OR clearly documented that no prompt field exists after searching.\nNav hint (optional): Sidebar: Pathways / Agents / Pathways library.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Bland AI's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "bland",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t2_system_prompt",
+      "goal_title": "Write or edit the system prompt",
+      "comparative_group": "vd_t2_system_prompt",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://app.bland.ai/dashboard",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/dashboard"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I am unable to complete the task. Despite the instruction that I am already signed in, every attempt to navigate to `https://app.bland.ai/dashboard` has resulted in a redirect to the login page (`https://app.bland.ai/login`). As I am not permitted to log in or create an account, I cannot access the dashboard to find the system prompt/instructions field. Therefore, I cannot proceed with the task.\\n\\n**What I accomplished:** I attempted to navigate to the dashboard multiple times as instructed.\\n\\n**Likes about Bland AI's UX:**\\n- I cannot comment on the UX as I was unable to access the main application.\\n\\n**Dislikes about Bland AI's UX:**\\n- The login redirection behavior is unexpected given the 'already signed in' instruction.\\n\\n**Difficulty:** Hard (due to unresolvable login issue)\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The user asked the agent to navigate to a specific URL, which was supposed to be already signed in, and then find and edit a system prompt. The agent successfully navigated to the provided URL multiple times. However, each attempt resulted in a redirect to the login page, indicating that the 'already signed in' condition was not met. The agent correctly identified this blocking issue and concluded that it could not p",
+          "url": "https://app.bland.ai/login"
+        }
+      ],
+      "num_actions": 5,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The task explicitly stated that the agent was already signed in, but every attempt to navigate to the dashboard resulted in a redirect to the login page. The agent is not permitted to log in or create an account, thus it was blocked from accessing the necessary functionality to complete the task.",
+      "judge_evidence": "The final URL is 'https://app.bland.ai/login' and the screenshot clearly shows a login page. The action summary indicates multiple attempts to navigate to the dashboard, all resulting in a redirect to the login page.",
+      "failure_category": "HARNESS",
+      "final_url": "https://app.bland.ai/login",
+      "final_title": "Bland Console",
+      "input_tokens": 51420,
+      "output_tokens": 3016,
+      "estimated_cost_usd": 0.0242414,
+      "trace_dir": "public/bakeoff-traces/bu_9921_c992c0b0",
+      "created_at": "2026-09-25T11:24:21.970658+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": false
+    },
+    {
+      "run_id": "bu_9923_4665cea7",
+      "task_id": "vd_t2_system_prompt_retell",
+      "eval_index": 9923,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Retell AI product console (you are already signed in).\nUSER GOAL: Open an agent (create one if needed) and find the system prompt / instructions field. Write or edit a short prompt (e.g. 'You are a helpful scheduling assistant.') but do not publish if avoidable.\nSUCCESS: System prompt / instructions editor is visible and you entered or edited text, OR clearly documented that no prompt field exists after searching.\nNav hint (optional): Sidebar: Agents.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Retell AI's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "retell",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t2_system_prompt",
+      "goal_title": "Write or edit the system prompt",
+      "comparative_group": "vd_t2_system_prompt",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://dashboard.retellai.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.retellai.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://dashboard.retellai.com/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.retellai.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.retellai.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.retellai.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://dashboard.retellai.com/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.retellai.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBEbTFPVGRaMG50d0pmalRuYTZ6TkFuUTd1ZHcwN2JQMqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIFdvdjRXTWlOemdkTlQxTzEtMWtPY2k0SzlUQWxPZWRRo2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I am unable to complete the task. Despite the instruction 'You are already signed in. Navigate directly to https://dashboard.retellai.com/', the navigation led to a login page (https://auth.retellai.com/u/login/identifier). As I do not have login credentials, I cannot proceed to the Retell AI dashboard to perform the requested actions. Therefore, I cannot open an agent, find the system prompt/instructions field, or edit a prompt.\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The user's primary goal was to navigate to the Retell AI dashboard, open or create an agent, find the system prompt field, and edit it. The agent successfully attempted to navigate to the specified URL. However, despite the task stating 'You are already signed in,' the navigation led to a login page. The agent correctly identified this as a blocking issue, as it lacked the necessary credentials to proceed. Consequent",
+          "url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBzY25QT1FISFl1X04zdFJLOXJ4T2c3YmozUVRTTUk1bqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIDlpN1phdGVhLTZUb2RZeXhnZ0VKc1hxZU8xaUNOQVBOo2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY"
+        }
+      ],
+      "num_actions": 3,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The task explicitly stated 'you are already signed in' and provided a URL to navigate to the dashboard. However, the agent was redirected to a login page, and then to an error page, preventing it from accessing the Retell AI console. Without login credentials, the agent cannot proceed with the task.",
+      "judge_evidence": "The final URL is a login page (https://auth.retellai.com/u/login/identifier) and the screenshot shows an 'Oops!, something went wrong' error page, indicating the agent was blocked from accessing the dashboard.",
+      "failure_category": "HARNESS",
+      "final_url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBzY25QT1FISFl1X04zdFJLOXJ4T2c3YmozUVRTTUk1bqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIDlpN1phdGVhLTZUb2RZeXhnZ0VKc1hxZU8xaUNOQVBOo2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY",
+      "final_title": "Retell AI",
+      "input_tokens": 27548,
+      "output_tokens": 2277,
+      "estimated_cost_usd": 0.0152474,
+      "trace_dir": "public/bakeoff-traces/bu_9923_4665cea7",
+      "created_at": "2026-09-25T11:24:23.243199+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": false
+    },
+    {
+      "run_id": "bu_9922_c6ff0c91",
+      "task_id": "vd_t2_system_prompt_vapi",
+      "eval_index": 9922,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Vapi product console (you are already signed in).\nUSER GOAL: Open an agent (create one if needed) and find the system prompt / instructions field. Write or edit a short prompt (e.g. 'You are a helpful scheduling assistant.') but do not publish if avoidable.\nSUCCESS: System prompt / instructions editor is visible and you entered or edited text, OR clearly documented that no prompt field exists after searching.\nNav hint (optional): Sidebar: Assistants.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Vapi's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "vapi",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t2_system_prompt",
+      "goal_title": "Write or edit the system prompt",
+      "comparative_group": "vd_t2_system_prompt",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://dashboard.vapi.ai/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.vapi.ai/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://dashboard.vapi.ai/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.vapi.ai/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=26))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Sign in\"', include_extracted_content_only_once=False, metadata={'click_x': 406.9375, 'click_y': 592.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/register"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.vapi.ai/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://dashboard.vapi.ai/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.vapi.ai/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/login"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=1110))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Sign in\"', include_extracted_content_only_once=False, metadata={'click_x': 406.9375, 'click_y': 592.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/register"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I am unable to complete the task because I am stuck on the login page (https://dashboard.vapi.ai/login) despite the user's instruction that I am already signed in. I have attempted to navigate directly to the dashboard URL multiple times and clicked the 'Sign in' link, but I consistently land on the login page. As I do not have login credentials, I cannot access the Vapi product console to find the system prompt/instructions field. Therefore, I cannot fulfill the user's request.\\n\\n**What I accomplished:** I successfully navigated to the initial URL provided, but was blocked by the login page.\\n\\n**Likes about Vapi's UX:** (Unable to assess due to login block)\\n**Dislikes about Vapi's UX:** (Unable to assess due to login block)\\n\\n**Difficulty:** Hard (due to unexpected login block)\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The user explicitly stated, 'You are already signed in.' However, upon navigating to the specified URL, the agent was immediately presented with a login/signup page. The agent made multiple attempts to navigate and click 'Sign in' but consistently landed on a login screen, preventing it from accessing the dashboard. Since the agent does not have login credentials, it was impossible to proceed with the task of finding",
+          "url": "https://dashboard.vapi.ai/login"
+        }
+      ],
+      "num_actions": 5,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The task explicitly states that the agent is already signed in. However, the agent was presented with a login page and could not proceed without credentials. This prevented the agent from accessing the Vapi product console to complete the task.",
+      "judge_evidence": "The final URL is https://dashboard.vapi.ai/login, which is a login page. The action summary shows multiple attempts to navigate and click 'Sign in', all leading back to the login page. The agent's final 'Done' action explicitly states being stuck on the login page and unable to proceed.",
+      "failure_category": "HARNESS",
+      "final_url": "https://dashboard.vapi.ai/login",
+      "final_title": "",
+      "input_tokens": 51609,
+      "output_tokens": 3393,
+      "estimated_cost_usd": 0.0252467,
+      "trace_dir": "public/bakeoff-traces/bu_9922_c6ff0c91",
+      "created_at": "2026-09-25T11:24:28.338098+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": true
+    },
+    {
+      "run_id": "bu_9933_0d031a27",
+      "task_id": "vd_t3_voice_llm_retell",
+      "eval_index": 9933,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Retell AI product console (you are already signed in).\nUSER GOAL: On an agent config, locate voice/TTS and LLM/model controls. Select or inspect available voice and model options (do not spend credits on a live call).\nSUCCESS: Voice and LLM/model controls are visible (selected or listed). Not login.\nNav hint (optional): Voice / LLM settings on agent.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Retell AI's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "retell",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t3_voice_llm",
+      "goal_title": "Choose a voice and LLM",
+      "comparative_group": "vd_t3_voice_llm",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://dashboard.retellai.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.retellai.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://dashboard.retellai.com/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.retellai.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.retellai.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.retellai.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://dashboard.retellai.com/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.retellai.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBGUTltU0dUcHRDVVoxZ0JSUU5zZGp0NnJHZjNnSFBSX6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEdKREZSOGprdmx3LWRpZ0p4Y0g5YUJ6M0Njb054TFFko2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text='I am unable to complete the task. Despite the instruction that I am already signed in, I am consistently redirected to the login page for Retell AI. I do not have the necessary credentials to log in, and the task rules state not to attempt to log in without credentials. Therefore, I cannot access the dashboard to locate the voice/TTS and LLM/model controls as requested.', success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The user's primary goal was to navigate to the Retell AI dashboard and locate specific controls. The agent successfully navigated to the provided URL. However, despite the task stating that the agent was already signed in, the website presented a login page. The agent correctly identified this issue and, adhering to the rule of not attempting to log in without credentials, concluded that it could not proceed with the",
+          "url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SB4ZEFwZWZoRWQ5QVRGdUhyZUtaalFIaExXRktlTS1KR6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIDRLYmlPVFVOZjRnbVJTcjd3XzY3Zy13eXFrSHBfYkZ5o2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY"
+        }
+      ],
+      "num_actions": 3,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent was blocked from accessing the dashboard. The task stated that the agent was already signed in, but the website presented a login page, and then an error page. The agent correctly identified that it could not proceed without credentials, adhering to the task rules.",
+      "judge_evidence": "The final URL is a login page, and the screenshot shows an 'Oops!, something went wrong' error page, indicating the agent was blocked from accessing the dashboard.",
+      "failure_category": "HARNESS",
+      "final_url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SB4ZEFwZWZoRWQ5QVRGdUhyZUtaalFIaExXRktlTS1KR6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIDRLYmlPVFVOZjRnbVJTcjd3XzY3Zy13eXFrSHBfYkZ5o2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY",
+      "final_title": "Retell AI",
+      "input_tokens": 27431,
+      "output_tokens": 2032,
+      "estimated_cost_usd": 0.0145081,
+      "trace_dir": "public/bakeoff-traces/bu_9933_0d031a27",
+      "created_at": "2026-09-25T11:24:51.477573+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": false
+    },
+    {
+      "run_id": "bu_9941_a7f5c5e9",
+      "task_id": "vd_t4_phone_or_web_test_bland",
+      "eval_index": 9941,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Bland AI product console (you are already signed in).\nUSER GOAL: Find where to set up a phone number OR start a web/test call. Do NOT place a live call, buy a number, or spend credits \u2014 stop once the setup UI or test-call affordance is clearly visible.\nSUCCESS: Phone numbers buy/import/connect UI OR web/test/simulate call control is visible.\nNav hint (optional): Sidebar: Phone Numbers / Numbers / Send Call.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Bland AI's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "bland",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t4_phone_or_web_test",
+      "goal_title": "Find phone number or web test call setup",
+      "comparative_group": "vd_t4_phone_or_web_test",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://app.bland.ai/dashboard",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/dashboard"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I was unable to complete the task. I was instructed to navigate to `https://app.bland.ai/dashboard` and that I was already signed in. However, the browser redirected me to the login page (`https://app.bland.ai/login`). As I do not have login credentials, I cannot access the dashboard to find the phone number setup or test call UI. Therefore, I cannot fulfill the user's request.\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The agent was instructed to navigate to a specific URL, with the explicit instruction that it was already signed in. However, upon navigation, the browser redirected to a login page, indicating that the 'signed in' condition was not met. The agent correctly identified this issue and concluded that it could not proceed without login credentials. The presence of a 'Verify you are human' Cloudflare challenge further con",
+          "url": "https://app.bland.ai/login"
+        }
+      ],
+      "num_actions": 2,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent was instructed to start from a signed-in state at https://app.bland.ai/dashboard. However, upon navigation, the browser redirected to a login page, indicating that the 'signed in' condition was not met. Without login credentials, the agent cannot access the dashboard to find the required UI elements.",
+      "judge_evidence": "The final URL is https://app.bland.ai/login, and the screenshot clearly shows a 'Log in to Bland' page, not the expected dashboard. The agent's action summary also explicitly states this redirection and inability to proceed.",
+      "failure_category": "HARNESS",
+      "final_url": "https://app.bland.ai/login",
+      "final_title": "Bland Console",
+      "input_tokens": 17611,
+      "output_tokens": 1119,
+      "estimated_cost_usd": 0.0092297,
+      "trace_dir": "public/bakeoff-traces/bu_9941_a7f5c5e9",
+      "created_at": "2026-09-25T11:24:51.649562+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": false
+    },
+    {
+      "run_id": "bu_9931_1c662f5a",
+      "task_id": "vd_t3_voice_llm_bland",
+      "eval_index": 9931,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Bland AI product console (you are already signed in).\nUSER GOAL: On an agent config, locate voice/TTS and LLM/model controls. Select or inspect available voice and model options (do not spend credits on a live call).\nSUCCESS: Voice and LLM/model controls are visible (selected or listed). Not login.\nNav hint (optional): Voice settings on pathway / Voices library.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Bland AI's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "bland",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t3_voice_llm",
+      "goal_title": "Choose a voice and LLM",
+      "comparative_group": "vd_t3_voice_llm",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://app.bland.ai/dashboard",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/dashboard"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=4948))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button \"Sign in with Google\"', include_extracted_content_only_once=False, metadata={'click_x': 320.0, 'click_y': 427.5}, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 6,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I am unable to complete the task. The user request states that I am already signed in and should not log in, but every attempt to navigate to the dashboard (https://app.bland.ai/dashboard) has resulted in a redirection to a login page (either bland.ai's or Google's after clicking 'Sign in with Google'). As I am explicitly forbidden from logging in or providing credentials, I cannot proceed to access the agent configuration to locate voice/TTS and LLM/model controls. The task cannot be completed under these conditions.\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The user's primary goal was to navigate to the Bland AI dashboard and then locate specific controls (voice/TTS and LLM/model) on an agent configuration page. A critical constraint was that the agent was 'already signed in' and should 'not log in'.\\n\\nThe agent repeatedly attempted to navigate to the specified URL, but each attempt resulted in a redirection to a login page. This indicates that the 'already signed in' ",
+          "url": "https://accounts.google.com/v3/signin/identifier?opparams=%253F&dsh=S167894439%3A1790335476643730&client_id=502298138375-m8cutlpltgo5n7n1kiacrm65ujai5k3d.apps.googleusercontent.com&code_challenge=F5q85Uml7irNhyt66ySbo_FBo9D8geA1U9aPyoH-z9o&code_challenge_method=S256&include_granted_scopes=true&o2v=2&prompt=select_account&redirect_uri=https%3A%2F%2Fapi.bland.ai%2Fauthorization%2Fcallback%2Fgoogle&response_type=code&scope=email+profile+openid&service=lso&state=lDeRA2FHtG80ZJ6-TQXFXwcxYxu7kcnM&flowName=GeneralOAuthFlow&continue=https%3A%2F%2Faccounts.google.com%2Fsignin%2Foauth%2Fconsent%3Fauthuser%3Dunknown%26part%3DAJi8hANRl6XLgN7GXjDQGhQCuFnpnMz6YGS6uQBcpSIIv1EN6A2oWfokoNNq3BTpOoiyXksVhTWDkfY9U7nGt0P6ZHkTm0V4VIOXGPjhnp0eMqd6dL-5gGvYMYqJzPn_--yVOu8vEGVuQqJagJrgEVEcSN7yFHK4-cl92M5IYsmY2H_i5VYQofSeA2fZaE5zzMFDUs353fbmihZxIgQFH5F_d88S6cSNPp0D6Ga0_1QEQbfAIf8izSvek8KgPGeQpnft6a4XBsTtLL-yvRu2v9mYCdkQ8fOVfwWL9Dev9zFjVXpCODcydNRsuKnODG1xBHYAyLtwkH9mM5nhgc3ESg3PhHMhP6I5PLKyK5jJTZjgbcnOb7eLFGEkegTrwmBus59J3HIDMHf3iGRFU74FuLlOf1o9O3OU-E2_CIrHRfPwH4MhKhWV_o6pKZF90MofTj_a0tqUNrWOa6h4x2pgFzV0pBONEskFgA%26flowName%3DGeneralOAuthFlow%26as%3DS167894439%253A1790335476643730%26client_id%3D502298138375-m8cutlpltgo5n7n1kiacrm65ujai5k3d.apps.googleusercontent.com%26requestPath%3D%252Fsignin%252Foauth%252Fconsent%23&app_domain=https%3A%2F%2Fapi.bland.ai&rart=ANgoxcfjXWxdXqDhGnIrlS-bl72JZh9YseN7MtZ8jRt_A3G4ksSaWeEG58M3XZ3beDaneCQKqkt-7ZXIZQqdiohR5LloHNQLaVJwfo8or-XrbdWH8Bjs8Fw"
+        }
+      ],
+      "num_actions": 6,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The task explicitly states that the agent is already signed in and should not log in. However, every attempt to navigate to the dashboard resulted in a redirection to a login page (either bland.ai's or Google's). Since the agent is forbidden from logging in or providing credentials, it cannot proceed to access the agent configuration to complete the task.",
+      "judge_evidence": "The final URL is a Google sign-in page, and the action summary shows repeated attempts to navigate to the dashboard followed by redirections to login pages. The agent also explicitly states in its 'DoneAction' that it cannot complete the task due to being blocked by login requirements.",
+      "failure_category": "HARNESS",
+      "final_url": "https://accounts.google.com/v3/signin/identifier?opparams=%253F&dsh=S167894439%3A1790335476643730&client_id=502298138375-m8cutlpltgo5n7n1kiacrm65ujai5k3d.apps.googleusercontent.com&code_challenge=F5q85Uml7irNhyt66ySbo_FBo9D8geA1U9aPyoH-z9o&code_challenge_method=S256&include_granted_scopes=true&o2v=2&prompt=select_account&redirect_uri=https%3A%2F%2Fapi.bland.ai%2Fauthorization%2Fcallback%2Fgoogle&response_type=code&scope=email+profile+openid&service=lso&state=lDeRA2FHtG80ZJ6-TQXFXwcxYxu7kcnM&flowName=GeneralOAuthFlow&continue=https%3A%2F%2Faccounts.google.com%2Fsignin%2Foauth%2Fconsent%3Fauthuser%3Dunknown%26part%3DAJi8hANRl6XLgN7GXjDQGhQCuFnpnMz6YGS6uQBcpSIIv1EN6A2oWfokoNNq3BTpOoiyXksVhTWDkfY9U7nGt0P6ZHkTm0V4VIOXGPjhnp0eMqd6dL-5gGvYMYqJzPn_--yVOu8vEGVuQqJagJrgEVEcSN7yFHK4-cl92M5IYsmY2H_i5VYQofSeA2fZaE5zzMFDUs353fbmihZxIgQFH5F_d88S6cSNPp0D6Ga0_1QEQbfAIf8izSvek8KgPGeQpnft6a4XBsTtLL-yvRu2v9mYCdkQ8fOVfwWL9Dev9zFjVXpCODcydNRsuKnODG1xBHYAyLtwkH9mM5nhgc3ESg3PhHMhP6I5PLKyK5jJTZjgbcnOb7eLFGEkegTrwmBus59J3HIDMHf3iGRFU74FuLlOf1o9O3OU-E2_CIrHRfPwH4MhKhWV_o6pKZF90MofTj_a0tqUNrWOa6h4x2pgFzV0pBONEskFgA%26flowName%3DGeneralOAuthFlow%26as%3DS167894439%253A1790335476643730%26client_id%3D502298138375-m8cutlpltgo5n7n1kiacrm65ujai5k3d.apps.googleusercontent.com%26requestPath%3D%252Fsignin%252Foauth%252Fconsent%23&app_domain=https%3A%2F%2Fapi.bland.ai&rart=ANgoxcfjXWxdXqDhGnIrlS-bl72JZh9YseN7MtZ8jRt_A3G4ksSaWeEG58M3XZ3beDaneCQKqkt-7ZXIZQqdiohR5LloHNQLaVJwfo8or-XrbdWH8Bjs8Fw",
+      "final_title": "Sign in - Google Accounts",
+      "input_tokens": 64366,
+      "output_tokens": 3331,
+      "estimated_cost_usd": 0.029510300000000003,
+      "trace_dir": "public/bakeoff-traces/bu_9931_1c662f5a",
+      "created_at": "2026-09-25T11:24:54.587905+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": false
+    },
+    {
+      "run_id": "bu_9942_22c4eeea",
+      "task_id": "vd_t4_phone_or_web_test_vapi",
+      "eval_index": 9942,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Vapi product console (you are already signed in).\nUSER GOAL: Find where to set up a phone number OR start a web/test call. Do NOT place a live call, buy a number, or spend credits \u2014 stop once the setup UI or test-call affordance is clearly visible.\nSUCCESS: Phone numbers buy/import/connect UI OR web/test/simulate call control is visible.\nNav hint (optional): Sidebar: Phone Numbers.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Vapi's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "vapi",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t4_phone_or_web_test",
+      "goal_title": "Find phone number or web test call setup",
+      "comparative_group": "vd_t4_phone_or_web_test",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://dashboard.vapi.ai/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.vapi.ai/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://dashboard.vapi.ai/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.vapi.ai/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=3))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 3 seconds', extracted_content='Waited for 3 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=504))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Phone numbers\"', include_extracted_content_only_once=False, metadata={'click_x': 125.0, 'click_y': 403.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=WaitActionModel(wait=wait_Params(seconds=3))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Waited for 3 seconds', extracted_content='Waited for 3 seconds', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/phone-numbers"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I have successfully navigated to the Vapi dashboard and found the 'Phone numbers' section. On this page, the UI clearly shows options to set up phone numbers, including a 'Create Phone Number' button. This fulfills the user's request to find where to set up a phone number.\\n\\n**Likes about Vapi's UX:**\\n1. Clear and intuitive sidebar navigation.\\n2. Concise and informative descriptions on the 'Phone numbers' page.\\n3. Prominent 'Create Phone Number' button for easy access.\\n4. Clean and modern interface design.\\n\\n**Dislikes about Vapi's UX:**\\n1. The initial notification banner at the top of the page is quite large and persistent.\\n2. The 'Active Call' widget is present even when no call is active, which might be distracting.\\n\\n**Difficulty:** Easy\", success=True, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=True, judgement=JudgementResult(reasoning=\"The agent successfully navigated to the specified URL and then, following the navigation hint, clicked on 'Phone numbers'. The resulting page clearly displayed the UI for setting up phone numbers, including a 'Create Phone Number' button, which satisfied the user's goal of finding where to set up a phone number. The agent correctly stopped before performing any actions that would involve placing calls, buying numbers,",
+          "url": "https://dashboard.vapi.ai/phone-numbers"
+        }
+      ],
+      "num_actions": 5,
+      "stop_reason": "agent_done",
+      "success": true,
+      "status": "SUCCESS",
+      "judge_reason": "The agent successfully navigated to the 'Phone numbers' section of the Vapi dashboard. The final page clearly displays the UI for setting up phone numbers, including a 'Create Phone Number' button, which satisfies the task's requirement to find where to set up a phone number. The agent correctly stopped before performing any actions that would involve placing calls, buying numbers, or spending credits.",
+      "judge_evidence": "The final URL is 'https://dashboard.vapi.ai/phone-numbers', and the action summary indicates a click on 'Phone numbers' and a subsequent 'Done' action with a description confirming the visibility of the setup UI.",
+      "failure_category": null,
+      "final_url": "https://dashboard.vapi.ai/phone-numbers",
+      "final_title": "Vapi - Dashboard",
+      "input_tokens": 53739,
+      "output_tokens": 2241,
+      "estimated_cost_usd": 0.0230263,
+      "trace_dir": "public/bakeoff-traces/bu_9942_22c4eeea",
+      "created_at": "2026-09-25T11:25:06.896964+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": true
+    },
+    {
+      "run_id": "bu_9943_b2b6a792",
+      "task_id": "vd_t4_phone_or_web_test_retell",
+      "eval_index": 9943,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Retell AI product console (you are already signed in).\nUSER GOAL: Find where to set up a phone number OR start a web/test call. Do NOT place a live call, buy a number, or spend credits \u2014 stop once the setup UI or test-call affordance is clearly visible.\nSUCCESS: Phone numbers buy/import/connect UI OR web/test/simulate call control is visible.\nNav hint (optional): Sidebar: Phone Numbers.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Retell AI's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "retell",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t4_phone_or_web_test",
+      "goal_title": "Find phone number or web test call setup",
+      "comparative_group": "vd_t4_phone_or_web_test",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://dashboard.retellai.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.retellai.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://dashboard.retellai.com/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.retellai.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.retellai.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.retellai.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://dashboard.retellai.com/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.retellai.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBOZ1RVYU5pVHljTjdPb0FDQUgwMDZpTGFUbzRHd2Z5Q6Fur3VuaXZlcnNhbC1sb2dpbqN0aWTZIDdIYlZyYmJrekZZVlR0YUE5RnhKUV82aG1WWXJpVXhto2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text='I am unable to complete the task. Despite the instruction that I am already signed in, navigating to `https://dashboard.retellai.com/` consistently leads to a login page. I do not have the credentials to log in, and the task explicitly forbids creating accounts or spending credits. Therefore, I cannot access the dashboard to find where to set up a phone number or start a web/test call.', success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning='The user\\'s primary goal was to find specific UI elements related to phone number setup or web/test calls on the Retell AI dashboard. The task explicitly stated, \"You are already signed in.\" However, upon navigating to the specified URL, the agent was presented with a login page, as evidenced by the screenshots. The agent correctly identified this discrepancy and concluded that it could not proceed without login cred",
+          "url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SA4RTdHaXY1eER3RTZJdmlZaWVtS2FJZnpudm5mcXh0cqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIGNHYlZreDh2eHFybWtFZ29PVEN6N2VNc08wekc0TEhKo2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY"
+        }
+      ],
+      "num_actions": 3,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent was blocked from accessing the dashboard. The task stated the agent was already signed in, but navigating to the provided URL resulted in an error page, preventing any further progress.",
+      "judge_evidence": "The final screenshot shows an 'Oops!, something went wrong' error page from Retell AI, indicating a system error or outage, which prevented access to the dashboard.",
+      "failure_category": "HARNESS",
+      "final_url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SA4RTdHaXY1eER3RTZJdmlZaWVtS2FJZnpudm5mcXh0cqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIGNHYlZreDh2eHFybWtFZ29PVEN6N2VNc08wekc0TEhKo2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY",
+      "final_title": "Retell AI",
+      "input_tokens": 27470,
+      "output_tokens": 2010,
+      "estimated_cost_usd": 0.0144468,
+      "trace_dir": "public/bakeoff-traces/bu_9943_b2b6a792",
+      "created_at": "2026-09-25T11:25:21.212779+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": false
+    },
+    {
+      "run_id": "bu_9953_ab72200b",
+      "task_id": "vd_t5_api_webhooks_retell",
+      "eval_index": 9953,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Retell AI product console (you are already signed in).\nUSER GOAL: Find API keys and/or webhook / event callback settings. Do not create or delete keys \u2014 locate the surface and report what is available.\nSUCCESS: API keys page and/or webhooks/events UI is visible (or thoroughly documented absent).\nNav hint (optional): Sidebar: API Keys / Settings.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Retell AI's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "retell",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t5_api_webhooks",
+      "goal_title": "Find API keys or webhooks",
+      "comparative_group": "vd_t5_api_webhooks",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://dashboard.retellai.com/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.retellai.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://dashboard.retellai.com/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.retellai.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.retellai.com/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.retellai.com/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://dashboard.retellai.com/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.retellai.com/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBULU9pRHhMa1FWNFFVRGdqV05kVFlxdkhyX0xYUUZydaFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEJnY1BFSzl5VEZlZGxTNkdEbE8tRm1ZeXF0UWVSSTlQo2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I was unable to complete the task. Despite the instruction that I am already signed in and should navigate directly to https://dashboard.retellai.com/, I was repeatedly redirected to a login page. As I do not have login credentials, I cannot access the dashboard to find the API keys or webhook/event callback settings. Therefore, I cannot fulfill the user's request.\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The user's primary goal was to find API keys and/or webhook/event callback settings on the Retell AI dashboard. The task explicitly stated that the agent was already signed in and should navigate directly to the dashboard. However, upon navigation, the agent was presented with a login page, which included a reCAPTCHA challenge. Since no login credentials were provided, the agent was unable to proceed past the login s",
+          "url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBzRGtkQUVTTk5oVXpuSEZtOFF5ZklxMHBBMVZ2aTFnNaFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEo0TzQwXzB0dTcxUm9tWVZnM2o0SlJXNXZ4T3ZodzNao2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY"
+        }
+      ],
+      "num_actions": 3,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent was blocked from accessing the dashboard. The task stated the agent was already signed in, but the agent was redirected to a login page and then encountered an error page. This prevented the agent from reaching the API keys or webhook/event callback settings.",
+      "judge_evidence": "The final screenshot shows an error page with the message 'Oops!, something went wrong' and the URL is a login page: 'https://auth.retellai.com/u/login/identifier?state=hKFo2SBzRGtkQUVTTk5oVXpuSEZtOFF5ZklxMHBBMVZ2aTFnNaFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEo0TzQwXzB0dTcxUm9tWVZnM2o0SlJXNXZ4T3ZodzNao2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY'",
+      "failure_category": "HARNESS",
+      "final_url": "https://auth.retellai.com/u/login/identifier?state=hKFo2SBzRGtkQUVTTk5oVXpuSEZtOFF5ZklxMHBBMVZ2aTFnNaFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIEo0TzQwXzB0dTcxUm9tWVZnM2o0SlJXNXZ4T3ZodzNao2NpZNkgTG9paTNYbEZiRXRnOUppazFMYkJaT2VZemEyMHJKYUY",
+      "final_title": "Retell AI",
+      "input_tokens": 27372,
+      "output_tokens": 2075,
+      "estimated_cost_usd": 0.0149283,
+      "trace_dir": "public/bakeoff-traces/bu_9953_ab72200b",
+      "created_at": "2026-09-25T11:25:35.437852+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": false
+    },
+    {
+      "run_id": "bu_9951_2a6a4d7c",
+      "task_id": "vd_t5_api_webhooks_bland",
+      "eval_index": 9951,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Bland AI product console (you are already signed in).\nUSER GOAL: Find API keys and/or webhook / event callback settings. Do not create or delete keys \u2014 locate the surface and report what is available.\nSUCCESS: API keys page and/or webhooks/events UI is visible (or thoroughly documented absent).\nNav hint (optional): Settings / API Keys / Developer.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Bland AI's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "bland",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t5_api_webhooks",
+      "goal_title": "Find API keys or webhooks",
+      "comparative_group": "vd_t5_api_webhooks",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://app.bland.ai/dashboard",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/dashboard"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://app.bland.ai/dashboard', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Navigated to https://app.bland.ai/dashboard', extracted_content='\ud83d\udd17 Navigated to https://app.bland.ai/dashboard', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://app.bland.ai/login"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I am unable to complete the task. Despite being instructed that I am already signed in, navigating to https://app.bland.ai/dashboard consistently redirects me to the login page (https://app.bland.ai/login). The task constraints prevent me from attempting to log in or create an account. Therefore, I cannot access the dashboard to find the API keys or webhook/event callback settings. \\n\\nSince I could not access the platform, I cannot provide feedback on Bland AI's UX or the difficulty of the task.\", success=False, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=False, judgement=JudgementResult(reasoning=\"The user's primary goal was to find API keys and/or webhook settings on the Bland AI dashboard and then provide feedback on the UX. The agent was instructed that it was already signed in and to navigate directly to the dashboard URL.\\n\\nWhat went well: The agent correctly attempted to navigate to the specified URL. It accurately identified that it was redirected to a login page despite the instruction that it was alr",
+          "url": "https://app.bland.ai/login"
+        }
+      ],
+      "num_actions": 3,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "BLOCKED",
+      "judge_reason": "The agent was instructed that it was already signed in and to navigate to the dashboard. However, navigating to the dashboard URL (https://app.bland.ai/dashboard) consistently redirected to the login page (https://app.bland.ai/login). The task constraints explicitly forbade logging in or creating an account, thus blocking the agent from accessing the required dashboard to complete the task.",
+      "judge_evidence": "The final URL is https://app.bland.ai/login, which is a login page. The action summary shows attempts to navigate to the dashboard were redirected to the login page. The agent's final `DoneAction` explicitly states it was unable to complete the task due to being redirected to the login page and being unable to log in.",
+      "failure_category": "HARNESS",
+      "final_url": "https://app.bland.ai/login",
+      "final_title": "Bland Console",
+      "input_tokens": 27628,
+      "output_tokens": 2747,
+      "estimated_cost_usd": 0.0164367,
+      "trace_dir": "public/bakeoff-traces/bu_9951_2a6a4d7c",
+      "created_at": "2026-09-25T11:25:38.379391+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": false
+    },
+    {
+      "run_id": "bu_9952_29d80432",
+      "task_id": "vd_t5_api_webhooks_vapi",
+      "eval_index": 9952,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Vapi product console (you are already signed in).\nUSER GOAL: Find API keys and/or webhook / event callback settings. Do not create or delete keys \u2014 locate the surface and report what is available.\nSUCCESS: API keys page and/or webhooks/events UI is visible (or thoroughly documented absent).\nNav hint (optional): Sidebar: API Keys / Organization settings.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Vapi's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "vapi",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t5_api_webhooks",
+      "goal_title": "Find API keys or webhooks",
+      "comparative_group": "vd_t5_api_webhooks",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://dashboard.vapi.ai/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.vapi.ai/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://dashboard.vapi.ai/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.vapi.ai/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=1074))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"API keys\"', include_extracted_content_only_once=False, metadata={'click_x': 125.0, 'click_y': 466.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=1130))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked div role=button \"Org settings\" aria-label=Org settings', include_extracted_content_only_once=False, metadata={'click_x': 125.0, 'click_y': 658.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/org/api-keys"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=ScrollActionModel(scroll=ScrollAction(down=True, pages=1.0, index=None))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Scrolled down 800px', extracted_content='\ud83d\udd0d Scrolled down 800px', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/settings/organization"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I have successfully located the API keys page and the webhook/event callback settings within the Vapi product console.\\n\\n**What I accomplished:**\\nI navigated to the Vapi dashboard, then to the 'API keys' section, and finally to the 'Org settings' page where I found the 'Server URL' section, which contains the webhook/event callback settings.\\n\\n**Vapi's UX - Likes:**\\n1. Clear and intuitive sidebar navigation, making it easy to find key sections like 'API keys' and 'Org settings'.\\n2. Descriptive labels for settings, such as 'Server URL' clearly indicating its purpose for webhooks.\\n3. The overall clean and modern design of the dashboard is visually appealing.\\n4. The search functionality (\u2318K) is a nice touch for quick navigation.\\n\\n**Vapi's UX - Dislikes:**\\n1. The 'Org settings' page is quite long, requiring scrolling to find all relevant settings. A more organized layout or sub-sections could improve discoverability.\\n2. Some elements are nested within shadow DOMs, which can sometimes make programmatic interaction more complex (though not an issue for this task).\\n3. The 'Call recording storage' banner at the top is persistent and takes up valuable screen real estate.\\n4. The 'Cloudflare security challenge' iframes are present, which could potentially be a minor annoyance for some users.\\n\\n**Difficulty:** Easy\", success=True, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=True, judgement=JudgementResult(reasoning=\"The agent successfully navigated to the Vapi dashboard as instructed. It then correctly identified and clicked on 'API keys' in the sidebar, fulfilling the first part of the user's goal. Subsequently, it navigated to 'Org settings' and scrolled down to locate the 'Server URL' section, which clearly serves as the webhook/event callback settings. The agent adhered to all constraints, such as not creating or deleting key",
+          "url": "https://dashboard.vapi.ai/settings/organization"
+        }
+      ],
+      "num_actions": 5,
+      "stop_reason": "agent_done",
+      "success": false,
+      "status": "FAILURE",
+      "judge_reason": "The final screenshot is completely black, indicating that the page content is not visible. Therefore, it's impossible to verify if the API keys page and/or webhooks/events UI is visible as required by the SUCCESS criteria.",
+      "judge_evidence": "The final screenshot is entirely black, showing no visible content of the webpage.",
+      "failure_category": "PRODUCT",
+      "final_url": "https://dashboard.vapi.ai/settings/organization",
+      "final_title": "Vapi - Dashboard",
+      "input_tokens": 60278,
+      "output_tokens": 2257,
+      "estimated_cost_usd": 0.0248972,
+      "trace_dir": "public/bakeoff-traces/bu_9952_29d80432",
+      "created_at": "2026-09-25T11:25:42.937956+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": true
+    },
+    {
+      "run_id": "bu_9932_98d75b93",
+      "task_id": "vd_t3_voice_llm_vapi",
+      "eval_index": 9932,
+      "task": "PERSONA: Taylor Ng \u2014 Startup Founder at Early-stage consumer startup.\nContext: Get a first voice agent ready to show investors this week. You care about: onboarding, first agent, phone/web test, API access.\nPLATFORM: Vapi product console (you are already signed in).\nUSER GOAL: On an agent config, locate voice/TTS and LLM/model controls. Select or inspect available voice and model options (do not spend credits on a live call).\nSUCCESS: Voice and LLM/model controls are visible (selected or listed). Not login.\nNav hint (optional): Voice / TTS on assistant config.\nRules: Do not create/delete API keys, do not place live phone calls, do not buy numbers, do not spend credits or change billing. When done, include: (1) what you accomplished, (2) 2\u20134 likes about Vapi's UX, (3) 2\u20134 dislikes, (4) difficulty (easy/medium/hard).",
+      "website": "vapi",
+      "persona_id": "sf_founder",
+      "persona_name": "Taylor Ng",
+      "goal_key": "vd_t3_voice_llm",
+      "goal_title": "Choose a voice and LLM",
+      "comparative_group": "vd_t3_voice_llm",
+      "seed": null,
+      "matched_block": null,
+      "model": "gemini-bakeoff",
+      "harness": "browser_use_oss",
+      "provider": "vertex",
+      "observation_mode": "browser_use_dom_vision",
+      "start_url": "https://dashboard.vapi.ai/",
+      "actions": [
+        {
+          "i": 1,
+          "action": [
+            "root=NavigateActionModel(navigate=NavigateAction(url='https://dashboard.vapi.ai/', new_tab=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Found initial url and automatically loaded it. Navigated to https://dashboard.vapi.ai/', extracted_content='\ud83d\udd17 Navigated to https://dashboard.vapi.ai/', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 2,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=417))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked a \"Assistants\"', include_extracted_content_only_once=False, metadata={'click_x': 125.0, 'click_y': 307.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/"
+        },
+        {
+          "i": 3,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=1834))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button \"Create Assistant\"', include_extracted_content_only_once=False, metadata={'click_x': 354.5, 'click_y': 145.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants"
+        },
+        {
+          "i": 4,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=2139))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked div role=button \"New Assistant\\nSoniox \u00b7 OpenAI ...\" aria-label=Drag New Assistant', include_extracted_content_only_once=False, metadata={'click_x': 391.0, 'click_y': 305.125}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/39dffbb4-66de-4816-a087-fbaee0847381"
+        },
+        {
+          "i": 5,
+          "action": [
+            "root=WriteFileActionModel(write_file=write_file_Params(file_name='todo.md', content=\"# Vapi Agent Configuration Task\\n\\n## Goal: Locate and inspect voice/TTS and LLM/model controls on an agent config.\\n\\n## Tasks:\\n- [ ] Inspect the 'MODEL' controls and available options.\\n- [ ] Inspect the 'VOICE' controls and available options.\\n- [ ] Summarize findings and call done.\", append=False, trailing_newline=False, leading_newline=False))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Data written to file todo.md successfully.', extracted_content='Data written to file todo.md successfully.', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 6,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=5822))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button aria-label=Edit MODEL', include_extracted_content_only_once=False, metadata={'click_x': 991.328125, 'click_y': 319.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 7,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=7430))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button role=combobox \"GPT-4.1\\n690\\nms\\n\u00b7\\n$\\n0.020\\n/min\\n...\" aria-label=Model', include_extracted_content_only_once=False, metadata={'click_x': 1070.0, 'click_y': 242.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 8,
+          "action": [
+            "root=ScrollActionModel(scroll=ScrollAction(down=True, pages=1.0, index=9640))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Scrolled down element 9640 800px', extracted_content='\ud83d\udd0d Scrolled down element 9640 800px', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 9,
+          "action": [
+            "root=ScrollActionModel(scroll=ScrollAction(down=True, pages=1.0, index=9640))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Scrolled down element 9640 800px', extracted_content='\ud83d\udd0d Scrolled down element 9640 800px', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 10,
+          "action": [
+            "root=ScrollActionModel(scroll=ScrollAction(down=True, pages=1.0, index=9640))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Scrolled down element 9640 800px', extracted_content='\ud83d\udd0d Scrolled down element 9640 800px', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 11,
+          "action": [
+            "root=ScrollActionModel(scroll=ScrollAction(down=True, pages=1.0, index=9640))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Scrolled down element 9640 800px', extracted_content='\ud83d\udd0d Scrolled down element 9640 800px', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 12,
+          "action": [
+            "root=ScrollActionModel(scroll=ScrollAction(down=True, pages=1.0, index=9640))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Scrolled down element 9640 800px', extracted_content='\ud83d\udd0d Scrolled down element 9640 800px', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 13,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=5822))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button aria-label=Close MODEL settings', include_extracted_content_only_once=False, metadata={'click_x': 711.328125, 'click_y': 375.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 14,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=5972))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button aria-label=Edit VOICE', include_extracted_content_only_once=False, metadata={'click_x': 1223.0, 'click_y': 319.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 15,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=12286))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button role=combobox \"Vapi Voices - Version 2\\n430\\nms...\" aria-label=Voice model', include_extracted_content_only_once=False, metadata={'click_x': 1070.0, 'click_y': 222.5}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 16,
+          "action": [
+            "root=ScrollActionModel(scroll=ScrollAction(down=True, pages=1.0, index=13815))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Scrolled down element 13815 800px', extracted_content='\ud83d\udd0d Scrolled down element 13815 800px', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 17,
+          "action": [
+            "root=ScrollActionModel(scroll=ScrollAction(down=True, pages=1.0, index=13815))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory='Scrolled down element 13815 800px', extracted_content='\ud83d\udd0d Scrolled down element 13815 800px', include_extracted_content_only_once=False, metadata=None, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 18,
+          "action": [
+            "root=ClickActionModel(click=ClickElementActionIndexOnly(index=5972))"
+          ],
+          "result": "[ActionResult(is_done=False, success=None, judgement=None, error=None, attachments=None, images=None, long_term_memory=None, extracted_content='Clicked button aria-label=Close VOICE settings', include_extracted_content_only_once=False, metadata={'click_x': 802.984375, 'click_y': 375.0}, include_in_memory=False)]",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        },
+        {
+          "i": 19,
+          "action": [
+            "root=DoneActionModel(done=DoneAction(text=\"I have successfully navigated to the Vapi dashboard, created a new assistant, and inspected the voice/TTS and LLM/model controls. I opened the 'Model Settings' and 'Voice Settings' panels and scrolled through the available options for both. \\n\\n**Likes about Vapi's UX:**\\n1. Clear and intuitive navigation to create and configure assistants.\\n2. Well-organized settings panels for Model and Voice, making it easy to locate controls.\\n3. Real-time cost and latency information displayed, which is very helpful for optimization.\\n4. The ability to easily switch between 'Visual' and 'Code' for system prompts is a great feature for different user preferences.\\n\\n**Dislikes about Vapi's UX:**\\n1. The scrolling mechanism within the dropdowns for model and voice options required multiple scrolls to see all options, which could be improved.\\n2. The 'New Assistant' entries are not uniquely identifiable without opening them, which could be confusing if there are many.\\n3. The initial 'New Assistant' creation doesn't prompt for a name, leading to generic names.\\n4. The 'Call recording storage is now access-controlled' banner is quite prominent and persistent.\\n\\n**Difficulty:** Easy\", success=True, files_to_display=[]))"
+          ],
+          "result": "[ActionResult(is_done=True, success=True, judgement=JudgementResult(reasoning='The agent successfully navigated to the Vapi dashboard, created a new assistant, and then located and inspected both the LLM/model controls and the voice/TTS controls. It opened the respective settings panels and scrolled through the available options, fulfilling the core requirement of making the controls visible and inspecting them. The agent also provided a comprehensive summary of its accomplishments, including va",
+          "url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593"
+        }
+      ],
+      "num_actions": 19,
+      "stop_reason": "agent_done",
+      "success": true,
+      "status": "SUCCESS",
+      "judge_reason": "The agent successfully navigated to the Vapi dashboard, created a new assistant, and then located and inspected both the LLM/model controls and the voice/TTS controls. It opened the respective settings panels and scrolled through the available options, fulfilling the core requirement of making the controls visible and inspecting them. The agent also provided a comprehensive summary of its accomplishments, including valuable feedback on the UX.",
+      "judge_evidence": "The final URL is on an assistant configuration page. The action summary shows clicks on 'Edit MODEL' and 'Edit VOICE' buttons, followed by clicks on comboboxes to inspect options and scrolling within those options. This indicates that the voice/TTS and LLM/model controls were made visible and inspected.",
+      "failure_category": null,
+      "final_url": "https://dashboard.vapi.ai/assistants/96d80ab5-d7e6-4e45-a270-61224115c593",
+      "final_title": "Vapi - Dashboard",
+      "input_tokens": 326935,
+      "output_tokens": 6579,
+      "estimated_cost_usd": 0.11672679999999999,
+      "trace_dir": "public/bakeoff-traces/bu_9932_98d75b93",
+      "created_at": "2026-09-25T11:25:53.680872+00:00",
+      "browser_headless": true,
+      "max_actions_budget": 40,
+      "had_auth": true
+    }
+  ]
+}
