@@ -150,13 +150,28 @@ def _metrics_html(metrics: object) -> str:
         return ""
     steps = metrics.get("median_steps")
     steps_txt = "—" if steps is None else f"{float(steps):.1f}"
+
+    def _sec(value: object) -> str:
+        if not isinstance(value, (int, float)):
+            return "—"
+        return f"{float(value):.1f}s"
+
+    model = metrics.get("model") or ""
+    provider = metrics.get("model_provider") or ""
+    model_txt = " ".join(part for part in (str(model), str(provider)) if part).strip()
+    model_html = f"<span>{_escape_html(model_txt)}</span>" if model_txt else ""
+    changed_n = metrics.get("changed_page_n", metrics.get("left_start_n", 0))
+    changed_pct = metrics.get("changed_page_pct", metrics.get("left_start_pct", 0))
     return (
         '<p class="stat-strip" id="work-metrics">'
         f"<span><strong>{steps_txt}</strong> median steps</span>"
-        f"<span><strong>{metrics.get('left_start_pct', 0)}%</strong> left the start URL "
-        f"({metrics.get('left_start_n', 0)}/{metrics.get('n')})</span>"
+        f"<span><strong>{changed_pct}%</strong> changed page state "
+        f"({changed_n}/{metrics.get('n')})</span>"
         f"<span><strong>{metrics.get('task_success_rate', 0)}%</strong> task success on the final state "
         f"({metrics.get('task_success_n', 0)}/{metrics.get('n')})</span>"
+        f"<span><strong>{_sec(metrics.get('step_latency_p50'))}</strong> step p50 / "
+        f"<strong>{_sec(metrics.get('step_latency_p95'))}</strong> p95</span>"
+        f"{model_html}"
         "</p>"
     )
 
@@ -228,12 +243,16 @@ def _render_report_html(data: dict) -> str:
         time = "—" if row.get("median_time_s") is None else f'{row.get("median_time_s")}s'
         steps = "—" if row.get("median_steps") is None else f'{float(row["median_steps"]):.1f}'
         pct = int(round(float(row.get("success_rate") or 0) * 100))
+        p50 = "—" if row.get("step_latency_p50") is None else f'{row.get("step_latency_p50")}s'
+        p95 = "—" if row.get("step_latency_p95") is None else f'{row.get("step_latency_p95")}s'
+        changed = row.get("changed_page_pct", row.get("left_start_pct", 0))
         body_rows.append(
             "<tr>"
             f"<td>{_escape_html(row.get('site_label') or row.get('site_key'))}</td>"
             f"<td>{row.get('ok')}/{row.get('n')} ({pct}%)</td>"
-            f"<td>{row.get('left_start_pct', 0)}%</td>"
-            f"<td>{steps}</td><td>{time}</td><td>{row.get('friction_n') or 0}</td></tr>"
+            f"<td>{changed}%</td>"
+            f"<td>{steps}</td><td>{p50}</td><td>{p95}</td><td>{time}</td>"
+            f"<td>{row.get('friction_n') or 0}</td></tr>"
         )
     if insights.get("tie_note"):
         tie_html = f'<p id="tie-note" class="tie-note">{_escape_html(insights.get("tie_note"))}</p>'
@@ -248,7 +267,7 @@ def _render_report_html(data: dict) -> str:
     if body_rows:
         table = (
             '<div class="compare-wrap"><table id="compare-table"><thead><tr>'
-            "<th>Site</th><th>Task success</th><th>Left start</th><th>Median steps</th><th>Median time</th><th>Friction notes</th>"
+            "<th>Site</th><th>Task success</th><th>Changed page</th><th>Median steps</th><th>Step p50</th><th>Step p95</th><th>Median time</th><th>Friction notes</th>"
             f"</tr></thead><tbody>{''.join(body_rows)}</tbody></table></div>"
         )
 

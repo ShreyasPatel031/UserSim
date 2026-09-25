@@ -173,6 +173,8 @@ _INTERACT = (
     "search",
     "scroll",
     "select",
+    "drag",
+    "press_and_hold",
 )
 
 
@@ -193,6 +195,69 @@ def _action_name(step: dict[str, Any]) -> str:
     return label.split("—")[0].split(":")[0].strip()
 
 
+def _canvas_samples(raw: str) -> list[int]:
+    out: list[int] = []
+    for part in (raw or "").split(";"):
+        if ":" not in part or "taint" in part:
+            continue
+        nums = part.split(":", 1)[1]
+        for token in nums.split(","):
+            token = token.strip()
+            if token.lstrip("-").isdigit():
+                out.append(int(token))
+    return out
+
+
+def _canvas_changed(a: str, b: str) -> bool:
+    """A drawing changes many canvas samples. A cursor blink does not."""
+    if not a or not b or "taint" in a or "taint" in b or a == b:
+        return False
+    sa, sb = _canvas_samples(a), _canvas_samples(b)
+    if not sa or not sb:
+        return False
+    n = max(len(sa), len(sb), 1)
+    overlap = min(len(sa), len(sb))
+    differ = sum(1 for i in range(overlap) if sa[i] != sb[i]) + abs(len(sa) - len(sb))
+    return differ >= 3 and differ / n >= 0.08
+
+
+def _text_tokens(text: str) -> set[str]:
+    return set(re.findall(r"[a-z0-9]{3,}", (text or "").lower()))
+
+
+def _text_changed(a: str, b: str) -> bool:
+    ta, tb = _text_tokens(a), _text_tokens(b)
+    if len(ta) < 8 or len(tb) < 8:
+        return False
+    union = len(ta | tb) or 1
+    delta = len(ta ^ tb)
+    return delta >= 12 and (len(ta & tb) / union) < 0.82
+
+
+def changed_page_state(run: dict[str, Any], start_url: str) -> bool:
+    """URL change, or a meaningful DOM-text or canvas-pixel change.
+
+    Highlight overlays are not part of the signature. A same-URL canvas
+    (Excalidraw) counts when the drawing surface actually changes.
+    """
+    if left_start(run, start_url):
+        return True
+    sigs = [
+        step.get("state_sig")
+        for step in (run.get("trace") or [])
+        if isinstance(step, dict) and isinstance(step.get("state_sig"), dict)
+    ]
+    if len(sigs) < 2:
+        return False
+    base = sigs[0]
+    for sig in sigs[1:]:
+        if _canvas_changed(str(base.get("canvas") or ""), str(sig.get("canvas") or "")):
+            return True
+        if _text_changed(str(base.get("text") or ""), str(sig.get("text") or "")):
+            return True
+    return False
+
+
 def left_start(run: dict[str, Any], start_url: str) -> bool:
     """True when any recorded URL is a different page than the one the run opened."""
     start = run.get("site_url") or start_url
@@ -207,15 +272,16 @@ def left_start(run: dict[str, Any], start_url: str) -> bool:
 
 
 def task_succeeded(run: dict[str, Any], start_url: str) -> bool:
-    """Final-state success: the run interacted and landed off the start page, or typed.
+    """Final-state success: the run interacted and the page state changed, or typed.
 
     Describing the homepage, waiting, or writing a note is not success.
+    Page state changes on a URL change or a meaningful DOM or canvas change.
     """
     steps = [step for step in (run.get("trace") or []) if isinstance(step, dict)]
     names = [_action_name(step) for step in steps]
     interacted = any(name.startswith(_INTERACT) or name in _INTERACT for name in names)
     typed = any(name in {"input", "input_text", "type", "send_keys"} for name in names)
-    if typed or (interacted and left_start(run, start_url)):
+    if typed or (interacted and changed_page_state(run, start_url)):
         return True
     # Single-page apps (the canvas stays on one URL). A done call after a
     # click counts only when it names a control, not the landing page.
@@ -225,26 +291,82 @@ def task_succeeded(run: dict[str, Any], start_url: str) -> bool:
     return False
 
 
+def _percentile(values: list[float], p: float) -> float | None:
+    if not values:
+        return None
+    ordered = sorted(values)
+    if len(ordered) == 1:
+        return round(ordered[0], 3)
+    k = (len(ordered) - 1) * p
+    lo = int(k)
+    hi = min(lo + 1, len(ordered) - 1)
+    return round(ordered[lo] + (ordered[hi] - ordered[lo]) * (k - lo), 3)
+
+
+def _step_latencies(runs: list[dict[str, Any]]) -> list[float]:
+    vals: list[float] = []
+    for run in runs:
+        for step in run.get("trace") or []:
+            if not isinstance(step, dict) or step.get("step") in (None, 0):
+                continue
+            raw = step.get("step_latency_s")
+            if isinstance(raw, (int, float)) and raw >= 0:
+                vals.append(float(raw))
+    return vals
+
+
+def _latency_block(runs: list[dict[str, Any]]) -> dict[str, Any]:
+    lat = _step_latencies(runs)
+    first = [
+        float(r["first_action_s"])
+        for r in runs
+        if isinstance(r.get("first_action_s"), (int, float))
+    ]
+    models = [str(r.get("model")) for r in runs if r.get("model")]
+    providers = [str(r.get("model_provider")) for r in runs if r.get("model_provider")]
+    return {
+        "step_latency_p50": _percentile(lat, 0.50),
+        "step_latency_p95": _percentile(lat, 0.95),
+        "first_action_p50": _percentile(first, 0.50),
+        "model": models[0] if models else None,
+        "model_provider": providers[0] if providers else None,
+    }
+
+
 def work_metrics(runs: list[dict[str, Any]], start_url: str) -> dict[str, Any]:
+    empty_latency = {
+        "step_latency_p50": None,
+        "step_latency_p95": None,
+        "first_action_p50": None,
+        "model": None,
+        "model_provider": None,
+    }
     if not runs:
         return {
             "n": 0,
             "median_steps": None,
             "left_start_pct": 0,
+            "changed_page_pct": 0,
             "task_success_rate": 0,
             "task_success_n": 0,
             "left_start_n": 0,
+            "changed_page_n": 0,
+            **empty_latency,
         }
     steps = [float(r.get("num_steps") or len(r.get("trace") or []) or 0) for r in runs]
     left_n = sum(1 for r in runs if left_start(r, start_url))
+    changed_n = sum(1 for r in runs if changed_page_state(r, start_url))
     ok_n = sum(1 for r in runs if task_succeeded(r, start_url))
     return {
         "n": len(runs),
         "median_steps": _median(steps),
         "left_start_n": left_n,
         "left_start_pct": round(100 * left_n / len(runs)),
+        "changed_page_n": changed_n,
+        "changed_page_pct": round(100 * changed_n / len(runs)),
         "task_success_n": ok_n,
         "task_success_rate": round(100 * ok_n / len(runs)),
+        **_latency_block(runs),
     }
 
 
@@ -436,7 +558,9 @@ def _comparisons(
         site_start = str(group[0].get("site_url") or study.get("url") or "")
         ok = sum(1 for r in group if task_succeeded(r, site_start))
         left_n = sum(1 for r in group if left_start(r, site_start))
+        changed_n = sum(1 for r in group if changed_page_state(r, site_start))
         steps = [float(r.get("num_steps") or len(r.get("trace") or []) or 0) for r in group]
+        latency = _latency_block(group)
         times = [durations[str(r.get("agent_id"))] for r in group if str(r.get("agent_id")) in durations]
         friction = sum(len(r.get("friction_points") or []) for r in group)
         label = str(group[0].get("site_label") or key)
@@ -450,6 +574,11 @@ def _comparisons(
                 "ok": ok,
                 "success_rate": round(ok / len(group), 3) if group else 0,
                 "left_start_pct": round(100 * left_n / len(group)) if group else 0,
+                "changed_page_pct": round(100 * changed_n / len(group)) if group else 0,
+                "step_latency_p50": latency["step_latency_p50"],
+                "step_latency_p95": latency["step_latency_p95"],
+                "model": latency["model"],
+                "model_provider": latency["model_provider"],
                 "median_steps": _median(steps),
                 "median_time_s": round(_median(times), 1) if _median(times) is not None else None,
                 "friction_n": friction,

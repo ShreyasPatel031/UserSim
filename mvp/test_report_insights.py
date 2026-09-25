@@ -4,7 +4,13 @@ from __future__ import annotations
 
 import unittest
 
-from mvp.report_insights import build_report_insights, left_start, task_succeeded, work_metrics
+from mvp.report_insights import (
+    build_report_insights,
+    changed_page_state,
+    left_start,
+    task_succeeded,
+    work_metrics,
+)
 
 
 def _run(
@@ -75,6 +81,36 @@ class WorkMetricTests(unittest.TestCase):
         run["trace"][0]["action"] = "click — index=25"
         self.assertFalse(left_start(run, "https://excalidraw.com/"))
         self.assertTrue(task_succeeded(run, "https://excalidraw.com/"))
+
+    def test_canvas_drag_changes_page_state_without_a_url_change(self) -> None:
+        run = _run("a", steps=2, final="https://excalidraw.com/")
+        run["site_url"] = "https://excalidraw.com/"
+        blank = "900x600:" + ",".join(["10"] * 64)
+        drawn = "900x600:" + ",".join(["10"] * 20 + ["200"] * 44)
+        run["trace"][0]["url"] = "https://excalidraw.com/"
+        run["trace"][0]["state_sig"] = {"text": "excalidraw canvas", "canvas": blank}
+        run["trace"][1]["action"] = "drag — start_x=120 start_y=180 end_x=400 end_y=320"
+        run["trace"][1]["url"] = "https://excalidraw.com/"
+        run["trace"][1]["state_sig"] = {"text": "excalidraw canvas", "canvas": drawn}
+        run["trace"][1]["step_latency_s"] = 4.2
+        self.assertFalse(left_start(run, "https://excalidraw.com/"))
+        self.assertTrue(changed_page_state(run, "https://excalidraw.com/"))
+        self.assertTrue(task_succeeded(run, "https://excalidraw.com/"))
+        metrics = work_metrics([run], "https://excalidraw.com/")
+        self.assertEqual(metrics["changed_page_pct"], 100)
+        self.assertEqual(metrics["left_start_pct"], 0)
+        self.assertEqual(metrics["step_latency_p50"], 4.2)
+
+    def test_one_canvas_sample_is_not_a_page_change(self) -> None:
+        run = _run("a", steps=2, final="https://excalidraw.com/")
+        run["site_url"] = "https://excalidraw.com/"
+        base = "900x600:" + ",".join(["10"] * 64)
+        flicker = "900x600:" + ",".join(["10"] * 63 + ["11"])
+        run["trace"][0]["state_sig"] = {"text": "excalidraw", "canvas": base}
+        run["trace"][1]["action"] = "click — index=29"
+        run["trace"][1]["state_sig"] = {"text": "excalidraw", "canvas": flicker}
+        self.assertFalse(changed_page_state(run, "https://excalidraw.com/"))
+        self.assertFalse(task_succeeded(run, "https://excalidraw.com/"))
 
 
 class InsightTests(unittest.TestCase):

@@ -7,6 +7,26 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 
+class FlagLadderTests(unittest.TestCase):
+    def test_signup_ladder_tries_solve_without_proxies(self) -> None:
+        from capability.browserbase_client import session_flag_attempts
+
+        attempts = session_flag_attempts(
+            proxies=True, solve_captchas=True, advanced_stealth=False
+        )
+        self.assertEqual(
+            attempts[0],
+            {"proxies": True, "solve_captchas": True, "advanced_stealth": False},
+        )
+        self.assertEqual(
+            attempts[1],
+            {"proxies": False, "solve_captchas": True, "advanced_stealth": False},
+        )
+        self.assertEqual(attempts[-1]["proxies"], False)
+        self.assertFalse(attempts[-1]["solve_captchas"])
+        self.assertFalse(any(a["advanced_stealth"] for a in attempts))
+
+
 class BackoffTests(unittest.TestCase):
     def test_timeout_backoff_is_short(self) -> None:
         from capability.browserbase_client import _create_backoff_s

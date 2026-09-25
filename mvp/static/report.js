@@ -80,17 +80,22 @@ function renderCompare(insights) {
       const time = r.median_time_s == null ? "—" : `${r.median_time_s}s`;
       const steps = r.median_steps == null ? "—" : Number(r.median_steps).toFixed(1);
       const pct = Math.round((r.success_rate || 0) * 100);
+      const changed = r.changed_page_pct ?? r.left_start_pct ?? 0;
+      const p50 = r.step_latency_p50 == null ? "—" : `${r.step_latency_p50}s`;
+      const p95 = r.step_latency_p95 == null ? "—" : `${r.step_latency_p95}s`;
       return `<tr>
         <td>${escapeHtml(r.site_label || r.site_key)}</td>
         <td>${r.ok}/${r.n} (${pct}%)</td>
-        <td>${r.left_start_pct ?? 0}%</td>
+        <td>${changed}%</td>
         <td>${steps}</td>
+        <td>${p50}</td>
+        <td>${p95}</td>
         <td>${time}</td>
         <td>${r.friction_n ?? 0}</td>
       </tr>`;
     })
     .join("");
-  table.innerHTML = `<thead><tr><th>Site</th><th>Task success</th><th>Left start</th><th>Median steps</th><th>Median time</th><th>Friction notes</th></tr></thead><tbody>${body}</tbody>`;
+  table.innerHTML = `<thead><tr><th>Site</th><th>Task success</th><th>Changed page</th><th>Median steps</th><th>Step p50</th><th>Step p95</th><th>Median time</th><th>Friction notes</th></tr></thead><tbody>${body}</tbody>`;
 }
 
 function renderTrace() {

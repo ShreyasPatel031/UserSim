@@ -329,6 +329,34 @@ async def _toggle_session(page, sess: dict) -> None:
     await page.wait_for_timeout(400)
 
 
+def _attach_task_success(report: dict, study: dict, judged: dict, fallback_url: str) -> None:
+    """Final-state task success, beside screenshot yeses. Does not change the pass gate."""
+    from mvp.report_insights import task_succeeded
+
+    runs = [
+        r
+        for r in (study.get("agent_results") or _sessions(study) or [])
+        if isinstance(r, dict)
+    ]
+    by_id = {str(r.get("agent_id") or r.get("task_id") or ""): r for r in runs}
+    n_ok = 0
+    for aid, row in judged.items():
+        run = by_id.get(str(aid))
+        ok = False
+        if isinstance(run, dict):
+            start = str(run.get("site_url") or fallback_url or "")
+            try:
+                ok = bool(task_succeeded(run, start))
+            except Exception:
+                ok = False
+        row["task_success"] = ok
+        if ok:
+            n_ok += 1
+    report["task_success_n"] = n_ok
+    report["task_success_of"] = len(judged)
+    report["task_success_rate"] = round(100 * n_ok / len(judged)) if judged else 0
+
+
 async def run_e2e2(args: argparse.Namespace) -> dict:
     from playwright.async_api import async_playwright
 
@@ -659,6 +687,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
 
         report["study_id"] = study_id
         report["yeses"] = sum(1 for v in judged.values() if v.get("pass"))
+        _attach_task_success(report, study, judged, args.url)
         report["judgements"] = list(judged.values())
         report["agents"] = len(_sessions(study))
         report["personas"] = len(study.get("personas") or [])
@@ -892,7 +921,9 @@ def main() -> int:
         return 1
     _log(
         f"ALL_PASS study={result.get('study_id')} "
-        f"yeses={result.get('yeses')}/{expected} elapsed={result.get('elapsed_s')}s "
+        f"yeses={result.get('yeses')}/{expected} "
+        f"task_success={result.get('task_success_n')}/{result.get('task_success_of')} "
+        f"elapsed={result.get('elapsed_s')}s "
         f"url={args.url}"
     )
     return 0
