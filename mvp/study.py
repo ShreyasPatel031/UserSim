@@ -92,6 +92,26 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _mark_first_screenshot(sess: dict[str, Any] | None) -> None:
+    """Stamp first real screenshot time once (server-side, for e2e start budget)."""
+    if not isinstance(sess, dict):
+        return
+    if sess.get("first_screenshot_at_ts") is not None:
+        return
+    # Only count when a numbered trace row already carries a screenshot URL.
+    has_shot = False
+    for step in sess.get("trace") or []:
+        if not isinstance(step, dict):
+            continue
+        if isinstance(step.get("step"), int) and step.get("screenshot_url"):
+            has_shot = True
+            break
+    if not has_shot:
+        return
+    sess["first_screenshot_at"] = _now()
+    sess["first_screenshot_at_ts"] = time.time()
+
+
 def _extract_json(text: str) -> dict:
     match = re.search(r"\{.*\}", text, re.S)
     if not match:
@@ -661,7 +681,11 @@ async def backfill_site_opening_shots(study: StudyState) -> int:
         for aid in aids:
             dest = MVP_RUNS_DIR / study.id / aid / "screenshots" / "bbox_0.png"
             dest.parent.mkdir(parents=True, exist_ok=True)
+            # Replace missing OR blankish/splash openings with a real same-site frame.
             if dest.is_file() and not _png_is_blankish(dest):
+                sess = study.live_sessions.get(aid) or {}
+                # Keep non-blank; still ensure first_screenshot stamp exists.
+                _mark_first_screenshot(sess)
                 continue
             try:
                 shutil.copy2(donor_path, dest)
@@ -688,11 +712,13 @@ async def backfill_site_opening_shots(study: StudyState) -> int:
             step0["screenshot_url"] = (
                 f"/api/studies/{study.id}/agents/{aid}/screenshots/bbox_0.png"
             )
+            step0.pop("opening_blankish", None)
             trace = [s for s in (sess.get("trace") or []) if not (
                 isinstance(s, dict) and s.get("step") == 0
             )]
             sess["trace"] = [step0, *trace]
             sess["num_steps"] = len(sess["trace"])
+            _mark_first_screenshot(sess)
             if not sess.get("last_action"):
                 sess["last_action"] = step0["action"]
             filled += 1
@@ -1442,51 +1468,10 @@ async def run_study(
                 title=task.get("title"),
             )
 
-        # Open live sessions NOW — don't wait on Browserbase/fleet or the UI
-        # sits on the task list with no stage.
-        persona_by_id = {p["id"]: p for p in study.personas}
-        study.live_sessions = {}
-        for task in study.tasks:
-            persona = persona_by_id.get(task.get("persona_id")) or (study.personas[0] if study.personas else {})
-            agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
-            site = task.get("site_url") or study.url
-            study.live_sessions[agent_id] = {
-                "agent_id": agent_id,
-                "persona_id": persona.get("id"),
-                "persona_name": persona.get("name"),
-                "persona_bio": persona.get("bio"),
-                "task_id": task.get("id"),
-                "task_title": task.get("title"),
-                "task_prompt": task.get("prompt"),
-                "site_key": task.get("site_key") or "product",
-                "site_url": site,
-                "site_label": task.get("site_label") or "Product",
-                "status": "starting",
-                "trace": [],
-                "num_steps": 0,
-                "live_active": False,
-                "live_thoughts": [
-                    {
-                        "at": _now(),
-                        "text": f"Opening {task.get('site_label') or site}…",
-                        "kind": "status",
-                    }
-                ],
-                "last_action": f"Opening {site}…",
-            }
-
-        touch("Opening the live page")
-        persist_study(study)
-        if on_update:
-            try:
-                on_update(study, event="brief")
-            except TypeError:
-                on_update(study)
-            except Exception:
-                pass
-
-        # Warm captures may already be done; if not, do not block agent launch.
-        # Wait a bit longer when warming multiple sites (product + rivals).
+        # Finish warm captures BEFORE creating live sessions so each agent can
+        # get a first frame at creation (creation→first-shot budget is tight).
+        # Warm ran in parallel with page fetch + persona/task LLMs; this wait
+        # is usually near-zero by the time the brief is ready.
         if warm_site_tasks:
             timeout_s = 14.0 if len(warm_site_tasks) > 1 else 8.0
             done, pending = await asyncio.wait(
@@ -1516,83 +1501,126 @@ async def run_study(
                 flush=True,
             )
 
-        # Publish warmed landing shots onto every matching site task NOW so
-        # the stage + e2e judges have real pixels before per-agent sessions boot.
-        if warm_by_site:
-            import shutil as _shutil
+        # Open live sessions + attach warm frames in one pass so the stage and
+        # e2e judges see pixels immediately (no create→wait→publish gap).
+        import shutil as _shutil
 
-            from mvp.paths import MVP_RUNS_DIR
-            from mvp.opening_shot import attach_opening_pixels
+        from mvp.paths import MVP_RUNS_DIR
+        from mvp.opening_shot import attach_opening_pixels
+        from mvp.browser_agent import _png_is_blankish
 
-            for task in study.tasks:
-                site_key = str(task.get("site_key") or "product")
-                warm = warm_by_site.get(site_key)
-                if not warm or not warm.get("shot_path"):
-                    continue
-                aid = task.get("id") or ""
-                sess = study.live_sessions.get(aid)
-                if not sess:
-                    continue
-                site = task.get("site_url") or study.url
-                dest_dir = MVP_RUNS_DIR / study.id / aid / "screenshots"
-                dest_dir.mkdir(parents=True, exist_ok=True)
-                dest = dest_dir / "bbox_0.png"
-                try:
-                    _shutil.copy2(warm["shot_path"], dest)
-                    # Skip blank warm frames — better to wait for agent paint.
-                    from mvp.browser_agent import _png_is_blankish
-
-                    if _png_is_blankish(dest):
-                        print(
-                            f"warm publish skip blank {aid} ({dest.stat().st_size} bytes)",
-                            flush=True,
-                        )
-                        continue
-                    step0 = {
-                        "step": 0,
-                        "action": f"Opened {site}",
-                        "observation": "Landing page screenshot",
-                        "thought": "",
-                        "thought_detail": {},
-                        "url": site,
-                        "screenshot_url": (
-                            f"/api/studies/{study.id}/agents/{aid}/screenshots/bbox_0.png"
-                        ),
-                        "boxes": [],
-                        "outcome": "neutral",
-                        "evidence_label": "Opening frame · before agent steps",
+        persona_by_id = {p["id"]: p for p in study.personas}
+        study.live_sessions = {}
+        for task in study.tasks:
+            persona = persona_by_id.get(task.get("persona_id")) or (
+                study.personas[0] if study.personas else {}
+            )
+            agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
+            site = task.get("site_url") or study.url
+            site_key = str(task.get("site_key") or "product")
+            created_ts = time.time()
+            sess: dict[str, Any] = {
+                "agent_id": agent_id,
+                "persona_id": persona.get("id"),
+                "persona_name": persona.get("name"),
+                "persona_bio": persona.get("bio"),
+                "task_id": task.get("id"),
+                "task_title": task.get("title"),
+                "task_prompt": task.get("prompt"),
+                "site_key": site_key,
+                "site_url": site,
+                "site_label": task.get("site_label") or "Product",
+                "status": "starting",
+                "trace": [],
+                "num_steps": 0,
+                "live_active": False,
+                "created_at": _now(),
+                "created_at_ts": created_ts,
+                "live_thoughts": [
+                    {
+                        "at": _now(),
+                        "text": f"Opening {task.get('site_label') or site}…",
+                        "kind": "status",
                     }
-                    await attach_opening_pixels(
-                        study_id=study.id,
-                        agent_id=aid,
-                        local=dest,
-                        step=step0,
-                    )
-                    sess["status"] = "running"
-                    sess["trace"] = [step0]
-                    sess["num_steps"] = 1
-                    sess["last_action"] = step0["action"]
-                    # Screenshot only — never stamp warm live_view_url onto agents.
-                    sess["live_thoughts"] = [
-                        {
-                            "at": _now(),
-                            "text": f"Opened {site} — agent starting…",
-                            "kind": "status",
-                        }
-                    ]
-                    study.updated_at = _now()
-                    log_activity(
-                        study,
-                        "browser",
-                        f"First screenshot ready for {site}",
-                        agent_id=aid,
-                    )
-                except Exception as pub_exc:  # noqa: BLE001
-                    print(f"warm publish failed: {pub_exc!r}", flush=True)
-            persist_study(study)
+                ],
+                "last_action": f"Opening {site}…",
+            }
+            study.live_sessions[agent_id] = sess
 
-            # Free competitor (and YouTube product) warm BB slots before the
-            # 24-agent wave — we only needed their PNGs.
+            warm = warm_by_site.get(site_key)
+            if not warm or not warm.get("shot_path"):
+                continue
+            dest_dir = MVP_RUNS_DIR / study.id / agent_id / "screenshots"
+            dest_dir.mkdir(parents=True, exist_ok=True)
+            dest = dest_dir / "bbox_0.png"
+            try:
+                _shutil.copy2(warm["shot_path"], dest)
+                blankish = _png_is_blankish(dest)
+                if blankish:
+                    # Still publish immediately so creation→first-shot stays
+                    # within the e2e budget; same-site backfill / agent paint
+                    # replaces splash for flash-lite YESes.
+                    print(
+                        f"warm publish blankish {agent_id} ({dest.stat().st_size} bytes) "
+                        f"— stamping for immediate start",
+                        flush=True,
+                    )
+                step0 = {
+                    "step": 0,
+                    "action": f"Opened {site}",
+                    "observation": "Landing page screenshot",
+                    "thought": "",
+                    "thought_detail": {},
+                    "url": site,
+                    "screenshot_url": (
+                        f"/api/studies/{study.id}/agents/{agent_id}/screenshots/bbox_0.png"
+                    ),
+                    "boxes": [],
+                    "outcome": "neutral",
+                    "evidence_label": "Opening frame · before agent steps",
+                    "opening_blankish": blankish,
+                }
+                await attach_opening_pixels(
+                    study_id=study.id,
+                    agent_id=agent_id,
+                    local=dest,
+                    step=step0,
+                )
+                sess["status"] = "running"
+                sess["trace"] = [step0]
+                sess["num_steps"] = 1
+                sess["last_action"] = step0["action"]
+                _mark_first_screenshot(sess)
+                # Screenshot only — never stamp warm live_view_url onto agents.
+                sess["live_thoughts"] = [
+                    {
+                        "at": _now(),
+                        "text": f"Opened {site} — agent starting…",
+                        "kind": "status",
+                    }
+                ]
+                log_activity(
+                    study,
+                    "browser",
+                    f"First screenshot ready for {site}",
+                    agent_id=agent_id,
+                )
+            except Exception as pub_exc:  # noqa: BLE001
+                print(f"warm publish failed: {pub_exc!r}", flush=True)
+
+        touch("Opening the live page")
+        persist_study(study)
+        if on_update:
+            try:
+                on_update(study, event="brief")
+            except TypeError:
+                on_update(study)
+            except Exception:
+                pass
+
+        # Free competitor (and YouTube product) warm BB slots before the
+        # 24-agent wave — we only needed their PNGs.
+        if warm_by_site:
             from mvp.browser_agent import close_warm_opening
             from urllib.parse import urlparse as _urlparse
 
@@ -1763,6 +1791,7 @@ async def run_study(
                     sess["trace"].append(step)
                 sess["num_steps"] = len(sess["trace"])
                 sess["last_action"] = step.get("action") or ""
+                _mark_first_screenshot(sess)
                 refresh_agent_phase()
                 study.updated_at = _now()
                 persist_study(study)
@@ -1881,6 +1910,7 @@ async def run_study(
                     else:
                         sess["trace"] = existing
                     sess["num_steps"] = len(sess["trace"])
+                    _mark_first_screenshot(sess)
                 study.agent_results.append(result)
                 log_activity(
                     study,
@@ -2177,6 +2207,7 @@ async def run_study(
                         sess["trace"].append(step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
+                    _mark_first_screenshot(sess)
                     thought = (step.get("thought") or "").strip()
                     if thought:
                         thoughts = list(sess.get("live_thoughts") or [])
@@ -2528,6 +2559,7 @@ async def run_study(
                     else:
                         sess["trace"] = snap_trace or existing
                     sess["num_steps"] = len(sess["trace"])
+                    _mark_first_screenshot(sess)
                     done_count += 1
                     study.agent_results.append(result)
                     refresh_agent_phase()

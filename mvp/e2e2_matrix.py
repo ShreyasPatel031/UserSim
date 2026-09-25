@@ -42,10 +42,13 @@ if sa.is_file():
 OUT_DIR = Path(os.environ.get("E2E2_OUT_DIR", "/tmp/usersim_e2e2"))
 # Default: 4 personas × 2 tasks × 3 sites = 24 (fits Browserbase 25-slot budget).
 DEFAULT_EXPECTED = int(os.environ.get("E2E2_EXPECTED", "24") or "24")
+# Only a full 24-agent matrix can PASS. Smaller runs are smoke-only.
+PASS_AGENT_BAR = int(os.environ.get("E2E2_PASS_AGENT_BAR", "24") or "24")
 # Prior YouTube 9-agent run was ~408s — full 24-agent budget must still be faster.
 DEFAULT_MAX_ELAPSED_S = float(os.environ.get("E2E2_MAX_ELAPSED_S", "360") or "360")
-# After agents exist, first real screenshot must land quickly (no queue theatre).
-DEFAULT_FIRST_SHOT_S = float(os.environ.get("E2E2_FIRST_SHOT_S", "45") or "45")
+# Per-agent: first screenshot must land within this many seconds of that
+# session's own creation (Shreyas: a few seconds after task creation).
+DEFAULT_FIRST_SHOT_S = float(os.environ.get("E2E2_FIRST_SHOT_S", "5") or "5")
 
 
 def _log(msg: str) -> None:
@@ -66,6 +69,113 @@ def _sessions(study: dict) -> list[dict]:
         if rid:
             by_id[rid] = {**by_id.get(rid, {}), **r}
     return list(by_id.values())
+
+
+def _parse_ts(value: object) -> float | None:
+    """Parse server-side epoch float or ISO timestamp into epoch seconds."""
+    if value is None or value == "":
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    text = str(value).strip()
+    if not text:
+        return None
+    try:
+        return float(text)
+    except ValueError:
+        pass
+    try:
+        from datetime import datetime
+
+        if text.endswith("Z"):
+            text = text[:-1] + "+00:00"
+        return datetime.fromisoformat(text).timestamp()
+    except Exception:
+        return None
+
+
+def _sess_created_ts(sess: dict) -> float | None:
+    return _parse_ts(sess.get("created_at_ts")) or _parse_ts(sess.get("created_at"))
+
+
+def _sess_first_shot_ts(sess: dict) -> float | None:
+    stamped = _parse_ts(sess.get("first_screenshot_at_ts")) or _parse_ts(
+        sess.get("first_screenshot_at")
+    )
+    if stamped is not None:
+        return stamped
+    # Fallback: infer from numbered screenshot rows (older servers).
+    for step in sess.get("trace") or []:
+        if not isinstance(step, dict):
+            continue
+        if isinstance(step.get("step"), int) and step.get("screenshot_url"):
+            return _parse_ts(step.get("at")) or _parse_ts(step.get("ts"))
+    return None
+
+
+def _percentile(sorted_vals: list[float], p: float) -> float | None:
+    if not sorted_vals:
+        return None
+    if len(sorted_vals) == 1:
+        return round(sorted_vals[0], 3)
+    idx = (len(sorted_vals) - 1) * (p / 100.0)
+    lo = int(idx)
+    hi = min(lo + 1, len(sorted_vals) - 1)
+    frac = idx - lo
+    return round(sorted_vals[lo] * (1 - frac) + sorted_vals[hi] * frac, 3)
+
+
+def _per_agent_shot_latencies(sessions: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    for sess in sessions:
+        aid = str(sess.get("agent_id") or sess.get("task_id") or "")
+        created = _sess_created_ts(sess)
+        shot = _sess_first_shot_ts(sess)
+        gap = None
+        if created is not None and shot is not None:
+            gap = round(shot - created, 3)
+        rows.append(
+            {
+                "agent_id": aid,
+                "created_at_ts": created,
+                "first_screenshot_at_ts": shot,
+                "creation_to_first_shot_s": gap,
+            }
+        )
+    return rows
+
+
+def _timing_summary(t0: float, sessions: list[dict], expected: int) -> dict:
+    rows = _per_agent_shot_latencies(sessions)
+    created_list = sorted(
+        r["created_at_ts"] for r in rows if r["created_at_ts"] is not None
+    )
+    gaps = sorted(
+        r["creation_to_first_shot_s"]
+        for r in rows
+        if r["creation_to_first_shot_s"] is not None
+    )
+    first_created_s = (
+        round(created_list[0] - t0, 3) if created_list else None
+    )
+    all_created_s = None
+    if created_list and len(created_list) >= expected:
+        all_created_s = round(created_list[expected - 1] - t0, 3)
+    elif created_list:
+        all_created_s = round(created_list[-1] - t0, 3)
+    return {
+        "run_click_to_first_task_created_s": first_created_s,
+        "run_click_to_all_tasks_created_s": all_created_s,
+        "creation_to_first_shot_s": {
+            "p50": _percentile(gaps, 50),
+            "p95": _percentile(gaps, 95),
+            "max": round(max(gaps), 3) if gaps else None,
+            "n": len(gaps),
+            "missing_shot": sum(1 for r in rows if r["first_screenshot_at_ts"] is None),
+            "missing_created": sum(1 for r in rows if r["created_at_ts"] is None),
+        },
+        "per_agent": rows,
+    }
 
 
 def _best_shot(sess: dict) -> dict | None:
@@ -263,9 +373,10 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         last_steps = -1
         last_done = -1
         last_move_t = time.time()
-        t_agents_ready: float | None = None
-        t_first_shot: float | None = None
+        t_first_task: float | None = None
+        t_all_tasks: float | None = None
         queued_hits = 0
+        immediate_start_failed: str | None = None
 
         while time.time() - t0 < args.timeout_s:
             e2e = await page.evaluate("() => window.__e2e || {}")
@@ -293,12 +404,56 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 for st in (s.get("trace") or [])
                 if isinstance(st, dict) and isinstance(st.get("step"), int)
             )
-            if sessions and t_agents_ready is None and len(sessions) >= max(1, expected // 2):
-                t_agents_ready = time.time()
-                _log(f"  agents_ready +{t_agents_ready - t0:.1f}s n={len(sessions)}")
-            if step_n > 0 and t_first_shot is None:
-                t_first_shot = time.time()
-                _log(f"  first_shot +{t_first_shot - t0:.1f}s steps={step_n}")
+            if sessions and t_first_task is None:
+                t_first_task = time.time()
+                _log(f"  first_task_created +{t_first_task - t0:.1f}s n={len(sessions)}")
+            if (
+                sessions
+                and t_all_tasks is None
+                and len(sessions) >= expected
+            ):
+                t_all_tasks = time.time()
+                _log(f"  all_tasks_created +{t_all_tasks - t0:.1f}s n={len(sessions)}")
+
+            # Per-agent immediate start: creation → first screenshot ≤ budget.
+            now = time.time()
+            overdue: list[str] = []
+            for sess in sessions:
+                aid = str(sess.get("agent_id") or sess.get("task_id") or "")
+                created = _sess_created_ts(sess)
+                shot = _sess_first_shot_ts(sess)
+                if created is None:
+                    continue
+                if shot is not None:
+                    gap = shot - created
+                    if gap > args.first_shot_s:
+                        overdue.append(f"{aid}={gap:.2f}s")
+                elif (now - created) > args.first_shot_s:
+                    overdue.append(f"{aid}>={now - created:.2f}s(no-shot)")
+            if overdue and immediate_start_failed is None:
+                immediate_start_failed = (
+                    f"IMMEDIATE_START: {len(overdue)} agent(s) first screenshot "
+                    f">{args.first_shot_s:.0f}s after own creation: "
+                    + ", ".join(overdue[:8])
+                )
+                _log(f"  {immediate_start_failed}")
+                timing = _timing_summary(t0, sessions, expected)
+                report["study_id"] = study_id
+                report["agents"] = len(sessions)
+                report["timing"] = timing
+                report["t_first_task_created_s"] = timing[
+                    "run_click_to_first_task_created_s"
+                ]
+                report["t_all_tasks_created_s"] = timing[
+                    "run_click_to_all_tasks_created_s"
+                ]
+                report["creation_to_first_shot"] = timing["creation_to_first_shot_s"]
+                report["fail_reasons"] = [immediate_start_failed]
+                report["pass"] = False
+                report["elapsed_s"] = round(time.time() - t0, 1)
+                (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
+                raise RuntimeError(immediate_start_failed)
+
             # No excuse for queue theatre when fleet ≤ Browserbase concurrency.
             queued = [
                 s
@@ -307,24 +462,15 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 or "waiting for a browser slot" in str(s.get("last_action") or "").lower()
                 or "queued — waiting" in str(s.get("last_action") or "").lower()
             ]
-            if queued and t_agents_ready is not None and (time.time() - t_agents_ready) > 8:
+            if queued and t_first_task is not None and (time.time() - t_first_task) > 8:
                 queued_hits += 1
                 if queued_hits >= 3:
                     raise RuntimeError(
                         "IMMEDIATE_START: "
                         f"{len(queued)}/{len(sessions)} agents still queued "
-                        "more than 8s after agents existed "
+                        "more than 8s after first task created "
                         "(no excuse with 25 Browserbase slots)"
                     )
-            if (
-                t_agents_ready is not None
-                and t_first_shot is None
-                and (time.time() - t_agents_ready) > args.first_shot_s
-            ):
-                raise RuntimeError(
-                    f"IMMEDIATE_START: no screenshots within {args.first_shot_s:.0f}s "
-                    f"of agents existing (agents={len(sessions)})"
-                )
             if step_n > last_steps or done_n > last_done:
                 last_steps = step_n
                 last_done = done_n
@@ -508,21 +654,45 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         })
         report["sites"] = 1 + len(study.get("competitors") or [])
         report["elapsed_s"] = round(time.time() - t0, 1)
-        report["t_agents_ready_s"] = (
-            round(t_agents_ready - t0, 1) if t_agents_ready else None
+        timing = _timing_summary(t0, _sessions(study), expected)
+        report["timing"] = timing
+        report["t_first_task_created_s"] = timing["run_click_to_first_task_created_s"]
+        report["t_all_tasks_created_s"] = timing["run_click_to_all_tasks_created_s"]
+        report["creation_to_first_shot"] = timing["creation_to_first_shot_s"]
+        report["t_first_task_poll_s"] = (
+            round(t_first_task - t0, 1) if t_first_task else None
         )
-        report["t_first_shot_s"] = (
-            round(t_first_shot - t0, 1) if t_first_shot else None
+        report["t_all_tasks_poll_s"] = (
+            round(t_all_tasks - t0, 1) if t_all_tasks else None
+        )
+        _log(
+            "  timing: run→first_task="
+            f"{timing['run_click_to_first_task_created_s']}s "
+            f"run→all_tasks={timing['run_click_to_all_tasks_created_s']}s "
+            f"shot p50/p95/max="
+            f"{timing['creation_to_first_shot_s']['p50']}/"
+            f"{timing['creation_to_first_shot_s']['p95']}/"
+            f"{timing['creation_to_first_shot_s']['max']}s"
         )
 
         fails = []
+        # 24 agents is the only PASS bar — smaller runs are smoke-only.
+        if expected < PASS_AGENT_BAR:
+            fails.append(
+                f"smoke-only expected={expected}; PASS requires {PASS_AGENT_BAR} agents"
+            )
         if report["personas"] < want_personas:
             fails.append(f"personas={report['personas']} want {want_personas}")
         if report["task_bases"] < want_tasks:
             fails.append(f"tasks={report['task_bases']} want {want_tasks}")
         if report["sites"] < want_sites:
             fails.append(f"sites={report['sites']} want {want_sites}")
-        if report["agents"] < expected:
+        if report["agents"] < PASS_AGENT_BAR:
+            fails.append(
+                f"agents={report['agents']} want {PASS_AGENT_BAR} "
+                "(8-agent smoke does not count as PASS)"
+            )
+        elif report["agents"] < expected:
             fails.append(f"agents={report['agents']} want {expected}")
         if report["yeses"] < expected:
             fails.append(f"yeses={report['yeses']} want {expected}")
@@ -535,12 +705,33 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 f"elapsed={report['elapsed_s']}s want ≤{args.max_elapsed_s:.0f}s "
                 f"(prior YouTube baseline ~408s)"
             )
-        if t_first_shot is None:
-            fails.append("never got a first screenshot")
-        elif t_agents_ready is not None and (t_first_shot - t_agents_ready) > args.first_shot_s:
+        # Per-agent creation → first screenshot gate.
+        shot_stats = timing["creation_to_first_shot_s"]
+        slow_agents = [
+            r
+            for r in timing["per_agent"]
+            if r["creation_to_first_shot_s"] is not None
+            and r["creation_to_first_shot_s"] > args.first_shot_s
+        ]
+        missing_shot = [
+            r["agent_id"]
+            for r in timing["per_agent"]
+            if r["first_screenshot_at_ts"] is None
+        ]
+        if missing_shot:
             fails.append(
-                f"first_shot_gap={t_first_shot - t_agents_ready:.1f}s "
-                f"want ≤{args.first_shot_s:.0f}s after agents ready"
+                f"no first screenshot for {len(missing_shot)} agent(s): "
+                + ", ".join(missing_shot[:8])
+            )
+        if slow_agents:
+            fails.append(
+                f"creation→first_shot >{args.first_shot_s:.0f}s for "
+                f"{len(slow_agents)} agent(s) "
+                f"(max={shot_stats['max']}s p95={shot_stats['p95']}s): "
+                + ", ".join(
+                    f"{r['agent_id']}={r['creation_to_first_shot_s']}s"
+                    for r in slow_agents[:8]
+                )
             )
         nos = [v["agent_id"] for v in judged.values() if not v.get("pass")]
         if nos:
@@ -572,6 +763,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
 
         report["fail_reasons"] = fails
         report["pass"] = not fails
+        report["smoke_only"] = expected < PASS_AGENT_BAR
         await browser.close()
 
     (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
@@ -640,7 +832,10 @@ def main() -> int:
         "--first-shot-s",
         type=float,
         default=DEFAULT_FIRST_SHOT_S,
-        help="Max seconds from agents-ready to first screenshot",
+        help=(
+            "Max seconds from EACH agent's creation to THAT agent's first "
+            "screenshot (env E2E2_FIRST_SHOT_S, default 5)"
+        ),
     )
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
     ap.add_argument("--study-id", default=os.environ.get("E2E2_STUDY_ID", ""))
