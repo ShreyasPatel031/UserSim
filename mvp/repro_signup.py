@@ -150,7 +150,7 @@ async def run_one(host: str, *, nonce: str, timeout: float) -> dict[str, Any]:
     except Exception:
         pass
 
-    ident = provision_fresh(host, nonce=nonce, force_dotted=True)
+    ident = provision_fresh(host, nonce=nonce)
     print(
         f"fresh email_tag={ident.alias_tag} dotted={'+' not in ident.email} "
         f"local={ident.email.split('@')[0]}",
