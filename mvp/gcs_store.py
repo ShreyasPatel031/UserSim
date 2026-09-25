@@ -81,21 +81,30 @@ def normalize_study_display(data: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def abandon_running_studies_in_gcs(*, study_id: str | None = None, limit: int = 80) -> list[str]:
-    """Persist abandoned status onto GCS study.json for killed/zombie runs."""
+def abandon_running_studies_in_gcs(
+    *,
+    study_id: str | None = None,
+    study_ids: list[str] | None = None,
+    limit: int = 80,
+) -> list[str]:
+    """Persist abandoned status onto GCS study.json for killed/zombie runs.
+
+    Prefer an explicit ``study_ids`` snapshot from kill time. Re-listing all
+    "running" studies races newly started runs and falsely marks them killed.
+    """
     from datetime import datetime, timezone
 
     abandoned: list[str] = []
     now = datetime.now(timezone.utc).isoformat()
-    rows = list_mvp_studies(limit=limit)
-    # Bypass display normalize for discovering raw targets — use cache-bust.
-    clear_list_cache()
-    # Re-list without normalize would still apply after we add normalize to list —
-    # so scan blobs by reading each candidate id from the previous rows + optional id.
     ids: list[str] = []
-    if study_id:
+    if study_ids is not None:
+        ids = [str(x) for x in study_ids if x]
+    elif study_id:
         ids = [study_id]
     else:
+        # Legacy fallback — still snapshot the list once up front.
+        rows = list_mvp_studies(limit=limit)
+        clear_list_cache()
         ids = [str(r.get("id") or "") for r in rows if r.get("id")]
 
     for sid in ids:
@@ -401,12 +410,27 @@ def hydrate_live_sessions_from_gcs(study_id: str, live_sessions: Any) -> Any:
         frames: list[dict[str, Any]] = []
         if isinstance(manifest, dict):
             frames = [f for f in (manifest.get("steps") or []) if isinstance(f, dict)]
-        else:
+        if not frames:
             for step_no in range(0, 24):
-                fr = gcs_download_json(f"{root}/live/{agent_id}/step_{step_no:03d}.json")
+                fr = gcs_download_json(f"{root}/live/{agent_id}/step_{step_no}.json")
                 if not isinstance(fr, dict):
                     break
                 frames.append(fr)
+        if not frames:
+            for name in ("step_0.png", "bbox_0.png"):
+                raw = gcs_download_bytes(screenshot_gcs_uri(study_id, agent_id, name))
+                if raw and len(raw) > 200:
+                    frames = [
+                        {
+                            "step": 0,
+                            "action": "Opened page",
+                            "observation": "Landing page screenshot",
+                            "screenshot_url": (
+                                f"/api/studies/{study_id}/agents/{agent_id}/screenshots/{name}"
+                            ),
+                        }
+                    ]
+                    break
         if not frames:
             continue
         sess["trace"] = frames

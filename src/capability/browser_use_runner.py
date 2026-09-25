@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -24,6 +25,12 @@ from capability import (
 from capability.judge import JUDGE_ERROR, judge_task
 from config import GCP_PROJECT
 from capability.site_preflight import PreflightResult, preflight_start_url
+from capability.verify_done import harness_verify_stats, make_verify_done_hook, verify_done_enabled
+
+
+def _browser_headless() -> bool:
+    """Headed when BROWSER_HEADLESS=0 (fleet Xvfb). Default headless for local/CI."""
+    return os.environ.get("BROWSER_HEADLESS", "1").lower() not in {"0", "false", "no"}
 
 
 def task_wall_timeout_s(max_actions: int) -> float:
@@ -127,7 +134,7 @@ async def _run_async(
         temperature=0,
     )
     profile = BrowserProfile(
-        headless=True,
+        headless=_browser_headless(),
         viewport=VIEWPORT,
         user_agent=USER_AGENT,
         disable_security=True,
@@ -138,6 +145,10 @@ async def _run_async(
         f"Task: {task['task']}\n"
         f"Satisfy every constraint. Stop only when fully done."
     )
+    verify_hook = None
+    verify_stats = None
+    if verify_done_enabled():
+        verify_hook, verify_stats = make_verify_done_hook(task["task"], llm=llm)
     agent = Agent(
         task=agent_task,
         llm=llm,
@@ -147,13 +158,20 @@ async def _run_async(
         calculate_cost=True,
         extend_system_message=(
             "You are optimizing for task completion, not human imitation. "
-            "Apply all required filters and finish the stated goal."
+            "Apply all required filters and finish the stated goal. "
+            "Before calling done, verify every constraint is visibly satisfied on the "
+            "current page (filters applied, cart/items present, extracted fields shown). "
+            "If anything is missing, keep working — do not claim done early. "
+            "Stay on the task start website; do not escape to Google/Bing."
         ),
         save_conversation_path=str(run_dir / "conversation"),
     )
     wall_s = task_wall_timeout_s(max_actions)
     try:
-        history = await asyncio.wait_for(agent.run(max_steps=max_actions), timeout=wall_s)
+        run_kwargs: dict = {"max_steps": max_actions}
+        if verify_hook is not None:
+            run_kwargs["on_step_end"] = verify_hook
+        history = await asyncio.wait_for(agent.run(**run_kwargs), timeout=wall_s)
     except asyncio.TimeoutError:
         out = {
             "run_id": run_id,
@@ -286,6 +304,8 @@ async def _run_async(
         + float(judgment.get("estimated_cost_usd") or 0),
         "trace_dir": str(run_dir),
         "created_at": datetime.now(timezone.utc).isoformat(),
+        "browser_headless": _browser_headless(),
+        **harness_verify_stats(verify_stats),
     }
     (run_dir / "run.json").write_text(__import__("json").dumps(out, indent=2, default=str))
     # stash history string

@@ -17,6 +17,8 @@ let watchTimer = null;
 let runtimeTimer = null;
 let bootDone = false;
 let killing = false;
+/** URLs that 404'd — keep the last real landing PNG instead of a broken img. */
+const _shotBad = {};
 
 function escapeHtml(str) {
   return String(str ?? "")
@@ -159,10 +161,11 @@ function latestShot(session) {
   const trace = session?.trace || [];
   for (let i = trace.length - 1; i >= 0; i--) {
     const step = trace[i];
+    if (!step || step.progress_only || typeof step.step !== "number") continue;
     const inline = step?.screenshot_data_url || "";
-    if ((typeof inline === "string" && inline.startsWith("data:image/")) || step?.screenshot_url) {
-      return step;
-    }
+    if (typeof inline === "string" && inline.startsWith("data:image/")) return step;
+    const url = step?.screenshot_url || "";
+    if (url && !_shotBad[url.split("?")[0]]) return step;
   }
   return null;
 }
@@ -245,9 +248,12 @@ function renderWatch(data) {
     if (shotSrc && img) {
       const pre = new Image();
       pre.onload = () => {
-        if (!img.isConnected) return;
+        if (!img.isConnected || pre.naturalWidth < 40) return;
         img.src = shotSrc;
         img.dataset.shotSrc = shotSrc;
+      };
+      pre.onerror = () => {
+        _shotBad[shotSrc.split("?")[0]] = true;
       };
       pre.src = shotSrc;
       const stepEl = card.querySelector(".live-agent-step");
@@ -256,7 +262,7 @@ function renderWatch(data) {
     }
     let frame;
     if (shotSrc) {
-      frame = `<img src="${escapeHtml(shotSrc)}" data-shot-src="${escapeHtml(shotSrc)}" alt="" loading="eager" />`;
+      frame = `<img data-shot-src="${escapeHtml(shotSrc)}" alt="" />`;
     } else if (img) {
       continue;
     } else {
@@ -268,6 +274,19 @@ function renderWatch(data) {
       ${header}
       <div class="live-agent-frame">${frame}</div>
       <p class="live-agent-step">${escapeHtml(stepText)}</p>`;
+    const painted = card.querySelector("img");
+    if (painted && shotSrc) {
+      const pre = new Image();
+      pre.onload = () => {
+        if (!painted.isConnected || pre.naturalWidth < 40) return;
+        painted.src = shotSrc;
+        painted.dataset.shotSrc = shotSrc;
+      };
+      pre.onerror = () => {
+        _shotBad[shotSrc.split("?")[0]] = true;
+      };
+      pre.src = shotSrc;
+    }
   }
   for (const el of [...agentGrid.children]) {
     if (!keep.has(el.dataset.agentId || "")) el.remove();

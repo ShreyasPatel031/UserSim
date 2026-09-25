@@ -1127,31 +1127,20 @@ async def run_study_on_gcp_fleet(
                 return out
         except Exception:  # noqa: BLE001
             pass
-        # Don't publish a 404 bbox_N URL — landing frame is the reliable pixel.
-        landing = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / "step_0.png"
-        if landing.is_file() and landing.stat().st_size > 100:
-            out["screenshot_url"] = f"{api}/step_0.png"
-        else:
-            try:
-                raw0 = gcs_download_bytes(
-                    screenshot_gcs_uri(study_id, agent_id, "step_0.png")
-                )
-            except Exception:
-                raw0 = None
-            if raw0 and len(raw0) > 100:
-                landing.parent.mkdir(parents=True, exist_ok=True)
-                landing.write_bytes(raw0)
-                out["screenshot_url"] = f"{api}/step_0.png"
-            else:
-                out["screenshot_url"] = f"{api}/step_0.png"
+        # Real frame only. Missing PNG → omit URL so the UI waits (no step_0 stand-in).
+        out.pop("screenshot_url", None)
         return out
 
     async def _emit_frame(agent_id: str, fr: dict[str, Any]) -> None:
         step_no = int(fr.get("step") or 0)
+        fr = await asyncio.to_thread(_hydrate_frame_png, agent_id, fr)
+        # Wait for the real PNG. Don't mark the step seen until pixels exist,
+        # so a late GCS upload can still land (no step_0 stand-in).
+        if not fr.get("screenshot_url") and not fr.get("screenshot_data_url"):
+            return
         if step_no in seen_steps.setdefault(agent_id, set()):
             return
         seen_steps[agent_id].add(step_no)
-        fr = await asyncio.to_thread(_hydrate_frame_png, agent_id, fr)
         if on_frame:
             maybe = on_frame(agent_id, fr)
             if maybe is not None and hasattr(maybe, "__await__"):

@@ -142,6 +142,7 @@ class StudyState:
     auth_status: str | None = None
     auth_blocker: str | None = None
     kill_requested: bool = False
+    max_agents: int = 0
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -231,6 +232,10 @@ STUDY_TASKS: dict[str, asyncio.Task] = {}
 
 
 def study_was_killed(study: StudyState) -> bool:
+    # Emergency escape hatch: competing local servers / GCS abandon-all races
+    # were falsely setting kill_requested ("Killed by operator" with no click).
+    if os.environ.get("MVP_DISABLE_KILL", "").lower() in {"1", "true", "yes"}:
+        return False
     return bool(getattr(study, "kill_requested", False))
 
 
@@ -962,8 +967,8 @@ async def run_study(
         def _should_warm_browserbase() -> bool:
             if SNAPSHOT_ONLY and not _fleet_preferred(test_mode=bool(study.test_mode)):
                 return False
-            if _fleet_preferred(test_mode=bool(study.test_mode)):
-                return False
+            # Fleet still needs an immediate product-site PNG. One Browserbase
+            # landing capture is what the stage shows while seeds boot.
             if os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {"1", "true", "yes"}:
                 return False
             if IS_VERCEL_ENV:
@@ -972,6 +977,21 @@ async def run_study(
 
         if _should_warm_browserbase():
             from mvp.browser_agent import warm_opening_session
+
+            # Free zombie Browserbase sessions from abandoned studies so
+            # create_session doesn't hang on a leaked local slot / 429.
+            try:
+                from capability.browserbase_client import reset_local_slots
+                from mvp.kill_switch import kill_all_browserbase
+
+                released = await asyncio.wait_for(
+                    asyncio.to_thread(kill_all_browserbase),
+                    timeout=12,
+                )
+                reset_local_slots()
+                print(f"pre-study browserbase release: {released}", flush=True)
+            except Exception as rel_exc:  # noqa: BLE001
+                print(f"pre-study browserbase release skipped: {rel_exc!r}", flush=True)
 
             warm_task = asyncio.create_task(
                 warm_opening_session(study_id=study.id, url=study.url)
@@ -1252,6 +1272,9 @@ async def run_study(
             # Never silently drop agents. MVP_MAX_SESSIONS>0 is an explicit
             # emergency brake only (0 / unset = run everything; queue on semaphore).
             max_sessions = int(os.environ.get("MVP_MAX_SESSIONS", "0") or "0")
+            req_cap = int(getattr(study, "max_agents", 0) or 0)
+            if req_cap > 0:
+                max_sessions = req_cap if max_sessions <= 0 else min(max_sessions, req_cap)
             if max_sessions > 0 and len(study.tasks) > max_sessions:
                 product = [
                     t
@@ -1263,26 +1286,23 @@ async def run_study(
                     for t in study.tasks
                     if str(t.get("site_key") or "product") != "product"
                 ]
-                picked: list[dict[str, Any]] = []
-                for t in product:
-                    if len(picked) >= max_sessions:
-                        break
-                    picked.append(t)
+                n_rival = 0
+                if rivals and max_sessions >= 2:
+                    n_rival = min(len(rivals), 2 if max_sessions >= 5 else 1)
+                n_prod = max_sessions - n_rival
+                picked = product[:n_prod] + rivals[:n_rival]
                 if len(picked) < max_sessions:
-                    have = {p.get("persona_id") for p in picked}
-                    primary = [t for t in rivals if t.get("persona_id") in have]
-                    secondary = [t for t in rivals if t.get("persona_id") not in have]
-                    for t in primary + secondary:
-                        if len(picked) >= max_sessions:
-                            break
-                        picked.append(t)
+                    rest = product[n_prod:] + rivals[n_rival:]
+                    picked.extend(rest[: max_sessions - len(picked)])
                 dropped = len(study.tasks) - len(picked)
                 study.tasks = picked
                 log_activity(
                     study,
                     "plan",
-                    f"Emergency cap: kept {len(study.tasks)}, dropped {dropped} "
-                    f"(MVP_MAX_SESSIONS={max_sessions})",
+                    f"Bounded to {len(study.tasks)} threads "
+                    f"({sum(1 for t in picked if str(t.get('site_key') or 'product') == 'product')} product / "
+                    f"{sum(1 for t in picked if str(t.get('site_key') or 'product') != 'product')} rival) "
+                    f"— dropped {dropped}",
                 )
         else:
             for task in study.tasks:
@@ -1322,31 +1342,14 @@ async def run_study(
                 title=task.get("title"),
             )
 
-        # Brief is ready — surface competitors / users / tasks before browsers start.
-        touch("Brief ready")
-        if on_update:
-            try:
-                on_update(study, event="brief")
-            except TypeError:
-                on_update(study)
-            except Exception:
-                pass
-
-        # Finish warm capture BEFORE exposing live_sessions so the first poll
-        # that sees agents also sees real pixels (no empty stage gap).
-        if warm_task is not None:
-            try:
-                warm_opening = await warm_task
-            except Exception as warm_exc:  # noqa: BLE001
-                print(f"warm opening await failed: {warm_exc!r}", flush=True)
-                warm_opening = None
-            warm_task = None
-
+        # Open live sessions NOW — don't wait on Browserbase/fleet or the UI
+        # sits on the task list with no stage.
         persona_by_id = {p["id"]: p for p in study.personas}
         study.live_sessions = {}
         for task in study.tasks:
             persona = persona_by_id.get(task.get("persona_id")) or (study.personas[0] if study.personas else {})
             agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
+            site = task.get("site_url") or study.url
             study.live_sessions[agent_id] = {
                 "agent_id": agent_id,
                 "persona_id": persona.get("id"),
@@ -1356,7 +1359,7 @@ async def run_study(
                 "task_title": task.get("title"),
                 "task_prompt": task.get("prompt"),
                 "site_key": task.get("site_key") or "product",
-                "site_url": task.get("site_url") or study.url,
+                "site_url": site,
                 "site_label": task.get("site_label") or "Product",
                 "status": "starting",
                 "trace": [],
@@ -1365,19 +1368,46 @@ async def run_study(
                 "live_thoughts": [
                     {
                         "at": _now(),
-                        "text": (
-                            f"Preparing browser for {task.get('site_label') or task.get('site_url') or study.url}…"
-                        ),
+                        "text": f"Opening {task.get('site_label') or site}…",
                         "kind": "status",
                     }
                 ],
-                "last_action": (
-                    f"Preparing browser for {task.get('site_label') or 'site'}…"
-                ),
+                "last_action": f"Opening {site}…",
             }
 
-        # If warm screenshot is already on disk, publish it onto the first product
-        # agent NOW — stage shows real pixels as soon as the task URL is chosen.
+        touch("Opening the live page")
+        persist_study(study)
+        if on_update:
+            try:
+                on_update(study, event="brief")
+            except TypeError:
+                on_update(study)
+            except Exception:
+                pass
+
+        # Warm capture may already be done; if not, do not block agent launch.
+        # YouTube e2e was stalling here forever when Browserbase create hung.
+        if warm_task is not None:
+            try:
+                warm_opening = await asyncio.wait_for(warm_task, timeout=20)
+            except asyncio.TimeoutError:
+                print(
+                    "warm opening timed out — launching agents without warm session",
+                    flush=True,
+                )
+                warm_task.cancel()
+                try:
+                    await warm_task
+                except Exception:
+                    pass
+                warm_opening = None
+            except Exception as warm_exc:  # noqa: BLE001
+                print(f"warm opening await failed: {warm_exc!r}", flush=True)
+                warm_opening = None
+            warm_task = None
+
+        # Publish the product-site landing shot onto every product task NOW so
+        # the stage shows the website as soon as tasks exist (not just agent 0).
         if warm_opening and warm_opening.get("shot_path"):
             from pathlib import Path as _Path
 
@@ -1447,9 +1477,9 @@ async def run_study(
                         f"First screenshot ready for {site}",
                         agent_id=aid,
                     )
-                    break
                 except Exception as pub_exc:  # noqa: BLE001
                     print(f"warm publish failed: {pub_exc!r}", flush=True)
+            persist_study(study)
 
         touch(
             f"Live browser agents — 0/{len(study.tasks)} done · {len(study.tasks)} active · 0 queued · 0 steps"
@@ -1534,7 +1564,15 @@ async def run_study(
                 return result
 
             study.agent_results = []
-            await asyncio.gather(*[_run_snapshot(t) for t in study.tasks])
+            snap_out = await asyncio.gather(
+                *[_run_snapshot(t) for t in study.tasks],
+                return_exceptions=True,
+            )
+            for item in snap_out:
+                if isinstance(item, Exception) and not isinstance(
+                    item, asyncio.CancelledError
+                ):
+                    print(f"snapshot agent failed: {item!r}", flush=True)
         elif _fleet_preferred(test_mode=bool(study.test_mode)):
             from mvp.gcp_fleet import run_study_on_gcp_fleet
 
@@ -1865,7 +1903,15 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                await asyncio.gather(*[_run_snapshot_fallback(t) for t in study.tasks])
+                snap_out = await asyncio.gather(
+                    *[_run_snapshot_fallback(t) for t in study.tasks],
+                    return_exceptions=True,
+                )
+                for item in snap_out:
+                    if isinstance(item, Exception) and not isinstance(
+                        item, asyncio.CancelledError
+                    ):
+                        print(f"snapshot fallback agent failed: {item!r}", flush=True)
             else:
                 # Mark each agent with its chosen URL and launch immediately.
                 # Do not clobber a warm session that already has pixels / live view.
@@ -2252,7 +2298,17 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                await asyncio.gather(*[_run_one(t) for t in study.tasks])
+                # return_exceptions=True is critical: one cancelled/failed agent
+                # used to CancelledError the whole gather and stamp the study
+                # "Study task cancelled" / "Killed by operator" mid-run.
+                agent_out = await asyncio.gather(
+                    *[_run_one(t) for t in study.tasks],
+                    return_exceptions=True,
+                )
+                for item in agent_out:
+                    if isinstance(item, Exception):
+                        print(f"live agent failed: {item!r}", flush=True)
+                        continue
                 if warm_opening is not None and not warm_used:
                     from mvp.browser_agent import close_warm_opening
 
@@ -2307,10 +2363,23 @@ async def run_study(
         study.updated_at = _now()
         persist_study(study)
     except asyncio.CancelledError:
-        study.kill_requested = True
-        study.status = "abandoned"
-        study.phase = "Killed"
-        study.error = "Killed by operator"
+        # Only label as operator-kill when the kill switch was actually armed.
+        # Bare task cancellation (server restart, gather teardown) used to
+        # stamp every interrupted study as "Killed by operator".
+        if study_was_killed(study) or getattr(study, "kill_requested", False):
+            study.kill_requested = True
+            study.status = "abandoned"
+            study.phase = "Killed"
+            study.error = "Killed by operator"
+        else:
+            study.status = "abandoned"
+            study.phase = "Cancelled"
+            study.error = study.error or "Study task cancelled"
+            print(
+                f"study {study.id} CancelledError without kill_requested "
+                f"(not treating as operator kill)",
+                flush=True,
+            )
         study.updated_at = _now()
         persist_study(study)
         raise

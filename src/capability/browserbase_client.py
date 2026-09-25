@@ -49,8 +49,26 @@ ensure_browserbase_full_parallel()
 # Developer project default is 25 concurrent (see Browserbase project.concurrency).
 # Create pacing is off unless BROWSERBASE_THROTTLE=1.
 _SLOT = threading.Semaphore(int(os.environ.get("BROWSERBASE_MAX_CONCURRENT", "25")))
+_SLOT_LOCK = threading.Lock()
+_HELD_IDS: set[str] = set()
 _CREATE_LOCK = threading.Lock()
 _LAST_CREATE_MONO = 0.0
+
+
+def reset_local_slots() -> None:
+    """Rebuild the process semaphore after remote sessions were released.
+
+    create_session holds a slot until close_session. Abandoned studies leak
+    those slots and the next study deadlocks on acquire.
+    """
+    global _SLOT
+    try:
+        cap = int(os.environ.get("BROWSERBASE_MAX_CONCURRENT", "25") or "25")
+    except ValueError:
+        cap = 25
+    with _SLOT_LOCK:
+        _SLOT = threading.Semaphore(max(1, cap))
+        _HELD_IDS.clear()
 
 
 def _create_interval_s() -> float:
@@ -122,7 +140,16 @@ def create_session(
     pacing is off unless BROWSERBASE_THROTTLE=1.
     """
     ensure_browserbase_full_parallel()
-    _SLOT.acquire()
+    try:
+        slot_wait = float(os.environ.get("BROWSERBASE_SLOT_WAIT_S", "20") or "20")
+    except ValueError:
+        slot_wait = 20.0
+    held = _SLOT.acquire(timeout=max(1.0, slot_wait))
+    if not held:
+        print(
+            "Browserbase local slot acquire timed out — creating anyway (stale slots)",
+            flush=True,
+        )
     client = Browserbase(api_key=browserbase_api_key())
     pid = browserbase_project_id()
 
@@ -183,6 +210,9 @@ def create_session(
             kwargs["project_id"] = pid
         if flags.get("proxies"):
             kwargs["proxies"] = True
+        # Tag signup sessions so sibling agents can spare e2e sessions on cleanup.
+        owner = (os.environ.get("BROWSERBASE_SESSION_OWNER") or "signup").strip() or "signup"
+        kwargs["user_metadata"] = {"owner": owner, "purpose": "signup"}
         browser_settings: dict[str, Any] = {}
         if flags.get("solve_captchas"):
             browser_settings["solveCaptchas"] = True
@@ -211,15 +241,42 @@ def create_session(
                 basic = {
                     k: v
                     for k, v in flat.items()
-                    if k in {"keep_alive", "project_id", "proxies", "api_timeout", "timeout"}
+                    if k
+                    in {
+                        "keep_alive",
+                        "project_id",
+                        "proxies",
+                        "api_timeout",
+                        "timeout",
+                        "user_metadata",
+                    }
                 }
                 return client.sessions.create(**basic)
+
+    def _create_once_bounded(kwargs: dict[str, Any], *, timeout_s: float) -> Any:
+        """Don't let the Browserbase SDK retry loop block a study forever."""
+        box: dict[str, Any] = {}
+
+        def _run() -> None:
+            try:
+                box["session"] = _create_once(kwargs)
+            except Exception as exc:  # noqa: BLE001
+                box["exc"] = exc
+
+        worker = threading.Thread(target=_run, daemon=True, name="bb-create")
+        worker.start()
+        worker.join(max(5.0, timeout_s))
+        if worker.is_alive():
+            raise TimeoutError(f"Browserbase session create timed out after {timeout_s:.0f}s")
+        if "exc" in box:
+            raise box["exc"]
+        return box["session"]
 
     last_exc: BaseException | None = None
     try:
         for flags in unique_attempts:
             kwargs = _build_kwargs(flags)
-            for attempt in range(8):
+            for attempt in range(3):
                 try:
                     global _LAST_CREATE_MONO
                     with _CREATE_LOCK:
@@ -228,9 +285,12 @@ def create_session(
                             wait = interval - (time.monotonic() - _LAST_CREATE_MONO)
                             if wait > 0:
                                 time.sleep(wait)
-                        session = _create_once(kwargs)
+                        session = _create_once_bounded(kwargs, timeout_s=25)
                         _LAST_CREATE_MONO = time.monotonic()
                     sid = session.id
+                    if held:
+                        with _SLOT_LOCK:
+                            _HELD_IDS.add(sid)
                     return BrowserbaseSession(
                         id=sid,
                         connect_url=session.connect_url,
@@ -254,13 +314,23 @@ def create_session(
                         )
                     ):
                         break
-                    if _is_rate_limit(exc) and attempt < 7:
-                        time.sleep(min(65, 8 * (attempt + 1)))
+                    if _is_rate_limit(exc) and attempt < 2:
+                        # Shared project with e2e (needs up to 24/25). Back off
+                        # hard instead of hammering creates or freeing strangers.
+                        delay = float(os.environ.get("BROWSERBASE_429_BACKOFF_S", "45"))
+                        delay = min(120.0, max(15.0, delay) * (attempt + 1))
+                        print(
+                            f"Browserbase 429/concurrency — backing off {delay:.0f}s "
+                            f"(attempt {attempt + 1}/3)",
+                            flush=True,
+                        )
+                        time.sleep(delay)
                         continue
                     raise BrowserbaseRateLimitError(str(exc)[:400]) from exc
         raise BrowserbaseRateLimitError(str(last_exc)[:400] if last_exc else "session create failed")
     except Exception:
-        _SLOT.release()
+        if held:
+            _SLOT.release()
         raise
 
 
@@ -271,7 +341,10 @@ def close_session(session_id: str) -> None:
     except Exception:
         pass
     finally:
-        _SLOT.release()
+        with _SLOT_LOCK:
+            if session_id in _HELD_IDS:
+                _HELD_IDS.discard(session_id)
+                _SLOT.release()
 
 
 def session_live_view_url(session_id: str) -> str | None:
