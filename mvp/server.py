@@ -899,13 +899,23 @@ async def retell_page() -> FileResponse:
 def _load_latest_live_study(prefix: str = "retell-live") -> dict | None:
     """Load the most recent live study with matching prefix."""
     from mvp.paths import MVP_RUNS_DIR
+    from mvp.experiment_runner import RESULTS_DIR
     
     candidates = []
-    for d in MVP_RUNS_DIR.iterdir():
-        if d.is_dir() and d.name.startswith(prefix):
-            study_json = d / "study.json"
-            if study_json.is_file():
-                candidates.append((d.stat().st_mtime, study_json))
+    
+    # Check runs directory
+    if MVP_RUNS_DIR.is_dir():
+        for d in MVP_RUNS_DIR.iterdir():
+            if d.is_dir() and d.name.startswith(prefix):
+                study_json = d / "study.json"
+                if study_json.is_file():
+                    candidates.append((d.stat().st_mtime, study_json))
+    
+    # Also check experiment_results directory
+    if RESULTS_DIR.is_dir():
+        for f in RESULTS_DIR.glob(f"{prefix}*.json"):
+            if f.is_file():
+                candidates.append((f.stat().st_mtime, f))
     
     if not candidates:
         return None
@@ -947,6 +957,19 @@ async def get_experiment(experiment_id: str):
                 try:
                     from mvp.synthesize_insights import add_insights_to_study
                     live = add_insights_to_study(live)
+                except Exception as e:
+                    live.setdefault("summary", {})["synthesis_error"] = str(e)
+            return live
+    
+    # Special handling for "voice-bakeoff" - load latest bakeoff study
+    if experiment_id == "voice-bakeoff" or experiment_id == "bakeoff":
+        live = _load_latest_live_study("voice-bakeoff")
+        if live:
+            # Try to synthesize insights if not already done
+            if not live.get("summary", {}).get("insights_synthesized"):
+                try:
+                    from mvp.synthesize_bakeoff import add_bakeoff_insights
+                    live = add_bakeoff_insights(live)
                 except Exception as e:
                     live.setdefault("summary", {})["synthesis_error"] = str(e)
             return live
