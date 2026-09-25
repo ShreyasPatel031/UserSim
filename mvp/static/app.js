@@ -137,6 +137,13 @@ function studyStillRunning(data) {
   if (/timed out|killed|failed|site blocked/i.test(phase) && !/complete/i.test(phase)) {
     return false;
   }
+  const tasks = data?.tasks || [];
+  const results = data?.agent_results || [];
+  // Study-level complete wins over stale live_session statuses (agents can
+  // linger as "running"/"summarizing" in memory after the orchestrator finishes).
+  if (status === "complete" && data?.summary) {
+    if (!tasks.length || results.length >= tasks.length) return false;
+  }
   const sessions = studySessions(data);
   const liveBusy = sessions.some((s) =>
     ["running", "starting", "pending", "queued", "summarizing"].includes(
@@ -144,8 +151,6 @@ function studyStillRunning(data) {
     )
   );
   if (liveBusy) return true;
-  const tasks = data?.tasks || [];
-  const results = data?.agent_results || [];
   if (status === "complete" && data?.summary && results.length >= tasks.length && tasks.length) {
     return false;
   }

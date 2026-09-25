@@ -625,9 +625,26 @@ def main() -> int:
     except Exception as exc:  # noqa: BLE001
         _log(f"FAIL: {exc}")
         OUT_DIR.mkdir(parents=True, exist_ok=True)
-        (OUT_DIR / "result.json").write_text(
-            json.dumps({"pass": False, "error": str(exc), "product_url": args.url}, indent=2)
-        )
+        # Preserve a full report if run_e2e2 already wrote one (judgements etc.).
+        existing: dict = {}
+        result_path = OUT_DIR / "result.json"
+        if result_path.is_file():
+            try:
+                existing = json.loads(result_path.read_text())
+            except Exception:
+                existing = {}
+        if existing.get("judgements") or existing.get("yeses") is not None:
+            existing["pass"] = False
+            existing["error"] = str(exc)
+            existing.setdefault("product_url", args.url)
+            result_path.write_text(json.dumps(existing, indent=2))
+        else:
+            result_path.write_text(
+                json.dumps(
+                    {"pass": False, "error": str(exc), "product_url": args.url},
+                    indent=2,
+                )
+            )
         return 1
     _log(
         f"ALL_PASS study={result.get('study_id')} "
