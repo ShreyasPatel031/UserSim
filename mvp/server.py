@@ -270,7 +270,11 @@ async def report_page(request: Request):
         if study:
             data = study_to_dict(study)
         if not data or not data.get("summary"):
+            from mvp.study import load_local_study
+
             remote = await asyncio.to_thread(load_study_from_gcs, study_id)
+            if not remote:
+                remote = await asyncio.to_thread(load_local_study, study_id)
             if remote:
                 data = remote
         if not data:
@@ -628,7 +632,13 @@ async def get_study(study_id: str):
             hydrate_live_sessions_from_gcs, study_id, data.get("live_sessions")
         )
         return data
+    from mvp.study import load_local_study
+
     remote = await asyncio.to_thread(load_study_from_gcs, study_id)
+    if not remote:
+        remote = load_local_study(study_id)
+        if remote:
+            return remote
     if remote:
         remote["live_sessions"] = await asyncio.to_thread(
             hydrate_live_sessions_from_gcs, study_id, remote.get("live_sessions")

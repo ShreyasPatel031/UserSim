@@ -9,9 +9,11 @@ from mvp.competitor_urls import (
     classify_run_issue,
     filter_live_competitor_urls,
     insight_view,
+    looks_like_product_page,
     rewrite_competitor_task,
     same_site,
     scrub_product_summary,
+    unwrap_search_url,
 )
 from mvp.study import _summary_from_agent_results
 
@@ -63,6 +65,19 @@ class CompetitorUrlTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(same_site("https://asana.com/", "https://app.asana.com/login"))
         self.assertTrue(same_site("https://www.asana.com/", "https://asana.com/"))
         self.assertFalse(same_site("https://height.app/", "https://www.atlassian.com/software/jira"))
+
+    def test_unwraps_duckduckgo_redirects(self) -> None:
+        raw = (
+            "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.tldraw.com%2F"
+            "&rut=abc"
+        )
+        self.assertEqual(unwrap_search_url(raw), "https://www.tldraw.com/")
+        self.assertTrue(looks_like_product_page("https://www.figma.com/figjam/"))
+        self.assertTrue(looks_like_product_page("https://miro.com/"))
+        self.assertFalse(
+            looks_like_product_page("https://affine.pro/blog/excalidraw-alternative")
+        )
+        self.assertFalse(looks_like_product_page("https://www.g2.com/products/linear"))
 
 
 class TaskRetargetTests(unittest.TestCase):
@@ -284,6 +299,7 @@ class RunIssueTests(unittest.TestCase):
         issues = annotate_run_issues([bad, good])
         self.assertEqual(len(issues), 1)
         self.assertTrue(bad["exclude_from_insights"])
+        self.assertEqual(bad["run_issue"]["persona_name"], "Agile Product Manager")
         self.assertNotIn("exclude_from_insights", good)
 
 
