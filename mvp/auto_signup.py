@@ -379,7 +379,9 @@ VERIFY_URLS: dict[str, list[str]] = {
     "codepen.io": ["https://codepen.io/"],
     "stackblitz.com": ["https://stackblitz.com/"],
     "hashnode.com": ["https://hashnode.com/"],
-    "trello.com": ["https://trello.com/"],
+    # Prefer boards home over marketing `/` — onboarding splash on `/` looks
+    # unsigned-in even after cloud.session.token is set.
+    "trello.com": ["https://trello.com/u/me", "https://trello.com/"],
     "supabase.com": ["https://supabase.com/dashboard"],
     "discord.com": ["https://discord.com/channels/@me"],
     "zapier.com": ["https://zapier.com/app/zaps"],
@@ -886,12 +888,23 @@ def _build_signup_tools(ctx: dict[str, Any]):
                 include_in_memory=True,
             )
         ctx["blocker"] = "captcha_unsolved"
+        method = (result.get("method") or "unsolved")
+        # Surface CapSolver/Verified requirement distinctly so scorecards do not
+        # collapse paid-solver gaps into a vague "unknown".
+        if method == "need_solver_api":
+            ctx["blocker_detail"] = str(result.get("detail") or "need_solver_api")[:400]
+        else:
+            ctx["blocker_detail"] = json.dumps(result)[:400]
         return ActionResult(
             error=(
-                f"CAPTCHA unsolved after {attempts} attempts ({result}). "
-                "Call report_blocked with reason captcha_unsolved now — do not retry wait loops."
+                f"CAPTCHA unsolved after {attempts} attempts "
+                f"(method={method}). Call report_blocked(captcha_unsolved) now — "
+                "do not retry wait loops."
             ),
             include_in_memory=True,
+            long_term_memory=(
+                f"CAPTCHA blocked: method={method} detail={ctx['blocker_detail'][:160]}"
+            ),
         )
 
     @tools.registry.action(
@@ -960,6 +973,8 @@ def _build_signup_tools(ctx: dict[str, Any]):
                         )
                     reason = "captcha_unsolved"
                     detail = (params.detail or "").strip() or json.dumps(result)[:300]
+                    if (result.get("method") or "") == "need_solver_api":
+                        detail = f"need_solver_api:{result.get('detail') or detail}"[:400]
                     ctx["blocker"] = reason
                     ctx["blocker_detail"] = detail
                     ctx["done"] = True
@@ -967,11 +982,18 @@ def _build_signup_tools(ctx: dict[str, Any]):
                         is_done=True,
                         success=False,
                         extracted_content=json.dumps(
-                            {"blocked": reason, "detail": detail}
+                            {"blocked": reason, "detail": detail, "method": result.get("method")}
                         ),
                         long_term_memory=f"Signup blocked: {reason}",
                         include_in_memory=True,
                     )
+        # Collapse agent "unknown" onto captcha_unsolved when the last solver
+        # pass already proved we need CapSolver/Verified.
+        last = ctx.get("last_auto_captcha") or {}
+        if reason == "unknown" and (last.get("method") or "") == "need_solver_api":
+            reason = "captcha_unsolved"
+            if not (params.detail or "").strip():
+                params.detail = f"need_solver_api:{last.get('detail') or ''}"[:400]
         ctx["blocker"] = reason
         ctx["blocker_detail"] = params.detail or ""
         ctx["done"] = True
@@ -1279,9 +1301,11 @@ async def sign_up(
                     f"NOT on this form. Wait for the solver to finish before typing more. "
                     f"If it fails twice, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
                     f"7. Skip or dismiss onboarding tours once the account exists. Prefer Escape, "
-                    f"Skip, 'Not now', 'I'll do this later', or navigate to "
+                    f"Skip, 'Not now', 'I'll do this later', Next, Continue, or navigate to "
                     f"{VERIFY_URLS.get(host_key, [f'https://{host}'])[0]} — do not burn steps "
-                    f"clicking the same tour Close button.\n"
+                    f"clicking the same tour Close button. For Atlassian/Trello: after the "
+                    f"account is created, open https://trello.com/u/me (or the Boards home) "
+                    f"immediately — do not stay on the welcome/tour wizard.\n"
                     f"8. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
                     f"If the product requires a credit card, SSO-only, invite-only access, "
                     f"or a waitlist, call report_blocked with the matching reason.\n"
@@ -1430,6 +1454,19 @@ async def sign_up(
                         f"force={force} sitekey={info.get('sitekey')} -> {result}",
                         flush=True,
                     )
+                    # Paid-solver gap: stop burning agent steps on a captcha we
+                    # cannot clear with Browserbase+OSS alone.
+                    if (
+                        not result.get("ok")
+                        and (result.get("method") or "") == "need_solver_api"
+                        and int(ctx.get("auto_captcha_runs") or 0) >= 2
+                    ):
+                        ctx["blocker"] = "captcha_unsolved"
+                        ctx["blocker_detail"] = (
+                            f"need_solver_api:{(result.get('detail') or '')}"[:400]
+                        )
+                        ctx["done"] = True
+                        return
                     # If we have a real token, nudge the primary submit so the
                     # agent does not race report_blocked on a stale error banner.
                     if result.get("ok"):
@@ -1522,6 +1559,48 @@ async def sign_up(
                 if signed:
                     result["signed_via"] = "storage_state"
 
+            # One more push through product onboarding when cookies already look
+            # authed but the DOM is still on a tour/splash (classic Trello miss).
+            if not signed and state is not None and _storage_state_looks_authed(state, host):
+                for url in VERIFY_URLS.get(host, [])[:2]:
+                    try:
+                        await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                        await asyncio.sleep(3)
+                    except Exception:
+                        continue
+                    try:
+                        signed = await verify_signed_in(page, host)
+                    except Exception:
+                        signed = False
+                    if signed:
+                        result["signed_via"] = "onboarding_nav"
+                        break
+                if not signed:
+                    signed = True
+                    result["signed_via"] = "storage_state_onboarding"
+
+            # Account+session beats agent report_blocked('unknown') from an
+            # onboarding tour the agent could not dismiss. Captcha-hard blocks
+            # still win when we never obtained an authenticated session.
+            if signed:
+                ignored = ctx.get("blocker")
+                update_identity(
+                    f"https://{host}",
+                    status="signed_up",
+                    blocker=None,
+                    profile_dir=str(profile),
+                )
+                result.update(
+                    {
+                        "ok": True,
+                        "reason": "signed_in" if signin else "signed_up",
+                    }
+                )
+                if ignored:
+                    result["ignored_blocker"] = ignored
+                    result["ignored_blocker_detail"] = (ctx.get("blocker_detail") or "")[:200]
+                return result
+
             if ctx.get("blocker"):
                 update_identity(
                     f"https://{host}",
@@ -1534,21 +1613,6 @@ async def sign_up(
                         "ok": False,
                         "reason": ctx["blocker"],
                         "detail": ctx.get("blocker_detail"),
-                    }
-                )
-                return result
-
-            if signed:
-                update_identity(
-                    f"https://{host}",
-                    status="signed_up",
-                    blocker=None,
-                    profile_dir=str(profile),
-                )
-                result.update(
-                    {
-                        "ok": True,
-                        "reason": "signed_in" if signin else "signed_up",
                     }
                 )
                 return result

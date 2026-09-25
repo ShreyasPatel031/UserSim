@@ -1253,6 +1253,27 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
                 "(CapSolver/2Captcha) or Browserbase Verified"
             ),
         }
+    # Unattended seed runs must not burn the human timeout after we already know
+    # a paid solver is required — ALLOW_HUMAN=0 → need_solver_api immediately
+    # when a widget/challenge is still visible.
+    allow_human = (os.environ.get("MVP_CAPTCHA_ALLOW_HUMAN") or "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+    if not allow_human and (
+        await _challenge_visible(page)
+        or await _captcha_widget_present(page)
+        or (info and info.get("sitekey"))
+    ):
+        return {
+            "ok": False,
+            "method": "need_solver_api",
+            "detail": (
+                f"human_disabled;sitekey={((info or {}).get('sitekey') or 'unknown')} "
+                f"type={((info or {}).get('type') or 'unknown')}"
+            ),
+        }
     await asyncio.to_thread(request_human_solve, page_url)
     ok = await asyncio.to_thread(wait_for_human_solve)
     if not ok and await _recaptcha_solved(page):

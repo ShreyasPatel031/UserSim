@@ -1,6 +1,8 @@
 {
-  "version": 3,
-  "description": "60-product signup benchmark (40 + wave 3). Score = cookie/localStorage-verified sessions on the seed. Skip hosts already servable; do not re-run wins. Accounts that already exist (compromised identities) stay in the list but are not treated as signup failures.",
+  "version": 4,
+  "description": "60-product signup benchmark (40 + wave 3). Score = REPRODUCIBLE fresh-alias signups (results/signup_repro/score.json): a host counts only when a never-before-used alias also succeeds. One-time cookie jars on the seed do NOT count. Compromised identities stay listed but are not treated as signup failures.",
+  "metric": "reproducible_fresh_alias",
+  "score_path": "results/signup_repro/score.json",
   "skip_hosts": [
     "linear.app",
     "notion.so",
