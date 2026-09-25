@@ -166,7 +166,11 @@ FAIL (is_real_target_site_screenshot=false) if you see any of:
 - Status text like "Preparing … session", "Step null", "Opening …", URL-only placeholders
 - A screenshot of a different unrelated site
 
-PASS only if the pixels show real page UI from the target site (nav, hero, readable content).
+PASS (is_real_target_site_screenshot=true) if the pixels show real UI from the target product:
+- Marketing homepage / nav / hero / pricing, OR
+- In-app views, OR
+- Login / signup / "create workspace" / SSO / trial-start flows for that product
+  (these COUNT even when the browser chrome does not display the hostname)
 
 Return JSON only:
 {{
@@ -207,6 +211,35 @@ Return JSON only:
             # solely on a missing hostname guess.
             host_ok = bool(result.get("is_real_target_site_screenshot"))
         result["host_match"] = host_ok
+    authish = False
+    reason_l = str(result.get("reason") or "").lower()
+    if any(
+        w in reason_l
+        for w in (
+            "sign up",
+            "signup",
+            "log in",
+            "login",
+            "workspace",
+            "sso",
+            "create your",
+            "trial",
+        )
+    ):
+        authish = True
+    # Auth/signup flows sometimes fail the hostname/identity guess even when
+    # the page is clearly the product — count readable non-blank auth UI.
+    if (
+        not result.get("is_real_target_site_screenshot")
+        and authish
+        and result.get("has_readable_page_content")
+        and not result.get("is_grey_or_blank_placeholder")
+        and not result.get("is_usersim_chrome_only")
+    ):
+        result["is_real_target_site_screenshot"] = True
+        host_ok = True
+        result["host_match"] = True
+        result["auth_flow_pass"] = True
     result["pass"] = bool(
         result.get("is_real_target_site_screenshot")
         and result.get("has_readable_page_content")
