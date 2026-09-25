@@ -529,7 +529,10 @@ async def generate_plan(
 
 async def _duckduckgo_search(query: str, *, limit: int = 8) -> list[dict[str, str]]:
     """Best-effort public web search for competitor discovery (no API key)."""
+    from html import unescape
     from urllib.parse import quote_plus
+
+    from mvp.competitor_urls import unwrap_search_url
 
     results: list[dict[str, str]] = []
     url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
@@ -548,14 +551,14 @@ async def _duckduckgo_search(query: str, *, limit: int = 8) -> list[dict[str, st
     except Exception:
         return results
 
-    # DuckDuckGo HTML result links look like:
-    # <a rel="nofollow" class="result__a" href="https://...">Title</a>
+    # DuckDuckGo HTML result links are protocol-relative redirects:
+    # href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fmiro.com%2F&rut=..."
     for match in re.finditer(
         r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
         html,
         flags=re.I | re.S,
     ):
-        href = match.group(1).strip()
+        href = unwrap_search_url(unescape(match.group(1).strip()))
         title = re.sub(r"<[^>]+>", "", match.group(2)).strip()
         if not href.startswith("http"):
             continue
@@ -572,11 +575,16 @@ async def invent_competitors(
     *,
     exclude_hosts: set[str] | None = None,
     want: int = 2,
+    dropped_out: list[tuple[str, str]] | None = None,
 ) -> list[str]:
     """Find live competitor homepages via web search, then drop dead or off-site URLs."""
     from urllib.parse import urlparse
 
-    from mvp.competitor_urls import filter_live_competitor_urls, registrable_host
+    from mvp.competitor_urls import (
+        filter_live_competitor_urls,
+        looks_like_product_page,
+        registrable_host,
+    )
 
     host = (urlparse(url).hostname or "").replace("www.", "")
     product_hint = (site_summary or host or url).strip()[:120]
@@ -605,26 +613,25 @@ What it is: {site_summary}
 Page excerpt:
 {page_text[:2500]}
 
-Live web search results (use these — do not invent domains):
+Web search results (often review articles — name the products they discuss, not the article URL):
 {json.dumps(search_hits[:12], indent=2)}
 
 Return JSON only:
 {{"competitors": [{{"name": "...", "url": "https://..."}}, {{"name": "...", "url": "https://..."}}]}}
 
 Rules:
-- Exactly 2 direct product competitors a real user would also evaluate.
-- Prefer URLs from the search results above. Only use other well-known live public sites if search is empty.
-- Public marketing homepages only (https), no app login URLs, no review articles.
+- Return 4 direct product competitors a real user would also evaluate, best first. We keep the ones that are live.
+- Each url must be that product's own public homepage (https://example.com/), never a review, blog, or comparison article.
 - The product must be operating today. Never return a shut-down, parked, or redirected domain.
-- Never invent fake domains.
+- Never invent fake domains. Never repeat the product under study.
 """
     raw = await _llm_chat(
         [
             {
                 "role": "system",
                 "content": (
-                    "You output valid JSON only. Prefer competitor URLs from the provided "
-                    "web search results. Never invent fake domains."
+                    "You output valid JSON only. Return real competitor homepages "
+                    "for products that are operating today. Never invent fake domains."
                 ),
             },
             {"role": "user", "content": prompt},
@@ -632,6 +639,7 @@ Rules:
     )
     data = _extract_json(raw)
     candidates: list[str] = []
+    names: list[str] = []
 
     def _push(raw_url: str) -> None:
         u = (raw_url or "").strip()
@@ -642,13 +650,21 @@ Rules:
         if u not in candidates:
             candidates.append(u)
 
-    for row in data.get("competitors") or []:
-        _push(row.get("url") if isinstance(row, dict) else str(row or ""))
-    # Homepage-shaped search hits next, so a dead model guess can be replaced.
+    def _take_rows(rows: object) -> None:
+        for row in rows or []:
+            if isinstance(row, dict):
+                name = str(row.get("name") or "").strip()
+                if name and name not in names:
+                    names.append(name)
+                _push(str(row.get("url") or ""))
+            else:
+                _push(str(row or ""))
+
+    _take_rows(data.get("competitors"))
+    # Product-shaped search hits next, so a dead model guess can be replaced.
     for hit in search_hits:
         hit_url = hit.get("url") or ""
-        path = (urlparse(hit_url).path or "/").rstrip("/") or "/"
-        if path == "/":
+        if looks_like_product_page(hit_url):
             _push(hit_url)
     blocked = set(exclude_hosts or set())
     live, dropped = await filter_live_competitor_urls(
@@ -658,7 +674,8 @@ Rules:
         limit=max(1, want),
     )
     blocked |= {registrable_host(u) for u, _reason in dropped if registrable_host(u)}
-    # A dead guess (Height.app) must not stop us from filling the pair.
+    blocked |= {registrable_host(u) for u in live if registrable_host(u)}
+    # A dead guess (Height.app) or a one-URL model answer must not stop the pair.
     if len(live) < want:
         try:
             raw2 = await _llm_chat(
@@ -668,34 +685,71 @@ Rules:
                         "content": (
                             "JSON only. Return real public competitor homepage URLs "
                             "for products that are operating today. Never return a "
-                            "shut-down or parked domain."
+                            "shut-down or parked domain. Do not repeat rejected hosts."
                         ),
                     },
                     {
                         "role": "user",
                         "content": (
                             f"Product: {url}\nSummary: {site_summary}\n"
-                            f"Already rejected or in use: {', '.join(sorted(blocked)) or 'none'}\n"
-                            f"Need {want - len(live)} more live competitor homepage URL(s). "
-                            'Return {"competitors":[{"name":"...","url":"https://..."}]}'
+                            f"Search titles: {json.dumps([h.get('title') for h in search_hits[:8]])}\n"
+                            f"Already rejected or in use: {', '.join(sorted(h for h in blocked if h)) or 'none'}\n"
+                            f"Need {want - len(live)} more DIFFERENT live competitor homepage URL(s). "
+                            "Return 3 options, best first. "
+                            'JSON: {"competitors":[{"name":"...","url":"https://..."}]}'
                         ),
                     },
                 ]
             )
             extra: list[str] = []
             for row in (_extract_json(raw2).get("competitors") or []):
-                u = (row.get("url") if isinstance(row, dict) else str(row or "")).strip()
+                if isinstance(row, dict):
+                    name = str(row.get("name") or "").strip()
+                    if name and name not in names:
+                        names.append(name)
+                    u = str(row.get("url") or "").strip()
+                else:
+                    u = str(row or "").strip()
                 if u.startswith("http") and u not in candidates and u not in extra:
                     extra.append(u)
-            more, _more_dropped = await filter_live_competitor_urls(
+            more, more_dropped = await filter_live_competitor_urls(
                 extra,
                 product_url=url,
-                exclude_hosts=blocked | {registrable_host(u) for u in live},
+                exclude_hosts=blocked,
                 limit=want - len(live),
             )
+            dropped.extend(more_dropped)
             live.extend(more)
-        except Exception:
-            pass
+            blocked |= {registrable_host(u) for u in more if registrable_host(u)}
+            blocked |= {registrable_host(u) for u, _reason in more_dropped if registrable_host(u)}
+        except Exception as exc:  # noqa: BLE001
+            print(f"competitor second pass failed: {exc!r}", flush=True)
+    # Named products whose guessed URL died: look up that name's homepage.
+    if len(live) < want and names:
+        lookups: list[str] = []
+        for name in names:
+            if len(live) + len(lookups) >= want + 2:
+                break
+            try:
+                for hit in await _duckduckgo_search(f"{name} official website", limit=4):
+                    hit_url = hit.get("url") or ""
+                    path = (urlparse(hit_url).path or "/").rstrip("/") or "/"
+                    if path == "/" and looks_like_product_page(hit_url):
+                        lookups.append(hit_url)
+                        break
+            except Exception:
+                continue
+        if lookups:
+            more, more_dropped = await filter_live_competitor_urls(
+                lookups,
+                product_url=url,
+                exclude_hosts=blocked,
+                limit=want - len(live),
+            )
+            dropped.extend(more_dropped)
+            live.extend(more)
+    if dropped_out is not None:
+        dropped_out.extend(dropped)
     return live[:want]
 
 
@@ -719,6 +773,7 @@ async def resolve_study_competitors(
         return live[:limit], dropped
     exclude = {registrable_host(u) for u in live}
     exclude.add(registrable_host(product_url))
+    invented_drops: list[tuple[str, str]] = []
     try:
         invented = await invent_competitors(
             product_url,
@@ -726,9 +781,11 @@ async def resolve_study_competitors(
             page_text,
             exclude_hosts=exclude,
             want=limit,
+            dropped_out=invented_drops,
         )
     except Exception:
         invented = []
+    dropped.extend(invented_drops)
     used = set(exclude)
     for url in invented:
         host = registrable_host(url)
@@ -1512,18 +1569,31 @@ async def run_study(
         if site_summary:
             log_activity(study, "plan", f"Site: {site_summary}")
 
-        # Retry competitors with richer summary if the first pass was empty.
+        # Top up when the first pass kept fewer than two live rivals.
+        # An empty list and a single URL both shrink the 24-agent matrix.
         if (
             not study.test_mode
             and not study.skip_competitors
-            and not study.competitors
+            and len(study.competitors or []) < 2
             and site_summary
         ):
             try:
-                study.competitors = await invent_competitors(
-                    study.url, site_summary, page_text
+                filled, more_dropped = await resolve_study_competitors(
+                    list(study.competitors or []),
+                    product_url=study.url,
+                    site_summary=site_summary,
+                    page_text=page_text,
                 )
-                if study.competitors:
+                for old, reason in more_dropped:
+                    msg = f"Dropped competitor {old} — {reason}"
+                    if not any(
+                        (row or {}).get("message") == msg
+                        for row in (study.activity_log or [])
+                        if isinstance(row, dict)
+                    ):
+                        log_activity(study, "plan", msg)
+                if len(filled) > len(study.competitors or []):
+                    study.competitors = filled
                     log_activity(
                         study,
                         "plan",
@@ -3491,8 +3561,23 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
     )
 
 
+def _local_snapshot_path(study_id: str):
+    from mvp.paths import MVP_RUNS_DIR
+
+    return MVP_RUNS_DIR / "snapshots" / f"{study_id}.json"
+
+
 def persist_study(study: StudyState) -> None:
-    """Best-effort write of study state to GCS so Vercel clients can reconnect."""
+    """Best-effort write of study state so a restarted local server can still serve the report."""
+    try:
+        from mvp.opening_shot import drop_inline_shots
+
+        payload = drop_inline_shots(study_to_dict(study))
+        path = _local_snapshot_path(study.id)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload), encoding="utf-8")
+    except Exception as exc:  # noqa: BLE001
+        print(f"local persist_study failed for {study.id}: {exc!r}", flush=True)
     try:
         from mvp.gcs_store import write_study_state
         from mvp.opening_shot import drop_inline_shots
@@ -3500,6 +3585,27 @@ def persist_study(study: StudyState) -> None:
         write_study_state(study.id, drop_inline_shots(study_to_dict(study)))
     except Exception as exc:  # noqa: BLE001
         print(f"persist_study failed for {study.id}: {exc!r}", flush=True)
+
+
+def load_local_study(study_id: str) -> dict[str, Any] | None:
+    """Study JSON written by this process, or a snapshot saved before a restart."""
+    from pathlib import Path
+
+    candidates = [
+        _local_snapshot_path(study_id),
+        Path("/tmp/usersim-study-snapshots") / f"{study_id}.json",
+    ]
+    for path in candidates:
+        try:
+            if not path.is_file():
+                continue
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if isinstance(data, dict) and (data.get("id") or data.get("summary") or data.get("url")):
+            data.setdefault("id", study_id)
+            return data
+    return None
 
 
 def load_study_from_gcs(study_id: str) -> dict[str, Any] | None:

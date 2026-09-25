@@ -40,6 +40,12 @@ _NON_PRODUCT_HOSTS = frozenset(
         "theverge.com",
         "forbes.com",
         "nytimes.com",
+        "github.com",
+        "gitlab.com",
+        "alternativeto.net",
+        "techjockey.com",
+        "stackshare.io",
+        "sourceforge.net",
     }
 )
 
@@ -110,6 +116,76 @@ def is_non_product_host(url: str) -> bool:
     if not host:
         return True
     return any(host == blocked or host.endswith("." + blocked) for blocked in _NON_PRODUCT_HOSTS)
+
+
+_ARTICLE_SEGMENTS = frozenset(
+    {
+        "blog",
+        "news",
+        "article",
+        "articles",
+        "posts",
+        "post",
+        "wiki",
+        "review",
+        "reviews",
+        "compare",
+        "comparison",
+        "comparisons",
+        "alternatives",
+        "alternative",
+        "versus",
+        "vs",
+        "guide",
+        "guides",
+        "category",
+        "categories",
+        "tag",
+        "tags",
+        "search",
+    }
+)
+
+
+def unwrap_search_url(url: str) -> str:
+    """Turn a DuckDuckGo result href into the destination product URL."""
+    from urllib.parse import parse_qs, unquote
+
+    raw = (url or "").strip()
+    if not raw:
+        return ""
+    if raw.startswith("//"):
+        raw = "https:" + raw
+    parsed = urlparse(raw)
+    host = (parsed.hostname or "").lower()
+    if host == "duckduckgo.com" or host.endswith(".duckduckgo.com"):
+        target = unquote((parse_qs(parsed.query).get("uddg") or [""])[0]).strip()
+        if target.startswith("//"):
+            target = "https:" + target
+        if target.startswith("http"):
+            return target
+    return raw
+
+
+def looks_like_product_page(url: str) -> bool:
+    """True for a short product URL, false for articles and review roundups."""
+    raw = unwrap_search_url(url)
+    if not raw.startswith("http"):
+        return False
+    if is_non_product_host(raw):
+        return False
+    parts = [p for p in (urlparse(raw).path or "/").split("/") if p]
+    if len(parts) > 2:
+        return False
+    if any(p.lower() in _ARTICLE_SEGMENTS for p in parts):
+        return False
+    if any(
+        p.lower().endswith(ext)
+        for p in parts
+        for ext in (".pdf", ".html", ".htm", ".php", ".xml", ".txt")
+    ):
+        return False
+    return True
 
 
 @dataclass(frozen=True)
@@ -330,16 +406,17 @@ def annotate_run_issues(results: list[dict[str, Any]]) -> list[dict[str, str]]:
             result.pop("run_issue", None)
             result.pop("exclude_from_insights", None)
             continue
-        result["run_issue"] = issue
+        # Store the persona on the result itself. Summary lines read this
+        # object, not the list this function returns.
+        enriched = {
+            **issue,
+            "agent_id": str(result.get("agent_id") or result.get("task_id") or ""),
+            "persona_name": str(result.get("persona_name") or ""),
+            "task_title": str(result.get("task_title") or ""),
+        }
+        result["run_issue"] = enriched
         result["exclude_from_insights"] = True
-        issues.append(
-            {
-                **issue,
-                "agent_id": str(result.get("agent_id") or result.get("task_id") or ""),
-                "persona_name": str(result.get("persona_name") or ""),
-                "task_title": str(result.get("task_title") or ""),
-            }
-        )
+        issues.append(enriched)
     return issues
 
 

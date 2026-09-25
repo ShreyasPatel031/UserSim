@@ -661,7 +661,7 @@ async def runtime_kill(body: KillRequest | None = None):
 @app.get("/api/studies/{study_id}")
 async def get_study(study_id: str):
     from mvp.gcs_store import hydrate_live_sessions_from_gcs
-    from mvp.study import STUDIES, load_study_from_gcs, study_to_dict
+    from mvp.study import STUDIES, load_local_study, load_study_from_gcs, study_to_dict
 
     study = STUDIES.get(study_id)
     if study:
@@ -706,6 +706,10 @@ async def get_study(study_id: str):
         )
         return _with_report_insights(data)
     remote = await asyncio.to_thread(load_study_from_gcs, study_id)
+    if not remote:
+        remote = load_local_study(study_id)
+        if remote:
+            return _with_report_insights(remote)
     if remote:
         remote["live_sessions"] = await asyncio.to_thread(
             hydrate_live_sessions_from_gcs, study_id, remote.get("live_sessions")
