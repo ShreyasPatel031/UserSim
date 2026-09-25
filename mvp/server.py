@@ -889,10 +889,10 @@ async def study_report_page(slug: str) -> FileResponse:
 
 @app.get("/retell")
 async def retell_page() -> FileResponse:
-    """Serve the Retell AI study page."""
-    path = STATIC / "study_report.html"
+    """Serve the Voice AI Bakeoff page (Retell vs Bland vs Vapi)."""
+    path = STATIC / "voice_bakeoff.html"
     if not path.is_file():
-        raise HTTPException(status_code=503, detail="Study report page not bundled")
+        raise HTTPException(status_code=503, detail="Voice bakeoff page not bundled")
     return FileResponse(path, media_type="text/html")
 
 
