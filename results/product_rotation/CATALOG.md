@@ -2,19 +2,25 @@
 
 Standing target: live site runs any product URL immediately.
 
-**Pass bar (tightened):** 24 agents only. Per-agent creation→first-screenshot ≤ `E2E2_FIRST_SHOT_S` (default **5s**). 8-agent runs are smoke-only and do **not** count as PASS.
+**Pass bar:** 24 agents. Per-agent creation → first **REAL** (non-placeholder, non-blank) product screenshot ≤ `E2E2_FIRST_SHOT_S` (default **5s**). Placeholders do not count. 8-agent runs are smoke-only.
 
-| # | Shape | Product | Smoke (8) | 24 + ≤5s/agent | Notes |
-|---|-------|---------|-----------|----------------|-------|
-| 1 | Video | youtube.com | smoke | **PASS** 321.3s | run→tasks 55/60s; shot p50/p95/max 0.24/0.27/0.29s |
-| 2 | Docs | developer.mozilla.org | smoke | **PASS** 278.1s | run→tasks 21/26s; shot max 0.26s |
-| 3 | E-commerce | etsy.com | smoke | **PASS** 288.4s | run→tasks 22/29s; shot max 1.99s |
-| 4 | SaaS signup | linear.app | smoke | **PASS** 319.7s | 4×3×2; run→tasks 48/53s; shot max 0.26s |
-| 5 | News | bbc.com/news | smoke | **PASS** 292.8s | NPR/AP; run→tasks 25/30s; shot max 0.27s |
-| 6 | Heavy JS | excalidraw.com | smoke | **PASS** 293.6s | 4×3×2 tldraw; run→tasks 35/38s; shot max 0.15s |
+## Real-shot matrix (2026-09-25, `cursor/e2e-ui-run` tip)
+
+| # | Product | PASS | run→first task | run→all 24 | creation→real shot p50/p95/max | elapsed |
+|---|---------|------|----------------|------------|-------------------------------|---------|
+| 1 | youtube.com | **PASS** | 25.7s | 31.8s | 0.27 / 0.32 / **0.35s** | 292s |
+| 2 | developer.mozilla.org | **PASS** | 17.7s | 22.5s | 0.21 / 0.25 / **0.28s** | 283s |
+| 3 | etsy.com | **PASS** | 21.5s | 29.5s | 0.23 / 0.38 / **2.69s** | 287s |
+| 4 | linear.app | **PASS** | 16.9s | 28.6s | 0.24 / 1.80 / **3.93s** | 287s |
+| 5 | bbc.com/news | **PASS** | 41.2s | 47.7s | 0.26 / 0.29 / **0.92s** | 305s |
+| 6 | excalidraw.com | **PASS** | 23.5s | 27.0s | 0.15 / 0.17 / **0.17s** | 282s |
+
+Warm BB create is ~0.3–1.3s; navigate+paint ~8–27s — that work runs during persona/task LLM so creation→real shot stays under 5s.
+
+Prior sub-0.3s “PASSes” that stamped placeholders are **void**.
 
 ## Blockers
-- **PR #32 still OPEN** — prod https://usersim.vercel.app/ on `app.js?v=86`. Merge required for prod e2e.
+- **PR #32** is the merge candidate (includes #36 criteria). Prod e2e after merge.
 
 ## GCP
 - No VMs started.
