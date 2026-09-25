@@ -423,29 +423,64 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             if study.get("status") == "complete" and study.get("summary"):
                 # Allow post-agent shot backfill to land, then re-judge blanks.
                 t_complete = report.setdefault("_t_complete", time.time())
-                if time.time() - t_complete < 10:
-                    # Drop prior blank/miss judgements so backfilled PNGs get scored.
-                    for aid, verd in list(judged.items()):
-                        reason = str(verd.get("reason") or "").lower()
-                        if not verd.get("pass") and (
-                            "blank" in reason
-                            or "splash" in reason
-                            or "no screenshot" in reason
-                        ):
-                            judged.pop(aid, None)
+                # Drop prior blank/miss judgements so backfilled PNGs get scored.
+                for aid, verd in list(judged.items()):
+                    reason = str(verd.get("reason") or "").lower()
+                    if not verd.get("pass") and (
+                        "blank" in reason
+                        or "splash" in reason
+                        or "no screenshot" in reason
+                    ):
+                        judged.pop(aid, None)
+                # Directly probe bbox_0 on disk via API — GCS hydrate can clobber
+                # backfilled traces out of the study JSON while files are correct.
+                for sess in sessions:
+                    aid = str(sess.get("agent_id") or sess.get("task_id") or "")
+                    if not aid or aid in judged:
+                        continue
+                    shot = _best_shot(sess)
+                    url = (
+                        (shot or {}).get("screenshot_url")
+                        or f"/api/studies/{study_id}/agents/{aid}/screenshots/bbox_0.png"
+                    )
+                    try:
+                        raw = _fetch_png(
+                            args.base, url, study_id=study_id, agent_id=aid
+                        )
+                    except Exception:
+                        continue
+                    if _png_looks_blank(raw):
+                        continue
+                    host = _hostname(sess.get("site_url") or args.url)
+                    verdict = judge_screenshot(
+                        raw, label=f"{aid} backfill", expected_host=host
+                    )
+                    (OUT_DIR / f"{aid}.png").write_bytes(raw)
+                    judged[aid] = {
+                        "agent_id": aid,
+                        "host": host,
+                        "step": 0,
+                        "bytes": len(raw),
+                        **verdict,
+                    }
+                    _log(
+                        f"  judge {len(judged)}/{expected} {aid} "
+                        f"host={host} pass={verdict.get('pass')} "
+                        f"{verdict.get('reason')}"
+                    )
+                if time.time() - t_complete < 12 and len(judged) < expected:
                     await page.wait_for_timeout(2000)
                     continue
                 for sess in sessions:
                     aid = str(sess.get("agent_id") or sess.get("task_id") or "")
                     if not aid or aid in judged:
                         continue
-                    if not _best_shot(sess):
-                        judged[aid] = {
-                            "agent_id": aid,
-                            "host": _hostname(sess.get("site_url") or args.url),
-                            "pass": False,
-                            "reason": "no screenshot after study complete",
-                        }
+                    judged[aid] = {
+                        "agent_id": aid,
+                        "host": _hostname(sess.get("site_url") or args.url),
+                        "pass": False,
+                        "reason": "no screenshot after study complete",
+                    }
                 if len(sessions) >= expected and len(judged) >= min(expected, len(sessions)):
                     break
             if study.get("status") in {"error", "abandoned"}:
