@@ -4,10 +4,11 @@
   "description": "A host is reproducible only when a signup with a never-before-used alias_tag succeeds (ok=true, reason signed_up|signed_in). One-time cookie jars on the seed do NOT count.",
   "hosts": {
     "trello.com": {
-      "reproducible": false,
-      "last_reason": "captcha_unsolved",
-      "last_detail": "Unable to proceed with sign-up due to persistent reCAPTCHA verification issues. The page displays an error: 'We are having trouble verifying reCAPTCHA for this request. Please try again. If the problem persists, try another browser/device or reach out to Atlassian Support.'",
-      "last_alias_tag": "trello8d12440",
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "trellotcap10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "trello.com",
@@ -23,9 +24,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/fda908dc-d0c0-45f0-a27b-a1ea9ca8dc4e",
           "at": "2026-09-25T10:36:28.067958+00:00"
+        },
+        {
+          "host": "trello.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 435.0,
+          "alias_tag": "trellotcap10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/3f08af3c-b1fe-4821-b2fa-8002001317a4",
+          "attempt": 1,
+          "balance_before": 20.0,
+          "balance_after": 19.994,
+          "at": "2026-09-25T22:02:32.662102+00:00"
         }
       ],
-      "updated_at": "2026-09-25T10:36:28.067958+00:00"
+      "updated_at": "2026-09-25T22:02:32.662102+00:00"
     },
     "hashnode.com": {
       "reproducible": true,
@@ -1135,7 +1154,7 @@
       "updated_at": "2026-09-25T14:25:11.670454+00:00"
     }
   },
-  "updated_at": "2026-09-25T21:00:27.201228+00:00",
+  "updated_at": "2026-09-25T22:02:32.662503+00:00",
   "reproducible": [
     "airtable.com",
     "asana.com",
@@ -1166,6 +1185,7 @@
     "smartsheet.com",
     "stackblitz.com",
     "substack.com",
+    "trello.com",
     "vercel.com",
     "webflow.com",
     "wix.com",
@@ -1181,9 +1201,8 @@
     "reddit.com",
     "shopify.com",
     "todoist.com",
-    "trello.com",
     "whimsical.com"
   ],
-  "score": "36/60",
-  "reproducible_count": 36
+  "score": "37/60",
+  "reproducible_count": 37
 }

@@ -1,0 +1,5 @@
+{"attempt": 1, "event": "signup_start", "site": "trello.com", "ts": "2026-09-25T21:55:17.194108+00:00"}
+{"attempt": 1, "balance": 20.0, "event": "balance", "site": "trello.com", "ts": "2026-09-25T21:55:17.235117+00:00", "when": "before"}
+{"attempt": 1, "balance_after": 20.0, "balance_before": 20.0, "balance_delta": 0.0, "captcha_type": "recaptcha_v3_enterprise", "cost": 0.003, "event": "createTask", "list_price": 0.003, "note": "", "site": "trello.com", "solved": true, "task_id": "a07f1e5b-4603-4871-881d-d4dd5acc809b", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-25T21:57:00.562363+00:00"}
+{"attempt": 1, "balance_after": 19.997, "balance_before": 19.997, "balance_delta": 0.0, "captcha_type": "recaptcha_v3_enterprise", "cost": 0.003, "event": "createTask", "list_price": 0.003, "note": "", "site": "trello.com", "solved": true, "task_id": "7b4f36dd-5aea-4d7c-88b9-ed22a5ee0a59", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-25T21:59:13.233267+00:00"}
+{"attempt": 1, "balance": 19.994, "event": "balance", "site": "trello.com", "ts": "2026-09-25T22:02:32.399102+00:00", "when": "after"}
