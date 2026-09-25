@@ -8,6 +8,7 @@ from mvp.competitor_urls import (
     annotate_run_issues,
     classify_run_issue,
     filter_live_competitor_urls,
+    insight_view,
     rewrite_competitor_task,
     same_site,
     scrub_product_summary,
@@ -208,6 +209,69 @@ class RunIssueTests(unittest.TestCase):
         self.assertEqual(len(cleaned["recommendations"]), 1)
         self.assertNotIn("misdirection", cleaned["conversion_outlook"].lower())
         self.assertIn("professional", cleaned["headline"].lower())
+
+    def test_browser_partial_is_infrastructure_even_on_the_right_domain(self) -> None:
+        issue = classify_run_issue(
+            {
+                "site_url": "https://linear.app/",
+                "final_url": "https://linear.app/",
+                "task_title": "Skim",
+                "task_prompt": "Skim",
+                "mode": "browser_partial",
+                "browser_error": "Browserbase create concurrency cap busy",
+                "friction_points": ["Browser session ended before the task finished"],
+            }
+        )
+        self.assertIsNotNone(issue)
+        assert issue is not None
+        self.assertEqual(issue["kind"], "infrastructure")
+        summary = _summary_from_agent_results(
+            [
+                {
+                    "agent_id": "partial",
+                    "persona_name": "PM",
+                    "site_url": "https://linear.app/",
+                    "final_url": "https://linear.app/",
+                    "task_title": "Skim",
+                    "task_prompt": "Skim",
+                    "mode": "browser_partial",
+                    "browser_error": "429",
+                    "friction_points": ["Browser session ended before the task finished"],
+                    "what_was_easy": [],
+                    "quote": "The browser died.",
+                    "would_convert": "no",
+                },
+                {
+                    "agent_id": "ok",
+                    "persona_name": "PM",
+                    "site_url": "https://linear.app/",
+                    "final_url": "https://linear.app/",
+                    "task_title": "Skim",
+                    "task_prompt": "Skim",
+                    "friction_points": ["Pricing is hard to find."],
+                    "what_was_easy": [],
+                    "quote": "Clean page.",
+                    "would_convert": "maybe",
+                },
+            ]
+        )
+        self.assertEqual(summary["top_friction"], ["Pricing is hard to find."])
+        self.assertTrue(summary["run_issues"])
+        self.assertNotIn("browser session ended", " ".join(summary["top_friction"]).lower())
+
+    def test_on_target_competitor_is_not_called_a_wrong_site(self) -> None:
+        cleaned = insight_view(
+            {
+                "friction_points": [
+                    "The user was on the wrong website (Jira instead of Linear) for the given task.",
+                    "Pricing is hard to find.",
+                ],
+                "quote": "I'm on the wrong website, Jira instead of Linear.",
+                "product_feedback": "Landing on Jira is completely off-topic.",
+            }
+        )
+        self.assertEqual(cleaned["friction_points"], ["Pricing is hard to find."])
+        self.assertEqual(cleaned["quote"], "")
 
     def test_annotate_marks_only_bad_runs(self) -> None:
         bad = self._jira_mismatch()

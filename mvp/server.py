@@ -184,8 +184,12 @@ def _render_report_html(data: dict) -> str:
     for r in agents if isinstance(agents, list) else []:
         if not isinstance(r, dict):
             continue
+        from mvp.competitor_urls import is_harness_text
+
         friction = "".join(
-            f"<li>{_escape_html(x)}</li>" for x in (r.get("friction_points") or [])
+            f"<li>{_escape_html(x)}</li>"
+            for x in (r.get("friction_points") or [])
+            if not is_harness_text(x)
         ) or "<li>—</li>"
         easy = "".join(
             f"<li>{_escape_html(x)}</li>" for x in (r.get("what_was_easy") or [])

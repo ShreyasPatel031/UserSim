@@ -55,15 +55,19 @@ _DEFUNCT_RE = re.compile(
 # Phrases that describe our harness, not the product.
 _OUR_FAULT_RE = re.compile(
     r"incorrect competitor|wrong competitor|wrong website|wrong site|"
-    r"landed on (?:the )?(?:wrong|incorrect)|"
-    r"instead of (?:the )?(?:intended |correct )?(?:competitor|site|website)|"
+    r"landed on (?:the )?(?:wrong|incorrect)|landed on a competitor|"
+    r"instead of (?:the )?(?:intended |correct |original )?(?:competitor|site|website|product)|"
+    r"instead of linear|"
     r"task misdirection|misdirection to competitor|"
     r"navigation error|infrastructure error|"
     r"derail(?:ing|ed) comparative|"
     r"not the (?:intended|right|correct) (?:site|website|competitor)|"
-    r"ended up on (?!the (?:homepage|page)\b)",
+    r"ended up on (?!the (?:homepage|page)\b)|"
+    r"browser session ended|about:blank|concurrency cap|too many requests",
     re.I,
 )
+
+_INFRA_MODES = frozenset({"browser_partial", "browser_wall", "fallback_snapshot"})
 
 _VS_URL_RE = re.compile(r"\s*\(vs\s+https?://[^)]+\)\s*$", re.I)
 _INSTR_RE = re.compile(
@@ -236,10 +240,23 @@ def rewrite_competitor_task(task: dict[str, Any], new_url: str) -> None:
     task["site_url"] = new_url
     task["site_label"] = f"Competitor · {host}"
     task["title"] = f"{title} (vs {new_url})"
-    task["prompt"] = (
-        f"{prompt}\n\n"
-        f"You are evaluating the competitor site {new_url} only. "
-        f"Stay on that site — do not open the original product or other rivals."
+    task["prompt"] = competitor_task_prompt(prompt, new_url)
+
+
+def competitor_task_prompt(base_prompt: str, site_url: str) -> str:
+    """Task text that names the same competitor the browser will open."""
+    base = _INSTR_RE.sub("", str(base_prompt or "Task")).strip()
+    base = re.sub(
+        r"^Apply this task on the competitor website https?://\S+, not on the original product\.\n",
+        "",
+        base,
+    ).strip()
+    return (
+        f"Apply this task on the competitor website {site_url}, not on the original product.\n"
+        f"{base}\n\n"
+        f"You are evaluating the competitor site {site_url} only. "
+        f"Stay on that site — do not open the original product or other rivals. "
+        f"Opening {site_url} is correct; do not treat that as a mistake."
     )
 
 
@@ -256,6 +273,24 @@ def classify_run_issue(result: dict[str, Any]) -> dict[str, str] | None:
     final = str(result.get("final_url") or "").strip()
     if not target.startswith("http"):
         return None
+    mode = str(result.get("mode") or "")
+    browser_error = str(result.get("browser_error") or "").strip()
+    if browser_error or mode in _INFRA_MODES:
+        detail = browser_error or mode or "browser session ended early"
+        return {
+            "kind": "infrastructure",
+            "reason": f"Browser run failed before a product conclusion ({detail[:180]})",
+            "target_url": target,
+            "final_url": final,
+        }
+    friction_blob = " ".join(str(x) for x in (result.get("friction_points") or []))
+    if re.search(r"about:blank|browser session ended", friction_blob, re.I):
+        return {
+            "kind": "navigation",
+            "reason": "Session hit an infrastructure navigation failure (about:blank or a dropped browser)",
+            "target_url": target,
+            "final_url": final,
+        }
     for instructed in explicit_task_targets(result):
         if instructed.startswith("http") and not same_site(instructed, target):
             return {
@@ -308,10 +343,33 @@ def annotate_run_issues(results: list[dict[str, Any]]) -> list[dict[str, str]]:
     return issues
 
 
+def is_harness_text(text: object) -> bool:
+    return bool(text) and bool(_OUR_FAULT_RE.search(str(text)))
+
+
+def insight_view(result: dict[str, Any]) -> dict[str, Any]:
+    """Copy with harness-fault lines removed so they cannot become product insights."""
+    out = dict(result)
+    out["friction_points"] = [
+        item for item in (result.get("friction_points") or []) if not is_harness_text(item)
+    ]
+    easy = result.get("what_was_easy")
+    if isinstance(easy, list):
+        out["what_was_easy"] = [item for item in easy if not is_harness_text(item)]
+    for key in ("quote", "product_feedback"):
+        if is_harness_text(result.get(key)):
+            out[key] = ""
+    return out
+
+
 def product_insight_results(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Sessions that actually evaluated the task URL."""
+    """Sessions that actually evaluated the task URL, with harness lines removed."""
     annotate_run_issues(results)
-    return [r for r in results or [] if isinstance(r, dict) and not r.get("exclude_from_insights")]
+    return [
+        insight_view(r)
+        for r in results or []
+        if isinstance(r, dict) and not r.get("exclude_from_insights")
+    ]
 
 
 def run_issue_lines(issues: list[dict[str, str]]) -> list[str]:

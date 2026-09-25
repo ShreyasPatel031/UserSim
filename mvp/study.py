@@ -768,11 +768,10 @@ def expand_tasks_for_sites(
             title = task.get("title") or "Task"
             if site_key != "product":
                 clone["title"] = f"{title} (vs {site_url})"
-                prompt = str(task.get("prompt") or title)
-                clone["prompt"] = (
-                    f"{prompt}\n\n"
-                    f"You are evaluating the competitor site {site_url} only. "
-                    f"Stay on that site — do not open the original product or other rivals."
+                from mvp.competitor_urls import competitor_task_prompt
+
+                clone["prompt"] = competitor_task_prompt(
+                    str(task.get("prompt") or title), site_url
                 )
             expanded.append(clone)
     return expanded
@@ -902,11 +901,9 @@ def expand_full_matrix(
                 prompt = str(task.get("prompt") or title)
                 if site_key != "product":
                     clone["title"] = f"{title} (vs {site_url})"
-                    clone["prompt"] = (
-                        f"{prompt}\n\n"
-                        f"You are evaluating the competitor site {site_url} only. "
-                        f"Stay on that site — do not open the original product or other rivals."
-                    )
+                    from mvp.competitor_urls import competitor_task_prompt
+
+                    clone["prompt"] = competitor_task_prompt(prompt, site_url)
                 else:
                     clone["title"] = title
                     clone["prompt"] = prompt
