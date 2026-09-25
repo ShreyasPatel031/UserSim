@@ -114,11 +114,30 @@ def browserbase_max_workers(requested: int) -> int:
     return max(1, min(requested, cap))
 
 
+# Shared Browserbase project with the Sign Up agent. Tag every session we
+# create so leftover cleanup can release only ours (never signup / untagged).
+BB_OWNER_E2E = "e2e"
+BB_OWNER_SIGNUP = "signup"
+
+
 @dataclass(frozen=True)
 class BrowserbaseSession:
     id: str
     connect_url: str
     session_url: str
+
+
+def session_user_metadata(
+    *,
+    owner: str = BB_OWNER_E2E,
+    study_id: str | None = None,
+    **extra: Any,
+) -> dict[str, object]:
+    """Build Browserbase userMetadata for ownership / study scoping."""
+    meta: dict[str, object] = {"owner": str(owner), **extra}
+    if study_id:
+        meta["study_id"] = str(study_id)
+    return meta
 
 
 def _is_rate_limit(exc: BaseException) -> bool:
@@ -132,12 +151,19 @@ def create_session(
     keep_alive: bool = False,
     solve_captchas: bool | None = None,
     advanced_stealth: bool | None = None,
+    user_metadata: dict[str, Any] | None = None,
+    owner: str | None = None,
+    study_id: str | None = None,
 ) -> BrowserbaseSession:
     """Create a Browserbase session at full Developer concurrency.
 
     Walks down feature flags on 402/403 so Hobby plans still get a session:
     proxies / advanced stealth / captcha-solve are optional. Session create
     pacing is off unless BROWSERBASE_THROTTLE=1.
+
+    Pass ``user_metadata`` (or ``owner`` / ``study_id``) so shared-project
+    cleanup can release only our sessions. Callers that omit metadata stay
+    untagged — kill_all will leave those alone.
     """
     ensure_browserbase_full_parallel()
     try:
@@ -152,6 +178,20 @@ def create_session(
         )
     client = Browserbase(api_key=browserbase_api_key())
     pid = browserbase_project_id()
+
+    meta: dict[str, object] | None = None
+    if user_metadata:
+        meta = {str(k): v for k, v in user_metadata.items()}
+    if owner is not None or study_id is not None:
+        base = session_user_metadata(
+            owner=owner or BB_OWNER_E2E,
+            study_id=study_id,
+        )
+        if meta:
+            base.update(meta)
+            meta = base
+        else:
+            meta = base
 
     # Captcha / stealth: env default, explicit kwargs override.
     default_solve: bool | None = None
@@ -210,6 +250,8 @@ def create_session(
             kwargs["project_id"] = pid
         if flags.get("proxies"):
             kwargs["proxies"] = True
+        if meta:
+            kwargs["user_metadata"] = meta
         browser_settings: dict[str, Any] = {}
         if flags.get("solve_captchas"):
             browser_settings["solveCaptchas"] = True
@@ -235,12 +277,29 @@ def create_session(
             try:
                 return client.sessions.create(**flat)
             except TypeError:
+                # Drop metadata last — older SDKs may not accept it.
                 basic = {
                     k: v
                     for k, v in flat.items()
-                    if k in {"keep_alive", "project_id", "proxies", "api_timeout", "timeout"}
+                    if k
+                    in {
+                        "keep_alive",
+                        "project_id",
+                        "proxies",
+                        "api_timeout",
+                        "timeout",
+                        "user_metadata",
+                    }
                 }
-                return client.sessions.create(**basic)
+                try:
+                    return client.sessions.create(**basic)
+                except TypeError:
+                    bare = {
+                        k: v
+                        for k, v in basic.items()
+                        if k in {"keep_alive", "project_id", "proxies", "api_timeout", "timeout"}
+                    }
+                    return client.sessions.create(**bare)
 
     def _create_once_bounded(kwargs: dict[str, Any], *, timeout_s: float) -> Any:
         """Don't let the Browserbase SDK retry loop block a study forever."""

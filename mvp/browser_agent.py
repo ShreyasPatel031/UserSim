@@ -606,7 +606,13 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
     try:
         from browser_use import BrowserSession
 
-        bb_session = await asyncio.to_thread(create_session, proxies=False, keep_alive=True)
+        bb_session = await asyncio.to_thread(
+            create_session,
+            proxies=False,
+            keep_alive=True,
+            owner="e2e",
+            study_id=study_id,
+        )
         connect = getattr(bb_session, "connect_url", None)
         if not connect:
             raise RuntimeError("Browserbase session missing connect_url")
@@ -921,7 +927,11 @@ async def run_browser_agent(
             if owns_session:
                 # keep_alive=True so parallel agents don't lose CDP mid-run (410 Gone).
                 bb_session = await asyncio.to_thread(
-                    create_session, proxies=False, keep_alive=True
+                    create_session,
+                    proxies=False,
+                    keep_alive=True,
+                    owner="e2e",
+                    study_id=study_id,
                 )
             session_url = getattr(bb_session, "session_url", None)
             connect = getattr(bb_session, "connect_url", None)

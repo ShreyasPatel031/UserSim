@@ -119,7 +119,11 @@ def _create_signup_browserbase_session():
     last_exc: BaseException | None = None
     for kwargs in attempts:
         try:
-            session = create_session(keep_alive=False, **kwargs)
+            # Shared Browserbase project with e2e studies — tag so their
+            # leftover cleanup never REQUEST_RELEASEs our signup sessions.
+            session = create_session(
+                keep_alive=False, owner="signup", study_id="signup", **kwargs
+            )
             print(
                 f"Browserbase create ok with {kwargs}",
                 flush=True,

@@ -166,11 +166,16 @@ async def _prefetch_browser_sessions(
     n: int,
     *,
     on_progress=None,
+    study_id: str | None = None,
 ) -> list[Any]:
     """Create Browserbase sessions in parallel with per-session progress + timeout."""
     if n <= 0:
         return []
-    from capability.browserbase_client import create_session, ensure_browserbase_full_parallel
+    from capability.browserbase_client import (
+        BB_OWNER_E2E,
+        create_session,
+        ensure_browserbase_full_parallel,
+    )
 
     ensure_browserbase_full_parallel()
     ready: list[Any] = []
@@ -179,7 +184,13 @@ async def _prefetch_browser_sessions(
     async def _one(i: int) -> Any | None:
         try:
             session = await asyncio.wait_for(
-                asyncio.to_thread(create_session, proxies=False, keep_alive=True),
+                asyncio.to_thread(
+                    create_session,
+                    proxies=False,
+                    keep_alive=True,
+                    owner=BB_OWNER_E2E,
+                    study_id=study_id,
+                ),
                 timeout=timeout_s,
             )
             return session
@@ -1036,14 +1047,15 @@ async def run_study(
         if _should_warm_browserbase():
             from mvp.browser_agent import warm_opening_session
 
-            # Free zombie Browserbase sessions from abandoned studies so
+            # Free OUR zombie Browserbase sessions from abandoned studies so
             # create_session doesn't hang on a leaked local slot / 429.
+            # Never touch Sign Up (owner=signup) or untagged foreign sessions.
             try:
-                from capability.browserbase_client import reset_local_slots
+                from capability.browserbase_client import BB_OWNER_E2E, reset_local_slots
                 from mvp.kill_switch import kill_all_browserbase
 
                 released = await asyncio.wait_for(
-                    asyncio.to_thread(kill_all_browserbase),
+                    asyncio.to_thread(kill_all_browserbase, owner=BB_OWNER_E2E),
                     timeout=12,
                 )
                 reset_local_slots()
