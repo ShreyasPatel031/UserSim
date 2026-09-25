@@ -1,0 +1,19 @@
+{
+  "pass": true,
+  "product_url": "https://www.etsy.com/",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 288.4,
+  "t_first_task_created_s": 22.442,
+  "t_all_tasks_created_s": 29.199,
+  "creation_to_first_shot": {
+    "p50": 0.242,
+    "p95": 0.365,
+    "max": 1.991,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "study_id": "6d66f689-35de-474f-a216-9283ce8373da",
+  "fail_reasons": null
+}

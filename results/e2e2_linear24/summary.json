@@ -1,0 +1,19 @@
+{
+  "pass": true,
+  "product_url": "https://linear.app/",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 319.7,
+  "t_first_task_created_s": 48.163,
+  "t_all_tasks_created_s": 52.699,
+  "creation_to_first_shot": {
+    "p50": 0.195,
+    "p95": 0.25,
+    "max": 0.255,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "study_id": "03e472a1-f088-4727-952f-1eab549d888d",
+  "fail_reasons": null
+}

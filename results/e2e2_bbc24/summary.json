@@ -1,0 +1,19 @@
+{
+  "pass": true,
+  "product_url": "https://www.bbc.com/news",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 292.8,
+  "t_first_task_created_s": 24.795,
+  "t_all_tasks_created_s": 29.832,
+  "creation_to_first_shot": {
+    "p50": 0.215,
+    "p95": 0.26,
+    "max": 0.269,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "study_id": "110c7f2a-9edf-4f9e-bb00-eea29930a039",
+  "fail_reasons": null
+}

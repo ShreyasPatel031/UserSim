@@ -1,0 +1,19 @@
+{
+  "pass": true,
+  "product_url": "https://developer.mozilla.org/",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 278.1,
+  "t_first_task_created_s": 21.44,
+  "t_all_tasks_created_s": 25.647,
+  "creation_to_first_shot": {
+    "p50": 0.169,
+    "p95": 0.223,
+    "max": 0.258,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "study_id": "8458bb9f-a127-44ef-8200-14fea7a6e4e4",
+  "fail_reasons": null
+}

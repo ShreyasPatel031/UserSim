@@ -1,0 +1,19 @@
+{
+  "pass": true,
+  "product_url": "https://excalidraw.com/",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 293.6,
+  "t_first_task_created_s": 35.382,
+  "t_all_tasks_created_s": 38.349,
+  "creation_to_first_shot": {
+    "p50": 0.137,
+    "p95": 0.153,
+    "max": 0.154,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "study_id": "7d26019f-8e21-4763-9e64-fc33a34a48dd",
+  "fail_reasons": null
+}
