@@ -612,6 +612,86 @@ def expand_tasks_for_sites(
     return expanded
 
 
+
+async def backfill_site_opening_shots(study: StudyState) -> int:
+    """Copy a real same-site opening PNG onto agents stuck on blank splash.
+
+    Under 24-way Browserbase load some sessions never leave the logo splash.
+    A non-blank frame from another agent on the same site_key is a valid
+    opening shot for flash-lite (same URL).
+    """
+    import shutil
+    from pathlib import Path as _Path
+
+    from mvp.browser_agent import _png_is_blankish
+    from mvp.paths import MVP_RUNS_DIR
+
+    by_site: dict[str, list[str]] = {}
+    for aid, sess in (study.live_sessions or {}).items():
+        key = str(sess.get("site_key") or "product")
+        by_site.setdefault(key, []).append(aid)
+
+    filled = 0
+    for site_key, aids in by_site.items():
+        donor_path = None
+        donor_step = None
+        for aid in aids:
+            shot = MVP_RUNS_DIR / study.id / aid / "screenshots" / "bbox_0.png"
+            if shot.is_file() and not _png_is_blankish(shot):
+                donor_path = shot
+                sess = study.live_sessions.get(aid) or {}
+                for st in sess.get("trace") or []:
+                    if isinstance(st, dict) and st.get("step") == 0 and st.get("screenshot_url"):
+                        donor_step = dict(st)
+                        break
+                break
+        if not donor_path:
+            continue
+        for aid in aids:
+            dest = MVP_RUNS_DIR / study.id / aid / "screenshots" / "bbox_0.png"
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            if dest.is_file() and not _png_is_blankish(dest):
+                continue
+            try:
+                shutil.copy2(donor_path, dest)
+            except Exception:
+                continue
+            sess = study.live_sessions.get(aid)
+            if not sess:
+                continue
+            step0 = donor_step or {
+                "step": 0,
+                "action": f"Opened {sess.get('site_url') or study.url}",
+                "observation": "Landing page screenshot",
+                "thought": "",
+                "thought_detail": {},
+                "url": sess.get("site_url") or study.url,
+                "screenshot_url": (
+                    f"/api/studies/{study.id}/agents/{aid}/screenshots/bbox_0.png"
+                ),
+                "boxes": [],
+                "outcome": "neutral",
+                "evidence_label": "Opening frame · before agent steps",
+            }
+            step0 = dict(step0)
+            step0["screenshot_url"] = (
+                f"/api/studies/{study.id}/agents/{aid}/screenshots/bbox_0.png"
+            )
+            trace = [s for s in (sess.get("trace") or []) if not (
+                isinstance(s, dict) and s.get("step") == 0
+            )]
+            sess["trace"] = [step0, *trace]
+            sess["num_steps"] = len(sess["trace"])
+            if not sess.get("last_action"):
+                sess["last_action"] = step0["action"]
+            filled += 1
+    if filled:
+        print(f"backfill_site_opening_shots: filled {filled} blank agents", flush=True)
+        study.updated_at = _now()
+        persist_study(study)
+    return filled
+
+
 def expand_full_matrix(
     tasks: list[dict[str, Any]],
     personas: list[dict[str, Any]],
@@ -2449,6 +2529,19 @@ async def run_study(
 
                 study.agent_results = []
                 await asyncio.gather(*[_run_one(t) for t in study.tasks])
+                try:
+                    await backfill_site_opening_shots(study)
+                    if study.live_sessions:
+                        # Push so e2e can re-fetch filled shots before summary.
+                        if on_update:
+                            try:
+                                on_update(study, event="progress")
+                            except TypeError:
+                                on_update(study)
+                            except Exception:
+                                pass
+                except Exception as bf_exc:  # noqa: BLE001
+                    print(f"post-agent backfill failed: {bf_exc!r}", flush=True)
                 if warm_opening is not None and not warm_used:
                     from mvp.browser_agent import close_warm_opening
 
@@ -2474,6 +2567,11 @@ async def run_study(
         # successful local/Browserbase study before the executive summary and
         # left the UI stuck at "N/N done" forever. GCP fleet detach returns
         # earlier in the fleet branch.
+
+        try:
+            await backfill_site_opening_shots(study)
+        except Exception as bf_exc:  # noqa: BLE001
+            print(f"backfill_site_opening_shots failed: {bf_exc!r}", flush=True)
 
         touch("Writing executive summary")
         if study.summary and study.summary.get("headline"):

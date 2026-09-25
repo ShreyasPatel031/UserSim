@@ -421,6 +421,11 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     _log(f"  judge skip {aid}: {exc!r}")
 
             if study.get("status") == "complete" and study.get("summary"):
+                # Allow one extra poll cycle for post-agent shot backfill to land.
+                t_complete = report.setdefault("_t_complete", time.time())
+                if time.time() - t_complete < 8:
+                    await page.wait_for_timeout(2000)
+                    continue
                 for sess in sessions:
                     aid = str(sess.get("agent_id") or sess.get("task_id") or "")
                     if not aid or aid in judged:
