@@ -846,6 +846,32 @@ def _build_signup_tools(ctx: dict[str, Any]):
             reason = "unknown"
         # Refuse premature "unknown" when a captcha is clearly holding Sign up —
         # force one solve_captcha pass before accepting the block.
+        # Refuse premature captcha_unsolved if the agent never called solve_captcha.
+        if reason == "captcha_unsolved" and int(ctx.get("captcha_attempts") or 0) < 1:
+            page = None
+            try:
+                page = page_getter()
+            except Exception:
+                page = None
+            if page is not None:
+                ctx["captcha_attempts"] = 1
+                result = await solve_captcha_on_page(page)
+                if result.get("ok") and await _page_has_captcha_token(page):
+                    return ActionResult(
+                        extracted_content=json.dumps({"forced_solve": result}),
+                        include_in_memory=True,
+                        long_term_memory=(
+                            f"CAPTCHA solved via {result.get('method')} — "
+                            "click Continue/Sign up now; do not report_blocked yet."
+                        ),
+                    )
+                return ActionResult(
+                    error=(
+                        f"CAPTCHA still unsolved ({result}). Call solve_captcha() once more, "
+                        "then report_blocked(captcha_unsolved) only if it fails again."
+                    ),
+                    include_in_memory=True,
+                )
         if reason in {"unknown", "captcha_unsolved"} and int(ctx.get("auto_captcha_runs") or 0) < 1:
             page = None
             try:
@@ -1259,6 +1285,21 @@ async def sign_up(
                 ctx["auto_captcha_runs"] = runs + 1
                 try:
                     result = await solve_captcha_on_page(page_now)
+                    # Match solve_captcha tool: soft BB clears without a real
+                    # response token are not success (Loom/Supabase reject them).
+                    if result.get("ok") and not await _page_has_captcha_token(page_now):
+                        if (result.get("method") or "") in {
+                            "browserbase",
+                            "self_cleared",
+                            "click",
+                            "checkbox",
+                            "oss_image",
+                        }:
+                            result = {
+                                "ok": False,
+                                "method": result.get("method"),
+                                "detail": f"no_token_after_{result.get('detail')}",
+                            }
                     ctx["last_auto_captcha"] = result
                     print(
                         f"[auto_captcha] run={ctx['auto_captcha_runs']} "
@@ -1266,6 +1307,30 @@ async def sign_up(
                         f"force={force} sitekey={info.get('sitekey')} -> {result}",
                         flush=True,
                     )
+                    # If we have a real token, nudge the primary submit so the
+                    # agent does not race report_blocked on a stale error banner.
+                    if result.get("ok"):
+                        try:
+                            await page_now.evaluate(
+                                """() => {
+                                  const btns = [...document.querySelectorAll(
+                                    'button[type=submit], button#email-signup-submit, button'
+                                  )];
+                                  for (const b of btns) {
+                                    const label = ((b.innerText || b.id || '') + '').toLowerCase();
+                                    if (/github|google|sso|apple/.test(label)) continue;
+                                    if (!(b.type === 'submit' || /sign\\s*up|continue|create|register/.test(label)))
+                                      continue;
+                                    b.disabled = false;
+                                    b.removeAttribute('disabled');
+                                    try { b.click(); } catch (e) {}
+                                    return true;
+                                  }
+                                  return false;
+                                }"""
+                            )
+                        except Exception:
+                            pass
                 except Exception as exc:
                     ctx["last_auto_captcha"] = {
                         "ok": False,

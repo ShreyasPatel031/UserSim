@@ -1151,9 +1151,15 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
     # Browserbase native solver (console events) — free when session has solveCaptchas.
     if await wait_for_browserbase_solver(page, timeout_s=bb_timeout):
         if await _recaptcha_solved(page):
-            return {"ok": True, "method": "browserbase", "detail": "token_after_bb"}
+            # Token present is necessary but not sufficient — Loom often keeps
+            # showing a reCAPTCHA error until a fresh solve lands. Only accept
+            # early if the signup CTA is no longer disabled.
+            still_blocked = await page_looks_captcha_blocked(page)
+            if not still_blocked.get("submit_disabled") and not still_blocked.get("blocked"):
+                return {"ok": True, "method": "browserbase", "detail": "token_after_bb"}
+            # Fall through to OSS / API for a stronger solve.
         # Challenge UI gone with no token is only OK for non-recaptcha interstitials.
-        if not await _challenge_visible(page):
+        elif not await _challenge_visible(page):
             info = info_early or await detect_sitekey(page)
             url = (getattr(page, "url", "") or "").lower()
             left_for_oauth = any(
