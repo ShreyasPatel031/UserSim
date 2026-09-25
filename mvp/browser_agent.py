@@ -27,9 +27,11 @@ MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
 # 200s is enough for several clicks once thinking/planning are off.
 MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
 # A 75s Gemini default let the first call consume the wall (~115s observed).
-# Abort a slow call and let the next step retry. Targets: first action ~10s, step ~15s.
-MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "12") or "12")
-MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "15") or "15")
+# Abort a hung call, but leave room for a real action: under a 24-way
+# Vertex burst the successful call is ~20s. A 12s/15s cap timed out every
+# step, burned max_failures, and stopped the run on the opening screenshot.
+MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "22") or "22")
+MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "30") or "30")
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
 
 
@@ -1612,7 +1614,9 @@ async def run_browser_agent(
                 # One attempt. A slow call is aborted by http timeout and the next
                 # agent step retries, instead of five backoffs eating the wall.
                 "max_retries": 1,
-                "max_output_tokens": 768,
+                # 768 truncated the action JSON ("invalid output format") on the
+                # first step, so the run never got a click.
+                "max_output_tokens": 2048,
                 "http_options": {"timeout": max(3000, (MVP_LLM_TIMEOUT_S - 2) * 1000)},
             }
             # Gemini 2.5 thinking is what stretched the first call past a minute.
@@ -1695,6 +1699,8 @@ async def run_browser_agent(
             use_judge=False,
             llm_timeout=MVP_LLM_TIMEOUT_S,
             step_timeout=MVP_STEP_TIMEOUT_S,
+            # A few format/timeout misses must not end the run before a click.
+            max_failures=8,
             llm_screenshot_size=(800, 450),
             message_compaction=False,
             max_actions_per_step=2,

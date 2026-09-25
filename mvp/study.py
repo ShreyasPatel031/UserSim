@@ -3320,15 +3320,30 @@ async def run_study(
                         (s or {}).get("screenshot_url") or (s or {}).get("screenshot_data_url")
                         for s in snap_trace
                     )
-                    if has_pixels and not snap_has_pixels:
+                    # The step hook records clicks on the live session. A short
+                    # return (step timeout, wall, empty history) must not replace
+                    # those frames with only the opening screenshot.
+                    if has_pixels and len(existing) > len(snap_trace):
+                        known = {
+                            e.get("step") for e in existing if isinstance(e, dict)
+                        }
+                        merged = existing + [
+                            s for s in snap_trace
+                            if (s or {}).get("step") not in known
+                        ]
+                        sess["trace"] = merged
+                        result["trace"] = merged
+                    elif has_pixels and not snap_has_pixels:
                         sess["trace"] = existing + [
                             s for s in snap_trace if (s or {}).get("step") not in {
                                 e.get("step") for e in existing if isinstance(e, dict)
                             }
                         ]
+                        result["trace"] = sess["trace"]
                     else:
                         sess["trace"] = snap_trace or existing
                     sess["num_steps"] = len(sess["trace"])
+                    result["num_steps"] = len(sess["trace"])
                     _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     done_count += 1
                     study.agent_results.append(result)
