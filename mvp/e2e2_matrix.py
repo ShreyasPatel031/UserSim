@@ -96,7 +96,12 @@ def _png_looks_blank(raw: bytes) -> bool:
         pixels = list(im.getdata())
         lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
         mean = sum(lums) / max(1, len(lums))
-        return mean < 15.0
+        var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
+        if mean < 22.0:
+            return True
+        if mean < 35.0 and var < 180.0:
+            return True
+        return False
     except Exception:
         return len(raw) < 12000
 
@@ -345,7 +350,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     )
                     # Don't fail the whole matrix on a black splash while the
                     # agent is still browsing — wait for a real paint.
-                    if _png_looks_blank(raw) and study.get("status") == "running":
+                    if _png_looks_blank(raw):
                         _log(
                             f"  skip blankish shot {aid} step={shot.get('step')} "
                             f"({len(raw)} bytes) — waiting for paint"

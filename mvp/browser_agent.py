@@ -39,9 +39,14 @@ def _png_is_blankish(path: Path) -> bool:
         pixels = list(im.getdata())
         lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
         mean = sum(lums) / max(1, len(lums))
-        # Near-black splash (Vimeo / YouTube logo-on-black). Real dark UIs
-        # with content sit well above ~30 mean luminance at 64×40.
-        return mean < 15.0
+        var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
+        # Near-black splash (Vimeo / YouTube logo-on-black). Grey logo on black
+        # can sit at mean 15–25 with very low variance — still not a real page.
+        if mean < 22.0:
+            return True
+        if mean < 35.0 and var < 180.0:
+            return True
+        return False
     except Exception:
         try:
             return path.stat().st_size < 12000
@@ -400,6 +405,7 @@ async def _emit_opening_frame(
     agent_id: str,
     url: str,
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
+    shot_name: str = "bbox_0.png",
 ) -> None:
     """Navigate + full-viewport screenshot before the LLM agent loop."""
     try:
@@ -459,7 +465,6 @@ async def _emit_opening_frame(
         except Exception:
             pass
 
-    shot_name = "bbox_0.png"
     shot_path = screenshot_dir / shot_name
 
     async def _snap_once() -> bool:
@@ -484,23 +489,23 @@ async def _emit_opening_frame(
             return False
 
     ok = False
-    for attempt in range(2):
-        await asyncio.sleep(0.4 if attempt == 0 else 0.9)
+    for attempt in range(4):
+        await asyncio.sleep(0.5 if attempt == 0 else 1.2)
         if not await _snap_once():
             continue
         if not _png_is_blankish(shot_path):
             ok = True
             break
         print(
-            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/2) — waiting for paint",
+            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/4) — waiting for paint",
             flush=True,
         )
         if page is not None:
             try:
-                await asyncio.wait_for(page.reload(wait_until="domcontentloaded"), timeout=8)
+                await asyncio.wait_for(page.reload(wait_until="domcontentloaded"), timeout=10)
             except Exception:
                 try:
-                    await asyncio.wait_for(browser_session.navigate_to(url), timeout=12)
+                    await asyncio.wait_for(browser_session.navigate_to(url), timeout=15)
                 except Exception:
                     pass
 
@@ -1132,6 +1137,20 @@ async def run_browser_agent(
                 )
             except Exception:
                 pass
+            # Last-chance paint before kill — Vimeo/DailyMotion often finish
+            # loading after the LLM loop has already stalled.
+            if browser_session is not None and on_step is not None:
+                try:
+                    await _emit_opening_frame(
+                        browser_session,
+                        screenshot_dir=screenshot_dir,
+                        study_id=study_id,
+                        agent_id=agent_id,
+                        url=start_url,
+                        on_step=on_step,
+                    )
+                except Exception as wall_shot_exc:  # noqa: BLE001
+                    print(f"[{agent_id}] wall reshoot failed: {wall_shot_exc!r}", flush=True)
         except Exception as run_exc:  # noqa: BLE001
             # Prefer partial opening frames over raising into study retry.
             print(f"[{agent_id}] agent.run failed: {run_exc!r} — returning partial", flush=True)
