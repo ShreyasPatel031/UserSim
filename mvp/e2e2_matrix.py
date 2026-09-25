@@ -421,9 +421,18 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     _log(f"  judge skip {aid}: {exc!r}")
 
             if study.get("status") == "complete" and study.get("summary"):
-                # Allow one extra poll cycle for post-agent shot backfill to land.
+                # Allow post-agent shot backfill to land, then re-judge blanks.
                 t_complete = report.setdefault("_t_complete", time.time())
-                if time.time() - t_complete < 8:
+                if time.time() - t_complete < 10:
+                    # Drop prior blank/miss judgements so backfilled PNGs get scored.
+                    for aid, verd in list(judged.items()):
+                        reason = str(verd.get("reason") or "").lower()
+                        if not verd.get("pass") and (
+                            "blank" in reason
+                            or "splash" in reason
+                            or "no screenshot" in reason
+                        ):
+                            judged.pop(aid, None)
                     await page.wait_for_timeout(2000)
                     continue
                 for sess in sessions:
