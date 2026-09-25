@@ -2362,6 +2362,15 @@ footer p {
 .live-agent-step{margin:0;padding:0.5rem 0.75rem;font-size:0.75rem;color:var(--text-muted);border-top:1px solid var(--border)}
 @media (max-width:900px){.live-dash .live-main{grid-template-columns:1fr}.live-sidebar{border-right:0;border-bottom:1px solid var(--border);max-height:40vh}}
 
+.stat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 0 0 1.1rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+.stat-strip strong { color: var(--text); }
 .evidence-note, .tie-note {
   margin: 0 0 1.1rem;
   color: var(--text-muted);

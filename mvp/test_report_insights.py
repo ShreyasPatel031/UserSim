@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import unittest
 
-from mvp.report_insights import build_report_insights
+from mvp.report_insights import build_report_insights, left_start, task_succeeded, work_metrics
 
 
 def _run(
@@ -46,6 +46,26 @@ def _run(
         "quote": quote,
         "trace": trace,
     }
+
+
+class WorkMetricTests(unittest.TestCase):
+    def test_homepage_only_is_not_task_success(self) -> None:
+        run = _run("a", steps=1, final="https://docs.python.org/3/")
+        self.assertFalse(task_succeeded(run, "https://docs.python.org/3/"))
+        self.assertFalse(left_start(run, "https://docs.python.org/3/"))
+
+    def test_leaving_the_start_url_after_a_click_is_success(self) -> None:
+        run = _run("a", steps=2, final="https://docs.python.org/3/tutorial/")
+        run["site_url"] = "https://docs.python.org/3/"
+        run["trace"][0]["url"] = "https://docs.python.org/3/"
+        run["trace"][1]["action"] = "click — index=4"
+        run["trace"][1]["url"] = "https://docs.python.org/3/tutorial/"
+        self.assertTrue(left_start(run, "https://docs.python.org/3/"))
+        self.assertTrue(task_succeeded(run, "https://docs.python.org/3/"))
+        metrics = work_metrics([run], "https://docs.python.org/3/")
+        self.assertEqual(metrics["left_start_pct"], 100)
+        self.assertEqual(metrics["task_success_rate"], 100)
+        self.assertEqual(metrics["median_steps"], 2)
 
 
 class InsightTests(unittest.TestCase):

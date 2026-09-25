@@ -83,13 +83,14 @@ function renderCompare(insights) {
       return `<tr>
         <td>${escapeHtml(r.site_label || r.site_key)}</td>
         <td>${r.ok}/${r.n} (${pct}%)</td>
+        <td>${r.left_start_pct ?? 0}%</td>
         <td>${steps}</td>
         <td>${time}</td>
         <td>${r.friction_n ?? 0}</td>
       </tr>`;
     })
     .join("");
-  table.innerHTML = `<thead><tr><th>Site</th><th>Success</th><th>Median steps</th><th>Median time</th><th>Friction notes</th></tr></thead><tbody>${body}</tbody>`;
+  table.innerHTML = `<thead><tr><th>Site</th><th>Task success</th><th>Left start</th><th>Median steps</th><th>Median time</th><th>Friction notes</th></tr></thead><tbody>${body}</tbody>`;
 }
 
 function renderTrace() {

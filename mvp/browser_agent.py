@@ -23,7 +23,9 @@ from mvp.paths import MVP_RUNS_DIR
 MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
 # Hard wall so hung browser_use waits / DOMWatchdog deadlocks cannot freeze a study.
 # Prior YouTube e2e sat at 0/N done for 400s+ because agent.run had no timeout.
-MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "120") or "120")
+# 120s let the first model call consume the whole budget (0–2 actions).
+# 200s is enough for several clicks once thinking/planning are off.
+MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
 
 
 def _png_is_blankish(path: Path) -> bool:
@@ -318,11 +320,117 @@ def _trace_step_from_history_item(
     }
 
 
+_INTERACT_ACTIONS = {
+    "click",
+    "input",
+    "input_text",
+    "type",
+    "send_keys",
+    "go_to_url",
+    "search",
+    "search_page",
+    "scroll",
+    "select_dropdown",
+    "select_dropdown_option",
+    "upload_file",
+    "drag",
+    "switch_tab",
+}
+_BLOCKED_MARKERS = (
+    "captcha",
+    "press & hold",
+    "press and hold",
+    "verification",
+    "access denied",
+    "login wall",
+    "sign in to continue",
+    "sign in required",
+)
+
+
+def _action_name(action: Any) -> str:
+    label = _action_label(action).lower()
+    return label.split("—")[0].split(":")[0].strip()
+
+
+def _same_page(url: str | None, start_url: str | None) -> bool:
+    if not url or not start_url:
+        return True
+
+    def key(raw: str) -> tuple[str, str, str]:
+        try:
+            parsed = urlparse(raw)
+        except Exception:
+            return ("", raw, "")
+        host = (parsed.hostname or "").lower().removeprefix("www.")
+        path = (parsed.path or "/").rstrip("/") or "/"
+        return (host, path, parsed.query or "")
+
+    return key(url) == key(start_url)
+
+
+def _history_interact_count(agent: Any) -> int:
+    history = getattr(agent, "history", None)
+    items = list(getattr(history, "history", None) or [])
+    count = 0
+    for item in items:
+        model_out = getattr(item, "model_output", None)
+        actions = getattr(model_out, "action", None) if model_out is not None else None
+        if actions is None:
+            continue
+        if not isinstance(actions, list):
+            actions = [actions]
+        for action in actions:
+            if _action_name(action) in _INTERACT_ACTIONS:
+                count += 1
+    return count
+
+
+def reject_early_done(agent: Any, start_url: str) -> bool:
+    """Undo a done action that only describes the page the agent opened.
+
+    Returns True when the done flag was cleared so the loop keeps going.
+    A done call stands when the agent left the start URL, interacted at least
+    twice, or the page is clearly blocked.
+    """
+    history = getattr(agent, "history", None)
+    if history is None or not history.is_done():
+        return False
+    items = list(getattr(history, "history", None) or [])
+    if not items:
+        return False
+    results = list(getattr(items[-1], "result", None) or [])
+    if not results:
+        return False
+    last = results[-1]
+    blob = " ".join(
+        str(getattr(last, field, "") or "")
+        for field in ("extracted_content", "long_term_memory", "error")
+    ).lower()
+    state = getattr(items[-1], "state", None)
+    url = str(getattr(state, "url", None) or start_url)
+    blocked = any(marker in blob for marker in _BLOCKED_MARKERS)
+    if blocked or not _same_page(url, start_url) or _history_interact_count(agent) >= 2:
+        return False
+    # success=True is invalid once is_done is cleared.
+    if getattr(last, "success", None) is True:
+        last.success = None
+    last.is_done = False
+    last.error = (
+        "Still on the start page without doing the task. Click, type, or open the "
+        "section the task asks for. Call done only when that page or state is open, "
+        "or when a captcha or login wall blocks you."
+    )
+    print(f"rejected early done on {url}", flush=True)
+    return True
+
+
 def _make_step_hooks(
     screenshot_dir: Path,
     *,
     study_id: str,
     agent_id: str,
+    start_url: str = "",
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
 ):
     """Capture a screenshot with DOM bounding boxes drawn on it, once per step.
@@ -360,6 +468,10 @@ def _make_step_hooks(
         )
 
     async def on_step_end(agent: Any) -> None:
+        try:
+            reject_early_done(agent, start_url)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] early-done check failed: {exc!r}", flush=True)
         state["step"] += 1
         step_no = state["step"]
         session = getattr(agent, "browser_session", None)
@@ -1218,11 +1330,12 @@ async def run_browser_agent(
             f"You are already on {start_url}. Continue from this page.\n"
             f"Task: {task_prompt}\n"
             f"Behave like this persona would — note confusion, pricing concerns, and UX friction.\n"
-            f"Do not judge the site from the landing page alone. If the answer is not visible, "
-            f"click into the nav links (blog, docs, use cases, about, pricing) and read the real "
-            f"pages before forming an opinion. Only conclude something is missing after you have "
-            f"actually looked for it.\n"
-            f"Stop when the task is done or you would realistically give up."
+            f"Do not judge the site from the landing page alone. The task is not done when you "
+            f"can describe the first screen.\n"
+            f"Click, type, and open the specific page or control the task names. "
+            f"Call done only after that page or state is on screen, or when a captcha, "
+            f"login wall, or missing control blocks you. Say which.\n"
+            f"Do not write todo files. Do not wait if the page is already visible.\n"
         )
 
         agent = Agent(
@@ -1231,8 +1344,13 @@ async def run_browser_agent(
             browser_session=browser_session,
             browser_profile=None,
             use_vision=True,
+            vision_detail_level="low",
+            use_thinking=False,
+            flash_mode=True,
+            enable_planning=False,
             use_judge=False,
-            max_actions_per_step=2,
+            step_timeout=80,
+            max_actions_per_step=3,
             calculate_cost=True,
             file_system_path=str(run_dir),
             save_conversation_path=str(run_dir / "conversation"),
@@ -1246,7 +1364,9 @@ async def run_browser_agent(
                 "Never claim to see content that is only 'implied' or absent from the "
                 "current screenshot/DOM. Stay on the product site you were given. "
                 "If a cookie/consent banner blocks the page, Accept all / Agree first, "
-                "then continue the task."
+                "then continue the task. "
+                "Do not call done on the landing page. Do not spend a step writing notes "
+                "or waiting. Act on the task."
             ),
         )
         # Signal UI: agent loop is starting — replace screenshot with live view now.
@@ -1285,6 +1405,7 @@ async def run_browser_agent(
             screenshot_dir,
             study_id=study_id,
             agent_id=agent_id,
+            start_url=start_url,
             on_step=on_step,
         )
         print(

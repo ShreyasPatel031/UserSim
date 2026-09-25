@@ -163,12 +163,83 @@ def _stuck_on_open(run: dict[str, Any], start_host: str) -> bool:
     return final == start_host or start_host.endswith(final) or final.endswith(start_host)
 
 
-def _success(run: dict[str, Any]) -> bool:
-    diff = str(run.get("difficulty") or "").lower()
-    conv = str(run.get("would_convert") or "").lower()
-    if diff == "hard" or conv in {"no", "false"}:
-        return False
-    return diff == "easy" or conv in {"yes", "maybe", "likely", "true"}
+_INTERACT = (
+    "click",
+    "input",
+    "input_text",
+    "type",
+    "send_keys",
+    "go_to_url",
+    "search",
+    "scroll",
+    "select",
+)
+
+
+def _page_key(url: str | None) -> tuple[str, str, str]:
+    if not url:
+        return ("", "", "")
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return ("", url, "")
+    host = (parsed.hostname or "").lower().removeprefix("www.")
+    path = (parsed.path or "/").rstrip("/") or "/"
+    return (host, path, parsed.query or "")
+
+
+def _action_name(step: dict[str, Any]) -> str:
+    label = str(step.get("action") or "").lower()
+    return label.split("—")[0].split(":")[0].strip()
+
+
+def left_start(run: dict[str, Any], start_url: str) -> bool:
+    """True when any recorded URL is a different page than the one the run opened."""
+    start = run.get("site_url") or start_url
+    start_key = _page_key(str(start or ""))
+    urls = [run.get("final_url")]
+    urls.extend(step.get("url") for step in (run.get("trace") or []) if isinstance(step, dict))
+    for url in urls:
+        key = _page_key(str(url or ""))
+        if key != ("", "", "") and key != start_key:
+            return True
+    return False
+
+
+def task_succeeded(run: dict[str, Any], start_url: str) -> bool:
+    """Final-state success: the run interacted and landed off the start page, or typed.
+
+    Describing the homepage, waiting, or writing a note is not success.
+    """
+    names = [_action_name(step) for step in (run.get("trace") or []) if isinstance(step, dict)]
+    interacted = any(name.startswith(_INTERACT) or name in _INTERACT for name in names)
+    typed = any(name in {"input", "input_text", "type", "send_keys"} for name in names)
+    if typed:
+        return True
+    return interacted and left_start(run, start_url)
+
+
+def work_metrics(runs: list[dict[str, Any]], start_url: str) -> dict[str, Any]:
+    if not runs:
+        return {
+            "n": 0,
+            "median_steps": None,
+            "left_start_pct": 0,
+            "task_success_rate": 0,
+            "task_success_n": 0,
+            "left_start_n": 0,
+        }
+    steps = [float(r.get("num_steps") or len(r.get("trace") or []) or 0) for r in runs]
+    left_n = sum(1 for r in runs if left_start(r, start_url))
+    ok_n = sum(1 for r in runs if task_succeeded(r, start_url))
+    return {
+        "n": len(runs),
+        "median_steps": _median(steps),
+        "left_start_n": left_n,
+        "left_start_pct": round(100 * left_n / len(runs)),
+        "task_success_n": ok_n,
+        "task_success_rate": round(100 * ok_n / len(runs)),
+    }
 
 
 def _durations(study: dict[str, Any]) -> dict[str, float]:
@@ -333,6 +404,7 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
         )
 
     comparisons, tie_note = _comparisons(study, runs)
+    product_metrics = work_metrics(product, product_url)
     return {
         "headline": headline[:240],
         "evidence_thin": bool(thin),
@@ -341,6 +413,7 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
         "weaknesses": weaknesses,
         "comparisons": comparisons,
         "tie_note": tie_note,
+        "work_metrics": product_metrics,
     }
 
 
@@ -354,7 +427,9 @@ def _comparisons(
         by_site.setdefault(key, []).append(run)
     rows = []
     for key, group in by_site.items():
-        ok = sum(1 for r in group if _success(r))
+        site_start = str(group[0].get("site_url") or study.get("url") or "")
+        ok = sum(1 for r in group if task_succeeded(r, site_start))
+        left_n = sum(1 for r in group if left_start(r, site_start))
         steps = [float(r.get("num_steps") or len(r.get("trace") or []) or 0) for r in group]
         times = [durations[str(r.get("agent_id"))] for r in group if str(r.get("agent_id")) in durations]
         friction = sum(len(r.get("friction_points") or []) for r in group)
@@ -368,6 +443,7 @@ def _comparisons(
                 "n": len(group),
                 "ok": ok,
                 "success_rate": round(ok / len(group), 3) if group else 0,
+                "left_start_pct": round(100 * left_n / len(group)) if group else 0,
                 "median_steps": _median(steps),
                 "median_time_s": round(_median(times), 1) if _median(times) is not None else None,
                 "friction_n": friction,
@@ -394,7 +470,7 @@ def _comparisons(
             )
             pct = int(round(top * 100))
             tie_note = (
-                f"Success ties at {pct}%. Ordered by fewer steps, then less time, then less friction: {names}."
+                f"Task success ties at {pct}%. Ordered by fewer steps, then less time, then less friction: {names}."
             )
     return rows, tie_note
 

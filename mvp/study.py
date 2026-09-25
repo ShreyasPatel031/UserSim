@@ -454,6 +454,9 @@ Critical rules:
 - Every task must use a persona_id from the list above.
 - Every task must target something that actually appears on the page (a real nav item,
   section, CTA, or feature name). Quote or reference that element in the task prompt.
+- A task is not complete when the user describes the landing page. Each prompt must
+  require opening a specific section, searching, or using a control, and must say
+  what "done" looks like (a heading, a result, or a page that is not the homepage).
 - If the page has no pricing page, do not create a "find the pricing page" task.
 - Do not invent new personas."""
     raw = await _llm_chat(
@@ -2870,7 +2873,7 @@ async def run_study(
                             run = None
                             _outer_wall = max(
                                 45.0,
-                                float(os.environ.get("MVP_AGENT_WALL_S", "120") or "120")
+                                float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
                                 + 45.0,
                             )
                             _agent_task = asyncio.create_task(

@@ -145,6 +145,22 @@ def _trace_anchor(agent_id: object, step: object) -> str:
     return f"trace-{safe}-{step}"
 
 
+def _metrics_html(metrics: object) -> str:
+    if not isinstance(metrics, dict) or not metrics.get("n"):
+        return ""
+    steps = metrics.get("median_steps")
+    steps_txt = "—" if steps is None else f"{float(steps):.1f}"
+    return (
+        '<p class="stat-strip" id="work-metrics">'
+        f"<span><strong>{steps_txt}</strong> median steps</span>"
+        f"<span><strong>{metrics.get('left_start_pct', 0)}%</strong> left the start URL "
+        f"({metrics.get('left_start_n', 0)}/{metrics.get('n')})</span>"
+        f"<span><strong>{metrics.get('task_success_rate', 0)}%</strong> task success on the final state "
+        f"({metrics.get('task_success_n', 0)}/{metrics.get('n')})</span>"
+        "</p>"
+    )
+
+
 def _render_report_html(data: dict) -> str:
     """Server-rendered report. Claims cite a real step screenshot and final URL."""
     data = _with_report_insights(data)
@@ -153,7 +169,7 @@ def _render_report_html(data: dict) -> str:
     if not isinstance(insights, dict) or not insights.get("headline"):
         study_id = _escape_html(data.get("id"))
         return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><title>UserSim — Report</title>
-<link rel="stylesheet" href="/static/styles.css?v=64" /></head><body>
+<link rel="stylesheet" href="/static/styles.css?v=65" /></head><body>
 <header class="site-header"><a class="logo" href="/">UserSim</a>
 <a class="header-back" href="/">← Back to simulation</a></header>
 <main class="main-url-first report-main"><p class="brief-empty">No summary on this study yet.
@@ -216,13 +232,14 @@ def _render_report_html(data: dict) -> str:
             "<tr>"
             f"<td>{_escape_html(row.get('site_label') or row.get('site_key'))}</td>"
             f"<td>{row.get('ok')}/{row.get('n')} ({pct}%)</td>"
+            f"<td>{row.get('left_start_pct', 0)}%</td>"
             f"<td>{steps}</td><td>{time}</td><td>{row.get('friction_n') or 0}</td></tr>"
         )
     if insights.get("tie_note"):
         tie_html = f'<p id="tie-note" class="tie-note">{_escape_html(insights.get("tie_note"))}</p>'
     elif body_rows:
         tie_html = (
-            '<p id="tie-note" class="tie-note">Success rates differ, so steps, time, and friction '
+            '<p id="tie-note" class="tie-note">Task-success rates differ, so steps, time, and friction '
             "are listed beside the rates and are not used to break a tie.</p>"
         )
     else:
@@ -231,7 +248,7 @@ def _render_report_html(data: dict) -> str:
     if body_rows:
         table = (
             '<div class="compare-wrap"><table id="compare-table"><thead><tr>'
-            "<th>Site</th><th>Success</th><th>Median steps</th><th>Median time</th><th>Friction notes</th>"
+            "<th>Site</th><th>Task success</th><th>Left start</th><th>Median steps</th><th>Median time</th><th>Friction notes</th>"
             f"</tr></thead><tbody>{''.join(body_rows)}</tbody></table></div>"
         )
 
@@ -289,7 +306,7 @@ def _render_report_html(data: dict) -> str:
 <html lang="en"><head><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UserSim — Report</title>
-<link rel="stylesheet" href="/static/styles.css?v=64" />
+<link rel="stylesheet" href="/static/styles.css?v=65" />
 <style>.trace-target{{display:none}}.trace-target:target{{display:block}}.cite a.shot{{display:block;padding:0;border:1px solid var(--border);border-radius:6px;background:#111;overflow:hidden}}.cite a.shot img{{width:112px;height:72px;object-fit:cover;object-position:top;display:block}}</style>
 </head><body>
 <header class="site-header"><a class="logo" href="/">UserSim</a>
@@ -300,6 +317,7 @@ def _render_report_html(data: dict) -> str:
 <h2 id="report-title">{title}</h2>
 <p id="headline" class="headline">{_escape_html(insights.get("headline"))}</p>
 {note_html}
+{_metrics_html(insights.get("work_metrics"))}
 <div class="insight-grid">
 <div><h4>Strengths</h4>{claim_cards(insights.get("strengths"), "strength")}</div>
 <div><h4>Weaknesses</h4>{claim_cards(insights.get("weaknesses"), "weakness")}</div>
