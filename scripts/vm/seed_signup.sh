@@ -113,6 +113,53 @@ except Exception as exc:
 PY
 fi
 
+# Wait for shared-project headroom: e2e may hold up to 24/25. Never create when
+# the pool is full — back off instead of fighting e2e for the last slot.
+if [[ "${MVP_SIGNUP_BROWSERBASE}" == "1" ]]; then
+  .venv/bin/python - <<'PY'
+import os, time, json
+from browserbase import Browserbase
+
+cap = int(os.environ.get("BROWSERBASE_MAX_CONCURRENT", "25") or "25")
+# Leave room for e2e (up to 24) + our single signup session.
+reserve_e2e = int(os.environ.get("BROWSERBASE_E2E_RESERVE", "24") or "24")
+max_wait = float(os.environ.get("BROWSERBASE_HEADROOM_WAIT_S", "900") or "900")
+c = Browserbase(api_key=os.environ.get("BROWSERBASE_API_KEY", ""))
+deadline = time.time() + max_wait
+while True:
+    running = list(c.sessions.list(status="RUNNING"))
+    owners = {}
+    for s in running:
+        md = getattr(s, "user_metadata", None) or {}
+        if isinstance(md, str):
+            try:
+                md = json.loads(md)
+            except Exception:
+                md = {}
+        o = (md or {}).get("owner", "?")
+        owners[o] = owners.get(o, 0) + 1
+    n = len(running)
+    # Free slot exists AND e2e is not already above its reserve with us adding one.
+    e2e_n = owners.get("e2e", 0)
+    if n < cap and e2e_n <= reserve_e2e and (n < cap):
+        # Our 1 session needs n+1 <= cap
+        if n + 1 <= cap:
+            print(f"==> bb headroom ok running={n}/{cap} owners={owners}", flush=True)
+            break
+    if time.time() >= deadline:
+        raise SystemExit(
+            f"FATAL: no Browserbase headroom after {max_wait:.0f}s "
+            f"(running={n}/{cap} owners={owners}); e2e reserve={reserve_e2e}"
+        )
+    print(
+        f"==> bb headroom wait running={n}/{cap} owners={owners} "
+        f"(need ≤{cap - 1}; e2e reserve {reserve_e2e})",
+        flush=True,
+    )
+    time.sleep(30)
+PY
+fi
+
 # Display only needed for local Chrome fallback.
 if [[ "${MVP_SIGNUP_BROWSERBASE}" != "1" ]]; then
   export DISPLAY=:99
