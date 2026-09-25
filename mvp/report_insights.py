@@ -211,12 +211,18 @@ def task_succeeded(run: dict[str, Any], start_url: str) -> bool:
 
     Describing the homepage, waiting, or writing a note is not success.
     """
-    names = [_action_name(step) for step in (run.get("trace") or []) if isinstance(step, dict)]
+    steps = [step for step in (run.get("trace") or []) if isinstance(step, dict)]
+    names = [_action_name(step) for step in steps]
     interacted = any(name.startswith(_INTERACT) or name in _INTERACT for name in names)
     typed = any(name in {"input", "input_text", "type", "send_keys"} for name in names)
-    if typed:
+    if typed or (interacted and left_start(run, start_url)):
         return True
-    return interacted and left_start(run, start_url)
+    # Single-page apps (the canvas stays on one URL). A done call after a
+    # click counts only when it names a control, not the landing page.
+    done = " ".join(str(step.get("action") or "") for step in steps if _action_name(step) == "done")
+    if interacted and done and not _is_generic(done):
+        return True
+    return False
 
 
 def work_metrics(runs: list[dict[str, Any]], start_url: str) -> dict[str, Any]:

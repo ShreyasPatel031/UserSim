@@ -67,6 +67,15 @@ class WorkMetricTests(unittest.TestCase):
         self.assertEqual(metrics["task_success_rate"], 100)
         self.assertEqual(metrics["median_steps"], 2)
 
+    def test_done_after_a_click_on_the_same_url_counts(self) -> None:
+        run = _run("a", steps=2, final="https://excalidraw.com/")
+        run["site_url"] = "https://excalidraw.com/"
+        run["trace"][1]["action"] = "done — text=Opened the menu and found Export image"
+        run["trace"][1]["url"] = "https://excalidraw.com/"
+        run["trace"][0]["action"] = "click — index=25"
+        self.assertFalse(left_start(run, "https://excalidraw.com/"))
+        self.assertTrue(task_succeeded(run, "https://excalidraw.com/"))
+
 
 class InsightTests(unittest.TestCase):
     def test_generic_load_notes_are_not_strengths(self) -> None:

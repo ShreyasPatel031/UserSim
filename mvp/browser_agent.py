@@ -1346,7 +1346,10 @@ async def run_browser_agent(
             use_vision=True,
             vision_detail_level="low",
             use_thinking=False,
-            flash_mode=True,
+            # flash_mode emits actions the controller drops ("no handler"),
+            # so the step fails without a click. Planning stays off so the
+            # first action is a click, not a todo file.
+            flash_mode=False,
             enable_planning=False,
             use_judge=False,
             step_timeout=80,
