@@ -188,6 +188,9 @@ def _best_shot(sess: dict) -> dict | None:
             continue
         if bad.search(str(step.get("action") or "")):
             continue
+        # Immediate-start placeholders / blankish warm splash — wait for paint.
+        if step.get("opening_placeholder") or step.get("opening_blankish"):
+            continue
         ranked.append(step)
     ranked.sort(key=lambda s: int(s.get("step") or 0), reverse=True)
     return ranked[0] if ranked else None

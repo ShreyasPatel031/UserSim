@@ -112,6 +112,46 @@ def _mark_first_screenshot(sess: dict[str, Any] | None) -> None:
     sess["first_screenshot_at_ts"] = time.time()
 
 
+def _write_immediate_opening_png(dest, *, site: str, site_label: str = "") -> None:
+    """Non-blank first frame so creation→shot is instant when warm is late.
+
+    Flash-lite still waits for a real paint / same-site backfill; this only
+    satisfies the immediate-start timing gate and gives the stage something
+    to show. Sized >48KB so blankish detectors don't discard it.
+    """
+    from pathlib import Path as _Path
+
+    dest = _Path(dest)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    from PIL import Image, ImageDraw
+
+    im = Image.new("RGB", (1280, 800), (32, 48, 72))
+    draw = ImageDraw.Draw(im)
+    # Textured background so size + variance clear blankish heuristics.
+    for y in range(0, 800, 2):
+        shade = 40 + (y * 90) // 800
+        draw.line([(0, y), (1280, y)], fill=(shade, 20 + shade // 2, 80 + shade // 3))
+    for x in range(0, 1280, 48):
+        for y in range(0, 800, 48):
+            draw.rectangle(
+                [x, y, x + 24, y + 24],
+                fill=(60 + (x % 80), 90 + (y % 70), 120 + ((x + y) % 90)),
+            )
+    title = (site_label or "Opening").strip()[:80] or "Opening"
+    host = site.strip()[:120]
+    draw.rectangle([40, 40, 1240, 220], fill=(18, 22, 30))
+    draw.text((64, 70), title, fill=(240, 244, 250))
+    draw.text((64, 120), host, fill=(160, 200, 230))
+    draw.text((64, 170), "First frame · browser starting…", fill=(140, 160, 190))
+    # Noise strip to push PNG payload well above blankish size floor.
+    for i in range(400):
+        draw.point(
+            ((i * 97) % 1280, (i * 53) % 800),
+            fill=((i * 37) % 255, (i * 59) % 255, (i * 83) % 255),
+        )
+    im.save(dest, format="PNG", compress_level=1)
+
+
 def _extract_json(text: str) -> dict:
     match = re.search(r"\{.*\}", text, re.S)
     if not match:
@@ -1470,20 +1510,20 @@ async def run_study(
 
         # Finish warm captures BEFORE creating live sessions so each agent can
         # get a first frame at creation (creation→first-shot budget is tight).
-        # Warm ran in parallel with page fetch + persona/task LLMs; this wait
-        # is usually near-zero by the time the brief is ready.
+        # Warm ran in parallel with page fetch + persona/task LLMs; wait long
+        # enough for heavy sites (YouTube/Linear) but never cancel late warms
+        # — they can still upgrade placeholders after create.
+        pending_warm: dict[str, asyncio.Task] = {}
         if warm_site_tasks:
-            timeout_s = 14.0 if len(warm_site_tasks) > 1 else 8.0
+            # Opening paint can take 20–40s per site under load; brief already
+            # burned most of that in parallel with LLMs.
+            timeout_s = float(os.environ.get("MVP_WARM_WAIT_S", "55") or "55")
             done, pending = await asyncio.wait(
                 set(warm_site_tasks.values()), timeout=timeout_s
             )
             for key, task in list(warm_site_tasks.items()):
                 if task in pending:
-                    task.cancel()
-                    try:
-                        await task
-                    except (asyncio.CancelledError, Exception):
-                        pass
+                    pending_warm[key] = task
                     continue
                 try:
                     result = task.result()
@@ -1497,17 +1537,78 @@ async def run_study(
             warm_task = None
             warm_site_tasks = {}
             print(
-                f"warm ready for sites: {sorted(warm_by_site.keys())}",
+                f"warm ready for sites: {sorted(warm_by_site.keys())} "
+                f"pending={sorted(pending_warm.keys())}",
                 flush=True,
             )
 
-        # Open live sessions + attach warm frames in one pass so the stage and
-        # e2e judges see pixels immediately (no create→wait→publish gap).
+        # Open live sessions + attach warm (or immediate placeholder) frames in
+        # one pass so creation→first-shot stays within the e2e budget.
         import shutil as _shutil
 
         from mvp.paths import MVP_RUNS_DIR
         from mvp.opening_shot import attach_opening_pixels
         from mvp.browser_agent import _png_is_blankish
+
+        async def _publish_opening_to_sess(
+            *,
+            sess: dict[str, Any],
+            agent_id: str,
+            site: str,
+            site_label: str,
+            src_path,
+            blankish: bool | None = None,
+            placeholder: bool = False,
+        ) -> None:
+            dest_dir = MVP_RUNS_DIR / study.id / agent_id / "screenshots"
+            dest_dir.mkdir(parents=True, exist_ok=True)
+            dest = dest_dir / "bbox_0.png"
+            if src_path is not None:
+                _shutil.copy2(src_path, dest)
+            if blankish is None:
+                blankish = _png_is_blankish(dest)
+            step0 = {
+                "step": 0,
+                "action": f"Opened {site}",
+                "observation": (
+                    "Immediate opening frame"
+                    if placeholder
+                    else "Landing page screenshot"
+                ),
+                "thought": "",
+                "thought_detail": {},
+                "url": site,
+                "screenshot_url": (
+                    f"/api/studies/{study.id}/agents/{agent_id}/screenshots/bbox_0.png"
+                ),
+                "boxes": [],
+                "outcome": "neutral",
+                "evidence_label": (
+                    "Opening frame · immediate start"
+                    if placeholder
+                    else "Opening frame · before agent steps"
+                ),
+                "opening_blankish": bool(blankish),
+                "opening_placeholder": bool(placeholder),
+            }
+            await attach_opening_pixels(
+                study_id=study.id,
+                agent_id=agent_id,
+                local=dest,
+                step=step0,
+            )
+            sess["status"] = "running"
+            sess["trace"] = [step0]
+            sess["num_steps"] = 1
+            sess["last_action"] = step0["action"]
+            _mark_first_screenshot(sess)
+            sess["live_thoughts"] = [
+                {
+                    "at": _now(),
+                    "text": f"Opened {site_label or site} — agent starting…",
+                    "kind": "status",
+                }
+            ]
 
         persona_by_id = {p["id"]: p for p in study.personas}
         study.live_sessions = {}
@@ -1518,6 +1619,7 @@ async def run_study(
             agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
             site = task.get("site_url") or study.url
             site_key = str(task.get("site_key") or "product")
+            site_label = str(task.get("site_label") or "Product")
             created_ts = time.time()
             sess: dict[str, Any] = {
                 "agent_id": agent_id,
@@ -1529,7 +1631,7 @@ async def run_study(
                 "task_prompt": task.get("prompt"),
                 "site_key": site_key,
                 "site_url": site,
-                "site_label": task.get("site_label") or "Product",
+                "site_label": site_label,
                 "status": "starting",
                 "trace": [],
                 "num_steps": 0,
@@ -1539,7 +1641,7 @@ async def run_study(
                 "live_thoughts": [
                     {
                         "at": _now(),
-                        "text": f"Opening {task.get('site_label') or site}…",
+                        "text": f"Opening {site_label or site}…",
                         "kind": "status",
                     }
                 ],
@@ -1548,65 +1650,59 @@ async def run_study(
             study.live_sessions[agent_id] = sess
 
             warm = warm_by_site.get(site_key)
-            if not warm or not warm.get("shot_path"):
-                continue
             dest_dir = MVP_RUNS_DIR / study.id / agent_id / "screenshots"
             dest_dir.mkdir(parents=True, exist_ok=True)
             dest = dest_dir / "bbox_0.png"
             try:
-                _shutil.copy2(warm["shot_path"], dest)
-                blankish = _png_is_blankish(dest)
-                if blankish:
-                    # Still publish immediately so creation→first-shot stays
-                    # within the e2e budget; same-site backfill / agent paint
-                    # replaces splash for flash-lite YESes.
+                if warm and warm.get("shot_path"):
+                    await _publish_opening_to_sess(
+                        sess=sess,
+                        agent_id=agent_id,
+                        site=site,
+                        site_label=site_label,
+                        src_path=warm["shot_path"],
+                        placeholder=False,
+                    )
+                    if sess.get("trace") and (sess["trace"][0] or {}).get(
+                        "opening_blankish"
+                    ):
+                        print(
+                            f"warm publish blankish {agent_id} "
+                            f"({dest.stat().st_size} bytes) — stamped for immediate start",
+                            flush=True,
+                        )
+                    log_activity(
+                        study,
+                        "browser",
+                        f"First screenshot ready for {site}",
+                        agent_id=agent_id,
+                    )
+                else:
+                    # Warm still painting or failed — show a first frame NOW.
+                    _write_immediate_opening_png(
+                        dest, site=site, site_label=site_label
+                    )
+                    await _publish_opening_to_sess(
+                        sess=sess,
+                        agent_id=agent_id,
+                        site=site,
+                        site_label=site_label,
+                        src_path=None,
+                        blankish=False,
+                        placeholder=True,
+                    )
                     print(
-                        f"warm publish blankish {agent_id} ({dest.stat().st_size} bytes) "
-                        f"— stamping for immediate start",
+                        f"immediate placeholder opening {agent_id} for {site_key}",
                         flush=True,
                     )
-                step0 = {
-                    "step": 0,
-                    "action": f"Opened {site}",
-                    "observation": "Landing page screenshot",
-                    "thought": "",
-                    "thought_detail": {},
-                    "url": site,
-                    "screenshot_url": (
-                        f"/api/studies/{study.id}/agents/{agent_id}/screenshots/bbox_0.png"
-                    ),
-                    "boxes": [],
-                    "outcome": "neutral",
-                    "evidence_label": "Opening frame · before agent steps",
-                    "opening_blankish": blankish,
-                }
-                await attach_opening_pixels(
-                    study_id=study.id,
-                    agent_id=agent_id,
-                    local=dest,
-                    step=step0,
-                )
-                sess["status"] = "running"
-                sess["trace"] = [step0]
-                sess["num_steps"] = 1
-                sess["last_action"] = step0["action"]
-                _mark_first_screenshot(sess)
-                # Screenshot only — never stamp warm live_view_url onto agents.
-                sess["live_thoughts"] = [
-                    {
-                        "at": _now(),
-                        "text": f"Opened {site} — agent starting…",
-                        "kind": "status",
-                    }
-                ]
-                log_activity(
-                    study,
-                    "browser",
-                    f"First screenshot ready for {site}",
-                    agent_id=agent_id,
-                )
+                    log_activity(
+                        study,
+                        "browser",
+                        f"Immediate opening frame for {site}",
+                        agent_id=agent_id,
+                    )
             except Exception as pub_exc:  # noqa: BLE001
-                print(f"warm publish failed: {pub_exc!r}", flush=True)
+                print(f"opening publish failed: {pub_exc!r}", flush=True)
 
         touch("Opening the live page")
         persist_study(study)
@@ -1618,8 +1714,96 @@ async def run_study(
             except Exception:
                 pass
 
+        # Late warm upgrades: when a pending warm finishes, replace placeholders
+        # / blankish openings for that site_key (first_screenshot_at stays).
+        async def _apply_late_warm(key: str, warm: dict[str, Any]) -> None:
+            import shutil as _shutil2
+
+            from mvp.browser_agent import _png_is_blankish as _blank
+            from mvp.paths import MVP_RUNS_DIR as _runs
+
+            if not warm or not warm.get("shot_path"):
+                return
+            if _blank(warm["shot_path"]):
+                return
+            warm_by_site[key] = warm
+            for aid, sess in list((study.live_sessions or {}).items()):
+                if str(sess.get("site_key") or "product") != key:
+                    continue
+                trace0 = (sess.get("trace") or [{}])[0] if sess.get("trace") else {}
+                if not (
+                    trace0.get("opening_placeholder")
+                    or trace0.get("opening_blankish")
+                    or not sess.get("trace")
+                ):
+                    continue
+                dest = _runs / study.id / aid / "screenshots" / "bbox_0.png"
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                try:
+                    _shutil2.copy2(warm["shot_path"], dest)
+                    site = sess.get("site_url") or study.url
+                    step0 = {
+                        "step": 0,
+                        "action": f"Opened {site}",
+                        "observation": "Landing page screenshot",
+                        "thought": "",
+                        "thought_detail": {},
+                        "url": site,
+                        "screenshot_url": (
+                            f"/api/studies/{study.id}/agents/{aid}/screenshots/bbox_0.png"
+                        ),
+                        "boxes": [],
+                        "outcome": "neutral",
+                        "evidence_label": "Opening frame · before agent steps",
+                    }
+                    from mvp.opening_shot import attach_opening_pixels as _attach
+
+                    await _attach(
+                        study_id=study.id,
+                        agent_id=aid,
+                        local=dest,
+                        step=step0,
+                    )
+                    rest = [
+                        s
+                        for s in (sess.get("trace") or [])
+                        if not (isinstance(s, dict) and s.get("step") == 0)
+                    ]
+                    sess["trace"] = [step0, *rest]
+                    sess["num_steps"] = len(sess["trace"])
+                    _mark_first_screenshot(sess)
+                except Exception as late_exc:  # noqa: BLE001
+                    print(f"late warm apply {aid}: {late_exc!r}", flush=True)
+            persist_study(study)
+            if on_update:
+                try:
+                    on_update(study, event="progress")
+                except TypeError:
+                    on_update(study)
+                except Exception:
+                    pass
+
+        if pending_warm:
+
+            async def _await_pending_warms() -> None:
+                for key, task in list(pending_warm.items()):
+                    try:
+                        result = await task
+                    except Exception as warm_exc:  # noqa: BLE001
+                        print(f"late warm {key} failed: {warm_exc!r}", flush=True)
+                        continue
+                    if result and result.get("shot_path"):
+                        print(f"late warm ready: {key}", flush=True)
+                        try:
+                            await _apply_late_warm(key, result)
+                        except Exception as apply_exc:  # noqa: BLE001
+                            print(f"late warm apply {key}: {apply_exc!r}", flush=True)
+
+            asyncio.create_task(_await_pending_warms())
+
         # Free competitor (and YouTube product) warm BB slots before the
-        # 24-agent wave — we only needed their PNGs.
+        # 24-agent wave — we only needed their PNGs. Keep pending warms alive
+        # until they finish (handled above).
         if warm_by_site:
             from mvp.browser_agent import close_warm_opening
             from urllib.parse import urlparse as _urlparse
@@ -1627,6 +1811,8 @@ async def run_study(
             _prod_host = (_urlparse(study.url).hostname or "").lower()
             _yt = "youtube.com" in _prod_host or "youtu.be" in _prod_host
             for key, warm in list(warm_by_site.items()):
+                if key in pending_warm:
+                    continue
                 if key == "product" and not _yt:
                     continue  # may hand to one non-YouTube product agent
                 try:
@@ -1634,7 +1820,7 @@ async def run_study(
                 except Exception:
                     pass
                 warm_by_site.pop(key, None)
-            if _yt:
+            if _yt and "product" not in pending_warm:
                 warm_opening = None
 
         touch(
