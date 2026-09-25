@@ -11,7 +11,7 @@
 # so they outlive this VM.
 set -euo pipefail
 
-PARALLEL="${PARALLEL:-2}"
+PARALLEL="${PARALLEL:-1}"
 TIMEOUT_S="${TIMEOUT_S:-420}"
 MAX_STEPS="${MAX_STEPS:-30}"
 
@@ -47,6 +47,14 @@ export MVP_SMS_BACKEND="${MVP_SMS_BACKEND:-ntfy}"
 # Browserbase project defaultTimeout is often 300s; signup agents overrun that
 # and CDP dies with HTTP 410 mid-onboarding. Keep sessions alive for the run.
 export BROWSERBASE_SESSION_TIMEOUT_S="${BROWSERBASE_SESSION_TIMEOUT_S:-1800}"
+# Tag every signup session so e2e cleanup can spare/own them separately.
+export BROWSERBASE_SESSION_OWNER="${BROWSERBASE_SESSION_OWNER:-signup}"
+# Shared BB project: never exceed 1 concurrent signup session.
+export PARALLEL="${PARALLEL:-1}"
+if [[ "${PARALLEL}" -gt 1 ]]; then
+  echo "==> WARNING: PARALLEL=${PARALLEL} forced down to 1 (e2e needs BB headroom)" >&2
+  PARALLEL=1
+fi
 # Only force local Chrome when explicitly requested — that path is the debug fallback.
 if [[ "${MVP_FORCE_LOCAL_BROWSER:-0}" == "1" ]]; then
   export MVP_BROWSER_HEADLESS="${MVP_BROWSER_HEADLESS:-0}"
