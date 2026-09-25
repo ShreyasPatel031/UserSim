@@ -900,19 +900,17 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
 
     # Browserbase native solver (console events) — free when session has solveCaptchas.
     if await wait_for_browserbase_solver(page):
-        if await _recaptcha_solved(page) or not await _challenge_visible(page):
-            # Prefer token proof; accept cleared challenge only if widget no longer blocks.
-            if await _recaptcha_solved(page):
-                return {"ok": True, "method": "browserbase", "detail": "token_after_bb"}
-            if not await _challenge_visible(page) and clicked:
-                # Checkbox-only pass (no image grid). Confirm with a short settle.
-                await asyncio.sleep(1.5)
-                if await _recaptcha_solved(page) or not await _challenge_visible(page):
-                    return {
-                        "ok": True,
-                        "method": "browserbase",
-                        "detail": "challenge_cleared",
-                    }
+        if await _recaptcha_solved(page):
+            return {"ok": True, "method": "browserbase", "detail": "token_after_bb"}
+        # Challenge UI gone with no token is only OK for non-recaptcha interstitials.
+        if not await _challenge_visible(page):
+            info = await detect_sitekey(page)
+            if not info or (info.get("type") or "") not in {"recaptcha", "recaptcha_v2", "hcaptcha"}:
+                return {
+                    "ok": True,
+                    "method": "browserbase",
+                    "detail": "challenge_cleared",
+                }
 
     # Cheapest remaining: give an interstitial a few seconds to vanish.
     if await wait_for_challenge_to_clear(page, timeout_s=8.0):
@@ -930,14 +928,23 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
         if await wait_for_challenge_to_clear(page):
             return {"ok": True, "method": "click", "detail": "cloudflare_checkbox"}
 
-    # Open-source local solvers (optional deps).
+    # Prefer audio STT before image-grid guessing — more reliable for v2.
+    oss_audio = await _try_oss_recaptcha_audio(page)
+    if oss_audio and oss_audio.get("ok") and await _recaptcha_solved(page):
+        return oss_audio
+
+    # Open-source local image solver (optional deps).
     oss_img = await _try_oss_image_solver(page)
     if oss_img and oss_img.get("ok"):
         if await _recaptcha_solved(page) or not await _challenge_visible(page):
             return oss_img
-    oss_audio = await _try_oss_recaptcha_audio(page)
-    if oss_audio and oss_audio.get("ok"):
-        return oss_audio
+
+    # Retry audio once more after image attempts (new challenge round).
+    if not (oss_audio and oss_audio.get("ok")):
+        oss_audio = await _try_oss_recaptcha_audio(page)
+        if oss_audio and oss_audio.get("ok") and await _recaptcha_solved(page):
+            return oss_audio
+
     oss_ocr = await _try_oss_text_ocr(page)
     if oss_ocr and oss_ocr.get("ok"):
         return oss_ocr
@@ -976,6 +983,13 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
         detail = f"{detail};oss_audio={oss_audio.get('detail')}"
     if oss_ocr and not oss_ocr.get("ok"):
         detail = f"{detail};oss_ocr={oss_ocr.get('detail')}"
+    # Explicit failure when a widget is still present without a token.
+    if not ok and await _challenge_visible(page) and not await _recaptcha_solved(page):
+        return {
+            "ok": False,
+            "method": "unsolved",
+            "detail": detail,
+        }
     return {
         "ok": ok,
         "method": "human",

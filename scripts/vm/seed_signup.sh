@@ -70,6 +70,27 @@ echo "==> egress $(timeout 15 curl -sf https://api.ipify.org || echo unknown)"
 echo "==> signup backend: browserbase=$([[ "${MVP_SIGNUP_BROWSERBASE}" == "1" ]] && echo ON || echo OFF) sms=${MVP_SMS_BACKEND}"
 echo "==> signup: $* (parallel=${PARALLEL})"
 
+# Reclaim leaked Browserbase sessions before creating more (cap is easy to hit).
+if [[ "${MVP_SIGNUP_BROWSERBASE}" == "1" && "${MVP_BB_RELEASE_STALE:-1}" == "1" ]]; then
+  .venv/bin/python - <<'PY' || true
+import os, time
+try:
+    from browserbase import Browserbase
+    c = Browserbase(api_key=os.environ.get("BROWSERBASE_API_KEY", ""))
+    items = list(getattr(c.sessions.list(status="RUNNING"), "data", []) or [])
+    for s in items:
+        try:
+            c.sessions.update(s.id, status="REQUEST_RELEASE")
+        except Exception:
+            pass
+    if items:
+        print(f"==> released {len(items)} stale Browserbase session(s)", flush=True)
+        time.sleep(1.5)
+except Exception as exc:
+    print(f"==> bb release skipped: {exc}", flush=True)
+PY
+fi
+
 # Display only needed for local Chrome fallback.
 if [[ "${MVP_SIGNUP_BROWSERBASE}" != "1" ]]; then
   export DISPLAY=:99
