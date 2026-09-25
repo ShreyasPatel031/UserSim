@@ -1380,10 +1380,11 @@ async def run_study(
                 pass
 
         # Warm capture may already be done; if not, do not block agent launch.
-        # YouTube e2e was stalling here forever when Browserbase create hung.
+        # Cap wait tightly — blank-frame retries were burning 20s+ before any agent
+        # started (YouTube e2e first_shot landed at +40s).
         if warm_task is not None:
             try:
-                warm_opening = await asyncio.wait_for(warm_task, timeout=20)
+                warm_opening = await asyncio.wait_for(warm_task, timeout=8)
             except asyncio.TimeoutError:
                 print(
                     "warm opening timed out — launching agents without warm session",
@@ -1448,19 +1449,14 @@ async def run_study(
                     sess["trace"] = [step0]
                     sess["num_steps"] = 1
                     sess["last_action"] = step0["action"]
-                    # Stash live URL and flip live_active ON as soon as pixels exist —
-                    # UI must not sit on "waiting for agent" while BB session is live.
-                    if warm_opening.get("live_view_url"):
-                        sess["live_view_url"] = warm_opening["live_view_url"]
-                    if warm_opening.get("browserbase_session_id"):
-                        sess["browserbase_session_id"] = warm_opening[
-                            "browserbase_session_id"
-                        ]
-                    sess["live_active"] = bool(sess.get("live_view_url"))
+                    # Screenshot only — never stamp the warm live_view_url onto every
+                    # product agent. Sharing one Browserbase DevTools URL across N
+                    # iframes (then closing warm) causes "WebSocket disconnected".
+                    # Each agent mounts live view from its own session when it starts.
                     sess["live_thoughts"] = [
                         {
                             "at": _now(),
-                            "text": f"Opened {site} — live browser on, agent starting…",
+                            "text": f"Opened {site} — agent starting…",
                             "kind": "status",
                         }
                     ]
@@ -2154,8 +2150,19 @@ async def run_study(
                                 and warm_opening is not None
                                 and str(task.get("site_key") or "product") == "product"
                             ):
-                                agent_warm = warm_opening
-                                warm_used = True
+                                # YouTube agents never consume warm sessions (signed-in
+                                # path). Claiming warm anyway leaked the BB slot and
+                                # left DevTools URLs pointing at a zombie session.
+                                _host = (
+                                    str(task.get("site_url") or study.url or "")
+                                    .lower()
+                                )
+                                if (
+                                    "youtube.com" not in _host
+                                    and "youtu.be" not in _host
+                                ):
+                                    agent_warm = warm_opening
+                                    warm_used = True
                             run = await run_browser_agent(
                                 study_id=study.id,
                                 agent_id=agent_id,

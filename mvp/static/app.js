@@ -65,7 +65,9 @@ let _liveFailed = {};
 let _liveMountedSrc = {};
 /** Periodic remount timers — BB DevTools WS dies mid-run without a remount. */
 let _liveKeepAlive = {};
-const LIVE_RECONNECT_MS = 28000;
+// Only used when a live frame has already failed — blind periodic remounts
+// tear down healthy Browserbase DevTools websockets ("WebSocket disconnected").
+const LIVE_RECONNECT_MS = 45000;
 let _activeTraceIdx = 0;
 let _userPickedTrace = false;
 let _activityRendered = 0;
@@ -525,14 +527,14 @@ function ensureLiveKeepAlive(agentId, liveSrc) {
       delete _liveKeepAlive[agentId];
       return;
     }
-    // Force remount — Browserbase DevTools WS dies with "WebSocket disconnected"
-    // and the overlay cannot be clicked cross-origin.
+    // Remount ONLY after a failed load — periodic remounts cause the exact
+    // "WebSocket disconnected / Reconnect DevTools" overlay the user hit.
+    if (!_liveFailed[agentId]) return;
     _liveFailed[agentId] = false;
     _liveReady[agentId] = false;
-    const bust = String(sess.live_view_url || liveSrc);
-    const joiner = bust.includes("?") ? "&" : "?";
-    _liveMountedSrc[agentId] = `${bust}${joiner}_r=${Date.now()}`;
-    // Temporarily clear so paintStageBody sees a URL change.
+    const raw = String(sess.live_view_url || liveSrc).replace(/([?&])_r=\d+/g, "").replace(/[?&]$/, "");
+    const joiner = raw.includes("?") ? "&" : "?";
+    _liveMountedSrc[agentId] = `${raw}${joiner}_r=${Date.now()}`;
     sess.live_view_url = _liveMountedSrc[agentId];
     renderStage(sessions);
   }, LIVE_RECONNECT_MS);

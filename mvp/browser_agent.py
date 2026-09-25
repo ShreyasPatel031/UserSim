@@ -20,6 +20,9 @@ from mvp.paths import MVP_RUNS_DIR
 
 # Enough steps to leave the landing page: land, scroll, open a nav item, read, come back.
 MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
+# Hard wall so hung browser_use waits / DOMWatchdog deadlocks cannot freeze a study.
+# Prior YouTube e2e sat at 0/N done for 400s+ because agent.run had no timeout.
+MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "120") or "120")
 
 
 def _png_is_blankish(path: Path) -> bool:
@@ -481,23 +484,23 @@ async def _emit_opening_frame(
             return False
 
     ok = False
-    for attempt in range(4):
-        await asyncio.sleep(0.6 if attempt == 0 else 1.4)
+    for attempt in range(2):
+        await asyncio.sleep(0.4 if attempt == 0 else 0.9)
         if not await _snap_once():
             continue
         if not _png_is_blankish(shot_path):
             ok = True
             break
         print(
-            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/4) — waiting for paint",
+            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/2) — waiting for paint",
             flush=True,
         )
         if page is not None:
             try:
-                await asyncio.wait_for(page.reload(wait_until="domcontentloaded"), timeout=20)
+                await asyncio.wait_for(page.reload(wait_until="domcontentloaded"), timeout=8)
             except Exception:
                 try:
-                    await asyncio.wait_for(browser_session.navigate_to(url), timeout=30)
+                    await asyncio.wait_for(browser_session.navigate_to(url), timeout=12)
                 except Exception:
                     pass
 
@@ -1098,12 +1101,31 @@ async def run_browser_agent(
             agent_id=agent_id,
             on_step=on_step,
         )
-        print(f"[{agent_id}] agent.run starting (warm={use_warm})", flush=True)
-        history = await agent.run(
-            max_steps=max_steps,
-            on_step_start=on_step_start,
-            on_step_end=on_step_end,
+        print(
+            f"[{agent_id}] agent.run starting (warm={use_warm}, "
+            f"max_steps={max_steps}, wall={MVP_AGENT_WALL_S:.0f}s)",
+            flush=True,
         )
+        history = None
+        try:
+            history = await asyncio.wait_for(
+                agent.run(
+                    max_steps=max_steps,
+                    on_step_start=on_step_start,
+                    on_step_end=on_step_end,
+                ),
+                timeout=max(15.0, MVP_AGENT_WALL_S),
+            )
+        except asyncio.TimeoutError:
+            print(
+                f"[{agent_id}] agent.run hit wall ({MVP_AGENT_WALL_S:.0f}s) — "
+                "returning opening/partial trace",
+                flush=True,
+            )
+            await _pulse(
+                f"Stopped after {int(MVP_AGENT_WALL_S)}s wall — keeping captured frames",
+                thinking=True,
+            )
     finally:
         if browser_session is not None:
             try:
