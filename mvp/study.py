@@ -1393,7 +1393,7 @@ async def run_study(
                 warm_task.cancel()
                 try:
                     await warm_task
-                except Exception:
+                except (asyncio.CancelledError, Exception):
                     pass
                 warm_opening = None
             except Exception as warm_exc:  # noqa: BLE001

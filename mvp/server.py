@@ -370,10 +370,19 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     want_stream = "text/event-stream" in (request.headers.get("accept") or "") or (
         request.headers.get("x-usersim-stream") == "1"
     )
+    # Default OFF: Playwright/browser fetch aborts cancel the request's anyio
+    # cancel scope and were taking STUDY_TASKS with them ("Killed by operator"
+    # ~30s in). Background + client poll is durable; opt into attached stream
+    # only when MVP_ATTACH_STREAM=1 (true serverless edge streaming).
+    attach_stream = os.environ.get("MVP_ATTACH_STREAM", "0").lower() in {
+        "1",
+        "true",
+        "yes",
+    }
 
     # Serverless: stream NDJSON so the brief (competitors / users / tasks) arrives
     # before browser agents finish — cuts perceived time-to-first-content.
-    if IS_VERCEL or want_stream:
+    if attach_stream and (IS_VERCEL or want_stream):
         # Pro plan GA max is 800s — give studies ~13 min (8–12 min typical)
         # with a little headroom for kill/persist cleanup.
         timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "780" if IS_VERCEL else "900"))

@@ -1835,7 +1835,9 @@ form.addEventListener("submit", async (e) => {
           updateProgressUI(data, startedAt);
           renderLiveStudy(data);
           if (!studyStillRunning(data) && data.status === "complete") break;
-          if (data.status === "error") throw new Error(data.error || "Study failed");
+          if (data.status === "error" || data.status === "abandoned") {
+            throw new Error(data.error || data.phase || "Study failed");
+          }
           await new Promise((r) => setTimeout(r, 1500));
         }
       }
