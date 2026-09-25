@@ -318,6 +318,10 @@ STUDY_TASKS: dict[str, asyncio.Task] = {}
 
 
 def study_was_killed(study: StudyState) -> bool:
+    # Emergency escape hatch: competing local servers / GCS abandon-all races
+    # were falsely setting kill_requested ("Killed by operator" with no click).
+    if os.environ.get("MVP_DISABLE_KILL", "").lower() in {"1", "true", "yes"}:
+        return False
     return bool(getattr(study, "kill_requested", False))
 
 
@@ -1143,19 +1147,31 @@ async def run_study(
             except Exception as rel_exc:  # noqa: BLE001
                 print(f"pre-study browserbase release skipped: {rel_exc!r}", flush=True)
 
+            async def _warm_after(
+                *, key: str, url: str, delay_s: float
+            ) -> dict[str, Any] | None:
+                # Stagger session creates so product + rivals are not one burst.
+                if delay_s > 0:
+                    await asyncio.sleep(delay_s)
+                return await warm_opening_session(study_id=f"{study.id}_{key}", url=url)
+
             warm_task = asyncio.create_task(
-                warm_opening_session(study_id=study.id, url=study.url)
+                _warm_after(key="product", url=study.url, delay_s=0.0)
             )
             warm_site_tasks["product"] = warm_task
             # Warm competitors too — under 24-way load their own opening frames
             # often stay on logo-on-black splash and never get a flash-lite YES.
+            # ~0.6s apart: create concurrency is capped, and a thundering herd
+            # is what 429s the shared Browserbase project.
             for i, comp in enumerate((study.competitors or [])[:4]):
                 if not comp:
                     continue
                 key = f"competitor_{i+1}"
                 warm_site_tasks[key] = asyncio.create_task(
-                    warm_opening_session(
-                        study_id=f"{study.id}_{key}", url=str(comp)
+                    _warm_after(
+                        key=key,
+                        url=str(comp),
+                        delay_s=0.55 * (i + 1),
                     )
                 )
             log_activity(
@@ -1692,6 +1708,158 @@ async def run_study(
 
             if "product" in warm_by_site:
                 warm_opening = warm_by_site["product"]
+
+            # Retry sites whose warm create 429'd or timed out. This loop
+            # finishes BEFORE live sessions exist, so created_at_ts / the 5s
+            # first-screenshot clock have not started. Do not loosen that clock.
+            if needed_site_keys - set(warm_by_site):
+                import random as _warm_random
+
+                from mvp.browser_agent import warm_opening_session as _warm_retry
+
+                def _warm_url(key: str) -> str | None:
+                    if key == "product":
+                        return study.url
+                    if not str(key).startswith("competitor_"):
+                        return None
+                    try:
+                        idx = int(str(key).rsplit("_", 1)[-1]) - 1
+                    except ValueError:
+                        return None
+                    comps = list(study.competitors or [])
+                    if 0 <= idx < len(comps) and comps[idx]:
+                        return str(comps[idx])
+                    return None
+
+                try:
+                    pre_attempts = int(
+                        os.environ.get("MVP_WARM_PRECLOCK_RETRIES", "3") or "3"
+                    )
+                except ValueError:
+                    pre_attempts = 3
+                pre_attempts = max(1, min(5, pre_attempts))
+                try:
+                    warm_conc = int(
+                        os.environ.get("MVP_WARM_CREATE_CONCURRENCY", "2") or "2"
+                    )
+                except ValueError:
+                    warm_conc = 2
+                warm_conc = max(1, min(3, warm_conc))
+                warm_sem = asyncio.Semaphore(warm_conc)
+
+                # In-flight warms are already retrying inside create_session.
+                # Collect them before opening a second session for the same site.
+                if pending_warm:
+                    try:
+                        grace = float(
+                            os.environ.get("MVP_WARM_PRECLOCK_GRACE_S", "20") or "20"
+                        )
+                    except ValueError:
+                        grace = 20.0
+                    grace_deadline = time.time() + max(1.0, grace)
+                    inflight = dict(pending_warm)
+                    while inflight and time.time() < grace_deadline:
+                        wait_s = max(0.1, min(5.0, grace_deadline - time.time()))
+                        done, _pending = await asyncio.wait(
+                            set(inflight.values()),
+                            timeout=wait_s,
+                            return_when=asyncio.FIRST_COMPLETED,
+                        )
+                        for key, task in list(inflight.items()):
+                            if task not in done:
+                                continue
+                            inflight.pop(key, None)
+                            pending_warm.pop(key, None)
+                            try:
+                                result = task.result()
+                            except Exception as warm_exc:  # noqa: BLE001
+                                print(
+                                    f"pre-clock warm {key} inflight failed: {warm_exc!r}",
+                                    flush=True,
+                                )
+                                continue
+                            if result and result.get("timing"):
+                                warm_timing[key] = result["timing"]
+                            if _warm_is_real(result):
+                                warm_by_site[key] = result
+                            elif result and result.get("shot_path"):
+                                warm_by_site.setdefault(f"_blank_{key}", result)
+
+                async def _retry_key(key: str, attempt: int) -> None:
+                    url = _warm_url(key)
+                    if not url:
+                        return
+                    async with warm_sem:
+                        await asyncio.sleep(_warm_random.uniform(0.05, 0.4))
+                        try:
+                            result = await asyncio.wait_for(
+                                _warm_retry(
+                                    study_id=f"{study.id}_{key}_pre{attempt}",
+                                    url=url,
+                                ),
+                                timeout=float(
+                                    os.environ.get("MVP_WARM_ATTEMPT_TIMEOUT_S", "75")
+                                    or "75"
+                                ),
+                            )
+                        except Exception as retry_exc:  # noqa: BLE001
+                            print(
+                                f"pre-clock warm {key} attempt {attempt + 1} "
+                                f"failed: {retry_exc!r}",
+                                flush=True,
+                            )
+                            return
+                        if result and result.get("timing"):
+                            warm_timing[key] = result["timing"]
+                        if _warm_is_real(result):
+                            # Drop a blank donor so we don't keep two sessions.
+                            blank = warm_by_site.pop(f"_blank_{key}", None)
+                            if blank:
+                                try:
+                                    from mvp.browser_agent import close_warm_opening
+
+                                    await close_warm_opening(blank)
+                                except Exception:
+                                    pass
+                            warm_by_site[key] = result
+                            print(
+                                f"pre-clock warm {key} real on attempt {attempt + 1}",
+                                flush=True,
+                            )
+                        elif result:
+                            warm_by_site.setdefault(f"_blank_{key}", result)
+
+                for attempt in range(pre_attempts):
+                    missing = [
+                        k
+                        for k in sorted(needed_site_keys)
+                        if k not in warm_by_site and k not in pending_warm
+                    ]
+                    if not missing:
+                        break
+                    delay = min(6.0, 0.7 * (2 ** attempt)) + _warm_random.uniform(
+                        0.15, 0.9
+                    )
+                    print(
+                        f"pre-clock warm retry {attempt + 1}/{pre_attempts} "
+                        f"for {missing} after {delay:.1f}s "
+                        f"(not on the 5s screenshot clock)",
+                        flush=True,
+                    )
+                    log_activity(
+                        study,
+                        "browser",
+                        f"Retrying warm screenshots before agents start: {', '.join(missing)}",
+                    )
+                    await asyncio.sleep(delay)
+                    await asyncio.gather(
+                        *[_retry_key(k, attempt) for k in missing],
+                        return_exceptions=True,
+                    )
+
+                if "product" in warm_by_site:
+                    warm_opening = warm_by_site["product"]
+
             warm_task = None
             warm_site_tasks = {}
             study.activity_log.append(
@@ -2071,7 +2239,15 @@ async def run_study(
                 return result
 
             study.agent_results = []
-            await asyncio.gather(*[_run_snapshot(t) for t in study.tasks])
+            snap_out = await asyncio.gather(
+                *[_run_snapshot(t) for t in study.tasks],
+                return_exceptions=True,
+            )
+            for item in snap_out:
+                if isinstance(item, Exception) and not isinstance(
+                    item, asyncio.CancelledError
+                ):
+                    print(f"snapshot agent failed: {item!r}", flush=True)
         elif _fleet_preferred(test_mode=bool(study.test_mode)):
             from mvp.gcp_fleet import run_study_on_gcp_fleet
 
@@ -2404,7 +2580,15 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                await asyncio.gather(*[_run_snapshot_fallback(t) for t in study.tasks])
+                snap_out = await asyncio.gather(
+                    *[_run_snapshot_fallback(t) for t in study.tasks],
+                    return_exceptions=True,
+                )
+                for item in snap_out:
+                    if isinstance(item, Exception) and not isinstance(
+                        item, asyncio.CancelledError
+                    ):
+                        print(f"snapshot fallback agent failed: {item!r}", flush=True)
             else:
                 # Mark each agent with its chosen URL and launch immediately.
                 # Do not clobber a warm session that already has pixels / live view.
@@ -2923,7 +3107,16 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                await asyncio.gather(*[_run_one(t) for t in study.tasks])
+                # return_exceptions=True: one cancelled/failed agent must not
+                # CancelledError the whole gather ("Killed by operator").
+                agent_out = await asyncio.gather(
+                    *[_run_one(t) for t in study.tasks],
+                    return_exceptions=True,
+                )
+                for item in agent_out:
+                    if isinstance(item, Exception):
+                        print(f"live agent failed: {item!r}", flush=True)
+                        continue
                 try:
                     await backfill_site_opening_shots(study)
                     if study.live_sessions:
@@ -3008,10 +3201,23 @@ async def run_study(
         study.updated_at = _now()
         persist_study(study)
     except asyncio.CancelledError:
-        study.kill_requested = True
-        study.status = "abandoned"
-        study.phase = "Killed"
-        study.error = "Killed by operator"
+        # Only label as operator-kill when the kill switch was actually armed.
+        # Bare task cancellation (server restart, gather teardown) used to
+        # stamp every interrupted study as "Killed by operator".
+        if study_was_killed(study) or getattr(study, "kill_requested", False):
+            study.kill_requested = True
+            study.status = "abandoned"
+            study.phase = "Killed"
+            study.error = "Killed by operator"
+        else:
+            study.status = "abandoned"
+            study.phase = "Cancelled"
+            study.error = study.error or "Study task cancelled"
+            print(
+                f"study {study.id} CancelledError without kill_requested "
+                f"(not treating as operator kill)",
+                flush=True,
+            )
         study.updated_at = _now()
         persist_study(study)
         raise

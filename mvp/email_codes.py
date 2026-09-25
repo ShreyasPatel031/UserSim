@@ -84,11 +84,17 @@ def _body_text(msg: email.message.Message) -> str:
 _CODE_REJECT = re.compile(r"^(\d)\1+$|^(?:012345|123456|654321|999999|000000)\d*$")
 _CODE_NEAR = re.compile(
     r"(?is)(?:"
-    r"(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in)\s+code[^0-9]{0,40}(\d{4,8})"
-    r"|code\s*(?:is|:)\s*(\d{4,8})"
-    r"|(\d{4,8})\s*(?:is\s+your|is\s+the)\b"
-    r"|enter\s+(?:this\s+)?(?:code\s*)?[^0-9]{0,20}(\d{4,8})"
+    r"(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in)\s+code[^0-9A-Za-z]{0,40}([0-9A-Za-z]{4,8})"
+    r"|code\s*(?:is|:)\s*([0-9A-Za-z]{4,8})"
+    r"|([0-9A-Za-z]{4,8})\s*(?:is\s+your|is\s+the)\b"
+    r"|enter\s+(?:this\s+)?(?:code\s*)?[^0-9A-Za-z]{0,20}([0-9A-Za-z]{4,8})"
     r")"
+)
+# Atlassian (and a few others) put alphanumeric OTPs in the subject:
+# "EV7DUU is your verification code".
+_ALPHA_SUBJECT_CODE = re.compile(
+    r"(?i)\b([A-Z0-9]{6,8})\b(?=[^\n]{0,40}\b(?:verification|security|confirmation|one[- ]?time)?\s*code\b)"
+    r"|\b([A-Z0-9]{6,8})\s+is\s+your\s+(?:verification\s+)?code\b",
 )
 
 
@@ -97,6 +103,9 @@ def _find_code(subject: str, body: str) -> str | None:
 
     A bare "first 6-8 digits" scan picks up tracking ids and CSS values; loom
     signup failed on a code of "999999" lifted out of the HTML part.
+
+    Atlassian sends alphanumeric codes (``EV7DUU is your verification code``);
+    those must be accepted or id.atlassian.com signup dies despite mail landing.
     """
     subject = subject or ""
     body = body or ""
@@ -106,16 +115,37 @@ def _find_code(subject: str, body: str) -> str | None:
         return google.group(1)
 
     def _ok(value: str | None) -> str | None:
-        if value and not _CODE_REJECT.match(value):
+        if not value:
+            return None
+        # Prefer mostly-digit codes; allow alphanumeric when length 6-8 and
+        # not a pure reject pattern.
+        if _CODE_REJECT.match(value):
+            return None
+        if value.isdigit() and 4 <= len(value) <= 8:
             return value
+        # Alphanumeric OTPs (Atlassian EV7DUU) must contain a digit so product
+        # names in the subject ("Your Notion signup code") are not the code.
+        if (
+            re.fullmatch(r"[A-Za-z0-9]{6,8}", value)
+            and re.search(r"[A-Za-z]", value)
+            and re.search(r"\d", value)
+        ):
+            return value.upper()
         return None
+
+    # 0) Explicit alphanumeric subject forms (Atlassian).
+    m = _ALPHA_SUBJECT_CODE.search(subject)
+    if m:
+        got = _ok(next(g for g in m.groups() if g))
+        if got:
+            return got
 
     # 1) Subject lines usually read "123456 is your code".
     for cand in re.findall(r"\b(\d{4,8})\b", subject):
         if _ok(cand):
             return cand
 
-    # 2) Digits sitting next to code-ish wording.
+    # 2) Digits / alnum sitting next to code-ish wording.
     for match in _CODE_NEAR.finditer(f"{subject}\n{body}"):
         for group in match.groups():
             if _ok(group):
@@ -125,6 +155,8 @@ def _find_code(subject: str, body: str) -> str | None:
     for line in body.splitlines():
         stripped = line.strip()
         if re.fullmatch(r"\d{4,8}", stripped) and _ok(stripped):
+            return stripped
+        if re.fullmatch(r"[A-Za-z0-9]{6,8}", stripped) and _ok(stripped):
             return stripped
 
     # 4) Last resort: any standalone 6-8 digit run.
@@ -253,6 +285,14 @@ _SKIP_LINK_HINTS = (
     "twitter.com",
     "linkedin.com",
     "instagram.com",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".svg",
+    ".webp",
+    "atl-paas.net/assets/",
+    "post-office-rml-frontend",
 )
 
 
@@ -354,12 +394,18 @@ def _alias_match(recipients: str, alias: str) -> bool:
     alias = (alias or "").strip().lower()
     if not alias:
         return False
-    if alias in recipients:
+    recipients_l = (recipients or "").lower()
+    if alias in recipients_l:
         return True
     # Gmail sometimes rewrites plus-aliases; also accept local+tag without domain.
-    if "+" in alias:
-        local = alias.split("@", 1)[0]
-        return local in recipients
+    local = alias.split("@", 1)[0]
+    if "+" in alias and local in recipients_l:
+        return True
+    # Dotted Gmail locals (ticktick.com rejects '+') — match with/without dots.
+    if "." in local:
+        nodot = local.replace(".", "")
+        if nodot and nodot in recipients_l.replace(".", ""):
+            return True
     return False
 
 
@@ -379,6 +425,11 @@ def latest_signup_code(
     if host_l.startswith("www."):
         host_l = host_l[4:]
     host_token = host_l.split(".")[0] if host_l else ""
+    # id.atlassian.com → also match "atlassian" in From/body.
+    host_aliases = {host_token, host_l}
+    if "atlassian" in host_l:
+        host_aliases.add("atlassian")
+    host_aliases.discard("")
     for msg in _iter_recent_messages(username, app_password, lookback=lookback):
         if not _alias_match(_recipients(msg), alias):
             continue
@@ -390,10 +441,12 @@ def latest_signup_code(
         body = _body_text(msg)
         sender = _decode(msg.get("From"))
         low = f"{subject}\n{body}\n{sender}".lower()
-        if host_token and host_token not in low and host_l not in low:
+        if host_aliases and not any(tok in low for tok in host_aliases):
             continue
-        if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_RE.search(low):
-            continue
+        if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_NEAR.search(low):
+            # Still allow alphanumeric subject codes without numeric _CODE_RE.
+            if not _ALPHA_SUBJECT_CODE.search(subject):
+                continue
         code = _find_code(subject, body)
         if code:
             return code

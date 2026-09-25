@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><title>Sign up | Bland AI</title></head>
+<body>
+<div id="root"></div>
+<script>
+  // React Cloudflare Turnstile. The sitekey is not on .cf-turnstile;
+  // the widget delivers the token only through onSuccess.
+  const Turnstile = {
+    sitekey: "0x4AAAAAAA-wFNpU7mZhDp4F",
+    onSuccess: function (token) { window.__captchaToken = token; }
+  };
+</script>
+</body>
+</html>
