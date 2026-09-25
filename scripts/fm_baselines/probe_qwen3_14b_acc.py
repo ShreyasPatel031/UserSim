@@ -134,14 +134,35 @@ def main() -> None:
     )
     sampling = SamplingParams(temperature=0.0, max_tokens=16)
     preds_path = RESULTS / "predictions.jsonl"
+    done_ids: set[str] = set()
+    if preds_path.exists():
+        for line in preds_path.read_text().splitlines():
+            if not line.strip():
+                continue
+            try:
+                done_ids.add(json.loads(line)["sample_id"])
+            except (json.JSONDecodeError, KeyError):
+                continue
+        print(f"resume already={len(done_ids)}", flush=True)
     started = time.time()
-    n = 0
+    n = len(done_ids)
     bare = 0
-    with preds_path.open("w") as fout:
+    pending = [
+        (prompt, rec)
+        for prompt, rec in zip(prompts, meta)
+        if (
+            f"{rec['study_id']}|{rec['sample_id']}|{rec['condition_num']}|"
+            f"{rec['task_num']}|{rec['participant']}"
+        )
+        not in done_ids
+    ]
+    with preds_path.open("a") as fout:
         chunk = 256
-        for i in range(0, len(prompts), chunk):
-            outs = llm.generate(prompts[i : i + chunk], sampling)
-            for rec, out in zip(meta[i : i + chunk], outs):
+        for i in range(0, len(pending), chunk):
+            batch = pending[i : i + chunk]
+            outs = llm.generate([p for p, _ in batch], sampling)
+            for (rec_prompt, rec), out in zip(batch, outs):
+                del rec_prompt
                 text = out.outputs[0].text if out.outputs else ""
                 pred = None
                 stripped = text.strip()
