@@ -132,7 +132,13 @@ def main() -> None:
         gpu_memory_utilization=0.90,
         trust_remote_code=True,
     )
-    sampling = SamplingParams(temperature=0.0, max_tokens=16)
+    temperature = float(os.environ.get("TEMPERATURE", "0"))
+    top_p = float(os.environ.get("TOP_P", "0.9"))
+    if temperature <= 0:
+        sampling = SamplingParams(temperature=0.0, max_tokens=16)
+    else:
+        sampling = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=16)
+    print(f"sampling temperature={temperature} top_p={top_p}", flush=True)
     preds_path = RESULTS / "predictions.jsonl"
     done_ids: set[str] = set()
     if preds_path.exists():
@@ -204,7 +210,8 @@ def main() -> None:
         "model": MODEL,
         "role": "zero_shot_instruct_probe",
         "thinking": False,
-        "temperature": 0.0,
+        "temperature": temperature,
+        "top_p": top_p if temperature > 0 else None,
         "studies": sorted(keep),
         "n_preds": len(preds),
         "n_parsed": parsed,
