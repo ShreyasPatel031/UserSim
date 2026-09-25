@@ -33,6 +33,12 @@ MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "15") or "15")
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
 
 
+def _study_bb_owner() -> str:
+    from capability.browserbase_client import study_session_owner
+
+    return study_session_owner()
+
+
 def _png_is_blankish(path: Path) -> bool:
     """True when the shot is basically black / empty (loading splash).
 
@@ -1126,7 +1132,7 @@ async def warm_opening_session(
         bb_session = await asyncio.to_thread(
             create_session,
             keep_alive=True,
-            owner="e2e",
+            owner=_study_bb_owner(),
             study_id=study_id,
             **_product_session_call_kwargs(),
         )
@@ -1506,7 +1512,7 @@ async def run_browser_agent(
                 bb_session = await asyncio.to_thread(
                     create_session,
                     keep_alive=True,
-                    owner="e2e",
+                    owner=_study_bb_owner(),
                     study_id=study_id,
                     **_product_session_call_kwargs(),
                 )

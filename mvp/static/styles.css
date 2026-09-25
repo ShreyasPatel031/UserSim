@@ -1020,6 +1020,40 @@ button[type="submit"]:disabled {
   border-bottom: none;
 }
 
+.run-issues {
+  margin-top: 1.25rem;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.run-issues h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.run-issues-note,
+.run-issue-flag {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.run-issues ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.run-issue-flag {
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(148, 163, 184, 0.12);
+}
+
 .priority {
   font-size: 0.65rem;
   text-transform: uppercase;

@@ -403,6 +403,139 @@ def _median(values: list[float]) -> float | None:
     return (ordered[mid - 1] + ordered[mid]) / 2
 
 
+_CAPTCHA_RE = re.compile(
+    r"\bcaptcha\b|turnstile|hcaptcha|recaptcha|arkose|perimeterx|px-captcha",
+    re.I,
+)
+_TIMEOUT_RE = re.compile(
+    r"\btimed?\s*out\b|\btimeout\b|agent wall|deadline exceeded",
+    re.I,
+)
+_SITE_CLASS = ("site-0", "site-1", "site-2", "site-3")
+
+
+def _note_ok(text: str) -> bool:
+    """A product claim must be specific and must not describe a UserSim failure."""
+    if _is_generic(text):
+        return False
+    try:
+        from mvp.competitor_urls import is_harness_text
+
+        if is_harness_text(text):
+            return False
+    except Exception:
+        pass
+    if _CAPTCHA_RE.search(text) or _TIMEOUT_RE.search(text):
+        return False
+    return True
+
+
+def _failure_blob(result: dict[str, Any]) -> str:
+    parts = [
+        str(result.get("browser_error") or ""),
+        str(result.get("mode") or ""),
+        " ".join(str(x) for x in (result.get("friction_points") or [])),
+    ]
+    for step in result.get("trace") or []:
+        if isinstance(step, dict):
+            parts.append(str(step.get("action") or ""))
+            parts.append(str(step.get("observation") or ""))
+    return " ".join(parts)
+
+
+def _usersim_failure(result: dict[str, Any], start_url: str) -> dict[str, str] | None:
+    """Captcha and timeout stops are UserSim failures, even on the right site.
+
+    A run that still completed the task is kept. The captcha sentence is
+    dropped later so it cannot become a product weakness.
+    """
+    if task_succeeded(result, start_url):
+        return None
+    blob = _failure_blob(result)
+    target = str(result.get("site_url") or start_url or "")
+    final = str(result.get("final_url") or "")
+    if _CAPTCHA_RE.search(blob):
+        return {
+            "kind": "captcha",
+            "reason": "Run stopped on a captcha. That is a UserSim limitation, not product friction.",
+            "target_url": target,
+            "final_url": final,
+        }
+    if _TIMEOUT_RE.search(blob):
+        return {
+            "kind": "timeout",
+            "reason": "Run timed out before a product conclusion. That is infrastructure, not product friction.",
+            "target_url": target,
+            "final_url": final,
+        }
+    return None
+
+
+def _issue_row(result: dict[str, Any]) -> dict[str, Any]:
+    issue = dict(result.get("run_issue") or {})
+    ev = _evidence(result, detail=str(issue.get("reason") or ""))
+    issue["agent_id"] = str((ev or {}).get("agent_id") or result.get("agent_id") or "")
+    issue["persona_name"] = str(result.get("persona_name") or "")
+    issue["task_title"] = str(result.get("task_title") or "")
+    issue["task_id"] = str(result.get("task_id") or "")
+    issue["persona_id"] = str(result.get("persona_id") or "")
+    issue["site_key"] = str(result.get("site_key") or "")
+    if ev:
+        issue["step"] = ev.get("step")
+        issue["screenshot_url"] = ev.get("screenshot_url")
+    return issue
+
+
+def _split_runs(study: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Drop harness failures. Return included runs and run-issue rows."""
+    from mvp.competitor_urls import annotate_run_issues, insight_view
+
+    copied = [dict(r) for r in _runs(study)]
+    annotate_run_issues(copied)
+    issues: list[dict[str, Any]] = []
+    for result in copied:
+        if result.get("exclude_from_insights") and isinstance(result.get("run_issue"), dict):
+            issues.append(_issue_row(result))
+            continue
+        start = str(result.get("site_url") or study.get("url") or "")
+        extra = _usersim_failure(result, start)
+        if extra:
+            result["run_issue"] = extra
+            result["exclude_from_insights"] = True
+            issues.append(_issue_row(result))
+    included = [insight_view(r) for r in copied if not r.get("exclude_from_insights")]
+    return included, issues
+
+
+def _pretty_host(url: str) -> str:
+    host = _host(url)
+    if not host:
+        return "Site"
+    parts = [p for p in host.split(".") if p]
+    base = parts[0] if parts else host
+    if base in {"app", "www", "docs", "m"} and len(parts) >= 2:
+        base = parts[-2]
+    return base[:1].upper() + base[1:] if base else "Site"
+
+
+def _site_label(run: dict[str, Any], study: dict[str, Any]) -> str:
+    key = str(run.get("site_key") or "product")
+    if key == "product":
+        return _pretty_host(str(study.get("url") or run.get("site_url") or ""))
+    label = str(run.get("site_label") or "").strip()
+    if label and not label.startswith("http") and label.lower() != "product":
+        return label
+    return _pretty_host(str(run.get("site_url") or ""))
+
+
+def _persona_key(run: dict[str, Any]) -> str:
+    return str(run.get("persona_id") or run.get("persona_name") or "persona")
+
+
+def _task_key(run: dict[str, Any]) -> str:
+    return str(run.get("task_id") or run.get("task_title") or "task")
+
+
 def _claim(text: str, evidence: list[dict[str, Any]]) -> dict[str, Any] | None:
     cited = [e for e in evidence if e.get("agent_id") and e.get("screenshot_url")]
     if not text or not cited:
@@ -411,11 +544,12 @@ def _claim(text: str, evidence: list[dict[str, Any]]) -> dict[str, Any] | None:
 
 
 def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
-    runs = _runs(study)
+    runs, run_issues = _split_runs(study)
     product_url = str(study.get("url") or "")
     host = _host(product_url) or "this product"
+    product_name = _pretty_host(product_url)
     product = [r for r in runs if str(r.get("site_key") or "product") == "product"]
-    if not product:
+    if not product and not run_issues:
         product = [r for r in runs if _host(str(r.get("site_url") or "")) == host]
     start_host = _host(product_url)
 
@@ -434,7 +568,7 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
             notes.append(quote)
         for note in notes:
             text = str(note).strip()
-            if _is_generic(text):
+            if not _note_ok(text):
                 continue
             ev = _evidence(run, detail=text)
             if not ev:
@@ -467,7 +601,7 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
     for run in product:
         for note in run.get("friction_points") or []:
             text = str(note).strip()
-            if _is_generic(text):
+            if not _note_ok(text):
                 continue
             key = " ".join(text.lower().split())[:80]
             ev = _evidence(run, detail=text, prefer_friction=True)
@@ -499,7 +633,13 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
             weaknesses = weaknesses[:3]
 
     thin = (not strengths and not any("friction" in w["claim"].lower() for w in weaknesses)) or stuck_ratio >= 0.75
-    if not product:
+    if not product and run_issues:
+        headline = (
+            f"No usable product runs for {product_name}. "
+            f"{len(run_issues)} run(s) failed inside UserSim and are listed as run issues, not product friction."
+        )
+        thin = True
+    elif not product:
         headline = f"No product-site runs for {host}, so there is nothing to claim."
         thin = True
     elif stuck_ratio >= 0.75 and not strengths:
@@ -528,9 +668,16 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
             "Evidence is thin. Claims below are only what a trace step actually shows. "
             "Nothing else is filled in."
         )
+    if run_issues:
+        extra = (
+            f"{len(run_issues)} run(s) failed inside UserSim "
+            "(wrong site, captcha, timeout, or infrastructure) and are not product friction."
+        )
+        evidence_note = f"{evidence_note} {extra}".strip() if evidence_note else extra
 
     comparisons, tie_note = _comparisons(study, runs)
     product_metrics = work_metrics(product, product_url)
+    layout = _layout(study, runs, comparisons, product_name, thin, run_issues)
     return {
         "headline": headline[:240],
         "evidence_thin": bool(thin),
@@ -540,6 +687,200 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
         "comparisons": comparisons,
         "tie_note": tie_note,
         "work_metrics": product_metrics,
+        "run_issues": run_issues,
+        "product_name": product_name,
+        **layout,
+    }
+
+
+def _layout(
+    study: dict[str, Any],
+    runs: list[dict[str, Any]],
+    comparisons: list[dict[str, Any]],
+    product_name: str,
+    thin: bool,
+    run_issues: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Numbers the Bland-style report draws. Every figure comes from included runs."""
+    ordered = sorted(
+        comparisons,
+        key=lambda row: (0 if row.get("site_key") == "product" else 1, str(row.get("site_key"))),
+    )
+    labels = {str(row.get("site_key")): str(row.get("site_label")) for row in ordered}
+    by_site: dict[str, list[dict[str, Any]]] = {}
+    for run in runs:
+        by_site.setdefault(str(run.get("site_key") or "product"), []).append(run)
+
+    sites: list[dict[str, Any]] = []
+    for i, row in enumerate(ordered):
+        key = str(row.get("site_key"))
+        group = by_site.get(key) or []
+        success_steps: list[float] = []
+        for run in group:
+            start = str(run.get("site_url") or study.get("url") or "")
+            if task_succeeded(run, start):
+                success_steps.append(float(run.get("num_steps") or len(run.get("trace") or []) or 0))
+        sites.append(
+            {
+                "site_key": key,
+                "site_label": labels.get(key) or key,
+                "css": _SITE_CLASS[i % len(_SITE_CLASS)],
+                "n": row.get("n") or 0,
+                "ok": row.get("ok") or 0,
+                "success_pct": int(round(float(row.get("success_rate") or 0) * 100)),
+                "median_steps": row.get("median_steps"),
+                "median_success_steps": _median(success_steps),
+                "median_time_s": row.get("median_time_s"),
+            }
+        )
+
+    task_slots: dict[str, dict[str, Any]] = {}
+    persona_slots: dict[str, dict[str, Any]] = {}
+    for run in runs:
+        sk = str(run.get("site_key") or "product")
+        tk = _task_key(run)
+        pk = _persona_key(run)
+        start = str(run.get("site_url") or study.get("url") or "")
+        ok = task_succeeded(run, start)
+        steps = float(run.get("num_steps") or len(run.get("trace") or []) or 0)
+        task = task_slots.setdefault(
+            tk,
+            {
+                "task_id": tk,
+                "title": str(run.get("task_title") or tk),
+                "prompt": str(run.get("task_prompt") or ""),
+                "sites": {},
+            },
+        )
+        cell = task["sites"].setdefault(sk, {"n": 0, "ok": 0, "steps": []})
+        cell["n"] += 1
+        if ok:
+            cell["ok"] += 1
+            cell["steps"].append(steps)
+        persona = persona_slots.setdefault(
+            pk,
+            {
+                "persona_id": pk,
+                "persona_name": str(run.get("persona_name") or pk),
+                "bio": str(run.get("persona_bio") or ""),
+                "goals": {},
+            },
+        )
+        goal = persona["goals"].setdefault(
+            tk,
+            {
+                "task_id": tk,
+                "title": str(run.get("task_title") or tk),
+                "prompt": str(run.get("task_prompt") or ""),
+                "success": {},
+                "steps": {},
+            },
+        )
+        goal["success"][sk] = bool(goal["success"].get(sk)) or ok
+        if ok:
+            goal["steps"].setdefault(sk, []).append(steps)
+
+    by_task = []
+    for task in task_slots.values():
+        sites_out = {}
+        for sk, cell in task["sites"].items():
+            sites_out[sk] = {
+                "n": cell["n"],
+                "ok": cell["ok"],
+                "median_steps": _median(cell["steps"]) if cell["steps"] else None,
+            }
+        by_task.append(
+            {
+                "task_id": task["task_id"],
+                "title": task["title"],
+                "prompt": task["prompt"],
+                "sites": sites_out,
+            }
+        )
+
+    completed_goals = {site["site_key"]: 0 for site in sites}
+    by_persona = []
+    for persona in persona_slots.values():
+        goals = []
+        for goal in persona["goals"].values():
+            succeeded = [sk for sk, ok in goal["success"].items() if ok]
+            if len(succeeded) == 1:
+                pick = succeeded[0]
+                reason = f"Only {labels.get(pick, pick)} completed this task."
+            elif len(succeeded) > 1:
+                pick = None
+                bits = []
+                for sk in succeeded:
+                    med = _median(goal["steps"].get(sk) or [])
+                    bit = labels.get(sk, sk)
+                    if med is not None:
+                        bit += f" ({med:.0f} steps)"
+                    bits.append(bit)
+                reason = "Completed on " + ", ".join(bits) + ". No single pick."
+            else:
+                pick = None
+                reason = "No included run completed this task."
+            for sk in succeeded:
+                completed_goals[sk] = completed_goals.get(sk, 0) + 1
+            goals.append(
+                {
+                    "task_id": goal["task_id"],
+                    "title": goal["title"],
+                    "prompt": goal["prompt"],
+                    "success": goal["success"],
+                    "pick": pick,
+                    "pick_reason": reason,
+                }
+            )
+        wins = {}
+        for site in sites:
+            wins[site["site_key"]] = sum(1 for g in goals if g["success"].get(site["site_key"]))
+        top = None
+        if wins:
+            best = max(wins.values())
+            leaders = [sk for sk, n in wins.items() if n == best and n > 0]
+            if len(leaders) == 1:
+                top = leaders[0]
+        by_persona.append(
+            {
+                "persona_id": persona["persona_id"],
+                "persona_name": persona["persona_name"],
+                "bio": persona["bio"],
+                "goals": goals,
+                "completed": wins,
+                "top_site": top,
+            }
+        )
+
+    for site in sites:
+        site["goals_completed"] = completed_goals.get(site["site_key"], 0)
+
+    n_personas = len(by_persona)
+    n_tasks = len(by_task)
+    n_goals = sum(len(p["goals"]) for p in by_persona)
+    names = ", ".join(site["site_label"] for site in sites) or product_name
+    metric = (
+        "Task success means the agent interacted and the page state changed "
+        "(a new URL, or a real canvas or text change). Steps and time come from the traces. "
+        "A site is a pick on a goal only when it is the only one that completed that goal."
+    )
+    if run_issues:
+        metric += (
+            f" {len(run_issues)} run(s) failed inside UserSim and are excluded from these rates."
+        )
+    if thin:
+        metric += " Evidence is thin, so only screenshot-backed claims are shown."
+    return {
+        "sites": sites,
+        "by_task": by_task,
+        "by_persona": by_persona,
+        "n_runs": len(runs),
+        "n_goals": n_goals,
+        "n_personas": n_personas,
+        "n_tasks": n_tasks,
+        "n_sites": len(sites),
+        "metric_note": metric,
+        "lede": f"Task success and step traces across {names} — then drill into the screenshots.",
     }
 
 
@@ -561,9 +902,7 @@ def _comparisons(
         latency = _latency_block(group)
         times = [durations[str(r.get("agent_id"))] for r in group if str(r.get("agent_id")) in durations]
         friction = sum(len(r.get("friction_points") or []) for r in group)
-        label = str(group[0].get("site_label") or key)
-        if key == "product":
-            label = _host(str(study.get("url") or "")) or "Product"
+        label = _site_label(group[0], study)
         rows.append(
             {
                 "site_key": key,

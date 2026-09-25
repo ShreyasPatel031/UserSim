@@ -352,23 +352,8 @@ def _render_report_html(data: dict) -> str:
 
 @app.get("/report")
 async def report_page(request: Request):
-    """Serve report UI. When ?study= is set, SSR from GCS so links work without sessionStorage."""
-    study_id = (request.query_params.get("study") or "").strip()
-    if study_id:
-        from mvp.study import STUDIES, load_study_from_gcs, study_to_dict
-
-        data = None
-        study = STUDIES.get(study_id)
-        if study:
-            data = study_to_dict(study)
-        if not data or not data.get("summary"):
-            remote = await asyncio.to_thread(load_study_from_gcs, study_id)
-            if remote:
-                data = remote
-        if not data:
-            raise HTTPException(status_code=404, detail="Study not found")
-        return HTMLResponse(_render_report_html(data))
-
+    """Generic study report. The page shell matches /blandai; data comes from the study API."""
+    del request
     path = STATIC / "report.html"
     if not path.is_file():
         raise HTTPException(status_code=503, detail="Report page not bundled")

@@ -246,9 +246,9 @@ async def _prefetch_browser_sessions(
     if n <= 0:
         return []
     from capability.browserbase_client import (
-        BB_OWNER_E2E,
         create_session,
         ensure_browserbase_full_parallel,
+        study_session_owner,
     )
 
     ensure_browserbase_full_parallel()
@@ -262,7 +262,7 @@ async def _prefetch_browser_sessions(
                     create_session,
                     proxies=False,
                     keep_alive=True,
-                    owner=BB_OWNER_E2E,
+                    owner=study_session_owner(),
                     study_id=study_id,
                 ),
                 timeout=timeout_s,
@@ -565,9 +565,18 @@ async def _duckduckgo_search(query: str, *, limit: int = 8) -> list[dict[str, st
     return results
 
 
-async def invent_competitors(url: str, site_summary: str, page_text: str) -> list[str]:
-    """Find 2 real competitor homepage URLs via web search + LLM selection."""
+async def invent_competitors(
+    url: str,
+    site_summary: str,
+    page_text: str,
+    *,
+    exclude_hosts: set[str] | None = None,
+    want: int = 2,
+) -> list[str]:
+    """Find live competitor homepages via web search, then drop dead or off-site URLs."""
     from urllib.parse import urlparse
+
+    from mvp.competitor_urls import filter_live_competitor_urls, registrable_host
 
     host = (urlparse(url).hostname or "").replace("www.", "")
     product_hint = (site_summary or host or url).strip()[:120]
@@ -605,7 +614,8 @@ Return JSON only:
 Rules:
 - Exactly 2 direct product competitors a real user would also evaluate.
 - Prefer URLs from the search results above. Only use other well-known live public sites if search is empty.
-- Public marketing homepages only (https), no app login URLs.
+- Public marketing homepages only (https), no app login URLs, no review articles.
+- The product must be operating today. Never return a shut-down, parked, or redirected domain.
 - Never invent fake domains.
 """
     raw = await _llm_chat(
@@ -621,47 +631,114 @@ Rules:
         ]
     )
     data = _extract_json(raw)
-    urls: list[str] = []
+    candidates: list[str] = []
+
+    def _push(raw_url: str) -> None:
+        u = (raw_url or "").strip()
+        if not u.startswith("http"):
+            return
+        if registrable_host(u) == registrable_host(url):
+            return
+        if u not in candidates:
+            candidates.append(u)
+
     for row in data.get("competitors") or []:
-        u = (row.get("url") if isinstance(row, dict) else str(row) or "").strip()
-        if u.startswith("http") and u.rstrip("/") != url.rstrip("/"):
-            urls.append(u)
-    if not urls and search_hits:
-        # Fallback: first two distinct search result hosts.
-        for hit in search_hits:
-            u = hit.get("url") or ""
-            if u.startswith("http") and u.rstrip("/") != url.rstrip("/"):
-                urls.append(u)
-            if len(urls) >= 2:
-                break
-    # Still short? Ask the model for well-known public alternatives without search.
-    if len(urls) < 2:
+        _push(row.get("url") if isinstance(row, dict) else str(row or ""))
+    # Homepage-shaped search hits next, so a dead model guess can be replaced.
+    for hit in search_hits:
+        hit_url = hit.get("url") or ""
+        path = (urlparse(hit_url).path or "/").rstrip("/") or "/"
+        if path == "/":
+            _push(hit_url)
+    blocked = set(exclude_hosts or set())
+    live, dropped = await filter_live_competitor_urls(
+        candidates,
+        product_url=url,
+        exclude_hosts=blocked,
+        limit=max(1, want),
+    )
+    blocked |= {registrable_host(u) for u, _reason in dropped if registrable_host(u)}
+    # A dead guess (Height.app) must not stop us from filling the pair.
+    if len(live) < want:
         try:
             raw2 = await _llm_chat(
                 [
                     {
                         "role": "system",
-                        "content": "JSON only. Return real public competitor homepage URLs.",
+                        "content": (
+                            "JSON only. Return real public competitor homepage URLs "
+                            "for products that are operating today. Never return a "
+                            "shut-down or parked domain."
+                        ),
                     },
                     {
                         "role": "user",
                         "content": (
                             f"Product: {url}\nSummary: {site_summary}\n"
-                            f"Need {2 - len(urls)} more competitor homepage URL(s). "
+                            f"Already rejected or in use: {', '.join(sorted(blocked)) or 'none'}\n"
+                            f"Need {want - len(live)} more live competitor homepage URL(s). "
                             'Return {"competitors":[{"name":"...","url":"https://..."}]}'
                         ),
                     },
                 ]
             )
+            extra: list[str] = []
             for row in (_extract_json(raw2).get("competitors") or []):
-                u = (row.get("url") if isinstance(row, dict) else str(row) or "").strip()
-                if u.startswith("http") and u.rstrip("/") != url.rstrip("/") and u not in urls:
-                    urls.append(u)
-                if len(urls) >= 2:
-                    break
+                u = (row.get("url") if isinstance(row, dict) else str(row or "")).strip()
+                if u.startswith("http") and u not in candidates and u not in extra:
+                    extra.append(u)
+            more, _more_dropped = await filter_live_competitor_urls(
+                extra,
+                product_url=url,
+                exclude_hosts=blocked | {registrable_host(u) for u in live},
+                limit=want - len(live),
+            )
+            live.extend(more)
         except Exception:
             pass
-    return urls[:2]
+    return live[:want]
+
+
+async def resolve_study_competitors(
+    seeds: list[str],
+    *,
+    product_url: str,
+    site_summary: str,
+    page_text: str,
+    limit: int = 2,
+) -> tuple[list[str], list[tuple[str, str]]]:
+    """Keep live seeded rivals and replace defunct ones before tasks are written."""
+    from mvp.competitor_urls import filter_live_competitor_urls, registrable_host
+
+    live, dropped = await filter_live_competitor_urls(
+        list(seeds or []),
+        product_url=product_url,
+        limit=limit,
+    )
+    if len(live) >= limit:
+        return live[:limit], dropped
+    exclude = {registrable_host(u) for u in live}
+    exclude.add(registrable_host(product_url))
+    try:
+        invented = await invent_competitors(
+            product_url,
+            site_summary,
+            page_text,
+            exclude_hosts=exclude,
+            want=limit,
+        )
+    except Exception:
+        invented = []
+    used = set(exclude)
+    for url in invented:
+        host = registrable_host(url)
+        if not host or host in used:
+            continue
+        live.append(url)
+        used.add(host)
+        if len(live) >= limit:
+            break
+    return live[:limit], dropped
 
 
 def _site_pairs(product_url: str, competitors: list[str]) -> list[tuple[str, str]]:
@@ -694,11 +771,10 @@ def expand_tasks_for_sites(
             title = task.get("title") or "Task"
             if site_key != "product":
                 clone["title"] = f"{title} (vs {site_url})"
-                prompt = str(task.get("prompt") or title)
-                clone["prompt"] = (
-                    f"{prompt}\n\n"
-                    f"You are evaluating the competitor site {site_url} only. "
-                    f"Stay on that site — do not open the original product or other rivals."
+                from mvp.competitor_urls import competitor_task_prompt
+
+                clone["prompt"] = competitor_task_prompt(
+                    str(task.get("prompt") or title), site_url
                 )
             expanded.append(clone)
     return expanded
@@ -828,11 +904,9 @@ def expand_full_matrix(
                 prompt = str(task.get("prompt") or title)
                 if site_key != "product":
                     clone["title"] = f"{title} (vs {site_url})"
-                    clone["prompt"] = (
-                        f"{prompt}\n\n"
-                        f"You are evaluating the competitor site {site_url} only. "
-                        f"Stay on that site — do not open the original product or other rivals."
-                    )
+                    from mvp.competitor_urls import competitor_task_prompt
+
+                    clone["prompt"] = competitor_task_prompt(prompt, site_url)
                 else:
                     clone["title"] = title
                     clone["prompt"] = prompt
@@ -1003,14 +1077,34 @@ async def synthesize_summary(
     site_summary: str,
     agent_results: list[dict[str, Any]],
 ) -> dict[str, Any]:
+    from mvp.competitor_urls import (
+        product_insight_results,
+        run_issue_lines,
+        scrub_product_summary,
+    )
+
+    issues = [
+        r.get("run_issue")
+        for r in agent_results or []
+        if isinstance(r, dict) and r.get("exclude_from_insights") and isinstance(r.get("run_issue"), dict)
+    ]
+    # Re-classify so fleet workers that skip annotate still exclude bad runs.
+    insight_results = product_insight_results(agent_results)
+    if not issues:
+        issues = [
+            r.get("run_issue")
+            for r in agent_results or []
+            if isinstance(r, dict) and isinstance(r.get("run_issue"), dict)
+        ]
+    issue_lines = run_issue_lines([i for i in issues if isinstance(i, dict)])
     prompt = f"""Synthesize a product research report from parallel simulated user sessions.
 
 Site: {url}
 Segment: {segment}
 Site summary: {site_summary}
 
-Agent session results:
-{json.dumps(_slim_results(agent_results), indent=2)[:14000]}
+Agent session results (product evidence only — navigation and infrastructure failures were removed):
+{json.dumps(_slim_results(insight_results), indent=2)[:14000]}
 
 Return JSON only:
 {{
@@ -1023,62 +1117,102 @@ Return JSON only:
   ],
   "segment_fit_score": 1-10,
   "segment_fit_rationale": "2 sentences"
-}}"""
+}}
+
+Rules:
+- Report only what these sessions show about the product at {url} and its live competitors.
+- Never describe a wrong website, a competitor mix-up, a failed navigation, or a harness/infrastructure error as product friction, a weakness, or a user insight.
+- If a session is missing, do not infer why."""
     raw = await _llm_chat(
         [
-            {"role": "system", "content": "You are a senior UX researcher. JSON only."},
+            {
+                "role": "system",
+                "content": (
+                    "You are a senior UX researcher. JSON only. "
+                    "Navigation and infrastructure failures are not product insights."
+                ),
+            },
             {"role": "user", "content": prompt},
         ],
         temperature=0.3,
     )
-    return _extract_json(raw)
+    summary = scrub_product_summary(_extract_json(raw))
+    summary["run_issues"] = issue_lines
+    return summary
 
 
 def _summary_from_agent_results(agent_results: list[dict[str, Any]]) -> dict[str, Any]:
     """Deterministic fallback when LLM synthesis is unavailable."""
-    if not agent_results:
+    from mvp.competitor_urls import (
+        product_insight_results,
+        run_issue_lines,
+        scrub_product_summary,
+    )
+
+    issues = run_issue_lines(
+        [
+            r.get("run_issue")
+            for r in (agent_results or [])
+            if isinstance(r, dict) and isinstance(r.get("run_issue"), dict)
+        ]
+    )
+    # annotate if the caller has not yet, then ignore harness failures.
+    insight_results = product_insight_results(agent_results)
+    if not issues:
+        issues = run_issue_lines(
+            [
+                r.get("run_issue")
+                for r in (agent_results or [])
+                if isinstance(r, dict) and isinstance(r.get("run_issue"), dict)
+            ]
+        )
+    if not insight_results:
         return {
-            "headline": "Study finished with no agent results",
+            "headline": "Study finished with no product sessions",
             "top_friction": [],
             "top_strengths": [],
             "conversion_outlook": "",
             "recommendations": [],
             "segment_fit_score": 0,
             "segment_fit_rationale": "",
+            "run_issues": issues,
         }
     friction: list[str] = []
     strengths: list[str] = []
-    for r in agent_results:
+    for r in insight_results:
         for item in r.get("friction_points") or []:
             if item and item not in friction:
                 friction.append(str(item))
         for item in r.get("what_was_easy") or []:
             if item and item not in strengths:
                 strengths.append(str(item))
-    first = agent_results[0]
+    first = insight_results[0]
     converts = sum(
         1
-        for r in agent_results
+        for r in insight_results
         if str(r.get("would_convert") or "").lower() in {"yes", "true", "likely"}
     )
-    score = max(1, min(10, round(10 * converts / max(1, len(agent_results)))))
-    return {
-        "headline": (first.get("quote") or first.get("product_feedback") or "Study complete")[:200],
-        "top_friction": friction[:5],
-        "top_strengths": strengths[:5],
-        "conversion_outlook": (
-            f"{converts}/{len(agent_results)} simulated users said they would convert."
-        ),
-        "recommendations": [
-            {
-                "priority": "medium",
-                "action": "Review session recaps for the highest-friction steps",
-                "rationale": "Fallback summary — LLM synthesis was unavailable.",
-            }
-        ],
-        "segment_fit_score": score,
-        "segment_fit_rationale": "Score derived from would-convert answers across sessions.",
-    }
+    score = max(1, min(10, round(10 * converts / max(1, len(insight_results)))))
+    return scrub_product_summary(
+        {
+            "headline": (first.get("quote") or first.get("product_feedback") or "Study complete")[:200],
+            "top_friction": friction[:5],
+            "top_strengths": strengths[:5],
+            "conversion_outlook": (
+                f"{converts}/{len(insight_results)} simulated users said they would convert."
+            ),
+            "recommendations": [
+                {
+                    "priority": "medium",
+                    "action": "Review session recaps for the highest-friction steps",
+                    "rationale": "Fallback summary — LLM synthesis was unavailable.",
+                }
+            ],
+            "segment_fit_score": score,
+            "segment_fit_rationale": "Score derived from would-convert answers across sessions.",
+            "run_issues": issues,
+        }
+    )
 
 
 async def run_study(
@@ -1131,6 +1265,9 @@ async def run_study(
                 return USE_LIVE_BROWSER and _browserbase_configured()
             return _browserbase_configured()
 
+        def _schedule_competitor_warms() -> None:
+            return
+
         if _should_warm_browserbase():
             from mvp.browser_agent import warm_opening_session
 
@@ -1138,11 +1275,13 @@ async def run_study(
             # create_session doesn't hang on a leaked local slot / 429.
             # Never touch Sign Up (owner=signup) or untagged foreign sessions.
             try:
-                from capability.browserbase_client import BB_OWNER_E2E, reset_local_slots
+                from capability.browserbase_client import reset_local_slots, study_session_owner
                 from mvp.kill_switch import kill_all_browserbase
 
                 released = await asyncio.wait_for(
-                    asyncio.to_thread(kill_all_browserbase, owner=BB_OWNER_E2E),
+                    asyncio.to_thread(
+                        kill_all_browserbase, owner=study_session_owner()
+                    ),
                     timeout=12,
                 )
                 reset_local_slots()
@@ -1162,25 +1301,34 @@ async def run_study(
                 _warm_after(key="product", url=study.url, delay_s=0.0)
             )
             warm_site_tasks["product"] = warm_task
-            # Warm competitors too — under 24-way load their own opening frames
-            # often stay on logo-on-black splash and never get a flash-lite YES.
-            # ~0.6s apart: create concurrency is capped, and a thundering herd
-            # is what 429s the shared Browserbase project.
-            for i, comp in enumerate((study.competitors or [])[:4]):
-                if not comp:
-                    continue
-                key = f"competitor_{i+1}"
-                warm_site_tasks[key] = asyncio.create_task(
-                    _warm_after(
-                        key=key,
-                        url=str(comp),
-                        delay_s=0.55 * (i + 1),
+
+            def _schedule_competitor_warms() -> None:
+                # Only after URLs are probed. A dead host must not take a slot,
+                # and a later replacement must not inherit the old session.
+                # ~0.6s apart: a thundering herd 429s the shared Browserbase project.
+                for i, comp in enumerate((study.competitors or [])[:4]):
+                    if not comp:
+                        continue
+                    key = f"competitor_{i+1}"
+                    if key in warm_site_tasks:
+                        continue
+                    warm_site_tasks[key] = asyncio.create_task(
+                        _warm_after(
+                            key=key,
+                            url=str(comp),
+                            delay_s=0.55 * (i + 1),
+                        )
                     )
-                )
+                    log_activity(
+                        study,
+                        "browser",
+                        f"Warming competitor screenshot for {comp}",
+                    )
+
             log_activity(
                 study,
                 "browser",
-                f"Warming first screenshots for {1+len(study.competitors or [])} sites during brief",
+                "Warming first screenshot for the product during brief",
             )
             # Prewarm Vertex ADC so agent.run isn't blocked on first credential load.
             try:
@@ -1289,11 +1437,24 @@ async def run_study(
             )
             touch("Building simulated users")
             _push_brief("brief")
-        elif not study.competitors:
+        else:
             try:
-                study.competitors = await invent_competitors(
-                    study.url, site_hint, page_text
+                resolved, dropped = await resolve_study_competitors(
+                    list(study.competitors or []),
+                    product_url=study.url,
+                    site_summary=site_hint,
+                    page_text=page_text,
                 )
+                for old, reason in dropped:
+                    # The warm-time probe may already have logged the same drop.
+                    msg = f"Dropped competitor {old} — {reason}"
+                    if not any(
+                        (row or {}).get("message") == msg
+                        for row in (study.activity_log or [])
+                        if isinstance(row, dict)
+                    ):
+                        log_activity(study, "plan", msg)
+                study.competitors = resolved
             except Exception as exc:  # noqa: BLE001
                 log_activity(
                     study,
@@ -1307,6 +1468,7 @@ async def run_study(
                 "plan",
                 "Competitors: " + ", ".join(study.competitors),
             )
+            _schedule_competitor_warms()
             touch("Finding competitors")
             _push_brief("brief")
 
@@ -1367,6 +1529,7 @@ async def run_study(
                         "plan",
                         "Competitors: " + ", ".join(study.competitors),
                     )
+                    _schedule_competitor_warms()
             except Exception as exc:  # noqa: BLE001
                 log_activity(
                     study,
@@ -1628,6 +1791,7 @@ async def run_study(
                         close_warm_opening,
                         warm_opening_session,
                     )
+                    from mvp.competitor_urls import rewrite_competitor_task
 
                     def _host(u: str) -> str:
                         return (_urlparse(u).hostname or "").lower().removeprefix(
@@ -1644,6 +1808,7 @@ async def run_study(
                             study.url,
                             site_summary or study.url,
                             page_text or "",
+                            exclude_hosts=set(used_hosts),
                         )
                     except Exception as inv_exc:  # noqa: BLE001
                         print(f"competitor re-invent failed: {inv_exc!r}", flush=True)
@@ -1671,10 +1836,7 @@ async def run_study(
                         # Rewrite already-expanded matrix rows for this site_key.
                         for t in study.tasks or []:
                             if str(t.get("site_key") or "") == key:
-                                t["site_url"] = new_url
-                                t["site_label"] = (
-                                    f"Competitor · {_host(new_url) or new_url}"
-                                )
+                                rewrite_competitor_task(t, new_url)
                         log_activity(
                             study,
                             "plan",
@@ -3164,10 +3326,31 @@ async def run_study(
         except Exception as bf_exc:  # noqa: BLE001
             print(f"backfill_site_opening_shots failed: {bf_exc!r}", flush=True)
 
+        from mvp.competitor_urls import annotate_run_issues, run_issue_lines, scrub_product_summary
+
+        run_issues = annotate_run_issues(study.agent_results)
+        if run_issues:
+            log_activity(
+                study,
+                "run_issue",
+                f"{len(run_issues)} run issue(s) excluded from product insights",
+            )
+            for issue in run_issues:
+                log_activity(
+                    study,
+                    "run_issue",
+                    f"{issue.get('persona_name') or issue.get('agent_id')}: "
+                    f"{issue.get('kind')} — {issue.get('reason')}",
+                    agent_id=issue.get("agent_id"),
+                )
+
         touch("Writing executive summary")
         if study.summary and study.summary.get("headline"):
-            # Already written by fleet finisher.
-            pass
+            # Already written by fleet finisher — still strip harness failures.
+            study.summary = scrub_product_summary(study.summary)
+            study.summary["run_issues"] = run_issue_lines(
+                [r.get("run_issue") for r in study.agent_results if isinstance(r, dict) and r.get("run_issue")]
+            )
         else:
             log_activity(study, "summary", "Synthesizing executive summary from all sessions")
             try:

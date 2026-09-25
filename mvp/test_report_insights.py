@@ -212,5 +212,49 @@ class InsightTests(unittest.TestCase):
         )
 
 
+    def test_wrong_site_and_captcha_are_run_issues_not_friction(self) -> None:
+        wrong = _run(
+            "bad-nav",
+            friction=["Landed on the wrong website instead of Linear."],
+            final="https://asana.com/",
+        )
+        wrong["site_url"] = "https://linear.app/"
+        wrong["final_url"] = "https://asana.com/"
+        wrong["trace"][-1]["url"] = "https://asana.com/"
+        captcha = _run(
+            "captcha-run",
+            friction=["A captcha blocked the signup form."],
+        )
+        real = _run(
+            "real",
+            steps=3,
+            final="https://linear.app/pricing",
+            friction=["The pricing table is hard to compare."],
+        )
+        real["site_url"] = "https://linear.app/"
+        real["trace"][0]["url"] = "https://linear.app/"
+        real["trace"][1]["action"] = "click — index=3"
+        real["trace"][1]["url"] = "https://linear.app/pricing"
+        real["trace"][2]["url"] = "https://linear.app/pricing"
+        study = {
+            "url": "https://linear.app/",
+            "agent_results": [wrong, captcha, real],
+            "activity_log": [],
+        }
+        insights = build_report_insights(study)
+        kinds = {row["kind"] for row in insights["run_issues"]}
+        self.assertIn("navigation", kinds)
+        self.assertIn("captcha", kinds)
+        self.assertEqual(len(insights["run_issues"]), 2)
+        blob = " ".join(w["claim"] for w in insights["weaknesses"]).lower()
+        self.assertNotIn("captcha", blob)
+        self.assertNotIn("wrong website", blob)
+        self.assertTrue(any("pricing" in w["claim"].lower() for w in insights["weaknesses"]))
+        self.assertEqual(insights["weaknesses"][0]["evidence"][0]["agent_id"], "real")
+        self.assertTrue(insights["run_issues"][0]["screenshot_url"])
+        self.assertEqual(insights["product_name"], "Linear")
+        self.assertTrue(insights["sites"])
+
+
 if __name__ == "__main__":
     unittest.main()
