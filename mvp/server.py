@@ -456,6 +456,9 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 study_obj = STUDIES[study.id]
                 payload = await _abandon_timeout(study_obj, timeout_s)
                 await queue.put(payload)
+            except asyncio.CancelledError:
+                # Should be rare — runner is detached from the HTTP stream.
+                raise
             except Exception as exc:  # noqa: BLE001
                 study_obj = STUDIES[study.id]
                 study_obj.status = "error"
@@ -472,21 +475,17 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 await queue.put(payload)
             finally:
                 await queue.put(None)
+                STUDY_TASKS.pop(study.id, None)
+
+        from mvp.study import STUDY_TASKS
+
+        # Detach the runner from the HTTP request BEFORE streaming. Playwright /
+        # browser fetch aborts were cancelling the request-scoped generator and
+        # taking the study with it ("Killed by operator" at ~30s).
+        task = asyncio.create_task(_runner(), name=f"study-{study.id}")
+        STUDY_TASKS[study.id] = task
 
         async def _gen():
-            task = asyncio.create_task(_runner())
-            from mvp.study import STUDY_TASKS
-
-            STUDY_TASKS[study.id] = task
-
-            async def _keep(t: asyncio.Task) -> None:
-                try:
-                    await t
-                except Exception:
-                    pass
-                finally:
-                    STUDY_TASKS.pop(study.id, None)
-
             try:
                 while True:
                     item = await queue.get()
@@ -497,13 +496,12 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                     except Exception:
                         # Never kill the study because one frame failed to encode.
                         continue
+            except asyncio.CancelledError:
+                # Client disconnected — study keeps running in STUDY_TASKS.
+                return
             finally:
-                # Keep the study alive after client disconnect / encode errors.
-                if not task.done():
-                    asyncio.create_task(_keep(task))
-                else:
-                    await task
-                    STUDY_TASKS.pop(study.id, None)
+                # Do not cancel `task`. Agents must outlive the NDJSON stream.
+                pass
 
         return StreamingResponse(
             _gen(),
