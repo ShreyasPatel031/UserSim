@@ -9,7 +9,7 @@ Standing target: live site runs any product URL immediately. After YouTube 24-ag
 | 3 | E-commerce | https://www.etsy.com/ | https://www.ikea.com/ | 8 (2×2×2) | PASS local | `results/e2e2_etsy/` | 8/8 YESes in 378s; first_shot 17.0s |
 | 4 | SaaS landing + signup | https://linear.app/ | https://www.notion.so/ | 8 (2×2×2) | PASS local | `results/e2e2_linear/` | 8/8 YESes in 264.5s; first_shot 29.9s |
 | 5 | News / media | https://www.bbc.com/news | npr.org (+ apnews for 24) | 8 then 24 | PASS local | `results/e2e2_bbc/` + `results/e2e2_bbc24/` | 8/8 in 252.5s; **24/24 in 282.8s**. Reuters bot-walled — use NPR/AP. |
-| 6 | Heavy JS web app | https://excalidraw.com/ | https://tldraw.com/ | 8–24 | RUNNING | `results/e2e2_excalidraw/` | |
+| 6 | Heavy JS web app | https://excalidraw.com/ | https://www.tldraw.com/ | 8 then raising to 24 | PASS 8 local | `results/e2e2_excalidraw/` | 8/8 YESes in 261.5s; first_shot 27.7s. Raising to 24. |
 
 ## Blockers
 - Production https://usersim.vercel.app/ awaits PR #32 merge (prod still app.js?v=86).
