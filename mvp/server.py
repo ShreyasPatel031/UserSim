@@ -917,6 +917,13 @@ def _load_latest_live_study(prefix: str = "retell-live") -> dict | None:
             if f.is_file():
                 candidates.append((f.stat().st_mtime, f))
     
+    # Check results/capability for proven harness output
+    capability_results = ROOT / "results" / "capability"
+    if capability_results.is_dir():
+        for f in capability_results.glob(f"{prefix}*.json"):
+            if f.is_file():
+                candidates.append((f.stat().st_mtime, f))
+    
     if not candidates:
         return None
     
@@ -926,7 +933,7 @@ def _load_latest_live_study(prefix: str = "retell-live") -> dict | None:
     try:
         data = json.loads(path.read_text())
         # Ensure screenshot URLs point to correct location
-        for result in data.get("agent_results") or []:
+        for result in data.get("agent_results") or data.get("runs") or []:
             for step in result.get("trace") or []:
                 shot = step.get("screenshot_url") or ""
                 if shot and "/screenshots/" in shot:
@@ -963,6 +970,25 @@ async def get_experiment(experiment_id: str):
     
     # Special handling for "voice-bakeoff" - load latest bakeoff study
     if experiment_id == "voice-bakeoff" or experiment_id == "bakeoff":
+        # First try proven harness results
+        capability_results = ROOT / "results" / "capability"
+        if capability_results.is_dir():
+            candidates = []
+            for f in capability_results.glob("voice-public-*.json"):
+                if f.is_file():
+                    candidates.append((f.stat().st_mtime, f))
+            if candidates:
+                candidates.sort(reverse=True)
+                _, path = candidates[0]
+                try:
+                    raw = json.loads(path.read_text())
+                    from mvp.transform_bakeoff_results import transform_proven_harness_results
+                    live = transform_proven_harness_results(raw)
+                    return live
+                except Exception as e:
+                    print(f"Error loading proven harness results: {e}", flush=True)
+        
+        # Fall back to old format
         live = _load_latest_live_study("voice-bakeoff")
         if live:
             # Try to synthesize insights if not already done

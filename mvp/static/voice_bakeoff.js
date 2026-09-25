@@ -54,34 +54,39 @@ function renderStatus(summary) {
   const byProduct = summary.by_product || {};
   const totalRuns = summary.total_runs || 0;
   
-  let totalSuccess = 0, totalTimeout = 0, totalFail = 0;
+  let totalSuccess = 0, totalHarness = 0, totalBotWall = 0, totalProductFail = 0;
   for (const p of PLATFORMS) {
     const prod = byProduct[p] || {};
     totalSuccess += prod.success || 0;
-    totalTimeout += prod.harness_timeout || 0;
-    totalFail += prod.failure || 0;
+    totalHarness += prod.harness_failure || prod.harness || prod.harness_timeout || 0;
+    totalBotWall += prod.bot_wall || 0;
+    totalProductFail += prod.product_failure || prod.failure || 0;
   }
 
   const items = [
     { label: "Total runs", value: totalRuns },
     { label: "Successes", value: totalSuccess },
-    { label: "Harness timeouts", value: totalTimeout },
-    { label: "Product failures", value: totalFail },
-    { label: "Accounts created", value: "0 (no credentials)" },
-    { label: "Test link", value: '<a href="/retell">/retell</a>' },
+    { label: "Harness failures", value: totalHarness },
+    { label: "Bot walls", value: totalBotWall },
+    { label: "Product failures", value: totalProductFail },
+    { label: "Page", value: '<a href="/retell">/retell</a>' },
   ];
+
+  let blockerHtml = "";
+  if (totalHarness > 0 || totalBotWall > 0) {
+    blockerHtml = `
+    <div class="blocker">
+      ⚠️ <strong>Note:</strong> Harness failures and bot walls are NOT product issues.
+      Only product failures indicate actual UX problems with the platform.
+    </div>`;
+  }
 
   statusContent.innerHTML = items.map(item =>
     `<div class="status-item">
       <span class="status-label">${escapeHtml(item.label)}</span>
       <span class="status-value">${item.value}</span>
     </div>`
-  ).join("") + `
-    <div class="blocker">
-      ⚠️ <strong>Dashboard tasks blocked:</strong> No test credentials configured (credentials.json missing). 
-      All runs used public marketing site tasks only.
-    </div>
-  `;
+  ).join("") + blockerHtml;
 }
 
 function renderAnalytics(study) {
@@ -139,10 +144,21 @@ function renderAnalytics(study) {
       if (d.timeout > 0) note = ` (${d.timeout} timeout)`;
       return `<td>${d.success}/${d.total}${note}</td>`;
     }).join("");
+    
+    let winnerDisplay;
+    if (winner.startsWith("tie:")) {
+      const tiedPlatforms = winner.replace("tie:", "").split(",");
+      winnerDisplay = `<span class="pill" style="background:#f6f6f6;color:#6b6b6b">TIE: ${tiedPlatforms.map(p => PLAT_LABEL[p] || p).join(", ")}</span>`;
+    } else if (winner === "none") {
+      winnerDisplay = `<span style="color:#6b6b6b">—</span>`;
+    } else {
+      winnerDisplay = pill(winner);
+    }
+    
     return `<tr>
       <td>${escapeHtml(task.slice(0, 35))}</td>
       ${cells}
-      <td>${pill(winner)}</td>
+      <td>${winnerDisplay}</td>
     </tr>`;
   }).join("");
 
