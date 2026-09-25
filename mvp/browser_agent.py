@@ -367,13 +367,23 @@ async def _eval_page(session: Any, expression: str) -> Any:
     page = await asyncio.wait_for(session.get_current_page(), timeout=8)
     if page is None:
         return None
-    return await asyncio.wait_for(page.evaluate(expression), timeout=8)
+    # browser-use Page.evaluate returns a string. Objects arrive as JSON.
+    raw = await asyncio.wait_for(page.evaluate(expression), timeout=8)
+    if isinstance(raw, str):
+        text = raw.strip()
+        if text.startswith("{") or text.startswith("["):
+            try:
+                return json.loads(text)
+            except json.JSONDecodeError:
+                return text
+    return raw
 
 
 async def _page_state(session: Any) -> dict[str, str] | None:
     try:
         raw = await _eval_page(session, _PAGE_STATE_JS)
-    except Exception:
+    except Exception as exc:  # noqa: BLE001
+        print(f"page state capture failed: {exc!r}"[:240], flush=True)
         return None
     if not isinstance(raw, dict):
         return None
@@ -679,7 +689,9 @@ def reject_early_done(agent: Any, start_url: str) -> bool:
     state = getattr(items[-1], "state", None)
     url = str(getattr(state, "url", None) or start_url)
     blocked = any(marker in blob for marker in _BLOCKED_MARKERS)
-    if blocked or not _same_page(url, start_url) or _history_interact_count(agent) >= 2:
+    # One click, drag, or typed field is enough. Requiring two made canvas
+    # runs call done, get rejected, and spend the rest of the step cap repeating it.
+    if blocked or not _same_page(url, start_url) or _history_interact_count(agent) >= 1:
         return False
     # success=True is invalid once is_done is cleared.
     if getattr(last, "success", None) is True:
