@@ -1119,28 +1119,43 @@ async def run_browser_agent(
                 ),
                 timeout=max(15.0, MVP_AGENT_WALL_S),
             )
-        except asyncio.TimeoutError:
+        except (asyncio.TimeoutError, asyncio.CancelledError):
             print(
                 f"[{agent_id}] agent.run hit wall ({MVP_AGENT_WALL_S:.0f}s) — "
                 "returning opening/partial trace",
                 flush=True,
             )
-            await _pulse(
-                f"Stopped after {int(MVP_AGENT_WALL_S)}s wall — keeping captured frames",
-                thinking=True,
-            )
+            try:
+                await _pulse(
+                    f"Stopped after {int(MVP_AGENT_WALL_S)}s wall — keeping captured frames",
+                    thinking=True,
+                )
+            except Exception:
+                pass
+        except Exception as run_exc:  # noqa: BLE001
+            # Prefer partial opening frames over raising into study retry.
+            print(f"[{agent_id}] agent.run failed: {run_exc!r} — returning partial", flush=True)
     finally:
         if browser_session is not None:
             try:
                 await browser_session.kill()
             except Exception:
                 pass
+            browser_session = None
         if profile_clone is not None:
-            await asyncio.to_thread(discard_profile, profile_clone)
+            try:
+                await asyncio.to_thread(discard_profile, profile_clone)
+            except Exception:
+                pass
+            profile_clone = None
         if owns_session and bb_session is not None:
             sid = getattr(bb_session, "id", None)
             if sid:
-                await asyncio.to_thread(close_session, sid)
+                try:
+                    await asyncio.to_thread(close_session, sid)
+                except Exception:
+                    pass
+            bb_session = None
 
     actions = _history_to_actions(history) if history is not None else []
     trace = (

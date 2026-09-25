@@ -2199,63 +2199,108 @@ async def run_study(
                         result = {**run, **feedback, "mode": "browser"}
                     except Exception as exc:  # noqa: BLE001
                         sess["status"] = "error"
-                        # Prefer a fresh Browserbase session over local Chrome.
-                        # Local fallback was attaching to the UserSim debug Chrome
-                        # and agents got stuck on http://127.0.0.1:8787/live.
-                        log_activity(
-                            study,
-                            "agent_error",
-                            f"{persona.get('name')} browser failed — retrying Browserbase",
-                            agent_id=agent_id,
-                            error=str(exc)[:200],
+                        existing = sess.get("trace") or []
+                        has_pixels = any(
+                            (s or {}).get("screenshot_url")
+                            or (s or {}).get("screenshot_data_url")
+                            for s in existing
                         )
-                        try:
-                            run = await run_browser_agent(
-                                study_id=study.id,
-                                agent_id=agent_id,
-                                url=task.get("site_url") or study.url,
-                                task_prompt=task.get("prompt") or task.get("title") or "",
-                                persona=persona,
-                                segment=study.segment,
-                                on_step=lambda step: _on_agent_step(agent_id, step),
-                                bb_session=None,
-                                local=False,
-                            )
-                            sess["status"] = "summarizing"
-                            feedback = await summarize_agent_feedback(
-                                url=study.url,
-                                segment=study.segment,
-                                persona=persona,
-                                task=task,
-                                run=run,
-                            )
-                            outcomes = {
-                                o.get("step"): o.get("outcome")
-                                for o in feedback.pop("step_outcomes", []) or []
-                            }
-                            for step in run.get("trace") or []:
-                                step["outcome"] = outcomes.get(step.get("step")) or "neutral"
-                            result = {**run, **feedback, "mode": "browser_retry"}
-                            result["browser_error"] = (str(exc) or repr(exc))[:300]
-                        except Exception as retry_exc:  # noqa: BLE001
+                        # Opening frames already on stage: finish with partials.
+                        # Full Browserbase retry after wall/CDP death doubles runtime
+                        # (90s → 180s+) and re-exhausts the 25-slot budget.
+                        if has_pixels:
                             log_activity(
                                 study,
                                 "agent_error",
-                                f"{persona.get('name')} Browserbase retry failed — snapshot fallback",
+                                f"{persona.get('name')} browser ended early — "
+                                "keeping captured frames (no retry)",
                                 agent_id=agent_id,
-                                error=str(retry_exc)[:200],
+                                error=str(exc)[:200],
                             )
-                            result = await simulate_agent(
-                                url=study.url,
-                                segment=study.segment,
-                                persona=persona,
-                                task=task,
-                                page_text=page_text,
-                                study_id=study.id,
+                            result = {
+                                "agent_id": agent_id,
+                                "completed": False,
+                                "difficulty": "hard",
+                                "friction_points": [
+                                    "Browser session ended before the task finished"
+                                ],
+                                "what_was_easy": [],
+                                "product_feedback": (
+                                    "Session captured the opening page but the live "
+                                    "browser run stopped early."
+                                ),
+                                "would_convert": "maybe",
+                                "trace": existing,
+                                "actions": [],
+                                "num_steps": len(existing),
+                                "final_url": site,
+                                "visited_urls": [site],
+                                "mode": "browser_partial",
+                                "browser_error": (str(exc) or repr(exc))[:300],
+                            }
+                        else:
+                            # Prefer a fresh Browserbase session over local Chrome.
+                            # Local fallback was attaching to the UserSim debug Chrome
+                            # and agents got stuck on http://127.0.0.1:8787/live.
+                            log_activity(
+                                study,
+                                "agent_error",
+                                f"{persona.get('name')} browser failed — retrying Browserbase",
                                 agent_id=agent_id,
+                                error=str(exc)[:200],
                             )
-                            result["mode"] = "fallback_snapshot"
-                            result["browser_error"] = (str(retry_exc) or repr(retry_exc))[:300]
+                            try:
+                                run = await run_browser_agent(
+                                    study_id=study.id,
+                                    agent_id=agent_id,
+                                    url=task.get("site_url") or study.url,
+                                    task_prompt=task.get("prompt") or task.get("title") or "",
+                                    persona=persona,
+                                    segment=study.segment,
+                                    on_step=lambda step: _on_agent_step(agent_id, step),
+                                    bb_session=None,
+                                    local=False,
+                                )
+                                sess["status"] = "summarizing"
+                                feedback = await summarize_agent_feedback(
+                                    url=study.url,
+                                    segment=study.segment,
+                                    persona=persona,
+                                    task=task,
+                                    run=run,
+                                )
+                                outcomes = {
+                                    o.get("step"): o.get("outcome")
+                                    for o in feedback.pop("step_outcomes", []) or []
+                                }
+                                for step in run.get("trace") or []:
+                                    step["outcome"] = (
+                                        outcomes.get(step.get("step")) or "neutral"
+                                    )
+                                result = {**run, **feedback, "mode": "browser_retry"}
+                                result["browser_error"] = (str(exc) or repr(exc))[:300]
+                            except Exception as retry_exc:  # noqa: BLE001
+                                log_activity(
+                                    study,
+                                    "agent_error",
+                                    f"{persona.get('name')} Browserbase retry failed — "
+                                    "snapshot fallback",
+                                    agent_id=agent_id,
+                                    error=str(retry_exc)[:200],
+                                )
+                                result = await simulate_agent(
+                                    url=study.url,
+                                    segment=study.segment,
+                                    persona=persona,
+                                    task=task,
+                                    page_text=page_text,
+                                    study_id=study.id,
+                                    agent_id=agent_id,
+                                )
+                                result["mode"] = "fallback_snapshot"
+                                result["browser_error"] = (
+                                    (str(retry_exc) or repr(retry_exc))[:300]
+                                )
 
                     result["persona_id"] = persona.get("id")
                     result["persona_name"] = persona.get("name")
