@@ -1,0 +1,20 @@
+{
+  "pass": true,
+  "product_url": "https://www.youtube.com/",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 321.3,
+  "t_first_task_created_s": 55.267,
+  "t_all_tasks_created_s": 59.843,
+  "creation_to_first_shot": {
+    "p50": 0.244,
+    "p95": 0.267,
+    "max": 0.286,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "study_id": "87cd9484-a4b1-47c6-aa79-06dd4aafd201",
+  "smoke_only": false,
+  "fail_reasons": []
+}
