@@ -102,12 +102,38 @@ def _mentions(text: str, bit: str) -> bool:
     return re.search(rf"\b{re.escape(bit)}\b", text) is not None
 
 
+_NEGATIVE_RE = re.compile(
+    r"couldn'?t|could not|can'?t|cannot|hard to|confus|unclear|no clear|"
+    r"didn'?t|did not|no immediate|no path|stuck|difficult|not enough|"
+    r"haven'?t seen|too early|where to start|can(?:no|')t even",
+    re.I,
+)
+_POSITIVE_RE = re.compile(
+    r"\b(clean|modern|professional|easy|clear|simple|fast|intuitive|obvious|helpful)\b",
+    re.I,
+)
+
+
+def _sentiment(text: str) -> str:
+    """pos, neg, or neutral. A complaint is never a strength."""
+    if _NEGATIVE_RE.search(text):
+        return "neg"
+    if _POSITIVE_RE.search(text):
+        return "pos"
+    return "neutral"
+
+
 def _is_generic(text: str) -> bool:
     """True when the note does not name a specific product observation."""
     low = text.lower().strip()
-    if not low:
+    if not low or len(low) < 12:
         return True
-    return not any(_mentions(low, bit) for bit in _CONCRETE)
+    if any(_mentions(low, bit) for bit in _CONCRETE):
+        return False
+    # A full sentence that is not a "page loaded" note is specific enough to cite.
+    if len(low) >= 40 and not any(phrase in low for phrase in _GENERIC):
+        return False
+    return True
 
 
 def _runs(study: dict[str, Any]) -> list[dict[str, Any]]:
@@ -533,7 +559,12 @@ def _persona_key(run: dict[str, Any]) -> str:
 
 
 def _task_key(run: dict[str, Any]) -> str:
-    return str(run.get("task_id") or run.get("task_title") or "task")
+    """Group the same goal across sites. Expanded task ids are unique per site."""
+    title = " ".join(str(run.get("task_title") or "").split()).lower()
+    if title:
+        return title[:120]
+    raw = str(run.get("task_id") or "task")
+    return raw.split("__")[0]
 
 
 def _claim(text: str, evidence: list[dict[str, Any]]) -> dict[str, Any] | None:
@@ -556,11 +587,13 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
     strengths: list[dict[str, Any]] = []
     weaknesses: list[dict[str, Any]] = []
 
-    # Concrete likes. First-screen look comments collapse into one cited claim.
+    # Concrete likes. Complaints are weaknesses even when they were stored as a quote.
     look_words = ("clean", "modern", "professional")
     look_evs: list[dict[str, Any]] = []
     like_groups: dict[str, list[dict[str, Any]]] = {}
     like_label: dict[str, str] = {}
+    friction_groups: dict[str, list[dict[str, Any]]] = {}
+    friction_label: dict[str, str] = {}
     for run in product:
         notes = list(run.get("what_was_easy") or [])
         quote = str(run.get("quote") or "").strip()
@@ -569,6 +602,16 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
         for note in notes:
             text = str(note).strip()
             if not _note_ok(text):
+                continue
+            if _sentiment(text) == "neg":
+                key = " ".join(text.lower().split())[:80]
+                ev = _evidence(run, detail=text, prefer_friction=True)
+                if not ev:
+                    continue
+                friction_groups.setdefault(key, []).append(ev)
+                friction_label.setdefault(key, text)
+                continue
+            if _sentiment(text) != "pos":
                 continue
             ev = _evidence(run, detail=text)
             if not ev:
@@ -596,8 +639,6 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
         if len(strengths) >= 3:
             break
 
-    friction_groups: dict[str, list[dict[str, Any]]] = {}
-    friction_label: dict[str, str] = {}
     for run in product:
         for note in run.get("friction_points") or []:
             text = str(note).strip()

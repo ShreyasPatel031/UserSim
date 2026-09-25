@@ -255,6 +255,27 @@ class InsightTests(unittest.TestCase):
         self.assertEqual(insights["product_name"], "Linear")
         self.assertTrue(insights["sites"])
 
+    def test_negative_quote_is_a_weakness_not_a_strength(self) -> None:
+        study = {
+            "url": "https://linear.app/",
+            "agent_results": [
+                _run(
+                    "t1__p1__product",
+                    quote="I couldn't figure out how to create an issue from the landing page.",
+                    easy=["The design is clean and modern."],
+                    friction=["No clear path to create an issue from the landing page."],
+                )
+            ],
+            "activity_log": [],
+        }
+        insights = build_report_insights(study)
+        strength_blob = " ".join(c["claim"] for c in insights["strengths"]).lower()
+        weak_blob = " ".join(c["claim"] for c in insights["weaknesses"]).lower()
+        self.assertIn("clean", strength_blob)
+        self.assertNotIn("couldn't", strength_blob)
+        self.assertIn("issue", weak_blob)
+        self.assertTrue(insights["weaknesses"][0]["evidence"][0]["screenshot_url"])
+
 
 if __name__ == "__main__":
     unittest.main()
