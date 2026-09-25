@@ -151,7 +151,7 @@ def _render_report_html(data: dict) -> str:
     ):
         study_id = _escape_html(data.get("id"))
         return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><title>UserSim — Report</title>
-<link rel="stylesheet" href="/static/styles.css?v=64" /></head><body>
+<link rel="stylesheet" href="/static/styles.css?v=65" /></head><body>
 <header class="site-header"><a class="logo" href="/">UserSim</a>
 <a class="header-back" href="/">← Back to simulation</a></header>
 <main class="main-url-first report-main"><p class="brief-empty">No summary on this study yet.
@@ -184,16 +184,28 @@ def _render_report_html(data: dict) -> str:
     for r in agents if isinstance(agents, list) else []:
         if not isinstance(r, dict):
             continue
+        from mvp.competitor_urls import is_harness_text
+
         friction = "".join(
-            f"<li>{_escape_html(x)}</li>" for x in (r.get("friction_points") or [])
+            f"<li>{_escape_html(x)}</li>"
+            for x in (r.get("friction_points") or [])
+            if not is_harness_text(x)
         ) or "<li>—</li>"
         easy = "".join(
             f"<li>{_escape_html(x)}</li>" for x in (r.get("what_was_easy") or [])
         ) or "<li>—</li>"
+        issue = r.get("run_issue") if isinstance(r.get("run_issue"), dict) else None
+        issue_html = ""
+        if issue:
+            issue_html = (
+                '<p class="run-issue-flag">Run issue — excluded from product insights. '
+                f"{_escape_html(issue.get('reason'))}</p>"
+            )
         agent_html.append(
             '<article class="agent-card">'
             f"<h3>{_escape_html(r.get('persona_name') or 'Simulated user')} — "
             f"{_escape_html(r.get('task_title') or 'Task')}</h3>"
+            f"{issue_html}"
             f'<div class="meta"><span class="tag difficulty-{_escape_html(r.get("difficulty") or "medium")}">'
             f'{_escape_html(r.get("difficulty") or "medium")}</span>'
             f'<span class="tag">would convert: {_escape_html(r.get("would_convert") or "?")}</span>'
@@ -215,7 +227,7 @@ def _render_report_html(data: dict) -> str:
 <html lang="en"><head><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UserSim — Report</title>
-<link rel="stylesheet" href="/static/styles.css?v=64" />
+<link rel="stylesheet" href="/static/styles.css?v=65" />
 </head><body>
 <header class="site-header"><a class="logo" href="/">UserSim</a>
 <a class="header-back" href="/">← Back to simulation</a></header>
@@ -232,6 +244,10 @@ def _render_report_html(data: dict) -> str:
 <div><strong>Segment fit</strong><p>{_escape_html(summary.get("segment_fit_rationale"))}</p></div></div>
 <div class="conversion"><h4>Conversion outlook</h4><p>{_escape_html(summary.get("conversion_outlook") or "—")}</p></div>
 <div class="recommendations"><h4>Recommendations</h4><div id="recommendations">{"".join(rec_html) or "—"}</div></div>
+<div class="run-issues"><h4>Run issues</h4>
+<p class="run-issues-note">Navigation and infrastructure failures. These are not product friction.</p>
+<ul>{lis(summary.get("run_issues")) if summary.get("run_issues") else "<li>None</li>"}</ul>
+</div>
 </section>
 <section class="panel"><h2>Session recaps</h2>
 <div class="agents-grid">{"".join(agent_html) or "<p>—</p>"}</div>
@@ -254,7 +270,11 @@ async def report_page(request: Request):
         if study:
             data = study_to_dict(study)
         if not data or not data.get("summary"):
+            from mvp.study import load_local_study
+
             remote = await asyncio.to_thread(load_study_from_gcs, study_id)
+            if not remote:
+                remote = await asyncio.to_thread(load_local_study, study_id)
             if remote:
                 data = remote
         if not data:
@@ -612,7 +632,13 @@ async def get_study(study_id: str):
             hydrate_live_sessions_from_gcs, study_id, data.get("live_sessions")
         )
         return data
+    from mvp.study import load_local_study
+
     remote = await asyncio.to_thread(load_study_from_gcs, study_id)
+    if not remote:
+        remote = load_local_study(study_id)
+        if remote:
+            return remote
     if remote:
         remote["live_sessions"] = await asyncio.to_thread(
             hydrate_live_sessions_from_gcs, study_id, remote.get("live_sessions")

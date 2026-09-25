@@ -26,6 +26,12 @@ MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
 MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "120") or "120")
 
 
+def _study_bb_owner() -> str:
+    from capability.browserbase_client import study_session_owner
+
+    return study_session_owner()
+
+
 def _png_is_blankish(path: Path) -> bool:
     """True when the shot is basically black / empty (loading splash).
 
@@ -705,7 +711,7 @@ async def warm_opening_session(
             create_session,
             proxies=bool(proxies),
             keep_alive=True,
-            owner="e2e",
+            owner=_study_bb_owner(),
             study_id=study_id,
         )
         t_bb_create = time.time() - t0
@@ -1085,7 +1091,7 @@ async def run_browser_agent(
                     create_session,
                     proxies=False,
                     keep_alive=True,
-                    owner="e2e",
+                    owner=_study_bb_owner(),
                     study_id=study_id,
                 )
             session_url = getattr(bb_session, "session_url", None)
