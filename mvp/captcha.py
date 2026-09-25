@@ -94,6 +94,21 @@ async def detect_sitekey(page: Any) -> dict[str, Any] | None:
         else out.type = 'recaptcha';
         out.action = g.getAttribute('data-action') || null;
       }
+      // Invisible hCaptcha / Turnstile often only expose the key on iframe src.
+      if (!out.sitekey) {
+        for (const f of document.querySelectorAll('iframe[src]')) {
+          const src = f.src || '';
+          let m = src.match(/[?&#]sitekey=([^&?#]+)/i);
+          if (!m) m = src.match(/sitekey=([0-9a-f-]{36})/i);
+          if (m) {
+            out.sitekey = decodeURIComponent(m[1]);
+            if (/hcaptcha/i.test(src)) out.type = 'hcaptcha';
+            else if (/turnstile|challenges\\.cloudflare/i.test(src)) out.type = 'turnstile';
+            else out.type = 'recaptcha';
+            break;
+          }
+        }
+      }
       if (!out.sitekey) {
         const scripts = [...document.scripts].map(s => s.src || '');
         for (const src of scripts) {
@@ -103,6 +118,7 @@ async def detect_sitekey(page: Any) -> dict[str, Any] | None:
         }
       }
       if (!out.sitekey && window.grecaptcha) out.type = out.type || 'recaptcha';
+      if (!out.sitekey && window.hcaptcha) out.type = out.type || 'hcaptcha';
       return out.sitekey ? out : null;
     })()
     """
@@ -916,6 +932,79 @@ async def _click_recaptcha_checkbox(page: Any) -> bool:
         return False
 
 
+async def _click_hcaptcha_checkbox(page: Any) -> bool:
+    """Click an hCaptcha checkbox (visible or invisible host) when present."""
+    try:
+        for frame in page.frames:
+            url = (frame.url or "").lower()
+            if "hcaptcha" not in url:
+                continue
+            if "challenge" in url and "checkbox" not in url:
+                continue
+            for sel in (
+                "#checkbox",
+                "[role=checkbox]",
+                "#anchor-state",
+                ".check",
+                "div#checkbox",
+            ):
+                try:
+                    loc = frame.locator(sel).first
+                    if await loc.count() == 0:
+                        continue
+                    await loc.click(timeout=3000, force=True)
+                    await page.wait_for_timeout(2000)
+                    return True
+                except Exception:
+                    continue
+    except Exception:
+        pass
+    try:
+        frame = page.frame_locator('iframe[src*="hcaptcha"]').first
+        await frame.locator("#checkbox, [role=checkbox]").first.click(timeout=4000, force=True)
+        await page.wait_for_timeout(2000)
+        return True
+    except Exception:
+        return False
+
+
+async def _trigger_signup_submit(page: Any) -> bool:
+    """Click email Sign up / Create account to engage invisible captchas.
+
+    Avoid SSO buttons (Continue with GitHub/Google) — those match a naive
+    ``continue`` regex and yank the session off the email signup form.
+    """
+    try:
+        clicked = await page.evaluate(
+            """() => {
+              const btns = [...document.querySelectorAll('button[type=submit], button')];
+              const scored = [];
+              for (const b of btns) {
+                const label = ((b.innerText || b.getAttribute('aria-label') || '') + '').toLowerCase().trim();
+                if (!label) continue;
+                if (/github|google|gitlab|sso|saml|chatgpt|apple|azure|microsoft|bitbucket/.test(label)) continue;
+                let score = 0;
+                if (b.type === 'submit') score += 5;
+                if (/^sign\\s*up$/.test(label) || label === 'create account' || label === 'register') score += 10;
+                if (/sign\\s*up|create\\s*account|register|join/.test(label)) score += 3;
+                // Do NOT match bare 'continue' — that hits OAuth CTAs.
+                if (score > 0) scored.push({b, score, label});
+              }
+              scored.sort((a,b) => b.score - a.score);
+              if (!scored.length) return false;
+              const b = scored[0].b;
+              try { b.scrollIntoView({block:'center'}); } catch (e) {}
+              b.click();
+              return scored[0].label;
+            }"""
+        )
+        if clicked:
+            await page.wait_for_timeout(2500)
+        return bool(clicked)
+    except Exception:
+        return False
+
+
 async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
     """Full stack: settle → BB wait → click → OSS → solver API → human.
 
@@ -929,19 +1018,50 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
     if clicked and await _recaptcha_solved(page):
         return {"ok": True, "method": "checkbox", "detail": "anchor_checked"}
 
+    # hCaptcha (Supabase invisible + challenge iframe).
+    hc_clicked = await _click_hcaptcha_checkbox(page)
+    if not hc_clicked:
+        # Invisible hCaptcha often only arms after the signup CTA is pressed.
+        await _trigger_signup_submit(page)
+        hc_clicked = await _click_hcaptcha_checkbox(page)
+
+    # Longer BB wait when an hCaptcha iframe is present.
+    info_early = await detect_sitekey(page)
+    is_hcaptcha = bool(
+        (info_early or {}).get("type") == "hcaptcha"
+        or await page.evaluate(
+            """() => !!document.querySelector('iframe[src*="hcaptcha"], .h-captcha')"""
+        )
+    )
+    bb_timeout = float(os.environ.get("MVP_CAPTCHA_BB_WAIT_S", "45"))
+    if is_hcaptcha:
+        bb_timeout = max(bb_timeout, float(os.environ.get("MVP_CAPTCHA_HCAPTCHA_BB_WAIT_S", "90")))
+
     # Browserbase native solver (console events) — free when session has solveCaptchas.
-    if await wait_for_browserbase_solver(page):
+    if await wait_for_browserbase_solver(page, timeout_s=bb_timeout):
         if await _recaptcha_solved(page):
             return {"ok": True, "method": "browserbase", "detail": "token_after_bb"}
         # Challenge UI gone with no token is only OK for non-recaptcha interstitials.
         if not await _challenge_visible(page):
-            info = await detect_sitekey(page)
-            if not info or (info.get("type") or "") not in {"recaptcha", "recaptcha_v2", "hcaptcha"}:
-                return {
-                    "ok": True,
-                    "method": "browserbase",
-                    "detail": "challenge_cleared",
-                }
+            info = info_early or await detect_sitekey(page)
+            url = (getattr(page, "url", "") or "").lower()
+            left_for_oauth = any(
+                x in url
+                for x in ("github.com", "accounts.google", "login.microsoft", "apple.com")
+            )
+            captcha_type = (info or {}).get("type") or ""
+            if (
+                not left_for_oauth
+                and captcha_type not in {"recaptcha", "recaptcha_v2", "hcaptcha"}
+                and not await _recaptcha_solved(page)
+            ):
+                blocked = await page_looks_captcha_blocked(page)
+                if not blocked.get("widget_present") and not blocked.get("blocked"):
+                    return {
+                        "ok": True,
+                        "method": "browserbase",
+                        "detail": "challenge_cleared",
+                    }
 
     # Cheapest remaining: give an interstitial a few seconds to vanish.
     if await wait_for_challenge_to_clear(page, timeout_s=8.0):
