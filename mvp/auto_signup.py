@@ -373,6 +373,29 @@ _COOKIE_HOST_ALIASES: dict[str, frozenset[str]] = {
     "loom.com": frozenset({"loom.com", "atlassian.com", "atlassian.net"}),
 }
 
+# Names that look auth-y but are bot/WAF/consent noise (keep in sync with seed_status).
+_AUTH_COOKIE_NOISE = (
+    "analytics",
+    "ab.storage",
+    "_ga",
+    "_gid",
+    "csrf",
+    "xsrf",
+    "anti_forgery",
+    "intercom",
+    "anonymous",
+    "guest",
+    "logged-out",
+    "logged_out",
+    "waf",
+    "aws-waf",
+    "recaptcha",
+    "ajs_anonymous",
+    "__cuid",
+    "g_state",
+    "bifrost",
+)
+
 
 def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
     """True if Playwright storage_state carries an auth-looking cookie for host.
@@ -384,16 +407,14 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
     if "." in want:
         want = ".".join(want.split(".")[-2:])
     aliases = _COOKIE_HOST_ALIASES.get(want, frozenset({want}))
-    auth_hints = ("sess", "auth", "token", "login", "sid", "jwt", "credential", "cloud")
-    noise = (
-        "analytics",
-        "ab.storage",
-        "_ga",
-        "_gid",
-        "csrf",
-        "xsrf",
-        "anti_forgery",
-        "intercom",
+    # Prefer real product session markers over WAF / marketing tokens.
+    auth_hints = ("sess", "auth", "token", "login", "sid", "jwt", "credential")
+    strong = (
+        "cloud.session.token",
+        "atl.session",
+        "session.token",
+        "descope",
+        "refresh",
     )
     for cookie in state.get("cookies") or []:
         domain = str(cookie.get("domain") or "").lstrip(".").lower()
@@ -401,11 +422,19 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
         etld = ".".join(parts[-2:]) if len(parts) >= 2 else domain
         if etld not in aliases and not any(a in domain for a in aliases):
             continue
-        name = str(cookie.get("name") or "").lower()
-        if any(n in name for n in noise):
+        name = str(cookie.get("name") or "")
+        low = name.lower()
+        if any(n in low for n in _AUTH_COOKIE_NOISE):
             continue
-        if any(h in name for h in auth_hints):
+        if any(s in low for s in strong):
             return True
+        if any(h in low for h in auth_hints):
+            # Require httpOnly or a non-empty value so marketing tokens don't count.
+            if cookie.get("httpOnly") or (cookie.get("value") or ""):
+                # Skip short opaque WAF-ish values without session semantics.
+                if low in {"token", "sid"} and len(str(cookie.get("value") or "")) < 20:
+                    continue
+                return True
     return False
 
 
