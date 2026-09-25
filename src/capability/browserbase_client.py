@@ -49,8 +49,26 @@ ensure_browserbase_full_parallel()
 # Developer project default is 25 concurrent (see Browserbase project.concurrency).
 # Create pacing is off unless BROWSERBASE_THROTTLE=1.
 _SLOT = threading.Semaphore(int(os.environ.get("BROWSERBASE_MAX_CONCURRENT", "25")))
+_SLOT_LOCK = threading.Lock()
+_HELD_IDS: set[str] = set()
 _CREATE_LOCK = threading.Lock()
 _LAST_CREATE_MONO = 0.0
+
+
+def reset_local_slots() -> None:
+    """Rebuild the process semaphore after remote sessions were released.
+
+    create_session holds a slot until close_session. Abandoned studies leak
+    those slots and the next study deadlocks on acquire.
+    """
+    global _SLOT
+    try:
+        cap = int(os.environ.get("BROWSERBASE_MAX_CONCURRENT", "25") or "25")
+    except ValueError:
+        cap = 25
+    with _SLOT_LOCK:
+        _SLOT = threading.Semaphore(max(1, cap))
+        _HELD_IDS.clear()
 
 
 def _create_interval_s() -> float:
@@ -96,11 +114,30 @@ def browserbase_max_workers(requested: int) -> int:
     return max(1, min(requested, cap))
 
 
+# Shared Browserbase project with the Sign Up agent. Tag every session we
+# create so leftover cleanup can release only ours (never signup / untagged).
+BB_OWNER_E2E = "e2e"
+BB_OWNER_SIGNUP = "signup"
+
+
 @dataclass(frozen=True)
 class BrowserbaseSession:
     id: str
     connect_url: str
     session_url: str
+
+
+def session_user_metadata(
+    *,
+    owner: str = BB_OWNER_E2E,
+    study_id: str | None = None,
+    **extra: Any,
+) -> dict[str, object]:
+    """Build Browserbase userMetadata for ownership / study scoping."""
+    meta: dict[str, object] = {"owner": str(owner), **extra}
+    if study_id:
+        meta["study_id"] = str(study_id)
+    return meta
 
 
 def _is_rate_limit(exc: BaseException) -> bool:
@@ -114,17 +151,47 @@ def create_session(
     keep_alive: bool = False,
     solve_captchas: bool | None = None,
     advanced_stealth: bool | None = None,
+    user_metadata: dict[str, Any] | None = None,
+    owner: str | None = None,
+    study_id: str | None = None,
 ) -> BrowserbaseSession:
     """Create a Browserbase session at full Developer concurrency.
 
     Walks down feature flags on 402/403 so Hobby plans still get a session:
     proxies / advanced stealth / captcha-solve are optional. Session create
     pacing is off unless BROWSERBASE_THROTTLE=1.
+
+    Pass ``user_metadata`` (or ``owner`` / ``study_id``) so shared-project
+    cleanup can release only our sessions. Callers that omit metadata stay
+    untagged — kill_all will leave those alone.
     """
     ensure_browserbase_full_parallel()
-    _SLOT.acquire()
+    try:
+        slot_wait = float(os.environ.get("BROWSERBASE_SLOT_WAIT_S", "20") or "20")
+    except ValueError:
+        slot_wait = 20.0
+    held = _SLOT.acquire(timeout=max(1.0, slot_wait))
+    if not held:
+        print(
+            "Browserbase local slot acquire timed out — creating anyway (stale slots)",
+            flush=True,
+        )
     client = Browserbase(api_key=browserbase_api_key())
     pid = browserbase_project_id()
+
+    meta: dict[str, object] | None = None
+    if user_metadata:
+        meta = {str(k): v for k, v in user_metadata.items()}
+    if owner is not None or study_id is not None:
+        base = session_user_metadata(
+            owner=owner or BB_OWNER_E2E,
+            study_id=study_id,
+        )
+        if meta:
+            base.update(meta)
+            meta = base
+        else:
+            meta = base
 
     # Captcha / stealth: env default, explicit kwargs override.
     default_solve: bool | None = None
@@ -183,6 +250,8 @@ def create_session(
             kwargs["project_id"] = pid
         if flags.get("proxies"):
             kwargs["proxies"] = True
+        if meta:
+            kwargs["user_metadata"] = meta
         browser_settings: dict[str, Any] = {}
         if flags.get("solve_captchas"):
             browser_settings["solveCaptchas"] = True
@@ -208,18 +277,54 @@ def create_session(
             try:
                 return client.sessions.create(**flat)
             except TypeError:
+                # Drop metadata last — older SDKs may not accept it.
                 basic = {
                     k: v
                     for k, v in flat.items()
-                    if k in {"keep_alive", "project_id", "proxies", "api_timeout", "timeout"}
+                    if k
+                    in {
+                        "keep_alive",
+                        "project_id",
+                        "proxies",
+                        "api_timeout",
+                        "timeout",
+                        "user_metadata",
+                    }
                 }
-                return client.sessions.create(**basic)
+                try:
+                    return client.sessions.create(**basic)
+                except TypeError:
+                    bare = {
+                        k: v
+                        for k, v in basic.items()
+                        if k in {"keep_alive", "project_id", "proxies", "api_timeout", "timeout"}
+                    }
+                    return client.sessions.create(**bare)
+
+    def _create_once_bounded(kwargs: dict[str, Any], *, timeout_s: float) -> Any:
+        """Don't let the Browserbase SDK retry loop block a study forever."""
+        box: dict[str, Any] = {}
+
+        def _run() -> None:
+            try:
+                box["session"] = _create_once(kwargs)
+            except Exception as exc:  # noqa: BLE001
+                box["exc"] = exc
+
+        worker = threading.Thread(target=_run, daemon=True, name="bb-create")
+        worker.start()
+        worker.join(max(5.0, timeout_s))
+        if worker.is_alive():
+            raise TimeoutError(f"Browserbase session create timed out after {timeout_s:.0f}s")
+        if "exc" in box:
+            raise box["exc"]
+        return box["session"]
 
     last_exc: BaseException | None = None
     try:
         for flags in unique_attempts:
             kwargs = _build_kwargs(flags)
-            for attempt in range(8):
+            for attempt in range(3):
                 try:
                     global _LAST_CREATE_MONO
                     with _CREATE_LOCK:
@@ -228,9 +333,12 @@ def create_session(
                             wait = interval - (time.monotonic() - _LAST_CREATE_MONO)
                             if wait > 0:
                                 time.sleep(wait)
-                        session = _create_once(kwargs)
+                        session = _create_once_bounded(kwargs, timeout_s=25)
                         _LAST_CREATE_MONO = time.monotonic()
                     sid = session.id
+                    if held:
+                        with _SLOT_LOCK:
+                            _HELD_IDS.add(sid)
                     return BrowserbaseSession(
                         id=sid,
                         connect_url=session.connect_url,
@@ -254,13 +362,14 @@ def create_session(
                         )
                     ):
                         break
-                    if _is_rate_limit(exc) and attempt < 7:
-                        time.sleep(min(65, 8 * (attempt + 1)))
+                    if _is_rate_limit(exc) and attempt < 2:
+                        time.sleep(min(8, 2 * (attempt + 1)))
                         continue
                     raise BrowserbaseRateLimitError(str(exc)[:400]) from exc
         raise BrowserbaseRateLimitError(str(last_exc)[:400] if last_exc else "session create failed")
     except Exception:
-        _SLOT.release()
+        if held:
+            _SLOT.release()
         raise
 
 
@@ -271,7 +380,10 @@ def close_session(session_id: str) -> None:
     except Exception:
         pass
     finally:
-        _SLOT.release()
+        with _SLOT_LOCK:
+            if session_id in _HELD_IDS:
+                _HELD_IDS.discard(session_id)
+                _SLOT.release()
 
 
 def session_live_view_url(session_id: str) -> str | None:

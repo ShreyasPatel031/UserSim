@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8"/>
+<title>e2e five threads</title>
+<style>
+body{font:15px/1.4 ui-sans-serif,system-ui;margin:24px;background:#111;color:#eee}
+img{max-width:100%;height:auto;border:1px solid #333;background:#000}
+figure{margin:0 0 1.25rem}
+figcaption{font-size:12px;color:#bbb;margin-top:.35rem}
+h1,h2{font-weight:600}
+.pass{color:#4ade80}.fail{color:#f87171}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.step{margin:0 0 1.5rem;padding-bottom:1rem;border-bottom:1px solid #333}
+</style></head><body>
+<h1>5-thread e2e <span class=fail>FAIL</span></h1>
+<pre>{
+  &quot;study_id&quot;: &quot;090bb1a0-91a6-46d6-b7fc-4bdfdb992925&quot;,
+  &quot;elapsed_s&quot;: 694.0,
+  &quot;after_tasks_s&quot;: 0.69,
+  &quot;fails&quot;: [
+    &quot;t1__p1__competitor_1 missing landing PNG&quot;,
+    &quot;t2__p1__competitor_1 missing landing PNG&quot;,
+    &quot;t1__p1__competitor_1 step 0 PNG missing and no live view&quot;,
+    &quot;t2__p1__competitor_1 step 0 PNG missing and no live view&quot;,
+    &quot;t1__p1__competitor_1 step 1 PNG missing and no live view&quot;,
+    &quot;t1__p1__competitor_1 step 1: live screen required, still showing screenshot only&quot;,
+    &quot;t1__p1__competitor_1 step 1: pixels identical to step 0 (screen did not change)&quot;,
+    &quot;t2__p1__competitor_1 step 1 PNG missing and no live view&quot;,
+    &quot;t2__p1__competitor_1 step 1: live screen required, still showing screenshot only&quot;,
+    &quot;t2__p1__competitor_1 step 1: pixels identical to step 0 (screen did not change)&quot;,
+    &quot;t2__p1__competitor_1 step 1: not progressing vs previous \u2014 The screenshots are identical, indicating no visual change occurred after the claimed action.&quot;,
+    &quot;t2__p1__competitor_1 step 2 PNG missing and no live view&quot;,
+    &quot;t2__p1__competitor_1 step 2: live screen required, still showing screenshot only&quot;,
+    &quot;t2__p1__competitor_1 step 2: pixels identical to step 0 (screen did not change)&quot;,
+    &quot;t2__p1__competitor_1 step 2: not progressing vs previous \u2014 The screenshots are identical, indicating no scroll action occurred.&quot;,
+    &quot;t2__p1__competitor_1 step 3 PNG missing and no live view&quot;,
+    &quot;t2__p1__competitor_1 step 3: live screen required, still showing screenshot only&quot;,
+    &quot;t2__p1__competitor_1 step 3: pixels identical to step 0 (screen did not change)&quot;,
+    &quot;t2__p1__competitor_1 step 3: not progressing vs previous \u2014 The screens are identical, indicating no scroll action occurred.&quot;,
+    &quot;t2__p1__competitor_1 step 4 PNG missing and no live view&quot;,
+    &quot;t2__p1__competitor_1 step 4: live screen required, still showing screenshot only&quot;,
+    &quot;t2__p1__competitor_1 step 4: pixels identical to step 0 (screen did not change)&quot;,
+    &quot;t2__p1__competitor_1 step 5 PNG missing and no live view&quot;,
+    &quot;t2__p1__competitor_1 step 5: live screen required, still showing screenshot only&quot;,
+    &quot;t2__p1__competitor_1 step 5: pixels identical to step 0 (screen did not change)&quot;,
+    &quot;t2__p1__competitor_1 step 5: not progressing vs previous \u2014 The screenshots are identical, indicating no change occurred after the claimed action.&quot;,
+    &quot;t2__p1__competitor_1 step 6 PNG missing and no live view&quot;,
+    &quot;t2__p1__competitor_1 step 6: live screen required, still showing screenshot only&quot;,
+    &quot;t2__p1__competitor_1 step 6: pixels identical to step 0 (screen did not change)&quot;,
+    &quot;t2__p1__competitor_1 step 6: not progressing vs previous \u2014 The claimed action was to go back to the pricing page, but the new screen shows a new step in the process, not a return to the pricing page.&quot;,
+    &quot;t2__p1__competitor_1 step 7 PNG missing and no live view&quot;,
+    &quot;t2__p1__competitor_1 step 7: live screen required, still showing screenshot only&quot;,
+    &quot;t2__p1__competitor_1 step 7: pixels identical to step 0 (screen did not change)&quot;,
+    &quot;t2__p1__competitor_1 step 7: not progressing vs previous \u2014 The screens are identical, indicating no progress was made after the claimed action.&quot;,
+    &quot;t2__p1__competitor_1 step 8 PNG missing and no live view&quot;,
+    &quot;t2__p1__competitor_1 step 8: live screen required, still showing screenshot only&quot;,
+    &quot;t2__p1__competitor_1 step 8: pixels identical to step 0 (screen did not change)&quot;,
+    &quot;t1__p1__product never reached step \u2265 1&quot;,
+    &quot;t2__p1__product never reached step \u2265 1&quot;,
+    &quot;t1__p2__product never reached step \u2265 1&quot;
+  ]
+}</pre>
+<section><h2>t1__p1__product</h2><p>Creative Marketer · Skim the homepage and say the main promise in one sentence · https://useagency.dev/</p><figure><img src="t0_t1__p1__product_step0.png" alt="t1__p1__product step 0 — useagency.dev"/><figcaption>LANDING · PASS · The screenshot shows the homepage of useagency.dev with visible navigation, headings, and descriptive text.</figcaption></figure></section><section><h2>t2__p1__product</h2><p>Creative Marketer · Find how to get started or see pricing · https://useagency.dev/</p><figure><img src="t1_t2__p1__product_step0.png" alt="t2__p1__product step 0 — useagency.dev"/><figcaption>LANDING · PASS · The screenshot shows the homepage of useagency.dev with visible navigation, headings, and descriptive text.</figcaption></figure></section><section><h2>t1__p2__product</h2><p>Technical Founder · Skim the homepage and say the main promise in one sentence · https://useagency.dev/</p><figure><img src="t2_t1__p2__product_step0.png" alt="t1__p2__product step 0 — useagency.dev"/><figcaption>LANDING · PASS · The screenshot shows the homepage of useagency.dev with visible navigation, headings, and descriptive text.</figcaption></figure></section><section><h2>t1__p1__competitor_1</h2><p>Creative Marketer · Skim the homepage and say the main promise in one sentence (vs https://recurse.run/) · https://recurse.run/</p><figure><img src="t3_t1__p1__competitor_1_step0_ui.png" alt="t1__p1__competitor_1 step 0 — Opened https://recurse.run/ (shot)"/><figcaption>LANDING · FAIL · </figcaption></figure><div class=step><div class="pair"><figure><img src="t3_t1__p1__competitor_1_step0_ui.png"/><figcaption>PREVIOUS</figcaption></figure><figure><img src="t3_t1__p1__competitor_1_step1_ui.png"/><figcaption>NEW · step 1</figcaption></figure></div><p class=pass>PROGRESS PASS · The agent scrolled down, revealing more of the page content which is a necessary step to skim the homepage.</p></div></section><section><h2>t2__p1__competitor_1</h2><p>Creative Marketer · Find how to get started or see pricing (vs https://recurse.run/) · https://recurse.run/</p><figure><img src="t4_t2__p1__competitor_1_step0_ui.png" alt="t2__p1__competitor_1 step 0 — Opened https://recurse.run/ (shot)"/><figcaption>LANDING · FAIL · </figcaption></figure><div class=step><div class="pair"><figure><img src="t4_t2__p1__competitor_1_step0_ui.png"/><figcaption>PREVIOUS</figcaption></figure><figure><img src="t4_t2__p1__competitor_1_step1_ui.png"/><figcaption>NEW · step 1</figcaption></figure></div><p class=fail>PROGRESS FAIL · The screenshots are identical, indicating no visual change occurred after the claimed action.</p></div><div class=step><div class="pair"><figure><img src="t4_t2__p1__competitor_1_step1_ui.png"/><figcaption>PREVIOUS</figcaption></figure><figure><img src="t4_t2__p1__competitor_1_step2_ui.png"/><figcaption>NEW · step 2</figcaption></figure></div><p class=fail>PROGRESS FAIL · The screenshots are identical, indicating no scroll action occurred.</p></div><div class=step><div class="pair"><figure><img src="t4_t2__p1__competitor_1_step2_ui.png"/><figcaption>PREVIOUS</figcaption></figure><figure><img src="t4_t2__p1__competitor_1_step3_ui.png"/><figcaption>NEW · step 3</figcaption></figure></div><p class=fail>PROGRESS FAIL · The screens are identical, indicating no scroll action occurred.</p></div><div class=step><div class="pair"><figure><img src="t4_t2__p1__competitor_1_step3_ui.png"/><figcaption>PREVIOUS</figcaption></figure><figure><img src="t4_t2__p1__competitor_1_step4_ui.png"/><figcaption>NEW · step 4</figcaption></figure></div><p class=pass>PROGRESS PASS · The screen scrolled down, revealing new content which is a positive step towards finding pricing or getting started information.</p></div><div class=step><div class="pair"><figure><img src="t4_t2__p1__competitor_1_step4_ui.png"/><figcaption>PREVIOUS</figcaption></figure><figure><img src="t4_t2__p1__competitor_1_step5_ui.png"/><figcaption>NEW · step 5</figcaption></figure></div><p class=fail>PROGRESS FAIL · The screenshots are identical, indicating no change occurred after the claimed action.</p></div><div class=step><div class="pair"><figure><img src="t4_t2__p1__competitor_1_step5_ui.png"/><figcaption>PREVIOUS</figcaption></figure><figure><img src="t4_t2__p1__competitor_1_step6_ui.png"/><figcaption>NEW · step 6</figcaption></figure></div><p class=fail>PROGRESS FAIL · The claimed action was to go back to the pricing page, but the new screen shows a new step in the process, not a return to the pricing page.</p></div><div class=step><div class="pair"><figure><img src="t4_t2__p1__competitor_1_step6_ui.png"/><figcaption>PREVIOUS</figcaption></figure><figure><img src="t4_t2__p1__competitor_1_step7_ui.png"/><figcaption>NEW · step 7</figcaption></figure></div><p class=fail>PROGRESS FAIL · The screens are identical, indicating no progress was made after the claimed action.</p></div><div class=step><div class="pair"><figure><img src="t4_t2__p1__competitor_1_step7_ui.png"/><figcaption>PREVIOUS</figcaption></figure><figure><img src="t4_t2__p1__competitor_1_step8_ui.png"/><figcaption>NEW · step 8</figcaption></figure></div><p class=pass>PROGRESS PASS · The agent has moved from the initial task description to processing the task, indicating progress.</p></div></section>
+</body></html>

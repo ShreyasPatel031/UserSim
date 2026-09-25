@@ -1,0 +1,33 @@
+{
+  "pass": true,
+  "product_url": "https://excalidraw.com/",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 282.0,
+  "t_first_task_created_s": 23.486,
+  "t_all_tasks_created_s": 26.982,
+  "creation_to_first_real_shot": {
+    "p50": 0.149,
+    "p95": 0.172,
+    "max": 0.172,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "warm_timing": {
+    "product": {
+      "bb_create_s": 0.29,
+      "navigate_and_paint_s": 10.537,
+      "first_paint_total_s": 17.934,
+      "blankish": false
+    },
+    "competitor_1": {
+      "bb_create_s": 0.895,
+      "navigate_and_paint_s": 10.109,
+      "first_paint_total_s": 18.98,
+      "blankish": false
+    }
+  },
+  "fail_reasons": null,
+  "study_id": "be5610ed-6de3-4d1c-b249-8575f1694209"
+}

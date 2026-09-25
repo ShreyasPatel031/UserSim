@@ -1,0 +1,39 @@
+{
+  "pass": true,
+  "product_url": "https://developer.mozilla.org/",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 283.2,
+  "t_first_task_created_s": 17.688,
+  "t_all_tasks_created_s": 22.49,
+  "creation_to_first_real_shot": {
+    "p50": 0.208,
+    "p95": 0.252,
+    "max": 0.276,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "warm_timing": {
+    "competitor_2": {
+      "bb_create_s": 0.517,
+      "navigate_and_paint_s": 8.612,
+      "first_paint_total_s": 14.052,
+      "blankish": false
+    },
+    "competitor_1": {
+      "bb_create_s": 1.064,
+      "navigate_and_paint_s": 7.942,
+      "first_paint_total_s": 15.037,
+      "blankish": false
+    },
+    "product": {
+      "bb_create_s": 1.312,
+      "navigate_and_paint_s": 7.906,
+      "first_paint_total_s": 16.519,
+      "blankish": false
+    }
+  },
+  "fail_reasons": null,
+  "study_id": "e9a37dc4-664a-4621-be0c-e738a983e2db"
+}

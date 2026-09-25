@@ -54,6 +54,24 @@ if [[ -n "$EXTRA_ENV" ]]; then
   for kv in $EXTRA_ENV; do export "${kv?}"; done
 fi
 
+# Headed Chromium under Xvfb when BROWSER_HEADLESS=0 (Flash headed / verify-done arms).
+if [[ "${BROWSER_HEADLESS:-1}" == "0" ]]; then
+  export DISPLAY="${DISPLAY:-:99}"
+  if ! pgrep -f "Xvfb ${DISPLAY}" >/dev/null 2>&1; then
+    if command -v Xvfb >/dev/null 2>&1; then
+      echo "==> starting Xvfb ${DISPLAY}"
+      Xvfb "${DISPLAY}" -screen 0 1440x900x24 >/tmp/xvfb.log 2>&1 &
+      sleep 1
+    else
+      echo "WARN: BROWSER_HEADLESS=0 but Xvfb missing — installing..."
+      sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq xvfb >/dev/null 2>&1 || true
+      Xvfb "${DISPLAY}" -screen 0 1440x900x24 >/tmp/xvfb.log 2>&1 &
+      sleep 1
+    fi
+  fi
+  echo "DISPLAY=${DISPLAY} BROWSER_HEADLESS=0"
+fi
+
 eval_flag=()
 [[ -n "$EVAL_INDICES" ]] && eval_flag=(--eval-indices "$EVAL_INDICES")
 

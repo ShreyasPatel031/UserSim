@@ -1,0 +1,39 @@
+{
+  "pass": true,
+  "product_url": "https://www.etsy.com/",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 286.6,
+  "t_first_task_created_s": 21.488,
+  "t_all_tasks_created_s": 29.502,
+  "creation_to_first_real_shot": {
+    "p50": 0.233,
+    "p95": 0.379,
+    "max": 2.686,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "warm_timing": {
+    "product": {
+      "bb_create_s": 0.31,
+      "navigate_and_paint_s": 10.57,
+      "first_paint_total_s": 12.997,
+      "blankish": false
+    },
+    "competitor_2": {
+      "bb_create_s": 1.112,
+      "navigate_and_paint_s": 16.335,
+      "first_paint_total_s": 20.221,
+      "blankish": false
+    },
+    "competitor_1": {
+      "bb_create_s": 1.133,
+      "navigate_and_paint_s": 15.104,
+      "first_paint_total_s": 20.317,
+      "blankish": false
+    }
+  },
+  "fail_reasons": null,
+  "study_id": "810596cb-fa01-42a9-8141-9fc089f8d83b"
+}

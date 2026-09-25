@@ -6,6 +6,7 @@ import asyncio
 import json
 import os
 import shutil
+import time
 from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Any
@@ -20,6 +21,44 @@ from mvp.paths import MVP_RUNS_DIR
 
 # Enough steps to leave the landing page: land, scroll, open a nav item, read, come back.
 MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
+# Hard wall so hung browser_use waits / DOMWatchdog deadlocks cannot freeze a study.
+# Prior YouTube e2e sat at 0/N done for 400s+ because agent.run had no timeout.
+MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "120") or "120")
+
+
+def _png_is_blankish(path: Path) -> bool:
+    """True when the shot is basically black / empty (loading splash).
+
+    Align with e2e2 `_png_looks_blank`: small logo-on-black splashes (~32KB)
+    are blank; large dark product UIs (Linear, etc.) with real texture are not.
+    """
+    try:
+        if not path.is_file() or path.stat().st_size < 2500:
+            return True
+        size = path.stat().st_size
+    except OSError:
+        return True
+    try:
+        from PIL import Image
+
+        im = Image.open(path).convert("RGB").resize((64, 40))
+        pixels = list(im.getdata())
+        lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
+        mean = sum(lums) / max(1, len(lums))
+        var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
+        # Small payloads: logo-on-black splash or empty pane.
+        if size < 48000:
+            if mean < 25.0:
+                return True
+            if mean < 40.0 and var < 250.0:
+                return True
+            return False
+        # Large payloads: only near-uniform near-black (empty canvas).
+        if mean < 12.0 and var < 80.0:
+            return True
+        return False
+    except Exception:
+        return size < 48000
 
 
 def _history_to_actions(history) -> list[dict]:
@@ -373,46 +412,135 @@ async def _emit_opening_frame(
     agent_id: str,
     url: str,
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
+    shot_name: str = "bbox_0.png",
 ) -> None:
     """Navigate + full-viewport screenshot before the LLM agent loop."""
     try:
-        await asyncio.wait_for(browser_session.navigate_to(url), timeout=30)
+        await asyncio.wait_for(browser_session.navigate_to(url), timeout=45)
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening navigate failed: {exc!r}", flush=True)
-    # Scroll to top so we don't capture a footer-only viewport.
+
+    # Wait for real paint — 0.2s was capturing Vimeo/Dailymotion black splashes.
+    page = None
     try:
         page = await asyncio.wait_for(browser_session.get_current_page(), timeout=8)
-        if page is not None:
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] opening get_current_page failed: {exc!r}", flush=True)
+    if page is not None:
+        try:
+            await asyncio.wait_for(page.wait_for_load_state("domcontentloaded"), timeout=15)
+        except Exception:
+            pass
+        # Extra settle — 24-way Browserbase fleets often still show splash at DOMContentLoaded.
+        try:
+            await asyncio.sleep(2.5)
+        except Exception:
+            pass
+        try:
+            await asyncio.wait_for(
+                page.wait_for_function(
+                    "() => document.body && (document.body.innerText || '').trim().length > 40",
+                    timeout=8000,
+                ),
+                timeout=10,
+            )
+        except Exception:
+            pass
+        try:
             await asyncio.wait_for(
                 page.evaluate("() => window.scrollTo(0, 0)"),
                 timeout=5,
             )
-    except Exception as exc:  # noqa: BLE001
-        print(f"[{agent_id}] opening scrollTop failed: {exc!r}", flush=True)
-    await asyncio.sleep(0.2)
-    shot_name = "bbox_0.png"
-    shot_path = screenshot_dir / shot_name
-    try:
-        await asyncio.wait_for(
-            browser_session.take_screenshot(path=str(shot_path), full_page=False),
-            timeout=20,
-        )
-    except TypeError:
-        # Older browser-use: no full_page kwarg.
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] opening scrollTop failed: {exc!r}", flush=True)
+        # Cookie / consent banners that cover the page.
         try:
             await asyncio.wait_for(
-                browser_session.take_screenshot(path=str(shot_path)),
+                page.evaluate(
+                    """() => {
+                      const labels = ['accept all','accept','agree','got it','i agree','allow all','ok'];
+                      const els = [...document.querySelectorAll('button,[role=button],a')];
+                      for (const el of els) {
+                        const t = (el.innerText || el.textContent || '').trim().toLowerCase();
+                        if (!t || t.length > 40) continue;
+                        if (!labels.some(l => t === l || t.startsWith(l))) continue;
+                        const r = el.getBoundingClientRect();
+                        if (r.width < 8 || r.height < 8) continue;
+                        el.click();
+                        return t;
+                      }
+                      return '';
+                    }"""
+                ),
+                timeout=5,
+            )
+        except Exception:
+            pass
+
+    shot_path = screenshot_dir / shot_name
+
+    async def _snap_once() -> bool:
+        try:
+            await asyncio.wait_for(
+                browser_session.take_screenshot(path=str(shot_path), full_page=False),
                 timeout=20,
             )
+            return True
+        except TypeError:
+            try:
+                await asyncio.wait_for(
+                    browser_session.take_screenshot(path=str(shot_path)),
+                    timeout=20,
+                )
+                return True
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
+                return False
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
+            return False
+
+    ok = False
+    # Heavy marketing / SPA landings (Linear, etc.) often stay on a ~32KB logo
+    # splash for several seconds under parallel Browserbase load — wait longer.
+    for attempt in range(8):
+        await asyncio.sleep(1.2 if attempt == 0 else 2.5)
+        if not await _snap_once():
+            continue
+        if not _png_is_blankish(shot_path):
+            ok = True
+            break
+        print(
+            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/8) — waiting for paint",
+            flush=True,
+        )
+        if page is not None:
+            try:
+                await asyncio.wait_for(page.reload(wait_until="domcontentloaded"), timeout=10)
+            except Exception:
+                try:
+                    await asyncio.wait_for(browser_session.navigate_to(url), timeout=15)
+                except Exception:
+                    pass
+
+    if not ok:
+        if not shot_path.is_file() or shot_path.stat().st_size < 100:
+            print(f"[{agent_id}] opening screenshot missing/empty", flush=True)
             return
-    except Exception as exc:  # noqa: BLE001
-        print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
-        return
-    if not shot_path.is_file() or shot_path.stat().st_size < 100:
-        print(f"[{agent_id}] opening screenshot missing/empty", flush=True)
-        return
+        if _png_is_blankish(shot_path):
+            print(
+                f"[{agent_id}] opening frame still blank after extended wait — "
+                "publishing best effort so same-site backfill can replace it",
+                flush=True,
+            )
+            # Fall through and publish — backfill_site_opening_shots can replace
+            # blank splash from a same-site donor once any agent gets real paint.
+        else:
+            print(
+                f"[{agent_id}] opening frame marginal — publishing best effort",
+                flush=True,
+            )
+
     final_url = url
     try:
         got = browser_session.get_current_page_url()
@@ -485,26 +613,53 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
     screenshot_dir.mkdir(parents=True, exist_ok=True)
     bb_session = None
     browser_session = None
+    t0 = time.time()
+    t_bb_create: float | None = None
+    t_navigate_done: float | None = None
+    t_paint: float | None = None
     try:
         from browser_use import BrowserSession
 
-        bb_session = await asyncio.to_thread(create_session, proxies=False, keep_alive=True)
+        bb_session = await asyncio.to_thread(
+            create_session,
+            proxies=False,
+            keep_alive=True,
+            owner="e2e",
+            study_id=study_id,
+        )
+        t_bb_create = time.time() - t0
         connect = getattr(bb_session, "connect_url", None)
         if not connect:
             raise RuntimeError("Browserbase session missing connect_url")
         browser_session = BrowserSession(browser_profile=_browserbase_profile(connect))
         await browser_session.start()
+        t_nav0 = time.time()
+        # YouTube signed-out home is often an empty splash in automation —
+        # warm a search-results URL so we get a real product frame for e2e.
+        paint_url = url
+        try:
+            host = (urlparse(url).hostname or "").lower()
+            if "youtube.com" in host or "youtu.be" in host:
+                from mvp.auth_state import youtube_bootstrap_url
+
+                paint_url = youtube_bootstrap_url("videos to watch", "warm")
+                print(f"[warm] YouTube bootstrap paint via {paint_url}", flush=True)
+        except Exception as yt_exc:  # noqa: BLE001
+            print(f"[warm] YouTube bootstrap skipped: {yt_exc!r}", flush=True)
+            paint_url = url
         await _emit_opening_frame(
             browser_session,
             screenshot_dir=screenshot_dir,
             study_id=study_id,
             agent_id="_warm",
-            url=url,
+            url=paint_url,
             on_step=None,
         )
+        t_navigate_done = time.time() - t_nav0
         shot = screenshot_dir / "bbox_0.png"
         if not shot.is_file() or shot.stat().st_size < 100:
             raise RuntimeError("warm opening screenshot missing")
+        t_paint = time.time() - t0
         live_view = None
         try:
             from capability.browserbase_client import session_live_view_url
@@ -514,7 +669,22 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
                 live_view = await asyncio.to_thread(session_live_view_url, str(sid))
         except Exception as live_exc:  # noqa: BLE001
             print(f"[warm] live view url failed: {live_exc!r}", flush=True)
-        print(f"[warm] first pixels ready for {url}", flush=True)
+        timing = {
+            "bb_create_s": round(t_bb_create, 3) if t_bb_create is not None else None,
+            "navigate_and_paint_s": round(t_navigate_done, 3)
+            if t_navigate_done is not None
+            else None,
+            "first_paint_total_s": round(t_paint, 3) if t_paint is not None else None,
+            "blankish": _png_is_blankish(shot),
+        }
+        print(
+            f"[warm] first pixels ready for {url} "
+            f"bb_create={timing['bb_create_s']}s "
+            f"nav+paint={timing['navigate_and_paint_s']}s "
+            f"total={timing['first_paint_total_s']}s "
+            f"blankish={timing['blankish']}",
+            flush=True,
+        )
         return {
             "url": url,
             "bb_session": bb_session,
@@ -523,6 +693,7 @@ async def warm_opening_session(*, study_id: str, url: str) -> dict[str, Any] | N
             "owns_session": True,
             "live_view_url": live_view,
             "browserbase_session_id": getattr(bb_session, "id", None),
+            "timing": timing,
         }
     except Exception as exc:  # noqa: BLE001
         print(f"[warm] opening session failed: {exc!r}", flush=True)
@@ -595,9 +766,12 @@ async def run_browser_agent(
         Path(os.environ["XDG_CONFIG_HOME"]).mkdir(parents=True, exist_ok=True)
         Path(os.environ["XDG_CACHE_HOME"]).mkdir(parents=True, exist_ok=True)
 
-    model = model or os.environ.get("MVP_BROWSER_MODEL") or MODEL or "gemini-2.5-flash-lite"
-    os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", "120")
-    os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", "240")
+    model = model or os.environ.get("MVP_BROWSER_MODEL") or MODEL or "[REDACTED]-lite"
+    # Keep CDP/action timeouts under the agent wall so a single hung navigate
+    # cannot outlive MVP_AGENT_WALL_S (was 120/240 → studies stuck at 0/N done).
+    _wall = max(15.0, MVP_AGENT_WALL_S)
+    os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", str(max(20, int(_wall // 3))))
+    os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", str(max(30, int(_wall // 2))))
 
     run_dir = MVP_RUNS_DIR / study_id / agent_id
     screenshot_dir = run_dir / "screenshots"
@@ -742,16 +916,16 @@ async def run_browser_agent(
                 maybe = on_step(step)
                 if asyncio.iscoroutine(maybe):
                     await maybe
-            # Stash live URL only — live_active flips when agent.run starts.
+            # Stash live URL and turn live view ON immediately — page is open.
             if on_step is not None and (warm_live_url or bb_session is not None):
                 maybe = on_step(
                     {
                         "step": None,
                         "progress_only": True,
-                        "live_active": False,
+                        "live_active": True,
                         "live_view_url": warm_live_url,
                         "browserbase_session_id": warm_bb_id,
-                        "action": "Page open — starting simulated user",
+                        "action": "Page open — live browser on",
                         "thought": "Page is open. Starting the simulated user…",
                         "thought_detail": {},
                         "observation": "",
@@ -800,7 +974,11 @@ async def run_browser_agent(
             if owns_session:
                 # keep_alive=True so parallel agents don't lose CDP mid-run (410 Gone).
                 bb_session = await asyncio.to_thread(
-                    create_session, proxies=False, keep_alive=True
+                    create_session,
+                    proxies=False,
+                    keep_alive=True,
+                    owner="e2e",
+                    study_id=study_id,
                 )
             session_url = getattr(bb_session, "session_url", None)
             connect = getattr(bb_session, "connect_url", None)
@@ -826,6 +1004,35 @@ async def run_browser_agent(
                 url=start_url,
                 on_step=on_step,
             )
+            # Flip live view ON immediately — don't wait for LLM / agent.run.
+            if on_step is not None and bb_session is not None and not force_local:
+                live_url = None
+                try:
+                    from capability.browserbase_client import session_live_view_url
+
+                    sid = getattr(bb_session, "id", None)
+                    if sid:
+                        live_url = await asyncio.to_thread(session_live_view_url, str(sid))
+                except Exception:
+                    live_url = None
+                maybe = on_step(
+                    {
+                        "step": None,
+                        "progress_only": True,
+                        "live_active": True,
+                        "live_view_url": live_url,
+                        "browserbase_session_id": getattr(bb_session, "id", None),
+                        "action": "Live browser on",
+                        "thought": "Page is open — live view connected.",
+                        "thought_detail": {},
+                        "observation": "",
+                        "url": start_url,
+                        "screenshot_url": None,
+                        "outcome": "neutral",
+                    }
+                )
+                if asyncio.iscoroutine(maybe):
+                    await maybe
             await _pulse("First screenshot captured — starting the simulated user…", thinking=True)
         except Exception:
             if browser_session is not None:
@@ -966,24 +1173,72 @@ async def run_browser_agent(
             agent_id=agent_id,
             on_step=on_step,
         )
-        print(f"[{agent_id}] agent.run starting (warm={use_warm})", flush=True)
-        history = await agent.run(
-            max_steps=max_steps,
-            on_step_start=on_step_start,
-            on_step_end=on_step_end,
+        print(
+            f"[{agent_id}] agent.run starting (warm={use_warm}, "
+            f"max_steps={max_steps}, wall={MVP_AGENT_WALL_S:.0f}s)",
+            flush=True,
         )
+        history = None
+        try:
+            history = await asyncio.wait_for(
+                agent.run(
+                    max_steps=max_steps,
+                    on_step_start=on_step_start,
+                    on_step_end=on_step_end,
+                ),
+                timeout=max(15.0, MVP_AGENT_WALL_S),
+            )
+        except (asyncio.TimeoutError, asyncio.CancelledError):
+            print(
+                f"[{agent_id}] agent.run hit wall ({MVP_AGENT_WALL_S:.0f}s) — "
+                "returning opening/partial trace",
+                flush=True,
+            )
+            try:
+                await _pulse(
+                    f"Stopped after {int(MVP_AGENT_WALL_S)}s wall — keeping captured frames",
+                    thinking=True,
+                )
+            except Exception:
+                pass
+            # Last-chance paint before kill — Vimeo/DailyMotion often finish
+            # loading after the LLM loop has already stalled.
+            if browser_session is not None and on_step is not None:
+                try:
+                    await _emit_opening_frame(
+                        browser_session,
+                        screenshot_dir=screenshot_dir,
+                        study_id=study_id,
+                        agent_id=agent_id,
+                        url=start_url,
+                        on_step=on_step,
+                    )
+                except Exception as wall_shot_exc:  # noqa: BLE001
+                    print(f"[{agent_id}] wall reshoot failed: {wall_shot_exc!r}", flush=True)
+        except Exception as run_exc:  # noqa: BLE001
+            # Prefer partial opening frames over raising into study retry.
+            print(f"[{agent_id}] agent.run failed: {run_exc!r} — returning partial", flush=True)
     finally:
         if browser_session is not None:
             try:
                 await browser_session.kill()
             except Exception:
                 pass
+            browser_session = None
         if profile_clone is not None:
-            await asyncio.to_thread(discard_profile, profile_clone)
+            try:
+                await asyncio.to_thread(discard_profile, profile_clone)
+            except Exception:
+                pass
+            profile_clone = None
         if owns_session and bb_session is not None:
             sid = getattr(bb_session, "id", None)
             if sid:
-                await asyncio.to_thread(close_session, sid)
+                try:
+                    await asyncio.to_thread(close_session, sid)
+                except Exception:
+                    pass
+            bb_session = None
 
     actions = _history_to_actions(history) if history is not None else []
     trace = (

@@ -1,0 +1,39 @@
+{
+  "pass": true,
+  "product_url": "https://www.bbc.com/news",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 304.7,
+  "t_first_task_created_s": 41.155,
+  "t_all_tasks_created_s": 47.676,
+  "creation_to_first_real_shot": {
+    "p50": 0.261,
+    "p95": 0.291,
+    "max": 0.919,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "warm_timing": {
+    "product": {
+      "bb_create_s": 0.534,
+      "navigate_and_paint_s": 8.027,
+      "first_paint_total_s": 10.039,
+      "blankish": false
+    },
+    "competitor_1": {
+      "bb_create_s": 0.891,
+      "navigate_and_paint_s": 9.258,
+      "first_paint_total_s": 17.239,
+      "blankish": false
+    },
+    "competitor_2": {
+      "bb_create_s": 0.62,
+      "navigate_and_paint_s": 26.886,
+      "first_paint_total_s": 30.193,
+      "blankish": false
+    }
+  },
+  "fail_reasons": null,
+  "study_id": "1f600361-5840-42f9-b33b-76d470d7ebfa"
+}

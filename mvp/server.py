@@ -24,6 +24,7 @@ STATIC = Path(__file__).resolve().parent / "static"
 IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 
 app = FastAPI(title="UserSim MVP", version="0.1.0")
+
 if STATIC.is_dir():
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
 _TRACE_PUBLIC = ROOT / "public" / "bakeoff-traces"
@@ -52,6 +53,7 @@ class StudyRequest(BaseModel):
     tasks: list[str] = Field(default_factory=list)
     test_mode: bool = False
     skip_competitors: bool = False
+    max_agents: int | None = Field(default=None, ge=1, le=75)
     backend: str = Field(default="default", pattern="^(default)$")
 
 
@@ -360,6 +362,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     # Default: invent ~2 rivals when the box is blank (product + rivals in Products).
     # Only skip when the client explicitly opts out.
     study.skip_competitors = bool(body.skip_competitors)
+    study.max_agents = int(body.max_agents or 0)
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
     if study.test_mode and not study.tasks_override:
         study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
@@ -367,10 +370,19 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     want_stream = "text/event-stream" in (request.headers.get("accept") or "") or (
         request.headers.get("x-usersim-stream") == "1"
     )
+    # Default OFF: Playwright/browser fetch aborts cancel the request's anyio
+    # cancel scope and were taking STUDY_TASKS with them ("Killed by operator"
+    # ~30s in). Background + client poll is durable; opt into attached stream
+    # only when MVP_ATTACH_STREAM=1 (true serverless edge streaming).
+    attach_stream = os.environ.get("MVP_ATTACH_STREAM", "0").lower() in {
+        "1",
+        "true",
+        "yes",
+    }
 
     # Serverless: stream NDJSON so the brief (competitors / users / tasks) arrives
     # before browser agents finish — cuts perceived time-to-first-content.
-    if IS_VERCEL or want_stream:
+    if attach_stream and (IS_VERCEL or want_stream):
         # Pro plan GA max is 800s — give studies ~13 min (8–12 min typical)
         # with a little headroom for kill/persist cleanup.
         timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "780" if IS_VERCEL else "900"))
@@ -453,6 +465,9 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 study_obj = STUDIES[study.id]
                 payload = await _abandon_timeout(study_obj, timeout_s)
                 await queue.put(payload)
+            except asyncio.CancelledError:
+                # Should be rare — runner is detached from the HTTP stream.
+                raise
             except Exception as exc:  # noqa: BLE001
                 study_obj = STUDIES[study.id]
                 study_obj.status = "error"
@@ -469,21 +484,17 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 await queue.put(payload)
             finally:
                 await queue.put(None)
+                STUDY_TASKS.pop(study.id, None)
+
+        from mvp.study import STUDY_TASKS
+
+        # Detach the runner from the HTTP request BEFORE streaming. Playwright /
+        # browser fetch aborts were cancelling the request-scoped generator and
+        # taking the study with it ("Killed by operator" at ~30s).
+        task = asyncio.create_task(_runner(), name=f"study-{study.id}")
+        STUDY_TASKS[study.id] = task
 
         async def _gen():
-            task = asyncio.create_task(_runner())
-            from mvp.study import STUDY_TASKS
-
-            STUDY_TASKS[study.id] = task
-
-            async def _keep(t: asyncio.Task) -> None:
-                try:
-                    await t
-                except Exception:
-                    pass
-                finally:
-                    STUDY_TASKS.pop(study.id, None)
-
             try:
                 while True:
                     item = await queue.get()
@@ -494,13 +505,12 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                     except Exception:
                         # Never kill the study because one frame failed to encode.
                         continue
+            except asyncio.CancelledError:
+                # Client disconnected — study keeps running in STUDY_TASKS.
+                return
             finally:
-                # Keep the study alive after client disconnect / encode errors.
-                if not task.done():
-                    asyncio.create_task(_keep(task))
-                else:
-                    await task
-                    STUDY_TASKS.pop(study.id, None)
+                # Do not cancel `task`. Agents must outlive the NDJSON stream.
+                pass
 
         return StreamingResponse(
             _gen(),
@@ -563,13 +573,31 @@ async def get_study(study_id: str):
         # poll while 6 Browserbase agents are writing was starving the event
         # loop (study GET timeouts / list 503s under parallel load).
         live = data.get("live_sessions") or {}
-        if data.get("status") in {"running", "pending"} and live:
+        if data.get("status") in {"running", "pending"} and live and _live_step_count(live) > 0:
             return data
+        if data.get("status") in {"running", "pending"} and live:
+            data["live_sessions"] = await asyncio.to_thread(
+                hydrate_live_sessions_from_gcs, study_id, live
+            )
+            if _live_step_count(data.get("live_sessions")) > 0:
+                return data
         # Merge fresher GCS state when fleet finished off-box / no local frames.
         if data.get("status") in {"running", "pending"} or not data.get("summary"):
             remote = await asyncio.to_thread(load_study_from_gcs, study_id)
             if remote:
                 local_live = data.get("live_sessions")
+                # Never let a stale GCS kill flag clobber a healthy in-memory run
+                # (async abandon-all used to race newly started studies).
+                if data.get("status") in {"running", "pending"} and not data.get(
+                    "kill_requested"
+                ):
+                    remote = {
+                        **remote,
+                        "status": data.get("status"),
+                        "phase": data.get("phase"),
+                        "error": data.get("error"),
+                        "kill_requested": False,
+                    }
                 data = {**data, **remote, "id": study_id}
                 remote_live = data.get("live_sessions")
                 local_steps = _live_step_count(local_live)
@@ -612,8 +640,6 @@ async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
     if m:
         kind, num = m.group(1), m.group(2)
         names.append(("bbox" if kind == "step" else "step") + f"_{num}.png")
-        if num != "0":
-            names.append("step_0.png")
     from fastapi.responses import Response
 
     from mvp.gcs_store import gcs_download_bytes, screenshot_gcs_uri
@@ -690,12 +716,59 @@ async def health():
     return {"ok": True}
 
 
+@app.get("/recurse-study")
+async def recurse_study_page() -> FileResponse:
+    """Recurse.run competitive study — blandai-style dashboard (5x6x4 matrix)."""
+    path = STATIC / "recurse_study.html"
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="recurse_study.html missing")
+    return FileResponse(path, media_type="text/html")
+
+
 @app.get("/blandai")
 async def blandai_page() -> FileResponse:
     path = STATIC / "bakeoff.html"
     if not path.is_file():
         raise HTTPException(status_code=503, detail="Bland AI study viewer not bundled")
     return FileResponse(path)
+
+
+# Pretty share URL for the recurse.run full study (same pattern as /blandai).
+_RECURSE_STUDY_ID = "e5daac85-b0f8-4425-a991-834d071ee823"
+
+
+@app.get("/recurse")
+async def recurse_page() -> FileResponse:
+    path = STATIC / "recurse.html"
+    if not path.is_file():
+        raise HTTPException(status_code=503, detail="Recurse study viewer not bundled")
+    return FileResponse(path)
+
+
+@app.get("/api/recurse/analytics")
+async def recurse_analytics():
+    from mvp.recurse_study import analytics
+
+    return analytics()
+
+
+@app.get("/api/recurse/studies")
+async def recurse_study_list():
+    from mvp.recurse_study import studies
+
+    return {"studies": studies()}
+
+
+@app.get("/api/recurse/studies/{study_id}")
+async def recurse_study_detail(study_id: str):
+    from mvp.recurse_study import study
+
+    if not re.fullmatch(r"p\d+", study_id):
+        raise HTTPException(status_code=400, detail="Invalid study id")
+    try:
+        return study(study_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Study not found") from None
 
 
 @app.get("/video-platforms")

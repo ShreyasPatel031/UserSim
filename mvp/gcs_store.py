@@ -401,12 +401,27 @@ def hydrate_live_sessions_from_gcs(study_id: str, live_sessions: Any) -> Any:
         frames: list[dict[str, Any]] = []
         if isinstance(manifest, dict):
             frames = [f for f in (manifest.get("steps") or []) if isinstance(f, dict)]
-        else:
+        if not frames:
             for step_no in range(0, 24):
-                fr = gcs_download_json(f"{root}/live/{agent_id}/step_{step_no:03d}.json")
+                fr = gcs_download_json(f"{root}/live/{agent_id}/step_{step_no}.json")
                 if not isinstance(fr, dict):
                     break
                 frames.append(fr)
+        if not frames:
+            for name in ("step_0.png", "bbox_0.png"):
+                raw = gcs_download_bytes(screenshot_gcs_uri(study_id, agent_id, name))
+                if raw and len(raw) > 200:
+                    frames = [
+                        {
+                            "step": 0,
+                            "action": "Opened page",
+                            "observation": "Landing page screenshot",
+                            "screenshot_url": (
+                                f"/api/studies/{study_id}/agents/{agent_id}/screenshots/{name}"
+                            ),
+                        }
+                    ]
+                    break
         if not frames:
             continue
         sess["trace"] = frames

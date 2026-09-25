@@ -56,6 +56,18 @@ function studyProgress(phase) {
 let _traceResults = [];
 let _shotIdx = {};
 let _shotFollowLatest = {};
+/** src → true once the PNG actually loaded for this page. Failed later-step URLs stay out. */
+let _shotLoaded = {};
+/** Live iframe painted for this agent — only then hide the website screenshot. */
+let _liveReady = {};
+let _liveFailed = {};
+/** Last live_view_url we mounted per agent — remount when BB refreshes the debugger. */
+let _liveMountedSrc = {};
+/** Periodic remount timers — BB DevTools WS dies mid-run without a remount. */
+let _liveKeepAlive = {};
+// Only used when a live frame has already failed — blind periodic remounts
+// tear down healthy Browserbase DevTools websockets ("WebSocket disconnected").
+const LIVE_RECONNECT_MS = 45000;
 let _activeTraceIdx = 0;
 let _userPickedTrace = false;
 let _activityRendered = 0;
@@ -63,6 +75,8 @@ let _lastStudyData = null;
 let _notifyEmail = "";
 let _emailCaptureSubmitted = false;
 let _briefScrollStep = "";
+let _stageOpened = false;
+let _stageScrolled = false;
 const BRIEF_SCROLL_ORDER = ["products", "users", "tasks", "live"];
 const IS_LOCAL_HOST = /^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
 
@@ -123,6 +137,13 @@ function studyStillRunning(data) {
   if (/timed out|killed|failed|site blocked/i.test(phase) && !/complete/i.test(phase)) {
     return false;
   }
+  const tasks = data?.tasks || [];
+  const results = data?.agent_results || [];
+  // Study-level complete wins over stale live_session statuses (agents can
+  // linger as "running"/"summarizing" in memory after the orchestrator finishes).
+  if (status === "complete" && data?.summary) {
+    if (!tasks.length || results.length >= tasks.length) return false;
+  }
   const sessions = studySessions(data);
   const liveBusy = sessions.some((s) =>
     ["running", "starting", "pending", "queued", "summarizing"].includes(
@@ -130,8 +151,6 @@ function studyStillRunning(data) {
     )
   );
   if (liveBusy) return true;
-  const tasks = data?.tasks || [];
-  const results = data?.agent_results || [];
   if (status === "complete" && data?.summary && results.length >= tasks.length && tasks.length) {
     return false;
   }
@@ -250,9 +269,14 @@ function resetLiveUI() {
   _lastStudyData = null;
   _shotIdx = {};
   _shotFollowLatest = {};
+  _shotLoaded = {};
+  _liveReady = {};
+  _liveFailed = {};
   _notifyEmail = "";
   _emailCaptureSubmitted = false;
   _briefScrollStep = "";
+  _stageOpened = false;
+  _stageScrolled = false;
   document.getElementById("brief-section").hidden = true;
   document.getElementById("stage-section").hidden = true;
   const reportLink = document.getElementById("view-report-link");
@@ -425,39 +449,118 @@ function demographicLine(p) {
   return p.demographics || "";
 }
 
+function isOpeningShotUrl(src) {
+  return /\/(?:bbox|step)_0\.png(?:\?|$)/i.test(String(src || "").split("?")[0]);
+}
+
 function stepShotSrc(step) {
   if (!step || step.progress_only) return "";
   // Progress pulses use step:null — never treat them as screenshot frames.
   if (step.step == null && !step.screenshot_url && !step.screenshot_data_url) return "";
   const inline = step?.screenshot_data_url || "";
   if (typeof inline === "string" && inline.startsWith("data:image/")) return inline;
-  return step?.screenshot_url || "";
+  const url = step?.screenshot_url || "";
+  const key = url.split("?")[0];
+  if (url && _shotLoaded[key] === false) {
+    // Landing page must stay retryable — first GET often races the file.
+    if (step.step === 0 || isOpeningShotUrl(url)) {
+      return `${key}?t=${Math.floor(Date.now() / 3000)}`;
+    }
+    return "";
+  }
+  return url;
 }
 
-/** Fleet often advertises bbox_N.png before GCS has it. step_0 is the landing frame. */
-function shotFallbackSrc(src) {
-  const raw = String(src || "");
-  if (!raw || raw.startsWith("data:")) return "";
-  return raw.replace(/\/(?:bbox|step)_\d+\.png(?:\?.*)?$/i, "/step_0.png");
+function markShotResult(src, ok) {
+  const key = String(src || "").split("?")[0];
+  if (!key || key.startsWith("data:")) return;
+  if (ok) {
+    _shotLoaded[key] = true;
+    return;
+  }
+  if (isOpeningShotUrl(key)) {
+    // Keep the website frame in play; do not blank the stage.
+    delete _shotLoaded[key];
+    return;
+  }
+  const prev = _shotLoaded[key];
+  _shotLoaded[key] = false;
+  // Fall back to the last real frame of this agent (usually the opening site).
+  if (prev !== false && _lastStudyData) {
+    renderStage(mergeSessions(_lastStudyData));
+  }
 }
 
-function bindShotFallback(img) {
-  if (!img || img.dataset.fbBound) return;
-  img.dataset.fbBound = "1";
+function bindAgentShot(img, agentId) {
+  if (!img || img.dataset.boundShot) return;
+  img.dataset.boundShot = "1";
+  img.addEventListener("load", () => {
+    if (img.naturalWidth > 40) markShotResult(img.dataset.shotSrc || img.src, true);
+  });
   img.addEventListener("error", () => {
-    if (img.dataset.fbApplied) return;
-    const next = shotFallbackSrc(img.getAttribute("src") || img.dataset.shotSrc || "");
-    if (!next || next === (img.getAttribute("src") || "")) return;
-    img.dataset.fbApplied = "1";
-    img.src = next;
-    img.dataset.shotSrc = next;
+    markShotResult(img.dataset.shotSrc || img.src, false);
+  });
+  img.dataset.agentId = String(agentId || "");
+}
+
+function bindLiveProbe(iframe, agentId) {
+  if (!iframe || !agentId || iframe.dataset.boundLive) return;
+  iframe.dataset.boundLive = "1";
+  iframe.addEventListener("load", () => {
+    // Any successful paint clears a prior disconnect — keep trying.
+    _liveFailed[agentId] = false;
+    _liveReady[agentId] = true;
+    _liveMountedSrc[agentId] = iframe.getAttribute("src") || _liveMountedSrc[agentId] || "";
+    if (_lastStudyData) renderStage(mergeSessions(_lastStudyData));
+  });
+  iframe.addEventListener("error", () => {
+    _liveFailed[agentId] = true;
+    _liveReady[agentId] = false;
+    if (_lastStudyData) renderStage(mergeSessions(_lastStudyData));
   });
 }
 
+function ensureLiveKeepAlive(agentId, liveSrc) {
+  if (!agentId || !liveSrc) return;
+  if (_liveKeepAlive[agentId]) return;
+  _liveKeepAlive[agentId] = setInterval(() => {
+    if (!_lastStudyData) return;
+    const sessions = mergeSessions(_lastStudyData);
+    const sess = (sessions || []).find((s) => String(s?.agent_id || "") === String(agentId));
+    if (!sess || !["starting", "pending", "running"].includes(String(sess.status || ""))) {
+      clearInterval(_liveKeepAlive[agentId]);
+      delete _liveKeepAlive[agentId];
+      return;
+    }
+    // Remount ONLY after a failed load — periodic remounts cause the exact
+    // "WebSocket disconnected / Reconnect DevTools" overlay the user hit.
+    if (!_liveFailed[agentId]) return;
+    _liveFailed[agentId] = false;
+    _liveReady[agentId] = false;
+    const raw = String(sess.live_view_url || liveSrc).replace(/([?&])_r=\d+/g, "").replace(/[?&]$/, "");
+    const joiner = raw.includes("?") ? "&" : "?";
+    _liveMountedSrc[agentId] = `${raw}${joiner}_r=${Date.now()}`;
+    sess.live_view_url = _liveMountedSrc[agentId];
+    renderStage(sessions);
+  }, LIVE_RECONNECT_MS);
+}
+
+function stopLiveKeepAlive(agentId) {
+  if (_liveKeepAlive[agentId]) {
+    clearInterval(_liveKeepAlive[agentId]);
+    delete _liveKeepAlive[agentId];
+  }
+}
+
 function stepsWithScreenshots(trace) {
-  // Only real numbered browser frames with image pixels — never prep pulses (step:null).
   return (trace || []).filter(
-    (s) => s && !s.progress_only && typeof s.step === "number" && Boolean(stepShotSrc(s))
+    (s) =>
+      s &&
+      !s.progress_only &&
+      typeof s.step === "number" &&
+      (Boolean(s.screenshot_url) ||
+        (typeof s.screenshot_data_url === "string" &&
+          s.screenshot_data_url.startsWith("data:image/")))
   );
 }
 
@@ -492,44 +595,78 @@ function preferredShots(session) {
   return onSite.length ? onSite : shots;
 }
 
+function pickVisibleShot(session, sessionIdx) {
+  const shots = preferredShots(session);
+  const key = String(sessionIdx ?? 0);
+  if (!shots.length) return { shots, idx: 0, step: null, src: "" };
+  if (_shotFollowLatest[key] !== false) {
+    for (let i = shots.length - 1; i >= 0; i--) {
+      const src = stepShotSrc(shots[i]);
+      if (src) {
+        _shotIdx[key] = i;
+        return { shots, idx: i, step: shots[i], src };
+      }
+    }
+    const open = shots.find((s) => s.step === 0) || shots[0];
+    _shotIdx[key] = Math.max(0, shots.indexOf(open));
+    const src =
+      stepShotSrc(open) ||
+      open.screenshot_data_url ||
+      open.screenshot_url ||
+      "";
+    return { shots, idx: _shotIdx[key], step: open, src };
+  }
+  if (_shotIdx[key] == null || _shotIdx[key] >= shots.length) {
+    _shotIdx[key] = Math.max(0, shots.length - 1);
+  }
+  const idx = _shotIdx[key];
+  const step = shots[idx];
+  const src = stepShotSrc(step) || stepShotSrc(shots.find((s) => stepShotSrc(s)) || step);
+  return { shots, idx, step, src: src || "" };
+}
+
 function renderFocusStage(session, sessionIdx) {
   const persona = session?._persona;
   const demos = demographicLine(persona);
   const taskText = session?.task_prompt || session?.task_title || "";
   const trace = session?.trace || [];
-  const shots = preferredShots(session);
+  const { shots, idx, step, src: pickedSrc } = pickVisibleShot(session, sessionIdx);
   const key = String(sessionIdx ?? 0);
-  // Follow newest frame (0 → 1 → …) unless user scrubbed away.
-  if (_shotFollowLatest[key] !== false) {
-    _shotIdx[key] = Math.max(0, shots.length - 1);
-  } else if (_shotIdx[key] == null || _shotIdx[key] >= shots.length) {
-    _shotIdx[key] = Math.max(0, shots.length - 1);
-  }
-  const idx = shots.length ? _shotIdx[key] : 0;
-  const step = shots[idx];
   const lastAction = session?.last_action || trace[trace.length - 1]?.action || "";
   const lastObs = trace[trace.length - 1]?.observation || "";
   const siteName = prettySiteName(session?.site_url, session?.site_label);
+  const agentId = String(session?.agent_id || "");
 
   let visual = "";
   const browsing = ["starting", "pending", "running"].includes(String(session?.status || ""));
   const liveView = session?.live_view_url;
-  // XOR: live iframe when agent is up; otherwise screenshot; never both.
-  // Never show live DevTools for killed/abandoned/dead sessions.
-  const showLive = Boolean(
+  const liveWanted = Boolean(
     liveView &&
       session?.live_active &&
       browsing &&
       !["killed", "complete", "error", "abandoned"].includes(String(session?.status || ""))
   );
-  const shotSrc = !showLive && step ? stepShotSrc(step) : "";
+  // Show live as soon as we have a URL — don't wait on a probe that doubles the WS
+  // and often dies with "WebSocket disconnected". Screenshot stays underneath until load.
+  const showLive = liveWanted;
+  if (liveWanted) ensureLiveKeepAlive(agentId, liveView);
+  else stopLiveKeepAlive(agentId);
+  const shotSrc = !showLive || !_liveReady[agentId] ? pickedSrc : "";
   if (showLive) {
+    const frameSrc = _liveMountedSrc[agentId] || liveView;
     visual = `
       <div class="stage-visuals">
-        <div class="stage-live-wrap" data-live-src="${escapeHtml(liveView)}">
+        ${
+          shotSrc && !_liveReady[agentId]
+            ? `<figure class="stage-shot stage-shot-under-live">
+          <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="Opening" loading="eager" data-agent-id="${escapeHtml(agentId)}" />
+        </figure>`
+            : ""
+        }
+        <div class="stage-live-wrap" data-live-src="${escapeHtml(frameSrc)}">
           <iframe
             class="stage-live-frame"
-            src="${escapeHtml(liveView)}"
+            src="${escapeHtml(frameSrc)}"
             title="Live browser — ${escapeHtml(siteName)}"
             sandbox="allow-same-origin allow-scripts"
             allow="clipboard-read; clipboard-write"
@@ -538,7 +675,8 @@ function renderFocusStage(session, sessionIdx) {
           <p class="stage-live-caption">Live browser · ${escapeHtml(siteName)} · agent acting</p>
         </div>
       </div>`;
-  } else if (shotSrc) {
+  } else if (shotSrc || pickedSrc) {
+    const src = shotSrc || pickedSrc;
     const boxes = step?.boxes || [];
     const caption = formatStepCaption(step);
     const boxLegend = boxes.length
@@ -556,31 +694,13 @@ function renderFocusStage(session, sessionIdx) {
     visual = `
       <div class="stage-visuals">
         <figure class="stage-shot">
-          <img class="trace-screenshot" data-shot-src="${escapeHtml(shotSrc)}" src="${escapeHtml(shotSrc)}" alt="${escapeHtml(caption)}" loading="eager" onerror="if(!this.dataset.fbApplied){const n=(this.src||'').replace(/\\/(?:bbox|step)_\\d+\\.png(?:\\?.*)?$/i,'/step_0.png');if(n&&n!==this.src){this.dataset.fbApplied='1';this.src=n;this.dataset.shotSrc=n;}}" />
+          <img class="trace-screenshot" data-shot-src="${escapeHtml(src)}" src="${escapeHtml(src)}" alt="${escapeHtml(caption)}" loading="eager" data-agent-id="${escapeHtml(agentId)}" />
           <figcaption>${escapeHtml(caption)}${
-            browsing ? " · waiting for agent…" : ""
+            browsing ? " · opening live browser…" : ""
           }</figcaption>
         </figure>
       </div>
-      ${boxLegend}
-      ${
-        shots.length
-          ? `<div class="stage-shot-nav">
-        <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="-1" ${idx <= 0 ? "disabled" : ""}>← Prev</button>
-        <div class="trace-step-pills">
-          ${shots
-            .map(
-              (s, i) =>
-                `<button type="button" class="step-pill${i === idx ? " active" : ""}" data-shot-key="${escapeHtml(key)}" data-shot-idx="${i}">${escapeHtml(
-                  typeof s.step === "number" ? s.step : i
-                )}</button>`
-            )
-            .join("")}
-        </div>
-        <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="1" ${idx >= shots.length - 1 ? "disabled" : ""}>Next →</button>
-      </div>`
-          : ""
-      }`;
+      ${boxLegend}`;
   } else {
     const waitingMsg =
       session?.status === "summarizing"
@@ -598,6 +718,26 @@ function renderFocusStage(session, sessionIdx) {
         <p>${escapeHtml(waitingMsg)}</p>
       </div>`;
   }
+
+  const shotNav =
+    !showLive && shots.length
+      ? `<div class="stage-shot-nav">
+        <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="-1" ${idx <= 0 ? "disabled" : ""}>← Prev</button>
+        <div class="trace-step-pills">
+          ${shots
+            .map(
+              (s, i) =>
+                `<button type="button" class="step-pill${i === idx ? " active" : ""}${
+                  stepShotSrc(s) ? "" : " is-pending"
+                }" data-shot-key="${escapeHtml(key)}" data-shot-idx="${i}">${escapeHtml(
+                  typeof s.step === "number" ? s.step : i
+                )}</button>`
+            )
+            .join("")}
+        </div>
+        <button type="button" class="step-nav" data-shot-key="${escapeHtml(key)}" data-shot-delta="1" ${idx >= shots.length - 1 ? "disabled" : ""}>Next →</button>
+      </div>`
+      : "";
 
   const thoughts = Array.isArray(session?.live_thoughts) ? session.live_thoughts : [];
   const thoughtPanel = thoughts.length
@@ -640,6 +780,7 @@ function renderFocusStage(session, sessionIdx) {
         </div>
       </div>
       ${visual}
+      ${shotNav}
       ${thoughtPanel}
       ${
         step || latestThought
@@ -951,32 +1092,61 @@ function renderStage(sessions) {
   const userSelect = document.getElementById("stage-user-select");
   _traceResults = sessions || [];
 
-  const hasPixels = (s) =>
-    (s?.trace || []).some((t) => t && stepShotSrc(t));
+  const hasLive = (s) =>
+    Boolean(s?.live_view_url && s?.live_active) &&
+    ["starting", "pending", "running"].includes(String(s?.status || ""));
+  const hasRealShot = (s) => (s?.trace || []).some((t) => t && stepShotSrc(t));
+  const inFlight = (s) =>
+    ["starting", "pending", "running", "summarizing"].includes(String(s?.status || ""));
+  const tasksReady = ((_lastStudyData?.tasks || []).length > 0) || (sessions?.length > 0);
+  const studyGoing = ["running", "pending", "queued"].includes(
+    String(_lastStudyData?.status || "")
+  );
 
-  // Never show an empty "watching/capturing" browser pane — only open the
-  // stage once at least one real screenshot exists.
-  if (!sessions?.length || !sessions.some(hasPixels)) {
+  // Open the live stage as soon as tasks exist — don't leave people staring
+  // at the task list while browsers boot.
+  if (
+    !_stageOpened &&
+    !sessions?.length &&
+    !tasksReady &&
+    !studyGoing &&
+    !(sessions || []).some(hasLive) &&
+    !(sessions || []).some(hasRealShot) &&
+    !(sessions || []).some(inFlight)
+  ) {
     section.hidden = true;
     document.querySelector("main")?.classList.remove("live-wide");
     return;
   }
+  _stageOpened = true;
   section.hidden = false;
   document.querySelector("main")?.classList.add("live-wide");
   scrollBriefTo("stage-section", "live");
 
   if (!_userPickedTrace) {
-    const firstWithShot = sessions.findIndex(hasPixels);
-    const firstWithTrace = sessions.findIndex((s) => (s.trace || []).length > 0);
+    const firstWithShot = sessions.findIndex(hasRealShot);
+    const firstLive = sessions.findIndex(hasLive);
+    const firstInFlight = sessions.findIndex(inFlight);
     if (firstWithShot >= 0) _activeTraceIdx = firstWithShot;
-    else if (firstWithTrace >= 0) _activeTraceIdx = firstWithTrace;
+    else if (firstLive >= 0) _activeTraceIdx = firstLive;
+    else if (firstInFlight >= 0) _activeTraceIdx = firstInFlight;
     else _activeTraceIdx = 0;
   } else if (_activeTraceIdx >= sessions.length) {
     _activeTraceIdx = Math.max(0, sessions.length - 1);
   }
 
   const idx = Math.max(0, _activeTraceIdx);
-  const session = sessions[idx];
+  const session =
+    sessions[idx] ||
+    {
+      status: "starting",
+      site_url: _lastStudyData?.url || "",
+      site_label: "Product",
+      last_action: `Opening ${_lastStudyData?.url || "the page"}…`,
+      persona_name: (_lastStudyData?.personas || [])[0]?.name || "Simulated user",
+      task_title: uniqueBriefTasks(_lastStudyData?.tasks || [])[0]?.title || "",
+      trace: [],
+    };
   const activeBase = baseTaskId(session?.task_id || session?.agent_id);
   const activeSite =
     session?.site_key ||
@@ -1073,31 +1243,45 @@ function renderStage(sessions) {
   );
 
   paintStageBody(body, session, idx);
+  if (!_stageScrolled) {
+    _stageScrolled = true;
+    requestAnimationFrame(() => {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 }
 
 function paintStageBody(body, session, idx) {
   const nextHtml = renderFocusStage(session, idx);
-  const nextShots = preferredShots(session);
-  const nextSrc = nextShots.length
-    ? stepShotSrc(
-        nextShots[
-          Math.max(
-            0,
-            _shotFollowLatest[String(idx)] !== false
-              ? nextShots.length - 1
-              : Math.min(_shotIdx[String(idx)] ?? 0, nextShots.length - 1)
-          )
-        ]
-      )
-    : "";
+  const picked = pickVisibleShot(session, idx);
+  const nextSrc = picked.src || "";
   const liveImg = body.querySelector("img.trace-screenshot");
   const liveFrame = body.querySelector("iframe.stage-live-frame");
+  const liveProbe = body.querySelector("iframe.stage-live-probe");
   const liveWrap = body.querySelector(".stage-live-wrap");
-  const sameAgent = body.dataset.agentId === String(session?.agent_id || idx);
-  const wantLive =
-    Boolean(session?.live_view_url && session?.live_active) &&
-    ["starting", "pending", "running"].includes(String(session?.status || ""));
+  const agentId = String(session?.agent_id || idx);
+  const sameAgent = body.dataset.agentId === agentId;
+  const browsing = ["starting", "pending", "running"].includes(String(session?.status || ""));
+  const liveWanted = Boolean(
+    session?.live_view_url &&
+      session?.live_active &&
+      browsing
+  );
+  const wantLive = liveWanted;
   const liveSrc = session?.live_view_url || "";
+  const finishPaint = () => {
+    body.dataset.agentId = agentId;
+    body.innerHTML = nextHtml;
+    const painted = body.querySelector("img.trace-screenshot");
+    if (painted) bindAgentShot(painted, session?.agent_id);
+    const frame = body.querySelector("iframe.stage-live-frame");
+    if (frame) {
+      bindLiveProbe(frame, agentId);
+      if (liveWanted) ensureLiveKeepAlive(agentId, liveSrc);
+    } else {
+      stopLiveKeepAlive(agentId);
+    }
+  };
 
   const patchMeta = () => {
     const actionEl = body.querySelector(".step-shot-action");
@@ -1140,40 +1324,51 @@ function paintStageBody(body, session, idx) {
   };
 
   // Mode switch shot ↔ live requires a full repaint (never side-by-side).
+  // Keep the website screenshot up until live actually paints.
   const haveShot = Boolean(liveImg);
   const haveLive = Boolean(liveFrame);
   if (
     sameAgent &&
-    ((wantLive && haveShot && !haveLive) || (!wantLive && haveLive && Boolean(nextSrc)))
+    ((wantLive && haveShot && !haveLive) ||
+      (!wantLive && haveLive) ||
+      (!wantLive && haveShot && !nextSrc && !picked.shots.length))
   ) {
-    body.innerHTML = nextHtml;
-    body.dataset.agentId = String(session?.agent_id || idx);
+    finishPaint();
     return;
   }
   if (sameAgent && (liveImg || liveFrame)) {
-    // Keep iframe mounted — remounting blanks the live view.
+    // Remount when BB refreshes the debugger URL or keep-alive busts it —
+    // otherwise the iframe stays on a dead WebSocket ("Reconnect DevTools").
     if (wantLive && liveSrc && liveFrame) {
       const cur = liveWrap?.dataset.liveSrc || liveFrame.getAttribute("src") || "";
-      if (cur !== liveSrc) {
+      const mounted = _liveMountedSrc[agentId] || "";
+      if (cur !== liveSrc && mounted !== liveSrc && !String(cur).startsWith(String(liveSrc).split("?")[0])) {
         liveFrame.src = liveSrc;
         if (liveWrap) liveWrap.dataset.liveSrc = liveSrc;
+        _liveMountedSrc[agentId] = liveSrc;
+        _liveReady[agentId] = false;
+      } else if (mounted && mounted !== cur) {
+        liveFrame.src = mounted;
+        if (liveWrap) liveWrap.dataset.liveSrc = mounted;
       }
+      ensureLiveKeepAlive(agentId, liveSrc);
     }
     if (liveImg && nextSrc && !wantLive) {
-      bindShotFallback(liveImg);
+      bindAgentShot(liveImg, session?.agent_id);
       const shown = liveImg.dataset.shotSrc || liveImg.getAttribute("src") || "";
       if (shown.split("?")[0] !== nextSrc && !String(nextSrc).startsWith("data:")) {
         const pre = new Image();
-        const apply = (src) => {
+        pre.onload = () => {
           if (!liveImg.isConnected) return;
-          liveImg.src = src;
-          liveImg.dataset.shotSrc = src;
+          if (pre.naturalWidth > 40) {
+            markShotResult(nextSrc, true);
+            liveImg.src = nextSrc;
+            liveImg.dataset.shotSrc = nextSrc;
+          } else {
+            markShotResult(nextSrc, false);
+          }
         };
-        pre.onload = () => apply(nextSrc);
-        pre.onerror = () => {
-          const fb = shotFallbackSrc(nextSrc);
-          if (fb && fb !== nextSrc) apply(fb);
-        };
+        pre.onerror = () => markShotResult(nextSrc, false);
         pre.src = nextSrc;
       } else if (String(nextSrc).startsWith("data:") && shown !== nextSrc) {
         liveImg.src = nextSrc;
@@ -1184,8 +1379,7 @@ function paintStageBody(body, session, idx) {
     return;
   }
 
-  body.dataset.agentId = String(session?.agent_id || idx);
-  body.innerHTML = nextHtml;
+  finishPaint();
 }
 
 function siteMatches(session, siteKey, siteUrl) {
@@ -1549,6 +1743,9 @@ form.addEventListener("submit", async (e) => {
         tasks,
         test_mode: testMode,
         backend: "default",
+        ...(Number(new URLSearchParams(location.search).get("max_agents") || 0) > 0
+          ? { max_agents: Number(new URLSearchParams(location.search).get("max_agents")) }
+          : {}),
       }),
     });
 
@@ -1643,7 +1840,9 @@ form.addEventListener("submit", async (e) => {
           updateProgressUI(data, startedAt);
           renderLiveStudy(data);
           if (!studyStillRunning(data) && data.status === "complete") break;
-          if (data.status === "error") throw new Error(data.error || "Study failed");
+          if (data.status === "error" || data.status === "abandoned") {
+            throw new Error(data.error || data.phase || "Study failed");
+          }
           await new Promise((r) => setTimeout(r, 1500));
         }
       }

@@ -210,3 +210,10 @@ def make_verify_done_hook(
         agent.add_new_task(msg)
 
     return on_step_end, stats
+
+
+def harness_verify_stats(stats: VerifyDoneStats | None) -> dict:
+    """Manifest fields when verify-done ran (empty dict if disabled)."""
+    if stats is None or not verify_done_enabled():
+        return {}
+    return stats.as_dict()

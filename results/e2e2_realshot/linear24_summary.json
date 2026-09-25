@@ -1,0 +1,33 @@
+{
+  "pass": true,
+  "product_url": "https://linear.app/",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 286.6,
+  "t_first_task_created_s": 16.856,
+  "t_all_tasks_created_s": 28.604,
+  "creation_to_first_real_shot": {
+    "p50": 0.238,
+    "p95": 1.796,
+    "max": 3.933,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "warm_timing": {
+    "competitor_1": {
+      "bb_create_s": 0.578,
+      "navigate_and_paint_s": 8.973,
+      "first_paint_total_s": 11.069,
+      "blankish": false
+    },
+    "product": {
+      "bb_create_s": 0.596,
+      "navigate_and_paint_s": 10.717,
+      "first_paint_total_s": 14.418,
+      "blankish": false
+    }
+  },
+  "fail_reasons": null,
+  "study_id": "f95e8140-e287-4906-9f87-2bc3f5f9b97f"
+}

@@ -1,0 +1,39 @@
+{
+  "pass": true,
+  "product_url": "https://www.youtube.com/",
+  "agents": 24,
+  "yeses": 24,
+  "elapsed_s": 291.8,
+  "t_first_task_created_s": 25.671,
+  "t_all_tasks_created_s": 31.798,
+  "creation_to_first_real_shot": {
+    "p50": 0.267,
+    "p95": 0.32,
+    "max": 0.348,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "warm_timing": {
+    "product": {
+      "bb_create_s": 0.971,
+      "navigate_and_paint_s": 15.418,
+      "first_paint_total_s": 17.788,
+      "blankish": false
+    },
+    "competitor_2": {
+      "bb_create_s": 0.72,
+      "navigate_and_paint_s": 16.803,
+      "first_paint_total_s": 20.224,
+      "blankish": false
+    },
+    "competitor_1": {
+      "bb_create_s": 0.865,
+      "navigate_and_paint_s": 18.663,
+      "first_paint_total_s": 23.743,
+      "blankish": false
+    }
+  },
+  "fail_reasons": null,
+  "study_id": "3263155c-7d07-47f3-a45e-54cdda8bace5"
+}
