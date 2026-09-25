@@ -69,3 +69,18 @@
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "beehiiv.com", "ts": "2026-09-25T23:37:29.469663+00:00", "when": "after"}
 {"attempt": 1, "event": "signup_start", "site": "whimsical.com", "ts": "2026-09-25T23:37:30.943155+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "whimsical.com", "ts": "2026-09-25T23:37:30.985752+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "whimsical.com", "ts": "2026-09-25T23:40:52.995783+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "ticktick.com", "ts": "2026-09-25T23:40:54.388596+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "ticktick.com", "ts": "2026-09-25T23:40:54.426705+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "ticktick.com", "ts": "2026-09-25T23:45:13.417959+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "huggingface.co", "ts": "2026-09-25T23:45:14.840973+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "huggingface.co", "ts": "2026-09-25T23:45:14.881459+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "huggingface.co", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T23:48:35.065034+00:00"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "huggingface.co", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T23:50:52.017796+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "huggingface.co", "ts": "2026-09-25T23:53:01.325117+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "linear.app", "ts": "2026-09-25T23:53:02.874470+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "linear.app", "ts": "2026-09-25T23:53:03.025912+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "linear.app", "ts": "2026-09-25T23:55:55.944905+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "notion.so", "ts": "2026-09-25T23:55:57.056426+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "notion.so", "ts": "2026-09-25T23:55:57.141490+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "notion.so", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T23:58:39.507849+00:00"}

@@ -448,7 +448,8 @@
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "linearcfbb20",
+      "last_alias_tag": "linearfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "linear.app",
@@ -479,9 +480,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/ceca8189-7f90-40cd-ba34-9c217602aa13",
           "at": "2026-09-25T21:00:27.200750+00:00"
+        },
+        {
+          "host": "linear.app",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 172.9,
+          "alias_tag": "linearfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/ef1aef77-aa32-4bf0-8768-ba97bfc28466",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:55:56.191384+00:00"
         }
       ],
-      "updated_at": "2026-09-25T21:00:27.200750+00:00"
+      "updated_at": "2026-09-25T23:55:56.191384+00:00"
     },
     "notion.so": {
       "reproducible": true,
@@ -1264,8 +1283,9 @@
     "whimsical.com": {
       "reproducible": false,
       "last_reason": "unknown",
-      "last_detail": "The 'Continue' button on the email verification page is unresponsive after entering the code. Repeated clicks and 'Enter' key presses did not advance the page, and CAPTCHA detection/solving did not resolve the issue.",
-      "last_alias_tag": "whimsicalwhim1d9d0",
+      "last_detail": "The email verification step is blocked by a 'Sorry, there's a technical issue.' message, preventing further progress. Repeated attempts to submit the code and resend the email have failed.",
+      "last_alias_tag": "whimsicalfullb10",
+      "last_ok": false,
       "attempts": [
         {
           "host": "whimsical.com",
@@ -1281,9 +1301,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/59888835-9b59-44e2-816a-7201ba8e16a5",
           "at": "2026-09-25T14:25:11.670454+00:00"
+        },
+        {
+          "host": "whimsical.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "unknown",
+          "detail": "The email verification step is blocked by a 'Sorry, there's a technical issue.' message, preventing further progress. Repeated attempts to submit the code and resend the email have failed.",
+          "elapsed_s": 201.8,
+          "alias_tag": "whimsicalfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/7dd3ab58-94e0-4985-b3d7-5538f161ffed",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:40:53.243915+00:00"
         }
       ],
-      "updated_at": "2026-09-25T14:25:11.670454+00:00"
+      "updated_at": "2026-09-25T23:40:53.243915+00:00"
     },
     "loom.com": {
       "reproducible": false,
@@ -1592,9 +1630,65 @@
         }
       ],
       "updated_at": "2026-09-25T23:37:29.696087+00:00"
+    },
+    "ticktick.com": {
+      "reproducible": false,
+      "last_reason": "not_signed_in",
+      "last_detail": "",
+      "last_alias_tag": "ticktickfullb10",
+      "last_ok": false,
+      "attempts": [
+        {
+          "host": "ticktick.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "not_signed_in",
+          "detail": "",
+          "elapsed_s": 259.0,
+          "alias_tag": "ticktickfullb10",
+          "email_scheme": "dotted",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/f641d0c2-c1b7-4ce6-b89c-8aee3e0d2fd8",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:45:13.665376+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:45:13.665376+00:00"
+    },
+    "huggingface.co": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "huggingfacefullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "huggingface.co",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 466.4,
+          "alias_tag": "huggingfacefullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/a2e35588-0f4f-46f1-a178-b8f22a1e11fd",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:53:01.580956+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:53:01.580956+00:00"
     }
   },
-  "updated_at": "2026-09-25T23:37:29.696589+00:00",
+  "updated_at": "2026-09-25T23:55:56.191867+00:00",
   "reproducible": [
     "1password.com",
     "airtable.com",
@@ -1613,6 +1707,7 @@
     "grammarly.com",
     "hashnode.com",
     "hubspot.com",
+    "huggingface.co",
     "intercom.com",
     "jotform.com",
     "linear.app",
@@ -1651,9 +1746,10 @@
     "reddit.com",
     "shopify.com",
     "supabase.com",
+    "ticktick.com",
     "todoist.com",
     "whimsical.com"
   ],
-  "score": "44/60",
-  "reproducible_count": 44
+  "score": "45/60",
+  "reproducible_count": 45
 }
