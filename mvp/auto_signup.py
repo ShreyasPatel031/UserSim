@@ -264,7 +264,7 @@ SIGNUP_START: dict[str, str] = {
     "grammarly.com": "https://www.grammarly.com/signup",
     "cal.com": "https://app.cal.com/signup",
     "jotform.com": "https://www.jotform.com/signup",
-    "hotjar.com": "https://insights.hotjar.com/register",
+    "hotjar.com": "https://app.contentsquare.com/signup?app=hotjar",
     "mixpanel.com": "https://mixpanel.com/register/",
     "intercom.com": "https://app.intercom.com/admins/sign_up",
     "zendesk.com": "https://www.zendesk.com/register/",
@@ -656,6 +656,26 @@ def _build_signup_tools(ctx: dict[str, Any]):
 
         code = await asyncio.to_thread(_wait_any)
         if not code:
+            # Many products (Intercom, etc.) email a magic link, not digits.
+            # Surface the link so the agent can navigate instead of looping
+            # get_email_code until timeout.
+            def _link_fallback() -> str | None:
+                for alias in aliases:
+                    link = latest_signup_link(alias, host=host, newer_than=newer)
+                    if link:
+                        return link
+                return None
+
+            link = await asyncio.to_thread(_link_fallback)
+            if link:
+                return ActionResult(
+                    extracted_content=link,
+                    include_in_memory=True,
+                    long_term_memory=(
+                        f"No numeric code; email verification LINK "
+                        f"(navigate to it exactly): {link}"
+                    ),
+                )
             return ActionResult(
                 error="No verification code arrived in email within timeout",
                 include_in_memory=True,
