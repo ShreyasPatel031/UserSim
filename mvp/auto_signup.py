@@ -283,6 +283,8 @@ SIGNUP_START: dict[str, str] = {
     "typeform.com": "https://admin.typeform.com/signup",
     "box.com": "https://account.box.com/signup/n/personal",
     "wix.com": "https://users.wix.com/signin?loginCompName=SignUp",
+    "users.wix.com": "https://users.wix.com/signin?loginCompName=SignUp",
+    "id.atlassian.com": "https://id.atlassian.com/signup",
 }
 
 # Login deep-links for recovering sessions when signup created the account
