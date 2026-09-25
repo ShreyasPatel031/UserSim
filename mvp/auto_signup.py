@@ -1037,6 +1037,17 @@ async def sign_up(
         or (identity.host if identity is not None else "")
         or host_for_url(url)
     )
+    try:
+        from mvp.captcha_spend import bind_signup, current_attempt, current_site
+
+        # Keep the attempt the runner already opened. A bare sign_up call
+        # binds attempt 0 so CapSolver stays refused.
+        if current_site() == host and current_attempt() >= 1:
+            bind_signup(host, current_attempt())
+        else:
+            bind_signup(host, 0)
+    except Exception:
+        pass
     if host in RETIRED_HOSTS or host.removeprefix("www.") in RETIRED_HOSTS:
         try:
             update_identity(

@@ -506,21 +506,28 @@ def solve_sitekey(
     captcha_type: str = "recaptcha",
     action: str | None = None,
     timeout_s: float = 180.0,
+    blocking: bool = False,
 ) -> str | None:
-    """Return a solver token for the given sitekey, or None on failure."""
-    key = _api_key()
-    if not key:
-        return None
+    """Return a solver token for the given sitekey, or None on failure.
+
+    CapSolver is research-only: ``blocking`` must be true (the page detector
+    already confirmed a captcha is in the way) and the spend gate must allow
+    the host. Other providers still require ``MVP_CAPTCHA_API_KEY``.
+    """
     api = _api_name()
     if api in {"capsolver", "cap-solver"}:
         return _capsolver_solve(
-            key,
+            "",
             sitekey=sitekey,
             page_url=page_url,
             captcha_type=captcha_type,
             action=action,
             timeout_s=timeout_s,
+            blocking=blocking,
         )
+    key = _api_key()
+    if not key:
+        return None
     if api in {"2captcha", "twocaptcha", "2-captcha"}:
         return _twocaptcha_solve(
             key,
@@ -550,39 +557,137 @@ def _capsolver_solve(
     captcha_type: str,
     action: str | None,
     timeout_s: float,
+    blocking: bool = False,
 ) -> str | None:
-    task_type = capsolver_task_type(captcha_type)
-    if not task_type:
+    """One createTask, then poll that task. No retry loop.
+
+    ``key`` is ignored. The research token is read from ``CAPSOLVER_API_KEY``
+    inside the spend gate, and only after a blocking captcha and a priced task
+    type have both been confirmed.
+    """
+    del key  # vault / caller keys must not reach CapSolver
+    from mvp import captcha_spend as spend
+
+    task_type = capsolver_task_type(captcha_type) or ""
+    site = spend.current_site() or ""
+    if not blocking:
+        spend.record_skip(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            reason="not_blocking",
+        )
         return None
+    reason = spend.refusal_reason(task_type, site=site or None)
+    if reason:
+        spend.record_skip(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            reason=reason,
+        )
+        return None
+    token = spend.capsolver_key()
+    if not token:
+        spend.record_skip(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            reason="no_key",
+        )
+        return None
+
+    balance_before = spend.get_balance(token)
     task = _solver_task(task_type, sitekey=sitekey, page_url=page_url, action=action)
+    task_id = None
+    solved = False
+    solution: str | None = None
+    note = ""
     try:
         create = httpx.post(
             "https://api.capsolver.com/createTask",
-            json={"clientKey": key, "task": task},
+            json={"clientKey": token, "task": task},
             timeout=30.0,
         ).json()
     except Exception:
+        spend.record_task(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            task_id=None,
+            solved=False,
+            cost=0.0,
+            balance_before=balance_before,
+            balance_after=balance_before,
+            note="create_error",
+        )
         return None
+    if not isinstance(create, dict):
+        create = {}
     task_id = create.get("taskId")
     if not task_id:
+        balance_after = spend.get_balance(token)
+        spend.record_task(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            task_id=None,
+            solved=False,
+            cost=0.0,
+            balance_before=balance_before,
+            balance_after=balance_after,
+            note="no_task_id",
+        )
         return None
+
     deadline = time.time() + timeout_s
     while time.time() < deadline:
-        time.sleep(3)
         try:
             result = httpx.post(
                 "https://api.capsolver.com/getTaskResult",
-                json={"clientKey": key, "taskId": task_id},
+                json={"clientKey": token, "taskId": task_id},
                 timeout=30.0,
             ).json()
         except Exception:
+            time.sleep(3)
+            continue
+        if not isinstance(result, dict):
+            time.sleep(3)
             continue
         if result.get("status") == "ready":
             sol = result.get("solution") or {}
-            return sol.get("gRecaptchaResponse") or sol.get("token") or sol.get("response")
+            solution = sol.get("gRecaptchaResponse") or sol.get("token") or sol.get("response")
+            solved = bool(solution)
+            note = "" if solved else "ready_without_token"
+            break
         if result.get("status") == "failed" or result.get("errorId"):
-            return None
-    return None
+            note = "task_failed"
+            break
+        time.sleep(3)
+    else:
+        note = "poll_timeout"
+
+    balance_after = spend.get_balance(token)
+    list_price = spend.PRICED_TASKS_USD.get(task_type, 0.0)
+    if balance_before is not None and balance_after is not None:
+        delta = round(max(0.0, float(balance_before) - float(balance_after)), 6)
+    else:
+        delta = None
+    # Reserve the published price when the balance call hasn't moved yet so a
+    # burst of solves cannot walk past the cap. The ledger keeps both numbers.
+    cost = list_price if delta is None else max(list_price, delta)
+    spend.record_task(
+        site=site,
+        captcha_type=captcha_type,
+        task_type=task_type,
+        task_id=str(task_id),
+        solved=solved,
+        cost=cost,
+        balance_before=balance_before,
+        balance_after=balance_after,
+        note=note,
+    )
+    return solution if solved else None
 
 
 def _twocaptcha_solve(
@@ -866,7 +971,7 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
             await page.evaluate(
                 """() => {
                   const t = (document.body && document.body.innerText || '').toLowerCase();
-                  return /verify you are human|checking your browser|just a moment|complete the security check|press and hold|are you a robot|invalid or missing captcha|missing captcha token|captcha token|failed to sign up:.*captcha|hcaptcha|complete the captcha/.test(t);
+                  return /verify you are human|checking your browser|just a moment|complete the security check|press and hold|are you a robot|invalid or missing captcha|missing captcha token|captcha token|failed to sign up:.*captcha|hcaptcha|complete the captcha|trouble verifying recaptcha|recaptcha verification|slide right to secure/.test(t);
                 }"""
             )
         )
@@ -920,6 +1025,7 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
         "challenge_visible": visible,
         "widget_present": widget,
         "submit_disabled": submit_disabled,
+        "text_block": text_block,
         "sitekey": (info or {}).get("sitekey"),
         "type": (info or {}).get("type"),
         "action": action,
@@ -1604,13 +1710,23 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
 
     page_url = getattr(page, "url", "") or ""
     info = await detect_sitekey(page)
-    if info and info.get("sitekey"):
+    blocked_info = await page_looks_captcha_blocked(page)
+    # A sitekey or a disabled button alone is not enough. CapSolver runs only
+    # when a challenge, widget, or captcha error is actually on the page.
+    captcha_blocking = bool(info and info.get("sitekey")) and not blocked_info.get("solved") and bool(
+        blocked_info.get("challenge_visible")
+        or blocked_info.get("widget_present")
+        or blocked_info.get("text_block")
+    )
+    # Paid CapSolver only after the detector says this page is actually stuck.
+    if info and info.get("sitekey") and captcha_blocking:
         token = await asyncio.to_thread(
             solve_sitekey,
             sitekey=info["sitekey"],
             page_url=page_url,
-            captcha_type=info.get("type") or "recaptcha",
+            captcha_type=info.get("type") or blocked_info.get("type") or "recaptcha",
             action=info.get("action"),
+            blocking=True,
         )
         if token:
             injected = await _inject_token(page, token, info.get("type") or "recaptcha")
