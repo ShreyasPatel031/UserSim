@@ -1032,7 +1032,11 @@ async def sign_up(
     from config import GCP_PROJECT, MODEL
     from playwright.async_api import async_playwright
 
-    host = (product_host or "").strip().lower().removeprefix("www.") or host_for_url(url)
+    host = (
+        (product_host or "").strip().lower().removeprefix("www.")
+        or (identity.host if identity is not None else "")
+        or host_for_url(url)
+    )
     if host in RETIRED_HOSTS or host.removeprefix("www.") in RETIRED_HOSTS:
         try:
             update_identity(

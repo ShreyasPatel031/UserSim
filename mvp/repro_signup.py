@@ -156,7 +156,13 @@ async def run_one(host: str, *, nonce: str, timeout: float) -> dict[str, Any]:
     )
     url = _signup_url(host)
     t0 = time.time()
-    result = await sign_up(url, timeout_s=timeout, headed=False, identity=ident)
+    result = await sign_up(
+        url,
+        timeout_s=timeout,
+        headed=False,
+        identity=ident,
+        product_host=host,
+    )
     elapsed = round(time.time() - t0, 1)
     if kill_all_browserbase is not None:
         try:
