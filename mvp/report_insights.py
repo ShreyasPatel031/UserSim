@@ -683,10 +683,17 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
             ev = _evidence(run, detail=f"Ended on {run.get('final_url') or 'the opening URL'} after {run.get('num_steps') or 1} step(s).")
             if ev:
                 evs.append(ev)
-        claim = _claim(
-            f"No product run got past the first screen ({len(stuck)} of {len(product)} stopped on the homepage), so feature-level weaknesses are not in these traces.",
-            evs,
-        )
+        if len(stuck) == len(product):
+            stuck_text = (
+                f"No product run got past the first screen ({len(stuck)} of {len(product)} "
+                "stopped on the homepage), so feature-level weaknesses are not in these traces."
+            )
+        else:
+            stuck_text = (
+                f"{len(stuck)} of {len(product)} product runs stopped on the first screen, "
+                "so feature-level weaknesses are thin in these traces."
+            )
+        claim = _claim(stuck_text, evs)
         if claim and not any("first screen" in w["claim"] for w in weaknesses):
             weaknesses.insert(0, claim)
             weaknesses = weaknesses[:3]
