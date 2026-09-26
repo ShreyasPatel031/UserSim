@@ -958,6 +958,9 @@ async def run_trials(*, per_type: int) -> None:
     closed = _release_leftover_experiment_sessions()
     if closed:
         print(f"released {closed} leftover signup-captcha sessions", flush=True)
+    from mvp.captcha_spend import capsolver_key
+
+    print(f"capsolver_key_set {bool(capsolver_key())}", flush=True)
     jobs = _schedule(per_type)
     print(f"trials queued {len(jobs)}", flush=True)
     sem = asyncio.Semaphore(2)
