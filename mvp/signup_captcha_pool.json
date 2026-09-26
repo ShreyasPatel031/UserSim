@@ -1,125 +1,1362 @@
 {
   "version": 1,
-  "description": "Captcha-type experiment pool. These hosts are NOT part of mvp/signup_benchmark60.json and do not change the 60-site fresh score. cohort=new are additional SaaS signup pages. cohort=known are captcha-gated hosts already on the 60-site list, included only so each captcha type can be tried more than once.",
+  "description": "Captcha-type experiment pool. These hosts are NOT part of mvp/signup_benchmark60.json and do not change the 60-site fresh score. Wave 2 adds signup pages aimed at captcha types that had fewer than 10 sites (hCaptcha, GeeTest, Arkose, image/text, DataDome, AWS WAF, slider, reCAPTCHA Enterprise).",
   "sites": [
-    {"host": "sentry.io", "url": "https://sentry.io/signup/", "cohort": "new", "group": "devtools"},
-    {"host": "datadoghq.com", "url": "https://www.datadoghq.com/free-datadog-trial/", "cohort": "new", "group": "devtools"},
-    {"host": "newrelic.com", "url": "https://newrelic.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "circleci.com", "url": "https://circleci.com/signup/", "cohort": "new", "group": "devtools"},
-    {"host": "heroku.com", "url": "https://signup.heroku.com/", "cohort": "new", "group": "devtools"},
-    {"host": "railway.app", "url": "https://railway.com/login", "cohort": "new", "group": "devtools"},
-    {"host": "fly.io", "url": "https://fly.io/app/sign-up", "cohort": "new", "group": "devtools"},
-    {"host": "neon.tech", "url": "https://console.neon.tech/signup", "cohort": "new", "group": "devtools"},
-    {"host": "planetscale.com", "url": "https://auth.planetscale.com/sign-up", "cohort": "new", "group": "devtools"},
-    {"host": "mongodb.com", "url": "https://account.mongodb.com/account/register", "cohort": "new", "group": "devtools"},
-    {"host": "redis.io", "url": "https://redis.io/try-free/", "cohort": "new", "group": "devtools"},
-    {"host": "clerk.com", "url": "https://dashboard.clerk.com/sign-up", "cohort": "new", "group": "devtools"},
-    {"host": "auth0.com", "url": "https://auth0.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "workos.com", "url": "https://workos.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "stytch.com", "url": "https://stytch.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "launchdarkly.com", "url": "https://app.launchdarkly.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "amplitude.com", "url": "https://analytics.amplitude.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "segment.com", "url": "https://app.segment.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "pagerduty.com", "url": "https://www.pagerduty.com/sign-up/", "cohort": "new", "group": "devtools"},
-    {"host": "bitbucket.org", "url": "https://id.atlassian.com/signup?application=bitbucket", "cohort": "new", "group": "devtools"},
-    {"host": "sourcegraph.com", "url": "https://sourcegraph.com/sign-up", "cohort": "new", "group": "devtools"},
-    {"host": "docker.com", "url": "https://app.docker.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "snyk.io", "url": "https://app.snyk.io/signup", "cohort": "new", "group": "devtools"},
-    {"host": "sonarcloud.io", "url": "https://sonarcloud.io/signup", "cohort": "new", "group": "devtools"},
-    {"host": "retool.com", "url": "https://login.retool.com/auth/signup", "cohort": "new", "group": "devtools"},
-    {"host": "n8n.io", "url": "https://app.n8n.cloud/register", "cohort": "new", "group": "devtools"},
-    {"host": "pipedream.com", "url": "https://pipedream.com/auth/signup", "cohort": "new", "group": "devtools"},
-    {"host": "airbyte.com", "url": "https://cloud.airbyte.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "getdbt.com", "url": "https://www.getdbt.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "databricks.com", "url": "https://login.databricks.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "grafana.com", "url": "https://grafana.com/auth/sign-up", "cohort": "new", "group": "devtools"},
-    {"host": "honeycomb.io", "url": "https://ui.honeycomb.io/signup", "cohort": "new", "group": "devtools"},
-    {"host": "checklyhq.com", "url": "https://app.checklyhq.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "logrocket.com", "url": "https://app.logrocket.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "postman.com", "url": "https://identity.getpostman.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "ngrok.com", "url": "https://dashboard.ngrok.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "algolia.com", "url": "https://www.algolia.com/users/sign_up", "cohort": "new", "group": "devtools"},
-    {"host": "contentful.com", "url": "https://www.contentful.com/sign-up/", "cohort": "new", "group": "devtools"},
-    {"host": "sanity.io", "url": "https://www.sanity.io/get-started", "cohort": "new", "group": "devtools"},
-    {"host": "strapi.io", "url": "https://cloud.strapi.io/signup", "cohort": "new", "group": "devtools"},
-    {"host": "hasura.io", "url": "https://cloud.hasura.io/signup", "cohort": "new", "group": "devtools"},
-    {"host": "cockroachlabs.com", "url": "https://www.cockroachlabs.com/get-started/", "cohort": "new", "group": "devtools"},
-    {"host": "timescale.com", "url": "https://console.cloud.timescale.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "clickhouse.com", "url": "https://console.clickhouse.cloud/signUp", "cohort": "new", "group": "devtools"},
-    {"host": "snowflake.com", "url": "https://signup.snowflake.com/", "cohort": "new", "group": "devtools"},
-    {"host": "fivetran.com", "url": "https://fivetran.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "linode.com", "url": "https://login.linode.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "vultr.com", "url": "https://my.vultr.com/signup/", "cohort": "new", "group": "devtools"},
-    {"host": "hetzner.com", "url": "https://accounts.hetzner.com/signUp", "cohort": "new", "group": "devtools"},
-    {"host": "northflank.com", "url": "https://app.northflank.com/signup", "cohort": "new", "group": "devtools"},
-    {"host": "salesforce.com", "url": "https://www.salesforce.com/form/signup/freetrial-sales/", "cohort": "new", "group": "crm"},
-    {"host": "pipedrive.com", "url": "https://app.pipedrive.com/register", "cohort": "new", "group": "crm"},
-    {"host": "close.com", "url": "https://app.close.com/signup", "cohort": "new", "group": "crm"},
-    {"host": "freshdesk.com", "url": "https://www.freshworks.com/freshdesk/signup/", "cohort": "new", "group": "crm"},
-    {"host": "crisp.chat", "url": "https://app.crisp.chat/initiate/signup/", "cohort": "new", "group": "crm"},
-    {"host": "front.com", "url": "https://app.frontapp.com/signup", "cohort": "new", "group": "crm"},
-    {"host": "helpscout.com", "url": "https://secure.helpscout.net/members/register/", "cohort": "new", "group": "crm"},
-    {"host": "gorgias.com", "url": "https://www.gorgias.com/signup", "cohort": "new", "group": "crm"},
-    {"host": "klaviyo.com", "url": "https://www.klaviyo.com/sign-up", "cohort": "new", "group": "crm"},
-    {"host": "apollo.io", "url": "https://www.apollo.io/sign-up", "cohort": "new", "group": "crm"},
-    {"host": "copper.com", "url": "https://app.copper.com/signup", "cohort": "new", "group": "crm"},
-    {"host": "zoho.com", "url": "https://www.zoho.com/crm/signup.html", "cohort": "new", "group": "crm"},
-    {"host": "attio.com", "url": "https://app.attio.com/signup", "cohort": "new", "group": "crm"},
-    {"host": "capsulecrm.com", "url": "https://app.capsulecrm.com/signup", "cohort": "new", "group": "crm"},
-    {"host": "nutshell.com", "url": "https://app.nutshell.com/signup", "cohort": "new", "group": "crm"},
-    {"host": "kit.com", "url": "https://app.kit.com/users/signup", "cohort": "new", "group": "email"},
-    {"host": "ghost.org", "url": "https://ghost.org/signup", "cohort": "new", "group": "email"},
-    {"host": "mailerlite.com", "url": "https://www.mailerlite.com/signup", "cohort": "new", "group": "email"},
-    {"host": "sendgrid.com", "url": "https://signup.sendgrid.com/", "cohort": "new", "group": "email"},
-    {"host": "postmarkapp.com", "url": "https://account.postmarkapp.com/sign_up", "cohort": "new", "group": "email"},
-    {"host": "mailgun.com", "url": "https://signup.mailgun.com/new/signup", "cohort": "new", "group": "email"},
-    {"host": "customer.io", "url": "https://fly.customer.io/signup", "cohort": "new", "group": "email"},
-    {"host": "activecampaign.com", "url": "https://www.activecampaign.com/signup", "cohort": "new", "group": "email"},
-    {"host": "brevo.com", "url": "https://onboarding.brevo.com/account/register", "cohort": "new", "group": "email"},
-    {"host": "omnisend.com", "url": "https://app.omnisend.com/registration", "cohort": "new", "group": "email"},
-    {"host": "proton.me", "url": "https://account.proton.me/signup", "cohort": "new", "group": "email"},
-    {"host": "tuta.com", "url": "https://app.tuta.com/signup", "cohort": "new", "group": "email"},
-    {"host": "fastmail.com", "url": "https://app.fastmail.com/signup/", "cohort": "new", "group": "email"},
-    {"host": "mailjet.com", "url": "https://app.mailjet.com/signup", "cohort": "new", "group": "email"},
-    {"host": "mailersend.com", "url": "https://www.mailersend.com/signup", "cohort": "new", "group": "email"},
-    {"host": "buttondown.com", "url": "https://buttondown.com/register", "cohort": "new", "group": "email"},
-    {"host": "slack.com", "url": "https://slack.com/get-started#/createnew", "cohort": "new", "group": "forum"},
-    {"host": "circle.so", "url": "https://login.circle.so/sign_up", "cohort": "new", "group": "forum"},
-    {"host": "producthunt.com", "url": "https://www.producthunt.com/signup", "cohort": "new", "group": "forum"},
-    {"host": "dev.to", "url": "https://dev.to/enter?state=new-user", "cohort": "new", "group": "forum"},
-    {"host": "stackoverflow.com", "url": "https://stackoverflow.com/users/signup", "cohort": "new", "group": "forum"},
-    {"host": "twitch.tv", "url": "https://www.twitch.tv/signup", "cohort": "new", "group": "forum"},
-    {"host": "indiehackers.com", "url": "https://www.indiehackers.com/sign-up", "cohort": "new", "group": "forum"},
-    {"host": "lobste.rs", "url": "https://lobste.rs/signup", "cohort": "new", "group": "forum"},
-    {"host": "quora.com", "url": "https://www.quora.com/signup", "cohort": "new", "group": "forum"},
-    {"host": "meetup.com", "url": "https://www.meetup.com/register/", "cohort": "new", "group": "forum"},
-    {"host": "peerlist.io", "url": "https://peerlist.io/signup", "cohort": "new", "group": "forum"},
-    {"host": "coinbase.com", "url": "https://www.coinbase.com/signup", "cohort": "new", "group": "fintech"},
-    {"host": "binance.com", "url": "https://accounts.binance.com/en/register", "cohort": "new", "group": "fintech"},
-    {"host": "kraken.com", "url": "https://www.kraken.com/sign-up", "cohort": "new", "group": "fintech"},
-    {"host": "gemini.com", "url": "https://exchange.gemini.com/register", "cohort": "new", "group": "fintech"},
-    {"host": "crypto.com", "url": "https://crypto.com/exchange/signup", "cohort": "new", "group": "fintech"},
-    {"host": "robinhood.com", "url": "https://robinhood.com/signup", "cohort": "new", "group": "fintech"},
-    {"host": "stripe.com", "url": "https://dashboard.stripe.com/register", "cohort": "new", "group": "fintech"},
-    {"host": "wise.com", "url": "https://wise.com/register", "cohort": "new", "group": "fintech"},
-    {"host": "mercury.com", "url": "https://app.mercury.com/signup", "cohort": "new", "group": "fintech"},
-    {"host": "brex.com", "url": "https://dashboard.brex.com/signup", "cohort": "new", "group": "fintech"},
-    {"host": "ramp.com", "url": "https://app.ramp.com/sign-up", "cohort": "new", "group": "fintech"},
-    {"host": "okx.com", "url": "https://www.okx.com/account/register", "cohort": "new", "group": "fintech"},
-    {"host": "bybit.com", "url": "https://www.bybit.com/en/register", "cohort": "new", "group": "fintech"},
-    {"host": "kucoin.com", "url": "https://www.kucoin.com/ucenter/signup", "cohort": "new", "group": "fintech"},
-    {"host": "gate.io", "url": "https://www.gate.io/signup", "cohort": "new", "group": "fintech"},
-    {"host": "plaid.com", "url": "https://dashboard.plaid.com/signup", "cohort": "new", "group": "fintech"},
-    {"host": "squareup.com", "url": "https://app.squareup.com/signup", "cohort": "new", "group": "fintech"},
-    {"host": "trello.com", "url": "https://trello.com/signup", "cohort": "known", "group": "known"},
-    {"host": "loom.com", "url": "https://www.loom.com/signup", "cohort": "known", "group": "known"},
-    {"host": "discord.com", "url": "https://discord.com/register", "cohort": "known", "group": "known"},
-    {"host": "supabase.com", "url": "https://supabase.com/dashboard/sign-up", "cohort": "known", "group": "known"},
-    {"host": "github.com", "url": "https://github.com/signup", "cohort": "known", "group": "known"},
-    {"host": "notion.so", "url": "https://www.notion.so/signup", "cohort": "known", "group": "known"},
-    {"host": "shopify.com", "url": "https://accounts.shopify.com/signup", "cohort": "known", "group": "known"},
-    {"host": "cloudflare.com", "url": "https://dash.cloudflare.com/sign-up", "cohort": "known", "group": "known"},
-    {"host": "reddit.com", "url": "https://www.reddit.com/register/", "cohort": "known", "group": "known"},
-    {"host": "hubspot.com", "url": "https://app.hubspot.com/signup-hubspot/crm", "cohort": "known", "group": "known"}
+    {
+      "host": "sentry.io",
+      "url": "https://sentry.io/signup/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "datadoghq.com",
+      "url": "https://www.datadoghq.com/free-datadog-trial/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "newrelic.com",
+      "url": "https://newrelic.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "circleci.com",
+      "url": "https://circleci.com/signup/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "heroku.com",
+      "url": "https://signup.heroku.com/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "railway.app",
+      "url": "https://railway.com/login",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "fly.io",
+      "url": "https://fly.io/app/sign-up",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "neon.tech",
+      "url": "https://console.neon.tech/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "planetscale.com",
+      "url": "https://auth.planetscale.com/sign-up",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "mongodb.com",
+      "url": "https://account.mongodb.com/account/register",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "redis.io",
+      "url": "https://redis.io/try-free/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "clerk.com",
+      "url": "https://dashboard.clerk.com/sign-up",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "auth0.com",
+      "url": "https://auth0.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "workos.com",
+      "url": "https://workos.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "stytch.com",
+      "url": "https://stytch.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "launchdarkly.com",
+      "url": "https://app.launchdarkly.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "amplitude.com",
+      "url": "https://analytics.amplitude.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "segment.com",
+      "url": "https://app.segment.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "pagerduty.com",
+      "url": "https://www.pagerduty.com/sign-up/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "bitbucket.org",
+      "url": "https://id.atlassian.com/signup?application=bitbucket",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "sourcegraph.com",
+      "url": "https://sourcegraph.com/sign-up",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "docker.com",
+      "url": "https://app.docker.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "snyk.io",
+      "url": "https://app.snyk.io/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "sonarcloud.io",
+      "url": "https://sonarcloud.io/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "retool.com",
+      "url": "https://login.retool.com/auth/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "n8n.io",
+      "url": "https://app.n8n.cloud/register",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "pipedream.com",
+      "url": "https://pipedream.com/auth/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "airbyte.com",
+      "url": "https://cloud.airbyte.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "getdbt.com",
+      "url": "https://www.getdbt.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "databricks.com",
+      "url": "https://login.databricks.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "grafana.com",
+      "url": "https://grafana.com/auth/sign-up",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "honeycomb.io",
+      "url": "https://ui.honeycomb.io/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "checklyhq.com",
+      "url": "https://app.checklyhq.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "logrocket.com",
+      "url": "https://app.logrocket.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "postman.com",
+      "url": "https://identity.getpostman.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "ngrok.com",
+      "url": "https://dashboard.ngrok.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "algolia.com",
+      "url": "https://www.algolia.com/users/sign_up",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "contentful.com",
+      "url": "https://www.contentful.com/sign-up/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "sanity.io",
+      "url": "https://www.sanity.io/get-started",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "strapi.io",
+      "url": "https://cloud.strapi.io/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "hasura.io",
+      "url": "https://cloud.hasura.io/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "cockroachlabs.com",
+      "url": "https://www.cockroachlabs.com/get-started/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "timescale.com",
+      "url": "https://console.cloud.timescale.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "clickhouse.com",
+      "url": "https://console.clickhouse.cloud/signUp",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "snowflake.com",
+      "url": "https://signup.snowflake.com/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "fivetran.com",
+      "url": "https://fivetran.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "linode.com",
+      "url": "https://login.linode.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "vultr.com",
+      "url": "https://my.vultr.com/signup/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "hetzner.com",
+      "url": "https://accounts.hetzner.com/signUp",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "northflank.com",
+      "url": "https://app.northflank.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "salesforce.com",
+      "url": "https://www.salesforce.com/form/signup/freetrial-sales/",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "pipedrive.com",
+      "url": "https://app.pipedrive.com/register",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "close.com",
+      "url": "https://app.close.com/signup",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "freshdesk.com",
+      "url": "https://www.freshworks.com/freshdesk/signup/",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "crisp.chat",
+      "url": "https://app.crisp.chat/initiate/signup/",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "front.com",
+      "url": "https://app.frontapp.com/signup",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "helpscout.com",
+      "url": "https://secure.helpscout.net/members/register/",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "gorgias.com",
+      "url": "https://www.gorgias.com/signup",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "klaviyo.com",
+      "url": "https://www.klaviyo.com/sign-up",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "apollo.io",
+      "url": "https://www.apollo.io/sign-up",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "copper.com",
+      "url": "https://app.copper.com/signup",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "zoho.com",
+      "url": "https://www.zoho.com/crm/signup.html",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "attio.com",
+      "url": "https://app.attio.com/signup",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "capsulecrm.com",
+      "url": "https://app.capsulecrm.com/signup",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "nutshell.com",
+      "url": "https://app.nutshell.com/signup",
+      "cohort": "new",
+      "group": "crm"
+    },
+    {
+      "host": "kit.com",
+      "url": "https://app.kit.com/users/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "ghost.org",
+      "url": "https://ghost.org/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "mailerlite.com",
+      "url": "https://www.mailerlite.com/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "sendgrid.com",
+      "url": "https://signup.sendgrid.com/",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "postmarkapp.com",
+      "url": "https://account.postmarkapp.com/sign_up",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "mailgun.com",
+      "url": "https://signup.mailgun.com/new/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "customer.io",
+      "url": "https://fly.customer.io/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "activecampaign.com",
+      "url": "https://www.activecampaign.com/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "brevo.com",
+      "url": "https://onboarding.brevo.com/account/register",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "omnisend.com",
+      "url": "https://app.omnisend.com/registration",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "proton.me",
+      "url": "https://account.proton.me/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "tuta.com",
+      "url": "https://app.tuta.com/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "fastmail.com",
+      "url": "https://app.fastmail.com/signup/",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "mailjet.com",
+      "url": "https://app.mailjet.com/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "mailersend.com",
+      "url": "https://www.mailersend.com/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "buttondown.com",
+      "url": "https://buttondown.com/register",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "slack.com",
+      "url": "https://slack.com/get-started#/createnew",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "circle.so",
+      "url": "https://login.circle.so/sign_up",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "producthunt.com",
+      "url": "https://www.producthunt.com/signup",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "dev.to",
+      "url": "https://dev.to/enter?state=new-user",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "stackoverflow.com",
+      "url": "https://stackoverflow.com/users/signup",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "twitch.tv",
+      "url": "https://www.twitch.tv/signup",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "indiehackers.com",
+      "url": "https://www.indiehackers.com/sign-up",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "lobste.rs",
+      "url": "https://lobste.rs/signup",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "quora.com",
+      "url": "https://www.quora.com/signup",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "meetup.com",
+      "url": "https://www.meetup.com/register/",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "peerlist.io",
+      "url": "https://peerlist.io/signup",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "coinbase.com",
+      "url": "https://www.coinbase.com/signup",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "binance.com",
+      "url": "https://accounts.binance.com/en/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "kraken.com",
+      "url": "https://www.kraken.com/sign-up",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "gemini.com",
+      "url": "https://exchange.gemini.com/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "crypto.com",
+      "url": "https://crypto.com/exchange/signup",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "robinhood.com",
+      "url": "https://robinhood.com/signup",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "stripe.com",
+      "url": "https://dashboard.stripe.com/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "wise.com",
+      "url": "https://wise.com/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "mercury.com",
+      "url": "https://app.mercury.com/signup",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "brex.com",
+      "url": "https://dashboard.brex.com/signup",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "ramp.com",
+      "url": "https://app.ramp.com/sign-up",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "okx.com",
+      "url": "https://www.okx.com/account/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "bybit.com",
+      "url": "https://www.bybit.com/en/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "kucoin.com",
+      "url": "https://www.kucoin.com/ucenter/signup",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "gate.io",
+      "url": "https://www.gate.io/signup",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "plaid.com",
+      "url": "https://dashboard.plaid.com/signup",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "squareup.com",
+      "url": "https://app.squareup.com/signup",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "trello.com",
+      "url": "https://trello.com/signup",
+      "cohort": "known",
+      "group": "known"
+    },
+    {
+      "host": "loom.com",
+      "url": "https://www.loom.com/signup",
+      "cohort": "known",
+      "group": "known"
+    },
+    {
+      "host": "discord.com",
+      "url": "https://discord.com/register",
+      "cohort": "known",
+      "group": "known"
+    },
+    {
+      "host": "supabase.com",
+      "url": "https://supabase.com/dashboard/sign-up",
+      "cohort": "known",
+      "group": "known"
+    },
+    {
+      "host": "github.com",
+      "url": "https://github.com/signup",
+      "cohort": "known",
+      "group": "known"
+    },
+    {
+      "host": "notion.so",
+      "url": "https://www.notion.so/signup",
+      "cohort": "known",
+      "group": "known"
+    },
+    {
+      "host": "shopify.com",
+      "url": "https://accounts.shopify.com/signup",
+      "cohort": "known",
+      "group": "known"
+    },
+    {
+      "host": "cloudflare.com",
+      "url": "https://dash.cloudflare.com/sign-up",
+      "cohort": "known",
+      "group": "known"
+    },
+    {
+      "host": "reddit.com",
+      "url": "https://www.reddit.com/register/",
+      "cohort": "known",
+      "group": "known"
+    },
+    {
+      "host": "hubspot.com",
+      "url": "https://app.hubspot.com/signup-hubspot/crm",
+      "cohort": "known",
+      "group": "known"
+    },
+    {
+      "host": "epicgames.com",
+      "url": "https://www.epicgames.com/id/register",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "imgur.com",
+      "url": "https://imgur.com/register",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "patreon.com",
+      "url": "https://www.patreon.com/signup",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "riotgames.com",
+      "url": "https://authenticate.riotgames.com/",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "snapchat.com",
+      "url": "https://accounts.snapchat.com/accounts/v2/signup",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "nintendo.com",
+      "url": "https://accounts.nintendo.com/register",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "openai.com",
+      "url": "https://auth.openai.com/create-account",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "anthropic.com",
+      "url": "https://console.anthropic.com/login",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "replicate.com",
+      "url": "https://replicate.com/signin",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "cohere.com",
+      "url": "https://dashboard.cohere.com/welcome/register",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "mistral.ai",
+      "url": "https://console.mistral.ai/login",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "perplexity.ai",
+      "url": "https://www.perplexity.ai/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "mexc.com",
+      "url": "https://www.mexc.com/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "bitget.com",
+      "url": "https://www.bitget.com/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "htx.com",
+      "url": "https://www.htx.com/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "phemex.com",
+      "url": "https://phemex.com/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "lbank.com",
+      "url": "https://www.lbank.com/signup",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "bitmart.com",
+      "url": "https://www.bitmart.com/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "xt.com",
+      "url": "https://www.xt.com/en/accounts/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "coinex.com",
+      "url": "https://www.coinex.com/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "bingx.com",
+      "url": "https://bingx.com/en/register",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "geetest.com",
+      "url": "https://www.geetest.com/en/demo",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "roblox.com",
+      "url": "https://www.roblox.com/CreateAccount",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "live.com",
+      "url": "https://signup.live.com/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "ea.com",
+      "url": "https://www.ea.com/register",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "battle.net",
+      "url": "https://account.battle.net/creation/flow/creation-full",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "linkedin.com",
+      "url": "https://www.linkedin.com/signup",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "paypal.com",
+      "url": "https://www.paypal.com/us/webapps/mpp/account-selection",
+      "cohort": "new",
+      "group": "fintech"
+    },
+    {
+      "host": "ebay.com",
+      "url": "https://signup.ebay.com/pa/crte",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "instagram.com",
+      "url": "https://www.instagram.com/accounts/emailsignup/",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "tripadvisor.com",
+      "url": "https://www.tripadvisor.com/Registration",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "match.com",
+      "url": "https://www.match.com/registration",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "arkoselabs.com",
+      "url": "https://client-demo.arkoselabs.com/github",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "playstation.com",
+      "url": "https://www.playstation.com/en-us/",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "pokemoncenter.com",
+      "url": "https://www.pokemoncenter.com/",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "ticketmaster.com",
+      "url": "https://www.ticketmaster.com/",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "aa.com",
+      "url": "https://www.aa.com/loyalty/enrollment/enroll",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "united.com",
+      "url": "https://www.united.com/en/us/account/join-now",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "delta.com",
+      "url": "https://www.delta.com/join",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "costco.com",
+      "url": "https://www.costco.com/join-costco-online",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "homedepot.com",
+      "url": "https://www.homedepot.com/auth/view/createaccount",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "stubhub.com",
+      "url": "https://www.stubhub.com/",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "footlocker.com",
+      "url": "https://www.footlocker.com/account/create",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "sephora.com",
+      "url": "https://www.sephora.com/register",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "hermes.com",
+      "url": "https://www.hermes.com/us/en/",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "zillow.com",
+      "url": "https://www.zillow.com/user/acct/register.htm",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "etsy.com",
+      "url": "https://www.etsy.com/join",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "leboncoin.fr",
+      "url": "https://www.leboncoin.fr/",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "fiverr.com",
+      "url": "https://www.fiverr.com/join",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "walmart.com",
+      "url": "https://www.walmart.com/account/signup",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "target.com",
+      "url": "https://www.target.com/account",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "bestbuy.com",
+      "url": "https://www.bestbuy.com/identity/global/createAccount",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "nike.com",
+      "url": "https://www.nike.com/register",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "adidas.com",
+      "url": "https://www.adidas.com/us/account-register",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "aliexpress.com",
+      "url": "https://login.aliexpress.com/user/buyer/join",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "wikipedia.org",
+      "url": "https://en.wikipedia.org/w/index.php?title=Special:CreateAccount",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "xenforo.com",
+      "url": "https://xenforo.com/community/register/",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "phpbb.com",
+      "url": "https://www.phpbb.com/community/ucp.php?mode=register",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "python.org",
+      "url": "https://www.python.org/accounts/signup/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "imdb.com",
+      "url": "https://www.imdb.com/registration/signup",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "stackexchange.com",
+      "url": "https://stackoverflow.com/users/signup",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "bbc.com",
+      "url": "https://account.bbc.com/register",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "2captcha.com",
+      "url": "https://2captcha.com/auth/register",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "anti-captcha.com",
+      "url": "https://anti-captcha.com/clients/entrance/register",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "spotify.com",
+      "url": "https://www.spotify.com/signup",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "airbnb.com",
+      "url": "https://www.airbnb.com/signup_login",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "uber.com",
+      "url": "https://auth.uber.com/v2/",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "doordash.com",
+      "url": "https://www.doordash.com/consumer/login/",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "lyft.com",
+      "url": "https://account.lyft.com/auth",
+      "cohort": "new",
+      "group": "ecommerce"
+    },
+    {
+      "host": "adobe.com",
+      "url": "https://auth.services.adobe.com/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "oracle.com",
+      "url": "https://signup.cloud.oracle.com/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "ibm.com",
+      "url": "https://cloud.ibm.com/registration",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "atlassian.com",
+      "url": "https://id.atlassian.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "basecamp.com",
+      "url": "https://basecamp.com/signup",
+      "cohort": "new",
+      "group": "saas"
+    },
+    {
+      "host": "freshworks.com",
+      "url": "https://www.freshworks.com/signup/",
+      "cohort": "new",
+      "group": "saas"
+    },
+    {
+      "host": "tawk.to",
+      "url": "https://dashboard.tawk.to/signup",
+      "cohort": "new",
+      "group": "saas"
+    },
+    {
+      "host": "livechat.com",
+      "url": "https://accounts.livechat.com/signup",
+      "cohort": "new",
+      "group": "saas"
+    },
+    {
+      "host": "tutanota.com",
+      "url": "https://mail.tutanota.com/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "convertkit.com",
+      "url": "https://app.kit.com/users/signup",
+      "cohort": "new",
+      "group": "email"
+    },
+    {
+      "host": "element.io",
+      "url": "https://app.element.io/#/register",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "mastodon.social",
+      "url": "https://mastodon.social/auth/sign_up",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "bsky.app",
+      "url": "https://bsky.app/",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "tumblr.com",
+      "url": "https://www.tumblr.com/register",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "vimeo.com",
+      "url": "https://vimeo.com/join",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "soundcloud.com",
+      "url": "https://soundcloud.com/signup",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "deviantart.com",
+      "url": "https://www.deviantart.com/join",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "dribbble.com",
+      "url": "https://dribbble.com/signup",
+      "cohort": "new",
+      "group": "social"
+    },
+    {
+      "host": "news.ycombinator.com",
+      "url": "https://news.ycombinator.com/login",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "npmjs.com",
+      "url": "https://www.npmjs.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "pypi.org",
+      "url": "https://pypi.org/account/register/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "sourceforge.net",
+      "url": "https://sourceforge.net/user/registration",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "codeberg.org",
+      "url": "https://codeberg.org/user/sign_up",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "codesandbox.io",
+      "url": "https://codesandbox.io/signin",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "stackblitz.com",
+      "url": "https://stackblitz.com/register",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "codepen.io",
+      "url": "https://codepen.io/accounts/signup/user/free",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "hashnode.com",
+      "url": "https://hashnode.com/onboard",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "kaggle.com",
+      "url": "https://www.kaggle.com/account/login",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "wandb.ai",
+      "url": "https://wandb.ai/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "modal.com",
+      "url": "https://modal.com/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "runpod.io",
+      "url": "https://www.runpod.io/console/signup",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "lightning.ai",
+      "url": "https://lightning.ai/sign-up",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "neptune.ai",
+      "url": "https://app.neptune.ai/register",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "quay.io",
+      "url": "https://quay.io/signin/",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "gitea.com",
+      "url": "https://gitea.com/user/sign_up",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "rubygems.org",
+      "url": "https://rubygems.org/sign_up",
+      "cohort": "new",
+      "group": "devtools"
+    },
+    {
+      "host": "flarum.org",
+      "url": "https://discuss.flarum.org/signup",
+      "cohort": "new",
+      "group": "forum"
+    },
+    {
+      "host": "discourse.org",
+      "url": "https://try.discourse.org/",
+      "cohort": "new",
+      "group": "forum"
+    }
   ]
 }
