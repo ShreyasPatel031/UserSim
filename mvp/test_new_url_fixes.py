@@ -299,3 +299,25 @@ class RivalBrandAndTestLimitTests(unittest.TestCase):
         run["friction_points"] = ["click Accept changed nothing on https://www.todoist.com/"]
         insights = build_report_insights({"id": "s-c", "url": "https://todoist.com/", "agent_results": [run], "activity_log": []})
         self.assertFalse(any("Accept" in str(c.get("claim")) for c in insights.get("weaknesses") or []))
+
+
+class SameUrlSignupDialogWeaknessTests(unittest.TestCase):
+    def test_signup_dialog_on_the_start_page_is_a_cited_wall(self):
+        from mvp.report_insights import build_report_insights
+
+        url = "https://www.figma.com/"
+        run = {
+            "agent_id": "t1__p1__product", "site_key": "product", "site_url": url,
+            "task_title": "Create a new design file", "completed": False, "final_url": url,
+            "page_open_at_ts": 1.0, "first_action_at_ts": 2.0, "final_screenshot_url": "/shots/p.png",
+            "stop_reason": "needs_account",
+            "failed_step": {"phase": "needs_account", "reason": "signup did not finish (timeout)", "step": 2},
+            "trace": [
+                {"step": 0, "action": f"Opened {url}", "url": url, "observation": "Figma Figma"},
+                {"step": 1, "action": "click Get started for free", "url": url, "changed": True},
+                {"step": 2, "action": "signup did not finish (timeout)", "url": url, "decision_source": "signup"},
+            ],
+        }
+        insights = build_report_insights({"id": "s-fd", "url": url, "agent_results": [run], "activity_log": []})
+        claims = " ".join(str(c.get("claim")) for c in insights.get("weaknesses") or [])
+        self.assertIn("needs an account first", claims)

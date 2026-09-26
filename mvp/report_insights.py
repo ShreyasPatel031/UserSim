@@ -952,7 +952,10 @@ def trace_claims(
     for run in product:
         start = str(run.get("site_url") or product_url or "")
         steps = _acted_steps(run)
-        if not steps or not changed_page_state(run, start):
+        # A sign-up dialog on the start page (Figma) is an account wall even
+        # though the URL never changed.
+        walled = str(run.get("stop_reason") or "") == "needs_account"
+        if not steps or not (changed_page_state(run, start) or walled):
             continue
         title = _task_title(run) or "Task"
         final_url = str(run.get("final_url") or steps[-1].get("url") or "")
