@@ -1789,6 +1789,44 @@ async def close_warm_opening(warm: dict[str, Any] | None) -> None:
         warm["owns_session"] = False
 
 
+async def _save_final_on_cancel(
+    browser_session: Any,
+    screenshot_dir: Any,
+    study_id: str,
+    agent_id: str,
+) -> str:
+    """Upload final.png when the study budget cancels this browser agent."""
+    current = asyncio.current_task()
+    if current is not None:
+        while current.cancelling():
+            current.uncancel()
+    if browser_session is None or screenshot_dir is None:
+        return ""
+    path = screenshot_dir / "final.png"
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            await asyncio.wait_for(
+                browser_session.take_screenshot(path=str(path), full_page=False),
+                timeout=8,
+            )
+        except TypeError:
+            await asyncio.wait_for(
+                browser_session.take_screenshot(path=str(path)),
+                timeout=8,
+            )
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] final capture on cancel failed: {exc!r}", flush=True)
+        return ""
+    from mvp.study import upload_saved_final
+
+    uploaded = await asyncio.to_thread(upload_saved_final, study_id, agent_id)
+    if not uploaded:
+        print(f"[{agent_id}] final PNG was not uploaded", flush=True)
+        return ""
+    return f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
+
+
 async def run_browser_agent(
     *,
     study_id: str,
@@ -2335,6 +2373,11 @@ async def run_browser_agent(
                 on_step_end=on_step_end,
             )
         except asyncio.CancelledError:
+            shot = await _save_final_on_cancel(
+                browser_session, screenshot_dir, study_id, agent_id
+            )
+            if shot:
+                print(f"[{agent_id}] final PNG saved on cancel", flush=True)
             raise
         except Exception as run_exc:  # noqa: BLE001
             # Prefer partial opening frames over raising into study retry.

@@ -330,6 +330,50 @@ class InsightTests(unittest.TestCase):
         self.assertIn("issue", weak_blob)
         self.assertTrue(insights["weaknesses"][0]["evidence"][0]["screenshot_url"])
 
+    def test_not_seeing_an_obvious_path_is_a_weakness(self) -> None:
+        study = {
+            "url": "https://linear.app/",
+            "agent_results": [
+                _run(
+                    "t1__p1__product",
+                    quote="I'm not seeing an obvious path to creating an issue right from the start.",
+                )
+            ],
+            "activity_log": [],
+        }
+        insights = build_report_insights(study)
+        strength_blob = " ".join(c["claim"] for c in insights["strengths"]).lower()
+        weak_blob = " ".join(c["claim"] for c in insights["weaknesses"]).lower()
+        self.assertNotIn("not seeing", strength_blob)
+        self.assertIn("not seeing", weak_blob)
+
+    def test_steps_and_time_stay_when_no_task_completes(self) -> None:
+        product = _run("a", steps=2, final="https://linear.app/")
+        rival = _run("b", site_key="competitor_1", steps=4, final="https://asana.com/")
+        study = {
+            "url": "https://linear.app/",
+            "agent_results": [product, rival],
+            "activity_log": [
+                {"kind": "agent_start", "agent_id": "a", "at": "2026-09-25T20:00:00+00:00"},
+                {"kind": "agent_done", "agent_id": "a", "at": "2026-09-25T20:04:07+00:00"},
+                {"kind": "agent_start", "agent_id": "b", "at": "2026-09-25T20:00:00+00:00"},
+                {"kind": "agent_done", "agent_id": "b", "at": "2026-09-25T20:02:00+00:00"},
+            ],
+        }
+        insights = build_report_insights(study)
+        by_key = {row["site_key"]: row for row in insights["sites"]}
+        self.assertEqual(by_key["product"]["success_pct"], 0)
+        self.assertEqual(by_key["product"]["ok"], 0)
+        self.assertEqual(by_key["product"]["median_steps"], 2)
+        self.assertEqual(by_key["product"]["median_time_s"], 247.0)
+        self.assertIsNone(by_key["product"]["median_success_steps"])
+        cell = insights["by_task"][0]["sites"]["product"]
+        self.assertEqual(cell["ok"], 0)
+        self.assertEqual(cell["n"], 1)
+        self.assertEqual(cell["median_all_steps"], 2)
+        self.assertEqual(cell["median_time_s"], 247.0)
+        self.assertIsNone(cell["median_steps"])
+
 
 if __name__ == "__main__":
     unittest.main()

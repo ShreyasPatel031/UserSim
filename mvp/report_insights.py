@@ -105,7 +105,8 @@ def _mentions(text: str, bit: str) -> bool:
 _NEGATIVE_RE = re.compile(
     r"couldn'?t|could not|can'?t|cannot|hard to|confus|unclear|no clear|"
     r"didn'?t|did not|no immediate|no path|stuck|difficult|where to start|"
-    r"can(?:no|')t even",
+    r"can(?:no|')t even|not seeing|haven'?t found|no information|can'?t tell|"
+    r"not found|no obvious path",
     re.I,
 )
 _HEDGE_RE = re.compile(
@@ -832,6 +833,7 @@ def _layout(
     run_issues: list[dict[str, Any]],
 ) -> dict[str, Any]:
     """Numbers the Bland-style report draws. Every figure comes from included runs."""
+    durations = _durations(study)
     ordered = sorted(
         comparisons,
         key=lambda row: (0 if row.get("site_key") == "product" else 1, str(row.get("site_key"))),
@@ -882,8 +884,14 @@ def _layout(
                 "sites": {},
             },
         )
-        cell = task["sites"].setdefault(sk, {"n": 0, "ok": 0, "steps": []})
+        cell = task["sites"].setdefault(
+            sk, {"n": 0, "ok": 0, "steps": [], "all_steps": [], "times": []}
+        )
         cell["n"] += 1
+        cell["all_steps"].append(steps)
+        elapsed = durations.get(str(run.get("agent_id") or ""))
+        if elapsed is not None:
+            cell["times"].append(elapsed)
         if ok:
             cell["ok"] += 1
             cell["steps"].append(steps)
@@ -914,10 +922,15 @@ def _layout(
     for task in task_slots.values():
         sites_out = {}
         for sk, cell in task["sites"].items():
+            all_steps = cell.get("all_steps") or []
+            times = cell.get("times") or []
+            time_med = _median(times)
             sites_out[sk] = {
                 "n": cell["n"],
                 "ok": cell["ok"],
                 "median_steps": _median(cell["steps"]) if cell["steps"] else None,
+                "median_all_steps": _median(all_steps) if all_steps else None,
+                "median_time_s": round(time_med, 1) if time_med is not None else None,
             }
         by_task.append(
             {
