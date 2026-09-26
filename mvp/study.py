@@ -476,10 +476,10 @@ Critical rules:
   require opening a specific section, searching, or using a control, and must say
   what "done" looks like (a heading, a result, or a page that is not the homepage).
 - If the page has no pricing page, do not create a "find the pricing page" task.
-- Every task must be finishable by a logged-out visitor. Do not require an account,
-  a workspace, signing in, or filing an issue inside the product. On a marketing
-  site, ask them to open a public page (pricing, docs, changelog) or to use a
-  public control (draw, export, help).
+- Tasks may require an account. Prefer real product work when the page is a
+  product: create an issue, make a board, export a file. Do not rewrite those
+  into "find how" or docs-only tasks. A public page (pricing, docs, changelog)
+  is still a valid task when that is what the persona would do.
 - Do not invent new personas."""
     raw = await _llm_chat(
         [
@@ -520,17 +520,6 @@ Critical rules:
             next_n += 1
             if next_n > task_count + 3:
                 break
-    from mvp.a11y_agent import achievable_without_account
-
-    for task in tasks:
-        if not isinstance(task, dict):
-            continue
-        prompt = achievable_without_account(url, str(task.get("prompt") or ""))
-        task["prompt"] = prompt
-        title = str(task.get("title") or "")
-        rewritten = achievable_without_account(url, title)
-        if rewritten != title:
-            task["title"] = rewritten[:80]
     return tasks
 
 
@@ -3332,6 +3321,7 @@ async def run_study(
                                             "step": len(existing),
                                         },
                                         "error": "study budget",
+                                        "signup": sess.get("signup") or {"attempted": False, "ok": False},
                                     }
                                     _agent_task = None
                                 else:
@@ -3374,6 +3364,7 @@ async def run_study(
                                             "step": len(existing),
                                         },
                                         "error": "study budget",
+                                        "signup": sess.get("signup") or {"attempted": False, "ok": False},
                                     }
                                 elif _agent_task is not None:
                                     run = _agent_task.result()
@@ -3770,6 +3761,23 @@ async def run_study(
             from mvp.a11y_agent import failure_breakdown
 
             study.summary["failure_breakdown"] = failure_breakdown(study.agent_results)
+            study.summary["signups"] = [
+                {
+                    "agent_id": str(row.get("agent_id") or ""),
+                    "persona_name": str(row.get("persona_name") or ""),
+                    "site_key": str(row.get("site_key") or ""),
+                    "task_title": str(row.get("task_title") or ""),
+                    "ok": bool((row.get("signup") or {}).get("ok")),
+                    "email": (row.get("signup") or {}).get("email"),
+                    "reason": (row.get("signup") or {}).get("reason"),
+                    "elapsed_s": (row.get("signup") or {}).get("elapsed_s"),
+                    "trigger": (row.get("signup") or {}).get("trigger"),
+                }
+                for row in study.agent_results
+                if isinstance(row, dict)
+                and isinstance(row.get("signup"), dict)
+                and row["signup"].get("attempted")
+            ]
         except Exception as breakdown_exc:  # noqa: BLE001
             print(f"failure breakdown skipped: {breakdown_exc!r}", flush=True)
         study.summary["site_summary"] = site_summary

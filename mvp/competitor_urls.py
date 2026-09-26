@@ -401,6 +401,20 @@ def annotate_run_issues(results: list[dict[str, Any]]) -> list[dict[str, str]]:
     for result in results or []:
         if not isinstance(result, dict):
             continue
+        existing = result.get("run_issue") if isinstance(result.get("run_issue"), dict) else None
+        if existing and str(existing.get("kind") or "") == "signup":
+            enriched = {
+                **existing,
+                "kind": "signup",
+                "reason": str(existing.get("reason") or "Signup failed"),
+                "agent_id": str(result.get("agent_id") or existing.get("agent_id") or ""),
+                "persona_name": str(result.get("persona_name") or existing.get("persona_name") or ""),
+                "task_title": str(result.get("task_title") or existing.get("task_title") or ""),
+            }
+            result["run_issue"] = enriched
+            result["exclude_from_insights"] = True
+            issues.append(enriched)
+            continue
         issue = classify_run_issue(result)
         if not issue:
             result.pop("run_issue", None)
