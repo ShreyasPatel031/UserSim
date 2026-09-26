@@ -300,15 +300,46 @@ def _bb_owner() -> str:
 
 
 def _release_testfix_sessions(study_id: str = "") -> None:
-    """Release only this harness's sessions. Never signup, report, or other owners."""
+    """Release only this harness's sessions. Never signup, report, or other owners.
+
+    A blanket release keeps ``study_id=prime`` sessions. Those are the server's
+    pre-click pool, created before URL submit, and are not leftovers from a study.
+    """
     owner = _bb_owner()
     try:
-        from mvp.kill_switch import kill_all_browserbase
-
-        released = kill_all_browserbase(
-            owner=owner,
-            study_id=study_id or None,
+        from mvp.kill_switch import (
+            kill_all_browserbase,
+            list_running_browserbase,
+            release_browserbase_session,
         )
+
+        if study_id:
+            released = kill_all_browserbase(owner=owner, study_id=study_id)
+        else:
+            running = list_running_browserbase(owner=owner)
+            released_ids: list[str] = []
+            failed: list[str] = []
+            kept = 0
+            for row in running:
+                if str(row.get("study_id") or "") == "prime":
+                    kept += 1
+                    continue
+                sid = str(row.get("id") or "")
+                if not sid:
+                    continue
+                if release_browserbase_session(sid):
+                    released_ids.append(sid)
+                else:
+                    failed.append(sid)
+            released = {
+                "found": len(running),
+                "released": len(released_ids),
+                "failed": failed,
+                "session_ids": released_ids,
+                "kept_prime": kept,
+                "owner": owner,
+                "study_id": None,
+            }
         _log(f"released browserbase owner={owner} study={study_id or '*'} {released}")
     except Exception as exc:  # noqa: BLE001
         _log(f"browserbase release failed: {exc!r}")
