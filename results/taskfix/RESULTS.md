@@ -1,3 +1,16 @@
+# #46 harness — product Gemini YES
+
+`MVP_BB_OWNER=gates`. Eight product agents per site. The independent judge in `mvp/e2e2_gates.py` scored the final screenshot.
+
+| Site | Study | Product Gemini YES | Report |
+| --- | --- | --- | --- |
+| Linear | `a437acc0-1586-45e6-a574-4099c73299ff` | 8/8 | `results/taskfix/linear8g_summary.md` |
+| Excalidraw | `4ac26c20-0711-4609-a86e-3cf7222279b5` | 8/8 | `results/taskfix/excal8g_summary.md` |
+
+Linear: create-issue agents landed on `https://linear.app/docs/creating-issues`. Pricing agents landed on `https://linear.app/pricing`. Excalidraw: draw agents left a rectangle on the canvas. Export agents opened the menu to Export image. No agent repeated a dead New issue click.
+
+The overall harness `pass` flag is false because strength/weakness evidence is still short of the gate (Linear strengths 0/0, Excalidraw strengths 0/0 and weaknesses 0/0). Product task completion is 8/8 on both. Gate files were not edited.
+
 # Task completion — single-agent harness
 
 Local Chromium, one task at a time, no Browserbase. Every step re-reads the live page and asks the model. Clicks use role and name, then coordinates. A drawing counts only after a drag changes the canvas ink. Log: `results/taskfix/harness4b.log`.
