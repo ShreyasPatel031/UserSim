@@ -763,6 +763,15 @@ class A11yBoot:
         self._handles: list[dict[str, Any]] = []
         self._handle_cv = asyncio.Condition()
         self._page_lock = asyncio.Lock()
+        self._site_locks: dict[str, asyncio.Lock] = {}
+
+    def lock_for(self, site_key: str) -> asyncio.Lock:
+        """One agent at a time per browser. Parallel tabs were closing the session."""
+        lock = self._site_locks.get(site_key)
+        if lock is None:
+            lock = asyncio.Lock()
+            self._site_locks[site_key] = lock
+        return lock
         self._pw: Any = None
         self._started = 0.0
         self._tasks: list[asyncio.Task] = []
@@ -1129,41 +1138,26 @@ class A11yBoot:
         self.published.set()
 
     async def take_page(self, site_key: str, url: str) -> dict[str, Any] | None:
-        """A new tab on the browser already connected for this site.
+        """The page already open for this site.
 
-        Reconnecting over CDP closes the Browserbase session (410). Tabs share
-        the one connection the shared read opened.
+        A second CDP connection returns 410, and extra tabs on that one browser
+        were closing each other. Callers hold ``lock_for(site_key)`` and reuse
+        this page one agent at a time.
         """
         deadline = getattr(self.study, "budget_deadline", None) or (
             time.monotonic() + study_budget_s()
         )
         while time.monotonic() < deadline:
             handle = self.contexts.get(site_key) or {}
-            context = handle.get("context")
-            if context is not None:
+            page = handle.get("page")
+            if page is not None:
                 try:
-                    async with self._page_lock:
-                        page = await context.new_page()
-                        try:
-                            await page.set_viewport_size({"width": 1440, "height": 900})
-                        except Exception:
-                            pass
-                except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] new tab failed for {site_key}: {exc!r}", flush=True)
-                    await asyncio.sleep(0.4)
-                    continue
-                try:
-                    if url:
+                    if url and _host(page.url or "") != _host(url):
                         await page.goto(url, wait_until="commit", timeout=8000)
                 except Exception as exc:  # noqa: BLE001
                     if browser_dead(exc):
-                        print(f"[a11y] browser died during goto (retrying): {exc!r}", flush=True)
-                        try:
-                            await page.close()
-                        except Exception:
-                            pass
-                        await asyncio.sleep(0.4)
-                        continue
+                        print(f"[a11y] shared page died for {site_key}: {exc!r}", flush=True)
+                        return None
                     print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
                 return {
                     "bb": handle.get("bb"),
@@ -1171,6 +1165,7 @@ class A11yBoot:
                     "page": page,
                     "site_key": site_key,
                     "shared": True,
+                    "reuse": True,
                 }
             remaining = deadline - time.monotonic()
             if remaining <= 0:
@@ -1384,6 +1379,33 @@ async def _one_read(page: Any, fallback_url: str) -> dict[str, Any]:
 
 
 async def run_a11y_agent(
+    *,
+    boot: A11yBoot,
+    study_id: str,
+    agent_id: str,
+    url: str,
+    task_prompt: str,
+    persona: dict[str, Any],
+    on_step: Any | None = None,
+    site_key: str = "product",
+    deadline: float | None = None,
+) -> dict[str, Any]:
+    """One agent at a time on this site's browser, then the next."""
+    async with boot.lock_for(site_key):
+        return await _run_a11y_agent_unlocked(
+            boot=boot,
+            study_id=study_id,
+            agent_id=agent_id,
+            url=url,
+            task_prompt=task_prompt,
+            persona=persona,
+            on_step=on_step,
+            site_key=site_key,
+            deadline=deadline,
+        )
+
+
+async def _run_a11y_agent_unlocked(
     *,
     boot: A11yBoot,
     study_id: str,
@@ -1697,13 +1719,8 @@ async def run_a11y_agent(
     }
     ensure_phase_ms(result)
     apply_gate_fields(result, **{k: result.get(k) for k in GATE_FIELDS})
-    # The browser is shared by every agent on this site. Close only this tab.
-    if page is not None and handle is not None and handle.get("shared"):
-        try:
-            await page.close()
-        except Exception:
-            pass
-    elif browser is not None:
+    # Reused pages stay open for the next agent on this site.
+    if not (handle is not None and handle.get("reuse")) and browser is not None:
         try:
             await browser.close()
         except Exception:
