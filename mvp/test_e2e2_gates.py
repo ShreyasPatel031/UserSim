@@ -1092,6 +1092,29 @@ class HeadlineMetricTests(unittest.TestCase):
         self.assertFalse(_gate(not_ready, "total_time")["pass"])
         self.assertIn("report not ready", str(_gate(not_ready, "total_time")["value"]))
 
+    def test_first_screen_claim_cannot_contradict_a_zero_count(self) -> None:
+        study = _matrix([True] * 8)
+        insights = study["summary"]["insights"]
+        insights["weaknesses"] = [
+            {
+                "claim": (
+                    "6 of 8 product runs stopped on the first screen, "
+                    "so feature-level weaknesses are thin in these traces."
+                ),
+                "evidence": [],
+            }
+        ]
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product"
+        }
+        result = _evaluate(study, vision_goal=vision)
+        self.assertEqual(result["product_task_success"]["first_screen_ids"], [])
+        self.assertFalse(_gate(result, "top_weakness_not_homepage_only")["pass"])
+        self.assertFalse(_gate(result, "first_screen_not_excluded")["pass"])
+        self.assertFalse(result["pass"])
+
     def test_missing_headline_clocks_fail(self) -> None:
         study, vision = self._passing()
         startup = _startup_that_used_to_pass()

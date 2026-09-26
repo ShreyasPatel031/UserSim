@@ -1184,6 +1184,21 @@ def is_homepage_excuse(text: str) -> bool:
     return bool(_HOMEPAGE_EXCUSE_RE.search(text or ""))
 
 
+_CLAIMED_STALL_RE = re.compile(
+    r"(\d+)\s+of\s+\d+[^.]*stopped on the first screen",
+    re.I,
+)
+
+
+def claimed_first_screen_stall(*texts: str) -> int:
+    """Largest 'N of M stopped on the first screen' count written into the report."""
+    found = 0
+    for text in texts:
+        for match in _CLAIMED_STALL_RE.finditer(text or ""):
+            found = max(found, int(match.group(1)))
+    return found
+
+
 def _insights(study: dict[str, Any]) -> dict[str, Any]:
     summary = study.get("summary") if isinstance(study.get("summary"), dict) else {}
     insights = summary.get("insights") if isinstance(summary.get("insights"), dict) else {}
@@ -2061,6 +2076,15 @@ def evaluate_strict_gates(
     solely_homepage = (not real_weaknesses) or (
         bool(weaknesses) and is_homepage_excuse(top_weak) and len(real_weaknesses) == 0
     )
+    insight_blob = _insights(study)
+    claimed_stall = claimed_first_screen_stall(
+        top_weak,
+        str(insight_blob.get("headline") or ""),
+        *[str(c.get("claim") or "") for c in weaknesses],
+    )
+    # The report says runs never left, while the structural counter says none
+    # stayed on the opening screen. That pair is not a pass.
+    stall_contradiction = claimed_stall > 0 and len(first_screen_ids) == 0
 
     study_id = str(study.get("id") or startup.get("study_id") or "")
     html = report_html or ""
@@ -2140,8 +2164,16 @@ def evaluate_strict_gates(
                 "Top weakness is not only the homepage stall",
                 (top_weak[:140] or "(none)"),
                 "at least one weakness is a real product issue from a run past the first screen",
-                not solely_homepage and len(real_weaknesses) >= 1,
-                f"real_weaknesses={len(real_weaknesses)}",
+                not solely_homepage and len(real_weaknesses) >= 1 and not stall_contradiction,
+                (
+                    f"real_weaknesses={len(real_weaknesses)}"
+                    + (
+                        f"; report says {claimed_stall} stopped on the first screen "
+                        f"but structural count is 0"
+                        if stall_contradiction
+                        else ""
+                    )
+                ),
             ),
             _gate(
                 "run_issues_separate",
@@ -2169,10 +2201,24 @@ def evaluate_strict_gates(
             _gate(
                 "first_screen_not_excluded",
                 "First-screen and opening-frame runs stay in the product denominator",
-                f"opening_or_first_screen={len(first_screen_ids)} product_n={product_n} excluded=0",
+                (
+                    f"opening_or_first_screen={len(first_screen_ids)} product_n={product_n} excluded=0"
+                    + (
+                        f" report_claimed_stuck={claimed_stall}"
+                        if stall_contradiction
+                        else ""
+                    )
+                ),
                 "excluded=0 (a stuck run is a failure, not a drop)",
-                product_n >= len(set(first_screen_ids)) and not opening_excluded,
-                f"excluded={len(opening_excluded)}",
+                product_n >= len(set(first_screen_ids)) and not opening_excluded and not stall_contradiction,
+                (
+                    f"excluded={len(opening_excluded)}"
+                    + (
+                        f"; weakness text says {claimed_stall} stopped on the first screen"
+                        if stall_contradiction
+                        else ""
+                    )
+                ),
             ),
         ]
     )
