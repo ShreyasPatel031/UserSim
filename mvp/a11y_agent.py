@@ -740,7 +740,8 @@ def action_label(action: dict[str, Any]) -> str:
     if act == "scroll":
         return "scroll down"
     if act == "drag":
-        return f"drag {name}".strip()
+        # The model's coordinates ("500,200") mean nothing to a reader.
+        return "drag on the canvas"
     if act == "done":
         return "done"
     return f"click {name}".strip()

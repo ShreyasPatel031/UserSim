@@ -187,7 +187,7 @@ def _evidence(run: dict[str, Any], *, detail: str, prefer_friction: bool = False
         "screenshot_url": shot,
         "step_url": str(chosen.get("url") or ""),
         "final_url": str(run.get("final_url") or chosen.get("url") or ""),
-        "action": str(chosen.get("action") or "")[:180],
+        "action": human_action(str(chosen.get("action") or ""))[:180],
         "detail": (detail or str(chosen.get("action") or ""))[:220],
     }
 
@@ -307,7 +307,7 @@ def changed_page_state(run: dict[str, Any], start_url: str) -> bool:
     for step, sig in zip(steps[1:], sigs[1:]):
         # A drag that added vector shapes (SVG canvases such as tldraw leave the
         # pixel sample unchanged) changed the drawing surface.
-        if str(step.get("action") or "").strip().lower() == "drag" and int(sig.get("shapes") or 0) > int(base.get("shapes") or 0):
+        if str(step.get("action") or "").strip().lower().startswith("drag") and int(sig.get("shapes") or 0) > int(base.get("shapes") or 0):
             return True
         if _canvas_changed(str(ink_base.get("canvas") or ""), str(sig.get("canvas") or "")):
             return True
@@ -758,9 +758,29 @@ def _page_shape(url: str) -> str:
     return host + "/" + "/".join(segs)
 
 
+_ID_NAME_RE = re.compile(r"^(click|type .* into) ([a-z0-9]+(?:[-_][a-z0-9]+)+)$")
+
+
+def human_action(action: str) -> str:
+    """A step label a reader understands: no drag coordinates, no DOM ids.
+
+    "drag 500,200" -> "drag on the canvas"; "click main-menu-trigger" -> "click main menu".
+    """
+    text = " ".join(str(action or "").split())
+    if re.match(r"^drag\b", text, re.I):
+        return "drag on the canvas"
+    m = _ID_NAME_RE.match(text)
+    if m:
+        words = re.split(r"[-_]", m.group(2))
+        while len(words) > 1 and words[-1] in {"trigger", "button", "btn", "icon", "toggle"}:
+            words.pop()
+        return f"{m.group(1)} {' '.join(words)}"
+    return text
+
+
 def _chain_item(action: str) -> str:
     """One readable step for a click chain, cut on a word boundary, never an email."""
-    text = " ".join(str(action or "").split())
+    text = human_action(action)
     if text.startswith("signed up as"):
         m = re.search(r" in (\d+(?:\.\d+)?)s", text)
         return f"live sign-up ({float(m.group(1)):.0f}s)" if m else "live sign-up"
@@ -807,7 +827,7 @@ def _trace_evidence(run: dict[str, Any], step: dict[str, Any], detail: str) -> d
         "final_screenshot": shot,
         "final_screenshot_url": shot,
         "final_url": str(run.get("final_url") or step_url),
-        "action": str(step.get("action") or "")[:180],
+        "action": human_action(str(step.get("action") or ""))[:180],
         "detail": detail[:220],
     }
 
@@ -878,7 +898,7 @@ def trace_claims(
         moved = [s for s in steps if s.get("changed") is True]
         if _run_done(run) and not _AUTH_PATH_RE.search(final_url):
             key_step = _key_step(moved or steps)
-            action = " ".join(str(key_step.get("action") or "").split())[:80]
+            action = human_action(str(key_step.get("action") or ""))[:80]
             count = run_steps(run)
             # A same-page app (a canvas editor) is never "reached" by its last
             # key press: say it was finished there, with the step that did it.
@@ -929,7 +949,7 @@ def trace_claims(
             weak_label.setdefault(key, label)
         for step in steps:
             if step.get("changed") is False:
-                action = " ".join(str(step.get("action") or "").split())[:80]
+                action = human_action(str(step.get("action") or ""))[:80]
                 page = _page_shape(str(step.get("url") or final_url))
                 k2 = f"nochange|{action.lower()}|{page}"
                 lab = f"\u201c{action}\u201d changed nothing on {page}"

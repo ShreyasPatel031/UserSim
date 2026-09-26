@@ -480,7 +480,7 @@ class CanvasClaimWordingTests(unittest.TestCase):
         self.assertNotIn("reached", claim)
         self.assertNotIn("Escape", claim)
         self.assertIn("finished it on", claim)
-        self.assertIn("\u201cdrag\u201d", claim)
+        self.assertIn("\u201cdrag on the canvas\u201d", claim)
 
     def test_long_path_step_count_matches_the_median_steps_chart(self) -> None:
         from mvp.report_insights import trace_claims

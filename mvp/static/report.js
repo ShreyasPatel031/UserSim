@@ -112,6 +112,20 @@ function claimCards(claims, kind) {
     .join("");
 }
 
+// Step labels a reader understands: no drag coordinates, no DOM ids
+// (same rules as report_insights.human_action).
+function humanAction(action) {
+  const text = String(action || "").split(/\s+/).join(" ").trim();
+  if (/^drag\b/i.test(text)) return "drag on the canvas";
+  const m = text.match(/^(click|type .* into) ([a-z0-9]+(?:[-_][a-z0-9]+)+)$/);
+  if (m) {
+    const words = m[2].split(/[-_]/);
+    while (words.length > 1 && ["trigger", "button", "btn", "icon", "toggle"].includes(words[words.length - 1])) words.pop();
+    return `${m[1]} ${words.join(" ")}`;
+  }
+  return text;
+}
+
 function renderAnalytics() {
   const root = document.getElementById("analytics-root");
   const insights = _insights || {};
@@ -341,7 +355,7 @@ function renderStepViewer(run) {
       </a>
     </figure>
     <div class="step-detail">
-      <p class="step-action"><strong>${escapeHtml(step.step)}.</strong> ${escapeHtml(step.action || "Action")}</p>
+      <p class="step-action"><strong>${escapeHtml(step.step)}.</strong> ${escapeHtml(humanAction(step.action) || "Action")}</p>
       ${step.url ? `<p class="step-meta"><span>URL</span> <a href="${escapeHtml(step.url)}" target="_blank" rel="noopener">${escapeHtml(step.url)}</a></p>` : ""}
       ${thoughtHtml(step)}
     </div>
