@@ -580,7 +580,11 @@ def _usersim_failure(result: dict[str, Any], start_url: str) -> dict[str, str] |
             "target_url": target,
             "final_url": final,
         }
-    if _TIMEOUT_RE.search(blob):
+    failed = result.get("failed_step") if isinstance(result.get("failed_step"), dict) else {}
+    walled = str(result.get("stop_reason") or "") == "needs_account" or str(failed.get("phase") or "") == "needs_account"
+    if _TIMEOUT_RE.search(blob) and not walled:
+        # An account wall is a product fact even when the live signup behind
+        # it ran out of time; the report shows that signup on the wall row.
         return {
             "kind": "timeout",
             "reason": "Run timed out before a product conclusion. That is infrastructure, not product friction.",
