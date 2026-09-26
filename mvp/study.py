@@ -86,9 +86,8 @@ _AGENT_SEMAPHORE = asyncio.Semaphore(
 _BROWSER_SEMAPHORE = asyncio.Semaphore(
     int(os.environ.get("MVP_BROWSER_CONCURRENCY", "25"))
 )
-# Caps simultaneous navigate + agent.run. The 25-slot browser semaphore still
-# lets a 24-agent matrix reserve capacity, but only this many browsers are
-# alive at once — the width that actually leaves the homepage.
+# Caps simultaneous live sessions. Navigations are capped tighter inside
+# run_browser_agent. Queue here, before the per-agent wall clock.
 _LLM_RUN_SEMAPHORE: asyncio.Semaphore | None = None
 
 

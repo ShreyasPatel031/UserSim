@@ -330,8 +330,8 @@ async def _toggle_session(page, sess: dict) -> None:
 
 
 def _attach_task_success(report: dict, study: dict, judged: dict, fallback_url: str) -> None:
-    """Final-state task success, beside screenshot yeses. Does not change the pass gate."""
-    from mvp.report_insights import task_succeeded
+    """Record task success beside screenshot yeses, including the product gate."""
+    from mvp.report_insights import product_completion_gate, task_succeeded
 
     runs = [
         r
@@ -355,6 +355,12 @@ def _attach_task_success(report: dict, study: dict, judged: dict, fallback_url: 
     report["task_success_n"] = n_ok
     report["task_success_of"] = len(judged)
     report["task_success_rate"] = round(100 * n_ok / len(judged)) if judged else 0
+    gate = product_completion_gate(runs, str(study.get("url") or fallback_url or ""))
+    report["product_task_gate"] = gate
+    report["product_task_success_n"] = gate["success_n"]
+    report["product_task_success_of"] = gate["product_n"]
+    report["product_task_success_rate"] = gate["success_rate"]
+    report["product_first_screen_failures"] = gate["first_screen_failures"]
 
 
 async def run_e2e2(args: argparse.Namespace) -> dict:
@@ -726,6 +732,14 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             f"missing_real={timing['creation_to_first_shot_s']['missing_shot']} "
             f"warm={warm_timing or '{}'}"
         )
+        gate = report.get("product_task_gate") or {}
+        _log(
+            "  product task gate: "
+            f"{gate.get('success_n')}/{gate.get('product_n')} "
+            f"want ≥{gate.get('required_n')} "
+            f"first_screen_fail={len(gate.get('first_screen_failures') or [])} "
+            f"pass={gate.get('pass')}"
+        )
 
         fails = []
         # 24 agents is the only PASS bar — smaller runs are smoke-only.
@@ -788,6 +802,14 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         nos = [v["agent_id"] for v in judged.values() if not v.get("pass")]
         if nos:
             fails.append(f"flash-lite NO: {nos[:8]}")
+        gate = report.get("product_task_gate") or {}
+        if not gate.get("pass"):
+            stuck = gate.get("first_screen_failures") or []
+            fails.append(
+                f"product task success {gate.get('success_n')}/{gate.get('product_n')} "
+                f"want ≥{gate.get('required_n')} "
+                f"({len(stuck)} stayed on the first screen)"
+            )
 
         # Ready may show only now — give the UI a beat to apply the final poll.
         ready = False
@@ -923,6 +945,8 @@ def main() -> int:
         f"ALL_PASS study={result.get('study_id')} "
         f"yeses={result.get('yeses')}/{expected} "
         f"task_success={result.get('task_success_n')}/{result.get('task_success_of')} "
+        f"product_task={result.get('product_task_success_n')}/"
+        f"{result.get('product_task_success_of')} "
         f"elapsed={result.get('elapsed_s')}s "
         f"url={args.url}"
     )

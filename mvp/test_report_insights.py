@@ -8,6 +8,8 @@ from mvp.report_insights import (
     build_report_insights,
     changed_page_state,
     left_start,
+    product_completion_gate,
+    product_task_passed,
     task_succeeded,
     work_metrics,
 )
@@ -100,6 +102,46 @@ class WorkMetricTests(unittest.TestCase):
         self.assertEqual(metrics["changed_page_pct"], 100)
         self.assertEqual(metrics["left_start_pct"], 0)
         self.assertEqual(metrics["step_latency_p50"], 4.2)
+
+    def test_done_on_the_first_screen_fails_the_product_gate(self) -> None:
+        run = _run("a", steps=2, final="https://linear.app/")
+        run["site_url"] = "https://linear.app/"
+        run["trace"][0]["action"] = "Opened https://linear.app/"
+        run["trace"][1]["action"] = "done — text=The homepage looks modern and clear"
+        self.assertFalse(product_task_passed(run, "https://linear.app/"))
+
+    def test_product_gate_needs_half_and_counts_first_screen_as_failure(self) -> None:
+        runs = []
+        for i in range(8):
+            run = _run(f"p{i}", steps=2, final="https://linear.app/")
+            run["site_url"] = "https://linear.app/"
+            run["site_key"] = "product"
+            if i < 4:
+                run["trace"][0]["url"] = "https://linear.app/"
+                run["trace"][0]["action"] = "click — index=3"
+                run["trace"][1]["action"] = "click — index=9"
+                run["trace"][1]["url"] = "https://linear.app/pricing"
+                run["final_url"] = "https://linear.app/pricing"
+            else:
+                run["trace"][0]["action"] = "Opened https://linear.app/"
+                run["trace"][1]["action"] = "wait — seconds=5"
+                run["trace"][1]["url"] = "https://linear.app/"
+            runs.append(run)
+        runs.append(_run("c1", site_key="competitor_1", steps=1, final="https://asana.com/"))
+        gate = product_completion_gate(runs, "https://linear.app/")
+        self.assertEqual(gate["product_n"], 8)
+        self.assertEqual(gate["success_n"], 4)
+        self.assertEqual(gate["required_n"], 4)
+        self.assertEqual(len(gate["first_screen_failures"]), 4)
+        self.assertTrue(gate["pass"])
+        gate["success_n"] = 3
+        # A 3/8 result is below the bar. Rebuild from runs to prove it.
+        runs[3]["trace"][1]["url"] = "https://linear.app/"
+        runs[3]["final_url"] = "https://linear.app/"
+        runs[3]["trace"][1]["action"] = "wait — seconds=5"
+        gate = product_completion_gate(runs, "https://linear.app/")
+        self.assertEqual(gate["success_n"], 3)
+        self.assertFalse(gate["pass"])
 
     def test_one_canvas_sample_is_not_a_page_change(self) -> None:
         run = _run("a", steps=2, final="https://excalidraw.com/")
