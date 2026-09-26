@@ -978,6 +978,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 early_abort,
                 base_url=args.base.rstrip("/"),
             )
+            strict["failures"] = failure_doc
         else:
             failure_doc = strict.get("failures") or {}
         failure_path.write_text(json.dumps(failure_doc, indent=2))
