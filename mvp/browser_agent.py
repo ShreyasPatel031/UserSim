@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import json
+import math
 import os
 import shutil
 import time
@@ -27,10 +29,258 @@ MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
 # 200s is enough for several clicks once thinking/planning are off.
 MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
 # A 75s Gemini default let the first call consume the wall (~115s observed).
-# Abort a slow call and let the next step retry. Targets: first action ~10s, step ~15s.
+# The model call stays short. Captcha-solver wait and DOM capture have their
+# own caps so they cannot cancel that call. The step clock is only long
+# enough for those caps, one model call, and one press-and-hold.
 MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "12") or "12")
-MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "15") or "15")
+MVP_CAPTCHA_WAIT_S = float(os.environ.get("MVP_CAPTCHA_WAIT_S", "2") or "2")
+MVP_STATE_TIMEOUT_S = float(os.environ.get("MVP_STATE_TIMEOUT_S", "4") or "4")
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
+MVP_ACTION_SLACK_S = float(os.environ.get("MVP_ACTION_SLACK_S", "8") or "8")
+_FALLBACK_STATE_NOTE = (
+    " A screenshot of the page is attached. "
+    "Click or drag using viewport coordinates. Do not wait for another DOM pass."
+)
+
+
+def captcha_wait_timeout_s(
+    requested: float | None = None,
+    *,
+    cap_s: float = MVP_CAPTCHA_WAIT_S,
+) -> float:
+    """Cap Browserbase's solver wait. The library default is 120s inside the step."""
+    cap = max(0.0, float(cap_s))
+    if requested is None:
+        return cap
+    return min(max(0.0, float(requested)), cap)
+
+
+def action_step_budget_s(
+    *,
+    llm_timeout_s: float = MVP_LLM_TIMEOUT_S,
+    state_timeout_s: float = MVP_STATE_TIMEOUT_S,
+    captcha_wait_s: float = MVP_CAPTCHA_WAIT_S,
+    hold_s: float = MVP_HOLD_S,
+    action_slack_s: float = MVP_ACTION_SLACK_S,
+) -> int:
+    """Seconds one agent step may run without cancelling the model call.
+
+    Captcha wait and DOM capture are capped on their own clocks. The model
+    keeps ``llm_timeout_s``. One press-and-hold fits after the model returns.
+    """
+    total = (
+        float(captcha_wait_s)
+        + float(state_timeout_s)
+        + float(llm_timeout_s)
+        + float(hold_s)
+        + float(action_slack_s)
+    )
+    return max(1, int(math.ceil(total - 1e-9)))
+
+
+def _env_step_timeout_s() -> int:
+    computed = action_step_budget_s()
+    raw = (os.environ.get("MVP_STEP_TIMEOUT_S") or "").strip()
+    if not raw:
+        return computed
+    try:
+        requested = int(raw)
+    except ValueError:
+        return computed
+    # A 15s step cancelled the model before it could act. Do not go below the
+    # budget that keeps prep, the model call, and one hold on separate clocks.
+    return max(computed, requested)
+
+
+MVP_STEP_TIMEOUT_S = _env_step_timeout_s()
+
+
+def _png_b64(path: Path | None) -> str | None:
+    if path is None:
+        return None
+    try:
+        if path.is_file() and path.stat().st_size > 100:
+            return base64.b64encode(path.read_bytes()).decode("ascii")
+    except OSError:
+        return None
+    return None
+
+
+def empty_browser_state(url: str, screenshot_b64: str | None, reason: str) -> Any:
+    """Minimal page state so a timed-out DOM fetch still reaches the model."""
+    from browser_use.browser.views import BrowserStateSummary
+    from browser_use.dom.views import SerializedDOMState
+
+    return BrowserStateSummary(
+        dom_state=SerializedDOMState(_root=None, selector_map={}),
+        url=url or "about:blank",
+        title="Browser state unavailable",
+        tabs=[],
+        screenshot=screenshot_b64,
+        browser_errors=[reason],
+        state_error=reason,
+    )
+
+
+def enrich_timed_out_browser_state(
+    summary: Any,
+    *,
+    screenshot_b64: str | None,
+    url: str,
+    reason: str,
+) -> Any:
+    """Attach the opening screenshot when DOM capture failed, and still return state."""
+    if summary is None:
+        note = reason + _FALLBACK_STATE_NOTE
+        return empty_browser_state(url, screenshot_b64, note)
+    if not getattr(summary, "state_error", None):
+        return summary
+    if screenshot_b64 and not getattr(summary, "screenshot", None):
+        summary.screenshot = screenshot_b64
+    err = str(summary.state_error)
+    if "viewport coordinates" not in err:
+        summary.state_error = err + _FALLBACK_STATE_NOTE
+    return summary
+
+
+async def bounded_browser_state(
+    fetch: Callable[[], Awaitable[Any]],
+    *,
+    timeout_s: float,
+    fallback: Any,
+) -> Any:
+    """Run a DOM fetch on its own clock. Timeout returns fallback, it does not raise."""
+    try:
+        return await asyncio.wait_for(fetch(), timeout=timeout_s)
+    except (TimeoutError, asyncio.TimeoutError):
+        return fallback
+
+
+def first_action_seconds(
+    agent: Any,
+    *,
+    t0: float | None,
+    now: float,
+    already: float | None,
+) -> float | None:
+    """Stamp first_action_s only after a real click, drag, or type."""
+    if already is not None or t0 is None:
+        return already
+    if _history_interact_count(agent) < 1:
+        return None
+    return round(float(now) - float(t0), 3)
+
+
+def partial_agent_history(agent: Any) -> Any | None:
+    """History already committed on the agent when run() is cancelled."""
+    if agent is None:
+        return None
+    history = getattr(agent, "history", None)
+    items = list(getattr(history, "history", None) or [])
+    if not items:
+        return None
+    return history
+
+
+def browser_state_event_timeout_s(state_timeout_s: float = MVP_STATE_TIMEOUT_S) -> float:
+    """Handler timeout slightly under our wrapper so the event bus is free first."""
+    return max(1.0, float(state_timeout_s) - 0.5)
+
+
+_BUDGETED_AGENT_CLS: type | None = None
+
+
+def budgeted_step_agent_class() -> type:
+    """Agent whose step clock is not spent on a 120s captcha wait or a 30s DOM build."""
+    global _BUDGETED_AGENT_CLS
+    if _BUDGETED_AGENT_CLS is not None:
+        return _BUDGETED_AGENT_CLS
+    from browser_use import Agent
+
+    class BudgetedStepAgent(Agent):
+        def __init__(
+            self,
+            *args: Any,
+            opening_screenshot_path: Path | None = None,
+            page_url: str = "",
+            agent_label: str = "",
+            **kwargs: Any,
+        ) -> None:
+            super().__init__(*args, **kwargs)
+            self._opening_screenshot_path = opening_screenshot_path
+            self._page_url = page_url
+            self._agent_label = agent_label or "agent"
+
+        def _fallback_shot(self) -> str | None:
+            return _png_b64(self._opening_screenshot_path)
+
+        async def _prepare_context(self, step_info: Any = None) -> Any:
+            session = self.browser_session
+            if session is None:
+                return await super()._prepare_context(step_info)
+            original = session.get_browser_state_summary
+            label = self._agent_label
+            page_url = self._page_url
+
+            async def capped_state_lazy(*args: Any, **kwargs: Any) -> Any:
+                # Read when the event is constructed. The 30s default outlives
+                # the step, and the serial event bus then blocks the click.
+                os.environ["TIMEOUT_BrowserStateRequestEvent"] = str(
+                    browser_state_event_timeout_s()
+                )
+                missed = object()
+
+                async def _fetch() -> Any:
+                    return await original(*args, **kwargs)
+
+                result = await bounded_browser_state(
+                    _fetch,
+                    timeout_s=MVP_STATE_TIMEOUT_S,
+                    fallback=missed,
+                )
+                if result is missed:
+                    print(
+                        f"[{label}] browser state exceeded {MVP_STATE_TIMEOUT_S:.0f}s "
+                        "— calling the model with the opening screenshot",
+                        flush=True,
+                    )
+                    result = None
+                return enrich_timed_out_browser_state(
+                    result,
+                    screenshot_b64=self._fallback_shot(),
+                    url=page_url,
+                    reason=(
+                        f"Browser state capture exceeded {MVP_STATE_TIMEOUT_S:.0f}s "
+                        "and was abandoned so the model could still act."
+                    ),
+                )
+
+            object.__setattr__(session, "get_browser_state_summary", capped_state_lazy)
+            try:
+                return await super()._prepare_context(step_info)
+            finally:
+                object.__setattr__(session, "get_browser_state_summary", original)
+
+        async def step(self, step_info: Any = None) -> None:
+            session = self.browser_session
+            if session is None:
+                await super().step(step_info)
+                return
+            original_wait = session.wait_if_captcha_solving
+
+            async def capped_wait(timeout: float | None = None) -> Any:
+                # solve_captchas stays on at session create. This wait must not
+                # use the 120s library default inside the action step.
+                return await original_wait(timeout=captcha_wait_timeout_s(timeout))
+
+            object.__setattr__(session, "wait_if_captcha_solving", capped_wait)
+            try:
+                await super().step(step_info)
+            finally:
+                object.__setattr__(session, "wait_if_captcha_solving", original_wait)
+
+    _BUDGETED_AGENT_CLS = BudgetedStepAgent
+    return BudgetedStepAgent
 
 
 def _png_is_blankish(path: Path) -> bool:
@@ -493,6 +743,8 @@ def _study_tools() -> Any:
     from browser_use.agent.views import ActionResult
 
     tools = Tools(exclude_actions=["write_file", "replace_file"])
+    # Canvas pages often have no usable element index. Coordinates still click.
+    tools.set_coordinate_clicking(True)
 
     @tools.action(
         "Draw or drag. Mouse down at start_x,start_y, move in a straight line to "
@@ -773,8 +1025,12 @@ def _make_step_hooks(
             print(f"[{agent_id}] early-done check failed: {exc!r}", flush=True)
         state["step"] += 1
         step_no = state["step"]
-        if book.get("t0") is not None and book.get("first_action_s") is None:
-            book["first_action_s"] = round(time.monotonic() - float(book["t0"]), 3)
+        book["first_action_s"] = first_action_seconds(
+            agent,
+            t0=book.get("t0"),
+            now=time.monotonic(),
+            already=book.get("first_action_s"),
+        )
         session = getattr(agent, "browser_session", None)
         if session is None:
             return
@@ -1641,8 +1897,6 @@ async def run_browser_agent(
             injected = await _inject_cookies(browser_session, cookie_state)
             print(f"[{agent_id}] injected {injected} cookies via CDP", flush=True)
 
-        from browser_use import Agent
-
         llm = await llm_task
         persona_line = f"You are {persona.get('name')}: {persona.get('bio')}"
         stay_put = (
@@ -1672,9 +1926,12 @@ async def run_browser_agent(
             f"Do not write todo files. Do not wait if the page is already visible.\n"
         )
 
-        agent = Agent(
+        agent = budgeted_step_agent_class()(
             task=agent_task,
             llm=llm,
+            opening_screenshot_path=screenshot_dir / "bbox_0.png",
+            page_url=start_url,
+            agent_label=agent_id,
             browser_session=browser_session,
             browser_profile=None,
             tools=_study_tools(),
@@ -1711,7 +1968,9 @@ async def run_browser_agent(
                 "To draw, call drag with viewport coordinates. A click on the rectangle "
                 "tool is not a rectangle. "
                 "On a Press and Hold check, call press_and_hold. Never call CapSolver "
-                "or another captcha API."
+                "or another captcha API. "
+                "If element indices are missing, click or drag with viewport coordinates "
+                "from the screenshot. Do not wait."
             ),
         )
         # Signal UI: agent loop is starting — replace screenshot with live view now.
@@ -1776,6 +2035,7 @@ async def run_browser_agent(
         print(
             f"[{agent_id}] agent.run starting model={model} provider=google-vertex "
             f"llm_timeout={MVP_LLM_TIMEOUT_S}s step_timeout={MVP_STEP_TIMEOUT_S}s "
+            f"state_timeout={MVP_STATE_TIMEOUT_S:.0f}s captcha_wait={MVP_CAPTCHA_WAIT_S:.0f}s "
             f"(warm={use_warm}, max_steps={max_steps}, wall={MVP_AGENT_WALL_S:.0f}s)",
             flush=True,
         )
@@ -1790,9 +2050,11 @@ async def run_browser_agent(
                 timeout=max(15.0, MVP_AGENT_WALL_S),
             )
         except (asyncio.TimeoutError, asyncio.CancelledError):
+            history = partial_agent_history(agent)
+            kept = len(list(getattr(history, "history", None) or []))
             print(
                 f"[{agent_id}] agent.run hit wall ({MVP_AGENT_WALL_S:.0f}s) — "
-                "returning opening/partial trace",
+                f"keeping {kept} completed step(s)",
                 flush=True,
             )
             try:
@@ -1818,6 +2080,8 @@ async def run_browser_agent(
                     print(f"[{agent_id}] wall reshoot failed: {wall_shot_exc!r}", flush=True)
         except Exception as run_exc:  # noqa: BLE001
             # Prefer partial opening frames over raising into study retry.
+            if history is None:
+                history = partial_agent_history(agent)
             print(f"[{agent_id}] agent.run failed: {run_exc!r} — returning partial", flush=True)
     finally:
         if browser_session is not None:
