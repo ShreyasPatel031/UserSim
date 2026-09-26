@@ -705,11 +705,8 @@ async def get_study(study_id: str):
         # request until the poll that should see the first click has already
         # missed the 10s clock.
         if data.get("status") in {"running", "pending", "starting"}:
-            # The click is already in this payload. Stamp the clocks at the
-            # response the harness is reading, so a poll that was blocked
-            # behind browser setup is not recorded as a late first action.
-            _align_visible_clocks(study)
-            data = study_to_dict(study)
+            # Return the clocks the agent wrote. Rewriting them at poll time
+            # made every first action look instant.
             return data
         # In-memory live studies: return immediately. Hydrating GCS on every UI
         # poll while 6 Browserbase agents are writing was starving the event
