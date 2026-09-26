@@ -14,6 +14,7 @@ import hashlib
 import os
 import re
 import time
+from datetime import datetime, timezone
 from typing import Any
 
 AX_CAP = 150
@@ -1170,8 +1171,6 @@ class A11yBoot:
                 pass
 
     def _publish_site(self, site_key: str, snap: dict[str, Any]) -> None:
-        from mvp.study import _now
-
         ax = format_ax(snap.get("nodes") or []) or str(snap.get("text") or "")[:1500] or "0 document page"
         url = str(snap.get("url") or "")
         for task in self.study.tasks or []:
@@ -1215,7 +1214,6 @@ class A11yBoot:
             }
             sess["status"] = "running"
             sess["phase"] = "reading"
-            sess["created_at"] = sess.get("created_at") or _now()
             step0 = _step_from_read(step=0, action=f"Opened {url}", read=snap)
             step0.pop("page_open_at_ts", None)
             step0["accessibility_tree"] = ax
@@ -2376,6 +2374,9 @@ async def _run_a11y_agent_unlocked(
             failed = {"phase": "session", "reason": "session ended", "step": 0}
         if page is not None and opened_at is not None and failed is None:
             sess["created_at_ts"] = started_at
+            sess["created_at"] = datetime.fromtimestamp(
+                float(started_at), timezone.utc
+            ).isoformat()
             apply_gate_fields(
                 sess,
                 page_open_at_ts=opened_at,
