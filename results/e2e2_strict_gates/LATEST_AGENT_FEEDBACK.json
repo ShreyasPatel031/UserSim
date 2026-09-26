@@ -87,6 +87,38 @@
       "final_screenshot_url"
     ]
   },
+  "bugs": [
+    {
+      "id": "fleet_not_24_by_5s",
+      "where": "live_sessions",
+      "fact": "At abort only 18 of 24 sessions were in the polled study. agent_count=18 and full_matrix FAIL. Publish all 24 before the 5s page-open clock."
+    },
+    {
+      "id": "wrong_host_on_trello",
+      "where": "page_url / opened_url / current_url vs site_url",
+      "fact": "page_opened failed wrong site=2: t1__p1__competitor_2 and t2__p1__competitor_2. Assigned host is trello.com. The 5s check compares that host to the first published URL. A Linear URL on a Trello agent fails immediately."
+    },
+    {
+      "id": "ax_tree",
+      "where": "live session ax_tree",
+      "fact": "On this 9741b7e abort, agents that counted as opened had a non-empty ax_tree (missing_ax=0). The prior head 59c2702 study 4dfa950e failed page_opened because 8 product agents had no ax_tree. Keep a non-empty ax_tree on every live session, including product, at the same moment as page_open_at_ts."
+    },
+    {
+      "id": "final_screenshot_url",
+      "where": "live session final_screenshot_url and phase_ms.final_screenshot",
+      "fact": "Both failed runs are missing field final_screenshot_url and missing field phase_ms.final_screenshot. The one judge PNG has to be on the live session when the run stops, not only after a long successful loop. phase_ms.final_screenshot is the millisecond key inside phase_ms."
+    },
+    {
+      "id": "failed_step",
+      "where": "live session failed_step.phase and failed_step.reason",
+      "fact": "failures.json phase_counts is missing field failed_step_phase x 2. A stopped run must set failed_step to {phase, reason}. Empty or null does not pass."
+    },
+    {
+      "id": "new_issue_stuck",
+      "where": "t1__p1__product on study 6e2acd43 (head 59c2702)",
+      "fact": "That agent repeated last_action 'click New issue' three times with no URL or DOM change, phase=acting, and never wrote failed_step. Product stayed 0/8. This 9741b7e run died at 5.2s on page_opened, so the new stuck stop was not exercised. A third identical click still has to record failed_step.phase=stuck and a reason, then leave the homepage on the other product agents."
+    }
+  ],
   "what_to_emit": [
     "Every agent, including competitors, publishes page_open_at_ts and a non-empty ax_tree for its own assigned host within 5s of created_at_ts.",
     "The first published URL host must match site_url (www stripped).",
