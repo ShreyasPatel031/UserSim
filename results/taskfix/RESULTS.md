@@ -1,3 +1,19 @@
+# Study bdc1f5da — 24-agent Linear, PNGs in GCS
+
+Not a pass. Only PR #46 grades this with `--grade-study`. Local harness 4/4 is not a pass.
+
+Study `bdc1f5da-5815-4002-9dcf-32ada5300190`. 4 personas × 2 tasks × 3 sites (Linear, Asana, Trello) = 24 agents. Local Chromium (`MVP_FORCE_LOCAL_BROWSER=1`, `USE_BROWSERBASE=0`). `prime_sessions` stayed 0. taskfix Browserbase sessions after the run: 0.
+
+`study.json` is in GCS with status complete and 24 agent results. All 8 product `final.png` objects are PNGs. Checked `t1__p1__product`: `mvp_studies/bdc1f5da-5815-4002-9dcf-32ada5300190/screenshots/t1__p1__product/final.png` is 24679 bytes. The other product objects are `t1__p2__product` 27895, `t1__p3__product` 27895, `t1__p4__product` 27895, `t2__p1__product` 65171, `t2__p2__product` 54512, `t2__p3__product` 259391, `t2__p4__product` 65171.
+
+Issue agents stopped `needs_account` on `https://linear.app/login` or `https://linear.app/signup`. There is no `secrets/credentials.json` here, so the in-page Sign Up flow could not build a fresh alias. The task text was not rewritten into a docs tour. Pricing agents: two stopped on `https://linear.app/pricing`, one on `https://linear.app/customers`, one on `https://linear.app/contact/sales`. The judge decides.
+
+`ee317fff-8166-499d-b6ae-dda192f0e9d9` died on the GCP fleet (`compute_v1` import) before any PNG. Do not grade that id.
+
+Integration should cherry-pick `c5a32f8` (`c5a32f806a142f12e510b93a657dab683e2a3d88`). `de70d9d` is only a harness log.
+
+Generic tree draw/export/help was exercised with the local harness on tldraw.com, figma.com, and ikea.com (`results/taskfix/harness_generic.log`). That 4/4 is not a pass.
+
 # Study 70557bae product PNGs are in GCS
 
 Local `mvp/runs/.../final.png` was not enough. Before this upload, GCS had no object for `t1__p1__product` `final.png` and no `study.json`, which is the `no downloadable PNG` failure.
