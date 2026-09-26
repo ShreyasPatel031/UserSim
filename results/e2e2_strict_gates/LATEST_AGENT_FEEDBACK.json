@@ -1,0 +1,130 @@
+{
+  "audience": "PR #47 coding agent",
+  "branch": "cursor/product-agent-full-model-76fc",
+  "head": "9741b7e",
+  "proof_branch": "cursor/gates-shared-read-proof-21fe",
+  "proof_commit": "4061352",
+  "pass": false,
+  "startup_alone_is_not_a_pass": true,
+  "study_id": "3d869a34-ec04-4687-9eb4-5a599948ccdf",
+  "product_url": "https://linear.app",
+  "elapsed_s": 5.2,
+  "time_to_first_value_s": 3.973,
+  "time_to_first_value": "PASS",
+  "total_time": "not ready",
+  "product_task_completion": "0/8",
+  "product_need": ">= 4/8 Gemini YES on the final screenshot",
+  "gemini_called": false,
+  "report_ready": false,
+  "per_task_rows": false,
+  "strength_from_run_past_homepage": false,
+  "weakness_from_run_past_homepage": false,
+  "abort": {
+    "gate": "page_opened",
+    "reason": "FAIL page_opened: 14/18 agents opened the assigned site within 5s (wrong site=2)",
+    "agents_visible": 18,
+    "opened": 14,
+    "wrong_site_ids": ["t1__p1__competitor_2", "t2__p1__competitor_2"],
+    "note": "Assigned site and the URL stored after abort are both https://trello.com/. The 5s check still marked these two wrong-site, and the harness stopped before the fleet reached 24."
+  },
+  "missing_fields": [
+    "phase_ms.final_screenshot",
+    "phase_ms",
+    "final_screenshot_url",
+    "final_url",
+    "state_sig.text",
+    "failed_step_phase",
+    "failed_step_reason"
+  ],
+  "failures_json": {
+    "counts": {
+      "our infrastructure": 0,
+      "model timeout": 0,
+      "stuck": 0,
+      "product": 2,
+      "no_first_action": 0
+    },
+    "phase_counts": [
+      {"phase": "missing field failed_step_phase", "n": 2}
+    ],
+    "failed_runs": [
+      {
+        "agent_id": "t1__p1__competitor_2",
+        "type": "product",
+        "last_action": "click Sign up for Trello - it’s free!",
+        "final_url": "https://trello.com/",
+        "failed_step_phase": "missing field failed_step_phase",
+        "failed_step_reason": "missing field failed_step_reason",
+        "phase_ms": "missing field phase_ms.final_screenshot",
+        "final_screenshot": "missing field final_screenshot_url"
+      },
+      {
+        "agent_id": "t2__p1__competitor_2",
+        "type": "product",
+        "last_action": "click Sign up for Trello - it’s free!",
+        "final_url": "https://trello.com/",
+        "failed_step_phase": "missing field failed_step_phase",
+        "failed_step_reason": "missing field failed_step_reason",
+        "phase_ms": "missing field phase_ms.final_screenshot",
+        "final_screenshot": "missing field final_screenshot_url"
+      }
+    ]
+  },
+  "previous_real_fail": {
+    "head": "59c2702",
+    "study_id": "6e2acd43-9649-411f-b28c-084b94e0d560",
+    "elapsed_s": 73.4,
+    "time_to_first_value_s": 4.778,
+    "time_to_first_action": "median=20.024s max=20.33s n=24/24 FAIL",
+    "product_task_completion": "0/8",
+    "abort": "stuck",
+    "reason": "t1__p1__product repeated click New issue 3 times with no URL/DOM change",
+    "phase_counts": [{"phase": "missing field failed_step_phase", "n": 1}],
+    "missing_on_stuck_run": [
+      "failed_step_phase",
+      "failed_step_reason",
+      "phase_ms.final_screenshot",
+      "final_screenshot_url"
+    ]
+  },
+  "bugs": [
+    {
+      "id": "fleet_not_24_by_5s",
+      "where": "live_sessions",
+      "fact": "At abort only 18 of 24 sessions were in the polled study. agent_count=18 and full_matrix FAIL. Publish all 24 before the 5s page-open clock."
+    },
+    {
+      "id": "wrong_host_on_trello",
+      "where": "page_url / opened_url / current_url vs site_url",
+      "fact": "page_opened failed wrong site=2: t1__p1__competitor_2 and t2__p1__competitor_2. Assigned host is trello.com. The 5s check compares that host to the first published URL. A Linear URL on a Trello agent fails immediately."
+    },
+    {
+      "id": "ax_tree",
+      "where": "live session ax_tree",
+      "fact": "On this 9741b7e abort, agents that counted as opened had a non-empty ax_tree (missing_ax=0). The prior head 59c2702 study 4dfa950e failed page_opened because 8 product agents had no ax_tree. Keep a non-empty ax_tree on every live session, including product, at the same moment as page_open_at_ts."
+    },
+    {
+      "id": "final_screenshot_url",
+      "where": "live session final_screenshot_url and phase_ms.final_screenshot",
+      "fact": "Both failed runs are missing field final_screenshot_url and missing field phase_ms.final_screenshot. The one judge PNG has to be on the live session when the run stops, not only after a long successful loop. phase_ms.final_screenshot is the millisecond key inside phase_ms."
+    },
+    {
+      "id": "failed_step",
+      "where": "live session failed_step.phase and failed_step.reason",
+      "fact": "failures.json phase_counts is missing field failed_step_phase x 2. A stopped run must set failed_step to {phase, reason}. Empty or null does not pass."
+    },
+    {
+      "id": "new_issue_stuck",
+      "where": "t1__p1__product on study 6e2acd43 (head 59c2702)",
+      "fact": "That agent repeated last_action 'click New issue' three times with no URL or DOM change, phase=acting, and never wrote failed_step. Product stayed 0/8. This 9741b7e run died at 5.2s on page_opened, so the new stuck stop was not exercised. A third identical click still has to record failed_step.phase=stuck and a reason, then leave the homepage on the other product agents."
+    }
+  ],
+  "what_to_emit": [
+    "Every agent, including competitors, publishes page_open_at_ts and a non-empty ax_tree for its own assigned host within 5s of created_at_ts.",
+    "The first published URL host must match site_url (www stripped).",
+    "All 24 live sessions must exist before that 5s clock expires.",
+    "On stop, write failed_step.phase and failed_step.reason, including stuck.",
+    "Write phase_ms.final_screenshot and final_screenshot_url on every agent before the study is complete.",
+    "A TTFV under 10s is not a pass. Product completion still needs at least 4/8 Gemini YES, and the report needs per-task rates plus a strength and a weakness from a run that left the homepage."
+  ]
+}
