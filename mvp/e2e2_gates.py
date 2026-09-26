@@ -1,13 +1,14 @@
 """Strict e2e pass gates.
 
-Startup gates stay: agent count, first real screenshot within 5s, and a vision
-YES that the screenshot is the real product. The old 360s elapsed ceiling is a
-study-level budget of 8 minutes. There is no per-agent limit on how long a
-study may run. An agent that makes no progress for several steps is flagged
-stuck; it is not timed out. Time to first action is separate: from each
-agent's first real screenshot until a click, type, or scroll shows up in the
-live study. That passes only when the median is <= 5s and the max is <= 10s
-at 24 agents. The harness aborts once that max is clearly blown.
+Startup gates stay: agent count, and each agent opening the assigned site
+within 5s, confirmed by URL and the accessibility tree. Vision runs only on
+the one final screenshot. The old 360s elapsed ceiling is a study-level
+budget of 8 minutes. There is no per-agent limit on how long a study may run.
+An agent that makes no progress for several steps is flagged stuck; it is not
+timed out. Time to first action starts when the study records browser-session
+ready or page open, until a click, type, or scroll shows up in the live
+study. That passes only when the median is <= 5s and the max is <= 10s at 24
+agents. The harness aborts once that max is clearly blown.
 Two headline clocks sit in front of that: time_to_first_value is the Run
 click until the first click, type, or scroll is visible in the live UI
 (pass <= 10s), and total_time is the Run click until the report is ready
@@ -183,18 +184,29 @@ def _final_shot(run: dict[str, Any]) -> dict[str, Any] | None:
     return last
 
 
+def _numbered_steps(run: dict[str, Any]) -> list[dict[str, Any]]:
+    steps = [
+        step
+        for step in (run.get("trace") or [])
+        if isinstance(step, dict) and isinstance(step.get("step"), int)
+    ]
+    steps.sort(key=lambda step: int(step["step"]))
+    return steps
+
+
 def ended_on_opening_frame(run: dict[str, Any]) -> bool:
-    """Final screenshot is missing, a placeholder, or the opening frame (step 0)."""
-    final = _final_shot(run)
-    if final is None:
+    """The run never recorded a step after the page open.
+
+    A single final screenshot is not, by itself, an opening frame. Per-step
+    screenshots are not required. A placeholder or blank opening shot still is.
+    """
+    for step in _numbered_steps(run):
+        if step.get("opening_placeholder") or step.get("opening_blankish"):
+            if int(step["step"]) == 0 and len(_numbered_steps(run)) == 1:
+                return True
+    if not _numbered_steps(run):
         return True
-    if final.get("opening_placeholder") or final.get("opening_blankish"):
-        return True
-    try:
-        step_n = int(final.get("step") or 0)
-    except (TypeError, ValueError):
-        step_n = 0
-    return step_n <= 0
+    return int(_numbered_steps(run)[-1]["step"]) <= 0
 
 
 def never_left_first_screen(run: dict[str, Any], start_url: str) -> bool:
@@ -368,18 +380,161 @@ def note_visible_actions(
             seen_at[aid] = float(now)
 
 
-def _screenshot_epoch(run: dict[str, Any]) -> float | None:
-    for key in ("first_screenshot_at_ts", "first_screenshot_at"):
-        value = run.get(key)
-        if value is None or value == "":
-            continue
-        if isinstance(value, (int, float)):
-            return float(value)
+# Page open is the start when the study stored it. Otherwise session ready.
+_PAGE_OPEN_TS_KEYS = (
+    "page_open_at_ts",
+    "page_opened_at_ts",
+    "page_open_at",
+    "opened_at_ts",
+)
+_SESSION_READY_TS_KEYS = (
+    "browser_ready_at_ts",
+    "browser_session_ready_at_ts",
+    "session_ready_at_ts",
+    "browser_ready_at",
+    "session_ready_at",
+)
+_AX_KEYS = (
+    "ax_tree",
+    "accessibility_tree",
+    "ax",
+    "accessibility",
+    "ax_text",
+)
+
+
+def _epoch(value: object) -> float | None:
+    if value is None or value == "":
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    text = str(value).strip()
+    if not text:
+        return None
+    try:
+        return float(text)
+    except (TypeError, ValueError):
+        pass
+    try:
+        from datetime import datetime
+
+        if text.endswith("Z"):
+            text = text[:-1] + "+00:00"
+        return datetime.fromisoformat(text).timestamp()
+    except Exception:
+        return None
+
+
+def _clock_sources(run: dict[str, Any]) -> list[dict[str, Any]]:
+    sources = [run]
+    steps = [step for step in (run.get("trace") or []) if isinstance(step, dict)]
+    steps.sort(key=lambda step: int(step["step"]) if isinstance(step.get("step"), int) else 0)
+    if steps:
+        sources.append(steps[0])
+    return sources
+
+
+def _first_recorded_epoch(
+    sources: list[dict[str, Any]], keys: tuple[str, ...]
+) -> tuple[float | None, str]:
+    for source in sources:
+        for key in keys:
+            stamp = _epoch(source.get(key))
+            if stamp is not None:
+                return stamp, key
+    return None, ""
+
+
+def action_clock_start(run: dict[str, Any]) -> tuple[float | None, str]:
+    """When this agent could act: page open if recorded, else browser session ready.
+
+    Screenshot timestamps are not a start. The study JSON supplies whichever
+    of those two events it recorded.
+    """
+    sources = _clock_sources(run)
+    opened, key = _first_recorded_epoch(sources, _PAGE_OPEN_TS_KEYS)
+    if opened is not None:
+        return opened, key
+    ready, key = _first_recorded_epoch(sources, _SESSION_READY_TS_KEYS)
+    if ready is not None:
+        return ready, key
+    return None, ""
+
+
+def _host_of(url: object) -> str:
+    text = str(url or "").strip()
+    if not text:
+        return ""
+    if "://" not in text:
+        text = "https://" + text
+    host = (urlsplit(text).hostname or "").lower().rstrip(".")
+    if host.startswith("www."):
+        host = host[4:]
+    return host
+
+
+def _ax_blob(value: object) -> str:
+    if isinstance(value, str):
+        return value.strip()
+    if isinstance(value, (dict, list)) and value:
         try:
-            return float(str(value).strip())
-        except (TypeError, ValueError):
-            continue
-    return None
+            import json
+
+            return json.dumps(value, default=str)[:2000]
+        except Exception:
+            return ""
+    return ""
+
+
+def ax_text(obj: object) -> str:
+    """Accessibility tree text recorded on a run, step, or evidence row."""
+    if not isinstance(obj, dict):
+        return ""
+    for key in _AX_KEYS:
+        text = _ax_blob(obj.get(key))
+        if text and text.lower() not in {"{}", "[]", "null", "none"}:
+            return text
+    sig = obj.get("state_sig")
+    if isinstance(sig, dict):
+        for key in _AX_KEYS:
+            text = _ax_blob(sig.get(key))
+            if text and text.lower() not in {"{}", "[]", "null", "none"}:
+                return text
+    return ""
+
+
+def run_has_ax(run: dict[str, Any]) -> bool:
+    if ax_text(run):
+        return True
+    for step in run.get("trace") or []:
+        if ax_text(step):
+            return True
+    return False
+
+
+def opened_url_of(run: dict[str, Any]) -> str:
+    """URL the study recorded when the page opened, else the first trace URL."""
+    for key in ("page_url", "opened_url", "current_url"):
+        text = str(run.get(key) or "").strip()
+        if text:
+            return text
+    steps = [step for step in (run.get("trace") or []) if isinstance(step, dict)]
+    steps.sort(key=lambda step: int(step["step"]) if isinstance(step.get("step"), int) else 0)
+    for step in steps:
+        text = str(step.get("url") or "").strip()
+        if text:
+            return text
+    return str(run.get("final_url") or "").strip()
+
+
+def opened_on_assigned_site(run: dict[str, Any]) -> bool:
+    site = _host_of(run.get("site_url"))
+    opened = _host_of(opened_url_of(run))
+    return bool(site) and site == opened
+
+
+def created_epoch(run: dict[str, Any]) -> float | None:
+    return _epoch(run.get("created_at_ts")) or _epoch(run.get("created_at"))
 
 
 def _median(values: list[float]) -> float | None:
@@ -402,13 +557,14 @@ def assess_time_to_first_action(
     abort_after_s: float | None = None,
     expected: int = PASS_AGENT_BAR,
 ) -> dict[str, Any]:
-    """Time from each agent's first real screenshot to a click/type/scroll in the live UI.
+    """Time from browser-session ready or page open to a click/type/scroll in the live UI.
 
-    `action_seen_at` is the harness poll time when that action showed up in the
-    study payload. The pass bar is median <= 5s and max <= 10s at 24 agents.
-    Abort when any agent with a screenshot still has no such action after
-    `abort_after_s` (default 10s, the max, so the threshold is clearly blown).
-    A higher `abort_after_s` only delays the abort; it does not loosen the pass bar.
+    The start is whichever of those the study JSON recorded (page open first,
+    otherwise session ready). Screenshot time is not the start. `action_seen_at`
+    is the harness poll time when that action showed up in the study payload.
+    The pass bar is median <= 5s and max <= 10s at 24 agents. Abort when any
+    agent whose clock has started still has no such action after `abort_after_s`
+    (default 10s). A higher value only delays the abort.
     """
     if action_seen_at is None:
         action_seen_at = {}
@@ -422,16 +578,16 @@ def assess_time_to_first_action(
     idle: list[dict[str, Any]] = []
     for run in agents:
         aid = str(run.get("agent_id") or run.get("task_id") or "")
-        shot = _screenshot_epoch(run)
+        started, start_key = action_clock_start(run)
         acted = has_click_type_scroll(run)
         appeared = action_seen_at.get(aid) if aid else None
         latency = None
         waited = None
-        if shot is not None and acted and appeared is not None:
-            latency = max(0.0, float(appeared) - float(shot))
+        if started is not None and acted and appeared is not None:
+            latency = max(0.0, float(appeared) - float(started))
             latencies.append(latency)
-        elif shot is not None and not acted:
-            waited = float(now) - float(shot)
+        elif started is not None and not acted:
+            waited = float(now) - float(started)
             idle.append(run)
             if waited > ceiling:
                 blown.append(run)
@@ -440,7 +596,8 @@ def assess_time_to_first_action(
         per_agent.append(
             {
                 "agent_id": aid,
-                "screenshot_at": shot,
+                "started_at": started,
+                "start": start_key,
                 "action_seen_at": appeared,
                 "latency_s": None if latency is None else round(latency, 3),
                 "waited_s": None if waited is None else round(waited, 3),
@@ -462,12 +619,12 @@ def assess_time_to_first_action(
     if abort:
         waits = ", ".join(
             f"{str(run.get('agent_id') or '')}="
-            f"{max(0.0, float(now) - float(_screenshot_epoch(run) or now)):.1f}s"
+            f"{max(0.0, float(now) - float(action_clock_start(run)[0] or now)):.1f}s"
             for run in blown[:8]
         )
         reason = (
             f"FAIL time_to_first_action: {len(blown)}/{len(agents)} agents had no "
-            f"click/type/scroll {ceiling:.0f}s after their first real screenshot "
+            f"click/type/scroll {ceiling:.0f}s after browser session ready or page open "
             f"({waits})"
         )
         seen = "; ".join(last_seen_text(run) for run in blown[:8])
@@ -494,6 +651,89 @@ def assess_time_to_first_action(
         "reason": reason,
         "detail": reason,
         "per_agent": per_agent,
+    }
+
+
+def assess_page_opened(
+    runs: list[dict[str, Any]],
+    *,
+    now: float | None = None,
+    limit_s: float = DEFAULT_FIRST_SHOT_S,
+) -> dict[str, Any]:
+    """Every agent opened its assigned site within `limit_s`, confirmed by URL and AX.
+
+    The clock is creation → the page-open timestamp the study recorded. When
+    the study only stored browser-session ready, that stamp is the open time
+    once URL and the accessibility tree confirm the page. Vision is not used.
+    """
+    agents = [run for run in runs if isinstance(run, dict)]
+    limit = float(limit_s)
+    opened_n = 0
+    slow: list[str] = []
+    wrong: list[str] = []
+    missing_ax: list[str] = []
+    waiting: list[str] = []
+    for run in agents:
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        created = created_epoch(run)
+        on_site = opened_on_assigned_site(run)
+        has_ax = run_has_ax(run)
+        sources = _clock_sources(run)
+        open_ts, _key = _first_recorded_epoch(sources, _PAGE_OPEN_TS_KEYS)
+        if open_ts is None and on_site and has_ax:
+            open_ts, _key = _first_recorded_epoch(sources, _SESSION_READY_TS_KEYS)
+        gap = None
+        if created is not None and open_ts is not None:
+            gap = max(0.0, open_ts - created)
+        age = None
+        if created is not None and now is not None:
+            age = float(now) - created
+        past_limit = (gap is not None and gap > limit) or (
+            age is not None and age > limit and gap is None
+        )
+        finished = now is None
+        if on_site and has_ax and gap is not None and gap <= limit:
+            opened_n += 1
+            continue
+        if opened_url_of(run) and not on_site:
+            wrong.append(aid)
+        elif on_site and not has_ax and (past_limit or finished or gap is not None):
+            missing_ax.append(aid)
+        elif gap is not None and gap > limit:
+            slow.append(aid)
+        elif past_limit or finished:
+            slow.append(aid)
+        else:
+            waiting.append(aid)
+    abort = bool(wrong or slow or missing_ax)
+    ok = bool(agents) and opened_n == len(agents) and not waiting and not abort
+    reason = ""
+    if abort:
+        parts = []
+        if wrong:
+            parts.append(f"wrong site={len(wrong)}")
+        if missing_ax:
+            parts.append(f"no accessibility tree={len(missing_ax)}")
+        if slow:
+            parts.append(f"opened after {limit:.0f}s={len(slow)}")
+        reason = (
+            f"FAIL page_opened: {opened_n}/{len(agents)} agents opened the assigned "
+            f"site within {limit:.0f}s ({', '.join(parts)})"
+        )
+    return {
+        "measured": True,
+        "ok": ok,
+        "abort": abort,
+        "opened": opened_n,
+        "agents": len(agents),
+        "slow": len(slow),
+        "wrong_site": len(wrong),
+        "missing_ax": len(missing_ax),
+        "waiting": len(waiting),
+        "limit_s": limit,
+        "reason": reason,
+        "detail": reason,
+        "ids": wrong + missing_ax + slow,
     }
 
 
@@ -796,21 +1036,45 @@ def _screenshot_ok(url: str, loader: Callable[[str], bool] | None) -> bool:
         return False
 
 
+def _cited_step(run: dict[str, Any], step_n: int) -> dict[str, Any] | None:
+    for step in _numbered_steps(run):
+        if int(step["step"]) == step_n:
+            return step
+    return None
+
+
+def _final_screenshot_url(run: dict[str, Any], evidence: dict[str, Any]) -> str:
+    """The one final screenshot. A per-step shot still counts for older reports."""
+    for source in (evidence, run):
+        for key in ("final_screenshot", "final_screenshot_url", "screenshot_url"):
+            text = str(source.get(key) or "").strip()
+            if text:
+                return text
+    shot = _final_shot(run)
+    return str((shot or {}).get("screenshot_url") or "").strip()
+
+
 def _evidence_ok(
     evidence: dict[str, Any],
     runs_by_id: dict[str, dict[str, Any]],
     study: dict[str, Any],
     loader: Callable[[str], bool] | None,
 ) -> bool:
+    """A strength or weakness cites a step's URL or AX tree, plus the final screenshot."""
     aid = str(evidence.get("agent_id") or "")
     if not aid or not isinstance(evidence.get("step"), int):
         return False
-    if not _screenshot_ok(str(evidence.get("screenshot_url") or ""), loader):
-        return False
     run = runs_by_id.get(aid)
-    if not run:
+    if not run or not beyond_first_screen(run, _start_url(run, study)):
         return False
-    return beyond_first_screen(run, _start_url(run, study))
+    cited = _cited_step(run, int(evidence["step"])) or {}
+    step_url = str(
+        evidence.get("step_url") or evidence.get("url") or cited.get("url") or ""
+    ).strip()
+    ax = ax_text(evidence) or ax_text(cited)
+    if not step_url and not ax:
+        return False
+    return _screenshot_ok(_final_screenshot_url(run, evidence), loader)
 
 
 def _qualifying_claims(
@@ -934,6 +1198,29 @@ def _headline_gates(startup: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
+def _page_opened_gate(
+    runs: list[dict[str, Any]],
+    startup: dict[str, Any],
+    limit_s: float,
+) -> dict[str, Any]:
+    check = startup.get("page_open_check")
+    if not (isinstance(check, dict) and check.get("measured")):
+        check = assess_page_opened(runs, limit_s=limit_s)
+    opened = check.get("opened")
+    agents = check.get("agents")
+    return _gate(
+        "page_opened",
+        "Page opened on the assigned site",
+        f"{opened}/{agents} within {limit_s:.0f}s",
+        (
+            f"<= {limit_s:.0f}s from agent creation, URL host matches the assigned "
+            "site, accessibility tree present"
+        ),
+        bool(check.get("ok")),
+        str(check.get("detail") or check.get("reason") or ""),
+    )
+
+
 def _startup_gates(
     study: dict[str, Any],
     runs: list[dict[str, Any]],
@@ -963,12 +1250,7 @@ def _startup_gates(
     else:
         keys = {str(r.get("site_key") or "product") for r in runs}
         sites = max(len(keys), 1 + len(study.get("competitors") or []))
-    yeses = startup.get("yeses")
     elapsed = startup.get("elapsed_s")
-    missing = startup.get("missing_shot")
-    max_gap = startup.get("max_creation_to_shot_s")
-    slow = int(startup.get("slow_agents") or 0)
-    vision_nos = int(startup.get("vision_nos") or 0)
     status = str(startup.get("status") or study.get("status") or "")
     has_summary = bool(startup["has_summary"]) if "has_summary" in startup else bool(study.get("summary"))
 
@@ -1009,14 +1291,7 @@ def _startup_gates(
             f">= {min_sites}",
             sites >= min_sites,
         ),
-        _gate(
-            "vision_yes",
-            "First real screenshot is the product",
-            "not recorded" if yeses is None else f"{yeses}/{expected}",
-            f"{expected}/{expected} vision YES",
-            yeses is not None and int(yeses) >= expected and vision_nos == 0,
-            f"vision_nos={vision_nos}",
-        ),
+        _page_opened_gate(runs, startup, first_shot_s),
         _gate(
             "study_complete",
             "Study completed with a summary",
@@ -1037,20 +1312,6 @@ def _startup_gates(
                 "Confirmed maxima: saved-study wall 358s, measured e2e2 elapsed 378s, "
                 f"YouTube baseline {OBSERVED_STUDY_MAX_S:.0f}s."
             ),
-        ),
-        _gate(
-            "first_screenshot",
-            "Every agent has a first real screenshot",
-            "not recorded" if missing is None else f"missing={missing}",
-            "missing=0",
-            missing is not None and int(missing) == 0,
-        ),
-        _gate(
-            "first_screenshot_latency",
-            "Creation to first real screenshot",
-            "not recorded" if max_gap is None else f"max={max_gap}s slow={slow}",
-            f"<= {first_shot_s:.0f}s for every agent",
-            max_gap is not None and float(max_gap) <= first_shot_s and slow == 0,
         ),
     ]
     check = startup.get("first_action_check")
@@ -1117,8 +1378,8 @@ def _startup_gates(
                 ),
                 True,
                 (
-                    "Live poll did not record screenshot → click/type/scroll "
-                    "visible in the study."
+                    "Live poll did not record browser-session ready or page open "
+                    "→ click/type/scroll visible in the study."
                 ),
             )
         )
@@ -1454,14 +1715,14 @@ def evaluate_strict_gates(
                 "product_strength",
                 "Product strength from a run past the first screen",
                 f"{len(good_strengths)}/{len(strengths)}",
-                ">= 1 strength with agent, step, and a screenshot URL that loads",
+                ">= 1 strength with agent, step, AX or URL, and the final screenshot",
                 len(good_strengths) >= 1,
             ),
             _gate(
                 "product_weakness",
                 "Product weakness from a run past the first screen",
                 f"{len(good_weaknesses)}/{len(weaknesses)}",
-                ">= 1 weakness with agent, step, and a screenshot URL that loads",
+                ">= 1 weakness with agent, step, AX or URL, and the final screenshot",
                 len(good_weaknesses) >= 1,
             ),
             _gate(
