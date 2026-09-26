@@ -876,16 +876,16 @@ class A11yBoot:
                     self._handle_cv.notify_all()
                 self.snapshots["product"] = snap
                 self._publish_site("product", snap)
+                # The shared browser is display-only. Close it so the 24
+                # agent sessions fit in the project cap.
+                await _close_agent_session(handle.get("browser"), handle.get("bb"))
                 # Agents open their own browsers now. Do not wait for the
                 # competitor reads before the first click clock can start.
                 self.published.set()
                 break
             else:
                 print("[a11y] no live product page", flush=True)
-            extras = len([c for c in (self.study.competitors or []) if c])
-            if extras:
-                self._tasks.append(asyncio.create_task(self._fill_pool(extras, offset=1)))
-            await self._publish_rest()
+                self.published.set()
 
         self._tasks.append(asyncio.create_task(_boot()))
 
@@ -1163,6 +1163,7 @@ class A11yBoot:
                     self._handle_cv.notify_all()
                 self.snapshots[key] = snap
                 self._publish_site(key, snap)
+                await _close_agent_session(handle.get("browser"), handle.get("bb"))
                 return
             print(f"[a11y] no live page for {key}", flush=True)
 

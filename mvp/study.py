@@ -3123,36 +3123,27 @@ async def run_study(
                     agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
                     site = task.get("site_url") or study.url
                     if a11y_boot is not None:
-                        # The shared read is display only. Do not wait for a
-                        # click: this agent is what produces the first action.
-                        _wait_until = getattr(study, "budget_deadline", None) or (
-                            time.monotonic() + 30
-                        )
-                        while time.monotonic() < _wait_until:
-                            existing = study.live_sessions.get(agent_id) or {}
-                            trace = existing.get("trace") or []
-                            opened = bool(existing.get("page_open_at_ts")) or any(
-                                isinstance(step, dict) and int(step.get("step") or -1) == 0
-                                for step in trace
-                            )
-                            if opened:
-                                break
-                            await asyncio.sleep(0.05)
+                        # The shared read is display only. Start this agent
+                        # even when its row is still a placeholder.
                         sess = study.live_sessions.get(agent_id)
-                        trace = (sess or {}).get("trace") or []
-                        opened = bool(sess and (
-                            sess.get("page_open_at_ts")
-                            or any(
-                                isinstance(step, dict) and int(step.get("step") or -1) == 0
-                                for step in trace
-                            )
-                        ))
-                        if not opened:
-                            print(
-                                f"[{agent_id}] no shared page read before the study budget",
-                                flush=True,
-                            )
-                            return {"agent_id": agent_id, "skipped": True}
+                        if sess is None:
+                            sess = {
+                                "agent_id": agent_id,
+                                "persona_id": persona.get("id"),
+                                "persona_name": persona.get("name"),
+                                "persona_bio": persona.get("bio"),
+                                "task_id": task.get("id"),
+                                "task_title": task.get("title"),
+                                "task_prompt": task.get("prompt"),
+                                "site_key": str(task.get("site_key") or "product"),
+                                "site_url": site,
+                                "site_label": str(task.get("site_label") or "Product"),
+                                "status": "starting",
+                                "trace": [],
+                                "num_steps": 0,
+                                "live_thoughts": [],
+                            }
+                            study.live_sessions[agent_id] = sess
                     else:
                         sess = study.live_sessions.setdefault(
                             agent_id,
