@@ -1477,8 +1477,8 @@ async def _model_action(
         "Elements marked (selected) are already on: a selected drawing tool means the next action is drag, not another click. "
         "done as soon as the current page shows the finished outcome the task asked for "
         "(for example the typed text is already in the note, or the item now exists); do not redo work. "
-        "reason is a short phrase. friction is one sentence if something was confusing, else empty. "
-        "easy is one sentence naming something that was obvious, else empty."
+        "reason: at most 12 words. friction: at most 15 words if something was confusing, else empty. "
+        "easy: at most 15 words naming something that was obvious, else empty."
     )
     try:
         raw = await gemini_chat(
