@@ -516,6 +516,20 @@ def _redact(text: str, ident: dict[str, str]) -> str:
     return text.replace(pw, "<password>") if pw else text
 
 
+def _act_timeout_ms() -> int:
+    """How long one control may take to become actionable.
+
+    3s/2s/4s was tight for a React form rendering in a remote browser: 11 of
+    18 fills in the kolanut signup failed with TimeoutError, each leaving a
+    required field empty, so Next stayed disabled and the model re-read the
+    page and tried again until the signup budget ran out (0/10 accounts).
+    """
+    try:
+        return max(1000, int(float(os.environ.get("MVP_SIGNUP_ACT_TIMEOUT_MS", "10000") or "10000")))
+    except ValueError:
+        return 10000
+
+
 def _norm_option(text: str) -> str:
     """Option text for matching: dashes unified, spaces collapsed, lower case."""
     text = re.sub(r"[\u2010-\u2015\u2212]", "-", str(text or ""))
@@ -585,18 +599,25 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
             return f"typed {len(value)} chars into split boxes"
         try:
             # Type like a person: bot checks score instant fill() as automation.
-            await loc.click(timeout=3000)
-            await loc.fill("", timeout=2000)
-            await page.keyboard.type(value, delay=35 if len(value) < 60 else 5)
+            await loc.click(timeout=_act_timeout_ms())
+            await loc.fill("", timeout=_act_timeout_ms())
+            if len(value) > 40:
+                # One keystroke per character costs a round trip to the remote
+                # browser; insert long values at once after two real keystrokes
+                # so the field's own handlers still fire.
+                await page.keyboard.type(value[:2], delay=0)
+                await page.keyboard.insert_text(value[2:])
+            else:
+                await page.keyboard.type(value, delay=0)
         except Exception:
-            await loc.fill(value, timeout=4000)
+            await loc.fill(value, timeout=_act_timeout_ms())
         try:
-            got = await loc.input_value(timeout=1500)
+            got = await loc.input_value(timeout=3000)
             if got != value:
-                await loc.click(timeout=2000)
+                await loc.click(timeout=_act_timeout_ms())
                 await page.keyboard.press("Control+A")
                 await page.keyboard.press("Backspace")
-                await page.keyboard.type(value, delay=20)
+                await page.keyboard.type(value, delay=0)
         except Exception:
             pass
         field = name or el.get("placeholder") or el.get("field") or "field"
@@ -607,12 +628,12 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
             if el.get("checked"):
                 return f"already checked {name}"
             try:
-                await loc.check(timeout=3000, force=True)
+                await loc.check(timeout=_act_timeout_ms(), force=True)
             except Exception:
-                await loc.click(timeout=3000, force=True)
+                await loc.click(timeout=_act_timeout_ms(), force=True)
         except Exception:
             # hidden input: click its label
-            await page.locator(f"label:has([data-sis-i='{idx}'])").first.click(timeout=3000)
+            await page.locator(f"label:has([data-sis-i='{idx}'])").first.click(timeout=_act_timeout_ms())
         return f"check {name}"
     if kind == "select":
         try:
@@ -624,12 +645,12 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
             options = []
         pick = _match_option(value, options if isinstance(options, list) else [])
         if pick is not None:
-            await loc.select_option(index=pick, timeout=3000)
+            await loc.select_option(index=pick, timeout=_act_timeout_ms())
             return f"select {name} = {str(options[pick].get('text') or '')[:30]}"
         try:
-            await loc.select_option(label=value, timeout=3000)
+            await loc.select_option(label=value, timeout=_act_timeout_ms())
         except Exception:
-            await loc.select_option(value=value, timeout=3000)
+            await loc.select_option(value=value, timeout=_act_timeout_ms())
         return f"select {name} = {value[:30]}"
     if kind == "click":
         try:
@@ -650,9 +671,9 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
         except Exception:
             pass
         try:
-            await loc.click(timeout=4000)
+            await loc.click(timeout=_act_timeout_ms())
         except Exception:
-            await loc.click(timeout=3000, force=True)
+            await loc.click(timeout=_act_timeout_ms(), force=True)
         return f"click {el.get('role')} {name!r}"
     if kind == "press":
         await page.keyboard.press(value or "Enter")
