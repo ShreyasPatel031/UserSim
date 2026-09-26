@@ -1,0 +1,118 @@
+{
+  "branch": "pr39",
+  "nonce_base": "39b",
+  "results": [
+    {
+      "site": "trello",
+      "url": "https://trello.com/",
+      "ok": false,
+      "reason": "captcha_unsolved",
+      "detail": "The CAPTCHA on the Trello signup page is repeatedly blocking the registration process, even after multiple attempts to solve it. The 'Sign up' button remains disabled.",
+      "elapsed_s": 384.8,
+      "alias_tag": "trello39b0",
+      "backend": "browserbase",
+      "bb_session": "https://www.browserbase.com/sessions/bdeea449-c804-4d4a-958d-a96a1302a9ec",
+      "running_signup_before": 0,
+      "running_signup_after": 0,
+      "released_after": {
+        "found": 0,
+        "released": 0,
+        "failed": [],
+        "skipped": [],
+        "session_ids": [],
+        "owner": "signup",
+        "study_id": null
+      }
+    },
+    {
+      "site": "hashnode",
+      "url": "https://hashnode.com/",
+      "ok": true,
+      "reason": "signed_up",
+      "detail": "",
+      "elapsed_s": 346.8,
+      "alias_tag": "hashnode39b1",
+      "backend": "browserbase",
+      "bb_session": "https://www.browserbase.com/sessions/6a090edd-4e07-491b-a1e0-2911bc3ece90",
+      "running_signup_before": 0,
+      "running_signup_after": 0,
+      "released_after": {
+        "found": 0,
+        "released": 0,
+        "failed": [],
+        "skipped": [],
+        "session_ids": [],
+        "owner": "signup",
+        "study_id": null
+      }
+    },
+    {
+      "site": "stackblitz",
+      "url": "https://stackblitz.com/",
+      "ok": false,
+      "reason": "unknown",
+      "detail": "The provided email and username are already registered, and I am not allowed to invent new credentials.",
+      "elapsed_s": 97.9,
+      "alias_tag": "stackblitz39b2",
+      "backend": "browserbase",
+      "bb_session": "https://www.browserbase.com/sessions/e96ccfff-a89c-4d4f-bf99-21501c7a438b",
+      "running_signup_before": 0,
+      "running_signup_after": 0,
+      "released_after": {
+        "found": 0,
+        "released": 0,
+        "failed": [],
+        "skipped": [],
+        "session_ids": [],
+        "owner": "signup",
+        "study_id": null
+      }
+    },
+    {
+      "site": "wix",
+      "url": "https://www.wix.com/",
+      "ok": false,
+      "reason": "unknown",
+      "detail": "The 'Sign Up' button is not submitting the form even after entering credentials and solving the CAPTCHA multiple times.",
+      "elapsed_s": 300.3,
+      "alias_tag": "wix39b3",
+      "backend": "browserbase",
+      "bb_session": "https://www.browserbase.com/sessions/8cb0be1b-a357-4a7c-a801-209341983ae1",
+      "running_signup_before": 0,
+      "running_signup_after": 0,
+      "released_after": {
+        "found": 0,
+        "released": 0,
+        "failed": [],
+        "skipped": [],
+        "session_ids": [],
+        "owner": "signup",
+        "study_id": null
+      }
+    },
+    {
+      "site": "codepen",
+      "url": "https://codepen.io/",
+      "ok": true,
+      "reason": "signed_up",
+      "detail": "",
+      "elapsed_s": 90.0,
+      "alias_tag": "codepen39b4",
+      "backend": "browserbase",
+      "bb_session": "https://www.browserbase.com/sessions/dbd67b06-1e38-4fe0-80be-79aeb40c9892",
+      "running_signup_before": 0,
+      "running_signup_after": 0,
+      "released_after": {
+        "found": 0,
+        "released": 0,
+        "failed": [],
+        "skipped": [],
+        "session_ids": [],
+        "owner": "signup",
+        "study_id": null
+      }
+    }
+  ],
+  "ok_count": 2,
+  "n": 5
+}

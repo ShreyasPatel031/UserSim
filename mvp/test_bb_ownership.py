@@ -20,6 +20,20 @@ class SessionMetadataTests(unittest.TestCase):
             {"owner": "signup", "study_id": "s1"},
         )
 
+    def test_study_owner_honors_testfix(self) -> None:
+        from capability.browserbase_client import study_session_owner
+
+        with patch.dict("os.environ", {"MVP_BB_OWNER": "testfix"}, clear=False):
+            self.assertEqual(study_session_owner(), "testfix")
+        with patch.dict("os.environ", {"MVP_BB_OWNER": "integration"}, clear=False):
+            self.assertEqual(study_session_owner(), "integration")
+        with patch.dict("os.environ", {"MVP_BB_OWNER": "gates"}, clear=False):
+            self.assertEqual(study_session_owner(), "gates")
+        with patch.dict("os.environ", {"MVP_BB_OWNER": "taskfix"}, clear=False):
+            self.assertEqual(study_session_owner(), "taskfix")
+        with patch.dict("os.environ", {"MVP_BB_OWNER": ""}, clear=False):
+            self.assertEqual(study_session_owner(), "e2e")
+
 
 class KillFilterTests(unittest.TestCase):
     def _fake_sessions(self) -> list[MagicMock]:
@@ -110,6 +124,39 @@ class KillFilterTests(unittest.TestCase):
             kill_all_browserbase(owner="e2e", study_id="study-a")
 
         self.assertEqual(released, ["e2e-1"])
+
+    def test_kill_now_abandons_before_release_and_keeps_signup(self) -> None:
+        from mvp.kill_switch import kill_now
+
+        order: list[str] = []
+
+        def _abandon(*, study_id: str | None = None) -> dict:
+            order.append(f"abandon:{study_id}")
+            return {"abandoned": [study_id or ""]}
+
+        def _release(*, owner: str | None = "e2e", study_id: str | None = None) -> dict:
+            order.append(f"release:{owner}:{study_id}")
+            return {"released": 0, "owner": owner, "study_id": study_id}
+
+        with (
+            patch.dict("os.environ", {"MVP_BB_OWNER": "integration"}),
+            patch("mvp.kill_switch.abandon_local_studies", side_effect=_abandon),
+            patch("mvp.kill_switch.kill_all_browserbase", side_effect=_release),
+            patch("mvp.kill_switch.runtime_status", return_value={}),
+        ):
+            result = kill_now(study_id="study-a")
+
+        self.assertEqual(
+            order,
+            [
+                "abandon:study-a",
+                "release:e2e:study-a",
+                "release:integration:study-a",
+            ],
+        )
+        self.assertNotIn("signup", order)
+        self.assertIn("integration", result["browserbase"])
+        self.assertIn("e2e", result["browserbase"])
 
 
 if __name__ == "__main__":

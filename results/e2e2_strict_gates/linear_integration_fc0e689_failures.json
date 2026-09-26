@@ -1,0 +1,76 @@
+{
+  "study_id": "dffe751e-f6dc-453b-a747-d56728538243",
+  "product_url": "https://linear.app",
+  "abort": "product",
+  "reason": "FAIL page_opened: 22/24 agents opened the assigned site within 5s (opened after 5s=2)",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 2,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "act",
+      "n": 1
+    },
+    {
+      "phase": "done",
+      "n": 1
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t1__p1__product",
+      "site_key": "product",
+      "task": "Find how to create a new issue",
+      "type": "product",
+      "judge_reason": "t1__p1__product phase=done error= last_action=view /docs/creating-issues",
+      "phase": "done",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=dffe751e-f6dc-453b-a747-d56728538243&agent=t1__p1__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 1007.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/dffe751e-f6dc-453b-a747-d56728538243/agents/t1__p1__product/screenshots/final.png",
+      "final_url": "https://linear.app/docs/creating-issues",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p1__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nFind how to create a new issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "t1__p1__competitor_2 phase=act error= last_action=click Log in",
+      "phase": "act",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=dffe751e-f6dc-453b-a747-d56728538243&agent=t1__p1__competitor_2&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 797.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/dffe751e-f6dc-453b-a747-d56728538243/agents/t1__p1__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 2
+    }
+  ]
+}

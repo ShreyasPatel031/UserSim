@@ -1,0 +1,65 @@
+{
+  "pass": false,
+  "startup_alone_is_not_a_pass": true,
+  "graded_at": "2026-09-26T05:28:00Z",
+  "heads": {
+    "cursor/product-agent-full-model-76fc": {
+      "sha": "9470be5",
+      "note": "Logs browser-agent phase timings. The live path still aborted the same way.",
+      "linear": {
+        "study_id": "f27bc4b7-196b-4c24-b533-734db02ecc35",
+        "pass": false,
+        "elapsed_s": 36.1,
+        "time_to_first_value": "4.127s PASS",
+        "total_time": "not ready FAIL",
+        "time_to_first_action": "median=2.309s max=24.352s n=24/24 FAIL",
+        "ttfa_note": "7 Trello competitor_2 agents at 24.352s from browser_ready_at_ts. t1__p1__competitor_2 recorded 0.0s.",
+        "page_opened": "23/24 FAIL slow=t1__p1__product",
+        "product_task_completion": "0/8",
+        "final_screenshot": "missing field final_screenshot_url"
+      },
+      "excalidraw": {
+        "study_id": "93087bdd-2b00-434c-8d8b-efe422511a99",
+        "pass": false,
+        "elapsed_s": 30.9,
+        "time_to_first_value": "3.308s PASS",
+        "total_time": "not ready FAIL",
+        "time_to_first_action": "median=19.872s max=19.873s n=24/24 FAIL",
+        "ttfa_note": "16 of 24 agents are about 19.87s from browser_ready_at_ts. Median fails the 5s bar as well as the max.",
+        "page_opened": "22/24 FAIL slow=t1__p1__product and t1__p1__competitor_1",
+        "product_task_completion": "0/8",
+        "final_screenshot": "missing field final_screenshot_url"
+      }
+    },
+    "cursor/tonight-integration": {
+      "sha": "269058b",
+      "note": "feedback-json merge only. Same agent tree as graded fc0e689."
+    }
+  },
+  "bugs": [
+    {
+      "id": 1,
+      "fact": "Phase-timing logs did not change the clock. Linear f27bc4b7 Trello competitor_2 max 24.352s from browser_ready_at_ts (7 agents; t1__p1__competitor_2 is 0.0s). Excalidraw 93087bdd median 19.872s and max 19.873s. 16 agents are about 19.87s."
+    },
+    {
+      "id": 2,
+      "fact": "Page open within 5s failed. Linear 23/24 slow t1__p1__product. Excalidraw 22/24 slow t1__p1__product and t1__p1__competitor_1. Abort leaves total_time not ready and final_screenshot_url missing."
+    },
+    {
+      "id": 3,
+      "fact": "Product is 0/8. No final PNG, so no Gemini YES."
+    },
+    {
+      "id": 4,
+      "fact": "Strength and weakness are empty. A pass needs one of each from a run past the first screen with agent, step, AX or URL, and the final screenshot."
+    },
+    {
+      "id": 5,
+      "fact": "Do not set created_at_ts, page_open_at_ts, and first_action_at_ts to one poll instant. The harness clocks from browser_ready_at_ts when those three match."
+    },
+    {
+      "id": 6,
+      "fact": "New-issue stuck loop from study 6e2acd43 stays open until product is >=4/8 Gemini YES on a finished report."
+    }
+  ]
+}

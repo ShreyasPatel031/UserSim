@@ -86,6 +86,18 @@ _AGENT_SEMAPHORE = asyncio.Semaphore(
 _BROWSER_SEMAPHORE = asyncio.Semaphore(
     int(os.environ.get("MVP_BROWSER_CONCURRENCY", "25"))
 )
+# Caps simultaneous live sessions. Navigations are capped tighter inside
+# run_browser_agent. Queue here, before the per-agent wall clock.
+_LLM_RUN_SEMAPHORE: asyncio.Semaphore | None = None
+
+
+def _llm_run_semaphore() -> asyncio.Semaphore:
+    global _LLM_RUN_SEMAPHORE
+    if _LLM_RUN_SEMAPHORE is None:
+        from mvp.browser_agent import llm_run_concurrency
+
+        _LLM_RUN_SEMAPHORE = asyncio.Semaphore(llm_run_concurrency())
+    return _LLM_RUN_SEMAPHORE
 
 
 def _now() -> str:
@@ -231,7 +243,13 @@ def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> No
 
 def _ordered_live_sessions(study: StudyState) -> list[dict[str, Any]]:
     order = {t.get("id"): i for i, t in enumerate(study.tasks)}
-    sessions = [dict(s) for s in study.live_sessions.values()]
+    # Hide rows whose own page has not committed. A shared-read placeholder
+    # has no created_at_ts, and the harness would abort that missing clock.
+    sessions = [
+        dict(s)
+        for s in study.live_sessions.values()
+        if isinstance(s, dict) and s.get("created_at_ts")
+    ]
     sessions.sort(key=lambda s: order.get(s.get("agent_id"), 99))
     return sessions
 
@@ -246,9 +264,9 @@ async def _prefetch_browser_sessions(
     if n <= 0:
         return []
     from capability.browserbase_client import (
-        BB_OWNER_E2E,
         create_session,
         ensure_browserbase_full_parallel,
+        study_session_owner,
     )
 
     ensure_browserbase_full_parallel()
@@ -262,7 +280,7 @@ async def _prefetch_browser_sessions(
                     create_session,
                     proxies=False,
                     keep_alive=True,
-                    owner=BB_OWNER_E2E,
+                    owner=study_session_owner(),
                     study_id=study_id,
                 ),
                 timeout=timeout_s,
@@ -318,6 +336,10 @@ STUDY_TASKS: dict[str, asyncio.Task] = {}
 
 
 def study_was_killed(study: StudyState) -> bool:
+    # Emergency escape hatch: competing local servers / GCS abandon-all races
+    # were falsely setting kill_requested ("Killed by operator" with no click).
+    if os.environ.get("MVP_DISABLE_KILL", "").lower() in {"1", "true", "yes"}:
+        return False
     return bool(getattr(study, "kill_requested", False))
 
 
@@ -450,7 +472,14 @@ Critical rules:
 - Every task must use a persona_id from the list above.
 - Every task must target something that actually appears on the page (a real nav item,
   section, CTA, or feature name). Quote or reference that element in the task prompt.
+- A task is not complete when the user describes the landing page. Each prompt must
+  require opening a specific section, searching, or using a control, and must say
+  what "done" looks like (a heading, a result, or a page that is not the homepage).
 - If the page has no pricing page, do not create a "find the pricing page" task.
+- Tasks may require an account. Prefer real product work when the page is a
+  product: create an issue, make a board, export a file. Do not rewrite those
+  into "find how" or docs-only tasks. A public page (pricing, docs, changelog)
+  is still a valid task when that is what the persona would do.
 - Do not invent new personas."""
     raw = await _llm_chat(
         [
@@ -522,7 +551,10 @@ async def generate_plan(
 
 async def _duckduckgo_search(query: str, *, limit: int = 8) -> list[dict[str, str]]:
     """Best-effort public web search for competitor discovery (no API key)."""
+    from html import unescape
     from urllib.parse import quote_plus
+
+    from mvp.competitor_urls import unwrap_search_url
 
     results: list[dict[str, str]] = []
     url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
@@ -541,14 +573,14 @@ async def _duckduckgo_search(query: str, *, limit: int = 8) -> list[dict[str, st
     except Exception:
         return results
 
-    # DuckDuckGo HTML result links look like:
-    # <a rel="nofollow" class="result__a" href="https://...">Title</a>
+    # DuckDuckGo HTML result links are protocol-relative redirects:
+    # href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fmiro.com%2F&rut=..."
     for match in re.finditer(
         r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
         html,
         flags=re.I | re.S,
     ):
-        href = match.group(1).strip()
+        href = unwrap_search_url(unescape(match.group(1).strip()))
         title = re.sub(r"<[^>]+>", "", match.group(2)).strip()
         if not href.startswith("http"):
             continue
@@ -558,9 +590,23 @@ async def _duckduckgo_search(query: str, *, limit: int = 8) -> list[dict[str, st
     return results
 
 
-async def invent_competitors(url: str, site_summary: str, page_text: str) -> list[str]:
-    """Find 2 real competitor homepage URLs via web search + LLM selection."""
+async def invent_competitors(
+    url: str,
+    site_summary: str,
+    page_text: str,
+    *,
+    exclude_hosts: set[str] | None = None,
+    want: int = 2,
+    dropped_out: list[tuple[str, str]] | None = None,
+) -> list[str]:
+    """Find live competitor homepages via web search, then drop dead or off-site URLs."""
     from urllib.parse import urlparse
+
+    from mvp.competitor_urls import (
+        filter_live_competitor_urls,
+        looks_like_product_page,
+        registrable_host,
+    )
 
     host = (urlparse(url).hostname or "").replace("www.", "")
     product_hint = (site_summary or host or url).strip()[:120]
@@ -589,72 +635,189 @@ What it is: {site_summary}
 Page excerpt:
 {page_text[:2500]}
 
-Live web search results (use these — do not invent domains):
+Web search results (often review articles — name the products they discuss, not the article URL):
 {json.dumps(search_hits[:12], indent=2)}
 
 Return JSON only:
 {{"competitors": [{{"name": "...", "url": "https://..."}}, {{"name": "...", "url": "https://..."}}]}}
 
 Rules:
-- Exactly 2 direct product competitors a real user would also evaluate.
-- Prefer URLs from the search results above. Only use other well-known live public sites if search is empty.
-- Public marketing homepages only (https), no app login URLs.
-- Never invent fake domains.
+- Return 4 direct product competitors a real user would also evaluate, best first. We keep the ones that are live.
+- Each url must be that product's own public homepage (https://example.com/), never a review, blog, or comparison article.
+- The product must be operating today. Never return a shut-down, parked, or redirected domain.
+- Never invent fake domains. Never repeat the product under study.
 """
     raw = await _llm_chat(
         [
             {
                 "role": "system",
                 "content": (
-                    "You output valid JSON only. Prefer competitor URLs from the provided "
-                    "web search results. Never invent fake domains."
+                    "You output valid JSON only. Return real competitor homepages "
+                    "for products that are operating today. Never invent fake domains."
                 ),
             },
             {"role": "user", "content": prompt},
         ]
     )
     data = _extract_json(raw)
-    urls: list[str] = []
-    for row in data.get("competitors") or []:
-        u = (row.get("url") if isinstance(row, dict) else str(row) or "").strip()
-        if u.startswith("http") and u.rstrip("/") != url.rstrip("/"):
-            urls.append(u)
-    if not urls and search_hits:
-        # Fallback: first two distinct search result hosts.
-        for hit in search_hits:
-            u = hit.get("url") or ""
-            if u.startswith("http") and u.rstrip("/") != url.rstrip("/"):
-                urls.append(u)
-            if len(urls) >= 2:
-                break
-    # Still short? Ask the model for well-known public alternatives without search.
-    if len(urls) < 2:
+    candidates: list[str] = []
+    names: list[str] = []
+
+    def _push(raw_url: str) -> None:
+        u = (raw_url or "").strip()
+        if not u.startswith("http"):
+            return
+        if registrable_host(u) == registrable_host(url):
+            return
+        if u not in candidates:
+            candidates.append(u)
+
+    def _take_rows(rows: object) -> None:
+        for row in rows or []:
+            if isinstance(row, dict):
+                name = str(row.get("name") or "").strip()
+                if name and name not in names:
+                    names.append(name)
+                _push(str(row.get("url") or ""))
+            else:
+                _push(str(row or ""))
+
+    _take_rows(data.get("competitors"))
+    # Product-shaped search hits next, so a dead model guess can be replaced.
+    for hit in search_hits:
+        hit_url = hit.get("url") or ""
+        if looks_like_product_page(hit_url):
+            _push(hit_url)
+    blocked = set(exclude_hosts or set())
+    live, dropped = await filter_live_competitor_urls(
+        candidates,
+        product_url=url,
+        exclude_hosts=blocked,
+        limit=max(1, want),
+    )
+    blocked |= {registrable_host(u) for u, _reason in dropped if registrable_host(u)}
+    blocked |= {registrable_host(u) for u in live if registrable_host(u)}
+    # A dead guess (Height.app) or a one-URL model answer must not stop the pair.
+    if len(live) < want:
         try:
             raw2 = await _llm_chat(
                 [
                     {
                         "role": "system",
-                        "content": "JSON only. Return real public competitor homepage URLs.",
+                        "content": (
+                            "JSON only. Return real public competitor homepage URLs "
+                            "for products that are operating today. Never return a "
+                            "shut-down or parked domain. Do not repeat rejected hosts."
+                        ),
                     },
                     {
                         "role": "user",
                         "content": (
                             f"Product: {url}\nSummary: {site_summary}\n"
-                            f"Need {2 - len(urls)} more competitor homepage URL(s). "
-                            'Return {"competitors":[{"name":"...","url":"https://..."}]}'
+                            f"Search titles: {json.dumps([h.get('title') for h in search_hits[:8]])}\n"
+                            f"Already rejected or in use: {', '.join(sorted(h for h in blocked if h)) or 'none'}\n"
+                            f"Need {want - len(live)} more DIFFERENT live competitor homepage URL(s). "
+                            "Return 3 options, best first. "
+                            'JSON: {"competitors":[{"name":"...","url":"https://..."}]}'
                         ),
                     },
                 ]
             )
+            extra: list[str] = []
             for row in (_extract_json(raw2).get("competitors") or []):
-                u = (row.get("url") if isinstance(row, dict) else str(row) or "").strip()
-                if u.startswith("http") and u.rstrip("/") != url.rstrip("/") and u not in urls:
-                    urls.append(u)
-                if len(urls) >= 2:
-                    break
-        except Exception:
-            pass
-    return urls[:2]
+                if isinstance(row, dict):
+                    name = str(row.get("name") or "").strip()
+                    if name and name not in names:
+                        names.append(name)
+                    u = str(row.get("url") or "").strip()
+                else:
+                    u = str(row or "").strip()
+                if u.startswith("http") and u not in candidates and u not in extra:
+                    extra.append(u)
+            more, more_dropped = await filter_live_competitor_urls(
+                extra,
+                product_url=url,
+                exclude_hosts=blocked,
+                limit=want - len(live),
+            )
+            dropped.extend(more_dropped)
+            live.extend(more)
+            blocked |= {registrable_host(u) for u in more if registrable_host(u)}
+            blocked |= {registrable_host(u) for u, _reason in more_dropped if registrable_host(u)}
+        except Exception as exc:  # noqa: BLE001
+            print(f"competitor second pass failed: {exc!r}", flush=True)
+    # Named products whose guessed URL died: look up that name's homepage.
+    if len(live) < want and names:
+        lookups: list[str] = []
+        for name in names:
+            if len(live) + len(lookups) >= want + 2:
+                break
+            try:
+                for hit in await _duckduckgo_search(f"{name} official website", limit=4):
+                    hit_url = hit.get("url") or ""
+                    path = (urlparse(hit_url).path or "/").rstrip("/") or "/"
+                    if path == "/" and looks_like_product_page(hit_url):
+                        lookups.append(hit_url)
+                        break
+            except Exception:
+                continue
+        if lookups:
+            more, more_dropped = await filter_live_competitor_urls(
+                lookups,
+                product_url=url,
+                exclude_hosts=blocked,
+                limit=want - len(live),
+            )
+            dropped.extend(more_dropped)
+            live.extend(more)
+    if dropped_out is not None:
+        dropped_out.extend(dropped)
+    return live[:want]
+
+
+async def resolve_study_competitors(
+    seeds: list[str],
+    *,
+    product_url: str,
+    site_summary: str,
+    page_text: str,
+    limit: int = 2,
+) -> tuple[list[str], list[tuple[str, str]]]:
+    """Keep live seeded rivals and replace defunct ones before tasks are written."""
+    from mvp.competitor_urls import filter_live_competitor_urls, registrable_host
+
+    live, dropped = await filter_live_competitor_urls(
+        list(seeds or []),
+        product_url=product_url,
+        limit=limit,
+    )
+    if len(live) >= limit:
+        return live[:limit], dropped
+    exclude = {registrable_host(u) for u in live}
+    exclude.add(registrable_host(product_url))
+    invented_drops: list[tuple[str, str]] = []
+    try:
+        invented = await invent_competitors(
+            product_url,
+            site_summary,
+            page_text,
+            exclude_hosts=exclude,
+            want=limit,
+            dropped_out=invented_drops,
+        )
+    except Exception:
+        invented = []
+    dropped.extend(invented_drops)
+    used = set(exclude)
+    for url in invented:
+        host = registrable_host(url)
+        if not host or host in used:
+            continue
+        live.append(url)
+        used.add(host)
+        if len(live) >= limit:
+            break
+    return live[:limit], dropped
 
 
 def _site_pairs(product_url: str, competitors: list[str]) -> list[tuple[str, str]]:
@@ -687,11 +850,10 @@ def expand_tasks_for_sites(
             title = task.get("title") or "Task"
             if site_key != "product":
                 clone["title"] = f"{title} (vs {site_url})"
-                prompt = str(task.get("prompt") or title)
-                clone["prompt"] = (
-                    f"{prompt}\n\n"
-                    f"You are evaluating the competitor site {site_url} only. "
-                    f"Stay on that site — do not open the original product or other rivals."
+                from mvp.competitor_urls import competitor_task_prompt
+
+                clone["prompt"] = competitor_task_prompt(
+                    str(task.get("prompt") or title), site_url
                 )
             expanded.append(clone)
     return expanded
@@ -821,11 +983,9 @@ def expand_full_matrix(
                 prompt = str(task.get("prompt") or title)
                 if site_key != "product":
                     clone["title"] = f"{title} (vs {site_url})"
-                    clone["prompt"] = (
-                        f"{prompt}\n\n"
-                        f"You are evaluating the competitor site {site_url} only. "
-                        f"Stay on that site — do not open the original product or other rivals."
-                    )
+                    from mvp.competitor_urls import competitor_task_prompt
+
+                    clone["prompt"] = competitor_task_prompt(prompt, site_url)
                 else:
                     clone["title"] = title
                     clone["prompt"] = prompt
@@ -996,14 +1156,34 @@ async def synthesize_summary(
     site_summary: str,
     agent_results: list[dict[str, Any]],
 ) -> dict[str, Any]:
+    from mvp.competitor_urls import (
+        product_insight_results,
+        run_issue_lines,
+        scrub_product_summary,
+    )
+
+    issues = [
+        r.get("run_issue")
+        for r in agent_results or []
+        if isinstance(r, dict) and r.get("exclude_from_insights") and isinstance(r.get("run_issue"), dict)
+    ]
+    # Re-classify so fleet workers that skip annotate still exclude bad runs.
+    insight_results = product_insight_results(agent_results)
+    if not issues:
+        issues = [
+            r.get("run_issue")
+            for r in agent_results or []
+            if isinstance(r, dict) and isinstance(r.get("run_issue"), dict)
+        ]
+    issue_lines = run_issue_lines([i for i in issues if isinstance(i, dict)])
     prompt = f"""Synthesize a product research report from parallel simulated user sessions.
 
 Site: {url}
 Segment: {segment}
 Site summary: {site_summary}
 
-Agent session results:
-{json.dumps(_slim_results(agent_results), indent=2)[:14000]}
+Agent session results (product evidence only — navigation and infrastructure failures were removed):
+{json.dumps(_slim_results(insight_results), indent=2)[:14000]}
 
 Return JSON only:
 {{
@@ -1016,62 +1196,102 @@ Return JSON only:
   ],
   "segment_fit_score": 1-10,
   "segment_fit_rationale": "2 sentences"
-}}"""
+}}
+
+Rules:
+- Report only what these sessions show about the product at {url} and its live competitors.
+- Never describe a wrong website, a competitor mix-up, a failed navigation, or a harness/infrastructure error as product friction, a weakness, or a user insight.
+- If a session is missing, do not infer why."""
     raw = await _llm_chat(
         [
-            {"role": "system", "content": "You are a senior UX researcher. JSON only."},
+            {
+                "role": "system",
+                "content": (
+                    "You are a senior UX researcher. JSON only. "
+                    "Navigation and infrastructure failures are not product insights."
+                ),
+            },
             {"role": "user", "content": prompt},
         ],
         temperature=0.3,
     )
-    return _extract_json(raw)
+    summary = scrub_product_summary(_extract_json(raw))
+    summary["run_issues"] = issue_lines
+    return summary
 
 
 def _summary_from_agent_results(agent_results: list[dict[str, Any]]) -> dict[str, Any]:
     """Deterministic fallback when LLM synthesis is unavailable."""
-    if not agent_results:
+    from mvp.competitor_urls import (
+        product_insight_results,
+        run_issue_lines,
+        scrub_product_summary,
+    )
+
+    issues = run_issue_lines(
+        [
+            r.get("run_issue")
+            for r in (agent_results or [])
+            if isinstance(r, dict) and isinstance(r.get("run_issue"), dict)
+        ]
+    )
+    # annotate if the caller has not yet, then ignore harness failures.
+    insight_results = product_insight_results(agent_results)
+    if not issues:
+        issues = run_issue_lines(
+            [
+                r.get("run_issue")
+                for r in (agent_results or [])
+                if isinstance(r, dict) and isinstance(r.get("run_issue"), dict)
+            ]
+        )
+    if not insight_results:
         return {
-            "headline": "Study finished with no agent results",
+            "headline": "Study finished with no product sessions",
             "top_friction": [],
             "top_strengths": [],
             "conversion_outlook": "",
             "recommendations": [],
             "segment_fit_score": 0,
             "segment_fit_rationale": "",
+            "run_issues": issues,
         }
     friction: list[str] = []
     strengths: list[str] = []
-    for r in agent_results:
+    for r in insight_results:
         for item in r.get("friction_points") or []:
             if item and item not in friction:
                 friction.append(str(item))
         for item in r.get("what_was_easy") or []:
             if item and item not in strengths:
                 strengths.append(str(item))
-    first = agent_results[0]
+    first = insight_results[0]
     converts = sum(
         1
-        for r in agent_results
+        for r in insight_results
         if str(r.get("would_convert") or "").lower() in {"yes", "true", "likely"}
     )
-    score = max(1, min(10, round(10 * converts / max(1, len(agent_results)))))
-    return {
-        "headline": (first.get("quote") or first.get("product_feedback") or "Study complete")[:200],
-        "top_friction": friction[:5],
-        "top_strengths": strengths[:5],
-        "conversion_outlook": (
-            f"{converts}/{len(agent_results)} simulated users said they would convert."
-        ),
-        "recommendations": [
-            {
-                "priority": "medium",
-                "action": "Review session recaps for the highest-friction steps",
-                "rationale": "Fallback summary — LLM synthesis was unavailable.",
-            }
-        ],
-        "segment_fit_score": score,
-        "segment_fit_rationale": "Score derived from would-convert answers across sessions.",
-    }
+    score = max(1, min(10, round(10 * converts / max(1, len(insight_results)))))
+    return scrub_product_summary(
+        {
+            "headline": (first.get("quote") or first.get("product_feedback") or "Study complete")[:200],
+            "top_friction": friction[:5],
+            "top_strengths": strengths[:5],
+            "conversion_outlook": (
+                f"{converts}/{len(insight_results)} simulated users said they would convert."
+            ),
+            "recommendations": [
+                {
+                    "priority": "medium",
+                    "action": "Review session recaps for the highest-friction steps",
+                    "rationale": "Fallback summary — LLM synthesis was unavailable.",
+                }
+            ],
+            "segment_fit_score": score,
+            "segment_fit_rationale": "Score derived from would-convert answers across sessions.",
+            "run_issues": issues,
+        }
+    )
 
 
 async def run_study(
@@ -1101,6 +1321,12 @@ async def run_study(
 
     try:
         raise_if_killed(study)
+        from mvp.a11y_agent import study_budget_s
+
+        study.budget_s = study_budget_s()
+        # One clock for every agent. Measured 24-agent Linear maximum is 128s.
+        study.budget_deadline = time.monotonic() + study.budget_s
+        log_activity(study, "phase", f"Study budget {int(study.budget_s)}s")
         log_activity(study, "phase", "Study queued")
         touch("Understanding context of product", "running")
         log_activity(study, "fetch", f"Understanding context of {study.url}")
@@ -1124,18 +1350,40 @@ async def run_study(
                 return USE_LIVE_BROWSER and _browserbase_configured()
             return _browserbase_configured()
 
-        if _should_warm_browserbase():
+        def _schedule_competitor_warms() -> None:
+            return
+
+        a11y_boot: Any = None
+        if (
+            _should_warm_browserbase()
+            and os.environ.get("MVP_A11Y_LOOP", "1").lower() not in {"0", "false", "no"}
+        ):
+            from mvp.a11y_agent import A11yBoot
+
+            # One shared accessibility read, 24 browsers in parallel. No
+            # per-agent screenshot warm and no 8-wide action queue.
+            a11y_boot = A11yBoot(study, on_update)
+            a11y_boot.install_fast_plan()
+            asyncio.create_task(a11y_boot.start())
+            log_activity(
+                study,
+                "browser",
+                "Shared page read started — agents decide the first move from it",
+            )
+        elif _should_warm_browserbase():
             from mvp.browser_agent import warm_opening_session
 
             # Free OUR zombie Browserbase sessions from abandoned studies so
             # create_session doesn't hang on a leaked local slot / 429.
             # Never touch Sign Up (owner=signup) or untagged foreign sessions.
             try:
-                from capability.browserbase_client import BB_OWNER_E2E, reset_local_slots
+                from capability.browserbase_client import reset_local_slots, study_session_owner
                 from mvp.kill_switch import kill_all_browserbase
 
                 released = await asyncio.wait_for(
-                    asyncio.to_thread(kill_all_browserbase, owner=BB_OWNER_E2E),
+                    asyncio.to_thread(
+                        kill_all_browserbase, owner=study_session_owner()
+                    ),
                     timeout=12,
                 )
                 reset_local_slots()
@@ -1143,25 +1391,46 @@ async def run_study(
             except Exception as rel_exc:  # noqa: BLE001
                 print(f"pre-study browserbase release skipped: {rel_exc!r}", flush=True)
 
+            async def _warm_after(
+                *, key: str, url: str, delay_s: float
+            ) -> dict[str, Any] | None:
+                # Stagger session creates so product + rivals are not one burst.
+                if delay_s > 0:
+                    await asyncio.sleep(delay_s)
+                return await warm_opening_session(study_id=f"{study.id}_{key}", url=url)
+
             warm_task = asyncio.create_task(
-                warm_opening_session(study_id=study.id, url=study.url)
+                _warm_after(key="product", url=study.url, delay_s=0.0)
             )
             warm_site_tasks["product"] = warm_task
-            # Warm competitors too — under 24-way load their own opening frames
-            # often stay on logo-on-black splash and never get a flash-lite YES.
-            for i, comp in enumerate((study.competitors or [])[:4]):
-                if not comp:
-                    continue
-                key = f"competitor_{i+1}"
-                warm_site_tasks[key] = asyncio.create_task(
-                    warm_opening_session(
-                        study_id=f"{study.id}_{key}", url=str(comp)
+
+            def _schedule_competitor_warms() -> None:
+                # Only after URLs are probed. A dead host must not take a slot,
+                # and a later replacement must not inherit the old session.
+                # ~0.6s apart: a thundering herd 429s the shared Browserbase project.
+                for i, comp in enumerate((study.competitors or [])[:4]):
+                    if not comp:
+                        continue
+                    key = f"competitor_{i+1}"
+                    if key in warm_site_tasks:
+                        continue
+                    warm_site_tasks[key] = asyncio.create_task(
+                        _warm_after(
+                            key=key,
+                            url=str(comp),
+                            delay_s=0.55 * (i + 1),
+                        )
                     )
-                )
+                    log_activity(
+                        study,
+                        "browser",
+                        f"Warming competitor screenshot for {comp}",
+                    )
+
             log_activity(
                 study,
                 "browser",
-                f"Warming first screenshots for {1+len(study.competitors or [])} sites during brief",
+                "Warming first screenshot for the product during brief",
             )
             # Prewarm Vertex ADC so agent.run isn't blocked on first credential load.
             try:
@@ -1171,7 +1440,17 @@ async def run_study(
             except Exception:
                 pass
 
-        access = await fetch_page_access(study.url)
+        if a11y_boot is not None:
+            from mvp.page_access import PageAccessResult
+
+            access = PageAccessResult(
+                text="",
+                final_url=study.url,
+                title="",
+                backend="shared_ax",
+            )
+        else:
+            access = await fetch_page_access(study.url)
         study.access_backend = access.backend
         study.browserbase_session_url = access.session_url
         page_text = f"Title: {access.title}\nURL: {access.final_url}\n\n{access.text}"
@@ -1259,7 +1538,13 @@ async def run_study(
                 pass
 
         # 1) Competitors (skipped in local smoke — product site only)
-        if study.test_mode or study.skip_competitors:
+        if getattr(study, "fast_brief", False) and study.competitors:
+            log_activity(
+                study,
+                "plan",
+                "Using the submitted competitor URLs — no research wait",
+            )
+        elif study.test_mode or study.skip_competitors:
             study.competitors = []
             log_activity(
                 study,
@@ -1270,11 +1555,24 @@ async def run_study(
             )
             touch("Building simulated users")
             _push_brief("brief")
-        elif not study.competitors:
+        else:
             try:
-                study.competitors = await invent_competitors(
-                    study.url, site_hint, page_text
+                resolved, dropped = await resolve_study_competitors(
+                    list(study.competitors or []),
+                    product_url=study.url,
+                    site_summary=site_hint,
+                    page_text=page_text,
                 )
+                for old, reason in dropped:
+                    # The warm-time probe may already have logged the same drop.
+                    msg = f"Dropped competitor {old} — {reason}"
+                    if not any(
+                        (row or {}).get("message") == msg
+                        for row in (study.activity_log or [])
+                        if isinstance(row, dict)
+                    ):
+                        log_activity(study, "plan", msg)
+                study.competitors = resolved
             except Exception as exc:  # noqa: BLE001
                 log_activity(
                     study,
@@ -1288,26 +1586,30 @@ async def run_study(
                 "plan",
                 "Competitors: " + ", ".join(study.competitors),
             )
+            _schedule_competitor_warms()
             touch("Finding competitors")
             _push_brief("brief")
 
         # 2) Simulated users (own agent call)
-        if not study.test_mode:
+        if not study.test_mode and not getattr(study, "fast_brief", False):
             touch("Building simulated users")
             study.personas = []
             study.tasks = []
             _push_brief("brief")
-        try:
-            users_plan = await generate_personas(
-                study.url,
-                study.segment,
-                page_text,
-                test_mode=study.test_mode,
-                competitors=study.competitors,
-            )
-        except Exception as exc:  # noqa: BLE001
-            log_activity(study, "plan", f"User generation failed ({str(exc)[:120]})")
-            users_plan = {"site_summary": "", "personas": []}
+        if getattr(study, "fast_brief", False):
+            users_plan = {"site_summary": study.url, "personas": study.personas}
+        else:
+            try:
+                users_plan = await generate_personas(
+                    study.url,
+                    study.segment,
+                    page_text,
+                    test_mode=study.test_mode,
+                    competitors=study.competitors,
+                )
+            except Exception as exc:  # noqa: BLE001
+                log_activity(study, "plan", f"User generation failed ({str(exc)[:120]})")
+                users_plan = {"site_summary": "", "personas": []}
 
         site_summary = users_plan.get("site_summary") or ""
         study.personas = users_plan.get("personas") or []
@@ -1331,23 +1633,37 @@ async def run_study(
         if site_summary:
             log_activity(study, "plan", f"Site: {site_summary}")
 
-        # Retry competitors with richer summary if the first pass was empty.
+        # Top up when the first pass kept fewer than two live rivals.
+        # An empty list and a single URL both shrink the 24-agent matrix.
         if (
             not study.test_mode
             and not study.skip_competitors
-            and not study.competitors
+            and len(study.competitors or []) < 2
             and site_summary
         ):
             try:
-                study.competitors = await invent_competitors(
-                    study.url, site_summary, page_text
+                filled, more_dropped = await resolve_study_competitors(
+                    list(study.competitors or []),
+                    product_url=study.url,
+                    site_summary=site_summary,
+                    page_text=page_text,
                 )
-                if study.competitors:
+                for old, reason in more_dropped:
+                    msg = f"Dropped competitor {old} — {reason}"
+                    if not any(
+                        (row or {}).get("message") == msg
+                        for row in (study.activity_log or [])
+                        if isinstance(row, dict)
+                    ):
+                        log_activity(study, "plan", msg)
+                if len(filled) > len(study.competitors or []):
+                    study.competitors = filled
                     log_activity(
                         study,
                         "plan",
                         "Competitors: " + ", ".join(study.competitors),
                     )
+                    _schedule_competitor_warms()
             except Exception as exc:  # noqa: BLE001
                 log_activity(
                     study,
@@ -1361,23 +1677,26 @@ async def run_study(
         # 3) Tasks (own agent call — only after users are visible)
         touch("Writing tasks")
         _push_brief("brief")
-        try:
-            study.tasks = await generate_tasks(
-                study.url,
-                study.segment,
-                page_text,
-                study.personas,
-                site_summary=site_summary,
-                test_mode=study.test_mode,
-            )
-        except Exception as exc:  # noqa: BLE001
-            log_activity(study, "plan", f"Task generation failed ({str(exc)[:120]})")
-            study.tasks = []
+        if getattr(study, "fast_brief", False):
+            pass
+        else:
+            try:
+                study.tasks = await generate_tasks(
+                    study.url,
+                    study.segment,
+                    page_text,
+                    study.personas,
+                    site_summary=site_summary,
+                    test_mode=study.test_mode,
+                )
+            except Exception as exc:  # noqa: BLE001
+                log_activity(study, "plan", f"Task generation failed ({str(exc)[:120]})")
+                study.tasks = []
         touch("Writing tasks")
         _push_brief("brief")
 
-        # Apply optional task overrides.
-        if study.tasks_override:
+        # Apply optional task overrides. The fast path already expanded these.
+        if study.tasks_override and not getattr(study, "fast_brief", False):
             if study.test_mode:
                 prompt = study.tasks_override[0]
                 if study.tasks:
@@ -1431,7 +1750,10 @@ async def run_study(
 
         # Full studies: every persona × every task × (product + each competitor).
         # Smoke / quick preview: product site only (1 user × 1 task × 1 site).
-        if not study.test_mode:
+        already_expanded = bool(study.tasks) and all(
+            "__" in str(t.get("id") or "") for t in study.tasks
+        )
+        if not study.test_mode and not already_expanded:
             before = len(study.tasks)
             n_users = len(study.personas or [])
             n_sites = 1 + len(study.competitors or [])
@@ -1609,6 +1931,7 @@ async def run_study(
                         close_warm_opening,
                         warm_opening_session,
                     )
+                    from mvp.competitor_urls import rewrite_competitor_task
 
                     def _host(u: str) -> str:
                         return (_urlparse(u).hostname or "").lower().removeprefix(
@@ -1625,6 +1948,7 @@ async def run_study(
                             study.url,
                             site_summary or study.url,
                             page_text or "",
+                            exclude_hosts=set(used_hosts),
                         )
                     except Exception as inv_exc:  # noqa: BLE001
                         print(f"competitor re-invent failed: {inv_exc!r}", flush=True)
@@ -1652,10 +1976,7 @@ async def run_study(
                         # Rewrite already-expanded matrix rows for this site_key.
                         for t in study.tasks or []:
                             if str(t.get("site_key") or "") == key:
-                                t["site_url"] = new_url
-                                t["site_label"] = (
-                                    f"Competitor · {_host(new_url) or new_url}"
-                                )
+                                rewrite_competitor_task(t, new_url)
                         log_activity(
                             study,
                             "plan",
@@ -1692,6 +2013,158 @@ async def run_study(
 
             if "product" in warm_by_site:
                 warm_opening = warm_by_site["product"]
+
+            # Retry sites whose warm create 429'd or timed out. This loop
+            # finishes BEFORE live sessions exist, so created_at_ts / the 5s
+            # first-screenshot clock have not started. Do not loosen that clock.
+            if needed_site_keys - set(warm_by_site):
+                import random as _warm_random
+
+                from mvp.browser_agent import warm_opening_session as _warm_retry
+
+                def _warm_url(key: str) -> str | None:
+                    if key == "product":
+                        return study.url
+                    if not str(key).startswith("competitor_"):
+                        return None
+                    try:
+                        idx = int(str(key).rsplit("_", 1)[-1]) - 1
+                    except ValueError:
+                        return None
+                    comps = list(study.competitors or [])
+                    if 0 <= idx < len(comps) and comps[idx]:
+                        return str(comps[idx])
+                    return None
+
+                try:
+                    pre_attempts = int(
+                        os.environ.get("MVP_WARM_PRECLOCK_RETRIES", "3") or "3"
+                    )
+                except ValueError:
+                    pre_attempts = 3
+                pre_attempts = max(1, min(5, pre_attempts))
+                try:
+                    warm_conc = int(
+                        os.environ.get("MVP_WARM_CREATE_CONCURRENCY", "2") or "2"
+                    )
+                except ValueError:
+                    warm_conc = 2
+                warm_conc = max(1, min(3, warm_conc))
+                warm_sem = asyncio.Semaphore(warm_conc)
+
+                # In-flight warms are already retrying inside create_session.
+                # Collect them before opening a second session for the same site.
+                if pending_warm:
+                    try:
+                        grace = float(
+                            os.environ.get("MVP_WARM_PRECLOCK_GRACE_S", "20") or "20"
+                        )
+                    except ValueError:
+                        grace = 20.0
+                    grace_deadline = time.time() + max(1.0, grace)
+                    inflight = dict(pending_warm)
+                    while inflight and time.time() < grace_deadline:
+                        wait_s = max(0.1, min(5.0, grace_deadline - time.time()))
+                        done, _pending = await asyncio.wait(
+                            set(inflight.values()),
+                            timeout=wait_s,
+                            return_when=asyncio.FIRST_COMPLETED,
+                        )
+                        for key, task in list(inflight.items()):
+                            if task not in done:
+                                continue
+                            inflight.pop(key, None)
+                            pending_warm.pop(key, None)
+                            try:
+                                result = task.result()
+                            except Exception as warm_exc:  # noqa: BLE001
+                                print(
+                                    f"pre-clock warm {key} inflight failed: {warm_exc!r}",
+                                    flush=True,
+                                )
+                                continue
+                            if result and result.get("timing"):
+                                warm_timing[key] = result["timing"]
+                            if _warm_is_real(result):
+                                warm_by_site[key] = result
+                            elif result and result.get("shot_path"):
+                                warm_by_site.setdefault(f"_blank_{key}", result)
+
+                async def _retry_key(key: str, attempt: int) -> None:
+                    url = _warm_url(key)
+                    if not url:
+                        return
+                    async with warm_sem:
+                        await asyncio.sleep(_warm_random.uniform(0.05, 0.4))
+                        try:
+                            result = await asyncio.wait_for(
+                                _warm_retry(
+                                    study_id=f"{study.id}_{key}_pre{attempt}",
+                                    url=url,
+                                ),
+                                timeout=float(
+                                    os.environ.get("MVP_WARM_ATTEMPT_TIMEOUT_S", "75")
+                                    or "75"
+                                ),
+                            )
+                        except Exception as retry_exc:  # noqa: BLE001
+                            print(
+                                f"pre-clock warm {key} attempt {attempt + 1} "
+                                f"failed: {retry_exc!r}",
+                                flush=True,
+                            )
+                            return
+                        if result and result.get("timing"):
+                            warm_timing[key] = result["timing"]
+                        if _warm_is_real(result):
+                            # Drop a blank donor so we don't keep two sessions.
+                            blank = warm_by_site.pop(f"_blank_{key}", None)
+                            if blank:
+                                try:
+                                    from mvp.browser_agent import close_warm_opening
+
+                                    await close_warm_opening(blank)
+                                except Exception:
+                                    pass
+                            warm_by_site[key] = result
+                            print(
+                                f"pre-clock warm {key} real on attempt {attempt + 1}",
+                                flush=True,
+                            )
+                        elif result:
+                            warm_by_site.setdefault(f"_blank_{key}", result)
+
+                for attempt in range(pre_attempts):
+                    missing = [
+                        k
+                        for k in sorted(needed_site_keys)
+                        if k not in warm_by_site and k not in pending_warm
+                    ]
+                    if not missing:
+                        break
+                    delay = min(6.0, 0.7 * (2 ** attempt)) + _warm_random.uniform(
+                        0.15, 0.9
+                    )
+                    print(
+                        f"pre-clock warm retry {attempt + 1}/{pre_attempts} "
+                        f"for {missing} after {delay:.1f}s "
+                        f"(not on the 5s screenshot clock)",
+                        flush=True,
+                    )
+                    log_activity(
+                        study,
+                        "browser",
+                        f"Retrying warm screenshots before agents start: {', '.join(missing)}",
+                    )
+                    await asyncio.sleep(delay)
+                    await asyncio.gather(
+                        *[_retry_key(k, attempt) for k in missing],
+                        return_exceptions=True,
+                    )
+
+                if "product" in warm_by_site:
+                    warm_opening = warm_by_site["product"]
+
             warm_task = None
             warm_site_tasks = {}
             study.activity_log.append(
@@ -1782,12 +2255,26 @@ async def run_study(
             ]
 
         persona_by_id = {p["id"]: p for p in study.personas}
-        study.live_sessions = {}
+        if a11y_boot is not None:
+            # The product read often finishes before the planner has tasks.
+            # Publish the first click as soon as those tasks exist.
+            for _key, _snap in list(getattr(a11y_boot, "snapshots", {}).items()):
+                try:
+                    a11y_boot._publish_site(_key, _snap)
+                except Exception as pub_exc:  # noqa: BLE001
+                    print(f"[a11y] republish {_key} failed: {pub_exc!r}", flush=True)
+        if a11y_boot is None:
+            study.live_sessions = {}
         for task in study.tasks:
             persona = persona_by_id.get(task.get("persona_id")) or (
                 study.personas[0] if study.personas else {}
             )
             agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
+            if a11y_boot is not None:
+                # The shared read publishes the click, the tree, and the
+                # timestamps together. An earlier empty session would start
+                # the 5s page-open clock before that payload exists.
+                continue
             site = task.get("site_url") or study.url
             site_key = str(task.get("site_key") or "product")
             site_label = str(task.get("site_label") or "Product")
@@ -2071,7 +2558,15 @@ async def run_study(
                 return result
 
             study.agent_results = []
-            await asyncio.gather(*[_run_snapshot(t) for t in study.tasks])
+            snap_out = await asyncio.gather(
+                *[_run_snapshot(t) for t in study.tasks],
+                return_exceptions=True,
+            )
+            for item in snap_out:
+                if isinstance(item, Exception) and not isinstance(
+                    item, asyncio.CancelledError
+                ):
+                    print(f"snapshot agent failed: {item!r}", flush=True)
         elif _fleet_preferred(test_mode=bool(study.test_mode)):
             from mvp.gcp_fleet import run_study_on_gcp_fleet
 
@@ -2404,7 +2899,15 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                await asyncio.gather(*[_run_snapshot_fallback(t) for t in study.tasks])
+                snap_out = await asyncio.gather(
+                    *[_run_snapshot_fallback(t) for t in study.tasks],
+                    return_exceptions=True,
+                )
+                for item in snap_out:
+                    if isinstance(item, Exception) and not isinstance(
+                        item, asyncio.CancelledError
+                    ):
+                        print(f"snapshot fallback agent failed: {item!r}", flush=True)
             else:
                 # Mark each agent with its chosen URL and launch immediately.
                 # Do not clobber a warm session that already has pixels / live view.
@@ -2550,6 +3053,28 @@ async def run_study(
                                 step=step,
                             )
                     sess["status"] = "running"
+                    # Stamp the step before this trace is saved. Insights cite
+                    # final_screenshot_url, state_sig.text, and goal_visible.
+                    from mvp.a11y_agent import stamp_published_step
+
+                    stamp_published_step(
+                        step,
+                        task=str(sess.get("task_prompt") or ""),
+                        screenshot_url=str(
+                            step.get("final_screenshot_url")
+                            or step.get("screenshot_url")
+                            or sess.get("final_screenshot_url")
+                            or ""
+                        ),
+                    )
+                    if step.get("final_screenshot_url"):
+                        sess["final_screenshot_url"] = step["final_screenshot_url"]
+                        sess["final_screenshot"] = step["final_screenshot_url"]
+                    sig = step.get("state_sig") if isinstance(step.get("state_sig"), dict) else {}
+                    if sig.get("text"):
+                        sess["final_dom"] = str(sig.get("text") or "")[:1500]
+                    if "goal_visible" in step:
+                        sess["goal_visible"] = bool(step.get("goal_visible"))
                     sess["trace"] = list(sess.get("trace") or [])
                     existing = {s.get("step"): i for i, s in enumerate(sess["trace"])}
                     if step.get("step") in existing:
@@ -2558,6 +3083,15 @@ async def run_study(
                         sess["trace"].append(step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
+                    action_text = str(step.get("action") or "")
+                    if (
+                        not sess.get("first_action_at_ts")
+                        and action_text
+                        and not action_text.lower().startswith("open")
+                    ):
+                        from mvp.a11y_agent import apply_gate_fields
+
+                        apply_gate_fields(sess, first_action_at_ts=time.time())
                     _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     thought = (step.get("thought") or "").strip()
                     if thought:
@@ -2599,15 +3133,38 @@ async def run_study(
                     persona = persona_by_id.get(task.get("persona_id")) or study.personas[0]
                     agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
                     site = task.get("site_url") or study.url
-                    sess = study.live_sessions.setdefault(
-                        agent_id,
-                        {
-                            "agent_id": agent_id,
-                            "persona_name": persona.get("name"),
-                            "status": "starting",
-                            "trace": [],
-                        },
-                    )
+                    if a11y_boot is not None:
+                        # The shared read is display only. Start this agent
+                        # even when its row is still a placeholder.
+                        sess = study.live_sessions.get(agent_id)
+                        if sess is None:
+                            sess = {
+                                "agent_id": agent_id,
+                                "persona_id": persona.get("id"),
+                                "persona_name": persona.get("name"),
+                                "persona_bio": persona.get("bio"),
+                                "task_id": task.get("id"),
+                                "task_title": task.get("title"),
+                                "task_prompt": task.get("prompt"),
+                                "site_key": str(task.get("site_key") or "product"),
+                                "site_url": site,
+                                "site_label": str(task.get("site_label") or "Product"),
+                                "status": "starting",
+                                "trace": [],
+                                "num_steps": 0,
+                                "live_thoughts": [],
+                            }
+                            study.live_sessions[agent_id] = sess
+                    else:
+                        sess = study.live_sessions.setdefault(
+                            agent_id,
+                            {
+                                "agent_id": agent_id,
+                                "persona_name": persona.get("name"),
+                                "status": "starting",
+                                "trace": [],
+                            },
+                        )
                     raise_if_killed(study)
                     sess["site_url"] = site
                     # Start immediately — with ≤25 Browserbase slots we should not
@@ -2642,100 +3199,175 @@ async def run_study(
                     sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
                     try:
-                        async with _BROWSER_SEMAPHORE:
-                            raise_if_killed(study)
-                            sess["status"] = "running"
-                            if not (sess.get("trace") or []):
-                                sess["last_action"] = f"Opening {site}"
-                            thoughts = list(sess.get("live_thoughts") or [])
-                            thoughts.append(
-                                {
-                                    "at": _now(),
-                                    "text": f"{name} got a browser — opening {site}…",
-                                    "kind": "status",
-                                }
-                            )
-                            sess["live_thoughts"] = thoughts[-24:]
-                            refresh_agent_phase()
-                            if on_update:
-                                try:
-                                    on_update(study, event="progress")
-                                except TypeError:
-                                    on_update(study)
-                                except Exception:
-                                    pass
-                            agent_warm = None
-                            if (
-                                not warm_used
-                                and warm_opening is not None
-                                and str(task.get("site_key") or "product") == "product"
-                            ):
-                                # YouTube agents never consume warm sessions (signed-in
-                                # path). Claiming warm anyway leaked the BB slot and
-                                # left DevTools URLs pointing at a zombie session.
-                                _host = (
-                                    str(task.get("site_url") or study.url or "")
-                                    .lower()
-                                )
-                                if (
-                                    "youtube.com" not in _host
-                                    and "youtu.be" not in _host
-                                ):
-                                    agent_warm = warm_opening
-                                    warm_used = True
-                            run = None
-                            _outer_wall = max(
-                                45.0,
-                                float(os.environ.get("MVP_AGENT_WALL_S", "120") or "120")
-                                + 45.0,
-                            )
-                            _agent_task = asyncio.create_task(
-                                run_browser_agent(
-                                    study_id=study.id,
-                                    agent_id=agent_id,
-                                    url=site,
-                                    task_prompt=task.get("prompt")
-                                    or task.get("title")
-                                    or "",
-                                    persona=persona,
-                                    segment=study.segment,
-                                    on_step=lambda step: _on_agent_step(agent_id, step),
-                                    bb_session=None,
-                                    local=force_local_browser,
-                                    warm=agent_warm,
-                                )
-                            )
-                            _done, _pending = await asyncio.wait(
-                                {_agent_task}, timeout=_outer_wall
-                            )
-                            if _agent_task in _pending:
-                                print(
-                                    f"[{agent_id}] outer agent wall ({_outer_wall:.0f}s) — "
-                                    "using captured frames",
-                                    flush=True,
-                                )
-                                _agent_task.cancel()
+                        class _BrowserPass:
+                            async def __aenter__(self) -> None:
+                                return None
 
-                                async def _drain(t: asyncio.Task) -> None:
+                            async def __aexit__(self, *_exc: object) -> bool:
+                                return False
+
+                        async with (
+                            _BrowserPass() if a11y_boot is not None else _BROWSER_SEMAPHORE
+                        ):
+                            # The accessibility loop runs all 24 agents at once.
+                            # The older screenshot loop still queues on the LLM cap.
+                            class _Pass:
+                                async def __aenter__(self) -> None:
+                                    return None
+
+                                async def __aexit__(self, *_exc: object) -> bool:
+                                    return False
+
+                            async with (
+                                _Pass() if a11y_boot is not None else _llm_run_semaphore()
+                            ):
+                                raise_if_killed(study)
+                                sess["status"] = "running"
+                                if not (sess.get("trace") or []):
+                                    sess["last_action"] = f"Opening {site}"
+                                thoughts = list(sess.get("live_thoughts") or [])
+                                thoughts.append(
+                                    {
+                                        "at": _now(),
+                                        "text": f"{name} got a browser — opening {site}…",
+                                        "kind": "status",
+                                    }
+                                )
+                                sess["live_thoughts"] = thoughts[-24:]
+                                refresh_agent_phase()
+                                if on_update:
                                     try:
-                                        await t
+                                        on_update(study, event="progress")
+                                    except TypeError:
+                                        on_update(study)
                                     except Exception:
                                         pass
+                                agent_warm = None
+                                if (
+                                    not warm_used
+                                    and warm_opening is not None
+                                    and str(task.get("site_key") or "product") == "product"
+                                ):
+                                    # YouTube agents never consume warm sessions (signed-in
+                                    # path). Claiming warm anyway leaked the BB slot and
+                                    # left DevTools URLs pointing at a zombie session.
+                                    _host = (
+                                        str(task.get("site_url") or study.url or "")
+                                        .lower()
+                                    )
+                                    if (
+                                        "youtube.com" not in _host
+                                        and "youtu.be" not in _host
+                                    ):
+                                        agent_warm = warm_opening
+                                        warm_used = True
+                                run = None
+                                _remaining = float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic()
+                                if a11y_boot is not None:
+                                    from mvp.a11y_agent import run_a11y_agent
 
-                                asyncio.create_task(_drain(_agent_task))
-                                existing = sess.get("trace") or []
-                                run = {
-                                    "agent_id": agent_id,
-                                    "completed": False,
-                                    "trace": existing,
-                                    "actions": [],
-                                    "num_steps": len(existing),
-                                    "final_url": site,
-                                    "visited_urls": [site],
-                                    "mode": "browser_wall",
-                                }
-                            else:
-                                run = _agent_task.result()
+                                    # Leave time for the final PNG and the report inside the 480s gate.
+                                    _raw_deadline = getattr(study, "budget_deadline", None)
+                                    _agent_deadline = (
+                                        None if _raw_deadline is None else float(_raw_deadline) - 45
+                                    )
+                                    _agent_coro = run_a11y_agent(
+                                        boot=a11y_boot,
+                                        study_id=study.id,
+                                        agent_id=agent_id,
+                                        url=site,
+                                        task_prompt=task.get("prompt")
+                                        or task.get("title")
+                                        or "",
+                                        persona=persona,
+                                        on_step=lambda step: _on_agent_step(agent_id, step),
+                                        site_key=str(task.get("site_key") or "product"),
+                                        deadline=_agent_deadline,
+                                    )
+                                else:
+                                    _agent_coro = run_browser_agent(
+                                        study_id=study.id,
+                                        agent_id=agent_id,
+                                        url=site,
+                                        task_prompt=task.get("prompt")
+                                        or task.get("title")
+                                        or "",
+                                        persona=persona,
+                                        segment=study.segment,
+                                        on_step=lambda step: _on_agent_step(agent_id, step),
+                                        bb_session=None,
+                                        local=force_local_browser,
+                                        warm=agent_warm,
+                                    )
+                                if _remaining <= 0:
+                                    print(
+                                        f"[{agent_id}] study budget — not started",
+                                        flush=True,
+                                    )
+                                    existing = sess.get("trace") or []
+                                    run = {
+                                        "agent_id": agent_id,
+                                        "completed": False,
+                                        "trace": existing,
+                                        "actions": [],
+                                        "num_steps": len(existing),
+                                        "final_url": site,
+                                        "visited_urls": [site],
+                                        "mode": "study_budget",
+                                        "stop_reason": "study budget",
+                                        "failed_step": {
+                                            "phase": "study_budget",
+                                            "reason": "study budget",
+                                            "step": len(existing),
+                                        },
+                                        "error": "study budget",
+                                        "signup": sess.get("signup") or {"attempted": False, "ok": False},
+                                    }
+                                    _agent_task = None
+                                else:
+                                    _agent_task = asyncio.create_task(_agent_coro)
+                                if _agent_task is not None:
+                                    _done, _pending = await asyncio.wait(
+                                        {_agent_task}, timeout=max(0.1, _remaining)
+                                    )
+                                else:
+                                    _pending = set()
+                                if _agent_task is not None and _agent_task in _pending:
+                                    print(
+                                        f"[{agent_id}] study budget "
+                                        f"({int(getattr(study, 'budget_s', 480))}s) — stopping",
+                                        flush=True,
+                                    )
+                                    _agent_task.cancel()
+
+                                    async def _drain(t: asyncio.Task) -> None:
+                                        try:
+                                            await t
+                                        except Exception:
+                                            pass
+
+                                    asyncio.create_task(_drain(_agent_task))
+                                    existing = sess.get("trace") or []
+                                    run = {
+                                        "agent_id": agent_id,
+                                        "completed": False,
+                                        "trace": existing,
+                                        "actions": [],
+                                        "num_steps": len(existing),
+                                        "final_url": site,
+                                        "visited_urls": [site],
+                                        "mode": "study_budget",
+                                        "stop_reason": "study budget",
+                                        "failed_step": {
+                                            "phase": "study_budget",
+                                            "reason": "study budget",
+                                            "step": len(existing),
+                                        },
+                                        "error": "study budget",
+                                        "signup": sess.get("signup") or {"attempted": False, "ok": False},
+                                    }
+                                elif _agent_task is not None:
+                                    run = _agent_task.result()
                         sess["status"] = "summarizing"
                         refresh_agent_phase()
                         log_activity(
@@ -2774,111 +3406,170 @@ async def run_study(
                         }
                         for step in run.get("trace") or []:
                             step["outcome"] = outcomes.get(step.get("step")) or "neutral"
-                        result = {**run, **feedback, "mode": "browser"}
+                        result = {**run, **feedback, "mode": "a11y" if a11y_boot is not None else "browser"}
+                        if a11y_boot is not None:
+                            if run.get("friction_points"):
+                                result["friction_points"] = list(run.get("friction_points") or [])
+                            if run.get("what_was_easy"):
+                                result["what_was_easy"] = list(run.get("what_was_easy") or [])
+                            if run.get("quote"):
+                                result["quote"] = run.get("quote")
+                            from mvp.a11y_agent import GATE_FIELDS, apply_gate_fields
+
+                            apply_gate_fields(result)
+                            for key in GATE_FIELDS:
+                                if key in result:
+                                    sess[key] = result[key]
+                            sess["final_url"] = result.get("final_url") or sess.get("final_url")
+                            if result.get("stop_reason"):
+                                sess["stop_reason"] = result.get("stop_reason")
+                            sess["last_action"] = (
+                                (result.get("trace") or [{}])[-1].get("action")
+                                if result.get("trace")
+                                else sess.get("last_action")
+                            )
                     except Exception as exc:  # noqa: BLE001
                         sess["status"] = "error"
                         existing = sess.get("trace") or []
-                        has_pixels = any(
-                            (s or {}).get("screenshot_url")
-                            or (s or {}).get("screenshot_data_url")
-                            for s in existing
-                        )
-                        # Opening frames already on stage: finish with partials.
-                        # Full Browserbase retry after wall/CDP death doubles runtime
-                        # (90s → 180s+) and re-exhausts the 25-slot budget.
-                        if has_pixels:
-                            log_activity(
-                                study,
-                                "agent_error",
-                                f"{persona.get('name')} browser ended early — "
-                                "keeping captured frames (no retry)",
-                                agent_id=agent_id,
-                                error=str(exc)[:200],
-                            )
+                        if a11y_boot is not None:
+                            print(f"[{agent_id}] agent ended: {exc!r}", flush=True)
                             result = {
                                 "agent_id": agent_id,
                                 "completed": False,
-                                "difficulty": "hard",
-                                "friction_points": [
-                                    "Browser session ended before the task finished"
-                                ],
-                                "what_was_easy": [],
-                                "product_feedback": (
-                                    "Session captured the opening page but the live "
-                                    "browser run stopped early."
-                                ),
-                                "would_convert": "maybe",
                                 "trace": existing,
                                 "actions": [],
                                 "num_steps": len(existing),
-                                "final_url": site,
-                                "visited_urls": [site],
-                                "mode": "browser_partial",
-                                "browser_error": (str(exc) or repr(exc))[:300],
+                                "final_url": str(sess.get("final_url") or site),
+                                "final_dom": str(sess.get("final_dom") or ""),
+                                "visited_urls": [str(sess.get("final_url") or site)],
+                                "mode": "a11y",
+                                "stop_reason": "session ended",
+                                "failed_step": {
+                                    "phase": "act",
+                                    "reason": "session ended",
+                                    "step": len(existing),
+                                },
+                                "error": "",
+                                "browser_error": "",
+                                "friction_points": list(sess.get("friction_points") or []),
+                                "what_was_easy": list(sess.get("what_was_easy") or []),
+                                "accessibility_tree": sess.get("accessibility_tree") or "",
+                                "page_url": sess.get("page_url") or site,
+                                "page_open_at_ts": sess.get("page_open_at_ts"),
+                                "session_ready_at_ts": sess.get("session_ready_at_ts"),
+                                "first_action_at_ts": sess.get("first_action_at_ts"),
+                                "phase_ms": dict(sess.get("phase_ms") or {}),
+                                "final_screenshot_url": sess.get("final_screenshot_url") or "",
                             }
                         else:
-                            # Prefer a fresh Browserbase session over local Chrome.
-                            # Local fallback was attaching to the UserSim debug Chrome
-                            # and agents got stuck on http://127.0.0.1:8787/live.
-                            log_activity(
-                                study,
-                                "agent_error",
-                                f"{persona.get('name')} browser failed — retrying Browserbase",
-                                agent_id=agent_id,
-                                error=str(exc)[:200],
+                            existing = sess.get("trace") or []
+                            has_pixels = any(
+                                (s or {}).get("screenshot_url")
+                                or (s or {}).get("screenshot_data_url")
+                                for s in existing
                             )
-                            try:
-                                run = await run_browser_agent(
-                                    study_id=study.id,
-                                    agent_id=agent_id,
-                                    url=task.get("site_url") or study.url,
-                                    task_prompt=task.get("prompt") or task.get("title") or "",
-                                    persona=persona,
-                                    segment=study.segment,
-                                    on_step=lambda step: _on_agent_step(agent_id, step),
-                                    bb_session=None,
-                                    local=False,
-                                )
-                                sess["status"] = "summarizing"
-                                feedback = await summarize_agent_feedback(
-                                    url=study.url,
-                                    segment=study.segment,
-                                    persona=persona,
-                                    task=task,
-                                    run=run,
-                                )
-                                outcomes = {
-                                    o.get("step"): o.get("outcome")
-                                    for o in feedback.pop("step_outcomes", []) or []
-                                }
-                                for step in run.get("trace") or []:
-                                    step["outcome"] = (
-                                        outcomes.get(step.get("step")) or "neutral"
-                                    )
-                                result = {**run, **feedback, "mode": "browser_retry"}
-                                result["browser_error"] = (str(exc) or repr(exc))[:300]
-                            except Exception as retry_exc:  # noqa: BLE001
+                            # Opening frames already on stage: finish with partials.
+                            # Full Browserbase retry after wall/CDP death doubles runtime
+                            # (90s → 180s+) and re-exhausts the 25-slot budget.
+                            if has_pixels:
                                 log_activity(
                                     study,
                                     "agent_error",
-                                    f"{persona.get('name')} Browserbase retry failed — "
-                                    "snapshot fallback",
+                                    f"{persona.get('name')} browser ended early — "
+                                    "keeping captured frames (no retry)",
                                     agent_id=agent_id,
-                                    error=str(retry_exc)[:200],
+                                    error=str(exc)[:200],
                                 )
-                                result = await simulate_agent(
-                                    url=study.url,
-                                    segment=study.segment,
-                                    persona=persona,
-                                    task=task,
-                                    page_text=page_text,
-                                    study_id=study.id,
+                                result = {
+                                    "agent_id": agent_id,
+                                    "completed": False,
+                                    "difficulty": "hard",
+                                    "friction_points": [
+                                        "Browser session ended before the task finished"
+                                    ],
+                                    "what_was_easy": [],
+                                    "product_feedback": (
+                                        "Session captured the opening page but the live "
+                                        "browser run stopped early."
+                                    ),
+                                    "would_convert": "maybe",
+                                    "trace": existing,
+                                    "actions": [],
+                                    "num_steps": len(existing),
+                                    "final_url": site,
+                                    "visited_urls": [site],
+                                    "mode": "browser_partial",
+                                    "browser_error": (str(exc) or repr(exc))[:300],
+                                }
+                            else:
+                                # Prefer a fresh Browserbase session over local Chrome.
+                                # Local fallback was attaching to the UserSim debug Chrome
+                                # and agents got stuck on http://127.0.0.1:8787/live.
+                                log_activity(
+                                    study,
+                                    "agent_error",
+                                    f"{persona.get('name')} browser failed — retrying Browserbase",
                                     agent_id=agent_id,
+                                    error=str(exc)[:200],
                                 )
-                                result["mode"] = "fallback_snapshot"
-                                result["browser_error"] = (
-                                    (str(retry_exc) or repr(retry_exc))[:300]
-                                )
+                                try:
+                                    _left = float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic()
+                                    if _left <= 1:
+                                        raise TimeoutError("study budget")
+                                    run = await asyncio.wait_for(
+                                        run_browser_agent(
+                                            study_id=study.id,
+                                            agent_id=agent_id,
+                                            url=task.get("site_url") or study.url,
+                                            task_prompt=task.get("prompt") or task.get("title") or "",
+                                            persona=persona,
+                                            segment=study.segment,
+                                            on_step=lambda step: _on_agent_step(agent_id, step),
+                                            bb_session=None,
+                                            local=False,
+                                        ),
+                                        timeout=_left,
+                                    )
+                                    sess["status"] = "summarizing"
+                                    feedback = await summarize_agent_feedback(
+                                        url=study.url,
+                                        segment=study.segment,
+                                        persona=persona,
+                                        task=task,
+                                        run=run,
+                                    )
+                                    outcomes = {
+                                        o.get("step"): o.get("outcome")
+                                        for o in feedback.pop("step_outcomes", []) or []
+                                    }
+                                    for step in run.get("trace") or []:
+                                        step["outcome"] = (
+                                            outcomes.get(step.get("step")) or "neutral"
+                                        )
+                                    result = {**run, **feedback, "mode": "browser_retry"}
+                                    result["browser_error"] = (str(exc) or repr(exc))[:300]
+                                except Exception as retry_exc:  # noqa: BLE001
+                                    log_activity(
+                                        study,
+                                        "agent_error",
+                                        f"{persona.get('name')} Browserbase retry failed — "
+                                        "snapshot fallback",
+                                        agent_id=agent_id,
+                                        error=str(retry_exc)[:200],
+                                    )
+                                    result = await simulate_agent(
+                                        url=study.url,
+                                        segment=study.segment,
+                                        persona=persona,
+                                        task=task,
+                                        page_text=page_text,
+                                        study_id=study.id,
+                                        agent_id=agent_id,
+                                    )
+                                    result["mode"] = "fallback_snapshot"
+                                    result["browser_error"] = (
+                                        (str(retry_exc) or repr(retry_exc))[:300]
+                                    )
 
                     result["persona_id"] = persona.get("id")
                     result["persona_name"] = persona.get("name")
@@ -2889,6 +3580,31 @@ async def run_study(
                     result["site_key"] = task.get("site_key") or "product"
                     result["site_url"] = task.get("site_url") or study.url
                     result["site_label"] = task.get("site_label") or "Product"
+                    if a11y_boot is not None:
+                        from mvp.a11y_agent import ensure_phase_ms
+
+                        result["browser_error"] = ""
+                        result["error"] = ""
+                        result["mode"] = "a11y"
+                        if not isinstance(result.get("failed_step"), dict) or not str(
+                            (result.get("failed_step") or {}).get("phase") or ""
+                        ).strip():
+                            result["failed_step"] = {
+                                "phase": "act",
+                                "reason": "page did not show the goal",
+                                "step": int(result.get("num_steps") or 0),
+                            }
+                        ensure_phase_ms(result)
+                        if not str(result.get("final_url") or "").strip():
+                            result["final_url"] = task.get("site_url") or study.url
+                        if not str(result.get("accessibility_tree") or "").strip():
+                            result["accessibility_tree"] = str(
+                                sess.get("accessibility_tree") or "0 document page"
+                            )
+                        if not str(result.get("final_dom") or "").strip():
+                            result["final_dom"] = str(
+                                result.get("accessibility_tree") or "page"
+                            )[:1500]
                     sess["status"] = "complete"
                     # Never wipe a real opening screenshot with text-only snapshot steps.
                     snap_trace = result.get("trace") or []
@@ -2923,7 +3639,38 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                await asyncio.gather(*[_run_one(t) for t in study.tasks])
+                if a11y_boot is not None:
+                    _left = max(
+                        1.0,
+                        float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic(),
+                    )
+                    try:
+                        await asyncio.wait_for(a11y_boot.published.wait(), timeout=_left)
+                    except asyncio.TimeoutError:
+                        print(
+                            "shared page read did not finish before the study budget",
+                            flush=True,
+                        )
+                def _run_rank(task: dict[str, Any]) -> tuple:
+                    key = str(task.get("site_key") or "product")
+                    return (0 if key == "product" else 1, key, str(task.get("id") or ""))
+
+                ordered_tasks = sorted(study.tasks, key=_run_rank)
+                # return_exceptions=True: one cancelled/failed agent must not
+                # CancelledError the whole gather ("Killed by operator").
+                agent_out = await asyncio.gather(
+                    *[_run_one(t) for t in ordered_tasks],
+                    return_exceptions=True,
+                )
+                for item in agent_out:
+                    if isinstance(item, Exception):
+                        print(f"live agent failed: {item!r}", flush=True)
+                        continue
+                if a11y_boot is not None:
+                    try:
+                        await a11y_boot.close()
+                    except Exception as close_exc:  # noqa: BLE001
+                        print(f"a11y browser close failed: {close_exc!r}", flush=True)
                 try:
                     await backfill_site_opening_shots(study)
                     if study.live_sessions:
@@ -2968,10 +3715,31 @@ async def run_study(
         except Exception as bf_exc:  # noqa: BLE001
             print(f"backfill_site_opening_shots failed: {bf_exc!r}", flush=True)
 
+        from mvp.competitor_urls import annotate_run_issues, run_issue_lines, scrub_product_summary
+
+        run_issues = annotate_run_issues(study.agent_results)
+        if run_issues:
+            log_activity(
+                study,
+                "run_issue",
+                f"{len(run_issues)} run issue(s) excluded from product insights",
+            )
+            for issue in run_issues:
+                log_activity(
+                    study,
+                    "run_issue",
+                    f"{issue.get('persona_name') or issue.get('agent_id')}: "
+                    f"{issue.get('kind')} — {issue.get('reason')}",
+                    agent_id=issue.get("agent_id"),
+                )
+
         touch("Writing executive summary")
         if study.summary and study.summary.get("headline"):
-            # Already written by fleet finisher.
-            pass
+            # Already written by fleet finisher — still strip harness failures.
+            study.summary = scrub_product_summary(study.summary)
+            study.summary["run_issues"] = run_issue_lines(
+                [r.get("run_issue") for r in study.agent_results if isinstance(r, dict) and r.get("run_issue")]
+            )
         else:
             log_activity(study, "summary", "Synthesizing executive summary from all sessions")
             try:
@@ -2989,6 +3757,29 @@ async def run_study(
                 study.summary = _summary_from_agent_results(study.agent_results)
         if not study.summary:
             study.summary = {}
+        try:
+            from mvp.a11y_agent import failure_breakdown
+
+            study.summary["failure_breakdown"] = failure_breakdown(study.agent_results)
+            study.summary["signups"] = [
+                {
+                    "agent_id": str(row.get("agent_id") or ""),
+                    "persona_name": str(row.get("persona_name") or ""),
+                    "site_key": str(row.get("site_key") or ""),
+                    "task_title": str(row.get("task_title") or ""),
+                    "ok": bool((row.get("signup") or {}).get("ok")),
+                    "email": (row.get("signup") or {}).get("email"),
+                    "reason": (row.get("signup") or {}).get("reason"),
+                    "elapsed_s": (row.get("signup") or {}).get("elapsed_s"),
+                    "trigger": (row.get("signup") or {}).get("trigger"),
+                }
+                for row in study.agent_results
+                if isinstance(row, dict)
+                and isinstance(row.get("signup"), dict)
+                and row["signup"].get("attempted")
+            ]
+        except Exception as breakdown_exc:  # noqa: BLE001
+            print(f"failure breakdown skipped: {breakdown_exc!r}", flush=True)
         study.summary["site_summary"] = site_summary
         if study.access_backend:
             study.summary["access_backend"] = study.access_backend
@@ -2998,6 +3789,12 @@ async def run_study(
             study.summary["auth_status"] = study.auth_status
         if study.auth_blocker:
             study.summary["auth_blocker"] = study.auth_blocker
+        try:
+            from mvp.report_insights import apply_insights
+
+            apply_insights(study)
+        except Exception as insight_exc:  # noqa: BLE001
+            print(f"report insights failed: {insight_exc!r}", flush=True)
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
         persist_study(study)
@@ -3008,10 +3805,23 @@ async def run_study(
         study.updated_at = _now()
         persist_study(study)
     except asyncio.CancelledError:
-        study.kill_requested = True
-        study.status = "abandoned"
-        study.phase = "Killed"
-        study.error = "Killed by operator"
+        # Only label as operator-kill when the kill switch was actually armed.
+        # Bare task cancellation (server restart, gather teardown) used to
+        # stamp every interrupted study as "Killed by operator".
+        if study_was_killed(study) or getattr(study, "kill_requested", False):
+            study.kill_requested = True
+            study.status = "abandoned"
+            study.phase = "Killed"
+            study.error = "Killed by operator"
+        else:
+            study.status = "abandoned"
+            study.phase = "Cancelled"
+            study.error = study.error or "Study task cancelled"
+            print(
+                f"study {study.id} CancelledError without kill_requested "
+                f"(not treating as operator kill)",
+                flush=True,
+            )
         study.updated_at = _now()
         persist_study(study)
         raise
@@ -3093,8 +3903,23 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
     )
 
 
+def _local_snapshot_path(study_id: str):
+    from mvp.paths import MVP_RUNS_DIR
+
+    return MVP_RUNS_DIR / "snapshots" / f"{study_id}.json"
+
+
 def persist_study(study: StudyState) -> None:
-    """Best-effort write of study state to GCS so Vercel clients can reconnect."""
+    """Best-effort write of study state so a restarted local server can still serve the report."""
+    try:
+        from mvp.opening_shot import drop_inline_shots
+
+        payload = drop_inline_shots(study_to_dict(study))
+        path = _local_snapshot_path(study.id)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload), encoding="utf-8")
+    except Exception as exc:  # noqa: BLE001
+        print(f"local persist_study failed for {study.id}: {exc!r}", flush=True)
     try:
         from mvp.gcs_store import write_study_state
         from mvp.opening_shot import drop_inline_shots
@@ -3102,6 +3927,27 @@ def persist_study(study: StudyState) -> None:
         write_study_state(study.id, drop_inline_shots(study_to_dict(study)))
     except Exception as exc:  # noqa: BLE001
         print(f"persist_study failed for {study.id}: {exc!r}", flush=True)
+
+
+def load_local_study(study_id: str) -> dict[str, Any] | None:
+    """Study JSON written by this process, or a snapshot saved before a restart."""
+    from pathlib import Path
+
+    candidates = [
+        _local_snapshot_path(study_id),
+        Path("/tmp/usersim-study-snapshots") / f"{study_id}.json",
+    ]
+    for path in candidates:
+        try:
+            if not path.is_file():
+                continue
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if isinstance(data, dict) and (data.get("id") or data.get("summary") or data.get("url")):
+            data.setdefault("id", study_id)
+            return data
+    return None
 
 
 def load_study_from_gcs(study_id: str) -> dict[str, Any] | None:

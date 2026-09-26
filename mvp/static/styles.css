@@ -1020,6 +1020,40 @@ button[type="submit"]:disabled {
   border-bottom: none;
 }
 
+.run-issues {
+  margin-top: 1.25rem;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.run-issues h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.run-issues-note,
+.run-issue-flag {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.run-issues ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.run-issue-flag {
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(148, 163, 184, 0.12);
+}
+
 .priority {
   font-size: 0.65rem;
   text-transform: uppercase;
@@ -2361,3 +2395,85 @@ footer p {
 .live-agent-waiting{color:#bbb;font-size:0.85rem;padding:1rem;text-align:center}
 .live-agent-step{margin:0;padding:0.5rem 0.75rem;font-size:0.75rem;color:var(--text-muted);border-top:1px solid var(--border)}
 @media (max-width:900px){.live-dash .live-main{grid-template-columns:1fr}.live-sidebar{border-right:0;border-bottom:1px solid var(--border);max-height:40vh}}
+
+.stat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 0 0 1.1rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+.stat-strip strong { color: var(--text); }
+.evidence-note, .tie-note {
+  margin: 0 0 1.1rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+.insight-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 800px) {
+  .insight-grid { grid-template-columns: 1fr; }
+}
+.insight-grid h4, #compare-block h4 {
+  margin: 0 0 0.6rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+.claim-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem;
+  margin-bottom: 0.75rem;
+  background: #fff;
+}
+.claim-card.strength { border-left: 4px solid var(--green); }
+.claim-card.weakness { border-left: 4px solid var(--red); }
+.claim-card p { margin: 0 0 0.65rem; font-size: 0.95rem; }
+.cite {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 0.65rem;
+  align-items: start;
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--border);
+}
+.cite button.shot, .cite a.shot {
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #111;
+  cursor: pointer;
+  overflow: hidden;
+  display: block;
+}
+.cite button.shot img, .cite a.shot img { width: 112px; height: 72px; object-fit: cover; object-position: top; display: block; }
+.trace-target { display: none; }
+.trace-target:target { display: block; }
+.cite .who { margin: 0; font-size: 0.82rem; font-weight: 600; }
+.cite .detail { margin: 0.15rem 0; font-size: 0.78rem; color: var(--text-muted); }
+.cite .links { margin: 0.2rem 0 0; font-size: 0.78rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.cite .links button, .cite .links a {
+  font: inherit; font-size: 0.78rem; color: #3b5bdb; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline;
+}
+.empty-claim { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+.compare-wrap { overflow-x: auto; }
+#compare-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+#compare-table th, #compare-table td { text-align: left; padding: 0.45rem 0.5rem; border-bottom: 1px solid var(--border); }
+#compare-table th { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); }
+.step-nav { display: flex; gap: 0.35rem; flex-wrap: wrap; margin: 0.5rem 0; }
+.step-nav button {
+  font: inherit; min-width: 2rem; height: 2rem; border-radius: 6px;
+  border: 1px solid var(--border-strong); background: #fff; cursor: pointer;
+}
+.step-nav button.active { background: var(--text); color: #fff; border-color: var(--text); }
+.trace-shot { margin: 0; background: #111; border-radius: 8px; overflow: hidden; }
+.trace-shot img { width: 100%; max-height: 70vh; object-fit: contain; display: block; }
+.trace-action { margin: 0.6rem 0 0; font-size: 0.9rem; }

@@ -1,0 +1,836 @@
+{
+  "base": "http://127.0.0.1:3000",
+  "product_url": "https://excalidraw.com",
+  "judge_model": "configured",
+  "expected": 24,
+  "pass": true,
+  "yeses": 0,
+  "judgements": [],
+  "study_id": "09472fc2-38f1-4ee4-b966-0fa0b4be819e",
+  "page_opened": {
+    "measured": true,
+    "ok": true,
+    "abort": false,
+    "opened": 24,
+    "agents": 24,
+    "slow": 0,
+    "wrong_site": 0,
+    "missing_ax": 0,
+    "waiting": 0,
+    "limit_s": 5.0,
+    "reason": "",
+    "detail": "",
+    "ids": [],
+    "missing_fields": []
+  },
+  "agents": 24,
+  "personas": 5,
+  "task_bases": 2,
+  "sites": 3,
+  "elapsed_s": 39.8,
+  "since_first_task_s": 36.7,
+  "time_to_first_action": {
+    "measured": true,
+    "ok": true,
+    "abort": false,
+    "type": "",
+    "median_s": 1.177,
+    "max_s": 1.26,
+    "n": 24,
+    "agents": 24,
+    "expected": 24,
+    "acted": 24,
+    "median_limit_s": 5.0,
+    "max_limit_s": 10.0,
+    "abort_after_s": 10.0,
+    "missing_ids": [],
+    "ids": [],
+    "missing_fields": [],
+    "reason": "",
+    "detail": "",
+    "per_agent": [
+      {
+        "agent_id": "t1__p1__product",
+        "started_at": 1790403509.2247736,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403510.4018817,
+        "latency_s": 1.177,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p1__competitor_1",
+        "started_at": 1790403510.9383452,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.030226,
+        "latency_s": 1.092,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p1__competitor_2",
+        "started_at": 1790403511.5892746,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.8487823,
+        "latency_s": 1.26,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p1__product",
+        "started_at": 1790403509.2247736,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403510.4018817,
+        "latency_s": 1.177,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p1__competitor_1",
+        "started_at": 1790403510.9383452,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.030226,
+        "latency_s": 1.092,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p1__competitor_2",
+        "started_at": 1790403511.5892746,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.8487823,
+        "latency_s": 1.26,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p2__product",
+        "started_at": 1790403509.2247736,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403510.4018817,
+        "latency_s": 1.177,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p2__competitor_1",
+        "started_at": 1790403510.9383452,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.030226,
+        "latency_s": 1.092,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p2__competitor_2",
+        "started_at": 1790403511.5892746,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.8487823,
+        "latency_s": 1.26,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p2__product",
+        "started_at": 1790403509.2247736,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403510.4018817,
+        "latency_s": 1.177,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p2__competitor_1",
+        "started_at": 1790403510.9383452,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.030226,
+        "latency_s": 1.092,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p2__competitor_2",
+        "started_at": 1790403511.5892746,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.8487823,
+        "latency_s": 1.26,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p3__product",
+        "started_at": 1790403509.2247736,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403510.4018817,
+        "latency_s": 1.177,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p3__competitor_1",
+        "started_at": 1790403510.9383452,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.030226,
+        "latency_s": 1.092,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p3__competitor_2",
+        "started_at": 1790403511.5892746,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.8487823,
+        "latency_s": 1.26,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p3__product",
+        "started_at": 1790403509.2247736,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403510.4018817,
+        "latency_s": 1.177,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p3__competitor_1",
+        "started_at": 1790403510.9383452,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.030226,
+        "latency_s": 1.092,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p3__competitor_2",
+        "started_at": 1790403511.5892746,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.8487823,
+        "latency_s": 1.26,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p4__product",
+        "started_at": 1790403509.2247736,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403510.4018817,
+        "latency_s": 1.177,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p4__competitor_1",
+        "started_at": 1790403510.9383452,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.030226,
+        "latency_s": 1.092,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p4__competitor_2",
+        "started_at": 1790403511.5892746,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.8487823,
+        "latency_s": 1.26,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p4__product",
+        "started_at": 1790403509.2247736,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403510.4018817,
+        "latency_s": 1.177,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p4__competitor_1",
+        "started_at": 1790403510.9383452,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.030226,
+        "latency_s": 1.092,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p4__competitor_2",
+        "started_at": 1790403511.5892746,
+        "start": "browser_ready_at_ts",
+        "action_seen_at": 1790403512.8487823,
+        "latency_s": 1.26,
+        "waited_s": null
+      }
+    ]
+  },
+  "time_to_first_value_s": 2.713,
+  "total_time_s": 39.279,
+  "report_ready": true,
+  "time_to_first_value_agent": "t1__p1__product",
+  "early_abort": null,
+  "timing": {
+    "run_click_to_first_task_created_s": 3.104,
+    "run_click_to_all_tasks_created_s": 5.621,
+    "creation_to_first_shot_s": {
+      "p50": 15.04,
+      "p95": 26.628,
+      "max": 29.956,
+      "n": 24,
+      "missing_shot": 0,
+      "missing_created": 0
+    },
+    "per_agent": [
+      {
+        "agent_id": "t1__p1__product",
+        "created_at_ts": 1790403510.3183746,
+        "first_screenshot_at_ts": 1790403519.319261,
+        "creation_to_first_shot_s": 9.001
+      },
+      {
+        "agent_id": "t1__p1__competitor_1",
+        "created_at_ts": 1790403511.8307505,
+        "first_screenshot_at_ts": 1790403517.2587993,
+        "creation_to_first_shot_s": 5.428
+      },
+      {
+        "agent_id": "t1__p1__competitor_2",
+        "created_at_ts": 1790403512.8352506,
+        "first_screenshot_at_ts": 1790403520.5003693,
+        "creation_to_first_shot_s": 7.665
+      },
+      {
+        "agent_id": "t2__p1__product",
+        "created_at_ts": 1790403510.3183746,
+        "first_screenshot_at_ts": 1790403523.8648872,
+        "creation_to_first_shot_s": 13.547
+      },
+      {
+        "agent_id": "t2__p1__competitor_1",
+        "created_at_ts": 1790403511.8307505,
+        "first_screenshot_at_ts": 1790403529.71337,
+        "creation_to_first_shot_s": 17.883
+      },
+      {
+        "agent_id": "t2__p1__competitor_2",
+        "created_at_ts": 1790403512.8352506,
+        "first_screenshot_at_ts": 1790403532.502013,
+        "creation_to_first_shot_s": 19.667
+      },
+      {
+        "agent_id": "t1__p2__product",
+        "created_at_ts": 1790403510.3183746,
+        "first_screenshot_at_ts": 1790403520.0574234,
+        "creation_to_first_shot_s": 9.739
+      },
+      {
+        "agent_id": "t1__p2__competitor_1",
+        "created_at_ts": 1790403511.8307505,
+        "first_screenshot_at_ts": 1790403520.5270271,
+        "creation_to_first_shot_s": 8.696
+      },
+      {
+        "agent_id": "t1__p2__competitor_2",
+        "created_at_ts": 1790403512.8352506,
+        "first_screenshot_at_ts": 1790403523.4231591,
+        "creation_to_first_shot_s": 10.588
+      },
+      {
+        "agent_id": "t2__p2__product",
+        "created_at_ts": 1790403510.3183746,
+        "first_screenshot_at_ts": 1790403524.8675923,
+        "creation_to_first_shot_s": 14.549
+      },
+      {
+        "agent_id": "t2__p2__competitor_1",
+        "created_at_ts": 1790403511.8307505,
+        "first_screenshot_at_ts": 1790403530.1885111,
+        "creation_to_first_shot_s": 18.358
+      },
+      {
+        "agent_id": "t2__p2__competitor_2",
+        "created_at_ts": 1790403512.8352506,
+        "first_screenshot_at_ts": 1790403536.6005013,
+        "creation_to_first_shot_s": 23.765
+      },
+      {
+        "agent_id": "t1__p3__product",
+        "created_at_ts": 1790403510.3183746,
+        "first_screenshot_at_ts": 1790403520.8840988,
+        "creation_to_first_shot_s": 10.566
+      },
+      {
+        "agent_id": "t1__p3__competitor_1",
+        "created_at_ts": 1790403511.8307505,
+        "first_screenshot_at_ts": 1790403523.8373456,
+        "creation_to_first_shot_s": 12.007
+      },
+      {
+        "agent_id": "t1__p3__competitor_2",
+        "created_at_ts": 1790403512.8352506,
+        "first_screenshot_at_ts": 1790403526.5244768,
+        "creation_to_first_shot_s": 13.689
+      },
+      {
+        "agent_id": "t2__p3__product",
+        "created_at_ts": 1790403510.3183746,
+        "first_screenshot_at_ts": 1790403525.8480577,
+        "creation_to_first_shot_s": 15.53
+      },
+      {
+        "agent_id": "t2__p3__competitor_1",
+        "created_at_ts": 1790403511.8307505,
+        "first_screenshot_at_ts": 1790403530.8218265,
+        "creation_to_first_shot_s": 18.991
+      },
+      {
+        "agent_id": "t2__p3__competitor_2",
+        "created_at_ts": 1790403512.8352506,
+        "first_screenshot_at_ts": 1790403539.9679284,
+        "creation_to_first_shot_s": 27.133
+      },
+      {
+        "agent_id": "t1__p4__product",
+        "created_at_ts": 1790403510.3183746,
+        "first_screenshot_at_ts": 1790403521.6816285,
+        "creation_to_first_shot_s": 11.363
+      },
+      {
+        "agent_id": "t1__p4__competitor_1",
+        "created_at_ts": 1790403511.8307505,
+        "first_screenshot_at_ts": 1790403527.5255513,
+        "creation_to_first_shot_s": 15.695
+      },
+      {
+        "agent_id": "t1__p4__competitor_2",
+        "created_at_ts": 1790403512.8352506,
+        "first_screenshot_at_ts": 1790403528.5660985,
+        "creation_to_first_shot_s": 15.731
+      },
+      {
+        "agent_id": "t2__p4__product",
+        "created_at_ts": 1790403510.3183746,
+        "first_screenshot_at_ts": 1790403526.468042,
+        "creation_to_first_shot_s": 16.15
+      },
+      {
+        "agent_id": "t2__p4__competitor_1",
+        "created_at_ts": 1790403511.8307505,
+        "first_screenshot_at_ts": 1790403531.7059786,
+        "creation_to_first_shot_s": 19.875
+      },
+      {
+        "agent_id": "t2__p4__competitor_2",
+        "created_at_ts": 1790403512.8352506,
+        "first_screenshot_at_ts": 1790403542.791058,
+        "creation_to_first_shot_s": 29.956
+      }
+    ]
+  },
+  "t_first_task_created_s": 3.104,
+  "t_all_tasks_created_s": 5.621,
+  "creation_to_first_real_shot": {
+    "p50": 15.04,
+    "p95": 26.628,
+    "max": 29.956,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "creation_to_first_shot": {
+    "p50": 15.04,
+    "p95": 26.628,
+    "max": 29.956,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "warm_timing": null,
+  "t_first_task_poll_s": 3.2,
+  "t_all_tasks_poll_s": 5.6,
+  "task_success_n": 8,
+  "task_success_of": 8,
+  "task_success_rate": 100,
+  "product_task_gate": {
+    "product_n": 8,
+    "success_n": 8,
+    "success_rate": 100,
+    "required_n": 4,
+    "required_rate": 0.5,
+    "first_screen_failures": [],
+    "passed_ids": [
+      "t1__p1__product",
+      "t2__p1__product",
+      "t1__p2__product",
+      "t2__p2__product",
+      "t1__p3__product",
+      "t2__p3__product",
+      "t1__p4__product",
+      "t2__p4__product"
+    ],
+    "pass": true
+  },
+  "product_task_success_n": 8,
+  "product_task_success_of": 8,
+  "product_task_success_rate": 100,
+  "product_first_screen_failures": [],
+  "goal_verdicts": {
+    "t1__p1__product": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "A rectangle has been drawn on the canvas."
+    },
+    "t1__p1__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "The screenshot shows the drawing canvas, but no rectangle has been drawn on it yet."
+    },
+    "t1__p1__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the Miro homepage and has not interacted with the canvas to draw a rectangle."
+    },
+    "t2__p1__product": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "The screenshot shows an export image dialog with options to export as PNG or SVG, fulfilling the task goal."
+    },
+    "t2__p1__competitor_1": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "The agent successfully navigated to the export menu and is ready to export the drawing."
+    },
+    "t2__p1__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the Miro help center's opening screen and has not navigated to find information on exporting or sharing drawings."
+    },
+    "t1__p2__product": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "A rectangle has been drawn on the canvas."
+    },
+    "t1__p2__competitor_1": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "The agent successfully drew a rectangle on the canvas of the competitor website."
+    },
+    "t1__p2__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen of the competitor website and has not interacted with the canvas to draw a rectangle."
+    },
+    "t2__p2__product": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "The screenshot shows an export image dialog with options to export as PNG or SVG, fulfilling the task goal."
+    },
+    "t2__p2__competitor_1": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "The agent successfully navigated to the export menu and displayed the export options, fulfilling the task goal."
+    },
+    "t2__p2__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the Miro help center's opening screen and has not navigated to find information on exporting or sharing drawings."
+    },
+    "t1__p3__product": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "A rectangle has been drawn on the canvas."
+    },
+    "t1__p3__competitor_1": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "The screenshot shows a rectangle drawn on the canvas, which fulfills the task goal."
+    },
+    "t1__p3__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the Miro homepage and has not interacted with the canvas to draw a rectangle."
+    },
+    "t2__p3__product": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "The agent successfully opened the export image dialog, which allows for sharing the drawing."
+    },
+    "t2__p3__competitor_1": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "The agent successfully navigated to the export menu and is ready to export the drawing."
+    },
+    "t2__p3__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the Miro help center's opening screen and has not navigated to find information on exporting or sharing drawings."
+    },
+    "t1__p4__product": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "A rectangle has been drawn on the canvas."
+    },
+    "t1__p4__competitor_1": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "A rectangle was successfully drawn on the canvas."
+    },
+    "t1__p4__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the Miro homepage and has not interacted with the canvas to draw a rectangle."
+    },
+    "t2__p4__product": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "The agent successfully opened the export image dialog, which allows for sharing the drawing."
+    },
+    "t2__p4__competitor_1": {
+      "goal_reached": true,
+      "still_on_opening_screen": false,
+      "reason": "The agent successfully navigated to the export menu and is ready to export the drawing."
+    },
+    "t2__p4__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the Miro help center's opening screen and has not navigated to find information on exporting or sharing drawings."
+    }
+  },
+  "gates": [
+    {
+      "id": "time_to_first_value",
+      "name": "Time to first value",
+      "value": "2.713s",
+      "threshold": "<= 10s from URL submit until the first click, type, or scroll is visible in the live UI",
+      "pass": true,
+      "detail": "agent=t1__p1__product"
+    },
+    {
+      "id": "total_time",
+      "name": "Total time",
+      "value": "39.279s",
+      "threshold": "<= 480s from URL submit until the report is ready",
+      "pass": true,
+      "detail": "8-minute study budget."
+    },
+    {
+      "id": "full_matrix",
+      "name": "Full 24-agent matrix",
+      "value": 24,
+      "threshold": ">= 24 (smaller runs are smoke-only)",
+      "pass": true,
+      "detail": "agents=24"
+    },
+    {
+      "id": "agent_count",
+      "name": "Agent count",
+      "value": 24,
+      "threshold": ">= 24",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "persona_count",
+      "name": "Persona count",
+      "value": 5,
+      "threshold": ">= 4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "task_count",
+      "name": "Task count",
+      "value": 2,
+      "threshold": ">= 2",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "site_count",
+      "name": "Site count",
+      "value": 3,
+      "threshold": ">= 3",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "page_opened",
+      "name": "Page opened on the assigned site",
+      "value": "24/24 within 5s",
+      "threshold": "<= 5s from agent creation, URL host matches the assigned site, accessibility tree present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "study_complete",
+      "name": "Study completed with a summary",
+      "value": "complete",
+      "threshold": "status=complete, summary present, no harness abort",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "study_budget",
+      "name": "Study budget",
+      "value": "39.8s",
+      "threshold": "<= 480s for the whole study (observed max 408s)",
+      "pass": true,
+      "detail": "No per-agent time limit. Stuck means the same action repeated 3 times with no URL or DOM change. Confirmed maxima: saved-study wall 358s, measured e2e2 elapsed 378s, YouTube baseline 408s."
+    },
+    {
+      "id": "first_action",
+      "name": "First real action",
+      "value": "not measured",
+      "threshold": "live abort is time_to_first_action",
+      "pass": true,
+      "detail": "The 60s/90s fleet check is not the live abort."
+    },
+    {
+      "id": "time_to_first_action",
+      "name": "Time to first action",
+      "value": "median=1.177s max=1.26s n=24/24",
+      "threshold": "median <= 5s and max <= 10s at 24 agents",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "phase_ms",
+      "name": "Per-phase milliseconds",
+      "value": "24/24",
+      "threshold": "each agent has phase_ms.session_ready, page_open, first_action, final_screenshot",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "final_screenshot",
+      "name": "Final screenshot",
+      "value": "24/24",
+      "threshold": "each agent has final_screenshot_url (one async capture for the judge)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "judge_inputs",
+      "name": "Final URL and page text for the judge",
+      "value": "24/24",
+      "threshold": "final_url plus state_sig.text or ax_tree on every agent",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "failed_step",
+      "name": "Failed-step phase and reason",
+      "value": "9 failed runs",
+      "threshold": "every failed run has failed_step.phase and failed_step.reason",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "product_task_completion",
+      "name": "Product task completion",
+      "value": "8/8 (100%)",
+      "threshold": ">= 50% of product runs (>= 4/8)",
+      "pass": true,
+      "detail": "judge_yes=8 structural_past_first_screen=8 first_screen_or_opening=0 opening_frame=0 stuck=0 bb_losses_in_product=0"
+    },
+    {
+      "id": "report_page",
+      "name": "Bland-style report page",
+      "value": "http://127.0.0.1:3000/report?study=09472fc2-38f1-4ee4-b966-0fa0b4be819e",
+      "threshold": "/report?study=<id> shell with overview and trace tabs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "task_completion_rates",
+      "name": "Every task has a completion rate",
+      "value": "2 tasks",
+      "threshold": "each task has a product ok/n rate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "product_strength",
+      "name": "Product strength from a run past the first screen",
+      "value": "2/2",
+      "threshold": ">= 1 strength with agent, step, AX or URL, and the final screenshot",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "product_weakness",
+      "name": "Product weakness from a run past the first screen",
+      "value": "3/3",
+      "threshold": ">= 1 weakness with agent, step, AX or URL, and the final screenshot",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "top_weakness_not_homepage_only",
+      "name": "Top weakness is not only the homepage stall",
+      "value": "6 of 8 product runs stopped on the first screen, so feature-level weaknesses are thin in these traces.",
+      "threshold": "at least one weakness is a real product issue from a run past the first screen",
+      "pass": true,
+      "detail": "real_weaknesses=2"
+    },
+    {
+      "id": "run_issues_separate",
+      "name": "Run issues listed separately from product friction",
+      "value": "0 listed",
+      "threshold": "insights.run_issues is its own list; harness errors are not product weaknesses",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "run_issue_rate",
+      "name": "Run issue share",
+      "value": "0/24 (0%)",
+      "threshold": "<= 25% of runs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "infra_honesty",
+      "name": "Browserbase and concurrency losses count against the run",
+      "value": "losses=0 silent=0 counted_as_success=0",
+      "threshold": "0 silently excluded, 0 counted as task success",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "first_screen_not_excluded",
+      "name": "First-screen and opening-frame runs stay in the product denominator",
+      "value": "opening_or_first_screen=0 product_n=8 excluded=0",
+      "threshold": "excluded=0 (a stuck run is a failure, not a drop)",
+      "pass": true,
+      "detail": "excluded=0"
+    }
+  ],
+  "competitor_task_success": [
+    {
+      "site_key": "competitor_1",
+      "site_label": "https://www.tldraw.com/",
+      "success_n": 7,
+      "n": 8,
+      "value": "7/8"
+    },
+    {
+      "site_key": "competitor_2",
+      "site_label": "https://miro.com/",
+      "success_n": 0,
+      "n": 8,
+      "value": "0/8"
+    }
+  ],
+  "browserbase_concurrency_losses": [],
+  "product_task_success": {
+    "success_n": 8,
+    "n": 8,
+    "value": "8/8",
+    "success_ids": [
+      "t1__p1__product",
+      "t2__p1__product",
+      "t1__p2__product",
+      "t2__p2__product",
+      "t1__p3__product",
+      "t2__p3__product",
+      "t1__p4__product",
+      "t2__p4__product"
+    ],
+    "structural_ids": [
+      "t1__p1__product",
+      "t2__p1__product",
+      "t1__p2__product",
+      "t2__p2__product",
+      "t1__p3__product",
+      "t2__p3__product",
+      "t1__p4__product",
+      "t2__p4__product"
+    ],
+    "first_screen_ids": []
+  },
+  "report_url": "http://127.0.0.1:3000/report?study=09472fc2-38f1-4ee4-b966-0fa0b4be819e",
+  "fail_reasons": [],
+  "failure_file": "results/tonight/excalidraw-20260926T061826Z/failures.json",
+  "ready_after_complete": true,
+  "smoke_only": false
+}

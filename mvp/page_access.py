@@ -123,7 +123,11 @@ async def fetch_page_access(url: str) -> PageAccessResult:
     except Exception:
         pass
 
-    session = create_session(proxies=False, owner="e2e", study_id="page_access")
+    from capability.browserbase_client import study_session_owner
+
+    session = create_session(
+        proxies=False, owner=study_session_owner(), study_id="page_access"
+    )
     try:
         body, final_url, title, blocked, reason = await _playwright_body(
             connect_url=session.connect_url, url=url
