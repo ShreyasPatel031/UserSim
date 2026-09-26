@@ -506,7 +506,7 @@ def create_session(
         for flags in unique_attempts:
             kwargs = _build_kwargs(flags)
             for attempt in range(attempts_n):
-                sem_held = _CREATE_SEM.acquire(timeout=max(1.0, min(8.0, timeout_s)))
+                sem_held = _CREATE_SEM.acquire(timeout=max(1.0, timeout_s))
                 plan_refusal = False
                 retry_delay: float | None = None
                 if not sem_held:
