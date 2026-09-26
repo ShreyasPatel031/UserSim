@@ -1115,6 +1115,89 @@ class HeadlineMetricTests(unittest.TestCase):
         self.assertFalse(_gate(result, "first_screen_not_excluded")["pass"])
         self.assertFalse(result["pass"])
 
+    def test_same_host_short_runs_count_as_first_screen(self) -> None:
+        """A /docs hop in two steps is the stall the summary already describes."""
+        study = _matrix([True] * 8)
+        short = 0
+        for run in study["agent_results"]:
+            if run["site_key"] != "product" or short >= 6:
+                continue
+            run["num_steps"] = 2
+            run["final_url"] = "https://linear.app/docs/creating-issues"
+            run["trace"] = [
+                {
+                    "step": 0,
+                    "action": "click docs",
+                    "url": "https://linear.app/",
+                    "state_sig": {"text": "Skip to content →", "canvas": ""},
+                },
+                {
+                    "step": 1,
+                    "action": "click creating issues",
+                    "url": "https://linear.app/docs/creating-issues",
+                    "state_sig": {"text": "Create issues " * 80, "canvas": ""},
+                },
+            ]
+            short += 1
+        insights = study["summary"]["insights"]
+        insights["headline"] = (
+            "linear.app only shows a first-screen impression. "
+            "6 of 8 product runs never left the homepage."
+        )
+        insights["weaknesses"] = [
+            {
+                "claim": (
+                    "6 of 8 product runs stopped on the first screen, "
+                    "so feature-level weaknesses are thin in these traces."
+                ),
+                "evidence": [],
+            }
+        ]
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product"
+        }
+        result = _evaluate(study, vision_goal=vision)
+        stats = result["product_task_success"]
+        self.assertEqual(len(stats["first_screen_ids"]), 6)
+        self.assertEqual(len(stats["structural_ids"]), 2)
+        self.assertFalse(_gate(result, "top_weakness_not_homepage_only")["pass"])
+        self.assertIn("opening_or_first_screen=6", _gate(result, "first_screen_not_excluded")["value"])
+        self.assertIn("structural_past_first_screen=2", _gate(result, "first_screen_not_excluded")["value"])
+        self.assertTrue(_gate(result, "first_screen_not_excluded")["pass"])
+        self.assertFalse(result["pass"])
+
+    def test_homepage_headline_cannot_exceed_the_structural_count(self) -> None:
+        study = _matrix([True] * 8)
+        insights = study["summary"]["insights"]
+        insights["headline"] = "6 of 8 product runs never left the homepage."
+        insights["lede"] = "6 of 8 product runs stopped on the homepage."
+        result = _evaluate(study, vision_goal={})
+        self.assertEqual(result["product_task_success"]["first_screen_ids"], [])
+        self.assertFalse(_gate(result, "first_screen_not_excluded")["pass"])
+        self.assertFalse(_gate(result, "top_weakness_not_homepage_only")["pass"])
+        self.assertIn("structural count is 0", _gate(result, "first_screen_not_excluded")["detail"])
+
+    def test_judge_opening_screen_overrides_a_path_change(self) -> None:
+        study = _matrix([True] * 8)
+        aid = "t1__p1__product"
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product"
+        }
+        vision[aid] = {
+            "goal_reached": True,
+            "still_on_opening_screen": True,
+            "reason": "The screenshot is still the marketing homepage.",
+        }
+        result = _evaluate(study, vision_goal=vision)
+        stats = result["product_task_success"]
+        self.assertIn(aid, stats["first_screen_ids"])
+        self.assertNotIn(aid, stats["structural_ids"])
+        self.assertNotIn(aid, stats["success_ids"])
+
     def test_missing_headline_clocks_fail(self) -> None:
         study, vision = self._passing()
         startup = _startup_that_used_to_pass()
