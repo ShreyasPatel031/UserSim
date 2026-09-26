@@ -375,5 +375,44 @@ class InsightTests(unittest.TestCase):
         self.assertIsNone(cell["median_steps"])
 
 
+class ReportWordingTests(unittest.TestCase):
+    def test_per_account_workspace_slugs_group_as_one_page(self):
+        from mvp.report_insights import _page_shape
+
+        a = _page_shape("https://linear.app/riveralabse671/team/RIV/active")
+        b = _page_shape("https://linear.app/riveralabs0764/team/RIV/active")
+        self.assertEqual(a, b)
+        self.assertEqual(a, "linear.app/\u2026/team/RIV/active")
+        self.assertEqual(_page_shape("https://linear.app/pricing"), "linear.app/pricing")
+        self.assertEqual(_page_shape("https://www.notion.com/product/ai"), "notion.com/product/ai")
+
+    def test_chain_never_shows_the_signup_email_or_cuts_mid_word(self):
+        from mvp.report_insights import _chain_item
+
+        self.assertEqual(_chain_item("signed up as linearz7sug5@uberip.com in 106.3s"), "live sign-up (106s)")
+        self.assertEqual(_chain_item("type 'Test issue' into Issue title"), "type 'Test issue'")
+        self.assertEqual(_chain_item("click Create issue"), "Create issue")
+        long = _chain_item("click Open the very long settings menu for workspace")
+        self.assertTrue(long.endswith("\u2026"))
+        self.assertNotIn("worksp\u2026", long)
+
+    def test_short_brand_keeps_its_domain(self):
+        from mvp.report_insights import _pretty_host
+
+        self.assertEqual(_pretty_host("https://cal.com/"), "Cal.com")
+        self.assertEqual(_pretty_host("https://miro.com/"), "Miro")
+        self.assertEqual(_pretty_host("https://www.tldraw.com/"), "Tldraw")
+
+    def test_failed_usersim_signup_notes_are_not_product_friction(self):
+        from mvp.report_insights import _signup_harness_note
+
+        run = {"signup": {"ok": False, "reason": "email_rejected"}}
+        self.assertTrue(_signup_harness_note(run, "Email rejected during signup"))
+        self.assertTrue(_signup_harness_note(run, "email_rejected during signup"))
+        self.assertTrue(_signup_harness_note(run, "The signup process was not completed, preventing project creation."))
+        self.assertFalse(_signup_harness_note(run, "The pricing table hides the per-seat price."))
+        self.assertFalse(_signup_harness_note({"signup": {"ok": True}}, "Signup asked for a phone number."))
+
+
 if __name__ == "__main__":
     unittest.main()

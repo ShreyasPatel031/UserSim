@@ -549,6 +549,33 @@ def _note_ok(text: str) -> bool:
     return True
 
 
+_SIGNUP_FAIL_RE = re.compile(
+    r"(sign[ -]?up|signup|account creation|create (an )?account|verification|email|inbox|captcha)",
+    re.I,
+)
+_FAIL_WORD_RE = re.compile(
+    r"(reject|error|fail|not (be )?completed|incomplete|prevent|unable|could ?n[o']t|blocked|timed? ?out|"
+    r"not received|never (arrived|came)|did ?n[o']t (arrive|receive))",
+    re.I,
+)
+
+
+def _signup_harness_note(run: dict[str, Any], text: str) -> bool:
+    """A note that only restates UserSim's own failed live sign-up is not product friction.
+
+    The account wall itself is still reported from the trace (the path needs an
+    account); what our throwaway inbox or captcha solver could not do is a run issue.
+    """
+    su = run.get("signup") if isinstance(run.get("signup"), dict) else None
+    failed = run.get("failed_step") if isinstance(run.get("failed_step"), dict) else {}
+    signup_failed = (su is not None and not su.get("ok")) or str(failed.get("reason") or "").startswith(
+        "blocked at signup"
+    )
+    if re.search(r"\b[a-z]+_[a-z_]+\b", text):  # raw status codes like email_rejected
+        return True
+    return bool(signup_failed and _SIGNUP_FAIL_RE.search(text) and _FAIL_WORD_RE.search(text))
+
+
 def _failure_blob(result: dict[str, Any]) -> str:
     parts = [
         str(result.get("browser_error") or ""),
@@ -642,6 +669,8 @@ def _pretty_host(url: str) -> str:
     base = parts[0] if parts else host
     if base in {"app", "www", "docs", "m"} and len(parts) >= 2:
         base = parts[-2]
+    if base and len(base) <= 3 and base == parts[-2] and len(parts) >= 2:
+        base = f"{base}.{parts[-1]}"  # cal.com reads as "Cal.com", not "Cal"
     return base[:1].upper() + base[1:] if base else "Site"
 
 
@@ -691,6 +720,46 @@ def _short_page(url: str) -> str:
     if not host:
         return url[:80]
     return (host + ("" if path == "/" else path))[:90]
+
+
+_ID_SEG_RE = re.compile(
+    r"^(?:\d+|[0-9a-f]{8,}|[0-9a-f-]{20,}|(?=[a-z0-9-]*\d)(?=[a-z0-9-]*[a-z])[a-z0-9-]{6,})$",
+    re.I,
+)
+
+
+def _page_shape(url: str) -> str:
+    """The page with per-account path segments (workspace slugs, ids) folded to '…'.
+
+    linear.app/riveralabse671/team/RIV/active and linear.app/riveralabs0764/team/RIV/active
+    are the same page for a report; each fresh signup gets its own workspace slug.
+    """
+    page = _short_page(url)
+    host, _, path = page.partition("/")
+    if not path:
+        return page
+    segs = ["\u2026" if _ID_SEG_RE.match(seg) else seg for seg in path.split("/")]
+    return host + "/" + "/".join(segs)
+
+
+def _chain_item(action: str) -> str:
+    """One readable step for a click chain, cut on a word boundary, never an email."""
+    text = " ".join(str(action or "").split())
+    if text.startswith("signed up as"):
+        m = re.search(r" in (\d+(?:\.\d+)?)s", text)
+        return f"live sign-up ({float(m.group(1)):.0f}s)" if m else "live sign-up"
+    text = text.removeprefix("click ")
+    text = re.sub(r"^(type '[^']*') into .*$", r"\1", text)
+    if len(text) > 32:
+        text = text[:32].rsplit(" ", 1)[0] + "\u2026"
+    return text
+
+
+def _clip(text: str, n: int) -> str:
+    text = " ".join(str(text or "").split())
+    if len(text) <= n:
+        return text
+    return text[:n].rsplit(" ", 1)[0].rstrip(",;:\u2014-") + "\u2026"
 
 
 def _step_ax(step: dict[str, Any]) -> str:
@@ -766,7 +835,7 @@ def trace_claims(
             continue
         title = _task_title(run) or "Task"
         final_url = str(run.get("final_url") or steps[-1].get("url") or "")
-        final_page = _short_page(final_url)
+        final_page = _page_shape(final_url)
         moved = [s for s in steps if s.get("changed") is True]
         if _run_done(run) and not _AUTH_PATH_RE.search(final_url):
             key_step = moved[-1] if moved else steps[-1]
@@ -783,12 +852,14 @@ def trace_claims(
             if len(steps) >= 3:
                 # A finished path that still took several clicks is friction the
                 # trace shows directly: list the clicks, cite the first one.
-                chain = " \u2192 ".join(
-                    " ".join(str(s.get("action") or "").split()).removeprefix("click ")[:30]
-                    for s in steps[:4]
-                )
+                items = [_chain_item(s.get("action")) for s in steps]
+                chain = " \u2192 ".join(items[:6]) + (" \u2192 \u2026" if len(items) > 6 else "")
+                signed = any(str(s.get("decision_source") or "") == "signup" for s in steps)
                 key3 = f"{title.lower()}|long|{final_page}"
-                lab3 = f"{title}: it took {len(steps)} clicks ({chain}) to reach {final_page}"
+                lab3 = (
+                    f"{title}: it took {len(steps)} steps"
+                    f"{' including a live sign-up' if signed else ''} ({chain}) to reach {final_page}"
+                )
                 ev3 = _trace_evidence(run, steps[0], lab3)
                 if ev3:
                     long_paths.setdefault(key3, []).append(ev3)
@@ -801,12 +872,16 @@ def trace_claims(
         if stop == "needs_account" or _AUTH_PATH_RE.search(final_url):
             key = f"{title.lower()}|account"
             label = (
-                f"{title}: the path needs an account \u2014 agents were sent to "
-                f"{final_page} before they could finish"
+                f"{title}: the path needs an account \u2014 agents hit a sign-up or sign-in wall "
+                f"at {final_page} before they could finish"
             )
             if reason.startswith("blocked at signup"):
+                why = reason.removeprefix("blocked at signup").lstrip(": ").strip() or "it did not finish"
                 key = f"{title.lower()}|account|{reason}"
-                label = f"{title}: the path needs an account and the live signup was {reason} (at {final_page})"
+                label = (
+                    f"{title}: the path needs an account (wall at {final_page}); UserSim's live sign-up "
+                    f"could not get past it ({why})"
+                )
         else:
             key = f"{title.lower()}|{final_page}"
             label = (
@@ -820,7 +895,7 @@ def trace_claims(
         for step in steps:
             if step.get("changed") is False:
                 action = " ".join(str(step.get("action") or "").split())[:80]
-                page = _short_page(str(step.get("url") or final_url))
+                page = _page_shape(str(step.get("url") or final_url))
                 k2 = f"nochange|{action.lower()}|{page}"
                 lab = f"\u201c{action}\u201d changed nothing on {page}"
                 ev2 = _trace_evidence(run, step, lab)
@@ -878,7 +953,9 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
             if not _note_ok(text):
                 continue
             if _sentiment(text) == "neg":
-                key = " ".join(text.lower().split())[:80]
+                if _signup_harness_note(run, text):
+                    continue
+                key = " ".join(text.lower().replace("_", " ").split())[:80]
                 ev = _evidence(run, detail=text, prefer_friction=True)
                 if not ev:
                     continue
@@ -916,9 +993,9 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
     for run in product:
         for note in run.get("friction_points") or []:
             text = str(note).strip()
-            if not _note_ok(text):
+            if not _note_ok(text) or _signup_harness_note(run, text):
                 continue
-            key = " ".join(text.lower().split())[:80]
+            key = " ".join(text.lower().replace("_", " ").split())[:80]
             ev = _evidence(run, detail=text, prefer_friction=True)
             if not ev:
                 continue
@@ -934,8 +1011,17 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
     # Trace-backed claims first: they cite a step past the opening page.
     t_strengths, t_weaknesses = trace_claims(product, product_url)
     have = {c["claim"] for c in strengths}
-    strengths = (t_strengths + [c for c in strengths if c["claim"] not in {t["claim"] for t in t_strengths}])[:3]
-    weaknesses = (t_weaknesses + [c for c in weaknesses if c["claim"] not in {t["claim"] for t in t_weaknesses}])[:3]
+    def _norm(text: str) -> str:
+        text = re.sub(r"https?://(www\.)?", "", str(text or "").lower())
+        text = re.sub(r"\(\d+ (of \d+ )?runs?\)", "", text)
+        return re.sub(r"[^a-z0-9]+", "", text)
+
+    def _novel(c: dict[str, Any], base: list[dict[str, Any]]) -> bool:
+        n = _norm(c["claim"])
+        return bool(n) and not any(n in _norm(t["claim"]) or _norm(t["claim"]) in n for t in base)
+
+    strengths = (t_strengths + [c for c in strengths if _novel(c, t_strengths)])[:3]
+    weaknesses = (t_weaknesses + [c for c in weaknesses if _novel(c, t_weaknesses)])[:3]
     del have
 
     # Stuck means the run never left the page it opened on. A pricing page
@@ -988,11 +1074,11 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
             f"{len(stuck)} of {len(product)} product runs never left the homepage."
         )
     elif strengths and weaknesses:
-        headline = f"{host}: {strengths[0]['claim'][:90]}"
+        headline = f"{host}: {_clip(strengths[0]['claim'], 150)}"
     elif strengths:
-        headline = f"{host}: {strengths[0]['claim'][:110]}"
+        headline = f"{host}: {_clip(strengths[0]['claim'], 150)}"
     elif weaknesses:
-        headline = f"{host}: {weaknesses[0]['claim'][:110]}"
+        headline = f"{host}: {_clip(weaknesses[0]['claim'], 150)}"
     else:
         headline = f"Evidence is thin for {host}: the traces do not support a specific strength or weakness."
         thin = True
@@ -1383,14 +1469,17 @@ def verdict(insights: dict[str, Any], study: dict[str, Any]) -> dict[str, Any]:
             elif rate > 0:
                 ms, os_ = mine.get("median_steps"), cell.get("median_steps")
                 mt, ot = mine.get("median_time_s"), cell.get("median_time_s")
+                def _st(v: float) -> str:
+                    return f"{v:.0f} step{'s' if round(v) != 1 else ''}"
+
                 if ms is not None and os_ is not None and os_ + 1 <= ms:
-                    better.append(f"{name} ({os_:.0f} steps vs {ms:.0f})")
+                    better.append(f"{name} ({_st(os_)} vs {product_label}'s {ms:.0f})")
                 elif ms is not None and os_ is not None and ms + 1 <= os_:
-                    worse.append(f"{name} ({os_:.0f} steps vs {ms:.0f})")
+                    worse.append(f"{name} ({_st(os_)} vs {product_label}'s {ms:.0f})")
                 elif mt is not None and ot is not None and ot * 1.5 < mt:
-                    better.append(f"{name} ({ot:.0f}s vs {mt:.0f}s)")
+                    better.append(f"{name} ({ot:.0f}s vs {product_label}'s {mt:.0f}s)")
                 elif mt is not None and ot is not None and mt * 1.5 < ot:
-                    worse.append(f"{name} ({ot:.0f}s vs {mt:.0f}s)")
+                    worse.append(f"{name} ({ot:.0f}s vs {product_label}'s {mt:.0f}s)")
         mine_txt = _fmt_rate(mine.get("ok") or 0, mine.get("n") or 0)
         steps = mine.get("median_steps")
         how = f" in a median {steps:.0f} step{'s' if steps != 1 else ''}" if steps else ""
@@ -1404,7 +1493,7 @@ def verdict(insights: dict[str, Any], study: dict[str, Any]) -> dict[str, Any]:
             )
         elif rate == 0:
             wall = " because it needs an account" if "product" in walls.get(title, set()) else ""
-            trails.append(f"{title}: no {product_label} run finished{wall} (every site 0 as well)."
+            trails.append(f"{title}: no {product_label} run finished{wall} (no competitor finished it either)."
                           if not others or all(not (c.get("ok")) for c in others.values())
                           else f"{title}: no {product_label} run finished{wall}.")
     return {"good_for": good[:4], "trails": trails[:4], "summary": None}
