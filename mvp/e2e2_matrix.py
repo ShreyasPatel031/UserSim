@@ -9,17 +9,20 @@ Preparing pulse, not a grey pane).
 Startup gates still apply (24 agents, each first real screenshot within 5s,
 a vision YES). The study budget is 8 minutes (480s), confirmed above the
 observed strict-e2e maximum of 408s. There is no per-agent time limit; a stuck
-agent is one with no URL/DOM/canvas progress over 3 steps. pass=true only when
-the independent goal-judge verdicts and the report checks in mvp.e2e2_gates
-all pass. Agent summaries are not a pass signal. Failed runs are written to
-failures.json.
+agent repeats the same action 3 times with no URL or DOM change. While the
+study runs, the harness aborts if agents open the page and then take no real
+action (under half by 60s, or any agent still idle at 90s), if Root CDP client
+init fails, or if Browserbase session drops pass 25% of agents. pass=true only
+when the independent goal-judge verdicts and the report checks all pass.
+Agent summaries are not a pass signal. Failed runs are written to failures.json.
 
   MVP_BB_OWNER=testfix PYTHONPATH=src:. python mvp/e2e2_matrix.py \\
     --base http://127.0.0.1:3000 --url https://linear.app \\
     --competitors $'https://asana.com/\\nhttps://trello.com/' \\
     --tasks $'Find how to create a new issue\\nLook for pricing or how to get started' \\
     --segment 'Product managers comparing issue trackers' \\
-    --expected 24 --max-agents 24 --max-elapsed-s 480 --first-shot-s 5
+    --expected 24 --max-agents 24 --max-elapsed-s 480 --first-shot-s 5 \\
+    --first-action-s 60 --first-action-frac 0.5
 """
 
 from __future__ import annotations
@@ -46,11 +49,18 @@ from mvp.e2e_ui_run import (  # noqa: E402
     http_json,
 )
 from mvp.e2e2_gates import (  # noqa: E402
+    DEFAULT_FIRST_ACTION_FRAC,
+    DEFAULT_FIRST_ACTION_S,
     DEFAULT_STUDY_BUDGET_S,
+    assess_first_action,
+    assess_infrastructure_abort,
+    assess_stuck_abort,
+    build_early_failures,
     coerce_verdict,
     evaluate_strict_gates,
     final_dom_of,
     final_url_of,
+    has_real_action,
     iter_runs,
     judge_goal_screenshot,
     render_markdown,
@@ -354,15 +364,45 @@ async def _toggle_session(page, sess: dict) -> None:
     await page.wait_for_timeout(400)
 
 
-def _release_testfix_sessions() -> None:
+def _release_testfix_sessions(study_id: str = "") -> None:
     """Release only strict-e2e sessions. Never signup, report, or other e2e owners."""
     try:
         from mvp.kill_switch import kill_all_browserbase
 
-        released = kill_all_browserbase(owner="testfix")
-        _log(f"released browserbase owner=testfix {released}")
+        released = kill_all_browserbase(
+            owner="testfix",
+            study_id=study_id or None,
+        )
+        _log(f"released browserbase owner=testfix study={study_id or '*'} {released}")
     except Exception as exc:  # noqa: BLE001
         _log(f"browserbase release failed: {exc!r}")
+
+
+def _stop_study(base: str, study_id: str) -> None:
+    """Stop this study via the API, then release its owner-tagged sessions."""
+    if not study_id:
+        return
+    body = json.dumps(
+        {
+            "agents": True,
+            "vms": False,
+            "seeds": False,
+            "study_id": study_id,
+        }
+    ).encode()
+    req = urllib.request.Request(
+        base.rstrip("/") + "/api/runtime/kill",
+        data=body,
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=90) as resp:
+            payload = resp.read().decode("utf-8", "replace")
+        _log(f"  stopped study {study_id} via /api/runtime/kill ({len(payload)} bytes)")
+    except Exception as exc:  # noqa: BLE001
+        _log(f"  stop study via API failed: {exc!r}")
+    _release_testfix_sessions(study_id)
 
 
 def _fetch_report_html(base: str, study_id: str) -> tuple[str, str]:
@@ -515,6 +555,9 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         t_all_tasks: float | None = None
         queued_hits = 0
         abort_reason: str | None = None
+        early_abort: dict | None = None
+        elapsed_at_abort: float | None = None
+        first_action_check: dict | None = None
 
         while time.time() - t0 < args.timeout_s:
             e2e = await page.evaluate("() => window.__e2e || {}")
@@ -596,10 +639,52 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     )
                     _log(f"  {abort_reason}")
                     break
+            acted_n = sum(1 for sess in sessions if has_real_action(sess))
+            since_task = None
+            if sessions and t_first_task is not None:
+                created_ts = [
+                    ts
+                    for sess in sessions
+                    if (ts := _sess_created_ts(sess)) is not None
+                ]
+                anchor = min(created_ts) if created_ts else t_first_task
+                since_task = time.time() - anchor
+                study_phase = str(study.get("phase") or "")
+                for sess in sessions:
+                    if not sess.get("phase"):
+                        sess["phase"] = study_phase
+                infra = assess_infrastructure_abort(sessions)
+                stuck = (
+                    {"abort": False}
+                    if infra.get("abort")
+                    else assess_stuck_abort(sessions)
+                )
+                first_action_check = assess_first_action(
+                    sessions,
+                    since_s=since_task,
+                    first_action_s=args.first_action_s,
+                    frac=args.first_action_frac,
+                )
+                chosen = None
+                if infra.get("abort"):
+                    chosen = infra
+                elif stuck.get("abort"):
+                    chosen = stuck
+                elif first_action_check.get("abort"):
+                    chosen = first_action_check
+                if chosen:
+                    abort_reason = str(chosen.get("reason") or "FAIL early")
+                    early_abort = chosen
+                    elapsed_at_abort = time.time()
+                    _log(f"  {abort_reason}")
+                    _stop_study(args.base, str(study_id or ""))
+                    break
             _log(
                 f"  [{int(time.time()-t0)}s] status={study.get('status')} "
                 f"users={len(personas)} tasks={n_unique_tasks} "
                 f"sites={1+len(comps)} agents={len(sessions)} "
+                f"acted={acted_n}/{len(sessions)} "
+                f"since_task={'' if since_task is None else f'{since_task:.0f}s'} "
                 f"steps={step_n} done={done_n} "
                 f"yeses={len(judged)} phase={(study.get('phase') or '')[:50]}"
             )
@@ -769,7 +854,18 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             for t in (study.get("tasks") or [])
         })
         report["sites"] = 1 + len(study.get("competitors") or [])
-        report["elapsed_s"] = round(time.time() - t0, 1)
+        report["elapsed_s"] = round((elapsed_at_abort or time.time()) - t0, 1)
+        report["since_first_task_s"] = (
+            None if not first_action_check else first_action_check.get("since_s")
+        )
+        report["early_abort"] = (
+            None
+            if not early_abort
+            else {
+                "type": early_abort.get("type"),
+                "reason": early_abort.get("reason"),
+            }
+        )
         timing = _timing_summary(t0, _sessions(study), expected)
         report["timing"] = timing
         report["t_first_task_created_s"] = timing["run_click_to_first_task_created_s"]
@@ -815,11 +911,17 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         nos = [v["agent_id"] for v in judged.values() if not v.get("pass")]
         if study_id and not study.get("id"):
             study["id"] = study_id
-        vision_goal = _goal_verdicts(study, args.base) if study_id else {}
+        if early_abort:
+            vision_goal = {}
+            report_html, report_url = "", ""
+            shot_loader = lambda _url: False  # noqa: E731
+        else:
+            vision_goal = _goal_verdicts(study, args.base) if study_id else {}
+            report_html, report_url = (
+                _fetch_report_html(args.base, study_id) if study_id else ("", "")
+            )
+            shot_loader = _screenshot_loader(args.base, study_id) if study_id else (lambda _url: False)
         report["goal_verdicts"] = vision_goal
-        report_html, report_url = (
-            _fetch_report_html(args.base, study_id) if study_id else ("", "")
-        )
         strict = evaluate_strict_gates(
             study,
             startup={
@@ -840,13 +942,16 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 "max_elapsed_s": args.max_elapsed_s,
                 "study_budget_s": args.max_elapsed_s,
                 "first_shot_s": args.first_shot_s,
+                "first_action_s": args.first_action_s,
+                "first_action_frac": args.first_action_frac,
+                "first_action_check": first_action_check,
                 "base": args.base,
                 "study_id": study_id,
                 "status": study.get("status"),
                 "has_summary": bool(study.get("summary")),
             },
             vision_goal=vision_goal,
-            screenshot_loads=_screenshot_loader(args.base, study_id),
+            screenshot_loads=shot_loader,
             report_html=report_html,
             report_url=report_url,
             abort_reason=abort_reason,
@@ -866,7 +971,15 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         report["goal_verdicts"] = strict.get("verdicts") or vision_goal
         report["pass"] = bool(strict["pass"])
         failure_path = OUT_DIR / "failures.json"
-        failure_doc = strict.get("failures") or {}
+        if early_abort:
+            failure_doc = build_early_failures(
+                study,
+                _sessions(study),
+                early_abort,
+                base_url=args.base.rstrip("/"),
+            )
+        else:
+            failure_doc = strict.get("failures") or {}
         failure_path.write_text(json.dumps(failure_doc, indent=2))
         report["failure_file"] = str(failure_path)
         summary_md = render_markdown(
@@ -883,26 +996,29 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
 
         # Ready may show only now — give the UI a beat to apply the final poll.
         ready = False
-        for _ in range(5):
-            try:
-                await page.evaluate(
-                    """(data) => {
-                      if (typeof updateReportCta === 'function') {
-                        updateReportCta(data);
-                      } else if (typeof window.applyStudyUpdate === 'function') {
-                        window.applyStudyUpdate(data);
-                      }
-                    }""",
-                    study,
-                )
-            except Exception:
-                pass
-            ready = await page.evaluate(_ready_visible_js())
-            if ready:
-                break
-            await page.wait_for_timeout(1000)
-        report["ready_after_complete"] = ready
-        if study.get("status") == "complete" and not ready:
+        if early_abort:
+            report["ready_after_complete"] = False
+        else:
+            for _ in range(5):
+                try:
+                    await page.evaluate(
+                        """(data) => {
+                          if (typeof updateReportCta === 'function') {
+                            updateReportCta(data);
+                          } else if (typeof window.applyStudyUpdate === 'function') {
+                            window.applyStudyUpdate(data);
+                          }
+                        }""",
+                        study,
+                    )
+                except Exception:
+                    pass
+                ready = await page.evaluate(_ready_visible_js())
+                if ready:
+                    break
+                await page.wait_for_timeout(1000)
+            report["ready_after_complete"] = ready
+        if study.get("status") == "complete" and not ready and not early_abort:
             _log("  WARN: Ready still hidden after complete")
 
         report["smoke_only"] = expected < PASS_AGENT_BAR
@@ -912,7 +1028,12 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
     _log(f"Wrote {OUT_DIR / 'result.json'}")
     _log(f"Wrote {OUT_DIR / 'summary.md'}")
     if not report["pass"]:
-        raise RuntimeError("e2e2 failed: " + "; ".join(report.get("fail_reasons") or ["unknown"]))
+        lead = ""
+        if early_abort and early_abort.get("reason"):
+            lead = str(early_abort.get("reason")) + " || "
+        raise RuntimeError(
+            lead + "e2e2 failed: " + "; ".join(report.get("fail_reasons") or ["unknown"])
+        )
     return report
 
 
@@ -985,6 +1106,18 @@ def main() -> int:
             "Max seconds from EACH agent's creation to THAT agent's first "
             "screenshot (env E2E2_FIRST_SHOT_S, default 5)"
         ),
+    )
+    ap.add_argument(
+        "--first-action-s",
+        type=float,
+        default=float(os.environ.get("E2E2_FIRST_ACTION_S", str(int(DEFAULT_FIRST_ACTION_S))) or "60"),
+        help="Seconds after the first task before the half-of-agents action check (default 60)",
+    )
+    ap.add_argument(
+        "--first-action-frac",
+        type=float,
+        default=float(os.environ.get("E2E2_FIRST_ACTION_FRAC", str(DEFAULT_FIRST_ACTION_FRAC)) or "0.5"),
+        help="Minimum share of agents with a real action by --first-action-s (default 0.5)",
     )
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
     ap.add_argument("--study-id", default=os.environ.get("E2E2_STUDY_ID", ""))

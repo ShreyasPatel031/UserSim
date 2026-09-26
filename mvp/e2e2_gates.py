@@ -47,12 +47,21 @@ FAILURE_INFRASTRUCTURE = "our infrastructure"
 FAILURE_MODEL_TIMEOUT = "model timeout"
 FAILURE_STUCK = "stuck"
 FAILURE_PRODUCT = "product"
+FAILURE_NO_FIRST_ACTION = "no_first_action"
 FAILURE_TYPES = (
     FAILURE_INFRASTRUCTURE,
     FAILURE_MODEL_TIMEOUT,
     FAILURE_STUCK,
     FAILURE_PRODUCT,
+    FAILURE_NO_FIRST_ACTION,
 )
+# Live poll: by 60s at least half the agents must have a real action, and by
+# 90s every agent must. 90s is first_action_s + this extra.
+DEFAULT_FIRST_ACTION_S = 60.0
+DEFAULT_FIRST_ACTION_FRAC = 0.5
+FIRST_ACTION_ALL_EXTRA_S = 30.0
+# Abort when Browserbase session drops are strictly over this share of agents.
+INFRA_DROP_MAX = 0.25
 
 # Bland-style /report shell (same layout as /blandai).
 _REPORT_MARKERS = (
@@ -80,6 +89,18 @@ _BB_LOSS_RE = re.compile(
 
 _TIMEOUT_RE = re.compile(
     r"\btimed?\s*out\b|\btimeout\b|agent wall|deadline exceeded",
+    re.I,
+)
+
+_CDP_RE = re.compile(r"root cdp client not initialized", re.I)
+_BB_DROP_RE = re.compile(
+    r"root cdp client not initialized|"
+    r"session (?:dropped|closed|expired|disconnected)|"
+    r"browser(?:base)? session (?:dropped|closed|lost)|"
+    r"target closed|"
+    r"websocket[^.]{0,40}clos|"
+    r"browser disconnected|"
+    r"cdp client",
     re.I,
 )
 
@@ -239,11 +260,15 @@ def _step_progressed(prev: dict[str, Any], cur: dict[str, Any]) -> bool:
     return False
 
 
-def stuck_no_progress(run: dict[str, Any], *, steps: int = STUCK_STEPS) -> bool:
-    """True when `steps` consecutive trace steps make no progress.
+def _action_key(step: dict[str, Any]) -> str:
+    return " ".join(str(step.get("action") or "").split()).lower()
 
-    This is not a timeout. A run that only captured the opening frame has not
-    taken enough steps to be stuck.
+
+def stuck_no_progress(run: dict[str, Any], *, steps: int = STUCK_STEPS) -> bool:
+    """True when the same action is repeated `steps` times with no URL/DOM change.
+
+    Opening the page is not that action. A run that only captured the opening
+    frame has not repeated an action, so it is not stuck.
     """
     trace = [
         step
@@ -251,17 +276,187 @@ def stuck_no_progress(run: dict[str, Any], *, steps: int = STUCK_STEPS) -> bool:
         if isinstance(step, dict) and isinstance(step.get("step"), int)
     ]
     trace.sort(key=lambda step: int(step["step"]))
-    if len(trace) < steps:
-        return False
-    streak = 1
-    for prev, cur in zip(trace, trace[1:]):
-        if _step_progressed(prev, cur):
-            streak = 1
-        else:
-            streak += 1
-            if streak >= steps:
-                return True
+    streak = 0
+    prev: dict[str, Any] | None = None
+    prev_key = ""
+    for step in trace:
+        key = _action_key(step)
+        if not key or key.startswith("opened"):
+            streak = 0
+            prev = step
+            prev_key = ""
+            continue
+        same = (
+            prev is not None
+            and key == prev_key
+            and not _step_progressed(prev, step)
+        )
+        streak = streak + 1 if same else 1
+        prev = step
+        prev_key = key
+        if streak >= steps:
+            return True
     return False
+
+
+def has_real_action(run: dict[str, Any]) -> bool:
+    """A numbered step at or after 1 whose action is not just opening the page."""
+    for step in run.get("trace") or []:
+        if not isinstance(step, dict):
+            continue
+        try:
+            number = int(step.get("step"))
+        except (TypeError, ValueError):
+            continue
+        if number < 1:
+            continue
+        action = str(step.get("action") or "").strip()
+        if not action or action.lower().startswith("opened"):
+            continue
+        return True
+    return False
+
+
+def last_seen_text(run: dict[str, Any]) -> str:
+    """Phase and error the harness last observed for this agent."""
+    aid = str(run.get("agent_id") or run.get("task_id") or "")
+    phase = str(run.get("phase") or run.get("status") or "")
+    error = str(run.get("error") or run.get("browser_error") or "")
+    last = str(run.get("last_action") or "")
+    return (
+        f"{aid} phase={phase[:80]} error={error[:120]} last_action={last[:80]}"
+    )
+
+
+def _agent_text(run: dict[str, Any]) -> str:
+    issue = run.get("run_issue") if isinstance(run.get("run_issue"), dict) else {}
+    return " ".join(
+        [
+            str(run.get("browser_error") or ""),
+            str(run.get("last_action") or ""),
+            str(run.get("error") or ""),
+            str(run.get("phase") or ""),
+            str(run.get("status") or ""),
+            str(issue.get("kind") or ""),
+            str(issue.get("reason") or ""),
+        ]
+    )
+
+
+def is_cdp_failure(run: dict[str, Any]) -> bool:
+    return bool(_CDP_RE.search(_agent_text(run)))
+
+
+def is_browserbase_session_drop(run: dict[str, Any]) -> bool:
+    return bool(_BB_DROP_RE.search(_agent_text(run)))
+
+
+def assess_first_action(
+    runs: list[dict[str, Any]],
+    *,
+    since_s: float,
+    first_action_s: float = DEFAULT_FIRST_ACTION_S,
+    frac: float = DEFAULT_FIRST_ACTION_FRAC,
+) -> dict[str, Any]:
+    """Abort when agents open the page and then sit.
+
+    At `first_action_s` (default 60s after the first task) fewer than `frac`
+    of agents with a real action aborts. At `first_action_s` + 30s (default
+    90s) any agent still without one aborts.
+    """
+    agents = [run for run in runs if isinstance(run, dict)]
+    acted = [run for run in agents if has_real_action(run)]
+    missing = [run for run in agents if not has_real_action(run)]
+    total = len(agents)
+    acted_n = len(acted)
+    share = (acted_n / total) if total else 1.0
+    all_by = float(first_action_s) + FIRST_ACTION_ALL_EXTRA_S
+    abort = False
+    reason = ""
+    if total and since_s >= float(first_action_s) and share < float(frac):
+        abort = True
+        reason = (
+            f"FAIL first_action: {acted_n}/{total} agents had a real action "
+            f"by {since_s:.0f}s (need >= {float(frac):.0%} by {float(first_action_s):.0f}s)"
+        )
+    elif total and since_s >= all_by and missing:
+        abort = True
+        reason = (
+            f"FAIL first_action: {len(missing)}/{total} agents still have no real action "
+            f"at {since_s:.0f}s (every agent must act by {all_by:.0f}s)"
+        )
+    seen = "; ".join(last_seen_text(run) for run in missing)
+    if abort and seen:
+        reason = f"{reason}. {seen}"
+    return {
+        "measured": True,
+        "ok": not abort,
+        "abort": abort,
+        "type": FAILURE_NO_FIRST_ACTION if abort else "",
+        "acted": acted_n,
+        "agents": total,
+        "since_s": round(float(since_s), 1),
+        "first_action_s": float(first_action_s),
+        "frac": float(frac),
+        "all_by_s": all_by,
+        "missing_ids": [str(run.get("agent_id") or "") for run in missing],
+        "reason": reason,
+        "detail": seen[:1500],
+    }
+
+
+def assess_infrastructure_abort(runs: list[dict[str, Any]]) -> dict[str, Any]:
+    """Abort on a CDP init failure, or when session drops pass 25% of agents."""
+    agents = [run for run in runs if isinstance(run, dict)]
+    total = len(agents)
+    cdp = [run for run in agents if is_cdp_failure(run)]
+    drops = [run for run in agents if is_browserbase_session_drop(run)]
+    abort = False
+    reason = ""
+    flagged = cdp
+    if cdp:
+        abort = True
+        reason = (
+            f"FAIL our infrastructure: Root CDP client not initialized "
+            f"on {len(cdp)}/{total} agents"
+        )
+    elif total and (len(drops) / total) > INFRA_DROP_MAX:
+        abort = True
+        flagged = drops
+        reason = (
+            f"FAIL our infrastructure: Browserbase session drops "
+            f"{len(drops)}/{total} (over {INFRA_DROP_MAX:.0%})"
+        )
+    if abort:
+        reason = f"{reason}. " + "; ".join(last_seen_text(run) for run in flagged)
+    return {
+        "abort": abort,
+        "type": FAILURE_INFRASTRUCTURE if abort else "",
+        "reason": reason,
+        "ids": [str(run.get("agent_id") or "") for run in flagged],
+        "cdp_n": len(cdp),
+        "drop_n": len(drops),
+        "agents": total,
+    }
+
+
+def assess_stuck_abort(runs: list[dict[str, Any]]) -> dict[str, Any]:
+    """Abort when an agent repeats one action with no URL or DOM change."""
+    agents = [run for run in runs if isinstance(run, dict)]
+    stuck = [run for run in agents if stuck_no_progress(run)]
+    if not stuck:
+        return {"abort": False, "type": "", "reason": "", "ids": []}
+    reason = (
+        f"FAIL stuck: {len(stuck)} agent(s) repeated the same action "
+        f"{STUCK_STEPS} times with no URL/DOM change. "
+        + "; ".join(last_seen_text(run) for run in stuck)
+    )
+    return {
+        "abort": True,
+        "type": FAILURE_STUCK,
+        "reason": reason,
+        "ids": [str(run.get("agent_id") or "") for run in stuck],
+    }
 
 
 def final_url_of(run: dict[str, Any]) -> str:
@@ -588,7 +783,7 @@ def _startup_gates(
             elapsed is not None and float(elapsed) <= max_elapsed,
             (
                 "No per-agent time limit. "
-                f"Stuck means {STUCK_STEPS} consecutive steps with no URL, DOM, or canvas change. "
+                f"Stuck means the same action repeated {STUCK_STEPS} times with no URL or DOM change. "
                 "Confirmed maxima: saved-study wall 358s, measured e2e2 elapsed 378s, "
                 f"YouTube baseline {OBSERVED_STUDY_MAX_S:.0f}s."
             ),
@@ -608,6 +803,38 @@ def _startup_gates(
             max_gap is not None and float(max_gap) <= first_shot_s and slow == 0,
         ),
     ]
+    check = startup.get("first_action_check")
+    action_s = float(startup.get("first_action_s") or DEFAULT_FIRST_ACTION_S)
+    action_frac = float(startup.get("first_action_frac") or DEFAULT_FIRST_ACTION_FRAC)
+    all_by = action_s + FIRST_ACTION_ALL_EXTRA_S
+    if isinstance(check, dict) and check.get("measured"):
+        gates.append(
+            _gate(
+                "first_action",
+                "First real action",
+                f"{check.get('acted')}/{check.get('agents')} by {check.get('since_s')}s",
+                (
+                    f">= {action_frac:.0%} of agents by {action_s:.0f}s "
+                    f"and every agent by {all_by:.0f}s"
+                ),
+                bool(check.get("ok")),
+                str(check.get("detail") or check.get("reason") or ""),
+            )
+        )
+    else:
+        gates.append(
+            _gate(
+                "first_action",
+                "First real action",
+                "not measured",
+                (
+                    f">= {action_frac:.0%} of agents by {action_s:.0f}s "
+                    f"and every agent by {all_by:.0f}s"
+                ),
+                True,
+                "Live poll did not run. A running study aborts when agents stay on the opening step.",
+            )
+        )
     return gates
 
 
@@ -669,6 +896,64 @@ def _absolute_url(base: str, url: str) -> str:
 
 def _shot_step(run: dict[str, Any]) -> dict[str, Any] | None:
     return _final_shot(run)
+
+
+def build_early_failures(
+    study: dict[str, Any],
+    runs: list[dict[str, Any]],
+    early: dict[str, Any],
+    *,
+    base_url: str = "",
+) -> dict[str, Any]:
+    """Failure file for an early abort. Every listed run shares the abort type."""
+    kind = str(early.get("type") or FAILURE_PRODUCT)
+    wanted = set(early.get("ids") or early.get("missing_ids") or [])
+    study_id = str(study.get("id") or "")
+    failed: list[dict[str, Any]] = []
+    for run in runs:
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        if not aid:
+            continue
+        if wanted and aid not in wanted:
+            continue
+        if kind == FAILURE_NO_FIRST_ACTION and has_real_action(run):
+            continue
+        shot = _shot_step(run)
+        step_n = shot.get("step") if shot else None
+        shot_url = str((shot or {}).get("screenshot_url") or "")
+        step_q = int(step_n) if isinstance(step_n, int) else 0
+        if study_id:
+            trace = f"{base_url}/report?study={study_id}&agent={aid}&step={step_q}"
+        else:
+            trace = f"{base_url}/report?agent={aid}&step={step_q}"
+        failed.append(
+            {
+                "agent_id": aid,
+                "site_key": str(run.get("site_key") or ""),
+                "task": str(run.get("task_prompt") or run.get("task_title") or ""),
+                "type": kind,
+                "judge_reason": last_seen_text(run),
+                "phase": str(run.get("phase") or run.get("status") or ""),
+                "error": str(run.get("error") or run.get("browser_error") or ""),
+                "goal_reached": False,
+                "trace_link": trace,
+                "final_screenshot": _absolute_url(base_url, shot_url),
+                "final_url": final_url_of(run),
+                "step": step_n if isinstance(step_n, int) else None,
+            }
+        )
+    counts: dict[str, int] = {name: 0 for name in FAILURE_TYPES}
+    for row in failed:
+        counts[row["type"]] = counts.get(row["type"], 0) + 1
+    return {
+        "study_id": study_id,
+        "product_url": _product_url(study),
+        "abort": kind,
+        "reason": str(early.get("reason") or ""),
+        "types": list(FAILURE_TYPES),
+        "counts": counts,
+        "failed_runs": failed,
+    }
 
 
 def build_failure_report(

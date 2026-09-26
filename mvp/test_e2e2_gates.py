@@ -9,9 +9,14 @@ from pathlib import Path
 from mvp.e2e2_gates import (
     FAILURE_INFRASTRUCTURE,
     FAILURE_MODEL_TIMEOUT,
+    FAILURE_NO_FIRST_ACTION,
     FAILURE_PRODUCT,
     FAILURE_STUCK,
+    assess_first_action,
+    assess_infrastructure_abort,
+    assess_stuck_abort,
     beyond_first_screen,
+    build_early_failures,
     evaluate_strict_gates,
     is_browserbase_or_concurrency_loss,
     render_markdown,
@@ -427,6 +432,160 @@ class SyntheticGateTests(unittest.TestCase):
         self.assertFalse(_gate(over, "study_budget")["pass"])
         self.assertFalse(over["pass"])
         self.assertNotIn("elapsed", {g["id"] for g in over["gates"]})
+
+
+def _opened(agent_id: str, *, error: str = "", phase: str = "Live browser agents") -> dict:
+    return {
+        "agent_id": agent_id,
+        "site_key": "product",
+        "task_prompt": "Find how to create a new issue",
+        "phase": phase,
+        "last_action": "Opened https://linear.app/",
+        "error": error,
+        "browser_error": error,
+        "final_url": "https://linear.app/",
+        "trace": [
+            {
+                "step": 0,
+                "action": "Opened https://linear.app/",
+                "url": "https://linear.app/",
+                "screenshot_url": f"/api/studies/s/agents/{agent_id}/screenshots/bbox_0.png",
+            }
+        ],
+    }
+
+
+def _acting(agent_id: str) -> dict:
+    run = _opened(agent_id)
+    run["trace"].append(
+        {
+            "step": 1,
+            "action": "click — index=4",
+            "url": "https://linear.app/login",
+            "screenshot_url": f"/api/studies/s/agents/{agent_id}/screenshots/step_1.png",
+        }
+    )
+    run["last_action"] = "click — index=4"
+    return run
+
+
+class EarlyFailureTests(unittest.TestCase):
+    def test_step_zero_fleet_aborts_at_60s_and_a_healthy_fleet_does_not(self) -> None:
+        silent = [_opened(f"a{i}") for i in range(24)]
+        too_soon = assess_first_action(silent, since_s=59)
+        self.assertFalse(too_soon["abort"])
+        stalled = assess_first_action(silent, since_s=60)
+        self.assertTrue(stalled["abort"])
+        self.assertEqual(stalled["type"], FAILURE_NO_FIRST_ACTION)
+        self.assertEqual(stalled["acted"], 0)
+        self.assertEqual(stalled["agents"], 24)
+        self.assertIn("FAIL first_action", stalled["reason"])
+        self.assertIn("phase=Live browser agents", stalled["reason"])
+        half = [_acting(f"a{i}") for i in range(12)] + [_opened(f"b{i}") for i in range(12)]
+        self.assertFalse(assess_first_action(half, since_s=60)["abort"])
+        short = [_acting(f"a{i}") for i in range(11)] + [_opened(f"b{i}") for i in range(13)]
+        self.assertTrue(assess_first_action(short, since_s=60)["abort"])
+        healthy = [_acting(f"a{i}") for i in range(24)]
+        for elapsed in (60, 90, 120):
+            check = assess_first_action(healthy, since_s=elapsed)
+            self.assertFalse(check["abort"], elapsed)
+            self.assertTrue(check["ok"])
+        almost = healthy[:23] + [_opened("late")]
+        self.assertFalse(assess_first_action(almost, since_s=89)["abort"])
+        late = assess_first_action(almost, since_s=90)
+        self.assertTrue(late["abort"])
+        self.assertEqual(late["missing_ids"], ["late"])
+        doc = build_early_failures(
+            {"id": "s", "url": "https://linear.app/"},
+            silent,
+            stalled,
+            base_url="http://127.0.0.1:3000",
+        )
+        self.assertEqual(len(doc["failed_runs"]), 24)
+        self.assertTrue(all(row["type"] == FAILURE_NO_FIRST_ACTION for row in doc["failed_runs"]))
+        self.assertTrue(doc["failed_runs"][0]["trace_link"])
+        self.assertTrue(doc["failed_runs"][0]["final_screenshot"])
+        self.assertIn("phase=", doc["failed_runs"][0]["judge_reason"])
+
+    def test_saved_studies_would_have_aborted_for_no_first_action(self) -> None:
+        for study_id, acted_at_most in (
+            (LINEAR, 3),
+            (EXCALIDRAW, 2),
+            (MDN, 6),
+        ):
+            study = _load(study_id)
+            check = assess_first_action(study["agent_results"], since_s=60)
+            self.assertTrue(check["abort"], study_id)
+            self.assertLessEqual(check["acted"], acted_at_most)
+            self.assertEqual(check["agents"], 24)
+
+    def test_cdp_and_session_drops_abort_as_infrastructure(self) -> None:
+        runs = [_opened(f"a{i}") for i in range(24)]
+        runs[0]["browser_error"] = "Root CDP client not initialized"
+        cdp = assess_infrastructure_abort(runs)
+        self.assertTrue(cdp["abort"])
+        self.assertEqual(cdp["type"], FAILURE_INFRASTRUCTURE)
+        self.assertIn("Root CDP client not initialized", cdp["reason"])
+        self.assertIn("a0", cdp["reason"])
+        drops = [_opened(f"a{i}") for i in range(24)]
+        for run in drops[:6]:
+            run["browser_error"] = "Browserbase session closed"
+        self.assertFalse(assess_infrastructure_abort(drops)["abort"])
+        drops[6]["browser_error"] = "Browserbase session dropped"
+        over = assess_infrastructure_abort(drops)
+        self.assertTrue(over["abort"])
+        self.assertEqual(over["drop_n"], 7)
+        self.assertIn("over 25%", over["reason"])
+
+    def test_same_action_three_times_is_stuck_and_aborts(self) -> None:
+        run = _opened("loop")
+        run["trace"] = [
+            {
+                "step": step,
+                "action": "click — index=726",
+                "url": "https://linear.app/",
+                "state_sig": {"text": " ".join(["homepage"] * 30), "canvas": ""},
+            }
+            for step in (1, 2, 3)
+        ]
+        self.assertTrue(stuck_no_progress(run))
+        varied = _opened("moves")
+        varied["trace"] = [
+            {
+                "step": step,
+                "action": action,
+                "url": "https://linear.app/",
+                "state_sig": {"text": " ".join(["homepage"] * 30), "canvas": ""},
+            }
+            for step, action in ((1, "click — index=1"), (2, "click — index=2"), (3, "scroll"))
+        ]
+        self.assertFalse(stuck_no_progress(varied))
+        decision = assess_stuck_abort([run, varied])
+        self.assertTrue(decision["abort"])
+        self.assertEqual(decision["type"], FAILURE_STUCK)
+        self.assertEqual(decision["ids"], ["loop"])
+
+    def test_first_action_gate_fails_the_study(self) -> None:
+        flags = [True, True, False, False, True, True, False, False]
+        study = _matrix(flags)
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product" and r["num_steps"] == 4
+        }
+        startup = _startup_that_used_to_pass()
+        startup["first_action_check"] = {
+            "measured": True,
+            "ok": False,
+            "acted": 0,
+            "agents": 24,
+            "since_s": 60,
+            "detail": "a0 phase=Live error= last_action=Opened https://linear.app/",
+        }
+        result = _evaluate(study, vision_goal=vision, startup=startup)
+        self.assertFalse(_gate(result, "first_action")["pass"])
+        self.assertFalse(result["pass"])
+        self.assertIn("0/24", str(_gate(result, "first_action")["value"]))
 
 
 if __name__ == "__main__":
