@@ -69,10 +69,10 @@ Return:
   "segment": "one short phrase naming who evaluates products in this category",
   "competitors": [{{"url": "https://rival-one.com/", "name": "Rival One"}}, {{"url": "...", "name": "..."}}, {{"url": "...", "name": "..."}}],
   "personas": [{{"name": "first and last name", "role": "job title and company type",
-                 "bio": "one sentence: situation, what they need, how they judge a tool",
+                 "bio": "at most 20 words: situation, need, how they judge a tool",
                  "favors": "product or the competitor url this person is the natural fit for",
-                 "why": "at most 15 words"}}],
-  "tasks": [{{"task": "3-8 word task", "favors": "product or a competitor url", "why": "at most 15 words"}}]}}
+                 "why": "at most 10 words"}}],
+  "tasks": [{{"task": "3-8 word task", "favors": "product or a competitor url", "why": "at most 10 words"}}]}}
 
 Rules:
 - competitors: exactly three best-known direct competitors, best first, homepage URLs of real public
@@ -92,6 +92,40 @@ Rules:
   the product is demo-only. Never a task that needs the customer's own outside credentials or data
   (connect or sync a data source, API keys, payment). At most one pricing task.
 - No quotes inside strings. No explanations."""
+
+# Split plan (default): a tiny competitor call first, then tasks and personas
+# in parallel. One big call took 5-7s of model time on the first-action path.
+_CMP_COMPETITORS = """Name the three best-known direct competitors of this product. Reply with JSON only.
+Product URL: {url}
+Page title: {title}
+Page text: {text}
+
+Return {{"product": "short product name", "segment": "one short phrase naming who evaluates products in this category",
+  "competitors": [{{"url": "https://rival.com/", "name": "Rival"}}, ...3 items]}}
+Rules: standalone products in the same category a buyer would compare side by side, best known first, homepage
+URLs of real public sites. Sales-led (demo only) rivals are fine. Never a parent company, multi-product suite
+homepage, marketplace or discontinued product, and never one that was acquired, merged or rebranded (its site
+redirects elsewhere)."""
+
+_CMP_TASKS = """Pick five tasks for a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
+{product} page text: {text}
+
+Return {{"tasks": [{{"task": "3-8 word task", "favors": "product or one competitor url exactly as listed", "why": "at most 12 words"}}]}}
+Rules: five representative jobs a buyer in this category needs done, an imperative verb and a concrete object
+(for example "Identify at-risk customer accounts"). At least one favors the product and at least one favors each
+competitor. Each must make sense on all four sites: done in the product where a trial allows, or judged from the
+website (feature pages, docs, pricing, proof) where the product is demo-only. Never a task needing the customer's
+own outside credentials or data (connect or sync a data source, API keys, payment). At most one pricing task. No quotes."""
+
+_CMP_PERSONAS = """Invent five target customers for a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
+{product} page text: {text}
+
+Return {{"personas": [{{"name": "first and last name", "role": "job title and company type",
+  "bio": "at most 25 words: situation, what they need, how they judge a tool",
+  "favors": "product or one competitor url exactly as listed", "why": "at most 12 words"}}]}}
+Rules: realistic buyers in this category, spread evenly: at least one natural fit for the product and at least one
+natural fit for each competitor (for example an enterprise CS leader fits an enterprise suite, a two-person startup
+fits a self-serve tool). No quotes."""
 
 _PRICING_TASK = "Look for pricing or how to get started"
 _PRICING_RE = re.compile(r"pric|\bplans?\b|upgrade|billing|subscri", re.I)
@@ -292,13 +326,18 @@ def _host_of(url: str) -> str:
     return (urlsplit(_clean_url(url)).hostname or "").removeprefix("www.")
 
 
-def resolve_favors(value: Any, own: str, comps: list[str], names: dict[str, str] | None = None) -> str:
+def resolve_favors(
+    value: Any, own: str, comps: list[str], names: dict[str, str] | None = None, product: str = ""
+) -> str:
     """'product' or the competitor URL (as picked) a persona or task favors; '' when unknown."""
     text = str(value or "").strip()
     low = text.lower()
     if not text:
         return ""
-    if low in {"product", "the product", own.lower()} or _host_of(text) == own:
+    own_words = {"product", "the product", own.lower(), own.lower().split(".")[0]}
+    if product:
+        own_words.add(product.lower())
+    if low in own_words or _host_of(text) == own:
         return "product"
     for c in comps:
         host = _host_of(c)
@@ -376,6 +415,79 @@ async def plan_from_url(url: str, *, timeout: float | None = None) -> dict[str, 
 
 
 async def compare_plan_from_url(url: str, *, timeout: float = 25.0) -> dict[str, Any] | None:
+    """Split plan: competitors, then tasks and personas in parallel. Falls back to the single call."""
+    if os.environ.get("MVP_COMPARE_PLAN_SPLIT", "0") == "1":
+        plan = await _split_compare_plan(url, timeout=timeout)
+        if plan:
+            return plan
+    return await _single_compare_plan(url, timeout=timeout)
+
+
+async def _split_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, Any] | None:
+    from capability.gemini_config import extract_json, gemini_chat
+
+    model = os.environ.get("MVP_FAST_PLAN_MODEL") or "gemini-2.5-flash"
+
+    async def ask(prompt: str) -> Any:
+        raw = await gemini_chat(
+            [{"role": "user", "content": prompt}], model=model, temperature=0.3, json_mode=True, max_retries=2
+        )
+        return extract_json(raw)
+
+    async def _run() -> dict[str, Any] | None:
+        t0 = asyncio.get_running_loop().time()
+        read = await _page_read(url)
+        text = str(read.get("text") or "")[:600]
+        head = await ask(_CMP_COMPETITORS.format(url=url, title=read.get("title") or "", text=text))
+        if not isinstance(head, dict):
+            return None
+        own = (urlsplit(url).hostname or "").removeprefix("www.")
+        items = list(head.get("competitors") or [])
+        names = {_clean_url(str(i.get("url") or "")): str(i.get("name") or "") for i in items if isinstance(i, dict)}
+        raw_comps = pick_competitors(items, own, limit=3)
+        if not raw_comps:
+            return None
+        product = str(head.get("product") or "")[:60] or own
+        rivals = ", ".join(f"{names.get(c) or c} ({c})" for c in raw_comps)
+        from mvp.server import _landing_url
+
+        landed_f = asyncio.gather(*(_landing_url(c) for c in raw_comps))
+        tasks_raw, personas_raw, landed = await asyncio.gather(
+            ask(_CMP_TASKS.format(product=product, url=url, rivals=rivals, text=text)),
+            ask(_CMP_PERSONAS.format(product=product, url=url, rivals=rivals, text=text)),
+            landed_f,
+        )
+        landed = list(landed)
+        personas = compare_personas(personas_raw if isinstance(personas_raw, dict) else {}, own, raw_comps, names)
+        tasks = compare_tasks(tasks_raw if isinstance(tasks_raw, dict) else {}, own, raw_comps, names)
+        if len(tasks) < 2 or len(personas) < 2:
+            return None
+        remap = dict(zip(raw_comps, landed))
+        for row in personas + tasks:
+            row["favors"] = remap.get(row["favors"], row["favors"])
+        comp_names = {remap.get(k, k): v for k, v in names.items() if k in remap}
+        took = round(asyncio.get_running_loop().time() - t0, 2)
+        print(f"[fast_plan] compare(split {took}s) {url} rivals={landed} tasks={[t['prompt'] for t in tasks]}", flush=True)
+        return {
+            "mode": "compare",
+            "product": product,
+            "segment": " ".join(str(head.get("segment") or "").split())[:140],
+            "competitors": landed,
+            "competitor_names": comp_names,
+            "personas": personas,
+            "task_specs": tasks,
+            "tasks": [t["prompt"] for t in tasks],
+            "plan_s": took,
+        }
+
+    try:
+        return await asyncio.wait_for(_run(), timeout=timeout)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fast_plan] split compare plan skipped: {exc!r}", flush=True)
+        return None
+
+
+async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, Any] | None:
     """Comparison plan: 3 rivals, 5 personas spread across all 4 products, 5 tasks favoring each."""
     from capability.gemini_config import extract_json, gemini_chat
 
