@@ -800,6 +800,24 @@ class EarlyFailureTests(unittest.TestCase):
         self.assertEqual(check["per_agent"][0]["latency_s"], 28.15)
         self.assertFalse(check["ok"])
 
+    def test_page_open_equal_to_click_uses_session_ready(self) -> None:
+        ready = 1_000.0
+        click = ready + 26.2
+        run = _acting("asana")
+        run["browser_ready_at_ts"] = ready
+        run["created_at_ts"] = None
+        run["page_open_at_ts"] = click
+        run["first_action_at_ts"] = click
+        remember_earliest_clocks([run], {})
+        self.assertNotIn("page_open_at_ts", run)
+        seen = {"asana": click}
+        check = assess_time_to_first_action(
+            [run], now=click + 1.0, action_seen_at=seen, expected=1
+        )
+        self.assertEqual(check["per_agent"][0]["start"], "browser_ready_at_ts")
+        self.assertEqual(check["per_agent"][0]["latency_s"], 26.2)
+        self.assertFalse(check["ok"])
+
 
 def _opened_page(agent_id: str, **extra) -> dict:
     run = {

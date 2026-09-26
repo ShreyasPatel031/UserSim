@@ -675,7 +675,15 @@ def remember_earliest_clocks(
                 slot["created_at_ts"] = created
         aligned = _stamps_aligned_to_one_instant(run)
         opened, _key = _first_recorded_epoch(_clock_sources(run), _PAGE_OPEN_TS_KEYS)
-        if opened is not None and not aligned:
+        acted, _act_key = first_action_epoch(run)
+        # Page-open written at the click instant is the same rewrite when
+        # created_at was dropped by a later result row.
+        click_aligned = (
+            opened is not None
+            and acted is not None
+            and abs(opened - acted) <= 0.05
+        )
+        if opened is not None and not aligned and not click_aligned:
             prev_open = slot.get("page_open_at_ts")
             if prev_open is None or opened < prev_open:
                 slot["page_open_at_ts"] = opened
@@ -683,7 +691,7 @@ def remember_earliest_clocks(
             run["created_at_ts"] = slot["created_at_ts"]
         if "page_open_at_ts" in slot:
             run["page_open_at_ts"] = slot["page_open_at_ts"]
-        elif aligned:
+        elif aligned or click_aligned:
             _clear_page_open_stamps(run)
 
 
