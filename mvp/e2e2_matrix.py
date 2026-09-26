@@ -2,19 +2,22 @@
 """e2e2: real Run button → matrix of users × tasks × sites → strict gates.
 
 Clicks Run (never Smoke). While agents run, Ready/View-full-report must stay
-hidden. Then toggles every site × task × user control and vision-judges the
-*agent screenshot bytes of the target website* (not UserSim chrome, not a
-Preparing pulse, not a grey pane).
+hidden. Vision checks use the screenshot bytes the agents already saved
+(not UserSim chrome, not a Preparing pulse, not a grey pane) and do not
+click through the live stage during the run.
 
 Startup gates still apply (24 agents, each first real screenshot within 5s,
 a vision YES). The study budget is 8 minutes (480s), confirmed above the
 observed strict-e2e maximum of 408s. There is no per-agent time limit; a stuck
 agent repeats the same action 3 times with no URL or DOM change. While the
-study runs, the harness aborts if agents open the page and then take no real
-action (under half by 60s, or any agent still idle at 90s), if Root CDP client
-init fails, or if Browserbase session drops pass 25% of agents. pass=true only
-when the independent goal-judge verdicts and the report checks all pass.
-Agent summaries are not a pass signal. Failed runs are written to failures.json.
+study runs, the harness aborts if any agent still has no click/type/scroll
+once the time_to_first_action max is clearly blown (default 10s after that
+agent's first real screenshot; --first-action-s loosens only that abort), if
+Root CDP client init fails, or if Browserbase session drops pass 25% of agents.
+Vision and screenshot checks read PNGs the agents already saved. They do not
+drive the live page while agents run. pass=true only when the independent
+goal-judge verdicts and the report checks all pass. Agent summaries are not a
+pass signal. Failed runs are written to failures.json.
 
   MVP_BB_OWNER=testfix PYTHONPATH=src:. python mvp/e2e2_matrix.py \\
     --base http://127.0.0.1:3000 --url https://linear.app \\
@@ -22,7 +25,7 @@ Agent summaries are not a pass signal. Failed runs are written to failures.json.
     --tasks $'Find how to create a new issue\\nLook for pricing or how to get started' \\
     --segment 'Product managers comparing issue trackers' \\
     --expected 24 --max-agents 24 --max-elapsed-s 480 --first-shot-s 5 \\
-    --first-action-s 60 --first-action-frac 0.5
+    --first-action-s 10
 """
 
 from __future__ import annotations
@@ -49,18 +52,19 @@ from mvp.e2e_ui_run import (  # noqa: E402
     http_json,
 )
 from mvp.e2e2_gates import (  # noqa: E402
-    DEFAULT_FIRST_ACTION_FRAC,
-    DEFAULT_FIRST_ACTION_S,
     DEFAULT_STUDY_BUDGET_S,
-    assess_first_action,
+    DEFAULT_TTFA_ABORT_S,
+    DEFAULT_TTFA_MAX_S,
+    DEFAULT_TTFA_MEDIAN_S,
     assess_infrastructure_abort,
     assess_stuck_abort,
+    assess_time_to_first_action,
     build_early_failures,
     coerce_verdict,
     evaluate_strict_gates,
     final_dom_of,
     final_url_of,
-    has_real_action,
+    has_click_type_scroll,
     iter_runs,
     judge_goal_screenshot,
     render_markdown,
@@ -336,32 +340,78 @@ async def _assert_ready_hidden(page, study: dict) -> None:
         )
 
 
-async def _toggle_session(page, sess: dict) -> None:
-    site_key = sess.get("site_key") or "product"
-    persona = sess.get("persona_id") or ""
-    task_base = str(sess.get("task_id") or sess.get("agent_id") or "").split("__")[0]
-    if site_key:
-        btn = page.locator(f'#stage-site-switch [data-stage-site-key="{site_key}"]')
-        if await btn.count():
-            await btn.first.click()
-            await page.wait_for_timeout(200)
-    if task_base:
-        task_sel = page.locator("#stage-task-select")
-        if await task_sel.count():
-            try:
-                await task_sel.select_option(task_base)
-            except Exception:
-                pass
-            await page.wait_for_timeout(150)
-    if persona:
-        user_sel = page.locator("#stage-user-select")
-        if await user_sel.count():
-            try:
-                await user_sel.select_option(persona)
-            except Exception:
-                pass
-            await page.wait_for_timeout(150)
-    await page.wait_for_timeout(400)
+def _score_saved_frames(
+    *,
+    base: str,
+    product_url: str,
+    study: dict,
+    sessions: list,
+    study_id: str,
+    judged: dict,
+    expected: int,
+) -> None:
+    """Vision-check PNGs the agents already saved. Does not drive a browser."""
+    for sess in sessions:
+        aid = str(sess.get("agent_id") or sess.get("task_id") or "")
+        if not aid or aid in judged:
+            continue
+        shot = _best_shot(sess)
+        if not shot:
+            continue
+        try:
+            raw = _fetch_png(
+                base,
+                shot["screenshot_url"],
+                study_id=study_id,
+                agent_id=aid,
+            )
+            if _png_looks_blank(raw):
+                if study.get("status") == "running":
+                    _log(
+                        f"  skip blankish shot {aid} step={shot.get('step')} "
+                        f"({len(raw)} bytes) — waiting for paint"
+                    )
+                    continue
+                _log(
+                    f"  blankish after complete {aid} step={shot.get('step')} "
+                    f"({len(raw)} bytes) — counting as miss"
+                )
+                judged[aid] = {
+                    "agent_id": aid,
+                    "host": _hostname(sess.get("site_url") or shot.get("url") or product_url),
+                    "step": shot.get("step"),
+                    "bytes": len(raw),
+                    "pass": False,
+                    "reason": "blank/splash frame after study complete",
+                }
+                continue
+            host = _hostname(sess.get("site_url") or shot.get("url") or product_url)
+            verdict = judge_screenshot(
+                raw,
+                label=f"{aid} step={shot.get('step')}",
+                expected_host=host,
+            )
+            (OUT_DIR / f"{aid}.png").write_bytes(raw)
+            judged[aid] = {
+                "agent_id": aid,
+                "host": host,
+                "step": shot.get("step"),
+                "bytes": len(raw),
+                **verdict,
+            }
+            _log(
+                f"  judge {len(judged)}/{expected} {aid} "
+                f"host={host} pass={verdict.get('pass')} "
+                f"{verdict.get('reason')}"
+            )
+            if not verdict.get("pass") and study.get("status") == "running":
+                _log(
+                    f"  defer NO {aid} step={shot.get('step')}: "
+                    f"{verdict.get('reason')}"
+                )
+                judged.pop(aid, None)
+        except Exception as exc:  # noqa: BLE001
+            _log(f"  judge skip {aid}: {exc!r}")
 
 
 def _release_testfix_sessions(study_id: str = "") -> None:
@@ -557,17 +607,21 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         abort_reason: str | None = None
         early_abort: dict | None = None
         elapsed_at_abort: float | None = None
-        first_action_check: dict | None = None
+        ttfa_check: dict | None = None
+        action_seen_at: dict[str, float] = {}
+        since_task_last: float | None = None
+        action_clock_open = True
 
         while time.time() - t0 < args.timeout_s:
-            e2e = await page.evaluate("() => window.__e2e || {}")
-            study_id = study_id or e2e.get("studyId") or ""
+            if not study_id:
+                e2e = await page.evaluate("() => window.__e2e || {}")
+                study_id = e2e.get("studyId") or ""
             if study_id:
                 try:
-                    study = http_json(args.base, f"/api/studies/{study_id}", timeout=45)
+                    study = http_json(args.base, f"/api/studies/{study_id}", timeout=8)
                 except Exception as exc:  # noqa: BLE001
                     _log(f"  poll warn: {exc!r}")
-                    await page.wait_for_timeout(2000)
+                    await asyncio.sleep(0.4)
                     continue
             await _assert_ready_hidden(page, study)
 
@@ -639,8 +693,9 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     )
                     _log(f"  {abort_reason}")
                     break
-            acted_n = sum(1 for sess in sessions if has_real_action(sess))
+            acted_n = sum(1 for sess in sessions if has_click_type_scroll(sess))
             since_task = None
+            now_poll = time.time()
             if sessions and t_first_task is not None:
                 created_ts = [
                     ts
@@ -648,7 +703,8 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     if (ts := _sess_created_ts(sess)) is not None
                 ]
                 anchor = min(created_ts) if created_ts else t_first_task
-                since_task = time.time() - anchor
+                since_task = now_poll - anchor
+                since_task_last = since_task
                 study_phase = str(study.get("phase") or "")
                 for sess in sessions:
                     if not sess.get("phase"):
@@ -659,19 +715,25 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     if infra.get("abort")
                     else assess_stuck_abort(sessions)
                 )
-                first_action_check = assess_first_action(
+                ttfa_check = assess_time_to_first_action(
                     sessions,
-                    since_s=since_task,
-                    first_action_s=args.first_action_s,
-                    frac=args.first_action_frac,
+                    now=now_poll,
+                    action_seen_at=action_seen_at,
+                    abort_after_s=args.first_action_s,
+                    expected=max(expected, PASS_AGENT_BAR),
+                )
+                need_actions = max(expected, PASS_AGENT_BAR)
+                action_clock_open = (
+                    len(sessions) < need_actions
+                    or int(ttfa_check.get("n") or 0) < need_actions
                 )
                 chosen = None
                 if infra.get("abort"):
                     chosen = infra
                 elif stuck.get("abort"):
                     chosen = stuck
-                elif first_action_check.get("abort"):
-                    chosen = first_action_check
+                elif ttfa_check.get("abort"):
+                    chosen = ttfa_check
                 if chosen:
                     abort_reason = str(chosen.get("reason") or "FAIL early")
                     early_abort = chosen
@@ -679,101 +741,37 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     _log(f"  {abort_reason}")
                     _stop_study(args.base, str(study_id or ""))
                     break
+            ttfa_med = None if not ttfa_check else ttfa_check.get("median_s")
+            ttfa_max = None if not ttfa_check else ttfa_check.get("max_s")
             _log(
                 f"  [{int(time.time()-t0)}s] status={study.get('status')} "
                 f"users={len(personas)} tasks={n_unique_tasks} "
                 f"sites={1+len(comps)} agents={len(sessions)} "
                 f"acted={acted_n}/{len(sessions)} "
+                f"ttfa_median={ttfa_med} ttfa_max={ttfa_max} "
                 f"since_task={'' if since_task is None else f'{since_task:.0f}s'} "
                 f"steps={step_n} done={done_n} "
                 f"yeses={len(judged)} phase={(study.get('phase') or '')[:50]}"
             )
 
-            # Toggle + judge any session that now has a real numbered shot.
-            for sess in sessions:
-                aid = str(sess.get("agent_id") or sess.get("task_id") or "")
-                if not aid or aid in judged:
-                    continue
-                shot = _best_shot(sess)
-                if not shot:
-                    continue
-                try:
-                    raw = _fetch_png(
-                        args.base,
-                        shot["screenshot_url"],
-                        study_id=study_id,
-                        agent_id=aid,
-                    )
-                    # Don't fail the whole matrix on a black splash while the
-                    # agent is still browsing — wait for a real paint.
-                    if _png_looks_blank(raw):
-                        if study.get("status") == "running":
-                            _log(
-                                f"  skip blankish shot {aid} step={shot.get('step')} "
-                                f"({len(raw)} bytes) — waiting for paint"
-                            )
-                            continue
-                        # Study finished with only a splash — count as a miss,
-                        # don't spin forever skipping after complete.
-                        _log(
-                            f"  blankish after complete {aid} step={shot.get('step')} "
-                            f"({len(raw)} bytes) — counting as miss"
-                        )
-                        judged[aid] = {
-                            "agent_id": aid,
-                            "host": _hostname(
-                                sess.get("site_url") or shot.get("url") or args.url
-                            ),
-                            "step": shot.get("step"),
-                            "bytes": len(raw),
-                            "pass": False,
-                            "reason": "blank/splash frame after study complete",
-                        }
-                        continue
-                    try:
-                        if await page.locator("#stage-section:not([hidden])").count():
-                            await _toggle_session(page, sess)
-                    except Exception:
-                        pass
-                    await _assert_ready_hidden(page, study)
-                    host = _hostname(sess.get("site_url") or shot.get("url") or args.url)
-                    verdict = judge_screenshot(
-                        raw,
-                        label=f"{aid} step={shot.get('step')}",
-                        expected_host=host,
-                    )
-                    (OUT_DIR / f"{aid}.png").write_bytes(raw)
-                    judged[aid] = {
-                        "agent_id": aid,
-                        "host": host,
-                        "step": shot.get("step"),
-                        "bytes": len(raw),
-                        **verdict,
-                    }
-                    _log(
-                        f"  judge {len(judged)}/{expected} {aid} "
-                        f"host={host} pass={verdict.get('pass')} "
-                        f"{verdict.get('reason')}"
-                    )
-                    if not verdict.get("pass"):
-                        # Keep waiting for a later real frame while the study runs.
-                        # Hard-aborting mid-run on one NO kills the whole matrix
-                        # (signup flows often lack hostname chrome in the PNG).
-                        if study.get("status") == "running":
-                            _log(
-                                f"  defer NO {aid} step={shot.get('step')}: "
-                                f"{verdict.get('reason')}"
-                            )
-                            judged.pop(aid, None)
-                            continue
-                        _log(
-                            f"  NO after complete {aid}: {verdict.get('reason')}"
-                        )
-                        # Keep the NO in judged; final gate counts yeses.
-                except Exception as exc:  # noqa: BLE001
-                    _log(f"  judge skip {aid}: {exc!r}")
+            # Score frames the agents already saved. Skip while the action
+            # clock is open so Gemini cannot push a 10s abort out to a minute.
+            if sessions and not action_clock_open:
+                _score_saved_frames(
+                    base=args.base,
+                    product_url=args.url,
+                    study=study,
+                    sessions=sessions,
+                    study_id=str(study_id or ""),
+                    judged=judged,
+                    expected=expected,
+                )
 
-            if study.get("status") == "complete" and study.get("summary"):
+            if (
+                study.get("status") == "complete"
+                and study.get("summary")
+                and not action_clock_open
+            ):
                 # Allow post-agent shot backfill to land, then re-judge blanks.
                 t_complete = report.setdefault("_t_complete", time.time())
                 # Drop prior blank/miss judgements so backfilled PNGs get scored.
@@ -822,7 +820,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                         f"{verdict.get('reason')}"
                     )
                 if time.time() - t_complete < 12 and len(judged) < expected:
-                    await page.wait_for_timeout(2000)
+                    await asyncio.sleep(1.0)
                     continue
                 for sess in sessions:
                     aid = str(sess.get("agent_id") or sess.get("task_id") or "")
@@ -842,7 +840,19 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 )
                 _log(f"  {abort_reason}")
                 break
-            await page.wait_for_timeout(4000)
+            await asyncio.sleep(0.4 if action_clock_open else 1.0)
+
+        # Frames skipped while the action clock was open, including an early abort.
+        # Fetched PNGs only — this does not click the live stage.
+        _score_saved_frames(
+            base=args.base,
+            product_url=args.url,
+            study=study,
+            sessions=_sessions(study),
+            study_id=str(study_id or ""),
+            judged=judged,
+            expected=expected,
+        )
 
         report["study_id"] = study_id
         report["yeses"] = sum(1 for v in judged.values() if v.get("pass"))
@@ -856,8 +866,9 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         report["sites"] = 1 + len(study.get("competitors") or [])
         report["elapsed_s"] = round((elapsed_at_abort or time.time()) - t0, 1)
         report["since_first_task_s"] = (
-            None if not first_action_check else first_action_check.get("since_s")
+            None if since_task_last is None else round(since_task_last, 1)
         )
+        report["time_to_first_action"] = ttfa_check
         report["early_abort"] = (
             None
             if not early_abort
@@ -944,7 +955,9 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 "first_shot_s": args.first_shot_s,
                 "first_action_s": args.first_action_s,
                 "first_action_frac": args.first_action_frac,
-                "first_action_check": first_action_check,
+                "ttfa_median_s": DEFAULT_TTFA_MEDIAN_S,
+                "ttfa_max_s": DEFAULT_TTFA_MAX_S,
+                "time_to_first_action_check": ttfa_check,
                 "base": args.base,
                 "study_id": study_id,
                 "status": study.get("status"),
@@ -1111,14 +1124,22 @@ def main() -> int:
     ap.add_argument(
         "--first-action-s",
         type=float,
-        default=float(os.environ.get("E2E2_FIRST_ACTION_S", str(int(DEFAULT_FIRST_ACTION_S))) or "60"),
-        help="Seconds after the first task before the half-of-agents action check (default 60)",
+        default=float(
+            os.environ.get("E2E2_FIRST_ACTION_S", str(DEFAULT_TTFA_ABORT_S))
+            or str(DEFAULT_TTFA_ABORT_S)
+        ),
+        help=(
+            "Abort when any agent still has no click, type, or scroll this many "
+            "seconds after its own first real screenshot (default 10). "
+            "The pass bar stays median <= 5s and max <= 10s. "
+            "A larger value only loosens the early abort."
+        ),
     )
     ap.add_argument(
         "--first-action-frac",
         type=float,
-        default=float(os.environ.get("E2E2_FIRST_ACTION_FRAC", str(DEFAULT_FIRST_ACTION_FRAC)) or "0.5"),
-        help="Minimum share of agents with a real action by --first-action-s (default 0.5)",
+        default=float(os.environ.get("E2E2_FIRST_ACTION_FRAC", "0.5") or "0.5"),
+        help="Ignored. Kept so older commands still parse. The abort is per agent.",
     )
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
     ap.add_argument("--study-id", default=os.environ.get("E2E2_STUDY_ID", ""))

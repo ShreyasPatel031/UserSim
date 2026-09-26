@@ -12,13 +12,15 @@ from mvp.e2e2_gates import (
     FAILURE_NO_FIRST_ACTION,
     FAILURE_PRODUCT,
     FAILURE_STUCK,
-    assess_first_action,
     assess_infrastructure_abort,
     assess_stuck_abort,
+    assess_time_to_first_action,
     beyond_first_screen,
     build_early_failures,
     evaluate_strict_gates,
+    has_click_type_scroll,
     is_browserbase_or_concurrency_loss,
+    is_click_type_scroll,
     render_markdown,
     stuck_no_progress,
 )
@@ -469,36 +471,86 @@ def _acting(agent_id: str) -> dict:
     return run
 
 
+def _stamp_shot(run: dict, shot: float = 1_000.0) -> dict:
+    run["first_screenshot_at_ts"] = shot
+    return run
+
+
 class EarlyFailureTests(unittest.TestCase):
-    def test_step_zero_fleet_aborts_at_60s_and_a_healthy_fleet_does_not(self) -> None:
-        silent = [_opened(f"a{i}") for i in range(24)]
-        too_soon = assess_first_action(silent, since_s=59)
-        self.assertFalse(too_soon["abort"])
-        stalled = assess_first_action(silent, since_s=60)
-        self.assertTrue(stalled["abort"])
-        self.assertEqual(stalled["type"], FAILURE_NO_FIRST_ACTION)
-        self.assertEqual(stalled["acted"], 0)
-        self.assertEqual(stalled["agents"], 24)
-        self.assertIn("FAIL first_action", stalled["reason"])
-        self.assertIn("phase=Live browser agents", stalled["reason"])
-        half = [_acting(f"a{i}") for i in range(12)] + [_opened(f"b{i}") for i in range(12)]
-        self.assertFalse(assess_first_action(half, since_s=60)["abort"])
-        short = [_acting(f"a{i}") for i in range(11)] + [_opened(f"b{i}") for i in range(13)]
-        self.assertTrue(assess_first_action(short, since_s=60)["abort"])
-        healthy = [_acting(f"a{i}") for i in range(24)]
-        for elapsed in (60, 90, 120):
-            check = assess_first_action(healthy, since_s=elapsed)
-            self.assertFalse(check["abort"], elapsed)
-            self.assertTrue(check["ok"])
-        almost = healthy[:23] + [_opened("late")]
-        self.assertFalse(assess_first_action(almost, since_s=89)["abort"])
-        late = assess_first_action(almost, since_s=90)
-        self.assertTrue(late["abort"])
-        self.assertEqual(late["missing_ids"], ["late"])
+    def test_idle_agent_aborts_when_the_max_is_blown_and_a_fast_fleet_passes(self) -> None:
+        shot = 1_000.0
+        silent = [_stamp_shot(_opened(f"a{i}"), shot) for i in range(24)]
+        inside = assess_time_to_first_action(silent, now=shot + 10.0)
+        self.assertFalse(inside["abort"])
+        self.assertFalse(inside["ok"])
+        blown = assess_time_to_first_action(silent, now=shot + 10.01)
+        self.assertTrue(blown["abort"])
+        self.assertEqual(blown["type"], FAILURE_NO_FIRST_ACTION)
+        self.assertEqual(blown["acted"], 0)
+        self.assertEqual(blown["agents"], 24)
+        self.assertIn("FAIL time_to_first_action", blown["reason"])
+        self.assertIn("phase=Live browser agents", blown["reason"])
+        self.assertEqual(blown["ids"], [f"a{i}" for i in range(24)])
+        # A longer --first-action-s only delays the abort. It does not loosen 5s/10s.
+        held = assess_time_to_first_action(silent, now=shot + 11.0, abort_after_s=60)
+        self.assertFalse(held["abort"])
+        self.assertFalse(held["ok"])
+        late_flag = assess_time_to_first_action(silent, now=shot + 60.01, abort_after_s=60)
+        self.assertTrue(late_flag["abort"])
+        seen: dict[str, float] = {}
+        fast = [_stamp_shot(_acting(f"a{i}"), shot) for i in range(24)]
+        for i, run in enumerate(fast):
+            seen[run["agent_id"]] = shot + 2.0 + (i % 3) * 0.5
+        healthy = assess_time_to_first_action(
+            fast, now=shot + 30.0, action_seen_at=seen
+        )
+        self.assertFalse(healthy["abort"])
+        self.assertTrue(healthy["ok"])
+        self.assertLessEqual(healthy["median_s"], 5)
+        self.assertLessEqual(healthy["max_s"], 10)
+        self.assertEqual(healthy["n"], 24)
+        # The live-UI stamp stays on the poll that first showed the action.
+        again = assess_time_to_first_action(
+            fast, now=shot + 40.0, action_seen_at=seen
+        )
+        self.assertEqual(again["median_s"], healthy["median_s"])
+        self.assertEqual(again["max_s"], healthy["max_s"])
+        slow_seen = dict(seen)
+        slow_seen["a0"] = shot + 10.5
+        slow = assess_time_to_first_action(
+            fast, now=shot + 30.0, action_seen_at=slow_seen
+        )
+        self.assertFalse(slow["abort"])
+        self.assertFalse(slow["ok"])
+        self.assertGreater(slow["max_s"], 10)
+        at_limit = [_stamp_shot(_acting(f"b{i}"), shot) for i in range(24)]
+        limit_seen = {
+            run["agent_id"]: shot + (5.0 if i < 23 else 10.0)
+            for i, run in enumerate(at_limit)
+        }
+        exact = assess_time_to_first_action(
+            at_limit, now=shot + 12.0, action_seen_at=limit_seen
+        )
+        self.assertEqual(exact["median_s"], 5.0)
+        self.assertEqual(exact["max_s"], 10.0)
+        self.assertTrue(exact["ok"])
+        over = dict(limit_seen)
+        over[at_limit[-1]["agent_id"]] = shot + 10.01
+        past = assess_time_to_first_action(
+            at_limit, now=shot + 12.0, action_seen_at=over
+        )
+        self.assertFalse(past["ok"])
+        self.assertGreater(past["max_s"], 10)
+        short = fast[:23]
+        self.assertFalse(
+            assess_time_to_first_action(
+                short, now=shot + 4.0, action_seen_at=seen
+            )["ok"]
+        )
         doc = build_early_failures(
             {"id": "s", "url": "https://linear.app/"},
             silent,
-            stalled,
+            blown,
             base_url="http://127.0.0.1:3000",
         )
         self.assertEqual(len(doc["failed_runs"]), 24)
@@ -507,17 +559,37 @@ class EarlyFailureTests(unittest.TestCase):
         self.assertTrue(doc["failed_runs"][0]["final_screenshot"])
         self.assertIn("phase=", doc["failed_runs"][0]["judge_reason"])
 
-    def test_saved_studies_would_have_aborted_for_no_first_action(self) -> None:
-        for study_id, acted_at_most in (
-            (LINEAR, 3),
-            (EXCALIDRAW, 2),
-            (MDN, 6),
-        ):
+    def test_only_click_type_and_scroll_count_as_the_first_action(self) -> None:
+        self.assertTrue(is_click_type_scroll("click — index=4"))
+        self.assertTrue(is_click_type_scroll("input — index=54"))
+        self.assertTrue(is_click_type_scroll("type — text=hello"))
+        self.assertTrue(is_click_type_scroll("scroll"))
+        self.assertTrue(is_click_type_scroll("send_keys — keys=Enter"))
+        self.assertFalse(is_click_type_scroll("Opened https://linear.app/"))
+        self.assertFalse(is_click_type_scroll("Opening https://linear.app/"))
+        self.assertFalse(is_click_type_scroll("go_to_url — url=https://linear.app/"))
+        self.assertFalse(is_click_type_scroll("search — query=pricing"))
+        self.assertFalse(is_click_type_scroll("Page is open. Starting the simulated user…"))
+        opened = _stamp_shot(_opened("searcher"))
+        opened["trace"].append(
+            {"step": 1, "action": "search — query=pricing", "url": "https://linear.app/"}
+        )
+        self.assertFalse(has_click_type_scroll(opened))
+        typed = _stamp_shot(_opened("typer"))
+        typed["last_action"] = "input — index=3"
+        self.assertTrue(has_click_type_scroll(typed))
+
+    def test_saved_studies_blow_the_action_max(self) -> None:
+        for study_id in (LINEAR, EXCALIDRAW, MDN):
             study = _load(study_id)
-            check = assess_first_action(study["agent_results"], since_s=60)
+            runs = study["agent_results"]
+            for run in runs:
+                run["first_screenshot_at_ts"] = 1_000.0
+            check = assess_time_to_first_action(runs, now=1_011.0, action_seen_at={})
             self.assertTrue(check["abort"], study_id)
-            self.assertLessEqual(check["acted"], acted_at_most)
             self.assertEqual(check["agents"], 24)
+            self.assertLess(check["n"], 24, study_id)
+            self.assertGreater(len(check["ids"]), 0, study_id)
 
     def test_cdp_and_session_drops_abort_as_infrastructure(self) -> None:
         runs = [_opened(f"a{i}") for i in range(24)]
@@ -586,6 +658,50 @@ class EarlyFailureTests(unittest.TestCase):
         self.assertFalse(_gate(result, "first_action")["pass"])
         self.assertFalse(result["pass"])
         self.assertIn("0/24", str(_gate(result, "first_action")["value"]))
+
+    def test_time_to_first_action_gate_shows_value_and_threshold(self) -> None:
+        flags = [True, True, False, False, True, True, False, False]
+        study = _matrix(flags)
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product" and r["num_steps"] == 4
+        }
+        startup = _startup_that_used_to_pass()
+        startup["time_to_first_action_check"] = {
+            "measured": True,
+            "ok": True,
+            "median_s": 2.5,
+            "max_s": 4.0,
+            "n": 24,
+            "agents": 24,
+        }
+        passed = _evaluate(study, vision_goal=vision, startup=startup)
+        self.assertTrue(_gate(passed, "time_to_first_action")["pass"])
+        self.assertTrue(passed["pass"])
+        self.assertIn("2.5s", str(_gate(passed, "time_to_first_action")["value"]))
+        self.assertIn("4.0s", str(_gate(passed, "time_to_first_action")["value"]))
+        self.assertIn(
+            "median <= 5s and max <= 10s at 24 agents",
+            _gate(passed, "time_to_first_action")["threshold"],
+        )
+        text = render_markdown(passed, study_id=study["id"], product_url=study["url"])
+        self.assertIn("`time_to_first_action`", text)
+        self.assertIn("median=2.5s max=4.0s n=24/24", text)
+        startup["time_to_first_action_check"] = {
+            "measured": True,
+            "ok": False,
+            "median_s": 6.0,
+            "max_s": 11.0,
+            "n": 24,
+            "agents": 24,
+            "detail": "max blown",
+        }
+        failed = _evaluate(study, vision_goal=vision, startup=startup)
+        self.assertFalse(_gate(failed, "time_to_first_action")["pass"])
+        self.assertFalse(failed["pass"])
+        self.assertIn("6.0s", str(_gate(failed, "time_to_first_action")["value"]))
+        self.assertIn("11.0s", str(_gate(failed, "time_to_first_action")["value"]))
 
 
 if __name__ == "__main__":

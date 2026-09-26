@@ -2,8 +2,12 @@
 
 Startup gates stay: agent count, first real screenshot within 5s, and a vision
 YES that the screenshot is the real product. The old 360s elapsed ceiling is a
-study-level budget of 8 minutes. There is no per-agent time limit. An agent
-that makes no progress for several steps is flagged stuck; it is not timed out.
+study-level budget of 8 minutes. There is no per-agent limit on how long a
+study may run. An agent that makes no progress for several steps is flagged
+stuck; it is not timed out. Time to first action is separate: from each
+agent's first real screenshot until a click, type, or scroll shows up in the
+live study. That passes only when the median is <= 5s and the max is <= 10s
+at 24 agents. The harness aborts once that max is clearly blown.
 
 Task completion comes only from an independent vision judge. The judge sees the
 final screenshot plus the final URL and DOM and writes a verdict with a reason.
@@ -55,11 +59,19 @@ FAILURE_TYPES = (
     FAILURE_PRODUCT,
     FAILURE_NO_FIRST_ACTION,
 )
-# Live poll: by 60s at least half the agents must have a real action, and by
-# 90s every agent must. 90s is first_action_s + this extra.
+# Legacy fleet check (half by 60s, every agent by 90s). The live abort is
+# time_to_first_action; --first-action-s only loosens that tighter ceiling.
 DEFAULT_FIRST_ACTION_S = 60.0
 DEFAULT_FIRST_ACTION_FRAC = 0.5
 FIRST_ACTION_ALL_EXTRA_S = 30.0
+# Screenshot → click/type/scroll visible in the live study. Pass at 24 agents.
+DEFAULT_TTFA_MEDIAN_S = 5.0
+DEFAULT_TTFA_MAX_S = 10.0
+# Early abort once this wait is clearly past the max. --first-action-s overrides it.
+DEFAULT_TTFA_ABORT_S = DEFAULT_TTFA_MAX_S
+_CLICK_TYPE_SCROLL = frozenset(
+    {"click", "type", "input", "input_text", "send_keys", "scroll"}
+)
 # Abort when Browserbase session drops are strictly over this share of agents.
 INFRA_DROP_MAX = 0.25
 
@@ -297,6 +309,186 @@ def stuck_no_progress(run: dict[str, Any], *, steps: int = STUCK_STEPS) -> bool:
         if streak >= steps:
             return True
     return False
+
+
+def action_verb(text: object) -> str:
+    """Leading action name, so 'click — index=4' and 'Opened https://…' both parse."""
+    raw = str(text or "").strip().lower()
+    if not raw:
+        return ""
+    head = raw.split("—", 1)[0]
+    head = head.split(" - ", 1)[0]
+    head = head.split(":", 1)[0]
+    return " ".join(head.split())
+
+
+def is_click_type_scroll(text: object) -> bool:
+    """A real UI action. Opening the page, search, and go_to_url do not count."""
+    for part in re.split(r"[;\n]", str(text or "")):
+        verb = action_verb(part)
+        if not verb:
+            continue
+        if verb in _CLICK_TYPE_SCROLL:
+            return True
+        if any(verb.startswith(name + " ") for name in _CLICK_TYPE_SCROLL):
+            return True
+    return False
+
+
+def has_click_type_scroll(run: dict[str, Any]) -> bool:
+    """True once a click, type, or scroll is in the trace or the live last action."""
+    for step in run.get("trace") or []:
+        if isinstance(step, dict) and is_click_type_scroll(step.get("action")):
+            return True
+    return is_click_type_scroll(run.get("last_action"))
+
+
+def note_visible_actions(
+    runs: list[dict[str, Any]],
+    seen_at: dict[str, float],
+    now: float,
+) -> None:
+    """Stamp the poll time when a click/type/scroll first shows up in the study JSON.
+
+    That JSON is what the live UI renders. The stamp is not an agent-side clock.
+    """
+    for run in runs:
+        if not isinstance(run, dict):
+            continue
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        if not aid or aid in seen_at:
+            continue
+        if has_click_type_scroll(run):
+            seen_at[aid] = float(now)
+
+
+def _screenshot_epoch(run: dict[str, Any]) -> float | None:
+    for key in ("first_screenshot_at_ts", "first_screenshot_at"):
+        value = run.get(key)
+        if value is None or value == "":
+            continue
+        if isinstance(value, (int, float)):
+            return float(value)
+        try:
+            return float(str(value).strip())
+        except (TypeError, ValueError):
+            continue
+    return None
+
+
+def _median(values: list[float]) -> float | None:
+    if not values:
+        return None
+    ordered = sorted(values)
+    mid = len(ordered) // 2
+    if len(ordered) % 2:
+        return ordered[mid]
+    return (ordered[mid - 1] + ordered[mid]) / 2.0
+
+
+def assess_time_to_first_action(
+    runs: list[dict[str, Any]],
+    *,
+    now: float,
+    action_seen_at: dict[str, float] | None = None,
+    median_s: float = DEFAULT_TTFA_MEDIAN_S,
+    max_s: float = DEFAULT_TTFA_MAX_S,
+    abort_after_s: float | None = None,
+    expected: int = PASS_AGENT_BAR,
+) -> dict[str, Any]:
+    """Time from each agent's first real screenshot to a click/type/scroll in the live UI.
+
+    `action_seen_at` is the harness poll time when that action showed up in the
+    study payload. The pass bar is median <= 5s and max <= 10s at 24 agents.
+    Abort when any agent with a screenshot still has no such action after
+    `abort_after_s` (default 10s, the max, so the threshold is clearly blown).
+    A higher `abort_after_s` only delays the abort; it does not loosen the pass bar.
+    """
+    if action_seen_at is None:
+        action_seen_at = {}
+    note_visible_actions(runs, action_seen_at, now)
+    ceiling = float(max_s if abort_after_s is None else abort_after_s)
+    need = int(expected) if int(expected) > 0 else PASS_AGENT_BAR
+    agents = [run for run in runs if isinstance(run, dict)]
+    latencies: list[float] = []
+    per_agent: list[dict[str, Any]] = []
+    blown: list[dict[str, Any]] = []
+    idle: list[dict[str, Any]] = []
+    for run in agents:
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        shot = _screenshot_epoch(run)
+        acted = has_click_type_scroll(run)
+        appeared = action_seen_at.get(aid) if aid else None
+        latency = None
+        waited = None
+        if shot is not None and acted and appeared is not None:
+            latency = max(0.0, float(appeared) - float(shot))
+            latencies.append(latency)
+        elif shot is not None and not acted:
+            waited = float(now) - float(shot)
+            idle.append(run)
+            if waited > ceiling:
+                blown.append(run)
+        elif not acted:
+            idle.append(run)
+        per_agent.append(
+            {
+                "agent_id": aid,
+                "screenshot_at": shot,
+                "action_seen_at": appeared,
+                "latency_s": None if latency is None else round(latency, 3),
+                "waited_s": None if waited is None else round(waited, 3),
+            }
+        )
+    median = _median(latencies)
+    maximum = max(latencies) if latencies else None
+    abort = bool(blown)
+    complete = len(agents) >= need and len(latencies) == len(agents) and len(latencies) >= need
+    ok = (
+        not abort
+        and complete
+        and median is not None
+        and maximum is not None
+        and median <= float(median_s)
+        and maximum <= float(max_s)
+    )
+    reason = ""
+    if abort:
+        waits = ", ".join(
+            f"{str(run.get('agent_id') or '')}="
+            f"{max(0.0, float(now) - float(_screenshot_epoch(run) or now)):.1f}s"
+            for run in blown[:8]
+        )
+        reason = (
+            f"FAIL time_to_first_action: {len(blown)}/{len(agents)} agents had no "
+            f"click/type/scroll {ceiling:.0f}s after their first real screenshot "
+            f"({waits})"
+        )
+        seen = "; ".join(last_seen_text(run) for run in blown[:8])
+        if seen:
+            reason = f"{reason}. {seen}"
+    median_out = None if median is None else round(median, 3)
+    max_out = None if maximum is None else round(maximum, 3)
+    return {
+        "measured": True,
+        "ok": ok,
+        "abort": abort,
+        "type": FAILURE_NO_FIRST_ACTION if abort else "",
+        "median_s": median_out,
+        "max_s": max_out,
+        "n": len(latencies),
+        "agents": len(agents),
+        "expected": need,
+        "acted": len(latencies),
+        "median_limit_s": float(median_s),
+        "max_limit_s": float(max_s),
+        "abort_after_s": ceiling,
+        "missing_ids": [str(run.get("agent_id") or "") for run in idle],
+        "ids": [str(run.get("agent_id") or "") for run in blown],
+        "reason": reason,
+        "detail": reason,
+        "per_agent": per_agent,
+    }
 
 
 def has_real_action(run: dict[str, Any]) -> bool:
@@ -827,12 +1019,49 @@ def _startup_gates(
                 "first_action",
                 "First real action",
                 "not measured",
+                "live abort is time_to_first_action",
+                True,
+                "The 60s/90s fleet check is not the live abort.",
+            )
+        )
+    ttfa = startup.get("time_to_first_action_check")
+    median_lim = float(startup.get("ttfa_median_s") or DEFAULT_TTFA_MEDIAN_S)
+    max_lim = float(startup.get("ttfa_max_s") or DEFAULT_TTFA_MAX_S)
+    ttfa_need = int(startup.get("expected") or bar)
+    if isinstance(ttfa, dict) and ttfa.get("measured"):
+        med = ttfa.get("median_s")
+        mx = ttfa.get("max_s")
+        got = ttfa.get("n")
+        med_txt = "n/a" if med is None else f"{med}s"
+        max_txt = "n/a" if mx is None else f"{mx}s"
+        gates.append(
+            _gate(
+                "time_to_first_action",
+                "Time to first action",
+                f"median={med_txt} max={max_txt} n={got}/{ttfa_need}",
                 (
-                    f">= {action_frac:.0%} of agents by {action_s:.0f}s "
-                    f"and every agent by {all_by:.0f}s"
+                    f"median <= {median_lim:.0f}s and max <= {max_lim:.0f}s "
+                    f"at {ttfa_need} agents"
+                ),
+                bool(ttfa.get("ok")),
+                str(ttfa.get("detail") or ttfa.get("reason") or ""),
+            )
+        )
+    else:
+        gates.append(
+            _gate(
+                "time_to_first_action",
+                "Time to first action",
+                "not measured",
+                (
+                    f"median <= {median_lim:.0f}s and max <= {max_lim:.0f}s "
+                    f"at {ttfa_need} agents"
                 ),
                 True,
-                "Live poll did not run. A running study aborts when agents stay on the opening step.",
+                (
+                    "Live poll did not record screenshot → click/type/scroll "
+                    "visible in the study."
+                ),
             )
         )
     return gates
@@ -916,7 +1145,7 @@ def build_early_failures(
             continue
         if wanted and aid not in wanted:
             continue
-        if kind == FAILURE_NO_FIRST_ACTION and has_real_action(run):
+        if kind == FAILURE_NO_FIRST_ACTION and has_click_type_scroll(run):
             continue
         shot = _shot_step(run)
         step_n = shot.get("step") if shot else None
