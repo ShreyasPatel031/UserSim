@@ -125,7 +125,7 @@ function renderAnalytics() {
           const steps = cell.median_all_steps != null ? cell.median_all_steps : cell.median_steps;
           const time = cell.median_time_s;
           const extra = [
-            steps != null ? `${Number(steps).toFixed(0)} steps` : "",
+            steps != null ? `${Number(steps).toFixed(0)} step${Number(steps).toFixed(0) === "1" ? "" : "s"}` : "",
             time != null ? `${Number(time).toFixed(0)}s` : "",
           ]
             .filter(Boolean)

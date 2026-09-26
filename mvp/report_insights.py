@@ -1527,7 +1527,9 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
         "live_signups are UserSim's own test accounts: a captcha, a rejected throwaway email, a "
         "verification email that never arrived, or a signup error there is a limit of the test "
         "harness, not a product problem, so never describe it as a product flaw or recommend fixing "
-        "it. That a task needs an account at all is a product fact and may be mentioned.\n"
+        "it. That a task needs an account at all is a product fact and may be mentioned. "
+        "Name the specific competitor for every comparison. No opinions, industry norms, or "
+        "claims about typical users that are not in the facts.\n"
         f"Facts: {json.dumps(facts, ensure_ascii=False)[:5000]}"
     )
     raw = await gemini_chat(
@@ -1546,6 +1548,12 @@ def _signup_cause(label: str) -> str:
     m = re.match(r"^sign-?up did not finish \((.+)\)$", text, flags=re.I)
     if m:
         text = m.group(1)
+    if re.match(r"^\w*Timeout\w*\(.*\)$|^timed? ?out$", text, flags=re.I):
+        return "timeout"
+    if re.match(r"^\w+(Error|Exception)\(.*\)$", text):
+        return "browser error"
+    if text.lower() == "error":
+        return "signup error"
     return text.replace("_", " ").strip() or "unknown"
 
 
