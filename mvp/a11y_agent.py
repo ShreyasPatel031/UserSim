@@ -161,6 +161,58 @@ def failure_breakdown(runs: list[dict[str, Any]]) -> dict[str, Any]:
 # Sessions created at process start so URL submit does not wait on Browserbase.
 _PRIMED: asyncio.Queue | None = None
 _PRIME_STARTED = False
+# A primed browser that is already stopped (CDP 410) means the rest of that
+# startup batch is stopped too. Later creates must not pop those ids.
+_PRIMES_DEAD = False
+
+
+def _session_id(bb: Any) -> str:
+    return str(getattr(bb, "id", "") or "")
+
+
+def session_still_running(bb: Any) -> bool:
+    """True when Browserbase still has this browser in RUNNING."""
+    sid = _session_id(bb)
+    if not sid:
+        return False
+    try:
+        from browserbase import Browserbase
+        from capability.browserbase_client import browserbase_api_key
+
+        row = Browserbase(api_key=browserbase_api_key()).sessions.retrieve(sid)
+        return str(getattr(row, "status", "") or "").upper() == "RUNNING"
+    except Exception:
+        return False
+
+
+def _discard_session(bb: Any) -> None:
+    sid = _session_id(bb)
+    if not sid:
+        return
+    try:
+        from capability.browserbase_client import close_session
+
+        close_session(sid)
+    except Exception:
+        pass
+
+
+async def _abandon_primes(failed: Any | None = None) -> None:
+    """Drop the pre-click pool after one of them is already stopped."""
+    global _PRIMES_DEAD
+    _PRIMES_DEAD = True
+    if failed is not None:
+        await asyncio.to_thread(_discard_session, failed)
+    queue = _PRIMED
+    if queue is None:
+        return
+    while True:
+        try:
+            extra = queue.get_nowait()
+        except asyncio.QueueEmpty:
+            return
+        print(f"[a11y] discarding primed session {_session_id(extra)}", flush=True)
+        await asyncio.to_thread(_discard_session, extra)
 
 
 def prime_sessions(n: int = 4) -> None:
@@ -836,7 +888,15 @@ class A11yBoot:
                 try:
                     snap = await self._read_url(bb, self.study.url)
                 except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] product read failed (retrying): {exc!r}", flush=True)
+                    print(
+                        f"[a11y] product read failed session={_session_id(bb)} "
+                        f"(retrying with a new browser): {exc!r}",
+                        flush=True,
+                    )
+                    if browser_dead(exc):
+                        await _abandon_primes(bb)
+                    else:
+                        await asyncio.to_thread(_discard_session, bb)
                     continue
                 handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
                 page = (handle or {}).get("page") if isinstance(handle, dict) else None
@@ -845,7 +905,11 @@ class A11yBoot:
                 except Exception:
                     closed = True
                 if closed or not isinstance(handle, dict) or not isinstance(snap, dict):
-                    print("[a11y] product read had no live page (retrying)", flush=True)
+                    print(
+                        f"[a11y] product read had no live page session={_session_id(bb)} (retrying)",
+                        flush=True,
+                    )
+                    await _abandon_primes(bb)
                     continue
                 handle["site_key"] = "product"
                 handle["read"] = snap
@@ -875,15 +939,21 @@ class A11yBoot:
     async def _create_one(self, i: int, enqueue: bool = True) -> Any | None:
         from capability.browserbase_client import create_session, study_session_owner
 
-        if _PRIMED is not None:
-            try:
-                bb = _PRIMED.get_nowait()
-                print(f"[a11y] using primed session for {i + 1}", flush=True)
-                if enqueue:
-                    await self.pool.put(bb)
-                return bb
-            except asyncio.QueueEmpty:
-                pass
+        if _PRIMED is not None and not _PRIMES_DEAD:
+            while True:
+                try:
+                    bb = _PRIMED.get_nowait()
+                except asyncio.QueueEmpty:
+                    break
+                sid = _session_id(bb)
+                if await asyncio.to_thread(session_still_running, bb):
+                    print(f"[a11y] using primed session {sid} for {i + 1}", flush=True)
+                    if enqueue:
+                        await self.pool.put(bb)
+                    return bb
+                print(f"[a11y] primed session {sid} is not running", flush=True)
+                await _abandon_primes(bb)
+                break
         deadline = getattr(self.study, "budget_deadline", None) or (
             time.monotonic() + study_budget_s()
         )
@@ -1133,7 +1203,15 @@ class A11yBoot:
                 try:
                     snap = await self._read_url(bb, url)
                 except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] shared read {key} failed (retrying): {exc!r}", flush=True)
+                    print(
+                        f"[a11y] shared read {key} failed session={_session_id(bb)} "
+                        f"(retrying): {exc!r}",
+                        flush=True,
+                    )
+                    if browser_dead(exc):
+                        await _abandon_primes(bb)
+                    else:
+                        await asyncio.to_thread(_discard_session, bb)
                     continue
                 handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
                 page = (handle or {}).get("page") if isinstance(handle, dict) else None
@@ -1142,7 +1220,12 @@ class A11yBoot:
                 except Exception:
                     closed = True
                 if closed or not isinstance(handle, dict):
-                    print(f"[a11y] shared read {key} had no live page (retrying)", flush=True)
+                    print(
+                        f"[a11y] shared read {key} had no live page "
+                        f"session={_session_id(bb)} (retrying)",
+                        flush=True,
+                    )
+                    await _abandon_primes(bb)
                     continue
                 handle["site_key"] = key
                 handle["read"] = snap
@@ -1229,7 +1312,14 @@ class A11yBoot:
         try:
             snap = await self._read_url(bb, url or self.study.url)
         except Exception as exc:  # noqa: BLE001
-            print(f"[a11y] revive read failed {site_key}: {exc!r}", flush=True)
+            print(
+                f"[a11y] revive read failed {site_key} session={_session_id(bb)}: {exc!r}",
+                flush=True,
+            )
+            if browser_dead(exc):
+                await _abandon_primes(bb)
+            else:
+                await asyncio.to_thread(_discard_session, bb)
             return None
         handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
         if not isinstance(handle, dict):

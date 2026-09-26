@@ -187,6 +187,56 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(table["counts"]["product"], 1)
         self.assertEqual(table["counts"]["our infrastructure"], 1)
 
+    def test_stopped_primed_session_is_replaced(self) -> None:
+        """A CDP 410 prime must not be handed out. The next browser is a new create."""
+        import asyncio
+        from types import SimpleNamespace
+        from unittest.mock import patch
+
+        import mvp.a11y_agent as mod
+
+        dead = SimpleNamespace(id="dead-prime")
+        also_dead = SimpleNamespace(id="dead-prime-2")
+        fresh = SimpleNamespace(id="fresh-session", connect_url="wss://example/fresh")
+        queue: asyncio.Queue = asyncio.Queue()
+        queue.put_nowait(dead)
+        queue.put_nowait(also_dead)
+        discarded: list[str] = []
+
+        class _Study:
+            id = "study-1"
+            budget_deadline = None
+
+        boot = mod.A11yBoot(_Study())
+        prev_queue, prev_dead = mod._PRIMED, mod._PRIMES_DEAD
+        mod._PRIMED = queue
+        mod._PRIMES_DEAD = False
+
+        def _running(bb: object) -> bool:
+            return False
+
+        def _discard(bb: object) -> None:
+            discarded.append(mod._session_id(bb))
+
+        def _create(**kwargs: object) -> object:
+            self.assertEqual(kwargs.get("study_id"), "study-1")
+            return fresh
+
+        try:
+            with (
+                patch.object(mod, "session_still_running", _running),
+                patch.object(mod, "_discard_session", _discard),
+                patch("capability.browserbase_client.create_session", _create),
+                patch("capability.browserbase_client.study_session_owner", return_value="gates"),
+            ):
+                got = asyncio.run(boot._create_one(0, enqueue=False))
+        finally:
+            mod._PRIMED = prev_queue
+            mod._PRIMES_DEAD = prev_dead
+        self.assertIs(got, fresh)
+        self.assertEqual(discarded, ["dead-prime", "dead-prime-2"])
+        self.assertTrue(queue.empty())
+
 
 if __name__ == "__main__":
     unittest.main()
