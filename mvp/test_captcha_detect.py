@@ -90,6 +90,12 @@ class PoolAndPriorityTests(unittest.TestCase):
         self.assertEqual(primary_type(["cloudflare_challenge", "turnstile"]), "turnstile")
         self.assertEqual(primary_type([]), "none")
 
+    def test_bare_sitekey_is_classified(self) -> None:
+        from mvp.captcha_experiment import _row_type
+
+        self.assertEqual(_row_type({"types": [], "sitekey": "6LdQHE0eAAAAAG9v3"}), "recaptcha")
+        self.assertEqual(_row_type({"types": [], "sitekey": "0x4AAAAAAA-wFNpU7m"}), "turnstile")
+
 
 class SolverMapTests(unittest.TestCase):
     def test_capsolver_maps_enterprise_and_arkose(self) -> None:

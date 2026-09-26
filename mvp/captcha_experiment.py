@@ -309,7 +309,17 @@ async def _signals(page: Any) -> dict[str, Any]:
 
 
 def _row_type(info: dict[str, Any]) -> str:
-    return primary_type(list(info.get("types") or []))
+    ctype = primary_type(list(info.get("types") or []))
+    if ctype != "none":
+        return ctype
+    key = str(info.get("sitekey") or "")
+    if key.startswith("0x4"):
+        return "turnstile"
+    if key.startswith("6L"):
+        return "recaptcha"
+    if len(key) == 36 and key.count("-") == 4:
+        return "hcaptcha"
+    return "none"
 
 
 async def detect_one(site: dict[str, Any]) -> dict[str, Any]:
@@ -320,6 +330,15 @@ async def detect_one(site: dict[str, Any]) -> dict[str, Any]:
         err = await _goto_signup(page, site["url"])
         info = await _signals(page)
         if not info.get("types"):
+            try:
+                await page.evaluate(
+                    """() => {
+                      const el = document.querySelector('input[type=email], input[name*=email i], input[type=text]');
+                      if (el) { el.focus(); el.click(); }
+                    }"""
+                )
+            except Exception:
+                pass
             await page.wait_for_timeout(4000)
             info = await _signals(page)
         ctype = _row_type(info)
@@ -392,7 +411,11 @@ async def run_detect(*, limit: int | None = None) -> dict[str, Any]:
     closed = _release_leftover_experiment_sessions()
     if closed:
         print(f"released {closed} leftover signup-captcha sessions", flush=True)
-    done = {row.get("site") for row in _read_jsonl(DETECT_PATH) if row.get("ok") or row.get("type") not in {None, "error"}}
+    done = {
+        row.get("site")
+        for row in _read_jsonl(DETECT_PATH)
+        if row.get("type") not in {None, "", "none", "error"}
+    }
     sites = [s for s in load_pool() if s.get("host") not in done]
     if limit:
         sites = sites[:limit]
