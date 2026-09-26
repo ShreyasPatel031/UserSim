@@ -242,6 +242,33 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(extract_json('{"act":"click","i":1}\n{"act":"done"}'), {"act": "click", "i": 1})
         self.assertEqual(extract_json('note {"act":"drag"} trailing'), {"act": "drag"})
 
+    def test_hand_drawn_diagram_is_a_draw_task(self) -> None:
+        self.assertEqual(task_kind("Draw a diagram with hand-drawn elements"), "draw")
+        self.assertEqual(task_kind("Draw a rectangle on the canvas"), "draw")
+        # Thin freehand ink below the sample threshold is not a finished drawing.
+        self.assertFalse(
+            goal_visible(
+                "Draw a diagram with hand-drawn elements",
+                {
+                    "url": "https://excalidraw.com/",
+                    "drew": True,
+                    "opened_canvas": "1440x900:dark=0/4000;",
+                    "canvas": "1440x900:dark=5/4000;",
+                },
+            )
+        )
+        self.assertTrue(
+            goal_visible(
+                "Draw a diagram with hand-drawn elements",
+                {
+                    "url": "https://excalidraw.com/",
+                    "drew": True,
+                    "opened_canvas": "1440x900:dark=0/4000;",
+                    "canvas": "1440x900:dark=24/4000;",
+                },
+            )
+        )
+
     def test_logged_out_tasks_do_not_require_an_account(self) -> None:
         self.assertEqual(
             achievable_without_account("https://linear.app/", "Create a new issue in your workspace"),

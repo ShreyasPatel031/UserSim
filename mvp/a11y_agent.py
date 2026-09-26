@@ -1737,23 +1737,37 @@ def _canvas_box(nodes: list[dict[str, Any]]) -> dict[str, Any] | None:
 
 
 async def _drag_on_canvas(page: Any, action: dict[str, Any]) -> None:
-    """Drag across the middle of the largest canvas box from the tree."""
+    """Drag across the middle of the largest canvas box from the tree.
+
+    Excalidraw FreeDraw leaves a thin stroke. A short straight drag only
+    darkens about five sparse sample cells, below the ink threshold of 8,
+    so the loop treats the drag as a no-op and stops. A short zigzag covers
+    enough pixels for FreeDraw; with the rectangle tool the same gesture
+    still yields one shape (pointer-down corner to final corner).
+    """
     cx = int(action.get("canvas_x") or 0)
     cy = int(action.get("canvas_y") or 0)
     cw = int(action.get("canvas_w") or 0)
     ch = int(action.get("canvas_h") or 0)
     if cw > 200 and ch > 200 and (cx or cy):
-        x1 = int(cx - cw * 0.12)
-        y1 = int(cy - ch * 0.05)
-        x2 = int(cx + cw * 0.15)
-        y2 = int(cy + ch * 0.2)
+        x0 = int(cx - cw * 0.14)
+        y0 = int(cy - ch * 0.08)
+        x1 = int(cx + cw * 0.14)
+        y1 = int(cy + ch * 0.1)
+        amp = max(18, int(ch * 0.06))
     else:
         size = getattr(page, "viewport_size", None) or {"width": 1280, "height": 800}
         w, h = int(size.get("width") or 1280), int(size.get("height") or 800)
-        x1, y1, x2, y2 = int(w * 0.38), int(h * 0.4), int(w * 0.6), int(h * 0.62)
-    await page.mouse.move(x1, y1)
+        x0, y0, x1, y1 = int(w * 0.38), int(h * 0.42), int(w * 0.62), int(h * 0.58)
+        amp = max(18, int(h * 0.05))
+    await page.mouse.move(x0, y0)
     await page.mouse.down()
-    await page.mouse.move(x2, y2, steps=12)
+    segments = 6
+    for i in range(1, segments + 1):
+        t = i / segments
+        x = int(x0 + (x1 - x0) * t)
+        y = int(y0 + (y1 - y0) * t + (amp if i % 2 else -amp))
+        await page.mouse.move(x, y, steps=8)
     await page.mouse.up()
 
 
