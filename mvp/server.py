@@ -490,9 +490,9 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     # Serverless: stream NDJSON so the brief (competitors / users / tasks) arrives
     # before browser agents finish — cuts perceived time-to-first-content.
     if attach_stream and (IS_VERCEL or want_stream):
-        # Pro plan GA max is 800s — give studies ~13 min (8–12 min typical)
-        # with a little headroom for kill/persist cleanup.
-        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "780" if IS_VERCEL else "900"))
+        # One study budget. A full 24-agent Linear study finished in 128s.
+        # The cap is 8 minutes.
+        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "480"))
         queue: asyncio.Queue[dict | None] = asyncio.Queue()
 
         def _push(study_obj, event: str = "progress") -> None:

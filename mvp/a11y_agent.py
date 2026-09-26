@@ -2,19 +2,162 @@
 
 One browser reads the product URL at study start. Every agent for that URL
 gets the same compact accessibility tree and chooses a first click, type, or
-scroll from it. Later steps take one tree read each. Screenshots happen once,
-at the end, for the vision judge.
+scroll from it. Later steps take one tree read each. The only saved screenshot is the final
+one for the vision judge. Each step also hashes the viewport so a stuck agent
+can be stopped; that image is not stored and is not sent to the action model.
 """
 
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import os
 import re
 import time
 from typing import Any
 
 AX_CAP = 150
+
+# Full 24-agent Linear study 413e0cc0-f23b-45e5-9905-06f1c6d6d683 finished in
+# 128s from Run click to the report. One study-level cap, 8 minutes, sits
+# above that measured maximum. There is no per-agent step cap or wall.
+STUDY_BUDGET_S = float(os.environ.get("MVP_STUDY_BUDGET_S", "480") or "480")
+STUCK_STEPS = int(os.environ.get("MVP_STUCK_STEPS", "3") or "3")
+
+FAILURE_TYPES = ("our infrastructure", "model timeout", "stuck", "product")
+
+
+def study_budget_s() -> float:
+    """Seconds the whole study may run. Default is 8 minutes."""
+    try:
+        budget = float(os.environ.get("MVP_STUDY_BUDGET_S", "") or STUDY_BUDGET_S)
+    except (TypeError, ValueError):
+        budget = 480.0
+    return max(30.0, budget)
+
+
+def stuck_steps() -> int:
+    try:
+        n = int(os.environ.get("MVP_STUCK_STEPS", "") or STUCK_STEPS)
+    except (TypeError, ValueError):
+        n = 3
+    return max(2, n)
+
+
+def progress_signature(
+    *,
+    url: str,
+    screenshot_hash: str,
+    text: str,
+    canvas: str,
+) -> tuple[str, str, str, str]:
+    """URL + screenshot hash + DOM hash + canvas sample. Equal means no progress."""
+    dom = hashlib.sha256((text or "").encode("utf-8", "replace")).hexdigest()[:16]
+    return (
+        (url or "").split("#")[0].rstrip("/"),
+        screenshot_hash or "",
+        dom,
+        (canvas or "")[:120],
+    )
+
+
+def note_progress(
+    previous: tuple[str, str, str, str] | None,
+    signature: tuple[str, str, str, str],
+    streak: int,
+) -> tuple[int, str]:
+    """Count consecutive steps whose page signature did not change."""
+    if previous is not None and signature == previous:
+        streak += 1
+    else:
+        streak = 0
+    limit = stuck_steps()
+    if streak >= limit:
+        return streak, (
+            f"stuck: no progress for {limit} consecutive steps "
+            "(same URL, screenshot hash, DOM, and canvas)"
+        )
+    return streak, ""
+
+
+def browser_dead(exc: BaseException | str) -> bool:
+    text = (exc if isinstance(exc, str) else repr(exc)).lower()
+    markers = (
+        "target closed",
+        "has been closed",
+        "browser closed",
+        "connection closed",
+        "websocket",
+        "session closed",
+        "page closed",
+        "context closed",
+        "browser has disconnected",
+        "target page, context or browser",
+    )
+    return any(marker in text for marker in markers)
+
+
+def classify_failure(
+    *,
+    stop_reason: str = "",
+    error: str = "",
+    goal_reached: bool | None = None,
+) -> str:
+    """Bucket a stopped run: infrastructure, model timeout, stuck, or product."""
+    text = f"{stop_reason}\n{error}".lower()
+    if "stuck:" in text or "no progress for" in text:
+        return "stuck"
+    model_timeout = (
+        ("model" in text or "llm" in text or "gemini" in text)
+        and ("timeout" in text or "timed out" in text)
+    )
+    if model_timeout:
+        return "model timeout"
+    if "study budget" in text or browser_dead(text) or any(
+        marker in text
+        for marker in (
+            "no browserbase",
+            "browserbase",
+            "cdp",
+            "websocket",
+            "target closed",
+        )
+    ):
+        return "our infrastructure"
+    if goal_reached is False:
+        return "product"
+    if goal_reached is True or (stop_reason or "").strip() in {"", "done"} and not error.strip():
+        return ""
+    if error.strip() or (stop_reason and stop_reason != "done"):
+        return "our infrastructure"
+    return ""
+
+
+def failure_breakdown(runs: list[dict[str, Any]]) -> dict[str, Any]:
+    counts = {kind: 0 for kind in FAILURE_TYPES}
+    rows: list[dict[str, Any]] = []
+    for run in runs:
+        if not isinstance(run, dict):
+            continue
+        if str(run.get("site_key") or "product") != "product":
+            continue
+        kind = classify_failure(
+            stop_reason=str(run.get("stop_reason") or ""),
+            error=str(run.get("error") or run.get("browser_error") or ""),
+            goal_reached=run.get("goal_reached") if "goal_reached" in run else None,
+        )
+        if not kind:
+            continue
+        counts[kind] = counts.get(kind, 0) + 1
+        rows.append(
+            {
+                "agent_id": run.get("agent_id"),
+                "type": kind,
+                "reason": (run.get("stop_reason") or run.get("error") or "")[:300],
+                "judge_reason": str(run.get("judge_reason") or "")[:300],
+            }
+        )
+    return {"counts": counts, "rows": rows}
 
 # Sessions created at process start so URL submit does not wait on Browserbase.
 _PRIMED: asyncio.Queue | None = None
@@ -679,15 +822,14 @@ async def _model_action(
         "easy is one sentence if a control was obvious, else empty."
     )
     try:
-        raw = await asyncio.wait_for(
-            gemini_chat(
-                [{"role": "user", "content": prompt}],
-                model=fast_action_model(),
-                temperature=0,
-                json_mode=True,
-                max_retries=1,
-            ),
-            timeout=15,
+        # No per-step deadline. A slow model call keeps going; the study budget
+        # is the only timer, and a failed call falls through to the keyword move.
+        raw = await gemini_chat(
+            [{"role": "user", "content": prompt}],
+            model=fast_action_model(),
+            temperature=0,
+            json_mode=True,
+            max_retries=1,
         )
         data = extract_json(raw)
     except Exception as exc:  # noqa: BLE001
@@ -743,6 +885,20 @@ async def _act(page: Any, action: dict[str, Any]) -> None:
     await page.mouse.click(x, y)
 
 
+async def _screenshot_hash(page: Any) -> tuple[str, str]:
+    """Hash the viewport for the stuck check. The bytes are discarded."""
+    try:
+        blob = await page.screenshot(type="jpeg", quality=25, full_page=False, timeout=8000)
+    except Exception as exc:  # noqa: BLE001
+        if browser_dead(exc):
+            return "", f"browser dead: {exc!r}"[:220]
+        print(f"[a11y] screenshot hash skipped: {exc!r}", flush=True)
+        return "", ""
+    if not blob:
+        return "", ""
+    return hashlib.sha256(blob).hexdigest()[:16], ""
+
+
 async def _one_read(page: Any, fallback_url: str) -> dict[str, Any]:
     t0 = time.perf_counter()
     try:
@@ -774,20 +930,28 @@ async def run_a11y_agent(
     persona: dict[str, Any],
     on_step: Any | None = None,
     site_key: str = "product",
-    max_steps: int = 6,
+    deadline: float | None = None,
 ) -> dict[str, Any]:
-    """Continue from the shared snapshot. One tree read per step, one final shot."""
+    """Continue from the shared snapshot. One tree read per step, one final shot.
+
+    Stops when the task is done, the page signature is unchanged for N steps,
+    the browser is dead, or the study-level budget is spent.
+    """
     from mvp.paths import MVP_RUNS_DIR
 
     sess = boot.study.live_sessions.get(agent_id) or {}
     handle = await boot.take_page(site_key, url)
     failed: dict[str, Any] | None = None
+    stop_reason = ""
     phase = "navigate"
     page = None
     browser = None
     bb = None
+    if deadline is None:
+        deadline = time.monotonic() + study_budget_s()
     if handle is None:
-        failed = {"phase": "session", "reason": "no Browserbase session", "step": 0}
+        stop_reason = "browser dead: no Browserbase session"
+        failed = {"phase": "session", "reason": stop_reason, "step": 0}
     else:
         page = handle["page"]
         browser = handle["browser"]
@@ -795,14 +959,20 @@ async def run_a11y_agent(
         current = ""
         try:
             current = page.url or ""
-        except Exception:
-            current = ""
-        if url and url.rstrip("/") not in current.rstrip("/"):
+        except Exception as exc:  # noqa: BLE001
+            if browser_dead(exc):
+                stop_reason = f"browser dead: {exc!r}"[:220]
+                failed = {"phase": "session", "reason": stop_reason, "step": 0}
+        if failed is None and url and url.rstrip("/") not in current.rstrip("/"):
             phase = "navigate"
             try:
                 await page.goto(url, wait_until="commit", timeout=8000)
             except Exception as exc:  # noqa: BLE001
-                failed = {"phase": "navigate", "reason": repr(exc)[:200], "step": 1}
+                if browser_dead(exc):
+                    stop_reason = f"browser dead: {exc!r}"[:220]
+                    failed = {"phase": "navigate", "reason": stop_reason, "step": 1}
+                else:
+                    print(f"[{agent_id}] navigate error (continuing): {exc!r}", flush=True)
         pending = dict(sess.get("pending_action") or {}) or pick_action(
             task_prompt, (boot.snapshot_for(site_key) or {}).get("nodes") or []
         )
@@ -811,7 +981,11 @@ async def run_a11y_agent(
             try:
                 await _act(page, pending)
             except Exception as exc:  # noqa: BLE001
-                failed = {"phase": "act", "reason": repr(exc)[:200], "step": 1}
+                if browser_dead(exc):
+                    stop_reason = f"browser dead: {exc!r}"[:220]
+                    failed = {"phase": "act", "reason": stop_reason, "step": 1}
+                else:
+                    print(f"[{agent_id}] first action error (continuing): {exc!r}", flush=True)
 
     read = boot.snapshot_for(site_key) or {"url": url, "text": "", "canvas": "", "nodes": []}
     history = [str(sess.get("last_action") or "")]
@@ -821,16 +995,40 @@ async def run_a11y_agent(
     step_no = max([int(s.get("step") or 0) for s in trace if isinstance(s, dict)] or [0])
     prev_url = str(read.get("url") or "")
     prev_text = str(read.get("text") or "")[:240]
+    previous_sig: tuple[str, str, str, str] | None = None
+    stuck_streak = 0
 
-    for _ in range(max_steps):
-        if page is None or failed:
+    while page is not None and failed is None:
+        if time.monotonic() >= deadline:
+            stop_reason = "study budget"
+            failed = {"phase": "study_budget", "reason": stop_reason, "step": step_no}
             break
         phase = "read"
         t_read = time.perf_counter()
-        read = await _one_read(page, str(read.get("url") or url))
+        fresh = await _one_read(page, str(read.get("url") or url))
         read_ms = int(round((time.perf_counter() - t_read) * 1000))
-        if read.get("error"):
-            failed = {"phase": "read", "reason": str(read.get("error")), "step": step_no}
+        if fresh.get("error") and browser_dead(str(fresh.get("error"))):
+            stop_reason = f"browser dead: {fresh.get('error')}"[:220]
+            failed = {"phase": "read", "reason": stop_reason, "step": step_no}
+            break
+        if not fresh.get("error"):
+            read = fresh
+        shot_hash, dead_reason = await _screenshot_hash(page)
+        if dead_reason:
+            stop_reason = dead_reason
+            failed = {"phase": "read", "reason": stop_reason, "step": step_no}
+            break
+        signature = progress_signature(
+            url=str(read.get("url") or ""),
+            screenshot_hash=shot_hash,
+            text=str(read.get("text") or ""),
+            canvas=str(read.get("canvas") or ""),
+        )
+        stuck_streak, stuck_reason = note_progress(previous_sig, signature, stuck_streak)
+        previous_sig = signature
+        if stuck_reason:
+            stop_reason = stuck_reason
+            failed = {"phase": "stuck", "reason": stop_reason, "step": step_no}
             break
         phase = "decide"
         action = await _model_action(task=task_prompt, read=read, history=history)
@@ -841,6 +1039,7 @@ async def run_a11y_agent(
         if action.get("easy"):
             easy.append(str(action["easy"]))
         if str(action.get("act")) == "done":
+            stop_reason = "done"
             break
         step_no += 1
         label = action_label(action)
@@ -857,10 +1056,16 @@ async def run_a11y_agent(
         try:
             await _act(page, action)
         except Exception as exc:  # noqa: BLE001
-            failed = {"phase": "act", "reason": repr(exc)[:200], "step": step_no}
-            break
+            if browser_dead(exc):
+                stop_reason = f"browser dead: {exc!r}"[:220]
+                failed = {"phase": "act", "reason": stop_reason, "step": step_no}
+                break
+            print(f"[{agent_id}] action error (continuing): {exc!r}", flush=True)
         prev_url = str(read.get("url") or "")
         prev_text = str(read.get("text") or "")[:240]
+
+    if stop_reason:
+        print(f"[{agent_id}] stop reason: {stop_reason}", flush=True)
 
     # One more read so final URL and DOM are the page after the last action.
     if page is not None:
@@ -932,6 +1137,7 @@ async def run_a11y_agent(
         "first_action_at_ts": sess.get("first_action_at_ts"),
         "phase_ms": phase_ms,
         "failed_step": failed,
+        "stop_reason": stop_reason or ("done" if failed is None else str((failed or {}).get("reason") or "")),
         "phase": "error" if failed else "done",
         "error": "" if not failed else str(failed.get("reason") or ""),
         "browser_error": "" if not failed else str(failed.get("reason") or ""),

@@ -1311,6 +1311,12 @@ async def run_study(
 
     try:
         raise_if_killed(study)
+        from mvp.a11y_agent import study_budget_s
+
+        study.budget_s = study_budget_s()
+        # One clock for every agent. Measured 24-agent Linear maximum is 128s.
+        study.budget_deadline = time.monotonic() + study.budget_s
+        log_activity(study, "phase", f"Study budget {int(study.budget_s)}s")
         log_activity(study, "phase", "Study queued")
         touch("Understanding context of product", "running")
         log_activity(study, "fetch", f"Understanding context of {study.url}")
@@ -3144,7 +3150,6 @@ async def run_study(
                     )
                     sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
-                    _agent_wall = 200.0
                     try:
                         async with _BROWSER_SEMAPHORE:
                             # The accessibility loop runs all 24 agents at once.
@@ -3200,20 +3205,7 @@ async def run_study(
                                         agent_warm = warm_opening
                                         warm_used = True
                                 run = None
-                                _site_key = str(task.get("site_key") or "product")
-                                if _site_key == "product":
-                                    _agent_wall = float(
-                                        os.environ.get("MVP_AGENT_WALL_S", "200") or "200"
-                                    )
-                                else:
-                                    # Competitor stalls were holding the 16-wide
-                                    # slots for the full 200s and pushing the
-                                    # 24-agent e2e past 360s. Product keeps 200s.
-                                    _agent_wall = float(
-                                        os.environ.get("MVP_COMPETITOR_WALL_S", "90") or "90"
-                                    )
-                                _agent_wall = max(15.0, _agent_wall)
-                                _outer_wall = max(45.0, _agent_wall + 45.0)
+                                _remaining = float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic()
                                 if a11y_boot is not None:
                                     from mvp.a11y_agent import run_a11y_agent
 
@@ -3228,6 +3220,7 @@ async def run_study(
                                         persona=persona,
                                         on_step=lambda step: _on_agent_step(agent_id, step),
                                         site_key=str(task.get("site_key") or "product"),
+                                        deadline=getattr(study, "budget_deadline", None),
                                     )
                                 else:
                                     _agent_coro = run_browser_agent(
@@ -3243,16 +3236,43 @@ async def run_study(
                                         bb_session=None,
                                         local=force_local_browser,
                                         warm=agent_warm,
-                                        wall_s=_agent_wall,
                                     )
-                                _agent_task = asyncio.create_task(_agent_coro)
-                                _done, _pending = await asyncio.wait(
-                                    {_agent_task}, timeout=_outer_wall
-                                )
-                                if _agent_task in _pending:
+                                if _remaining <= 0:
                                     print(
-                                        f"[{agent_id}] outer agent wall ({_outer_wall:.0f}s) — "
-                                        "using captured frames",
+                                        f"[{agent_id}] study budget — not started",
+                                        flush=True,
+                                    )
+                                    existing = sess.get("trace") or []
+                                    run = {
+                                        "agent_id": agent_id,
+                                        "completed": False,
+                                        "trace": existing,
+                                        "actions": [],
+                                        "num_steps": len(existing),
+                                        "final_url": site,
+                                        "visited_urls": [site],
+                                        "mode": "study_budget",
+                                        "stop_reason": "study budget",
+                                        "failed_step": {
+                                            "phase": "study_budget",
+                                            "reason": "study budget",
+                                            "step": len(existing),
+                                        },
+                                        "error": "study budget",
+                                    }
+                                    _agent_task = None
+                                else:
+                                    _agent_task = asyncio.create_task(_agent_coro)
+                                if _agent_task is not None:
+                                    _done, _pending = await asyncio.wait(
+                                        {_agent_task}, timeout=max(0.1, _remaining)
+                                    )
+                                else:
+                                    _pending = set()
+                                if _agent_task is not None and _agent_task in _pending:
+                                    print(
+                                        f"[{agent_id}] study budget "
+                                        f"({int(getattr(study, 'budget_s', 480))}s) — stopping",
                                         flush=True,
                                     )
                                     _agent_task.cancel()
@@ -3273,9 +3293,16 @@ async def run_study(
                                         "num_steps": len(existing),
                                         "final_url": site,
                                         "visited_urls": [site],
-                                        "mode": "browser_wall",
+                                        "mode": "study_budget",
+                                        "stop_reason": "study budget",
+                                        "failed_step": {
+                                            "phase": "study_budget",
+                                            "reason": "study budget",
+                                            "step": len(existing),
+                                        },
+                                        "error": "study budget",
                                     }
-                                else:
+                                elif _agent_task is not None:
                                     run = _agent_task.result()
                         sess["status"] = "summarizing"
                         refresh_agent_phase()
@@ -3328,6 +3355,8 @@ async def run_study(
                                 if key in result:
                                     sess[key] = result[key]
                             sess["final_url"] = result.get("final_url") or sess.get("final_url")
+                            if result.get("stop_reason"):
+                                sess["stop_reason"] = result.get("stop_reason")
                             sess["last_action"] = (
                                 (result.get("trace") or [{}])[-1].get("action")
                                 if result.get("trace")
@@ -3390,17 +3419,22 @@ async def run_study(
                                 error=str(exc)[:200],
                             )
                             try:
-                                run = await run_browser_agent(
-                                    study_id=study.id,
-                                    agent_id=agent_id,
-                                    url=task.get("site_url") or study.url,
-                                    task_prompt=task.get("prompt") or task.get("title") or "",
-                                    persona=persona,
-                                    segment=study.segment,
-                                    on_step=lambda step: _on_agent_step(agent_id, step),
-                                    bb_session=None,
-                                    local=False,
-                                    wall_s=_agent_wall,
+                                _left = float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic()
+                                if _left <= 1:
+                                    raise TimeoutError("study budget")
+                                run = await asyncio.wait_for(
+                                    run_browser_agent(
+                                        study_id=study.id,
+                                        agent_id=agent_id,
+                                        url=task.get("site_url") or study.url,
+                                        task_prompt=task.get("prompt") or task.get("title") or "",
+                                        persona=persona,
+                                        segment=study.segment,
+                                        on_step=lambda step: _on_agent_step(agent_id, step),
+                                        bb_session=None,
+                                        local=False,
+                                    ),
+                                    timeout=_left,
                                 )
                                 sess["status"] = "summarizing"
                                 feedback = await summarize_agent_feedback(
@@ -3593,6 +3627,12 @@ async def run_study(
                 study.summary = _summary_from_agent_results(study.agent_results)
         if not study.summary:
             study.summary = {}
+        try:
+            from mvp.a11y_agent import failure_breakdown
+
+            study.summary["failure_breakdown"] = failure_breakdown(study.agent_results)
+        except Exception as breakdown_exc:  # noqa: BLE001
+            print(f"failure breakdown skipped: {breakdown_exc!r}", flush=True)
         study.summary["site_summary"] = site_summary
         if study.access_backend:
             study.summary["access_backend"] = study.access_backend
