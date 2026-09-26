@@ -15,6 +15,7 @@ import os
 import re
 import time
 from typing import Any
+from urllib.parse import urlsplit
 
 AX_CAP = 150
 
@@ -407,6 +408,167 @@ def apply_gate_fields(sess: dict[str, Any], **fields: Any) -> None:
     sess["current_url"] = url
     shot = str(sess.get("final_screenshot_url") or "")
     sess["final_screenshot"] = shot
+
+
+_STEP_STAMP_KEYS = (
+    "page_open_at_ts",
+    "page_opened_at_ts",
+    "page_open_at",
+    "opened_at_ts",
+    "session_ready_at_ts",
+    "browser_session_ready_at_ts",
+    "browser_ready_at_ts",
+    "session_ready_at",
+    "browser_ready_at",
+    "first_action_at_ts",
+    "first_action_at",
+)
+
+
+def _url_host(url: object) -> str:
+    text = str(url or "").strip()
+    if not text:
+        return ""
+    if "://" not in text:
+        text = "https://" + text
+    try:
+        host = (urlsplit(text).hostname or "").lower().rstrip(".")
+    except Exception:
+        return ""
+    if host.startswith("www."):
+        host = host[4:]
+    return host
+
+
+def keep_step_stamps(previous: dict[str, Any] | None, incoming: dict[str, Any]) -> None:
+    """Replacing a numbered step must not drop the stamps the gates read."""
+    if not isinstance(previous, dict) or not isinstance(incoming, dict):
+        return
+    for key in _STEP_STAMP_KEYS:
+        if previous.get(key) not in (None, "") and incoming.get(key) in (None, ""):
+            incoming[key] = previous[key]
+    prev_ax = str(previous.get("ax_tree") or previous.get("accessibility_tree") or "").strip()
+    inc_ax = str(incoming.get("ax_tree") or incoming.get("accessibility_tree") or "").strip()
+    if prev_ax and not inc_ax:
+        incoming["ax_tree"] = previous.get("ax_tree") or prev_ax
+        incoming["accessibility_tree"] = previous.get("accessibility_tree") or prev_ax
+    if isinstance(previous.get("phase_ms"), dict) and previous["phase_ms"]:
+        merged = dict(previous["phase_ms"])
+        if isinstance(incoming.get("phase_ms"), dict):
+            merged.update({k: v for k, v in incoming["phase_ms"].items() if v is not None})
+        incoming["phase_ms"] = merged
+    if isinstance(previous.get("failed_step"), dict) and not isinstance(incoming.get("failed_step"), dict):
+        incoming["failed_step"] = previous["failed_step"]
+    for key in ("final_screenshot_url", "final_screenshot", "page_url", "opened_url", "current_url"):
+        if previous.get(key) and not incoming.get(key):
+            incoming[key] = previous[key]
+
+
+def promote_live_session_fields(sess: dict[str, Any], step: dict[str, Any] | None = None) -> None:
+    """Copy gate fields onto the live session the harness polls.
+
+    `page_open_at_ts` and `ax_tree` on a trace step are not enough. The strict
+    page-open check reads the session object, and only the first trace step
+    is a fallback for the open clock.
+    """
+    if not isinstance(sess, dict):
+        return
+    sources: list[dict[str, Any]] = []
+    if isinstance(step, dict):
+        sources.append(step)
+    trace = [row for row in (sess.get("trace") or []) if isinstance(row, dict)]
+    trace.sort(key=lambda row: int(row["step"]) if isinstance(row.get("step"), int) else 0)
+    sources.extend(trace)
+
+    def _first(*keys: str) -> Any:
+        for src in sources:
+            for key in keys:
+                val = src.get(key)
+                if val not in (None, "", [], {}):
+                    return val
+        return None
+
+    if not sess.get("page_open_at_ts"):
+        stamp = _first("page_open_at_ts", "page_opened_at_ts", "page_open_at", "opened_at_ts")
+        if stamp not in (None, ""):
+            sess["page_open_at_ts"] = stamp
+            sess["page_opened_at_ts"] = stamp
+            sess["page_open_at"] = stamp
+            sess["opened_at_ts"] = stamp
+            # Placeholder sessions have no clock. It starts with the open stamp
+            # so creation and publish are the same moment.
+            if sess.get("created_at_ts") in (None, "") and not sess.get("created_at"):
+                try:
+                    sess["created_at_ts"] = float(stamp)
+                except (TypeError, ValueError):
+                    sess["created_at_ts"] = time.time()
+
+    if not sess.get("session_ready_at_ts"):
+        ready = _first(
+            "session_ready_at_ts",
+            "browser_session_ready_at_ts",
+            "browser_ready_at_ts",
+            "session_ready_at",
+            "browser_ready_at",
+        )
+        if ready not in (None, ""):
+            sess["session_ready_at_ts"] = ready
+            sess["browser_session_ready_at_ts"] = ready
+            sess["browser_ready_at_ts"] = ready
+            sess["browser_ready_at"] = ready
+            sess["session_ready_at"] = ready
+
+    if not sess.get("first_action_at_ts"):
+        first_action = _first("first_action_at_ts", "first_action_at")
+        if first_action not in (None, ""):
+            sess["first_action_at_ts"] = first_action
+
+    ax = _first("ax_tree", "accessibility_tree", "ax_text")
+    if ax and not str(sess.get("ax_tree") or "").strip():
+        text = str(ax)
+        sess["ax_tree"] = text
+        sess["accessibility_tree"] = text
+        sess["ax_text"] = text
+
+    site_host = _url_host(sess.get("site_url"))
+    current_host = _url_host(sess.get("page_url") or sess.get("opened_url") or sess.get("current_url"))
+    chosen = ""
+    for src in sources:
+        for key in ("page_url", "opened_url", "current_url", "url"):
+            text = str(src.get(key) or "").strip()
+            if not text:
+                continue
+            if site_host and _url_host(text) == site_host:
+                chosen = text
+                break
+        if chosen:
+            break
+    if chosen and (not sess.get("page_url") or (site_host and current_host != site_host)):
+        sess["page_url"] = chosen
+        sess["opened_url"] = chosen
+        sess["current_url"] = chosen
+
+    shot = _first("final_screenshot_url", "final_screenshot")
+    if shot and not sess.get("final_screenshot_url"):
+        sess["final_screenshot_url"] = str(shot)
+        sess["final_screenshot"] = str(shot)
+
+    merged_phase: dict[str, Any] = dict(sess.get("phase_ms") or {}) if isinstance(sess.get("phase_ms"), dict) else {}
+    for src in sources:
+        raw = src.get("phase_ms")
+        if not isinstance(raw, dict):
+            continue
+        for key, value in raw.items():
+            if value is not None and key not in merged_phase:
+                merged_phase[key] = value
+    if merged_phase:
+        sess["phase_ms"] = merged_phase
+
+    failed_now = sess.get("failed_step") if isinstance(sess.get("failed_step"), dict) else {}
+    if not failed_now.get("phase"):
+        failed = _first("failed_step")
+        if isinstance(failed, dict) and (failed.get("phase") or failed.get("reason")):
+            sess["failed_step"] = failed
 
 
 def _step_from_read(

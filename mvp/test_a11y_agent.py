@@ -13,9 +13,11 @@ from mvp.a11y_agent import (
     failure_breakdown,
     fast_action_model,
     format_ax,
+    keep_step_stamps,
     note_progress,
     pick_action,
     progress_signature,
+    promote_live_session_fields,
     study_budget_s,
 )
 
@@ -36,6 +38,79 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(action["act"], "click")
         self.assertEqual(action["name"], "Pricing")
         self.assertTrue(action_label(action).startswith("click "))
+
+    def test_live_session_gets_ax_and_page_open_from_the_trace(self) -> None:
+        sess = {
+            "agent_id": "t1__p1__product",
+            "site_url": "https://linear.app/",
+            "trace": [
+                {
+                    "step": 0,
+                    "url": "https://linear.app/",
+                    "ax_tree": "0 button New issue",
+                    "page_open_at_ts": 1_000.0,
+                    "session_ready_at_ts": 999.0,
+                }
+            ],
+        }
+        promote_live_session_fields(sess)
+        self.assertEqual(sess["ax_tree"], "0 button New issue")
+        self.assertEqual(sess["accessibility_tree"], "0 button New issue")
+        self.assertEqual(sess["page_open_at_ts"], 1_000.0)
+        self.assertEqual(sess["page_opened_at_ts"], 1_000.0)
+        self.assertEqual(sess["created_at_ts"], 1_000.0)
+        self.assertEqual(sess["page_url"], "https://linear.app/")
+        self.assertEqual(sess["session_ready_at_ts"], 999.0)
+
+    def test_promote_does_not_wipe_existing_stamps(self) -> None:
+        sess = {
+            "site_url": "https://linear.app/",
+            "page_open_at_ts": 50.0,
+            "ax_tree": "0 button Pricing",
+            "created_at_ts": 49.0,
+            "page_url": "https://linear.app/",
+            "trace": [{"step": 1, "action": "click New issue", "url": "https://linear.app/team"}],
+        }
+        promote_live_session_fields(sess, {"step": 1, "action": "click New issue"})
+        self.assertEqual(sess["page_open_at_ts"], 50.0)
+        self.assertEqual(sess["ax_tree"], "0 button Pricing")
+        self.assertEqual(sess["created_at_ts"], 49.0)
+        self.assertEqual(sess["page_url"], "https://linear.app/")
+
+    def test_replaced_step_keeps_page_open_and_ax(self) -> None:
+        previous = {
+            "step": 0,
+            "page_open_at_ts": 10.0,
+            "ax_tree": "0 button Save",
+            "url": "https://trello.com/",
+            "phase_ms": {"page_open": 40},
+        }
+        incoming = {"step": 0, "action": "Opened", "url": "https://trello.com/"}
+        keep_step_stamps(previous, incoming)
+        self.assertEqual(incoming["page_open_at_ts"], 10.0)
+        self.assertEqual(incoming["ax_tree"], "0 button Save")
+        self.assertEqual(incoming["phase_ms"]["page_open"], 40)
+
+    def test_promote_uses_the_assigned_host(self) -> None:
+        sess = {
+            "site_url": "https://trello.com/",
+            "page_url": "https://linear.app/",
+            "created_at_ts": 5.0,
+            "trace": [
+                {
+                    "step": 0,
+                    "url": "https://linear.app/",
+                    "ax_tree": "0 a Login",
+                    "page_open_at_ts": 5.0,
+                },
+                {"step": 1, "url": "https://trello.com/", "ax_tree": "0 button Sign up"},
+            ],
+        }
+        promote_live_session_fields(sess)
+        self.assertEqual(sess["page_url"], "https://trello.com/")
+        self.assertEqual(sess["opened_url"], "https://trello.com/")
+        self.assertEqual(sess["ax_tree"], "0 a Login")
+        self.assertEqual(sess["created_at_ts"], 5.0)
 
     def test_gate_fields_are_present(self) -> None:
         sess: dict = {}

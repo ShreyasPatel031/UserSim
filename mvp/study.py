@@ -2254,32 +2254,37 @@ async def run_study(
             agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
             if a11y_boot is not None:
                 # The shared read publishes the real opening. Do not stamp a
-                # screenshot placeholder that overwrites the first click.
-                if not (study.live_sessions.get(agent_id) or {}).get("trace"):
-                    site = task.get("site_url") or study.url
-                    site_key = str(task.get("site_key") or "")
-                    if not site_key or (
-                        site_key == "product" and "competitor_" in str(agent_id)
-                    ):
-                        site_key = str(agent_id).split("__")[-1] or "product"
-                    study.live_sessions[agent_id] = {
-                        "agent_id": agent_id,
-                        "persona_id": persona.get("id"),
-                        "persona_name": persona.get("name"),
-                        "persona_bio": persona.get("bio"),
-                        "task_id": task.get("id"),
-                        "task_title": task.get("title"),
-                        "task_prompt": task.get("prompt"),
-                        "site_key": site_key,
-                        "site_url": site,
-                        "site_label": task.get("site_label") or site_key,
-                        "status": "starting",
-                        "trace": [],
-                        "num_steps": 0,
-                        "created_at": _now(),
-                        "created_at_ts": time.time(),
-                        "last_action": f"Opening {site}",
-                    }
+                # screenshot placeholder that overwrites the first click, and
+                # do not start the 5s page-open clock before that publish.
+                existing_live = study.live_sessions.get(agent_id) or {}
+                if (
+                    existing_live.get("trace")
+                    or existing_live.get("ax_tree")
+                    or existing_live.get("page_open_at_ts")
+                ):
+                    continue
+                site = task.get("site_url") or study.url
+                site_key = str(task.get("site_key") or "")
+                if not site_key or (
+                    site_key == "product" and "competitor_" in str(agent_id)
+                ):
+                    site_key = str(agent_id).split("__")[-1] or "product"
+                study.live_sessions[agent_id] = {
+                    "agent_id": agent_id,
+                    "persona_id": persona.get("id"),
+                    "persona_name": persona.get("name"),
+                    "persona_bio": persona.get("bio"),
+                    "task_id": task.get("id"),
+                    "task_title": task.get("title"),
+                    "task_prompt": task.get("prompt"),
+                    "site_key": site_key,
+                    "site_url": site,
+                    "site_label": task.get("site_label") or site_key,
+                    "status": "starting",
+                    "trace": [],
+                    "num_steps": 0,
+                    "last_action": f"Opening {site}",
+                }
                 continue
             site = task.get("site_url") or study.url
             site_key = str(task.get("site_key") or "product")
@@ -3061,10 +3066,15 @@ async def run_study(
                     sess["status"] = "running"
                     sess["trace"] = list(sess.get("trace") or [])
                     existing = {s.get("step"): i for i, s in enumerate(sess["trace"])}
+                    from mvp.a11y_agent import keep_step_stamps, promote_live_session_fields
+
                     if step.get("step") in existing:
+                        previous = sess["trace"][existing[step["step"]]]
+                        keep_step_stamps(previous if isinstance(previous, dict) else None, step)
                         sess["trace"][existing[step["step"]]] = step
                     else:
                         sess["trace"].append(step)
+                    promote_live_session_fields(sess, step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
                     _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
@@ -3151,16 +3161,19 @@ async def run_study(
                     sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
                     try:
-                        async with _BROWSER_SEMAPHORE:
-                            # The accessibility loop runs all 24 agents at once.
-                            # The older screenshot loop still queues on the LLM cap.
-                            class _Pass:
-                                async def __aenter__(self) -> None:
-                                    return None
+                        # The accessibility loop runs all 24 agents at once.
+                        # The older screenshot loop still queues on the browser
+                        # and LLM caps (MVP_BROWSER_CONCURRENCY is 8 here).
+                        class _Pass:
+                            async def __aenter__(self) -> None:
+                                return None
 
-                                async def __aexit__(self, *_exc: object) -> bool:
-                                    return False
+                            async def __aexit__(self, *_exc: object) -> bool:
+                                return False
 
+                        async with (
+                            _Pass() if a11y_boot is not None else _BROWSER_SEMAPHORE
+                        ):
                             async with (
                                 _Pass() if a11y_boot is not None else _llm_run_semaphore()
                             ):
