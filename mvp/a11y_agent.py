@@ -163,19 +163,25 @@ _PRIMED: asyncio.Queue | None = None
 _PRIME_STARTED = False
 
 
-def prime_sessions(n: int = 4) -> None:
-    """Start creating browsers before anyone clicks Run."""
+def prime_sessions(n: int = 0) -> None:
+    """Pre-click browsers. This harness keeps the count at 0.
+
+    A positive ``n`` still fills the queue for a caller that opts in.
+    ``n <= 0`` creates nothing, including no ``study_id=prime`` sessions.
+    """
     global _PRIME_STARTED
     if _PRIME_STARTED:
         return
     _PRIME_STARTED = True
+    if n <= 0:
+        return
 
     async def _fill() -> None:
         global _PRIMED
         from capability.browserbase_client import create_session, study_session_owner
 
         _PRIMED = asyncio.Queue()
-        for i in range(max(1, n)):
+        for i in range(n):
             try:
                 bb = await asyncio.to_thread(
                     create_session,
@@ -842,15 +848,8 @@ class A11yBoot:
         self.install_fast_plan()
 
         async def _boot() -> None:
-            # Shared read for the opening display. Each agent then takes its
-            # own browser from the pool (or creates one). They do not share
-            # this page.
-            n_agents = len(self.study.tasks or [])
-            fill = (
-                asyncio.create_task(self._fill_pool(n_agents, offset=1))
-                if n_agents
-                else None
-            )
+            # Shared read for the opening display. Each agent creates its own
+            # browser when it runs. No pre-click prime pool.
             for attempt in range(4):
                 bb = await self._create_one(attempt, enqueue=False)
                 if bb is None:
@@ -876,18 +875,9 @@ class A11yBoot:
                     self.contexts["product"] = handle
                     self._handle_cv.notify_all()
                 self.snapshots["product"] = snap
-                # Sessions are created before the page-open clock starts, so
-                # each agent's own browser can click inside the first-action window.
-                if fill is not None:
-                    try:
-                        await fill
-                    except Exception as exc:  # noqa: BLE001
-                        print(f"[a11y] agent pool fill: {exc!r}", flush=True)
                 self._publish_site("product", snap)
                 break
             else:
-                if fill is not None and not fill.done():
-                    fill.cancel()
                 print("[a11y] no live product page", flush=True)
             extras = len([c for c in (self.study.competitors or []) if c])
             if extras:

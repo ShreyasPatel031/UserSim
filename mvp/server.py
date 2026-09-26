@@ -29,12 +29,13 @@ app = FastAPI(title="UserSim MVP", version="0.1.0")
 
 @app.on_event("startup")
 async def _prime_browser_sessions() -> None:
-    """Have a Browserbase session ready before the Run click."""
+    """Start with a prime count of 0. Agents open browsers when they run."""
     if os.environ.get("MVP_A11Y_LOOP", "1").lower() in {"0", "false", "no"}:
         return
     from mvp.a11y_agent import prime_sessions
 
-    prime_sessions(4)
+    # No pre-click pool. A study opens browsers when an agent runs.
+    prime_sessions(int(os.environ.get("MVP_PRIME_SESSIONS", "0") or "0"))
 
 if STATIC.is_dir():
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
