@@ -427,3 +427,12 @@ def test_purchase_controls_are_never_offered():
     nodes = [{"i": 1, "role": "input", "name": "Card number"}, {"i": 2, "role": "button", "name": "Subscribe to Pro"},
              {"i": 3, "role": "button", "name": "Select plan"}]
     assert [n["i"] for n in _nodes_for_model(nodes, set(), signed_in=True)] == [3]
+
+
+def test_view_tasks_detected_for_empty_account_rule():
+    from mvp.a11y_agent import _VIEW_TASK_RE
+
+    for t in ("Identify at-risk customer accounts", "See which accounts are at risk", "Review customer health scores"):
+        assert _VIEW_TASK_RE.search(t), t
+    for t in ("Draft an outreach message", "Create a new issue", "Connect a product data source"):
+        assert not _VIEW_TASK_RE.search(t), t

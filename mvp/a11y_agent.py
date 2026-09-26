@@ -1610,6 +1610,11 @@ def credential_wall(read: dict[str, Any]) -> str:
     return re.sub(r"\s+", " ", hit).strip().lower()
 
 
+_VIEW_TASK_RE = re.compile(
+    r"^\s*(?:find|identify|review|see|view|check|spot|list|show|look (?:at|up)|explore|analy[sz]e|monitor|track)\b", re.I
+)
+
+
 def connect_task(task: str) -> bool:
     """A task to connect, integrate, import or sync an outside data source."""
     return bool(_CONNECT_TASK_RE.search(task or ""))
@@ -1775,6 +1780,14 @@ async def _model_action(
         "Elements marked (selected) are already on: a selected drawing tool means the next action is drag, not another click. "
         "done as soon as the current page shows the finished outcome the task asked for "
         "(for example the typed text is already in the note, or the item now exists); do not redo work. "
+        + (
+            "A brand-new account has little or no data: for a task to find, identify, review or see something, "
+            "the view that answers it (the right list, filter, segment, report or answer, even if it lists few "
+            "or no items yet) is the finished outcome. "
+            if read.get("signed_in") and _VIEW_TASK_RE.search(task or "")
+            else ""
+        )
+        + 
         "reason: at most 12 words. friction: at most 15 words if something was confusing, else empty. "
         "easy: at most 15 words naming something that was obvious, else empty."
     )
@@ -2561,7 +2574,14 @@ async def _verify_done(
         "(the created item, the drawn shape, the requested page or dialog). "
         "A docs, help, blog or marketing page that explains how is not finished. "
         "An unchanged start page is not finished.\n"
-        'JSON: {"finished": true|false, "why": "short"}'
+        + (
+            "The account is brand new and has little or no data. For a task to find, identify, review or see "
+            "something, the page counts as finished when it shows the view that answers the task (the right "
+            "list, filter, segment, report or assistant answer), even if that view lists few or no items.\n"
+            if signed_in and _VIEW_TASK_RE.search(task or "")
+            else ""
+        )
+        + 'JSON: {"finished": true|false, "why": "short"}'
     )
     message: dict[str, Any] = {"role": "user", "content": prompt}
     if page is not None:
