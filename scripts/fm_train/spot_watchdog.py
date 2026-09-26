@@ -6,9 +6,10 @@ Runs on fm-gate0-spot-watchdog (on-demand e2-micro) from a 60s systemd timer.
 A TERMINATED VM is restarted only when the newest stop since lastStartTimestamp
 was a preemption (compute.instances.preempted, a maintenance simulation, or a
 Spot VM that went down with no user/agent stop operation). A stop issued by a
-person or an agent is left alone. usersim-train-state=done,
-usersim-do-not-start=true, and a missing usersim-spot-watch label are also
-left alone.
+person or an agent is left alone. usersim-train-state=done on a stopped VM is left alone. On a running
+on-demand VM, done means training finished: the watchdog sets that label,
+sets usersim-do-not-start, and stops the VM. usersim-do-not-start=true and a
+missing usersim-spot-watch label are also left alone.
 
 A start whose operation finishes while the VM is still TERMINATED is a
 stockout, not a success. Stockouts do not increment usersim-spot-restarts.
@@ -143,6 +144,8 @@ def decide(
         return "skip", "other_team"
     if labels.get(LABEL_KEY) != LABEL_VALUE:
         return "skip", "not_watched"
+    if labels.get(STATE_LABEL) == "done" and status == "RUNNING" and not preemptible:
+        return "stop", "train_finished"
     if labels.get(STATE_LABEL) == "done":
         return "skip", "train_state_done"
     if status == "RUNNING":
@@ -311,6 +314,23 @@ def remove_labels(inst: dict, keys: list[str]) -> None:
         log(f"DECISION name={inst['name']} action=note reason=label_remove_failed detail={(result.stderr or '')[-240:]}")
 
 
+def stop_instance(inst: dict) -> tuple[int, str]:
+    result = run(
+        [
+            "gcloud",
+            "compute",
+            "instances",
+            "stop",
+            inst["name"],
+            f"--zone={inst['zone']}",
+            f"--project={project()}",
+        ],
+        timeout=300,
+    )
+    text = ((result.stdout or "") + (result.stderr or ""))[-500:]
+    return result.returncode, text.replace("\n", " ")
+
+
 def start_instance(inst: dict) -> tuple[int, str]:
     result = run(
         [
@@ -464,6 +484,18 @@ def tick() -> int:
             inst["labels"],
         )
         state = load_state(name)
+        if action == "stop":
+            log(
+                f"DECISION name={name} action=stop reason={reason} "
+                f"status={inst['status']} note=on_demand_idle_after_training"
+            )
+            add_labels(inst, {STATE_LABEL: "done", DENY_LABEL: "true"})
+            code, detail = stop_instance(inst)
+            if code == 0:
+                log(f"DECISION name={name} action=stop reason={reason} result=ok")
+            else:
+                log(f"DECISION name={name} action=stop reason={reason} result=fail detail={detail[:240]}")
+            continue
         if action == "failover":
             log(
                 f"DECISION name={name} action=failover reason={reason} "
@@ -548,7 +580,42 @@ def tick() -> int:
     return started
 
 
+def dry_run_stockout(source_name: str, target_name: str) -> int:
+    """Log a stockout failover for a throwaway name. Does not start any VM."""
+    if source_name.startswith(DENY_PREFIXES) or "dose-oss" in source_name or "dose-oss" in target_name:
+        log(f"FAILOVER name={source_name} target={target_name} result=dry_run reason=other_team note=no_instance_started")
+        return 1
+    ok, classified = classify_start(0, "TERMINATED")
+    assert not ok and classified == "start_op_done_but_still_TERMINATED"
+    labels = {
+        LABEL_KEY: LABEL_VALUE,
+        STATE_LABEL: "running",
+        RESTARTS_LABEL: "0",
+        FAILOVER_LABEL: target_name,
+        STOCKOUT_LABEL: "true",
+    }
+    action, reason = decide(source_name, "TERMINATED", True, None, [], labels)
+    if action != "start" or reason != "simulated_stockout":
+        log(f"DECISION name={source_name} action={action} reason={reason} result=dry_run note=unexpected")
+        return 1
+    log(
+        f"DECISION name={source_name} action=start reason=simulated_stockout result=fail "
+        f"detail={classified} status=TERMINATED restarts=0/{MAX_RESTARTS}"
+    )
+    log(
+        f"CAPACITY name={source_name} consecutive_failures=1 restarts=0/{MAX_RESTARTS} "
+        "note=stockout does not consume the cap; failing over to on-demand"
+    )
+    log(
+        f"FAILOVER name={source_name} target={target_name} result=dry_run "
+        "reason=simulated_stockout note=no_instance_started"
+    )
+    return 0
+
+
 def main() -> int:
+    if len(sys.argv) >= 4 and sys.argv[1] == "--dry-run-stockout":
+        return dry_run_stockout(sys.argv[2], sys.argv[3])
     log(f"watchdog tick project={project()} label={LABEL_KEY}={LABEL_VALUE} max_restarts={MAX_RESTARTS}")
     try:
         n = tick()
