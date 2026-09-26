@@ -662,18 +662,14 @@ def achievable_without_account(url: str, prompt: str) -> str:
 
 
 def public_task(task: str) -> bool:
-    """A task a visitor can finish without an account.
+    """Draw, export, help, pricing, and changelog do not need an account."""
+    return task_kind(task) in {"draw", "export", "help", "pricing", "changelog"}
 
-    Draw, export, help, pricing, and a how-to docs page are public. Creating
-    or filing something inside the product is not.
-    """
-    kind = task_kind(task)
-    if kind in {"draw", "export", "help", "pricing", "changelog"}:
-        return True
+
+def asks_for_docs(task: str) -> bool:
+    """True only when the task text itself asks for docs."""
     low = (task or "").lower()
-    if kind == "issue" and any(word in low for word in ("how", "find", "docs", "documentation")):
-        return True
-    return False
+    return "documentation" in low or bool(re.search(r"\bdocs\b", low))
 
 
 _AUTH_PATH = re.compile(
@@ -974,7 +970,7 @@ def tree_action(
     skipped = {item.lower() for item in (skip or set())}
     nodes = _live_nodes(read)
     text = str((read or {}).get("text") or "")
-    if kind == "issue" and public_task(task):
+    if kind == "issue" and asks_for_docs(task):
         found = _find_issue_target(nodes, skipped)
         if found:
             return _click_from_node(found)
@@ -1774,11 +1770,11 @@ async def _model_action(
         "Use an element i from the list for click, type, and scroll. "
         "A homepage preview of the product is not the real app. "
         "If the task needs an account and the list has Sign up or Log in, click that. "
-        "For pricing or getting started, open Pricing. "
+        "Do not open docs unless the task asks for docs. "
+        "If the task says pricing, export, share, or help, click the control whose name matches. "
         "If the task says draw and the list has a shape tool, click that tool, then drag on the canvas. "
         "The shape tool is whichever name is in the list (rectangle, ellipse, line, or similar). "
         "Selecting the tool is not done. done for a drawing only after the drag has changed the canvas. "
-        "If the task says export, share, or help, click the control whose name matches. "
         "That control can be on any site. Do not invent a name that is not in the list. "
         "done only when that outcome is already visible. "
         "friction is one sentence if a control was unclear, else empty. "
@@ -2028,6 +2024,63 @@ async def _fresh_read(page: Any, fallback_url: str) -> dict[str, Any]:
     return fresh
 
 
+async def _signup_on_page(page: Any, *, signup_url: str, agent_id: str) -> dict[str, Any]:
+    """Sign up on this browser with a fresh alias, then CapSolver if a captcha is up.
+
+    Uses the agent's page. It does not open a second Browserbase session.
+    """
+    from mvp.identity import fresh_alias
+
+    try:
+        ident = fresh_alias(signup_url or "", tag=agent_id)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] signup alias failed: {exc!r}", flush=True)
+        return {"ok": False, "reason": "no_alias"}
+    current = ""
+    try:
+        current = str(page.url or "")
+    except Exception:
+        current = ""
+    if signup_url and not _path_matches(current, _SIGNUP_PATH):
+        try:
+            await page.goto(signup_url, wait_until="domcontentloaded", timeout=8000)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] signup goto: {exc!r}", flush=True)
+    try:
+        email_box = page.locator(
+            'input[type="email"], input[name="email" i], input[autocomplete="email"]'
+        ).first
+        await email_box.fill(ident.email, timeout=3000)
+        await page.locator('input[type="password"]').first.fill(ident.password, timeout=3000)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] signup form: {exc!r}", flush=True)
+        return {"ok": False, "reason": "form", "email": ident.email, "signup_url": signup_url}
+    submit = re.compile(r"sign up|create account|continue|get started", re.I)
+    try:
+        await page.get_by_role("button", name=submit).first.click(timeout=3000)
+    except Exception:
+        pass
+    try:
+        from mvp.captcha import solve_captcha_on_page
+
+        await asyncio.wait_for(solve_captcha_on_page(page), timeout=45)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] captcha: {exc!r}", flush=True)
+    try:
+        await page.get_by_role("button", name=submit).first.click(timeout=3000)
+    except Exception:
+        pass
+    await _wait_for_page(page)
+    fresh = await _fresh_read(page, signup_url)
+    print(f"[{agent_id}] signed up as {ident.email}", flush=True)
+    return {
+        "ok": account_wall(fresh) is None,
+        "email": ident.email,
+        "signup_url": signup_url,
+        "read": fresh,
+    }
+
+
 async def complete_task_on_page(
     page: Any,
     *,
@@ -2064,6 +2117,7 @@ async def complete_task_on_page(
     model_misses = 0
     done_rejects = 0
     draw_waits = 0
+    signup_tries = 0
     try:
         await page.wait_for_selector("a, button, canvas", timeout=800)
     except Exception:
@@ -2105,8 +2159,23 @@ async def complete_task_on_page(
             break
         wall = account_wall(read)
         if wall:
-            stop_reason = "needs_account"
             signup_url = str(wall.get("signup_url") or "")
+            if signup_tries < 1:
+                signup_tries += 1
+                print(f"[{agent_id}] login wall, signing up {signup_url}", flush=True)
+                try:
+                    signed = await asyncio.wait_for(
+                        _signup_on_page(page, signup_url=signup_url, agent_id=agent_id),
+                        timeout=70,
+                    )
+                except asyncio.TimeoutError:
+                    signed = {"ok": False}
+                if signed.get("ok"):
+                    history.append("signed up")
+                    previous_sig = None
+                    stuck_streak = 0
+                    continue
+            stop_reason = "needs_account"
             print(f"[{agent_id}] needs_account {signup_url}", flush=True)
             break
         signature = progress_signature(
@@ -2123,41 +2192,22 @@ async def complete_task_on_page(
             break
         model_read = dict(read)
         model_read["nodes"] = _nodes_for_model(list(read.get("nodes") or []), skip, task)
-        # The live tree already names the next control for these tasks.
-        # Waiting on the model first is what blew time-to-first-action and
-        # let the model click a hero mock before the override.
-        action = tree_action(task, read, history, skip)
-        source = "tree"
-        if (
-            action is None
-            and task_kind(task) == "draw"
-            and not _shape_chosen(history, str(read.get("text") or ""))
-            and _find_shape(_live_nodes(read), task, skip) is None
-            and draw_waits < 6
-        ):
-            draw_waits += 1
-            previous_sig = None
-            stuck_streak = 0
-            try:
-                await page.wait_for_timeout(700)
-            except Exception:
-                pass
-            continue
-        if not isinstance(action, dict):
-            source = "model"
-            try:
-                action = await asyncio.wait_for(
-                    _model_action(
-                        task=task,
-                        read=model_read,
-                        history=history,
-                        changed_nothing=changed_nothing,
-                    ),
-                    timeout=8,
-                )
-            except asyncio.TimeoutError:
-                print(f"[{agent_id}] model action timed out", flush=True)
-                action = None
+        # Every step asks the model. The tree is only the fallback when the
+        # model returns nothing. It does not replace a real click.
+        source = "model"
+        try:
+            action = await asyncio.wait_for(
+                _model_action(
+                    task=task,
+                    read=model_read,
+                    history=history,
+                    changed_nothing=changed_nothing,
+                ),
+                timeout=8,
+            )
+        except asyncio.TimeoutError:
+            print(f"[{agent_id}] model action timed out", flush=True)
+            action = None
         if not isinstance(action, dict):
             invented = tree_action(task, read, history, skip)
             if invented is not None:
@@ -2190,14 +2240,6 @@ async def complete_task_on_page(
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
-        if public_task(task) and task_kind(task) == "issue" and not goal_visible(task, read):
-            target = _find_issue_target(_live_nodes(read), skip)
-            if target is not None:
-                want = str(target.get("href") or target.get("name") or "").lower()
-                have = f"{action.get('href') or ''} {action.get('name') or ''}".lower()
-                if want and want not in have:
-                    action = _click_from_node(target)
-                    source = "tree"
         if task_kind(task) == "draw":
             # Any canvas app: click the shape tool the tree shows, then drag
             # on the largest canvas. Do not click an unlabeled canvas first.
@@ -2317,9 +2359,26 @@ async def complete_task_on_page(
         if not after.get("error"):
             wall = account_wall(after)
             if wall:
-                stop_reason = "needs_account"
                 signup_url = str(wall.get("signup_url") or "")
-                print(f"[{agent_id}] needs_account {signup_url}", flush=True)
+                if signup_tries < 1:
+                    signup_tries += 1
+                    print(f"[{agent_id}] login wall, signing up {signup_url}", flush=True)
+                    try:
+                        signed = await asyncio.wait_for(
+                            _signup_on_page(page, signup_url=signup_url, agent_id=agent_id),
+                            timeout=70,
+                        )
+                    except asyncio.TimeoutError:
+                        signed = {"ok": False}
+                    if signed.get("ok") and isinstance(signed.get("read"), dict):
+                        after = signed["read"]
+                        history.append("signed up")
+                    else:
+                        stop_reason = "needs_account"
+                        print(f"[{agent_id}] needs_account {signup_url}", flush=True)
+                else:
+                    stop_reason = "needs_account"
+                    print(f"[{agent_id}] needs_account {signup_url}", flush=True)
         if not after.get("error"):
             changed = _observation_changed(read, after, task=task)
             if str(action.get("act")) == "drag" and task_kind(task) == "draw":

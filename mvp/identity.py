@@ -240,6 +240,33 @@ def list_identities() -> list[Identity]:
     return [_from_dict(h, raw) for h, raw in sorted(products.items())]
 
 
+def fresh_alias(url: str, tag: str) -> Identity:
+    """A new mailbox for one signup. Does not replace the saved host identity."""
+    base = _base_identity_fields()
+    host = host_for_url(url) or "product"
+    if not base["username"] or "@" not in base["username"]:
+        raise RuntimeError(
+            "No base email in secrets/credentials.json — add a vault site with username"
+        )
+    safe = re.sub(r"[^a-z0-9]", "", (tag or "agent").lower())[:16] or "agent"
+    email = email_for_host(
+        base["username"],
+        host,
+        tag=f"{alias_tag_for_host(host)}{safe}",
+        force_dotted=True,
+    )
+    return Identity(
+        host=host,
+        email=email,
+        password=_generate_password(),
+        full_name=base["full_name"],
+        company=base["company"],
+        phone=base["phone"],
+        alias_tag=safe,
+        status="provisioned",
+    )
+
+
 def provision_identity(url: str) -> Identity:
     """Return existing identity for this host, or create and persist a new one."""
     from datetime import datetime, timezone

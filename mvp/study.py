@@ -471,8 +471,8 @@ Critical rules:
   what "done" looks like (a heading, a result, or a page that is not the homepage).
 - If the page has no pricing page, do not create a "find the pricing page" task.
 - A task may require an account when the page's real control does. Do not
-  rewrite that into a public tour. The browser loop reports needs_account
-  with a signup URL when it hits a login wall.
+  rewrite that into a public tour. On a login wall the browser signs up
+  with a fresh email alias, then continues the same task.
 - Do not invent new personas."""
     raw = await _llm_chat(
         [

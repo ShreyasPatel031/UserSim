@@ -411,9 +411,14 @@ class A11yAgentTest(unittest.TestCase):
             {"role": "button", "name": "Issues", "href": ""},
             {"role": "a", "name": "Create issues", "href": "https://linear.app/docs/creating-issues"},
         ]
-        self.assertEqual(tree_action("Find how to create a new issue", {"nodes": home})["name"], "Documentation")
-        self.assertEqual(tree_action("Find how to create a new issue", {"nodes": docs})["name"], "Issues")
-        self.assertEqual(tree_action("Find how to create a new issue", {"nodes": opened})["href"], "https://linear.app/docs/creating-issues")
+        self.assertIsNone(tree_action("Find how to create a new issue", {"nodes": home}))
+        self.assertEqual(
+            tree_action("Open the documentation for creating issues", {"nodes": home})["name"],
+            "Documentation",
+        )
+        docs_task = "Open the documentation for creating issues"
+        self.assertEqual(tree_action(docs_task, {"nodes": docs})["name"], "Issues")
+        self.assertEqual(tree_action(docs_task, {"nodes": opened})["href"], "https://linear.app/docs/creating-issues")
         pricing = tree_action(
             "Look for pricing or how to get started",
             {"nodes": home},
