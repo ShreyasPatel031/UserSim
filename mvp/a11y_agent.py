@@ -2547,9 +2547,25 @@ def auth_modal_opened(href: str, before: dict[str, Any], after: dict[str, Any]) 
     return bool((after or {}).get("dialog") and not (before or {}).get("dialog")) or blocked
 
 
+# Data that only exists inside a signed-in workspace. "Review customer health
+# scores" starts with a browse verb, but the scores live in the app: Kolanut
+# study a09d0645 treated it as public, hid Get Started, and all 4 agents
+# stopped on the marketing page.
+_IN_APP_DATA_RE = re.compile(
+    r"\b(?:your|my|our)\s+(?:own\s+)?(?!pricing|price|plans?\b)\w+"
+    r"|health[- ]scores?|at[- ]risk|churn(?:ed|ing)?\s+(?:accounts?|customers?|users?)"
+    r"|\b(?:customer|user|account)\s+(?:list|data|scores?|segments?|activity|usage)"
+    r"|\b(?:dashboard|analytics|metrics|segments?|contacts|inbox|workspace)\b",
+    re.I,
+)
+
+
 def public_task(task: str) -> bool:
     """A task a logged-out visitor can finish (find, look up, pricing). Others need an account."""
-    return bool(_PUBLIC_TASK_RE.search(task or ""))
+    text = task or ""
+    if re.search(r"pricing|price|plans?\b|how much|changelog|what shipped", text, re.I):
+        return True
+    return bool(_PUBLIC_TASK_RE.search(text)) and not _IN_APP_DATA_RE.search(text)
 
 
 def looping(trace: list[dict[str, Any]], window: int = 8) -> bool:

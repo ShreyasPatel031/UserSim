@@ -64,6 +64,12 @@ class A11yAgentTest(unittest.TestCase):
         self.assertTrue(public_task("Find the plans page"))
         self.assertFalse(public_task("Create a new issue"))
         self.assertFalse(public_task("Create a board with three lists"))
+        # Browse verb, but the data lives in a signed-in workspace (kolanut a09d0645).
+        self.assertFalse(public_task("Review customer health scores"))
+        self.assertFalse(public_task("Check your analytics dashboard"))
+        self.assertTrue(public_task("Review your pricing options"))
+        self.assertTrue(public_task("Explore templates"))
+        self.assertTrue(public_task("Find customer stories"))
         self.assertEqual(task_kind("Draw a rectangle on the canvas"), "draw")
         self.assertEqual(task_kind("Check the inbox for mail"), "")
 
