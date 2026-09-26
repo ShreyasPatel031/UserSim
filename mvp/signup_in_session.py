@@ -733,6 +733,9 @@ async def signup_in_session(
         rejects = 0
         rejected_domains: list[str] = []
         banner_clicks = 0
+        verifying = 0
+        pending_links: list[str] = []
+        pending_wait = 0
         url_changed_at = time.time()
         last_url = ""
         note = ""
@@ -829,6 +832,13 @@ async def signup_in_session(
                 continue
             status = str(decision.get("status") or "working").lower()
             body_low = str(snap.get("body") or "").lower()
+            if status == "need_email" and re.search(r"verifying (it|that)|checking your browser|just a moment", body_low):
+                verifying += 1
+                if verifying >= 4:
+                    return _finish(False, "bot_check: the site's 'verifying it's you' check never cleared")
+                steps.append("site is running a bot check; waiting")
+                await page.wait_for_timeout(4000)
+                continue
             if status == "need_email" and _ERROR_TEXT.search(body_low) and not ident.get("code"):
                 m = _ERROR_TEXT.search(body_low)
                 note = (f"The page shows an error ({m.group(0)!r}); no email was sent. Reload the "
@@ -934,7 +944,8 @@ async def signup_in_session(
                     and ("email" not in f"{e.get('name')} {e.get('placeholder')} {e.get('field')} {e.get('type')}".lower())
                     for e in snap.get("elements") or []
                 )
-                if mail.get("code") and (code_box or not mail.get("links")):
+                code_first = bool(mail.get("code")) and "code" in str(mail.get("subject") or "").lower()
+                if mail.get("code") and (code_box or code_first or not mail.get("links")):
                     ident["code"] = mail["code"]
                     if await _type_code(page, mail["code"]):
                         steps.append("  typed emailed code into the code box")
@@ -943,7 +954,9 @@ async def signup_in_session(
                         note = ("The emailed code was typed into the code box. If a Verify/Continue "
                                 "button is enabled, click it; otherwise wait.")
                     else:
-                        note = "The emailed verification code is available as {code}. Enter it now."
+                        note = ("The emailed verification code is available as {code}. Enter it into the "
+                                "code field; if this page has none, open the control that lets you enter a code.")
+                        pending_links = list(mail.get("links") or [])
                     continue
                 if mail.get("links"):
                     link = await _pick_link(mail)
@@ -958,6 +971,15 @@ async def signup_in_session(
                 note = f"An email arrived but had no code or link. Subject: {mail['subject'][:80]}"
                 continue
 
+            if pending_links and ident.get("code"):
+                pending_wait += 1
+                if pending_wait >= 3:
+                    link = await _pick_link({"links": pending_links, "subject": "", "text": ""})
+                    pending_links = []
+                    await page.goto(link, wait_until="domcontentloaded", timeout=30000)
+                    steps.append(f"no code box appeared; opened emailed link {_host(link)}{urlparse(link).path[:40]}")
+                    await _settle(page, 1500)
+                    continue
             acts = decision.get("actions") or []
             if same and history:
                 for h in history[-3:]:

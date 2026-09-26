@@ -1586,7 +1586,11 @@ def account_wall(task: str, read: dict[str, Any]) -> dict[str, Any] | None:
     for node in nodes:
         name = " ".join(str(node.get("name") or "").lower().split())
         href = str(node.get("href") or "")
-        if name in _LOGGED_OUT_NAMES or (href and _auth_href(href) and name in _AUTH_NAMES):
+        if (
+            name in _LOGGED_OUT_NAMES
+            or (href and _auth_href(href) and name in _AUTH_NAMES)
+            or re.match(r"^(log ?in|sign ?in|sign ?up)\b", name)
+        ):
             logged_out = True
         if not signup_url and href and any(name.startswith(w) for w in _SIGNUP_NAMES):
             signup_url = href
