@@ -1,0 +1,510 @@
+{
+  "study_id": "4981bad8-95cc-4114-ba59-c2781c371aef",
+  "product_url": "https://excalidraw.com",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 24,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "done",
+      "n": 20
+    },
+    {
+      "phase": "act",
+      "n": 4
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t1__p1__product",
+      "site_key": "product",
+      "task": "Draw a simple rectangle on the canvas",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p1__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 488.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p1__product/screenshots/final.png",
+      "final_url": "https://excalidraw.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p1__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://www.tldraw.com/, not on the original product.\nDraw a simple rectangle on the canvas\n\nYou are evaluating the competitor site https://www.tldraw.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://www.tldraw.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p1__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 457.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p1__competitor_1/screenshots/final.png",
+      "final_url": "https://www.tldraw.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p1__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://miro.com/, not on the original product.\nDraw a simple rectangle on the canvas\n\nYou are evaluating the competitor site https://miro.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://miro.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p1__competitor_2&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 444.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p1__competitor_2/screenshots/final.png",
+      "final_url": "https://miro.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p1__product",
+      "site_key": "product",
+      "task": "Find how to export or share the drawing",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p1__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 488.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p1__product/screenshots/final.png",
+      "final_url": "https://excalidraw.com/?shape=rectangle&export=image",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p1__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://www.tldraw.com/, not on the original product.\nFind how to export or share the drawing\n\nYou are evaluating the competitor site https://www.tldraw.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://www.tldraw.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p1__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 395.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p1__competitor_1/screenshots/final.png",
+      "final_url": "https://www.tldraw.com/?shape=rectangle&export=image",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p1__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://miro.com/, not on the original product.\nFind how to export or share the drawing\n\nYou are evaluating the competitor site https://miro.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://miro.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p1__competitor_2&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 2658.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p1__competitor_2/screenshots/final.png",
+      "final_url": "https://miro.com/index/?export=image#skip-link-target",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p2__product",
+      "site_key": "product",
+      "task": "Draw a simple rectangle on the canvas",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p2__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 329.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p2__product/screenshots/final.png",
+      "final_url": "https://excalidraw.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p2__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://www.tldraw.com/, not on the original product.\nDraw a simple rectangle on the canvas\n\nYou are evaluating the competitor site https://www.tldraw.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://www.tldraw.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p2__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 487.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p2__competitor_1/screenshots/final.png",
+      "final_url": "https://www.tldraw.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p2__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://miro.com/, not on the original product.\nDraw a simple rectangle on the canvas\n\nYou are evaluating the competitor site https://miro.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://miro.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p2__competitor_2&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 479.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p2__competitor_2/screenshots/final.png",
+      "final_url": "https://miro.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p2__product",
+      "site_key": "product",
+      "task": "Find how to export or share the drawing",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p2__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 539.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p2__product/screenshots/final.png",
+      "final_url": "https://excalidraw.com/?shape=rectangle&export=image",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p2__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://www.tldraw.com/, not on the original product.\nFind how to export or share the drawing\n\nYou are evaluating the competitor site https://www.tldraw.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://www.tldraw.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p2__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 618.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p2__competitor_1/screenshots/final.png",
+      "final_url": "https://www.tldraw.com/?shape=rectangle&export=image",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p2__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://miro.com/, not on the original product.\nFind how to export or share the drawing\n\nYou are evaluating the competitor site https://miro.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://miro.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p2__competitor_2&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 684.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p2__competitor_2/screenshots/final.png",
+      "final_url": "https://miro.com/index/?export=image#skip-link-target",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p3__product",
+      "site_key": "product",
+      "task": "Draw a simple rectangle on the canvas",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p3__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 335.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p3__product/screenshots/final.png",
+      "final_url": "https://excalidraw.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p3__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://www.tldraw.com/, not on the original product.\nDraw a simple rectangle on the canvas\n\nYou are evaluating the competitor site https://www.tldraw.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://www.tldraw.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p3__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 1797.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p3__competitor_1/screenshots/final.png",
+      "final_url": "https://www.tldraw.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p3__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://miro.com/, not on the original product.\nDraw a simple rectangle on the canvas\n\nYou are evaluating the competitor site https://miro.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://miro.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p3__competitor_2&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 466.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p3__competitor_2/screenshots/final.png",
+      "final_url": "https://miro.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p3__product",
+      "site_key": "product",
+      "task": "Find how to export or share the drawing",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p3__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 573.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p3__product/screenshots/final.png",
+      "final_url": "https://excalidraw.com/?shape=rectangle&export=image",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p3__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://www.tldraw.com/, not on the original product.\nFind how to export or share the drawing\n\nYou are evaluating the competitor site https://www.tldraw.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://www.tldraw.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p3__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 494.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p3__competitor_1/screenshots/final.png",
+      "final_url": "https://www.tldraw.com/?shape=rectangle&export=image",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p3__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://miro.com/, not on the original product.\nFind how to export or share the drawing\n\nYou are evaluating the competitor site https://miro.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://miro.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p3__competitor_2&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 916.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p3__competitor_2/screenshots/final.png",
+      "final_url": "https://miro.com/index/?export=image#skip-link-target",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p4__product",
+      "site_key": "product",
+      "task": "Draw a simple rectangle on the canvas",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p4__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 327.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p4__product/screenshots/final.png",
+      "final_url": "https://excalidraw.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p4__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://www.tldraw.com/, not on the original product.\nDraw a simple rectangle on the canvas\n\nYou are evaluating the competitor site https://www.tldraw.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://www.tldraw.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p4__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 601.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p4__competitor_1/screenshots/final.png",
+      "final_url": "https://www.tldraw.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p4__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://miro.com/, not on the original product.\nDraw a simple rectangle on the canvas\n\nYou are evaluating the competitor site https://miro.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://miro.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t1__p4__competitor_2&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 490.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t1__p4__competitor_2/screenshots/final.png",
+      "final_url": "https://miro.com/?shape=rectangle",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p4__product",
+      "site_key": "product",
+      "task": "Find how to export or share the drawing",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p4__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 1094.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p4__product/screenshots/final.png",
+      "final_url": "https://excalidraw.com/?shape=rectangle&export=image",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p4__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://www.tldraw.com/, not on the original product.\nFind how to export or share the drawing\n\nYou are evaluating the competitor site https://www.tldraw.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://www.tldraw.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p4__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 1188.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p4__competitor_1/screenshots/final.png",
+      "final_url": "https://www.tldraw.com/?shape=rectangle&export=image",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p4__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://miro.com/, not on the original product.\nFind how to export or share the drawing\n\nYou are evaluating the competitor site https://miro.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://miro.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=4981bad8-95cc-4114-ba59-c2781c371aef&agent=t2__p4__competitor_2&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 826.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/4981bad8-95cc-4114-ba59-c2781c371aef/agents/t2__p4__competitor_2/screenshots/final.png",
+      "final_url": "https://miro.com/index/?export=image#skip-link-target",
+      "step": 2
+    }
+  ]
+}

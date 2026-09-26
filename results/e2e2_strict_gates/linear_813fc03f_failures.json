@@ -1,0 +1,46 @@
+{
+  "study_id": "813fc03f-e1a4-4479-80c5-360bd5572e93",
+  "product_url": "https://linear.app/",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 1,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "act",
+      "n": 1
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t1__p1__product",
+      "site_key": "product",
+      "task": "Create an issue",
+      "type": "product",
+      "judge_reason": "The agent navigated to the 'All issues' page, but the task was to create an issue, and there is no indication that an issue was created.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=813fc03f-e1a4-4479-80c5-360bd5572e93&agent=t1__p1__product&step=10",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 418.0,
+        "first_action": 0.0,
+        "final_screenshot": 418.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/813fc03f-e1a4-4479-80c5-360bd5572e93/agents/t1__p1__product/screenshots/final.png",
+      "final_url": "https://linear.app/usersim/team/SHR/all",
+      "step": 10
+    }
+  ]
+}

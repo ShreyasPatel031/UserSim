@@ -1,0 +1,1017 @@
+{
+  "pass": false,
+  "startup_alone_is_not_a_pass": true,
+  "graded_at": "2026-09-26T08:26:00Z",
+  "live_launches": "stopped",
+  "note": "Gemini already scored Linear 26e83a58 from GCS PNGs. Self-claimed 8/8 matches the judge count and the study still fails. New-issue YES is the docs page. No new Excalidraw is in flight. The finished Excalidraw with PNGs is 748a1b0a, product 4/8. Floor for a study that is closer to a real pass remains 68af612b at 4/8 pricing only until a study clears every gate. owner=gates running 0. Integration tip 7bfc147.",
+  "heads": {
+    "cursor/product-agent-full-model-76fc": {
+      "sha": "9470be5",
+      "tip_seen": "ea561a2",
+      "note": "Last live grade is 9470be5. Tip ea561a2 acts on the first painted opening frame. Not launched. Studies 86afd88f and c1d1cd17 regraded from GCS: TTFA is not 0.0s.",
+      "linear": {
+        "study_id": "f27bc4b7-196b-4c24-b533-734db02ecc35",
+        "pass": false,
+        "elapsed_s": 36.1,
+        "time_to_first_value": "4.127s PASS",
+        "total_time": "not ready FAIL",
+        "time_to_first_action": "median=2.309s max=24.352s n=24/24 FAIL",
+        "ttfa_note": "7 Trello competitor_2 agents at 24.352s from browser_ready_at_ts. t1__p1__competitor_2 recorded 0.0s.",
+        "page_opened": "23/24 FAIL slow=t1__p1__product",
+        "product_task_completion": "0/8",
+        "final_screenshot": "missing field final_screenshot_url"
+      },
+      "excalidraw": {
+        "study_id": "93087bdd-2b00-434c-8d8b-efe422511a99",
+        "pass": false,
+        "elapsed_s": 30.9,
+        "time_to_first_value": "3.308s PASS",
+        "total_time": "not ready FAIL",
+        "time_to_first_action": "median=19.872s max=19.873s n=24/24 FAIL",
+        "ttfa_note": "16 of 24 agents are about 19.87s from browser_ready_at_ts. Median fails the 5s bar as well as the max.",
+        "page_opened": "22/24 FAIL slow=t1__p1__product and t1__p1__competitor_1",
+        "product_task_completion": "0/8",
+        "final_screenshot": "missing field final_screenshot_url"
+      }
+    },
+    "cursor/tonight-integration": {
+      "sha": "617e158",
+      "tip_seen": "7bfc147",
+      "note": "Cherry-pick of task-completion onto the a11y loop. Both sites aborted. Tip 4a874ac holds no idle primes and is not live-graded.",
+      "linear": {
+        "study_id": "9ac802e0-30fa-487b-87e0-5d3ee8b3b50d",
+        "pass": false,
+        "elapsed_s": 41.5,
+        "time_to_first_value": "3.71s PASS",
+        "total_time": "not ready FAIL",
+        "report_ready": false,
+        "time_to_first_action": "median=1.875s max=25.62s n=24/24 FAIL",
+        "ttfa_note": "All 8 Asana competitor_1 agents at 25.62s from browser_ready_at_ts.",
+        "page_opened": "23/24 FAIL slow=t1__p1__product missing_ax=0",
+        "product_task_completion": "0/8 structural=t1__p1__product first_screen=7",
+        "final_screenshot": "missing field final_screenshot_url",
+        "phase_counts": "done=1",
+        "gates": {
+          "time_to_first_value": "PASS 3.71s",
+          "total_time": "FAIL not ready",
+          "full_matrix": "PASS 24",
+          "agent_count": "PASS 24",
+          "persona_count": "PASS 4",
+          "task_count": "PASS 2",
+          "site_count": "PASS 3",
+          "page_opened": "FAIL 23/24 within 5s",
+          "study_complete": "FAIL running aborted",
+          "study_budget": "PASS 41.5s",
+          "first_action": "PASS not measured",
+          "time_to_first_action": "FAIL median=1.875s max=25.62s n=24/24",
+          "phase_ms": "PASS 24/24",
+          "final_screenshot": "FAIL missing field final_screenshot_url",
+          "judge_inputs": "PASS 24/24",
+          "failed_step": "PASS 24 failed runs",
+          "product_task_completion": "FAIL 0/8 (0%)",
+          "report_page": "FAIL missing",
+          "task_completion_rates": "FAIL missing no by_task rows",
+          "product_strength": "FAIL 0/0",
+          "product_weakness": "FAIL 0/0",
+          "top_weakness_not_homepage_only": "FAIL (none)",
+          "run_issues_separate": "FAIL 0 listed",
+          "run_issue_rate": "PASS 0/24 (0%)",
+          "infra_honesty": "PASS losses=0",
+          "first_screen_not_excluded": "PASS opening_or_first_screen=7 product_n=8"
+        }
+      },
+      "excalidraw": {
+        "study_id": "ab9bd20a-08f1-42d0-bd20-992feae6008b",
+        "pass": false,
+        "elapsed_s": 35.2,
+        "time_to_first_value": "3.3s PASS",
+        "total_time": "not ready FAIL",
+        "report_ready": false,
+        "time_to_first_action": "median=1.555s max=22.753s n=24/24 FAIL",
+        "ttfa_note": "All 8 competitor_2 agents at 22.753s from browser_ready_at_ts.",
+        "page_opened": "23/24 FAIL slow=t1__p1__competitor_2 missing_ax=0",
+        "product_task_completion": "0/8 structural=0 first_screen=8",
+        "final_screenshot": "missing field final_screenshot_url",
+        "phase_counts": "done=1",
+        "gates": {
+          "time_to_first_value": "PASS 3.3s",
+          "total_time": "FAIL not ready",
+          "full_matrix": "PASS 24",
+          "agent_count": "PASS 24",
+          "persona_count": "PASS 4",
+          "task_count": "PASS 2",
+          "site_count": "PASS 3",
+          "page_opened": "FAIL 23/24 within 5s",
+          "study_complete": "FAIL running aborted",
+          "study_budget": "PASS 35.2s",
+          "first_action": "PASS not measured",
+          "time_to_first_action": "FAIL median=1.555s max=22.753s n=24/24",
+          "phase_ms": "PASS 24/24",
+          "final_screenshot": "FAIL missing field final_screenshot_url",
+          "judge_inputs": "PASS 24/24",
+          "failed_step": "PASS 24 failed runs",
+          "product_task_completion": "FAIL 0/8 (0%)",
+          "report_page": "FAIL missing",
+          "task_completion_rates": "FAIL missing no by_task rows",
+          "product_strength": "FAIL 0/0",
+          "product_weakness": "FAIL 0/0",
+          "top_weakness_not_homepage_only": "FAIL (none)",
+          "run_issues_separate": "FAIL 0 listed",
+          "run_issue_rate": "PASS 0/24 (0%)",
+          "infra_honesty": "PASS losses=0",
+          "first_screen_not_excluded": "PASS opening_or_first_screen=8 product_n=8"
+        }
+      },
+      "tip_note": "b5b8e71 is an ancestor of 7bfc147. Not live-launched."
+    }
+  },
+  "bugs": [
+    {
+      "id": 1,
+      "fact": "time_to_first_action max must be <=10s and median <=5s at 24 agents, from browser_ready_at_ts when page-open was rewritten. Integration Linear 9ac802e0 Asana competitor_1 is 25.62s. Integration Excalidraw ab9bd20a competitor_2 is 22.753s. #47 Excalidraw 93087bdd median 19.872s max 19.873s. #47 Linear f27bc4b7 Trello 24.352s."
+    },
+    {
+      "id": 2,
+      "fact": "Page open within 5s is 23/24 on both 617e158 sites. Linear slow id is t1__p1__product. Excalidraw slow id is t1__p1__competitor_2. The abort leaves total_time not ready and final_screenshot_url missing."
+    },
+    {
+      "id": 3,
+      "fact": "A startup TTFV pass is not a study pass. Linear 26e83a58 is Gemini product 8/8 and still pass=false. Excalidraw 748a1b0a is product 4/8 and still pass=false. Linear 68af612b is product 4/8 pricing only. Pass needs product >=4/8 Gemini YES plus a full non-empty report plus TTFV, total_time, and TTFA gates."
+    },
+    {
+      "id": 4,
+      "fact": "Strength and weakness are 0/0. A pass needs one of each from a run past the first screen with agent, step, AX or URL, and the final screenshot."
+    },
+    {
+      "id": 5,
+      "fact": "Do not set created_at_ts, page_open_at_ts, and first_action_at_ts to one poll instant. The harness clocks from browser_ready_at_ts when those three match."
+    },
+    {
+      "id": 6,
+      "fact": "New-issue is still not an issue created in the app. Linear 26e83a58 YES is the docs page: 'The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal.' Linear 68af612b new-issue is 0/4 (opening screen or the dashboard with no create control). Killed Linear 757461e7 new-issue agents died on https://linear.app/ after 'click Documentation' and have no final PNG. 1-agent Linear 813fc03f task 'Create an issue': Gemini NO 'The agent navigated to the All issues page, but the task was to create an issue, and there is no indication that an issue was created.' The report headline on 813fc03f, 4f57c488, and 5462b0ee is 'click Create new issue changed nothing on https://linear.app/usersim/my-issues/assigned'. 5462b0ee Gemini NO: 'The agent attempted to create a project but failed because the project name was not provided, and the page shows an error message indicating this.' 4f57c488 Gemini YES is a saved view named All issues ('View created'), not an issue. That study is 1 agent, so it is not a pass."
+    },
+    {
+      "id": 7,
+      "fact": "One shared page serializes the fleet. Competitor clicks land together 17-25s after browser_ready. The 10s max stays."
+    },
+    {
+      "id": 8,
+      "fact": "Finished Linear study 68af612b is product 4/8 only because every pricing persona was a Gemini YES. The new-issue task is 0/4 (opening screen or dashboard with no create control). It also misses ax_tree, page_open_at_ts (created, page_open, and first_action are one instant and browser_ready_at_ts is empty), phase_ms, final_screenshot_url, state_sig.text, and failed_step. Wall clock 507s. pass=false."
+    },
+    {
+      "id": 9,
+      "fact": "Complete studies 08d81811 (Linear) and 09472fc2 (Excalidraw) record page open 24/24 and time_to_first_action about 1.1s median, under 2s max, from browser_ready_at_ts. Product is still 0/8. The final_screenshot_url is set and the PNG bytes are not in GCS, so the judge has no image. Excalidraw's 8 product runs are still on the first screen. Linear's runs left the first screen and one final URL is https://linear.app/docs/creating-issues, which is the docs page, not a created issue. TTFV and total_time are not stored on the study, so those gates fail. A fast TTFA is not a pass."
+    },
+    {
+      "id": 10,
+      "fact": "A page_open_at_ts equal to first_action_at_ts is the poll rewrite even when created_at_ts was dropped. Linear 5a10cefa is median 42.23s max 68.697s from browser_ready_at_ts. Excalidraw 0711d32d is median 46.121s max 82.966s. The 0.0s reading is not a pass."
+    },
+    {
+      "id": 11,
+      "fact": "Excalidraw 748a1b0a export/share is 0/4. Gemini: 'The page is still on the opening screen and no drawing has been made or exported/shared.' Draw-a-box is 4/4 YES ('A rectangle has been drawn on the canvas'). Top weakness 'click Menu changed nothing on https://excalidraw.com/' does not qualify. Strength 0/0. TTFV not recorded. total_time not ready. Study pass false."
+    },
+    {
+      "id": 12,
+      "fact": "Linear 757461e7 is a 24-agent kill at 42.78s. page_opened 24/24 PASS. time_to_first_action median=1.389s max=3.398s n=17/24 FAIL. Idle agents with no click: t1__p1__competitor_2, t2__p1__competitor_2, t1__p2__competitor_1, t1__p3__competitor_1, t1__p4__competitor_2, t2__p4__competitor_1, t2__p4__competitor_2. TTFV not recorded. total_time not ready. report_ready false. Official product 0/8 because the study is abandoned. Diagnostic Gemini on the three finished PNGs is 3/3 YES, all pricing pages (t2__p1, t2__p3, t2__p4). t2__p2__product was killed on click Pricing with no PNG. A self-reported TTFV of 23.88s is not the gate."
+    },
+    {
+      "id": 13,
+      "fact": "1-agent completes are not the 24-agent matrix. 813fc03f, 4f57c488, and 5462b0ee each have agent_count 1, task_count 1, site_count 1. TTFA n=1/24 (latencies 0.418s, 0.340s, 0.268s from browser_ready after a click-aligned page-open). TTFV not recorded. total_time not ready even though status is complete. report_page was not fetched because the gates app is stopped. None of these is a pass."
+    },
+    {
+      "id": 14,
+      "owner": "cursor/tonight-integration",
+      "fact": "Self-grade pass true and product 8/8 on Excalidraw 09472fc2 and Linear 08d81811 is rejected. GCS mvp_studies/<id>/ has only study.json. mvp/a11y_agent.py sets final_screenshot_url to .../final.png and then calls mvp/opening_shot.py upload_screenshot; a failed upload is swallowed, so the URL remains with no bytes. Gemini reason on every product agent: no downloadable PNG. Product 0/8. Their top weakness is '6 of 8 product runs stopped on the first screen...' and they marked that gate PASS. Independent top_weakness_not_homepage_only FAILS (real_weaknesses=0). First-screen runs stay in the denominator (excluded=0). Excalidraw product final URLs are all https://excalidraw.com/ (8/8 first screen). Linear product URLs are /docs/creating-issues and /pricing, which is not an issue in the app. time_to_first_value_s and total_time_s are absent from study.json (persist_study / write_study_state). Their local result numbers are not the gate. TTFV and total stay not recorded / not ready."
+    },
+    {
+      "id": 15,
+      "owner": "cursor/product-agent-full-model-76fc",
+      "fact": "86afd88f and c1d1cd17 set created_at_ts, page_open_at_ts, and first_action_at_ts to one instant. A 0.0s TTFA is rejected. From browser_ready_at_ts, Linear 86afd88f is median 39.712s max 65.966s FAIL and Excalidraw c1d1cd17 is median 50.185s max 80.704s FAIL. Both GCS prefixes are study.json only, so product is 0/8 (no downloadable PNG). 86afd88f weakness names the docs page with no title field. c1d1cd17 still has t1__p3 and t1__p4 on the opening screen."
+    },
+    {
+      "id": 16,
+      "owner": "cursor/tonight-integration",
+      "fact": "18d86703, 40e719b1, 5a10cefa, and 0711d32d each store only study.json. Product is 0/8. Judge reason: no downloadable PNG. Fix mvp/a11y_agent.py so a failed mvp/opening_shot.py upload_screenshot does not leave final_screenshot_url set, and mvp/gcs_store.py gcs_upload_file must write final.png next to study.json. Stamp time_to_first_value_s and total_time_s in persist_study. Both are missing, so TTFV is not recorded and total_time is not ready. 18d86703 TTFA median 1.009s max 1.782s PASS but product URLs are docs and pricing. 40e719b1 TTFA median 1.082s max 1.538s PASS and 8/8 are still https://excalidraw.com/. 5a10cefa TTFA median 42.23s max 68.697s FAIL. 0711d32d TTFA median 46.121s max 82.966s FAIL. A 0.0s median is the aligned stamp, not a pass. Top weakness on the first two is the homepage-stall sentence and fails."
+    },
+    {
+      "id": 17,
+      "owner": "cursor/task-completion-fix",
+      "fact": "70557bae product PNGs are in GCS and Gemini YES is 8/8, but the study fails. New-issue YES is the docs page (https://linear.app/docs/creating-issues): 'The page clearly explains multiple ways to create a new issue, including keyboard shortcuts, icons, and URLs.' Pricing YES is https://linear.app/pricing. TTFA median 38.594s max 104.43s from browser_ready_at_ts because page_open_at_ts equals first_action_at_ts. TTFV not recorded. total_time not ready. Strength 0/2. Weakness 0/3. Top weakness is the homepage-stall sentence. Missing competitor objects: mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/<competitor_id>/final.png for all 16 competitor agents. 38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160 is absent: no study.json and no final.png."
+    },
+    {
+      "id": 18,
+      "fact": "Hard fails still in force. final_screenshot_url without PNG bytes is product 0/8 (no downloadable PNG): Excalidraw 4981bad8 and Linear eb2c36a0 have no screenshots/<agent>/final.png. page_open_at_ts equal to first_action_at_ts is not 0.0s: those two clock from browser_ready at median 42.071s/45.017s and max 67.934s/72.551s. agent_count must be 24 and page_opened 24/24 within 5s: c1832e16 is 20 agents, opened 7/20, missing page_open_at_ts, product 0/7, wall 13.807s, abandoned. b7fea33b is 15 agents. df51233e is 1 agent. product under 4/8 Gemini YES on a real final PNG fails: b7fea33b is 0/5. Dashboard, no issue created. t1__p5 is still the opening screen. df51233e Gemini says the New issue form is open and ready. One agent is not the matrix, and a form is not an issue that exists. Self-grades stay rejected. Floor remains Linear 68af612b product 4/8 pricing only, new-issue 0/4."
+    },
+    {
+      "id": 19,
+      "fact": "Linear bdc1f5da is product 2/8. The two YES are pricing pages. New-issue NO: t1__p1 is the login screen; t1__p2 and t1__p3 are workspace creation; t1__p4 is signup/workspace creation. TTFA median 34.687s max 51.193s. TTFV not recorded. total_time not ready. Linear 49b52ebe is one task (Create an issue), TTFA median 0.423s max 2.333s PASS, product 0/8. Dashboard runs did not create an issue. t1__p3 is viewing an existing issue. t1__p4 and t1__p7 Gemini text also describes an existing issue, and a model timeout overrides that YES. t1__p5 is missing final_screenshot_url. Top weakness on bdc1f5da is click Log in changed nothing. On 49b52ebe it is click Create workspace changed nothing."
+    },
+    {
+      "id": 20,
+      "fact": "757461e7 rechecked. Abandoned at 42.78s. page_opened 24/24. TTFA median 1.389s max 3.398s n=17/24. Seven competitors never clicked. TTFV is not recorded. Their 23.88s is not on the study. total_time is not ready. Official product 0/8. Diagnostic Gemini on three pricing PNGs is 3/3 YES. New-issue agents died on https://linear.app/ after click Documentation with no final PNG. Integration must parallelize connect_over_cdp, stamp time_to_first_value_s from URL submit, skip the await-all-sites barrier before step 0, and release Browserbase after abort."
+    },
+    {
+      "id": 21,
+      "fact": "Linear 26e83a58 Gemini is 8/8 and the study fails. New-issue t1__p1 through t1__p4 YES is the docs page that explains how to create an issue and shows a modal example. Pricing t2__p1 through t2__p4 YES is the pricing tiers. TTFV not recorded. total_time not ready. page_open_at_ts missing (opened 19/24). final_screenshot_url field missing even though 19 final.png objects are in GCS. Strength 0/0 and weakness 0/0, so neither has a screenshot citation. Excalidraw 748a1b0a is 4/8: draw-a-box YES, export still the opening screen. Strength 0/0. Weakness 0/2."
+    }
+  ],
+  "graded_from_gcs": {
+    "study_id": "68af612b-e3ae-433a-9b5d-6022d604406d",
+    "url": "https://linear.app",
+    "pass": false,
+    "source": "gcs",
+    "wall_s": 507.198,
+    "note": "Complete 24-agent Linear study. No git sha is stored on the study. Graded with --grade-study. Gemini ran on per-step screenshots because final_screenshot_url is missing. report_page was not fetched because the gates app was stopped. That fetch failure is not a report-content finding.",
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "study_budget": "507.198s FAIL",
+    "page_opened": "FAIL missing field ax_tree; missing field page_open_at_ts (stamps aligned, no browser_ready_at_ts)",
+    "time_to_first_action": "FAIL missing field page_open_at_ts",
+    "phase_ms": "FAIL missing field phase_ms",
+    "final_screenshot": "FAIL missing field final_screenshot_url",
+    "judge_inputs": "FAIL missing field state_sig.text",
+    "failed_step": "FAIL missing field failed_step_phase; missing field failed_step_reason",
+    "product_task_completion": "4/8 PASS \u2014 all four YES are task 2 (pricing). Task 1 (new issue) is 0/4.",
+    "product_yes_ids": [
+      "t2__p1__product",
+      "t2__p2__product",
+      "t2__p3__product",
+      "t2__p4__product"
+    ],
+    "competitors": "Asana 2/8, Trello 0/8",
+    "strength": "0/3 FAIL",
+    "weakness": "0/3 FAIL",
+    "top_weakness": "I can't properly evaluate the pricing plans if I can't even scroll down to see all the details.",
+    "product_diagnostic": "0/0 finished (no final_screenshot_url)",
+    "judge_reasons_product": [
+      "Pricing page shows tiers (4 YES).",
+      "New issue: still the opening screen, or the Linear dashboard with no create-issue control."
+    ]
+  },
+  "gcs_abandoned": [
+    {
+      "study_id": "04d5ab41-82dc-455c-b1dc-774b493fcfc4",
+      "url": "https://linear.app",
+      "pass": false,
+      "wall_s": 12.218,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=6.928s max=10.006s FAIL",
+      "product_task_completion": "0/8",
+      "final_screenshot": "missing field final_screenshot_url",
+      "note": "Killed. Recorded TTFA fails the 5s median and the 10s max."
+    },
+    {
+      "study_id": "33cee22a-85fb-466b-b6c4-4ca8ef4b6de7",
+      "url": "https://excalidraw.com",
+      "pass": false,
+      "wall_s": 13.278,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=9.123s max=11.029s FAIL",
+      "product_task_completion": "0/8",
+      "final_screenshot": "missing field final_screenshot_url",
+      "note": "Killed. Median is over 5s."
+    },
+    {
+      "study_id": "2eb1450e-dfc3-47fa-b338-58971b94aa2c",
+      "url": "https://linear.app",
+      "pass": false,
+      "wall_s": 51.142,
+      "page_opened": "FAIL missing field ax_tree; missing field page_open_at_ts",
+      "time_to_first_action": "FAIL missing field page_open_at_ts",
+      "product_task_completion": "0/8",
+      "final_screenshot": "missing field final_screenshot_url",
+      "note": "Killed. Gemini on step screenshots still saw the Linear dashboard with no create-issue control."
+    }
+  ],
+  "taskfix_studies_not_in_gcs": [
+    "70557bae-83af-4bf9-9bbb-3135046193cd",
+    "38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160"
+  ],
+  "complete_24": {
+    "linear_08d81811": {
+      "study_id": "08d81811-ef15-4e48-9a7c-715606420241",
+      "pass": false,
+      "wall_s": 63.17,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=1.077s max=1.907s n=24/24 PASS",
+      "ttfa_note": "Clock is browser_ready_at_ts after the aligned created/page_open/first_action stamp was dropped.",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "product_task_completion": "0/8",
+      "product_note": "All 8 product runs are structurally past the first screen. Gemini did not see a PNG. GCS has only study.json. Judge reason: no downloadable PNG. Not a content YES.",
+      "final_url_example": "https://linear.app/docs/creating-issues",
+      "final_screenshot_field": "24/24 PASS",
+      "strength": "0/2 FAIL",
+      "weakness": "0/3 FAIL",
+      "report_page": "not fetched, gates app stopped"
+    },
+    "excalidraw_09472fc2": {
+      "study_id": "09472fc2-38f1-4ee4-b966-0fa0b4be819e",
+      "pass": false,
+      "wall_s": 38.776,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=1.094s max=1.246s n=24/24 PASS",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "product_task_completion": "0/8",
+      "product_note": "All 8 product runs are still the first screen structurally. PNG bytes are not in GCS. No Gemini YES.",
+      "final_screenshot_field": "24/24 PASS",
+      "strength": "0/2 FAIL",
+      "weakness": "0/3 FAIL",
+      "report_page": "not fetched, gates app stopped"
+    }
+  },
+  "self_claim_rejected": {
+    "branch": "cursor/task-completion-fix",
+    "sha": "3590dd0",
+    "claim": "Gemini YES 8/8 and ALL_PASS on 70557bae and 38deb1cc",
+    "fact": "Those study ids are not in GCS. The published 8-agent summaries a437acc0 and 4ac26c20 set the matrix bar to 8, record time_to_first_action 0.0s, and their own pass flag is false because strength evidence is missing."
+  },
+  "corrected_ttfa": [
+    {
+      "study_id": "5a10cefa-ea9c-44e8-9da7-e02bd7e0cc81",
+      "site": "https://linear.app",
+      "time_to_first_action": "median=42.23s max=68.697s FAIL",
+      "note": "page_open_at_ts equaled first_action_at_ts. Clock is browser_ready_at_ts. A 0.0s stamp gap is not a pass."
+    },
+    {
+      "study_id": "0711d32d-2b75-4a15-a772-a9f48d3927d6",
+      "site": "https://excalidraw.com",
+      "time_to_first_action": "median=46.121s max=82.966s FAIL",
+      "note": "Same click-aligned page-open. Product 0/8, no PNG bytes in GCS. 7 of 8 product runs were structurally past the first screen."
+    },
+    {
+      "study_id": "18d86703-93a9-461e-a5e9-787a8ac5b927",
+      "site": "https://linear.app",
+      "time_to_first_action": "median=1.009s max=1.782s PASS",
+      "product": "0/8",
+      "page_opened": "24/24 PASS"
+    },
+    {
+      "study_id": "40e719b1-5e63-46af-9ca2-3f322868b513",
+      "site": "https://excalidraw.com",
+      "time_to_first_action": "median=1.082s max=1.538s PASS",
+      "product": "0/8",
+      "page_opened": "24/24 PASS",
+      "note": "All 8 product runs still on the first screen. No PNG bytes."
+    }
+  ],
+  "late_studies": [
+    {
+      "study_id": "b14b33d0-b779-46ff-a575-bfe8d6aef2d3",
+      "site": "https://linear.app",
+      "pass": false,
+      "agents": 24,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "n=0/24 FAIL no click recorded",
+      "product": "0/8 all opening frame",
+      "final_screenshot": "missing field final_screenshot_url"
+    },
+    {
+      "study_id": "c1832e16-3271-4a4b-b3e9-b6661a54b1e4",
+      "site": "https://linear.app",
+      "pass": false,
+      "agents": 20,
+      "page_opened": "FAIL missing field page_open_at_ts 7/20",
+      "time_to_first_action": "FAIL missing field page_open_at_ts",
+      "product": "0/7 structural 7",
+      "final_screenshot": "missing field final_screenshot_url"
+    }
+  ],
+  "newest_complete": [
+    {
+      "study_id": "863e1a10-def0-469d-ba44-012bf1885db3",
+      "site": "https://linear.app",
+      "pass": false,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=41.891s max=67.259s FAIL",
+      "product": "0/8",
+      "note": "8/8 structurally past the first screen. PNG bytes not in GCS. Judge: no downloadable PNG."
+    },
+    {
+      "study_id": "884dce8f-cb4a-4441-ac14-12df43833a9e",
+      "site": "https://excalidraw.com",
+      "pass": false,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=55.326s max=83.894s FAIL",
+      "product": "0/8",
+      "note": "8/8 structurally past the first screen. PNG bytes not in GCS."
+    }
+  ],
+  "linear_26e83a58": {
+    "study_id": "26e83a58-dcfb-4cc7-b60e-87d177738760",
+    "pass": false,
+    "wall_s": 488.046,
+    "self_claim": "product 8/8 judge_yes=8. The judge count matches. The study does not pass.",
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "report_ready": true,
+    "report_page": "not fetched, gates app stopped",
+    "page_opened": "FAIL missing field page_open_at_ts. Opened 19/24.",
+    "time_to_first_action": "FAIL missing field page_open_at_ts",
+    "final_screenshot_field": "missing field final_screenshot_url",
+    "png_bytes": "19 final.png objects in GCS. Gemini saw product images.",
+    "product_task_completion": "8/8 Gemini YES. Study FAIL.",
+    "strength": "0/0 FAIL. Not non-empty. No screenshot citation.",
+    "weakness": "0/0 FAIL. Not non-empty. No screenshot citation.",
+    "top_weakness": "FAIL (none)",
+    "per_task": [
+      {
+        "agent": "t1__p1__product",
+        "task": "new issue",
+        "yes": true,
+        "reason": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal. This is the docs page, not an issue created in the app."
+      },
+      {
+        "agent": "t1__p2__product",
+        "task": "new issue",
+        "yes": true,
+        "reason": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts, icons, and URLs, and shows a visual example of an issue creation modal."
+      },
+      {
+        "agent": "t1__p3__product",
+        "task": "new issue",
+        "yes": true,
+        "reason": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal."
+      },
+      {
+        "agent": "t1__p4__product",
+        "task": "new issue",
+        "yes": true,
+        "reason": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal."
+      },
+      {
+        "agent": "t2__p1__product",
+        "task": "pricing",
+        "yes": true,
+        "reason": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+      },
+      {
+        "agent": "t2__p2__product",
+        "task": "pricing",
+        "yes": true,
+        "reason": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+      },
+      {
+        "agent": "t2__p3__product",
+        "task": "pricing",
+        "yes": true,
+        "reason": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+      },
+      {
+        "agent": "t2__p4__product",
+        "task": "pricing",
+        "yes": true,
+        "reason": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+      }
+    ]
+  },
+  "excalidraw_748a1b0a": {
+    "study_id": "748a1b0a-5cb2-4f8a-8a81-72ebcca23c17",
+    "pass": false,
+    "wall_s": 118.787,
+    "note": "No newer Excalidraw study is running. This is the finished one with 24 final PNGs.",
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "page_opened": "24/24 PASS",
+    "time_to_first_action": "median=0.894s max=4.28s n=24/24 PASS",
+    "product_task_completion": "4/8",
+    "strength": "0/0 FAIL",
+    "weakness": "0/2 FAIL",
+    "top_weakness": "FAIL. click Menu changed nothing on https://excalidraw.com/",
+    "per_task": [
+      {
+        "agent": "t1__p1__product",
+        "task": "draw a box",
+        "yes": true,
+        "reason": "A rectangle has been drawn on the canvas."
+      },
+      {
+        "agent": "t1__p2__product",
+        "task": "draw a box",
+        "yes": true,
+        "reason": "A rectangle has been drawn on the canvas."
+      },
+      {
+        "agent": "t1__p3__product",
+        "task": "draw a box",
+        "yes": true,
+        "reason": "The screenshot shows a rectangle drawn on the canvas, fulfilling the task goal."
+      },
+      {
+        "agent": "t1__p4__product",
+        "task": "draw a box",
+        "yes": true,
+        "reason": "A rectangle has been successfully drawn on the canvas."
+      },
+      {
+        "agent": "t2__p1__product",
+        "task": "export or share",
+        "yes": false,
+        "reason": "The page is still on the opening screen and no drawing has been made or exported/shared."
+      },
+      {
+        "agent": "t2__p2__product",
+        "task": "export or share",
+        "yes": false,
+        "reason": "The page is still on the opening screen and no drawing has been created or exported."
+      },
+      {
+        "agent": "t2__p3__product",
+        "task": "export or share",
+        "yes": false,
+        "reason": "The page is still on the opening screen and no drawing has been made or exported/shared."
+      },
+      {
+        "agent": "t2__p4__product",
+        "task": "export or share",
+        "yes": false,
+        "reason": "The page is still on the opening screen and no drawing has been created or exported."
+      }
+    ]
+  },
+  "taskfix_70557bae_38deb1cc": {
+    "graded_at": "2026-09-26T08:06:00Z",
+    "pass": false,
+    "self_grade": "rejected",
+    "png_present_product": [
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p1__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p2__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p3__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p4__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p1__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p2__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p3__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p4__product/final.png"
+    ],
+    "missing_gcs_paths": [
+      "mvp_studies/38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160/study.json",
+      "mvp_studies/38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160/screenshots/t1__p1__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p1__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p1__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p1__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p1__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p2__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p2__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p2__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p2__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p3__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p3__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p3__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p3__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p4__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p4__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p4__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p4__competitor_2/final.png"
+    ],
+    "linear_70557bae": {
+      "study_id": "70557bae-83af-4bf9-9bbb-3135046193cd",
+      "url": "https://linear.app",
+      "pass": false,
+      "wall_s": 114.369,
+      "agents": 24,
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "report_ready": true,
+      "report_page": "not fetched, gates app stopped",
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=38.594s max=104.43s n=24/24 FAIL",
+      "ttfa_note": "page_open_at_ts == first_action_at_ts == created_at_ts on all 24. Clock is browser_ready_at_ts. A 0.0s gap is not a pass.",
+      "product_task_completion": "8/8 Gemini YES on downloadable product PNGs. Study still FAIL.",
+      "product_urls": "new-issue https://linear.app/docs/creating-issues; pricing https://linear.app/pricing",
+      "judge_reasons": {
+        "t1_new_issue": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts, icons, and URLs. That is the docs page, not an issue created in the app.",
+        "t2_pricing": "The page displays pricing tiers for the product, including free and paid options."
+      },
+      "strength": "0/2 FAIL",
+      "weakness": "0/3 FAIL",
+      "top_weakness": "FAIL. '6 of 8 product runs stopped on the first screen, so feature-level weaknesses are thin in these traces.'",
+      "missing_fields": [
+        "time_to_first_value_s",
+        "total_time_s"
+      ],
+      "png": "8 product final.png objects exist. 16 competitor final.png objects are missing."
+    },
+    "excalidraw_38deb1cc": {
+      "study_id": "38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160",
+      "pass": false,
+      "png": "none. Prefix is absent.",
+      "missing_gcs": "mvp_studies/38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160/study.json and screenshots/*/final.png",
+      "product_task_completion": "0/8 FAIL. Gemini not run.",
+      "fact": "No study.json and no final.png. A self-graded 8/8 is not a pass."
+    },
+    "uploader_fix": "mvp/a11y_agent.py must not keep final_screenshot_url when mvp/opening_shot.py upload_screenshot returns false. mvp/gcs_store.py gcs_upload_file must write screenshots/<agent_id>/final.png for every agent, including competitors. Stamp time_to_first_value_s and total_time_s in persist_study before write_study_state."
+  },
+  "gates_running": 0,
+  "linear_757461e7": {
+    "study_id": "757461e7-233e-47d9-8d3d-93031b70008d",
+    "path_they_cite": "results/tonight/linear-20260926T071313Z",
+    "their_tip": "e111295",
+    "pass": false,
+    "status": "abandoned",
+    "wall_s": 42.78,
+    "their_ttfv": "23.88s is their harness number. It is not on study.json.",
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "report_ready": false,
+    "page_opened": "24/24 PASS",
+    "time_to_first_action": "median=1.389s max=3.398s n=17/24 FAIL",
+    "no_first_action": [
+      "t1__p1__competitor_2",
+      "t2__p1__competitor_2",
+      "t1__p2__competitor_1",
+      "t1__p3__competitor_1",
+      "t1__p4__competitor_2",
+      "t2__p4__competitor_1",
+      "t2__p4__competitor_2"
+    ],
+    "product_task_completion": "0/8 FAIL. Study abandoned, official vision empty.",
+    "product_diagnostic": "3/3 finished, all pricing YES. Not a study pass.",
+    "judge_reasons_no": [
+      "New-issue t1__p1 through t1__p4 killed on https://linear.app/ after click Documentation. No final PNG.",
+      "Pricing t2__p2 killed after click Pricing. No final PNG."
+    ],
+    "judge_reasons_yes_diagnostic": [
+      "t2__p1 and t2__p3: pricing tiers and getting started.",
+      "t2__p4: pricing tiers, free and paid."
+    ],
+    "png": "4 final.png objects. New-issue product agents have none."
+  },
+  "one_agent_not_matrix": [
+    {
+      "study_id": "813fc03f-e1a4-4479-80c5-360bd5572e93",
+      "url": "https://linear.app/",
+      "task": "Create an issue",
+      "pass": false,
+      "agents": 1,
+      "wall_s": 141.56,
+      "report_ready": true,
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "1/1 host match, not a 24-agent gate",
+      "time_to_first_action": "median=0.418s max=0.418s n=1/24 FAIL",
+      "product_task_completion": "0/1 FAIL",
+      "judge_reason": "The agent navigated to the All issues page, but the task was to create an issue, and there is no indication that an issue was created.",
+      "report_headline": "click Create new issue changed nothing on https://linear.app/usersim/my-issues/assigned"
+    },
+    {
+      "study_id": "4f57c488-af7e-4a41-bdee-6b747193b163",
+      "url": "https://linear.app/",
+      "task": "Create an issue",
+      "pass": false,
+      "agents": 1,
+      "wall_s": 248.564,
+      "report_ready": true,
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "1/1 host match, not a 24-agent gate",
+      "time_to_first_action": "median=0.340s max=0.340s n=1/24 FAIL",
+      "product_task_completion": "1/1 Gemini YES on this single run, study still FAIL",
+      "judge_reason": "The user successfully created a new view named All issues and the confirmation message View created is visible on the screen. That is a view, not an issue. The report headline is still click Create new issue changed nothing.",
+      "report_headline": "click Create new issue changed nothing on https://linear.app/usersim/my-issues/assigned"
+    },
+    {
+      "study_id": "5462b0ee-f694-4c12-8510-3a925f1dec67",
+      "url": "https://linear.app/",
+      "task": "Create an issue",
+      "pass": false,
+      "agents": 1,
+      "wall_s": 242.615,
+      "report_ready": true,
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "1/1 host match, not a 24-agent gate",
+      "time_to_first_action": "median=0.268s max=0.268s n=1/24 FAIL",
+      "product_task_completion": "0/1 FAIL",
+      "judge_reason": "The agent attempted to create a project but failed because the project name was not provided, and the page shows an error message indicating this.",
+      "report_headline": "click Create new issue changed nothing on https://linear.app/usersim/my-issues/assigned"
+    }
+  ],
+  "self_claim_rejected_09472fc2_08d81811": {
+    "pass": false,
+    "source": "Their results/tonight/*/result.json says pass true and product 8/8. This grade does not use that file.",
+    "excalidraw": {
+      "study_id": "09472fc2-38f1-4ee4-b966-0fa0b4be819e",
+      "their_claim": "pass true, product 8/8, TTFV 2.713s, total 39.279s, TTFA median 1.177s max 1.26s, top_weakness PASS",
+      "their_summary": "6 of 8 product runs stopped on the first screen, so feature-level weaknesses are thin in these traces.",
+      "independent": {
+        "pass": false,
+        "wall_s": 38.776,
+        "time_to_first_value": "not recorded FAIL",
+        "total_time": "not ready FAIL",
+        "report_ready": true,
+        "report_page": "not fetched, gates app stopped",
+        "page_opened": "24/24 PASS",
+        "time_to_first_action": "median=1.094s max=1.246s n=24/24 PASS",
+        "ttfa_note": "created_at_ts, page_open_at_ts, and first_action_at_ts are one instant. Clock is browser_ready_at_ts.",
+        "final_screenshot_field": "24/24 PASS",
+        "png_bytes": "GCS objects=1 (study.json only). Judge: no downloadable PNG on every product agent.",
+        "product_task_completion": "0/8 FAIL",
+        "first_screen": "8/8 product final URLs are https://excalidraw.com/",
+        "structural_past_first_screen": 0,
+        "top_weakness_not_homepage_only": "FAIL. The weakness is the homepage stall and real_weaknesses=0.",
+        "first_screen_not_excluded": "PASS excluded=0. First-screen runs stay in the 0/8 denominator.",
+        "product_strength": "0/2 FAIL",
+        "product_weakness": "0/3 FAIL",
+        "product_diagnostic": "0/8 finished"
+      }
+    },
+    "linear": {
+      "study_id": "08d81811-ef15-4e48-9a7c-715606420241",
+      "their_claim": "pass true, product 8/8, TTFV 3.302s, total 63.534s, TTFA median 1.344s max 2.285s, top_weakness PASS",
+      "their_summary": "6 of 8 product runs never left the homepage. Same sentence is the top weakness they marked PASS.",
+      "independent": {
+        "pass": false,
+        "wall_s": 63.17,
+        "time_to_first_value": "not recorded FAIL",
+        "total_time": "not ready FAIL",
+        "report_ready": true,
+        "report_page": "not fetched, gates app stopped",
+        "page_opened": "24/24 PASS",
+        "time_to_first_action": "median=1.077s max=1.907s n=24/24 PASS",
+        "ttfa_note": "Aligned created/page_open/first_action stamp dropped. Clock is browser_ready_at_ts.",
+        "final_screenshot_field": "24/24 PASS",
+        "png_bytes": "GCS objects=1 (study.json only). Judge: no downloadable PNG.",
+        "product_task_completion": "0/8 FAIL",
+        "structural_past_first_screen": "8/8 URLs are https://linear.app/docs/creating-issues or https://linear.app/pricing. That is docs and pricing, not an issue created in the app. Gemini did not see a PNG, so this is not a YES.",
+        "first_screen_ids": [],
+        "top_weakness_not_homepage_only": "FAIL. Their qualifying weakness is the homepage-stall sentence. real_weaknesses=0.",
+        "first_screen_not_excluded": "PASS excluded=0",
+        "product_strength": "0/2 FAIL",
+        "product_weakness": "0/3 FAIL",
+        "product_diagnostic": "0/8 finished"
+      }
+    }
+  },
+  "stamp_lie_86afd88f_c1d1cd17": {
+    "pass": false,
+    "note": "A reported TTFA of median 0.0s max 0.0s is the aligned stamp. Recomputed from browser_ready_at_ts.",
+    "linear_86afd88f": {
+      "study_id": "86afd88f-9832-47e8-b303-91bb387e615b",
+      "pass": false,
+      "wall_s": 78.894,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=39.712s max=65.966s n=24/24 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "report_ready": true,
+      "product_task_completion": "0/8 FAIL",
+      "png_bytes": "study.json only. Judge: no downloadable PNG.",
+      "structural": "8/8 past the first screen on docs/creating-issues or pricing. Not a Gemini YES.",
+      "top_weakness": "FAIL. Text is 'The new issue form is hard to find; the docs explain issues but the title field is not on screen.' real_weaknesses=0 because the screenshot did not load."
+    },
+    "excalidraw_c1d1cd17": {
+      "study_id": "c1d1cd17-0989-4999-b922-a45c9e13d33f",
+      "pass": false,
+      "wall_s": 91.584,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=50.185s max=80.704s n=24/24 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "report_ready": true,
+      "product_task_completion": "0/8 FAIL",
+      "png_bytes": "study.json only. Judge: no downloadable PNG.",
+      "first_screen": "t1__p3__product and t1__p4__product",
+      "structural": 6,
+      "top_weakness": "FAIL. Text is 'The export button is hard to find in the menu before the dialog opens.' real_weaknesses=0."
+    }
+  },
+  "gcs_only_study_json": {
+    "pass": false,
+    "png_bytes": "missing. GCS prefix contains study.json only. Product YES requires downloadable final PNG bytes.",
+    "judge_reason": "no downloadable PNG",
+    "missing_on_study_json": [
+      "time_to_first_value_s",
+      "total_time_s"
+    ],
+    "final_screenshot_url_field": "present on the runs, but the object is not in GCS",
+    "fix": [
+      "mvp/a11y_agent.py final capture sets final_screenshot_url before upload and swallows a failed mvp/opening_shot.py upload_screenshot.",
+      "mvp/opening_shot.py upload_screenshot must put final.png at screenshot_gcs_uri via mvp/gcs_store.py gcs_upload_file. A false return cannot leave the URL set.",
+      "mvp/gcs_store.py write_study_state writes study.json only. Stamp time_to_first_value_s and total_time_s on the study before persist_study.",
+      "Do not set created_at_ts, page_open_at_ts, and first_action_at_ts to one instant. The harness drops that page-open and clocks from browser_ready_at_ts."
+    ],
+    "linear_18d86703": {
+      "study_id": "18d86703-93a9-461e-a5e9-787a8ac5b927",
+      "pass": false,
+      "product_task_completion": "0/8 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=1.009s max=1.782s n=24/24 PASS",
+      "ttfa_note": "Not 0.0s. Clock is browser_ready_at_ts after the aligned stamp was dropped.",
+      "report_ready": true,
+      "report_page": "not fetched, gates app stopped",
+      "urls": "4 docs/creating-issues, 4 pricing. Not an issue in the app.",
+      "top_weakness": "FAIL. '6 of 8 product runs stopped on the first screen...'",
+      "strength": "0/2 FAIL",
+      "weakness": "0/3 FAIL",
+      "wall_s": 61.422
+    },
+    "excalidraw_40e719b1": {
+      "study_id": "40e719b1-5e63-46af-9ca2-3f322868b513",
+      "pass": false,
+      "product_task_completion": "0/8 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=1.082s max=1.538s n=24/24 PASS",
+      "ttfa_note": "Not 0.0s. Clock is browser_ready_at_ts.",
+      "report_ready": true,
+      "report_page": "not fetched, gates app stopped",
+      "first_screen": "8/8 final URL https://excalidraw.com/",
+      "top_weakness": "FAIL. '6 of 8 product runs stopped on the first screen...'",
+      "strength": "0/2 FAIL",
+      "weakness": "0/3 FAIL",
+      "wall_s": 29.757
+    },
+    "linear_5a10cefa": {
+      "study_id": "5a10cefa-ea9c-44e8-9da7-e02bd7e0cc81",
+      "pass": false,
+      "product_task_completion": "0/8 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=42.23s max=68.697s n=24/24 FAIL",
+      "ttfa_note": "0.0s is forged. page_open_at_ts equals first_action_at_ts. Clock is browser_ready_at_ts.",
+      "report_ready": true,
+      "urls": "4 docs/creating-issues, 4 pricing",
+      "top_weakness": "FAIL. Docs page, title field not on screen. Screenshot did not load.",
+      "wall_s": 83.316
+    },
+    "excalidraw_0711d32d": {
+      "study_id": "0711d32d-2b75-4a15-a772-a9f48d3927d6",
+      "pass": false,
+      "product_task_completion": "0/8 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=46.121s max=82.966s n=24/24 FAIL",
+      "ttfa_note": "0.0s is forged. Clock is browser_ready_at_ts.",
+      "report_ready": true,
+      "first_screen": "t1__p1__product still https://excalidraw.com/",
+      "top_weakness": "FAIL. Export button claim has no loadable screenshot.",
+      "wall_s": 94.072
+    }
+  },
+  "session_count_freed": 0,
+  "best_floor": {
+    "study_id": "68af612b-e3ae-433a-9b5d-6022d604406d",
+    "product": "4/8 pricing only; new-issue 0/4",
+    "note": "bdc1f5da is 2/8 and does not beat 68af612b 4/8. 49b52ebe is 0/8. New-issue is still login, workspace setup, or the dashboard."
+  },
+  "linear_c1832e16": {
+    "study_id": "c1832e16-3271-4a4b-b3e9-b6661a54b1e4",
+    "pass": false,
+    "wall_s": 13.807,
+    "status": "abandoned",
+    "agents": 20,
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "report_ready": false,
+    "page_opened": "FAIL missing field page_open_at_ts. Opened 7/20.",
+    "time_to_first_action": "FAIL missing field page_open_at_ts. Partial clocks on 7 agents median 5.798s max 6.1s are not a 24-agent pass.",
+    "product_task_completion": "0/7 FAIL",
+    "final_screenshot": "missing field final_screenshot_url",
+    "png_note": "Three objects exist at mvp_studies/c1832e16-3271-4a4b-b3e9-b6661a54b1e4/screenshots/t2__p1__product/final.png (also t2__p2 and t2__p4) but the JSON field is absent, so Gemini did not score them. Diagnostic 0/0 finished.",
+    "tip": "integration was already past 872438f"
+  },
+  "new_since_70557bae": {
+    "excalidraw_4981bad8": {
+      "study_id": "4981bad8-95cc-4114-ba59-c2781c371aef",
+      "pass": false,
+      "wall_s": 79.15,
+      "agents": 24,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=42.071s max=67.934s n=24/24 FAIL",
+      "ttfa_note": "Aligned page_open and first_action. Clock is browser_ready_at_ts. Not 0.0s.",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "product_task_completion": "0/8 FAIL",
+      "png": "missing mvp_studies/4981bad8-95cc-4114-ba59-c2781c371aef/screenshots/<agent>/final.png. Judge: no downloadable PNG.",
+      "top_weakness": "FAIL. The export button is hard to find in the menu after the drawing is on the canvas. real_weaknesses=0."
+    },
+    "linear_eb2c36a0": {
+      "study_id": "eb2c36a0-686b-424c-9222-87c51cf14579",
+      "pass": false,
+      "wall_s": 84.679,
+      "agents": 24,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=45.017s max=72.551s n=24/24 FAIL",
+      "ttfa_note": "Clock is browser_ready_at_ts after the aligned stamp. Not 0.0s.",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "product_task_completion": "0/8 FAIL",
+      "png": "missing mvp_studies/eb2c36a0-686b-424c-9222-87c51cf14579/screenshots/<agent>/final.png. Judge: no downloadable PNG.",
+      "top_weakness": "FAIL. The new issue form is hard to find; the docs explain issues but the title field is not on screen."
+    },
+    "linear_b7fea33b": {
+      "study_id": "b7fea33b-2fd6-4759-acfc-3e7890b8ceb3",
+      "pass": false,
+      "wall_s": 443.361,
+      "agents": 15,
+      "task_count": 1,
+      "page_opened": "15/15 host match, not 24/24",
+      "time_to_first_action": "median=0.254s max=0.477s n=15/24 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "product_task_completion": "0/5 FAIL",
+      "judge_reasons_no": [
+        "t1__p1 through t1__p4: on the Linear dashboard, not the marketing page, and no issue was created.",
+        "t1__p5: still the opening screen and has not created an issue."
+      ],
+      "run_issue_rate": "10/15 (67%) FAIL"
+    },
+    "linear_df51233e": {
+      "study_id": "df51233e-6d0b-4081-aa86-2119b3dbce47",
+      "pass": false,
+      "agents": 1,
+      "wall_s": 226.172,
+      "product_task_completion": "1/1 on this single run. Not a 24-agent pass.",
+      "judge": "The agent successfully navigated to the New issue form and is ready to create an issue. That is the form, not an issue that exists.",
+      "time_to_first_action": "median=0.329s n=1/24 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL"
+    }
+  },
+  "all_pass": false,
+  "linear_bdc1f5da": {
+    "study_id": "bdc1f5da-5815-4002-9dcf-32ada5300190",
+    "pass": false,
+    "wall_s": 170.789,
+    "agents": 24,
+    "page_opened": "24/24 PASS",
+    "time_to_first_action": "median=34.687s max=51.193s n=24/24 FAIL",
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "report_ready": true,
+    "report_page": "not fetched, gates app stopped",
+    "product_task_completion": "2/8 FAIL",
+    "png": "24 final.png objects. Gemini ran.",
+    "yes": [
+      "t2__p1__product pricing tiers",
+      "t2__p4__product pricing page"
+    ],
+    "judge_reasons_no": [
+      "t1__p1: still on the login screen. No new issue.",
+      "t1__p2 and t1__p3: still on the workspace creation screen. No new issue.",
+      "t1__p4: still on the signup/workspace creation screen. No new issue.",
+      "t2__p2: contact-sales page, no pricing and no get-started path.",
+      "t2__p3: customer stories, no pricing."
+    ],
+    "top_weakness": "FAIL. click Log in was unclear and changed nothing on https://linear.app/",
+    "strength": "0/3 FAIL",
+    "weakness": "0/3 FAIL"
+  },
+  "linear_49b52ebe": {
+    "study_id": "49b52ebe-161e-49c6-9fa8-1c61dd71005b",
+    "pass": false,
+    "wall_s": 448.284,
+    "agents": 24,
+    "task_count": "1 FAIL. Only Create an issue. Not the 2-task matrix.",
+    "page_opened": "24/24 PASS",
+    "time_to_first_action": "median=0.423s max=2.333s n=24/24 PASS",
+    "ttfa_note": "Not 0.0s. A TTFA pass is not a study pass.",
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "report_ready": true,
+    "product_task_completion": "0/8 FAIL",
+    "png": "19 final.png objects. t1__p5 missing final_screenshot_url.",
+    "model_timeout_overrides_yes": [
+      "t1__p4 and t1__p7 Gemini text says an existing issue was opened. product_run_succeeded is false because the run is a model timeout."
+    ],
+    "judge_reasons_no": [
+      "t1__p1 and t1__p6 and t1__p8: Linear dashboard, no issue created.",
+      "t1__p2: Create a workspace page, workspace not created.",
+      "t1__p3: viewing an existing issue, not a created issue.",
+      "t1__p5: missing field final_screenshot_url."
+    ],
+    "top_weakness": "FAIL. click Create workspace changed nothing on https://linear.app/",
+    "run_issue_rate": "12/24 (50%) FAIL"
+  },
+  "owner_fixes": [
+    {
+      "owner": "cursor/tonight-integration",
+      "fix": [
+        "Parallelize connect_over_cdp. 757461e7 left 7 competitor agents with no click.",
+        "Stamp time_to_first_value_s as URL submit to the first click, type, or scroll. A harness-only 23.88s does not satisfy the gate.",
+        "Do not await every site before step 0.",
+        "Release Browserbase sessions after an abort. 757461e7 was killed at 42.78s with total_time not ready."
+      ]
+    },
+    {
+      "owner": "cursor/task-completion-fix",
+      "fix": [
+        "One browser per agent.",
+        "New-issue 0/4 is still login, workspace creation, the dashboard, or the docs page. An inert hash or a docs URL is not an issue in the app.",
+        "Stamp final.png, final text, and the goal on the run before save. e82c73f records bdc1f5da and is not a grade. That study is product 2/8 FAIL."
+      ]
+    },
+    {
+      "owner": "cursor/product-agent-full-model-76fc",
+      "fix": [
+        "Self ALL_PASS is rejected. A TTFA of 0.0s is the aligned page_open and first_action stamp. The clock is browser_ready_at_ts."
+      ]
+    }
+  ]
+}

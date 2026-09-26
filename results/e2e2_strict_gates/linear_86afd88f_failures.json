@@ -1,0 +1,510 @@
+{
+  "study_id": "86afd88f-9832-47e8-b303-91bb387e615b",
+  "product_url": "https://linear.app",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 24,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "done",
+      "n": 16
+    },
+    {
+      "phase": "act",
+      "n": 8
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t1__p1__product",
+      "site_key": "product",
+      "task": "Find how to create a new issue",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p1__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 2732.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p1__product/screenshots/final.png",
+      "final_url": "https://linear.app/docs/creating-issues",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p1__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nFind how to create a new issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p1__competitor_1&step=1",
+      "failed_step_phase": "act",
+      "failed_step_reason": "session ended",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 10921.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p1__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p1__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nFind how to create a new issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p1__competitor_2&step=1",
+      "failed_step_phase": "act",
+      "failed_step_reason": "session ended",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 3841.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p1__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 1
+    },
+    {
+      "agent_id": "t2__p1__product",
+      "site_key": "product",
+      "task": "Look for pricing or how to get started",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p1__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 1267.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p1__product/screenshots/final.png",
+      "final_url": "https://linear.app/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p1__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nLook for pricing or how to get started\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p1__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 637.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p1__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p1__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nLook for pricing or how to get started\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p1__competitor_2&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 2260.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p1__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p2__product",
+      "site_key": "product",
+      "task": "Find how to create a new issue",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p2__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 1046.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p2__product/screenshots/final.png",
+      "final_url": "https://linear.app/docs/creating-issues",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p2__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nFind how to create a new issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p2__competitor_1&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 885.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p2__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p2__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nFind how to create a new issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p2__competitor_2&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 1576.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p2__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p2__product",
+      "site_key": "product",
+      "task": "Look for pricing or how to get started",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p2__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 800.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p2__product/screenshots/final.png",
+      "final_url": "https://linear.app/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p2__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nLook for pricing or how to get started\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p2__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 551.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p2__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p2__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nLook for pricing or how to get started\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p2__competitor_2&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 4011.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p2__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p3__product",
+      "site_key": "product",
+      "task": "Find how to create a new issue",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p3__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 915.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p3__product/screenshots/final.png",
+      "final_url": "https://linear.app/docs/creating-issues",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p3__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nFind how to create a new issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p3__competitor_1&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 2291.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p3__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p3__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nFind how to create a new issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p3__competitor_2&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 994.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p3__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p3__product",
+      "site_key": "product",
+      "task": "Look for pricing or how to get started",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p3__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 5667.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p3__product/screenshots/final.png",
+      "final_url": "https://linear.app/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p3__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nLook for pricing or how to get started\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p3__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 813.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p3__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p3__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nLook for pricing or how to get started\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p3__competitor_2&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 1059.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p3__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p4__product",
+      "site_key": "product",
+      "task": "Find how to create a new issue",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p4__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 2918.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p4__product/screenshots/final.png",
+      "final_url": "https://linear.app/docs/creating-issues",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p4__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nFind how to create a new issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p4__competitor_1&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "session ended",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 9921.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p4__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/",
+      "step": 2
+    },
+    {
+      "agent_id": "t1__p4__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nFind how to create a new issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t1__p4__competitor_2&step=2",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 842.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t1__p4__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p4__product",
+      "site_key": "product",
+      "task": "Look for pricing or how to get started",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p4__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 519.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p4__product/screenshots/final.png",
+      "final_url": "https://linear.app/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p4__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nLook for pricing or how to get started\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p4__competitor_1&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 440.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p4__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/pricing",
+      "step": 2
+    },
+    {
+      "agent_id": "t2__p4__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nLook for pricing or how to get started\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "Judge failed: no downloadable PNG (URLError(ConnectionRefusedError(111, 'Connection refused')))",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=86afd88f-9832-47e8-b303-91bb387e615b&agent=t2__p4__competitor_2&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 1648.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/86afd88f-9832-47e8-b303-91bb387e615b/agents/t2__p4__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/pricing",
+      "step": 2
+    }
+  ]
+}

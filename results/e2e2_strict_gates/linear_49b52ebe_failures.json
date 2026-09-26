@@ -1,0 +1,518 @@
+{
+  "study_id": "49b52ebe-161e-49c6-9fa8-1c61dd71005b",
+  "product_url": "https://linear.app/",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 8,
+    "stuck": 0,
+    "product": 16,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "signup",
+      "n": 12
+    },
+    {
+      "phase": "missing field failed_step_phase",
+      "n": 5
+    },
+    {
+      "phase": "act",
+      "n": 4
+    },
+    {
+      "phase": "study_budget",
+      "n": 3
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t1__p1__product",
+      "site_key": "product",
+      "task": "Create an issue",
+      "type": "model timeout",
+      "judge_reason": "The agent is on the Linear app's dashboard, not on the initial marketing page, but the task was to create an issue, and no issue creation form or confirmation is visible.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p1__product&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "timeout",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 370.0,
+        "first_action": 0.0,
+        "final_screenshot": 861.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p1__product/screenshots/final.png",
+      "final_url": "https://linear.app/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p1__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "The task was to create an issue on the competitor website, but the agent remained on the Asana developer documentation page and did not interact with any issue creation functionality.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p1__competitor_1&step=7",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 252.0,
+        "first_action": 0.0,
+        "final_screenshot": 826.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p1__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/",
+      "step": 7
+    },
+    {
+      "agent_id": "t1__p1__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "The agent is still on the Trello homepage and has not created an issue.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p1__competitor_2&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "captcha_unsolved",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 163.0,
+        "first_action": 0.0,
+        "final_screenshot": 587.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p1__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p2__product",
+      "site_key": "product",
+      "task": "Create an issue",
+      "type": "product",
+      "judge_reason": "The agent is on the \"Create a workspace\" page, but has not yet created the workspace.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p2__product&step=4",
+      "failed_step_phase": "act",
+      "failed_step_reason": "model said done before the goal was visible",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 283.0,
+        "first_action": 0.0,
+        "final_screenshot": 852.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p2__product/screenshots/final.png",
+      "final_url": "https://linear.app/",
+      "step": 4
+    },
+    {
+      "agent_id": "t1__p2__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "The agent is on the Asana API Reference page, but the task was to create an issue on the competitor website, which this page does not facilitate.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p2__competitor_1&step=15",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 1275.0,
+        "first_action": 0.0,
+        "final_screenshot": 1115.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p2__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/",
+      "step": 15
+    },
+    {
+      "agent_id": "t1__p2__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "missing field final_screenshot_url",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p2__competitor_2&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 435.0,
+        "first_action": 0.0,
+        "final_screenshot": 0.0
+      },
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://trello.com/",
+      "step": null
+    },
+    {
+      "agent_id": "t1__p3__product",
+      "site_key": "product",
+      "task": "Create an issue",
+      "type": "model timeout",
+      "judge_reason": "The page shows an issue within the Linear application, but the task was to create an issue, not to view an existing one.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p3__product&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "timeout",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 1271.0,
+        "first_action": 0.0,
+        "final_screenshot": 546.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p3__product/screenshots/final.png",
+      "final_url": "https://linear.app/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p3__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "The user was asked to create an issue on the competitor website, but the current page is a developer documentation page for building apps, not an issue creation form.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p3__competitor_1&step=20",
+      "failed_step_phase": "study_budget",
+      "failed_step_reason": "study budget",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 222.0,
+        "first_action": 0.0,
+        "final_screenshot": 481.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p3__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/",
+      "step": 20
+    },
+    {
+      "agent_id": "t1__p3__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "model timeout",
+      "judge_reason": "The agent is still on the opening screen of the competitor website and has not created an issue.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p3__competitor_2&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "timeout",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 223.0,
+        "first_action": 0.0,
+        "final_screenshot": 998.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p3__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p4__product",
+      "site_key": "product",
+      "task": "Create an issue",
+      "type": "model timeout",
+      "judge_reason": "The agent successfully navigated to an issue within the Linear application, indicating the task of creating an issue was likely completed or the agent landed on an existing issue page.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p4__product&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "timeout",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 2333.0,
+        "first_action": 0.0,
+        "final_screenshot": 612.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p4__product/screenshots/final.png",
+      "final_url": "https://linear.app/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p4__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "missing field final_screenshot_url",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p4__competitor_1&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 475.0,
+        "first_action": 0.0,
+        "final_screenshot": 0.0
+      },
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://asana.com/",
+      "step": null
+    },
+    {
+      "agent_id": "t1__p4__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "The agent is still on the opening screen and has not created an issue.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p4__competitor_2&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "captcha_unsolved",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 294.0,
+        "first_action": 0.0,
+        "final_screenshot": 853.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p4__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p5__product",
+      "site_key": "product",
+      "task": "Create an issue",
+      "type": "product",
+      "judge_reason": "missing field final_screenshot_url",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p5__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 631.0,
+        "first_action": 0.0,
+        "final_screenshot": 0.0
+      },
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://linear.app/",
+      "step": null
+    },
+    {
+      "agent_id": "t1__p5__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "missing field final_screenshot_url",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p5__competitor_1&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 649.0,
+        "first_action": 0.0,
+        "final_screenshot": 0.0
+      },
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://asana.com/",
+      "step": null
+    },
+    {
+      "agent_id": "t1__p5__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "model timeout",
+      "judge_reason": "The agent is still on the opening screen and has not created an issue.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p5__competitor_2&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "timeout",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 119.0,
+        "first_action": 0.0,
+        "final_screenshot": 701.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p5__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p6__product",
+      "site_key": "product",
+      "task": "Create an issue",
+      "type": "model timeout",
+      "judge_reason": "The agent is on the Linear app's dashboard, not on the opening screen, but has not created an issue as requested by the task.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p6__product&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "timeout",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 448.0,
+        "first_action": 0.0,
+        "final_screenshot": 622.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p6__product/screenshots/final.png",
+      "final_url": "https://linear.app/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p6__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "The user is on the Asana developer site, but the task was to create an issue, and the current page is about publishing an app.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p6__competitor_1&step=16",
+      "failed_step_phase": "study_budget",
+      "failed_step_reason": "study budget",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 572.0,
+        "first_action": 0.0,
+        "final_screenshot": 898.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p6__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/",
+      "step": 16
+    },
+    {
+      "agent_id": "t1__p6__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "The agent is still on the Trello homepage and has not created an issue.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p6__competitor_2&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "captcha_unsolved",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 125.0,
+        "first_action": 0.0,
+        "final_screenshot": 618.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p6__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p7__product",
+      "site_key": "product",
+      "task": "Create an issue",
+      "type": "model timeout",
+      "judge_reason": "The agent successfully navigated to an existing issue within the Linear application, as indicated by the URL and the displayed issue details.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p7__product&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "timeout",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 275.0,
+        "first_action": 0.0,
+        "final_screenshot": 597.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p7__product/screenshots/final.png",
+      "final_url": "https://linear.app/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p7__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "The agent is on the API Reference page, which is not the goal of creating an issue.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p7__competitor_1&step=6",
+      "failed_step_phase": "act",
+      "failed_step_reason": "page did not show the goal",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 753.0,
+        "first_action": 0.0,
+        "final_screenshot": 760.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p7__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/",
+      "step": 6
+    },
+    {
+      "agent_id": "t1__p7__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "The agent is still on the Trello homepage and has not created an issue.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p7__competitor_2&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "captcha_unsolved",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 850.0,
+        "first_action": 0.0,
+        "final_screenshot": 585.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p7__competitor_2/screenshots/final.png",
+      "final_url": "https://trello.com/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p8__product",
+      "site_key": "product",
+      "task": "Create an issue",
+      "type": "model timeout",
+      "judge_reason": "The agent is on the Linear app's dashboard, not the opening marketing page, but has not created an issue as requested by the task.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p8__product&step=1",
+      "failed_step_phase": "signup",
+      "failed_step_reason": "timeout",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 447.0,
+        "first_action": 0.0,
+        "final_screenshot": 607.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p8__product/screenshots/final.png",
+      "final_url": "https://linear.app/",
+      "step": 1
+    },
+    {
+      "agent_id": "t1__p8__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://asana.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://asana.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://asana.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "The task was to create an issue on the competitor website, but the agent landed on the Asana developer documentation page and did not attempt to create an issue.",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p8__competitor_1&step=13",
+      "failed_step_phase": "study_budget",
+      "failed_step_reason": "study budget",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 319.0,
+        "first_action": 0.0,
+        "final_screenshot": 523.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/49b52ebe-161e-49c6-9fa8-1c61dd71005b/agents/t1__p8__competitor_1/screenshots/final.png",
+      "final_url": "https://asana.com/",
+      "step": 13
+    },
+    {
+      "agent_id": "t1__p8__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nCreate an issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "missing field final_screenshot_url",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=49b52ebe-161e-49c6-9fa8-1c61dd71005b&agent=t1__p8__competitor_2&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 411.0,
+        "first_action": 0.0,
+        "final_screenshot": 0.0
+      },
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://trello.com/",
+      "step": null
+    }
+  ]
+}
