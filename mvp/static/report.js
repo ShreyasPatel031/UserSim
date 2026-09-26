@@ -622,9 +622,22 @@ function verdictHtml(insights) {
       <h3>Verdict</h3>
       <p class="sub">Per-task results against the competitors. Finished runs count first, then steps, then time.</p>
       ${v.summary ? `<p class="verdict-summary">${escapeHtml(v.summary)}</p>` : ""}
+      ${signupLine(insights.signups)}
       <div class="split">
         <div><h3>Good for</h3>${list(good, "No task where it led or matched the competitors.")}</div>
         <div><h3>Trails competitors on</h3>${list(trails, "No task where a competitor did better.")}</div>
       </div>
     </div>`;
+}
+
+function signupLine(signups) {
+  const sites = (signups && signups.sites) || [];
+  if (!sites.length) return "";
+  const bits = sites.map((r) => {
+    const why = Object.entries(r.reasons || {}).map(([k, n]) => `${k} ×${n}`).join(", ");
+    return `${escapeHtml(r.site)}: ${r.ok}/${r.tried} signed up live` +
+      (r.median_s != null ? ` (median ${Math.round(r.median_s)}s)` : "") +
+      (why ? ` · blocked by ${escapeHtml(why)}` : "");
+  });
+  return `<p class="sub"><strong>Account walls:</strong> agents created real accounts mid-task when a step needed one. ${bits.join(" · ")}</p>`;
 }

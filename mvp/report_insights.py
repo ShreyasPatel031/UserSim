@@ -1016,6 +1016,7 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
         **layout,
     }
     out["verdict"] = verdict(out, study)
+    out["signups"] = signup_summary(runs, study)
     # A task where a competitor did better is a product weakness. Cite the
     # product runs of that task so the claim points at real steps.
     if len(out["weaknesses"]) < 3:
@@ -1412,6 +1413,7 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
         "trails": (insights.get("verdict") or {}).get("trails") or [],
         "strengths": [c.get("claim") for c in insights.get("strengths") or []][:3],
         "weaknesses": [c.get("claim") for c in insights.get("weaknesses") or []][:3],
+        "live_signups": (insights.get("signups") or {}).get("sites") or [],
         "sites": [
             {k: s.get(k) for k in ("site_label", "ok", "n", "median_steps", "median_time_s")}
             for s in insights.get("sites") or []
@@ -1432,3 +1434,28 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
         max_retries=2,
     )
     return " ".join(str(raw or "").split())[:1200]
+
+
+def signup_summary(runs: list[dict[str, Any]], study: dict[str, Any]) -> dict[str, Any]:
+    """Live account creation during the study, per site: tried, finished, median seconds."""
+    rows: dict[str, dict[str, Any]] = {}
+    for run in runs:
+        info = run.get("signup") if isinstance(run.get("signup"), dict) else None
+        if not info:
+            continue
+        label = _site_label(run, study)
+        row = rows.setdefault(label, {"site": label, "tried": 0, "ok": 0, "seconds": [], "reasons": {}})
+        row["tried"] += 1
+        if info.get("ok"):
+            row["ok"] += 1
+            if isinstance(info.get("seconds"), (int, float)):
+                row["seconds"].append(float(info["seconds"]))
+        else:
+            reason = str(info.get("reason") or "unknown").split(":", 1)[0][:40]
+            row["reasons"][reason] = row["reasons"].get(reason, 0) + 1
+    out = []
+    for row in rows.values():
+        med = _median(row.pop("seconds"))
+        row["median_s"] = round(med, 1) if med is not None else None
+        out.append(row)
+    return {"sites": out, "tried": sum(r["tried"] for r in out), "ok": sum(r["ok"] for r in out)}
