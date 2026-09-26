@@ -586,13 +586,55 @@ def _capsolver_key() -> str:
     ).strip()
 
 
+async def _recaptcha_anchor_checked(page: Any) -> bool:
+    """True when a reCAPTCHA v2 anchor frame shows the checkbox as checked.
+
+    Falls back to the response-token check only when no anchor frame exists.
+    """
+    anchors = [
+        f for f in getattr(page, "frames", []) or []
+        if re.search(r"recaptcha/(api2|enterprise)/anchor", (f.url or "").lower())
+    ]
+    if not anchors:
+        from mvp import captcha as cap
+
+        return bool(await cap._recaptcha_solved(page))
+    for frame in anchors:
+        try:
+            if (await frame.locator("#recaptcha-anchor").first.get_attribute("aria-checked", timeout=1500)) == "true":
+                return True
+        except Exception:
+            continue
+    return False
+
+
+async def _captcha_frame_visible(page: Any) -> bool:
+    """A visible (non-invisible) captcha/challenge iframe is still on the page."""
+    try:
+        return bool(await page.evaluate(
+            """() => [...document.querySelectorAll('iframe')].some(f => {
+                 const r = f.getBoundingClientRect();
+                 const s = f.src || '';
+                 return r.width > 20 && r.height > 20 && !/size=invisible/i.test(s)
+                   && /recaptcha|hcaptcha|turnstile|challenges\\.cloudflare|arkoselabs|funcaptcha|captcha/i.test(s);
+               })"""
+        ))
+    except Exception:
+        return False
+
+
 async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any]) -> dict[str, Any]:
     """Free clicks first; CapSolver only with a key and only under the per-site cap."""
     from mvp import captcha as cap
 
     out: dict[str, Any] = {"type": snap.get("captcha", "")[:80], "ok": False, "method": ""}
+    ctype = str(snap.get("captcha") or "").lower()
     try:
-        if await cap._click_recaptcha_checkbox(page) and await cap._recaptcha_solved(page):
+        # Only a checked anchor counts. Calendly (reCAPTCHA Enterprise v2 on
+        # recaptcha.net) also carries a filled g-recaptcha-response from an
+        # invisible widget, so "token present" said ok while the image
+        # challenge was still open, and CapSolver was never reached.
+        if await cap._click_recaptcha_checkbox(page) and await _recaptcha_anchor_checked(page):
             out.update(ok=True, method="recaptcha_checkbox")
             return out
     except Exception:
@@ -608,13 +650,19 @@ async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any])
         if res.get("ok"):
             out.update(ok=True, method=str(res.get("method")))
             return out
-    try:
-        if await cap._try_click_cloudflare_checkbox(page):
-            await page.wait_for_timeout(4000)
-            out.update(ok=True, method="turnstile_click")
-            return out
-    except Exception:
-        pass
+    # The Turnstile helper clicks any control whose text mentions "human" or
+    # "verify" and reports True. On a reCAPTCHA/hCaptcha page that is a false
+    # "solved", so only use it for Cloudflare widgets and only count it when
+    # the challenge iframe is gone afterwards.
+    if not ctype or "turnstile" in ctype or "cloudflare" in ctype:
+        try:
+            if await cap._try_click_cloudflare_checkbox(page):
+                await page.wait_for_timeout(4000)
+                if not await _captcha_frame_visible(page):
+                    out.update(ok=True, method="turnstile_click")
+                    return out
+        except Exception:
+            pass
     if not _capsolver_key():
         out["method"] = "no_capsolver_key"
         return out

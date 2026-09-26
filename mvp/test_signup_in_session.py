@@ -108,6 +108,54 @@ class SignupHopeless(unittest.TestCase):
         os.environ.pop("MVP_SIGNUP_COMPETITOR_TIMEOUT_S", None)
         self.assertEqual(competitor_signup_timeout_s(), 40.0)
 
+class ClearCaptchaNoFalseOk(unittest.TestCase):
+    """Calendly: reCAPTCHA Enterprise v2 image challenge open, stray token filled."""
+
+    def test_recaptcha_page_is_not_cleared_by_turnstile_click_or_token(self) -> None:
+        import asyncio
+        import os
+        from unittest import mock
+
+        import mvp.captcha as cap
+        import mvp.signup_in_session as sis
+
+        class _Loc:
+            first = property(lambda self: self)
+
+            async def get_attribute(self, name, timeout=0):
+                return "false"
+
+        class _Frame:
+            url = "https://www.recaptcha.net/recaptcha/enterprise/anchor?k=x"
+
+            def locator(self, sel):
+                return _Loc()
+
+        class _Page:
+            frames = [_Frame()]
+
+            async def wait_for_timeout(self, ms):
+                return None
+
+            async def evaluate(self, js):
+                return True  # captcha frame still visible
+
+        async def _yes(*a, **k):
+            return True
+
+        async def _audio_fail(page):
+            return {"ok": False, "method": "audio"}
+
+        snap = {"captcha": "https://www.recaptcha.net/recaptcha/enterprise/anchor?k=x"}
+        with mock.patch.object(cap, "_click_recaptcha_checkbox", _yes), \
+                mock.patch.object(cap, "_recaptcha_solved", _yes), \
+                mock.patch.object(cap, "_try_click_cloudflare_checkbox", _yes), \
+                mock.patch("mvp.signup_captcha_audio.solve_recaptcha_audio", _audio_fail), \
+                mock.patch.dict(os.environ, {"CAPSOLVER_API_KEY": "", "MVP_CAPTCHA_API_KEY": ""}):
+            res = asyncio.run(sis._clear_captcha(_Page(), snap, {"usd": 0.0, "calls": 0, "site": "calendly.com"}))
+        self.assertFalse(res["ok"], res)
+        self.assertEqual(res["method"], "no_capsolver_key")
+
 if __name__ == "__main__":
     unittest.main()
 
