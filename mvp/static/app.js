@@ -1669,7 +1669,20 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+// Expose the running study id (tests, the report link, and support) on every
+// path: the NDJSON stream (Vercel) and the JSON + poll path (VM / local uvicorn).
+function markStudyId(data) {
+  const id = data && (data.id || data.study_id);
+  if (id && document.body.dataset.studyId !== String(id)) {
+    document.body.dataset.studyId = String(id);
+    const link = document.getElementById("view-report-link");
+    if (link) link.href = `/report?study=${encodeURIComponent(id)}`;
+  }
+  return id || "";
+}
+
 async function pollStudy(studyId) {
+  markStudyId({ id: studyId });
   const res = await fetch(`/api/studies/${studyId}`);
   if (!res.ok) throw new Error("Failed to fetch study status");
   return res.json();
@@ -1789,7 +1802,7 @@ form.addEventListener("submit", async (e) => {
             continue;
           }
           data = chunk;
-          if (data && (data.id || data.study_id)) document.body.dataset.studyId = data.id || data.study_id;
+          markStudyId(data);
           updateProgressUI(data, startedAt);
           renderLiveStudy(data);
           if (
@@ -1834,7 +1847,7 @@ form.addEventListener("submit", async (e) => {
     } else {
       const raw = await startRes.text();
       const payload = JSON.parse(raw);
-      const studyId = payload.study_id || payload.id;
+      const studyId = markStudyId(payload);
       data = payload;
       if (!data?.personas && studyId) {
         data = await pollStudy(studyId);
