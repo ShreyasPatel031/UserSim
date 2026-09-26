@@ -91,6 +91,7 @@ class VerdictWithoutRivalRunsTests(unittest.TestCase):
         self.assertIn('"competitors_compared": []', seen["prompt"])
         self.assertIn('"runs_that_never_opened": 11', seen["prompt"])
         self.assertIn("compare with no one", seen["prompt"])
+        self.assertIn("with none, suggest no fix", seen["prompt"])
 
 
 class StepNoiseTests(unittest.TestCase):

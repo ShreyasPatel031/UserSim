@@ -1697,8 +1697,9 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
     prompt = (
         "Write a short verdict for a product team from a simulated user study. "
         "Use only these facts; do not invent features, numbers, or sites. "
-        "3 to 5 plain sentences: what the product is good for, where it trails its competitors, "
-        "and the single most useful fix. No markdown, no bullet points. "
+        "2 to 5 plain sentences: what the product is good for, where it trails its competitors, "
+        "and the single most useful fix. Suggest a fix only when it follows from a trails line or a "
+        "product weakness in the facts; with none, suggest no fix. No markdown, no bullet points. "
         "live_signups are UserSim's own test accounts: a captcha, a rejected throwaway email, a "
         "verification email that never arrived, or a signup error there is a limit of the test "
         "harness, not a product problem, so never describe it as a product flaw or recommend fixing "
