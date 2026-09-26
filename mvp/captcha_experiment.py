@@ -234,14 +234,22 @@ def _release_leftover_experiment_sessions() -> int:
     return closed
 
 
-async def _with_page(solve_captchas: bool, fn: Any) -> Any:
+async def _with_page(solve_captchas: bool, fn: Any, *, proxies: bool = False) -> Any:
     _experiment_env()
     from capability.browserbase_client import close_session, create_session
 
-    attempts = [
-        {"proxies": True, "solve_captchas": solve_captchas, "advanced_stealth": False},
-        {"proxies": False, "solve_captchas": solve_captchas, "advanced_stealth": False},
-    ]
+    # Detection wants the widget to stay visible, so it skips residential
+    # proxies (those creates were timing out and hiding nothing we need).
+    # Trials that compare Browserbase's solver ask for proxies and fall back.
+    if proxies:
+        attempts = [
+            {"proxies": True, "solve_captchas": solve_captchas, "advanced_stealth": False},
+            {"proxies": False, "solve_captchas": solve_captchas, "advanced_stealth": False},
+        ]
+    else:
+        attempts = [
+            {"proxies": False, "solve_captchas": solve_captchas, "advanced_stealth": False},
+        ]
     session = None
     last_exc: BaseException | None = None
     for kwargs in attempts:
@@ -333,8 +341,17 @@ async def detect_one(site: dict[str, Any]) -> dict[str, Any]:
             try:
                 await page.evaluate(
                     """() => {
-                      const el = document.querySelector('input[type=email], input[name*=email i], input[type=text]');
-                      if (el) { el.focus(); el.click(); }
+                      const el = document.querySelector('input[type=email], input[name*=email i]');
+                      if (el) { el.focus(); el.click(); return; }
+                      const nodes = [...document.querySelectorAll('a, button')];
+                      for (const n of nodes) {
+                        const t = ((n.innerText || '') + '').trim().toLowerCase();
+                        if (t.length > 32) continue;
+                        if (/sign up|get started|start free|create account|try free|register/.test(t)) {
+                          n.click();
+                          return;
+                        }
+                      }
                     }"""
                 )
             except Exception:
@@ -363,7 +380,7 @@ async def detect_one(site: dict[str, Any]) -> dict[str, Any]:
         }
 
     try:
-        return await _with_page(False, run)
+        return await _with_page(False, run, proxies=False)
     except Exception as exc:  # noqa: BLE001
         return {
             "site": host,
@@ -722,7 +739,7 @@ async def trial_one(detection: dict[str, Any], method: str, repeat: int) -> dict
         }
 
     try:
-        return await _with_page(solve_captchas, run)
+        return await _with_page(solve_captchas, run, proxies=(method == "browserbase"))
     except Exception as exc:  # noqa: BLE001
         return {
             **base,
