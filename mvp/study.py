@@ -86,6 +86,18 @@ _AGENT_SEMAPHORE = asyncio.Semaphore(
 _BROWSER_SEMAPHORE = asyncio.Semaphore(
     int(os.environ.get("MVP_BROWSER_CONCURRENCY", "25"))
 )
+# Caps simultaneous live sessions. Navigations are capped tighter inside
+# run_browser_agent. Queue here, before the per-agent wall clock.
+_LLM_RUN_SEMAPHORE: asyncio.Semaphore | None = None
+
+
+def _llm_run_semaphore() -> asyncio.Semaphore:
+    global _LLM_RUN_SEMAPHORE
+    if _LLM_RUN_SEMAPHORE is None:
+        from mvp.browser_agent import llm_run_concurrency
+
+        _LLM_RUN_SEMAPHORE = asyncio.Semaphore(llm_run_concurrency())
+    return _LLM_RUN_SEMAPHORE
 
 
 def _now() -> str:
@@ -218,6 +230,8 @@ class StudyState:
     auth_blocker: str | None = None
     kill_requested: bool = False
     max_agents: int = 0
+    submitted_ts: float = 0.0
+    ux_metrics: dict[str, Any] = field(default_factory=dict)
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -1298,7 +1312,16 @@ async def run_study(
                 pass
 
     try:
+        from mvp.shared_extract import note_submitted
+
+        note_submitted(study)
         raise_if_killed(study)
+        from mvp.a11y_agent import study_budget_s
+
+        study.budget_s = study_budget_s()
+        # One clock for every agent. Measured 24-agent Linear maximum is 128s.
+        study.budget_deadline = time.monotonic() + study.budget_s
+        log_activity(study, "phase", f"Study budget {int(study.budget_s)}s")
         log_activity(study, "phase", "Study queued")
         touch("Understanding context of product", "running")
         log_activity(study, "fetch", f"Understanding context of {study.url}")
@@ -1325,7 +1348,24 @@ async def run_study(
         def _schedule_competitor_warms() -> None:
             return
 
-        if _should_warm_browserbase():
+        a11y_boot: Any = None
+        if (
+            _should_warm_browserbase()
+            and os.environ.get("MVP_A11Y_LOOP", "1").lower() not in {"0", "false", "no"}
+        ):
+            from mvp.shared_extract import SharedExtractBoot
+
+            # One shared extract per site. First actions are decided from it
+            # before any agent opens its own browser.
+            a11y_boot = SharedExtractBoot(study, on_update)
+            a11y_boot.install_fast_plan()
+            asyncio.create_task(a11y_boot.start())
+            log_activity(
+                study,
+                "browser",
+                "Shared page read started — agents decide the first move from it",
+            )
+        elif _should_warm_browserbase():
             from mvp.browser_agent import warm_opening_session
 
             # Free OUR zombie Browserbase sessions from abandoned studies so
@@ -1395,7 +1435,17 @@ async def run_study(
             except Exception:
                 pass
 
-        access = await fetch_page_access(study.url)
+        if a11y_boot is not None:
+            from mvp.page_access import PageAccessResult
+
+            access = PageAccessResult(
+                text="",
+                final_url=study.url,
+                title="",
+                backend="shared_ax",
+            )
+        else:
+            access = await fetch_page_access(study.url)
         study.access_backend = access.backend
         study.browserbase_session_url = access.session_url
         page_text = f"Title: {access.title}\nURL: {access.final_url}\n\n{access.text}"
@@ -1483,7 +1533,13 @@ async def run_study(
                 pass
 
         # 1) Competitors (skipped in local smoke — product site only)
-        if study.test_mode or study.skip_competitors:
+        if getattr(study, "fast_brief", False) and study.competitors:
+            log_activity(
+                study,
+                "plan",
+                "Using the submitted competitor URLs — no research wait",
+            )
+        elif study.test_mode or study.skip_competitors:
             study.competitors = []
             log_activity(
                 study,
@@ -1530,22 +1586,25 @@ async def run_study(
             _push_brief("brief")
 
         # 2) Simulated users (own agent call)
-        if not study.test_mode:
+        if not study.test_mode and not getattr(study, "fast_brief", False):
             touch("Building simulated users")
             study.personas = []
             study.tasks = []
             _push_brief("brief")
-        try:
-            users_plan = await generate_personas(
-                study.url,
-                study.segment,
-                page_text,
-                test_mode=study.test_mode,
-                competitors=study.competitors,
-            )
-        except Exception as exc:  # noqa: BLE001
-            log_activity(study, "plan", f"User generation failed ({str(exc)[:120]})")
-            users_plan = {"site_summary": "", "personas": []}
+        if getattr(study, "fast_brief", False):
+            users_plan = {"site_summary": study.url, "personas": study.personas}
+        else:
+            try:
+                users_plan = await generate_personas(
+                    study.url,
+                    study.segment,
+                    page_text,
+                    test_mode=study.test_mode,
+                    competitors=study.competitors,
+                )
+            except Exception as exc:  # noqa: BLE001
+                log_activity(study, "plan", f"User generation failed ({str(exc)[:120]})")
+                users_plan = {"site_summary": "", "personas": []}
 
         site_summary = users_plan.get("site_summary") or ""
         study.personas = users_plan.get("personas") or []
@@ -1613,23 +1672,26 @@ async def run_study(
         # 3) Tasks (own agent call — only after users are visible)
         touch("Writing tasks")
         _push_brief("brief")
-        try:
-            study.tasks = await generate_tasks(
-                study.url,
-                study.segment,
-                page_text,
-                study.personas,
-                site_summary=site_summary,
-                test_mode=study.test_mode,
-            )
-        except Exception as exc:  # noqa: BLE001
-            log_activity(study, "plan", f"Task generation failed ({str(exc)[:120]})")
-            study.tasks = []
+        if getattr(study, "fast_brief", False):
+            pass
+        else:
+            try:
+                study.tasks = await generate_tasks(
+                    study.url,
+                    study.segment,
+                    page_text,
+                    study.personas,
+                    site_summary=site_summary,
+                    test_mode=study.test_mode,
+                )
+            except Exception as exc:  # noqa: BLE001
+                log_activity(study, "plan", f"Task generation failed ({str(exc)[:120]})")
+                study.tasks = []
         touch("Writing tasks")
         _push_brief("brief")
 
-        # Apply optional task overrides.
-        if study.tasks_override:
+        # Apply optional task overrides. The fast path already expanded these.
+        if study.tasks_override and not getattr(study, "fast_brief", False):
             if study.test_mode:
                 prompt = study.tasks_override[0]
                 if study.tasks:
@@ -1683,7 +1745,10 @@ async def run_study(
 
         # Full studies: every persona × every task × (product + each competitor).
         # Smoke / quick preview: product site only (1 user × 1 task × 1 site).
-        if not study.test_mode:
+        already_expanded = bool(study.tasks) and all(
+            "__" in str(t.get("id") or "") for t in study.tasks
+        )
+        if not study.test_mode and not already_expanded:
             before = len(study.tasks)
             n_users = len(study.personas or [])
             n_sites = 1 + len(study.competitors or [])
@@ -2185,12 +2250,26 @@ async def run_study(
             ]
 
         persona_by_id = {p["id"]: p for p in study.personas}
-        study.live_sessions = {}
+        if a11y_boot is not None:
+            # The product read often finishes before the planner has tasks.
+            # Publish the first click as soon as those tasks exist.
+            for _key, _snap in list(getattr(a11y_boot, "snapshots", {}).items()):
+                try:
+                    a11y_boot._publish_site(_key, _snap)
+                except Exception as pub_exc:  # noqa: BLE001
+                    print(f"[a11y] republish {_key} failed: {pub_exc!r}", flush=True)
+        if a11y_boot is None:
+            study.live_sessions = {}
         for task in study.tasks:
             persona = persona_by_id.get(task.get("persona_id")) or (
                 study.personas[0] if study.personas else {}
             )
             agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
+            if a11y_boot is not None:
+                # The shared read publishes the click, the tree, and the
+                # timestamps together. An earlier empty session would start
+                # the 5s page-open clock before that payload exists.
+                continue
             site = task.get("site_url") or study.url
             site_key = str(task.get("site_key") or "product")
             site_label = str(task.get("site_label") or "Product")
@@ -2977,6 +3056,17 @@ async def run_study(
                         sess["trace"].append(step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
+                    action_text = str(step.get("action") or "")
+                    if (
+                        not sess.get("first_action_at_ts")
+                        and action_text
+                        and not action_text.lower().startswith("open")
+                        and not action_text.lower().startswith("step failed")
+                        and not step.get("failed_step")
+                    ):
+                        from mvp.a11y_agent import apply_gate_fields
+
+                        apply_gate_fields(sess, first_action_at_ts=time.time())
                     _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     thought = (step.get("thought") or "").strip()
                     if thought:
@@ -3018,15 +3108,32 @@ async def run_study(
                     persona = persona_by_id.get(task.get("persona_id")) or study.personas[0]
                     agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
                     site = task.get("site_url") or study.url
-                    sess = study.live_sessions.setdefault(
-                        agent_id,
-                        {
-                            "agent_id": agent_id,
-                            "persona_name": persona.get("name"),
-                            "status": "starting",
-                            "trace": [],
-                        },
-                    )
+                    if a11y_boot is not None:
+                        _wait_until = getattr(study, "budget_deadline", None) or (
+                            time.monotonic() + 30
+                        )
+                        while time.monotonic() < _wait_until:
+                            existing = study.live_sessions.get(agent_id) or {}
+                            if existing.get("first_action_at_ts"):
+                                break
+                            await asyncio.sleep(0.05)
+                        sess = study.live_sessions.get(agent_id)
+                        if not sess or not sess.get("first_action_at_ts"):
+                            print(
+                                f"[{agent_id}] no shared page read before the study budget",
+                                flush=True,
+                            )
+                            return {"agent_id": agent_id, "skipped": True}
+                    else:
+                        sess = study.live_sessions.setdefault(
+                            agent_id,
+                            {
+                                "agent_id": agent_id,
+                                "persona_name": persona.get("name"),
+                                "status": "starting",
+                                "trace": [],
+                            },
+                        )
                     raise_if_killed(study)
                     sess["site_url"] = site
                     # Start immediately — with ≤25 Browserbase slots we should not
@@ -3062,99 +3169,199 @@ async def run_study(
                     refresh_agent_phase()
                     try:
                         async with _BROWSER_SEMAPHORE:
-                            raise_if_killed(study)
-                            sess["status"] = "running"
-                            if not (sess.get("trace") or []):
-                                sess["last_action"] = f"Opening {site}"
-                            thoughts = list(sess.get("live_thoughts") or [])
-                            thoughts.append(
-                                {
-                                    "at": _now(),
-                                    "text": f"{name} got a browser — opening {site}…",
-                                    "kind": "status",
-                                }
-                            )
-                            sess["live_thoughts"] = thoughts[-24:]
-                            refresh_agent_phase()
-                            if on_update:
-                                try:
-                                    on_update(study, event="progress")
-                                except TypeError:
-                                    on_update(study)
-                                except Exception:
-                                    pass
-                            agent_warm = None
-                            if (
-                                not warm_used
-                                and warm_opening is not None
-                                and str(task.get("site_key") or "product") == "product"
-                            ):
-                                # YouTube agents never consume warm sessions (signed-in
-                                # path). Claiming warm anyway leaked the BB slot and
-                                # left DevTools URLs pointing at a zombie session.
-                                _host = (
-                                    str(task.get("site_url") or study.url or "")
-                                    .lower()
-                                )
-                                if (
-                                    "youtube.com" not in _host
-                                    and "youtu.be" not in _host
-                                ):
-                                    agent_warm = warm_opening
-                                    warm_used = True
-                            run = None
-                            _outer_wall = max(
-                                45.0,
-                                float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
-                                + 45.0,
-                            )
-                            _agent_task = asyncio.create_task(
-                                run_browser_agent(
-                                    study_id=study.id,
-                                    agent_id=agent_id,
-                                    url=site,
-                                    task_prompt=task.get("prompt")
-                                    or task.get("title")
-                                    or "",
-                                    persona=persona,
-                                    segment=study.segment,
-                                    on_step=lambda step: _on_agent_step(agent_id, step),
-                                    bb_session=None,
-                                    local=force_local_browser,
-                                    warm=agent_warm,
-                                )
-                            )
-                            _done, _pending = await asyncio.wait(
-                                {_agent_task}, timeout=_outer_wall
-                            )
-                            if _agent_task in _pending:
-                                print(
-                                    f"[{agent_id}] outer agent wall ({_outer_wall:.0f}s) — "
-                                    "using captured frames",
-                                    flush=True,
-                                )
-                                _agent_task.cancel()
+                            # The accessibility loop runs all 24 agents at once.
+                            # The older screenshot loop still queues on the LLM cap.
+                            class _Pass:
+                                async def __aenter__(self) -> None:
+                                    return None
 
-                                async def _drain(t: asyncio.Task) -> None:
+                                async def __aexit__(self, *_exc: object) -> bool:
+                                    return False
+
+                            async with (
+                                _Pass() if a11y_boot is not None else _llm_run_semaphore()
+                            ):
+                                raise_if_killed(study)
+                                sess["status"] = "running"
+                                if not (sess.get("trace") or []):
+                                    sess["last_action"] = f"Opening {site}"
+                                thoughts = list(sess.get("live_thoughts") or [])
+                                thoughts.append(
+                                    {
+                                        "at": _now(),
+                                        "text": f"{name} got a browser — opening {site}…",
+                                        "kind": "status",
+                                    }
+                                )
+                                sess["live_thoughts"] = thoughts[-24:]
+                                refresh_agent_phase()
+                                if on_update:
                                     try:
-                                        await t
+                                        on_update(study, event="progress")
+                                    except TypeError:
+                                        on_update(study)
                                     except Exception:
                                         pass
+                                agent_warm = None
+                                if (
+                                    not warm_used
+                                    and warm_opening is not None
+                                    and str(task.get("site_key") or "product") == "product"
+                                ):
+                                    # YouTube agents never consume warm sessions (signed-in
+                                    # path). Claiming warm anyway leaked the BB slot and
+                                    # left DevTools URLs pointing at a zombie session.
+                                    _host = (
+                                        str(task.get("site_url") or study.url or "")
+                                        .lower()
+                                    )
+                                    if (
+                                        "youtube.com" not in _host
+                                        and "youtu.be" not in _host
+                                    ):
+                                        agent_warm = warm_opening
+                                        warm_used = True
+                                run = None
+                                _remaining = float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic()
+                                if a11y_boot is not None:
+                                    from mvp.shared_extract import SharedExtractBoot, run_shared_agent
 
-                                asyncio.create_task(_drain(_agent_task))
-                                existing = sess.get("trace") or []
-                                run = {
-                                    "agent_id": agent_id,
-                                    "completed": False,
-                                    "trace": existing,
-                                    "actions": [],
-                                    "num_steps": len(existing),
-                                    "final_url": site,
-                                    "visited_urls": [site],
-                                    "mode": "browser_wall",
-                                }
-                            else:
-                                run = _agent_task.result()
+                                    if isinstance(a11y_boot, SharedExtractBoot):
+                                        _agent_coro = run_shared_agent(
+                                            study_id=study.id,
+                                            agent_id=agent_id,
+                                            url=site,
+                                            task_prompt=task.get("prompt")
+                                            or task.get("title")
+                                            or "",
+                                            persona=persona,
+                                            segment=study.segment,
+                                            on_step=lambda step: _on_agent_step(agent_id, step),
+                                            decision=dict(sess.get("pending_action") or {}),
+                                            shared=dict(
+                                                (getattr(a11y_boot, "snapshots", {}) or {}).get(
+                                                    str(task.get("site_key") or "product")
+                                                )
+                                                or {}
+                                            ),
+                                            gate={
+                                                "page_open_at_ts": sess.get("page_open_at_ts"),
+                                                "session_ready_at_ts": sess.get("session_ready_at_ts"),
+                                                "first_action_at_ts": sess.get("first_action_at_ts"),
+                                                "accessibility_tree": sess.get("accessibility_tree"),
+                                                "page_url": sess.get("page_url"),
+                                                "created_at_ts": sess.get("created_at_ts"),
+                                                "phase_ms": dict(sess.get("phase_ms") or {}),
+                                            },
+                                            deadline=getattr(study, "budget_deadline", None),
+                                            opening_trace=list(sess.get("trace") or []),
+                                        )
+                                    else:
+                                        from mvp.a11y_agent import run_a11y_agent
+
+                                        _agent_coro = run_a11y_agent(
+                                            boot=a11y_boot,
+                                            study_id=study.id,
+                                            agent_id=agent_id,
+                                            url=site,
+                                            task_prompt=task.get("prompt")
+                                            or task.get("title")
+                                            or "",
+                                            persona=persona,
+                                            on_step=lambda step: _on_agent_step(agent_id, step),
+                                            site_key=str(task.get("site_key") or "product"),
+                                            deadline=getattr(study, "budget_deadline", None),
+                                        )
+                                else:
+                                    _agent_coro = run_browser_agent(
+                                        study_id=study.id,
+                                        agent_id=agent_id,
+                                        url=site,
+                                        task_prompt=task.get("prompt")
+                                        or task.get("title")
+                                        or "",
+                                        persona=persona,
+                                        segment=study.segment,
+                                        on_step=lambda step: _on_agent_step(agent_id, step),
+                                        bb_session=None,
+                                        local=force_local_browser,
+                                        warm=agent_warm,
+                                    )
+                                if _remaining <= 0:
+                                    print(
+                                        f"[{agent_id}] study budget — not started",
+                                        flush=True,
+                                    )
+                                    existing = sess.get("trace") or []
+                                    from mvp.browser_agent import silent_failure_fields
+
+                                    _err, _browser_err = silent_failure_fields(existing)
+                                    run = {
+                                        "agent_id": agent_id,
+                                        "completed": False,
+                                        "trace": existing,
+                                        "actions": [],
+                                        "num_steps": len(existing),
+                                        "final_url": site,
+                                        "visited_urls": [site],
+                                        "mode": "study_budget",
+                                        "stop_reason": "study budget",
+                                        "failed_step": {
+                                            "phase": "study_budget",
+                                            "reason": "study budget",
+                                            "step": len(existing),
+                                        },
+                                        "error": _err,
+                                        "browser_error": _browser_err,
+                                    }
+                                    _agent_task = None
+                                else:
+                                    _agent_task = asyncio.create_task(_agent_coro)
+                                if _agent_task is not None:
+                                    _done, _pending = await asyncio.wait(
+                                        {_agent_task}, timeout=max(0.1, _remaining)
+                                    )
+                                else:
+                                    _pending = set()
+                                if _agent_task is not None and _agent_task in _pending:
+                                    print(
+                                        f"[{agent_id}] study budget "
+                                        f"({int(getattr(study, 'budget_s', 480))}s) — stopping",
+                                        flush=True,
+                                    )
+                                    _agent_task.cancel()
+
+                                    async def _drain(t: asyncio.Task) -> None:
+                                        try:
+                                            await t
+                                        except Exception:
+                                            pass
+
+                                    asyncio.create_task(_drain(_agent_task))
+                                    existing = sess.get("trace") or []
+                                    from mvp.browser_agent import silent_failure_fields
+
+                                    _err, _browser_err = silent_failure_fields(existing)
+                                    run = {
+                                        "agent_id": agent_id,
+                                        "completed": False,
+                                        "trace": existing,
+                                        "actions": [],
+                                        "num_steps": len(existing),
+                                        "final_url": site,
+                                        "visited_urls": [site],
+                                        "mode": "study_budget",
+                                        "stop_reason": "study budget",
+                                        "failed_step": {
+                                            "phase": "study_budget",
+                                            "reason": "study budget",
+                                            "step": len(existing),
+                                        },
+                                        "error": _err,
+                                        "browser_error": _browser_err,
+                                    }
+                                elif _agent_task is not None:
+                                    run = _agent_task.result()
                         sess["status"] = "summarizing"
                         refresh_agent_phase()
                         log_activity(
@@ -3193,111 +3400,170 @@ async def run_study(
                         }
                         for step in run.get("trace") or []:
                             step["outcome"] = outcomes.get(step.get("step")) or "neutral"
-                        result = {**run, **feedback, "mode": "browser"}
+                        result = {**run, **feedback, "mode": "a11y" if a11y_boot is not None else "browser"}
+                        if a11y_boot is not None:
+                            if run.get("friction_points"):
+                                result["friction_points"] = list(run.get("friction_points") or [])
+                            if run.get("what_was_easy"):
+                                result["what_was_easy"] = list(run.get("what_was_easy") or [])
+                            if run.get("quote"):
+                                result["quote"] = run.get("quote")
+                            from mvp.a11y_agent import GATE_FIELDS, apply_gate_fields
+
+                            apply_gate_fields(result)
+                            for key in GATE_FIELDS:
+                                if key in result:
+                                    sess[key] = result[key]
+                            sess["final_url"] = result.get("final_url") or sess.get("final_url")
+                            if result.get("stop_reason"):
+                                sess["stop_reason"] = result.get("stop_reason")
+                            sess["last_action"] = (
+                                (result.get("trace") or [{}])[-1].get("action")
+                                if result.get("trace")
+                                else sess.get("last_action")
+                            )
                     except Exception as exc:  # noqa: BLE001
                         sess["status"] = "error"
                         existing = sess.get("trace") or []
-                        has_pixels = any(
-                            (s or {}).get("screenshot_url")
-                            or (s or {}).get("screenshot_data_url")
-                            for s in existing
-                        )
-                        # Opening frames already on stage: finish with partials.
-                        # Full Browserbase retry after wall/CDP death doubles runtime
-                        # (90s → 180s+) and re-exhausts the 25-slot budget.
-                        if has_pixels:
-                            log_activity(
-                                study,
-                                "agent_error",
-                                f"{persona.get('name')} browser ended early — "
-                                "keeping captured frames (no retry)",
-                                agent_id=agent_id,
-                                error=str(exc)[:200],
-                            )
+                        if a11y_boot is not None:
+                            print(f"[{agent_id}] agent ended: {exc!r}", flush=True)
                             result = {
                                 "agent_id": agent_id,
                                 "completed": False,
-                                "difficulty": "hard",
-                                "friction_points": [
-                                    "Browser session ended before the task finished"
-                                ],
-                                "what_was_easy": [],
-                                "product_feedback": (
-                                    "Session captured the opening page but the live "
-                                    "browser run stopped early."
-                                ),
-                                "would_convert": "maybe",
                                 "trace": existing,
                                 "actions": [],
                                 "num_steps": len(existing),
-                                "final_url": site,
-                                "visited_urls": [site],
-                                "mode": "browser_partial",
-                                "browser_error": (str(exc) or repr(exc))[:300],
+                                "final_url": str(sess.get("final_url") or site),
+                                "final_dom": str(sess.get("final_dom") or ""),
+                                "visited_urls": [str(sess.get("final_url") or site)],
+                                "mode": "a11y",
+                                "stop_reason": "session ended",
+                                "failed_step": {
+                                    "phase": "act",
+                                    "reason": "session ended",
+                                    "step": len(existing),
+                                },
+                                "error": "",
+                                "browser_error": "",
+                                "friction_points": list(sess.get("friction_points") or []),
+                                "what_was_easy": list(sess.get("what_was_easy") or []),
+                                "accessibility_tree": sess.get("accessibility_tree") or "",
+                                "page_url": sess.get("page_url") or site,
+                                "page_open_at_ts": sess.get("page_open_at_ts"),
+                                "session_ready_at_ts": sess.get("session_ready_at_ts"),
+                                "first_action_at_ts": sess.get("first_action_at_ts"),
+                                "phase_ms": dict(sess.get("phase_ms") or {}),
+                                "final_screenshot_url": sess.get("final_screenshot_url") or "",
                             }
                         else:
-                            # Prefer a fresh Browserbase session over local Chrome.
-                            # Local fallback was attaching to the UserSim debug Chrome
-                            # and agents got stuck on http://127.0.0.1:8787/live.
-                            log_activity(
-                                study,
-                                "agent_error",
-                                f"{persona.get('name')} browser failed — retrying Browserbase",
-                                agent_id=agent_id,
-                                error=str(exc)[:200],
+                            existing = sess.get("trace") or []
+                            has_pixels = any(
+                                (s or {}).get("screenshot_url")
+                                or (s or {}).get("screenshot_data_url")
+                                for s in existing
                             )
-                            try:
-                                run = await run_browser_agent(
-                                    study_id=study.id,
-                                    agent_id=agent_id,
-                                    url=task.get("site_url") or study.url,
-                                    task_prompt=task.get("prompt") or task.get("title") or "",
-                                    persona=persona,
-                                    segment=study.segment,
-                                    on_step=lambda step: _on_agent_step(agent_id, step),
-                                    bb_session=None,
-                                    local=False,
-                                )
-                                sess["status"] = "summarizing"
-                                feedback = await summarize_agent_feedback(
-                                    url=study.url,
-                                    segment=study.segment,
-                                    persona=persona,
-                                    task=task,
-                                    run=run,
-                                )
-                                outcomes = {
-                                    o.get("step"): o.get("outcome")
-                                    for o in feedback.pop("step_outcomes", []) or []
-                                }
-                                for step in run.get("trace") or []:
-                                    step["outcome"] = (
-                                        outcomes.get(step.get("step")) or "neutral"
-                                    )
-                                result = {**run, **feedback, "mode": "browser_retry"}
-                                result["browser_error"] = (str(exc) or repr(exc))[:300]
-                            except Exception as retry_exc:  # noqa: BLE001
+                            # Opening frames already on stage: finish with partials.
+                            # Full Browserbase retry after wall/CDP death doubles runtime
+                            # (90s → 180s+) and re-exhausts the 25-slot budget.
+                            if has_pixels:
                                 log_activity(
                                     study,
                                     "agent_error",
-                                    f"{persona.get('name')} Browserbase retry failed — "
-                                    "snapshot fallback",
+                                    f"{persona.get('name')} browser ended early — "
+                                    "keeping captured frames (no retry)",
                                     agent_id=agent_id,
-                                    error=str(retry_exc)[:200],
+                                    error=str(exc)[:200],
                                 )
-                                result = await simulate_agent(
-                                    url=study.url,
-                                    segment=study.segment,
-                                    persona=persona,
-                                    task=task,
-                                    page_text=page_text,
-                                    study_id=study.id,
+                                result = {
+                                    "agent_id": agent_id,
+                                    "completed": False,
+                                    "difficulty": "hard",
+                                    "friction_points": [
+                                        "Browser session ended before the task finished"
+                                    ],
+                                    "what_was_easy": [],
+                                    "product_feedback": (
+                                        "Session captured the opening page but the live "
+                                        "browser run stopped early."
+                                    ),
+                                    "would_convert": "maybe",
+                                    "trace": existing,
+                                    "actions": [],
+                                    "num_steps": len(existing),
+                                    "final_url": site,
+                                    "visited_urls": [site],
+                                    "mode": "browser_partial",
+                                    "browser_error": (str(exc) or repr(exc))[:300],
+                                }
+                            else:
+                                # Prefer a fresh Browserbase session over local Chrome.
+                                # Local fallback was attaching to the UserSim debug Chrome
+                                # and agents got stuck on http://127.0.0.1:8787/live.
+                                log_activity(
+                                    study,
+                                    "agent_error",
+                                    f"{persona.get('name')} browser failed — retrying Browserbase",
                                     agent_id=agent_id,
+                                    error=str(exc)[:200],
                                 )
-                                result["mode"] = "fallback_snapshot"
-                                result["browser_error"] = (
-                                    (str(retry_exc) or repr(retry_exc))[:300]
-                                )
+                                try:
+                                    _left = float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic()
+                                    if _left <= 1:
+                                        raise TimeoutError("study budget")
+                                    run = await asyncio.wait_for(
+                                        run_browser_agent(
+                                            study_id=study.id,
+                                            agent_id=agent_id,
+                                            url=task.get("site_url") or study.url,
+                                            task_prompt=task.get("prompt") or task.get("title") or "",
+                                            persona=persona,
+                                            segment=study.segment,
+                                            on_step=lambda step: _on_agent_step(agent_id, step),
+                                            bb_session=None,
+                                            local=False,
+                                        ),
+                                        timeout=_left,
+                                    )
+                                    sess["status"] = "summarizing"
+                                    feedback = await summarize_agent_feedback(
+                                        url=study.url,
+                                        segment=study.segment,
+                                        persona=persona,
+                                        task=task,
+                                        run=run,
+                                    )
+                                    outcomes = {
+                                        o.get("step"): o.get("outcome")
+                                        for o in feedback.pop("step_outcomes", []) or []
+                                    }
+                                    for step in run.get("trace") or []:
+                                        step["outcome"] = (
+                                            outcomes.get(step.get("step")) or "neutral"
+                                        )
+                                    result = {**run, **feedback, "mode": "browser_retry"}
+                                    result["browser_error"] = (str(exc) or repr(exc))[:300]
+                                except Exception as retry_exc:  # noqa: BLE001
+                                    log_activity(
+                                        study,
+                                        "agent_error",
+                                        f"{persona.get('name')} Browserbase retry failed — "
+                                        "snapshot fallback",
+                                        agent_id=agent_id,
+                                        error=str(retry_exc)[:200],
+                                    )
+                                    result = await simulate_agent(
+                                        url=study.url,
+                                        segment=study.segment,
+                                        persona=persona,
+                                        task=task,
+                                        page_text=page_text,
+                                        study_id=study.id,
+                                        agent_id=agent_id,
+                                    )
+                                    result["mode"] = "fallback_snapshot"
+                                    result["browser_error"] = (
+                                        (str(retry_exc) or repr(retry_exc))[:300]
+                                    )
 
                     result["persona_id"] = persona.get("id")
                     result["persona_name"] = persona.get("name")
@@ -3308,6 +3574,31 @@ async def run_study(
                     result["site_key"] = task.get("site_key") or "product"
                     result["site_url"] = task.get("site_url") or study.url
                     result["site_label"] = task.get("site_label") or "Product"
+                    if a11y_boot is not None:
+                        from mvp.a11y_agent import ensure_phase_ms
+
+                        result["browser_error"] = ""
+                        result["error"] = ""
+                        result["mode"] = "a11y"
+                        if not isinstance(result.get("failed_step"), dict) or not str(
+                            (result.get("failed_step") or {}).get("phase") or ""
+                        ).strip():
+                            result["failed_step"] = {
+                                "phase": "act",
+                                "reason": "page did not show the goal",
+                                "step": int(result.get("num_steps") or 0),
+                            }
+                        ensure_phase_ms(result)
+                        if not str(result.get("final_url") or "").strip():
+                            result["final_url"] = task.get("site_url") or study.url
+                        if not str(result.get("accessibility_tree") or "").strip():
+                            result["accessibility_tree"] = str(
+                                sess.get("accessibility_tree") or "0 document page"
+                            )
+                        if not str(result.get("final_dom") or "").strip():
+                            result["final_dom"] = str(
+                                result.get("accessibility_tree") or "page"
+                            )[:1500]
                     sess["status"] = "complete"
                     # Never wipe a real opening screenshot with text-only snapshot steps.
                     snap_trace = result.get("trace") or []
@@ -3342,16 +3633,38 @@ async def run_study(
                     return result
 
                 study.agent_results = []
+                if a11y_boot is not None:
+                    _left = max(
+                        1.0,
+                        float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic(),
+                    )
+                    try:
+                        await asyncio.wait_for(a11y_boot.published.wait(), timeout=_left)
+                    except asyncio.TimeoutError:
+                        print(
+                            "shared page read did not finish before the study budget",
+                            flush=True,
+                        )
+                def _run_rank(task: dict[str, Any]) -> tuple:
+                    key = str(task.get("site_key") or "product")
+                    return (0 if key == "product" else 1, key, str(task.get("id") or ""))
+
+                ordered_tasks = sorted(study.tasks, key=_run_rank)
                 # return_exceptions=True: one cancelled/failed agent must not
                 # CancelledError the whole gather ("Killed by operator").
                 agent_out = await asyncio.gather(
-                    *[_run_one(t) for t in study.tasks],
+                    *[_run_one(t) for t in ordered_tasks],
                     return_exceptions=True,
                 )
                 for item in agent_out:
                     if isinstance(item, Exception):
                         print(f"live agent failed: {item!r}", flush=True)
                         continue
+                if a11y_boot is not None:
+                    try:
+                        await a11y_boot.close()
+                    except Exception as close_exc:  # noqa: BLE001
+                        print(f"a11y browser close failed: {close_exc!r}", flush=True)
                 try:
                     await backfill_site_opening_shots(study)
                     if study.live_sessions:
@@ -3438,6 +3751,12 @@ async def run_study(
                 study.summary = _summary_from_agent_results(study.agent_results)
         if not study.summary:
             study.summary = {}
+        try:
+            from mvp.a11y_agent import failure_breakdown
+
+            study.summary["failure_breakdown"] = failure_breakdown(study.agent_results)
+        except Exception as breakdown_exc:  # noqa: BLE001
+            print(f"failure breakdown skipped: {breakdown_exc!r}", flush=True)
         study.summary["site_summary"] = site_summary
         if study.access_backend:
             study.summary["access_backend"] = study.access_backend
@@ -3453,6 +3772,12 @@ async def run_study(
             apply_insights(study)
         except Exception as insight_exc:  # noqa: BLE001
             print(f"report insights failed: {insight_exc!r}", flush=True)
+        try:
+            from mvp.shared_extract import finalize_ux_metrics
+
+            finalize_ux_metrics(study)
+        except Exception as ux_exc:  # noqa: BLE001
+            print(f"ux metrics failed: {ux_exc!r}", flush=True)
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
         persist_study(study)
@@ -3557,6 +3882,7 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "backend": study.backend,
             "email": study.email,
             "kill_requested": study.kill_requested,
+            "ux_metrics": getattr(study, "ux_metrics", None) or {},
         }
     )
 

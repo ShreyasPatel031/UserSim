@@ -199,6 +199,23 @@ function renderAnalytics() {
     ? `${insights.n_personas} personas × ${insights.n_tasks} tasks × ${insights.n_sites} sites`
     : "";
 
+  const ux = _study?.ux_metrics || _study?.summary?.ux_metrics || {};
+  const perAction = ux.per_agent_time_to_first_action_s || {};
+  const perRows = Object.entries(perAction)
+    .map(([id, seconds]) => `<li>${escapeHtml(id)}: ${Number(seconds).toFixed(2)}s</li>`)
+    .join("");
+  const ttfv = ux.time_to_first_value_s;
+  const totalStudy = ux.total_study_s;
+  const uxStrip =
+    ttfv == null && totalStudy == null
+      ? ""
+      : `<div class="stat-strip">
+      ${ttfv == null ? "" : `<span><strong>${Number(ttfv).toFixed(2)}s</strong> time to first value</span>`}
+      ${perRows ? `<span><strong>${Object.keys(perAction).length}</strong> agents to first action</span>` : ""}
+      ${totalStudy == null ? "" : `<span><strong>${Number(totalStudy).toFixed(1)}s</strong> total study</span>`}
+    </div>
+    ${perRows ? `<details class="chart-card"><summary>Per-agent time to first action</summary><ul>${perRows}</ul></details>` : ""}`;
+
   root.innerHTML = `
     <div class="stat-strip">
       <span><strong>${insights.n_runs ?? 0}</strong> included runs</span>
@@ -206,6 +223,7 @@ function renderAnalytics() {
       ${matrix ? `<span>${escapeHtml(matrix)}</span>` : ""}
       ${issues.length ? `<span><strong>${issues.length}</strong> run issues excluded</span>` : ""}
     </div>
+    ${uxStrip}
     ${insights.headline ? `<p class="headline-line">${escapeHtml(insights.headline)}</p>` : ""}
     <p class="metric-note">${escapeHtml(insights.metric_note || insights.evidence_note || "")}</p>
     <div class="analytics-grid">

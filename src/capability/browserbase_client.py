@@ -120,18 +120,24 @@ def browserbase_max_workers(requested: int) -> int:
 BB_OWNER_E2E = "e2e"
 BB_OWNER_SIGNUP = "signup"
 BB_OWNER_COMPETITOR = "competitor"
+# Strict e2e harness tag. Release only these sessions; do not touch signup,
+# report runs, or another agent's e2e sessions.
+BB_OWNER_TESTFIX = "testfix"
+# This harness's live baseline. Release only these sessions.
+BB_OWNER_GATES = "gates"
 
 
 def study_session_owner() -> str:
     """Owner tag for study Browserbase sessions.
 
     Defaults to ``e2e``. Set ``MVP_BB_OWNER=competitor`` for a competitor-pipeline
-    run so those sessions can be released without touching signup or other e2e
-    work. The signup tag is never used here.
+    run, or ``MVP_BB_OWNER=testfix`` for the strict e2e harness, so those
+    sessions can be released without touching signup or other work. The signup
+    tag is never used here.
     """
     raw = (os.environ.get("MVP_BB_OWNER") or "").strip().lower()
     # signup sessions are a different pipeline and must never be tagged here.
-    if raw in {BB_OWNER_COMPETITOR, "report", BB_OWNER_E2E}:
+    if raw in {BB_OWNER_COMPETITOR, "report", BB_OWNER_E2E, BB_OWNER_TESTFIX, BB_OWNER_GATES}:
         return raw
     return BB_OWNER_E2E
 
@@ -232,10 +238,10 @@ def _create_backoff_s(attempt: int, exc: BaseException | None = None) -> float:
 
 def _create_concurrency() -> int:
     try:
-        n = int(os.environ.get("BROWSERBASE_CREATE_CONCURRENCY", "2") or "2")
+        n = int(os.environ.get("BROWSERBASE_CREATE_CONCURRENCY", "24") or "24")
     except ValueError:
-        n = 2
-    return max(1, min(6, n))
+        n = 24
+    return max(1, min(25, n))
 
 
 def _create_attempt_timeout_s() -> float:
@@ -506,7 +512,7 @@ def create_session(
         for flags in unique_attempts:
             kwargs = _build_kwargs(flags)
             for attempt in range(attempts_n):
-                sem_held = _CREATE_SEM.acquire(timeout=max(1.0, min(8.0, timeout_s)))
+                sem_held = _CREATE_SEM.acquire(timeout=max(1.0, timeout_s))
                 plan_refusal = False
                 retry_delay: float | None = None
                 if not sem_held:
