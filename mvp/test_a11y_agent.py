@@ -18,6 +18,7 @@ from mvp.a11y_agent import (
     format_ax,
     goal_visible,
     invented_excalidraw_action,
+    stamp_published_step,
     note_progress,
     offhost_excalidraw_tool,
     trace_canvas,
@@ -223,6 +224,30 @@ class A11yAgentTest(unittest.TestCase):
             trace_canvas("dark=0", "dark=20", "https://excalidraw.com/", "Draw a simple box"),
             "dark=20",
         )
+        step = {
+            "step": 2,
+            "action": "click Pricing",
+            "url": "https://linear.app/",
+            "observation": "homepage",
+            "state_sig": {"text": "homepage", "canvas": "dark=10"},
+        }
+        stamp_published_step(
+            step,
+            task="Look for pricing or how to get started",
+            read={
+                "url": "https://linear.app/pricing",
+                "text": "Pricing Free Basic Business",
+                "canvas": "dark=800",
+                "nodes": [{"i": 0, "role": "a", "name": "Pricing"}],
+            },
+            screenshot_url="/api/studies/s/agents/a/screenshots/final.png",
+        )
+        self.assertEqual(step["final_screenshot_url"], "/api/studies/s/agents/a/screenshots/final.png")
+        self.assertEqual(step["screenshot_url"], step["final_screenshot_url"])
+        self.assertIn("Pricing", step["state_sig"]["text"])
+        self.assertEqual(step["state_sig"]["canvas"], "dark=10")
+        self.assertTrue(step["goal_visible"])
+        self.assertIn("Pricing", step["ax_tree"])
         self.assertFalse(
             goal_visible(
                 "Draw a simple box",

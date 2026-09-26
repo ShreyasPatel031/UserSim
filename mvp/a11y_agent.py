@@ -854,8 +854,70 @@ def apply_gate_fields(sess: dict[str, Any], **fields: Any) -> None:
     sess["final_screenshot"] = shot
 
 
-def _stamp_observation(trace: list[dict[str, Any]], read: dict[str, Any]) -> None:
-    """Write the live page onto the latest step.
+def stamp_published_step(
+    step: dict[str, Any],
+    *,
+    task: str = "",
+    read: dict[str, Any] | None = None,
+    screenshot_url: str = "",
+) -> dict[str, Any]:
+    """Write final_screenshot_url, state_sig.text, and goal_visible onto one step.
+
+    The study persists whatever is on the step at save time. Insights can cite
+    a past-homepage screenshot only when those three fields are already there.
+    Canvas flicker stays off the signature except for an Excalidraw drawing.
+    """
+    if not isinstance(step, dict):
+        return step
+    live = read if isinstance(read, dict) else {}
+    sig = step.get("state_sig") if isinstance(step.get("state_sig"), dict) else {}
+    text = str(live.get("text") or sig.get("text") or step.get("observation") or "")
+    url = str(live.get("url") or step.get("url") or "")
+    prior_canvas = str(sig.get("canvas") or "")
+    current_canvas = str(live.get("canvas") or prior_canvas)
+    if task:
+        canvas = trace_canvas(prior_canvas, current_canvas, url, task)
+    elif _host(url) != "excalidraw.com":
+        canvas = prior_canvas or current_canvas
+    else:
+        canvas = current_canvas or prior_canvas
+    step["url"] = url
+    step["state_sig"] = {"text": text[:1500], "canvas": canvas}
+    if text:
+        step["observation"] = text[:400]
+    visible_read = {
+        "url": url,
+        "text": text,
+        "title": str(live.get("title") or ""),
+        "canvas": str(live.get("canvas") or current_canvas),
+        "opened_canvas": str(live.get("opened_canvas") or ""),
+        "drew": bool(live.get("drew")),
+    }
+    if task:
+        step["goal_visible"] = bool(goal_visible(task, visible_read))
+    elif "goal_visible" not in step:
+        step["goal_visible"] = False
+    shot = str(
+        screenshot_url or step.get("final_screenshot_url") or step.get("screenshot_url") or ""
+    ).strip()
+    if shot:
+        step["screenshot_url"] = shot
+        step["final_screenshot_url"] = shot
+    nodes = live.get("nodes")
+    if nodes:
+        ax = format_ax(nodes)
+        if ax:
+            step["accessibility_tree"] = ax
+            step["ax_tree"] = ax
+    return step
+
+
+def _stamp_observation(
+    trace: list[dict[str, Any]],
+    read: dict[str, Any],
+    task: str = "",
+) -> None:
+    """Write the live page onto the latest step before the study saves it.
 
     Agents that find the goal already on screen never append a step. Without
     this, the trace keeps the opening title and the run looks like it never
@@ -869,21 +931,7 @@ def _stamp_observation(trace: list[dict[str, Any]], read: dict[str, Any]) -> Non
     if not steps:
         return
     last = max(steps, key=lambda step: int(step["step"]))
-    text = str(read.get("text") or "")
-    url = str(read.get("url") or last.get("url") or "")
-    ax = format_ax(read.get("nodes") or [])
-    last["url"] = url
-    last["observation"] = text[:400]
-    # A marketing-page canvas sample flickers. Keep the previous sample unless
-    # this is an Excalidraw drawing, where the ink change is the result.
-    previous = last.get("state_sig") if isinstance(last.get("state_sig"), dict) else {}
-    canvas = str(read.get("canvas") or "")
-    if _host(url) != "excalidraw.com":
-        canvas = str(previous.get("canvas") or "")
-    last["state_sig"] = {"text": text[:1500], "canvas": canvas}
-    if ax:
-        last["accessibility_tree"] = ax
-        last["ax_tree"] = ax
+    stamp_published_step(last, task=task, read=read)
 
 
 def _step_from_read(
@@ -2101,6 +2149,11 @@ async def complete_task_on_page(
             }
             row["accessibility_tree"] = format_ax(read.get("nodes") or [])
             row["ax_tree"] = row["accessibility_tree"]
+            stamp_published_step(row, task=task, read=read)
+            if on_step is not None:
+                maybe = on_step(row)
+                if asyncio.iscoroutine(maybe):
+                    await maybe
         logs.append(
             {
                 "step": step_no,
@@ -2121,7 +2174,7 @@ async def complete_task_on_page(
             break
 
     if stop_reason == "done" or goal_visible(task, read):
-        _stamp_observation(trace, read)
+        _stamp_observation(trace, read, task=task)
     if stop_reason:
         print(f"[{agent_id}] stop reason: {stop_reason}", flush=True)
     if not isinstance(failed, dict):
@@ -2383,9 +2436,17 @@ async def _run_a11y_agent_unlocked(
                         "reason": "final capture failed",
                         "step": step_no,
                     }
-            if shot_url and trace:
-                trace[-1]["screenshot_url"] = shot_url
-                trace[-1]["final_screenshot_url"] = shot_url
+            if trace:
+                stamp_published_step(
+                    trace[-1],
+                    task=task_prompt,
+                    read=read,
+                    screenshot_url=shot_url,
+                )
+                if on_step is not None and shot_url:
+                    maybe = on_step(trace[-1])
+                    if asyncio.iscoroutine(maybe):
+                        await maybe
 
         final_url = str(read.get("url") or url)
         if url and _host(final_url) != _host(url):

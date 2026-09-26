@@ -4,18 +4,18 @@ Study `70557bae-83af-4bf9-9bbb-3135046193cd`. Report: http://127.0.0.1:3000/repo
 
 This is not an independent pass until PR #46 grades that id. Browserbase for the study is released. Gates should run `--grade-study 70557bae-83af-4bf9-9bbb-3135046193cd`.
 
-# #46 harness — product Gemini YES
+# Local judge notes (not a pass)
 
-`MVP_BB_OWNER=gates`. Eight product agents per site. The independent judge in `mvp/e2e2_gates.py` scored the final screenshot.
+Only PR #46 grades a study. A local Gemini check is not a pass. `MVP_BB_OWNER=gates`. Eight product agents per site. The judge in `mvp/e2e2_gates.py` looked at the final screenshot.
 
-| Site | Study | Product Gemini YES | Report |
+| Site | Study | Local YES (not a pass) | Report |
 | --- | --- | --- | --- |
 | Linear | `a437acc0-1586-45e6-a574-4099c73299ff` | 8/8 | `results/taskfix/linear8g_summary.md` |
 | Excalidraw | `4ac26c20-0711-4609-a86e-3cf7222279b5` | 8/8 | `results/taskfix/excal8g_summary.md` |
 
 Linear: create-issue agents landed on `https://linear.app/docs/creating-issues`. Pricing agents landed on `https://linear.app/pricing`. Excalidraw: draw agents left a rectangle on the canvas. Export agents opened the menu to Export image. No agent repeated a dead New issue click.
 
-The overall harness `pass` flag is false because strength/weakness evidence is still short of the gate (Linear strengths 0/0, Excalidraw strengths 0/0 and weaknesses 0/0). Product task completion is 8/8 on both. Gate files were not edited. Those wide runs are not repeated: prime count is 0, and only the integration agent runs 24-wide.
+The harness `pass` flag was false because strength/weakness evidence was short of the gate (Linear strengths 0/0, Excalidraw strengths 0/0 and weaknesses 0/0). Gate files were not edited. Those wide runs are not repeated. Prime count is 0. Owner taskfix holds at most 2 sessions. Integration runs 24-wide.
 
 # Task completion — single-agent harness
 
