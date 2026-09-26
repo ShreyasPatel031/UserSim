@@ -401,6 +401,24 @@ _AX_KEYS = (
     "accessibility",
     "ax_text",
 )
+# Epoch of the first click/type/scroll written onto the live session.
+# `first_action_s` is a monotonic duration inside the agent and is not a stamp.
+_FIRST_ACTION_TS_KEYS = (
+    "first_action_at_ts",
+    "first_action_at",
+)
+# Per-agent phase durations, milliseconds. Seconds under `timing.<phase>_s` adapt.
+_PHASE_MS_KEYS = (
+    "session_ready",
+    "page_open",
+    "first_action",
+    "final_screenshot",
+)
+
+
+def missing_field(name: str) -> str:
+    """Loud failure text. A gate that needed `name` and did not find it."""
+    return f"missing field {name}"
 
 
 def _epoch(value: object) -> float | None:
@@ -443,6 +461,74 @@ def _first_recorded_epoch(
             if stamp is not None:
                 return stamp, key
     return None, ""
+
+
+def first_action_epoch(run: dict[str, Any]) -> tuple[float | None, str]:
+    """Epoch when the first click/type/scroll was written. Not `first_action_s`."""
+    sources: list[dict[str, Any]] = [run]
+    for step in run.get("trace") or []:
+        if isinstance(step, dict) and is_click_type_scroll(step.get("action")):
+            sources.append(step)
+            break
+    return _first_recorded_epoch(sources, _FIRST_ACTION_TS_KEYS)
+
+
+def _phase_number(value: object) -> float | None:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return float(value)
+
+
+def phase_ms_of(run: dict[str, Any]) -> tuple[dict[str, float], list[str]]:
+    """Milliseconds per phase. Accepts `phase_ms` or `timing.<phase>_ms` / `_s`."""
+    raw = run.get("phase_ms") if isinstance(run.get("phase_ms"), dict) else {}
+    timing = run.get("timing") if isinstance(run.get("timing"), dict) else {}
+    found: dict[str, float] = {}
+    missing: list[str] = []
+    for key in _PHASE_MS_KEYS:
+        number = _phase_number(raw.get(key))
+        if number is None:
+            number = _phase_number(raw.get(f"{key}_ms"))
+        if number is None:
+            number = _phase_number(timing.get(f"{key}_ms"))
+        if number is None:
+            seconds = _phase_number(timing.get(f"{key}_s"))
+            if seconds is not None:
+                number = seconds * 1000.0
+        if number is None:
+            missing.append(f"phase_ms.{key}")
+        else:
+            found[key] = number
+    if not raw and not timing and missing:
+        return {}, ["phase_ms"]
+    return found, missing
+
+
+def failed_step_fields(run: dict[str, Any]) -> tuple[str, str]:
+    """Phase and reason of the step that failed.
+
+    Contract is `failed_step.phase` and `failed_step.reason`. A last trace step
+    with those keys, or `run_issue.kind` / `run_issue.reason`, is the same pair.
+    """
+    blob = run.get("failed_step") if isinstance(run.get("failed_step"), dict) else {}
+    phase = str(blob.get("phase") or "").strip()
+    reason = str(blob.get("reason") or "").strip()
+    numbered = _numbered_steps(run)
+    last = numbered[-1] if numbered else {}
+    if not phase:
+        phase = str(last.get("phase") or "").strip()
+    if not reason:
+        reason = str(last.get("reason") or "").strip()
+    issue = run.get("run_issue") if isinstance(run.get("run_issue"), dict) else {}
+    if not phase:
+        phase = str(issue.get("phase") or issue.get("kind") or "").strip()
+    if not reason:
+        reason = str(issue.get("reason") or "").strip()
+    if not phase:
+        phase = missing_field("failed_step_phase")
+    if not reason:
+        reason = missing_field("failed_step_reason")
+    return phase, reason
 
 
 def action_clock_start(run: dict[str, Any]) -> tuple[float | None, str]:
@@ -576,6 +662,7 @@ def assess_time_to_first_action(
     per_agent: list[dict[str, Any]] = []
     blown: list[dict[str, Any]] = []
     idle: list[dict[str, Any]] = []
+    missing_start: list[dict[str, Any]] = []
     for run in agents:
         aid = str(run.get("agent_id") or run.get("task_id") or "")
         started, start_key = action_clock_start(run)
@@ -593,6 +680,10 @@ def assess_time_to_first_action(
                 blown.append(run)
         elif not acted:
             idle.append(run)
+            created = created_epoch(run)
+            age = None if created is None else float(now) - float(created)
+            if age is None or age > ceiling:
+                missing_start.append(run)
         per_agent.append(
             {
                 "agent_id": aid,
@@ -605,7 +696,7 @@ def assess_time_to_first_action(
         )
     median = _median(latencies)
     maximum = max(latencies) if latencies else None
-    abort = bool(blown)
+    abort = bool(blown or missing_start)
     complete = len(agents) >= need and len(latencies) == len(agents) and len(latencies) >= need
     ok = (
         not abort
@@ -616,7 +707,13 @@ def assess_time_to_first_action(
         and maximum <= float(max_s)
     )
     reason = ""
-    if abort:
+    missing_fields: list[str] = ["page_open_at_ts"] if missing_start else []
+    if missing_start:
+        reason = (
+            f"{missing_field('page_open_at_ts')}: {len(missing_start)}/{len(agents)} "
+            "agents have no page-open or session-ready stamp"
+        )
+    if blown:
         waits = ", ".join(
             f"{str(run.get('agent_id') or '')}="
             f"{max(0.0, float(now) - float(action_clock_start(run)[0] or now)):.1f}s"
@@ -630,6 +727,8 @@ def assess_time_to_first_action(
         seen = "; ".join(last_seen_text(run) for run in blown[:8])
         if seen:
             reason = f"{reason}. {seen}"
+        if missing_start and not reason.startswith("missing field"):
+            reason = f"{missing_field('page_open_at_ts')}. {reason}"
     median_out = None if median is None else round(median, 3)
     max_out = None if maximum is None else round(maximum, 3)
     return {
@@ -647,10 +746,84 @@ def assess_time_to_first_action(
         "max_limit_s": float(max_s),
         "abort_after_s": ceiling,
         "missing_ids": [str(run.get("agent_id") or "") for run in idle],
-        "ids": [str(run.get("agent_id") or "") for run in blown],
+        "ids": [str(run.get("agent_id") or "") for run in (*blown, *missing_start)],
+        "missing_fields": missing_fields,
         "reason": reason,
         "detail": reason,
         "per_agent": per_agent,
+    }
+
+
+def assess_recorded_time_to_first_action(
+    runs: list[dict[str, Any]],
+    *,
+    median_s: float = DEFAULT_TTFA_MEDIAN_S,
+    max_s: float = DEFAULT_TTFA_MAX_S,
+    expected: int = PASS_AGENT_BAR,
+) -> dict[str, Any]:
+    """Offline clock from page_open_at_ts (or session ready) to first_action_at_ts.
+
+    `first_action_s` is not an epoch and does not satisfy this clock. A missing
+    stamp fails the gate; it does not count as unmeasured.
+    """
+    agents = [run for run in runs if isinstance(run, dict)]
+    need = int(expected) if int(expected) > 0 else PASS_AGENT_BAR
+    latencies: list[float] = []
+    missing_open = False
+    missing_action = False
+    idle = 0
+    for run in agents:
+        started, _key = action_clock_start(run)
+        if started is None:
+            missing_open = True
+            continue
+        acted = has_click_type_scroll(run)
+        acted_at, _stamp = first_action_epoch(run)
+        if acted and acted_at is None:
+            missing_action = True
+            continue
+        if acted_at is None:
+            idle += 1
+            continue
+        latencies.append(max(0.0, float(acted_at) - float(started)))
+    median = _median(latencies)
+    maximum = max(latencies) if latencies else None
+    missing_fields: list[str] = []
+    if missing_open:
+        missing_fields.append("page_open_at_ts")
+    if missing_action:
+        missing_fields.append("first_action_at_ts")
+    complete = (
+        not missing_fields
+        and len(agents) >= need
+        and len(latencies) == len(agents)
+        and len(latencies) >= need
+    )
+    ok = (
+        complete
+        and median is not None
+        and maximum is not None
+        and median <= float(median_s)
+        and maximum <= float(max_s)
+    )
+    if missing_fields:
+        detail = "; ".join(missing_field(name) for name in missing_fields)
+    elif not ok:
+        detail = (
+            f"median={median} max={maximum} n={len(latencies)}/{need} idle={idle}"
+        )
+    else:
+        detail = ""
+    return {
+        "measured": True,
+        "ok": ok,
+        "median_s": None if median is None else round(median, 3),
+        "max_s": None if maximum is None else round(maximum, 3),
+        "n": len(latencies),
+        "agents": len(agents),
+        "missing_fields": missing_fields,
+        "detail": detail,
+        "reason": detail,
     }
 
 
@@ -673,6 +846,12 @@ def assess_page_opened(
     wrong: list[str] = []
     missing_ax: list[str] = []
     waiting: list[str] = []
+    missing_names: list[str] = []
+
+    def _note(name: str) -> None:
+        if name not in missing_names:
+            missing_names.append(name)
+
     for run in agents:
         aid = str(run.get("agent_id") or run.get("task_id") or "")
         created = created_epoch(run)
@@ -692,6 +871,7 @@ def assess_page_opened(
             age is not None and age > limit and gap is None
         )
         finished = now is None
+        stamp_missing = open_ts is None
         if on_site and has_ax and gap is not None and gap <= limit:
             opened_n += 1
             continue
@@ -699,16 +879,26 @@ def assess_page_opened(
             wrong.append(aid)
         elif on_site and not has_ax and (past_limit or finished or gap is not None):
             missing_ax.append(aid)
+            _note("ax_tree")
+            if stamp_missing:
+                _note("page_open_at_ts")
         elif gap is not None and gap > limit:
             slow.append(aid)
         elif past_limit or finished:
             slow.append(aid)
+            if stamp_missing:
+                _note("page_open_at_ts")
+            if not has_ax:
+                _note("ax_tree")
         else:
             waiting.append(aid)
     abort = bool(wrong or slow or missing_ax)
     ok = bool(agents) and opened_n == len(agents) and not waiting and not abort
     reason = ""
-    if abort:
+    if abort and missing_names:
+        reason = "; ".join(missing_field(name) for name in missing_names)
+        reason = f"{reason}: {opened_n}/{len(agents)} agents"
+    elif abort:
         parts = []
         if wrong:
             parts.append(f"wrong site={len(wrong)}")
@@ -734,6 +924,7 @@ def assess_page_opened(
         "reason": reason,
         "detail": reason,
         "ids": wrong + missing_ax + slow,
+        "missing_fields": list(missing_names),
     }
 
 
@@ -908,13 +1099,20 @@ def final_url_of(run: dict[str, Any]) -> str:
 
 
 def final_dom_of(run: dict[str, Any], *, limit: int = 1500) -> str:
-    """Last DOM text signature on the trace. Empty when the run never recorded one."""
+    """Last DOM text, or the accessibility tree when that is the page read."""
     for step in reversed(run.get("trace") or []):
         if not isinstance(step, dict):
             continue
         sig = step.get("state_sig")
         if isinstance(sig, dict) and str(sig.get("text") or "").strip():
             return str(sig.get("text") or "").strip()[:limit]
+    text = ax_text(run)
+    if text:
+        return text[:limit]
+    for step in reversed(run.get("trace") or []):
+        text = ax_text(step)
+        if text:
+            return text[:limit]
     return ""
 
 
@@ -1208,10 +1406,15 @@ def _page_opened_gate(
         check = assess_page_opened(runs, limit_s=limit_s)
     opened = check.get("opened")
     agents = check.get("agents")
+    missing = [str(name) for name in (check.get("missing_fields") or [])]
+    if missing and not check.get("ok"):
+        value = "; ".join(missing_field(name) for name in missing)
+    else:
+        value = f"{opened}/{agents} within {limit_s:.0f}s"
     return _gate(
         "page_opened",
         "Page opened on the assigned site",
-        f"{opened}/{agents} within {limit_s:.0f}s",
+        value,
         (
             f"<= {limit_s:.0f}s from agent creation, URL host matches the assigned "
             "site, accessibility tree present"
@@ -1347,42 +1550,36 @@ def _startup_gates(
     median_lim = float(startup.get("ttfa_median_s") or DEFAULT_TTFA_MEDIAN_S)
     max_lim = float(startup.get("ttfa_max_s") or DEFAULT_TTFA_MAX_S)
     ttfa_need = int(startup.get("expected") or bar)
-    if isinstance(ttfa, dict) and ttfa.get("measured"):
-        med = ttfa.get("median_s")
-        mx = ttfa.get("max_s")
-        got = ttfa.get("n")
+    if not (isinstance(ttfa, dict) and ttfa.get("measured")):
+        ttfa = assess_recorded_time_to_first_action(
+            runs,
+            median_s=median_lim,
+            max_s=max_lim,
+            expected=ttfa_need,
+        )
+    med = ttfa.get("median_s")
+    mx = ttfa.get("max_s")
+    got = ttfa.get("n")
+    missing = [str(name) for name in (ttfa.get("missing_fields") or [])]
+    if missing and not ttfa.get("ok"):
+        value = "; ".join(missing_field(name) for name in missing)
+    else:
         med_txt = "n/a" if med is None else f"{med}s"
         max_txt = "n/a" if mx is None else f"{mx}s"
-        gates.append(
-            _gate(
-                "time_to_first_action",
-                "Time to first action",
-                f"median={med_txt} max={max_txt} n={got}/{ttfa_need}",
-                (
-                    f"median <= {median_lim:.0f}s and max <= {max_lim:.0f}s "
-                    f"at {ttfa_need} agents"
-                ),
-                bool(ttfa.get("ok")),
-                str(ttfa.get("detail") or ttfa.get("reason") or ""),
-            )
+        value = f"median={med_txt} max={max_txt} n={got}/{ttfa_need}"
+    gates.append(
+        _gate(
+            "time_to_first_action",
+            "Time to first action",
+            value,
+            (
+                f"median <= {median_lim:.0f}s and max <= {max_lim:.0f}s "
+                f"at {ttfa_need} agents"
+            ),
+            bool(ttfa.get("ok")),
+            str(ttfa.get("detail") or ttfa.get("reason") or ""),
         )
-    else:
-        gates.append(
-            _gate(
-                "time_to_first_action",
-                "Time to first action",
-                "not measured",
-                (
-                    f"median <= {median_lim:.0f}s and max <= {max_lim:.0f}s "
-                    f"at {ttfa_need} agents"
-                ),
-                True,
-                (
-                    "Live poll did not record browser-session ready or page open "
-                    "→ click/type/scroll visible in the study."
-                ),
-            )
-        )
+    )
     return gates
 
 
@@ -1446,6 +1643,33 @@ def _shot_step(run: dict[str, Any]) -> dict[str, Any] | None:
     return _final_shot(run)
 
 
+def _failure_contract(run: dict[str, Any], base_url: str, shot_url: str) -> dict[str, Any]:
+    phase, reason = failed_step_fields(run)
+    found, missing = phase_ms_of(run)
+    dedicated = _run_final_screenshot(run)
+    url = dedicated or shot_url
+    return {
+        "failed_step_phase": phase,
+        "failed_step_reason": reason,
+        "phase_ms": (
+            "; ".join(missing_field(name) for name in missing) if missing else found
+        ),
+        "final_screenshot": (
+            _absolute_url(base_url, url) if url else missing_field("final_screenshot_url")
+        ),
+        "final_url": final_url_of(run) or missing_field("final_url"),
+    }
+
+
+def _phase_counts(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    counts: dict[str, int] = {}
+    for row in rows:
+        key = str(row.get("failed_step_phase") or missing_field("failed_step_phase"))
+        counts[key] = counts.get(key, 0) + 1
+    ordered = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    return [{"phase": phase, "n": count} for phase, count in ordered]
+
+
 def build_early_failures(
     study: dict[str, Any],
     runs: list[dict[str, Any]],
@@ -1485,8 +1709,7 @@ def build_early_failures(
                 "error": str(run.get("error") or run.get("browser_error") or ""),
                 "goal_reached": False,
                 "trace_link": trace,
-                "final_screenshot": _absolute_url(base_url, shot_url),
-                "final_url": final_url_of(run),
+                **_failure_contract(run, base_url, shot_url),
                 "step": step_n if isinstance(step_n, int) else None,
             }
         )
@@ -1500,6 +1723,7 @@ def build_early_failures(
         "reason": str(early.get("reason") or ""),
         "types": list(FAILURE_TYPES),
         "counts": counts,
+        "phase_counts": _phase_counts(failed),
         "failed_runs": failed,
     }
 
@@ -1543,8 +1767,7 @@ def build_failure_report(
                 "judge_reason": str(verdict.get("reason") or ""),
                 "goal_reached": False,
                 "trace_link": trace,
-                "final_screenshot": _absolute_url(base_url, shot_url),
-                "final_url": final_url_of(run),
+                **_failure_contract(run, base_url, shot_url),
                 "step": step_n if isinstance(step_n, int) else None,
             }
         )
@@ -1556,8 +1779,120 @@ def build_failure_report(
         "product_url": _product_url(study),
         "types": list(FAILURE_TYPES),
         "counts": counts,
+        "phase_counts": _phase_counts(failed),
         "failed_runs": failed,
     }
+
+
+def _run_final_screenshot(run: dict[str, Any]) -> str:
+    """The async final screenshot. A per-step URL is not this field."""
+    for key in ("final_screenshot_url", "final_screenshot"):
+        text = str(run.get(key) or "").strip()
+        if text:
+            return text
+    return ""
+
+
+def _field_contract_gates(
+    runs: list[dict[str, Any]],
+    vision_goal: dict[str, object],
+    study: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Fields PR #47 must write. A missing one fails; it is not skipped."""
+    agents = [run for run in runs if isinstance(run, dict)]
+    phase_names: list[str] = []
+    for run in agents:
+        _found, missing = phase_ms_of(run)
+        for name in missing:
+            if name not in phase_names:
+                phase_names.append(name)
+    if not agents:
+        phase_names = ["phase_ms"]
+    phase_ok = not phase_names
+    phase_value = (
+        f"{len(agents)}/{len(agents)}"
+        if phase_ok
+        else "; ".join(missing_field(name) for name in phase_names)
+    )
+
+    shot_missing = [run for run in agents if not _run_final_screenshot(run)]
+    shot_ok = bool(agents) and not shot_missing
+    shot_value = (
+        f"{len(agents) - len(shot_missing)}/{len(agents)}"
+        if shot_ok
+        else missing_field("final_screenshot_url")
+    )
+
+    url_missing = [run for run in agents if not final_url_of(run)]
+    dom_missing = [run for run in agents if not final_dom_of(run)]
+    judge_names: list[str] = []
+    if not agents or url_missing:
+        judge_names.append("final_url")
+    if not agents or dom_missing:
+        judge_names.append("state_sig.text")
+    judge_ok = not judge_names
+    judge_value = (
+        f"{len(agents)}/{len(agents)}"
+        if judge_ok
+        else "; ".join(missing_field(name) for name in judge_names)
+    )
+
+    failed_runs = []
+    for run in agents:
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        if product_run_succeeded(run, _start_url(run, study), vision_goal=vision_goal.get(aid)):
+            continue
+        failed_runs.append(run)
+    step_names: list[str] = []
+    for run in failed_runs:
+        phase, reason = failed_step_fields(run)
+        if phase.startswith("missing field") and "failed_step_phase" not in step_names:
+            step_names.append("failed_step_phase")
+        if reason.startswith("missing field") and "failed_step_reason" not in step_names:
+            step_names.append("failed_step_reason")
+    step_ok = not step_names
+    if not agents and not step_names:
+        step_names = ["failed_step_phase"]
+        step_ok = False
+    step_value = (
+        f"{len(failed_runs)} failed runs"
+        if step_ok
+        else "; ".join(missing_field(name) for name in step_names)
+    )
+    return [
+        _gate(
+            "phase_ms",
+            "Per-phase milliseconds",
+            phase_value,
+            "each agent has phase_ms.session_ready, page_open, first_action, final_screenshot",
+            phase_ok,
+            f"missing_agents={len([r for r in agents if phase_ms_of(r)[1]])}" if not phase_ok else "",
+        ),
+        _gate(
+            "final_screenshot",
+            "Final screenshot",
+            shot_value,
+            "each agent has final_screenshot_url (one async capture for the judge)",
+            shot_ok,
+            "",
+        ),
+        _gate(
+            "judge_inputs",
+            "Final URL and page text for the judge",
+            judge_value,
+            "final_url plus state_sig.text or ax_tree on every agent",
+            judge_ok,
+            "",
+        ),
+        _gate(
+            "failed_step",
+            "Failed-step phase and reason",
+            step_value,
+            "every failed run has failed_step.phase and failed_step.reason",
+            step_ok,
+            "",
+        ),
+    ]
 
 
 def evaluate_strict_gates(
@@ -1678,7 +2013,11 @@ def evaluate_strict_gates(
     if harness_in_weakness:
         separate_ok = False
 
-    gates = _headline_gates(startup) + _startup_gates(study, runs, startup, abort_reason)
+    gates = (
+        _headline_gates(startup)
+        + _startup_gates(study, runs, startup, abort_reason)
+        + _field_contract_gates(runs, vision_goal, study)
+    )
     gates.extend(
         [
             _gate(
