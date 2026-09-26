@@ -9,11 +9,11 @@
 
 Linear: create-issue agents landed on `https://linear.app/docs/creating-issues`. Pricing agents landed on `https://linear.app/pricing`. Excalidraw: draw agents left a rectangle on the canvas. Export agents opened the menu to Export image. No agent repeated a dead New issue click.
 
-The overall harness `pass` flag is false because strength/weakness evidence is still short of the gate (Linear strengths 0/0, Excalidraw strengths 0/0 and weaknesses 0/0). Product task completion is 8/8 on both. Gate files were not edited.
+The overall harness `pass` flag is false because strength/weakness evidence is still short of the gate (Linear strengths 0/0, Excalidraw strengths 0/0 and weaknesses 0/0). Product task completion is 8/8 on both. Gate files were not edited. Those wide runs are not repeated: prime count is 0, and only the integration agent runs 24-wide.
 
 # Task completion — single-agent harness
 
-Local Chromium, one task at a time, no Browserbase. Every step re-reads the live page and asks the model. Clicks use role and name, then coordinates. A drawing counts only after a drag changes the canvas ink. Log: `results/taskfix/harness4b.log`.
+Local Chromium, one task at a time, no Browserbase session. Prime count is 0 (`prime_sessions` returns immediately; the server defaults `MVP_PRIME_SESSIONS` to 0). Running `taskfix` Browserbase sessions at the start of this run: 0. Every step re-reads the live page and asks the model. Clicks use role and name, then coordinates. A drawing counts only after a drag changes the canvas ink. Log: `results/taskfix/harness_prime0.log`.
 
 4/4 passed. No failing step logs.
 
@@ -29,8 +29,9 @@ Local Chromium, one task at a time, no Browserbase. Every step re-reads the live
 The homepage preview (New issue, Inbox, My issues) is marked inert and is not offered to the model.
 
 1. Saw the homepage. Decision: click Documentation. After: `https://linear.app/docs`.
-2. Saw the docs sidebar. Decision: click Issues. After: the Issues section expanded, still on `/docs`.
-3. Decision: click Create issues. After: `https://linear.app/docs/creating-issues`, title Create issues – Linear Docs.
+2. Decision: click Docs. The URL stayed `https://linear.app/docs`.
+3. Saw the docs sidebar. Decision: click Issues. After: the Issues section expanded, still on `/docs`.
+4. Decision: click Create issues. After: `https://linear.app/docs/creating-issues`, title Create issues – Linear Docs.
 
 ## Linear — Look for pricing or how to get started
 

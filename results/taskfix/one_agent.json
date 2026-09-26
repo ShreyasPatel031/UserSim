@@ -28,6 +28,22 @@
         "observation": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Issue properties Projects Initiatives Cycles Views Find and filter Linear Asks Integrations Analytics Administration Importers Docs Developers Learn Contact support Home Sign up Linear Docs Get an overview of Linear's featur",
         "decision": {
           "act": "click",
+          "name": "Docs",
+          "href": "https://linear.app/docs",
+          "role": "a",
+          "source": "model"
+        },
+        "executed": "click Docs",
+        "how": "role",
+        "url_after": "https://linear.app/docs",
+        "dom_after": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Issue properties Projects Initiatives Cycles Views Find and filter Linear Asks Integrations Analytics Administration Importers Docs Developers Learn Contact support Home Sign up Linear Docs Get an overview of Linear's featur",
+        "title_after": "Linear Docs"
+      },
+      {
+        "step": 3,
+        "observation": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Issue properties Projects Initiatives Cycles Views Find and filter Linear Asks Integrations Analytics Administration Importers Docs Developers Learn Contact support Home Sign up Linear Docs Get an overview of Linear's featur",
+        "decision": {
+          "act": "click",
           "name": "Issues",
           "href": "",
           "role": "button",
@@ -40,7 +56,7 @@
         "title_after": "Linear Docs"
       },
       {
-        "step": 3,
+        "step": 4,
         "observation": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Create issues Edit issues Assign and delegate issues Select issues Parent and sub-issues Issue templates Comments and reactions Editor Documents Delete and archive issues Customer Requests Releases Issue properties Projects ",
         "decision": {
           "act": "click",
@@ -114,12 +130,12 @@
         "observation": "Excalidraw Selected shape actions Stroke Background Stroke width Stroke style Sloppiness Edges Opacity 100 0 Layers Shapes V R D O A L P T N E Excalidraw+ Share Canvas actions 100%",
         "decision": {
           "act": "drag",
-          "name": "",
+          "name": "canvas",
           "href": "",
           "role": "canvas",
           "source": "model"
         },
-        "executed": "drag",
+        "executed": "drag canvas",
         "how": "drag",
         "url_after": "https://excalidraw.com/",
         "dom_after": "Excalidraw Selected shape actions Stroke Background Stroke width Stroke style Sloppiness Edges Opacity 100 0 Layers Actions Enter to add text, Ctrl + \u2191\u2193 to create a flowchart Shapes V R D O A L P T N E Excalidraw+ Share Canvas actions 100%",
