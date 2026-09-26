@@ -2545,9 +2545,9 @@ async def _run_a11y_agent_unlocked(
                 trace[-1]["screenshot_url"] = shot_url
                 trace[-1]["final_screenshot_url"] = shot_url
 
+        # Report where the agent really ended. Replacing an off-host final URL
+        # with the start URL hid docs/subdomain detours from the judge.
         final_url = str(read.get("url") or url)
-        if url and _host(final_url) != _host(url):
-            final_url = url
         ax = format_ax(read.get("nodes") or []) or str(sess.get("accessibility_tree") or "") or "0 document page"
         final_dom = str(read.get("text") or "")[:1500] or ax
         if not isinstance(failed, dict) or not str(failed.get("phase") or "").strip():
