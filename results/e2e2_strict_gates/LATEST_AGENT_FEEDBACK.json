@@ -1,0 +1,60 @@
+{
+  "pass": false,
+  "startup_alone_is_not_a_pass": true,
+  "graded_at": "2026-09-26T04:00:00Z",
+  "heads": {
+    "cursor/product-agent-full-model-76fc": {
+      "sha": "9741b7e",
+      "unchanged_since_last_grade": true,
+      "linear": {
+        "study_id": "3d869a34-ec04-4687-9eb4-5a599948ccdf",
+        "pass": false,
+        "elapsed_s": 5.2,
+        "time_to_first_value_s": 3.973,
+        "product_task_completion": "0/8"
+      }
+    },
+    "cursor/tonight-integration": {
+      "sha": "9e67aa0",
+      "linear": {
+        "study_id": "e5a35680-8866-4cc2-8081-2bcd84a3ee2c",
+        "pass": false,
+        "elapsed_s": 5.1,
+        "time_to_first_value_s": 3.875,
+        "product_task_completion": "0/8",
+        "abort": "FAIL page_opened: 14/18 agents opened the assigned site within 5s (wrong site=2)",
+        "wrong_site_ids": ["t1__p1__competitor_2", "t2__p1__competitor_2"],
+        "phase_counts": [{"phase": "missing field failed_step_phase", "n": 2}],
+        "counts": {"our infrastructure": 0, "model timeout": 0, "stuck": 0, "product": 2, "no_first_action": 0}
+      },
+      "excalidraw": {
+        "study_id": "44cfc228-be61-4419-82d5-b860afce5cd5",
+        "pass": false,
+        "elapsed_s": 21.9,
+        "time_to_first_value": "not recorded",
+        "product_task_completion": "0/8",
+        "abort": "missing field ax_tree: 0/24 agents",
+        "phase_counts": [{"phase": "missing field failed_step_phase", "n": 24}],
+        "counts": {"our infrastructure": 0, "model timeout": 0, "stuck": 0, "product": 24, "no_first_action": 0}
+      }
+    }
+  },
+  "bugs": [
+    {
+      "id": 1,
+      "fact": "Integration 9e67aa0 Linear study e5a35680 aborted at 5.1s with only 18/24 live sessions. page_opened 14/18. t1__p1__competitor_2 and t2__p1__competitor_2 were wrong-site (assigned host trello.com). Publish all 24 with the assigned host before 5s."
+    },
+    {
+      "id": 2,
+      "fact": "Those two Linear failures have no failed_step.phase, no failed_step.reason, no final_screenshot_url, and no phase_ms.final_screenshot. Write them when the run stops."
+    },
+    {
+      "id": 3,
+      "fact": "Integration Excalidraw study 44cfc228 aborted with missing field ax_tree on 0/24 opened. Every live session needs a non-empty ax_tree next to page_open_at_ts. final_screenshot_url and failed_step were also missing (phase count missing field failed_step_phase x 24)."
+    },
+    {
+      "id": 4,
+      "fact": "New-issue stuck loop remains from #47 study 6e2acd43 on 59c2702: t1__p1__product repeated click New issue three times with no URL/DOM change and no failed_step. Neither new run reached that loop. Product is still 0/8. Gemini was not called. A TTFV under 10s is not a pass."
+    }
+  ]
+}
