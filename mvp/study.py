@@ -230,6 +230,8 @@ class StudyState:
     auth_blocker: str | None = None
     kill_requested: bool = False
     max_agents: int = 0
+    submitted_ts: float = 0.0
+    ux_metrics: dict[str, Any] = field(default_factory=dict)
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -1310,6 +1312,9 @@ async def run_study(
                 pass
 
     try:
+        from mvp.shared_extract import note_submitted
+
+        note_submitted(study)
         raise_if_killed(study)
         from mvp.a11y_agent import study_budget_s
 
@@ -1348,11 +1353,11 @@ async def run_study(
             _should_warm_browserbase()
             and os.environ.get("MVP_A11Y_LOOP", "1").lower() not in {"0", "false", "no"}
         ):
-            from mvp.a11y_agent import A11yBoot
+            from mvp.shared_extract import SharedExtractBoot
 
-            # One shared accessibility read, 24 browsers in parallel. No
-            # per-agent screenshot warm and no 8-wide action queue.
-            a11y_boot = A11yBoot(study, on_update)
+            # One shared extract per site. First actions are decided from it
+            # before any agent opens its own browser.
+            a11y_boot = SharedExtractBoot(study, on_update)
             a11y_boot.install_fast_plan()
             asyncio.create_task(a11y_boot.start())
             log_activity(
@@ -3219,21 +3224,54 @@ async def run_study(
                                 run = None
                                 _remaining = float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic()
                                 if a11y_boot is not None:
-                                    from mvp.a11y_agent import run_a11y_agent
+                                    from mvp.shared_extract import SharedExtractBoot, run_shared_agent
 
-                                    _agent_coro = run_a11y_agent(
-                                        boot=a11y_boot,
-                                        study_id=study.id,
-                                        agent_id=agent_id,
-                                        url=site,
-                                        task_prompt=task.get("prompt")
-                                        or task.get("title")
-                                        or "",
-                                        persona=persona,
-                                        on_step=lambda step: _on_agent_step(agent_id, step),
-                                        site_key=str(task.get("site_key") or "product"),
-                                        deadline=getattr(study, "budget_deadline", None),
-                                    )
+                                    if isinstance(a11y_boot, SharedExtractBoot):
+                                        _agent_coro = run_shared_agent(
+                                            study_id=study.id,
+                                            agent_id=agent_id,
+                                            url=site,
+                                            task_prompt=task.get("prompt")
+                                            or task.get("title")
+                                            or "",
+                                            persona=persona,
+                                            segment=study.segment,
+                                            on_step=lambda step: _on_agent_step(agent_id, step),
+                                            decision=dict(sess.get("pending_action") or {}),
+                                            shared=dict(
+                                                (getattr(a11y_boot, "snapshots", {}) or {}).get(
+                                                    str(task.get("site_key") or "product")
+                                                )
+                                                or {}
+                                            ),
+                                            gate={
+                                                "page_open_at_ts": sess.get("page_open_at_ts"),
+                                                "session_ready_at_ts": sess.get("session_ready_at_ts"),
+                                                "first_action_at_ts": sess.get("first_action_at_ts"),
+                                                "accessibility_tree": sess.get("accessibility_tree"),
+                                                "page_url": sess.get("page_url"),
+                                                "created_at_ts": sess.get("created_at_ts"),
+                                                "phase_ms": dict(sess.get("phase_ms") or {}),
+                                            },
+                                            deadline=getattr(study, "budget_deadline", None),
+                                            opening_trace=list(sess.get("trace") or []),
+                                        )
+                                    else:
+                                        from mvp.a11y_agent import run_a11y_agent
+
+                                        _agent_coro = run_a11y_agent(
+                                            boot=a11y_boot,
+                                            study_id=study.id,
+                                            agent_id=agent_id,
+                                            url=site,
+                                            task_prompt=task.get("prompt")
+                                            or task.get("title")
+                                            or "",
+                                            persona=persona,
+                                            on_step=lambda step: _on_agent_step(agent_id, step),
+                                            site_key=str(task.get("site_key") or "product"),
+                                            deadline=getattr(study, "budget_deadline", None),
+                                        )
                                 else:
                                     _agent_coro = run_browser_agent(
                                         study_id=study.id,
@@ -3734,6 +3772,12 @@ async def run_study(
             apply_insights(study)
         except Exception as insight_exc:  # noqa: BLE001
             print(f"report insights failed: {insight_exc!r}", flush=True)
+        try:
+            from mvp.shared_extract import finalize_ux_metrics
+
+            finalize_ux_metrics(study)
+        except Exception as ux_exc:  # noqa: BLE001
+            print(f"ux metrics failed: {ux_exc!r}", flush=True)
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
         persist_study(study)
@@ -3838,6 +3882,7 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "backend": study.backend,
             "email": study.email,
             "kill_requested": study.kill_requested,
+            "ux_metrics": getattr(study, "ux_metrics", None) or {},
         }
     )
 

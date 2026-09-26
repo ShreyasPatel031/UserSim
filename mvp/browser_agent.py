@@ -1984,7 +1984,31 @@ _VIEWPORT_EXTRACT_JS = """(() => {
     const href = String(el.getAttribute('href') || '').slice(0, 160);
     out.push({tag, role, text, href, x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height)});
   }
-  return JSON.stringify({url: location.href, title: document.title || '', in_page_ms: Math.round(performance.now() - t0), elements: out});
+  let canvas = '';
+  const canvases = document.querySelectorAll('canvas');
+  for (let c = 0; c < canvases.length && c < 2; c++) {
+    const cv = canvases[c];
+    try {
+      const w = cv.width || 0, h = cv.height || 0;
+      if (w < 2 || h < 2) continue;
+      const ctx = cv.getContext('2d', { willReadFrequently: true });
+      if (!ctx) continue;
+      const step = Math.max(12, Math.floor(Math.min(w, h) / 16));
+      const data = ctx.getImageData(0, 0, w, h).data;
+      let dark = 0, total = 0;
+      for (let y = 0; y < h; y += step) {
+        for (let x = 0; x < w; x += step) {
+          const i = (y * w + x) * 4;
+          if ((data[i] + data[i + 1] + data[i + 2]) < 700) dark++;
+          total++;
+        }
+      }
+      canvas += w + 'x' + h + ':dark=' + dark + '/' + total + ';';
+    } catch (e) {
+      canvas += 'taint;';
+    }
+  }
+  return JSON.stringify({url: location.href, title: document.title || '', in_page_ms: Math.round(performance.now() - t0), elements: out, canvas});
 })()"""
 
 
@@ -1996,7 +2020,7 @@ def normalize_viewport_extract(raw: Any, *, limit: int = EXTRACT_ELEMENT_CAP) ->
         except json.JSONDecodeError:
             raw = None
     if not isinstance(raw, dict):
-        return {"url": "", "title": "", "in_page_ms": None, "elements": []}
+        return {"url": "", "title": "", "in_page_ms": None, "elements": [], "text": "", "canvas": ""}
     elements: list[dict[str, Any]] = []
     for el in raw.get("elements") or []:
         if len(elements) >= limit:
@@ -2033,6 +2057,8 @@ def normalize_viewport_extract(raw: Any, *, limit: int = EXTRACT_ELEMENT_CAP) ->
         "title": str(raw.get("title") or "")[:200],
         "in_page_ms": in_page_ms,
         "elements": elements,
+        "text": str(raw.get("text") or "")[:1500],
+        "canvas": str(raw.get("canvas") or "")[:300],
     }
 
 
@@ -2411,6 +2437,10 @@ async def _run_extract_loop(
                 "boxes": boxes,
                 "highlight_index": decision.get("index") or None,
                 "outcome": "neutral",
+                "state_sig": {
+                    "text": (read.get("text") or _element_lines(read["elements"]))[:1500],
+                    "canvas": str(read.get("canvas") or ""),
+                },
             }
             extra = clock.fields_for(step_no)
             if extra.get("phase_ms"):
