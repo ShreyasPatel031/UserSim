@@ -917,6 +917,32 @@ def apply_gate_fields(sess: dict[str, Any], **fields: Any) -> None:
     sess["final_screenshot"] = shot
 
 
+def _stamp_observation(trace: list[dict[str, Any]], read: dict[str, Any]) -> None:
+    """Write the live page onto the latest step.
+
+    Agents that find the goal already on screen never append a step. Without
+    this, the trace keeps the opening title and the run looks like it never
+    left the first screen.
+    """
+    steps = [
+        step
+        for step in trace
+        if isinstance(step, dict) and isinstance(step.get("step"), int)
+    ]
+    if not steps:
+        return
+    last = max(steps, key=lambda step: int(step["step"]))
+    text = str(read.get("text") or "")
+    url = str(read.get("url") or last.get("url") or "")
+    ax = format_ax(read.get("nodes") or [])
+    last["url"] = url
+    last["observation"] = text[:400]
+    last["state_sig"] = {"text": text[:1500], "canvas": str(read.get("canvas") or "")}
+    if ax:
+        last["accessibility_tree"] = ax
+        last["ax_tree"] = ax
+
+
 _STEP_STAMP_KEYS = (
     "page_open_at_ts",
     "page_opened_at_ts",
@@ -1265,6 +1291,11 @@ class A11yBoot:
         page = context.pages[0] if context.pages else await context.new_page()
         try:
             await page.set_viewport_size({"width": 1440, "height": 900})
+        except Exception:
+            pass
+        try:
+            page.set_default_timeout(8000)
+            page.set_default_navigation_timeout(8000)
         except Exception:
             pass
         return browser, context, page
@@ -1823,7 +1854,16 @@ async def _screenshot_hash(page: Any) -> tuple[str, str]:
 async def _one_read(page: Any, fallback_url: str) -> dict[str, Any]:
     t0 = time.perf_counter()
     try:
-        raw = await page.evaluate(_READ_JS)
+        raw = await asyncio.wait_for(page.evaluate(_READ_JS), timeout=8)
+    except asyncio.TimeoutError:
+        return {
+            "url": fallback_url,
+            "text": "",
+            "canvas": "",
+            "nodes": [],
+            "title": "",
+            "error": "accessibility read timed out",
+        }
     except Exception as exc:  # noqa: BLE001
         return {
             "url": fallback_url,
@@ -1911,6 +1951,7 @@ async def complete_task_on_page(
     logs: list[dict[str, Any]] = []
     previous_sig: tuple[str, str, str, str] | None = None
     stuck_streak = 0
+    model_calls = 0
     try:
         await page.wait_for_selector("a, button, canvas", timeout=3000)
     except Exception:
@@ -1956,9 +1997,25 @@ async def complete_task_on_page(
             break
         action = planned_action(task, read, skip=skip)
         source = "plan"
+        if action is None and task_kind(task) and model_calls >= 1:
+            # No known control, and one model guess already failed. Stop
+            # instead of walking every link on the site.
+            _miss()
+            break
         if action is None:
-            action = await _model_action(task=task, read=read, history=history)
+            model_calls += 1
+            try:
+                action = await asyncio.wait_for(
+                    _model_action(task=task, read=read, history=history),
+                    timeout=20,
+                )
+            except asyncio.TimeoutError:
+                print(f"[{agent_id}] model action timed out", flush=True)
+                action = None
             source = "model"
+        if action is None and task_kind(task):
+            _miss()
+            break
         if action is None:
             action = pick_action(task, read.get("nodes") or [])
             source = "keyword"
@@ -1993,7 +2050,11 @@ async def complete_task_on_page(
                 await maybe
         how = ""
         try:
-            how = await _act(page, action)
+            how = await asyncio.wait_for(_act(page, action), timeout=12)
+        except asyncio.TimeoutError:
+            print(f"[{agent_id}] action timed out: {label}", flush=True)
+            how = "timeout"
+            skip.add(str(action.get("name") or "").lower())
         except Exception as exc:  # noqa: BLE001
             if browser_dead(exc):
                 print(f"[{agent_id}] session ended: {exc!r}", flush=True)
@@ -2062,6 +2123,8 @@ async def complete_task_on_page(
                 read["drew"] = True
             break
 
+    if stop_reason == "done" or goal_visible(task, read):
+        _stamp_observation(trace, read)
     if stop_reason:
         print(f"[{agent_id}] stop reason: {stop_reason}", flush=True)
     if not isinstance(failed, dict):
