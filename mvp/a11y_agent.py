@@ -437,6 +437,8 @@ def task_kind(task: str) -> str:
     A compound task ("draw a box, then export it") is judged on its last step.
     """
     text = (task or "").lower()
+    # A rival's address ("(vs https://www.sketch.com/)") is not part of the goal.
+    text = re.sub(r"\(vs [^)]*\)|https?://\S+|\b[\w-]+(?:\.[\w-]+)*\.(?:com|io|app|so|co|org|net|dev|ai)\b\S*", " ", text)
     parts = re.split(r"\bthen\b|\band then\b", text)
     if len(parts) > 1 and parts[-1].strip():
         text = parts[-1]
@@ -2207,7 +2209,7 @@ def auth_page(read: dict[str, Any]) -> bool:
     host = _host(url)
     if _AUTH_PATH_RE.search(_page_key(url)[1] or "") or _AUTH_HOST_RE.match(host or ""):
         return True
-    if (read or {}).get("password"):
+    if (read or {}).get("password") or (read or {}).get("auth_modal"):
         return True
     text = str((read or {}).get("text") or "").lower()
     if (read or {}).get("email_input") and any(
@@ -2216,6 +2218,27 @@ def auth_page(read: dict[str, Any]) -> bool:
     ) and len(text) < 1500:
         return True
     return False
+
+
+def _inert_share(read: dict[str, Any]) -> float:
+    nodes = [n for n in (read or {}).get("nodes") or [] if isinstance(n, dict)]
+    if not nodes:
+        return 0.0
+    return sum(1 for n in nodes if n.get("inert")) / len(nodes)
+
+
+def auth_modal_opened(href: str, before: dict[str, Any], after: dict[str, Any]) -> bool:
+    """A click on a sign-up / log-in link opened a modal on the same page.
+
+    The link's href is an auth URL, the page URL did not change, and the page
+    behind is now blocked: a dialog is open or most controls went inert.
+    """
+    if not href or not _AUTH_PATH_RE.search(_page_key(href)[1] or ""):
+        return False
+    if _page_key(str((after or {}).get("url") or "")) != _page_key(str((before or {}).get("url") or "")):
+        return False
+    blocked = _inert_share(after) >= 0.6 and _inert_share(before) < 0.3
+    return bool((after or {}).get("dialog") and not (before or {}).get("dialog")) or blocked
 
 
 def public_task(task: str) -> bool:
@@ -2232,7 +2255,16 @@ def looping(trace: list[dict[str, Any]], window: int = 8) -> bool:
     if len(rows) < window:
         return False
     pairs = {(str(s.get("action") or ""), _page_key(str(s.get("url") or ""))) for s in rows}
-    return len(pairs) <= 2
+    if len(pairs) <= 2:
+        return True
+    # A three-step cycle (Pricing -> Free trial -> Home -> Pricing ...) over 12 actions.
+    longer = [
+        s for s in trace
+        if isinstance(s, dict) and isinstance(s.get("step"), int) and int(s["step"]) >= 1
+    ][-12:]
+    if len(longer) < 12:
+        return False
+    return len({(str(s.get("action") or ""), _page_key(str(s.get("url") or ""))) for s in longer}) <= 3
 
 
 def _goal_reached_heuristic(task: str, read: dict[str, Any]) -> bool | None:
@@ -2406,7 +2438,7 @@ async def complete_task_on_page(
             drew = drew or task_kind(task) == "draw"
             break
         if acted and account_task and auth_page(read):
-            signup_url = str(read.get("url") or "")
+            signup_url = str(read.get("auth_modal") or read.get("url") or "")
             print(f"[{agent_id}] needs account at {signup_url}", flush=True)
             _miss("needs_account", "needs_account")
             break
@@ -2597,6 +2629,10 @@ async def complete_task_on_page(
                 backed = await _fresh_read(page, str(read.get("url") or url))
                 if not backed.get("error"):
                     after = backed
+            if act == "click" and auth_modal_opened(str(action.get("href") or ""), read, after):
+                # "Get started" linked to /signup but opened a sign-up dialog on
+                # this page (Figma). That dialog is the account wall.
+                after["auth_modal"] = str(action.get("href") or "")
             changed = _observation_changed(read, after, task=task)
             if act == "drag":
                 inked = canvas_inked(str(read.get("canvas") or ""), str(after.get("canvas") or ""))

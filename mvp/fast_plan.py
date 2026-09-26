@@ -32,10 +32,13 @@ Return:
   "app_task": "second task done in the product"}}
 
 Rules:
-- competitors: the two best-known direct rivals, as homepage URLs of real public sites.
+- competitors: the two best-known direct rivals, as homepage URLs of real public sites. Use the
+  rival product's own site, not a parent company's homepage that sells many products.
 - core_task: the one thing a new user comes to do in the product itself, 3-8 words,
   an imperative verb and a concrete object (never a tagline), generic enough to try on the rivals too (for example "Create a new project",
-  "Draw a rectangle on the canvas", "Create a new event type"). If doing it needs an account,
+  "Draw a rectangle on the canvas", "Create a new event type"). One action whose result shows on
+  one screen, never a broad activity (not "Design and prototype an interface"; say "Create a new
+  design file"). If doing it needs an account,
   keep it that way; never turn it into a logged-out task.
 - public_task: 3-8 words a logged-out visitor can finish from this page using only the links,
   buttons and text listed above. Use "Look for pricing or how to get started" only when a
