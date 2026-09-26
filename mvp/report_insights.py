@@ -800,6 +800,9 @@ def trace_claims(
                 f"{title}: the path needs an account \u2014 agents were sent to "
                 f"{final_page} before they could finish"
             )
+            if reason.startswith("blocked at signup"):
+                key = f"{title.lower()}|account|{reason}"
+                label = f"{title}: the path needs an account and the live signup was {reason} (at {final_page})"
         else:
             key = f"{title.lower()}|{final_page}"
             label = (
@@ -1455,7 +1458,9 @@ def signup_summary(runs: list[dict[str, Any]], study: dict[str, Any]) -> dict[st
             if isinstance(info.get("seconds"), (int, float)):
                 row["seconds"].append(float(info["seconds"]))
         else:
-            reason = str(info.get("reason") or "unknown").split(":", 1)[0][:40]
+            from mvp.a11y_agent import signup_block_label
+
+            reason = signup_block_label(str(info.get("reason") or "unknown"))
             row["reasons"][reason] = row["reasons"].get(reason, 0) + 1
     out = []
     for row in rows.values():

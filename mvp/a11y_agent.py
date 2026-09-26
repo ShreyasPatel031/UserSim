@@ -1404,6 +1404,23 @@ _OAUTH_RE = re.compile(
 )
 
 
+def _typed_item_visible(typed: list[str], read: dict[str, Any]) -> bool:
+    """A title the agent typed now shows as page text outside any field (the item exists)."""
+    text = " ".join(str((read or {}).get("text") or "").lower().split())
+    if not text:
+        return False
+    values = {
+        " ".join(str(n.get("value") or "").lower().split())
+        for n in ((read or {}).get("nodes") or [])
+        if isinstance(n, dict) and n.get("value")
+    }
+    for item in typed[-3:]:
+        low = " ".join(item.lower().split())
+        if len(low) >= 4 and low in text and low not in values:
+            return True
+    return False
+
+
 def _nodes_for_model(
     nodes: list[dict[str, Any]],
     skip: set[str],
@@ -2065,6 +2082,7 @@ async def complete_task_on_page(
     skip: set[str] = set()
     escapes: list[str] = []
     typed_again = 0
+    typed: list[str] = []
     logs: list[dict[str, Any]] = []
     changed_nothing = False
     model_misses = 0
@@ -2194,6 +2212,9 @@ async def complete_task_on_page(
                 verdict = bool(heuristic) if heuristic is not None else await _verify_done(task, read, opened, page)
                 if heuristic is None and verdict and _page_key(str(read.get("url") or "")) == _page_key(str(opened.get("url") or "")) and not _observation_changed(opened, read, task=task) and task_kind(task) != "draw":
                     verdict = False
+                if not verdict and signed_in and _typed_item_visible(typed, read):
+                    # The title the agent typed now shows on the page outside any field.
+                    verdict = True
             if verdict:
                 stop_reason = "done"
                 break
@@ -2241,6 +2262,8 @@ async def complete_task_on_page(
             history.append(f"{label} already changed nothing; do something else")
             continue
         step_no += 1
+        if act == "type" and str(action.get("text") or "").strip():
+            typed.append(str(action.get("text")).strip())
         row = _step_from_read(step=step_no, action=label, read=read, thought=str(action.get("reason") or "")[:200])
         row["decision_source"] = "model"
         row["decision"] = {
@@ -2527,6 +2550,35 @@ def _visited(trace: list[dict[str, Any]], start: str, final: str) -> list[str]:
     return seen[:40]
 
 
+def signup_block_label(reason: str) -> str:
+    """Plain words for a live signup that did not finish."""
+    low = (reason or "").lower()
+    if "email_rejected" in low or "rejected" in low:
+        return "blocked at signup: throwaway email rejected"
+    if "email_timeout" in low:
+        return "blocked at signup: no verification email reached the throwaway inbox"
+    if "captcha" in low:
+        return "blocked at signup: captcha"
+    if "inbox" in low:
+        return "blocked at signup: could not create a throwaway inbox"
+    return f"signup did not finish ({(reason or 'unknown').split(':', 1)[0][:40]})"
+
+
+_SIGNUP_GATE: dict[str, Any] = {"lock": None, "last": 0.0}
+
+
+async def _stagger_signup() -> None:
+    """Start live signups a few seconds apart; throwaway inbox APIs rate-limit new addresses."""
+    gap = float(os.environ.get("MVP_SIGNUP_STAGGER_S") or 3.0)
+    if _SIGNUP_GATE["lock"] is None:
+        _SIGNUP_GATE["lock"] = asyncio.Lock()
+    async with _SIGNUP_GATE["lock"]:
+        wait = _SIGNUP_GATE["last"] + gap - time.monotonic()
+        if wait > 0:
+            await asyncio.sleep(wait)
+        _SIGNUP_GATE["last"] = time.monotonic()
+
+
 async def _signup_then_resume(
     page: Any,
     *,
@@ -2572,7 +2624,11 @@ async def _signup_then_resume(
     try:
         import inspect
 
-        kwargs: dict[str, Any] = {"timeout_s": min(150.0, remaining - 30), "tag": None}
+        await _stagger_signup()
+        remaining = (deadline - time.monotonic()) if deadline is not None else 240.0
+        cap = float(os.environ.get("MVP_SIGNUP_IN_SESSION_TIMEOUT_S") or 220)
+        budget = max(30.0, min(cap, remaining - 45))
+        kwargs: dict[str, Any] = {"timeout_s": budget, "tag": None}
         params = inspect.signature(signup_in_session).parameters
         if "signup_url" in params:
             kwargs["signup_url"] = wall
@@ -2593,7 +2649,7 @@ async def _signup_then_resume(
             kwargs["on_step"] = _progress
         result = await asyncio.wait_for(
             signup_in_session(page, url, persona, **kwargs),
-            timeout=min(160.0, remaining - 20),
+            timeout=budget + 10,
         )
     except Exception as exc:  # noqa: BLE001
         result = {"ok": False, "reason": repr(exc)[:160]}
@@ -2610,7 +2666,7 @@ async def _signup_then_resume(
     row["action"] = (
         f"signed up as {public['email'] or 'a new user'} in {public['seconds']}s"
         if public["ok"]
-        else f"signup did not finish: {public['reason'] or 'unknown'}"
+        else signup_block_label(public["reason"])
     )
     try:
         row["url"] = str(page.url or wall)
@@ -2621,7 +2677,7 @@ async def _signup_then_resume(
         if asyncio.iscoroutine(maybe):
             await maybe
     if not public["ok"]:
-        failed = {"phase": "needs_account", "reason": "signup did not finish", "step": step_no}
+        failed = {"phase": "needs_account", "reason": signup_block_label(public["reason"]), "step": step_no}
         return {**outcome, "trace": trace, "step_no": step_no, "failed": failed, "signup": public}
     resumed = await complete_task_on_page(
         page,
@@ -2639,6 +2695,28 @@ async def _signup_then_resume(
     resumed["signup"] = public
     resumed["logs"] = list(outcome.get("logs") or []) + list(resumed.get("logs") or [])
     return resumed
+
+
+async def signup_and_resume(
+    page: Any,
+    *,
+    task: str,
+    url: str,
+    persona: dict[str, Any] | None,
+    outcome: dict[str, Any],
+    on_step: Any | None = None,
+    deadline: float | None = None,
+    agent_id: str = "agent",
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Compatibility for the signup branch's local harness: (signup_result, loop_outcome)."""
+    sess: dict[str, Any] = {}
+    resumed = await _signup_then_resume(
+        page, outcome=outcome, url=url, task=task, persona=persona or {},
+        agent_id=agent_id, on_step=on_step, deadline=deadline, sess=sess,
+    )
+    if resumed is None:
+        return {"ok": False, "reason": "signup unavailable"}, outcome
+    return dict(sess.get("signup") or resumed.get("signup") or {}), resumed
 
 
 async def run_a11y_agent(

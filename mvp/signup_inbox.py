@@ -131,6 +131,9 @@ class Inbox:
         return None
 
 
+_DOMAIN_CACHE: dict[str, tuple[str, float]] = {}
+
+
 class MailTmInbox(Inbox):
     """Throwaway mailbox on the mail.tm API (or mail.gw, same API)."""
 
@@ -139,12 +142,16 @@ class MailTmInbox(Inbox):
     def _req(self, method: str, path: str, **kw: Any) -> httpx.Response:
         """mail.tm rate-limits (429, sometimes an HTML body). Back off and retry."""
         last: httpx.Response | None = None
-        for attempt in range(6):
+        for attempt in range(8):
             r = self.client.request(method, f"{self.base}{path}", **kw)
             if r.status_code != 429 and "json" in (r.headers.get("content-type") or "") or r.status_code in (201, 204):
                 return r
             last = r
-            time.sleep(1.5 * (attempt + 1))
+            try:
+                wait = float(r.headers.get("retry-after") or 0)
+            except ValueError:
+                wait = 0.0
+            time.sleep(min(10.0, max(wait, 1.0 + attempt * 1.5)))
         assert last is not None
         return last
 
@@ -152,9 +159,14 @@ class MailTmInbox(Inbox):
         self.base = base.rstrip("/")
         self.client = httpx.Client(timeout=20.0)
         self._cache: dict[str, dict[str, Any]] = {}
-        doms = self._req("GET", "/domains").json()
-        members = doms.get("hydra:member") if isinstance(doms, dict) else doms
-        domain = next(d["domain"] for d in members if d.get("isActive", True))
+        cached = _DOMAIN_CACHE.get(self.base)
+        if cached and time.time() - cached[1] < 600:
+            domain = cached[0]
+        else:
+            doms = self._req("GET", "/domains").json()
+            members = doms.get("hydra:member") if isinstance(doms, dict) else doms
+            domain = next(d["domain"] for d in members if d.get("isActive", True))
+            _DOMAIN_CACHE[self.base] = (domain, time.time())
         local = (re.sub(r"[^a-z0-9]", "", tag.lower())[:10] or "user") + _rand(6)
         self.address = f"{local}@{domain}"
         self.password = _rand(16, string.ascii_letters + string.digits)
