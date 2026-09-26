@@ -476,6 +476,18 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
     if study.test_mode and not study.tasks_override:
         study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
+    if not study.tasks_override and os.environ.get("MVP_FAST_PLAN", "1") != "0":
+        # A bare URL: one quick model call picks the tasks, rivals, and segment
+        # so agents open pages within seconds instead of after ~20s of research.
+        from mvp.fast_plan import plan_from_url
+
+        plan = await plan_from_url(url)
+        if plan:
+            study.tasks_override = list(plan["tasks"])
+            if not study.competitors and not study.skip_competitors:
+                study.competitors = list(plan["competitors"])
+            if not (body.segment or body.customers) and plan.get("segment"):
+                study.segment = plan["segment"]
 
     want_stream = "text/event-stream" in (request.headers.get("accept") or "") or (
         "application/x-ndjson" in (request.headers.get("accept") or "")

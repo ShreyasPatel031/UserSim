@@ -2417,8 +2417,13 @@ async def _signup_then_resume(
     sess["signup_status"] = "signing up"
     started = time.time()
     try:
+        import inspect
+
+        kwargs: dict[str, Any] = {"timeout_s": min(150.0, remaining - 30), "tag": None}
+        if "signup_url" in inspect.signature(signup_in_session).parameters:
+            kwargs["signup_url"] = wall
         result = await asyncio.wait_for(
-            signup_in_session(page, url, persona, timeout_s=min(150.0, remaining - 30), tag=agent_id),
+            signup_in_session(page, url, persona, **kwargs),
             timeout=min(160.0, remaining - 20),
         )
     except Exception as exc:  # noqa: BLE001

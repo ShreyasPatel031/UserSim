@@ -1016,6 +1016,30 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
         **layout,
     }
     out["verdict"] = verdict(out, study)
+    # A task where a competitor did better is a product weakness. Cite the
+    # product runs of that task so the claim points at real steps.
+    if len(out["weaknesses"]) < 3:
+        have_titles = {c["claim"].split(":", 1)[0].strip().lower() for c in out["weaknesses"]}
+        for line in out["verdict"].get("trails") or []:
+            title = line.split(":", 1)[0].strip()
+            if title.lower() in have_titles:
+                continue
+            evs = []
+            for run in product:
+                if (_task_title(run) or "").strip().lower() != title.lower():
+                    continue
+                steps = _acted_steps(run)
+                if not steps:
+                    continue
+                ev = _trace_evidence(run, steps[-1], line)
+                if ev:
+                    evs.append(ev)
+            claim = _claim(line, evs)
+            if claim:
+                claim["source"] = "comparison"
+                out["weaknesses"].append(claim)
+            if len(out["weaknesses"]) >= 3:
+                break
     stored = (study.get("summary") or {}) if isinstance(study.get("summary"), dict) else {}
     if stored.get("verdict_summary"):
         out["verdict"]["summary"] = str(stored["verdict_summary"])

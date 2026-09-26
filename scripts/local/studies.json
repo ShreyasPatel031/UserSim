@@ -31,7 +31,7 @@
   ],
   "tasks": [
    "Draw a rectangle on the canvas",
-   "Add a sticky note that says hello"
+   "Get a shareable link to the drawing"
   ],
   "segment": "Designers who whiteboard ideas with a team"
  },
@@ -94,5 +94,11 @@
    "Look for pricing or how to get started"
   ],
   "segment": "Workshop facilitators choosing a whiteboard"
+ },
+ "calendly_auto": {
+  "url": "https://calendly.com"
+ },
+ "notion_auto": {
+  "url": "https://www.notion.so"
  }
 }
