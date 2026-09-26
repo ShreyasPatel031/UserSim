@@ -305,6 +305,65 @@ def left_start(run: dict[str, Any], start_url: str) -> bool:
     return False
 
 
+def left_first_screen(run: dict[str, Any], start_url: str) -> bool:
+    """True when the run left the opening screen.
+
+    A URL change, a meaningful DOM change, or a canvas stroke counts.
+    Waiting, or calling done, on the untouched landing page does not.
+    """
+    return changed_page_state(run, start_url)
+
+
+def product_task_passed(run: dict[str, Any], start_url: str) -> bool:
+    """Product task success that rejects first-screen stalls.
+
+    Homepage-only runs fail even if the model calls done.
+    """
+    if not left_first_screen(run, start_url):
+        return False
+    return task_succeeded(run, start_url)
+
+
+def product_completion_gate(
+    runs: list[dict[str, Any]],
+    start_url: str,
+) -> dict[str, Any]:
+    """At least half of the product runs must leave the first screen and finish.
+
+    A 24-agent matrix has 8 product runs, so the bar is 4/8.
+    """
+    product = [
+        run
+        for run in runs
+        if isinstance(run, dict) and str(run.get("site_key") or "product") == "product"
+    ]
+    passed: list[str] = []
+    first_screen: list[str] = []
+    for run in product:
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        start = str(run.get("site_url") or start_url or "")
+        if product_task_passed(run, start):
+            passed.append(aid)
+        elif not left_first_screen(run, start):
+            first_screen.append(aid)
+    n = len(product)
+    k = len(passed)
+    required = (n + 1) // 2 if n else 0
+    if n >= 8:
+        required = max(required, 4)
+    ok = n > 0 and k >= required
+    return {
+        "product_n": n,
+        "success_n": k,
+        "success_rate": round(100 * k / n) if n else 0,
+        "required_n": required,
+        "required_rate": 0.5,
+        "first_screen_failures": first_screen,
+        "passed_ids": passed,
+        "pass": ok,
+    }
+
+
 def task_succeeded(run: dict[str, Any], start_url: str) -> bool:
     """Final-state success: the run interacted and the page state changed, or typed.
 
