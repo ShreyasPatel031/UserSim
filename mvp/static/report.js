@@ -553,10 +553,15 @@ function showReport(data) {
   const lede = document.getElementById("report-lede");
   if (!_insights) {
     const status = data?.status || "unknown";
+    const stopped = status === "abandoned" || status === "error";
     const waiting =
       status === "complete"
         ? "This study finished without per-run traces. The charts below stay in the report."
-        : `This study is ${status}. Charts fill as runs land.`;
+        : stopped
+          ? "This study did not finish, so there is no report to show."
+          : status === "queued"
+            ? "This study is queued for free browsers. Charts fill as runs land."
+            : `This study is ${status}. Charts fill as runs land.`;
     _insights = {
       product_name: name,
       headline: waiting,
@@ -573,6 +578,10 @@ function showReport(data) {
   }
   _sites = _insights.sites || [];
   lede.textContent = _insights.lede || _insights.headline || "";
+  if ((data?.status === "abandoned" || data?.status === "error") && data?.error) {
+    // A stopped study says so first; its partial charts are not a finished report.
+    lede.textContent = `Did not finish: ${data.error} ${lede.textContent}`.trim();
+  }
   renderAnalytics();
   fillSelectors();
 }

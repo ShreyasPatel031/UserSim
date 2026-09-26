@@ -236,6 +236,10 @@ class StudyState:
     time_to_first_value_s: float | None = None
     time_to_first_value_agent: str = ""
     total_time_s: float | None = None
+    # Waiting for Browserbase slots (see mvp.browser_slots).
+    queue_eta_s: int | None = None
+    queue_position: int | None = None
+    queued_s: float = 0.0
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -1380,6 +1384,35 @@ def _summary_from_agent_results(agent_results: list[dict[str, Any]]) -> dict[str
 
 
 async def run_study(
+    study_id: str,
+    *,
+    on_update: Any | None = None,
+) -> None:
+    """Queue for Browserbase slots, run the study, then free the slots and leftover sessions."""
+    from mvp import browser_slots
+
+    study = STUDIES[study_id]
+
+    def queued(phase: str, status: str | None = None) -> None:
+        study.phase = phase
+        if status:
+            study.status = status
+        study.updated_at = _now()
+        if on_update:
+            try:
+                on_update(study)
+            except Exception:
+                pass
+        schedule_persist(study)
+
+    try:
+        await browser_slots.acquire(study, queued)
+        await _run_study_body(study_id, on_update=on_update)
+    finally:
+        browser_slots.release(study)
+
+
+async def _run_study_body(
     study_id: str,
     *,
     on_update: Any | None = None,
@@ -3990,6 +4023,9 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "time_to_first_value_s": study.time_to_first_value_s,
             "time_to_first_value_agent": study.time_to_first_value_agent,
             "total_time_s": study.total_time_s,
+            "queue_eta_s": study.queue_eta_s,
+            "queue_position": study.queue_position,
+            "queued_s": study.queued_s,
         }
     )
 
@@ -4148,3 +4184,86 @@ def load_study_from_gcs(study_id: str) -> dict[str, Any] | None:
         return None
     except Exception:
         return None
+
+
+_UNFINISHED = {"running", "pending", "queued", "starting"}
+
+
+def interrupted_note(when: str = "") -> str:
+    stamp = f" at {when}" if when else ""
+    return (
+        f"The server restarted{stamp} while this study was running, so its agents stopped "
+        "before the study finished. Only runs that had already finished are counted below. "
+        "Run the study again for a full report."
+    )
+
+
+def mark_interrupted(payload: dict[str, Any], when: str = "") -> dict[str, Any]:
+    """A study that stopped mid-run: say so, and stop every live pane, instead of a report stuck half-built."""
+    out = dict(payload)
+    out["status"] = "abandoned"
+    out["phase"] = "Interrupted"
+    out["error"] = interrupted_note(when)
+    out["interrupted"] = True
+    live = out.get("live_sessions")
+    rows = live.values() if isinstance(live, dict) else (live or [])
+    for sess in rows:
+        if not isinstance(sess, dict):
+            continue
+        if str(sess.get("status") or "") in _UNFINISHED | {"summarizing"}:
+            sess["status"] = "killed"
+        sess["live_active"] = False
+    return out
+
+
+def recover_interrupted_studies(max_files: int = 200, max_age_s: float = 86400.0) -> list[str]:
+    """On server start: studies saved as running by a previous process are marked interrupted and their sessions released."""
+    from mvp.paths import MVP_RUNS_DIR
+
+    folder = MVP_RUNS_DIR / "snapshots"
+    if not folder.is_dir():
+        return []
+    now = time.time()
+    try:
+        files = sorted(folder.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[:max_files]
+    except Exception:
+        return []
+    when = datetime.now().astimezone().strftime("%H:%M %Z")
+    fixed: list[str] = []
+    for path in files:
+        try:
+            if now - path.stat().st_mtime > max_age_s:
+                break
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not isinstance(data, dict) or str(data.get("status") or "") not in _UNFINISHED:
+            continue
+        sid = str(data.get("id") or path.stem)
+        if sid in STUDIES:
+            continue
+        _write_payload(sid, mark_interrupted(data, when))
+        fixed.append(sid)
+        try:
+            from mvp.browser_slots import release_study_sessions
+
+            release_study_sessions(sid)
+        except Exception:
+            pass
+    return fixed
+
+
+def looks_interrupted(data: dict[str, Any], stale_s: float = 180.0) -> bool:
+    """A saved study that says running but has not been updated for minutes and is not in this process."""
+    if str(data.get("status") or "") not in _UNFINISHED:
+        return False
+    if str(data.get("id") or "") in STUDIES:
+        return False
+    raw = str(data.get("updated_at") or "")
+    try:
+        updated = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except Exception:
+        return False
+    if updated.tzinfo is None:
+        updated = updated.replace(tzinfo=timezone.utc)
+    return (datetime.now(timezone.utc) - updated).total_seconds() > stale_s

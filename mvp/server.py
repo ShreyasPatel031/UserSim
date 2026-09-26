@@ -42,6 +42,22 @@ async def _prime_browser_sessions() -> None:
         prime_n = 0
     prime_sessions(prime_n)
 
+
+@app.on_event("startup")
+async def _recover_interrupted() -> None:
+    """Studies a previous process left running are marked interrupted, and their browsers released."""
+    from mvp.study import recover_interrupted_studies
+
+    async def _run() -> None:
+        try:
+            fixed = await asyncio.to_thread(recover_interrupted_studies)
+            if fixed:
+                print(f"marked {len(fixed)} interrupted studies: {', '.join(f[:8] for f in fixed)}", flush=True)
+        except Exception as exc:  # noqa: BLE001
+            print(f"interrupted-study recovery failed: {exc!r}", flush=True)
+
+    asyncio.get_running_loop().create_task(_run())
+
 if STATIC.is_dir():
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
 _TRACE_PUBLIC = ROOT / "public" / "bakeoff-traces"
@@ -485,6 +501,11 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
         segment = "Curious first-time visitor"
 
     study = create_study(url, segment)
+    # Count busy Browserbase sessions while the plan is written, so the
+    # queue check before agents start costs nothing on a free project.
+    from mvp.browser_slots import prefetch_count
+
+    prefetch_count()
     # Stash optional inputs for the upcoming agent-loop planner.
     study.email = body.email
     study.customers = body.customers
@@ -772,13 +793,23 @@ async def get_study(study_id: str):
     if not remote:
         remote = load_local_study(study_id)
         if remote:
-            return _with_report_insights(remote)
+            return _with_report_insights(_interrupted_if_stale(remote))
     if remote:
+        remote = _interrupted_if_stale(remote)
         remote["live_sessions"] = await asyncio.to_thread(
             hydrate_live_sessions_from_gcs, study_id, remote.get("live_sessions")
         )
         return _with_report_insights(remote)
     raise HTTPException(status_code=404, detail="Study not found")
+
+
+def _interrupted_if_stale(data: dict) -> dict:
+    """A saved study still marked running that no process is updating is shown as interrupted."""
+    from mvp.study import looks_interrupted, mark_interrupted
+
+    if looks_interrupted(data):
+        return mark_interrupted(data)
+    return data
 
 
 def _with_report_insights(data: dict) -> dict:

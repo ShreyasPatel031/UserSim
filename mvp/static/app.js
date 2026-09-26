@@ -340,8 +340,16 @@ function updateProgressUI(data, startedAt) {
   // ETA — not "3/9 sessions finished"
   if (data.status === "complete" || phase === "Complete") {
     progressAgents.textContent = "Done";
+  } else if (data.status === "queued" && data.queue_eta_s) {
+    progressAgents.textContent = `Starts in ~${data.queue_eta_s}s`;
   } else {
     progressAgents.textContent = formatEta(left);
+  }
+  if (data.status === "queued") {
+    progressHint.textContent = "Queued: waiting for free browsers. It starts on its own.";
+    progressFill.style.width = "3%";
+    updateReportCta(data, startedAt);
+    return;
   }
 
   if (phase.startsWith("Preparing browser sessions")) {

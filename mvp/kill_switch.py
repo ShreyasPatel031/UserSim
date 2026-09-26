@@ -92,6 +92,9 @@ def list_running_browserbase(
                 "owner": sess_owner,
                 "study_id": sess_study,
                 "user_metadata": meta,
+                "started_at": (s.get("started_at") or s.get("startedAt") or s.get("created_at") or s.get("createdAt"))
+                if isinstance(s, dict)
+                else (getattr(s, "started_at", None) or getattr(s, "created_at", None)),
             }
         )
     return running
