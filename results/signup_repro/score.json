@@ -1418,10 +1418,10 @@
       "updated_at": "2026-09-26T01:21:32.957092+00:00"
     },
     "asana.com": {
-      "reproducible": false,
-      "last_reason": "already_signed_in",
+      "reproducible": true,
+      "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "asanafullb10",
+      "last_alias_tag": "asanahonest10",
       "last_ok": true,
       "attempts": [
         {
@@ -1456,15 +1456,33 @@
           "balance_before": 19.991,
           "balance_after": 19.991,
           "at": "2026-09-26T01:21:46.767976+00:00"
+        },
+        {
+          "host": "asana.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 424.9,
+          "alias_tag": "asanahonest10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/f24493cd-c323-4522-8958-5678b8f941be",
+          "attempt": 2,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T02:56:16.382069+00:00"
         }
       ],
-      "updated_at": "2026-09-26T01:21:46.767976+00:00"
+      "updated_at": "2026-09-26T02:56:16.382069+00:00"
     },
     "monday.com": {
-      "reproducible": false,
-      "last_reason": "already_signed_in",
+      "reproducible": true,
+      "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "mondayfullb10",
+      "last_alias_tag": "mondayhonest10",
       "last_ok": true,
       "attempts": [
         {
@@ -1499,15 +1517,33 @@
           "balance_before": 19.991,
           "balance_after": 19.991,
           "at": "2026-09-26T01:21:55.723824+00:00"
+        },
+        {
+          "host": "monday.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 457.9,
+          "alias_tag": "mondayhonest10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/d527c743-cfc1-4be5-a44b-1492f77ff1f4",
+          "attempt": 2,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T03:03:55.429323+00:00"
         }
       ],
-      "updated_at": "2026-09-26T01:21:55.723824+00:00"
+      "updated_at": "2026-09-26T03:03:55.429323+00:00"
     },
     "mailchimp.com": {
-      "reproducible": false,
-      "last_reason": "already_signed_in",
+      "reproducible": true,
+      "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "mailchimpfullb10",
+      "last_alias_tag": "mailchimphonest10",
       "last_ok": true,
       "attempts": [
         {
@@ -1542,9 +1578,27 @@
           "balance_before": 19.991,
           "balance_after": 19.991,
           "at": "2026-09-26T01:22:03.191792+00:00"
+        },
+        {
+          "host": "mailchimp.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 306.1,
+          "alias_tag": "mailchimphonest10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/49fe1f74-98d6-408b-a3d8-cbf5c2101890",
+          "attempt": 2,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T03:09:02.678344+00:00"
         }
       ],
-      "updated_at": "2026-09-26T01:22:03.191792+00:00"
+      "updated_at": "2026-09-26T03:09:02.678344+00:00"
     },
     "vercel.com": {
       "reproducible": true,
@@ -1590,10 +1644,10 @@
       "updated_at": "2026-09-26T01:25:25.125033+00:00"
     },
     "netlify.com": {
-      "reproducible": false,
-      "last_reason": "already_signed_in",
+      "reproducible": true,
+      "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "netlifyfullb10",
+      "last_alias_tag": "netlifyhonest10",
       "last_ok": true,
       "attempts": [
         {
@@ -1628,9 +1682,27 @@
           "balance_before": 19.991,
           "balance_after": 19.991,
           "at": "2026-09-26T01:25:32.593436+00:00"
+        },
+        {
+          "host": "netlify.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 225.0,
+          "alias_tag": "netlifyhonest10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/f1a8ece7-4cc5-4363-b156-e60f8bd47110",
+          "attempt": 2,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T03:12:48.976959+00:00"
         }
       ],
-      "updated_at": "2026-09-26T01:25:32.593436+00:00"
+      "updated_at": "2026-09-26T03:12:48.976959+00:00"
     },
     "digitalocean.com": {
       "reproducible": true,
@@ -1719,10 +1791,10 @@
       "updated_at": "2026-09-26T01:34:42.811064+00:00"
     },
     "pinterest.com": {
-      "reproducible": false,
-      "last_reason": "already_signed_in",
+      "reproducible": true,
+      "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "pinterestfullb10",
+      "last_alias_tag": "pinteresthonest10",
       "last_ok": true,
       "attempts": [
         {
@@ -1757,16 +1829,34 @@
           "balance_before": 19.991,
           "balance_after": 19.991,
           "at": "2026-09-26T01:42:11.639370+00:00"
+        },
+        {
+          "host": "pinterest.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 400.9,
+          "alias_tag": "pinteresthonest10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/1e6a41ed-7c36-40d3-8ba1-311e51dbece8",
+          "attempt": 2,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T03:19:31.061334+00:00"
         }
       ],
-      "updated_at": "2026-09-26T01:42:11.639370+00:00"
+      "updated_at": "2026-09-26T03:19:31.061334+00:00"
     },
     "substack.com": {
       "reproducible": false,
-      "last_reason": "already_signed_in",
+      "last_reason": "timeout",
       "last_detail": "",
-      "last_alias_tag": "substackfullb10",
-      "last_ok": true,
+      "last_alias_tag": "substackhonest10",
+      "last_ok": false,
       "attempts": [
         {
           "host": "substack.com",
@@ -1800,9 +1890,27 @@
           "balance_before": 19.991,
           "balance_after": 19.991,
           "at": "2026-09-26T01:42:20.097914+00:00"
+        },
+        {
+          "host": "substack.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "timeout",
+          "detail": "",
+          "elapsed_s": 459.3,
+          "alias_tag": "substackhonest10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/5c41dc99-6ef7-4def-8aed-80a7edfd7c79",
+          "attempt": 2,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T03:27:11.583389+00:00"
         }
       ],
-      "updated_at": "2026-09-26T01:42:20.097914+00:00"
+      "updated_at": "2026-09-26T03:27:11.583389+00:00"
     },
     "hubspot.com": {
       "reproducible": false,
@@ -1892,9 +2000,9 @@
     },
     "whimsical.com": {
       "reproducible": false,
-      "last_reason": "unknown",
-      "last_detail": "The email verification step is blocked by a 'Sorry, there's a technical issue.' message, preventing further progress. Repeated attempts to submit the code and resend the email have failed.",
-      "last_alias_tag": "whimsicalfullb10",
+      "last_reason": "not_signed_in",
+      "last_detail": "",
+      "last_alias_tag": "whimsicalhonest10",
       "last_ok": false,
       "attempts": [
         {
@@ -1929,9 +2037,27 @@
           "balance_before": 19.991,
           "balance_after": 19.991,
           "at": "2026-09-25T23:40:53.243915+00:00"
+        },
+        {
+          "host": "whimsical.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "not_signed_in",
+          "detail": "",
+          "elapsed_s": 230.2,
+          "alias_tag": "whimsicalhonest10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/40e91836-d75c-4873-a763-d4a79b043857",
+          "attempt": 2,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T03:32:13.378241+00:00"
         }
       ],
-      "updated_at": "2026-09-25T23:40:53.243915+00:00"
+      "updated_at": "2026-09-26T03:32:13.378241+00:00"
     },
     "loom.com": {
       "reproducible": false,
@@ -2039,7 +2165,7 @@
       "reproducible": false,
       "last_reason": "timeout",
       "last_detail": "",
-      "last_alias_tag": "hotjarfullb10",
+      "last_alias_tag": "hotjarhonest10",
       "last_ok": false,
       "attempts": [
         {
@@ -2059,9 +2185,27 @@
           "balance_before": 19.991,
           "balance_after": 19.991,
           "at": "2026-09-25T22:59:58.218165+00:00"
+        },
+        {
+          "host": "hotjar.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "timeout",
+          "detail": "",
+          "elapsed_s": 456.7,
+          "alias_tag": "hotjarhonest10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/35ecf2db-8e64-4b0a-889d-4654a1cca8db",
+          "attempt": 2,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T03:39:51.445086+00:00"
         }
       ],
-      "updated_at": "2026-09-25T22:59:58.218165+00:00"
+      "updated_at": "2026-09-26T03:39:51.445086+00:00"
     },
     "1password.com": {
       "reproducible": true,
@@ -2317,7 +2461,7 @@
       "updated_at": "2026-09-25T23:53:01.580956+00:00"
     }
   },
-  "updated_at": "2026-09-26T02:48:38.305339+00:00",
+  "updated_at": "2026-09-26T03:39:51.445541+00:00",
   "reproducible": [
     "linear.app",
     "dropbox.com",
@@ -2334,10 +2478,15 @@
     "todoist.com",
     "calendly.com",
     "buffer.com",
+    "asana.com",
+    "monday.com",
+    "mailchimp.com",
     "vercel.com",
+    "netlify.com",
     "digitalocean.com",
     "wordpress.com",
     "wix.com",
+    "pinterest.com",
     "smartsheet.com",
     "zapier.com",
     "make.com",
@@ -2357,18 +2506,13 @@
     "huggingface.co"
   ],
   "failed": [
-    "asana.com",
     "cloudflare.com",
     "discord.com",
     "github.com",
     "hotjar.com",
     "hubspot.com",
     "loom.com",
-    "mailchimp.com",
-    "monday.com",
-    "netlify.com",
     "notion.so",
-    "pinterest.com",
     "reddit.com",
     "shopify.com",
     "substack.com",
@@ -2376,6 +2520,6 @@
     "trello.com",
     "whimsical.com"
   ],
-  "score": "36/60",
-  "reproducible_count": 36
+  "score": "41/60",
+  "reproducible_count": 41
 }
