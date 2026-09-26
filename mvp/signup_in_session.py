@@ -50,6 +50,12 @@ _AUTH_PATH = re.compile(
 )
 
 
+_OAUTH_HOST = re.compile(
+    r"(^|\.)(accounts\.google\.com|login\.microsoftonline\.com|login\.live\.com|appleid\.apple\.com|"
+    r"github\.com|slack\.com|facebook\.com|okta\.com)$",
+    re.I,
+)
+
 _ERROR_TEXT = re.compile(
     r"unable to verify|please refresh|try again|something went wrong|too many (requests|attempts)|"
     r"too fast|temporarily blocked|not allowed to sign up|invalid email|email (address )?is not valid|"
@@ -275,6 +281,7 @@ Rules:
 - Onboarding after the account exists: answer with short plausible values, choose
   the free plan/"skip"/"not now"/"continue" for invites, integrations, desktop apps,
   and upsells. Pick any template if forced. Keep going until the app itself loads.
+  If an onboarding tour stalls, exit it with Close / X / Skip / Escape.
 - status=signed_in only when the logged-in app is on screen (workspace, dashboard,
   boards, issues, documents, canvas with an account/avatar control) and no more
   onboarding steps or forms are pending.
@@ -288,12 +295,15 @@ Rules:
 
 async def _decide(
     *, snap: dict[str, Any], ident: dict[str, str], site_url: str, history: list[str],
-    note: str, hint: str,
+    note: str, hint: str, dead_names: set[str] | None = None,
 ) -> dict[str, Any] | None:
     from capability.gemini_config import extract_json, gemini_chat
 
-    elements = _visible_elements(snap)
-    known = {k: ("<set>" if k == "password" else v) for k, v in ident.items() if v}
+    elements = [
+        e for e in _visible_elements(snap)
+        if not (dead_names and e.get("role") in {"button", "link", "tab", "menuitem"} and str(e.get("name") or "")[:40] in dead_names)
+    ]
+    known = {k: ("(type {password})" if k == "password" else v) for k, v in ident.items() if v}
     prompt = (
         f"{_RULES}\n\nSite: {site_url}\n"
         + (f"Hint: {hint}\n" if hint else "")
@@ -349,6 +359,33 @@ async def _verify_signed_in(snap: dict[str, Any]) -> tuple[bool, str]:
     return bool(isinstance(data, dict) and data.get("signed_in")), str((data or {}).get("evidence") or "")[:200]
 
 
+async def _pick_link(mail: dict[str, Any]) -> str:
+    """Pick the confirmation/magic link. One cheap model call when there are several."""
+    links = list(mail.get("links") or [])
+    if len(links) <= 1:
+        return links[0]
+    from capability.gemini_config import extract_json, gemini_chat
+
+    texts = list(mail.get("link_texts") or [""] * len(links))
+    listing = "\n".join(f"{i}: [{texts[i] if i < len(texts) else ''}] {u[:140]}" for i, u in enumerate(links))
+    prompt = (
+        "A signup verification email arrived. Which link confirms the email / signs the user in "
+        "/ continues account setup? Reply JSON {\"i\": n}.\n"
+        f"Subject: {mail.get('subject')}\nBody: {str(mail.get('text') or '')[:1200]}\nLinks:\n{listing}"
+    )
+    try:
+        raw = await asyncio.wait_for(
+            gemini_chat([{"role": "user", "content": prompt}], model=_model(), temperature=0, json_mode=True, max_retries=2),
+            timeout=30,
+        )
+        i = int(extract_json(raw).get("i"))
+        if 0 <= i < len(links):
+            return links[i]
+    except Exception:
+        pass
+    return links[0]
+
+
 # ---------------------------------------------------------------- actions
 
 def _subst(value: str, ident: dict[str, str]) -> str:
@@ -363,7 +400,7 @@ def _redact(text: str, ident: dict[str, str]) -> str:
     return text.replace(pw, "<password>") if pw else text
 
 
-async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: dict[int, dict[str, Any]]) -> str:
+async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: dict[int, dict[str, Any]], home_site: str = "") -> str:
     kind = str(act.get("do") or "").lower()
     value = _subst(str(act.get("value") or ""), ident)
     try:
@@ -422,6 +459,19 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
         return f"select {name} = {value[:30]}"
     if kind == "click":
         try:
+            live = await loc.evaluate(
+                "el => ((el.getAttribute('aria-label') || el.innerText || el.value || '') + '').replace(/\\s+/g, ' ').trim().slice(0, 80)",
+                timeout=1500,
+            )
+        except Exception:
+            live = None
+        want = str(el.get("name") or "")
+        words = lambda t: {w for w in re.findall(r"[a-z0-9]{3,}", t.lower())}  # noqa: E731
+        if live is not None and want and live and not (words(want) & words(live)) and want[:25].lower() not in live.lower():
+            return f"skipped stale [{idx}] (now {live[:30]!r})"
+        if live and _OAUTH.search(live) and "email" not in live.lower():
+            return f"refused oauth {live[:30]}"
+        try:
             await loc.scroll_into_view_if_needed(timeout=2000)
         except Exception:
             pass
@@ -435,7 +485,7 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
         return f"press {value or 'Enter'}"
     if kind == "goto":
         target = urljoin(page.url, value)
-        if _site(target) != _site(page.url) and _site(target) not in {"atlassian.com", "notion.com", "notion.so"}:
+        if _site(target) not in {_site(page.url), home_site} or _OAUTH_HOST.search(_host(target)):
             return f"refused off-site goto {target[:60]}"
         await page.goto(target, wait_until="domcontentloaded", timeout=30000)
         return f"goto {target[:80]}"
@@ -601,6 +651,8 @@ async def signup_in_session(
         same = 0
         errors_seen = 0
         dead: list[str] = []
+        dead_count: dict[str, int] = {}
+        empty_waits = 0
         url_changed_at = time.time()
         last_url = ""
         note = ""
@@ -624,6 +676,20 @@ async def signup_in_session(
             if str(snap.get("url")) != last_url:
                 last_url = str(snap.get("url"))
                 url_changed_at = time.time()
+            if _OAUTH_HOST.search(_host(str(snap.get("url") or ""))):
+                steps.append(f"landed on OAuth provider {_host(str(snap.get('url')))}; going back")
+                try:
+                    await page.go_back(wait_until="domcontentloaded", timeout=15000)
+                except Exception:
+                    await page.goto(signup_url or site_url, wait_until="domcontentloaded", timeout=30000)
+                await _settle(page, 1200)
+                note = "The last click opened an OAuth provider. Use the email field and email/password path only."
+                continue
+            if not (snap.get("elements") or []) and empty_waits < 4:
+                empty_waits += 1
+                await page.wait_for_timeout(1200)
+                continue
+            empty_waits = 0
             sig = _page_sig(snap)
             same = same + 1 if sig == last_sig else 0
             last_sig = sig
@@ -645,10 +711,12 @@ async def signup_in_session(
                 note=note + (
                     "\nThe page did not change after your last actions. Do not repeat them; "
                     f"these had no effect: {'; '.join(dead[-5:])}. Try a different control "
-                    "(a primary button, Continue/Next/Skip/Done, or close an overlay with Escape)."
+                    "(a primary button, Continue/Next/Skip/Done, Close, or press Escape). Controls "
+                    "that failed twice are removed from the list."
                     if same else ""
                 ),
                 hint=SITE_HINTS.get(site, ""),
+                dead_names={n for n, c in dead_count.items() if c >= 2},
             )
             note = ""
             if not decision:
@@ -727,9 +795,9 @@ async def signup_in_session(
                     note = "The emailed verification code is available as {code}. Enter it now."
                     continue
                 if mail.get("links"):
-                    link = mail["links"][0]
+                    link = await _pick_link(mail)
                     await page.goto(link, wait_until="domcontentloaded", timeout=30000)
-                    steps.append(f"opened emailed link on {_host(link)}")
+                    steps.append(f"opened emailed link {_host(link)}{urlparse(link).path[:40]} (of {len(mail['links'])})")
                     await _settle(page, 1500)
                     continue
                 if mail.get("code"):
@@ -741,7 +809,15 @@ async def signup_in_session(
 
             acts = decision.get("actions") or []
             if same and history:
-                dead.extend(h for h in history[-3:] if h.startswith("click"))
+                for h in history[-3:]:
+                    if h.startswith("click"):
+                        dead.append(h)
+                        m = re.search(r"'(.*)'$|\"(.*)\"$", h)
+                        if m:
+                            nm = m.group(1) or m.group(2)
+                            dead_count[nm] = dead_count.get(nm, 0) + 1
+            elif not same:
+                dead_count.clear()
             if not isinstance(acts, list) or not acts:
                 await page.wait_for_timeout(1200)
                 continue
@@ -749,7 +825,7 @@ async def signup_in_session(
                 if not isinstance(act, dict):
                     continue
                 try:
-                    done = await asyncio.wait_for(_do(page, act, ident, elements), timeout=15)
+                    done = await asyncio.wait_for(_do(page, act, ident, elements, site), timeout=15)
                 except Exception as exc:  # noqa: BLE001
                     done = f"{act.get('do')} [{act.get('i')}] failed: {type(exc).__name__}"
                 done = _redact(done, ident)
@@ -762,6 +838,8 @@ async def signup_in_session(
                         await page.wait_for_timeout(int(gap * 1000))
                 if str(act.get("do")) in {"click", "goto", "press"}:
                     await _settle(page, 700)
+                    if str(getattr(page, "url", "")) != str(snap.get("url")):
+                        break  # new page: re-read before acting again
             await _settle(page, 900)
         return _finish(False, "timeout")
     except Exception as exc:  # noqa: BLE001

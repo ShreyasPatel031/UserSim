@@ -50,6 +50,16 @@ def _links_from_html(html: str) -> list[str]:
     return [unescape(h) for h in hrefs if h.lower().startswith("http")]
 
 
+def anchors_from_html(html: str) -> dict[str, str]:
+    """href -> visible anchor text (for picking the right button in an email)."""
+    out: dict[str, str] = {}
+    for href, inner in re.findall(r"""<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>(.*?)</a>""", html or "", re.I | re.S):
+        text = re.sub(r"\s+", " ", _strip_html(inner)).strip()
+        if href.lower().startswith("http") and text:
+            out.setdefault(unescape(href), text[:60])
+    return out
+
+
 def rank_links(links: list[str], host: str) -> list[str]:
     """Verification-looking links first, product-domain links next, junk dropped."""
     host_tok = (host or "").lower().removeprefix("www.").split(".")[0]
@@ -107,11 +117,14 @@ class Inbox:
                     continue
                 seen.add(key)
                 code = find_code(msg.get("subject", ""), msg.get("text", ""))
+                anchors = msg.get("anchors") or {}
+                ranked = rank_links(msg.get("links") or [], host)[:8]
                 return {
                     "subject": msg.get("subject", ""),
                     "sender": msg.get("sender", ""),
                     "code": code,
-                    "links": rank_links(msg.get("links") or [], host)[:6],
+                    "links": ranked,
+                    "link_texts": [anchors.get(u, "") for u in ranked],
                     "text": (msg.get("text") or "")[:3000],
                 }
             time.sleep(2.5)
@@ -169,6 +182,7 @@ class MailTmInbox(Inbox):
             text = full.get("text") or _strip_html(html)
             links = _links_from_html(html) + _URL_RE.findall(text or "")
             row = {
+                "anchors": anchors_from_html(html),
                 "id": item["id"],
                 "subject": full.get("subject") or "",
                 "sender": ((full.get("from") or {}).get("address") or ""),
@@ -224,6 +238,7 @@ class GmailAliasInbox(Inbox):
                     "sender": _decode(msg.get("From")),
                     "text": text,
                     "links": _links_from_html("\n".join(html_parts)) + _URL_RE.findall(text),
+                    "anchors": anchors_from_html("\n".join(html_parts)),
                     "ts": ts,
                 }
             )
