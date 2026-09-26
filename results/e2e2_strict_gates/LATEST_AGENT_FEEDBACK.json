@@ -1,7 +1,7 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T07:33:00Z",
+  "graded_at": "2026-09-26T07:40:00Z",
   "live_launches": "stopped",
   "note": "Owner gates sessions were released, including primes. New grades use --grade-study and do not open Browserbase. #47 tip 234280b and integration tip 4a874ac are not live-graded.",
   "heads": {
@@ -369,5 +369,21 @@
       "new_issue": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal.",
       "pricing": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
     }
+  },
+  "excalidraw_748a1b0a": {
+    "study_id": "748a1b0a-5cb2-4f8a-8a81-72ebcca23c17",
+    "pass": false,
+    "wall_s": 118.787,
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "page_opened": "24/24 PASS",
+    "time_to_first_action": "median=0.894s max=4.28s n=24/24 PASS",
+    "final_screenshot": "24/24 PASS",
+    "product_task_completion": "4/8 PASS",
+    "product_note": "Draw-a-box is 4/4 YES (a rectangle is on the canvas). Export/share is 0/4, still the opening screen.",
+    "strength": "0/0 FAIL",
+    "weakness": "0/2 FAIL",
+    "top_weakness": "click Menu changed nothing on https://excalidraw.com/",
+    "report_page": "not fetched, gates app stopped"
   }
 }
