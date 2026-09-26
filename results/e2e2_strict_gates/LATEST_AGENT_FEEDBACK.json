@@ -1,13 +1,13 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T05:58:00Z",
+  "graded_at": "2026-09-26T06:04:00Z",
   "live_launches": "stopped",
   "note": "Owner gates sessions were released, including primes. New grades use --grade-study and do not open Browserbase. #47 tip 234280b and integration tip 4a874ac are not live-graded.",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "9470be5",
-      "tip_seen": "234280b",
+      "tip_seen": "a7bc851",
       "note": "Last live grade is 9470be5. Tip 234280b caps CDP state capture. Not launched.",
       "linear": {
         "study_id": "f27bc4b7-196b-4c24-b533-734db02ecc35",
@@ -36,7 +36,7 @@
     },
     "cursor/tonight-integration": {
       "sha": "617e158",
-      "tip_seen": "4a874ac",
+      "tip_seen": "17559b2",
       "note": "Cherry-pick of task-completion onto the a11y loop. Both sites aborted. Tip 4a874ac holds no idle primes and is not live-graded.",
       "linear": {
         "study_id": "9ac802e0-30fa-487b-87e0-5d3ee8b3b50d",
@@ -121,7 +121,8 @@
           "infra_honesty": "PASS losses=0",
           "first_screen_not_excluded": "PASS opening_or_first_screen=8 product_n=8"
         }
-      }
+      },
+      "tip_note": "17559b2 only adds results/tonight JSON. No live regrade."
     }
   },
   "bugs": [
@@ -190,5 +191,40 @@
       "Pricing page shows tiers (4 YES).",
       "New issue: still the opening screen, or the Linear dashboard with no create-issue control."
     ]
-  }
+  },
+  "gcs_abandoned": [
+    {
+      "study_id": "04d5ab41-82dc-455c-b1dc-774b493fcfc4",
+      "url": "https://linear.app",
+      "pass": false,
+      "wall_s": 12.218,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=6.928s max=10.006s FAIL",
+      "product_task_completion": "0/8",
+      "final_screenshot": "missing field final_screenshot_url",
+      "note": "Killed. Recorded TTFA fails the 5s median and the 10s max."
+    },
+    {
+      "study_id": "33cee22a-85fb-466b-b6c4-4ca8ef4b6de7",
+      "url": "https://excalidraw.com",
+      "pass": false,
+      "wall_s": 13.278,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=9.123s max=11.029s FAIL",
+      "product_task_completion": "0/8",
+      "final_screenshot": "missing field final_screenshot_url",
+      "note": "Killed. Median is over 5s."
+    },
+    {
+      "study_id": "2eb1450e-dfc3-47fa-b338-58971b94aa2c",
+      "url": "https://linear.app",
+      "pass": false,
+      "wall_s": 51.142,
+      "page_opened": "FAIL missing field ax_tree; missing field page_open_at_ts",
+      "time_to_first_action": "FAIL missing field page_open_at_ts",
+      "product_task_completion": "0/8",
+      "final_screenshot": "missing field final_screenshot_url",
+      "note": "Killed. Gemini on step screenshots still saw the Linear dashboard with no create-issue control."
+    }
+  ]
 }
