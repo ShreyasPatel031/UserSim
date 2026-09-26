@@ -3,7 +3,18 @@ from __future__ import annotations
 import base64
 from pathlib import Path
 
-from mvp.opening_shot import drop_inline_shots, drop_inline_shots_inplace, png_data_url, strip_live_view
+import unittest
+from datetime import datetime, timedelta, timezone
+
+from mvp.opening_shot import (
+    drop_inline_shots,
+    drop_inline_shots_inplace,
+    png_bytes_ok,
+    png_data_url,
+    publish_final_png,
+    strip_live_view,
+)
+from mvp.study import headline_clocks
 
 
 def test_png_data_url_roundtrip(tmp_path: Path) -> None:
@@ -49,6 +60,46 @@ def test_drop_inline_and_live_view() -> None:
     assert kept.get("live_view_url")
     drop_inline_shots_inplace(payload)
     assert "screenshot_data_url" not in payload["live_sessions"][0]["trace"][0]
+
+
+class FinalPngAndClocksTest(unittest.TestCase):
+    def test_short_or_non_png_is_not_a_final(self) -> None:
+        self.assertFalse(png_bytes_ok(None))
+        self.assertFalse(png_bytes_ok(b"\x89PNG\r\n\x1a\n" + b"\x00" * 20))
+        self.assertTrue(png_bytes_ok(b"\x89PNG\r\n\x1a\n" + b"\x00" * 2100))
+
+    def test_missing_ids_do_not_invent_a_url(self) -> None:
+        self.assertEqual(publish_final_png("", "t1__p1__product"), "")
+        self.assertEqual(publish_final_png("study", ""), "")
+
+    def test_headline_clocks_use_url_submit_not_a_later_poll(self) -> None:
+        submit = datetime(2026, 9, 26, tzinfo=timezone.utc)
+        acted = (submit + timedelta(seconds=3.2)).timestamp()
+        clocks = headline_clocks(
+            created_at=submit.isoformat(),
+            updated_at=(submit + timedelta(seconds=61.5)).isoformat(),
+            runs=[
+                {"agent_id": "t1__p1__product", "first_action_at_ts": acted},
+                {
+                    "agent_id": "t2__p1__product",
+                    "first_action_at_ts": (submit + timedelta(seconds=9)).timestamp(),
+                },
+            ],
+            complete=True,
+        )
+        self.assertEqual(clocks["time_to_first_value_s"], 3.2)
+        self.assertEqual(clocks["time_to_first_value_agent"], "t1__p1__product")
+        self.assertEqual(clocks["total_time_s"], 61.5)
+        self.assertTrue(clocks["report_ready"])
+        open_study = headline_clocks(
+            created_at=submit.isoformat(),
+            updated_at=(submit + timedelta(seconds=4)).isoformat(),
+            runs=[{"agent_id": "t1__p1__product", "first_action_at_ts": acted}],
+            complete=False,
+        )
+        self.assertEqual(open_study["time_to_first_value_s"], 3.2)
+        self.assertIsNone(open_study["total_time_s"])
+        self.assertFalse(open_study["report_ready"])
 
 
 if __name__ == "__main__":

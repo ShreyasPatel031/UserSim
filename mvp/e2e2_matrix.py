@@ -295,6 +295,20 @@ async def _assert_ready_hidden(page, study: dict) -> None:
         )
 
 
+def _stored_clock(study: dict, key: str) -> float | None:
+    """Headline clock saved on the study at URL submit, not the poll clock."""
+    raw = study.get(key)
+    summary = study.get("summary")
+    if raw is None and isinstance(summary, dict):
+        raw = summary.get(key)
+    if raw is None or raw == "":
+        return None
+    try:
+        return round(float(raw), 3)
+    except (TypeError, ValueError):
+        return None
+
+
 def _bb_owner() -> str:
     """Owner this process may release. testfix, gates, or integration only."""
     raw = (os.environ.get("MVP_BB_OWNER") or "testfix").strip().lower() or "testfix"
@@ -767,18 +781,14 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             None if since_task_last is None else round(since_task_last, 1)
         )
         report["time_to_first_action"] = ttfa_check
-        report["time_to_first_value_s"] = (
-            None
-            if t_first_value is None or t_submit is None
-            else round(t_first_value - t_submit, 3)
+        # Clocks live on the study, measured from URL submit inside the server.
+        # The poll that first noticed a click is not time_to_first_value.
+        report["time_to_first_value_s"] = _stored_clock(study, "time_to_first_value_s")
+        report["total_time_s"] = _stored_clock(study, "total_time_s")
+        report["report_ready"] = bool(study.get("report_ready"))
+        report["time_to_first_value_agent"] = str(
+            study.get("time_to_first_value_agent") or ""
         )
-        report["total_time_s"] = (
-            None
-            if t_report_ready is None or t_submit is None
-            else round(t_report_ready - t_submit, 3)
-        )
-        report["report_ready"] = t_report_ready is not None
-        report["time_to_first_value_agent"] = first_value_agent
         report["early_abort"] = (
             None
             if not early_abort

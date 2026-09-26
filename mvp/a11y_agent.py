@@ -739,48 +739,6 @@ def _ms(a: float | None, b: float | None) -> int | None:
     return max(0, int(round((b - a) * 1000)))
 
 
-def invented_excalidraw_action(
-    task: str,
-    read: dict[str, Any],
-    history: list[str] | None = None,
-    skip: set[str] | None = None,
-) -> dict[str, Any] | None:
-    """Rectangle drag and Export image exist only on excalidraw.com.
-
-    Competitors such as Miro do not have those controls. Inventing the click
-    there repeats until the harness aborts every agent in the study.
-    """
-    if _host(str((read or {}).get("url") or "")) != "excalidraw.com":
-        return None
-    kind = task_kind(task)
-    skipped = skip or set()
-    done = [item.lower() for item in (history or [])]
-    if kind == "draw":
-        selected = "selected shape" in str((read or {}).get("text") or "").lower() or any(
-            "rectangle" in item for item in done
-        )
-        if selected:
-            return {"act": "drag", "i": -1, "name": "canvas", "role": "canvas", "href": ""}
-        if "rectangle" in skipped:
-            return None
-        return {"act": "click", "i": -1, "name": "Rectangle", "role": "button", "href": ""}
-    if kind == "export":
-        if "export image" in str((read or {}).get("text") or "").lower():
-            if "export image" in skipped:
-                return None
-            return {
-                "act": "click",
-                "i": -1,
-                "name": "Export image",
-                "role": "menuitem",
-                "href": "",
-            }
-        if "menu" in skipped:
-            return None
-        return {"act": "click", "i": -1, "name": "Menu", "role": "button", "href": ""}
-    return None
-
-
 def offhost_excalidraw_tool(action: dict[str, Any], url: str) -> bool:
     """True when this action is the Excalidraw rectangle/export shortcut elsewhere."""
     if _host(url) == "excalidraw.com":
@@ -1798,7 +1756,6 @@ async def complete_task_on_page(
     on_step: Any | None = None,
     deadline: float | None = None,
     agent_id: str = "agent",
-    opening_nodes: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Step until the live page shows the goal.
 
@@ -1822,7 +1779,6 @@ async def complete_task_on_page(
     model_misses = 0
     offhost_refusals = 0
     done_rejects = 0
-    opening = [node for node in (opening_nodes or []) if isinstance(node, dict)]
     try:
         await page.wait_for_selector("a, button, canvas", timeout=800)
     except Exception:
@@ -1838,28 +1794,16 @@ async def complete_task_on_page(
             _miss("study budget")
             failed = {"phase": "study_budget", "reason": "study budget", "step": step_no}
             break
-        if not acted_once and opening and not read.get("nodes"):
-            # Shared read is the initial observation only. Act on this agent's
-            # own page without waiting for another tree before the first click.
+        try:
+            fresh = await asyncio.wait_for(
+                _fresh_read(page, str(read.get("url") or url)),
+                timeout=12,
+            )
+        except asyncio.TimeoutError:
             fresh = {
-                "url": url,
-                "text": "",
-                "canvas": "",
-                "nodes": opening,
-                "title": "",
+                "error": "accessibility read timed out",
+                "url": str(read.get("url") or url),
             }
-        else:
-            read_cap = 4 if not acted_once else 12
-            try:
-                fresh = await asyncio.wait_for(
-                    _fresh_read(page, str(read.get("url") or url)),
-                    timeout=read_cap,
-                )
-            except asyncio.TimeoutError:
-                fresh = {
-                    "error": "accessibility read timed out",
-                    "url": str(read.get("url") or url),
-                }
         if fresh.get("error") and browser_dead(str(fresh.get("error"))):
             print(f"[{agent_id}] session ended: {fresh.get('error')}", flush=True)
             _miss("session ended")
@@ -1896,58 +1840,29 @@ async def complete_task_on_page(
             _miss()
             break
         model_read = dict(read)
-        live_nodes = list(read.get("nodes") or [])
-        if not acted_once and not live_nodes and opening:
-            live_nodes = opening
-        model_read["nodes"] = _nodes_for_model(live_nodes, skip)
-        action = None
+        model_read["nodes"] = _nodes_for_model(list(read.get("nodes") or []), skip)
         source = "model"
-        # The first click is chosen from the tree already in hand. Waiting on
-        # the model here is what pushed competitor first-action past 10s.
-        if not acted_once:
-            invented = invented_excalidraw_action(task, read, history, skip)
-            if invented is not None:
-                action = invented
-                source = "excalidraw"
-            else:
-                picked = pick_action(task, list(model_read.get("nodes") or []))
-                page_url = str(read.get("url") or url)
-                if offhost_excalidraw_tool(picked, page_url):
-                    picked = {"act": "scroll", "i": -1, "name": "page", "dy": 600}
-                if (
-                    task_kind(task) == "issue"
-                    and "new issue" in str(picked.get("name") or "").lower()
-                ):
-                    picked = {"act": "scroll", "i": -1, "name": "page", "dy": 700}
-                action = picked
-                source = "tree"
-        if action is None:
-            try:
-                action = await asyncio.wait_for(
-                    _model_action(
-                        task=task,
-                        read=model_read,
-                        history=history,
-                        changed_nothing=changed_nothing,
-                    ),
-                    timeout=7 if not acted_once else 20,
-                )
-            except asyncio.TimeoutError:
-                print(f"[{agent_id}] model action timed out", flush=True)
-                action = None
+        try:
+            action = await asyncio.wait_for(
+                _model_action(
+                    task=task,
+                    read=model_read,
+                    history=history,
+                    changed_nothing=changed_nothing,
+                ),
+                timeout=20,
+            )
+        except asyncio.TimeoutError:
+            print(f"[{agent_id}] model action timed out", flush=True)
+            action = None
         if not isinstance(action, dict):
-            invented = invented_excalidraw_action(task, read, history, skip)
-            if invented is not None:
-                action = invented
-                source = "excalidraw"
-            else:
-                model_misses += 1
-                if model_misses >= 3:
-                    _miss("model returned no action")
-                    break
-                changed_nothing = True
-                history.append("model returned no action")
-                continue
+            model_misses += 1
+            if model_misses >= 3:
+                _miss("model returned no action")
+                break
+            changed_nothing = True
+            history.append("model returned no action")
+            continue
         model_misses = 0
         if str(action.get("act")) == "done":
             if goal_visible(task, read):
@@ -1978,21 +1893,6 @@ async def complete_task_on_page(
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
-        if (
-            task_kind(task) == "draw"
-            and _host(str(read.get("url") or url)) == "excalidraw.com"
-            and str(action.get("act")) != "drag"
-        ):
-            # The rectangle tool is selected. The next move is a canvas drag,
-            # not the export menu.
-            selected = "selected shape" in str(read.get("text") or "").lower() or any(
-                "rectangle" in item.lower() for item in history
-            )
-            if selected and not goal_visible(task, read):
-                action = dict(action)
-                action["act"] = "drag"
-                action["name"] = "canvas"
-                action["role"] = "canvas"
         if str(action.get("act")) == "drag":
             box = _canvas_box(list(read.get("nodes") or []))
             if box:
@@ -2385,13 +2285,6 @@ async def _run_a11y_agent_unlocked(
             if trace and isinstance(trace[0], dict):
                 trace[0]["page_open_at_ts"] = opened_at
                 trace[0]["session_ready_at_ts"] = created_at
-            opening_nodes: list[dict[str, Any]] = []
-            for snap in boot.snapshots.values():
-                if _host(str(snap.get("url") or "")) == _host(url):
-                    opening_nodes = [
-                        node for node in (snap.get("nodes") or []) if isinstance(node, dict)
-                    ]
-                    break
             apply_gate_fields(
                 sess,
                 page_open_at_ts=opened_at,
@@ -2410,36 +2303,6 @@ async def _run_a11y_agent_unlocked(
             sess.pop("first_action_at_ts", None)
             boot.study.live_sessions[agent_id] = sess
             boot._touch()
-            # Record a real click or scroll before any accessibility read.
-            # The read is what left competitors on "Opening" past 10s.
-            first = pick_action(task_prompt, opening_nodes) if opening_nodes else {
-                "act": "scroll",
-                "i": -1,
-                "name": "page",
-                "dy": 500,
-            }
-            if offhost_excalidraw_tool(first, url) or (
-                task_kind(task_prompt) == "issue"
-                and "new issue" in str(first.get("name") or "").lower()
-            ):
-                first = {"act": "scroll", "i": -1, "name": "page", "dy": 700}
-            label = action_label(first)
-            step_no = 1
-            row = _step_from_read(
-                step=1,
-                action=label,
-                read={"url": url, "text": "", "nodes": opening_nodes, "title": ""},
-            )
-            trace.append(row)
-            history.append(label)
-            if on_step is not None:
-                maybe = on_step(row)
-                if asyncio.iscoroutine(maybe):
-                    await maybe
-            try:
-                await asyncio.wait_for(_act(page, first), timeout=4)
-            except Exception as exc:  # noqa: BLE001
-                print(f"[{agent_id}] first action: {exc!r}", flush=True)
             phase = "act"
             outcome = await complete_task_on_page(
                 page,
@@ -2452,7 +2315,6 @@ async def _run_a11y_agent_unlocked(
                 on_step=on_step,
                 deadline=deadline,
                 agent_id=agent_id,
-                opening_nodes=opening_nodes,
             )
             stop_reason = str(outcome.get("stop_reason") or "")
             failed = outcome.get("failed") if isinstance(outcome.get("failed"), dict) else failed
@@ -2489,13 +2351,12 @@ async def _run_a11y_agent_unlocked(
             try:
                 await page.screenshot(path=str(path), full_page=False, timeout=8000)
                 shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
-                shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
                 try:
-                    from mvp.opening_shot import upload_screenshot
+                    from mvp.opening_shot import publish_final_png
 
-                    await upload_screenshot(study_id, agent_id, path)
+                    shot_url = await asyncio.to_thread(publish_final_png, study_id, agent_id)
                 except Exception:
-                    pass
+                    shot_url = ""
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
                 if not shot_url:

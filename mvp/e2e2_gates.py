@@ -30,7 +30,9 @@ from urllib.parse import urlsplit
 
 from mvp.report_insights import (
     _canvas_changed,
+    _host,
     _page_key,
+    _stuck_on_open,
     _text_changed,
     changed_page_state,
 )
@@ -212,7 +214,15 @@ def ended_on_opening_frame(run: dict[str, Any]) -> bool:
 
 
 def never_left_first_screen(run: dict[str, Any], start_url: str) -> bool:
-    """No URL, DOM-text, or canvas change away from the page the run opened."""
+    """The run never left the opening screen.
+
+    A two-step visit that stays on the same host is the stall the report
+    calls "stopped on the first screen", even when the path is /docs or
+    /pricing. A URL, DOM, or canvas change counts only after that.
+    """
+    start = str(run.get("site_url") or start_url or "")
+    if _stuck_on_open(run, _host(start)):
+        return True
     return not changed_page_state(run, start_url)
 
 
@@ -1185,13 +1195,22 @@ def is_homepage_excuse(text: str) -> bool:
 
 
 _CLAIMED_STALL_RE = re.compile(
-    r"(\d+)\s+of\s+\d+[^.]*stopped on the first screen",
+    r"(\d+)\s+of\s+\d+[^.]*?(?:"
+    r"stopped on the first screen|"
+    r"stopped on the homepage|"
+    r"never left the homepage|"
+    r"never left the first screen"
+    r")",
     re.I,
 )
 
 
 def claimed_first_screen_stall(*texts: str) -> int:
-    """Largest 'N of M stopped on the first screen' count written into the report."""
+    """Largest first-screen stall count written into the report.
+
+    Matches the insight writer's phrases: stopped on the first screen,
+    stopped on the homepage, and never left the homepage.
+    """
     found = 0
     for text in texts:
         for match in _CLAIMED_STALL_RE.finditer(text or ""):
@@ -2011,11 +2030,19 @@ def evaluate_strict_gates(
     for run in product:
         aid = str(run.get("agent_id") or "")
         start = _start_url(run, study)
+        verdict = coerce_verdict(vision_goal.get(aid)) if aid in vision_goal else None
+        judge_opening = bool(verdict and verdict.get("still_on_opening_screen"))
         if ended_on_opening_frame(run):
             opening_ids.append(aid)
-        if never_left_first_screen(run, start) or ended_on_opening_frame(run):
+        # A judge that still sees the opening screen overrides a path change.
+        on_first = (
+            judge_opening
+            or never_left_first_screen(run, start)
+            or ended_on_opening_frame(run)
+        )
+        if on_first:
             first_screen_ids.append(aid)
-        if beyond_first_screen(run, start):
+        elif beyond_first_screen(run, start):
             structural_ids.append(aid)
         if product_run_succeeded(run, start, vision_goal=vision_goal.get(aid)):
             success_ids.append(aid)
@@ -2077,14 +2104,19 @@ def evaluate_strict_gates(
         bool(weaknesses) and is_homepage_excuse(top_weak) and len(real_weaknesses) == 0
     )
     insight_blob = _insights(study)
+    summary = study.get("summary") if isinstance(study.get("summary"), dict) else {}
     claimed_stall = claimed_first_screen_stall(
         top_weak,
         str(insight_blob.get("headline") or ""),
+        str(insight_blob.get("lede") or ""),
+        str(insight_blob.get("evidence_note") or ""),
+        str(summary.get("headline") or ""),
         *[str(c.get("claim") or "") for c in weaknesses],
     )
-    # The report says runs never left, while the structural counter says none
-    # stayed on the opening screen. That pair is not a pass.
-    stall_contradiction = claimed_stall > 0 and len(first_screen_ids) == 0
+    # The report's stall count cannot be larger than the runs the same
+    # first-screen rule actually marks. A zero structural count next to
+    # "6 of 8 stopped" is the contradiction this rejects.
+    stall_contradiction = claimed_stall > len(first_screen_ids)
 
     study_id = str(study.get("id") or startup.get("study_id") or "")
     html = report_html or ""
@@ -2166,10 +2198,12 @@ def evaluate_strict_gates(
                 "at least one weakness is a real product issue from a run past the first screen",
                 not solely_homepage and len(real_weaknesses) >= 1 and not stall_contradiction,
                 (
-                    f"real_weaknesses={len(real_weaknesses)}"
+                    f"real_weaknesses={len(real_weaknesses)} "
+                    f"structural_past_first_screen={len(structural_ids)} "
+                    f"opening_or_first_screen={len(first_screen_ids)}"
                     + (
                         f"; report says {claimed_stall} stopped on the first screen "
-                        f"but structural count is 0"
+                        f"but structural count is {len(first_screen_ids)}"
                         if stall_contradiction
                         else ""
                     )
@@ -2202,19 +2236,18 @@ def evaluate_strict_gates(
                 "first_screen_not_excluded",
                 "First-screen and opening-frame runs stay in the product denominator",
                 (
-                    f"opening_or_first_screen={len(first_screen_ids)} product_n={product_n} excluded=0"
-                    + (
-                        f" report_claimed_stuck={claimed_stall}"
-                        if stall_contradiction
-                        else ""
-                    )
+                    f"opening_or_first_screen={len(first_screen_ids)} "
+                    f"structural_past_first_screen={len(structural_ids)} "
+                    f"product_n={product_n} excluded=0"
+                    + (f" report_claimed_stuck={claimed_stall}" if claimed_stall else "")
                 ),
                 "excluded=0 (a stuck run is a failure, not a drop)",
                 product_n >= len(set(first_screen_ids)) and not opening_excluded and not stall_contradiction,
                 (
                     f"excluded={len(opening_excluded)}"
                     + (
-                        f"; weakness text says {claimed_stall} stopped on the first screen"
+                        f"; weakness text says {claimed_stall} stopped on the first screen "
+                    f"but structural count is {len(first_screen_ids)}"
                         if stall_contradiction
                         else ""
                     )
