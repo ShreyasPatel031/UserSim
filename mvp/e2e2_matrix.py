@@ -1013,11 +1013,6 @@ def grade_recorded_study(args: argparse.Namespace) -> dict:
     report_html, report_url = _fetch_report_html(args.base, study_id)
     shot_loader = _screenshot_loader(args.base, study_id)
     personas = study.get("personas") or []
-    task_bases = {
-        str(run.get("task_title") or run.get("task_prompt") or "")
-        for run in runs
-        if str(run.get("task_title") or run.get("task_prompt") or "")
-    }
     sites = {str(run.get("site_key") or "product") for run in runs}
     strict = evaluate_strict_gates(
         study,
@@ -1027,7 +1022,6 @@ def grade_recorded_study(args: argparse.Namespace) -> dict:
             "elapsed_s": elapsed,
             "page_open_check": page_open_check,
             "personas": len(personas) if isinstance(personas, list) else 0,
-            "task_bases": len(task_bases),
             "sites": len(sites),
             "min_personas": int(args.min_personas),
             "min_tasks": int(args.min_tasks),

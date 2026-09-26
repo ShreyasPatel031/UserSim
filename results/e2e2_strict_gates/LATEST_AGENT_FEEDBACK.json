@@ -1,7 +1,7 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T05:50:00Z",
+  "graded_at": "2026-09-26T05:58:00Z",
   "live_launches": "stopped",
   "note": "Owner gates sessions were released, including primes. New grades use --grade-study and do not open Browserbase. #47 tip 234280b and integration tip 4a874ac are not live-graded.",
   "heads": {
@@ -152,6 +152,43 @@
     {
       "id": 7,
       "fact": "One shared page serializes the fleet. Competitor clicks land together 17-25s after browser_ready. The 10s max stays."
+    },
+    {
+      "id": 8,
+      "fact": "Finished Linear study 68af612b is product 4/8 only because every pricing persona was a Gemini YES. The new-issue task is 0/4 (opening screen or dashboard with no create control). It also misses ax_tree, page_open_at_ts (created, page_open, and first_action are one instant and browser_ready_at_ts is empty), phase_ms, final_screenshot_url, state_sig.text, and failed_step. Wall clock 507s. pass=false."
     }
-  ]
+  ],
+  "graded_from_gcs": {
+    "study_id": "68af612b-e3ae-433a-9b5d-6022d604406d",
+    "url": "https://linear.app",
+    "pass": false,
+    "source": "gcs",
+    "wall_s": 507.198,
+    "note": "Complete 24-agent Linear study. No git sha is stored on the study. Graded with --grade-study. Gemini ran on per-step screenshots because final_screenshot_url is missing. report_page was not fetched because the gates app was stopped. That fetch failure is not a report-content finding.",
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "study_budget": "507.198s FAIL",
+    "page_opened": "FAIL missing field ax_tree; missing field page_open_at_ts (stamps aligned, no browser_ready_at_ts)",
+    "time_to_first_action": "FAIL missing field page_open_at_ts",
+    "phase_ms": "FAIL missing field phase_ms",
+    "final_screenshot": "FAIL missing field final_screenshot_url",
+    "judge_inputs": "FAIL missing field state_sig.text",
+    "failed_step": "FAIL missing field failed_step_phase; missing field failed_step_reason",
+    "product_task_completion": "4/8 PASS \u2014 all four YES are task 2 (pricing). Task 1 (new issue) is 0/4.",
+    "product_yes_ids": [
+      "t2__p1__product",
+      "t2__p2__product",
+      "t2__p3__product",
+      "t2__p4__product"
+    ],
+    "competitors": "Asana 2/8, Trello 0/8",
+    "strength": "0/3 FAIL",
+    "weakness": "0/3 FAIL",
+    "top_weakness": "I can't properly evaluate the pricing plans if I can't even scroll down to see all the details.",
+    "product_diagnostic": "0/0 finished (no final_screenshot_url)",
+    "judge_reasons_product": [
+      "Pricing page shows tiers (4 YES).",
+      "New issue: still the opening screen, or the Linear dashboard with no create-issue control."
+    ]
+  }
 }
