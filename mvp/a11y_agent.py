@@ -139,8 +139,6 @@ def failure_breakdown(runs: list[dict[str, Any]]) -> dict[str, Any]:
     for run in runs:
         if not isinstance(run, dict):
             continue
-        if str(run.get("site_key") or "product") != "product":
-            continue
         kind = classify_failure(
             stop_reason=str(run.get("stop_reason") or ""),
             error=str(run.get("error") or run.get("browser_error") or ""),
@@ -152,6 +150,7 @@ def failure_breakdown(runs: list[dict[str, Any]]) -> dict[str, Any]:
         rows.append(
             {
                 "agent_id": run.get("agent_id"),
+                "site_key": run.get("site_key") or "product",
                 "type": kind,
                 "reason": (run.get("stop_reason") or run.get("error") or "")[:300],
                 "judge_reason": str(run.get("judge_reason") or "")[:300],
@@ -550,22 +549,31 @@ class A11yBoot:
                 return bb
             except asyncio.QueueEmpty:
                 pass
-        try:
-            bb = await asyncio.to_thread(
-                create_session,
-                proxies=False,
-                keep_alive=True,
-                solve_captchas=False,
-                advanced_stealth=False,
-                owner=study_session_owner(),
-                study_id=self.study.id,
-            )
-        except Exception as exc:  # noqa: BLE001
-            print(f"[a11y] session {i + 1} failed: {exc!r}", flush=True)
-            return None
-        if enqueue:
-            await self.pool.put(bb)
-        return bb
+        deadline = getattr(self.study, "budget_deadline", None) or (
+            time.monotonic() + study_budget_s()
+        )
+        while time.monotonic() < deadline:
+            try:
+                bb = await asyncio.to_thread(
+                    create_session,
+                    proxies=False,
+                    keep_alive=True,
+                    solve_captchas=False,
+                    advanced_stealth=False,
+                    owner=study_session_owner(),
+                    study_id=self.study.id,
+                )
+            except Exception as exc:  # noqa: BLE001
+                # A 429 or a slow create is not a dead browser. Keep trying
+                # until the study budget. Do not stop the agent on the first miss.
+                print(f"[a11y] session {i + 1} create retry: {exc!r}", flush=True)
+                await asyncio.sleep(5)
+                continue
+            if enqueue:
+                await self.pool.put(bb)
+            return bb
+        print(f"[a11y] session {i + 1} not created before the study budget", flush=True)
+        return None
 
     async def _fill_pool(self, n: int, offset: int = 0) -> None:
         await asyncio.gather(*[self._create_one(offset + i) for i in range(n)])
@@ -637,6 +645,10 @@ class A11yBoot:
                 continue
             agent_id = str(task.get("id") or "")
             if not agent_id:
+                continue
+            existing = self.study.live_sessions.get(agent_id) or {}
+            # A later republish must not wipe steps the agent already took.
+            if existing.get("first_action_at_ts") or len(existing.get("trace") or []) > 2:
                 continue
             persona = next(
                 (p for p in (self.study.personas or []) if p.get("id") == task.get("persona_id")),
@@ -771,28 +783,39 @@ class A11yBoot:
         self.published.set()
 
     async def take_page(self, site_key: str, url: str) -> dict[str, Any] | None:
-        """A browser already on this site, or the next pre-created session."""
-        async with self._handle_cv:
-            for i, handle in enumerate(self._handles):
-                if handle.get("site_key") == site_key:
-                    return self._handles.pop(i)
-        try:
-            bb = await asyncio.wait_for(self.pool.get(), timeout=40)
-        except asyncio.TimeoutError:
+        """A browser already on this site, or the next session that becomes ready.
+
+        Waits until the study budget. A rate-limited create is not a dead browser.
+        """
+        deadline = getattr(self.study, "budget_deadline", None) or (
+            time.monotonic() + study_budget_s()
+        )
+        while time.monotonic() < deadline:
             async with self._handle_cv:
-                if self._handles:
-                    return self._handles.pop(0)
-            return None
-        try:
-            _browser, page = await self._connect(bb)
+                for i, handle in enumerate(self._handles):
+                    if handle.get("site_key") == site_key:
+                        return self._handles.pop(i)
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            try:
+                bb = await asyncio.wait_for(self.pool.get(), timeout=min(5.0, remaining))
+            except asyncio.TimeoutError:
+                continue
+            try:
+                _browser, page = await self._connect(bb)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] connect failed (retrying): {exc!r}", flush=True)
+                continue
             try:
                 await page.goto(url, wait_until="commit", timeout=8000)
             except Exception as exc:  # noqa: BLE001
+                if browser_dead(exc):
+                    print(f"[a11y] browser died during goto (retrying): {exc!r}", flush=True)
+                    continue
                 print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
             return {"bb": bb, "browser": _browser, "page": page, "site_key": site_key}
-        except Exception as exc:  # noqa: BLE001
-            print(f"[a11y] connect failed: {exc!r}", flush=True)
-            return None
+        return None
 
     def snapshot_for(self, site_key: str) -> dict[str, Any] | None:
         return self.snapshots.get(site_key)
@@ -950,8 +973,8 @@ async def run_a11y_agent(
     if deadline is None:
         deadline = time.monotonic() + study_budget_s()
     if handle is None:
-        stop_reason = "browser dead: no Browserbase session"
-        failed = {"phase": "session", "reason": stop_reason, "step": 0}
+        stop_reason = "study budget"
+        failed = {"phase": "study_budget", "reason": stop_reason, "step": 0}
     else:
         page = handle["page"]
         browser = handle["browser"]

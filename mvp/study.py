@@ -2245,6 +2245,14 @@ async def run_study(
             ]
 
         persona_by_id = {p["id"]: p for p in study.personas}
+        if a11y_boot is not None:
+            # The product read often finishes before the planner has tasks.
+            # Publish the first click as soon as those tasks exist.
+            for _key, _snap in list(getattr(a11y_boot, "snapshots", {}).items()):
+                try:
+                    a11y_boot._publish_site(_key, _snap)
+                except Exception as pub_exc:  # noqa: BLE001
+                    print(f"[a11y] republish {_key} failed: {pub_exc!r}", flush=True)
         if a11y_boot is None:
             study.live_sessions = {}
         for task in study.tasks:
@@ -3067,6 +3075,15 @@ async def run_study(
                         sess["trace"].append(step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
+                    action_text = str(step.get("action") or "")
+                    if (
+                        not sess.get("first_action_at_ts")
+                        and action_text
+                        and not action_text.lower().startswith("open")
+                    ):
+                        from mvp.a11y_agent import apply_gate_fields
+
+                        apply_gate_fields(sess, first_action_at_ts=time.time())
                     _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     thought = (step.get("thought") or "").strip()
                     if thought:
