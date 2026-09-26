@@ -105,13 +105,20 @@ class CreateBucket:
             return len(self._waiters)
 
     # ---- feedback from Browserbase ----
-    def note_rate_limited(self, retry_after_s: float | None, now: float | None = None) -> float:
+    def note_rate_limited(
+        self, retry_after_s: float | None, now: float | None = None, *, refund: bool = True
+    ) -> float:
         """A 429 arrived: hold every grant until the server's retry moment plus jitter.
 
+        The rejected request's token is handed back (``refund``): measured on
+        2026-09-26, 22 creates rejected inside a full window did not delay the
+        next window, so rejected requests do not count against the 25/min.
         Returns the moment (clock units) grants resume.
         """
         with self._cond:
             now = self._clock() if now is None else now
+            if refund and self._grants:
+                self._grants.pop()
             wait = retry_after_s if retry_after_s is not None and retry_after_s >= 0 else self.window_s / 2
             until = now + float(wait) + max(0.0, float(self._jitter()))
             self.blocked_until = max(self.blocked_until, until)

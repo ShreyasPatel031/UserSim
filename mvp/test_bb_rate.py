@@ -115,6 +115,17 @@ class BucketRateLimitTests(unittest.TestCase):
         self.assertAlmostEqual(c.t - start, 35.0, places=6)
         self.assertEqual(b.stats["rate_limited"], 1)
 
+    def test_a_rejected_create_gives_its_token_back(self):
+        c = FakeClock()
+        b = bucket(c)
+        for _ in range(22):
+            b.acquire()
+        self.assertEqual(b.recent(), 22)
+        b.note_rate_limited(5.0)
+        self.assertEqual(b.recent(), 21)
+        b.note_rate_limited(5.0, refund=False)
+        self.assertEqual(b.recent(), 21)
+
     def test_unknown_retry_after_waits_half_a_window(self):
         c = FakeClock()
         b = bucket(c)
