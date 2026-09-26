@@ -116,7 +116,8 @@
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "wix8d12443",
+      "last_alias_tag": "wixfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "wix.com",
@@ -132,9 +133,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/d984e30e-066f-4fd5-89cc-c235c4ff347c",
           "at": "2026-09-25T10:52:01.113801+00:00"
+        },
+        {
+          "host": "wix.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 441.5,
+          "alias_tag": "wixfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/2684b388-be1e-4819-9859-045ffc459f75",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:42:05.724025+00:00"
         }
       ],
-      "updated_at": "2026-09-25T10:52:01.113801+00:00"
+      "updated_at": "2026-09-26T01:42:05.724025+00:00"
     },
     "codepen.io": {
       "reproducible": true,
@@ -1566,9 +1585,10 @@
     },
     "pinterest.com": {
       "reproducible": true,
-      "last_reason": "signed_up",
+      "last_reason": "already_signed_in",
       "last_detail": "",
-      "last_alias_tag": "pintereste731c9d",
+      "last_alias_tag": "pinterestfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "pinterest.com",
@@ -1584,15 +1604,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/fe0c80ac-a686-4ee4-89d9-190ee87821a1",
           "at": "2026-09-25T14:02:38.307560+00:00"
+        },
+        {
+          "host": "pinterest.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "already_signed_in",
+          "detail": "",
+          "elapsed_s": 4.4,
+          "alias_tag": "pinterestfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/3e20fb33-a76d-4838-8087-fb3332a42686",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:42:11.639370+00:00"
         }
       ],
-      "updated_at": "2026-09-25T14:02:38.307560+00:00"
+      "updated_at": "2026-09-26T01:42:11.639370+00:00"
     },
     "substack.com": {
       "reproducible": true,
       "last_reason": "already_signed_in",
       "last_detail": "",
-      "last_alias_tag": "substacke731c9e",
+      "last_alias_tag": "substackfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "substack.com",
@@ -1608,9 +1647,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/3d60a039-d35d-4170-9b80-4736440b6e5c",
           "at": "2026-09-25T14:02:43.529151+00:00"
+        },
+        {
+          "host": "substack.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "already_signed_in",
+          "detail": "",
+          "elapsed_s": 7.4,
+          "alias_tag": "substackfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/c393e4bd-5845-4464-9d62-688445da7281",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:42:20.097914+00:00"
         }
       ],
-      "updated_at": "2026-09-25T14:02:43.529151+00:00"
+      "updated_at": "2026-09-26T01:42:20.097914+00:00"
     },
     "hubspot.com": {
       "reproducible": true,
@@ -2068,7 +2125,7 @@
       "updated_at": "2026-09-25T23:53:01.580956+00:00"
     }
   },
-  "updated_at": "2026-09-26T01:34:42.811580+00:00",
+  "updated_at": "2026-09-26T01:42:20.098383+00:00",
   "reproducible": [
     "1password.com",
     "airtable.com",

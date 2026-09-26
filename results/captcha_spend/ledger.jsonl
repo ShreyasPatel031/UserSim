@@ -155,3 +155,14 @@
 {"attempt": 1, "event": "signup_start", "site": "wix.com", "ts": "2026-09-26T01:34:43.893214+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "wix.com", "ts": "2026-09-26T01:34:43.978467+00:00", "when": "before"}
 {"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "wix.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-26T01:36:13.110263+00:00"}
+{"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "wix.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-26T01:37:40.981650+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "wix.com", "ts": "2026-09-26T01:42:05.495417+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "pinterest.com", "ts": "2026-09-26T01:42:06.885046+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "pinterest.com", "ts": "2026-09-26T01:42:06.921998+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "pinterest.com", "ts": "2026-09-26T01:42:11.376444+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "substack.com", "ts": "2026-09-26T01:42:12.387279+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "substack.com", "ts": "2026-09-26T01:42:12.423418+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "substack.com", "ts": "2026-09-26T01:42:19.889555+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "hubspot.com", "ts": "2026-09-26T01:42:20.842290+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "hubspot.com", "ts": "2026-09-26T01:42:20.878858+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "hubspot.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-26T01:46:04.421679+00:00"}
