@@ -50,6 +50,12 @@ _AUTH_PATH = re.compile(
 )
 
 
+_ONBOARDING_PATH = re.compile(
+    r"/(welcome|onboarding|setup|get-started|getting-started|account_setup|account-setup|"
+    r"invite|join|signup|sign-up|login|verify)(\b|/|$)",
+    re.I,
+)
+
 _OAUTH_HOST = re.compile(
     r"(^|\.)(accounts\.google\.com|login\.microsoftonline\.com|login\.live\.com|appleid\.apple\.com|"
     r"github\.com|slack\.com|facebook\.com|okta\.com)$",
@@ -335,7 +341,8 @@ async def _decide(
 _VERIFY = """Is this browser page the SIGNED-IN product application (e.g. a workspace,
 dashboard, board, issue list, document editor, or canvas that belongs to a logged-in
 user), as opposed to a marketing page, a login/signup/verify form, or an onboarding
-questionnaire that still needs answers? Reply JSON {"signed_in":true|false,
+step (welcome, profile setup, invite teammates, connect tools, pick a plan, survey)
+that still needs answers? Onboarding steps are NOT signed_in. Reply JSON {"signed_in":true|false,
 "evidence":"one sentence naming what on the page shows it"}."""
 
 
@@ -806,7 +813,8 @@ async def signup_in_session(
                     await _settle(page, 2500)
                     snap2 = await _snapshot(page)
                     ok2, evidence2 = await _verify_signed_in(snap2)
-                    if ok2 and not _has_password_or_email_field(snap2):
+                    onboarding = bool(_ONBOARDING_PATH.search(urlparse(str(snap2.get("url"))).path or ""))
+                    if ok2 and not _has_password_or_email_field(snap2) and not onboarding:
                         steps.append(f"verified after reload: {evidence2}")
                         return _finish(True, "signed_up", evidence2 or evidence)
                     note = f"After reload the page does not look signed in: {evidence2}"

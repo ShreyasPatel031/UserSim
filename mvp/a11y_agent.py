@@ -2218,6 +2218,7 @@ async def complete_task_on_page(
         clicked = str(action.get("name") or "").lower()
         if (
             not after.get("error")
+            and not signed_in
             and task_kind(task) == "issue"
             and "new issue" in clicked
         ):
