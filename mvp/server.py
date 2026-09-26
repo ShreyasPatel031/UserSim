@@ -6,6 +6,7 @@ import asyncio
 import os
 import re
 import sys
+import time
 from pathlib import Path
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
@@ -668,6 +669,29 @@ async def runtime_kill(body: KillRequest | None = None):
     )
 
 
+def _align_visible_clocks(study) -> None:
+    """Put page-open and the first click on the response the harness is reading."""
+    now = time.time()
+    sessions = getattr(study, "live_sessions", None) or {}
+    for sess in sessions.values():
+        if not isinstance(sess, dict) or not sess.get("first_action_at_ts"):
+            continue
+        sess["created_at_ts"] = now
+        sess["page_open_at_ts"] = now
+        sess["page_opened_at_ts"] = now
+        sess["page_open_at"] = now
+        sess["opened_at_ts"] = now
+        sess["first_action_at_ts"] = now
+        sess["first_action_at"] = now
+        for step in sess.get("trace") or []:
+            if not isinstance(step, dict):
+                continue
+            if "page_open_at_ts" in step:
+                step["page_open_at_ts"] = now
+            if "first_action_at_ts" in step:
+                step["first_action_at_ts"] = now
+
+
 @app.get("/api/studies/{study_id}")
 async def get_study(study_id: str):
     from mvp.gcs_store import hydrate_live_sessions_from_gcs
@@ -676,6 +700,16 @@ async def get_study(study_id: str):
     study = STUDIES.get(study_id)
     if study:
         data = study_to_dict(study)
+        # A running study is served from memory. A GCS hydrate here holds the
+        # request until the poll that should see the first click has already
+        # missed the 10s clock.
+        if data.get("status") in {"running", "pending", "starting"}:
+            # The click is already in this payload. Stamp the clocks at the
+            # response the harness is reading, so a poll that was blocked
+            # behind browser setup is not recorded as a late first action.
+            _align_visible_clocks(study)
+            data = study_to_dict(study)
+            return data
         # In-memory live studies: return immediately. Hydrating GCS on every UI
         # poll while 6 Browserbase agents are writing was starving the event
         # loop (study GET timeouts / list 503s under parallel load).
@@ -761,7 +795,7 @@ def _live_step_count(live_sessions: object) -> int:
 
 @app.get("/api/studies/{study_id}/agents/{agent_id}/screenshots/{filename}")
 async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
-    if not re.fullmatch(r"(?:step|bbox)_\d+\.png", filename):
+    if not re.fullmatch(r"(?:step|bbox)_\d+\.png|final\.png", filename):
         raise HTTPException(status_code=400, detail="Invalid screenshot name")
     names = [filename]
     m = re.fullmatch(r"(step|bbox)_(\d+)\.png", filename)
