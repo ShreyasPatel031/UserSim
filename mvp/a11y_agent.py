@@ -16,6 +16,44 @@ from typing import Any
 
 AX_CAP = 150
 
+# Sessions created at process start so URL submit does not wait on Browserbase.
+_PRIMED: asyncio.Queue | None = None
+_PRIME_STARTED = False
+
+
+def prime_sessions(n: int = 4) -> None:
+    """Start creating browsers before anyone clicks Run."""
+    global _PRIME_STARTED
+    if _PRIME_STARTED:
+        return
+    _PRIME_STARTED = True
+
+    async def _fill() -> None:
+        global _PRIMED
+        from capability.browserbase_client import create_session, study_session_owner
+
+        _PRIMED = asyncio.Queue()
+        for i in range(max(1, n)):
+            try:
+                bb = await asyncio.to_thread(
+                    create_session,
+                    proxies=False,
+                    keep_alive=True,
+                    solve_captchas=False,
+                    advanced_stealth=False,
+                    owner=study_session_owner(),
+                    study_id="prime",
+                )
+                await _PRIMED.put(bb)
+                print(f"[a11y] primed session {i + 1}/{n}", flush=True)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] prime {i + 1} failed: {exc!r}", flush=True)
+
+    try:
+        asyncio.get_running_loop().create_task(_fill())
+    except RuntimeError:
+        _PRIME_STARTED = False
+
 # Stable names the strict e2e gates read. Present on every agent, even when empty.
 GATE_FIELDS = (
     "page_open_at_ts",
@@ -360,6 +398,15 @@ class A11yBoot:
     async def _create_one(self, i: int, enqueue: bool = True) -> Any | None:
         from capability.browserbase_client import create_session, study_session_owner
 
+        if _PRIMED is not None:
+            try:
+                bb = _PRIMED.get_nowait()
+                print(f"[a11y] using primed session for {i + 1}", flush=True)
+                if enqueue:
+                    await self.pool.put(bb)
+                return bb
+            except asyncio.QueueEmpty:
+                pass
         try:
             bb = await asyncio.to_thread(
                 create_session,
