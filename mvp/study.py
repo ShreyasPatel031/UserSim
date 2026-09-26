@@ -3358,6 +3358,8 @@ async def run_study(
                                 result["friction_points"] = list(run.get("friction_points") or [])
                             if run.get("what_was_easy"):
                                 result["what_was_easy"] = list(run.get("what_was_easy") or [])
+                            if run.get("quote"):
+                                result["quote"] = run.get("quote")
                             from mvp.a11y_agent import GATE_FIELDS, apply_gate_fields
 
                             apply_gate_fields(result)
@@ -3610,6 +3612,11 @@ async def run_study(
                     if isinstance(item, Exception):
                         print(f"live agent failed: {item!r}", flush=True)
                         continue
+                if a11y_boot is not None:
+                    try:
+                        await a11y_boot.close()
+                    except Exception as close_exc:  # noqa: BLE001
+                        print(f"a11y browser close failed: {close_exc!r}", flush=True)
                 try:
                     await backfill_site_opening_shots(study)
                     if study.live_sessions:
