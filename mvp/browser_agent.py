@@ -34,6 +34,19 @@ MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "60") or "60")
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
 
 
+def llm_run_concurrency() -> int:
+    """How many browser agents may run at once.
+
+    Eight parallel flash agents leave Linear (8/8). Twenty-four at once time out
+    on navigate, drop the CDP socket, and wait on an empty homepage (0/8).
+    """
+    raw = (os.environ.get("MVP_LLM_RUN_CONCURRENCY") or "8").strip()
+    try:
+        return max(1, int(raw))
+    except ValueError:
+        return 8
+
+
 def _study_bb_owner() -> str:
     from capability.browserbase_client import study_session_owner
 
@@ -851,6 +864,27 @@ _CONSENT_CLICK_JS = """
   return '';
 }
 """
+
+
+async def _ensure_cdp_connected(browser_session: Any, *, agent_id: str) -> None:
+    """Reconnect if the socket died while this agent waited for a run slot.
+
+    browser-use raises 'Root CDP client not initialized' once the websocket
+    leaves OPEN. connect() tears down a dead client and opens a new one.
+    """
+    if browser_session is None:
+        return
+    try:
+        connected = bool(browser_session.is_cdp_connected)
+    except Exception:
+        connected = False
+    if connected:
+        return
+    print(f"[{agent_id}] CDP down — reconnecting before agent.run", flush=True)
+    try:
+        await asyncio.wait_for(browser_session.connect(), timeout=30)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] CDP reconnect failed: {exc!r}", flush=True)
 
 
 async def _dismiss_consent_banners(browser_session: Any, *, agent_id: str) -> None:
@@ -1777,6 +1811,7 @@ async def run_browser_agent(
             on_step=on_step,
             page_state=page_state,
         )
+        await _ensure_cdp_connected(browser_session, agent_id=agent_id)
         print(
             f"[{agent_id}] agent.run starting model={model} provider=google-vertex "
             f"llm_timeout={MVP_LLM_TIMEOUT_S}s step_timeout={MVP_STEP_TIMEOUT_S}s "
