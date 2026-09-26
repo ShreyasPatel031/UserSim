@@ -262,6 +262,11 @@ def _text_tokens(text: str) -> set[str]:
 def _text_changed(a: str, b: str) -> bool:
     ta, tb = _text_tokens(a), _text_tokens(b)
     if len(ta) < 8 or len(tb) < 8:
+        short, long = (a, b) if len(a) <= len(b) else (b, a)
+        # The first accessibility read is often just the document title.
+        # A later read of the real page is a DOM change.
+        if len(short) <= 40 and len(long) - len(short) >= 80:
+            return True
         return False
     union = len(ta | tb) or 1
     delta = len(ta ^ tb)
