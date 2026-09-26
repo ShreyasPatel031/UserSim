@@ -92,3 +92,14 @@
 {"attempt": 1, "event": "signup_start", "site": "zoom.us", "ts": "2026-09-26T00:06:39.946797+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "zoom.us", "ts": "2026-09-26T00:06:39.982968+00:00", "when": "before"}
 {"attempt": 1, "captcha_type": "turnstile", "event": "skip", "reason": "host_not_paid", "site": "zoom.us", "task_type": "AntiTurnstileTaskProxyLess", "ts": "2026-09-26T00:08:10.929071+00:00"}
+{"attempt": 1, "captcha_type": "turnstile", "event": "skip", "reason": "host_not_paid", "site": "zoom.us", "task_type": "AntiTurnstileTaskProxyLess", "ts": "2026-09-26T00:09:30.748444+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "zoom.us", "ts": "2026-09-26T00:14:17.301046+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "canva.com", "ts": "2026-09-26T00:15:20.631891+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "canva.com", "ts": "2026-09-26T00:15:20.672486+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "turnstile", "event": "skip", "reason": "host_not_paid", "site": "canva.com", "task_type": "AntiTurnstileTaskProxyLess", "ts": "2026-09-26T00:17:34.421120+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "canva.com", "ts": "2026-09-26T00:22:58.964519+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "coda.io", "ts": "2026-09-26T00:24:47.900635+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "coda.io", "ts": "2026-09-26T00:24:48.055820+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "coda.io", "ts": "2026-09-26T00:27:35.151049+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "medium.com", "ts": "2026-09-26T00:27:36.384763+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "medium.com", "ts": "2026-09-26T00:27:36.423604+00:00", "when": "before"}

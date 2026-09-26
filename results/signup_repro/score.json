@@ -622,7 +622,8 @@
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "zoomff2dac6",
+      "last_alias_tag": "zoomfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "zoom.us",
@@ -638,15 +639,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/d544a84f-8831-47bc-a9df-a14fc83941a3",
           "at": "2026-09-25T12:14:48.488090+00:00"
+        },
+        {
+          "host": "zoom.us",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 457.3,
+          "alias_tag": "zoomfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/386767ee-5e86-4112-9b7a-f031136e0374",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:14:17.549682+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:14:48.488090+00:00"
+      "updated_at": "2026-09-26T00:14:17.549682+00:00"
     },
     "canva.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "canvaff2dac7",
+      "last_alias_tag": "canvafullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "canva.com",
@@ -662,9 +682,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/378a51fd-3be2-47bb-ae26-ddd6eb2c4782",
           "at": "2026-09-25T12:23:23.735038+00:00"
+        },
+        {
+          "host": "canva.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 458.3,
+          "alias_tag": "canvafullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/7b7071d7-caea-4223-852c-d0d5bd272678",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:22:59.210992+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:23:23.735038+00:00"
+      "updated_at": "2026-09-26T00:22:59.210992+00:00"
     },
     "reddit.com": {
       "reproducible": false,
@@ -756,7 +794,8 @@
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "codaff2daca",
+      "last_alias_tag": "codafullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "coda.io",
@@ -772,9 +811,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/f102e0b8-ba04-4e03-956e-c2137aab9d1b",
           "at": "2026-09-25T12:33:45.564622+00:00"
+        },
+        {
+          "host": "coda.io",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 167.1,
+          "alias_tag": "codafullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/a7c5e230-9a01-414f-a228-3e5709de3eee",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:27:35.377841+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:33:45.564622+00:00"
+      "updated_at": "2026-09-26T00:27:35.377841+00:00"
     },
     "medium.com": {
       "reproducible": true,
@@ -1726,7 +1783,7 @@
       "updated_at": "2026-09-25T23:53:01.580956+00:00"
     }
   },
-  "updated_at": "2026-09-26T00:06:38.739640+00:00",
+  "updated_at": "2026-09-26T00:27:35.378303+00:00",
   "reproducible": [
     "1password.com",
     "airtable.com",
