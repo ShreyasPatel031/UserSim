@@ -13,6 +13,7 @@ from mvp.a11y_agent import (
     failure_breakdown,
     fast_action_model,
     format_ax,
+    goal_visible,
     keep_step_stamps,
     note_progress,
     pick_action,
@@ -111,6 +112,18 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(sess["opened_url"], "https://trello.com/")
         self.assertEqual(sess["ax_tree"], "0 a Login")
         self.assertEqual(sess["created_at_ts"], 5.0)
+
+    def test_link_target_beats_skip_to_content(self) -> None:
+        nodes = [
+            {"i": 0, "role": "a", "name": "Skip to content", "href": "https://linear.app/#content", "x": 1, "y": 1},
+            {"i": 1, "role": "a", "name": "Changelog", "href": "https://linear.app/changelog", "x": 2, "y": 2},
+        ]
+        action = pick_action("Open the changelog and see what shipped recently", nodes)
+        self.assertEqual(action["href"], "https://linear.app/changelog")
+        self.assertFalse(goal_visible("Find pricing", {"url": "https://linear.app/"}))
+        self.assertTrue(goal_visible("Find pricing", {"url": "https://linear.app/pricing"}))
+        self.assertFalse(goal_visible("Open the changelog", {"url": "https://linear.app/docs"}))
+        self.assertTrue(goal_visible("Open the changelog", {"url": "https://linear.app/changelog"}))
 
     def test_gate_fields_are_present(self) -> None:
         sess: dict = {}
