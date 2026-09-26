@@ -1103,6 +1103,7 @@ async def sign_up(
     attach_page: Any | None = None,
     attach_cdp_url: str | None = None,
     email_timeout_s: float | None = None,
+    persist_identity: bool = True,
 ) -> dict[str, Any]:
     """Create an account on ``url`` and persist the signed-in Chrome profile.
 
@@ -1632,12 +1633,13 @@ async def sign_up(
         # still win when we never obtained an authenticated session.
         if signed:
             ignored = ctx.get("blocker")
-            update_identity(
-                f"https://{host}",
-                status="signed_up",
-                blocker=None,
-                profile_dir=str(profile),
-            )
+            if persist_identity:
+                update_identity(
+                    f"https://{host}",
+                    status="signed_up",
+                    blocker=None,
+                    profile_dir=str(profile),
+                )
             result.update(
                 {
                     "ok": True,
@@ -1650,12 +1652,13 @@ async def sign_up(
             return result
 
         if ctx.get("blocker"):
-            update_identity(
-                f"https://{host}",
-                status="blocked",
-                blocker=ctx["blocker"],
-                profile_dir=str(profile),
-            )
+            if persist_identity:
+                update_identity(
+                    f"https://{host}",
+                    status="blocked",
+                    blocker=ctx["blocker"],
+                    profile_dir=str(profile),
+                )
             result.update(
                 {
                     "ok": False,
@@ -1673,15 +1676,16 @@ async def sign_up(
                 pass
         # Always pin the product host (e.g. shopify.com), never the IdP URL host
         # (accounts.shopify.com) — registry keys are product hosts.
-        try:
-            update_identity(
-                f"https://{host}",
-                status="provisioned",
-                blocker=result.get("reason"),
-                profile_dir=str(profile),
-            )
-        except KeyError as exc:
-            result["identity_error"] = str(exc)[:120]
+        if persist_identity:
+            try:
+                update_identity(
+                    f"https://{host}",
+                    status="provisioned",
+                    blocker=result.get("reason"),
+                    profile_dir=str(profile),
+                )
+            except KeyError as exc:
+                result["identity_error"] = str(exc)[:120]
         return result
 
     try:

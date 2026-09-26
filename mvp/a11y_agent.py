@@ -1917,21 +1917,39 @@ async def complete_task_on_page(
                 drew = True
                 read["drew"] = True
             break
+        names = " ".join(
+            str(node.get("name") or "").lower()
+            for node in (read.get("nodes") or [])
+            if isinstance(node, dict)
+        )
         if (
             not nudged_issue
             and task_needs_account(task)
             and task_kind(task) == "issue"
             and _host(str(read.get("url") or "")) == "linear.app"
             and not _is_auth_wall(read)
+            and "create new issue" in names
         ):
             # Linear opens the issue composer with C. "Create new issue"
             # often changes nothing once the agent is signed in.
             nudged_issue = True
             try:
                 await page.keyboard.press("Escape")
-                await page.keyboard.press("c")
             except Exception:
                 pass
+            opened = False
+            try:
+                loc = page.get_by_role("button", name="Create new issue")
+                if await loc.count():
+                    await loc.first.click(timeout=3000)
+                    opened = True
+            except Exception:
+                opened = False
+            if not opened:
+                try:
+                    await page.keyboard.press("c")
+                except Exception:
+                    pass
         signature = progress_signature(
             url=str(read.get("url") or ""),
             screenshot_hash="",
@@ -2501,17 +2519,20 @@ async def _run_a11y_agent_unlocked(
                 cdp = str(getattr(bb, "connect_url", "") or "")
                 print(f"[{agent_id}] signup ({why}) timeout={timeout_s:.0f}s", flush=True)
                 from mvp.auto_signup import sign_up
+                from mvp.identity import fresh_alias_identity
 
                 started = time.perf_counter()
                 try:
                     outcome = await sign_up(
                         url,
+                        identity=fresh_alias_identity(url),
                         attach_page=page,
                         attach_cdp_url=cdp,
                         timeout_s=timeout_s,
                         max_steps=int(os.environ.get("MVP_SIGNUP_IN_STUDY_STEPS", "16") or "16"),
                         email_timeout_s=float(os.environ.get("MVP_SIGNUP_IN_STUDY_EMAIL_S", "90") or "90"),
                         headed=False,
+                        persist_identity=False,
                     )
                 except Exception as exc:  # noqa: BLE001
                     outcome = {
