@@ -123,7 +123,19 @@ def _run(
         "final_url": end,
         "created_at_ts": 1_000.0,
         "page_open_at_ts": 1_000.04,
+        "first_action_at_ts": 1_002.0,
+        "final_screenshot_url": f"/api/studies/s/agents/{agent_id}/screenshots/final.png",
         "ax_tree": "navigation main landmark button Create issue",
+        "phase_ms": {
+            "session_ready": 40,
+            "page_open": 80,
+            "first_action": 1960,
+            "final_screenshot": 500,
+        },
+        "failed_step": {
+            "phase": "act",
+            "reason": "Goal not visible on the final page",
+        },
         "num_steps": 4 if success else 1,
         "trace": trace,
         "what_was_easy": (
@@ -426,7 +438,8 @@ class SyntheticGateTests(unittest.TestCase):
             "Still the Linear marketing homepage.",
         )
         self.assertIn("step=2", by_id["t1__p1__product"]["trace_link"])
-        self.assertTrue(by_id["t1__p1__product"]["final_screenshot"].endswith("step_2.png"))
+        self.assertTrue(by_id["t1__p1__product"]["final_screenshot"].endswith("final.png"))
+        self.assertEqual(by_id["t1__p1__product"]["failed_step_phase"], "act")
         self.assertEqual(by_id["t1__p2__product"]["type"], FAILURE_MODEL_TIMEOUT)
         self.assertNotIn("t1__p1__product", result["product_task_success"]["success_ids"])
         self.assertNotIn("t1__p2__product", result["product_task_success"]["success_ids"])
@@ -723,9 +736,11 @@ class EarlyFailureTests(unittest.TestCase):
         for run in silent:
             run["first_screenshot_at_ts"] = shot
         untouched = assess_time_to_first_action(silent, now=shot + 30.0)
-        self.assertFalse(untouched["abort"])
+        self.assertTrue(untouched["abort"])
+        self.assertFalse(untouched["ok"])
         self.assertEqual(untouched["n"], 0)
         self.assertEqual(untouched["per_agent"][0]["start"], "")
+        self.assertIn("missing field page_open_at_ts", untouched["reason"])
         ready = [_opened(f"b{i}") for i in range(24)]
         for run in ready:
             run["browser_ready_at_ts"] = shot
@@ -867,6 +882,61 @@ class PageOpenedTests(unittest.TestCase):
         bare = _evaluate(study, vision_goal=vision)
         self.assertFalse(_gate(bare, "product_strength")["pass"])
         self.assertFalse(_gate(bare, "product_weakness")["pass"])
+
+    def test_missing_contract_fields_fail_loudly(self) -> None:
+        study = _load(LINEAR)
+        result = _evaluate(study, vision_goal={})
+        for gate_id, text in (
+            ("page_opened", "missing field page_open_at_ts"),
+            ("time_to_first_action", "missing field page_open_at_ts"),
+            ("phase_ms", "missing field phase_ms"),
+            ("final_screenshot", "missing field final_screenshot_url"),
+            ("failed_step", "missing field failed_step_phase"),
+        ):
+            gate = _gate(result, gate_id)
+            self.assertFalse(gate["pass"], gate_id)
+            blob = f"{gate['value']} {gate['detail']}"
+            self.assertIn(text, blob, gate_id)
+        self.assertIn("phase_counts", result["failures"])
+
+    def test_duration_and_timing_aliases(self) -> None:
+        from mvp.e2e2_gates import (
+            assess_recorded_time_to_first_action,
+            failed_step_fields,
+            phase_ms_of,
+        )
+
+        run = _stamp_open(_acting("a0"))
+        run["first_action_s"] = 1.2
+        denied = assess_recorded_time_to_first_action([run], expected=1)
+        self.assertFalse(denied["ok"])
+        self.assertIn("missing field first_action_at_ts", denied["detail"])
+        run["first_action_at_ts"] = 1_002.0
+        recorded = assess_recorded_time_to_first_action([run], expected=1)
+        self.assertTrue(recorded["ok"], recorded)
+        self.assertEqual(recorded["median_s"], 2.0)
+        issued = _opened("issue")
+        issued["run_issue"] = {
+            "kind": "navigation",
+            "reason": "Agent never reached linear.app",
+        }
+        self.assertEqual(
+            failed_step_fields(issued),
+            ("navigation", "Agent never reached linear.app"),
+        )
+        found, missing = phase_ms_of(
+            {
+                "timing": {
+                    "session_ready_s": 0.04,
+                    "page_open_s": 0.08,
+                    "first_action_s": 1.96,
+                    "final_screenshot_s": 0.5,
+                }
+            }
+        )
+        self.assertEqual(missing, [])
+        self.assertEqual(found["page_open"], 80.0)
+        self.assertEqual(found["first_action"], 1960.0)
 
 
 class HeadlineMetricTests(unittest.TestCase):

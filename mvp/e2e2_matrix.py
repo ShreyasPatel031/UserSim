@@ -70,6 +70,7 @@ from mvp.e2e2_gates import (  # noqa: E402
     final_dom_of,
     final_url_of,
     has_click_type_scroll,
+    missing_field,
     iter_runs,
     judge_goal_screenshot,
     render_markdown,
@@ -293,17 +294,17 @@ async def _assert_ready_hidden(page, study: dict) -> None:
         )
 
 
-def _harness_owner() -> str:
-    """Owner this process may release. Never signup, report, or another agent's tag."""
-    raw = (os.environ.get("MVP_BB_OWNER") or "testfix").strip().lower()
-    if raw in {"testfix", "integration"}:
+def _bb_owner() -> str:
+    """Owner this process may release. testfix, gates, or integration only."""
+    raw = (os.environ.get("MVP_BB_OWNER") or "testfix").strip().lower() or "testfix"
+    if raw in {"testfix", "gates", "integration"}:
         return raw
     return "testfix"
 
 
 def _release_testfix_sessions(study_id: str = "") -> None:
     """Release only this harness's sessions. Never signup, report, or other owners."""
-    owner = _harness_owner()
+    owner = _bb_owner()
     try:
         from mvp.kill_switch import kill_all_browserbase
 
@@ -407,7 +408,7 @@ def _goal_verdicts(study: dict, base: str) -> dict[str, dict]:
                 {
                     "goal_reached": False,
                     "still_on_opening_screen": True,
-                    "reason": "No final screenshot to judge.",
+                    "reason": missing_field("final_screenshot_url"),
                 }
             )
             _log(f"  goal {aid} reached=False (no final screenshot)")
@@ -604,7 +605,10 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                             f"within {args.first_shot_s:.0f}s"
                         )
                     )
+                    early_abort = page_open_check
+                    elapsed_at_abort = time.time()
                     _log(f"  {abort_reason}")
+                    _stop_study(args.base, str(study_id or ""))
                     break
 
             # No excuse for queue theatre when fleet ≤ Browserbase concurrency.
