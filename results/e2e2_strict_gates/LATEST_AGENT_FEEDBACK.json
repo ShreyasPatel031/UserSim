@@ -1,9 +1,9 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T08:22:00Z",
+  "graded_at": "2026-09-26T08:26:00Z",
   "live_launches": "stopped",
-  "note": "Rechecked 757461e7. GCS updated_at is still 2026-09-26T07:13:57Z. Their TTFV 23.88s is not on the study. Independent grade stands. No newer finished study after bdc1f5da and 49b52ebe. owner=gates running 0. Integration tip 7bfc147 is past e111295. Task-completion tip e82c73f only records bdc1f5da and says it is not a grade. #47 tip c553e86. No ALL_PASS.",
+  "note": "Gemini already scored Linear 26e83a58 from GCS PNGs. Self-claimed 8/8 matches the judge count and the study still fails. New-issue YES is the docs page. No new Excalidraw is in flight. The finished Excalidraw with PNGs is 748a1b0a, product 4/8. Floor for a study that is closer to a real pass remains 68af612b at 4/8 pricing only until a study clears every gate. owner=gates running 0. Integration tip 7bfc147.",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "9470be5",
@@ -209,6 +209,10 @@
     {
       "id": 20,
       "fact": "757461e7 rechecked. Abandoned at 42.78s. page_opened 24/24. TTFA median 1.389s max 3.398s n=17/24. Seven competitors never clicked. TTFV is not recorded. Their 23.88s is not on the study. total_time is not ready. Official product 0/8. Diagnostic Gemini on three pricing PNGs is 3/3 YES. New-issue agents died on https://linear.app/ after click Documentation with no final PNG. Integration must parallelize connect_over_cdp, stamp time_to_first_value_s from URL submit, skip the await-all-sites barrier before step 0, and release Browserbase after abort."
+    },
+    {
+      "id": 21,
+      "fact": "Linear 26e83a58 Gemini is 8/8 and the study fails. New-issue t1__p1 through t1__p4 YES is the docs page that explains how to create an issue and shows a modal example. Pricing t2__p1 through t2__p4 YES is the pricing tiers. TTFV not recorded. total_time not ready. page_open_at_ts missing (opened 19/24). final_screenshot_url field missing even though 19 final.png objects are in GCS. Strength 0/0 and weakness 0/0, so neither has a screenshot citation. Excalidraw 748a1b0a is 4/8: draw-a-box YES, export still the opening screen. Strength 0/0. Weakness 0/2."
     }
   ],
   "graded_from_gcs": {
@@ -398,37 +402,133 @@
     "study_id": "26e83a58-dcfb-4cc7-b60e-87d177738760",
     "pass": false,
     "wall_s": 488.046,
+    "self_claim": "product 8/8 judge_yes=8. The judge count matches. The study does not pass.",
     "time_to_first_value": "not recorded FAIL",
     "total_time": "not ready FAIL",
-    "study_budget": "488.046s FAIL",
-    "page_opened": "FAIL missing field page_open_at_ts",
-    "time_to_first_action": "FAIL missing field page_open_at_ts",
-    "final_screenshot": "FAIL missing field final_screenshot_url",
-    "product_task_completion": "8/8 PASS",
-    "product_note": "Gemini YES on all 8 product runs. New-issue YES is the docs page that explains how to create an issue and shows a modal example. Pricing YES is the pricing tiers. Not a study pass.",
-    "strength": "0/0 FAIL",
-    "weakness": "0/0 FAIL",
+    "report_ready": true,
     "report_page": "not fetched, gates app stopped",
-    "judge_reasons": {
-      "new_issue": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal.",
-      "pricing": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
-    }
+    "page_opened": "FAIL missing field page_open_at_ts. Opened 19/24.",
+    "time_to_first_action": "FAIL missing field page_open_at_ts",
+    "final_screenshot_field": "missing field final_screenshot_url",
+    "png_bytes": "19 final.png objects in GCS. Gemini saw product images.",
+    "product_task_completion": "8/8 Gemini YES. Study FAIL.",
+    "strength": "0/0 FAIL. Not non-empty. No screenshot citation.",
+    "weakness": "0/0 FAIL. Not non-empty. No screenshot citation.",
+    "top_weakness": "FAIL (none)",
+    "per_task": [
+      {
+        "agent": "t1__p1__product",
+        "task": "new issue",
+        "yes": true,
+        "reason": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal. This is the docs page, not an issue created in the app."
+      },
+      {
+        "agent": "t1__p2__product",
+        "task": "new issue",
+        "yes": true,
+        "reason": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts, icons, and URLs, and shows a visual example of an issue creation modal."
+      },
+      {
+        "agent": "t1__p3__product",
+        "task": "new issue",
+        "yes": true,
+        "reason": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal."
+      },
+      {
+        "agent": "t1__p4__product",
+        "task": "new issue",
+        "yes": true,
+        "reason": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal."
+      },
+      {
+        "agent": "t2__p1__product",
+        "task": "pricing",
+        "yes": true,
+        "reason": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+      },
+      {
+        "agent": "t2__p2__product",
+        "task": "pricing",
+        "yes": true,
+        "reason": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+      },
+      {
+        "agent": "t2__p3__product",
+        "task": "pricing",
+        "yes": true,
+        "reason": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+      },
+      {
+        "agent": "t2__p4__product",
+        "task": "pricing",
+        "yes": true,
+        "reason": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+      }
+    ]
   },
   "excalidraw_748a1b0a": {
     "study_id": "748a1b0a-5cb2-4f8a-8a81-72ebcca23c17",
     "pass": false,
     "wall_s": 118.787,
+    "note": "No newer Excalidraw study is running. This is the finished one with 24 final PNGs.",
     "time_to_first_value": "not recorded FAIL",
     "total_time": "not ready FAIL",
     "page_opened": "24/24 PASS",
     "time_to_first_action": "median=0.894s max=4.28s n=24/24 PASS",
-    "final_screenshot": "24/24 PASS",
-    "product_task_completion": "4/8 PASS",
-    "product_note": "Draw-a-box is 4/4 YES (a rectangle is on the canvas). Export/share is 0/4, still the opening screen.",
+    "product_task_completion": "4/8",
     "strength": "0/0 FAIL",
     "weakness": "0/2 FAIL",
-    "top_weakness": "click Menu changed nothing on https://excalidraw.com/",
-    "report_page": "not fetched, gates app stopped"
+    "top_weakness": "FAIL. click Menu changed nothing on https://excalidraw.com/",
+    "per_task": [
+      {
+        "agent": "t1__p1__product",
+        "task": "draw a box",
+        "yes": true,
+        "reason": "A rectangle has been drawn on the canvas."
+      },
+      {
+        "agent": "t1__p2__product",
+        "task": "draw a box",
+        "yes": true,
+        "reason": "A rectangle has been drawn on the canvas."
+      },
+      {
+        "agent": "t1__p3__product",
+        "task": "draw a box",
+        "yes": true,
+        "reason": "The screenshot shows a rectangle drawn on the canvas, fulfilling the task goal."
+      },
+      {
+        "agent": "t1__p4__product",
+        "task": "draw a box",
+        "yes": true,
+        "reason": "A rectangle has been successfully drawn on the canvas."
+      },
+      {
+        "agent": "t2__p1__product",
+        "task": "export or share",
+        "yes": false,
+        "reason": "The page is still on the opening screen and no drawing has been made or exported/shared."
+      },
+      {
+        "agent": "t2__p2__product",
+        "task": "export or share",
+        "yes": false,
+        "reason": "The page is still on the opening screen and no drawing has been created or exported."
+      },
+      {
+        "agent": "t2__p3__product",
+        "task": "export or share",
+        "yes": false,
+        "reason": "The page is still on the opening screen and no drawing has been made or exported/shared."
+      },
+      {
+        "agent": "t2__p4__product",
+        "task": "export or share",
+        "yes": false,
+        "reason": "The page is still on the opening screen and no drawing has been created or exported."
+      }
+    ]
   },
   "taskfix_70557bae_38deb1cc": {
     "graded_at": "2026-09-26T08:06:00Z",
