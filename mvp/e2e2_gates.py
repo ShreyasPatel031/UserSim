@@ -625,15 +625,41 @@ def created_epoch(run: dict[str, Any]) -> float | None:
     return _epoch(run.get("created_at_ts")) or _epoch(run.get("created_at"))
 
 
+def _stamps_aligned_to_one_instant(run: dict[str, Any]) -> bool:
+    """True when created, page-open, and first-action were written as one instant.
+
+    That is the poll rewrite: all three match the response time, so page-open
+    is not a start that precedes the click. Session ready stays the clock.
+    """
+    created = created_epoch(run)
+    opened, _open_key = _first_recorded_epoch(_clock_sources(run), _PAGE_OPEN_TS_KEYS)
+    acted, _act_key = first_action_epoch(run)
+    if created is None or opened is None or acted is None:
+        return False
+    return max(created, opened, acted) - min(created, opened, acted) <= 0.05
+
+
+def _clear_page_open_stamps(run: dict[str, Any]) -> None:
+    for key in _PAGE_OPEN_TS_KEYS:
+        run.pop(key, None)
+    steps = [step for step in (run.get("trace") or []) if isinstance(step, dict)]
+    if steps:
+        steps.sort(key=lambda step: int(step["step"]) if isinstance(step.get("step"), int) else 0)
+        for key in _PAGE_OPEN_TS_KEYS:
+            steps[0].pop(key, None)
+
+
 def remember_earliest_clocks(
     runs: list[dict[str, Any]],
     latch: dict[str, dict[str, float]],
 ) -> None:
     """Keep the earliest created and page-open stamps seen on each agent.
 
-    A later poll that moves those stamps forward (both rewritten to the
-    response time) must not shrink time_to_first_action or the 5s open gap.
-    The action time stays the poll that first showed the click.
+    A later poll that moves those stamps forward must not shrink
+    time_to_first_action. A page-open stamp that is the same instant as
+    created and first-action is the poll rewrite, not a page-open start;
+    the clock falls through to session ready. The action time stays the
+    poll that first showed the click.
     """
     for run in runs:
         if not isinstance(run, dict):
@@ -647,8 +673,9 @@ def remember_earliest_clocks(
             prev = slot.get("created_at_ts")
             if prev is None or created < prev:
                 slot["created_at_ts"] = created
+        aligned = _stamps_aligned_to_one_instant(run)
         opened, _key = _first_recorded_epoch(_clock_sources(run), _PAGE_OPEN_TS_KEYS)
-        if opened is not None:
+        if opened is not None and not aligned:
             prev_open = slot.get("page_open_at_ts")
             if prev_open is None or opened < prev_open:
                 slot["page_open_at_ts"] = opened
@@ -656,6 +683,8 @@ def remember_earliest_clocks(
             run["created_at_ts"] = slot["created_at_ts"]
         if "page_open_at_ts" in slot:
             run["page_open_at_ts"] = slot["page_open_at_ts"]
+        elif aligned:
+            _clear_page_open_stamps(run)
 
 
 def _median(values: list[float]) -> float | None:
