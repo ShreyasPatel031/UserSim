@@ -78,8 +78,9 @@ _COOKIE = re.compile(
 
 _EMAIL_REJECT = re.compile(
     r"invalid email domain|email domain (is )?not (allowed|supported)|disposable|temporary email|"
-    r"couldn['’]t create your account|please try again later|use a (work|business) email( address)? (to|instead)|"
-    r"email (address )?(is )?not (valid|allowed|accepted)|we (can(no|')t|are unable to) accept",
+    r"couldn['’]t create your account|please try again later|use a (work|business|different) email( address)?( (to|instead))?|"
+    r"email (address )?(is )?not (valid|allowed|accepted)|we (can(no|')t|are unable to) (accept|reach)|"
+    r"could not reach the email|try again with a different email",
     re.I,
 )
 
@@ -776,6 +777,59 @@ async def signup_in_session(
             sig = _page_sig(snap)
             same = same + 1 if sig == last_sig else 0
             last_sig = sig
+            if same >= 3:
+                body_tour = str(snap.get("body") or "").lower()
+                # Trello's Atlassian pre-board tour freezes on "One last thing!" /
+                # "Start using Trello". The data-sis-i click often no-ops; force
+                # the role click, then Escape/Close, then follow the continue URL.
+                if "one last thing" in body_tour or "start using trello" in body_tour:
+                    advanced = False
+                    for label in (
+                        "Mark this card complete (Start using Trello)",
+                        "Start using Trello",
+                        "One last thing!",
+                        "Close",
+                        "Next",
+                    ):
+                        try:
+                            btn = page.get_by_role("button", name=label).first
+                            if await btn.count() == 0:
+                                continue
+                            await btn.click(timeout=4000, force=True)
+                            steps.append(f"  force-clicked tour control {label!r}")
+                            await _settle(page, 1800)
+                            advanced = True
+                            break
+                        except Exception as exc:  # noqa: BLE001
+                            steps.append(f"  tour click {label!r} failed: {type(exc).__name__}")
+                    if not advanced:
+                        try:
+                            await page.keyboard.press("Escape")
+                            steps.append("  pressed Escape on stuck Trello tour")
+                            await _settle(page, 1200)
+                            advanced = True
+                        except Exception:
+                            pass
+                    # Still on id.atlassian.com/signup?…&continue=https://trello.com/…
+                    if advanced or same >= 5:
+                        cur = str(snap.get("url") or page.url or "")
+                        if "id.atlassian.com" in cur and "continue=" in cur:
+                            from urllib.parse import parse_qs, unquote, urlparse as _up
+
+                            qs = parse_qs(_up(cur).query)
+                            cont = unquote((qs.get("continue") or [""])[0])
+                            if cont.startswith("http") and "trello.com" in cont:
+                                try:
+                                    await page.goto(cont, wait_until="domcontentloaded", timeout=30000)
+                                    steps.append(f"  followed Atlassian continue → {cont[:80]}")
+                                    await _settle(page, 2000)
+                                    same = 0
+                                    continue
+                                except Exception as exc:  # noqa: BLE001
+                                    steps.append(f"  continue goto failed: {type(exc).__name__}")
+                    if advanced:
+                        same = 0
+                        continue
             if same >= 8:
                 return _finish(False, "stuck: page stopped changing")
 
