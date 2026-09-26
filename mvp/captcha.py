@@ -1752,6 +1752,103 @@ async def human_drag(page: Any) -> dict[str, Any]:
     return {"ok": cleared, "detail": "dragged", "cleared": cleared}
 
 
+async def solve_image_challenge(page: Any, *, method: str = "image_to_text") -> dict[str, Any]:
+    """Send the visible challenge image to a priced recognition task.
+
+    ImageToText is the general fallback. ReCaptchaV2Classification is used
+    only when the on-page prompt matches CapSolver's question list.
+    """
+    import base64
+
+    selectors = (
+        "iframe[src*='hcaptcha']",
+        "iframe[src*='bframe']",
+        "img[src*='captcha' i]",
+        "img[alt*='captcha' i]",
+    )
+    png = b""
+    for sel in selectors:
+        try:
+            loc = page.locator(sel).first
+            if await loc.count() == 0:
+                continue
+            png = await loc.screenshot(type="png", timeout=4000)
+            if png:
+                break
+        except Exception:
+            continue
+    if not png:
+        try:
+            png = await page.screenshot(type="png")
+        except Exception:
+            png = b""
+    if not png:
+        return {"ok": False, "detail": "no_image"}
+    shot = base64.b64encode(png).decode()
+    page_url = getattr(page, "url", "") or ""
+    extra: dict[str, Any] = {"body": shot, "module": "common"}
+    task_type = "ImageToTextTask"
+    captcha_type = "image_text"
+    if method == "recaptcha_classification":
+        question = ""
+        try:
+            question = await page.evaluate(
+                "() => ((document.body && document.body.innerText) || '').slice(0, 400)"
+            )
+        except Exception:
+            question = ""
+        qid = None
+        low = (question or "").lower()
+        for needle, code in (
+            ("traffic light", "/m/015qff"),
+            ("crosswalk", "/m/014xcs"),
+            ("fire hydrant", "/m/01pns0"),
+            ("bicycle", "/m/0199g"),
+            ("bus", "/m/01bjv"),
+            ("car", "/m/0k4j"),
+            ("motorcycle", "/m/04_sv"),
+            ("stair", "/m/01lynh"),
+        ):
+            if needle in low:
+                qid = code
+                break
+        if not qid:
+            return {"ok": False, "detail": "question_unmapped"}
+        extra = {"image": shot, "question": qid}
+        task_type = "ReCaptchaV2Classification"
+        captcha_type = "recaptcha_classification"
+    token = await asyncio.to_thread(
+        _capsolver_solve,
+        "",
+        sitekey="",
+        page_url=page_url,
+        captcha_type=captcha_type,
+        action=None,
+        timeout_s=60,
+        blocking=True,
+        extra=extra,
+        task_type_override=task_type,
+    )
+    if not token:
+        return {"ok": False, "detail": "no_token"}
+    try:
+        await page.evaluate(
+            """(text) => {
+              const el = document.querySelector('input[name*=captcha i], input[id*=captcha i], input[type=text]');
+              if (!el || text.startsWith('{')) return false;
+              el.focus();
+              el.value = text;
+              el.dispatchEvent(new Event('input', {bubbles:true}));
+              return true;
+            }""",
+            token,
+        )
+    except Exception:
+        pass
+    cleared = not await _challenge_visible(page)
+    return {"ok": bool(token), "detail": task_type, "cleared": cleared, "token": True}
+
+
 async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
     """Full stack: settle → BB wait → click → OSS → solver API → human.
 
@@ -1908,9 +2005,17 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
                 return {"ok": True, "method": "solver_api", "detail": f"{info.get('type')}_injected"}
             return {"ok": False, "method": "solver_api", "detail": "inject_failed", "token": token}
 
+    if spec.get("method") in {"image_to_text", "recaptcha_classification"}:
+        image_result = await solve_image_challenge(page, method=str(spec.get("method")))
+        if image_result.get("cleared") or (
+            image_result.get("ok") and not await _challenge_visible(page)
+        ):
+            return {"ok": True, "method": spec.get("method"), "detail": image_result.get("detail")}
+
     drag_type = ((info or {}).get("type") or "")
     want_drag = spec.get("method") == "mouse_drag" or (
-        not policy and drag_type in {"arkose", "funcaptcha", "slider", "geetest", "geetest_v4"}
+        not policy
+        and drag_type in {"arkose", "funcaptcha", "slider", "geetest", "geetest_v4", "datadome"}
     )
     if want_drag:
         dragged = await human_drag(page)

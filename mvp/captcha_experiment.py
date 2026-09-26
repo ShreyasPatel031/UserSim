@@ -777,7 +777,7 @@ def _schedule(per_type: int) -> list[tuple[dict[str, Any], str, int]]:
                 continue
             scheduled = 0
             repeat = 0
-            while scheduled < target and repeat < 4:
+            while scheduled < target and repeat < 10:
                 for site in sites:
                     if scheduled >= target:
                         break
