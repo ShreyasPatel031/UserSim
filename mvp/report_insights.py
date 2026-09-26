@@ -985,8 +985,9 @@ def trace_claims(
                 why = reason.removeprefix("blocked at signup").lstrip(": ").strip() or "it did not finish"
                 key = f"{title.lower()}|account|{reason}"
                 label = (
-                    f"{title}: the path needs an account (wall at {final_page}); UserSim's live sign-up "
-                    f"could not get past it ({why})"
+                    f"{title}: needs an account first (sign-up wall at {final_page}). UserSim's test "
+                    f"sign-up could not finish ({why}), so this task was not tested past the wall; "
+                    f"that is a limit of the test, not a product failure"
                 )
         else:
             key = f"{title.lower()}|{final_page}"
