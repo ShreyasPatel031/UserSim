@@ -23,20 +23,14 @@ from mvp.paths import MVP_RUNS_DIR
 
 # Enough steps to leave the landing page: land, scroll, open a nav item, read, come back.
 MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
-# Per-agent walls and step caps are gone. The study budget is the only timer.
-# These match that budget so browser-use does not apply its own 15s/60s kill,
-# and max_failures is not used to stop an agent on a slow model call.
-def _study_budget_timeout() -> int:
-    try:
-        from mvp.a11y_agent import study_budget_s
-
-        return max(30, int(study_budget_s()))
-    except Exception:
-        return 480
-
-
-MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "") or _study_budget_timeout())
-MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "") or _study_budget_timeout())
+# One remote step is DOM/state, a network-idle wait, a vision call, and the
+# action. A 15s cap cancels that before browser-use appends a history item, so
+# the trace keeps only the opening frame. 60s/30s fits one step. The 8-minute
+# study budget is still the only per-agent wall.
+DEFAULT_LLM_TIMEOUT_S = 30
+DEFAULT_STEP_TIMEOUT_S = 60
+MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "") or DEFAULT_LLM_TIMEOUT_S)
+MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "") or DEFAULT_STEP_TIMEOUT_S)
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
 
 # Measurement only. Each phase prints one JSON line and is copied onto the
@@ -406,6 +400,101 @@ def _cdp_failure_text(text: str) -> bool:
     return bool(_CDP_ERROR_RE.search(text or ""))
 
 
+def _step_is_real_action(step: dict[str, Any]) -> bool:
+    """A click, type, or scroll. Opening frames and recorded failures are not."""
+    if not isinstance(step, dict) or not isinstance(step.get("step"), int):
+        return False
+    if int(step["step"]) <= 0 or step.get("timing_only") or step.get("failed_step"):
+        return False
+    action = str(step.get("action") or "")
+    lowered = action.lower()
+    if not action or lowered.startswith("open") or lowered.startswith("step failed"):
+        return False
+    return True
+
+
+def _failure_phase(clock: _PhaseClock | None, step_no: int) -> str:
+    """The phase that was in flight when the step died. The wrapper is last."""
+    if clock is None:
+        return "step"
+    specific = ""
+    for ev in clock.events:
+        if ev.get("event") != "end" or ev.get("step") != step_no or not ev.get("error"):
+            continue
+        phase = str(ev.get("phase") or "")
+        if phase and phase != "step":
+            specific = phase
+        elif phase == "step" and not specific:
+            specific = "step"
+    return specific or "step"
+
+
+def _failure_reason(agent: Any, clock: _PhaseClock | None, step_no: int) -> tuple[str, str]:
+    """Exception or timeout text, plus the phase that produced it."""
+    texts: list[str] = []
+    results = getattr(getattr(agent, "state", None), "last_result", None) or []
+    for item in results:
+        err = getattr(item, "error", None)
+        if err:
+            texts.append(str(err).strip())
+    phase = _failure_phase(clock, step_no)
+    if clock is not None:
+        for ev in reversed(clock.events):
+            if ev.get("step") != step_no or not ev.get("error"):
+                continue
+            err = str(ev.get("error") or "").strip()
+            if err and err != "null" and err != "CancelledError: cancelled":
+                texts.append(err)
+                break
+    if not texts:
+        fails = getattr(getattr(agent, "state", None), "consecutive_failures", None)
+        texts.append(
+            f"no history item after step {step_no} (consecutive_failures={fails})"
+        )
+    return texts[0][:400], phase
+
+
+def _failed_trace_step(
+    *,
+    step_no: int,
+    reason: str,
+    phase: str,
+    url: str | None = None,
+) -> dict[str, Any]:
+    """A numbered trace row for a step browser-use did not store.
+
+    The action text stays free of the timeout wording. The classifier reads
+    run.error for the type, and failed_step.phase / reason for the contract.
+    """
+    failed = {"phase": phase, "reason": reason[:400], "step": step_no}
+    return {
+        "step": step_no,
+        "action": "step failed",
+        "observation": reason[:800],
+        "thought": "",
+        "thought_detail": {},
+        "url": url,
+        "screenshot_url": None,
+        "outcome": "fail",
+        "phase": phase,
+        "reason": reason[:400],
+        "error": reason[:400],
+        "failed_step": failed,
+    }
+
+
+def _last_failed_step(trace: list[dict[str, Any]]) -> dict[str, Any] | None:
+    numbered = [
+        step
+        for step in trace
+        if isinstance(step, dict) and isinstance(step.get("step"), int) and int(step["step"]) > 0
+    ]
+    if not numbered or _step_is_real_action(numbered[-1]):
+        return None
+    failed = numbered[-1].get("failed_step")
+    return failed if isinstance(failed, dict) else None
+
+
 def _surface_swallowed_failure(
     clock: _PhaseClock | None,
     run_exc: BaseException | None,
@@ -417,16 +506,7 @@ def _surface_swallowed_failure(
     timeout string on error as a model timeout. A finished run stays blank
     so a recovered step is not relabeled.
     """
-    acted = False
-    for step in trace:
-        if not isinstance(step, dict) or not isinstance(step.get("step"), int):
-            continue
-        if int(step["step"]) <= 0:
-            continue
-        action = str(step.get("action") or "")
-        if action and not action.lower().startswith("open") and not step.get("timing_only"):
-            acted = True
-            break
+    acted = any(_step_is_real_action(step) for step in trace if isinstance(step, dict))
     if run_exc is not None:
         text = f"{type(run_exc).__name__}: {run_exc}"[:400]
         if _cdp_failure_text(text):
@@ -463,10 +543,10 @@ def silent_failure_fields(trace: list[dict[str, Any]] | None) -> tuple[str, str]
             continue
         if step.get("swallowed_error"):
             notes.append(str(step["swallowed_error"]))
-        if isinstance(step.get("step"), int) and int(step["step"]) > 0:
-            action = str(step.get("action") or "")
-            if action and not action.lower().startswith("open") and not step.get("timing_only"):
-                acted = True
+        if step.get("failed_step") and isinstance(step.get("failed_step"), dict):
+            notes.append(str((step.get("failed_step") or {}).get("reason") or ""))
+        if _step_is_real_action(step):
+            acted = True
     if acted or not notes:
         return "study budget", ""
     text = notes[-1][:400]
@@ -1392,45 +1472,44 @@ def _make_step_hooks(
                 book.setdefault("sigs", {})[step_no] = sig
         except Exception as exc:
             _swallowed("page_state", exc)
-        where_token = _PHASE_WHERE.set("hook")
-        if clock is not None:
-            clock.hook_step = step_no
-        try:
-            # Cached selector map is stale after the step action (often empty post-nav).
-            summary = await asyncio.wait_for(session.get_browser_state_summary(), timeout=25)
-            selector_map = {}
-            if summary is not None and getattr(summary, "dom_state", None) is not None:
-                selector_map = summary.dom_state.selector_map or {}
-            if not selector_map:
-                selector_map = await asyncio.wait_for(session.get_selector_map(), timeout=10)
-            if selector_map:
-                await asyncio.wait_for(session.add_highlights(selector_map), timeout=10)
-                await asyncio.sleep(0.3)
-            await asyncio.wait_for(
-                session.take_screenshot(path=str(screenshot_dir / f"bbox_{step_no}.png")),
-                timeout=20,
-            )
-        except Exception as exc:  # noqa: BLE001
-            _swallowed("hook_capture", exc)
-        finally:
-            try:
-                await asyncio.wait_for(session.remove_highlights(), timeout=5)
-            except Exception as exc:  # noqa: BLE001
-                _swallowed("remove_highlights", exc)
-            _PHASE_WHERE.reset(where_token)
-
         history = getattr(agent, "history", None)
         items = list(getattr(history, "history", None) or [])
-        if not items:
-            # The step number advanced but browser-use stored nothing. Keep the
-            # timings in the phase log; do not invent a numbered action.
-            if swallowed or clock is not None:
-                print(
-                    f"[{agent_id}] step {step_no} has no history item"
-                    + (f" swallowed={swallowed}" if swallowed else ""),
-                    flush=True,
-                )
+        # step() is cancelled on step_timeout before _finalize appends history.
+        # Compare to the previous length so a later success is not marked failed.
+        prev_len = int(state.get("history_len") or 0)
+        if len(items) <= prev_len:
+            reason, phase = _failure_reason(agent, clock, step_no)
+            print(
+                f"[{agent_id}] step {step_no} failed phase={phase}: {reason}"
+                + (f" swallowed={swallowed}" if swallowed else ""),
+                flush=True,
+            )
+            step = _failed_trace_step(step_no=step_no, reason=reason, phase=phase)
+            if swallowed:
+                step["swallowed_error"] = " | ".join(swallowed)[:800]
+            if clock is not None:
+                extra = clock.fields_for(step_no)
+                if extra.get("phase_ms"):
+                    step["phase_ms"] = extra["phase_ms"]
+                if extra.get("swallowed_error"):
+                    prior = str(step.get("swallowed_error") or "")
+                    step["swallowed_error"] = (prior + " | " + str(extra["swallowed_error"])).strip(" |")[:800]
+            sigs = book.get("sigs") if isinstance(book.get("sigs"), dict) else {}
+            if step_no in sigs:
+                step["state_sig"] = sigs[step_no]
+            await _emit(step)
             return
+        state["history_len"] = len(items)
+        # Reuse the screenshot captured inside the step. A second
+        # get_browser_state_summary here repeated the DOM load on every session.
+        latest = items[-1]
+        shot = getattr(getattr(latest, "state", None), "screenshot_path", None)
+        dest = screenshot_dir / f"bbox_{step_no}.png"
+        if shot and Path(shot).is_file() and not dest.is_file():
+            try:
+                shutil.copy2(shot, dest)
+            except Exception as exc:  # noqa: BLE001
+                _swallowed("reuse_screenshot", exc)
         step = _trace_step_from_history_item(
             items[-1],
             step_no,
@@ -1956,7 +2035,7 @@ async def run_browser_agent(
     # wall_s is ignored. A hung browser is stopped by the study budget, or by
     # the accessibility loop's stuck detector on the path studies actually run.
     _ = wall_s
-    _budget = _study_budget_timeout()
+    _budget = MVP_STEP_TIMEOUT_S
     os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", str(_budget))
     os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", str(_budget))
 
@@ -2560,6 +2639,13 @@ async def run_browser_agent(
     swallowed_error, swallowed_browser_error = _surface_swallowed_failure(
         phase_clock, run_failure, trace
     )
+    ended_failed = _last_failed_step(trace)
+    if ended_failed and not swallowed_error and not swallowed_browser_error:
+        reason = str(ended_failed.get("reason") or "")
+        if _cdp_failure_text(reason):
+            swallowed_browser_error = reason[:400]
+        else:
+            swallowed_error = reason[:400]
 
     visited_urls: list[str] = []
     for step in trace:
@@ -2593,6 +2679,7 @@ async def run_browser_agent(
                 "phase_events": phase_clock.events,
                 "error": swallowed_error,
                 "browser_error": swallowed_browser_error,
+                "failed_step": ended_failed,
             },
             indent=2,
             default=str,
@@ -2618,6 +2705,7 @@ async def run_browser_agent(
         "phase_events": phase_clock.events,
         "error": swallowed_error,
         "browser_error": swallowed_browser_error,
+        "failed_step": ended_failed,
         "run_dir": str(run_dir),
         "num_steps": len(trace),
     }

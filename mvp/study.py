@@ -3056,6 +3056,8 @@ async def run_study(
                         not sess.get("first_action_at_ts")
                         and action_text
                         and not action_text.lower().startswith("open")
+                        and not action_text.lower().startswith("step failed")
+                        and not step.get("failed_step")
                     ):
                         from mvp.a11y_agent import apply_gate_fields
 
