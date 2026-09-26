@@ -1556,6 +1556,20 @@ _AUTH_PATH_RE = re.compile(
 )
 
 
+def _typed_item_visible(typed: list[str], read: dict[str, Any]) -> bool:
+    """A title the agent typed is now shown as page text (the item exists)."""
+    text = " ".join(str((read or {}).get("text") or "").lower().split())
+    if not text:
+        return False
+    editors = [n for n in ((read or {}).get("nodes") or []) if isinstance(n, dict)
+               and str(n.get("role") or "") in {"textbox", "input", "textarea"}]
+    for item in typed[-3:]:
+        low = " ".join(item.lower().split())
+        if len(low) >= 4 and low in text and not any(low == str(n.get("value") or "").lower() for n in editors):
+            return True
+    return False
+
+
 def insession_signup_enabled() -> bool:
     return os.environ.get("MVP_INSESSION_SIGNUP", "1").strip().lower() not in {"0", "false", "no", "off"}
 
@@ -1975,6 +1989,7 @@ async def complete_task_on_page(
     offhost_refusals = 0
     done_rejects = 0
     signup_url = ""
+    typed_texts: list[str] = []
     wall_on = (not signed_in) and insession_signup_enabled() and task_needs_account(task)
     opening = [node for node in (opening_nodes or []) if isinstance(node, dict)]
     try:
@@ -2117,6 +2132,11 @@ async def complete_task_on_page(
             if goal_visible(task, read):
                 stop_reason = "done"
                 break
+            if signed_in and task_kind(task) == "" and _typed_item_visible(typed_texts, read):
+                # Signed-in create task with no built-in goal check: the name the
+                # agent typed now shows on the page outside any open editor.
+                stop_reason = "done"
+                break
             done_rejects += 1
             if done_rejects >= 3:
                 _miss("model said done before the goal was visible")
@@ -2164,6 +2184,8 @@ async def complete_task_on_page(
                 action["canvas_y"] = int(box.get("y") or 0)
                 action["canvas_w"] = int(box.get("w") or 0)
                 action["canvas_h"] = int(box.get("h") or 0)
+        if str(action.get("act")) == "type" and str(action.get("text") or "").strip():
+            typed_texts.append(str(action.get("text")).strip())
         label = action_label(action)
         if would_repeat_action(trace, label, read):
             _miss()
