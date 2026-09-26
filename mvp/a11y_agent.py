@@ -2889,6 +2889,17 @@ async def _open_agent_session_once(
     A create that finishes after its own cap is closed so it cannot hold a slot.
     """
     last = "no browser session"
+    # Product agents first take a browser opened (and rendered) while the plan
+    # was written; see mvp/preopen.py.
+    try:
+        from mvp.preopen import claim as _claim_preopened
+
+        got = await _claim_preopened(getattr(boot.study, "id", None), url)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[a11y] pre-opened claim failed: {exc!r}", flush=True)
+        got = None
+    if got is not None:
+        return got
     for attempt in range(1, 5):
         bb = None
         browser = None

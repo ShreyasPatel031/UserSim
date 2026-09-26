@@ -70,6 +70,24 @@ async def _recover_interrupted() -> None:
 
     asyncio.get_running_loop().create_task(_run())
 
+@app.on_event("startup")
+async def _warm_study_list() -> None:
+    """Build the /live study list once in the background so the first list call is not a cold GCS pass."""
+    if os.environ.get("MVP_WARM_STUDY_LIST", "1").lower() in {"0", "false", "no"}:
+        return
+
+    async def _run() -> None:
+        await asyncio.sleep(2)
+        try:
+            from mvp.gcs_store import list_mvp_studies
+
+            await asyncio.to_thread(list_mvp_studies, limit=200)
+        except Exception as exc:  # noqa: BLE001
+            print(f"study list warm failed: {exc!r}", flush=True)
+
+    asyncio.get_running_loop().create_task(_run())
+
+
 if STATIC.is_dir():
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
 _TRACE_PUBLIC = ROOT / "public" / "bakeoff-traces"
@@ -434,22 +452,20 @@ async def report_page(request: Request):
 async def list_studies(limit: int = 40):
     """List recent studies (in-memory first, then GCS) for the live dashboard."""
     from mvp.gcs_store import list_mvp_studies
-    from mvp.study import STUDIES, study_to_dict
+    from mvp.study import STUDIES
 
     rows: list[dict] = []
     seen: set[str] = set()
     # Local / current process runs first — /live should show what's actually running.
     for study in sorted(
-        STUDIES.values(),
+        list(STUDIES.values()),
         key=lambda s: s.updated_at or s.created_at or "",
         reverse=True,
     ):
-        data = study_to_dict(study)
-        live = data.get("live_sessions") or []
-        if isinstance(live, dict):
-            live_items = list(live.values())
-        else:
-            live_items = list(live or [])
+        # Count straight off the in-memory rows. study_to_dict here copied every
+        # step's accessibility tree for every study this process ever ran.
+        live = study.live_sessions or {}
+        live_items = list(live.values()) if isinstance(live, dict) else list(live or [])
         rows.append(
             {
                 "id": study.id,
@@ -478,7 +494,7 @@ async def list_studies(limit: int = 40):
     try:
         remote = await asyncio.wait_for(
             asyncio.to_thread(list_mvp_studies, limit=max(limit * 5, 100)),
-            timeout=20.0,
+            timeout=8.0,
         )
     except Exception as exc:  # noqa: BLE001
         print(f"list_mvp_studies failed/timeout: {exc!r}", flush=True)
@@ -534,6 +550,13 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
     if study.test_mode and not study.tasks_override:
         study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
+    # Create and navigate the product agents' browsers while the plan is written.
+    try:
+        from mvp.preopen import start_preopen
+
+        start_preopen(study, url)
+    except Exception as exc:  # noqa: BLE001
+        print(f"preopen start failed: {exc!r}", flush=True)
     if not study.tasks_override and os.environ.get("MVP_FAST_PLAN", "1") != "0":
         # A bare URL: one quick model call picks the tasks, rivals, and segment
         # so agents open pages within seconds instead of after ~20s of research.
@@ -751,6 +774,25 @@ async def runtime_kill(body: KillRequest | None = None):
         seeds=bool(req.seeds),
         study_id=req.study_id,
     )
+
+
+@app.get("/api/studies/{study_id}/live")
+async def get_study_live(study_id: str, since: int = 0):
+    """Cursor delta for the home-page poll: small fields plus only the agents changed after ``since``.
+
+    Studies not running in this process answer ``final: true`` and the client
+    reads the full ``/api/studies/<id>`` instead.
+    """
+    from mvp.live_delta import live_view
+    from mvp.study import STUDIES
+
+    study = STUDIES.get(study_id)
+    if study is None:
+        return JSONResponse(
+            {"id": study_id, "delta": True, "final": True, "missing": True},
+            headers={"Cache-Control": "no-store"},
+        )
+    return JSONResponse(live_view(study, since), headers={"Cache-Control": "no-store"})
 
 
 @app.get("/api/studies/{study_id}")

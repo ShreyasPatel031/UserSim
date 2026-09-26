@@ -249,6 +249,22 @@ async def acquire(study: Any, touch: Callable[..., None]) -> None:
     if not _enabled():
         _ACTIVE[study.id] = time.monotonic()
         return
+    try:
+        from mvp.preopen import take_admission
+
+        preadmitted = take_admission(study.id)
+    except Exception:
+        preadmitted = False
+    if preadmitted:
+        # Admitted at submit, when its product browsers were pre-opened; a
+        # recount now would count those browsers as another run's.
+        study.queue_eta_s = None
+        study.queue_position = None
+        study.queued_s = 0.0
+        _ACTIVE[study.id] = time.monotonic()
+        _OBJS[study.id] = study
+        _COUNT_CACHE["at"] = 0.0
+        return
     need = needed_sessions(study)
     _TICKETS.append(study.id)
     started = time.monotonic()
@@ -334,6 +350,12 @@ def release_study_sessions(study_id: str) -> int:
 
 def release(study: Any) -> None:
     """End of a study (finished, failed, or cancelled): free the turn and any leftover sessions."""
+    try:
+        from mvp.preopen import release as _preopen_release
+
+        asyncio.get_running_loop().create_task(_preopen_release(study.id))
+    except Exception:
+        pass
     began = _ACTIVE.pop(study.id, None)
     _OBJS.pop(study.id, None)
     if began is not None and str(getattr(study, "status", "")) == "complete":

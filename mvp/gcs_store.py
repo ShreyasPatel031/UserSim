@@ -25,6 +25,11 @@ STALE_RUNNING_MIN = float(os.environ.get("MVP_STALE_RUNNING_MIN", "10"))
 
 def clear_list_cache() -> None:
     _LIST_CACHE.clear()
+    try:
+        with _LIST_LOCK:
+            _LIST_STATE.update({"at": 0.0, "rows": None, "limit": 0})
+    except NameError:
+        pass
 
 
 def _parse_iso(ts: str | None):
@@ -255,111 +260,209 @@ def study_gcs_root(study_id: str) -> str:
     return f"{DEFAULT_GCS}/mvp_studies/{study_id}"
 
 
-def list_mvp_studies(*, limit: int = 40) -> list[dict[str, Any]]:
-    """Recent studies under mvp_studies/*/study.json (GCS-backed, survives refresh)."""
-    # Short TTL cache — Live dash polls every few seconds; full GCS scan is ~3s+.
-    now = time.monotonic()
-    cache_key = f"list:{limit}"
-    cached = _LIST_CACHE.get(cache_key)
-    if cached and now - cached[0] < 8.0:
+def study_summary_row(study_id: str, data: dict[str, Any], *, done: bool = False) -> dict[str, Any]:
+    """One /live list row from a study payload (no live_sessions, a few hundred bytes)."""
+    payload: dict[str, Any] = {"id": study_id}
+    live = data.get("live_sessions") or []
+    if isinstance(live, dict):
+        live_items = list(live.values())
+    elif isinstance(live, list):
+        live_items = live
+    else:
+        live_items = []
+    steps = sum(len(s.get("trace") or []) for s in live_items if isinstance(s, dict))
+    agents = len(live_items)
+    running = sum(
+        1
+        for s in live_items
+        if isinstance(s, dict) and (s.get("status") or "") in {"running", "starting"}
+    )
+    status = data.get("status") or "unknown"
+    phase = data.get("phase") or ""
+    if done and status in {"running", "pending"}:
+        status = "complete"
+        phase = phase or "Complete"
+    elif status in {"running", "pending"}:
+        phase_l = phase.lower()
+        if "0 active" in phase_l and "done" in phase_l:
+            status = "complete"
+        elif agents == 0 and steps == 0 and study_id.startswith("e2e"):
+            status = "abandoned"
+            phase = phase or "E2E left mid-flight (no agents)"
+        elif agents and running == 0 and steps > 0 and "done" in phase_l:
+            status = "complete"
+    payload.update(
+        {
+            "url": data.get("url"),
+            "segment": data.get("segment"),
+            "status": status,
+            "phase": phase,
+            "updated_at": data.get("updated_at"),
+            "agents": agents,
+            "steps": steps,
+            "running_agents": running,
+            "persona_count": len(data.get("personas") or []),
+            "task_count": len(data.get("tasks") or []),
+            "has_done": bool(done or status == "complete"),
+            "kill_requested": bool(data.get("kill_requested")),
+        }
+    )
+    return payload
+
+
+def _display_row(row: dict[str, Any]) -> dict[str, Any]:
+    out = normalize_study_display(dict(row))
+    if out.get("status") == "abandoned":
+        out["running_agents"] = 0
+    return out
+
+
+# id -> (study.json generation, summary row). Finished studies never change, so
+# after the first pass a list costs one metadata listing and zero downloads.
+_SUMMARY_CACHE: dict[str, tuple[Any, dict[str, Any]]] = {}
+_LIST_STATE: dict[str, Any] = {"at": 0.0, "rows": None, "limit": 0, "refreshing": False}
+_LIST_LOCK = __import__("threading").Lock()
+_LIST_FRESH_S = 8.0
+_LIST_SERVE_STALE_S = 300.0
+
+
+def _glob_blobs(client: Any, bucket_name: str, prefix: str, leaf: str) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for blob in client.list_blobs(bucket_name, prefix=prefix, match_glob=f"{prefix}*/{leaf}"):
+        parts = (blob.name or "")[len(prefix) :].split("/")
+        if len(parts) == 2 and parts[1] == leaf:
+            out[parts[0]] = blob
+    return out
+
+
+def _summary_for(study_id: str, blob: Any, summary_blob: Any | None, done: bool) -> dict[str, Any]:
+    gen = getattr(blob, "generation", None) or getattr(blob, "updated", None)
+    cached = _SUMMARY_CACHE.get(study_id)
+    if cached is not None and cached[0] == gen:
         return cached[1]
+    row: dict[str, Any] | None = None
+    fresh_summary = (
+        summary_blob is not None
+        and getattr(summary_blob, "updated", None) is not None
+        and getattr(blob, "updated", None) is not None
+        and summary_blob.updated.timestamp() >= blob.updated.timestamp() - 5
+    )
+    if fresh_summary:
+        try:
+            data = json.loads(summary_blob.download_as_bytes().decode("utf-8"))
+            if isinstance(data, dict) and data.get("id") == study_id:
+                row = data
+        except Exception:
+            row = None
+    if row is None:
+        # No (or an older) summary.json: read study.json once and backfill the summary.
+        row = {"id": study_id}
+        try:
+            data = json.loads(blob.download_as_bytes().decode("utf-8"))
+            if isinstance(data, dict):
+                row = study_summary_row(study_id, data, done=done)
+                try:
+                    gcs_upload_json(f"{study_gcs_root(study_id)}/summary.json", row)
+                except Exception:
+                    pass
+        except Exception:
+            pass
+    if done:
+        row = {**row, "has_done": True}
+        if row.get("status") in {"running", "pending"}:
+            row["status"] = "complete"
+            row["phase"] = row.get("phase") or "Complete"
+    if blob.updated is not None:
+        row.setdefault("updated_at", blob.updated.isoformat())
+    _SUMMARY_CACHE[study_id] = (gen, row)
+    return row
+
+
+def _build_study_list(limit: int) -> list[dict[str, Any]]:
+    from concurrent.futures import ThreadPoolExecutor
 
     bucket_name, prefix = parse_gs_uri(f"{DEFAULT_GCS}/mvp_studies/")
     if not prefix.endswith("/"):
         prefix += "/"
     client = _storage_client()
-    done_ids: set[str] = set()
-    study_blobs: list[Any] = []
-    for blob in client.list_blobs(bucket_name, prefix=prefix):
-        name = blob.name or ""
-        if name.endswith("/done.json"):
-            parts = name[len(prefix) :].split("/")
-            if len(parts) == 2:
-                done_ids.add(parts[0])
-        elif name.endswith("/study.json"):
-            study_blobs.append(blob)
-
-    rows: list[dict[str, Any]] = []
-    for blob in study_blobs:
-        name = blob.name or ""
-        parts = name[len(prefix) :].split("/")
-        if len(parts) != 2 or parts[1] != "study.json":
-            continue
-        study_id = parts[0]
-        payload: dict[str, Any] = {"id": study_id}
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        f_study = pool.submit(_glob_blobs, client, bucket_name, prefix, "study.json")
+        f_summary = pool.submit(_glob_blobs, client, bucket_name, prefix, "summary.json")
+        f_done = pool.submit(_glob_blobs, client, bucket_name, prefix, "done.json")
+        studies = f_study.result()
         try:
-            raw = blob.download_as_bytes()
-            data = json.loads(raw.decode("utf-8"))
-            if isinstance(data, dict):
-                live = data.get("live_sessions") or []
-                if isinstance(live, dict):
-                    live_items = list(live.values())
-                elif isinstance(live, list):
-                    live_items = live
-                else:
-                    live_items = []
-                steps = sum(len(s.get("trace") or []) for s in live_items if isinstance(s, dict))
-                agents = len(live_items)
-                running = sum(
-                    1
-                    for s in live_items
-                    if isinstance(s, dict) and (s.get("status") or "") in {"running", "starting"}
-                )
-                status = data.get("status") or "unknown"
-                phase = data.get("phase") or ""
-                if study_id in done_ids and status in {"running", "pending"}:
-                    status = "complete"
-                    phase = phase or "Complete"
-                elif status in {"running", "pending"}:
-                    phase_l = phase.lower()
-                    if "0 active" in phase_l and "done" in phase_l:
-                        status = "complete"
-                    elif agents == 0 and steps == 0 and study_id.startswith("e2e"):
-                        status = "abandoned"
-                        phase = phase or "E2E left mid-flight (no agents)"
-                    elif agents and running == 0 and steps > 0 and "done" in phase_l:
-                        status = "complete"
-                payload.update(
-                    {
-                        "url": data.get("url"),
-                        "segment": data.get("segment"),
-                        "status": status,
-                        "phase": phase,
-                        "updated_at": data.get("updated_at"),
-                        "agents": agents,
-                        "steps": steps,
-                        "running_agents": running,
-                        "persona_count": len(data.get("personas") or []),
-                        "task_count": len(data.get("tasks") or []),
-                        "has_done": study_id in done_ids,
-                        "kill_requested": bool(data.get("kill_requested")),
-                        "live_sessions": data.get("live_sessions"),
-                    }
-                )
-                payload = normalize_study_display(payload)
-                # List rows don't need full live_sessions blobs.
-                payload.pop("live_sessions", None)
-                # Recount running after normalize may have flipped agent statuses.
-                if payload.get("status") == "abandoned":
-                    payload["running_agents"] = 0
+            summaries = f_summary.result()
         except Exception:
-            pass
-        if blob.updated is not None:
-            payload.setdefault("updated_at", blob.updated.isoformat())
-            payload["_sort"] = blob.updated.timestamp()
-        else:
-            payload["_sort"] = 0.0
-        rows.append(payload)
-    rows.sort(key=lambda r: float(r.get("_sort") or 0), reverse=True)
-    for r in rows:
-        r.pop("_sort", None)
-    out = rows[: max(1, min(limit, 200))]
-    _LIST_CACHE[cache_key] = (now, out)
-    return out
+            summaries = {}
+        try:
+            done_ids = set(f_done.result())
+        except Exception:
+            done_ids = set()
+    ordered = sorted(
+        studies.items(),
+        key=lambda kv: kv[1].updated.timestamp() if kv[1].updated is not None else 0.0,
+        reverse=True,
+    )[: max(1, min(limit, 200))]
+    with ThreadPoolExecutor(max_workers=16) as pool:
+        rows = list(
+            pool.map(
+                lambda kv: _summary_for(kv[0], kv[1], summaries.get(kv[0]), kv[0] in done_ids),
+                ordered,
+            )
+        )
+    return [_display_row(r) for r in rows]
+
+
+def _refresh_study_list(limit: int) -> list[dict[str, Any]]:
+    rows = _build_study_list(limit)
+    with _LIST_LOCK:
+        _LIST_STATE.update({"at": time.monotonic(), "rows": rows, "limit": limit, "refreshing": False})
+    return rows
+
+
+def list_mvp_studies(*, limit: int = 40) -> list[dict[str, Any]]:
+    """Recent studies under mvp_studies/*/study.json, newest first, as small summary rows.
+
+    Lists only study.json / summary.json / done.json metadata (glob), then reads
+    each study's small summary.json (written with every study.json). The old
+    path listed every blob under mvp_studies/ (screenshots included) and
+    downloaded every ~2MB study.json one by one, so /api/studies hit its 20s
+    timeout. A recent list is served at once while a background refresh runs.
+    """
+    import threading
+
+    now = time.monotonic()
+    with _LIST_LOCK:
+        rows = _LIST_STATE.get("rows")
+        age = now - float(_LIST_STATE.get("at") or 0.0)
+        enough = rows is not None and int(_LIST_STATE.get("limit") or 0) >= limit
+        if enough and age < _LIST_FRESH_S:
+            return rows[: max(1, min(limit, 200))]
+        if enough and age < _LIST_SERVE_STALE_S:
+            if not _LIST_STATE.get("refreshing"):
+                _LIST_STATE["refreshing"] = True
+                want = max(limit, int(_LIST_STATE.get("limit") or 0))
+
+                def _bg() -> None:
+                    try:
+                        _refresh_study_list(want)
+                    except Exception as exc:  # noqa: BLE001
+                        print(f"study list refresh failed: {exc!r}", flush=True)
+                        with _LIST_LOCK:
+                            _LIST_STATE["refreshing"] = False
+
+                threading.Thread(target=_bg, daemon=True).start()
+            return rows[: max(1, min(limit, 200))]
+    return _refresh_study_list(limit)[: max(1, min(limit, 200))]
 
 
 def write_study_state(study_id: str, payload: dict[str, Any]) -> None:
     gcs_upload_json(f"{study_gcs_root(study_id)}/study.json", payload)
+    # A small row for /api/studies so the list never downloads full study blobs.
+    try:
+        gcs_upload_json(f"{study_gcs_root(study_id)}/summary.json", study_summary_row(study_id, payload))
+    except Exception as exc:  # noqa: BLE001
+        print(f"summary write failed for {study_id}: {exc!r}", flush=True)
 
 
 def read_study_state(study_id: str) -> dict[str, Any] | None:
