@@ -733,7 +733,7 @@ def stamp_published_step(
     else:
         canvas = prior_canvas or current_canvas
     step["url"] = url
-    step["state_sig"] = {"text": text[:1500], "canvas": canvas}
+    step["state_sig"] = {"text": text[:1500], "canvas": canvas, "shapes": int(live.get("shapes") or sig.get("shapes") or 0)}
     if text:
         step["observation"] = text[:400]
     visible_read = {
@@ -812,7 +812,7 @@ def _step_from_read(
         "outcome": outcome,
         "accessibility_tree": ax,
         "ax_tree": ax,
-        "state_sig": {"text": text[:1500], "canvas": str(read.get("canvas") or "")},
+        "state_sig": {"text": text[:1500], "canvas": str(read.get("canvas") or ""), "shapes": int(read.get("shapes") or 0)},
     }
     return row
 

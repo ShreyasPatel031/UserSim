@@ -284,15 +284,20 @@ def changed_page_state(run: dict[str, Any], start_url: str) -> bool:
     """
     if left_start(run, start_url):
         return True
-    sigs = [
-        step.get("state_sig")
+    steps = [
+        step
         for step in (run.get("trace") or [])
         if isinstance(step, dict) and isinstance(step.get("state_sig"), dict)
     ]
+    sigs = [step["state_sig"] for step in steps]
     if len(sigs) < 2:
         return False
     base = sigs[0]
-    for sig in sigs[1:]:
+    for step, sig in zip(steps[1:], sigs[1:]):
+        # A drag that added vector shapes (SVG canvases such as tldraw leave the
+        # pixel sample unchanged) changed the drawing surface.
+        if str(step.get("action") or "").strip().lower() == "drag" and int(sig.get("shapes") or 0) > int(base.get("shapes") or 0):
+            return True
         if _canvas_changed(str(base.get("canvas") or ""), str(sig.get("canvas") or "")):
             return True
         if _text_changed(str(base.get("text") or ""), str(sig.get("text") or "")):
