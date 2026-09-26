@@ -8,7 +8,10 @@ function cmpLabel(comp, key) {
 }
 
 function cmpCss(key) {
-  return siteOf(key).css || "site-0";
+  // Stable colors: the product is site-0, competitor_N is site-N.
+  if (key === "product") return "site-0";
+  const m = String(key || "").match(/competitor_(\d+)/);
+  return m ? `site-${Math.min(3, Number(m[1]))}` : "site-0";
 }
 
 function cmpRun(agentId) {

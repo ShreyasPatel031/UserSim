@@ -593,7 +593,7 @@ function showReport(data) {
   }
   _sites = _insights.sites || [];
   lede.textContent = compared
-    ? `${compared.n_personas} buyers tried ${(compared.by_task || []).length} tasks on ${(compared.sites || []).length} products (${compared.n_scored} scored runs), then each picked one to buy.`
+    ? `${compared.n_personas} buyer${compared.n_personas === 1 ? "" : "s"} tried ${(compared.by_task || []).length} tasks on ${(compared.sites || []).length} products (${compared.n_scored} scored runs), then each picked one to buy.`
     : _insights.lede || _insights.headline || "";
   if ((data?.status === "abandoned" || data?.status === "error") && data?.error) {
     // A stopped study says so first; its partial charts are not a finished report.
