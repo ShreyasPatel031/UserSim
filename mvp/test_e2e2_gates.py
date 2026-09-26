@@ -780,6 +780,25 @@ class EarlyFailureTests(unittest.TestCase):
         self.assertEqual(check["per_agent"][0]["latency_s"], 15.7)
         self.assertFalse(check["ok"])
 
+    def test_aligned_poll_stamp_uses_session_ready(self) -> None:
+        ready = 1_000.0
+        poll = ready + 28.1
+        run = _acting("asana")
+        run["browser_ready_at_ts"] = ready
+        run["created_at_ts"] = poll
+        run["page_open_at_ts"] = poll
+        run["first_action_at_ts"] = poll
+        latch: dict[str, dict[str, float]] = {}
+        remember_earliest_clocks([run], latch)
+        self.assertNotIn("page_open_at_ts", run)
+        seen = {"asana": poll + 0.05}
+        check = assess_time_to_first_action(
+            [run], now=poll + 1.0, action_seen_at=seen, expected=1
+        )
+        self.assertEqual(check["per_agent"][0]["start"], "browser_ready_at_ts")
+        self.assertEqual(check["per_agent"][0]["latency_s"], 28.15)
+        self.assertFalse(check["ok"])
+
 
 def _opened_page(agent_id: str, **extra) -> dict:
     run = {
