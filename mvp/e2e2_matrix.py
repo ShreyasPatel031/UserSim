@@ -1,14 +1,23 @@
 #!/usr/bin/env python3
-"""e2e2: real Run button → matrix of users × tasks × sites → flash-lite YESes.
+"""e2e2: real Run button → matrix of users × tasks × sites → strict gates.
 
 Clicks Run (never Smoke). While agents run, Ready/View-full-report must stay
 hidden. Then toggles every site × task × user control and vision-judges the
 *agent screenshot bytes of the target website* (not UserSim chrome, not a
 Preparing pulse, not a grey pane).
 
-  PYTHONPATH=src:. python mvp/e2e2_matrix.py --base https://usersim.vercel.app
-  E2E2_URL=https://www.youtube.com/ E2E2_EXPECTED=9 E2E2_MAX_AGENTS=9 \\
-    ./mvp/run_e2e2.sh http://127.0.0.1:3000
+Startup gates still apply (24 agents, each first real screenshot within 5s,
+a vision YES, elapsed <= 360s). pass=true only when those AND the quality
+gates in mvp.e2e2_gates all pass: product task completion >= 50% on the final
+state, a non-empty /blandai-style report, and Browserbase/concurrency losses
+counted against the run.
+
+  MVP_BB_OWNER=testfix PYTHONPATH=src:. python mvp/e2e2_matrix.py \\
+    --base http://127.0.0.1:3000 --url https://linear.app \\
+    --competitors $'https://asana.com/\\nhttps://trello.com/' \\
+    --tasks $'Find how to create a new issue\\nLook for pricing or how to get started' \\
+    --segment 'Product managers comparing issue trackers' \\
+    --expected 24 --max-agents 24 --max-elapsed-s 360 --first-shot-s 5
 """
 
 from __future__ import annotations
@@ -33,6 +42,14 @@ from mvp.e2e_ui_run import (  # noqa: E402
     _hostname,
     judge_screenshot,
     http_json,
+)
+from mvp.e2e2_gates import (  # noqa: E402
+    beyond_first_screen,
+    evaluate_strict_gates,
+    is_product_run,
+    iter_runs,
+    judge_goal_screenshot,
+    render_markdown,
 )
 
 sa = ROOT / "secrets" / "sa.json"
@@ -329,6 +346,91 @@ async def _toggle_session(page, sess: dict) -> None:
     await page.wait_for_timeout(400)
 
 
+def _release_testfix_sessions() -> None:
+    """Release only strict-e2e sessions. Never signup, report, or other e2e owners."""
+    try:
+        from mvp.kill_switch import kill_all_browserbase
+
+        released = kill_all_browserbase(owner="testfix")
+        _log(f"released browserbase owner=testfix {released}")
+    except Exception as exc:  # noqa: BLE001
+        _log(f"browserbase release failed: {exc!r}")
+
+
+def _fetch_report_html(base: str, study_id: str) -> tuple[str, str]:
+    url = f"{base.rstrip('/')}/report?study={study_id}"
+    try:
+        with urllib.request.urlopen(url, timeout=30) as resp:
+            return resp.read().decode("utf-8", "replace"), url
+    except Exception as exc:  # noqa: BLE001
+        _log(f"  report page fetch failed: {exc!r}")
+        return "", url
+
+
+def _screenshot_loader(base: str, study_id: str):
+    cache: dict[str, bool] = {}
+
+    def loads(url: str) -> bool:
+        if url in cache:
+            return cache[url]
+        try:
+            raw = _fetch_png(base, url, study_id=study_id)
+            ok = bool(raw) and raw[:8] == b"\x89PNG\r\n\x1a\n"
+        except Exception:
+            ok = False
+        cache[url] = ok
+        return ok
+
+    return loads
+
+
+def _final_trace_shot(run: dict) -> dict | None:
+    last = None
+    for step in run.get("trace") or []:
+        if isinstance(step, dict) and step.get("screenshot_url") and isinstance(step.get("step"), int):
+            if step.get("opening_placeholder") or step.get("opening_blankish"):
+                continue
+            last = step
+    return last
+
+
+def _vision_goal_flags(study: dict, base: str) -> dict[str, bool]:
+    """Confirm goal-reached only for product runs that already left the first screen."""
+    flags: dict[str, bool] = {}
+    study_id = str(study.get("id") or "")
+    for run in iter_runs(study):
+        if not is_product_run(run):
+            continue
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        start = str(run.get("site_url") or study.get("url") or "")
+        if not aid:
+            continue
+        if not beyond_first_screen(run, start):
+            flags[aid] = False
+            continue
+        shot = _final_trace_shot(run)
+        if not shot:
+            flags[aid] = False
+            continue
+        try:
+            raw = _fetch_png(base, shot["screenshot_url"], study_id=study_id, agent_id=aid)
+            verdict = judge_goal_screenshot(
+                raw,
+                task=str(run.get("task_prompt") or run.get("task_title") or ""),
+                start_url=start,
+            )
+            flags[aid] = bool(verdict.get("goal_reached"))
+            _log(
+                f"  goal {aid} reached={flags[aid]} "
+                f"opening={verdict.get('still_on_opening_screen')} "
+                f"{verdict.get('reason')}"
+            )
+        except Exception as exc:  # noqa: BLE001
+            flags[aid] = False
+            _log(f"  goal judge failed {aid}: {exc!r}")
+    return flags
+
+
 def _attach_task_success(report: dict, study: dict, judged: dict, fallback_url: str) -> None:
     """Final-state task success, beside screenshot yeses. Does not change the pass gate."""
     from mvp.report_insights import task_succeeded
@@ -418,7 +520,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         t_first_task: float | None = None
         t_all_tasks: float | None = None
         queued_hits = 0
-        immediate_start_failed: str | None = None
+        abort_reason: str | None = None
 
         while time.time() - t0 < args.timeout_s:
             e2e = await page.evaluate("() => window.__e2e || {}")
@@ -472,29 +574,14 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                         overdue.append(f"{aid}={gap:.2f}s")
                 elif (now - created) > args.first_shot_s:
                     overdue.append(f"{aid}>={now - created:.2f}s(no-shot)")
-            if overdue and immediate_start_failed is None:
-                immediate_start_failed = (
+            if overdue and abort_reason is None:
+                abort_reason = (
                     f"IMMEDIATE_START: {len(overdue)} agent(s) first screenshot "
                     f">{args.first_shot_s:.0f}s after own creation: "
                     + ", ".join(overdue[:8])
                 )
-                _log(f"  {immediate_start_failed}")
-                timing = _timing_summary(t0, sessions, expected)
-                report["study_id"] = study_id
-                report["agents"] = len(sessions)
-                report["timing"] = timing
-                report["t_first_task_created_s"] = timing[
-                    "run_click_to_first_task_created_s"
-                ]
-                report["t_all_tasks_created_s"] = timing[
-                    "run_click_to_all_tasks_created_s"
-                ]
-                report["creation_to_first_shot"] = timing["creation_to_first_shot_s"]
-                report["fail_reasons"] = [immediate_start_failed]
-                report["pass"] = False
-                report["elapsed_s"] = round(time.time() - t0, 1)
-                (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
-                raise RuntimeError(immediate_start_failed)
+                _log(f"  {abort_reason}")
+                break
 
             # No excuse for queue theatre when fleet ≤ Browserbase concurrency.
             queued = [
@@ -507,12 +594,14 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             if queued and t_first_task is not None and (time.time() - t_first_task) > 8:
                 queued_hits += 1
                 if queued_hits >= 3:
-                    raise RuntimeError(
+                    abort_reason = (
                         "IMMEDIATE_START: "
                         f"{len(queued)}/{len(sessions)} agents still queued "
                         "more than 8s after first task created "
                         "(no excuse with 25 Browserbase slots)"
                     )
+                    _log(f"  {abort_reason}")
+                    break
             if step_n > last_steps or done_n > last_done:
                 last_steps = step_n
                 last_done = done_n
@@ -526,11 +615,13 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
 
             # Stall fail-fast: frozen fleet must not burn the full timeout.
             if sessions and (time.time() - last_move_t) > args.stall_s:
-                raise RuntimeError(
+                abort_reason = (
                     f"STALL: no new steps/dones for {args.stall_s:.0f}s "
                     f"(steps={step_n}, done={done_n}/{len(sessions)}, "
                     f"phase={study.get('phase')!r})"
                 )
+                _log(f"  {abort_reason}")
+                break
 
             # Toggle + judge any session that now has a real numbered shot.
             for sess in sessions:
@@ -680,9 +771,11 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 if len(sessions) >= expected and len(judged) >= min(expected, len(sessions)):
                     break
             if study.get("status") in {"error", "abandoned"}:
-                raise RuntimeError(
+                abort_reason = (
                     f"Study {study.get('status')}: {study.get('error') or study.get('phase')}"
                 )
+                _log(f"  {abort_reason}")
+                break
             await page.wait_for_timeout(4000)
 
         report["study_id"] = study_id
@@ -727,37 +820,6 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             f"warm={warm_timing or '{}'}"
         )
 
-        fails = []
-        # 24 agents is the only PASS bar — smaller runs are smoke-only.
-        if expected < PASS_AGENT_BAR:
-            fails.append(
-                f"smoke-only expected={expected}; PASS requires {PASS_AGENT_BAR} agents"
-            )
-        if report["personas"] < want_personas:
-            fails.append(f"personas={report['personas']} want {want_personas}")
-        if report["task_bases"] < want_tasks:
-            fails.append(f"tasks={report['task_bases']} want {want_tasks}")
-        if report["sites"] < want_sites:
-            fails.append(f"sites={report['sites']} want {want_sites}")
-        if report["agents"] < PASS_AGENT_BAR:
-            fails.append(
-                f"agents={report['agents']} want {PASS_AGENT_BAR} "
-                "(8-agent smoke does not count as PASS)"
-            )
-        elif report["agents"] < expected:
-            fails.append(f"agents={report['agents']} want {expected}")
-        if report["yeses"] < expected:
-            fails.append(f"yeses={report['yeses']} want {expected}")
-        if study.get("status") != "complete":
-            fails.append(f"status={study.get('status')}")
-        if not study.get("summary"):
-            fails.append("missing summary")
-        if report["elapsed_s"] > args.max_elapsed_s:
-            fails.append(
-                f"elapsed={report['elapsed_s']}s want ≤{args.max_elapsed_s:.0f}s "
-                f"(prior YouTube baseline ~408s)"
-            )
-        # Per-agent creation → first screenshot gate.
         shot_stats = timing["creation_to_first_shot_s"]
         slow_agents = [
             r
@@ -770,24 +832,64 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             for r in timing["per_agent"]
             if r["first_screenshot_at_ts"] is None
         ]
-        if missing_shot:
-            fails.append(
-                f"no first screenshot for {len(missing_shot)} agent(s): "
-                + ", ".join(missing_shot[:8])
-            )
-        if slow_agents:
-            fails.append(
-                f"creation→first_shot >{args.first_shot_s:.0f}s for "
-                f"{len(slow_agents)} agent(s) "
-                f"(max={shot_stats['max']}s p95={shot_stats['p95']}s): "
-                + ", ".join(
-                    f"{r['agent_id']}={r['creation_to_first_shot_s']}s"
-                    for r in slow_agents[:8]
-                )
-            )
         nos = [v["agent_id"] for v in judged.values() if not v.get("pass")]
-        if nos:
-            fails.append(f"flash-lite NO: {nos[:8]}")
+        if study_id and not study.get("id"):
+            study["id"] = study_id
+        report["interaction_task_success_n"] = report.get("task_success_n")
+        report["interaction_task_success_of"] = report.get("task_success_of")
+        vision_goal = _vision_goal_flags(study, args.base) if study_id else {}
+        report_html, report_url = (
+            _fetch_report_html(args.base, study_id) if study_id else ("", "")
+        )
+        strict = evaluate_strict_gates(
+            study,
+            startup={
+                "expected": expected,
+                "pass_agent_bar": PASS_AGENT_BAR,
+                "yeses": report["yeses"],
+                "elapsed_s": report["elapsed_s"],
+                "missing_shot": len(missing_shot),
+                "max_creation_to_shot_s": shot_stats.get("max"),
+                "slow_agents": len(slow_agents),
+                "vision_nos": len(nos),
+                "personas": report["personas"],
+                "task_bases": report["task_bases"],
+                "sites": report["sites"],
+                "min_personas": want_personas,
+                "min_tasks": want_tasks,
+                "min_sites": want_sites,
+                "max_elapsed_s": args.max_elapsed_s,
+                "first_shot_s": args.first_shot_s,
+                "study_id": study_id,
+                "status": study.get("status"),
+                "has_summary": bool(study.get("summary")),
+            },
+            vision_goal=vision_goal,
+            screenshot_loads=_screenshot_loader(args.base, study_id),
+            report_html=report_html,
+            report_url=report_url,
+            abort_reason=abort_reason,
+        )
+        product = strict["product_task_success"]
+        report["task_success_n"] = product["success_n"]
+        report["task_success_of"] = product["n"]
+        report["task_success_rate"] = (
+            round(100 * product["success_n"] / product["n"]) if product["n"] else 0
+        )
+        report["gates"] = strict["gates"]
+        report["competitor_task_success"] = strict["competitor_task_success"]
+        report["browserbase_concurrency_losses"] = strict["browserbase_concurrency_losses"]
+        report["product_task_success"] = product
+        report["report_url"] = report_url
+        report["fail_reasons"] = strict["fail_reasons"]
+        report["pass"] = bool(strict["pass"])
+        summary_md = render_markdown(
+            strict, study_id=str(study_id or ""), product_url=str(args.url or "")
+        )
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        (OUT_DIR / "summary.md").write_text(summary_md)
+        (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
+        _log(summary_md)
 
         # Ready may show only now — give the UI a beat to apply the final poll.
         ready = False
@@ -813,15 +915,14 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         if study.get("status") == "complete" and not ready:
             _log("  WARN: Ready still hidden after complete")
 
-        report["fail_reasons"] = fails
-        report["pass"] = not fails
         report["smoke_only"] = expected < PASS_AGENT_BAR
         await browser.close()
 
     (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
     _log(f"Wrote {OUT_DIR / 'result.json'}")
+    _log(f"Wrote {OUT_DIR / 'summary.md'}")
     if not report["pass"]:
-        raise RuntimeError("e2e2 failed: " + "; ".join(fails))
+        raise RuntimeError("e2e2 failed: " + "; ".join(report.get("fail_reasons") or ["unknown"]))
     return report
 
 
@@ -893,6 +994,8 @@ def main() -> int:
     ap.add_argument("--study-id", default=os.environ.get("E2E2_STUDY_ID", ""))
     args = ap.parse_args()
     expected = int(args.expected)
+    _release_testfix_sessions()
+    code = 0
     try:
         result = asyncio.run(run_e2e2(args))
     except Exception as exc:  # noqa: BLE001
@@ -906,7 +1009,7 @@ def main() -> int:
                 existing = json.loads(result_path.read_text())
             except Exception:
                 existing = {}
-        if existing.get("judgements") or existing.get("yeses") is not None:
+        if existing.get("gates") or existing.get("judgements") or existing.get("yeses") is not None:
             existing["pass"] = False
             existing["error"] = str(exc)
             existing.setdefault("product_url", args.url)
@@ -918,15 +1021,18 @@ def main() -> int:
                     indent=2,
                 )
             )
-        return 1
-    _log(
-        f"ALL_PASS study={result.get('study_id')} "
-        f"yeses={result.get('yeses')}/{expected} "
-        f"task_success={result.get('task_success_n')}/{result.get('task_success_of')} "
-        f"elapsed={result.get('elapsed_s')}s "
-        f"url={args.url}"
-    )
-    return 0
+        code = 1
+    else:
+        _log(
+            f"ALL_PASS study={result.get('study_id')} "
+            f"yeses={result.get('yeses')}/{expected} "
+            f"task_success={result.get('task_success_n')}/{result.get('task_success_of')} "
+            f"elapsed={result.get('elapsed_s')}s "
+            f"url={args.url}"
+        )
+    finally:
+        _release_testfix_sessions()
+    return code
 
 
 if __name__ == "__main__":

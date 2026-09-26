@@ -20,6 +20,14 @@ class SessionMetadataTests(unittest.TestCase):
             {"owner": "signup", "study_id": "s1"},
         )
 
+    def test_study_owner_honors_testfix(self) -> None:
+        from capability.browserbase_client import study_session_owner
+
+        with patch.dict("os.environ", {"MVP_BB_OWNER": "testfix"}, clear=False):
+            self.assertEqual(study_session_owner(), "testfix")
+        with patch.dict("os.environ", {"MVP_BB_OWNER": ""}, clear=False):
+            self.assertEqual(study_session_owner(), "e2e")
+
 
 class KillFilterTests(unittest.TestCase):
     def _fake_sessions(self) -> list[MagicMock]:

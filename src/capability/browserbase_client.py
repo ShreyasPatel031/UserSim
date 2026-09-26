@@ -120,18 +120,22 @@ def browserbase_max_workers(requested: int) -> int:
 BB_OWNER_E2E = "e2e"
 BB_OWNER_SIGNUP = "signup"
 BB_OWNER_COMPETITOR = "competitor"
+# Strict e2e harness tag. Release only these sessions; do not touch signup,
+# report runs, or another agent's e2e sessions.
+BB_OWNER_TESTFIX = "testfix"
 
 
 def study_session_owner() -> str:
     """Owner tag for study Browserbase sessions.
 
     Defaults to ``e2e``. Set ``MVP_BB_OWNER=competitor`` for a competitor-pipeline
-    run so those sessions can be released without touching signup or other e2e
-    work. The signup tag is never used here.
+    run, or ``MVP_BB_OWNER=testfix`` for the strict e2e harness, so those
+    sessions can be released without touching signup or other work. The signup
+    tag is never used here.
     """
     raw = (os.environ.get("MVP_BB_OWNER") or "").strip().lower()
     # signup sessions are a different pipeline and must never be tagged here.
-    if raw in {BB_OWNER_COMPETITOR, "report", BB_OWNER_E2E}:
+    if raw in {BB_OWNER_COMPETITOR, "report", BB_OWNER_E2E, BB_OWNER_TESTFIX}:
         return raw
     return BB_OWNER_E2E
 
