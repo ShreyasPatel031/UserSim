@@ -26,11 +26,49 @@ MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
 # 120s let the first model call consume the whole budget (0–2 actions).
 # 200s is enough for several clicks once thinking/planning are off.
 MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
-# A 75s Gemini default let the first call consume the wall (~115s observed).
-# Abort a slow call and let the next step retry. Targets: first action ~10s, step ~15s.
-MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "12") or "12")
-MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "15") or "15")
+# A 12s model cap and 15s step cap aborted the action call before a click landed,
+# so product runs died on the homepage after the opening frame. A step may use
+# most of a minute; the agent wall still stops a hung run.
+MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "45") or "45")
+MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "60") or "60")
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
+
+
+def llm_run_concurrency() -> int:
+    """How many browser agents may hold a live session at once.
+
+    Eight parallel flash agents leave Linear (8/8). Twenty-four at once time out
+    on navigate and never leave the homepage (0/8). Sixteen lets the other
+    sixteen agents overlap that work so a 24-agent matrix still finishes inside
+    the 360s e2e budget. Navigations stay capped separately.
+    """
+    raw = (os.environ.get("MVP_LLM_RUN_CONCURRENCY") or "16").strip()
+    try:
+        return max(1, int(raw))
+    except ValueError:
+        return 16
+
+
+def nav_concurrency() -> int:
+    """How many agents may create a session and navigate at once.
+
+    The 24-wide failure was the navigation burst, not the later clicks.
+    """
+    raw = (os.environ.get("MVP_NAV_CONCURRENCY") or "8").strip()
+    try:
+        return max(1, int(raw))
+    except ValueError:
+        return 8
+
+
+_NAV_SEMAPHORE: asyncio.Semaphore | None = None
+
+
+def _nav_semaphore() -> asyncio.Semaphore:
+    global _NAV_SEMAPHORE
+    if _NAV_SEMAPHORE is None:
+        _NAV_SEMAPHORE = asyncio.Semaphore(nav_concurrency())
+    return _NAV_SEMAPHORE
 
 
 def _study_bb_owner() -> str:
@@ -277,20 +315,17 @@ async def _inject_cookies(session: Any, state: dict[str, Any] | None) -> int:
 
 
 def action_model_name(explicit: str | None = None) -> str:
-    """Fast model for action steps.
+    """Action-step model.
 
-    ``MVP_BROWSER_MODEL`` is the heavier flash model. Its first call was ~115s
-    under a 24-way load and consumed the agent wall. Action steps use the lite
-    sibling unless ``MVP_AGENT_ACTION_MODEL`` is set.
+    The configured flash model is the one that leaves the homepage. Forcing its
+    lite sibling (commit 1526a5a restored that downgrade) dropped Linear product
+    task success from 8/8 to 1/8 on the same 8-agent harness. Set
+    ``MVP_AGENT_ACTION_MODEL`` to pin a different model.
     """
     chosen = (explicit or os.environ.get("MVP_AGENT_ACTION_MODEL") or "").strip()
     if chosen:
         return chosen
-    base = (os.environ.get("MVP_LLM_MODEL") or MODEL or "").strip()
-    if not base:
-        base = (os.environ.get("MVP_BROWSER_MODEL") or "").strip()
-    if base and "lite" not in base.lower() and "flash" in base.lower():
-        return base + "-lite"
+    base = (os.environ.get("MVP_BROWSER_MODEL") or os.environ.get("MVP_LLM_MODEL") or MODEL or "").strip()
     return base or MODEL
 
 
@@ -853,6 +888,27 @@ _CONSENT_CLICK_JS = """
   return '';
 }
 """
+
+
+async def _ensure_cdp_connected(browser_session: Any, *, agent_id: str) -> None:
+    """Reconnect if the socket died while this agent waited for a run slot.
+
+    browser-use raises 'Root CDP client not initialized' once the websocket
+    leaves OPEN. connect() tears down a dead client and opens a new one.
+    """
+    if browser_session is None:
+        return
+    try:
+        connected = bool(browser_session.is_cdp_connected)
+    except Exception:
+        connected = False
+    if connected:
+        return
+    print(f"[{agent_id}] CDP down — reconnecting before agent.run", flush=True)
+    try:
+        await asyncio.wait_for(browser_session.connect(), timeout=30)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] CDP reconnect failed: {exc!r}", flush=True)
 
 
 async def _dismiss_consent_banners(browser_session: Any, *, agent_id: str) -> None:
@@ -1478,115 +1534,124 @@ async def run_browser_agent(
             warm["bb_session"] = None
             warm["owns_session"] = False
 
-    if not use_warm:
-        if force_local:
-            # A cloned signed-in profile beats cookie injection: Google binds session
-            # cookies to the profile, so transplanted cookies report LOGGED_IN=false.
-            profile_clone = await asyncio.to_thread(clone_for_url, url)
-            if profile_clone:
-                cookie_state = None
-                if auth_task is not None and not auth_task.done():
-                    auth_task.cancel()
+    # Only a few navigations at once. The run slot above this stays held so
+    # the model loop can overlap once the page is actually open.
+    hold_nav = not use_warm
+    if hold_nav:
+        await _nav_semaphore().acquire()
+    try:
+        if not use_warm:
+            if force_local:
+                # A cloned signed-in profile beats cookie injection: Google binds session
+                # cookies to the profile, so transplanted cookies report LOGGED_IN=false.
+                profile_clone = await asyncio.to_thread(clone_for_url, url)
+                if profile_clone:
+                    cookie_state = None
+                    if auth_task is not None and not auth_task.done():
+                        auth_task.cancel()
+                        try:
+                            await auth_task
+                        except Exception:
+                            pass
+                        auth_task = None
+                    start_url = url
+                    yt_hint = (
+                        "You are signed in on this site. Use the personalized home feed, "
+                        "subscriptions, and account UI as a real logged-in user would.\n"
+                    )
+                profile = _local_browser_profile(
+                    storage_state=None
+                    if profile_clone
+                    else (storage_state if isinstance(storage_state, str) else None),
+                    user_data_dir=str(profile_clone) if profile_clone else None,
+                )
+                backend = "local_playwright"
+            else:
+                # create_session may contend on a threading lock; off-loop so parallel agents progress.
+                owns_session = bb_session is None
+                if owns_session:
+                    # keep_alive=True so parallel agents don't lose CDP mid-run (410 Gone).
+                    bb_session = await asyncio.to_thread(
+                        create_session,
+                        keep_alive=True,
+                        owner=_study_bb_owner(),
+                        study_id=study_id,
+                        **_product_session_call_kwargs(),
+                    )
+                    print(
+                        f"[{agent_id}] browserbase flags={getattr(bb_session, 'flags', None)}",
+                        flush=True,
+                    )
+                session_url = getattr(bb_session, "session_url", None)
+                connect = getattr(bb_session, "connect_url", None)
+                if not connect:
+                    raise RuntimeError("Browserbase session missing connect_url")
+                profile = _browserbase_profile(connect)
+                backend = "browserbase"
+                await _pulse("Browser ready — loading the page…")
+
+            try:
+                from browser_use import BrowserSession
+
+                # Own the session before agent.run so we navigate + show a frame
+                # the moment the task URL is known — not after the LLM's first thought.
+                browser_session = BrowserSession(browser_profile=profile)
+                await browser_session.start()
+
+                await _emit_opening_frame(
+                    browser_session,
+                    screenshot_dir=screenshot_dir,
+                    study_id=study_id,
+                    agent_id=agent_id,
+                    url=start_url,
+                    on_step=on_step,
+                )
+                # Flip live view ON immediately — don't wait for LLM / agent.run.
+                if on_step is not None and bb_session is not None and not force_local:
+                    live_url = None
                     try:
-                        await auth_task
+                        from capability.browserbase_client import session_live_view_url
+
+                        sid = getattr(bb_session, "id", None)
+                        if sid:
+                            live_url = await asyncio.to_thread(session_live_view_url, str(sid))
+                    except Exception:
+                        live_url = None
+                    maybe = on_step(
+                        {
+                            "step": None,
+                            "progress_only": True,
+                            "live_active": True,
+                            "live_view_url": live_url,
+                            "browserbase_session_id": getattr(bb_session, "id", None),
+                            "action": "Live browser on",
+                            "thought": "Page is open — live view connected.",
+                            "thought_detail": {},
+                            "observation": "",
+                            "url": start_url,
+                            "screenshot_url": None,
+                            "outcome": "neutral",
+                        }
+                    )
+                    if asyncio.iscoroutine(maybe):
+                        await maybe
+                await _pulse("First screenshot captured — starting the simulated user…", thinking=True)
+            except Exception:
+                if browser_session is not None:
+                    try:
+                        await browser_session.kill()
                     except Exception:
                         pass
-                    auth_task = None
-                start_url = url
-                yt_hint = (
-                    "You are signed in on this site. Use the personalized home feed, "
-                    "subscriptions, and account UI as a real logged-in user would.\n"
-                )
-            profile = _local_browser_profile(
-                storage_state=None
-                if profile_clone
-                else (storage_state if isinstance(storage_state, str) else None),
-                user_data_dir=str(profile_clone) if profile_clone else None,
-            )
-            backend = "local_playwright"
-        else:
-            # create_session may contend on a threading lock; off-loop so parallel agents progress.
-            owns_session = bb_session is None
-            if owns_session:
-                # keep_alive=True so parallel agents don't lose CDP mid-run (410 Gone).
-                bb_session = await asyncio.to_thread(
-                    create_session,
-                    keep_alive=True,
-                    owner=_study_bb_owner(),
-                    study_id=study_id,
-                    **_product_session_call_kwargs(),
-                )
-                print(
-                    f"[{agent_id}] browserbase flags={getattr(bb_session, 'flags', None)}",
-                    flush=True,
-                )
-            session_url = getattr(bb_session, "session_url", None)
-            connect = getattr(bb_session, "connect_url", None)
-            if not connect:
-                raise RuntimeError("Browserbase session missing connect_url")
-            profile = _browserbase_profile(connect)
-            backend = "browserbase"
-            await _pulse("Browser ready — loading the page…")
-
-        try:
-            from browser_use import BrowserSession
-
-            # Own the session before agent.run so we navigate + show a frame
-            # the moment the task URL is known — not after the LLM's first thought.
-            browser_session = BrowserSession(browser_profile=profile)
-            await browser_session.start()
-
-            await _emit_opening_frame(
-                browser_session,
-                screenshot_dir=screenshot_dir,
-                study_id=study_id,
-                agent_id=agent_id,
-                url=start_url,
-                on_step=on_step,
-            )
-            # Flip live view ON immediately — don't wait for LLM / agent.run.
-            if on_step is not None and bb_session is not None and not force_local:
-                live_url = None
-                try:
-                    from capability.browserbase_client import session_live_view_url
-
+                if profile_clone is not None:
+                    await asyncio.to_thread(discard_profile, profile_clone)
+                if owns_session and bb_session is not None:
                     sid = getattr(bb_session, "id", None)
                     if sid:
-                        live_url = await asyncio.to_thread(session_live_view_url, str(sid))
-                except Exception:
-                    live_url = None
-                maybe = on_step(
-                    {
-                        "step": None,
-                        "progress_only": True,
-                        "live_active": True,
-                        "live_view_url": live_url,
-                        "browserbase_session_id": getattr(bb_session, "id", None),
-                        "action": "Live browser on",
-                        "thought": "Page is open — live view connected.",
-                        "thought_detail": {},
-                        "observation": "",
-                        "url": start_url,
-                        "screenshot_url": None,
-                        "outcome": "neutral",
-                    }
-                )
-                if asyncio.iscoroutine(maybe):
-                    await maybe
-            await _pulse("First screenshot captured — starting the simulated user…", thinking=True)
-        except Exception:
-            if browser_session is not None:
-                try:
-                    await browser_session.kill()
-                except Exception:
-                    pass
-            if profile_clone is not None:
-                await asyncio.to_thread(discard_profile, profile_clone)
-            if owns_session and bb_session is not None:
-                sid = getattr(bb_session, "id", None)
-                if sid:
-                    await asyncio.to_thread(close_session, sid)
-            raise
+                        await asyncio.to_thread(close_session, sid)
+                raise
+    finally:
+        if hold_nav:
+            _nav_semaphore().release()
 
     page_state: dict[str, Any] = {
         "sigs": {},
@@ -1779,6 +1844,7 @@ async def run_browser_agent(
             on_step=on_step,
             page_state=page_state,
         )
+        await _ensure_cdp_connected(browser_session, agent_id=agent_id)
         print(
             f"[{agent_id}] agent.run starting model={model} provider=google-vertex "
             f"llm_timeout={MVP_LLM_TIMEOUT_S}s step_timeout={MVP_STEP_TIMEOUT_S}s "

@@ -719,8 +719,13 @@ async def get_study(study_id: str):
 
 
 def _with_report_insights(data: dict) -> dict:
-    """Attach trace-cited insights on completed studies without mutating the live object."""
-    if data.get("status") != "complete":
+    """Attach trace-cited insights whenever the study has runs.
+
+    A finished study with no summary used to return one empty sentence.
+    Partial runs still draw completion, steps, and time.
+    """
+    runs = [r for r in (data.get("agent_results") or []) if isinstance(r, dict)]
+    if data.get("status") != "complete" and not runs:
         return data
     try:
         from mvp.report_insights import build_report_insights

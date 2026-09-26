@@ -129,13 +129,14 @@ def study_session_owner() -> str:
     """Owner tag for study Browserbase sessions.
 
     Defaults to ``e2e``. Set ``MVP_BB_OWNER=competitor`` for a competitor-pipeline
-    run, or ``MVP_BB_OWNER=testfix`` for the strict e2e harness, so those
+    run, ``MVP_BB_OWNER=testfix`` for the strict e2e harness, or
+    ``MVP_BB_OWNER=integration`` for the nightly integration runner, so those
     sessions can be released without touching signup or other work. The signup
     tag is never used here.
     """
     raw = (os.environ.get("MVP_BB_OWNER") or "").strip().lower()
     # signup sessions are a different pipeline and must never be tagged here.
-    if raw in {BB_OWNER_COMPETITOR, "report", BB_OWNER_E2E, BB_OWNER_TESTFIX}:
+    if raw in {BB_OWNER_COMPETITOR, "report", BB_OWNER_E2E, BB_OWNER_TESTFIX, "integration"}:
         return raw
     return BB_OWNER_E2E
 

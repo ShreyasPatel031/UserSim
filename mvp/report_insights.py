@@ -105,7 +105,8 @@ def _mentions(text: str, bit: str) -> bool:
 _NEGATIVE_RE = re.compile(
     r"couldn'?t|could not|can'?t|cannot|hard to|confus|unclear|no clear|"
     r"didn'?t|did not|no immediate|no path|stuck|difficult|where to start|"
-    r"can(?:no|')t even",
+    r"can(?:no|')t even|not seeing|haven'?t found|no information|can'?t tell|"
+    r"not found|no obvious path",
     re.I,
 )
 _HEDGE_RE = re.compile(
@@ -303,6 +304,65 @@ def left_start(run: dict[str, Any], start_url: str) -> bool:
         if key != ("", "", "") and key != start_key:
             return True
     return False
+
+
+def left_first_screen(run: dict[str, Any], start_url: str) -> bool:
+    """True when the run left the opening screen.
+
+    A URL change, a meaningful DOM change, or a canvas stroke counts.
+    Waiting, or calling done, on the untouched landing page does not.
+    """
+    return changed_page_state(run, start_url)
+
+
+def product_task_passed(run: dict[str, Any], start_url: str) -> bool:
+    """Product task success that rejects first-screen stalls.
+
+    Homepage-only runs fail even if the model calls done.
+    """
+    if not left_first_screen(run, start_url):
+        return False
+    return task_succeeded(run, start_url)
+
+
+def product_completion_gate(
+    runs: list[dict[str, Any]],
+    start_url: str,
+) -> dict[str, Any]:
+    """At least half of the product runs must leave the first screen and finish.
+
+    A 24-agent matrix has 8 product runs, so the bar is 4/8.
+    """
+    product = [
+        run
+        for run in runs
+        if isinstance(run, dict) and str(run.get("site_key") or "product") == "product"
+    ]
+    passed: list[str] = []
+    first_screen: list[str] = []
+    for run in product:
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        start = str(run.get("site_url") or start_url or "")
+        if product_task_passed(run, start):
+            passed.append(aid)
+        elif not left_first_screen(run, start):
+            first_screen.append(aid)
+    n = len(product)
+    k = len(passed)
+    required = (n + 1) // 2 if n else 0
+    if n >= 8:
+        required = max(required, 4)
+    ok = n > 0 and k >= required
+    return {
+        "product_n": n,
+        "success_n": k,
+        "success_rate": round(100 * k / n) if n else 0,
+        "required_n": required,
+        "required_rate": 0.5,
+        "first_screen_failures": first_screen,
+        "passed_ids": passed,
+        "pass": ok,
+    }
 
 
 def task_succeeded(run: dict[str, Any], start_url: str) -> bool:
@@ -768,6 +828,7 @@ def _layout(
     run_issues: list[dict[str, Any]],
 ) -> dict[str, Any]:
     """Numbers the Bland-style report draws. Every figure comes from included runs."""
+    durations = _durations(study)
     ordered = sorted(
         comparisons,
         key=lambda row: (0 if row.get("site_key") == "product" else 1, str(row.get("site_key"))),
@@ -818,8 +879,14 @@ def _layout(
                 "sites": {},
             },
         )
-        cell = task["sites"].setdefault(sk, {"n": 0, "ok": 0, "steps": []})
+        cell = task["sites"].setdefault(
+            sk, {"n": 0, "ok": 0, "steps": [], "all_steps": [], "times": []}
+        )
         cell["n"] += 1
+        cell["all_steps"].append(steps)
+        elapsed = durations.get(str(run.get("agent_id") or ""))
+        if elapsed is not None:
+            cell["times"].append(elapsed)
         if ok:
             cell["ok"] += 1
             cell["steps"].append(steps)
@@ -850,10 +917,15 @@ def _layout(
     for task in task_slots.values():
         sites_out = {}
         for sk, cell in task["sites"].items():
+            all_steps = cell.get("all_steps") or []
+            times = cell.get("times") or []
+            time_med = _median(times)
             sites_out[sk] = {
                 "n": cell["n"],
                 "ok": cell["ok"],
                 "median_steps": _median(cell["steps"]) if cell["steps"] else None,
+                "median_all_steps": _median(all_steps) if all_steps else None,
+                "median_time_s": round(time_med, 1) if time_med is not None else None,
             }
         by_task.append(
             {

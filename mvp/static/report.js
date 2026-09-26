@@ -57,6 +57,9 @@ function legend() {
 }
 
 function barRows(valueOf, format, fixedMax) {
+  if (!_sites.length) {
+    return `<p class="empty-claim">No included runs yet.</p>`;
+  }
   const vals = _sites.map((s) => Number(valueOf(s)) || 0);
   const max = fixedMax || Math.max(1, ...vals);
   return _sites
@@ -68,7 +71,7 @@ function barRows(valueOf, format, fixedMax) {
       return `<div class="bar-row">
         <span class="bar-label">${escapeHtml(s.site_label)}</span>
         <div class="bar-track"><div class="bar-fill ${escapeHtml(s.css)}" style="width:${pct}%"></div></div>
-        <span class="bar-val">${missing ? "—" : format(raw)}</span>
+        <span class="bar-val">${missing ? "—" : format(raw, s)}</span>
       </div>`;
     })
     .join("");
@@ -113,17 +116,26 @@ function renderAnalytics() {
   const root = document.getElementById("analytics-root");
   const insights = _insights || {};
   const sites = _sites;
-  const goalMax = Math.max(1, ...sites.map((s) => s.goals_completed || 0));
   const taskRows = (insights.by_task || [])
     .map((task) => {
       const bars = sites
         .map((s) => {
           const cell = task.sites?.[s.site_key] || { n: 0, ok: 0 };
           const pct = cell.n ? Math.round((100 * cell.ok) / cell.n) : 0;
-          return `<div class="bar-row">
-            <span class="bar-label">${escapeHtml(s.site_label)}</span>
-            <div class="bar-track"><div class="bar-fill ${escapeHtml(s.css)}" style="width:${pct}%"></div></div>
-            <span class="bar-val">${cell.ok}/${cell.n}</span>
+          const steps = cell.median_all_steps != null ? cell.median_all_steps : cell.median_steps;
+          const time = cell.median_time_s;
+          const extra = [
+            steps != null ? `${Number(steps).toFixed(0)} steps` : "",
+            time != null ? `${Number(time).toFixed(0)}s` : "",
+          ]
+            .filter(Boolean)
+            .join(" · ");
+          return `<div class="bar-stack">
+            <div class="bar-row">
+              <span class="bar-label">${escapeHtml(s.site_label)}</span>
+              <div class="bar-track"><div class="bar-fill ${escapeHtml(s.css)}" style="width:${pct}%"></div></div>
+              <span class="bar-val">${cell.ok}/${cell.n}${extra ? ` · ${extra}` : ""}</span>
+            </div>
           </div>`;
         })
         .join("");
@@ -210,38 +222,31 @@ function renderAnalytics() {
     <p class="metric-note">${escapeHtml(insights.metric_note || insights.evidence_note || "")}</p>
     <div class="analytics-grid">
       <div class="chart-card">
-        <h3>Goals completed</h3>
-        <p class="sub">Persona × task cells this site finished. A cell can count for more than one site.</p>
-        ${legend()}
-        ${_sites
-          .map((s) => {
-            const v = s.goals_completed || 0;
-            const pct = (v / goalMax) * 100;
-            return `<div class="bar-row">
-              <span class="bar-label">${escapeHtml(s.site_label)}</span>
-              <div class="bar-track"><div class="bar-fill ${escapeHtml(s.css)}" style="width:${pct}%"></div></div>
-              <span class="bar-val">${v}</span>
-            </div>`;
-          })
-          .join("")}
-      </div>
-      <div class="chart-card">
-        <h3>Median steps on completed goals</h3>
-        <p class="sub">Lower is better — only runs that finished the task. — means none did.</p>
+        <h3>Task completion</h3>
+        <p class="sub">Included runs that finished the task, per site. 0% is a real rate, not a missing chart.</p>
         ${legend()}
         ${barRows(
-          (s) => s.median_success_steps,
+          (s) => (s.n ? s.success_pct : null),
+          (v, s) => (s && s.n ? `${s.ok ?? 0}/${s.n} · ${v}%` : "—"),
+          100
+        )}
+      </div>
+      <div class="chart-card">
+        <h3>Median steps</h3>
+        <p class="sub">Steps on every included run, finished or not. Lower is a shorter trace.</p>
+        ${legend()}
+        ${barRows(
+          (s) => s.median_steps,
           (v) => (v == null ? "—" : Number(v).toFixed(0))
         )}
       </div>
       <div class="chart-card">
-        <h3>Task completion</h3>
-        <p class="sub">Share of included runs that finished the task</p>
+        <h3>Median time</h3>
+        <p class="sub">Seconds from agent start to agent done, per site.</p>
         ${legend()}
         ${barRows(
-          (s) => s.success_pct,
-          (v) => `${v}%`,
-          100
+          (s) => s.median_time_s,
+          (v) => (v == null ? "—" : `${Number(v).toFixed(0)}s`)
         )}
       </div>
     </div>
@@ -533,15 +538,26 @@ function showReport(data) {
   const lede = document.getElementById("report-lede");
   if (!_insights) {
     const status = data?.status || "unknown";
-    lede.textContent =
+    const waiting =
       status === "complete"
-        ? "This study finished without an evidence-backed report."
-        : `This study is ${status}. Analytics appear when the runs finish.`;
-    document.getElementById("analytics-root").innerHTML = `<p class="section-sub">${escapeHtml(lede.textContent)} <a href="/live?study=${escapeHtml(data.id || "")}">Live view</a></p>`;
-    return;
+        ? "This study finished without per-run traces. The charts below stay in the report."
+        : `This study is ${status}. Charts fill as runs land.`;
+    _insights = {
+      product_name: name,
+      headline: waiting,
+      lede: waiting,
+      metric_note: `${waiting} Open the live view if a run is still going.`,
+      sites: [],
+      by_task: [],
+      by_persona: [],
+      strengths: [],
+      weaknesses: [],
+      run_issues: [],
+      n_runs: 0,
+    };
   }
   _sites = _insights.sites || [];
-  lede.textContent = _insights.lede || "";
+  lede.textContent = _insights.lede || _insights.headline || "";
   renderAnalytics();
   fillSelectors();
 }

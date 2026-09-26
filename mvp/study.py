@@ -86,6 +86,18 @@ _AGENT_SEMAPHORE = asyncio.Semaphore(
 _BROWSER_SEMAPHORE = asyncio.Semaphore(
     int(os.environ.get("MVP_BROWSER_CONCURRENCY", "25"))
 )
+# Caps simultaneous live sessions. Navigations are capped tighter inside
+# run_browser_agent. Queue here, before the per-agent wall clock.
+_LLM_RUN_SEMAPHORE: asyncio.Semaphore | None = None
+
+
+def _llm_run_semaphore() -> asyncio.Semaphore:
+    global _LLM_RUN_SEMAPHORE
+    if _LLM_RUN_SEMAPHORE is None:
+        from mvp.browser_agent import llm_run_concurrency
+
+        _LLM_RUN_SEMAPHORE = asyncio.Semaphore(llm_run_concurrency())
+    return _LLM_RUN_SEMAPHORE
 
 
 def _now() -> str:
@@ -3062,99 +3074,102 @@ async def run_study(
                     refresh_agent_phase()
                     try:
                         async with _BROWSER_SEMAPHORE:
-                            raise_if_killed(study)
-                            sess["status"] = "running"
-                            if not (sess.get("trace") or []):
-                                sess["last_action"] = f"Opening {site}"
-                            thoughts = list(sess.get("live_thoughts") or [])
-                            thoughts.append(
-                                {
-                                    "at": _now(),
-                                    "text": f"{name} got a browser — opening {site}…",
-                                    "kind": "status",
-                                }
-                            )
-                            sess["live_thoughts"] = thoughts[-24:]
-                            refresh_agent_phase()
-                            if on_update:
-                                try:
-                                    on_update(study, event="progress")
-                                except TypeError:
-                                    on_update(study)
-                                except Exception:
-                                    pass
-                            agent_warm = None
-                            if (
-                                not warm_used
-                                and warm_opening is not None
-                                and str(task.get("site_key") or "product") == "product"
-                            ):
-                                # YouTube agents never consume warm sessions (signed-in
-                                # path). Claiming warm anyway leaked the BB slot and
-                                # left DevTools URLs pointing at a zombie session.
-                                _host = (
-                                    str(task.get("site_url") or study.url or "")
-                                    .lower()
+                            # Queue here, before the wall clock. A waiter must not
+                            # be cancelled at 245s while eight other agents browse.
+                            async with _llm_run_semaphore():
+                                raise_if_killed(study)
+                                sess["status"] = "running"
+                                if not (sess.get("trace") or []):
+                                    sess["last_action"] = f"Opening {site}"
+                                thoughts = list(sess.get("live_thoughts") or [])
+                                thoughts.append(
+                                    {
+                                        "at": _now(),
+                                        "text": f"{name} got a browser — opening {site}…",
+                                        "kind": "status",
+                                    }
                                 )
-                                if (
-                                    "youtube.com" not in _host
-                                    and "youtu.be" not in _host
-                                ):
-                                    agent_warm = warm_opening
-                                    warm_used = True
-                            run = None
-                            _outer_wall = max(
-                                45.0,
-                                float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
-                                + 45.0,
-                            )
-                            _agent_task = asyncio.create_task(
-                                run_browser_agent(
-                                    study_id=study.id,
-                                    agent_id=agent_id,
-                                    url=site,
-                                    task_prompt=task.get("prompt")
-                                    or task.get("title")
-                                    or "",
-                                    persona=persona,
-                                    segment=study.segment,
-                                    on_step=lambda step: _on_agent_step(agent_id, step),
-                                    bb_session=None,
-                                    local=force_local_browser,
-                                    warm=agent_warm,
-                                )
-                            )
-                            _done, _pending = await asyncio.wait(
-                                {_agent_task}, timeout=_outer_wall
-                            )
-                            if _agent_task in _pending:
-                                print(
-                                    f"[{agent_id}] outer agent wall ({_outer_wall:.0f}s) — "
-                                    "using captured frames",
-                                    flush=True,
-                                )
-                                _agent_task.cancel()
-
-                                async def _drain(t: asyncio.Task) -> None:
+                                sess["live_thoughts"] = thoughts[-24:]
+                                refresh_agent_phase()
+                                if on_update:
                                     try:
-                                        await t
+                                        on_update(study, event="progress")
+                                    except TypeError:
+                                        on_update(study)
                                     except Exception:
                                         pass
+                                agent_warm = None
+                                if (
+                                    not warm_used
+                                    and warm_opening is not None
+                                    and str(task.get("site_key") or "product") == "product"
+                                ):
+                                    # YouTube agents never consume warm sessions (signed-in
+                                    # path). Claiming warm anyway leaked the BB slot and
+                                    # left DevTools URLs pointing at a zombie session.
+                                    _host = (
+                                        str(task.get("site_url") or study.url or "")
+                                        .lower()
+                                    )
+                                    if (
+                                        "youtube.com" not in _host
+                                        and "youtu.be" not in _host
+                                    ):
+                                        agent_warm = warm_opening
+                                        warm_used = True
+                                run = None
+                                _outer_wall = max(
+                                    45.0,
+                                    float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
+                                    + 45.0,
+                                )
+                                _agent_task = asyncio.create_task(
+                                    run_browser_agent(
+                                        study_id=study.id,
+                                        agent_id=agent_id,
+                                        url=site,
+                                        task_prompt=task.get("prompt")
+                                        or task.get("title")
+                                        or "",
+                                        persona=persona,
+                                        segment=study.segment,
+                                        on_step=lambda step: _on_agent_step(agent_id, step),
+                                        bb_session=None,
+                                        local=force_local_browser,
+                                        warm=agent_warm,
+                                    )
+                                )
+                                _done, _pending = await asyncio.wait(
+                                    {_agent_task}, timeout=_outer_wall
+                                )
+                                if _agent_task in _pending:
+                                    print(
+                                        f"[{agent_id}] outer agent wall ({_outer_wall:.0f}s) — "
+                                        "using captured frames",
+                                        flush=True,
+                                    )
+                                    _agent_task.cancel()
 
-                                asyncio.create_task(_drain(_agent_task))
-                                existing = sess.get("trace") or []
-                                run = {
-                                    "agent_id": agent_id,
-                                    "completed": False,
-                                    "trace": existing,
-                                    "actions": [],
-                                    "num_steps": len(existing),
-                                    "final_url": site,
-                                    "visited_urls": [site],
-                                    "mode": "browser_wall",
-                                }
-                            else:
-                                run = _agent_task.result()
+                                    async def _drain(t: asyncio.Task) -> None:
+                                        try:
+                                            await t
+                                        except Exception:
+                                            pass
+
+                                    asyncio.create_task(_drain(_agent_task))
+                                    existing = sess.get("trace") or []
+                                    run = {
+                                        "agent_id": agent_id,
+                                        "completed": False,
+                                        "trace": existing,
+                                        "actions": [],
+                                        "num_steps": len(existing),
+                                        "final_url": site,
+                                        "visited_urls": [site],
+                                        "mode": "browser_wall",
+                                    }
+                                else:
+                                    run = _agent_task.result()
                         sess["status"] = "summarizing"
                         refresh_agent_phase()
                         log_activity(
@@ -3342,10 +3357,17 @@ async def run_study(
                     return result
 
                 study.agent_results = []
+                # Product agents take the first run slots. An 8-wide cap is what
+                # leaves the homepage; competitors follow as slots free.
+                def _run_rank(task: dict[str, Any]) -> tuple:
+                    key = str(task.get("site_key") or "product")
+                    return (0 if key == "product" else 1, key, str(task.get("id") or ""))
+
+                ordered_tasks = sorted(study.tasks, key=_run_rank)
                 # return_exceptions=True: one cancelled/failed agent must not
                 # CancelledError the whole gather ("Killed by operator").
                 agent_out = await asyncio.gather(
-                    *[_run_one(t) for t in study.tasks],
+                    *[_run_one(t) for t in ordered_tasks],
                     return_exceptions=True,
                 )
                 for item in agent_out:

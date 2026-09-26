@@ -417,16 +417,25 @@ def _score_saved_frames(
             _log(f"  judge skip {aid}: {exc!r}")
 
 
+def _harness_owner() -> str:
+    """Owner this process may release. Never signup, report, or another agent's tag."""
+    raw = (os.environ.get("MVP_BB_OWNER") or "testfix").strip().lower()
+    if raw in {"testfix", "integration"}:
+        return raw
+    return "testfix"
+
+
 def _release_testfix_sessions(study_id: str = "") -> None:
-    """Release only strict-e2e sessions. Never signup, report, or other e2e owners."""
+    """Release only this harness's sessions. Never signup, report, or other owners."""
+    owner = _harness_owner()
     try:
         from mvp.kill_switch import kill_all_browserbase
 
         released = kill_all_browserbase(
-            owner="testfix",
+            owner=owner,
             study_id=study_id or None,
         )
-        _log(f"released browserbase owner=testfix study={study_id or '*'} {released}")
+        _log(f"released browserbase owner={owner} study={study_id or '*'} {released}")
     except Exception as exc:  # noqa: BLE001
         _log(f"browserbase release failed: {exc!r}")
 
@@ -547,6 +556,40 @@ def _goal_verdicts(study: dict, base: str) -> dict[str, dict]:
             )
             _log(f"  goal judge failed {aid}: {exc!r}")
     return verdicts
+
+
+def _attach_task_success(report: dict, study: dict, judged: dict, fallback_url: str) -> None:
+    """Record task success beside screenshot yeses, including the product gate."""
+    from mvp.report_insights import product_completion_gate, task_succeeded
+
+    runs = [
+        r
+        for r in (study.get("agent_results") or _sessions(study) or [])
+        if isinstance(r, dict)
+    ]
+    by_id = {str(r.get("agent_id") or r.get("task_id") or ""): r for r in runs}
+    n_ok = 0
+    for aid, row in judged.items():
+        run = by_id.get(str(aid))
+        ok = False
+        if isinstance(run, dict):
+            start = str(run.get("site_url") or fallback_url or "")
+            try:
+                ok = bool(task_succeeded(run, start))
+            except Exception:
+                ok = False
+        row["task_success"] = ok
+        if ok:
+            n_ok += 1
+    report["task_success_n"] = n_ok
+    report["task_success_of"] = len(judged)
+    report["task_success_rate"] = round(100 * n_ok / len(judged)) if judged else 0
+    gate = product_completion_gate(runs, str(study.get("url") or fallback_url or ""))
+    report["product_task_gate"] = gate
+    report["product_task_success_n"] = gate["success_n"]
+    report["product_task_success_of"] = gate["product_n"]
+    report["product_task_success_rate"] = gate["success_rate"]
+    report["product_first_screen_failures"] = gate["first_screen_failures"]
 
 
 async def run_e2e2(args: argparse.Namespace) -> dict:
@@ -943,6 +986,15 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             f"missing_real={timing['creation_to_first_shot_s']['missing_shot']} "
             f"warm={warm_timing or '{}'}"
         )
+        _attach_task_success(report, study, judged, args.url)
+        gate = report.get("product_task_gate") or {}
+        _log(
+            "  product task gate: "
+            f"{gate.get('success_n')}/{gate.get('product_n')} "
+            f"want ≥{gate.get('required_n')} "
+            f"first_screen_fail={len(gate.get('first_screen_failures') or [])} "
+            f"pass={gate.get('pass')}"
+        )
 
         shot_stats = timing["creation_to_first_shot_s"]
         slow_agents = [
@@ -1024,6 +1076,23 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         report["fail_reasons"] = strict["fail_reasons"]
         report["goal_verdicts"] = strict.get("verdicts") or vision_goal
         report["pass"] = bool(strict["pass"])
+        structural = report.get("product_task_gate") or {}
+        if (
+            not early_abort
+            and structural.get("product_n")
+            and not structural.get("pass")
+        ):
+            stuck = structural.get("first_screen_failures") or []
+            reason = (
+                f"product task success {structural.get('success_n')}/{structural.get('product_n')} "
+                f"want ≥{structural.get('required_n')} "
+                f"({len(stuck)} stayed on the first screen)"
+            )
+            reasons = list(report.get("fail_reasons") or [])
+            if reason not in reasons:
+                reasons.append(reason)
+            report["fail_reasons"] = reasons
+            report["pass"] = False
         failure_path = OUT_DIR / "failures.json"
         if early_abort:
             failure_doc = build_early_failures(
@@ -1048,7 +1117,6 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
         _log(f"Wrote {failure_path} ({len(failure_doc.get('failed_runs') or [])} failed runs)")
         _log(summary_md)
-
         # Ready may show only now — give the UI a beat to apply the final poll.
         ready = False
         if early_abort:
@@ -1225,7 +1293,6 @@ def main() -> int:
     finally:
         _release_testfix_sessions()
     return code
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
