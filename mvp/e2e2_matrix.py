@@ -778,7 +778,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             f"missing_real={timing['creation_to_first_shot_s']['missing_shot']} "
             f"warm={warm_timing or '{}'}"
         )
-        _attach_task_success(report, study, judged, args.url)
+        _attach_task_success(report, study, {}, args.url)
         gate = report.get("product_task_gate") or {}
         _log(
             "  product task gate: "
