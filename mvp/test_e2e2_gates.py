@@ -13,6 +13,7 @@ from mvp.e2e2_gates import (
     FAILURE_PRODUCT,
     FAILURE_STUCK,
     assess_infrastructure_abort,
+    assess_page_opened,
     assess_stuck_abort,
     assess_time_to_first_action,
     beyond_first_screen,
@@ -120,6 +121,9 @@ def _run(
         "site_label": "Linear" if site_key == "product" else site_key,
         "site_url": start,
         "final_url": end,
+        "created_at_ts": 1_000.0,
+        "page_open_at_ts": 1_000.04,
+        "ax_tree": "navigation main landmark button Create issue",
         "num_steps": 4 if success else 1,
         "trace": trace,
         "what_was_easy": (
@@ -195,7 +199,12 @@ class SavedStudyTests(unittest.TestCase):
         self.assertFalse(_gate(result, "product_strength")["pass"])
         self.assertFalse(_gate(result, "top_weakness_not_homepage_only")["pass"])
         self.assertTrue(_gate(result, "agent_count")["pass"])
-        self.assertTrue(_gate(result, "vision_yes")["pass"])
+        ids = [gate["id"] for gate in result["gates"]]
+        self.assertNotIn("vision_yes", ids)
+        self.assertNotIn("first_screenshot", ids)
+        self.assertNotIn("first_screenshot_latency", ids)
+        self.assertIn("page_opened", ids)
+        self.assertFalse(_gate(result, "page_opened")["pass"])
         self.assertTrue(_gate(result, "study_budget")["pass"])
         self.assertTrue(_gate(result, "infra_honesty")["pass"])
         # A judge YES is the completion signal. The report checks still fail.
@@ -475,15 +484,16 @@ def _acting(agent_id: str) -> dict:
     return run
 
 
-def _stamp_shot(run: dict, shot: float = 1_000.0) -> dict:
-    run["first_screenshot_at_ts"] = shot
+def _stamp_open(run: dict, opened: float = 1_000.0) -> dict:
+    """Stamp the page-open time the study JSON records. A screenshot is not a start."""
+    run["page_open_at_ts"] = opened
     return run
 
 
 class EarlyFailureTests(unittest.TestCase):
     def test_idle_agent_aborts_when_the_max_is_blown_and_a_fast_fleet_passes(self) -> None:
         shot = 1_000.0
-        silent = [_stamp_shot(_opened(f"a{i}"), shot) for i in range(24)]
+        silent = [_stamp_open(_opened(f"a{i}"), shot) for i in range(24)]
         inside = assess_time_to_first_action(silent, now=shot + 10.0)
         self.assertFalse(inside["abort"])
         self.assertFalse(inside["ok"])
@@ -502,7 +512,7 @@ class EarlyFailureTests(unittest.TestCase):
         late_flag = assess_time_to_first_action(silent, now=shot + 60.01, abort_after_s=60)
         self.assertTrue(late_flag["abort"])
         seen: dict[str, float] = {}
-        fast = [_stamp_shot(_acting(f"a{i}"), shot) for i in range(24)]
+        fast = [_stamp_open(_acting(f"a{i}"), shot) for i in range(24)]
         for i, run in enumerate(fast):
             seen[run["agent_id"]] = shot + 2.0 + (i % 3) * 0.5
         healthy = assess_time_to_first_action(
@@ -527,7 +537,7 @@ class EarlyFailureTests(unittest.TestCase):
         self.assertFalse(slow["abort"])
         self.assertFalse(slow["ok"])
         self.assertGreater(slow["max_s"], 10)
-        at_limit = [_stamp_shot(_acting(f"b{i}"), shot) for i in range(24)]
+        at_limit = [_stamp_open(_acting(f"b{i}"), shot) for i in range(24)]
         limit_seen = {
             run["agent_id"]: shot + (5.0 if i < 23 else 10.0)
             for i, run in enumerate(at_limit)
@@ -574,12 +584,12 @@ class EarlyFailureTests(unittest.TestCase):
         self.assertFalse(is_click_type_scroll("go_to_url — url=https://linear.app/"))
         self.assertFalse(is_click_type_scroll("search — query=pricing"))
         self.assertFalse(is_click_type_scroll("Page is open. Starting the simulated user…"))
-        opened = _stamp_shot(_opened("searcher"))
+        opened = _stamp_open(_opened("searcher"))
         opened["trace"].append(
             {"step": 1, "action": "search — query=pricing", "url": "https://linear.app/"}
         )
         self.assertFalse(has_click_type_scroll(opened))
-        typed = _stamp_shot(_opened("typer"))
+        typed = _stamp_open(_opened("typer"))
         typed["last_action"] = "input — index=3"
         self.assertTrue(has_click_type_scroll(typed))
 
@@ -588,7 +598,7 @@ class EarlyFailureTests(unittest.TestCase):
             study = _load(study_id)
             runs = study["agent_results"]
             for run in runs:
-                run["first_screenshot_at_ts"] = 1_000.0
+                run["page_open_at_ts"] = 1_000.0
             check = assess_time_to_first_action(runs, now=1_011.0, action_seen_at={})
             self.assertTrue(check["abort"], study_id)
             self.assertEqual(check["agents"], 24)
@@ -706,6 +716,157 @@ class EarlyFailureTests(unittest.TestCase):
         self.assertFalse(failed["pass"])
         self.assertIn("6.0s", str(_gate(failed, "time_to_first_action")["value"]))
         self.assertIn("11.0s", str(_gate(failed, "time_to_first_action")["value"]))
+
+    def test_screenshot_stamp_does_not_start_the_action_clock(self) -> None:
+        shot = 1_000.0
+        silent = [_opened(f"a{i}") for i in range(24)]
+        for run in silent:
+            run["first_screenshot_at_ts"] = shot
+        untouched = assess_time_to_first_action(silent, now=shot + 30.0)
+        self.assertFalse(untouched["abort"])
+        self.assertEqual(untouched["n"], 0)
+        self.assertEqual(untouched["per_agent"][0]["start"], "")
+        ready = [_opened(f"b{i}") for i in range(24)]
+        for run in ready:
+            run["browser_ready_at_ts"] = shot
+            run["first_screenshot_at_ts"] = shot + 50
+        blown = assess_time_to_first_action(ready, now=shot + 10.01)
+        self.assertTrue(blown["abort"])
+        self.assertEqual(blown["per_agent"][0]["start"], "browser_ready_at_ts")
+        opened = _acting("c0")
+        opened["browser_ready_at_ts"] = shot
+        opened["page_open_at_ts"] = shot + 1.0
+        opened["first_screenshot_at_ts"] = shot
+        seen = {"c0": shot + 3.0}
+        check = assess_time_to_first_action(
+            [opened], now=shot + 12.0, action_seen_at=seen, expected=1
+        )
+        self.assertEqual(check["per_agent"][0]["start"], "page_open_at_ts")
+        self.assertEqual(check["per_agent"][0]["latency_s"], 2.0)
+        self.assertTrue(check["ok"])
+
+
+def _opened_page(agent_id: str, **extra) -> dict:
+    run = {
+        "agent_id": agent_id,
+        "site_url": "https://www.linear.app/en-US/",
+        "created_at_ts": 1_000.0,
+        "page_open_at_ts": 1_000.04,
+        "ax_tree": "button Create issue",
+        "trace": [
+            {
+                "step": 0,
+                "action": "Opened https://linear.app/",
+                "url": "https://linear.app/",
+            }
+        ],
+    }
+    run.update(extra)
+    return run
+
+
+class PageOpenedTests(unittest.TestCase):
+    def test_right_site_within_5s_passes_without_a_screenshot(self) -> None:
+        runs = [_opened_page(f"a{i}") for i in range(24)]
+        check = assess_page_opened(runs)
+        self.assertTrue(check["ok"])
+        self.assertFalse(check["abort"])
+        self.assertEqual(check["opened"], 24)
+        ready = []
+        for i in range(24):
+            run = _opened_page(f"b{i}")
+            del run["page_open_at_ts"]
+            run["browser_ready_at_ts"] = 1_002.0
+            ready.append(run)
+        session = assess_page_opened(ready)
+        self.assertTrue(session["ok"], session["reason"])
+        flags = [True, True, False, False, True, True, False, False]
+        study = _matrix(flags)
+        for run in study["agent_results"]:
+            for step in run.get("trace") or []:
+                step.pop("screenshot_url", None)
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product" and r["num_steps"] == 4
+        }
+        result = _evaluate(study, vision_goal=vision)
+        self.assertTrue(_gate(result, "page_opened")["pass"], _gate(result, "page_opened"))
+        self.assertIn("URL host matches", _gate(result, "page_opened")["threshold"])
+
+    def test_wrong_host_empty_ax_and_slow_open_fail(self) -> None:
+        wrong = assess_page_opened(
+            [
+                _opened_page(
+                    "bad",
+                    trace=[{"step": 0, "url": "https://example.com/", "action": "Opened"}],
+                )
+            ],
+            now=1_001.0,
+        )
+        self.assertTrue(wrong["abort"])
+        self.assertEqual(wrong["wrong_site"], 1)
+        empty = _opened_page("ax")
+        empty["ax_tree"] = ""
+        missing = assess_page_opened([empty])
+        self.assertTrue(missing["abort"])
+        self.assertEqual(missing["missing_ax"], 1)
+        slow = assess_page_opened([_opened_page("slow", page_open_at_ts=1_006.0)])
+        self.assertTrue(slow["abort"])
+        self.assertEqual(slow["slow"], 1)
+        waiting_run = _opened_page("wait")
+        del waiting_run["page_open_at_ts"]
+        waiting_run["ax_tree"] = ""
+        waiting = assess_page_opened([waiting_run], now=1_001.0)
+        self.assertFalse(waiting["abort"])
+        self.assertFalse(waiting["ok"])
+        shot_only = _opened_page("shot")
+        del shot_only["page_open_at_ts"]
+        shot_only["first_screenshot_at_ts"] = 1_000.04
+        finished = assess_page_opened([shot_only])
+        self.assertTrue(finished["abort"])
+        self.assertEqual(finished["opened"], 0)
+
+    def test_strength_and_weakness_cite_step_ax_and_the_final_screenshot(self) -> None:
+        flags = [True, True, False, False, True, True, False, False]
+        study = _matrix(flags)
+        for run in study["agent_results"]:
+            if run.get("num_steps") == 4:
+                run["final_screenshot_url"] = f"/final/{run['agent_id']}.png"
+            for step in run.get("trace") or []:
+                step.pop("screenshot_url", None)
+                step["ax_tree"] = "textbox Title button Save"
+        insights = study["summary"]["insights"]
+        for bucket in ("strengths", "weaknesses"):
+            for claim in insights.get(bucket) or []:
+                for ev in claim.get("evidence") or []:
+                    ev.pop("screenshot_url", None)
+                    ev["final_screenshot"] = f"/final/{ev['agent_id']}.png"
+                    ev["ax_tree"] = "textbox Title button Save"
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product" and r["num_steps"] == 4
+        }
+        result = _evaluate(study, vision_goal=vision)
+        self.assertTrue(_gate(result, "product_strength")["pass"], result["fail_reasons"])
+        self.assertTrue(_gate(result, "product_weakness")["pass"], result["fail_reasons"])
+        self.assertIn("AX or URL", _gate(result, "product_strength")["threshold"])
+        self.assertIn("final screenshot", _gate(result, "product_weakness")["threshold"])
+        self.assertTrue(result["pass"], result["fail_reasons"])
+        for claim in insights["strengths"] + insights["weaknesses"]:
+            for ev in claim.get("evidence") or []:
+                ev.pop("final_screenshot", None)
+                ev.pop("ax_tree", None)
+                ev.pop("step_url", None)
+                ev.pop("url", None)
+        for run in study["agent_results"]:
+            run.pop("final_screenshot_url", None)
+            for step in run.get("trace") or []:
+                step.pop("ax_tree", None)
+        bare = _evaluate(study, vision_goal=vision)
+        self.assertFalse(_gate(bare, "product_strength")["pass"])
+        self.assertFalse(_gate(bare, "product_weakness")["pass"])
 
 
 class HeadlineMetricTests(unittest.TestCase):
