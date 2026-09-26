@@ -78,7 +78,8 @@ Rules:
 - competitors: exactly three best-known direct competitors, best first, homepage URLs of real public
   sites. A direct competitor is a standalone product in the same category that a buyer would compare
   side by side. Never a parent company, multi-product suite homepage, marketplace or discontinued product.
-  Rivals may be sales-led (demo only); that is fine.
+  Rivals may be sales-led (demo only); that is fine. Each rival must still be sold under its own name
+  at that domain today: never one that was acquired, merged or rebranded (its site redirects elsewhere).
 - personas: exactly five realistic target customers of this category. Spread them evenly across the four
   products: at least one natural fit for the product and at least one natural fit for each competitor
   (for example an enterprise CS leader fits an enterprise suite, a two-person startup fits a self-serve
