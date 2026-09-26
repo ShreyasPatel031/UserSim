@@ -676,6 +676,11 @@ async def get_study(study_id: str):
     study = STUDIES.get(study_id)
     if study:
         data = study_to_dict(study)
+        # A running study is served from memory. A GCS hydrate here holds the
+        # request until the poll that should see the first click has already
+        # missed the 10s clock.
+        if data.get("status") in {"running", "pending", "starting"}:
+            return data
         # In-memory live studies: return immediately. Hydrating GCS on every UI
         # poll while 6 Browserbase agents are writing was starving the event
         # loop (study GET timeouts / list 503s under parallel load).
