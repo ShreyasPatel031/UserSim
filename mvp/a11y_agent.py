@@ -139,8 +139,6 @@ def failure_breakdown(runs: list[dict[str, Any]]) -> dict[str, Any]:
     for run in runs:
         if not isinstance(run, dict):
             continue
-        if str(run.get("site_key") or "product") != "product":
-            continue
         kind = classify_failure(
             stop_reason=str(run.get("stop_reason") or ""),
             error=str(run.get("error") or run.get("browser_error") or ""),
@@ -152,6 +150,7 @@ def failure_breakdown(runs: list[dict[str, Any]]) -> dict[str, Any]:
         rows.append(
             {
                 "agent_id": run.get("agent_id"),
+                "site_key": run.get("site_key") or "product",
                 "type": kind,
                 "reason": (run.get("stop_reason") or run.get("error") or "")[:300],
                 "judge_reason": str(run.get("judge_reason") or "")[:300],
@@ -282,6 +281,7 @@ _READ_JS = """() => {
       i: nodes.length,
       role: (el.getAttribute('role') || el.tagName || '').toLowerCase(),
       name: name,
+      href: String(el.href || el.getAttribute('href') || '').slice(0, 180),
       x: Math.round(r.x + r.width / 2),
       y: Math.round(r.y + r.height / 2),
     });
@@ -334,9 +334,12 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
         if not isinstance(node, dict):
             continue
         name = str(node.get("name") or "").lower()
-        if not name:
+        href = str(node.get("href") or "").lower()
+        if not name and not href:
             continue
-        score = sum(3 for w in words if w in name)
+        if "skip to content" in name:
+            continue
+        score = sum(3 for w in words if w in name or w in href)
         role = str(node.get("role") or "")
         if role in {"a", "button", "link", "menuitem", "tab"}:
             score += 1
@@ -356,7 +359,40 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
         "x": int(best.get("x") or 0),
         "y": int(best.get("y") or 0),
         "name": str(best.get("name") or "")[:80],
+        "href": str(best.get("href") or "")[:180],
     }
+
+
+def goal_visible(task: str, read: dict[str, Any]) -> bool:
+    """True when the open URL is the page the task asked for.
+
+    A nav label on the homepage is not the pricing page or the changelog.
+    """
+    url = str((read or {}).get("url") or "").lower()
+    task_l = (task or "").lower()
+    needed: list[bool] = []
+    if any(word in task_l for word in ("pricing", "free plan", "price")):
+        needed.append("pricing" in url)
+    if any(word in task_l for word in ("changelog", "what shipped", "shipped recently")):
+        needed.append("changelog" in url)
+    if not needed:
+        return True
+    return all(needed)
+
+
+def _follow_href(href: str) -> str:
+    """Absolute link to open. Same-page fragments stay a coordinate click."""
+    from urllib.parse import urlparse
+
+    raw = (href or "").strip()
+    if not raw.startswith("http"):
+        return ""
+    parsed = urlparse(raw)
+    if parsed.scheme not in {"http", "https"}:
+        return ""
+    if parsed.fragment and parsed.path in {"", "/"}:
+        return ""
+    return raw[:180]
 
 
 def action_label(action: dict[str, Any]) -> str:
@@ -550,22 +586,31 @@ class A11yBoot:
                 return bb
             except asyncio.QueueEmpty:
                 pass
-        try:
-            bb = await asyncio.to_thread(
-                create_session,
-                proxies=False,
-                keep_alive=True,
-                solve_captchas=False,
-                advanced_stealth=False,
-                owner=study_session_owner(),
-                study_id=self.study.id,
-            )
-        except Exception as exc:  # noqa: BLE001
-            print(f"[a11y] session {i + 1} failed: {exc!r}", flush=True)
-            return None
-        if enqueue:
-            await self.pool.put(bb)
-        return bb
+        deadline = getattr(self.study, "budget_deadline", None) or (
+            time.monotonic() + study_budget_s()
+        )
+        while time.monotonic() < deadline:
+            try:
+                bb = await asyncio.to_thread(
+                    create_session,
+                    proxies=False,
+                    keep_alive=True,
+                    solve_captchas=False,
+                    advanced_stealth=False,
+                    owner=study_session_owner(),
+                    study_id=self.study.id,
+                )
+            except Exception as exc:  # noqa: BLE001
+                # A 429 or a slow create is not a dead browser. Keep trying
+                # until the study budget. Do not stop the agent on the first miss.
+                print(f"[a11y] session {i + 1} create retry: {exc!r}", flush=True)
+                await asyncio.sleep(5)
+                continue
+            if enqueue:
+                await self.pool.put(bb)
+            return bb
+        print(f"[a11y] session {i + 1} not created before the study budget", flush=True)
+        return None
 
     async def _fill_pool(self, n: int, offset: int = 0) -> None:
         await asyncio.gather(*[self._create_one(offset + i) for i in range(n)])
@@ -637,6 +682,10 @@ class A11yBoot:
                 continue
             agent_id = str(task.get("id") or "")
             if not agent_id:
+                continue
+            existing = self.study.live_sessions.get(agent_id) or {}
+            # A later republish must not wipe steps the agent already took.
+            if existing.get("first_action_at_ts") or len(existing.get("trace") or []) > 2:
                 continue
             persona = next(
                 (p for p in (self.study.personas or []) if p.get("id") == task.get("persona_id")),
@@ -771,28 +820,39 @@ class A11yBoot:
         self.published.set()
 
     async def take_page(self, site_key: str, url: str) -> dict[str, Any] | None:
-        """A browser already on this site, or the next pre-created session."""
-        async with self._handle_cv:
-            for i, handle in enumerate(self._handles):
-                if handle.get("site_key") == site_key:
-                    return self._handles.pop(i)
-        try:
-            bb = await asyncio.wait_for(self.pool.get(), timeout=40)
-        except asyncio.TimeoutError:
+        """A browser already on this site, or the next session that becomes ready.
+
+        Waits until the study budget. A rate-limited create is not a dead browser.
+        """
+        deadline = getattr(self.study, "budget_deadline", None) or (
+            time.monotonic() + study_budget_s()
+        )
+        while time.monotonic() < deadline:
             async with self._handle_cv:
-                if self._handles:
-                    return self._handles.pop(0)
-            return None
-        try:
-            _browser, page = await self._connect(bb)
+                for i, handle in enumerate(self._handles):
+                    if handle.get("site_key") == site_key:
+                        return self._handles.pop(i)
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            try:
+                bb = await asyncio.wait_for(self.pool.get(), timeout=min(5.0, remaining))
+            except asyncio.TimeoutError:
+                continue
+            try:
+                _browser, page = await self._connect(bb)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] connect failed (retrying): {exc!r}", flush=True)
+                continue
             try:
                 await page.goto(url, wait_until="commit", timeout=8000)
             except Exception as exc:  # noqa: BLE001
+                if browser_dead(exc):
+                    print(f"[a11y] browser died during goto (retrying): {exc!r}", flush=True)
+                    continue
                 print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
             return {"bb": bb, "browser": _browser, "page": page, "site_key": site_key}
-        except Exception as exc:  # noqa: BLE001
-            print(f"[a11y] connect failed: {exc!r}", flush=True)
-            return None
+        return None
 
     def snapshot_for(self, site_key: str) -> dict[str, Any] | None:
         return self.snapshots.get(site_key)
@@ -855,6 +915,7 @@ async def _model_action(
         "friction": str(data.get("friction") or "")[:180],
         "easy": str(data.get("easy") or "")[:180],
         "name": str((node or {}).get("name") or data.get("text") or "")[:80],
+        "href": str((node or {}).get("href") or "")[:180],
         "x": int((node or {}).get("x") or 0),
         "y": int((node or {}).get("y") or 0),
     }
@@ -865,6 +926,10 @@ async def _act(page: Any, action: dict[str, Any]) -> None:
     act = str(action.get("act") or "click")
     x = int(action.get("x") or 200)
     y = int(action.get("y") or 200)
+    href = _follow_href(str(action.get("href") or ""))
+    if act == "click" and href:
+        await page.goto(href, wait_until="commit", timeout=8000)
+        return
     if act == "scroll":
         await page.mouse.wheel(0, int(action.get("dy") or 500))
         return
@@ -950,8 +1015,8 @@ async def run_a11y_agent(
     if deadline is None:
         deadline = time.monotonic() + study_budget_s()
     if handle is None:
-        stop_reason = "browser dead: no Browserbase session"
-        failed = {"phase": "session", "reason": stop_reason, "step": 0}
+        stop_reason = "study budget"
+        failed = {"phase": "study_budget", "reason": stop_reason, "step": 0}
     else:
         page = handle["page"]
         browser = handle["browser"]
@@ -1039,8 +1104,14 @@ async def run_a11y_agent(
         if action.get("easy"):
             easy.append(str(action["easy"]))
         if str(action.get("act")) == "done":
-            stop_reason = "done"
-            break
+            if goal_visible(task_prompt, read):
+                stop_reason = "done"
+                break
+            # The model stopped on the wrong page. Keep going from the tree.
+            action = pick_action(task_prompt, read.get("nodes") or [])
+            if str(action.get("act")) == "done":
+                stop_reason = "done"
+                break
         step_no += 1
         label = action_label(action)
         outcome = "friction" if action.get("friction") else "neutral"
