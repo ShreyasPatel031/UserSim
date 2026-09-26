@@ -36,6 +36,9 @@ MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
 # capture cannot sit on the CDP connection until browser-use's 30s timeout.
 DOM_BUDGET_S = float(os.environ.get("MVP_DOM_BUDGET_S", "") or "4")
 SHOT_BUDGET_S = float(os.environ.get("MVP_SHOT_BUDGET_S", "") or "5")
+# The decision waits this long for a state capture, then continues on the
+# screenshot. A stuck CDP call is left running so it cannot hold the step.
+STATE_BUDGET_S = float(os.environ.get("MVP_STATE_BUDGET_S", "") or "4")
 DOM_ELEMENT_CAP = int(os.environ.get("MVP_DOM_ELEMENT_CAP", "") or "40")
 _VISION_IMAGE = (800, 450)
 
@@ -263,6 +266,55 @@ def _empty_dom_state() -> Any:
     return SerializedDOMState(_root=None, selector_map={})
 
 
+def _empty_browser_state(reason: str, browser_session: Any = None) -> Any:
+    """DOM-less state so the model can still click the last screenshot."""
+    from browser_use.browser.views import BrowserStateSummary
+
+    screenshot = None
+    url = ""
+    title = "Browser state unavailable"
+    tabs: list[Any] = []
+    if browser_session is not None:
+        cached = getattr(browser_session, "_cached_browser_state_summary", None)
+        if cached is not None:
+            screenshot = getattr(cached, "screenshot", None) or None
+            url = str(getattr(cached, "url", "") or "")
+            cached_title = getattr(cached, "title", None)
+            if cached_title:
+                title = str(cached_title)
+            tabs = list(getattr(cached, "tabs", None) or [])
+        if not screenshot:
+            screenshot = getattr(browser_session, "_usersim_fallback_screenshot", None)
+    return BrowserStateSummary(
+        dom_state=_empty_dom_state(),
+        url=url,
+        title=title,
+        tabs=tabs,
+        screenshot=screenshot,
+        browser_errors=[reason[:300]],
+        state_error=reason[:300],
+    )
+
+
+async def _await_budget(task: asyncio.Task, timeout: float) -> Any:
+    """Return the task result, or None once the budget passes.
+
+    The task is left running. Cancelling a CDP call and then waiting for that
+    cancel used to hold the step until the 30s browser-state timeout.
+    """
+    done, _pending = await asyncio.wait({task}, timeout=timeout)
+    if task not in done:
+        return None
+    if task.cancelled():
+        return None
+    exc = task.exception()
+    if exc is not None:
+        if isinstance(exc, asyncio.CancelledError):
+            return None
+        raise exc
+    return task.result()
+
+
 def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
     """Time DOM extraction, screenshots, and navigation on this session only."""
     if browser_session is None or getattr(browser_session, "_phase_probes", False):
@@ -273,41 +325,62 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
         pass
 
     orig_state = browser_session.get_browser_state_summary
+    try:
+        object.__setattr__(browser_session, "_usersim_orig_state", orig_state)
+    except Exception:
+        pass
+
+    def _remember_inflight(task: asyncio.Task) -> None:
+        try:
+            object.__setattr__(browser_session, "_usersim_state_inflight", task)
+        except Exception:
+            pass
+
+    def _clear_inflight(task: asyncio.Task) -> None:
+        if not task.done():
+            return
+        current = getattr(browser_session, "_usersim_state_inflight", None)
+        if current is task:
+            try:
+                object.__setattr__(browser_session, "_usersim_state_inflight", None)
+            except Exception:
+                pass
 
     async def state_wrapped(*args: Any, **kwargs: Any) -> Any:
-        # The opening vision click starts one state capture. The first loop
-        # step awaits that same task instead of extracting the DOM again.
+        # One capture per browser. A step that is still extracting is reused
+        # instead of starting a second DOM walk on the same CDP connection.
         pending = getattr(browser_session, "_usersim_pending_state", None)
+        inflight = getattr(browser_session, "_usersim_state_inflight", None)
+        reused = False
         if pending is not None and pending is not asyncio.current_task():
             try:
                 object.__setattr__(browser_session, "_usersim_pending_state", None)
             except Exception:
                 pass
-            started = clock.begin("state", reused=True)
-            error = None
-            error_type = None
-            try:
-                return await pending
-            except asyncio.CancelledError:
-                if _task_is_cancelling():
-                    error = "CancelledError: cancelled"
-                    error_type = "CancelledError"
-                    raise
-                error = "CancelledError: state capture interrupted"
-                error_type = "CancelledError"
-                raise RuntimeError(error)
-            except Exception as exc:
-                error = f"{type(exc).__name__}: {exc}"[:400]
-                error_type = type(exc).__name__
-            finally:
-                clock.finish("state", started, error=error, error_type=error_type, reused=True)
-        started = clock.begin("state")
+            task = pending
+            reused = True
+            _remember_inflight(task)
+        elif (
+            isinstance(inflight, asyncio.Task)
+            and inflight is not asyncio.current_task()
+            and not inflight.done()
+        ):
+            task = inflight
+            reused = True
+        else:
+            # The event handler does the CDP work on another task. Holding the
+            # slot here deadlocks that handler, which then returns no state.
+            task = asyncio.create_task(orig_state(*args, **kwargs))
+            _remember_inflight(task)
+        started = clock.begin("state", reused=reused)
         error = None
         error_type = None
         try:
-            # The event handler does the CDP work on another task. Holding the
-            # slot here deadlocks that handler, which then returns no state.
-            result = await orig_state(*args, **kwargs)
+            result = await _await_budget(task, STATE_BUDGET_S)
+            if result is None:
+                error = f"TimeoutError: state budget {STATE_BUDGET_S:.0f}s"
+                error_type = "TimeoutError"
+                return _empty_browser_state(error, browser_session)
             state_error = getattr(result, "state_error", None)
             if state_error:
                 error = str(state_error)[:400]
@@ -320,13 +393,16 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
                 raise
             error = "CancelledError: state capture interrupted"
             error_type = "CancelledError"
-            raise RuntimeError(error)
+            return _empty_browser_state(error, browser_session)
         except Exception as exc:
             error = f"{type(exc).__name__}: {exc}"[:400]
             error_type = type(exc).__name__
             raise
         finally:
-            clock.finish("state", started, error=error, error_type=error_type)
+            clock.finish(
+                "state", started, error=error, error_type=error_type, reused=reused
+            )
+            _clear_inflight(task)
 
     _patch_method(browser_session, "get_browser_state_summary", state_wrapped)
 
@@ -1890,7 +1966,12 @@ def _start_background_state(browser_session: Any, clock: _PhaseClock, step_no: i
         token_where = _PHASE_WHERE.set("loop")
         token_step = _PHASE_STEP.set(step_no)
         try:
-            return await browser_session.get_browser_state_summary(include_screenshot=True)
+            # Call the unwrapped capture. The step wrapper only waits for it,
+            # so this task is not itself cut off at the state budget.
+            fetch = getattr(browser_session, "_usersim_orig_state", None)
+            if fetch is None:
+                fetch = browser_session.get_browser_state_summary
+            return await fetch(include_screenshot=True)
         finally:
             _PHASE_WHERE.reset(token_where)
             _PHASE_STEP.reset(token_step)
@@ -1898,6 +1979,7 @@ def _start_background_state(browser_session: Any, clock: _PhaseClock, step_no: i
     task = asyncio.create_task(_load())
     try:
         object.__setattr__(browser_session, "_usersim_pending_state", task)
+        object.__setattr__(browser_session, "_usersim_state_inflight", task)
     except Exception:
         pass
     clock.event(event="start", phase="state", where="background", step=step_no, note="scheduled")
@@ -1934,6 +2016,10 @@ async def _act_from_opening_screenshot(
     phase = "llm"
     try:
         jpeg, src_w, src_h = _vision_jpeg(shot)
+        try:
+            object.__setattr__(browser_session, "_usersim_fallback_screenshot", jpeg)
+        except Exception:
+            pass
         from browser_use.llm.messages import (
             ContentPartImageParam,
             ContentPartTextParam,

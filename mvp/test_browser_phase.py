@@ -109,6 +109,38 @@ class BrowserPhaseTest(unittest.TestCase):
         self.assertNotIn("take_screenshot", hook)
         self.assertNotIn("_page_state(", hook)
 
+    def test_state_budget_returns_while_capture_keeps_running(self) -> None:
+        import asyncio
+
+        from mvp.browser_agent import STATE_BUDGET_S, _await_budget, _empty_browser_state
+
+        self.assertGreaterEqual(STATE_BUDGET_S, 1)
+        self.assertLessEqual(STATE_BUDGET_S, 8)
+
+        async def stuck() -> None:
+            await asyncio.sleep(30)
+
+        async def run() -> tuple[float, bool]:
+            loop = asyncio.get_running_loop()
+            started = loop.time()
+            task = asyncio.create_task(stuck())
+            result = await _await_budget(task, 0.2)
+            elapsed = loop.time() - started
+            still_running = not task.done()
+            task.cancel()
+            return elapsed, result is None and still_running
+
+        elapsed, released = asyncio.run(run())
+        self.assertLess(elapsed, 1.0)
+        self.assertTrue(released)
+        empty = _empty_browser_state(
+            "TimeoutError: state budget 4s",
+            type("S", (), {"_usersim_fallback_screenshot": "abc", "_cached_browser_state_summary": None})(),
+        )
+        self.assertEqual(empty.screenshot, "abc")
+        self.assertEqual(empty.dom_state.selector_map, {})
+        self.assertIn("state budget", empty.state_error or "")
+
 
 if __name__ == "__main__":
     unittest.main()
