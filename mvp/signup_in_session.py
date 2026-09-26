@@ -199,6 +199,36 @@ _SNAPSHOT_JS = r"""
     for (const el of root.querySelectorAll('*')) { if (el.shadowRoot && i < 140) walk(el.shadowRoot); }
   };
   walk(document);
+  // Choice cards built from <div onClick> (kolanut.ai onboarding "What do you
+  // want to improve first?") are not buttons; Next stays disabled until one is
+  // picked, and without them in the list the model could only guess numbers.
+  // List the outermost cursor:pointer element that holds text and no listed
+  // control.
+  if (i < 140) {
+    const cand = [...document.querySelectorAll('div, li, span, section, article, p, h3, h4')].slice(0, 4000);
+    for (const el of cand) {
+      if (i >= 140) break;
+      if (el.closest('[data-sis-i]') || el.querySelector('[data-sis-i]')) continue;
+      let s;
+      try { s = getComputedStyle(el); } catch (e) { continue; }
+      if (s.cursor !== 'pointer') continue;
+      const up = el.parentElement;
+      if (up && up !== document.body && getComputedStyle(up).cursor === 'pointer') continue;
+      if (!vis(el)) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width * r.height > innerWidth * innerHeight * 0.4) continue;
+      const name = clean(el.getAttribute('aria-label') || el.innerText || '').slice(0, 80);
+      if (!name) continue;
+      const item = {i, tag: el.tagName.toLowerCase(), role: 'clickable', name};
+      if (el.getAttribute('aria-pressed') || el.getAttribute('aria-selected')) {
+        item.checked = el.getAttribute('aria-pressed') === 'true' || el.getAttribute('aria-selected') === 'true';
+      }
+      if (r.bottom < 0 || r.top > innerHeight) item.offscreen = true;
+      el.setAttribute('data-sis-i', String(i));
+      OUT.push(item);
+      i += 1;
+    }
+  }
   const frames = [...document.querySelectorAll('iframe')].filter(vis).map(f => f.src || '').filter(Boolean);
   // Invisible widgets (reCAPTCHA badge, size=invisible) do not block a form.
   const cap = frames.filter(s => !/size=invisible/i.test(s))
@@ -242,10 +272,12 @@ def _fmt_elements(elements: list[dict[str, Any]]) -> str:
         if el.get("type") and el.get("type") not in {"text"}:
             bits.append(f"type={el['type']}")
         if el.get("name"):
-            bits.append(json.dumps(el["name"]))
+            bits.append(json.dumps(el["name"], ensure_ascii=False))
         for k in ("placeholder", "field", "options", "href", "maxlength"):
             if el.get(k):
-                bits.append(f"{k}={json.dumps(el[k]) if isinstance(el[k], str) else el[k]}")
+                # ensure_ascii=False: the model must see "1–10 employees", not
+                # "1\\u201310", or it writes an option text no <option> has.
+                bits.append(f"{k}={json.dumps(el[k], ensure_ascii=False) if isinstance(el[k], str) else el[k]}")
         if "filled" in el:
             bits.append(f"filled={el['filled']}")
         if "checked" in el:
@@ -467,6 +499,53 @@ def _redact(text: str, ident: dict[str, str]) -> str:
     return text.replace(pw, "<password>") if pw else text
 
 
+def _norm_option(text: str) -> str:
+    """Option text for matching: dashes unified, spaces collapsed, lower case."""
+    text = re.sub(r"[\u2010-\u2015\u2212]", "-", str(text or ""))
+    return re.sub(r"\s+", " ", text).strip().lower()
+
+
+_PLACEHOLDER_OPTION = re.compile(r"^(select|choose|pick|please|--|-)\b|^$", re.I)
+
+
+def _match_option(want: str, options: list[dict[str, Any]]) -> int | None:
+    """Index of the <option> the model meant, or None.
+
+    select_option(label=...) needs the exact text, and waits out its timeout
+    when it differs. kolanut.ai's "Team size" options use en dashes
+    ("1\u201310 employees"); the model wrote "1-10 employees", every select timed
+    out, Next stayed disabled and signup ended "stuck"/"timeout".
+    """
+    usable = [
+        (i, o) for i, o in enumerate(options or [])
+        if isinstance(o, dict) and not o.get("disabled")
+    ]
+    if not usable:
+        return None
+    w = _norm_option(want)
+    real = [(i, o) for i, o in usable if not _PLACEHOLDER_OPTION.search(_norm_option(o.get("text") or ""))
+            and str(o.get("value") or "").strip() != ""]
+    if w:
+        for i, o in usable:
+            if w in {_norm_option(o.get("text") or ""), _norm_option(o.get("value") or "")}:
+                return i
+        for i, o in real:
+            t = _norm_option(o.get("text") or "")
+            if w in t or (t and t in w):
+                return i
+        digits = re.findall(r"\d+", w.replace(",", ""))
+        if digits:
+            for i, o in real:
+                if re.findall(r"\d+", _norm_option(o.get("text") or "").replace(",", ""))[: len(digits)] == digits:
+                    return i
+        words = set(re.findall(r"[a-z0-9]{3,}", w))
+        best = max(real, key=lambda io: len(words & set(re.findall(r"[a-z0-9]{3,}", _norm_option(io[1].get("text") or "")))), default=None)
+        if best is not None and words & set(re.findall(r"[a-z0-9]{3,}", _norm_option(best[1].get("text") or ""))):
+            return best[0]
+        return None
+    return real[0][0] if real else None
+
+
 async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: dict[int, dict[str, Any]], home_site: str = "") -> str:
     kind = str(act.get("do") or "").lower()
     value = _subst(str(act.get("value") or ""), ident)
@@ -519,6 +598,17 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
             await page.locator(f"label:has([data-sis-i='{idx}'])").first.click(timeout=3000)
         return f"check {name}"
     if kind == "select":
+        try:
+            options = await loc.evaluate(
+                "el => [...el.options].map(o => ({text: (o.text || '').trim(), value: o.value, disabled: o.disabled}))",
+                timeout=2000,
+            )
+        except Exception:
+            options = []
+        pick = _match_option(value, options if isinstance(options, list) else [])
+        if pick is not None:
+            await loc.select_option(index=pick, timeout=3000)
+            return f"select {name} = {str(options[pick].get('text') or '')[:30]}"
         try:
             await loc.select_option(label=value, timeout=3000)
         except Exception:

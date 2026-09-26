@@ -11,7 +11,7 @@ from mvp.a11y_agent import (
     signup_hopeless_without_keys,
 )
 from mvp.signup_inbox import rank_links
-from mvp.signup_in_session import _OAUTH, _visible_elements
+from mvp.signup_in_session import _OAUTH, _fmt_elements, _match_option, _visible_elements
 
 
 class SignupLabels(unittest.TestCase):
@@ -156,8 +156,6 @@ class ClearCaptchaNoFalseOk(unittest.TestCase):
         self.assertFalse(res["ok"], res)
         self.assertEqual(res["method"], "no_capsolver_key")
 
-if __name__ == "__main__":
-    unittest.main()
 
 
 class ApiRejectPatternTests(unittest.TestCase):
@@ -179,3 +177,41 @@ class GmailAliasFreshTests(unittest.TestCase):
             b = GmailAliasInbox("notion.so", "notion").address
         self.assertNotEqual(a, b)
         self.assertTrue(a.endswith("@gmail.com") and "notion" in a)
+
+
+class SelectOptionTests(unittest.TestCase):
+    """kolanut.ai onboarding: 'Team size' options use en dashes; the model wrote
+    '1-10 employees', select_option(label=...) timed out every time, Next stayed
+    disabled and signup ended stuck/timeout on engagement.kolanut.ai/onboarding."""
+
+    OPTS = [{"text": "Select team size", "value": ""}] + [
+        {"text": t, "value": v}
+        for t, v in (
+            ("1\u201310 employees", "1-10"),
+            ("11\u201350 employees", "11-50"),
+            ("201\u20131,000 employees", "201-1000"),
+            ("1,000+ employees", "1000+"),
+        )
+    ]
+
+    def test_ascii_dash_matches_en_dash_option(self) -> None:
+        self.assertEqual(_match_option("1-10 employees", self.OPTS), 1)
+        self.assertEqual(_match_option("11\u201350 employees", self.OPTS), 2)
+        self.assertEqual(_match_option("201-1000 employees", self.OPTS), 3)
+        self.assertEqual(_match_option("1,000+ employees", self.OPTS), 4)
+
+    def test_empty_value_picks_first_real_option_not_placeholder(self) -> None:
+        self.assertEqual(_match_option("", self.OPTS), 1)
+
+    def test_no_match_returns_none(self) -> None:
+        self.assertIsNone(_match_option("Enterprise tier", self.OPTS))
+
+    def test_model_sees_real_characters(self) -> None:
+        out = _fmt_elements([{"i": 1, "role": "select", "name": "Team size *",
+                              "options": "Select team size | 1\u201310 employees"}])
+        self.assertIn("1\u201310 employees", out)
+        self.assertNotIn("\\u2013", out)
+
+
+if __name__ == "__main__":
+    unittest.main()

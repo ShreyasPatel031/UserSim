@@ -278,13 +278,34 @@ _READ_JS = """() => {
   const sel = 'a, button, input, textarea, select, summary, [role="button"], [role="link"], [role="menuitem"], [role="tab"], [role="textbox"], canvas, [contenteditable="true"]';
   const all = document.querySelectorAll(sel);
   const vh = window.innerHeight || 800;
+  const vw = window.innerWidth || 1280;
+  // A control under a fixed overlay (a product-tour or promo modal that is a
+  // plain <div>, not role=dialog) cannot be clicked. kolanut.ai's tour modal
+  // covered its Customers page; the agent kept clicking "Re-engage at-risk"
+  // behind it ("how=miss") until "repeated an action that changed nothing".
+  const covered = (el, r) => {
+    if (el.tagName === 'CANVAS' || /^(checkbox|radio)$/i.test(el.type || '')) return false;
+    if (el.getRootNode() !== document) return false;
+    const cx = r.x + r.width / 2, cy = r.y + r.height / 2;
+    if (!(cx >= 0 && cy >= 0 && cx < (window.innerWidth || 1280) && cy < vh)) return false;
+    const top = document.elementFromPoint(cx, cy);
+    if (!top || top === el || el.contains(top) || top.contains(el)) return false;
+    const lab = top.closest('label');
+    if (lab && lab.contains(el)) return false;
+    let n = top;
+    while (n && n !== document.body && n !== document.documentElement) {
+      if (window.getComputedStyle(n).position === 'fixed') return !n.contains(el);
+      n = n.parentElement;
+    }
+    return false;
+  };
   const pack = (el) => {
     const r = el.getBoundingClientRect();
     const href = String(el.href || el.getAttribute('href') || '').slice(0, 180);
     const tab = el.getAttribute('tabindex');
     // Toolbars, radio groups, menus, and tabs use a roving tabindex of -1 on real controls.
     const roving = !!el.closest('[role="toolbar"], [role="radiogroup"], [role="menu"], [role="menubar"], [role="tablist"], [role="listbox"], [role="grid"], [role="tree"], [role="dialog"]');
-    const inert = ((tab === '-1') && !href && !roving) || !!el.disabled || el.getAttribute('aria-disabled') === 'true' || !!el.closest('[aria-hidden="true"], [inert]');
+    const inert = ((tab === '-1') && !href && !roving) || !!el.disabled || el.getAttribute('aria-disabled') === 'true' || !!el.closest('[aria-hidden="true"], [inert]') || covered(el, r);
     let name = (
       el.getAttribute('aria-label')
       || el.getAttribute('placeholder')
@@ -321,6 +342,10 @@ _READ_JS = """() => {
     if (r.width < 2 || r.height < 2) continue;
     const style = window.getComputedStyle(el);
     if (style.visibility === 'hidden' || style.display === 'none') continue;
+    // A panel slid off the side (kolanut.ai's closed "AI Chats" drawer sits at
+    // x=1590 on a 1024px viewport) is not on screen either; its buttons were
+    // offered, chosen, and missed on every click.
+    if (r.right <= 0 || r.left >= vw) continue;
     const onScreen = r.bottom >= 0 && r.top <= vh + 80;
     if (!onScreen) {
       offscreen.push(el);
@@ -1741,6 +1766,45 @@ async def _escape_to_app(page: Any, read: dict[str, Any], signed_in: bool, escap
     return True
 
 
+_LINK_OF_JS = "el => { const a = el.closest('a[href]'); return a ? {href: a.href, target: a.target || ''} : null; }"
+_LINK_AT_POINT_JS = (
+    "([x, y]) => { const el = document.elementFromPoint(x, y); const a = el && el.closest('a[href]');"
+    " return a ? {href: a.href, target: a.target || ''} : null; }"
+)
+
+
+async def _note_link_target(loc: Any, action: dict[str, Any]) -> None:
+    """Record the link a control sits in (a <button> inside <a target=_blank>).
+
+    The tree names the button, not the link, so the action has no href; the
+    loop needs to know the click opens a new tab to wait for it.
+    """
+    try:
+        live = await loc.evaluate(_LINK_OF_JS, timeout=1000)
+    except Exception:
+        return
+    if isinstance(live, dict):
+        action["_live_href"] = str(live.get("href") or "")
+        action["_live_target"] = str(live.get("target") or "")
+
+
+def _new_tab_wait_ms(action: dict[str, Any], current: str) -> int:
+    """How long a click that changed nothing waits for a late new tab.
+
+    A link to another page, or one with target=_blank, gets a long wait: a new
+    tab in a remote browser shows up only once its first response commits
+    (2-4s on a cold cross-subdomain signup page). Anything else: 1s, the same
+    beat the loop already gives a single-page app to swap its view.
+    """
+    target = str(action.get("_live_target") or "").lower()
+    href = str(action.get("href") or action.get("_live_href") or "")
+    if target and target != "_self":
+        return 5000
+    if _link_leaves_page(href, current):
+        return 4000
+    return 1000
+
+
 async def _click_named(page: Any, action: dict[str, Any]) -> str:
     """Click the live control by role and name, then by its bounding box."""
     name = str(action.get("name") or "").strip()
@@ -1780,6 +1844,7 @@ async def _click_named(page: Any, action: dict[str, Any]) -> str:
             ranked.append(((1e6 if off else 0.0) + dist, idx))
         for _score, idx in sorted(ranked):
             try:
+                await _note_link_target(loc.nth(idx), action)
                 await loc.nth(idx).click(timeout=2500)
                 return "role"
             except Exception:
@@ -1797,6 +1862,13 @@ async def _click_named(page: Any, action: dict[str, Any]) -> str:
     y = int(action.get("y") or 0)
     size = getattr(page, "viewport_size", None) or {"width": 1440, "height": 900}
     if (x or y) and 0 <= y <= int(size.get("height") or 900) and 0 <= x <= int(size.get("width") or 1440):
+        try:
+            live = await page.evaluate(_LINK_AT_POINT_JS, [x, y])
+            if isinstance(live, dict):
+                action["_live_href"] = str(live.get("href") or "")
+                action["_live_target"] = str(live.get("target") or "")
+        except Exception:
+            pass
         await page.mouse.click(x, y)
         return "xy"
     if name:
@@ -2018,28 +2090,51 @@ def _open_tabs(page: Any) -> set[int] | None:
         return None
 
 
-async def _follow_new_tab(page: Any, before: set[int]) -> str:
+async def _follow_new_tab(page: Any, before: set[int], wait_ms: int = 0) -> str:
     """A link that opened a new tab (target=_blank) leaves this tab unchanged.
 
     Open that URL in this tab instead, the way a user would switch to it, and
     close the extra tab. Returns the URL followed, or "".
+
+    ``wait_ms``: how long to wait for a tab that has not opened yet. Remote
+    browsers (Browserbase) report a new tab a beat after the click, and some
+    buttons call window.open from a timer. A new tab starts on about:blank
+    and gets its real URL only when the first response commits; its URL is
+    awaited before deciding (kolanut.ai's "Get Started" -> engagement.kolanut.ai
+    was read as about:blank, the tab was closed, and the step "changed nothing").
     """
-    try:
-        fresh = [p for p in page.context.pages if id(p) not in before and p is not page]
-    except Exception:
-        return ""
+    def _fresh() -> list[Any]:
+        try:
+            return [p for p in page.context.pages if id(p) not in before and p is not page]
+        except Exception:
+            return []
+
+    fresh = _fresh()
+    waited = 0
+    while not fresh and waited < wait_ms:
+        try:
+            await asyncio.sleep(0.1)
+        except Exception:
+            break
+        waited += 100
+        fresh = _fresh()
     if not fresh:
         return ""
     tab = fresh[-1]
     target = ""
-    try:
-        await tab.wait_for_load_state("commit", timeout=3000)
-    except Exception:
-        pass
-    try:
-        target = str(tab.url or "")
-    except Exception:
-        target = ""
+    for _ in range(80):  # up to ~8s for the first response to commit
+        try:
+            target = str(tab.url or "")
+        except Exception:
+            target = ""
+        if target and not target.startswith("about:"):
+            break
+        try:
+            await tab.wait_for_url(lambda u: not str(u).startswith("about:"), timeout=8000)
+            target = str(tab.url or "")
+            break
+        except Exception:
+            await asyncio.sleep(0.1)
     for extra in fresh:
         try:
             await extra.close()
@@ -2682,11 +2777,22 @@ async def complete_task_on_page(
                 changed = True
                 after["downloaded"] = downloads[-1]
             if not changed and act == "click":
-                # Single-page apps often swap the view a beat later. Look once more.
-                try:
-                    await page.wait_for_timeout(1000)
-                except Exception:
-                    pass
+                # Single-page apps often swap the view a beat later, and a link
+                # to another page may open its new tab late (remote browser,
+                # window.open on a timer). Wait for a late tab (longer when the
+                # control links off this page), else look once more.
+                late_tab = ""
+                if tabs_before is not None:
+                    late_tab = await _follow_new_tab(
+                        page, tabs_before, wait_ms=_new_tab_wait_ms(action, str(read.get("url") or url))
+                    )
+                    if late_tab:
+                        how = f"{how}+newtab"
+                if not late_tab:
+                    try:
+                        await page.wait_for_timeout(1000 if tabs_before is None else 100)
+                    except Exception:
+                        pass
                 later = await _fresh_read(page, str(read.get("url") or url))
                 if not later.get("error") and _observation_changed(read, later, task=task):
                     after = later
