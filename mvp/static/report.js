@@ -627,7 +627,8 @@ function verdictHtml(insights) {
   const v = (insights && insights.verdict) || {};
   const good = v.good_for || [];
   const trails = v.trails || [];
-  if (!good.length && !trails.length && !v.summary) return "";
+  const unfinished = v.unfinished || [];
+  if (!good.length && !trails.length && !unfinished.length && !v.summary) return "";
   const list = (items, empty) =>
     items.length
       ? `<ul class="verdict-list">${items.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}</ul>`
@@ -641,6 +642,7 @@ function verdictHtml(insights) {
         <div><h3>Good for</h3>${list(good, "No task where it led or matched the competitors.")}</div>
         <div><h3>Trails competitors on</h3>${list(trails, "No task where a competitor did better.")}</div>
       </div>
+      ${unfinished.length ? `<div><h3>No site finished</h3>${list(unfinished, "")}</div>` : ""}
     </div>`;
 }
 

@@ -501,3 +501,44 @@ class CanvasClaimWordingTests(unittest.TestCase):
         self.assertIn("to finish on whiteboard.example", long[0])
         # The chain shown is a 4-step run, so the count and the list agree.
         self.assertEqual(long[0].split("(", 1)[1].split(")", 1)[0].count("\u2192"), 3)
+
+
+class VerdictAndBrandTests(unittest.TestCase):
+    def _study(self, product_ok: bool, rival_ok: bool, observation: str = "") -> dict:
+        def run(agent_id: str, site_key: str, title: str, ok: bool, url: str) -> dict:
+            r = _run(agent_id, site_key=site_key, steps=3, final=url)
+            r["task_title"] = title
+            r["site_url"] = url
+            if ok:
+                r["stop_reason"] = "done"
+                r["failed_step"] = {"phase": "done", "reason": "task complete"}
+                r["final_url"] = url.rstrip("/") + "/pricing"
+                r["trace"][-1]["url"] = r["final_url"]
+            else:
+                r["stop_reason"] = "needs_account"
+                r["failed_step"] = {"phase": "needs_account", "reason": "needs_account"}
+            if observation and site_key == "product":
+                r["trace"][0]["observation"] = observation
+            return r
+
+        runs = [
+            run("p1", "product", "Create a new project", product_ok, "https://clickup.com/"),
+            run("r1", "competitor_1", "Create a new project", rival_ok, "https://asana.com/"),
+        ]
+        return {"id": f"s-{product_ok}-{rival_ok}-{len(observation)}", "url": "https://clickup.com/", "agent_results": runs, "activity_log": []}
+
+    def test_a_task_nobody_finished_is_not_trailing(self):
+        verdict = build_report_insights(self._study(False, False))["verdict"]
+        self.assertEqual(verdict["trails"], [])
+        self.assertEqual(len(verdict["unfinished"]), 1)
+        self.assertIn("no site finished", verdict["unfinished"][0])
+
+    def test_a_rival_that_finished_is_trailing(self):
+        verdict = build_report_insights(self._study(False, True))["verdict"]
+        self.assertEqual(len(verdict["trails"]), 1)
+        self.assertEqual(verdict["unfinished"], [])
+
+    def test_product_name_uses_the_sites_own_spelling(self):
+        study = self._study(False, False, observation="ClickUp is the app for work. Try ClickUp free. clickup")
+        self.assertEqual(build_report_insights(study)["product_name"], "ClickUp")
+        self.assertEqual(build_report_insights(self._study(False, False))["product_name"], "Clickup")

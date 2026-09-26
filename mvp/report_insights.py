@@ -690,10 +690,46 @@ def _pretty_host(url: str) -> str:
     return base[:1].upper() + base[1:] if base else "Site"
 
 
+_BRAND_CACHE: dict[str, str] = {}
+
+
+def _brand_spelling(study: dict[str, Any], base: str) -> str:
+    """The product's own spelling of its name ("ClickUp", not "Clickup") from its opening page."""
+    key = f"{study.get('id') or ''}|{base}"
+    if key in _BRAND_CACHE:
+        return _BRAND_CACHE[key]
+    word = base.split(".")[0]
+    counts: dict[str, int] = {}
+    for run in (study.get("agent_results") or [])[:24]:
+        if not isinstance(run, dict) or str(run.get("site_key") or "product") != "product":
+            continue
+        first = (run.get("trace") or [{}])[0]
+        if not isinstance(first, dict):
+            continue
+        text = f"{first.get('observation') or ''} {first.get('accessibility_tree') or ''}"[:20000]
+        for m in re.finditer(rf"\b({re.escape(word)})\b", text, re.I):
+            form = m.group(1)
+            if form != form.upper() or len(form) <= 3:
+                counts[form] = counts.get(form, 0) + 1
+    best = base
+    cased = {f: n for f, n in counts.items() if f != f.lower()}
+    if cased:
+        form = max(cased, key=cased.get)
+        if cased[form] >= 2:
+            best = form + base[len(word):]
+    elif counts.get(word.lower(), 0) >= 3:
+        # The product only ever writes its name in lower case ("tldraw").
+        best = word.lower() + base[len(word):]
+    if len(_BRAND_CACHE) > 500:
+        _BRAND_CACHE.clear()
+    _BRAND_CACHE[key] = best
+    return best
+
+
 def _site_label(run: dict[str, Any], study: dict[str, Any]) -> str:
     key = str(run.get("site_key") or "product")
     if key == "product":
-        return _pretty_host(str(study.get("url") or run.get("site_url") or ""))
+        return _brand_spelling(study, _pretty_host(str(study.get("url") or run.get("site_url") or "")))
     label = str(run.get("site_label") or "").strip()
     if label and not label.startswith("http") and label.lower() != "product":
         return label
@@ -1004,7 +1040,7 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
     runs, run_issues = _split_runs(study)
     product_url = str(study.get("url") or "")
     host = _host(product_url) or "this product"
-    product_name = _pretty_host(product_url)
+    product_name = _brand_spelling(study, _pretty_host(product_url))
     product = [r for r in runs if str(r.get("site_key") or "product") == "product"]
     if not product and not run_issues:
         product = [r for r in runs if _host(str(r.get("site_url") or "")) == host]
@@ -1517,9 +1553,10 @@ def verdict(insights: dict[str, Any], study: dict[str, Any]) -> dict[str, Any]:
     """
     sites = insights.get("sites") or []
     labels = {str(s.get("site_key")): str(s.get("site_label")) for s in sites}
-    product_label = labels.get("product") or _pretty_host(str(study.get("url") or ""))
+    product_label = labels.get("product") or _brand_spelling(study, _pretty_host(str(study.get("url") or "")))
     good: list[str] = []
     trails: list[str] = []
+    unfinished: list[str] = []
     walls: dict[str, set[str]] = {}
     for run in _runs(study):
         stop = str(run.get("stop_reason") or "")
@@ -1570,10 +1607,13 @@ def verdict(insights: dict[str, Any], study: dict[str, Any]) -> dict[str, Any]:
             )
         elif rate == 0:
             wall = " because it needs an account" if "product" in walls.get(title, set()) else ""
-            trails.append(f"{title}: no {product_label} run finished{wall} (no competitor finished it either)."
-                          if not others or all(not (c.get("ok")) for c in others.values())
-                          else f"{title}: no {product_label} run finished{wall}.")
-    return {"good_for": good[:4], "trails": trails[:4], "summary": None}
+            if not others or all(not (c.get("ok")) for c in others.values()):
+                # Nobody finished: that is not trailing a competitor.
+                need = f" ({product_label} needs an account)" if wall else ""
+                unfinished.append(f"{title}: no site finished it{need}.")
+            else:
+                trails.append(f"{title}: no {product_label} run finished{wall}.")
+    return {"good_for": good[:4], "trails": trails[:4], "unfinished": unfinished[:4], "summary": None}
 
 
 async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any]) -> str:
@@ -1588,6 +1628,7 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
         "segment": study.get("segment") or study.get("target_segment") or "",
         "good_for": (insights.get("verdict") or {}).get("good_for") or [],
         "trails": (insights.get("verdict") or {}).get("trails") or [],
+        "no_site_finished": (insights.get("verdict") or {}).get("unfinished") or [],
         "strengths": [c.get("claim") for c in insights.get("strengths") or []][:3],
         "weaknesses": [c.get("claim") for c in insights.get("weaknesses") or []][:3],
         "live_signups": (insights.get("signups") or {}).get("sites") or [],
@@ -1604,7 +1645,10 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
         "live_signups are UserSim's own test accounts: a captcha, a rejected throwaway email, a "
         "verification email that never arrived, or a signup error there is a limit of the test "
         "harness, not a product problem, so never describe it as a product flaw or recommend fixing "
-        "it. That a task needs an account at all is a product fact and may be mentioned. "
+        "it. That a task needs an account at all is a product fact and may be mentioned, but never "
+        "recommend removing sign-up or an account requirement. no_site_finished lists tasks no site "
+        "finished: that is not a comparison, so never say the product trails a competitor there. "
+        "If trails is empty, say it matched or led every competitor on the tasks that finished. "
         "Name the specific competitor for every comparison. No opinions, industry norms, or "
         "claims about typical users that are not in the facts.\n"
         f"Facts: {json.dumps(facts, ensure_ascii=False)[:5000]}"
