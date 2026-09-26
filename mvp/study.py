@@ -1763,9 +1763,12 @@ async def _run_study_body(
         if (
             not study.test_mode
             and not study.skip_competitors
+            and not getattr(study, "fast_brief", False)
             and len(study.competitors or []) < 2
             and site_summary
         ):
+            # A fast-path study already expanded its matrix on the submitted
+            # competitors; a late top-up added a rival no agent visits (jasper.ai, we1).
             try:
                 filled, more_dropped = await resolve_study_competitors(
                     list(study.competitors or []),
@@ -1931,7 +1934,10 @@ async def _run_study_body(
                     f"{sum(1 for t in picked if str(t.get('site_key') or 'product') != 'product')} rival) "
                     f"— dropped {dropped}",
                 )
-        else:
+        elif study.test_mode:
+            # Smoke preview: product site only. A fast-path study is already
+            # expanded per site; overwriting it here sent every competitor agent
+            # to the product URL (hand-picked tasks + pinned competitors, we1).
             for task in study.tasks:
                 task["site_key"] = "product"
                 task["site_url"] = study.url
