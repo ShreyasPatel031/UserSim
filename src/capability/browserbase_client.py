@@ -232,10 +232,10 @@ def _create_backoff_s(attempt: int, exc: BaseException | None = None) -> float:
 
 def _create_concurrency() -> int:
     try:
-        n = int(os.environ.get("BROWSERBASE_CREATE_CONCURRENCY", "2") or "2")
+        n = int(os.environ.get("BROWSERBASE_CREATE_CONCURRENCY", "24") or "24")
     except ValueError:
-        n = 2
-    return max(1, min(6, n))
+        n = 24
+    return max(1, min(25, n))
 
 
 def _create_attempt_timeout_s() -> float:
