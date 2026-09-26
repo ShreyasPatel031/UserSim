@@ -3140,6 +3140,14 @@ async def _signup_then_resume(
         row["url"] = str(page.url or wall)
     except Exception:
         pass
+    if not public["ok"]:
+        # The sign-up page where it was blocked, even if the page has since
+        # gone back to where the agent was: that is where the wall is.
+        last_page = result.get("last_page") if isinstance(result.get("last_page"), dict) else {}
+        blocked_at = str(last_page.get("url") or result.get("final_url") or "")
+        if blocked_at.startswith("http"):
+            row["url"] = blocked_at
+            public["blocked_url"] = blocked_at[:300]
     if on_step is not None:
         maybe = on_step(row)
         if asyncio.iscoroutine(maybe):
