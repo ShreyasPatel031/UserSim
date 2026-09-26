@@ -878,10 +878,24 @@ class A11yBoot:
             # Let the next agent of this site try its own page instead.
             self._site_readers.discard(site_key)
             return None
+        # Race the shared read against this agent's own read of its own page.
+        # A heavy site (a busy main thread) can take 5s+ for the first read;
+        # waiting on it and then reading again doubled time to first action.
+        shared = asyncio.ensure_future(ev.wait())
+        own = asyncio.ensure_future(self._read_page(page, url))
         try:
-            await asyncio.wait_for(ev.wait(), timeout=wait_s)
-        except asyncio.TimeoutError:
-            return None
+            done, _pending = await asyncio.wait({shared, own}, timeout=wait_s + 2, return_when=asyncio.FIRST_COMPLETED)
+        finally:
+            for fut in (shared, own):
+                if not fut.done():
+                    fut.cancel()
+        if own in done:
+            try:
+                mine = own.result()
+            except Exception:
+                mine = None
+            if isinstance(mine, dict) and (mine.get("nodes") or mine.get("text")) and _host(str(mine.get("url") or "")) == _host(url):
+                return mine
         return self.snapshots.get(site_key)
 
     async def _read_page(self, page: Any, url: str) -> dict[str, Any]:
