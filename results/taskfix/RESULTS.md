@@ -1,3 +1,9 @@
+# Linear 24-agent study to grade
+
+Study `70557bae-83af-4bf9-9bbb-3135046193cd`. Report: http://127.0.0.1:3000/report?study=70557bae-83af-4bf9-9bbb-3135046193cd. Final screenshots: `mvp/runs/70557bae-83af-4bf9-9bbb-3135046193cd/<agent>/screenshots/final.png` (8 product paths in `results/taskfix/linear24_grade.md`).
+
+This is not an independent pass until PR #46 grades that id. Browserbase for the study is released. Gates should run `--grade-study 70557bae-83af-4bf9-9bbb-3135046193cd`.
+
 # #46 harness — product Gemini YES
 
 `MVP_BB_OWNER=gates`. Eight product agents per site. The independent judge in `mvp/e2e2_gates.py` scored the final screenshot.
@@ -76,6 +82,8 @@ An earlier 8-wide Linear slice (study before this one) judged the six scheduled 
 Study `617d8ef9-2991-4532-a70a-b7b8d03367a8` was killed by the harness at 32s. Product agents had already reached the goal (rectangle on the canvas, Export image dialog) but the vision judge never ran because the study was aborted.
 
 Failure: `t2__p1__competitor_2` on Miro repeated `click Export image` (steps 1–9). The planned action invented Excalidraw's export shortcut on a site that does not have it. A flickering hero-image canvas sample counted as progress, so the repeat check never fired. The harness aborts the whole study at the third identical action. Log: `results/taskfix/excalidraw24.log`.
+
+The step loop now invents Rectangle, drag, and Export image only on `excalidraw.com`. A Miro (or any other host) action with those names is refused before it is written to the trace, and a canvas sample is stored only for an Excalidraw drawing. Owner `taskfix` holds at most 2 sessions and does not create primes.
 
 That run's step loop invented the Rectangle drag, Export shortcut, and Help click only on excalidraw.com, and a canvas-sample flicker no longer counted as a new page. A click or accessibility read that does not return is capped (8s read, 12s action). The model loop above replaces those invented actions.
 

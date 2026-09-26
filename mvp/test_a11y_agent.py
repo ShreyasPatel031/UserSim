@@ -17,7 +17,10 @@ from mvp.a11y_agent import (
     achievable_without_account,
     format_ax,
     goal_visible,
+    invented_excalidraw_action,
     note_progress,
+    offhost_excalidraw_tool,
+    trace_canvas,
     notes_from_trace,
     pick_action,
     progress_signature,
@@ -178,6 +181,48 @@ class A11yAgentTest(unittest.TestCase):
         ]
         self.assertFalse(would_repeat_action(trace[:2], "click Export image", read))
         self.assertTrue(would_repeat_action(trace, "click Export image", read))
+        self.assertIsNone(
+            invented_excalidraw_action(
+                "Find how to export or share the drawing",
+                {"url": "https://miro.com/", "nodes": []},
+            )
+        )
+        export = invented_excalidraw_action(
+            "Find how to export or share the drawing",
+            {"url": "https://excalidraw.com/", "text": "Export image..."},
+        )
+        self.assertEqual(export["name"], "Export image")
+        rectangle = invented_excalidraw_action(
+            "Draw a simple box",
+            {"url": "https://excalidraw.com/", "text": "Pick a tool"},
+        )
+        self.assertEqual(rectangle["name"], "Rectangle")
+        self.assertIsNone(
+            invented_excalidraw_action(
+                "Draw a simple box",
+                {"url": "https://miro.com/", "text": "Whiteboard"},
+            )
+        )
+        self.assertTrue(
+            offhost_excalidraw_tool(
+                {"act": "click", "name": "Export image"},
+                "https://miro.com/",
+            )
+        )
+        self.assertFalse(
+            offhost_excalidraw_tool(
+                {"act": "drag", "name": "canvas"},
+                "https://excalidraw.com/",
+            )
+        )
+        self.assertEqual(
+            trace_canvas("dark=10", "dark=400", "https://miro.com/", "Find how to export or share"),
+            "dark=10",
+        )
+        self.assertEqual(
+            trace_canvas("dark=0", "dark=20", "https://excalidraw.com/", "Draw a simple box"),
+            "dark=20",
+        )
         self.assertFalse(
             goal_visible(
                 "Draw a simple box",

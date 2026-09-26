@@ -163,16 +163,88 @@ _PRIMED: asyncio.Queue | None = None
 _PRIME_STARTED = False
 
 
+# taskfix may hold two live browsers and never a study_id=prime session.
+# Other owners (the integration 24-wide run) are not capped here.
+TASKFIX_SESSION_CAP = 2
+_TASKFIX_LOCK: asyncio.Lock | None = None
+_TASKFIX_HELD = 0
+
+
+def _owner_is_taskfix() -> bool:
+    return (os.environ.get("MVP_BB_OWNER") or "").strip().lower() == "taskfix"
+
+
+def _taskfix_lock() -> asyncio.Lock:
+    global _TASKFIX_LOCK
+    if _TASKFIX_LOCK is None:
+        _TASKFIX_LOCK = asyncio.Lock()
+    return _TASKFIX_LOCK
+
+
+def _taskfix_running_count() -> int:
+    from mvp.kill_switch import list_running_browserbase
+
+    return len(list_running_browserbase(owner="taskfix"))
+
+
+def release_idle_taskfix(*, study_id: str | None = None) -> None:
+    """Release idle taskfix sessions. Never signup, gates, or other owners.
+
+    With no study id this drops ``study_id=prime`` only. A study id releases
+    that study's sessions after the run, so the slot is free for integration.
+    """
+    if not _owner_is_taskfix():
+        return
+    from mvp.kill_switch import kill_all_browserbase
+
+    kill_all_browserbase(owner="taskfix", study_id="prime")
+    if study_id and study_id != "prime":
+        kill_all_browserbase(owner="taskfix", study_id=study_id)
+
+
+async def _acquire_taskfix_slot() -> bool:
+    """True when this process may open one more taskfix browser."""
+    global _TASKFIX_HELD
+    if not _owner_is_taskfix():
+        return True
+    async with _taskfix_lock():
+        try:
+            remote = await asyncio.to_thread(_taskfix_running_count)
+        except Exception:
+            remote = _TASKFIX_HELD
+        if max(remote, _TASKFIX_HELD) >= TASKFIX_SESSION_CAP:
+            print(
+                f"[a11y] taskfix holds {max(remote, _TASKFIX_HELD)} sessions; cap is {TASKFIX_SESSION_CAP}",
+                flush=True,
+            )
+            return False
+        _TASKFIX_HELD += 1
+        return True
+
+
+def _release_taskfix_slot() -> None:
+    global _TASKFIX_HELD
+    if _TASKFIX_HELD > 0:
+        _TASKFIX_HELD -= 1
+
+
 def prime_sessions(n: int = 0) -> None:
     """Pre-click browsers. This harness keeps the count at 0.
 
     A positive ``n`` still fills the queue for a caller that opts in.
     ``n <= 0`` creates nothing, including no ``study_id=prime`` sessions.
+    Owner ``taskfix`` never primes, even when ``n`` is positive.
     """
     global _PRIME_STARTED
     if _PRIME_STARTED:
         return
     _PRIME_STARTED = True
+    if _owner_is_taskfix():
+        n = 0
+        try:
+            release_idle_taskfix()
+        except Exception as exc:  # noqa: BLE001
+            print(f"[a11y] taskfix prime release failed: {exc!r}", flush=True)
     if n <= 0:
         return
 
@@ -637,6 +709,71 @@ def would_repeat_action(trace: list[dict[str, Any]], label: str, read: dict[str,
     return streak >= 3
 
 
+def invented_excalidraw_action(
+    task: str,
+    read: dict[str, Any],
+    history: list[str] | None = None,
+    skip: set[str] | None = None,
+) -> dict[str, Any] | None:
+    """Rectangle drag and Export image exist only on excalidraw.com.
+
+    Competitors such as Miro do not have those controls. Inventing the click
+    there repeats until the harness aborts every agent in the study.
+    """
+    if _host(str((read or {}).get("url") or "")) != "excalidraw.com":
+        return None
+    kind = task_kind(task)
+    skipped = skip or set()
+    done = [item.lower() for item in (history or [])]
+    if kind == "draw":
+        selected = "selected shape" in str((read or {}).get("text") or "").lower() or any(
+            "rectangle" in item for item in done
+        )
+        if selected:
+            return {"act": "drag", "i": -1, "name": "canvas", "role": "canvas", "href": ""}
+        if "rectangle" in skipped:
+            return None
+        return {"act": "click", "i": -1, "name": "Rectangle", "role": "button", "href": ""}
+    if kind == "export":
+        if "export image" in str((read or {}).get("text") or "").lower():
+            if "export image" in skipped:
+                return None
+            return {
+                "act": "click",
+                "i": -1,
+                "name": "Export image",
+                "role": "menuitem",
+                "href": "",
+            }
+        if "menu" in skipped:
+            return None
+        return {"act": "click", "i": -1, "name": "Menu", "role": "button", "href": ""}
+    return None
+
+
+def offhost_excalidraw_tool(action: dict[str, Any], url: str) -> bool:
+    """True when this action is the Excalidraw rectangle/export shortcut elsewhere."""
+    if _host(url) == "excalidraw.com":
+        return False
+    act = str((action or {}).get("act") or "")
+    name = str((action or {}).get("name") or "").lower()
+    if act == "drag":
+        return True
+    if name in {"rectangle", "square", "canvas"}:
+        return True
+    return "export" in name
+
+
+def trace_canvas(previous: str, current: str, url: str, task: str) -> str:
+    """Canvas sample stored on a trace step.
+
+    Flicker on any site except an Excalidraw drawing is not a new page.
+    """
+    if _host(url) == "excalidraw.com" and task_kind(task) == "draw":
+        return current or ""
+    return previous or ""
+
+
 def ensure_phase_ms(sess: dict[str, Any]) -> None:
     """The four phase durations, as numbers, on every agent."""
     raw = dict(sess.get("phase_ms") or {})
@@ -737,7 +874,13 @@ def _stamp_observation(trace: list[dict[str, Any]], read: dict[str, Any]) -> Non
     ax = format_ax(read.get("nodes") or [])
     last["url"] = url
     last["observation"] = text[:400]
-    last["state_sig"] = {"text": text[:1500], "canvas": str(read.get("canvas") or "")}
+    # A marketing-page canvas sample flickers. Keep the previous sample unless
+    # this is an Excalidraw drawing, where the ink change is the result.
+    previous = last.get("state_sig") if isinstance(last.get("state_sig"), dict) else {}
+    canvas = str(read.get("canvas") or "")
+    if _host(url) != "excalidraw.com":
+        canvas = str(previous.get("canvas") or "")
+    last["state_sig"] = {"text": text[:1500], "canvas": canvas}
     if ax:
         last["accessibility_tree"] = ax
         last["ax_tree"] = ax
@@ -858,6 +1001,9 @@ class A11yBoot:
                     snap = await self._read_url(bb, self.study.url)
                 except Exception as exc:  # noqa: BLE001
                     print(f"[a11y] product read failed (retrying): {exc!r}", flush=True)
+                    if _owner_is_taskfix():
+                        await _close_agent_session(None, bb)
+                        _release_taskfix_slot()
                     continue
                 handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
                 page = (handle or {}).get("page") if isinstance(handle, dict) else None
@@ -867,6 +1013,10 @@ class A11yBoot:
                     closed = True
                 if closed or not isinstance(handle, dict) or not isinstance(snap, dict):
                     print("[a11y] product read had no live page (retrying)", flush=True)
+                    if _owner_is_taskfix():
+                        browser = handle.get("browser") if isinstance(handle, dict) else None
+                        await _close_agent_session(browser, bb)
+                        _release_taskfix_slot()
                     continue
                 handle["site_key"] = "product"
                 handle["read"] = snap
@@ -876,11 +1026,19 @@ class A11yBoot:
                     self._handle_cv.notify_all()
                 self.snapshots["product"] = snap
                 self._publish_site("product", snap)
+                if _owner_is_taskfix() and isinstance(handle, dict):
+                    await _close_agent_session(handle.get("browser"), handle.get("bb"))
+                    _release_taskfix_slot()
+                    async with self._handle_cv:
+                        self._handles = [
+                            item for item in self._handles if item is not handle
+                        ]
+                        self.contexts.pop("product", None)
                 break
             else:
                 print("[a11y] no live product page", flush=True)
             extras = len([c for c in (self.study.competitors or []) if c])
-            if extras:
+            if extras and not _owner_is_taskfix():
                 self._tasks.append(asyncio.create_task(self._fill_pool(extras, offset=1)))
             await self._publish_rest()
 
@@ -896,40 +1054,51 @@ class A11yBoot:
     async def _create_one(self, i: int, enqueue: bool = True) -> Any | None:
         from capability.browserbase_client import create_session, study_session_owner
 
-        if _PRIMED is not None:
-            try:
-                bb = _PRIMED.get_nowait()
-                print(f"[a11y] using primed session for {i + 1}", flush=True)
+        if _owner_is_taskfix() and str(getattr(self.study, "id", "") or "") == "prime":
+            return None
+        if not await _acquire_taskfix_slot():
+            return None
+        bb = None
+        try:
+            if not _owner_is_taskfix() and _PRIMED is not None:
+                try:
+                    bb = _PRIMED.get_nowait()
+                    print(f"[a11y] using primed session for {i + 1}", flush=True)
+                    if enqueue:
+                        await self.pool.put(bb)
+                    return bb
+                except asyncio.QueueEmpty:
+                    bb = None
+            deadline = getattr(self.study, "budget_deadline", None) or (
+                time.monotonic() + study_budget_s()
+            )
+            while time.monotonic() < deadline:
+                try:
+                    bb = await asyncio.to_thread(
+                        create_session,
+                        proxies=False,
+                        keep_alive=True,
+                        solve_captchas=False,
+                        advanced_stealth=False,
+                        owner=study_session_owner(),
+                        study_id=self.study.id,
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    # A 429 or a slow create is not a dead browser. Keep trying
+                    # until the study budget. Do not stop the agent on the first miss.
+                    print(f"[a11y] session {i + 1} create retry: {exc!r}", flush=True)
+                    bb = None
+                    await asyncio.sleep(5)
+                    continue
                 if enqueue:
                     await self.pool.put(bb)
                 return bb
-            except asyncio.QueueEmpty:
-                pass
-        deadline = getattr(self.study, "budget_deadline", None) or (
-            time.monotonic() + study_budget_s()
-        )
-        while time.monotonic() < deadline:
-            try:
-                bb = await asyncio.to_thread(
-                    create_session,
-                    proxies=False,
-                    keep_alive=True,
-                    solve_captchas=False,
-                    advanced_stealth=False,
-                    owner=study_session_owner(),
-                    study_id=self.study.id,
-                )
-            except Exception as exc:  # noqa: BLE001
-                # A 429 or a slow create is not a dead browser. Keep trying
-                # until the study budget. Do not stop the agent on the first miss.
-                print(f"[a11y] session {i + 1} create retry: {exc!r}", flush=True)
-                await asyncio.sleep(5)
-                continue
-            if enqueue:
-                await self.pool.put(bb)
-            return bb
-        print(f"[a11y] session {i + 1} not created before the study budget", flush=True)
-        return None
+            print(f"[a11y] session {i + 1} not created before the study budget", flush=True)
+            bb = None
+            return None
+        finally:
+            if bb is None:
+                _release_taskfix_slot()
 
     async def _fill_pool(self, n: int, offset: int = 0) -> None:
         await asyncio.gather(*[self._create_one(offset + i) for i in range(n)])
@@ -1148,6 +1317,9 @@ class A11yBoot:
                     snap = await self._read_url(bb, url)
                 except Exception as exc:  # noqa: BLE001
                     print(f"[a11y] shared read {key} failed (retrying): {exc!r}", flush=True)
+                    if _owner_is_taskfix():
+                        await _close_agent_session(None, bb)
+                        _release_taskfix_slot()
                     continue
                 handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
                 page = (handle or {}).get("page") if isinstance(handle, dict) else None
@@ -1157,19 +1329,31 @@ class A11yBoot:
                     closed = True
                 if closed or not isinstance(handle, dict):
                     print(f"[a11y] shared read {key} had no live page (retrying)", flush=True)
+                    if _owner_is_taskfix():
+                        browser = handle.get("browser") if isinstance(handle, dict) else None
+                        await _close_agent_session(browser, bb)
+                        _release_taskfix_slot()
                     continue
                 handle["site_key"] = key
                 handle["read"] = snap
-                async with self._handle_cv:
-                    self._handles.append(handle)
-                    self.contexts[key] = handle
-                    self._handle_cv.notify_all()
+                if _owner_is_taskfix():
+                    await _close_agent_session(handle.get("browser"), handle.get("bb"))
+                    _release_taskfix_slot()
+                else:
+                    async with self._handle_cv:
+                        self._handles.append(handle)
+                        self.contexts[key] = handle
+                        self._handle_cv.notify_all()
                 self.snapshots[key] = snap
                 self._publish_site(key, snap)
                 return
             print(f"[a11y] no live page for {key}", flush=True)
 
-        await asyncio.gather(*[_one(key, url) for key, url in sites])
+        if _owner_is_taskfix():
+            for key, url in sites:
+                await _one(key, url)
+        else:
+            await asyncio.gather(*[_one(key, url) for key, url in sites])
         self.published.set()
 
     async def take_page(self, site_key: str, url: str) -> dict[str, Any] | None:
@@ -1352,10 +1536,11 @@ async def _model_action(
         "A homepage preview of the product is not the real app. "
         "For how to create an issue, open Docs or Documentation, then the Issues section, then Create issues. "
         "For pricing or getting started, open Pricing. "
-        "To draw a box, click Rectangle, then the next action must be drag. "
+        "To draw a box on excalidraw.com, click Rectangle, then the next action must be drag. "
         "drag presses r and drags inside the canvas box from the tree. Selecting the tool is not done. "
         "done for a drawing only after the drag has changed the canvas. "
-        "Open Menu and Export image only when the task asks to export or share. "
+        "On excalidraw.com, open Menu and Export image only when the task asks to export or share. "
+        "Rectangle, drag, and Export image are excalidraw.com controls. Do not use them on any other site. "
         "done only when that outcome is already visible. "
         "friction is one sentence if a control was unclear, else empty. "
         "easy is one sentence naming a control that was obvious, else empty."
@@ -1504,6 +1689,9 @@ async def _act(page: Any, action: dict[str, Any]) -> str:
             await page.keyboard.type(text, delay=0)
         return "type"
     if act == "drag":
+        host = _host(getattr(page, "url", "") or "")
+        if host != "excalidraw.com":
+            return "miss"
         await _drag_on_canvas(page, action)
         return "drag"
     if act == "done":
@@ -1594,6 +1782,9 @@ def _observation_changed(
             return True
     if task_kind(task) != "draw":
         return False
+    host = _host(str(after.get("url") or before.get("url") or ""))
+    if host != "excalidraw.com":
+        return False
     before_dark = _canvas_dark(str(before.get("canvas") or ""))
     after_dark = _canvas_dark(str(after.get("canvas") or ""))
     if before_dark >= 0 and after_dark >= 0 and abs(after_dark - before_dark) >= 8:
@@ -1642,6 +1833,7 @@ async def complete_task_on_page(
     saw_opening = False
     acted_once = False
     model_misses = 0
+    offhost_refusals = 0
     done_rejects = 0
     try:
         await page.wait_for_selector("a, button, canvas", timeout=800)
@@ -1711,13 +1903,18 @@ async def complete_task_on_page(
             action = None
         source = "model"
         if not isinstance(action, dict):
-            model_misses += 1
-            if model_misses >= 3:
-                _miss("model returned no action")
-                break
-            changed_nothing = True
-            history.append("model returned no action")
-            continue
+            invented = invented_excalidraw_action(task, read, history, skip)
+            if invented is not None:
+                action = invented
+                source = "excalidraw"
+            else:
+                model_misses += 1
+                if model_misses >= 3:
+                    _miss("model returned no action")
+                    break
+                changed_nothing = True
+                history.append("model returned no action")
+                continue
         model_misses = 0
         if str(action.get("act")) == "done":
             if goal_visible(task, read):
@@ -1733,11 +1930,26 @@ async def complete_task_on_page(
             stuck_streak = 0
             continue
         chosen = str(action.get("name") or "").strip().lower()
+        if offhost_excalidraw_tool(action, str(read.get("url") or url)):
+            # Do not invent Rectangle / Export image / canvas drag on Miro.
+            # Recording that click three times aborts the whole study.
+            skip.add(chosen or "export")
+            offhost_refusals += 1
+            if offhost_refusals >= 2 or would_repeat_action(trace, action_label(action), read):
+                _miss("excalidraw tool is not on this site")
+                break
+            changed_nothing = True
+            history.append(f"skipped off-host {chosen or action.get('act')}")
+            continue
         if chosen and chosen in skip and str(action.get("act")) == "click":
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
-        if task_kind(task) == "draw" and str(action.get("act")) != "drag":
+        if (
+            task_kind(task) == "draw"
+            and _host(str(read.get("url") or url)) == "excalidraw.com"
+            and str(action.get("act")) != "drag"
+        ):
             # The rectangle tool is selected. The next move is a canvas drag,
             # not the export menu.
             selected = "selected shape" in str(read.get("text") or "").lower() or any(
@@ -1849,7 +2061,7 @@ async def complete_task_on_page(
             changed_nothing = True
         if not after.get("error"):
             changed = _observation_changed(read, after, task=task)
-            if str(action.get("act")) == "drag":
+            if str(action.get("act")) == "drag" and _host(str(after.get("url") or "")) == "excalidraw.com":
                 before_dark = _canvas_dark(str(read.get("canvas") or ""))
                 after_dark = _canvas_dark(str(after.get("canvas") or ""))
                 canvas_moved = (
@@ -1873,9 +2085,19 @@ async def complete_task_on_page(
             after["drew"] = drew
             read = after
             row["url"] = str(read.get("url") or "")
+            previous_canvas = ""
+            if len(trace) >= 2 and isinstance(trace[-2], dict):
+                previous_sig = trace[-2].get("state_sig")
+                if isinstance(previous_sig, dict):
+                    previous_canvas = str(previous_sig.get("canvas") or "")
             row["state_sig"] = {
                 "text": str(read.get("text") or "")[:1500],
-                "canvas": str(read.get("canvas") or ""),
+                "canvas": trace_canvas(
+                    previous_canvas,
+                    str(read.get("canvas") or ""),
+                    str(read.get("url") or ""),
+                    task,
+                ),
             }
             row["accessibility_tree"] = format_ax(read.get("nodes") or [])
             row["ax_tree"] = row["accessibility_tree"]
@@ -1931,11 +2153,15 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
     bb = None
     browser = None
     last = "no browser session"
+    held_slot = False
     try:
-        try:
-            bb = boot.pool.get_nowait()
-        except asyncio.QueueEmpty:
-            bb = None
+        if _owner_is_taskfix() and str(getattr(boot.study, "id", "") or "") == "prime":
+            raise RuntimeError("taskfix does not open prime sessions")
+        if not _owner_is_taskfix():
+            try:
+                bb = boot.pool.get_nowait()
+            except asyncio.QueueEmpty:
+                bb = None
         if bb is not None:
             try:
                 pw = await boot._playwright()
@@ -1961,7 +2187,11 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
                 await _close_agent_session(browser, bb)
                 bb = None
                 browser = None
-        while time.monotonic() < deadline:
+        if bb is None:
+            if not await _acquire_taskfix_slot():
+                raise RuntimeError("taskfix session cap is 2")
+            held_slot = _owner_is_taskfix()
+        while bb is None and time.monotonic() < deadline:
             try:
                 bb = await asyncio.to_thread(
                     create_session,
@@ -1996,9 +2226,16 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
             await page.goto(url, wait_until="domcontentloaded", timeout=8000)
         except Exception as exc:  # noqa: BLE001
             print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
+        if held_slot:
+            try:
+                browser._taskfix_slot = True
+            except Exception:
+                pass
         return bb, browser, page
     except Exception:
         await _close_agent_session(browser, bb)
+        if held_slot:
+            _release_taskfix_slot()
         raise
 
 
@@ -2201,3 +2438,10 @@ async def _run_a11y_agent_unlocked(
         return result
     finally:
         await _close_agent_session(browser, bb)
+        if browser is not None and getattr(browser, "_taskfix_slot", False):
+            _release_taskfix_slot()
+        if _owner_is_taskfix():
+            try:
+                release_idle_taskfix()
+            except Exception:
+                pass
