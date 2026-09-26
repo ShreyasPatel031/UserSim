@@ -1,4 +1,8 @@
-"""Start the 24-agent Linear study on the local server and wait for the report."""
+"""Start a 24-agent study on the local server and wait for the report.
+
+Usage: run_linear_study.py [site]   (site is a key in studies.json; default linear)
+Set BASE to target another server.
+"""
 from __future__ import annotations
 
 import json
@@ -6,14 +10,20 @@ import sys
 import time
 import urllib.request
 
-BASE = "http://127.0.0.1:3000"
-BODY = {
+import os
+from pathlib import Path
+
+BASE = os.environ.get("BASE", "http://127.0.0.1:3000")
+_SITES = json.loads((Path(__file__).with_name("studies.json")).read_text())
+_LINEAR = {
     "url": "https://linear.app",
     "competitors": ["https://asana.com/", "https://trello.com/"],
     "tasks": ["Find how to create a new issue", "Look for pricing or how to get started"],
     "segment": "Product managers comparing issue trackers",
     "max_agents": 24,
 }
+BODY = dict(_SITES.get(sys.argv[1] if len(sys.argv) > 1 else "linear") or _LINEAR)
+BODY.setdefault("max_agents", 24)
 
 
 def _req(method: str, path: str, body: dict | None = None) -> dict:

@@ -19,8 +19,11 @@ from mvp.a11y_agent import (
     goal_visible,
     note_progress,
     notes_from_trace,
-    offhost_excalidraw_tool,
-    pick_action,
+    auth_page,
+    docs_page,
+    looping,
+    public_task,
+    task_kind,
     progress_signature,
     stamp_published_step,
     study_budget_s,
@@ -35,76 +38,42 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(len(text.splitlines()), 150)
         self.assertTrue(text.startswith("0 button Item 0"))
 
-    def test_first_move_is_a_click_from_the_shared_tree(self) -> None:
-        nodes = [
-            {"i": 0, "role": "a", "name": "Blog", "x": 10, "y": 10},
-            {"i": 1, "role": "button", "name": "Pricing", "x": 40, "y": 20},
-        ]
-        action = pick_action("Find pricing or the signup path", nodes)
-        self.assertEqual(action["act"], "click")
-        self.assertEqual(action["name"], "Pricing")
-        self.assertTrue(action_label(action).startswith("click "))
-
-    def test_issue_task_skips_decorative_new_issue(self) -> None:
-        nodes = [
-            {"i": 0, "role": "button", "name": "New issue", "href": "", "inert": True},
-            {
-                "i": 1,
-                "role": "a",
-                "name": "Docs",
-                "href": "https://linear.app/docs/creating-issues",
-            },
-        ]
-        action = pick_action("Find how to create a new issue", nodes)
-        self.assertIn("creating-issues", action["href"])
-        self.assertNotIn("new issue", action["name"].lower())
-        self.assertTrue(offhost_excalidraw_tool({"act": "drag", "name": "canvas"}, "https://miro.com"))
-        self.assertFalse(
-            offhost_excalidraw_tool({"act": "drag", "name": "canvas"}, "https://excalidraw.com")
-        )
+    def test_docs_page_never_counts_as_done(self) -> None:
+        self.assertTrue(docs_page("https://linear.app/docs/creating-issues"))
+        self.assertTrue(docs_page("https://help.trello.com/article/708-creating-a-board"))
+        self.assertTrue(docs_page("https://support.atlassian.com/trello/"))
+        self.assertTrue(docs_page("https://www.notion.so/help/create-a-page"))
+        self.assertTrue(docs_page("https://example.com/en-us/docs/start"))
+        self.assertFalse(docs_page("https://linear.app/pricing"))
+        self.assertFalse(docs_page("https://linear.app/team/issue/ABC-1"))
         step = stamp_published_step(
             {"step": 1, "action": "click Docs", "url": "https://linear.app/docs/creating-issues"},
-            task="Find how to create a new issue",
-            read={"url": "https://linear.app/docs/creating-issues", "text": "Create issues", "title": "Creating issues"},
+            task="Create a new issue",
+            read={"url": "https://linear.app/docs/creating-issues", "text": "Issue title description Create issues", "title": "Creating issues"},
             screenshot_url="/api/studies/s/agents/a/screenshots/final.png",
         )
         self.assertTrue(step["final_screenshot_url"].endswith("final.png"))
-        self.assertTrue(step["goal_visible"])
-        self.assertIn("Create issues", step["state_sig"]["text"])
+        self.assertFalse(step["goal_visible"])
 
-    def test_link_target_beats_skip_to_content(self) -> None:
-        nodes = [
-            {"i": 0, "role": "a", "name": "Skip to content", "href": "https://linear.app/#content", "x": 1, "y": 1},
-            {"i": 1, "role": "a", "name": "Changelog", "href": "https://linear.app/changelog", "x": 2, "y": 2},
+    def test_account_wall_and_public_tasks(self) -> None:
+        self.assertTrue(auth_page({"url": "https://linear.app/signup"}))
+        self.assertTrue(auth_page({"url": "https://id.atlassian.com/login"}))
+        self.assertTrue(auth_page({"url": "https://x.com/start", "password": True}))
+        self.assertFalse(auth_page({"url": "https://linear.app/pricing", "text": "Pricing plans"}))
+        self.assertTrue(public_task("Look for pricing or how to get started"))
+        self.assertTrue(public_task("Find the plans page"))
+        self.assertFalse(public_task("Create a new issue"))
+        self.assertFalse(public_task("Create a board with three lists"))
+        self.assertEqual(task_kind("Draw a rectangle on the canvas"), "draw")
+        self.assertEqual(task_kind("Check the inbox for mail"), "")
+
+    def test_loop_between_two_pages_is_detected(self) -> None:
+        trace = [
+            {"step": n, "action": "click Docs" if n % 2 else "click API", "url": "https://a.com/docs" if n % 2 else "https://a.com/api"}
+            for n in range(1, 9)
         ]
-        action = pick_action("Open the changelog and see what shipped recently", nodes)
-        self.assertEqual(action["href"], "https://linear.app/changelog")
-        self.assertFalse(goal_visible("Find pricing", {"url": "https://linear.app/"}))
-        self.assertTrue(goal_visible("Find pricing", {"url": "https://linear.app/pricing"}))
-        self.assertFalse(goal_visible("Open the changelog", {"url": "https://linear.app/docs"}))
-        self.assertTrue(goal_visible("Open the changelog", {"url": "https://linear.app/changelog"}))
-        self.assertFalse(goal_visible("Find how to create a new issue", {"url": "https://linear.app/"}))
-        self.assertTrue(
-            goal_visible(
-                "Find how to create a new issue",
-                {"url": "https://linear.app/docs/creating-issues", "title": "Create issues – Linear Docs"},
-            )
-        )
-        self.assertFalse(
-            goal_visible("Draw a simple rectangle on the canvas", {"url": "https://excalidraw.com/", "canvas": "1x1:dark=0/1;", "drew": True})
-        )
-        self.assertFalse(
-            goal_visible(
-                "Draw a simple rectangle on the canvas",
-                {"url": "https://excalidraw.com/", "text": "Selected shape actions Stroke width", "opened_canvas": "1440x900:dark=0/900;", "canvas": "1440x900:dark=0/900;"},
-            )
-        )
-        self.assertTrue(
-            goal_visible(
-                "Draw a simple rectangle on the canvas",
-                {"url": "https://excalidraw.com/", "text": "Selected shape actions", "opened_canvas": "1440x900:dark=0/900;", "canvas": "1440x900:dark=24/900;"},
-            )
-        )
+        self.assertTrue(looping(trace))
+        self.assertFalse(looping(trace[:5]))
 
     def test_gate_fields_are_present(self) -> None:
         sess: dict = {}
@@ -126,13 +95,13 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(sess["phase_ms"]["first_action_ms"], 200)
         self.assertIsNone(sess["failed_step"])
 
-    def test_action_model_is_the_lite_sibling(self) -> None:
+    def test_action_model_is_flash_unless_set(self) -> None:
         prev = os.environ.get("MVP_AGENT_ACTION_MODEL")
         browser = os.environ.get("MVP_BROWSER_MODEL")
         os.environ.pop("MVP_AGENT_ACTION_MODEL", None)
         os.environ["MVP_BROWSER_MODEL"] = "gemini-test-flash"
         try:
-            self.assertEqual(fast_action_model(), "gemini-test-flash-lite")
+            self.assertEqual(fast_action_model(), "gemini-2.5-flash")
             os.environ["MVP_AGENT_ACTION_MODEL"] = "gemini-explicit"
             self.assertEqual(fast_action_model(), "gemini-explicit")
         finally:
@@ -216,7 +185,7 @@ class A11yAgentTest(unittest.TestCase):
         self.assertTrue(
             goal_visible(
                 "Draw a simple box",
-                {"url": "https://excalidraw.com/", "opened_canvas": "1440x900:dark=0/900;", "canvas": "1440x900:dark=18/900;"},
+                {"url": "https://excalidraw.com/", "drew": True, "opened_canvas": "1440x900:dark=0/900;", "canvas": "1440x900:dark=18/900;"},
             )
         )
 

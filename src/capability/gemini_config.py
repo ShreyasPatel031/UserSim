@@ -58,9 +58,14 @@ def _to_vertex(messages: list[dict[str, str]]) -> tuple[list[dict], dict | None]
         if role == "system":
             system_parts.append({"text": text})
             continue
-        contents.append(
-            {"role": "model" if role == "assistant" else "user", "parts": [{"text": text}]}
-        )
+        parts: list[dict] = [{"text": text}]
+        image = msg.get("image_b64") or ""
+        if image:
+            # Optional screenshot for a vision check. Base64 JPEG or PNG bytes.
+            parts.append(
+                {"inline_data": {"mime_type": msg.get("image_mime") or "image/jpeg", "data": image}}
+            )
+        contents.append({"role": "model" if role == "assistant" else "user", "parts": parts})
     system = {"parts": system_parts} if system_parts else None
     return contents, system
 

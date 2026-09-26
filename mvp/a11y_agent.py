@@ -273,19 +273,19 @@ _READ_JS = """() => {
     const r = el.getBoundingClientRect();
     const href = String(el.href || el.getAttribute('href') || '').slice(0, 180);
     const tab = el.getAttribute('tabindex');
-    const cls = String(el.className || '');
-    // Linear's homepage embeds a fake app. Those controls look clickable and do nothing.
-    const mock = /(?:navItem|newIssue|searchButton|switchWorkspace|rowButton|ingredientButton|headerButton|iconButton|sendButton|dropdownButton|pillButton|navButton|labelButton|attachmentButton|splitSegment|locationBar)/.test(cls);
-    const inert = ((tab === '-1') && !href) || !!el.disabled || el.getAttribute('aria-disabled') === 'true' || (mock && !href);
+    // Toolbars, radio groups, menus, and tabs use a roving tabindex of -1 on real controls.
+    const roving = !!el.closest('[role="toolbar"], [role="radiogroup"], [role="menu"], [role="menubar"], [role="tablist"], [role="listbox"], [role="grid"], [role="tree"], [role="dialog"]');
+    const inert = ((tab === '-1') && !href && !roving) || !!el.disabled || el.getAttribute('aria-disabled') === 'true' || !!el.closest('[aria-hidden="true"], [inert]');
     let name = (
       el.getAttribute('aria-label')
       || el.getAttribute('placeholder')
       || el.getAttribute('title')
       || el.innerText
       || el.getAttribute('name')
+      || el.getAttribute('data-testid')
       || ''
     ).replace(/\\s+/g, ' ').trim().slice(0, 80);
-    if (!name && /main-menu-trigger/.test(cls)) name = 'Menu';
+    if (!name && el.tagName === 'INPUT') name = (el.getAttribute('type') || 'input') + ' field';
     return {
       i: nodes.length,
       role: (el.getAttribute('role') || el.tagName || '').toLowerCase(),
@@ -296,6 +296,7 @@ _READ_JS = """() => {
       w: Math.round(Math.max(r.width, 0)),
       h: Math.round(Math.max(r.height, 0)),
       inert: inert,
+      on: el.getAttribute('aria-pressed') === 'true' || el.getAttribute('aria-checked') === 'true' || el.getAttribute('aria-selected') === 'true' || el.getAttribute('aria-expanded') === 'true' || !!el.checked,
     };
   };
   const offscreen = [];
@@ -319,28 +320,23 @@ _READ_JS = """() => {
     if (!href) continue;
     nodes.push(pack(el));
   }
-  return { url, title, text, canvas, nodes };
+  const visible = (el) => { const r = el.getBoundingClientRect(); return r.width > 2 && r.height > 2; };
+  const password = Array.from(document.querySelectorAll('input[type="password"]')).some(visible);
+  const email_input = Array.from(document.querySelectorAll('input[type="email"], input[autocomplete="email"], input[autocomplete="username"], input[name*="email" i]')).some(visible);
+  const dialog = !!document.querySelector('[role="dialog"]:not([aria-hidden="true"]), dialog[open]');
+  const shapes = document.querySelectorAll('svg path, svg rect, svg ellipse, [data-shape-type], .tl-shape').length;
+  return { url, title, text, canvas, nodes, password, email_input, dialog, shapes };
 }"""
 
 
 def fast_action_model() -> str:
-    """Fastest text action model. Lite, no vision, short prompts."""
-    chosen = (os.environ.get("MVP_AGENT_ACTION_MODEL") or "").strip()
-    if chosen:
-        return chosen
-    from config import MODEL
+    """Model for each step decision.
 
-    base = (
-        os.environ.get("MVP_BROWSER_MODEL")
-        or os.environ.get("MVP_LLM_MODEL")
-        or MODEL
-        or ""
-    ).strip()
-    if not base:
-        return MODEL
-    if "lite" in base.lower():
-        return base
-    return base + "-lite"
+    gemini-2.5-flash with thinking off: about a second per step, and unlike
+    the lite model it follows "tool selected, now drag" and account walls.
+    """
+    chosen = (os.environ.get("MVP_AGENT_ACTION_MODEL") or "").strip()
+    return chosen or "gemini-2.5-flash"
 
 
 def format_ax(nodes: list[dict[str, Any]], *, limit: int = AX_CAP) -> str:
@@ -350,109 +346,12 @@ def format_ax(nodes: list[dict[str, Any]], *, limit: int = AX_CAP) -> str:
             continue
         name = str(node.get("name") or "")
         href = str(node.get("href") or "")
-        inert = " inert" if node.get("inert") else ""
+        inert = " inert" if node.get("inert") else " (selected)" if node.get("on") else ""
         extra = f" {href}" if href else ""
         lines.append(
             f"{int(node.get('i') or 0)} {node.get('role') or 'el'} {name}{inert}{extra}".rstrip()
         )
     return "\n".join(lines)
-
-
-def _preferred_control(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any] | None:
-    """Real control for this task. Decorative marketing buttons are not it."""
-    kind = task_kind(task)
-    usable = [
-        node
-        for node in nodes or []
-        if isinstance(node, dict) and not node.get("inert")
-    ]
-    if kind == "issue":
-        for node in usable:
-            href = str(node.get("href") or "").lower()
-            if "creating-issues" in href or "create-issues" in href:
-                return node
-        for node in usable:
-            name = str(node.get("name") or "").strip().lower()
-            href = str(node.get("href") or "").lower().rstrip("/")
-            if name in {"docs", "documentation", "doc"} or href.endswith("/docs"):
-                return node
-        return None
-    if kind == "pricing":
-        for node in usable:
-            blob = f"{node.get('name') or ''} {node.get('href') or ''}".lower()
-            if "pricing" in blob:
-                return node
-    return None
-
-
-def _action_from_node(node: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "act": "click",
-        "i": int(node.get("i") or 0),
-        "x": int(node.get("x") or 0),
-        "y": int(node.get("y") or 0),
-        "name": str(node.get("name") or "")[:80],
-        "href": str(node.get("href") or "")[:180],
-        "role": str(node.get("role") or ""),
-    }
-
-
-def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
-    """Deterministic first move from the shared tree. No model, no page read."""
-    preferred = _preferred_control(task, nodes)
-    if preferred is not None:
-        return _action_from_node(preferred)
-    words = [
-        w
-        for w in re.findall(r"[a-z0-9]+", (task or "").lower())
-        if len(w) > 3 and w not in _STOP
-    ]
-    best: dict[str, Any] | None = None
-    best_score = 0
-    issue = task_kind(task) == "issue"
-    for node in nodes or []:
-        if not isinstance(node, dict):
-            continue
-        name = str(node.get("name") or "").lower()
-        href = str(node.get("href") or "").lower()
-        if not name and not href:
-            continue
-        if node.get("inert"):
-            continue
-        if "skip to content" in name:
-            continue
-        if issue and "new issue" in name and "creating-issues" not in href and "create-issues" not in href:
-            continue
-        score = sum(3 for w in words if w in name or w in href)
-        role = str(node.get("role") or "")
-        if role in {"a", "button", "link", "menuitem", "tab"}:
-            score += 1
-        if score > best_score:
-            best = node
-            best_score = score
-    if best is None:
-        for node in nodes or []:
-            if not isinstance(node, dict) or not str(node.get("name") or "").strip():
-                continue
-            if node.get("inert"):
-                continue
-            name = str(node.get("name") or "").lower()
-            href = str(node.get("href") or "").lower()
-            if issue and "new issue" in name and "creating-issues" not in href:
-                continue
-            best = node
-            break
-    if best is None:
-        return {"act": "scroll", "i": -1, "x": 0, "y": 400, "name": "page", "dy": 500}
-    return {
-        "act": "click",
-        "i": int(best.get("i") or 0),
-        "x": int(best.get("x") or 0),
-        "y": int(best.get("y") or 0),
-        "name": str(best.get("name") or "")[:80],
-        "href": str(best.get("href") or "")[:180],
-        "role": str(best.get("role") or ""),
-    }
 
 
 def _host(url: str) -> str:
@@ -502,62 +401,55 @@ def _origin(url: str) -> str:
 def task_kind(task: str) -> str:
     """Which goal this task is asking the agent to reach."""
     text = (task or "").lower()
-    if any(word in text for word in ("rectangle", "draw a", "square", "box")):
+    if re.search(r"\b(?:rectangle|draw|square|box|shape|sketch|diagram)\b", text):
         return "draw"
-    if "export" in text or ("share" in text and "drawing" in text):
+    if re.search(r"\bexport\b", text) or ("share" in text and "drawing" in text):
         return "export"
-    if "help" in text or "shortcut" in text:
+    if re.search(r"\b(?:keyboard )?shortcuts?\b", text):
         return "help"
     if any(word in text for word in ("changelog", "what shipped", "shipped recently")):
         return "changelog"
-    if "issue" in text and "pricing" not in text:
-        return "issue"
-    if any(word in text for word in ("pricing", "free plan", "price", "get started")):
+    if re.search(r"\bpric(?:e|es|ing)\b|\bplans?\b|free plan", text):
         return "pricing"
+    if "issue" in text:
+        return "issue"
     return ""
 
 
 def goal_visible(task: str, read: dict[str, Any]) -> bool:
-    """True only when this page shows the task goal.
+    """True only when this page itself shows the task goal.
 
-    A nav label on the opening page is not the pricing page, the issue form,
-    a drawing, or an export dialog.
+    Generic evidence only. A docs, help, or blog page never counts: it
+    explains how to do the task, it does not show the task done. A nav label
+    on the opening page is not the pricing page either.
     """
-    url = str((read or {}).get("url") or "")
-    text = str((read or {}).get("text") or "").lower()
-    title = str((read or {}).get("title") or "").lower()
+    read = read or {}
+    url = str(read.get("url") or "")
+    if docs_page(url):
+        return False
+    title = str(read.get("title") or "").lower()
     kind = task_kind(task)
-    path = _page_key(url)[1]
+    path = _page_key(url)[1].lower()
     if kind == "pricing":
-        return "pricing" in path or "pricing" in title
+        return bool(re.search(r"pric|plans", path)) or "pricing" in title
     if kind == "changelog":
-        return "changelog" in path or "changelog" in title
-    if kind == "issue":
-        # A logged-out visitor cannot open the workspace composer. The public
-        # create-issues doc is the page that shows how. The marketing demo's
-        # "New issue" button does not.
-        if "creating-issues" in path or "create-issues" in path:
-            return True
-        if "create issues" in title or "creating issues" in title:
-            return True
-        return "issue title" in text and "description" in text
+        return "changelog" in path or "changelog" in title or "release notes" in title
     if kind == "draw":
-        # Tool chrome ("Selected shape actions") appears when the tool is
-        # selected, before any stroke. The canvas sample has to change.
-        opened = str((read or {}).get("opened_canvas") or "")
-        current = str((read or {}).get("canvas") or "")
-        if not opened or not current or "taint" in opened or "taint" in current:
+        # The tool being selected is not a drawing. The page has to show ink:
+        # a canvas sample that changed, or new vector shapes after a drag.
+        if not read.get("drew"):
             return False
-        opened_dark = _canvas_dark(opened)
-        current_dark = _canvas_dark(current)
-        if opened_dark < 0 or current_dark < 0:
-            return False
-        return abs(current_dark - opened_dark) >= 8
-    if kind == "export":
-        # The welcome hint says "Export, preferences". The dialog says "Export image".
-        return "export image" in text
-    if kind == "help":
-        return "keyboard shortcuts" in text
+        opened = str(read.get("opened_canvas") or "")
+        current = str(read.get("canvas") or "")
+        if opened and current and "taint" not in opened and "taint" not in current:
+            a, b = _canvas_dark(opened), _canvas_dark(current)
+            if a >= 0 and b >= 0 and abs(b - a) >= 8:
+                return True
+        return int(read.get("shapes") or 0) > int(read.get("opened_shapes") or 0)
+    if kind == "export" and read.get("downloaded"):
+        return True
+    # Export, help, create, and other outcomes cannot be decided from page
+    # text alone. The loop asks a separate screenshot check instead.
     return False
 
 
@@ -739,67 +631,9 @@ def _ms(a: float | None, b: float | None) -> int | None:
     return max(0, int(round((b - a) * 1000)))
 
 
-def invented_excalidraw_action(
-    task: str,
-    read: dict[str, Any],
-    history: list[str] | None = None,
-    skip: set[str] | None = None,
-) -> dict[str, Any] | None:
-    """Rectangle drag and Export image exist only on excalidraw.com.
-
-    Competitors such as Miro do not have those controls. Inventing the click
-    there repeats until the harness aborts every agent in the study.
-    """
-    if _host(str((read or {}).get("url") or "")) != "excalidraw.com":
-        return None
-    kind = task_kind(task)
-    skipped = skip or set()
-    done = [item.lower() for item in (history or [])]
-    if kind == "draw":
-        selected = "selected shape" in str((read or {}).get("text") or "").lower() or any(
-            "rectangle" in item for item in done
-        )
-        if selected:
-            return {"act": "drag", "i": -1, "name": "canvas", "role": "canvas", "href": ""}
-        if "rectangle" in skipped:
-            return None
-        return {"act": "click", "i": -1, "name": "Rectangle", "role": "button", "href": ""}
-    if kind == "export":
-        if "export image" in str((read or {}).get("text") or "").lower():
-            if "export image" in skipped:
-                return None
-            return {
-                "act": "click",
-                "i": -1,
-                "name": "Export image",
-                "role": "menuitem",
-                "href": "",
-            }
-        if "menu" in skipped:
-            return None
-        return {"act": "click", "i": -1, "name": "Menu", "role": "button", "href": ""}
-    return None
-
-
-def offhost_excalidraw_tool(action: dict[str, Any], url: str) -> bool:
-    """True when this action is the Excalidraw rectangle/export shortcut elsewhere."""
-    if _host(url) == "excalidraw.com":
-        return False
-    act = str((action or {}).get("act") or "")
-    name = str((action or {}).get("name") or "").lower()
-    if act == "drag":
-        return True
-    if name in {"rectangle", "square", "canvas"}:
-        return True
-    return "export" in name
-
-
 def trace_canvas(previous: str, current: str, url: str, task: str) -> str:
-    """Canvas sample stored on a trace step.
-
-    Flicker on any site except an Excalidraw drawing is not a new page.
-    """
-    if _host(url) == "excalidraw.com" and task_kind(task) == "draw":
+    """Canvas sample stored on a trace step. Only a draw task keeps canvas changes."""
+    if task_kind(task) == "draw":
         return current or ""
     return previous or ""
 
@@ -857,10 +691,8 @@ def stamp_published_step(
     current_canvas = str(live.get("canvas") or prior_canvas)
     if task:
         canvas = trace_canvas(prior_canvas, current_canvas, url, task)
-    elif _host(url) != "excalidraw.com":
-        canvas = prior_canvas or current_canvas
     else:
-        canvas = current_canvas or prior_canvas
+        canvas = prior_canvas or current_canvas
     step["url"] = url
     step["state_sig"] = {"text": text[:1500], "canvas": canvas}
     if text:
@@ -872,6 +704,9 @@ def stamp_published_step(
         "canvas": str(live.get("canvas") or current_canvas),
         "opened_canvas": str(live.get("opened_canvas") or ""),
         "drew": bool(live.get("drew")),
+        "shapes": live.get("shapes"),
+        "opened_shapes": live.get("opened_shapes"),
+        "dialog": live.get("dialog"),
     }
     if task:
         step["goal_visible"] = bool(goal_visible(task, visible_read))
@@ -1517,11 +1352,19 @@ _AUTH_NAMES = frozenset(
 
 def _auth_href(href: str) -> bool:
     text = (href or "").lower()
-    return "/login" in text or "/signup" in text or "plus.excalidraw.com" in text
+    return bool(_AUTH_PATH_RE.search(text)) or bool(_AUTH_HOST_RE.match(_host(text) or ""))
 
 
-def _nodes_for_model(nodes: list[dict[str, Any]], skip: set[str]) -> list[dict[str, Any]]:
-    """Drop inert controls, login walls, and controls already clicked with no change."""
+def _nodes_for_model(
+    nodes: list[dict[str, Any]],
+    skip: set[str],
+    *,
+    allow_auth: bool = False,
+) -> list[dict[str, Any]]:
+    """Drop inert controls and controls already clicked with no change.
+
+    Login and signup controls stay visible only for tasks that need an account.
+    """
     skipped = {str(item).lower() for item in skip if str(item).strip()}
     kept: list[dict[str, Any]] = []
     for node in nodes or []:
@@ -1529,7 +1372,7 @@ def _nodes_for_model(nodes: list[dict[str, Any]], skip: set[str]) -> list[dict[s
             continue
         name = str(node.get("name") or "").strip().lower()
         href = str(node.get("href") or "").strip().lower()
-        if name in _AUTH_NAMES or _auth_href(href):
+        if not allow_auth and (name in _AUTH_NAMES or _auth_href(href)):
             continue
         if name and name in skipped:
             continue
@@ -1539,56 +1382,66 @@ def _nodes_for_model(nodes: list[dict[str, Any]], skip: set[str]) -> list[dict[s
     return kept
 
 
+_ACTS = ("click", "type", "press", "scroll", "back", "drag", "done")
+
+
 async def _model_action(
     *,
     task: str,
     read: dict[str, Any],
     history: list[str],
     changed_nothing: bool = False,
+    account_task: bool = False,
+    all_nodes: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any] | None:
+    """One model decision for the next browser action. No site hints."""
     from capability.gemini_config import extract_json, gemini_chat
 
     ax = format_ax(read.get("nodes") or [])
     flag = (
-        "Previous action changed nothing. Do not click that element again.\n"
+        "Your previous action changed nothing on the page. Pick something different.\n"
         if changed_nothing
-        else "Previous action changed the page.\n"
+        else "Your previous action changed the page.\n"
         if history
         else ""
     )
+    access = (
+        "This task needs the product itself. If the product asks you to sign up or log in, "
+        "go to that sign-up or log-in page; do not read docs instead.\n"
+        if account_task
+        else "This task can be done on the public site without an account. Do not log in or sign up.\n"
+    )
+    canvas = "yes" if any(str(n.get("role") or "") == "canvas" for n in (read.get("nodes") or []) if isinstance(n, dict)) else "no"
     prompt = (
-        "You are a logged-out visitor finishing a task in the browser. Reply with one JSON object only.\n"
+        "You are a real first-time user doing one task in a web browser. "
+        "Pick the single next action. Reply with one JSON object only.\n"
         f"Task: {task[:400]}\n"
         f"URL: {read.get('url') or ''}\n"
         f"Title: {read.get('title') or ''}\n"
-        f"Visible text: {str(read.get('text') or '')[:700]}\n"
-        f"Elements (i role name href):\n{ax}\n"
-        f"Already did: {'; '.join(history[-6:]) or 'nothing'}\n"
-        f"{flag}"
-        'JSON: {"act":"click|type|scroll|drag|done","i":0,"text":"","friction":"","easy":""}\n'
-        "Use an element i from the list for click, type, and scroll. "
-        "Do not click Log in, Sign up, or Open app. Stay on the public site. "
-        "A homepage preview of the product is not the real app. "
-        "For how to create an issue, open Docs or Documentation, then the Issues section, then Create issues. "
-        "For pricing or getting started, open Pricing. "
-        "To draw a box on excalidraw.com, click Rectangle, then the next action must be drag. "
-        "drag presses r and drags inside the canvas box from the tree. Selecting the tool is not done. "
-        "done for a drawing only after the drag has changed the canvas. "
-        "On excalidraw.com, open Menu and Export image only when the task asks to export or share. "
-        "Rectangle, drag, and Export image are excalidraw.com controls. Do not use them on any other site. "
-        "done only when that outcome is already visible. "
-        "friction is one sentence if a control was unclear, else empty. "
-        "easy is one sentence naming a control that was obvious, else empty."
+        f"Dialog open: {'yes' if read.get('dialog') else 'no'}. Drawing canvas on page: {canvas}.\n"
+        f"Visible text: {str(read.get('text') or '')[:900]}\n"
+        f"Interactive elements (i role name href):\n{ax}\n"
+        f"Actions so far: {'; '.join(history[-8:]) or 'none'}\n"
+        f"{flag}{access}"
+        'JSON: {"act":"click|type|press|scroll|back|drag|done","i":0,"text":"","key":"","reason":"","friction":"","easy":""}\n'
+        "click, type, and scroll use an element i from the list. type puts text into that field. "
+        "press sends one keyboard key or shortcut in key (for example Enter, Escape, r). "
+        "back returns to the previous page. drag draws by dragging across the largest canvas; select a drawing tool first. "
+        "Do the task in the product the way a user would. Reading a docs, help, or blog article about the task "
+        "does not do the task. "
+        "Buttons inside a product screenshot or animated preview on a marketing page do nothing; do not click them. "
+        "Elements marked (selected) are already on: a selected drawing tool means the next action is drag, not another click. "
+        "done only when the current page already shows the finished outcome the task asked for. "
+        "reason is a short phrase. friction is one sentence if something was confusing, else empty. "
+        "easy is one sentence naming something that was obvious, else empty."
     )
     try:
-        # No per-step deadline. A slow model call keeps going; the study budget
-        # is the only timer, and a failed call falls through to the keyword move.
         raw = await gemini_chat(
             [{"role": "user", "content": prompt}],
             model=fast_action_model(),
             temperature=0,
             json_mode=True,
-            max_retries=1,
+            max_retries=2,
         )
         data = extract_json(raw)
     except Exception as exc:  # noqa: BLE001
@@ -1597,29 +1450,37 @@ async def _model_action(
     if not isinstance(data, dict):
         return None
     act = str(data.get("act") or "click").lower().strip()
-    if act not in {"click", "type", "scroll", "drag", "done"}:
+    if act not in _ACTS:
         act = "click"
     try:
-        index = int(data.get("i") or 0)
+        index = int(data.get("i") if data.get("i") is not None else -1)
     except (TypeError, ValueError):
-        index = 0
+        index = -1
     nodes = read.get("nodes") or []
     node = next((n for n in nodes if isinstance(n, dict) and int(n.get("i") or 0) == index), None)
-    if node is None and nodes and isinstance(nodes[0], dict):
-        node = nodes[0]
-    out = {
+    if node is None and act in {"click", "type"}:
+        hidden = next(
+            (n for n in (all_nodes or []) if isinstance(n, dict) and int(n.get("i") or 0) == index),
+            None,
+        )
+        if hidden is not None:
+            return {"act": "blocked", "name": str(hidden.get("name") or "")[:80]}
+        print(f"[a11y] model picked no listed element: {str(raw)[:200]!r}", flush=True)
+        return None
+    return {
         "act": act,
         "i": index,
         "text": str(data.get("text") or "")[:120],
+        "key": str(data.get("key") or "")[:24],
+        "reason": str(data.get("reason") or "")[:160],
         "friction": str(data.get("friction") or "")[:180],
         "easy": str(data.get("easy") or "")[:180],
-        "name": str((node or {}).get("name") or data.get("text") or "")[:80],
+        "name": str((node or {}).get("name") or (data.get("key") if act == "press" else "") or "")[:80],
         "href": str((node or {}).get("href") or "")[:180],
-        "role": str((node or {}).get("role") or ""),
+        "role": str((node or {}).get("role") or ("canvas" if act == "drag" else "")),
         "x": int((node or {}).get("x") or 0),
         "y": int((node or {}).get("y") or 0),
     }
-    return out
 
 
 def _pw_role(role: str) -> str:
@@ -1651,19 +1512,41 @@ async def _click_named(page: Any, action: dict[str, Any]) -> str:
                 count = await loc.count()
             except Exception:
                 count = 0
-        if count:
-            await loc.first.click(timeout=3000)
-            return "role"
+        for idx in range(min(count, 6)):
+            item = loc.nth(idx)
+            try:
+                if not await item.is_visible():
+                    continue
+                await item.click(timeout=2500)
+                return "role"
+            except Exception:
+                continue
+    href = str(action.get("href") or "")
+    if href.startswith("http") and "#" not in href.split("//", 1)[-1][:1]:
+        # The link exists in the tree but is not clickable where it sits
+        # (hidden duplicate, off screen). Following it is what the click does.
+        try:
+            await page.goto(href, wait_until="domcontentloaded", timeout=8000)
+            return "href"
+        except Exception:
+            pass
     x = int(action.get("x") or 0)
     y = int(action.get("y") or 0)
-    if x or y:
+    size = getattr(page, "viewport_size", None) or {"width": 1440, "height": 900}
+    if (x or y) and 0 <= y <= int(size.get("height") or 900) and 0 <= x <= int(size.get("width") or 1440):
         await page.mouse.click(x, y)
         return "xy"
     if name:
         loc = page.get_by_text(name, exact=False)
-        if await loc.count():
-            await loc.first.click(timeout=3000)
-            return "text"
+        for idx in range(min(await loc.count(), 6)):
+            item = loc.nth(idx)
+            try:
+                if not await item.is_visible():
+                    continue
+                await item.click(timeout=2500)
+                return "text"
+            except Exception:
+                continue
     return "miss"
 
 
@@ -1685,26 +1568,20 @@ def _canvas_box(nodes: list[dict[str, Any]]) -> dict[str, Any] | None:
 
 
 async def _drag_on_canvas(page: Any, action: dict[str, Any]) -> None:
-    """Press r, then drag inside the canvas box from the tree."""
-    try:
-        await page.keyboard.press("Escape")
-    except Exception:
-        pass
-    try:
-        await page.keyboard.press("r")
-    except Exception:
-        pass
+    """Drag across the middle of the largest canvas box from the tree."""
     cx = int(action.get("canvas_x") or 0)
     cy = int(action.get("canvas_y") or 0)
     cw = int(action.get("canvas_w") or 0)
     ch = int(action.get("canvas_h") or 0)
     if cw > 200 and ch > 200 and (cx or cy):
         x1 = int(cx - cw * 0.12)
-        y1 = int(cy - ch * 0.02)
-        x2 = int(cx + cw * 0.18)
-        y2 = int(cy + ch * 0.22)
+        y1 = int(cy - ch * 0.05)
+        x2 = int(cx + cw * 0.15)
+        y2 = int(cy + ch * 0.2)
     else:
-        x1, y1, x2, y2 = 420, 280, 760, 500
+        size = getattr(page, "viewport_size", None) or {"width": 1280, "height": 800}
+        w, h = int(size.get("width") or 1280), int(size.get("height") or 800)
+        x1, y1, x2, y2 = int(w * 0.38), int(h * 0.4), int(w * 0.6), int(h * 0.62)
     await page.mouse.move(x1, y1)
     await page.mouse.down()
     await page.mouse.move(x2, y2, steps=12)
@@ -1715,18 +1592,22 @@ async def _act(page: Any, action: dict[str, Any]) -> str:
     """Run one action. Returns how it was performed."""
     act = str(action.get("act") or "click")
     if act == "scroll":
-        await page.mouse.wheel(0, int(action.get("dy") or 500))
+        await page.mouse.wheel(0, int(action.get("dy") or 600))
         return "scroll"
     if act == "type":
-        await _click_named(page, action)
-        text = str(action.get("text") or action.get("name") or "")
+        how = await _click_named(page, action)
+        text = str(action.get("text") or "")
         if text:
             await page.keyboard.type(text, delay=0)
-        return "type"
+        return f"type/{how}"
+    if act == "press":
+        key = str(action.get("key") or action.get("text") or "").strip() or "Enter"
+        await page.keyboard.press(key)
+        return "press"
+    if act == "back":
+        await page.go_back(wait_until="domcontentloaded", timeout=5000)
+        return "back"
     if act == "drag":
-        host = _host(getattr(page, "url", "") or "")
-        if host != "excalidraw.com":
-            return "miss"
         await _drag_on_canvas(page, action)
         return "drag"
     if act == "done":
@@ -1799,32 +1680,34 @@ def _observation_changed(
 ) -> bool:
     """True when the live page is not the page we just acted on.
 
-    Canvas samples on marketing pages flicker by hundreds of dark pixels.
-    Only a draw task treats that as a real change.
+    Canvas samples on marketing pages flicker. Only a draw task treats a
+    canvas or vector-shape change as a real change.
     """
     before_key = _page_key(str(before.get("url") or ""))
     after_key = _page_key(str(after.get("url") or ""))
     if before_key != ("", "", "") and after_key != ("", "", "") and before_key != after_key:
         return True
+    if bool(before.get("dialog")) != bool(after.get("dialog")):
+        return True
     before_text = str(before.get("text") or "")
     after_text = str(after.get("text") or "")
     if before_text != after_text and abs(len(after_text) - len(before_text)) >= 40:
         return True
-    before_low = before_text.lower()
-    after_low = after_text.lower()
-    for marker in ("selected shape", "export image", "keyboard shortcuts", "create issues"):
-        if marker in after_low and marker not in before_low:
-            return True
+    before_names = {str(n.get("name") or "") for n in before.get("nodes") or [] if isinstance(n, dict)}
+    after_names = {str(n.get("name") or "") for n in after.get("nodes") or [] if isinstance(n, dict)}
+    if len(after_names - before_names) >= 3:
+        return True
+    before_on = {str(n.get("name") or "") for n in before.get("nodes") or [] if isinstance(n, dict) and n.get("on")}
+    after_on = {str(n.get("name") or "") for n in after.get("nodes") or [] if isinstance(n, dict) and n.get("on")}
+    if before_on != after_on:
+        return True
     if task_kind(task) != "draw":
-        return False
-    host = _host(str(after.get("url") or before.get("url") or ""))
-    if host != "excalidraw.com":
         return False
     before_dark = _canvas_dark(str(before.get("canvas") or ""))
     after_dark = _canvas_dark(str(after.get("canvas") or ""))
     if before_dark >= 0 and after_dark >= 0 and abs(after_dark - before_dark) >= 8:
         return True
-    return False
+    return int(after.get("shapes") or 0) != int(before.get("shapes") or 0)
 
 
 async def _fresh_read(page: Any, fallback_url: str) -> dict[str, Any]:
@@ -1833,6 +1716,143 @@ async def _fresh_read(page: Any, fallback_url: str) -> dict[str, Any]:
     if fresh.get("error") and not browser_dead(str(fresh.get("error"))):
         fresh = await _one_read(page, fallback_url)
     return fresh
+
+
+_DOCS_HOST_LABELS = frozenset(
+    "docs doc help support developers developer learn academy community guide guides "
+    "university kb knowledge knowledgebase manual wiki blog".split()
+)
+_DOCS_PATH_SEGMENTS = frozenset(
+    "docs doc documentation help support guide guides learn academy tutorials tutorial "
+    "blog developers developer api reference community kb knowledge-base hc articles "
+    "article faq manual wiki".split()
+)
+_AUTH_PATH_RE = re.compile(
+    r"/(?:login|log-in|signin|sign-in|signup|sign-up|register|join|auth|oauth|sso|"
+    r"accounts?/(?:login|signup|new)|u/login|session/new|users/sign_in|get-started/signup)\b",
+    re.I,
+)
+_AUTH_HOST_RE = re.compile(r"^(?:accounts?|auth|login|id|signin|sso)\.", re.I)
+_PUBLIC_TASK_RE = re.compile(
+    r"^\s*(?:find|look|learn|read|browse|check|compare|see|explore|skim|review|search for|figure out)\b"
+    r"|pricing|price|plans?\b|how much|changelog|what shipped",
+    re.I,
+)
+
+
+def docs_page(url: str) -> bool:
+    """A docs, help, guide, or blog article. It explains a task; it never completes one."""
+    host = _host(url)
+    if not host:
+        return False
+    labels = host.split(".")
+    if len(labels) > 2 and labels[0] in _DOCS_HOST_LABELS:
+        return True
+    path = _page_key(url)[1].strip("/").lower()
+    first = path.split("/", 1)[0] if path else ""
+    if first in _DOCS_PATH_SEGMENTS:
+        return True
+    # Locale prefix: /en/docs/..., /en-us/help/...
+    parts = path.split("/")
+    if len(parts) >= 2 and re.fullmatch(r"[a-z]{2}(?:-[a-z]{2})?", parts[0] or "") and parts[1] in _DOCS_PATH_SEGMENTS:
+        return True
+    return False
+
+
+def auth_page(read: dict[str, Any]) -> bool:
+    """A login or signup wall: an auth URL, or a visible password / sign-in form."""
+    url = str((read or {}).get("url") or "")
+    host = _host(url)
+    if _AUTH_PATH_RE.search(_page_key(url)[1] or "") or _AUTH_HOST_RE.match(host or ""):
+        return True
+    if (read or {}).get("password"):
+        return True
+    text = str((read or {}).get("text") or "").lower()
+    if (read or {}).get("email_input") and any(
+        phrase in text
+        for phrase in ("continue with google", "continue with email", "sign in", "log in", "sign up", "create your account", "create an account")
+    ) and len(text) < 1500:
+        return True
+    return False
+
+
+def public_task(task: str) -> bool:
+    """A task a logged-out visitor can finish (find, look up, pricing). Others need an account."""
+    return bool(_PUBLIC_TASK_RE.search(task or ""))
+
+
+def looping(trace: list[dict[str, Any]], window: int = 8) -> bool:
+    """True when the last ``window`` actions bounce between at most two action/page pairs."""
+    rows = [
+        s for s in trace
+        if isinstance(s, dict) and isinstance(s.get("step"), int) and int(s["step"]) >= 1
+    ][-window:]
+    if len(rows) < window:
+        return False
+    pairs = {(str(s.get("action") or ""), _page_key(str(s.get("url") or ""))) for s in rows}
+    return len(pairs) <= 2
+
+
+def _goal_reached_heuristic(task: str, read: dict[str, Any]) -> bool | None:
+    """Cheap, generic evidence. True/False when the page decides it; None when it cannot."""
+    url = str((read or {}).get("url") or "")
+    if docs_page(url) or auth_page(read):
+        return False
+    return goal_visible(task, read) or None
+
+
+async def _verify_done(
+    task: str, read: dict[str, Any], opened: dict[str, Any], page: Any = None
+) -> bool:
+    """Separate check, with a screenshot, when the model says done and the page cannot decide."""
+    import base64
+
+    from capability.gemini_config import extract_json, gemini_chat
+
+    url = str(read.get("url") or "")
+    if docs_page(url) or auth_page(read):
+        return False
+    prompt = (
+        "Decide if a browser task is finished, from the current page only. Reply JSON only.\n"
+        f"Task: {task[:300]}\n"
+        f"Start page: {opened.get('url') or ''}\n"
+        f"Current URL: {url}\n"
+        f"Current title: {read.get('title') or ''}\n"
+        f"Current visible text: {str(read.get('text') or '')[:1200]}\n"
+        f"File downloaded during the task: {read.get('downloaded') or 'none'}\n"
+        "finished=true only if this page itself shows the outcome the task asked for "
+        "(the created item, the drawn shape, the requested page or dialog). "
+        "A docs, help, blog or marketing page that explains how is not finished. "
+        "An unchanged start page is not finished.\n"
+        'JSON: {"finished": true|false, "why": "short"}'
+    )
+    message: dict[str, Any] = {"role": "user", "content": prompt}
+    if page is not None:
+        try:
+            blob = await page.screenshot(type="jpeg", quality=50, full_page=False, timeout=6000)
+            if blob:
+                message["image_b64"] = base64.b64encode(blob).decode("ascii")
+                message["content"] = prompt.replace(
+                    "from the current page only", "from the current page and its screenshot"
+                )
+        except Exception as exc:  # noqa: BLE001
+            print(f"[a11y] done check screenshot skipped: {exc!r}", flush=True)
+    try:
+        raw = await asyncio.wait_for(
+            gemini_chat(
+                [message],
+                model=os.environ.get("MVP_DONE_CHECK_MODEL") or "gemini-2.5-flash",
+                temperature=0,
+                json_mode=True,
+                max_retries=2,
+            ),
+            timeout=15,
+        )
+        data = extract_json(raw)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[a11y] done check failed: {exc!r}", flush=True)
+        return False
+    return bool(isinstance(data, dict) and data.get("finished") is True)
 
 
 async def complete_task_on_page(
@@ -1848,129 +1868,104 @@ async def complete_task_on_page(
     deadline: float | None = None,
     agent_id: str = "agent",
     opening_nodes: list[dict[str, Any]] | None = None,
+    initial_read: dict[str, Any] | None = None,
+    max_steps: int | None = None,
+    signed_in: bool = False,
 ) -> dict[str, Any]:
-    """Step until the live page shows the goal.
+    """Generic step loop: read, one model decision, act, re-read.
 
-    Every step re-reads the page. The action is chosen from that read, executed
-    with a role+name click, then checked against a new read. A control that
-    does not change the page is not clicked again.
+    Step 0 is ``initial_read`` (the site's shared read) when given; after
+    that every step reads the live page once. There are no site-specific
+    moves and no scripted first click. A docs or help page never counts as
+    done. A login or signup wall on an account task returns needs_account.
     """
     trace = list(trace or [])
     history = list(history or [])
+    cap = int(max_steps or os.environ.get("MVP_A11Y_MAX_STEPS", "30") or 30)
+    account_task = not public_task(task)
     read: dict[str, Any] = {"url": url, "text": "", "canvas": "", "nodes": [], "title": ""}
+    seed: dict[str, Any] | None = None
+    if isinstance(initial_read, dict) and (initial_read.get("nodes") or initial_read.get("text")):
+        seed = dict(initial_read)
+    elif opening_nodes:
+        seed = {"url": url, "text": "", "canvas": "", "nodes": list(opening_nodes), "title": ""}
+    opened: dict[str, Any] = {}
     drew = False
     failed: dict[str, Any] | None = None
     stop_reason = ""
+    signup_url = ""
     skip: set[str] = set()
     logs: list[dict[str, Any]] = []
-    previous_sig: tuple[str, str, str, str] | None = None
-    stuck_streak = 0
     changed_nothing = False
-    saw_opening = False
-    acted_once = False
     model_misses = 0
-    offhost_refusals = 0
     done_rejects = 0
-    opening = [node for node in (opening_nodes or []) if isinstance(node, dict)]
+    acted = 0
+    downloads: list[str] = []
+
+    def _on_download(download: Any) -> None:
+        try:
+            downloads.append(str(download.suggested_filename or "file"))
+        except Exception:
+            downloads.append("file")
+
     try:
-        await page.wait_for_selector("a, button, canvas", timeout=800)
+        page.on("download", _on_download)
     except Exception:
         pass
 
-    def _miss(reason: str = "page did not show the goal") -> None:
+    def _miss(reason: str = "page did not show the goal", phase: str = "act") -> None:
         nonlocal stop_reason, failed
         stop_reason = reason
-        failed = {"phase": "act", "reason": reason, "step": step_no}
+        failed = {"phase": phase, "reason": reason, "step": step_no}
 
-    while failed is None:
+    while failed is None and stop_reason != "done":
         if deadline is not None and time.monotonic() >= deadline:
-            _miss("study budget")
-            failed = {"phase": "study_budget", "reason": "study budget", "step": step_no}
+            _miss("study budget", "study_budget")
             break
-        if not acted_once and opening and not read.get("nodes"):
-            # Shared read is the initial observation only. Act on this agent's
-            # own page without waiting for another tree before the first click.
-            fresh = {
-                "url": url,
-                "text": "",
-                "canvas": "",
-                "nodes": opening,
-                "title": "",
-            }
+        if acted >= cap:
+            _miss(f"step cap {cap}")
+            break
+        if seed is not None:
+            fresh, seed = seed, None
         else:
-            read_cap = 4 if not acted_once else 12
             try:
-                fresh = await asyncio.wait_for(
-                    _fresh_read(page, str(read.get("url") or url)),
-                    timeout=read_cap,
-                )
+                fresh = await asyncio.wait_for(_fresh_read(page, str(read.get("url") or url)), timeout=12)
             except asyncio.TimeoutError:
-                fresh = {
-                    "error": "accessibility read timed out",
-                    "url": str(read.get("url") or url),
-                }
-        if fresh.get("error") and browser_dead(str(fresh.get("error"))):
-            print(f"[{agent_id}] session ended: {fresh.get('error')}", flush=True)
-            _miss("session ended")
-            failed = {"phase": "read", "reason": "session ended", "step": step_no}
-            break
+                fresh = {"error": "accessibility read timed out", "url": str(read.get("url") or url)}
         if fresh.get("error"):
-            # A failed read must not reuse the tree from before the last click.
-            if acted_once:
-                continue
+            if browser_dead(str(fresh.get("error"))):
+                print(f"[{agent_id}] session ended: {fresh.get('error')}", flush=True)
+                _miss("session ended", "read")
+                break
+            if not read.get("nodes"):
+                read = {**read, **{k: v for k, v in fresh.items() if k != "error"}}
         else:
             read = fresh
-        if not saw_opening:
-            saw_opening = True
+        if not opened:
+            opened = dict(read)
             if not opened_canvas:
                 opened_canvas = str(read.get("canvas") or "")
         read["opened_canvas"] = opened_canvas
+        read["opened_shapes"] = opened.get("shapes")
         read["drew"] = drew
-        if goal_visible(task, read):
+        if acted and _goal_reached_heuristic(task, read):
             stop_reason = "done"
-            if task_kind(task) == "draw":
-                drew = True
-                read["drew"] = True
+            drew = drew or task_kind(task) == "draw"
             break
-        signature = progress_signature(
-            url=str(read.get("url") or ""),
-            screenshot_hash="",
-            text=str(read.get("text") or ""),
-            canvas=str(read.get("canvas") or ""),
-        )
-        stuck_streak, stuck_reason = note_progress(previous_sig, signature, stuck_streak)
-        previous_sig = signature
-        if stuck_reason:
-            print(f"[{agent_id}] no progress: {stuck_reason}", flush=True)
-            _miss()
+        if acted and account_task and auth_page(read):
+            signup_url = str(read.get("url") or "")
+            print(f"[{agent_id}] needs account at {signup_url}", flush=True)
+            _miss("needs_account", "needs_account")
+            break
+        if looping(trace):
+            _miss("looping between the same pages")
             break
         model_read = dict(read)
-        live_nodes = list(read.get("nodes") or [])
-        if not acted_once and not live_nodes and opening:
-            live_nodes = opening
-        model_read["nodes"] = _nodes_for_model(live_nodes, skip)
+        model_read["nodes"] = _nodes_for_model(
+            list(read.get("nodes") or []), skip, allow_auth=account_task
+        )
         action = None
-        source = "model"
-        # The first click is chosen from the tree already in hand. Waiting on
-        # the model here is what pushed competitor first-action past 10s.
-        if not acted_once:
-            invented = invented_excalidraw_action(task, read, history, skip)
-            if invented is not None:
-                action = invented
-                source = "excalidraw"
-            else:
-                picked = pick_action(task, list(model_read.get("nodes") or []))
-                page_url = str(read.get("url") or url)
-                if offhost_excalidraw_tool(picked, page_url):
-                    picked = {"act": "scroll", "i": -1, "name": "page", "dy": 600}
-                if (
-                    task_kind(task) == "issue"
-                    and "new issue" in str(picked.get("name") or "").lower()
-                ):
-                    picked = {"act": "scroll", "i": -1, "name": "page", "dy": 700}
-                action = picked
-                source = "tree"
-        if action is None:
+        for attempt in range(2):
             try:
                 action = await asyncio.wait_for(
                     _model_action(
@@ -1978,28 +1973,45 @@ async def complete_task_on_page(
                         read=model_read,
                         history=history,
                         changed_nothing=changed_nothing,
+                        account_task=account_task,
+                        all_nodes=list(read.get("nodes") or []),
                     ),
-                    timeout=7 if not acted_once else 20,
+                    timeout=10 if not acted else 20,
                 )
             except asyncio.TimeoutError:
                 print(f"[{agent_id}] model action timed out", flush=True)
                 action = None
+            if isinstance(action, dict):
+                break
         if not isinstance(action, dict):
-            invented = invented_excalidraw_action(task, read, history, skip)
-            if invented is not None:
-                action = invented
-                source = "excalidraw"
-            else:
-                model_misses += 1
-                if model_misses >= 3:
-                    _miss("model returned no action")
-                    break
-                changed_nothing = True
-                history.append("model returned no action")
-                continue
+            model_misses += 1
+            if model_misses >= 3:
+                _miss("model returned no action")
+                break
+            changed_nothing = True
+            history.append("model returned no action")
+            continue
+        act = str(action.get("act") or "click")
+        if act == "blocked":
+            model_misses += 1
+            if model_misses >= 4:
+                _miss("kept choosing a control that does nothing")
+                break
+            changed_nothing = True
+            history.append(
+                f"{action.get('name') or 'that control'} was already tried and changed nothing; it is not available now"
+            )
+            continue
         model_misses = 0
-        if str(action.get("act")) == "done":
-            if goal_visible(task, read):
+        if act == "done":
+            if not acted:
+                verdict = False
+            else:
+                heuristic = _goal_reached_heuristic(task, read)
+                verdict = bool(heuristic) if heuristic is not None else await _verify_done(task, read, opened, page)
+                if heuristic is None and verdict and _page_key(str(read.get("url") or "")) == _page_key(str(opened.get("url") or "")) and not _observation_changed(opened, read, task=task) and task_kind(task) != "draw":
+                    verdict = False
+            if verdict:
                 stop_reason = "done"
                 break
             done_rejects += 1
@@ -2007,42 +2019,15 @@ async def complete_task_on_page(
                 _miss("model said done before the goal was visible")
                 break
             changed_nothing = True
-            history.append("done rejected: goal not visible")
-            previous_sig = None
-            stuck_streak = 0
+            where = "a docs or help page" if docs_page(str(read.get("url") or "")) else "this page"
+            history.append(f"done rejected: the goal is not visible on {where}")
             continue
         chosen = str(action.get("name") or "").strip().lower()
-        if offhost_excalidraw_tool(action, str(read.get("url") or url)):
-            # Do not invent Rectangle / Export image / canvas drag on Miro.
-            # Recording that click three times aborts the whole study.
-            skip.add(chosen or "export")
-            offhost_refusals += 1
-            if offhost_refusals >= 2 or would_repeat_action(trace, action_label(action), read):
-                _miss("excalidraw tool is not on this site")
-                break
-            changed_nothing = True
-            history.append(f"skipped off-host {chosen or action.get('act')}")
-            continue
-        if chosen and chosen in skip and str(action.get("act")) == "click":
+        if act == "click" and chosen and chosen in skip:
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
-        if (
-            task_kind(task) == "draw"
-            and _host(str(read.get("url") or url)) == "excalidraw.com"
-            and str(action.get("act")) != "drag"
-        ):
-            # The rectangle tool is selected. The next move is a canvas drag,
-            # not the export menu.
-            selected = "selected shape" in str(read.get("text") or "").lower() or any(
-                "rectangle" in item.lower() for item in history
-            )
-            if selected and not goal_visible(task, read):
-                action = dict(action)
-                action["act"] = "drag"
-                action["name"] = "canvas"
-                action["role"] = "canvas"
-        if str(action.get("act")) == "drag":
+        if act == "drag":
             box = _canvas_box(list(read.get("nodes") or []))
             if box:
                 action["canvas_x"] = int(box.get("x") or 0)
@@ -2051,17 +2036,19 @@ async def complete_task_on_page(
                 action["canvas_h"] = int(box.get("h") or 0)
         label = action_label(action)
         if would_repeat_action(trace, label, read):
-            _miss()
+            _miss("repeated an action that changed nothing")
             break
         step_no += 1
-        row = _step_from_read(step=step_no, action=label, read=read, thought="")
-        row["decision_source"] = source
+        row = _step_from_read(step=step_no, action=label, read=read, thought=str(action.get("reason") or "")[:200])
+        row["decision_source"] = "model"
         row["decision"] = {
-            "act": action.get("act"),
+            "act": act,
             "name": action.get("name"),
             "href": action.get("href"),
             "role": action.get("role"),
-            "source": source,
+            "source": "model",
+            "easy": action.get("easy") or "",
+            "friction": action.get("friction") or "",
         }
         trace.append(row)
         history.append(label)
@@ -2075,111 +2062,65 @@ async def complete_task_on_page(
         except asyncio.TimeoutError:
             print(f"[{agent_id}] action timed out: {label}", flush=True)
             how = "timeout"
-            skip.add(str(action.get("name") or "").lower())
+            skip.add(chosen)
         except Exception as exc:  # noqa: BLE001
             if browser_dead(exc):
                 print(f"[{agent_id}] session ended: {exc!r}", flush=True)
                 _miss("session ended")
-                failed = {"phase": "act", "reason": "session ended", "step": step_no}
                 break
-            print(f"[{agent_id}] action error (continuing): {exc!r}", flush=True)
-            how = f"error:{exc!r}"[:180]
-        acted_once = True
+            print(f"[{agent_id}] action error (continuing): {str(exc)[:160]!r}", flush=True)
+            how = f"error:{str(exc)[:120]}"
+        acted += 1
         await _wait_for_page(page)
         after = await _fresh_read(page, str(read.get("url") or url))
-        if (
-            how in {"drag", "role"}
-            and not after.get("error")
-            and not _observation_changed(read, after, task=task)
-        ):
-            try:
-                await page.wait_for_timeout(300)
-            except Exception:
-                pass
-            again = await _fresh_read(page, str(read.get("url") or url))
-            if not again.get("error"):
-                after = again
         if after.get("error") and browser_dead(str(after.get("error"))):
             print(f"[{agent_id}] session ended: {after.get('error')}", flush=True)
-            _miss("session ended")
-            failed = {"phase": "read", "reason": "session ended", "step": step_no}
+            _miss("session ended", "read")
             break
-        clicked = str(action.get("name") or "").lower()
-        if (
-            not after.get("error")
-            and task_kind(task) == "issue"
-            and "new issue" in clicked
-        ):
-            body = str(after.get("text") or "").lower()
-            composer = "issue title" in body or ("description" in body and "title" in body)
-            if not composer:
-                skip.add(clicked)
-                changed_nothing = True
+        if not after.get("error"):
+            if not account_task and auth_page(after):
+                # A public task does not need the login page. Go back and avoid that control.
+                skip.add(chosen)
+                href = str(action.get("href") or "").lower()
+                if href:
+                    skip.add(href)
                 try:
-                    await page.keyboard.press("Escape")
-                except Exception:
-                    pass
-                try:
-                    await page.mouse.wheel(0, 700)
+                    await page.go_back(wait_until="domcontentloaded", timeout=4000)
                 except Exception:
                     pass
                 await _wait_for_page(page)
-                scrolled = await _fresh_read(page, str(read.get("url") or url))
-                if not scrolled.get("error"):
-                    after = scrolled
-        if not after.get("error") and _auth_href(str(after.get("url") or "")):
-            skip.add(str(action.get("name") or "").lower())
-            href = str(action.get("href") or "")
-            if href:
-                skip.add(href.lower())
-            try:
-                await page.go_back(wait_until="domcontentloaded", timeout=4000)
-            except Exception:
-                pass
-            await _wait_for_page(page)
-            backed = await _fresh_read(page, str(read.get("url") or url))
-            if not backed.get("error"):
-                after = backed
-            changed_nothing = True
-        if not after.get("error"):
+                backed = await _fresh_read(page, str(read.get("url") or url))
+                if not backed.get("error"):
+                    after = backed
             changed = _observation_changed(read, after, task=task)
-            if str(action.get("act")) == "drag" and _host(str(after.get("url") or "")) == "excalidraw.com":
+            if act == "drag":
                 before_dark = _canvas_dark(str(read.get("canvas") or ""))
                 after_dark = _canvas_dark(str(after.get("canvas") or ""))
-                canvas_moved = (
-                    before_dark >= 0
-                    and after_dark >= 0
-                    and abs(after_dark - before_dark) >= 8
-                )
-                changed = changed or canvas_moved or goal_visible(task, after)
-            if not changed:
-                skip.add(str(action.get("name") or "").lower())
-                href = str(action.get("href") or "")
+                inked = before_dark >= 0 and after_dark >= 0 and abs(after_dark - before_dark) >= 8
+                if inked or int(after.get("shapes") or 0) > int(read.get("shapes") or 0):
+                    changed = True
+                    drew = True
+            if act in {"type", "press"} and not str(how).endswith("miss"):
+                changed = True
+            if downloads:
+                changed = True
+                after["downloaded"] = downloads[-1]
+            if not changed and act in {"click", "type"}:
+                skip.add(chosen)
+                href = str(action.get("href") or "").lower()
                 if href:
-                    skip.add(href.lower())
-                changed_nothing = True
-            else:
-                changed_nothing = False
+                    skip.add(href)
+            changed_nothing = not changed
             row["changed"] = changed
             after["opened_canvas"] = opened_canvas
-            if task_kind(task) == "draw" and goal_visible(task, after):
-                drew = True
+            after["opened_shapes"] = opened.get("shapes")
             after["drew"] = drew
             read = after
+            seed = dict(after)  # this read is the next step's read
             row["url"] = str(read.get("url") or "")
-            previous_canvas = ""
-            if len(trace) >= 2 and isinstance(trace[-2], dict):
-                prior_step_sig = trace[-2].get("state_sig")
-                if isinstance(prior_step_sig, dict):
-                    previous_canvas = str(prior_step_sig.get("canvas") or "")
             row["state_sig"] = {
                 "text": str(read.get("text") or "")[:1500],
-                "canvas": trace_canvas(
-                    previous_canvas,
-                    str(read.get("canvas") or ""),
-                    str(read.get("url") or ""),
-                    task,
-                ),
+                "canvas": str(read.get("canvas") or ""),
             }
             row["accessibility_tree"] = format_ax(read.get("nodes") or [])
             row["ax_tree"] = row["accessibility_tree"]
@@ -2191,34 +2132,22 @@ async def complete_task_on_page(
         logs.append(
             {
                 "step": step_no,
-                "observation": str(row.get("observation") or "")[:300],
                 "decision": row.get("decision"),
                 "executed": label,
                 "how": how,
                 "url_after": str(read.get("url") or ""),
-                "dom_after": str(read.get("text") or "")[:300],
-                "title_after": str(read.get("title") or ""),
             }
         )
-        if goal_visible(task, read):
-            stop_reason = "done"
-            if task_kind(task) == "draw":
-                drew = True
-                read["drew"] = True
-            break
 
-    if stop_reason == "done" or goal_visible(task, read):
+    if stop_reason == "done":
         _stamp_observation(trace, read, task=task)
+        failed = {"phase": "done", "reason": "task complete", "step": step_no}
     if stop_reason:
         print(f"[{agent_id}] stop reason: {stop_reason}", flush=True)
     if not isinstance(failed, dict):
-        if stop_reason == "done" or goal_visible(task, read):
-            failed = {"phase": "done", "reason": "task complete", "step": step_no}
-            stop_reason = stop_reason or "done"
-        else:
-            failed = {"phase": "act", "reason": "page did not show the goal", "step": step_no}
+        failed = {"phase": "act", "reason": "page did not show the goal", "step": step_no}
     return {
-        "stop_reason": stop_reason,
+        "stop_reason": stop_reason or str(failed.get("reason") or ""),
         "failed": failed,
         "trace": trace,
         "history": history,
@@ -2227,6 +2156,8 @@ async def complete_task_on_page(
         "drew": drew,
         "opened_canvas": opened_canvas,
         "logs": logs,
+        "needs_account": stop_reason == "needs_account",
+        "signup_url": signup_url,
     }
 
 
@@ -2250,9 +2181,11 @@ async def _create_session_or_close(study_id: str | None, timeout: float = 3.5) -
                 study_id=study_id,
             )
         except Exception as exc:  # noqa: BLE001
+            err = exc
+
             def _fail() -> None:
                 if not fut.done():
-                    fut.set_exception(exc)
+                    fut.set_exception(err)
 
             loop.call_soon_threadsafe(_fail)
             return
@@ -2354,6 +2287,107 @@ async def _close_agent_session(browser: Any, bb: Any) -> None:
         pass
 
 
+def _visited(trace: list[dict[str, Any]], start: str, final: str) -> list[str]:
+    seen: list[str] = []
+    for item in [start] + [str(s.get("url") or "") for s in trace if isinstance(s, dict)] + [final]:
+        if item and item not in seen:
+            seen.append(item)
+    return seen[:40]
+
+
+async def _signup_then_resume(
+    page: Any,
+    *,
+    outcome: dict[str, Any],
+    url: str,
+    task: str,
+    persona: dict[str, Any],
+    agent_id: str,
+    on_step: Any | None,
+    deadline: float | None,
+    sess: dict[str, Any],
+) -> dict[str, Any] | None:
+    """The task hit a login or signup wall. Sign up in this same browser, then resume.
+
+    Uses mvp.signup_in_session when it is installed. Without it the agent
+    stops with needs_account, which the report shows as an account wall.
+    """
+    try:
+        from mvp.signup_in_session import signup_in_session  # type: ignore
+    except Exception:
+        return None
+    remaining = (deadline - time.monotonic()) if deadline is not None else 180.0
+    if remaining < 45:
+        return None
+    trace = list(outcome.get("trace") or [])
+    step_no = int(outcome.get("step_no") or 0) + 1
+    wall = str(outcome.get("signup_url") or (outcome.get("read") or {}).get("url") or url)
+    row = {
+        "step": step_no,
+        "action": "sign up for an account (the task needs one)",
+        "url": wall,
+        "thought": "account wall",
+        "decision_source": "signup",
+        "decision": {"act": "signup", "source": "signup"},
+    }
+    trace.append(row)
+    if on_step is not None:
+        maybe = on_step(row)
+        if asyncio.iscoroutine(maybe):
+            await maybe
+    sess["signup_status"] = "signing up"
+    started = time.time()
+    try:
+        result = await asyncio.wait_for(
+            signup_in_session(page, url, persona, timeout_s=min(150.0, remaining - 30), tag=agent_id),
+            timeout=min(160.0, remaining - 20),
+        )
+    except Exception as exc:  # noqa: BLE001
+        result = {"ok": False, "reason": repr(exc)[:160]}
+    result = dict(result or {}) if isinstance(result, dict) else {"ok": bool(result)}
+    public = {
+        "ok": bool(result.get("ok")),
+        "reason": str(result.get("reason") or "")[:200],
+        "email": str(result.get("email") or "")[:120],
+        "seconds": round(time.time() - started, 1),
+    }
+    sess["signup_status"] = "signed up" if public["ok"] else "signup failed"
+    sess["signup"] = public
+    row["signup"] = public
+    row["action"] = (
+        f"signed up as {public['email'] or 'a new user'} in {public['seconds']}s"
+        if public["ok"]
+        else f"signup did not finish: {public['reason'] or 'unknown'}"
+    )
+    try:
+        row["url"] = str(page.url or wall)
+    except Exception:
+        pass
+    if on_step is not None:
+        maybe = on_step(row)
+        if asyncio.iscoroutine(maybe):
+            await maybe
+    if not public["ok"]:
+        failed = {"phase": "needs_account", "reason": "signup did not finish", "step": step_no}
+        return {**outcome, "trace": trace, "step_no": step_no, "failed": failed, "signup": public}
+    resumed = await complete_task_on_page(
+        page,
+        task=task,
+        url=str(getattr(page, "url", "") or url),
+        trace=trace,
+        history=list(outcome.get("history") or []) + [row["action"]],
+        step_no=step_no,
+        opened_canvas=str(outcome.get("opened_canvas") or ""),
+        on_step=on_step,
+        deadline=deadline,
+        agent_id=agent_id,
+        signed_in=True,
+    )
+    resumed["signup"] = public
+    resumed["logs"] = list(outcome.get("logs") or []) + list(resumed.get("logs") or [])
+    return resumed
+
+
 async def run_a11y_agent(
     *,
     boot: A11yBoot,
@@ -2417,6 +2451,7 @@ async def _run_a11y_agent_unlocked(
     ]
     step_no = 0
     read = {"url": url, "text": "", "canvas": "", "nodes": [], "title": ""}
+    outcome_flags: dict[str, Any] = {}
     try:
         opened_at = None
         try:
@@ -2456,11 +2491,13 @@ async def _run_a11y_agent_unlocked(
             # Step 0 is this site's one shared read, taken on the first
             # agent's own page. Never wait on another site and never re-read.
             opening_nodes: list[dict[str, Any]] = []
+            initial_read: dict[str, Any] | None = None
             snap = await boot.site_read(site_key, page, url)
             if isinstance(snap, dict) and _host(str(snap.get("url") or "")) == _host(url):
                 opening_nodes = [
                     node for node in (snap.get("nodes") or []) if isinstance(node, dict)
                 ]
+                initial_read = dict(snap)
             trace = list(sess.get("trace") or trace)
             if trace and isinstance(trace[0], dict):
                 trace[0]["page_open_at_ts"] = opened_at
@@ -2477,7 +2514,6 @@ async def _run_a11y_agent_unlocked(
             )
             sess["phase"] = "acting"
             boot.study.live_sessions[agent_id] = sess
-            phase = "act"
             outcome = await complete_task_on_page(
                 page,
                 task=task_prompt,
@@ -2490,8 +2526,24 @@ async def _run_a11y_agent_unlocked(
                 deadline=deadline,
                 agent_id=agent_id,
                 opening_nodes=opening_nodes,
+                initial_read=initial_read,
             )
+            if outcome.get("needs_account"):
+                signup = await _signup_then_resume(
+                    page,
+                    outcome=outcome,
+                    url=url,
+                    task=task_prompt,
+                    persona=persona,
+                    agent_id=agent_id,
+                    on_step=on_step,
+                    deadline=deadline,
+                    sess=sess,
+                )
+                if signup is not None:
+                    outcome = signup
             stop_reason = str(outcome.get("stop_reason") or "")
+            outcome_flags = {"needs_account": outcome.get("needs_account"), "signup": outcome.get("signup")}
             failed = outcome.get("failed") if isinstance(outcome.get("failed"), dict) else failed
             trace = list(outcome.get("trace") or trace)
             history = list(outcome.get("history") or history)
@@ -2507,7 +2559,6 @@ async def _run_a11y_agent_unlocked(
         shot_url = ""
         shot_ms = 0
         if page is not None:
-            phase = "final_screenshot"
             dest = MVP_RUNS_DIR / study_id / agent_id / "screenshots"
             dest.mkdir(parents=True, exist_ok=True)
             path = dest / "final.png"
@@ -2516,13 +2567,6 @@ async def _run_a11y_agent_unlocked(
                 await page.wait_for_load_state("domcontentloaded", timeout=6000)
             except Exception:
                 pass
-            if task_kind(task_prompt) == "issue":
-                try:
-                    await page.evaluate(
-                        "() => { const h = document.querySelector('h1'); if (h) h.scrollIntoView({block:'center'}); }"
-                    )
-                except Exception:
-                    pass
             try:
                 await page.screenshot(path=str(path), full_page=False, timeout=8000)
                 shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
@@ -2577,7 +2621,10 @@ async def _run_a11y_agent_unlocked(
             "completed": stop_reason == "done",
             "final_url": final_url,
             "final_dom": final_dom,
-            "visited_urls": [final_url],
+            "visited_urls": _visited(trace, url, final_url),
+            "finished_at_ts": time.time(),
+            "needs_account": bool(outcome_flags.get("needs_account")),
+            "signup": outcome_flags.get("signup") or {},
             "actions": [{"action": h} for h in history if h],
             "trace": trace,
             "backend": "browserbase_a11y",
