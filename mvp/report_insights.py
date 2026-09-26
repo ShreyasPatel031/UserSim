@@ -992,8 +992,8 @@ def trace_claims(
                 f"{title}: the path needs an account \u2014 agents hit a sign-up or sign-in wall "
                 f"at {final_page} before they could finish"
             )
-            if reason.startswith("blocked at signup"):
-                why = reason.removeprefix("blocked at signup").lstrip(": ").strip() or "it did not finish"
+            if reason.startswith(("blocked at signup", "signup did not finish")):
+                why = _signup_cause(reason) or "it did not finish"
                 key = f"{title.lower()}|account|{reason}"
                 label = (
                     f"{title}: needs an account first (sign-up wall at {final_page}). UserSim's test "
@@ -1707,8 +1707,10 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
 
 _HARNESS_RE = re.compile(
     r"throwaway|disposable|temporary e-?mail|captcha|verification (e-?mail|code)|test account|usersim"
-    # Advice to fix sign-up: the test never saw past its own sign-up attempt.
-    r"|(?:improve|fix|simplify|streamline|smooth|address|ease|shorten)\w*\b[^.]{0,40}\bsign[- ]?up",
+    # Advice to fix sign-up or drop an account wall: the test never saw past
+    # its own sign-up attempt, and requiring an account is a product choice.
+    r"|(?:improve|fix|simplify|streamline|smooth|address|ease|shorten|remove|reduce|avoid|eliminate|lower|bypass)"
+    r"\w*\b[^.]{0,40}\b(?:sign[- ]?up|account|log-?in)",
     re.I,
 )
 

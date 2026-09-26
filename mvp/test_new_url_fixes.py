@@ -234,3 +234,32 @@ class PricingPageUnderAnotherNameTests(unittest.TestCase):
     def test_one_price_on_a_home_page_is_not_the_pricing_page(self):
         task = "Look for pricing or how to get started"
         self.assertFalse(goal_visible(task, {"url": "https://x.com/", "title": "X", "text": "Start free, then $10/month"}))
+
+
+class SignupTimeoutWordingTests(unittest.TestCase):
+    def test_account_wall_advice_is_dropped(self):
+        from mvp.report_insights import drop_harness_sentences
+
+        text = ("Airtable is good for pricing. The most useful fix is to address the account creation "
+                "wall encountered when trying to create a new base.")
+        self.assertEqual(drop_harness_sentences(text), "Airtable is good for pricing.")
+        self.assertEqual(drop_harness_sentences("Pricing takes one click."), "Pricing takes one click.")
+
+    def test_a_signup_that_timed_out_is_a_limit_of_the_test(self):
+        from mvp.report_insights import build_report_insights
+
+        run = {
+            "agent_id": "t1__p1__product", "site_key": "product", "task_title": "Create a new base",
+            "site_url": "https://airtable.com/", "completed": False, "stop_reason": "needs_account",
+            "final_url": "https://airtable.com/signup", "page_open_at_ts": 1.0,
+            "final_screenshot_url": "/api/studies/s1/agents/t1__p1__product/screenshots/final.png", "first_action_at_ts": 2.0,
+            "failed_step": {"phase": "needs_account", "reason": "signup did not finish (timeout)", "step": 2},
+            "trace": [
+                {"step": 0, "action": "Opened https://airtable.com/", "url": "https://airtable.com/"},
+                {"step": 1, "action": "click Sign up for free", "url": "https://airtable.com/signup", "changed": True},
+                {"step": 2, "action": "signup did not finish (timeout)", "url": "https://airtable.com/signup"},
+            ],
+        }
+        insights = build_report_insights({"id": "s1", "url": "https://airtable.com/", "agent_results": [run], "activity_log": []})
+        claims = " ".join(str(c.get("claim")) for c in insights.get("weaknesses") or [])
+        self.assertIn("limit of the test", claims)
