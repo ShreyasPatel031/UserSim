@@ -764,6 +764,10 @@ class A11yBoot:
         self._handle_cv = asyncio.Condition()
         self._page_lock = asyncio.Lock()
         self._site_locks: dict[str, asyncio.Lock] = {}
+        self._pw: Any = None
+        self._started = 0.0
+        self._tasks: list[asyncio.Task] = []
+        self.published = asyncio.Event()
 
     def lock_for(self, site_key: str) -> asyncio.Lock:
         """One agent at a time per browser. Parallel tabs were closing the session."""
@@ -772,10 +776,6 @@ class A11yBoot:
             lock = asyncio.Lock()
             self._site_locks[site_key] = lock
         return lock
-        self._pw: Any = None
-        self._started = 0.0
-        self._tasks: list[asyncio.Task] = []
-        self.published = asyncio.Event()
 
     def install_fast_plan(self) -> None:
         """Known tasks and rivals are enough. Do not wait on a planning model."""
