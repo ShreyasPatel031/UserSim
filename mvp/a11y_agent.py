@@ -126,6 +126,8 @@ def classify_failure(
         return "our infrastructure"
     if goal_reached is False:
         return "product"
+    if (stop_reason or "").strip() == "needs_account":
+        return ""
     if goal_reached is True or (stop_reason or "").strip() in {"", "done"} and not error.strip():
         return ""
     if error.strip() or (stop_reason and stop_reason != "done"):
@@ -389,6 +391,7 @@ _READ_JS = """() => {
       w: Math.round(Math.max(r.width, 0)),
       h: Math.round(Math.max(r.height, 0)),
       inert: inert,
+      type: String(el.getAttribute('type') || '').toLowerCase(),
     };
   };
   const offscreen = [];
@@ -653,33 +656,115 @@ def _canvas_dark(raw: str) -> int:
 
 
 def achievable_without_account(url: str, prompt: str) -> str:
-    """Rewrite a task that needs a login into one a logged-out visitor can finish."""
-    text = " ".join((prompt or "").split())
-    low = text.lower()
-    host = _host(url)
-    if host == "linear.app" and "issue" in low and not any(
-        word in low for word in ("how", "find", "docs", "documentation", "pricing")
-    ):
-        return "Find how to create a new issue"
-    needs_account = any(
-        phrase in low
-        for phrase in (
-            "log in",
-            "log-in",
-            "sign in",
-            "sign up for an account",
-            "create an account",
-            "your workspace",
-            "in the workspace",
-            "file an issue",
-            "submit an issue",
-        )
-    )
-    if needs_account and "pricing" not in low and "how to" not in low:
-        if task_kind(text) in {"draw", "export", "help"}:
-            return text
-        return "Find help or pricing without signing in"
-    return text
+    """Leave the task as written. Account work is not rewritten into a public tour."""
+    del url
+    return prompt or ""
+
+
+def public_task(task: str) -> bool:
+    """A task a visitor can finish without an account.
+
+    Draw, export, help, pricing, and a how-to docs page are public. Creating
+    or filing something inside the product is not.
+    """
+    kind = task_kind(task)
+    if kind in {"draw", "export", "help", "pricing", "changelog"}:
+        return True
+    low = (task or "").lower()
+    if kind == "issue" and any(word in low for word in ("how", "find", "docs", "documentation")):
+        return True
+    return False
+
+
+_AUTH_PATH = re.compile(
+    r"/(?:login|log-in|signin|sign-in|signup|sign-up|register|join)(?:/|$)",
+    re.I,
+)
+_SIGNUP_PATH = re.compile(
+    r"/(?:signup|sign-up|register|join)(?:/|$)",
+    re.I,
+)
+_CONTINUE_PHRASES = (
+    "sign up to continue",
+    "log in to continue",
+    "sign in to continue",
+    "create an account to continue",
+)
+
+
+def _path_matches(url: str, pattern: re.Pattern[str]) -> bool:
+    from urllib.parse import urlsplit
+
+    raw = (url or "").strip()
+    if not raw:
+        return False
+    if "://" not in raw and not raw.startswith("/"):
+        raw = "https://" + raw
+    path = urlsplit(raw).path or ""
+    return bool(pattern.search(path))
+
+
+def _signup_url_from(url: str, nodes: list[dict[str, Any]]) -> str:
+    """Prefer a signup link on this page, then a known signup URL for the host."""
+    for node in nodes:
+        href = str(node.get("href") or "").strip()
+        if href and (_path_matches(href, _SIGNUP_PATH) or _host(href) == "plus.excalidraw.com"):
+            return href
+    if _path_matches(url, _SIGNUP_PATH) or _host(url) == "plus.excalidraw.com":
+        return url
+    mapped = ""
+    try:
+        from mvp.auto_signup import signup_start_url
+
+        mapped = signup_start_url(_host(url))
+    except Exception:
+        mapped = ""
+    if mapped and _path_matches(mapped, _SIGNUP_PATH):
+        return mapped
+    for node in nodes:
+        href = str(node.get("href") or "").strip()
+        if href and _path_matches(href, _AUTH_PATH):
+            return href
+    return url
+
+
+def account_wall(read: dict[str, Any]) -> dict[str, str] | None:
+    """Login or signup wall, with the URL the signup hook should open.
+
+    A header link named Sign up is not a wall. A login or signup URL, an
+    email field plus a password field, or a 'Sign up to continue' modal is.
+    """
+    url = str((read or {}).get("url") or "")
+    text = str((read or {}).get("text") or "").lower()
+    nodes = [node for node in ((read or {}).get("nodes") or []) if isinstance(node, dict)]
+    names = " ".join(str(node.get("name") or "").lower() for node in nodes)
+    url_wall = _path_matches(url, _AUTH_PATH) or _host(url) == "plus.excalidraw.com"
+    email = False
+    password = False
+    for node in nodes:
+        role = str(node.get("role") or "").lower()
+        if role not in {"input", "textbox", "textarea"}:
+            continue
+        name = str(node.get("name") or "").lower()
+        kind = str(node.get("type") or "").lower()
+        if kind == "password" or "password" in name:
+            password = True
+        if kind == "email" or "email" in name:
+            email = True
+    form_wall = email and password
+    modal_wall = any(phrase in f"{text}\n{names}" for phrase in _CONTINUE_PHRASES)
+    if not (url_wall or form_wall or modal_wall):
+        return None
+    if url_wall:
+        reason = "login_url"
+    elif form_wall:
+        reason = "email_password"
+    else:
+        reason = "modal"
+    return {
+        "signup_url": _signup_url_from(url, nodes),
+        "reason": reason,
+    }
 
 
 def notes_from_trace(trace: list[dict[str, Any]]) -> tuple[list[str], list[str]]:
@@ -889,7 +974,7 @@ def tree_action(
     skipped = {item.lower() for item in (skip or set())}
     nodes = _live_nodes(read)
     text = str((read or {}).get("text") or "")
-    if kind == "issue":
+    if kind == "issue" and public_task(task):
         found = _find_issue_target(nodes, skipped)
         if found:
             return _click_from_node(found)
@@ -1631,16 +1716,25 @@ def _auth_href(href: str) -> bool:
     return "/login" in text or "/signup" in text or "plus.excalidraw.com" in text
 
 
-def _nodes_for_model(nodes: list[dict[str, Any]], skip: set[str]) -> list[dict[str, Any]]:
-    """Drop inert controls, login walls, and controls already clicked with no change."""
+def _nodes_for_model(
+    nodes: list[dict[str, Any]],
+    skip: set[str],
+    task: str = "",
+) -> list[dict[str, Any]]:
+    """Drop inert controls and controls already clicked with no change.
+
+    Public tasks hide login and signup. An account task keeps those controls
+    so the loop can reach the wall and hand the signup URL to the hook.
+    """
     skipped = {str(item).lower() for item in skip if str(item).strip()}
+    hide_auth = not task or public_task(task)
     kept: list[dict[str, Any]] = []
     for node in nodes or []:
         if not isinstance(node, dict) or node.get("inert"):
             continue
         name = str(node.get("name") or "").strip().lower()
         href = str(node.get("href") or "").strip().lower()
-        if name in _AUTH_NAMES or _auth_href(href):
+        if hide_auth and (name in _AUTH_NAMES or _auth_href(href)):
             continue
         if name and name in skipped:
             continue
@@ -1668,7 +1762,7 @@ async def _model_action(
         else ""
     )
     prompt = (
-        "You are a logged-out visitor finishing a task in the browser. Reply with one JSON object only.\n"
+        "You are finishing a task in the browser. Reply with one JSON object only.\n"
         f"Task: {task[:400]}\n"
         f"URL: {read.get('url') or ''}\n"
         f"Title: {read.get('title') or ''}\n"
@@ -1678,9 +1772,8 @@ async def _model_action(
         f"{flag}"
         'JSON: {"act":"click|type|scroll|drag|done","i":0,"text":"","friction":"","easy":""}\n'
         "Use an element i from the list for click, type, and scroll. "
-        "Do not click Log in, Sign up, or Open app. Stay on the public site. "
         "A homepage preview of the product is not the real app. "
-        "For how to create an issue, open Docs or Documentation, then the Issues section, then Create issues. "
+        "If the task needs an account and the list has Sign up or Log in, click that. "
         "For pricing or getting started, open Pricing. "
         "If the task says draw and the list has a shape tool, click that tool, then drag on the canvas. "
         "The shape tool is whichever name is in the list (rectangle, ellipse, line, or similar). "
@@ -1960,6 +2053,7 @@ async def complete_task_on_page(
     drew = False
     failed: dict[str, Any] | None = None
     stop_reason = ""
+    signup_url = ""
     skip: set[str] = set()
     logs: list[dict[str, Any]] = []
     previous_sig: tuple[str, str, str, str] | None = None
@@ -2009,6 +2103,12 @@ async def complete_task_on_page(
                 drew = True
                 read["drew"] = True
             break
+        wall = account_wall(read)
+        if wall:
+            stop_reason = "needs_account"
+            signup_url = str(wall.get("signup_url") or "")
+            print(f"[{agent_id}] needs_account {signup_url}", flush=True)
+            break
         signature = progress_signature(
             url=str(read.get("url") or ""),
             screenshot_hash="",
@@ -2022,7 +2122,7 @@ async def complete_task_on_page(
             _miss()
             break
         model_read = dict(read)
-        model_read["nodes"] = _nodes_for_model(list(read.get("nodes") or []), skip)
+        model_read["nodes"] = _nodes_for_model(list(read.get("nodes") or []), skip, task)
         # The live tree already names the next control for these tasks.
         # Waiting on the model first is what blew time-to-first-action and
         # let the model click a hero mock before the override.
@@ -2090,7 +2190,7 @@ async def complete_task_on_page(
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
-        if task_kind(task) == "issue" and not goal_visible(task, read):
+        if public_task(task) and task_kind(task) == "issue" and not goal_visible(task, read):
             target = _find_issue_target(_live_nodes(read), skip)
             if target is not None:
                 want = str(target.get("href") or target.get("name") or "").lower()
@@ -2214,20 +2314,12 @@ async def complete_task_on_page(
                 scrolled = await _fresh_read(page, str(read.get("url") or url))
                 if not scrolled.get("error"):
                     after = scrolled
-        if not after.get("error") and _auth_href(str(after.get("url") or "")):
-            skip.add(str(action.get("name") or "").lower())
-            href = str(action.get("href") or "")
-            if href:
-                skip.add(href.lower())
-            try:
-                await page.go_back(wait_until="domcontentloaded", timeout=4000)
-            except Exception:
-                pass
-            await _wait_for_page(page)
-            backed = await _fresh_read(page, str(read.get("url") or url))
-            if not backed.get("error"):
-                after = backed
-            changed_nothing = True
+        if not after.get("error"):
+            wall = account_wall(after)
+            if wall:
+                stop_reason = "needs_account"
+                signup_url = str(wall.get("signup_url") or "")
+                print(f"[{agent_id}] needs_account {signup_url}", flush=True)
         if not after.get("error"):
             changed = _observation_changed(read, after, task=task)
             if str(action.get("act")) == "drag" and task_kind(task) == "draw":
@@ -2287,6 +2379,8 @@ async def complete_task_on_page(
                 "title_after": str(read.get("title") or ""),
             }
         )
+        if stop_reason == "needs_account":
+            break
         if goal_visible(task, read):
             stop_reason = "done"
             if task_kind(task) == "draw":
@@ -2294,18 +2388,27 @@ async def complete_task_on_page(
                 read["drew"] = True
             break
 
-    if stop_reason == "done" or goal_visible(task, read):
+    if stop_reason == "done" or (stop_reason != "needs_account" and goal_visible(task, read)):
         _stamp_observation(trace, read, task=task)
     if stop_reason:
         print(f"[{agent_id}] stop reason: {stop_reason}", flush=True)
     if not isinstance(failed, dict):
-        if stop_reason == "done" or goal_visible(task, read):
+        if stop_reason == "needs_account":
+            failed = {
+                "phase": "needs_account",
+                "reason": "needs_account",
+                "step": step_no,
+                "signup_url": signup_url,
+            }
+        elif stop_reason == "done" or goal_visible(task, read):
             failed = {"phase": "done", "reason": "task complete", "step": step_no}
             stop_reason = stop_reason or "done"
         else:
             failed = {"phase": "act", "reason": "page did not show the goal", "step": step_no}
     return {
         "stop_reason": stop_reason,
+        "needs_account": stop_reason == "needs_account",
+        "signup_url": signup_url,
         "failed": failed,
         "trace": trace,
         "history": history,
@@ -2477,6 +2580,7 @@ async def _run_a11y_agent_unlocked(
     sess = boot.study.live_sessions.get(agent_id) or {}
     failed: dict[str, Any] | None = None
     stop_reason = ""
+    signup_url = ""
     page = None
     browser = None
     bb = None
@@ -2551,6 +2655,7 @@ async def _run_a11y_agent_unlocked(
                 agent_id=agent_id,
             )
             stop_reason = str(outcome.get("stop_reason") or "")
+            signup_url = str(outcome.get("signup_url") or "")
             failed = outcome.get("failed") if isinstance(outcome.get("failed"), dict) else failed
             trace = list(outcome.get("trace") or trace)
             history = list(outcome.get("history") or history)
@@ -2611,7 +2716,14 @@ async def _run_a11y_agent_unlocked(
             final_url = url
         ax = format_ax(read.get("nodes") or []) or str(sess.get("accessibility_tree") or "") or "0 document page"
         final_dom = str(read.get("text") or "")[:1500] or ax
-        if not isinstance(failed, dict) or not str(failed.get("phase") or "").strip():
+        if stop_reason == "needs_account":
+            failed = {
+                "phase": "needs_account",
+                "reason": "needs_account",
+                "step": step_no,
+                "signup_url": signup_url,
+            }
+        elif not isinstance(failed, dict) or not str(failed.get("phase") or "").strip():
             if stop_reason == "done" or goal_visible(task_prompt, read):
                 failed = {"phase": "done", "reason": "task complete", "step": step_no}
             else:
@@ -2652,7 +2764,9 @@ async def _run_a11y_agent_unlocked(
             "phase_ms": phase_ms,
             "failed_step": failed,
             "stop_reason": stop_reason or "done",
-            "phase": "done" if stop_reason == "done" else "act",
+            "needs_account": stop_reason == "needs_account",
+            "signup_url": signup_url,
+            "phase": "needs_account" if stop_reason == "needs_account" else ("done" if stop_reason == "done" else "act"),
             "error": "",
             "browser_error": "",
             "browserbase_session_id": getattr(bb, "id", None) if bb is not None else None,

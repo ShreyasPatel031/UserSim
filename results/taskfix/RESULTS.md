@@ -1,3 +1,9 @@
+# Account tasks are not rewritten
+
+`generate_tasks` no longer turns an account task into a logged-out tour. When the step loop hits a login or signup URL, an email and password form, or a "Sign up to continue" modal, the agent result is `needs_account: true` with `signup_url` set to the signup link on that page (or the known signup URL for the host). The signup hook owns the next step. A header "Sign up" link on a marketing page is not a wall.
+
+Public how-to, pricing, draw, and export tasks still finish from the live tree. Local Chromium after this change (not a pass): `results/taskfix/harness_account.log`. New-issue how-to still ended on `https://linear.app/docs/creating-issues`.
+
 # Independent grade (PR #46 only)
 
 Self-graded 8/8 is rejected. Only PR #46 (`bc-10cbc813`) grades. The latest independent result is Linear study `68af612b`: product **4/8**. All four pricing agents were YES. All four new-issue agents were NO (opening screen or a dashboard with no create control). Integration cherry-picks are still product 0/8 because those studies abort before a report (shared page, time-to-first-action 17–25s).

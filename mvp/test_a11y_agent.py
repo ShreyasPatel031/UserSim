@@ -15,6 +15,7 @@ from mvp.a11y_agent import (
     failure_breakdown,
     fast_action_model,
     _nodes_for_model,
+    account_wall,
     achievable_without_account,
     format_ax,
     goal_visible,
@@ -372,6 +373,7 @@ class A11yAgentTest(unittest.TestCase):
         )
         self.assertEqual(classify_failure(stop_reason="done", goal_reached=False), "product")
         self.assertEqual(classify_failure(stop_reason="done", goal_reached=True), "")
+        self.assertEqual(classify_failure(stop_reason="needs_account"), "")
         table = failure_breakdown(
             [
                 {"site_key": "product", "agent_id": "a", "stop_reason": "stuck: no progress for 3 consecutive steps"},
@@ -418,19 +420,71 @@ class A11yAgentTest(unittest.TestCase):
         )
         self.assertEqual(pricing["name"], "Pricing")
 
-    def test_logged_out_tasks_do_not_require_an_account(self) -> None:
-        self.assertEqual(
-            achievable_without_account("https://linear.app/", "Create a new issue in your workspace"),
-            "Find how to create a new issue",
+    def test_account_tasks_stay_account_tasks(self) -> None:
+        original = "Create a new issue in your workspace"
+        self.assertEqual(achievable_without_account("https://linear.app/", original), original)
+        self.assertIsNone(
+            tree_action(
+                original,
+                {
+                    "nodes": [
+                        {"role": "a", "name": "Documentation", "href": "https://linear.app/docs"},
+                        {"role": "a", "name": "Sign up", "href": "https://linear.app/signup"},
+                    ]
+                },
+            )
         )
-        self.assertEqual(
-            achievable_without_account("https://linear.app/", "Find how to create a new issue"),
-            "Find how to create a new issue",
+        kept = _nodes_for_model(
+            [
+                {"role": "a", "name": "Sign up", "href": "https://linear.app/signup"},
+                {"role": "a", "name": "Docs", "href": "https://linear.app/docs"},
+            ],
+            set(),
+            original,
         )
-        self.assertEqual(
-            achievable_without_account("https://linear.app/", "Look for pricing or how to get started"),
-            "Look for pricing or how to get started",
+        self.assertEqual([node["name"] for node in kept], ["Sign up", "Docs"])
+
+    def test_account_wall_returns_the_signup_url(self) -> None:
+        self.assertIsNone(
+            account_wall(
+                {
+                    "url": "https://linear.app/",
+                    "text": "Plan and build your product Sign up Log in",
+                    "nodes": [{"role": "a", "name": "Sign up", "href": "https://linear.app/signup"}],
+                }
+            )
         )
+        login = account_wall(
+            {
+                "url": "https://linear.app/login",
+                "text": "Log in",
+                "nodes": [{"role": "a", "name": "Sign up", "href": "https://linear.app/signup"}],
+            }
+        )
+        self.assertEqual(login["signup_url"], "https://linear.app/signup")
+        self.assertEqual(login["reason"], "login_url")
+        form = account_wall(
+            {
+                "url": "https://linear.app/",
+                "text": "Welcome",
+                "nodes": [
+                    {"role": "input", "type": "email", "name": "Email"},
+                    {"role": "input", "type": "password", "name": "Password"},
+                    {"role": "a", "name": "Create account", "href": "https://linear.app/signup"},
+                ],
+            }
+        )
+        self.assertEqual(form["reason"], "email_password")
+        self.assertEqual(form["signup_url"], "https://linear.app/signup")
+        modal = account_wall(
+            {
+                "url": "https://excalidraw.com/",
+                "text": "Sign up to continue and save this drawing",
+                "nodes": [{"role": "a", "name": "Sign up", "href": "https://plus.excalidraw.com/sign-up"}],
+            }
+        )
+        self.assertEqual(modal["reason"], "modal")
+        self.assertIn("sign-up", modal["signup_url"])
 
 
 if __name__ == "__main__":
