@@ -955,9 +955,9 @@ async def backfill_final_screenshots(study: StudyState) -> int:
     """Fill missing final.png when a Browserbase session died before capture.
 
     Agents take no mid-run screenshots, so a dead session leaves the judge gate
-    empty and fails the whole study for one or two lost browsers. Prefer a
-    same-site donor final.png; otherwise write a clearly labeled placeholder so
-    the field gate passes without looking like a successful task screenshot.
+    empty and fails the whole study for one or two lost browsers. Write a
+    clearly labeled placeholder PNG so the field gate passes without looking
+    like a successful task screenshot.
     """
     from mvp.opening_shot import png_bytes_ok, upload_final_verified
     from mvp.paths import MVP_RUNS_DIR
