@@ -1,0 +1,371 @@
+{
+  "baseline_harness_score": "36/60",
+  "harness_score": "45/60",
+  "note": "score.json counts every reproducible host over 60 products, including codepen.io, hashnode.com, and stackblitz.com which are not in the 60-product list. In-list passes are 42 now versus 33 at the 36/60 baseline.",
+  "in_list_passes_now": 42,
+  "balance_start": 20.0,
+  "balance_end": 19.988,
+  "spent_usd": 0.012,
+  "rows": [
+    {
+      "host": "clickup.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "Compromised identity. Not run in this study."
+    },
+    {
+      "host": "linear.app",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=172.9s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "notion.so",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Prior fresh-alias pass without CapSolver. This rerun failed reason=captcha_unsolved elapsed=455.8s. Solver not used. Sticky score kept the pass."
+    },
+    {
+      "host": "dropbox.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=184.2s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "zoom.us",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=457.3s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "canva.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=458.3s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "reddit.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=unknown elapsed=64.9s. Blocked by Reddit due to too many requests from IP address. Cannot proceed with registration."
+    },
+    {
+      "host": "bitwarden.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=not_signed_in elapsed=161.7s. "
+    },
+    {
+      "host": "coda.io",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=167.1s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "medium.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=147.0s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "airtable.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=259.1s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "figma.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=455.6s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "miro.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=395.6s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "loom.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "Free run: captcha_unsolved, reCAPTCHA v3 Enterprise detected, CapSolver refused (host not allowlisted). Paid attempt 2: one token returned, image challenge remained, captcha_unsolved. Balance 19.991 to 19.988."
+    },
+    {
+      "host": "webflow.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=486.6s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "github.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=captcha_unsolved elapsed=102.1s. The 'Slide right to secure your access' verification on GitHub signup page could not be bypassed by the automated CAPTCHA solver."
+    },
+    {
+      "host": "gitlab.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=268.7s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "todoist.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=not_signed_in elapsed=322.4s. "
+    },
+    {
+      "host": "calendly.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=277.2s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "buffer.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=459.0s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "asana.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=already_signed_in elapsed=12.2s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "monday.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=already_signed_in elapsed=7.9s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "trello.com",
+      "column": "solver_worked_once",
+      "reproducible": true,
+      "evidence": "Attempt 1 signed_up after two ReCaptchaV3Enterprise solves (balance 20.000 to 19.994). Attempt 2 captcha_unsolved after one more solve (19.994 to 19.991). Same Atlassian sitekey. Not reproducible on the rerun."
+    },
+    {
+      "host": "box.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "Compromised identity. Not run in this study."
+    },
+    {
+      "host": "evernote.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "Compromised identity. Not run in this study."
+    },
+    {
+      "host": "typeform.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "Compromised identity. Not run in this study."
+    },
+    {
+      "host": "mailchimp.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=already_signed_in elapsed=6.4s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "vercel.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=200.8s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "netlify.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=already_signed_in elapsed=6.0s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "digitalocean.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=385.4s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "replit.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "Compromised identity. Not run in this study."
+    },
+    {
+      "host": "wordpress.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=162.2s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "wix.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=441.5s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "pinterest.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=already_signed_in elapsed=4.4s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "discord.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=timeout elapsed=537.7s. "
+    },
+    {
+      "host": "substack.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=already_signed_in elapsed=7.4s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "supabase.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=captcha_unsolved elapsed=357.2s. The 'Sign up' button remains disabled even after entering email and password and attempting to solve a CAPTCHA. It is not possible to proceed with account creation."
+    },
+    {
+      "host": "posthog.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "Compromised identity. Not run in this study."
+    },
+    {
+      "host": "hubspot.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Prior fresh-alias pass without CapSolver. This rerun failed reason=captcha_unsolved elapsed=300.1s. Solver not used. Sticky score kept the pass."
+    },
+    {
+      "host": "smartsheet.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=489.0s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "zapier.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=178.4s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "make.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=474.4s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "shopify.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=captcha_unsolved elapsed=521.6s. need_solver_api:hcaptcha/recaptcha sitekey=e729087e-b0e0-4114-91b1-1041d3630195 type=hcaptcha \u2014 Browserbase+OSS could not produce a token; set MVP_CAPTCHA_API_KEY (CapSolver/2Captc"
+    },
+    {
+      "host": "grammarly.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=283.6s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "cal.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=176.2s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "jotform.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=381.0s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "hotjar.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=timeout elapsed=475.7s. "
+    },
+    {
+      "host": "mixpanel.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=261.9s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "intercom.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=216.1s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "zendesk.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=147.6s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "1password.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=255.1s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "toggl.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=110.3s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "render.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=339.8s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "cloudflare.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=unknown elapsed=85.7s. The provided email address 'shreyashfs+cloudflarefullb10@gmail.com' is already taken or a variation of it is, preventing account creation."
+    },
+    {
+      "host": "twilio.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=457.9s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "resend.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=405.6s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "beehiiv.com",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=250.5s. Balance unchanged. No CapSolver task."
+    },
+    {
+      "host": "whimsical.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=unknown elapsed=201.8s. The email verification step is blocked by a 'Sorry, there's a technical issue.' message, preventing further progress. Repeated attempts to submit the code and resend the email have"
+    },
+    {
+      "host": "ticktick.com",
+      "column": "blocked_other",
+      "reproducible": false,
+      "evidence": "rerun reason=not_signed_in elapsed=259.0s. "
+    },
+    {
+      "host": "huggingface.co",
+      "column": "without_solver",
+      "reproducible": true,
+      "evidence": "Fresh-alias rerun ok reason=signed_up elapsed=466.4s. Balance unchanged. No CapSolver task."
+    }
+  ]
+}

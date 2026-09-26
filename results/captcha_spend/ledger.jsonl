@@ -175,3 +175,23 @@
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "zapier.com", "ts": "2026-09-26T01:58:31.453777+00:00", "when": "after"}
 {"attempt": 1, "event": "signup_start", "site": "make.com", "ts": "2026-09-26T01:58:32.878187+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "make.com", "ts": "2026-09-26T01:58:33.014790+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "make.com", "ts": "2026-09-26T02:06:27.445329+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "grammarly.com", "ts": "2026-09-26T02:07:52.431565+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "grammarly.com", "ts": "2026-09-26T02:07:52.475329+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "grammarly.com", "ts": "2026-09-26T02:12:36.063593+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "cal.com", "ts": "2026-09-26T02:12:37.615693+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "cal.com", "ts": "2026-09-26T02:12:37.657012+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "cal.com", "ts": "2026-09-26T02:15:33.942033+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "jotform.com", "ts": "2026-09-26T02:15:35.063200+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "jotform.com", "ts": "2026-09-26T02:15:35.154367+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "jotform.com", "ts": "2026-09-26T02:21:56.242468+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "mixpanel.com", "ts": "2026-09-26T02:21:57.661622+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "mixpanel.com", "ts": "2026-09-26T02:21:57.696189+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "mixpanel.com", "ts": "2026-09-26T02:26:19.642564+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "zendesk.com", "ts": "2026-09-26T02:26:20.935605+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "zendesk.com", "ts": "2026-09-26T02:26:20.972040+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "zendesk.com", "ts": "2026-09-26T02:28:48.655821+00:00", "when": "after"}
+{"attempt": 2, "event": "signup_start", "site": "loom.com", "ts": "2026-09-26T02:29:24.768832+00:00"}
+{"attempt": 2, "balance": 19.991, "event": "balance", "site": "loom.com", "ts": "2026-09-26T02:29:24.805461+00:00", "when": "before"}
+{"attempt": 2, "balance_after": 19.991, "balance_before": 19.991, "balance_delta": 0.0, "captcha_type": "recaptcha_v3_enterprise", "cost": 0.003, "event": "createTask", "list_price": 0.003, "note": "", "site": "loom.com", "solved": true, "task_id": "529bc49b-3c47-44d1-935e-8bde9ffcaffc", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-26T02:30:58.756227+00:00"}
+{"attempt": 2, "balance": 19.988, "event": "balance", "site": "loom.com", "ts": "2026-09-26T02:37:01.077651+00:00", "when": "after"}
