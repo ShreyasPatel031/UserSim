@@ -3277,6 +3277,11 @@ async def run_study(
                                 if a11y_boot is not None:
                                     from mvp.a11y_agent import run_a11y_agent
 
+                                    # Leave time for the final PNG and the report inside the 480s gate.
+                                    _raw_deadline = getattr(study, "budget_deadline", None)
+                                    _agent_deadline = (
+                                        None if _raw_deadline is None else float(_raw_deadline) - 45
+                                    )
                                     _agent_coro = run_a11y_agent(
                                         boot=a11y_boot,
                                         study_id=study.id,
@@ -3288,7 +3293,7 @@ async def run_study(
                                         persona=persona,
                                         on_step=lambda step: _on_agent_step(agent_id, step),
                                         site_key=str(task.get("site_key") or "product"),
-                                        deadline=getattr(study, "budget_deadline", None),
+                                        deadline=_agent_deadline,
                                     )
                                 else:
                                     _agent_coro = run_browser_agent(
