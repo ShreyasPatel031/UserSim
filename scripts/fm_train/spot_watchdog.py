@@ -11,10 +11,12 @@ usersim-do-not-start=true, and a missing usersim-spot-watch label are also
 left alone.
 
 A start whose operation finishes while the VM is still TERMINATED is a
-stockout, not a success. On that failure, or once usersim-spot-restarts hits
-the cap after a preemption, the watchdog starts the single instance named by
-usersim-failover-to and moves the watch label there. It does not create VMs
-and it does not fail over to any third instance.
+stockout, not a success. Stockouts do not increment usersim-spot-restarts.
+That counter counts successful starts only. While usersim-train-state=running
+the watchdog backs off and tries again; it does not give up after repeated
+stockouts. A simulated stockout, or a cap of successful starts after a real
+preemption, starts the single instance named by usersim-failover-to and does
+not try any other machine.
 """
 from __future__ import annotations
 
@@ -428,6 +430,13 @@ def do_failover(source: dict, why: str) -> bool:
     return False
 
 
+def stockout_backoff_s(failures: int) -> int:
+    """Seconds to wait before the next Spot start. Does not stop the retries."""
+    if failures <= 0:
+        return 0
+    return min(300, 60 * (2 ** min(failures - 1, 3)))
+
+
 def capacity_error(detail: str) -> bool:
     upper = detail.upper()
     return any(
@@ -466,6 +475,7 @@ def tick() -> int:
         if action != "start":
             if inst["status"] == "RUNNING":
                 state["consecutive_failures"] = 0
+                state["next_try_epoch"] = 0
                 save_state(name, state)
             log(
                 f"DECISION name={name} action={action} reason={reason} "
@@ -485,13 +495,21 @@ def tick() -> int:
             restarts = int(inst["labels"].get(RESTARTS_LABEL) or "0")
         except ValueError:
             restarts = 0
-        new_count = str(restarts + 1)
-        add_labels(inst, {RESTARTS_LABEL: new_count})
+        wait_s = int(float(state.get("next_try_epoch") or 0) - time.time())
+        if wait_s > 0 and inst["labels"].get(STATE_LABEL) == "running":
+            log(
+                f"DECISION name={name} action=skip reason=stockout_backoff "
+                f"wait_s={wait_s} status={inst['status']} restarts={restarts}/{MAX_RESTARTS}"
+            )
+            continue
         code, detail = start_instance(inst)
         status_after = wait_until_up(inst) if code == 0 else instance_status(inst)
         ok, classified = classify_start(code, status_after)
         if ok:
+            new_count = str(restarts + 1)
+            add_labels(inst, {RESTARTS_LABEL: new_count})
             state["consecutive_failures"] = 0
+            state["next_try_epoch"] = 0
             save_state(name, state)
             if inst["labels"].get(TEST_LABEL) == "true":
                 remove_labels(inst, [TEST_LABEL])
@@ -503,22 +521,21 @@ def tick() -> int:
             continue
         failures = int(state.get("consecutive_failures") or 0) + 1
         state["consecutive_failures"] = failures
+        delay = stockout_backoff_s(failures)
+        state["next_try_epoch"] = time.time() + delay
         save_state(name, state)
         fail_detail = detail if code != 0 else classified
+        stockout = classified.startswith("start_op_done_but_still_") or capacity_error(detail) or capacity_error(classified)
         log(
             f"DECISION name={name} action=start reason={reason} result=fail "
-            f"consecutive_failures={failures} restarts={new_count}/{MAX_RESTARTS} "
-            f"detail={fail_detail}"
+            f"consecutive_failures={failures} restarts={restarts}/{MAX_RESTARTS} "
+            f"backoff_s={delay} detail={fail_detail} "
+            "note=stockout_does_not_consume_cap"
         )
-        stockout = classified.startswith("start_op_done_but_still_") or capacity_error(detail) or capacity_error(classified)
-        if stockout and inst["labels"].get(FAILOVER_LABEL):
-            if do_failover(inst, classified):
-                started += 1
-            continue
-        if failures >= 2 and (capacity_error(detail) or capacity_error(classified)):
+        if failures >= 2 and stockout:
             log(
-                f"CAPACITY name={name} consecutive_failures={failures} "
-                "note=Spot capacity failed and no on-demand failover target is labeled"
+                f"CAPACITY name={name} consecutive_failures={failures} restarts={restarts}/{MAX_RESTARTS} "
+                "note=Spot capacity failed; restart cap unchanged; will retry while train-state=running"
             )
     return started
 
