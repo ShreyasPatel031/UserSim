@@ -50,6 +50,12 @@ _AUTH_PATH = re.compile(
 )
 
 
+_ONBOARDING_PATH = re.compile(
+    r"/(welcome|onboarding|setup|get-started|getting-started|account_setup|account-setup|"
+    r"invite|join|signup|sign-up|login|verify)(\b|/|$)",
+    re.I,
+)
+
 _OAUTH_HOST = re.compile(
     r"(^|\.)(accounts\.google\.com|login\.microsoftonline\.com|login\.live\.com|appleid\.apple\.com|"
     r"github\.com|slack\.com|facebook\.com|okta\.com)$",
@@ -60,6 +66,20 @@ _ERROR_TEXT = re.compile(
     r"unable to verify|please refresh|try again|something went wrong|too many (requests|attempts)|"
     r"too fast|temporarily blocked|not allowed to sign up|invalid email|email (address )?is not valid|"
     r"disposable|use a (work|different) email",
+    re.I,
+)
+
+
+_COOKIE = re.compile(
+    r"^(reject all( cookies)?|accept all( cookies)?|allow all( cookies)?|accept cookies|"
+    r"only necessary|necessary only|reject non-essential|decline all|i accept|agree( and close)?)$",
+    re.I,
+)
+
+_EMAIL_REJECT = re.compile(
+    r"invalid email domain|email domain (is )?not (allowed|supported)|disposable|temporary email|"
+    r"couldn['’]t create your account|please try again later|use a (work|business|different) email|"
+    r"email (address )?(is )?not (valid|allowed|accepted)|we (can(no|')t|are unable to) accept",
     re.I,
 )
 
@@ -113,6 +133,9 @@ _SNAPSHOT_JS = r"""
     if (s.visibility === 'hidden' || s.display === 'none') return false;
     // OTP widgets overlay a transparent <input> on drawn boxes: keep inputs.
     if (Number(s.opacity) === 0 && !['INPUT', 'TEXTAREA'].includes(el.tagName)) return false;
+    // Honeypots / password-manager decoys: aria-hidden, untabbable, not clickable.
+    if (el.closest('[aria-hidden="true"]') && !el.closest('[role="dialog"]')) return false;
+    if (el.tabIndex < 0 && s.pointerEvents === 'none') return false;
     return true;
   };
   const clean = (t) => (t || '').replace(/\s+/g, ' ').trim();
@@ -175,7 +198,9 @@ _SNAPSHOT_JS = r"""
   };
   walk(document);
   const frames = [...document.querySelectorAll('iframe')].filter(vis).map(f => f.src || '').filter(Boolean);
-  const cap = frames.find(s => /recaptcha|hcaptcha|turnstile|challenges\.cloudflare|arkoselabs|funcaptcha|captcha/i.test(s)) || '';
+  // Invisible widgets (reCAPTCHA badge, size=invisible) do not block a form.
+  const cap = frames.filter(s => !/size=invisible/i.test(s))
+    .find(s => /recaptcha|hcaptcha|turnstile|challenges\.cloudflare|arkoselabs|funcaptcha|captcha/i.test(s)) || '';
   const body = clean(document.body ? document.body.innerText : '').slice(0, 2200);
   return {url: location.href, title: document.title, elements: OUT, captcha: cap, body};
 }
@@ -335,7 +360,8 @@ async def _decide(
 _VERIFY = """Is this browser page the SIGNED-IN product application (e.g. a workspace,
 dashboard, board, issue list, document editor, or canvas that belongs to a logged-in
 user), as opposed to a marketing page, a login/signup/verify form, or an onboarding
-questionnaire that still needs answers? Reply JSON {"signed_in":true|false,
+step (welcome, profile setup, invite teammates, connect tools, pick a plan, survey)
+that still needs answers? Onboarding steps are NOT signed_in. Reply JSON {"signed_in":true|false,
 "evidence":"one sentence naming what on the page shows it"}."""
 
 
@@ -569,6 +595,17 @@ async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any])
             return out
     except Exception:
         pass
+    if "recaptcha" in str(snap.get("captcha") or "") and os.environ.get("MVP_SIGNUP_AUDIO_CAPTCHA", "1") != "0":
+        from mvp.signup_captcha_audio import solve_recaptcha_audio
+
+        try:
+            res = await asyncio.wait_for(solve_recaptcha_audio(page), timeout=90)
+        except Exception as exc:  # noqa: BLE001
+            res = {"ok": False, "method": "audio", "detail": repr(exc)[:120]}
+        out["audio"] = res
+        if res.get("ok"):
+            out.update(ok=True, method=str(res.get("method")))
+            return out
     try:
         if await cap._try_click_cloudflare_checkbox(page):
             await page.wait_for_timeout(4000)
@@ -692,6 +729,10 @@ async def signup_in_session(
         dead: list[str] = []
         dead_count: dict[str, int] = {}
         empty_waits = 0
+        email_submitted = False
+        rejects = 0
+        rejected_domains: list[str] = []
+        banner_clicks = 0
         url_changed_at = time.time()
         last_url = ""
         note = ""
@@ -745,6 +786,18 @@ async def signup_in_session(
                 continue
 
             elements = {int(e["i"]): e for e in (snap.get("elements") or [])}
+            # Cookie banners cover submit buttons (Miro, Asana). Dismiss them generically.
+            banner = next((e for e in elements.values() if e.get("role") in {"button", "link"}
+                           and _COOKIE.match(str(e.get("name") or "").strip())), None)
+            if banner is not None and banner_clicks < 2:
+                banner_clicks += 1
+                try:
+                    await page.locator(f"[data-sis-i='{banner['i']}']").first.click(timeout=3000)
+                    steps.append(f"  dismissed cookie banner ({banner.get('name')})")
+                    await _settle(page, 600)
+                    continue
+                except Exception:
+                    pass
             decision = await _decide(
                 snap=snap, ident=ident, site_url=site_url, history=history,
                 note=note + (
@@ -806,7 +859,8 @@ async def signup_in_session(
                     await _settle(page, 2500)
                     snap2 = await _snapshot(page)
                     ok2, evidence2 = await _verify_signed_in(snap2)
-                    if ok2 and not _has_password_or_email_field(snap2):
+                    onboarding = bool(_ONBOARDING_PATH.search(urlparse(str(snap2.get("url"))).path or ""))
+                    if ok2 and not _has_password_or_email_field(snap2) and not onboarding:
                         steps.append(f"verified after reload: {evidence2}")
                         return _finish(True, "signed_up", evidence2 or evidence)
                     note = f"After reload the page does not look signed in: {evidence2}"
@@ -826,6 +880,44 @@ async def signup_in_session(
                     return _finish(False, f"captcha_unsolved ({res.get('method')})")
                 return _finish(False, reason)
 
+            rej = _EMAIL_REJECT.search(body_low)
+            if email_submitted and rej:
+                rejects += 1
+                if rejects >= 2:
+                    steps.append(f"email rejected: {rej.group(0)} ({ident['email'].split('@')[1]})")
+                    rejected_domains.append(ident["email"].split("@")[1])
+                    swapped = None
+                    if inbox.backend == "mailtm" and len(rejected_domains) < 2:
+                        from mvp.signup_inbox import GuerrillaInbox
+
+                        try:
+                            swapped = await asyncio.to_thread(GuerrillaInbox, tag)
+                        except Exception:
+                            swapped = None
+                    if swapped is None:
+                        return _finish(False, f"email_rejected: {rej.group(0)} ({', '.join(rejected_domains)})")
+                    inbox = swapped
+                    ident["email"] = inbox.address
+                    result["email"] = inbox.address
+                    result["inbox"] = inbox.backend
+                    email_submitted = False
+                    rejects = 0
+                    email_since = time.time()
+                    steps.append(f"retrying with a new inbox on {inbox.address.split('@')[1]}")
+                    try:
+                        await page.goto(str(snap.get("url")), wait_until="domcontentloaded", timeout=30000)
+                    except Exception:
+                        pass
+                    await _settle(page, 1500)
+                    note = "The previous email address was rejected. Use {email} (a new address) and submit again."
+                    continue
+            acts_now = [a for a in (decision.get("actions") or []) if isinstance(a, dict)
+                        and str(a.get("do")) not in {"wait"}]
+            if ident.get("email") and ident["email"].lower() in (str(snap.get("body")) + " " + str(snap.get("url"))).lower().replace("%40", "@"):
+                email_submitted = True
+            if status == "need_email" and (acts_now or not email_submitted):
+                # The model wants to submit a form first (or no email was typed yet).
+                status = "working"
             if status == "need_email" and not ident.get("code"):
                 left = max(5.0, min(75.0, deadline - time.time() - 10))
                 steps.append(f"waiting for email to {ident['email'].split('@')[1]} (up to {int(left)}s)")
@@ -888,6 +980,10 @@ async def signup_in_session(
                 except Exception as exc:  # noqa: BLE001
                     done = f"{act.get('do')} [{act.get('i')}] failed: {type(exc).__name__}"
                 done = _redact(done, ident)
+                if str(act.get("do")) == "fill" and "{email}" in str(act.get("value") or "") or (
+                    str(act.get("do")) == "fill" and ident.get("email") and ident["email"] in str(act.get("value") or "")
+                ):
+                    email_submitted = True
                 history.append(done)
                 steps.append("  " + done)
                 if str(act.get("do")) == "fill":

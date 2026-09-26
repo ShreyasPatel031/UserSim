@@ -296,6 +296,7 @@ _READ_JS = """() => {
       w: Math.round(Math.max(r.width, 0)),
       h: Math.round(Math.max(r.height, 0)),
       inert: inert,
+      value: ((el.tagName === 'INPUT' && !/password|hidden|checkbox|radio/i.test(el.type || '')) || el.tagName === 'TEXTAREA') ? String(el.value || '').slice(0, 60) : (el.isContentEditable ? String(el.innerText || '').replace(/\\s+/g, ' ').trim().slice(0, 60) : ''),
       on: el.getAttribute('aria-pressed') === 'true' || el.getAttribute('aria-checked') === 'true' || el.getAttribute('aria-selected') === 'true' || el.getAttribute('aria-expanded') === 'true' || !!el.checked,
     };
   };
@@ -359,6 +360,9 @@ def format_ax(nodes: list[dict[str, Any]], *, limit: int = AX_CAP) -> str:
         href = str(node.get("href") or "")
         inert = " inert" if node.get("inert") else " (selected)" if node.get("on") else ""
         extra = f" {href}" if href else ""
+        value = str(node.get("value") or "").strip()
+        if value and value != name:
+            extra += f" = {value!r}"
         lines.append(
             f"{int(node.get('i') or 0)} {node.get('role') or 'el'} {name}{inert}{extra}".rstrip()
         )
@@ -1560,6 +1564,27 @@ def _pw_role(role: str) -> str:
     }.get((role or "").lower(), "")
 
 
+_LAST_FRAME: dict[str, bytes] = {}
+_FRAME_TASKS: set[Any] = set()
+
+
+def _spawn_last_frame(page: Any, agent_id: str) -> None:
+    async def grab() -> None:
+        try:
+            blob = await page.screenshot(type="png", full_page=False, timeout=6000)
+        except Exception:
+            return
+        if blob:
+            _LAST_FRAME[agent_id] = blob
+
+    try:
+        task = asyncio.get_running_loop().create_task(grab())
+    except RuntimeError:
+        return
+    _FRAME_TASKS.add(task)
+    task.add_done_callback(_FRAME_TASKS.discard)
+
+
 async def _escape_to_app(page: Any, read: dict[str, Any], signed_in: bool, escapes: list[str]) -> bool:
     """Once per run, a signed-in agent stuck on a setup screen opens the site's home page.
 
@@ -2039,6 +2064,7 @@ async def complete_task_on_page(
     signup_url = ""
     skip: set[str] = set()
     escapes: list[str] = []
+    typed_again = 0
     logs: list[dict[str, Any]] = []
     changed_nothing = False
     model_misses = 0
@@ -2192,6 +2218,14 @@ async def complete_task_on_page(
                 action["canvas_w"] = int(box.get("w") or 0)
                 action["canvas_h"] = int(box.get("h") or 0)
         label = action_label(action)
+        if act == "type" and trace and str(trace[-1].get("action") or "") == label:
+            typed_again += 1
+            if typed_again >= 3:
+                _miss("typed the same text over and over")
+                break
+            changed_nothing = True
+            history.append(f"{label} was just done and the field holds that text; submit it or take the next step")
+            continue
         if would_repeat_action(trace, label, read):
             repeats += 1
             if repeats >= 3 and await _escape_to_app(page, read, signed_in, escapes):
@@ -2299,6 +2333,10 @@ async def complete_task_on_page(
             after["drew"] = drew
             read = after
             seed = dict(after)  # this read is the next step's read
+            if changed and agent_id:
+                # Keep the latest frame. If the browser dies later, the report
+                # still has the last screen the agent really saw.
+                _spawn_last_frame(page, agent_id)
             row["url"] = str(read.get("url") or "")
             row["state_sig"] = {
                 "text": str(read.get("text") or "")[:1500],
@@ -2794,6 +2832,17 @@ async def _run_a11y_agent_unlocked(
                     print(f"[{agent_id}] final PNG did not round-trip through GCS", flush=True)
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
+                frame = _LAST_FRAME.get(agent_id)
+                if frame and not shot_url:
+                    try:
+                        path.write_bytes(frame)
+                        from mvp.opening_shot import upload_final_verified
+
+                        if await asyncio.to_thread(upload_final_verified, study_id, agent_id, path):
+                            shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
+                            print(f"[{agent_id}] final.png is the last frame before the browser ended", flush=True)
+                    except Exception as exc2:  # noqa: BLE001
+                        print(f"[{agent_id}] last-frame fallback failed: {exc2!r}", flush=True)
                 if not shot_url:
                     failed = failed or {
                         "phase": "final_screenshot",
@@ -2803,6 +2852,7 @@ async def _run_a11y_agent_unlocked(
             if shot_url and trace:
                 trace[-1]["screenshot_url"] = shot_url
                 trace[-1]["final_screenshot_url"] = shot_url
+        _LAST_FRAME.pop(agent_id, None)
 
         # Report where the agent really ended. Replacing an off-host final URL
         # with the start URL hid docs/subdomain detours from the judge.
