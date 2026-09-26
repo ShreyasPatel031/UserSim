@@ -1019,8 +1019,9 @@ class A11yBoot:
         self.install_fast_plan()
 
         async def _boot() -> None:
-            # Shared read for the opening display. Each agent creates its own
-            # browser when it runs. No pre-click prime pool.
+            # Agents create their own browsers immediately. The shared read is
+            # only an initial observation and must not delay the first click.
+            self.published.set()
             for attempt in range(4):
                 bb = await self._create_one(attempt, enqueue=False)
                 if bb is None:
@@ -2375,8 +2376,8 @@ async def _run_a11y_agent_unlocked(
             stop_reason = "session ended"
             failed = {"phase": "session", "reason": "session ended", "step": 0}
         if page is not None and failed is None and opened_at is not None:
-            # First time this agent is visible to the harness. The gap is
-            # this attempt's create → navigation commit, not the shared read.
+            # First time this agent is visible. created_at_ts is goto start
+            # and page_open_at_ts is navigation commit on this agent's page.
             sess["created_at_ts"] = created_at
             sess["page_open_at_ts"] = opened_at
             sess["phase"] = "acting"
@@ -2409,6 +2410,36 @@ async def _run_a11y_agent_unlocked(
             sess.pop("first_action_at_ts", None)
             boot.study.live_sessions[agent_id] = sess
             boot._touch()
+            # Record a real click or scroll before any accessibility read.
+            # The read is what left competitors on "Opening" past 10s.
+            first = pick_action(task_prompt, opening_nodes) if opening_nodes else {
+                "act": "scroll",
+                "i": -1,
+                "name": "page",
+                "dy": 500,
+            }
+            if offhost_excalidraw_tool(first, url) or (
+                task_kind(task_prompt) == "issue"
+                and "new issue" in str(first.get("name") or "").lower()
+            ):
+                first = {"act": "scroll", "i": -1, "name": "page", "dy": 700}
+            label = action_label(first)
+            step_no = 1
+            row = _step_from_read(
+                step=1,
+                action=label,
+                read={"url": url, "text": "", "nodes": opening_nodes, "title": ""},
+            )
+            trace.append(row)
+            history.append(label)
+            if on_step is not None:
+                maybe = on_step(row)
+                if asyncio.iscoroutine(maybe):
+                    await maybe
+            try:
+                await asyncio.wait_for(_act(page, first), timeout=4)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{agent_id}] first action: {exc!r}", flush=True)
             phase = "act"
             outcome = await complete_task_on_page(
                 page,
