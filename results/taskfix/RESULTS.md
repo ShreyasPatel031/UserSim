@@ -17,6 +17,23 @@ Linear: create-issue agents landed on `https://linear.app/docs/creating-issues`.
 
 The harness `pass` flag was false because strength/weakness evidence was short of the gate (Linear strengths 0/0, Excalidraw strengths 0/0 and weaknesses 0/0). Gate files were not edited. Those wide runs are not repeated. Prime count is 0. Owner taskfix holds at most 2 sessions. Integration runs 24-wide.
 
+# Generic loop — sites this agent was not tuned for
+
+Draw, export, and help no longer use Excalidraw shortcut keys or invented names. If the task says draw and the tree has a shape tool, the loop clicks that tool and drags on the largest canvas. Export and help click a control whose accessible name matches, on whatever site is open. A name that is not in the tree is not invented. `tabindex=-1` is not inert: canvas toolbars use it. Linear's fake homepage controls stay inert because of their mock class names.
+
+Local Chromium, one task at a time, no Browserbase session. Log: `results/taskfix/harness_generic.log`. Records: `results/taskfix/generic_agent.json`. This local `goal_visible` check is not a pass. Only PR #46 grades a study.
+
+4/4 passed.
+
+| Site | Task | Result | Final URL |
+| --- | --- | --- | --- |
+| tldraw | Draw a simple box | PASS | https://www.tldraw.com/ |
+| tldraw | Find how to export or share | PASS | https://www.tldraw.com/ |
+| Figma | Look for pricing or how to get started | PASS | https://www.figma.com/pricing/ |
+| IKEA | Find help or how to contact support | PASS | https://www.ikea.com/us/en/customer-service/contact-us/ |
+
+etsy.com and ebay.com returned HTTP 403 to headless Chromium. wayfair.com returned 429. IKEA is the commerce page that loaded. The draw task clicked `Rectangle — R` by role, then dragged on the canvas. The export task clicked Share. The pricing task clicked Pricing. The help task clicked Contact us.
+
 # Task completion — single-agent harness
 
 Local Chromium, one task at a time, no Browserbase session. Prime count is 0 (`prime_sessions` returns immediately; the server defaults `MVP_PRIME_SESSIONS` to 0). Running `taskfix` Browserbase sessions at the start of this run: 0. Every step re-reads the live page and asks the model. Clicks use role and name, then coordinates. A drawing counts only after a drag changes the canvas ink. Log: `results/taskfix/harness_prime0.log`.
@@ -83,9 +100,7 @@ Study `617d8ef9-2991-4532-a70a-b7b8d03367a8` was killed by the harness at 32s. P
 
 Failure: `t2__p1__competitor_2` on Miro repeated `click Export image` (steps 1–9). The planned action invented Excalidraw's export shortcut on a site that does not have it. A flickering hero-image canvas sample counted as progress, so the repeat check never fired. The harness aborts the whole study at the third identical action. Log: `results/taskfix/excalidraw24.log`.
 
-The step loop now invents Rectangle, drag, and Export image only on `excalidraw.com`. A Miro (or any other host) action with those names is refused before it is written to the trace, and a canvas sample is stored only for an Excalidraw drawing. Owner `taskfix` holds at most 2 sessions and does not create primes.
-
-That run's step loop invented the Rectangle drag, Export shortcut, and Help click only on excalidraw.com, and a canvas-sample flicker no longer counted as a new page. A click or accessibility read that does not return is capped (8s read, 12s action). The model loop above replaces those invented actions.
+That aborted run invented an Excalidraw export click on Miro. The loop no longer invents a name that is not in the tree, on any host. A non-draw canvas sample is kept from the previous step so a flickering hero image is not a new page. Owner `taskfix` holds at most 2 sessions unless `MVP_TASKFIX_WIDE=1` for the single 24-agent run. It does not create primes.
 
 ## Server study — Excalidraw 24 agents
 

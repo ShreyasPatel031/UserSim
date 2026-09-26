@@ -25,16 +25,32 @@ TASKS = [
     ("excalidraw", "https://excalidraw.com/", "Find how to export or share"),
 ]
 
+# Sites this loop was not hand-tuned for. Draw uses a shape tool plus the
+# largest canvas. Export and help click whatever role and name the tree shows.
+GENERIC_TASKS = [
+    ("tldraw", "https://www.tldraw.com/", "Draw a simple box"),
+    ("tldraw", "https://www.tldraw.com/", "Find how to export or share"),
+    ("figma", "https://www.figma.com/", "Look for pricing or how to get started"),
+    # etsy.com returns 403 to headless Chromium. IKEA is the commerce page that loads.
+    ("ikea", "https://www.ikea.com/us/en/", "Find help or how to contact support"),
+]
+
 
 def _trim(text: object, limit: int = 280) -> str:
     return " ".join(str(text or "").split())[:limit]
 
 
 async def run_one(browser, site: str, url: str, task: str) -> dict:
-    page = await browser.new_page(viewport={"width": 1440, "height": 900})
+    page = await browser.new_page(
+        viewport={"width": 1440, "height": 900},
+        user_agent=(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+        ),
+    )
     print(f"\n======== {site} | {task}", flush=True)
     try:
-        await page.goto(url, wait_until="domcontentloaded", timeout=8000)
+        await page.goto(url, wait_until="domcontentloaded", timeout=20000)
     except Exception as exc:  # noqa: BLE001
         print(f"goto: {exc!r}", flush=True)
     outcome = await complete_task_on_page(
@@ -82,15 +98,18 @@ async def run_one(browser, site: str, url: str, task: str) -> dict:
 async def main() -> None:
     from playwright.async_api import async_playwright
 
+    generic = "--generic" in sys.argv
+    tasks = GENERIC_TASKS if generic else TASKS
+    out_name = "generic_agent.json" if generic else "one_agent.json"
     async with async_playwright() as playwright:
         browser = await playwright.chromium.launch(headless=True)
         results = []
-        for site, url, task in TASKS:
+        for site, url, task in tasks:
             results.append(await run_one(browser, site, url, task))
         await browser.close()
     out = ROOT / "results" / "taskfix"
     out.mkdir(parents=True, exist_ok=True)
-    (out / "one_agent.json").write_text(json.dumps(results, indent=2))
+    (out / out_name).write_text(json.dumps(results, indent=2))
     passed = sum(1 for row in results if row["pass"])
     print(f"\n==== {passed}/{len(results)} passed", flush=True)
     if passed < len(results):

@@ -165,6 +165,7 @@ _PRIME_STARTED = False
 
 # taskfix may hold two live browsers and never a study_id=prime session.
 # Other owners (the integration 24-wide run) are not capped here.
+# One allowed wide run sets MVP_TASKFIX_WIDE=1 and may hold 24.
 TASKFIX_SESSION_CAP = 2
 _TASKFIX_LOCK: asyncio.Lock | None = None
 _TASKFIX_HELD = 0
@@ -172,6 +173,21 @@ _TASKFIX_HELD = 0
 
 def _owner_is_taskfix() -> bool:
     return (os.environ.get("MVP_BB_OWNER") or "").strip().lower() == "taskfix"
+
+
+def taskfix_session_cap() -> int:
+    """How many taskfix browsers this process may hold.
+
+    The default is 2. The single 24-agent run sets ``MVP_TASKFIX_WIDE=1``.
+    """
+    flag = (os.environ.get("MVP_TASKFIX_WIDE") or "").strip().lower()
+    if flag not in {"1", "true", "yes"}:
+        return TASKFIX_SESSION_CAP
+    try:
+        wide = int(os.environ.get("MVP_TASKFIX_WIDE_CAP", "24") or "24")
+    except ValueError:
+        wide = 24
+    return max(TASKFIX_SESSION_CAP, min(wide, 24))
 
 
 def _taskfix_lock() -> asyncio.Lock:
@@ -212,9 +228,10 @@ async def _acquire_taskfix_slot() -> bool:
             remote = await asyncio.to_thread(_taskfix_running_count)
         except Exception:
             remote = _TASKFIX_HELD
-        if max(remote, _TASKFIX_HELD) >= TASKFIX_SESSION_CAP:
+        cap = taskfix_session_cap()
+        if max(remote, _TASKFIX_HELD) >= cap:
             print(
-                f"[a11y] taskfix holds {max(remote, _TASKFIX_HELD)} sessions; cap is {TASKFIX_SESSION_CAP}",
+                f"[a11y] taskfix holds {max(remote, _TASKFIX_HELD)} sessions; cap is {cap}",
                 flush=True,
             )
             return False
@@ -344,11 +361,11 @@ _READ_JS = """() => {
   const pack = (el) => {
     const r = el.getBoundingClientRect();
     const href = String(el.href || el.getAttribute('href') || '').slice(0, 180);
-    const tab = el.getAttribute('tabindex');
     const cls = String(el.className || '');
     // Linear's homepage embeds a fake app. Those controls look clickable and do nothing.
+    // tabindex=-1 is not enough: canvas toolbars use it for roving focus.
     const mock = /(?:navItem|newIssue|searchButton|switchWorkspace|rowButton|ingredientButton|headerButton|iconButton|sendButton|dropdownButton|pillButton|navButton|labelButton|attachmentButton|splitSegment|locationBar)/.test(cls);
-    const inert = ((tab === '-1') && !href) || !!el.disabled || el.getAttribute('aria-disabled') === 'true' || (mock && !href);
+    const inert = !!el.disabled || el.getAttribute('aria-disabled') === 'true' || (mock && !href);
     let name = (
       el.getAttribute('aria-label')
       || el.getAttribute('placeholder')
@@ -574,10 +591,33 @@ def goal_visible(task: str, read: dict[str, Any]) -> bool:
             return False
         return abs(current_dark - opened_dark) >= 8
     if kind == "export":
-        # The welcome hint says "Export, preferences". The dialog says "Export image".
-        return "export image" in text
+        # A welcome sentence that mentions export is not the export control.
+        # A menu item, or the words "export image" / "export as", is.
+        if "export image" in text or "export as" in text:
+            return True
+        for node in (read or {}).get("nodes") or []:
+            if not isinstance(node, dict):
+                continue
+            role = str(node.get("role") or "").lower()
+            name = str(node.get("name") or "").lower()
+            if "export" in name and role in {"menuitem", "menuitemcheckbox", "menuitemradio", "link"}:
+                return True
+        return False
     if kind == "help":
-        return "keyboard shortcuts" in text
+        if "keyboard shortcut" in text:
+            return True
+        if any(part in path for part in ("/help", "/support", "/contact")):
+            return True
+        for node in (read or {}).get("nodes") or []:
+            if not isinstance(node, dict):
+                continue
+            role = str(node.get("role") or "").lower()
+            name = str(node.get("name") or "").lower()
+            if role in {"menuitem", "link"} and any(
+                word in name for word in ("help", "support", "shortcut", "contact")
+            ):
+                return True
+        return False
     return False
 
 
@@ -618,9 +658,9 @@ def achievable_without_account(url: str, prompt: str) -> str:
         )
     )
     if needs_account and "pricing" not in low and "how to" not in low:
-        if "excalidraw" in host:
-            return "Draw a simple box"
-        return "Look for pricing or how to get started"
+        if task_kind(text) in {"draw", "export", "help"}:
+            return text
+        return "Find help or pricing without signing in"
     return text
 
 
@@ -709,67 +749,137 @@ def would_repeat_action(trace: list[dict[str, Any]], label: str, read: dict[str,
     return streak >= 3
 
 
+_SHAPE_WORDS = (
+    "rectangle",
+    "square",
+    "ellipse",
+    "circle",
+    "diamond",
+    "triangle",
+    "arrow",
+    "line",
+    "pencil",
+    "shape",
+    "geo",
+)
+_EXPORT_WORDS = ("export", "share", "download")
+_HELP_WORDS = ("help", "support", "shortcut", "contact")
+
+
+def _click_from_node(node: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "act": "click",
+        "i": int(node.get("i") or 0),
+        "name": str(node.get("name") or "")[:80],
+        "role": str(node.get("role") or ""),
+        "href": str(node.get("href") or "")[:180],
+        "x": int(node.get("x") or 0),
+        "y": int(node.get("y") or 0),
+    }
+
+
+def _live_nodes(read: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        node
+        for node in (read or {}).get("nodes") or []
+        if isinstance(node, dict) and not node.get("inert")
+    ]
+
+
+def _find_named(
+    nodes: list[dict[str, Any]],
+    words: tuple[str, ...],
+    skip: set[str],
+) -> dict[str, Any] | None:
+    """First control whose accessible name contains one of the words."""
+    for node in nodes:
+        name = str(node.get("name") or "").lower()
+        if not name or name in skip:
+            continue
+        href = str(node.get("href") or "").lower()
+        if href and href in skip:
+            continue
+        if any(word in name for word in words):
+            return node
+    return None
+
+
+def _shape_words_for(task: str) -> tuple[str, ...]:
+    low = (task or "").lower()
+    if any(word in low for word in ("box", "rectangle", "square")):
+        return ("rectangle", "square", "ellipse", "circle", "diamond", "triangle", "shape", "geo")
+    return _SHAPE_WORDS
+
+
+def _find_shape(nodes: list[dict[str, Any]], task: str, skip: set[str]) -> dict[str, Any] | None:
+    for word in _shape_words_for(task):
+        found = _find_named(nodes, (word,), skip)
+        if found:
+            return found
+    return None
+
+
+def _shape_chosen(history: list[str] | None, text: str) -> bool:
+    done = [item.lower() for item in (history or [])]
+    if "selected shape" in (text or "").lower():
+        return True
+    return any(any(word in item for word in _SHAPE_WORDS) for item in done)
+
+
+def tree_action(
+    task: str,
+    read: dict[str, Any],
+    history: list[str] | None = None,
+    skip: set[str] | None = None,
+) -> dict[str, Any] | None:
+    """Choose a click or drag from the live tree. No site-specific shortcut.
+
+    A draw task clicks a shape tool when the tree has one, then drags on the
+    largest canvas. Export and help click a control whose name matches, on
+    whatever site this page is. A name that is not in the tree is not invented.
+    """
+    kind = task_kind(task)
+    skipped = {item.lower() for item in (skip or set())}
+    nodes = _live_nodes(read)
+    text = str((read or {}).get("text") or "")
+    if kind == "draw":
+        if _canvas_box(nodes) and _shape_chosen(history, text):
+            return {"act": "drag", "i": -1, "name": "canvas", "role": "canvas", "href": ""}
+        found = _find_shape(nodes, task, skipped)
+        if found:
+            return _click_from_node(found)
+        return None
+    if kind == "export":
+        found = _find_named(nodes, _EXPORT_WORDS, skipped)
+        if found:
+            return _click_from_node(found)
+        return None
+    if kind == "help":
+        found = _find_named(nodes, _HELP_WORDS, skipped)
+        if found:
+            return _click_from_node(found)
+        return None
+    return None
+
+
 def invented_excalidraw_action(
     task: str,
     read: dict[str, Any],
     history: list[str] | None = None,
     skip: set[str] | None = None,
 ) -> dict[str, Any] | None:
-    """Rectangle drag and Export image exist only on excalidraw.com.
-
-    Competitors such as Miro do not have those controls. Inventing the click
-    there repeats until the harness aborts every agent in the study.
-    """
-    if _host(str((read or {}).get("url") or "")) != "excalidraw.com":
-        return None
-    kind = task_kind(task)
-    skipped = skip or set()
-    done = [item.lower() for item in (history or [])]
-    if kind == "draw":
-        selected = "selected shape" in str((read or {}).get("text") or "").lower() or any(
-            "rectangle" in item for item in done
-        )
-        if selected:
-            return {"act": "drag", "i": -1, "name": "canvas", "role": "canvas", "href": ""}
-        if "rectangle" in skipped:
-            return None
-        return {"act": "click", "i": -1, "name": "Rectangle", "role": "button", "href": ""}
-    if kind == "export":
-        if "export image" in str((read or {}).get("text") or "").lower():
-            if "export image" in skipped:
-                return None
-            return {
-                "act": "click",
-                "i": -1,
-                "name": "Export image",
-                "role": "menuitem",
-                "href": "",
-            }
-        if "menu" in skipped:
-            return None
-        return {"act": "click", "i": -1, "name": "Menu", "role": "button", "href": ""}
-    return None
-
-
-def offhost_excalidraw_tool(action: dict[str, Any], url: str) -> bool:
-    """True when this action is the Excalidraw rectangle/export shortcut elsewhere."""
-    if _host(url) == "excalidraw.com":
-        return False
-    act = str((action or {}).get("act") or "")
-    name = str((action or {}).get("name") or "").lower()
-    if act == "drag":
-        return True
-    if name in {"rectangle", "square", "canvas"}:
-        return True
-    return "export" in name
+    """Backward-compatible name. The choice comes from the tree on any host."""
+    return tree_action(task, read, history, skip)
 
 
 def trace_canvas(previous: str, current: str, url: str, task: str) -> str:
     """Canvas sample stored on a trace step.
 
-    Flicker on any site except an Excalidraw drawing is not a new page.
+    A drawing stores the new sample on any host. Every other task keeps the
+    previous sample so a flickering hero image is not a new page.
     """
-    if _host(url) == "excalidraw.com" and task_kind(task) == "draw":
+    del url
+    if task_kind(task) == "draw":
         return current or ""
     return previous or ""
 
@@ -1584,11 +1694,11 @@ async def _model_action(
         "A homepage preview of the product is not the real app. "
         "For how to create an issue, open Docs or Documentation, then the Issues section, then Create issues. "
         "For pricing or getting started, open Pricing. "
-        "To draw a box on excalidraw.com, click Rectangle, then the next action must be drag. "
-        "drag presses r and drags inside the canvas box from the tree. Selecting the tool is not done. "
-        "done for a drawing only after the drag has changed the canvas. "
-        "On excalidraw.com, open Menu and Export image only when the task asks to export or share. "
-        "Rectangle, drag, and Export image are excalidraw.com controls. Do not use them on any other site. "
+        "If the task says draw and the list has a shape tool, click that tool, then drag on the canvas. "
+        "The shape tool is whichever name is in the list (rectangle, ellipse, line, or similar). "
+        "Selecting the tool is not done. done for a drawing only after the drag has changed the canvas. "
+        "If the task says export, share, or help, click the control whose name matches. "
+        "That control can be on any site. Do not invent a name that is not in the list. "
         "done only when that outcome is already visible. "
         "friction is one sentence if a control was unclear, else empty. "
         "easy is one sentence naming a control that was obvious, else empty."
@@ -1698,15 +1808,7 @@ def _canvas_box(nodes: list[dict[str, Any]]) -> dict[str, Any] | None:
 
 
 async def _drag_on_canvas(page: Any, action: dict[str, Any]) -> None:
-    """Press r, then drag inside the canvas box from the tree."""
-    try:
-        await page.keyboard.press("Escape")
-    except Exception:
-        pass
-    try:
-        await page.keyboard.press("r")
-    except Exception:
-        pass
+    """Drag inside the largest canvas box from the tree. No site shortcut key."""
     cx = int(action.get("canvas_x") or 0)
     cy = int(action.get("canvas_y") or 0)
     cw = int(action.get("canvas_w") or 0)
@@ -1737,9 +1839,6 @@ async def _act(page: Any, action: dict[str, Any]) -> str:
             await page.keyboard.type(text, delay=0)
         return "type"
     if act == "drag":
-        host = _host(getattr(page, "url", "") or "")
-        if host != "excalidraw.com":
-            return "miss"
         await _drag_on_canvas(page, action)
         return "drag"
     if act == "done":
@@ -1830,9 +1929,6 @@ def _observation_changed(
             return True
     if task_kind(task) != "draw":
         return False
-    host = _host(str(after.get("url") or before.get("url") or ""))
-    if host != "excalidraw.com":
-        return False
     before_dark = _canvas_dark(str(before.get("canvas") or ""))
     after_dark = _canvas_dark(str(after.get("canvas") or ""))
     if before_dark >= 0 and after_dark >= 0 and abs(after_dark - before_dark) >= 8:
@@ -1881,8 +1977,8 @@ async def complete_task_on_page(
     saw_opening = False
     acted_once = False
     model_misses = 0
-    offhost_refusals = 0
     done_rejects = 0
+    draw_waits = 0
     try:
         await page.wait_for_selector("a, button, canvas", timeout=800)
     except Exception:
@@ -1951,10 +2047,10 @@ async def complete_task_on_page(
             action = None
         source = "model"
         if not isinstance(action, dict):
-            invented = invented_excalidraw_action(task, read, history, skip)
+            invented = tree_action(task, read, history, skip)
             if invented is not None:
                 action = invented
-                source = "excalidraw"
+                source = "tree"
             else:
                 model_misses += 1
                 if model_misses >= 3:
@@ -1978,36 +2074,41 @@ async def complete_task_on_page(
             stuck_streak = 0
             continue
         chosen = str(action.get("name") or "").strip().lower()
-        if offhost_excalidraw_tool(action, str(read.get("url") or url)):
-            # Do not invent Rectangle / Export image / canvas drag on Miro.
-            # Recording that click three times aborts the whole study.
-            skip.add(chosen or "export")
-            offhost_refusals += 1
-            if offhost_refusals >= 2 or would_repeat_action(trace, action_label(action), read):
-                _miss("excalidraw tool is not on this site")
-                break
-            changed_nothing = True
-            history.append(f"skipped off-host {chosen or action.get('act')}")
-            continue
         if chosen and chosen in skip and str(action.get("act")) == "click":
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
-        if (
-            task_kind(task) == "draw"
-            and _host(str(read.get("url") or url)) == "excalidraw.com"
-            and str(action.get("act")) != "drag"
-        ):
-            # The rectangle tool is selected. The next move is a canvas drag,
-            # not the export menu.
-            selected = "selected shape" in str(read.get("text") or "").lower() or any(
-                "rectangle" in item.lower() for item in history
-            )
-            if selected and not goal_visible(task, read):
+        if task_kind(task) == "draw":
+            # Any canvas app: click the shape tool the tree shows, then drag
+            # on the largest canvas. Do not click an unlabeled canvas first.
+            nodes = _live_nodes(read)
+            page_text = str(read.get("text") or "")
+            if not _shape_chosen(history, page_text):
+                shape = _find_shape(nodes, task, skip)
+                if shape is None and draw_waits < 6:
+                    # The toolbar is still painting. Waiting is not a repeated action.
+                    draw_waits += 1
+                    previous_sig = None
+                    stuck_streak = 0
+                    try:
+                        await page.wait_for_timeout(700)
+                    except Exception:
+                        pass
+                    continue
+                picked = str(action.get("name") or "").lower()
+                if shape is not None and not any(word in picked for word in _shape_words_for(task)):
+                    action = _click_from_node(shape)
+                    source = "tree"
+            elif (
+                str(action.get("act")) != "drag"
+                and _canvas_box(nodes)
+                and not goal_visible(task, read)
+            ):
                 action = dict(action)
                 action["act"] = "drag"
                 action["name"] = "canvas"
                 action["role"] = "canvas"
+                source = "tree"
         if str(action.get("act")) == "drag":
             box = _canvas_box(list(read.get("nodes") or []))
             if box:
@@ -2109,7 +2210,7 @@ async def complete_task_on_page(
             changed_nothing = True
         if not after.get("error"):
             changed = _observation_changed(read, after, task=task)
-            if str(action.get("act")) == "drag" and _host(str(after.get("url") or "")) == "excalidraw.com":
+            if str(action.get("act")) == "drag" and task_kind(task) == "draw":
                 before_dark = _canvas_dark(str(read.get("canvas") or ""))
                 after_dark = _canvas_dark(str(after.get("canvas") or ""))
                 canvas_moved = (

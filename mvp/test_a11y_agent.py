@@ -17,11 +17,11 @@ from mvp.a11y_agent import (
     achievable_without_account,
     format_ax,
     goal_visible,
-    invented_excalidraw_action,
     stamp_published_step,
     note_progress,
-    offhost_excalidraw_tool,
     trace_canvas,
+    tree_action,
+    taskfix_session_cap,
     notes_from_trace,
     pick_action,
     progress_signature,
@@ -183,45 +183,59 @@ class A11yAgentTest(unittest.TestCase):
         self.assertFalse(would_repeat_action(trace[:2], "click Export image", read))
         self.assertTrue(would_repeat_action(trace, "click Export image", read))
         self.assertIsNone(
-            invented_excalidraw_action(
+            tree_action(
                 "Find how to export or share the drawing",
                 {"url": "https://miro.com/", "nodes": []},
             )
         )
-        export = invented_excalidraw_action(
-            "Find how to export or share the drawing",
-            {"url": "https://excalidraw.com/", "text": "Export image..."},
+        export = tree_action(
+            "Find how to export or share",
+            {
+                "url": "https://www.tldraw.com/",
+                "nodes": [{"i": 3, "role": "menuitem", "name": "Export as PNG", "x": 40, "y": 120}],
+            },
         )
-        self.assertEqual(export["name"], "Export image")
-        rectangle = invented_excalidraw_action(
+        self.assertEqual(export["name"], "Export as PNG")
+        self.assertEqual(export["x"], 40)
+        rectangle = tree_action(
             "Draw a simple box",
-            {"url": "https://excalidraw.com/", "text": "Pick a tool"},
+            {
+                "url": "https://www.tldraw.com/",
+                "nodes": [{"i": 1, "role": "button", "name": "Rectangle", "x": 80, "y": 40}],
+            },
         )
         self.assertEqual(rectangle["name"], "Rectangle")
+        self.assertEqual(rectangle["act"], "click")
+        drag = tree_action(
+            "Draw a simple box",
+            {
+                "url": "https://www.tldraw.com/",
+                "text": "canvas",
+                "nodes": [{"i": 9, "role": "canvas", "name": "canvas", "x": 400, "y": 300, "w": 800, "h": 600}],
+            },
+            history=["click Rectangle"],
+        )
+        self.assertEqual(drag["act"], "drag")
         self.assertIsNone(
-            invented_excalidraw_action(
+            tree_action(
                 "Draw a simple box",
-                {"url": "https://miro.com/", "text": "Whiteboard"},
+                {"url": "https://miro.com/", "text": "Whiteboard", "nodes": []},
             )
         )
-        self.assertTrue(
-            offhost_excalidraw_tool(
-                {"act": "click", "name": "Export image"},
-                "https://miro.com/",
-            )
+        help_click = tree_action(
+            "Find help or how to contact support",
+            {
+                "url": "https://www.etsy.com/",
+                "nodes": [{"i": 2, "role": "a", "name": "Help", "href": "https://www.etsy.com/help"}],
+            },
         )
-        self.assertFalse(
-            offhost_excalidraw_tool(
-                {"act": "drag", "name": "canvas"},
-                "https://excalidraw.com/",
-            )
-        )
+        self.assertEqual(help_click["name"], "Help")
         self.assertEqual(
             trace_canvas("dark=10", "dark=400", "https://miro.com/", "Find how to export or share"),
             "dark=10",
         )
         self.assertEqual(
-            trace_canvas("dark=0", "dark=20", "https://excalidraw.com/", "Draw a simple box"),
+            trace_canvas("dark=0", "dark=20", "https://www.tldraw.com/", "Draw a simple box"),
             "dark=20",
         )
         step = {
@@ -260,6 +274,31 @@ class A11yAgentTest(unittest.TestCase):
                 {"url": "https://excalidraw.com/", "opened_canvas": "1440x900:dark=0/900;", "canvas": "1440x900:dark=18/900;"},
             )
         )
+
+    def test_taskfix_cap_is_two_until_the_wide_run(self) -> None:
+        owner = os.environ.get("MVP_BB_OWNER")
+        wide = os.environ.get("MVP_TASKFIX_WIDE")
+        wide_cap = os.environ.get("MVP_TASKFIX_WIDE_CAP")
+        try:
+            os.environ.pop("MVP_TASKFIX_WIDE", None)
+            self.assertEqual(taskfix_session_cap(), 2)
+            os.environ["MVP_TASKFIX_WIDE"] = "1"
+            self.assertEqual(taskfix_session_cap(), 24)
+            os.environ["MVP_TASKFIX_WIDE_CAP"] = "8"
+            self.assertEqual(taskfix_session_cap(), 8)
+        finally:
+            if owner is None:
+                os.environ.pop("MVP_BB_OWNER", None)
+            else:
+                os.environ["MVP_BB_OWNER"] = owner
+            if wide is None:
+                os.environ.pop("MVP_TASKFIX_WIDE", None)
+            else:
+                os.environ["MVP_TASKFIX_WIDE"] = wide
+            if wide_cap is None:
+                os.environ.pop("MVP_TASKFIX_WIDE_CAP", None)
+            else:
+                os.environ["MVP_TASKFIX_WIDE_CAP"] = wide_cap
 
     def test_stuck_after_three_identical_signatures(self) -> None:
         sig = progress_signature(
