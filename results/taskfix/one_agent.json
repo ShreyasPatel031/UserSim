@@ -15,10 +15,10 @@
           "name": "Documentation",
           "href": "https://linear.app/docs",
           "role": "a",
-          "source": "plan"
+          "source": "model"
         },
         "executed": "click Documentation",
-        "how": "goto",
+        "how": "role",
         "url_after": "https://linear.app/docs",
         "dom_after": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Issue properties Projects Initiatives Cycles Views Find and filter Linear Asks Integrations Analytics Administration Importers Docs Developers Learn Contact support Home Sign up Linear Docs Get an overview of Linear's featur",
         "title_after": "Linear Docs"
@@ -28,13 +28,29 @@
         "observation": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Issue properties Projects Initiatives Cycles Views Find and filter Linear Asks Integrations Analytics Administration Importers Docs Developers Learn Contact support Home Sign up Linear Docs Get an overview of Linear's featur",
         "decision": {
           "act": "click",
+          "name": "Issues",
+          "href": "",
+          "role": "button",
+          "source": "model"
+        },
+        "executed": "click Issues",
+        "how": "role",
+        "url_after": "https://linear.app/docs",
+        "dom_after": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Create issues Edit issues Assign and delegate issues Select issues Parent and sub-issues Issue templates Comments and reactions Editor Documents Delete and archive issues Customer Requests Releases Issue properties Projects ",
+        "title_after": "Linear Docs"
+      },
+      {
+        "step": 3,
+        "observation": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Create issues Edit issues Assign and delegate issues Select issues Parent and sub-issues Issue templates Comments and reactions Editor Documents Delete and archive issues Customer Requests Releases Issue properties Projects ",
+        "decision": {
+          "act": "click",
           "name": "Create issues",
           "href": "https://linear.app/docs/creating-issues",
-          "role": "link",
-          "source": "plan"
+          "role": "a",
+          "source": "model"
         },
         "executed": "click Create issues",
-        "how": "goto",
+        "how": "role",
         "url_after": "https://linear.app/docs/creating-issues",
         "dom_after": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Create issues Edit issues Assign and delegate issues Select issues Parent and sub-issues Issue templates Comments and reactions Editor Documents Delete and archive issues Customer Requests Releases Issue properties Projects ",
         "title_after": "Create issues \u2013 Linear Docs"
@@ -58,10 +74,10 @@
           "name": "Pricing",
           "href": "https://linear.app/pricing",
           "role": "a",
-          "source": "plan"
+          "source": "model"
         },
         "executed": "click Pricing",
-        "how": "goto",
+        "how": "role",
         "url_after": "https://linear.app/pricing",
         "dom_after": "Skip to content \u2192 Product Resources Customers Pricing Now Contact Log in Sign up Pricing Free $0 Free for everyone Unlimited members 2 teams 250 issues Agent platform Linear Agent Get started Basic $10 per user/month Billed yearly All Free features + 5 teams Unlimited issues Unlimited file uploads A",
         "title_after": "Pricing \u2013 Linear"
@@ -70,35 +86,8 @@
     "screenshot": "/workspace/results/taskfix/shots/linear-Look_for_pricing_or_how_to_get_s.png"
   },
   {
-    "site": "linear",
-    "task": "Open the changelog and see what shipped recently",
-    "pass": true,
-    "stop_reason": "done",
-    "final_url": "https://linear.app/changelog/2026-09-24-new-controls-for-linear-coding-agent",
-    "title": "New controls for Linear coding agent \u2013 Changelog",
-    "logs": [
-      {
-        "step": 1,
-        "observation": "Skip to content \u2192 Product Resources Customers Pricing Now Contact Log in Sign up The product development system for teams and agents The product development system for teams and agents Purpose-built for planning and building products. Designed for the AI era. New Loops \u2192 Linear Pulse Inbox My issues",
-        "decision": {
-          "act": "click",
-          "name": "New controls for Linear coding agent Coding sessions are the shortest path from ",
-          "href": "https://linear.app/changelog/2026-09-24-new-controls-for-linear-coding-agent",
-          "role": "a",
-          "source": "plan"
-        },
-        "executed": "click New controls for Linear coding agent Coding sessions are the shortest path from",
-        "how": "goto",
-        "url_after": "https://linear.app/changelog/2026-09-24-new-controls-for-linear-coding-agent",
-        "dom_after": "Skip to content \u2192 Product Resources Customers Pricing Now Contact Log in Sign up Changelog September 24, 2026 Share New controls for Linear coding agent Coding sessions are the shortest path from issue to diff. Assign a task to Linear Agent, and it works in a secure cloud environment to write and te",
-        "title_after": "New controls for Linear coding agent \u2013 Changelog"
-      }
-    ],
-    "screenshot": "/workspace/results/taskfix/shots/linear-Open_the_changelog_and_see_what_.png"
-  },
-  {
     "site": "excalidraw",
-    "task": "Draw a simple rectangle on the canvas",
+    "task": "Draw a simple box",
     "pass": true,
     "stop_reason": "done",
     "final_url": "https://excalidraw.com/",
@@ -112,20 +101,36 @@
           "name": "Rectangle",
           "href": "",
           "role": "button",
-          "source": "plan"
+          "source": "model"
         },
         "executed": "click Rectangle",
+        "how": "role",
+        "url_after": "https://excalidraw.com/",
+        "dom_after": "Excalidraw Selected shape actions Stroke Background Stroke width Stroke style Sloppiness Edges Opacity 100 0 Layers Shapes V R D O A L P T N E Excalidraw+ Share Canvas actions 100%",
+        "title_after": "Excalidraw Whiteboard"
+      },
+      {
+        "step": 2,
+        "observation": "Excalidraw Selected shape actions Stroke Background Stroke width Stroke style Sloppiness Edges Opacity 100 0 Layers Shapes V R D O A L P T N E Excalidraw+ Share Canvas actions 100%",
+        "decision": {
+          "act": "drag",
+          "name": "",
+          "href": "",
+          "role": "canvas",
+          "source": "model"
+        },
+        "executed": "drag",
         "how": "drag",
         "url_after": "https://excalidraw.com/",
         "dom_after": "Excalidraw Selected shape actions Stroke Background Stroke width Stroke style Sloppiness Edges Opacity 100 0 Layers Actions Enter to add text, Ctrl + \u2191\u2193 to create a flowchart Shapes V R D O A L P T N E Excalidraw+ Share Canvas actions 100%",
         "title_after": "Excalidraw Whiteboard"
       }
     ],
-    "screenshot": "/workspace/results/taskfix/shots/excalidraw-Draw_a_simple_rectangle_on_the_c.png"
+    "screenshot": "/workspace/results/taskfix/shots/excalidraw-Draw_a_simple_box.png"
   },
   {
     "site": "excalidraw",
-    "task": "Find how to export or share the drawing",
+    "task": "Find how to export or share",
     "pass": true,
     "stop_reason": "done",
     "final_url": "https://excalidraw.com/",
@@ -136,45 +141,18 @@
         "observation": "Excalidraw Your drawings are saved in your browser's storage. Browser storage can be cleared unexpectedly. Save your work to a file regularly to avoid losing it. Open Ctrl+O Help ? Live collaboration... Sign up Export, preferences, languages, ... Pick a tool & Start drawing! To move canvas, hold Scr",
         "decision": {
           "act": "click",
-          "name": "Export image",
+          "name": "Menu",
           "href": "",
           "role": "button",
-          "source": "plan"
+          "source": "model"
         },
-        "executed": "click Export image",
-        "how": "export",
+        "executed": "click Menu",
+        "how": "xy",
         "url_after": "https://excalidraw.com/",
-        "dom_after": "Excalidraw Your drawings are saved in your browser's storage. Browser storage can be cleared unexpectedly. Save your work to a file regularly to avoid losing it. Open Ctrl+O Help ? Live collaboration... Sign up Export, preferences, languages, ... Pick a tool & Start drawing! To move canvas, hold Scr",
+        "dom_after": "Excalidraw Your drawings are saved in your browser's storage. Browser storage can be cleared unexpectedly. Save your work to a file regularly to avoid losing it. Open Ctrl+O Help ? Live collaboration... Sign up Open Ctrl+O Save to... Export image... Ctrl+Shift+E Live collaboration... Command palette",
         "title_after": "Excalidraw Whiteboard"
       }
     ],
-    "screenshot": "/workspace/results/taskfix/shots/excalidraw-Find_how_to_export_or_share_the_.png"
-  },
-  {
-    "site": "excalidraw",
-    "task": "Open the help dialog and read the keyboard shortcuts",
-    "pass": true,
-    "stop_reason": "done",
-    "final_url": "https://excalidraw.com/",
-    "title": "Excalidraw Whiteboard",
-    "logs": [
-      {
-        "step": 1,
-        "observation": "Excalidraw Your drawings are saved in your browser's storage. Browser storage can be cleared unexpectedly. Save your work to a file regularly to avoid losing it. Open Ctrl+O Help ? Live collaboration... Sign up Export, preferences, languages, ... Pick a tool & Start drawing! To move canvas, hold Scr",
-        "decision": {
-          "act": "click",
-          "name": "Help",
-          "href": "",
-          "role": "button",
-          "source": "plan"
-        },
-        "executed": "click Help",
-        "how": "role",
-        "url_after": "https://excalidraw.com/",
-        "dom_after": "Excalidraw Your drawings are saved in your browser's storage. Browser storage can be cleared unexpectedly. Save your work to a file regularly to avoid losing it. Open Ctrl+O Help ? Live collaboration... Sign up Export, preferences, languages, ... Pick a tool & Start drawing! To move canvas, hold Scr",
-        "title_after": "Excalidraw Whiteboard"
-      }
-    ],
-    "screenshot": "/workspace/results/taskfix/shots/excalidraw-Open_the_help_dialog_and_read_th.png"
+    "screenshot": "/workspace/results/taskfix/shots/excalidraw-Find_how_to_export_or_share.png"
   }
 ]
