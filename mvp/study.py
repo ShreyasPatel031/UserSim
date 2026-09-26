@@ -3457,7 +3457,7 @@ async def run_study(
                 study.agent_results = []
                 if a11y_boot is not None:
                     try:
-                        await asyncio.wait_for(a11y_boot.published, timeout=18)
+                        await asyncio.wait_for(a11y_boot.published.wait(), timeout=18)
                     except asyncio.TimeoutError:
                         print("shared page read did not publish within 18s", flush=True)
                 def _run_rank(task: dict[str, Any]) -> tuple:
