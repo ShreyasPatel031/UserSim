@@ -70,6 +70,14 @@ _ERROR_TEXT = re.compile(
 )
 
 
+_EMAIL_REJECT = re.compile(
+    r"invalid email domain|email domain (is )?not (allowed|supported)|disposable|temporary email|"
+    r"couldn['’]t create your account|please try again later|use a (work|business|different) email|"
+    r"email (address )?(is )?not (valid|allowed|accepted)|we (can(no|')t|are unable to) accept",
+    re.I,
+)
+
+
 def _host(url: str) -> str:
     host = (urlparse(url or "").hostname or "").lower()
     return host[4:] if host.startswith("www.") else host
@@ -119,6 +127,9 @@ _SNAPSHOT_JS = r"""
     if (s.visibility === 'hidden' || s.display === 'none') return false;
     // OTP widgets overlay a transparent <input> on drawn boxes: keep inputs.
     if (Number(s.opacity) === 0 && !['INPUT', 'TEXTAREA'].includes(el.tagName)) return false;
+    // Honeypots / password-manager decoys: aria-hidden, untabbable, not clickable.
+    if (el.closest('[aria-hidden="true"]') && !el.closest('[role="dialog"]')) return false;
+    if (el.tabIndex < 0 && s.pointerEvents === 'none') return false;
     return true;
   };
   const clean = (t) => (t || '').replace(/\s+/g, ' ').trim();
@@ -699,6 +710,9 @@ async def signup_in_session(
         dead: list[str] = []
         dead_count: dict[str, int] = {}
         empty_waits = 0
+        email_submitted = False
+        rejects = 0
+        rejected_domains: list[str] = []
         url_changed_at = time.time()
         last_url = ""
         note = ""
@@ -834,6 +848,44 @@ async def signup_in_session(
                     return _finish(False, f"captcha_unsolved ({res.get('method')})")
                 return _finish(False, reason)
 
+            rej = _EMAIL_REJECT.search(body_low)
+            if email_submitted and rej:
+                rejects += 1
+                if rejects >= 2:
+                    steps.append(f"email rejected: {rej.group(0)} ({ident['email'].split('@')[1]})")
+                    rejected_domains.append(ident["email"].split("@")[1])
+                    swapped = None
+                    if inbox.backend == "mailtm" and len(rejected_domains) < 2:
+                        from mvp.signup_inbox import GuerrillaInbox
+
+                        try:
+                            swapped = await asyncio.to_thread(GuerrillaInbox, tag)
+                        except Exception:
+                            swapped = None
+                    if swapped is None:
+                        return _finish(False, f"email_rejected: {rej.group(0)} ({', '.join(rejected_domains)})")
+                    inbox = swapped
+                    ident["email"] = inbox.address
+                    result["email"] = inbox.address
+                    result["inbox"] = inbox.backend
+                    email_submitted = False
+                    rejects = 0
+                    email_since = time.time()
+                    steps.append(f"retrying with a new inbox on {inbox.address.split('@')[1]}")
+                    try:
+                        await page.goto(str(snap.get("url")), wait_until="domcontentloaded", timeout=30000)
+                    except Exception:
+                        pass
+                    await _settle(page, 1500)
+                    note = "The previous email address was rejected. Use {email} (a new address) and submit again."
+                    continue
+            acts_now = [a for a in (decision.get("actions") or []) if isinstance(a, dict)
+                        and str(a.get("do")) not in {"wait"}]
+            if ident.get("email") and ident["email"].lower() in (str(snap.get("body")) + " " + str(snap.get("url"))).lower().replace("%40", "@"):
+                email_submitted = True
+            if status == "need_email" and (acts_now or not email_submitted):
+                # The model wants to submit a form first (or no email was typed yet).
+                status = "working"
             if status == "need_email" and not ident.get("code"):
                 left = max(5.0, min(75.0, deadline - time.time() - 10))
                 steps.append(f"waiting for email to {ident['email'].split('@')[1]} (up to {int(left)}s)")
@@ -896,6 +948,10 @@ async def signup_in_session(
                 except Exception as exc:  # noqa: BLE001
                     done = f"{act.get('do')} [{act.get('i')}] failed: {type(exc).__name__}"
                 done = _redact(done, ident)
+                if str(act.get("do")) == "fill" and "{email}" in str(act.get("value") or "") or (
+                    str(act.get("do")) == "fill" and ident.get("email") and ident["email"] in str(act.get("value") or "")
+                ):
+                    email_submitted = True
                 history.append(done)
                 steps.append("  " + done)
                 if str(act.get("do")) == "fill":

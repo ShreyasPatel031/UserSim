@@ -194,6 +194,47 @@ class MailTmInbox(Inbox):
         return out
 
 
+class GuerrillaInbox(Inbox):
+    """Throwaway mailbox on the Guerrilla Mail API (different domains than mail.tm)."""
+
+    backend = "guerrilla"
+    API = "https://api.guerrillamail.com/ajax.php"
+
+    def __init__(self, tag: str = "") -> None:
+        self.client = httpx.Client(timeout=20.0, headers={"User-Agent": "Mozilla/5.0"})
+        r = self.client.get(self.API, params={"f": "get_email_address", "lang": "en"}).json()
+        self.sid = r["sid_token"]
+        user = (re.sub(r"[^a-z0-9]", "", tag.lower())[:10] or "user") + _rand(6)
+        r = self.client.get(self.API, params={"f": "set_email_user", "email_user": user, "sid_token": self.sid}).json()
+        self.sid = r.get("sid_token") or self.sid
+        domain = os.environ.get("MVP_SIGNUP_GUERRILLA_DOMAIN", "").strip()
+        addr = r["email_addr"]
+        self.address = f"{addr.split('@')[0]}@{domain}" if domain else addr
+        self._cache: dict[str, dict[str, Any]] = {}
+
+    def messages(self, newer_than: float) -> list[dict[str, Any]]:
+        r = self.client.get(self.API, params={"f": "check_email", "seq": 0, "sid_token": self.sid}).json()
+        out = []
+        for item in r.get("list") or []:
+            mid = str(item.get("mail_id"))
+            if "guerrillamail" in str(item.get("mail_from", "")).lower():
+                continue  # welcome mail
+            if mid in self._cache:
+                out.append(self._cache[mid])
+                continue
+            full = self.client.get(self.API, params={"f": "fetch_email", "email_id": mid, "sid_token": self.sid}).json()
+            html = str(full.get("mail_body") or "")
+            text = _strip_html(html)
+            row = {
+                "id": mid, "subject": full.get("mail_subject") or "", "sender": full.get("mail_from") or "",
+                "text": text, "links": _links_from_html(html) + _URL_RE.findall(text),
+                "anchors": anchors_from_html(html),
+            }
+            self._cache[mid] = row
+            out.append(row)
+        return out
+
+
 class GmailAliasInbox(Inbox):
     """Plus/dotted alias of the vault Gmail, read over IMAP."""
 
@@ -257,12 +298,18 @@ def gmail_available() -> bool:
 def create_inbox(host: str, tag: str, *, dotted: bool = False) -> Inbox:
     """Fresh inbox for one signup attempt."""
     forced = (os.environ.get("MVP_SIGNUP_INBOX") or "").strip().lower()
-    if forced != "mailtm" and (forced == "gmail" or gmail_available()):
+    if forced not in {"mailtm", "guerrilla"} and (forced == "gmail" or gmail_available()):
         return GmailAliasInbox(host, tag, dotted=dotted)
     last: Exception | None = None
+    if forced == "guerrilla":
+        return GuerrillaInbox(tag=tag)
     for base in ("https://api.mail.tm", "https://api.mail.gw"):
         try:
             return MailTmInbox(base, tag=tag)
         except Exception as exc:  # noqa: BLE001
             last = exc
+    try:
+        return GuerrillaInbox(tag=tag)
+    except Exception as exc:  # noqa: BLE001
+        last = exc
     raise RuntimeError(f"no inbox backend: {last!r}")
