@@ -148,3 +148,10 @@
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "netlify.com", "ts": "2026-09-26T01:25:32.350574+00:00", "when": "after"}
 {"attempt": 1, "event": "signup_start", "site": "digitalocean.com", "ts": "2026-09-26T01:25:33.340630+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "digitalocean.com", "ts": "2026-09-26T01:25:33.420250+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "digitalocean.com", "ts": "2026-09-26T01:31:58.864658+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "wordpress.com", "ts": "2026-09-26T01:32:00.278235+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "wordpress.com", "ts": "2026-09-26T01:32:00.319846+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "wordpress.com", "ts": "2026-09-26T01:34:42.566353+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "wix.com", "ts": "2026-09-26T01:34:43.893214+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "wix.com", "ts": "2026-09-26T01:34:43.978467+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "wix.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-26T01:36:13.110263+00:00"}

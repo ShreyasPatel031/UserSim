@@ -1482,7 +1482,8 @@
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "digitaloceane731c9b",
+      "last_alias_tag": "digitaloceanfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "digitalocean.com",
@@ -1498,15 +1499,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/3c173b85-7113-4060-b5be-0c8c1e91170e",
           "at": "2026-09-25T13:49:40.525547+00:00"
+        },
+        {
+          "host": "digitalocean.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 385.4,
+          "alias_tag": "digitaloceanfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/234bf720-c257-4666-88ff-a7a08c1ba33a",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:31:59.131667+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:49:40.525547+00:00"
+      "updated_at": "2026-09-26T01:31:59.131667+00:00"
     },
     "wordpress.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "wordpresse731c9c",
+      "last_alias_tag": "wordpressfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "wordpress.com",
@@ -1522,9 +1542,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/788ca54b-422a-46d3-a9f7-c25cf022a9bd",
           "at": "2026-09-25T13:57:05.176783+00:00"
+        },
+        {
+          "host": "wordpress.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 162.2,
+          "alias_tag": "wordpressfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/9b84cb0c-4faf-48ff-9680-d41cb9462afa",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:34:42.811064+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:57:05.176783+00:00"
+      "updated_at": "2026-09-26T01:34:42.811064+00:00"
     },
     "pinterest.com": {
       "reproducible": true,
@@ -2030,7 +2068,7 @@
       "updated_at": "2026-09-25T23:53:01.580956+00:00"
     }
   },
-  "updated_at": "2026-09-26T01:25:32.593870+00:00",
+  "updated_at": "2026-09-26T01:34:42.811580+00:00",
   "reproducible": [
     "1password.com",
     "airtable.com",
