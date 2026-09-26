@@ -22,8 +22,7 @@
       "expected_host": "linear.app",
       "png_bytes": 420275,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p1__competitor_1",
@@ -41,8 +40,7 @@
       "expected_host": "asana.com",
       "png_bytes": 195337,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p1__competitor_2",
@@ -60,8 +58,7 @@
       "expected_host": "trello.com",
       "png_bytes": 209956,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p1__product",
@@ -79,8 +76,7 @@
       "expected_host": "linear.app",
       "png_bytes": 420275,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p1__competitor_1",
@@ -98,8 +94,7 @@
       "expected_host": "asana.com",
       "png_bytes": 195337,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p1__competitor_2",
@@ -117,8 +112,7 @@
       "expected_host": "trello.com",
       "png_bytes": 209956,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p2__product",
@@ -136,8 +130,7 @@
       "expected_host": "linear.app",
       "png_bytes": 420275,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p2__competitor_1",
@@ -155,8 +148,7 @@
       "expected_host": "asana.com",
       "png_bytes": 195337,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p2__competitor_2",
@@ -174,8 +166,7 @@
       "expected_host": "trello.com",
       "png_bytes": 209956,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p2__product",
@@ -193,8 +184,7 @@
       "expected_host": "linear.app",
       "png_bytes": 420275,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p2__competitor_1",
@@ -212,8 +202,7 @@
       "expected_host": "asana.com",
       "png_bytes": 195337,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p2__competitor_2",
@@ -231,8 +220,7 @@
       "expected_host": "trello.com",
       "png_bytes": 209956,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p3__product",
@@ -250,8 +238,7 @@
       "expected_host": "linear.app",
       "png_bytes": 420275,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p3__competitor_1",
@@ -269,8 +256,7 @@
       "expected_host": "asana.com",
       "png_bytes": 195337,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p3__competitor_2",
@@ -288,8 +274,7 @@
       "expected_host": "trello.com",
       "png_bytes": 209956,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p3__product",
@@ -307,8 +292,7 @@
       "expected_host": "linear.app",
       "png_bytes": 420275,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p3__competitor_1",
@@ -326,8 +310,7 @@
       "expected_host": "asana.com",
       "png_bytes": 195337,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p3__competitor_2",
@@ -345,8 +328,7 @@
       "expected_host": "trello.com",
       "png_bytes": 209956,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p4__product",
@@ -364,8 +346,7 @@
       "expected_host": "linear.app",
       "png_bytes": 420275,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p4__competitor_1",
@@ -383,8 +364,7 @@
       "expected_host": "asana.com",
       "png_bytes": 195337,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t1__p4__competitor_2",
@@ -402,8 +382,7 @@
       "expected_host": "trello.com",
       "png_bytes": 209956,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p4__product",
@@ -421,8 +400,7 @@
       "expected_host": "linear.app",
       "png_bytes": 420275,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p4__competitor_1",
@@ -440,8 +418,7 @@
       "expected_host": "asana.com",
       "png_bytes": 195337,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     },
     {
       "agent_id": "t2__p4__competitor_2",
@@ -459,8 +436,7 @@
       "expected_host": "trello.com",
       "png_bytes": 209956,
       "host_match": true,
-      "pass": true,
-      "task_success": false
+      "pass": true
     }
   ],
   "_t_complete": 1790387479.881799,
@@ -680,8 +656,6 @@
   },
   "t_first_task_poll_s": 33.7,
   "t_all_tasks_poll_s": 33.7,
-  "interaction_task_success_n": 0,
-  "interaction_task_success_of": 24,
   "gates": [
     {
       "id": "full_matrix",
@@ -740,12 +714,12 @@
       "detail": ""
     },
     {
-      "id": "elapsed",
-      "name": "Elapsed time",
+      "id": "study_budget",
+      "name": "Study budget",
       "value": "302.9s",
-      "threshold": "<= 360s",
+      "threshold": "<= 480s for the whole study (observed max 408s)",
       "pass": true,
-      "detail": ""
+      "detail": "No per-agent time limit. Stuck means 3 consecutive steps with no URL, DOM, or canvas change. Confirmed maxima: saved-study wall 358s, measured e2e2 elapsed 378s, YouTube baseline 408s."
     },
     {
       "id": "first_screenshot",
@@ -769,7 +743,7 @@
       "value": "0/8 (0%)",
       "threshold": ">= 50% of product runs (>= 4/8)",
       "pass": false,
-      "detail": "structural_past_first_screen=0 vision_confirmed=0 first_screen_or_opening=8 opening_frame=8 bb_losses_in_product=1"
+      "detail": "judge_yes=0 structural_past_first_screen=0 first_screen_or_opening=8 opening_frame=8 stuck=0 bb_losses_in_product=1"
     },
     {
       "id": "report_page",
@@ -848,9 +822,9 @@
     {
       "site_key": "competitor_1",
       "site_label": "https://asana.com/",
-      "success_n": 0,
+      "success_n": 1,
       "n": 8,
-      "value": "0/8"
+      "value": "1/8"
     },
     {
       "site_key": "competitor_2",
@@ -887,12 +861,13 @@
   },
   "report_url": "http://127.0.0.1:3000/report?study=11ef735e-f9b2-4376-9be1-80fec9cd3319",
   "fail_reasons": [
-    "product_task_completion: value=0/8 (0%) threshold=>= 50% of product runs (>= 4/8) (structural_past_first_screen=0 vision_confirmed=0 first_screen_or_opening=8 opening_frame=8 bb_losses_in_product=1)",
+    "product_task_completion: value=0/8 (0%) threshold=>= 50% of product runs (>= 4/8) (judge_yes=0 structural_past_first_screen=0 first_screen_or_opening=8 opening_frame=8 stuck=0 bb_losses_in_product=1)",
     "product_strength: value=0/1 threshold=>= 1 strength with agent, step, and a screenshot URL that loads",
     "product_weakness: value=0/3 threshold=>= 1 weakness with agent, step, and a screenshot URL that loads",
     "top_weakness_not_homepage_only: value=No product run got past the first screen (7 of 7 stopped on the homepage), so feature-level weaknesses are not in these traces. threshold=at least one weakness is a real product issue from a run past the first screen (real_weaknesses=0)"
   ],
   "ready_after_complete": true,
   "smoke_only": false,
-  "error": "e2e2 failed: product_task_completion: value=0/8 (0%) threshold=>= 50% of product runs (>= 4/8) (structural_past_first_screen=0 vision_confirmed=0 first_screen_or_opening=8 opening_frame=8 bb_losses_in_product=1); product_strength: value=0/1 threshold=>= 1 strength with agent, step, and a screenshot URL that loads; product_weakness: value=0/3 threshold=>= 1 weakness with agent, step, and a screenshot URL that loads; top_weakness_not_homepage_only: value=No product run got past the first screen (7 of 7 stopped on the homepage), so feature-level weaknesses are not in these traces. threshold=at least one weakness is a real product issue from a run past the first screen (real_weaknesses=0)"
+  "error": "e2e2 failed: product_task_completion: value=0/8 (0%) threshold=>= 50% of product runs (>= 4/8) (structural_past_first_screen=0 vision_confirmed=0 first_screen_or_opening=8 opening_frame=8 bb_losses_in_product=1); product_strength: value=0/1 threshold=>= 1 strength with agent, step, and a screenshot URL that loads; product_weakness: value=0/3 threshold=>= 1 weakness with agent, step, and a screenshot URL that loads; top_weakness_not_homepage_only: value=No product run got past the first screen (7 of 7 stopped on the homepage), so feature-level weaknesses are not in these traces. threshold=at least one weakness is a real product issue from a run past the first screen (real_weaknesses=0)",
+  "failure_file": "results/e2e2_strict_gates/linear_failures.json"
 }

@@ -7,10 +7,15 @@ import unittest
 from pathlib import Path
 
 from mvp.e2e2_gates import (
+    FAILURE_INFRASTRUCTURE,
+    FAILURE_MODEL_TIMEOUT,
+    FAILURE_PRODUCT,
+    FAILURE_STUCK,
     beyond_first_screen,
     evaluate_strict_gates,
     is_browserbase_or_concurrency_loss,
     render_markdown,
+    stuck_no_progress,
 )
 from mvp.report_insights import build_report_insights
 
@@ -169,14 +174,9 @@ def _matrix(product_flags: list[bool], *, bb_at: int | None = None) -> dict:
 
 
 class SavedStudyTests(unittest.TestCase):
-    def test_linear_fails_even_if_every_screenshot_is_a_vision_yes(self) -> None:
+    def test_linear_startup_vision_yes_is_not_task_success(self) -> None:
         study = _load(LINEAR)
-        vision = {
-            str(r.get("agent_id")): True
-            for r in study["agent_results"]
-            if r.get("site_key") == "product"
-        }
-        result = _evaluate(study, vision_goal=vision)
+        result = _evaluate(study, vision_goal={})
         self.assertFalse(result["pass"])
         product = _gate(result, "product_task_completion")
         self.assertFalse(product["pass"])
@@ -185,7 +185,23 @@ class SavedStudyTests(unittest.TestCase):
         self.assertFalse(_gate(result, "top_weakness_not_homepage_only")["pass"])
         self.assertTrue(_gate(result, "agent_count")["pass"])
         self.assertTrue(_gate(result, "vision_yes")["pass"])
+        self.assertTrue(_gate(result, "study_budget")["pass"])
         self.assertTrue(_gate(result, "infra_honesty")["pass"])
+        # A judge YES is the completion signal. The report checks still fail.
+        vision = {
+            str(r.get("agent_id")): {
+                "goal_reached": True,
+                "still_on_opening_screen": False,
+                "reason": "The final screenshot shows the requested issue form.",
+            }
+            for r in study["agent_results"]
+            if r.get("site_key") == "product"
+        }
+        judged = _evaluate(study, vision_goal=vision)
+        self.assertEqual(judged["product_task_success"]["value"], "8/8")
+        self.assertTrue(_gate(judged, "product_task_completion")["pass"])
+        self.assertFalse(judged["pass"])
+        self.assertFalse(_gate(judged, "product_strength")["pass"])
 
     def test_excalidraw_keeps_opening_frame_runs_in_the_denominator(self) -> None:
         study = _load(EXCALIDRAW)
@@ -208,6 +224,11 @@ class SavedStudyTests(unittest.TestCase):
             len(result["run_issues"]),
             6,
         )
+        by_id = {row["agent_id"]: row for row in result["failures"]["failed_runs"]}
+        for aid in excluded:
+            self.assertEqual(by_id[aid]["type"], FAILURE_INFRASTRUCTURE)
+            self.assertIn("judge_reason", by_id[aid])
+            self.assertTrue(by_id[aid]["trace_link"])
 
     def test_mdn_fails_the_half_completion_bar(self) -> None:
         study = _load(MDN)
@@ -251,6 +272,19 @@ class SyntheticGateTests(unittest.TestCase):
             self.assertIn(f"`{gate['id']}`", text)
             self.assertIn("PASS" if gate["pass"] else "FAIL", text)
         self.assertIn("pass: true", text)
+        self.assertIn("`study_budget`", text)
+        failed_ids = {row["agent_id"] for row in result["failures"]["failed_runs"]}
+        self.assertTrue(failed_ids.isdisjoint(result["product_task_success"]["success_ids"]))
+        product_fails = [
+            row
+            for row in result["failures"]["failed_runs"]
+            if row["site_key"] == "product"
+        ]
+        self.assertEqual(len(product_fails), 4)
+        self.assertTrue(all(row["type"] == FAILURE_PRODUCT for row in product_fails))
+        sample = product_fails[0]
+        for key in ("type", "judge_reason", "trace_link", "final_screenshot"):
+            self.assertTrue(sample.get(key), key)
 
     def test_browserbase_loss_counts_against_the_product_rate(self) -> None:
         flags = [True, True, True, True, False, False, False, False]
@@ -303,6 +337,96 @@ class SyntheticGateTests(unittest.TestCase):
         at_cap = _evaluate(study, vision_goal=vision)
         self.assertTrue(_gate(at_cap, "run_issue_rate")["pass"])
         self.assertIn("6/24", str(_gate(at_cap, "run_issue_rate")["value"]))
+
+    def test_agent_summary_cannot_pass_without_a_judge_yes(self) -> None:
+        study = _matrix([True, False, False, False, False, False, False, False])
+        product = [r for r in study["agent_results"] if r["site_key"] == "product"]
+        for run in product:
+            run["what_was_easy"] = ["I created the issue and saved it."]
+            run["friction_points"] = []
+            run["quote"] = "Done, the new issue is filed."
+        result = _evaluate(study, vision_goal={})
+        self.assertEqual(result["product_task_success"]["value"], "0/8")
+        self.assertFalse(_gate(result, "product_task_completion")["pass"])
+        only = product[0]["agent_id"]
+        yes = _evaluate(
+            study,
+            vision_goal={
+                only: {
+                    "goal_reached": True,
+                    "still_on_opening_screen": False,
+                    "reason": "The issue form is open.",
+                }
+            },
+        )
+        self.assertEqual(yes["product_task_success"]["success_ids"], [only])
+
+    def test_stuck_is_steps_not_a_timeout(self) -> None:
+        sig = {"text": " ".join(["homepage"] * 30), "canvas": ""}
+        run = _run("t1__p1__product", success=False)
+        run["trace"] = [
+            {
+                "step": step,
+                "action": "click — index=1",
+                "url": "https://linear.app/",
+                "state_sig": dict(sig),
+                "screenshot_url": f"/api/studies/s/agents/t1__p1__product/screenshots/step_{step}.png",
+            }
+            for step in (0, 1, 2)
+        ]
+        self.assertTrue(stuck_no_progress(run))
+        opening = _run("t1__p2__product", success=False)
+        self.assertFalse(stuck_no_progress(opening))
+        study = _matrix([False] * 8)
+        study["agent_results"] = [
+            run if r["agent_id"] == "t1__p1__product" else r for r in study["agent_results"]
+        ]
+        timed = next(r for r in study["agent_results"] if r["agent_id"] == "t1__p2__product")
+        timed["last_action"] = "Timed out — browser closed"
+        timed["what_was_easy"] = ["I finished the task before the clock."]
+        result = _evaluate(
+            study,
+            vision_goal={
+                "t1__p1__product": {
+                    "goal_reached": False,
+                    "still_on_opening_screen": True,
+                    "reason": "Still the Linear marketing homepage.",
+                },
+                "t1__p2__product": {
+                    "goal_reached": True,
+                    "still_on_opening_screen": False,
+                    "reason": "This YES must not override a model timeout.",
+                },
+            },
+        )
+        by_id = {row["agent_id"]: row for row in result["failures"]["failed_runs"]}
+        self.assertEqual(by_id["t1__p1__product"]["type"], FAILURE_STUCK)
+        self.assertEqual(
+            by_id["t1__p1__product"]["judge_reason"],
+            "Still the Linear marketing homepage.",
+        )
+        self.assertIn("step=2", by_id["t1__p1__product"]["trace_link"])
+        self.assertTrue(by_id["t1__p1__product"]["final_screenshot"].endswith("step_2.png"))
+        self.assertEqual(by_id["t1__p2__product"]["type"], FAILURE_MODEL_TIMEOUT)
+        self.assertNotIn("t1__p1__product", result["product_task_success"]["success_ids"])
+        self.assertNotIn("t1__p2__product", result["product_task_success"]["success_ids"])
+        self.assertEqual(result["product_task_success"]["value"], "0/8")
+
+    def test_study_budget_is_eight_minutes(self) -> None:
+        study = _matrix([True, True, False, False, True, True, False, False])
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product" and r["num_steps"] == 4
+        }
+        under = _evaluate(study, vision_goal=vision, startup={**_startup_that_used_to_pass(), "elapsed_s": 408})
+        self.assertTrue(_gate(under, "study_budget")["pass"])
+        self.assertIn("480", _gate(under, "study_budget")["threshold"])
+        self.assertIn("408", _gate(under, "study_budget")["threshold"])
+        over = _evaluate(study, vision_goal=vision, startup={**_startup_that_used_to_pass(), "elapsed_s": 481})
+        self.assertFalse(_gate(over, "study_budget")["pass"])
+        self.assertFalse(over["pass"])
+        self.assertNotIn("elapsed", {g["id"] for g in over["gates"]})
 
 
 if __name__ == "__main__":

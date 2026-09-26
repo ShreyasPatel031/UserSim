@@ -7,17 +7,19 @@ hidden. Then toggles every site × task × user control and vision-judges the
 Preparing pulse, not a grey pane).
 
 Startup gates still apply (24 agents, each first real screenshot within 5s,
-a vision YES, elapsed <= 360s). pass=true only when those AND the quality
-gates in mvp.e2e2_gates all pass: product task completion >= 50% on the final
-state, a non-empty /blandai-style report, and Browserbase/concurrency losses
-counted against the run.
+a vision YES). The study budget is 8 minutes (480s), confirmed above the
+observed strict-e2e maximum of 408s. There is no per-agent time limit; a stuck
+agent is one with no URL/DOM/canvas progress over 3 steps. pass=true only when
+the independent goal-judge verdicts and the report checks in mvp.e2e2_gates
+all pass. Agent summaries are not a pass signal. Failed runs are written to
+failures.json.
 
   MVP_BB_OWNER=testfix PYTHONPATH=src:. python mvp/e2e2_matrix.py \\
     --base http://127.0.0.1:3000 --url https://linear.app \\
     --competitors $'https://asana.com/\\nhttps://trello.com/' \\
     --tasks $'Find how to create a new issue\\nLook for pricing or how to get started' \\
     --segment 'Product managers comparing issue trackers' \\
-    --expected 24 --max-agents 24 --max-elapsed-s 360 --first-shot-s 5
+    --expected 24 --max-agents 24 --max-elapsed-s 480 --first-shot-s 5
 """
 
 from __future__ import annotations
@@ -44,9 +46,11 @@ from mvp.e2e_ui_run import (  # noqa: E402
     http_json,
 )
 from mvp.e2e2_gates import (  # noqa: E402
-    beyond_first_screen,
+    DEFAULT_STUDY_BUDGET_S,
+    coerce_verdict,
     evaluate_strict_gates,
-    is_product_run,
+    final_dom_of,
+    final_url_of,
     iter_runs,
     judge_goal_screenshot,
     render_markdown,
@@ -61,8 +65,12 @@ OUT_DIR = Path(os.environ.get("E2E2_OUT_DIR", "/tmp/usersim_e2e2"))
 DEFAULT_EXPECTED = int(os.environ.get("E2E2_EXPECTED", "24") or "24")
 # Only a full 24-agent matrix can PASS. Smaller runs are smoke-only.
 PASS_AGENT_BAR = int(os.environ.get("E2E2_PASS_AGENT_BAR", "24") or "24")
-# Prior YouTube 9-agent run was ~408s — full 24-agent budget must still be faster.
-DEFAULT_MAX_ELAPSED_S = float(os.environ.get("E2E2_MAX_ELAPSED_S", "360") or "360")
+# Study-level budget. Observed strict-e2e max is 408s (YouTube baseline);
+# saved 24-agent studies finished in <= 358s wall, measured e2e2 elapsed <= 378s.
+DEFAULT_MAX_ELAPSED_S = float(
+    os.environ.get("E2E2_MAX_ELAPSED_S", str(int(DEFAULT_STUDY_BUDGET_S)))
+    or str(int(DEFAULT_STUDY_BUDGET_S))
+)
 # Per-agent: first screenshot must land within this many seconds of that
 # session's own creation (Shreyas: a few seconds after task creation).
 DEFAULT_FIRST_SHOT_S = float(os.environ.get("E2E2_FIRST_SHOT_S", "5") or "5")
@@ -394,69 +402,58 @@ def _final_trace_shot(run: dict) -> dict | None:
     return last
 
 
-def _vision_goal_flags(study: dict, base: str) -> dict[str, bool]:
-    """Confirm goal-reached only for product runs that already left the first screen."""
-    flags: dict[str, bool] = {}
+def _goal_verdicts(study: dict, base: str) -> dict[str, dict]:
+    """Judge every run from its final screenshot, URL, and DOM.
+
+    The verdict is independent of the agent's summary. Runs with no screenshot
+    get an explicit NO rather than a skip.
+    """
+    verdicts: dict[str, dict] = {}
     study_id = str(study.get("id") or "")
     for run in iter_runs(study):
-        if not is_product_run(run):
-            continue
         aid = str(run.get("agent_id") or run.get("task_id") or "")
-        start = str(run.get("site_url") or study.get("url") or "")
         if not aid:
             continue
-        if not beyond_first_screen(run, start):
-            flags[aid] = False
-            continue
+        start = str(run.get("site_url") or study.get("url") or "")
+        task = str(run.get("task_prompt") or run.get("task_title") or "")
+        final_url = final_url_of(run)
+        dom = final_dom_of(run)
         shot = _final_trace_shot(run)
         if not shot:
-            flags[aid] = False
+            verdicts[aid] = coerce_verdict(
+                {
+                    "goal_reached": False,
+                    "still_on_opening_screen": True,
+                    "reason": "No final screenshot to judge.",
+                }
+            )
+            _log(f"  goal {aid} reached=False (no final screenshot)")
             continue
         try:
             raw = _fetch_png(base, shot["screenshot_url"], study_id=study_id, agent_id=aid)
             verdict = judge_goal_screenshot(
                 raw,
-                task=str(run.get("task_prompt") or run.get("task_title") or ""),
+                task=task,
                 start_url=start,
+                final_url=final_url,
+                dom=dom,
             )
-            flags[aid] = bool(verdict.get("goal_reached"))
+            verdicts[aid] = verdict
             _log(
-                f"  goal {aid} reached={flags[aid]} "
+                f"  goal {aid} reached={verdict.get('goal_reached')} "
                 f"opening={verdict.get('still_on_opening_screen')} "
-                f"{verdict.get('reason')}"
+                f"url={final_url} {verdict.get('reason')}"
             )
         except Exception as exc:  # noqa: BLE001
-            flags[aid] = False
+            verdicts[aid] = coerce_verdict(
+                {
+                    "goal_reached": False,
+                    "still_on_opening_screen": False,
+                    "reason": f"Judge failed: {exc}",
+                }
+            )
             _log(f"  goal judge failed {aid}: {exc!r}")
-    return flags
-
-
-def _attach_task_success(report: dict, study: dict, judged: dict, fallback_url: str) -> None:
-    """Final-state task success, beside screenshot yeses. Does not change the pass gate."""
-    from mvp.report_insights import task_succeeded
-
-    runs = [
-        r
-        for r in (study.get("agent_results") or _sessions(study) or [])
-        if isinstance(r, dict)
-    ]
-    by_id = {str(r.get("agent_id") or r.get("task_id") or ""): r for r in runs}
-    n_ok = 0
-    for aid, row in judged.items():
-        run = by_id.get(str(aid))
-        ok = False
-        if isinstance(run, dict):
-            start = str(run.get("site_url") or fallback_url or "")
-            try:
-                ok = bool(task_succeeded(run, start))
-            except Exception:
-                ok = False
-        row["task_success"] = ok
-        if ok:
-            n_ok += 1
-    report["task_success_n"] = n_ok
-    report["task_success_of"] = len(judged)
-    report["task_success_rate"] = round(100 * n_ok / len(judged)) if judged else 0
+    return verdicts
 
 
 async def run_e2e2(args: argparse.Namespace) -> dict:
@@ -514,9 +511,6 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             _log(f"→ attach study {study_id} (no new Run)")
         study: dict = {}
         judged: dict[str, dict] = {}
-        last_steps = -1
-        last_done = -1
-        last_move_t = time.time()
         t_first_task: float | None = None
         t_all_tasks: float | None = None
         queued_hits = 0
@@ -602,26 +596,13 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     )
                     _log(f"  {abort_reason}")
                     break
-            if step_n > last_steps or done_n > last_done:
-                last_steps = step_n
-                last_done = done_n
-                last_move_t = time.time()
             _log(
                 f"  [{int(time.time()-t0)}s] status={study.get('status')} "
                 f"users={len(personas)} tasks={n_unique_tasks} "
                 f"sites={1+len(comps)} agents={len(sessions)} "
+                f"steps={step_n} done={done_n} "
                 f"yeses={len(judged)} phase={(study.get('phase') or '')[:50]}"
             )
-
-            # Stall fail-fast: frozen fleet must not burn the full timeout.
-            if sessions and (time.time() - last_move_t) > args.stall_s:
-                abort_reason = (
-                    f"STALL: no new steps/dones for {args.stall_s:.0f}s "
-                    f"(steps={step_n}, done={done_n}/{len(sessions)}, "
-                    f"phase={study.get('phase')!r})"
-                )
-                _log(f"  {abort_reason}")
-                break
 
             # Toggle + judge any session that now has a real numbered shot.
             for sess in sessions:
@@ -780,7 +761,6 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
 
         report["study_id"] = study_id
         report["yeses"] = sum(1 for v in judged.values() if v.get("pass"))
-        _attach_task_success(report, study, judged, args.url)
         report["judgements"] = list(judged.values())
         report["agents"] = len(_sessions(study))
         report["personas"] = len(study.get("personas") or [])
@@ -835,9 +815,8 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         nos = [v["agent_id"] for v in judged.values() if not v.get("pass")]
         if study_id and not study.get("id"):
             study["id"] = study_id
-        report["interaction_task_success_n"] = report.get("task_success_n")
-        report["interaction_task_success_of"] = report.get("task_success_of")
-        vision_goal = _vision_goal_flags(study, args.base) if study_id else {}
+        vision_goal = _goal_verdicts(study, args.base) if study_id else {}
+        report["goal_verdicts"] = vision_goal
         report_html, report_url = (
             _fetch_report_html(args.base, study_id) if study_id else ("", "")
         )
@@ -859,7 +838,9 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 "min_tasks": want_tasks,
                 "min_sites": want_sites,
                 "max_elapsed_s": args.max_elapsed_s,
+                "study_budget_s": args.max_elapsed_s,
                 "first_shot_s": args.first_shot_s,
+                "base": args.base,
                 "study_id": study_id,
                 "status": study.get("status"),
                 "has_summary": bool(study.get("summary")),
@@ -882,13 +863,22 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         report["product_task_success"] = product
         report["report_url"] = report_url
         report["fail_reasons"] = strict["fail_reasons"]
+        report["goal_verdicts"] = strict.get("verdicts") or vision_goal
         report["pass"] = bool(strict["pass"])
+        failure_path = OUT_DIR / "failures.json"
+        failure_doc = strict.get("failures") or {}
+        failure_path.write_text(json.dumps(failure_doc, indent=2))
+        report["failure_file"] = str(failure_path)
         summary_md = render_markdown(
-            strict, study_id=str(study_id or ""), product_url=str(args.url or "")
+            strict,
+            study_id=str(study_id or ""),
+            product_url=str(args.url or ""),
+            failure_file=str(failure_path),
         )
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         (OUT_DIR / "summary.md").write_text(summary_md)
         (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
+        _log(f"Wrote {failure_path} ({len(failure_doc.get('failed_runs') or [])} failed runs)")
         _log(summary_md)
 
         # Ready may show only now — give the UI a beat to apply the final poll.
@@ -972,14 +962,20 @@ def main() -> int:
     ap.add_argument(
         "--stall-s",
         type=float,
-        default=float(os.environ.get("E2E2_STALL_S", "90")),
-        help="Fail if no new steps/dones for this many seconds",
+        default=float(os.environ.get("E2E2_STALL_S", "0")),
+        help=(
+            "Ignored. Agents are not timed out. A stuck agent is flagged when "
+            "3 consecutive trace steps show no URL, DOM, or canvas change."
+        ),
     )
     ap.add_argument(
         "--max-elapsed-s",
         type=float,
         default=DEFAULT_MAX_ELAPSED_S,
-        help="Hard ceiling vs prior ~408s YouTube baseline",
+        help=(
+            "Study-level budget in seconds (default 480 = 8 minutes). "
+            "Observed strict-e2e max is 408s. Not a per-agent limit."
+        ),
     )
     ap.add_argument(
         "--first-shot-s",

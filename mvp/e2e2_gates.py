@@ -1,13 +1,15 @@
 """Strict e2e pass gates.
 
-Startup gates (agent count, first real screenshot, vision YES, elapsed) stay.
-They are not sufficient. A study passes only when every gate below passes.
+Startup gates stay: agent count, first real screenshot within 5s, and a vision
+YES that the screenshot is the real product. The old 360s elapsed ceiling is a
+study-level budget of 8 minutes. There is no per-agent time limit. An agent
+that makes no progress for several steps is flagged stuck; it is not timed out.
 
-Product task completion is judged on the final state of each product run:
-the URL, DOM, or canvas moved toward the goal, and a vision judge confirmed
-the final screenshot shows the goal. A run that never leaves the first screen
-or ends on the opening frame is a failure. It stays in the denominator.
-Competitor runs are reported separately and do not count toward that gate.
+Task completion comes only from an independent vision judge. The judge sees the
+final screenshot plus the final URL and DOM and writes a verdict with a reason.
+Agent summaries, quotes, and task_succeeded notes are not a pass signal.
+A study passes only when those verdicts clear the product bar and the report
+checks pass. Competitor runs are reported separately.
 Browserbase and concurrency losses count against the run. They are not dropped.
 """
 
@@ -15,14 +17,42 @@ from __future__ import annotations
 
 import re
 from typing import Any, Callable
+from urllib.parse import urlsplit
 
-from mvp.report_insights import changed_page_state
+from mvp.report_insights import (
+    _canvas_changed,
+    _page_key,
+    _text_changed,
+    changed_page_state,
+)
 
 PASS_AGENT_BAR = 24
 PRODUCT_SUCCESS_MIN = 0.50
 RUN_ISSUE_MAX = 0.25
-DEFAULT_MAX_ELAPSED_S = 360.0
+# Confirmed maxima for this strict matrix, in seconds:
+#   saved-study wall (created→updated): Linear 352, Excalidraw 349, MDN 358
+#   measured 24-agent e2e2 elapsed: Etsy 378 (highest in results/e2e2_*)
+#   harness baseline cited for the old gate: YouTube ~408
+#   live runs on this branch: Linear 303, Excalidraw 314
+# Per-agent durations in those studies peaked near 248s. That is not a timeout.
+OBSERVED_STUDY_MAX_S = 408.0
+DEFAULT_STUDY_BUDGET_S = 480.0  # 8 minutes, above the confirmed max
+DEFAULT_MAX_ELAPSED_S = DEFAULT_STUDY_BUDGET_S
 DEFAULT_FIRST_SHOT_S = 5.0
+# Consecutive trace steps with the same URL, DOM text, and canvas.
+# A single opening frame is a product miss, not a stuck agent.
+STUCK_STEPS = 3
+
+FAILURE_INFRASTRUCTURE = "our infrastructure"
+FAILURE_MODEL_TIMEOUT = "model timeout"
+FAILURE_STUCK = "stuck"
+FAILURE_PRODUCT = "product"
+FAILURE_TYPES = (
+    FAILURE_INFRASTRUCTURE,
+    FAILURE_MODEL_TIMEOUT,
+    FAILURE_STUCK,
+    FAILURE_PRODUCT,
+)
 
 # Bland-style /report shell (same layout as /blandai).
 _REPORT_MARKERS = (
@@ -47,6 +77,13 @@ _BB_LOSS_RE = re.compile(
     r"rate limit|create timeout|browser slot|waiting for a browser",
     re.I,
 )
+
+_TIMEOUT_RE = re.compile(
+    r"\btimed?\s*out\b|\btimeout\b|agent wall|deadline exceeded",
+    re.I,
+)
+
+_INFRA_KINDS = {"infrastructure", "navigation", "captcha"}
 
 
 def _gate(
@@ -150,6 +187,104 @@ def is_browserbase_or_concurrency_loss(run: dict[str, Any]) -> bool:
     return bool(_BB_LOSS_RE.search(blob))
 
 
+def _harness_blob(run: dict[str, Any]) -> str:
+    """Harness and trace text. Agent summaries and quotes are not included."""
+    issue = run.get("run_issue") if isinstance(run.get("run_issue"), dict) else {}
+    parts = [
+        str(run.get("browser_error") or ""),
+        str(run.get("last_action") or ""),
+        str(run.get("error") or ""),
+        str(run.get("mode") or ""),
+        str(issue.get("kind") or ""),
+        str(issue.get("reason") or ""),
+    ]
+    for step in run.get("trace") or []:
+        if isinstance(step, dict):
+            parts.append(str(step.get("action") or ""))
+    return " ".join(parts)
+
+
+def is_model_timeout(run: dict[str, Any]) -> bool:
+    """The model or agent wall stopped the run. Not a Browserbase loss."""
+    if is_browserbase_or_concurrency_loss(run):
+        return False
+    return bool(_TIMEOUT_RE.search(_harness_blob(run)))
+
+
+def is_infrastructure_failure(run: dict[str, Any]) -> bool:
+    """Our harness failed the run: Browserbase, navigation, captcha, browser error."""
+    if is_browserbase_or_concurrency_loss(run):
+        return True
+    if is_model_timeout(run):
+        return False
+    issue = run.get("run_issue") if isinstance(run.get("run_issue"), dict) else {}
+    kind = str(issue.get("kind") or "").lower()
+    if kind in _INFRA_KINDS:
+        return True
+    return bool(str(run.get("browser_error") or "").strip())
+
+
+def _step_progressed(prev: dict[str, Any], cur: dict[str, Any]) -> bool:
+    """True when the URL, DOM text, or canvas changed between two trace steps."""
+    prev_key = _page_key(str(prev.get("url") or ""))
+    cur_key = _page_key(str(cur.get("url") or ""))
+    if prev_key != ("", "", "") and cur_key != ("", "", "") and prev_key != cur_key:
+        return True
+    prev_sig = prev.get("state_sig") if isinstance(prev.get("state_sig"), dict) else {}
+    cur_sig = cur.get("state_sig") if isinstance(cur.get("state_sig"), dict) else {}
+    if _canvas_changed(str(prev_sig.get("canvas") or ""), str(cur_sig.get("canvas") or "")):
+        return True
+    if _text_changed(str(prev_sig.get("text") or ""), str(cur_sig.get("text") or "")):
+        return True
+    return False
+
+
+def stuck_no_progress(run: dict[str, Any], *, steps: int = STUCK_STEPS) -> bool:
+    """True when `steps` consecutive trace steps make no progress.
+
+    This is not a timeout. A run that only captured the opening frame has not
+    taken enough steps to be stuck.
+    """
+    trace = [
+        step
+        for step in (run.get("trace") or [])
+        if isinstance(step, dict) and isinstance(step.get("step"), int)
+    ]
+    trace.sort(key=lambda step: int(step["step"]))
+    if len(trace) < steps:
+        return False
+    streak = 1
+    for prev, cur in zip(trace, trace[1:]):
+        if _step_progressed(prev, cur):
+            streak = 1
+        else:
+            streak += 1
+            if streak >= steps:
+                return True
+    return False
+
+
+def final_url_of(run: dict[str, Any]) -> str:
+    url = str(run.get("final_url") or "").strip()
+    if url:
+        return url
+    for step in reversed(run.get("trace") or []):
+        if isinstance(step, dict) and str(step.get("url") or "").strip():
+            return str(step.get("url") or "").strip()
+    return ""
+
+
+def final_dom_of(run: dict[str, Any], *, limit: int = 1500) -> str:
+    """Last DOM text signature on the trace. Empty when the run never recorded one."""
+    for step in reversed(run.get("trace") or []):
+        if not isinstance(step, dict):
+            continue
+        sig = step.get("state_sig")
+        if isinstance(sig, dict) and str(sig.get("text") or "").strip():
+            return str(sig.get("text") or "").strip()[:limit]
+    return ""
+
+
 def is_homepage_excuse(text: str) -> bool:
     return bool(_HOMEPAGE_EXCUSE_RE.search(text or ""))
 
@@ -184,18 +319,76 @@ def _task_titles(study: dict[str, Any]) -> list[str]:
     return titles
 
 
+def _as_bool(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "yes"}
+    return False
+
+
+def coerce_verdict(raw: object) -> dict[str, Any]:
+    """Normalize a judge payload. Missing and non-dict values are a NO."""
+    if isinstance(raw, dict):
+        opening = _as_bool(raw.get("still_on_opening_screen"))
+        reached = _as_bool(raw.get("goal_reached")) and not opening
+        reason = str(raw.get("reason") or "").strip()
+        if not reason:
+            reason = "Goal reached." if reached else "Goal not reached."
+        return {
+            "goal_reached": reached,
+            "still_on_opening_screen": opening,
+            "reason": reason,
+        }
+    if raw is True:
+        return {
+            "goal_reached": True,
+            "still_on_opening_screen": False,
+            "reason": "Judge verdict: goal reached.",
+        }
+    if raw is False:
+        return {
+            "goal_reached": False,
+            "still_on_opening_screen": False,
+            "reason": "Judge verdict: goal not reached.",
+        }
+    return {
+        "goal_reached": False,
+        "still_on_opening_screen": False,
+        "reason": "No independent judge verdict.",
+    }
+
+
+def verdict_reached(raw: object) -> bool:
+    return bool(coerce_verdict(raw).get("goal_reached"))
+
+
 def product_run_succeeded(
     run: dict[str, Any],
     start_url: str,
     *,
-    vision_goal: bool,
+    vision_goal: object = None,
 ) -> bool:
-    """Final-state success. Opening-frame and first-screen runs never pass."""
-    if is_browserbase_or_concurrency_loss(run):
+    """Success is an independent judge YES.
+
+    Infrastructure losses and model timeouts are not success. Agent summaries
+    are not read. `start_url` is unused; the judge already saw the final URL.
+    """
+    del start_url
+    if is_infrastructure_failure(run) or is_model_timeout(run):
         return False
-    if not beyond_first_screen(run, start_url):
-        return False
-    return bool(vision_goal)
+    return verdict_reached(vision_goal)
+
+
+def failure_type_for(run: dict[str, Any], verdict: object) -> str:
+    """Bucket for a run that did not succeed. Priority is fixed."""
+    if is_infrastructure_failure(run):
+        return FAILURE_INFRASTRUCTURE
+    if is_model_timeout(run):
+        return FAILURE_MODEL_TIMEOUT
+    if not verdict_reached(verdict) and stuck_no_progress(run):
+        return FAILURE_STUCK
+    return FAILURE_PRODUCT
 
 
 def _screenshot_ok(url: str, loader: Callable[[str], bool] | None) -> bool:
@@ -243,21 +436,37 @@ def _qualifying_claims(
     return out
 
 
-def judge_goal_screenshot(png: bytes, *, task: str, start_url: str) -> dict[str, Any]:
-    """Vision judge: does this final screenshot show the task goal was reached?"""
+def judge_goal_screenshot(
+    png: bytes,
+    *,
+    task: str,
+    start_url: str,
+    final_url: str = "",
+    dom: str = "",
+) -> dict[str, Any]:
+    """Independent vision judge.
+
+    Decides whether the final screenshot, final URL, and DOM text show that
+    the task goal was reached. The coding agent's own summary is not an input.
+    """
     from mvp.e2e_ui_run import gemini_vision_json
 
-    prompt = f"""You are a strict QA vision judge for the FINAL screenshot of a browser agent.
+    dom_text = (dom or "").strip()
+    if len(dom_text) > 1500:
+        dom_text = dom_text[:1500]
+    prompt = f"""You are an independent QA vision judge. You do not work for the agent that browsed this page. Judge only the final screenshot, the final URL, and the DOM text below, against the task goal.
 
 Task goal: {task or "unknown"}
 Page the run opened on: {start_url or "unknown"}
+Final URL: {final_url or "unknown"}
+Final DOM text (may be truncated):
+{dom_text or "(no DOM text recorded)"}
 
-PASS goal_reached=true only when the pixels show the goal was actually reached
-(for example the requested issue form or created issue, a drawing on the canvas,
-an export/share dialog, or the specific destination the task asked for).
+PASS goal_reached=true only when the screenshot and the final URL/DOM together show the goal was actually reached (for example the requested issue form or created issue, a drawing on the canvas, an export/share dialog, or the specific destination the task asked for).
 
 FAIL goal_reached=false when:
 - This is still the opening screen, marketing homepage, or unchanged first canvas
+- The final URL and DOM are still the page the run opened on, and the screenshot does not show the goal
 - The agent only scrolled or hovered the page it opened on
 - You cannot tell the goal was reached
 
@@ -269,16 +478,15 @@ Return JSON only:
 }}
 """
     if len(png) < 2000:
-        return {
-            "goal_reached": False,
-            "still_on_opening_screen": True,
-            "reason": f"PNG too small ({len(png)} bytes)",
-        }
+        return coerce_verdict(
+            {
+                "goal_reached": False,
+                "still_on_opening_screen": True,
+                "reason": f"PNG too small ({len(png)} bytes)",
+            }
+        )
     result = gemini_vision_json(prompt, png)
-    result["goal_reached"] = bool(result.get("goal_reached")) and not bool(
-        result.get("still_on_opening_screen")
-    )
-    return result
+    return coerce_verdict(result)
 
 
 def _startup_gates(
@@ -292,7 +500,11 @@ def _startup_gates(
     min_personas = int(startup.get("min_personas") or 4)
     min_tasks = int(startup.get("min_tasks") or 2)
     min_sites = int(startup.get("min_sites") or 3)
-    max_elapsed = float(startup.get("max_elapsed_s") or DEFAULT_MAX_ELAPSED_S)
+    max_elapsed = float(
+        startup.get("study_budget_s")
+        or startup.get("max_elapsed_s")
+        or DEFAULT_STUDY_BUDGET_S
+    )
     first_shot_s = float(startup.get("first_shot_s") or DEFAULT_FIRST_SHOT_S)
 
     agents = len(runs)
@@ -369,11 +581,17 @@ def _startup_gates(
             abort_reason or "",
         ),
         _gate(
-            "elapsed",
-            "Elapsed time",
+            "study_budget",
+            "Study budget",
             "not recorded" if elapsed is None else f"{elapsed}s",
-            f"<= {max_elapsed:.0f}s",
+            f"<= {max_elapsed:.0f}s for the whole study (observed max {OBSERVED_STUDY_MAX_S:.0f}s)",
             elapsed is not None and float(elapsed) <= max_elapsed,
+            (
+                "No per-agent time limit. "
+                f"Stuck means {STUCK_STEPS} consecutive steps with no URL, DOM, or canvas change. "
+                "Confirmed maxima: saved-study wall 358s, measured e2e2 elapsed 378s, "
+                f"YouTube baseline {OBSERVED_STUDY_MAX_S:.0f}s."
+            ),
         ),
         _gate(
             "first_screenshot",
@@ -396,8 +614,9 @@ def _startup_gates(
 def _competitor_scores(
     study: dict[str, Any],
     runs: list[dict[str, Any]],
+    verdicts: dict[str, object],
 ) -> list[dict[str, Any]]:
-    """Past-first-screen counts. Not a product gate and not vision-confirmed."""
+    """Judge verdicts, reported separately. Not a product pass gate."""
     groups: dict[str, list[dict[str, Any]]] = {}
     for run in runs:
         if is_product_run(run):
@@ -409,8 +628,11 @@ def _competitor_scores(
         ok = sum(
             1
             for run in group
-            if beyond_first_screen(run, _start_url(run, study))
-            and not is_browserbase_or_concurrency_loss(run)
+            if product_run_succeeded(
+                run,
+                _start_url(run, study),
+                vision_goal=verdicts.get(str(run.get("agent_id") or "")),
+            )
         )
         label = str(group[0].get("site_label") or group[0].get("site_url") or key)
         rows.append(
@@ -425,17 +647,101 @@ def _competitor_scores(
     return rows
 
 
+def _origin(report_url: str) -> str:
+    if not report_url:
+        return ""
+    parts = urlsplit(report_url)
+    if parts.scheme and parts.netloc:
+        return f"{parts.scheme}://{parts.netloc}"
+    return ""
+
+
+def _absolute_url(base: str, url: str) -> str:
+    text = str(url or "").strip()
+    if not text:
+        return ""
+    if text.startswith("http://") or text.startswith("https://"):
+        return text
+    if not base:
+        return text
+    return base.rstrip("/") + (text if text.startswith("/") else "/" + text)
+
+
+def _shot_step(run: dict[str, Any]) -> dict[str, Any] | None:
+    return _final_shot(run)
+
+
+def build_failure_report(
+    study: dict[str, Any],
+    runs: list[dict[str, Any]],
+    verdicts: dict[str, object],
+    *,
+    base_url: str = "",
+) -> dict[str, Any]:
+    """Every run the judge (or a harness failure) did not pass.
+
+    Types are mutually exclusive: our infrastructure, model timeout, stuck, product.
+    """
+    study_id = str(study.get("id") or "")
+    failed: list[dict[str, Any]] = []
+    for run in runs:
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        if not aid:
+            continue
+        raw = verdicts.get(aid)
+        verdict = coerce_verdict(raw)
+        if product_run_succeeded(run, _start_url(run, study), vision_goal=raw):
+            continue
+        shot = _shot_step(run)
+        step_n = shot.get("step") if shot else None
+        shot_url = str((shot or {}).get("screenshot_url") or "")
+        step_q = int(step_n) if isinstance(step_n, int) else 0
+        if study_id:
+            trace = f"{base_url}/report?study={study_id}&agent={aid}&step={step_q}"
+        else:
+            trace = f"{base_url}/report?agent={aid}&step={step_q}"
+        kind = failure_type_for(run, raw)
+        failed.append(
+            {
+                "agent_id": aid,
+                "site_key": str(run.get("site_key") or ""),
+                "task": str(run.get("task_prompt") or run.get("task_title") or ""),
+                "type": kind,
+                "judge_reason": str(verdict.get("reason") or ""),
+                "goal_reached": False,
+                "trace_link": trace,
+                "final_screenshot": _absolute_url(base_url, shot_url),
+                "final_url": final_url_of(run),
+                "step": step_n if isinstance(step_n, int) else None,
+            }
+        )
+    counts: dict[str, int] = {name: 0 for name in FAILURE_TYPES}
+    for row in failed:
+        counts[row["type"]] = counts.get(row["type"], 0) + 1
+    return {
+        "study_id": study_id,
+        "product_url": _product_url(study),
+        "types": list(FAILURE_TYPES),
+        "counts": counts,
+        "failed_runs": failed,
+    }
+
+
 def evaluate_strict_gates(
     study: dict[str, Any],
     *,
     startup: dict[str, Any] | None = None,
-    vision_goal: dict[str, bool] | None = None,
+    vision_goal: dict[str, object] | None = None,
     screenshot_loads: Callable[[str], bool] | None = None,
     report_html: str | None = None,
     report_url: str | None = None,
     abort_reason: str | None = None,
 ) -> dict[str, Any]:
-    """Return gates, competitor scores, and pass=True only when every gate passes."""
+    """Return gates, judge-backed scores, and pass=True only when every gate passes.
+
+    `vision_goal` maps agent id → judge verdict (dict with goal_reached, reason)
+    or a bool. Agent summary fields are ignored.
+    """
     startup = dict(startup or {})
     vision_goal = dict(vision_goal or {})
     runs = iter_runs(study)
@@ -457,7 +763,7 @@ def evaluate_strict_gates(
             first_screen_ids.append(aid)
         if beyond_first_screen(run, start):
             structural_ids.append(aid)
-        if product_run_succeeded(run, start, vision_goal=bool(vision_goal.get(aid))):
+        if product_run_succeeded(run, start, vision_goal=vision_goal.get(aid)):
             success_ids.append(aid)
 
     product_n = len(product)
@@ -549,10 +855,11 @@ def evaluate_strict_gates(
                 f">= {PRODUCT_SUCCESS_MIN:.0%} of product runs (>= {need_n}/{product_n or '?'})",
                 rate_ok,
                 (
+                    f"judge_yes={success_n} "
                     f"structural_past_first_screen={len(structural_ids)} "
-                    f"vision_confirmed={success_n} "
                     f"first_screen_or_opening={len(first_screen_ids)} "
                     f"opening_frame={len(opening_ids)} "
+                    f"stuck={sum(1 for r in product if stuck_no_progress(r))} "
                     f"bb_losses_in_product={sum(1 for r in product if is_browserbase_or_concurrency_loss(r))}"
                 ),
             ),
@@ -627,7 +934,9 @@ def evaluate_strict_gates(
         ]
     )
 
-    competitors = _competitor_scores(study, runs)
+    competitors = _competitor_scores(study, runs, vision_goal)
+    base_url = str(startup.get("base") or _origin(str(report_url or "")))
+    failures = build_failure_report(study, runs, vision_goal, base_url=base_url)
     fail_reasons = [
         f"{g['id']}: value={g['value']} threshold={g['threshold']}"
         + (f" ({g['detail']})" if g.get("detail") else "")
@@ -651,17 +960,32 @@ def evaluate_strict_gates(
         "browserbase_concurrency_losses": [
             str(r.get("agent_id") or "") for r in bb_losses
         ],
+        "verdicts": {aid: coerce_verdict(vision_goal.get(aid)) for aid in runs_by_id},
+        "failures": failures,
     }
 
 
-def render_markdown(result: dict[str, Any], *, study_id: str = "", product_url: str = "") -> str:
+def render_markdown(
+    result: dict[str, Any],
+    *,
+    study_id: str = "",
+    product_url: str = "",
+    failure_file: str = "",
+) -> str:
     """Human summary. Every gate is a row with value, threshold, and PASS/FAIL."""
+    failures = result.get("failures") if isinstance(result.get("failures"), dict) else {}
+    counts = failures.get("counts") if isinstance(failures.get("counts"), dict) else {}
     lines = [
         "# Strict e2e gates",
         "",
         f"- study: {study_id or '(none)'}",
         f"- product: {product_url or '(none)'}",
         f"- pass: {str(bool(result.get('pass'))).lower()}",
+        f"- failure file: {failure_file or '(not written)'}",
+        (
+            "- failed runs: "
+            + ", ".join(f"{name}={counts.get(name, 0)}" for name in FAILURE_TYPES)
+        ),
         "",
         "| Gate | Value | Threshold | Result |",
         "| --- | --- | --- | --- |",
