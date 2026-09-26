@@ -280,9 +280,13 @@ async def acquire(study: Any, touch: Callable[..., None]) -> None:
                 n = int(counted["n"]) if counted else 0
                 free = session_cap() - n
                 burst = burst_state(need, counted)
-                if (counted is None or free >= need) and burst["ok"]:
+                # Browserbase 429s now queue inside the study, so a big study
+                # does not need every browser free: most of its first wave is enough.
+                # (2 stale sessions of another harness held a 100-agent study for minutes.)
+                enough = max(1, int(need * float(os.environ.get("MVP_QUEUE_MIN_FREE_FRAC", "0.75") or 0.75)))
+                if (counted is None or free >= enough) and burst["ok"]:
                     break
-                if counted is not None and free < need:
+                if counted is not None and free < enough:
                     reason = f"{n} of {session_cap()} browsers are busy with another run"
                 else:
                     # Browserbase allows 25 new browsers per rolling minute.
