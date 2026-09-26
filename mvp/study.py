@@ -3117,16 +3117,31 @@ async def run_study(
                     agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
                     site = task.get("site_url") or study.url
                     if a11y_boot is not None:
+                        # The shared read is display only. Do not wait for a
+                        # click: this agent is what produces the first action.
                         _wait_until = getattr(study, "budget_deadline", None) or (
                             time.monotonic() + 30
                         )
                         while time.monotonic() < _wait_until:
                             existing = study.live_sessions.get(agent_id) or {}
-                            if existing.get("first_action_at_ts"):
+                            trace = existing.get("trace") or []
+                            opened = bool(existing.get("page_open_at_ts")) or any(
+                                isinstance(step, dict) and int(step.get("step") or -1) == 0
+                                for step in trace
+                            )
+                            if opened:
                                 break
                             await asyncio.sleep(0.05)
                         sess = study.live_sessions.get(agent_id)
-                        if not sess or not sess.get("first_action_at_ts"):
+                        trace = (sess or {}).get("trace") or []
+                        opened = bool(sess and (
+                            sess.get("page_open_at_ts")
+                            or any(
+                                isinstance(step, dict) and int(step.get("step") or -1) == 0
+                                for step in trace
+                            )
+                        ))
+                        if not opened:
                             print(
                                 f"[{agent_id}] no shared page read before the study budget",
                                 flush=True,

@@ -287,6 +287,8 @@ _READ_JS = """() => {
       href: href,
       x: Math.round(r.x + Math.max(r.width, 0) / 2),
       y: Math.round(r.y + Math.max(r.height, 0) / 2),
+      w: Math.round(Math.max(r.width, 0)),
+      h: Math.round(Math.max(r.height, 0)),
       inert: inert,
     };
   };
@@ -840,26 +842,41 @@ class A11yBoot:
         self.install_fast_plan()
 
         async def _boot() -> None:
-            # One browser per site. Agents open their own tabs on it. A second
-            # CDP connection to the same Browserbase session returns 410.
-            bb = await self._create_one(0, enqueue=False)
-            if bb is not None:
+            # Shared read for the opening display. Each agent then takes its
+            # own browser from the pool (or creates one). They do not share
+            # this page.
+            n_agents = len(self.study.tasks or [])
+            if n_agents:
+                self._tasks.append(asyncio.create_task(self._fill_pool(n_agents, offset=1)))
+            for attempt in range(4):
+                bb = await self._create_one(attempt, enqueue=False)
+                if bb is None:
+                    continue
                 try:
                     snap = await self._read_url(bb, self.study.url)
                 except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] product read failed: {exc!r}", flush=True)
-                    snap = None
-                if isinstance(snap, dict):
-                    handle = snap.pop("_handle", None)
-                    if isinstance(handle, dict):
-                        handle["site_key"] = "product"
-                        handle["read"] = snap
-                        async with self._handle_cv:
-                            self._handles.append(handle)
-                            self.contexts["product"] = handle
-                            self._handle_cv.notify_all()
-                    self.snapshots["product"] = snap
-                    self._publish_site("product", snap)
+                    print(f"[a11y] product read failed (retrying): {exc!r}", flush=True)
+                    continue
+                handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
+                page = (handle or {}).get("page") if isinstance(handle, dict) else None
+                try:
+                    closed = page is None or page.is_closed()
+                except Exception:
+                    closed = True
+                if closed or not isinstance(handle, dict) or not isinstance(snap, dict):
+                    print("[a11y] product read had no live page (retrying)", flush=True)
+                    continue
+                handle["site_key"] = "product"
+                handle["read"] = snap
+                async with self._handle_cv:
+                    self._handles.append(handle)
+                    self.contexts["product"] = handle
+                    self._handle_cv.notify_all()
+                self.snapshots["product"] = snap
+                self._publish_site("product", snap)
+                break
+            else:
+                print("[a11y] no live product page", flush=True)
             extras = len([c for c in (self.study.competitors or []) if c])
             if extras:
                 self._tasks.append(asyncio.create_task(self._fill_pool(extras, offset=1)))
@@ -1334,9 +1351,9 @@ async def _model_action(
         "For how to create an issue, open Docs or Documentation, then the Issues section, then Create issues. "
         "For pricing or getting started, open Pricing. "
         "To draw a box, click Rectangle, then the next action must be drag. "
-        "drag presses r and drags on the canvas. Selecting the tool is not done. "
+        "drag presses r and drags inside the canvas box from the tree. Selecting the tool is not done. "
         "done for a drawing only after the drag has changed the canvas. "
-        "To export or share, click Menu, then Export image. "
+        "Open Menu and Export image only when the task asks to export or share. "
         "done only when that outcome is already visible. "
         "friction is one sentence if a control was unclear, else empty. "
         "easy is one sentence naming a control that was obvious, else empty."
@@ -1428,8 +1445,25 @@ async def _click_named(page: Any, action: dict[str, Any]) -> str:
     return "miss"
 
 
+def _canvas_box(nodes: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Largest canvas rectangle in the accessibility tree."""
+    best: dict[str, Any] | None = None
+    best_area = 0
+    for node in nodes or []:
+        if not isinstance(node, dict):
+            continue
+        if str(node.get("role") or "") != "canvas":
+            continue
+        w = int(node.get("w") or 0)
+        h = int(node.get("h") or 0)
+        if w * h > best_area:
+            best = node
+            best_area = w * h
+    return best
+
+
 async def _drag_on_canvas(page: Any, action: dict[str, Any]) -> None:
-    """Press r to select the rectangle tool, then drag on the canvas."""
+    """Press r, then drag inside the canvas box from the tree."""
     try:
         await page.keyboard.press("Escape")
     except Exception:
@@ -1438,14 +1472,20 @@ async def _drag_on_canvas(page: Any, action: dict[str, Any]) -> None:
         await page.keyboard.press("r")
     except Exception:
         pass
-    x = int(action.get("x") or 0)
-    y = int(action.get("y") or 0)
-    # Toolbar clicks sit on the top edge. A box has to land on the canvas.
-    if y < 160:
-        x, y = 420, 280
-    await page.mouse.move(x, y)
+    cx = int(action.get("canvas_x") or 0)
+    cy = int(action.get("canvas_y") or 0)
+    cw = int(action.get("canvas_w") or 0)
+    ch = int(action.get("canvas_h") or 0)
+    if cw > 200 and ch > 200 and (cx or cy):
+        x1 = int(cx - cw * 0.12)
+        y1 = int(cy - ch * 0.02)
+        x2 = int(cx + cw * 0.18)
+        y2 = int(cy + ch * 0.22)
+    else:
+        x1, y1, x2, y2 = 420, 280, 760, 500
+    await page.mouse.move(x1, y1)
     await page.mouse.down()
-    await page.mouse.move(x + 340, y + 220, steps=12)
+    await page.mouse.move(x2, y2, steps=12)
     await page.mouse.up()
 
 
@@ -1598,10 +1638,11 @@ async def complete_task_on_page(
     stuck_streak = 0
     changed_nothing = False
     saw_opening = False
+    acted_once = False
     model_misses = 0
     done_rejects = 0
     try:
-        await page.wait_for_selector("a, button, canvas", timeout=3000)
+        await page.wait_for_selector("a, button, canvas", timeout=800)
     except Exception:
         pass
 
@@ -1621,7 +1662,11 @@ async def complete_task_on_page(
             _miss("session ended")
             failed = {"phase": "read", "reason": "session ended", "step": step_no}
             break
-        if not fresh.get("error"):
+        if fresh.get("error"):
+            # A failed read must not reuse the tree from before the last click.
+            if acted_once:
+                continue
+        else:
             read = fresh
         if not saw_opening:
             saw_opening = True
@@ -1690,6 +1735,13 @@ async def complete_task_on_page(
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
+        if str(action.get("act")) == "drag":
+            box = _canvas_box(list(read.get("nodes") or []))
+            if box:
+                action["canvas_x"] = int(box.get("x") or 0)
+                action["canvas_y"] = int(box.get("y") or 0)
+                action["canvas_w"] = int(box.get("w") or 0)
+                action["canvas_h"] = int(box.get("h") or 0)
         label = action_label(action)
         if would_repeat_action(trace, label, read):
             _miss()
@@ -1725,6 +1777,7 @@ async def complete_task_on_page(
                 break
             print(f"[{agent_id}] action error (continuing): {exc!r}", flush=True)
             how = f"error:{exc!r}"[:180]
+        acted_once = True
         await _wait_for_page(page)
         after = await _fresh_read(page, str(read.get("url") or url))
         if (
@@ -1744,6 +1797,29 @@ async def complete_task_on_page(
             _miss("session ended")
             failed = {"phase": "read", "reason": "session ended", "step": step_no}
             break
+        clicked = str(action.get("name") or "").lower()
+        if (
+            not after.get("error")
+            and task_kind(task) == "issue"
+            and "new issue" in clicked
+        ):
+            body = str(after.get("text") or "").lower()
+            composer = "issue title" in body or ("description" in body and "title" in body)
+            if not composer:
+                skip.add(clicked)
+                changed_nothing = True
+                try:
+                    await page.keyboard.press("Escape")
+                except Exception:
+                    pass
+                try:
+                    await page.mouse.wheel(0, 700)
+                except Exception:
+                    pass
+                await _wait_for_page(page)
+                scrolled = await _fresh_read(page, str(read.get("url") or url))
+                if not scrolled.get("error"):
+                    after = scrolled
         if not after.get("error") and _auth_href(str(after.get("url") or "")):
             skip.add(str(action.get("name") or "").lower())
             href = str(action.get("href") or "")
@@ -1843,6 +1919,35 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
     browser = None
     last = "no browser session"
     try:
+        try:
+            bb = boot.pool.get_nowait()
+        except asyncio.QueueEmpty:
+            bb = None
+        if bb is not None:
+            try:
+                pw = await boot._playwright()
+                browser = await pw.chromium.connect_over_cdp(bb.connect_url)
+                context = browser.contexts[0] if browser.contexts else await browser.new_context()
+                page = context.pages[0] if context.pages else await context.new_page()
+                try:
+                    await page.set_viewport_size({"width": 1440, "height": 900})
+                except Exception:
+                    pass
+                try:
+                    page.set_default_timeout(8000)
+                    page.set_default_navigation_timeout(8000)
+                except Exception:
+                    pass
+                try:
+                    await page.goto(url, wait_until="domcontentloaded", timeout=8000)
+                except Exception as exc:  # noqa: BLE001
+                    print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
+                return bb, browser, page
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] pooled session unusable: {exc!r}", flush=True)
+                await _close_agent_session(browser, bb)
+                bb = None
+                browser = None
         while time.monotonic() < deadline:
             try:
                 bb = await asyncio.to_thread(
