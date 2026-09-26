@@ -301,7 +301,13 @@ _READ_JS = """() => {
     };
   };
   const offscreen = [];
-  for (const el of all) {
+  // An open dialog is where the next action is. List its controls first so
+  // a long sidebar or list cannot push them past the cap.
+  const openDialog = document.querySelector('[role="dialog"]:not([aria-hidden="true"]), dialog[open], [aria-modal="true"]');
+  const ordered = openDialog
+    ? [...Array.from(all).filter((el) => openDialog.contains(el)), ...Array.from(all).filter((el) => !openDialog.contains(el))]
+    : Array.from(all);
+  for (const el of ordered) {
     const r = el.getBoundingClientRect();
     if (r.width < 2 || r.height < 2) continue;
     const style = window.getComputedStyle(el);
