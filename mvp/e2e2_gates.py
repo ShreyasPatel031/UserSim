@@ -35,6 +35,8 @@ from mvp.report_insights import (
     changed_page_state,
 )
 
+# A full matrix is 24 agents at once. An 8-wide or serialized browser cap
+# does not pass, even if the eight that ran were fast.
 PASS_AGENT_BAR = 24
 PRODUCT_SUCCESS_MIN = 0.50
 RUN_ISSUE_MAX = 0.25
@@ -1561,6 +1563,13 @@ def _startup_gates(
     mx = ttfa.get("max_s")
     got = ttfa.get("n")
     missing = [str(name) for name in (ttfa.get("missing_fields") or [])]
+    starts = [
+        str(row.get("start") or "")
+        for row in (ttfa.get("per_agent") or [])
+        if isinstance(row, dict)
+    ]
+    if not missing and starts and not any(starts) and not ttfa.get("ok"):
+        missing = ["page_open_at_ts"]
     if missing and not ttfa.get("ok"):
         value = "; ".join(missing_field(name) for name in missing)
     else:
