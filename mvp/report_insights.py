@@ -949,8 +949,9 @@ def trace_claims(
         chain = " \u2192 ".join(items[:6]) + (" \u2192 \u2026" if len(items) > 6 else "")
         signed = any(str(s.get("decision_source") or "") == "signup" for s in rep_steps)
         median_word = "a median of " if len(group) > 1 and any(run_steps(r) != n_steps for r, _, _ in group) else ""
+        rep_title = _task_title(rep) or "Task"
         lab3 = (
-            f"{_task_title(rep) or "Task"}: it took {median_word}{n_steps} steps"
+            f"{rep_title}: it took {median_word}{n_steps} steps"
             f"{' including a live sign-up' if signed else ''} ({chain}) "
             f"{'to reach' if left_start(rep, str(rep.get('site_url') or product_url or '')) else 'to finish on'} {page3}"
         )
