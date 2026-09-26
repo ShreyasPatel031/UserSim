@@ -117,3 +117,15 @@
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "miro.com", "ts": "2026-09-26T00:49:11.511533+00:00", "when": "after"}
 {"attempt": 1, "event": "signup_start", "site": "webflow.com", "ts": "2026-09-26T00:49:12.837007+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "webflow.com", "ts": "2026-09-26T00:49:12.953778+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "webflow.com", "ts": "2026-09-26T00:57:19.659802+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "gitlab.com", "ts": "2026-09-26T01:04:44.585566+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "gitlab.com", "ts": "2026-09-26T01:04:44.626862+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "gitlab.com", "ts": "2026-09-26T01:09:13.473835+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "calendly.com", "ts": "2026-09-26T01:09:14.697913+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "calendly.com", "ts": "2026-09-26T01:09:14.900777+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "calendly.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-26T01:11:02.329398+00:00"}
+{"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "calendly.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-26T01:12:23.479899+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "calendly.com", "ts": "2026-09-26T01:13:52.179426+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "buffer.com", "ts": "2026-09-26T01:13:53.616812+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "buffer.com", "ts": "2026-09-26T01:13:53.649643+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "buffer.com", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-26T01:16:19.864421+00:00"}
