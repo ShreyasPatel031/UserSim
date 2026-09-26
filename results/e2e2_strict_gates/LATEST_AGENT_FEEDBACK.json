@@ -1,7 +1,7 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T07:16:00Z",
+  "graded_at": "2026-09-26T07:33:00Z",
   "live_launches": "stopped",
   "note": "Owner gates sessions were released, including primes. New grades use --grade-study and do not open Browserbase. #47 tip 234280b and integration tip 4a874ac are not live-graded.",
   "heads": {
@@ -349,5 +349,25 @@
       "product": "0/8",
       "note": "8/8 structurally past the first screen. PNG bytes not in GCS."
     }
-  ]
+  ],
+  "linear_26e83a58": {
+    "study_id": "26e83a58-dcfb-4cc7-b60e-87d177738760",
+    "pass": false,
+    "wall_s": 488.046,
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "study_budget": "488.046s FAIL",
+    "page_opened": "FAIL missing field page_open_at_ts",
+    "time_to_first_action": "FAIL missing field page_open_at_ts",
+    "final_screenshot": "FAIL missing field final_screenshot_url",
+    "product_task_completion": "8/8 PASS",
+    "product_note": "Gemini YES on all 8 product runs. New-issue YES is the docs page that explains how to create an issue and shows a modal example. Pricing YES is the pricing tiers. Not a study pass.",
+    "strength": "0/0 FAIL",
+    "weakness": "0/0 FAIL",
+    "report_page": "not fetched, gates app stopped",
+    "judge_reasons": {
+      "new_issue": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal.",
+      "pricing": "The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+    }
+  }
 }
