@@ -17,6 +17,7 @@ from mvp.a11y_agent import (
     _nodes_for_model,
     account_wall,
     achievable_without_account,
+    linear_mock_inert,
     stamp_first_click,
     format_ax,
     goal_visible,
@@ -159,7 +160,7 @@ class A11yAgentTest(unittest.TestCase):
         )
         self.assertIsNone(same["first_action_at_ts"])
         self.assertIn("const fakeIssue = /newIssue/.test(cls)", _READ_JS)
-        self.assertIn("fakeIssue || (mock && !href)", _READ_JS)
+        self.assertIn("!header && (fakeIssue || (!href && mock))", _READ_JS)
 
     def test_action_model_is_the_lite_sibling(self) -> None:
         prev = os.environ.get("MVP_AGENT_ACTION_MODEL")
@@ -419,7 +420,22 @@ class A11yAgentTest(unittest.TestCase):
     def test_linear_hero_hash_is_inert_and_the_header_is_not(self) -> None:
         self.assertIn("Mmx1Wq_", _READ_JS)
         self.assertIn("qM9FAa_", _READ_JS)
+        self.assertIn("TZTsQG_", _READ_JS)
+        self.assertIn("!header && (fakeIssue || (!href && mock))", _READ_JS)
         self.assertNotIn("[A-Za-z][A-Za-z0-9]{4,}_", _READ_JS)
+        self.assertTrue(linear_mock_inert("Mmx1Wq_navItem", ""))
+        self.assertTrue(linear_mock_inert("qM9FAa_rowButton", ""))
+        self.assertTrue(linear_mock_inert("Mmx1Wq_newIssue", ""))
+        self.assertFalse(linear_mock_inert("TZTsQG_link", ""))
+        self.assertFalse(linear_mock_inert("TZTsQG_link", "https://linear.app/signup"))
+        self.assertFalse(linear_mock_inert("Mmx1Wq_navItem", "https://linear.app/pricing"))
+        home = [
+            {"role": "button", "name": "Inbox", "href": "", "inert": linear_mock_inert("Mmx1Wq_navItem", "")},
+            {"role": "button", "name": "My issues", "href": "", "inert": linear_mock_inert("qM9FAa_row", "")},
+            {"role": "a", "name": "Sign up", "href": "https://linear.app/signup", "inert": linear_mock_inert("TZTsQG_link", "https://linear.app/signup")},
+        ]
+        picked = tree_action("Find how to create a new issue", {"nodes": home})
+        self.assertEqual(picked["name"], "Sign up")
 
     def test_issue_target_is_docs_then_create_issues(self) -> None:
         home = [

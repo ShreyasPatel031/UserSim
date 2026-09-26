@@ -3704,18 +3704,8 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                if a11y_boot is not None:
-                    _left = max(
-                        1.0,
-                        float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic(),
-                    )
-                    try:
-                        await asyncio.wait_for(a11y_boot.published.wait(), timeout=_left)
-                    except asyncio.TimeoutError:
-                        print(
-                            "shared page read did not finish before the study budget",
-                            flush=True,
-                        )
+                # Do not wait for every site's step 0. Each agent opens its own
+                # browser and clicks from that page. A shared read was the 17–25s stall.
                 def _run_rank(task: dict[str, Any]) -> tuple:
                     key = str(task.get("site_key") or "product")
                     return (0 if key == "product" else 1, key, str(task.get("id") or ""))

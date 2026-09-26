@@ -95,18 +95,34 @@ async def run_one(browser, site: str, url: str, task: str) -> dict:
     }
 
 
+def _release_taskfix_sessions() -> None:
+    """Drop every taskfix Browserbase session. Leave signup and other owners."""
+    import os
+
+    os.environ.setdefault("MVP_BB_OWNER", "taskfix")
+    try:
+        from mvp.kill_switch import kill_all_browserbase
+
+        kill_all_browserbase(owner="taskfix")
+    except Exception as exc:  # noqa: BLE001
+        print(f"taskfix release: {exc!r}", flush=True)
+
+
 async def main() -> None:
     from playwright.async_api import async_playwright
 
     generic = "--generic" in sys.argv
     tasks = GENERIC_TASKS if generic else TASKS
     out_name = "generic_agent.json" if generic else "one_agent.json"
-    async with async_playwright() as playwright:
-        browser = await playwright.chromium.launch(headless=True)
-        results = []
-        for site, url, task in tasks:
-            results.append(await run_one(browser, site, url, task))
-        await browser.close()
+    try:
+        async with async_playwright() as playwright:
+            browser = await playwright.chromium.launch(headless=True)
+            results = []
+            for site, url, task in tasks:
+                results.append(await run_one(browser, site, url, task))
+            await browser.close()
+    finally:
+        _release_taskfix_sessions()
     out = ROOT / "results" / "taskfix"
     out.mkdir(parents=True, exist_ok=True)
     (out / out_name).write_text(json.dumps(results, indent=2))

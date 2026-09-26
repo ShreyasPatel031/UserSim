@@ -1,3 +1,7 @@
+# Each agent opens its own browser
+
+Product agents were idle 17–25s after page open because a shared competitor read ran first. Boot now calls `published.set()` and does not open a snapshot browser. Competitor agents open and close their own sessions. The study no longer waits for every site's step 0 before the first click. The first click is the live tree, capped so a hung read or click cannot sit for 8–12s. `Mmx1Wq_` / `qM9FAa_` with no href are inert. The header hash `TZTsQG_` stays clickable. Not a pass. #46 grades the next Linear study after integration cherry-picks this tip.
+
 # PNG bytes are fetched the way #46 fetches them
 
 `upload_saved_final` uploads the PNG bytes and reads them back before `final_screenshot_url` is kept. A URL with no object is what graded `08d81811`, `09472fc2`, `18d86703`, and `40e719b1`.

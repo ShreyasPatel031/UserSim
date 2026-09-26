@@ -392,13 +392,14 @@ _READ_JS = """() => {
     // prefixes Mmx1Wq_ and qM9FAa_, have no href, and do nothing.
     // The real header (TZTsQG_) and the docs sidebar use other hashes and stay
     // clickable. tabindex=-1 is not inert: canvas toolbars use it for focus.
-    const mockHash = /(?:^|\\s)(?:Mmx1Wq_|qM9FAa_)/.test(cls);
+    // Hero hashes with no href are the Inbox / My issues mock. The real header
+    // is TZTsQG_ and stays clickable. Keep this in sync with linear_mock_inert.
+    const header = /(?:^|\\s)TZTsQG_/.test(cls);
+    const heroHash = /(?:^|\\s)(?:Mmx1Wq_|qM9FAa_)/.test(cls);
     const mock = /(?:navItem|newIssue|searchButton|switchWorkspace|rowButton|ingredientButton|headerButton|iconButton|sendButton|dropdownButton|pillButton|navButton|labelButton|attachmentButton|splitSegment|locationBar)/.test(cls)
-      || mockHash;
-    // The marketing mock's class is newIssue even when the node has an href
-    // (often into /docs/creating-issues). A real composer does not use that class.
+      || heroHash;
     const fakeIssue = /newIssue/.test(cls);
-    const inert = !!el.disabled || el.getAttribute('aria-disabled') === 'true' || fakeIssue || (mock && !href);
+    const inert = !!el.disabled || el.getAttribute('aria-disabled') === 'true' || (!header && (fakeIssue || (!href && mock)));
     let name = (
       el.getAttribute('aria-label')
       || el.getAttribute('placeholder')
@@ -688,6 +689,48 @@ def achievable_without_account(url: str, prompt: str) -> str:
 def public_task(task: str) -> bool:
     """Draw, export, help, pricing, and changelog do not need an account."""
     return task_kind(task) in {"draw", "export", "help", "pricing", "changelog"}
+
+
+_HEADER_HASH = "TZTsQG_"
+_HERO_HASHES = ("Mmx1Wq_", "qM9FAa_")
+_MOCK_CLASS_NAMES = (
+    "navItem",
+    "newIssue",
+    "searchButton",
+    "switchWorkspace",
+    "rowButton",
+    "ingredientButton",
+    "headerButton",
+    "iconButton",
+    "sendButton",
+    "dropdownButton",
+    "pillButton",
+    "navButton",
+    "labelButton",
+    "attachmentButton",
+    "splitSegment",
+    "locationBar",
+)
+
+
+def linear_mock_inert(class_name: str, href: str = "", *, disabled: bool = False) -> bool:
+    """Hero CSS modules with no href are the Inbox / My issues mock.
+
+    ``Mmx1Wq_`` (including ``Mmx1Wq_navItem``) and ``qM9FAa_`` are inert when
+    they have no href. The real header hash ``TZTsQG_`` stays clickable.
+    """
+    cls = class_name or ""
+    if disabled:
+        return True
+    if _HEADER_HASH in cls:
+        return False
+    if "newIssue" in cls:
+        return True
+    if (href or "").strip():
+        return False
+    if any(token in cls for token in _HERO_HASHES):
+        return True
+    return any(token in cls for token in _MOCK_CLASS_NAMES)
 
 
 def asks_for_docs(task: str) -> bool:
@@ -1456,60 +1499,11 @@ class A11yBoot:
         self.install_fast_plan()
 
         async def _boot() -> None:
-            # Agents start immediately. The product read below is step 0 only.
-            # Competitor browsers are not opened here: one shared page was
-            # serializing those sites and pushing TTFA to 17–25s.
+            # One browser per agent. Do not open a shared snapshot, and do not
+            # read competitor sites here. That shared read left product agents
+            # idle for 17–25s after page open.
             self.published.set()
-            if not _use_browserbase():
-                # Step 0 does not need a shared Browserbase page. Each agent
-                # reads its own local browser. This keeps the taskfix cap at 0.
-                print("[a11y] local chromium; no shared Browserbase read", flush=True)
-                return
-            for attempt in range(4):
-                bb = await self._create_one(attempt, enqueue=False)
-                if bb is None:
-                    continue
-                try:
-                    snap = await self._read_url(bb, self.study.url)
-                except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] product read failed (retrying): {exc!r}", flush=True)
-                    await _close_agent_session(None, bb)
-                    if _owner_is_taskfix():
-                        _release_taskfix_slot()
-                    continue
-                handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
-                page = (handle or {}).get("page") if isinstance(handle, dict) else None
-                try:
-                    closed = page is None or page.is_closed()
-                except Exception:
-                    closed = True
-                if closed or not isinstance(handle, dict) or not isinstance(snap, dict):
-                    print("[a11y] product read had no live page (retrying)", flush=True)
-                    browser = handle.get("browser") if isinstance(handle, dict) else None
-                    await _close_agent_session(browser, bb)
-                    if _owner_is_taskfix():
-                        _release_taskfix_slot()
-                    continue
-                handle["site_key"] = "product"
-                handle["read"] = snap
-                async with self._handle_cv:
-                    self._handles.append(handle)
-                    self.contexts["product"] = handle
-                    self._handle_cv.notify_all()
-                self.snapshots["product"] = snap
-                self._publish_site("product", snap)
-                # Drop the shared browser. Every agent opens its own page.
-                await _close_agent_session(handle.get("browser"), handle.get("bb"))
-                if _owner_is_taskfix():
-                    _release_taskfix_slot()
-                async with self._handle_cv:
-                    self._handles = [
-                        item for item in self._handles if item is not handle
-                    ]
-                    self.contexts.pop("product", None)
-                break
-            else:
-                print("[a11y] no live product page", flush=True)
+            print("[a11y] no shared browser; each agent opens its own", flush=True)
 
         self._tasks.append(asyncio.create_task(_boot()))
 
@@ -1723,106 +1717,11 @@ class A11yBoot:
         self._touch()
 
     async def _publish_all(self) -> None:
-        # Wait until the fast plan (or the normal planner) has tasks.
-        deadline = time.time() + 25
-        while not self.study.tasks and time.time() < deadline:
-            await asyncio.sleep(0.05)
-        sites: list[tuple[str, str]] = [("product", self.study.url)]
-        for i, comp in enumerate(self.study.competitors or []):
-            if comp:
-                sites.append((f"competitor_{i+1}", str(comp)))
-        async def _one(key: str, url: str) -> None:
-            try:
-                bb = await asyncio.wait_for(self.pool.get(), timeout=40)
-            except asyncio.TimeoutError:
-                print(f"[a11y] no session for {key}", flush=True)
-                return
-            try:
-                snap = await self._read_url(bb, url)
-            except Exception as exc:  # noqa: BLE001
-                print(f"[a11y] shared read {key} failed: {exc!r}", flush=True)
-                return
-            handle = snap.pop("_handle", None)
-            if isinstance(handle, dict):
-                handle["site_key"] = key
-                handle["read"] = snap
-                async with self._handle_cv:
-                    self._handles.append(handle)
-                    self.contexts[key] = handle
-                    self._handle_cv.notify_all()
-            self.snapshots[key] = snap
-            self._publish_site(key, snap)
-
-        await asyncio.gather(*[_one(key, url) for key, url in sites])
+        """Do not open browsers for every site before the first click."""
         self.published.set()
 
     async def _publish_rest(self) -> None:
-        """Competitor reads. The product tree is already published."""
-        sites: list[tuple[str, str]] = []
-        for i, comp in enumerate(self.study.competitors or []):
-            if comp:
-                sites.append((f"competitor_{i+1}", str(comp)))
-        if not sites:
-            self.published.set()
-            return
-
-        async def _one(key: str, url: str) -> None:
-            deadline = getattr(self.study, "budget_deadline", None) or (
-                time.monotonic() + study_budget_s()
-            )
-            # A primed session is often already closed. Try a few browsers
-            # before giving up, or every agent on this site waits out the budget.
-            for attempt in range(4):
-                if time.monotonic() >= deadline:
-                    break
-                bb = None
-                try:
-                    bb = self.pool.get_nowait()
-                except asyncio.QueueEmpty:
-                    bb = await self._create_one(attempt, enqueue=False)
-                if bb is None:
-                    continue
-                try:
-                    snap = await self._read_url(bb, url)
-                except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] shared read {key} failed (retrying): {exc!r}", flush=True)
-                    if _owner_is_taskfix():
-                        await _close_agent_session(None, bb)
-                        _release_taskfix_slot()
-                    continue
-                handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
-                page = (handle or {}).get("page") if isinstance(handle, dict) else None
-                try:
-                    closed = page is None or page.is_closed()
-                except Exception:
-                    closed = True
-                if closed or not isinstance(handle, dict):
-                    print(f"[a11y] shared read {key} had no live page (retrying)", flush=True)
-                    if _owner_is_taskfix():
-                        browser = handle.get("browser") if isinstance(handle, dict) else None
-                        await _close_agent_session(browser, bb)
-                        _release_taskfix_slot()
-                    continue
-                handle["site_key"] = key
-                handle["read"] = snap
-                if _owner_is_taskfix():
-                    await _close_agent_session(handle.get("browser"), handle.get("bb"))
-                    _release_taskfix_slot()
-                else:
-                    async with self._handle_cv:
-                        self._handles.append(handle)
-                        self.contexts[key] = handle
-                        self._handle_cv.notify_all()
-                self.snapshots[key] = snap
-                self._publish_site(key, snap)
-                return
-            print(f"[a11y] no live page for {key}", flush=True)
-
-        if _owner_is_taskfix():
-            for key, url in sites:
-                await _one(key, url)
-        else:
-            await asyncio.gather(*[_one(key, url) for key, url in sites])
+        """Competitor agents open and close their own sessions. Nothing here waits."""
         self.published.set()
 
     async def take_page(self, site_key: str, url: str) -> dict[str, Any] | None:
@@ -2128,10 +2027,10 @@ async def _screenshot_hash(page: Any) -> tuple[str, str]:
     return hashlib.sha256(blob).hexdigest()[:16], ""
 
 
-async def _one_read(page: Any, fallback_url: str) -> dict[str, Any]:
+async def _one_read(page: Any, fallback_url: str, *, timeout: float = 4.0) -> dict[str, Any]:
     t0 = time.perf_counter()
     try:
-        raw = await asyncio.wait_for(page.evaluate(_READ_JS), timeout=8)
+        raw = await asyncio.wait_for(page.evaluate(_READ_JS), timeout=timeout)
     except asyncio.TimeoutError:
         return {
             "url": fallback_url,
@@ -2191,11 +2090,11 @@ def _observation_changed(
     return False
 
 
-async def _fresh_read(page: Any, fallback_url: str) -> dict[str, Any]:
+async def _fresh_read(page: Any, fallback_url: str, *, timeout: float = 4.0) -> dict[str, Any]:
     """One accessibility read, retried once if the page was mid-navigation."""
-    fresh = await _one_read(page, fallback_url)
+    fresh = await _one_read(page, fallback_url, timeout=timeout)
     if fresh.get("error") and not browser_dead(str(fresh.get("error"))):
-        fresh = await _one_read(page, fallback_url)
+        fresh = await _one_read(page, fallback_url, timeout=timeout)
     return fresh
 
 
@@ -2269,6 +2168,7 @@ async def complete_task_on_page(
     deadline: float | None = None,
     agent_id: str = "agent",
     session: dict[str, Any] | None = None,
+    initial_read: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Step until the live page shows the goal.
 
@@ -2309,7 +2209,15 @@ async def complete_task_on_page(
             _miss("study budget")
             failed = {"phase": "study_budget", "reason": "study budget", "step": step_no}
             break
-        fresh = await _fresh_read(page, str(read.get("url") or url))
+        if not acted_once and isinstance(initial_read, dict) and initial_read.get("nodes"):
+            fresh = dict(initial_read)
+            initial_read = None
+        else:
+            fresh = await _fresh_read(
+                page,
+                str(read.get("url") or url),
+                timeout=2.0 if not acted_once else 4.0,
+            )
         if fresh.get("error") and browser_dead(str(fresh.get("error"))):
             print(f"[{agent_id}] session ended: {fresh.get('error')}", flush=True)
             _miss("session ended")
@@ -2371,19 +2279,28 @@ async def complete_task_on_page(
         # Every step asks the model. The tree is only the fallback when the
         # model returns nothing. It does not replace a real click.
         source = "model"
-        try:
-            action = await asyncio.wait_for(
-                _model_action(
-                    task=task,
-                    read=model_read,
-                    history=history,
-                    changed_nothing=changed_nothing,
-                ),
-                timeout=8,
-            )
-        except asyncio.TimeoutError:
-            print(f"[{agent_id}] model action timed out", flush=True)
-            action = None
+        action = None
+        # The first click is the live tree, not an 8s model wait. That wait
+        # is what left agents idle after page_open.
+        if not acted_once:
+            action = tree_action(task, read, history, skip)
+            source = "tree"
+        if not isinstance(action, dict):
+            try:
+                action = await asyncio.wait_for(
+                    _model_action(
+                        task=task,
+                        read=model_read,
+                        history=history,
+                        changed_nothing=changed_nothing,
+                    ),
+                    timeout=2.0 if not acted_once else 4.0,
+                )
+            except asyncio.TimeoutError:
+                print(f"[{agent_id}] model action timed out", flush=True)
+                action = None
+            else:
+                source = "model"
         if not isinstance(action, dict):
             invented = tree_action(task, read, history, skip)
             if invented is not None:
@@ -2486,13 +2403,14 @@ async def complete_task_on_page(
         }
         trace.append(row)
         history.append(label)
+        stamp_published_step(row, task=task, read=read)
         if on_step is not None:
             maybe = on_step(row)
             if asyncio.iscoroutine(maybe):
                 await maybe
         how = ""
         try:
-            how = await asyncio.wait_for(_act(page, action), timeout=12)
+            how = await asyncio.wait_for(_act(page, action), timeout=5)
         except asyncio.TimeoutError:
             print(f"[{agent_id}] action timed out: {label}", flush=True)
             how = "timeout"
@@ -2906,7 +2824,7 @@ async def _run_a11y_agent_unlocked(
         if page is not None and failed is None:
             # TTFA starts when this agent's own page is open, with an AX tree.
             # The shared product read is step 0 display and does not start the clock.
-            opened = await _fresh_read(page, url)
+            opened = await _fresh_read(page, url, timeout=2.0)
             if opened.get("error"):
                 opened = {"url": url, "text": "", "nodes": [], "title": ""}
             now_open = time.time()
@@ -2954,6 +2872,7 @@ async def _run_a11y_agent_unlocked(
                 deadline=deadline,
                 agent_id=agent_id,
                 session=sess,
+                initial_read=opened,
             )
             stop_reason = str(outcome.get("stop_reason") or "")
             signup_url = str(outcome.get("signup_url") or "")
