@@ -70,8 +70,6 @@ class BuildTests(unittest.TestCase):
         self.assertEqual((t1["winner_label"], t1["product_rank"]), ("Kolanut", 1))
         self.assertEqual((t2["winner_label"], t2["product_rank"]), ("Alpha", 2))
         self.assertEqual(t2["expected_favorite"], "competitor_1")
-        self.assertEqual(c["wins"][0]["runner_up"], "Beta")
-        self.assertEqual(c["losses"][0]["winner"], "Alpha")
         alpha = next(v for v in c["versus"] if v["label"] == "Alpha")
         self.assertEqual([i["task"] for i in alpha["strengths"]], ["Find risk"])
         self.assertEqual([i["task"] for i in alpha["weaknesses"]], ["Score health"])
@@ -84,6 +82,60 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(ana["pick_label"], "Kolanut")
         self.assertTrue(ana["product_wins"])
         self.assertEqual(c["by_persona"][1]["expected_favorite"], "competitor_1")
+
+    def test_tie_rule_level_then_friction_then_tie(self):
+        from mvp.comparison import rank_sites
+
+        def r(score, level, friction):
+            return {"comparison_score": {"score": score, "level": level, "friction": friction}}
+
+        # Same mean: the higher best level wins.
+        tiers = rank_sites({"a": [r(4, "clear_evidence", 1)], "b": [r(4, "vague_marketing", 1)]})
+        self.assertEqual(tiers, [["a"], ["b"]])
+        # Same mean and level: lower friction wins.
+        tiers = rank_sites({"a": [r(4, "clear_evidence", 2)], "b": [r(4, "clear_evidence", 0)]})
+        self.assertEqual(tiers, [["b"], ["a"]])
+        # Still equal: a tie, never an arbitrary order.
+        tiers = rank_sites({"a": [r(1, "wall_or_nothing", 3)], "b": [r(1, "wall_or_nothing", 3)]})
+        self.assertEqual(tiers, [["a", "b"]])
+
+    def test_task_tie_has_no_winner(self):
+        for r in self.study["agent_results"]:
+            if r.get("agent_id", "").startswith("t1__") and r["site_key"] in {"product", "competitor_2"}:
+                r["comparison_score"] = {"level": "clear_evidence", "score": 5, "friction": 1, "reason": "x"}
+        c = build_comparison(self.study)
+        t1 = c["by_task"][0]
+        self.assertEqual(t1["winner"], "")
+        self.assertEqual(t1["tied"], ["product", "competitor_2"])
+        self.assertEqual(t1["winner_label"], "Tie: Kolanut = Beta")
+        self.assertEqual(t1["product_rank"], 1)
+
+    def test_persona_llm_pick_is_headline(self):
+        self.study["summary"] = {"comparison_llm": {"picks": [
+            {"persona_id": "p1", "pick": "competitor_1", "why": "better scores", "cites": ["t2__p1__competitor_1"]},
+        ]}}
+        c = build_comparison(self.study)
+        self.assertEqual(c["by_persona"][0]["pick"], "competitor_1")
+        self.assertEqual(c["by_persona"][0]["pick_source"], "persona")
+        # p2 has no persona pick: its scores decide (Kolanut 5.0 vs Alpha 4.5).
+        self.assertEqual(c["by_persona"][1]["pick_source"], "scores")
+        self.assertEqual(c["pick_counts"], {"product": 1, "competitor_1": 1, "competitor_2": 0})
+        self.assertEqual(c["headline_metric"], "Kolanut: 1 of 2 buyers, Alpha: 1, Beta: 0")
+
+    def test_wins_and_losses_rows(self):
+        c = build_comparison(self.study)
+        self.assertEqual(c["wins"][0]["task"], "Find risk")
+        self.assertEqual(c["wins"][0]["competitor_label"], "Alpha")
+        self.assertEqual(c["losses"][0]["task"], "Score health")
+        self.assertIn("quote", c["losses"][0]["competitor_evidence"])
+
+    def test_refs_resolve(self):
+        from mvp.comparison import _refs, _resolve
+
+        refs = _refs([{"agent_id": "t1__p1__product"}, {"agent_id": "t2__p1__competitor_1"}])
+        self.assertEqual(_resolve("R2", refs), "t2__p1__competitor_1")
+        self.assertEqual(_resolve("[r1]", refs), "t1__p1__product")
+        self.assertEqual(_resolve("t1", refs), "")
 
     def test_none_without_scores(self):
         self.assertIsNone(build_comparison({"agent_results": [{"agent_id": "x"}]}))

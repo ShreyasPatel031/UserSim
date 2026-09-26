@@ -226,7 +226,7 @@ function renderAnalytics() {
     ? `${insights.n_personas} personas × ${insights.n_tasks} tasks × ${insights.n_sites} sites`
     : "";
 
-  root.innerHTML = `
+  const legacyHtml = `
     <div class="stat-strip">
       <span><strong>${insights.n_runs ?? 0}</strong> included runs</span>
       <span><strong>${insights.n_goals ?? 0}</strong> head-to-head goals</span>
@@ -291,6 +291,17 @@ function renderAnalytics() {
       ${personaBlocks || `<p class="empty-claim">No persona breakdown — the included traces do not cover a goal.</p>`}
     </div>
   `;
+  const comp = _study?.summary?.comparison;
+  if (comp && typeof renderCompareHtml === "function") {
+    // Comparison study: who each buyer picks leads; task completion is debug detail.
+    root.innerHTML = `${renderCompareHtml(comp)}
+      <details class="debug-block"><summary>Debug: task completion, signup, timing and errors</summary>${legacyHtml}</details>`;
+  } else {
+    root.innerHTML = legacyHtml;
+  }
+  root.querySelectorAll("[data-tab-jump]").forEach((node) => {
+    node.addEventListener("click", () => { selectTab(node.dataset.tabJump); window.scrollTo({ top: 0, behavior: "smooth" }); });
+  });
 
   root.querySelectorAll("button[data-agent]").forEach((node) => {
     node.addEventListener("click", () => {
@@ -550,7 +561,10 @@ function showReport(data) {
   const name = _insights?.product_name || "Study";
   document.title = `UserSim — ${name} study`;
   document.getElementById("product-badge").textContent = name;
-  document.getElementById("report-title").innerHTML = `${escapeHtml(name)} study<br /><em>analytics + traces</em>`;
+  const compared = data?.summary?.comparison;
+  document.getElementById("report-title").innerHTML = compared
+    ? `${escapeHtml(name)} vs ${escapeHtml((compared.sites || []).filter((s) => s.key !== "product").map((s) => s.label).join(", "))}<br /><em>where you win, where you lose</em>`
+    : `${escapeHtml(name)} study<br /><em>analytics + traces</em>`;
   const lede = document.getElementById("report-lede");
   if (!_insights) {
     const status = data?.status || "unknown";
@@ -578,7 +592,9 @@ function showReport(data) {
     };
   }
   _sites = _insights.sites || [];
-  lede.textContent = _insights.lede || _insights.headline || "";
+  lede.textContent = compared
+    ? `${compared.n_personas} buyers tried ${(compared.by_task || []).length} tasks on ${(compared.sites || []).length} products (${compared.n_scored} scored runs), then each picked one to buy.`
+    : _insights.lede || _insights.headline || "";
   if ((data?.status === "abandoned" || data?.status === "error") && data?.error) {
     // A stopped study says so first; its partial charts are not a finished report.
     lede.textContent = `Did not finish: ${data.error} ${lede.textContent}`.trim();

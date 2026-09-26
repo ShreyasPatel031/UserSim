@@ -249,6 +249,57 @@
     .thought-details { margin-top: 0.4rem; }
     .thought-text { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.75rem; margin: 0; }
     .run-issue-flag { margin: 0.35rem 0 0; font-size: 0.8rem; color: #b45309; }
+    /* Comparison study */
+    .cmp-hero { border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.35rem; margin-bottom: 1.25rem; background: #fbfbfb; }
+    .pick-line { margin: 0 0 0.75rem; font-size: clamp(1.3rem, 2.4vw, 1.8rem); letter-spacing: -0.02em; font-weight: 600; }
+    .pick-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem; }
+    .pick-chip { padding: 0.35rem 0.7rem; border-radius: 999px; font-size: 0.9rem; border: 1px solid var(--border); background: #fff; }
+    .pick-chip.site-0 { background: #151515; color: #fff; border-color: #151515; }
+    .pick-chip.site-1 { background: #e8eeff; color: var(--site-1); }
+    .pick-chip.site-2 { background: #e6f5ee; color: var(--site-2); }
+    .pick-chip.site-3 { background: #fff4e5; color: var(--site-3); }
+    .pick-chip.tie { color: var(--text-muted); }
+    .hl { margin: 0 0 0.75rem; font-size: 1rem; line-height: 1.55; max-width: 60rem; }
+    .hl-sentence { margin-right: 0.25rem; }
+    .pickers summary { cursor: pointer; font-weight: 600; font-size: 0.88rem; color: var(--text-muted); }
+    .pickers ul { margin: 0.6rem 0 0; padding-left: 1.1rem; font-size: 0.88rem; }
+    .pickers li { margin-bottom: 0.55rem; }
+    .cite-link { font: inherit; font-size: 0.78rem; background: none; border: 0; padding: 0; color: var(--site-1); cursor: pointer; font-weight: 600; }
+    .cite-link:hover { text-decoration: underline; }
+    .muted { color: var(--text-muted); }
+    .small { font-size: 0.78rem; }
+    .ok { color: var(--pick); }
+    .warn { color: #b45309; }
+    .wl-card { border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; margin-bottom: 0.65rem; background: #fff; }
+    .wl-card.win { border-left: 4px solid var(--pick); }
+    .wl-card.loss { border-left: 4px solid #b45309; }
+    .wl-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.35rem; font-size: 0.86rem; margin-bottom: 0.45rem; }
+    .wl-meta { color: var(--text-muted); font-size: 0.8rem; }
+    .wl-body { display: grid; grid-template-columns: 120px 1fr; gap: 0.7rem; }
+    .wl-reason { margin: 0 0 0.35rem; font-size: 0.86rem; }
+    .wl-card blockquote { margin: 0 0 0.35rem; padding-left: 0.6rem; border-left: 2px solid var(--border-strong); font-size: 0.8rem; color: var(--text-muted); }
+    .shot.mini { display: block; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: #111; height: 80px; }
+    .shot.mini img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+    .cmp-grid td.num, .cmp-grid th.num { text-align: center; font-variant-numeric: tabular-nums; }
+    .cmp-grid td.pick { outline: 2px solid var(--pick); outline-offset: -2px; font-weight: 700; }
+    .pick-mark { font-size: 0.7rem; color: var(--pick); font-weight: 700; }
+    .lvl { display: inline-block; margin-top: 0.2rem; padding: 0.05rem 0.35rem; border-radius: 4px; font-size: 0.68rem; font-weight: 600; background: var(--bg-muted); color: var(--text-muted); }
+    .lvl-in_product { background: #e6f5ee; color: var(--pick); }
+    .lvl-clear_evidence { background: #e8eeff; color: var(--site-1); }
+    .lvl-vague_marketing { background: #fff4e5; color: var(--site-3); }
+    .lvl-wall_or_nothing { background: #fde8e8; color: #b42318; }
+    .fi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem; }
+    .fi-card { border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; font-size: 0.84rem; }
+    .fi-card h4 { margin: 0 0 0.5rem; display: flex; gap: 0.5rem; align-items: center; }
+    .fi-card dl { margin: 0 0 0.4rem; }
+    .fi-card dt { color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.4rem; }
+    .fi-card dd { margin: 0.1rem 0 0; }
+    .fix-list { margin: 0; padding-left: 0; list-style: none; }
+    .fix { padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+    .tab-jump { font: inherit; font-weight: 600; padding: 0.5rem 0.9rem; border-radius: 999px; border: 1px solid var(--border-strong); background: #fff; cursor: pointer; }
+    .debug-block { margin-top: 1.5rem; border: 1px dashed var(--border-strong); border-radius: 12px; padding: 0.75rem 1rem; }
+    .debug-block > summary { cursor: pointer; font-weight: 600; color: var(--text-muted); }
+    .debug-block[open] > summary { margin-bottom: 1rem; }
   </style>
 </head>
 <body>
@@ -291,6 +342,7 @@
     </section>
   </main>
 
-  <script src="/static/report.js?v=53"></script>
+  <script src="/static/report_compare.js?v=1"></script>
+  <script src="/static/report.js?v=54"></script>
 </body>
 </html>

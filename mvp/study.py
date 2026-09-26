@@ -3938,6 +3938,14 @@ async def _run_study_body(
                 print(f"verdict summary skipped: {verdict_exc!r}", flush=True)
         except Exception as insight_exc:  # noqa: BLE001
             print(f"report insights failed: {insight_exc!r}", flush=True)
+        if any(isinstance((r or {}).get("comparison_score"), dict) for r in study.agent_results or []):
+            try:
+                from mvp.comparison import apply_comparison_llm
+
+                touch("Each buyer picks a product")
+                await asyncio.wait_for(apply_comparison_llm(study), timeout=75)
+            except Exception as cmp_exc:  # noqa: BLE001
+                print(f"comparison picks skipped: {cmp_exc!r}", flush=True)
         finish_clocks(study)
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
