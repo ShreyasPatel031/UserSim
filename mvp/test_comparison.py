@@ -129,6 +129,12 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(c["losses"][0]["task"], "Score health")
         self.assertIn("quote", c["losses"][0]["competitor_evidence"])
 
+    def test_refs_stripped_from_text(self):
+        from mvp.comparison import _strip_refs
+
+        self.assertEqual(_strip_refs("Kolanut leads in drafting (R2)."), "Kolanut leads in drafting.")
+        self.assertEqual(_strip_refs("It worked (R1, R3) and failed [R4]."), "It worked and failed.")
+
     def test_refs_resolve(self):
         from mvp.comparison import _refs, _resolve
 

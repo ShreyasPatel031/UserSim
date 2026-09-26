@@ -282,6 +282,11 @@ def _rank_of(tiers: list[list[str]], site: str) -> int | None:
     return None
 
 
+def _strip_refs(text: Any) -> str:
+    out = re.sub(r"\s*[\(\[]\s*R\d+(?:\s*,\s*R\d+)*\s*[\)\]]", "", str(text or ""))
+    return re.sub(r"\s+([.,;])", r"\1", out).strip()
+
+
 def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
     """Per-task winners, per-persona picks, wins/losses and strengths vs each rival. None without scores."""
     runs = [
@@ -302,6 +307,13 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
     personas = {str(p.get("id")): p for p in (study.get("personas") or []) if isinstance(p, dict)}
     specs = {str(t.get("prompt") or ""): t for t in (study.get("task_specs") or []) if isinstance(t, dict)}
     llm = dict((study.get("summary") or {}).get("comparison_llm") or {})
+    # Run refs (R3) are prompt plumbing; the page links the citation instead.
+    llm["headline"] = [
+        {**h, "text": _strip_refs(h.get("text"))} for h in (llm.get("headline") or []) if isinstance(h, dict)
+    ]
+    llm["picks"] = [
+        {**p, "why": _strip_refs(p.get("why"))} for p in (llm.get("picks") or []) if isinstance(p, dict)
+    ]
 
     def favored_key(value: str) -> str:
         if not value:
