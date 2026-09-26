@@ -657,6 +657,153 @@ def _claim(text: str, evidence: list[dict[str, Any]]) -> dict[str, Any] | None:
     return {"claim": text, "evidence": cited[:3]}
 
 
+_AUTH_PATH_RE = re.compile(r"/(?:login|log-in|signin|sign-in|signup|sign-up|register|join|auth)\b", re.I)
+
+
+def _short_page(url: str) -> str:
+    host, path, _query = _page_key(url)
+    if not host:
+        return url[:80]
+    return (host + ("" if path == "/" else path))[:90]
+
+
+def _step_ax(step: dict[str, Any]) -> str:
+    for key in ("accessibility_tree", "ax_tree"):
+        text = str(step.get(key) or "").strip()
+        if text:
+            return text[:1500]
+    return ""
+
+
+def _trace_evidence(run: dict[str, Any], step: dict[str, Any], detail: str) -> dict[str, Any] | None:
+    """Cite one real trace step plus this run's uploaded final screenshot."""
+    shot = str(run.get("final_screenshot_url") or run.get("final_screenshot") or "").strip()
+    if not shot or not isinstance(step.get("step"), int):
+        return None
+    step_url = str(step.get("url") or "").strip()
+    ax = _step_ax(step)
+    if not step_url and not ax:
+        return None
+    return {
+        "agent_id": str(run.get("agent_id") or ""),
+        "persona_name": str(run.get("persona_name") or "Simulated user"),
+        "task_title": _task_title(run),
+        "step": int(step["step"]),
+        "step_url": step_url,
+        "url": step_url,
+        "accessibility_tree": ax,
+        "screenshot_url": shot,
+        "final_screenshot": shot,
+        "final_screenshot_url": shot,
+        "final_url": str(run.get("final_url") or step_url),
+        "action": str(step.get("action") or "")[:180],
+        "detail": detail[:220],
+    }
+
+
+def _acted_steps(run: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        s
+        for s in (run.get("trace") or [])
+        if isinstance(s, dict) and isinstance(s.get("step"), int) and int(s["step"]) >= 1
+    ]
+
+
+def _run_done(run: dict[str, Any]) -> bool:
+    failed = run.get("failed_step") if isinstance(run.get("failed_step"), dict) else {}
+    return str(failed.get("phase") or "") == "done" or str(run.get("stop_reason") or "") == "done"
+
+
+def trace_claims(
+    product: list[dict[str, Any]],
+    product_url: str,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Strengths and weaknesses read straight from product traces.
+
+    Only runs that left the page they opened on are cited. Each claim names
+    the task, the action and the page it produced, and cites the step plus
+    the run's final screenshot. Nothing is written that a step does not show.
+    """
+    strong: dict[str, list[dict[str, Any]]] = {}
+    strong_label: dict[str, str] = {}
+    weak: dict[str, list[dict[str, Any]]] = {}
+    weak_label: dict[str, str] = {}
+    totals: dict[str, int] = {}
+    for run in product:
+        totals[_task_title(run).lower()] = totals.get(_task_title(run).lower(), 0) + 1
+    for run in product:
+        start = str(run.get("site_url") or product_url or "")
+        steps = _acted_steps(run)
+        if not steps or not changed_page_state(run, start):
+            continue
+        title = _task_title(run) or "Task"
+        final_url = str(run.get("final_url") or steps[-1].get("url") or "")
+        final_page = _short_page(final_url)
+        moved = [s for s in steps if s.get("changed") is True]
+        if _run_done(run) and not _AUTH_PATH_RE.search(final_url):
+            key_step = moved[-1] if moved else steps[-1]
+            action = " ".join(str(key_step.get("action") or "").split())[:80]
+            text = (
+                f"{title}: \u201c{action}\u201d reached {final_page} in {len(steps)} "
+                f"step{'s' if len(steps) != 1 else ''}"
+            )
+            key = f"{title.lower()}|{final_page}"
+            ev = _trace_evidence(run, key_step, text)
+            if ev:
+                strong.setdefault(key, []).append(ev)
+                strong_label.setdefault(key, f"{title}: agents reached {final_page} by \u201c{action}\u201d")
+            continue
+        # Not done. Say where the path ended and why, from the trace itself.
+        stop = str(run.get("stop_reason") or "")
+        failed = run.get("failed_step") if isinstance(run.get("failed_step"), dict) else {}
+        reason = str(failed.get("reason") or stop or "goal not shown")
+        if stop == "needs_account" or _AUTH_PATH_RE.search(final_url):
+            key = f"{title.lower()}|account"
+            label = (
+                f"{title}: the path needs an account \u2014 agents were sent to "
+                f"{final_page} before they could finish"
+            )
+        else:
+            key = f"{title.lower()}|{final_page}"
+            label = (
+                f"{title}: after {len(steps)} steps agents ended on {final_page} "
+                f"without reaching the goal ({reason})"
+            )
+        ev = _trace_evidence(run, steps[-1], label)
+        if ev:
+            weak.setdefault(key, []).append(ev)
+            weak_label.setdefault(key, label)
+        for step in steps:
+            if step.get("changed") is False:
+                action = " ".join(str(step.get("action") or "").split())[:80]
+                page = _short_page(str(step.get("url") or final_url))
+                k2 = f"nochange|{action.lower()}|{page}"
+                lab = f"\u201c{action}\u201d changed nothing on {page}"
+                ev2 = _trace_evidence(run, step, lab)
+                if ev2:
+                    weak.setdefault(k2, []).append(ev2)
+                    weak_label.setdefault(k2, lab)
+                break
+
+    def _rank(groups: dict[str, list[dict[str, Any]]], labels: dict[str, str]) -> list[dict[str, Any]]:
+        out: list[dict[str, Any]] = []
+        for key, evs in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+            title = key.split("|", 1)[0]
+            n = totals.get(title) or len(evs)
+            text = labels[key]
+            if not key.startswith("nochange|"):
+                text = f"{text} ({len(evs)} of {n} runs)"
+            else:
+                text = f"{text} ({len(evs)} run{'s' if len(evs) != 1 else ''})"
+            claim = _claim(text, evs)
+            if claim:
+                claim["source"] = "trace"
+                out.append(claim)
+        return out
+
+    return _rank(strong, strong_label), _rank(weak, weak_label)
+
+
 def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
     runs, run_issues = _split_runs(study)
     product_url = str(study.get("url") or "")
@@ -739,6 +886,13 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
             weaknesses.append(claim)
         if len(weaknesses) >= 3:
             break
+
+    # Trace-backed claims first: they cite a step past the opening page.
+    t_strengths, t_weaknesses = trace_claims(product, product_url)
+    have = {c["claim"] for c in strengths}
+    strengths = (t_strengths + [c for c in strengths if c["claim"] not in {t["claim"] for t in t_strengths}])[:3]
+    weaknesses = (t_weaknesses + [c for c in weaknesses if c["claim"] not in {t["claim"] for t in t_weaknesses}])[:3]
+    del have
 
     stuck = [r for r in product if _stuck_on_open(r, start_host)]
     stuck_ratio = (len(stuck) / len(product)) if product else 0.0
