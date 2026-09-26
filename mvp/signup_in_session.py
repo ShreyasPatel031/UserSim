@@ -629,6 +629,12 @@ async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any])
 
     out: dict[str, Any] = {"type": snap.get("captcha", "")[:80], "ok": False, "method": ""}
     ctype = str(snap.get("captcha") or "").lower()
+
+    def _left(cap_s: float) -> float:
+        # Solver waits (audio 90s, CapSolver 150s) used to run past the signup
+        # deadline, so the caller's wait_for fired and the agent reported a bare
+        # TimeoutError() with no email, steps or last page (Asana p1/p2).
+        return min(cap_s, float(spend.get("deadline") or time.time() + 1e6) - time.time() - 8)
     try:
         # Only a checked anchor counts. Calendly (reCAPTCHA Enterprise v2 on
         # recaptcha.net) also carries a filled g-recaptcha-response from an
@@ -643,7 +649,9 @@ async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any])
         from mvp.signup_captcha_audio import solve_recaptcha_audio
 
         try:
-            res = await asyncio.wait_for(solve_recaptcha_audio(page), timeout=90)
+            if _left(90) < 10:
+                raise TimeoutError("no time left for audio")
+            res = await asyncio.wait_for(solve_recaptcha_audio(page), timeout=_left(90))
         except Exception as exc:  # noqa: BLE001
             res = {"ok": False, "method": "audio", "detail": repr(exc)[:120]}
         out["audio"] = res
@@ -665,6 +673,9 @@ async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any])
             pass
     if not _capsolver_key():
         out["method"] = "no_capsolver_key"
+        return out
+    if _left(150) < 15:
+        out["method"] = "no_time_left"
         return out
     cap_usd = float(os.environ.get("MVP_SIGNUP_CAPTCHA_SITE_CAP_USD", "1.50"))
     if spend.get("usd", 0.0) + 0.003 > cap_usd:
@@ -688,7 +699,7 @@ async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any])
     os.environ["MVP_CAPTCHA_BB_WAIT_S"] = "0"
     os.environ["MVP_CAPTCHA_HCAPTCHA_BB_WAIT_S"] = "0"
     try:
-        res = await asyncio.wait_for(cap.solve_captcha_on_page(page), timeout=150)
+        res = await asyncio.wait_for(cap.solve_captcha_on_page(page), timeout=_left(150))
     except Exception as exc:  # noqa: BLE001
         res = {"ok": False, "method": "solver_error", "detail": repr(exc)[:120]}
     spend["usd"] = spend.get("usd", 0.0) + (0.003 if "capsolver" in str(res.get("method", "")) or "api" in str(res.get("method", "")) else 0.0)
@@ -731,7 +742,7 @@ async def signup_in_session(
     steps: list[str] = []
     history: list[str] = []
     captcha_log: list[dict[str, Any]] = []
-    spend: dict[str, Any] = {"usd": 0.0, "calls": 0, "site": site}
+    spend: dict[str, Any] = {"usd": 0.0, "calls": 0, "site": site, "deadline": deadline}
     ident: dict[str, str] = {}
     last_snap: dict[str, Any] = {}
     result: dict[str, Any] = {
@@ -943,7 +954,7 @@ async def signup_in_session(
                     # Without CapSolver, a second attempt will not help — release the
                     # Browserbase session instead of burning another 60–120s.
                     fails = sum(1 for c in captcha_log if not c.get("ok"))
-                    if method in {"no_capsolver_key", "site_cap_reached"} or fails >= 2:
+                    if method in {"no_capsolver_key", "site_cap_reached", "no_time_left"} or fails >= 2:
                         return _finish(False, f"captcha_unsolved ({method})")
                 await _settle(page)
                 continue
