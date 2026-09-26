@@ -655,11 +655,11 @@
       "updated_at": "2026-09-25T23:55:56.191384+00:00"
     },
     "notion.so": {
-      "reproducible": false,
-      "last_reason": "captcha_unsolved",
-      "last_detail": "need_solver_api:hcaptcha/recaptcha sitekey=b3fa1b6e-8d5c-4d16-b7ac-f3e6f162c01a type=hcaptcha \u2014 Browserbase+OSS could not produce a token; set MVP_CAPTCHA_API_KEY (CapSolver/2Captcha) or Browserbase Verified",
-      "last_alias_tag": "notionfullb10",
-      "last_ok": false,
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "notion6d47b91",
+      "last_ok": true,
       "attempts": [
         {
           "host": "notion.so",
@@ -723,9 +723,27 @@
           "balance_before": 19.991,
           "balance_after": 19.991,
           "at": "2026-09-26T00:03:33.242040+00:00"
+        },
+        {
+          "host": "notion.so",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 333.4,
+          "alias_tag": "notion6d47b91",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "unknown",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/e9badd76-e862-4e3b-b598-f5c5cc09a6e7",
+          "attempt": 2,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T07:58:48.371995+00:00"
         }
       ],
-      "updated_at": "2026-09-26T00:03:33.242040+00:00"
+      "updated_at": "2026-09-26T07:58:48.371995+00:00"
     },
     "dropbox.com": {
       "reproducible": true,
@@ -1852,11 +1870,11 @@
       "updated_at": "2026-09-26T03:19:31.061334+00:00"
     },
     "substack.com": {
-      "reproducible": false,
-      "last_reason": "timeout",
+      "reproducible": true,
+      "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "substackhonest10",
-      "last_ok": false,
+      "last_alias_tag": "substack6d47b90",
+      "last_ok": true,
       "attempts": [
         {
           "host": "substack.com",
@@ -1908,15 +1926,33 @@
           "balance_before": null,
           "balance_after": null,
           "at": "2026-09-26T03:27:11.583389+00:00"
+        },
+        {
+          "host": "substack.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 171.7,
+          "alias_tag": "substack6d47b90",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/a3b66ada-2f1b-4d3d-bd98-17b519329353",
+          "attempt": 3,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T07:53:14.454812+00:00"
         }
       ],
-      "updated_at": "2026-09-26T03:27:11.583389+00:00"
+      "updated_at": "2026-09-26T07:53:14.454812+00:00"
     },
     "hubspot.com": {
       "reproducible": false,
-      "last_reason": "captcha_unsolved",
-      "last_detail": "The CAPTCHA is persistently blocking progress despite multiple attempts to solve it using the `solve_captcha()` tool and clicking the 'Verify' button. The 'Continue' button remains disabled.",
-      "last_alias_tag": "hubspotfullb10",
+      "last_reason": "not_signed_in",
+      "last_detail": "",
+      "last_alias_tag": "hubspot6d47b92",
       "last_ok": false,
       "attempts": [
         {
@@ -1951,9 +1987,27 @@
           "balance_before": 19.991,
           "balance_after": 19.991,
           "at": "2026-09-26T01:47:21.211611+00:00"
+        },
+        {
+          "host": "hubspot.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "not_signed_in",
+          "detail": "",
+          "elapsed_s": 51.0,
+          "alias_tag": "hubspot6d47b92",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/842e8ed6-f24c-4963-af8a-2a3e98364355",
+          "attempt": 4,
+          "balance_before": null,
+          "balance_after": null,
+          "at": "2026-09-26T07:59:39.932135+00:00"
         }
       ],
-      "updated_at": "2026-09-26T01:47:21.211611+00:00"
+      "updated_at": "2026-09-26T07:59:39.932135+00:00"
     },
     "smartsheet.com": {
       "reproducible": true,
@@ -2461,9 +2515,10 @@
       "updated_at": "2026-09-25T23:53:01.580956+00:00"
     }
   },
-  "updated_at": "2026-09-26T03:39:51.445541+00:00",
+  "updated_at": "2026-09-26T07:59:39.932684+00:00",
   "reproducible": [
     "linear.app",
+    "notion.so",
     "dropbox.com",
     "zoom.us",
     "canva.com",
@@ -2487,6 +2542,7 @@
     "wordpress.com",
     "wix.com",
     "pinterest.com",
+    "substack.com",
     "smartsheet.com",
     "zapier.com",
     "make.com",
@@ -2512,14 +2568,12 @@
     "hotjar.com",
     "hubspot.com",
     "loom.com",
-    "notion.so",
     "reddit.com",
     "shopify.com",
-    "substack.com",
     "supabase.com",
     "trello.com",
     "whimsical.com"
   ],
-  "score": "41/60",
-  "reproducible_count": 41
+  "score": "43/60",
+  "reproducible_count": 43
 }
