@@ -50,14 +50,43 @@ class SignupHelpers(unittest.TestCase):
 
 
 class SignupHopeless(unittest.TestCase):
-    def test_trello_hopeless_without_gmail(self) -> None:
+    def test_every_site_hopeless_without_gmail(self) -> None:
+        from unittest import mock
+
+        with mock.patch("mvp.signup_inbox.gmail_available", return_value=False):
+            for url in ("https://trello.com/signup", "https://linear.app/", "https://asana.com/"):
+                reason = signup_hopeless_without_keys(url)
+                self.assertIn("gmail_inbox_missing", reason or "", url)
+
+    def test_create_inbox_gmail_only_no_fallback(self) -> None:
         import os
-        os.environ.pop("GMAIL_USER", None)
-        os.environ.pop("GMAIL_APP_PASSWORD", None)
-        os.environ.pop("MVP_SIGNUP_INBOX", None)
-        reason = signup_hopeless_without_keys("https://trello.com/signup")
-        self.assertIsNotNone(reason)
-        self.assertIn("email_rejected", reason or "")
+        from unittest import mock
+
+        import mvp.signup_inbox as si
+
+        self.assertFalse(hasattr(si, "MailTmInbox"))
+        self.assertFalse(hasattr(si, "GuerrillaInbox"))
+        with mock.patch.object(si, "gmail_available", return_value=False):
+            with self.assertRaises(si.GmailInboxMissing):
+                si.create_inbox("clickup.com", "clickup")
+        with mock.patch.dict(os.environ, {"MVP_SIGNUP_INBOX": "mailtm"}):
+            with self.assertRaises(si.GmailInboxMissing):
+                si.create_inbox("clickup.com", "clickup")
+
+    def test_create_inbox_gmail_alias_fresh_per_signup(self) -> None:
+        import os
+        from unittest import mock
+
+        import mvp.signup_inbox as si
+
+        env = {"GMAIL_USER": "someone@gmail.com", "GMAIL_APP_PASSWORD": "x" * 16}
+        with mock.patch.dict(os.environ, env):
+            os.environ.pop("MVP_SIGNUP_INBOX", None)
+            a = si.create_inbox("clickup.com", "clickup")
+            b = si.create_inbox("clickup.com", "clickup")
+        self.assertEqual(a.backend, "gmail")
+        self.assertTrue(a.address.startswith("someone+clickup") and a.address.endswith("@gmail.com"), a.address)
+        self.assertNotEqual(a.address, b.address)
 
     def test_miro_hopeless_without_capsolver(self) -> None:
         import os
@@ -68,7 +97,10 @@ class SignupHopeless(unittest.TestCase):
         self.assertIn("captcha", reason or "")
 
     def test_linear_not_hopeless(self) -> None:
-        reason = signup_hopeless_without_keys("https://linear.app/")
+        from unittest import mock
+
+        with mock.patch("mvp.signup_inbox.gmail_available", return_value=True):
+            reason = signup_hopeless_without_keys("https://linear.app/")
         self.assertIsNone(reason)
 
     def test_competitor_timeout_default(self) -> None:

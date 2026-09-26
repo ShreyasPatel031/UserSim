@@ -3,14 +3,14 @@
 Each signup gets a never-reused address and a way to read the verification
 code or magic link sent to it.
 
-Backends, in order:
-  * ``gmail``  -- Gmail plus/dotted alias of the vault base address, read over
-                  IMAP (same scheme as ``mvp.identity`` / ``mvp.email_codes``).
-                  Used when a Gmail app password is available.
-  * ``mailtm`` -- a throwaway mailbox on the public mail.tm API (mail.gw as a
-                  fallback). Used when no Gmail app password is on the machine.
+The only backend is ``gmail``: a Gmail plus-alias of GMAIL_USER with a random
+suffix per signup (``shreyashfs+notion3fa9c1@gmail.com``), read over IMAP with
+GMAIL_APP_PASSWORD (same scheme as ``mvp.identity`` / ``mvp.email_codes``).
 
-``MVP_SIGNUP_INBOX=gmail|mailtm`` forces one.
+Throwaway inboxes (mail.tm, mail.gw, Guerrilla Mail) are not used: most
+products block their domains (ClickUp DOM_001, Notion, Trello, Calendly), and
+the user asked that they never be used. If Gmail credentials are missing,
+``create_inbox`` raises ``GmailInboxMissing``; it never falls back.
 """
 
 from __future__ import annotations
@@ -22,8 +22,6 @@ import string
 import time
 from html import unescape
 from typing import Any
-
-import httpx
 
 _URL_RE = re.compile(r"https?://[^\s<>\"')\]]+", re.I)
 _SKIP_LINK = (
@@ -131,120 +129,14 @@ class Inbox:
         return None
 
 
-_DOMAIN_CACHE: dict[str, tuple[str, float]] = {}
+GMAIL_MISSING_MSG = (
+    "Gmail signup inbox missing: set GMAIL_USER and GMAIL_APP_PASSWORD "
+    "(throwaway inboxes are disabled)"
+)
 
 
-class MailTmInbox(Inbox):
-    """Throwaway mailbox on the mail.tm API (or mail.gw, same API)."""
-
-    backend = "mailtm"
-
-    def _req(self, method: str, path: str, **kw: Any) -> httpx.Response:
-        """mail.tm rate-limits (429, sometimes an HTML body). Back off and retry."""
-        last: httpx.Response | None = None
-        for attempt in range(8):
-            r = self.client.request(method, f"{self.base}{path}", **kw)
-            if r.status_code != 429 and "json" in (r.headers.get("content-type") or "") or r.status_code in (201, 204):
-                return r
-            last = r
-            try:
-                wait = float(r.headers.get("retry-after") or 0)
-            except ValueError:
-                wait = 0.0
-            time.sleep(min(10.0, max(wait, 1.0 + attempt * 1.5)))
-        assert last is not None
-        return last
-
-    def __init__(self, base: str = "https://api.mail.tm", tag: str = "") -> None:
-        self.base = base.rstrip("/")
-        self.client = httpx.Client(timeout=20.0)
-        self._cache: dict[str, dict[str, Any]] = {}
-        cached = _DOMAIN_CACHE.get(self.base)
-        if cached and time.time() - cached[1] < 600:
-            domain = cached[0]
-        else:
-            doms = self._req("GET", "/domains").json()
-            members = doms.get("hydra:member") if isinstance(doms, dict) else doms
-            domain = next(d["domain"] for d in members if d.get("isActive", True))
-            _DOMAIN_CACHE[self.base] = (domain, time.time())
-        local = (re.sub(r"[^a-z0-9]", "", tag.lower())[:10] or "user") + _rand(6)
-        self.address = f"{local}@{domain}"
-        self.password = _rand(16, string.ascii_letters + string.digits)
-        r = self._req("POST", "/accounts", json={"address": self.address, "password": self.password})
-        if r.status_code >= 300:
-            raise RuntimeError(f"mail.tm account create {r.status_code}: {r.text[:200]}")
-        t = self._req("POST", "/token", json={"address": self.address, "password": self.password})
-        t.raise_for_status()
-        self.client.headers["Authorization"] = f"Bearer {t.json()['token']}"
-
-    def messages(self, newer_than: float) -> list[dict[str, Any]]:
-        r = self._req("GET", "/messages")
-        if r.status_code >= 300:
-            return []
-        data = r.json()
-        items = data.get("hydra:member") if isinstance(data, dict) else data
-        out = []
-        for item in items or []:
-            if item["id"] in self._cache:
-                out.append(self._cache[item["id"]])
-                continue
-            full = self._req("GET", f"/messages/{item['id']}").json()
-            html = full.get("html") or []
-            html = "\n".join(html) if isinstance(html, list) else str(html or "")
-            text = full.get("text") or _strip_html(html)
-            links = _links_from_html(html) + _URL_RE.findall(text or "")
-            row = {
-                "anchors": anchors_from_html(html),
-                "id": item["id"],
-                "subject": full.get("subject") or "",
-                "sender": ((full.get("from") or {}).get("address") or ""),
-                "text": text,
-                "links": links,
-            }
-            self._cache[item["id"]] = row
-            out.append(row)
-        return out
-
-
-class GuerrillaInbox(Inbox):
-    """Throwaway mailbox on the Guerrilla Mail API (different domains than mail.tm)."""
-
-    backend = "guerrilla"
-    API = "https://api.guerrillamail.com/ajax.php"
-
-    def __init__(self, tag: str = "") -> None:
-        self.client = httpx.Client(timeout=20.0, headers={"User-Agent": "Mozilla/5.0"})
-        r = self.client.get(self.API, params={"f": "get_email_address", "lang": "en"}).json()
-        self.sid = r["sid_token"]
-        user = (re.sub(r"[^a-z0-9]", "", tag.lower())[:10] or "user") + _rand(6)
-        r = self.client.get(self.API, params={"f": "set_email_user", "email_user": user, "sid_token": self.sid}).json()
-        self.sid = r.get("sid_token") or self.sid
-        domain = os.environ.get("MVP_SIGNUP_GUERRILLA_DOMAIN", "").strip()
-        addr = r["email_addr"]
-        self.address = f"{addr.split('@')[0]}@{domain}" if domain else addr
-        self._cache: dict[str, dict[str, Any]] = {}
-
-    def messages(self, newer_than: float) -> list[dict[str, Any]]:
-        r = self.client.get(self.API, params={"f": "check_email", "seq": 0, "sid_token": self.sid}).json()
-        out = []
-        for item in r.get("list") or []:
-            mid = str(item.get("mail_id"))
-            if "guerrillamail" in str(item.get("mail_from", "")).lower():
-                continue  # welcome mail
-            if mid in self._cache:
-                out.append(self._cache[mid])
-                continue
-            full = self.client.get(self.API, params={"f": "fetch_email", "email_id": mid, "sid_token": self.sid}).json()
-            html = str(full.get("mail_body") or "")
-            text = _strip_html(html)
-            row = {
-                "id": mid, "subject": full.get("mail_subject") or "", "sender": full.get("mail_from") or "",
-                "text": text, "links": _links_from_html(html) + _URL_RE.findall(text),
-                "anchors": anchors_from_html(html),
-            }
-            self._cache[mid] = row
-            out.append(row)
-        return out
+class GmailInboxMissing(RuntimeError):
+    """GMAIL_USER / GMAIL_APP_PASSWORD are required for every in-run signup."""
 
 
 class GmailAliasInbox(Inbox):
@@ -258,7 +150,7 @@ class GmailAliasInbox(Inbox):
 
         creds = _imap_creds()
         if not creds:
-            raise RuntimeError("no Gmail app password")
+            raise GmailInboxMissing(GMAIL_MISSING_MSG)
         self.username, self.app_password = creds
         # Never reuse an alias: parallel agents on one site all got
         # shreyashfs+notion@ and collided (one account, the rest "try again
@@ -314,20 +206,17 @@ def gmail_available() -> bool:
 
 
 def create_inbox(host: str, tag: str, *, dotted: bool = False) -> Inbox:
-    """Fresh inbox for one signup attempt."""
+    """Fresh Gmail plus-alias inbox for one signup attempt. Gmail only.
+
+    Raises ``GmailInboxMissing`` when Gmail credentials are absent (or when
+    MVP_SIGNUP_INBOX asks for anything other than gmail). No throwaway fallback.
+    """
     forced = (os.environ.get("MVP_SIGNUP_INBOX") or "").strip().lower()
-    if forced not in {"mailtm", "guerrilla"} and (forced == "gmail" or gmail_available()):
-        return GmailAliasInbox(host, tag, dotted=dotted)
-    last: Exception | None = None
-    if forced == "guerrilla":
-        return GuerrillaInbox(tag=tag)
-    for base in ("https://api.mail.tm", "https://api.mail.gw"):
-        try:
-            return MailTmInbox(base, tag=tag)
-        except Exception as exc:  # noqa: BLE001
-            last = exc
-    try:
-        return GuerrillaInbox(tag=tag)
-    except Exception as exc:  # noqa: BLE001
-        last = exc
-    raise RuntimeError(f"no inbox backend: {last!r}")
+    if forced and forced != "gmail":
+        raise GmailInboxMissing(
+            f"MVP_SIGNUP_INBOX={forced!r} is not supported: signup uses Gmail plus-aliases only"
+        )
+    if not gmail_available():
+        print(f"[signup_inbox] ERROR {GMAIL_MISSING_MSG}", flush=True)
+        raise GmailInboxMissing(GMAIL_MISSING_MSG)
+    return GmailAliasInbox(host, tag, dotted=dotted)

@@ -7,8 +7,8 @@ generic, model-guided signup:
   read the page (interactive elements, indexed)  ->  one Gemini call picks a few
   form actions  ->  run them  ->  re-read ...
 
-using a fresh email inbox (``mvp.signup_inbox``: Gmail alias when an app password
-is available, else a throwaway mail.tm mailbox), reading the emailed code or
+using a fresh Gmail plus-alias inbox (``mvp.signup_inbox``; Gmail only, no
+throwaway inboxes, fails loudly without GMAIL_USER/GMAIL_APP_PASSWORD), reading the emailed code or
 magic link, clearing a captcha only when one actually blocks the form, and then
 walking onboarding until the signed-in product workspace loads. A reload must
 still show the workspace before it counts as ``ok``.
@@ -673,7 +673,7 @@ async def signup_in_session(
     ``signup_url``: optional URL of the wall the task loop hit (used as the start
     page). The page is left on the signed-in workspace when ``ok`` is True.
     """
-    from mvp.signup_inbox import create_inbox
+    from mvp.signup_inbox import GmailInboxMissing, create_inbox
 
     started = time.time()
     limit = float(timeout_s or os.environ.get("MVP_SIGNUP_IN_SESSION_TIMEOUT_S") or DEFAULT_TIMEOUT_S)
@@ -710,6 +710,9 @@ async def signup_in_session(
 
     try:
         inbox = await asyncio.to_thread(create_inbox, site, tag)
+    except GmailInboxMissing as exc:
+        print(f"[signup] ERROR {site}: {exc}", flush=True)
+        return _finish(False, "gmail_inbox_missing: set GMAIL_USER and GMAIL_APP_PASSWORD")
     except Exception as exc:  # noqa: BLE001
         return _finish(False, f"inbox_error: {exc!r}"[:120])
     ident = _identity(persona, inbox.address)
@@ -777,7 +780,6 @@ async def signup_in_session(
         empty_waits = 0
         email_submitted = False
         rejects = 0
-        rejected_domains: list[str] = []
         banner_clicks = 0
         verifying = 0
         pending_links: list[str] = []
@@ -1007,47 +1009,12 @@ async def signup_in_session(
             )
             if email_submitted and rej and email_box:
                 rejects += 1
-                # One clear rejection is enough when we have no durable Gmail alias —
-                # swapping mail.tm↔guerrilla just burns another minute on the same wall.
-                try:
-                    from mvp.signup_inbox import gmail_available as _gmail_ok
-                    have_gmail = bool(_gmail_ok())
-                except Exception:
-                    have_gmail = False
-                if rejects >= 1 and not have_gmail:
-                    steps.append(f"email rejected: {rej.group(0)} ({ident['email'].split('@')[1]}) — no Gmail alias")
-                    return _finish(False, f"email_rejected: {rej.group(0)} ({ident['email'].split('@')[1]})")
+                # Gmail is the only inbox; there is nothing to swap to. Two
+                # clear rejections of the same Gmail alias end the attempt.
                 if rejects >= 2:
-                    steps.append(f"email rejected: {rej.group(0)} ({ident['email'].split('@')[1]})")
-                    rejected_domains.append(ident["email"].split("@")[1])
-                    swapped = None
-                    if inbox.backend in {"mailtm", "guerrilla"} and len(rejected_domains) < 2:
-                        from mvp.signup_inbox import GuerrillaInbox, MailTmInbox
-
-                        try:
-                            if inbox.backend == "mailtm":
-                                swapped = await asyncio.to_thread(GuerrillaInbox, tag)
-                            else:
-                                swapped = await asyncio.to_thread(MailTmInbox, "https://api.mail.tm", tag)
-                        except Exception:
-                            swapped = None
-                    if swapped is None:
-                        return _finish(False, f"email_rejected: {rej.group(0)} ({', '.join(rejected_domains)})")
-                    inbox = swapped
-                    ident["email"] = inbox.address
-                    result["email"] = inbox.address
-                    result["inbox"] = inbox.backend
-                    email_submitted = False
-                    rejects = 0
-                    email_since = time.time()
-                    steps.append(f"retrying with a new inbox on {inbox.address.split('@')[1]}")
-                    try:
-                        await page.goto(str(snap.get("url")), wait_until="domcontentloaded", timeout=30000)
-                    except Exception:
-                        pass
-                    await _settle(page, 1500)
-                    note = "The previous email address was rejected. Use {email} (a new address) and submit again."
-                    continue
+                    dom = ident["email"].split("@")[1]
+                    steps.append(f"email rejected: {rej.group(0)} ({dom})")
+                    return _finish(False, f"email_rejected: {rej.group(0)} ({dom})")
             acts_now = [a for a in (decision.get("actions") or []) if isinstance(a, dict)
                         and str(a.get("do")) not in {"wait"}]
             if ident.get("email") and ident["email"].lower() in (str(snap.get("body")) + " " + str(snap.get("url"))).lower().replace("%40", "@"):

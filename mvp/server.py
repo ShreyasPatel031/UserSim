@@ -44,6 +44,15 @@ async def _prime_browser_sessions() -> None:
 
 
 @app.on_event("startup")
+async def _check_signup_inbox() -> None:
+    """Signup uses Gmail plus-aliases only; say so loudly at boot if creds are missing."""
+    from mvp.signup_inbox import GMAIL_MISSING_MSG, gmail_available
+
+    if not gmail_available():
+        print(f"ERROR {GMAIL_MISSING_MSG}. Every in-run signup will fail with gmail_inbox_missing.", flush=True)
+
+
+@app.on_event("startup")
 async def _recover_interrupted() -> None:
     """Studies a previous process left running are marked interrupted, and their browsers released."""
     from mvp.study import recover_interrupted_studies

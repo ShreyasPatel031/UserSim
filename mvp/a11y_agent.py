@@ -3015,16 +3015,6 @@ def _gmail_configured() -> bool:
         )
 
 
-# Hosts that reject throwaway inboxes without a durable Gmail alias.
-_THROWAYWAY_REJECT_HOSTS = (
-    "trello.com",
-    "atlassian.com",
-    "notion.so",
-    "notion.com",
-    "miro.com",
-    "calendly.com",
-    "clickup.com",  # API: "Users from this domain are blocked." (DOM_001) for mail.tm
-)
 # Hosts that need CapSolver for signup on Browserbase (checkbox/audio alone fails).
 _CAPTCHA_HARD_HOSTS = (
     "miro.com",
@@ -3043,8 +3033,9 @@ def signup_hopeless_without_keys(url: str) -> str | None:
         return None
     if any(h in host for h in _CAPTCHA_HARD_HOSTS) and not _capsolver_configured():
         return "captcha_unsolved (no_capsolver_key)"
-    if any(h in host for h in _THROWAYWAY_REJECT_HOSTS) and not _gmail_configured():
-        return "email_rejected (no durable inbox)"
+    if not _gmail_configured():
+        # Gmail plus-aliases are the only signup inbox (no throwaway fallback).
+        return "gmail_inbox_missing (set GMAIL_USER and GMAIL_APP_PASSWORD)"
     return None
 
 
