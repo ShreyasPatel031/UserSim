@@ -22,6 +22,7 @@ from __future__ import annotations
 import json
 import os
 import threading
+import time
 from contextvars import ContextVar
 from datetime import datetime, timezone
 from pathlib import Path
@@ -356,20 +357,24 @@ def get_balance(key: str | None = None) -> float | None:
     token = key if key is not None else capsolver_key()
     if not token:
         return None
-    try:
-        payload = httpx.post(
-            "https://api.capsolver.com/getBalance",
-            json={"clientKey": token},
-            timeout=20.0,
-        ).json()
-    except Exception:
-        return None
-    if payload.get("errorId"):
-        return None
-    try:
-        return round(float(payload.get("balance")), 6)
-    except (TypeError, ValueError):
-        return None
+    for attempt in range(3):
+        try:
+            payload = httpx.post(
+                "https://api.capsolver.com/getBalance",
+                json={"clientKey": token},
+                timeout=20.0,
+            ).json()
+        except Exception:
+            time.sleep(0.4 * (attempt + 1))
+            continue
+        if not isinstance(payload, dict) or payload.get("errorId"):
+            time.sleep(0.4 * (attempt + 1))
+            continue
+        try:
+            return round(float(payload.get("balance")), 6)
+        except (TypeError, ValueError):
+            return None
+    return None
 
 
 def record_balance(site: str, *, when: str) -> float | None:

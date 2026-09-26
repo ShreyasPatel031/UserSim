@@ -18,6 +18,7 @@ import argparse
 import asyncio
 import os
 import sys
+import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -150,7 +151,7 @@ def _targets() -> list[dict[str, Any]]:
 def _solve_one(target: dict[str, Any]) -> dict[str, Any]:
     os.environ["MVP_CAPTCHA_EXPERIMENT"] = "1"
     from mvp.captcha import _capsolver_solve
-    from mvp.captcha_spend import ensure_attempt, get_balance, last_outcome
+    from mvp.captcha_spend import ensure_attempt, last_outcome
 
     base = {
         "site": target["site"],
@@ -167,11 +168,6 @@ def _solve_one(target: dict[str, Any]) -> dict[str, Any]:
         ensure_attempt(target["site"])
     except Exception as exc:  # noqa: BLE001
         base["error"] = f"{type(exc).__name__}:{str(exc)[:120]}"
-        return base
-    balance = get_balance()
-    if balance is not None and balance - float(target["price"]) < 1.0:
-        base["error"] = "balance_floor"
-        base["floor"] = True
         return base
     token = _capsolver_solve(
         "",
@@ -232,7 +228,12 @@ def run_spend(*, workers: int) -> None:
     logged = 0
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         while True:
-            balance = get_balance()
+            balance = None
+            for _ in range(5):
+                balance = get_balance()
+                if balance is not None:
+                    break
+                time.sleep(1.5)
             print(
                 f"spend balance {balance} ledger {spent_usd()} logged {logged}",
                 flush=True,
