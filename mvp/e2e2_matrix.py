@@ -259,7 +259,9 @@ def _fetch_png(base: str, url: str, *, study_id: str = "", agent_id: str = "") -
         try:
             from mvp.gcs_store import gcs_download_bytes, screenshot_gcs_uri
 
-            for name in ("step_0.png", "bbox_1.png", "bbox_0.png"):
+            # final.png is the shot the goal judge scores. Opening frames are
+            # only a fallback when that upload is missing.
+            for name in ("final.png", "step_0.png", "bbox_1.png", "bbox_0.png"):
                 raw = gcs_download_bytes(screenshot_gcs_uri(study_id, agent_id, name))
                 if raw and raw[:8] == b"\x89PNG\r\n\x1a\n" and len(raw) > 2000:
                     return raw

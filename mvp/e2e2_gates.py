@@ -1321,7 +1321,7 @@ Final DOM text (may be truncated):
 
 PASS goal_reached=true only when the screenshot and the final URL/DOM together show the goal was actually reached (for example the requested issue form or created issue, a drawing on the canvas, an export/share dialog, or the specific destination the task asked for).
 
-For a task about creating an issue, PASS only when the final URL path contains /docs/creating-issues, or the screenshot shows a create-issue composer with an issue title field and a description field. FAIL that task when the screenshot is the marketing homepage, or a logged-in dashboard that has no create-issue control.
+For a task about creating an issue, PASS only when the screenshot shows a create-issue composer with an issue title field and a description field. FAIL that task when the final URL is a marketing page or a docs page (including /docs/creating-issues), or a logged-in dashboard that has no create-issue control.
 
 FAIL goal_reached=false when:
 - This is still the opening screen, marketing homepage, or unchanged first canvas

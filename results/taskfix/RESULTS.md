@@ -1,3 +1,13 @@
+# Docs page is not create-issue success
+
+`https://linear.app/docs/creating-issues` is not a finished "create a new issue" task. #46 already rejected that URL. Local 4/4 and any self-graded 8/8 do not count.
+
+`goal_visible` is true for an issue task only when the live tree has an issue title field and a description field, and the URL is not the marketing homepage and not a docs page. After every click the loop re-reads that tree. A docs link is not clicked unless the task text itself says docs. The fallback click is New issue, the issue title field, or Sign up. Hero mocks (`Mmx1Wq_` / `qM9FAa_`, no href) stay inert.
+
+Each product run writes `final.png` and uploads it to the study screenshot store (`final.png`). The grade fetch tries that object before an opening frame. Strength and weakness notes name the control that moved (or failed to move) and cite a numbered step past the first screen, with that final PNG.
+
+`prime_sessions` stays 0. No 24-wide run was started. This note is not a pass. Hand a finished study to PR #46 (`bc-10cbc813`) with `--grade-study`. Integration `bc-e15ccdff` should cherry-pick only `mvp/a11y_agent.py`, `mvp/study.py`, `mvp/server.py`, `mvp/e2e2_matrix.py`, and `src/capability/gemini_config.py` from this tip, and must not replace their page-open slot logic. In `mvp/server.py`, take only the hunk that returns the clocks the agent wrote on GET while a study is running. Do not call `_align_visible_clocks` at poll time.
+
 # Model-loop studies for PR #46
 
 These are not a pass. Only PR #46 (`bc-10cbc813`) grades, with `--grade-study`.

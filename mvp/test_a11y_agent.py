@@ -76,10 +76,23 @@ class A11yAgentTest(unittest.TestCase):
                 {"url": "https://linear.app/acme/team/ENG/active", "title": "Linear", "text": "Inbox My issues"},
             )
         )
-        self.assertTrue(
+        self.assertFalse(
             goal_visible(
                 "Find how to create a new issue",
                 {"url": "https://linear.app/docs/creating-issues", "title": "Create issues – Linear Docs"},
+            )
+        )
+        self.assertFalse(
+            goal_visible(
+                "Find how to create a new issue",
+                {
+                    "url": "https://linear.app/docs/creating-issues",
+                    "title": "Create issues – Linear Docs",
+                    "nodes": [
+                        {"role": "textbox", "name": "Issue title"},
+                        {"role": "textarea", "name": "Description"},
+                    ],
+                },
             )
         )
         self.assertFalse(
@@ -205,7 +218,9 @@ class A11yAgentTest(unittest.TestCase):
             ]
         )
         self.assertTrue(any("Pricing" in line and "pricing" in line for line in easy))
+        self.assertTrue(any("easy" in line and "clear" in line for line in easy))
         self.assertTrue(any("changed nothing" in line for line in friction))
+        self.assertTrue(any("unclear" in line for line in friction))
         self.assertFalse(any("free plan is listed" in line for line in easy))
 
     def test_canvas_flicker_does_not_excuse_a_repeated_click(self) -> None:
@@ -412,6 +427,29 @@ class A11yAgentTest(unittest.TestCase):
             {"role": "a", "name": "Create issues", "href": "https://linear.app/docs/creating-issues"},
         ]
         self.assertIsNone(tree_action("Find how to create a new issue", {"nodes": home}))
+        composer = tree_action(
+            "Find how to create a new issue",
+            {
+                "nodes": [
+                    *home,
+                    {"role": "button", "name": "New issue", "href": ""},
+                    {"role": "a", "name": "Sign up", "href": "https://linear.app/signup"},
+                ]
+            },
+        )
+        self.assertEqual(composer["name"], "New issue")
+        self.assertNotIn("/docs", composer["href"])
+        offered = _nodes_for_model(
+            [
+                {"role": "a", "name": "Documentation", "href": "https://linear.app/docs"},
+                {"role": "button", "name": "New issue", "href": ""},
+                {"role": "a", "name": "Sign up", "href": "https://linear.app/signup"},
+            ],
+            set(),
+            "Find how to create a new issue",
+        )
+        offered_names = [node["name"] for node in offered]
+        self.assertEqual(offered_names, ["New issue", "Sign up"])
         self.assertEqual(
             tree_action("Open the documentation for creating issues", {"nodes": home})["name"],
             "Documentation",
@@ -428,17 +466,17 @@ class A11yAgentTest(unittest.TestCase):
     def test_account_tasks_stay_account_tasks(self) -> None:
         original = "Create a new issue in your workspace"
         self.assertEqual(achievable_without_account("https://linear.app/", original), original)
-        self.assertIsNone(
-            tree_action(
-                original,
-                {
-                    "nodes": [
-                        {"role": "a", "name": "Documentation", "href": "https://linear.app/docs"},
-                        {"role": "a", "name": "Sign up", "href": "https://linear.app/signup"},
-                    ]
-                },
-            )
+        signup = tree_action(
+            original,
+            {
+                "nodes": [
+                    {"role": "a", "name": "Documentation", "href": "https://linear.app/docs"},
+                    {"role": "a", "name": "Sign up", "href": "https://linear.app/signup"},
+                ]
+            },
         )
+        self.assertEqual(signup["name"], "Sign up")
+        self.assertNotIn("/docs", signup["href"])
         kept = _nodes_for_model(
             [
                 {"role": "a", "name": "Sign up", "href": "https://linear.app/signup"},
@@ -447,7 +485,7 @@ class A11yAgentTest(unittest.TestCase):
             set(),
             original,
         )
-        self.assertEqual([node["name"] for node in kept], ["Sign up", "Docs"])
+        self.assertEqual([node["name"] for node in kept], ["Sign up"])
 
     def test_account_wall_returns_the_signup_url(self) -> None:
         self.assertIsNone(
@@ -490,6 +528,86 @@ class A11yAgentTest(unittest.TestCase):
         )
         self.assertEqual(modal["reason"], "modal")
         self.assertIn("sign-up", modal["signup_url"])
+
+    def test_strength_and_weakness_cite_a_step_past_the_first_screen(self) -> None:
+        from mvp.a11y_agent import publish_final_shot
+        from mvp.e2e2_gates import _qualifying_claims
+        from mvp.report_insights import build_report_insights
+
+        easy, friction = notes_from_trace(
+            [
+                {"step": 0, "action": "Opened https://linear.app/", "url": "https://linear.app/"},
+                {
+                    "step": 1,
+                    "action": "click New issue",
+                    "url": "https://linear.app/",
+                    "changed": False,
+                },
+                {
+                    "step": 2,
+                    "action": "click Pricing",
+                    "url": "https://linear.app/pricing",
+                    "changed": True,
+                },
+            ]
+        )
+        shot = "/api/studies/s/agents/a/screenshots/final.png"
+        trace = [
+            {
+                "step": 0,
+                "action": "Opened https://linear.app/",
+                "url": "https://linear.app/",
+                "state_sig": {"text": "homepage " * 12, "canvas": ""},
+            },
+            {
+                "step": 1,
+                "action": "click New issue",
+                "url": "https://linear.app/",
+                "changed": False,
+                "state_sig": {"text": "homepage " * 12, "canvas": ""},
+            },
+            {
+                "step": 2,
+                "action": "click Pricing",
+                "url": "https://linear.app/pricing",
+                "changed": True,
+                "accessibility_tree": "0 link Pricing plans",
+                "state_sig": {"text": "pricing plans " * 12, "canvas": ""},
+            },
+        ]
+        publish_final_shot(trace, shot)
+        self.assertEqual(trace[2]["screenshot_url"], shot)
+        self.assertFalse(trace[0].get("screenshot_url"))
+        run = {
+            "agent_id": "a",
+            "site_key": "product",
+            "site_url": "https://linear.app/",
+            "task_title": "Look for pricing or how to get started",
+            "final_url": "https://linear.app/pricing",
+            "final_screenshot_url": shot,
+            "final_screenshot": shot,
+            "what_was_easy": easy,
+            "friction_points": friction,
+            "num_steps": 3,
+            "trace": trace,
+        }
+        study = {"id": "s", "url": "https://linear.app/", "agent_results": [run]}
+        insights = build_report_insights(study)
+        self.assertGreaterEqual(len(insights["strengths"]), 1)
+        self.assertGreaterEqual(len(insights["weaknesses"]), 1)
+        runs_by_id = {"a": run}
+
+        def loads(url: str) -> bool:
+            return str(url).endswith("final.png")
+
+        self.assertGreaterEqual(
+            len(_qualifying_claims(insights["strengths"], runs_by_id, study, loads)),
+            1,
+        )
+        self.assertGreaterEqual(
+            len(_qualifying_claims(insights["weaknesses"], runs_by_id, study, loads)),
+            1,
+        )
 
 
 if __name__ == "__main__":

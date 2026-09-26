@@ -577,13 +577,10 @@ def goal_visible(task: str, read: dict[str, Any]) -> bool:
     if kind == "changelog":
         return "changelog" in path or "changelog" in title
     if kind == "issue":
-        # Success is the public create-issues doc, or a real composer.
-        # The marketing homepage and a dashboard with no create control are not.
-        if "/docs/creating-issues" in path or path.rstrip("/").endswith("/docs/create-issues"):
-            return True
-        if ("create issues" in title or "creating issues" in title) and "docs" in title:
-            return True
-        if path in {"", "/"}:
+        # A composer is an issue title field and a description field.
+        # The marketing homepage, any docs URL (including /docs/creating-issues),
+        # and a dashboard with no create control are not done.
+        if _docs_or_marketing(url, title):
             return False
         title_box = False
         desc_box = False
@@ -670,6 +667,28 @@ def asks_for_docs(task: str) -> bool:
     """True only when the task text itself asks for docs."""
     low = (task or "").lower()
     return "documentation" in low or bool(re.search(r"\bdocs\b", low))
+
+
+def _docs_or_marketing(url: str, title: str = "") -> bool:
+    """Marketing homepage or a docs article. Neither is an issue composer."""
+    path = _page_key(url)[1].lower()
+    if path in {"", "/"}:
+        return True
+    if "/docs" in path:
+        return True
+    low_title = (title or "").lower()
+    return "docs" in low_title
+
+
+_DOCS_NAMES = frozenset(
+    {"documentation", "docs", "create issues", "creating issues"}
+)
+_COMPOSER_WORDS = ("new issue", "create issue", "add issue")
+
+
+def _docs_href(href: str) -> bool:
+    path = _page_key(href)[1].lower() if href else ""
+    return "/docs" in path
 
 
 _AUTH_PATH = re.compile(
@@ -780,9 +799,13 @@ def notes_from_trace(trace: list[dict[str, Any]]) -> tuple[list[str], list[str]]
         url = str(step.get("url") or "").strip()
         decision = step.get("decision") if isinstance(step.get("decision"), dict) else {}
         if step.get("changed") is False:
-            friction.append(f"{action} changed nothing" + (f" on {url}" if url else ""))
+            friction.append(
+                f"{action} was unclear and changed nothing" + (f" on {url}" if url else "")
+            )
         elif step.get("changed") is True:
-            easy.append(f"{action} changed the page" + (f" to {url}" if url else ""))
+            easy.append(
+                f"{action} was easy and opened a clear page" + (f" at {url}" if url else "")
+            )
         model_easy = " ".join(str(decision.get("easy") or "").split())
         model_friction = " ".join(str(decision.get("friction") or "").split())
         if model_easy:
@@ -925,6 +948,36 @@ def _shape_chosen(history: list[str] | None, text: str) -> bool:
     return any(any(word in item for word in _SHAPE_WORDS) for item in done)
 
 
+def _find_composer_target(
+    nodes: list[dict[str, Any]],
+    skip: set[str],
+) -> dict[str, Any] | None:
+    """Real New issue / composer control. Docs links are never the goal.
+
+    Hero mocks are already dropped (inert, no href). Sign up is the way into
+    the app when the live tree has no composer control.
+    """
+    signup = None
+    for node in nodes:
+        name = str(node.get("name") or "").strip().lower()
+        href = str(node.get("href") or "").strip()
+        href_l = href.lower()
+        if not name or name in skip or (href_l and href_l in skip):
+            continue
+        if _docs_href(href) or name in _DOCS_NAMES:
+            continue
+        if any(word in name for word in _COMPOSER_WORDS):
+            return node
+        role = str(node.get("role") or "").lower()
+        if role in {"textbox", "input", "textarea"} and "title" in name and "issue" in name:
+            return node
+        if signup is None and (
+            name in {"sign up", "log in", "sign in", "login", "signup"} or _auth_href(href)
+        ):
+            signup = node
+    return signup
+
+
 def _find_issue_target(
     nodes: list[dict[str, Any]],
     skip: set[str],
@@ -970,8 +1023,11 @@ def tree_action(
     skipped = {item.lower() for item in (skip or set())}
     nodes = _live_nodes(read)
     text = str((read or {}).get("text") or "")
-    if kind == "issue" and asks_for_docs(task):
-        found = _find_issue_target(nodes, skipped)
+    if kind == "issue":
+        if asks_for_docs(task):
+            found = _find_issue_target(nodes, skipped)
+        else:
+            found = _find_composer_target(nodes, skipped)
         if found:
             return _click_from_node(found)
         return None
@@ -1167,6 +1223,45 @@ def stamp_published_step(
             step["accessibility_tree"] = ax
             step["ax_tree"] = ax
     return step
+
+
+def publish_final_shot(trace: list[dict[str, Any]], shot_url: str) -> None:
+    """Put the final PNG on a step that left the page the run opened.
+
+    Insights cite a numbered step that has a screenshot. The judge loads this
+    same final PNG. A step that is still the opening URL is not that citation.
+    """
+    if not shot_url or not trace:
+        return
+    numbered = [
+        step
+        for step in trace
+        if isinstance(step, dict) and isinstance(step.get("step"), int)
+    ]
+    opening = ""
+    for step in numbered:
+        if int(step["step"]) == 0:
+            opening = str(step.get("url") or "")
+            break
+    past = None
+    for step in numbered:
+        if int(step["step"]) <= 0:
+            continue
+        url = str(step.get("url") or "")
+        if url and _page_key(url) != _page_key(opening):
+            past = step
+    if past is None:
+        for step in numbered:
+            if int(step["step"]) <= 0:
+                continue
+            if step.get("changed") is True:
+                past = step
+    if past is None:
+        return
+    past["screenshot_url"] = shot_url
+    past["final_screenshot_url"] = shot_url
+    if past.get("changed") is False and str(past.get("outcome") or "") in {"", "neutral"}:
+        past["outcome"] = "friction"
 
 
 def _stamp_observation(
@@ -1732,6 +1827,12 @@ def _nodes_for_model(
         href = str(node.get("href") or "").strip().lower()
         if hide_auth and (name in _AUTH_NAMES or _auth_href(href)):
             continue
+        if (
+            task_kind(task) == "issue"
+            and not asks_for_docs(task)
+            and (_docs_href(href) or name in _DOCS_NAMES)
+        ):
+            continue
         if name and name in skipped:
             continue
         if href and href in skipped:
@@ -1771,6 +1872,10 @@ async def _model_action(
         "A homepage preview of the product is not the real app. "
         "If the task needs an account and the list has Sign up or Log in, click that. "
         "Do not open docs unless the task asks for docs. "
+        "For creating an issue, click New issue or the issue title field in the app. "
+        "A docs page is not the goal. "
+        "done for an issue only when an issue title field and a description field are both visible "
+        "and the URL is not a marketing or docs page. "
         "If the task says pricing, export, share, or help, click the control whose name matches. "
         "If the task says draw and the list has a shape tool, click that tool, then drag on the canvas. "
         "The shape tool is whichever name is in the list (rectangle, ellipse, line, or similar). "
@@ -2235,6 +2340,22 @@ async def complete_task_on_page(
             previous_sig = None
             stuck_streak = 0
             continue
+        if task_kind(task) == "issue" and not asks_for_docs(task):
+            href = str(action.get("href") or "")
+            picked = str(action.get("name") or "").strip().lower()
+            if _docs_href(href) or picked in _DOCS_NAMES:
+                composer = _find_composer_target(_live_nodes(read), skip)
+                if composer is not None:
+                    action = _click_from_node(composer)
+                    source = "tree"
+                else:
+                    if picked:
+                        skip.add(picked)
+                    if href:
+                        skip.add(href.lower())
+                    changed_nothing = True
+                    history.append("skipped docs page")
+                    continue
         chosen = str(action.get("name") or "").strip().lower()
         if chosen and chosen in skip and str(action.get("act")) == "click":
             changed_nothing = True
@@ -2750,6 +2871,11 @@ async def _run_a11y_agent_unlocked(
                 await page.screenshot(path=str(path), full_page=False, timeout=8000)
                 shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
                 shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
+                from mvp.opening_shot import upload_screenshot
+
+                uploaded = await upload_screenshot(study_id, agent_id, path)
+                if not uploaded:
+                    print(f"[{agent_id}] final PNG was not uploaded", flush=True)
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
                 if not shot_url:
@@ -2759,11 +2885,23 @@ async def _run_a11y_agent_unlocked(
                         "step": step_no,
                     }
             if trace:
+                if shot_url:
+                    publish_final_shot(trace, shot_url)
+                last = trace[-1] if isinstance(trace[-1], dict) else {}
+                opening_url = ""
+                for step in trace:
+                    if isinstance(step, dict) and step.get("step") == 0:
+                        opening_url = str(step.get("url") or "")
+                        break
+                last_url = str(last.get("url") or read.get("url") or "")
+                last_left = bool(last_url) and _page_key(last_url) != _page_key(opening_url)
+                if last.get("changed") is True:
+                    last_left = True
                 stamp_published_step(
                     trace[-1],
                     task=task_prompt,
                     read=read,
-                    screenshot_url=shot_url,
+                    screenshot_url=shot_url if last_left else "",
                 )
                 if on_step is not None and shot_url:
                     maybe = on_step(trace[-1])

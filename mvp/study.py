@@ -3402,6 +3402,12 @@ async def run_study(
                         }
                         for step in run.get("trace") or []:
                             step["outcome"] = outcomes.get(step.get("step")) or "neutral"
+                        if a11y_boot is not None:
+                            shot = str(run.get("final_screenshot_url") or "")
+                            if shot:
+                                from mvp.a11y_agent import publish_final_shot
+
+                                publish_final_shot(run.get("trace") or [], shot)
                         result = {**run, **feedback, "mode": "a11y" if a11y_boot is not None else "browser"}
                         if a11y_boot is not None:
                             if run.get("friction_points"):
