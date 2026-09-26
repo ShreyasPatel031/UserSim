@@ -322,8 +322,16 @@ class A11yBoot:
         self.install_fast_plan()
         n = int(getattr(self.study, "max_agents", 0) or 0) or len(self.study.tasks or []) or 24
         n = max(1, min(24, n))
-        self._tasks.append(asyncio.create_task(self._fill_pool(n)))
-        self._tasks.append(asyncio.create_task(self._publish_all()))
+
+        async def _boot() -> None:
+            # The shared read needs one session now. The other 23 must not
+            # stand in front of it on the create semaphore.
+            await self._create_one(0)
+            if n > 1:
+                self._tasks.append(asyncio.create_task(self._fill_pool(n - 1, offset=1)))
+            await self._publish_all()
+
+        self._tasks.append(asyncio.create_task(_boot()))
 
     async def _playwright(self) -> Any:
         if self._pw is None:
@@ -332,25 +340,25 @@ class A11yBoot:
             self._pw = await async_playwright().start()
         return self._pw
 
-    async def _fill_pool(self, n: int) -> None:
+    async def _create_one(self, i: int) -> None:
         from capability.browserbase_client import create_session, study_session_owner
 
-        async def one(i: int) -> None:
-            try:
-                bb = await asyncio.to_thread(
-                    create_session,
-                    proxies=False,
-                    keep_alive=True,
-                    solve_captchas=False,
-                    advanced_stealth=False,
-                    owner=study_session_owner(),
-                    study_id=self.study.id,
-                )
-                await self.pool.put(bb)
-            except Exception as exc:  # noqa: BLE001
-                print(f"[a11y] session {i+1}/{n} failed: {exc!r}", flush=True)
+        try:
+            bb = await asyncio.to_thread(
+                create_session,
+                proxies=False,
+                keep_alive=True,
+                solve_captchas=False,
+                advanced_stealth=False,
+                owner=study_session_owner(),
+                study_id=self.study.id,
+            )
+            await self.pool.put(bb)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[a11y] session {i + 1} failed: {exc!r}", flush=True)
 
-        await asyncio.gather(*[one(i) for i in range(n)])
+    async def _fill_pool(self, n: int, offset: int = 0) -> None:
+        await asyncio.gather(*[self._create_one(offset + i) for i in range(n)])
 
     async def _connect(self, bb: Any) -> tuple[Any, Any]:
         pw = await self._playwright()
@@ -496,7 +504,7 @@ class A11yBoot:
                 sites.append((f"competitor_{i+1}", str(comp)))
         async def _one(key: str, url: str) -> None:
             try:
-                bb = await asyncio.wait_for(self.pool.get(), timeout=12)
+                bb = await asyncio.wait_for(self.pool.get(), timeout=40)
             except asyncio.TimeoutError:
                 print(f"[a11y] no session for {key}", flush=True)
                 return
@@ -525,7 +533,7 @@ class A11yBoot:
                 if handle.get("site_key") == site_key:
                     return self._handles.pop(i)
         try:
-            bb = await asyncio.wait_for(self.pool.get(), timeout=12)
+            bb = await asyncio.wait_for(self.pool.get(), timeout=40)
         except asyncio.TimeoutError:
             async with self._handle_cv:
                 if self._handles:
