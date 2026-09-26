@@ -537,7 +537,13 @@ def goal_visible(task: str, read: dict[str, Any]) -> bool:
         # Creating an issue is done when the composer is on screen. A how-to
         # task is done on the public creating-issues doc.
         if task_needs_account(task):
-            return "issue title" in text and "description" in text
+            names = " ".join(
+                str(node.get("name") or "")
+                for node in ((read or {}).get("nodes") or [])
+                if isinstance(node, dict)
+            ).lower()
+            blob = f"{text} {names}"
+            return "issue title" in blob and "description" in blob
         if "creating-issues" in path or "create-issues" in path:
             return True
         if "create issues" in title or "creating issues" in title:
@@ -1838,6 +1844,7 @@ async def complete_task_on_page(
     changed_nothing = False
     saw_opening = False
     acted_once = False
+    nudged_issue = False
     model_misses = 0
     offhost_refusals = 0
     done_rejects = 0
@@ -1910,6 +1917,21 @@ async def complete_task_on_page(
                 drew = True
                 read["drew"] = True
             break
+        if (
+            not nudged_issue
+            and task_needs_account(task)
+            and task_kind(task) == "issue"
+            and _host(str(read.get("url") or "")) == "linear.app"
+            and not _is_auth_wall(read)
+        ):
+            # Linear opens the issue composer with C. "Create new issue"
+            # often changes nothing once the agent is signed in.
+            nudged_issue = True
+            try:
+                await page.keyboard.press("Escape")
+                await page.keyboard.press("c")
+            except Exception:
+                pass
         signature = progress_signature(
             url=str(read.get("url") or ""),
             screenshot_hash="",

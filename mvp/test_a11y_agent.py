@@ -294,6 +294,19 @@ class A11yAgentTest(unittest.TestCase):
                 {"url": "https://linear.app/team/issue/new", "text": "Issue title\nDescription"},
             )
         )
+        self.assertTrue(
+            goal_visible(
+                "Create an issue",
+                {
+                    "url": "https://linear.app/usersim/team/active",
+                    "text": "Inbox",
+                    "nodes": [
+                        {"name": "Issue title"},
+                        {"name": "Add description..."},
+                    ],
+                },
+            )
+        )
 
 
 if __name__ == "__main__":
