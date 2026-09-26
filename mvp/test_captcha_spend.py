@@ -21,13 +21,15 @@ class SpendGateTests(unittest.TestCase):
                 "CAPSOLVER_API_KEY": "unit-test-key",
                 "MVP_CAPTCHA_PAID_HOSTS": "trello.com",
                 "MVP_CAPTCHA_API": "capsolver",
+                "CAPTCHA_METHOD_POLICY": str(Path(self.tmp.name) / "no-policy.json"),
             },
             clear=False,
         )
         self.env.start()
         # Context vars leak across tests if a previous test bound a site.
-        from mvp.captcha_spend import bind_signup
+        from mvp.captcha_spend import bind_signup, reset_runtime_state
 
+        reset_runtime_state()
         bind_signup("", 0)
 
     def tearDown(self) -> None:
@@ -187,7 +189,10 @@ class SpendGateTests(unittest.TestCase):
         self.assertIsNone(token)
         self.assertEqual(self._rows()[-1]["reason"], "solve_attempt_cap")
         self.assertEqual(attempt, 1)
-        begin_signup_attempt("trello.com")
+        from mvp import captcha_spend as spend
+
+        for _ in range(spend.MAX_SIGNUP_ATTEMPTS - 1):
+            begin_signup_attempt("trello.com")
         with self.assertRaises(SpendCapError):
             begin_signup_attempt("trello.com")
 
@@ -202,9 +207,9 @@ class SpendGateTests(unittest.TestCase):
             task_type="ReCaptchaV2EnterpriseTaskProxyLess",
             task_id="seed-cap",
             solved=True,
-            cost=15.0,
+            cost=19.0,
             balance_before=20.0,
-            balance_after=5.0,
+            balance_after=1.0,
         )
         with patch("mvp.captcha.httpx.post", side_effect=AssertionError("http")):
             token = _capsolver_solve(
@@ -218,6 +223,48 @@ class SpendGateTests(unittest.TestCase):
             )
         self.assertIsNone(token)
         self.assertEqual(self._rows()[-1]["reason"], "total_cap")
+
+    def test_balance_floor_refuses_before_create(self) -> None:
+        from mvp.captcha import _capsolver_solve
+        from mvp.captcha_spend import begin_signup_attempt
+
+        begin_signup_attempt("trello.com")
+
+        def fake_post(url, json=None, timeout=None):  # noqa: A002
+            class Resp:
+                def json(self):
+                    if str(url).endswith("/getBalance"):
+                        return {"errorId": 0, "balance": 0.5}
+                    raise AssertionError(url)
+
+            return Resp()
+
+        with patch("mvp.captcha.httpx.post", side_effect=fake_post):
+            token = _capsolver_solve(
+                "",
+                sitekey="6Le",
+                page_url="https://trello.com/signup",
+                captcha_type="recaptcha_enterprise",
+                action=None,
+                timeout_s=5,
+                blocking=True,
+            )
+        self.assertIsNone(token)
+        self.assertEqual(self._rows()[-1]["reason"], "balance_floor")
+        self.assertNotIn("createTask", self.ledger.read_text())
+
+    def test_experiment_allows_any_host_for_a_priced_task(self) -> None:
+        from mvp.captcha_spend import begin_signup_attempt, refusal_reason
+
+        os.environ["MVP_CAPTCHA_EXPERIMENT"] = "1"
+        begin_signup_attempt("neon.tech")
+        self.assertIsNone(
+            refusal_reason("GeeTestTaskProxyLess", site="neon.tech", attempt=1)
+        )
+        self.assertEqual(
+            refusal_reason("HCaptchaTaskProxyLess", site="neon.tech", attempt=1),
+            "unsupported_or_unpriced",
+        )
 
 
 if __name__ == "__main__":

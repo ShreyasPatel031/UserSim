@@ -1,17 +1,18 @@
-"""CapSolver research budget.
+"""CapSolver experiment budget.
 
 The key is read only from ``CAPSOLVER_API_KEY``. This module never logs it.
 
-Hard caps, enforced before every ``createTask``:
+Hard stops, enforced before every ``createTask``:
 
-- $15 total (the other $5 of a $20 balance stays untouched)
-- $1.50 per site
+- live balance must stay at or above $1.00 (spend the rest of the balance)
+- $19 booked on the ledger (a second brake next to the live floor)
 - 3 solves per signup attempt
-- 2 signup attempts per site
+- 20 signup attempts per site (paired trials, not an open loop)
 
-Only task types on CapSolver's published price list are sent. Arkose/FunCaptcha
-and hCaptcha are not on that list (docs.capsolver.com/en/pricing/, 2026-09-25),
-so those calls are refused with no HTTP request.
+The per-site dollar cap is lifted. Only task types on CapSolver's published
+price list (docs.capsolver.com/en/pricing/ and the task pages, 2026-09-26)
+are sent. hCaptcha and FunCaptcha are not on that list. FunCaptcha may be
+probed once when ``MVP_CAPTCHA_EXPERIMENT=1``; a rejected probe is not retried.
 """
 
 from __future__ import annotations
@@ -27,20 +28,37 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 
 # USD per solve from https://docs.capsolver.com/en/pricing/ (per 1,000 tokens).
+# Task names are the ones on the official task pages (2026-09-26).
 PRICED_TASKS_USD: dict[str, float] = {
     "ReCaptchaV2TaskProxyLess": 0.80 / 1000,
     "ReCaptchaV2EnterpriseTaskProxyLess": 1.00 / 1000,
     "ReCaptchaV3TaskProxyLess": 1.00 / 1000,
     "ReCaptchaV3EnterpriseTaskProxyLess": 3.00 / 1000,
     "AntiTurnstileTaskProxyLess": 1.20 / 1000,
+    "AntiCloudflareTask": 1.20 / 1000,
+    "GeeTestTaskProxyLess": 1.20 / 1000,
+    "MtCaptchaTaskProxyLess": 3.00 / 1000,
+    "AntiAwsWafTaskProxyLess": 2.00 / 1000,
+    "ReCaptchaV2Classification": 0.40 / 1000,
+    "AwsWafClassification": 0.60 / 1000,
+    "ImageToTextTask": 0.40 / 1000,
+    "DatadomeSliderTask": 2.50 / 1000,
 }
 
-TOTAL_CAP_USD = 15.0
-PER_SITE_CAP_USD = 1.50
+# Not on the official support or price list. One createTask, then stop.
+PROBE_TASKS_USD: dict[str, float] = {
+    "FunCaptchaTaskProxyLess": 0.02,
+}
+MAX_PROBES_PER_TASK = 1
+
+# Live getBalance must not fall below this. Ledger cap is the second brake.
+BALANCE_FLOOR_USD = 1.0
+TOTAL_CAP_USD = 19.0
 MAX_SOLVES_PER_ATTEMPT = 3
-MAX_SIGNUP_ATTEMPTS = 2
+MAX_SIGNUP_ATTEMPTS = 20
 
 _LOCK = threading.Lock()
+_INFLIGHT_USD = 0.0
 _SITE: ContextVar[str] = ContextVar("captcha_spend_site", default="")
 _ATTEMPT: ContextVar[int] = ContextVar("captcha_spend_attempt", default=0)
 
@@ -64,6 +82,93 @@ def capsolver_key() -> str:
 def paid_hosts() -> set[str]:
     raw = os.environ.get("MVP_CAPTCHA_PAID_HOSTS") or ""
     return {h.strip().lower().removeprefix("www.") for h in raw.split(",") if h.strip()}
+
+
+def experiment_mode() -> bool:
+    return (os.environ.get("MVP_CAPTCHA_EXPERIMENT") or "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+
+
+def policy_path() -> Path:
+    raw = (os.environ.get("CAPTCHA_METHOD_POLICY") or "").strip()
+    if raw:
+        return Path(raw)
+    return ROOT / "results" / "captcha_spend" / "method_policy.json"
+
+
+def load_method_policy() -> dict[str, Any]:
+    path = policy_path()
+    if not path.is_file():
+        return {}
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def endorsed_task(task_type: str) -> bool:
+    """True when the published signup policy says this task is worth paying for."""
+    policy = load_method_policy()
+    if not policy.get("apply_to_signup"):
+        return False
+    types = policy.get("types") or {}
+    if not isinstance(types, dict):
+        return False
+    for spec in types.values():
+        if not isinstance(spec, dict):
+            continue
+        if spec.get("task") == task_type and spec.get("method") in {
+            "capsolver",
+            "image_to_text",
+            "recaptcha_classification",
+            "capsolver_v2_enterprise",
+        }:
+            return True
+    return False
+
+
+def reset_runtime_state() -> None:
+    """Clear the in-process reserve. Tests and a fresh experiment call this."""
+    global _INFLIGHT_USD
+    with _LOCK:
+        _INFLIGHT_USD = 0.0
+
+
+def task_price(task_type: str) -> float | None:
+    if task_type in PRICED_TASKS_USD:
+        return PRICED_TASKS_USD[task_type]
+    if (
+        task_type in PROBE_TASKS_USD
+        and experiment_mode()
+        and probe_count(task_type) < MAX_PROBES_PER_TASK
+    ):
+        return PROBE_TASKS_USD[task_type]
+    return None
+
+
+def probe_count(task_type: str) -> int:
+    return sum(
+        1
+        for row in _read_rows()
+        if row.get("event") == "createTask" and row.get("task_type") == task_type
+    )
+
+
+def host_allowed(host: str) -> bool:
+    host = (host or "").strip().lower().removeprefix("www.")
+    if not host:
+        return False
+    if experiment_mode():
+        return True
+    allowed = paid_hosts()
+    if "*" in allowed or "all" in allowed:
+        return True
+    return host in allowed
 
 
 def bind_signup(site: str, attempt: int) -> None:
@@ -161,29 +266,54 @@ def begin_signup_attempt(site: str) -> int:
 
 
 def refusal_reason(task_type: str, *, site: str | None = None, attempt: int | None = None) -> str | None:
-    """Why createTask must not be called, or None if it is allowed."""
-    host = (site if site is not None else current_site()).strip().lower()
+    """Why createTask must not be called, or None if the ledger allows it.
+
+    The live $1 balance floor is applied separately by ``claim_spend`` after
+    ``getBalance``, so a refusal here never needs an HTTP call.
+    """
+    host = (site if site is not None else current_site()).strip().lower().removeprefix("www.")
     att = current_attempt() if attempt is None else int(attempt)
-    allowed = paid_hosts()
-    if not host or host not in allowed:
+    if not host_allowed(host) and not endorsed_task(task_type):
         return "host_not_paid"
     if att < 1:
         return "no_signup_attempt"
-    if task_type not in PRICED_TASKS_USD:
+    price = task_price(task_type)
+    if price is None:
         return "unsupported_or_unpriced"
     if solves_for_attempt(host, att) >= MAX_SOLVES_PER_ATTEMPT:
         return "solve_attempt_cap"
-    if spent_usd(site=host) >= PER_SITE_CAP_USD:
-        return "per_site_cap"
     if spent_usd() >= TOTAL_CAP_USD:
         return "total_cap"
-    # A priced solve must not be able to cross the cap by itself.
-    price = PRICED_TASKS_USD[task_type]
     if spent_usd() + price > TOTAL_CAP_USD + 1e-9:
         return "total_cap"
-    if spent_usd(site=host) + price > PER_SITE_CAP_USD + 1e-9:
-        return "per_site_cap"
     return None
+
+
+def claim_spend(task_type: str, balance: float | None) -> str | None:
+    """Reserve list price against the live balance. None means createTask may run."""
+    global _INFLIGHT_USD
+    price = task_price(task_type)
+    if price is None:
+        return "unsupported_or_unpriced"
+    try:
+        bal = None if balance is None else float(balance)
+    except (TypeError, ValueError):
+        bal = None
+    with _LOCK:
+        if bal is None:
+            return "balance_unknown"
+        if bal - _INFLIGHT_USD - price < BALANCE_FLOOR_USD - 1e-9:
+            return "balance_floor"
+        _INFLIGHT_USD = round(_INFLIGHT_USD + price, 6)
+    return None
+
+
+def release_spend(task_type: str) -> None:
+    """Drop a reserve taken by ``claim_spend`` (call once after the task settles)."""
+    global _INFLIGHT_USD
+    price = task_price(task_type) or 0.0
+    with _LOCK:
+        _INFLIGHT_USD = round(max(0.0, _INFLIGHT_USD - price), 6)
 
 
 def get_balance(key: str | None = None) -> float | None:
@@ -251,7 +381,7 @@ def record_task(
             "task_id": task_id,
             "solved": bool(solved),
             "cost": None if cost is None else round(float(cost), 6),
-            "list_price": PRICED_TASKS_USD.get(task_type),
+            "list_price": task_price(task_type),
             "balance_before": balance_before,
             "balance_after": balance_after,
             "balance_delta": delta,

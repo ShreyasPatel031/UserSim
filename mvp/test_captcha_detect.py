@@ -68,6 +68,29 @@ class DetectHtmlTests(unittest.TestCase):
         self.assertEqual(turnstile["callback"], "onTurnstileSuccess")
 
 
+class PoolAndPriorityTests(unittest.TestCase):
+    def test_pool_adds_at_least_60_sites_outside_the_score_file(self) -> None:
+        import json
+        from pathlib import Path
+
+        root = Path(__file__).resolve().parents[1]
+        pool = json.loads((root / "mvp" / "signup_captcha_pool.json").read_text())
+        bench = json.loads((root / "mvp" / "signup_benchmark60.json").read_text())
+        scored = {p["host"] for p in bench["products"]}
+        new_hosts = [s["host"] for s in pool["sites"] if s.get("cohort") == "new"]
+        self.assertGreaterEqual(len(new_hosts), 60)
+        self.assertEqual(len(new_hosts), len(set(new_hosts)))
+        # Known captcha hosts may overlap the 60. New hosts must not.
+        self.assertTrue(set(new_hosts).isdisjoint(scored))
+
+    def test_primary_type_prefers_a_visible_widget(self) -> None:
+        from mvp.captcha_experiment import primary_type
+
+        self.assertEqual(primary_type(["recaptcha_v3", "hcaptcha"]), "hcaptcha")
+        self.assertEqual(primary_type(["cloudflare_challenge", "turnstile"]), "turnstile")
+        self.assertEqual(primary_type([]), "none")
+
+
 class SolverMapTests(unittest.TestCase):
     def test_capsolver_maps_enterprise_and_arkose(self) -> None:
         from mvp.captcha import _solver_task, capsolver_task_type
@@ -76,6 +99,8 @@ class SolverMapTests(unittest.TestCase):
         self.assertEqual(capsolver_task_type("recaptcha_v3_enterprise"), "ReCaptchaV3EnterpriseTaskProxyLess")
         self.assertEqual(capsolver_task_type("arkose"), "FunCaptchaTaskProxyLess")
         self.assertEqual(capsolver_task_type("turnstile"), "AntiTurnstileTaskProxyLess")
+        self.assertEqual(capsolver_task_type("geetest"), "GeeTestTaskProxyLess")
+        self.assertEqual(capsolver_task_type("image_text"), "ImageToTextTask")
         self.assertIsNone(capsolver_task_type("friendly_captcha"))
         arkose = _solver_task(
             "FunCaptchaTaskProxyLess",
