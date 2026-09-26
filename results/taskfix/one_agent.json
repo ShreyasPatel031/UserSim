@@ -9,7 +9,7 @@
     "logs": [
       {
         "step": 1,
-        "observation": "Skip to content \u2192 Product Resources Customers Pricing Now Contact Log in Sign up The product development system for teams and agents The product development system for teams and agents Purpose-built for planning and building products. Designed for the AI era. New Loops \u2192 Linear Pulse Inbox My issues",
+        "observation": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Issue properties Projects Initiatives Cycles Views Find and filter Linear Asks Integrations Analytics Administration Importers Docs Developers Learn Contact support Home Sign up Linear Docs Get an overview of Linear's featur",
         "decision": {
           "act": "click",
           "name": "Documentation",
@@ -25,7 +25,7 @@
       },
       {
         "step": 2,
-        "observation": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Issue properties Projects Initiatives Cycles Views Find and filter Linear Asks Integrations Analytics Administration Importers Docs Developers Learn Contact support Home Sign up Linear Docs Get an overview of Linear's featur",
+        "observation": "Skip to content \u2192 Docs Getting started Account AI Your sidebar Teams Issues Create issues Edit issues Assign and delegate issues Select issues Parent and sub-issues Issue templates Comments and reactions Editor Documents Delete and archive issues Customer Requests Releases Issue properties Projects ",
         "decision": {
           "act": "click",
           "name": "Issues",
@@ -68,7 +68,7 @@
     "logs": [
       {
         "step": 1,
-        "observation": "Skip to content \u2192 Product Resources Customers Pricing Now Contact Log in Sign up The product development system for teams and agents The product development system for teams and agents Purpose-built for planning and building products. Designed for the AI era. New Loops \u2192 Linear Pulse Inbox My issues",
+        "observation": "Skip to content \u2192 Product Resources Customers Pricing Now Contact Log in Sign up Pricing Free $0 Free for everyone Unlimited members 2 teams 250 issues Agent platform Linear Agent Get started Basic $10 per user/month Billed yearly All Free features + 5 teams Unlimited issues Unlimited file uploads A",
         "decision": {
           "act": "click",
           "name": "Pricing",
@@ -95,7 +95,7 @@
     "logs": [
       {
         "step": 1,
-        "observation": "Excalidraw Your drawings are saved in your browser's storage. Browser storage can be cleared unexpectedly. Save your work to a file regularly to avoid losing it. Open Ctrl+O Help ? Live collaboration... Sign up Export, preferences, languages, ... Pick a tool & Start drawing! To move canvas, hold Scr",
+        "observation": "Excalidraw Selected shape actions Stroke Background Stroke width Stroke style Sloppiness Edges Opacity 100 0 Layers Shapes V R D O A L P T N E Excalidraw+ Share Canvas actions 100%",
         "decision": {
           "act": "click",
           "name": "Rectangle",
@@ -111,15 +111,15 @@
       },
       {
         "step": 2,
-        "observation": "Excalidraw Selected shape actions Stroke Background Stroke width Stroke style Sloppiness Edges Opacity 100 0 Layers Shapes V R D O A L P T N E Excalidraw+ Share Canvas actions 100%",
+        "observation": "Excalidraw Selected shape actions Stroke Background Stroke width Stroke style Sloppiness Edges Opacity 100 0 Layers Actions Enter to add text, Ctrl + \u2191\u2193 to create a flowchart Shapes V R D O A L P T N E Excalidraw+ Share Canvas actions 100%",
         "decision": {
           "act": "drag",
-          "name": "52 canvas",
+          "name": "canvas",
           "href": "",
           "role": "canvas",
           "source": "model"
         },
-        "executed": "drag 52 canvas",
+        "executed": "drag canvas",
         "how": "drag",
         "url_after": "https://excalidraw.com/",
         "dom_after": "Excalidraw Selected shape actions Stroke Background Stroke width Stroke style Sloppiness Edges Opacity 100 0 Layers Actions Enter to add text, Ctrl + \u2191\u2193 to create a flowchart Shapes V R D O A L P T N E Excalidraw+ Share Canvas actions 100%",
@@ -138,7 +138,7 @@
     "logs": [
       {
         "step": 1,
-        "observation": "Excalidraw Your drawings are saved in your browser's storage. Browser storage can be cleared unexpectedly. Save your work to a file regularly to avoid losing it. Open Ctrl+O Help ? Live collaboration... Sign up Export, preferences, languages, ... Pick a tool & Start drawing! To move canvas, hold Scr",
+        "observation": "Excalidraw Your drawings are saved in your browser's storage. Browser storage can be cleared unexpectedly. Save your work to a file regularly to avoid losing it. Open Ctrl+O Help ? Live collaboration... Sign up Open Ctrl+O Save to... Export image... Ctrl+Shift+E Live collaboration... Command palette",
         "decision": {
           "act": "click",
           "name": "Menu",
