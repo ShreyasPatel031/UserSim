@@ -8,6 +8,8 @@ from mvp.browser_agent import (
     DEFAULT_LLM_TIMEOUT_S,
     DEFAULT_STEP_TIMEOUT_S,
     DOM_ELEMENT_CAP,
+    EXTRACT_ELEMENT_CAP,
+    _VIEWPORT_EXTRACT_JS,
     _browserbase_profile,
     _cap_dom_elements,
     _cheap_dom_flags,
@@ -15,6 +17,8 @@ from mvp.browser_agent import (
     _last_failed_step,
     _step_is_real_action,
     _surface_swallowed_failure,
+    normalize_viewport_extract,
+    parse_extract_action,
     parse_vision_action,
 )
 
@@ -140,6 +144,48 @@ class BrowserPhaseTest(unittest.TestCase):
         self.assertEqual(empty.screenshot, "abc")
         self.assertEqual(empty.dom_state.selector_map, {})
         self.assertIn("state budget", empty.state_error or "")
+
+    def test_viewport_extract_is_one_expression_capped_at_150(self) -> None:
+        self.assertEqual(EXTRACT_ELEMENT_CAP, 150)
+        self.assertIn("getBoundingClientRect", _VIEWPORT_EXTRACT_JS)
+        self.assertNotIn("DOMSnapshot", _VIEWPORT_EXTRACT_JS)
+        self.assertNotIn("Accessibility.getFullAXTree", _VIEWPORT_EXTRACT_JS)
+        raw = {
+            "url": "https://linear.app/",
+            "title": "Linear",
+            "in_page_ms": 12,
+            "elements": [
+                {"tag": "a", "text": "Pricing", "x": 10, "y": 20, "w": 40, "h": 16, "href": "/pricing"}
+            ]
+            + [{"tag": "button", "text": str(i), "x": 1, "y": 1, "w": 8, "h": 8} for i in range(200)],
+        }
+        got = normalize_viewport_extract(raw)
+        self.assertEqual(len(got["elements"]), 150)
+        self.assertEqual(got["elements"][0]["i"], 1)
+        self.assertEqual(got["elements"][0]["text"], "Pricing")
+        self.assertEqual(got["in_page_ms"], 12)
+        decision = parse_extract_action(
+            {"kind": "click", "index": 1},
+            got["elements"],
+            width=1280,
+            height=800,
+        )
+        self.assertIsNotNone(decision)
+        assert decision is not None
+        self.assertEqual(decision["kind"], "click")
+        self.assertEqual(decision["x"], 30)
+        self.assertEqual(decision["y"], 28)
+
+    def test_extract_loop_does_not_request_browser_state(self) -> None:
+        from pathlib import Path
+
+        src = Path("mvp/browser_agent.py").read_text()
+        loop = src.split("async def _run_extract_loop", 1)[1].split("def _start_background_state", 1)[0]
+        self.assertNotIn("get_browser_state_summary", loop)
+        self.assertNotIn("DOMSnapshot", loop)
+        self.assertIn("_cdp_eval", loop)
+        self.assertIn("_cdp_png", loop)
+        self.assertNotIn("on_step_end", loop)
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import contextvars
 import json
 import os
@@ -1960,6 +1961,501 @@ async def _cdp_insert_text(session: Any, text: str) -> None:
     )
 
 
+# One Runtime.evaluate. Visible controls in the viewport, capped so the walk
+# stays in the tens of milliseconds inside the page.
+EXTRACT_ELEMENT_CAP = 150
+_VIEWPORT_EXTRACT_JS = """(() => {
+  const t0 = performance.now();
+  const vw = window.innerWidth || 1280;
+  const vh = window.innerHeight || 800;
+  const nodes = document.querySelectorAll('a,button,input,textarea,select,summary,[role="button"],[role="link"],[role="tab"],[role="menuitem"],[role="checkbox"],[role="radio"],[contenteditable="true"]');
+  const out = [];
+  const limit = Math.min(nodes.length, 400);
+  for (let k = 0; k < limit && out.length < 150; k++) {
+    const el = nodes[k];
+    const r = el.getBoundingClientRect();
+    if (r.width < 4 || r.height < 4) continue;
+    if (r.bottom <= 0 || r.right <= 0 || r.top >= vh || r.left >= vw) continue;
+    const tag = (el.tagName || '').toLowerCase();
+    const role = el.getAttribute('role') || '';
+    let text = el.getAttribute('aria-label') || el.getAttribute('placeholder') || el.getAttribute('title') || '';
+    if (!text) text = (el.innerText || el.textContent || '');
+    text = String(text).replace(/\\s+/g, ' ').trim().slice(0, 80);
+    const href = String(el.getAttribute('href') || '').slice(0, 160);
+    out.push({tag, role, text, href, x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height)});
+  }
+  return JSON.stringify({url: location.href, title: document.title || '', in_page_ms: Math.round(performance.now() - t0), elements: out});
+})()"""
+
+
+def normalize_viewport_extract(raw: Any, *, limit: int = EXTRACT_ELEMENT_CAP) -> dict[str, Any]:
+    """Keep at most `limit` viewport elements and renumber their indexes."""
+    if isinstance(raw, str):
+        try:
+            raw = json.loads(raw)
+        except json.JSONDecodeError:
+            raw = None
+    if not isinstance(raw, dict):
+        return {"url": "", "title": "", "in_page_ms": None, "elements": []}
+    elements: list[dict[str, Any]] = []
+    for el in raw.get("elements") or []:
+        if len(elements) >= limit:
+            break
+        if not isinstance(el, dict):
+            continue
+        try:
+            x = int(el.get("x") or 0)
+            y = int(el.get("y") or 0)
+            w = int(el.get("w") or 0)
+            h = int(el.get("h") or 0)
+        except (TypeError, ValueError):
+            continue
+        elements.append(
+            {
+                "i": len(elements) + 1,
+                "tag": str(el.get("tag") or "")[:32],
+                "role": str(el.get("role") or "")[:32],
+                "text": str(el.get("text") or "")[:80],
+                "href": str(el.get("href") or "")[:160],
+                "x": x,
+                "y": y,
+                "w": w,
+                "h": h,
+            }
+        )
+    in_page = raw.get("in_page_ms")
+    try:
+        in_page_ms = int(in_page) if in_page is not None else None
+    except (TypeError, ValueError):
+        in_page_ms = None
+    return {
+        "url": str(raw.get("url") or ""),
+        "title": str(raw.get("title") or "")[:200],
+        "in_page_ms": in_page_ms,
+        "elements": elements,
+    }
+
+
+def _element_boxes(elements: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "index": el["i"],
+            "label": el.get("text") or el.get("tag") or "element",
+            "tag": el.get("tag") or "",
+            "x": el.get("x"),
+            "y": el.get("y"),
+            "w": el.get("w"),
+            "h": el.get("h"),
+        }
+        for el in elements
+    ]
+
+
+def _element_lines(elements: list[dict[str, Any]]) -> str:
+    lines = []
+    for el in elements:
+        label = el.get("text") or el.get("tag") or "element"
+        href = f" href={el['href']}" if el.get("href") else ""
+        role = f" role={el['role']}" if el.get("role") else ""
+        lines.append(
+            f"[{el['i']}] {el.get('tag')}{role} {label}{href} "
+            f"{el['x']},{el['y']} {el['w']}x{el['h']}"
+        )
+    return "\n".join(lines)
+
+
+def parse_extract_action(
+    payload: Any,
+    elements: list[dict[str, Any]],
+    *,
+    width: int,
+    height: int,
+) -> dict[str, Any] | None:
+    """Map a model reply to a CDP click, type, scroll, or drag.
+
+    An element index is turned into the center of that element's box. Drag
+    coordinates that sit inside the 800x450 image are scaled to the viewport.
+    """
+    data: Any = payload
+    if hasattr(payload, "model_dump"):
+        data = payload.model_dump()
+    elif not isinstance(payload, dict):
+        text = str(getattr(payload, "completion", payload) or "")
+        match = re.search(r"\{.*\}", text, re.S)
+        if not match:
+            return None
+        try:
+            data = json.loads(match.group(0))
+        except json.JSONDecodeError:
+            return None
+    if not isinstance(data, dict):
+        return None
+    kind = str(data.get("kind") or data.get("action") or "").strip().lower()
+    if kind not in {"click", "type", "scroll", "drag", "done"}:
+        return None
+    try:
+        index = int(data.get("index") or 0)
+    except (TypeError, ValueError):
+        index = 0
+    text = str(data.get("text") or "")[:80]
+    by_index = {int(el["i"]): el for el in elements}
+    el = by_index.get(index)
+
+    def _px(key: str) -> int:
+        try:
+            return int(float(data.get(key) or 0))
+        except (TypeError, ValueError):
+            return 0
+
+    def _scale(x: int, y: int) -> tuple[int, int]:
+        image_w, image_h = _VISION_IMAGE
+        if image_w > 0 and image_h > 0 and 0 <= x < image_w and 0 <= y < image_h and width and height:
+            x = int(round(x * width / image_w))
+            y = int(round(y * height / image_h))
+        return max(1, min(int(width or x or 1), x or 1)), max(1, min(int(height or y or 1), y or 1))
+
+    if el is not None:
+        x = int(el["x"]) + max(1, int(el["w"])) // 2
+        y = int(el["y"]) + max(1, int(el["h"])) // 2
+    else:
+        x, y = _scale(_px("x"), _px("y"))
+    x2, y2 = _scale(_px("x2"), _px("y2"))
+    if kind == "type" and not text:
+        kind = "click"
+    if kind in {"click", "type"} and el is None and index:
+        return None
+    return {
+        "kind": kind,
+        "index": index if el is not None else 0,
+        "x": x,
+        "y": y,
+        "x2": x2,
+        "y2": y2,
+        "text": text,
+    }
+
+
+async def _cdp_eval(session: Any, expression: str) -> Any:
+    """One Runtime.evaluate round trip. Returns the JSON value."""
+    cdp = await session.get_or_create_cdp_session()
+    raw = await cdp.cdp_client.send.Runtime.evaluate(
+        {
+            "expression": expression,
+            "returnByValue": True,
+        },
+        session_id=cdp.session_id,
+    )
+    result = raw.get("result") if isinstance(raw, dict) else None
+    value = result.get("value") if isinstance(result, dict) else raw
+    if isinstance(value, str):
+        text = value.strip()
+        if text.startswith("{") or text.startswith("["):
+            try:
+                return json.loads(text)
+            except json.JSONDecodeError:
+                return text
+    return value
+
+
+async def _cdp_png(session: Any, path: Path) -> None:
+    """One Page.captureScreenshot round trip."""
+    cdp = await session.get_or_create_cdp_session()
+    raw = await cdp.cdp_client.send.Page.captureScreenshot(
+        {"format": "png"},
+        session_id=cdp.session_id,
+    )
+    data = raw.get("data") if isinstance(raw, dict) else None
+    if not data:
+        raise RuntimeError("screenshot returned no data")
+    path.write_bytes(base64.b64decode(data))
+
+
+async def _act_extract(session: Any, decision: dict[str, Any]) -> None:
+    kind = decision["kind"]
+    if kind == "done":
+        return
+    if kind == "scroll":
+        cdp = await session.get_or_create_cdp_session()
+        await cdp.cdp_client.send.Input.dispatchMouseEvent(
+            {
+                "type": "mouseWheel",
+                "x": int(decision["x"] or 640),
+                "y": int(decision["y"] or 400),
+                "deltaX": 0,
+                "deltaY": 700,
+            },
+            session_id=cdp.session_id,
+        )
+        return
+    if kind == "drag":
+        await _mouse_path(
+            session,
+            _line_points(int(decision["x"]), int(decision["y"]), int(decision["x2"]), int(decision["y2"])),
+        )
+        return
+    await _mouse_path(session, [(int(decision["x"]), int(decision["y"]))])
+    if kind == "type" and decision.get("text"):
+        await _cdp_insert_text(session, str(decision["text"]))
+
+
+def _extract_action_label(decision: dict[str, Any]) -> str:
+    kind = decision["kind"]
+    if kind == "done":
+        note = decision.get("text") or "task stopped"
+        return f"done — text={note}"[:180]
+    if kind == "scroll":
+        return "scroll — down=True"
+    if kind == "drag":
+        return (
+            f"drag — x={decision['x']}, y={decision['y']}, "
+            f"x2={decision['x2']}, y2={decision['y2']}"
+        )
+    if kind == "type":
+        index = decision.get("index") or ""
+        return f"type — index={index}, x={decision['x']}, y={decision['y']}, text={decision.get('text')}"
+    index = decision.get("index") or ""
+    return f"click — index={index}, x={decision['x']}, y={decision['y']}"
+
+
+async def _run_extract_loop(
+    browser_session: Any,
+    llm: Any,
+    *,
+    clock: _PhaseClock,
+    screenshot_dir: Path,
+    study_id: str,
+    agent_id: str,
+    task_prompt: str,
+    url: str,
+    on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None,
+    book: dict[str, Any],
+    max_steps: int,
+) -> None:
+    """Screenshot once, extract the viewport once, ask the model, act.
+
+    browser-use builds its per-step state only when a BrowserStateRequestEvent
+    is dispatched. This loop never dispatches that event.
+    """
+    from browser_use.llm.messages import (
+        ContentPartImageParam,
+        ContentPartTextParam,
+        ImageURL,
+        SystemMessage,
+        UserMessage,
+    )
+    from pydantic import BaseModel, Field
+
+    class ExtractAction(BaseModel):
+        kind: str = Field(description="click, type, scroll, drag, or done")
+        index: int = 0
+        text: str = ""
+        x: int = 0
+        y: int = 0
+        x2: int = 0
+        y2: int = 0
+
+    try:
+        cdp = await browser_session.get_or_create_cdp_session()
+        await cdp.cdp_client.send.Page.enable(session_id=cdp.session_id)
+    except Exception:
+        pass
+
+    width = int(VIEWPORT["width"])
+    height = int(VIEWPORT["height"])
+    for _ in range(max(1, int(max_steps))):
+        step_no = int(book.get("step") or 0) + 1
+        token = _PHASE_STEP.set(step_no)
+        where = _PHASE_WHERE.set("loop")
+        started = clock.begin("step", step=step_no)
+        error = None
+        error_type = None
+        phase = "extract"
+        try:
+            ext_started = clock.begin("extract", step=step_no)
+            try:
+                raw = await asyncio.wait_for(
+                    _cdp_eval(browser_session, _VIEWPORT_EXTRACT_JS),
+                    timeout=4,
+                )
+            except Exception as exc:
+                clock.finish(
+                    "extract",
+                    ext_started,
+                    step=step_no,
+                    error=f"{type(exc).__name__}: {exc}"[:400],
+                    error_type=type(exc).__name__,
+                )
+                raise
+            read = normalize_viewport_extract(raw)
+            clock.finish(
+                "extract",
+                ext_started,
+                step=step_no,
+                in_page_ms=read.get("in_page_ms"),
+                elements=len(read["elements"]),
+            )
+            phase = "screenshot"
+            shot_path = screenshot_dir / f"bbox_{step_no}.png"
+            shot_started = clock.begin("screenshot", step=step_no)
+            try:
+                await asyncio.wait_for(_cdp_png(browser_session, shot_path), timeout=4)
+            except Exception as exc:
+                clock.finish(
+                    "screenshot",
+                    shot_started,
+                    step=step_no,
+                    error=f"{type(exc).__name__}: {exc}"[:400],
+                    error_type=type(exc).__name__,
+                )
+                raise
+            clock.finish("screenshot", shot_started, step=step_no)
+            if book.get("screenshot_mono") is None:
+                book["screenshot_mono"] = time.monotonic()
+                book["t0"] = book["screenshot_mono"]
+            shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/bbox_{step_no}.png"
+            boxes = _element_boxes(read["elements"])
+            page_url = read.get("url") or url
+            book["final_url"] = page_url
+            phase = "llm"
+            jpeg, _src_w, _src_h = _vision_jpeg(shot_path)
+            prompt = (
+                f"Task: {task_prompt[:400]}\n"
+                f"Page: {page_url}\n"
+                "Elements in the viewport (index, tag, label, box):\n"
+                f"{_element_lines(read['elements']) or '(none)'}\n"
+                "Pick ONE next action. kind=click or type uses index. "
+                "kind=scroll moves down. kind=drag uses x,y,x2,y2 on the 800x450 image. "
+                "kind=done only when the task's page or control is on screen."
+            )
+            messages = [
+                SystemMessage(content="You choose one browser action from a screenshot and a short element list."),
+                UserMessage(
+                    content=[
+                        ContentPartTextParam(text=prompt),
+                        ContentPartImageParam(
+                            image_url=ImageURL(
+                                url=f"data:image/jpeg;base64,{jpeg}",
+                                media_type="image/jpeg",
+                                detail="low",
+                            )
+                        ),
+                    ]
+                ),
+            ]
+            result = await asyncio.wait_for(
+                llm.ainvoke(messages, output_format=ExtractAction),
+                timeout=8,
+            )
+            decision = parse_extract_action(
+                getattr(result, "completion", result),
+                read["elements"],
+                width=width,
+                height=height,
+            )
+            if not decision:
+                raise RuntimeError("model reply had no click, type, scroll, drag, or done")
+            label = _extract_action_label(decision)
+            _schedule_emit(
+                on_step,
+                {
+                    "step": step_no,
+                    "action": label,
+                    "observation": "",
+                    "thought": "",
+                    "thought_detail": {},
+                    "url": page_url,
+                    "screenshot_url": shot_url,
+                    "boxes": boxes,
+                    "highlight_index": decision.get("index") or None,
+                    "outcome": "neutral",
+                    "live": True,
+                },
+                book,
+            )
+            phase = "action"
+            act_started = clock.begin("action", step=step_no)
+            try:
+                await asyncio.wait_for(_act_extract(browser_session, decision), timeout=4)
+            except Exception as exc:
+                clock.finish(
+                    "action",
+                    act_started,
+                    step=step_no,
+                    error=f"{type(exc).__name__}: {exc}"[:400],
+                    error_type=type(exc).__name__,
+                )
+                raise
+            clock.finish("action", act_started, step=step_no)
+            if book.get("first_action_s") is None and isinstance(book.get("screenshot_mono"), float):
+                elapsed_ms = round((time.monotonic() - float(book["screenshot_mono"])) * 1000)
+                book["first_action_s"] = round(elapsed_ms / 1000, 3)
+                clock.event(
+                    event="end",
+                    phase="first_action",
+                    where="loop",
+                    step=step_no,
+                    ms=elapsed_ms,
+                )
+                print(
+                    f"[{agent_id}] first action {label} {elapsed_ms}ms after screenshot",
+                    flush=True,
+                )
+            step = {
+                "step": step_no,
+                "action": label,
+                "observation": f"{len(read['elements'])} viewport elements",
+                "thought": "",
+                "thought_detail": {},
+                "url": page_url,
+                "screenshot_url": shot_url,
+                "boxes": boxes,
+                "highlight_index": decision.get("index") or None,
+                "outcome": "neutral",
+            }
+            extra = clock.fields_for(step_no)
+            if extra.get("phase_ms"):
+                step["phase_ms"] = extra["phase_ms"]
+            _schedule_emit(on_step, step, book)
+            book["step"] = step_no
+            if decision["kind"] == "done":
+                book["completed"] = True
+                break
+        except asyncio.CancelledError:
+            if _task_is_cancelling():
+                error = "CancelledError: cancelled"
+                error_type = "CancelledError"
+                raise
+            error = "CancelledError: step interrupted"
+            error_type = "CancelledError"
+            failed = _failed_trace_step(
+                step_no=step_no,
+                reason=error,
+                phase=phase,
+                url=url,
+            )
+            _schedule_emit(on_step, failed, book)
+            book["step"] = step_no
+        except Exception as exc:
+            error = f"{type(exc).__name__}: {exc}"[:400]
+            error_type = type(exc).__name__
+            print(f"[{agent_id}] step {step_no} failed phase={phase}: {error}", flush=True)
+            failed = _failed_trace_step(
+                step_no=step_no,
+                reason=error,
+                phase=phase,
+                url=url,
+            )
+            extra = clock.fields_for(step_no)
+            if extra.get("phase_ms"):
+                failed["phase_ms"] = extra["phase_ms"]
+            _schedule_emit(on_step, failed, book)
+            book["step"] = step_no
+        finally:
+            clock.finish("step", started, step=step_no, error=error, error_type=error_type)
+            _PHASE_STEP.reset(token)
+            _PHASE_WHERE.reset(where)
+
+
 def _start_background_state(browser_session: Any, clock: _PhaseClock, step_no: int) -> None:
     """Load DOM while the vision call runs. The next step reuses this task."""
 
@@ -2888,8 +3384,9 @@ async def run_browser_agent(
                     )
                 finally:
                     _PHASE_WHERE.reset(_opening_where)
-                await _vision_from_opening()
-                # Flip live view ON immediately — don't wait for LLM / agent.run.
+                # The decision loop reads the page itself. Do not start a
+                # browser-use DOM extraction beside the opening frame.
+                # Flip live view ON immediately — don't wait for the first click.
                 if on_step is not None and bb_session is not None and not force_local:
                     live_url = None
                     try:
@@ -2937,12 +3434,11 @@ async def run_browser_agent(
             _nav_semaphore().release()
 
     try:
-        # Auth/cookies after the first click. The vision action already ran
-        # on the opening screenshot.
+        # Cookies only if the vault already finished. The first click does not
+        # wait on it.
         if auth_task is not None:
             try:
-                # Cap wait so a slow vault never owns TTFT; skip cookies if late.
-                storage_state = await asyncio.wait_for(auth_task, timeout=2.5)
+                storage_state = await asyncio.wait_for(auth_task, timeout=0.05)
             except asyncio.TimeoutError:
                 print(f"[{agent_id}] deferred auth timed out — starting without cookies", flush=True)
                 auth_task.cancel()
@@ -2964,117 +3460,11 @@ async def run_browser_agent(
             injected = await _inject_cookies(browser_session, cookie_state)
             print(f"[{agent_id}] injected {injected} cookies via CDP", flush=True)
 
-        from browser_use import Agent
-
         llm = await llm_task
         _install_agent_probes(None, llm, phase_clock)
-        persona_line = f"You are {persona.get('name')}: {persona.get('bio')}"
-        stay_put = (
-            f"CRITICAL: Stay on {start_url} and its own pages/subdomains only. "
-            f"Do not navigate to other products or competitors (especially not YouTube, "
-            f"Vimeo, or Dailymotion unless that is exactly this site). "
-            f"Evaluate the task using THIS site’s UI, search, and docs.\n"
-        )
-        agent_task = (
-            f"{CAPABLE_AGENT_PREAMBLE}\n\n"
-            f"{persona_line}\n"
-            f"Customer segment: {segment}\n"
-            f"{yt_hint}"
-            f"{stay_put}"
-            f"You are already on {start_url}. Continue from this page.\n"
-            f"Task: {task_prompt}\n"
-            f"Behave like this persona would — note confusion, pricing concerns, and UX friction.\n"
-            f"Do not judge the site from the landing page alone. The task is not done when you "
-            f"can describe the first screen.\n"
-            f"Click, type, and open the specific page or control the task names. "
-            f"Call done only after that page or state is on screen, or when a captcha, "
-            f"login wall, or missing control blocks you. Say which.\n"
-            f"On a drawing canvas, clicking a shape tool does not place a shape. "
-            f"Select the tool, then use drag (mouse down, move, mouse up) across the canvas.\n"
-            f"If the page says Press and Hold, use press_and_hold on that control. "
-            f"Do not use an external captcha service.\n"
-            f"Do not write todo files. Do not wait if the page is already visible.\n"
-        )
-
-        agent = Agent(
-            task=agent_task,
-            llm=llm,
-            browser_session=browser_session,
-            browser_profile=None,
-            tools=_study_tools(),
-            use_vision=True,
-            vision_detail_level="low",
-            use_thinking=False,
-            # flash_mode emits actions the controller drops ("no handler"),
-            # so the step fails without a click. Planning stays off so the
-            # first action is a click, not a todo file.
-            flash_mode=False,
-            enable_planning=False,
-            use_judge=False,
-            # Do not stop the agent because a model call was slow or failed.
-            max_failures=10_000,
-            llm_timeout=MVP_LLM_TIMEOUT_S,
-            step_timeout=MVP_STEP_TIMEOUT_S,
-            llm_screenshot_size=(800, 450),
-            message_compaction=False,
-            max_actions_per_step=2,
-            calculate_cost=True,
-            file_system_path=str(run_dir),
-            save_conversation_path=str(run_dir / "conversation"),
-            # We already navigated + screenshotted. Default True makes browser-use
-            # re-navigate to the URL in the task text BEFORE the first hooked step —
-            # live iframe up, step rail stuck at opening, looks frozen on YouTube.
-            directly_open_url=False,
-            extend_system_message=(
-                "You are a real user in a usability study, not an optimizer. "
-                "Prefer obvious UI paths; comment on clarity and trust. "
-                "Never claim to see content that is only 'implied' or absent from the "
-                "current screenshot/DOM. Stay on the product site you were given. "
-                "If a cookie/consent banner blocks the page, Accept all / Agree first, "
-                "then continue the task. "
-                "Do not call done on the landing page. Do not spend a step writing notes "
-                "or waiting. Act on the task. "
-                "To draw, call drag with viewport coordinates. A click on the rectangle "
-                "tool is not a rectangle. "
-                "On a Press and Hold check, call press_and_hold. Never call CapSolver "
-                "or another captcha API. "
-                "When the DOM has no element index, click or type with coordinate_x "
-                "and coordinate_y in viewport pixels."
-            ),
-        )
-        try:
-            agent.tools.set_coordinate_clicking(True)
-        except Exception as exc:  # noqa: BLE001
-            print(f"[{agent_id}] coordinate clicking unavailable: {exc!r}", flush=True)
-        try:
-            object.__setattr__(agent, "_usersim_book", page_state)
-            object.__setattr__(agent, "_usersim_step_offset", int(page_state.get("step") or 0))
-        except Exception:
-            pass
-        decision = page_state.get("vision_action")
-        if isinstance(decision, dict):
-            try:
-                from browser_use.agent.views import ActionResult
-
-                label = (
-                    f"typed {decision.get('text')!r} at ({decision.get('x')},{decision.get('y')})"
-                    if decision.get("kind") == "type"
-                    else f"clicked ({decision.get('x')},{decision.get('y')})"
-                )
-                agent.state.last_result = [
-                    ActionResult(
-                        extracted_content=(
-                            f"You already {label} using the opening screenshot. "
-                            "Continue the task from the current page."
-                        ),
-                        long_term_memory=f"Already {label} from the opening screenshot.",
-                    )
-                ]
-            except Exception as exc:  # noqa: BLE001
-                print(f"[{agent_id}] could not record the opening click: {exc!r}", flush=True)
+        _ = (persona, segment, yt_hint)
         if use_warm and browser_session is not None:
             _install_session_probes(browser_session, phase_clock)
-        _install_agent_probes(agent, llm, phase_clock)
         # Signal UI: agent loop is starting — replace screenshot with live view now.
         if on_step is not None and bb_session is not None:
             live_url = warm_live_url
@@ -3110,28 +3500,27 @@ async def run_browser_agent(
         if page_state.get("screenshot_mono") is None:
             page_state["screenshot_mono"] = time.monotonic()
         page_state["t0"] = page_state["screenshot_mono"]
-        on_step_start, on_step_end = _make_step_hooks(
-            screenshot_dir,
-            study_id=study_id,
-            agent_id=agent_id,
-            start_url=start_url,
-            on_step=on_step,
-            page_state=page_state,
-        )
         await _ensure_cdp_connected(browser_session, agent_id=agent_id)
         print(
-            f"[{agent_id}] agent.run starting model={model} provider=google-vertex "
-            f"llm_timeout={MVP_LLM_TIMEOUT_S}s step_timeout={MVP_STEP_TIMEOUT_S}s "
-            f"(warm={use_warm}, max_steps={max_steps}, cdp_budget={_budget}s)",
+            f"[{agent_id}] extract loop starting model={model} provider=google-vertex "
+            f"max_steps={max_steps} (warm={use_warm})",
             flush=True,
         )
         history = None
         run_failure: BaseException | None = None
         try:
-            history = await agent.run(
+            await _run_extract_loop(
+                browser_session,
+                llm,
+                clock=phase_clock,
+                screenshot_dir=screenshot_dir,
+                study_id=study_id,
+                agent_id=agent_id,
+                task_prompt=task_prompt,
+                url=start_url,
+                on_step=on_step,
+                book=page_state,
                 max_steps=max_steps,
-                on_step_start=on_step_start,
-                on_step_end=on_step_end,
             )
         except asyncio.CancelledError:
             if _task_is_cancelling():
@@ -3214,20 +3603,22 @@ async def run_browser_agent(
                 *trace,
             ]
 
-    final_url = ""
-    try:
-        urls = history.urls() if history is not None and hasattr(history, "urls") else []
-        final_url = urls[-1] if urls else ""
-    except Exception:
-        final_url = actions[-1].get("url") or url if actions else url
+    final_url = str(page_state.get("final_url") or "")
+    if not final_url:
+        try:
+            urls = history.urls() if history is not None and hasattr(history, "urls") else []
+            final_url = urls[-1] if urls else ""
+        except Exception:
+            final_url = actions[-1].get("url") or url if actions else url
 
-    is_done = False
-    try:
-        is_done = (
-            bool(history.is_done()) if history is not None and hasattr(history, "is_done") else False
-        )
-    except Exception:
-        pass
+    is_done = bool(page_state.get("completed"))
+    if not is_done:
+        try:
+            is_done = (
+                bool(history.is_done()) if history is not None and hasattr(history, "is_done") else False
+            )
+        except Exception:
+            pass
 
     sigs = page_state.get("sigs") if isinstance(page_state.get("sigs"), dict) else {}
     for step in trace:
