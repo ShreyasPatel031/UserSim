@@ -281,6 +281,7 @@ _READ_JS = """() => {
       i: nodes.length,
       role: (el.getAttribute('role') || el.tagName || '').toLowerCase(),
       name: name,
+      href: String(el.href || el.getAttribute('href') || '').slice(0, 180),
       x: Math.round(r.x + r.width / 2),
       y: Math.round(r.y + r.height / 2),
     });
@@ -333,9 +334,12 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
         if not isinstance(node, dict):
             continue
         name = str(node.get("name") or "").lower()
-        if not name:
+        href = str(node.get("href") or "").lower()
+        if not name and not href:
             continue
-        score = sum(3 for w in words if w in name)
+        if "skip to content" in name:
+            continue
+        score = sum(3 for w in words if w in name or w in href)
         role = str(node.get("role") or "")
         if role in {"a", "button", "link", "menuitem", "tab"}:
             score += 1
@@ -355,7 +359,40 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
         "x": int(best.get("x") or 0),
         "y": int(best.get("y") or 0),
         "name": str(best.get("name") or "")[:80],
+        "href": str(best.get("href") or "")[:180],
     }
+
+
+def goal_visible(task: str, read: dict[str, Any]) -> bool:
+    """True when the open URL is the page the task asked for.
+
+    A nav label on the homepage is not the pricing page or the changelog.
+    """
+    url = str((read or {}).get("url") or "").lower()
+    task_l = (task or "").lower()
+    needed: list[bool] = []
+    if any(word in task_l for word in ("pricing", "free plan", "price")):
+        needed.append("pricing" in url)
+    if any(word in task_l for word in ("changelog", "what shipped", "shipped recently")):
+        needed.append("changelog" in url)
+    if not needed:
+        return True
+    return all(needed)
+
+
+def _follow_href(href: str) -> str:
+    """Absolute link to open. Same-page fragments stay a coordinate click."""
+    from urllib.parse import urlparse
+
+    raw = (href or "").strip()
+    if not raw.startswith("http"):
+        return ""
+    parsed = urlparse(raw)
+    if parsed.scheme not in {"http", "https"}:
+        return ""
+    if parsed.fragment and parsed.path in {"", "/"}:
+        return ""
+    return raw[:180]
 
 
 def action_label(action: dict[str, Any]) -> str:
@@ -878,6 +915,7 @@ async def _model_action(
         "friction": str(data.get("friction") or "")[:180],
         "easy": str(data.get("easy") or "")[:180],
         "name": str((node or {}).get("name") or data.get("text") or "")[:80],
+        "href": str((node or {}).get("href") or "")[:180],
         "x": int((node or {}).get("x") or 0),
         "y": int((node or {}).get("y") or 0),
     }
@@ -888,6 +926,10 @@ async def _act(page: Any, action: dict[str, Any]) -> None:
     act = str(action.get("act") or "click")
     x = int(action.get("x") or 200)
     y = int(action.get("y") or 200)
+    href = _follow_href(str(action.get("href") or ""))
+    if act == "click" and href:
+        await page.goto(href, wait_until="commit", timeout=8000)
+        return
     if act == "scroll":
         await page.mouse.wheel(0, int(action.get("dy") or 500))
         return
@@ -1062,8 +1104,14 @@ async def run_a11y_agent(
         if action.get("easy"):
             easy.append(str(action["easy"]))
         if str(action.get("act")) == "done":
-            stop_reason = "done"
-            break
+            if goal_visible(task_prompt, read):
+                stop_reason = "done"
+                break
+            # The model stopped on the wrong page. Keep going from the tree.
+            action = pick_action(task_prompt, read.get("nodes") or [])
+            if str(action.get("act")) == "done":
+                stop_reason = "done"
+                break
         step_no += 1
         label = action_label(action)
         outcome = "friction" if action.get("friction") else "neutral"
