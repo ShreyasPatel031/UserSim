@@ -974,7 +974,7 @@ async def backfill_final_screenshots(study: StudyState) -> int:
             return str(fs.get("reason"))
         return str(r.get("stop_reason") or "missing final")
 
-    def _placeholder(aid: str, url: str, reason: str) -> _Path:
+    def _placeholder(aid: str, url: str, reason: str):
         from PIL import Image, ImageDraw
 
         dest = MVP_RUNS_DIR / study.id / aid / "screenshots" / "final.png"
