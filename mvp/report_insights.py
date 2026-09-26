@@ -613,6 +613,21 @@ def _usersim_failure(result: dict[str, Any], start_url: str) -> dict[str, str] |
     """
     if task_succeeded(result, start_url):
         return None
+    failed_s = result.get("failed_step") if isinstance(result.get("failed_step"), dict) else {}
+    if (
+        (str(failed_s.get("phase") or "") == "session" or str(result.get("stop_reason") or "") == "session ended")
+        and not _acted_steps(result)
+        and not result.get("page_open_at_ts")
+        and not result.get("first_action_at_ts")
+    ):
+        # The browser never opened the page (no Browserbase session, e.g. the
+        # account's concurrency limit). Nothing here is about the site.
+        return {
+            "kind": "session",
+            "reason": "The browser session never opened the page. That is infrastructure, not a product result.",
+            "target_url": str(result.get("site_url") or start_url or ""),
+            "final_url": str(result.get("final_url") or ""),
+        }
     blob = _failure_blob(result)
     target = str(result.get("site_url") or start_url or "")
     final = str(result.get("final_url") or "")
@@ -1598,7 +1613,11 @@ def verdict(insights: dict[str, Any], study: dict[str, Any]) -> dict[str, Any]:
         steps = mine.get("median_steps")
         how = f" in a median {steps:.0f} step{'s' if steps != 1 else ''}" if steps else ""
         if rate > 0 and not better:
-            tail = f", ahead of {', '.join(worse)}" if worse else ", level with the competitors"
+            tail = (
+                f", ahead of {', '.join(worse)}" if worse
+                else ", level with the competitors" if others
+                else " (no competitor run to compare)"
+            )
             good.append(f"{title}: {mine_txt} runs finished on {product_label}{how}{tail}.")
         elif better:
             wall = " Agents hit a sign-up wall first." if "product" in walls.get(title, set()) else ""
@@ -1610,7 +1629,7 @@ def verdict(insights: dict[str, Any], study: dict[str, Any]) -> dict[str, Any]:
             if not others or all(not (c.get("ok")) for c in others.values()):
                 # Nobody finished: that is not trailing a competitor.
                 need = f" ({product_label} needs an account)" if wall else ""
-                unfinished.append(f"{title}: no site finished it{need}.")
+                unfinished.append(f"{title}: no {'site' if others else 'run'} finished it{need}.")
             else:
                 trails.append(f"{title}: no {product_label} run finished{wall}.")
     return {"good_for": good[:4], "trails": trails[:4], "unfinished": unfinished[:4], "summary": None}

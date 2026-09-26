@@ -542,3 +542,18 @@ class VerdictAndBrandTests(unittest.TestCase):
         study = self._study(False, False, observation="ClickUp is the app for work. Try ClickUp free. clickup")
         self.assertEqual(build_report_insights(study)["product_name"], "ClickUp")
         self.assertEqual(build_report_insights(self._study(False, False))["product_name"], "Clickup")
+
+
+class SessionNeverOpenedTests(unittest.TestCase):
+    def test_runs_whose_browser_never_opened_are_run_issues_not_results(self):
+        ok = _run("p1", steps=3, final="https://todoist.com/pricing")
+        ok.update(task_title="Look for pricing", site_url="https://todoist.com/", stop_reason="done",
+                  failed_step={"phase": "done", "reason": "task complete"})
+        dead = _run("r1", site_key="competitor_1", steps=1, final="https://trello.com/")
+        dead.update(task_title="Look for pricing", site_url="https://trello.com/", stop_reason="session ended",
+                    failed_step={"phase": "session", "reason": "session ended", "step": 0}, page_open_at_ts=None)
+        insights = build_report_insights({"id": "s-dead", "url": "https://todoist.com/", "agent_results": [ok, dead], "activity_log": []})
+        self.assertEqual([r.get("kind") for r in insights["run_issues"]], ["session"])
+        cells = insights["by_task"][0]["sites"]
+        self.assertNotIn("competitor_1", cells)
+        self.assertIn("no competitor run to compare", insights["verdict"]["good_for"][0])
