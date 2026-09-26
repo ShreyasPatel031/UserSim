@@ -901,11 +901,14 @@ async def signup_in_session(
                     steps.append(f"email rejected: {rej.group(0)} ({ident['email'].split('@')[1]})")
                     rejected_domains.append(ident["email"].split("@")[1])
                     swapped = None
-                    if inbox.backend == "mailtm" and len(rejected_domains) < 2:
-                        from mvp.signup_inbox import GuerrillaInbox
+                    if inbox.backend in {"mailtm", "guerrilla"} and len(rejected_domains) < 2:
+                        from mvp.signup_inbox import GuerrillaInbox, MailTmInbox
 
                         try:
-                            swapped = await asyncio.to_thread(GuerrillaInbox, tag)
+                            if inbox.backend == "mailtm":
+                                swapped = await asyncio.to_thread(GuerrillaInbox, tag)
+                            else:
+                                swapped = await asyncio.to_thread(MailTmInbox, "https://api.mail.tm", tag)
                         except Exception:
                             swapped = None
                     if swapped is None:
