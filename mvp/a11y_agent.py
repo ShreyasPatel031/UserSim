@@ -846,8 +846,11 @@ class A11yBoot:
             # own browser from the pool (or creates one). They do not share
             # this page.
             n_agents = len(self.study.tasks or [])
-            if n_agents:
-                self._tasks.append(asyncio.create_task(self._fill_pool(n_agents, offset=1)))
+            fill = (
+                asyncio.create_task(self._fill_pool(n_agents, offset=1))
+                if n_agents
+                else None
+            )
             for attempt in range(4):
                 bb = await self._create_one(attempt, enqueue=False)
                 if bb is None:
@@ -873,9 +876,18 @@ class A11yBoot:
                     self.contexts["product"] = handle
                     self._handle_cv.notify_all()
                 self.snapshots["product"] = snap
+                # Sessions are created before the page-open clock starts, so
+                # each agent's own browser can click inside the first-action window.
+                if fill is not None:
+                    try:
+                        await fill
+                    except Exception as exc:  # noqa: BLE001
+                        print(f"[a11y] agent pool fill: {exc!r}", flush=True)
                 self._publish_site("product", snap)
                 break
             else:
+                if fill is not None and not fill.done():
+                    fill.cancel()
                 print("[a11y] no live product page", flush=True)
             extras = len([c for c in (self.study.competitors or []) if c])
             if extras:
@@ -1735,6 +1747,17 @@ async def complete_task_on_page(
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
+        if task_kind(task) == "draw" and str(action.get("act")) != "drag":
+            # The rectangle tool is selected. The next move is a canvas drag,
+            # not the export menu.
+            selected = "selected shape" in str(read.get("text") or "").lower() or any(
+                "rectangle" in item.lower() for item in history
+            )
+            if selected and not goal_visible(task, read):
+                action = dict(action)
+                action["act"] = "drag"
+                action["name"] = "canvas"
+                action["role"] = "canvas"
         if str(action.get("act")) == "drag":
             box = _canvas_box(list(read.get("nodes") or []))
             if box:
