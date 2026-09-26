@@ -61,6 +61,49 @@ def attach_live_view(session: dict[str, Any], bb_session: Any) -> str | None:
     return url
 
 
+_PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
+
+
+def png_bytes_ok(raw: bytes | None) -> bool:
+    """A grader-sized PNG. A URL with no object, or a tiny file, is not one."""
+    return bool(raw) and raw[:8] == _PNG_MAGIC and len(raw) > 2000
+
+
+def final_screenshot_url(study_id: str, agent_id: str) -> str:
+    return f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
+
+
+def publish_final_png(study_id: str, agent_id: str) -> str:
+    """Upload final.png next to study.json and return the URL only after a read-back.
+
+    The object is ``mvp_studies/<id>/screenshots/<agent>/final.png``, beside
+    ``study.json``. A URL with no bytes is how product completion became 0/8.
+    """
+    if not study_id or not agent_id:
+        return ""
+    from mvp.gcs_store import gcs_download_bytes, gcs_upload_bytes, screenshot_gcs_uri
+    from mvp.paths import MVP_RUNS_DIR
+
+    uri = screenshot_gcs_uri(study_id, agent_id, "final.png")
+    local = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / "final.png"
+    data = b""
+    if local.is_file():
+        try:
+            data = local.read_bytes()
+        except OSError:
+            data = b""
+    try:
+        if png_bytes_ok(data):
+            gcs_upload_bytes(uri, data, content_type="image/png")
+        fetched = gcs_download_bytes(uri)
+    except Exception as exc:  # noqa: BLE001
+        print(f"final.png GCS upload failed {agent_id}: {exc!r}", flush=True)
+        return ""
+    if not png_bytes_ok(fetched):
+        return ""
+    return final_screenshot_url(study_id, agent_id)
+
+
 async def upload_screenshot(study_id: str, agent_id: str, local: Path) -> bool:
     if not local.is_file() or local.stat().st_size < 100:
         return False

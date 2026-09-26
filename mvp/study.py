@@ -104,6 +104,111 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _iso_epoch(value: object) -> float | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        return datetime.fromisoformat(text).timestamp()
+    except Exception:
+        return None
+
+
+def headline_clocks(
+    *,
+    created_at: object,
+    updated_at: object,
+    runs: list[dict[str, Any]],
+    complete: bool,
+) -> dict[str, Any]:
+    """Time to first value and total time, measured from URL submit.
+
+    ``created_at`` is when the study was accepted. ``first_action_at_ts`` is
+    when that agent's click, type, or scroll was stored. A poll timestamp is
+    not an input.
+    """
+    submit = _iso_epoch(created_at)
+    best: tuple[float, str] | None = None
+    if submit is not None:
+        for row in runs:
+            if not isinstance(row, dict):
+                continue
+            try:
+                acted = float(row.get("first_action_at_ts"))
+            except (TypeError, ValueError):
+                continue
+            if acted <= 0:
+                continue
+            aid = str(row.get("agent_id") or row.get("task_id") or "")
+            if best is None or acted < best[0]:
+                best = (acted, aid)
+    ttfv = None
+    agent = ""
+    if submit is not None and best is not None:
+        ttfv = round(max(0.0, best[0] - submit), 3)
+        agent = best[1]
+    total = None
+    ready = False
+    if complete and submit is not None:
+        ready_at = _iso_epoch(updated_at)
+        if ready_at is not None:
+            total = round(max(0.0, ready_at - submit), 3)
+            ready = True
+    return {
+        "time_to_first_value_s": ttfv,
+        "time_to_first_value_agent": agent,
+        "total_time_s": total,
+        "report_ready": ready,
+    }
+
+
+def _publish_product_finals(study: StudyState) -> None:
+    """Put each product final.png in GCS and keep the URL only when the bytes are there."""
+    from mvp.opening_shot import publish_final_png
+
+    for row in study.agent_results or []:
+        if not isinstance(row, dict):
+            continue
+        aid = str(row.get("agent_id") or "")
+        site = str(row.get("site_key") or "")
+        if site != "product" and not aid.endswith("__product"):
+            continue
+        shot = publish_final_png(study.id, aid)
+        row["final_screenshot_url"] = shot
+        row["final_screenshot"] = shot
+        trace = row.get("trace") or []
+        if shot and trace and isinstance(trace[-1], dict):
+            trace[-1]["final_screenshot_url"] = shot
+            trace[-1]["screenshot_url"] = trace[-1].get("screenshot_url") or shot
+        sess = (study.live_sessions or {}).get(aid)
+        if isinstance(sess, dict):
+            sess["final_screenshot_url"] = shot
+            sess["final_screenshot"] = shot
+
+
+def apply_headline_clocks(study: StudyState) -> None:
+    runs: list[dict[str, Any]] = [
+        row for row in (study.agent_results or []) if isinstance(row, dict)
+    ]
+    runs.extend(
+        row for row in (study.live_sessions or {}).values() if isinstance(row, dict)
+    )
+    clocks = headline_clocks(
+        created_at=study.created_at,
+        updated_at=study.updated_at,
+        runs=runs,
+        complete=study.status == "complete" and bool(study.summary),
+    )
+    study.time_to_first_value_s = clocks["time_to_first_value_s"]
+    study.time_to_first_value_agent = clocks["time_to_first_value_agent"]
+    study.total_time_s = clocks["total_time_s"]
+    study.report_ready = bool(clocks["report_ready"])
+    if isinstance(study.summary, dict):
+        study.summary.update(clocks)
+
+
 def _mark_first_screenshot(
     sess: dict[str, Any] | None,
     *,
@@ -230,6 +335,11 @@ class StudyState:
     auth_blocker: str | None = None
     kill_requested: bool = False
     max_agents: int = 0
+    # Headline clocks from URL submit (created_at), not a later poll.
+    time_to_first_value_s: float | None = None
+    time_to_first_value_agent: str = ""
+    total_time_s: float | None = None
+    report_ready: bool = False
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -3426,6 +3536,19 @@ async def run_study(
                             from mvp.a11y_agent import GATE_FIELDS, apply_gate_fields
 
                             apply_gate_fields(result)
+                            from mvp.opening_shot import publish_final_png
+
+                            shot = await asyncio.to_thread(
+                                publish_final_png, study.id, str(agent_id or "")
+                            )
+                            result["final_screenshot_url"] = shot
+                            result["final_screenshot"] = shot
+                            sess["final_screenshot_url"] = shot
+                            sess["final_screenshot"] = shot
+                            trace = result.get("trace") or []
+                            if shot and trace and isinstance(trace[-1], dict):
+                                trace[-1]["final_screenshot_url"] = shot
+                                trace[-1]["screenshot_url"] = shot
                             for key in GATE_FIELDS:
                                 if key in result:
                                     sess[key] = result[key]
@@ -3782,6 +3905,10 @@ async def run_study(
         if study.auth_blocker:
             study.summary["auth_blocker"] = study.auth_blocker
         try:
+            await asyncio.to_thread(_publish_product_finals, study)
+        except Exception as shot_exc:  # noqa: BLE001
+            print(f"final.png publish failed: {shot_exc!r}", flush=True)
+        try:
             from mvp.report_insights import apply_insights
 
             apply_insights(study)
@@ -3789,6 +3916,7 @@ async def run_study(
             print(f"report insights failed: {insight_exc!r}", flush=True)
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
+        apply_headline_clocks(study)
         persist_study(study)
     except SiteAccessBlockedError as exc:
         study.status = "error"
@@ -3891,6 +4019,10 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "backend": study.backend,
             "email": study.email,
             "kill_requested": study.kill_requested,
+            "time_to_first_value_s": study.time_to_first_value_s,
+            "time_to_first_value_agent": study.time_to_first_value_agent,
+            "total_time_s": study.total_time_s,
+            "report_ready": study.report_ready,
         }
     )
 

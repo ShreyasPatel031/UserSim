@@ -2351,13 +2351,12 @@ async def _run_a11y_agent_unlocked(
             try:
                 await page.screenshot(path=str(path), full_page=False, timeout=8000)
                 shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
-                shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
                 try:
-                    from mvp.opening_shot import upload_screenshot
+                    from mvp.opening_shot import publish_final_png
 
-                    await upload_screenshot(study_id, agent_id, path)
+                    shot_url = await asyncio.to_thread(publish_final_png, study_id, agent_id)
                 except Exception:
-                    pass
+                    shot_url = ""
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
                 if not shot_url:
