@@ -27,9 +27,11 @@ MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
 # 200s is enough for several clicks once thinking/planning are off.
 MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
 # A 75s Gemini default let the first call consume the wall (~115s observed).
-# Abort a slow call and let the next step retry. Targets: first action ~10s, step ~15s.
-MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "12") or "12")
-MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "15") or "15")
+# Start short. A slow-but-alive model call gets a longer next step.
+# A dead CDP socket must not sit through that budget until the 200s wall.
+MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "14") or "14")
+MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "18") or "18")
+MVP_STEP_TIMEOUT_CAP_S = int(os.environ.get("MVP_STEP_TIMEOUT_CAP_S", "42") or "42")
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
 
 
@@ -294,13 +296,46 @@ def action_model_name(explicit: str | None = None) -> str:
     return base or MODEL
 
 
-def _product_session_call_kwargs() -> dict[str, Any]:
-    """Signup's richest Browserbase flags. ``create_session`` walks the ladder.
+def _product_session_call_kwargs(
+    *, proxies: bool = False, solve_captchas: bool = False
+) -> dict[str, Any]:
+    """Browserbase flags for a study session.
 
-    Proxies + captcha solve, then solve without proxies, then bare.
-    ``advanced_stealth`` stays off (Hobby returns 403).
+    Ordinary product pages (Linear, Excalidraw) do not need the signup
+    ladder. Proxies plus captcha-solve on all 24 sessions made navigation
+    hang until the CDP socket dropped. Pass proxies/solve only after a warm
+    page is classified as a block. ``advanced_stealth`` stays off.
     """
-    return {"proxies": True, "solve_captchas": True, "advanced_stealth": False}
+    return {
+        "proxies": bool(proxies),
+        "solve_captchas": bool(solve_captchas),
+        "advanced_stealth": False,
+    }
+
+
+def _cdp_alive(session: Any) -> bool:
+    return session is not None and getattr(session, "_cdp_client_root", None) is not None
+
+
+def _cdp_dead_error(exc: BaseException) -> bool:
+    text = str(exc).lower()
+    return "cdp client not" in text or "not connected" in text or "browser not connected" in text
+
+
+async def _ensure_cdp(session: Any, *, agent_id: str) -> bool:
+    """Reconnect a dropped Browserbase socket. One attempt."""
+    if _cdp_alive(session):
+        return True
+    print(f"[{agent_id}] CDP down — reconnecting", flush=True)
+    try:
+        await asyncio.wait_for(session.start(), timeout=20)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] CDP reconnect failed: {exc!r}", flush=True)
+        return False
+    ok = _cdp_alive(session)
+    if not ok:
+        print(f"[{agent_id}] CDP still down after reconnect", flush=True)
+    return ok
 
 
 _PAGE_STATE_JS = """() => {
@@ -744,6 +779,14 @@ def _make_step_hooks(
     async def on_step_start(agent: Any) -> None:
         nxt = state["step"] + 1
         session = getattr(agent, "browser_session", None)
+        if session is not None and not _cdp_alive(session):
+            if not await _ensure_cdp(session, agent_id=agent_id):
+                print(
+                    f"[{agent_id}] stopping — CDP down before step {nxt}",
+                    flush=True,
+                )
+                agent.stop()
+                return
         holds = int(book.get("holds") or 0)
         if session is not None and holds < 1:
             try:
@@ -828,8 +871,41 @@ def _make_step_hooks(
         if step_no in sigs:
             step["state_sig"] = sigs[step_no]
         await _emit(step)
+        _adapt_step_budget(agent, session, agent_id=agent_id)
 
     return on_step_start, on_step_end
+
+
+def _adapt_step_budget(agent: Any, session: Any, *, agent_id: str) -> None:
+    """Lengthen the next step only when the browser is alive and the model was slow.
+
+    A dead socket stops the run. Waiting out max_failures × step_timeout is
+    what made the 200s wall return nothing but the opening screenshot.
+    """
+    settings = getattr(agent, "settings", None)
+    if settings is None:
+        return
+    if session is not None and not _cdp_alive(session):
+        print(f"[{agent_id}] stopping — CDP dropped mid-task", flush=True)
+        agent.stop()
+        return
+    history = getattr(agent, "history", None)
+    items = list(getattr(history, "history", None) or [])
+    err = ""
+    if items:
+        for result in list(getattr(items[-1], "result", None) or []):
+            err += " " + str(getattr(result, "error", "") or "")
+    try:
+        current = int(getattr(settings, "step_timeout", MVP_STEP_TIMEOUT_S) or MVP_STEP_TIMEOUT_S)
+    except (TypeError, ValueError):
+        current = MVP_STEP_TIMEOUT_S
+    if "timed out" in err.lower():
+        nxt = min(MVP_STEP_TIMEOUT_CAP_S, current + 12)
+        if nxt != current:
+            settings.step_timeout = nxt
+            print(f"[{agent_id}] slow step — next budget {nxt}s", flush=True)
+    elif current > MVP_STEP_TIMEOUT_S:
+        settings.step_timeout = max(MVP_STEP_TIMEOUT_S, current - 6)
 
 
 _CONSENT_CLICK_JS = """
@@ -946,39 +1022,59 @@ async def _emit_opening_frame(
 
     shot_path = screenshot_dir / shot_name
 
+    cdp_dead = False
+
     async def _snap_once() -> bool:
+        nonlocal cdp_dead
+        if not _cdp_alive(browser_session):
+            if not await _ensure_cdp(browser_session, agent_id=agent_id):
+                cdp_dead = True
+                return False
         try:
             await asyncio.wait_for(
                 browser_session.take_screenshot(path=str(shot_path), full_page=False),
-                timeout=20,
+                timeout=8,
             )
             return True
         except TypeError:
             try:
                 await asyncio.wait_for(
                     browser_session.take_screenshot(path=str(shot_path)),
-                    timeout=20,
+                    timeout=8,
                 )
                 return True
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
+                if _cdp_dead_error(exc):
+                    cdp_dead = True
                 return False
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] opening screenshot failed: {exc!r}", flush=True)
+            if _cdp_dead_error(exc):
+                cdp_dead = True
             return False
 
     ok = False
     # Heavy marketing / SPA landings (Linear, etc.) often stay on a ~32KB logo
     # splash for several seconds under parallel Browserbase load — wait longer.
-    for attempt in range(8):
-        await asyncio.sleep(1.2 if attempt == 0 else 2.5)
+    # A dropped CDP socket must not repeat an 8×20s wait until the agent wall.
+    for attempt in range(4):
+        if cdp_dead:
+            break
+        await asyncio.sleep(0.4 if attempt == 0 else 1.5)
         if not await _snap_once():
+            if cdp_dead:
+                print(
+                    f"[{agent_id}] opening screenshot stopped — CDP socket is down",
+                    flush=True,
+                )
+                break
             continue
         if not _png_is_blankish(shot_path):
             ok = True
             break
         print(
-            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/8) — waiting for paint",
+            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/4) — waiting for paint",
             flush=True,
         )
         if page is not None:
@@ -1134,7 +1230,9 @@ async def warm_opening_session(
             keep_alive=True,
             owner=_study_bb_owner(),
             study_id=study_id,
-            **_product_session_call_kwargs(),
+            **_product_session_call_kwargs(
+                proxies=proxies, solve_captchas=proxies
+            ),
         )
         t_bb_create = time.time() - t0
         connect = getattr(bb_session, "connect_url", None)
@@ -1588,6 +1686,51 @@ async def run_browser_agent(
                     await asyncio.to_thread(close_session, sid)
             raise
 
+    if (
+        browser_session is not None
+        and not force_local
+        and not _cdp_alive(browser_session)
+    ):
+        print(
+            f"[{agent_id}] opening browser lost CDP — opening a fresh bare session",
+            flush=True,
+        )
+        try:
+            await asyncio.wait_for(browser_session.kill(), timeout=8)
+        except Exception:
+            pass
+        browser_session = None
+        if owns_session and bb_session is not None:
+            sid = getattr(bb_session, "id", None)
+            if sid:
+                try:
+                    await asyncio.to_thread(close_session, sid)
+                except Exception:
+                    pass
+            bb_session = None
+        bb_session = await asyncio.to_thread(
+            create_session,
+            keep_alive=True,
+            owner=_study_bb_owner(),
+            study_id=study_id,
+            **_product_session_call_kwargs(),
+        )
+        owns_session = True
+        connect = getattr(bb_session, "connect_url", None)
+        if connect:
+            from browser_use import BrowserSession
+
+            browser_session = BrowserSession(browser_profile=_browserbase_profile(connect))
+            await browser_session.start()
+            await _emit_opening_frame(
+                browser_session,
+                screenshot_dir=screenshot_dir,
+                study_id=study_id,
+                agent_id=agent_id,
+                url=start_url,
+                on_step=on_step,
+            )
+
     page_state: dict[str, Any] = {
         "sigs": {},
         "holds": 0,
@@ -1611,8 +1754,12 @@ async def run_browser_agent(
                 "temperature": 0,
                 # One attempt. A slow call is aborted by http timeout and the next
                 # agent step retries, instead of five backoffs eating the wall.
-                "max_retries": 1,
-                "max_output_tokens": 768,
+                # One retry inside the step when the first call is slow.
+                # A dead browser does not get more retries — the step hook stops.
+                "max_retries": 2,
+                # 768 truncated the action JSON ("invalid output format") on the
+                # first step, so the run never got a click.
+                "max_output_tokens": 2048,
                 "http_options": {"timeout": max(3000, (MVP_LLM_TIMEOUT_S - 2) * 1000)},
             }
             # Gemini 2.5 thinking is what stretched the first call past a minute.
@@ -1695,6 +1842,8 @@ async def run_browser_agent(
             use_judge=False,
             llm_timeout=MVP_LLM_TIMEOUT_S,
             step_timeout=MVP_STEP_TIMEOUT_S,
+            # A few format/timeout misses must not end the run before a click.
+            max_failures=8,
             llm_screenshot_size=(800, 450),
             message_compaction=False,
             max_actions_per_step=2,
@@ -1796,9 +1945,13 @@ async def run_browser_agent(
                 timeout=max(15.0, MVP_AGENT_WALL_S),
             )
         except (asyncio.TimeoutError, asyncio.CancelledError):
+            # The wait cancels agent.run, but steps already taken are on the
+            # agent. Returning history=None dropped them and left only bbox_0.
+            history = getattr(agent, "history", None)
+            salvaged = len(list(getattr(history, "history", None) or []))
             print(
                 f"[{agent_id}] agent.run hit wall ({MVP_AGENT_WALL_S:.0f}s) — "
-                "returning opening/partial trace",
+                f"keeping {salvaged} in-progress step(s)",
                 flush=True,
             )
             try:
@@ -1808,9 +1961,8 @@ async def run_browser_agent(
                 )
             except Exception:
                 pass
-            # Last-chance paint before kill — Vimeo/DailyMotion often finish
-            # loading after the LLM loop has already stalled.
-            if browser_session is not None and on_step is not None:
+            # Last-chance paint only when the loop never recorded a step.
+            if salvaged == 0 and browser_session is not None and on_step is not None:
                 try:
                     await _emit_opening_frame(
                         browser_session,
@@ -1824,6 +1976,8 @@ async def run_browser_agent(
                     print(f"[{agent_id}] wall reshoot failed: {wall_shot_exc!r}", flush=True)
         except Exception as run_exc:  # noqa: BLE001
             # Prefer partial opening frames over raising into study retry.
+            if history is None:
+                history = getattr(agent, "history", None)
             print(f"[{agent_id}] agent.run failed: {run_exc!r} — returning partial", flush=True)
     finally:
         if browser_session is not None:
