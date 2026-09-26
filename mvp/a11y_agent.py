@@ -1106,33 +1106,42 @@ class A11yBoot:
             deadline = getattr(self.study, "budget_deadline", None) or (
                 time.monotonic() + study_budget_s()
             )
-            bb = None
-            while time.monotonic() < deadline and bb is None:
-                remaining = deadline - time.monotonic()
+            # A primed session is often already closed. Try a few browsers
+            # before giving up, or every agent on this site waits out the budget.
+            for attempt in range(4):
+                if time.monotonic() >= deadline:
+                    break
+                bb = None
                 try:
-                    bb = await asyncio.wait_for(
-                        self.pool.get(), timeout=min(5.0, max(0.1, remaining))
-                    )
-                except asyncio.TimeoutError:
+                    bb = self.pool.get_nowait()
+                except asyncio.QueueEmpty:
+                    bb = await self._create_one(attempt, enqueue=False)
+                if bb is None:
                     continue
-            if bb is None:
-                print(f"[a11y] no session for {key} before the study budget", flush=True)
-                return
-            try:
-                snap = await self._read_url(bb, url)
-            except Exception as exc:  # noqa: BLE001
-                print(f"[a11y] shared read {key} failed: {exc!r}", flush=True)
-                return
-            handle = snap.pop("_handle", None)
-            if isinstance(handle, dict):
+                try:
+                    snap = await self._read_url(bb, url)
+                except Exception as exc:  # noqa: BLE001
+                    print(f"[a11y] shared read {key} failed (retrying): {exc!r}", flush=True)
+                    continue
+                handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
+                page = (handle or {}).get("page") if isinstance(handle, dict) else None
+                try:
+                    closed = page is None or page.is_closed()
+                except Exception:
+                    closed = True
+                if closed or not isinstance(handle, dict):
+                    print(f"[a11y] shared read {key} had no live page (retrying)", flush=True)
+                    continue
                 handle["site_key"] = key
                 handle["read"] = snap
                 async with self._handle_cv:
                     self._handles.append(handle)
                     self.contexts[key] = handle
                     self._handle_cv.notify_all()
-            self.snapshots[key] = snap
-            self._publish_site(key, snap)
+                self.snapshots[key] = snap
+                self._publish_site(key, snap)
+                return
+            print(f"[a11y] no live page for {key}", flush=True)
 
         await asyncio.gather(*[_one(key, url) for key, url in sites])
         self.published.set()
