@@ -23,20 +23,27 @@ from mvp.paths import MVP_RUNS_DIR
 
 # Enough steps to leave the landing page: land, scroll, open a nav item, read, come back.
 MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
-# One remote step is DOM/state, a network-idle wait, a vision call, and the
-# action. A 15s cap cancels that before browser-use appends a history item, so
-# the trace keeps only the opening frame. 60s/30s fits one step. The 8-minute
-# study budget is still the only per-agent wall.
+# Backstop only. A step is supposed to decide in a few seconds: the first
+# click comes from the opening screenshot, and later DOM captures are capped.
+# These ceilings stop a stuck CDP call from cancelling the step before a
+# history item exists. They are not what makes the agent fast.
 DEFAULT_LLM_TIMEOUT_S = 30
 DEFAULT_STEP_TIMEOUT_S = 60
 MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "") or DEFAULT_LLM_TIMEOUT_S)
 MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "") or DEFAULT_STEP_TIMEOUT_S)
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
+# Viewport-only DOM, a small element list, and a hard stop so one state
+# capture cannot sit on the CDP connection until browser-use's 30s timeout.
+DOM_BUDGET_S = float(os.environ.get("MVP_DOM_BUDGET_S", "") or "4")
+SHOT_BUDGET_S = float(os.environ.get("MVP_SHOT_BUDGET_S", "") or "5")
+DOM_ELEMENT_CAP = int(os.environ.get("MVP_DOM_ELEMENT_CAP", "") or "40")
+_VISION_IMAGE = (800, 450)
 
 # Measurement only. Each phase prints one JSON line and is copied onto the
-# trace step. The context var splits the decision loop from the post-step
-# highlight screenshot, which calls the same DOM/screenshot methods.
+# trace step. where/step are task-local so a background DOM capture and the
+# vision call do not stamp each other's timings.
 _PHASE_WHERE = contextvars.ContextVar("usersim_phase_where", default="loop")
+_PHASE_STEP = contextvars.ContextVar("usersim_phase_step", default=None)
 _PHASE_LOG = Path("/tmp/usersim_phase/events.jsonl")
 _HTTP_STATUS_RE = re.compile(r"\b(408|429|500|502|503|504)\b")
 
@@ -71,7 +78,11 @@ class _PhaseClock:
         where = str(rec.pop("where", None) or _PHASE_WHERE.get() or "loop")
         step = rec.get("step")
         if step is None:
-            step = self.hook_step if where == "hook" else self.current_step
+            pinned = _PHASE_STEP.get()
+            if pinned is not None:
+                step = pinned
+            else:
+                step = self.hook_step if where == "hook" else self.current_step
         row: dict[str, Any] = {
             "t": round(time.time(), 3),
             "agent_id": self.agent_id,
@@ -165,6 +176,93 @@ def _patch_method(obj: Any, name: str, wrapper: Any) -> bool:
             return False
 
 
+def _cheap_dom_flags() -> dict[str, Any]:
+    """Viewport-only DOM, no highlight pass, almost no idle wait."""
+    return {
+        "highlight_elements": False,
+        "dom_highlight_elements": False,
+        "cross_origin_iframes": False,
+        "max_iframes": 1,
+        "max_iframe_depth": 0,
+        "paint_order_filtering": True,
+        "minimum_wait_page_load_time": 0.05,
+        "wait_for_network_idle_page_load_time": 0.05,
+        "wait_between_actions": 0.05,
+    }
+
+
+def _ensure_cheap_dom_service(watchdog: Any, browser_session: Any) -> None:
+    """Build the DOM service once, scoped to the viewport and one frame."""
+    svc = getattr(watchdog, "_dom_service", None)
+    if svc is not None:
+        svc.viewport_threshold = 0
+        svc.max_iframes = 1
+        svc.max_iframe_depth = 0
+        svc.cross_origin_iframes = False
+        return
+    from browser_use.dom.service import DomService
+
+    watchdog._dom_service = DomService(
+        browser_session=browser_session,
+        logger=getattr(watchdog, "logger", None),
+        cross_origin_iframes=False,
+        paint_order_filtering=True,
+        max_iframes=1,
+        max_iframe_depth=0,
+        viewport_threshold=0,
+    )
+
+
+def _cap_dom_elements(state: Any, limit: int) -> Any:
+    """Keep a short viewport-first element list for the model."""
+    if limit <= 0 or state is None:
+        return state
+    smap = getattr(state, "selector_map", None)
+    if not isinstance(smap, dict) or len(smap) <= limit:
+        return state
+    vw = float(VIEWPORT["width"])
+    vh = float(VIEWPORT["height"])
+
+    def _in_view(node: Any) -> bool:
+        snap = getattr(node, "snapshot_node", None)
+        bounds = getattr(snap, "bounds", None)
+        if bounds is None:
+            return True
+        x = float(getattr(bounds, "x", 0) or 0)
+        y = float(getattr(bounds, "y", 0) or 0)
+        w = float(getattr(bounds, "width", 0) or 0)
+        h = float(getattr(bounds, "height", 0) or 0)
+        return x < vw and y < vh and x + w > 0 and y + h > 0
+
+    ranked = sorted(smap.items(), key=lambda item: (0 if _in_view(item[1]) else 1, item[0]))
+    keep = {idx for idx, _node in ranked[:limit]}
+    for idx in list(smap):
+        if idx not in keep:
+            smap.pop(idx, None)
+
+    def _walk(node: Any) -> None:
+        if node is None:
+            return
+        idx = getattr(node, "selector_index", None)
+        if idx is not None and idx not in keep:
+            try:
+                node.is_interactive = False
+                node.selector_index = None
+            except Exception:
+                pass
+        for child in getattr(node, "children", None) or []:
+            _walk(child)
+
+    _walk(getattr(state, "_root", None))
+    return state
+
+
+def _empty_dom_state() -> Any:
+    from browser_use.dom.views import SerializedDOMState
+
+    return SerializedDOMState(_root=None, selector_map={})
+
+
 def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
     """Time DOM extraction, screenshots, and navigation on this session only."""
     if browser_session is None or getattr(browser_session, "_phase_probes", False):
@@ -177,6 +275,24 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
     orig_state = browser_session.get_browser_state_summary
 
     async def state_wrapped(*args: Any, **kwargs: Any) -> Any:
+        # The opening vision click starts one state capture. The first loop
+        # step awaits that same task instead of extracting the DOM again.
+        pending = getattr(browser_session, "_usersim_pending_state", None)
+        if pending is not None and pending is not asyncio.current_task():
+            try:
+                object.__setattr__(browser_session, "_usersim_pending_state", None)
+            except Exception:
+                pass
+            started = clock.begin("state", reused=True)
+            error = None
+            error_type = None
+            try:
+                return await pending
+            except Exception as exc:
+                error = f"{type(exc).__name__}: {exc}"[:400]
+                error_type = type(exc).__name__
+            finally:
+                clock.finish("state", started, error=error, error_type=error_type, reused=True)
         started = clock.begin("state")
         error = None
         error_type = None
@@ -202,6 +318,14 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
 
     _patch_method(browser_session, "get_browser_state_summary", state_wrapped)
 
+    profile = getattr(browser_session, "browser_profile", None)
+    if profile is not None:
+        for key, value in _cheap_dom_flags().items():
+            try:
+                setattr(profile, key, value)
+            except Exception:
+                pass
+
     watchdog = getattr(browser_session, "_dom_watchdog", None)
     if watchdog is not None:
         orig_dom = watchdog._build_dom_tree_without_highlights
@@ -212,7 +336,18 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
             error_type = None
             try:
                 async with _CdpSlot():
-                    return await orig_dom(*args, **kwargs)
+                    try:
+                        _ensure_cheap_dom_service(watchdog, browser_session)
+                    except Exception as exc:
+                        clock.note_exception("dom_service", exc)
+                    result = await asyncio.wait_for(
+                        orig_dom(*args, **kwargs), timeout=DOM_BUDGET_S
+                    )
+                return _cap_dom_elements(result, DOM_ELEMENT_CAP)
+            except TimeoutError:
+                error = f"TimeoutError: DOM budget {DOM_BUDGET_S:.0f}s"
+                error_type = "TimeoutError"
+                return _empty_dom_state()
             except asyncio.CancelledError:
                 error = "CancelledError: cancelled"
                 error_type = "CancelledError"
@@ -232,7 +367,13 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
             error_type = None
             try:
                 async with _CdpSlot():
-                    return await orig_shot(*args, **kwargs)
+                    return await asyncio.wait_for(
+                        orig_shot(*args, **kwargs), timeout=SHOT_BUDGET_S
+                    )
+            except TimeoutError:
+                error = f"TimeoutError: screenshot budget {SHOT_BUDGET_S:.0f}s"
+                error_type = "TimeoutError"
+                return None
             except asyncio.CancelledError:
                 error = "CancelledError: cancelled"
                 error_type = "CancelledError"
@@ -286,9 +427,7 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
         _patch_method(browser_session, "take_screenshot", take_wrapped)
 
 
-def _install_agent_probes(agent: Any, llm: Any, clock: _PhaseClock) -> None:
-    """Time the LLM call (status and retries) and action execution."""
-    attempts: dict[str, Any] = {"n": 0, "statuses": []}
+def _wrap_llm_probe(llm: Any, clock: _PhaseClock, attempts: dict[str, Any]) -> None:
     try:
         client = llm.get_client()
         models = client.aio.models
@@ -343,11 +482,24 @@ def _install_agent_probes(agent: Any, llm: Any, clock: _PhaseClock) -> None:
 
     _patch_method(llm, "ainvoke", invoke_wrapped)
 
+
+_LLM_PROBES: set[int] = set()
+
+
+def _install_agent_probes(agent: Any, llm: Any, clock: _PhaseClock) -> None:
+    """Time the LLM call (status and retries) and action execution."""
+    if id(llm) not in _LLM_PROBES:
+        _LLM_PROBES.add(id(llm))
+        _wrap_llm_probe(llm, clock, {"n": 0, "statuses": []})
+    if agent is None:
+        return
     orig_step = agent.step
 
     async def step_wrapped(step_info: Any = None) -> Any:
-        step_no = int(getattr(getattr(agent, "state", None), "n_steps", 0) or 0)
+        offset = int(getattr(agent, "_usersim_step_offset", 0) or 0)
+        step_no = int(getattr(getattr(agent, "state", None), "n_steps", 0) or 0) + offset
         clock.current_step = step_no
+        token = _PHASE_STEP.set(step_no)
         started = clock.begin("step", step=step_no)
         error = None
         error_type = None
@@ -363,12 +515,16 @@ def _install_agent_probes(agent: Any, llm: Any, clock: _PhaseClock) -> None:
             raise
         finally:
             clock.finish("step", started, step=step_no, error=error, error_type=error_type)
+            _PHASE_STEP.reset(token)
 
     _patch_method(agent, "step", step_wrapped)
 
     orig_exec = agent._execute_actions
 
     async def exec_wrapped() -> Any:
+        # The step rail updates when the action is chosen, before multi_act
+        # and the post-step hook finish.
+        _schedule_live_action(agent)
         started = clock.begin("action")
         error = None
         error_type = None
@@ -839,14 +995,9 @@ def _browserbase_profile(cdp_url: str):
         viewport=VIEWPORT,
         user_agent=USER_AGENT,
         disable_security=True,
-        cross_origin_iframes=False,
         enable_default_extensions=False,
         captcha_solver=captcha_solver_enabled(),
-        highlight_elements=False,
-        dom_highlight_elements=True,
-        minimum_wait_page_load_time=float(os.environ.get("BROWSERBB_MIN_WAIT", "2.0")),
-        wait_for_network_idle_page_load_time=float(os.environ.get("BROWSERBB_NETWORK_IDLE", "2.0")),
-        wait_between_actions=0.5,
+        **_cheap_dom_flags(),
     )
 
 
@@ -872,16 +1023,9 @@ def _local_browser_profile(
         "viewport": VIEWPORT,
         "user_agent": USER_AGENT,
         "disable_security": True,
-        "cross_origin_iframes": False,
         "enable_default_extensions": False,
         "captcha_solver": captcha_solver_enabled(),
-        "highlight_elements": False,
-        "dom_highlight_elements": True,
-        "minimum_wait_page_load_time": float(os.environ.get("MVP_LOCAL_MIN_WAIT", "1.0")),
-        "wait_for_network_idle_page_load_time": float(
-            os.environ.get("MVP_LOCAL_NETWORK_IDLE", "1.5")
-        ),
-        "wait_between_actions": 0.4,
+        **_cheap_dom_flags(),
     }
     # Default: bundled Chromium. channel=chrome will attach to an already-open
     # Google Chrome (e.g. the UserSim debug window on :9222) and agents get stuck
@@ -1384,6 +1528,63 @@ def reject_early_done(agent: Any, start_url: str) -> bool:
     return True
 
 
+def _remember_step(book: dict[str, Any], step: dict[str, Any]) -> None:
+    n = step.get("step")
+    if isinstance(n, int):
+        book.setdefault("emitted", {})[n] = step
+
+
+def _schedule_emit(
+    on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None,
+    step: dict[str, Any],
+    book: dict[str, Any] | None = None,
+) -> None:
+    """Hand a trace row to the UI without waiting on persistence."""
+    if isinstance(book, dict):
+        _remember_step(book, step)
+    if on_step is None:
+        return
+    maybe = on_step(step)
+    if asyncio.iscoroutine(maybe):
+        task = asyncio.create_task(maybe)
+        if isinstance(book, dict):
+            book.setdefault("emit_tasks", []).append(task)
+
+
+def _schedule_live_action(agent: Any) -> None:
+    """Push the chosen action onto the step rail before it finishes executing."""
+    book = getattr(agent, "_usersim_book", None)
+    if not isinstance(book, dict):
+        return
+    model_out = getattr(getattr(agent, "state", None), "last_model_output", None)
+    if model_out is None:
+        return
+    act = getattr(model_out, "action", None) or getattr(model_out, "actions", None)
+    label = _action_label(act)
+    if not label or label == "—":
+        return
+    step_no = int(book.get("step") or 0) + 1
+    if book.get("live_emitted") == step_no:
+        return
+    book["live_emitted"] = step_no
+    thought = str(getattr(model_out, "next_goal", None) or getattr(model_out, "thinking", None) or "")
+    _schedule_emit(
+        book.get("on_step"),
+        {
+            "step": step_no,
+            "action": label,
+            "observation": "",
+            "thought": thought[:400],
+            "thought_detail": {"next_goal": thought[:400]} if thought else {},
+            "url": None,
+            "screenshot_url": None,
+            "outcome": "neutral",
+            "live": True,
+        },
+        book,
+    )
+
+
 def _make_step_hooks(
     screenshot_dir: Path,
     *,
@@ -1393,24 +1594,19 @@ def _make_step_hooks(
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
     page_state: dict[str, Any] | None = None,
 ):
-    """Capture a screenshot with DOM bounding boxes drawn on it, once per step.
+    """Record the step from the screenshot browser-use already took.
 
-    browser-use takes its own screenshot *before* injecting highlights, so history
-    screenshots are always clean. Re-injecting the overlay here is the only way to
-    get boxed frames like the Bland bakeoff traces.
-
-    Page-state signatures are taken before highlights so the overlay is not a
-    false DOM change.
+    Nothing here extracts the DOM, draws highlights, or takes another
+    screenshot. The UI write is scheduled so tracing does not stall the next
+    decision.
     """
-    state = {"step": 0}
     book = page_state if isinstance(page_state, dict) else {}
+    book.setdefault("step", 0)
+    book["on_step"] = on_step
+    state = book
 
-    async def _emit(step: dict[str, Any]) -> None:
-        if on_step is None:
-            return
-        maybe = on_step(step)
-        if asyncio.iscoroutine(maybe):
-            await maybe
+    def _emit(step: dict[str, Any]) -> None:
+        _schedule_emit(on_step, step, book)
 
     async def on_step_start(agent: Any) -> None:
         nxt = state["step"] + 1
@@ -1426,8 +1622,8 @@ def _make_step_hooks(
                 book["captcha"] = found
                 if found.get("held"):
                     book["holds"] = holds + 1
-        # Stream a thinking pulse before the LLM finishes this step's tokens.
-        await _emit(
+        # Status pulse only. The numbered row is emitted when the action is chosen.
+        _emit(
             {
                 "step": None,
                 "progress_only": True,
@@ -1465,13 +1661,14 @@ def _make_step_hooks(
             book["first_action_s"] = round(time.monotonic() - float(book["t0"]), 3)
         session = getattr(agent, "browser_session", None)
         if session is None:
+            _emit(
+                _failed_trace_step(
+                    step_no=step_no,
+                    reason="no browser session",
+                    phase="action",
+                )
+            )
             return
-        try:
-            sig = await _page_state(session)
-            if sig:
-                book.setdefault("sigs", {})[step_no] = sig
-        except Exception as exc:
-            _swallowed("page_state", exc)
         history = getattr(agent, "history", None)
         items = list(getattr(history, "history", None) or [])
         # step() is cancelled on step_timeout before _finalize appends history.
@@ -1497,11 +1694,10 @@ def _make_step_hooks(
             sigs = book.get("sigs") if isinstance(book.get("sigs"), dict) else {}
             if step_no in sigs:
                 step["state_sig"] = sigs[step_no]
-            await _emit(step)
+            _emit(step)
             return
         state["history_len"] = len(items)
-        # Reuse the screenshot captured inside the step. A second
-        # get_browser_state_summary here repeated the DOM load on every session.
+        # Reuse the screenshot already stored on the history item.
         latest = items[-1]
         shot = getattr(getattr(latest, "state", None), "screenshot_path", None)
         dest = screenshot_dir / f"bbox_{step_no}.png"
@@ -1533,7 +1729,7 @@ def _make_step_hooks(
         sigs = book.get("sigs") if isinstance(book.get("sigs"), dict) else {}
         if step_no in sigs:
             step["state_sig"] = sigs[step_no]
-        await _emit(step)
+        _emit(step)
 
     return on_step_start, on_step_end
 
@@ -1597,6 +1793,271 @@ async def _dismiss_consent_banners(browser_session: Any, *, agent_id: str) -> No
         print(f"[{agent_id}] consent dismiss skipped: {exc!r}", flush=True)
 
 
+def parse_vision_action(
+    payload: Any,
+    *,
+    width: int,
+    height: int,
+    image_w: int = _VISION_IMAGE[0],
+    image_h: int = _VISION_IMAGE[1],
+) -> dict[str, Any] | None:
+    """Turn a vision reply into a viewport click or type.
+
+    The model sees an 800x450 image. Coordinates inside that image are scaled
+    up to the screenshot. Coordinates already past the image are viewport pixels.
+    """
+    data: Any = payload
+    if hasattr(payload, "model_dump"):
+        data = payload.model_dump()
+    elif not isinstance(payload, dict):
+        text = str(getattr(payload, "completion", payload) or "")
+        match = re.search(r"\{.*\}", text, re.S)
+        if not match:
+            return None
+        try:
+            data = json.loads(match.group(0))
+        except json.JSONDecodeError:
+            return None
+    if not isinstance(data, dict):
+        return None
+    kind = str(data.get("kind") or data.get("action") or "").strip().lower()
+    if kind not in {"click", "type"}:
+        return None
+    try:
+        x = int(float(data.get("x")))
+        y = int(float(data.get("y")))
+    except (TypeError, ValueError):
+        return None
+    if image_w > 0 and image_h > 0 and 0 <= x <= image_w and 0 <= y <= image_h and width and height:
+        # A point on the resized image. The far edges are still inside the image,
+        # so only values past the image are treated as already-viewport pixels.
+        if x < image_w and y < image_h:
+            x = int(round(x * width / image_w))
+            y = int(round(y * height / image_h))
+    x = max(1, min(int(width or x), x))
+    y = max(1, min(int(height or y), y))
+    text = str(data.get("text") or "")[:80]
+    if kind == "type" and not text:
+        kind = "click"
+    return {"kind": kind, "x": x, "y": y, "text": text}
+
+
+def _vision_jpeg(path: Path) -> tuple[str, int, int]:
+    import base64
+    import io
+
+    from PIL import Image
+
+    im = Image.open(path)
+    src_w, src_h = im.size
+    im = im.convert("RGB").resize(_VISION_IMAGE)
+    buf = io.BytesIO()
+    im.save(buf, format="JPEG", quality=55)
+    return base64.b64encode(buf.getvalue()).decode("ascii"), src_w, src_h
+
+
+async def _cdp_insert_text(session: Any, text: str) -> None:
+    cdp = await session.get_or_create_cdp_session()
+    await cdp.cdp_client.send.Input.insertText(
+        {"text": text},
+        session_id=cdp.session_id,
+    )
+
+
+def _start_background_state(browser_session: Any, clock: _PhaseClock, step_no: int) -> None:
+    """Load DOM while the vision call runs. The next step reuses this task."""
+
+    async def _load() -> Any:
+        token_where = _PHASE_WHERE.set("loop")
+        token_step = _PHASE_STEP.set(step_no)
+        try:
+            return await browser_session.get_browser_state_summary(include_screenshot=True)
+        finally:
+            _PHASE_WHERE.reset(token_where)
+            _PHASE_STEP.reset(token_step)
+
+    task = asyncio.create_task(_load())
+    try:
+        object.__setattr__(browser_session, "_usersim_pending_state", task)
+    except Exception:
+        pass
+    clock.event(event="start", phase="state", where="background", step=step_no, note="scheduled")
+
+
+async def _act_from_opening_screenshot(
+    browser_session: Any,
+    llm: Any,
+    *,
+    clock: _PhaseClock,
+    screenshot_dir: Path,
+    study_id: str,
+    agent_id: str,
+    task_prompt: str,
+    url: str,
+    on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None,
+    book: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Click or type from the opening PNG. Does not wait for a DOM extraction."""
+    shot = screenshot_dir / "bbox_0.png"
+    if not shot.is_file() or shot.stat().st_size < 100:
+        return None
+    shot_at = book.get("screenshot_mono")
+    if not isinstance(shot_at, float):
+        shot_at = time.monotonic()
+        book["screenshot_mono"] = shot_at
+    # The loop's first state capture is this task. Trace step 1 is the click;
+    # the capture belongs to the following decision.
+    _start_background_state(browser_session, clock, step_no=2)
+    step_token = _PHASE_STEP.set(1)
+    where_token = _PHASE_WHERE.set("opening")
+    clock.current_step = 1
+    decision: dict[str, Any] | None = None
+    phase = "llm"
+    try:
+        jpeg, src_w, src_h = _vision_jpeg(shot)
+        from browser_use.llm.messages import (
+            ContentPartImageParam,
+            ContentPartTextParam,
+            ImageURL,
+            SystemMessage,
+            UserMessage,
+        )
+        from pydantic import BaseModel, Field
+
+        class VisionFirstAction(BaseModel):
+            kind: str = Field(description="click or type")
+            x: int
+            y: int
+            text: str = ""
+
+        prompt = (
+            f"Task: {task_prompt[:400]}\n"
+            f"Page: {url}\n"
+            "The image is 800 by 450. Pick ONE next action a real user would take "
+            "for the task. Return kind=click or kind=type, plus x and y inside the "
+            "image. For type, also return the short text to enter. Do not describe the page."
+        )
+        messages = [
+            SystemMessage(content="You choose one browser action from a screenshot."),
+            UserMessage(
+                content=[
+                    ContentPartTextParam(text=prompt),
+                    ContentPartImageParam(
+                        image_url=ImageURL(
+                            url=f"data:image/jpeg;base64,{jpeg}",
+                            media_type="image/jpeg",
+                            detail="low",
+                        )
+                    ),
+                ]
+            ),
+        ]
+        try:
+            result = await asyncio.wait_for(
+                llm.ainvoke(messages, output_format=VisionFirstAction),
+                timeout=8,
+            )
+            decision = parse_vision_action(
+                getattr(result, "completion", result),
+                width=src_w or int(VIEWPORT["width"]),
+                height=src_h or int(VIEWPORT["height"]),
+            )
+        except Exception as exc:
+            reason = f"{type(exc).__name__}: {exc}"[:400]
+            failed = _failed_trace_step(step_no=1, reason=reason, phase="llm", url=url)
+            failed["screenshot_url"] = (
+                f"/api/studies/{study_id}/agents/{agent_id}/screenshots/bbox_0.png"
+            )
+            _schedule_emit(on_step, failed, book)
+            book["step"] = 1
+            print(f"[{agent_id}] vision first action failed phase=llm: {reason}", flush=True)
+            return failed
+        if not decision:
+            failed = _failed_trace_step(
+                step_no=1,
+                reason="vision reply had no click or type coordinates",
+                phase="llm",
+                url=url,
+            )
+            _schedule_emit(on_step, failed, book)
+            book["step"] = 1
+            print(f"[{agent_id}] vision first action had no coordinates", flush=True)
+            return failed
+        phase = "action"
+        started = clock.begin("action", where="opening", step=1)
+        try:
+            await asyncio.wait_for(
+                _mouse_path(browser_session, [(decision["x"], decision["y"])]),
+                timeout=3,
+            )
+            if decision["kind"] == "type" and decision.get("text"):
+                await asyncio.wait_for(
+                    _cdp_insert_text(browser_session, str(decision["text"])),
+                    timeout=3,
+                )
+        except Exception as exc:
+            clock.finish(
+                "action",
+                started,
+                where="opening",
+                step=1,
+                error=f"{type(exc).__name__}: {exc}"[:400],
+                error_type=type(exc).__name__,
+            )
+            failed = _failed_trace_step(
+                step_no=1,
+                reason=f"{type(exc).__name__}: {exc}"[:400],
+                phase="action",
+                url=url,
+            )
+            _schedule_emit(on_step, failed, book)
+            book["step"] = 1
+            print(f"[{agent_id}] vision click failed: {exc!r}", flush=True)
+            return failed
+        clock.finish("action", started, where="opening", step=1)
+        elapsed_ms = round((time.monotonic() - float(shot_at)) * 1000)
+        clock.event(
+            event="end",
+            phase="first_action",
+            where="opening",
+            step=1,
+            ms=elapsed_ms,
+        )
+        book["first_action_s"] = round(elapsed_ms / 1000, 3)
+        book["vision_action"] = decision
+        if decision["kind"] == "type" and decision.get("text"):
+            label = f"type — x={decision['x']}, y={decision['y']}, text={decision['text']}"
+        else:
+            label = f"click — x={decision['x']}, y={decision['y']}"
+        step = {
+            "step": 1,
+            "action": label,
+            "observation": "Chosen from the opening screenshot.",
+            "thought": "",
+            "thought_detail": {},
+            "url": url,
+            "screenshot_url": f"/api/studies/{study_id}/agents/{agent_id}/screenshots/bbox_0.png",
+            "boxes": [],
+            "outcome": "neutral",
+            "phase_ms": {"first_action": elapsed_ms},
+        }
+        extra = clock.fields_for(1)
+        if extra.get("phase_ms"):
+            merged = dict(step["phase_ms"])
+            merged.update(extra["phase_ms"])
+            step["phase_ms"] = merged
+        _schedule_emit(on_step, step, book)
+        book["step"] = 1
+        print(
+            f"[{agent_id}] first action {label} {elapsed_ms}ms after screenshot",
+            flush=True,
+        )
+        return step
+    finally:
+        _PHASE_STEP.reset(step_token)
+        _PHASE_WHERE.reset(where_token)
+
+
 async def _emit_opening_frame(
     browser_session: Any,
     *,
@@ -1606,8 +2067,9 @@ async def _emit_opening_frame(
     url: str,
     on_step: Callable[[dict[str, Any]], Awaitable[None] | None] | None = None,
     shot_name: str = "bbox_0.png",
+    book: dict[str, Any] | None = None,
 ) -> None:
-    """Navigate + full-viewport screenshot before the LLM agent loop."""
+    """Navigate + one viewport screenshot, then return so the first click can start."""
     try:
         await asyncio.wait_for(browser_session.navigate_to(url), timeout=45)
     except Exception as exc:  # noqa: BLE001
@@ -1622,21 +2084,20 @@ async def _emit_opening_frame(
         print(f"[{agent_id}] opening get_current_page failed: {exc!r}", flush=True)
     if page is not None:
         try:
-            await asyncio.wait_for(page.wait_for_load_state("domcontentloaded"), timeout=15)
+            await asyncio.wait_for(page.wait_for_load_state("domcontentloaded"), timeout=8)
         except Exception:
             pass
-        # Extra settle — 24-way Browserbase fleets often still show splash at DOMContentLoaded.
         try:
-            await asyncio.sleep(2.5)
+            await asyncio.sleep(0.4)
         except Exception:
             pass
         try:
             await asyncio.wait_for(
                 page.wait_for_function(
                     "() => document.body && (document.body.innerText || '').trim().length > 40",
-                    timeout=8000,
+                    timeout=2000,
                 ),
-                timeout=10,
+                timeout=3,
             )
         except Exception:
             pass
@@ -1695,27 +2156,21 @@ async def _emit_opening_frame(
             return False
 
     ok = False
-    # Heavy marketing / SPA landings (Linear, etc.) often stay on a ~32KB logo
-    # splash for several seconds under parallel Browserbase load — wait longer.
-    for attempt in range(8):
-        await asyncio.sleep(1.2 if attempt == 0 else 2.5)
+    # Two quick frames. The first real click uses whichever PNG we publish
+    # and must not wait on a reload loop.
+    for attempt in range(2):
+        await asyncio.sleep(0.3 if attempt == 0 else 0.6)
         if not await _snap_once():
             continue
+        if isinstance(book, dict) and "screenshot_mono" not in book:
+            book["screenshot_mono"] = time.monotonic()
         if not _png_is_blankish(shot_path):
             ok = True
             break
         print(
-            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/8) — waiting for paint",
+            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/2) — one more snap",
             flush=True,
         )
-        if page is not None:
-            try:
-                await asyncio.wait_for(page.reload(wait_until="domcontentloaded"), timeout=10)
-            except Exception:
-                try:
-                    await asyncio.wait_for(browser_session.navigate_to(url), timeout=15)
-                except Exception:
-                    pass
 
     if not ok:
         if not shot_path.is_file() or shot_path.stat().st_size < 100:
@@ -1756,10 +2211,7 @@ async def _emit_opening_frame(
         "outcome": "neutral",
         "evidence_label": "Opening frame · before agent steps",
     }
-    if on_step is not None:
-        maybe = on_step(step)
-        if asyncio.iscoroutine(maybe):
-            await maybe
+    _schedule_emit(on_step, step, book)
     print(
         f"[{agent_id}] opening frame ready ({shot_path.stat().st_size} bytes) {final_url}",
         flush=True,
@@ -2145,6 +2597,78 @@ async def run_browser_agent(
     backend = "browserbase"
     warm_live_url = None
     warm_bb_id = None
+    page_state: dict[str, Any] = {
+        "sigs": {},
+        "holds": 0,
+        "captcha": None,
+        "t0": None,
+        "first_action_s": None,
+        "step": 0,
+        "phase_clock": phase_clock,
+        "on_step": on_step,
+    }
+
+    def _build_llm() -> Any:
+        from browser_use import ChatGoogle
+
+        location = os.environ.get("MVP_VERTEX_LOCATION") or location_for(model)
+        kwargs: dict[str, Any] = {
+            "model": model,
+            "vertexai": True,
+            "credentials": vertex_credentials(),
+            "project": GCP_PROJECT,
+            "location": location,
+            "temperature": 0,
+            # One attempt. A slow call is aborted by http timeout and the next
+            # agent step retries, instead of five backoffs eating the wall.
+            "max_retries": 1,
+            "max_output_tokens": 768,
+            "http_options": {"timeout": max(3000, (MVP_LLM_TIMEOUT_S - 2) * 1000)},
+        }
+        # Gemini 2.5 thinking is what stretched the first call past a minute.
+        if "2.5" in model or "gemini-3" in model:
+            kwargs["thinking_budget"] = 0
+        return ChatGoogle(**kwargs)
+
+    # Overlap client setup with navigation so the vision call can start
+    # on the first screenshot.
+    llm_task = asyncio.create_task(asyncio.to_thread(_build_llm))
+
+    async def _vision_from_opening() -> Any:
+        if page_state.get("vision_started") or browser_session is None:
+            return None
+        page_state["vision_started"] = True
+        try:
+            llm_ready = await llm_task
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] LLM client failed: {exc!r}", flush=True)
+            failed = _failed_trace_step(
+                step_no=1,
+                reason=f"{type(exc).__name__}: {exc}"[:400],
+                phase="llm",
+                url=start_url,
+            )
+            _schedule_emit(on_step, failed, page_state)
+            page_state["step"] = 1
+            return None
+        _install_agent_probes(None, llm_ready, phase_clock)
+        try:
+            await _act_from_opening_screenshot(
+                browser_session,
+                llm_ready,
+                clock=phase_clock,
+                screenshot_dir=screenshot_dir,
+                study_id=study_id,
+                agent_id=agent_id,
+                task_prompt=task_prompt,
+                url=start_url,
+                on_step=on_step,
+                book=page_state,
+            )
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] opening vision failed: {exc!r}", flush=True)
+            phase_clock.note_exception("llm", exc, where="opening", step=1)
+        return llm_ready if page_state.get("vision_started") else None
 
     if use_warm:
         browser_session = warm["browser_session"]
@@ -2179,10 +2703,9 @@ async def run_browser_agent(
                 "outcome": "neutral",
                 "evidence_label": "Opening frame · before agent steps",
             }
-            if on_step is not None:
-                maybe = on_step(step)
-                if asyncio.iscoroutine(maybe):
-                    await maybe
+            page_state["screenshot_mono"] = time.monotonic()
+            _schedule_emit(on_step, step, page_state)
+            await _vision_from_opening()
             # Stash live URL and turn live view ON immediately — page is open.
             if on_step is not None and (warm_live_url or bb_session is not None):
                 maybe = on_step(
@@ -2283,9 +2806,11 @@ async def run_browser_agent(
                         agent_id=agent_id,
                         url=start_url,
                         on_step=on_step,
+                        book=page_state,
                     )
                 finally:
                     _PHASE_WHERE.reset(_opening_where)
+                await _vision_from_opening()
                 # Flip live view ON immediately — don't wait for LLM / agent.run.
                 if on_step is not None and bb_session is not None and not force_local:
                     live_url = None
@@ -2333,41 +2858,9 @@ async def run_browser_agent(
         if hold_nav:
             _nav_semaphore().release()
 
-    page_state: dict[str, Any] = {
-        "sigs": {},
-        "holds": 0,
-        "captcha": None,
-        "t0": None,
-        "first_action_s": None,
-        "phase_clock": phase_clock,
-    }
     try:
-        # Auth/cookies after first pixels (non-YouTube, non-warm).
-        # Warm sessions skip this — first click should not wait on vault I/O.
-        # Build the LLM in parallel with any remaining auth wait.
-        def _build_llm() -> Any:
-            from browser_use import ChatGoogle
-
-            kwargs: dict[str, Any] = {
-                "model": model,
-                "vertexai": True,
-                "credentials": vertex_credentials(),
-                "project": GCP_PROJECT,
-                "location": location_for(model),
-                "temperature": 0,
-                # One attempt. A slow call is aborted by http timeout and the next
-                # agent step retries, instead of five backoffs eating the wall.
-                "max_retries": 1,
-                "max_output_tokens": 768,
-                "http_options": {"timeout": max(3000, (MVP_LLM_TIMEOUT_S - 2) * 1000)},
-            }
-            # Gemini 2.5 thinking is what stretched the first call past a minute.
-            if "2.5" in model or "gemini-3" in model:
-                kwargs["thinking_budget"] = 0
-            return ChatGoogle(**kwargs)
-
-        llm_task = asyncio.create_task(asyncio.to_thread(_build_llm))
-
+        # Auth/cookies after the first click. The vision action already ran
+        # on the opening screenshot.
         if auth_task is not None:
             try:
                 # Cap wait so a slow vault never owns TTFT; skip cookies if late.
@@ -2396,6 +2889,7 @@ async def run_browser_agent(
         from browser_use import Agent
 
         llm = await llm_task
+        _install_agent_probes(None, llm, phase_clock)
         persona_line = f"You are {persona.get('name')}: {persona.get('bio')}"
         stay_put = (
             f"CRITICAL: Stay on {start_url} and its own pages/subdomains only. "
@@ -2465,9 +2959,41 @@ async def run_browser_agent(
                 "To draw, call drag with viewport coordinates. A click on the rectangle "
                 "tool is not a rectangle. "
                 "On a Press and Hold check, call press_and_hold. Never call CapSolver "
-                "or another captcha API."
+                "or another captcha API. "
+                "When the DOM has no element index, click or type with coordinate_x "
+                "and coordinate_y in viewport pixels."
             ),
         )
+        try:
+            agent.tools.set_coordinate_clicking(True)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] coordinate clicking unavailable: {exc!r}", flush=True)
+        try:
+            object.__setattr__(agent, "_usersim_book", page_state)
+            object.__setattr__(agent, "_usersim_step_offset", int(page_state.get("step") or 0))
+        except Exception:
+            pass
+        decision = page_state.get("vision_action")
+        if isinstance(decision, dict):
+            try:
+                from browser_use.agent.views import ActionResult
+
+                label = (
+                    f"typed {decision.get('text')!r} at ({decision.get('x')},{decision.get('y')})"
+                    if decision.get("kind") == "type"
+                    else f"clicked ({decision.get('x')},{decision.get('y')})"
+                )
+                agent.state.last_result = [
+                    ActionResult(
+                        extracted_content=(
+                            f"You already {label} using the opening screenshot. "
+                            "Continue the task from the current page."
+                        ),
+                        long_term_memory=f"Already {label} from the opening screenshot.",
+                    )
+                ]
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{agent_id}] could not record the opening click: {exc!r}", flush=True)
         if use_warm and browser_session is not None:
             _install_session_probes(browser_session, phase_clock)
         _install_agent_probes(agent, llm, phase_clock)
@@ -2503,25 +3029,9 @@ async def run_browser_agent(
             )
             if asyncio.iscoroutine(maybe):
                 await maybe
-        page_state["t0"] = time.monotonic()
-        if browser_session is not None:
-            try:
-                sig0 = await _page_state(browser_session)
-                if sig0:
-                    page_state["sigs"][0] = sig0
-            except Exception:
-                pass
-            try:
-                found = await _maybe_press_and_hold(browser_session, agent_id=agent_id)
-                if found:
-                    page_state["captcha"] = found
-                    if found.get("held"):
-                        page_state["holds"] = 1
-                        sig_after = await _page_state(browser_session)
-                        if sig_after:
-                            page_state["sigs"][0] = sig_after
-            except Exception as exc:  # noqa: BLE001
-                print(f"[{agent_id}] opening captcha check failed: {exc!r}", flush=True)
+        if page_state.get("screenshot_mono") is None:
+            page_state["screenshot_mono"] = time.monotonic()
+        page_state["t0"] = page_state["screenshot_mono"]
         on_step_start, on_step_end = _make_step_hooks(
             screenshot_dir,
             study_id=study_id,
@@ -2534,7 +3044,7 @@ async def run_browser_agent(
         print(
             f"[{agent_id}] agent.run starting model={model} provider=google-vertex "
             f"llm_timeout={MVP_LLM_TIMEOUT_S}s step_timeout={MVP_STEP_TIMEOUT_S}s "
-            f"(warm={use_warm}, max_steps={max_steps}, study_budget={_budget}s)",
+            f"(warm={use_warm}, max_steps={max_steps}, cdp_budget={_budget}s)",
             flush=True,
         )
         history = None
@@ -2578,13 +3088,20 @@ async def run_browser_agent(
                     pass
 
     actions = _history_to_actions(history) if history is not None else []
-    trace = (
-        _history_to_trace(
-            history, study_id=study_id, agent_id=agent_id, screenshot_dir=screenshot_dir
+    emitted = page_state.get("emitted") if isinstance(page_state.get("emitted"), dict) else {}
+    if emitted:
+        trace = [emitted[k] for k in sorted(emitted) if isinstance(k, int)]
+    else:
+        trace = (
+            _history_to_trace(
+                history, study_id=study_id, agent_id=agent_id, screenshot_dir=screenshot_dir
+            )
+            if history is not None
+            else []
         )
-        if history is not None
-        else []
-    )
+    pending_emits = [t for t in (page_state.get("emit_tasks") or []) if asyncio.isfuture(t)]
+    if pending_emits:
+        await asyncio.wait(pending_emits, timeout=2)
     # Keep the pre-agent landing frame (bbox_0) ahead of LLM steps.
     opening = screenshot_dir / "bbox_0.png"
     if opening.is_file() and opening.stat().st_size > 100:
