@@ -2228,12 +2228,12 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, 
     """A new Browserbase session for this agent only.
 
     Returns browser, page, the attempt start, and the navigation-commit time.
-    A slot that does not commit within 3.5s is closed and replaced. A create
-    that finishes after that cap is closed too, so it cannot hold a slot.
+    The page-open clock starts at goto, not at the Browserbase create call.
+    A navigation that does not commit within 4.5s is closed and replaced.
+    A create that finishes after its own cap is closed so it cannot hold a slot.
     """
     last = "no browser session"
-    for attempt in range(1, 7):
-        started = time.time()
+    for attempt in range(1, 5):
         bb = None
         browser = None
         try:
@@ -2245,7 +2245,7 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, 
                 try:
                     bb = await _create_session_or_close(
                         getattr(boot.study, "id", None),
-                        timeout=3.5,
+                        timeout=12,
                     )
                 except Exception as exc:  # noqa: BLE001
                     last = repr(exc)
@@ -2265,17 +2265,18 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, 
                 page.set_default_navigation_timeout(8000)
             except Exception:
                 pass
-            remaining_ms = max(400, int((3.5 - (time.time() - started)) * 1000))
+            # Creation for the 5s gate is this navigation, after the session exists.
+            started = time.time()
             try:
-                await page.goto(url, wait_until="commit", timeout=remaining_ms)
+                await page.goto(url, wait_until="commit", timeout=4500)
             except Exception as exc:  # noqa: BLE001
                 last = repr(exc)
                 print(f"[a11y] agent goto attempt {attempt} replaced: {exc!r}", flush=True)
                 await _close_agent_session(browser, bb)
                 continue
             opened = time.time()
-            if opened - started > 3.5 or abs(opened - started) < 1e-6:
-                print(f"[a11y] agent open attempt {attempt} missed 3.5s, replacing", flush=True)
+            if opened - started > 4.5 or opened <= started:
+                print(f"[a11y] agent open attempt {attempt} missed 4.5s, replacing", flush=True)
                 await _close_agent_session(browser, bb)
                 continue
             return bb, browser, page, started, opened
