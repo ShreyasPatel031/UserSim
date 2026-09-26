@@ -1,11 +1,14 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T05:28:00Z",
+  "graded_at": "2026-09-26T05:50:00Z",
+  "live_launches": "stopped",
+  "note": "Owner gates sessions were released, including primes. New grades use --grade-study and do not open Browserbase. #47 tip 234280b and integration tip 4a874ac are not live-graded.",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "9470be5",
-      "note": "Logs browser-agent phase timings. The live path still aborted the same way.",
+      "tip_seen": "234280b",
+      "note": "Last live grade is 9470be5. Tip 234280b caps CDP state capture. Not launched.",
       "linear": {
         "study_id": "f27bc4b7-196b-4c24-b533-734db02ecc35",
         "pass": false,
@@ -32,26 +35,111 @@
       }
     },
     "cursor/tonight-integration": {
-      "sha": "269058b",
-      "note": "feedback-json merge only. Same agent tree as graded fc0e689."
+      "sha": "617e158",
+      "tip_seen": "4a874ac",
+      "note": "Cherry-pick of task-completion onto the a11y loop. Both sites aborted. Tip 4a874ac holds no idle primes and is not live-graded.",
+      "linear": {
+        "study_id": "9ac802e0-30fa-487b-87e0-5d3ee8b3b50d",
+        "pass": false,
+        "elapsed_s": 41.5,
+        "time_to_first_value": "3.71s PASS",
+        "total_time": "not ready FAIL",
+        "report_ready": false,
+        "time_to_first_action": "median=1.875s max=25.62s n=24/24 FAIL",
+        "ttfa_note": "All 8 Asana competitor_1 agents at 25.62s from browser_ready_at_ts.",
+        "page_opened": "23/24 FAIL slow=t1__p1__product missing_ax=0",
+        "product_task_completion": "0/8 structural=t1__p1__product first_screen=7",
+        "final_screenshot": "missing field final_screenshot_url",
+        "phase_counts": "done=1",
+        "gates": {
+          "time_to_first_value": "PASS 3.71s",
+          "total_time": "FAIL not ready",
+          "full_matrix": "PASS 24",
+          "agent_count": "PASS 24",
+          "persona_count": "PASS 4",
+          "task_count": "PASS 2",
+          "site_count": "PASS 3",
+          "page_opened": "FAIL 23/24 within 5s",
+          "study_complete": "FAIL running aborted",
+          "study_budget": "PASS 41.5s",
+          "first_action": "PASS not measured",
+          "time_to_first_action": "FAIL median=1.875s max=25.62s n=24/24",
+          "phase_ms": "PASS 24/24",
+          "final_screenshot": "FAIL missing field final_screenshot_url",
+          "judge_inputs": "PASS 24/24",
+          "failed_step": "PASS 24 failed runs",
+          "product_task_completion": "FAIL 0/8 (0%)",
+          "report_page": "FAIL missing",
+          "task_completion_rates": "FAIL missing no by_task rows",
+          "product_strength": "FAIL 0/0",
+          "product_weakness": "FAIL 0/0",
+          "top_weakness_not_homepage_only": "FAIL (none)",
+          "run_issues_separate": "FAIL 0 listed",
+          "run_issue_rate": "PASS 0/24 (0%)",
+          "infra_honesty": "PASS losses=0",
+          "first_screen_not_excluded": "PASS opening_or_first_screen=7 product_n=8"
+        }
+      },
+      "excalidraw": {
+        "study_id": "ab9bd20a-08f1-42d0-bd20-992feae6008b",
+        "pass": false,
+        "elapsed_s": 35.2,
+        "time_to_first_value": "3.3s PASS",
+        "total_time": "not ready FAIL",
+        "report_ready": false,
+        "time_to_first_action": "median=1.555s max=22.753s n=24/24 FAIL",
+        "ttfa_note": "All 8 competitor_2 agents at 22.753s from browser_ready_at_ts.",
+        "page_opened": "23/24 FAIL slow=t1__p1__competitor_2 missing_ax=0",
+        "product_task_completion": "0/8 structural=0 first_screen=8",
+        "final_screenshot": "missing field final_screenshot_url",
+        "phase_counts": "done=1",
+        "gates": {
+          "time_to_first_value": "PASS 3.3s",
+          "total_time": "FAIL not ready",
+          "full_matrix": "PASS 24",
+          "agent_count": "PASS 24",
+          "persona_count": "PASS 4",
+          "task_count": "PASS 2",
+          "site_count": "PASS 3",
+          "page_opened": "FAIL 23/24 within 5s",
+          "study_complete": "FAIL running aborted",
+          "study_budget": "PASS 35.2s",
+          "first_action": "PASS not measured",
+          "time_to_first_action": "FAIL median=1.555s max=22.753s n=24/24",
+          "phase_ms": "PASS 24/24",
+          "final_screenshot": "FAIL missing field final_screenshot_url",
+          "judge_inputs": "PASS 24/24",
+          "failed_step": "PASS 24 failed runs",
+          "product_task_completion": "FAIL 0/8 (0%)",
+          "report_page": "FAIL missing",
+          "task_completion_rates": "FAIL missing no by_task rows",
+          "product_strength": "FAIL 0/0",
+          "product_weakness": "FAIL 0/0",
+          "top_weakness_not_homepage_only": "FAIL (none)",
+          "run_issues_separate": "FAIL 0 listed",
+          "run_issue_rate": "PASS 0/24 (0%)",
+          "infra_honesty": "PASS losses=0",
+          "first_screen_not_excluded": "PASS opening_or_first_screen=8 product_n=8"
+        }
+      }
     }
   },
   "bugs": [
     {
       "id": 1,
-      "fact": "Phase-timing logs did not change the clock. Linear f27bc4b7 Trello competitor_2 max 24.352s from browser_ready_at_ts (7 agents; t1__p1__competitor_2 is 0.0s). Excalidraw 93087bdd median 19.872s and max 19.873s. 16 agents are about 19.87s."
+      "fact": "time_to_first_action max must be <=10s and median <=5s at 24 agents, from browser_ready_at_ts when page-open was rewritten. Integration Linear 9ac802e0 Asana competitor_1 is 25.62s. Integration Excalidraw ab9bd20a competitor_2 is 22.753s. #47 Excalidraw 93087bdd median 19.872s max 19.873s. #47 Linear f27bc4b7 Trello 24.352s."
     },
     {
       "id": 2,
-      "fact": "Page open within 5s failed. Linear 23/24 slow t1__p1__product. Excalidraw 22/24 slow t1__p1__product and t1__p1__competitor_1. Abort leaves total_time not ready and final_screenshot_url missing."
+      "fact": "Page open within 5s is 23/24 on both 617e158 sites. Linear slow id is t1__p1__product. Excalidraw slow id is t1__p1__competitor_2. The abort leaves total_time not ready and final_screenshot_url missing."
     },
     {
       "id": 3,
-      "fact": "Product is 0/8. No final PNG, so no Gemini YES."
+      "fact": "Product is 0/8 on every graded head. No final PNG, so there is no Gemini YES. A startup TTFV pass is not a study pass."
     },
     {
       "id": 4,
-      "fact": "Strength and weakness are empty. A pass needs one of each from a run past the first screen with agent, step, AX or URL, and the final screenshot."
+      "fact": "Strength and weakness are 0/0. A pass needs one of each from a run past the first screen with agent, step, AX or URL, and the final screenshot."
     },
     {
       "id": 5,
@@ -59,7 +147,11 @@
     },
     {
       "id": 6,
-      "fact": "New-issue stuck loop from study 6e2acd43 stays open until product is >=4/8 Gemini YES on a finished report."
+      "fact": "New-issue stuck loop from study 6e2acd43 stays open until a finished report shows product >=4/8 Gemini YES."
+    },
+    {
+      "id": 7,
+      "fact": "One shared page serializes the fleet. Competitor clicks land together 17-25s after browser_ready. The 10s max stays."
     }
   ]
 }

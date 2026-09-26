@@ -1275,6 +1275,51 @@ def product_run_succeeded(
     return verdict_reached(vision_goal)
 
 
+def product_diagnostic(
+    study: dict[str, Any],
+    runs: list[dict[str, Any]],
+    verdicts: dict[str, object],
+) -> dict[str, Any]:
+    """Gemini YES among product runs that already had a final screenshot.
+
+    Separate from the official product gate. An aborted study stays pass=false
+    even when this count is high.
+    """
+    product = [run for run in runs if isinstance(run, dict) and is_product_run(run)]
+    finished_ids: list[str] = []
+    yes_ids: list[str] = []
+    reasons: list[dict[str, Any]] = []
+    for run in product:
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        if not aid or not _run_final_screenshot(run):
+            continue
+        finished_ids.append(aid)
+        raw = verdicts.get(aid)
+        verdict = coerce_verdict(raw) if raw is not None else None
+        reached = bool(
+            verdict
+            and product_run_succeeded(run, _start_url(run, study), vision_goal=raw)
+        )
+        if reached:
+            yes_ids.append(aid)
+        reasons.append(
+            {
+                "agent_id": aid,
+                "goal_reached": reached,
+                "reason": str((verdict or {}).get("reason") or "not judged"),
+            }
+        )
+    return {
+        "yes": len(yes_ids),
+        "finished": len(finished_ids),
+        "product_n": len(product),
+        "value": f"{len(yes_ids)}/{len(finished_ids)} finished",
+        "yes_ids": yes_ids,
+        "finished_ids": finished_ids,
+        "reasons": reasons,
+    }
+
+
 def failure_type_for(run: dict[str, Any], verdict: object) -> str:
     """Bucket for a run that did not succeed. Priority is fixed."""
     if is_infrastructure_failure(run):
@@ -2281,6 +2326,17 @@ def render_markdown(
             "",
         ]
     )
+    diagnostic = result.get("product_diagnostic")
+    if isinstance(diagnostic, dict) and diagnostic.get("value"):
+        lines.extend(
+            [
+                "## Product (diagnostic)",
+                "",
+                f"- product (diagnostic) {diagnostic.get('value')}",
+                "- Not a gate. An aborted study stays pass=false.",
+                "",
+            ]
+        )
     if result.get("fail_reasons"):
         lines.append("## Failed gates")
         lines.append("")

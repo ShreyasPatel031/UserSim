@@ -67,6 +67,7 @@ from mvp.e2e2_gates import (  # noqa: E402
     remember_earliest_clocks,
     build_early_failures,
     coerce_verdict,
+    assess_recorded_time_to_first_action,
     evaluate_strict_gates,
     final_dom_of,
     final_url_of,
@@ -74,6 +75,7 @@ from mvp.e2e2_gates import (  # noqa: E402
     missing_field,
     iter_runs,
     judge_goal_screenshot,
+    product_diagnostic,
     render_markdown,
 )
 
@@ -260,7 +262,14 @@ def _fetch_png(base: str, url: str, *, study_id: str = "", agent_id: str = "") -
         try:
             from mvp.gcs_store import gcs_download_bytes, screenshot_gcs_uri
 
-            for name in ("step_0.png", "bbox_1.png", "bbox_0.png"):
+            requested = url.rstrip("/").split("/")[-1] if "/screenshots/" in url else ""
+            names: list[str] = []
+            if requested:
+                names.append(requested)
+            for name in ("final.png", "step_0.png", "bbox_1.png", "bbox_0.png"):
+                if name not in names:
+                    names.append(name)
+            for name in names:
                 raw = gcs_download_bytes(screenshot_gcs_uri(study_id, agent_id, name))
                 if raw and raw[:8] == b"\x89PNG\r\n\x1a\n" and len(raw) > 2000:
                     return raw
@@ -415,17 +424,25 @@ def _final_trace_shot(run: dict) -> dict | None:
     return last
 
 
-def _goal_verdicts(study: dict, base: str) -> dict[str, dict]:
+def _goal_verdicts(
+    study: dict,
+    base: str,
+    *,
+    only_finished: bool = False,
+) -> dict[str, dict]:
     """Judge every run from its final screenshot, URL, and DOM.
 
     The verdict is independent of the agent's summary. Runs with no screenshot
-    get an explicit NO rather than a skip.
+    get an explicit NO rather than a skip. ``only_finished`` skips those runs
+    so an abort can report a diagnostic on agents that already saved a PNG.
     """
     verdicts: dict[str, dict] = {}
     study_id = str(study.get("id") or "")
     for run in iter_runs(study):
         aid = str(run.get("agent_id") or run.get("task_id") or "")
         if not aid:
+            continue
+        if only_finished and not _final_trace_shot(run):
             continue
         start = str(run.get("site_url") or study.get("url") or "")
         task = str(run.get("task_prompt") or run.get("task_title") or "")
@@ -783,6 +800,11 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         if study_id and not study.get("id"):
             study["id"] = study_id
         if early_abort:
+            diagnostic_verdicts = _goal_verdicts(study, args.base, only_finished=True)
+            report["product_diagnostic"] = product_diagnostic(
+                study, _sessions(study), diagnostic_verdicts
+            )
+            _log(f"  product (diagnostic) {report['product_diagnostic']['value']}")
             vision_goal = {}
             report_html, report_url = "", ""
             shot_loader = lambda _url: False  # noqa: E731
@@ -842,7 +864,9 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         report["report_url"] = report_url
         report["fail_reasons"] = strict["fail_reasons"]
         report["goal_verdicts"] = strict.get("verdicts") or vision_goal
-        report["pass"] = bool(strict["pass"])
+        if report.get("product_diagnostic"):
+            strict["product_diagnostic"] = report["product_diagnostic"]
+        report["pass"] = bool(strict["pass"]) and not early_abort
         failure_path = OUT_DIR / "failures.json"
         if early_abort:
             failure_doc = build_early_failures(
@@ -908,6 +932,169 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         raise RuntimeError(
             lead + "e2e2 failed: " + "; ".join(report.get("fail_reasons") or ["unknown"])
         )
+    return report
+
+
+def _load_study_for_grade(base: str, study_id: str) -> tuple[dict, str]:
+    """Pull a finished study from the running app, then from GCS."""
+    try:
+        data = http_json(base, f"/api/studies/{study_id}", timeout=30)
+    except Exception as exc:  # noqa: BLE001
+        _log(f"  app study fetch failed: {exc!r}")
+        data = None
+    if isinstance(data, dict) and (data.get("live_sessions") or data.get("agent_results") or data.get("summary")):
+        data.setdefault("id", study_id)
+        return data, "http"
+    from mvp.study import load_study_from_gcs
+
+    remote = load_study_from_gcs(study_id)
+    if isinstance(remote, dict):
+        remote.setdefault("id", study_id)
+        return remote, "gcs"
+    raise RuntimeError(f"study {study_id} not found on {base} or in GCS")
+
+
+def _optional_float(value: object) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _study_elapsed_s(study: dict) -> float | None:
+    start = _parse_ts(
+        study.get("created_at_ts") or study.get("created_at") or study.get("started_at")
+    )
+    end = _parse_ts(
+        study.get("completed_at_ts")
+        or study.get("completed_at")
+        or study.get("updated_at")
+        or study.get("finished_at")
+    )
+    if start is None or end is None or end < start:
+        return None
+    return round(end - start, 3)
+
+
+def grade_recorded_study(args: argparse.Namespace) -> dict:
+    """Score an existing study. Does not click Run or open a Browserbase session."""
+    study_id = str(args.grade_study or args.study_id or "").strip()
+    if not study_id:
+        raise RuntimeError("missing study id")
+    study, source = _load_study_for_grade(args.base, study_id)
+    runs = _sessions(study)
+    remember_earliest_clocks(runs, {})
+    expected = int(args.expected)
+    page_open_check = assess_page_opened(runs, limit_s=float(args.first_shot_s))
+    ttfa_check = assess_recorded_time_to_first_action(
+        runs,
+        median_s=DEFAULT_TTFA_MEDIAN_S,
+        max_s=DEFAULT_TTFA_MAX_S,
+        expected=expected,
+    )
+    status = str(study.get("status") or "")
+    complete = status == "complete" and bool(study.get("summary"))
+    ttfv = _optional_float(study.get("time_to_first_value_s"))
+    total = _optional_float(study.get("total_time_s"))
+    elapsed = _study_elapsed_s(study)
+    if complete:
+        vision_goal = _goal_verdicts(study, args.base)
+        diagnostic = product_diagnostic(study, runs, vision_goal)
+    else:
+        vision_goal = {}
+        diagnostic = product_diagnostic(
+            study,
+            runs,
+            _goal_verdicts(study, args.base, only_finished=True),
+        )
+    _log(f"  product (diagnostic) {diagnostic['value']} source={source}")
+    report_html, report_url = _fetch_report_html(args.base, study_id)
+    shot_loader = _screenshot_loader(args.base, study_id)
+    personas = study.get("personas") or []
+    task_bases = {
+        str(run.get("task_title") or run.get("task_prompt") or "")
+        for run in runs
+        if str(run.get("task_title") or run.get("task_prompt") or "")
+    }
+    sites = {str(run.get("site_key") or "product") for run in runs}
+    strict = evaluate_strict_gates(
+        study,
+        startup={
+            "expected": expected,
+            "pass_agent_bar": PASS_AGENT_BAR,
+            "elapsed_s": elapsed,
+            "page_open_check": page_open_check,
+            "personas": len(personas) if isinstance(personas, list) else 0,
+            "task_bases": len(task_bases),
+            "sites": len(sites),
+            "min_personas": int(args.min_personas),
+            "min_tasks": int(args.min_tasks),
+            "min_sites": int(args.min_sites),
+            "max_elapsed_s": args.max_elapsed_s,
+            "study_budget_s": args.max_elapsed_s,
+            "first_shot_s": args.first_shot_s,
+            "first_action_s": args.first_action_s,
+            "first_action_frac": args.first_action_frac,
+            "ttfa_median_s": DEFAULT_TTFA_MEDIAN_S,
+            "ttfa_max_s": DEFAULT_TTFA_MAX_S,
+            "time_to_first_action_check": ttfa_check,
+            "time_to_first_value_s": ttfv,
+            "time_to_first_value_agent": str(study.get("time_to_first_value_agent") or ""),
+            "total_time_s": total,
+            "report_ready": complete,
+            "base": args.base,
+            "study_id": study_id,
+            "status": status,
+            "has_summary": bool(study.get("summary")),
+        },
+        vision_goal=vision_goal,
+        screenshot_loads=shot_loader,
+        report_html=report_html,
+        report_url=report_url,
+        abort_reason=None if complete else f"status={status or 'unknown'}",
+    )
+    strict["product_diagnostic"] = diagnostic
+    product = strict["product_task_success"]
+    report = {
+        "base": args.base,
+        "product_url": str(study.get("url") or args.url or ""),
+        "judge_model": JUDGE_MODEL,
+        "expected": expected,
+        "study_id": study_id,
+        "source": source,
+        "grade_study": True,
+        "pass": bool(strict["pass"]) and complete,
+        "elapsed_s": elapsed,
+        "time_to_first_value_s": ttfv,
+        "total_time_s": total,
+        "report_ready": complete,
+        "gates": strict["gates"],
+        "fail_reasons": strict["fail_reasons"],
+        "product_task_success": product,
+        "product_diagnostic": diagnostic,
+        "competitor_task_success": strict["competitor_task_success"],
+        "goal_verdicts": strict.get("verdicts") or vision_goal,
+        "task_success_n": product["success_n"],
+        "task_success_of": product["n"],
+        "page_opened": page_open_check,
+        "time_to_first_action": ttfa_check,
+    }
+    failure_doc = strict.get("failures") or {}
+    failure_path = OUT_DIR / "failures.json"
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    failure_path.write_text(json.dumps(failure_doc, indent=2))
+    report["failure_file"] = str(failure_path)
+    summary_md = render_markdown(
+        strict,
+        study_id=study_id,
+        product_url=report["product_url"],
+        failure_file=str(failure_path),
+    )
+    (OUT_DIR / "summary.md").write_text(summary_md)
+    (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
+    _log(summary_md)
     return report
 
 
@@ -1003,7 +1190,35 @@ def main() -> int:
     )
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
     ap.add_argument("--study-id", default=os.environ.get("E2E2_STUDY_ID", ""))
+    ap.add_argument(
+        "--grade-study",
+        default=os.environ.get("E2E2_GRADE_STUDY", ""),
+        help=(
+            "Grade an existing study id from the app or GCS. "
+            "Does not click Run and does not open a Browserbase session."
+        ),
+    )
     args = ap.parse_args()
+    if str(args.grade_study or "").strip():
+        code = 0
+        try:
+            result = grade_recorded_study(args)
+        except Exception as exc:  # noqa: BLE001
+            _log(f"FAIL: {exc}")
+            return 1
+        if not result.get("pass"):
+            _log(
+                "FAIL grade-study: "
+                + "; ".join(result.get("fail_reasons") or ["unknown"])
+            )
+            diag = result.get("product_diagnostic") or {}
+            _log(f"product (diagnostic) {diag.get('value')}")
+            return 1
+        _log(
+            f"ALL_PASS study={result.get('study_id')} "
+            f"task_success={result.get('task_success_n')}/{result.get('task_success_of')}"
+        )
+        return code
     expected = int(args.expected)
     _release_testfix_sessions()
     code = 0

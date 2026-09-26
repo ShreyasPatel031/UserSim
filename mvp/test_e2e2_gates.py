@@ -20,6 +20,7 @@ from mvp.e2e2_gates import (
     beyond_first_screen,
     build_early_failures,
     evaluate_strict_gates,
+    product_diagnostic,
     has_click_type_scroll,
     is_browserbase_or_concurrency_loss,
     is_click_type_scroll,
@@ -1104,6 +1105,36 @@ class HeadlineMetricTests(unittest.TestCase):
         self.assertEqual(_gate(result, "total_time")["value"], "not ready")
         self.assertFalse(_gate(result, "total_time")["pass"])
         self.assertFalse(result["pass"])
+
+    def test_product_diagnostic_does_not_flip_the_gate(self) -> None:
+        finished = _run("t1__p1__product", success=True)
+        unfinished = _run("t1__p2__product", success=False)
+        unfinished.pop("final_screenshot_url")
+        study = {
+            "id": "s",
+            "url": "https://linear.app/",
+            "live_sessions": [finished, unfinished],
+        }
+        verdicts = {
+            "t1__p1__product": {
+                "goal_reached": True,
+                "still_on_opening_screen": False,
+                "reason": "The new issue form is open.",
+            }
+        }
+        diag = product_diagnostic(study, [finished, unfinished], verdicts)
+        self.assertEqual(diag["value"], "1/1 finished")
+        self.assertEqual(diag["yes"], 1)
+        self.assertEqual(diag["finished"], 1)
+        self.assertEqual(diag["product_n"], 2)
+        official = _evaluate(study, vision_goal={})
+        self.assertEqual(official["product_task_success"]["success_n"], 0)
+        self.assertFalse(official["pass"])
+        md = render_markdown(
+            {**official, "product_diagnostic": diag},
+            study_id="s",
+        )
+        self.assertIn("product (diagnostic) 1/1 finished", md)
 
 
 if __name__ == "__main__":
