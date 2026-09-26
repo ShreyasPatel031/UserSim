@@ -234,6 +234,14 @@ class StudyState:
     auth_blocker: str | None = None
     kill_requested: bool = False
     max_agents: int = 0
+    # URL-submit clock. time_to_first_value is the first published click/type/scroll
+    # minus this, not the moment every browser has connected.
+    url_submit_at_ts: float | None = None
+    time_to_first_value_s: float | None = None
+    time_to_first_value_agent: str = ""
+    time_to_first_value_at_ts: float | None = None
+    report_ready_at_ts: float | None = None
+    total_time_s: float | None = None
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -3101,6 +3109,12 @@ async def run_study(
                         sess["trace"].append(step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
+                    # URL submit → this published click/type/scroll. Step 0 is
+                    # "Opened …" and does not count. Later steps do not move it.
+                    if int(step.get("step") or 0) > 0:
+                        note_first_published_action(
+                            study, agent_id, str(step.get("action") or "")
+                        )
                     # first_action_at_ts is stamped in the agent after a click
                     # is sent. Recording it here, before the click, made the
                     # clock match page open.
@@ -3838,6 +3852,12 @@ async def run_study(
             apply_insights(study)
         except Exception as insight_exc:  # noqa: BLE001
             print(f"report insights failed: {insight_exc!r}", flush=True)
+        study.report_ready_at_ts = time.time()
+        submit = study.url_submit_at_ts
+        if isinstance(submit, (int, float)) and not isinstance(submit, bool):
+            study.total_time_s = round(
+                max(0.0, float(study.report_ready_at_ts) - float(submit)), 3
+            )
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
         persist_study(study)
@@ -3883,11 +3903,57 @@ async def run_study(
         study.phase = "Failed"
         study.updated_at = _now()
         persist_study(study)
+    finally:
+        release_study_browsers(study)
+
+
+def note_first_published_action(study: StudyState, agent_id: str, action: str) -> None:
+    """Stamp time_to_first_value from URL submit to this live click/type/scroll.
+
+    The first published step wins. Later agents do not move the clock, and the
+    clock is not restarted when a session is created.
+    """
+    from mvp.e2e2_gates import is_click_type_scroll
+
+    if not is_click_type_scroll(action):
+        return
+    submit = getattr(study, "url_submit_at_ts", None)
+    if not isinstance(submit, (int, float)) or isinstance(submit, bool):
+        return
+    now = time.time()
+    delta = round(max(0.0, now - float(submit)), 3)
+    prev = getattr(study, "time_to_first_value_s", None)
+    if isinstance(prev, (int, float)) and not isinstance(prev, bool) and float(prev) <= delta:
+        return
+    study.time_to_first_value_s = delta
+    study.time_to_first_value_agent = agent_id
+    study.time_to_first_value_at_ts = now
+
+
+def release_study_browsers(study: StudyState | None = None) -> None:
+    """Release this run's Browserbase sessions, including leaked primes.
+
+    Signup sessions are left alone. Integration and taskfix are the owners
+    this harness has used for 24-wide studies.
+    """
+    del study
+    try:
+        from capability.browserbase_client import study_session_owner
+        from mvp.kill_switch import kill_all_browserbase
+
+        owners = {study_session_owner(), "integration", "taskfix"}
+        for owner in sorted(owners):
+            result = kill_all_browserbase(owner=owner)
+            print(f"release browserbase owner={owner}: {result}", flush=True)
+    except Exception as exc:  # noqa: BLE001
+        print(f"release browserbase failed: {exc!r}", flush=True)
 
 
 def create_study(url: str, segment: str) -> StudyState:
     study_id = str(uuid.uuid4())
     study = StudyState(id=study_id, url=url.strip(), segment=segment.strip())
+    # POST /api/studies is the URL submit. Do not move this to session create.
+    study.url_submit_at_ts = time.time()
     STUDIES[study_id] = study
     return study
 
@@ -3942,6 +4008,12 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "backend": study.backend,
             "email": study.email,
             "kill_requested": study.kill_requested,
+            "url_submit_at_ts": study.url_submit_at_ts,
+            "time_to_first_value_s": study.time_to_first_value_s,
+            "time_to_first_value_agent": study.time_to_first_value_agent,
+            "time_to_first_value_at_ts": study.time_to_first_value_at_ts,
+            "report_ready_at_ts": study.report_ready_at_ts,
+            "total_time_s": study.total_time_s,
         }
     )
 

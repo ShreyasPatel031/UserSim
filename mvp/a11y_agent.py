@@ -12,8 +12,11 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import os
+import queue
 import re
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 AX_CAP = 150
@@ -1145,6 +1148,19 @@ def invented_excalidraw_action(
     return tree_action(task, read, history, skip)
 
 
+def offhost_excalidraw_tool(action: dict[str, Any], url: str) -> bool:
+    """True when a model named an Excalidraw shortcut on some other site."""
+    if _host(url) == "excalidraw.com":
+        return False
+    act = str((action or {}).get("act") or "")
+    name = str((action or {}).get("name") or "").lower()
+    if act == "drag":
+        return True
+    if name in {"rectangle", "square", "canvas"}:
+        return True
+    return "export" in name
+
+
 def trace_canvas(previous: str, current: str, url: str, task: str) -> str:
     """Canvas sample stored on a trace step.
 
@@ -2197,8 +2213,12 @@ async def complete_task_on_page(
     done_rejects = 0
     draw_waits = 0
     signup_tries = 0
+    offhost_refusals = 0
     try:
-        await page.wait_for_selector("a, button, canvas", timeout=800)
+        # The opening read is already the live tree. Do not sit here while
+        # the other 23 browsers are still connecting.
+        if not (isinstance(initial_read, dict) and initial_read.get("nodes")):
+            await page.wait_for_selector("a, button, canvas", timeout=800)
     except Exception:
         pass
 
@@ -2348,6 +2368,15 @@ async def complete_task_on_page(
                     history.append("skipped docs page")
                     continue
         chosen = str(action.get("name") or "").strip().lower()
+        if source != "tree" and offhost_excalidraw_tool(action, str(read.get("url") or url)):
+            skip.add(chosen or "export")
+            offhost_refusals += 1
+            if offhost_refusals >= 2 or would_repeat_action(trace, action_label(action), read):
+                _miss("excalidraw tool is not on this site")
+                break
+            changed_nothing = True
+            history.append(f"skipped off-host {chosen or action.get('act')}")
+            continue
         if chosen and chosen in skip and str(action.get("act")) == "click":
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
@@ -2595,6 +2624,181 @@ async def complete_task_on_page(
     }
 
 
+# One Playwright driver serializes connect_over_cdp (~1s each, so 24 browsers
+# hold the first click for ~24s). Each agent gets its own driver thread.
+_CDP_POOL = ThreadPoolExecutor(max_workers=32, thread_name_prefix="cdp")
+_PW_SYNC_FACTORIES = {
+    "get_by_role",
+    "get_by_text",
+    "get_by_label",
+    "get_by_placeholder",
+    "get_by_alt_text",
+    "get_by_title",
+    "get_by_test_id",
+    "locator",
+    "frame_locator",
+}
+
+
+def _is_playwright_obj(obj: Any) -> bool:
+    return type(obj).__module__.startswith("playwright.")
+
+
+class _CdpCallError(Exception):
+    pass
+
+
+class _PwProxy:
+    """Async-looking handle for a Playwright object that lives on one CDP thread."""
+
+    def __init__(self, session: "_CdpSession", obj: Any) -> None:
+        self._session = session
+        self._obj = obj
+
+    def __getattr__(self, name: str) -> Any:
+        attr = self._session.call_blocking(lambda: getattr(self._obj, name))
+        if not callable(attr):
+            if _is_playwright_obj(attr):
+                return _PwProxy(self._session, attr)
+            return attr
+
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            def _run() -> Any:
+                return getattr(self._obj, name)(*args, **kwargs)
+
+            if name in _PW_SYNC_FACTORIES:
+                result = self._session.call_blocking(_run)
+                if _is_playwright_obj(result):
+                    return _PwProxy(self._session, result)
+
+                async def _value() -> Any:
+                    return result
+
+                return _value()
+
+            async def _await() -> Any:
+                result = await self._session.call(_run)
+                if _is_playwright_obj(result):
+                    return _PwProxy(self._session, result)
+                return result
+
+            return _await()
+
+        return wrapper
+
+
+class _CdpSession:
+    """connect_over_cdp + goto on a private driver, off the shared event-loop pipe."""
+
+    def __init__(self) -> None:
+        self._q: queue.Queue = queue.Queue()
+        self._pw: Any = None
+        self._browser: Any = None
+        self._page: Any = None
+        self.page_proxy: _PwProxy | None = None
+        self.browser_proxy: _PwProxy | None = None
+        self._started = threading.Event()
+        self._dead = False
+        self._fut = _CDP_POOL.submit(self._loop)
+        if not self._started.wait(timeout=5):
+            raise RuntimeError("cdp worker did not start")
+
+    def _loop(self) -> None:
+        self._started.set()
+        while True:
+            item = self._q.get()
+            if item is None:
+                self._dead = True
+                return
+            fn, box = item
+            try:
+                box["value"] = fn()
+                box["ok"] = True
+            except BaseException as exc:  # noqa: BLE001
+                box["error"] = exc
+                box["ok"] = False
+            box["event"].set()
+
+    def call_blocking(self, fn: Any, timeout: float = 8) -> Any:
+        if self._dead:
+            raise RuntimeError("cdp worker stopped")
+        box: dict[str, Any] = {"event": threading.Event(), "ok": False}
+        self._q.put((fn, box))
+        if not box["event"].wait(timeout=timeout):
+            raise TimeoutError("cdp call timed out")
+        if not box.get("ok"):
+            raise box.get("error") or RuntimeError("cdp call failed")
+        return box.get("value")
+
+    async def call(self, fn: Any, timeout: float = 20) -> Any:
+        if self._dead:
+            raise RuntimeError("cdp worker stopped")
+        box: dict[str, Any] = {"event": threading.Event(), "ok": False}
+        self._q.put((fn, box))
+        deadline = time.monotonic() + timeout
+        while not box["event"].is_set():
+            if time.monotonic() >= deadline:
+                raise TimeoutError("cdp call timed out")
+            await asyncio.sleep(0.01)
+        if not box.get("ok"):
+            raise box.get("error") or RuntimeError("cdp call failed")
+        return box.get("value")
+
+    async def connect_and_goto(self, connect_url: str, url: str) -> float:
+        """Return the navigation-commit clock. Does not share the study Playwright."""
+
+        def _open() -> float:
+            from playwright.sync_api import sync_playwright
+
+            self._pw = sync_playwright().start()
+            self._browser = self._pw.chromium.connect_over_cdp(connect_url, timeout=12000)
+            context = (
+                self._browser.contexts[0]
+                if self._browser.contexts
+                else self._browser.new_context()
+            )
+            page = context.pages[0] if context.pages else context.new_page()
+            try:
+                page.set_viewport_size({"width": 1440, "height": 900})
+            except Exception:
+                pass
+            try:
+                page.set_default_timeout(8000)
+                page.set_default_navigation_timeout(8000)
+            except Exception:
+                pass
+            try:
+                page.goto(url, wait_until="commit", timeout=8000)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
+            self._page = page
+            return time.time()
+
+        opened = float(await self.call(_open, timeout=20))
+        self.page_proxy = _PwProxy(self, self._page)
+        self.browser_proxy = _PwProxy(self, self._browser)
+        return opened
+
+    async def close(self) -> None:
+        def _close() -> None:
+            try:
+                if self._browser is not None:
+                    self._browser.close()
+            except Exception:
+                pass
+            try:
+                if self._pw is not None:
+                    self._pw.stop()
+            except Exception:
+                pass
+
+        try:
+            await self.call(_close, timeout=8)
+        except Exception:
+            pass
+        self._q.put(None)
+
+
 async def _open_local_page(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
     """One local Chromium page. Does not take a Browserbase slot."""
     pw = await boot._playwright()
@@ -2619,9 +2823,30 @@ async def _open_local_page(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
     return None, browser, page
 
 
-async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
+async def _attach_cdp(connect_url: str, url: str) -> tuple[Any, Any, float, float]:
+    """Connect and commit navigation on a private driver thread.
+
+    All 24 agents call this together (the study gather). A shared Playwright
+    queues every connect_over_cdp on one pipe, so the first goto waits until
+    the other 23 connects finish.
+    """
+    created = time.time()
+    session = _CdpSession()
+    try:
+        opened = await session.connect_and_goto(connect_url, url)
+    except Exception:
+        await session.close()
+        raise
+    return session.browser_proxy, session.page_proxy, created, opened
+
+
+async def _open_agent_session(
+    boot: A11yBoot, url: str
+) -> tuple[Any, Any, Any, float, float]:
     """A new Browserbase session for this agent only.
 
+    Returns ``(bb, browser, page, created_at_ts, page_open_at_ts)``.
+    ``page_open_at_ts`` is the navigation commit, not session create.
     When USE_BROWSERBASE is off, this is a local Chromium page instead, so a
     study can finish without taking integration's Browserbase slots.
     """
@@ -2638,7 +2863,9 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
         if _owner_is_taskfix() and str(getattr(boot.study, "id", "") or "") == "prime":
             raise RuntimeError("taskfix does not open prime sessions")
         if not _use_browserbase():
-            return await _open_local_page(boot, url)
+            bb, browser, page = await _open_local_page(boot, url)
+            now = time.time()
+            return bb, browser, page, now, now
         if not _owner_is_taskfix():
             try:
                 bb = boot.pool.get_nowait()
@@ -2646,24 +2873,8 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
                 bb = None
         if bb is not None:
             try:
-                pw = await boot._playwright()
-                browser = await asyncio.wait_for(pw.chromium.connect_over_cdp(bb.connect_url), timeout=12)
-                context = browser.contexts[0] if browser.contexts else await browser.new_context()
-                page = context.pages[0] if context.pages else await context.new_page()
-                try:
-                    await page.set_viewport_size({"width": 1440, "height": 900})
-                except Exception:
-                    pass
-                try:
-                    page.set_default_timeout(8000)
-                    page.set_default_navigation_timeout(8000)
-                except Exception:
-                    pass
-                try:
-                    await page.goto(url, wait_until="domcontentloaded", timeout=8000)
-                except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
-                return bb, browser, page
+                browser, page, created_ts, opened_ts = await _attach_cdp(bb.connect_url, url)
+                return bb, browser, page, created_ts, opened_ts
             except Exception as exc:  # noqa: BLE001
                 print(f"[a11y] pooled session unusable: {exc!r}", flush=True)
                 await _close_agent_session(browser, bb)
@@ -2688,32 +2899,16 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
             except Exception as exc:  # noqa: BLE001
                 last = repr(exc)
                 print(f"[a11y] agent session create retry: {exc!r}", flush=True)
-                await asyncio.sleep(2)
+                await asyncio.sleep(0.5)
         if bb is None:
             raise RuntimeError(last)
-        pw = await boot._playwright()
-        browser = await asyncio.wait_for(pw.chromium.connect_over_cdp(bb.connect_url), timeout=12)
-        context = browser.contexts[0] if browser.contexts else await browser.new_context()
-        page = context.pages[0] if context.pages else await context.new_page()
-        try:
-            await page.set_viewport_size({"width": 1440, "height": 900})
-        except Exception:
-            pass
-        try:
-            page.set_default_timeout(8000)
-            page.set_default_navigation_timeout(8000)
-        except Exception:
-            pass
-        try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=8000)
-        except Exception as exc:  # noqa: BLE001
-            print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
-        if held_slot:
+        browser, page, created_ts, opened_ts = await _attach_cdp(bb.connect_url, url)
+        if held_slot and browser is not None:
             try:
                 browser._taskfix_slot = True
             except Exception:
                 pass
-        return bb, browser, page
+        return bb, browser, page, created_ts, opened_ts
     except Exception:
         await _close_agent_session(browser, bb)
         if held_slot:
@@ -2722,8 +2917,11 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
 
 
 async def _close_agent_session(browser: Any, bb: Any) -> None:
+    session = getattr(browser, "_session", None) if browser is not None else None
     try:
-        if browser is not None:
+        if isinstance(session, _CdpSession):
+            await session.close()
+        elif browser is not None:
             await browser.close()
     except Exception:
         pass
@@ -2822,25 +3020,33 @@ async def _run_a11y_agent_unlocked(
     step_no = 0
     read = {"url": url, "text": "", "canvas": "", "nodes": [], "title": ""}
     try:
+        created_ts = time.time()
+        page_open_ts = created_ts
         try:
-            bb, browser, page = await _open_agent_session(boot, url)
+            bb, browser, page, created_ts, page_open_ts = await _open_agent_session(boot, url)
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] session ended: {exc!r}", flush=True)
             stop_reason = "session ended"
             failed = {"phase": "session", "reason": "session ended", "step": 0}
         if page is not None and failed is None:
-            # TTFA starts when this agent's own page is open, with an AX tree.
-            # The shared product read is step 0 display and does not start the clock.
-            opened = await _fresh_read(page, url, timeout=2.0)
+            # page_open_at_ts is this agent's navigation commit. The AX read
+            # after it does not move that clock, and it does not wait for any
+            # other site. TTFV is URL submit → first published click, not this stamp.
+            opened = await _fresh_read(page, url, timeout=1.5)
             if opened.get("error"):
                 opened = {"url": url, "text": "", "nodes": [], "title": ""}
-            now_open = time.time()
+            if not isinstance(page_open_ts, (int, float)) or page_open_ts <= 0:
+                page_open_ts = time.time()
+            if not isinstance(created_ts, (int, float)) or created_ts <= 0:
+                created_ts = page_open_ts
+            if page_open_ts < created_ts:
+                created_ts = page_open_ts
             ax_open = format_ax(opened.get("nodes") or []) or "0 document page"
-            sess["created_at_ts"] = now_open
+            sess["created_at_ts"] = created_ts
             apply_gate_fields(
                 sess,
-                page_open_at_ts=now_open,
-                session_ready_at_ts=now_open,
+                page_open_at_ts=page_open_ts,
+                session_ready_at_ts=created_ts,
                 page_url=str(opened.get("url") or url),
                 accessibility_tree=ax_open,
                 final_url=str(opened.get("url") or url),
@@ -2865,7 +3071,7 @@ async def _run_a11y_agent_unlocked(
                 step0 = _step_from_read(step=0, action=f"Opened {url}", read=opened)
                 step0["accessibility_tree"] = ax_open
                 step0["ax_tree"] = ax_open
-                step0["page_open_at_ts"] = now_open
+                step0["page_open_at_ts"] = page_open_ts
                 trace = [step0, *trace]
             phase = "act"
             outcome = await complete_task_on_page(

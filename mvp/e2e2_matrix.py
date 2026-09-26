@@ -306,19 +306,24 @@ PRIME_SESSIONS = 0
 
 
 def _release_testfix_sessions(study_id: str = "") -> None:
-    """Release only this harness's sessions. Never signup, report, or other owners.
+    """Release this harness, integration, and taskfix. Never signup.
 
-    Prime count is 0, so a blanket release also drops ``study_id=prime`` sessions.
+    Prime count is 0. A release with no study id also drops ``study_id=prime``.
     """
     owner = _bb_owner()
+    owners = [owner]
+    for extra in ("integration", "taskfix"):
+        if extra not in owners:
+            owners.append(extra)
     try:
         from mvp.kill_switch import kill_all_browserbase
 
-        released = kill_all_browserbase(owner=owner, study_id=study_id or None)
-        _log(
-            f"released browserbase owner={owner} study={study_id or '*'} "
-            f"prime_sessions={PRIME_SESSIONS} {released}"
-        )
+        for name in owners:
+            released = kill_all_browserbase(owner=name, study_id=study_id or None)
+            _log(
+                f"released browserbase owner={name} study={study_id or '*'} "
+                f"prime_sessions={PRIME_SESSIONS} {released}"
+            )
     except Exception as exc:  # noqa: BLE001
         _log(f"browserbase release failed: {exc!r}")
 
@@ -529,12 +534,35 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     await asyncio.sleep(0.4)
                     continue
             await _assert_ready_hidden(page, study)
+            stored_ttfv = study.get("time_to_first_value_s")
+            if (
+                t_first_value is None
+                and isinstance(stored_ttfv, (int, float))
+                and not isinstance(stored_ttfv, bool)
+                and t_submit is not None
+            ):
+                # The study stamped this at the first published click, from
+                # URL submit. Do not replace it with a later poll.
+                t_first_value = t_submit + float(stored_ttfv)
+                first_value_agent = str(study.get("time_to_first_value_agent") or "")
+                _log(
+                    f"  first_value +{float(stored_ttfv):.1f}s "
+                    f"agent={first_value_agent} (study clock)"
+                )
             if (
                 t_report_ready is None
                 and study.get("status") == "complete"
                 and study.get("summary")
             ):
-                t_report_ready = time.time()
+                stored_total = study.get("total_time_s")
+                if (
+                    isinstance(stored_total, (int, float))
+                    and not isinstance(stored_total, bool)
+                    and t_submit is not None
+                ):
+                    t_report_ready = t_submit + float(stored_total)
+                else:
+                    t_report_ready = time.time()
                 anchor = t_submit if t_submit is not None else t0
                 _log(f"  report_ready +{t_report_ready - anchor:.1f}s")
 
@@ -705,16 +733,26 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             None if since_task_last is None else round(since_task_last, 1)
         )
         report["time_to_first_action"] = ttfa_check
-        report["time_to_first_value_s"] = (
-            None
-            if t_first_value is None or t_submit is None
-            else round(t_first_value - t_submit, 3)
-        )
-        report["total_time_s"] = (
-            None
-            if t_report_ready is None or t_submit is None
-            else round(t_report_ready - t_submit, 3)
-        )
+        stored_ttfv = study.get("time_to_first_value_s")
+        if isinstance(stored_ttfv, (int, float)) and not isinstance(stored_ttfv, bool):
+            report["time_to_first_value_s"] = round(float(stored_ttfv), 3)
+            if study.get("time_to_first_value_agent"):
+                first_value_agent = str(study.get("time_to_first_value_agent"))
+        else:
+            report["time_to_first_value_s"] = (
+                None
+                if t_first_value is None or t_submit is None
+                else round(t_first_value - t_submit, 3)
+            )
+        stored_total = study.get("total_time_s")
+        if isinstance(stored_total, (int, float)) and not isinstance(stored_total, bool):
+            report["total_time_s"] = round(float(stored_total), 3)
+        else:
+            report["total_time_s"] = (
+                None
+                if t_report_ready is None or t_submit is None
+                else round(t_report_ready - t_submit, 3)
+            )
         report["report_ready"] = t_report_ready is not None
         report["time_to_first_value_agent"] = first_value_agent
         report["early_abort"] = (

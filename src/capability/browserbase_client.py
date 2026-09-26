@@ -127,6 +127,8 @@ BB_OWNER_TESTFIX = "testfix"
 BB_OWNER_GATES = "gates"
 # Task-completion harness. Release only these sessions.
 BB_OWNER_TASKFIX = "taskfix"
+# Tonight's 24-wide integration run. Release only these sessions.
+BB_OWNER_INTEGRATION = "integration"
 
 
 def study_session_owner() -> str:
@@ -146,6 +148,7 @@ def study_session_owner() -> str:
         BB_OWNER_TESTFIX,
         BB_OWNER_GATES,
         BB_OWNER_TASKFIX,
+        BB_OWNER_INTEGRATION,
     }:
         return raw
     return BB_OWNER_E2E

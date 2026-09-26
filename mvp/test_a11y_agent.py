@@ -18,6 +18,7 @@ from mvp.a11y_agent import (
     account_wall,
     achievable_without_account,
     linear_mock_inert,
+    offhost_excalidraw_tool,
     stamp_first_click,
     format_ax,
     goal_visible,
@@ -645,6 +646,116 @@ class A11yAgentTest(unittest.TestCase):
             len(_qualifying_claims(insights["weaknesses"], runs_by_id, study, loads)),
             1,
         )
+
+
+class ClockAndCdpTests(unittest.TestCase):
+    def test_offhost_excalidraw_shortcut_is_blocked(self) -> None:
+        self.assertFalse(
+            offhost_excalidraw_tool(
+                {"act": "click", "name": "Rectangle"},
+                "https://excalidraw.com/",
+            )
+        )
+        self.assertTrue(
+            offhost_excalidraw_tool(
+                {"act": "click", "name": "Export image"},
+                "https://linear.app/",
+            )
+        )
+        self.assertTrue(
+            offhost_excalidraw_tool({"act": "drag", "name": "canvas"}, "https://miro.com/")
+        )
+
+    def test_first_published_click_sets_ttfv_from_url_submit(self) -> None:
+        from mvp.study import StudyState, note_first_published_action
+
+        study = StudyState(id="s", url="https://linear.app", segment="pm")
+        study.url_submit_at_ts = 1_000.0
+        note_first_published_action(study, "t1__p1__product", "Opened https://linear.app")
+        self.assertIsNone(study.time_to_first_value_s)
+        note_first_published_action(study, "t1__p2__product", "click Pricing")
+        self.assertEqual(study.time_to_first_value_agent, "t1__p2__product")
+        self.assertGreater(study.time_to_first_value_s, 0)
+        first = study.time_to_first_value_s
+        note_first_published_action(study, "t1__p1__product", "scroll down")
+        self.assertEqual(study.time_to_first_value_s, first)
+        self.assertEqual(study.time_to_first_value_agent, "t1__p2__product")
+
+    def test_parallel_cdp_threads_do_not_share_one_pipe(self) -> None:
+        import asyncio
+
+        from playwright.sync_api import sync_playwright
+
+        from mvp.a11y_agent import _CDP_POOL, _attach_cdp
+
+        self.assertGreaterEqual(_CDP_POOL._max_workers, 24)
+        browsers = []
+        pw = sync_playwright().start()
+        try:
+            for i in range(4):
+                browser = pw.chromium.launch(
+                    headless=True,
+                    args=[f"--remote-debugging-port={9333 + i}"],
+                )
+                page = browser.new_page()
+                page.set_content(f"<title>t{i}</title><a href='https://example.com'>Go</a>")
+                browsers.append(browser)
+            # Chromium prints the ws url on stderr; read it from the browser.
+            endpoints = []
+            for i, browser in enumerate(browsers):
+                # The debugging port serves /json/version.
+                import urllib.request
+
+                with urllib.request.urlopen(
+                    f"http://127.0.0.1:{9333 + i}/json/version", timeout=5
+                ) as resp:
+                    import json
+
+                    endpoints.append(json.loads(resp.read())["webSocketDebuggerUrl"])
+
+            async def _all() -> list[str]:
+                async def _one(endpoint: str, url: str) -> str:
+                    browser, page, created, opened = await _attach_cdp(endpoint, url)
+                    try:
+                        title = await page.title()
+                        loc = page.get_by_role("link", name="Go", exact=True)
+                        self.assertGreater(await loc.count(), 0)
+                        self.assertGreaterEqual(opened, created)
+                        return str(title)
+                    finally:
+                        await browser._session.close()
+
+                return await asyncio.gather(
+                    *[
+                        _one(
+                            endpoints[i],
+                            "data:text/html,<title>n%d</title><a href='https://example.com/'>Go</a>"
+                            % i,
+                        )
+                        for i in range(4)
+                    ]
+                )
+
+            def _run() -> list[str]:
+                return asyncio.run(_all())
+
+            t0 = __import__("time").perf_counter()
+            # The agent loop may already own a loop in-process. Run this one aside.
+            import concurrent.futures
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                titles = pool.submit(_run).result()
+            elapsed = __import__("time").perf_counter() - t0
+        finally:
+            for browser in browsers:
+                try:
+                    browser.close()
+                except Exception:
+                    pass
+            pw.stop()
+        self.assertEqual(sorted(titles), ["n0", "n1", "n2", "n3"])
+        # Four serial connects would be several seconds. Parallel stays well under that.
+        self.assertLess(elapsed, 12)
 
 
 class ForceLocalFleetTests(unittest.TestCase):
