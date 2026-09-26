@@ -63,7 +63,7 @@ Study `617d8ef9-2991-4532-a70a-b7b8d03367a8` was killed by the harness at 32s. P
 
 Failure: `t2__p1__competitor_2` on Miro repeated `click Export image` (steps 1–9). The planned action invented Excalidraw's export shortcut on a site that does not have it. A flickering hero-image canvas sample counted as progress, so the repeat check never fired. The harness aborts the whole study at the third identical action. Log: `results/taskfix/excalidraw24.log`.
 
-The step loop now invents the Rectangle drag, Export shortcut, and Help click only on excalidraw.com, and a canvas-sample flicker no longer counts as a new page. A click or accessibility read that does not return is capped (8s read, 12s action) so one competitor page cannot hold the study. When the goal is already on screen, that live read is written onto the latest trace step.
+That run's step loop invented the Rectangle drag, Export shortcut, and Help click only on excalidraw.com, and a canvas-sample flicker no longer counted as a new page. A click or accessibility read that does not return is capped (8s read, 12s action). The model loop above replaces those invented actions.
 
 ## Server study — Excalidraw 24 agents
 
