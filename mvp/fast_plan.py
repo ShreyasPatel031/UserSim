@@ -26,14 +26,17 @@ Links and buttons on the page (label -> target): {links}
 Return:
 {{"product": "short product name",
   "segment": "one short phrase naming who evaluates this product",
-  "competitors": ["https://rival-one.com/", "https://rival-two.com/"],
+  "competitors": ["https://rival-one.com/", "https://rival-two.com/", "https://rival-three.com/"],
   "core_task": "core task",
   "public_task": "public task",
   "app_task": "second task done in the product"}}
 
 Rules:
-- competitors: the two best-known direct rivals, as homepage URLs of real public sites. Use the
-  rival product's own site, not a parent company's homepage that sells many products.
+- competitors: the three best-known direct competitors, best first, as homepage URLs of real public
+  sites. A direct competitor is a standalone product in the same category that a buyer would try
+  side by side for the same job (a design tool for a design tool, a scheduler for a scheduler).
+  Never a parent company, a multi-product suite or vendor homepage, a marketplace, or a
+  discontinued product. Use the rival product's own site.
 - core_task: the one thing a new user comes to do in the product itself, 3-8 words,
   an imperative verb and a concrete object (never a tagline), generic enough to try on the rivals too (for example "Create a new project",
   "Draw a rectangle on the canvas", "Create a new event type"). One action whose result shows on
@@ -197,6 +200,32 @@ def _links_for_prompt(read: dict[str, Any]) -> str:
     return "; ".join(f"{label} -> {href}" if href else label for label, href in shown)
 
 
+# Homepages of vendors that sell many unrelated products. A bare root URL of one
+# of these is a company, not a competing product (figma.com -> adobe.com).
+_SUITE_HOSTS = {
+    "adobe.com", "google.com", "microsoft.com", "apple.com", "amazon.com", "aws.amazon.com",
+    "oracle.com", "salesforce.com", "ibm.com", "meta.com", "sap.com", "zoho.com", "atlassian.com",
+    "autodesk.com", "alphabet.com", "office.com",
+}
+
+
+def pick_competitors(items: list[Any], own: str) -> list[str]:
+    """Up to two direct rivals: not this site, not a suite vendor's bare homepage."""
+    comps: list[str] = []
+    for item in items:
+        clean = _clean_url(str(item))
+        parts = urlsplit(clean)
+        host = (parts.hostname or "").removeprefix("www.")
+        if not clean or not host or host == own or clean in comps:
+            continue
+        if host in _SUITE_HOSTS and parts.path.strip("/") == "":
+            continue
+        comps.append(clean)
+        if len(comps) == 2:
+            break
+    return comps
+
+
 async def plan_from_url(url: str, *, timeout: float = 9.0) -> dict[str, Any] | None:
     """{"segment", "competitors", "tasks"} for a bare URL, or None on any failure."""
     from capability.gemini_config import extract_json, gemini_chat
@@ -218,12 +247,7 @@ async def plan_from_url(url: str, *, timeout: float = 9.0) -> dict[str, Any] | N
             return None
         own = urlsplit(url).hostname or ""
         own = own.removeprefix("www.")
-        comps: list[str] = []
-        for item in data.get("competitors") or []:
-            clean = _clean_url(str(item))
-            host = (urlsplit(clean).hostname or "").removeprefix("www.")
-            if clean and host and host != own and clean not in comps:
-                comps.append(clean)
+        comps = pick_competitors(data.get("competitors") or [], own)
         if comps:
             from mvp.server import _landing_url
 

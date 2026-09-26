@@ -102,3 +102,19 @@ class StepLabelTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DirectCompetitorTests(unittest.TestCase):
+    def test_suite_vendor_homepage_is_skipped_for_the_next_candidate(self):
+        from mvp.fast_plan import _PROMPT, pick_competitors
+
+        got = pick_competitors(["https://www.adobe.com/", "https://www.sketch.com/", "https://penpot.app/"], "figma.com")
+        self.assertEqual(got, ["https://www.sketch.com/", "https://penpot.app/"])
+        self.assertIn("Never a parent company", _PROMPT)
+
+    def test_own_site_and_vendor_pages_are_not_rivals(self):
+        from mvp.fast_plan import pick_competitors
+
+        # Rival URLs are cut to the homepage, so a vendor's product page is the vendor.
+        got = pick_competitors(["https://figma.com/", "https://www.microsoft.com/en-us/microsoft-teams/", "https://zoom.us/"], "figma.com")
+        self.assertEqual(got, ["https://zoom.us/"])
