@@ -1,7 +1,7 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T04:20:00Z",
+  "graded_at": "2026-09-26T04:25:00Z",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "2d536c7",
@@ -11,30 +11,13 @@
         "elapsed_s": 26.0,
         "time_to_first_value": "not recorded",
         "product_task_completion": "0/8",
-        "abort": "missing field ax_tree: 16/24 agents",
-        "missing_ax_ids": [
-          "t1__p1__competitor_1",
-          "t2__p1__competitor_1",
-          "t1__p2__competitor_1",
-          "t2__p2__competitor_1",
-          "t1__p3__competitor_1",
-          "t2__p3__competitor_1",
-          "t1__p4__competitor_1",
-          "t2__p4__competitor_1"
-        ],
+        "abort": "missing field ax_tree on 8 Asana competitor_1 agents",
         "phase_counts": [
           {
             "phase": "missing field failed_step_phase",
             "n": 8
           }
-        ],
-        "counts": {
-          "product": 8,
-          "stuck": 0,
-          "our infrastructure": 0,
-          "model timeout": 0,
-          "no_first_action": 0
-        }
+        ]
       },
       "excalidraw": {
         "study_id": "1e967417-f997-4e08-9fc8-ea228595625e",
@@ -48,13 +31,43 @@
             "phase": "missing field failed_step_phase",
             "n": 6
           }
+        ]
+      }
+    },
+    "cursor/tonight-integration": {
+      "sha": "5a63c36",
+      "linear": {
+        "study_id": "64cec553-8bf4-4d06-a194-fa7d8ed10dd2",
+        "pass": false,
+        "elapsed_s": 4.0,
+        "time_to_first_value": "not recorded",
+        "product_task_completion": "0/2",
+        "abort": "missing field page_open_at_ts: 6/6 agents have no page-open or session-ready stamp",
+        "phase_counts": [
+          {
+            "phase": "missing field failed_step_phase",
+            "n": 6
+          }
         ],
         "counts": {
-          "product": 6,
-          "stuck": 0,
-          "our infrastructure": 0,
-          "model timeout": 0,
-          "no_first_action": 0
+          "no_first_action": 6
+        }
+      },
+      "excalidraw": {
+        "study_id": "845efca2-7138-4cf4-bc94-3031370087f2",
+        "pass": false,
+        "elapsed_s": 3.6,
+        "time_to_first_value": "not recorded",
+        "product_task_completion": "0/2",
+        "abort": "missing field page_open_at_ts: 6/6 agents",
+        "phase_counts": [
+          {
+            "phase": "missing field failed_step_phase",
+            "n": 6
+          }
+        ],
+        "counts": {
+          "no_first_action": 6
         }
       }
     }
@@ -62,19 +75,19 @@
   "bugs": [
     {
       "id": 1,
-      "fact": "#47 2d536c7 Linear study 499c892a: 8 Asana agents (every competitor_1) had no ax_tree at 5s. 16/24 had opened. page_opened FAIL missing field ax_tree. Put a non-empty ax_tree on the Asana live sessions with page_open_at_ts."
+      "fact": "#47 2d536c7 Linear 499c892a: 8 Asana competitor_1 agents had no ax_tree. page_opened FAIL missing field ax_tree. Also missing failed_step and final_screenshot_url (phase count x 8)."
     },
     {
       "id": 2,
-      "fact": "Those 8 runs are missing failed_step.phase, failed_step.reason, final_screenshot_url, and phase_ms.final_screenshot. phase count missing field failed_step_phase x 8."
+      "fact": "#47 2d536c7 Excalidraw 1e967417: only 6 sessions, missing field page_open_at_ts and ax_tree, missing phase_ms and final_screenshot_url. Product 0/2."
     },
     {
       "id": 3,
-      "fact": "Excalidraw study 1e967417 aborted at 6.6s with only 6 live sessions and missing field page_open_at_ts plus missing field ax_tree. final_screenshot_url and phase_ms missing. Product 0/2. No report."
+      "fact": "Integration 5a63c36 still does not put a page-open stamp on the polled session in time. Linear 64cec553 and Excalidraw 845efca2 both aborted missing field page_open_at_ts on 6/6 agents, with no ax_tree, no final_screenshot_url, and no failed_step."
     },
     {
       "id": 4,
-      "fact": "New-issue stuck loop is still open from study 6e2acd43: t1__p1__product repeated click New issue 3 times with no URL/DOM change and no failed_step. This head died before that loop. TTFV was not recorded. Product is not >=4/8 Gemini YES."
+      "fact": "New-issue stuck loop remains study 6e2acd43: t1__p1__product repeated click New issue 3 times with no URL/DOM change and no failed_step. None of these heads reached a Gemini judge. Product is not >=4/8. TTFV was not recorded. That is not a pass."
     }
   ]
 }
