@@ -1337,7 +1337,24 @@ async def run_study(
         def _schedule_competitor_warms() -> None:
             return
 
-        if _should_warm_browserbase():
+        a11y_boot: Any = None
+        if (
+            _should_warm_browserbase()
+            and os.environ.get("MVP_A11Y_LOOP", "1").lower() not in {"0", "false", "no"}
+        ):
+            from mvp.a11y_agent import A11yBoot
+
+            # One shared accessibility read, 24 browsers in parallel. No
+            # per-agent screenshot warm and no 8-wide action queue.
+            a11y_boot = A11yBoot(study, on_update)
+            a11y_boot.install_fast_plan()
+            asyncio.create_task(a11y_boot.start())
+            log_activity(
+                study,
+                "browser",
+                "Shared page read started — agents decide the first move from it",
+            )
+        elif _should_warm_browserbase():
             from mvp.browser_agent import warm_opening_session
 
             # Free OUR zombie Browserbase sessions from abandoned studies so
@@ -1407,7 +1424,17 @@ async def run_study(
             except Exception:
                 pass
 
-        access = await fetch_page_access(study.url)
+        if a11y_boot is not None:
+            from mvp.page_access import PageAccessResult
+
+            access = PageAccessResult(
+                text="",
+                final_url=study.url,
+                title="",
+                backend="shared_ax",
+            )
+        else:
+            access = await fetch_page_access(study.url)
         study.access_backend = access.backend
         study.browserbase_session_url = access.session_url
         page_text = f"Title: {access.title}\nURL: {access.final_url}\n\n{access.text}"
@@ -1495,7 +1522,13 @@ async def run_study(
                 pass
 
         # 1) Competitors (skipped in local smoke — product site only)
-        if study.test_mode or study.skip_competitors:
+        if getattr(study, "fast_brief", False) and study.competitors:
+            log_activity(
+                study,
+                "plan",
+                "Using the submitted competitor URLs — no research wait",
+            )
+        elif study.test_mode or study.skip_competitors:
             study.competitors = []
             log_activity(
                 study,
@@ -1542,22 +1575,25 @@ async def run_study(
             _push_brief("brief")
 
         # 2) Simulated users (own agent call)
-        if not study.test_mode:
+        if not study.test_mode and not getattr(study, "fast_brief", False):
             touch("Building simulated users")
             study.personas = []
             study.tasks = []
             _push_brief("brief")
-        try:
-            users_plan = await generate_personas(
-                study.url,
-                study.segment,
-                page_text,
-                test_mode=study.test_mode,
-                competitors=study.competitors,
-            )
-        except Exception as exc:  # noqa: BLE001
-            log_activity(study, "plan", f"User generation failed ({str(exc)[:120]})")
-            users_plan = {"site_summary": "", "personas": []}
+        if getattr(study, "fast_brief", False):
+            users_plan = {"site_summary": study.url, "personas": study.personas}
+        else:
+            try:
+                users_plan = await generate_personas(
+                    study.url,
+                    study.segment,
+                    page_text,
+                    test_mode=study.test_mode,
+                    competitors=study.competitors,
+                )
+            except Exception as exc:  # noqa: BLE001
+                log_activity(study, "plan", f"User generation failed ({str(exc)[:120]})")
+                users_plan = {"site_summary": "", "personas": []}
 
         site_summary = users_plan.get("site_summary") or ""
         study.personas = users_plan.get("personas") or []
@@ -1625,23 +1661,26 @@ async def run_study(
         # 3) Tasks (own agent call — only after users are visible)
         touch("Writing tasks")
         _push_brief("brief")
-        try:
-            study.tasks = await generate_tasks(
-                study.url,
-                study.segment,
-                page_text,
-                study.personas,
-                site_summary=site_summary,
-                test_mode=study.test_mode,
-            )
-        except Exception as exc:  # noqa: BLE001
-            log_activity(study, "plan", f"Task generation failed ({str(exc)[:120]})")
-            study.tasks = []
+        if getattr(study, "fast_brief", False):
+            pass
+        else:
+            try:
+                study.tasks = await generate_tasks(
+                    study.url,
+                    study.segment,
+                    page_text,
+                    study.personas,
+                    site_summary=site_summary,
+                    test_mode=study.test_mode,
+                )
+            except Exception as exc:  # noqa: BLE001
+                log_activity(study, "plan", f"Task generation failed ({str(exc)[:120]})")
+                study.tasks = []
         touch("Writing tasks")
         _push_brief("brief")
 
-        # Apply optional task overrides.
-        if study.tasks_override:
+        # Apply optional task overrides. The fast path already expanded these.
+        if study.tasks_override and not getattr(study, "fast_brief", False):
             if study.test_mode:
                 prompt = study.tasks_override[0]
                 if study.tasks:
@@ -1695,7 +1734,10 @@ async def run_study(
 
         # Full studies: every persona × every task × (product + each competitor).
         # Smoke / quick preview: product site only (1 user × 1 task × 1 site).
-        if not study.test_mode:
+        already_expanded = bool(study.tasks) and all(
+            "__" in str(t.get("id") or "") for t in study.tasks
+        )
+        if not study.test_mode and not already_expanded:
             before = len(study.tasks)
             n_users = len(study.personas or [])
             n_sites = 1 + len(study.competitors or [])
@@ -2197,12 +2239,15 @@ async def run_study(
             ]
 
         persona_by_id = {p["id"]: p for p in study.personas}
-        study.live_sessions = {}
+        if a11y_boot is None:
+            study.live_sessions = {}
         for task in study.tasks:
             persona = persona_by_id.get(task.get("persona_id")) or (
                 study.personas[0] if study.personas else {}
             )
             agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
+            if a11y_boot is not None and (study.live_sessions.get(agent_id) or {}).get("trace"):
+                continue
             site = task.get("site_url") or study.url
             site_key = str(task.get("site_key") or "product")
             site_label = str(task.get("site_label") or "Product")
@@ -3075,9 +3120,18 @@ async def run_study(
                     _agent_wall = 200.0
                     try:
                         async with _BROWSER_SEMAPHORE:
-                            # Queue here, before the wall clock. A waiter must not
-                            # be cancelled at 245s while eight other agents browse.
-                            async with _llm_run_semaphore():
+                            # The accessibility loop runs all 24 agents at once.
+                            # The older screenshot loop still queues on the LLM cap.
+                            class _Pass:
+                                async def __aenter__(self) -> None:
+                                    return None
+
+                                async def __aexit__(self, *_exc: object) -> bool:
+                                    return False
+
+                            async with (
+                                _Pass() if a11y_boot is not None else _llm_run_semaphore()
+                            ):
                                 raise_if_killed(study)
                                 sess["status"] = "running"
                                 if not (sess.get("trace") or []):
@@ -3133,8 +3187,23 @@ async def run_study(
                                     )
                                 _agent_wall = max(15.0, _agent_wall)
                                 _outer_wall = max(45.0, _agent_wall + 45.0)
-                                _agent_task = asyncio.create_task(
-                                    run_browser_agent(
+                                if a11y_boot is not None:
+                                    from mvp.a11y_agent import run_a11y_agent
+
+                                    _agent_coro = run_a11y_agent(
+                                        boot=a11y_boot,
+                                        study_id=study.id,
+                                        agent_id=agent_id,
+                                        url=site,
+                                        task_prompt=task.get("prompt")
+                                        or task.get("title")
+                                        or "",
+                                        persona=persona,
+                                        on_step=lambda step: _on_agent_step(agent_id, step),
+                                        site_key=str(task.get("site_key") or "product"),
+                                    )
+                                else:
+                                    _agent_coro = run_browser_agent(
                                         study_id=study.id,
                                         agent_id=agent_id,
                                         url=site,
@@ -3149,7 +3218,7 @@ async def run_study(
                                         warm=agent_warm,
                                         wall_s=_agent_wall,
                                     )
-                                )
+                                _agent_task = asyncio.create_task(_agent_coro)
                                 _done, _pending = await asyncio.wait(
                                     {_agent_task}, timeout=_outer_wall
                                 )
@@ -3219,7 +3288,24 @@ async def run_study(
                         }
                         for step in run.get("trace") or []:
                             step["outcome"] = outcomes.get(step.get("step")) or "neutral"
-                        result = {**run, **feedback, "mode": "browser"}
+                        result = {**run, **feedback, "mode": "a11y" if a11y_boot is not None else "browser"}
+                        if a11y_boot is not None:
+                            if run.get("friction_points"):
+                                result["friction_points"] = list(run.get("friction_points") or [])
+                            if run.get("what_was_easy"):
+                                result["what_was_easy"] = list(run.get("what_was_easy") or [])
+                            from mvp.a11y_agent import GATE_FIELDS, apply_gate_fields
+
+                            apply_gate_fields(result)
+                            for key in GATE_FIELDS:
+                                if key in result:
+                                    sess[key] = result[key]
+                            sess["final_url"] = result.get("final_url") or sess.get("final_url")
+                            sess["last_action"] = (
+                                (result.get("trace") or [{}])[-1].get("action")
+                                if result.get("trace")
+                                else sess.get("last_action")
+                            )
                     except Exception as exc:  # noqa: BLE001
                         sess["status"] = "error"
                         existing = sess.get("trace") or []
@@ -3369,8 +3455,11 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                # Product agents take the first run slots. An 8-wide cap is what
-                # leaves the homepage; competitors follow as slots free.
+                if a11y_boot is not None:
+                    try:
+                        await asyncio.wait_for(a11y_boot.published, timeout=18)
+                    except asyncio.TimeoutError:
+                        print("shared page read did not publish within 18s", flush=True)
                 def _run_rank(task: dict[str, Any]) -> tuple:
                     key = str(task.get("site_key") or "product")
                     return (0 if key == "product" else 1, key, str(task.get("id") or ""))
