@@ -643,16 +643,20 @@ async def _try_signup(page: Any, host: str) -> str:
         except Exception:
             text = ""
         low = (text or "").lower()
+        # Marketing copy on the signup form itself often says "welcome".
+        # Only treat a post-submit confirmation as a completed signup.
         if any(
             phrase in low
             for phrase in (
                 "check your email",
                 "verify your email",
-                "confirmation",
-                "welcome",
-                "dashboard",
-                "inbox",
+                "confirm your email",
+                "we sent you an email",
+                "account has been created",
                 "account created",
+                "registration successful",
+                "successfully registered",
+                "you're all set",
             )
         ):
             return "y"
