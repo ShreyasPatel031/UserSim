@@ -722,6 +722,14 @@ async def runtime_status():
     return await asyncio.to_thread(_status)
 
 
+@app.get("/api/runtime/queue")
+async def runtime_queue():
+    """Studies holding or waiting for this server's Browserbase turn."""
+    from mvp.browser_slots import queue_snapshot
+
+    return queue_snapshot()
+
+
 @app.post("/api/runtime/kill")
 async def runtime_kill(body: KillRequest | None = None):
     """Kill Browserbase agents and/or UserSim VMs immediately."""

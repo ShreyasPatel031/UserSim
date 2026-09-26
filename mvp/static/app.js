@@ -1150,7 +1150,10 @@ function renderStage(sessions) {
       status: "starting",
       site_url: _lastStudyData?.url || "",
       site_label: "Product",
-      last_action: `Opening ${_lastStudyData?.url || "the page"}…`,
+      last_action:
+        _lastStudyData?.status === "queued"
+          ? `Queued: ${_lastStudyData?.queue_eta_s ? `starting in ~${_lastStudyData.queue_eta_s}s` : "waiting for free browsers"}…`
+          : `Opening ${_lastStudyData?.url || "the page"}…`,
       persona_name: (_lastStudyData?.personas || [])[0]?.name || "Simulated user",
       task_title: uniqueBriefTasks(_lastStudyData?.tasks || [])[0]?.title || "",
       trace: [],
@@ -1578,8 +1581,15 @@ function updateReportCta(data, startedAt) {
   const left = Math.max(20, estimateStudySeconds(data) - elapsedSec);
   const etaTitle = document.getElementById("report-eta-title");
   const etaSub = document.getElementById("report-eta-sub");
-  if (etaTitle) etaTitle.textContent = "Study in progress";
-  if (etaSub) etaSub.textContent = `${formatEta(left)} · not done yet`;
+  if (data.status === "queued") {
+    // Another study holds the browsers: say so, with the wait, instead of a stalled stage.
+    const eta = data.queue_eta_s ? `Starts in ~${data.queue_eta_s}s` : "Starts on its own";
+    if (etaTitle) etaTitle.textContent = "Queued: waiting for free browsers";
+    if (etaSub) etaSub.textContent = `${eta} · ${String(data.phase || "").replace(/^Queued:\s*/, "").replace(/\.\s*Starting in ~\d+s$/, "")}`;
+  } else {
+    if (etaTitle) etaTitle.textContent = "Study in progress";
+    if (etaSub) etaSub.textContent = `${formatEta(left)} · not done yet`;
+  }
 
   if (runningCard) {
     const progressOpen = progressPanel && !progressPanel.hidden;
