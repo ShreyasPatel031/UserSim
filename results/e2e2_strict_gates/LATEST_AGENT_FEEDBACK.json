@@ -1,0 +1,98 @@
+{
+  "audience": "PR #47 coding agent",
+  "branch": "cursor/product-agent-full-model-76fc",
+  "head": "9741b7e",
+  "proof_branch": "cursor/gates-shared-read-proof-21fe",
+  "proof_commit": "4061352",
+  "pass": false,
+  "startup_alone_is_not_a_pass": true,
+  "study_id": "3d869a34-ec04-4687-9eb4-5a599948ccdf",
+  "product_url": "https://linear.app",
+  "elapsed_s": 5.2,
+  "time_to_first_value_s": 3.973,
+  "time_to_first_value": "PASS",
+  "total_time": "not ready",
+  "product_task_completion": "0/8",
+  "product_need": ">= 4/8 Gemini YES on the final screenshot",
+  "gemini_called": false,
+  "report_ready": false,
+  "per_task_rows": false,
+  "strength_from_run_past_homepage": false,
+  "weakness_from_run_past_homepage": false,
+  "abort": {
+    "gate": "page_opened",
+    "reason": "FAIL page_opened: 14/18 agents opened the assigned site within 5s (wrong site=2)",
+    "agents_visible": 18,
+    "opened": 14,
+    "wrong_site_ids": ["t1__p1__competitor_2", "t2__p1__competitor_2"],
+    "note": "Assigned site and the URL stored after abort are both https://trello.com/. The 5s check still marked these two wrong-site, and the harness stopped before the fleet reached 24."
+  },
+  "missing_fields": [
+    "phase_ms.final_screenshot",
+    "phase_ms",
+    "final_screenshot_url",
+    "final_url",
+    "state_sig.text",
+    "failed_step_phase",
+    "failed_step_reason"
+  ],
+  "failures_json": {
+    "counts": {
+      "our infrastructure": 0,
+      "model timeout": 0,
+      "stuck": 0,
+      "product": 2,
+      "no_first_action": 0
+    },
+    "phase_counts": [
+      {"phase": "missing field failed_step_phase", "n": 2}
+    ],
+    "failed_runs": [
+      {
+        "agent_id": "t1__p1__competitor_2",
+        "type": "product",
+        "last_action": "click Sign up for Trello - it’s free!",
+        "final_url": "https://trello.com/",
+        "failed_step_phase": "missing field failed_step_phase",
+        "failed_step_reason": "missing field failed_step_reason",
+        "phase_ms": "missing field phase_ms.final_screenshot",
+        "final_screenshot": "missing field final_screenshot_url"
+      },
+      {
+        "agent_id": "t2__p1__competitor_2",
+        "type": "product",
+        "last_action": "click Sign up for Trello - it’s free!",
+        "final_url": "https://trello.com/",
+        "failed_step_phase": "missing field failed_step_phase",
+        "failed_step_reason": "missing field failed_step_reason",
+        "phase_ms": "missing field phase_ms.final_screenshot",
+        "final_screenshot": "missing field final_screenshot_url"
+      }
+    ]
+  },
+  "previous_real_fail": {
+    "head": "59c2702",
+    "study_id": "6e2acd43-9649-411f-b28c-084b94e0d560",
+    "elapsed_s": 73.4,
+    "time_to_first_value_s": 4.778,
+    "time_to_first_action": "median=20.024s max=20.33s n=24/24 FAIL",
+    "product_task_completion": "0/8",
+    "abort": "stuck",
+    "reason": "t1__p1__product repeated click New issue 3 times with no URL/DOM change",
+    "phase_counts": [{"phase": "missing field failed_step_phase", "n": 1}],
+    "missing_on_stuck_run": [
+      "failed_step_phase",
+      "failed_step_reason",
+      "phase_ms.final_screenshot",
+      "final_screenshot_url"
+    ]
+  },
+  "what_to_emit": [
+    "Every agent, including competitors, publishes page_open_at_ts and a non-empty ax_tree for its own assigned host within 5s of created_at_ts.",
+    "The first published URL host must match site_url (www stripped).",
+    "All 24 live sessions must exist before that 5s clock expires.",
+    "On stop, write failed_step.phase and failed_step.reason, including stuck.",
+    "Write phase_ms.final_screenshot and final_screenshot_url on every agent before the study is complete.",
+    "A TTFV under 10s is not a pass. Product completion still needs at least 4/8 Gemini YES, and the report needs per-task rates plus a strength and a weakness from a run that left the homepage."
+  ]
+}
