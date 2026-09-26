@@ -15,7 +15,10 @@ once the time_to_first_action max is clearly blown (default 10s after that
 agent's first real screenshot; --first-action-s loosens only that abort), if
 Root CDP client init fails, or if Browserbase session drops pass 25% of agents.
 Vision and screenshot checks read PNGs the agents already saved. They do not
-drive the live page while agents run. pass=true only when the independent
+drive the live page while agents run. The summary leads with two clocks from
+the Run click: time_to_first_value (<= 10s until the first click/type/scroll
+is visible) and total_time (until the report is ready, within 8 minutes).
+pass=true only when the independent
 goal-judge verdicts and the report checks all pass. Agent summaries are not a
 pass signal. Failed runs are written to failures.json.
 
@@ -581,6 +584,10 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         await page.wait_for_selector("#study-form #submit-btn", timeout=30_000)
 
         study_id = args.study_id
+        t_submit: float | None = None
+        t_first_value: float | None = None
+        t_report_ready: float | None = None
+        first_value_agent = ""
         if not study_id:
             smoke = page.locator("#test-mode-input")
             if await smoke.count() and await smoke.is_checked():
@@ -596,6 +603,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 await page.fill('textarea[name="customers"]', args.segment)
 
             _log("→ click Run (not Smoke)")
+            t_submit = time.time()
             await page.click("#submit-btn")
         else:
             _log(f"→ attach study {study_id} (no new Run)")
@@ -624,6 +632,14 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     await asyncio.sleep(0.4)
                     continue
             await _assert_ready_hidden(page, study)
+            if (
+                t_report_ready is None
+                and study.get("status") == "complete"
+                and study.get("summary")
+            ):
+                t_report_ready = time.time()
+                anchor = t_submit if t_submit is not None else t0
+                _log(f"  report_ready +{t_report_ready - anchor:.1f}s")
 
             personas = study.get("personas") or []
             tasks = study.get("tasks") or []
@@ -722,6 +738,15 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                     abort_after_s=args.first_action_s,
                     expected=max(expected, PASS_AGENT_BAR),
                 )
+                if t_first_value is None and action_seen_at:
+                    first_value_agent, t_first_value = min(
+                        action_seen_at.items(), key=lambda item: item[1]
+                    )
+                    if t_submit is not None:
+                        _log(
+                            f"  first_value +{t_first_value - t_submit:.1f}s "
+                            f"agent={first_value_agent}"
+                        )
                 need_actions = max(expected, PASS_AGENT_BAR)
                 action_clock_open = (
                     len(sessions) < need_actions
@@ -869,6 +894,18 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             None if since_task_last is None else round(since_task_last, 1)
         )
         report["time_to_first_action"] = ttfa_check
+        report["time_to_first_value_s"] = (
+            None
+            if t_first_value is None or t_submit is None
+            else round(t_first_value - t_submit, 3)
+        )
+        report["total_time_s"] = (
+            None
+            if t_report_ready is None or t_submit is None
+            else round(t_report_ready - t_submit, 3)
+        )
+        report["report_ready"] = t_report_ready is not None
+        report["time_to_first_value_agent"] = first_value_agent
         report["early_abort"] = (
             None
             if not early_abort
@@ -958,6 +995,10 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 "ttfa_median_s": DEFAULT_TTFA_MEDIAN_S,
                 "ttfa_max_s": DEFAULT_TTFA_MAX_S,
                 "time_to_first_action_check": ttfa_check,
+                "time_to_first_value_s": report["time_to_first_value_s"],
+                "time_to_first_value_agent": first_value_agent,
+                "total_time_s": report["total_time_s"],
+                "report_ready": report["report_ready"],
                 "base": args.base,
                 "study_id": study_id,
                 "status": study.get("status"),

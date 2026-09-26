@@ -48,6 +48,10 @@ def _startup_that_used_to_pass() -> dict:
         "slow_agents": 0,
         "vision_nos": 0,
         "expected": 24,
+        "time_to_first_value_s": 8.0,
+        "time_to_first_value_agent": "t1__p1__product",
+        "total_time_s": 280.0,
+        "report_ready": True,
     }
 
 
@@ -702,6 +706,79 @@ class EarlyFailureTests(unittest.TestCase):
         self.assertFalse(failed["pass"])
         self.assertIn("6.0s", str(_gate(failed, "time_to_first_action")["value"]))
         self.assertIn("11.0s", str(_gate(failed, "time_to_first_action")["value"]))
+
+
+class HeadlineMetricTests(unittest.TestCase):
+    def _passing(self) -> tuple[dict, dict]:
+        flags = [True, True, False, False, True, True, False, False]
+        study = _matrix(flags)
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product" and r["num_steps"] == 4
+        }
+        return study, vision
+
+    def test_headline_gates_lead_the_summary(self) -> None:
+        study, vision = self._passing()
+        startup = _startup_that_used_to_pass()
+        startup["time_to_first_value_s"] = 10.0
+        startup["total_time_s"] = 480.0
+        startup["report_ready"] = True
+        result = _evaluate(study, vision_goal=vision, startup=startup)
+        self.assertEqual(
+            [gate["id"] for gate in result["gates"][:2]],
+            ["time_to_first_value", "total_time"],
+        )
+        self.assertIn("time_to_first_action", [gate["id"] for gate in result["gates"]])
+        self.assertTrue(_gate(result, "time_to_first_value")["pass"])
+        self.assertIn("10.0s", str(_gate(result, "time_to_first_value")["value"]))
+        self.assertIn("<= 10s", _gate(result, "time_to_first_value")["threshold"])
+        self.assertIn("URL submit", _gate(result, "time_to_first_value")["threshold"])
+        self.assertTrue(_gate(result, "total_time")["pass"])
+        self.assertIn("480.0s", str(_gate(result, "total_time")["value"]))
+        self.assertIn("<= 480s", _gate(result, "total_time")["threshold"])
+        self.assertIn("report is ready", _gate(result, "total_time")["threshold"])
+        self.assertTrue(result["pass"])
+        text = render_markdown(result, study_id=study["id"], product_url=study["url"])
+        self.assertLess(text.index("## Headline"), text.index("| Gate |"))
+        self.assertLess(text.index("`time_to_first_value`"), text.index("`total_time`"))
+        self.assertLess(text.index("`total_time`"), text.index("`full_matrix`"))
+        self.assertIn("`time_to_first_action`", text)
+        self.assertIn("median <= 5s and max <= 10s at 24 agents", text)
+
+    def test_first_value_over_10s_and_total_over_budget_fail(self) -> None:
+        study, vision = self._passing()
+        startup = _startup_that_used_to_pass()
+        startup["time_to_first_value_s"] = 10.01
+        late = _evaluate(study, vision_goal=vision, startup=startup)
+        self.assertFalse(_gate(late, "time_to_first_value")["pass"])
+        self.assertFalse(late["pass"])
+        self.assertTrue(_gate(late, "time_to_first_action")["pass"])
+        startup["time_to_first_value_s"] = 9.0
+        startup["total_time_s"] = 481.0
+        over = _evaluate(study, vision_goal=vision, startup=startup)
+        self.assertTrue(_gate(over, "time_to_first_value")["pass"])
+        self.assertFalse(_gate(over, "total_time")["pass"])
+        self.assertFalse(over["pass"])
+        startup["total_time_s"] = 100.0
+        startup["report_ready"] = False
+        not_ready = _evaluate(study, vision_goal=vision, startup=startup)
+        self.assertFalse(_gate(not_ready, "total_time")["pass"])
+        self.assertIn("report not ready", str(_gate(not_ready, "total_time")["value"]))
+
+    def test_missing_headline_clocks_fail(self) -> None:
+        study, vision = self._passing()
+        startup = _startup_that_used_to_pass()
+        startup["time_to_first_value_s"] = None
+        startup["total_time_s"] = None
+        startup["report_ready"] = False
+        result = _evaluate(study, vision_goal=vision, startup=startup)
+        self.assertEqual(_gate(result, "time_to_first_value")["value"], "not recorded")
+        self.assertFalse(_gate(result, "time_to_first_value")["pass"])
+        self.assertEqual(_gate(result, "total_time")["value"], "not ready")
+        self.assertFalse(_gate(result, "total_time")["pass"])
+        self.assertFalse(result["pass"])
 
 
 if __name__ == "__main__":

@@ -8,6 +8,10 @@ stuck; it is not timed out. Time to first action is separate: from each
 agent's first real screenshot until a click, type, or scroll shows up in the
 live study. That passes only when the median is <= 5s and the max is <= 10s
 at 24 agents. The harness aborts once that max is clearly blown.
+Two headline clocks sit in front of that: time_to_first_value is the Run
+click until the first click, type, or scroll is visible in the live UI
+(pass <= 10s), and total_time is the Run click until the report is ready
+(pass within the 8-minute study budget).
 
 Task completion comes only from an independent vision judge. The judge sees the
 final screenshot plus the final URL and DOM and writes a verdict with a reason.
@@ -43,6 +47,8 @@ OBSERVED_STUDY_MAX_S = 408.0
 DEFAULT_STUDY_BUDGET_S = 480.0  # 8 minutes, above the confirmed max
 DEFAULT_MAX_ELAPSED_S = DEFAULT_STUDY_BUDGET_S
 DEFAULT_FIRST_SHOT_S = 5.0
+# URL submit → first click/type/scroll visible in the live UI.
+DEFAULT_TIME_TO_FIRST_VALUE_S = 10.0
 # Consecutive trace steps with the same URL, DOM text, and canvas.
 # A single opening frame is a product miss, not a stuck agent.
 STUCK_STEPS = 3
@@ -876,6 +882,58 @@ Return JSON only:
     return coerce_verdict(result)
 
 
+def _headline_gates(startup: dict[str, Any]) -> list[dict[str, Any]]:
+    """The two clocks the summary leads with. Per-agent time_to_first_action stays separate."""
+    value_limit = float(
+        startup.get("time_to_first_value_max_s") or DEFAULT_TIME_TO_FIRST_VALUE_S
+    )
+    budget = float(
+        startup.get("study_budget_s")
+        or startup.get("max_elapsed_s")
+        or DEFAULT_STUDY_BUDGET_S
+    )
+    raw_value = startup.get("time_to_first_value_s")
+    if raw_value is None:
+        value_ok = False
+        value_text = "not recorded"
+    else:
+        seconds = float(raw_value)
+        value_ok = seconds <= value_limit
+        value_text = f"{seconds}s"
+    agent = str(startup.get("time_to_first_value_agent") or "")
+    raw_total = startup.get("total_time_s")
+    ready = startup.get("report_ready")
+    if raw_total is None:
+        total_ok = False
+        total_text = "not ready"
+    else:
+        total_s = float(raw_total)
+        ready_ok = ready is not False
+        total_ok = ready_ok and total_s <= budget
+        total_text = f"{total_s}s" if ready_ok else f"{total_s}s, report not ready"
+    return [
+        _gate(
+            "time_to_first_value",
+            "Time to first value",
+            value_text,
+            (
+                f"<= {value_limit:.0f}s from URL submit until the first "
+                "click, type, or scroll is visible in the live UI"
+            ),
+            value_ok,
+            f"agent={agent}" if agent else "",
+        ),
+        _gate(
+            "total_time",
+            "Total time",
+            total_text,
+            f"<= {budget:.0f}s from URL submit until the report is ready",
+            total_ok,
+            "8-minute study budget.",
+        ),
+    ]
+
+
 def _startup_gates(
     study: dict[str, Any],
     runs: list[dict[str, Any]],
@@ -1359,7 +1417,7 @@ def evaluate_strict_gates(
     if harness_in_weakness:
         separate_ok = False
 
-    gates = _startup_gates(study, runs, startup, abort_reason)
+    gates = _headline_gates(startup) + _startup_gates(study, runs, startup, abort_reason)
     gates.extend(
         [
             _gate(
@@ -1489,21 +1547,37 @@ def render_markdown(
     """Human summary. Every gate is a row with value, threshold, and PASS/FAIL."""
     failures = result.get("failures") if isinstance(result.get("failures"), dict) else {}
     counts = failures.get("counts") if isinstance(failures.get("counts"), dict) else {}
+    by_id = {str(g.get("id")): g for g in (result.get("gates") or []) if isinstance(g, dict)}
     lines = [
         "# Strict e2e gates",
         "",
-        f"- study: {study_id or '(none)'}",
-        f"- product: {product_url or '(none)'}",
-        f"- pass: {str(bool(result.get('pass'))).lower()}",
-        f"- failure file: {failure_file or '(not written)'}",
-        (
-            "- failed runs: "
-            + ", ".join(f"{name}={counts.get(name, 0)}" for name in FAILURE_TYPES)
-        ),
+        "## Headline",
         "",
-        "| Gate | Value | Threshold | Result |",
-        "| --- | --- | --- | --- |",
     ]
+    for gate_id in ("time_to_first_value", "total_time"):
+        gate = by_id.get(gate_id)
+        if not gate:
+            continue
+        mark = "PASS" if gate.get("pass") else "FAIL"
+        lines.append(
+            f"- `{gate_id}`: {gate.get('value')} (threshold {gate.get('threshold')}) {mark}"
+        )
+    lines.extend(
+        [
+            "",
+            f"- study: {study_id or '(none)'}",
+            f"- product: {product_url or '(none)'}",
+            f"- pass: {str(bool(result.get('pass'))).lower()}",
+            f"- failure file: {failure_file or '(not written)'}",
+            (
+                "- failed runs: "
+                + ", ".join(f"{name}={counts.get(name, 0)}" for name in FAILURE_TYPES)
+            ),
+            "",
+            "| Gate | Value | Threshold | Result |",
+            "| --- | --- | --- | --- |",
+        ]
+    )
     for gate in result.get("gates") or []:
         mark = "PASS" if gate.get("pass") else "FAIL"
         value = str(gate.get("value")).replace("|", "/")
