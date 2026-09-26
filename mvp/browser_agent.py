@@ -26,10 +26,11 @@ MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
 # 120s let the first model call consume the whole budget (0–2 actions).
 # 200s is enough for several clicks once thinking/planning are off.
 MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
-# A 75s Gemini default let the first call consume the wall (~115s observed).
-# Abort a slow call and let the next step retry. Targets: first action ~10s, step ~15s.
-MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "12") or "12")
-MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "15") or "15")
+# A 12s model cap and 15s step cap aborted the action call before a click landed,
+# so product runs died on the homepage after the opening frame. A step may use
+# most of a minute; the agent wall still stops a hung run.
+MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "45") or "45")
+MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "60") or "60")
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
 
 
@@ -277,20 +278,17 @@ async def _inject_cookies(session: Any, state: dict[str, Any] | None) -> int:
 
 
 def action_model_name(explicit: str | None = None) -> str:
-    """Fast model for action steps.
+    """Action-step model.
 
-    ``MVP_BROWSER_MODEL`` is the heavier flash model. Its first call was ~115s
-    under a 24-way load and consumed the agent wall. Action steps use the lite
-    sibling unless ``MVP_AGENT_ACTION_MODEL`` is set.
+    The configured flash model is the one that leaves the homepage. Forcing its
+    lite sibling (commit 1526a5a restored that downgrade) dropped Linear product
+    task success from 8/8 to 1/8 on the same 8-agent harness. Set
+    ``MVP_AGENT_ACTION_MODEL`` to pin a different model.
     """
     chosen = (explicit or os.environ.get("MVP_AGENT_ACTION_MODEL") or "").strip()
     if chosen:
         return chosen
-    base = (os.environ.get("MVP_LLM_MODEL") or MODEL or "").strip()
-    if not base:
-        base = (os.environ.get("MVP_BROWSER_MODEL") or "").strip()
-    if base and "lite" not in base.lower() and "flash" in base.lower():
-        return base + "-lite"
+    base = (os.environ.get("MVP_BROWSER_MODEL") or os.environ.get("MVP_LLM_MODEL") or MODEL or "").strip()
     return base or MODEL
 
 
