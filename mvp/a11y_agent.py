@@ -1133,8 +1133,26 @@ def _step_from_read(
     return row
 
 
+# One slow Browserbase slot must not fail the 5s page-open gate for the
+# other 23. Replace that session before the gate if navigation has not committed.
+SLOW_OPEN_S = 3.5
+
+
+def should_replace_open(*, started: float, now: float, opened: float | None) -> bool:
+    """True when this attempt has no real navigation-commit stamp inside 3.5s.
+
+    ``opened`` must be the time ``goto`` committed. A stamp copied from
+    ``created_at_ts`` is not an open.
+    """
+    if opened is None:
+        return (now - started) >= SLOW_OPEN_S
+    if abs(float(opened) - float(started)) < 1e-6:
+        return True
+    return (float(opened) - float(started)) > SLOW_OPEN_S
+
+
 class A11yBoot:
-    """One shared read per start URL, then 24 agents act in parallel."""
+    """24 browsers open in parallel. A slow slot is replaced, not fatal."""
 
     def __init__(self, study: Any, on_update: Any | None = None) -> None:
         self.study = study
@@ -1143,6 +1161,7 @@ class A11yBoot:
         self.snapshots: dict[str, dict[str, Any]] = {}
         self.handles: dict[str, dict[str, Any]] = {}
         self.contexts: dict[str, dict[str, Any]] = {}
+        self.agent_pages: dict[str, dict[str, Any]] = {}
         self._handles: list[dict[str, Any]] = []
         self._handle_cv = asyncio.Condition()
         self._page_lock = asyncio.Lock()
@@ -1209,30 +1228,21 @@ class A11yBoot:
         self.install_fast_plan()
 
         async def _boot() -> None:
-            # One browser per site. Agents open their own tabs on it. A second
-            # CDP connection to the same Browserbase session returns 410.
-            bb = await self._create_one(0, enqueue=False)
-            if bb is not None:
-                try:
-                    snap = await self._read_url(bb, self.study.url)
-                except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] product read failed: {exc!r}", flush=True)
-                    snap = None
-                if isinstance(snap, dict):
-                    handle = snap.pop("_handle", None)
-                    if isinstance(handle, dict):
-                        handle["site_key"] = "product"
-                        handle["read"] = snap
-                        async with self._handle_cv:
-                            self._handles.append(handle)
-                            self.contexts["product"] = handle
-                            self._handle_cv.notify_all()
-                    self.snapshots["product"] = snap
-                    self._publish_site("product", snap)
-            extras = len([c for c in (self.study.competitors or []) if c])
-            if extras:
-                self._tasks.append(asyncio.create_task(self._fill_pool(extras, offset=1)))
-            await self._publish_rest()
+            # Tasks exist before any live session, so the 5s clock does not
+            # start on an empty row. All 24 create+navigate together.
+            deadline = time.time() + 8
+            while not self.study.tasks and time.time() < deadline:
+                await asyncio.sleep(0.05)
+            tasks = list(self.study.tasks or [])
+            if not tasks:
+                print("[a11y] no tasks to open", flush=True)
+                self.published.set()
+                return
+            await asyncio.gather(
+                *[self._open_agent_slot(i, task) for i, task in enumerate(tasks)],
+                return_exceptions=True,
+            )
+            self.published.set()
 
         self._tasks.append(asyncio.create_task(_boot()))
 
@@ -1281,6 +1291,206 @@ class A11yBoot:
         print(f"[a11y] session {i + 1} not created before the study budget", flush=True)
         return None
 
+    async def _create_one_fast(self, i: int) -> Any | None:
+        """One create attempt. A slow create is a slot to replace, not a 5s sleep.
+
+        If the create outlives the 3.5s budget, close that session when it
+        finally returns so it does not hold a Browserbase slot.
+        """
+        from capability.browserbase_client import close_session, create_session, study_session_owner
+
+        task = asyncio.create_task(
+            asyncio.to_thread(
+                create_session,
+                proxies=False,
+                keep_alive=True,
+                solve_captchas=False,
+                advanced_stealth=False,
+                owner=study_session_owner(),
+                study_id=self.study.id,
+            )
+        )
+
+        def _drop_late(done: asyncio.Task) -> None:
+            if done.cancelled():
+                return
+            try:
+                bb = done.result()
+            except Exception:
+                return
+            sid = getattr(bb, "id", None)
+            if not sid:
+                return
+            try:
+                close_session(str(sid))
+            except Exception:
+                pass
+
+        try:
+            return await asyncio.wait_for(asyncio.shield(task), timeout=SLOW_OPEN_S)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[a11y] fast create {i + 1} failed: {exc!r}", flush=True)
+            if task.done():
+                _drop_late(task)
+            else:
+                task.add_done_callback(_drop_late)
+            return None
+
+    async def _release_browser(self, bb: Any, snap: dict[str, Any] | None) -> None:
+        handle = (snap or {}).get("_handle") if isinstance(snap, dict) else None
+        browser = handle.get("browser") if isinstance(handle, dict) else None
+        if browser is not None:
+            try:
+                await browser.close()
+            except Exception:
+                pass
+        sid = getattr(bb, "id", None) if bb is not None else None
+        if not sid:
+            return
+        try:
+            from capability.browserbase_client import close_session
+
+            await asyncio.to_thread(close_session, str(sid))
+        except Exception:
+            pass
+
+    async def _open_agent_slot(self, index: int, task: dict[str, Any]) -> None:
+        """Create and navigate this agent. Replace the browser once if it is slow."""
+        url = str(task.get("site_url") or self.study.url or "")
+        agent_id = str(task.get("id") or "")
+        for attempt in (1, 2):
+            started = time.time()
+            bb = await self._create_one_fast(index + attempt)
+            if bb is None:
+                continue
+            snap: dict[str, Any] | None = None
+            try:
+                remaining = max(0.4, SLOW_OPEN_S - (time.time() - started))
+                snap = await asyncio.wait_for(
+                    self._read_url(bb, url, commit_timeout_ms=int(remaining * 1000)),
+                    timeout=remaining,
+                )
+            except Exception as exc:  # noqa: BLE001
+                print(
+                    f"[a11y] {agent_id or index} open attempt {attempt} "
+                    f"replaced: {exc!r}",
+                    flush=True,
+                )
+                await self._release_browser(bb, snap)
+                continue
+            opened = snap.get("page_open_at_ts") if isinstance(snap, dict) else None
+            opened_f = float(opened) if isinstance(opened, (int, float)) else None
+            if should_replace_open(started=started, now=time.time(), opened=opened_f):
+                print(
+                    f"[a11y] {agent_id or index} no commit within {SLOW_OPEN_S}s, "
+                    f"replacing slot (attempt {attempt})",
+                    flush=True,
+                )
+                await self._release_browser(bb, snap if isinstance(snap, dict) else None)
+                continue
+            assert isinstance(snap, dict)
+            handle = snap.get("_handle") if isinstance(snap.get("_handle"), dict) else None
+            self._publish_agent(task, snap, created_at=started)
+            if isinstance(handle, dict) and agent_id:
+                handle["site_key"] = str(task.get("site_key") or "product")
+                handle["read"] = {k: v for k, v in snap.items() if k != "_handle"}
+                handle["reuse"] = False
+                self.agent_pages[agent_id] = handle
+                self._handles.append(handle)
+            site_key = str(task.get("site_key") or "product")
+            self.snapshots.setdefault(site_key, handle["read"] if isinstance(handle, dict) else snap)
+            return
+        print(f"[a11y] {agent_id or index} still unopened after one replacement", flush=True)
+
+    def _publish_agent(
+        self,
+        task: dict[str, Any],
+        snap: dict[str, Any],
+        *,
+        created_at: float,
+    ) -> None:
+        """Publish one agent. Page-open is the commit stamp, not created_at."""
+        opened = snap.get("page_open_at_ts")
+        if not isinstance(opened, (int, float)):
+            return
+        if abs(float(opened) - float(created_at)) < 1e-6:
+            return
+        from mvp.study import _now
+
+        site_key = str(task.get("site_key") or "product")
+        agent_id = str(task.get("id") or "")
+        if not agent_id:
+            return
+        url = str(snap.get("url") or task.get("site_url") or "")
+        ax = format_ax(snap.get("nodes") or []) or str(snap.get("text") or "")[:1500] or "0 document page"
+        persona = next(
+            (p for p in (self.study.personas or []) if p.get("id") == task.get("persona_id")),
+            (self.study.personas or [{}])[0] if self.study.personas else {},
+        )
+        prompt = str(task.get("prompt") or task.get("title") or "")
+        action = planned_action(prompt, snap) or pick_action(prompt, snap.get("nodes") or [])
+        label = action_label(action)
+        clicked = time.time()
+        sess = self.study.live_sessions.get(agent_id) or {
+            "agent_id": agent_id,
+            "persona_id": persona.get("id"),
+            "persona_name": persona.get("name"),
+            "persona_bio": persona.get("bio"),
+            "task_id": task.get("id"),
+            "task_title": task.get("title"),
+            "task_prompt": task.get("prompt"),
+            "site_key": site_key,
+            "site_url": task.get("site_url") or url,
+            "site_label": task.get("site_label") or site_key,
+            "trace": [],
+            "num_steps": 0,
+            "live_thoughts": [],
+        }
+        sess["status"] = "running"
+        sess["phase"] = "acting"
+        sess["created_at"] = sess.get("created_at") or _now()
+        sess["created_at_ts"] = created_at
+        step0 = _step_from_read(step=0, action=f"Opened {url}", read=snap)
+        step0["page_open_at_ts"] = float(opened)
+        step0["session_ready_at_ts"] = snap.get("session_ready_at_ts")
+        step0["accessibility_tree"] = ax
+        step1 = _step_from_read(
+            step=1,
+            action=label,
+            read=snap,
+            thought="First move from this browser's committed page.",
+        )
+        step1["first_action_at_ts"] = clicked
+        sess["trace"] = [step0, step1]
+        sess["num_steps"] = 2
+        sess["last_action"] = label
+        sess["pending_action"] = action
+        apply_gate_fields(
+            sess,
+            page_open_at_ts=float(opened),
+            session_ready_at_ts=snap.get("session_ready_at_ts"),
+            page_url=url,
+            accessibility_tree=ax,
+            final_url=url,
+            final_dom=str(snap.get("text") or "")[:1500],
+            phase="acting",
+            error="",
+            browser_error="",
+            failed_step={"phase": "act", "reason": "page did not show the goal", "step": 1},
+            first_action_at_ts=clicked,
+            phase_ms={
+                **dict(snap.get("phase_ms") or {}),
+                "session_ready": 0,
+                "page_open": max(0, int(round((float(opened) - float(created_at)) * 1000))),
+                "first_action": 0,
+                "final_screenshot": 0,
+                "first_action_ms": 0,
+            },
+        )
+        ensure_phase_ms(sess)
+        self.study.live_sessions[agent_id] = sess
+        self._touch()
+
     async def _fill_pool(self, n: int, offset: int = 0) -> None:
         await asyncio.gather(*[self._create_one(offset + i) for i in range(n)])
 
@@ -1300,12 +1510,20 @@ class A11yBoot:
             pass
         return browser, context, page
 
-    async def _read_url(self, bb: Any, url: str) -> dict[str, Any]:
+    async def _read_url(
+        self,
+        bb: Any,
+        url: str,
+        *,
+        commit_timeout_ms: int = 8000,
+    ) -> dict[str, Any]:
         ready = time.time()
         t0 = time.perf_counter()
         browser, context, page = await self._connect(bb)
+        committed: float | None = None
         try:
-            await page.goto(url, wait_until="commit", timeout=8000)
+            await page.goto(url, wait_until="commit", timeout=max(400, int(commit_timeout_ms)))
+            committed = time.time()
         except Exception as exc:  # noqa: BLE001
             print(f"[a11y] goto {url} : {exc!r}", flush=True)
         read_t0 = time.perf_counter()
@@ -1320,10 +1538,12 @@ class A11yBoot:
         raw["url"] = str(raw.get("url") or url)
         raw["nodes"] = list(raw.get("nodes") or [])[:AX_CAP]
         raw["session_ready_at_ts"] = ready
-        raw["page_open_at_ts"] = opened
+        # Commit time only. Do not copy session-created or the post-read clock.
+        if committed is not None:
+            raw["page_open_at_ts"] = committed
         raw["phase_ms"] = {
             "session_ready_ms": _ms(self._started, ready),
-            "page_open_ms": _ms(ready, opened),
+            "page_open_ms": _ms(ready, committed),
             "read_ms": int(round((time.perf_counter() - read_t0) * 1000)),
             "navigate_ms": int(round((read_t0 - t0) * 1000)),
         }
@@ -1619,7 +1839,7 @@ class A11yBoot:
     async def close(self) -> None:
         """Close the shared browsers after every agent has finished."""
         seen: set[int] = set()
-        for handle in list(self.contexts.values()):
+        for handle in list(self.contexts.values()) + list(self.agent_pages.values()):
             browser = handle.get("browser")
             if browser is not None and id(browser) not in seen:
                 seen.add(id(browser))
@@ -2028,6 +2248,21 @@ async def complete_task_on_page(
             else:
                 _miss()
             break
+        if (
+            task_kind(task) == "draw"
+            and str(action.get("act")) != "drag"
+            and _host(str(read.get("url") or url)) == "excalidraw.com"
+        ):
+            # Rectangle tool is already selected. Draw on the canvas.
+            # Do not open the export menu for that next click.
+            selected = "selected shape" in str(read.get("text") or "").lower() or any(
+                "rectangle" in item.lower() for item in history
+            )
+            if selected and not goal_visible(task, read):
+                action = dict(action)
+                action["act"] = "drag"
+                action["name"] = "canvas"
+                action["role"] = "canvas"
         label = action_label(action)
         if would_repeat_action(trace, label, read):
             _miss()
@@ -2085,6 +2320,28 @@ async def complete_task_on_page(
             _miss("session ended")
             failed = {"phase": "read", "reason": "session ended", "step": step_no}
             break
+        clicked = str(action.get("name") or "").lower()
+        if (
+            not after.get("error")
+            and task_kind(task) == "issue"
+            and "new issue" in clicked
+        ):
+            body = str(after.get("text") or "").lower()
+            composer = "issue title" in body or ("description" in body and "title" in body)
+            if not composer:
+                # Marketing "New issue" does not open a composer. Skip it.
+                skip.add(clicked)
+                try:
+                    await page.keyboard.press("Escape")
+                except Exception:
+                    pass
+                try:
+                    await page.mouse.wheel(0, 700)
+                except Exception:
+                    pass
+                scrolled = await _fresh_read(page, str(read.get("url") or url))
+                if not scrolled.get("error"):
+                    after = scrolled
         if not after.get("error"):
             changed = _observation_changed(read, after, task=task)
             if not changed:
@@ -2158,7 +2415,19 @@ async def run_a11y_agent(
     site_key: str = "product",
     deadline: float | None = None,
 ) -> dict[str, Any]:
-    """One agent at a time on this site's browser, then the next."""
+    """Each agent keeps the browser that opened its page. No site-wide queue."""
+    if agent_id in boot.agent_pages:
+        return await _run_a11y_agent_unlocked(
+            boot=boot,
+            study_id=study_id,
+            agent_id=agent_id,
+            url=url,
+            task_prompt=task_prompt,
+            persona=persona,
+            on_step=on_step,
+            site_key=site_key,
+            deadline=deadline,
+        )
     async with boot.lock_for(site_key):
         return await _run_a11y_agent_unlocked(
             boot=boot,
@@ -2193,7 +2462,9 @@ async def _run_a11y_agent_unlocked(
     from mvp.paths import MVP_RUNS_DIR
 
     sess = boot.study.live_sessions.get(agent_id) or {}
-    handle = await boot.take_page(site_key, url)
+    handle = boot.agent_pages.get(agent_id)
+    if handle is None:
+        handle = await boot.take_page(site_key, url)
     failed: dict[str, Any] | None = None
     stop_reason = ""
     phase = "navigate"
@@ -2229,7 +2500,11 @@ async def _run_a11y_agent_unlocked(
                     failed = {"phase": "navigate", "reason": "session ended", "step": 1}
                 else:
                     print(f"[{agent_id}] navigate error (continuing): {exc!r}", flush=True)
-    snap = boot.snapshot_for(site_key) or {}
+    snap = {}
+    if isinstance(handle, dict) and isinstance(handle.get("read"), dict):
+        snap = handle["read"]
+    if not snap:
+        snap = boot.snapshot_for(site_key) or {}
     opened_canvas = str(snap.get("canvas") or "")
     history = [str(sess.get("last_action") or "")]
     trace = list(sess.get("trace") or [])
@@ -2287,6 +2562,12 @@ async def _run_a11y_agent_unlocked(
             await page.screenshot(path=str(path), full_page=False, timeout=8000)
             shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
             shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
+            try:
+                from mvp.opening_shot import upload_screenshot
+
+                asyncio.create_task(upload_screenshot(study_id, agent_id, path))
+            except Exception:
+                pass
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
             if browser_dead(exc):
@@ -2300,6 +2581,12 @@ async def _run_a11y_agent_unlocked(
                         shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
                         shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
                         page = page2
+                        try:
+                            from mvp.opening_shot import upload_screenshot
+
+                            asyncio.create_task(upload_screenshot(study_id, agent_id, path))
+                        except Exception:
+                            pass
                     except Exception as exc2:  # noqa: BLE001
                         print(f"[{agent_id}] revive capture failed: {exc2!r}", flush=True)
             if not shot_url:

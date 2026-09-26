@@ -7,6 +7,7 @@ import unittest
 
 from mvp.a11y_agent import (
     GATE_FIELDS,
+    SLOW_OPEN_S,
     action_label,
     apply_gate_fields,
     classify_failure,
@@ -22,6 +23,7 @@ from mvp.a11y_agent import (
     planned_action,
     progress_signature,
     promote_live_session_fields,
+    should_replace_open,
     study_budget_s,
     would_repeat_action,
 )
@@ -298,6 +300,22 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(table["counts"]["stuck"], 1)
         self.assertEqual(table["counts"]["product"], 1)
         self.assertEqual(table["counts"]["our infrastructure"], 1)
+
+    def test_slow_slot_is_replaced_before_the_page_open_gate(self) -> None:
+        started = 1_000.0
+        self.assertFalse(
+            should_replace_open(started=started, now=started + 1.0, opened=started + 0.4)
+        )
+        self.assertTrue(
+            should_replace_open(started=started, now=started + SLOW_OPEN_S, opened=None)
+        )
+        self.assertTrue(
+            should_replace_open(started=started, now=started + 0.2, opened=started)
+        )
+        self.assertTrue(
+            should_replace_open(started=started, now=started + 4.0, opened=started + 4.0)
+        )
+        self.assertGreater(5.0, SLOW_OPEN_S)
 
     def test_logged_out_tasks_do_not_require_an_account(self) -> None:
         self.assertEqual(

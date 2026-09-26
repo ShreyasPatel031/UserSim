@@ -1365,8 +1365,9 @@ async def run_study(
         ):
             from mvp.a11y_agent import A11yBoot
 
-            # One shared accessibility read, 24 browsers in parallel. No
-            # per-agent screenshot warm and no 8-wide action queue.
+            # All 24 browsers create and navigate together. A slot that has
+            # not committed within 3.5s is replaced. No shared page, no
+            # per-agent screenshot warm, and no 8-wide action queue.
             a11y_boot = A11yBoot(study, on_update)
             a11y_boot.install_fast_plan()
             asyncio.create_task(a11y_boot.start())
@@ -2261,13 +2262,10 @@ async def run_study(
 
         persona_by_id = {p["id"]: p for p in study.personas}
         if a11y_boot is not None:
-            # The product read often finishes before the planner has tasks.
-            # Publish the first click as soon as those tasks exist.
-            for _key, _snap in list(getattr(a11y_boot, "snapshots", {}).items()):
-                try:
-                    a11y_boot._publish_site(_key, _snap)
-                except Exception as pub_exc:  # noqa: BLE001
-                    print(f"[a11y] republish {_key} failed: {pub_exc!r}", flush=True)
+            # Each agent publishes created_at_ts and the navigation-commit
+            # page_open_at_ts from its own browser. A shared republish would
+            # copy one clock onto the other and fail the 5s page-open gate.
+            pass
         if a11y_boot is None:
             study.live_sessions = {}
         for task in study.tasks:
