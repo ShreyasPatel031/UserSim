@@ -484,8 +484,9 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
             error = None
             error_type = None
             try:
-                async with _CdpSlot():
-                    return await orig_nav(*args, **kwargs)
+                # Do not hold a CDP slot across navigation. The load handler
+                # and the opening screenshot need the connection at the same time.
+                return await orig_nav(*args, **kwargs)
             except Exception as exc:
                 error = f"{type(exc).__name__}: {exc}"[:400]
                 error_type = type(exc).__name__
@@ -2175,65 +2176,31 @@ async def _emit_opening_frame(
     book: dict[str, Any] | None = None,
 ) -> None:
     """Navigate + one viewport screenshot, then return so the first click can start."""
-    try:
-        await asyncio.wait_for(browser_session.navigate_to(url), timeout=45)
-    except Exception as exc:  # noqa: BLE001
-        print(f"[{agent_id}] opening navigate failed: {exc!r}", flush=True)
+    nav_task = asyncio.create_task(browser_session.navigate_to(url))
 
-    await _dismiss_consent_banners(browser_session, agent_id=agent_id)
-    # Wait for real paint — 0.2s was capturing Vimeo/Dailymotion black splashes.
+    def _log_opening_nav(task: asyncio.Task) -> None:
+        if task.cancelled():
+            return
+        exc = task.exception()
+        if exc is not None:
+            print(f"[{agent_id}] opening navigate finished: {exc!r}", flush=True)
+
+    nav_task.add_done_callback(_log_opening_nav)
+    try:
+        object.__setattr__(browser_session, "_usersim_opening_nav", nav_task)
+    except Exception:
+        pass
+
+    # The screenshot must not wait for the navigate event. Page.navigate and
+    # the first paint overlap; a blank frame is retried for a few seconds.
     page = None
     try:
-        page = await asyncio.wait_for(browser_session.get_current_page(), timeout=8)
+        page = await asyncio.wait_for(browser_session.get_current_page(), timeout=2)
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] opening get_current_page failed: {exc!r}", flush=True)
     if page is not None:
         try:
-            await asyncio.wait_for(page.wait_for_load_state("domcontentloaded"), timeout=8)
-        except Exception:
-            pass
-        try:
-            await asyncio.sleep(0.4)
-        except Exception:
-            pass
-        try:
-            await asyncio.wait_for(
-                page.wait_for_function(
-                    "() => document.body && (document.body.innerText || '').trim().length > 40",
-                    timeout=2000,
-                ),
-                timeout=3,
-            )
-        except Exception:
-            pass
-        try:
-            await asyncio.wait_for(
-                page.evaluate("() => window.scrollTo(0, 0)"),
-                timeout=5,
-            )
-        except Exception as exc:  # noqa: BLE001
-            print(f"[{agent_id}] opening scrollTop failed: {exc!r}", flush=True)
-        # Cookie / consent banners that cover the page.
-        try:
-            await asyncio.wait_for(
-                page.evaluate(
-                    """() => {
-                      const labels = ['accept all','accept','agree','got it','i agree','allow all','ok'];
-                      const els = [...document.querySelectorAll('button,[role=button],a')];
-                      for (const el of els) {
-                        const t = (el.innerText || el.textContent || '').trim().toLowerCase();
-                        if (!t || t.length > 40) continue;
-                        if (!labels.some(l => t === l || t.startsWith(l))) continue;
-                        const r = el.getBoundingClientRect();
-                        if (r.width < 8 || r.height < 8) continue;
-                        el.click();
-                        return t;
-                      }
-                      return '';
-                    }"""
-                ),
-                timeout=5,
-            )
+            await asyncio.wait_for(page.wait_for_load_state("domcontentloaded"), timeout=2)
         except Exception:
             pass
 
@@ -2243,14 +2210,14 @@ async def _emit_opening_frame(
         try:
             await asyncio.wait_for(
                 browser_session.take_screenshot(path=str(shot_path), full_page=False),
-                timeout=20,
+                timeout=4,
             )
             return True
         except TypeError:
             try:
                 await asyncio.wait_for(
                     browser_session.take_screenshot(path=str(shot_path)),
-                    timeout=20,
+                    timeout=4,
                 )
                 return True
             except Exception as exc:  # noqa: BLE001
@@ -2261,21 +2228,23 @@ async def _emit_opening_frame(
             return False
 
     ok = False
-    # Two quick frames. The first real click uses whichever PNG we publish
-    # and must not wait on a reload loop.
-    for attempt in range(2):
-        await asyncio.sleep(0.3 if attempt == 0 else 0.6)
-        if not await _snap_once():
-            continue
-        if isinstance(book, dict) and "screenshot_mono" not in book:
-            book["screenshot_mono"] = time.monotonic()
-        if not _png_is_blankish(shot_path):
-            ok = True
+    deadline = time.monotonic() + 4.0
+    attempt = 0
+    while time.monotonic() < deadline:
+        attempt += 1
+        if await _snap_once():
+            if isinstance(book, dict) and "screenshot_mono" not in book:
+                book["screenshot_mono"] = time.monotonic()
+            if not _png_is_blankish(shot_path):
+                ok = True
+                break
+            print(
+                f"[{agent_id}] opening frame blankish (attempt {attempt}) — one more snap",
+                flush=True,
+            )
+        if time.monotonic() >= deadline:
             break
-        print(
-            f"[{agent_id}] opening frame blankish (attempt {attempt + 1}/2) — one more snap",
-            flush=True,
-        )
+        await asyncio.sleep(0.25)
 
     if not ok:
         if not shot_path.is_file() or shot_path.stat().st_size < 100:
@@ -2299,7 +2268,7 @@ async def _emit_opening_frame(
     try:
         got = browser_session.get_current_page_url()
         if asyncio.iscoroutine(got):
-            got = await asyncio.wait_for(got, timeout=5)
+            got = await asyncio.wait_for(got, timeout=1)
         if got:
             final_url = got
     except Exception:
