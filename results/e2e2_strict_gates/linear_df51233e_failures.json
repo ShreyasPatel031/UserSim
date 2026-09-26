@@ -1,0 +1,20 @@
+{
+  "study_id": "df51233e-6d0b-4081-aa86-2119b3dbce47",
+  "product_url": "https://linear.app/",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 0,
+    "no_first_action": 0
+  },
+  "phase_counts": [],
+  "failed_runs": []
+}

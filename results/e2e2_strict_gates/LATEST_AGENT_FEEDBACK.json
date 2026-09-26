@@ -1,9 +1,9 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T08:06:00Z",
+  "graded_at": "2026-09-26T08:10:00Z",
   "live_launches": "stopped",
-  "note": "70557bae graded from GCS with Gemini on product final.png. Study pass is false. 38deb1cc is not in GCS. owner=gates and owner=fix running counts are 0. Two owner=integration sessions were left running. Tips: integration 7bfc147, #47 ea561a2, task-completion a62ce07.",
+  "note": "Grade-only. owner=gates running 0. Integration tip 7bfc147 is past 872438f. Task-completion tip a62ce07 is past 03c543b. #47 tip ea561a2. No study has passed. Floor remains Linear 68af612b product 4/8 pricing only.",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "9470be5",
@@ -197,6 +197,10 @@
       "id": 17,
       "owner": "cursor/task-completion-fix",
       "fact": "70557bae product PNGs are in GCS and Gemini YES is 8/8, but the study fails. New-issue YES is the docs page (https://linear.app/docs/creating-issues): 'The page clearly explains multiple ways to create a new issue, including keyboard shortcuts, icons, and URLs.' Pricing YES is https://linear.app/pricing. TTFA median 38.594s max 104.43s from browser_ready_at_ts because page_open_at_ts equals first_action_at_ts. TTFV not recorded. total_time not ready. Strength 0/2. Weakness 0/3. Top weakness is the homepage-stall sentence. Missing competitor objects: mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/<competitor_id>/final.png for all 16 competitor agents. 38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160 is absent: no study.json and no final.png."
+    },
+    {
+      "id": 18,
+      "fact": "Hard fails still in force. final_screenshot_url without PNG bytes is product 0/8 (no downloadable PNG): Excalidraw 4981bad8 and Linear eb2c36a0 have no screenshots/<agent>/final.png. page_open_at_ts equal to first_action_at_ts is not 0.0s: those two clock from browser_ready at median 42.071s/45.017s and max 67.934s/72.551s. agent_count must be 24 and page_opened 24/24 within 5s: c1832e16 is 20 agents, opened 7/20, missing page_open_at_ts, product 0/7, wall 13.807s, abandoned. b7fea33b is 15 agents. df51233e is 1 agent. product under 4/8 Gemini YES on a real final PNG fails: b7fea33b is 0/5. Dashboard, no issue created. t1__p5 is still the opening screen. df51233e Gemini says the New issue form is open and ready. One agent is not the matrix, and a form is not an issue that exists. Self-grades stay rejected. Floor remains Linear 68af612b product 4/8 pricing only, new-issue 0/4."
     }
   ],
   "graded_from_gcs": {
@@ -733,5 +737,84 @@
       "wall_s": 94.072
     }
   },
-  "session_count_freed": 0
+  "session_count_freed": 0,
+  "best_floor": {
+    "study_id": "68af612b-e3ae-433a-9b5d-6022d604406d",
+    "product": "4/8 pricing only; new-issue 0/4",
+    "note": "Nothing in this batch beats that floor. 70557bae and 26e83a58 Gemini 8/8 are the docs page and the studies still fail. b7fea33b new-issue is 0/5 on the dashboard."
+  },
+  "linear_c1832e16": {
+    "study_id": "c1832e16-3271-4a4b-b3e9-b6661a54b1e4",
+    "pass": false,
+    "wall_s": 13.807,
+    "status": "abandoned",
+    "agents": 20,
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "report_ready": false,
+    "page_opened": "FAIL missing field page_open_at_ts. Opened 7/20.",
+    "time_to_first_action": "FAIL missing field page_open_at_ts. Partial clocks on 7 agents median 5.798s max 6.1s are not a 24-agent pass.",
+    "product_task_completion": "0/7 FAIL",
+    "final_screenshot": "missing field final_screenshot_url",
+    "png_note": "Three objects exist at mvp_studies/c1832e16-3271-4a4b-b3e9-b6661a54b1e4/screenshots/t2__p1__product/final.png (also t2__p2 and t2__p4) but the JSON field is absent, so Gemini did not score them. Diagnostic 0/0 finished.",
+    "tip": "integration was already past 872438f"
+  },
+  "new_since_70557bae": {
+    "excalidraw_4981bad8": {
+      "study_id": "4981bad8-95cc-4114-ba59-c2781c371aef",
+      "pass": false,
+      "wall_s": 79.15,
+      "agents": 24,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=42.071s max=67.934s n=24/24 FAIL",
+      "ttfa_note": "Aligned page_open and first_action. Clock is browser_ready_at_ts. Not 0.0s.",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "product_task_completion": "0/8 FAIL",
+      "png": "missing mvp_studies/4981bad8-95cc-4114-ba59-c2781c371aef/screenshots/<agent>/final.png. Judge: no downloadable PNG.",
+      "top_weakness": "FAIL. The export button is hard to find in the menu after the drawing is on the canvas. real_weaknesses=0."
+    },
+    "linear_eb2c36a0": {
+      "study_id": "eb2c36a0-686b-424c-9222-87c51cf14579",
+      "pass": false,
+      "wall_s": 84.679,
+      "agents": 24,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=45.017s max=72.551s n=24/24 FAIL",
+      "ttfa_note": "Clock is browser_ready_at_ts after the aligned stamp. Not 0.0s.",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "product_task_completion": "0/8 FAIL",
+      "png": "missing mvp_studies/eb2c36a0-686b-424c-9222-87c51cf14579/screenshots/<agent>/final.png. Judge: no downloadable PNG.",
+      "top_weakness": "FAIL. The new issue form is hard to find; the docs explain issues but the title field is not on screen."
+    },
+    "linear_b7fea33b": {
+      "study_id": "b7fea33b-2fd6-4759-acfc-3e7890b8ceb3",
+      "pass": false,
+      "wall_s": 443.361,
+      "agents": 15,
+      "task_count": 1,
+      "page_opened": "15/15 host match, not 24/24",
+      "time_to_first_action": "median=0.254s max=0.477s n=15/24 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "product_task_completion": "0/5 FAIL",
+      "judge_reasons_no": [
+        "t1__p1 through t1__p4: on the Linear dashboard, not the marketing page, and no issue was created.",
+        "t1__p5: still the opening screen and has not created an issue."
+      ],
+      "run_issue_rate": "10/15 (67%) FAIL"
+    },
+    "linear_df51233e": {
+      "study_id": "df51233e-6d0b-4081-aa86-2119b3dbce47",
+      "pass": false,
+      "agents": 1,
+      "wall_s": 226.172,
+      "product_task_completion": "1/1 on this single run. Not a 24-agent pass.",
+      "judge": "The agent successfully navigated to the New issue form and is ready to create an issue. That is the form, not an issue that exists.",
+      "time_to_first_action": "median=0.329s n=1/24 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL"
+    }
+  }
 }
