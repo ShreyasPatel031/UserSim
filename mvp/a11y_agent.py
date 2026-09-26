@@ -15,6 +15,7 @@ import os
 import re
 import time
 from typing import Any
+from urllib.parse import urlparse
 
 AX_CAP = 150
 
@@ -533,9 +534,16 @@ def goal_visible(task: str, read: dict[str, Any]) -> bool:
     if kind == "changelog":
         return "changelog" in path or "changelog" in title
     if kind == "issue":
-        # A logged-out visitor cannot open the workspace composer. The public
-        # create-issues doc is the page that shows how. The marketing demo's
-        # "New issue" button does not.
+        # Creating an issue is done when the composer is on screen. A how-to
+        # task is done on the public creating-issues doc.
+        if task_needs_account(task):
+            names = " ".join(
+                str(node.get("name") or "")
+                for node in ((read or {}).get("nodes") or [])
+                if isinstance(node, dict)
+            ).lower()
+            blob = f"{text} {names}"
+            return "issue title" in blob and "description" in blob
         if "creating-issues" in path or "create-issues" in path:
             return True
         if "create issues" in title or "creating issues" in title:
@@ -572,6 +580,26 @@ def _canvas_dark(raw: str) -> int:
         if num.lstrip("-").isdigit():
             total += int(num)
     return total if found else -1
+
+
+def task_needs_account(task: str) -> bool:
+    """True when the task is real product work, not a public how-to page."""
+    low = " ".join((task or "").lower().split())
+    if any(phrase in low for phrase in ("find how", "how to", "look for", "documentation")):
+        return False
+    if "issue" in low and any(
+        word in low for word in ("create", "file", "add", "submit", "new issue")
+    ):
+        return True
+    if "board" in low and any(word in low for word in ("make", "create", "add", "new")):
+        return True
+    if any(
+        phrase in low
+        for phrase in ("your workspace", "in the workspace", "create an account", "sign up for")
+    ):
+        return True
+    return False
+
 
 
 def notes_from_trace(trace: list[dict[str, Any]]) -> tuple[list[str], list[str]]:
@@ -1399,6 +1427,27 @@ def _auth_href(href: str) -> bool:
     return "/login" in text or "/signup" in text or "plus.excalidraw.com" in text
 
 
+def _is_auth_wall(read: dict[str, Any]) -> bool:
+    """True when this URL is a login or signup page, not a marketing homepage."""
+    url = str((read or {}).get("url") or "").strip().lower()
+    if not url.startswith("http"):
+        return False
+    path = urlparse(url).path.lower()
+    return any(
+        part in path
+        for part in (
+            "/login",
+            "/log-in",
+            "/signin",
+            "/sign-in",
+            "/signup",
+            "/sign-up",
+            "/register",
+            "/join",
+        )
+    )
+
+
 def _nodes_for_model(nodes: list[dict[str, Any]], skip: set[str]) -> list[dict[str, Any]]:
     """Drop inert controls, login walls, and controls already clicked with no change."""
     skipped = {str(item).lower() for item in skip if str(item).strip()}
@@ -1726,6 +1775,8 @@ async def complete_task_on_page(
     on_step: Any | None = None,
     deadline: float | None = None,
     agent_id: str = "agent",
+    opening_nodes: list[dict[str, Any]] | None = None,
+    ensure_signup: Any | None = None,
 ) -> dict[str, Any]:
     """Step until the live page shows the goal.
 
@@ -1746,9 +1797,11 @@ async def complete_task_on_page(
     changed_nothing = False
     saw_opening = False
     acted_once = False
+    nudged_issue = False
     model_misses = 0
     offhost_refusals = 0
     done_rejects = 0
+    opening = [node for node in (opening_nodes or []) if isinstance(node, dict)]
     try:
         await page.wait_for_selector("a, button, canvas", timeout=800)
     except Exception:
@@ -1764,16 +1817,21 @@ async def complete_task_on_page(
             _miss("study budget")
             failed = {"phase": "study_budget", "reason": "study budget", "step": step_no}
             break
-        try:
-            fresh = await asyncio.wait_for(
-                _fresh_read(page, str(read.get("url") or url)),
-                timeout=12,
-            )
-        except asyncio.TimeoutError:
-            fresh = {
-                "error": "accessibility read timed out",
-                "url": str(read.get("url") or url),
-            }
+        if not acted_once and opening and not read.get("nodes"):
+            # Shared boot-time read is the opening observation only. Use it for
+            # the model's first decision instead of waiting on another tree.
+            fresh = {"url": url, "text": "", "canvas": "", "nodes": opening, "title": ""}
+        else:
+            try:
+                fresh = await asyncio.wait_for(
+                    _fresh_read(page, str(read.get("url") or url)),
+                    timeout=12,
+                )
+            except asyncio.TimeoutError:
+                fresh = {
+                    "error": "accessibility read timed out",
+                    "url": str(read.get("url") or url),
+                }
         if fresh.get("error") and browser_dead(str(fresh.get("error"))):
             print(f"[{agent_id}] session ended: {fresh.get('error')}", flush=True)
             _miss("session ended")
@@ -1791,12 +1849,53 @@ async def complete_task_on_page(
                 opened_canvas = str(read.get("canvas") or "")
         read["opened_canvas"] = opened_canvas
         read["drew"] = drew
+        if ensure_signup is not None and _is_auth_wall(read):
+            outcome = await ensure_signup("auth wall")
+            if not isinstance(outcome, dict) or not outcome.get("ok"):
+                reason = str((outcome or {}).get("reason") or "signup failed")
+                stop_reason = f"signup failed: {reason}"
+                failed = {"phase": "signup", "reason": reason, "step": step_no}
+                break
+            continue
         if goal_visible(task, read):
             stop_reason = "done"
             if task_kind(task) == "draw":
                 drew = True
                 read["drew"] = True
             break
+        names = " ".join(
+            str(node.get("name") or "").lower()
+            for node in (read.get("nodes") or [])
+            if isinstance(node, dict)
+        )
+        if (
+            not nudged_issue
+            and task_needs_account(task)
+            and task_kind(task) == "issue"
+            and _host(str(read.get("url") or "")) == "linear.app"
+            and not _is_auth_wall(read)
+            and "create new issue" in names
+        ):
+            # Linear opens the issue composer with C. "Create new issue"
+            # often changes nothing once the agent is signed in.
+            nudged_issue = True
+            try:
+                await page.keyboard.press("Escape")
+            except Exception:
+                pass
+            opened = False
+            try:
+                loc = page.get_by_role("button", name="Create new issue")
+                if await loc.count():
+                    await loc.first.click(timeout=3000)
+                    opened = True
+            except Exception:
+                opened = False
+            if not opened:
+                try:
+                    await page.keyboard.press("c")
+                except Exception:
+                    pass
         signature = progress_signature(
             url=str(read.get("url") or ""),
             screenshot_hash="",
@@ -2274,26 +2373,115 @@ async def _run_a11y_agent_unlocked(
             boot.study.live_sessions[agent_id] = sess
             boot._touch()
             phase = "act"
-            outcome = await complete_task_on_page(
-                page,
-                task=task_prompt,
-                url=url,
-                trace=trace,
-                history=history,
-                step_no=step_no,
-                opened_canvas=opened_canvas,
-                on_step=on_step,
-                deadline=deadline,
-                agent_id=agent_id,
-            )
-            stop_reason = str(outcome.get("stop_reason") or "")
-            failed = outcome.get("failed") if isinstance(outcome.get("failed"), dict) else failed
-            trace = list(outcome.get("trace") or trace)
-            history = list(outcome.get("history") or history)
-            step_no = int(outcome.get("step_no") or step_no)
-            read = dict(outcome.get("read") or read)
-            drew = bool(outcome.get("drew"))
-            opened_canvas = str(outcome.get("opened_canvas") or opened_canvas)
+            opening_nodes: list[dict[str, Any]] = []
+            for snap in boot.snapshots.values():
+                if _host(str(snap.get("url") or "")) == _host(url):
+                    opening_nodes = [
+                        node for node in (snap.get("nodes") or []) if isinstance(node, dict)
+                    ]
+                    break
+            signup_box: dict[str, Any] = {}
+
+            async def ensure_signup(why: str) -> dict[str, Any]:
+                nonlocal page
+                if signup_box.get("attempted"):
+                    return signup_box
+                remain = (deadline - time.monotonic()) if deadline else 180.0
+                timeout_s = max(45.0, min(300.0, remain - 40.0))
+                cdp = str(getattr(bb, "connect_url", "") or "")
+                print(f"[{agent_id}] signup ({why}) timeout={timeout_s:.0f}s", flush=True)
+                from mvp.auto_signup import sign_up
+                from mvp.identity import fresh_alias_identity
+
+                started = time.perf_counter()
+                try:
+                    outcome = await sign_up(
+                        url,
+                        identity=fresh_alias_identity(url),
+                        attach_page=page,
+                        attach_cdp_url=cdp,
+                        timeout_s=timeout_s,
+                        max_steps=int(os.environ.get("MVP_SIGNUP_IN_STUDY_STEPS", "22") or "22"),
+                        email_timeout_s=float(os.environ.get("MVP_SIGNUP_IN_STUDY_EMAIL_S", "120") or "120"),
+                        headed=False,
+                        persist_identity=False,
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    outcome = {
+                        "ok": False,
+                        "reason": f"signup_error:{type(exc).__name__}",
+                        "detail": str(exc)[:180],
+                    }
+                outcome = dict(outcome or {})
+                elapsed = round(time.perf_counter() - started, 2)
+                try:
+                    closed = page is None or page.is_closed()
+                except Exception:
+                    closed = True
+                if closed and outcome.get("ok"):
+                    outcome["ok"] = False
+                    outcome["reason"] = "page_closed_after_signup"
+                elif not closed:
+                    try:
+                        pages = [item for item in page.context.pages if not item.is_closed()]
+                        if pages:
+                            page = pages[-1]
+                    except Exception:
+                        pass
+                public = {
+                    "attempted": True,
+                    "ok": bool(outcome.get("ok")),
+                    "email": outcome.get("email"),
+                    "reason": outcome.get("reason"),
+                    "detail": str(outcome.get("detail") or "")[:180],
+                    "trigger": why,
+                    "elapsed_s": elapsed,
+                    "host": outcome.get("host"),
+                }
+                signup_box.clear()
+                signup_box.update(public)
+                sess["signup"] = public
+                label = (
+                    f"Signed up as {public.get('email') or 'alias'}"
+                    if public.get("ok")
+                    else f"Signup failed: {public.get('reason') or 'unknown'}"
+                )
+                history.append(label)
+                print(f"[{agent_id}] {label} ({elapsed}s)", flush=True)
+                return signup_box
+
+            if task_needs_account(task_prompt):
+                signed = await ensure_signup("task needs an account")
+                if not signed.get("ok"):
+                    reason = str(signed.get("reason") or "signup failed")
+                    stop_reason = f"signup failed: {reason}"
+                    failed = {"phase": "signup", "reason": reason, "step": step_no}
+                    opening_nodes = []
+                else:
+                    opening_nodes = []
+            if failed is None:
+                outcome = await complete_task_on_page(
+                    page,
+                    task=task_prompt,
+                    url=url,
+                    trace=trace,
+                    history=history,
+                    step_no=step_no,
+                    opened_canvas=opened_canvas,
+                    on_step=on_step,
+                    deadline=deadline,
+                    agent_id=agent_id,
+                    opening_nodes=opening_nodes,
+                    ensure_signup=ensure_signup,
+                )
+                stop_reason = str(outcome.get("stop_reason") or "")
+                failed = outcome.get("failed") if isinstance(outcome.get("failed"), dict) else failed
+                trace = list(outcome.get("trace") or trace)
+                history = list(outcome.get("history") or history)
+                step_no = int(outcome.get("step_no") or step_no)
+                read = dict(outcome.get("read") or read)
+                drew = bool(outcome.get("drew"))
+                opened_canvas = str(outcome.get("opened_canvas") or opened_canvas)
 
         read["drew"] = drew
         read["opened_canvas"] = opened_canvas
@@ -2396,7 +2584,20 @@ async def _run_a11y_agent_unlocked(
             "error": "",
             "browser_error": "",
             "browserbase_session_id": getattr(bb, "id", None) if bb is not None else None,
+            "signup": sess.get("signup") or {"attempted": False, "ok": False},
         }
+        signup_info = result.get("signup") if isinstance(result.get("signup"), dict) else {}
+        if signup_info.get("attempted") and not signup_info.get("ok"):
+            result["run_issue"] = {
+                "kind": "signup",
+                "reason": f"Signup failed: {signup_info.get('reason') or 'unknown'}",
+                "target_url": url,
+                "final_url": final_url,
+                "agent_id": agent_id,
+                "task_title": task_prompt[:80],
+            }
+            result["exclude_from_insights"] = True
+            result["goal_reached"] = False
         ensure_phase_ms(result)
         apply_gate_fields(result, **{k: result.get(k) for k in GATE_FIELDS})
         # The harness reads the live row. Copy the gate fields onto it before

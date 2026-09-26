@@ -724,7 +724,10 @@ def _build_signup_tools(ctx: dict[str, Any]):
         for cand in (identity.email, canonical_alias_email(identity)):
             if cand and cand not in aliases:
                 aliases.append(cand)
-        timeout_s = float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240"))
+        timeout_s = float(
+            ctx.get("email_timeout")
+            or os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240")
+        )
 
         def _wait_any() -> str | None:
             started = time.time()
@@ -782,7 +785,10 @@ def _build_signup_tools(ctx: dict[str, Any]):
         for cand in (identity.email, canonical_alias_email(identity)):
             if cand and cand not in aliases:
                 aliases.append(cand)
-        timeout_s = float(os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240"))
+        timeout_s = float(
+            ctx.get("email_timeout")
+            or os.environ.get("MVP_SIGNUP_EMAIL_TIMEOUT_S", "240")
+        )
 
         def _wait_any_link() -> str | None:
             started = time.time()
@@ -1094,12 +1100,20 @@ async def sign_up(
     cdp_port: int | None = None,
     signin: bool = False,
     product_host: str | None = None,
+    attach_page: Any | None = None,
+    attach_cdp_url: str | None = None,
+    email_timeout_s: float | None = None,
+    persist_identity: bool = True,
 ) -> dict[str, Any]:
     """Create an account on ``url`` and persist the signed-in Chrome profile.
 
     When ``signin`` is True, log into an existing identity instead of registering.
     ``product_host`` pins the identity / cookie jar when ``url`` is on a shared
     IdP (e.g. id.atlassian.com for Trello).
+
+    ``attach_page`` plus ``attach_cdp_url`` run this same signup agent inside an
+    existing Browserbase session instead of opening a second browser. The
+    session is left open so the caller can continue the task signed in.
     """
     from browser_use import Agent, ChatGoogle
     from browser_use.browser.profile import BrowserProfile
@@ -1117,8 +1131,13 @@ async def sign_up(
         from mvp.captcha_spend import bind_signup, current_attempt, current_site
 
         # Keep the attempt the runner already opened. A bare sign_up call
-        # binds attempt 0 so CapSolver stays refused.
-        if current_site() == host and current_attempt() >= 1:
+        # binds attempt 0 so CapSolver stays refused. An attached study
+        # session opens its own attempt so captchas can be solved.
+        if attach_page is not None and attach_cdp_url:
+            from mvp.captcha_spend import bind_study_signup
+
+            bind_study_signup(host)
+        elif current_site() == host and current_attempt() >= 1:
             bind_signup(host, current_attempt())
         else:
             bind_signup(host, 0)
@@ -1172,21 +1191,28 @@ async def sign_up(
         start_url = SIGNUP_START[host_key]
 
     max_steps = max_steps or int(os.environ.get("MVP_SIGNUP_MAX_STEPS", "40"))
-    use_bb = _signup_uses_browserbase()
+    attached = attach_page is not None and bool(attach_cdp_url)
+    use_bb = False if attached else _signup_uses_browserbase()
     proc: subprocess.Popen | None = None
     bb_session = None
-    cdp_url = f"http://127.0.0.1:{port}"
+    cdp_url = str(attach_cdp_url) if attached else f"http://127.0.0.1:{port}"
     result: dict[str, Any] = {
         "ok": False,
         "host": host,
         "email": identity.email,
         "profile_dir": str(profile),
         "actions": [],
-        "backend": "local_chrome",
+        "backend": "attached_session" if attached else "local_chrome",
         "mode": "signin" if signin else "signup",
     }
 
-    if use_bb:
+    if attached:
+        print(
+            f"Signup attached to existing session host={host}",
+            flush=True,
+            file=__import__("sys").stderr,
+        )
+    elif use_bb:
         from capability.browserbase_client import close_session
 
         # Best available session for this Browserbase plan (proxies may 402 on free).
@@ -1217,9 +1243,454 @@ async def sign_up(
         "blocker_detail": None,
         "done": False,
         "sms_number": None,
+        "email_timeout": email_timeout_s,
     }
 
+    async def _drive(page: Any, pw_ctx: Any) -> dict[str, Any]:
+        ctx["page_getter"] = lambda: page
+        # Fresh signup: drop whatever the first paint stored. A marketing
+        # page with an "account" link is not a signed-in session, and a
+        # reused cookie jar is not a new account.
+        try:
+            await pw_ctx.clear_cookies()
+        except Exception:
+            pass
+        try:
+            await page.evaluate(
+                "() => { try { localStorage.clear(); sessionStorage.clear(); } catch (e) {} }"
+            )
+        except Exception:
+            pass
+        try:
+            await page.goto(start_url, wait_until="domcontentloaded", timeout=60000)
+        except Exception as exc:
+            result["reason"] = f"navigate_failed:{type(exc).__name__}"
+            result["detail"] = str(exc)[:200]
+            return result
+
+        tools = _build_signup_tools(ctx)
+        # Always Gemini 2.5 Flash via Vertex.
+        model = (os.environ.get("MVP_SIGNUP_MODEL") or MODEL).strip()
+        llm = ChatGoogle(
+            model=model,
+            vertexai=True,
+            credentials=vertex_credentials(),
+            project=GCP_PROJECT,
+            location=location_for(model),
+            temperature=0,
+        )
+        # Attach to the already-running Chrome via CDP so the persistent
+        # profile is the one we launched (not a throwaway browser-use profile).
+        bu_profile = BrowserProfile(
+            cdp_url=cdp_url,
+            is_local=False,
+            keep_alive=True if attached else None,
+            viewport={"width": 1440, "height": 900},
+            disable_security=True,
+            highlight_elements=False,
+            captcha_solver=True if (use_bb or attached) else (
+                os.environ.get("MVP_CAPTCHA_SOLVER", "").lower()
+                in {"1", "true", "yes"}
+            ),
+        )
+        id_blob = json.dumps(
+            {
+                "email": identity.email,
+                "password": identity.password,
+                "full_name": identity.full_name,
+                "company": identity.company,
+                "phone": identity.phone,
+            }
+        )
+        if signin:
+            task = (
+                f"Sign in to an EXISTING account on {start_url} for product host {host}.\n"
+                f"IDENTITY (use these exact values; do not invent credentials):\n{id_blob}\n"
+                f"You may call get_identity() once to confirm — do NOT call it repeatedly.\n"
+                f"Flow:\n"
+                f"1. You should already be on a login / sign-in page. If not, open Sign in "
+                f"(not Sign up / Create account).\n"
+                f"2. Enter the IDENTITY email and password.\n"
+                f"3. If email verification / magic link / OTP is required: call "
+                f"mark_email_requested(), then get_email_code() or get_email_link().\n"
+                f"   NEVER invent a verification code.\n"
+                f"4. If SMS is required: call get_sms_code() and enter the code.\n"
+                f"5. If a CAPTCHA/Cloudflare challenge blocks you: call detect_captcha(), "
+                f"then solve_captcha() once. Wait for the solver. If it fails twice, "
+                f"call report_blocked(captcha_unsolved).\n"
+                f"6. Skip or dismiss onboarding tours. Prefer Escape, Skip, 'Not now', "
+                f"'I'll do this later', or navigate directly to the product home "
+                f"({VERIFY_URLS.get(host_key, [f'https://{host}'])[0]}).\n"
+                f"7. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
+                f"Do NOT create a new account. Do NOT try to pay."
+            )
+        else:
+            task = (
+                f"Create a free account on {start_url} for product host {host}.\n"
+                f"IDENTITY (use these exact values; do not invent credentials):\n{id_blob}\n"
+                f"You may call get_identity() once to confirm — do NOT call it repeatedly.\n"
+                f"Flow:\n"
+                f"1. You should already be on a signup page. If not, open Sign up / Create account "
+                f"(not Sign in).\n"
+                f"2. Fill the registration form with the IDENTITY values above.\n"
+                f"3. Accept terms if required. Skip optional marketing checkboxes.\n"
+                f"4. If email verification is required: call mark_email_requested(), "
+                f"then get_email_code() or get_email_link() and complete verification.\n"
+                f"   NEVER invent a verification code. Type the exact digits the tool "
+                f"returned. If you cannot see a real code, call the tool again — do not "
+                f"guess placeholders like 123456.\n"
+                f"5. If SMS is required: call get_sms_code() and enter the code.\n"
+                f"6. If a CAPTCHA/Cloudflare challenge blocks you OR Sign up stays disabled "
+                f"after email+password are filled: IMMEDIATELY call detect_captcha(), then "
+                f"solve_captcha() once. Do NOT hunt for full_name/company/phone — those are "
+                f"NOT on this form. Wait for the solver to finish before typing more. "
+                f"If it fails twice, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
+                f"7. Skip or dismiss onboarding tours once the account exists. Prefer Escape, "
+                f"Skip, 'Not now', 'I'll do this later', Next, Continue, or navigate to "
+                f"{VERIFY_URLS.get(host_key, [f'https://{host}'])[0]} — do not burn steps "
+                f"clicking the same tour Close button. For Atlassian/Trello: after the "
+                f"account is created, open https://trello.com/u/me (or the Boards home) "
+                f"immediately — do not stay on the welcome/tour wizard.\n"
+                f"8. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
+                f"If the product requires a credit card, SSO-only, invite-only access, "
+                f"or a waitlist, call report_blocked with the matching reason.\n"
+                f"Do NOT try to pay. Prefer email signup; use Google/GitHub SSO only if email signup is absent."
+            )
+        # Used to exercise the phone→ntfy SMS path end-to-end. Optional phone
+        # prompts (Zoom "Skip" / "No thanks") otherwise get dismissed and never
+        # produce a text — which is correct for normal signup, wrong for a relay test.
+        if os.environ.get("MVP_SIGNUP_REQUIRE_SMS", "").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+        }:
+            phone = identity.phone or "the vault phone"
+            task += (
+                f"\n\nCRITICAL — SMS REQUIRED FOR THIS RUN:\n"
+                f"- You MUST enter phone number {phone} and complete SMS verification "
+                f"via get_sms_code().\n"
+                f"- Do NOT click Skip / Not now / No thanks on any phone or text prompts.\n"
+                f"- If the product offers optional phone linking, take it and finish SMS OTP.\n"
+                f"- Do not call done() until SMS verification has succeeded."
+            )
+        role = "signing in" if signin else "signing up"
+        agent = Agent(
+            task=task,
+            llm=llm,
+            browser_profile=bu_profile,
+            tools=tools,
+            use_vision=True,
+            use_judge=False,
+            max_actions_per_step=2,
+            calculate_cost=True,
+            file_system_path=str(step_dir),
+            save_conversation_path=str(step_dir / "conversation"),
+            extend_system_message=(
+                f"You are {role} for a product so usability agents can study the "
+                "authenticated experience. Prefer the email/password path. Be decisive; "
+                "do not loop on the same form. Call report_blocked when stuck on a "
+                "hard gate (card, SSO-only, invite, waitlist). "
+                "CAPTCHA: whenever you see 'I'm not a robot', image grids, Cloudflare "
+                "'verify you are human', Turnstile, or a blocked submit button, call "
+                "detect_captcha() then solve_captcha() before any other action. "
+                "If Sign up / Continue / Create account stays disabled after filling the "
+                "form, IMMEDIATELY call detect_captcha() then solve_captcha() — do not "
+                "scroll hunting for terms for more than one step. "
+                "Do not keep clicking the checkbox yourself — the solver stack handles it. "
+                "Once the account exists, leave onboarding quickly — navigate to the "
+                "product home rather than fighting tour modals."
+            ),
+        )
+
+        async def _on_step_end(_agent: Any = None) -> None:
+            """Persist cookies + auto-run captcha solver when Sign up is stuck.
+
+            The LLM often burns 20+ steps hunting phantom fields instead of
+            calling solve_captcha(). Detect disabled signup CTA / hCaptcha and
+            invoke the solver stack deterministically (max 2 times per run).
+            """
+            try:
+                snap = await pw_ctx.storage_state()
+                SITE_STATES.mkdir(parents=True, exist_ok=True)
+                site_state_path(host).write_text(json.dumps(snap, indent=2))
+                ctx["last_state"] = snap
+            except Exception:
+                pass
+
+            if ctx.get("done") or ctx.get("blocker"):
+                return
+            runs = int(ctx.get("auto_captcha_runs") or 0)
+            if runs >= 2:
+                return
+            page_now = None
+            try:
+                page_now = pw_ctx.pages[0] if pw_ctx.pages else None
+            except Exception:
+                page_now = None
+            if page_now is None:
+                try:
+                    getter = ctx.get("page_getter")
+                    page_now = getter() if callable(getter) else None
+                except Exception:
+                    return
+            if page_now is None:
+                return
+            try:
+                info = await page_looks_captcha_blocked(page_now)
+            except Exception as exc:
+                info = {"blocked": False, "error": str(exc)[:120]}
+            # Also treat signup URLs with a disabled primary submit as stuck,
+            # even if evaluate on the browser-use page wrapper lied earlier.
+            force = False
+            try:
+                url_now = (getattr(page_now, "url", "") or "").lower()
+                force = any(
+                    x in url_now
+                    for x in ("sign-up", "signup", "register", "supabase.com")
+                )
+                if force:
+                    disabled = await page_now.evaluate(
+                        """() => {
+                          const b = document.querySelector('button[type=submit]');
+                          return !!(b && b.disabled);
+                        }"""
+                    )
+                    force = bool(disabled)
+            except Exception:
+                force = "supabase.com" in (getattr(page_now, "url", "") or "").lower()
+            if not (
+                info.get("blocked")
+                or info.get("submit_disabled")
+                or info.get("sitekey")
+                or (info.get("widget_present") and info.get("type") == "hcaptcha")
+                or force
+            ):
+                return
+            # Only auto-solve after the agent has had a couple steps to fill fields.
+            step_n = 0
+            try:
+                step_n = int(getattr(getattr(_agent, "state", None), "n_steps", 0) or 0)
+            except Exception:
+                step_n = runs + 1
+            if step_n < 2 and runs == 0:
+                return
+            ctx["auto_captcha_runs"] = runs + 1
+            try:
+                result = await solve_captcha_on_page(page_now)
+                # Match solve_captcha tool: soft BB clears without a real
+                # response token are not success (Loom/Supabase reject them).
+                if result.get("ok") and not await _page_has_captcha_token(page_now):
+                    if (result.get("method") or "") in {
+                        "browserbase",
+                        "self_cleared",
+                        "click",
+                        "checkbox",
+                        "oss_image",
+                    }:
+                        result = {
+                            "ok": False,
+                            "method": result.get("method"),
+                            "detail": f"no_token_after_{result.get('detail')}",
+                        }
+                ctx["last_auto_captcha"] = result
+                print(
+                    f"[auto_captcha] run={ctx['auto_captcha_runs']} "
+                    f"blocked={info.get('blocked')} submit_disabled={info.get('submit_disabled')} "
+                    f"force={force} sitekey={info.get('sitekey')} -> {result}",
+                    flush=True,
+                )
+                # Paid-solver gap: stop burning agent steps on a captcha we
+                # cannot clear with Browserbase+OSS alone.
+                if (
+                    not result.get("ok")
+                    and (result.get("method") or "") == "need_solver_api"
+                    and int(ctx.get("auto_captcha_runs") or 0) >= 2
+                ):
+                    ctx["blocker"] = "captcha_unsolved"
+                    ctx["blocker_detail"] = (
+                        f"need_solver_api:{(result.get('detail') or '')}"[:400]
+                    )
+                    ctx["done"] = True
+                    return
+                # If we have a real token, nudge the primary submit so the
+                # agent does not race report_blocked on a stale error banner.
+                if result.get("ok"):
+                    try:
+                        await page_now.evaluate(
+                            """() => {
+                              const btns = [...document.querySelectorAll(
+                                'button[type=submit], button#email-signup-submit, button'
+                              )];
+                              for (const b of btns) {
+                                const label = ((b.innerText || b.id || '') + '').toLowerCase();
+                                if (/github|google|sso|apple/.test(label)) continue;
+                                if (!(b.type === 'submit' || /sign\\s*up|continue|create|register/.test(label)))
+                                  continue;
+                                b.disabled = false;
+                                b.removeAttribute('disabled');
+                                try { b.click(); } catch (e) {}
+                                return true;
+                              }
+                              return false;
+                            }"""
+                        )
+                    except Exception:
+                        pass
+            except Exception as exc:
+                ctx["last_auto_captcha"] = {
+                    "ok": False,
+                    "method": "auto_hook",
+                    "detail": f"{type(exc).__name__}:{exc}"[:200],
+                }
+                print(f"[auto_captcha] error: {exc}", flush=True)
+
+        history = None
+        try:
+            history = await asyncio.wait_for(
+                agent.run(max_steps=max_steps, on_step_end=_on_step_end),
+                timeout=timeout_s,
+            )
+        except asyncio.TimeoutError:
+            result["reason"] = "timeout"
+        except Exception as exc:
+            result["reason"] = f"agent_error:{type(exc).__name__}:{exc}"[:300]
+
+        # Refresh page handle after agent activity.
+        try:
+            page = pw_ctx.pages[0] if pw_ctx.pages else page
+            ctx["page_getter"] = lambda: page
+        except Exception:
+            pass
+
+        try:
+            await page.screenshot(path=str(step_dir / "final.png"), full_page=False)
+        except Exception:
+            pass
+
+        # Always snapshot cookies before judging — Browserbase sessions die in
+        # ``finally``, so a false-negative signed-in heuristic used to throw away
+        # a real account (Todoist completed signup then reported not_signed_in).
+        state: dict[str, Any] | None = ctx.get("last_state")
+        try:
+            state = await pw_ctx.storage_state()
+            SITE_STATES.mkdir(parents=True, exist_ok=True)
+            site_state_path(host).write_text(json.dumps(state, indent=2))
+        except Exception as exc:
+            result["state_error"] = str(exc)[:200]
+            if state is not None:
+                result["state_error"] = (
+                    f"{result['state_error']};recovered_checkpoint=1"
+                )
+
+        # Onboarding often ends on a "Getting ready…" splash that redirects a
+        # few seconds later, so a single probe reports a fresh account as
+        # not_signed_in. Re-probe for a short window before giving up.
+        signed = False
+        settle_deadline = time.time() + float(
+            os.environ.get("MVP_SIGNUP_SETTLE_S", "30")
+        )
+        while True:
+            try:
+                await _dismiss_onboarding(page)
+            except Exception:
+                pass
+            try:
+                signed = await verify_signed_in(page, host)
+            except Exception:
+                signed = False
+            if signed or time.time() >= settle_deadline:
+                break
+            await asyncio.sleep(3)
+
+        if not signed and state is not None:
+            # Cookie-jar fallback: SPA chrome is flaky right after signup.
+            signed = _storage_state_looks_authed(state, host)
+            if signed:
+                result["signed_via"] = "storage_state"
+
+        # One more push through product onboarding when cookies already look
+        # authed but the DOM is still on a tour/splash (classic Trello miss).
+        if not signed and state is not None and _storage_state_looks_authed(state, host):
+            for url in VERIFY_URLS.get(host, [])[:2]:
+                try:
+                    await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                    await asyncio.sleep(3)
+                except Exception:
+                    continue
+                try:
+                    signed = await verify_signed_in(page, host)
+                except Exception:
+                    signed = False
+                if signed:
+                    result["signed_via"] = "onboarding_nav"
+                    break
+            if not signed:
+                signed = True
+                result["signed_via"] = "storage_state_onboarding"
+
+        # Account+session beats agent report_blocked('unknown') from an
+        # onboarding tour the agent could not dismiss. Captcha-hard blocks
+        # still win when we never obtained an authenticated session.
+        if signed:
+            ignored = ctx.get("blocker")
+            if persist_identity:
+                update_identity(
+                    f"https://{host}",
+                    status="signed_up",
+                    blocker=None,
+                    profile_dir=str(profile),
+                )
+            result.update(
+                {
+                    "ok": True,
+                    "reason": "signed_in" if signin else "signed_up",
+                }
+            )
+            if ignored:
+                result["ignored_blocker"] = ignored
+                result["ignored_blocker_detail"] = (ctx.get("blocker_detail") or "")[:200]
+            return result
+
+        if ctx.get("blocker"):
+            if persist_identity:
+                update_identity(
+                    f"https://{host}",
+                    status="blocked",
+                    blocker=ctx["blocker"],
+                    profile_dir=str(profile),
+                )
+            result.update(
+                {
+                    "ok": False,
+                    "reason": ctx["blocker"],
+                    "detail": ctx.get("blocker_detail"),
+                }
+            )
+            return result
+
+        result["reason"] = result.get("reason") or "not_signed_in"
+        if history is not None:
+            try:
+                result["steps"] = getattr(history, "number_of_steps", lambda: None)()
+            except Exception:
+                pass
+        # Always pin the product host (e.g. shopify.com), never the IdP URL host
+        # (accounts.shopify.com) — registry keys are product hosts.
+        if persist_identity:
+            try:
+                update_identity(
+                    f"https://{host}",
+                    status="provisioned",
+                    blocker=result.get("reason"),
+                    profile_dir=str(profile),
+                )
+            except KeyError as exc:
+                result["identity_error"] = str(exc)[:120]
+        return result
+
     try:
+        if attached:
+            return await _drive(attach_page, attach_page.context)
         async with async_playwright() as p:
             browser = None
             deadline = time.time() + min(60.0, timeout_s)
@@ -1306,441 +1777,7 @@ async def sign_up(
                         return result
             ctx["page_getter"] = lambda: page
 
-            # Fresh signup: drop whatever the first paint stored. A marketing
-            # page with an "account" link is not a signed-in session, and a
-            # reused cookie jar is not a new account.
-            try:
-                await pw_ctx.clear_cookies()
-            except Exception:
-                pass
-            try:
-                await page.evaluate(
-                    "() => { try { localStorage.clear(); sessionStorage.clear(); } catch (e) {} }"
-                )
-            except Exception:
-                pass
-            try:
-                await page.goto(start_url, wait_until="domcontentloaded", timeout=60000)
-            except Exception as exc:
-                result["reason"] = f"navigate_failed:{type(exc).__name__}"
-                result["detail"] = str(exc)[:200]
-                return result
-
-            tools = _build_signup_tools(ctx)
-            # Always Gemini 2.5 Flash via Vertex.
-            model = (os.environ.get("MVP_SIGNUP_MODEL") or MODEL or "gemini-2.5-flash").strip()
-            llm = ChatGoogle(
-                model=model,
-                vertexai=True,
-                credentials=vertex_credentials(),
-                project=GCP_PROJECT,
-                location=location_for(model),
-                temperature=0,
-            )
-            # Attach to the already-running Chrome via CDP so the persistent
-            # profile is the one we launched (not a throwaway browser-use profile).
-            bu_profile = BrowserProfile(
-                cdp_url=cdp_url,
-                is_local=False,
-                viewport={"width": 1440, "height": 900},
-                disable_security=True,
-                highlight_elements=False,
-                captcha_solver=True if use_bb else (
-                    os.environ.get("MVP_CAPTCHA_SOLVER", "").lower()
-                    in {"1", "true", "yes"}
-                ),
-            )
-            id_blob = json.dumps(
-                {
-                    "email": identity.email,
-                    "password": identity.password,
-                    "full_name": identity.full_name,
-                    "company": identity.company,
-                    "phone": identity.phone,
-                }
-            )
-            if signin:
-                task = (
-                    f"Sign in to an EXISTING account on {start_url} for product host {host}.\n"
-                    f"IDENTITY (use these exact values; do not invent credentials):\n{id_blob}\n"
-                    f"You may call get_identity() once to confirm — do NOT call it repeatedly.\n"
-                    f"Flow:\n"
-                    f"1. You should already be on a login / sign-in page. If not, open Sign in "
-                    f"(not Sign up / Create account).\n"
-                    f"2. Enter the IDENTITY email and password.\n"
-                    f"3. If email verification / magic link / OTP is required: call "
-                    f"mark_email_requested(), then get_email_code() or get_email_link().\n"
-                    f"   NEVER invent a verification code.\n"
-                    f"4. If SMS is required: call get_sms_code() and enter the code.\n"
-                    f"5. If a CAPTCHA/Cloudflare challenge blocks you: call detect_captcha(), "
-                    f"then solve_captcha() once. Wait for the solver. If it fails twice, "
-                    f"call report_blocked(captcha_unsolved).\n"
-                    f"6. Skip or dismiss onboarding tours. Prefer Escape, Skip, 'Not now', "
-                    f"'I'll do this later', or navigate directly to the product home "
-                    f"({VERIFY_URLS.get(host_key, [f'https://{host}'])[0]}).\n"
-                    f"7. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
-                    f"Do NOT create a new account. Do NOT try to pay."
-                )
-            else:
-                task = (
-                    f"Create a free account on {start_url} for product host {host}.\n"
-                    f"IDENTITY (use these exact values; do not invent credentials):\n{id_blob}\n"
-                    f"You may call get_identity() once to confirm — do NOT call it repeatedly.\n"
-                    f"Flow:\n"
-                    f"1. You should already be on a signup page. If not, open Sign up / Create account "
-                    f"(not Sign in).\n"
-                    f"2. Fill the registration form with the IDENTITY values above.\n"
-                    f"3. Accept terms if required. Skip optional marketing checkboxes.\n"
-                    f"4. If email verification is required: call mark_email_requested(), "
-                    f"then get_email_code() or get_email_link() and complete verification.\n"
-                    f"   NEVER invent a verification code. Type the exact digits the tool "
-                    f"returned. If you cannot see a real code, call the tool again — do not "
-                    f"guess placeholders like 123456.\n"
-                    f"5. If SMS is required: call get_sms_code() and enter the code.\n"
-                    f"6. If a CAPTCHA/Cloudflare challenge blocks you OR Sign up stays disabled "
-                    f"after email+password are filled: IMMEDIATELY call detect_captcha(), then "
-                    f"solve_captcha() once. Do NOT hunt for full_name/company/phone — those are "
-                    f"NOT on this form. Wait for the solver to finish before typing more. "
-                    f"If it fails twice, immediately call report_blocked(captcha_unsolved). Do not wait-loop.\n"
-                    f"7. Skip or dismiss onboarding tours once the account exists. Prefer Escape, "
-                    f"Skip, 'Not now', 'I'll do this later', Next, Continue, or navigate to "
-                    f"{VERIFY_URLS.get(host_key, [f'https://{host}'])[0]} — do not burn steps "
-                    f"clicking the same tour Close button. For Atlassian/Trello: after the "
-                    f"account is created, open https://trello.com/u/me (or the Boards home) "
-                    f"immediately — do not stay on the welcome/tour wizard.\n"
-                    f"8. Stop when you are clearly signed in (account menu / dashboard / logout).\n"
-                    f"If the product requires a credit card, SSO-only, invite-only access, "
-                    f"or a waitlist, call report_blocked with the matching reason.\n"
-                    f"Do NOT try to pay. Prefer email signup; use Google/GitHub SSO only if email signup is absent."
-                )
-            # Used to exercise the phone→ntfy SMS path end-to-end. Optional phone
-            # prompts (Zoom "Skip" / "No thanks") otherwise get dismissed and never
-            # produce a text — which is correct for normal signup, wrong for a relay test.
-            if os.environ.get("MVP_SIGNUP_REQUIRE_SMS", "").strip().lower() in {
-                "1",
-                "true",
-                "yes",
-            }:
-                phone = identity.phone or "the vault phone"
-                task += (
-                    f"\n\nCRITICAL — SMS REQUIRED FOR THIS RUN:\n"
-                    f"- You MUST enter phone number {phone} and complete SMS verification "
-                    f"via get_sms_code().\n"
-                    f"- Do NOT click Skip / Not now / No thanks on any phone or text prompts.\n"
-                    f"- If the product offers optional phone linking, take it and finish SMS OTP.\n"
-                    f"- Do not call done() until SMS verification has succeeded."
-                )
-            role = "signing in" if signin else "signing up"
-            agent = Agent(
-                task=task,
-                llm=llm,
-                browser_profile=bu_profile,
-                tools=tools,
-                use_vision=True,
-                use_judge=False,
-                max_actions_per_step=2,
-                calculate_cost=True,
-                file_system_path=str(step_dir),
-                save_conversation_path=str(step_dir / "conversation"),
-                extend_system_message=(
-                    f"You are {role} for a product so usability agents can study the "
-                    "authenticated experience. Prefer the email/password path. Be decisive; "
-                    "do not loop on the same form. Call report_blocked when stuck on a "
-                    "hard gate (card, SSO-only, invite, waitlist). "
-                    "CAPTCHA: whenever you see 'I'm not a robot', image grids, Cloudflare "
-                    "'verify you are human', Turnstile, or a blocked submit button, call "
-                    "detect_captcha() then solve_captcha() before any other action. "
-                    "If Sign up / Continue / Create account stays disabled after filling the "
-                    "form, IMMEDIATELY call detect_captcha() then solve_captcha() — do not "
-                    "scroll hunting for terms for more than one step. "
-                    "Do not keep clicking the checkbox yourself — the solver stack handles it. "
-                    "Once the account exists, leave onboarding quickly — navigate to the "
-                    "product home rather than fighting tour modals."
-                ),
-            )
-
-            async def _on_step_end(_agent: Any = None) -> None:
-                """Persist cookies + auto-run captcha solver when Sign up is stuck.
-
-                The LLM often burns 20+ steps hunting phantom fields instead of
-                calling solve_captcha(). Detect disabled signup CTA / hCaptcha and
-                invoke the solver stack deterministically (max 2 times per run).
-                """
-                try:
-                    snap = await pw_ctx.storage_state()
-                    SITE_STATES.mkdir(parents=True, exist_ok=True)
-                    site_state_path(host).write_text(json.dumps(snap, indent=2))
-                    ctx["last_state"] = snap
-                except Exception:
-                    pass
-
-                if ctx.get("done") or ctx.get("blocker"):
-                    return
-                runs = int(ctx.get("auto_captcha_runs") or 0)
-                if runs >= 2:
-                    return
-                page_now = None
-                try:
-                    page_now = pw_ctx.pages[0] if pw_ctx.pages else None
-                except Exception:
-                    page_now = None
-                if page_now is None:
-                    try:
-                        getter = ctx.get("page_getter")
-                        page_now = getter() if callable(getter) else None
-                    except Exception:
-                        return
-                if page_now is None:
-                    return
-                try:
-                    info = await page_looks_captcha_blocked(page_now)
-                except Exception as exc:
-                    info = {"blocked": False, "error": str(exc)[:120]}
-                # Also treat signup URLs with a disabled primary submit as stuck,
-                # even if evaluate on the browser-use page wrapper lied earlier.
-                force = False
-                try:
-                    url_now = (getattr(page_now, "url", "") or "").lower()
-                    force = any(
-                        x in url_now
-                        for x in ("sign-up", "signup", "register", "supabase.com")
-                    )
-                    if force:
-                        disabled = await page_now.evaluate(
-                            """() => {
-                              const b = document.querySelector('button[type=submit]');
-                              return !!(b && b.disabled);
-                            }"""
-                        )
-                        force = bool(disabled)
-                except Exception:
-                    force = "supabase.com" in (getattr(page_now, "url", "") or "").lower()
-                if not (
-                    info.get("blocked")
-                    or info.get("submit_disabled")
-                    or info.get("sitekey")
-                    or (info.get("widget_present") and info.get("type") == "hcaptcha")
-                    or force
-                ):
-                    return
-                # Only auto-solve after the agent has had a couple steps to fill fields.
-                step_n = 0
-                try:
-                    step_n = int(getattr(getattr(_agent, "state", None), "n_steps", 0) or 0)
-                except Exception:
-                    step_n = runs + 1
-                if step_n < 2 and runs == 0:
-                    return
-                ctx["auto_captcha_runs"] = runs + 1
-                try:
-                    result = await solve_captcha_on_page(page_now)
-                    # Match solve_captcha tool: soft BB clears without a real
-                    # response token are not success (Loom/Supabase reject them).
-                    if result.get("ok") and not await _page_has_captcha_token(page_now):
-                        if (result.get("method") or "") in {
-                            "browserbase",
-                            "self_cleared",
-                            "click",
-                            "checkbox",
-                            "oss_image",
-                        }:
-                            result = {
-                                "ok": False,
-                                "method": result.get("method"),
-                                "detail": f"no_token_after_{result.get('detail')}",
-                            }
-                    ctx["last_auto_captcha"] = result
-                    print(
-                        f"[auto_captcha] run={ctx['auto_captcha_runs']} "
-                        f"blocked={info.get('blocked')} submit_disabled={info.get('submit_disabled')} "
-                        f"force={force} sitekey={info.get('sitekey')} -> {result}",
-                        flush=True,
-                    )
-                    # Paid-solver gap: stop burning agent steps on a captcha we
-                    # cannot clear with Browserbase+OSS alone.
-                    if (
-                        not result.get("ok")
-                        and (result.get("method") or "") == "need_solver_api"
-                        and int(ctx.get("auto_captcha_runs") or 0) >= 2
-                    ):
-                        ctx["blocker"] = "captcha_unsolved"
-                        ctx["blocker_detail"] = (
-                            f"need_solver_api:{(result.get('detail') or '')}"[:400]
-                        )
-                        ctx["done"] = True
-                        return
-                    # If we have a real token, nudge the primary submit so the
-                    # agent does not race report_blocked on a stale error banner.
-                    if result.get("ok"):
-                        try:
-                            await page_now.evaluate(
-                                """() => {
-                                  const btns = [...document.querySelectorAll(
-                                    'button[type=submit], button#email-signup-submit, button'
-                                  )];
-                                  for (const b of btns) {
-                                    const label = ((b.innerText || b.id || '') + '').toLowerCase();
-                                    if (/github|google|sso|apple/.test(label)) continue;
-                                    if (!(b.type === 'submit' || /sign\\s*up|continue|create|register/.test(label)))
-                                      continue;
-                                    b.disabled = false;
-                                    b.removeAttribute('disabled');
-                                    try { b.click(); } catch (e) {}
-                                    return true;
-                                  }
-                                  return false;
-                                }"""
-                            )
-                        except Exception:
-                            pass
-                except Exception as exc:
-                    ctx["last_auto_captcha"] = {
-                        "ok": False,
-                        "method": "auto_hook",
-                        "detail": f"{type(exc).__name__}:{exc}"[:200],
-                    }
-                    print(f"[auto_captcha] error: {exc}", flush=True)
-
-            history = None
-            try:
-                history = await asyncio.wait_for(
-                    agent.run(max_steps=max_steps, on_step_end=_on_step_end),
-                    timeout=timeout_s,
-                )
-            except asyncio.TimeoutError:
-                result["reason"] = "timeout"
-            except Exception as exc:
-                result["reason"] = f"agent_error:{type(exc).__name__}:{exc}"[:300]
-
-            # Refresh page handle after agent activity.
-            try:
-                page = pw_ctx.pages[0] if pw_ctx.pages else page
-                ctx["page_getter"] = lambda: page
-            except Exception:
-                pass
-
-            try:
-                await page.screenshot(path=str(step_dir / "final.png"), full_page=False)
-            except Exception:
-                pass
-
-            # Always snapshot cookies before judging — Browserbase sessions die in
-            # ``finally``, so a false-negative signed-in heuristic used to throw away
-            # a real account (Todoist completed signup then reported not_signed_in).
-            state: dict[str, Any] | None = ctx.get("last_state")
-            try:
-                state = await pw_ctx.storage_state()
-                SITE_STATES.mkdir(parents=True, exist_ok=True)
-                site_state_path(host).write_text(json.dumps(state, indent=2))
-            except Exception as exc:
-                result["state_error"] = str(exc)[:200]
-                if state is not None:
-                    result["state_error"] = (
-                        f"{result['state_error']};recovered_checkpoint=1"
-                    )
-
-            # Onboarding often ends on a "Getting ready…" splash that redirects a
-            # few seconds later, so a single probe reports a fresh account as
-            # not_signed_in. Re-probe for a short window before giving up.
-            signed = False
-            settle_deadline = time.time() + float(
-                os.environ.get("MVP_SIGNUP_SETTLE_S", "30")
-            )
-            while True:
-                try:
-                    await _dismiss_onboarding(page)
-                except Exception:
-                    pass
-                try:
-                    signed = await verify_signed_in(page, host)
-                except Exception:
-                    signed = False
-                if signed or time.time() >= settle_deadline:
-                    break
-                await asyncio.sleep(3)
-
-            if not signed and state is not None:
-                # Cookie-jar fallback: SPA chrome is flaky right after signup.
-                signed = _storage_state_looks_authed(state, host)
-                if signed:
-                    result["signed_via"] = "storage_state"
-
-            # One more push through product onboarding when cookies already look
-            # authed but the DOM is still on a tour/splash (classic Trello miss).
-            if not signed and state is not None and _storage_state_looks_authed(state, host):
-                for url in VERIFY_URLS.get(host, [])[:2]:
-                    try:
-                        await page.goto(url, wait_until="domcontentloaded", timeout=30000)
-                        await asyncio.sleep(3)
-                    except Exception:
-                        continue
-                    try:
-                        signed = await verify_signed_in(page, host)
-                    except Exception:
-                        signed = False
-                    if signed:
-                        result["signed_via"] = "onboarding_nav"
-                        break
-                if not signed:
-                    signed = True
-                    result["signed_via"] = "storage_state_onboarding"
-
-            # Account+session beats agent report_blocked('unknown') from an
-            # onboarding tour the agent could not dismiss. Captcha-hard blocks
-            # still win when we never obtained an authenticated session.
-            if signed:
-                ignored = ctx.get("blocker")
-                update_identity(
-                    f"https://{host}",
-                    status="signed_up",
-                    blocker=None,
-                    profile_dir=str(profile),
-                )
-                result.update(
-                    {
-                        "ok": True,
-                        "reason": "signed_in" if signin else "signed_up",
-                    }
-                )
-                if ignored:
-                    result["ignored_blocker"] = ignored
-                    result["ignored_blocker_detail"] = (ctx.get("blocker_detail") or "")[:200]
-                return result
-
-            if ctx.get("blocker"):
-                update_identity(
-                    f"https://{host}",
-                    status="blocked",
-                    blocker=ctx["blocker"],
-                    profile_dir=str(profile),
-                )
-                result.update(
-                    {
-                        "ok": False,
-                        "reason": ctx["blocker"],
-                        "detail": ctx.get("blocker_detail"),
-                    }
-                )
-                return result
-
-            result["reason"] = result.get("reason") or "not_signed_in"
-            if history is not None:
-                try:
-                    result["steps"] = getattr(history, "number_of_steps", lambda: None)()
-                except Exception:
-                    pass
-            # Always pin the product host (e.g. shopify.com), never the IdP URL host
-            # (accounts.shopify.com) — registry keys are product hosts.
-            try:
-                update_identity(
-                    f"https://{host}",
-                    status="provisioned",
-                    blocker=result.get("reason"),
-                    profile_dir=str(profile),
-                )
-            except KeyError as exc:
-                result["identity_error"] = str(exc)[:120]
-            return result
+            return await _drive(page, pw_ctx)
     finally:
         number = ctx.get("sms_number")
         if number is not None:

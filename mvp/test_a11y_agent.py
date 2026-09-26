@@ -14,6 +14,7 @@ from mvp.a11y_agent import (
     failure_breakdown,
     fast_action_model,
     _nodes_for_model,
+    task_needs_account,
     format_ax,
     goal_visible,
     note_progress,
@@ -271,6 +272,36 @@ class A11yAgentTest(unittest.TestCase):
     def test_extract_json_keeps_the_first_object(self) -> None:
         self.assertEqual(extract_json('{"act":"click","i":1}\n{"act":"done"}'), {"act": "click", "i": 1})
         self.assertEqual(extract_json('note {"act":"drag"} trailing'), {"act": "drag"})
+
+    def test_account_tasks_are_kept(self) -> None:
+        self.assertTrue(task_needs_account("Create an issue"))
+        self.assertTrue(task_needs_account("Make a board"))
+        self.assertFalse(task_needs_account("Find how to create a new issue"))
+        self.assertFalse(
+            goal_visible(
+                "Create an issue",
+                {"url": "https://linear.app/docs/creating-issues", "title": "Create issues – Linear Docs"},
+            )
+        )
+        self.assertTrue(
+            goal_visible(
+                "Create an issue",
+                {"url": "https://linear.app/team/issue/new", "text": "Issue title\nDescription"},
+            )
+        )
+        self.assertTrue(
+            goal_visible(
+                "Create an issue",
+                {
+                    "url": "https://linear.app/usersim/team/active",
+                    "text": "Inbox",
+                    "nodes": [
+                        {"name": "Issue title"},
+                        {"name": "Add description..."},
+                    ],
+                },
+            )
+        )
 
 
 if __name__ == "__main__":
