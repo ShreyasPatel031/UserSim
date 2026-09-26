@@ -1994,6 +1994,60 @@ async def _act(page: Any, action: dict[str, Any]) -> str:
     return await _click_named(page, action)
 
 
+_IDP_URL_RE = re.compile(
+    r"^https?://(?:accounts\.google\.com/|login\.microsoftonline\.com/|login\.live\.com/|appleid\.apple\.com/|"
+    r"github\.com/(?:login|sessions)|gitlab\.com/(?:users/sign_in|oauth)|[a-z0-9-]*\.?slack\.com/(?:oauth|signin)|"
+    r"(?:www\.)?facebook\.com/(?:login|dialog/oauth)|[a-z0-9-]+\.okta\.com/|[a-z0-9-]+\.auth0\.com/)",
+    re.I,
+)
+
+
+def _open_tabs(page: Any) -> set[int] | None:
+    """Ids of the tabs open in this page's browser context, or None if unknown."""
+    try:
+        return {id(p) for p in page.context.pages}
+    except Exception:
+        return None
+
+
+async def _follow_new_tab(page: Any, before: set[int]) -> str:
+    """A link that opened a new tab (target=_blank) leaves this tab unchanged.
+
+    Open that URL in this tab instead, the way a user would switch to it, and
+    close the extra tab. Returns the URL followed, or "".
+    """
+    try:
+        fresh = [p for p in page.context.pages if id(p) not in before and p is not page]
+    except Exception:
+        return ""
+    if not fresh:
+        return ""
+    tab = fresh[-1]
+    target = ""
+    try:
+        await tab.wait_for_load_state("commit", timeout=3000)
+    except Exception:
+        pass
+    try:
+        target = str(tab.url or "")
+    except Exception:
+        target = ""
+    for extra in fresh:
+        try:
+            await extra.close()
+        except Exception:
+            pass
+    if not target.startswith("http") or _IDP_URL_RE.search(target):
+        # A third-party sign-in popup cannot be finished in place; stay put.
+        return ""
+    try:
+        await page.goto(target, wait_until="domcontentloaded", timeout=15000)
+    except Exception:
+        return ""
+    await _wait_for_page(page)
+    return target
+
+
 async def _wait_for_page(page: Any) -> None:
     """Brief wait so a click can navigate or the DOM can update."""
     try:
@@ -2502,6 +2556,7 @@ async def complete_task_on_page(
                 drag_before = await asyncio.wait_for(page.screenshot(type="png", timeout=2500), timeout=3)
             except Exception:
                 drag_before = None
+        tabs_before = _open_tabs(page)
         try:
             how = await asyncio.wait_for(_act(page, action), timeout=12)
         except asyncio.TimeoutError:
@@ -2517,6 +2572,10 @@ async def complete_task_on_page(
             how = f"error:{str(exc)[:120]}"
         acted += 1
         await _wait_for_page(page)
+        if act == "click" and tabs_before is not None:
+            followed = await _follow_new_tab(page, tabs_before)
+            if followed:
+                how = f"{how}+newtab"
         after = await _fresh_read(page, str(read.get("url") or url))
         if after.get("error") and browser_dead(str(after.get("error"))):
             print(f"[{agent_id}] session ended: {after.get('error')}", flush=True)
