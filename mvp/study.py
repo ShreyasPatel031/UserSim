@@ -243,7 +243,13 @@ def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> No
 
 def _ordered_live_sessions(study: StudyState) -> list[dict[str, Any]]:
     order = {t.get("id"): i for i, t in enumerate(study.tasks)}
-    sessions = [dict(s) for s in study.live_sessions.values()]
+    # Hide rows whose own page has not committed. A shared-read placeholder
+    # has no created_at_ts, and the harness would abort that missing clock.
+    sessions = [
+        dict(s)
+        for s in study.live_sessions.values()
+        if isinstance(s, dict) and s.get("created_at_ts")
+    ]
     sessions.sort(key=lambda s: order.get(s.get("agent_id"), 99))
     return sessions
 
@@ -3191,7 +3197,16 @@ async def run_study(
                     sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
                     try:
-                        async with _BROWSER_SEMAPHORE:
+                        class _BrowserPass:
+                            async def __aenter__(self) -> None:
+                                return None
+
+                            async def __aexit__(self, *_exc: object) -> bool:
+                                return False
+
+                        async with (
+                            _BrowserPass() if a11y_boot is not None else _BROWSER_SEMAPHORE
+                        ):
                             # The accessibility loop runs all 24 agents at once.
                             # The older screenshot loop still queues on the LLM cap.
                             class _Pass:

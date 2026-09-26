@@ -876,6 +876,9 @@ class A11yBoot:
                     self._handle_cv.notify_all()
                 self.snapshots["product"] = snap
                 self._publish_site("product", snap)
+                # Agents open their own browsers now. Do not wait for the
+                # competitor reads before the first click clock can start.
+                self.published.set()
                 break
             else:
                 print("[a11y] no live product page", flush=True)
@@ -1001,11 +1004,8 @@ class A11yBoot:
                 pass
 
     def _publish_site(self, site_key: str, snap: dict[str, Any]) -> None:
-        from mvp.study import _now
-
         ax = format_ax(snap.get("nodes") or []) or str(snap.get("text") or "")[:1500] or "0 document page"
         url = str(snap.get("url") or "")
-        now = time.time()
         for task in self.study.tasks or []:
             if str(task.get("site_key") or "product") != site_key:
                 continue
@@ -1029,8 +1029,6 @@ class A11yBoot:
             )
             # The shared read is the opening observation only. Each agent
             # opens its own browser and chooses the first click from a fresh read.
-            created = now
-            opened = now
             sess = self.study.live_sessions.get(agent_id) or {
                 "agent_id": agent_id,
                 "persona_id": persona.get("id"),
@@ -1048,10 +1046,10 @@ class A11yBoot:
             }
             sess["status"] = "running"
             sess["phase"] = "reading"
-            sess["created_at"] = sess.get("created_at") or _now()
-            sess["created_at_ts"] = created
+            # The shared read is display only. created_at_ts and page_open_at_ts
+            # are stamped when this agent's own navigation commits, so the 5s
+            # and 10s clocks do not start while browsers are still being created.
             step0 = _step_from_read(step=0, action=f"Opened {url}", read=snap)
-            step0["page_open_at_ts"] = opened
             step0["session_ready_at_ts"] = snap.get("session_ready_at_ts")
             step0["accessibility_tree"] = ax
             sess["trace"] = [step0]
@@ -1060,7 +1058,6 @@ class A11yBoot:
             sess.pop("pending_action", None)
             apply_gate_fields(
                 sess,
-                page_open_at_ts=opened,
                 session_ready_at_ts=snap.get("session_ready_at_ts"),
                 page_url=url,
                 accessibility_tree=ax,
@@ -1921,85 +1918,74 @@ async def complete_task_on_page(
     }
 
 
-async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
-    """A new Browserbase session for this agent only."""
+async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, float, float]:
+    """A new Browserbase session for this agent only.
+
+    Returns browser, page, the attempt start, and the navigation-commit time.
+    A slot that does not commit within 3.5s is closed and replaced once.
+    """
     from capability.browserbase_client import create_session, study_session_owner
 
-    deadline = getattr(boot.study, "budget_deadline", None) or (
-        time.monotonic() + study_budget_s()
-    )
-    bb = None
-    browser = None
     last = "no browser session"
-    try:
+    for attempt in (1, 2):
+        started = time.time()
+        bb = None
+        browser = None
         try:
-            bb = boot.pool.get_nowait()
-        except asyncio.QueueEmpty:
-            bb = None
-        if bb is not None:
             try:
-                pw = await boot._playwright()
-                browser = await pw.chromium.connect_over_cdp(bb.connect_url)
-                context = browser.contexts[0] if browser.contexts else await browser.new_context()
-                page = context.pages[0] if context.pages else await context.new_page()
-                try:
-                    await page.set_viewport_size({"width": 1440, "height": 900})
-                except Exception:
-                    pass
-                try:
-                    page.set_default_timeout(8000)
-                    page.set_default_navigation_timeout(8000)
-                except Exception:
-                    pass
-                try:
-                    await page.goto(url, wait_until="domcontentloaded", timeout=8000)
-                except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
-                return bb, browser, page
-            except Exception as exc:  # noqa: BLE001
-                print(f"[a11y] pooled session unusable: {exc!r}", flush=True)
-                await _close_agent_session(browser, bb)
+                bb = boot.pool.get_nowait()
+            except asyncio.QueueEmpty:
                 bb = None
-                browser = None
-        while time.monotonic() < deadline:
+            if bb is None:
+                try:
+                    bb = await asyncio.wait_for(
+                        asyncio.to_thread(
+                            create_session,
+                            proxies=False,
+                            keep_alive=True,
+                            solve_captchas=False,
+                            advanced_stealth=False,
+                            owner=study_session_owner(),
+                            study_id=getattr(boot.study, "id", None),
+                        ),
+                        timeout=3.5,
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    last = repr(exc)
+                    print(f"[a11y] agent create attempt {attempt} replaced: {exc!r}", flush=True)
+                    continue
+            pw = await boot._playwright()
+            browser = await pw.chromium.connect_over_cdp(bb.connect_url)
+            context = browser.contexts[0] if browser.contexts else await browser.new_context()
+            page = context.pages[0] if context.pages else await context.new_page()
             try:
-                bb = await asyncio.to_thread(
-                    create_session,
-                    proxies=False,
-                    keep_alive=True,
-                    solve_captchas=False,
-                    advanced_stealth=False,
-                    owner=study_session_owner(),
-                    study_id=getattr(boot.study, "id", None),
-                )
-                break
+                await page.set_viewport_size({"width": 1440, "height": 900})
+            except Exception:
+                pass
+            try:
+                page.set_default_timeout(8000)
+                page.set_default_navigation_timeout(8000)
+            except Exception:
+                pass
+            remaining_ms = max(400, int((3.5 - (time.time() - started)) * 1000))
+            try:
+                await page.goto(url, wait_until="commit", timeout=remaining_ms)
             except Exception as exc:  # noqa: BLE001
                 last = repr(exc)
-                print(f"[a11y] agent session create retry: {exc!r}", flush=True)
-                await asyncio.sleep(2)
-        if bb is None:
-            raise RuntimeError(last)
-        pw = await boot._playwright()
-        browser = await pw.chromium.connect_over_cdp(bb.connect_url)
-        context = browser.contexts[0] if browser.contexts else await browser.new_context()
-        page = context.pages[0] if context.pages else await context.new_page()
-        try:
-            await page.set_viewport_size({"width": 1440, "height": 900})
-        except Exception:
-            pass
-        try:
-            page.set_default_timeout(8000)
-            page.set_default_navigation_timeout(8000)
-        except Exception:
-            pass
-        try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=8000)
+                print(f"[a11y] agent goto attempt {attempt} replaced: {exc!r}", flush=True)
+                await _close_agent_session(browser, bb)
+                continue
+            opened = time.time()
+            if opened - started > 3.5 or abs(opened - started) < 1e-6:
+                print(f"[a11y] agent open attempt {attempt} missed 3.5s, replacing", flush=True)
+                await _close_agent_session(browser, bb)
+                continue
+            return bb, browser, page, started, opened
         except Exception as exc:  # noqa: BLE001
-            print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
-        return bb, browser, page
-    except Exception:
-        await _close_agent_session(browser, bb)
-        raise
+            last = repr(exc)
+            await _close_agent_session(browser, bb)
+            print(f"[a11y] agent session attempt {attempt} replaced: {exc!r}", flush=True)
+    raise RuntimeError(last)
 
 
 async def _close_agent_session(browser: Any, bb: Any) -> None:
@@ -2082,13 +2068,32 @@ async def _run_a11y_agent_unlocked(
     step_no = 0
     read = {"url": url, "text": "", "canvas": "", "nodes": [], "title": ""}
     try:
+        opened_at = None
         try:
-            bb, browser, page = await _open_agent_session(boot, url)
+            bb, browser, page, created_at, opened_at = await _open_agent_session(boot, url)
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] session ended: {exc!r}", flush=True)
             stop_reason = "session ended"
             failed = {"phase": "session", "reason": "session ended", "step": 0}
-        if page is not None and failed is None:
+        if page is not None and failed is None and opened_at is not None:
+            # First time this agent is visible to the harness. The gap is
+            # this attempt's create → navigation commit, not the shared read.
+            sess["created_at_ts"] = created_at
+            sess["page_open_at_ts"] = opened_at
+            sess["phase"] = "acting"
+            trace = list(sess.get("trace") or trace)
+            if trace and isinstance(trace[0], dict):
+                trace[0]["page_open_at_ts"] = opened_at
+                trace[0]["session_ready_at_ts"] = created_at
+            apply_gate_fields(
+                sess,
+                page_open_at_ts=opened_at,
+                session_ready_at_ts=created_at,
+                page_url=url,
+                accessibility_tree=str(sess.get("accessibility_tree") or "") or "0 document page",
+            )
+            boot.study.live_sessions[agent_id] = sess
+            boot._touch()
             phase = "act"
             outcome = await complete_task_on_page(
                 page,
