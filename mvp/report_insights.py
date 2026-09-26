@@ -1523,7 +1523,11 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
         "Write a short verdict for a product team from a simulated user study. "
         "Use only these facts; do not invent features, numbers, or sites. "
         "3 to 5 plain sentences: what the product is good for, where it trails its competitors, "
-        "and the single most useful fix. No markdown, no bullet points.\n"
+        "and the single most useful fix. No markdown, no bullet points. "
+        "live_signups are UserSim's own test accounts: a captcha, a rejected throwaway email, a "
+        "verification email that never arrived, or a signup error there is a limit of the test "
+        "harness, not a product problem, so never describe it as a product flaw or recommend fixing "
+        "it. That a task needs an account at all is a product fact and may be mentioned.\n"
         f"Facts: {json.dumps(facts, ensure_ascii=False)[:5000]}"
     )
     raw = await gemini_chat(
@@ -1534,6 +1538,15 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
         max_retries=2,
     )
     return " ".join(str(raw or "").split())[:1200]
+
+
+def _signup_cause(label: str) -> str:
+    """'blocked at signup: captcha' -> 'captcha'; 'signup did not finish (site_error)' -> 'site error'."""
+    text = re.sub(r"^blocked at sign-?up:?\s*", "", str(label or "").strip(), flags=re.I)
+    m = re.match(r"^sign-?up did not finish \((.+)\)$", text, flags=re.I)
+    if m:
+        text = m.group(1)
+    return text.replace("_", " ").strip() or "unknown"
 
 
 def signup_summary(runs: list[dict[str, Any]], study: dict[str, Any]) -> dict[str, Any]:
@@ -1553,7 +1566,7 @@ def signup_summary(runs: list[dict[str, Any]], study: dict[str, Any]) -> dict[st
         else:
             from mvp.a11y_agent import signup_block_label
 
-            reason = signup_block_label(str(info.get("reason") or "unknown"))
+            reason = _signup_cause(signup_block_label(str(info.get("reason") or "unknown")))
             row["reasons"][reason] = row["reasons"].get(reason, 0) + 1
     out = []
     for row in rows.values():

@@ -637,7 +637,7 @@ function signupLine(signups) {
     const why = Object.entries(r.reasons || {}).map(([k, n]) => `${k} ×${n}`).join(", ");
     return `${escapeHtml(r.site)}: ${r.ok}/${r.tried} signed up live` +
       (r.median_s != null ? ` (median ${Math.round(r.median_s)}s)` : "") +
-      (why ? ` · blocked by ${escapeHtml(why)}` : "");
+      (why ? ` (UserSim could not finish: ${escapeHtml(why)})` : "");
   });
   return `<p class="sub"><strong>Account walls:</strong> agents created real accounts mid-task when a step needed one. ${bits.join(" · ")}</p>`;
 }
