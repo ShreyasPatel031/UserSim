@@ -36,6 +36,25 @@ def study_budget_s() -> float:
     return max(30.0, budget)
 
 
+_LOCAL_BROWSER_LIMIT: asyncio.Semaphore | None = None
+
+
+def _local_browser_limit() -> asyncio.Semaphore:
+    """How many local Chromium processes may run at once.
+
+    Browserbase studies do not use this. A 24-agent local study otherwise
+    launches 24 browsers together and the machine runs out of memory.
+    """
+    global _LOCAL_BROWSER_LIMIT
+    if _LOCAL_BROWSER_LIMIT is None:
+        try:
+            n = int(os.environ.get("MVP_BROWSER_CONCURRENCY", "4") or "4")
+        except (TypeError, ValueError):
+            n = 4
+        _LOCAL_BROWSER_LIMIT = asyncio.Semaphore(max(1, n))
+    return _LOCAL_BROWSER_LIMIT
+
+
 def stuck_steps() -> int:
     try:
         n = int(os.environ.get("MVP_STUCK_STEPS", "") or STUCK_STEPS)
@@ -2764,8 +2783,24 @@ async def run_a11y_agent(
     site_key: str = "product",
     deadline: float | None = None,
 ) -> dict[str, Any]:
-    """One Browserbase session for this agent. The shared read is display only."""
+    """One Browserbase session for this agent. The shared read is display only.
+
+    Local Chromium (USE_BROWSERBASE off) waits on a small semaphore so a
+    24-agent study does not open 24 browsers at once.
+    """
     del site_key
+    if not _use_browserbase():
+        async with _local_browser_limit():
+            return await _run_a11y_agent_unlocked(
+                boot=boot,
+                study_id=study_id,
+                agent_id=agent_id,
+                url=url,
+                task_prompt=task_prompt,
+                persona=persona,
+                on_step=on_step,
+                deadline=deadline,
+            )
     return await _run_a11y_agent_unlocked(
         boot=boot,
         study_id=study_id,

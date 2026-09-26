@@ -610,5 +610,20 @@ class A11yAgentTest(unittest.TestCase):
         )
 
 
+class ForceLocalFleetTests(unittest.TestCase):
+    def test_force_local_browser_skips_gcp_fleet(self) -> None:
+        from mvp.study import _fleet_preferred
+
+        old = os.environ.get("MVP_FORCE_LOCAL_BROWSER")
+        os.environ["MVP_FORCE_LOCAL_BROWSER"] = "1"
+        try:
+            self.assertFalse(_fleet_preferred())
+        finally:
+            if old is None:
+                os.environ.pop("MVP_FORCE_LOCAL_BROWSER", None)
+            else:
+                os.environ["MVP_FORCE_LOCAL_BROWSER"] = old
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -43,6 +43,10 @@ def _fleet_preferred(*, test_mode: bool = False) -> bool:
     # Smoke / quick preview stays on Browserbase (or snapshot) — don't spin VMs.
     if test_mode:
         return False
+    # USE_BROWSERBASE=0 otherwise falls through to gcp_fleet_enabled(), which is
+    # true whenever ADC exists. A local Chromium study must not take that path.
+    if os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {"1", "true", "yes"}:
+        return False
     # Explicit opt-in always wins (local warm-seed path / Vercel long studies).
     if os.environ.get("MVP_PREFER_GCP_FLEET", "").lower() in {"1", "true", "yes"}:
         try:
@@ -1347,21 +1351,34 @@ async def run_study(
             return
 
         a11y_boot: Any = None
-        if (
-            _should_warm_browserbase()
-            and os.environ.get("MVP_A11Y_LOOP", "1").lower() not in {"0", "false", "no"}
-        ):
+        _a11y_on = os.environ.get("MVP_A11Y_LOOP", "1").lower() not in {
+            "0",
+            "false",
+            "no",
+        }
+        _force_local = os.environ.get("MVP_FORCE_LOCAL_BROWSER", "").lower() in {
+            "1",
+            "true",
+            "yes",
+        }
+        if _a11y_on and (_should_warm_browserbase() or _force_local):
             from mvp.a11y_agent import A11yBoot
 
             # One shared accessibility read, 24 browsers in parallel. No
             # per-agent screenshot warm and no 8-wide action queue.
+            # MVP_FORCE_LOCAL_BROWSER still uses this loop: each agent opens
+            # its own Chromium and does not take a Browserbase slot.
             a11y_boot = A11yBoot(study, on_update)
             a11y_boot.install_fast_plan()
             asyncio.create_task(a11y_boot.start())
             log_activity(
                 study,
                 "browser",
-                "Shared page read started — agents decide the first move from it",
+                (
+                    "Local Chromium accessibility loop — no Browserbase sessions"
+                    if _force_local
+                    else "Shared page read started — agents decide the first move from it"
+                ),
             )
         elif _should_warm_browserbase():
             from mvp.browser_agent import warm_opening_session
@@ -1800,7 +1817,11 @@ async def run_study(
                     f"— dropped {dropped}",
                 )
         else:
+            # An already-expanded matrix has competitor rows. Do not rewrite
+            # those URLs onto the product host.
             for task in study.tasks:
+                if task.get("site_key") and task.get("site_url"):
+                    continue
                 task["site_key"] = "product"
                 task["site_url"] = study.url
                 task["site_label"] = "Product"
