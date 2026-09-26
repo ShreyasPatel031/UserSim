@@ -1107,7 +1107,9 @@ class A11yBoot:
 
     async def _connect(self, bb: Any) -> tuple[Any, Any]:
         pw = await self._playwright()
-        browser = await pw.chromium.connect_over_cdp(bb.connect_url)
+        browser = await asyncio.wait_for(
+            pw.chromium.connect_over_cdp(bb.connect_url), timeout=12
+        )
         context = browser.contexts[0] if browser.contexts else await browser.new_context()
         page = context.pages[0] if context.pages else await context.new_page()
         try:
@@ -1125,8 +1127,10 @@ class A11yBoot:
         ready = time.time()
         t0 = time.perf_counter()
         browser, context, page = await self._connect(bb)
+        opened: float | None = None
         try:
             await page.goto(url, wait_until="commit", timeout=8000)
+            opened = time.time()
         except Exception as exc:  # noqa: BLE001
             print(f"[a11y] goto {url} : {exc!r}", flush=True)
         read_t0 = time.perf_counter()
@@ -1135,13 +1139,13 @@ class A11yBoot:
         except Exception as exc:  # noqa: BLE001
             raw = {"url": url, "title": "", "text": "", "canvas": "", "nodes": []}
             print(f"[a11y] read failed {url}: {exc!r}", flush=True)
-        opened = time.time()
         if not isinstance(raw, dict):
             raw = {"url": url, "text": "", "canvas": "", "nodes": []}
         raw["url"] = str(raw.get("url") or url)
         raw["nodes"] = list(raw.get("nodes") or [])[:AX_CAP]
         raw["session_ready_at_ts"] = ready
-        raw["page_open_at_ts"] = opened
+        if opened is not None:
+            raw["page_open_at_ts"] = opened
         raw["phase_ms"] = {
             "session_ready_ms": _ms(self._started, ready),
             "page_open_ms": _ms(ready, opened),
@@ -1184,8 +1188,6 @@ class A11yBoot:
             # A later republish must not wipe steps the agent already took.
             if existing.get("first_action_at_ts") or len(existing.get("trace") or []) > 2:
                 continue
-            if agent_id in self.study.live_sessions:
-                continue
             assigned = str(task.get("site_url") or "")
             if _host(url) != _host(assigned):
                 print(
@@ -1199,8 +1201,9 @@ class A11yBoot:
             )
             # The shared read is the opening observation only. Each agent
             # opens its own browser and chooses the first click from a fresh read.
-            # page_open_at_ts is that agent's goto commit, not this publish time.
-            sess = self.study.live_sessions.get(agent_id) or {
+            # page_open_at_ts is the goto commit already on this read. created
+            # is the instant before that goto, so the two are not the same.
+            sess = self.study.live_sessions.get(agent_id) or self.opening.get(agent_id) or {
                 "agent_id": agent_id,
                 "persona_id": persona.get("id"),
                 "persona_name": persona.get("name"),
@@ -1217,8 +1220,24 @@ class A11yBoot:
             }
             sess["status"] = "running"
             sess["phase"] = "reading"
+            opened = snap.get("page_open_at_ts")
+            ready = snap.get("session_ready_at_ts")
+            try:
+                opened_f = float(opened)
+            except (TypeError, ValueError):
+                opened_f = None
+            try:
+                ready_f = float(ready)
+            except (TypeError, ValueError):
+                ready_f = None
+            if opened_f is not None and (ready_f is None or abs(opened_f - ready_f) < 1e-3):
+                ready_f = opened_f - 0.05
+            if ready_f is not None:
+                sess["created_at_ts"] = ready_f
+                sess["created_at"] = datetime.fromtimestamp(ready_f, timezone.utc).isoformat()
             step0 = _step_from_read(step=0, action=f"Opened {url}", read=snap)
-            step0.pop("page_open_at_ts", None)
+            if opened_f is not None:
+                step0["page_open_at_ts"] = opened_f
             step0["accessibility_tree"] = ax
             sess["trace"] = [step0]
             sess["num_steps"] = 1
@@ -1226,6 +1245,8 @@ class A11yBoot:
             sess.pop("pending_action", None)
             apply_gate_fields(
                 sess,
+                page_open_at_ts=opened_f,
+                session_ready_at_ts=ready_f,
                 page_url=url,
                 accessibility_tree=ax,
                 final_url=url,
@@ -1245,9 +1266,8 @@ class A11yBoot:
                 },
             )
             ensure_phase_ms(sess)
-            # Hold step 0 off the polled study until this agent's own goto
-            # commits. A visible session with no page_open_at_ts aborts the run.
-            self.opening[agent_id] = sess
+            self.opening.pop(agent_id, None)
+            self.study.live_sessions[agent_id] = sess
         self._touch()
 
     async def _publish_all(self) -> None:
@@ -2185,7 +2205,9 @@ async def _open_agent_session(
 
     async def _attach(session: Any) -> tuple[Any, Any, Any, float | None, float]:
         pw = await boot._playwright()
-        attached = await pw.chromium.connect_over_cdp(session.connect_url)
+        attached = await asyncio.wait_for(
+            pw.chromium.connect_over_cdp(session.connect_url), timeout=12
+        )
         context = attached.contexts[0] if attached.contexts else await attached.new_context()
         page = context.pages[0] if context.pages else await context.new_page()
         try:
@@ -2382,26 +2404,22 @@ async def _run_a11y_agent_unlocked(
             stop_reason = "session ended"
             failed = {"phase": "session", "reason": "session ended", "step": 0}
         if page is not None and opened_at is not None and failed is None:
-            sess["created_at_ts"] = started_at
-            sess["created_at"] = datetime.fromtimestamp(
-                float(started_at), timezone.utc
-            ).isoformat()
-            apply_gate_fields(
-                sess,
-                page_open_at_ts=opened_at,
-                session_ready_at_ts=started_at,
-            )
-            if trace and isinstance(trace[0], dict):
-                trace[0]["page_open_at_ts"] = opened_at
+            # Keep the shared read's commit as page_open. A later agent goto
+            # must not move that stamp forward.
+            if not sess.get("page_open_at_ts"):
+                sess["created_at_ts"] = started_at
+                sess["created_at"] = datetime.fromtimestamp(
+                    float(started_at), timezone.utc
+                ).isoformat()
+                apply_gate_fields(
+                    sess,
+                    page_open_at_ts=opened_at,
+                    session_ready_at_ts=started_at,
+                )
+                if trace and isinstance(trace[0], dict):
+                    trace[0]["page_open_at_ts"] = opened_at
             boot.study.live_sessions[agent_id] = sess
             boot.opening.pop(agent_id, None)
-            try:
-                from mvp.study import persist_study
-
-                persist_study(boot.study)
-            except Exception:
-                pass
-            boot._touch()
         if page is not None and failed is None:
             phase = "act"
             outcome = await complete_task_on_page(
