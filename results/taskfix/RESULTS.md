@@ -1,3 +1,18 @@
+# Model-loop studies for PR #46
+
+These are not a pass. Only PR #46 (`bc-10cbc813`) grades, with `--grade-study`.
+
+Five Browserbase sessions were already running, so each study used 10 personas × 2 tasks = 20 agents (not 24) and skipped competitors. Owner `taskfix`. Sessions were closed in `finally`. Running `taskfix` sessions after both studies: 0.
+
+| Site | Study | Agents | What the loop did (not a vision grade) |
+| --- | --- | --- | --- |
+| Linear | `190452e9-f6a3-435e-b199-afb083726e6a` | 20 | Pricing: 10/10 clicked Pricing and stopped on `https://linear.app/pricing`. New issue: 10/10 clicked Sign up or Log in, then `needs_account`. Signup did not continue: `secrets/credentials.json` is not on this machine, so a fresh alias could not be built. |
+| Excalidraw | `e784d307-3fea-4ea5-83c6-20fadb2c6da0` | 20 | Draw: model clicked Rectangle, then the canvas was dragged. Export: model clicked Menu. Agent `stop_reason` was `done` for all 20. Time from page open to first click was about 1.1–1.4s. |
+
+Final screenshots (local, gitignored): `mvp/runs/<study_id>/<agent>/screenshots/final.png` (20 per study).
+
+The Linear study was polled by a server that still rewrote page-open and first-action to the same instant. That rewrite is removed in `ca68f90`. The Excalidraw clocks above are the stamps the agents wrote.
+
 # Account tasks are not rewritten
 
 `generate_tasks` no longer turns an account task into a logged-out tour. When the step loop hits a login or signup URL, an email and password form, or a "Sign up to continue" modal, the agent result is `needs_account: true` with `signup_url` set to the signup link on that page (or the known signup URL for the host). The signup hook owns the next step. A header "Sign up" link on a marketing page is not a wall.
