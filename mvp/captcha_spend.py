@@ -160,6 +160,32 @@ def begin_signup_attempt(site: str) -> int:
     return attempt
 
 
+def begin_inrun_attempt(site: str) -> int:
+    """Open a ledger attempt for one in-run (step-loop) signup and bind it.
+
+    In-run signups are part of a study (one per product agent that hits an
+    account wall), so the research cap of 2 attempts per site does not apply.
+    They are still limited by the host allowlist, 3 solves per attempt, the
+    per-site and total USD caps, and the balance floor.
+    """
+    host = (site or "").strip().lower().removeprefix("www.")
+    if not host:
+        raise SpendCapError("signup attempt missing site")
+    with _LOCK:
+        attempt = signup_attempts(host) + 1
+    _append({"event": "signup_start", "site": host, "attempt": attempt, "inrun": True, "ts": _now()})
+    bind_signup(host, attempt)
+    return attempt
+
+
+def min_balance_usd() -> float:
+    """Stop paid solves when the CapSolver balance is below this (default $0.20)."""
+    try:
+        return max(0.0, float(os.environ.get("MVP_CAPTCHA_MIN_BALANCE_USD") or 0.20))
+    except (TypeError, ValueError):
+        return 0.20
+
+
 def refusal_reason(task_type: str, *, site: str | None = None, attempt: int | None = None) -> str | None:
     """Why createTask must not be called, or None if it is allowed."""
     host = (site if site is not None else current_site()).strip().lower()

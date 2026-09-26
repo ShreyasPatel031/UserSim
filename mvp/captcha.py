@@ -598,6 +598,14 @@ def _capsolver_solve(
         return None
 
     balance_before = spend.get_balance(token)
+    if balance_before is not None and balance_before < spend.min_balance_usd():
+        spend.record_skip(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            reason="low_balance",
+        )
+        return None
     task = _solver_task(task_type, sitekey=sitekey, page_url=page_url, action=action)
     task_id = None
     solved = False

@@ -222,3 +222,43 @@ class SpendGateTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class InRunSpendTests(SpendGateTests):
+    """In-run signups bind an attempt; the balance floor stops paid solves."""
+
+    def test_inrun_attempt_binds_and_skips_research_cap(self) -> None:
+        from mvp import captcha_spend as cs
+
+        for _ in range(4):
+            att = cs.begin_inrun_attempt("www.trello.com")
+        self.assertEqual(att, 4)
+        self.assertEqual(cs.current_site(), "trello.com")
+        self.assertIsNone(cs.refusal_reason("ReCaptchaV2TaskProxyLess"))
+
+    def test_low_balance_makes_no_create_task(self) -> None:
+        from mvp import captcha_spend as cs
+        from mvp.captcha import _capsolver_solve
+
+        cs.begin_inrun_attempt("trello.com")
+        calls: list[str] = []
+
+        def fake_post(url, **kw):
+            calls.append(url)
+            if url.endswith("createTask"):
+                raise AssertionError("createTask below floor")
+
+            class R:
+                def json(self_inner):
+                    return {"errorId": 0, "balance": 0.15}
+
+            return R()
+
+        with patch("mvp.captcha.httpx.post", side_effect=fake_post), patch("httpx.post", side_effect=fake_post):
+            token = _capsolver_solve(
+                "", sitekey="6Le", page_url="https://trello.com/signup",
+                captcha_type="recaptcha", action=None, timeout_s=5, blocking=True,
+            )
+        self.assertIsNone(token)
+        self.assertEqual(self._rows()[-1]["reason"], "low_balance")
+        self.assertTrue(all("createTask" not in c for c in calls))

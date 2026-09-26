@@ -621,6 +621,20 @@ async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any])
     if spend.get("usd", 0.0) + 0.003 > cap_usd:
         out["method"] = "site_cap_reached"
         return out
+    # The CapSolver spend gate refuses any solve that is not bound to a site and
+    # an attempt ("host_not_paid" / "no_signup_attempt"). Bind this in-run
+    # signup so a blocking captcha on an allowlisted host can be paid for.
+    site = str(spend.get("site") or "")
+    if site:
+        try:
+            from mvp import captcha_spend as cs
+
+            if not spend.get("attempt"):
+                spend["attempt"] = cs.begin_inrun_attempt(site)
+            else:
+                cs.bind_signup(site, int(spend["attempt"]))
+        except Exception as exc:  # noqa: BLE001
+            out["spend_bind_error"] = repr(exc)[:120]
     os.environ.setdefault("MVP_CAPTCHA_API_KEY", _capsolver_key())
     os.environ["MVP_CAPTCHA_BB_WAIT_S"] = "0"
     os.environ["MVP_CAPTCHA_HCAPTCHA_BB_WAIT_S"] = "0"
@@ -668,7 +682,7 @@ async def signup_in_session(
     steps: list[str] = []
     history: list[str] = []
     captcha_log: list[dict[str, Any]] = []
-    spend: dict[str, Any] = {"usd": 0.0, "calls": 0}
+    spend: dict[str, Any] = {"usd": 0.0, "calls": 0, "site": site}
     ident: dict[str, str] = {}
     last_snap: dict[str, Any] = {}
     result: dict[str, Any] = {
