@@ -21,7 +21,7 @@ The overall harness `pass` flag is false because strength/weakness evidence is s
 
 Local Chromium, one task at a time, no Browserbase session. Prime count is 0 (`prime_sessions` returns immediately; the server defaults `MVP_PRIME_SESSIONS` to 0). Running `taskfix` Browserbase sessions at the start of this run: 0. Every step re-reads the live page and asks the model. Clicks use role and name, then coordinates. A drawing counts only after a drag changes the canvas ink. Log: `results/taskfix/harness_prime0.log`.
 
-4/4 passed. No failing step logs.
+4/4 passed. No failing step logs. Re-run after the excalidraw-only shortcut guard: `results/taskfix/harness_hostguard.log`, 4/4 again.
 
 | Site | Task | Result | Final URL |
 | --- | --- | --- | --- |
