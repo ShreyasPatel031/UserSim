@@ -746,7 +746,7 @@ def action_label(action: dict[str, Any]) -> str:
         return "drag on the canvas"
     if act == "done":
         return "done"
-    return f"click {name}".strip()
+    return f"click {name}" if name else "click an unlabeled control"
 
 
 def _ms(a: float | None, b: float | None) -> int | None:
@@ -2063,6 +2063,30 @@ async def _wait_for_page(page: Any) -> None:
         pass
 
 
+def _link_leaves_page(href: str, current: str) -> bool:
+    """A real link to another page (not '#', not javascript:, not this page)."""
+    if not href.startswith(("http://", "https://")):
+        return False
+    return _page_key(href) != _page_key(current)
+
+
+async def _await_link_navigation(page: Any, href: str, current: str, timeout_ms: int = 2500) -> None:
+    """A clicked link to another page: give a slow navigation a moment to land.
+
+    Figma's Pricing link took longer than the post-click wait, so the agent
+    read the old page, clicked Pricing again, and the report counted two steps.
+    """
+    if not _link_leaves_page(href, current):
+        return
+    try:
+        if _page_key(str(page.url or "")) != _page_key(current):
+            return
+        await page.wait_for_url(lambda u: _page_key(str(u)) != _page_key(current), timeout=timeout_ms)
+        await page.wait_for_load_state("domcontentloaded", timeout=2000)
+    except Exception:
+        pass
+
+
 async def _screenshot_hash(page: Any) -> tuple[str, str]:
     """Hash the viewport for the stuck check. The bytes are discarded."""
     try:
@@ -2605,6 +2629,8 @@ async def complete_task_on_page(
             how = f"error:{str(exc)[:120]}"
         acted += 1
         await _wait_for_page(page)
+        if act == "click":
+            await _await_link_navigation(page, str(action.get("href") or ""), str(read.get("url") or url))
         if act == "click" and tabs_before is not None:
             followed = await _follow_new_tab(page, tabs_before)
             if followed:

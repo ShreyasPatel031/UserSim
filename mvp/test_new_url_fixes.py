@@ -91,3 +91,75 @@ class VerdictWithoutRivalRunsTests(unittest.TestCase):
         self.assertIn('"competitors_compared": []', seen["prompt"])
         self.assertIn('"runs_that_never_opened": 11', seen["prompt"])
         self.assertIn("compare with no one", seen["prompt"])
+
+
+class StepNoiseTests(unittest.TestCase):
+    def _insights(self, mine_steps, rival_steps, mine_t=9.0, rival_t=6.0):
+        return {
+            "sites": [
+                {"site_key": "product", "site_label": "Figma", "n": 2},
+                {"site_key": "competitor_1", "site_label": "Sketch", "n": 2},
+            ],
+            "by_task": [{
+                "title": "Look for pricing",
+                "sites": {
+                    "product": {"n": 2, "ok": 2, "median_steps": mine_steps, "median_time_s": mine_t},
+                    "competitor_1": {"n": 2, "ok": 2, "median_steps": rival_steps, "median_time_s": rival_t},
+                },
+            }],
+        }
+
+    def test_one_step_and_three_seconds_is_level(self):
+        from mvp.report_insights import verdict
+
+        v = verdict(self._insights(2.0, 1.0), {"url": "https://www.figma.com/"})
+        self.assertEqual(v["trails"], [])
+        self.assertIn("level with the competitors", v["good_for"][0])
+
+    def test_a_real_gap_still_trails(self):
+        from mvp.report_insights import verdict
+
+        v = verdict(self._insights(5.0, 2.0, 40.0, 10.0), {"url": "https://www.figma.com/"})
+        self.assertEqual(len(v["trails"]), 1)
+        self.assertIn("Sketch (2 steps vs Figma's 5)", v["trails"][0])
+
+
+class LinkNavigationWaitTests(unittest.TestCase):
+    def test_only_real_links_to_another_page_wait(self):
+        from mvp.a11y_agent import _link_leaves_page
+
+        self.assertTrue(_link_leaves_page("https://www.figma.com/pricing/", "https://www.figma.com/"))
+        self.assertFalse(_link_leaves_page("https://www.figma.com/#top", "https://www.figma.com/"))
+        self.assertFalse(_link_leaves_page("javascript:void(0)", "https://www.figma.com/"))
+        self.assertFalse(_link_leaves_page("", "https://www.figma.com/"))
+
+    def test_waits_for_the_url_to_change(self):
+        import asyncio
+
+        from mvp.a11y_agent import _await_link_navigation
+
+        class Page:
+            url = "https://www.figma.com/"
+            waited = []
+
+            async def wait_for_url(self, pred, timeout):
+                self.waited.append(timeout)
+                self.url = "https://www.figma.com/pricing/"
+                assert pred(self.url)
+
+            async def wait_for_load_state(self, *a, **k):
+                return None
+
+        page = Page()
+        asyncio.run(_await_link_navigation(page, "https://www.figma.com/pricing/", "https://www.figma.com/"))
+        self.assertEqual(page.waited, [2500])
+
+
+class UnlabeledClickTests(unittest.TestCase):
+    def test_a_click_with_no_name_reads_as_words(self):
+        from mvp.a11y_agent import action_label
+        from mvp.report_insights import human_action
+
+        self.assertEqual(action_label({"act": "click", "name": ""}), "click an unlabeled control")
+        self.assertEqual(human_action("click"), "click an unlabeled control")
+        self.assertEqual(human_action("click add-project"), "click add project")

@@ -117,6 +117,7 @@ function claimCards(claims, kind) {
 function humanAction(action) {
   const text = String(action || "").split(/\s+/).join(" ").trim();
   if (/^drag\b/i.test(text)) return "drag on the canvas";
+  if (text.toLowerCase() === "click") return "click an unlabeled control";
   const m = text.match(/^(click|type .* into) ([a-z0-9]+(?:[-_][a-z0-9]+)+)$/);
   if (m) {
     const words = m[2].split(/[-_]/);

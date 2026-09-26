@@ -820,6 +820,8 @@ def human_action(action: str) -> str:
     text = " ".join(str(action or "").split())
     if re.match(r"^drag\b", text, re.I):
         return "drag on the canvas"
+    if text.lower() == "click":
+        return "click an unlabeled control"
     m = _ID_NAME_RE.match(text)
     if m:
         words = re.split(r"[-_]", m.group(2))
@@ -1602,13 +1604,15 @@ def verdict(insights: dict[str, Any], study: dict[str, Any]) -> dict[str, Any]:
                 def _st(v: float) -> str:
                     return f"{v:.0f} step{'s' if round(v) != 1 else ''}"
 
-                if ms is not None and os_ is not None and os_ + 1 <= ms:
+                # One step or a few seconds is within run-to-run noise (a slow
+                # page, a re-click). A lead needs 2+ steps or 1.5x and 10s+.
+                if ms is not None and os_ is not None and os_ + 2 <= ms:
                     better.append(f"{name} ({_st(os_)} vs {product_label}'s {ms:.0f})")
-                elif ms is not None and os_ is not None and ms + 1 <= os_:
+                elif ms is not None and os_ is not None and ms + 2 <= os_:
                     worse.append(f"{name} ({_st(os_)} vs {product_label}'s {ms:.0f})")
-                elif mt is not None and ot is not None and ot * 1.5 < mt:
+                elif mt is not None and ot is not None and ot * 1.5 < mt and mt - ot >= 10:
                     better.append(f"{name} ({ot:.0f}s vs {product_label}'s {mt:.0f}s)")
-                elif mt is not None and ot is not None and mt * 1.5 < ot:
+                elif mt is not None and ot is not None and mt * 1.5 < ot and ot - mt >= 10:
                     worse.append(f"{name} ({ot:.0f}s vs {product_label}'s {mt:.0f}s)")
         mine_txt = _fmt_rate(mine.get("ok") or 0, mine.get("n") or 0)
         steps = mine.get("median_steps")
