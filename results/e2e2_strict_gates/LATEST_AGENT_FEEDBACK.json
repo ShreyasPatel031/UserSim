@@ -1,7 +1,7 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T07:01:00Z",
+  "graded_at": "2026-09-26T07:16:00Z",
   "live_launches": "stopped",
   "note": "Owner gates sessions were released, including primes. New grades use --grade-study and do not open Browserbase. #47 tip 234280b and integration tip 4a874ac are not live-graded.",
   "heads": {
@@ -36,7 +36,7 @@
     },
     "cursor/tonight-integration": {
       "sha": "617e158",
-      "tip_seen": "872438f",
+      "tip_seen": "6be5be0",
       "note": "Cherry-pick of task-completion onto the a11y loop. Both sites aborted. Tip 4a874ac holds no idle primes and is not live-graded.",
       "linear": {
         "study_id": "9ac802e0-30fa-487b-87e0-5d3ee8b3b50d",
@@ -328,6 +328,26 @@
       "time_to_first_action": "FAIL missing field page_open_at_ts",
       "product": "0/7 structural 7",
       "final_screenshot": "missing field final_screenshot_url"
+    }
+  ],
+  "newest_complete": [
+    {
+      "study_id": "863e1a10-def0-469d-ba44-012bf1885db3",
+      "site": "https://linear.app",
+      "pass": false,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=41.891s max=67.259s FAIL",
+      "product": "0/8",
+      "note": "8/8 structurally past the first screen. PNG bytes not in GCS. Judge: no downloadable PNG."
+    },
+    {
+      "study_id": "884dce8f-cb4a-4441-ac14-12df43833a9e",
+      "site": "https://excalidraw.com",
+      "pass": false,
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=55.326s max=83.894s FAIL",
+      "product": "0/8",
+      "note": "8/8 structurally past the first screen. PNG bytes not in GCS."
     }
   ]
 }
