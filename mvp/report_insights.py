@@ -573,7 +573,11 @@ def _usersim_failure(result: dict[str, Any], start_url: str) -> dict[str, str] |
     blob = _failure_blob(result)
     target = str(result.get("site_url") or start_url or "")
     final = str(result.get("final_url") or "")
-    if _CAPTCHA_RE.search(blob):
+    failed0 = result.get("failed_step") if isinstance(result.get("failed_step"), dict) else {}
+    walled0 = str(result.get("stop_reason") or "") == "needs_account" or str(failed0.get("phase") or "") == "needs_account"
+    if _CAPTCHA_RE.search(blob) and not walled0:
+        # A captcha behind an account wall is the wall's signup being blocked;
+        # the wall row says "blocked at signup: captcha".
         return {
             "kind": "captcha",
             "reason": "Run stopped on a captcha. That is a UserSim limitation, not product friction.",

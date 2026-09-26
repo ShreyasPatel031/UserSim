@@ -108,7 +108,25 @@ def same_site(a: str, b: str) -> bool:
     ha, hb = registrable_host(a), registrable_host(b)
     if not ha or not hb:
         return False
-    return ha == hb or ha.endswith("." + hb) or hb.endswith("." + ha)
+    if ha == hb or ha.endswith("." + hb) or hb.endswith("." + ha):
+        return True
+    # One brand under two TLDs (notion.so redirects to notion.com).
+    ba, bb = _brand(ha), _brand(hb)
+    return bool(ba) and ba == bb
+
+
+_SECOND_LEVEL = frozenset({"co", "com", "org", "net", "ac", "gov", "edu"})
+
+
+def _brand(host: str) -> str:
+    parts = [p for p in host.split(".") if p]
+    if len(parts) < 2:
+        return ""
+    if len(parts) >= 3 and parts[-2] in _SECOND_LEVEL and len(parts[-1]) == 2:
+        label = parts[-3]
+    else:
+        label = parts[-2]
+    return label if len(label) >= 4 else ""
 
 
 def is_non_product_host(url: str) -> bool:
