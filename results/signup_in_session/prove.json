@@ -1,0 +1,45 @@
+{
+  "api": "mvp.signup_in_session.signup_in_session",
+  "timeout_s": 90,
+  "capsolver_balance_usd": 0.9498,
+  "paid_solves": "stopped — live balance is under the $1 floor",
+  "browserbase": "one session at a time, owner=signup, released after each run",
+  "sites": [
+    {
+      "site": "https://linear.app",
+      "passed": 0,
+      "runs_attempted": 4,
+      "reason": "auth_error",
+      "detail": "A single submit reached Check your email and a same-browser magic link. Repeats returned login-too-fast. A link opened in a different browser expires."
+    },
+    {
+      "site": "https://trello.com",
+      "passed": 0,
+      "runs_attempted": 3,
+      "reason": "email_not_sent",
+      "detail": "One run reached the Atlassian email code and the name/password welcome step. Later submits did not send a new code."
+    },
+    {
+      "site": "https://asana.com",
+      "passed": 0,
+      "runs_attempted": 2,
+      "reason": "captcha_unsolved",
+      "detail": "Enterprise reCAPTCHA checkbox is on the create-account form. Browserbase left the token empty. CapSolver was not called."
+    },
+    {
+      "site": "https://miro.com",
+      "passed": 0,
+      "runs_attempted": 3,
+      "reason": "captcha_unsolved",
+      "detail": "Plus-aliases hit emailTooManyAliases. A dotted alias got past that and the API returned captchaV2Required. Browserbase left the token empty."
+    },
+    {
+      "site": "https://www.tldraw.com",
+      "passed": 0,
+      "runs_attempted": 2,
+      "reason": "sign_in_only",
+      "detail": "The canvas is usable without an account. Continue with email calls Clerk sign-in and returns form_identifier_not_found for a new alias. No email sign-up control is on the page."
+    }
+  ],
+  "goal": "3 of 5 sites at 4/5 within 90s — not met"
+}

@@ -80,6 +80,10 @@ async def _run(repeats: int) -> dict:
 
 def main() -> None:
     repeats = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+    if len(sys.argv) > 2:
+        global SITES
+        want = {a.lower().removeprefix("www.") for a in sys.argv[2:] }
+        SITES = [s for s in SITES if any(h in s for h in want)]
     payload = asyncio.run(_run(repeats))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(payload, indent=2) + "\n")

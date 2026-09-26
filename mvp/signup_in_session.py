@@ -53,28 +53,39 @@ _OAUTH = re.compile(
     r"\b(google|microsoft|apple|slack|saml|sso|office\s*365|github|facebook|passkey)\b",
     re.I,
 )
-_EMAIL_PATH = re.compile(
-    r"continue with email|sign up with email|email",
-    re.I,
+# Exact button labels, best first. "Continue with email" is a submit only once the
+# email box is already on screen (tldraw). It is not a substitute for "Continue".
+_SUBMIT_RANK: tuple[re.Pattern[str], ...] = (
+    re.compile(r"^try for free$", re.I),
+    re.compile(r"^take me to my (canvas|board)$", re.I),
+    re.compile(r"^sign up$", re.I),
+    re.compile(r"^continue$", re.I),
+    re.compile(r"^verify( email)?$", re.I),
+    re.compile(r"^next$", re.I),
+    re.compile(r"^get started$", re.I),
+    re.compile(r"^create( workspace| account)?$", re.I),
+    re.compile(r"^join$", re.I),
+    re.compile(r"^submit$", re.I),
+    re.compile(r"^continue with email$", re.I),
 )
-_SUBMIT = re.compile(
-    r"^(sign up|try for free|take me to my canvas|continue|next|create( workspace| account)?|"
-    r"get started|submit|verify|confirm|join|create)$",
-    re.I,
-)
+_EMAIL_PATH = re.compile(r"^continue with email$|^sign up with email$", re.I)
 _SKIP = re.compile(
     r"^(skip( for now| to web app)?|not now|no thanks|maybe later|do this later|"
-    r"i['’]ll do this later|got it|dismiss|close|continue without.*|maybe later)$",
+    r"i['’]ll do this later|got it)$",
     re.I,
 )
 _CODE_HINT = re.compile(
-    r"verification code|enter (the |your )?code|check your email|we (emailed|sent)|"
-    r"magic link|sign-in link|confirmation link|code we sent",
+    r"check your (email|inbox)|enter (the |your )?(verification )?code|"
+    r"we (emailed|sent) you|code we sent|sent you a (link|code)|"
+    r"click the link we|confirm your email",
     re.I,
 )
-_PHONE_HINT = re.compile(r"\b(phone number|mobile number|sms code|text message)\b", re.I)
+_PHONE_HINT = re.compile(
+    r"\b(enter your phone|verify your phone|sms code|text message code)\b", re.I
+)
 _WORK_REJECT = re.compile(
-    r"work email|business email|could not reach the email|not accepted|use your company",
+    r"personal email|use (a |your )?work email to|business email address|"
+    r"could not reach the email|email is not accepted",
     re.I,
 )
 
@@ -97,7 +108,8 @@ def fresh_alias(host: str, persona: dict[str, Any] | None, *, tag: str) -> dict[
         raise RuntimeError("persona.email or the credential vault must be a base email")
     name = str(persona.get("full_name") or persona.get("name") or base.get("full_name") or "Shreyas Patel")
     company = str(persona.get("company") or base.get("company") or "UserSim")
-    email = email_for_host(username, host, tag=tag, force_dotted=False)
+    dotted = host in {"miro.com"}
+    email = email_for_host(username, host, tag=tag, force_dotted=dotted)
     return {
         "email": email,
         "password": _generate_password(),
@@ -106,6 +118,13 @@ def fresh_alias(host: str, persona: dict[str, Any] | None, *, tag: str) -> dict[
         "alias_tag": re.sub(r"[^a-z0-9]", "", tag.lower())[:32],
         "host": host,
     }
+
+
+def _body_hint(body: str) -> str:
+    text = re.sub(r"\S+@\S+", "<email>", body or "")
+    text = re.sub(r"\b\d{4,8}\b", "<n>", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return "hint:" + text[:140]
 
 
 def _safe_step(text: str) -> str:
@@ -233,58 +252,98 @@ async def _fill_kind(page: Any, kind: str, value: str) -> bool:
         return false;
       };
       const el = fields.find(match);
-      if (!el) return false;
+      if (!el) return '';
       el.setAttribute('data-sis-target', '1');
-      return true;
+      const proto = Object.getPrototypeOf(el);
+      const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+      if (desc && desc.set) desc.set.call(el, '');
+      el.focus();
+      return 'ok';
     }
     """
     try:
         found = await page.evaluate(script, kind)
     except Exception:
-        found = False
-    if not found:
+        found = ""
+    if found != "ok":
         return False
     loc = page.locator("[data-sis-target='1']").first
     try:
         await loc.click(timeout=2500)
-        await loc.fill("")
-        await loc.press_sequentially(value, delay=18)
+        await loc.press_sequentially(value, delay=12)
+        typed = await loc.input_value()
+        if typed != value:
+            await loc.fill(value)
+            await page.evaluate(
+                """(value) => {
+                  const el = document.querySelector('[data-sis-target="1"]');
+                  if (!el) return;
+                  const desc = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el), 'value');
+                  if (desc && desc.set) desc.set.call(el, value);
+                  el.dispatchEvent(new Event('input', { bubbles: true }));
+                  el.dispatchEvent(new Event('change', { bubbles: true }));
+                }""",
+                value,
+            )
         return True
     except Exception:
         return False
 
 
-async def _click_button(page: Any, pattern: re.Pattern[str], *, avoid_oauth: bool = True) -> str | None:
-    script = """
-    () => {
-      const vis = (el) => {
-        const r = el.getBoundingClientRect();
-        const s = getComputedStyle(el);
-        return r.width > 1 && r.height > 1 && s.visibility !== 'hidden' && s.display !== 'none';
-      };
-      return [...document.querySelectorAll('button, [role="button"], a, input[type="submit"]')]
-        .filter(vis)
-        .map(el => ((el.innerText || el.getAttribute('aria-label') || el.getAttribute('value') || '') + '').replace(/\\s+/g, ' ').trim())
-        .filter(t => t && t.length < 80);
-    }
-    """
+_LABELS_JS = """
+() => {
+  const vis = (el) => {
+    const r = el.getBoundingClientRect();
+    const s = getComputedStyle(el);
+    return r.width > 1 && r.height > 1 && s.visibility !== 'hidden' && s.display !== 'none';
+  };
+  return [...document.querySelectorAll('button, [role="button"], input[type="submit"]')]
+    .filter(vis)
+    .map(el => ((el.innerText || el.getAttribute('aria-label') || el.getAttribute('value') || '') + '').replace(/\\s+/g, ' ').trim())
+    .filter(t => t && t.length < 80);
+}
+"""
+
+
+async def _labels(page: Any) -> list[str]:
     try:
-        labels = await page.evaluate(script)
+        labels = await page.evaluate(_LABELS_JS)
     except Exception:
-        labels = []
-    for label in labels or []:
-        if avoid_oauth and _OAUTH.search(label):
+        return []
+    return [str(label) for label in labels or []]
+
+
+async def _click_label(page: Any, label: str) -> bool:
+    try:
+        await page.get_by_role("button", name=label, exact=True).first.click(timeout=3000)
+        return True
+    except Exception:
+        try:
+            await page.get_by_text(label, exact=True).first.click(timeout=3000)
+            return True
+        except Exception:
+            return False
+
+
+async def _click_button(page: Any, pattern: re.Pattern[str], *, avoid_oauth: bool = True) -> str | None:
+    for label in await _labels(page):
+        if avoid_oauth and _OAUTH.search(label) and not _EMAIL_PATH.search(label):
             continue
-        if pattern.search(label):
-            try:
-                await page.get_by_role("button", name=label).first.click(timeout=3000)
+        if pattern.search(label) and await _click_label(page, label):
+            return label
+    return None
+
+
+async def _click_ranked_submit(page: Any, *, allow_email_path: bool = True) -> str | None:
+    labels = await _labels(page)
+    for pattern in _SUBMIT_RANK:
+        for label in labels:
+            if not allow_email_path and _EMAIL_PATH.search(label):
+                continue
+            if _OAUTH.search(label) and not _EMAIL_PATH.search(label):
+                continue
+            if pattern.search(label) and await _click_label(page, label):
                 return label
-            except Exception:
-                try:
-                    await page.get_by_text(label, exact=True).first.click(timeout=3000)
-                    return label
-                except Exception:
-                    continue
     return None
 
 
@@ -408,12 +467,33 @@ async def _drive(page: Any, ident: dict[str, str], deadline: float, steps: list[
         if _workspace_ready(host, snap):
             return "signed_up"
         body = str(snap.get("body") or "")
+        if stuck == 2:
+            steps.append(_body_hint(body))
+        if "/auth/error" in href:
+            steps.append(_body_hint(body))
+            return "auth_error"
+        if host == "tldraw.com" and emailed and "email" not in kinds and "code" not in kinds:
+            # The share dialog posts to Clerk sign-in. Unknown emails are rejected
+            # and the dialog closes; there is no email sign-up control on the canvas.
+            return "sign_in_only"
         if emailed and _WORK_REJECT.search(body) and "email" in kinds and "password" not in kinds:
-            # Only treat this as fatal when the form bounced back to email-only.
-            if stuck >= 1:
+            if stuck >= 2:
+                steps.append(_body_hint(body))
                 return "work_email_rejected"
         if _PHONE_HINT.search(body) and "phone" in kinds and "email" not in kinds:
             return "phone_required"
+
+        # Cookie banners sit on top of Miro/Asana submit buttons.
+        if not emailed:
+            banner = await _click_button(
+                page,
+                re.compile(r"^(reject all|accept all cookies|accept all)$", re.I),
+                avoid_oauth=True,
+            )
+            if banner:
+                steps.append(f"click:{banner}")
+                await page.wait_for_timeout(300)
+                continue
 
         # Prefer the email path over Google on the first screen (Linear, tldraw).
         if not emailed and "email" not in kinds:
@@ -436,9 +516,15 @@ async def _drive(page: Any, ident: dict[str, str], deadline: float, steps: list[
                 return "email_field_missing"
             steps.append("typed:email")
             email_at = time.time()
-            label = await _click_button(page, _SUBMIT) or await _click_button(
-                page, re.compile(r"sign up|continue|try for free|canvas", re.I)
-            )
+            # "Continue with email" is the reveal button. Clicking it again makes
+            # Linear answer "trying to login too fast". Enter submits the field.
+            label = await _click_ranked_submit(page, allow_email_path=False)
+            if not label:
+                try:
+                    await page.locator("[data-sis-target='1']").press("Enter")
+                    label = "Enter"
+                except Exception:
+                    label = None
             if not label:
                 try:
                     await page.keyboard.press("Enter")
@@ -450,18 +536,27 @@ async def _drive(page: Any, ident: dict[str, str], deadline: float, steps: list[
             await page.wait_for_timeout(800)
             continue
 
-        if snap.get("captcha") and emailed and stuck >= 2 and not captcha_waited:
+        visible_challenge = bool(snap.get("captcha")) and bool(
+            re.search(r"i['’]m not a robot|verify you are human|complete the captcha", body, re.I)
+        )
+        if visible_challenge and emailed and not captcha_waited:
             captcha_waited = True
             steps.append("wait:captcha")
-            await page.wait_for_timeout(12000)
+            await page.wait_for_timeout(8000)
             continue
-        if snap.get("captcha") and emailed and stuck >= 3 and captcha_waited:
+        if visible_challenge and captcha_waited and stuck >= 3:
             return "captcha_unsolved"
 
-        needs_mail = (
-            emailed
-            and not mail_used
-            and ("code" in kinds or bool(_CODE_HINT.search(body)))
+        needs_mail = emailed and not mail_used and (
+            "code" in kinds
+            or (
+                "email" not in kinds
+                and "password" not in kinds
+                and (
+                    bool(_CODE_HINT.search(body))
+                    or host == "miro.com"
+                )
+            )
         )
         if needs_mail and email_at is not None:
             left = max(1.0, deadline - time.time() - 8.0)
@@ -478,9 +573,7 @@ async def _drive(page: Any, ident: dict[str, str], deadline: float, steps: list[
             if not await _enter_code(page, payload):
                 return "code_field_missing"
             steps.append("typed:code")
-            label = await _click_button(page, _SUBMIT) or await _click_button(
-                page, re.compile(r"verify|continue|submit|confirm", re.I)
-            )
+            label = await _click_ranked_submit(page)
             if label:
                 steps.append(f"click:{label}")
             else:
@@ -493,12 +586,27 @@ async def _drive(page: Any, ident: dict[str, str], deadline: float, steps: list[
 
         if "password" in kinds:
             if not await _fill_kind(page, "password", ident["password"]):
-                return "password_field_missing"
+                steps.append("fill_failed:password")
+                if stuck >= 3:
+                    steps.append(_body_hint(body))
+                    return "password_field_missing"
+                await page.wait_for_timeout(400)
+                continue
             steps.append("typed:password")
             if "name" in kinds:
                 await _fill_kind(page, "name", ident["full_name"])
                 steps.append("typed:name")
-            label = await _click_button(page, _SUBMIT)
+            try:
+                await page.evaluate(
+                    """() => {
+                      document.querySelectorAll('input[type=checkbox]').forEach(el => {
+                        if (!el.checked) el.click();
+                      });
+                    }"""
+                )
+            except Exception:
+                pass
+            label = await _click_ranked_submit(page)
             if label:
                 steps.append(f"click:{label}")
             else:
@@ -516,7 +624,7 @@ async def _drive(page: Any, ident: dict[str, str], deadline: float, steps: list[
             if "workspace" in kinds:
                 await _fill_kind(page, "workspace", ident["company"])
                 steps.append("typed:workspace")
-            label = await _click_button(page, _SUBMIT) or await _click_button(page, _SKIP)
+            label = await _click_ranked_submit(page) or await _click_button(page, _SKIP)
             if label:
                 steps.append(f"click:{label}")
                 await page.wait_for_timeout(500)
@@ -528,6 +636,8 @@ async def _drive(page: Any, ident: dict[str, str], deadline: float, steps: list[
             await page.wait_for_timeout(400)
             continue
 
+        if emailed and stuck >= 3 and "email" in kinds and snap.get("captcha"):
+            return "captcha_unsolved"
         if stuck >= 4:
             return "stuck"
         await page.wait_for_timeout(500)
