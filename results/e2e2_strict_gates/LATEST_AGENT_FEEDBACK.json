@@ -1,63 +1,76 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T04:30:00Z",
+  "graded_at": "2026-09-26T04:50:00Z",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
-      "sha": "2d536c7",
-      "note": "unchanged this cycle"
-    },
-    "cursor/tonight-integration": {
-      "sha": "f044c45",
+      "sha": "2ac3c3d",
       "linear": {
-        "study_id": "b0333cd1-fa1c-4ba3-a6bc-875cefd9e88b",
+        "study_id": "96c06028-f421-4599-9aa8-9ee2d783e729",
         "pass": false,
-        "elapsed_s": 23.4,
-        "time_to_first_value": "not recorded",
+        "elapsed_s": 157.0,
+        "time_to_first_value": "6.111s PASS",
+        "total_time": "156.507s PASS",
+        "time_to_first_action": "median=0.35s max=15.732s n=24/24 FAIL",
+        "ttfa_max_who": "all 8 Asana competitor_1 agents",
+        "page_opened": "24/24 within 5s PASS",
+        "final_screenshot": "missing field final_screenshot_url FAIL",
         "product_task_completion": "0/8",
-        "abort": "missing field ax_tree",
-        "opened": 8,
-        "missing_ax": 16,
-        "missing_ax_who": "all product agents and all competitor_2 (trello)",
+        "product_note": "all 8 product agents are first-screen. Judge HTTP 400 on final.png where the URL existed; t2 product and t1 p3/p4 missing the URL.",
         "phase_counts": [
-          {
-            "phase": "missing field failed_step_phase",
-            "n": 16
-          }
+          {"phase": "act", "n": 12},
+          {"phase": "read", "n": 5},
+          {"phase": "done", "n": 4},
+          {"phase": "final_screenshot", "n": 3}
         ]
       },
       "excalidraw": {
-        "study_id": "34e75538-b5ee-4e64-95cd-a313693c5014",
+        "study_id": "f9823a33-699a-4815-a2bb-5198a0cf7473",
         "pass": false,
-        "elapsed_s": 3.7,
-        "time_to_first_value": "not recorded",
-        "product_task_completion": "0/2",
-        "abort": "missing field page_open_at_ts: 6/6",
+        "elapsed_s": 183.3,
+        "time_to_first_value": "3.224s PASS",
+        "total_time": "182.84s PASS",
+        "time_to_first_action": "median=0.378s max=18.805s n=24/24 FAIL",
+        "ttfa_max_who": "all 8 Miro competitor_2 agents",
+        "page_opened": "24/24 within 5s PASS",
+        "final_screenshot": "24/24 field present PASS, but every product judge got HTTP 400 on final.png",
+        "product_task_completion": "0/8",
+        "product_note": "4 structural past first screen (t1 product, draw a box) and 4 still on the first screen (t2 export). judge_yes=0.",
         "phase_counts": [
-          {
-            "phase": "missing field failed_step_phase",
-            "n": 6
-          }
+          {"phase": "done", "n": 15},
+          {"phase": "act", "n": 9}
         ]
       }
+    },
+    "cursor/tonight-integration": {
+      "sha": "f044c45",
+      "note": "last graded agent tree. origin moved to 8178b3d after this grade; that head is not graded yet."
     }
   },
   "bugs": [
     {
       "id": 1,
-      "fact": "Integration f044c45 Linear b0333cd1: 16/24 agents missing ax_tree (every product agent and every Trello competitor_2). Only 8 opened. phase missing field failed_step_phase x 16. final_screenshot_url missing. Product 0/8. TTFV not recorded."
+      "fact": "time_to_first_action max must be <=10s at 24 agents. Linear 96c06028 max 15.732s (every Asana competitor_1). Excalidraw f9823a33 max 18.805s (every Miro competitor_2). Median was under 5s both times. A rewritten 0s stamp gap is not this clock."
     },
     {
       "id": 2,
-      "fact": "Integration f044c45 Excalidraw 34e75538: 6/6 missing page_open_at_ts. No ax_tree, no final_screenshot_url, no failed_step, no phase_ms. Product 0/2. Elapsed 3.7s."
+      "fact": "final_screenshot_url must be on every agent and the GET must return the PNG. Linear 96c06028 is missing the field on t2 product and on t1 p3/p4. Where the URL existed, the judge got HTTP 400 on final.png. Excalidraw f9823a33 has the field on 24/24 and still 400s, so Gemini YES stayed 0."
     },
     {
       "id": 3,
-      "fact": "#47 2d536c7 is the same agent code and already failed Linear 499c892a (8 Asana agents missing ax_tree) and Excalidraw 1e967417 (missing page_open_at_ts and ax_tree)."
+      "fact": "Product gate is Gemini YES on a final screenshot, >=4/8, on a run that left the homepage. Linear 0/8, all eight product agents still on the opening frame. Excalidraw 0/8 even though four draw-a-box runs left the first screen structurally."
     },
     {
       "id": 4,
-      "fact": "New-issue stuck loop still open on study 6e2acd43: click New issue three times, no URL/DOM change, no failed_step. No run has reached >=4/8 Gemini YES or a finished report."
+      "fact": "Strength and weakness need one run past the first screen with agent, step, AX or URL, and the final screenshot. Linear weakness 0/1: 'The new issue form is hard to find because this page has no issue title field.' Excalidraw strength 0/3 and weakness 0/3: 'The export button is hard to find in the menu after the drawing is on the canvas.' real_weaknesses=0 both times."
+    },
+    {
+      "id": 5,
+      "fact": "New-issue stuck loop is still open until a run shows it is gone and product is >=4/8. Study 6e2acd43, t1__p1__product, click New issue three times with no URL/DOM change. 2ac3c3d did not abort on that loop, and the Linear product agents still never left the opening frame."
+    },
+    {
+      "id": 6,
+      "fact": "ax_tree and page_open_at_ts were present on all 24 live sessions for both 2ac3c3d sites. Do not regress. Earlier fails still stand as the contract: missing ax on product, Asana, or Trello, or missing page_open on a 6-agent Excalidraw abort, fails the run."
     }
   ]
 }

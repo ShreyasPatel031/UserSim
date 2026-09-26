@@ -625,6 +625,39 @@ def created_epoch(run: dict[str, Any]) -> float | None:
     return _epoch(run.get("created_at_ts")) or _epoch(run.get("created_at"))
 
 
+def remember_earliest_clocks(
+    runs: list[dict[str, Any]],
+    latch: dict[str, dict[str, float]],
+) -> None:
+    """Keep the earliest created and page-open stamps seen on each agent.
+
+    A later poll that moves those stamps forward (both rewritten to the
+    response time) must not shrink time_to_first_action or the 5s open gap.
+    The action time stays the poll that first showed the click.
+    """
+    for run in runs:
+        if not isinstance(run, dict):
+            continue
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        if not aid:
+            continue
+        slot = latch.setdefault(aid, {})
+        created = created_epoch(run)
+        if created is not None:
+            prev = slot.get("created_at_ts")
+            if prev is None or created < prev:
+                slot["created_at_ts"] = created
+        opened, _key = _first_recorded_epoch(_clock_sources(run), _PAGE_OPEN_TS_KEYS)
+        if opened is not None:
+            prev_open = slot.get("page_open_at_ts")
+            if prev_open is None or opened < prev_open:
+                slot["page_open_at_ts"] = opened
+        if "created_at_ts" in slot:
+            run["created_at_ts"] = slot["created_at_ts"]
+        if "page_open_at_ts" in slot:
+            run["page_open_at_ts"] = slot["page_open_at_ts"]
+
+
 def _median(values: list[float]) -> float | None:
     if not values:
         return None
