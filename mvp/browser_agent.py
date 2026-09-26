@@ -187,8 +187,9 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
         error = None
         error_type = None
         try:
-            async with _CdpSlot():
-                result = await orig_state(*args, **kwargs)
+            # The event handler does the CDP work on another task. Holding the
+            # slot here deadlocks that handler, which then returns no state.
+            result = await orig_state(*args, **kwargs)
             state_error = getattr(result, "state_error", None)
             if state_error:
                 error = str(state_error)[:400]
@@ -216,7 +217,8 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
             error = None
             error_type = None
             try:
-                return await orig_dom(*args, **kwargs)
+                async with _CdpSlot():
+                    return await orig_dom(*args, **kwargs)
             except asyncio.CancelledError:
                 error = "CancelledError: cancelled"
                 error_type = "CancelledError"
@@ -235,7 +237,8 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
             error = None
             error_type = None
             try:
-                return await orig_shot(*args, **kwargs)
+                async with _CdpSlot():
+                    return await orig_shot(*args, **kwargs)
             except asyncio.CancelledError:
                 error = "CancelledError: cancelled"
                 error_type = "CancelledError"
