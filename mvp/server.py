@@ -6,6 +6,7 @@ import asyncio
 import os
 import re
 import sys
+import time
 from pathlib import Path
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
@@ -28,19 +29,13 @@ app = FastAPI(title="UserSim MVP", version="0.1.0")
 
 @app.on_event("startup")
 async def _prime_browser_sessions() -> None:
-    """Have a Browserbase session ready before the Run click."""
+    """Start with a prime count of 0. Agents open browsers when they run."""
     if os.environ.get("MVP_A11Y_LOOP", "1").lower() in {"0", "false", "no"}:
         return
     from mvp.a11y_agent import prime_sessions
 
-    # Idle primes sit inside the 25-session cap. A 24-agent study reuses any
-    # primed session as one of the 24, so the default is zero extra sessions.
-    raw = (os.environ.get("MVP_PRIME_SESSIONS") or "0").strip()
-    try:
-        prime_n = max(0, int(raw))
-    except ValueError:
-        prime_n = 0
-    prime_sessions(prime_n)
+    # No pre-click pool. A study opens browsers when an agent runs.
+    prime_sessions(int(os.environ.get("MVP_PRIME_SESSIONS", "0") or "0"))
 
 if STATIC.is_dir():
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
@@ -687,10 +682,6 @@ async def get_study(study_id: str):
         # request until the poll that should see the first click has already
         # missed the 10s clock.
         if data.get("status") in {"running", "pending", "starting"}:
-            # Serve the stamps recorded when the page opened. Rewriting them
-            # to this poll's time made page-open look ~10s after creation
-            # once a finished agent row was merged back onto the live session,
-            # and the harness aborted 23/24 studies that had already clicked.
             return data
         # In-memory live studies: return immediately. Hydrating GCS on every UI
         # poll while 6 Browserbase agents are writing was starving the event
@@ -745,13 +736,8 @@ async def get_study(study_id: str):
 
 
 def _with_report_insights(data: dict) -> dict:
-    """Attach trace-cited insights whenever the study has runs.
-
-    A finished study with no summary used to return one empty sentence.
-    Partial runs still draw completion, steps, and time.
-    """
-    runs = [r for r in (data.get("agent_results") or []) if isinstance(r, dict)]
-    if data.get("status") != "complete" and not runs:
+    """Attach trace-cited insights on completed studies without mutating the live object."""
+    if data.get("status") != "complete":
         return data
     try:
         from mvp.report_insights import build_report_insights

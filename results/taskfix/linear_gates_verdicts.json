@@ -1,0 +1,44 @@
+[
+  {
+    "agent": "t1__p1__product",
+    "task": "Find how to create a new issue",
+    "url": "https://linear.app/docs/creating-issues",
+    "yes": true,
+    "reason": "The page clearly explains how to create new issues and provides multiple methods, including keyboard shortcuts and a \"Create new issue\" icon."
+  },
+  {
+    "agent": "t2__p1__product",
+    "task": "Look for pricing or how to get started",
+    "url": "https://linear.app/pricing",
+    "yes": true,
+    "reason": "The agent successfully navigated to the pricing page, which displays different pricing tiers and features."
+  },
+  {
+    "agent": "t1__p2__product",
+    "task": "Find how to create a new issue",
+    "url": "https://linear.app/docs/creating-issues",
+    "yes": true,
+    "reason": "The page clearly explains multiple ways to create an issue, including keyboard shortcuts and a \"Create new issue\" icon."
+  },
+  {
+    "agent": "t2__p2__product",
+    "task": "Look for pricing or how to get started",
+    "url": "https://linear.app/pricing",
+    "yes": true,
+    "reason": "The agent successfully navigated to the pricing page, which displays different pricing tiers and features."
+  },
+  {
+    "agent": "t1__p3__product",
+    "task": "Find how to create a new issue",
+    "url": "https://linear.app/docs/creating-issues",
+    "yes": true,
+    "reason": "The page clearly explains multiple ways to create an issue, including keyboard shortcuts and a \"Create new issue\" icon."
+  },
+  {
+    "agent": "t2__p3__product",
+    "task": "Look for pricing or how to get started",
+    "url": "https://linear.app/pricing",
+    "yes": true,
+    "reason": "The agent successfully navigated to the pricing page, which displays different pricing tiers and features."
+  }
+]

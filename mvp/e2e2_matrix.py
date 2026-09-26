@@ -97,6 +97,17 @@ DEFAULT_MAX_ELAPSED_S = float(
 DEFAULT_FIRST_SHOT_S = float(os.environ.get("E2E2_FIRST_SHOT_S", "5") or "5")
 
 
+def _study_clock(study: dict, key: str) -> float | None:
+    """Headline clock stored on the study, not a harness poll timestamp."""
+    raw = study.get(key)
+    if raw is None and isinstance(study.get("summary"), dict):
+        raw = study["summary"].get(key)
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return None
+
+
 def _log(msg: str) -> None:
     print(msg, flush=True)
 
@@ -303,48 +314,24 @@ def _bb_owner() -> str:
     return "testfix"
 
 
+# This harness does not keep a pre-click pool.
+PRIME_SESSIONS = 0
+
+
 def _release_testfix_sessions(study_id: str = "") -> None:
     """Release only this harness's sessions. Never signup, report, or other owners.
 
-    A blanket release keeps ``study_id=prime`` sessions. Those are the server's
-    pre-click pool, created before URL submit, and are not leftovers from a study.
+    Prime count is 0, so a blanket release also drops ``study_id=prime`` sessions.
     """
     owner = _bb_owner()
     try:
-        from mvp.kill_switch import (
-            kill_all_browserbase,
-            list_running_browserbase,
-            release_browserbase_session,
-        )
+        from mvp.kill_switch import kill_all_browserbase
 
-        if study_id:
-            released = kill_all_browserbase(owner=owner, study_id=study_id)
-        else:
-            running = list_running_browserbase(owner=owner)
-            released_ids: list[str] = []
-            failed: list[str] = []
-            kept = 0
-            for row in running:
-                if str(row.get("study_id") or "") == "prime":
-                    kept += 1
-                    continue
-                sid = str(row.get("id") or "")
-                if not sid:
-                    continue
-                if release_browserbase_session(sid):
-                    released_ids.append(sid)
-                else:
-                    failed.append(sid)
-            released = {
-                "found": len(running),
-                "released": len(released_ids),
-                "failed": failed,
-                "session_ids": released_ids,
-                "kept_prime": kept,
-                "owner": owner,
-                "study_id": None,
-            }
-        _log(f"released browserbase owner={owner} study={study_id or '*'} {released}")
+        released = kill_all_browserbase(owner=owner, study_id=study_id or None)
+        _log(
+            f"released browserbase owner={owner} study={study_id or '*'} "
+            f"prime_sessions={PRIME_SESSIONS} {released}"
+        )
     except Exception as exc:  # noqa: BLE001
         _log(f"browserbase release failed: {exc!r}")
 
@@ -767,18 +754,37 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             None if since_task_last is None else round(since_task_last, 1)
         )
         report["time_to_first_action"] = ttfa_check
+        stored_ttfv = _study_clock(study, "time_to_first_value_s")
+        stored_total = _study_clock(study, "total_time_s")
+        stored_agent = str(
+            study.get("time_to_first_value_agent")
+            or (study.get("summary") or {}).get("time_to_first_value_agent")
+            or ""
+        )
         report["time_to_first_value_s"] = (
-            None
-            if t_first_value is None or t_submit is None
-            else round(t_first_value - t_submit, 3)
+            stored_ttfv
+            if stored_ttfv is not None
+            else (
+                None
+                if t_first_value is None or t_submit is None
+                else round(t_first_value - t_submit, 3)
+            )
         )
         report["total_time_s"] = (
-            None
-            if t_report_ready is None or t_submit is None
-            else round(t_report_ready - t_submit, 3)
+            stored_total
+            if stored_total is not None
+            else (
+                None
+                if t_report_ready is None or t_submit is None
+                else round(t_report_ready - t_submit, 3)
+            )
         )
-        report["report_ready"] = t_report_ready is not None
-        report["time_to_first_value_agent"] = first_value_agent
+        report["report_ready"] = bool(study.get("report_ready")) or (
+            stored_total is not None
+        ) or t_report_ready is not None
+        report["time_to_first_value_agent"] = stored_agent or first_value_agent
+        report["url_submit_at_ts"] = _study_clock(study, "url_submit_at_ts")
+        report["report_ready_at_ts"] = _study_clock(study, "report_ready_at_ts")
         report["early_abort"] = (
             None
             if not early_abort

@@ -163,16 +163,88 @@ _PRIMED: asyncio.Queue | None = None
 _PRIME_STARTED = False
 
 
+# taskfix may hold two live browsers and never a study_id=prime session.
+# Other owners (the integration 24-wide run) are not capped here.
+TASKFIX_SESSION_CAP = 2
+_TASKFIX_LOCK: asyncio.Lock | None = None
+_TASKFIX_HELD = 0
+
+
+def _owner_is_taskfix() -> bool:
+    return (os.environ.get("MVP_BB_OWNER") or "").strip().lower() == "taskfix"
+
+
+def _taskfix_lock() -> asyncio.Lock:
+    global _TASKFIX_LOCK
+    if _TASKFIX_LOCK is None:
+        _TASKFIX_LOCK = asyncio.Lock()
+    return _TASKFIX_LOCK
+
+
+def _taskfix_running_count() -> int:
+    from mvp.kill_switch import list_running_browserbase
+
+    return len(list_running_browserbase(owner="taskfix"))
+
+
+def release_idle_taskfix(*, study_id: str | None = None) -> None:
+    """Release idle taskfix sessions. Never signup, gates, or other owners.
+
+    With no study id this drops ``study_id=prime`` only. A study id releases
+    that study's sessions after the run, so the slot is free for integration.
+    """
+    if not _owner_is_taskfix():
+        return
+    from mvp.kill_switch import kill_all_browserbase
+
+    kill_all_browserbase(owner="taskfix", study_id="prime")
+    if study_id and study_id != "prime":
+        kill_all_browserbase(owner="taskfix", study_id=study_id)
+
+
+async def _acquire_taskfix_slot() -> bool:
+    """True when this process may open one more taskfix browser."""
+    global _TASKFIX_HELD
+    if not _owner_is_taskfix():
+        return True
+    async with _taskfix_lock():
+        try:
+            remote = await asyncio.to_thread(_taskfix_running_count)
+        except Exception:
+            remote = _TASKFIX_HELD
+        if max(remote, _TASKFIX_HELD) >= TASKFIX_SESSION_CAP:
+            print(
+                f"[a11y] taskfix holds {max(remote, _TASKFIX_HELD)} sessions; cap is {TASKFIX_SESSION_CAP}",
+                flush=True,
+            )
+            return False
+        _TASKFIX_HELD += 1
+        return True
+
+
+def _release_taskfix_slot() -> None:
+    global _TASKFIX_HELD
+    if _TASKFIX_HELD > 0:
+        _TASKFIX_HELD -= 1
+
+
 def prime_sessions(n: int = 0) -> None:
     """Pre-click browsers. This harness keeps the count at 0.
 
     A positive ``n`` still fills the queue for a caller that opts in.
     ``n <= 0`` creates nothing, including no ``study_id=prime`` sessions.
+    Owner ``taskfix`` never primes, even when ``n`` is positive.
     """
     global _PRIME_STARTED
     if _PRIME_STARTED:
         return
     _PRIME_STARTED = True
+    if _owner_is_taskfix():
+        n = 0
+        try:
+            release_idle_taskfix()
+        except Exception as exc:  # noqa: BLE001
+            print(f"[a11y] taskfix prime release failed: {exc!r}", flush=True)
     if n <= 0:
         return
 
@@ -358,50 +430,8 @@ def format_ax(nodes: list[dict[str, Any]], *, limit: int = AX_CAP) -> str:
     return "\n".join(lines)
 
 
-def _preferred_control(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any] | None:
-    """Real control for this task. Decorative marketing buttons are not it."""
-    kind = task_kind(task)
-    usable = [
-        node
-        for node in nodes or []
-        if isinstance(node, dict) and not node.get("inert")
-    ]
-    if kind == "issue":
-        for node in usable:
-            href = str(node.get("href") or "").lower()
-            if "creating-issues" in href or "create-issues" in href:
-                return node
-        for node in usable:
-            name = str(node.get("name") or "").strip().lower()
-            href = str(node.get("href") or "").lower().rstrip("/")
-            if name in {"docs", "documentation", "doc"} or href.endswith("/docs"):
-                return node
-        return None
-    if kind == "pricing":
-        for node in usable:
-            blob = f"{node.get('name') or ''} {node.get('href') or ''}".lower()
-            if "pricing" in blob:
-                return node
-    return None
-
-
-def _action_from_node(node: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "act": "click",
-        "i": int(node.get("i") or 0),
-        "x": int(node.get("x") or 0),
-        "y": int(node.get("y") or 0),
-        "name": str(node.get("name") or "")[:80],
-        "href": str(node.get("href") or "")[:180],
-        "role": str(node.get("role") or ""),
-    }
-
-
 def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
     """Deterministic first move from the shared tree. No model, no page read."""
-    preferred = _preferred_control(task, nodes)
-    if preferred is not None:
-        return _action_from_node(preferred)
     words = [
         w
         for w in re.findall(r"[a-z0-9]+", (task or "").lower())
@@ -409,7 +439,6 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
     ]
     best: dict[str, Any] | None = None
     best_score = 0
-    issue = task_kind(task) == "issue"
     for node in nodes or []:
         if not isinstance(node, dict):
             continue
@@ -421,8 +450,6 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
             continue
         if "skip to content" in name:
             continue
-        if issue and "new issue" in name and "creating-issues" not in href and "create-issues" not in href:
-            continue
         score = sum(3 for w in words if w in name or w in href)
         role = str(node.get("role") or "")
         if role in {"a", "button", "link", "menuitem", "tab"}:
@@ -432,16 +459,9 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
             best_score = score
     if best is None:
         for node in nodes or []:
-            if not isinstance(node, dict) or not str(node.get("name") or "").strip():
-                continue
-            if node.get("inert"):
-                continue
-            name = str(node.get("name") or "").lower()
-            href = str(node.get("href") or "").lower()
-            if issue and "new issue" in name and "creating-issues" not in href:
-                continue
-            best = node
-            break
+            if isinstance(node, dict) and str(node.get("name") or "").strip():
+                best = node
+                break
     if best is None:
         return {"act": "scroll", "i": -1, "x": 0, "y": 400, "name": "page", "dy": 500}
     return {
@@ -689,56 +709,6 @@ def would_repeat_action(trace: list[dict[str, Any]], label: str, read: dict[str,
     return streak >= 3
 
 
-def ensure_phase_ms(sess: dict[str, Any]) -> None:
-    """The four phase durations, as numbers, on every agent."""
-    raw = dict(sess.get("phase_ms") or {})
-    for key in ("session_ready", "page_open", "first_action", "final_screenshot"):
-        if isinstance(raw.get(key), (int, float)) and not isinstance(raw.get(key), bool):
-            continue
-        alias = raw.get(f"{key}_ms")
-        if isinstance(alias, (int, float)) and not isinstance(alias, bool):
-            raw[key] = int(alias)
-        else:
-            raw[key] = 0
-        raw[f"{key}_ms"] = int(raw[key])
-    sess["phase_ms"] = raw
-
-
-def _follow_href(href: str) -> str:
-    """Absolute link to open. Same-page fragments stay a coordinate click."""
-    from urllib.parse import urlparse
-
-    raw = (href or "").strip()
-    if not raw.startswith("http"):
-        return ""
-    parsed = urlparse(raw)
-    if parsed.scheme not in {"http", "https"}:
-        return ""
-    if parsed.fragment and parsed.path in {"", "/"}:
-        return ""
-    return raw[:180]
-
-
-def action_label(action: dict[str, Any]) -> str:
-    act = str(action.get("act") or "click")
-    name = str(action.get("name") or action.get("text") or "").strip()
-    if act == "type":
-        return f"type {name or action.get('text') or ''}".strip()
-    if act == "scroll":
-        return "scroll down"
-    if act == "drag":
-        return f"drag {name}".strip()
-    if act == "done":
-        return "done"
-    return f"click {name}".strip()
-
-
-def _ms(a: float | None, b: float | None) -> int | None:
-    if a is None or b is None:
-        return None
-    return max(0, int(round((b - a) * 1000)))
-
-
 def invented_excalidraw_action(
     task: str,
     read: dict[str, Any],
@@ -804,6 +774,56 @@ def trace_canvas(previous: str, current: str, url: str, task: str) -> str:
     return previous or ""
 
 
+def ensure_phase_ms(sess: dict[str, Any]) -> None:
+    """The four phase durations, as numbers, on every agent."""
+    raw = dict(sess.get("phase_ms") or {})
+    for key in ("session_ready", "page_open", "first_action", "final_screenshot"):
+        if isinstance(raw.get(key), (int, float)) and not isinstance(raw.get(key), bool):
+            continue
+        alias = raw.get(f"{key}_ms")
+        if isinstance(alias, (int, float)) and not isinstance(alias, bool):
+            raw[key] = int(alias)
+        else:
+            raw[key] = 0
+        raw[f"{key}_ms"] = int(raw[key])
+    sess["phase_ms"] = raw
+
+
+def _follow_href(href: str) -> str:
+    """Absolute link to open. Same-page fragments stay a coordinate click."""
+    from urllib.parse import urlparse
+
+    raw = (href or "").strip()
+    if not raw.startswith("http"):
+        return ""
+    parsed = urlparse(raw)
+    if parsed.scheme not in {"http", "https"}:
+        return ""
+    if parsed.fragment and parsed.path in {"", "/"}:
+        return ""
+    return raw[:180]
+
+
+def action_label(action: dict[str, Any]) -> str:
+    act = str(action.get("act") or "click")
+    name = str(action.get("name") or action.get("text") or "").strip()
+    if act == "type":
+        return f"type {name or action.get('text') or ''}".strip()
+    if act == "scroll":
+        return "scroll down"
+    if act == "drag":
+        return f"drag {name}".strip()
+    if act == "done":
+        return "done"
+    return f"click {name}".strip()
+
+
+def _ms(a: float | None, b: float | None) -> int | None:
+    if a is None or b is None:
+        return None
+    return max(0, int(round((b - a) * 1000)))
+
+
 def apply_gate_fields(sess: dict[str, Any], **fields: Any) -> None:
     """Write every gate field. Missing values stay present as empty or null."""
     for key in GATE_FIELDS:
@@ -834,70 +854,8 @@ def apply_gate_fields(sess: dict[str, Any], **fields: Any) -> None:
     sess["final_screenshot"] = shot
 
 
-def stamp_published_step(
-    step: dict[str, Any],
-    *,
-    task: str = "",
-    read: dict[str, Any] | None = None,
-    screenshot_url: str = "",
-) -> dict[str, Any]:
-    """Write final_screenshot_url, state_sig.text, and goal_visible onto one step.
-
-    The study persists whatever is on the step at save time. Insights can cite
-    a past-homepage screenshot only when those three fields are already there.
-    Canvas flicker stays off the signature except for an Excalidraw drawing.
-    """
-    if not isinstance(step, dict):
-        return step
-    live = read if isinstance(read, dict) else {}
-    sig = step.get("state_sig") if isinstance(step.get("state_sig"), dict) else {}
-    text = str(live.get("text") or sig.get("text") or step.get("observation") or "")
-    url = str(live.get("url") or step.get("url") or "")
-    prior_canvas = str(sig.get("canvas") or "")
-    current_canvas = str(live.get("canvas") or prior_canvas)
-    if task:
-        canvas = trace_canvas(prior_canvas, current_canvas, url, task)
-    elif _host(url) != "excalidraw.com":
-        canvas = prior_canvas or current_canvas
-    else:
-        canvas = current_canvas or prior_canvas
-    step["url"] = url
-    step["state_sig"] = {"text": text[:1500], "canvas": canvas}
-    if text:
-        step["observation"] = text[:400]
-    visible_read = {
-        "url": url,
-        "text": text,
-        "title": str(live.get("title") or ""),
-        "canvas": str(live.get("canvas") or current_canvas),
-        "opened_canvas": str(live.get("opened_canvas") or ""),
-        "drew": bool(live.get("drew")),
-    }
-    if task:
-        step["goal_visible"] = bool(goal_visible(task, visible_read))
-    elif "goal_visible" not in step:
-        step["goal_visible"] = False
-    shot = str(
-        screenshot_url or step.get("final_screenshot_url") or step.get("screenshot_url") or ""
-    ).strip()
-    if shot:
-        step["screenshot_url"] = shot
-        step["final_screenshot_url"] = shot
-    nodes = live.get("nodes")
-    if nodes:
-        ax = format_ax(nodes)
-        if ax:
-            step["accessibility_tree"] = ax
-            step["ax_tree"] = ax
-    return step
-
-
-def _stamp_observation(
-    trace: list[dict[str, Any]],
-    read: dict[str, Any],
-    task: str = "",
-) -> None:
-    """Write the live page onto the latest step before the study saves it.
+def _stamp_observation(trace: list[dict[str, Any]], read: dict[str, Any]) -> None:
+    """Write the live page onto the latest step.
 
     Agents that find the goal already on screen never append a step. Without
     this, the trace keeps the opening title and the run looks like it never
@@ -911,7 +869,21 @@ def _stamp_observation(
     if not steps:
         return
     last = max(steps, key=lambda step: int(step["step"]))
-    stamp_published_step(last, task=task, read=read)
+    text = str(read.get("text") or "")
+    url = str(read.get("url") or last.get("url") or "")
+    ax = format_ax(read.get("nodes") or [])
+    last["url"] = url
+    last["observation"] = text[:400]
+    # A marketing-page canvas sample flickers. Keep the previous sample unless
+    # this is an Excalidraw drawing, where the ink change is the result.
+    previous = last.get("state_sig") if isinstance(last.get("state_sig"), dict) else {}
+    canvas = str(read.get("canvas") or "")
+    if _host(url) != "excalidraw.com":
+        canvas = str(previous.get("canvas") or "")
+    last["state_sig"] = {"text": text[:1500], "canvas": canvas}
+    if ax:
+        last["accessibility_tree"] = ax
+        last["ax_tree"] = ax
 
 
 def _step_from_read(
@@ -1019,9 +991,8 @@ class A11yBoot:
         self.install_fast_plan()
 
         async def _boot() -> None:
-            # Agents create their own browsers immediately. The shared read is
-            # only an initial observation and must not delay the first click.
-            self.published.set()
+            # Shared read for the opening display. Each agent creates its own
+            # browser when it runs. No pre-click prime pool.
             for attempt in range(4):
                 bb = await self._create_one(attempt, enqueue=False)
                 if bb is None:
@@ -1030,6 +1001,9 @@ class A11yBoot:
                     snap = await self._read_url(bb, self.study.url)
                 except Exception as exc:  # noqa: BLE001
                     print(f"[a11y] product read failed (retrying): {exc!r}", flush=True)
+                    if _owner_is_taskfix():
+                        await _close_agent_session(None, bb)
+                        _release_taskfix_slot()
                     continue
                 handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
                 page = (handle or {}).get("page") if isinstance(handle, dict) else None
@@ -1039,6 +1013,10 @@ class A11yBoot:
                     closed = True
                 if closed or not isinstance(handle, dict) or not isinstance(snap, dict):
                     print("[a11y] product read had no live page (retrying)", flush=True)
+                    if _owner_is_taskfix():
+                        browser = handle.get("browser") if isinstance(handle, dict) else None
+                        await _close_agent_session(browser, bb)
+                        _release_taskfix_slot()
                     continue
                 handle["site_key"] = "product"
                 handle["read"] = snap
@@ -1048,16 +1026,21 @@ class A11yBoot:
                     self._handle_cv.notify_all()
                 self.snapshots["product"] = snap
                 self._publish_site("product", snap)
-                # The shared browser is display-only. Close it so the 24
-                # agent sessions fit in the project cap.
-                await _close_agent_session(handle.get("browser"), handle.get("bb"))
-                # Agents open their own browsers now. Do not wait for the
-                # competitor reads before the first click clock can start.
-                self.published.set()
+                if _owner_is_taskfix() and isinstance(handle, dict):
+                    await _close_agent_session(handle.get("browser"), handle.get("bb"))
+                    _release_taskfix_slot()
+                    async with self._handle_cv:
+                        self._handles = [
+                            item for item in self._handles if item is not handle
+                        ]
+                        self.contexts.pop("product", None)
                 break
             else:
                 print("[a11y] no live product page", flush=True)
-                self.published.set()
+            extras = len([c for c in (self.study.competitors or []) if c])
+            if extras and not _owner_is_taskfix():
+                self._tasks.append(asyncio.create_task(self._fill_pool(extras, offset=1)))
+            await self._publish_rest()
 
         self._tasks.append(asyncio.create_task(_boot()))
 
@@ -1071,40 +1054,51 @@ class A11yBoot:
     async def _create_one(self, i: int, enqueue: bool = True) -> Any | None:
         from capability.browserbase_client import create_session, study_session_owner
 
-        if _PRIMED is not None:
-            try:
-                bb = _PRIMED.get_nowait()
-                print(f"[a11y] using primed session for {i + 1}", flush=True)
+        if _owner_is_taskfix() and str(getattr(self.study, "id", "") or "") == "prime":
+            return None
+        if not await _acquire_taskfix_slot():
+            return None
+        bb = None
+        try:
+            if not _owner_is_taskfix() and _PRIMED is not None:
+                try:
+                    bb = _PRIMED.get_nowait()
+                    print(f"[a11y] using primed session for {i + 1}", flush=True)
+                    if enqueue:
+                        await self.pool.put(bb)
+                    return bb
+                except asyncio.QueueEmpty:
+                    bb = None
+            deadline = getattr(self.study, "budget_deadline", None) or (
+                time.monotonic() + study_budget_s()
+            )
+            while time.monotonic() < deadline:
+                try:
+                    bb = await asyncio.to_thread(
+                        create_session,
+                        proxies=False,
+                        keep_alive=True,
+                        solve_captchas=False,
+                        advanced_stealth=False,
+                        owner=study_session_owner(),
+                        study_id=self.study.id,
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    # A 429 or a slow create is not a dead browser. Keep trying
+                    # until the study budget. Do not stop the agent on the first miss.
+                    print(f"[a11y] session {i + 1} create retry: {exc!r}", flush=True)
+                    bb = None
+                    await asyncio.sleep(5)
+                    continue
                 if enqueue:
                     await self.pool.put(bb)
                 return bb
-            except asyncio.QueueEmpty:
-                pass
-        deadline = getattr(self.study, "budget_deadline", None) or (
-            time.monotonic() + study_budget_s()
-        )
-        while time.monotonic() < deadline:
-            try:
-                bb = await asyncio.to_thread(
-                    create_session,
-                    proxies=False,
-                    keep_alive=True,
-                    solve_captchas=False,
-                    advanced_stealth=False,
-                    owner=study_session_owner(),
-                    study_id=self.study.id,
-                )
-            except Exception as exc:  # noqa: BLE001
-                # A 429 or a slow create is not a dead browser. Keep trying
-                # until the study budget. Do not stop the agent on the first miss.
-                print(f"[a11y] session {i + 1} create retry: {exc!r}", flush=True)
-                await asyncio.sleep(5)
-                continue
-            if enqueue:
-                await self.pool.put(bb)
-            return bb
-        print(f"[a11y] session {i + 1} not created before the study budget", flush=True)
-        return None
+            print(f"[a11y] session {i + 1} not created before the study budget", flush=True)
+            bb = None
+            return None
+        finally:
+            if bb is None:
+                _release_taskfix_slot()
 
     async def _fill_pool(self, n: int, offset: int = 0) -> None:
         await asyncio.gather(*[self._create_one(offset + i) for i in range(n)])
@@ -1176,6 +1170,8 @@ class A11yBoot:
                 pass
 
     def _publish_site(self, site_key: str, snap: dict[str, Any]) -> None:
+        from mvp.study import _now
+
         ax = format_ax(snap.get("nodes") or []) or str(snap.get("text") or "")[:1500] or "0 document page"
         url = str(snap.get("url") or "")
         for task in self.study.tasks or []:
@@ -1201,6 +1197,7 @@ class A11yBoot:
             )
             # The shared read is the opening observation only. Each agent
             # opens its own browser and chooses the first click from a fresh read.
+            # page_open_at_ts is that agent's goto commit, not this publish time.
             sess = self.study.live_sessions.get(agent_id) or {
                 "agent_id": agent_id,
                 "persona_id": persona.get("id"),
@@ -1218,11 +1215,9 @@ class A11yBoot:
             }
             sess["status"] = "running"
             sess["phase"] = "reading"
-            # The shared read is display only. created_at_ts and page_open_at_ts
-            # are stamped when this agent's own navigation commits, so the 5s
-            # and 10s clocks do not start while browsers are still being created.
+            sess["created_at"] = sess.get("created_at") or _now()
             step0 = _step_from_read(step=0, action=f"Opened {url}", read=snap)
-            step0["session_ready_at_ts"] = snap.get("session_ready_at_ts")
+            step0.pop("page_open_at_ts", None)
             step0["accessibility_tree"] = ax
             sess["trace"] = [step0]
             sess["num_steps"] = 1
@@ -1230,7 +1225,6 @@ class A11yBoot:
             sess.pop("pending_action", None)
             apply_gate_fields(
                 sess,
-                session_ready_at_ts=snap.get("session_ready_at_ts"),
                 page_url=url,
                 accessibility_tree=ax,
                 final_url=url,
@@ -1317,6 +1311,9 @@ class A11yBoot:
                     snap = await self._read_url(bb, url)
                 except Exception as exc:  # noqa: BLE001
                     print(f"[a11y] shared read {key} failed (retrying): {exc!r}", flush=True)
+                    if _owner_is_taskfix():
+                        await _close_agent_session(None, bb)
+                        _release_taskfix_slot()
                     continue
                 handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
                 page = (handle or {}).get("page") if isinstance(handle, dict) else None
@@ -1326,20 +1323,31 @@ class A11yBoot:
                     closed = True
                 if closed or not isinstance(handle, dict):
                     print(f"[a11y] shared read {key} had no live page (retrying)", flush=True)
+                    if _owner_is_taskfix():
+                        browser = handle.get("browser") if isinstance(handle, dict) else None
+                        await _close_agent_session(browser, bb)
+                        _release_taskfix_slot()
                     continue
                 handle["site_key"] = key
                 handle["read"] = snap
-                async with self._handle_cv:
-                    self._handles.append(handle)
-                    self.contexts[key] = handle
-                    self._handle_cv.notify_all()
+                if _owner_is_taskfix():
+                    await _close_agent_session(handle.get("browser"), handle.get("bb"))
+                    _release_taskfix_slot()
+                else:
+                    async with self._handle_cv:
+                        self._handles.append(handle)
+                        self.contexts[key] = handle
+                        self._handle_cv.notify_all()
                 self.snapshots[key] = snap
                 self._publish_site(key, snap)
-                await _close_agent_session(handle.get("browser"), handle.get("bb"))
                 return
             print(f"[a11y] no live page for {key}", flush=True)
 
-        await asyncio.gather(*[_one(key, url) for key, url in sites])
+        if _owner_is_taskfix():
+            for key, url in sites:
+                await _one(key, url)
+        else:
+            await asyncio.gather(*[_one(key, url) for key, url in sites])
         self.published.set()
 
     async def take_page(self, site_key: str, url: str) -> dict[str, Any] | None:
@@ -1798,7 +1806,6 @@ async def complete_task_on_page(
     on_step: Any | None = None,
     deadline: float | None = None,
     agent_id: str = "agent",
-    opening_nodes: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Step until the live page shows the goal.
 
@@ -1822,7 +1829,6 @@ async def complete_task_on_page(
     model_misses = 0
     offhost_refusals = 0
     done_rejects = 0
-    opening = [node for node in (opening_nodes or []) if isinstance(node, dict)]
     try:
         await page.wait_for_selector("a, button, canvas", timeout=800)
     except Exception:
@@ -1838,28 +1844,7 @@ async def complete_task_on_page(
             _miss("study budget")
             failed = {"phase": "study_budget", "reason": "study budget", "step": step_no}
             break
-        if not acted_once and opening and not read.get("nodes"):
-            # Shared read is the initial observation only. Act on this agent's
-            # own page without waiting for another tree before the first click.
-            fresh = {
-                "url": url,
-                "text": "",
-                "canvas": "",
-                "nodes": opening,
-                "title": "",
-            }
-        else:
-            read_cap = 4 if not acted_once else 12
-            try:
-                fresh = await asyncio.wait_for(
-                    _fresh_read(page, str(read.get("url") or url)),
-                    timeout=read_cap,
-                )
-            except asyncio.TimeoutError:
-                fresh = {
-                    "error": "accessibility read timed out",
-                    "url": str(read.get("url") or url),
-                }
+        fresh = await _fresh_read(page, str(read.get("url") or url))
         if fresh.get("error") and browser_dead(str(fresh.get("error"))):
             print(f"[{agent_id}] session ended: {fresh.get('error')}", flush=True)
             _miss("session ended")
@@ -1896,45 +1881,21 @@ async def complete_task_on_page(
             _miss()
             break
         model_read = dict(read)
-        live_nodes = list(read.get("nodes") or [])
-        if not acted_once and not live_nodes and opening:
-            live_nodes = opening
-        model_read["nodes"] = _nodes_for_model(live_nodes, skip)
-        action = None
+        model_read["nodes"] = _nodes_for_model(list(read.get("nodes") or []), skip)
+        try:
+            action = await asyncio.wait_for(
+                _model_action(
+                    task=task,
+                    read=model_read,
+                    history=history,
+                    changed_nothing=changed_nothing,
+                ),
+                timeout=20,
+            )
+        except asyncio.TimeoutError:
+            print(f"[{agent_id}] model action timed out", flush=True)
+            action = None
         source = "model"
-        # The first click is chosen from the tree already in hand. Waiting on
-        # the model here is what pushed competitor first-action past 10s.
-        if not acted_once:
-            invented = invented_excalidraw_action(task, read, history, skip)
-            if invented is not None:
-                action = invented
-                source = "excalidraw"
-            else:
-                picked = pick_action(task, list(model_read.get("nodes") or []))
-                page_url = str(read.get("url") or url)
-                if offhost_excalidraw_tool(picked, page_url):
-                    picked = {"act": "scroll", "i": -1, "name": "page", "dy": 600}
-                if (
-                    task_kind(task) == "issue"
-                    and "new issue" in str(picked.get("name") or "").lower()
-                ):
-                    picked = {"act": "scroll", "i": -1, "name": "page", "dy": 700}
-                action = picked
-                source = "tree"
-        if action is None:
-            try:
-                action = await asyncio.wait_for(
-                    _model_action(
-                        task=task,
-                        read=model_read,
-                        history=history,
-                        changed_nothing=changed_nothing,
-                    ),
-                    timeout=7 if not acted_once else 20,
-                )
-            except asyncio.TimeoutError:
-                print(f"[{agent_id}] model action timed out", flush=True)
-                action = None
         if not isinstance(action, dict):
             invented = invented_excalidraw_action(task, read, history, skip)
             if invented is not None:
@@ -2036,6 +1997,12 @@ async def complete_task_on_page(
             print(f"[{agent_id}] action error (continuing): {exc!r}", flush=True)
             how = f"error:{exc!r}"[:180]
         acted_once = True
+        if how in {"scroll", "type", "drag", "role", "xy", "text"}:
+            row["first_action_at_ts"] = time.time()
+            if on_step is not None:
+                maybe = on_step(row)
+                if asyncio.iscoroutine(maybe):
+                    await maybe
         await _wait_for_page(page)
         after = await _fresh_read(page, str(read.get("url") or url))
         if (
@@ -2120,9 +2087,9 @@ async def complete_task_on_page(
             row["url"] = str(read.get("url") or "")
             previous_canvas = ""
             if len(trace) >= 2 and isinstance(trace[-2], dict):
-                prior_step_sig = trace[-2].get("state_sig")
-                if isinstance(prior_step_sig, dict):
-                    previous_canvas = str(prior_step_sig.get("canvas") or "")
+                previous_sig = trace[-2].get("state_sig")
+                if isinstance(previous_sig, dict):
+                    previous_canvas = str(previous_sig.get("canvas") or "")
             row["state_sig"] = {
                 "text": str(read.get("text") or "")[:1500],
                 "canvas": trace_canvas(
@@ -2134,11 +2101,6 @@ async def complete_task_on_page(
             }
             row["accessibility_tree"] = format_ax(read.get("nodes") or [])
             row["ax_tree"] = row["accessibility_tree"]
-            stamp_published_step(row, task=task, read=read)
-            if on_step is not None:
-                maybe = on_step(row)
-                if asyncio.iscoroutine(maybe):
-                    await maybe
         logs.append(
             {
                 "step": step_no,
@@ -2159,7 +2121,7 @@ async def complete_task_on_page(
             break
 
     if stop_reason == "done" or goal_visible(task, read):
-        _stamp_observation(trace, read, task=task)
+        _stamp_observation(trace, read)
     if stop_reason:
         print(f"[{agent_id}] stop reason: {stop_reason}", flush=True)
     if not isinstance(failed, dict):
@@ -2181,111 +2143,148 @@ async def complete_task_on_page(
     }
 
 
-async def _create_session_or_close(study_id: str | None, timeout: float = 3.5) -> Any:
-    """Create one session. If it arrives after the cap, close it so the slot is free."""
-    import threading
-
-    from capability.browserbase_client import close_session, create_session, study_session_owner
-
-    loop = asyncio.get_running_loop()
-    fut: asyncio.Future[Any] = loop.create_future()
-
-    def _work() -> None:
-        try:
-            bb = create_session(
-                proxies=False,
-                keep_alive=True,
-                solve_captchas=False,
-                advanced_stealth=False,
-                owner=study_session_owner(),
-                study_id=study_id,
-            )
-        except Exception as exc:  # noqa: BLE001
-            def _fail() -> None:
-                if not fut.done():
-                    fut.set_exception(exc)
-
-            loop.call_soon_threadsafe(_fail)
-            return
-
-        def _deliver() -> None:
-            if fut.done():
-                sid = str(getattr(bb, "id", "") or "")
-                if sid:
-                    try:
-                        close_session(sid)
-                    except Exception:
-                        pass
-                return
-            fut.set_result(bb)
-
-        loop.call_soon_threadsafe(_deliver)
-
-    threading.Thread(target=_work, daemon=True).start()
-    return await asyncio.wait_for(fut, timeout)
+# A slow Browserbase slot must not fail the 5s page-open gate. Replace it
+# when navigation has not committed inside this window.
+SLOW_OPEN_S = 3.5
 
 
-async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, float, float]:
+def should_replace_open(*, started: float, now: float, opened: float | None) -> bool:
+    """True when this attempt has no navigation-commit stamp inside 3.5s.
+
+    ``opened`` is the time ``goto(wait_until='commit')`` returned. A missing
+    stamp, or one copied from the attempt start, is not an open.
+    """
+    del now
+    if opened is None:
+        return True
+    if abs(float(opened) - float(started)) < 1e-6:
+        return True
+    return (float(opened) - float(started)) > SLOW_OPEN_S
+
+
+async def _open_agent_session(
+    boot: A11yBoot, url: str
+) -> tuple[Any, Any, Any, float | None, float | None]:
     """A new Browserbase session for this agent only.
 
-    Returns browser, page, the attempt start, and the navigation-commit time.
-    The page-open clock starts at goto, not at the Browserbase create call.
-    A navigation that does not commit within 4.5s is closed and replaced.
-    A create that finishes after its own cap is closed so it cannot hold a slot.
+    Returns the session, browser, page, the goto-commit time, and the attempt
+    start. page_open is the commit time. It is not the attempt start.
     """
+    from capability.browserbase_client import create_session, study_session_owner
+
+    deadline = getattr(boot.study, "budget_deadline", None) or (
+        time.monotonic() + study_budget_s()
+    )
+    bb = None
+    browser = None
     last = "no browser session"
-    for attempt in range(1, 5):
-        bb = None
-        browser = None
+    held_slot = False
+
+    async def _attach(session: Any) -> tuple[Any, Any, Any, float | None, float]:
+        pw = await boot._playwright()
+        attached = await pw.chromium.connect_over_cdp(session.connect_url)
+        context = attached.contexts[0] if attached.contexts else await attached.new_context()
+        page = context.pages[0] if context.pages else await context.new_page()
         try:
+            await page.set_viewport_size({"width": 1440, "height": 900})
+        except Exception:
+            pass
+        try:
+            page.set_default_timeout(8000)
+            page.set_default_navigation_timeout(8000)
+        except Exception:
+            pass
+        started = time.time()
+        opened: float | None = None
+        try:
+            await page.goto(url, wait_until="commit", timeout=4500)
+            opened = time.time()
+        except Exception as exc:  # noqa: BLE001
+            print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
+        return session, attached, page, opened, started
+
+    try:
+        if _owner_is_taskfix() and str(getattr(boot.study, "id", "") or "") == "prime":
+            raise RuntimeError("taskfix does not open prime sessions")
+        if not _owner_is_taskfix():
             try:
                 bb = boot.pool.get_nowait()
             except asyncio.QueueEmpty:
                 bb = None
-            if bb is None:
+        if bb is not None:
+            try:
+                bb, browser, page, opened, started = await _attach(bb)
+                if not should_replace_open(started=started, now=time.time(), opened=opened):
+                    return bb, browser, page, opened, started
+                print(
+                    f"[a11y] replace pooled open gap="
+                    f"{None if opened is None else round(opened - started, 3)}s",
+                    flush=True,
+                )
+                await _close_agent_session(browser, bb)
+                bb = None
+                browser = None
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] pooled session unusable: {exc!r}", flush=True)
+                await _close_agent_session(browser, bb)
+                bb = None
+                browser = None
+        if not await _acquire_taskfix_slot():
+            raise RuntimeError("taskfix session cap is 2")
+        held_slot = _owner_is_taskfix()
+        for _attempt in range(2):
+            if time.monotonic() >= deadline:
+                break
+            bb = None
+            while bb is None and time.monotonic() < deadline:
                 try:
-                    bb = await _create_session_or_close(
-                        getattr(boot.study, "id", None),
-                        timeout=12,
+                    bb = await asyncio.to_thread(
+                        create_session,
+                        proxies=False,
+                        keep_alive=True,
+                        solve_captchas=False,
+                        advanced_stealth=False,
+                        owner=study_session_owner(),
+                        study_id=getattr(boot.study, "id", None),
                     )
+                    break
                 except Exception as exc:  # noqa: BLE001
                     last = repr(exc)
-                    print(f"[a11y] agent create attempt {attempt} replaced: {exc!r}", flush=True)
-                    await asyncio.sleep(0.25)
-                    continue
-            pw = await boot._playwright()
-            browser = await pw.chromium.connect_over_cdp(bb.connect_url)
-            context = browser.contexts[0] if browser.contexts else await browser.new_context()
-            page = context.pages[0] if context.pages else await context.new_page()
+                    print(f"[a11y] agent session create retry: {exc!r}", flush=True)
+                    await asyncio.sleep(2)
+            if bb is None:
+                break
             try:
-                await page.set_viewport_size({"width": 1440, "height": 900})
-            except Exception:
-                pass
-            try:
-                page.set_default_timeout(8000)
-                page.set_default_navigation_timeout(8000)
-            except Exception:
-                pass
-            # Creation for the 5s gate is this navigation, after the session exists.
-            started = time.time()
-            try:
-                await page.goto(url, wait_until="commit", timeout=4500)
+                bb, browser, page, opened, started = await _attach(bb)
             except Exception as exc:  # noqa: BLE001
                 last = repr(exc)
-                print(f"[a11y] agent goto attempt {attempt} replaced: {exc!r}", flush=True)
+                print(f"[a11y] agent attach failed: {exc!r}", flush=True)
                 await _close_agent_session(browser, bb)
+                bb = None
+                browser = None
                 continue
-            opened = time.time()
-            if opened - started > 4.5 or opened <= started:
-                print(f"[a11y] agent open attempt {attempt} missed 4.5s, replacing", flush=True)
-                await _close_agent_session(browser, bb)
-                continue
-            return bb, browser, page, started, opened
-        except Exception as exc:  # noqa: BLE001
-            last = repr(exc)
+            if not should_replace_open(started=started, now=time.time(), opened=opened):
+                if held_slot:
+                    try:
+                        browser._taskfix_slot = True
+                    except Exception:
+                        pass
+                return bb, browser, page, opened, started
+            print(
+                f"[a11y] replace slow open gap="
+                f"{None if opened is None else round(opened - started, 3)}s",
+                flush=True,
+            )
             await _close_agent_session(browser, bb)
-            print(f"[a11y] agent session attempt {attempt} replaced: {exc!r}", flush=True)
-    raise RuntimeError(last)
+            bb = None
+            browser = None
+            last = "page open did not commit within 3.5s"
+        raise RuntimeError(last)
+    except Exception:
+        await _close_agent_session(browser, bb)
+        if held_slot:
+            _release_taskfix_slot()
+        raise
 
 
 async def _close_agent_session(browser: Any, bb: Any) -> None:
@@ -2368,78 +2367,31 @@ async def _run_a11y_agent_unlocked(
     step_no = 0
     read = {"url": url, "text": "", "canvas": "", "nodes": [], "title": ""}
     try:
-        opened_at = None
+        opened_at: float | None = None
         try:
-            bb, browser, page, created_at, opened_at = await _open_agent_session(boot, url)
+            bb, browser, page, opened_at, started_at = await _open_agent_session(boot, url)
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] session ended: {exc!r}", flush=True)
             stop_reason = "session ended"
             failed = {"phase": "session", "reason": "session ended", "step": 0}
-        if page is not None and failed is None and opened_at is not None:
-            # First time this agent is visible. created_at_ts is goto start
-            # and page_open_at_ts is navigation commit on this agent's page.
-            sess["created_at_ts"] = created_at
-            sess["page_open_at_ts"] = opened_at
-            sess["phase"] = "acting"
-            trace = list(sess.get("trace") or trace)
-            if trace and isinstance(trace[0], dict):
-                trace[0]["page_open_at_ts"] = opened_at
-                trace[0]["session_ready_at_ts"] = created_at
-            opening_nodes: list[dict[str, Any]] = []
-            for snap in boot.snapshots.values():
-                if _host(str(snap.get("url") or "")) == _host(url):
-                    opening_nodes = [
-                        node for node in (snap.get("nodes") or []) if isinstance(node, dict)
-                    ]
-                    break
+        if page is not None and opened_at is not None and failed is None:
+            sess["created_at_ts"] = started_at
             apply_gate_fields(
                 sess,
                 page_open_at_ts=opened_at,
-                session_ready_at_ts=created_at,
-                page_url=url,
-                accessibility_tree=str(sess.get("accessibility_tree") or "") or "0 document page",
-                phase_ms={
-                    "session_ready": 0,
-                    "page_open": _ms(created_at, opened_at) or 0,
-                    "first_action": 0,
-                    "final_screenshot": 0,
-                },
+                session_ready_at_ts=started_at,
             )
-            # created_at is this attempt's start. page_open is navigation commit.
-            # first_action stays unset until a click, type, or scroll is saved.
-            sess.pop("first_action_at_ts", None)
+            if trace and isinstance(trace[0], dict):
+                trace[0]["page_open_at_ts"] = opened_at
             boot.study.live_sessions[agent_id] = sess
-            boot._touch()
-            # Record a real click or scroll before any accessibility read.
-            # The read is what left competitors on "Opening" past 10s.
-            first = pick_action(task_prompt, opening_nodes) if opening_nodes else {
-                "act": "scroll",
-                "i": -1,
-                "name": "page",
-                "dy": 500,
-            }
-            if offhost_excalidraw_tool(first, url) or (
-                task_kind(task_prompt) == "issue"
-                and "new issue" in str(first.get("name") or "").lower()
-            ):
-                first = {"act": "scroll", "i": -1, "name": "page", "dy": 700}
-            label = action_label(first)
-            step_no = 1
-            row = _step_from_read(
-                step=1,
-                action=label,
-                read={"url": url, "text": "", "nodes": opening_nodes, "title": ""},
-            )
-            trace.append(row)
-            history.append(label)
-            if on_step is not None:
-                maybe = on_step(row)
-                if asyncio.iscoroutine(maybe):
-                    await maybe
             try:
-                await asyncio.wait_for(_act(page, first), timeout=4)
-            except Exception as exc:  # noqa: BLE001
-                print(f"[{agent_id}] first action: {exc!r}", flush=True)
+                from mvp.study import persist_study
+
+                persist_study(boot.study)
+            except Exception:
+                pass
+            boot._touch()
+        if page is not None and failed is None:
             phase = "act"
             outcome = await complete_task_on_page(
                 page,
@@ -2452,7 +2404,6 @@ async def _run_a11y_agent_unlocked(
                 on_step=on_step,
                 deadline=deadline,
                 agent_id=agent_id,
-                opening_nodes=opening_nodes,
             )
             stop_reason = str(outcome.get("stop_reason") or "")
             failed = outcome.get("failed") if isinstance(outcome.get("failed"), dict) else failed
@@ -2489,13 +2440,9 @@ async def _run_a11y_agent_unlocked(
             try:
                 await page.screenshot(path=str(path), full_page=False, timeout=8000)
                 shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
-                shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
-                try:
-                    from mvp.opening_shot import upload_screenshot
+                from mvp.opening_shot import publish_final_png
 
-                    await upload_screenshot(study_id, agent_id, path)
-                except Exception:
-                    pass
+                shot_url = await asyncio.to_thread(publish_final_png, study_id, agent_id)
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
                 if not shot_url:
@@ -2519,19 +2466,8 @@ async def _run_a11y_agent_unlocked(
             else:
                 failed = {"phase": "act", "reason": "page did not show the goal", "step": step_no}
         phase_ms = dict(sess.get("phase_ms") or {})
-        phase_ms["page_open"] = _ms(sess.get("created_at_ts"), sess.get("page_open_at_ts")) or int(
-            phase_ms.get("page_open") or 0
-        )
-        phase_ms["first_action"] = _ms(sess.get("page_open_at_ts"), sess.get("first_action_at_ts")) or 0
         phase_ms["final_screenshot"] = shot_ms
         phase_ms["final_screenshot_ms"] = shot_ms
-        if shot_url and trace:
-            stamp_published_step(
-                trace[-1],
-                task=task_prompt,
-                read=read,
-                screenshot_url=shot_url,
-            )
 
         result = {
             "agent_id": agent_id,
@@ -2567,16 +2503,13 @@ async def _run_a11y_agent_unlocked(
         }
         ensure_phase_ms(result)
         apply_gate_fields(result, **{k: result.get(k) for k in GATE_FIELDS})
-        # The harness reads the live row. Copy the gate fields onto it before
-        # this agent returns, including a failed open that never got a click.
-        if sess.get("created_at_ts") and sess.get("page_open_at_ts"):
-            apply_gate_fields(sess, **{k: result.get(k) for k in GATE_FIELDS})
-            sess["trace"] = trace
-            sess["final_screenshot_url"] = shot_url
-            sess["final_screenshot"] = shot_url
-            sess["failed_step"] = failed
-            boot.study.live_sessions[agent_id] = sess
-            boot._touch()
         return result
     finally:
         await _close_agent_session(browser, bb)
+        if browser is not None and getattr(browser, "_taskfix_slot", False):
+            _release_taskfix_slot()
+        if _owner_is_taskfix():
+            try:
+                release_idle_taskfix()
+            except Exception:
+                pass

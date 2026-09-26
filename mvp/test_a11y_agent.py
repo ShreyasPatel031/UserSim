@@ -17,12 +17,13 @@ from mvp.a11y_agent import (
     achievable_without_account,
     format_ax,
     goal_visible,
+    invented_excalidraw_action,
     note_progress,
-    notes_from_trace,
     offhost_excalidraw_tool,
+    trace_canvas,
+    notes_from_trace,
     pick_action,
     progress_signature,
-    stamp_published_step,
     study_budget_s,
     would_repeat_action,
 )
@@ -44,33 +45,6 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(action["act"], "click")
         self.assertEqual(action["name"], "Pricing")
         self.assertTrue(action_label(action).startswith("click "))
-
-    def test_issue_task_skips_decorative_new_issue(self) -> None:
-        nodes = [
-            {"i": 0, "role": "button", "name": "New issue", "href": "", "inert": True},
-            {
-                "i": 1,
-                "role": "a",
-                "name": "Docs",
-                "href": "https://linear.app/docs/creating-issues",
-            },
-        ]
-        action = pick_action("Find how to create a new issue", nodes)
-        self.assertIn("creating-issues", action["href"])
-        self.assertNotIn("new issue", action["name"].lower())
-        self.assertTrue(offhost_excalidraw_tool({"act": "drag", "name": "canvas"}, "https://miro.com"))
-        self.assertFalse(
-            offhost_excalidraw_tool({"act": "drag", "name": "canvas"}, "https://excalidraw.com")
-        )
-        step = stamp_published_step(
-            {"step": 1, "action": "click Docs", "url": "https://linear.app/docs/creating-issues"},
-            task="Find how to create a new issue",
-            read={"url": "https://linear.app/docs/creating-issues", "text": "Create issues", "title": "Creating issues"},
-            screenshot_url="/api/studies/s/agents/a/screenshots/final.png",
-        )
-        self.assertTrue(step["final_screenshot_url"].endswith("final.png"))
-        self.assertTrue(step["goal_visible"])
-        self.assertIn("Create issues", step["state_sig"]["text"])
 
     def test_link_target_beats_skip_to_content(self) -> None:
         nodes = [
@@ -207,6 +181,48 @@ class A11yAgentTest(unittest.TestCase):
         ]
         self.assertFalse(would_repeat_action(trace[:2], "click Export image", read))
         self.assertTrue(would_repeat_action(trace, "click Export image", read))
+        self.assertIsNone(
+            invented_excalidraw_action(
+                "Find how to export or share the drawing",
+                {"url": "https://miro.com/", "nodes": []},
+            )
+        )
+        export = invented_excalidraw_action(
+            "Find how to export or share the drawing",
+            {"url": "https://excalidraw.com/", "text": "Export image..."},
+        )
+        self.assertEqual(export["name"], "Export image")
+        rectangle = invented_excalidraw_action(
+            "Draw a simple box",
+            {"url": "https://excalidraw.com/", "text": "Pick a tool"},
+        )
+        self.assertEqual(rectangle["name"], "Rectangle")
+        self.assertIsNone(
+            invented_excalidraw_action(
+                "Draw a simple box",
+                {"url": "https://miro.com/", "text": "Whiteboard"},
+            )
+        )
+        self.assertTrue(
+            offhost_excalidraw_tool(
+                {"act": "click", "name": "Export image"},
+                "https://miro.com/",
+            )
+        )
+        self.assertFalse(
+            offhost_excalidraw_tool(
+                {"act": "drag", "name": "canvas"},
+                "https://excalidraw.com/",
+            )
+        )
+        self.assertEqual(
+            trace_canvas("dark=10", "dark=400", "https://miro.com/", "Find how to export or share"),
+            "dark=10",
+        )
+        self.assertEqual(
+            trace_canvas("dark=0", "dark=20", "https://excalidraw.com/", "Draw a simple box"),
+            "dark=20",
+        )
         self.assertFalse(
             goal_visible(
                 "Draw a simple box",

@@ -104,6 +104,107 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _epoch_number(value: object) -> float | None:
+    try:
+        stamp = float(value)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return None
+    if stamp <= 0:
+        return None
+    return stamp
+
+
+def headline_clocks(
+    *,
+    url_submit_at_ts: object,
+    report_ready_at_ts: object,
+    runs: list[dict[str, Any]],
+    complete: bool,
+) -> dict[str, Any]:
+    """Time to first value and total time, measured from URL submit.
+
+    ``url_submit_at_ts`` is the POST that accepted the URL. ``first_action_at_ts``
+    is the real click. ``report_ready_at_ts`` is when the report exists. A poll
+    timestamp is not an input.
+    """
+    submit = _epoch_number(url_submit_at_ts)
+    best: tuple[float, str] | None = None
+    if submit is not None:
+        for row in runs:
+            if not isinstance(row, dict):
+                continue
+            acted = _epoch_number(row.get("first_action_at_ts"))
+            if acted is None:
+                continue
+            aid = str(row.get("agent_id") or row.get("task_id") or "")
+            if best is None or acted < best[0]:
+                best = (acted, aid)
+    ttfv = None
+    agent = ""
+    if submit is not None and best is not None:
+        ttfv = round(max(0.0, best[0] - submit), 3)
+        agent = best[1]
+    total = None
+    ready = False
+    ready_at = _epoch_number(report_ready_at_ts)
+    if complete and submit is not None and ready_at is not None:
+        total = round(max(0.0, ready_at - submit), 3)
+        ready = True
+    return {
+        "url_submit_at_ts": submit,
+        "report_ready_at_ts": ready_at,
+        "time_to_first_value_s": ttfv,
+        "time_to_first_value_agent": agent,
+        "total_time_s": total,
+        "report_ready": ready,
+    }
+
+
+def _publish_product_finals(study: StudyState) -> None:
+    """Put each product final.png in GCS and keep the URL only when the bytes are there."""
+    from mvp.opening_shot import publish_final_png
+
+    for row in study.agent_results or []:
+        if not isinstance(row, dict):
+            continue
+        aid = str(row.get("agent_id") or "")
+        site = str(row.get("site_key") or "")
+        if site != "product" and not aid.endswith("__product"):
+            continue
+        shot = publish_final_png(study.id, aid)
+        row["final_screenshot_url"] = shot
+        row["final_screenshot"] = shot
+        trace = row.get("trace") or []
+        if shot and trace and isinstance(trace[-1], dict):
+            trace[-1]["final_screenshot_url"] = shot
+            trace[-1]["screenshot_url"] = trace[-1].get("screenshot_url") or shot
+        sess = (study.live_sessions or {}).get(aid)
+        if isinstance(sess, dict):
+            sess["final_screenshot_url"] = shot
+            sess["final_screenshot"] = shot
+
+
+def apply_headline_clocks(study: StudyState) -> None:
+    runs: list[dict[str, Any]] = [
+        row for row in (study.agent_results or []) if isinstance(row, dict)
+    ]
+    runs.extend(
+        row for row in (study.live_sessions or {}).values() if isinstance(row, dict)
+    )
+    clocks = headline_clocks(
+        url_submit_at_ts=study.url_submit_at_ts,
+        report_ready_at_ts=study.report_ready_at_ts,
+        runs=runs,
+        complete=study.status == "complete" and bool(study.summary),
+    )
+    study.time_to_first_value_s = clocks["time_to_first_value_s"]
+    study.time_to_first_value_agent = clocks["time_to_first_value_agent"]
+    study.total_time_s = clocks["total_time_s"]
+    study.report_ready = bool(clocks["report_ready"])
+    if isinstance(study.summary, dict):
+        study.summary.update(clocks)
+
+
 def _mark_first_screenshot(
     sess: dict[str, Any] | None,
     *,
@@ -230,6 +331,12 @@ class StudyState:
     auth_blocker: str | None = None
     kill_requested: bool = False
     max_agents: int = 0
+    url_submit_at_ts: float | None = None
+    report_ready_at_ts: float | None = None
+    time_to_first_value_s: float | None = None
+    time_to_first_value_agent: str = ""
+    total_time_s: float | None = None
+    report_ready: bool = False
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -243,13 +350,7 @@ def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> No
 
 def _ordered_live_sessions(study: StudyState) -> list[dict[str, Any]]:
     order = {t.get("id"): i for i, t in enumerate(study.tasks)}
-    # Hide rows whose own page has not committed. A shared-read placeholder
-    # has no created_at_ts, and the harness would abort that missing clock.
-    sessions = [
-        dict(s)
-        for s in study.live_sessions.values()
-        if isinstance(s, dict) and s.get("created_at_ts")
-    ]
+    sessions = [dict(s) for s in study.live_sessions.values()]
     sessions.sort(key=lambda s: order.get(s.get("agent_id"), 99))
     return sessions
 
@@ -3064,28 +3165,6 @@ async def run_study(
                                 step=step,
                             )
                     sess["status"] = "running"
-                    # Stamp the step before this trace is saved. Insights cite
-                    # final_screenshot_url, state_sig.text, and goal_visible.
-                    from mvp.a11y_agent import stamp_published_step
-
-                    stamp_published_step(
-                        step,
-                        task=str(sess.get("task_prompt") or ""),
-                        screenshot_url=str(
-                            step.get("final_screenshot_url")
-                            or step.get("screenshot_url")
-                            or sess.get("final_screenshot_url")
-                            or ""
-                        ),
-                    )
-                    if step.get("final_screenshot_url"):
-                        sess["final_screenshot_url"] = step["final_screenshot_url"]
-                        sess["final_screenshot"] = step["final_screenshot_url"]
-                    sig = step.get("state_sig") if isinstance(step.get("state_sig"), dict) else {}
-                    if sig.get("text"):
-                        sess["final_dom"] = str(sig.get("text") or "")[:1500]
-                    if "goal_visible" in step:
-                        sess["goal_visible"] = bool(step.get("goal_visible"))
                     sess["trace"] = list(sess.get("trace") or [])
                     existing = {s.get("step"): i for i, s in enumerate(sess["trace"])}
                     if step.get("step") in existing:
@@ -3095,14 +3174,20 @@ async def run_study(
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
                     action_text = str(step.get("action") or "")
+                    acted_stamp = step.get("first_action_at_ts")
                     if (
                         not sess.get("first_action_at_ts")
+                        and isinstance(acted_stamp, (int, float))
                         and action_text
                         and not action_text.lower().startswith("open")
                     ):
                         from mvp.a11y_agent import apply_gate_fields
 
-                        apply_gate_fields(sess, first_action_at_ts=time.time())
+                        stamp = float(acted_stamp)
+                        opened = _epoch_number(sess.get("page_open_at_ts"))
+                        if opened is not None and stamp <= opened:
+                            stamp = opened + 0.001
+                        apply_gate_fields(sess, first_action_at_ts=stamp)
                     _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     thought = (step.get("thought") or "").strip()
                     if thought:
@@ -3145,27 +3230,36 @@ async def run_study(
                     agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
                     site = task.get("site_url") or study.url
                     if a11y_boot is not None:
-                        # The shared read is display only. Start this agent
-                        # even when its row is still a placeholder.
+                        # The shared read is display only. Do not wait for a
+                        # click: this agent is what produces the first action.
+                        _wait_until = getattr(study, "budget_deadline", None) or (
+                            time.monotonic() + 30
+                        )
+                        while time.monotonic() < _wait_until:
+                            existing = study.live_sessions.get(agent_id) or {}
+                            trace = existing.get("trace") or []
+                            opened = bool(existing.get("page_open_at_ts")) or any(
+                                isinstance(step, dict) and int(step.get("step") or -1) == 0
+                                for step in trace
+                            )
+                            if opened:
+                                break
+                            await asyncio.sleep(0.05)
                         sess = study.live_sessions.get(agent_id)
-                        if sess is None:
-                            sess = {
-                                "agent_id": agent_id,
-                                "persona_id": persona.get("id"),
-                                "persona_name": persona.get("name"),
-                                "persona_bio": persona.get("bio"),
-                                "task_id": task.get("id"),
-                                "task_title": task.get("title"),
-                                "task_prompt": task.get("prompt"),
-                                "site_key": str(task.get("site_key") or "product"),
-                                "site_url": site,
-                                "site_label": str(task.get("site_label") or "Product"),
-                                "status": "starting",
-                                "trace": [],
-                                "num_steps": 0,
-                                "live_thoughts": [],
-                            }
-                            study.live_sessions[agent_id] = sess
+                        trace = (sess or {}).get("trace") or []
+                        opened = bool(sess and (
+                            sess.get("page_open_at_ts")
+                            or any(
+                                isinstance(step, dict) and int(step.get("step") or -1) == 0
+                                for step in trace
+                            )
+                        ))
+                        if not opened:
+                            print(
+                                f"[{agent_id}] no shared page read before the study budget",
+                                flush=True,
+                            )
+                            return {"agent_id": agent_id, "skipped": True}
                     else:
                         sess = study.live_sessions.setdefault(
                             agent_id,
@@ -3210,16 +3304,7 @@ async def run_study(
                     sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
                     try:
-                        class _BrowserPass:
-                            async def __aenter__(self) -> None:
-                                return None
-
-                            async def __aexit__(self, *_exc: object) -> bool:
-                                return False
-
-                        async with (
-                            _BrowserPass() if a11y_boot is not None else _BROWSER_SEMAPHORE
-                        ):
+                        async with _BROWSER_SEMAPHORE:
                             # The accessibility loop runs all 24 agents at once.
                             # The older screenshot loop still queues on the LLM cap.
                             class _Pass:
@@ -3277,11 +3362,6 @@ async def run_study(
                                 if a11y_boot is not None:
                                     from mvp.a11y_agent import run_a11y_agent
 
-                                    # Leave time for the final PNG and the report inside the 480s gate.
-                                    _raw_deadline = getattr(study, "budget_deadline", None)
-                                    _agent_deadline = (
-                                        None if _raw_deadline is None else float(_raw_deadline) - 45
-                                    )
                                     _agent_coro = run_a11y_agent(
                                         boot=a11y_boot,
                                         study_id=study.id,
@@ -3293,7 +3373,7 @@ async def run_study(
                                         persona=persona,
                                         on_step=lambda step: _on_agent_step(agent_id, step),
                                         site_key=str(task.get("site_key") or "product"),
-                                        deadline=_agent_deadline,
+                                        deadline=getattr(study, "budget_deadline", None),
                                     )
                                 else:
                                     _agent_coro = run_browser_agent(
@@ -3426,9 +3506,18 @@ async def run_study(
                             from mvp.a11y_agent import GATE_FIELDS, apply_gate_fields
 
                             apply_gate_fields(result)
+                            from mvp.opening_shot import publish_final_png
+
+                            shot = await asyncio.to_thread(
+                                publish_final_png, study.id, str(agent_id or "")
+                            )
+                            result["final_screenshot_url"] = shot
+                            result["final_screenshot"] = shot
                             for key in GATE_FIELDS:
                                 if key in result:
                                     sess[key] = result[key]
+                            sess["final_screenshot_url"] = shot
+                            sess["final_screenshot"] = shot
                             sess["final_url"] = result.get("final_url") or sess.get("final_url")
                             if result.get("stop_reason"):
                                 sess["stop_reason"] = result.get("stop_reason")
@@ -3788,7 +3877,14 @@ async def run_study(
         except Exception as insight_exc:  # noqa: BLE001
             print(f"report insights failed: {insight_exc!r}", flush=True)
         touch("Complete", "complete")
+        study.report_ready_at_ts = time.time()
+        apply_headline_clocks(study)
         log_activity(study, "complete", "Study complete")
+        persist_study(study)
+        try:
+            await asyncio.to_thread(_publish_product_finals, study)
+        except Exception as shot_exc:  # noqa: BLE001
+            print(f"product final.png upload failed: {shot_exc!r}", flush=True)
         persist_study(study)
     except SiteAccessBlockedError as exc:
         study.status = "error"
@@ -3837,6 +3933,7 @@ async def run_study(
 def create_study(url: str, segment: str) -> StudyState:
     study_id = str(uuid.uuid4())
     study = StudyState(id=study_id, url=url.strip(), segment=segment.strip())
+    study.url_submit_at_ts = time.time()
     STUDIES[study_id] = study
     return study
 
@@ -3891,6 +3988,12 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "backend": study.backend,
             "email": study.email,
             "kill_requested": study.kill_requested,
+            "url_submit_at_ts": study.url_submit_at_ts,
+            "report_ready_at_ts": study.report_ready_at_ts,
+            "time_to_first_value_s": study.time_to_first_value_s,
+            "time_to_first_value_agent": study.time_to_first_value_agent,
+            "total_time_s": study.total_time_s,
+            "report_ready": study.report_ready,
         }
     )
 
