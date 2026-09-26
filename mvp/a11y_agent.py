@@ -1556,6 +1556,29 @@ def _pw_role(role: str) -> str:
     }.get((role or "").lower(), "")
 
 
+async def _escape_to_app(page: Any, read: dict[str, Any], signed_in: bool, escapes: list[str]) -> bool:
+    """Once per run, a signed-in agent stuck on a setup screen opens the site's home page.
+
+    That is what a person does when onboarding will not let go: type the
+    address again. Signed in, the home page usually lands in the app.
+    """
+    from urllib.parse import urlsplit
+
+    if not signed_in or escapes:
+        return False
+    parts = urlsplit(str(read.get("url") or ""))
+    if not parts.scheme.startswith("http") or not parts.netloc:
+        return False
+    home = f"{parts.scheme}://{parts.netloc}/"
+    escapes.append(home)
+    try:
+        await page.goto(home, wait_until="domcontentloaded", timeout=10000)
+    except Exception:
+        return False
+    await _wait_for_page(page)
+    return True
+
+
 async def _click_named(page: Any, action: dict[str, Any]) -> str:
     """Click the live control by role and name, then by its bounding box."""
     name = str(action.get("name") or "").strip()
@@ -1572,12 +1595,30 @@ async def _click_named(page: Any, action: dict[str, Any]) -> str:
                 count = await loc.count()
             except Exception:
                 count = 0
-        for idx in range(min(count, 6)):
+        # Several controls can share a name (carousel slides, hidden
+        # duplicates). Click the one the agent saw: on screen and nearest
+        # to where the snapshot put it.
+        size0 = getattr(page, "viewport_size", None) or {"width": 1440, "height": 900}
+        vw, vh = int(size0.get("width") or 1440), int(size0.get("height") or 900)
+        ax, ay = int(action.get("x") or 0), int(action.get("y") or 0)
+        ranked: list[tuple[float, int]] = []
+        for idx in range(min(count, 8)):
             item = loc.nth(idx)
             try:
                 if not await item.is_visible():
                     continue
-                await item.click(timeout=2500)
+                box = await item.bounding_box()
+            except Exception:
+                continue
+            if not box:
+                continue
+            cx, cy = box["x"] + box["width"] / 2, box["y"] + box["height"] / 2
+            off = not (box["x"] + box["width"] > 0 and box["x"] < vw and box["y"] + box["height"] > 0 and box["y"] < vh)
+            dist = ((cx - ax) ** 2 + (cy - ay) ** 2) ** 0.5 if (ax or ay) else 0.0
+            ranked.append(((1e6 if off else 0.0) + dist, idx))
+        for _score, idx in sorted(ranked):
+            try:
+                await loc.nth(idx).click(timeout=2500)
                 return "role"
             except Exception:
                 continue
@@ -1985,6 +2026,7 @@ async def complete_task_on_page(
     stop_reason = ""
     signup_url = ""
     skip: set[str] = set()
+    escapes: list[str] = []
     logs: list[dict[str, Any]] = []
     changed_nothing = False
     model_misses = 0
@@ -2088,6 +2130,15 @@ async def complete_task_on_page(
             print(f"[{agent_id}] decide {act} {action.get('name')!r} text={action.get('text')!r} why={action.get('reason')!r}", flush=True)
         if act == "blocked":
             model_misses += 1
+            if model_misses == 2 and action.get("name"):
+                # Slow pages: give the control one more real try.
+                skip.discard(str(action.get("name") or "").strip().lower())
+            if model_misses >= 4 and await _escape_to_app(page, read, signed_in, escapes):
+                model_misses = 0
+                skip.clear()
+                seed = None
+                history.append("reopened the product's home page to get past the stuck screen")
+                continue
             if model_misses >= 4:
                 _miss("kept choosing a control that does nothing")
                 break
@@ -2131,6 +2182,12 @@ async def complete_task_on_page(
         label = action_label(action)
         if would_repeat_action(trace, label, read):
             repeats += 1
+            if repeats >= 3 and await _escape_to_app(page, read, signed_in, escapes):
+                repeats = 0
+                skip.clear()
+                seed = None
+                history.append("reopened the product's home page to get past the stuck screen")
+                continue
             if repeats >= 3:
                 _miss("repeated an action that changed nothing")
                 break
