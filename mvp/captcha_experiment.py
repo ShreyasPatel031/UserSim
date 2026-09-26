@@ -749,9 +749,25 @@ async def trial_one(detection: dict[str, Any], method: str, repeat: int) -> dict
         info = await _signals(page)
         info["type"] = ctype
         info["url"] = detection["url"]
-        for key in ("sitekey", "gt", "challenge", "captchaId", "action"):
+        for key in ("gt", "challenge", "captchaId", "action"):
             if not info.get(key) and detection.get(key):
                 info[key] = detection.get(key)
+        # The survey key is more reliable than a live scrape, which sometimes
+        # picks up a short or unrelated token and CapSolver rejects the task.
+        saved_key = str(detection.get("sitekey") or "")
+        live_key = str(info.get("sitekey") or "")
+
+        def _usable(value: str) -> bool:
+            return (value.startswith("6L") and len(value) >= 30) or (
+                value.startswith("0x4") and len(value) >= 12
+            )
+
+        if _usable(saved_key):
+            info["sitekey"] = saved_key
+        elif _usable(live_key):
+            info["sitekey"] = live_key
+        if str(info.get("sitekey") or "").startswith("0x4"):
+            info["type"] = "turnstile"
         if err:
             return {**base, "token": "n", "cleared": "n", "signup": "n", "cost": 0.0, "seconds": round(time.time() - started, 2), "note": err}
         await _arm_form(page)
