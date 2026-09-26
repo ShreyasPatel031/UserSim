@@ -25,6 +25,8 @@ class SessionMetadataTests(unittest.TestCase):
 
         with patch.dict("os.environ", {"MVP_BB_OWNER": "testfix"}, clear=False):
             self.assertEqual(study_session_owner(), "testfix")
+        with patch.dict("os.environ", {"MVP_BB_OWNER": "gates"}, clear=False):
+            self.assertEqual(study_session_owner(), "gates")
         with patch.dict("os.environ", {"MVP_BB_OWNER": ""}, clear=False):
             self.assertEqual(study_session_owner(), "e2e")
 

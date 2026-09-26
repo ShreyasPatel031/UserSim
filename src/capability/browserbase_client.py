@@ -123,6 +123,8 @@ BB_OWNER_COMPETITOR = "competitor"
 # Strict e2e harness tag. Release only these sessions; do not touch signup,
 # report runs, or another agent's e2e sessions.
 BB_OWNER_TESTFIX = "testfix"
+# This harness's live baseline. Release only these sessions.
+BB_OWNER_GATES = "gates"
 
 
 def study_session_owner() -> str:
@@ -135,7 +137,7 @@ def study_session_owner() -> str:
     """
     raw = (os.environ.get("MVP_BB_OWNER") or "").strip().lower()
     # signup sessions are a different pipeline and must never be tagged here.
-    if raw in {BB_OWNER_COMPETITOR, "report", BB_OWNER_E2E, BB_OWNER_TESTFIX}:
+    if raw in {BB_OWNER_COMPETITOR, "report", BB_OWNER_E2E, BB_OWNER_TESTFIX, BB_OWNER_GATES}:
         return raw
     return BB_OWNER_E2E
 
