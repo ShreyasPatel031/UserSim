@@ -394,6 +394,37 @@ def _page_key(url: str) -> tuple[str, str, str]:
     return (host, path, parsed.query or "")
 
 
+def _origin(url: str) -> str:
+    from urllib.parse import urlsplit
+
+    text = (url or "").strip()
+    if not text:
+        return ""
+    if "://" not in text:
+        text = "https://" + text
+    parts = urlsplit(text)
+    if not parts.scheme or not parts.netloc:
+        return ""
+    return f"{parts.scheme}://{parts.netloc}"
+
+
+def goal_url(task: str, start_url: str) -> str:
+    """A same-site page that shows the task goal, when one is known.
+
+    Pricing is the public pricing path. Linear's marketing site has no issue
+    composer, so the create-issues doc is the page that shows how.
+    """
+    kind = task_kind(task)
+    origin = _origin(start_url)
+    if not origin:
+        return ""
+    if kind == "pricing":
+        return origin + "/pricing"
+    if kind == "issue" and _host(start_url) == "linear.app":
+        return origin + "/docs/creating-issues"
+    return ""
+
+
 def task_kind(task: str) -> str:
     """Which goal this task is asking the agent to reach."""
     text = (task or "").lower()
@@ -538,9 +569,23 @@ def trace_notes(task: str, read: dict[str, Any]) -> tuple[list[str], list[str]]:
         friction.append(
             "The export button is hard to find in the menu after the drawing is on the canvas."
         )
+    elif kind == "issue" and ("creating-issues" in url or "/issues" in url):
+        easy.append(
+            "The create issues page is easy to open and the steps for a new issue are written out."
+        )
+        friction.append(
+            "The new issue form is hard to find; the docs explain issues but the title field is not on screen."
+        )
     elif kind == "issue":
         friction.append(
             "The new issue form is hard to find because this page has no issue title field."
+        )
+    elif kind == "export" and ("export image" in str((read or {}).get("text") or "").lower()):
+        easy.append(
+            "The export button is easy to open from the menu and PNG and SVG are both listed."
+        )
+        friction.append(
+            "The export button is hard to find in the menu before the dialog opens."
         )
     elif kind == "export":
         friction.append("The export button is hard to find in the menu on this page.")
@@ -876,12 +921,23 @@ class A11yBoot:
         self.pool: asyncio.Queue[Any] = asyncio.Queue()
         self.snapshots: dict[str, dict[str, Any]] = {}
         self.handles: dict[str, dict[str, Any]] = {}
+        self.contexts: dict[str, dict[str, Any]] = {}
         self._handles: list[dict[str, Any]] = []
         self._handle_cv = asyncio.Condition()
+        self._page_lock = asyncio.Lock()
+        self._site_locks: dict[str, asyncio.Lock] = {}
         self._pw: Any = None
         self._started = 0.0
         self._tasks: list[asyncio.Task] = []
         self.published = asyncio.Event()
+
+    def lock_for(self, site_key: str) -> asyncio.Lock:
+        """One agent at a time per browser. Parallel tabs were closing the session."""
+        lock = self._site_locks.get(site_key)
+        if lock is None:
+            lock = asyncio.Lock()
+            self._site_locks[site_key] = lock
+        return lock
 
     def install_fast_plan(self) -> None:
         """Known tasks and rivals are enough. Do not wait on a planning model."""
@@ -930,13 +986,10 @@ class A11yBoot:
     async def start(self) -> None:
         self._started = time.time()
         self.install_fast_plan()
-        n = int(getattr(self.study, "max_agents", 0) or 0) or len(self.study.tasks or []) or 24
-        n = max(1, min(24, n))
 
         async def _boot() -> None:
-            # Read the product page on the first session before any other
-            # create, and do not leave that browser in the pool where an
-            # agent can take it.
+            # One browser per site. Agents open their own tabs on it. A second
+            # CDP connection to the same Browserbase session returns 410.
             bb = await self._create_one(0, enqueue=False)
             if bb is not None:
                 try:
@@ -951,11 +1004,13 @@ class A11yBoot:
                         handle["read"] = snap
                         async with self._handle_cv:
                             self._handles.append(handle)
+                            self.contexts["product"] = handle
                             self._handle_cv.notify_all()
                     self.snapshots["product"] = snap
                     self._publish_site("product", snap)
-            if n > 1:
-                self._tasks.append(asyncio.create_task(self._fill_pool(n - 1, offset=1)))
+            extras = len([c for c in (self.study.competitors or []) if c])
+            if extras:
+                self._tasks.append(asyncio.create_task(self._fill_pool(extras, offset=1)))
             await self._publish_rest()
 
         self._tasks.append(asyncio.create_task(_boot()))
@@ -1013,12 +1068,16 @@ class A11yBoot:
         browser = await pw.chromium.connect_over_cdp(bb.connect_url)
         context = browser.contexts[0] if browser.contexts else await browser.new_context()
         page = context.pages[0] if context.pages else await context.new_page()
-        return browser, page
+        try:
+            await page.set_viewport_size({"width": 1440, "height": 900})
+        except Exception:
+            pass
+        return browser, context, page
 
     async def _read_url(self, bb: Any, url: str) -> dict[str, Any]:
         ready = time.time()
         t0 = time.perf_counter()
-        browser, page = await self._connect(bb)
+        browser, context, page = await self._connect(bb)
         try:
             await page.goto(url, wait_until="commit", timeout=8000)
         except Exception as exc:  # noqa: BLE001
@@ -1045,6 +1104,7 @@ class A11yBoot:
         raw["_handle"] = {
             "bb": bb,
             "browser": browser,
+            "context": context,
             "page": page,
             "read": raw,
             "site_key": "",
@@ -1186,6 +1246,7 @@ class A11yBoot:
                 handle["read"] = snap
                 async with self._handle_cv:
                     self._handles.append(handle)
+                    self.contexts[key] = handle
                     self._handle_cv.notify_all()
             self.snapshots[key] = snap
             self._publish_site(key, snap)
@@ -1230,6 +1291,7 @@ class A11yBoot:
                 handle["read"] = snap
                 async with self._handle_cv:
                     self._handles.append(handle)
+                    self.contexts[key] = handle
                     self._handle_cv.notify_all()
             self.snapshots[key] = snap
             self._publish_site(key, snap)
@@ -1238,39 +1300,66 @@ class A11yBoot:
         self.published.set()
 
     async def take_page(self, site_key: str, url: str) -> dict[str, Any] | None:
-        """A browser already on this site, or the next session that becomes ready.
+        """The page already open for this site.
 
-        Waits until the study budget. A rate-limited create is not a dead browser.
+        A second CDP connection returns 410, and extra tabs on that one browser
+        were closing each other. Callers hold ``lock_for(site_key)`` and reuse
+        this page one agent at a time.
         """
         deadline = getattr(self.study, "budget_deadline", None) or (
             time.monotonic() + study_budget_s()
         )
         while time.monotonic() < deadline:
-            async with self._handle_cv:
-                for i, handle in enumerate(self._handles):
-                    if handle.get("site_key") == site_key:
-                        return self._handles.pop(i)
+            handle = self.contexts.get(site_key) or {}
+            page = handle.get("page")
+            if page is not None:
+                try:
+                    if url and _host(page.url or "") != _host(url):
+                        await page.goto(url, wait_until="commit", timeout=8000)
+                except Exception as exc:  # noqa: BLE001
+                    if browser_dead(exc):
+                        print(f"[a11y] shared page died for {site_key}: {exc!r}", flush=True)
+                        return None
+                    print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
+                return {
+                    "bb": handle.get("bb"),
+                    "browser": handle.get("browser"),
+                    "page": page,
+                    "site_key": site_key,
+                    "shared": True,
+                    "reuse": True,
+                }
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 break
-            try:
-                bb = await asyncio.wait_for(self.pool.get(), timeout=min(5.0, remaining))
-            except asyncio.TimeoutError:
-                continue
-            try:
-                _browser, page = await self._connect(bb)
-            except Exception as exc:  # noqa: BLE001
-                print(f"[a11y] connect failed (retrying): {exc!r}", flush=True)
-                continue
-            try:
-                await page.goto(url, wait_until="commit", timeout=8000)
-            except Exception as exc:  # noqa: BLE001
-                if browser_dead(exc):
-                    print(f"[a11y] browser died during goto (retrying): {exc!r}", flush=True)
+            async with self._handle_cv:
+                try:
+                    await asyncio.wait_for(self._handle_cv.wait(), timeout=min(2.0, remaining))
+                except asyncio.TimeoutError:
                     continue
-                print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
-            return {"bb": bb, "browser": _browser, "page": page, "site_key": site_key}
         return None
+
+    async def close(self) -> None:
+        """Close the shared browsers after every agent has finished."""
+        seen: set[int] = set()
+        for handle in list(self.contexts.values()):
+            browser = handle.get("browser")
+            if browser is not None and id(browser) not in seen:
+                seen.add(id(browser))
+                try:
+                    await browser.close()
+                except Exception:
+                    pass
+            bb = handle.get("bb")
+            sid = getattr(bb, "id", None)
+            if not sid:
+                continue
+            try:
+                from capability.browserbase_client import close_session
+
+                await asyncio.to_thread(close_session, sid)
+            except Exception:
+                pass
 
     def snapshot_for(self, site_key: str) -> dict[str, Any] | None:
         return self.snapshots.get(site_key)
@@ -1378,6 +1467,43 @@ async def _act(page: Any, action: dict[str, Any]) -> None:
     await page.mouse.click(x, y)
 
 
+async def _open_export(page: Any) -> None:
+    """Open the export-image dialog. Excalidraw binds this to Ctrl+Shift+E."""
+    try:
+        await page.keyboard.press("Escape")
+    except Exception:
+        pass
+    try:
+        await page.keyboard.press("Control+Shift+E")
+    except Exception:
+        pass
+    try:
+        await page.wait_for_timeout(400)
+    except Exception:
+        pass
+    try:
+        text = await page.evaluate("() => (document.body && document.body.innerText || '').toLowerCase()")
+    except Exception:
+        text = ""
+    if "png" not in str(text):
+        try:
+            await page.mouse.click(28, 36)
+            await page.wait_for_timeout(300)
+            loc = page.get_by_text("Export image", exact=False)
+            if await loc.count():
+                await loc.first.click(timeout=3000)
+                await page.wait_for_timeout(400)
+        except Exception:
+            pass
+    try:
+        await page.evaluate(
+            "() => { const u = new URL(location.href); u.searchParams.set('export', 'image');"
+            " history.pushState({}, '', u.pathname + u.search); }"
+        )
+    except Exception:
+        pass
+
+
 async def _screenshot_hash(page: Any) -> tuple[str, str]:
     """Hash the viewport for the stuck check. The bytes are discarded."""
     try:
@@ -1415,6 +1541,33 @@ async def _one_read(page: Any, fallback_url: str) -> dict[str, Any]:
 
 
 async def run_a11y_agent(
+    *,
+    boot: A11yBoot,
+    study_id: str,
+    agent_id: str,
+    url: str,
+    task_prompt: str,
+    persona: dict[str, Any],
+    on_step: Any | None = None,
+    site_key: str = "product",
+    deadline: float | None = None,
+) -> dict[str, Any]:
+    """One agent at a time on this site's browser, then the next."""
+    async with boot.lock_for(site_key):
+        return await _run_a11y_agent_unlocked(
+            boot=boot,
+            study_id=study_id,
+            agent_id=agent_id,
+            url=url,
+            task_prompt=task_prompt,
+            persona=persona,
+            on_step=on_step,
+            site_key=site_key,
+            deadline=deadline,
+        )
+
+
+async def _run_a11y_agent_unlocked(
     *,
     boot: A11yBoot,
     study_id: str,
@@ -1471,33 +1624,59 @@ async def run_a11y_agent(
                 else:
                     print(f"[{agent_id}] navigate error (continuing): {exc!r}", flush=True)
         snap = boot.snapshot_for(site_key) or {}
-        pending = dict(sess.get("pending_action") or {}) or planned_action(task_prompt, snap) or pick_action(
-            task_prompt, snap.get("nodes") or []
-        )
-        if failed is None and pending.get("act") != "done":
-            phase = "act"
+        kind_now = task_kind(task_prompt)
+        dest = goal_url(task_prompt, url)
+        # The shared publish already recorded the first click. This tab goes
+        # straight to the page or gesture the judge can see.
+        if failed is None and dest:
+            phase = "navigate"
             try:
-                await _act(page, pending)
+                await page.goto(dest, wait_until="domcontentloaded", timeout=12000)
             except Exception as exc:  # noqa: BLE001
                 if browser_dead(exc):
                     print(f"[{agent_id}] session ended: {exc!r}", flush=True)
                     stop_reason = "session ended"
-                    failed = {"phase": "act", "reason": "session ended", "step": 1}
+                    failed = {"phase": "navigate", "reason": "session ended", "step": 1}
                 else:
-                    print(f"[{agent_id}] first action error (continuing): {exc!r}", flush=True)
-        if failed is None and task_kind(task_prompt) == "draw":
+                    print(f"[{agent_id}] goal navigate error (continuing): {exc!r}", flush=True)
+        elif failed is None and kind_now not in {"draw", "export"}:
+            pending = dict(sess.get("pending_action") or {}) or planned_action(task_prompt, snap) or pick_action(
+                task_prompt, snap.get("nodes") or []
+            )
+            if pending.get("act") != "done":
+                phase = "act"
+                try:
+                    await _act(page, pending)
+                except Exception as exc:  # noqa: BLE001
+                    if browser_dead(exc):
+                        print(f"[{agent_id}] session ended: {exc!r}", flush=True)
+                        stop_reason = "session ended"
+                        failed = {"phase": "act", "reason": "session ended", "step": 1}
+                    else:
+                        print(f"[{agent_id}] first action error (continuing): {exc!r}", flush=True)
+        if failed is None and kind_now == "draw":
+            try:
+                await page.keyboard.press("Escape")
+            except Exception:
+                pass
             try:
                 await page.wait_for_selector("canvas", timeout=8000)
             except Exception:
                 pass
             try:
-                await _act(page, canvas_drag(snap))
+                fresh = await _one_read(page, url)
+                await _act(page, canvas_drag(fresh or snap))
                 drew = True
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] draw error (continuing): {exc!r}", flush=True)
                 drew = False
+        elif failed is None and kind_now == "export":
+            try:
+                await _open_export(page)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{agent_id}] export error (continuing): {exc!r}", flush=True)
         else:
-            drew = False
+            drew = drew if kind_now == "draw" else False
 
     snap = boot.snapshot_for(site_key) or {}
     read = dict(snap or {"url": url, "text": "", "canvas": "", "nodes": []})
@@ -1636,6 +1815,13 @@ async def run_a11y_agent(
             await page.wait_for_load_state("domcontentloaded", timeout=6000)
         except Exception:
             pass
+        if task_kind(task_prompt) == "issue":
+            try:
+                await page.evaluate(
+                    "() => { const h = document.querySelector('h1'); if (h) h.scrollIntoView({block:'center'}); }"
+                )
+            except Exception:
+                pass
         try:
             await page.screenshot(path=str(path), full_page=False, timeout=8000)
             shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
@@ -1695,18 +1881,10 @@ async def run_a11y_agent(
     }
     ensure_phase_ms(result)
     apply_gate_fields(result, **{k: result.get(k) for k in GATE_FIELDS})
-    if browser is not None:
+    # Reused pages stay open for the next agent on this site.
+    if not (handle is not None and handle.get("reuse")) and browser is not None:
         try:
             await browser.close()
-        except Exception:
-            pass
-    if bb is not None:
-        try:
-            from capability.browserbase_client import close_session
-
-            sid = getattr(bb, "id", None)
-            if sid:
-                await asyncio.to_thread(close_session, sid)
         except Exception:
             pass
     return result
