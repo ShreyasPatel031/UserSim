@@ -1,77 +1,61 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T05:15:00Z",
+  "graded_at": "2026-09-26T05:28:00Z",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
-      "sha": "6b456af",
+      "sha": "9470be5",
+      "note": "Logs browser-agent phase timings. The live path still aborted the same way.",
       "linear": {
-        "study_id": "6c020271-bb02-4d56-b7b1-80d65bb69676",
+        "study_id": "f27bc4b7-196b-4c24-b533-734db02ecc35",
         "pass": false,
-        "elapsed_s": 35.6,
-        "time_to_first_value": "4.112s PASS",
-        "time_to_first_action": "median=2.339s max=19.986s FAIL",
-        "ttfa_max_who": "all 8 Asana competitor_1 from browser_ready_at_ts",
-        "page_opened": "23/24 slow=t1__p1__product",
-        "product_task_completion": "0/8"
+        "elapsed_s": 36.1,
+        "time_to_first_value": "4.127s PASS",
+        "total_time": "not ready FAIL",
+        "time_to_first_action": "median=2.309s max=24.352s n=24/24 FAIL",
+        "ttfa_note": "7 Trello competitor_2 agents at 24.352s from browser_ready_at_ts. t1__p1__competitor_2 recorded 0.0s.",
+        "page_opened": "23/24 FAIL slow=t1__p1__product",
+        "product_task_completion": "0/8",
+        "final_screenshot": "missing field final_screenshot_url"
       },
       "excalidraw": {
-        "study_id": "976ff37c-561e-4a54-9884-b34f048995fb",
+        "study_id": "93087bdd-2b00-434c-8d8b-efe422511a99",
         "pass": false,
-        "elapsed_s": 29.0,
-        "time_to_first_value": "2.89s PASS",
-        "time_to_first_action": "median=1.226s max=17.496s FAIL",
-        "ttfa_max_who": "all 8 Miro competitor_2 from browser_ready_at_ts",
-        "page_opened": "22/24 slow=t1__p1__product and t1__p1__competitor_1",
-        "product_task_completion": "0/8"
+        "elapsed_s": 30.9,
+        "time_to_first_value": "3.308s PASS",
+        "total_time": "not ready FAIL",
+        "time_to_first_action": "median=19.872s max=19.873s n=24/24 FAIL",
+        "ttfa_note": "16 of 24 agents are about 19.87s from browser_ready_at_ts. Median fails the 5s bar as well as the max.",
+        "page_opened": "22/24 FAIL slow=t1__p1__product and t1__p1__competitor_1",
+        "product_task_completion": "0/8",
+        "final_screenshot": "missing field final_screenshot_url"
       }
     },
     "cursor/tonight-integration": {
-      "sha": "fc0e689",
-      "linear": {
-        "study_id": "dffe751e-f6dc-453b-a747-d56728538243",
-        "pass": false,
-        "elapsed_s": 32.2,
-        "time_to_first_value": "4.124s PASS",
-        "time_to_first_action": "median=2.337s max=20.103s FAIL",
-        "ttfa_max_who": "all 8 Asana competitor_1 from browser_ready_at_ts",
-        "page_opened": "22/24 slow=t1__p1__product and t1__p1__competitor_2",
-        "product_task_completion": "0/8",
-        "final_screenshot": "missing field final_screenshot_url"
-      },
-      "excalidraw": {
-        "study_id": "94d04c8e-d7fb-451a-9869-79ef4d917a68",
-        "pass": false,
-        "elapsed_s": 30.4,
-        "time_to_first_value": "3.297s PASS",
-        "time_to_first_action": "median=1.482s max=19.301s FAIL",
-        "ttfa_max_who": "all 8 Miro competitor_2 from browser_ready_at_ts",
-        "page_opened": "22/24 slow=t1__p1__product and t1__p1__competitor_1",
-        "product_task_completion": "0/8",
-        "final_screenshot": "missing field final_screenshot_url"
-      }
+      "sha": "269058b",
+      "note": "feedback-json merge only. Same agent tree as graded fc0e689."
     }
   },
   "bugs": [
     {
       "id": 1,
-      "fact": "First click is still over 10s from browser_ready_at_ts. #47 6b456af Linear Asana 19.986s, Excalidraw Miro 17.496s. Integration fc0e689 Linear Asana 20.103s, Excalidraw Miro 19.301s. All eight agents of that competitor share one timestamp."
+      "fact": "Phase-timing logs did not change the clock. Linear f27bc4b7 Trello competitor_2 max 24.352s from browser_ready_at_ts (7 agents; t1__p1__competitor_2 is 0.0s). Excalidraw 93087bdd median 19.872s and max 19.873s. 16 agents are about 19.87s."
     },
     {
       "id": 2,
-      "fact": "Page open within 5s is 22/24 or 23/24. The slow ids are t1__p1__product plus one competitor persona-1 agent. The abort leaves total_time not ready and final_screenshot_url missing."
+      "fact": "Page open within 5s failed. Linear 23/24 slow t1__p1__product. Excalidraw 22/24 slow t1__p1__product and t1__p1__competitor_1. Abort leaves total_time not ready and final_screenshot_url missing."
     },
     {
       "id": 3,
-      "fact": "Product is 0/8 on every graded head tonight. No Gemini YES, because the final screenshot is missing when the 5s open gate aborts."
+      "fact": "Product is 0/8. No final PNG, so no Gemini YES."
     },
     {
       "id": 4,
-      "fact": "Strength and weakness are empty on these aborted studies. A pass needs one of each from a run past the first screen with agent, step, AX or URL, and the final screenshot."
+      "fact": "Strength and weakness are empty. A pass needs one of each from a run past the first screen with agent, step, AX or URL, and the final screenshot."
     },
     {
       "id": 5,
-      "fact": "Do not set created_at_ts, page_open_at_ts, and first_action_at_ts to one poll instant. The harness then clocks from browser_ready_at_ts."
+      "fact": "Do not set created_at_ts, page_open_at_ts, and first_action_at_ts to one poll instant. The harness clocks from browser_ready_at_ts when those three match."
     },
     {
       "id": 6,
