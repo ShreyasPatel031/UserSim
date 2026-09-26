@@ -961,6 +961,90 @@ class A11yBoot:
         self._started = 0.0
         self._tasks: list[asyncio.Task] = []
         self.published = asyncio.Event()
+        # One shared read per site. The first agent of a site whose own page
+        # commits does it; every agent of that site takes it as its step-0 read.
+        self._site_events: dict[str, asyncio.Event] = {}
+        self._site_readers: set[str] = set()
+
+    def _site_event(self, site_key: str) -> asyncio.Event:
+        ev = self._site_events.get(site_key)
+        if ev is None:
+            ev = asyncio.Event()
+            self._site_events[site_key] = ev
+        return ev
+
+    async def site_read(
+        self,
+        site_key: str,
+        page: Any,
+        url: str,
+        *,
+        wait_s: float = 4.0,
+    ) -> dict[str, Any] | None:
+        """The one shared read for ``site_key``.
+
+        The first caller reads its own freshly opened page and publishes it
+        for the whole site. Later callers wait for that read (never for
+        another site's read) and never re-read. Returns None when no read
+        landed in time; the caller then lets the loop take its own first read.
+        """
+        ev = self._site_event(site_key)
+        snap = self.snapshots.get(site_key)
+        if snap is not None:
+            return snap
+        if site_key not in self._site_readers:
+            self._site_readers.add(site_key)
+            try:
+                snap = await asyncio.wait_for(self._read_page(page, url), timeout=wait_s + 2)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] shared read {site_key} failed: {exc!r}", flush=True)
+                snap = None
+            if snap is not None and _host(str(snap.get("url") or "")) == _host(url):
+                self.snapshots[site_key] = snap
+                try:
+                    self._publish_site(site_key, snap)
+                except Exception as exc:  # noqa: BLE001
+                    print(f"[a11y] publish {site_key} failed: {exc!r}", flush=True)
+                ev.set()
+                return snap
+            # Let the next agent of this site try its own page instead.
+            self._site_readers.discard(site_key)
+            return None
+        try:
+            await asyncio.wait_for(ev.wait(), timeout=wait_s)
+        except asyncio.TimeoutError:
+            return None
+        return self.snapshots.get(site_key)
+
+    async def _read_page(self, page: Any, url: str) -> dict[str, Any]:
+        """Text accessibility read of an already-open page (no navigation, no screenshot)."""
+        t0 = time.perf_counter()
+        try:
+            await page.wait_for_selector("a, button, canvas", timeout=2500)
+        except Exception:
+            pass
+        raw: Any = None
+        for _ in range(2):
+            try:
+                raw = await page.evaluate(_READ_JS)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] read failed {url}: {exc!r}", flush=True)
+                raw = None
+            if isinstance(raw, dict) and len(raw.get("nodes") or []) >= 3:
+                break
+            try:
+                await page.wait_for_timeout(400)
+            except Exception:
+                break
+        if not isinstance(raw, dict):
+            raw = {"url": url, "title": "", "text": "", "canvas": "", "nodes": []}
+        opened = time.time()
+        raw["url"] = str(raw.get("url") or url)
+        raw["nodes"] = list(raw.get("nodes") or [])[:AX_CAP]
+        raw["session_ready_at_ts"] = opened
+        raw["page_open_at_ts"] = opened
+        raw["phase_ms"] = {"read_ms": int(round((time.perf_counter() - t0) * 1000))}
+        return raw
 
     def lock_for(self, site_key: str) -> asyncio.Lock:
         """One agent at a time per browser. Parallel tabs were closing the session."""
@@ -1015,51 +1099,16 @@ class A11yBoot:
             study.tasks = study.tasks[:cap]
 
     async def start(self) -> None:
+        """Install the plan and let agents start at once.
+
+        There is no separate read browser. Each site's first agent does the
+        shared read on its own page (see ``site_read``), so the study uses
+        exactly one Browserbase session per agent and product agents never
+        wait on a competitor read.
+        """
         self._started = time.time()
         self.install_fast_plan()
-
-        async def _boot() -> None:
-            # Agents create their own browsers immediately. The shared read is
-            # only an initial observation and must not delay the first click.
-            self.published.set()
-            for attempt in range(4):
-                bb = await self._create_one(attempt, enqueue=False)
-                if bb is None:
-                    continue
-                try:
-                    snap = await self._read_url(bb, self.study.url)
-                except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] product read failed (retrying): {exc!r}", flush=True)
-                    continue
-                handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
-                page = (handle or {}).get("page") if isinstance(handle, dict) else None
-                try:
-                    closed = page is None or page.is_closed()
-                except Exception:
-                    closed = True
-                if closed or not isinstance(handle, dict) or not isinstance(snap, dict):
-                    print("[a11y] product read had no live page (retrying)", flush=True)
-                    continue
-                handle["site_key"] = "product"
-                handle["read"] = snap
-                async with self._handle_cv:
-                    self._handles.append(handle)
-                    self.contexts["product"] = handle
-                    self._handle_cv.notify_all()
-                self.snapshots["product"] = snap
-                self._publish_site("product", snap)
-                # The shared browser is display-only. Close it so the 24
-                # agent sessions fit in the project cap.
-                await _close_agent_session(handle.get("browser"), handle.get("bb"))
-                # Agents open their own browsers now. Do not wait for the
-                # competitor reads before the first click clock can start.
-                self.published.set()
-                break
-            else:
-                print("[a11y] no live product page", flush=True)
-                self.published.set()
-
-        self._tasks.append(asyncio.create_task(_boot()))
+        self.published.set()
 
     async def _playwright(self) -> Any:
         if self._pw is None:
@@ -2317,8 +2366,7 @@ async def run_a11y_agent(
     site_key: str = "product",
     deadline: float | None = None,
 ) -> dict[str, Any]:
-    """One Browserbase session for this agent. The shared read is display only."""
-    del site_key
+    """One Browserbase session for this agent, step 0 from the site's shared read."""
     return await _run_a11y_agent_unlocked(
         boot=boot,
         study_id=study_id,
@@ -2328,6 +2376,7 @@ async def run_a11y_agent(
         persona=persona,
         on_step=on_step,
         deadline=deadline,
+        site_key=site_key,
     )
 
 
@@ -2341,6 +2390,7 @@ async def _run_a11y_agent_unlocked(
     persona: dict[str, Any],
     on_step: Any | None = None,
     deadline: float | None = None,
+    site_key: str = "product",
 ) -> dict[str, Any]:
     """Own browser, fresh read each step, one final shot.
 
@@ -2385,13 +2435,6 @@ async def _run_a11y_agent_unlocked(
             if trace and isinstance(trace[0], dict):
                 trace[0]["page_open_at_ts"] = opened_at
                 trace[0]["session_ready_at_ts"] = created_at
-            opening_nodes: list[dict[str, Any]] = []
-            for snap in boot.snapshots.values():
-                if _host(str(snap.get("url") or "")) == _host(url):
-                    opening_nodes = [
-                        node for node in (snap.get("nodes") or []) if isinstance(node, dict)
-                    ]
-                    break
             apply_gate_fields(
                 sess,
                 page_open_at_ts=opened_at,
@@ -2410,36 +2453,30 @@ async def _run_a11y_agent_unlocked(
             sess.pop("first_action_at_ts", None)
             boot.study.live_sessions[agent_id] = sess
             boot._touch()
-            # Record a real click or scroll before any accessibility read.
-            # The read is what left competitors on "Opening" past 10s.
-            first = pick_action(task_prompt, opening_nodes) if opening_nodes else {
-                "act": "scroll",
-                "i": -1,
-                "name": "page",
-                "dy": 500,
-            }
-            if offhost_excalidraw_tool(first, url) or (
-                task_kind(task_prompt) == "issue"
-                and "new issue" in str(first.get("name") or "").lower()
-            ):
-                first = {"act": "scroll", "i": -1, "name": "page", "dy": 700}
-            label = action_label(first)
-            step_no = 1
-            row = _step_from_read(
-                step=1,
-                action=label,
-                read={"url": url, "text": "", "nodes": opening_nodes, "title": ""},
+            # Step 0 is this site's one shared read, taken on the first
+            # agent's own page. Never wait on another site and never re-read.
+            opening_nodes: list[dict[str, Any]] = []
+            snap = await boot.site_read(site_key, page, url)
+            if isinstance(snap, dict) and _host(str(snap.get("url") or "")) == _host(url):
+                opening_nodes = [
+                    node for node in (snap.get("nodes") or []) if isinstance(node, dict)
+                ]
+            trace = list(sess.get("trace") or trace)
+            if trace and isinstance(trace[0], dict):
+                trace[0]["page_open_at_ts"] = opened_at
+                trace[0]["session_ready_at_ts"] = created_at
+            sess["page_open_at_ts"] = opened_at
+            sess["created_at_ts"] = created_at
+            apply_gate_fields(
+                sess,
+                page_open_at_ts=opened_at,
+                session_ready_at_ts=created_at,
+                accessibility_tree=format_ax(opening_nodes)
+                or str(sess.get("accessibility_tree") or "")
+                or "0 document page",
             )
-            trace.append(row)
-            history.append(label)
-            if on_step is not None:
-                maybe = on_step(row)
-                if asyncio.iscoroutine(maybe):
-                    await maybe
-            try:
-                await asyncio.wait_for(_act(page, first), timeout=4)
-            except Exception as exc:  # noqa: BLE001
-                print(f"[{agent_id}] first action: {exc!r}", flush=True)
+            sess["phase"] = "acting"
+            boot.study.live_sessions[agent_id] = sess
             phase = "act"
             outcome = await complete_task_on_page(
                 page,
@@ -2489,13 +2526,13 @@ async def _run_a11y_agent_unlocked(
             try:
                 await page.screenshot(path=str(path), full_page=False, timeout=8000)
                 shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
-                shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
-                try:
-                    from mvp.opening_shot import upload_screenshot
+                from mvp.opening_shot import upload_final_verified
 
-                    await upload_screenshot(study_id, agent_id, path)
-                except Exception:
-                    pass
+                # Keep the URL only after GCS returns the same PNG bytes.
+                if await asyncio.to_thread(upload_final_verified, study_id, agent_id, path):
+                    shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
+                else:
+                    print(f"[{agent_id}] final PNG did not round-trip through GCS", flush=True)
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
                 if not shot_url:
