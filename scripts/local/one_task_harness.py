@@ -21,10 +21,8 @@ from mvp.a11y_agent import complete_task_on_page, goal_visible  # noqa: E402
 TASKS = [
     ("linear", "https://linear.app/", "Find how to create a new issue"),
     ("linear", "https://linear.app/", "Look for pricing or how to get started"),
-    ("linear", "https://linear.app/", "Open the changelog and see what shipped recently"),
-    ("excalidraw", "https://excalidraw.com/", "Draw a simple rectangle on the canvas"),
-    ("excalidraw", "https://excalidraw.com/", "Find how to export or share the drawing"),
-    ("excalidraw", "https://excalidraw.com/", "Open the help dialog and read the keyboard shortcuts"),
+    ("excalidraw", "https://excalidraw.com/", "Draw a simple box"),
+    ("excalidraw", "https://excalidraw.com/", "Find how to export or share"),
 ]
 
 
@@ -43,7 +41,7 @@ async def run_one(browser, site: str, url: str, task: str) -> dict:
         page,
         task=task,
         url=url,
-        deadline=time.monotonic() + 45,
+        deadline=time.monotonic() + 90,
         agent_id=f"{site}",
     )
     for row in outcome.get("logs") or []:

@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import unittest
 
+from capability.gemini_config import extract_json
 from mvp.a11y_agent import (
     GATE_FIELDS,
     action_label,
@@ -12,13 +13,13 @@ from mvp.a11y_agent import (
     classify_failure,
     failure_breakdown,
     fast_action_model,
+    _nodes_for_model,
     achievable_without_account,
     format_ax,
-    goal_url,
     goal_visible,
     note_progress,
+    notes_from_trace,
     pick_action,
-    planned_action,
     progress_signature,
     study_budget_s,
     would_repeat_action,
@@ -51,15 +52,6 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(action["href"], "https://linear.app/changelog")
         self.assertFalse(goal_visible("Find pricing", {"url": "https://linear.app/"}))
         self.assertTrue(goal_visible("Find pricing", {"url": "https://linear.app/pricing"}))
-        self.assertEqual(
-            goal_url("Look for pricing or how to get started", "https://linear.app/"),
-            "https://linear.app/pricing",
-        )
-        self.assertEqual(
-            goal_url("Find how to create a new issue", "https://linear.app"),
-            "https://linear.app/docs/creating-issues",
-        )
-        self.assertEqual(goal_url("Draw a simple rectangle on the canvas", "https://excalidraw.com/"), "")
         self.assertFalse(goal_visible("Open the changelog", {"url": "https://linear.app/docs"}))
         self.assertTrue(goal_visible("Open the changelog", {"url": "https://linear.app/changelog"}))
         self.assertFalse(goal_visible("Find how to create a new issue", {"url": "https://linear.app/"}))
@@ -72,10 +64,16 @@ class A11yAgentTest(unittest.TestCase):
         self.assertFalse(
             goal_visible("Draw a simple rectangle on the canvas", {"url": "https://excalidraw.com/", "canvas": "1x1:dark=0/1;", "drew": True})
         )
+        self.assertFalse(
+            goal_visible(
+                "Draw a simple rectangle on the canvas",
+                {"url": "https://excalidraw.com/", "text": "Selected shape actions Stroke width", "opened_canvas": "1440x900:dark=0/900;", "canvas": "1440x900:dark=0/900;"},
+            )
+        )
         self.assertTrue(
             goal_visible(
                 "Draw a simple rectangle on the canvas",
-                {"url": "https://excalidraw.com/", "text": "Selected shape actions Stroke width"},
+                {"url": "https://excalidraw.com/", "text": "Selected shape actions", "opened_canvas": "1440x900:dark=0/900;", "canvas": "1440x900:dark=24/900;"},
             )
         )
 
@@ -138,21 +136,38 @@ class A11yAgentTest(unittest.TestCase):
         ]
         self.assertFalse(would_repeat_action(trace[:2], "click New issue", read))
         self.assertTrue(would_repeat_action(trace, "click New issue", read))
-        nodes = [
-            {"i": 0, "role": "a", "name": "Get started", "href": "https://linear.app/signup", "x": 1, "y": 1},
-            {"i": 1, "role": "a", "name": "Pricing", "href": "https://linear.app/pricing", "x": 2, "y": 2},
-        ]
-        action = planned_action("Look for pricing or how to get started", {"nodes": nodes})
-        self.assertEqual(action["href"], "https://linear.app/pricing")
-        decorative = [
-            {"i": 0, "role": "button", "name": "New issue", "href": "", "inert": True, "x": 256, "y": 543},
-            {"i": 1, "role": "a", "name": "Docs", "href": "https://linear.app/docs", "x": 10, "y": 900},
-        ]
-        issue = planned_action("Find how to create a new issue", {"url": "https://linear.app/", "nodes": decorative})
-        self.assertEqual(issue["name"], "Docs")
-        self.assertNotIn("new issue", issue["name"].lower())
-        direct = planned_action("Find how to create a new issue", {"url": "https://linear.app/", "nodes": decorative[:1]})
-        self.assertIn("creating-issues", direct["href"])
+        self.assertFalse(
+            goal_visible(
+                "Find how to create a new issue",
+                {"url": "https://linear.app/changelog/new-issue-ui", "title": "Changelog"},
+            )
+        )
+        kept = _nodes_for_model(
+            [
+                {"i": 0, "role": "button", "name": "New issue", "inert": True},
+                {"i": 1, "role": "a", "name": "Pricing", "href": "https://linear.app/pricing"},
+                {"i": 2, "role": "a", "name": "Docs", "href": "https://linear.app/docs"},
+                {"i": 3, "role": "a", "name": "Log in", "href": "https://linear.app/login"},
+            ],
+            {"new issue"},
+        )
+        self.assertEqual([node["name"] for node in kept], ["Pricing", "Docs"])
+        easy, friction = notes_from_trace(
+            [
+                {"step": 0, "action": "Opened https://linear.app/", "url": "https://linear.app/"},
+                {"step": 1, "action": "click New issue", "url": "https://linear.app/", "changed": False},
+                {
+                    "step": 2,
+                    "action": "click Pricing",
+                    "url": "https://linear.app/pricing",
+                    "changed": True,
+                    "decision": {"easy": "Pricing was in the header."},
+                },
+            ]
+        )
+        self.assertTrue(any("Pricing" in line and "pricing" in line for line in easy))
+        self.assertTrue(any("changed nothing" in line for line in friction))
+        self.assertFalse(any("free plan is listed" in line for line in easy))
 
     def test_canvas_flicker_does_not_excuse_a_repeated_click(self) -> None:
         read = {"url": "https://miro.com/index/", "text": "Miro homepage", "canvas": "dark=100"}
@@ -163,17 +178,18 @@ class A11yAgentTest(unittest.TestCase):
         ]
         self.assertFalse(would_repeat_action(trace[:2], "click Export image", read))
         self.assertTrue(would_repeat_action(trace, "click Export image", read))
-        self.assertIsNone(
-            planned_action(
-                "Find how to export or share the drawing",
-                {"url": "https://miro.com/", "nodes": []},
+        self.assertFalse(
+            goal_visible(
+                "Draw a simple box",
+                {"url": "https://excalidraw.com/", "text": "Selected shape actions", "opened_canvas": "1440x900:dark=0/900;", "canvas": "1440x900:dark=0/900;"},
             )
         )
-        export = planned_action(
-            "Find how to export or share the drawing",
-            {"url": "https://excalidraw.com/", "nodes": []},
+        self.assertTrue(
+            goal_visible(
+                "Draw a simple box",
+                {"url": "https://excalidraw.com/", "opened_canvas": "1440x900:dark=0/900;", "canvas": "1440x900:dark=18/900;"},
+            )
         )
-        self.assertEqual(export["name"], "Export image")
 
     def test_stuck_after_three_identical_signatures(self) -> None:
         sig = progress_signature(
@@ -223,6 +239,10 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(table["counts"]["stuck"], 1)
         self.assertEqual(table["counts"]["product"], 1)
         self.assertEqual(table["counts"]["our infrastructure"], 1)
+
+    def test_extract_json_keeps_the_first_object(self) -> None:
+        self.assertEqual(extract_json('{"act":"click","i":1}\n{"act":"done"}'), {"act": "click", "i": 1})
+        self.assertEqual(extract_json('note {"act":"drag"} trailing'), {"act": "drag"})
 
     def test_logged_out_tasks_do_not_require_an_account(self) -> None:
         self.assertEqual(
