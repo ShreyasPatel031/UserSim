@@ -2592,6 +2592,68 @@ def signup_block_label(reason: str) -> str:
     return f"signup did not finish ({(reason or 'unknown').split(':', 1)[0][:40]})"
 
 
+def _agent_is_competitor(agent_id: str) -> bool:
+    return "competitor" in (agent_id or "").lower()
+
+
+def _capsolver_configured() -> bool:
+    return bool(
+        (os.environ.get("CAPSOLVER_API_KEY") or os.environ.get("MVP_CAPTCHA_API_KEY") or "").strip()
+    )
+
+
+def _gmail_configured() -> bool:
+    try:
+        from mvp.signup_inbox import gmail_available
+
+        return bool(gmail_available())
+    except Exception:
+        return bool(
+            (os.environ.get("GMAIL_USER") or "").strip()
+            and (os.environ.get("GMAIL_APP_PASSWORD") or "").strip()
+        )
+
+
+# Hosts that reject throwaway inboxes without a durable Gmail alias.
+_THROWAYWAY_REJECT_HOSTS = (
+    "trello.com",
+    "atlassian.com",
+    "notion.so",
+    "notion.com",
+    "miro.com",
+    "calendly.com",
+)
+# Hosts that need CapSolver for signup on Browserbase (checkbox/audio alone fails).
+_CAPTCHA_HARD_HOSTS = (
+    "miro.com",
+)
+
+
+def signup_hopeless_without_keys(url: str) -> str | None:
+    """If keys are missing, return a short block reason; else None.
+
+    Competitor agents hit these walls and used to burn 80–200s of Browserbase
+    time, which starved sibling session creates (page_opened 18/24). Abort
+    before starting signup when success is impossible without CapSolver/Gmail.
+    """
+    host = _host(url).lower()
+    if not host:
+        return None
+    if any(h in host for h in _CAPTCHA_HARD_HOSTS) and not _capsolver_configured():
+        return "captcha_unsolved (no_capsolver_key)"
+    if any(h in host for h in _THROWAYWAY_REJECT_HOSTS) and not _gmail_configured():
+        return "email_rejected (no durable inbox)"
+    return None
+
+
+def competitor_signup_timeout_s() -> float:
+    """Wall-clock cap for competitor in-session signup (default 40s)."""
+    try:
+        return max(15.0, float(os.environ.get("MVP_SIGNUP_COMPETITOR_TIMEOUT_S") or 40))
+    except (TypeError, ValueError):
+        return 40.0
+
+
 _SIGNUP_GATE: dict[str, Any] = {"lock": None, "last": 0.0}
 
 
@@ -2634,6 +2696,30 @@ async def _signup_then_resume(
     trace = list(outcome.get("trace") or [])
     step_no = int(outcome.get("step_no") or 0) + 1
     wall = str(outcome.get("signup_url") or (outcome.get("read") or {}).get("url") or url)
+    competitor = _agent_is_competitor(agent_id)
+    # Competitors on known email/captcha walls without keys: label blocked and
+    # return immediately so Browserbase slots stay free for product agents.
+    pre_reason = signup_hopeless_without_keys(wall) or signup_hopeless_without_keys(url)
+    if competitor and pre_reason:
+        public = {"ok": False, "reason": pre_reason, "email": "", "seconds": 0.0}
+        row = {
+            "step": step_no,
+            "action": signup_block_label(pre_reason),
+            "url": wall,
+            "thought": "account wall — signup skipped (missing CapSolver/Gmail)",
+            "decision_source": "signup",
+            "decision": {"act": "signup", "source": "signup"},
+            "signup": public,
+        }
+        trace.append(row)
+        if on_step is not None:
+            maybe = on_step(row)
+            if asyncio.iscoroutine(maybe):
+                await maybe
+        sess["signup_status"] = "signup failed"
+        sess["signup"] = public
+        failed = {"phase": "needs_account", "reason": signup_block_label(pre_reason), "step": step_no}
+        return {**outcome, "trace": trace, "step_no": step_no, "failed": failed, "signup": public}
     row = {
         "step": step_no,
         "action": "sign up for an account (the task needs one)",
@@ -2655,7 +2741,9 @@ async def _signup_then_resume(
         await _stagger_signup()
         remaining = (deadline - time.monotonic()) if deadline is not None else 240.0
         cap = float(os.environ.get("MVP_SIGNUP_IN_SESSION_TIMEOUT_S") or 220)
-        budget = max(30.0, min(cap, remaining - 45))
+        if competitor:
+            cap = min(cap, competitor_signup_timeout_s())
+        budget = max(15.0 if competitor else 30.0, min(cap, remaining - 45))
         kwargs: dict[str, Any] = {"timeout_s": budget, "tag": None}
         params = inspect.signature(signup_in_session).parameters
         if "signup_url" in params:

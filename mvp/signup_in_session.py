@@ -837,8 +837,13 @@ async def signup_in_session(
                 res = await _clear_captcha(page, snap, spend)
                 captcha_log.append(res)
                 steps.append(f"captcha {res.get('type','')[:40]} -> {res.get('method')} ok={res.get('ok')}")
-                if not res.get("ok") and sum(1 for c in captcha_log if not c.get("ok")) >= 2:
-                    return _finish(False, f"captcha_unsolved ({res.get('method')})")
+                if not res.get("ok"):
+                    method = str(res.get("method") or "")
+                    # Without CapSolver, a second attempt will not help — release the
+                    # Browserbase session instead of burning another 60–120s.
+                    fails = sum(1 for c in captcha_log if not c.get("ok"))
+                    if method in {"no_capsolver_key", "site_cap_reached"} or fails >= 2:
+                        return _finish(False, f"captcha_unsolved ({method})")
                 await _settle(page)
                 continue
 
@@ -951,6 +956,16 @@ async def signup_in_session(
             )
             if email_submitted and rej and email_box:
                 rejects += 1
+                # One clear rejection is enough when we have no durable Gmail alias —
+                # swapping mail.tm↔guerrilla just burns another minute on the same wall.
+                try:
+                    from mvp.signup_inbox import gmail_available as _gmail_ok
+                    have_gmail = bool(_gmail_ok())
+                except Exception:
+                    have_gmail = False
+                if rejects >= 1 and not have_gmail:
+                    steps.append(f"email rejected: {rej.group(0)} ({ident['email'].split('@')[1]}) — no Gmail alias")
+                    return _finish(False, f"email_rejected: {rej.group(0)} ({ident['email'].split('@')[1]})")
                 if rejects >= 2:
                     steps.append(f"email rejected: {rej.group(0)} ({ident['email'].split('@')[1]})")
                     rejected_domains.append(ident["email"].split("@")[1])
