@@ -938,6 +938,36 @@ class PageOpenedTests(unittest.TestCase):
         self.assertEqual(found["page_open"], 80.0)
         self.assertEqual(found["first_action"], 1960.0)
 
+    def test_eight_wide_fleet_does_not_pass(self) -> None:
+        """Sixteen agents left without a page read must fail. Do not drop them."""
+        flags = [True, True, False, False, True, True, False, False]
+        study = _matrix(flags)
+        for run in study["agent_results"][8:]:
+            for key in (
+                "page_open_at_ts",
+                "first_action_at_ts",
+                "ax_tree",
+                "phase_ms",
+                "final_screenshot_url",
+                "failed_step",
+            ):
+                run.pop(key, None)
+            run["trace"] = []
+            run["final_url"] = ""
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"][:8]
+            if r["site_key"] == "product" and r["num_steps"] == 4
+        }
+        result = _evaluate(study, vision_goal=vision)
+        self.assertEqual(_gate(result, "agent_count")["value"], 24)
+        self.assertTrue(_gate(result, "agent_count")["pass"])
+        self.assertFalse(_gate(result, "page_opened")["pass"])
+        self.assertIn("missing field page_open_at_ts", str(_gate(result, "page_opened")["value"]))
+        self.assertFalse(_gate(result, "time_to_first_action")["pass"])
+        self.assertIn("missing field", str(_gate(result, "time_to_first_action")["value"]))
+        self.assertFalse(result["pass"])
+
     def test_measured_clock_without_a_start_names_the_missing_field(self) -> None:
         flags = [True, True, False, False, True, True, False, False]
         study = _matrix(flags)

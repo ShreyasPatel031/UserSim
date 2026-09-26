@@ -35,6 +35,8 @@ from mvp.report_insights import (
     changed_page_state,
 )
 
+# A full matrix is 24 agents at once. An 8-wide or serialized browser cap
+# does not pass, even if the eight that ran were fast.
 PASS_AGENT_BAR = 24
 PRODUCT_SUCCESS_MIN = 0.50
 RUN_ISSUE_MAX = 0.25
