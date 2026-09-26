@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/styles.css?v=63" />
+  <link rel="stylesheet" href="/static/styles.css?v=65" />
 </head>
 <body>
   <header class="site-header">
@@ -22,40 +22,34 @@
 
     <section id="results" class="results" hidden>
       <section class="panel summary-panel">
-        <h2>Executive summary</h2>
+        <h2 id="report-title">Study report</h2>
         <p id="access-info" class="access-info" hidden></p>
         <p id="report-email-note" class="email-status" hidden></p>
         <p id="headline" class="headline"></p>
-        <div class="summary-grid">
+        <p id="evidence-note" class="evidence-note" hidden></p>
+        <div class="insight-grid">
           <div>
-            <h4>Top friction</h4>
-            <ul id="top-friction"></ul>
+            <h4>Strengths</h4>
+            <div id="strength-cards"></div>
           </div>
           <div>
-            <h4>Top strengths</h4>
-            <ul id="top-strengths"></ul>
+            <h4>Weaknesses</h4>
+            <div id="weakness-cards"></div>
           </div>
         </div>
-        <div class="fit-score">
-          <span id="fit-score">—</span>
-          <div>
-            <strong>Segment fit</strong>
-            <p id="fit-rationale"></p>
+        <div id="compare-block">
+          <h4>Site comparison</h4>
+          <p id="tie-note" class="tie-note" hidden></p>
+          <div class="compare-wrap">
+            <table id="compare-table"></table>
           </div>
-        </div>
-        <div class="conversion">
-          <h4>Conversion outlook</h4>
-          <p id="conversion-outlook"></p>
-        </div>
-        <div class="recommendations">
-          <h4>Recommendations</h4>
-          <div id="recommendations"></div>
         </div>
       </section>
 
-      <section id="agents-section-final" class="panel" hidden>
-        <h2>Session recaps</h2>
-        <div id="agents-grid" class="agents-grid"></div>
+      <section id="trace-panel" class="panel" hidden>
+        <h2>Trace</h2>
+        <p id="trace-meta" class="section-sub"></p>
+        <div id="trace-viewer"></div>
       </section>
     </section>
   </main>
@@ -64,6 +58,6 @@
     <p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p>
   </footer>
 
-  <script src="/static/report.js?v=45"></script>
+  <script src="/static/report.js?v=46"></script>
 </body>
 </html>

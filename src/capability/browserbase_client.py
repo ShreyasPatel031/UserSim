@@ -126,6 +126,7 @@ class BrowserbaseSession:
     id: str
     connect_url: str
     session_url: str
+    flags: dict[str, Any] | None = None
 
 
 def session_user_metadata(
@@ -256,6 +257,59 @@ def _release_abandoned_session(session: Any) -> None:
         print(f"Browserbase abandoned-session release failed: {exc!r}", flush=True)
 
 
+def session_flag_attempts(
+    *,
+    proxies: bool,
+    solve_captchas: bool,
+    advanced_stealth: bool,
+) -> list[dict[str, Any]]:
+    """Richest session first, then the signup ladder, then a bare session.
+
+    Signup tries proxies+solve, then solve without proxies, then bare.
+    ``advanced_stealth`` stays off on Hobby (403). A proxies-only attempt sits
+    ahead of bare so a plan that allows proxies but not captcha-solve still
+    gets the proxy.
+    """
+    attempts: list[dict[str, Any]] = []
+    if proxies or solve_captchas or advanced_stealth:
+        attempts.append(
+            {
+                "proxies": bool(proxies),
+                "solve_captchas": bool(solve_captchas),
+                "advanced_stealth": bool(advanced_stealth),
+            }
+        )
+    if proxies or solve_captchas:
+        attempts.append(
+            {
+                "proxies": bool(proxies),
+                "solve_captchas": bool(solve_captchas),
+                "advanced_stealth": False,
+            }
+        )
+    # Signup's middle rung: captcha solve on a non-proxy session after a 402.
+    if proxies and solve_captchas:
+        attempts.append(
+            {"proxies": False, "solve_captchas": True, "advanced_stealth": False}
+        )
+    if proxies:
+        attempts.append(
+            {"proxies": True, "solve_captchas": False, "advanced_stealth": False}
+        )
+    attempts.append(
+        {"proxies": False, "solve_captchas": False, "advanced_stealth": False}
+    )
+    seen: set[tuple[Any, ...]] = set()
+    unique: list[dict[str, Any]] = []
+    for attempt in attempts:
+        key = (attempt["proxies"], attempt["solve_captchas"], attempt["advanced_stealth"])
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(attempt)
+    return unique
+
+
 def create_session(
     *,
     proxies: bool = False,
@@ -320,29 +374,11 @@ def create_session(
     want_solve = default_solve if solve_captchas is None else bool(solve_captchas)
     want_stealth = default_stealth if advanced_stealth is None else bool(advanced_stealth)
 
-    # Ordered attempts: richest → bare session. Enterprise flags first so paid
-    # plans keep them; Hobby gets a working basic session after 402/403.
-    attempts: list[dict[str, Any]] = []
-    if proxies or want_solve or want_stealth:
-        attempts.append(
-            {"proxies": bool(proxies), "solve_captchas": bool(want_solve), "advanced_stealth": bool(want_stealth)}
-        )
-    if proxies or want_solve:
-        attempts.append(
-            {"proxies": bool(proxies), "solve_captchas": bool(want_solve), "advanced_stealth": False}
-        )
-    if proxies:
-        attempts.append({"proxies": True, "solve_captchas": False, "advanced_stealth": False})
-    attempts.append({"proxies": False, "solve_captchas": False, "advanced_stealth": False})
-    # De-dupe while preserving order.
-    seen: set[tuple[Any, ...]] = set()
-    unique_attempts: list[dict[str, Any]] = []
-    for a in attempts:
-        key = (a["proxies"], a["solve_captchas"], a["advanced_stealth"])
-        if key in seen:
-            continue
-        seen.add(key)
-        unique_attempts.append(a)
+    unique_attempts = session_flag_attempts(
+        proxies=bool(proxies),
+        solve_captchas=bool(want_solve),
+        advanced_stealth=bool(want_stealth),
+    )
 
     def _build_kwargs(flags: dict[str, Any]) -> dict[str, Any]:
         # Project defaultTimeout is often 300s — parallel agents + LLM steps
@@ -490,10 +526,15 @@ def create_session(
                     if held:
                         with _SLOT_LOCK:
                             _HELD_IDS.add(sid)
+                    print(
+                        f"Browserbase session {sid} flags={flags}",
+                        flush=True,
+                    )
                     return BrowserbaseSession(
                         id=sid,
                         connect_url=session.connect_url,
                         session_url=f"https://www.browserbase.com/sessions/{sid}",
+                        flags=dict(flags),
                     )
                 except Exception as exc:  # noqa: BLE001
                     last_exc = exc
