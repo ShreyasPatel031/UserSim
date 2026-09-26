@@ -10,8 +10,11 @@ person or an agent is left alone. usersim-train-state=done,
 usersim-do-not-start=true, and a missing usersim-spot-watch label are also
 left alone.
 
-This process does not create on-demand instances. After two capacity errors in
-a row it logs that, and it stops trying after MAX_RESTARTS starts per run.
+A start whose operation finishes while the VM is still TERMINATED is a
+stockout, not a success. On that failure, or once usersim-spot-restarts hits
+the cap after a preemption, the watchdog starts the single instance named by
+usersim-failover-to and moves the watch label there. It does not create VMs
+and it does not fail over to any third instance.
 """
 from __future__ import annotations
 
@@ -29,6 +32,9 @@ STATE_LABEL = os.environ.get("TRAIN_STATE_LABEL", "usersim-train-state")
 DENY_LABEL = os.environ.get("DENY_LABEL_KEY", "usersim-do-not-start")
 RESTARTS_LABEL = os.environ.get("RESTARTS_LABEL", "usersim-spot-restarts")
 TEST_LABEL = os.environ.get("TEST_PREEMPT_LABEL", "usersim-spot-test-preempt")
+STOCKOUT_LABEL = os.environ.get("TEST_STOCKOUT_LABEL", "usersim-spot-test-stockout")
+FAILOVER_LABEL = os.environ.get("FAILOVER_LABEL", "usersim-failover-to")
+UP_OR_COMING = {"RUNNING", "STAGING", "PROVISIONING"}
 STATE_DIR = Path(os.environ.get("STATE_DIR", "/var/lib/usersim-spot-watch"))
 LOG = Path(os.environ.get("WATCH_LOG", "/var/log/usersim-spot-watch.log"))
 MAX_RESTARTS = int(os.environ.get("MAX_RESTARTS", "6"))
@@ -85,38 +91,17 @@ def parse_time(value: str | None) -> datetime | None:
     return stamp
 
 
-def decide(
-    name: str,
-    status: str,
-    preemptible: bool,
-    last_start: datetime | None,
-    ops: list[dict],
-    labels: dict[str, str],
-) -> tuple[str, str]:
-    """Return (action, reason). action is 'start' or 'skip'."""
-    if name.startswith(DENY_PREFIXES) or "dose-oss" in name:
-        return "skip", "other_team"
-    if labels.get(LABEL_KEY) != LABEL_VALUE:
-        return "skip", "not_watched"
-    if labels.get(STATE_LABEL) == "done":
-        return "skip", "train_state_done"
-    if labels.get(DENY_LABEL) == "true":
-        return "skip", "do_not_start"
-    if status == "RUNNING":
-        return "skip", "running"
-    if status in {"STAGING", "PROVISIONING", "REPAIRING", "SUSPENDING", "STOPPING"}:
-        return "skip", f"waiting_{status}"
-    if status not in DOWN:
-        return "skip", f"status_{status}"
-    try:
-        restarts = int(labels.get(RESTARTS_LABEL) or "0")
-    except ValueError:
-        restarts = 0
-    if restarts >= MAX_RESTARTS:
-        return "skip", f"restart_cap_{restarts}"
-    if labels.get(TEST_LABEL) == "true":
-        return "start", "test_preempt_marker"
+def classify_start(returncode: int, status_after: str) -> tuple[bool, str]:
+    """A finished start op that leaves the VM down is a stockout, not success."""
+    if returncode != 0:
+        return False, "start_command_failed"
+    if status_after not in UP_OR_COMING:
+        return False, f"start_op_done_but_still_{status_after or 'UNKNOWN'}"
+    return True, "ok"
 
+
+def newest_stop_kind(last_start: datetime | None, ops: list[dict]) -> tuple[str, str]:
+    """Return (preempted|user_stop|none, operation type)."""
     newest_preempt: datetime | None = None
     newest_stop: datetime | None = None
     preempt_type = ""
@@ -136,12 +121,55 @@ def decide(
             if newest_stop is None or stamp > newest_stop:
                 newest_stop = stamp
                 stop_type = kind
-
-    if newest_preempt is not None and (newest_stop is None or newest_preempt >= newest_stop):
-        return "start", f"preempted_op {preempt_type}"
     if newest_stop is not None and (newest_preempt is None or newest_stop > newest_preempt):
-        return "skip", f"user_or_agent_stop {stop_type}"
-    if preemptible and status in DOWN and newest_stop is None:
+        return "user_stop", stop_type
+    if newest_preempt is not None:
+        return "preempted", preempt_type
+    return "none", ""
+
+
+def decide(
+    name: str,
+    status: str,
+    preemptible: bool,
+    last_start: datetime | None,
+    ops: list[dict],
+    labels: dict[str, str],
+) -> tuple[str, str]:
+    """Return (action, reason). action is start, failover, or skip."""
+    if name.startswith(DENY_PREFIXES) or "dose-oss" in name:
+        return "skip", "other_team"
+    if labels.get(LABEL_KEY) != LABEL_VALUE:
+        return "skip", "not_watched"
+    if labels.get(STATE_LABEL) == "done":
+        return "skip", "train_state_done"
+    if status == "RUNNING":
+        return "skip", "running"
+    if labels.get(DENY_LABEL) == "true":
+        return "skip", "do_not_start"
+    if status in {"STAGING", "PROVISIONING", "REPAIRING", "SUSPENDING", "STOPPING"}:
+        return "skip", f"waiting_{status}"
+    if status not in DOWN:
+        return "skip", f"status_{status}"
+    if labels.get(STOCKOUT_LABEL) == "true":
+        return "start", "simulated_stockout"
+    if labels.get(TEST_LABEL) == "true":
+        return "start", "test_preempt_marker"
+    try:
+        restarts = int(labels.get(RESTARTS_LABEL) or "0")
+    except ValueError:
+        restarts = 0
+    kind, detail = newest_stop_kind(last_start, ops)
+    if kind == "user_stop":
+        return "skip", f"user_or_agent_stop {detail}"
+    preempted = kind == "preempted" or (preemptible and kind == "none")
+    if restarts >= MAX_RESTARTS:
+        if preempted and labels.get(FAILOVER_LABEL):
+            return "failover", f"restart_cap_{restarts}"
+        return "skip", f"restart_cap_{restarts}"
+    if kind == "preempted":
+        return "start", f"preempted_op {detail}"
+    if preemptible and kind == "none":
         return "start", "spot_termination_without_user_stop"
     return "skip", "no_preempt_evidence"
 
@@ -281,7 +309,7 @@ def remove_labels(inst: dict, keys: list[str]) -> None:
         log(f"DECISION name={inst['name']} action=note reason=label_remove_failed detail={(result.stderr or '')[-240:]}")
 
 
-def start_instance(inst: dict) -> tuple[bool, str]:
+def start_instance(inst: dict) -> tuple[int, str]:
     result = run(
         [
             "gcloud",
@@ -295,9 +323,109 @@ def start_instance(inst: dict) -> tuple[bool, str]:
         timeout=300,
     )
     text = ((result.stdout or "") + (result.stderr or ""))[-500:]
-    if result.returncode == 0:
-        return True, "ok"
-    return False, text.replace("\n", " ")
+    return result.returncode, text.replace("\n", " ")
+
+
+def instance_status(inst: dict) -> str:
+    result = run(
+        [
+            "gcloud",
+            "compute",
+            "instances",
+            "describe",
+            inst["name"],
+            f"--zone={inst['zone']}",
+            f"--project={project()}",
+            "--format=value(status)",
+        ],
+        timeout=60,
+    )
+    return (result.stdout or "").strip() or "UNKNOWN"
+
+
+def wait_until_up(inst: dict, attempts: int = 4, pause: float = 5.0) -> str:
+    status = "UNKNOWN"
+    for _ in range(attempts):
+        status = instance_status(inst)
+        if status in UP_OR_COMING:
+            return status
+        time.sleep(pause)
+    return status
+
+
+def find_instance(name: str) -> dict | None:
+    result = run(
+        [
+            "gcloud",
+            "compute",
+            "instances",
+            "list",
+            f"--project={project()}",
+            "--format=json(name,zone,status,labels,lastStartTimestamp,scheduling.preemptible)",
+        ],
+        timeout=120,
+    )
+    if result.returncode != 0:
+        log(f"FAILOVER name={name} result=fail reason=list_failed detail={(result.stderr or '')[-240:]}")
+        return None
+    try:
+        rows = json.loads(result.stdout or "[]")
+    except json.JSONDecodeError:
+        log(f"FAILOVER name={name} result=fail reason=list_bad_json")
+        return None
+    for row in rows:
+        if row.get("name") != name:
+            continue
+        zone = row.get("zone") or ""
+        if "/" in zone:
+            zone = zone.rsplit("/", 1)[-1]
+        scheduling = row.get("scheduling") or {}
+        return {
+            "name": row["name"],
+            "zone": zone,
+            "status": row.get("status") or "UNKNOWN",
+            "labels": row.get("labels") or {},
+            "last_start": parse_time(row.get("lastStartTimestamp")),
+            "preemptible": bool(scheduling.get("preemptible")),
+        }
+    return None
+
+
+def do_failover(source: dict, why: str) -> bool:
+    """Start the one named on-demand VM and stop watching the Spot VM."""
+    target_name = (source["labels"].get(FAILOVER_LABEL) or "").strip()
+    if not target_name or target_name == source["name"] or target_name.startswith(DENY_PREFIXES) or "dose-oss" in target_name:
+        log(f"FAILOVER name={source['name']} result=fail reason=no_target detail={why} note=no_further_failover")
+        return False
+    target = find_instance(target_name)
+    if target is None:
+        log(f"FAILOVER name={source['name']} target={target_name} result=fail reason=target_missing detail={why} note=no_further_failover")
+        return False
+    remove_labels(source, [LABEL_KEY, STOCKOUT_LABEL, TEST_LABEL])
+    add_labels(source, {DENY_LABEL: "true", STATE_LABEL: "yielded"})
+    add_labels(
+        target,
+        {
+            LABEL_KEY: LABEL_VALUE,
+            STATE_LABEL: "running",
+            RESTARTS_LABEL: "0",
+        },
+    )
+    remove_labels(target, [DENY_LABEL, STOCKOUT_LABEL])
+    if target["status"] in UP_OR_COMING:
+        log(f"FAILOVER name={source['name']} target={target_name} result=ok reason=already_running detail={why}")
+        return True
+    code, detail = start_instance(target)
+    status = wait_until_up(target)
+    ok, classified = classify_start(code, status)
+    if ok:
+        log(f"FAILOVER name={source['name']} target={target_name} result=ok reason={why} status={status}")
+        return True
+    log(
+        f"FAILOVER name={source['name']} target={target_name} result=fail "
+        f"reason={classified} status={status} detail={detail[:240]} note=no_further_failover"
+    )
+    return False
 
 
 def capacity_error(detail: str) -> bool:
@@ -327,6 +455,14 @@ def tick() -> int:
             inst["labels"],
         )
         state = load_state(name)
+        if action == "failover":
+            log(
+                f"DECISION name={name} action=failover reason={reason} "
+                f"status={inst['status']} restarts={inst['labels'].get(RESTARTS_LABEL, '0')}"
+            )
+            if do_failover(inst, reason):
+                started += 1
+            continue
         if action != "start":
             if inst["status"] == "RUNNING":
                 state["consecutive_failures"] = 0
@@ -336,32 +472,53 @@ def tick() -> int:
                 f"status={inst['status']} restarts={inst['labels'].get(RESTARTS_LABEL, '0')}"
             )
             continue
+        if reason == "simulated_stockout":
+            log(
+                f"DECISION name={name} action=start reason=simulated_stockout result=fail "
+                f"detail=start_op_done_but_still_TERMINATED status={inst['status']} "
+                f"restarts={inst['labels'].get(RESTARTS_LABEL, '0')}/{MAX_RESTARTS}"
+            )
+            if do_failover(inst, "simulated_stockout"):
+                started += 1
+            continue
         try:
             restarts = int(inst["labels"].get(RESTARTS_LABEL) or "0")
         except ValueError:
             restarts = 0
         new_count = str(restarts + 1)
         add_labels(inst, {RESTARTS_LABEL: new_count})
-        ok, detail = start_instance(inst)
+        code, detail = start_instance(inst)
+        status_after = wait_until_up(inst) if code == 0 else instance_status(inst)
+        ok, classified = classify_start(code, status_after)
         if ok:
             state["consecutive_failures"] = 0
             save_state(name, state)
             if inst["labels"].get(TEST_LABEL) == "true":
                 remove_labels(inst, [TEST_LABEL])
-            log(f"DECISION name={name} action=start reason={reason} result=ok restarts={new_count}/{MAX_RESTARTS}")
+            log(
+                f"DECISION name={name} action=start reason={reason} result=ok "
+                f"status={status_after} restarts={new_count}/{MAX_RESTARTS}"
+            )
             started += 1
             continue
         failures = int(state.get("consecutive_failures") or 0) + 1
         state["consecutive_failures"] = failures
         save_state(name, state)
+        fail_detail = detail if code != 0 else classified
         log(
             f"DECISION name={name} action=start reason={reason} result=fail "
-            f"consecutive_failures={failures} restarts={new_count}/{MAX_RESTARTS} detail={detail}"
+            f"consecutive_failures={failures} restarts={new_count}/{MAX_RESTARTS} "
+            f"detail={fail_detail}"
         )
-        if failures >= 2 and capacity_error(detail):
+        stockout = classified.startswith("start_op_done_but_still_") or capacity_error(detail) or capacity_error(classified)
+        if stockout and inst["labels"].get(FAILOVER_LABEL):
+            if do_failover(inst, classified):
+                started += 1
+            continue
+        if failures >= 2 and (capacity_error(detail) or capacity_error(classified)):
             log(
                 f"CAPACITY name={name} consecutive_failures={failures} "
-                "note=Spot capacity failed twice in a row; on-demand fallback is not done by this watchdog"
+                "note=Spot capacity failed and no on-demand failover target is labeled"
             )
     return started
 
