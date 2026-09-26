@@ -3627,38 +3627,41 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                if a11y_boot is not None:
-                    _left = max(
-                        1.0,
-                        float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic(),
-                    )
-                    try:
-                        await asyncio.wait_for(a11y_boot.published.wait(), timeout=_left)
-                    except asyncio.TimeoutError:
-                        print(
-                            "shared page read did not finish before the study budget",
-                            flush=True,
+                try:
+                    if a11y_boot is not None:
+                        _left = max(
+                            1.0,
+                            float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic(),
                         )
-                def _run_rank(task: dict[str, Any]) -> tuple:
-                    key = str(task.get("site_key") or "product")
-                    return (0 if key == "product" else 1, key, str(task.get("id") or ""))
+                        try:
+                            await asyncio.wait_for(a11y_boot.published.wait(), timeout=_left)
+                        except asyncio.TimeoutError:
+                            print(
+                                "shared page read did not finish before the study budget",
+                                flush=True,
+                            )
+                    def _run_rank(task: dict[str, Any]) -> tuple:
+                        key = str(task.get("site_key") or "product")
+                        return (0 if key == "product" else 1, key, str(task.get("id") or ""))
 
-                ordered_tasks = sorted(study.tasks, key=_run_rank)
-                # return_exceptions=True: one cancelled/failed agent must not
-                # CancelledError the whole gather ("Killed by operator").
-                agent_out = await asyncio.gather(
-                    *[_run_one(t) for t in ordered_tasks],
-                    return_exceptions=True,
-                )
-                for item in agent_out:
-                    if isinstance(item, Exception):
-                        print(f"live agent failed: {item!r}", flush=True)
-                        continue
-                if a11y_boot is not None:
-                    try:
-                        await a11y_boot.close()
-                    except Exception as close_exc:  # noqa: BLE001
-                        print(f"a11y browser close failed: {close_exc!r}", flush=True)
+                    ordered_tasks = sorted(study.tasks, key=_run_rank)
+                    # return_exceptions=True: one cancelled/failed agent must not
+                    # CancelledError the whole gather ("Killed by operator").
+                    agent_out = await asyncio.gather(
+                        *[_run_one(t) for t in ordered_tasks],
+                        return_exceptions=True,
+                    )
+                    for item in agent_out:
+                        if isinstance(item, Exception):
+                            print(f"live agent failed: {item!r}", flush=True)
+                            continue
+                finally:
+                    # A kill or cancel must still release keep-alive browsers.
+                    if a11y_boot is not None:
+                        try:
+                            await a11y_boot.close()
+                        except Exception as close_exc:  # noqa: BLE001
+                            print(f"a11y browser close failed: {close_exc!r}", flush=True)
                 try:
                     await backfill_site_opening_shots(study)
                     if study.live_sessions:
