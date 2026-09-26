@@ -1,9 +1,9 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T08:04:00Z",
+  "graded_at": "2026-09-26T08:06:00Z",
   "live_launches": "stopped",
-  "note": "Independent --grade-study. PR #48 self-claim of 8/8 is rejected. Each of 18d86703, 40e719b1, 5a10cefa, and 0711d32d has only study.json in GCS, so product is 0/8. A TTFA of 0.0s is a forged aligned stamp. owner=gates running count is 0.",
+  "note": "70557bae graded from GCS with Gemini on product final.png. Study pass is false. 38deb1cc is not in GCS. owner=gates and owner=fix running counts are 0. Two owner=integration sessions were left running. Tips: integration 7bfc147, #47 ea561a2, task-completion a62ce07.",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "9470be5",
@@ -192,6 +192,11 @@
       "id": 16,
       "owner": "cursor/tonight-integration",
       "fact": "18d86703, 40e719b1, 5a10cefa, and 0711d32d each store only study.json. Product is 0/8. Judge reason: no downloadable PNG. Fix mvp/a11y_agent.py so a failed mvp/opening_shot.py upload_screenshot does not leave final_screenshot_url set, and mvp/gcs_store.py gcs_upload_file must write final.png next to study.json. Stamp time_to_first_value_s and total_time_s in persist_study. Both are missing, so TTFV is not recorded and total_time is not ready. 18d86703 TTFA median 1.009s max 1.782s PASS but product URLs are docs and pricing. 40e719b1 TTFA median 1.082s max 1.538s PASS and 8/8 are still https://excalidraw.com/. 5a10cefa TTFA median 42.23s max 68.697s FAIL. 0711d32d TTFA median 46.121s max 82.966s FAIL. A 0.0s median is the aligned stamp, not a pass. Top weakness on the first two is the homepage-stall sentence and fails."
+    },
+    {
+      "id": 17,
+      "owner": "cursor/task-completion-fix",
+      "fact": "70557bae product PNGs are in GCS and Gemini YES is 8/8, but the study fails. New-issue YES is the docs page (https://linear.app/docs/creating-issues): 'The page clearly explains multiple ways to create a new issue, including keyboard shortcuts, icons, and URLs.' Pricing YES is https://linear.app/pricing. TTFA median 38.594s max 104.43s from browser_ready_at_ts because page_open_at_ts equals first_action_at_ts. TTFV not recorded. total_time not ready. Strength 0/2. Weakness 0/3. Top weakness is the homepage-stall sentence. Missing competitor objects: mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/<competitor_id>/final.png for all 16 competitor agents. 38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160 is absent: no study.json and no final.png."
     }
   ],
   "graded_from_gcs": {
@@ -414,11 +419,76 @@
     "report_page": "not fetched, gates app stopped"
   },
   "taskfix_70557bae_38deb1cc": {
-    "graded_at": "2026-09-26T07:56:00Z",
+    "graded_at": "2026-09-26T08:06:00Z",
     "pass": false,
-    "linear": "70557bae-83af-4bf9-9bbb-3135046193cd",
-    "excalidraw": "38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160",
-    "fact": "Neither study.json nor final PNGs are in GCS for 70557bae or 38deb1cc. 190452e9 and e784d307 are also absent. A self-graded 8/8 is not a pass. Task-completion tip is 3590dd0."
+    "self_grade": "rejected",
+    "png_present_product": [
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p1__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p2__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p3__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p4__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p1__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p2__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p3__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p4__product/final.png"
+    ],
+    "missing_gcs_paths": [
+      "mvp_studies/38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160/study.json",
+      "mvp_studies/38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160/screenshots/t1__p1__product/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p1__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p1__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p1__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p1__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p2__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p2__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p2__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p2__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p3__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p3__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p3__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p3__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p4__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p4__competitor_2/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p4__competitor_1/final.png",
+      "mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t2__p4__competitor_2/final.png"
+    ],
+    "linear_70557bae": {
+      "study_id": "70557bae-83af-4bf9-9bbb-3135046193cd",
+      "url": "https://linear.app",
+      "pass": false,
+      "wall_s": 114.369,
+      "agents": 24,
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "report_ready": true,
+      "report_page": "not fetched, gates app stopped",
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=38.594s max=104.43s n=24/24 FAIL",
+      "ttfa_note": "page_open_at_ts == first_action_at_ts == created_at_ts on all 24. Clock is browser_ready_at_ts. A 0.0s gap is not a pass.",
+      "product_task_completion": "8/8 Gemini YES on downloadable product PNGs. Study still FAIL.",
+      "product_urls": "new-issue https://linear.app/docs/creating-issues; pricing https://linear.app/pricing",
+      "judge_reasons": {
+        "t1_new_issue": "The page clearly explains multiple ways to create a new issue, including keyboard shortcuts, icons, and URLs. That is the docs page, not an issue created in the app.",
+        "t2_pricing": "The page displays pricing tiers for the product, including free and paid options."
+      },
+      "strength": "0/2 FAIL",
+      "weakness": "0/3 FAIL",
+      "top_weakness": "FAIL. '6 of 8 product runs stopped on the first screen, so feature-level weaknesses are thin in these traces.'",
+      "missing_fields": [
+        "time_to_first_value_s",
+        "total_time_s"
+      ],
+      "png": "8 product final.png objects exist. 16 competitor final.png objects are missing."
+    },
+    "excalidraw_38deb1cc": {
+      "study_id": "38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160",
+      "pass": false,
+      "png": "none. Prefix is absent.",
+      "missing_gcs": "mvp_studies/38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160/study.json and screenshots/*/final.png",
+      "product_task_completion": "0/8 FAIL. Gemini not run.",
+      "fact": "No study.json and no final.png. A self-graded 8/8 is not a pass."
+    },
+    "uploader_fix": "mvp/a11y_agent.py must not keep final_screenshot_url when mvp/opening_shot.py upload_screenshot returns false. mvp/gcs_store.py gcs_upload_file must write screenshots/<agent_id>/final.png for every agent, including competitors. Stamp time_to_first_value_s and total_time_s in persist_study before write_study_state."
   },
   "gates_running": 0,
   "linear_757461e7": {
@@ -662,5 +732,6 @@
       "top_weakness": "FAIL. Export button claim has no loadable screenshot.",
       "wall_s": 94.072
     }
-  }
+  },
+  "session_count_freed": 0
 }
