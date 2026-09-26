@@ -264,6 +264,10 @@ def run_spend(*, workers: int) -> None:
                 if row.get("floor"):
                     hit_floor = True
                     continue
+                # A missed balance read never called createTask. It is not a trial
+                # and must not retire a site that has been solving.
+                if row.get("error") == "balance_unknown":
+                    continue
                 st = stats[target["id"]]
                 st["n"] += 1
                 if row.get("solve_ok"):

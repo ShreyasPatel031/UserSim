@@ -62,6 +62,7 @@ MAX_SIGNUP_ATTEMPTS = 20
 
 _LOCK = threading.Lock()
 _INFLIGHT_USD = 0.0
+_BALANCE_CACHE: dict[str, float] = {"ts": 0.0, "value": -1.0}
 _SITE: ContextVar[str] = ContextVar("captcha_spend_site", default="")
 _ATTEMPT: ContextVar[int] = ContextVar("captcha_spend_attempt", default=0)
 _LAST = threading.local()
@@ -141,6 +142,8 @@ def reset_runtime_state() -> None:
     global _INFLIGHT_USD
     with _LOCK:
         _INFLIGHT_USD = 0.0
+        _BALANCE_CACHE["ts"] = 0.0
+        _BALANCE_CACHE["value"] = -1.0
 
 
 def task_price(task_type: str) -> float | None:
@@ -357,6 +360,28 @@ def get_balance(key: str | None = None) -> float | None:
     token = key if key is not None else capsolver_key()
     if not token:
         return None
+    now = time.time()
+    with _LOCK:
+        cached = _BALANCE_CACHE["value"]
+        fresh = now - _BALANCE_CACHE["ts"] < 1.2 and cached >= 2.0
+    if fresh:
+        return cached
+    # One balance call at a time. A burst of getBalance was coming back empty.
+    with _LOCK:
+        now = time.time()
+        cached = _BALANCE_CACHE["value"]
+        if now - _BALANCE_CACHE["ts"] < 1.2 and cached >= 2.0:
+            return cached
+        value = _fetch_balance(token)
+        if value is not None:
+            _BALANCE_CACHE["ts"] = time.time()
+            _BALANCE_CACHE["value"] = value
+        return value
+
+
+def _fetch_balance(token: str) -> float | None:
+    import httpx
+
     for attempt in range(3):
         try:
             payload = httpx.post(
