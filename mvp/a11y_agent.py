@@ -1291,7 +1291,7 @@ class A11yBoot:
                 continue
             existing = self.study.live_sessions.get(agent_id) or {}
             # A later republish must not wipe steps the agent already took.
-            if existing.get("first_action_at_ts") or len(existing.get("trace") or []) > 2:
+            if existing.get("first_action_at_ts") or existing.get("early_start") or len(existing.get("trace") or []) > 2:
                 continue
             assigned = str(task.get("site_url") or "")
             if _host(url) != _host(assigned):
@@ -4088,7 +4088,10 @@ async def _run_a11y_agent_unlocked(
             "visited_urls": _visited(trace, url, final_url),
             "finished_at_ts": time.time(),
             "needs_account": bool(outcome_flags.get("needs_account")),
-            "signup": outcome_flags.get("signup") or {},
+            # A public task (pricing, find out) never signs up; say so instead of
+            # leaving an empty signup that reads as "signup missing".
+            "signup": outcome_flags.get("signup")
+            or ({"ok": None, "reason": "not_needed_public_task"} if public_task(task_prompt) else {}),
             "website_eval": outcome_flags.get("website_eval") or None,
             "actions": [{"action": h} for h in history if h],
             "trace": trace,

@@ -593,7 +593,7 @@ function showReport(data) {
   }
   _sites = _insights.sites || [];
   lede.textContent = compared
-    ? `${compared.n_personas} buyer${compared.n_personas === 1 ? "" : "s"} tried ${(compared.by_task || []).length} tasks on ${(compared.sites || []).length} products (${compared.n_scored} scored runs), then each picked one to buy.`
+    ? `${compared.n_personas} buyer${compared.n_personas === 1 ? "" : "s"} tried ${(compared.by_task || []).length} tasks on ${(compared.sites || []).length} products (${compared.n_scored} of ${compared.n_runs || compared.n_scored} runs scored${compared.n_harness_excluded ? `, ${compared.n_harness_excluded} left out because the harness stopped them` : ""}), then each picked one to buy.`
     : _insights.lede || _insights.headline || "";
   if ((data?.status === "abandoned" || data?.status === "error") && data?.error) {
     // A stopped study says so first; its partial charts are not a finished report.
@@ -679,7 +679,8 @@ function signupLine(signups) {
     const why = Object.entries(r.reasons || {}).map(([k, n]) => `${k} ×${n}`).join(", ");
     return `${escapeHtml(r.site)}: ${r.ok}/${r.tried} signed up live` +
       (r.median_s != null ? ` (median ${Math.round(r.median_s)}s)` : "") +
-      (why ? ` (UserSim could not finish: ${escapeHtml(why)})` : "");
+      (why ? ` (UserSim could not finish: ${escapeHtml(why)})` : "") +
+      (r.not_needed ? ` · ${r.not_needed} public-task run${r.not_needed === 1 ? "" : "s"} needed no account` : "");
   });
   return `<p class="sub"><strong>Account walls:</strong> agents created real accounts mid-task when a step needed one. ${bits.join(" · ")}</p>`;
 }

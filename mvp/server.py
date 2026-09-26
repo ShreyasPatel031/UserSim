@@ -560,9 +560,32 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     if not study.tasks_override and os.environ.get("MVP_FAST_PLAN", "1") != "0":
         # A bare URL: one quick model call picks the tasks, rivals, and segment
         # so agents open pages within seconds instead of after ~20s of research.
-        from mvp.fast_plan import plan_from_url
+        from mvp.fast_plan import compare_mode, plan_from_url
 
-        plan = await plan_from_url(url)
+        plan_task = asyncio.create_task(plan_from_url(url))
+        starter = None
+        if compare_mode() and not study.test_mode:
+            from mvp import early_start
+
+            if early_start.enabled():
+                # The first buyer starts on the product while the full plan is written.
+                starter = await early_start.starter_plan(url)
+                if starter and not plan_task.done():
+                    try:
+                        early_start.start_early_agent(study, url, starter)
+                    except Exception as exc:  # noqa: BLE001
+                        print(f"[early] start failed: {exc!r}", flush=True)
+                        starter = None
+                else:
+                    starter = None
+        plan = await plan_task
+        if plan and starter and plan.get("mode") == "compare":
+            plan = early_start.splice_plan(plan, starter)
+        elif starter and not (plan and plan.get("mode") == "compare"):
+            # No comparison plan: stop the early agent rather than run it outside the study.
+            for t in (getattr(study, "early_runs", None) or {}).values():
+                t.cancel()
+            study.early_runs = {}
         if plan:
             study.tasks_override = list(plan["tasks"])
             if not study.competitors and not study.skip_competitors:

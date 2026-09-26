@@ -77,12 +77,13 @@ _INFRA_MODES = frozenset({"browser_partial", "browser_wall", "fallback_snapshot"
 
 _VS_URL_RE = re.compile(r"\s*\(vs\s+https?://[^)]+\)\s*$", re.I)
 _INSTR_RE = re.compile(
-    r"\n*You are evaluating the competitor site https?://\S+ only\. "
-    r"Stay on that site — do not open the original product or other rivals\.\s*$",
+    r"\n*You are evaluating the (?:competitor site https?://\S+ only\. "
+    r"Stay on that site — do not open the original product or other rivals\."
+    r"|site https?://\S+ only\. Stay on that site; opening it is correct\.)\s*$",
     re.I,
 )
 _EXPLICIT_TARGET_RE = re.compile(
-    r"(?:\(vs\s+|evaluating the competitor site\s+)(https?://[^\s)]+)",
+    r"(?:\(vs\s+|evaluating the (?:competitor )?site\s+)(https?://[^\s)]+)",
     re.I,
 )
 
@@ -345,6 +346,16 @@ def competitor_task_prompt(base_prompt: str, site_url: str) -> str:
         "",
         base,
     ).strip()
+    import os
+
+    if os.environ.get("MVP_STUDY_MODE", "classic").strip().lower() == "compare":
+        # Comparison study: every site gets the same job in the same words.
+        # "Competitor ... not the original product" made rival agents doubt
+        # they were on the right site and click back out of it (b19ba88f).
+        return (
+            f"{base}\n\n"
+            f"You are evaluating the site {site_url} only. Stay on that site; opening it is correct."
+        )
     return (
         f"Apply this task on the competitor website {site_url}, not on the original product.\n"
         f"{base}\n\n"

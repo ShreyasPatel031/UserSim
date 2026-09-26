@@ -186,3 +186,39 @@ class WebsiteEvalTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_infra_stop_runs_are_left_out():
+    from mvp.comparison import infra_stop
+
+    assert infra_stop({"stop_reason": "session ended", "num_steps": 0}).startswith("agent never ran")
+    assert "cut short" in infra_stop({"stop_reason": "study budget", "num_steps": 7})
+    assert infra_stop({"stop_reason": "done", "num_steps": 4}) == ""
+
+
+def test_persona_pick_is_blind_and_maps_letters_back(monkeypatch):
+    import asyncio
+
+    from mvp import comparison
+
+    seen = {}
+
+    async def fake(prompt, timeout=40.0):
+        seen["prompt"] = prompt
+        # Pick whichever letter ChurnZero got.
+        letter = prompt.split("Products: ")[1].split("ChurnZero")[0].strip().split()[-1].rstrip(":")
+        return {"pick": letter, "why": f"Product {letter} did it.", "cites": ["R1"]}
+
+    monkeypatch.setattr(comparison, "_json_call", fake)
+    rows = [
+        {"agent_id": "t1__p1__product", "site_key": "product", "persona_id": "p1", "task_prompt": "Do x",
+         "comparison_score": {"level": "in_product", "score": 5, "friction": 1, "reason": "ok"}},
+        {"agent_id": "t1__p1__competitor_1", "site_key": "competitor_1", "persona_id": "p1", "task_prompt": "Do x",
+         "comparison_score": {"level": "clear_evidence", "score": 6, "friction": 0, "reason": "ok"}},
+    ]
+    got = asyncio.run(comparison.persona_pick({"id": "p1", "name": "P"}, rows, {"product": "Kolanut", "competitor_1": "ChurnZero"}))
+    assert got["pick"] == "competitor_1"
+    assert "product under study" not in seen["prompt"]
+    assert "product: Kolanut" not in seen["prompt"]
+    assert "ChurnZero did it" in got["why"]
+    assert got["against_scores"] is False

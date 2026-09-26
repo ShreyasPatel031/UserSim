@@ -1390,6 +1390,64 @@ def _summary_from_agent_results(agent_results: list[dict[str, Any]]) -> dict[str
     )
 
 
+
+def study_budget_s_early() -> float:
+    from mvp.a11y_agent import study_budget_s
+
+    return float(study_budget_s())
+
+
+def _browser_concurrency() -> int:
+    for key in ("MVP_BROWSER_CONCURRENCY", "BROWSERBASE_MAX_CONCURRENT"):
+        try:
+            v = int(os.environ.get(key, "") or 0)
+        except ValueError:
+            v = 0
+        if v > 0:
+            return v
+    return 25
+
+
+def queue_waves(n_agents: int, concurrency: int | None = None) -> int:
+    """How many rounds of browsers a study needs (100 agents on 25 browsers = 4)."""
+    c = max(1, int(concurrency or _browser_concurrency()))
+    return max(1, -(-max(0, int(n_agents)) // c))
+
+
+def _size_budget_for_queue(study: Any) -> None:
+    """Give every queued wave of agents a full study budget.
+
+    The study clock is one budget for all agents. With more agents than
+    browsers the later waves waited for a browser, then found the clock gone:
+    kolanut b19ba88f cut 17 of 100 rival agents ("session ended" while queued,
+    "study budget" mid-run). Size the clock for the waves instead, capped by
+    MVP_STUDY_BUDGET_MAX_S.
+    """
+    deadline = getattr(study, "budget_deadline", None)
+    base = float(getattr(study, "budget_s", 0) or 0)
+    if deadline is None or base <= 0 or getattr(study, "_budget_sized", False):
+        return
+    waves = queue_waves(len(study.tasks or []))
+    if waves <= 1:
+        return
+    try:
+        cap = float(os.environ.get("MVP_STUDY_BUDGET_MAX_S", "2400") or 2400)
+    except ValueError:
+        cap = 2400.0
+    total = min(cap, base * waves)
+    add = max(0.0, total - base)
+    if add <= 0:
+        return
+    study.budget_deadline = float(deadline) + add
+    study.budget_s = base + add
+    study._budget_sized = True
+    log_activity(
+        study,
+        "phase",
+        f"Study budget {int(study.budget_s)}s for {len(study.tasks)} agents "
+        f"({waves} waves of {_browser_concurrency()} browsers)",
+    )
+
 async def run_study(
     study_id: str,
     *,
@@ -1946,6 +2004,8 @@ async def _run_study_body(
         if study.test_mode and study.personas and study.tasks:
             used = {t.get("persona_id") for t in study.tasks}
             study.personas = [p for p in study.personas if p.get("id") in used] or study.personas[:1]
+
+        _size_budget_for_queue(study)
 
         for persona in study.personas:
             demos = ", ".join(
@@ -3397,7 +3457,15 @@ async def _run_study_body(
                                         warm_used = True
                                 run = None
                                 _remaining = float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic()
-                                if a11y_boot is not None:
+                                from mvp import early_start as _early
+
+                                _early_task, _early_steps = _early.claim(study, agent_id)
+                                if _early_task is not None:
+                                    # Started before the plan finished (time to first value).
+                                    if _early_steps is not None:
+                                        await _early_steps.adopt(_on_agent_step)
+                                    _agent_coro = None
+                                elif a11y_boot is not None:
                                     from mvp.a11y_agent import run_a11y_agent
 
                                     # Leave time for the final PNG and the report inside the 480s gate.
@@ -3433,7 +3501,10 @@ async def _run_study_body(
                                         local=force_local_browser,
                                         warm=agent_warm,
                                     )
-                                if _remaining <= 0:
+                                if _early_task is not None:
+                                    _agent_task = _early_task
+                                    _remaining = max(_remaining, study_budget_s_early())
+                                elif _remaining <= 0:
                                     print(
                                         f"[{agent_id}] study budget — not started",
                                         flush=True,
@@ -3457,7 +3528,7 @@ async def _run_study_body(
                                         "error": "study budget",
                                     }
                                     _agent_task = None
-                                else:
+                                elif _early_task is None:
                                     _agent_task = asyncio.create_task(_agent_coro)
                                 if _agent_task is not None:
                                     _done, _pending = await asyncio.wait(

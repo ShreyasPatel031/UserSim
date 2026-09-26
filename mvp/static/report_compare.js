@@ -76,6 +76,7 @@ function renderCompareHtml(comp) {
       const run = cite ? cmpRun(cite) : null;
       const step = run?.comparison_score?.evidence_step ?? 0;
       return `<li><strong>${cmpEsc(p.name)}</strong> <span class="muted">${cmpEsc(p.role)}</span> → ${p.pick ? `<span class="pill ${cmpCss(p.pick)}">${cmpEsc(p.pick_label)}</span>` : `<span class="pill mixed">${cmpEsc(p.pick_label)}</span>`}
+        ${p.against_scores ? `<span class="muted small"> · picked against its own averages (${(comp.sites || []).map((s) => `${cmpEsc(s.label)} ${p.scores?.[s.key] ?? "–"}`).join(", ")})</span>` : ""}
         ${p.pick_why ? `<div class="muted small">“${cmpEsc(p.pick_why)}”</div>` : ""}
         ${(p.pick_cites || []).map((c, i) => cmpCite(c, cmpRun(c)?.comparison_score?.evidence_step, `evidence ${i + 1}`)).join(" ")}</li>`;
     })

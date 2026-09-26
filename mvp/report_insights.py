@@ -1775,7 +1775,11 @@ def signup_summary(runs: list[dict[str, Any]], study: dict[str, Any]) -> dict[st
         if not info:
             continue
         label = _site_label(run, study)
-        row = rows.setdefault(label, {"site": label, "tried": 0, "ok": 0, "seconds": [], "reasons": {}})
+        row = rows.setdefault(label, {"site": label, "tried": 0, "ok": 0, "seconds": [], "reasons": {}, "not_needed": 0})
+        if info.get("reason") == "not_needed_public_task":
+            # A public task (pricing) never needs an account; not a signup attempt.
+            row["not_needed"] += 1
+            continue
         row["tried"] += 1
         if info.get("ok"):
             row["ok"] += 1

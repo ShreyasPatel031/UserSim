@@ -22,6 +22,7 @@ screenshots. Nothing here reads the agent's own "done" claim.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import os
 import re
 import statistics
@@ -89,7 +90,7 @@ def score_prompt(run: dict[str, Any], persona: dict[str, Any], *, site_label: st
 
 Buyer persona: {persona.get('name') or ''}, {persona.get('occupation') or ''}. {persona.get('bio') or ''}
 Job to be done: {_base_task(run)}
-Site: {site_label} ({run.get('site_url') or ''}){' - the product under study' if is_product else ' - a competitor'}
+Site: {site_label} ({run.get('site_url') or ''})
 Access: {access}
 Step trace:
 {steps}
@@ -161,6 +162,22 @@ def _merged_runs(study: Any) -> tuple[list[dict[str, Any]], dict[str, dict[str, 
     return [r for r in (results or []) if isinstance(r, dict)], rows
 
 
+_INFRA_STOPS = {"session ended", "study budget", "browser lost", "no browser"}
+
+
+def infra_stop(run: dict[str, Any]) -> str:
+    """Why the harness, not the site, ended this run ('' when the site did)."""
+    stop = str(run.get("stop_reason") or "").strip().lower()
+    steps = int(run.get("num_steps") or 0)
+    if stop in _INFRA_STOPS:
+        if steps <= 0:
+            return f"agent never ran ({stop})"
+        return f"agent cut short by the harness ({stop}) after {steps} steps"
+    if steps <= 0 and str(run.get("browser_error") or "").strip():
+        return "agent never ran (browser error)"
+    return ""
+
+
 async def apply_comparison_scores(study: Any, *, timeout_s: float | None = None) -> int:
     """Score every run once (stored as run['comparison_score']); returns how many were scored."""
     if os.environ.get("MVP_COMPARE_SCORE", "1") == "0":
@@ -184,6 +201,12 @@ async def apply_comparison_scores(study: Any, *, timeout_s: float | None = None)
         is_product = str(run.get("site_key") or "") == "product"
         label = product_label if is_product else site_name(str(run.get("site_url") or ""), names)
         path = MVP_RUNS_DIR / str(getattr(study, "id", "")) / aid / "screenshots" / "final.png"
+        infra = infra_stop(run)
+        if infra:
+            # The harness stopped this agent (no browser in time, study clock),
+            # not the site. Scoring it would count our queue as the site's loss.
+            result["comparison_score"] = {"level": None, "score": None, "reason": infra, "excluded": True}
+            return
         if not path.is_file() or path.stat().st_size < 2000:
             # No final page to look at (lost browser): leave it out of the comparison.
             result["comparison_score"] = {"level": None, "score": None, "reason": "no final screenshot", "excluded": True}
@@ -291,7 +314,7 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
     """Per-task winners, per-persona picks, wins/losses and strengths vs each rival. None without scores."""
     runs = [
         r for r in (study.get("agent_results") or [])
-        if isinstance(r, dict) and isinstance(_sc(r).get("score"), (int, float))
+        if isinstance(r, dict) and isinstance(_sc(r).get("score"), (int, float)) and not infra_stop(r)
     ]
     if not runs:
         return None
@@ -405,6 +428,8 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
                 "pick_why": chosen.get("why") or "",
                 "pick_cites": [c for c in (chosen.get("cites") or []) if isinstance(c, str)],
                 "product_wins": pick == "product",
+                # Picked a product its own averages did not rank first (shown on the page).
+                "against_scores": bool(pick) and pick not in tiers[0],
                 "product_rank": _rank_of(tiers, "product"),
             }
         )
@@ -500,6 +525,11 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
         "product_label": product_label,
         "sites": [{"key": s, "label": labels[s], "url": site_urls[s]} for s in sites],
         "n_scored": len(runs),
+        "n_runs": sum(1 for r in (study.get("agent_results") or []) if isinstance(r, dict)),
+        # Runs the harness ended (no browser in time, study clock): left out, never a loss.
+        "n_harness_excluded": sum(
+            1 for r in (study.get("agent_results") or []) if isinstance(r, dict) and infra_stop(r)
+        ),
         "n_personas": len(by_persona),
         "pick_counts": pick_counts,
         "pick_ties": ties,
@@ -561,37 +591,93 @@ def _run_line(r: dict[str, Any], labels: dict[str, str], ref: str = "") -> str:
     )
 
 
+def _blind_order(keys: list[str], seed: str) -> list[str]:
+    """Stable per-persona shuffle so the product under study is never listed first by rule."""
+    return sorted(keys, key=lambda k: hashlib.sha256(f"{seed}|{k}".encode()).hexdigest())
+
+
+def score_leader(rows: list[dict[str, Any]]) -> tuple[list[str], dict[str, float]]:
+    """Sites tied for best by this persona's own scores (tie rule), and each site's mean."""
+    by_site: dict[str, list[dict[str, Any]]] = {}
+    for r in rows:
+        by_site.setdefault(str(r.get("site_key")), []).append(r)
+    tiers = rank_sites(by_site)
+    means = {k: round(statistics.fmean(float(_sc(r)["score"]) for r in v), 1) for k, v in by_site.items() if v}
+    return (tiers[0] if tiers else []), means
+
+
 async def persona_pick(persona: dict[str, Any], rows: list[dict[str, Any]], labels: dict[str, str]) -> dict[str, Any] | None:
-    keys = list(labels)
-    refs = _refs(rows)
-    prompt = f"""You are this buyer. You just tried the same jobs on {len(keys)} products. Pick the ONE product you would buy, from your own results below.
+    """One buyer picks a product from its own runs, blind to which one is under study.
+
+    Products are shown as neutral letters in a per-persona shuffled order, the
+    runs are shuffled the same way, and nothing says which product commissioned
+    the study (b19ba88f listed "product: Kolanut" first and told the buyer that
+    hands-on use beats the website, and 5 of 5 picked Kolanut).
+    """
+    seed = str(persona.get("id") or persona.get("name") or "")
+    order = _blind_order(list(labels), seed)
+    letters = {k: chr(ord("A") + i) for i, k in enumerate(order)}
+    back = {v: k for k, v in letters.items()}
+    blind = {letters[k]: labels[k] for k in order}
+    shuffled = sorted(rows, key=lambda r: hashlib.sha256(f"{seed}|{r.get('agent_id')}".encode()).hexdigest())
+    refs = _refs(shuffled)
+    means_by_site: dict[str, list[float]] = {}
+    for r in shuffled:
+        means_by_site.setdefault(str(r.get("site_key")), []).append(float(_sc(r)["score"]))
+    summary_line = ", ".join(
+        f"{letters[k]} {labels[k]} {round(statistics.fmean(means_by_site[k]), 1)}/10 over {len(means_by_site[k])} jobs"
+        for k in order if means_by_site.get(k)
+    )
+    tried = {k for k in means_by_site}
+    missing = [f"{letters[k]} {labels[k]}" for k in order if k not in tried]
+    blind_labels = {k: f"{letters[k]} {labels[k]}" for k in order}
+    lines = chr(10).join(_run_line(r, blind_labels, ref) for ref, r in zip(refs, shuffled))
+    prompt = f"""You are this buyer. You tried the same jobs on {len(order)} products. Pick the ONE product you would buy, from your own results below.
 
 You: {persona.get('name')}, {persona.get('occupation') or ''}. {persona.get('bio') or ''}
-Products (key: name): {", ".join(f"{k}: {v}" for k, v in labels.items())}
-Your runs (agent id, product, job, how far you got, score, friction, reason, what the page said):
-{chr(10).join(_run_line(r, labels, ref) for ref, r in zip(refs, rows))}
+Products: {", ".join(f"{letter}: {name}" for letter, name in blind.items())}
+Your average score per product: {summary_line}{(" (could not try: " + ", ".join(missing) + "; do not count that against them)") if missing else ""}
+Your runs (ref, product, job, how far you got, score, friction, reason, what the page said):
+{lines}
 
-Doing a job inside the product beats reading about it on a website. Weigh the jobs that matter most to you.
-Return JSON only: {{"pick": "one product key from the list", "runner_up": "product key", "why": "two short sentences in first person citing specific results", "cites": ["run refs (like R3) of the 1-3 runs that decided it"]}}"""
+Judge fairly:
+- A product that cannot do a job you need (missing, "coming soon", broken) loses that job, even if you could sign up.
+- Working inside a product and a website that clearly shows how it does the job are both real evidence; do not pick a product only because it let you in.
+- Weigh the jobs that matter most to you, and stay consistent with your scores unless a job that matters to you decides it.
+Return JSON only: {{"pick": "one product letter", "runner_up": "product letter", "why": "two short sentences in first person citing specific results", "cites": ["run refs (like R3) of the 1-3 runs that decided it"]}}"""
     data = await _json_call(prompt)
 
     def key_of(value: Any) -> str:
-        text = str(value or "").strip()
-        if text in keys:
-            return text
+        text = str(value or "").strip().strip(".:()[] ")
+        if text.upper() in back:
+            return back[text.upper()]
+        head = text[:2].strip(" :").upper()
+        if len(head) == 1 and head in back:
+            return back[head]
         for k, name in labels.items():
-            if name and name.lower() == text.lower():
+            if name and name.lower() in text.lower():
                 return k
         return ""
 
     if not isinstance(data, dict) or not key_of(data.get("pick")):
         print(f"[comparison] pick not a product: {str(data)[:160]}", flush=True)
         return None
+    pick = key_of(data["pick"])
+    leaders, means = score_leader(rows)
+    why = " ".join(str(data.get("why") or "").split())[:400]
+    for k, letter in letters.items():
+        # "Product B" / "(B)" in the reason reads as noise once names are shown.
+        why = re.sub(rf"\b(?:product|option)\s+{letter}\b", labels[k], why, flags=re.I)
+        why = re.sub(rf"\s*\(\s*{letter}\s*\)", "", why)
     return {
-        "pick": key_of(data["pick"]),
+        "pick": pick,
         "runner_up": key_of(data.get("runner_up")),
-        "why": " ".join(str(data.get("why") or "").split())[:400],
+        "why": why,
         "cites": [a for a in (_resolve(c, refs) for c in (data.get("cites") or [])) if a][:3],
+        "score_leaders": leaders,
+        "site_means": means,
+        # The buyer picked something its own scores did not rank first.
+        "against_scores": bool(leaders) and pick not in leaders,
     }
 
 
@@ -726,7 +812,10 @@ async def apply_comparison_llm(study: Any) -> dict[str, Any]:
     if not comp:
         return {}
     labels = {s["key"]: s["label"] for s in comp["sites"]}
-    runs = [r for r in data.get("agent_results") or [] if isinstance(_sc(r).get("score"), (int, float))]
+    runs = [
+        r for r in data.get("agent_results") or []
+        if isinstance(r, dict) and isinstance(_sc(r).get("score"), (int, float)) and not infra_stop(r)
+    ]
     personas = {str(p.get("id")): p for p in (data.get("personas") or []) if isinstance(p, dict)}
 
     async def pick(pid: str) -> dict[str, Any] | None:
