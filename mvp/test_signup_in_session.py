@@ -86,3 +86,16 @@ class ApiRejectPatternTests(unittest.TestCase):
 
         body = '{"err":"Users from this domain are blocked.","ECODE":"DOM_001"}'
         self.assertIsNotNone(_EMAIL_REJECT.search(body))
+
+
+class GmailAliasFreshTests(unittest.TestCase):
+    def test_each_gmail_inbox_gets_a_new_alias(self) -> None:
+        from unittest.mock import patch
+
+        from mvp.signup_inbox import GmailAliasInbox
+
+        with patch("mvp.email_codes._imap_creds", return_value=("base@gmail.com", "x")):
+            a = GmailAliasInbox("notion.so", "notion").address
+            b = GmailAliasInbox("notion.so", "notion").address
+        self.assertNotEqual(a, b)
+        self.assertTrue(a.endswith("@gmail.com") and "notion" in a)

@@ -260,7 +260,13 @@ class GmailAliasInbox(Inbox):
         if not creds:
             raise RuntimeError("no Gmail app password")
         self.username, self.app_password = creds
-        self.address = email_for_host(self.username, host, tag=tag, force_dotted=dotted)
+        # Never reuse an alias: parallel agents on one site all got
+        # shreyashfs+notion@ and collided (one account, the rest "try again
+        # later"). A random suffix makes each signup a fresh address; mail to
+        # it still lands in the same inbox and _alias_match finds it.
+        base_tag = re.sub(r"[^a-z0-9]", "", (tag or host.split(".")[0]).lower())[:12] or "signup"
+        fresh = base_tag + secrets.token_hex(3)
+        self.address = email_for_host(self.username, host, tag=fresh, force_dotted=dotted)
 
     def messages(self, newer_than: float) -> list[dict[str, Any]]:
         from mvp.email_codes import (
