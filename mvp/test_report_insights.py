@@ -73,7 +73,8 @@ class WorkMetricTests(unittest.TestCase):
         metrics = work_metrics([run], "https://docs.python.org/3/")
         self.assertEqual(metrics["left_start_pct"], 100)
         self.assertEqual(metrics["task_success_rate"], 100)
-        self.assertEqual(metrics["median_steps"], 2)
+        # Step 0 is the page opening; one click is one step.
+        self.assertEqual(metrics["median_steps"], 1)
 
     def test_done_after_a_click_on_the_same_url_counts(self) -> None:
         run = _run("a", steps=2, final="https://excalidraw.com/")
@@ -364,13 +365,13 @@ class InsightTests(unittest.TestCase):
         by_key = {row["site_key"]: row for row in insights["sites"]}
         self.assertEqual(by_key["product"]["success_pct"], 0)
         self.assertEqual(by_key["product"]["ok"], 0)
-        self.assertEqual(by_key["product"]["median_steps"], 2)
+        self.assertEqual(by_key["product"]["median_steps"], 1)
         self.assertEqual(by_key["product"]["median_time_s"], 247.0)
         self.assertIsNone(by_key["product"]["median_success_steps"])
         cell = insights["by_task"][0]["sites"]["product"]
         self.assertEqual(cell["ok"], 0)
         self.assertEqual(cell["n"], 1)
-        self.assertEqual(cell["median_all_steps"], 2)
+        self.assertEqual(cell["median_all_steps"], 1)
         self.assertEqual(cell["median_time_s"], 247.0)
         self.assertIsNone(cell["median_steps"])
 
@@ -416,3 +417,87 @@ class ReportWordingTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def _canvas_run(agent_id: str, actions: list[str]) -> dict:
+    """A same-URL canvas run: step 0 opens the page, then one step per action."""
+    url = "https://whiteboard.example/"
+    trace = [
+        {
+            "step": 0,
+            "action": "Opened the page",
+            "url": url,
+            "screenshot_url": f"/api/studies/s/agents/{agent_id}/screenshots/bbox_0.png",
+            "state_sig": {"text": "Whiteboard", "canvas": "1440x900:dark=0/9000:h=0;"},
+        }
+    ]
+    for i, action in enumerate(actions, start=1):
+        inked = i >= 2
+        trace.append(
+            {
+                "step": i,
+                "action": action,
+                "url": url,
+                "changed": True,
+                "screenshot_url": f"/api/studies/s/agents/{agent_id}/screenshots/bbox_{i}.png",
+                "state_sig": {
+                    "text": "Whiteboard",
+                    # A thin pen stroke: few dark samples, the ink hash moves.
+                    "canvas": f"1440x900:dark={3 if inked else 0}/9000:h={'k2x9a' if inked else '0'};",
+                },
+            }
+        )
+    return {
+        "agent_id": agent_id,
+        "persona_name": "Pat",
+        "task_title": "Draw a diagram",
+        "task_prompt": "Draw a diagram with hand-drawn feel",
+        "site_key": "product",
+        "site_url": url,
+        "num_steps": len(trace),
+        "final_url": url,
+        "stop_reason": "done",
+        "failed_step": {"phase": "done", "reason": "task complete"},
+        "final_screenshot_url": f"/api/studies/s/agents/{agent_id}/screenshots/final.png",
+        "trace": trace,
+    }
+
+
+class CanvasClaimWordingTests(unittest.TestCase):
+    ACTIONS = ["click — Draw", "drag", "drag", "press Escape"]
+
+    def test_thin_stroke_is_a_changed_drawing_surface(self) -> None:
+        run = _canvas_run("a", self.ACTIONS)
+        self.assertTrue(changed_page_state(run, run["site_url"]))
+
+    def test_same_page_strength_names_the_working_step_not_escape(self) -> None:
+        from mvp.report_insights import trace_claims
+
+        runs = [_canvas_run(f"a{i}", self.ACTIONS) for i in range(3)]
+        strong, _ = trace_claims(runs, runs[0]["site_url"])
+        self.assertTrue(strong)
+        claim = strong[0]["claim"]
+        self.assertNotIn("reached", claim)
+        self.assertNotIn("Escape", claim)
+        self.assertIn("finished it on", claim)
+        self.assertIn("\u201cdrag\u201d", claim)
+
+    def test_long_path_step_count_matches_the_median_steps_chart(self) -> None:
+        from mvp.report_insights import trace_claims
+
+        runs = [
+            _canvas_run("a", self.ACTIONS),
+            _canvas_run("b", self.ACTIONS),
+            _canvas_run("c", self.ACTIONS + ["drag"]),
+        ]
+        study = {"url": runs[0]["site_url"], "agent_results": runs, "activity_log": []}
+        insights = build_report_insights(study)
+        cell = insights["by_task"][0]["sites"]["product"]
+        self.assertEqual(cell["median_all_steps"], 4)
+        _, weak = trace_claims(runs, runs[0]["site_url"])
+        long = [c["claim"] for c in weak if "it took" in c["claim"]]
+        self.assertTrue(long, weak)
+        self.assertIn("it took a median of 4 steps", long[0])
+        self.assertIn("to finish on whiteboard.example", long[0])
+        # The chain shown is a 4-step run, so the count and the list agree.
+        self.assertEqual(long[0].split("(", 1)[1].split(")", 1)[0].count("\u2192"), 3)

@@ -251,11 +251,19 @@ def _canvas_dark(raw: str) -> int | None:
 
 
 def _canvas_changed(a: str, b: str) -> bool:
-    """A stroke adds non-white pixels. A cursor blink does not."""
+    """A stroke adds non-white pixels. A cursor blink does not.
+
+    The page read scans full rows and columns and hashes where the ink is
+    (':h=' in the signature), so a thin pen stroke that adds only a few dark
+    samples still counts when the ink moved.
+    """
     da, db = _canvas_dark(a), _canvas_dark(b)
     if da is None or db is None:
         return False
-    return abs(da - db) >= 8
+    if abs(da - db) >= 8:
+        return True
+    ha, hb = re.findall(r":h=([0-9a-z]+)", a), re.findall(r":h=([0-9a-z]+)", b)
+    return bool(ha and hb and len(ha) == len(hb) and ha != hb and db > 0)
 
 
 def _text_tokens(text: str) -> set[str]:
@@ -292,13 +300,16 @@ def changed_page_state(run: dict[str, Any], start_url: str) -> bool:
     sigs = [step["state_sig"] for step in steps]
     if len(sigs) < 2:
         return False
+    # Canvas apps mount their canvas after the first read; judge ink against
+    # the first signature that has one.
     base = sigs[0]
+    ink_base = next((sig for sig in sigs if "dark=" in str(sig.get("canvas") or "")), base)
     for step, sig in zip(steps[1:], sigs[1:]):
         # A drag that added vector shapes (SVG canvases such as tldraw leave the
         # pixel sample unchanged) changed the drawing surface.
         if str(step.get("action") or "").strip().lower() == "drag" and int(sig.get("shapes") or 0) > int(base.get("shapes") or 0):
             return True
-        if _canvas_changed(str(base.get("canvas") or ""), str(sig.get("canvas") or "")):
+        if _canvas_changed(str(ink_base.get("canvas") or ""), str(sig.get("canvas") or "")):
             return True
         if _text_changed(str(base.get("text") or ""), str(sig.get("text") or "")):
             return True
@@ -464,7 +475,7 @@ def work_metrics(runs: list[dict[str, Any]], start_url: str) -> dict[str, Any]:
             "changed_page_n": 0,
             **empty_latency,
         }
-    steps = [float(r.get("num_steps") or len(r.get("trace") or []) or 0) for r in runs]
+    steps = [float(run_steps(r)) for r in runs]
     left_n = sum(1 for r in runs if left_start(r, start_url))
     changed_n = sum(1 for r in runs if changed_page_state(r, start_url))
     ok_n = sum(1 for r in runs if task_succeeded(r, start_url))
@@ -801,6 +812,28 @@ def _trace_evidence(run: dict[str, Any], step: dict[str, Any], detail: str) -> d
     }
 
 
+_DISMISS_RE = re.compile(r"^press\s+(?:escape|esc|tab)\b", re.I)
+
+
+def _key_step(steps: list[dict[str, Any]]) -> dict[str, Any]:
+    """The step that did the work: the last one that is not a dismissal key press."""
+    for step in reversed(steps):
+        if not _DISMISS_RE.search(" ".join(str(step.get("action") or "").split())):
+            return step
+    return steps[-1]
+
+
+def run_steps(run: dict[str, Any]) -> int:
+    """Actions a run took. The one step count every chart and claim uses.
+
+    Trace step 0 is the page opening, not an action; num_steps counts it.
+    """
+    trace = [s for s in (run.get("trace") or []) if isinstance(s, dict)]
+    if trace:
+        return len(_acted_steps(run))
+    return max(0, int(run.get("num_steps") or 0) - 1)
+
+
 def _acted_steps(run: dict[str, Any]) -> list[dict[str, Any]]:
     return [
         s
@@ -830,6 +863,7 @@ def trace_claims(
     weak_label: dict[str, str] = {}
     long_paths: dict[str, list[dict[str, Any]]] = {}
     long_label: dict[str, str] = {}
+    long_runs: dict[str, list[tuple[dict[str, Any], list[dict[str, Any]], str]]] = {}
     totals: dict[str, int] = {}
     for run in product:
         totals[_task_title(run).lower()] = totals.get(_task_title(run).lower(), 0) + 1
@@ -843,32 +877,28 @@ def trace_claims(
         final_page = _page_shape(final_url)
         moved = [s for s in steps if s.get("changed") is True]
         if _run_done(run) and not _AUTH_PATH_RE.search(final_url):
-            key_step = moved[-1] if moved else steps[-1]
+            key_step = _key_step(moved or steps)
             action = " ".join(str(key_step.get("action") or "").split())[:80]
-            text = (
-                f"{title}: \u201c{action}\u201d reached {final_page} in {len(steps)} "
-                f"step{'s' if len(steps) != 1 else ''}"
-            )
+            count = run_steps(run)
+            # A same-page app (a canvas editor) is never "reached" by its last
+            # key press: say it was finished there, with the step that did it.
+            verb = "reached" if left_start(run, start) else "finished the task on"
+            text = f"{title}: \u201c{action}\u201d {verb} {final_page} in {count} step{'s' if count != 1 else ''}"
             key = f"{title.lower()}|{final_page}"
             ev = _trace_evidence(run, key_step, text)
             if ev:
                 strong.setdefault(key, []).append(ev)
-                strong_label.setdefault(key, f"{title}: agents reached {final_page} by \u201c{action}\u201d")
+                strong_label.setdefault(
+                    key,
+                    f"{title}: agents reached {final_page} by \u201c{action}\u201d"
+                    if left_start(run, start)
+                    else f"{title}: agents finished it on {final_page} with \u201c{action}\u201d",
+                )
             if len(steps) >= 3:
                 # A finished path that still took several clicks is friction the
                 # trace shows directly: list the clicks, cite the first one.
-                items = [_chain_item(s.get("action")) for s in steps]
-                chain = " \u2192 ".join(items[:6]) + (" \u2192 \u2026" if len(items) > 6 else "")
-                signed = any(str(s.get("decision_source") or "") == "signup" for s in steps)
                 key3 = f"{title.lower()}|long|{final_page}"
-                lab3 = (
-                    f"{title}: it took {len(steps)} steps"
-                    f"{' including a live sign-up' if signed else ''} ({chain}) to reach {final_page}"
-                )
-                ev3 = _trace_evidence(run, steps[0], lab3)
-                if ev3:
-                    long_paths.setdefault(key3, []).append(ev3)
-                    long_label.setdefault(key3, lab3)
+                long_runs.setdefault(key3, []).append((run, steps, final_page))
             continue
         # Not done. Say where the path ended and why, from the trace itself.
         stop = str(run.get("stop_reason") or "")
@@ -908,6 +938,27 @@ def trace_claims(
                     weak.setdefault(k2, []).append(ev2)
                     weak_label.setdefault(k2, lab)
                 break
+
+    for key3, group in long_runs.items():
+        # Same counter and rounding as the median-steps chart (run_steps,
+        # toFixed(0)); the chain shown is the run closest to that median.
+        med = _median([float(run_steps(r)) for r, _, _ in group]) or 0.0
+        n_steps = int(med + 0.5)
+        rep, rep_steps, page3 = min(group, key=lambda g: abs(run_steps(g[0]) - med))
+        items = [_chain_item(s.get("action")) for s in rep_steps]
+        chain = " \u2192 ".join(items[:6]) + (" \u2192 \u2026" if len(items) > 6 else "")
+        signed = any(str(s.get("decision_source") or "") == "signup" for s in rep_steps)
+        median_word = "a median of " if len(group) > 1 and any(run_steps(r) != n_steps for r, _, _ in group) else ""
+        lab3 = (
+            f"{_task_title(rep) or "Task"}: it took {median_word}{n_steps} steps"
+            f"{' including a live sign-up' if signed else ''} ({chain}) "
+            f"{'to reach' if left_start(rep, str(rep.get('site_url') or product_url or '')) else 'to finish on'} {page3}"
+        )
+        long_label[key3] = lab3
+        for r, st, _ in [(rep, rep_steps, page3)] + [g for g in group if g[0] is not rep]:
+            ev3 = _trace_evidence(r, st[0], lab3)
+            if ev3:
+                long_paths.setdefault(key3, []).append(ev3)
 
     def _rank(groups: dict[str, list[dict[str, Any]]], labels: dict[str, str]) -> list[dict[str, Any]]:
         out: list[dict[str, Any]] = []
@@ -1040,7 +1091,7 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
     if product and stuck_ratio >= 0.75:
         evs = []
         for run in stuck:
-            ev = _evidence(run, detail=f"Ended on {run.get('final_url') or 'the opening URL'} after {run.get('num_steps') or 1} step(s).")
+            ev = _evidence(run, detail=f"Ended on {run.get('final_url') or 'the opening URL'} after {run_steps(run)} step{'s' if run_steps(run) != 1 else ''}.")
             if ev:
                 evs.append(ev)
         if len(stuck) == len(product):
@@ -1176,7 +1227,7 @@ def _layout(
         for run in group:
             start = str(run.get("site_url") or study.get("url") or "")
             if task_succeeded(run, start):
-                success_steps.append(float(run.get("num_steps") or len(run.get("trace") or []) or 0))
+                success_steps.append(float(run_steps(run)))
         sites.append(
             {
                 "site_key": key,
@@ -1199,7 +1250,7 @@ def _layout(
         pk = _persona_key(run)
         start = str(run.get("site_url") or study.get("url") or "")
         ok = task_succeeded(run, start)
-        steps = float(run.get("num_steps") or len(run.get("trace") or []) or 0)
+        steps = float(run_steps(run))
         task = task_slots.setdefault(
             tk,
             {
@@ -1366,7 +1417,7 @@ def _comparisons(
         ok = sum(1 for r in group if task_succeeded(r, site_start))
         left_n = sum(1 for r in group if left_start(r, site_start))
         changed_n = sum(1 for r in group if changed_page_state(r, site_start))
-        steps = [float(r.get("num_steps") or len(r.get("trace") or []) or 0) for r in group]
+        steps = [float(run_steps(r)) for r in group]
         latency = _latency_block(group)
         times = [durations[str(r.get("agent_id"))] for r in group if str(r.get("agent_id")) in durations]
         friction = sum(len(r.get("friction_points") or []) for r in group)
