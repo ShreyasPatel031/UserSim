@@ -1008,7 +1008,7 @@ function renderBrief(data, sessions) {
             : "";
         const status =
           p.kind === "product" && searching
-            ? `<span class="product-search-label">Searching rivals…</span>`
+            ? `<span class="product-search-label">Searching competitors…</span>`
             : `<span>${escapeHtml(role)}</span>`;
         return `
           <a class="product-tile${p.kind === "product" ? " is-product" : ""}${
