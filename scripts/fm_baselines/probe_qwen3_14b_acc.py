@@ -180,13 +180,23 @@ def main() -> None:
         )
         if "<think>" in probe and "</think>" not in probe:
             raise SystemExit("thinking still open in the prompt")
+        lora_path = os.environ.get("LORA_PATH", "").strip()
         print("loading model", flush=True)
-        llm = LLM(
+        llm_kwargs = dict(
             model=MODEL,
             max_model_len=4096,
             gpu_memory_utilization=0.90,
             trust_remote_code=True,
         )
+        if lora_path:
+            llm_kwargs.update(enable_lora=True, max_loras=1, max_lora_rank=16)
+        llm = LLM(**llm_kwargs)
+        lora_request = None
+        if lora_path:
+            from vllm.lora.request import LoRARequest
+
+            lora_request = LoRARequest("distmatch", 1, lora_path)
+            print(f"lora={lora_path}", flush=True)
         if temperature <= 0:
             sampling = SamplingParams(temperature=0.0, max_tokens=16)
         else:
@@ -213,7 +223,7 @@ def main() -> None:
         print(f"study {study} pending={len(pending)}/{len(by_study[study])}", flush=True)
         with path.open("a") as fout:
             for i in range(0, len(prompts), 256):
-                outs = llm.generate(prompts[i : i + 256], sampling)
+                outs = llm.generate(prompts[i : i + 256], sampling, lora_request=lora_request)
                 for rec, out in zip(pending[i : i + 256], outs):
                     text = out.outputs[0].text if out.outputs else ""
                     pred, _bare = parse_pred(text)
@@ -285,7 +295,8 @@ def main() -> None:
     bare = sum(1 for p in preds if re_fullmatch_number((p.get("pred_raw") or "").strip()))
     summary = {
         "model": MODEL,
-        "role": "zero_shot_instruct_probe",
+        "lora": os.environ.get("LORA_PATH", "").strip() or None,
+        "role": "distmatch_qlora_gate" if os.environ.get("LORA_PATH", "").strip() else "zero_shot_instruct_probe",
         "thinking": False,
         "temperature": temperature,
         "top_p": top_p if temperature > 0 else None,

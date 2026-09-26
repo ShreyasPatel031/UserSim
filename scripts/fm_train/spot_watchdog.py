@@ -32,6 +32,7 @@ from pathlib import Path
 LABEL_KEY = os.environ.get("WATCH_LABEL_KEY", "usersim-spot-watch")
 LABEL_VALUE = os.environ.get("WATCH_LABEL_VALUE", "true")
 STATE_LABEL = os.environ.get("TRAIN_STATE_LABEL", "usersim-train-state")
+GATE_LABEL = os.environ.get("GATE_STATE_LABEL", "usersim-gate-state")
 DENY_LABEL = os.environ.get("DENY_LABEL_KEY", "usersim-do-not-start")
 RESTARTS_LABEL = os.environ.get("RESTARTS_LABEL", "usersim-spot-restarts")
 TEST_LABEL = os.environ.get("TEST_PREEMPT_LABEL", "usersim-spot-test-preempt")
@@ -144,6 +145,8 @@ def decide(
         return "skip", "other_team"
     if labels.get(LABEL_KEY) != LABEL_VALUE:
         return "skip", "not_watched"
+    if labels.get(GATE_LABEL) == "running":
+        return "skip", "gate_running"
     if labels.get(STATE_LABEL) == "done" and status == "RUNNING" and not preemptible:
         return "stop", "train_finished"
     if labels.get(STATE_LABEL) == "done":
