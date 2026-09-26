@@ -109,3 +109,11 @@
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "airtable.com", "ts": "2026-09-26T00:34:24.131990+00:00", "when": "after"}
 {"attempt": 1, "event": "signup_start", "site": "figma.com", "ts": "2026-09-26T00:34:25.503615+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "figma.com", "ts": "2026-09-26T00:34:25.539822+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "figma.com", "ts": "2026-09-26T00:42:01.204413+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "miro.com", "ts": "2026-09-26T00:42:35.814524+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "miro.com", "ts": "2026-09-26T00:42:35.855859+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "miro.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-26T00:44:11.361104+00:00"}
+{"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "miro.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-26T00:45:40.717765+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "miro.com", "ts": "2026-09-26T00:49:11.511533+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "webflow.com", "ts": "2026-09-26T00:49:12.837007+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "webflow.com", "ts": "2026-09-26T00:49:12.953778+00:00", "when": "before"}
