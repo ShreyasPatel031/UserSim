@@ -1760,6 +1760,16 @@ async def _drag_on_canvas(page: Any, action: dict[str, Any]) -> None:
         w, h = int(size.get("width") or 1280), int(size.get("height") or 800)
         x0, y0, x1, y1 = int(w * 0.38), int(h * 0.42), int(w * 0.62), int(h * 0.58)
         amp = max(18, int(h * 0.05))
+    # SVG drawing surfaces (tldraw) leave the <canvas> pixel sample blank, so
+    # sample the screen under the stroke before and after the drag.
+    pad = amp + 12
+    clip = {
+        "x": max(0, min(x0, x1) - pad),
+        "y": max(0, min(y0, y1) - pad),
+        "width": abs(x1 - x0) + 2 * pad,
+        "height": abs(y1 - y0) + 2 * pad,
+    }
+    before = await _clip_png(page, clip)
     await page.mouse.move(x0, y0)
     await page.mouse.down()
     segments = 6
@@ -1769,6 +1779,47 @@ async def _drag_on_canvas(page: Any, action: dict[str, Any]) -> None:
         y = int(y0 + (y1 - y0) * t + (amp if i % 2 else -amp))
         await page.mouse.move(x, y, steps=8)
     await page.mouse.up()
+    if before:
+        try:
+            await page.wait_for_timeout(250)
+        except Exception:
+            pass
+        after = await _clip_png(page, clip)
+        ink = screen_ink_delta(before, after)
+        if ink is not None:
+            action["_screen_ink"] = ink
+
+
+async def _clip_png(page: Any, clip: dict[str, int]) -> bytes:
+    try:
+        return await asyncio.wait_for(page.screenshot(clip=clip, type="png", timeout=2500), timeout=3)
+    except Exception:
+        return b""
+
+
+def screen_ink_delta(before: bytes, after: bytes) -> tuple[int, int] | None:
+    """Sample cells whose ink (dark or not) differs between two same-size shots."""
+    try:
+        import io
+
+        from PIL import Image
+
+        a = Image.open(io.BytesIO(before)).convert("RGB")
+        b = Image.open(io.BytesIO(after)).convert("RGB")
+    except Exception:
+        return None
+    if a.size != b.size or a.size[0] < 4 or a.size[1] < 4:
+        return None
+    w, h = a.size
+    step = max(4, int(((w * h) / 1600) ** 0.5))
+    pa, pb = a.load(), b.load()
+    changed = total = 0
+    for y in range(0, h, step):
+        for x in range(0, w, step):
+            total += 1
+            if (sum(pa[x, y]) < 600) != (sum(pb[x, y]) < 600):
+                changed += 1
+    return changed, total
 
 
 async def _act(page: Any, action: dict[str, Any]) -> str:
@@ -2359,7 +2410,8 @@ async def complete_task_on_page(
                 before_dark = _canvas_dark(str(read.get("canvas") or ""))
                 after_dark = _canvas_dark(str(after.get("canvas") or ""))
                 inked = before_dark >= 0 and after_dark >= 0 and abs(after_dark - before_dark) >= 8
-                if inked or int(after.get("shapes") or 0) > int(read.get("shapes") or 0):
+                screen = action.get("_screen_ink") or (0, 0)
+                if inked or int(screen[0]) >= 8 or int(after.get("shapes") or 0) > int(read.get("shapes") or 0):
                     changed = True
                     drew = True
             if act in {"type", "press"} and not str(how).endswith("miss"):
@@ -2405,6 +2457,10 @@ async def complete_task_on_page(
             row["accessibility_tree"] = format_ax(read.get("nodes") or [])
             row["ax_tree"] = row["accessibility_tree"]
             stamp_published_step(row, task=task, read=read)
+            ink = action.get("_screen_ink") if act == "drag" else None
+            if ink and isinstance(row.get("state_sig"), dict):
+                # Ink the stroke left on screen, measured under the drag.
+                row["state_sig"]["canvas"] = str(row["state_sig"].get("canvas") or "") + f"screen:dark={ink[0]}/{ink[1]};"
             if on_step is not None:
                 maybe = on_step(row)
                 if asyncio.iscoroutine(maybe):

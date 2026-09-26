@@ -242,6 +242,27 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(extract_json('{"act":"click","i":1}\n{"act":"done"}'), {"act": "click", "i": 1})
         self.assertEqual(extract_json('note {"act":"drag"} trailing'), {"act": "drag"})
 
+    def test_screen_ink_delta_counts_new_strokes_only(self) -> None:
+        import io
+
+        from PIL import Image, ImageDraw
+
+        from mvp.a11y_agent import screen_ink_delta
+
+        def png(draw: bool) -> bytes:
+            im = Image.new("RGB", (400, 200), "white")
+            if draw:
+                ImageDraw.Draw(im).rectangle([50, 50, 350, 150], outline="black", width=4)
+            buf = io.BytesIO()
+            im.save(buf, "PNG")
+            return buf.getvalue()
+
+        blank = png(False)
+        changed, total = screen_ink_delta(blank, png(True))
+        self.assertGreaterEqual(changed, 8)
+        self.assertEqual(screen_ink_delta(blank, blank)[0], 0)
+        self.assertIsNone(screen_ink_delta(b"", blank))
+
     def test_hand_drawn_diagram_is_a_draw_task(self) -> None:
         self.assertEqual(task_kind("Draw a diagram with hand-drawn elements"), "draw")
         self.assertEqual(task_kind("Draw a rectangle on the canvas"), "draw")
