@@ -1,3 +1,5 @@
+> **Superseded** by [`kolanut-27557f9c`](../kolanut-27557f9c/README.md). This run had 17 dead agents and a biased 5–0 pick.
+
 # Kolanut comparison study `b19ba88f` (Sep 26 2026, work in progress)
 
 Live page: https://usersim.vercel.app/report?study=b19ba88f-22b2-4b1a-ba05-aa6e17554b04
