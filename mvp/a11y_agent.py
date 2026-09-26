@@ -3738,11 +3738,18 @@ async def _run_a11y_agent_unlocked(
                 priority=PRIORITY_PRODUCT if site_key == "product" else PRIORITY_RIVAL,
                 on_wait=_show_wait,
             )
+            waited_for_browser = max(0.0, time.monotonic() - _wait_began)
             if sess.pop("waiting_for_browser", None):
-                sess["browser_wait_s"] = round(time.monotonic() - _wait_began, 1)
+                sess["browser_wait_s"] = round(waited_for_browser, 1)
                 if str(sess.get("last_action") or "").startswith("Waiting for a browser"):
                     sess["last_action"] = f"Got a browser after {sess['browser_wait_s']:.0f}s"
                 print(f"[{agent_id}] waited {sess['browser_wait_s']}s for a browser", flush=True)
+            # The task clock starts when this agent gets a browser. Queueing for
+            # one is the shared project's backlog, not the product's doing, and
+            # charging it here left agents with no time to act (13/13 kolanut
+            # product runs ended on the homepage at 0-1 steps).
+            if deadline is not None and waited_for_browser > 1.0:
+                deadline += waited_for_browser
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] session ended: {exc!r}", flush=True)
             stop_reason = "session ended"

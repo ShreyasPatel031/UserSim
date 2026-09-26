@@ -191,6 +191,18 @@ def _is_rate_limit(exc: BaseException) -> bool:
     return "429" in msg or "too many requests" in msg or "rate limit" in msg
 
 
+def _is_concurrency_limit(exc: BaseException) -> bool:
+    """A 429 that means "all 25 session slots are in use", not "too many creates".
+
+    Both arrive as 429. The burst limit is a rolling-window problem and the
+    whole process must hold off; a full account is not — slots free one at a
+    time as other agents finish, so this create just waits and asks again.
+    Blocking every create for half a window here stalled all 24 agents at once.
+    """
+    msg = str(exc).lower()
+    return "concurrent session" in msg or "max concurrent" in msg
+
+
 def _is_retryable_create(exc: BaseException) -> bool:
     """429s, hung creates, and transient gateway errors are worth another try.
 
@@ -273,6 +285,14 @@ def _create_attempt_timeout_s() -> float:
     except ValueError:
         timeout_s = 18.0
     return max(0.2, timeout_s)
+
+
+def _concurrency_poll_s() -> float:
+    """How long to wait before asking again when every session slot is in use."""
+    try:
+        return max(0.5, float(os.environ.get("BROWSERBASE_CONCURRENCY_POLL_S", "5") or "5"))
+    except ValueError:
+        return 5.0
 
 
 def _create_attempts() -> int:
@@ -634,7 +654,26 @@ def create_session(
                 except Exception as exc:  # noqa: BLE001
                     last_exc = exc
                     msg = str(exc).lower()
-                    if is_burst_limit(exc) and not isinstance(exc, TimeoutError):
+                    if (
+                        _is_concurrency_limit(exc)
+                        and not isinstance(exc, TimeoutError)
+                    ):
+                        # Every slot is in use. Queue for one instead of failing:
+                        # poll until the deadline, without a token (the rejected
+                        # create never reached the burst window) and without
+                        # holding back the other agents' creates.
+                        left = call_deadline - time.monotonic()
+                        if left <= 0:
+                            raise BrowserbaseRateLimitError(str(exc)[:400]) from exc
+                        retry_delay = -1.0
+                        poll = min(_concurrency_poll_s(), max(0.5, left))
+                        print(
+                            "Browserbase create 429 all sessions busy — waiting "
+                            f"{poll:.1f}s for a free slot ({int(left)}s left to wait)",
+                            flush=True,
+                        )
+                        time.sleep(poll)
+                    elif is_burst_limit(exc) and not isinstance(exc, TimeoutError):
                         # Burst window full: the server says when. Hold every
                         # create in this process until then and retry this one.
                         after = parse_retry_after(exc)
