@@ -191,7 +191,7 @@ class BrowserOpenRetryTests(unittest.TestCase):
 
         calls = []
 
-        async def once(boot, url):
+        async def once(boot, url, **_kw):
             calls.append(url)
             if len(calls) < 3:
                 raise RuntimeError("TimeoutError()")
@@ -215,7 +215,7 @@ class BrowserOpenRetryTests(unittest.TestCase):
 
         calls = []
 
-        async def once(boot, url):
+        async def once(boot, url, **_kw):
             calls.append(url)
             raise RuntimeError("TimeoutError()")
 

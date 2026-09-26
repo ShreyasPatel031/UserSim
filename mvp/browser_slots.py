@@ -110,7 +110,72 @@ def running_sessions() -> dict[str, Any] | None:
         return None
     ages = [a for a in (_age_s(r.get("started_at") or r.get("created_at")) for r in rows) if a is not None]
     ages.sort()
-    return {"n": len(rows), "median_age_s": ages[len(ages) // 2] if ages else None}
+    window = burst_window_s()
+    recent = [a for a in ages if a < window]
+    return {
+        "n": len(rows),
+        "median_age_s": ages[len(ages) // 2] if ages else None,
+        # Creates still inside Browserbase's rolling burst window, from every
+        # server on the project (still-running ones; released ones are
+        # invisible here, the local bucket covers this process).
+        "recent_ages_s": recent,
+    }
+
+
+def burst_window_s() -> float:
+    try:
+        from capability.bb_rate import create_bucket
+
+        return float(create_bucket().window_s)
+    except Exception:
+        return 60.0
+
+
+def burst_needed(need: int) -> int:
+    """Create tokens a study wants free before it starts.
+
+    The first ``need - slack`` creates (default slack 6) are what the product
+    agents and most rivals get at once; the rest may wait in the bucket a few
+    seconds without failing.
+    """
+    try:
+        from capability.bb_rate import create_bucket
+
+        cap = create_bucket().capacity
+    except Exception:
+        cap = 22
+    try:
+        slack = int(os.environ.get("MVP_QUEUE_BURST_SLACK") or "6")
+    except ValueError:
+        slack = 6
+    return max(1, min(need, cap) - max(0, slack))
+
+
+def burst_state(need: int, counted: dict[str, Any] | None) -> dict[str, Any]:
+    """Creates in the last window (max of this process's bucket and the project list) and when room opens."""
+    want = burst_needed(need)
+    try:
+        from capability.bb_rate import create_bucket
+
+        bucket = create_bucket()
+        cap, window = bucket.capacity, bucket.window_s
+        local_recent = bucket.recent()
+        local_eta = bucket.room_in(want)
+    except Exception:
+        cap, window, local_recent, local_eta = 22, 60.0, 0, 0.0
+    remote = sorted((counted or {}).get("recent_ages_s") or [], reverse=True)  # oldest first
+    remote_eta = 0.0
+    over = len(remote) + want - cap
+    if over > 0:
+        remote_eta = max(0.0, window - float(remote[over - 1]))
+    recent = max(local_recent, len(remote))
+    return {
+        "recent": recent,
+        "capacity": cap,
+        "want": want,
+        "ok": local_eta <= 0 and remote_eta <= 0,
+        "eta_s": max(local_eta, remote_eta),
+    }
 
 
 async def _fetch_count() -> dict[str, Any] | None:
@@ -166,7 +231,17 @@ def queue_eta_s(position: int, counted: dict[str, Any] | None) -> int:
 
 
 def queue_snapshot() -> dict[str, Any]:
-    return {"active": list(_ACTIVE), "queued": list(_TICKETS)}
+    snap: dict[str, Any] = {"active": list(_ACTIVE), "queued": list(_TICKETS)}
+    try:
+        from capability.bb_rate import create_bucket
+
+        bucket = create_bucket()
+        snap["creates_last_60s"] = bucket.recent()
+        snap["create_burst_cap"] = bucket.capacity
+        snap["create_waiters"] = bucket.waiting()
+    except Exception:
+        pass
+    return snap
 
 
 async def acquire(study: Any, touch: Callable[..., None]) -> None:
@@ -183,13 +258,23 @@ async def acquire(study: Any, touch: Callable[..., None]) -> None:
             ahead = list(_TICKETS).index(study.id)
             counted: dict[str, Any] | None = None
             reason = ""
+            burst_eta: int | None = None
             if ahead == 0 and not _ACTIVE:
                 counted = await _count(max_age_s=5.0 if not shown else 0.0)
                 n = int(counted["n"]) if counted else 0
                 free = session_cap() - n
-                if counted is None or free >= need:
+                burst = burst_state(need, counted)
+                if (counted is None or free >= need) and burst["ok"]:
                     break
-                reason = f"{n} of {session_cap()} browsers are busy with another run"
+                if counted is not None and free < need:
+                    reason = f"{n} of {session_cap()} browsers are busy with another run"
+                else:
+                    # Browserbase allows 25 new browsers per rolling minute.
+                    reason = (
+                        f"{burst['recent']} browsers were opened in the last minute "
+                        f"(Browserbase allows {burst['capacity']} new ones a minute here)"
+                    )
+                    burst_eta = int(burst["eta_s"]) + 1
             elif _ACTIVE:
                 reason = "another study is using the browsers"
             else:
@@ -198,7 +283,10 @@ async def acquire(study: Any, touch: Callable[..., None]) -> None:
             if waited > max_wait_s():
                 print(f"study {study.id}: browsers still busy after {int(waited)}s; starting anyway", flush=True)
                 break
-            eta = queue_eta_s(ahead + (1 if _ACTIVE and ahead else 0), counted)
+            if burst_eta is not None:
+                eta = max(1, burst_eta)
+            else:
+                eta = queue_eta_s(ahead + (1 if _ACTIVE and ahead else 0), counted)
             study.queue_eta_s = eta
             study.queue_position = ahead + 1
             touch(f"Queued: {reason}. Starting in ~{eta}s", "queued")
@@ -210,7 +298,7 @@ async def acquire(study: Any, touch: Callable[..., None]) -> None:
                     log_activity(study, "phase", f"Queued: {reason}")
                 except Exception:
                     pass
-            await asyncio.sleep(3)
+            await asyncio.sleep(3 if burst_eta is None else max(1.0, min(3.0, float(burst_eta))))
     finally:
         try:
             _TICKETS.remove(study.id)

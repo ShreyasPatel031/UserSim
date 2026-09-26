@@ -13,6 +13,13 @@ from browserbase import Browserbase
 
 from config import ROOT
 
+from capability.bb_rate import (
+    BucketTimeout,
+    create_bucket,
+    is_burst_limit,
+    parse_retry_after,
+)
+
 
 class BrowserbaseConfigError(RuntimeError):
     pass
@@ -351,6 +358,11 @@ def create_session(
     user_metadata: dict[str, Any] | None = None,
     owner: str | None = None,
     study_id: str | None = None,
+    priority: int = 1,
+    wait_s: float | None = None,
+    on_wait: Any | None = None,
+    attempt_timeout_s: float | None = None,
+    cancel: threading.Event | None = None,
 ) -> BrowserbaseSession:
     """Create a Browserbase session at full Developer concurrency.
 
@@ -361,6 +373,14 @@ def create_session(
     Pass ``user_metadata`` (or ``owner`` / ``study_id``) so shared-project
     cleanup can release only our sessions. Callers that omit metadata stay
     untagged — kill_all will leave those alone.
+
+    Every HTTP create first takes a token from the process-wide burst bucket
+    (``capability.bb_rate``: <= 22 creates per rolling 60s, served by
+    ``priority``: 0 product agents, 1 default, 2 rivals). A 429 ("try again in
+    N seconds") holds the bucket for N seconds plus jitter and the same create
+    is retried; it does not use up an attempt. ``wait_s`` bounds the whole
+    call (default BROWSERBASE_CREATE_WAIT_S, 150s). ``on_wait(seconds, reason)``
+    is called from this thread while the create waits for a token.
     """
     ensure_browserbase_full_parallel()
     try:
@@ -373,8 +393,21 @@ def create_session(
             "Browserbase local slot acquire timed out — creating anyway (stale slots)",
             flush=True,
         )
-    client = Browserbase(api_key=browserbase_api_key())
+    try:
+        # The SDK's own retries would each be another create request the
+        # bucket never saw (and it sleeps through 429s inside one attempt).
+        client = Browserbase(api_key=browserbase_api_key(), max_retries=0)
+    except TypeError:
+        client = Browserbase(api_key=browserbase_api_key())
     pid = browserbase_project_id()
+    bucket = create_bucket()
+    try:
+        total_wait = float(
+            wait_s if wait_s is not None else os.environ.get("BROWSERBASE_CREATE_WAIT_S", "150")
+        )
+    except ValueError:
+        total_wait = 150.0
+    call_deadline = time.monotonic() + max(1.0, total_wait)
 
     meta: dict[str, object] | None = None
     if user_metadata:
@@ -517,12 +550,39 @@ def create_session(
         return box["session"]
 
     attempts_n = _create_attempts()
-    timeout_s = _create_attempt_timeout_s()
+    timeout_s = (
+        max(0.2, float(attempt_timeout_s))
+        if attempt_timeout_s is not None
+        else _create_attempt_timeout_s()
+    )
     last_exc: BaseException | None = None
     try:
         for flags in unique_attempts:
             kwargs = _build_kwargs(flags)
-            for attempt in range(attempts_n):
+            attempt = 0  # non-429 failures on this flag set
+            while attempt < attempts_n:
+                if cancel is not None and cancel.is_set():
+                    raise BrowserbaseRateLimitError("session create cancelled by caller")
+                # One token per HTTP create, before the in-flight cap.
+                try:
+                    waited = bucket.acquire(
+                        priority,
+                        deadline=call_deadline,
+                        cancel=cancel,
+                        on_wait=on_wait,
+                    )
+                except BucketTimeout as exc:
+                    last_exc = exc
+                    raise BrowserbaseRateLimitError(
+                        f"no Browserbase create token in time: {exc}"
+                    ) from exc
+                if waited >= 1.0:
+                    print(
+                        f"Browserbase create waited {waited:.1f}s for a burst token "
+                        f"(priority {priority}, {bucket.recent()} creates in the last "
+                        f"{int(bucket.window_s)}s)",
+                        flush=True,
+                    )
                 sem_held = _CREATE_SEM.acquire(timeout=max(1.0, timeout_s))
                 plan_refusal = False
                 retry_delay: float | None = None
@@ -530,11 +590,12 @@ def create_session(
                     last_exc = TimeoutError(
                         "Browserbase create concurrency cap busy"
                     )
-                    if attempt < attempts_n - 1:
-                        delay = _create_backoff_s(attempt, last_exc)
+                    attempt += 1
+                    if attempt < attempts_n:
+                        delay = _create_backoff_s(attempt - 1, last_exc)
                         print(
                             f"Browserbase create cap busy — backing off {delay:.1f}s "
-                            f"(attempt {attempt + 1}/{attempts_n})",
+                            f"(attempt {attempt}/{attempts_n})",
                             flush=True,
                         )
                         time.sleep(delay)
@@ -542,14 +603,11 @@ def create_session(
                     break
                 try:
                     global _LAST_CREATE_MONO
-                    # Stagger starts so parallel warms are not one burst.
-                    jitter = random.uniform(0.05, 0.55)
                     with _CREATE_LOCK:
                         interval = _create_interval_s()
                         wait = max(
                             0.0, interval - (time.monotonic() - _LAST_CREATE_MONO)
                         )
-                        wait = max(wait, jitter if attempt == 0 else 0.0)
                         if wait > 0:
                             time.sleep(wait)
                         _LAST_CREATE_MONO = time.monotonic()
@@ -571,8 +629,20 @@ def create_session(
                 except Exception as exc:  # noqa: BLE001
                     last_exc = exc
                     msg = str(exc).lower()
+                    if is_burst_limit(exc) and not isinstance(exc, TimeoutError):
+                        # Burst window full: the server says when. Hold every
+                        # create in this process until then and retry this one.
+                        after = parse_retry_after(exc)
+                        resume = bucket.note_rate_limited(after)
+                        retry_delay = -1.0
+                        print(
+                            "Browserbase create 429 burst limit — retrying the same create in "
+                            f"{max(0.0, resume - time.monotonic()):.1f}s "
+                            f"(server said {after if after is not None else '?'}s)",
+                            flush=True,
+                        )
                     # Plan / feature refusal → try next (weaker) flag set.
-                    if any(
+                    elif any(
                         s in msg
                         for s in (
                             "403",
@@ -589,7 +659,7 @@ def create_session(
                     elif _is_retryable_create(exc) and attempt < attempts_n - 1:
                         retry_delay = _create_backoff_s(attempt, exc)
                         kind = (
-                            "timeout" if isinstance(exc, TimeoutError) else "rate-limit"
+                            "timeout" if isinstance(exc, TimeoutError) else "transient"
                         )
                         print(
                             f"Browserbase create {kind} — backing off {retry_delay:.1f}s "
@@ -605,8 +675,13 @@ def create_session(
                 if plan_refusal:
                     break
                 if retry_delay is not None:
+                    if retry_delay < 0:
+                        # 429: not an attempt. The bucket itself waits out the block.
+                        continue
+                    attempt += 1
                     time.sleep(retry_delay)
                     continue
+                attempt += 1
         raise BrowserbaseRateLimitError(
             str(last_exc)[:400] if last_exc else "session create failed"
         )

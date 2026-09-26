@@ -2772,14 +2772,29 @@ async def complete_task_on_page(
     }
 
 
-async def _create_session_or_close(study_id: str | None, timeout: float = 3.5) -> Any:
-    """Create one session. If it arrives after the cap, close it so the slot is free."""
+async def _create_session_or_close(
+    study_id: str | None,
+    timeout: float = 3.5,
+    *,
+    priority: int = 1,
+    on_wait: Any | None = None,
+    wait_s: float | None = None,
+) -> Any:
+    """Create one session. If it arrives after the caller gave up, close it so the slot is free.
+
+    ``timeout`` caps each HTTP create. Time spent waiting for a burst token
+    (Browserbase allows 25 creates per rolling minute) is extra and bounded by
+    ``wait_s``; when the caller gives up, the waiting create is cancelled so it
+    never sends a request nobody will use.
+    """
     import threading
 
     from capability.browserbase_client import close_session, create_session, study_session_owner
 
     loop = asyncio.get_running_loop()
     fut: asyncio.Future[Any] = loop.create_future()
+    cancel = threading.Event()
+    total = max(float(timeout), float(wait_s if wait_s is not None else timeout))
 
     def _work() -> None:
         try:
@@ -2790,6 +2805,11 @@ async def _create_session_or_close(study_id: str | None, timeout: float = 3.5) -
                 advanced_stealth=False,
                 owner=study_session_owner(),
                 study_id=study_id,
+                priority=priority,
+                wait_s=total,
+                on_wait=on_wait,
+                attempt_timeout_s=timeout,
+                cancel=cancel,
             )
         except Exception as exc:  # noqa: BLE001
             err = exc
@@ -2815,11 +2835,20 @@ async def _create_session_or_close(study_id: str | None, timeout: float = 3.5) -
         loop.call_soon_threadsafe(_deliver)
 
     threading.Thread(target=_work, daemon=True).start()
-    return await asyncio.wait_for(fut, timeout)
+    try:
+        return await asyncio.wait_for(fut, total + timeout + 2.0)
+    except BaseException:
+        cancel.set()
+        raise
 
 
 async def _open_agent_session(
-    boot: A11yBoot, url: str, deadline: float | None = None
+    boot: A11yBoot,
+    url: str,
+    deadline: float | None = None,
+    *,
+    priority: int = 1,
+    on_wait: Any | None = None,
 ) -> tuple[Any, Any, Any, float, float]:
     """Open this agent's browser. When every try fails, wait and try again while the budget allows.
 
@@ -2836,13 +2865,22 @@ async def _open_agent_session(
             print(f"[a11y] no browser after round {round_no}; retrying in 8s ({int(left)}s budget left)", flush=True)
             await asyncio.sleep(8)
         try:
-            return await _open_agent_session_once(boot, url)
+            return await _open_agent_session_once(
+                boot, url, deadline=deadline, priority=priority, on_wait=on_wait
+            )
         except RuntimeError as exc:
             last = str(exc)
     raise RuntimeError(last or "no browser session")
 
 
-async def _open_agent_session_once(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, float, float]:
+async def _open_agent_session_once(
+    boot: A11yBoot,
+    url: str,
+    *,
+    deadline: float | None = None,
+    priority: int = 1,
+    on_wait: Any | None = None,
+) -> tuple[Any, Any, Any, float, float]:
     """A new Browserbase session for this agent only.
 
     Returns browser, page, the attempt start, and the navigation-commit time.
@@ -2861,9 +2899,15 @@ async def _open_agent_session_once(boot: A11yBoot, url: str) -> tuple[Any, Any, 
                 bb = None
             if bb is None:
                 try:
+                    # Past the burst budget an agent waits for a token instead
+                    # of failing; keep ~30s of the budget for the task itself.
+                    left = (deadline - time.monotonic() - 30.0) if deadline is not None else 150.0
                     bb = await _create_session_or_close(
                         getattr(boot.study, "id", None),
                         timeout=12,
+                        priority=priority,
+                        on_wait=on_wait,
+                        wait_s=max(12.0, left),
                     )
                 except Exception as exc:  # noqa: BLE001
                     last = repr(exc)
@@ -3280,7 +3324,42 @@ async def _run_a11y_agent_unlocked(
     try:
         opened_at = None
         try:
-            bb, browser, page, created_at, opened_at = await _open_agent_session(boot, url, deadline)
+            from capability.bb_rate import PRIORITY_PRODUCT, PRIORITY_RIVAL
+
+            _loop = asyncio.get_running_loop()
+            _wait_began = time.monotonic()
+
+            def _show_wait(seconds: float, reason: str) -> None:
+                # Called from the create thread; update the card on the loop.
+                def _apply() -> None:
+                    sess["phase"] = "waiting_for_browser"
+                    sess["waiting_for_browser"] = True
+                    sess["last_action"] = (
+                        f"Waiting for a browser (Browserbase {reason}) · ~{max(1, int(round(seconds)))}s"
+                    )
+                    boot.study.live_sessions[agent_id] = sess
+                    try:
+                        boot._touch()
+                    except Exception:
+                        pass
+
+                try:
+                    _loop.call_soon_threadsafe(_apply)
+                except RuntimeError:
+                    pass
+
+            bb, browser, page, created_at, opened_at = await _open_agent_session(
+                boot,
+                url,
+                deadline,
+                priority=PRIORITY_PRODUCT if site_key == "product" else PRIORITY_RIVAL,
+                on_wait=_show_wait,
+            )
+            if sess.pop("waiting_for_browser", None):
+                sess["browser_wait_s"] = round(time.monotonic() - _wait_began, 1)
+                if str(sess.get("last_action") or "").startswith("Waiting for a browser"):
+                    sess["last_action"] = f"Got a browser after {sess['browser_wait_s']:.0f}s"
+                print(f"[{agent_id}] waited {sess['browser_wait_s']}s for a browser", flush=True)
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] session ended: {exc!r}", flush=True)
             stop_reason = "session ended"
