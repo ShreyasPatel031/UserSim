@@ -138,6 +138,18 @@ async def _flow(page: Any, url: str, task: str, out: Path, persona: dict) -> dic
                 print(f"[debug] dumped post-signup read + {len(fixed)} fixed layers", flush=True)
             except Exception as exc:  # noqa: BLE001
                 print(f"[debug] dom dump failed: {exc!r}", flush=True)
+        probe_file = os.environ.get("MVP_DEBUG_POST_SIGNUP")
+        if probe_file:
+            # A one-off probe on the fresh signed-in page: a file defining
+            # `async def probe(page, out)` (inspect a panel, dump a control's state).
+            try:
+                pg = a[0] if a else kw.get("page")
+                scope: dict = {}
+                exec(compile(Path(probe_file).read_text(), probe_file, "exec"), scope)
+                await asyncio.wait_for(scope["probe"](pg, out), timeout=90)
+                print(f"[debug] post-signup probe {probe_file} done", flush=True)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[debug] post-signup probe failed: {exc!r}", flush=True)
         (out / "signup.json").write_text(json.dumps(signup_full, indent=1, default=str))
         return res
 

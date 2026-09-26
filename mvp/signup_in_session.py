@@ -410,7 +410,9 @@ _VERIFY = """Is this browser page the SIGNED-IN product application (e.g. a work
 dashboard, board, issue list, document editor, or canvas that belongs to a logged-in
 user), as opposed to a marketing page, a login/signup/verify form, or an onboarding
 step (welcome, profile setup, invite teammates, connect tools, pick a plan, survey)
-that still needs answers? Onboarding steps are NOT signed_in. Reply JSON {"signed_in":true|false,
+that still needs answers? Onboarding steps are NOT signed_in. A getting-started checklist, product
+tour pop-up or setup card shown INSIDE the app (the app's own navigation, such as Home, Settings or a
+workspace menu, is on the page) IS signed_in: the account exists and the app is open. Reply JSON {"signed_in":true|false,
 "evidence":"one sentence naming what on the page shows it"}."""
 
 
@@ -1051,7 +1053,12 @@ async def signup_in_session(
                     return _finish(False, f"email_rejected: {api_rejects[0]}")
                 # A frozen page can be the signed-in app behind a tour pop-up.
                 path_now = urlparse(str(snap.get("url"))).path or ""
-                if email_submitted and not _has_password_or_email_field(snap) and not onboarding_blocks(path_now):
+                if (
+                    (email_submitted or any(str(x).lstrip().startswith(("fill ", "  fill")) for x in steps) or len(steps) >= 4)
+                    and not _has_password_or_email_field(snap)
+                    and not onboarding_blocks(path_now)
+                    and _site(str(snap.get("url") or "")) == site
+                ):
                     ok_now, evidence_now = await _verify_signed_in(snap)
                     if ok_now:
                         steps.append(f"page stopped changing but it is the signed-in app: {evidence_now}")

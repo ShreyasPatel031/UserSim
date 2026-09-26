@@ -415,3 +415,15 @@ def test_signed_in_links_that_leave_the_app_are_hidden():
     assert kept == [1, 3]
     # Signed out (public tasks, signup), marketing links stay.
     assert [n["i"] for n in _nodes_for_model(nodes, set(), signed_in=False, page_url=here)] == [1, 2, 3]
+
+
+def test_purchase_controls_are_never_offered():
+    from mvp.a11y_agent import _nodes_for_model, purchase_control
+
+    for name in ("Subscribe to Pro", "Card number", "Pay now", "Upgrade to Growth", "Checkout", "Complete subscription"):
+        assert purchase_control(name), name
+    for name in ("Select plan", "Get Free free", "Subscription", "Customers", "Create campaign", "Pricing"):
+        assert not purchase_control(name), name
+    nodes = [{"i": 1, "role": "input", "name": "Card number"}, {"i": 2, "role": "button", "name": "Subscribe to Pro"},
+             {"i": 3, "role": "button", "name": "Select plan"}]
+    assert [n["i"] for n in _nodes_for_model(nodes, set(), signed_in=True)] == [3]

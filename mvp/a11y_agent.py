@@ -1622,6 +1622,20 @@ def credential_stop(task: str, read: dict[str, Any], *, signed_in: bool, acted: 
     return credential_wall(read)
 
 
+# Buying is never part of a usability task: no subscribing, paying, or upgrading.
+_PURCHASE_RE = re.compile(
+    r"^(?:subscribe(?: to| now)?\b|pay(?: now|\s+\$)|purchase|buy(?: now)?\b|checkout|check out|place (?:your )?order|"
+    r"complete (?:purchase|payment|subscription|order)|upgrade(?: to| now| plan)?\b|confirm (?:payment|purchase|subscription)|"
+    r"start (?:paid )?subscription)|\b(?:card number|credit card|cvc|cvv|expiry|expiration date)\b",
+    re.I,
+)
+
+
+def purchase_control(name: str) -> bool:
+    """A control that spends money or takes card details (Subscribe to Pro, Card number)."""
+    return bool(_PURCHASE_RE.search((name or "").strip()))
+
+
 def _site2(host: str) -> str:
     """Last two labels of a host (engagement.kolanut.ai -> kolanut.ai)."""
     labels = [x for x in (host or "").split(".") if x]
@@ -1672,6 +1686,8 @@ def _nodes_for_model(
             # popups the agent cannot finish.
             continue
         if signed_in and href and leaves_app(href, page_url):
+            continue
+        if purchase_control(name):
             continue
         if name and name in skipped:
             continue
@@ -1751,6 +1767,8 @@ async def _model_action(
         "click, type, and scroll use an element i from the list. type puts text into that field. "
         "press sends one keyboard key or shortcut in key (for example Enter, Escape, r). "
         "back returns to the previous page. drag draws by dragging across the largest canvas; select a drawing tool first. "
+        "Never pay, subscribe, upgrade, start a paid plan, or enter card details; if a plan picker blocks the way, "
+        "choose the free plan or skip it. "
         "Do the task in the product the way a user would. Reading a docs, help, or blog article about the task "
         "does not do the task. "
         "Buttons inside a product screenshot or animated preview on a marketing page do nothing; do not click them. "
