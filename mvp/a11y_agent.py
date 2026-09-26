@@ -251,16 +251,25 @@ _READ_JS = """() => {
       if (!ctx) continue;
       const step = Math.max(8, Math.floor(Math.min(w, h) / 48));
       const data = ctx.getImageData(0, 0, w, h).data;
-      let dark = 0, total = 0;
+      // Scan every pixel of every step-th row AND column. A sparse point grid
+      // misses a thin pen stroke or connector; any stroke longer than one step
+      // crosses a scanned row or column. hash changes when ink moves as well.
+      let dark = 0, total = 0, hash = 0;
+      const ink = (i) => data[i + 3] > 16 && (data[i] + data[i + 1] + data[i + 2]) < 700;
       for (let y = 0; y < h; y += step) {
-        for (let x = 0; x < w; x += step) {
-          const i = (y * w + x) * 4;
-          // Transparent pixels are not ink. Excalidraw's drawing layer starts clear.
-          if (data[i + 3] > 16 && (data[i] + data[i + 1] + data[i + 2]) < 700) dark++;
+        for (let x = 0; x < w; x++) {
           total++;
+          if (ink((y * w + x) * 4)) { dark++; hash = (hash * 31 + x * 7 + y) | 0; }
         }
       }
-      canvas += w + 'x' + h + ':dark=' + dark + '/' + total + ';';
+      for (let x = 0; x < w; x += step) {
+        for (let y = 0; y < h; y++) {
+          if (y % step === 0) continue;
+          total++;
+          if (ink((y * w + x) * 4)) { dark++; hash = (hash * 31 + y * 7 + x) | 0; }
+        }
+      }
+      canvas += w + 'x' + h + ':dark=' + dark + '/' + total + ':h=' + (hash >>> 0).toString(36) + ';';
     } catch (e) {
       canvas += 'taint;';
     }
@@ -331,7 +340,10 @@ _READ_JS = """() => {
   const password = Array.from(document.querySelectorAll('input[type="password"]')).some(visible);
   const email_input = Array.from(document.querySelectorAll('input[type="email"], input[autocomplete="email"], input[autocomplete="username"], input[name*="email" i]')).some(visible);
   const dialog = !!document.querySelector('[role="dialog"]:not([aria-hidden="true"]), dialog[open]');
-  const shapes = document.querySelectorAll('svg path, svg rect, svg ellipse, [data-shape-type], .tl-shape').length;
+  // Drawn shapes only: icons inside buttons, toolbars, menus and panels are UI, not ink.
+  const ui = 'button, [role="button"], [role="radio"], [role="toolbar"], [role="menu"], [role="menuitem"], label, nav, header, [aria-hidden="true"]';
+  const shapes = Array.from(document.querySelectorAll('svg path, svg rect, svg ellipse, [data-shape-type], .tl-shape'))
+    .filter((el) => el.matches('[data-shape-type], .tl-shape') || !el.closest(ui)).length;
   let focus = null;
   const act = document.activeElement;
   if (act && act !== document.body && act !== document.documentElement) {
@@ -466,18 +478,64 @@ def goal_visible(task: str, read: dict[str, Any]) -> bool:
         # a canvas sample that changed, or new vector shapes after a drag.
         if not read.get("drew"):
             return False
-        opened = str(read.get("opened_canvas") or "")
-        current = str(read.get("canvas") or "")
-        if opened and current and "taint" not in opened and "taint" not in current:
-            a, b = _canvas_dark(opened), _canvas_dark(current)
-            if a >= 0 and b >= 0 and abs(b - a) >= 8:
-                return True
+        # A diagram, flowchart or several shapes is more than one stroke.
+        strokes = read.get("ink_strokes")
+        if strokes is not None and int(strokes) < strokes_needed(task):
+            return False
+        if canvas_inked(str(read.get("opened_canvas") or ""), str(read.get("canvas") or "")):
+            return True
         return int(read.get("shapes") or 0) > int(read.get("opened_shapes") or 0)
     if kind == "export" and read.get("downloaded"):
         return True
     # Export, help, create, and other outcomes cannot be decided from page
     # text alone. The loop asks a separate screenshot check instead.
     return False
+
+
+_MULTI_DRAW_RE = re.compile(
+    r"\b(?:diagram|flow ?chart|wireframe|mind ?map|sketches|shapes|boxes|rectangles|circles|arrows|"
+    r"connect(?:ed|ing)?|and (?:an? )?(?:arrow|line|circle|box|shape))\b",
+    re.I,
+)
+
+
+def strokes_needed(task: str) -> int:
+    """Separate inked drags a drawing task needs: 2 for a diagram or several shapes, else 1."""
+    kind_text = re.split(r"\bthen\b", (task or "").lower())[-1]
+    return 2 if _MULTI_DRAW_RE.search(kind_text) else 1
+
+
+def _canvas_hashes(raw: str) -> list[str]:
+    """Per-canvas ink hashes from the read ('...:h=abc;'), in canvas order."""
+    return re.findall(r":h=([0-9a-z]+)", raw or "")
+
+
+def canvas_inked(before: str, after: str) -> bool:
+    """True when a canvas now shows different ink than before.
+
+    Compares the scanned dark-pixel counts and the ink-position hash, so a
+    thin pen stroke, a connector, or a second shape drawn beside the first all
+    count. A tainted (cross-origin) canvas cannot be read and never counts.
+    """
+    if not before or not after or "taint" in before or "taint" in after:
+        return False
+    a, b = _canvas_dark(before), _canvas_dark(after)
+    if a >= 0 and b >= 0 and abs(b - a) >= 8:
+        return True
+    ha, hb = _canvas_hashes(before), _canvas_hashes(after)
+    return bool(ha and hb and len(ha) == len(hb) and ha != hb and b > 0)
+
+
+def canvas_note(before: dict[str, Any], after: dict[str, Any]) -> bool:
+    """True when a step changed a drawing canvas the user works on.
+
+    Only a page whose tree has a large canvas (a whiteboard or editor surface)
+    counts, so a flickering hero animation on a marketing page stays quiet.
+    """
+    box = _canvas_box(list((after or {}).get("nodes") or []))
+    if not box or int(box.get("w") or 0) < 200 or int(box.get("h") or 0) < 200:
+        return False
+    return canvas_inked(str((before or {}).get("canvas") or ""), str((after or {}).get("canvas") or ""))
 
 
 def _canvas_dark(raw: str) -> int:
@@ -1740,48 +1798,57 @@ def _canvas_box(nodes: list[dict[str, Any]]) -> dict[str, Any] | None:
     return best
 
 
+# Centre offsets (fraction of the canvas box) for the 1st, 2nd, ... drag. All stay
+# inside the middle of the box, clear of edge toolbars.
+_DRAG_OFFSETS = ((0.0, 0.0), (0.2, 0.0), (-0.2, 0.05), (0.0, 0.22), (0.2, 0.22), (-0.2, 0.25))
+
+
 async def _drag_on_canvas(page: Any, action: dict[str, Any]) -> None:
     """Drag across the middle of the largest canvas box from the tree.
 
-    Excalidraw FreeDraw leaves a thin stroke. A short straight drag only
-    darkens about five sparse sample cells, below the ink threshold of 8,
-    so the loop treats the drag as a no-op and stops. A short zigzag covers
-    enough pixels for FreeDraw; with the rectangle tool the same gesture
-    still yields one shape (pointer-down corner to final corner).
+    canvas_x/canvas_y are the box centre. A pen tool leaves a thin stroke; the
+    page read scans full rows and columns so it sees it (see _READ_JS). The
+    path is an outline, so a pen leaves a hand-drawn shape and a rectangle or
+    line tool still yields one shape (pointer-down corner to final corner).
     """
     cx = int(action.get("canvas_x") or 0)
     cy = int(action.get("canvas_y") or 0)
     cw = int(action.get("canvas_w") or 0)
     ch = int(action.get("canvas_h") or 0)
+    # Each later drag lands in a new spot: the same stroke drawn on top of the
+    # first one adds no ink and reads as "changed nothing".
+    dx, dy = _DRAG_OFFSETS[int(action.get("drag_index") or 0) % len(_DRAG_OFFSETS)]
     if cw > 200 and ch > 200 and (cx or cy):
-        x0 = int(cx - cw * 0.14)
-        y0 = int(cy - ch * 0.08)
-        x1 = int(cx + cw * 0.14)
-        y1 = int(cy + ch * 0.1)
-        amp = max(18, int(ch * 0.06))
+        ox, oy = int(cx + cw * dx), int(cy + ch * dy)
+        x1 = int(ox - cw * 0.07)
+        y1 = int(oy - ch * 0.06)
+        x2 = int(ox + cw * 0.07)
+        y2 = int(oy + ch * 0.08)
     else:
         size = getattr(page, "viewport_size", None) or {"width": 1280, "height": 800}
         w, h = int(size.get("width") or 1280), int(size.get("height") or 800)
-        x0, y0, x1, y1 = int(w * 0.38), int(h * 0.42), int(w * 0.62), int(h * 0.58)
-        amp = max(18, int(h * 0.05))
+        ox, oy = int(w * (0.5 + dx)), int(h * (0.5 + dy))
+        x1, y1, x2, y2 = int(ox - w * 0.08), int(oy - h * 0.08), int(ox + w * 0.08), int(oy + h * 0.1)
     # SVG drawing surfaces (tldraw) leave the <canvas> pixel sample blank.
     # The loop compares the screen under the stroke after the drag with the
     # frame before it, off the action's clock.
-    pad = amp + 12
+    pad = 16
     action["_drag_clip"] = {
-        "x": max(0, min(x0, x1) - pad),
-        "y": max(0, min(y0, y1) - pad),
-        "width": abs(x1 - x0) + 2 * pad,
-        "height": abs(y1 - y0) + 2 * pad,
+        "x": max(0, x1 - pad),
+        "y": max(0, y1 - pad),
+        "width": abs(x2 - x1) + 2 * pad,
+        "height": abs(y2 - y1) + 2 * pad,
     }
-    await page.mouse.move(x0, y0)
+    await page.mouse.move(x1, y1)
     await page.mouse.down()
-    segments = 6
-    for i in range(1, segments + 1):
-        t = i / segments
-        x = int(x0 + (x1 - x0) * t)
-        y = int(y0 + (y1 - y0) * t + (amp if i % 2 else -amp))
-        await page.mouse.move(x, y, steps=8)
+    # Down one side, across, up the far side and back to the far corner. A shape,
+    # line or selection tool only uses the start and end points (the same box as
+    # a straight drag); a pen or highlighter leaves a hand-drawn outline instead of
+    # one bare line.
+    await page.mouse.move(x1, y2, steps=5)
+    await page.mouse.move(x2, y2, steps=5)
+    await page.mouse.move(x2, y1, steps=4)
+    await page.mouse.move(x2, y2, steps=4)
     await page.mouse.up()
 
 
@@ -1997,9 +2064,7 @@ def _observation_changed(
         return True
     if task_kind(task) != "draw":
         return False
-    before_dark = _canvas_dark(str(before.get("canvas") or ""))
-    after_dark = _canvas_dark(str(after.get("canvas") or ""))
-    if before_dark >= 0 and after_dark >= 0 and abs(after_dark - before_dark) >= 8:
+    if canvas_inked(str(before.get("canvas") or ""), str(after.get("canvas") or "")):
         return True
     return int(after.get("shapes") or 0) != int(before.get("shapes") or 0)
 
@@ -2192,6 +2257,7 @@ async def complete_task_on_page(
         seed = {"url": url, "text": "", "canvas": "", "nodes": list(opening_nodes), "title": ""}
     opened: dict[str, Any] = {}
     drew = False
+    ink_strokes = 0
     failed: dict[str, Any] | None = None
     stop_reason = ""
     signup_url = ""
@@ -2248,11 +2314,14 @@ async def complete_task_on_page(
             read = fresh
         if not opened:
             opened = dict(read)
-            if not opened_canvas:
-                opened_canvas = str(read.get("canvas") or "")
+        if "dark=" not in opened_canvas and not drew and "dark=" in str(read.get("canvas") or ""):
+            # Canvas apps mount their canvas a beat after the first read. The
+            # ink baseline is the first read that has a canvas, before any drag.
+            opened_canvas = str(read.get("canvas") or "")
         read["opened_canvas"] = opened_canvas
         read["opened_shapes"] = opened.get("shapes")
         read["drew"] = drew
+        read["ink_strokes"] = ink_strokes
         if acted and _goal_reached_heuristic(task, read):
             stop_reason = "done"
             drew = drew or task_kind(task) == "draw"
@@ -2351,6 +2420,7 @@ async def complete_task_on_page(
             history.append(f"skipped repeat {chosen}")
             continue
         if act == "drag":
+            action["drag_index"] = sum(1 for t in trace if str(t.get("action") or "").startswith("drag"))
             box = _canvas_box(list(read.get("nodes") or []))
             if box:
                 action["canvas_x"] = int(box.get("x") or 0)
@@ -2445,14 +2515,18 @@ async def complete_task_on_page(
                     after = backed
             changed = _observation_changed(read, after, task=task)
             if act == "drag":
-                before_dark = _canvas_dark(str(read.get("canvas") or ""))
-                after_dark = _canvas_dark(str(after.get("canvas") or ""))
-                inked = before_dark >= 0 and after_dark >= 0 and abs(after_dark - before_dark) >= 8
+                inked = canvas_inked(str(read.get("canvas") or ""), str(after.get("canvas") or ""))
                 if inked or int(after.get("shapes") or 0) > int(read.get("shapes") or 0):
                     changed = True
                     drew = True
+                    ink_strokes += 1
             if act in {"type", "press"} and not str(how).endswith("miss"):
                 changed = True
+            if history and canvas_note(read, after):
+                # Canvas content (typed text, a placed shape) is not in the
+                # accessibility tree. Say so, or the model redoes a step that
+                # already landed.
+                history[-1] = f"{history[-1]} (the canvas now shows new content)"
             if downloads:
                 changed = True
                 after["downloaded"] = downloads[-1]
@@ -2480,6 +2554,7 @@ async def complete_task_on_page(
             after["opened_canvas"] = opened_canvas
             after["opened_shapes"] = opened.get("shapes")
             after["drew"] = drew
+            after["ink_strokes"] = ink_strokes
             read = after
             seed = dict(after)  # this read is the next step's read
             if changed and agent_id:
@@ -2538,6 +2613,7 @@ async def complete_task_on_page(
         "step_no": step_no,
         "read": read,
         "drew": drew,
+        "ink_strokes": ink_strokes,
         "opened_canvas": opened_canvas,
         "logs": logs,
         "needs_account": stop_reason == "needs_account",
