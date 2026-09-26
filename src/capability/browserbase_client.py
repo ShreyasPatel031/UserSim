@@ -125,6 +125,8 @@ BB_OWNER_COMPETITOR = "competitor"
 BB_OWNER_TESTFIX = "testfix"
 # This harness's live baseline. Release only these sessions.
 BB_OWNER_GATES = "gates"
+# Task-completion harness. Release only these sessions.
+BB_OWNER_TASKFIX = "taskfix"
 
 
 def study_session_owner() -> str:
@@ -138,7 +140,15 @@ def study_session_owner() -> str:
     """
     raw = (os.environ.get("MVP_BB_OWNER") or "").strip().lower()
     # signup sessions are a different pipeline and must never be tagged here.
-    if raw in {BB_OWNER_COMPETITOR, "report", BB_OWNER_E2E, BB_OWNER_TESTFIX, BB_OWNER_GATES, "integration"}:
+    if raw in {
+        BB_OWNER_COMPETITOR,
+        "report",
+        BB_OWNER_E2E,
+        BB_OWNER_TESTFIX,
+        BB_OWNER_GATES,
+        BB_OWNER_TASKFIX,
+        "integration",
+    }:
         return raw
     return BB_OWNER_E2E
 
