@@ -497,12 +497,61 @@ async def _challenge_shot(page: Any) -> str | None:
         return None
 
 
-async def _cleared(page: Any) -> bool:
-    from mvp.captcha import _challenge_visible, _recaptcha_solved
+async def _is_blocked(page: Any) -> bool:
+    """True only when a challenge or widget is actually on the page.
 
-    if await _recaptcha_solved(page):
-        return True
-    return not await _challenge_visible(page)
+    A captcha script that never opens a challenge is not a clear.
+    """
+    from mvp.captcha import _challenge_visible, page_looks_captcha_blocked
+
+    try:
+        if await _challenge_visible(page):
+            return True
+    except Exception:
+        pass
+    try:
+        info = await page_looks_captcha_blocked(page)
+    except Exception:
+        return False
+    return bool(
+        info.get("blocked")
+        or info.get("challenge_visible")
+        or info.get("widget_present")
+        or info.get("text_block")
+    )
+
+
+async def _arm_form(page: Any) -> None:
+    """Focus the email field and press the signup control so lazy widgets mount."""
+    try:
+        await page.evaluate(
+            """() => {
+              const set = (el, value) => {
+                el.focus();
+                const proto = HTMLInputElement.prototype;
+                const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+                if (desc && desc.set) desc.set.call(el, value);
+                else el.value = value;
+                el.dispatchEvent(new Event('input', {bubbles:true}));
+              };
+              const email = document.querySelector('input[type=email], input[name*=email i]');
+              if (email && !email.value) set(email, 'captcha.trial@example.com');
+              const buttons = [...document.querySelectorAll('button, [type=submit], input[type=submit]')];
+              for (const b of buttons) {
+                const label = ((b.innerText || b.value || '') + '').toLowerCase();
+                if (/sign\\s*up|continue|create|register|submit|get started/.test(label)) {
+                  try { b.click(); } catch (e) {}
+                  return;
+                }
+              }
+            }"""
+        )
+    except Exception:
+        pass
+    try:
+        await page.wait_for_timeout(2500)
+    except Exception:
+        pass
 
 
 async def _try_signup(page: Any, host: str) -> str:
@@ -662,9 +711,9 @@ async def _paid_call(page: Any, *, site: str, method: str, info: dict[str, Any])
             await page.wait_for_timeout(3000)
         except Exception:
             pass
-        cleared = await _cleared(page)
+        cleared = not await _is_blocked(page)
     elif token:
-        cleared = await _cleared(page)
+        cleared = not await _is_blocked(page)
     return {
         "token": _yn(bool(token)),
         "cleared": _yn(bool(cleared)),
@@ -699,9 +748,21 @@ async def trial_one(detection: dict[str, Any], method: str, repeat: int) -> dict
                 info[key] = detection.get(key)
         if err:
             return {**base, "token": "n", "cleared": "n", "signup": "n", "cost": 0.0, "seconds": round(time.time() - started, 2), "note": err}
+        await _arm_form(page)
+        blocked_before = await _is_blocked(page)
+        if not blocked_before:
+            return {
+                **base,
+                "token": "n",
+                "cleared": "n",
+                "signup": "n",
+                "cost": 0.0,
+                "seconds": round(time.time() - started, 2),
+                "note": "not_blocked",
+            }
         if method == "browserbase":
             await page.wait_for_timeout(20000)
-            cleared = await _cleared(page)
+            cleared = not await _is_blocked(page)
             signup = await _try_signup(page, host) if cleared else "n"
             return {
                 **base,
@@ -714,7 +775,7 @@ async def trial_one(detection: dict[str, Any], method: str, repeat: int) -> dict
             }
         if method == "mouse_drag":
             dragged = await human_drag(page)
-            cleared = bool(dragged.get("ok")) and await _cleared(page)
+            cleared = bool(dragged.get("ok")) and not await _is_blocked(page)
             signup = await _try_signup(page, host) if cleared else "n"
             return {
                 **base,
@@ -726,12 +787,12 @@ async def trial_one(detection: dict[str, Any], method: str, repeat: int) -> dict
                 "note": dragged.get("detail") or "",
             }
         paid = await _paid_call(page, site=host, method=method, info=info)
-        cleared = paid.get("cleared") == "y"
+        cleared = paid.get("cleared") == "y" and not await _is_blocked(page)
         signup = await _try_signup(page, host) if cleared else "n"
         return {
             **base,
             "token": paid.get("token") or "n",
-            "cleared": paid.get("cleared") or "n",
+            "cleared": _yn(cleared),
             "signup": signup,
             "cost": paid.get("cost") or 0.0,
             "seconds": round(time.time() - started, 2),
@@ -739,7 +800,9 @@ async def trial_one(detection: dict[str, Any], method: str, repeat: int) -> dict
         }
 
     try:
-        return await _with_page(solve_captchas, run, proxies=(method == "browserbase"))
+        # Residential proxy creates were timing out. Both arms use the same
+        # non-proxy Browserbase browser; only solve_captchas differs.
+        return await _with_page(solve_captchas, run, proxies=False)
     except Exception as exc:  # noqa: BLE001
         return {
             **base,
