@@ -3407,6 +3407,36 @@ async def run_study(
                                 "mode": "browser_partial",
                                 "browser_error": (str(exc) or repr(exc))[:300],
                             }
+                        elif a11y_boot is not None:
+                            # Shared accessibility studies stay on the text loop.
+                            # A screenshot-agent retry is the old flash path.
+                            log_activity(
+                                study,
+                                "agent_error",
+                                f"{persona.get('name')} shared-read agent stopped — "
+                                "not opening a screenshot browser",
+                                agent_id=agent_id,
+                                error=str(exc)[:200],
+                            )
+                            result = {
+                                "agent_id": agent_id,
+                                "completed": False,
+                                "difficulty": "hard",
+                                "friction_points": [],
+                                "what_was_easy": [],
+                                "product_feedback": (
+                                    "The shared accessibility run stopped before "
+                                    "the task finished."
+                                ),
+                                "would_convert": "maybe",
+                                "trace": existing,
+                                "actions": [],
+                                "num_steps": len(existing),
+                                "final_url": site,
+                                "visited_urls": [site],
+                                "mode": "a11y",
+                                "browser_error": (str(exc) or repr(exc))[:300],
+                            }
                         else:
                             # Prefer a fresh Browserbase session over local Chrome.
                             # Local fallback was attaching to the UserSim debug Chrome
