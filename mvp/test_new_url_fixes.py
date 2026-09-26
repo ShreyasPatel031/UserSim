@@ -263,3 +263,39 @@ class SignupTimeoutWordingTests(unittest.TestCase):
         insights = build_report_insights({"id": "s1", "url": "https://airtable.com/", "agent_results": [run], "activity_log": []})
         claims = " ".join(str(c.get("claim")) for c in insights.get("weaknesses") or [])
         self.assertIn("limit of the test", claims)
+
+
+class RivalBrandAndTestLimitTests(unittest.TestCase):
+    def _run(self, key, url, obs, reason=None, ok=False):
+        run = {
+            "agent_id": f"t1__p1__{key}", "site_key": key, "site_url": url, "task_title": "Create a new project",
+            "completed": ok, "final_url": url, "page_open_at_ts": 1.0, "first_action_at_ts": 2.0,
+            "final_screenshot_url": f"/shots/{key}.png",
+            "trace": [{"step": 0, "action": f"Opened {url}", "url": url, "observation": obs},
+                      {"step": 1, "action": "click Sign up", "url": url, "changed": True}],
+        }
+        if ok:
+            run.update(stop_reason="done", failed_step={"phase": "done", "reason": "task complete"})
+        else:
+            run.update(stop_reason="needs_account", failed_step={"phase": "needs_account", "reason": reason, "step": 2})
+        return run
+
+    def test_rival_label_uses_its_own_spelling_and_gap_names_the_test_limit(self):
+        from mvp.report_insights import build_report_insights
+
+        runs = [
+            self._run("product", "https://todoist.com/", "Todoist Todoist home", reason="signup did not finish (timeout)"),
+            self._run("competitor_2", "https://ticktick.com/", "TickTick is great. Try TickTick", ok=True),
+        ]
+        insights = build_report_insights({"id": "s-tt", "url": "https://todoist.com/", "agent_results": runs, "activity_log": []})
+        self.assertIn("TickTick", [s["site_label"] for s in insights["sites"]])
+        trails = " ".join(insights["verdict"]["trails"])
+        self.assertIn("may be a limit of the test", trails)
+
+    def test_consent_click_friction_note_is_not_a_weakness(self):
+        from mvp.report_insights import build_report_insights
+
+        run = self._run("product", "https://todoist.com/", "Todoist Todoist", ok=True)
+        run["friction_points"] = ["click Accept changed nothing on https://www.todoist.com/"]
+        insights = build_report_insights({"id": "s-c", "url": "https://todoist.com/", "agent_results": [run], "activity_log": []})
+        self.assertFalse(any("Accept" in str(c.get("claim")) for c in insights.get("weaknesses") or []))

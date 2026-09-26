@@ -708,15 +708,15 @@ def _pretty_host(url: str) -> str:
 _BRAND_CACHE: dict[str, str] = {}
 
 
-def _brand_spelling(study: dict[str, Any], base: str) -> str:
-    """The product's own spelling of its name ("ClickUp", not "Clickup") from its opening page."""
-    key = f"{study.get('id') or ''}|{base}"
+def _brand_spelling(study: dict[str, Any], base: str, site_key: str = "product") -> str:
+    """A site's own spelling of its name ("ClickUp", not "Clickup") from its opening page."""
+    key = f"{study.get('id') or ''}|{base}|{site_key}"
     if key in _BRAND_CACHE:
         return _BRAND_CACHE[key]
     word = base.split(".")[0]
     counts: dict[str, int] = {}
-    for run in (study.get("agent_results") or [])[:24]:
-        if not isinstance(run, dict) or str(run.get("site_key") or "product") != "product":
+    for run in (study.get("agent_results") or [])[:48]:
+        if not isinstance(run, dict) or str(run.get("site_key") or "product") != site_key:
             continue
         first = (run.get("trace") or [{}])[0]
         if not isinstance(first, dict):
@@ -748,7 +748,7 @@ def _site_label(run: dict[str, Any], study: dict[str, Any]) -> str:
     label = str(run.get("site_label") or "").strip()
     if label and not label.startswith("http") and label.lower() != "product":
         return label
-    return _pretty_host(str(run.get("site_url") or ""))
+    return _brand_spelling(study, _pretty_host(str(run.get("site_url") or "")), key)
 
 
 def _persona_key(run: dict[str, Any]) -> str:
@@ -1134,6 +1134,9 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
         for note in run.get("friction_points") or []:
             text = str(note).strip()
             if not _note_ok(text) or _signup_harness_note(run, text):
+                continue
+            consent = re.match(r"^(click .+?) changed nothing\b", text, re.I)
+            if consent and _CONSENT_CLICK_RE.match(consent.group(1)):
                 continue
             key = " ".join(text.lower().replace("_", " ").split())[:80]
             ev = _evidence(run, detail=text, prefer_friction=True)
@@ -1585,11 +1588,17 @@ def verdict(insights: dict[str, Any], study: dict[str, Any]) -> dict[str, Any]:
     trails: list[str] = []
     unfinished: list[str] = []
     walls: dict[str, set[str]] = {}
+    test_limit: dict[str, str] = {}
     for run in _runs(study):
         stop = str(run.get("stop_reason") or "")
         failed = run.get("failed_step") if isinstance(run.get("failed_step"), dict) else {}
         if stop == "needs_account" or str(failed.get("phase") or "") == "needs_account":
             walls.setdefault(_task_title(run) or "task", set()).add(str(run.get("site_key") or "product"))
+            why = str(failed.get("reason") or "")
+            if str(run.get("site_key") or "product") == "product" and why.startswith(
+                ("blocked at signup", "signup did not finish")
+            ):
+                test_limit.setdefault(_task_title(run) or "task", _signup_cause(why))
     for task in insights.get("by_task") or []:
         title = str(task.get("title") or "task")
         cells = task.get("sites") or {}
@@ -1635,6 +1644,11 @@ def verdict(insights: dict[str, Any], study: dict[str, Any]) -> dict[str, Any]:
             good.append(f"{title}: {mine_txt} runs finished on {product_label}{how}{tail}.")
         elif better:
             wall = " Agents hit a sign-up wall first." if "product" in walls.get(title, set()) else ""
+            if title in test_limit:
+                wall = (
+                    f" Agents hit a sign-up wall first and UserSim's test sign-up on {product_label} did not "
+                    f"finish ({test_limit[title]}), so this gap may be a limit of the test."
+                )
             trails.append(
                 f"{title}: {product_label} finished {mine_txt} runs; {', '.join(better)} did better.{wall}"
             )
