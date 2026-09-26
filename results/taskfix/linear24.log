@@ -1,0 +1,211 @@
+released browserbase owner=taskfix study=* {'found': 3, 'released': 0, 'failed': [], 'session_ids': [], 'kept_prime': 3, 'owner': 'taskfix', 'study_id': None}
+→ open http://127.0.0.1:3000/?max_agents=24 url=https://linear.app
+→ click Run (not Smoke)
+  [0s] status=None users=0 tasks=0 sites=1 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=
+  [0s] status=running users=5 tasks=2 sites=3 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  [1s] status=running users=5 tasks=2 sites=3 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  [1s] status=running users=5 tasks=2 sites=3 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  [2s] status=running users=5 tasks=2 sites=3 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  first_task_created +2.5s n=8
+  first_value +2.1s agent=t1__p1__product
+  [2s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.005 ttfa_max=0.005 since_task=0s steps=16 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  [2s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=16 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  [3s] status=running users=5 tasks=2 sites=3 agents=16 acted=16/16 ttfa_median=0.005 ttfa_max=0.009 since_task=0s steps=32 done=0 page_open=16/16 phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  all_tasks_created +3.8s n=24
+  [3s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.011 since_task=0s steps=48 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 48 s
+  [4s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=48 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 48 s
+  [5s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=50 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 50 s
+  [6s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=51 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 51 s
+  [7s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=51 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 51 s
+  [8s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=53 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 53 s
+  [9s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=54 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 54 s
+  [10s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=54 done=2 page_open=24/24 phase=Live browser agents — 2/24 done · 22 active · 54 s
+  [11s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=56 done=3 page_open=24/24 phase=Live browser agents — 3/24 done · 21 active · 56 s
+  [12s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=57 done=4 page_open=24/24 phase=Live browser agents — 4/24 done · 20 active · 57 s
+  [13s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=59 done=4 page_open=24/24 phase=Live browser agents — 4/24 done · 20 active · 59 s
+  [14s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=60 done=6 page_open=24/24 phase=Live browser agents — 6/24 done · 18 active · 60 s
+  [15s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=60 done=7 page_open=24/24 phase=Live browser agents — 7/24 done · 17 active · 60 s
+  [16s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=60 done=9 page_open=24/24 phase=Live browser agents — 9/24 done · 15 active · 60 s
+  [17s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=61 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 61 
+  [19s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=61 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 61 
+  [20s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=62 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 62 
+  [21s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=64 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 64 
+  [22s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 65 
+  [23s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=67 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 67 
+  [24s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=69 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 69 
+  [25s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=71 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 71 
+  [26s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=71 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 71 
+  [27s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=73 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 73 
+  [28s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=74 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 74 
+  [29s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=75 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 75 
+  [30s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=76 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 76 
+  [31s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=77 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 77 
+  [32s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=77 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 77 
+  [33s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=77 done=10 page_open=24/24 phase=Live browser agents — 10/24 done · 14 active · 77 
+  [34s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=77 done=11 page_open=24/24 phase=Live browser agents — 11/24 done · 13 active · 77 
+  [35s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=78 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 78 
+  [36s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=79 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 79 
+  [37s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=81 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 81 
+  [38s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=83 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 83 
+  [39s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=85 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 85 
+  [40s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=85 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 85 
+  [41s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=85 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 85 
+  [42s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=87 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 87 
+  [43s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=88 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 88 
+  [44s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=88 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 88 
+  [45s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=90 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 90 
+  [46s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=91 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 91 
+  [47s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=91 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 91 
+  [48s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=92 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 92 
+  [49s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=93 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 93 
+  [50s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=93 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 93 
+  [51s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=95 done=12 page_open=24/24 phase=Live browser agents — 12/24 done · 12 active · 95 
+  [52s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=95 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 95 
+  [53s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=97 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 97 
+  [54s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=97 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 97 
+  [55s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=99 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 99 
+  [56s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=100 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 100
+  [57s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=101 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 101
+  [59s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=102 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 102
+  [60s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=103 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 103
+  [61s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=104 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 104
+  [62s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=106 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 106
+  [63s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=106 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 106
+  [64s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=106 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 106
+  [65s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=106 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 106
+  [66s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=106 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 106
+  [67s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=106 done=13 page_open=24/24 phase=Live browser agents — 13/24 done · 11 active · 106
+  [68s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=107 done=14 page_open=24/24 phase=Live browser agents — 14/24 done · 10 active · 107
+  [69s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=107 done=14 page_open=24/24 phase=Live browser agents — 14/24 done · 10 active · 107
+  [70s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=107 done=15 page_open=24/24 phase=Live browser agents — 15/24 done · 9 active · 107 
+  [71s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=107 done=17 page_open=24/24 phase=Live browser agents — 17/24 done · 7 active · 107 
+  [72s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=107 done=18 page_open=24/24 phase=Live browser agents — 18/24 done · 6 active · 107 
+  [73s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=107 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 107 
+  [74s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=107 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 107 
+  [75s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=108 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 108 
+  [76s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=108 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 108 
+  [77s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=108 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 108 
+  [78s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=110 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 110 
+  [79s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=110 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 110 
+  [80s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=111 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 111 
+  [81s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=112 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 112 
+  [82s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=112 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 112 
+  [83s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=113 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 113 
+  [84s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=113 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 113 
+  [85s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=113 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 113 
+  [86s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=114 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 114 
+  [87s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=114 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 114 
+  [89s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=115 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 115 
+  [90s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=115 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 115 
+  [91s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=116 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 116 
+  [92s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=116 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 116 
+  [93s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=116 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 116 
+  [94s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=117 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 117 
+  [95s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=117 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 117 
+  [96s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=117 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 117 
+  [97s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=117 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 117 
+  [98s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=117 done=19 page_open=24/24 phase=Live browser agents — 19/24 done · 5 active · 117 
+  [99s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=117 done=20 page_open=24/24 phase=Live browser agents — 20/24 done · 4 active · 117 
+  [100s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=117 done=20 page_open=24/24 phase=Live browser agents — 20/24 done · 4 active · 117 
+  [101s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=117 done=20 page_open=24/24 phase=Live browser agents — 20/24 done · 4 active · 117 
+  [102s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=20 page_open=24/24 phase=Live browser agents — 20/24 done · 4 active · 118 
+  [103s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=20 page_open=24/24 phase=Live browser agents — 20/24 done · 4 active · 118 
+  [104s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=20 page_open=24/24 phase=Live browser agents — 20/24 done · 4 active · 118 
+  [105s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=20 page_open=24/24 phase=Live browser agents — 20/24 done · 4 active · 118 
+  [106s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=21 page_open=24/24 phase=Live browser agents — 21/24 done · 3 active · 118 
+  [107s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=22 page_open=24/24 phase=Live browser agents — 22/24 done · 2 active · 118 
+  [108s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=23 page_open=24/24 phase=Live browser agents — 23/24 done · 1 active · 118 
+  [109s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=24 page_open=24/24 phase=Writing executive summary
+  [110s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=24 page_open=24/24 phase=Writing executive summary
+  [111s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=24 page_open=24/24 phase=Writing executive summary
+  [112s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=24 page_open=24/24 phase=Writing executive summary
+  [114s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=118 done=24 page_open=24/24 phase=Writing executive summary
+  report_ready +114.7s
+  [115s] status=complete users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=1s steps=118 done=24 page_open=24/24 phase=Complete
+  timing: run→first_task=114.443s run→all_tasks=114.443s REAL shot p50/p95/max=-70.743/-6.417/-5.551s missing_real=0 warm={}
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+  goal t1__p1__product reached=True opening=False url=https://linear.app/docs/creating-issues The page clearly explains and demonstrates multiple ways to create a new issue, fulfilling the task goal.
+  goal t1__p1__competitor_1 reached=False opening=False url=https://asana.com/ The user is on the Asana developer documentation page, not on a page that shows how to create a new issue.
+  goal t1__p1__competitor_2 reached=False opening=True url=https://trello.com/ The agent is still on the Atlassian Support documentation page, which is not the competitor website Trello.com, and has not found how to create a new issue.
+  goal t2__p1__product reached=True opening=False url=https://linear.app/pricing The page displays pricing information for different plans, including free and paid options, fulfilling the task goal.
+  goal t2__p1__competitor_1 reached=True opening=False url=https://asana.com/pricing The agent successfully navigated to the pricing page of the competitor website and displayed pricing information.
+  goal t2__p1__competitor_2 reached=True opening=False url=https://trello.com/pricing The agent successfully navigated to the pricing page of the competitor website and displayed the pricing tiers.
+  goal t1__p2__product reached=True opening=False url=https://linear.app/docs/creating-issues The page clearly explains how to create a new issue, including keyboard shortcuts and UI elements.
+  goal t1__p2__competitor_1 reached=False opening=False url=https://asana.com/ The user is on the Asana developer documentation page, not on a page that shows how to create a new issue.
+  goal t1__p2__competitor_2 reached=False opening=True url=https://trello.com/ The agent is still on the Trello developer homepage and has not navigated to a page where new issues can be created.
+  goal t2__p2__product reached=True opening=False url=https://linear.app/pricing The page displays pricing tiers for the product, fulfilling the task goal.
+  goal t2__p2__competitor_1 reached=True opening=False url=https://asana.com/pricing The agent successfully navigated to the pricing page of the competitor website.
+  goal t2__p2__competitor_2 reached=True opening=False url=https://trello.com/pricing The agent successfully navigated to the pricing page of the competitor website and displayed the pricing tiers.
+  goal t1__p3__product reached=True opening=False url=https://linear.app/docs/creating-issues The page clearly explains how to create a new issue, including keyboard shortcuts and UI elements.
+  goal t1__p3__competitor_1 reached=False opening=False url=https://asana.com/ The task was to find how to create a new issue, but the agent navigated to the API reference for creating a goal on the competitor website.
+  goal t1__p3__competitor_2 reached=False opening=True url=https://trello.com/ The agent is still on the opening screen of the competitor website and has not navigated to a page where a new issue can be created.
+  goal t2__p3__product reached=True opening=False url=https://linear.app/pricing The page displays pricing tiers for the product, fulfilling the task goal.
+  goal t2__p3__competitor_1 reached=True opening=False url=https://asana.com/pricing The agent successfully navigated to the pricing page of the competitor website and displayed pricing information.
+  goal t2__p3__competitor_2 reached=True opening=False url=https://trello.com/pricing The agent successfully navigated to the pricing page of the competitor website and displayed the pricing tiers.
+  goal t1__p4__product reached=True opening=False url=https://linear.app/docs/creating-issues The page clearly explains how to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation form.
+  goal t1__p4__competitor_1 reached=False opening=False url=https://asana.com/ The task was to find how to create a new issue, but the page shows how to create a new goal, which is not the same as an issue.
+  goal t1__p4__competitor_2 reached=False opening=False url=https://trello.com/ The agent is on the Trello developer documentation site, not on the main Trello application where issues can be created.
+  goal t2__p4__product reached=True opening=False url=https://linear.app/pricing The page displays pricing tiers for the product, fulfilling the task goal.
+  goal t2__p4__competitor_1 reached=True opening=False url=https://asana.com/pricing The agent successfully navigated to the pricing page of the competitor website and displayed pricing information.
+  goal t2__p4__competitor_2 reached=True opening=False url=https://trello.com/pricing The agent successfully navigated to the pricing page of the competitor website and displayed the pricing tiers.
+Wrote /tmp/usersim_e2e2_linear24/failures.json (8 failed runs)
+# Strict e2e gates
+
+## Headline
+
+- `time_to_first_value`: 2.099s (threshold <= 10s from URL submit until the first click, type, or scroll is visible in the live UI) PASS
+- `total_time`: 114.651s (threshold <= 480s from URL submit until the report is ready) PASS
+
+- study: 70557bae-83af-4bf9-9bbb-3135046193cd
+- product: https://linear.app
+- pass: true
+- failure file: /tmp/usersim_e2e2_linear24/failures.json
+- failed runs: our infrastructure=0, model timeout=0, stuck=0, product=8, no_first_action=0
+
+| Gate | Value | Threshold | Result |
+| --- | --- | --- | --- |
+| Time to first value (`time_to_first_value`) | 2.099s | <= 10s from URL submit until the first click, type, or scroll is visible in the live UI | PASS |
+| Total time (`total_time`) | 114.651s | <= 480s from URL submit until the report is ready | PASS |
+| Full 24-agent matrix (`full_matrix`) | 24 | >= 24 (smaller runs are smoke-only) | PASS |
+| Agent count (`agent_count`) | 24 | >= 24 | PASS |
+| Persona count (`persona_count`) | 5 | >= 4 | PASS |
+| Task count (`task_count`) | 2 | >= 2 | PASS |
+| Site count (`site_count`) | 3 | >= 3 | PASS |
+| Page opened on the assigned site (`page_opened`) | 24/24 within 5s | <= 5s from agent creation, URL host matches the assigned site, accessibility tree present | PASS |
+| Study completed with a summary (`study_complete`) | complete | status=complete, summary present, no harness abort | PASS |
+| Study budget (`study_budget`) | 115.1s | <= 480s for the whole study (observed max 408s) | PASS |
+| First real action (`first_action`) | not measured | live abort is time_to_first_action | PASS |
+| Time to first action (`time_to_first_action`) | median=0.0s max=0.0s n=24/24 | median <= 5s and max <= 10s at 24 agents | PASS |
+| Per-phase milliseconds (`phase_ms`) | 24/24 | each agent has phase_ms.session_ready, page_open, first_action, final_screenshot | PASS |
+| Final screenshot (`final_screenshot`) | 24/24 | each agent has final_screenshot_url (one async capture for the judge) | PASS |
+| Final URL and page text for the judge (`judge_inputs`) | 24/24 | final_url plus state_sig.text or ax_tree on every agent | PASS |
+| Failed-step phase and reason (`failed_step`) | 8 failed runs | every failed run has failed_step.phase and failed_step.reason | PASS |
+| Product task completion (`product_task_completion`) | 8/8 (100%) | >= 50% of product runs (>= 4/8) | PASS |
+| Bland-style report page (`report_page`) | http://127.0.0.1:3000/report?study=70557bae-83af-4bf9-9bbb-3135046193cd | /report?study=<id> shell with overview and trace tabs | PASS |
+| Every task has a completion rate (`task_completion_rates`) | 2 tasks | each task has a product ok/n rate | PASS |
+| Product strength from a run past the first screen (`product_strength`) | 2/2 | >= 1 strength with agent, step, AX or URL, and the final screenshot | PASS |
+| Product weakness from a run past the first screen (`product_weakness`) | 3/3 | >= 1 weakness with agent, step, AX or URL, and the final screenshot | PASS |
+| Top weakness is not only the homepage stall (`top_weakness_not_homepage_only`) | 6 of 8 product runs stopped on the first screen, so feature-level weaknesses are thin in these traces. | at least one weakness is a real product issue from a run past the first screen | PASS |
+| Run issues listed separately from product friction (`run_issues_separate`) | 0 listed | insights.run_issues is its own list; harness errors are not product weaknesses | PASS |
+| Run issue share (`run_issue_rate`) | 0/24 (0%) | <= 25% of runs | PASS |
+| Browserbase and concurrency losses count against the run (`infra_honesty`) | losses=0 silent=0 counted_as_success=0 | 0 silently excluded, 0 counted as task success | PASS |
+| First-screen and opening-frame runs stay in the product denominator (`first_screen_not_excluded`) | opening_or_first_screen=0 product_n=8 excluded=0 | excluded=0 (a stuck run is a failure, not a drop) | PASS |
+
+## Competitor task completion
+
+Reported separately. These runs do not count toward the product gate.
+
+- https://asana.com/ (competitor_1): 4/8
+- https://trello.com/ (competitor_2): 4/8
+
+## Product task completion
+
+- confirmed: 8/8
+- past the first screen (structural): 8
+- first screen or opening frame: 0
+
+Wrote /tmp/usersim_e2e2_linear24/result.json
+Wrote /tmp/usersim_e2e2_linear24/summary.md
+ALL_PASS study=70557bae-83af-4bf9-9bbb-3135046193cd task_success=8/8 elapsed=115.1s url=https://linear.app
+released browserbase owner=taskfix study=* {'found': 0, 'released': 0, 'failed': [], 'session_ids': [], 'kept_prime': 0, 'owner': 'taskfix', 'study_id': None}
+EXIT:0

@@ -652,7 +652,9 @@ def planned_action(
         found = pick_link(nodes, ["rectangle", "square"], skip=skip)
         if found:
             return found
-        if "rectangle" not in skipped:
+        # The rectangle tool and the canvas drag are Excalidraw's. Other
+        # sites do not have that control; inventing the click repeats forever.
+        if _host(start) == "excalidraw.com" and "rectangle" not in skipped:
             return {
                 "act": "click",
                 "i": -1,
@@ -664,10 +666,10 @@ def planned_action(
             }
         return None
     if kind == "export":
-        found = pick_link(nodes, ["export image"], skip=skip)
-        if found:
+        found = pick_link(nodes, ["export image", "export"], skip=skip)
+        if found and "export" in str(found.get("name") or found.get("href") or "").lower():
             return found
-        if "export image" not in skipped:
+        if _host(start) == "excalidraw.com" and "export image" not in skipped:
             return {
                 "act": "click",
                 "i": -1,
@@ -698,7 +700,7 @@ def planned_action(
         found = pick_link(nodes, ["help"], skip=skip)
         if found and "help" in str(found.get("name") or "").lower():
             return found
-        if "help" not in skipped:
+        if _host(start) == "excalidraw.com" and "help" not in skipped:
             return {
                 "act": "click",
                 "i": -1,
@@ -825,13 +827,9 @@ def would_repeat_action(trace: list[dict[str, Any]], label: str, read: dict[str,
                 prev_key_ok = _page_key(str(prev.get("url") or "")) != ("", "", "")
                 cur_key_ok = _page_key(str(step.get("url") or "")) != ("", "", "")
                 progressed = prev_key_ok and cur_key_ok
-            if not progressed:
-                prev_sig = prev.get("state_sig") if isinstance(prev.get("state_sig"), dict) else {}
-                cur_sig = step.get("state_sig") if isinstance(step.get("state_sig"), dict) else {}
-                before = _canvas_dark(str(prev_sig.get("canvas") or ""))
-                after = _canvas_dark(str(cur_sig.get("canvas") or ""))
-                if before >= 0 and after >= 0 and abs(after - before) >= 8:
-                    progressed = True
+        # A hero image's dark-pixel sample flickers. That is not a new page,
+        # and counting it as progress lets the same click repeat until the
+        # harness aborts the study.
         same = prev is not None and key == prev_key and not progressed
         streak = streak + 1 if same else 1
         prev = step
@@ -1739,7 +1737,10 @@ async def _act(page: Any, action: dict[str, Any]) -> str:
         if text:
             await page.keyboard.type(text, delay=0)
         return "type"
-    if act == "drag" or (act == "click" and name.lower() in {"rectangle", "square"}):
+    host = _host(getattr(page, "url", "") or "")
+    if act == "drag" or (
+        act == "click" and name.lower() in {"rectangle", "square"} and host == "excalidraw.com"
+    ):
         try:
             await page.keyboard.press("Escape")
         except Exception:
@@ -1764,7 +1765,7 @@ async def _act(page: Any, action: dict[str, Any]) -> str:
         await page.mouse.move(x + 280, y + 180, steps=8)
         await page.mouse.up()
         return "drag"
-    if act == "click" and "export" in name.lower():
+    if act == "click" and "export" in name.lower() and host == "excalidraw.com":
         await _open_export(page)
         return "export"
     if act == "done":
@@ -1840,8 +1841,17 @@ async def _one_read(page: Any, fallback_url: str) -> dict[str, Any]:
     return raw
 
 
-def _observation_changed(before: dict[str, Any], after: dict[str, Any]) -> bool:
-    """True when the live page is not the page we just acted on."""
+def _observation_changed(
+    before: dict[str, Any],
+    after: dict[str, Any],
+    *,
+    task: str = "",
+) -> bool:
+    """True when the live page is not the page we just acted on.
+
+    Canvas samples on marketing pages flicker by hundreds of dark pixels.
+    Only a draw task treats that as a real change.
+    """
     before_key = _page_key(str(before.get("url") or ""))
     after_key = _page_key(str(after.get("url") or ""))
     if before_key != ("", "", "") and after_key != ("", "", "") and before_key != after_key:
@@ -1855,6 +1865,8 @@ def _observation_changed(before: dict[str, Any], after: dict[str, Any]) -> bool:
     for marker in ("selected shape", "export image", "keyboard shortcuts", "create issues"):
         if marker in after_low and marker not in before_low:
             return True
+    if task_kind(task) != "draw":
+        return False
     before_dark = _canvas_dark(str(before.get("canvas") or ""))
     after_dark = _canvas_dark(str(after.get("canvas") or ""))
     if before_dark >= 0 and after_dark >= 0 and abs(after_dark - before_dark) >= 8:
@@ -1950,6 +1962,9 @@ async def complete_task_on_page(
         if action is None:
             action = pick_action(task, read.get("nodes") or [])
             source = "keyword"
+        if not isinstance(action, dict):
+            _miss()
+            break
         if str(action.get("act")) == "done":
             if goal_visible(task, read):
                 stop_reason = "done"
@@ -1995,7 +2010,7 @@ async def complete_task_on_page(
         if (
             how in {"export", "drag", "role"}
             and not after.get("error")
-            and not _observation_changed(read, after)
+            and not _observation_changed(read, after, task=task)
         ):
             try:
                 await page.wait_for_timeout(300)
@@ -2010,7 +2025,7 @@ async def complete_task_on_page(
             failed = {"phase": "read", "reason": "session ended", "step": step_no}
             break
         if not after.get("error"):
-            changed = _observation_changed(read, after)
+            changed = _observation_changed(read, after, task=task)
             if not changed:
                 skip.add(str(action.get("name") or "").lower())
                 href = str(action.get("href") or "")

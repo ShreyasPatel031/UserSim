@@ -41,3 +41,32 @@ The marketing "New issue" control is `tabindex="-1"` with no href. Clicking it d
 1. Saw the welcome screen. Decision: click Help (exact name, not "Help ?"). After: the help panel listing keyboard shortcuts.
 
 Full step records: `results/taskfix/one_agent.json`.
+
+## Server study — Linear 24 agents
+
+Study `70557bae-83af-4bf9-9bbb-3135046193cd`. Strict harness `mvp/e2e2_matrix.py`, owner `taskfix`, competitors Asana and Trello. Independent Gemini vision judge.
+
+Product task completion **8/8**. Full gate table: `results/taskfix/linear24_summary.md`. Harness log: `results/taskfix/linear24.log`.
+
+| Agent | Task | Judge | Final URL |
+| --- | --- | --- | --- |
+| t1__p1__product | Find how to create a new issue | YES | https://linear.app/docs/creating-issues |
+| t1__p2__product | Find how to create a new issue | YES | https://linear.app/docs/creating-issues |
+| t1__p3__product | Find how to create a new issue | YES | https://linear.app/docs/creating-issues |
+| t1__p4__product | Find how to create a new issue | YES | https://linear.app/docs/creating-issues |
+| t2__p1__product | Look for pricing or how to get started | YES | https://linear.app/pricing |
+| t2__p2__product | Look for pricing or how to get started | YES | https://linear.app/pricing |
+| t2__p3__product | Look for pricing or how to get started | YES | https://linear.app/pricing |
+| t2__p4__product | Look for pricing or how to get started | YES | https://linear.app/pricing |
+
+Headline: time to first value 2.1s, study 115s, page open 24/24 within 5s, `ALL_PASS`. The 8 failed runs are competitor issue tasks (Asana and Trello have no public create-issue page). They do not count toward the product gate.
+
+An earlier 8-wide Linear slice (study before this one) judged the six scheduled product agents YES. Two extra live sessions were published before the task list was capped and had no final screenshot. That slice is in `results/taskfix/linear8.log` and `results/taskfix/linear8_verdicts.json`. The 24-agent run above is the graded result.
+
+## Server study — Excalidraw 24 agents (aborted)
+
+Study `617d8ef9-2991-4532-a70a-b7b8d03367a8` was killed by the harness at 32s. Product agents had already reached the goal (rectangle on the canvas, Export image dialog) but the vision judge never ran because the study was aborted.
+
+Failure: `t2__p1__competitor_2` on Miro repeated `click Export image` (steps 1–9). The planned action invented Excalidraw's export shortcut on a site that does not have it. A flickering hero-image canvas sample counted as progress, so the repeat check never fired. The harness aborts the whole study at the third identical action. Log: `results/taskfix/excalidraw24.log`.
+
+The step loop now invents the Rectangle drag, Export shortcut, and Help click only on excalidraw.com, and a canvas-sample flicker no longer counts as a new page. Rerun after that fix.

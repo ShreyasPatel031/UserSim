@@ -229,6 +229,27 @@ class A11yAgentTest(unittest.TestCase):
         direct = planned_action("Find how to create a new issue", {"url": "https://linear.app/", "nodes": decorative[:1]})
         self.assertIn("creating-issues", direct["href"])
 
+    def test_canvas_flicker_does_not_excuse_a_repeated_click(self) -> None:
+        read = {"url": "https://miro.com/index/", "text": "Miro homepage", "canvas": "dark=100"}
+        trace = [
+            {"step": 0, "action": "Opened https://miro.com/", "url": "https://miro.com/", "state_sig": {"text": "Miro", "canvas": "dark=2888"}},
+            {"step": 1, "action": "click Export image", "url": "https://miro.com/index/", "state_sig": {"text": "Miro", "canvas": "dark=1444"}},
+            {"step": 2, "action": "click Export image", "url": "https://miro.com/index/", "state_sig": {"text": "Miro", "canvas": "dark=2018"}},
+        ]
+        self.assertFalse(would_repeat_action(trace[:2], "click Export image", read))
+        self.assertTrue(would_repeat_action(trace, "click Export image", read))
+        self.assertIsNone(
+            planned_action(
+                "Find how to export or share the drawing",
+                {"url": "https://miro.com/", "nodes": []},
+            )
+        )
+        export = planned_action(
+            "Find how to export or share the drawing",
+            {"url": "https://excalidraw.com/", "nodes": []},
+        )
+        self.assertEqual(export["name"], "Export image")
+
     def test_stuck_after_three_identical_signatures(self) -> None:
         sig = progress_signature(
             url="https://linear.app/",
