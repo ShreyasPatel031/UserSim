@@ -34,6 +34,21 @@ Local Chromium, one task at a time, no Browserbase session. Log: `results/taskfi
 
 etsy.com and ebay.com returned HTTP 403 to headless Chromium. wayfair.com returned 429. IKEA is the commerce page that loaded. The draw task clicked `Rectangle — R` by role, then dragged on the canvas. The export task clicked Share. The pricing task clicked Pricing. The help task clicked Contact us.
 
+## Figma 24 agents (one site)
+
+Study `156a74a0-c5b1-45ae-a563-4e8347eb41cf`. Product URL `https://www.figma.com/`. Competitors skipped. 12 personas × 2 tasks × 1 site = 24 agents. Owner `taskfix` with `MVP_TASKFIX_WIDE=1` for this run only. The server was stopped afterward. Running `taskfix` sessions after the run: 0. Other owners were not released.
+
+Poll log: `results/taskfix/figma24.log`. Per-agent actions: `results/taskfix/figma24_agents.json`. Local vision reasons: `results/taskfix/figma24_vision.json`. Final screenshots: `mvp/runs/156a74a0-c5b1-45ae-a563-4e8347eb41cf/<agent>/screenshots/final.png` (21 of 24; three browsers died before the shot).
+
+Local Gemini on those screenshots: **19/24 YES**. That is not a pass. Only PR #46 grades.
+
+| Task | Local YES | Where the YES agents finished |
+| --- | --- | --- |
+| Look for pricing or how to get started | 10/12 | `/pricing/` or `/professional/` |
+| Find help or how to contact support | 9/12 | `/contact/` or the digital-regulation help centre |
+
+The five NOs: `t1__p6__product` stopped on `/organization/` (judge: no pricing), `t1__p10__product`, `t2__p2__product`, and `t2__p4__product` lost the browser before a final screenshot, and `t2__p8__product` reached the legal help centre without a contact form. Pricing agents clicked Pricing. Help agents clicked Support, then Contact sales.
+
 # Task completion — single-agent harness
 
 Local Chromium, one task at a time, no Browserbase session. Prime count is 0 (`prime_sessions` returns immediately; the server defaults `MVP_PRIME_SESSIONS` to 0). Running `taskfix` Browserbase sessions at the start of this run: 0. Every step re-reads the live page and asks the model. Clicks use role and name, then coordinates. A drawing counts only after a drag changes the canvas ink. Log: `results/taskfix/harness_prime0.log`.

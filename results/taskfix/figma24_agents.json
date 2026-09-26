@@ -1,0 +1,437 @@
+{
+  "study_id": "156a74a0-c5b1-45ae-a563-4e8347eb41cf",
+  "url": "https://www.figma.com/",
+  "agents": [
+    {
+      "agent_id": "t1__p1__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/professional/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p1__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free FIGMA PROFESSIONAL Where teams design together With unlimited files, pages, folders, and version history, the Figma Professional plan gives your team the features you need to get everyone on the same page without any constraints. Get started Keep designs consistent Access to shareable libr",
+      "actions": [
+        "click Pricing",
+        "click Professional"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t2__p1__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "model said done before the goal was visible",
+      "final_url": "https://www.figma.com/legal/digital-regulation-help-centre/",
+      "goal_visible": false,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t2__p1__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Figma Legal The information provided here is for Figma customers and users who have questions about our terms, policies, intellectual property, and compliance. Legal overview Customer and User Agreements Community and Developer Terms Policies, Notices and Guidelines Privacy and Data Protec",
+      "actions": [
+        "click Support",
+        "click Contact sales",
+        "click Pricing",
+        "click Learn more",
+        "click See more FAQs",
+        "click support@figma.com",
+        "click our Help Center article",
+        "click Pricing"
+      ],
+      "steps": 24,
+      "first_action_at_ts": 1790406480.6215148,
+      "page_open_at_ts": 1790406480.6215148
+    },
+    {
+      "agent_id": "t1__p2__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/professional/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p2__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free FIGMA PROFESSIONAL Where teams design together With unlimited files, pages, folders, and version history, the Figma Professional plan gives your team the features you need to get everyone on the same page without any constraints. Get started Keep designs consistent Access to shareable libr",
+      "actions": [
+        "click Pricing",
+        "click Professional"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t2__p2__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "session ended",
+      "final_url": "https://www.figma.com/events-and-webinars/",
+      "goal_visible": false,
+      "final_screenshot_url": "",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Find an event that speaks to you Join Figma\u2019s designer advocates and customers like you as they share best practices and give an inside look into how they work. View upcoming events View on-demand expert sessions Upcoming events Getting Started with Figma for Developers New to Figma's deve",
+      "actions": [
+        "click Support",
+        "click Contact sales",
+        "click Pricing",
+        "click Learn more",
+        "click See more FAQs",
+        "click support@figma.com",
+        "click our Help Center article",
+        "click Pricing"
+      ],
+      "steps": 36,
+      "first_action_at_ts": 1790406542.0125556,
+      "page_open_at_ts": 1790406542.0125556
+    },
+    {
+      "agent_id": "t1__p3__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/pricing/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p3__product/screenshots/final.png",
+      "final_dom": "Skip to main content AI add-ons now come with 2x more credits on Professional, and 1.6x more on Organization and Enterprise. Learn more Products Solutions Community Resources Pricing Log in Contact sales Get started for free NEW AI add-ons are now available for all plans. Pricing and plans Figma Design Figma Make Figma Draw Dev Mode FigJam Figma Slides Figma Motion Figma Sites Figma Buzz Prices in",
+      "actions": [
+        "click Pricing",
+        "click Professional"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t2__p3__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/contact/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t2__p3__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Contact us Talk to a member of our sales team We can give you a demo, help you choose the right plan for your team, or share best practices for getting the most out of Figma. Get product or account support We are here to help you with any of your needs. Get support Contact sales Looking fo",
+      "actions": [
+        "click Support",
+        "click Contact sales"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t1__p4__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/professional/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p4__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free FIGMA PROFESSIONAL Where teams design together With unlimited files, pages, folders, and version history, the Figma Professional plan gives your team the features you need to get everyone on the same page without any constraints. Get started Keep designs consistent Access to shareable libr",
+      "actions": [
+        "click Pricing",
+        "click Professional"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t2__p4__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "session ended",
+      "final_url": "https://www.figma.com/newsroom/",
+      "goal_visible": false,
+      "final_screenshot_url": "",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Questions? Get in Touch PRESS & MEDIA RESOURCES Figma Newsroom Figma is where teams come together to turn ideas into the world\u2019s best digital products and experiences. Founded in 2012, Figma has evolved from a design tool to a connected, AI-powered platform that helps teams go from idea to shipped product. Fin",
+      "actions": [
+        "click Support",
+        "click Contact sales",
+        "click Pricing",
+        "click Learn more",
+        "click See more FAQs",
+        "click support@figma.com",
+        "click our Help Center article",
+        "click specific criteria you must meet"
+      ],
+      "steps": 37,
+      "first_action_at_ts": 1790406542.0125556,
+      "page_open_at_ts": 1790406542.0125556
+    },
+    {
+      "agent_id": "t1__p5__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/professional/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p5__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free FIGMA PROFESSIONAL Where teams design together With unlimited files, pages, folders, and version history, the Figma Professional plan gives your team the features you need to get everyone on the same page without any constraints. Get started Keep designs consistent Access to shareable libr",
+      "actions": [
+        "click Pricing",
+        "click Professional"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t2__p5__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/contact/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t2__p5__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Contact Us Get product support or talk to someone on our sales team Step 1 of 2 *Required FIRST NAME* LAST NAME* WORK EMAIL ADDRESS* WHICH TOPIC BEST SUITS YOUR NEEDS?* Next step TRUSTED BY TEAMS AT Member of the press? Send us a note here. Figma Socials PRODUCT Figma Design Figma Make Fig",
+      "actions": [
+        "click Support",
+        "click Contact sales"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t1__p6__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "page did not show the goal",
+      "final_url": "https://www.figma.com/organization/",
+      "goal_visible": false,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p6__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Events Learn best practices at virtual events User groups Join a local Friends of Figma group Customer stories Read about leading product teams Resources Pricing Log in Contact sales Get started for free FIGMA ORGANIZATION Designed for fast-growing teams The Figma Organization plan gives growing teams the tools they need to move fast and build grea",
+      "actions": [
+        "click Pricing",
+        "click Professional",
+        "click Enterprise",
+        "click Contact sales",
+        "click Contact sales",
+        "click Enterprise",
+        "click Dismiss",
+        "click Enterprise"
+      ],
+      "steps": 26,
+      "first_action_at_ts": 1790406495.9428577,
+      "page_open_at_ts": 1790406495.9428577
+    },
+    {
+      "agent_id": "t2__p6__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/contact/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t2__p6__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Contact us Talk to a member of our sales team We can give you a demo, help you choose the right plan for your team, or share best practices for getting the most out of Figma. Get product or account support We are here to help you with any of your needs. Get support Contact sales Looking fo",
+      "actions": [
+        "click Support",
+        "click Contact sales"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t1__p7__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "model said done before the goal was visible",
+      "final_url": "https://www.figma.com/community/design-templates?resource_type=files&editor_type=figma",
+      "goal_visible": false,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p7__product/screenshots/final.png",
+      "final_dom": "Community Riffs Beta Design resources UI kits Pre-made essentials like buttons and toasts Wireframes Explore your early ideas with lo-fi frames AI workflows New Marketing Ideation Character & narrative Product & brand Design templates Portfolio templates Mobile apps Resume templates Web ads Social media Assets Icons Illustrations Shapes & colors Device mockups Fonts & typography Websites Landing p",
+      "actions": [
+        "click Pricing",
+        "click Professional",
+        "click Contact sales",
+        "click Contact sales",
+        "click Enterprise",
+        "click Enterprise",
+        "click Dismiss",
+        "click Products"
+      ],
+      "steps": 32,
+      "first_action_at_ts": 1790406511.3255527,
+      "page_open_at_ts": 1790406511.3255527
+    },
+    {
+      "agent_id": "t2__p7__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/contact/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t2__p7__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Contact Us Get product support or talk to someone on our sales team Step 1 of 2 *Required FIRST NAME* LAST NAME* WORK EMAIL ADDRESS* WHICH TOPIC BEST SUITS YOUR NEEDS?* Next step TRUSTED BY TEAMS AT Member of the press? Send us a note here. Figma Socials PRODUCT Figma Design Figma Make Fig",
+      "actions": [
+        "click Support",
+        "click Contact sales"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t1__p8__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/professional/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p8__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free FIGMA PROFESSIONAL Where teams design together With unlimited files, pages, folders, and version history, the Figma Professional plan gives your team the features you need to get everyone on the same page without any constraints. Get started Keep designs consistent Access to shareable libr",
+      "actions": [
+        "click Pricing",
+        "click Professional"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t2__p8__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "model said done before the goal was visible",
+      "final_url": "https://www.figma.com/legal/digital-regulation-help-centre/",
+      "goal_visible": false,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t2__p8__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Figma Legal The information provided here is for Figma customers and users who have questions about our terms, policies, intellectual property, and compliance. Legal overview Customer and User Agreements Community and Developer Terms Policies, Notices and Guidelines Acceptable Use Policy M",
+      "actions": [
+        "click Support",
+        "click Contact sales",
+        "click Pricing",
+        "click Learn more",
+        "click See more FAQs",
+        "click support@figma.com",
+        "click our Help Center article",
+        "click specific criteria you must meet"
+      ],
+      "steps": 37,
+      "first_action_at_ts": 1790406526.6716113,
+      "page_open_at_ts": 1790406526.6716113
+    },
+    {
+      "agent_id": "t1__p9__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/pricing/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p9__product/screenshots/final.png",
+      "final_dom": "Skip to main content AI add-ons now come with 2x more credits on Professional, and 1.6x more on Organization and Enterprise. Learn more Products Solutions Community Resources Pricing Log in Contact sales Get started for free NEW AI add-ons are now available for all plans. Pricing and plans Figma Design Figma Make Figma Draw Dev Mode FigJam Figma Slides Figma Motion Figma Sites Figma Buzz Prices in",
+      "actions": [
+        "click Pricing",
+        "click Professional"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t2__p9__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/contact/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t2__p9__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Contact us Talk to a member of our sales team We can give you a demo, help you choose the right plan for your team, or share best practices for getting the most out of Figma. Get product or account support We are here to help you with any of your needs. Get support Contact sales Looking fo",
+      "actions": [
+        "click Support",
+        "click Contact sales"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t1__p10__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "session ended",
+      "final_url": "https://www.figma.com/community/make",
+      "goal_visible": false,
+      "final_screenshot_url": "",
+      "final_dom": "Community Riffs Beta Design resources UI kits Pre-made essentials like buttons and toasts Wireframes Explore your early ideas with lo-fi frames AI workflows New Marketing Ideation Character & narrative Product & brand Design templates Portfolio templates Mobile apps Resume templates Web ads Social media Assets Icons Illustrations Shapes & colors Device mockups Fonts & typography Websites Landing p",
+      "actions": [
+        "click Pricing",
+        "click Professional",
+        "click Enterprise",
+        "click Contact sales",
+        "click Contact sales",
+        "click Enterprise",
+        "click Dismiss",
+        "click Learn more"
+      ],
+      "steps": 45,
+      "first_action_at_ts": 1790406542.0125556,
+      "page_open_at_ts": 1790406542.0125556
+    },
+    {
+      "agent_id": "t2__p10__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "model said done before the goal was visible",
+      "final_url": "https://www.figma.com/legal/digital-regulation-help-centre/",
+      "goal_visible": false,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t2__p10__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Figma Legal The information provided here is for Figma customers and users who have questions about our terms, policies, intellectual property, and compliance. Legal overview Customer and User Agreements Community and Developer Terms Policies, Notices and Guidelines Acceptable Use Policy M",
+      "actions": [
+        "click Support",
+        "click Contact sales",
+        "click Status",
+        "click Resources",
+        "click Figma Support",
+        "click Webinars",
+        "click Pricing",
+        "click Learn more"
+      ],
+      "steps": 23,
+      "first_action_at_ts": 1790406495.9428577,
+      "page_open_at_ts": 1790406495.9428577
+    },
+    {
+      "agent_id": "t1__p11__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/pricing/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p11__product/screenshots/final.png",
+      "final_dom": "Skip to main content AI add-ons now come with 2x more credits on Professional, and 1.6x more on Organization and Enterprise. Learn more Products Solutions Community Resources Pricing Log in Contact sales Get started for free NEW AI add-ons are now available for all plans. Pick your plan, choose your seats Figma Design Figma Make Figma Draw Dev Mode FigJam Figma Slides Figma Motion Figma Sites Figm",
+      "actions": [
+        "click Pricing"
+      ],
+      "steps": 1,
+      "first_action_at_ts": 1790406411.4162438,
+      "page_open_at_ts": 1790406406.6827009
+    },
+    {
+      "agent_id": "t2__p11__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/contact/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t2__p11__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Contact us Talk to a member of our sales team We can give you a demo, help you choose the right plan for your team, or share best practices for getting the most out of Figma. Get product or account support We are here to help you with any of your needs. Get support Contact sales Looking fo",
+      "actions": [
+        "click Support",
+        "click Contact sales"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t1__p12__product",
+      "task": "Look for pricing or how to get started",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/professional/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t1__p12__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free FIGMA PROFESSIONAL Where teams design together With unlimited files, pages, folders, and version history, the Figma Professional plan gives your team the features you need to get everyone on the same page without any constraints. Get started Keep designs consistent Access to shareable libr",
+      "actions": [
+        "click Pricing",
+        "click Professional"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    },
+    {
+      "agent_id": "t2__p12__product",
+      "task": "Find help or how to contact support",
+      "stop_reason": "done",
+      "final_url": "https://www.figma.com/contact/",
+      "goal_visible": true,
+      "final_screenshot_url": "/api/studies/156a74a0-c5b1-45ae-a563-4e8347eb41cf/agents/t2__p12__product/screenshots/final.png",
+      "final_dom": "Skip to main content Products Solutions Community Resources Pricing Log in Contact sales Get started for free Contact Us Get product support or talk to someone on our sales team Step 1 of 2 *Required FIRST NAME* LAST NAME* WORK EMAIL ADDRESS* WHICH TOPIC BEST SUITS YOUR NEEDS?* Next step TRUSTED BY TEAMS AT Member of the press? Send us a note here. Figma Socials PRODUCT Figma Design Figma Make Fig",
+      "actions": [
+        "click Support",
+        "click Contact sales"
+      ],
+      "steps": 2,
+      "first_action_at_ts": 1790406419.374571,
+      "page_open_at_ts": 1790406419.374571
+    }
+  ]
+}

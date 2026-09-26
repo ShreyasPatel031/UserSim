@@ -1,0 +1,15 @@
+Study 156a74a0-c5b1-45ae-a563-4e8347eb41cf
+URL https://www.figma.com/
+skip_competitors true
+tasks: Look for pricing or how to get started; Find help or how to contact support
+personas 12, agents 24, competitors 0
+MVP_BB_OWNER=taskfix MVP_TASKFIX_WIDE=1
+
+status=running phase=Live browser agents — 1/24 done · 23 active agents=24 acted=24 bb=taskfix:23 gates:1
+status=running phase=Live browser agents — 16/24 done · 8 active agents=24 acted=24 bb=taskfix:8
+status=running phase=Live browser agents — 21/24 done · 3 active agents=24 acted=24 bb=taskfix:3
+status=running phase=Live browser agents — 21/24 done · 0 active agents=24 acted=24 bb={}
+status=complete phase=Complete agents=24 acted=24
+
+Local Gemini (not a pass): 19/24 YES
+taskfix sessions after release: 0
