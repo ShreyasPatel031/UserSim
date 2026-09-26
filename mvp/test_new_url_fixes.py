@@ -322,3 +322,17 @@ class SameUrlSignupDialogWeaknessTests(unittest.TestCase):
         insights = build_report_insights({"id": "s-fd", "url": url, "agent_results": [run], "activity_log": []})
         claims = " ".join(str(c.get("claim")) for c in insights.get("weaknesses") or [])
         self.assertIn("needs an account first", claims)
+
+
+def test_signed_in_settings_auth_path_is_not_a_login_wall():
+    from mvp.a11y_agent import auth_page
+    read = {
+        "url": "https://engagement.kolanut.ai/dashboard/settings/integrations/auth/firebase-auth",
+        "text": "firebase auth sign in with google to list projects service account json",
+        "email_input": True,
+    }
+    assert auth_page(read) is True  # logged out, keep old behaviour
+    assert auth_page(read, signed_in=True) is False
+    assert auth_page({"url": "https://app.x.com/login"}, signed_in=True) is True
+    assert auth_page({"url": "https://app.x.com/dashboard", "password": True}, signed_in=True) is True
+    assert auth_page({"url": "https://accounts.x.com/"}, signed_in=True) is True

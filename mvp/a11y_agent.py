@@ -2353,14 +2353,29 @@ def docs_page(url: str) -> bool:
     return False
 
 
-def auth_page(read: dict[str, Any]) -> bool:
-    """A login or signup wall: an auth URL, or a visible password / sign-in form."""
+def auth_page(read: dict[str, Any], signed_in: bool = False) -> bool:
+    """A login or signup wall: an auth URL, or a visible password / sign-in form.
+
+    Once signed in, an "auth" segment deep inside an app URL is a settings
+    page (kolanut's /dashboard/settings/integrations/auth/firebase-auth), and
+    a "Sign in with Google" button there connects a data source. Only a
+    leading auth path, an auth host, a password field or an auth modal count
+    as being signed out again.
+    """
     url = str((read or {}).get("url") or "")
     host = _host(url)
-    if _AUTH_PATH_RE.search(_page_key(url)[1] or "") or _AUTH_HOST_RE.match(host or ""):
+    path = _page_key(url)[1] or ""
+    if _AUTH_HOST_RE.match(host or ""):
+        return True
+    if signed_in:
+        if _AUTH_PATH_RE.match(path):
+            return True
+    elif _AUTH_PATH_RE.search(path):
         return True
     if (read or {}).get("password") or (read or {}).get("auth_modal"):
         return True
+    if signed_in:
+        return False
     text = str((read or {}).get("text") or "").lower()
     if (read or {}).get("email_input") and any(
         phrase in text
@@ -2587,7 +2602,7 @@ async def complete_task_on_page(
             stop_reason = "done"
             drew = drew or task_kind(task) == "draw"
             break
-        if acted and account_task and auth_page(read):
+        if acted and account_task and auth_page(read, signed_in=signed_in):
             signup_url = str(read.get("auth_modal") or read.get("url") or "")
             print(f"[{agent_id}] needs account at {signup_url}", flush=True)
             _miss("needs_account", "needs_account")
