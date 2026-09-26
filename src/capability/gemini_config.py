@@ -8,7 +8,6 @@ from __future__ import annotations
 import asyncio
 import json
 import os
-import re
 from typing import Any
 
 import httpx
@@ -123,18 +122,12 @@ async def gemini_chat(
 
 
 def extract_json(text: str) -> dict:
-    """Parse the first JSON object. Extra objects after it are ignored."""
+    """Parse the first JSON object. A second object must not raise Extra data."""
     raw = text or ""
     start = raw.find("{")
     if start < 0:
         raise ValueError("Model did not return JSON")
-    try:
-        data, _end = json.JSONDecoder().raw_decode(raw[start:])
-    except json.JSONDecodeError:
-        match = re.search(r"\{.*\}", raw, re.S)
-        if not match:
-            raise
-        data = json.loads(match.group(0))
+    data, _end = json.JSONDecoder().raw_decode(raw[start:])
     if not isinstance(data, dict):
         raise ValueError("Model JSON was not an object")
     return data

@@ -7,6 +7,7 @@ import unittest
 
 from capability.gemini_config import extract_json
 from mvp.a11y_agent import (
+    _READ_JS,
     GATE_FIELDS,
     action_label,
     apply_gate_fields,
@@ -59,10 +60,43 @@ class A11yAgentTest(unittest.TestCase):
         self.assertFalse(goal_visible("Open the changelog", {"url": "https://linear.app/docs"}))
         self.assertTrue(goal_visible("Open the changelog", {"url": "https://linear.app/changelog"}))
         self.assertFalse(goal_visible("Find how to create a new issue", {"url": "https://linear.app/"}))
+        self.assertFalse(
+            goal_visible(
+                "Find how to create a new issue",
+                {
+                    "url": "https://linear.app/",
+                    "text": "New issue Inbox My issues issue title description",
+                },
+            )
+        )
+        self.assertFalse(
+            goal_visible(
+                "Find how to create a new issue",
+                {"url": "https://linear.app/acme/team/ENG/active", "title": "Linear", "text": "Inbox My issues"},
+            )
+        )
         self.assertTrue(
             goal_visible(
                 "Find how to create a new issue",
                 {"url": "https://linear.app/docs/creating-issues", "title": "Create issues – Linear Docs"},
+            )
+        )
+        self.assertFalse(
+            goal_visible(
+                "Find how to create a new issue",
+                {"url": "https://linear.app/developers/create-issues-using-linear-new", "title": "Create issues using linear.new"},
+            )
+        )
+        self.assertTrue(
+            goal_visible(
+                "Find how to create a new issue",
+                {
+                    "url": "https://linear.app/acme/issue/new",
+                    "nodes": [
+                        {"role": "textbox", "name": "Issue title"},
+                        {"role": "textarea", "name": "Description"},
+                    ],
+                },
             )
         )
         self.assertFalse(
@@ -352,6 +386,37 @@ class A11yAgentTest(unittest.TestCase):
     def test_extract_json_keeps_the_first_object(self) -> None:
         self.assertEqual(extract_json('{"act":"click","i":1}\n{"act":"done"}'), {"act": "click", "i": 1})
         self.assertEqual(extract_json('note {"act":"drag"} trailing'), {"act": "drag"})
+
+    def test_linear_hero_hash_is_inert_and_the_header_is_not(self) -> None:
+        self.assertIn("Mmx1Wq_", _READ_JS)
+        self.assertIn("qM9FAa_", _READ_JS)
+        self.assertNotIn("[A-Za-z][A-Za-z0-9]{4,}_", _READ_JS)
+
+    def test_issue_target_is_docs_then_create_issues(self) -> None:
+        home = [
+            {"role": "button", "name": "Inbox", "href": "", "inert": True},
+            {"role": "button", "name": "My issues", "href": "", "inert": True},
+            {"role": "a", "name": "Pricing", "href": "https://linear.app/pricing"},
+            {"role": "a", "name": "Documentation", "href": "https://linear.app/docs"},
+        ]
+        docs = [
+            {"role": "a", "name": "Skip to content →", "href": "https://linear.app/docs#skip-nav"},
+            {"role": "button", "name": "Issues", "href": ""},
+            {"role": "a", "name": "Docs", "href": "https://linear.app/docs"},
+        ]
+        opened = [
+            {"role": "a", "name": "Skip to content →", "href": "https://linear.app/docs/creating-issues#skip-nav"},
+            {"role": "button", "name": "Issues", "href": ""},
+            {"role": "a", "name": "Create issues", "href": "https://linear.app/docs/creating-issues"},
+        ]
+        self.assertEqual(tree_action("Find how to create a new issue", {"nodes": home})["name"], "Documentation")
+        self.assertEqual(tree_action("Find how to create a new issue", {"nodes": docs})["name"], "Issues")
+        self.assertEqual(tree_action("Find how to create a new issue", {"nodes": opened})["href"], "https://linear.app/docs/creating-issues")
+        pricing = tree_action(
+            "Look for pricing or how to get started",
+            {"nodes": home},
+        )
+        self.assertEqual(pricing["name"], "Pricing")
 
     def test_logged_out_tasks_do_not_require_an_account(self) -> None:
         self.assertEqual(

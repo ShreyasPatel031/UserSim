@@ -1,3 +1,20 @@
+# Independent grade (PR #46 only)
+
+Self-graded 8/8 is rejected. Only PR #46 (`bc-10cbc813`) grades. The latest independent result is Linear study `68af612b`: product **4/8**. All four pricing agents were YES. All four new-issue agents were NO (opening screen or a dashboard with no create control). Integration cherry-picks are still product 0/8 because those studies abort before a report (shared page, time-to-first-action 17–25s).
+
+No new Browserbase study was started for this tip. `taskfix` running sessions: 0. Do not treat the local 4/4 below as a pass. When a study finishes a report, gates should `--grade-study <id>`. Existing ids that are not a pass: `68af612b` (4/8 Linear, new-issue 0/4), `70557bae-83af-4bf9-9bbb-3135046193cd`, `156a74a0-c5b1-45ae-a563-4e8347eb41cf`.
+
+Local Chromium check after the six fixes (not a pass). Log: `results/taskfix/harness_tree.log`.
+
+| Site | Task | Local result | Final URL |
+| --- | --- | --- | --- |
+| Linear | Find how to create a new issue | goal visible | https://linear.app/docs/creating-issues |
+| Linear | Look for pricing or how to get started | goal visible | https://linear.app/pricing |
+| Excalidraw | Draw a simple box | goal visible | https://excalidraw.com/ |
+| Excalidraw | Find how to export or share | goal visible | https://excalidraw.com/ |
+
+Clicks for new-issue were Documentation, then the Issues expander, then Create issues. Inbox, My issues, and the hero New issue button were not clicked. Draw clicked Rectangle, then dragged the canvas.
+
 # Linear 24-agent study to grade
 
 Study `70557bae-83af-4bf9-9bbb-3135046193cd`. Report: http://127.0.0.1:3000/report?study=70557bae-83af-4bf9-9bbb-3135046193cd. Final screenshots: `mvp/runs/70557bae-83af-4bf9-9bbb-3135046193cd/<agent>/screenshots/final.png` (8 product paths in `results/taskfix/linear24_grade.md`).

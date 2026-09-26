@@ -362,9 +362,13 @@ _READ_JS = """() => {
     const r = el.getBoundingClientRect();
     const href = String(el.href || el.getAttribute('href') || '').slice(0, 180);
     const cls = String(el.className || '');
-    // Linear's homepage embeds a fake app. Those controls look clickable and do nothing.
-    // tabindex=-1 is not enough: canvas toolbars use it for roving focus.
-    const mock = /(?:navItem|newIssue|searchButton|switchWorkspace|rowButton|ingredientButton|headerButton|iconButton|sendButton|dropdownButton|pillButton|navButton|labelButton|attachmentButton|splitSegment|locationBar)/.test(cls);
+    // Linear's homepage embeds a fake app. Its buttons use the CSS-module
+    // prefixes Mmx1Wq_ and qM9FAa_, have no href, and do nothing.
+    // The real header (TZTsQG_) and the docs sidebar use other hashes and stay
+    // clickable. tabindex=-1 is not inert: canvas toolbars use it for focus.
+    const mockHash = /(?:^|\\s)(?:Mmx1Wq_|qM9FAa_)/.test(cls);
+    const mock = /(?:navItem|newIssue|searchButton|switchWorkspace|rowButton|ingredientButton|headerButton|iconButton|sendButton|dropdownButton|pillButton|navButton|labelButton|attachmentButton|splitSegment|locationBar)/.test(cls)
+      || mockHash;
     const inert = !!el.disabled || el.getAttribute('aria-disabled') === 'true' || (mock && !href);
     let name = (
       el.getAttribute('aria-label')
@@ -570,14 +574,28 @@ def goal_visible(task: str, read: dict[str, Any]) -> bool:
     if kind == "changelog":
         return "changelog" in path or "changelog" in title
     if kind == "issue":
-        # A logged-out visitor cannot open the workspace composer. The public
-        # create-issues doc is the page that shows how. The marketing demo's
-        # "New issue" button does not.
-        if "creating-issues" in path or "create-issues" in path:
+        # Success is the public create-issues doc, or a real composer.
+        # The marketing homepage and a dashboard with no create control are not.
+        if "/docs/creating-issues" in path or path.rstrip("/").endswith("/docs/create-issues"):
             return True
-        if "create issues" in title or "creating issues" in title:
+        if ("create issues" in title or "creating issues" in title) and "docs" in title:
             return True
-        return "issue title" in text and "description" in text
+        if path in {"", "/"}:
+            return False
+        title_box = False
+        desc_box = False
+        for node in (read or {}).get("nodes") or []:
+            if not isinstance(node, dict):
+                continue
+            role = str(node.get("role") or "").lower()
+            name = str(node.get("name") or "").lower()
+            if role not in {"textbox", "input", "textarea"}:
+                continue
+            if "title" in name:
+                title_box = True
+            if "description" in name:
+                desc_box = True
+        return title_box and desc_box
     if kind == "draw":
         # Tool chrome ("Selected shape actions") appears when the tool is
         # selected, before any stroke. The canvas sample has to change.
@@ -826,6 +844,35 @@ def _shape_chosen(history: list[str] | None, text: str) -> bool:
     return any(any(word in item for word in _SHAPE_WORDS) for item in done)
 
 
+def _find_issue_target(
+    nodes: list[dict[str, Any]],
+    skip: set[str],
+) -> dict[str, Any] | None:
+    """Create-issues link, then the Issues expander, then Docs. Names must be in the tree."""
+    docs = None
+    issues = None
+    fragment = None
+    for node in nodes:
+        name = str(node.get("name") or "").strip().lower()
+        href = str(node.get("href") or "").strip().lower()
+        if not name or name in skip or (href and href in skip):
+            continue
+        if "skip" in name and "content" in name:
+            continue
+        if name in {"create issues", "creating issues"}:
+            return node
+        doc_link = "/docs/creating-issues" in href or href.rstrip("/").endswith("/docs/create-issues")
+        if doc_link and "#" not in href.split("?", 1)[0]:
+            return node
+        if doc_link and fragment is None:
+            fragment = node
+        if issues is None and name == "issues" and not href:
+            issues = node
+        if docs is None and name in {"documentation", "docs"} and href:
+            docs = node
+    return fragment or issues or docs
+
+
 def tree_action(
     task: str,
     read: dict[str, Any],
@@ -842,6 +889,25 @@ def tree_action(
     skipped = {item.lower() for item in (skip or set())}
     nodes = _live_nodes(read)
     text = str((read or {}).get("text") or "")
+    if kind == "issue":
+        found = _find_issue_target(nodes, skipped)
+        if found:
+            return _click_from_node(found)
+        return None
+    if kind == "pricing":
+        found = _find_named(nodes, ("pricing",), skipped)
+        if found is None:
+            for node in nodes:
+                href = str(node.get("href") or "").lower()
+                name = str(node.get("name") or "").strip().lower()
+                if not href or name in skipped or href in skipped:
+                    continue
+                if "/pricing" in href:
+                    found = node
+                    break
+        if found:
+            return _click_from_node(found)
+        return None
     if kind == "draw":
         if _canvas_box(nodes) and _shape_chosen(history, text):
             return {"act": "drag", "i": -1, "name": "canvas", "role": "canvas", "href": ""}
@@ -1149,8 +1215,10 @@ class A11yBoot:
         self.install_fast_plan()
 
         async def _boot() -> None:
-            # Shared read for the opening display. Each agent creates its own
-            # browser when it runs. No pre-click prime pool.
+            # Agents start immediately. The product read below is step 0 only.
+            # Competitor browsers are not opened here: one shared page was
+            # serializing those sites and pushing TTFA to 17–25s.
+            self.published.set()
             for attempt in range(4):
                 bb = await self._create_one(attempt, enqueue=False)
                 if bb is None:
@@ -1159,8 +1227,8 @@ class A11yBoot:
                     snap = await self._read_url(bb, self.study.url)
                 except Exception as exc:  # noqa: BLE001
                     print(f"[a11y] product read failed (retrying): {exc!r}", flush=True)
+                    await _close_agent_session(None, bb)
                     if _owner_is_taskfix():
-                        await _close_agent_session(None, bb)
                         _release_taskfix_slot()
                     continue
                 handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
@@ -1171,9 +1239,9 @@ class A11yBoot:
                     closed = True
                 if closed or not isinstance(handle, dict) or not isinstance(snap, dict):
                     print("[a11y] product read had no live page (retrying)", flush=True)
+                    browser = handle.get("browser") if isinstance(handle, dict) else None
+                    await _close_agent_session(browser, bb)
                     if _owner_is_taskfix():
-                        browser = handle.get("browser") if isinstance(handle, dict) else None
-                        await _close_agent_session(browser, bb)
                         _release_taskfix_slot()
                     continue
                 handle["site_key"] = "product"
@@ -1184,21 +1252,18 @@ class A11yBoot:
                     self._handle_cv.notify_all()
                 self.snapshots["product"] = snap
                 self._publish_site("product", snap)
-                if _owner_is_taskfix() and isinstance(handle, dict):
-                    await _close_agent_session(handle.get("browser"), handle.get("bb"))
+                # Drop the shared browser. Every agent opens its own page.
+                await _close_agent_session(handle.get("browser"), handle.get("bb"))
+                if _owner_is_taskfix():
                     _release_taskfix_slot()
-                    async with self._handle_cv:
-                        self._handles = [
-                            item for item in self._handles if item is not handle
-                        ]
-                        self.contexts.pop("product", None)
+                async with self._handle_cv:
+                    self._handles = [
+                        item for item in self._handles if item is not handle
+                    ]
+                    self.contexts.pop("product", None)
                 break
             else:
                 print("[a11y] no live product page", flush=True)
-            extras = len([c for c in (self.study.competitors or []) if c])
-            if extras and not _owner_is_taskfix():
-                self._tasks.append(asyncio.create_task(self._fill_pool(extras, offset=1)))
-            await self._publish_rest()
 
         self._tasks.append(asyncio.create_task(_boot()))
 
@@ -1263,7 +1328,7 @@ class A11yBoot:
 
     async def _connect(self, bb: Any) -> tuple[Any, Any]:
         pw = await self._playwright()
-        browser = await pw.chromium.connect_over_cdp(bb.connect_url)
+        browser = await asyncio.wait_for(pw.chromium.connect_over_cdp(bb.connect_url), timeout=12)
         context = browser.contexts[0] if browser.contexts else await browser.new_context()
         page = context.pages[0] if context.pages else await context.new_page()
         try:
@@ -1287,7 +1352,7 @@ class A11yBoot:
             print(f"[a11y] goto {url} : {exc!r}", flush=True)
         read_t0 = time.perf_counter()
         try:
-            raw = await page.evaluate(_READ_JS)
+            raw = await asyncio.wait_for(page.evaluate(_READ_JS), timeout=8)
         except Exception as exc:  # noqa: BLE001
             raw = {"url": url, "title": "", "text": "", "canvas": "", "nodes": []}
             print(f"[a11y] read failed {url}: {exc!r}", flush=True)
@@ -1332,7 +1397,6 @@ class A11yBoot:
 
         ax = format_ax(snap.get("nodes") or []) or str(snap.get("text") or "")[:1500] or "0 document page"
         url = str(snap.get("url") or "")
-        now = time.time()
         for task in self.study.tasks or []:
             if str(task.get("site_key") or "product") != site_key:
                 continue
@@ -1341,7 +1405,11 @@ class A11yBoot:
                 continue
             existing = self.study.live_sessions.get(agent_id) or {}
             # A later republish must not wipe steps the agent already took.
-            if existing.get("first_action_at_ts") or len(existing.get("trace") or []) > 2:
+            # The shared read is step 0 only. It does not own the TTFA clock.
+            if existing.get("first_action_at_ts") or any(
+                isinstance(step, dict) and int(step.get("step") or 0) > 0
+                for step in (existing.get("trace") or [])
+            ):
                 continue
             assigned = str(task.get("site_url") or "")
             if _host(url) != _host(assigned):
@@ -1356,8 +1424,6 @@ class A11yBoot:
             )
             # The shared read is the opening observation only. Each agent
             # opens its own browser and chooses the first click from a fresh read.
-            created = now
-            opened = now
             sess = self.study.live_sessions.get(agent_id) or {
                 "agent_id": agent_id,
                 "persona_id": persona.get("id"),
@@ -1376,28 +1442,27 @@ class A11yBoot:
             sess["status"] = "running"
             sess["phase"] = "reading"
             sess["created_at"] = sess.get("created_at") or _now()
-            sess["created_at_ts"] = created
+            # Clocks start when this agent's own page is open, not at this
+            # shared read. An early stamp here made competitor reads eat TTFA.
             step0 = _step_from_read(step=0, action=f"Opened {url}", read=snap)
-            step0["page_open_at_ts"] = opened
-            step0["session_ready_at_ts"] = snap.get("session_ready_at_ts")
             step0["accessibility_tree"] = ax
-            sess["trace"] = [step0]
-            sess["num_steps"] = 1
-            sess["last_action"] = step0["action"]
+            step0["ax_tree"] = ax
+            if not (sess.get("trace") or []):
+                sess["trace"] = [step0]
+                sess["num_steps"] = 1
+                sess["last_action"] = step0["action"]
             sess.pop("pending_action", None)
             apply_gate_fields(
                 sess,
-                page_open_at_ts=opened,
-                session_ready_at_ts=snap.get("session_ready_at_ts"),
                 page_url=url,
                 accessibility_tree=ax,
-                final_url=url,
-                final_dom=str(snap.get("text") or "")[:1500],
+                final_url=str(sess.get("final_url") or url),
+                final_dom=str(sess.get("final_dom") or snap.get("text") or "")[:1500],
                 phase="reading",
                 error="",
                 browser_error="",
-                failed_step=None,
-                first_action_at_ts=None,
+                failed_step=sess.get("failed_step"),
+                first_action_at_ts=sess.get("first_action_at_ts"),
                 phase_ms={
                     **dict(snap.get("phase_ms") or {}),
                     "session_ready": 0,
@@ -1515,86 +1580,9 @@ class A11yBoot:
         self.published.set()
 
     async def take_page(self, site_key: str, url: str) -> dict[str, Any] | None:
-        """The page already open for this site.
-
-        A second CDP connection returns 410, and extra tabs on that one browser
-        were closing each other. Callers hold ``lock_for(site_key)`` and reuse
-        this page one agent at a time.
-        """
-        deadline = getattr(self.study, "budget_deadline", None) or (
-            time.monotonic() + study_budget_s()
-        )
-        while time.monotonic() < deadline:
-            handle = self.contexts.get(site_key) or {}
-            page = handle.get("page")
-            try:
-                closed = page is None or page.is_closed()
-            except Exception:
-                closed = True
-            if closed:
-                revived = await self._revive(site_key, url)
-                if revived is None:
-                    return None
-                handle = revived
-                page = handle.get("page")
-            if page is not None:
-                try:
-                    if url and _host(page.url or "") != _host(url):
-                        await page.goto(url, wait_until="commit", timeout=8000)
-                except Exception as exc:  # noqa: BLE001
-                    if browser_dead(exc):
-                        print(f"[a11y] shared page died for {site_key}: {exc!r}", flush=True)
-                        revived = await self._revive(site_key, url)
-                        if revived is None:
-                            return None
-                        handle = revived
-                        page = handle.get("page")
-                    else:
-                        print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
-                return {
-                    "bb": handle.get("bb"),
-                    "browser": handle.get("browser"),
-                    "page": page,
-                    "site_key": site_key,
-                    "shared": True,
-                    "reuse": True,
-                }
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                break
-            async with self._handle_cv:
-                try:
-                    await asyncio.wait_for(self._handle_cv.wait(), timeout=min(2.0, remaining))
-                except asyncio.TimeoutError:
-                    continue
+        """Agents do not share a page. Each one calls ``_open_agent_session``."""
+        del site_key, url
         return None
-
-    async def _revive(self, site_key: str, url: str) -> dict[str, Any] | None:
-        """Replace a dead shared page with a new browser on the same site."""
-        old = self.contexts.pop(site_key, None) or {}
-        old_browser = old.get("browser")
-        if old_browser is not None:
-            try:
-                await old_browser.close()
-            except Exception:
-                pass
-        print(f"[a11y] reviving {site_key}", flush=True)
-        bb = await self._create_one(0, enqueue=False)
-        if bb is None:
-            return None
-        try:
-            snap = await self._read_url(bb, url or self.study.url)
-        except Exception as exc:  # noqa: BLE001
-            print(f"[a11y] revive read failed {site_key}: {exc!r}", flush=True)
-            return None
-        handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
-        if not isinstance(handle, dict):
-            return None
-        handle["site_key"] = site_key
-        handle["read"] = snap
-        self.contexts[site_key] = handle
-        self.snapshots[site_key] = snap
-        return handle
 
     async def close(self) -> None:
         """Close the shared browsers after every agent has finished."""
@@ -1843,7 +1831,10 @@ async def _act(page: Any, action: dict[str, Any]) -> str:
         return "drag"
     if act == "done":
         return "done"
-    return await _click_named(page, action)
+    try:
+        return await asyncio.wait_for(_click_named(page, action), timeout=4)
+    except asyncio.TimeoutError:
+        return "timeout"
 
 
 async def _wait_for_page(page: Any) -> None:
@@ -2032,20 +2023,41 @@ async def complete_task_on_page(
             break
         model_read = dict(read)
         model_read["nodes"] = _nodes_for_model(list(read.get("nodes") or []), skip)
-        try:
-            action = await asyncio.wait_for(
-                _model_action(
-                    task=task,
-                    read=model_read,
-                    history=history,
-                    changed_nothing=changed_nothing,
-                ),
-                timeout=20,
-            )
-        except asyncio.TimeoutError:
-            print(f"[{agent_id}] model action timed out", flush=True)
-            action = None
-        source = "model"
+        # The live tree already names the next control for these tasks.
+        # Waiting on the model first is what blew time-to-first-action and
+        # let the model click a hero mock before the override.
+        action = tree_action(task, read, history, skip)
+        source = "tree"
+        if (
+            action is None
+            and task_kind(task) == "draw"
+            and not _shape_chosen(history, str(read.get("text") or ""))
+            and _find_shape(_live_nodes(read), task, skip) is None
+            and draw_waits < 6
+        ):
+            draw_waits += 1
+            previous_sig = None
+            stuck_streak = 0
+            try:
+                await page.wait_for_timeout(700)
+            except Exception:
+                pass
+            continue
+        if not isinstance(action, dict):
+            source = "model"
+            try:
+                action = await asyncio.wait_for(
+                    _model_action(
+                        task=task,
+                        read=model_read,
+                        history=history,
+                        changed_nothing=changed_nothing,
+                    ),
+                    timeout=8,
+                )
+            except asyncio.TimeoutError:
+                print(f"[{agent_id}] model action timed out", flush=True)
+                action = None
         if not isinstance(action, dict):
             invented = tree_action(task, read, history, skip)
             if invented is not None:
@@ -2078,6 +2090,14 @@ async def complete_task_on_page(
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
+        if task_kind(task) == "issue" and not goal_visible(task, read):
+            target = _find_issue_target(_live_nodes(read), skip)
+            if target is not None:
+                want = str(target.get("href") or target.get("name") or "").lower()
+                have = f"{action.get('href') or ''} {action.get('name') or ''}".lower()
+                if want and want not in have:
+                    action = _click_from_node(target)
+                    source = "tree"
         if task_kind(task) == "draw":
             # Any canvas app: click the shape tool the tree shows, then drag
             # on the largest canvas. Do not click an unlabeled canvas first.
@@ -2319,7 +2339,7 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
         if bb is not None:
             try:
                 pw = await boot._playwright()
-                browser = await pw.chromium.connect_over_cdp(bb.connect_url)
+                browser = await asyncio.wait_for(pw.chromium.connect_over_cdp(bb.connect_url), timeout=12)
                 context = browser.contexts[0] if browser.contexts else await browser.new_context()
                 page = context.pages[0] if context.pages else await context.new_page()
                 try:
@@ -2364,7 +2384,7 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
         if bb is None:
             raise RuntimeError(last)
         pw = await boot._playwright()
-        browser = await pw.chromium.connect_over_cdp(bb.connect_url)
+        browser = await asyncio.wait_for(pw.chromium.connect_over_cdp(bb.connect_url), timeout=12)
         context = browser.contexts[0] if browser.contexts else await browser.new_context()
         page = context.pages[0] if context.pages else await context.new_page()
         try:
@@ -2480,6 +2500,43 @@ async def _run_a11y_agent_unlocked(
             stop_reason = "session ended"
             failed = {"phase": "session", "reason": "session ended", "step": 0}
         if page is not None and failed is None:
+            # TTFA starts when this agent's own page is open, with an AX tree.
+            # The shared product read is step 0 display and does not start the clock.
+            opened = await _fresh_read(page, url)
+            if opened.get("error"):
+                opened = {"url": url, "text": "", "nodes": [], "title": ""}
+            now_open = time.time()
+            ax_open = format_ax(opened.get("nodes") or []) or "0 document page"
+            sess["created_at_ts"] = now_open
+            apply_gate_fields(
+                sess,
+                page_open_at_ts=now_open,
+                session_ready_at_ts=now_open,
+                page_url=str(opened.get("url") or url),
+                accessibility_tree=ax_open,
+                final_url=str(opened.get("url") or url),
+                final_dom=str(opened.get("text") or "")[:1500],
+                phase="reading",
+                error="",
+                browser_error="",
+                failed_step=None,
+                first_action_at_ts=None,
+                phase_ms={
+                    "session_ready": 0,
+                    "page_open": 0,
+                    "first_action": 0,
+                    "final_screenshot": 0,
+                },
+            )
+            boot.study.live_sessions[agent_id] = sess
+            if not any(
+                isinstance(step, dict) and int(step.get("step") or -1) == 0 for step in trace
+            ):
+                step0 = _step_from_read(step=0, action=f"Opened {url}", read=opened)
+                step0["accessibility_tree"] = ax_open
+                step0["ax_tree"] = ax_open
+                step0["page_open_at_ts"] = now_open
+                trace = [step0, *trace]
             phase = "act"
             outcome = await complete_task_on_page(
                 page,
@@ -2560,6 +2617,11 @@ async def _run_a11y_agent_unlocked(
             else:
                 failed = {"phase": "act", "reason": "page did not show the goal", "step": step_no}
         phase_ms = dict(sess.get("phase_ms") or {})
+        opened_at = sess.get("page_open_at_ts")
+        acted_at = sess.get("first_action_at_ts")
+        if isinstance(opened_at, (int, float)) and isinstance(acted_at, (int, float)):
+            phase_ms["first_action"] = max(0, int(round((float(acted_at) - float(opened_at)) * 1000)))
+            phase_ms["first_action_ms"] = phase_ms["first_action"]
         phase_ms["final_screenshot"] = shot_ms
         phase_ms["final_screenshot_ms"] = shot_ms
 

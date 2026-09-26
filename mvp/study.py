@@ -3087,11 +3087,14 @@ async def run_study(
                         sess["trace"].append(step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
-                    action_text = str(step.get("action") or "")
+                    action_text = str(step.get("action") or "").lower()
                     if (
                         not sess.get("first_action_at_ts")
-                        and action_text
-                        and not action_text.lower().startswith("open")
+                        and (
+                            action_text.startswith("click ")
+                            or action_text.startswith("type ")
+                            or action_text.startswith("scroll")
+                        )
                     ):
                         from mvp.a11y_agent import apply_gate_fields
 
@@ -3138,36 +3141,24 @@ async def run_study(
                     agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
                     site = task.get("site_url") or study.url
                     if a11y_boot is not None:
-                        # The shared read is display only. Do not wait for a
-                        # click: this agent is what produces the first action.
-                        _wait_until = getattr(study, "budget_deadline", None) or (
-                            time.monotonic() + 30
-                        )
-                        while time.monotonic() < _wait_until:
-                            existing = study.live_sessions.get(agent_id) or {}
-                            trace = existing.get("trace") or []
-                            opened = bool(existing.get("page_open_at_ts")) or any(
-                                isinstance(step, dict) and int(step.get("step") or -1) == 0
-                                for step in trace
-                            )
-                            if opened:
-                                break
-                            await asyncio.sleep(0.05)
-                        sess = study.live_sessions.get(agent_id)
-                        trace = (sess or {}).get("trace") or []
-                        opened = bool(sess and (
-                            sess.get("page_open_at_ts")
-                            or any(
-                                isinstance(step, dict) and int(step.get("step") or -1) == 0
-                                for step in trace
-                            )
-                        ))
-                        if not opened:
-                            print(
-                                f"[{agent_id}] no shared page read before the study budget",
-                                flush=True,
-                            )
-                            return {"agent_id": agent_id, "skipped": True}
+                        # Do not wait on the shared read. That wait serialized
+                        # competitor browsers and blew time-to-first-action.
+                        # This agent opens its own page and stamps the clock.
+                        sess = study.live_sessions.get(agent_id) or {
+                            "agent_id": agent_id,
+                            "persona_id": persona.get("id"),
+                            "persona_name": persona.get("name"),
+                            "task_id": task.get("id"),
+                            "task_title": task.get("title"),
+                            "task_prompt": task.get("prompt") or task.get("title") or "",
+                            "site_key": str(task.get("site_key") or "product"),
+                            "site_url": site,
+                            "site_label": task.get("site_label") or "Product",
+                            "trace": [],
+                            "num_steps": 0,
+                            "status": "running",
+                        }
+                        study.live_sessions[agent_id] = sess
                     else:
                         sess = study.live_sessions.setdefault(
                             agent_id,
@@ -3311,6 +3302,7 @@ async def run_study(
                                         "actions": [],
                                         "num_steps": len(existing),
                                         "final_url": site,
+                                        "final_dom": str(sess.get("final_dom") or ""),
                                         "visited_urls": [site],
                                         "mode": "study_budget",
                                         "stop_reason": "study budget",
@@ -3320,7 +3312,16 @@ async def run_study(
                                             "step": len(existing),
                                         },
                                         "error": "study budget",
+                                        "browser_error": "",
+                                        "final_screenshot_url": sess.get("final_screenshot_url") or "",
+                                        "accessibility_tree": sess.get("accessibility_tree") or "0 document page",
+                                        "page_url": sess.get("page_url") or site,
+                                        "page_open_at_ts": sess.get("page_open_at_ts"),
+                                        "phase_ms": dict(sess.get("phase_ms") or {}),
                                     }
+                                    from mvp.a11y_agent import apply_gate_fields
+
+                                    apply_gate_fields(run)
                                     _agent_task = None
                                 else:
                                     _agent_task = asyncio.create_task(_agent_coro)
@@ -3353,6 +3354,7 @@ async def run_study(
                                         "actions": [],
                                         "num_steps": len(existing),
                                         "final_url": site,
+                                        "final_dom": str(sess.get("final_dom") or ""),
                                         "visited_urls": [site],
                                         "mode": "study_budget",
                                         "stop_reason": "study budget",
@@ -3362,7 +3364,16 @@ async def run_study(
                                             "step": len(existing),
                                         },
                                         "error": "study budget",
+                                        "browser_error": "",
+                                        "final_screenshot_url": sess.get("final_screenshot_url") or "",
+                                        "accessibility_tree": sess.get("accessibility_tree") or "0 document page",
+                                        "page_url": sess.get("page_url") or site,
+                                        "page_open_at_ts": sess.get("page_open_at_ts"),
+                                        "phase_ms": dict(sess.get("phase_ms") or {}),
                                     }
+                                    from mvp.a11y_agent import apply_gate_fields
+
+                                    apply_gate_fields(run)
                                 elif _agent_task is not None:
                                     run = _agent_task.result()
                         sess["status"] = "summarizing"
@@ -3458,6 +3469,9 @@ async def run_study(
                                 "phase_ms": dict(sess.get("phase_ms") or {}),
                                 "final_screenshot_url": sess.get("final_screenshot_url") or "",
                             }
+                            from mvp.a11y_agent import apply_gate_fields
+
+                            apply_gate_fields(result)
                         else:
                             existing = sess.get("trace") or []
                             has_pixels = any(

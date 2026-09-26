@@ -15,7 +15,7 @@
           "name": "Documentation",
           "href": "https://linear.app/docs",
           "role": "a",
-          "source": "model"
+          "source": "tree"
         },
         "executed": "click Documentation",
         "how": "role",
@@ -31,7 +31,7 @@
           "name": "Issues",
           "href": "",
           "role": "button",
-          "source": "model"
+          "source": "tree"
         },
         "executed": "click Issues",
         "how": "role",
@@ -47,7 +47,7 @@
           "name": "Create issues",
           "href": "https://linear.app/docs/creating-issues",
           "role": "a",
-          "source": "model"
+          "source": "tree"
         },
         "executed": "click Create issues",
         "how": "role",
@@ -74,7 +74,7 @@
           "name": "Pricing",
           "href": "https://linear.app/pricing",
           "role": "a",
-          "source": "model"
+          "source": "tree"
         },
         "executed": "click Pricing",
         "how": "role",
@@ -101,7 +101,7 @@
           "name": "Rectangle",
           "href": "",
           "role": "button",
-          "source": "model"
+          "source": "tree"
         },
         "executed": "click Rectangle",
         "how": "role",
@@ -117,7 +117,7 @@
           "name": "canvas",
           "href": "",
           "role": "canvas",
-          "source": "model"
+          "source": "tree"
         },
         "executed": "drag canvas",
         "how": "drag",
