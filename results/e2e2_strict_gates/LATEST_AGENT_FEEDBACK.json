@@ -1,9 +1,9 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T08:02:00Z",
+  "graded_at": "2026-09-26T08:04:00Z",
   "live_launches": "stopped",
-  "note": "Independent --grade-study only. owner=gates sessions released (fast-linear-24c); running count is 0. Integration self-grade pass true and product 8/8 on 09472fc2 and 08d81811 is rejected. GCS has study.json only, so Gemini has no PNG. #47 tip ea561a2 and task-completion tip aa4f5c9 are not live-graded.",
+  "note": "Independent --grade-study. PR #48 self-claim of 8/8 is rejected. Each of 18d86703, 40e719b1, 5a10cefa, and 0711d32d has only study.json in GCS, so product is 0/8. A TTFA of 0.0s is a forged aligned stamp. owner=gates running count is 0.",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "9470be5",
@@ -187,6 +187,11 @@
       "id": 15,
       "owner": "cursor/product-agent-full-model-76fc",
       "fact": "86afd88f and c1d1cd17 set created_at_ts, page_open_at_ts, and first_action_at_ts to one instant. A 0.0s TTFA is rejected. From browser_ready_at_ts, Linear 86afd88f is median 39.712s max 65.966s FAIL and Excalidraw c1d1cd17 is median 50.185s max 80.704s FAIL. Both GCS prefixes are study.json only, so product is 0/8 (no downloadable PNG). 86afd88f weakness names the docs page with no title field. c1d1cd17 still has t1__p3 and t1__p4 on the opening screen."
+    },
+    {
+      "id": 16,
+      "owner": "cursor/tonight-integration",
+      "fact": "18d86703, 40e719b1, 5a10cefa, and 0711d32d each store only study.json. Product is 0/8. Judge reason: no downloadable PNG. Fix mvp/a11y_agent.py so a failed mvp/opening_shot.py upload_screenshot does not leave final_screenshot_url set, and mvp/gcs_store.py gcs_upload_file must write final.png next to study.json. Stamp time_to_first_value_s and total_time_s in persist_study. Both are missing, so TTFV is not recorded and total_time is not ready. 18d86703 TTFA median 1.009s max 1.782s PASS but product URLs are docs and pricing. 40e719b1 TTFA median 1.082s max 1.538s PASS and 8/8 are still https://excalidraw.com/. 5a10cefa TTFA median 42.23s max 68.697s FAIL. 0711d32d TTFA median 46.121s max 82.966s FAIL. A 0.0s median is the aligned stamp, not a pass. Top weakness on the first two is the homepage-stall sentence and fails."
     }
   ],
   "graded_from_gcs": {
@@ -578,6 +583,84 @@
       "first_screen": "t1__p3__product and t1__p4__product",
       "structural": 6,
       "top_weakness": "FAIL. Text is 'The export button is hard to find in the menu before the dialog opens.' real_weaknesses=0."
+    }
+  },
+  "gcs_only_study_json": {
+    "pass": false,
+    "png_bytes": "missing. GCS prefix contains study.json only. Product YES requires downloadable final PNG bytes.",
+    "judge_reason": "no downloadable PNG",
+    "missing_on_study_json": [
+      "time_to_first_value_s",
+      "total_time_s"
+    ],
+    "final_screenshot_url_field": "present on the runs, but the object is not in GCS",
+    "fix": [
+      "mvp/a11y_agent.py final capture sets final_screenshot_url before upload and swallows a failed mvp/opening_shot.py upload_screenshot.",
+      "mvp/opening_shot.py upload_screenshot must put final.png at screenshot_gcs_uri via mvp/gcs_store.py gcs_upload_file. A false return cannot leave the URL set.",
+      "mvp/gcs_store.py write_study_state writes study.json only. Stamp time_to_first_value_s and total_time_s on the study before persist_study.",
+      "Do not set created_at_ts, page_open_at_ts, and first_action_at_ts to one instant. The harness drops that page-open and clocks from browser_ready_at_ts."
+    ],
+    "linear_18d86703": {
+      "study_id": "18d86703-93a9-461e-a5e9-787a8ac5b927",
+      "pass": false,
+      "product_task_completion": "0/8 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=1.009s max=1.782s n=24/24 PASS",
+      "ttfa_note": "Not 0.0s. Clock is browser_ready_at_ts after the aligned stamp was dropped.",
+      "report_ready": true,
+      "report_page": "not fetched, gates app stopped",
+      "urls": "4 docs/creating-issues, 4 pricing. Not an issue in the app.",
+      "top_weakness": "FAIL. '6 of 8 product runs stopped on the first screen...'",
+      "strength": "0/2 FAIL",
+      "weakness": "0/3 FAIL",
+      "wall_s": 61.422
+    },
+    "excalidraw_40e719b1": {
+      "study_id": "40e719b1-5e63-46af-9ca2-3f322868b513",
+      "pass": false,
+      "product_task_completion": "0/8 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=1.082s max=1.538s n=24/24 PASS",
+      "ttfa_note": "Not 0.0s. Clock is browser_ready_at_ts.",
+      "report_ready": true,
+      "report_page": "not fetched, gates app stopped",
+      "first_screen": "8/8 final URL https://excalidraw.com/",
+      "top_weakness": "FAIL. '6 of 8 product runs stopped on the first screen...'",
+      "strength": "0/2 FAIL",
+      "weakness": "0/3 FAIL",
+      "wall_s": 29.757
+    },
+    "linear_5a10cefa": {
+      "study_id": "5a10cefa-ea9c-44e8-9da7-e02bd7e0cc81",
+      "pass": false,
+      "product_task_completion": "0/8 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=42.23s max=68.697s n=24/24 FAIL",
+      "ttfa_note": "0.0s is forged. page_open_at_ts equals first_action_at_ts. Clock is browser_ready_at_ts.",
+      "report_ready": true,
+      "urls": "4 docs/creating-issues, 4 pricing",
+      "top_weakness": "FAIL. Docs page, title field not on screen. Screenshot did not load.",
+      "wall_s": 83.316
+    },
+    "excalidraw_0711d32d": {
+      "study_id": "0711d32d-2b75-4a15-a772-a9f48d3927d6",
+      "pass": false,
+      "product_task_completion": "0/8 FAIL",
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "24/24 PASS",
+      "time_to_first_action": "median=46.121s max=82.966s n=24/24 FAIL",
+      "ttfa_note": "0.0s is forged. Clock is browser_ready_at_ts.",
+      "report_ready": true,
+      "first_screen": "t1__p1__product still https://excalidraw.com/",
+      "top_weakness": "FAIL. Export button claim has no loadable screenshot.",
+      "wall_s": 94.072
     }
   }
 }
