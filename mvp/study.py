@@ -1365,9 +1365,8 @@ async def run_study(
         ):
             from mvp.a11y_agent import A11yBoot
 
-            # All 24 browsers create and navigate together. A slot that has
-            # not committed within 3.5s is replaced. No shared page, no
-            # per-agent screenshot warm, and no 8-wide action queue.
+            # One shared accessibility read, 24 browsers in parallel. No
+            # per-agent screenshot warm and no 8-wide action queue.
             a11y_boot = A11yBoot(study, on_update)
             a11y_boot.install_fast_plan()
             asyncio.create_task(a11y_boot.start())
@@ -2262,10 +2261,13 @@ async def run_study(
 
         persona_by_id = {p["id"]: p for p in study.personas}
         if a11y_boot is not None:
-            # Each agent publishes created_at_ts and the navigation-commit
-            # page_open_at_ts from its own browser. A shared republish would
-            # copy one clock onto the other and fail the 5s page-open gate.
-            pass
+            # The product read often finishes before the planner has tasks.
+            # Publish the first click as soon as those tasks exist.
+            for _key, _snap in list(getattr(a11y_boot, "snapshots", {}).items()):
+                try:
+                    a11y_boot._publish_site(_key, _snap)
+                except Exception as pub_exc:  # noqa: BLE001
+                    print(f"[a11y] republish {_key} failed: {pub_exc!r}", flush=True)
         if a11y_boot is None:
             study.live_sessions = {}
         for task in study.tasks:
@@ -3058,15 +3060,10 @@ async def run_study(
                     sess["status"] = "running"
                     sess["trace"] = list(sess.get("trace") or [])
                     existing = {s.get("step"): i for i, s in enumerate(sess["trace"])}
-                    from mvp.a11y_agent import keep_step_stamps, promote_live_session_fields
-
                     if step.get("step") in existing:
-                        previous = sess["trace"][existing[step["step"]]]
-                        keep_step_stamps(previous if isinstance(previous, dict) else None, step)
                         sess["trace"][existing[step["step"]]] = step
                     else:
                         sess["trace"].append(step)
-                    promote_live_session_fields(sess, step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
                     action_text = str(step.get("action") or "")
@@ -3120,16 +3117,31 @@ async def run_study(
                     agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
                     site = task.get("site_url") or study.url
                     if a11y_boot is not None:
+                        # The shared read is display only. Do not wait for a
+                        # click: this agent is what produces the first action.
                         _wait_until = getattr(study, "budget_deadline", None) or (
                             time.monotonic() + 30
                         )
                         while time.monotonic() < _wait_until:
                             existing = study.live_sessions.get(agent_id) or {}
-                            if existing.get("first_action_at_ts"):
+                            trace = existing.get("trace") or []
+                            opened = bool(existing.get("page_open_at_ts")) or any(
+                                isinstance(step, dict) and int(step.get("step") or -1) == 0
+                                for step in trace
+                            )
+                            if opened:
                                 break
                             await asyncio.sleep(0.05)
                         sess = study.live_sessions.get(agent_id)
-                        if not sess or not sess.get("first_action_at_ts"):
+                        trace = (sess or {}).get("trace") or []
+                        opened = bool(sess and (
+                            sess.get("page_open_at_ts")
+                            or any(
+                                isinstance(step, dict) and int(step.get("step") or -1) == 0
+                                for step in trace
+                            )
+                        ))
+                        if not opened:
                             print(
                                 f"[{agent_id}] no shared page read before the study budget",
                                 flush=True,
@@ -3179,19 +3191,16 @@ async def run_study(
                     sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
                     try:
-                        # The accessibility loop runs all 24 agents at once.
-                        # The older screenshot loop still queues on the browser
-                        # and LLM caps (MVP_BROWSER_CONCURRENCY is 8 here).
-                        class _Pass:
-                            async def __aenter__(self) -> None:
-                                return None
+                        async with _BROWSER_SEMAPHORE:
+                            # The accessibility loop runs all 24 agents at once.
+                            # The older screenshot loop still queues on the LLM cap.
+                            class _Pass:
+                                async def __aenter__(self) -> None:
+                                    return None
 
-                            async def __aexit__(self, *_exc: object) -> bool:
-                                return False
+                                async def __aexit__(self, *_exc: object) -> bool:
+                                    return False
 
-                        async with (
-                            _Pass() if a11y_boot is not None else _BROWSER_SEMAPHORE
-                        ):
                             async with (
                                 _Pass() if a11y_boot is not None else _llm_run_semaphore()
                             ):
@@ -3396,10 +3405,6 @@ async def run_study(
                                 else sess.get("last_action")
                             )
                     except Exception as exc:  # noqa: BLE001
-                        # A harness abort already marked this study killed.
-                        # Opening another Browserbase session here is what left
-                        # agents running after the strict e2e had stopped.
-                        raise_if_killed(study)
                         sess["status"] = "error"
                         existing = sess.get("trace") or []
                         if a11y_boot is not None:
@@ -3431,36 +3436,6 @@ async def run_study(
                                 "first_action_at_ts": sess.get("first_action_at_ts"),
                                 "phase_ms": dict(sess.get("phase_ms") or {}),
                                 "final_screenshot_url": sess.get("final_screenshot_url") or "",
-                            }
-                        elif a11y_boot is not None:
-                            # Shared accessibility studies stay on the text loop.
-                            # A screenshot-agent retry is the old flash path.
-                            log_activity(
-                                study,
-                                "agent_error",
-                                f"{persona.get('name')} shared-read agent stopped — "
-                                "not opening a screenshot browser",
-                                agent_id=agent_id,
-                                error=str(exc)[:200],
-                            )
-                            result = {
-                                "agent_id": agent_id,
-                                "completed": False,
-                                "difficulty": "hard",
-                                "friction_points": [],
-                                "what_was_easy": [],
-                                "product_feedback": (
-                                    "The shared accessibility run stopped before "
-                                    "the task finished."
-                                ),
-                                "would_convert": "maybe",
-                                "trace": existing,
-                                "actions": [],
-                                "num_steps": len(existing),
-                                "final_url": site,
-                                "visited_urls": [site],
-                                "mode": "a11y",
-                                "browser_error": (str(exc) or repr(exc))[:300],
                             }
                         else:
                             existing = sess.get("trace") or []
@@ -3640,41 +3615,38 @@ async def run_study(
                     return result
 
                 study.agent_results = []
-                try:
-                    if a11y_boot is not None:
-                        _left = max(
-                            1.0,
-                            float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic(),
-                        )
-                        try:
-                            await asyncio.wait_for(a11y_boot.published.wait(), timeout=_left)
-                        except asyncio.TimeoutError:
-                            print(
-                                "shared page read did not finish before the study budget",
-                                flush=True,
-                            )
-                    def _run_rank(task: dict[str, Any]) -> tuple:
-                        key = str(task.get("site_key") or "product")
-                        return (0 if key == "product" else 1, key, str(task.get("id") or ""))
-
-                    ordered_tasks = sorted(study.tasks, key=_run_rank)
-                    # return_exceptions=True: one cancelled/failed agent must not
-                    # CancelledError the whole gather ("Killed by operator").
-                    agent_out = await asyncio.gather(
-                        *[_run_one(t) for t in ordered_tasks],
-                        return_exceptions=True,
+                if a11y_boot is not None:
+                    _left = max(
+                        1.0,
+                        float(getattr(study, "budget_deadline", 0) or 0) - time.monotonic(),
                     )
-                    for item in agent_out:
-                        if isinstance(item, Exception):
-                            print(f"live agent failed: {item!r}", flush=True)
-                            continue
-                finally:
-                    # A kill or cancel must still release keep-alive browsers.
-                    if a11y_boot is not None:
-                        try:
-                            await a11y_boot.close()
-                        except Exception as close_exc:  # noqa: BLE001
-                            print(f"a11y browser close failed: {close_exc!r}", flush=True)
+                    try:
+                        await asyncio.wait_for(a11y_boot.published.wait(), timeout=_left)
+                    except asyncio.TimeoutError:
+                        print(
+                            "shared page read did not finish before the study budget",
+                            flush=True,
+                        )
+                def _run_rank(task: dict[str, Any]) -> tuple:
+                    key = str(task.get("site_key") or "product")
+                    return (0 if key == "product" else 1, key, str(task.get("id") or ""))
+
+                ordered_tasks = sorted(study.tasks, key=_run_rank)
+                # return_exceptions=True: one cancelled/failed agent must not
+                # CancelledError the whole gather ("Killed by operator").
+                agent_out = await asyncio.gather(
+                    *[_run_one(t) for t in ordered_tasks],
+                    return_exceptions=True,
+                )
+                for item in agent_out:
+                    if isinstance(item, Exception):
+                        print(f"live agent failed: {item!r}", flush=True)
+                        continue
+                if a11y_boot is not None:
+                    try:
+                        await a11y_boot.close()
+                    except Exception as close_exc:  # noqa: BLE001
+                        print(f"a11y browser close failed: {close_exc!r}", flush=True)
                 try:
                     await backfill_site_opening_shots(study)
                     if study.live_sessions:
@@ -3737,7 +3709,6 @@ async def run_study(
                     agent_id=issue.get("agent_id"),
                 )
 
-        raise_if_killed(study)
         touch("Writing executive summary")
         if study.summary and study.summary.get("headline"):
             # Already written by fleet finisher — still strip harness failures.

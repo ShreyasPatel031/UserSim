@@ -123,7 +123,18 @@ async def gemini_chat(
 
 
 def extract_json(text: str) -> dict:
-    match = re.search(r"\{.*\}", text, re.S)
-    if not match:
+    """Parse the first JSON object. Extra objects after it are ignored."""
+    raw = text or ""
+    start = raw.find("{")
+    if start < 0:
         raise ValueError("Model did not return JSON")
-    return json.loads(match.group(0))
+    try:
+        data, _end = json.JSONDecoder().raw_decode(raw[start:])
+    except json.JSONDecodeError:
+        match = re.search(r"\{.*\}", raw, re.S)
+        if not match:
+            raise
+        data = json.loads(match.group(0))
+    if not isinstance(data, dict):
+        raise ValueError("Model JSON was not an object")
+    return data
