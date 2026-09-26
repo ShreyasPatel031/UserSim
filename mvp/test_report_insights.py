@@ -154,6 +154,18 @@ class WorkMetricTests(unittest.TestCase):
         self.assertFalse(changed_page_state(run, "https://excalidraw.com/"))
         self.assertFalse(task_succeeded(run, "https://excalidraw.com/"))
 
+    def test_title_only_opening_read_then_a_real_page_counts(self) -> None:
+        run = _run("a", steps=2, final="https://excalidraw.com/")
+        run["site_url"] = "https://excalidraw.com/"
+        run["trace"][0]["url"] = "https://excalidraw.com/"
+        run["trace"][0]["state_sig"] = {"text": "Excalidraw", "canvas": ""}
+        run["trace"][1]["url"] = "https://excalidraw.com/"
+        run["trace"][1]["state_sig"] = {
+            "text": "Excalidraw Selected shape actions Stroke Background " + ("shape " * 30),
+            "canvas": "900x600:dark=40/2304;",
+        }
+        self.assertTrue(changed_page_state(run, "https://excalidraw.com/"))
+
 
 class InsightTests(unittest.TestCase):
     def test_generic_load_notes_are_not_strengths(self) -> None:

@@ -470,6 +470,10 @@ Critical rules:
   require opening a specific section, searching, or using a control, and must say
   what "done" looks like (a heading, a result, or a page that is not the homepage).
 - If the page has no pricing page, do not create a "find the pricing page" task.
+- Every task must be finishable by a logged-out visitor. Do not require an account,
+  a workspace, signing in, or filing an issue inside the product. On a marketing
+  site, ask them to open a public page (pricing, docs, changelog) or to use a
+  public control (draw, export, help).
 - Do not invent new personas."""
     raw = await _llm_chat(
         [
@@ -510,6 +514,17 @@ Critical rules:
             next_n += 1
             if next_n > task_count + 3:
                 break
+    from mvp.a11y_agent import achievable_without_account
+
+    for task in tasks:
+        if not isinstance(task, dict):
+            continue
+        prompt = achievable_without_account(url, str(task.get("prompt") or ""))
+        task["prompt"] = prompt
+        title = str(task.get("title") or "")
+        rewritten = achievable_without_account(url, title)
+        if rewritten != title:
+            task["title"] = rewritten[:80]
     return tasks
 
 
