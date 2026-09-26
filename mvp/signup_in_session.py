@@ -110,7 +110,9 @@ _SNAPSHOT_JS = r"""
     const r = el.getBoundingClientRect();
     if (r.width < 2 || r.height < 2) return false;
     const s = getComputedStyle(el);
-    if (s.visibility === 'hidden' || s.display === 'none' || Number(s.opacity) === 0) return false;
+    if (s.visibility === 'hidden' || s.display === 'none') return false;
+    // OTP widgets overlay a transparent <input> on drawn boxes: keep inputs.
+    if (Number(s.opacity) === 0 && !['INPUT', 'TEXTAREA'].includes(el.tagName)) return false;
     return true;
   };
   const clean = (t) => (t || '').replace(/\s+/g, ' ').trim();
@@ -315,10 +317,10 @@ async def _decide(
         f"Done so far: {' ; '.join(history[-10:]) or 'nothing'}\n"
         f"{note}\n"
     )
-    for attempt in range(2):
+    for attempt in range(3):
         try:
             raw = await asyncio.wait_for(
-                gemini_chat([{"role": "user", "content": prompt}], model=_model(), temperature=0,
+                gemini_chat([{"role": "user", "content": prompt}], model=_model(), temperature=0.4 * attempt,
                             json_mode=True, max_retries=2),
                 timeout=40,
             )
@@ -357,6 +359,43 @@ async def _verify_signed_in(snap: dict[str, Any]) -> tuple[bool, str]:
     except Exception as exc:  # noqa: BLE001
         return False, f"verify failed: {exc!r}"[:160]
     return bool(isinstance(data, dict) and data.get("signed_in")), str((data or {}).get("evidence") or "")[:200]
+
+
+_OTP_JS = r"""
+() => {
+  const ok = (el) => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el);
+    return r.width > 1 && r.height > 1 && s.display !== 'none' && s.visibility !== 'hidden' && !el.disabled; };
+  const inputs = [...document.querySelectorAll('input')].filter(ok).filter(el => {
+    const t = (el.type || 'text').toLowerCase();
+    const blob = [el.name, el.id, el.placeholder, el.autocomplete, el.getAttribute('aria-label')].join(' ').toLowerCase();
+    return ['text', 'tel', 'number', ''].includes(t) && !/email|search|name|phone/.test(blob);
+  });
+  const pick = inputs.find(el => (el.autocomplete || '').includes('one-time-code'))
+    || inputs.find(el => /otp|code|verif|pin/.test([el.name, el.id, el.placeholder, el.getAttribute('aria-label')].join(' ').toLowerCase()))
+    || inputs.find(el => el.maxLength === 1) || inputs.find(el => el.inputMode === 'numeric') || null;
+  document.querySelectorAll('[data-sis-otp]').forEach(e => e.removeAttribute('data-sis-otp'));
+  if (!pick) return '';
+  pick.setAttribute('data-sis-otp', '1');
+  return 'ok';
+}
+"""
+
+
+async def _type_code(page: Any, code: str) -> bool:
+    """Type the emailed code into the page's code box (single or split boxes)."""
+    try:
+        found = await page.evaluate(_OTP_JS)
+    except Exception:
+        found = ""
+    if found != "ok":
+        return False
+    loc = page.locator("[data-sis-otp='1']").first
+    try:
+        await loc.click(timeout=3000, force=True)
+        await page.keyboard.type(code, delay=70)
+        return True
+    except Exception:
+        return False
 
 
 async def _pick_link(mail: dict[str, Any]) -> str:
@@ -719,6 +758,19 @@ async def signup_in_session(
                 dead_names={n for n, c in dead_count.items() if c >= 2},
             )
             note = ""
+            bad = [a for a in (decision or {}).get("actions") or [] if isinstance(a, dict)
+                   and str(a.get("do")) in {"fill", "click", "check", "select"}
+                   and (a.get("i") is None or str(a.get("i")).lstrip("-").isdigit() and int(a.get("i")) not in elements)]
+            if decision and bad and len(bad) == len(decision.get("actions") or []):
+                if ident.get("code") and await _type_code(page, ident["code"]):
+                    steps.append("  typed emailed code (model could not find the box)")
+                    await _settle(page, 1500)
+                    continue
+                note = ("Your last reply used element numbers that are not in the list. Only use i "
+                        "values from the Elements list; if the control you want is not listed, choose "
+                        "another listed control, press a key, scroll, or wait.")
+                steps.append("  model used unknown element numbers")
+                continue
             if not decision:
                 steps.append("model gave no decision")
                 continue
@@ -792,7 +844,14 @@ async def signup_in_session(
                 )
                 if mail.get("code") and (code_box or not mail.get("links")):
                     ident["code"] = mail["code"]
-                    note = "The emailed verification code is available as {code}. Enter it now."
+                    if await _type_code(page, mail["code"]):
+                        steps.append("  typed emailed code into the code box")
+                        history.append("typed the emailed verification code")
+                        await _settle(page, 1500)
+                        note = ("The emailed code was typed into the code box. If a Verify/Continue "
+                                "button is enabled, click it; otherwise wait.")
+                    else:
+                        note = "The emailed verification code is available as {code}. Enter it now."
                     continue
                 if mail.get("links"):
                     link = await _pick_link(mail)
