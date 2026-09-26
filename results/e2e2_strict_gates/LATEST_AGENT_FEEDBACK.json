@@ -1,76 +1,68 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T04:50:00Z",
+  "graded_at": "2026-09-26T04:57:00Z",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
-      "sha": "2ac3c3d",
+      "sha": "125346b",
       "linear": {
-        "study_id": "96c06028-f421-4599-9aa8-9ee2d783e729",
+        "study_id": "d47def0a-c4ea-4b12-beb7-b81a88e08812",
         "pass": false,
-        "elapsed_s": 157.0,
-        "time_to_first_value": "6.111s PASS",
-        "total_time": "156.507s PASS",
-        "time_to_first_action": "median=0.35s max=15.732s n=24/24 FAIL",
-        "ttfa_max_who": "all 8 Asana competitor_1 agents",
+        "elapsed_s": 76.4,
+        "time_to_first_value": "3.31s PASS",
+        "total_time": "75.969s PASS",
+        "time_to_first_action": "median=1.473s max=28.103s n=24/24 FAIL",
+        "ttfa_note": "created_at, page_open, and first_action were rewritten to one instant (1790398411.51). Session ready was not rewritten. Asana competitor_1 is 28.103s from browser_ready_at_ts to the poll that saw the click. The rewritten page-open gap was 0.146s and is not the clock.",
         "page_opened": "24/24 within 5s PASS",
-        "final_screenshot": "missing field final_screenshot_url FAIL",
+        "final_screenshot": "24/24 PASS and the judge downloaded the PNG",
         "product_task_completion": "0/8",
-        "product_note": "all 8 product agents are first-screen. Judge HTTP 400 on final.png where the URL existed; t2 product and t1 p3/p4 missing the URL.",
-        "phase_counts": [
-          {"phase": "act", "n": 12},
-          {"phase": "read", "n": 5},
-          {"phase": "done", "n": 4},
-          {"phase": "final_screenshot", "n": 3}
-        ]
+        "product_note": "Gemini saw the pages. goal_reached false. All 8 product agents are first_screen_ids. Reasons include dashboard with no new-issue form, an existing issue, and the main product page instead of pricing.",
+        "phase_counts": [{"phase": "act", "n": 16}]
       },
       "excalidraw": {
-        "study_id": "f9823a33-699a-4815-a2bb-5198a0cf7473",
+        "study_id": "cbdbe54e-7ff5-4d30-b409-3ffe8a3e9db0",
         "pass": false,
-        "elapsed_s": 183.3,
-        "time_to_first_value": "3.224s PASS",
-        "total_time": "182.84s PASS",
-        "time_to_first_action": "median=0.378s max=18.805s n=24/24 FAIL",
-        "ttfa_max_who": "all 8 Miro competitor_2 agents",
-        "page_opened": "24/24 within 5s PASS",
-        "final_screenshot": "24/24 field present PASS, but every product judge got HTTP 400 on final.png",
+        "elapsed_s": 31.7,
+        "time_to_first_value": "2.91s PASS",
+        "total_time": "not ready FAIL",
+        "time_to_first_action": "median=1.151s max=22.942s n=24/24 FAIL",
+        "ttfa_max_who": "all 8 Miro competitor_2 agents, start=browser_ready_at_ts",
+        "page_opened": "21/24 FAIL slow=t2__p2__product t2__p3__product t2__p4__product",
+        "abort": "FAIL page_opened: 21/24 opened within 5s (3 after 5s)",
+        "final_screenshot": "missing field final_screenshot_url",
         "product_task_completion": "0/8",
-        "product_note": "4 structural past first screen (t1 product, draw a box) and 4 still on the first screen (t2 export). judge_yes=0.",
-        "phase_counts": [
-          {"phase": "done", "n": 15},
-          {"phase": "act", "n": 9}
-        ]
+        "phase_counts": [{"phase": "read", "n": 3}]
       }
     },
     "cursor/tonight-integration": {
-      "sha": "f044c45",
-      "note": "last graded agent tree. origin moved to 8178b3d after this grade; that head is not graded yet."
+      "sha": "8178b3d",
+      "note": "includes 125346b and is not graded yet. Previous graded integration tree was f044c45."
     }
   },
   "bugs": [
     {
       "id": 1,
-      "fact": "time_to_first_action max must be <=10s at 24 agents. Linear 96c06028 max 15.732s (every Asana competitor_1). Excalidraw f9823a33 max 18.805s (every Miro competitor_2). Median was under 5s both times. A rewritten 0s stamp gap is not this clock."
+      "fact": "time_to_first_action max must be <=10s from session ready or a real page-open, not from a stamp rewritten to the poll. Linear d47def0a: Asana competitor_1 max 28.103s from browser_ready_at_ts. The saved created/page_open/first_action stamps are one instant. Excalidraw cbdbe54e: Miro competitor_2 max 22.942s from browser_ready_at_ts."
     },
     {
       "id": 2,
-      "fact": "final_screenshot_url must be on every agent and the GET must return the PNG. Linear 96c06028 is missing the field on t2 product and on t1 p3/p4. Where the URL existed, the judge got HTTP 400 on final.png. Excalidraw f9823a33 has the field on 24/24 and still 400s, so Gemini YES stayed 0."
+      "fact": "Do not write created_at_ts, page_open_at_ts, and first_action_at_ts to the same response time. On d47def0a all three are 1790398411.51 while browser_ready_at_ts is ~28s earlier on Asana. phase_ms.page_open and phase_ms.first_action are 0 even when page_open_ms is 1489."
     },
     {
       "id": 3,
-      "fact": "Product gate is Gemini YES on a final screenshot, >=4/8, on a run that left the homepage. Linear 0/8, all eight product agents still on the opening frame. Excalidraw 0/8 even though four draw-a-box runs left the first screen structurally."
+      "fact": "Page open within 5s failed on Excalidraw cbdbe54e for t2__p2__product, t2__p3__product, and t2__p4__product (21/24). The abort stopped the report, so total_time is not ready and final_screenshot_url is missing."
     },
     {
       "id": 4,
-      "fact": "Strength and weakness need one run past the first screen with agent, step, AX or URL, and the final screenshot. Linear weakness 0/1: 'The new issue form is hard to find because this page has no issue title field.' Excalidraw strength 0/3 and weakness 0/3: 'The export button is hard to find in the menu after the drawing is on the canvas.' real_weaknesses=0 both times."
+      "fact": "Product is still 0/8 Gemini YES. Linear d47def0a did serve final.png. The judge said the product agents were on the dashboard, an existing issue, or the main page, not a new-issue form and not pricing. All 8 stayed in the first-screen denominator. Excalidraw aborted before a judge YES."
     },
     {
       "id": 5,
-      "fact": "New-issue stuck loop is still open until a run shows it is gone and product is >=4/8. Study 6e2acd43, t1__p1__product, click New issue three times with no URL/DOM change. 2ac3c3d did not abort on that loop, and the Linear product agents still never left the opening frame."
+      "fact": "Strength and weakness still do not cite a run past the first screen. Linear weakness 0/2: 'The new issue form is hard to find because this page has no issue title field.' Excalidraw had no report, so strength 0/0 and weakness 0/0."
     },
     {
       "id": 6,
-      "fact": "ax_tree and page_open_at_ts were present on all 24 live sessions for both 2ac3c3d sites. Do not regress. Earlier fails still stand as the contract: missing ax on product, Asana, or Trello, or missing page_open on a 6-agent Excalidraw abort, fails the run."
+      "fact": "The New-issue stuck loop from study 6e2acd43 is still unresolved until product is >=4/8. d47def0a did not repeat 'click New issue' three times, and the product agents still did not create an issue."
     }
   ]
 }
