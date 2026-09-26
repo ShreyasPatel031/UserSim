@@ -1801,6 +1801,10 @@ async def _fresh_read(page: Any, fallback_url: str) -> dict[str, Any]:
     return fresh
 
 
+_SUBMIT_RE = re.compile(
+    r"\b(?:create|save|add|submit|publish|done|confirm|send|post|finish|schedule|book|invite|upload)\b", re.I
+)
+
 _DOCS_HOST_LABELS = frozenset(
     "docs doc help support developers developer learn academy community guide guides "
     "university kb knowledge knowledgebase manual wiki blog".split()
@@ -2200,6 +2204,20 @@ async def complete_task_on_page(
             if downloads:
                 changed = True
                 after["downloaded"] = downloads[-1]
+            if not changed and act == "click":
+                # Single-page apps often swap the view a beat later. Look once more.
+                try:
+                    await page.wait_for_timeout(1000)
+                except Exception:
+                    pass
+                later = await _fresh_read(page, str(read.get("url") or url))
+                if not later.get("error") and _observation_changed(read, later, task=task):
+                    after = later
+                    changed = True
+            if changed:
+                # A new view: controls skipped on the old one (another "Skip" or
+                # "Continue") are fair game again.
+                skip.clear()
             if not changed and act in {"click", "type"}:
                 skip.add(chosen)
                 href = str(action.get("href") or "").lower()
@@ -2224,6 +2242,18 @@ async def complete_task_on_page(
                 maybe = on_step(row)
                 if asyncio.iscoroutine(maybe):
                     await maybe
+        if (
+            changed_nothing is False
+            and act == "click"
+            and account_task
+            and _SUBMIT_RE.search(chosen or "")
+            and not docs_page(str(read.get("url") or ""))
+            and not auth_page(read)
+        ):
+            # The agent just submitted something. Check the outcome now rather
+            # than letting it redo the task.
+            if await _verify_done(task, read, opened, page):
+                stop_reason = "done"
         logs.append(
             {
                 "step": step_no,
