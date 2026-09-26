@@ -49,6 +49,9 @@ async def _recover_interrupted() -> None:
     from mvp.study import recover_interrupted_studies
 
     async def _run() -> None:
+        # Wait past the quiet window so a study still live in another process
+        # on this disk has rewritten its snapshot and is left alone.
+        await asyncio.sleep(float(os.environ.get("MVP_RECOVER_DELAY_S") or "100"))
         try:
             fixed = await asyncio.to_thread(recover_interrupted_studies)
             if fixed:

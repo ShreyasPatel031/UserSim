@@ -4216,8 +4216,12 @@ def mark_interrupted(payload: dict[str, Any], when: str = "") -> dict[str, Any]:
     return out
 
 
-def recover_interrupted_studies(max_files: int = 200, max_age_s: float = 86400.0) -> list[str]:
-    """On server start: studies saved as running by a previous process are marked interrupted and their sessions released."""
+def recover_interrupted_studies(max_files: int = 200, max_age_s: float = 86400.0, quiet_s: float = 90.0) -> list[str]:
+    """On server start: studies saved as running by a previous process are marked interrupted and their sessions released.
+
+    Another live server on the same disk (a second port) rewrites its running
+    study every few seconds, so only snapshots quiet for ``quiet_s`` count.
+    """
     from mvp.paths import MVP_RUNS_DIR
 
     folder = MVP_RUNS_DIR / "snapshots"
@@ -4232,8 +4236,11 @@ def recover_interrupted_studies(max_files: int = 200, max_age_s: float = 86400.0
     fixed: list[str] = []
     for path in files:
         try:
-            if now - path.stat().st_mtime > max_age_s:
+            age = now - path.stat().st_mtime
+            if age > max_age_s:
                 break
+            if age < quiet_s:
+                continue
             data = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
             continue
@@ -4253,7 +4260,7 @@ def recover_interrupted_studies(max_files: int = 200, max_age_s: float = 86400.0
     return fixed
 
 
-def looks_interrupted(data: dict[str, Any], stale_s: float = 180.0) -> bool:
+def looks_interrupted(data: dict[str, Any], stale_s: float = 120.0) -> bool:
     """A saved study that says running but has not been updated for minutes and is not in this process."""
     if str(data.get("status") or "") not in _UNFINISHED:
         return False

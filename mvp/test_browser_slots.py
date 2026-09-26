@@ -105,3 +105,34 @@ class InterruptedTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RecoverTest(unittest.TestCase):
+    def test_restart_marks_quiet_running_snapshots_and_leaves_fresh_ones(self):
+        import json
+        import os
+        import tempfile
+        import time
+        from pathlib import Path
+
+        from mvp import study as st
+
+        with tempfile.TemporaryDirectory() as tmp:
+            snaps = Path(tmp) / "snapshots"
+            snaps.mkdir()
+            old = snaps / "old1.json"
+            old.write_text(json.dumps({"id": "old1", "status": "running", "live_sessions": {}}))
+            os.utime(old, (time.time() - 300, time.time() - 300))
+            fresh = snaps / "new1.json"
+            fresh.write_text(json.dumps({"id": "new1", "status": "running", "live_sessions": {}}))
+            done = snaps / "done1.json"
+            done.write_text(json.dumps({"id": "done1", "status": "complete"}))
+            os.utime(done, (time.time() - 300, time.time() - 300))
+            written = {}
+            with mock.patch("mvp.paths.MVP_RUNS_DIR", Path(tmp)), mock.patch.object(
+                st, "_write_payload", side_effect=lambda sid, p: written.__setitem__(sid, p)
+            ), mock.patch("mvp.browser_slots.release_study_sessions", return_value=0):
+                fixed = st.recover_interrupted_studies()
+        self.assertEqual(fixed, ["old1"])
+        self.assertEqual(written["old1"]["status"], "abandoned")
+        self.assertTrue(written["old1"]["interrupted"])
