@@ -1561,6 +1561,13 @@ def _startup_gates(
     mx = ttfa.get("max_s")
     got = ttfa.get("n")
     missing = [str(name) for name in (ttfa.get("missing_fields") or [])]
+    starts = [
+        str(row.get("start") or "")
+        for row in (ttfa.get("per_agent") or [])
+        if isinstance(row, dict)
+    ]
+    if not missing and starts and not any(starts) and not ttfa.get("ok"):
+        missing = ["page_open_at_ts"]
     if missing and not ttfa.get("ok"):
         value = "; ".join(missing_field(name) for name in missing)
     else:

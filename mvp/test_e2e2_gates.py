@@ -938,6 +938,31 @@ class PageOpenedTests(unittest.TestCase):
         self.assertEqual(found["page_open"], 80.0)
         self.assertEqual(found["first_action"], 1960.0)
 
+    def test_measured_clock_without_a_start_names_the_missing_field(self) -> None:
+        flags = [True, True, False, False, True, True, False, False]
+        study = _matrix(flags)
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product" and r["num_steps"] == 4
+        }
+        startup = _startup_that_used_to_pass()
+        startup["time_to_first_action_check"] = {
+            "measured": True,
+            "ok": False,
+            "median_s": None,
+            "max_s": None,
+            "n": 0,
+            "agents": 24,
+            "per_agent": [{"agent_id": f"a{i}", "start": ""} for i in range(24)],
+        }
+        result = _evaluate(study, vision_goal=vision, startup=startup)
+        self.assertFalse(_gate(result, "time_to_first_action")["pass"])
+        self.assertIn(
+            "missing field page_open_at_ts",
+            str(_gate(result, "time_to_first_action")["value"]),
+        )
+
 
 class HeadlineMetricTests(unittest.TestCase):
     def _passing(self) -> tuple[dict, dict]:
