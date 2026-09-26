@@ -2515,7 +2515,7 @@ async def _run_a11y_agent_unlocked(
                 if signup_box.get("attempted"):
                     return signup_box
                 remain = (deadline - time.monotonic()) if deadline else 180.0
-                timeout_s = max(45.0, min(220.0, remain - 40.0))
+                timeout_s = max(45.0, min(300.0, remain - 40.0))
                 cdp = str(getattr(bb, "connect_url", "") or "")
                 print(f"[{agent_id}] signup ({why}) timeout={timeout_s:.0f}s", flush=True)
                 from mvp.auto_signup import sign_up
@@ -2529,8 +2529,8 @@ async def _run_a11y_agent_unlocked(
                         attach_page=page,
                         attach_cdp_url=cdp,
                         timeout_s=timeout_s,
-                        max_steps=int(os.environ.get("MVP_SIGNUP_IN_STUDY_STEPS", "16") or "16"),
-                        email_timeout_s=float(os.environ.get("MVP_SIGNUP_IN_STUDY_EMAIL_S", "90") or "90"),
+                        max_steps=int(os.environ.get("MVP_SIGNUP_IN_STUDY_STEPS", "22") or "22"),
+                        email_timeout_s=float(os.environ.get("MVP_SIGNUP_IN_STUDY_EMAIL_S", "120") or "120"),
                         headed=False,
                         persist_identity=False,
                     )
