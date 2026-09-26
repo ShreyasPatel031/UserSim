@@ -2246,7 +2246,34 @@ async def run_study(
                 study.personas[0] if study.personas else {}
             )
             agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
-            if a11y_boot is not None and (study.live_sessions.get(agent_id) or {}).get("trace"):
+            if a11y_boot is not None:
+                # The shared read publishes the real opening. Do not stamp a
+                # screenshot placeholder that overwrites the first click.
+                if not (study.live_sessions.get(agent_id) or {}).get("trace"):
+                    site = task.get("site_url") or study.url
+                    site_key = str(task.get("site_key") or "")
+                    if not site_key or (
+                        site_key == "product" and "competitor_" in str(agent_id)
+                    ):
+                        site_key = str(agent_id).split("__")[-1] or "product"
+                    study.live_sessions[agent_id] = {
+                        "agent_id": agent_id,
+                        "persona_id": persona.get("id"),
+                        "persona_name": persona.get("name"),
+                        "persona_bio": persona.get("bio"),
+                        "task_id": task.get("id"),
+                        "task_title": task.get("title"),
+                        "task_prompt": task.get("prompt"),
+                        "site_key": site_key,
+                        "site_url": site,
+                        "site_label": task.get("site_label") or site_key,
+                        "status": "starting",
+                        "trace": [],
+                        "num_steps": 0,
+                        "created_at": _now(),
+                        "created_at_ts": time.time(),
+                        "last_action": f"Opening {site}",
+                    }
                 continue
             site = task.get("site_url") or study.url
             site_key = str(task.get("site_key") or "product")
@@ -3461,7 +3488,7 @@ async def run_study(
                 study.agent_results = []
                 if a11y_boot is not None:
                     try:
-                        await asyncio.wait_for(a11y_boot.published.wait(), timeout=18)
+                        await asyncio.wait_for(a11y_boot.published.wait(), timeout=55)
                     except asyncio.TimeoutError:
                         print("shared page read did not publish within 18s", flush=True)
                 def _run_rank(task: dict[str, Any]) -> tuple:

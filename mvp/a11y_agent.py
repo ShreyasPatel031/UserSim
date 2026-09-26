@@ -16,6 +16,44 @@ from typing import Any
 
 AX_CAP = 150
 
+# Sessions created at process start so URL submit does not wait on Browserbase.
+_PRIMED: asyncio.Queue | None = None
+_PRIME_STARTED = False
+
+
+def prime_sessions(n: int = 4) -> None:
+    """Start creating browsers before anyone clicks Run."""
+    global _PRIME_STARTED
+    if _PRIME_STARTED:
+        return
+    _PRIME_STARTED = True
+
+    async def _fill() -> None:
+        global _PRIMED
+        from capability.browserbase_client import create_session, study_session_owner
+
+        _PRIMED = asyncio.Queue()
+        for i in range(max(1, n)):
+            try:
+                bb = await asyncio.to_thread(
+                    create_session,
+                    proxies=False,
+                    keep_alive=True,
+                    solve_captchas=False,
+                    advanced_stealth=False,
+                    owner=study_session_owner(),
+                    study_id="prime",
+                )
+                await _PRIMED.put(bb)
+                print(f"[a11y] primed session {i + 1}/{n}", flush=True)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] prime {i + 1} failed: {exc!r}", flush=True)
+
+    try:
+        asyncio.get_running_loop().create_task(_fill())
+    except RuntimeError:
+        _PRIME_STARTED = False
+
 # Stable names the strict e2e gates read. Present on every agent, even when empty.
 GATE_FIELDS = (
     "page_open_at_ts",
@@ -322,8 +360,33 @@ class A11yBoot:
         self.install_fast_plan()
         n = int(getattr(self.study, "max_agents", 0) or 0) or len(self.study.tasks or []) or 24
         n = max(1, min(24, n))
-        self._tasks.append(asyncio.create_task(self._fill_pool(n)))
-        self._tasks.append(asyncio.create_task(self._publish_all()))
+
+        async def _boot() -> None:
+            # Read the product page on the first session before any other
+            # create, and do not leave that browser in the pool where an
+            # agent can take it.
+            bb = await self._create_one(0, enqueue=False)
+            if bb is not None:
+                try:
+                    snap = await self._read_url(bb, self.study.url)
+                except Exception as exc:  # noqa: BLE001
+                    print(f"[a11y] product read failed: {exc!r}", flush=True)
+                    snap = None
+                if isinstance(snap, dict):
+                    handle = snap.pop("_handle", None)
+                    if isinstance(handle, dict):
+                        handle["site_key"] = "product"
+                        handle["read"] = snap
+                        async with self._handle_cv:
+                            self._handles.append(handle)
+                            self._handle_cv.notify_all()
+                    self.snapshots["product"] = snap
+                    self._publish_site("product", snap)
+            if n > 1:
+                self._tasks.append(asyncio.create_task(self._fill_pool(n - 1, offset=1)))
+            await self._publish_rest()
+
+        self._tasks.append(asyncio.create_task(_boot()))
 
     async def _playwright(self) -> Any:
         if self._pw is None:
@@ -332,25 +395,37 @@ class A11yBoot:
             self._pw = await async_playwright().start()
         return self._pw
 
-    async def _fill_pool(self, n: int) -> None:
+    async def _create_one(self, i: int, enqueue: bool = True) -> Any | None:
         from capability.browserbase_client import create_session, study_session_owner
 
-        async def one(i: int) -> None:
+        if _PRIMED is not None:
             try:
-                bb = await asyncio.to_thread(
-                    create_session,
-                    proxies=False,
-                    keep_alive=True,
-                    solve_captchas=False,
-                    advanced_stealth=False,
-                    owner=study_session_owner(),
-                    study_id=self.study.id,
-                )
-                await self.pool.put(bb)
-            except Exception as exc:  # noqa: BLE001
-                print(f"[a11y] session {i+1}/{n} failed: {exc!r}", flush=True)
+                bb = _PRIMED.get_nowait()
+                print(f"[a11y] using primed session for {i + 1}", flush=True)
+                if enqueue:
+                    await self.pool.put(bb)
+                return bb
+            except asyncio.QueueEmpty:
+                pass
+        try:
+            bb = await asyncio.to_thread(
+                create_session,
+                proxies=False,
+                keep_alive=True,
+                solve_captchas=False,
+                advanced_stealth=False,
+                owner=study_session_owner(),
+                study_id=self.study.id,
+            )
+        except Exception as exc:  # noqa: BLE001
+            print(f"[a11y] session {i + 1} failed: {exc!r}", flush=True)
+            return None
+        if enqueue:
+            await self.pool.put(bb)
+        return bb
 
-        await asyncio.gather(*[one(i) for i in range(n)])
+    async def _fill_pool(self, n: int, offset: int = 0) -> None:
+        await asyncio.gather(*[self._create_one(offset + i) for i in range(n)])
 
     async def _connect(self, bb: Any) -> tuple[Any, Any]:
         pw = await self._playwright()
@@ -496,7 +571,41 @@ class A11yBoot:
                 sites.append((f"competitor_{i+1}", str(comp)))
         async def _one(key: str, url: str) -> None:
             try:
-                bb = await asyncio.wait_for(self.pool.get(), timeout=12)
+                bb = await asyncio.wait_for(self.pool.get(), timeout=40)
+            except asyncio.TimeoutError:
+                print(f"[a11y] no session for {key}", flush=True)
+                return
+            try:
+                snap = await self._read_url(bb, url)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] shared read {key} failed: {exc!r}", flush=True)
+                return
+            handle = snap.pop("_handle", None)
+            if isinstance(handle, dict):
+                handle["site_key"] = key
+                handle["read"] = snap
+                async with self._handle_cv:
+                    self._handles.append(handle)
+                    self._handle_cv.notify_all()
+            self.snapshots[key] = snap
+            self._publish_site(key, snap)
+
+        await asyncio.gather(*[_one(key, url) for key, url in sites])
+        self.published.set()
+
+    async def _publish_rest(self) -> None:
+        """Competitor reads. The product tree is already published."""
+        sites: list[tuple[str, str]] = []
+        for i, comp in enumerate(self.study.competitors or []):
+            if comp:
+                sites.append((f"competitor_{i+1}", str(comp)))
+        if not sites:
+            self.published.set()
+            return
+
+        async def _one(key: str, url: str) -> None:
+            try:
+                bb = await asyncio.wait_for(self.pool.get(), timeout=40)
             except asyncio.TimeoutError:
                 print(f"[a11y] no session for {key}", flush=True)
                 return
@@ -525,7 +634,7 @@ class A11yBoot:
                 if handle.get("site_key") == site_key:
                     return self._handles.pop(i)
         try:
-            bb = await asyncio.wait_for(self.pool.get(), timeout=12)
+            bb = await asyncio.wait_for(self.pool.get(), timeout=40)
         except asyncio.TimeoutError:
             async with self._handle_cv:
                 if self._handles:
@@ -578,7 +687,7 @@ async def _model_action(
                 json_mode=True,
                 max_retries=1,
             ),
-            timeout=8,
+            timeout=15,
         )
         data = extract_json(raw)
     except Exception as exc:  # noqa: BLE001

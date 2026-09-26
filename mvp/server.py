@@ -25,6 +25,16 @@ IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 
 app = FastAPI(title="UserSim MVP", version="0.1.0")
 
+
+@app.on_event("startup")
+async def _prime_browser_sessions() -> None:
+    """Have a Browserbase session ready before the Run click."""
+    if os.environ.get("MVP_A11Y_LOOP", "1").lower() in {"0", "false", "no"}:
+        return
+    from mvp.a11y_agent import prime_sessions
+
+    prime_sessions(4)
+
 if STATIC.is_dir():
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
 _TRACE_PUBLIC = ROOT / "public" / "bakeoff-traces"
