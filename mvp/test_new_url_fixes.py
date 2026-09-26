@@ -384,3 +384,34 @@ def test_goal_heuristic_does_not_veto_signed_in_integration_auth_url():
     # Signed out, a /auth/ path looks like a login wall; signed in it is an in-app settings page.
     assert _goal_reached_heuristic("Connect a product data source", _FIREBASE_READ) is False
     assert _goal_reached_heuristic("Connect a product data source", _FIREBASE_READ, signed_in=True) is not False
+
+
+def test_credential_stop_only_for_signed_in_connect_tasks_after_acting():
+    from mvp.a11y_agent import credential_stop
+
+    task = "Connect a product data source"
+    assert credential_stop(task, _FIREBASE_READ, signed_in=True, acted=1) == "service account json"
+    assert credential_stop(task, _FIREBASE_READ, signed_in=False, acted=1) == ""
+    assert credential_stop(task, _FIREBASE_READ, signed_in=True, acted=0) == ""
+    assert credential_stop("See which accounts are at risk", _FIREBASE_READ, signed_in=True, acted=3) == ""
+
+
+def test_signed_in_links_that_leave_the_app_are_hidden():
+    from mvp.a11y_agent import _nodes_for_model, leaves_app
+
+    here = "https://engagement.kolanut.ai/dashboard/workspace/home"
+    assert leaves_app("https://kolanut.ai", here)
+    assert leaves_app("https://www.kolanut.ai/", here)
+    assert leaves_app("https://calendly.com/kolanut", here)
+    assert not leaves_app("https://engagement.kolanut.ai/dashboard/workspace/contacts", here)
+    assert not leaves_app("/dashboard/settings/integrations", here)
+    assert not leaves_app("https://docs.kolanut.ai/guide", here)
+    nodes = [
+        {"i": 1, "role": "a", "name": "Customers", "href": "https://engagement.kolanut.ai/dashboard/workspace/contacts"},
+        {"i": 2, "role": "a", "name": "Learn more at kolanut.ai", "href": "https://kolanut.ai"},
+        {"i": 3, "role": "button", "name": "Close"},
+    ]
+    kept = [n["i"] for n in _nodes_for_model(nodes, set(), signed_in=True, page_url=here)]
+    assert kept == [1, 3]
+    # Signed out (public tasks, signup), marketing links stay.
+    assert [n["i"] for n in _nodes_for_model(nodes, set(), signed_in=False, page_url=here)] == [1, 2, 3]

@@ -42,11 +42,15 @@ Rules:
   "Draw a rectangle on the canvas", "Create a new event type"). One action whose result shows on
   one screen, never a broad activity (not "Design and prototype an interface"; say "Create a new
   design file"). If doing it needs an account,
-  keep it that way; never turn it into a logged-out task.
+  keep it that way; never turn it into a logged-out task. A brand-new trial account must be able to
+  finish it alone: never a task that needs the customer's own outside credentials or data (connect,
+  integrate or sync a data source, database, auth provider or ad account; API keys; service accounts;
+  payment). Pick what the product does once it is open, with the sample data a new account starts with.
 - public_task: 3-8 words a logged-out visitor can finish from this page using only the links,
   buttons and text listed above. Use "Look for pricing or how to get started" only when a
   pricing or plans link is listed. Never name a page, link or feature that is not listed.
-- app_task: a second simple action in the product itself with a visible result, 3-8 words
+- app_task: a second simple action in the product itself with a visible result, 3-8 words, with
+  the same no-outside-credentials rule
   (for example "Add a text label that says hello", "Add a second task to the list"); used
   when the page is the app and lists no links.
 - No quotes inside tasks. No explanations."""
@@ -152,6 +156,18 @@ def task_grounded(task: str, read: dict[str, Any]) -> bool:
     return bool(words & pool)
 
 
+_CREDENTIAL_TASK_RE = re.compile(
+    r"\b(?:connect|integrate|sync|hook up)\b|\bdata ?sources?\b|\bintegrations?\b|"
+    r"\bimport (?:from|your|data|contacts|users|customers)\b|\bapi keys?\b|\bservice accounts?\b",
+    re.I,
+)
+
+
+def needs_customer_credentials(task: str) -> bool:
+    """A task only the real customer can finish (their data source, keys, or outside account)."""
+    return bool(_CREDENTIAL_TASK_RE.search(task or ""))
+
+
 def choose_tasks(data: dict[str, Any], read: dict[str, Any]) -> list[str]:
     """[core task, second task]: the public task when the page exposes it, else a second in-app task."""
 
@@ -162,6 +178,12 @@ def choose_tasks(data: dict[str, Any], read: dict[str, Any]) -> list[str]:
     core = clean(data.get("core_task")) or (legacy[0] if legacy else "")
     public = clean(data.get("public_task")) or (legacy[1] if len(legacy) > 1 else "")
     app = clean(data.get("app_task"))
+    if core and needs_customer_credentials(core) and app and not needs_customer_credentials(app):
+        # A fresh account cannot connect the customer's own data source: every
+        # agent would stop at the connect form. Test what the product does instead.
+        core, app = app, ""
+    if app and needs_customer_credentials(app):
+        app = ""
     if not core:
         return []
     links = list(read.get("links") or [])

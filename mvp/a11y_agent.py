@@ -1615,16 +1615,48 @@ def connect_task(task: str) -> bool:
     return bool(_CONNECT_TASK_RE.search(task or ""))
 
 
+def credential_stop(task: str, read: dict[str, Any], *, signed_in: bool, acted: int) -> str:
+    """The secret a signed-in connect task is stuck on ('' to keep going)."""
+    if not (acted and signed_in and connect_task(task)):
+        return ""
+    return credential_wall(read)
+
+
+def _site2(host: str) -> str:
+    """Last two labels of a host (engagement.kolanut.ai -> kolanut.ai)."""
+    labels = [x for x in (host or "").split(".") if x]
+    return ".".join(labels[-2:]) if len(labels) >= 2 else (host or "")
+
+
+def leaves_app(href: str, page_url: str) -> bool:
+    """A signed-in link that leaves the app: another site, or the marketing homepage.
+
+    Once signed in, the task is in the app. A pop-up's "Learn more at
+    kolanut.ai", "Powered by", social and booking links go to the marketing
+    site or elsewhere, and the agent loses the app.
+    """
+    if not href.lower().startswith(("http://", "https://")) or not page_url:
+        return False
+    here, there = _host(page_url), _host(href)
+    if not here or not there or here == there:
+        return False
+    if _site2(here) != _site2(there):
+        return True
+    return (_page_key(href)[1] or "/").strip("/") == ""
+
+
 def _nodes_for_model(
     nodes: list[dict[str, Any]],
     skip: set[str],
     *,
     allow_auth: bool = False,
     signed_in: bool = False,
+    page_url: str = "",
 ) -> list[dict[str, Any]]:
     """Drop inert controls and controls already clicked with no change.
 
     Login and signup controls stay visible only for tasks that need an account.
+    Signed in, links that leave the app (another site, the marketing home) are dropped.
     """
     skipped = {str(item).lower() for item in skip if str(item).strip()}
     kept: list[dict[str, Any]] = []
@@ -1638,6 +1670,8 @@ def _nodes_for_model(
         if signed_in and _OAUTH_RE.search(name):
             # Already signed in: third-party connect and SSO buttons only open
             # popups the agent cannot finish.
+            continue
+        if signed_in and href and leaves_app(href, page_url):
             continue
         if name and name in skipped:
             continue
@@ -1692,8 +1726,7 @@ async def _model_action(
     if wall:
         access += (
             f"This page asks for the customer's own credentials ({wall}), which you do not have. Never invent keys "
-            "or upload made-up files. If this form is how the task gets done, you have gone as far as a new user "
-            "can: answer done and name what it needs in friction.\n"
+            "or upload made-up files.\n"
         )
     canvas = "yes" if any(str(n.get("role") or "") == "canvas" for n in (read.get("nodes") or []) if isinstance(n, dict)) else "no"
     prompt = (
@@ -2497,7 +2530,6 @@ async def _verify_done(
     url = str(read.get("url") or "")
     if docs_page(url) or auth_page(read, signed_in=signed_in):
         return False
-    wall = credential_wall(read) if signed_in and connect_task(task) else ""
     prompt = (
         "Decide if a browser task is finished, from the current page only. Reply JSON only.\n"
         f"Task: {task[:300]}\n"
@@ -2511,14 +2543,7 @@ async def _verify_done(
         "(the created item, the drawn shape, the requested page or dialog). "
         "A docs, help, blog or marketing page that explains how is not finished. "
         "An unchanged start page is not finished.\n"
-        + (
-            f"This page is a connect form that needs the customer's own credentials ({wall}). A new trial "
-            "account cannot supply them, so if the task is to connect, integrate, import or sync this kind of "
-            "source, reaching this form inside the product is as far as a user can go and counts as finished.\n"
-            if wall
-            else ""
-        )
-        + 'JSON: {"finished": true|false, "why": "short"}'
+        'JSON: {"finished": true|false, "why": "short"}'
     )
     message: dict[str, Any] = {"role": "user", "content": prompt}
     if page is not None:
@@ -2661,12 +2686,27 @@ async def complete_task_on_page(
             print(f"[{agent_id}] needs account at {signup_url}", flush=True)
             _miss("needs_account", "needs_account")
             break
+        wall = credential_stop(task, read, signed_in=signed_in, acted=acted)
+        if wall:
+            # The connect form wants secrets only the real customer holds. A new
+            # account can go no further: report the wall instead of looping on it.
+            note = f"needs the customer's own {wall} to connect"
+            print(f"[{agent_id}] credential wall at {read.get('url')}: {wall}", flush=True)
+            history.append(f"reached the connect form at {read.get('url')}; it {note}")
+            if trace and isinstance(trace[-1].get("decision"), dict):
+                trace[-1]["decision"]["friction"] = f"Connecting {note}; a new account can only reach the form"
+            _miss(f"blocked: {note}", "credential_wall")
+            break
         if looping(trace):
             _miss("looping between the same pages")
             break
         model_read = dict(read)
         model_read["nodes"] = _nodes_for_model(
-            list(read.get("nodes") or []), skip, allow_auth=account_task and not signed_in, signed_in=signed_in
+            list(read.get("nodes") or []),
+            skip,
+            allow_auth=account_task and not signed_in,
+            signed_in=signed_in,
+            page_url=str(read.get("url") or ""),
         )
         model_read["signed_in"] = signed_in
         action = None
@@ -2743,14 +2783,6 @@ async def complete_task_on_page(
                     # The title the agent typed now shows on the page outside any field.
                     verdict = True
             if verdict:
-                wall = credential_wall(read) if signed_in and connect_task(task) else ""
-                if wall:
-                    # Done at the connect form: say what the real customer must bring.
-                    note = f"Connecting needs the customer's own {wall}; a new account can only reach the form"
-                    history.append(f"reached the connect form; it needs the customer's own {wall}")
-                    if trace and isinstance(trace[-1].get("decision"), dict):
-                        dec = trace[-1]["decision"]
-                        dec["friction"] = str(action.get("friction") or "").strip() or note
                 stop_reason = "done"
                 break
             done_rejects += 1
@@ -2870,6 +2902,35 @@ async def complete_task_on_page(
                 backed = await _fresh_read(page, str(read.get("url") or url))
                 if not backed.get("error"):
                     after = backed
+            if (
+                signed_in
+                and account_task
+                and auth_page(after, signed_in=True)
+                and _site2(_host(str(after.get("url") or ""))) != _site2(_host(str(read.get("url") or "")))
+            ):
+                # Signed in, the click opened another company's login (Connect
+                # Meta -> facebook.com). That is the customer's outside account,
+                # not a sign-up wall: go back and leave that control alone.
+                outside = _host(str(after.get("url") or ""))
+                print(f"[{agent_id}] outside sign-in at {outside}; going back", flush=True)
+                skip.add(chosen)
+                href = str(action.get("href") or "").lower()
+                if href:
+                    skip.add(href)
+                try:
+                    await page.go_back(wait_until="domcontentloaded", timeout=6000)
+                except Exception:
+                    try:
+                        await page.goto(str(read.get("url") or url), wait_until="domcontentloaded", timeout=15000)
+                    except Exception:
+                        pass
+                await _wait_for_page(page)
+                backed = await _fresh_read(page, str(read.get("url") or url))
+                if not backed.get("error"):
+                    after = backed
+                history.append(
+                    f"{label} opened a sign-in to an outside account ({outside}) that you cannot finish; went back"
+                )
             if act == "click" and auth_modal_opened(str(action.get("href") or ""), read, after):
                 # "Get started" linked to /signup but opened a sign-up dialog on
                 # this page (Figma). That dialog is the account wall.
@@ -3401,6 +3462,9 @@ async def _signup_then_resume(
         "email": str(result.get("email") or "")[:120],
         "seconds": round(time.time() - started, 1),
     }
+    if not public["ok"] and isinstance(result.get("steps"), list):
+        # The signup's own last steps (already redacted): why it stopped.
+        public["steps"] = [str(x)[:200] for x in result["steps"][-15:]]
     sess["signup_status"] = "signed up" if public["ok"] else "signup failed"
     sess["signup"] = public
     row["signup"] = public

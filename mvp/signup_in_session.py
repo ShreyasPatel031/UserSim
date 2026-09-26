@@ -50,6 +50,21 @@ _AUTH_PATH = re.compile(
 )
 
 
+def onboarding_blocks(path: str) -> bool:
+    """True when a signed-in-looking URL is still a pre-app onboarding step.
+
+    A leading onboarding segment (/welcome, /onboarding/..., /join) is a setup
+    wizard. The same word deep inside an app area (/dashboard/workspace/
+    get-started, a checklist page with the full app sidebar) is the app itself.
+    """
+    path = path or ""
+    m = _ONBOARDING_PATH.search(path)
+    if not m:
+        return False
+    segments = [seg for seg in path.split("/") if seg]
+    return not (m.start() > 0 and len(segments) >= 3)
+
+
 _ONBOARDING_PATH = re.compile(
     r"/(welcome|onboarding|setup|get-started|getting-started|account_setup|account-setup|"
     r"invite|join|signup|sign-up|login|verify)(\b|/|$)",
@@ -937,6 +952,7 @@ async def signup_in_session(
         last_url = ""
         note = ""
         email_waits = 0
+        onboarding_verified: dict[str, int] = {}
         while time.time() < deadline:
             if api_rejects:
                 dom = ident["email"].split("@")[1] if "@" in ident.get("email", "") else "?"
@@ -1033,6 +1049,13 @@ async def signup_in_session(
             if same >= 8:
                 if api_rejects:
                     return _finish(False, f"email_rejected: {api_rejects[0]}")
+                # A frozen page can be the signed-in app behind a tour pop-up.
+                path_now = urlparse(str(snap.get("url"))).path or ""
+                if email_submitted and not _has_password_or_email_field(snap) and not onboarding_blocks(path_now):
+                    ok_now, evidence_now = await _verify_signed_in(snap)
+                    if ok_now:
+                        steps.append(f"page stopped changing but it is the signed-in app: {evidence_now}")
+                        return _finish(True, "signed_up", evidence_now)
                 return _finish(False, "stuck: page stopped changing")
 
             if snap.get("captcha") and same >= 1:
@@ -1130,7 +1153,16 @@ async def signup_in_session(
                     await _settle(page, 2500)
                     snap2 = await _snapshot(page)
                     ok2, evidence2 = await _verify_signed_in(snap2)
-                    onboarding = bool(_ONBOARDING_PATH.search(urlparse(str(snap2.get("url"))).path or ""))
+                    path2 = urlparse(str(snap2.get("url"))).path or ""
+                    onboarding = onboarding_blocks(path2)
+                    if ok2 and not _has_password_or_email_field(snap2) and onboarding:
+                        # A verified in-app page on an onboarding path (kolanut's
+                        # /dashboard/workspace/get-started checklist behind a product
+                        # tour). The second time it verifies, the account is real.
+                        onboarding_verified[path2] = onboarding_verified.get(path2, 0) + 1
+                        if onboarding_verified[path2] >= 2:
+                            steps.append(f"verified twice after reload on onboarding page {path2[:60]}: {evidence2}")
+                            return _finish(True, "signed_up", evidence2 or evidence)
                     if ok2 and not _has_password_or_email_field(snap2) and not onboarding:
                         steps.append(f"verified after reload: {evidence2}")
                         return _finish(True, "signed_up", evidence2 or evidence)

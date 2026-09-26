@@ -215,3 +215,17 @@ class SelectOptionTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_onboarding_path_only_blocks_leading_setup_steps():
+    from mvp.signup_in_session import onboarding_blocks
+
+    # kolanut: a checklist page inside the app (full sidebar) is the app.
+    assert not onboarding_blocks("/dashboard/workspace/get-started")
+    assert not onboarding_blocks("/dashboard/workspace/home")
+    # Setup wizards before the app still block.
+    assert onboarding_blocks("/onboarding")
+    assert onboarding_blocks("/onboarding/profile")
+    assert onboarding_blocks("/welcome")
+    assert onboarding_blocks("/team/join")
+    assert onboarding_blocks("/signup")

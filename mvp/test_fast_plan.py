@@ -118,3 +118,16 @@ class DirectCompetitorTests(unittest.TestCase):
         # Rival URLs are cut to the homepage, so a vendor's product page is the vendor.
         got = pick_competitors(["https://figma.com/", "https://www.microsoft.com/en-us/microsoft-teams/", "https://zoom.us/"], "figma.com")
         self.assertEqual(got, ["https://zoom.us/"])
+
+
+def test_connect_data_source_core_task_swapped_for_app_task():
+    from mvp.fast_plan import choose_tasks, needs_customer_credentials
+
+    assert needs_customer_credentials("Connect a product data source")
+    assert needs_customer_credentials("Integrate your Stripe account")
+    assert not needs_customer_credentials("See which accounts are at risk")
+    assert not needs_customer_credentials("Add a link to the note")
+    data = {"core_task": "Connect a product data source", "app_task": "See which accounts are at risk"}
+    tasks = choose_tasks(data, {"links": [], "title": "Kolanut"})
+    assert tasks[0] == "See which accounts are at risk"
+    assert all(not needs_customer_credentials(t) for t in tasks)
