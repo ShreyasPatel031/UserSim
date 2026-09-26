@@ -178,3 +178,47 @@ class ReportNoiseTests(unittest.TestCase):
         self.assertTrue(_CONSENT_CLICK_RE.match("click Accept"))
         self.assertTrue(_CONSENT_CLICK_RE.match("click Accept all cookies"))
         self.assertFalse(_CONSENT_CLICK_RE.match("click Create project"))
+
+
+class BrowserOpenRetryTests(unittest.TestCase):
+    def test_retries_a_failed_open_while_budget_is_left(self):
+        import asyncio
+        import time
+        from unittest import mock
+
+        from mvp import a11y_agent
+
+        calls = []
+
+        async def once(boot, url):
+            calls.append(url)
+            if len(calls) < 3:
+                raise RuntimeError("TimeoutError()")
+            return ("bb", "browser", "page", 1.0, 2.0)
+
+        async def no_sleep(_s):
+            return None
+
+        with mock.patch.object(a11y_agent, "_open_agent_session_once", once), \
+                mock.patch.object(a11y_agent.asyncio, "sleep", no_sleep):
+            got = asyncio.run(a11y_agent._open_agent_session(None, "https://x.com/", time.monotonic() + 400))
+        self.assertEqual(got[0], "bb")
+        self.assertEqual(len(calls), 3)
+
+    def test_gives_up_when_the_budget_is_short(self):
+        import asyncio
+        import time
+        from unittest import mock
+
+        from mvp import a11y_agent
+
+        calls = []
+
+        async def once(boot, url):
+            calls.append(url)
+            raise RuntimeError("TimeoutError()")
+
+        with mock.patch.object(a11y_agent, "_open_agent_session_once", once):
+            with self.assertRaises(RuntimeError):
+                asyncio.run(a11y_agent._open_agent_session(None, "https://x.com/", time.monotonic() + 60))
+        self.assertEqual(len(calls), 1)

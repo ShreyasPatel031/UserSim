@@ -2813,7 +2813,31 @@ async def _create_session_or_close(study_id: str | None, timeout: float = 3.5) -
     return await asyncio.wait_for(fut, timeout)
 
 
-async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, float, float]:
+async def _open_agent_session(
+    boot: A11yBoot, url: str, deadline: float | None = None
+) -> tuple[Any, Any, Any, float, float]:
+    """Open this agent's browser. When every try fails, wait and try again while the budget allows.
+
+    Studies 204cba2c, 1d29d1cf and fe8626cc lost 7-11 of 12 agents to
+    create timeouts in one burst lasting under a minute; a single retry round
+    ended those agents at step 0 with 'session ended'.
+    """
+    last = ""
+    for round_no in range(3):
+        if round_no:
+            left = (deadline - time.monotonic()) if deadline is not None else 0.0
+            if left < 150:
+                break
+            print(f"[a11y] no browser after round {round_no}; retrying in 8s ({int(left)}s budget left)", flush=True)
+            await asyncio.sleep(8)
+        try:
+            return await _open_agent_session_once(boot, url)
+        except RuntimeError as exc:
+            last = str(exc)
+    raise RuntimeError(last or "no browser session")
+
+
+async def _open_agent_session_once(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, float, float]:
     """A new Browserbase session for this agent only.
 
     Returns browser, page, the attempt start, and the navigation-commit time.
@@ -3243,7 +3267,7 @@ async def _run_a11y_agent_unlocked(
     try:
         opened_at = None
         try:
-            bb, browser, page, created_at, opened_at = await _open_agent_session(boot, url)
+            bb, browser, page, created_at, opened_at = await _open_agent_session(boot, url, deadline)
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] session ended: {exc!r}", flush=True)
             stop_reason = "session ended"
