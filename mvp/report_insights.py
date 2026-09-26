@@ -728,6 +728,8 @@ def trace_claims(
     strong_label: dict[str, str] = {}
     weak: dict[str, list[dict[str, Any]]] = {}
     weak_label: dict[str, str] = {}
+    long_paths: dict[str, list[dict[str, Any]]] = {}
+    long_label: dict[str, str] = {}
     totals: dict[str, int] = {}
     for run in product:
         totals[_task_title(run).lower()] = totals.get(_task_title(run).lower(), 0) + 1
@@ -752,6 +754,19 @@ def trace_claims(
             if ev:
                 strong.setdefault(key, []).append(ev)
                 strong_label.setdefault(key, f"{title}: agents reached {final_page} by \u201c{action}\u201d")
+            if len(steps) >= 3:
+                # A finished path that still took several clicks is friction the
+                # trace shows directly: list the clicks, cite the first one.
+                chain = " \u2192 ".join(
+                    " ".join(str(s.get("action") or "").split()).removeprefix("click ")[:30]
+                    for s in steps[:4]
+                )
+                key3 = f"{title.lower()}|long|{final_page}"
+                lab3 = f"{title}: it took {len(steps)} clicks ({chain}) to reach {final_page}"
+                ev3 = _trace_evidence(run, steps[0], lab3)
+                if ev3:
+                    long_paths.setdefault(key3, []).append(ev3)
+                    long_label.setdefault(key3, lab3)
             continue
         # Not done. Say where the path ended and why, from the trace itself.
         stop = str(run.get("stop_reason") or "")
@@ -801,7 +816,7 @@ def trace_claims(
                 out.append(claim)
         return out
 
-    return _rank(strong, strong_label), _rank(weak, weak_label)
+    return _rank(strong, strong_label), _rank(weak, weak_label) + _rank(long_paths, long_label)
 
 
 def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
