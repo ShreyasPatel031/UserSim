@@ -440,7 +440,16 @@ _AUTH_COOKIE_NOISE = (
     "bifrost",
     "session_id",  # analytics session markers (Supabase marketing, etc.)
     "atl-bsc-consent",
+    "pinterest_sess",  # set for logged-out visitors; _auth is the login cookie
 )
+
+
+# Product session cookies whose names do not contain "session"/"auth".
+# TickTick's session cookie is the single letter "t" (httpOnly, long value).
+_PRODUCT_SESSION_COOKIES: dict[str, frozenset[str]] = {
+    "todoist.com": frozenset({"tduser", "todoistd"}),
+    "ticktick.com": frozenset({"t"}),
+}
 
 
 def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
@@ -448,10 +457,14 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
 
     Used when the live DOM heuristic lags SPA onboarding. Same idea as
     ``scripts/vm/seed_status.py``, kept local so signup doesn't import the VM tool.
+    Also accepts product session cookies and localStorage account records
+    (Bitwarden keeps the vault session in localStorage, not cookies).
     """
     want = (host or "").lower().removeprefix("www.")
     if "." in want:
         want = ".".join(want.split(".")[-2:])
+    if _local_storage_looks_authed(state, want):
+        return True
     aliases = _COOKIE_HOST_ALIASES.get(want, frozenset({want}))
     # Prefer real product session markers over WAF / marketing tokens.
     auth_hints = ("sess", "auth", "token", "login", "sid", "jwt", "credential")
@@ -474,6 +487,14 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
         low = name.lower()
         if any(n in low for n in _AUTH_COOKIE_NOISE):
             continue
+        product_names = _PRODUCT_SESSION_COOKIES.get(want, frozenset())
+        if low in product_names:
+            value = str(cookie.get("value") or "")
+            # TickTick's "t" is only a session when it is httpOnly and long.
+            if low == "t" and (not cookie.get("httpOnly") or len(value) < 100):
+                continue
+            if cookie.get("httpOnly") or len(value) >= 16:
+                return True
         if any(s in low for s in strong):
             return True
         if any(h in low for h in auth_hints):
@@ -484,6 +505,63 @@ def _storage_state_looks_authed(state: dict[str, Any], host: str) -> bool:
                     continue
                 return True
     return False
+
+
+def _local_storage_looks_authed(state: dict[str, Any], host: str) -> bool:
+    """Account records that live in localStorage rather than cookies."""
+    host = (host or "").lower().removeprefix("www.")
+    for origin in state.get("origins") or []:
+        raw = str(origin.get("origin") or "")
+        try:
+            origin_host = (urlparse(raw).hostname or "").lower()
+        except Exception:
+            origin_host = ""
+        if origin_host != host and not origin_host.endswith("." + host):
+            continue
+        names = [str(item.get("name") or "") for item in origin.get("localStorage") or []]
+        if host == "bitwarden.com" and "global_account_accounts" in names:
+            return True
+        if host == "todoist.com" and "auth_identity" in names:
+            return True
+        if host == "ticktick.com" and any(
+            name.endswith("/tags") or name.endswith("/globalPomoState") for name in names
+        ):
+            return True
+    return False
+
+
+async def _dismiss_onboarding(page: Any) -> None:
+    """Close skippable onboarding dialogs before the signed-in check.
+
+    TickTick's AI Assistant popup and Bitwarden's extension splash sit on top
+    of an account that already exists. Escape, then click a dismiss control
+    that lives inside a dialog.
+    """
+    try:
+        await page.keyboard.press("Escape")
+    except Exception:
+        pass
+    try:
+        await page.evaluate(
+            """() => {
+              const labelRe = /^(skip( to web app| for now)?|not now|no thanks|maybe later|do this later|i'll do this later|close|dismiss|got it)$/i;
+              const dialogs = [...document.querySelectorAll(
+                '[role="dialog"], [aria-modal="true"], [class*="modal" i], [class*="popup" i], [class*="onboard" i]'
+              )];
+              const scopes = dialogs.length ? dialogs : [document];
+              for (const scope of scopes) {
+                const nodes = [...scope.querySelectorAll('button, a, [role="button"]')];
+                for (const el of nodes) {
+                  const t = ((el.innerText || el.getAttribute('aria-label') || '') + '').replace(/\\s+/g, ' ').trim();
+                  if (!t || t.length > 40) continue;
+                  if (!labelRe.test(t)) continue;
+                  try { el.click(); } catch (e) {}
+                }
+              }
+            }"""
+        )
+    except Exception:
+        pass
 
 
 async def verify_signed_in(page: Any, host: str) -> bool:
@@ -532,11 +610,9 @@ async def _looks_signed_in(page: Any) -> bool:
 
       const hasAccountUi = !!q(
         'a[href*="logout"], a[href*="signout"], a[href*="sign-out"],' +
-        'a[href*="/account"], a[href*="/settings"],' +
-        'button[aria-label*="Account" i], button[aria-label*="account" i],' +
-        'img[alt*="avatar" i], [data-testid*="avatar" i], [data-testid*="user-menu" i],' +
-        '[data-testid*="UserMenu" i], [aria-label*="User menu" i],' +
-        '[class*="avatar" i], [data-testid*="profile" i]'
+        'button[aria-label*="Account menu" i], button[aria-label*="User menu" i],' +
+        '[data-testid*="avatar" i], [data-testid*="user-menu" i],' +
+        '[data-testid*="UserMenu" i], [aria-label*="User menu" i]'
       );
       const hasLogoutText = /\\blog\\s*out\\b|\\bsign\\s*out\\b/.test(body);
 
@@ -547,7 +623,7 @@ async def _looks_signed_in(page: Any) -> bool:
 
       // Authenticated app routes.
       const u = location.href.toLowerCase();
-      const appUrl = /(^https?:\\/\\/app\\.)|(\\/app(\\/|$))|\\/dashboard|\\/workspace|\\/home(\\/|$)|\\/projects|\\/inbox|\\/onboarding/.test(u);
+      const appUrl = /(^https?:\\/\\/app\\.)|(\\/app(\\/|$))|\\/dashboard|\\/workspace|\\/home(\\/|$)|\\/projects|\\/inbox|\\/onboarding|vault\\.bitwarden\\.com|app\\.todoist\\.com|ticktick\\.com\\/webapp|#\\/vault/.test(u);
       const authUrl = /\\/(login|signin|sign-in|signup|sign-up|register|join)(\\/|$|\\?|#)/.test(u);
 
       return {
@@ -1230,13 +1306,24 @@ async def sign_up(
                         return result
             ctx["page_getter"] = lambda: page
 
-            # Already signed in from a previous run?
-            if await _looks_signed_in(page):
-                state = await pw_ctx.storage_state()
-                SITE_STATES.mkdir(parents=True, exist_ok=True)
-                site_state_path(host).write_text(json.dumps(state, indent=2))
-                update_identity(f"https://{host}", status="signed_up", blocker=None, profile_dir=str(profile))
-                result.update({"ok": True, "reason": "already_signed_in"})
+            # Fresh signup: drop whatever the first paint stored. A marketing
+            # page with an "account" link is not a signed-in session, and a
+            # reused cookie jar is not a new account.
+            try:
+                await pw_ctx.clear_cookies()
+            except Exception:
+                pass
+            try:
+                await page.evaluate(
+                    "() => { try { localStorage.clear(); sessionStorage.clear(); } catch (e) {} }"
+                )
+            except Exception:
+                pass
+            try:
+                await page.goto(start_url, wait_until="domcontentloaded", timeout=60000)
+            except Exception as exc:
+                result["reason"] = f"navigate_failed:{type(exc).__name__}"
+                result["detail"] = str(exc)[:200]
                 return result
 
             tools = _build_signup_tools(ctx)
@@ -1560,6 +1647,10 @@ async def sign_up(
                 os.environ.get("MVP_SIGNUP_SETTLE_S", "30")
             )
             while True:
+                try:
+                    await _dismiss_onboarding(page)
+                except Exception:
+                    pass
                 try:
                     signed = await verify_signed_in(page, host)
                 except Exception:

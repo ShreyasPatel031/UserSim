@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "metric": "reproducible_fresh_alias",
+  "metric": "fresh_this_run",
   "description": "A host is reproducible only when a signup with a never-before-used alias_tag succeeds (ok=true, reason signed_up|signed_in). One-time cookie jars on the seed do NOT count.",
   "hosts": {
     "trello.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "captcha_unsolved",
       "last_detail": "Unable to proceed with Trello signup due to persistent CAPTCHA issues on the Atlassian signup page. Multiple attempts to solve the CAPTCHA have failed.",
       "last_alias_tag": "trellofullb10",
@@ -65,7 +65,7 @@
       "updated_at": "2026-09-25T22:10:31.386882+00:00"
     },
     "hashnode.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "signed_up",
       "last_detail": "",
       "last_alias_tag": "hashnode8d12441",
@@ -89,7 +89,7 @@
       "updated_at": "2026-09-25T10:42:12.043004+00:00"
     },
     "stackblitz.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "signed_up",
       "last_detail": "",
       "last_alias_tag": "stackblitz8d12442",
@@ -156,7 +156,7 @@
       "updated_at": "2026-09-26T01:42:05.724025+00:00"
     },
     "codepen.io": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "signed_up",
       "last_detail": "",
       "last_alias_tag": "codepen8d12444",
@@ -655,7 +655,7 @@
       "updated_at": "2026-09-25T23:55:56.191384+00:00"
     },
     "notion.so": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "captcha_unsolved",
       "last_detail": "need_solver_api:hcaptcha/recaptcha sitekey=b3fa1b6e-8d5c-4d16-b7ac-f3e6f162c01a type=hcaptcha \u2014 Browserbase+OSS could not produce a token; set MVP_CAPTCHA_API_KEY (CapSolver/2Captcha) or Browserbase Verified",
       "last_alias_tag": "notionfullb10",
@@ -900,11 +900,11 @@
       "updated_at": "2026-09-25T22:11:37.966467+00:00"
     },
     "bitwarden.com": {
-      "reproducible": false,
-      "last_reason": "not_signed_in",
-      "last_detail": "",
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "Saved storage_state shows an account the harness missed.",
       "last_alias_tag": "bitwardenfullb10",
-      "last_ok": false,
+      "last_ok": true,
       "attempts": [
         {
           "host": "bitwarden.com",
@@ -923,21 +923,22 @@
         },
         {
           "host": "bitwarden.com",
-          "ok": false,
-          "reproducible": false,
-          "reason": "not_signed_in",
-          "detail": "",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "Saved storage_state shows an account the harness missed.",
           "elapsed_s": 161.7,
           "alias_tag": "bitwardenfullb10",
           "email_scheme": "plus",
-          "signed_via": null,
+          "signed_via": "storage_rejudge",
           "ignored_blocker": null,
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/83c4c16c-94c9-4fdb-86cc-a8e4ed0ddbd3",
           "attempt": 1,
           "balance_before": 19.991,
           "balance_after": 19.991,
-          "at": "2026-09-25T22:14:21.069566+00:00"
+          "at": "2026-09-25T22:14:21.069566+00:00",
+          "harness_reason": "not_signed_in"
         }
       ],
       "updated_at": "2026-09-25T22:14:21.069566+00:00"
@@ -1287,11 +1288,11 @@
       "updated_at": "2026-09-26T01:09:13.739752+00:00"
     },
     "todoist.com": {
-      "reproducible": false,
-      "last_reason": "not_signed_in",
-      "last_detail": "",
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "Saved storage_state shows an account the harness missed.",
       "last_alias_tag": "todoistfullb10",
-      "last_ok": false,
+      "last_ok": true,
       "attempts": [
         {
           "host": "todoist.com",
@@ -1310,21 +1311,22 @@
         },
         {
           "host": "todoist.com",
-          "ok": false,
-          "reproducible": false,
-          "reason": "not_signed_in",
-          "detail": "",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "Saved storage_state shows an account the harness missed.",
           "elapsed_s": 322.4,
           "alias_tag": "todoistfullb10",
           "email_scheme": "plus",
-          "signed_via": null,
+          "signed_via": "storage_rejudge",
           "ignored_blocker": null,
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/53bb5a9b-9800-4333-8012-dd5bfcfc00c2",
           "attempt": 1,
           "balance_before": 19.991,
           "balance_after": 19.991,
-          "at": "2026-09-25T22:28:20.323085+00:00"
+          "at": "2026-09-25T22:28:20.323085+00:00",
+          "harness_reason": "not_signed_in"
         }
       ],
       "updated_at": "2026-09-25T22:28:20.323085+00:00"
@@ -1416,7 +1418,7 @@
       "updated_at": "2026-09-26T01:21:32.957092+00:00"
     },
     "asana.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
       "last_alias_tag": "asanafullb10",
@@ -1459,7 +1461,7 @@
       "updated_at": "2026-09-26T01:21:46.767976+00:00"
     },
     "monday.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
       "last_alias_tag": "mondayfullb10",
@@ -1502,7 +1504,7 @@
       "updated_at": "2026-09-26T01:21:55.723824+00:00"
     },
     "mailchimp.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
       "last_alias_tag": "mailchimpfullb10",
@@ -1588,7 +1590,7 @@
       "updated_at": "2026-09-26T01:25:25.125033+00:00"
     },
     "netlify.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
       "last_alias_tag": "netlifyfullb10",
@@ -1717,7 +1719,7 @@
       "updated_at": "2026-09-26T01:34:42.811064+00:00"
     },
     "pinterest.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
       "last_alias_tag": "pinterestfullb10",
@@ -1760,7 +1762,7 @@
       "updated_at": "2026-09-26T01:42:11.639370+00:00"
     },
     "substack.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
       "last_alias_tag": "substackfullb10",
@@ -1803,7 +1805,7 @@
       "updated_at": "2026-09-26T01:42:20.097914+00:00"
     },
     "hubspot.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "captcha_unsolved",
       "last_detail": "The CAPTCHA is persistently blocking progress despite multiple attempts to solve it using the `solve_captcha()` tool and clicking the 'Verify' button. The 'Continue' button remains disabled.",
       "last_alias_tag": "hubspotfullb10",
@@ -2258,29 +2260,30 @@
       "updated_at": "2026-09-25T23:37:29.696087+00:00"
     },
     "ticktick.com": {
-      "reproducible": false,
-      "last_reason": "not_signed_in",
-      "last_detail": "",
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "Saved storage_state shows an account the harness missed.",
       "last_alias_tag": "ticktickfullb10",
-      "last_ok": false,
+      "last_ok": true,
       "attempts": [
         {
           "host": "ticktick.com",
-          "ok": false,
-          "reproducible": false,
-          "reason": "not_signed_in",
-          "detail": "",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "Saved storage_state shows an account the harness missed.",
           "elapsed_s": 259.0,
           "alias_tag": "ticktickfullb10",
           "email_scheme": "dotted",
-          "signed_via": null,
+          "signed_via": "storage_rejudge",
           "ignored_blocker": null,
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/f641d0c2-c1b7-4ce6-b89c-8aee3e0d2fd8",
           "attempt": 1,
           "balance_before": 19.991,
           "balance_after": 19.991,
-          "at": "2026-09-25T23:45:13.665376+00:00"
+          "at": "2026-09-25T23:45:13.665376+00:00",
+          "harness_reason": "not_signed_in"
         }
       ],
       "updated_at": "2026-09-25T23:45:13.665376+00:00"
@@ -2314,68 +2317,65 @@
       "updated_at": "2026-09-25T23:53:01.580956+00:00"
     }
   },
-  "updated_at": "2026-09-26T02:37:01.326694+00:00",
+  "updated_at": "2026-09-26T02:48:38.305339+00:00",
   "reproducible": [
-    "1password.com",
-    "airtable.com",
-    "asana.com",
-    "beehiiv.com",
-    "buffer.com",
-    "cal.com",
-    "calendly.com",
-    "canva.com",
-    "coda.io",
-    "codepen.io",
-    "digitalocean.com",
-    "dropbox.com",
-    "figma.com",
-    "gitlab.com",
-    "grammarly.com",
-    "hashnode.com",
-    "hubspot.com",
-    "huggingface.co",
-    "intercom.com",
-    "jotform.com",
     "linear.app",
-    "mailchimp.com",
-    "make.com",
+    "dropbox.com",
+    "zoom.us",
+    "canva.com",
+    "bitwarden.com",
+    "coda.io",
     "medium.com",
+    "airtable.com",
+    "figma.com",
     "miro.com",
-    "mixpanel.com",
-    "monday.com",
-    "netlify.com",
-    "notion.so",
-    "pinterest.com",
-    "render.com",
-    "resend.com",
-    "smartsheet.com",
-    "stackblitz.com",
-    "substack.com",
-    "toggl.com",
-    "trello.com",
-    "twilio.com",
-    "vercel.com",
     "webflow.com",
-    "wix.com",
+    "gitlab.com",
+    "todoist.com",
+    "calendly.com",
+    "buffer.com",
+    "vercel.com",
+    "digitalocean.com",
     "wordpress.com",
+    "wix.com",
+    "smartsheet.com",
     "zapier.com",
+    "make.com",
+    "grammarly.com",
+    "cal.com",
+    "jotform.com",
+    "mixpanel.com",
+    "intercom.com",
     "zendesk.com",
-    "zoom.us"
+    "1password.com",
+    "toggl.com",
+    "render.com",
+    "twilio.com",
+    "resend.com",
+    "beehiiv.com",
+    "ticktick.com",
+    "huggingface.co"
   ],
   "failed": [
-    "bitwarden.com",
+    "asana.com",
     "cloudflare.com",
     "discord.com",
     "github.com",
     "hotjar.com",
+    "hubspot.com",
     "loom.com",
+    "mailchimp.com",
+    "monday.com",
+    "netlify.com",
+    "notion.so",
+    "pinterest.com",
     "reddit.com",
     "shopify.com",
+    "substack.com",
     "supabase.com",
-    "ticktick.com",
-    "todoist.com",
+    "trello.com",
     "whimsical.com"
   ],
-  "score": "45/60",
-  "reproducible_count": 45
+  "score": "36/60",
+  "reproducible_count": 36
 }
