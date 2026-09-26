@@ -758,6 +758,43 @@ class ClockAndCdpTests(unittest.TestCase):
         self.assertLess(elapsed, 12)
 
 
+class FinalPngOnCancelTest(unittest.TestCase):
+    def test_capture_returns_url_only_when_upload_succeeds(self) -> None:
+        import asyncio
+        from pathlib import Path
+        from unittest.mock import patch
+
+        from mvp.a11y_agent import _capture_final_png
+
+        class Page:
+            async def wait_for_load_state(self, *_a: object, **_k: object) -> None:
+                return None
+
+            async def screenshot(self, path: str, **_k: object) -> None:
+                Path(path).write_bytes(b"\x89PNG\r\n\x1a\n" + b"x" * 3000)
+
+            async def evaluate(self, *_a: object, **_k: object) -> None:
+                return None
+
+        async def _run(uploaded: bool) -> str:
+            with patch("mvp.study.upload_saved_final", return_value=uploaded):
+                url, _ms = await _capture_final_png(Page(), "study-x", "agent-y", "pricing")
+            return url
+
+        def _go(uploaded: bool) -> str:
+            return asyncio.run(_run(uploaded))
+
+        import concurrent.futures
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+            kept = pool.submit(_go, True).result()
+            dropped = pool.submit(_go, False).result()
+        self.assertEqual(
+            kept, "/api/studies/study-x/agents/agent-y/screenshots/final.png"
+        )
+        self.assertEqual(dropped, "")
+
+
 class ForceLocalFleetTests(unittest.TestCase):
     def test_force_local_browser_skips_gcp_fleet(self) -> None:
         from mvp.study import _fleet_preferred

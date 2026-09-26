@@ -2916,6 +2916,49 @@ async def _open_agent_session(
         raise
 
 
+def _clear_cancellation() -> None:
+    """Let a cancelled agent finish the final PNG before it re-raises."""
+    current = asyncio.current_task()
+    if current is None:
+        return
+    while current.cancelling():
+        current.uncancel()
+
+
+async def _capture_final_png(
+    page: Any,
+    study_id: str,
+    agent_id: str,
+    task_prompt: str,
+) -> tuple[str, int]:
+    """Write final.png and return the URL only after GCS has the bytes."""
+    from mvp.paths import MVP_RUNS_DIR
+    from mvp.study import upload_saved_final
+
+    dest = MVP_RUNS_DIR / study_id / agent_id / "screenshots"
+    dest.mkdir(parents=True, exist_ok=True)
+    path = dest / "final.png"
+    t_shot = time.perf_counter()
+    try:
+        await page.wait_for_load_state("domcontentloaded", timeout=4000)
+    except Exception:
+        pass
+    if task_kind(task_prompt) == "issue":
+        try:
+            await page.evaluate(
+                "() => { const h = document.querySelector('h1'); if (h) h.scrollIntoView({block:'center'}); }"
+            )
+        except Exception:
+            pass
+    await page.screenshot(path=str(path), full_page=False, timeout=8000)
+    shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
+    uploaded = await asyncio.to_thread(upload_saved_final, study_id, agent_id)
+    if not uploaded:
+        print(f"[{agent_id}] final PNG was not uploaded", flush=True)
+        return "", shot_ms
+    return f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png", shot_ms
+
+
 async def _close_agent_session(browser: Any, bb: Any) -> None:
     session = getattr(browser, "_session", None) if browser is not None else None
     try:
@@ -2994,8 +3037,6 @@ async def _run_a11y_agent_unlocked(
     The shared snapshot stays on step 0 for display. This agent does not
     reuse that page.
     """
-    from mvp.paths import MVP_RUNS_DIR
-
     sess = (
         boot.study.live_sessions.get(agent_id)
         or getattr(boot, "opening", {}).get(agent_id)
@@ -3019,6 +3060,8 @@ async def _run_a11y_agent_unlocked(
     ]
     step_no = 0
     read = {"url": url, "text": "", "canvas": "", "nodes": [], "title": ""}
+    shot_url = ""
+    shot_ms = 0
     try:
         created_ts = time.time()
         page_open_ts = created_ts
@@ -3102,36 +3145,16 @@ async def _run_a11y_agent_unlocked(
         read["opened_canvas"] = opened_canvas
         easy, friction = notes_from_trace(trace)
 
-        shot_url = ""
-        shot_ms = 0
         if page is not None:
             phase = "final_screenshot"
-            dest = MVP_RUNS_DIR / study_id / agent_id / "screenshots"
-            dest.mkdir(parents=True, exist_ok=True)
-            path = dest / "final.png"
-            t_shot = time.perf_counter()
             try:
-                await page.wait_for_load_state("domcontentloaded", timeout=6000)
-            except Exception:
-                pass
-            if task_kind(task_prompt) == "issue":
-                try:
-                    await page.evaluate(
-                        "() => { const h = document.querySelector('h1'); if (h) h.scrollIntoView({block:'center'}); }"
-                    )
-                except Exception:
-                    pass
-            try:
-                await page.screenshot(path=str(path), full_page=False, timeout=8000)
-                shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
-                from mvp.study import upload_saved_final
-
                 # The URL is written only after GCS returns the PNG bytes.
-                uploaded = await asyncio.to_thread(upload_saved_final, study_id, agent_id)
-                if uploaded:
-                    shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
-                else:
-                    print(f"[{agent_id}] final PNG was not uploaded", flush=True)
+                shot_url, shot_ms = await _capture_final_png(
+                    page, study_id, agent_id, task_prompt
+                )
+                if shot_url:
+                    sess["final_screenshot_url"] = shot_url
+                    sess["final_screenshot"] = shot_url
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
                 if not shot_url:
@@ -3227,6 +3250,23 @@ async def _run_a11y_agent_unlocked(
         ensure_phase_ms(result)
         apply_gate_fields(result, **{k: result.get(k) for k in GATE_FIELDS})
         return result
+    except asyncio.CancelledError:
+        # Budget stop cancels this task. Capture the PNG before the browser closes.
+        _clear_cancellation()
+        if page is not None and not shot_url:
+            try:
+                shot_url, shot_ms = await _capture_final_png(
+                    page, study_id, agent_id, task_prompt
+                )
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{agent_id}] final capture on cancel failed: {exc!r}", flush=True)
+        if shot_url:
+            sess["final_screenshot_url"] = shot_url
+            sess["final_screenshot"] = shot_url
+            if trace:
+                publish_final_shot(trace, shot_url)
+                sess["trace"] = trace
+        raise
     finally:
         await _close_agent_session(browser, bb)
         if browser is not None and getattr(browser, "_taskfix_slot", False):
