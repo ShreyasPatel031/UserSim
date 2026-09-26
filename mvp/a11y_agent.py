@@ -247,6 +247,11 @@ def _release_taskfix_slot() -> None:
         _TASKFIX_HELD -= 1
 
 
+def _use_browserbase() -> bool:
+    """Browserbase only when the process asked for it. Otherwise local Chromium."""
+    return os.environ.get("USE_BROWSERBASE", "").lower() in {"1", "true", "yes"}
+
+
 def prime_sessions(n: int = 0) -> None:
     """Pre-click browsers. This harness keeps the count at 0.
 
@@ -1178,7 +1183,8 @@ def stamp_published_step(
 
     The study persists whatever is on the step at save time. Insights can cite
     a past-homepage screenshot only when those three fields are already there.
-    Canvas flicker stays off the signature except for an Excalidraw drawing.
+    Canvas flicker stays off the signature except while a draw task is in progress.
+    The host does not matter.
     """
     if not isinstance(step, dict):
         return step
@@ -1190,10 +1196,8 @@ def stamp_published_step(
     current_canvas = str(live.get("canvas") or prior_canvas)
     if task:
         canvas = trace_canvas(prior_canvas, current_canvas, url, task)
-    elif _host(url) != "excalidraw.com":
-        canvas = prior_canvas or current_canvas
     else:
-        canvas = current_canvas or prior_canvas
+        canvas = prior_canvas or current_canvas
     step["url"] = url
     step["state_sig"] = {"text": text[:1500], "canvas": canvas}
     if text:
@@ -1395,6 +1399,11 @@ class A11yBoot:
             # Competitor browsers are not opened here: one shared page was
             # serializing those sites and pushing TTFA to 17–25s.
             self.published.set()
+            if not _use_browserbase():
+                # Step 0 does not need a shared Browserbase page. Each agent
+                # reads its own local browser. This keeps the taskfix cap at 0.
+                print("[a11y] local chromium; no shared Browserbase read", flush=True)
+                return
             for attempt in range(4):
                 bb = await self._create_one(attempt, enqueue=False)
                 if bb is None:
@@ -2600,8 +2609,36 @@ async def complete_task_on_page(
     }
 
 
+async def _open_local_page(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
+    """One local Chromium page. Does not take a Browserbase slot."""
+    pw = await boot._playwright()
+    browser = await pw.chromium.launch(headless=True)
+    context = await browser.new_context(
+        viewport={"width": 1440, "height": 900},
+        user_agent=(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+        ),
+    )
+    page = await context.new_page()
+    try:
+        page.set_default_timeout(8000)
+        page.set_default_navigation_timeout(20000)
+    except Exception:
+        pass
+    try:
+        await page.goto(url, wait_until="domcontentloaded", timeout=20000)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[a11y] local goto {url}: {exc!r}", flush=True)
+    return None, browser, page
+
+
 async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
-    """A new Browserbase session for this agent only."""
+    """A new Browserbase session for this agent only.
+
+    When USE_BROWSERBASE is off, this is a local Chromium page instead, so a
+    study can finish without taking integration's Browserbase slots.
+    """
     from capability.browserbase_client import create_session, study_session_owner
 
     deadline = getattr(boot.study, "budget_deadline", None) or (
@@ -2614,6 +2651,8 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any]:
     try:
         if _owner_is_taskfix() and str(getattr(boot.study, "id", "") or "") == "prime":
             raise RuntimeError("taskfix does not open prime sessions")
+        if not _use_browserbase():
+            return await _open_local_page(boot, url)
         if not _owner_is_taskfix():
             try:
                 bb = boot.pool.get_nowait()
