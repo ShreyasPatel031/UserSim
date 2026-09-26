@@ -1615,6 +1615,18 @@ _VIEW_TASK_RE = re.compile(
 )
 
 
+def _filled_fields(read: dict[str, Any]) -> str:
+    """Text already in fields and editors (field values are not in the page's visible text)."""
+    parts = []
+    for n in (read or {}).get("nodes") or []:
+        if isinstance(n, dict) and str(n.get("value") or "").strip():
+            parts.append(f"{str(n.get('name') or n.get('role') or 'field')[:40]!r} = {str(n.get('value'))[:80]!r}")
+    return "; ".join(parts[:8])
+
+
+_DRAFT_TASK_RE = re.compile(r"^\s*(?:draft|write|compose)\b", re.I)
+
+
 def connect_task(task: str) -> bool:
     """A task to connect, integrate, import or sync an outside data source."""
     return bool(_CONNECT_TASK_RE.search(task or ""))
@@ -1785,6 +1797,12 @@ async def _model_action(
             "the view that answers it (the right list, filter, segment, report or answer, even if it lists few "
             "or no items yet) is the finished outcome. "
             if read.get("signed_in") and _VIEW_TASK_RE.search(task or "")
+            else ""
+        )
+        + (
+            "For a task to draft, write or compose something, it is finished once the draft text is in the "
+            "editor or field; do not send, publish or keep regenerating it. "
+            if _DRAFT_TASK_RE.search(task or "")
             else ""
         )
         + 
@@ -2188,7 +2206,14 @@ async def _act(page: Any, action: dict[str, Any]) -> str:
                 await page.keyboard.press("Control+A")
             except Exception:
                 pass
-            await page.keyboard.type(text_value, delay=0)
+            if len(text_value) > 40:
+                # One keystroke per character over a remote browser takes ~0.1s
+                # each: a 120-char message outran the 12s action timeout (kolanut
+                # outreach drafts). Insert long text at once; short text is typed.
+                await page.keyboard.type(text_value[:2], delay=0)
+                await page.keyboard.insert_text(text_value[2:])
+            else:
+                await page.keyboard.type(text_value, delay=0)
         return f"type/{how}"
 
     if act == "press":
@@ -2570,6 +2595,7 @@ async def _verify_done(
         f"Current visible text: {str(read.get('text') or '')[:1200]}\n"
         f"File downloaded during the task: {read.get('downloaded') or 'none'}\n"
         f"Focused element: {_focus_text(read.get('focus'))}\n"
+        f"Filled fields: {_filled_fields(read) or 'none'}\n"
         "finished=true only if this page itself shows the outcome the task asked for "
         "(the created item, the drawn shape, the requested page or dialog). "
         "A docs, help, blog or marketing page that explains how is not finished. "
@@ -2579,6 +2605,12 @@ async def _verify_done(
             "something, the page counts as finished when it shows the view that answers the task (the right "
             "list, filter, segment, report or assistant answer), even if that view lists few or no items.\n"
             if signed_in and _VIEW_TASK_RE.search(task or "")
+            else ""
+        )
+        + (
+            "For a task to draft, write or compose something, it is finished when the drafted text is in the "
+            "editor or message field on this page; it does not need to be sent or published.\n"
+            if _DRAFT_TASK_RE.search(task or "")
             else ""
         )
         + 'JSON: {"finished": true|false, "why": "short"}'
@@ -2851,7 +2883,10 @@ async def complete_task_on_page(
                 _miss("typed the same text over and over")
                 break
             changed_nothing = True
-            history.append(f"{label} was just done and the field holds that text; submit it or take the next step")
+            history.append(
+                f"{label} was just done and the field holds that text; "
+                + ("the draft is written, so answer done" if _DRAFT_TASK_RE.search(task or "") else "submit it or take the next step")
+            )
             continue
         if would_repeat_action(trace, label, read):
             repeats += 1

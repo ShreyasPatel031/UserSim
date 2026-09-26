@@ -955,6 +955,7 @@ async def signup_in_session(
         note = ""
         email_waits = 0
         onboarding_verified: dict[str, int] = {}
+        root_tried = False
         while time.time() < deadline:
             if api_rejects:
                 dom = ident["email"].split("@")[1] if "@" in ident.get("email", "") else "?"
@@ -1048,6 +1049,24 @@ async def signup_in_session(
                     if advanced:
                         same = 0
                         continue
+            if same == 5 and not root_tried:
+                # Frozen after the account form (kolanut's plan picker answered
+                # "Failed to fetch"): open the app's own root once. A created
+                # account usually lands in the app from there.
+                root_tried = True
+                cur_url = str(snap.get("url") or "")
+                pu = urlparse(cur_url)
+                if pu.scheme.startswith("http") and _site(cur_url) == site and pu.path.strip("/"):
+                    root = f"{pu.scheme}://{pu.netloc}/"
+                    try:
+                        await page.goto(root, wait_until="domcontentloaded", timeout=30000)
+                        steps.append(f"page froze on {pu.path[:50]}; opened the app root {pu.netloc}/")
+                        await _settle(page, 2500)
+                        same = 0
+                        last_sig = ""
+                        continue
+                    except Exception as exc:  # noqa: BLE001
+                        steps.append(f"app root goto failed: {type(exc).__name__}")
             if same >= 8:
                 if api_rejects:
                     return _finish(False, f"email_rejected: {api_rejects[0]}")

@@ -436,3 +436,12 @@ def test_view_tasks_detected_for_empty_account_rule():
         assert _VIEW_TASK_RE.search(t), t
     for t in ("Draft an outreach message", "Create a new issue", "Connect a product data source"):
         assert not _VIEW_TASK_RE.search(t), t
+
+
+def test_draft_task_and_filled_fields():
+    from mvp.a11y_agent import _DRAFT_TASK_RE, _filled_fields
+
+    assert _DRAFT_TASK_RE.search("Draft an outreach message")
+    assert not _DRAFT_TASK_RE.search("Create a new issue")
+    read = {"nodes": [{"name": "Email subject line...", "value": "Hello"}, {"name": "Customers", "value": ""}]}
+    assert _filled_fields(read) == "'Email subject line...' = 'Hello'"
