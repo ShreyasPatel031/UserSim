@@ -14,7 +14,6 @@ from mvp.a11y_agent import (
     failure_breakdown,
     fast_action_model,
     _nodes_for_model,
-    achievable_without_account,
     format_ax,
     goal_visible,
     note_progress,
@@ -272,20 +271,6 @@ class A11yAgentTest(unittest.TestCase):
     def test_extract_json_keeps_the_first_object(self) -> None:
         self.assertEqual(extract_json('{"act":"click","i":1}\n{"act":"done"}'), {"act": "click", "i": 1})
         self.assertEqual(extract_json('note {"act":"drag"} trailing'), {"act": "drag"})
-
-    def test_logged_out_tasks_do_not_require_an_account(self) -> None:
-        self.assertEqual(
-            achievable_without_account("https://linear.app/", "Create a new issue in your workspace"),
-            "Find how to create a new issue",
-        )
-        self.assertEqual(
-            achievable_without_account("https://linear.app/", "Find how to create a new issue"),
-            "Find how to create a new issue",
-        )
-        self.assertEqual(
-            achievable_without_account("https://linear.app/", "Look for pricing or how to get started"),
-            "Look for pricing or how to get started",
-        )
 
 
 if __name__ == "__main__":

@@ -574,36 +574,6 @@ def _canvas_dark(raw: str) -> int:
     return total if found else -1
 
 
-def achievable_without_account(url: str, prompt: str) -> str:
-    """Rewrite a task that needs a login into one a logged-out visitor can finish."""
-    text = " ".join((prompt or "").split())
-    low = text.lower()
-    host = _host(url)
-    if host == "linear.app" and "issue" in low and not any(
-        word in low for word in ("how", "find", "docs", "documentation", "pricing")
-    ):
-        return "Find how to create a new issue"
-    needs_account = any(
-        phrase in low
-        for phrase in (
-            "log in",
-            "log-in",
-            "sign in",
-            "sign up for an account",
-            "create an account",
-            "your workspace",
-            "in the workspace",
-            "file an issue",
-            "submit an issue",
-        )
-    )
-    if needs_account and "pricing" not in low and "how to" not in low:
-        if "excalidraw" in host:
-            return "Draw a simple box"
-        return "Look for pricing or how to get started"
-    return text
-
-
 def notes_from_trace(trace: list[dict[str, Any]]) -> tuple[list[str], list[str]]:
     """Strengths and weaknesses taken from steps that actually ran.
 
