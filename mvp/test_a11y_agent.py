@@ -9,9 +9,14 @@ from mvp.a11y_agent import (
     GATE_FIELDS,
     action_label,
     apply_gate_fields,
+    classify_failure,
+    failure_breakdown,
     fast_action_model,
     format_ax,
+    note_progress,
     pick_action,
+    progress_signature,
+    study_budget_s,
 )
 
 
@@ -70,6 +75,66 @@ class A11yAgentTest(unittest.TestCase):
                 os.environ.pop("MVP_BROWSER_MODEL", None)
             else:
                 os.environ["MVP_BROWSER_MODEL"] = browser
+
+    def test_study_budget_is_eight_minutes(self) -> None:
+        prev = os.environ.get("MVP_STUDY_BUDGET_S")
+        os.environ.pop("MVP_STUDY_BUDGET_S", None)
+        try:
+            self.assertEqual(study_budget_s(), 480.0)
+        finally:
+            if prev is None:
+                os.environ.pop("MVP_STUDY_BUDGET_S", None)
+            else:
+                os.environ["MVP_STUDY_BUDGET_S"] = prev
+
+    def test_stuck_after_three_identical_signatures(self) -> None:
+        sig = progress_signature(
+            url="https://linear.app/",
+            screenshot_hash="abc",
+            text="Issue tracking",
+            canvas="canvas:0",
+        )
+        streak, reason = note_progress(None, sig, 0)
+        self.assertEqual(streak, 0)
+        self.assertEqual(reason, "")
+        streak, reason = note_progress(sig, sig, streak)
+        self.assertEqual(streak, 1)
+        streak, reason = note_progress(sig, sig, streak)
+        self.assertEqual(streak, 2)
+        streak, reason = note_progress(sig, sig, streak)
+        self.assertEqual(streak, 3)
+        self.assertIn("stuck:", reason)
+        self.assertIn("screenshot hash", reason)
+        moved = progress_signature(
+            url="https://linear.app/pricing",
+            screenshot_hash="def",
+            text="Pricing",
+            canvas="canvas:0",
+        )
+        streak, reason = note_progress(sig, moved, 2)
+        self.assertEqual(streak, 0)
+        self.assertEqual(reason, "")
+
+    def test_failure_buckets(self) -> None:
+        self.assertEqual(classify_failure(stop_reason="stuck: no progress for 3 consecutive steps"), "stuck")
+        self.assertEqual(classify_failure(stop_reason="browser dead: target closed"), "our infrastructure")
+        self.assertEqual(classify_failure(stop_reason="study budget"), "our infrastructure")
+        self.assertEqual(
+            classify_failure(error="gemini model timed out"),
+            "model timeout",
+        )
+        self.assertEqual(classify_failure(stop_reason="done", goal_reached=False), "product")
+        self.assertEqual(classify_failure(stop_reason="done", goal_reached=True), "")
+        table = failure_breakdown(
+            [
+                {"site_key": "product", "agent_id": "a", "stop_reason": "stuck: no progress for 3 consecutive steps"},
+                {"site_key": "product", "agent_id": "b", "stop_reason": "done", "goal_reached": False},
+                {"site_key": "competitor", "agent_id": "c", "stop_reason": "browser dead: closed"},
+            ]
+        )
+        self.assertEqual(table["counts"]["stuck"], 1)
+        self.assertEqual(table["counts"]["product"], 1)
+        self.assertEqual(table["counts"]["our infrastructure"], 0)
 
 
 if __name__ == "__main__":
