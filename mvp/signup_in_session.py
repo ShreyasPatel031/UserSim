@@ -70,6 +70,12 @@ _ERROR_TEXT = re.compile(
 )
 
 
+_COOKIE = re.compile(
+    r"^(reject all( cookies)?|accept all( cookies)?|allow all( cookies)?|accept cookies|"
+    r"only necessary|necessary only|reject non-essential|decline all|i accept|agree( and close)?)$",
+    re.I,
+)
+
 _EMAIL_REJECT = re.compile(
     r"invalid email domain|email domain (is )?not (allowed|supported)|disposable|temporary email|"
     r"couldn['’]t create your account|please try again later|use a (work|business|different) email|"
@@ -192,7 +198,9 @@ _SNAPSHOT_JS = r"""
   };
   walk(document);
   const frames = [...document.querySelectorAll('iframe')].filter(vis).map(f => f.src || '').filter(Boolean);
-  const cap = frames.find(s => /recaptcha|hcaptcha|turnstile|challenges\.cloudflare|arkoselabs|funcaptcha|captcha/i.test(s)) || '';
+  // Invisible widgets (reCAPTCHA badge, size=invisible) do not block a form.
+  const cap = frames.filter(s => !/size=invisible/i.test(s))
+    .find(s => /recaptcha|hcaptcha|turnstile|challenges\.cloudflare|arkoselabs|funcaptcha|captcha/i.test(s)) || '';
   const body = clean(document.body ? document.body.innerText : '').slice(0, 2200);
   return {url: location.href, title: document.title, elements: OUT, captcha: cap, body};
 }
@@ -587,6 +595,17 @@ async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any])
             return out
     except Exception:
         pass
+    if "recaptcha" in str(snap.get("captcha") or "") and os.environ.get("MVP_SIGNUP_AUDIO_CAPTCHA", "1") != "0":
+        from mvp.signup_captcha_audio import solve_recaptcha_audio
+
+        try:
+            res = await asyncio.wait_for(solve_recaptcha_audio(page), timeout=90)
+        except Exception as exc:  # noqa: BLE001
+            res = {"ok": False, "method": "audio", "detail": repr(exc)[:120]}
+        out["audio"] = res
+        if res.get("ok"):
+            out.update(ok=True, method=str(res.get("method")))
+            return out
     try:
         if await cap._try_click_cloudflare_checkbox(page):
             await page.wait_for_timeout(4000)
@@ -713,6 +732,7 @@ async def signup_in_session(
         email_submitted = False
         rejects = 0
         rejected_domains: list[str] = []
+        banner_clicks = 0
         url_changed_at = time.time()
         last_url = ""
         note = ""
@@ -766,6 +786,18 @@ async def signup_in_session(
                 continue
 
             elements = {int(e["i"]): e for e in (snap.get("elements") or [])}
+            # Cookie banners cover submit buttons (Miro, Asana). Dismiss them generically.
+            banner = next((e for e in elements.values() if e.get("role") in {"button", "link"}
+                           and _COOKIE.match(str(e.get("name") or "").strip())), None)
+            if banner is not None and banner_clicks < 2:
+                banner_clicks += 1
+                try:
+                    await page.locator(f"[data-sis-i='{banner['i']}']").first.click(timeout=3000)
+                    steps.append(f"  dismissed cookie banner ({banner.get('name')})")
+                    await _settle(page, 600)
+                    continue
+                except Exception:
+                    pass
             decision = await _decide(
                 snap=snap, ident=ident, site_url=site_url, history=history,
                 note=note + (
