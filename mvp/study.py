@@ -2251,7 +2251,11 @@ async def run_study(
                 # screenshot placeholder that overwrites the first click.
                 if not (study.live_sessions.get(agent_id) or {}).get("trace"):
                     site = task.get("site_url") or study.url
-                    site_key = str(task.get("site_key") or "product")
+                    site_key = str(task.get("site_key") or "")
+                    if not site_key or (
+                        site_key == "product" and "competitor_" in str(agent_id)
+                    ):
+                        site_key = str(agent_id).split("__")[-1] or "product"
                     study.live_sessions[agent_id] = {
                         "agent_id": agent_id,
                         "persona_id": persona.get("id"),
@@ -3480,7 +3484,7 @@ async def run_study(
                 study.agent_results = []
                 if a11y_boot is not None:
                     try:
-                        await asyncio.wait_for(a11y_boot.published.wait(), timeout=18)
+                        await asyncio.wait_for(a11y_boot.published.wait(), timeout=55)
                     except asyncio.TimeoutError:
                         print("shared page read did not publish within 18s", flush=True)
                 def _run_rank(task: dict[str, Any]) -> tuple:
