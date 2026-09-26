@@ -1789,6 +1789,7 @@ form.addEventListener("submit", async (e) => {
             continue;
           }
           data = chunk;
+          if (data && (data.id || data.study_id)) document.body.dataset.studyId = data.id || data.study_id;
           updateProgressUI(data, startedAt);
           renderLiveStudy(data);
           if (
