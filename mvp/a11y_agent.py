@@ -2155,6 +2155,7 @@ async def complete_task_on_page(
         )
         model_read["signed_in"] = signed_in
         action = None
+        t_decide = time.perf_counter()
         for attempt in range(2):
             try:
                 action = await asyncio.wait_for(
@@ -2173,6 +2174,8 @@ async def complete_task_on_page(
                 action = None
             if isinstance(action, dict):
                 break
+        if not acted:
+            print(f"[{agent_id}] first decision {int((time.perf_counter() - t_decide) * 1000)}ms (read {int(read.get('read_ms') or 0)}ms)", flush=True)
         if not isinstance(action, dict):
             model_misses += 1
             if model_misses >= 3:
@@ -2841,7 +2844,9 @@ async def _run_a11y_agent_unlocked(
             # agent's own page. Never wait on another site and never re-read.
             opening_nodes: list[dict[str, Any]] = []
             initial_read: dict[str, Any] | None = None
+            t_read = time.perf_counter()
             snap = await boot.site_read(site_key, page, url)
+            sess.setdefault("phase_ms", {})["site_read_ms"] = int((time.perf_counter() - t_read) * 1000)
             if isinstance(snap, dict) and _host(str(snap.get("url") or "")) == _host(url):
                 opening_nodes = [
                     node for node in (snap.get("nodes") or []) if isinstance(node, dict)
