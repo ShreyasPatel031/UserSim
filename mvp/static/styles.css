@@ -207,7 +207,8 @@ main {
 /* Class display:flex beats the UA [hidden] rule (same specificity, later). */
 .view-report-card[hidden],
 .report-running-card[hidden],
-.report-email-prompt[hidden] {
+.report-email-prompt[hidden],
+.test-mode-row[hidden] {
   display: none !important;
 }
 
