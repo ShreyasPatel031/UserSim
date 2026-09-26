@@ -1150,6 +1150,16 @@ class A11yBoot:
         while time.monotonic() < deadline:
             handle = self.contexts.get(site_key) or {}
             page = handle.get("page")
+            try:
+                closed = page is None or page.is_closed()
+            except Exception:
+                closed = True
+            if closed:
+                revived = await self._revive(site_key, url)
+                if revived is None:
+                    return None
+                handle = revived
+                page = handle.get("page")
             if page is not None:
                 try:
                     if url and _host(page.url or "") != _host(url):
@@ -1157,8 +1167,13 @@ class A11yBoot:
                 except Exception as exc:  # noqa: BLE001
                     if browser_dead(exc):
                         print(f"[a11y] shared page died for {site_key}: {exc!r}", flush=True)
-                        return None
-                    print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
+                        revived = await self._revive(site_key, url)
+                        if revived is None:
+                            return None
+                        handle = revived
+                        page = handle.get("page")
+                    else:
+                        print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
                 return {
                     "bb": handle.get("bb"),
                     "browser": handle.get("browser"),
@@ -1176,6 +1191,33 @@ class A11yBoot:
                 except asyncio.TimeoutError:
                     continue
         return None
+
+    async def _revive(self, site_key: str, url: str) -> dict[str, Any] | None:
+        """Replace a dead shared page with a new browser on the same site."""
+        old = self.contexts.pop(site_key, None) or {}
+        old_browser = old.get("browser")
+        if old_browser is not None:
+            try:
+                await old_browser.close()
+            except Exception:
+                pass
+        print(f"[a11y] reviving {site_key}", flush=True)
+        bb = await self._create_one(0, enqueue=False)
+        if bb is None:
+            return None
+        try:
+            snap = await self._read_url(bb, url or self.study.url)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[a11y] revive read failed {site_key}: {exc!r}", flush=True)
+            return None
+        handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
+        if not isinstance(handle, dict):
+            return None
+        handle["site_key"] = site_key
+        handle["read"] = snap
+        self.contexts[site_key] = handle
+        self.snapshots[site_key] = snap
+        return handle
 
     async def close(self) -> None:
         """Close the shared browsers after every agent has finished."""
@@ -1549,11 +1591,6 @@ async def _run_a11y_agent_unlocked(
         read["drew"] = drew
         if url and _host(str(read.get("url") or "")) not in {"", _host(url)}:
             read["url"] = url
-        shot_hash, dead_reason = await _screenshot_hash(page)
-        if dead_reason:
-            _miss("session ended")
-            failed = {"phase": "read", "reason": "session ended", "step": step_no}
-            break
         if goal_visible(task_prompt, read):
             stop_reason = "done"
             last = trace[-1] if trace else {}
@@ -1571,6 +1608,7 @@ async def _run_a11y_agent_unlocked(
                     if asyncio.iscoroutine(maybe):
                         await maybe
             break
+        shot_hash = ""
         signature = progress_signature(
             url=str(read.get("url") or ""),
             screenshot_hash=shot_hash,
@@ -1666,7 +1704,25 @@ async def _run_a11y_agent_unlocked(
             shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
-            failed = failed or {"phase": "final_screenshot", "reason": "final capture failed", "step": step_no}
+            if browser_dead(exc):
+                revived = await boot._revive(site_key, str(read.get("url") or url))
+                page2 = (revived or {}).get("page")
+                dest = str(read.get("url") or url)
+                if page2 is not None and dest:
+                    try:
+                        await page2.goto(dest, wait_until="domcontentloaded", timeout=12000)
+                        await page2.screenshot(path=str(path), full_page=False, timeout=8000)
+                        shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
+                        shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
+                        page = page2
+                    except Exception as exc2:  # noqa: BLE001
+                        print(f"[{agent_id}] revive capture failed: {exc2!r}", flush=True)
+            if not shot_url:
+                failed = failed or {
+                    "phase": "final_screenshot",
+                    "reason": "final capture failed",
+                    "step": step_no,
+                }
         if shot_url and trace:
             trace[-1]["screenshot_url"] = shot_url
             trace[-1]["final_screenshot_url"] = shot_url
