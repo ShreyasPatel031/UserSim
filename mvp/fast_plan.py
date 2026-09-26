@@ -84,7 +84,7 @@ Rules:
   products: at least one natural fit for the product and at least one natural fit for each competitor
   (for example an enterprise CS leader fits an enterprise suite, a two-person startup fits a self-serve
   tool). favors must be "product" or one of the competitor urls exactly as written above.
-- tasks: exactly five representative jobs a buyer in this category needs done, 3-8 words each, an
+- tasks: six representative jobs a buyer in this category needs done, best first (the study keeps five), 3-8 words each, an
   imperative verb and a concrete object (for example "Identify at-risk customer accounts",
   "Compare plan prices for 20 seats"). Choose them so at least one favors the product and at least one
   favors each competitor. Each task must make sense on every one of the four sites: done in the product
