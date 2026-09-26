@@ -778,6 +778,8 @@ def action_label(action: dict[str, Any]) -> str:
     if act == "type":
         text = str(action.get("text") or "").strip()
         field = str(action.get("name") or "").strip()
+        if len(text) > 100:
+            text = text[:100] + "…"
         if text and field and field != text:
             return f"type {text!r} into {field[:40]}"
         return f"type {text or field}".strip()
@@ -1781,7 +1783,8 @@ async def _model_action(
         f"Actions so far: {'; '.join(history[-8:]) or 'none'}\n"
         f"{flag}{access}"
         'JSON: {"act":"click|type|press|scroll|back|drag|done","i":0,"text":"","key":"","reason":"","friction":"","easy":""}\n'
-        "click, type, and scroll use an element i from the list. type puts text into that field. "
+        "click, type, and scroll use an element i from the list. type puts text into that field; "
+        "when drafting a message or document, type the complete text in one go (a few full sentences). "
         "press sends one keyboard key or shortcut in key (for example Enter, Escape, r). "
         "back returns to the previous page. drag draws by dragging across the largest canvas; select a drawing tool first. "
         "Never pay, subscribe, upgrade, start a paid plan, or enter card details; if a plan picker blocks the way, "
@@ -1844,7 +1847,10 @@ async def _model_action(
     return {
         "act": act,
         "i": index,
-        "text": str(data.get("text") or "")[:120],
+        # A drafted message needs its whole body: 120 chars cut kolanut outreach
+        # drafts mid-sentence ("...my company, Kolanut AI. We") and the judge
+        # called them unfinished.
+        "text": str(data.get("text") or "")[:700],
         "key": str(data.get("key") or "")[:24],
         "reason": str(data.get("reason") or "")[:160],
         "friction": str(data.get("friction") or "")[:180],
