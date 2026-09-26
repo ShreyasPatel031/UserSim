@@ -3101,18 +3101,9 @@ async def run_study(
                         sess["trace"].append(step)
                     sess["num_steps"] = len(sess["trace"])
                     sess["last_action"] = step.get("action") or ""
-                    action_text = str(step.get("action") or "").lower()
-                    if (
-                        not sess.get("first_action_at_ts")
-                        and (
-                            action_text.startswith("click ")
-                            or action_text.startswith("type ")
-                            or action_text.startswith("scroll")
-                        )
-                    ):
-                        from mvp.a11y_agent import apply_gate_fields
-
-                        apply_gate_fields(sess, first_action_at_ts=time.time())
+                    # first_action_at_ts is stamped in the agent after a click
+                    # is sent. Recording it here, before the click, made the
+                    # clock match page open.
                     _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     thought = (step.get("thought") or "").strip()
                     if thought:
@@ -3442,10 +3433,34 @@ async def run_study(
                                 result["what_was_easy"] = list(run.get("what_was_easy") or [])
                             if run.get("quote"):
                                 result["quote"] = run.get("quote")
-                            from mvp.a11y_agent import GATE_FIELDS, apply_gate_fields
+                            from mvp.a11y_agent import (
+                                GATE_FIELDS,
+                                _valid_first_click,
+                                apply_gate_fields,
+                            )
 
                             apply_gate_fields(result)
+                            opened_ts = result.get("page_open_at_ts") or sess.get("page_open_at_ts")
+                            ready_ts = (
+                                result.get("browser_ready_at_ts")
+                                or result.get("session_ready_at_ts")
+                                or sess.get("browser_ready_at_ts")
+                                or sess.get("session_ready_at_ts")
+                            )
                             for key in GATE_FIELDS:
+                                if key == "first_action_at_ts":
+                                    if _valid_first_click(
+                                        result.get(key), opened=opened_ts, ready=ready_ts
+                                    ):
+                                        sess[key] = result[key]
+                                    elif _valid_first_click(
+                                        sess.get(key), opened=opened_ts, ready=ready_ts
+                                    ):
+                                        result[key] = sess.get(key)
+                                    else:
+                                        sess[key] = None
+                                        result[key] = None
+                                    continue
                                 if key in result:
                                     sess[key] = result[key]
                             sess["final_url"] = result.get("final_url") or sess.get("final_url")
@@ -3662,11 +3677,22 @@ async def run_study(
                     sess["num_steps"] = len(sess["trace"])
                     _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     done_count += 1
-                    await asyncio.to_thread(
-                        upload_saved_final,
-                        study.id,
-                        str(sess.get("agent_id") or agent_id or ""),
+                    aid = str(sess.get("agent_id") or agent_id or "")
+                    uploaded = await asyncio.to_thread(upload_saved_final, study.id, aid)
+                    shot = (
+                        f"/api/studies/{study.id}/agents/{aid}/screenshots/final.png"
+                        if uploaded
+                        else ""
                     )
+                    if isinstance(result, dict):
+                        result["final_screenshot_url"] = shot
+                        result["final_screenshot"] = shot
+                    sess["final_screenshot_url"] = shot
+                    sess["final_screenshot"] = shot
+                    if shot and isinstance(result, dict):
+                        from mvp.a11y_agent import publish_final_shot
+
+                        publish_final_shot(result.get("trace") or [], shot)
                     study.agent_results.append(result)
                     refresh_agent_phase()
                     log_activity(
@@ -3935,28 +3961,48 @@ def _local_snapshot_path(study_id: str):
 _UPLOADED_FINALS: set[tuple[str, str]] = set()
 
 
-def upload_saved_final(study_id: str, agent_id: str) -> bool:
-    """Put on-disk final.png into the GCS object behind final_screenshot_url.
+_PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 
-    The grade fetch raises 'no downloadable PNG' when only mvp/runs has the file.
+
+def _png_bytes_ok(raw: bytes | None) -> bool:
+    return bool(raw) and raw[:8] == _PNG_MAGIC and len(raw) > 2000
+
+
+def upload_saved_final(study_id: str, agent_id: str) -> bool:
+    """Upload final.png bytes, then read them back before the URL is kept.
+
+    Writing final_screenshot_url without this round-trip is the
+    'no downloadable PNG' failure. A local file under mvp/runs is not enough.
     """
     key = (study_id, agent_id)
-    if not study_id or not agent_id or key in _UPLOADED_FINALS:
-        return key in _UPLOADED_FINALS
-    from mvp.gcs_store import gcs_upload_file, screenshot_gcs_uri
+    if not study_id or not agent_id:
+        return False
+    from mvp.gcs_store import gcs_download_bytes, gcs_upload_bytes, screenshot_gcs_uri
     from mvp.paths import MVP_RUNS_DIR
 
+    uri = screenshot_gcs_uri(study_id, agent_id, "final.png")
+    if key in _UPLOADED_FINALS:
+        try:
+            if _png_bytes_ok(gcs_download_bytes(uri)):
+                return True
+        except Exception:
+            pass
+        _UPLOADED_FINALS.discard(key)
     local = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / "final.png"
-    if not local.is_file() or local.stat().st_size < 2000:
-        return False
+    data = b""
+    if local.is_file():
+        try:
+            data = local.read_bytes()
+        except OSError:
+            data = b""
     try:
-        gcs_upload_file(
-            local,
-            screenshot_gcs_uri(study_id, agent_id, "final.png"),
-            content_type="image/png",
-        )
+        if _png_bytes_ok(data):
+            gcs_upload_bytes(uri, data, content_type="image/png")
+        fetched = gcs_download_bytes(uri)
     except Exception as exc:  # noqa: BLE001
         print(f"final.png GCS upload failed {agent_id}: {exc!r}", flush=True)
+        return False
+    if not _png_bytes_ok(fetched):
         return False
     _UPLOADED_FINALS.add(key)
     return True

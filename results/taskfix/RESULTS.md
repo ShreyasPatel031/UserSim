@@ -1,3 +1,13 @@
+# PNG bytes are fetched the way #46 fetches them
+
+`upload_saved_final` uploads the PNG bytes and reads them back before `final_screenshot_url` is kept. A URL with no object is what graded `08d81811`, `09472fc2`, `18d86703`, and `40e719b1`.
+
+Proved with the grader's `_fetch_png` (HTTP base down, then GCS): study `bdc1f5da-5815-4002-9dcf-32ada5300190`, agent `t1__p1__product`, 24679 bytes, PNG signature. Not a pass. Ask #46 to `--grade-study bdc1f5da-5815-4002-9dcf-32ada5300190`.
+
+The Figma run `156a74a0-c5b1-45ae-a563-4e8347eb41cf` was already complete, not live. Its `study.json` and 21 `final.png` objects are in GCS. `t1__p1__product` is 170029 bytes. taskfix Browserbase sessions: 0. `prime_sessions` stays 0. One signup session was left alone.
+
+`38deb1cc` is not in GCS. Do not treat `70557bae` or `38deb1cc` as an 8/8. Integration should cherry-pick `0113fd0` or this tip, which contains it.
+
 # Study bdc1f5da — 24-agent Linear, PNGs in GCS
 
 Not a pass. Only PR #46 grades this with `--grade-study`. Local harness 4/4 is not a pass.

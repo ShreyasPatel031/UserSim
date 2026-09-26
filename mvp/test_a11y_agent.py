@@ -17,6 +17,7 @@ from mvp.a11y_agent import (
     _nodes_for_model,
     account_wall,
     achievable_without_account,
+    stamp_first_click,
     format_ax,
     goal_visible,
     stamp_published_step,
@@ -148,6 +149,17 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(sess["ax_tree"], "0 button Pricing")
         self.assertEqual(sess["phase_ms"]["first_action_ms"], 200)
         self.assertIsNone(sess["failed_step"])
+        self.assertEqual(sess["first_action_at_ts"], 10.2)
+        same = {}
+        apply_gate_fields(
+            same,
+            page_open_at_ts=10.0,
+            session_ready_at_ts=9.0,
+            first_action_at_ts=10.0,
+        )
+        self.assertIsNone(same["first_action_at_ts"])
+        self.assertIn("const fakeIssue = /newIssue/.test(cls)", _READ_JS)
+        self.assertIn("fakeIssue || (mock && !href)", _READ_JS)
 
     def test_action_model_is_the_lite_sibling(self) -> None:
         prev = os.environ.get("MVP_AGENT_ACTION_MODEL")
@@ -462,6 +474,15 @@ class A11yAgentTest(unittest.TestCase):
             {"nodes": home},
         )
         self.assertEqual(pricing["name"], "Pricing")
+
+    def test_first_click_clock_is_after_the_page_is_open(self) -> None:
+        sess = {"page_open_at_ts": 50.0, "browser_ready_at_ts": 49.0, "first_action_at_ts": 50.0}
+        stamp_first_click(sess)
+        self.assertGreater(sess["first_action_at_ts"], sess["page_open_at_ts"])
+        self.assertGreater(sess["first_action_at_ts"], sess["browser_ready_at_ts"])
+        kept = {"page_open_at_ts": 50.0, "browser_ready_at_ts": 49.0, "first_action_at_ts": 51.0}
+        stamp_first_click(kept)
+        self.assertEqual(kept["first_action_at_ts"], 51.0)
 
     def test_account_tasks_stay_account_tasks(self) -> None:
         original = "Create a new issue in your workspace"

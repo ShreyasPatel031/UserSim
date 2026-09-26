@@ -395,7 +395,10 @@ _READ_JS = """() => {
     const mockHash = /(?:^|\\s)(?:Mmx1Wq_|qM9FAa_)/.test(cls);
     const mock = /(?:navItem|newIssue|searchButton|switchWorkspace|rowButton|ingredientButton|headerButton|iconButton|sendButton|dropdownButton|pillButton|navButton|labelButton|attachmentButton|splitSegment|locationBar)/.test(cls)
       || mockHash;
-    const inert = !!el.disabled || el.getAttribute('aria-disabled') === 'true' || (mock && !href);
+    // The marketing mock's class is newIssue even when the node has an href
+    // (often into /docs/creating-issues). A real composer does not use that class.
+    const fakeIssue = /newIssue/.test(cls);
+    const inert = !!el.disabled || el.getAttribute('aria-disabled') === 'true' || fakeIssue || (mock && !href);
     let name = (
       el.getAttribute('aria-label')
       || el.getAttribute('placeholder')
@@ -1161,6 +1164,41 @@ def _ms(a: float | None, b: float | None) -> int | None:
     return max(0, int(round((b - a) * 1000)))
 
 
+def _valid_first_click(value: Any, *, opened: Any, ready: Any) -> bool:
+    """A first click is a timestamp strictly after the browser is ready and the page is open."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return False
+    if isinstance(ready, bool) or not isinstance(ready, (int, float)):
+        return False
+    if isinstance(opened, bool) or not isinstance(opened, (int, float)):
+        return False
+    if float(value) <= float(ready) or float(value) <= float(opened):
+        return False
+    return True
+
+
+def stamp_first_click(sess: dict[str, Any]) -> None:
+    """Record the clock only after a click has been sent.
+
+    The value is never page_open_at_ts and never at or before browser_ready_at_ts.
+    """
+    if not isinstance(sess, dict):
+        return
+    opened = sess.get("page_open_at_ts")
+    ready = sess.get("browser_ready_at_ts") or sess.get("session_ready_at_ts")
+    if _valid_first_click(sess.get("first_action_at_ts"), opened=opened, ready=ready):
+        return
+    now = time.time()
+    floor = 0.0
+    if isinstance(ready, (int, float)) and not isinstance(ready, bool):
+        floor = max(floor, float(ready))
+    if isinstance(opened, (int, float)) and not isinstance(opened, bool):
+        floor = max(floor, float(opened))
+    if now <= floor:
+        now = floor + 0.001
+    sess["first_action_at_ts"] = now
+
+
 def apply_gate_fields(sess: dict[str, Any], **fields: Any) -> None:
     """Write every gate field. Missing values stay present as empty or null."""
     for key in GATE_FIELDS:
@@ -1171,6 +1209,10 @@ def apply_gate_fields(sess: dict[str, Any], **fields: Any) -> None:
             sess["phase_ms"].update(value)
         else:
             sess[key] = value
+    opened = sess.get("page_open_at_ts")
+    ready = sess.get("browser_ready_at_ts") or sess.get("session_ready_at_ts")
+    if not _valid_first_click(sess.get("first_action_at_ts"), opened=opened, ready=ready):
+        sess["first_action_at_ts"] = None
     # Aliases the gates accept.
     if sess.get("page_open_at_ts"):
         sess["page_opened_at_ts"] = sess["page_open_at_ts"]
@@ -2226,6 +2268,7 @@ async def complete_task_on_page(
     on_step: Any | None = None,
     deadline: float | None = None,
     agent_id: str = "agent",
+    session: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Step until the live page shows the goal.
 
@@ -2463,6 +2506,9 @@ async def complete_task_on_page(
             print(f"[{agent_id}] action error (continuing): {exc!r}", flush=True)
             how = f"error:{exc!r}"[:180]
         acted_once = True
+        act_name = str(action.get("act") or "click")
+        if act_name == "click" and how in {"role", "xy", "text"} and isinstance(session, dict):
+            stamp_first_click(session)
         await _wait_for_page(page)
         after = await _fresh_read(page, str(read.get("url") or url))
         if (
@@ -2907,6 +2953,7 @@ async def _run_a11y_agent_unlocked(
                 on_step=on_step,
                 deadline=deadline,
                 agent_id=agent_id,
+                session=sess,
             )
             stop_reason = str(outcome.get("stop_reason") or "")
             signup_url = str(outcome.get("signup_url") or "")
@@ -2944,11 +2991,13 @@ async def _run_a11y_agent_unlocked(
             try:
                 await page.screenshot(path=str(path), full_page=False, timeout=8000)
                 shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
-                shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
-                from mvp.opening_shot import upload_screenshot
+                from mvp.study import upload_saved_final
 
-                uploaded = await upload_screenshot(study_id, agent_id, path)
-                if not uploaded:
+                # The URL is written only after GCS returns the PNG bytes.
+                uploaded = await asyncio.to_thread(upload_saved_final, study_id, agent_id)
+                if uploaded:
+                    shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
+                else:
                     print(f"[{agent_id}] final PNG was not uploaded", flush=True)
             except Exception as exc:  # noqa: BLE001
                 print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
