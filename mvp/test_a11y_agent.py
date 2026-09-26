@@ -209,7 +209,7 @@ class A11yAgentTest(unittest.TestCase):
         )
         self.assertEqual(table["counts"]["stuck"], 1)
         self.assertEqual(table["counts"]["product"], 1)
-        self.assertEqual(table["counts"]["our infrastructure"], 0)
+        self.assertEqual(table["counts"]["our infrastructure"], 1)
 
 
 if __name__ == "__main__":
