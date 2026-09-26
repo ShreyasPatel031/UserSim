@@ -3072,6 +3072,7 @@ async def run_study(
                     )
                     sess["live_thoughts"] = thoughts[-24:]
                     refresh_agent_phase()
+                    _agent_wall = 200.0
                     try:
                         async with _BROWSER_SEMAPHORE:
                             # Queue here, before the wall clock. A waiter must not
@@ -3118,11 +3119,20 @@ async def run_study(
                                         agent_warm = warm_opening
                                         warm_used = True
                                 run = None
-                                _outer_wall = max(
-                                    45.0,
-                                    float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
-                                    + 45.0,
-                                )
+                                _site_key = str(task.get("site_key") or "product")
+                                if _site_key == "product":
+                                    _agent_wall = float(
+                                        os.environ.get("MVP_AGENT_WALL_S", "200") or "200"
+                                    )
+                                else:
+                                    # Competitor stalls were holding the 16-wide
+                                    # slots for the full 200s and pushing the
+                                    # 24-agent e2e past 360s. Product keeps 200s.
+                                    _agent_wall = float(
+                                        os.environ.get("MVP_COMPETITOR_WALL_S", "90") or "90"
+                                    )
+                                _agent_wall = max(15.0, _agent_wall)
+                                _outer_wall = max(45.0, _agent_wall + 45.0)
                                 _agent_task = asyncio.create_task(
                                     run_browser_agent(
                                         study_id=study.id,
@@ -3137,6 +3147,7 @@ async def run_study(
                                         bb_session=None,
                                         local=force_local_browser,
                                         warm=agent_warm,
+                                        wall_s=_agent_wall,
                                     )
                                 )
                                 _done, _pending = await asyncio.wait(
@@ -3272,6 +3283,7 @@ async def run_study(
                                     on_step=lambda step: _on_agent_step(agent_id, step),
                                     bb_session=None,
                                     local=False,
+                                    wall_s=_agent_wall,
                                 )
                                 sess["status"] = "summarizing"
                                 feedback = await summarize_agent_feedback(

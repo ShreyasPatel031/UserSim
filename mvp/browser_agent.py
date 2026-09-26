@@ -1341,6 +1341,7 @@ async def run_browser_agent(
     bb_session: Any | None = None,
     local: bool = False,
     warm: dict[str, Any] | None = None,
+    wall_s: float | None = None,
 ) -> dict[str, Any]:
     """Run Browser Use (Browserbase or local Chromium) and return a bbox screenshot trace.
 
@@ -1361,8 +1362,14 @@ async def run_browser_agent(
 
     model = action_model_name(model)
     # Keep CDP/action timeouts under the agent wall so a single hung navigate
-    # cannot outlive MVP_AGENT_WALL_S (was 120/240 → studies stuck at 0/N done).
-    _wall = max(15.0, MVP_AGENT_WALL_S)
+    # cannot outlive the wall (was 120/240 → studies stuck at 0/N done).
+    # Competitors use a shorter wall so a 24-agent matrix finishes inside 360s.
+    # Product agents keep the full wall; they are what the e2e task gate scores.
+    try:
+        agent_wall = max(15.0, float(wall_s) if wall_s is not None else MVP_AGENT_WALL_S)
+    except (TypeError, ValueError):
+        agent_wall = max(15.0, MVP_AGENT_WALL_S)
+    _wall = agent_wall
     os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", str(max(20, int(_wall // 3))))
     os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", str(max(30, int(_wall // 2))))
 
@@ -1848,7 +1855,7 @@ async def run_browser_agent(
         print(
             f"[{agent_id}] agent.run starting model={model} provider=google-vertex "
             f"llm_timeout={MVP_LLM_TIMEOUT_S}s step_timeout={MVP_STEP_TIMEOUT_S}s "
-            f"(warm={use_warm}, max_steps={max_steps}, wall={MVP_AGENT_WALL_S:.0f}s)",
+            f"(warm={use_warm}, max_steps={max_steps}, wall={agent_wall:.0f}s)",
             flush=True,
         )
         history = None
@@ -1859,17 +1866,17 @@ async def run_browser_agent(
                     on_step_start=on_step_start,
                     on_step_end=on_step_end,
                 ),
-                timeout=max(15.0, MVP_AGENT_WALL_S),
+                timeout=agent_wall,
             )
         except (asyncio.TimeoutError, asyncio.CancelledError):
             print(
-                f"[{agent_id}] agent.run hit wall ({MVP_AGENT_WALL_S:.0f}s) — "
+                f"[{agent_id}] agent.run hit wall ({agent_wall:.0f}s) — "
                 "returning opening/partial trace",
                 flush=True,
             )
             try:
                 await _pulse(
-                    f"Stopped after {int(MVP_AGENT_WALL_S)}s wall — keeping captured frames",
+                    f"Stopped after {int(agent_wall)}s wall — keeping captured frames",
                     thinking=True,
                 )
             except Exception:
