@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import asyncio
+import contextvars
 import json
 import os
+import re
 import shutil
 import time
 from collections.abc import Awaitable, Callable
@@ -36,6 +38,426 @@ def _study_budget_timeout() -> int:
 MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "") or _study_budget_timeout())
 MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "") or _study_budget_timeout())
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
+
+# Measurement only. Each phase prints one JSON line and is copied onto the
+# trace step. The context var splits the decision loop from the post-step
+# highlight screenshot, which calls the same DOM/screenshot methods.
+_PHASE_WHERE = contextvars.ContextVar("usersim_phase_where", default="loop")
+_PHASE_LOG = Path("/tmp/usersim_phase/events.jsonl")
+_HTTP_STATUS_RE = re.compile(r"\b(408|429|500|502|503|504)\b")
+
+
+def _http_status_of(exc: BaseException) -> int | None:
+    for attr in ("status_code", "code"):
+        val = getattr(exc, attr, None)
+        if isinstance(val, int) and 100 <= val < 600:
+            return val
+    response = getattr(exc, "response", None)
+    if response is not None:
+        val = getattr(response, "status_code", None)
+        if isinstance(val, int) and 100 <= val < 600:
+            return val
+    match = _HTTP_STATUS_RE.search(str(exc))
+    if match:
+        return int(match.group(1))
+    return None
+
+
+class _PhaseClock:
+    """Per-agent phase timings. Writes survive a killed run via stdout and jsonl."""
+
+    def __init__(self, agent_id: str, study_id: str) -> None:
+        self.agent_id = agent_id
+        self.study_id = study_id
+        self.events: list[dict[str, Any]] = []
+        self.current_step: int | None = None
+        self.hook_step: int | None = None
+
+    def event(self, **rec: Any) -> None:
+        where = str(rec.pop("where", None) or _PHASE_WHERE.get() or "loop")
+        step = rec.get("step")
+        if step is None:
+            step = self.hook_step if where == "hook" else self.current_step
+        row: dict[str, Any] = {
+            "t": round(time.time(), 3),
+            "agent_id": self.agent_id,
+            "study_id": self.study_id,
+            "where": where,
+            **rec,
+            "step": step,
+        }
+        self.events.append(row)
+        line = json.dumps(row, default=str)
+        print(f"[phase] {line}", flush=True)
+        try:
+            _PHASE_LOG.parent.mkdir(parents=True, exist_ok=True)
+            with _PHASE_LOG.open("a", encoding="utf-8") as handle:
+                handle.write(line + "\n")
+        except Exception:
+            pass
+
+    def begin(self, phase: str, **extra: Any) -> float:
+        self.event(event="start", phase=phase, **extra)
+        return time.monotonic()
+
+    def finish(self, phase: str, started: float, **extra: Any) -> None:
+        self.event(
+            event="end",
+            phase=phase,
+            ms=round((time.monotonic() - started) * 1000),
+            **extra,
+        )
+
+    def note_exception(self, phase: str, exc: BaseException, **extra: Any) -> str:
+        text = f"{type(exc).__name__}: {exc}"[:400]
+        self.event(
+            event="end",
+            phase=phase,
+            ms=0,
+            error=text,
+            error_type=type(exc).__name__,
+            http_status=_http_status_of(exc),
+            **extra,
+        )
+        return text
+
+    def fields_for(self, step_no: object) -> dict[str, Any]:
+        if not isinstance(step_no, int):
+            return {}
+        phase_ms: dict[str, int] = {}
+        llm_status = None
+        llm_retries = None
+        errors: list[str] = []
+        for ev in self.events:
+            if ev.get("step") != step_no or ev.get("event") != "end":
+                continue
+            where = str(ev.get("where") or "loop")
+            phase = str(ev.get("phase") or "")
+            if not phase:
+                continue
+            key = phase if where == "loop" else f"{where}_{phase}"
+            if isinstance(ev.get("ms"), int):
+                phase_ms[key] = int(ev["ms"])
+            if phase == "llm" and where == "loop":
+                llm_status = ev.get("http_status")
+                llm_retries = ev.get("retry_count")
+            if ev.get("error"):
+                errors.append(f"{key}: {ev.get('error')}")
+        out: dict[str, Any] = {}
+        if phase_ms:
+            out["phase_ms"] = phase_ms
+        if llm_status is not None:
+            out["llm_http_status"] = llm_status
+        if llm_retries is not None:
+            out["llm_retry_count"] = llm_retries
+        if errors:
+            out["swallowed_error"] = " | ".join(errors)[:800]
+        return out
+
+
+def _patch_method(obj: Any, name: str, wrapper: Any) -> bool:
+    try:
+        setattr(obj, name, wrapper)
+        return True
+    except Exception:
+        try:
+            object.__setattr__(obj, name, wrapper)
+            return True
+        except Exception as exc:
+            print(
+                f"[phase] could not patch {type(obj).__name__}.{name}: {exc!r}",
+                flush=True,
+            )
+            return False
+
+
+def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
+    """Time DOM extraction, screenshots, and navigation on this session only."""
+    if browser_session is None or getattr(browser_session, "_phase_probes", False):
+        return
+    try:
+        object.__setattr__(browser_session, "_phase_probes", True)
+    except Exception:
+        pass
+
+    orig_state = browser_session.get_browser_state_summary
+
+    async def state_wrapped(*args: Any, **kwargs: Any) -> Any:
+        started = clock.begin("state")
+        error = None
+        error_type = None
+        try:
+            result = await orig_state(*args, **kwargs)
+            state_error = getattr(result, "state_error", None)
+            if state_error:
+                error = str(state_error)[:400]
+                error_type = "state_error"
+            return result
+        except asyncio.CancelledError:
+            error = "CancelledError: cancelled"
+            error_type = "CancelledError"
+            raise
+        except Exception as exc:
+            error = f"{type(exc).__name__}: {exc}"[:400]
+            error_type = type(exc).__name__
+            raise
+        finally:
+            clock.finish("state", started, error=error, error_type=error_type)
+
+    _patch_method(browser_session, "get_browser_state_summary", state_wrapped)
+
+    watchdog = getattr(browser_session, "_dom_watchdog", None)
+    if watchdog is not None:
+        orig_dom = watchdog._build_dom_tree_without_highlights
+
+        async def dom_wrapped(*args: Any, **kwargs: Any) -> Any:
+            started = clock.begin("dom")
+            error = None
+            error_type = None
+            try:
+                return await orig_dom(*args, **kwargs)
+            except asyncio.CancelledError:
+                error = "CancelledError: cancelled"
+                error_type = "CancelledError"
+                raise
+            except Exception as exc:
+                error = f"{type(exc).__name__}: {exc}"[:400]
+                error_type = type(exc).__name__
+                raise
+            finally:
+                clock.finish("dom", started, error=error, error_type=error_type)
+
+        orig_shot = watchdog._capture_clean_screenshot
+
+        async def shot_wrapped(*args: Any, **kwargs: Any) -> Any:
+            started = clock.begin("screenshot")
+            error = None
+            error_type = None
+            try:
+                return await orig_shot(*args, **kwargs)
+            except asyncio.CancelledError:
+                error = "CancelledError: cancelled"
+                error_type = "CancelledError"
+                raise
+            except Exception as exc:
+                error = f"{type(exc).__name__}: {exc}"[:400]
+                error_type = type(exc).__name__
+                raise
+            finally:
+                clock.finish("screenshot", started, error=error, error_type=error_type)
+
+        _patch_method(watchdog, "_build_dom_tree_without_highlights", dom_wrapped)
+        _patch_method(watchdog, "_capture_clean_screenshot", shot_wrapped)
+
+    if hasattr(browser_session, "navigate_to"):
+        orig_nav = browser_session.navigate_to
+
+        async def nav_wrapped(*args: Any, **kwargs: Any) -> Any:
+            started = clock.begin("navigate")
+            error = None
+            error_type = None
+            try:
+                return await orig_nav(*args, **kwargs)
+            except Exception as exc:
+                error = f"{type(exc).__name__}: {exc}"[:400]
+                error_type = type(exc).__name__
+                raise
+            finally:
+                clock.finish("navigate", started, error=error, error_type=error_type)
+
+        _patch_method(browser_session, "navigate_to", nav_wrapped)
+
+    if hasattr(browser_session, "take_screenshot"):
+        orig_take = browser_session.take_screenshot
+
+        async def take_wrapped(*args: Any, **kwargs: Any) -> Any:
+            started = clock.begin("screenshot")
+            error = None
+            error_type = None
+            try:
+                return await orig_take(*args, **kwargs)
+            except Exception as exc:
+                error = f"{type(exc).__name__}: {exc}"[:400]
+                error_type = type(exc).__name__
+                raise
+            finally:
+                clock.finish("screenshot", started, error=error, error_type=error_type)
+
+        _patch_method(browser_session, "take_screenshot", take_wrapped)
+
+
+def _install_agent_probes(agent: Any, llm: Any, clock: _PhaseClock) -> None:
+    """Time the LLM call (status and retries) and action execution."""
+    attempts: dict[str, Any] = {"n": 0, "statuses": []}
+    try:
+        client = llm.get_client()
+        models = client.aio.models
+        orig_gen = models.generate_content
+
+        async def gen_wrapped(*args: Any, **kwargs: Any) -> Any:
+            attempts["n"] = int(attempts["n"]) + 1
+            try:
+                return await orig_gen(*args, **kwargs)
+            except Exception as exc:
+                attempts["statuses"].append(_http_status_of(exc))
+                raise
+
+        _patch_method(models, "generate_content", gen_wrapped)
+    except Exception as exc:
+        clock.note_exception("llm_client", exc)
+
+    orig_invoke = llm.ainvoke
+
+    async def invoke_wrapped(*args: Any, **kwargs: Any) -> Any:
+        attempts["n"] = 0
+        attempts["statuses"] = []
+        started = clock.begin("llm")
+        status: int | None = 200
+        error = None
+        error_type = None
+        try:
+            return await orig_invoke(*args, **kwargs)
+        except asyncio.CancelledError:
+            status = None
+            error = "CancelledError: cancelled"
+            error_type = "CancelledError"
+            raise
+        except Exception as exc:
+            statuses = [s for s in attempts["statuses"] if isinstance(s, int)]
+            status = _http_status_of(exc) or (statuses[-1] if statuses else 0)
+            error = f"{type(exc).__name__}: {exc}"[:400]
+            error_type = type(exc).__name__
+            raise
+        finally:
+            retry_count = max(0, int(attempts["n"]) - 1)
+            clock.finish(
+                "llm",
+                started,
+                http_status=status,
+                retry_count=retry_count,
+                attempt_count=int(attempts["n"]),
+                retry_statuses=list(attempts["statuses"]),
+                error=error,
+                error_type=error_type,
+            )
+
+    _patch_method(llm, "ainvoke", invoke_wrapped)
+
+    orig_step = agent.step
+
+    async def step_wrapped(step_info: Any = None) -> Any:
+        step_no = int(getattr(getattr(agent, "state", None), "n_steps", 0) or 0)
+        clock.current_step = step_no
+        started = clock.begin("step", step=step_no)
+        error = None
+        error_type = None
+        try:
+            return await orig_step(step_info)
+        except asyncio.CancelledError:
+            error = "CancelledError: cancelled"
+            error_type = "CancelledError"
+            raise
+        except Exception as exc:
+            error = f"{type(exc).__name__}: {exc}"[:400]
+            error_type = type(exc).__name__
+            raise
+        finally:
+            clock.finish("step", started, step=step_no, error=error, error_type=error_type)
+
+    _patch_method(agent, "step", step_wrapped)
+
+    orig_exec = agent._execute_actions
+
+    async def exec_wrapped() -> Any:
+        started = clock.begin("action")
+        error = None
+        error_type = None
+        try:
+            return await orig_exec()
+        except asyncio.CancelledError:
+            error = "CancelledError: cancelled"
+            error_type = "CancelledError"
+            raise
+        except Exception as exc:
+            error = f"{type(exc).__name__}: {exc}"[:400]
+            error_type = type(exc).__name__
+            raise
+        finally:
+            clock.finish("action", started, error=error, error_type=error_type)
+
+    _patch_method(agent, "_execute_actions", exec_wrapped)
+
+    orig_handle = agent._handle_step_error
+
+    async def handle_wrapped(error: BaseException) -> Any:
+        clock.note_exception("step_error", error, where="loop")
+        return await orig_handle(error)
+
+    _patch_method(agent, "_handle_step_error", handle_wrapped)
+
+
+def _stamp_phase_trace(
+    trace: list[dict[str, Any]],
+    clock: _PhaseClock | None,
+) -> None:
+    if clock is None:
+        return
+    have = {step.get("step") for step in trace if isinstance(step, dict)}
+    for step in trace:
+        if not isinstance(step, dict):
+            continue
+        extra = clock.fields_for(step.get("step"))
+        if extra.get("swallowed_error") and step.get("swallowed_error"):
+            step["swallowed_error"] = (
+                str(step["swallowed_error"]) + " | " + str(extra["swallowed_error"])
+            )[:800]
+            extra = {k: v for k, v in extra.items() if k != "swallowed_error"}
+        if extra.get("phase_ms"):
+            merged = dict(step.get("phase_ms") or {})
+            merged.update(extra.pop("phase_ms"))
+            step["phase_ms"] = merged
+        step.update(extra)
+        if step.get("step") == 0:
+            opening: dict[str, int] = {}
+            for ev in clock.events:
+                if ev.get("where") != "opening" or ev.get("event") != "end":
+                    continue
+                if isinstance(ev.get("ms"), int) and ev.get("phase"):
+                    opening[f"opening_{ev['phase']}"] = int(ev["ms"])
+            if opening:
+                merged = dict(step.get("phase_ms") or {})
+                merged.update(opening)
+                step["phase_ms"] = merged
+    # Unnumbered so gate step counters stay on real actions. The row is still
+    # on the trace, and the same record is in the phase log if the run is killed.
+    seen = {
+        ev.get("step")
+        for ev in clock.events
+        if ev.get("where") == "loop"
+        and ev.get("event") == "end"
+        and isinstance(ev.get("step"), int)
+    }
+    for step_no in sorted(n for n in seen if isinstance(n, int)):
+        if step_no in have:
+            continue
+        fields = clock.fields_for(step_no)
+        if not fields:
+            continue
+        trace.append(
+            {
+                "step": None,
+                "timed_step": step_no,
+                "timing_only": True,
+                "action": "phase timings",
+                "observation": str(fields.get("swallowed_error") or ""),
+                "thought": "",
+                "thought_detail": {},
+                "url": None,
+                "screenshot_url": None,
+                "outcome": "neutral",
+                **fields,
+            }
+        )
 
 
 def llm_run_concurrency() -> int:
@@ -812,10 +1234,21 @@ def _make_step_hooks(
         )
 
     async def on_step_end(agent: Any) -> None:
+        clock = book.get("phase_clock") if isinstance(book.get("phase_clock"), _PhaseClock) else None
+        swallowed: list[str] = []
+
+        def _swallowed(phase: str, exc: BaseException) -> None:
+            text = f"{type(exc).__name__}: {exc}"[:400]
+            swallowed.append(f"{phase}: {text}")
+            print(f"[{agent_id}] swallowed {phase}: {text}", flush=True)
+            if clock is not None:
+                clock.note_exception(phase, exc, where="hook", step=state["step"] or None)
+
         try:
             reject_early_done(agent, start_url)
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] early-done check failed: {exc!r}", flush=True)
+            _swallowed("early_done", exc)
         state["step"] += 1
         step_no = state["step"]
         if book.get("t0") is not None and book.get("first_action_s") is None:
@@ -827,8 +1260,11 @@ def _make_step_hooks(
             sig = await _page_state(session)
             if sig:
                 book.setdefault("sigs", {})[step_no] = sig
-        except Exception:
-            pass
+        except Exception as exc:
+            _swallowed("page_state", exc)
+        where_token = _PHASE_WHERE.set("hook")
+        if clock is not None:
+            clock.hook_step = step_no
         try:
             # Cached selector map is stale after the step action (often empty post-nav).
             summary = await asyncio.wait_for(session.get_browser_state_summary(), timeout=25)
@@ -844,17 +1280,26 @@ def _make_step_hooks(
                 session.take_screenshot(path=str(screenshot_dir / f"bbox_{step_no}.png")),
                 timeout=20,
             )
-        except Exception:  # noqa: BLE001
-            pass
+        except Exception as exc:  # noqa: BLE001
+            _swallowed("hook_capture", exc)
         finally:
             try:
                 await asyncio.wait_for(session.remove_highlights(), timeout=5)
-            except Exception:  # noqa: BLE001
-                pass
+            except Exception as exc:  # noqa: BLE001
+                _swallowed("remove_highlights", exc)
+            _PHASE_WHERE.reset(where_token)
 
         history = getattr(agent, "history", None)
         items = list(getattr(history, "history", None) or [])
         if not items:
+            # The step number advanced but browser-use stored nothing. Keep the
+            # timings in the phase log; do not invent a numbered action.
+            if swallowed or clock is not None:
+                print(
+                    f"[{agent_id}] step {step_no} has no history item"
+                    + (f" swallowed={swallowed}" if swallowed else ""),
+                    flush=True,
+                )
             return
         step = _trace_step_from_history_item(
             items[-1],
@@ -863,6 +1308,19 @@ def _make_step_hooks(
             agent_id=agent_id,
             screenshot_dir=screenshot_dir,
         )
+        if swallowed:
+            step["swallowed_error"] = " | ".join(swallowed)[:800]
+        if clock is not None:
+            extra = clock.fields_for(step_no)
+            if extra.get("swallowed_error") and step.get("swallowed_error"):
+                step["swallowed_error"] = (
+                    str(step["swallowed_error"]) + " | " + str(extra.pop("swallowed_error"))
+                )[:800]
+            if extra.get("phase_ms"):
+                merged = dict(step.get("phase_ms") or {})
+                merged.update(extra.pop("phase_ms"))
+                step["phase_ms"] = merged
+            step.update(extra)
         sigs = book.get("sigs") if isinstance(book.get("sigs"), dict) else {}
         if step_no in sigs:
             step["state_sig"] = sigs[step_no]
@@ -1376,6 +1834,7 @@ async def run_browser_agent(
     screenshot_dir = run_dir / "screenshots"
     run_dir.mkdir(parents=True, exist_ok=True)
     screenshot_dir.mkdir(parents=True, exist_ok=True)
+    phase_clock = _PhaseClock(agent_id, study_id)
 
     from mvp.profile_pool import clone_for_url, discard as discard_profile
 
@@ -1603,15 +2062,20 @@ async def run_browser_agent(
                 # the moment the task URL is known — not after the LLM's first thought.
                 browser_session = BrowserSession(browser_profile=profile)
                 await browser_session.start()
+                _install_session_probes(browser_session, phase_clock)
 
-                await _emit_opening_frame(
-                    browser_session,
-                    screenshot_dir=screenshot_dir,
-                    study_id=study_id,
-                    agent_id=agent_id,
-                    url=start_url,
-                    on_step=on_step,
-                )
+                _opening_where = _PHASE_WHERE.set("opening")
+                try:
+                    await _emit_opening_frame(
+                        browser_session,
+                        screenshot_dir=screenshot_dir,
+                        study_id=study_id,
+                        agent_id=agent_id,
+                        url=start_url,
+                        on_step=on_step,
+                    )
+                finally:
+                    _PHASE_WHERE.reset(_opening_where)
                 # Flip live view ON immediately — don't wait for LLM / agent.run.
                 if on_step is not None and bb_session is not None and not force_local:
                     live_url = None
@@ -1665,6 +2129,7 @@ async def run_browser_agent(
         "captcha": None,
         "t0": None,
         "first_action_s": None,
+        "phase_clock": phase_clock,
     }
     try:
         # Auth/cookies after first pixels (non-YouTube, non-warm).
@@ -1793,6 +2258,9 @@ async def run_browser_agent(
                 "or another captcha API."
             ),
         )
+        if use_warm and browser_session is not None:
+            _install_session_probes(browser_session, phase_clock)
+        _install_agent_probes(agent, llm, phase_clock)
         # Signal UI: agent loop is starting — replace screenshot with live view now.
         if on_step is not None and bb_session is not None:
             live_url = warm_live_url
@@ -1953,6 +2421,7 @@ async def run_browser_agent(
         n = step.get("step")
         if isinstance(n, int) and n in sigs and not step.get("state_sig"):
             step["state_sig"] = sigs[n]
+    _stamp_phase_trace(trace, phase_clock)
 
     visited_urls: list[str] = []
     for step in trace:
@@ -1983,6 +2452,7 @@ async def run_browser_agent(
                 "model_provider": "google-vertex",
                 "captcha": captcha,
                 "first_action_s": first_action_s,
+                "phase_events": phase_clock.events,
             },
             indent=2,
             default=str,
@@ -2005,6 +2475,7 @@ async def run_browser_agent(
         "model_provider": "google-vertex",
         "captcha": captcha,
         "first_action_s": first_action_s,
+        "phase_events": phase_clock.events,
         "run_dir": str(run_dir),
         "num_steps": len(trace),
     }
