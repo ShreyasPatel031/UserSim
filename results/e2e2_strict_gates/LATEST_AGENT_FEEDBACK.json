@@ -385,5 +385,12 @@
     "weakness": "0/2 FAIL",
     "top_weakness": "click Menu changed nothing on https://excalidraw.com/",
     "report_page": "not fetched, gates app stopped"
+  },
+  "taskfix_70557bae_38deb1cc": {
+    "graded_at": "2026-09-26T07:50:00Z",
+    "pass": false,
+    "linear": "70557bae-83af-4bf9-9bbb-3135046193cd",
+    "excalidraw": "38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160",
+    "fact": "Neither study.json nor final PNGs are in GCS. The deployed app returns 404. --grade-study cannot run Gemini. A self-graded 8/8 is not a pass. Newer recorded ids 190452e9 and e784d307 are also absent from GCS."
   }
 }
