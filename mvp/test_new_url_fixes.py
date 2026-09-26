@@ -163,3 +163,18 @@ class UnlabeledClickTests(unittest.TestCase):
         self.assertEqual(action_label({"act": "click", "name": ""}), "click an unlabeled control")
         self.assertEqual(human_action("click"), "click an unlabeled control")
         self.assertEqual(human_action("click add-project"), "click add project")
+
+
+class ReportNoiseTests(unittest.TestCase):
+    def test_signup_advice_is_dropped_from_the_verdict(self):
+        from mvp.report_insights import drop_harness_sentences
+
+        text = "Figma is good for pricing. The most useful fix is to improve the signup process for Figma."
+        self.assertEqual(drop_harness_sentences(text), "Figma is good for pricing.")
+
+    def test_consent_buttons_are_not_no_change_findings(self):
+        from mvp.report_insights import _CONSENT_CLICK_RE
+
+        self.assertTrue(_CONSENT_CLICK_RE.match("click Accept"))
+        self.assertTrue(_CONSENT_CLICK_RE.match("click Accept all cookies"))
+        self.assertFalse(_CONSENT_CLICK_RE.match("click Create project"))

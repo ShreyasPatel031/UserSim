@@ -812,6 +812,15 @@ def _page_shape(url: str) -> str:
 _ID_NAME_RE = re.compile(r"^(click|type .* into) ([a-z0-9]+(?:[-_][a-z0-9]+)+)$")
 
 
+# A cookie or consent banner button. When it "changes nothing" the banner was
+# already gone or re-rendered; that is not a finding about the product.
+_CONSENT_CLICK_RE = re.compile(
+    r"^click (?:accept(?: all)?(?: cookies)?|reject(?: all)?|allow all|agree|i agree|got it|ok|okay|"
+    r"accept (?:and|&) close|dismiss|close|x)$",
+    re.I,
+)
+
+
 def human_action(action: str) -> str:
     """A step label a reader understands: no drag coordinates, no DOM ids.
 
@@ -1002,7 +1011,7 @@ def trace_claims(
             weak.setdefault(key, []).append(ev)
             weak_label.setdefault(key, label)
         for step in steps:
-            if step.get("changed") is False:
+            if step.get("changed") is False and not _CONSENT_CLICK_RE.match(str(step.get("action") or "")):
                 action = human_action(str(step.get("action") or ""))[:80]
                 page = _page_shape(str(step.get("url") or final_url))
                 k2 = f"nochange|{action.lower()}|{page}"
@@ -1697,7 +1706,9 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
 
 
 _HARNESS_RE = re.compile(
-    r"throwaway|disposable|temporary e-?mail|captcha|verification (e-?mail|code)|test account|usersim",
+    r"throwaway|disposable|temporary e-?mail|captcha|verification (e-?mail|code)|test account|usersim"
+    # Advice to fix sign-up: the test never saw past its own sign-up attempt.
+    r"|(?:improve|fix|simplify|streamline|smooth|address|ease|shorten)\w*\b[^.]{0,40}\bsign[- ]?up",
     re.I,
 )
 
