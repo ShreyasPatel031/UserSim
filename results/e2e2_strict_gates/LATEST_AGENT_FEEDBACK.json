@@ -1,14 +1,14 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T07:40:00Z",
+  "graded_at": "2026-09-26T07:56:00Z",
   "live_launches": "stopped",
-  "note": "Owner gates sessions were released, including primes. New grades use --grade-study and do not open Browserbase. #47 tip 234280b and integration tip 4a874ac are not live-graded.",
+  "note": "Grade-only. owner=gates Browserbase sessions are 0. No new 24-agent study has passed. Integration tip 7bfc147. Task-completion tip 3590dd0. #47 tip f00ac43 is not live-graded. 70557bae, 38deb1cc, 190452e9, and e784d307 are still absent from GCS.",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "9470be5",
-      "tip_seen": "f51a119",
-      "note": "Last live grade is 9470be5. Tip 234280b caps CDP state capture. Not launched.",
+      "tip_seen": "f00ac43",
+      "note": "Last live grade is 9470be5. Tip f00ac43 takes the opening screenshot without waiting out navigation. Not launched.",
       "linear": {
         "study_id": "f27bc4b7-196b-4c24-b533-734db02ecc35",
         "pass": false,
@@ -36,7 +36,7 @@
     },
     "cursor/tonight-integration": {
       "sha": "617e158",
-      "tip_seen": "6be5be0",
+      "tip_seen": "7bfc147",
       "note": "Cherry-pick of task-completion onto the a11y loop. Both sites aborted. Tip 4a874ac holds no idle primes and is not live-graded.",
       "linear": {
         "study_id": "9ac802e0-30fa-487b-87e0-5d3ee8b3b50d",
@@ -122,7 +122,7 @@
           "first_screen_not_excluded": "PASS opening_or_first_screen=8 product_n=8"
         }
       },
-      "tip_note": "872438f takes the task-completion step loop. Not live-launched. Self-claimed 8/8 is not this grade."
+      "tip_note": "7bfc147 records the Excalidraw run with 24/24 page opens. That study is 748a1b0a, already graded, pass false. Not live-launched."
     }
   },
   "bugs": [
@@ -136,7 +136,7 @@
     },
     {
       "id": 3,
-      "fact": "Product is 0/8 on every graded head. No final PNG, so there is no Gemini YES. A startup TTFV pass is not a study pass."
+      "fact": "A startup TTFV pass is not a study pass. Linear 26e83a58 is Gemini product 8/8 and still pass=false. Excalidraw 748a1b0a is product 4/8 and still pass=false. Linear 68af612b is product 4/8 pricing only. Pass needs product >=4/8 Gemini YES plus a full non-empty report plus TTFV, total_time, and TTFA gates."
     },
     {
       "id": 4,
@@ -148,7 +148,7 @@
     },
     {
       "id": 6,
-      "fact": "New-issue stuck loop from study 6e2acd43 stays open until a finished report shows product >=4/8 Gemini YES."
+      "fact": "New-issue is still not an issue created in the app. Linear 26e83a58 YES is the docs page: 'The page clearly explains multiple ways to create a new issue, including keyboard shortcuts and UI elements, and shows an example of an issue creation modal.' Linear 68af612b new-issue is 0/4 (opening screen or the dashboard with no create control). Killed Linear 757461e7 new-issue agents died on https://linear.app/ after 'click Documentation' and have no final PNG. 1-agent Linear 813fc03f task 'Create an issue': Gemini NO 'The agent navigated to the All issues page, but the task was to create an issue, and there is no indication that an issue was created.' The report headline on 813fc03f, 4f57c488, and 5462b0ee is 'click Create new issue changed nothing on https://linear.app/usersim/my-issues/assigned'. 5462b0ee Gemini NO: 'The agent attempted to create a project but failed because the project name was not provided, and the page shows an error message indicating this.' 4f57c488 Gemini YES is a saved view named All issues ('View created'), not an issue. That study is 1 agent, so it is not a pass."
     },
     {
       "id": 7,
@@ -165,6 +165,18 @@
     {
       "id": 10,
       "fact": "A page_open_at_ts equal to first_action_at_ts is the poll rewrite even when created_at_ts was dropped. Linear 5a10cefa is median 42.23s max 68.697s from browser_ready_at_ts. Excalidraw 0711d32d is median 46.121s max 82.966s. The 0.0s reading is not a pass."
+    },
+    {
+      "id": 11,
+      "fact": "Excalidraw 748a1b0a export/share is 0/4. Gemini: 'The page is still on the opening screen and no drawing has been made or exported/shared.' Draw-a-box is 4/4 YES ('A rectangle has been drawn on the canvas'). Top weakness 'click Menu changed nothing on https://excalidraw.com/' does not qualify. Strength 0/0. TTFV not recorded. total_time not ready. Study pass false."
+    },
+    {
+      "id": 12,
+      "fact": "Linear 757461e7 is a 24-agent kill at 42.78s. page_opened 24/24 PASS. time_to_first_action median=1.389s max=3.398s n=17/24 FAIL. Idle agents with no click: t1__p1__competitor_2, t2__p1__competitor_2, t1__p2__competitor_1, t1__p3__competitor_1, t1__p4__competitor_2, t2__p4__competitor_1, t2__p4__competitor_2. TTFV not recorded. total_time not ready. report_ready false. Official product 0/8 because the study is abandoned. Diagnostic Gemini on the three finished PNGs is 3/3 YES, all pricing pages (t2__p1, t2__p3, t2__p4). t2__p2__product was killed on click Pricing with no PNG. A self-reported TTFV of 23.88s is not the gate."
+    },
+    {
+      "id": 13,
+      "fact": "1-agent completes are not the 24-agent matrix. 813fc03f, 4f57c488, and 5462b0ee each have agent_count 1, task_count 1, site_count 1. TTFA n=1/24 (latencies 0.418s, 0.340s, 0.268s from browser_ready after a click-aligned page-open). TTFV not recorded. total_time not ready even though status is complete. report_page was not fetched because the gates app is stopped. None of these is a pass."
     }
   ],
   "graded_from_gcs": {
@@ -275,7 +287,7 @@
   },
   "self_claim_rejected": {
     "branch": "cursor/task-completion-fix",
-    "sha": "aa2c82a",
+    "sha": "3590dd0",
     "claim": "Gemini YES 8/8 and ALL_PASS on 70557bae and 38deb1cc",
     "fact": "Those study ids are not in GCS. The published 8-agent summaries a437acc0 and 4ac26c20 set the matrix bar to 8, record time_to_first_action 0.0s, and their own pass flag is false because strength evidence is missing."
   },
@@ -387,10 +399,86 @@
     "report_page": "not fetched, gates app stopped"
   },
   "taskfix_70557bae_38deb1cc": {
-    "graded_at": "2026-09-26T07:50:00Z",
+    "graded_at": "2026-09-26T07:56:00Z",
     "pass": false,
     "linear": "70557bae-83af-4bf9-9bbb-3135046193cd",
     "excalidraw": "38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160",
-    "fact": "Neither study.json nor final PNGs are in GCS. The deployed app returns 404. --grade-study cannot run Gemini. A self-graded 8/8 is not a pass. Newer recorded ids 190452e9 and e784d307 are also absent from GCS."
-  }
+    "fact": "Neither study.json nor final PNGs are in GCS for 70557bae or 38deb1cc. 190452e9 and e784d307 are also absent. A self-graded 8/8 is not a pass. Task-completion tip is 3590dd0."
+  },
+  "gates_running": 0,
+  "linear_757461e7": {
+    "study_id": "757461e7-233e-47d9-8d3d-93031b70008d",
+    "url": "https://linear.app",
+    "pass": false,
+    "wall_s": 42.78,
+    "status": "abandoned",
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "report_ready": false,
+    "page_opened": "24/24 PASS",
+    "time_to_first_action": "median=1.389s max=3.398s n=17/24 FAIL",
+    "product_task_completion": "0/8 FAIL (study abandoned, official vision empty)",
+    "product_diagnostic": "3/3 finished, all pricing YES",
+    "judge_reasons_no": [
+      "New-issue t1__p1 through t1__p4: killed on https://linear.app/ after click Documentation. No final PNG, so no Gemini YES.",
+      "Pricing t2__p2: killed after click Pricing. No final PNG."
+    ],
+    "judge_reasons_yes_diagnostic": [
+      "t2__p1: The page displays pricing tiers and options for getting started with the service.",
+      "t2__p3: The page displays pricing tiers and options for getting started with the service.",
+      "t2__p4: The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+    ],
+    "final_screenshot": "missing field final_screenshot_url",
+    "note": "Killed. Not a pass. Self-reported TTFV 23.88s is not this grade."
+  },
+  "one_agent_not_matrix": [
+    {
+      "study_id": "813fc03f-e1a4-4479-80c5-360bd5572e93",
+      "url": "https://linear.app/",
+      "task": "Create an issue",
+      "pass": false,
+      "agents": 1,
+      "wall_s": 141.56,
+      "report_ready": true,
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "1/1 host match, not a 24-agent gate",
+      "time_to_first_action": "median=0.418s max=0.418s n=1/24 FAIL",
+      "product_task_completion": "0/1 FAIL",
+      "judge_reason": "The agent navigated to the All issues page, but the task was to create an issue, and there is no indication that an issue was created.",
+      "report_headline": "click Create new issue changed nothing on https://linear.app/usersim/my-issues/assigned"
+    },
+    {
+      "study_id": "4f57c488-af7e-4a41-bdee-6b747193b163",
+      "url": "https://linear.app/",
+      "task": "Create an issue",
+      "pass": false,
+      "agents": 1,
+      "wall_s": 248.564,
+      "report_ready": true,
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "1/1 host match, not a 24-agent gate",
+      "time_to_first_action": "median=0.340s max=0.340s n=1/24 FAIL",
+      "product_task_completion": "1/1 Gemini YES on this single run, study still FAIL",
+      "judge_reason": "The user successfully created a new view named All issues and the confirmation message View created is visible on the screen. That is a view, not an issue. The report headline is still click Create new issue changed nothing.",
+      "report_headline": "click Create new issue changed nothing on https://linear.app/usersim/my-issues/assigned"
+    },
+    {
+      "study_id": "5462b0ee-f694-4c12-8510-3a925f1dec67",
+      "url": "https://linear.app/",
+      "task": "Create an issue",
+      "pass": false,
+      "agents": 1,
+      "wall_s": 242.615,
+      "report_ready": true,
+      "time_to_first_value": "not recorded FAIL",
+      "total_time": "not ready FAIL",
+      "page_opened": "1/1 host match, not a 24-agent gate",
+      "time_to_first_action": "median=0.268s max=0.268s n=1/24 FAIL",
+      "product_task_completion": "0/1 FAIL",
+      "judge_reason": "The agent attempted to create a project but failed because the project name was not provided, and the page shows an error message indicating this.",
+      "report_headline": "click Create new issue changed nothing on https://linear.app/usersim/my-issues/assigned"
+    }
+  ]
 }
