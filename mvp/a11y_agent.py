@@ -1095,6 +1095,24 @@ class A11yBoot:
             ("Lena Weber", "switcher from a competitor", "expects the same shortcuts and layout as the tool they use today", "30–40", "Product manager"),
         ]
         study.personas = []
+        planned = [p for p in (getattr(study, "plan_personas", None) or []) if isinstance(p, dict)]
+        if planned:
+            # Comparison plan: target customers spread across the product and each rival.
+            for i, row in enumerate(planned, start=1):
+                study.personas.append(
+                    {
+                        "id": f"p{i}",
+                        "name": row.get("name") or f"Persona {i}",
+                        "bio": row.get("bio") or f"{row.get('role') or 'Buyer'} from {segment.rstrip('.')}.",
+                        "occupation": row.get("role") or "",
+                        "age_range": "",
+                        "location": "Remote",
+                        "goals": ["Decide which product fits", "Notice what is confusing"],
+                        "favors": row.get("favors") or "",
+                        "favors_why": row.get("favors_why") or "",
+                    }
+                )
+            want = 0
         for i in range(1, want + 1):
             name, kind, habit, age, job = archetypes[(i - 1) % len(archetypes)]
             study.personas.append(
@@ -1109,8 +1127,10 @@ class A11yBoot:
                 }
             )
         base = []
+        specs = {str(t.get("prompt") or ""): t for t in (getattr(study, "task_specs", None) or []) if isinstance(t, dict)}
         for i, prompt in enumerate(study.tasks_override):
             persona = study.personas[i % len(study.personas)]
+            spec = specs.get(str(prompt)) or {}
             base.append(
                 {
                     "id": f"t{i+1}",
@@ -1118,6 +1138,8 @@ class A11yBoot:
                     "prompt": prompt,
                     "persona_id": persona["id"],
                     "difficulty_hint": "medium",
+                    "favors": spec.get("favors") or "",
+                    "favors_why": spec.get("favors_why") or "",
                 }
             )
         from mvp.study import expand_full_matrix
@@ -2563,6 +2585,8 @@ _IN_APP_DATA_RE = re.compile(
 def public_task(task: str) -> bool:
     """A task a logged-out visitor can finish (find, look up, pricing). Others need an account."""
     text = task or ""
+    if text.startswith("Find out from the ") and " website whether " in text[:120]:
+        return True
     if re.search(r"pricing|price|plans?\b|how much|changelog|what shipped", text, re.I):
         return True
     return bool(_PUBLIC_TASK_RE.search(text)) and not _IN_APP_DATA_RE.search(text)
@@ -3640,6 +3664,73 @@ async def signup_and_resume(
     return su, resumed
 
 
+def website_eval_task(task_prompt: str, site_url: str) -> str:
+    """Task text for a site with no self-serve account: find the answer on the website."""
+    from mvp.competitor_urls import _INSTR_RE
+
+    lines = [ln.strip() for ln in _INSTR_RE.sub("", str(task_prompt or "")).splitlines() if ln.strip()]
+    core = next(
+        (ln for ln in lines if not re.match(r"(apply this task|you are evaluating|stay on that site|opening https?://)", ln, re.I)),
+        lines[0] if lines else "the task",
+    )
+    host = _host(site_url) or site_url
+    return (
+        f"Find out from the {host} website whether this product can: {core.rstrip('.')}. "
+        "Open the feature, solution, product tour or docs pages that show it and read them. "
+        "Say done once a page shows clear evidence of how it does this (or it is clear the site never says). "
+        "Do not book a demo, fill any form or sign up."
+    )
+
+
+async def website_eval(
+    page: Any,
+    *,
+    task: str,
+    url: str,
+    outcome: dict[str, Any],
+    on_step: Any | None = None,
+    deadline: float | None = None,
+    agent_id: str = "agent",
+) -> dict[str, Any]:
+    """Continue on the website after an account wall; the trace keeps both parts."""
+    eval_task = website_eval_task(task, url)
+    wall_url = str((outcome.get("read") or {}).get("url") or "")
+    print(f"[{agent_id}] website eval after account wall at {wall_url}", flush=True)
+    try:
+        await asyncio.wait_for(page.goto(url, wait_until="domcontentloaded"), timeout=15)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] website eval goto failed: {exc!r}", flush=True)
+    history = list(outcome.get("history") or [])
+    history.append(
+        "this site has no self-serve account (only a demo or sales form); now judging it from its website"
+    )
+    try:
+        nxt = await complete_task_on_page(
+            page,
+            task=eval_task,
+            url=url,
+            trace=list(outcome.get("trace") or []),
+            history=history,
+            step_no=int(outcome.get("step_no") or 0),
+            on_step=on_step,
+            deadline=deadline,
+            agent_id=agent_id,
+            max_steps=int(os.environ.get("MVP_WEBSITE_EVAL_STEPS", "10")),
+        )
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] website eval failed: {exc!r}", flush=True)
+        return outcome
+    merged = {**outcome, **nxt}
+    merged["signup"] = outcome.get("signup")
+    merged["needs_account"] = True
+    merged["website_eval"] = {
+        "task": eval_task,
+        "wall_url": wall_url,
+        "stop_reason": str(nxt.get("stop_reason") or ""),
+    }
+    return merged
+
+
 async def run_a11y_agent(
     *,
     boot: A11yBoot,
@@ -3840,8 +3931,33 @@ async def _run_a11y_agent_unlocked(
                 )
                 sess["signup"] = outcome.get("signup") or {"ok": False, "reason": _su.get("reason")}
                 sess["phase"] = "acting"
+            if (
+                outcome.get("needs_account")
+                and str(outcome.get("stop_reason") or "") == "needs_account"
+                and not (isinstance(outcome.get("signup"), dict) and outcome["signup"].get("ok"))
+                and os.environ.get("MVP_WEBSITE_EVAL", "1") != "0"
+                and (deadline is None or deadline - time.monotonic() > 40)
+            ):
+                # No self-serve account here (demo-only or signup blocked): judge
+                # the product from its website instead of stopping at the wall.
+                sess["phase"] = "website_eval"
+                boot.study.live_sessions[agent_id] = sess
+                outcome = await website_eval(
+                    page,
+                    task=task_prompt,
+                    url=url,
+                    outcome=outcome,
+                    on_step=on_step,
+                    deadline=deadline,
+                    agent_id=agent_id,
+                )
+                sess["phase"] = "acting"
             stop_reason = str(outcome.get("stop_reason") or "")
-            outcome_flags = {"needs_account": outcome.get("needs_account"), "signup": outcome.get("signup")}
+            outcome_flags = {
+                "needs_account": outcome.get("needs_account"),
+                "signup": outcome.get("signup"),
+                "website_eval": outcome.get("website_eval"),
+            }
             failed = outcome.get("failed") if isinstance(outcome.get("failed"), dict) else failed
             trace = list(outcome.get("trace") or trace)
             history = list(outcome.get("history") or history)
@@ -3935,6 +4051,7 @@ async def _run_a11y_agent_unlocked(
             "finished_at_ts": time.time(),
             "needs_account": bool(outcome_flags.get("needs_account")),
             "signup": outcome_flags.get("signup") or {},
+            "website_eval": outcome_flags.get("website_eval") or None,
             "actions": [{"action": h} for h in history if h],
             "trace": trace,
             "backend": "browserbase_a11y",

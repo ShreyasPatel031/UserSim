@@ -240,6 +240,13 @@ class StudyState:
     queue_eta_s: int | None = None
     queue_position: int | None = None
     queued_s: float = 0.0
+    # Comparison study (mvp.fast_plan compare mode): rival display names, the
+    # product's short name, and each task's expected favorite.
+    study_mode: str = ""
+    product_name: str = ""
+    competitor_names: dict[str, str] = field(default_factory=dict)
+    task_specs: list[dict[str, Any]] = field(default_factory=list)
+    plan_personas: list[dict[str, Any]] = field(default_factory=list)
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -3841,8 +3848,16 @@ async def _run_study_body(
         try:
             from mvp.page_verdict import apply_page_verdicts
 
-            touch("Checking each final page")
-            await apply_page_verdicts(study)
+            from mvp.comparison import apply_comparison_scores
+
+            touch("Scoring each run against the rivals")
+            # Task completion (debug) and the head-to-head scores are judged in parallel.
+            outcomes = await asyncio.gather(
+                apply_page_verdicts(study), apply_comparison_scores(study), return_exceptions=True
+            )
+            for item in outcomes:
+                if isinstance(item, Exception):
+                    print(f"final-page judging failed: {item!r}", flush=True)
         except Exception as pv_exc:  # noqa: BLE001
             print(f"page verdicts skipped: {pv_exc!r}", flush=True)
 
@@ -4023,6 +4038,10 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "auth_status": study.auth_status,
             "auth_blocker": study.auth_blocker,
             "competitors": study.competitors,
+            "study_mode": study.study_mode,
+            "product_name": study.product_name,
+            "competitor_names": study.competitor_names,
+            "task_specs": study.task_specs,
             "skip_competitors": study.skip_competitors,
             "test_mode": study.test_mode,
             "backend": study.backend,

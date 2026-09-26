@@ -567,6 +567,12 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
             study.tasks_override = list(plan["tasks"])
             if not study.competitors and not study.skip_competitors:
                 study.competitors = list(plan["competitors"])
+            if plan.get("mode") == "compare":
+                study.study_mode = "compare"
+                study.product_name = str(plan.get("product") or "")
+                study.competitor_names = dict(plan.get("competitor_names") or {})
+                study.task_specs = list(plan.get("task_specs") or [])
+                study.plan_personas = list(plan.get("personas") or [])
             if not (body.segment or body.customers) and plan.get("segment"):
                 study.segment = plan["segment"]
 
@@ -891,6 +897,14 @@ def _with_report_insights(data: dict) -> dict:
         return data
     summary = dict(data.get("summary") or {})
     summary["insights"] = insights
+    try:
+        from mvp.comparison import build_comparison
+
+        comparison = build_comparison(data)
+        if comparison:
+            summary["comparison"] = comparison
+    except Exception as exc:  # noqa: BLE001
+        print(f"comparison build failed: {exc!r}", flush=True)
     if insights.get("headline"):
         summary["headline"] = insights["headline"]
     return {**data, "summary": summary}

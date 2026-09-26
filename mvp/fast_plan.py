@@ -55,6 +55,43 @@ Rules:
   when the page is the app and lists no links.
 - No quotes inside tasks. No explanations."""
 
+# Comparison study (default): who each product is best for, not whether one
+# task finished. One call returns three rivals, five target customers spread
+# across all four products, and five tasks that between them favor each one.
+_COMPARE_PROMPT = """You plan a head-to-head product comparison study. Reply with JSON only.
+Product URL: {url}
+Page title: {title}
+Page text: {text}
+Links and buttons on the page (label -> target): {links}
+
+Return:
+{{"product": "short product name",
+  "segment": "one short phrase naming who evaluates products in this category",
+  "competitors": [{{"url": "https://rival-one.com/", "name": "Rival One"}}, {{"url": "...", "name": "..."}}, {{"url": "...", "name": "..."}}],
+  "personas": [{{"name": "first and last name", "role": "job title and company type",
+                 "bio": "one sentence: situation, what they need, how they judge a tool",
+                 "favors": "product or the competitor url this person is the natural fit for",
+                 "why": "at most 15 words"}}],
+  "tasks": [{{"task": "3-8 word task", "favors": "product or a competitor url", "why": "at most 15 words"}}]}}
+
+Rules:
+- competitors: exactly three best-known direct competitors, best first, homepage URLs of real public
+  sites. A direct competitor is a standalone product in the same category that a buyer would compare
+  side by side. Never a parent company, multi-product suite homepage, marketplace or discontinued product.
+  Rivals may be sales-led (demo only); that is fine.
+- personas: exactly five realistic target customers of this category. Spread them evenly across the four
+  products: at least one natural fit for the product and at least one natural fit for each competitor
+  (for example an enterprise CS leader fits an enterprise suite, a two-person startup fits a self-serve
+  tool). favors must be "product" or one of the competitor urls exactly as written above.
+- tasks: exactly five representative jobs a buyer in this category needs done, 3-8 words each, an
+  imperative verb and a concrete object (for example "Identify at-risk customer accounts",
+  "Compare plan prices for 20 seats"). Choose them so at least one favors the product and at least one
+  favors each competitor. Each task must make sense on every one of the four sites: done in the product
+  where a trial account allows, or judged from the website (feature pages, docs, pricing, proof) where
+  the product is demo-only. Never a task that needs the customer's own outside credentials or data
+  (connect or sync a data source, API keys, payment). At most one pricing task.
+- No quotes inside strings. No explanations."""
+
 _PRICING_TASK = "Look for pricing or how to get started"
 _PRICING_RE = re.compile(r"pric|\bplans?\b|upgrade|billing|subscri", re.I)
 _STOP = {
@@ -231,10 +268,12 @@ _SUITE_HOSTS = {
 }
 
 
-def pick_competitors(items: list[Any], own: str) -> list[str]:
-    """Up to two direct rivals: not this site, not a suite vendor's bare homepage."""
+def pick_competitors(items: list[Any], own: str, limit: int = 2) -> list[str]:
+    """Up to ``limit`` direct rivals: not this site, not a suite vendor's bare homepage."""
     comps: list[str] = []
     for item in items:
+        if isinstance(item, dict):
+            item = item.get("url") or ""
         clean = _clean_url(str(item))
         parts = urlsplit(clean)
         host = (parts.hostname or "").removeprefix("www.")
@@ -243,13 +282,159 @@ def pick_competitors(items: list[Any], own: str) -> list[str]:
         if host in _SUITE_HOSTS and parts.path.strip("/") == "":
             continue
         comps.append(clean)
-        if len(comps) == 2:
+        if len(comps) == limit:
             break
     return comps
 
 
-async def plan_from_url(url: str, *, timeout: float = 9.0) -> dict[str, Any] | None:
+def _host_of(url: str) -> str:
+    return (urlsplit(_clean_url(url)).hostname or "").removeprefix("www.")
+
+
+def resolve_favors(value: Any, own: str, comps: list[str], names: dict[str, str] | None = None) -> str:
+    """'product' or the competitor URL (as picked) a persona or task favors; '' when unknown."""
+    text = str(value or "").strip()
+    low = text.lower()
+    if not text:
+        return ""
+    if low in {"product", "the product", own.lower()} or _host_of(text) == own:
+        return "product"
+    for c in comps:
+        host = _host_of(c)
+        if host and (host == _host_of(text) or host.split(".")[0] in low):
+            return c
+    for raw, name in (names or {}).items():
+        if name and name.lower() in low:
+            for c in comps:
+                if _host_of(c) == _host_of(raw):
+                    return c
+    return ""
+
+
+def compare_personas(data: dict[str, Any], own: str, comps: list[str], names: dict[str, str]) -> list[dict[str, Any]]:
+    """Five personas, each tagged with the product it is expected to favor and why."""
+    out: list[dict[str, Any]] = []
+    for item in data.get("personas") or []:
+        if not isinstance(item, dict) or not str(item.get("name") or "").strip():
+            continue
+        out.append(
+            {
+                "name": " ".join(str(item.get("name")).split())[:40],
+                "role": " ".join(str(item.get("role") or "").split())[:80],
+                "bio": " ".join(str(item.get("bio") or "").split())[:240],
+                "favors": resolve_favors(item.get("favors"), own, comps, names),
+                "favors_why": " ".join(str(item.get("why") or "").split())[:120],
+            }
+        )
+    return out[:5]
+
+
+def compare_tasks(data: dict[str, Any], own: str, comps: list[str], names: dict[str, str]) -> list[dict[str, Any]]:
+    """Up to five tasks (no customer-credential tasks, one pricing task at most)."""
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    pricing = 0
+    for item in data.get("tasks") or []:
+        if isinstance(item, str):
+            item = {"task": item}
+        if not isinstance(item, dict):
+            continue
+        text = " ".join(str(item.get("task") or "").split()).strip(" .")[:120]
+        if not text or text.lower() in seen or needs_customer_credentials(text):
+            continue
+        if _PRICING_RE.search(text):
+            pricing += 1
+            if pricing > 1:
+                continue
+        seen.add(text.lower())
+        out.append(
+            {
+                "prompt": text,
+                "favors": resolve_favors(item.get("favors"), own, comps, names),
+                "favors_why": " ".join(str(item.get("why") or "").split())[:120],
+            }
+        )
+    return out[:5]
+
+
+def compare_mode() -> bool:
+    """5 personas x 5 tasks x product + 3 rivals, scored head to head (MVP_STUDY_MODE=compare).
+
+    Off by default until the study output is agreed: a compare study is 100 agents.
+    """
+    return os.environ.get("MVP_STUDY_MODE", "classic").strip().lower() == "compare"
+
+
+async def plan_from_url(url: str, *, timeout: float | None = None) -> dict[str, Any] | None:
     """{"segment", "competitors", "tasks"} for a bare URL, or None on any failure."""
+    if compare_mode():
+        plan = await compare_plan_from_url(url, timeout=timeout or float(os.environ.get("MVP_COMPARE_PLAN_TIMEOUT_S", "25")))
+        if plan:
+            return plan
+    return await _classic_plan_from_url(url, timeout=timeout or 9.0)
+
+
+async def compare_plan_from_url(url: str, *, timeout: float = 25.0) -> dict[str, Any] | None:
+    """Comparison plan: 3 rivals, 5 personas spread across all 4 products, 5 tasks favoring each."""
+    from capability.gemini_config import extract_json, gemini_chat
+
+    async def _run() -> dict[str, Any] | None:
+        read = await _page_read(url)
+        prompt = _COMPARE_PROMPT.format(
+            url=url, title=read.get("title") or "", text=read.get("text") or "", links=_links_for_prompt(read)
+        )
+        raw = await gemini_chat(
+            [{"role": "user", "content": prompt}],
+            model=os.environ.get("MVP_FAST_PLAN_MODEL") or "gemini-2.5-flash",
+            temperature=0.3,
+            json_mode=True,
+            max_retries=2,
+        )
+        data = extract_json(raw)
+        if not isinstance(data, dict):
+            return None
+        own = (urlsplit(url).hostname or "").removeprefix("www.")
+        items = list(data.get("competitors") or [])
+        names = {
+            _clean_url(str(i.get("url") or "")): str(i.get("name") or "")
+            for i in items
+            if isinstance(i, dict)
+        }
+        raw_comps = pick_competitors(items, own, limit=3)
+        if not raw_comps:
+            return None
+        from mvp.server import _landing_url
+
+        landed = list(await asyncio.gather(*(_landing_url(c) for c in raw_comps)))
+        # Tags were written against the planner's URLs; map them to where the rival lands.
+        personas = compare_personas(data, own, raw_comps, names)
+        tasks = compare_tasks(data, own, raw_comps, names)
+        remap = dict(zip(raw_comps, landed))
+        for row in personas + tasks:
+            row["favors"] = remap.get(row["favors"], row["favors"])
+        if len(tasks) < 2 or len(personas) < 2:
+            return None
+        comp_names = {remap.get(k, k): v for k, v in names.items() if k in remap}
+        print(f"[fast_plan] compare {url} rivals={landed} tasks={[t['prompt'] for t in tasks]}", flush=True)
+        return {
+            "mode": "compare",
+            "product": str(data.get("product") or "")[:60],
+            "segment": " ".join(str(data.get("segment") or "").split())[:140],
+            "competitors": landed,
+            "competitor_names": comp_names,
+            "personas": personas,
+            "task_specs": tasks,
+            "tasks": [t["prompt"] for t in tasks],
+        }
+
+    try:
+        return await asyncio.wait_for(_run(), timeout=timeout)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fast_plan] compare plan skipped: {exc!r}", flush=True)
+        return None
+
+
+async def _classic_plan_from_url(url: str, *, timeout: float = 9.0) -> dict[str, Any] | None:
     from capability.gemini_config import extract_json, gemini_chat
 
     async def _run() -> dict[str, Any] | None:
