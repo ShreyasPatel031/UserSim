@@ -1441,6 +1441,9 @@ class A11yBoot:
         self._started = 0.0
         self._tasks: list[asyncio.Task] = []
         self.published = asyncio.Event()
+        # Held until this agent's own page-open stamp. A visible row with no
+        # page_open_at_ts aborts the whole study.
+        self.opening: dict[str, dict[str, Any]] = {}
 
     def lock_for(self, site_key: str) -> asyncio.Lock:
         """One agent at a time per browser. Parallel tabs were closing the session."""
@@ -2795,7 +2798,11 @@ async def _run_a11y_agent_unlocked(
     """
     from mvp.paths import MVP_RUNS_DIR
 
-    sess = boot.study.live_sessions.get(agent_id) or {}
+    sess = (
+        boot.study.live_sessions.get(agent_id)
+        or getattr(boot, "opening", {}).get(agent_id)
+        or {}
+    )
     failed: dict[str, Any] | None = None
     stop_reason = ""
     signup_url = ""
@@ -2851,6 +2858,7 @@ async def _run_a11y_agent_unlocked(
                 },
             )
             boot.study.live_sessions[agent_id] = sess
+            getattr(boot, "opening", {}).pop(agent_id, None)
             if not any(
                 isinstance(step, dict) and int(step.get("step") or -1) == 0 for step in trace
             ):

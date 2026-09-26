@@ -3148,8 +3148,12 @@ async def run_study(
                     if a11y_boot is not None:
                         # Do not wait on the shared read. That wait serialized
                         # competitor browsers and blew time-to-first-action.
-                        # This agent opens its own page and stamps the clock.
-                        sess = study.live_sessions.get(agent_id) or {
+                        # Keep the row off the polled study until this agent's
+                        # own page-open stamp. A visible row with no stamp
+                        # aborts every agent.
+                        sess = study.live_sessions.get(agent_id) or getattr(
+                            a11y_boot, "opening", {}
+                        ).get(agent_id) or {
                             "agent_id": agent_id,
                             "persona_id": persona.get("id"),
                             "persona_name": persona.get("name"),
@@ -3163,7 +3167,8 @@ async def run_study(
                             "num_steps": 0,
                             "status": "running",
                         }
-                        study.live_sessions[agent_id] = sess
+                        if agent_id not in study.live_sessions:
+                            a11y_boot.opening[agent_id] = sess
                     else:
                         sess = study.live_sessions.setdefault(
                             agent_id,
