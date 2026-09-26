@@ -19,6 +19,7 @@ from mvp.a11y_agent import (
     goal_visible,
     invented_excalidraw_action,
     stamp_published_step,
+    tree_action,
     note_progress,
     offhost_excalidraw_tool,
     trace_canvas,
@@ -183,25 +184,53 @@ class A11yAgentTest(unittest.TestCase):
         self.assertFalse(would_repeat_action(trace[:2], "click Export image", read))
         self.assertTrue(would_repeat_action(trace, "click Export image", read))
         self.assertIsNone(
-            invented_excalidraw_action(
+            tree_action(
                 "Find how to export or share the drawing",
                 {"url": "https://miro.com/", "nodes": []},
             )
         )
-        export = invented_excalidraw_action(
-            "Find how to export or share the drawing",
-            {"url": "https://excalidraw.com/", "text": "Export image..."},
+        export = tree_action(
+            "Find how to export or share",
+            {
+                "url": "https://www.tldraw.com/",
+                "nodes": [{"i": 3, "role": "menuitem", "name": "Export as PNG", "x": 40, "y": 120}],
+            },
         )
-        self.assertEqual(export["name"], "Export image")
-        rectangle = invented_excalidraw_action(
+        self.assertEqual(export["name"], "Export as PNG")
+        self.assertEqual(export["x"], 40)
+        self.assertEqual(
+            invented_excalidraw_action(
+                "Find how to export or share",
+                {
+                    "url": "https://www.tldraw.com/",
+                    "nodes": [{"i": 3, "role": "menuitem", "name": "Export as PNG", "x": 40, "y": 120}],
+                },
+            )["name"],
+            "Export as PNG",
+        )
+        rectangle = tree_action(
             "Draw a simple box",
-            {"url": "https://excalidraw.com/", "text": "Pick a tool"},
+            {
+                "url": "https://www.tldraw.com/",
+                "nodes": [{"i": 1, "role": "button", "name": "Rectangle", "x": 80, "y": 40}],
+            },
         )
         self.assertEqual(rectangle["name"], "Rectangle")
+        self.assertEqual(rectangle["act"], "click")
+        drag = tree_action(
+            "Draw a simple box",
+            {
+                "url": "https://www.tldraw.com/",
+                "text": "canvas",
+                "nodes": [{"i": 9, "role": "canvas", "name": "canvas", "x": 400, "y": 300, "w": 800, "h": 600}],
+            },
+            history=["click Rectangle"],
+        )
+        self.assertEqual(drag["act"], "drag")
         self.assertIsNone(
-            invented_excalidraw_action(
+            tree_action(
                 "Draw a simple box",
-                {"url": "https://miro.com/", "text": "Whiteboard"},
+                {"url": "https://miro.com/", "text": "Whiteboard", "nodes": []},
             )
         )
         self.assertTrue(
@@ -221,7 +250,7 @@ class A11yAgentTest(unittest.TestCase):
             "dark=10",
         )
         self.assertEqual(
-            trace_canvas("dark=0", "dark=20", "https://excalidraw.com/", "Draw a simple box"),
+            trace_canvas("dark=0", "dark=20", "https://www.tldraw.com/", "Draw a simple box"),
             "dark=20",
         )
         step = {

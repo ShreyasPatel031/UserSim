@@ -710,46 +710,127 @@ def would_repeat_action(trace: list[dict[str, Any]], label: str, read: dict[str,
     return streak >= 3
 
 
+_SHAPE_WORDS = (
+    "rectangle",
+    "square",
+    "ellipse",
+    "circle",
+    "diamond",
+    "triangle",
+    "arrow",
+    "line",
+    "pencil",
+    "shape",
+    "geo",
+)
+_EXPORT_WORDS = ("export", "share", "download")
+_HELP_WORDS = ("help", "support", "shortcut", "contact")
+
+
+def _click_from_node(node: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "act": "click",
+        "i": int(node.get("i") or 0),
+        "name": str(node.get("name") or "")[:80],
+        "role": str(node.get("role") or ""),
+        "href": str(node.get("href") or "")[:180],
+        "x": int(node.get("x") or 0),
+        "y": int(node.get("y") or 0),
+    }
+
+
+def _live_nodes(read: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        node
+        for node in (read or {}).get("nodes") or []
+        if isinstance(node, dict) and not node.get("inert")
+    ]
+
+
+def _find_named(
+    nodes: list[dict[str, Any]],
+    words: tuple[str, ...],
+    skip: set[str],
+) -> dict[str, Any] | None:
+    """First control whose accessible name contains one of the words."""
+    for node in nodes:
+        name = str(node.get("name") or "").lower()
+        if not name or name in skip:
+            continue
+        href = str(node.get("href") or "").lower()
+        if href and href in skip:
+            continue
+        if any(word in name for word in words):
+            return node
+    return None
+
+
+def _shape_words_for(task: str) -> tuple[str, ...]:
+    low = (task or "").lower()
+    if any(word in low for word in ("box", "rectangle", "square")):
+        return ("rectangle", "square", "ellipse", "circle", "diamond", "triangle", "shape", "geo")
+    return _SHAPE_WORDS
+
+
+def _find_shape(nodes: list[dict[str, Any]], task: str, skip: set[str]) -> dict[str, Any] | None:
+    for word in _shape_words_for(task):
+        found = _find_named(nodes, (word,), skip)
+        if found:
+            return found
+    return None
+
+
+def _shape_chosen(history: list[str] | None, text: str) -> bool:
+    done = [item.lower() for item in (history or [])]
+    if "selected shape" in (text or "").lower():
+        return True
+    return any(any(word in item for word in _SHAPE_WORDS) for item in done)
+
+
+def tree_action(
+    task: str,
+    read: dict[str, Any],
+    history: list[str] | None = None,
+    skip: set[str] | None = None,
+) -> dict[str, Any] | None:
+    """Choose a click or drag from the live tree. No site-specific shortcut.
+
+    A draw task clicks a shape tool when the tree has one, then drags on the
+    largest canvas. Export and help click a control whose name matches, on
+    whatever site this page is. A name that is not in the tree is not invented.
+    """
+    kind = task_kind(task)
+    skipped = {item.lower() for item in (skip or set())}
+    nodes = _live_nodes(read)
+    text = str((read or {}).get("text") or "")
+    if kind == "draw":
+        if _canvas_box(nodes) and _shape_chosen(history, text):
+            return {"act": "drag", "i": -1, "name": "canvas", "role": "canvas", "href": ""}
+        found = _find_shape(nodes, task, skipped)
+        if found:
+            return _click_from_node(found)
+        return None
+    if kind == "export":
+        found = _find_named(nodes, _EXPORT_WORDS, skipped)
+        if found:
+            return _click_from_node(found)
+        return None
+    if kind == "help":
+        found = _find_named(nodes, _HELP_WORDS, skipped)
+        if found:
+            return _click_from_node(found)
+        return None
+    return None
+
+
 def invented_excalidraw_action(
     task: str,
     read: dict[str, Any],
     history: list[str] | None = None,
     skip: set[str] | None = None,
 ) -> dict[str, Any] | None:
-    """Rectangle drag and Export image exist only on excalidraw.com.
-
-    Competitors such as Miro do not have those controls. Inventing the click
-    there repeats until the harness aborts every agent in the study.
-    """
-    if _host(str((read or {}).get("url") or "")) != "excalidraw.com":
-        return None
-    kind = task_kind(task)
-    skipped = skip or set()
-    done = [item.lower() for item in (history or [])]
-    if kind == "draw":
-        selected = "selected shape" in str((read or {}).get("text") or "").lower() or any(
-            "rectangle" in item for item in done
-        )
-        if selected:
-            return {"act": "drag", "i": -1, "name": "canvas", "role": "canvas", "href": ""}
-        if "rectangle" in skipped:
-            return None
-        return {"act": "click", "i": -1, "name": "Rectangle", "role": "button", "href": ""}
-    if kind == "export":
-        if "export image" in str((read or {}).get("text") or "").lower():
-            if "export image" in skipped:
-                return None
-            return {
-                "act": "click",
-                "i": -1,
-                "name": "Export image",
-                "role": "menuitem",
-                "href": "",
-            }
-        if "menu" in skipped:
-            return None
-        return {"act": "click", "i": -1, "name": "Menu", "role": "button", "href": ""}
-    return None
+    """Backward-compatible name. The choice comes from the tree on any host."""
+    return tree_action(task, read, history, skip)
 
 
 def offhost_excalidraw_tool(action: dict[str, Any], url: str) -> bool:
@@ -768,9 +849,11 @@ def offhost_excalidraw_tool(action: dict[str, Any], url: str) -> bool:
 def trace_canvas(previous: str, current: str, url: str, task: str) -> str:
     """Canvas sample stored on a trace step.
 
-    Flicker on any site except an Excalidraw drawing is not a new page.
+    A drawing stores the new sample on any host. Every other task keeps the
+    previous sample so a flickering hero image is not a new page.
     """
-    if _host(url) == "excalidraw.com" and task_kind(task) == "draw":
+    del url
+    if task_kind(task) == "draw":
         return current or ""
     return previous or ""
 
@@ -1952,35 +2035,45 @@ async def complete_task_on_page(
             print(f"[{agent_id}] no progress: {stuck_reason}", flush=True)
             _miss()
             break
-        model_read = dict(read)
-        model_read["nodes"] = _nodes_for_model(list(read.get("nodes") or []), skip)
-        try:
-            action = await asyncio.wait_for(
-                _model_action(
-                    task=task,
-                    read=model_read,
-                    history=history,
-                    changed_nothing=changed_nothing,
-                ),
-                timeout=20,
-            )
-        except asyncio.TimeoutError:
-            print(f"[{agent_id}] model action timed out", flush=True)
-            action = None
         source = "model"
-        if not isinstance(action, dict):
-            invented = invented_excalidraw_action(task, read, history, skip)
-            if invented is not None:
-                action = invented
-                source = "excalidraw"
-            else:
-                model_misses += 1
-                if model_misses >= 3:
-                    _miss("model returned no action")
-                    break
-                changed_nothing = True
-                history.append("model returned no action")
-                continue
+        action: dict[str, Any] | None = None
+        if not acted_once:
+            # The first click leaves from the live tree. It does not wait on
+            # the model, and it is not a copy of page_open_at_ts.
+            action = tree_action(task, read, history, skip)
+            if not isinstance(action, dict):
+                action = pick_action(task, _live_nodes(read) or list(read.get("nodes") or []))
+            source = "tree"
+        else:
+            model_read = dict(read)
+            model_read["nodes"] = _nodes_for_model(list(read.get("nodes") or []), skip)
+            try:
+                action = await asyncio.wait_for(
+                    _model_action(
+                        task=task,
+                        read=model_read,
+                        history=history,
+                        changed_nothing=changed_nothing,
+                    ),
+                    timeout=20,
+                )
+            except asyncio.TimeoutError:
+                print(f"[{agent_id}] model action timed out", flush=True)
+                action = None
+            source = "model"
+            if not isinstance(action, dict):
+                invented = tree_action(task, read, history, skip)
+                if invented is not None:
+                    action = invented
+                    source = "tree"
+                else:
+                    model_misses += 1
+                    if model_misses >= 3:
+                        _miss("model returned no action")
+                        break
+                    changed_nothing = True
+                    history.append("model returned no action")
+                    continue
         model_misses = 0
         if str(action.get("act")) == "done":
             if goal_visible(task, read):
@@ -1996,9 +2089,8 @@ async def complete_task_on_page(
             stuck_streak = 0
             continue
         chosen = str(action.get("name") or "").strip().lower()
-        if offhost_excalidraw_tool(action, str(read.get("url") or url)):
-            # Do not invent Rectangle / Export image / canvas drag on Miro.
-            # Recording that click three times aborts the whole study.
+        if source != "tree" and offhost_excalidraw_tool(action, str(read.get("url") or url)):
+            # A model shortcut that names an Excalidraw tool is not in this tree.
             skip.add(chosen or "export")
             offhost_refusals += 1
             if offhost_refusals >= 2 or would_repeat_action(trace, action_label(action), read):
@@ -2011,21 +2103,26 @@ async def complete_task_on_page(
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
-        if (
-            task_kind(task) == "draw"
-            and _host(str(read.get("url") or url)) == "excalidraw.com"
-            and str(action.get("act")) != "drag"
-        ):
-            # The rectangle tool is selected. The next move is a canvas drag,
-            # not the export menu.
-            selected = "selected shape" in str(read.get("text") or "").lower() or any(
-                "rectangle" in item.lower() for item in history
-            )
-            if selected and not goal_visible(task, read):
+        if source != "tree" and task_kind(task) == "draw":
+            # Any canvas app: click the shape the tree shows, then drag.
+            nodes = _live_nodes(read)
+            page_text = str(read.get("text") or "")
+            if not _shape_chosen(history, page_text):
+                shape = _find_shape(nodes, task, skip)
+                picked = str(action.get("name") or "").lower()
+                if shape is not None and not any(word in picked for word in _shape_words_for(task)):
+                    action = _click_from_node(shape)
+                    source = "tree"
+            elif (
+                str(action.get("act")) != "drag"
+                and _canvas_box(nodes)
+                and not goal_visible(task, read)
+            ):
                 action = dict(action)
                 action["act"] = "drag"
                 action["name"] = "canvas"
                 action["role"] = "canvas"
+                source = "tree"
         if str(action.get("act")) == "drag":
             box = _canvas_box(list(read.get("nodes") or []))
             if box:
@@ -2068,13 +2165,16 @@ async def complete_task_on_page(
                 break
             print(f"[{agent_id}] action error (continuing): {exc!r}", flush=True)
             how = f"error:{exc!r}"[:180]
-        acted_once = True
         if how in {"scroll", "type", "drag", "role", "xy", "text"}:
+            acted_once = True
+            # Real click clock. It is not page_open_at_ts.
             row["first_action_at_ts"] = time.time()
             if on_step is not None:
                 maybe = on_step(row)
                 if asyncio.iscoroutine(maybe):
                     await maybe
+        elif how != "timeout":
+            acted_once = True
         await _wait_for_page(page)
         after = await _fresh_read(page, str(read.get("url") or url))
         if (
