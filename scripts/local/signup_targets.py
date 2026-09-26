@@ -39,6 +39,8 @@ def _run_one(
         "mvp.auto_signup",
         "--url",
         url,
+        "--host",
+        key,
         "--timeout",
         str(timeout_s),
         "--max-steps",

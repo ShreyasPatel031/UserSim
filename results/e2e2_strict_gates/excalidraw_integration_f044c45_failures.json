@@ -1,0 +1,130 @@
+{
+  "study_id": "34e75538-b5ee-4e64-95cd-a313693c5014",
+  "product_url": "https://excalidraw.com",
+  "abort": "no_first_action",
+  "reason": "missing field page_open_at_ts: 6/6 agents have no page-open or session-ready stamp",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 0,
+    "no_first_action": 6
+  },
+  "phase_counts": [
+    {
+      "phase": "missing field failed_step_phase",
+      "n": 6
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t1__p1__product",
+      "site_key": "product",
+      "task": "Draw a simple box",
+      "type": "no_first_action",
+      "judge_reason": "t1__p1__product phase=Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps error= last_action=Opening https://excalidraw.com",
+      "phase": "Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=34e75538-b5ee-4e64-95cd-a313693c5014&agent=t1__p1__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "missing field final_url",
+      "step": null
+    },
+    {
+      "agent_id": "t1__p1__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://www.tldraw.com/, not on the original product.\nDraw a simple box\n\nYou are evaluating the competitor site https://www.tldraw.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://www.tldraw.com/ is correct; do not treat that as a mistake.",
+      "type": "no_first_action",
+      "judge_reason": "t1__p1__competitor_1 phase=Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps error= last_action=Opening https://excalidraw.com",
+      "phase": "Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=34e75538-b5ee-4e64-95cd-a313693c5014&agent=t1__p1__competitor_1&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "missing field final_url",
+      "step": null
+    },
+    {
+      "agent_id": "t1__p1__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://miro.com/, not on the original product.\nDraw a simple box\n\nYou are evaluating the competitor site https://miro.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://miro.com/ is correct; do not treat that as a mistake.",
+      "type": "no_first_action",
+      "judge_reason": "t1__p1__competitor_2 phase=Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps error= last_action=Opening https://excalidraw.com",
+      "phase": "Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=34e75538-b5ee-4e64-95cd-a313693c5014&agent=t1__p1__competitor_2&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "missing field final_url",
+      "step": null
+    },
+    {
+      "agent_id": "t2__p1__product",
+      "site_key": "product",
+      "task": "Find how to export or share",
+      "type": "no_first_action",
+      "judge_reason": "t2__p1__product phase=Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps error= last_action=Opening https://excalidraw.com",
+      "phase": "Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=34e75538-b5ee-4e64-95cd-a313693c5014&agent=t2__p1__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "missing field final_url",
+      "step": null
+    },
+    {
+      "agent_id": "t2__p1__competitor_1",
+      "site_key": "competitor_1",
+      "task": "Apply this task on the competitor website https://www.tldraw.com/, not on the original product.\nFind how to export or share\n\nYou are evaluating the competitor site https://www.tldraw.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://www.tldraw.com/ is correct; do not treat that as a mistake.",
+      "type": "no_first_action",
+      "judge_reason": "t2__p1__competitor_1 phase=Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps error= last_action=Opening https://excalidraw.com",
+      "phase": "Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=34e75538-b5ee-4e64-95cd-a313693c5014&agent=t2__p1__competitor_1&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "missing field final_url",
+      "step": null
+    },
+    {
+      "agent_id": "t2__p1__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://miro.com/, not on the original product.\nFind how to export or share\n\nYou are evaluating the competitor site https://miro.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://miro.com/ is correct; do not treat that as a mistake.",
+      "type": "no_first_action",
+      "judge_reason": "t2__p1__competitor_2 phase=Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps error= last_action=Opening https://excalidraw.com",
+      "phase": "Live browser agents \u2014 0/6 done \u00b7 6 active \u00b7 0 queued \u00b7 0 steps",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=34e75538-b5ee-4e64-95cd-a313693c5014&agent=t2__p1__competitor_2&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "missing field final_url",
+      "step": null
+    }
+  ]
+}

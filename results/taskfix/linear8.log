@@ -1,0 +1,431 @@
+released browserbase owner=taskfix study=* {'found': 4, 'released': 0, 'failed': [], 'session_ids': [], 'kept_prime': 4, 'owner': 'taskfix', 'study_id': None}
+→ open http://127.0.0.1:3000/?max_agents=8 url=https://linear.app
+→ click Run (not Smoke)
+  [0s] status=None users=0 tasks=0 sites=1 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=
+  [0s] status=running users=5 tasks=2 sites=1 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=Finding competitors
+  [1s] status=running users=5 tasks=2 sites=1 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=Finding competitors
+  [1s] status=running users=5 tasks=2 sites=1 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=Finding competitors
+  [2s] status=running users=5 tasks=2 sites=1 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=Finding competitors
+  first_task_created +2.5s n=8
+  all_tasks_created +2.5s n=8
+  first_value +2.1s agent=t1__p1__product
+  [2s] status=running users=5 tasks=2 sites=1 agents=8 acted=8/8 ttfa_median=0.004 ttfa_max=0.004 since_task=0s steps=16 done=0 page_open=8/8 phase=Finding competitors
+  [2s] status=running users=5 tasks=2 sites=1 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=16 done=0 page_open=8/8 phase=Finding competitors
+  [3s] status=running users=5 tasks=2 sites=1 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=16 done=0 page_open=8/8 phase=Finding competitors
+  [3s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=16 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 16 ste
+  [4s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=16 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 16 ste
+  [4s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=16 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 16 ste
+  [4s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=17 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 17 ste
+  [5s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=17 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 17 ste
+  [5s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=17 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 17 ste
+  [6s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=17 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 17 ste
+  [6s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 18 ste
+  [6s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 18 ste
+  [7s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 18 ste
+  [7s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 18 ste
+  [8s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 18 ste
+  [8s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 18 ste
+  [9s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 18 ste
+  [9s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 8 active · 18 ste
+  [9s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=1 page_open=8/8 phase=Live browser agents — 1/6 done · 7 active · 18 ste
+  [10s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=1 page_open=8/8 phase=Live browser agents — 1/6 done · 7 active · 18 ste
+  [10s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=18 done=1 page_open=8/8 phase=Live browser agents — 1/6 done · 7 active · 18 ste
+  [11s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=1 page_open=8/8 phase=Live browser agents — 1/6 done · 7 active · 19 ste
+  [11s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=2 page_open=8/8 phase=Live browser agents — 2/6 done · 6 active · 19 ste
+  [11s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=2 page_open=8/8 phase=Live browser agents — 2/6 done · 6 active · 19 ste
+  [12s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=3 page_open=8/8 phase=Live browser agents — 3/6 done · 5 active · 19 ste
+  [12s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=3 page_open=8/8 phase=Live browser agents — 3/6 done · 5 active · 19 ste
+  [13s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=3 page_open=8/8 phase=Live browser agents — 3/6 done · 5 active · 19 ste
+  [13s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=3 page_open=8/8 phase=Live browser agents — 3/6 done · 5 active · 19 ste
+  [13s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=4 page_open=8/8 phase=Live browser agents — 4/6 done · 4 active · 19 ste
+  [14s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=4 page_open=8/8 phase=Live browser agents — 4/6 done · 4 active · 19 ste
+  [14s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=4 page_open=8/8 phase=Live browser agents — 4/6 done · 4 active · 19 ste
+  [15s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=5 page_open=8/8 phase=Live browser agents — 5/6 done · 3 active · 19 ste
+  [15s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=5 page_open=8/8 phase=Live browser agents — 5/6 done · 3 active · 19 ste
+  [15s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=6 page_open=8/8 phase=Live browser agents — 6/6 done · 2 active · 19 ste
+  [16s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=6 page_open=8/8 phase=Writing executive summary
+  [16s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=6 page_open=8/8 phase=Writing executive summary
+  [17s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=6 page_open=8/8 phase=Writing executive summary
+  [17s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=6 page_open=8/8 phase=Writing executive summary
+  [17s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=6 page_open=8/8 phase=Writing executive summary
+  [18s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=6 page_open=8/8 phase=Writing executive summary
+  [18s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=6 page_open=8/8 phase=Writing executive summary
+  [19s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=6 page_open=8/8 phase=Writing executive summary
+  report_ready +19.2s
+  [19s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=19 done=6 page_open=8/8 phase=Complete
+  [20s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=1s steps=19 done=6 page_open=8/8 phase=Complete
+  [20s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=1s steps=19 done=6 page_open=8/8 phase=Complete
+  [20s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=2s steps=19 done=6 page_open=8/8 phase=Complete
+  [21s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=2s steps=19 done=6 page_open=8/8 phase=Complete
+  [21s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=2s steps=19 done=6 page_open=8/8 phase=Complete
+  [22s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=3s steps=19 done=6 page_open=8/8 phase=Complete
+  [22s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=3s steps=19 done=6 page_open=8/8 phase=Complete
+  [22s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=4s steps=19 done=6 page_open=8/8 phase=Complete
+  [23s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=4s steps=19 done=6 page_open=8/8 phase=Complete
+  [23s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=5s steps=19 done=6 page_open=8/8 phase=Complete
+  [24s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=5s steps=19 done=6 page_open=8/8 phase=Complete
+  [24s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=5s steps=19 done=6 page_open=8/8 phase=Complete
+  [24s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=6s steps=19 done=6 page_open=8/8 phase=Complete
+  [25s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=6s steps=19 done=6 page_open=8/8 phase=Complete
+  [25s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=7s steps=19 done=6 page_open=8/8 phase=Complete
+  [26s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=7s steps=19 done=6 page_open=8/8 phase=Complete
+  [26s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=7s steps=19 done=6 page_open=8/8 phase=Complete
+  [26s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=8s steps=19 done=6 page_open=8/8 phase=Complete
+  [27s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=8s steps=19 done=6 page_open=8/8 phase=Complete
+  [27s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=9s steps=19 done=6 page_open=8/8 phase=Complete
+  [28s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=9s steps=19 done=6 page_open=8/8 phase=Complete
+  [28s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=9s steps=19 done=6 page_open=8/8 phase=Complete
+  [29s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=10s steps=19 done=6 page_open=8/8 phase=Complete
+  [29s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=10s steps=19 done=6 page_open=8/8 phase=Complete
+  [29s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=11s steps=19 done=6 page_open=8/8 phase=Complete
+  [30s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=11s steps=19 done=6 page_open=8/8 phase=Complete
+  [30s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=11s steps=19 done=6 page_open=8/8 phase=Complete
+  [31s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=12s steps=19 done=6 page_open=8/8 phase=Complete
+  [31s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=12s steps=19 done=6 page_open=8/8 phase=Complete
+  [31s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=13s steps=19 done=6 page_open=8/8 phase=Complete
+  [32s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=13s steps=19 done=6 page_open=8/8 phase=Complete
+  [32s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=14s steps=19 done=6 page_open=8/8 phase=Complete
+  [33s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=14s steps=19 done=6 page_open=8/8 phase=Complete
+  [33s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=14s steps=19 done=6 page_open=8/8 phase=Complete
+  [33s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=15s steps=19 done=6 page_open=8/8 phase=Complete
+  [34s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=15s steps=19 done=6 page_open=8/8 phase=Complete
+  [34s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=16s steps=19 done=6 page_open=8/8 phase=Complete
+  [35s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=16s steps=19 done=6 page_open=8/8 phase=Complete
+  [35s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=16s steps=19 done=6 page_open=8/8 phase=Complete
+  [36s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=17s steps=19 done=6 page_open=8/8 phase=Complete
+  [36s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=17s steps=19 done=6 page_open=8/8 phase=Complete
+  [36s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=18s steps=19 done=6 page_open=8/8 phase=Complete
+  [37s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=18s steps=19 done=6 page_open=8/8 phase=Complete
+  [37s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=18s steps=19 done=6 page_open=8/8 phase=Complete
+  [38s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=19s steps=19 done=6 page_open=8/8 phase=Complete
+  [38s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=19s steps=19 done=6 page_open=8/8 phase=Complete
+  [38s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=20s steps=19 done=6 page_open=8/8 phase=Complete
+  [39s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=20s steps=19 done=6 page_open=8/8 phase=Complete
+  [39s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=20s steps=19 done=6 page_open=8/8 phase=Complete
+  [40s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=21s steps=19 done=6 page_open=8/8 phase=Complete
+  [40s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=21s steps=19 done=6 page_open=8/8 phase=Complete
+  [40s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=22s steps=19 done=6 page_open=8/8 phase=Complete
+  [41s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=22s steps=19 done=6 page_open=8/8 phase=Complete
+  [41s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=23s steps=19 done=6 page_open=8/8 phase=Complete
+  [42s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=23s steps=19 done=6 page_open=8/8 phase=Complete
+  [42s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=23s steps=19 done=6 page_open=8/8 phase=Complete
+  [42s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=24s steps=19 done=6 page_open=8/8 phase=Complete
+  [43s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=24s steps=19 done=6 page_open=8/8 phase=Complete
+  [43s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=25s steps=19 done=6 page_open=8/8 phase=Complete
+  [44s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=25s steps=19 done=6 page_open=8/8 phase=Complete
+  [44s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=25s steps=19 done=6 page_open=8/8 phase=Complete
+  [45s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=26s steps=19 done=6 page_open=8/8 phase=Complete
+  [45s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=26s steps=19 done=6 page_open=8/8 phase=Complete
+  [45s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=27s steps=19 done=6 page_open=8/8 phase=Complete
+  [46s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=27s steps=19 done=6 page_open=8/8 phase=Complete
+  [46s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=27s steps=19 done=6 page_open=8/8 phase=Complete
+  [47s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=28s steps=19 done=6 page_open=8/8 phase=Complete
+  [47s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=28s steps=19 done=6 page_open=8/8 phase=Complete
+  [47s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=29s steps=19 done=6 page_open=8/8 phase=Complete
+  [48s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=29s steps=19 done=6 page_open=8/8 phase=Complete
+  [48s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=30s steps=19 done=6 page_open=8/8 phase=Complete
+  [49s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=30s steps=19 done=6 page_open=8/8 phase=Complete
+  [49s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=30s steps=19 done=6 page_open=8/8 phase=Complete
+  [49s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=31s steps=19 done=6 page_open=8/8 phase=Complete
+  [50s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=31s steps=19 done=6 page_open=8/8 phase=Complete
+  [50s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=32s steps=19 done=6 page_open=8/8 phase=Complete
+  [51s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=32s steps=19 done=6 page_open=8/8 phase=Complete
+  [51s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=32s steps=19 done=6 page_open=8/8 phase=Complete
+  [51s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=33s steps=19 done=6 page_open=8/8 phase=Complete
+  [52s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=33s steps=19 done=6 page_open=8/8 phase=Complete
+  [52s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=34s steps=19 done=6 page_open=8/8 phase=Complete
+  [53s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=34s steps=19 done=6 page_open=8/8 phase=Complete
+  [53s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=34s steps=19 done=6 page_open=8/8 phase=Complete
+  [54s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=35s steps=19 done=6 page_open=8/8 phase=Complete
+  [54s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=35s steps=19 done=6 page_open=8/8 phase=Complete
+  [54s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=36s steps=19 done=6 page_open=8/8 phase=Complete
+  [55s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=36s steps=19 done=6 page_open=8/8 phase=Complete
+  [55s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=36s steps=19 done=6 page_open=8/8 phase=Complete
+  [56s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=37s steps=19 done=6 page_open=8/8 phase=Complete
+  [56s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=37s steps=19 done=6 page_open=8/8 phase=Complete
+  [56s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=38s steps=19 done=6 page_open=8/8 phase=Complete
+  [57s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=38s steps=19 done=6 page_open=8/8 phase=Complete
+  [57s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=39s steps=19 done=6 page_open=8/8 phase=Complete
+  [58s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=39s steps=19 done=6 page_open=8/8 phase=Complete
+  [58s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=39s steps=19 done=6 page_open=8/8 phase=Complete
+  [58s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=40s steps=19 done=6 page_open=8/8 phase=Complete
+  [59s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=40s steps=19 done=6 page_open=8/8 phase=Complete
+  [59s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=41s steps=19 done=6 page_open=8/8 phase=Complete
+  [60s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=41s steps=19 done=6 page_open=8/8 phase=Complete
+  [60s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=41s steps=19 done=6 page_open=8/8 phase=Complete
+  [60s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=42s steps=19 done=6 page_open=8/8 phase=Complete
+  [61s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=42s steps=19 done=6 page_open=8/8 phase=Complete
+  [61s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=43s steps=19 done=6 page_open=8/8 phase=Complete
+  [62s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=43s steps=19 done=6 page_open=8/8 phase=Complete
+  [62s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=43s steps=19 done=6 page_open=8/8 phase=Complete
+  [63s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=44s steps=19 done=6 page_open=8/8 phase=Complete
+  [63s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=44s steps=19 done=6 page_open=8/8 phase=Complete
+  [63s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=45s steps=19 done=6 page_open=8/8 phase=Complete
+  [64s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=45s steps=19 done=6 page_open=8/8 phase=Complete
+  [64s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=45s steps=19 done=6 page_open=8/8 phase=Complete
+  [65s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=46s steps=19 done=6 page_open=8/8 phase=Complete
+  [65s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=46s steps=19 done=6 page_open=8/8 phase=Complete
+  [65s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=47s steps=19 done=6 page_open=8/8 phase=Complete
+  [66s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=47s steps=19 done=6 page_open=8/8 phase=Complete
+  [66s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=48s steps=19 done=6 page_open=8/8 phase=Complete
+  [67s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=48s steps=19 done=6 page_open=8/8 phase=Complete
+  [67s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=48s steps=19 done=6 page_open=8/8 phase=Complete
+  [67s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=49s steps=19 done=6 page_open=8/8 phase=Complete
+  [68s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=49s steps=19 done=6 page_open=8/8 phase=Complete
+  [68s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=50s steps=19 done=6 page_open=8/8 phase=Complete
+  [69s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=50s steps=19 done=6 page_open=8/8 phase=Complete
+  [69s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=50s steps=19 done=6 page_open=8/8 phase=Complete
+  [69s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=51s steps=19 done=6 page_open=8/8 phase=Complete
+  [70s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=51s steps=19 done=6 page_open=8/8 phase=Complete
+  [70s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=52s steps=19 done=6 page_open=8/8 phase=Complete
+  [71s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=52s steps=19 done=6 page_open=8/8 phase=Complete
+  [71s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=52s steps=19 done=6 page_open=8/8 phase=Complete
+  [72s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=53s steps=19 done=6 page_open=8/8 phase=Complete
+  [72s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=53s steps=19 done=6 page_open=8/8 phase=Complete
+  [72s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=54s steps=19 done=6 page_open=8/8 phase=Complete
+  [73s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=54s steps=19 done=6 page_open=8/8 phase=Complete
+  [73s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=54s steps=19 done=6 page_open=8/8 phase=Complete
+  [74s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=55s steps=19 done=6 page_open=8/8 phase=Complete
+  [74s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=55s steps=19 done=6 page_open=8/8 phase=Complete
+  [74s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=56s steps=19 done=6 page_open=8/8 phase=Complete
+  [75s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=56s steps=19 done=6 page_open=8/8 phase=Complete
+  [75s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=57s steps=19 done=6 page_open=8/8 phase=Complete
+  [76s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=57s steps=19 done=6 page_open=8/8 phase=Complete
+  [76s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=57s steps=19 done=6 page_open=8/8 phase=Complete
+  [76s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=58s steps=19 done=6 page_open=8/8 phase=Complete
+  [77s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=58s steps=19 done=6 page_open=8/8 phase=Complete
+  [77s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=59s steps=19 done=6 page_open=8/8 phase=Complete
+  [78s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=59s steps=19 done=6 page_open=8/8 phase=Complete
+  [78s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=59s steps=19 done=6 page_open=8/8 phase=Complete
+  [78s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=60s steps=19 done=6 page_open=8/8 phase=Complete
+  [79s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=60s steps=19 done=6 page_open=8/8 phase=Complete
+  [79s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=61s steps=19 done=6 page_open=8/8 phase=Complete
+  [80s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=61s steps=19 done=6 page_open=8/8 phase=Complete
+  [80s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=61s steps=19 done=6 page_open=8/8 phase=Complete
+  [81s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=62s steps=19 done=6 page_open=8/8 phase=Complete
+  [81s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=62s steps=19 done=6 page_open=8/8 phase=Complete
+  [81s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=63s steps=19 done=6 page_open=8/8 phase=Complete
+  [82s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=63s steps=19 done=6 page_open=8/8 phase=Complete
+  [82s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=63s steps=19 done=6 page_open=8/8 phase=Complete
+  [83s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=64s steps=19 done=6 page_open=8/8 phase=Complete
+  [83s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=64s steps=19 done=6 page_open=8/8 phase=Complete
+  [83s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=65s steps=19 done=6 page_open=8/8 phase=Complete
+  [84s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=65s steps=19 done=6 page_open=8/8 phase=Complete
+  [84s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=66s steps=19 done=6 page_open=8/8 phase=Complete
+  [85s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=66s steps=19 done=6 page_open=8/8 phase=Complete
+  [85s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=66s steps=19 done=6 page_open=8/8 phase=Complete
+  [85s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=67s steps=19 done=6 page_open=8/8 phase=Complete
+  [86s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=67s steps=19 done=6 page_open=8/8 phase=Complete
+  [86s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=68s steps=19 done=6 page_open=8/8 phase=Complete
+  [87s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=68s steps=19 done=6 page_open=8/8 phase=Complete
+  [87s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=68s steps=19 done=6 page_open=8/8 phase=Complete
+  [88s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=69s steps=19 done=6 page_open=8/8 phase=Complete
+  [88s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=69s steps=19 done=6 page_open=8/8 phase=Complete
+  [88s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=70s steps=19 done=6 page_open=8/8 phase=Complete
+  [89s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=70s steps=19 done=6 page_open=8/8 phase=Complete
+  [89s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=70s steps=19 done=6 page_open=8/8 phase=Complete
+  [90s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=71s steps=19 done=6 page_open=8/8 phase=Complete
+  [90s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=71s steps=19 done=6 page_open=8/8 phase=Complete
+  [90s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=72s steps=19 done=6 page_open=8/8 phase=Complete
+  [91s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=72s steps=19 done=6 page_open=8/8 phase=Complete
+  [91s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=73s steps=19 done=6 page_open=8/8 phase=Complete
+  [92s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=73s steps=19 done=6 page_open=8/8 phase=Complete
+  [92s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=73s steps=19 done=6 page_open=8/8 phase=Complete
+  [92s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=74s steps=19 done=6 page_open=8/8 phase=Complete
+  [93s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=74s steps=19 done=6 page_open=8/8 phase=Complete
+  [93s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=75s steps=19 done=6 page_open=8/8 phase=Complete
+  [94s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=75s steps=19 done=6 page_open=8/8 phase=Complete
+  [94s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=75s steps=19 done=6 page_open=8/8 phase=Complete
+  [94s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=76s steps=19 done=6 page_open=8/8 phase=Complete
+  [95s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=76s steps=19 done=6 page_open=8/8 phase=Complete
+  [95s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=77s steps=19 done=6 page_open=8/8 phase=Complete
+  [96s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=77s steps=19 done=6 page_open=8/8 phase=Complete
+  [96s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=77s steps=19 done=6 page_open=8/8 phase=Complete
+  [97s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=78s steps=19 done=6 page_open=8/8 phase=Complete
+  [97s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=78s steps=19 done=6 page_open=8/8 phase=Complete
+  [97s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=79s steps=19 done=6 page_open=8/8 phase=Complete
+  [98s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=79s steps=19 done=6 page_open=8/8 phase=Complete
+  [98s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=79s steps=19 done=6 page_open=8/8 phase=Complete
+  [99s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=80s steps=19 done=6 page_open=8/8 phase=Complete
+  [99s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=80s steps=19 done=6 page_open=8/8 phase=Complete
+  [99s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=81s steps=19 done=6 page_open=8/8 phase=Complete
+  [100s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=81s steps=19 done=6 page_open=8/8 phase=Complete
+  [100s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=82s steps=19 done=6 page_open=8/8 phase=Complete
+  [101s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=82s steps=19 done=6 page_open=8/8 phase=Complete
+  [101s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=82s steps=19 done=6 page_open=8/8 phase=Complete
+  [101s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=83s steps=19 done=6 page_open=8/8 phase=Complete
+  [102s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=83s steps=19 done=6 page_open=8/8 phase=Complete
+  [102s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=84s steps=19 done=6 page_open=8/8 phase=Complete
+  [103s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=84s steps=19 done=6 page_open=8/8 phase=Complete
+  [103s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=84s steps=19 done=6 page_open=8/8 phase=Complete
+  [103s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=85s steps=19 done=6 page_open=8/8 phase=Complete
+  [104s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=85s steps=19 done=6 page_open=8/8 phase=Complete
+  [104s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=86s steps=19 done=6 page_open=8/8 phase=Complete
+  [105s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=86s steps=19 done=6 page_open=8/8 phase=Complete
+  [105s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=86s steps=19 done=6 page_open=8/8 phase=Complete
+  [106s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=87s steps=19 done=6 page_open=8/8 phase=Complete
+  [106s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=87s steps=19 done=6 page_open=8/8 phase=Complete
+  [106s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=88s steps=19 done=6 page_open=8/8 phase=Complete
+  [107s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=88s steps=19 done=6 page_open=8/8 phase=Complete
+  [107s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=88s steps=19 done=6 page_open=8/8 phase=Complete
+  [108s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=89s steps=19 done=6 page_open=8/8 phase=Complete
+  [108s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=89s steps=19 done=6 page_open=8/8 phase=Complete
+  [108s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=90s steps=19 done=6 page_open=8/8 phase=Complete
+  [109s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=90s steps=19 done=6 page_open=8/8 phase=Complete
+  [109s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=91s steps=19 done=6 page_open=8/8 phase=Complete
+  [110s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=91s steps=19 done=6 page_open=8/8 phase=Complete
+  [110s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=91s steps=19 done=6 page_open=8/8 phase=Complete
+  [110s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=92s steps=19 done=6 page_open=8/8 phase=Complete
+  [111s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=92s steps=19 done=6 page_open=8/8 phase=Complete
+  [111s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=93s steps=19 done=6 page_open=8/8 phase=Complete
+  [112s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=93s steps=19 done=6 page_open=8/8 phase=Complete
+  [112s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=93s steps=19 done=6 page_open=8/8 phase=Complete
+  [113s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=94s steps=19 done=6 page_open=8/8 phase=Complete
+  [113s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=94s steps=19 done=6 page_open=8/8 phase=Complete
+  [113s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=95s steps=19 done=6 page_open=8/8 phase=Complete
+  [114s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=95s steps=19 done=6 page_open=8/8 phase=Complete
+  [114s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=95s steps=19 done=6 page_open=8/8 phase=Complete
+  [115s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=96s steps=19 done=6 page_open=8/8 phase=Complete
+  [115s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=96s steps=19 done=6 page_open=8/8 phase=Complete
+  [115s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=97s steps=19 done=6 page_open=8/8 phase=Complete
+  [116s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=97s steps=19 done=6 page_open=8/8 phase=Complete
+  [116s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=98s steps=19 done=6 page_open=8/8 phase=Complete
+  [117s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=98s steps=19 done=6 page_open=8/8 phase=Complete
+  [117s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=98s steps=19 done=6 page_open=8/8 phase=Complete
+  [117s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=99s steps=19 done=6 page_open=8/8 phase=Complete
+  [118s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=99s steps=19 done=6 page_open=8/8 phase=Complete
+  [118s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=100s steps=19 done=6 page_open=8/8 phase=Complete
+  [119s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=100s steps=19 done=6 page_open=8/8 phase=Complete
+  [119s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=100s steps=19 done=6 page_open=8/8 phase=Complete
+  [119s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=101s steps=19 done=6 page_open=8/8 phase=Complete
+  [120s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=101s steps=19 done=6 page_open=8/8 phase=Complete
+  [120s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=102s steps=19 done=6 page_open=8/8 phase=Complete
+  [121s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=102s steps=19 done=6 page_open=8/8 phase=Complete
+  [121s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=102s steps=19 done=6 page_open=8/8 phase=Complete
+  [122s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=103s steps=19 done=6 page_open=8/8 phase=Complete
+  [122s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=103s steps=19 done=6 page_open=8/8 phase=Complete
+  [122s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=104s steps=19 done=6 page_open=8/8 phase=Complete
+  [123s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=104s steps=19 done=6 page_open=8/8 phase=Complete
+  [123s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=104s steps=19 done=6 page_open=8/8 phase=Complete
+  [124s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=105s steps=19 done=6 page_open=8/8 phase=Complete
+  [124s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=105s steps=19 done=6 page_open=8/8 phase=Complete
+  [124s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=106s steps=19 done=6 page_open=8/8 phase=Complete
+  [125s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=106s steps=19 done=6 page_open=8/8 phase=Complete
+  [125s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=107s steps=19 done=6 page_open=8/8 phase=Complete
+  [126s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=107s steps=19 done=6 page_open=8/8 phase=Complete
+  [126s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=107s steps=19 done=6 page_open=8/8 phase=Complete
+  [126s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=108s steps=19 done=6 page_open=8/8 phase=Complete
+  [127s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=108s steps=19 done=6 page_open=8/8 phase=Complete
+  [127s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=109s steps=19 done=6 page_open=8/8 phase=Complete
+  [128s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=109s steps=19 done=6 page_open=8/8 phase=Complete
+  [128s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=109s steps=19 done=6 page_open=8/8 phase=Complete
+  [128s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=110s steps=19 done=6 page_open=8/8 phase=Complete
+  [129s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=110s steps=19 done=6 page_open=8/8 phase=Complete
+  [129s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=111s steps=19 done=6 page_open=8/8 phase=Complete
+  [130s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=111s steps=19 done=6 page_open=8/8 phase=Complete
+  [130s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=111s steps=19 done=6 page_open=8/8 phase=Complete
+  [131s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=112s steps=19 done=6 page_open=8/8 phase=Complete
+  [131s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=112s steps=19 done=6 page_open=8/8 phase=Complete
+  [131s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=113s steps=19 done=6 page_open=8/8 phase=Complete
+  [132s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=113s steps=19 done=6 page_open=8/8 phase=Complete
+  [132s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=113s steps=19 done=6 page_open=8/8 phase=Complete
+  [133s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=114s steps=19 done=6 page_open=8/8 phase=Complete
+  [133s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=114s steps=19 done=6 page_open=8/8 phase=Complete
+  [133s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=115s steps=19 done=6 page_open=8/8 phase=Complete
+  [134s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=115s steps=19 done=6 page_open=8/8 phase=Complete
+  [134s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=116s steps=19 done=6 page_open=8/8 phase=Complete
+  [135s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=116s steps=19 done=6 page_open=8/8 phase=Complete
+  [135s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=116s steps=19 done=6 page_open=8/8 phase=Complete
+  [135s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=117s steps=19 done=6 page_open=8/8 phase=Complete
+  [136s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=117s steps=19 done=6 page_open=8/8 phase=Complete
+  [136s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=118s steps=19 done=6 page_open=8/8 phase=Complete
+  [137s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=118s steps=19 done=6 page_open=8/8 phase=Complete
+  [137s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=118s steps=19 done=6 page_open=8/8 phase=Complete
+  [137s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=119s steps=19 done=6 page_open=8/8 phase=Complete
+  [138s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=119s steps=19 done=6 page_open=8/8 phase=Complete
+  [138s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=120s steps=19 done=6 page_open=8/8 phase=Complete
+  [139s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=120s steps=19 done=6 page_open=8/8 phase=Complete
+  [139s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=120s steps=19 done=6 page_open=8/8 phase=Complete
+  [140s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=121s steps=19 done=6 page_open=8/8 phase=Complete
+  [140s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=121s steps=19 done=6 page_open=8/8 phase=Complete
+  [140s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=122s steps=19 done=6 page_open=8/8 phase=Complete
+  [141s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=122s steps=19 done=6 page_open=8/8 phase=Complete
+  [141s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=122s steps=19 done=6 page_open=8/8 phase=Complete
+  [142s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=123s steps=19 done=6 page_open=8/8 phase=Complete
+  [142s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=123s steps=19 done=6 page_open=8/8 phase=Complete
+  [142s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=124s steps=19 done=6 page_open=8/8 phase=Complete
+  [143s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=124s steps=19 done=6 page_open=8/8 phase=Complete
+  [143s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=125s steps=19 done=6 page_open=8/8 phase=Complete
+  [144s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=125s steps=19 done=6 page_open=8/8 phase=Complete
+  [144s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=125s steps=19 done=6 page_open=8/8 phase=Complete
+  [144s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=126s steps=19 done=6 page_open=8/8 phase=Complete
+  [145s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=126s steps=19 done=6 page_open=8/8 phase=Complete
+  [145s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=127s steps=19 done=6 page_open=8/8 phase=Complete
+  [146s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=127s steps=19 done=6 page_open=8/8 phase=Complete
+  [146s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=127s steps=19 done=6 page_open=8/8 phase=Complete
+  [147s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=128s steps=19 done=6 page_open=8/8 phase=Complete
+  [147s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=128s steps=19 done=6 page_open=8/8 phase=Complete
+  [147s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=129s steps=19 done=6 page_open=8/8 phase=Complete
+  [148s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=129s steps=19 done=6 page_open=8/8 phase=Complete
+  [148s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=129s steps=19 done=6 page_open=8/8 phase=Complete
+  [149s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=130s steps=19 done=6 page_open=8/8 phase=Complete
+  [149s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=130s steps=19 done=6 page_open=8/8 phase=Complete
+  [149s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=131s steps=19 done=6 page_open=8/8 phase=Complete
+  [150s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=131s steps=19 done=6 page_open=8/8 phase=Complete
+  [150s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=132s steps=19 done=6 page_open=8/8 phase=Complete
+  [151s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=132s steps=19 done=6 page_open=8/8 phase=Complete
+  [151s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=132s steps=19 done=6 page_open=8/8 phase=Complete
+  [151s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=133s steps=19 done=6 page_open=8/8 phase=Complete
+  [152s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=133s steps=19 done=6 page_open=8/8 phase=Complete
+  [152s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=134s steps=19 done=6 page_open=8/8 phase=Complete
+  [153s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=134s steps=19 done=6 page_open=8/8 phase=Complete
+  [153s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=134s steps=19 done=6 page_open=8/8 phase=Complete
+  [154s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=135s steps=19 done=6 page_open=8/8 phase=Complete
+  [154s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=135s steps=19 done=6 page_open=8/8 phase=Complete
+  [154s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=136s steps=19 done=6 page_open=8/8 phase=Complete
+  [155s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=136s steps=19 done=6 page_open=8/8 phase=Complete
+  [155s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=136s steps=19 done=6 page_open=8/8 phase=Complete
+  [156s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=137s steps=19 done=6 page_open=8/8 phase=Complete
+  [156s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=137s steps=19 done=6 page_open=8/8 phase=Complete
+  [156s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=138s steps=19 done=6 page_open=8/8 phase=Complete
+  [157s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=138s steps=19 done=6 page_open=8/8 phase=Complete
+  [157s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=139s steps=19 done=6 page_open=8/8 phase=Complete
+  [158s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=139s steps=19 done=6 page_open=8/8 phase=Complete
+  [158s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=139s steps=19 done=6 page_open=8/8 phase=Complete
+  [158s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=140s steps=19 done=6 page_open=8/8 phase=Complete
+  [159s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=140s steps=19 done=6 page_open=8/8 phase=Complete
+  [159s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=141s steps=19 done=6 page_open=8/8 phase=Complete
+  [160s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=141s steps=19 done=6 page_open=8/8 phase=Complete
+  [160s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=141s steps=19 done=6 page_open=8/8 phase=Complete
+  [161s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=142s steps=19 done=6 page_open=8/8 phase=Complete
+  [161s] status=complete users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=142s steps=19 done=6 page_open=8/8 phase=Complete
+released browserbase owner=taskfix study=* {'found': 3, 'released': 0, 'failed': [], 'session_ids': [], 'kept_prime': 3, 'owner': 'taskfix', 'study_id': None}
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/workspace/mvp/e2e2_matrix.py", line 714, in run_e2e2
+    await asyncio.sleep(0.4 if action_clock_open else 1.0)
+  File "/usr/lib/python3.12/asyncio/tasks.py", line 665, in sleep
+    return await future
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/mvp/e2e2_matrix.py", line 1046, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/workspace/mvp/e2e2_matrix.py", line 1008, in main
+    result = asyncio.run(run_e2e2(args))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt

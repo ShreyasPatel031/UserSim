@@ -1,14 +1,37 @@
 #!/usr/bin/env python3
-"""e2e2: real Run button → matrix of users × tasks × sites → flash-lite YESes.
+"""e2e2: real Run button → matrix of users × tasks × sites → strict gates.
 
 Clicks Run (never Smoke). While agents run, Ready/View-full-report must stay
-hidden. Then toggles every site × task × user control and vision-judges the
-*agent screenshot bytes of the target website* (not UserSim chrome, not a
-Preparing pulse, not a grey pane).
+hidden. Vision checks use the screenshot bytes the agents already saved
+(not UserSim chrome, not a Preparing pulse, not a grey pane) and do not
+click through the live stage during the run.
 
-  PYTHONPATH=src:. python mvp/e2e2_matrix.py --base https://usersim.vercel.app
-  E2E2_URL=https://www.youtube.com/ E2E2_EXPECTED=9 E2E2_MAX_AGENTS=9 \\
-    ./mvp/run_e2e2.sh http://127.0.0.1:3000
+Startup gates still apply (24 agents, each assigned page open within 5s,
+confirmed by URL and the accessibility tree). Vision runs on the one final
+screenshot. The study budget is 8 minutes (480s), confirmed above the
+observed strict-e2e maximum of 408s. There is no per-agent time limit; a stuck
+agent repeats the same action 3 times with no URL or DOM change. While the
+study runs, the harness aborts if any agent still has no click/type/scroll
+once the time_to_first_action max is clearly blown (default 10s after the
+browser session is ready or the page is open, whichever the study JSON
+records; --first-action-s loosens only that abort), if Root CDP client init
+fails, or if Browserbase session drops pass 25% of agents. The goal judge
+reads the one final PNG each agent already saved. It does not drive the live
+page, and it does not score per-step screenshots. The summary leads with two
+clocks from the Run click: time_to_first_value (<= 10s until the first
+click/type/scroll is visible) and total_time (until the report is ready,
+within 8 minutes).
+pass=true only when the independent
+goal-judge verdicts and the report checks all pass. Agent summaries are not a
+pass signal. Failed runs are written to failures.json.
+
+  MVP_BB_OWNER=testfix PYTHONPATH=src:. python mvp/e2e2_matrix.py \\
+    --base http://127.0.0.1:3000 --url https://linear.app \\
+    --competitors $'https://asana.com/\\nhttps://trello.com/' \\
+    --tasks $'Find how to create a new issue\\nLook for pricing or how to get started' \\
+    --segment 'Product managers comparing issue trackers' \\
+    --expected 24 --max-agents 24 --max-elapsed-s 480 --first-shot-s 5 \\
+    --first-action-s 10
 """
 
 from __future__ import annotations
@@ -30,9 +53,28 @@ sys.path.insert(0, str(ROOT))
 from mvp.e2e_ui_run import (  # noqa: E402
     FETCH_PROBE,
     JUDGE_MODEL,
-    _hostname,
-    judge_screenshot,
     http_json,
+)
+from mvp.e2e2_gates import (  # noqa: E402
+    DEFAULT_STUDY_BUDGET_S,
+    DEFAULT_TTFA_ABORT_S,
+    DEFAULT_TTFA_MAX_S,
+    DEFAULT_TTFA_MEDIAN_S,
+    assess_infrastructure_abort,
+    assess_page_opened,
+    assess_stuck_abort,
+    assess_time_to_first_action,
+    remember_earliest_clocks,
+    build_early_failures,
+    coerce_verdict,
+    evaluate_strict_gates,
+    final_dom_of,
+    final_url_of,
+    has_click_type_scroll,
+    missing_field,
+    iter_runs,
+    judge_goal_screenshot,
+    render_markdown,
 )
 
 sa = ROOT / "secrets" / "sa.json"
@@ -44,11 +86,26 @@ OUT_DIR = Path(os.environ.get("E2E2_OUT_DIR", "/tmp/usersim_e2e2"))
 DEFAULT_EXPECTED = int(os.environ.get("E2E2_EXPECTED", "24") or "24")
 # Only a full 24-agent matrix can PASS. Smaller runs are smoke-only.
 PASS_AGENT_BAR = int(os.environ.get("E2E2_PASS_AGENT_BAR", "24") or "24")
-# Prior YouTube 9-agent run was ~408s — full 24-agent budget must still be faster.
-DEFAULT_MAX_ELAPSED_S = float(os.environ.get("E2E2_MAX_ELAPSED_S", "360") or "360")
-# Per-agent: first screenshot must land within this many seconds of that
-# session's own creation (Shreyas: a few seconds after task creation).
+# Study-level budget. Observed strict-e2e max is 408s (YouTube baseline);
+# saved 24-agent studies finished in <= 358s wall, measured e2e2 elapsed <= 378s.
+DEFAULT_MAX_ELAPSED_S = float(
+    os.environ.get("E2E2_MAX_ELAPSED_S", str(int(DEFAULT_STUDY_BUDGET_S)))
+    or str(int(DEFAULT_STUDY_BUDGET_S))
+)
+# Per-agent: the assigned page must be open within this many seconds of that
+# session's own creation, confirmed by URL and the accessibility tree.
 DEFAULT_FIRST_SHOT_S = float(os.environ.get("E2E2_FIRST_SHOT_S", "5") or "5")
+
+
+def _study_clock(study: dict, key: str) -> float | None:
+    """Headline clock stored on the study, not a harness poll timestamp."""
+    raw = study.get(key)
+    if raw is None and isinstance(study.get("summary"), dict):
+        raw = study["summary"].get(key)
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return None
 
 
 def _log(msg: str) -> None:
@@ -189,58 +246,6 @@ def _timing_summary(t0: float, sessions: list[dict], expected: int) -> dict:
     }
 
 
-def _best_shot(sess: dict) -> dict | None:
-    bad = re.compile(r"^(preparing|opening|thinking|signed-in cookies|waiting)\b", re.I)
-    ranked: list[dict] = []
-    for step in sess.get("trace") or []:
-        if not isinstance(step, dict) or not isinstance(step.get("step"), int):
-            continue
-        if not step.get("screenshot_url"):
-            continue
-        if bad.search(str(step.get("action") or "")):
-            continue
-        # Immediate-start placeholders / blankish warm splash — wait for paint.
-        if step.get("opening_placeholder") or step.get("opening_blankish"):
-            continue
-        ranked.append(step)
-    ranked.sort(key=lambda s: int(s.get("step") or 0), reverse=True)
-    return ranked[0] if ranked else None
-
-
-def _png_looks_blank(raw: bytes) -> bool:
-    """Skip judging pure-black / splash frames while the agent is still painting.
-
-    Dark SaaS themes (Linear, etc.) are real pages with low mean luminance but
-    substantial PNG payloads — only treat those as blank when nearly uniform.
-    """
-    if len(raw) < 2500:
-        return True
-    try:
-        from io import BytesIO
-
-        from PIL import Image
-
-        im = Image.open(BytesIO(raw)).convert("RGB").resize((64, 40))
-        pixels = list(im.getdata())
-        lums = [0.2126 * r + 0.7152 * g + 0.0722 * b for r, g, b in pixels]
-        mean = sum(lums) / max(1, len(lums))
-        var = sum((x - mean) ** 2 for x in lums) / max(1, len(lums))
-        # Small payloads: logo-on-black splash (~32KB) or empty pane.
-        if len(raw) < 48000:
-            if mean < 25.0:
-                return True
-            if mean < 40.0 and var < 250.0:
-                return True
-            return False
-        # Large payloads: only reject near-uniform near-black (empty canvas),
-        # not dark but textured product UIs.
-        if mean < 12.0 and var < 80.0:
-            return True
-        return False
-    except Exception:
-        return len(raw) < 48000
-
-
 def _fetch_png(base: str, url: str, *, study_id: str = "", agent_id: str = "") -> bytes:
     candidates = [url]
     if "/screenshots/" in url:
@@ -301,32 +306,191 @@ async def _assert_ready_hidden(page, study: dict) -> None:
         )
 
 
-async def _toggle_session(page, sess: dict) -> None:
-    site_key = sess.get("site_key") or "product"
-    persona = sess.get("persona_id") or ""
-    task_base = str(sess.get("task_id") or sess.get("agent_id") or "").split("__")[0]
-    if site_key:
-        btn = page.locator(f'#stage-site-switch [data-stage-site-key="{site_key}"]')
-        if await btn.count():
-            await btn.first.click()
-            await page.wait_for_timeout(200)
-    if task_base:
-        task_sel = page.locator("#stage-task-select")
-        if await task_sel.count():
+def _bb_owner() -> str:
+    """Owner this process may release. testfix, gates, or integration only."""
+    raw = (os.environ.get("MVP_BB_OWNER") or "testfix").strip().lower() or "testfix"
+    if raw in {"testfix", "gates", "integration"}:
+        return raw
+    return "testfix"
+
+
+# This harness does not keep a pre-click pool.
+PRIME_SESSIONS = 0
+
+
+def _release_testfix_sessions(study_id: str = "") -> None:
+    """Release only this harness's sessions. Never signup, report, or other owners.
+
+    Prime count is 0, so a blanket release also drops ``study_id=prime`` sessions.
+    """
+    owner = _bb_owner()
+    try:
+        from mvp.kill_switch import kill_all_browserbase
+
+        released = kill_all_browserbase(owner=owner, study_id=study_id or None)
+        _log(
+            f"released browserbase owner={owner} study={study_id or '*'} "
+            f"prime_sessions={PRIME_SESSIONS} {released}"
+        )
+    except Exception as exc:  # noqa: BLE001
+        _log(f"browserbase release failed: {exc!r}")
+
+
+def _stop_study(base: str, study_id: str) -> None:
+    """Stop this study via the API, then release its owner-tagged sessions."""
+    if not study_id:
+        return
+    body = json.dumps(
+        {
+            "agents": True,
+            "vms": False,
+            "seeds": False,
+            "study_id": study_id,
+        }
+    ).encode()
+    req = urllib.request.Request(
+        base.rstrip("/") + "/api/runtime/kill",
+        data=body,
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=90) as resp:
+            payload = resp.read().decode("utf-8", "replace")
+        _log(f"  stopped study {study_id} via /api/runtime/kill ({len(payload)} bytes)")
+    except Exception as exc:  # noqa: BLE001
+        _log(f"  stop study via API failed: {exc!r}")
+    _release_testfix_sessions(study_id)
+
+
+def _fetch_report_html(base: str, study_id: str) -> tuple[str, str]:
+    url = f"{base.rstrip('/')}/report?study={study_id}"
+    try:
+        with urllib.request.urlopen(url, timeout=30) as resp:
+            return resp.read().decode("utf-8", "replace"), url
+    except Exception as exc:  # noqa: BLE001
+        _log(f"  report page fetch failed: {exc!r}")
+        return "", url
+
+
+def _screenshot_loader(base: str, study_id: str):
+    cache: dict[str, bool] = {}
+
+    def loads(url: str) -> bool:
+        if url in cache:
+            return cache[url]
+        try:
+            raw = _fetch_png(base, url, study_id=study_id)
+            ok = bool(raw) and raw[:8] == b"\x89PNG\r\n\x1a\n"
+        except Exception:
+            ok = False
+        cache[url] = ok
+        return ok
+
+    return loads
+
+
+def _final_trace_shot(run: dict) -> dict | None:
+    """The one final screenshot for the goal judge, not a per-step frame."""
+    for key in ("final_screenshot_url", "final_screenshot"):
+        url = str(run.get(key) or "").strip()
+        if url:
+            return {"step": run.get("final_screenshot_step"), "screenshot_url": url, "url": run.get("final_url")}
+    last = None
+    for step in run.get("trace") or []:
+        if isinstance(step, dict) and step.get("screenshot_url") and isinstance(step.get("step"), int):
+            if step.get("opening_placeholder") or step.get("opening_blankish"):
+                continue
+            last = step
+    return last
+
+
+def _goal_verdicts(study: dict, base: str) -> dict[str, dict]:
+    """Judge every run from its final screenshot, URL, and DOM.
+
+    The verdict is independent of the agent's summary. Runs with no screenshot
+    get an explicit NO rather than a skip.
+    """
+    verdicts: dict[str, dict] = {}
+    study_id = str(study.get("id") or "")
+    for run in iter_runs(study):
+        aid = str(run.get("agent_id") or run.get("task_id") or "")
+        if not aid:
+            continue
+        start = str(run.get("site_url") or study.get("url") or "")
+        task = str(run.get("task_prompt") or run.get("task_title") or "")
+        final_url = final_url_of(run)
+        dom = final_dom_of(run)
+        shot = _final_trace_shot(run)
+        if not shot:
+            verdicts[aid] = coerce_verdict(
+                {
+                    "goal_reached": False,
+                    "still_on_opening_screen": True,
+                    "reason": missing_field("final_screenshot_url"),
+                }
+            )
+            _log(f"  goal {aid} reached=False (no final screenshot)")
+            continue
+        try:
+            raw = _fetch_png(base, shot["screenshot_url"], study_id=study_id, agent_id=aid)
+            verdict = judge_goal_screenshot(
+                raw,
+                task=task,
+                start_url=start,
+                final_url=final_url,
+                dom=dom,
+            )
+            verdicts[aid] = verdict
+            _log(
+                f"  goal {aid} reached={verdict.get('goal_reached')} "
+                f"opening={verdict.get('still_on_opening_screen')} "
+                f"url={final_url} {verdict.get('reason')}"
+            )
+        except Exception as exc:  # noqa: BLE001
+            verdicts[aid] = coerce_verdict(
+                {
+                    "goal_reached": False,
+                    "still_on_opening_screen": False,
+                    "reason": f"Judge failed: {exc}",
+                }
+            )
+            _log(f"  goal judge failed {aid}: {exc!r}")
+    return verdicts
+
+
+def _attach_task_success(report: dict, study: dict, judged: dict, fallback_url: str) -> None:
+    """Record task success beside screenshot yeses, including the product gate."""
+    from mvp.report_insights import product_completion_gate, task_succeeded
+
+    runs = [
+        r
+        for r in (study.get("agent_results") or _sessions(study) or [])
+        if isinstance(r, dict)
+    ]
+    by_id = {str(r.get("agent_id") or r.get("task_id") or ""): r for r in runs}
+    n_ok = 0
+    for aid, row in judged.items():
+        run = by_id.get(str(aid))
+        ok = False
+        if isinstance(run, dict):
+            start = str(run.get("site_url") or fallback_url or "")
             try:
-                await task_sel.select_option(task_base)
+                ok = bool(task_succeeded(run, start))
             except Exception:
-                pass
-            await page.wait_for_timeout(150)
-    if persona:
-        user_sel = page.locator("#stage-user-select")
-        if await user_sel.count():
-            try:
-                await user_sel.select_option(persona)
-            except Exception:
-                pass
-            await page.wait_for_timeout(150)
-    await page.wait_for_timeout(400)
+                ok = False
+        row["task_success"] = ok
+        if ok:
+            n_ok += 1
+    report["task_success_n"] = n_ok
+    report["task_success_of"] = len(judged)
+    report["task_success_rate"] = round(100 * n_ok / len(judged)) if judged else 0
+    gate = product_completion_gate(runs, str(study.get("url") or fallback_url or ""))
+    report["product_task_gate"] = gate
+    report["product_task_success_n"] = gate["success_n"]
+    report["product_task_success_of"] = gate["product_n"]
+    report["product_task_success_rate"] = gate["success_rate"]
+    report["product_first_screen_failures"] = gate["first_screen_failures"]
 
 
 async def run_e2e2(args: argparse.Namespace) -> dict:
@@ -364,6 +528,10 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         await page.wait_for_selector("#study-form #submit-btn", timeout=30_000)
 
         study_id = args.study_id
+        t_submit: float | None = None
+        t_first_value: float | None = None
+        t_report_ready: float | None = None
+        first_value_agent = ""
         if not study_id:
             smoke = page.locator("#test-mode-input")
             if await smoke.count() and await smoke.is_checked():
@@ -379,30 +547,44 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 await page.fill('textarea[name="customers"]', args.segment)
 
             _log("→ click Run (not Smoke)")
+            t_submit = time.time()
             await page.click("#submit-btn")
         else:
             _log(f"→ attach study {study_id} (no new Run)")
         study: dict = {}
-        judged: dict[str, dict] = {}
-        last_steps = -1
-        last_done = -1
-        last_move_t = time.time()
         t_first_task: float | None = None
         t_all_tasks: float | None = None
         queued_hits = 0
-        immediate_start_failed: str | None = None
+        abort_reason: str | None = None
+        early_abort: dict | None = None
+        elapsed_at_abort: float | None = None
+        ttfa_check: dict | None = None
+        action_seen_at: dict[str, float] = {}
+        clock_latch: dict[str, dict[str, float]] = {}
+        since_task_last: float | None = None
+        action_clock_open = True
+        page_open_check: dict | None = None
 
         while time.time() - t0 < args.timeout_s:
-            e2e = await page.evaluate("() => window.__e2e || {}")
-            study_id = study_id or e2e.get("studyId") or ""
+            if not study_id:
+                e2e = await page.evaluate("() => window.__e2e || {}")
+                study_id = e2e.get("studyId") or ""
             if study_id:
                 try:
-                    study = http_json(args.base, f"/api/studies/{study_id}", timeout=45)
+                    study = http_json(args.base, f"/api/studies/{study_id}", timeout=8)
                 except Exception as exc:  # noqa: BLE001
                     _log(f"  poll warn: {exc!r}")
-                    await page.wait_for_timeout(2000)
+                    await asyncio.sleep(0.4)
                     continue
             await _assert_ready_hidden(page, study)
+            if (
+                t_report_ready is None
+                and study.get("status") == "complete"
+                and study.get("summary")
+            ):
+                t_report_ready = time.time()
+                anchor = t_submit if t_submit is not None else t0
+                _log(f"  report_ready +{t_report_ready - anchor:.1f}s")
 
             personas = study.get("personas") or []
             tasks = study.get("tasks") or []
@@ -429,44 +611,26 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 t_all_tasks = time.time()
                 _log(f"  all_tasks_created +{t_all_tasks - t0:.1f}s n={len(sessions)}")
 
-            # Per-agent immediate start: creation → first screenshot ≤ budget.
+            # Per-agent immediate start: creation → page open on the right site.
             now = time.time()
-            overdue: list[str] = []
-            for sess in sessions:
-                aid = str(sess.get("agent_id") or sess.get("task_id") or "")
-                created = _sess_created_ts(sess)
-                shot = _sess_first_shot_ts(sess)
-                if created is None:
-                    continue
-                if shot is not None:
-                    gap = shot - created
-                    if gap > args.first_shot_s:
-                        overdue.append(f"{aid}={gap:.2f}s")
-                elif (now - created) > args.first_shot_s:
-                    overdue.append(f"{aid}>={now - created:.2f}s(no-shot)")
-            if overdue and immediate_start_failed is None:
-                immediate_start_failed = (
-                    f"IMMEDIATE_START: {len(overdue)} agent(s) first screenshot "
-                    f">{args.first_shot_s:.0f}s after own creation: "
-                    + ", ".join(overdue[:8])
+            if sessions:
+                remember_earliest_clocks(sessions, clock_latch)
+                page_open_check = assess_page_opened(
+                    sessions, now=now, limit_s=args.first_shot_s
                 )
-                _log(f"  {immediate_start_failed}")
-                timing = _timing_summary(t0, sessions, expected)
-                report["study_id"] = study_id
-                report["agents"] = len(sessions)
-                report["timing"] = timing
-                report["t_first_task_created_s"] = timing[
-                    "run_click_to_first_task_created_s"
-                ]
-                report["t_all_tasks_created_s"] = timing[
-                    "run_click_to_all_tasks_created_s"
-                ]
-                report["creation_to_first_shot"] = timing["creation_to_first_shot_s"]
-                report["fail_reasons"] = [immediate_start_failed]
-                report["pass"] = False
-                report["elapsed_s"] = round(time.time() - t0, 1)
-                (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
-                raise RuntimeError(immediate_start_failed)
+                if page_open_check.get("abort") and abort_reason is None:
+                    abort_reason = str(
+                        page_open_check.get("reason")
+                        or (
+                            f"IMMEDIATE_START: page not opened on the assigned site "
+                            f"within {args.first_shot_s:.0f}s"
+                        )
+                    )
+                    early_abort = page_open_check
+                    elapsed_at_abort = time.time()
+                    _log(f"  {abort_reason}")
+                    _stop_study(args.base, str(study_id or ""))
+                    break
 
             # No excuse for queue theatre when fleet ≤ Browserbase concurrency.
             queued = [
@@ -479,187 +643,105 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             if queued and t_first_task is not None and (time.time() - t_first_task) > 8:
                 queued_hits += 1
                 if queued_hits >= 3:
-                    raise RuntimeError(
+                    abort_reason = (
                         "IMMEDIATE_START: "
                         f"{len(queued)}/{len(sessions)} agents still queued "
                         "more than 8s after first task created "
                         "(no excuse with 25 Browserbase slots)"
                     )
-            if step_n > last_steps or done_n > last_done:
-                last_steps = step_n
-                last_done = done_n
-                last_move_t = time.time()
+                    _log(f"  {abort_reason}")
+                    break
+            acted_n = sum(1 for sess in sessions if has_click_type_scroll(sess))
+            since_task = None
+            now_poll = time.time()
+            if sessions and t_first_task is not None:
+                created_ts = [
+                    ts
+                    for sess in sessions
+                    if (ts := _sess_created_ts(sess)) is not None
+                ]
+                anchor = min(created_ts) if created_ts else t_first_task
+                since_task = now_poll - anchor
+                since_task_last = since_task
+                study_phase = str(study.get("phase") or "")
+                for sess in sessions:
+                    if not sess.get("phase"):
+                        sess["phase"] = study_phase
+                infra = assess_infrastructure_abort(sessions)
+                stuck = (
+                    {"abort": False}
+                    if infra.get("abort")
+                    else assess_stuck_abort(sessions)
+                )
+                ttfa_check = assess_time_to_first_action(
+                    sessions,
+                    now=now_poll,
+                    action_seen_at=action_seen_at,
+                    abort_after_s=args.first_action_s,
+                    expected=max(expected, PASS_AGENT_BAR),
+                )
+                if t_first_value is None and action_seen_at:
+                    first_value_agent, t_first_value = min(
+                        action_seen_at.items(), key=lambda item: item[1]
+                    )
+                    if t_submit is not None:
+                        _log(
+                            f"  first_value +{t_first_value - t_submit:.1f}s "
+                            f"agent={first_value_agent}"
+                        )
+                need_actions = max(expected, PASS_AGENT_BAR)
+                action_clock_open = (
+                    len(sessions) < need_actions
+                    or int(ttfa_check.get("n") or 0) < need_actions
+                )
+                chosen = None
+                if infra.get("abort"):
+                    chosen = infra
+                elif stuck.get("abort"):
+                    chosen = stuck
+                elif ttfa_check.get("abort"):
+                    chosen = ttfa_check
+                if chosen:
+                    abort_reason = str(chosen.get("reason") or "FAIL early")
+                    early_abort = chosen
+                    elapsed_at_abort = time.time()
+                    _log(f"  {abort_reason}")
+                    _stop_study(args.base, str(study_id or ""))
+                    break
+            ttfa_med = None if not ttfa_check else ttfa_check.get("median_s")
+            ttfa_max = None if not ttfa_check else ttfa_check.get("max_s")
             _log(
                 f"  [{int(time.time()-t0)}s] status={study.get('status')} "
                 f"users={len(personas)} tasks={n_unique_tasks} "
                 f"sites={1+len(comps)} agents={len(sessions)} "
-                f"yeses={len(judged)} phase={(study.get('phase') or '')[:50]}"
+                f"acted={acted_n}/{len(sessions)} "
+                f"ttfa_median={ttfa_med} ttfa_max={ttfa_max} "
+                f"since_task={'' if since_task is None else f'{since_task:.0f}s'} "
+                f"steps={step_n} done={done_n} "
+                f"page_open="
+                f"{'' if not page_open_check else page_open_check.get('opened')}/"
+                f"{'' if not page_open_check else page_open_check.get('agents')} "
+                f"phase={(study.get('phase') or '')[:50]}"
             )
 
-            # Stall fail-fast: frozen fleet must not burn the full timeout.
-            if sessions and (time.time() - last_move_t) > args.stall_s:
-                raise RuntimeError(
-                    f"STALL: no new steps/dones for {args.stall_s:.0f}s "
-                    f"(steps={step_n}, done={done_n}/{len(sessions)}, "
-                    f"phase={study.get('phase')!r})"
-                )
-
-            # Toggle + judge any session that now has a real numbered shot.
-            for sess in sessions:
-                aid = str(sess.get("agent_id") or sess.get("task_id") or "")
-                if not aid or aid in judged:
-                    continue
-                shot = _best_shot(sess)
-                if not shot:
-                    continue
-                try:
-                    raw = _fetch_png(
-                        args.base,
-                        shot["screenshot_url"],
-                        study_id=study_id,
-                        agent_id=aid,
-                    )
-                    # Don't fail the whole matrix on a black splash while the
-                    # agent is still browsing — wait for a real paint.
-                    if _png_looks_blank(raw):
-                        if study.get("status") == "running":
-                            _log(
-                                f"  skip blankish shot {aid} step={shot.get('step')} "
-                                f"({len(raw)} bytes) — waiting for paint"
-                            )
-                            continue
-                        # Study finished with only a splash — count as a miss,
-                        # don't spin forever skipping after complete.
-                        _log(
-                            f"  blankish after complete {aid} step={shot.get('step')} "
-                            f"({len(raw)} bytes) — counting as miss"
-                        )
-                        judged[aid] = {
-                            "agent_id": aid,
-                            "host": _hostname(
-                                sess.get("site_url") or shot.get("url") or args.url
-                            ),
-                            "step": shot.get("step"),
-                            "bytes": len(raw),
-                            "pass": False,
-                            "reason": "blank/splash frame after study complete",
-                        }
-                        continue
-                    try:
-                        if await page.locator("#stage-section:not([hidden])").count():
-                            await _toggle_session(page, sess)
-                    except Exception:
-                        pass
-                    await _assert_ready_hidden(page, study)
-                    host = _hostname(sess.get("site_url") or shot.get("url") or args.url)
-                    verdict = judge_screenshot(
-                        raw,
-                        label=f"{aid} step={shot.get('step')}",
-                        expected_host=host,
-                    )
-                    (OUT_DIR / f"{aid}.png").write_bytes(raw)
-                    judged[aid] = {
-                        "agent_id": aid,
-                        "host": host,
-                        "step": shot.get("step"),
-                        "bytes": len(raw),
-                        **verdict,
-                    }
-                    _log(
-                        f"  judge {len(judged)}/{expected} {aid} "
-                        f"host={host} pass={verdict.get('pass')} "
-                        f"{verdict.get('reason')}"
-                    )
-                    if not verdict.get("pass"):
-                        # Keep waiting for a later real frame while the study runs.
-                        # Hard-aborting mid-run on one NO kills the whole matrix
-                        # (signup flows often lack hostname chrome in the PNG).
-                        if study.get("status") == "running":
-                            _log(
-                                f"  defer NO {aid} step={shot.get('step')}: "
-                                f"{verdict.get('reason')}"
-                            )
-                            judged.pop(aid, None)
-                            continue
-                        _log(
-                            f"  NO after complete {aid}: {verdict.get('reason')}"
-                        )
-                        # Keep the NO in judged; final gate counts yeses.
-                except Exception as exc:  # noqa: BLE001
-                    _log(f"  judge skip {aid}: {exc!r}")
-
-            if study.get("status") == "complete" and study.get("summary"):
-                # Allow post-agent shot backfill to land, then re-judge blanks.
-                t_complete = report.setdefault("_t_complete", time.time())
-                # Drop prior blank/miss judgements so backfilled PNGs get scored.
-                for aid, verd in list(judged.items()):
-                    reason = str(verd.get("reason") or "").lower()
-                    if not verd.get("pass") and (
-                        "blank" in reason
-                        or "splash" in reason
-                        or "no screenshot" in reason
-                    ):
-                        judged.pop(aid, None)
-                # Directly probe bbox_0 on disk via API — GCS hydrate can clobber
-                # backfilled traces out of the study JSON while files are correct.
-                for sess in sessions:
-                    aid = str(sess.get("agent_id") or sess.get("task_id") or "")
-                    if not aid or aid in judged:
-                        continue
-                    shot = _best_shot(sess)
-                    url = (
-                        (shot or {}).get("screenshot_url")
-                        or f"/api/studies/{study_id}/agents/{aid}/screenshots/bbox_0.png"
-                    )
-                    try:
-                        raw = _fetch_png(
-                            args.base, url, study_id=study_id, agent_id=aid
-                        )
-                    except Exception:
-                        continue
-                    if _png_looks_blank(raw):
-                        continue
-                    host = _hostname(sess.get("site_url") or args.url)
-                    verdict = judge_screenshot(
-                        raw, label=f"{aid} backfill", expected_host=host
-                    )
-                    (OUT_DIR / f"{aid}.png").write_bytes(raw)
-                    judged[aid] = {
-                        "agent_id": aid,
-                        "host": host,
-                        "step": 0,
-                        "bytes": len(raw),
-                        **verdict,
-                    }
-                    _log(
-                        f"  judge {len(judged)}/{expected} {aid} "
-                        f"host={host} pass={verdict.get('pass')} "
-                        f"{verdict.get('reason')}"
-                    )
-                if time.time() - t_complete < 12 and len(judged) < expected:
-                    await page.wait_for_timeout(2000)
-                    continue
-                for sess in sessions:
-                    aid = str(sess.get("agent_id") or sess.get("task_id") or "")
-                    if not aid or aid in judged:
-                        continue
-                    judged[aid] = {
-                        "agent_id": aid,
-                        "host": _hostname(sess.get("site_url") or args.url),
-                        "pass": False,
-                        "reason": "no screenshot after study complete",
-                    }
-                if len(sessions) >= expected and len(judged) >= min(expected, len(sessions)):
-                    break
+            # Vision waits until the study is done. The goal judge uses the
+            # one final screenshot and does not run inside this poll.
+            if (
+                study.get("status") == "complete"
+                and study.get("summary")
+                and not action_clock_open
+            ):
+                break
             if study.get("status") in {"error", "abandoned"}:
-                raise RuntimeError(
+                abort_reason = (
                     f"Study {study.get('status')}: {study.get('error') or study.get('phase')}"
                 )
-            await page.wait_for_timeout(4000)
+                _log(f"  {abort_reason}")
+                break
+            await asyncio.sleep(0.4 if action_clock_open else 1.0)
 
         report["study_id"] = study_id
-        report["yeses"] = sum(1 for v in judged.values() if v.get("pass"))
-        report["judgements"] = list(judged.values())
+        report["page_opened"] = page_open_check
         report["agents"] = len(_sessions(study))
         report["personas"] = len(study.get("personas") or [])
         report["task_bases"] = len({
@@ -667,7 +749,50 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             for t in (study.get("tasks") or [])
         })
         report["sites"] = 1 + len(study.get("competitors") or [])
-        report["elapsed_s"] = round(time.time() - t0, 1)
+        report["elapsed_s"] = round((elapsed_at_abort or time.time()) - t0, 1)
+        report["since_first_task_s"] = (
+            None if since_task_last is None else round(since_task_last, 1)
+        )
+        report["time_to_first_action"] = ttfa_check
+        stored_ttfv = _study_clock(study, "time_to_first_value_s")
+        stored_total = _study_clock(study, "total_time_s")
+        stored_agent = str(
+            study.get("time_to_first_value_agent")
+            or (study.get("summary") or {}).get("time_to_first_value_agent")
+            or ""
+        )
+        report["time_to_first_value_s"] = (
+            stored_ttfv
+            if stored_ttfv is not None
+            else (
+                None
+                if t_first_value is None or t_submit is None
+                else round(t_first_value - t_submit, 3)
+            )
+        )
+        report["total_time_s"] = (
+            stored_total
+            if stored_total is not None
+            else (
+                None
+                if t_report_ready is None or t_submit is None
+                else round(t_report_ready - t_submit, 3)
+            )
+        )
+        report["report_ready"] = bool(study.get("report_ready")) or (
+            stored_total is not None
+        ) or t_report_ready is not None
+        report["time_to_first_value_agent"] = stored_agent or first_value_agent
+        report["url_submit_at_ts"] = _study_clock(study, "url_submit_at_ts")
+        report["report_ready_at_ts"] = _study_clock(study, "report_ready_at_ts")
+        report["early_abort"] = (
+            None
+            if not early_abort
+            else {
+                "type": early_abort.get("type"),
+                "reason": early_abort.get("reason"),
+            }
+        )
         timing = _timing_summary(t0, _sessions(study), expected)
         report["timing"] = timing
         report["t_first_task_created_s"] = timing["run_click_to_first_task_created_s"]
@@ -697,102 +822,160 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             f"missing_real={timing['creation_to_first_shot_s']['missing_shot']} "
             f"warm={warm_timing or '{}'}"
         )
+        _attach_task_success(report, study, {}, args.url)
+        gate = report.get("product_task_gate") or {}
+        _log(
+            "  product task gate: "
+            f"{gate.get('success_n')}/{gate.get('product_n')} "
+            f"want ≥{gate.get('required_n')} "
+            f"first_screen_fail={len(gate.get('first_screen_failures') or [])} "
+            f"pass={gate.get('pass')}"
+        )
 
-        fails = []
-        # 24 agents is the only PASS bar — smaller runs are smoke-only.
-        if expected < PASS_AGENT_BAR:
-            fails.append(
-                f"smoke-only expected={expected}; PASS requires {PASS_AGENT_BAR} agents"
+        if study_id and not study.get("id"):
+            study["id"] = study_id
+        if early_abort:
+            vision_goal = {}
+            report_html, report_url = "", ""
+            shot_loader = lambda _url: False  # noqa: E731
+        else:
+            vision_goal = _goal_verdicts(study, args.base) if study_id else {}
+            report_html, report_url = (
+                _fetch_report_html(args.base, study_id) if study_id else ("", "")
             )
-        if report["personas"] < want_personas:
-            fails.append(f"personas={report['personas']} want {want_personas}")
-        if report["task_bases"] < want_tasks:
-            fails.append(f"tasks={report['task_bases']} want {want_tasks}")
-        if report["sites"] < want_sites:
-            fails.append(f"sites={report['sites']} want {want_sites}")
-        if report["agents"] < PASS_AGENT_BAR:
-            fails.append(
-                f"agents={report['agents']} want {PASS_AGENT_BAR} "
-                "(8-agent smoke does not count as PASS)"
+            shot_loader = _screenshot_loader(args.base, study_id) if study_id else (lambda _url: False)
+        report["goal_verdicts"] = vision_goal
+        strict = evaluate_strict_gates(
+            study,
+            startup={
+                "expected": expected,
+                "pass_agent_bar": PASS_AGENT_BAR,
+                "elapsed_s": report["elapsed_s"],
+                "page_open_check": page_open_check,
+                "personas": report["personas"],
+                "task_bases": report["task_bases"],
+                "sites": report["sites"],
+                "min_personas": want_personas,
+                "min_tasks": want_tasks,
+                "min_sites": want_sites,
+                "max_elapsed_s": args.max_elapsed_s,
+                "study_budget_s": args.max_elapsed_s,
+                "first_shot_s": args.first_shot_s,
+                "first_action_s": args.first_action_s,
+                "first_action_frac": args.first_action_frac,
+                "ttfa_median_s": DEFAULT_TTFA_MEDIAN_S,
+                "ttfa_max_s": DEFAULT_TTFA_MAX_S,
+                "time_to_first_action_check": ttfa_check,
+                "time_to_first_value_s": report["time_to_first_value_s"],
+                "time_to_first_value_agent": first_value_agent,
+                "total_time_s": report["total_time_s"],
+                "report_ready": report["report_ready"],
+                "base": args.base,
+                "study_id": study_id,
+                "status": study.get("status"),
+                "has_summary": bool(study.get("summary")),
+            },
+            vision_goal=vision_goal,
+            screenshot_loads=shot_loader,
+            report_html=report_html,
+            report_url=report_url,
+            abort_reason=abort_reason,
+        )
+        product = strict["product_task_success"]
+        report["task_success_n"] = product["success_n"]
+        report["task_success_of"] = product["n"]
+        report["task_success_rate"] = (
+            round(100 * product["success_n"] / product["n"]) if product["n"] else 0
+        )
+        report["gates"] = strict["gates"]
+        report["competitor_task_success"] = strict["competitor_task_success"]
+        report["browserbase_concurrency_losses"] = strict["browserbase_concurrency_losses"]
+        report["product_task_success"] = product
+        report["report_url"] = report_url
+        report["fail_reasons"] = strict["fail_reasons"]
+        report["goal_verdicts"] = strict.get("verdicts") or vision_goal
+        report["pass"] = bool(strict["pass"])
+        structural = report.get("product_task_gate") or {}
+        if (
+            not early_abort
+            and structural.get("product_n")
+            and not structural.get("pass")
+        ):
+            stuck = structural.get("first_screen_failures") or []
+            reason = (
+                f"product task success {structural.get('success_n')}/{structural.get('product_n')} "
+                f"want ≥{structural.get('required_n')} "
+                f"({len(stuck)} stayed on the first screen)"
             )
-        elif report["agents"] < expected:
-            fails.append(f"agents={report['agents']} want {expected}")
-        if report["yeses"] < expected:
-            fails.append(f"yeses={report['yeses']} want {expected}")
-        if study.get("status") != "complete":
-            fails.append(f"status={study.get('status')}")
-        if not study.get("summary"):
-            fails.append("missing summary")
-        if report["elapsed_s"] > args.max_elapsed_s:
-            fails.append(
-                f"elapsed={report['elapsed_s']}s want ≤{args.max_elapsed_s:.0f}s "
-                f"(prior YouTube baseline ~408s)"
+            reasons = list(report.get("fail_reasons") or [])
+            if reason not in reasons:
+                reasons.append(reason)
+            report["fail_reasons"] = reasons
+            report["pass"] = False
+        failure_path = OUT_DIR / "failures.json"
+        if early_abort:
+            failure_doc = build_early_failures(
+                study,
+                _sessions(study),
+                early_abort,
+                base_url=args.base.rstrip("/"),
             )
-        # Per-agent creation → first screenshot gate.
-        shot_stats = timing["creation_to_first_shot_s"]
-        slow_agents = [
-            r
-            for r in timing["per_agent"]
-            if r["creation_to_first_shot_s"] is not None
-            and r["creation_to_first_shot_s"] > args.first_shot_s
-        ]
-        missing_shot = [
-            r["agent_id"]
-            for r in timing["per_agent"]
-            if r["first_screenshot_at_ts"] is None
-        ]
-        if missing_shot:
-            fails.append(
-                f"no first screenshot for {len(missing_shot)} agent(s): "
-                + ", ".join(missing_shot[:8])
-            )
-        if slow_agents:
-            fails.append(
-                f"creation→first_shot >{args.first_shot_s:.0f}s for "
-                f"{len(slow_agents)} agent(s) "
-                f"(max={shot_stats['max']}s p95={shot_stats['p95']}s): "
-                + ", ".join(
-                    f"{r['agent_id']}={r['creation_to_first_shot_s']}s"
-                    for r in slow_agents[:8]
-                )
-            )
-        nos = [v["agent_id"] for v in judged.values() if not v.get("pass")]
-        if nos:
-            fails.append(f"flash-lite NO: {nos[:8]}")
-
+            strict["failures"] = failure_doc
+        else:
+            failure_doc = strict.get("failures") or {}
+        failure_path.write_text(json.dumps(failure_doc, indent=2))
+        report["failure_file"] = str(failure_path)
+        summary_md = render_markdown(
+            strict,
+            study_id=str(study_id or ""),
+            product_url=str(args.url or ""),
+            failure_file=str(failure_path),
+        )
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        (OUT_DIR / "summary.md").write_text(summary_md)
+        (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
+        _log(f"Wrote {failure_path} ({len(failure_doc.get('failed_runs') or [])} failed runs)")
+        _log(summary_md)
         # Ready may show only now — give the UI a beat to apply the final poll.
         ready = False
-        for _ in range(5):
-            try:
-                await page.evaluate(
-                    """(data) => {
-                      if (typeof updateReportCta === 'function') {
-                        updateReportCta(data);
-                      } else if (typeof window.applyStudyUpdate === 'function') {
-                        window.applyStudyUpdate(data);
-                      }
-                    }""",
-                    study,
-                )
-            except Exception:
-                pass
-            ready = await page.evaluate(_ready_visible_js())
-            if ready:
-                break
-            await page.wait_for_timeout(1000)
-        report["ready_after_complete"] = ready
-        if study.get("status") == "complete" and not ready:
+        if early_abort:
+            report["ready_after_complete"] = False
+        else:
+            for _ in range(5):
+                try:
+                    await page.evaluate(
+                        """(data) => {
+                          if (typeof updateReportCta === 'function') {
+                            updateReportCta(data);
+                          } else if (typeof window.applyStudyUpdate === 'function') {
+                            window.applyStudyUpdate(data);
+                          }
+                        }""",
+                        study,
+                    )
+                except Exception:
+                    pass
+                ready = await page.evaluate(_ready_visible_js())
+                if ready:
+                    break
+                await page.wait_for_timeout(1000)
+            report["ready_after_complete"] = ready
+        if study.get("status") == "complete" and not ready and not early_abort:
             _log("  WARN: Ready still hidden after complete")
 
-        report["fail_reasons"] = fails
-        report["pass"] = not fails
         report["smoke_only"] = expected < PASS_AGENT_BAR
         await browser.close()
 
     (OUT_DIR / "result.json").write_text(json.dumps(report, indent=2))
     _log(f"Wrote {OUT_DIR / 'result.json'}")
+    _log(f"Wrote {OUT_DIR / 'summary.md'}")
     if not report["pass"]:
-        raise RuntimeError("e2e2 failed: " + "; ".join(fails))
+        lead = ""
+        if early_abort and early_abort.get("reason"):
+            lead = str(early_abort.get("reason")) + " || "
+        raise RuntimeError(
+            lead + "e2e2 failed: " + "; ".join(report.get("fail_reasons") or ["unknown"])
+        )
     return report
 
 
@@ -842,14 +1025,20 @@ def main() -> int:
     ap.add_argument(
         "--stall-s",
         type=float,
-        default=float(os.environ.get("E2E2_STALL_S", "90")),
-        help="Fail if no new steps/dones for this many seconds",
+        default=float(os.environ.get("E2E2_STALL_S", "0")),
+        help=(
+            "Ignored. Agents are not timed out. A stuck agent is flagged when "
+            "3 consecutive trace steps show no URL, DOM, or canvas change."
+        ),
     )
     ap.add_argument(
         "--max-elapsed-s",
         type=float,
         default=DEFAULT_MAX_ELAPSED_S,
-        help="Hard ceiling vs prior ~408s YouTube baseline",
+        help=(
+            "Study-level budget in seconds (default 480 = 8 minutes). "
+            "Observed strict-e2e max is 408s. Not a per-agent limit."
+        ),
     )
     ap.add_argument(
         "--first-shot-s",
@@ -860,10 +1049,32 @@ def main() -> int:
             "screenshot (env E2E2_FIRST_SHOT_S, default 5)"
         ),
     )
+    ap.add_argument(
+        "--first-action-s",
+        type=float,
+        default=float(
+            os.environ.get("E2E2_FIRST_ACTION_S", str(DEFAULT_TTFA_ABORT_S))
+            or str(DEFAULT_TTFA_ABORT_S)
+        ),
+        help=(
+            "Abort when any agent still has no click, type, or scroll this many "
+            "seconds after its own first real screenshot (default 10). "
+            "The pass bar stays median <= 5s and max <= 10s. "
+            "A larger value only loosens the early abort."
+        ),
+    )
+    ap.add_argument(
+        "--first-action-frac",
+        type=float,
+        default=float(os.environ.get("E2E2_FIRST_ACTION_FRAC", "0.5") or "0.5"),
+        help="Ignored. Kept so older commands still parse. The abort is per agent.",
+    )
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
     ap.add_argument("--study-id", default=os.environ.get("E2E2_STUDY_ID", ""))
     args = ap.parse_args()
     expected = int(args.expected)
+    _release_testfix_sessions()
+    code = 0
     try:
         result = asyncio.run(run_e2e2(args))
     except Exception as exc:  # noqa: BLE001
@@ -877,7 +1088,7 @@ def main() -> int:
                 existing = json.loads(result_path.read_text())
             except Exception:
                 existing = {}
-        if existing.get("judgements") or existing.get("yeses") is not None:
+        if existing.get("gates") or existing.get("judgements") or existing.get("yeses") is not None:
             existing["pass"] = False
             existing["error"] = str(exc)
             existing.setdefault("product_url", args.url)
@@ -889,13 +1100,17 @@ def main() -> int:
                     indent=2,
                 )
             )
-        return 1
-    _log(
-        f"ALL_PASS study={result.get('study_id')} "
-        f"yeses={result.get('yeses')}/{expected} elapsed={result.get('elapsed_s')}s "
-        f"url={args.url}"
-    )
-    return 0
+        code = 1
+    else:
+        _log(
+            f"ALL_PASS study={result.get('study_id')} "
+            f"task_success={result.get('task_success_n')}/{result.get('task_success_of')} "
+            f"elapsed={result.get('elapsed_s')}s "
+            f"url={args.url}"
+        )
+    finally:
+        _release_testfix_sessions()
+    return code
 
 
 if __name__ == "__main__":

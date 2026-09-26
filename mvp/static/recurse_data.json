@@ -1,0 +1,2727 @@
+{
+ "study_id": "ead862dd-6976-47c5-a2ad-22fe7b82fefd",
+ "url": "https://recurse.run/",
+ "segment": "Technical founders and AI engineers evaluating serverless harnesses and agent infrastructure for production workloads.",
+ "status": "complete",
+ "updated_at": "2026-09-12T18:40:09.505280+00:00",
+ "summary": {
+  "headline": "Recurse offers a serverless harness for custom AI agents, but 'private beta' status and inconsistent page loading create production readiness concerns for technical founders and AI engineers.",
+  "top_friction": [
+   "Private beta status and lack of clear pricing create uncertainty for production adoption.",
+   "Inconsistent page loading and errors (e.g., 'Harness' page failure) raise reliability concerns.",
+   "Navigation to key product areas can be indirect or require multiple steps.",
+   "Minor issues with form input fields during contact/demo requests."
+  ],
+  "top_strengths": [
+   "Clear communication of core value proposition for custom agent development.",
+   "Straightforward navigation to documentation, pricing, and examples.",
+   "Direct contact path via 'Book a call' with founders.",
+   "Generous 'Hobby' tier in pricing provides a good starting point for exploration."
+  ],
+  "conversion_outlook": "The 'private beta' status and the absence of readily available pricing information are significant deterrents for the target segment, who prioritize production readiness and cost predictability. While the core value proposition is understood, the technical hurdles encountered during the sessions (page load failures, indirect navigation) further erode confidence. Conversion is likely to be low until these critical production concerns are addressed.",
+  "recommendations": [
+   {
+    "priority": "high",
+    "action": "Clearly display pricing tiers and offer a path to production-ready plans, or provide a clear timeline for when pricing will be available.",
+    "rationale": "The 'private beta' status and lack of pricing are the most significant friction points for this segment, directly impacting their ability to evaluate Recurse for production workloads."
+   },
+   {
+    "priority": "high",
+    "action": "Ensure all core product pages and navigation links are consistently loading and functioning correctly.",
+    "rationale": "Page load failures and errors, particularly on core product pages like 'Harness', severely undermine confidence in the platform's reliability for production environments."
+   },
+   {
+    "priority": "medium",
+    "action": "Streamline navigation to key product areas and documentation, making the core offerings more immediately apparent.",
+    "rationale": "While documentation is accessible, some users found the path to understanding product areas indirect, which can slow down evaluation."
+   },
+   {
+    "priority": "low",
+    "action": "Review and refine form input field behavior, especially for contact and demo request forms.",
+    "rationale": "Minor issues with form inputs, while not critical, can create a perception of lower quality or reliability."
+   }
+  ],
+  "segment_fit_score": 6,
+  "segment_fit_rationale": "The core offering of a serverless harness for custom agents aligns well with the needs of technical founders and AI engineers. However, the current 'private beta' status and associated uncertainties significantly hinder adoption for production workloads.",
+  "site_summary": "",
+  "completed_agents": 110,
+  "total_agents": 120,
+  "note": "Synthesized from 110 completed agents."
+ },
+ "personas": [
+  {
+   "id": "p1",
+   "name": "AI Infrastructure Lead",
+   "bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production."
+  },
+  {
+   "id": "p2",
+   "name": "CTO, AI Startup",
+   "bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack."
+  },
+  {
+   "id": "p3",
+   "name": "Senior Machine Learning Engineer",
+   "bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria."
+  },
+  {
+   "id": "p4",
+   "name": "Head of AI Research",
+   "bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists."
+  },
+  {
+   "id": "p5",
+   "name": "Lead Software Engineer (AI Platform)",
+   "bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents."
+  }
+ ],
+ "tasks": [
+  "Find pricing or how to get started",
+  "Find social proof \u2014 customers, case studies, or examples",
+  "Find the developer docs or API reference and describe what you would build first",
+  "Look for a sign-up, demo, or contact path and describe the first step",
+  "Scan the navigation and name the main product areas",
+  "Skim the homepage and state the main value proposition in one sentence"
+ ],
+ "sites": [
+  {
+   "key": "product",
+   "label": "Recurse",
+   "url": "https://recurse.run/",
+   "runs": 25,
+   "completed": 13,
+   "yes": 3,
+   "maybe": 20,
+   "no": 2,
+   "steps": 127,
+   "friction": 17
+  },
+  {
+   "key": "competitor_1",
+   "label": "LangChain",
+   "url": "https://www.langchain.com/",
+   "runs": 28,
+   "completed": 14,
+   "yes": 5,
+   "maybe": 22,
+   "no": 1,
+   "steps": 143,
+   "friction": 15
+  },
+  {
+   "key": "competitor_2",
+   "label": "LlamaIndex",
+   "url": "https://www.llamaindex.ai/",
+   "runs": 30,
+   "completed": 16,
+   "yes": 8,
+   "maybe": 22,
+   "no": 0,
+   "steps": 159,
+   "friction": 20
+  },
+  {
+   "key": "competitor_3",
+   "label": "E2B",
+   "url": "https://e2b.dev/",
+   "runs": 27,
+   "completed": 14,
+   "yes": 6,
+   "maybe": 17,
+   "no": 4,
+   "steps": 129,
+   "friction": 10
+  }
+ ],
+ "rows": [
+  {
+   "agent_id": "t1__p1__competitor_3",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The value proposition was clear and immediately understandable.",
+    "The site loaded quickly and was easy to navigate."
+   ],
+   "feedback": "E2B seems to offer a robust solution for deploying AI agents with its isolated machine-per-agent approach. Abstracting away infrastructure is a significant advantage for scaling production workloads. The platform appears trustworthy and clearly communicates its core benefits for developers and infrastructure leads.",
+   "quote": "The main value proposition is that E2B provides a serverless platform where each AI agent gets its own isolated machine, abstracting away infrastructure management so developers can focus on agent development.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/e21a03bf-d654-4282-ba42-6bccde193e29"
+  },
+  {
+   "agent_id": "t1__p1__product",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "The 'Private beta' status and the absence of visible pricing are significant concerns from a production infrastructure perspective."
+   ],
+   "easy": [
+    "The landing page loaded quickly, allowing for immediate inspection of the content."
+   ],
+   "feedback": "The core value proposition of a serverless harness for custom agents is clear and addresses a potential need for specialized agentic workloads. However, the 'Private beta' status and lack of pricing information create uncertainty regarding production readiness and cost, which are critical for my role.",
+   "quote": "The main value proposition is that Recurse provides a serverless harness for building and deploying custom agents to handle complex agentic workloads, especially when generalist agents are insufficient, but the private beta status and lack of pricing are concerning for production use.",
+   "final_url": "https://recurse.run/",
+   "session": "https://www.browserbase.com/sessions/cb9cf546-2645-478a-900f-0cd4e00558d6"
+  },
+  {
+   "agent_id": "t1__p1__competitor_2",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the documentation was straightforward.",
+    "The value proposition was clearly stated on the page."
+   ],
+   "feedback": "LlamaParse seems like a comprehensive solution for document processing in AI pipelines, offering a unified SDK and API which is appealing for production environments. The composable products are a good approach to building flexible pipelines. I trust that an enterprise platform would offer the necessary reliability for production workloads.",
+   "quote": "The main value proposition is that LlamaParse is an enterprise platform that provides a unified SDK and API key for turning documents into production AI pipelines through five composable products.",
+   "final_url": "https://developers.llamaindex.ai/llamaparse/",
+   "session": "https://www.browserbase.com/sessions/b64abc05-db6a-486f-bb03-610d5bab17e9"
+  },
+  {
+   "agent_id": "t3__p1__product",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Finding a contact path by clicking 'Book a call'"
+   ],
+   "feedback": "The process to book a call was straightforward. I appreciate the directness of scheduling a meeting with a founder. However, the lack of pricing information on the discovery call page makes it difficult to assess the viability for production workloads.",
+   "quote": "The first step to initiate contact is to select a founder and click their 'Book 30 minutes' button.",
+   "final_url": "https://recurse.run/discovery-call",
+   "session": "https://www.browserbase.com/sessions/1ed1d469-2431-4247-97f9-604464955a7d"
+  },
+  {
+   "agent_id": "t2__p1__competitor_3",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Finding the pricing page was straightforward."
+   ],
+   "feedback": "The pricing tiers are clearly laid out, and the free 'Hobby' tier with a generous credit is a good starting point. The inclusion of session limits and concurrent sandbox numbers is helpful for understanding capacity. I appreciate the transparency in the pricing structure.",
+   "quote": "I found the pricing information easily and the Hobby tier looks like a good way to start exploring.",
+   "final_url": "https://e2b.dev/pricing",
+   "session": "https://www.browserbase.com/sessions/714ddbc0-ba59-4101-8837-1225fc078401"
+  },
+  {
+   "agent_id": "t4__p1__competitor_1",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the site and opening the 'Products' dropdown was straightforward."
+   ],
+   "feedback": "The product areas seem clearly defined, focusing on the lifecycle of agent development. The 'Build' section's mention of Deep Agents and LangGraph is particularly relevant for advanced agent composition. I would need to explore 'Test' and 'Deploy' further to assess their production readiness.",
+   "quote": "I was able to quickly identify the main product areas like Build, Test, Deploy, Monitor, and Govern from the dropdown.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/87ebcf3d-9b26-42c6-bc8e-209b2162fa03"
+  },
+  {
+   "agent_id": "t2__p1__product",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the pricing page was straightforward.",
+    "The 'Get started' button on the pricing page led directly to the installation/setup information."
+   ],
+   "feedback": "The site clearly separates pricing and getting started information. The pricing page is concise, and the 'Get started' link effectively directs users to the necessary installation steps. This directness builds confidence in the platform's usability for production deployments.",
+   "quote": "I was able to quickly find both the pricing and the installation guide to get started.",
+   "final_url": "https://recurse.run/install",
+   "session": "https://www.browserbase.com/sessions/2e1e5525-28aa-4db4-add6-89aecd439bee"
+  },
+  {
+   "agent_id": "t2__p1__competitor_1",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the pricing page was straightforward."
+   ],
+   "feedback": "The pricing tiers are clear, with a free option for getting started and paid tiers for teams and enterprise needs. The 'pay as you go' model for usage beyond base traces is a good indicator for scaling production workloads. Clarity on what 'base traces' entails would be beneficial for accurate cost estimation.",
+   "quote": "I found the pricing page easily and it outlines the different tiers for teams and enterprise, which is helpful for planning.",
+   "final_url": "https://www.langchain.com/pricing",
+   "session": "https://www.browserbase.com/sessions/ca20d232-bd64-4002-a781-bfd66e216d1a"
+  },
+  {
+   "agent_id": "t2__p1__competitor_2",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find pricing or how to get started",
+   "completed": false,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the site and scrolling were straightforward.",
+    "Locating and clicking the 'Try LlamaParse' button was easy."
+   ],
+   "feedback": "The landing page is clean and the 'Try LlamaParse' call to action is prominent. It's unclear if this is the main product or a specific feature, but it was easy to initiate an interaction. I need to understand how this integrates into a broader agent infrastructure for production.",
+   "quote": "I was able to easily find and click the button to try out LlamaParse, but I still need to understand the full scope of the product.",
+   "final_url": "https://www.llamaindex.ai/",
+   "session": "https://www.browserbase.com/sessions/1b5e7ca5-5acf-488a-aa32-ac9607b2541d"
+  },
+  {
+   "agent_id": "t4__p1__competitor_2",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": true,
+   "steps": 9,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent initially encountered an error when trying to click on the 'Product' navigation item (step 1), indicating a potential instability or change in the page structure.",
+    "The agent's thought process suggests a need to click on 'Product' and then 'Solutions' to reveal product areas, implying that the main product areas are not immediately obvious from the initial landing page."
+   ],
+   "easy": [
+    "The agent was able to successfully navigate to the 'Docs' and 'Resources' sections after some initial exploration.",
+    "The agent was able to identify key product areas like LlamaParse, LiteParse, LlamaAgents, and LlamaIndex Framework through its navigation."
+   ],
+   "feedback": "The product areas like LlamaParse and LlamaAgents seem relevant to my work in AI infrastructure. However, the navigation felt a bit indirect, requiring multiple clicks through 'Product' and 'Solutions' before reaching detailed documentation. I would need to see more explicit connections between these components and production workload scalability to fully trust it.",
+   "quote": "I was able to identify the main product areas like LlamaParse and LlamaAgents, but the navigation wasn't as straightforward as I'd hoped.",
+   "final_url": "https://developers.llamaindex.ai/llamaparse/#resources",
+   "session": "https://www.browserbase.com/sessions/5a19196e-faeb-4790-9e08-e631c593319d"
+  },
+  {
+   "agent_id": "t3__p1__competitor_3",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Finding and clicking the 'Book a Demo' button was straightforward."
+   ],
+   "feedback": "The landing page clearly offers a demo, which is a good starting point. However, the subsequent contact page failed to load properly, which raises concerns about reliability and immediate usability.",
+   "quote": "I clicked the 'Book a Demo' button, but the next page didn't seem to load correctly.",
+   "final_url": "https://e2b.dev/contact",
+   "session": "https://www.browserbase.com/sessions/d1235829-a086-49a9-afad-5c1895abcf5c"
+  },
+  {
+   "agent_id": "t4__p1__product",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": false,
+   "steps": 8,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The 'Harness' page failed to load, requiring a back navigation.",
+    "The agent spent time waiting for the initial page to load and for content to become available."
+   ],
+   "easy": [
+    "Navigating to different sections like Docs, Pricing, and Examples was straightforward once located.",
+    "Identifying clickable elements like 'Docs', 'Harness', 'Pricing', 'Examples', and 'Use Cases' was possible."
+   ],
+   "feedback": "The documentation and examples seem to be the primary areas for understanding the product's capabilities. However, the failure to load the 'Harness' page raises concerns about the reliability of the core product offering. Clarity on what 'Harness' specifically entails is needed, as it's not immediately obvious from the navigation.",
+   "quote": "I was trying to understand the main product areas by looking at the navigation, but the Harness page didn't load.",
+   "final_url": "https://recurse.run/examples",
+   "session": "https://www.browserbase.com/sessions/3329115f-37a2-44cf-8665-91f956cec3d0"
+  },
+  {
+   "agent_id": "t3__p1__competitor_2",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 8,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "The input field for 'First name' did not seem to accept the typed text correctly, showing an empty value and a warning about reformatting or autocompletion."
+   ],
+   "easy": [
+    "Finding and clicking the 'Book a demo' button was straightforward."
+   ],
+   "feedback": "The site clearly offers a demo option, which is good. However, the input field behavior during the demo request form submission was concerning, making me question the reliability of the data input process. I need to be sure that my information is captured correctly for a production-ready system.",
+   "quote": "I was able to find the demo button easily, but the input field gave me some pause about how well it handles data.",
+   "final_url": "https://www.llamaindex.ai/contact",
+   "session": "https://www.browserbase.com/sessions/2df03e13-c5fb-4c83-b346-f44161b37e67"
+  },
+  {
+   "agent_id": "t1__p2__competitor_1",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The main value proposition was clearly stated on the homepage."
+   ],
+   "feedback": "LangChain seems to offer a robust framework for building AI agents, which is exactly what we need for our specialized product. The focus on the entire development lifecycle, from building to monitoring, is impressive and suggests a mature platform. I'm particularly interested in how it handles iteration and governance, as those are critical for production workloads.",
+   "quote": "LangChain appears to be a comprehensive platform for accelerating the AI agent development lifecycle, which is exactly what my team needs.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/44082584-739a-4e32-898e-4afa025e56b7"
+  },
+  {
+   "agent_id": "t3__p1__competitor_1",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the contact sales page was straightforward after clicking the 'Get a demo' button."
+   ],
+   "feedback": "The site presents a clear call to action for a demo, which is good. However, the inability to complete the task due to a technical error is concerning for a platform handling production workloads. I need to be able to trust that the infrastructure is stable.",
+   "quote": "I clicked on 'Get a demo' and it took me to a contact sales page, but then there was an error and I couldn't proceed.",
+   "final_url": "https://www.langchain.com/contact-sales",
+   "session": "https://www.browserbase.com/sessions/fedf9b68-34c6-433a-9748-b250c088e4d6"
+  },
+  {
+   "agent_id": "t5__p1__competitor_1",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent repeatedly clicked on the 'Learn' dropdown, suggesting it might not have immediately found the desired information or navigated to it directly."
+   ],
+   "easy": [
+    "The initial navigation to the Langchain homepage was straightforward."
+   ],
+   "feedback": "The site seems to be a central hub for Langchain, offering various resources. However, without clear pathways to specific customer examples or case studies, it's difficult to gauge the real-world impact and adoption of their technology for production workloads.",
+   "quote": "I'm looking for concrete examples of how others are using Langchain in production, but I'm not seeing them easily here.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/b1a07a56-f722-4977-9aec-a8e31f0572b0"
+  },
+  {
+   "agent_id": "t4__p1__competitor_3",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": false,
+   "steps": 7,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the documentation and use cases sections was straightforward via the 'Resources' and 'Docs' links."
+   ],
+   "feedback": "The documentation is well-organized and provides clear examples of use cases, which is helpful for understanding the capabilities of the platform for AI workloads. The site's focus on agents and environments seems promising for production deployment. I'm interested in seeing more details on scaling and reliability.",
+   "quote": "I was able to easily find the documentation and explore the use cases for coding agents.",
+   "final_url": "https://docs.e2b.dev/use-cases/coding-agents",
+   "session": "https://www.browserbase.com/sessions/770d13a7-75be-4476-bc38-27dbf4d580e3"
+  },
+  {
+   "agent_id": "t5__p1__product",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 4,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent clicked on 'Examples' but the next page did not load as expected, leading to an incomplete output and failure to complete the task."
+   ],
+   "easy": [
+    "Navigating to the website was straightforward."
+   ],
+   "feedback": "The site's navigation to 'Examples' was promising for finding social proof. However, the subsequent page load error prevented me from evaluating the content, leaving me uncertain about the platform's real-world applications and customer success. I need to see concrete examples to trust this for production workloads.",
+   "quote": "I clicked on 'Examples' hoping to find case studies, but the page didn't load properly.",
+   "final_url": "https://recurse.run/use-cases",
+   "session": "https://www.browserbase.com/sessions/a5f58e87-4457-4cfa-9bb0-800021f02301"
+  },
+  {
+   "agent_id": "t5__p1__competitor_2",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent clicked on element 7412 multiple times, indicating a potential issue with element identification or state changes on the page."
+   ],
+   "easy": [
+    "The agent was able to navigate to the target website and find a customer success story."
+   ],
+   "feedback": "The site clearly showcases a customer success story, which is helpful for understanding real-world applications. However, the repeated clicking on the same element suggests potential UI instability or complexity in element targeting that could be frustrating for users trying to access information.",
+   "quote": "I found a customer success story, but it took a few tries to get to it.",
+   "final_url": "https://www.llamaindex.ai/customers/clean-inputs-smarter-minds-how-delphi-uses-llamacloud-to-power-better-data-ingestion-pipelines",
+   "session": "https://www.browserbase.com/sessions/7d8c13f6-5841-4737-8499-956bef27e38b"
+  },
+  {
+   "agent_id": "t6__p1__product",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the documentation",
+    "Finding the Python API reference"
+   ],
+   "feedback": "The documentation is straightforward to access, which is a good start for evaluating production readiness. I need to see more details on the serverless harness and how it specifically addresses scaling and reliability for complex agent systems. The clarity on the `build_bundle` function is helpful for initial validation.",
+   "quote": "I would start by building a simple agent using the `build_bundle` function to validate its structure and interfaces for deployment.",
+   "final_url": "https://recurse.run/docs/python-api",
+   "session": "https://www.browserbase.com/sessions/95e7f472-86b9-4b72-95e9-e1a787eb66cb"
+  },
+  {
+   "agent_id": "t6__p1__competitor_2",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the LlamaIndex documentation was straightforward."
+   ],
+   "feedback": "The documentation seems comprehensive and well-organized, which is reassuring for evaluating production capabilities. The clear navigation suggests a product designed with developer experience in mind. I trust that the core functionality for building AI applications is well-supported.",
+   "quote": "I'm looking for the developer docs to see how I can integrate LlamaIndex into our existing agent infrastructure.",
+   "final_url": "https://developers.llamaindex.ai/llamaparse/",
+   "session": "https://www.browserbase.com/sessions/2c2ecea3-52e6-4d13-a93c-ec732fd3dfed"
+  },
+  {
+   "agent_id": "t2__p2__competitor_2",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find pricing or how to get started",
+   "completed": false,
+   "steps": 1,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The landing page loaded successfully."
+   ],
+   "feedback": "The landing page loaded quickly, which is a good sign for performance. However, without more information readily available on the homepage about specific use cases for specialized agents or deployment options, it's difficult to immediately assess if this platform meets my startup's unique needs.",
+   "quote": "The page loaded, but I'm not seeing how to get started or pricing right away.",
+   "final_url": "",
+   "session": "https://www.browserbase.com/sessions/1f9fa814-e7b7-42f4-855e-7b1bc980902e"
+  },
+  {
+   "agent_id": "t6__p1__competitor_1",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 1,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Landing page loaded quickly"
+   ],
+   "feedback": "Langchain seems to be a comprehensive framework for building LLM applications. The landing page is clear about its purpose, but I couldn't immediately find specific developer documentation or API references to assess its suitability for production workloads.",
+   "quote": "I'm looking for the developer docs to see how to integrate this into our existing infrastructure.",
+   "final_url": "",
+   "session": "https://www.browserbase.com/sessions/057d21be-4320-40dd-8d5d-e7f33625af13"
+  },
+  {
+   "agent_id": "t3__p2__competitor_2",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 1,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The landing page loaded successfully."
+   ],
+   "feedback": "The landing page loaded quickly, which is a good start. I'm looking for a platform that can help my team build specialized AI agents, and the name 'LlamaIndex' suggests a focus on language models, which is relevant to my needs. I need to see more to understand if it provides the depth of agent capabilities and integration options we require.",
+   "quote": "The landing page loaded, and I'm ready to explore what LlamaIndex offers for building our AI agents.",
+   "final_url": "",
+   "session": "https://www.browserbase.com/sessions/bb2e80e4-51af-49c1-b046-384207998ed9"
+  },
+  {
+   "agent_id": "t2__p2__product",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find pricing or how to get started",
+   "completed": false,
+   "steps": 1,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The landing page loaded quickly."
+   ],
+   "feedback": "The landing page looks professional and clear, but it doesn't immediately tell me how to get started or what the pricing is. I need more information to understand if this is the right platform for my startup's specialized AI agent needs.",
+   "quote": "I'm not sure how to proceed from this landing page.",
+   "final_url": "",
+   "session": "https://www.browserbase.com/sessions/df3ccb89-e134-4ef4-8d7e-850aea37bbe8"
+  },
+  {
+   "agent_id": "t2__p2__competitor_1",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find pricing or how to get started",
+   "completed": false,
+   "steps": 1,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The landing page loaded quickly."
+   ],
+   "feedback": "The LangChain landing page is clear about what it offers, focusing on building LLM applications. It seems like a robust framework for developers. However, I didn't see immediate pricing or a clear 'get started' path for someone looking to deploy specialized agents in production, which is my primary need.",
+   "quote": "I opened the site and it loaded, but I'm not sure if this is the right place for production-ready specialized AI agents.",
+   "final_url": "",
+   "session": "https://www.browserbase.com/sessions/58aec471-f91f-4738-9d74-77649409b9bd"
+  },
+  {
+   "agent_id": "t1__p2__product",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": false,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "LLM call timed out after 75 seconds. Keep your thinking and output short."
+   ],
+   "easy": [
+    "Landing page loaded"
+   ],
+   "feedback": "The landing page loaded quickly, which is a good start. However, the subsequent LLM timeout indicates potential performance issues or limitations in processing information, which is concerning for a platform promising reliable deployment.",
+   "quote": "I couldn't get a clear value proposition because the system timed out.",
+   "final_url": "https://recurse.run/",
+   "session": "https://www.browserbase.com/sessions/78ad156c-f8be-4bc8-9d49-f63aef0f3abc"
+  },
+  {
+   "agent_id": "t3__p2__product",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The landing page loaded quickly."
+   ],
+   "feedback": "The landing page loaded without issue, which is a good start. I'm interested in seeing how the platform can support specialized agent capabilities for our AI product.",
+   "quote": "I'm looking for a platform that can help us build and deploy specialized AI agents quickly.",
+   "final_url": "https://recurse.run/",
+   "session": "https://www.browserbase.com/sessions/8674abfc-9aa9-413d-91b8-13957d216416"
+  },
+  {
+   "agent_id": "t2__p2__competitor_3",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find pricing or how to get started",
+   "completed": false,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "LLM call timed out after 75 seconds. Keep your thinking and output short."
+   ],
+   "easy": [
+    "The landing page loaded quickly."
+   ],
+   "feedback": "The landing page loaded, but the initial agent interaction failed due to a timeout. I'm concerned about the reliability if the core agent functionality is unstable. I need to see if this can be resolved before considering it for our production needs.",
+   "quote": "I'm hesitant because the agent timed out on the first interaction.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/ae416839-a6c6-42f8-9513-f712319a3ec8"
+  },
+  {
+   "agent_id": "t5__p1__competitor_3",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "no",
+   "friction": [
+    "LLM call timed out after 75 seconds"
+   ],
+   "easy": [
+    "The landing page loaded quickly."
+   ],
+   "feedback": "The landing page loaded, but the subsequent interactions failed due to LLM timeouts. This is concerning for production workloads where reliability is key. I need to see evidence of successful deployments or customer success stories to build trust.",
+   "quote": "I couldn't find any customer examples or case studies because the site kept timing out.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/15f3de8a-6e00-498c-b7ff-5973617816bd"
+  },
+  {
+   "agent_id": "t1__p2__competitor_3",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Identifying the main value proposition"
+   ],
+   "feedback": "E2B's focus on providing isolated machine environments for AI agents is a clear value proposition for my needs. It seems like they abstract away the infrastructure complexity, which is a significant draw for a technical founder focused on product development. I'd need to see more about integration and scalability, but the core offering is promising.",
+   "quote": "The main value proposition of E2B is providing an isolated machine environment for every AI agent, allowing technical founders to focus on developing agent logic and models while E2B handles the underlying infrastructure management.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/f944348a-5d24-432c-813a-f1bfa9b28930"
+  },
+  {
+   "agent_id": "t4__p2__competitor_3",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": true,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Identifying the main product areas was straightforward from the landing page."
+   ],
+   "feedback": "The product areas listed (Coding, Background, Enterprise, Financial) seem relevant to building specialized AI agents. The clarity of these main areas on the landing page is good, suggesting a focused offering. I'd need to see more details to assess reliability for production workloads.",
+   "quote": "I was able to quickly identify the main product areas like Coding and Enterprise.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/98593292-29e2-42fd-9f2d-0bea822c56c4"
+  },
+  {
+   "agent_id": "t1__p2__competitor_2",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Identifying the main value proposition was straightforward and clearly stated on the landing page."
+   ],
+   "feedback": "LlamaIndex's claims about cost and accuracy are compelling for a startup looking to optimize AI development. The ability to transform any document into AI-ready context directly addresses a key challenge in building specialized AI products. I'd need to see more about integration and deployment to fully assess its suitability for production workloads.",
+   "quote": "LlamaIndex seems to offer a way to make document processing for AI significantly cheaper and more accurate, which is exactly what we need.",
+   "final_url": "https://www.llamaindex.ai/",
+   "session": "https://www.browserbase.com/sessions/0677104e-a719-421c-9239-a152530ad44b"
+  },
+  {
+   "agent_id": "t1__p3__competitor_3",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "The main value proposition was clearly stated on the homepage."
+   ],
+   "feedback": "E2B seems to clearly address the infrastructure challenges for AI agents. The focus on providing isolated machines and cloud infrastructure is exactly what I'm looking for to deploy complex AI systems. I appreciate the clarity on allowing developers to focus on agent logic.",
+   "quote": "E2B provides the cloud infrastructure and isolated machines for AI agents so I can focus on building the agent logic.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/40955df8-3170-481b-acdf-5123790c94f8"
+  },
+  {
+   "agent_id": "t5__p2__competitor_3",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "LLM call timed out after 75 seconds."
+   ],
+   "easy": [
+    "The landing page loaded quickly."
+   ],
+   "feedback": "The site loaded quickly, which is a good sign. However, the agent timing out on the initial load is concerning for reliability. I need to see more concrete examples of how this platform handles production workloads before I can trust it for my AI product.",
+   "quote": "I'm not sure about this platform yet, as the agent timed out during the initial load.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/8197984d-8917-4ca5-b6a6-30bc80970af7"
+  },
+  {
+   "agent_id": "t3__p2__competitor_3",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "LLM call timed out after 75 seconds."
+   ],
+   "easy": [
+    "The landing page loaded quickly."
+   ],
+   "feedback": "The landing page loaded with an 'agent starting...' message, which is intriguing. However, the subsequent LLM timeout is concerning for a platform promising reliable deployment. I need to see if this is a persistent issue or a one-off.",
+   "quote": "The page loaded, but then timed out waiting for an agent, which makes me hesitant.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/d4aa2ca1-cbc8-4449-ae43-4366baab1611"
+  },
+  {
+   "agent_id": "t2__p3__competitor_1",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Finding the pricing page was straightforward via the navigation link.",
+    "The pricing tiers were clearly laid out, including a free 'Developer' option."
+   ],
+   "feedback": "The pricing structure is quite clear, especially with the free tier for developers. It's good to see a clear path for getting started without immediate commitment. The tiered approach makes sense for different levels of usage.",
+   "quote": "I found the pricing information easily, and the free developer plan is a good way to start evaluating the service.",
+   "final_url": "https://www.langchain.com/pricing",
+   "session": "https://www.browserbase.com/sessions/58315a7b-e625-4d19-b939-04eb47e4c16d"
+  },
+  {
+   "agent_id": "t4__p2__competitor_2",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "LLM call timed out after 75 seconds. Keep your thinking and output short.",
+    "Model output was truncated at max_output_tokens=8096; the structured output is incomplete. Increase max_output_tokens or request shorter output."
+   ],
+   "easy": [
+    "The main product areas were identified from the navigation."
+   ],
+   "feedback": "LlamaIndex appears to be a robust platform for building AI applications, with LlamaParse offering valuable document processing capabilities. The core platform itself is clearly positioned for integrating AI into existing tech stacks. However, the technical errors encountered during the session raise concerns about reliability for production workloads.",
+   "quote": "I've scanned the navigation and identified LlamaIndex as the core platform, LlamaParse for document processing, and Workflo as key product areas.",
+   "final_url": "https://www.llamaindex.ai/",
+   "session": "https://www.browserbase.com/sessions/44ead893-814e-48d6-97b7-1d92c431c05c"
+  },
+  {
+   "agent_id": "t2__p3__product",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Finding the pricing page",
+    "Finding the 'Get started' link",
+    "Accessing installation and deployment instructions"
+   ],
+   "feedback": "The pricing model of 'pay per request' starting at $5 seems reasonable for evaluating the service. The clear installation and deployment instructions, including shell commands, are very helpful for understanding how to integrate this into production workloads. The site is straightforward and provides the necessary technical details.",
+   "quote": "I found the pricing information and the detailed 'get started' guide with installation commands, which is exactly what I needed.",
+   "final_url": "https://recurse.run/install",
+   "session": "https://www.browserbase.com/sessions/81a117d8-d5d3-4d88-9334-0e4b43795c5b"
+  },
+  {
+   "agent_id": "t3__p2__competitor_1",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 5,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent encountered an error when trying to type into the form fields on the contact sales page, stating 'Failed to type to page: SessionManager not initialized'. This indicates a technical issue with the automation in"
+   ],
+   "easy": [
+    "The initial click on the 'Get a demo' button was successful, leading to the contact sales page."
+   ],
+   "feedback": "Langchain appears to be a robust platform for building AI applications, evident from the clear call to action for a demo. However, the inability to complete the demo request form due to technical issues with the automation is concerning for a platform that likely emphasizes reliability. The site's structure, leading directly to a sales contact after clicking 'Get a demo', is straightforward.",
+   "quote": "I clicked 'Get a demo' to start the process, but the form submission failed.",
+   "final_url": "https://www.langchain.com/contact-sales",
+   "session": "https://www.browserbase.com/sessions/9c9fb73f-18de-4d42-9019-9df60b1f6587"
+  },
+  {
+   "agent_id": "t1__p3__competitor_1",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The agent was able to quickly identify and articulate the main value proposition of the LangChain homepage."
+   ],
+   "feedback": "LangChain appears to offer a robust framework for developing AI agents, which is exactly what I need for creating more specialized and performant systems. The mention of LangSmith Engine for managing agent behavior drift is particularly interesting, as this is a critical challenge in production AI. The platform seems comprehensive, covering the full development lifecycle.",
+   "quote": "I have skimmed the LangChain homepage.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/6224b38b-4be9-44d4-8b09-7adb17ffcd4a"
+  },
+  {
+   "agent_id": "t4__p2__product",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": false,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "LLM call timed out after 75 seconds.",
+    "Model output was truncated at max_output_tokens=8096; the structured output is incomplete."
+   ],
+   "easy": [
+    "Navigating to the documentation page was straightforward.",
+    "Identifying and clicking the 'Harness' link was simple."
+   ],
+   "feedback": "The initial page load was quick, and finding the documentation was easy. However, the technical issues with the LLM calls and truncated output are concerning for a platform promising reliability. I need to see if the core product offers the specialized agent capabilities I'm looking for.",
+   "quote": "I was able to quickly find the documentation, but the errors during the process make me question the platform's stability.",
+   "final_url": "https://recurse.run/docs",
+   "session": "https://www.browserbase.com/sessions/f69adf4c-ea03-4d9d-b57c-27523358a258"
+  },
+  {
+   "agent_id": "t2__p3__competitor_3",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the pricing page was straightforward.",
+    "The pricing tiers (Hobby, Pro, Enterprise) were clearly presented.",
+    "The 'Start for Free' button offered a direct call to action."
+   ],
+   "feedback": "The pricing structure is clear and offers a free tier to start, which is great for evaluation. I appreciate the inclusion of a cost calculator to help estimate potential expenses for production workloads. The clear path to get started with the Hobby tier makes it easy to begin experimenting.",
+   "quote": "I was able to quickly find the pricing details and a clear way to start using the service.",
+   "final_url": "https://e2b.dev/pricing",
+   "session": "https://www.browserbase.com/sessions/e7a5c64b-b268-4025-8404-706aa3bf0257"
+  },
+  {
+   "agent_id": "t1__p3__product",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the Harness page was straightforward.",
+    "The value proposition was clearly stated on the Harness page."
+   ],
+   "feedback": "The serverless harness seems promising for developing specialized AI agents, which is a critical need for my work. The ability for main agents to autonomously build and improve specialist agents is particularly interesting. I'd need to see more details on the validation and continuous improvement processes to fully trust its reliability for production workloads.",
+   "quote": "Recurse provides a serverless harness that enables main AI agents to autonomously build, validate, and continuously improve specialist agents, ensuring reliable and evidence-backed AI system development.",
+   "final_url": "https://recurse.run/harness",
+   "session": "https://www.browserbase.com/sessions/71f90eb8-ec46-48fc-aa64-d92c9e123404"
+  },
+  {
+   "agent_id": "t4__p2__competitor_1",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": false,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "The LLM call timed out after 75 seconds, indicating potential performance issues or overly complex processing for a simple navigation scan."
+   ],
+   "easy": [
+    "Navigating to the 'Products' section was straightforward and immediately revealed a list of main product areas."
+   ],
+   "feedback": "The product areas listed under 'Products' seem comprehensive for an AI development platform, covering agents, graph execution, and deployment. However, the initial interaction was hampered by a timeout error, which raises concerns about the platform's responsiveness and reliability for production workloads.",
+   "quote": "I need to see if these agent capabilities can be deployed reliably, though that initial timeout was concerning.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/e980dd22-18c3-4b96-8b36-f537caae696b"
+  },
+  {
+   "agent_id": "t3__p3__product",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The 'Book a call' button was prominent and easy to locate on the landing page.",
+    "Navigating to the discovery call page was straightforward after clicking the button."
+   ],
+   "feedback": "The direct path to booking a 'Founder call' without a traditional sales funnel is intriguing, suggesting a focus on genuine engagement. However, the lack of immediate information on specific agent capabilities or technical details on the discovery call page leaves some ambiguity for a technical user like myself. I'd prefer more upfront technical specifications.",
+   "quote": "I found a way to connect with Recurse, and the first step is to book a 30-minute 'Founder call' through Calendly.",
+   "final_url": "https://recurse.run/discovery-call",
+   "session": "https://www.browserbase.com/sessions/27afd742-79c2-454e-ac32-d8ff030a3810"
+  },
+  {
+   "agent_id": "t6__p2__competitor_1",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the documentation was straightforward, with a clear 'Docs' link on the homepage.",
+    "Finding the relevant documentation for building an agent was intuitive, with clear 'Get started' buttons."
+   ],
+   "feedback": "The LangChain documentation is clear and provides good examples to get started quickly. I appreciate the focus on building specific agents, which aligns with our needs for specialized AI capabilities. The structure seems robust enough for production workloads.",
+   "quote": "I'd start by building a specialized agent to query our internal knowledge base, leveraging the `create_agent` function shown in the docs.",
+   "final_url": "https://docs.langchain.com/oss/python/langchain/overview",
+   "session": "https://www.browserbase.com/sessions/3dc6fbc0-196d-430b-9e06-be470994bbc9"
+  },
+  {
+   "agent_id": "t6__p2__competitor_3",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 7,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the documentation and API reference was straightforward.",
+    "Finding the 'Create sandbox' endpoint was relatively quick once the API reference was accessed."
+   ],
+   "feedback": "The E2B platform seems promising for quickly spinning up isolated environments, which is crucial for my team's agent development. The API reference is clear and provides the necessary details to get started. I appreciate the focus on security and isolation, as it directly addresses a key concern for deploying specialized AI agents.",
+   "quote": "I'd start by building a custom sandbox environment to test our novel reasoning agent's ability to interact with a simulated filesystem.",
+   "final_url": "https://docs.e2b.dev/api-reference/sandboxes/list-sandboxes",
+   "session": "https://www.browserbase.com/sessions/5c2e22db-2f52-453b-a1ef-6f3d7b991559"
+  },
+  {
+   "agent_id": "t6__p2__competitor_2",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating from the homepage to the LlamaIndex product page was straightforward.",
+    "Finding and accessing the documentation was also simple."
+   ],
+   "feedback": "The LlamaIndex documentation seems comprehensive and directly addresses the need for structured data extraction, which is crucial for building specialized AI agents. The clarity on 'Extract' and 'Parse' functionalities gives me confidence that I can quickly prototype the core data processing pipeline for my AI product. I appreciate the focus on developer-centric tools.",
+   "quote": "I would first build a system that leverages LlamaIndex's 'Extract' functionality to ingest various document types and pull structured data for training specialized AI agents.",
+   "final_url": "https://developers.llamaindex.ai/llamaparse/",
+   "session": "https://www.browserbase.com/sessions/d4dbcb36-fc5e-43cd-9b67-f96926496732"
+  },
+  {
+   "agent_id": "t5__p2__competitor_1",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 8,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The 'Company' dropdown menu did not open on the first two clicks, requiring a second click.",
+    "Navigation to the documentation page failed with an error, preventing further exploration."
+   ],
+   "easy": [
+    "Opening the initial landing page was straightforward.",
+    "Switching between browser tabs was seamless."
+   ],
+   "feedback": "The site seems to be focused on developers and their tools, which is good, but I couldn't easily find clear examples of successful customer implementations or case studies. The navigation to the documentation failed, which raises concerns about reliability. I need to see who else is successfully using this for production workloads.",
+   "quote": "I'm looking for concrete examples of companies using this in production, but the site navigation seems to be having issues.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/bf762652-0359-4a9f-b904-cbd7256732c1"
+  },
+  {
+   "agent_id": "t5__p2__product",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 8,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent clicked on a link that was not a case study but a blog post, which required further scrolling to determine if it contained social proof.",
+    "The model output for the blog post was truncated, indicating potential issues with accessing full content."
+   ],
+   "easy": [
+    "Navigating to the 'Examples', 'Use Cases', and 'Blog' sections was straightforward.",
+    "Identifying and clicking on a blog post that seemed like a potential case study was easy."
+   ],
+   "feedback": "The site structure is clear and allows for easy navigation to different content types. However, the content itself, particularly in the blog section, could be more clearly categorized to distinguish between general posts and specific customer success stories. The truncation of the blog post content raises concerns about reliability and completeness.",
+   "quote": "I'm looking for concrete examples of companies using this, but I had to dig through a blog post and even then the content was cut off.",
+   "final_url": "https://recurse.run/blog/indistinguishable-by-design",
+   "session": "https://www.browserbase.com/sessions/732d634a-0ece-4da7-95dc-e80485f7d65b"
+  },
+  {
+   "agent_id": "t6__p2__product",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating from the landing page to the documentation was straightforward via the 'Docs' link.",
+    "Accessing the Python API documentation was also a direct click from the main docs page."
+   ],
+   "feedback": "The documentation is accessible and seems to provide the necessary details for integrating custom agents. I appreciate the clear path to the Python API, which is crucial for my team's workflow. The site's structure makes it easy to find technical resources quickly.",
+   "quote": "I can see myself building a proof-of-concept agent for our specialized task analysis using this Python API.",
+   "final_url": "https://recurse.run/docs/python-api",
+   "session": "https://www.browserbase.com/sessions/00bd95ff-76a6-4d1e-b0e4-4f804f6b12c6"
+  },
+  {
+   "agent_id": "t3__p3__competitor_1",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent timed out during the final step of the form submission, indicating a potential issue with form processing or server response time on the site."
+   ],
+   "easy": [
+    "Locating and clicking the 'Get a demo' button was straightforward.",
+    "Filling out the initial fields of the contact form (first name, last name, email, and message) was simple."
+   ],
+   "feedback": "The site made it easy to find a demo request form and fill out the initial details. However, the process was interrupted by a timeout error, which raises concerns about the reliability of their contact system for production inquiries.",
+   "quote": "I was able to quickly find and start filling out the demo request, but it timed out before I could complete it.",
+   "final_url": "https://www.langchain.com/contact-sales",
+   "session": "https://www.browserbase.com/sessions/b5b32a75-00a6-4370-81cf-d3362168ce9d"
+  },
+  {
+   "agent_id": "t1__p4__competitor_2",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Identifying the main value proposition was straightforward.",
+    "The site loaded quickly."
+   ],
+   "feedback": "The value proposition of transforming documents into AI-ready context is clear and directly relevant to my work with agentic systems. The claims of cost-effectiveness and accuracy are promising, though I would need to see benchmarks to fully trust them. Overall, it seems like a solid tool for a common problem in agent development.",
+   "quote": "The main value proposition is transforming any document into AI-ready context by parsing and extracting complex documents with superior cost-effectiveness and accuracy.",
+   "final_url": "https://www.llamaindex.ai/",
+   "session": "https://www.browserbase.com/sessions/2c837aba-f5db-4693-922c-5029cce9c52c"
+  },
+  {
+   "agent_id": "t1__p3__competitor_2",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The main value proposition was clearly stated on the homepage."
+   ],
+   "feedback": "LlamaIndex seems to offer a straightforward way to process complex documents for AI. The claim of being cheaper and more accurate is compelling, but I'd need to see benchmarks to truly trust it for production workloads. The clarity of the value proposition is good, though.",
+   "quote": "LlamaIndex helps you get complex documents into a format AI can understand, and they claim it's cheaper and more accurate than other options.",
+   "final_url": "https://www.llamaindex.ai/",
+   "session": "https://www.browserbase.com/sessions/e4b0505c-5cd0-475f-90cf-90ece4c85925"
+  },
+  {
+   "agent_id": "t5__p2__competitor_2",
+   "persona_id": "p2",
+   "persona_name": "CTO, AI Startup",
+   "persona_bio": "I'm a technical founder focused on building a novel AI product that requires specialized agent capabilities beyond generalist models. I need a platform that empowers my team to create and deploy these specialists quickly and reliably, integrating them into our existing tech stack.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 5,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent was unable to click the 'GO BACK TO THE HOMEPAGE' button twice, indicating a potential issue with element identification or page stability.",
+    "The LLM call timed out after 75 seconds, suggesting that the agent's processing or analysis of the page content was too slow for the given time limit."
+   ],
+   "easy": [
+    "The initial landing page loaded successfully.",
+    "The agent was able to navigate to the 'use-cases' page."
+   ],
+   "feedback": "The site offers a clear overview of use cases, which is helpful for understanding potential applications. However, the difficulty in interacting with page elements and the LLM timeout suggest potential stability or performance issues that could hinder a deep evaluation.",
+   "quote": "I was trying to find customer examples, but ran into some issues navigating back to the homepage.",
+   "final_url": "https://www.llamaindex.ai/use-cases",
+   "session": "https://www.browserbase.com/sessions/0f069fed-1e25-430a-b854-50bdaaa79eda"
+  },
+  {
+   "agent_id": "t4__p3__competitor_1",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The 'Products' navigation dropdown was easily accessible and revealed the main product areas."
+   ],
+   "feedback": "The product areas listed under 'Products' seem comprehensive, covering aspects from development tools like LangSmith and LangGraph to deployment and open-source components. The clear categorization suggests a well-structured offering for building and managing AI applications, which aligns with my need for domain-specific agent development.",
+   "quote": "I was able to quickly identify the main product areas by clicking on the 'Products' dropdown.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/f61e9ba3-503c-407e-a439-199c2ef8a619"
+  },
+  {
+   "agent_id": "t6__p1__competitor_3",
+   "persona_id": "p1",
+   "persona_name": "AI Infrastructure Lead",
+   "persona_bio": "As an AI Infrastructure Lead, I'm responsible for the reliable deployment and scaling of our AI models and agentic systems. I need robust, serverless solutions that can handle complex agent compositions and ensure consistent performance in production.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 7,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the documentation and API reference was straightforward.",
+    "Finding the API reference for sandboxes and templates was easy."
+   ],
+   "feedback": "The documentation is well-organized and easy to navigate. I appreciate the clear separation between SDK and API references. The ability to create templates and manage sandboxes seems promising for production workloads.",
+   "quote": "I'd start by building a system to programmatically create and manage sandboxes using the API to ensure consistent environments for our AI models.",
+   "final_url": "https://docs.e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/44328c47-9651-4abf-b5d8-3efddda1553a"
+  },
+  {
+   "agent_id": "t5__p3__competitor_1",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 7,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent struggled to find social proof directly. It attempted to navigate through 'Company' and 'Partners' links, but the process was not straightforward and resulted in truncated output, indicating potential difficult"
+   ],
+   "easy": [
+    "Navigating to the main page was straightforward.",
+    "Identifying and clicking on navigation elements like 'Company' and 'Partners' was technically feasible."
+   ],
+   "feedback": "The site structure seems to prioritize technical documentation and partnerships over clear customer success stories. While the presence of a partner network is noted, it doesn't immediately provide the social proof I need to understand real-world application and reliability for production workloads. I'd prefer more direct access to case studies or testimonials.",
+   "quote": "I'm looking for concrete examples of how others are using this in production, but I'm having to dig through partner networks to find it.",
+   "final_url": "https://www.langchain.com/langchain-partner-network",
+   "session": "https://www.browserbase.com/sessions/d91f6cae-9f4c-4f49-a0f3-569252ca99ed"
+  },
+  {
+   "agent_id": "t1__p4__competitor_3",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The value proposition was clearly stated on the homepage."
+   ],
+   "feedback": "The concept of providing isolated machine environments for AI agents seems robust and addresses a key infrastructure challenge for AI development. The clarity of the value proposition suggests a well-thought-out product offering. I trust that the infrastructure handles the complexities, allowing me to focus on agent design.",
+   "quote": "E2B offers isolated machine environments for each AI agent, simplifying infrastructure management so I can focus on building and deploying my agents.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/8b08fc2b-bce6-43b5-9e58-6cd6fe044894"
+  },
+  {
+   "agent_id": "t1__p4__product",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "The \"Private beta\" status and lack of visible pricing on the homepage are immediate concerns regarding production readiness and cost."
+   ],
+   "easy": [
+    "The main value proposition was clearly stated on the homepage."
+   ],
+   "feedback": "The core concept of a serverless harness for custom agents is compelling for my research, especially for specialized workloads. However, the 'private beta' status and absence of pricing information raise significant questions about scalability, production readiness, and the potential cost of implementing this for advanced agentic systems. I need more clarity on how this integrates into a production environment and its associated costs before considering it.",
+   "quote": "I can see the value in a serverless harness for custom agents, but the lack of pricing and beta status makes me hesitant about its production readiness.",
+   "final_url": "https://recurse.run/",
+   "session": "https://www.browserbase.com/sessions/5dd3f537-9a54-4a49-98e7-df261876749f"
+  },
+  {
+   "agent_id": "t3__p3__competitor_2",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the \"Book a demo\" button",
+    "Successfully inputting text into the form field"
+   ],
+   "feedback": "The site immediately presented a clear path to book a demo, which was appreciated. The initial form field was straightforward to interact with. I'm looking for a platform that can handle complex agent customization, and the demo seems like the most direct way to understand if LlamaIndex fits that need.",
+   "quote": "I clicked 'Book a demo' and was taken to a contact form where I started filling in my role.",
+   "final_url": "https://www.llamaindex.ai/contact",
+   "session": "https://www.browserbase.com/sessions/fa96c643-3a62-4b0e-919b-217a47510f01"
+  },
+  {
+   "agent_id": "t5__p3__competitor_3",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the Hugging Face case study was straightforward.",
+    "The case study content was directly relevant to the search for social proof."
+   ],
+   "feedback": "The case study on Hugging Face provides strong social proof, clearly demonstrating the value of E2B's sandboxes for executing LLM-generated code in production environments. The specific metrics like fast startup times and parallel task execution are compelling. The clarity of how E2B addresses the need for secure and efficient code execution in complex AI tasks builds trust.",
+   "quote": "This case study with Hugging Face clearly shows how E2B can handle secure and fast execution of LLM-generated code for demanding AI tasks.",
+   "final_url": "https://e2b.dev/customers/how-hugging-face-is-using-e2b-to-replicate-deepseek-r1",
+   "session": "https://www.browserbase.com/sessions/ae5490db-3778-4437-9276-246168096637"
+  },
+  {
+   "agent_id": "t6__p3__competitor_2",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": true,
+   "steps": 8,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Finding the developer documentation was straightforward after opening the navigation menu."
+   ],
+   "feedback": "The documentation for LlamaParse seems clear and directly addresses the need for robust document ingestion, which is crucial for building specialized agents. The ability to handle various document formats is a significant plus for production workloads. I trust this could be a valuable tool for my work.",
+   "quote": "I would first build a document processing agent that leverages LlamaParse's 'Parse' functionality to ingest various document types and convert them into LLM-ready text.",
+   "final_url": "https://developers.llamaindex.ai/llamaparse/?_gl=1*16dvpsy*_gcl_au*MTMzMzI0NTEuMTc4OTE5MDc2Mw..*_ga*MTg1NTgxODA1NC4xNzg5MTkwNzYz*_ga_09S9Q9J2EP*czE3ODkxOTA3NjMkbzEkZzAkdDE3ODkxOTA3NjMkajYwJGwwJGg3MzM2ODExMg..",
+   "session": "https://www.browserbase.com/sessions/dfa54846-4ebe-4ff9-a993-d90e967de3f6"
+  },
+  {
+   "agent_id": "t5__p3__product",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 6,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The initial landing page did not immediately present clear social proof, requiring navigation through multiple links."
+   ],
+   "easy": [
+    "Navigating to the 'Examples' and 'Use Cases' sections was straightforward via clickable links.",
+    "Accessing specific use case details, like the 'Level designer' write-up, was also easily accomplished."
+   ],
+   "feedback": "The site provides detailed use cases, which is helpful for understanding the capabilities. However, I'm still looking for more direct evidence of customer adoption or success stories to build confidence in its production readiness. The focus on technical examples is good, but concrete testimonials or case studies would significantly improve trust.",
+   "quote": "I'm looking for examples of successful production deployments or customer testimonials to validate these capabilities.",
+   "final_url": "https://recurse.run/use-cases/level-design",
+   "session": "https://www.browserbase.com/sessions/55172a61-6ab6-4fa9-936d-654af8d46410"
+  },
+  {
+   "agent_id": "t3__p4__product",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Finding the sign-up/contact path was straightforward.",
+    "The call booking process was clearly presented."
+   ],
+   "feedback": "The focus on 'mapping the specialist' is an interesting concept for agent infrastructure, though it requires further explanation. The clear call-to-action for booking a discovery call makes it easy to take the next step. I trust that a conversation will clarify how this platform can support advanced agentic systems.",
+   "quote": "The first step to understanding how this platform can support my research is to book a discovery call with one of the co-founders.",
+   "final_url": "https://recurse.run/discovery-call",
+   "session": "https://www.browserbase.com/sessions/3276f6ad-c51f-45ec-9923-48ec53b93dba"
+  },
+  {
+   "agent_id": "t5__p3__competitor_2",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": true,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the customer stories page was straightforward.",
+    "The customer stories page clearly presented case studies and examples.",
+    "The `extract` tool successfully gathered the requested information."
+   ],
+   "feedback": "The LlamaIndex website effectively showcases customer success stories, which builds confidence in the product's capabilities. The clear presentation of case studies, like the one from Jeppesen, provides valuable social proof for potential users. I appreciate the directness of the information provided.",
+   "quote": "I found the customer stories page very helpful in understanding how others are successfully using LlamaIndex.",
+   "final_url": "https://www.llamaindex.ai/customers",
+   "session": "https://www.browserbase.com/sessions/18c600fb-eaa2-4918-ba09-336fad6dcccf"
+  },
+  {
+   "agent_id": "t1__p4__competitor_1",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The agent was able to quickly identify and articulate the main value proposition of the LangChain homepage."
+   ],
+   "feedback": "LangChain appears to offer a robust framework for developing and deploying AI agents, which aligns well with my research goals in agentic systems. The emphasis on the full lifecycle from building to monitoring is promising for rapid iteration. I would need to explore the specifics of their agent specialization and multi-agent collaboration features to fully assess its suitability.",
+   "quote": "LangChain seems to provide a comprehensive platform for accelerating AI agent development and deployment.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/f2a46ace-b9f0-49c0-9391-6ba367a22190"
+  },
+  {
+   "agent_id": "t6__p3__competitor_1",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 7,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent initially closed the documentation tab and navigated back to the homepage, requiring a second attempt to access the docs."
+   ],
+   "easy": [
+    "Navigating to the documentation and finding the 'Get started' button was straightforward once the correct tab was open."
+   ],
+   "feedback": "The documentation is well-organized and provides clear entry points like 'Get started'. However, the initial navigation felt a bit clunky, which could be improved. I'm looking for robust tools to build specialized agents, and LangChain seems promising for that.",
+   "quote": "I need to find out if I can build domain-specific agents here and how to integrate my custom tools.",
+   "final_url": "https://docs.langchain.com/build-overview",
+   "session": "https://www.browserbase.com/sessions/86902662-93aa-476a-8fc8-0dbf391c0ca2"
+  },
+  {
+   "agent_id": "t4__p3__product",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": false,
+   "steps": 9,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigation was straightforward, allowing easy access to documentation, harness details, pricing, and examples.",
+    "Clicking on navigation elements like 'Docs', 'Harness', 'Pricing', and 'Examples' directly led to the intended pages."
+   ],
+   "feedback": "The site clearly presents its core product, the Recurse Harness, and provides access to documentation and examples. I appreciate the direct links to technical details and use cases. However, the initial landing page could be more explicit about the specific capabilities for building domain-specific agents and the performance criteria it addresses.",
+   "quote": "I was able to quickly find information on the harness, pricing, and examples, which is a good start for evaluating its potential.",
+   "final_url": "https://recurse.run/examples",
+   "session": "https://www.browserbase.com/sessions/2cf50327-cd2d-4247-b06f-1b7828f21ed8"
+  },
+  {
+   "agent_id": "t2__p4__competitor_2",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the pricing page was straightforward.",
+    "The pricing tiers and 'Get Started' options were clearly presented."
+   ],
+   "feedback": "The pricing structure is clear and the tiered plans with 'Get Started' buttons make it easy to understand how to begin. The credit system is explained well, though I would need to investigate the specific credit consumption for complex agentic systems. Overall, it seems like a well-organized platform for deploying AI models.",
+   "quote": "I was able to quickly find the pricing information and see the different plans available, including how to get started.",
+   "final_url": "https://www.llamaindex.ai/pricing",
+   "session": "https://www.browserbase.com/sessions/dcae74a0-8484-4f34-b25d-3aac93aa8c52"
+  },
+  {
+   "agent_id": "t6__p3__competitor_3",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 2,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the base URL was straightforward."
+   ],
+   "feedback": "The landing page loaded quickly, which is a good first impression. However, without clear links to developer documentation or API references on the initial page, it's difficult to assess the platform's suitability for building custom, domain-specific agents. I need to see how I can integrate my own tools and data.",
+   "quote": "I need to find the developer docs to see if I can build specialized agents for my AI systems.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/40d9885a-a9d9-44c2-9505-433e194661fa"
+  },
+  {
+   "agent_id": "t2__p4__competitor_3",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find pricing or how to get started",
+   "completed": false,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "The 'Start for Free' button led directly to registration instead of a pricing or 'getting started' page, requiring a back navigation."
+   ],
+   "easy": [
+    "Navigating to the pricing page was straightforward.",
+    "The initial landing page loaded quickly."
+   ],
+   "feedback": "The site appears to be focused on getting users into the product quickly rather than providing detailed pricing information upfront. While the navigation was clear, the immediate redirect to registration from a 'Start for Free' button was unexpected and slightly disruptive to finding cost details. I'd prefer a clearer path to understanding the pricing structure before committing to registration.",
+   "quote": "I clicked 'Start for Free' expecting to see pricing, but it just took me to sign up.",
+   "final_url": "https://console.e2b.dev/registration?flow=5654ced5-e59d-41b9-94fd-7428e5a23a0a",
+   "session": "https://www.browserbase.com/sessions/f420c095-ca5e-45ef-b224-e8b86a5a6f6a"
+  },
+  {
+   "agent_id": "t4__p3__competitor_2",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": false,
+   "steps": 8,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent attempted to click on elements that were not clearly navigation links related to product areas, such as 'Product \n LlamaParse \n Industr...' which appears to be a dropdown or a section header rather than a direc",
+    "The agent encountered an error related to truncated output, indicating potential issues with processing or extracting information from the page.",
+    "The task was not completed within the maximum number of steps, suggesting difficulty in navigating and identifying the required information."
+   ],
+   "easy": [
+    "The initial loading of the website was straightforward.",
+    "The agent was able to identify and click on what it perceived as navigation links, such as 'Solutions' and 'Docs'."
+   ],
+   "feedback": "The navigation structure seems to include sections like 'Solutions' and 'Docs' which are relevant for understanding product areas. However, the presence of elements like 'Product \n LlamaParse \n Industr...' suggests a potentially complex or nested information architecture that could be confusing. The site appears to offer tools for building and deploying AI agents, which aligns with my needs for domain-specific agents.",
+   "quote": "I need to explore the 'Solutions' and 'Docs' sections to see if they offer the fine-grained control over agent capabilities that I require.",
+   "final_url": "",
+   "session": "https://www.browserbase.com/sessions/8d7a6425-60cb-4303-93a2-3394cb0e5e14"
+  },
+  {
+   "agent_id": "t2__p4__competitor_1",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 7,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating directly to the pricing page",
+    "Locating the 'Pricing' link and clicking it",
+    "Finding a free tier ('Developer' plan) and a clear 'Start for free' button"
+   ],
+   "feedback": "The pricing structure is clear and immediately accessible, which is appreciated. Having a free tier makes it easy to start experimenting. The information presented is straightforward and directly addresses the need for understanding costs and getting started.",
+   "quote": "I was able to quickly find the pricing details and a clear path to begin using the service.",
+   "final_url": "https://www.langchain.com/pricing",
+   "session": "https://www.browserbase.com/sessions/e84af643-146d-4930-bd81-b6c72dd4f9d7"
+  },
+  {
+   "agent_id": "t3__p4__competitor_1",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Finding the 'Get a demo' button was straightforward.",
+    "The contact form was presented directly after clicking the demo link."
+   ],
+   "feedback": "Langchain's platform appears to offer a clear path for interested users to connect. The directness of the 'Get a demo' link to a sales contact form is efficient for initial engagement. It seems like a well-structured approach for businesses looking to integrate their solutions.",
+   "quote": "I found the 'Get a demo' button easily and was taken directly to a form to provide my details.",
+   "final_url": "https://www.langchain.com/contact-sales",
+   "session": "https://www.browserbase.com/sessions/ec73a1a7-6d26-435f-973b-7dab2200c8e1"
+  },
+  {
+   "agent_id": "t2__p3__competitor_2",
+   "persona_id": "p3",
+   "persona_name": "Senior Machine Learning Engineer",
+   "persona_bio": "I work on developing and refining complex AI systems, often encountering tasks where generalist agents are insufficient. I'm looking for tools that allow me to build domain-specific agents, provide them with the necessary tools, and ensure they meet strict performance criteria.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the pricing page was straightforward.",
+    "The pricing tiers and credit system were clearly displayed."
+   ],
+   "feedback": "The pricing structure is clear, and the credit system makes sense for managing costs. I appreciate the different tiers available, including a free option to test with. The site seems straightforward for getting started, which is a plus.",
+   "quote": "I found the pricing information easily and the credit system seems manageable for my needs.",
+   "final_url": "https://www.llamaindex.ai/pricing",
+   "session": "https://www.browserbase.com/sessions/bd3e52b0-36d1-43f8-97ee-ab8961680309"
+  },
+  {
+   "agent_id": "t3__p4__competitor_3",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": true,
+   "steps": 10,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "The 'Book a Demo' button led to a general contact form rather than a dedicated scheduling interface."
+   ],
+   "easy": [
+    "Navigating to the website was straightforward after the initial blank page.",
+    "Accepting cookies and initiating the demo request process was a single click."
+   ],
+   "feedback": "The process to book a demo was initiated easily, but it led to a general contact form instead of a direct scheduling tool. This is a slight point of friction for someone looking to quickly evaluate or schedule a call. The site's infrastructure seems capable of handling initial requests, but the user flow for demos could be more streamlined.",
+   "quote": "The first step to booking a demo is entering my work email, but it's a general contact form, not a scheduler.",
+   "final_url": "https://e2b.dev/contact",
+   "session": "https://www.browserbase.com/sessions/7ae91685-e5cb-428d-93c1-285683c2173b"
+  },
+  {
+   "agent_id": "t4__p4__competitor_3",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "hard",
+   "would_convert": "no",
+   "friction": [
+    "The website did not load, preventing any interaction or task completion."
+   ],
+   "easy": [],
+   "feedback": "I was unable to evaluate the product as the website failed to load. This lack of accessibility makes it impossible to assess its capabilities for agentic systems or multi-agent collaboration at this time. I would need to see the site functioning before forming any opinion.",
+   "quote": "I couldn't even get the website to load, so I have no idea what their product areas are.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/b780410a-82d3-4757-881a-ccff6ac1e1ff"
+  },
+  {
+   "agent_id": "t3__p4__competitor_2",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 11,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent spent a significant amount of time on 'about:blank' with multiple wait actions before navigating to the actual site.",
+    "The agent clicked 'Book a demo' then immediately clicked 'Sign up', suggesting a potential confusion or a need to explore multiple paths."
+   ],
+   "easy": [
+    "Navigating to the contact page was straightforward.",
+    "The sign-up link was readily available on the contact page."
+   ],
+   "feedback": "The site presents clear calls to action like 'Book a demo' and 'Sign up'. However, the sign-up process appears to redirect to a separate login domain, which might add a slight friction for new users expecting an in-page sign-up. The overall impression is professional and geared towards business users.",
+   "quote": "I was looking for a clear path to sign up for an account or request a demo, and I found both options, though the sign-up led me to a separate login portal.",
+   "final_url": "https://login.llamaindex.ai/sign-up?state=eyJyZWRpcmVjdCI6ICJodHRwczovL2Nsb3VkLmxsYW1haW5kZXguYWkvP19nbD0xKm53NnJyaSpfZ2NsX2F1Kk5UQTVOekUxTWpZeUxqRTNPRGt4T1RFeE1UUS4qX2dhKk1UY3pPVGMwTnpZMk9DNHhOemc1TVRreE1URTAqX2dhXzA5UzlROUoyRVAqY3pFM09Ea3hPVEV4TVRNa2J6RWtaekVrZERFM09Ea3hPVEV5TWpna2FqWXdKR3d3SkdneE16RTVNRFF6TVRBeiJ9&redirect_uri=https%3A%2F%2Fapi.cloud.llamaindex.ai%2Fapi%2Fv1%2Fauth%2Fworkos%2Fcallback&authorization_session_id=01M2A1Q4BG95197FMYWG01G6BV",
+   "session": "https://www.browserbase.com/sessions/77050fe0-25d2-433e-b373-e965e8e14c4d"
+  },
+  {
+   "agent_id": "t1__p5__competitor_1",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The site loaded quickly, and the main value proposition was readily apparent."
+   ],
+   "feedback": "LangChain seems to provide a very complete suite of tools for the entire AI agent lifecycle, which is impressive. The focus on building, testing, deploying, and monitoring agents covers all the bases I'd be looking for. It's good to see flexibility in model and infrastructure control mentioned.",
+   "quote": "LangChain offers a comprehensive solution for accelerating the entire AI agent development lifecycle, covering everything from building to governing agents.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/7f5395ca-fd0c-48ef-92f6-9f9de136798a"
+  },
+  {
+   "agent_id": "t1__p5__competitor_3",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "hard",
+   "would_convert": "no",
+   "friction": [
+    "Website failed to load content, remaining blank across multiple attempts and extended waiting periods."
+   ],
+   "easy": [],
+   "feedback": "The website failed to load any content, making it impossible to evaluate the platform or understand its value proposition. This critical failure in basic functionality raises concerns about the reliability and readiness of the product for any serious evaluation.",
+   "quote": "The website https://e2b.dev/ failed to load its content during multiple attempts, preventing me from accessing any information to determine the value proposition.",
+   "final_url": "about:blank",
+   "session": "https://www.browserbase.com/sessions/2bedc285-7d95-4a15-b6f9-6ee14468f00e"
+  },
+  {
+   "agent_id": "t1__p5__competitor_2",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The agent was able to quickly identify and articulate the main value proposition of the LlamaIndex homepage."
+   ],
+   "feedback": "LlamaIndex seems to offer a powerful solution for data ingestion and retrieval for AI applications, which is directly relevant to my role. The emphasis on cost and accuracy improvements is compelling, though I would need to see benchmarks to fully trust those claims. The clarity of the core value proposition on the homepage makes it easy to understand the product's purpose.",
+   "quote": "LlamaIndex appears to provide a strong solution for efficiently handling data extraction and retrieval for our AI initiatives.",
+   "final_url": "https://www.llamaindex.ai/",
+   "session": "https://www.browserbase.com/sessions/a8274a3e-c346-4831-8b9e-e2673b52a637"
+  },
+  {
+   "agent_id": "t4__p4__competitor_1",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": false,
+   "steps": 10,
+   "difficulty": "hard",
+   "would_convert": "no",
+   "friction": [
+    "The agent repeatedly failed to load the page content, requiring multiple attempts and navigations.",
+    "The 'Products' dropdown was not consistently accessible or clickable, requiring multiple attempts.",
+    "The initial navigation to the site resulted in an empty page, indicating a potential loading or rendering issue."
+   ],
+   "easy": [
+    "The navigation action itself was executed without errors, even if the page content was not immediately available."
+   ],
+   "feedback": "The site's navigation is difficult to interact with, as the product areas are not readily accessible. It took multiple attempts to even reveal the 'Products' menu. This lack of clarity and responsiveness makes it hard to understand what the core offerings are, which is crucial for evaluating infrastructure for production workloads.",
+   "quote": "I couldn't even reliably access the product areas to see what they offer.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/c55c1bb9-fd74-433a-97bd-770b71048b7e"
+  },
+  {
+   "agent_id": "t5__p4__product",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 11,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent encountered an error 'Element index 37 not available - page may have changed. Try refreshing browser state.' when trying to click on 'Use Cases', indicating potential instability or changes in the website's str",
+    "The agent's final output was truncated due to exceeding 'max_output_tokens', preventing the full extraction of information from the blog post.",
+    "The task was not completed because the agent failed to extract the necessary information within the allowed steps and token limits."
+   ],
+   "easy": [
+    "Navigating to the Recurse.run homepage was straightforward.",
+    "The agent was able to locate and click on navigation links such as 'Examples', 'Use Cases', and 'Blog'.",
+    "The agent successfully identified and clicked on a blog post titled 'No Rulebook, No Tells', which seemed relevant to finding social proof."
+   ],
+   "feedback": "The Recurse.run site appears to have a clean structure, making it easy to navigate between different sections like Examples, Use Cases, and Blog. However, the inability to fully extract content from the blog post due to token limitations is a significant drawback for understanding the details of their case studies or examples. This lack of complete information makes it difficult to assess the value proposition or gain the social proof needed.",
+   "quote": "I found a blog post that looked promising, but the system couldn't give me the full details.",
+   "final_url": "",
+   "session": "https://www.browserbase.com/sessions/cddfa9df-d313-47b2-b6c3-d4790677e635"
+  },
+  {
+   "agent_id": "t6__p4__product",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 3,
+   "difficulty": "hard",
+   "would_convert": "no",
+   "friction": [
+    "Failed to click element 34: [DefaultActionWatchdog.on_ClickElementEvent] Reconnection failed \u2014 CDP still not connected"
+   ],
+   "easy": [
+    "The initial page load was successful."
+   ],
+   "feedback": "I was hoping to find the developer documentation to explore how to integrate agent infrastructure for my research. However, the site appears to have technical issues preventing navigation, which undermines my confidence in its reliability for production workloads.",
+   "quote": "I couldn't even get to the documentation to see what I could build.",
+   "final_url": "https://recurse.run/",
+   "session": "https://www.browserbase.com/sessions/97802390-297a-4c1b-8ee2-c051f4946645"
+  },
+  {
+   "agent_id": "t1__p5__product",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Skim the homepage and state the main value proposition in one sentence",
+   "completed": true,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The agent quickly identified the core value proposition of Recurse."
+   ],
+   "feedback": "The concept of a serverless harness for specialized agents is compelling for managing AI initiatives. However, the private beta status is a significant concern regarding production readiness and scalability for enterprise needs. I'm unsure if this is suitable for our current production workloads.",
+   "quote": "Recurse offers a serverless harness to build and deploy specialized agents for agentic workloads, addressing limitations of generalist agents, though its private beta status raises questions about production readiness and scalability for enterprise use.",
+   "final_url": "https://recurse.run/",
+   "session": "https://www.browserbase.com/sessions/c83c7500-b748-4502-b5af-27f0497d908f"
+  },
+  {
+   "agent_id": "t4__p4__competitor_2",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": false,
+   "steps": 8,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent struggled to interact with the 'Product' navigation item, encountering an 'Element not available' error initially and then needing to retry the click.",
+    "The agent attempted to click on 'Solutions' but the observation does not indicate what was revealed or if it was successful in navigating or expanding the menu."
+   ],
+   "easy": [
+    "The initial loading of the landing page was successful.",
+    "The agent was able to identify and click on the 'Product' navigation item, although it required a retry."
+   ],
+   "feedback": "The navigation structure seems to offer distinct areas for 'Product' and 'Solutions,' which is helpful. However, the initial interaction with the 'Product' menu was clunky, suggesting potential issues with the responsiveness or structure of the navigation elements. I need to see if the 'Product' section clearly outlines the core offerings relevant to agent infrastructure and multi-agent systems.",
+   "quote": "I'm trying to understand the main product areas, but the navigation is a bit tricky to interact with.",
+   "final_url": "",
+   "session": "https://www.browserbase.com/sessions/6a4f295a-2244-4fc0-b923-4a336ff6775c"
+  },
+  {
+   "agent_id": "t5__p4__competitor_2",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 8,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent navigated to a blank page initially and waited multiple times before reaching the target site.",
+    "The agent clicked on 'Solutions' but the subsequent actions and observations do not indicate that any useful information was revealed or extracted, and the task was not completed.",
+    "There was a navigation failure in step 7, indicating a potential issue with site accessibility or the agent's ability to interact with it."
+   ],
+   "easy": [
+    "The initial loading of the target website, llamaindex.ai, occurred."
+   ],
+   "feedback": "The website loaded, but it was difficult to immediately find clear examples of customer adoption or case studies. The navigation felt a bit indirect, and the failure to extract relevant information suggests a potential lack of clarity or discoverability for the social proof I was looking for. I need to see concrete evidence of who is using this and how successfully.",
+   "quote": "I'm looking for evidence of real-world success and adoption, but it wasn't immediately apparent on the site.",
+   "final_url": "https://www.llamaindex.ai/",
+   "session": "https://www.browserbase.com/sessions/9e8929d9-b7ce-4952-912e-1d798ca73e6c"
+  },
+  {
+   "agent_id": "t5__p5__product",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "no",
+   "friction": [
+    "Website did not load any content, making it impossible to find social proof."
+   ],
+   "easy": [],
+   "feedback": "The website did not load any content after multiple attempts, which was confusing and made it impossible to evaluate the product. I couldn't find any information about customers or case studies, which are crucial for building trust. Without any visible content, I cannot assess the value proposition or the technical capabilities.",
+   "quote": "I couldn't find any social proof because the website simply wouldn't load.",
+   "final_url": "about:blank",
+   "session": "https://www.browserbase.com/sessions/1e797838-fd48-4072-8784-540b82b78271"
+  },
+  {
+   "agent_id": "t5__p4__competitor_1",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigation to the use-cases page was straightforward.",
+    "The page loaded quickly enough to begin scrolling."
+   ],
+   "feedback": "The Langchain site appears to be a popular framework, but I'm not seeing specific customer examples or case studies that would demonstrate its effectiveness for production AI agent systems. The focus seems to be on the toolkit itself rather than validated outcomes from users, which makes it hard to gauge real-world impact and reliability for my research.",
+   "quote": "I'm not seeing concrete examples of other AI research teams successfully deploying complex agent systems with this framework.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/672bb852-fbab-43f8-8ffe-c7eb738e3ccc"
+  },
+  {
+   "agent_id": "t2__p5__competitor_2",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating directly to the pricing page from the homepage."
+   ],
+   "feedback": "The pricing page is clear and provides immediate options for different tiers, including a free plan, which is helpful for initial evaluation. The credit system is also straightforward to understand. Overall, the site clearly communicates its value proposition and pricing structure.",
+   "quote": "I was able to quickly find the pricing and get started information on the site.",
+   "final_url": "https://www.llamaindex.ai/pricing",
+   "session": "https://www.browserbase.com/sessions/7db7ac70-12bd-449f-9de8-709618b8849d"
+  },
+  {
+   "agent_id": "t6__p4__competitor_3",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 3,
+   "difficulty": "easy",
+   "would_convert": "no",
+   "friction": [],
+   "easy": [
+    "Loading the landing page was straightforward."
+   ],
+   "feedback": "The landing page loaded quickly, which is a good sign for performance. However, without clear links to documentation or API references on the initial page, it's difficult to assess how this platform would support my research into novel agent designs and rapid iteration.",
+   "quote": "I couldn't find any developer documentation or API references on the landing page to see how I could start building.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/b358c5cc-5c74-435d-8042-42b7322d9c96"
+  },
+  {
+   "agent_id": "t6__p4__competitor_1",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the documentation was straightforward after clicking the 'Get started' button."
+   ],
+   "feedback": "The documentation site seems comprehensive and well-organized, which is promising for diving into complex agentic systems. The clear 'Get started' link makes initial access easy. I trust that the documentation will provide the depth needed for advanced AI research.",
+   "quote": "I'm eager to explore the LangChain documentation to see how it can support the development of sophisticated multi-agent systems.",
+   "final_url": "https://docs.langchain.com/?_gl=1*1o3qbx4*_gcl_au*MTE4OTE2MDY2MS4xNzg5MTkxNDA4*_ga*ODIyNzM3Mjg1LjE3ODkxOTE0MDg.*_ga_47WX3HKKY2*czE3ODkxOTE0MDgkbzEkZzAkdDE3ODkxOTE0MDgkajYwJGwwJGgw",
+   "session": "https://www.browserbase.com/sessions/6a58a85f-ba88-4056-8198-be00f189d694"
+  },
+  {
+   "agent_id": "t6__p4__competitor_2",
+   "persona_id": "p4",
+   "persona_name": "Head of AI Research",
+   "persona_bio": "My focus is on pushing the boundaries of what AI can achieve, particularly in agentic systems and multi-agent collaboration. I need infrastructure that supports experimentation with novel agent designs and allows for rapid iteration and deployment of proven specialists.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": false,
+   "steps": 7,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the LlamaIndex product page",
+    "Finding the 'Docs' link",
+    "Locating the 'Which product do I want?' section",
+    "Discovering links related to agents and agent skills"
+   ],
+   "feedback": "The documentation is well-organized and easy to navigate, allowing me to quickly find information relevant to agentic systems. The clear separation of products and their use cases is helpful for understanding how LlamaParse can support advanced AI research. I feel confident that this platform can support my experimental needs.",
+   "quote": "I can quickly find the agent-related documentation I need to start building.",
+   "final_url": "https://developers.llamaindex.ai/llamaparse/#which-product-do-i-want",
+   "session": "https://www.browserbase.com/sessions/ed8f00b5-7d0e-48cf-b1b2-3c8356c3a766"
+  },
+  {
+   "agent_id": "t4__p5__competitor_2",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": true,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "The navigation was clear and easy to scan.",
+    "The 'Product' section clearly listed the main offerings."
+   ],
+   "feedback": "The site clearly outlines its core offerings like LlamaIndex and LlamaParse, which is helpful. The breakdown of functionalities is also quite clear. I'm not sure about the 'LiteParse' naming, it's a bit unclear what that specifically entails without further investigation.",
+   "quote": "I was able to quickly identify the main product areas like LlamaIndex and LlamaParse.",
+   "final_url": "https://www.llamaindex.ai/",
+   "session": "https://www.browserbase.com/sessions/d7352f8f-b4e8-4492-8493-218d90adc69f"
+  },
+  {
+   "agent_id": "t2__p5__competitor_1",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find pricing or how to get started",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating directly to the pricing page was straightforward.",
+    "The pricing page clearly presented different plan options and their associated costs."
+   ],
+   "feedback": "LangChain's pricing page is clear and offers a free tier, which is a great way to get started. The pay-as-you-go option is also appealing for managing costs as usage scales. I trust that the free tier will provide enough to evaluate the platform for our needs.",
+   "quote": "I was able to quickly find the pricing and get started with the free developer plan.",
+   "final_url": "https://www.langchain.com/pricing",
+   "session": "https://www.browserbase.com/sessions/c54d1c33-7b3d-43cf-b474-a610c011096c"
+  },
+  {
+   "agent_id": "t3__p5__competitor_1",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Finding the 'Get a demo' button was straightforward.",
+    "Navigating to the contact sales page was quick."
+   ],
+   "feedback": "LangChain's website presents a clear path to request a demo, which is essential for evaluating their platform. The contact form is standard and requires expected information for a sales inquiry. This directness builds some initial trust in their process for engaging with potential enterprise users.",
+   "quote": "I was able to easily find and initiate the demo request process by clicking the 'Get a demo' button.",
+   "final_url": "https://www.langchain.com/contact-sales",
+   "session": "https://www.browserbase.com/sessions/54980663-1500-4958-bc1e-e57b4ca50fe6"
+  },
+  {
+   "agent_id": "t2__p5__competitor_3",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find pricing or how to get started",
+   "completed": false,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the pricing page was straightforward.",
+    "Accepting cookies was a one-click action."
+   ],
+   "feedback": "The site loaded quickly and the pricing page was easy to find. I appreciate the directness of the pricing information. However, the initial page load and subsequent 'wait' actions suggest there might be some performance optimizations to consider before reaching the pricing details, though it ultimately resolved itself.",
+   "quote": "I was able to find the pricing information fairly quickly, which is helpful for my evaluation.",
+   "final_url": "https://e2b.dev/pricing",
+   "session": "https://www.browserbase.com/sessions/6c12c3fc-c891-4195-934d-7b1661d84afe"
+  },
+  {
+   "agent_id": "t4__p5__competitor_1",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": true,
+   "steps": 7,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the website",
+    "Identifying the 'Products' dropdown",
+    "Extracting the main product areas after clicking the dropdown"
+   ],
+   "feedback": "LangChain's structure seems well-organized, clearly separating their platform offerings from their open-source contributions. The product areas listed under the LangSmith Platform, such as Agent Infrastructure and LLM Gateway, align with my needs for evaluating agent deployment solutions. The clarity of these sections makes it easy to understand their core offerings.",
+   "quote": "The product areas are clearly laid out, making it easy to see where to find information on agent infrastructure.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/6c8a0485-c36c-442d-9a4f-e7372f77ad0e"
+  },
+  {
+   "agent_id": "t4__p5__competitor_3",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": true,
+   "steps": 7,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the site was straightforward.",
+    "Identifying the main product areas was simple after accepting cookies."
+   ],
+   "feedback": "The site quickly presented clear categories for its offerings, such as CODING, BACKGROUND, ENTERPRISE, and FINANCIAL. The prominent links in the header for ENTERPRISE, PRICING, and DOCS were helpful for understanding the scope of their solutions. Overall, the navigation was intuitive and provided a good overview.",
+   "quote": "I was able to quickly identify the main product areas like Coding, Background, and Enterprise through the site's clear navigation.",
+   "final_url": "https://e2b.dev/",
+   "session": "https://www.browserbase.com/sessions/4c515c00-5fa8-4ce8-aa97-10a7f9610b38"
+  },
+  {
+   "agent_id": "t3__p5__competitor_2",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": true,
+   "steps": 6,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the LlamaIndex website was straightforward.",
+    "Finding and clicking the 'Try LlamaParse' button was simple.",
+    "The sign-up page loaded quickly after clicking the sign-up link."
+   ],
+   "feedback": "The sign-up process is clear, offering both traditional form submission and social logins, which is convenient. The incentive of '10k bonus credits' for using a company email is a nice touch. However, the URL redirection and state parameters in the sign-up URL are a bit complex to parse at first glance.",
+   "quote": "The sign-up page presents clear options for getting started, including a bonus for using a company email.",
+   "final_url": "https://login.llamaindex.ai/sign-up?state=eyJyZWRpcmVjdCI6ICJodHRwczovL2Nsb3VkLmxsYW1haW5kZXguYWkvP19nbD0xKjExYzM2eGcqX2djbF9hdSpNVGM1T0RJeU1qVTBOaTR4TnpnNU1Ua3hOalUwKl9nYSpOelUxTmpBd01ESXpMakUzT0RreE9URTJOVE0uKl9nYV8wOVM5UTlKMkVQKmN6RTNPRGt4T1RFMk5UTWtiekVrWnpFa2RERTNPRGt4T1RFNE1UY2thalU1Skd3d0pHZzRPVFF4TXpnNU9ERS4ifQ%3D%3D&redirect_uri=https%3A%2F%2Fapi.cloud.llamaindex.ai%2Fapi%2Fv1%2Fauth%2Fworkos%2Fcallback&authorization_session_id=01M2A2BJ08S04FSY5M1AK7D1N5",
+   "session": "https://www.browserbase.com/sessions/03cc32d6-e0c8-4c1a-b024-76f61501d63f"
+  },
+  {
+   "agent_id": "t4__p5__product",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Scan the navigation and name the main product areas",
+   "completed": true,
+   "steps": 11,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [
+    "The persona's final output mentions 'some confusion and UX friction, particularly with the prici', but the specific friction is not detailed in the recorded steps."
+   ],
+   "easy": [
+    "Navigating between the main sections of the website (Docs, Harness, Pricing, Examples, Use Cases, Blog) was straightforward via the header navigation.",
+    "The task of scanning navigation and naming main product areas was completed successfully."
+   ],
+   "feedback": "The Recurse website clearly outlines its main product areas related to serverless harnesses and AI agents through its navigation. The structure makes it easy to explore different facets of the platform, from technical documentation to practical examples and use cases. However, there's a hint of unarticulated friction regarding pricing or related aspects.",
+   "quote": "I was able to easily navigate through the site to understand the core product areas of the serverless harness and agent infrastructure.",
+   "final_url": "https://recurse.run/blog",
+   "session": "https://www.browserbase.com/sessions/9906c931-ee7c-4db0-82f1-cc0a70975af2"
+  },
+  {
+   "agent_id": "t6__p5__competitor_2",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": true,
+   "steps": 4,
+   "difficulty": "easy",
+   "would_convert": "maybe",
+   "friction": [],
+   "easy": [
+    "Navigating to the LlamaIndex documentation was straightforward."
+   ],
+   "feedback": "The documentation is clear and provides a good starting point for understanding the capabilities of LlamaIndex. The focus on parsing various document types is particularly relevant for building AI applications that process unstructured data. I would need to see more on agent orchestration and deployment to fully assess its suitability for production workloads.",
+   "quote": "I would first focus on building a robust document ingestion pipeline using LlamaParse to convert various document formats into clean, LLM-ready text.",
+   "final_url": "https://developers.llamaindex.ai/llamaparse/",
+   "session": "https://www.browserbase.com/sessions/436862d5-f923-46b1-aa3e-a1fdc97be9f0"
+  },
+  {
+   "agent_id": "t3__p5__competitor_3",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Look for a sign-up, demo, or contact path and describe the first step",
+   "completed": false,
+   "steps": 8,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [
+    "The model output was truncated at max_output_tokens=8096, indicating potential issues with processing or display of form submission confirmation or related content."
+   ],
+   "easy": [
+    "Finding and clicking the 'Book a Demo' button.",
+    "Entering an email address into the form field."
+   ],
+   "feedback": "The site clearly presents a 'Book a Demo' option, which is a straightforward call to action. However, the repeated 'Model output was truncated' error messages in the session log are concerning and suggest underlying technical issues that could impact user trust and the perceived reliability of the platform.",
+   "quote": "I was able to easily find the demo booking and input my details.",
+   "final_url": "https://e2b.dev/contact",
+   "session": "https://www.browserbase.com/sessions/ec0606cd-787e-4cd8-8227-b15f1c0ba71a"
+  },
+  {
+   "agent_id": "t5__p5__competitor_3",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": true,
+   "steps": 5,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the Hugging Face case study was straightforward.",
+    "Finding the 'All customers' link to view more social proof was easy.",
+    "The customers page clearly displayed logos and case study summaries."
+   ],
+   "feedback": "The site effectively showcases customer adoption through logos and case studies. The Hugging Face example provided good insight into real-world application. I appreciate the clear presentation of different customer use cases and the companies they represent.",
+   "quote": "I found the customer page to be very informative and it gave me confidence in the platform's adoption.",
+   "final_url": "https://e2b.dev/customers",
+   "session": "https://www.browserbase.com/sessions/75950fe7-0b23-4695-a08c-8fbaf845a7cf"
+  },
+  {
+   "agent_id": "t5__p5__competitor_1",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_1",
+   "site": "LangChain",
+   "site_url": "https://www.langchain.com/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 11,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent initially landed on about:blank and had to navigate to the target site.",
+    "The agent clicked on a 'Learn' dropdown, but it's unclear from the observations if this led to relevant social proof information.",
+    "After clicking 'Learn', the agent navigated to the homepage, suggesting the 'Learn' section might not have been what was expected or didn't load correctly.",
+    "The chat widget appeared and had to be closed."
+   ],
+   "easy": [
+    "Navigating to the 'About' page was straightforward.",
+    "Clicking on the 'Company' dropdown was successful."
+   ],
+   "feedback": "The site structure with dropdowns for 'Learn' and 'Company' is typical, but it wasn't immediately clear if these sections would directly provide the social proof I was looking for. The presence of a chat widget was a minor interruption. I need to see clear examples of production use cases to build trust.",
+   "quote": "I'm trying to find examples of other companies using Langchain in production, but I had to navigate around a bit.",
+   "final_url": "https://www.langchain.com/",
+   "session": "https://www.browserbase.com/sessions/857ba7fb-3b17-4e0d-aa39-2921e9c13442"
+  },
+  {
+   "agent_id": "t6__p5__product",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "product",
+   "site": "Recurse",
+   "site_url": "https://recurse.run/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": true,
+   "steps": 7,
+   "difficulty": "easy",
+   "would_convert": "yes",
+   "friction": [],
+   "easy": [
+    "Navigating to the documentation was straightforward.",
+    "Finding the Python API reference was simple."
+   ],
+   "feedback": "The Python API documentation clearly outlines the core functions for building and running agents, such as `build_bundle` and `recurse.context()`. This clarity makes it easy to understand how to package and deploy agents. I appreciate the directness of the documentation.",
+   "quote": "I would build a simple 'Note-taking Agent' first, leveraging the `build_bundle` function to package it.",
+   "final_url": "https://recurse.run/docs/python-api",
+   "session": "https://www.browserbase.com/sessions/ed9ce799-7f9d-497b-a0c8-e76c44584451"
+  },
+  {
+   "agent_id": "t5__p5__competitor_2",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_2",
+   "site": "LlamaIndex",
+   "site_url": "https://www.llamaindex.ai/",
+   "task": "Find social proof \u2014 customers, case studies, or examples",
+   "completed": false,
+   "steps": 12,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The agent navigated to a specific documentation page and then clicked through several links within that page, rather than finding a general 'Customers' or 'Case Studies' section that might be more prominent on a homepage",
+    "The final observation indicates a failure to complete the task due to output truncation, suggesting the information sought was not easily extracted or the process was too complex for the agent's current configuration."
+   ],
+   "easy": [
+    "The agent was able to navigate to the documentation page.",
+    "The agent successfully identified and clicked on links within the 'On this page' and sidebar navigation."
+   ],
+   "feedback": "The documentation is very detailed, which is good for in-depth technical understanding. However, finding high-level social proof like customer examples or case studies was not straightforward. It felt like I had to dig deep into specific technical sections rather than finding a clear overview of who is using the product and how.",
+   "quote": "I'm having trouble quickly finding examples of other companies using LlamaParse effectively.",
+   "final_url": "",
+   "session": "https://www.browserbase.com/sessions/7414db06-8ac9-4253-ba70-ca65f8262cbb"
+  },
+  {
+   "agent_id": "t6__p5__competitor_3",
+   "persona_id": "p5",
+   "persona_name": "Lead Software Engineer (AI Platform)",
+   "persona_bio": "I manage the platform that enables our company's AI initiatives, including the integration of various LLMs and agent frameworks. I'm evaluating serverless harnesses to provide a standardized, efficient way for our engineers to build and deploy specialized agents.",
+   "site_key": "competitor_3",
+   "site": "E2B",
+   "site_url": "https://e2b.dev/",
+   "task": "Find the developer docs or API reference and describe what you would build first",
+   "completed": true,
+   "steps": 13,
+   "difficulty": "medium",
+   "would_convert": "maybe",
+   "friction": [
+    "The user had to scroll multiple times to find relevant information within the 'Coding Agents' use case page."
+   ],
+   "easy": [
+    "Navigating to the documentation was straightforward from the landing page.",
+    "Finding the 'SDK Reference' and 'Use cases' sections was simple once in the documentation."
+   ],
+   "feedback": "The documentation is comprehensive and provides clear examples like the 'Claude Code' agent. However, navigating within longer pages like the 'Coding Agents' use case required repeated scrolling, which could be improved with better content organization or a more detailed table of contents. Overall, the platform seems promising for building specialized agents.",
+   "quote": "I'd build an automated code review agent first, using the Claude Code sandbox to analyze repositories.",
+   "final_url": "https://docs.e2b.dev/agents/claude-code",
+   "session": "https://www.browserbase.com/sessions/b4593273-7dd8-4e71-a657-9935d1daef43"
+  }
+ ],
+ "totals": {
+  "agents": 110,
+  "planned": 120,
+  "steps": 558,
+  "completed": 57
+ }
+}

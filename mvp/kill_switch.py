@@ -163,27 +163,58 @@ def kill_all_browserbase(
 
 def abandon_local_studies(*, study_id: str | None = None) -> dict[str, Any]:
     """Mark in-memory studies killed and cancel their asyncio tasks."""
+    import os
+    import traceback
+
     from mvp.study import STUDIES, STUDY_TASKS, persist_study
 
-    targets = [STUDIES[study_id]] if study_id and study_id in STUDIES else list(STUDIES.values())
+    if os.environ.get("MVP_DISABLE_KILL", "").lower() in {"1", "true", "yes"}:
+        print(
+            "abandon_local_studies skipped (MVP_DISABLE_KILL=1)\n"
+            + "".join(traceback.format_stack(limit=8)),
+            flush=True,
+        )
+        return {
+            "abandoned": [],
+            "gcs_abandoned": [],
+            "cancelled_tasks": 0,
+            "gcs_abandon_async": False,
+            "target_ids": [],
+            "skipped": "MVP_DISABLE_KILL",
+        }
+
+    # Snapshot targets NOW. A later GCS re-list was racing newly-started studies
+    # and writing kill_requested onto them ("Killed by operator" with no click).
+    if study_id and study_id in STUDIES:
+        targets = [STUDIES[study_id]]
+    else:
+        targets = list(STUDIES.values())
+    target_ids = [s.id for s in targets if getattr(s, "id", None)]
+    print(
+        f"abandon_local_studies targets={target_ids} study_id={study_id!r}\n"
+        + "".join(traceback.format_stack(limit=6)),
+        flush=True,
+    )
+
     abandoned: list[str] = []
     cancelled_tasks = 0
     for study in targets:
-        if study.status in {"complete", "error", "abandoned"} and not getattr(
-            study, "kill_requested", False
-        ):
-            # Still allow force-kill of lingering sessions belonging to finished studies.
-            pass
-            study.kill_requested = True
-            if study.status in {"running", "pending", "queued"}:
-                study.status = "abandoned"
-                study.phase = "Killed"
-                study.error = "Killed by operator"
-                for sess in (study.live_sessions or {}).values():
-                    if sess.get("status") in {"running", "starting", "pending", "summarizing"}:
-                        sess["status"] = "killed"
+        study.kill_requested = True
+        if study.status in {"running", "pending", "queued"}:
+            study.status = "abandoned"
+            study.phase = "Killed"
+            study.error = "Killed by operator"
+            for sess in (study.live_sessions or {}).values():
+                if isinstance(sess, dict) and sess.get("status") in {
+                    "running",
+                    "starting",
+                    "pending",
+                    "summarizing",
+                }:
+                    sess["status"] = "killed"
+                if isinstance(sess, dict):
                     sess["live_active"] = False
-                abandoned.append(study.id)
+            abandoned.append(study.id)
             try:
                 persist_study(study)
             except Exception:
@@ -193,18 +224,20 @@ def abandon_local_studies(*, study_id: str | None = None) -> dict[str, Any]:
             task.cancel()
             cancelled_tasks += 1
 
-    # Always patch GCS too — after a server restart memory is empty but /live
-    # still lists GCS study.json as "running". Do this off the critical path so
-    # Kill buttons return immediately after Browserbase is released.
+    # Patch only the snapshotted ids in GCS — never re-list "all running".
     gcs_abandoned: list[str] = []
     try:
         from mvp.gcs_store import abandon_running_studies_in_gcs
         import threading
 
+        ids_for_gcs = list(target_ids)
+        if study_id and study_id not in ids_for_gcs:
+            ids_for_gcs.append(study_id)
+
         def _gcs() -> None:
             nonlocal gcs_abandoned
             try:
-                gcs_abandoned = abandon_running_studies_in_gcs(study_id=study_id)
+                gcs_abandoned = abandon_running_studies_in_gcs(study_ids=ids_for_gcs)
             except Exception as exc:  # noqa: BLE001
                 print(f"abandon_running_studies_in_gcs failed: {exc!r}", flush=True)
 
@@ -216,6 +249,7 @@ def abandon_local_studies(*, study_id: str | None = None) -> dict[str, Any]:
         "gcs_abandoned": gcs_abandoned,
         "cancelled_tasks": cancelled_tasks,
         "gcs_abandon_async": True,
+        "target_ids": target_ids,
     }
 
 
@@ -328,6 +362,19 @@ def runtime_status() -> dict[str, Any]:
     }
 
 
+def _kill_browser_owners() -> list[str]:
+    """Owners this process may release. Never signup or another harness's tag.
+
+    ``e2e`` stays first for older study sessions. The integration server also
+    releases its own ``MVP_BB_OWNER`` (testfix, gates, or integration).
+    """
+    owners = ["e2e"]
+    raw = (os.environ.get("MVP_BB_OWNER") or "").strip().lower()
+    if raw in {"testfix", "gates", "integration"} and raw not in owners:
+        owners.append(raw)
+    return owners
+
+
 def kill_now(
     *,
     agents: bool = True,
@@ -335,16 +382,23 @@ def kill_now(
     seeds: bool = False,
     study_id: str | None = None,
 ) -> dict[str, Any]:
-    """Kill immediately. Agents = our Browserbase sessions + abandon local studies.
+    """Kill immediately. Agents = abandon local studies, then release our sessions.
+
+    Abandon runs first. A slow Browserbase list must not leave the study task
+    alive long enough to open replacement sessions after the sockets die.
 
     Never releases Sign Up / untagged Browserbase sessions on the shared project.
     """
     result: dict[str, Any] = {"ok": True}
     if agents:
-        # Release all e2e-owned sessions (any study). Scoping BB release to
-        # study_id would leave orphaned e2e slots from prior abandoned runs.
-        result["browserbase"] = kill_all_browserbase(owner="e2e")
         result["studies"] = abandon_local_studies(study_id=study_id)
+        # Release this process's owners. Scoping to study_id would leave
+        # orphaned slots from the same owner when the caller omits an id;
+        # pass study_id through so a targeted kill still stays on that study.
+        released: dict[str, Any] = {}
+        for owner in _kill_browser_owners():
+            released[owner] = kill_all_browserbase(owner=owner, study_id=study_id)
+        result["browserbase"] = released
     if vms or seeds:
         result["vms"] = kill_usersim_vms(include_seeds=bool(seeds))
     result["status"] = runtime_status()

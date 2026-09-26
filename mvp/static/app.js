@@ -1626,6 +1626,10 @@ function renderSummary(summary, accessBackend, browserbaseSessionUrl) {
   document.getElementById("fit-score").textContent = summary.segment_fit_score ?? "—";
   document.getElementById("fit-rationale").textContent = summary.segment_fit_rationale || "";
   document.getElementById("conversion-outlook").textContent = summary.conversion_outlook || "";
+  const runIssues = document.getElementById("run-issues");
+  if (runIssues) {
+    renderList(runIssues, summary.run_issues && summary.run_issues.length ? summary.run_issues : ["None"]);
+  }
 
   const recEl = document.getElementById("recommendations");
   recEl.innerHTML = "";
