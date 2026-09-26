@@ -1389,11 +1389,19 @@ def _auth_href(href: str) -> bool:
     return bool(_AUTH_PATH_RE.search(text)) or bool(_AUTH_HOST_RE.match(_host(text) or ""))
 
 
+_OAUTH_RE = re.compile(
+    r"\b(?:authenticate|connect|continue|sign (?:in|up)|log ?in|link|import from|integrate)\b.{0,12}\b"
+    r"(?:with )?(?:google|github|gitlab|slack|microsoft|apple|jira|asana|figma|zoom|outlook|sso|saml)\b",
+    re.I,
+)
+
+
 def _nodes_for_model(
     nodes: list[dict[str, Any]],
     skip: set[str],
     *,
     allow_auth: bool = False,
+    signed_in: bool = False,
 ) -> list[dict[str, Any]]:
     """Drop inert controls and controls already clicked with no change.
 
@@ -1407,6 +1415,10 @@ def _nodes_for_model(
         name = str(node.get("name") or "").strip().lower()
         href = str(node.get("href") or "").strip().lower()
         if not allow_auth and (name in _AUTH_NAMES or _auth_href(href)):
+            continue
+        if signed_in and _OAUTH_RE.search(name):
+            # Already signed in: third-party connect and SSO buttons only open
+            # popups the agent cannot finish.
             continue
         if name and name in skipped:
             continue
@@ -1449,7 +1461,10 @@ async def _model_action(
         else ""
     )
     access = (
-        "This task needs the product itself. If the product asks you to sign up or log in, "
+        "You are signed in with a brand-new account. Get past any onboarding quickly: fill required fields, "
+        "choose Skip, Continue, or Later for optional steps (integrations, invites, imports), then do the task.\n"
+        if read.get("signed_in")
+        else "This task needs the product itself. If the product asks you to sign up or log in, "
         "go to that sign-up or log-in page; do not read docs instead.\n"
         if account_task
         else "This task can be done on the public site without an account. Do not log in or sign up.\n"
@@ -2034,8 +2049,9 @@ async def complete_task_on_page(
             break
         model_read = dict(read)
         model_read["nodes"] = _nodes_for_model(
-            list(read.get("nodes") or []), skip, allow_auth=account_task
+            list(read.get("nodes") or []), skip, allow_auth=account_task and not signed_in, signed_in=signed_in
         )
+        model_read["signed_in"] = signed_in
         action = None
         for attempt in range(2):
             try:
@@ -2420,8 +2436,24 @@ async def _signup_then_resume(
         import inspect
 
         kwargs: dict[str, Any] = {"timeout_s": min(150.0, remaining - 30), "tag": None}
-        if "signup_url" in inspect.signature(signup_in_session).parameters:
+        params = inspect.signature(signup_in_session).parameters
+        if "signup_url" in params:
             kwargs["signup_url"] = wall
+        if "on_step" in params and on_step is not None:
+            async def _progress(event: Any) -> None:
+                # Show each signup move live on this agent's row.
+                if not isinstance(event, dict):
+                    return
+                what = str(event.get("thought") or event.get("status") or "").strip()
+                if what:
+                    row["action"] = f"signing up: {what}"[:140]
+                if event.get("url"):
+                    row["url"] = str(event.get("url"))
+                maybe = on_step(row)
+                if asyncio.iscoroutine(maybe):
+                    await maybe
+
+            kwargs["on_step"] = _progress
         result = await asyncio.wait_for(
             signup_in_session(page, url, persona, **kwargs),
             timeout=min(160.0, remaining - 20),
