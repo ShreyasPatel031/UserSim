@@ -83,6 +83,31 @@ def _normalize_url(raw: str) -> str:
     return url
 
 
+async def _landing_url(url: str) -> str:
+    """Where the product URL really lands (notion.so -> www.notion.com).
+
+    Agents end on the redirected host. Keeping the pre-redirect host made
+    every product run look like it had wandered to another site.
+    """
+    from urllib.parse import urlsplit
+
+    import httpx
+
+    try:
+        async with httpx.AsyncClient(timeout=3.0, follow_redirects=True, headers={"user-agent": "Mozilla/5.0"}) as client:
+            resp = await client.get(url)
+        final = str(resp.url)
+    except Exception:
+        return url
+    a = (urlsplit(url).hostname or "").removeprefix("www.")
+    b = (urlsplit(final).hostname or "").removeprefix("www.")
+    if not b or a == b:
+        return url
+    # Only follow a redirect to a different host, and keep the path the user typed.
+    parts = urlsplit(url)
+    return f"https://{urlsplit(final).hostname}{parts.path or '/'}"
+
+
 def _study_list_key(url: str | None, study_id: str | None = None) -> str:
     """One sidebar row per product URL (host + path), not per historical run id."""
     from urllib.parse import urlparse
@@ -449,7 +474,7 @@ async def list_studies(limit: int = 40):
 async def start_study(body: StudyRequest, background: BackgroundTasks, request: Request):
     from mvp.study import STUDIES, create_study, run_study, study_to_dict
 
-    url = _normalize_url(body.url)
+    url = await _landing_url(_normalize_url(body.url))
     segment = (body.segment or body.customers or "").strip()
     if not segment:
         segment = (

@@ -94,6 +94,10 @@ async def plan_from_url(url: str, *, timeout: float = 9.0) -> dict[str, Any] | N
             host = (urlsplit(clean).hostname or "").removeprefix("www.")
             if clean and host and host != own and clean not in comps:
                 comps.append(clean)
+        if comps:
+            from mvp.server import _landing_url
+
+            comps = list(await asyncio.gather(*(_landing_url(c) for c in comps[:2])))
         tasks = [" ".join(str(t).split())[:120] for t in (data.get("tasks") or []) if str(t).strip()]
         if not tasks:
             return None
