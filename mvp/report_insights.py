@@ -394,6 +394,13 @@ def task_succeeded(run: dict[str, Any], start_url: str) -> bool:
     Describing the homepage, waiting, or writing a note is not success.
     Page state changes on a URL change or a meaningful DOM or canvas change.
     """
+    from mvp.page_verdict import verdict_success
+
+    judged = verdict_success(run)
+    if judged is not None:
+        # The final page, judged with the grader's prompt: the same number the
+        # judge gate reports (mvp/page_verdict.py).
+        return judged
     failed = run.get("failed_step")
     if isinstance(failed, dict) and str(failed.get("phase") or "").strip():
         # The step loop only writes phase "done" after the page itself showed
@@ -925,6 +932,11 @@ def _acted_steps(run: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _run_done(run: dict[str, Any]) -> bool:
+    from mvp.page_verdict import verdict_success
+
+    judged = verdict_success(run)
+    if judged is not None:
+        return judged
     failed = run.get("failed_step") if isinstance(run.get("failed_step"), dict) else {}
     return str(failed.get("phase") or "") == "done" or str(run.get("stop_reason") or "") == "done"
 

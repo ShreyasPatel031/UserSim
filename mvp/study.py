@@ -3836,6 +3836,16 @@ async def _run_study_body(
         except Exception as bf_exc:  # noqa: BLE001
             print(f"backfill_site_opening_shots failed: {bf_exc!r}", flush=True)
 
+        # One success number: the report counts what each final page proves,
+        # judged with the grader's own prompt (see mvp/page_verdict.py).
+        try:
+            from mvp.page_verdict import apply_page_verdicts
+
+            touch("Checking each final page")
+            await apply_page_verdicts(study)
+        except Exception as pv_exc:  # noqa: BLE001
+            print(f"page verdicts skipped: {pv_exc!r}", flush=True)
+
         from mvp.competitor_urls import annotate_run_issues, run_issue_lines, scrub_product_summary
 
         run_issues = annotate_run_issues(study.agent_results)
