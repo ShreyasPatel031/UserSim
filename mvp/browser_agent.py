@@ -21,16 +21,20 @@ from mvp.paths import MVP_RUNS_DIR
 
 # Enough steps to leave the landing page: land, scroll, open a nav item, read, come back.
 MVP_MAX_STEPS = int(os.environ.get("MVP_MAX_BROWSER_STEPS", "12"))
-# Hard wall so hung browser_use waits / DOMWatchdog deadlocks cannot freeze a study.
-# Prior YouTube e2e sat at 0/N done for 400s+ because agent.run had no timeout.
-# 120s let the first model call consume the whole budget (0–2 actions).
-# 200s is enough for several clicks once thinking/planning are off.
-MVP_AGENT_WALL_S = float(os.environ.get("MVP_AGENT_WALL_S", "200") or "200")
-# A 12s model cap and 15s step cap aborted the action call before a click landed,
-# so product runs died on the homepage after the opening frame. A step may use
-# most of a minute; the agent wall still stops a hung run.
-MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "45") or "45")
-MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "60") or "60")
+# Per-agent walls and step caps are gone. The study budget is the only timer.
+# These match that budget so browser-use does not apply its own 15s/60s kill,
+# and max_failures is not used to stop an agent on a slow model call.
+def _study_budget_timeout() -> int:
+    try:
+        from mvp.a11y_agent import study_budget_s
+
+        return max(30, int(study_budget_s()))
+    except Exception:
+        return 480
+
+
+MVP_LLM_TIMEOUT_S = int(os.environ.get("MVP_LLM_TIMEOUT_S", "") or _study_budget_timeout())
+MVP_STEP_TIMEOUT_S = int(os.environ.get("MVP_STEP_TIMEOUT_S", "") or _study_budget_timeout())
 MVP_HOLD_S = float(os.environ.get("MVP_PRESS_HOLD_S", "10") or "10")
 
 
@@ -1361,17 +1365,12 @@ async def run_browser_agent(
         Path(os.environ["XDG_CACHE_HOME"]).mkdir(parents=True, exist_ok=True)
 
     model = action_model_name(model)
-    # Keep CDP/action timeouts under the agent wall so a single hung navigate
-    # cannot outlive the wall (was 120/240 → studies stuck at 0/N done).
-    # Competitors use a shorter wall so a 24-agent matrix finishes inside 360s.
-    # Product agents keep the full wall; they are what the e2e task gate scores.
-    try:
-        agent_wall = max(15.0, float(wall_s) if wall_s is not None else MVP_AGENT_WALL_S)
-    except (TypeError, ValueError):
-        agent_wall = max(15.0, MVP_AGENT_WALL_S)
-    _wall = agent_wall
-    os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", str(max(20, int(_wall // 3))))
-    os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", str(max(30, int(_wall // 2))))
+    # wall_s is ignored. A hung browser is stopped by the study budget, or by
+    # the accessibility loop's stuck detector on the path studies actually run.
+    _ = wall_s
+    _budget = _study_budget_timeout()
+    os.environ.setdefault("BROWSER_USE_CDP_TIMEOUT_S", str(_budget))
+    os.environ.setdefault("BROWSER_USE_ACTION_TIMEOUT_S", str(_budget))
 
     run_dir = MVP_RUNS_DIR / study_id / agent_id
     screenshot_dir = run_dir / "screenshots"
@@ -1765,6 +1764,8 @@ async def run_browser_agent(
             flash_mode=False,
             enable_planning=False,
             use_judge=False,
+            # Do not stop the agent because a model call was slow or failed.
+            max_failures=10_000,
             llm_timeout=MVP_LLM_TIMEOUT_S,
             step_timeout=MVP_STEP_TIMEOUT_S,
             llm_screenshot_size=(800, 450),
@@ -1855,46 +1856,18 @@ async def run_browser_agent(
         print(
             f"[{agent_id}] agent.run starting model={model} provider=google-vertex "
             f"llm_timeout={MVP_LLM_TIMEOUT_S}s step_timeout={MVP_STEP_TIMEOUT_S}s "
-            f"(warm={use_warm}, max_steps={max_steps}, wall={agent_wall:.0f}s)",
+            f"(warm={use_warm}, max_steps={max_steps}, study_budget={_budget}s)",
             flush=True,
         )
         history = None
         try:
-            history = await asyncio.wait_for(
-                agent.run(
-                    max_steps=max_steps,
-                    on_step_start=on_step_start,
-                    on_step_end=on_step_end,
-                ),
-                timeout=agent_wall,
+            history = await agent.run(
+                max_steps=max_steps,
+                on_step_start=on_step_start,
+                on_step_end=on_step_end,
             )
-        except (asyncio.TimeoutError, asyncio.CancelledError):
-            print(
-                f"[{agent_id}] agent.run hit wall ({agent_wall:.0f}s) — "
-                "returning opening/partial trace",
-                flush=True,
-            )
-            try:
-                await _pulse(
-                    f"Stopped after {int(agent_wall)}s wall — keeping captured frames",
-                    thinking=True,
-                )
-            except Exception:
-                pass
-            # Last-chance paint before kill — Vimeo/DailyMotion often finish
-            # loading after the LLM loop has already stalled.
-            if browser_session is not None and on_step is not None:
-                try:
-                    await _emit_opening_frame(
-                        browser_session,
-                        screenshot_dir=screenshot_dir,
-                        study_id=study_id,
-                        agent_id=agent_id,
-                        url=start_url,
-                        on_step=on_step,
-                    )
-                except Exception as wall_shot_exc:  # noqa: BLE001
-                    print(f"[{agent_id}] wall reshoot failed: {wall_shot_exc!r}", flush=True)
+        except asyncio.CancelledError:
+            raise
         except Exception as run_exc:  # noqa: BLE001
             # Prefer partial opening frames over raising into study retry.
             print(f"[{agent_id}] agent.run failed: {run_exc!r} — returning partial", flush=True)
