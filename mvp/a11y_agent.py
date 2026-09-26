@@ -305,7 +305,8 @@ _READ_JS = """() => {
     const tab = el.getAttribute('tabindex');
     // Toolbars, radio groups, menus, and tabs use a roving tabindex of -1 on real controls.
     const roving = !!el.closest('[role="toolbar"], [role="radiogroup"], [role="menu"], [role="menubar"], [role="tablist"], [role="listbox"], [role="grid"], [role="tree"], [role="dialog"]');
-    const inert = ((tab === '-1') && !href && !roving) || !!el.disabled || el.getAttribute('aria-disabled') === 'true' || !!el.closest('[aria-hidden="true"], [inert]') || covered(el, r);
+    const under = covered(el, r);
+    const inert = ((tab === '-1') && !href && !roving) || !!el.disabled || el.getAttribute('aria-disabled') === 'true' || !!el.closest('[aria-hidden="true"], [inert]') || under;
     let name = (
       el.getAttribute('aria-label')
       || el.getAttribute('placeholder')
@@ -316,6 +317,17 @@ _READ_JS = """() => {
       || ''
     ).replace(/\\s+/g, ' ').trim().slice(0, 80);
     if (!name && el.tagName === 'INPUT') name = (el.getAttribute('type') || 'input') + ' field';
+    if (!name) {
+      // Icon-only buttons (a modal's X) have no text. Name them from the icon
+      // class (lucide-x, fa-times, icon-close) so the model can close a pop-up.
+      const svg = el.querySelector('svg, i, [data-icon], [data-lucide]');
+      const cls = svg ? String(svg.getAttribute('class') || '') + ' ' + String(svg.getAttribute('data-icon') || svg.getAttribute('data-lucide') || '') : '';
+      const m = cls.match(/(?:lucide|fa|icon|bi|mdi|ri|tabler)-([a-z0-9-]+)/i) || cls.match(/\b(close|x|times|minimize|minimize-2|menu|chevron-[a-z]+)\b/i);
+      if (m) {
+        const icon = m[1].toLowerCase();
+        name = /^(x|close|times|xmark|x-mark|circle-x|x-circle)$/.test(icon) ? 'Close (x icon)' : icon.replace(/-/g, ' ') + ' icon';
+      }
+    }
     return {
       i: nodes.length,
       role: (el.getAttribute('role') || el.tagName || '').toLowerCase(),
@@ -326,6 +338,7 @@ _READ_JS = """() => {
       w: Math.round(Math.max(r.width, 0)),
       h: Math.round(Math.max(r.height, 0)),
       inert: inert,
+      covered: under,
       value: ((el.tagName === 'INPUT' && !/password|hidden|checkbox|radio/i.test(el.type || '')) || el.tagName === 'TEXTAREA') ? String(el.value || '').slice(0, 60) : (el.isContentEditable ? String(el.innerText || '').replace(/\\s+/g, ' ').trim().slice(0, 60) : ''),
       on: el.getAttribute('aria-pressed') === 'true' || el.getAttribute('aria-checked') === 'true' || el.getAttribute('aria-selected') === 'true' || el.getAttribute('aria-expanded') === 'true' || !!el.checked,
     };
@@ -365,6 +378,9 @@ _READ_JS = """() => {
   const password = Array.from(document.querySelectorAll('input[type="password"]')).some(visible);
   const email_input = Array.from(document.querySelectorAll('input[type="email"], input[autocomplete="email"], input[autocomplete="username"], input[name*="email" i]')).some(visible);
   const dialog = !!document.querySelector('[role="dialog"]:not([aria-hidden="true"]), dialog[open]');
+  // A fixed pop-up (not role=dialog) that covers most of the page's controls.
+  const coveredCount = nodes.filter((n) => n.covered).length;
+  const overlay = coveredCount >= 3 && coveredCount >= nodes.length * 0.4;
   // Drawn shapes only: icons inside buttons, toolbars, menus and panels are UI, not ink.
   const ui = 'button, [role="button"], [role="radio"], [role="toolbar"], [role="menu"], [role="menuitem"], label, nav, header, [aria-hidden="true"]';
   const shapes = Array.from(document.querySelectorAll('svg path, svg rect, svg ellipse, [data-shape-type], .tl-shape'))
@@ -380,7 +396,7 @@ _READ_JS = """() => {
       value: String(act.value || (act.isContentEditable ? act.innerText : '') || '').slice(0, 120),
     };
   }
-  return { url, title, text, canvas, nodes, password, email_input, dialog, shapes, focus };
+  return { url, title, text, canvas, nodes, password, email_input, dialog: dialog || overlay, overlay, shapes, focus };
 }"""
 
 
@@ -1641,7 +1657,13 @@ async def _model_action(
         f"URL: {read.get('url') or ''}\n"
         f"Title: {read.get('title') or ''}\n"
         f"Dialog open: {'yes' if read.get('dialog') else 'no'}. Drawing canvas on page: {canvas}.\n"
-        f"Focused element: {_focus_text(read.get('focus'))}\n"
+        + (
+            "A pop-up covers the page, so the controls behind it are not listed. Close it (its Close or x "
+            "button, or press Escape) unless the pop-up itself does the task.\n"
+            if read.get("overlay")
+            else ""
+        )
+        + f"Focused element: {_focus_text(read.get('focus'))}\n"
         f"Visible text: {str(read.get('text') or '')[:900]}\n"
         f"Interactive elements (i role name href):\n{ax}\n"
         f"Actions so far: {'; '.join(history[-8:]) or 'none'}\n"
@@ -2122,22 +2144,26 @@ async def _follow_new_tab(page: Any, before: set[int], wait_ms: int = 0) -> str:
         return ""
     tab = fresh[-1]
     target = ""
-    for _ in range(80):  # up to ~8s for the first response to commit
+    until = time.monotonic() + 8.0  # the first response has ~8s to commit
+    while True:
         try:
             target = str(tab.url or "")
         except Exception:
             target = ""
-        if target and not target.startswith("about:"):
+        left = until - time.monotonic()
+        if (target and not target.startswith("about:")) or left <= 0:
             break
         try:
-            await tab.wait_for_url(lambda u: not str(u).startswith("about:"), timeout=8000)
-            target = str(tab.url or "")
-            break
+            await asyncio.wait_for(
+                tab.wait_for_url(lambda u: not str(u).startswith("about:"), timeout=int(left * 1000)),
+                timeout=left + 1,
+            )
         except Exception:
             await asyncio.sleep(0.1)
     for extra in fresh:
         try:
-            await extra.close()
+            # A remote browser can stall closing a tab; never let that hang the step.
+            await asyncio.wait_for(extra.close(), timeout=3)
         except Exception:
             pass
     if not target.startswith("http") or _IDP_URL_RE.search(target):
@@ -2735,7 +2761,10 @@ async def complete_task_on_page(
             followed = await _follow_new_tab(page, tabs_before)
             if followed:
                 how = f"{how}+newtab"
-        after = await _fresh_read(page, str(read.get("url") or url))
+        try:
+            after = await asyncio.wait_for(_fresh_read(page, str(read.get("url") or url)), timeout=15)
+        except asyncio.TimeoutError:
+            after = {"error": "accessibility read timed out", "url": str(read.get("url") or url)}
         if after.get("error") and browser_dead(str(after.get("error"))):
             print(f"[{agent_id}] session ended: {after.get('error')}", flush=True)
             _miss("session ended", "read")

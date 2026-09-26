@@ -29,6 +29,30 @@ def _tabs(page: Any) -> list[str]:
     except Exception:
         return []
 
+_FIXED_DUMP_JS = r"""() => {
+  const out = [];
+  for (const el of document.querySelectorAll('body *')) {
+    const cs = getComputedStyle(el);
+    if (cs.position !== 'fixed') continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 200 || r.height < 100) continue;
+    const kids = [];
+    for (const k of el.querySelectorAll('*')) {
+      const kc = getComputedStyle(k); const kr = k.getBoundingClientRect();
+      if (kr.width < 4 || kr.height < 4) continue;
+      const clicky = kc.cursor === 'pointer' || /^(A|BUTTON|INPUT|SELECT)$/.test(k.tagName) || k.getAttribute('role') || k.onclick;
+      if (!clicky) continue;
+      kids.push({tag: k.tagName, role: k.getAttribute('role'), aria: k.getAttribute('aria-label'), title: k.getAttribute('title'),
+                 cls: (k.className && k.className.baseVal !== undefined ? k.className.baseVal : k.className || '').slice(0, 80),
+                 text: (k.innerText || '').trim().slice(0, 50), x: Math.round(kr.x), y: Math.round(kr.y), w: Math.round(kr.width), h: Math.round(kr.height)});
+      if (kids.length > 40) break;
+    }
+    out.push({tag: el.tagName, role: el.getAttribute('role'), aria_modal: el.getAttribute('aria-modal'), cls: String(el.className).slice(0, 100),
+              z: cs.zIndex, box: [Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height)], kids});
+  }
+  return out;
+}"""
+
 
 async def _flow(page: Any, url: str, task: str, out: Path, persona: dict) -> dict:
     from mvp import a11y_agent as A
@@ -77,6 +101,23 @@ async def _flow(page: Any, url: str, task: str, out: Path, persona: dict) -> dic
 
     A._act = traced_act  # type: ignore[assignment]
 
+    real_model = A._model_action
+    decisions: list[dict] = []
+
+    async def traced_model(**kw: Any) -> Any:
+        got = await real_model(**kw)
+        read = kw.get("read") or {}
+        decisions.append({
+            "t": time.strftime("%H:%M:%S"), "url": read.get("url"), "dialog": read.get("dialog"),
+            "nodes_to_model": len(read.get("nodes") or []), "nodes_all": len(kw.get("all_nodes") or []),
+            "ax": A.format_ax(read.get("nodes") or []), "history": list(kw.get("history") or [])[-4:],
+            "decision": got,
+        })
+        (out / "decisions.json").write_text(json.dumps(decisions, indent=1, default=str))
+        return got
+
+    A._model_action = traced_model  # type: ignore[assignment]
+
     from mvp import signup_in_session as S
 
     real_signup = S.signup_in_session
@@ -86,6 +127,17 @@ async def _flow(page: Any, url: str, task: str, out: Path, persona: dict) -> dic
         res = await real_signup(*a, **kw)
         signup_full.update(res if isinstance(res, dict) else {})
         await shot("signup-end")
+        if os.environ.get("MVP_DEBUG_DUMP_DOM"):
+            try:
+                pg = a[0] if a else kw.get("page")
+                await asyncio.sleep(3)
+                read = await A._fresh_read(pg, pg.url)
+                (out / "post_signup_read.json").write_text(json.dumps(read, indent=1, default=str))
+                fixed = await pg.evaluate(_FIXED_DUMP_JS)
+                (out / "post_signup_fixed.json").write_text(json.dumps(fixed, indent=1, default=str))
+                print(f"[debug] dumped post-signup read + {len(fixed)} fixed layers", flush=True)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[debug] dom dump failed: {exc!r}", flush=True)
         (out / "signup.json").write_text(json.dumps(signup_full, indent=1, default=str))
         return res
 
@@ -127,6 +179,7 @@ async def _flow(page: Any, url: str, task: str, out: Path, persona: dict) -> dic
     await shot("final")
     (out / "steps.json").write_text(json.dumps(steps, indent=1, default=str))
     A._act = real_act  # type: ignore[assignment]
+    A._model_action = real_model  # type: ignore[assignment]
     S.signup_in_session = real_signup  # type: ignore[assignment]
     return {
         "site": url, "task": task, "first_stop": first.get("stop_reason"), "signup_url": first.get("signup_url"),

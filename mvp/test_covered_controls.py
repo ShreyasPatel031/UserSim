@@ -14,11 +14,12 @@ import unittest
 from mvp.a11y_agent import _READ_JS
 
 HTML = """<html><body style="margin:0">
-<div style="padding-top:60px"><button>Re-engage at-risk</button><a href="/contacts">Customers</a>
+<div style="padding-top:60px"><button>Re-engage at-risk</button><a href="/contacts">Customers</a><a href="/plays">Plays</a>
 <label><input type=checkbox style="opacity:0;position:absolute"><span>Agree</span></label></div>
 <aside style="position:fixed;top:0;left:1300px;width:300px"><button>Re-engage drawer</button></aside>
 <div id=ov style="position:fixed;inset:0;background:rgba(0,0,0,.4)"><div style="margin:100px auto;width:400px;background:#fff">
-<button aria-label="Close" onclick="document.getElementById('ov').remove()">x</button><a href="/tour">Play video</a></div></div>
+<button aria-label="Close" onclick="document.getElementById('ov').remove()">x</button>
+<button class="icon"><svg class="lucide lucide-x" width="16" height="16"><path d="M1 1L15 15"/></svg></button><a href="/tour">Play video</a></div></div>
 </body></html>"""
 
 
@@ -48,6 +49,9 @@ class CoveredControlTest(unittest.TestCase):
         self.assertTrue(inert["Re-engage at-risk"])
         self.assertTrue(inert["Customers"])
         self.assertFalse(inert["Close"])
+        self.assertIn("Close (x icon)", inert)  # icon-only X button gets a name
+        self.assertTrue(before["overlay"] and before["dialog"])
+        self.assertFalse(after["overlay"])
         self.assertFalse(inert["Play video"])
         self.assertFalse(inert["checkbox field"])  # styled checkbox under its label stays usable
         self.assertFalse(any(n["inert"] for n in after["nodes"]))
