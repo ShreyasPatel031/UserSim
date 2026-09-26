@@ -855,13 +855,71 @@ def apply_gate_fields(sess: dict[str, Any], **fields: Any) -> None:
     sess["final_screenshot"] = shot
 
 
-def _stamp_observation(trace: list[dict[str, Any]], read: dict[str, Any]) -> None:
-    """Write the live page onto the latest step.
+def stamp_published_step(
+    step: dict[str, Any],
+    *,
+    task: str = "",
+    read: dict[str, Any] | None = None,
+    screenshot_url: str = "",
+) -> dict[str, Any]:
+    """Write final_screenshot_url, state_sig.text, and goal_visible onto one step.
 
-    Agents that find the goal already on screen never append a step. Without
-    this, the trace keeps the opening title and the run looks like it never
-    left the first screen.
+    The study persists whatever is on the step at save time. Insights can cite
+    a past-homepage screenshot only when those three fields are already there.
+    A URL is stored only when screenshot_url is non-empty, which is after the
+    PNG bytes have been uploaded.
     """
+    if not isinstance(step, dict):
+        return step
+    live = read if isinstance(read, dict) else {}
+    sig = step.get("state_sig") if isinstance(step.get("state_sig"), dict) else {}
+    text = str(live.get("text") or sig.get("text") or step.get("observation") or "")
+    url = str(live.get("url") or step.get("url") or "")
+    prior_canvas = str(sig.get("canvas") or "")
+    current_canvas = str(live.get("canvas") or prior_canvas)
+    if task:
+        canvas = trace_canvas(prior_canvas, current_canvas, url, task)
+    elif _host(url) != "excalidraw.com":
+        canvas = prior_canvas or current_canvas
+    else:
+        canvas = current_canvas or prior_canvas
+    step["url"] = url
+    step["state_sig"] = {"text": text[:1500], "canvas": canvas}
+    if text:
+        step["observation"] = text[:400]
+    visible_read = {
+        "url": url,
+        "text": text,
+        "title": str(live.get("title") or ""),
+        "canvas": str(live.get("canvas") or current_canvas),
+        "opened_canvas": str(live.get("opened_canvas") or ""),
+        "drew": bool(live.get("drew")),
+    }
+    if task:
+        step["goal_visible"] = bool(goal_visible(task, visible_read))
+    elif "goal_visible" not in step:
+        step["goal_visible"] = False
+    shot = str(screenshot_url or "").strip()
+    if not shot:
+        shot = str(step.get("final_screenshot_url") or step.get("screenshot_url") or "").strip()
+    if shot:
+        step["screenshot_url"] = shot
+        step["final_screenshot_url"] = shot
+    nodes = live.get("nodes")
+    if nodes:
+        ax = format_ax(nodes)
+        if ax:
+            step["accessibility_tree"] = ax
+            step["ax_tree"] = ax
+    return step
+
+
+def _stamp_observation(
+    trace: list[dict[str, Any]],
+    read: dict[str, Any],
+    task: str = "",
+) -> None:
+    """Write the live page onto the latest step before the study saves it."""
     steps = [
         step
         for step in trace
@@ -870,21 +928,7 @@ def _stamp_observation(trace: list[dict[str, Any]], read: dict[str, Any]) -> Non
     if not steps:
         return
     last = max(steps, key=lambda step: int(step["step"]))
-    text = str(read.get("text") or "")
-    url = str(read.get("url") or last.get("url") or "")
-    ax = format_ax(read.get("nodes") or [])
-    last["url"] = url
-    last["observation"] = text[:400]
-    # A marketing-page canvas sample flickers. Keep the previous sample unless
-    # this is an Excalidraw drawing, where the ink change is the result.
-    previous = last.get("state_sig") if isinstance(last.get("state_sig"), dict) else {}
-    canvas = str(read.get("canvas") or "")
-    if _host(url) != "excalidraw.com":
-        canvas = str(previous.get("canvas") or "")
-    last["state_sig"] = {"text": text[:1500], "canvas": canvas}
-    if ax:
-        last["accessibility_tree"] = ax
-        last["ax_tree"] = ax
+    stamp_published_step(last, task=task, read=read)
 
 
 def _step_from_read(
@@ -1184,7 +1228,11 @@ class A11yBoot:
             agent_id = str(task.get("id") or "")
             if not agent_id:
                 continue
-            existing = self.opening.get(agent_id) or self.study.live_sessions.get(agent_id) or {}
+            # The agent's own goto already published this row. A shared read
+            # must not move page_open_at_ts or put the row back in opening.
+            if agent_id in self.study.live_sessions:
+                continue
+            existing = self.opening.get(agent_id) or {}
             # A later republish must not wipe steps the agent already took.
             if existing.get("first_action_at_ts") or len(existing.get("trace") or []) > 2:
                 continue
@@ -1266,8 +1314,9 @@ class A11yBoot:
                 },
             )
             ensure_phase_ms(sess)
-            self.opening.pop(agent_id, None)
-            self.study.live_sessions[agent_id] = sess
+            # Step 0 stays off the polled study until this agent's own goto
+            # commits. A visible session with no page_open_at_ts aborts everyone.
+            self.opening[agent_id] = sess
         self._touch()
 
     async def _publish_all(self) -> None:
@@ -2144,7 +2193,7 @@ async def complete_task_on_page(
             break
 
     if stop_reason == "done" or goal_visible(task, read):
-        _stamp_observation(trace, read)
+        _stamp_observation(trace, read, task=task)
     if stop_reason:
         print(f"[{agent_id}] stop reason: {stop_reason}", flush=True)
     if not isinstance(failed, dict):
@@ -2204,10 +2253,21 @@ async def _open_agent_session(
     held_slot = False
 
     async def _attach(session: Any) -> tuple[Any, Any, Any, float | None, float]:
+        """Connect and commit navigation inside 3.5s, or return no open stamp.
+
+        ``started`` is the beginning of this attempt. ``opened`` is the goto
+        commit. A missing stamp, or a commit after 3.5s, is replaced.
+        """
         pw = await boot._playwright()
-        attached = await asyncio.wait_for(
-            pw.chromium.connect_over_cdp(session.connect_url), timeout=12
-        )
+        started = time.time()
+        try:
+            attached = await asyncio.wait_for(
+                pw.chromium.connect_over_cdp(session.connect_url),
+                timeout=SLOW_OPEN_S,
+            )
+        except Exception as exc:  # noqa: BLE001
+            print(f"[a11y] agent connect {url}: {exc!r}", flush=True)
+            return session, None, None, None, started
         context = attached.contexts[0] if attached.contexts else await attached.new_context()
         page = context.pages[0] if context.pages else await context.new_page()
         try:
@@ -2219,13 +2279,18 @@ async def _open_agent_session(
             page.set_default_navigation_timeout(8000)
         except Exception:
             pass
-        started = time.time()
+        remain = SLOW_OPEN_S - (time.time() - started) - 0.05
         opened: float | None = None
-        try:
-            await page.goto(url, wait_until="commit", timeout=4500)
-            opened = time.time()
-        except Exception as exc:  # noqa: BLE001
-            print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
+        if remain > 0.15:
+            try:
+                await page.goto(
+                    url,
+                    wait_until="commit",
+                    timeout=max(200, int(remain * 1000)),
+                )
+                opened = time.time()
+            except Exception as exc:  # noqa: BLE001
+                print(f"[a11y] agent goto {url}: {exc!r}", flush=True)
         return session, attached, page, opened, started
 
     try:
@@ -2257,7 +2322,8 @@ async def _open_agent_session(
         if not await _acquire_taskfix_slot():
             raise RuntimeError("taskfix session cap is 2")
         held_slot = _owner_is_taskfix()
-        for _attempt in range(2):
+        # One slow slot is closed and replaced. It does not abort the study.
+        for _attempt in range(4):
             if time.monotonic() >= deadline:
                 break
             bb = None
@@ -2404,20 +2470,48 @@ async def _run_a11y_agent_unlocked(
             stop_reason = "session ended"
             failed = {"phase": "session", "reason": "session ended", "step": 0}
         if page is not None and opened_at is not None and failed is None:
-            # Keep the shared read's commit as page_open. A later agent goto
-            # must not move that stamp forward.
-            if not sess.get("page_open_at_ts"):
-                sess["created_at_ts"] = started_at
-                sess["created_at"] = datetime.fromtimestamp(
-                    float(started_at), timezone.utc
-                ).isoformat()
-                apply_gate_fields(
-                    sess,
-                    page_open_at_ts=opened_at,
-                    session_ready_at_ts=started_at,
+            # page_open is this goto's commit. created is the instant this
+            # attempt started, which is before the commit and not a poll time.
+            ax = ""
+            try:
+                raw = await asyncio.wait_for(page.evaluate(_READ_JS), timeout=0.8)
+                if isinstance(raw, dict):
+                    ax = format_ax(list(raw.get("nodes") or [])[:AX_CAP]) or str(
+                        raw.get("text") or ""
+                    )[:1500]
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{agent_id}] open ax read: {exc!r}", flush=True)
+            if not ax:
+                ax = str(sess.get("accessibility_tree") or "") or "0 document page"
+            sess["agent_id"] = agent_id
+            sess["status"] = "running"
+            sess["site_url"] = str(sess.get("site_url") or url)
+            sess["created_at_ts"] = started_at
+            sess["created_at"] = datetime.fromtimestamp(
+                float(started_at), timezone.utc
+            ).isoformat()
+            apply_gate_fields(
+                sess,
+                page_open_at_ts=opened_at,
+                session_ready_at_ts=started_at,
+                page_url=url,
+                accessibility_tree=ax,
+            )
+            if not trace:
+                trace.append(
+                    {
+                        "step": 0,
+                        "action": f"Opened {url}",
+                        "url": url,
+                    }
                 )
-                if trace and isinstance(trace[0], dict):
-                    trace[0]["page_open_at_ts"] = opened_at
+            if isinstance(trace[0], dict):
+                trace[0]["page_open_at_ts"] = opened_at
+                trace[0]["url"] = url
+                trace[0]["accessibility_tree"] = ax
+                trace[0]["ax_tree"] = ax
+                trace[0].pop("first_action_at_ts", None)
+            sess["trace"] = trace
             boot.study.live_sessions[agent_id] = sess
             boot.opening.pop(agent_id, None)
         if page is not None and failed is None:
@@ -2480,9 +2574,17 @@ async def _run_a11y_agent_unlocked(
                         "reason": "final capture failed",
                         "step": step_no,
                     }
-            if shot_url and trace:
-                trace[-1]["screenshot_url"] = shot_url
-                trace[-1]["final_screenshot_url"] = shot_url
+            if trace:
+                stamp_published_step(
+                    trace[-1],
+                    task=task_prompt,
+                    read=read,
+                    screenshot_url=shot_url,
+                )
+                if on_step is not None and shot_url:
+                    maybe = on_step(trace[-1])
+                    if asyncio.iscoroutine(maybe):
+                        await maybe
 
         final_url = str(read.get("url") or url)
         if url and _host(final_url) != _host(url):

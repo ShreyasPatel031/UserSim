@@ -621,17 +621,8 @@ Critical rules:
             next_n += 1
             if next_n > task_count + 3:
                 break
-    from mvp.a11y_agent import achievable_without_account
-
-    for task in tasks:
-        if not isinstance(task, dict):
-            continue
-        prompt = achievable_without_account(url, str(task.get("prompt") or ""))
-        task["prompt"] = prompt
-        title = str(task.get("title") or "")
-        rewritten = achievable_without_account(url, title)
-        if rewritten != title:
-            task["title"] = rewritten[:80]
+    # Account-needed tasks stay as written. The agent signs up; it does not
+    # rewrite them into logged-out visits.
     return tasks
 
 
@@ -3165,6 +3156,39 @@ async def run_study(
                                 step=step,
                             )
                     sess["status"] = "running"
+                    from mvp.a11y_agent import stamp_published_step
+                    from mvp.opening_shot import publish_final_png
+
+                    raw_shot = str(
+                        step.get("final_screenshot_url") or step.get("screenshot_url") or ""
+                    )
+                    if raw_shot.endswith("final.png"):
+                        verified = await asyncio.to_thread(
+                            publish_final_png, study.id, str(agent_id or "")
+                        )
+                        if verified:
+                            step["final_screenshot_url"] = verified
+                            step["screenshot_url"] = step.get("screenshot_url") or verified
+                        else:
+                            step.pop("final_screenshot_url", None)
+                            if str(step.get("screenshot_url") or "").endswith("final.png"):
+                                step.pop("screenshot_url", None)
+                    stamp_published_step(
+                        step,
+                        task=str(sess.get("task_prompt") or ""),
+                        screenshot_url=str(
+                            step.get("final_screenshot_url")
+                            or step.get("screenshot_url")
+                            or ""
+                        ),
+                    )
+                    if step.get("final_screenshot_url"):
+                        sess["final_screenshot_url"] = step["final_screenshot_url"]
+                        sess["final_screenshot"] = step["final_screenshot_url"]
+                    sig = step.get("state_sig") if isinstance(step.get("state_sig"), dict) else {}
+                    if sig.get("text"):
+                        sess["final_dom"] = str(sig.get("text") or "")[:1500]
+                    sess["goal_visible"] = bool(step.get("goal_visible"))
                     sess["trace"] = list(sess.get("trace") or [])
                     existing = {s.get("step"): i for i, s in enumerate(sess["trace"])}
                     if step.get("step") in existing:
@@ -3230,40 +3254,18 @@ async def run_study(
                     agent_id = task.get("id") or f"agent_{uuid.uuid4().hex[:8]}"
                     site = task.get("site_url") or study.url
                     if a11y_boot is not None:
-                        # The shared read is display only. Do not wait for a
-                        # click: this agent is what produces the first action.
-                        _wait_until = getattr(study, "budget_deadline", None) or (
-                            time.monotonic() + 30
-                        )
-                        while time.monotonic() < _wait_until:
-                            existing = study.live_sessions.get(agent_id) or {}
-                            if not existing:
-                                existing = getattr(a11y_boot, "opening", {}).get(agent_id) or {}
-                            trace = existing.get("trace") or []
-                            opened = bool(existing.get("page_open_at_ts")) or any(
-                                isinstance(step, dict) and int(step.get("step") or -1) == 0
-                                for step in trace
-                            )
-                            if opened:
-                                break
-                            await asyncio.sleep(0.05)
+                        # All 24 open together. Do not wait for the shared read,
+                        # and do not skip an agent because that read is late.
                         sess = study.live_sessions.get(agent_id) or getattr(
                             a11y_boot, "opening", {}
-                        ).get(agent_id)
-                        trace = (sess or {}).get("trace") or []
-                        opened = bool(sess and (
-                            sess.get("page_open_at_ts")
-                            or any(
-                                isinstance(step, dict) and int(step.get("step") or -1) == 0
-                                for step in trace
-                            )
-                        ))
-                        if not opened:
-                            print(
-                                f"[{agent_id}] no shared page read before the study budget",
-                                flush=True,
-                            )
-                            return {"agent_id": agent_id, "skipped": True}
+                        ).get(agent_id) or {
+                            "agent_id": agent_id,
+                            "persona_name": persona.get("name"),
+                            "task_prompt": task.get("prompt"),
+                            "site_url": site,
+                            "status": "starting",
+                            "trace": [],
+                        }
                     else:
                         sess = study.live_sessions.setdefault(
                             agent_id,
@@ -3515,13 +3517,22 @@ async def run_study(
                             shot = await asyncio.to_thread(
                                 publish_final_png, study.id, str(agent_id or "")
                             )
-                            result["final_screenshot_url"] = shot
-                            result["final_screenshot"] = shot
+                            # A URL is kept only when the PNG bytes read back.
+                            if shot:
+                                result["final_screenshot_url"] = shot
+                                result["final_screenshot"] = shot
+                            else:
+                                result.pop("final_screenshot_url", None)
+                                result.pop("final_screenshot", None)
                             for key in GATE_FIELDS:
                                 if key in result:
                                     sess[key] = result[key]
-                            sess["final_screenshot_url"] = shot
-                            sess["final_screenshot"] = shot
+                            if shot:
+                                sess["final_screenshot_url"] = shot
+                                sess["final_screenshot"] = shot
+                            else:
+                                sess.pop("final_screenshot_url", None)
+                                sess.pop("final_screenshot", None)
                             sess["final_url"] = result.get("final_url") or sess.get("final_url")
                             if result.get("stop_reason"):
                                 sess["stop_reason"] = result.get("stop_reason")
