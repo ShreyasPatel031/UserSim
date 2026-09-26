@@ -230,6 +230,12 @@ class StudyState:
     auth_blocker: str | None = None
     kill_requested: bool = False
     max_agents: int = 0
+    # Headline clocks. created_at_ts is URL submit (study creation).
+    created_at_ts: float = field(default_factory=time.time)
+    completed_at_ts: float | None = None
+    time_to_first_value_s: float | None = None
+    time_to_first_value_agent: str = ""
+    total_time_s: float | None = None
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -3103,6 +3109,7 @@ async def run_study(
                         from mvp.a11y_agent import apply_gate_fields
 
                         apply_gate_fields(sess, first_action_at_ts=time.time())
+                        note_first_value(study, sess)
                     _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     thought = (step.get("thought") or "").strip()
                     if thought:
@@ -3128,7 +3135,9 @@ async def run_study(
                     from mvp.opening_shot import drop_inline_shots_inplace
 
                     drop_inline_shots_inplace(sess)
-                    persist_study(study)
+                    # A full study.json upload per step blocked the event loop
+                    # for every agent. Coalesce writes off the loop.
+                    schedule_persist(study)
                     log_activity(
                         study,
                         "agent_step",
@@ -3787,6 +3796,7 @@ async def run_study(
             apply_insights(study)
         except Exception as insight_exc:  # noqa: BLE001
             print(f"report insights failed: {insight_exc!r}", flush=True)
+        finish_clocks(study)
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
         persist_study(study)
@@ -3891,6 +3901,11 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "backend": study.backend,
             "email": study.email,
             "kill_requested": study.kill_requested,
+            "created_at_ts": study.created_at_ts,
+            "completed_at_ts": study.completed_at_ts,
+            "time_to_first_value_s": study.time_to_first_value_s,
+            "time_to_first_value_agent": study.time_to_first_value_agent,
+            "total_time_s": study.total_time_s,
         }
     )
 
@@ -3901,8 +3916,105 @@ def _local_snapshot_path(study_id: str):
     return MVP_RUNS_DIR / "snapshots" / f"{study_id}.json"
 
 
+def note_first_value(study: StudyState, sess: dict[str, Any] | None = None) -> None:
+    """Time to first value: URL submit until the first agent action is in the UI."""
+    start = getattr(study, "created_at_ts", None)
+    if not isinstance(start, (int, float)):
+        return
+    best: tuple[float, str] | None = None
+    rows = [sess] if isinstance(sess, dict) else list((study.live_sessions or {}).values())
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        ts = row.get("first_action_at_ts")
+        if isinstance(ts, bool) or not isinstance(ts, (int, float)) or ts < start:
+            continue
+        if best is None or ts < best[0]:
+            best = (float(ts), str(row.get("agent_id") or ""))
+    if best is None:
+        return
+    value = round(best[0] - float(start), 3)
+    if study.time_to_first_value_s is None or value < study.time_to_first_value_s:
+        study.time_to_first_value_s = value
+        study.time_to_first_value_agent = best[1]
+
+
+def finish_clocks(study: StudyState) -> None:
+    """Stamp completed_at_ts and total_time_s when the report is ready."""
+    note_first_value(study)
+    study.completed_at_ts = time.time()
+    start = getattr(study, "created_at_ts", None)
+    if isinstance(start, (int, float)):
+        study.total_time_s = round(study.completed_at_ts - float(start), 3)
+
+
+_PERSIST_PENDING: dict[str, asyncio.Task] = {}
+_PERSIST_EVERY_S = float(os.environ.get("MVP_PERSIST_EVERY_S", "3") or "3")
+
+
+def schedule_persist(study: StudyState) -> None:
+    """Persist at most every few seconds, serialising on the loop and writing in a thread."""
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        persist_study(study)
+        return
+    task = _PERSIST_PENDING.get(study.id)
+    if task is not None and not task.done():
+        return
+
+    async def _later() -> None:
+        await asyncio.sleep(_PERSIST_EVERY_S)
+        try:
+            from mvp.opening_shot import drop_inline_shots
+
+            payload = drop_inline_shots(study_to_dict(study))
+            await asyncio.to_thread(_write_payload, study.id, payload)
+        except Exception as exc:  # noqa: BLE001
+            print(f"deferred persist failed for {study.id}: {exc!r}", flush=True)
+
+    _PERSIST_PENDING[study.id] = loop.create_task(_later())
+
+
+import threading as _threading
+
+_PERSIST_LOCK = _threading.Lock()
+_TERMINAL_WRITTEN: set[str] = set()
+_TERMINAL = {"complete", "error", "abandoned"}
+
+
+def _write_payload(study_id: str, payload: dict[str, Any]) -> None:
+    with _PERSIST_LOCK:
+        # A deferred write must never overwrite the finished report.
+        if study_id in _TERMINAL_WRITTEN and str(payload.get("status") or "") not in _TERMINAL:
+            return
+        _write_payload_unlocked(study_id, payload)
+
+
+def _write_payload_unlocked(study_id: str, payload: dict[str, Any]) -> None:
+    try:
+        path = _local_snapshot_path(study_id)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload), encoding="utf-8")
+    except Exception as exc:  # noqa: BLE001
+        print(f"local persist failed for {study_id}: {exc!r}", flush=True)
+    try:
+        from mvp.gcs_store import write_study_state
+
+        write_study_state(study_id, payload)
+    except Exception as exc:  # noqa: BLE001
+        print(f"persist failed for {study_id}: {exc!r}", flush=True)
+
+
 def persist_study(study: StudyState) -> None:
     """Best-effort write of study state so a restarted local server can still serve the report."""
+    with _PERSIST_LOCK:
+        if str(study.status or "") in _TERMINAL:
+            _TERMINAL_WRITTEN.add(study.id)
+        _persist_study_unlocked(study)
+
+
+def _persist_study_unlocked(study: StudyState) -> None:
     try:
         from mvp.opening_shot import drop_inline_shots
 
