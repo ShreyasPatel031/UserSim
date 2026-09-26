@@ -1103,5 +1103,6 @@ def main() -> int:
         _release_testfix_sessions()
     return code
 
+
 if __name__ == "__main__":
     raise SystemExit(main())

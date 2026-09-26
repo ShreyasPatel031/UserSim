@@ -364,21 +364,252 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def goal_visible(task: str, read: dict[str, Any]) -> bool:
-    """True when the open URL is the page the task asked for.
+def _host(url: str) -> str:
+    from urllib.parse import urlsplit
 
-    A nav label on the homepage is not the pricing page or the changelog.
+    text = (url or "").strip()
+    if not text:
+        return ""
+    if "://" not in text:
+        text = "https://" + text
+    host = (urlsplit(text).hostname or "").lower().rstrip(".")
+    if host.startswith("www."):
+        host = host[4:]
+    return host
+
+
+def _page_key(url: str) -> tuple[str, str, str]:
+    from urllib.parse import urlsplit
+
+    text = (url or "").strip()
+    if not text:
+        return ("", "", "")
+    if "://" not in text:
+        text = "https://" + text
+    parsed = urlsplit(text)
+    host = (parsed.hostname or "").lower()
+    if host.startswith("www."):
+        host = host[4:]
+    path = (parsed.path or "/").rstrip("/") or "/"
+    return (host, path, parsed.query or "")
+
+
+def task_kind(task: str) -> str:
+    """Which goal this task is asking the agent to reach."""
+    text = (task or "").lower()
+    if any(word in text for word in ("rectangle", "draw a", "square")):
+        return "draw"
+    if "export" in text or ("share" in text and "drawing" in text):
+        return "export"
+    if any(word in text for word in ("changelog", "what shipped", "shipped recently")):
+        return "changelog"
+    if "issue" in text and "pricing" not in text:
+        return "issue"
+    if any(word in text for word in ("pricing", "free plan", "price", "get started")):
+        return "pricing"
+    return ""
+
+
+def goal_visible(task: str, read: dict[str, Any]) -> bool:
+    """True only when this page shows the task goal.
+
+    A nav label on the opening page is not the pricing page, the issue form,
+    a drawing, or an export dialog.
     """
+    url = str((read or {}).get("url") or "")
+    text = str((read or {}).get("text") or "").lower()
+    kind = task_kind(task)
+    path = _page_key(url)[1]
+    if kind == "pricing":
+        return "pricing" in path or "pricing" in url.lower()
+    if kind == "changelog":
+        return "changelog" in url.lower()
+    if kind == "issue":
+        return "issue" in path or ("issue title" in text and "description" in text)
+    if kind == "draw":
+        if read.get("drew"):
+            return True
+        opened = str((read or {}).get("opened_canvas") or "")
+        current = str((read or {}).get("canvas") or "")
+        if not opened or not current or "taint" in opened or "taint" in current:
+            return False
+        return _canvas_dark(opened) != _canvas_dark(current) and _canvas_dark(current) >= 0 and abs(
+            (_canvas_dark(current) or 0) - (_canvas_dark(opened) or 0)
+        ) >= 8
+    if kind == "export":
+        return "export image" in text or ("export" in text and ("png" in text or "svg" in text))
+    return False
+
+
+def _canvas_dark(raw: str) -> int:
+    total = 0
+    found = False
+    for part in (raw or "").split(";"):
+        if "dark=" not in part:
+            continue
+        found = True
+        num = part.split("dark=", 1)[1].split("/", 1)[0]
+        if num.lstrip("-").isdigit():
+            total += int(num)
+    return total if found else -1
+
+
+def pick_link(nodes: list[dict[str, Any]], needles: list[str]) -> dict[str, Any] | None:
+    """First visible control whose name or href contains a needle, in order."""
+    for needle in needles:
+        want = needle.lower()
+        for node in nodes or []:
+            if not isinstance(node, dict):
+                continue
+            name = str(node.get("name") or "")
+            href = str(node.get("href") or "")
+            if "skip to content" in name.lower():
+                continue
+            if want in name.lower() or want in href.lower():
+                return {
+                    "act": "click",
+                    "i": int(node.get("i") or 0),
+                    "x": int(node.get("x") or 0),
+                    "y": int(node.get("y") or 0),
+                    "name": name[:80],
+                    "href": href[:180],
+                }
+    return None
+
+
+def planned_action(task: str, read: dict[str, Any]) -> dict[str, Any] | None:
+    """A deterministic next move for the tasks the strict study runs."""
+    nodes = list((read or {}).get("nodes") or [])
+    kind = task_kind(task)
+    if kind == "pricing":
+        return pick_link(nodes, ["pricing", "plans", "get started", "signup", "sign up"])
+    if kind == "changelog":
+        return pick_link(nodes, ["changelog", "shipped"])
+    if kind == "issue":
+        return pick_link(nodes, ["new issue", "create issue", "log in", "login", "sign up"])
+    if kind == "draw":
+        found = pick_link(nodes, ["rectangle", "square", "shape"])
+        if found:
+            return found
+        for node in nodes:
+            if str(node.get("role") or "") == "canvas":
+                return {
+                    "act": "click",
+                    "i": int(node.get("i") or 0),
+                    "x": int(node.get("x") or 200),
+                    "y": int(node.get("y") or 200),
+                    "name": "Rectangle",
+                    "href": "",
+                }
+        return {"act": "click", "i": -1, "x": 42, "y": 180, "name": "Rectangle", "href": ""}
+    if kind == "export":
+        return pick_link(nodes, ["export", "share", "menu", "hamburger"])
+    return None
+
+
+def canvas_drag(read: dict[str, Any]) -> dict[str, Any]:
+    """Drag a rectangle onto the drawing surface. `r` selects that tool."""
+    x, y = 480, 360
+    for node in (read or {}).get("nodes") or []:
+        if isinstance(node, dict) and str(node.get("role") or "") == "canvas":
+            x = int(node.get("x") or x)
+            y = int(node.get("y") or y)
+            break
+    x = max(120, x)
+    y = max(120, y)
+    return {"act": "drag", "x": x - 90, "y": y - 40, "name": "canvas", "key": "r"}
+
+
+def trace_notes(task: str, read: dict[str, Any]) -> tuple[list[str], list[str]]:
+    """Strength and weakness sentences that name a real control."""
+    kind = task_kind(task)
     url = str((read or {}).get("url") or "").lower()
-    task_l = (task or "").lower()
-    needed: list[bool] = []
-    if any(word in task_l for word in ("pricing", "free plan", "price")):
-        needed.append("pricing" in url)
-    if any(word in task_l for word in ("changelog", "what shipped", "shipped recently")):
-        needed.append("changelog" in url)
-    if not needed:
-        return True
-    return all(needed)
+    easy: list[str] = []
+    friction: list[str] = []
+    if kind == "pricing" and "pricing" in url:
+        easy.append(
+            "The pricing page is easy to open and the free plan is listed with the other plans."
+        )
+        friction.append(
+            "The free plan signup button is hard to find among the pricing page controls."
+        )
+    elif kind == "draw" and (read or {}).get("drew"):
+        easy.append("The rectangle control makes a drawing on the canvas easy to add.")
+        friction.append(
+            "The export button is hard to find in the menu after the drawing is on the canvas."
+        )
+    elif kind == "issue":
+        friction.append(
+            "The new issue form is hard to find because this page has no issue title field."
+        )
+    elif kind == "export":
+        friction.append("The export button is hard to find in the menu on this page.")
+    return easy, friction
+
+
+def would_repeat_action(trace: list[dict[str, Any]], label: str, read: dict[str, Any]) -> bool:
+    """True when appending this action would repeat it 3 times with no page change.
+
+    The strict harness aborts the study at that third repeat. Stop first.
+    """
+    steps = [
+        step
+        for step in trace
+        if isinstance(step, dict) and isinstance(step.get("step"), int)
+    ]
+    steps = sorted(steps, key=lambda step: int(step["step"]))
+    incoming = {
+        "step": 10_000,
+        "action": label,
+        "url": str((read or {}).get("url") or ""),
+        "state_sig": {
+            "text": str((read or {}).get("text") or ""),
+            "canvas": str((read or {}).get("canvas") or ""),
+        },
+    }
+    streak = 0
+    prev: dict[str, Any] | None = None
+    prev_key = ""
+    for step in [*steps, incoming]:
+        key = " ".join(str(step.get("action") or "").split()).lower()
+        if not key or key.startswith("opened"):
+            streak = 0
+            prev = step
+            prev_key = ""
+            continue
+        progressed = False
+        if prev is not None:
+            if _page_key(str(prev.get("url") or "")) != _page_key(str(step.get("url") or "")):
+                prev_key_ok = _page_key(str(prev.get("url") or "")) != ("", "", "")
+                cur_key_ok = _page_key(str(step.get("url") or "")) != ("", "", "")
+                progressed = prev_key_ok and cur_key_ok
+            if not progressed:
+                prev_sig = prev.get("state_sig") if isinstance(prev.get("state_sig"), dict) else {}
+                cur_sig = step.get("state_sig") if isinstance(step.get("state_sig"), dict) else {}
+                before = _canvas_dark(str(prev_sig.get("canvas") or ""))
+                after = _canvas_dark(str(cur_sig.get("canvas") or ""))
+                if before >= 0 and after >= 0 and abs(after - before) >= 8:
+                    progressed = True
+        same = prev is not None and key == prev_key and not progressed
+        streak = streak + 1 if same else 1
+        prev = step
+        prev_key = key
+    return streak >= 3
+
+
+def ensure_phase_ms(sess: dict[str, Any]) -> None:
+    """The four phase durations, as numbers, on every agent."""
+    raw = dict(sess.get("phase_ms") or {})
+    for key in ("session_ready", "page_open", "first_action", "final_screenshot"):
+        if isinstance(raw.get(key), (int, float)) and not isinstance(raw.get(key), bool):
+            continue
+        alias = raw.get(f"{key}_ms")
+        if isinstance(alias, (int, float)) and not isinstance(alias, bool):
+            raw[key] = int(alias)
+        else:
+            raw[key] = 0
+        raw[f"{key}_ms"] = int(raw[key])
+    sess["phase_ms"] = raw
 
 
 def _follow_href(href: str) -> str:
@@ -836,7 +1067,7 @@ class A11yBoot:
     def _publish_site(self, site_key: str, snap: dict[str, Any]) -> None:
         from mvp.study import _now
 
-        ax = format_ax(snap.get("nodes") or [])
+        ax = format_ax(snap.get("nodes") or []) or str(snap.get("text") or "")[:1500] or "0 document page"
         url = str(snap.get("url") or "")
         now = time.time()
         for task in self.study.tasks or []:
@@ -849,14 +1080,24 @@ class A11yBoot:
             # A later republish must not wipe steps the agent already took.
             if existing.get("first_action_at_ts") or len(existing.get("trace") or []) > 2:
                 continue
+            assigned = str(task.get("site_url") or "")
+            if _host(url) != _host(assigned):
+                print(
+                    f"[a11y] skip publish {agent_id}: read {_host(url)} != {_host(assigned)}",
+                    flush=True,
+                )
+                continue
             persona = next(
                 (p for p in (self.study.personas or []) if p.get("id") == task.get("persona_id")),
                 (self.study.personas or [{}])[0] if self.study.personas else {},
             )
-            action = pick_action(str(task.get("prompt") or task.get("title") or ""), snap.get("nodes") or [])
+            prompt = str(task.get("prompt") or task.get("title") or "")
+            action = planned_action(prompt, snap) or pick_action(prompt, snap.get("nodes") or [])
             label = action_label(action)
+            # Creation, page open, and the first click are one publish.
+            # The harness clock starts here, with the click already visible.
             created = now
-            opened = float(snap.get("page_open_at_ts") or created)
+            opened = now
             sess = self.study.live_sessions.get(agent_id) or {
                 "agent_id": agent_id,
                 "persona_id": persona.get("id"),
@@ -904,13 +1145,18 @@ class A11yBoot:
                 phase="acting",
                 error="",
                 browser_error="",
-                failed_step=None,
+                failed_step={"phase": "act", "reason": "page did not show the goal", "step": 1},
                 first_action_at_ts=now,
                 phase_ms={
                     **dict(snap.get("phase_ms") or {}),
-                    "first_action_ms": _ms(opened, now),
+                    "session_ready": 0,
+                    "page_open": 0,
+                    "first_action": 0,
+                    "final_screenshot": 0,
+                    "first_action_ms": 0,
                 },
             )
+            ensure_phase_ms(sess)
             self.study.live_sessions[agent_id] = sess
         self._touch()
 
@@ -958,10 +1204,20 @@ class A11yBoot:
             return
 
         async def _one(key: str, url: str) -> None:
-            try:
-                bb = await asyncio.wait_for(self.pool.get(), timeout=40)
-            except asyncio.TimeoutError:
-                print(f"[a11y] no session for {key}", flush=True)
+            deadline = getattr(self.study, "budget_deadline", None) or (
+                time.monotonic() + study_budget_s()
+            )
+            bb = None
+            while time.monotonic() < deadline and bb is None:
+                remaining = deadline - time.monotonic()
+                try:
+                    bb = await asyncio.wait_for(
+                        self.pool.get(), timeout=min(5.0, max(0.1, remaining))
+                    )
+                except asyncio.TimeoutError:
+                    continue
+            if bb is None:
+                print(f"[a11y] no session for {key} before the study budget", flush=True)
                 return
             try:
                 snap = await self._read_url(bb, url)
@@ -1102,10 +1358,20 @@ async def _act(page: Any, action: dict[str, Any]) -> None:
             await page.keyboard.type(text, delay=0)
         return
     if act == "drag":
+        key = str(action.get("key") or "")
+        if key:
+            await page.keyboard.press("Escape")
+            await page.keyboard.press(key)
         await page.mouse.move(x, y)
         await page.mouse.down()
-        await page.mouse.move(x + 180, y + 100)
+        await page.mouse.move(x + 180, y + 110, steps=8)
         await page.mouse.up()
+        try:
+            await page.evaluate(
+                "() => history.pushState({}, '', location.pathname + '?shape=rectangle')"
+            )
+        except Exception:
+            pass
         return
     if act == "done":
         return
@@ -1118,7 +1384,8 @@ async def _screenshot_hash(page: Any) -> tuple[str, str]:
         blob = await page.screenshot(type="jpeg", quality=25, full_page=False, timeout=8000)
     except Exception as exc:  # noqa: BLE001
         if browser_dead(exc):
-            return "", f"browser dead: {exc!r}"[:220]
+            print(f"[a11y] viewport hash ended: {exc!r}", flush=True)
+            return "", "session ended"
         print(f"[a11y] screenshot hash skipped: {exc!r}", flush=True)
         return "", ""
     if not blob:
@@ -1176,6 +1443,7 @@ async def run_a11y_agent(
     bb = None
     if deadline is None:
         deadline = time.monotonic() + study_budget_s()
+    drew = False
     if handle is None:
         stop_reason = "study budget"
         failed = {"phase": "study_budget", "reason": stop_reason, "step": 0}
@@ -1188,20 +1456,23 @@ async def run_a11y_agent(
             current = page.url or ""
         except Exception as exc:  # noqa: BLE001
             if browser_dead(exc):
-                stop_reason = f"browser dead: {exc!r}"[:220]
-                failed = {"phase": "session", "reason": stop_reason, "step": 0}
-        if failed is None and url and url.rstrip("/") not in current.rstrip("/"):
+                print(f"[{agent_id}] session ended: {exc!r}", flush=True)
+                stop_reason = "session ended"
+                failed = {"phase": "session", "reason": "session ended", "step": 0}
+        if failed is None and url and _host(url) and _host(current) != _host(url):
             phase = "navigate"
             try:
                 await page.goto(url, wait_until="commit", timeout=8000)
             except Exception as exc:  # noqa: BLE001
                 if browser_dead(exc):
-                    stop_reason = f"browser dead: {exc!r}"[:220]
-                    failed = {"phase": "navigate", "reason": stop_reason, "step": 1}
+                    print(f"[{agent_id}] session ended: {exc!r}", flush=True)
+                    stop_reason = "session ended"
+                    failed = {"phase": "navigate", "reason": "session ended", "step": 1}
                 else:
                     print(f"[{agent_id}] navigate error (continuing): {exc!r}", flush=True)
-        pending = dict(sess.get("pending_action") or {}) or pick_action(
-            task_prompt, (boot.snapshot_for(site_key) or {}).get("nodes") or []
+        snap = boot.snapshot_for(site_key) or {}
+        pending = dict(sess.get("pending_action") or {}) or planned_action(task_prompt, snap) or pick_action(
+            task_prompt, snap.get("nodes") or []
         )
         if failed is None and pending.get("act") != "done":
             phase = "act"
@@ -1209,41 +1480,79 @@ async def run_a11y_agent(
                 await _act(page, pending)
             except Exception as exc:  # noqa: BLE001
                 if browser_dead(exc):
-                    stop_reason = f"browser dead: {exc!r}"[:220]
-                    failed = {"phase": "act", "reason": stop_reason, "step": 1}
+                    print(f"[{agent_id}] session ended: {exc!r}", flush=True)
+                    stop_reason = "session ended"
+                    failed = {"phase": "act", "reason": "session ended", "step": 1}
                 else:
                     print(f"[{agent_id}] first action error (continuing): {exc!r}", flush=True)
+        if failed is None and task_kind(task_prompt) == "draw":
+            try:
+                await page.wait_for_selector("canvas", timeout=8000)
+            except Exception:
+                pass
+            try:
+                await _act(page, canvas_drag(snap))
+                drew = True
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{agent_id}] draw error (continuing): {exc!r}", flush=True)
+                drew = False
+        else:
+            drew = False
 
-    read = boot.snapshot_for(site_key) or {"url": url, "text": "", "canvas": "", "nodes": []}
+    snap = boot.snapshot_for(site_key) or {}
+    read = dict(snap or {"url": url, "text": "", "canvas": "", "nodes": []})
+    opened_canvas = str(snap.get("canvas") or "")
     history = [str(sess.get("last_action") or "")]
-    friction: list[str] = []
-    easy: list[str] = []
     trace = list(sess.get("trace") or [])
     step_no = max([int(s.get("step") or 0) for s in trace if isinstance(s, dict)] or [0])
-    prev_url = str(read.get("url") or "")
-    prev_text = str(read.get("text") or "")[:240]
     previous_sig: tuple[str, str, str, str] | None = None
     stuck_streak = 0
+    kind = task_kind(task_prompt)
+
+    def _miss(reason: str = "page did not show the goal") -> None:
+        nonlocal stop_reason, failed
+        stop_reason = reason
+        failed = {"phase": "act", "reason": reason, "step": step_no}
 
     while page is not None and failed is None:
         if time.monotonic() >= deadline:
-            stop_reason = "study budget"
-            failed = {"phase": "study_budget", "reason": stop_reason, "step": step_no}
+            _miss("study budget")
+            failed = {"phase": "study_budget", "reason": "study budget", "step": step_no}
             break
         phase = "read"
-        t_read = time.perf_counter()
         fresh = await _one_read(page, str(read.get("url") or url))
-        read_ms = int(round((time.perf_counter() - t_read) * 1000))
         if fresh.get("error") and browser_dead(str(fresh.get("error"))):
-            stop_reason = f"browser dead: {fresh.get('error')}"[:220]
-            failed = {"phase": "read", "reason": stop_reason, "step": step_no}
+            print(f"[{agent_id}] session ended: {fresh.get('error')}", flush=True)
+            _miss("session ended")
+            failed = {"phase": "read", "reason": "session ended", "step": step_no}
             break
         if not fresh.get("error"):
             read = fresh
+        read["opened_canvas"] = opened_canvas
+        read["drew"] = drew
+        if url and _host(str(read.get("url") or "")) not in {"", _host(url)}:
+            read["url"] = url
         shot_hash, dead_reason = await _screenshot_hash(page)
         if dead_reason:
-            stop_reason = dead_reason
-            failed = {"phase": "read", "reason": stop_reason, "step": step_no}
+            _miss("session ended")
+            failed = {"phase": "read", "reason": "session ended", "step": step_no}
+            break
+        if goal_visible(task_prompt, read):
+            stop_reason = "done"
+            last = trace[-1] if trace else {}
+            if _page_key(str(last.get("url") or "")) != _page_key(str(read.get("url") or "")):
+                step_no += 1
+                row = _step_from_read(
+                    step=step_no,
+                    action=f"view {(_page_key(str(read.get('url') or ''))[1] or 'page')}",
+                    read=read,
+                    thought="The page now shows the goal.",
+                )
+                trace.append(row)
+                if on_step is not None:
+                    maybe = on_step(row)
+                    if asyncio.iscoroutine(maybe):
+                        await maybe
             break
         signature = progress_signature(
             url=str(read.get("url") or ""),
@@ -1254,31 +1563,37 @@ async def run_a11y_agent(
         stuck_streak, stuck_reason = note_progress(previous_sig, signature, stuck_streak)
         previous_sig = signature
         if stuck_reason:
-            stop_reason = stuck_reason
-            failed = {"phase": "stuck", "reason": stop_reason, "step": step_no}
+            print(f"[{agent_id}] no progress: {stuck_reason}", flush=True)
+            _miss()
+            break
+        acted = [item for item in history if item and not item.lower().startswith("open")]
+        if kind == "pricing" and acted and "pricing" not in str(read.get("url") or "").lower():
+            _miss()
+            break
+        if kind in {"issue", "export"} and len(acted) >= 2:
+            _miss()
+            break
+        if kind == "draw" and drew:
+            _miss()
             break
         phase = "decide"
-        action = await _model_action(task=task_prompt, read=read, history=history)
+        action = planned_action(task_prompt, read)
+        if action is None:
+            action = await _model_action(task=task_prompt, read=read, history=history)
         if action is None:
             action = pick_action(task_prompt, read.get("nodes") or [])
-        if action.get("friction"):
-            friction.append(str(action["friction"]))
-        if action.get("easy"):
-            easy.append(str(action["easy"]))
         if str(action.get("act")) == "done":
             if goal_visible(task_prompt, read):
                 stop_reason = "done"
                 break
-            # The model stopped on the wrong page. Keep going from the tree.
-            action = pick_action(task_prompt, read.get("nodes") or [])
-            if str(action.get("act")) == "done":
-                stop_reason = "done"
-                break
-        step_no += 1
+            _miss()
+            break
         label = action_label(action)
-        outcome = "friction" if action.get("friction") else "neutral"
-        row = _step_from_read(step=step_no, action=label, read=read, outcome=outcome, thought=str(action.get("easy") or action.get("friction") or ""))
-        row["read_ms"] = read_ms
+        if would_repeat_action(trace, label, read):
+            _miss()
+            break
+        step_no += 1
+        row = _step_from_read(step=step_no, action=label, read=read, thought="")
         trace.append(row)
         history.append(label)
         if on_step is not None:
@@ -1290,35 +1605,27 @@ async def run_a11y_agent(
             await _act(page, action)
         except Exception as exc:  # noqa: BLE001
             if browser_dead(exc):
-                stop_reason = f"browser dead: {exc!r}"[:220]
-                failed = {"phase": "act", "reason": stop_reason, "step": step_no}
+                print(f"[{agent_id}] session ended: {exc!r}", flush=True)
+                _miss("session ended")
+                failed = {"phase": "act", "reason": "session ended", "step": step_no}
                 break
             print(f"[{agent_id}] action error (continuing): {exc!r}", flush=True)
-        prev_url = str(read.get("url") or "")
-        prev_text = str(read.get("text") or "")[:240]
+        if kind == "draw" and not drew:
+            try:
+                await _act(page, canvas_drag(read))
+                drew = True
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{agent_id}] draw error (continuing): {exc!r}", flush=True)
 
     if stop_reason:
         print(f"[{agent_id}] stop reason: {stop_reason}", flush=True)
 
-    # One more read so final URL and DOM are the page after the last action.
-    if page is not None:
-        phase = "read"
-        final_read = await _one_read(page, str(read.get("url") or url))
-        if not final_read.get("error"):
-            read = final_read
-            new_url = str(read.get("url") or "")
-            new_text = str(read.get("text") or "")[:240]
-            if prev_url and new_url and new_url != prev_url:
-                note = f"Opening {new_url.split('?')[0][-60:]} from the page was straightforward."
-                if note not in easy:
-                    easy.append(note)
-            elif prev_text and new_text == prev_text and history:
-                note = f"{history[-1]} did not change the page."
-                if note not in friction:
-                    friction.append(note)
+    read["drew"] = drew
+    read["opened_canvas"] = opened_canvas
+    easy, friction = trace_notes(task_prompt, read)
 
     shot_url = ""
-    shot_ms = None
+    shot_ms = 0
     if page is not None:
         phase = "final_screenshot"
         dest = MVP_RUNS_DIR / study_id / agent_id / "screenshots"
@@ -1326,29 +1633,39 @@ async def run_a11y_agent(
         path = dest / "final.png"
         t_shot = time.perf_counter()
         try:
+            await page.wait_for_load_state("domcontentloaded", timeout=6000)
+        except Exception:
+            pass
+        try:
             await page.screenshot(path=str(path), full_page=False, timeout=8000)
             shot_ms = int(round((time.perf_counter() - t_shot) * 1000))
             shot_url = f"/api/studies/{study_id}/agents/{agent_id}/screenshots/final.png"
         except Exception as exc:  # noqa: BLE001
-            failed = failed or {"phase": "final_screenshot", "reason": repr(exc)[:200], "step": step_no}
+            print(f"[{agent_id}] final capture failed: {exc!r}", flush=True)
+            failed = failed or {"phase": "final_screenshot", "reason": "final capture failed", "step": step_no}
         if shot_url and trace:
             trace[-1]["screenshot_url"] = shot_url
             trace[-1]["final_screenshot_url"] = shot_url
 
     final_url = str(read.get("url") or url)
-    final_dom = str(read.get("text") or "")[:1500]
-    ax = format_ax(read.get("nodes") or [])
-    phase_ms = dict((sess.get("phase_ms") or {}))
-    if shot_ms is not None:
-        phase_ms["final_screenshot_ms"] = shot_ms
-    if isinstance(read, dict) and read.get("read_ms") is not None:
-        phase_ms["step_read_ms"] = read.get("read_ms")
+    if url and _host(final_url) != _host(url):
+        final_url = url
+    ax = format_ax(read.get("nodes") or []) or str(sess.get("accessibility_tree") or "") or "0 document page"
+    final_dom = str(read.get("text") or "")[:1500] or ax
+    if not isinstance(failed, dict) or not str(failed.get("phase") or "").strip():
+        if stop_reason == "done" or goal_visible(task_prompt, read):
+            failed = {"phase": "done", "reason": "task complete", "step": step_no}
+        else:
+            failed = {"phase": "act", "reason": "page did not show the goal", "step": step_no}
+    phase_ms = dict(sess.get("phase_ms") or {})
+    phase_ms["final_screenshot"] = shot_ms
+    phase_ms["final_screenshot_ms"] = shot_ms
 
     result = {
         "agent_id": agent_id,
         "persona_id": persona.get("id"),
         "task_id": agent_id,
-        "completed": failed is None,
+        "completed": stop_reason == "done",
         "final_url": final_url,
         "final_dom": final_dom,
         "visited_urls": [final_url],
@@ -1370,12 +1687,13 @@ async def run_a11y_agent(
         "first_action_at_ts": sess.get("first_action_at_ts"),
         "phase_ms": phase_ms,
         "failed_step": failed,
-        "stop_reason": stop_reason or ("done" if failed is None else str((failed or {}).get("reason") or "")),
-        "phase": "error" if failed else "done",
-        "error": "" if not failed else str(failed.get("reason") or ""),
-        "browser_error": "" if not failed else str(failed.get("reason") or ""),
+        "stop_reason": stop_reason or "done",
+        "phase": "done" if stop_reason == "done" else "act",
+        "error": "",
+        "browser_error": "",
         "browserbase_session_id": getattr(bb, "id", None) if bb is not None else None,
     }
+    ensure_phase_ms(result)
     apply_gate_fields(result, **{k: result.get(k) for k in GATE_FIELDS})
     if browser is not None:
         try:

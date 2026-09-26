@@ -17,9 +17,11 @@ from mvp.a11y_agent import (
     keep_step_stamps,
     note_progress,
     pick_action,
+    planned_action,
     progress_signature,
     promote_live_session_fields,
     study_budget_s,
+    would_repeat_action,
 )
 
 
@@ -124,6 +126,16 @@ class A11yAgentTest(unittest.TestCase):
         self.assertTrue(goal_visible("Find pricing", {"url": "https://linear.app/pricing"}))
         self.assertFalse(goal_visible("Open the changelog", {"url": "https://linear.app/docs"}))
         self.assertTrue(goal_visible("Open the changelog", {"url": "https://linear.app/changelog"}))
+        self.assertFalse(goal_visible("Find how to create a new issue", {"url": "https://linear.app/"}))
+        self.assertFalse(
+            goal_visible("Draw a simple rectangle on the canvas", {"url": "https://excalidraw.com/", "canvas": "1x1:dark=0/1;"})
+        )
+        self.assertTrue(
+            goal_visible(
+                "Draw a simple rectangle on the canvas",
+                {"url": "https://excalidraw.com/?shape=rectangle", "drew": True},
+            )
+        )
 
     def test_gate_fields_are_present(self) -> None:
         sess: dict = {}
@@ -174,6 +186,22 @@ class A11yAgentTest(unittest.TestCase):
                 os.environ.pop("MVP_STUDY_BUDGET_S", None)
             else:
                 os.environ["MVP_STUDY_BUDGET_S"] = prev
+
+    def test_stops_before_a_third_identical_action(self) -> None:
+        read = {"url": "https://linear.app/", "text": "Issue tracking homepage", "canvas": ""}
+        trace = [
+            {"step": 0, "action": "Opened https://linear.app/", "url": "https://linear.app/", "state_sig": {"text": read["text"], "canvas": ""}},
+            {"step": 1, "action": "click New issue", "url": "https://linear.app/", "state_sig": {"text": read["text"], "canvas": ""}},
+            {"step": 2, "action": "click New issue", "url": "https://linear.app/", "state_sig": {"text": read["text"], "canvas": ""}},
+        ]
+        self.assertFalse(would_repeat_action(trace[:2], "click New issue", read))
+        self.assertTrue(would_repeat_action(trace, "click New issue", read))
+        nodes = [
+            {"i": 0, "role": "a", "name": "Get started", "href": "https://linear.app/signup", "x": 1, "y": 1},
+            {"i": 1, "role": "a", "name": "Pricing", "href": "https://linear.app/pricing", "x": 2, "y": 2},
+        ]
+        action = planned_action("Look for pricing or how to get started", {"nodes": nodes})
+        self.assertEqual(action["href"], "https://linear.app/pricing")
 
     def test_stuck_after_three_identical_signatures(self) -> None:
         sig = progress_signature(
