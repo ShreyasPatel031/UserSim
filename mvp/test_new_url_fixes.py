@@ -222,3 +222,15 @@ class BrowserOpenRetryTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 asyncio.run(a11y_agent._open_agent_session(None, "https://x.com/", time.monotonic() + 60))
         self.assertEqual(len(calls), 1)
+
+
+class PricingPageUnderAnotherNameTests(unittest.TestCase):
+    def test_premium_path_or_priced_plans_count_as_pricing(self):
+        task = "Look for pricing or how to get started (vs https://doodle.com/)"
+        self.assertTrue(goal_visible(task, {"url": "https://doodle.com/en/premium", "title": "Doodle Premium"}))
+        text = "Choose your plan Free $0 Pro $6.95 per user / month Team $8.95 per user / month"
+        self.assertTrue(goal_visible(task, {"url": "https://x.com/compare", "title": "Compare", "text": text}))
+
+    def test_one_price_on_a_home_page_is_not_the_pricing_page(self):
+        task = "Look for pricing or how to get started"
+        self.assertFalse(goal_visible(task, {"url": "https://x.com/", "title": "X", "text": "Start free, then $10/month"}))

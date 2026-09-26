@@ -472,7 +472,12 @@ def goal_visible(task: str, read: dict[str, Any]) -> bool:
     kind = task_kind(task)
     path = _page_key(url)[1].lower()
     if kind == "pricing":
-        return bool(re.search(r"pric|plans", path)) or "pricing" in title
+        if re.search(r"pric|plans|premium", path) or "pricing" in title or "plans" in title:
+            return True
+        # A plans page under another name: two or more prices with a billing period.
+        text = str(read.get("text") or "")
+        prices = re.findall(r"(?:[$€£]\s?\d[\d,]*(?:\.\d{1,2})?|\d[\d,]*(?:\.\d{1,2})?\s?(?:USD|EUR|GBP))", text)
+        return len(prices) >= 2 and bool(re.search(r"/\s?mo\b|/\s?month|per month|a month|/\s?yr|per year|/\s?year|per user|billed", text, re.I))
     if kind == "changelog":
         return "changelog" in path or "changelog" in title or "release notes" in title
     if kind == "draw":
