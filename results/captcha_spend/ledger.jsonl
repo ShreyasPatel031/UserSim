@@ -166,3 +166,12 @@
 {"attempt": 1, "event": "signup_start", "site": "hubspot.com", "ts": "2026-09-26T01:42:20.842290+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "hubspot.com", "ts": "2026-09-26T01:42:20.878858+00:00", "when": "before"}
 {"attempt": 1, "captcha_type": "recaptcha_v3_enterprise", "event": "skip", "reason": "host_not_paid", "site": "hubspot.com", "task_type": "ReCaptchaV3EnterpriseTaskProxyLess", "ts": "2026-09-26T01:46:04.421679+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "hubspot.com", "ts": "2026-09-26T01:47:20.981505+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "smartsheet.com", "ts": "2026-09-26T01:47:22.351943+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "smartsheet.com", "ts": "2026-09-26T01:47:22.389259+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "smartsheet.com", "ts": "2026-09-26T01:55:31.469420+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "zapier.com", "ts": "2026-09-26T01:55:32.801921+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "zapier.com", "ts": "2026-09-26T01:55:32.968937+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "zapier.com", "ts": "2026-09-26T01:58:31.453777+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "make.com", "ts": "2026-09-26T01:58:32.878187+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "make.com", "ts": "2026-09-26T01:58:33.014790+00:00", "when": "before"}

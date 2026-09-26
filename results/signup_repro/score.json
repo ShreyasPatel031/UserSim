@@ -183,7 +183,8 @@
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "zapier8d12445",
+      "last_alias_tag": "zapierfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "zapier.com",
@@ -199,9 +200,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/80cecfbc-382c-454f-b3e0-a3cdc07e1103",
           "at": "2026-09-25T10:56:24.939394+00:00"
+        },
+        {
+          "host": "zapier.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 178.4,
+          "alias_tag": "zapierfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/14376f64-8b0e-4fca-b588-eed2b9da68f5",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:58:31.702536+00:00"
         }
       ],
-      "updated_at": "2026-09-25T10:56:24.939394+00:00"
+      "updated_at": "2026-09-26T01:58:31.702536+00:00"
     },
     "make.com": {
       "reproducible": true,
@@ -1671,9 +1690,10 @@
     },
     "hubspot.com": {
       "reproducible": true,
-      "last_reason": "signed_up",
-      "last_detail": "",
-      "last_alias_tag": "hubspote731c9f",
+      "last_reason": "captcha_unsolved",
+      "last_detail": "The CAPTCHA is persistently blocking progress despite multiple attempts to solve it using the `solve_captcha()` tool and clicking the 'Verify' button. The 'Continue' button remains disabled.",
+      "last_alias_tag": "hubspotfullb10",
+      "last_ok": false,
       "attempts": [
         {
           "host": "hubspot.com",
@@ -1689,15 +1709,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/f56ec286-f3c8-40d0-8698-db915ab893ed",
           "at": "2026-09-25T14:09:10.251384+00:00"
+        },
+        {
+          "host": "hubspot.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "captcha_unsolved",
+          "detail": "The CAPTCHA is persistently blocking progress despite multiple attempts to solve it using the `solve_captcha()` tool and clicking the 'Verify' button. The 'Continue' button remains disabled.",
+          "elapsed_s": 300.1,
+          "alias_tag": "hubspotfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/78b6ef3d-9d5b-4a32-baad-79f4f37142a2",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:47:21.211611+00:00"
         }
       ],
-      "updated_at": "2026-09-25T14:09:10.251384+00:00"
+      "updated_at": "2026-09-26T01:47:21.211611+00:00"
     },
     "smartsheet.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "smartsheete731c910",
+      "last_alias_tag": "smartsheetfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "smartsheet.com",
@@ -1713,9 +1752,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/972e7f21-8958-4327-bcd5-4952adf1b163",
           "at": "2026-09-25T14:12:49.467930+00:00"
+        },
+        {
+          "host": "smartsheet.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 489.0,
+          "alias_tag": "smartsheetfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "unknown",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/8ebd5764-2813-44a7-972b-a16cee619883",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:55:31.725973+00:00"
         }
       ],
-      "updated_at": "2026-09-25T14:12:49.467930+00:00"
+      "updated_at": "2026-09-26T01:55:31.725973+00:00"
     },
     "whimsical.com": {
       "reproducible": false,
@@ -2125,7 +2182,7 @@
       "updated_at": "2026-09-25T23:53:01.580956+00:00"
     }
   },
-  "updated_at": "2026-09-26T01:42:20.098383+00:00",
+  "updated_at": "2026-09-26T01:58:31.703036+00:00",
   "reproducible": [
     "1password.com",
     "airtable.com",
