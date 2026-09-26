@@ -24,6 +24,8 @@ _TICKETS: collections.deque[str] = collections.deque()
 _ACTIVE: dict[str, float] = {}  # study id -> monotonic start
 _COUNT_CACHE: dict[str, Any] = {"at": 0.0, "value": None}
 _COUNT_TASK: asyncio.Task | None = None
+_OBJS: dict[str, Any] = {}  # study id -> study, for progress-based estimates
+_RECENT_S: collections.deque[float] = collections.deque(maxlen=5)  # recent study durations here
 
 
 def session_cap() -> int:
@@ -34,10 +36,28 @@ def session_cap() -> int:
 
 
 def typical_study_s() -> float:
+    """Median of the last few studies on this server, else MVP_TYPICAL_STUDY_S (180s)."""
+    if _RECENT_S:
+        ordered = sorted(_RECENT_S)
+        return ordered[len(ordered) // 2]
     try:
-        return float(os.environ.get("MVP_TYPICAL_STUDY_S") or "240")
+        return float(os.environ.get("MVP_TYPICAL_STUDY_S") or "180")
     except ValueError:
-        return 240.0
+        return 180.0
+
+
+def _progress_remaining_s(study: Any, elapsed: float) -> float | None:
+    """From the running study's own agents: elapsed x (left / done), once a fair share finished."""
+    live = getattr(study, "live_sessions", None) or {}
+    rows = [r for r in live.values() if isinstance(r, dict)] if isinstance(live, dict) else []
+    if len(rows) < 4:
+        return None
+    done = sum(1 for r in rows if str(r.get("status") or "") in {"complete", "done", "error", "killed", "failed"})
+    frac = done / len(rows)
+    if frac < 0.3:
+        return None
+    # The last agents (sign-ups, long paths) run longer than the median one.
+    return elapsed * (1 - frac) / frac * 1.5 + 10
 
 
 def max_wait_s() -> float:
@@ -132,8 +152,12 @@ def queue_eta_s(position: int, counted: dict[str, Any] | None) -> int:
     typical = typical_study_s()
     remaining = None
     if _ACTIVE:
-        elapsed = time.monotonic() - min(_ACTIVE.values())
+        sid, began = min(_ACTIVE.items(), key=lambda kv: kv[1])
+        elapsed = time.monotonic() - began
         remaining = typical - elapsed
+        by_progress = _progress_remaining_s(_OBJS.get(sid), elapsed) if sid in _OBJS else None
+        if by_progress is not None:
+            remaining = by_progress
     elif counted and counted.get("median_age_s") is not None:
         remaining = typical - float(counted["median_age_s"])
     if remaining is None:
@@ -196,6 +220,7 @@ async def acquire(study: Any, touch: Callable[..., None]) -> None:
     study.queue_position = None
     study.queued_s = round(time.monotonic() - started, 1) if shown else 0.0
     _ACTIVE[study.id] = time.monotonic()
+    _OBJS[study.id] = study
     # Sessions opened from here on count against the next caller's check.
     _COUNT_CACHE["at"] = 0.0
 
@@ -221,7 +246,10 @@ def release_study_sessions(study_id: str) -> int:
 
 def release(study: Any) -> None:
     """End of a study (finished, failed, or cancelled): free the turn and any leftover sessions."""
-    _ACTIVE.pop(study.id, None)
+    began = _ACTIVE.pop(study.id, None)
+    _OBJS.pop(study.id, None)
+    if began is not None and str(getattr(study, "status", "")) == "complete":
+        _RECENT_S.append(time.monotonic() - began)
     _COUNT_CACHE["at"] = 0.0
 
     async def _later() -> None:

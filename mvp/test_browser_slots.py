@@ -136,3 +136,24 @@ class RecoverTest(unittest.TestCase):
         self.assertEqual(fixed, ["old1"])
         self.assertEqual(written["old1"]["status"], "abandoned")
         self.assertTrue(written["old1"]["interrupted"])
+
+
+class EtaTest(unittest.TestCase):
+    def setUp(self):
+        bs._ACTIVE.clear()
+        bs._OBJS.clear()
+        bs._RECENT_S.clear()
+
+    def test_eta_follows_the_running_studys_progress(self):
+        import time as _t
+
+        live = {f"a{i}": {"status": "complete" if i < 12 else "running"} for i in range(24)}
+        bs._ACTIVE["x"] = _t.monotonic() - 40
+        bs._OBJS["x"] = types.SimpleNamespace(live_sessions=live)
+        eta = bs.queue_eta_s(0, None)
+        self.assertLess(eta, 120)
+        self.assertGreaterEqual(eta, 10)
+
+    def test_typical_follows_recent_studies(self):
+        bs._RECENT_S.extend([80.0, 90.0, 100.0])
+        self.assertEqual(bs.typical_study_s(), 90.0)
