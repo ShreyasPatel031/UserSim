@@ -526,17 +526,8 @@ Critical rules:
             next_n += 1
             if next_n > task_count + 3:
                 break
-    from mvp.a11y_agent import achievable_without_account
-
-    for task in tasks:
-        if not isinstance(task, dict):
-            continue
-        prompt = achievable_without_account(url, str(task.get("prompt") or ""))
-        task["prompt"] = prompt
-        title = str(task.get("title") or "")
-        rewritten = achievable_without_account(url, title)
-        if rewritten != title:
-            task["title"] = rewritten[:80]
+    # Account tasks stay as written. An agent that meets a login wall reports
+    # it; the task is not rewritten into a logged-out tour.
     return tasks
 
 
