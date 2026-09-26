@@ -161,3 +161,18 @@ class KillFilterTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DemoOwnerTests(unittest.TestCase):
+    def test_demo_owner_tag_is_kept_and_killable_by_its_own_server(self) -> None:
+        import os
+        from unittest.mock import patch
+
+        from capability.browserbase_client import study_session_owner
+        from mvp.kill_switch import _kill_browser_owners
+
+        with patch.dict(os.environ, {"MVP_BB_OWNER": "demo"}):
+            self.assertEqual(study_session_owner(), "demo")
+            self.assertIn("demo", _kill_browser_owners())
+        with patch.dict(os.environ, {"MVP_BB_OWNER": "integration"}):
+            self.assertNotIn("demo", _kill_browser_owners())

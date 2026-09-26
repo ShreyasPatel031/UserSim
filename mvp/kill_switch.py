@@ -373,7 +373,7 @@ def _kill_browser_owners() -> list[str]:
     """
     owners = ["e2e"]
     raw = (os.environ.get("MVP_BB_OWNER") or "").strip().lower()
-    if raw in {"testfix", "gates", "integration"} and raw not in owners:
+    if raw in {"testfix", "gates", "integration", "demo"} and raw not in owners:
         owners.append(raw)
     return owners
 

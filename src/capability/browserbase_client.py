@@ -134,6 +134,10 @@ BB_OWNER_TESTFIX = "testfix"
 BB_OWNER_GATES = "gates"
 # Task-completion harness. Release only these sessions.
 BB_OWNER_TASKFIX = "taskfix"
+# Public demo server (the sslip.io VM). No harness releases this tag, so a
+# harness on the same project that sweeps "integration"/"testfix" sessions
+# before its own run can no longer end the demo's live agents mid-signup.
+BB_OWNER_DEMO = "demo"
 
 
 def study_session_owner() -> str:
@@ -154,6 +158,7 @@ def study_session_owner() -> str:
         BB_OWNER_TESTFIX,
         BB_OWNER_GATES,
         BB_OWNER_TASKFIX,
+        BB_OWNER_DEMO,
         "integration",
     }:
         return raw
