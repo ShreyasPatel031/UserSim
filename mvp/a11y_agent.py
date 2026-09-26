@@ -1576,6 +1576,45 @@ def _typed_item_visible(typed: list[str], read: dict[str, Any]) -> bool:
     return False
 
 
+# Connect forms that need secrets only the real customer holds. A new trial
+# account cannot supply them, so reaching that form is as far as a user can go.
+_CREDENTIAL_RE = re.compile(
+    r"\b(service[- ]account(?: key| json| file)?|private key|api (?:key|token|secret)|secret key|client secret|"
+    r"access token|personal access token|webhook secret|connection string|database password|"
+    r"sign in with (?:google|github|microsoft) to (?:list|choose|select|pick|connect)[a-z ]{0,20})\b",
+    re.I,
+)
+_CONNECT_TASK_RE = re.compile(
+    r"\b(connect|integrat\w*|import|sync|link|hook up|set ?up (?:an? )?(?:data|integration|source)|data source|install)\b",
+    re.I,
+)
+
+
+def credential_wall(read: dict[str, Any]) -> str:
+    """What customer-owned secret the page asks for ('' when none).
+
+    Counts only when the page also has somewhere to put it (a text field,
+    upload or Connect button), so docs that merely mention an API key do not.
+    """
+    text = str((read or {}).get("text") or "")
+    hits = [m.group(1) for m in _CREDENTIAL_RE.finditer(text)]
+    if not hits:
+        return ""
+    # Name the secret itself (service account JSON) over the sign-in step.
+    hit = next((h for h in hits if not h.lower().startswith("sign in")), hits[0])
+    names = " ".join(
+        f"{n.get('role') or ''} {n.get('name') or ''}" for n in (read.get("nodes") or []) if isinstance(n, dict)
+    ).lower()
+    if not re.search(r"\b(textbox|textarea|input|upload|connect|combobox|select)\b", names):
+        return ""
+    return re.sub(r"\s+", " ", hit).strip().lower()
+
+
+def connect_task(task: str) -> bool:
+    """A task to connect, integrate, import or sync an outside data source."""
+    return bool(_CONNECT_TASK_RE.search(task or ""))
+
+
 def _nodes_for_model(
     nodes: list[dict[str, Any]],
     skip: set[str],
@@ -1649,6 +1688,13 @@ async def _model_action(
         if account_task
         else "This task can be done on the public site without an account. Do not log in or sign up.\n"
     )
+    wall = credential_wall(read) if read.get("signed_in") else ""
+    if wall:
+        access += (
+            f"This page asks for the customer's own credentials ({wall}), which you do not have. Never invent keys "
+            "or upload made-up files. If this form is how the task gets done, you have gone as far as a new user "
+            "can: answer done and name what it needs in friction.\n"
+        )
     canvas = "yes" if any(str(n.get("role") or "") == "canvas" for n in (read.get("nodes") or []) if isinstance(n, dict)) else "no"
     prompt = (
         "You are a real first-time user doing one task in a web browser. "
@@ -2432,16 +2478,16 @@ def looping(trace: list[dict[str, Any]], window: int = 8) -> bool:
     return len({(str(s.get("action") or ""), _page_key(str(s.get("url") or ""))) for s in longer}) <= 3
 
 
-def _goal_reached_heuristic(task: str, read: dict[str, Any]) -> bool | None:
+def _goal_reached_heuristic(task: str, read: dict[str, Any], *, signed_in: bool = False) -> bool | None:
     """Cheap, generic evidence. True/False when the page decides it; None when it cannot."""
     url = str((read or {}).get("url") or "")
-    if docs_page(url) or auth_page(read):
+    if docs_page(url) or auth_page(read, signed_in=signed_in):
         return False
     return goal_visible(task, read) or None
 
 
 async def _verify_done(
-    task: str, read: dict[str, Any], opened: dict[str, Any], page: Any = None
+    task: str, read: dict[str, Any], opened: dict[str, Any], page: Any = None, *, signed_in: bool = False
 ) -> bool:
     """Separate check, with a screenshot, when the model says done and the page cannot decide."""
     import base64
@@ -2449,8 +2495,9 @@ async def _verify_done(
     from capability.gemini_config import extract_json, gemini_chat
 
     url = str(read.get("url") or "")
-    if docs_page(url) or auth_page(read):
+    if docs_page(url) or auth_page(read, signed_in=signed_in):
         return False
+    wall = credential_wall(read) if signed_in and connect_task(task) else ""
     prompt = (
         "Decide if a browser task is finished, from the current page only. Reply JSON only.\n"
         f"Task: {task[:300]}\n"
@@ -2464,7 +2511,14 @@ async def _verify_done(
         "(the created item, the drawn shape, the requested page or dialog). "
         "A docs, help, blog or marketing page that explains how is not finished. "
         "An unchanged start page is not finished.\n"
-        'JSON: {"finished": true|false, "why": "short"}'
+        + (
+            f"This page is a connect form that needs the customer's own credentials ({wall}). A new trial "
+            "account cannot supply them, so if the task is to connect, integrate, import or sync this kind of "
+            "source, reaching this form inside the product is as far as a user can go and counts as finished.\n"
+            if wall
+            else ""
+        )
+        + 'JSON: {"finished": true|false, "why": "short"}'
     )
     message: dict[str, Any] = {"role": "user", "content": prompt}
     if page is not None:
@@ -2598,7 +2652,7 @@ async def complete_task_on_page(
         read["opened_shapes"] = opened.get("shapes")
         read["drew"] = drew
         read["ink_strokes"] = ink_strokes
-        if acted and _goal_reached_heuristic(task, read):
+        if acted and _goal_reached_heuristic(task, read, signed_in=signed_in):
             stop_reason = "done"
             drew = drew or task_kind(task) == "draw"
             break
@@ -2663,23 +2717,40 @@ async def complete_task_on_page(
                 _miss("kept choosing a control that does nothing")
                 break
             changed_nothing = True
-            history.append(
-                f"{action.get('name') or 'that control'} was already tried and changed nothing; it is not available now"
-            )
+            blocked_name = str(action.get("name") or "")
+            if signed_in and _OAUTH_RE.search(blocked_name):
+                history.append(
+                    f"{blocked_name} opens a sign-in to the customer's own outside account, which you cannot "
+                    "finish; it is not available"
+                )
+            else:
+                history.append(
+                    f"{blocked_name or 'that control'} was already tried and changed nothing; it is not available now"
+                )
             continue
         model_misses = 0
         if act == "done":
             if not acted:
                 verdict = False
             else:
-                heuristic = _goal_reached_heuristic(task, read)
-                verdict = bool(heuristic) if heuristic is not None else await _verify_done(task, read, opened, page)
+                heuristic = _goal_reached_heuristic(task, read, signed_in=signed_in)
+                verdict = bool(heuristic) if heuristic is not None else await _verify_done(
+                    task, read, opened, page, signed_in=signed_in
+                )
                 if heuristic is None and verdict and _page_key(str(read.get("url") or "")) == _page_key(str(opened.get("url") or "")) and not _observation_changed(opened, read, task=task) and task_kind(task) != "draw":
                     verdict = False
                 if not verdict and signed_in and _typed_item_visible(typed, read):
                     # The title the agent typed now shows on the page outside any field.
                     verdict = True
             if verdict:
+                wall = credential_wall(read) if signed_in and connect_task(task) else ""
+                if wall:
+                    # Done at the connect form: say what the real customer must bring.
+                    note = f"Connecting needs the customer's own {wall}; a new account can only reach the form"
+                    history.append(f"reached the connect form; it needs the customer's own {wall}")
+                    if trace and isinstance(trace[-1].get("decision"), dict):
+                        dec = trace[-1]["decision"]
+                        dec["friction"] = str(action.get("friction") or "").strip() or note
                 stop_reason = "done"
                 break
             done_rejects += 1
@@ -2883,11 +2954,11 @@ async def complete_task_on_page(
             and account_task
             and _SUBMIT_RE.search(chosen or "")
             and not docs_page(str(read.get("url") or ""))
-            and not auth_page(read)
+            and not auth_page(read, signed_in=signed_in)
         ):
             # The agent just submitted something. Check the outcome now rather
             # than letting it redo the task.
-            if await _verify_done(task, read, opened, page):
+            if await _verify_done(task, read, opened, page, signed_in=signed_in):
                 stop_reason = "done"
         logs.append(
             {

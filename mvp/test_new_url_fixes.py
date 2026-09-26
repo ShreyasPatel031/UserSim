@@ -336,3 +336,51 @@ def test_signed_in_settings_auth_path_is_not_a_login_wall():
     assert auth_page({"url": "https://app.x.com/login"}, signed_in=True) is True
     assert auth_page({"url": "https://app.x.com/dashboard", "password": True}, signed_in=True) is True
     assert auth_page({"url": "https://accounts.x.com/"}, signed_in=True) is True
+
+
+# --- connect forms that need the customer's own credentials (kolanut Firebase Auth) ---
+
+_FIREBASE_READ = {
+    "url": "https://engagement.kolanut.ai/dashboard/settings/integrations/auth/firebase-auth",
+    "text": (
+        "Integrations Firebase Auth 1. Sign in with Google to list projects 2. Firebase project Select a project "
+        "3. Service account JSON Upload JSON file Project ID Connect Firebase Auth"
+    ),
+    "nodes": [
+        {"i": 1, "role": "button", "name": "1. Sign in with Google to list projects"},
+        {"i": 2, "role": "combobox", "name": "Select a project"},
+        {"i": 3, "role": "textbox", "name": "Service account JSON"},
+        {"i": 4, "role": "button", "name": "Connect Firebase Auth"},
+    ],
+}
+
+
+def test_credential_wall_on_firebase_connect_form():
+    from mvp.a11y_agent import credential_wall
+
+    wall = credential_wall(_FIREBASE_READ)
+    assert wall and ("service account" in wall or "sign in with google" in wall)
+
+
+def test_credential_wall_ignores_docs_mention_without_form():
+    from mvp.a11y_agent import credential_wall
+
+    read = {"url": "https://x.com/blog", "text": "Create an API key in settings.", "nodes": [{"role": "a", "name": "Home"}]}
+    assert credential_wall(read) == ""
+    assert credential_wall({"text": "Create a project", "nodes": [{"role": "textbox", "name": "Name"}]}) == ""
+
+
+def test_connect_task_detection():
+    from mvp.a11y_agent import connect_task
+
+    assert connect_task("Connect a product data source")
+    assert connect_task("Integrate Slack")
+    assert not connect_task("Identify at-risk customer accounts")
+
+
+def test_goal_heuristic_does_not_veto_signed_in_integration_auth_url():
+    from mvp.a11y_agent import _goal_reached_heuristic
+
+    # Signed out, a /auth/ path looks like a login wall; signed in it is an in-app settings page.
+    assert _goal_reached_heuristic("Connect a product data source", _FIREBASE_READ) is False
+    assert _goal_reached_heuristic("Connect a product data source", _FIREBASE_READ, signed_in=True) is not False
