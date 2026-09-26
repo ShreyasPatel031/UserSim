@@ -1,9 +1,9 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T08:10:00Z",
+  "graded_at": "2026-09-26T08:20:00Z",
   "live_launches": "stopped",
-  "note": "Grade-only. owner=gates running 0. Integration tip 7bfc147 is past 872438f. Task-completion tip a62ce07 is past 03c543b. #47 tip ea561a2. No study has passed. Floor remains Linear 68af612b product 4/8 pricing only.",
+  "note": "Grade-only. Released 8 owner=gates sessions. owner=integration was not released. Integration tip is 7bfc147, which already contains b5b8e71. Task-completion tip is 4ff5738. #47 tip is c553e86. No head cleared every gate on both Linear and Excalidraw. Floor remains Linear 68af612b product 4/8 pricing only, new-issue 0/4.",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "9470be5",
@@ -122,7 +122,7 @@
           "first_screen_not_excluded": "PASS opening_or_first_screen=8 product_n=8"
         }
       },
-      "tip_note": "7bfc147 records the Excalidraw run with 24/24 page opens. That study is 748a1b0a, already graded, pass false. Not live-launched."
+      "tip_note": "b5b8e71 is an ancestor of 7bfc147. Not live-launched."
     }
   },
   "bugs": [
@@ -201,6 +201,10 @@
     {
       "id": 18,
       "fact": "Hard fails still in force. final_screenshot_url without PNG bytes is product 0/8 (no downloadable PNG): Excalidraw 4981bad8 and Linear eb2c36a0 have no screenshots/<agent>/final.png. page_open_at_ts equal to first_action_at_ts is not 0.0s: those two clock from browser_ready at median 42.071s/45.017s and max 67.934s/72.551s. agent_count must be 24 and page_opened 24/24 within 5s: c1832e16 is 20 agents, opened 7/20, missing page_open_at_ts, product 0/7, wall 13.807s, abandoned. b7fea33b is 15 agents. df51233e is 1 agent. product under 4/8 Gemini YES on a real final PNG fails: b7fea33b is 0/5. Dashboard, no issue created. t1__p5 is still the opening screen. df51233e Gemini says the New issue form is open and ready. One agent is not the matrix, and a form is not an issue that exists. Self-grades stay rejected. Floor remains Linear 68af612b product 4/8 pricing only, new-issue 0/4."
+    },
+    {
+      "id": 19,
+      "fact": "Linear bdc1f5da is product 2/8. The two YES are pricing pages. New-issue NO: t1__p1 is the login screen; t1__p2 and t1__p3 are workspace creation; t1__p4 is signup/workspace creation. TTFA median 34.687s max 51.193s. TTFV not recorded. total_time not ready. Linear 49b52ebe is one task (Create an issue), TTFA median 0.423s max 2.333s PASS, product 0/8. Dashboard runs did not create an issue. t1__p3 is viewing an existing issue. t1__p4 and t1__p7 Gemini text also describes an existing issue, and a model timeout overrides that YES. t1__p5 is missing final_screenshot_url. Top weakness on bdc1f5da is click Log in changed nothing. On 49b52ebe it is click Create workspace changed nothing."
     }
   ],
   "graded_from_gcs": {
@@ -737,11 +741,11 @@
       "wall_s": 94.072
     }
   },
-  "session_count_freed": 0,
+  "session_count_freed": 8,
   "best_floor": {
     "study_id": "68af612b-e3ae-433a-9b5d-6022d604406d",
     "product": "4/8 pricing only; new-issue 0/4",
-    "note": "Nothing in this batch beats that floor. 70557bae and 26e83a58 Gemini 8/8 are the docs page and the studies still fail. b7fea33b new-issue is 0/5 on the dashboard."
+    "note": "bdc1f5da is 2/8 and does not beat 68af612b 4/8. 49b52ebe is 0/8. New-issue is still login, workspace setup, or the dashboard."
   },
   "linear_c1832e16": {
     "study_id": "c1832e16-3271-4a4b-b3e9-b6661a54b1e4",
@@ -816,5 +820,60 @@
       "time_to_first_value": "not recorded FAIL",
       "total_time": "not ready FAIL"
     }
+  },
+  "all_pass": false,
+  "linear_bdc1f5da": {
+    "study_id": "bdc1f5da-5815-4002-9dcf-32ada5300190",
+    "pass": false,
+    "wall_s": 170.789,
+    "agents": 24,
+    "page_opened": "24/24 PASS",
+    "time_to_first_action": "median=34.687s max=51.193s n=24/24 FAIL",
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "report_ready": true,
+    "report_page": "not fetched, gates app stopped",
+    "product_task_completion": "2/8 FAIL",
+    "png": "24 final.png objects. Gemini ran.",
+    "yes": [
+      "t2__p1__product pricing tiers",
+      "t2__p4__product pricing page"
+    ],
+    "judge_reasons_no": [
+      "t1__p1: still on the login screen. No new issue.",
+      "t1__p2 and t1__p3: still on the workspace creation screen. No new issue.",
+      "t1__p4: still on the signup/workspace creation screen. No new issue.",
+      "t2__p2: contact-sales page, no pricing and no get-started path.",
+      "t2__p3: customer stories, no pricing."
+    ],
+    "top_weakness": "FAIL. click Log in was unclear and changed nothing on https://linear.app/",
+    "strength": "0/3 FAIL",
+    "weakness": "0/3 FAIL"
+  },
+  "linear_49b52ebe": {
+    "study_id": "49b52ebe-161e-49c6-9fa8-1c61dd71005b",
+    "pass": false,
+    "wall_s": 448.284,
+    "agents": 24,
+    "task_count": "1 FAIL. Only Create an issue. Not the 2-task matrix.",
+    "page_opened": "24/24 PASS",
+    "time_to_first_action": "median=0.423s max=2.333s n=24/24 PASS",
+    "ttfa_note": "Not 0.0s. A TTFA pass is not a study pass.",
+    "time_to_first_value": "not recorded FAIL",
+    "total_time": "not ready FAIL",
+    "report_ready": true,
+    "product_task_completion": "0/8 FAIL",
+    "png": "19 final.png objects. t1__p5 missing final_screenshot_url.",
+    "model_timeout_overrides_yes": [
+      "t1__p4 and t1__p7 Gemini text says an existing issue was opened. product_run_succeeded is false because the run is a model timeout."
+    ],
+    "judge_reasons_no": [
+      "t1__p1 and t1__p6 and t1__p8: Linear dashboard, no issue created.",
+      "t1__p2: Create a workspace page, workspace not created.",
+      "t1__p3: viewing an existing issue, not a created issue.",
+      "t1__p5: missing field final_screenshot_url."
+    ],
+    "top_weakness": "FAIL. click Create workspace changed nothing on https://linear.app/",
+    "run_issue_rate": "12/24 (50%) FAIL"
   }
 }
