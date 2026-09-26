@@ -1,67 +1,64 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T05:05:00Z",
+  "graded_at": "2026-09-26T05:11:00Z",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
-      "sha": "dd8cbe9",
-      "note": "One agent at a time on each site's shared page, plus the shared-read ready signal. Newer head dcef40e is not graded yet.",
+      "sha": "6b456af",
       "linear": {
-        "study_id": "d6b6da3e-01e9-489d-a708-5b4fdf6dfc74",
+        "study_id": "6c020271-bb02-4d56-b7b1-80d65bb69676",
         "pass": false,
-        "elapsed_s": 31.0,
-        "time_to_first_value": "4.122s PASS",
+        "elapsed_s": 35.6,
+        "time_to_first_value": "4.112s PASS",
         "total_time": "not ready FAIL",
-        "time_to_first_action": "median=2.222s max=20.418s n=24/24 FAIL",
-        "ttfa_max_who": "Asana competitor_1, start=browser_ready_at_ts",
+        "time_to_first_action": "median=2.339s max=19.986s n=24/24 FAIL",
+        "ttfa_max_who": "all 8 Asana competitor_1 from browser_ready_at_ts",
         "page_opened": "23/24 FAIL slow=t1__p1__product",
-        "abort": "FAIL page_opened: 23/24 opened within 5s (1 after 5s)",
-        "final_screenshot": "missing field final_screenshot_url",
         "product_task_completion": "0/8",
-        "product_note": "2 structural past first screen, 6 first screen. Aborted before Gemini.",
-        "phase_counts": [{"phase": "done", "n": 1}]
+        "final_screenshot": "missing field final_screenshot_url"
       },
       "excalidraw": {
-        "study_id": "b48ea98f-eb4b-48e9-81b0-8300ae225c3e",
+        "study_id": "976ff37c-561e-4a54-9884-b34f048995fb",
         "pass": false,
-        "elapsed_s": 33.3,
-        "time_to_first_value": "3.314s PASS",
+        "elapsed_s": 29.0,
+        "time_to_first_value": "2.89s PASS",
         "total_time": "not ready FAIL",
-        "time_to_first_action": "median=21.407s max=21.407s n=24/24 FAIL",
-        "ttfa_note": "Every agent, including product, is 21.407s from browser_ready_at_ts. One shared page serializes the first click.",
-        "page_opened": "23/24 FAIL slow=t1__p1__competitor_1",
-        "abort": "FAIL page_opened: 23/24 opened within 5s (1 after 5s)",
-        "final_screenshot": "missing field final_screenshot_url",
+        "time_to_first_action": "median=1.226s max=17.496s n=24/24 FAIL",
+        "ttfa_max_who": "all 8 Miro competitor_2 from browser_ready_at_ts",
+        "page_opened": "22/24 FAIL slow=t1__p1__product and t1__p1__competitor_1",
         "product_task_completion": "0/8",
-        "product_note": "1 structural past first screen, 7 first screen. Aborted before Gemini.",
-        "phase_counts": [{"phase": "done", "n": 1}]
+        "final_screenshot": "missing field final_screenshot_url"
       }
+    },
+    "cursor/tonight-integration": {
+      "sha": "fc0e689",
+      "note": "contains 6b456af plus a different a11y_agent.py and study.py. Live grade not started yet."
     }
   },
   "bugs": [
     {
       "id": 1,
-      "fact": "Running one agent at a time on a shared page misses the 10s first-action max. Excalidraw b48ea98f: all 24 agents are 21.407s from browser_ready_at_ts. Linear d6b6da3e: Asana competitor_1 is 20.418s from browser_ready_at_ts."
+      "fact": "Retrying a closed primed browser did not bring the first click under 10s. Linear 6c020271 Asana competitor_1 max 19.986s from browser_ready_at_ts. Excalidraw 976ff37c Miro competitor_2 max 17.496s from browser_ready_at_ts."
     },
     {
       "id": 2,
-      "fact": "Page open within 5s is still 23/24. Linear slow agent t1__p1__product. Excalidraw slow agent t1__p1__competitor_1. The abort leaves total_time not ready and final_screenshot_url missing."
+      "fact": "Page open within 5s failed. Linear 23/24 slow t1__p1__product. Excalidraw 22/24 slow t1__p1__product and t1__p1__competitor_1. Abort means total_time is not ready and final_screenshot_url is missing."
     },
     {
       "id": 3,
-      "fact": "Product is 0/8 because the run aborts before a final screenshot and before Gemini. Excalidraw had 1 structural run past the first screen. Linear had 2. Neither produced a report."
+      "fact": "Product is 0/8. No final PNG, so no Gemini YES. Linear had 2 structural runs past the first screen. Excalidraw had 1."
     },
     {
       "id": 4,
-      "fact": "Strength and weakness are empty on an aborted study. The last finished report weakness still does not qualify: 'The new issue form is hard to find because this page has no issue title field.'"
+      "fact": "Strength and weakness are empty on the aborted report. A pass needs one of each from a run past the first screen with agent, step, AX or URL, and the final screenshot."
     },
     {
       "id": 5,
-      "fact": "Do not rewrite created_at_ts, page_open_at_ts, and first_action_at_ts to one poll instant. The clock is browser_ready_at_ts when those three match. phase_ms.page_open and phase_ms.first_action must be the real durations, not 0."
+      "fact": "When created_at_ts, page_open_at_ts, and first_action_at_ts are the same instant, the harness clocks from browser_ready_at_ts. Do not rewrite those three to the poll."
     },
     {
       "id": 6,
-      "fact": "The New-issue stuck loop from study 6e2acd43 stays open until product is >=4/8 Gemini YES on a finished report."
+      "fact": "New-issue stuck loop from study 6e2acd43 stays open until product is >=4/8 Gemini YES on a finished report."
     }
   ]
 }
