@@ -2550,6 +2550,11 @@ def _visited(trace: list[dict[str, Any]], start: str, final: str) -> list[str]:
     return seen[:40]
 
 
+def insession_signup_enabled() -> bool:
+    """Study agents call signup_in_session on the same page when an account wall appears."""
+    return os.environ.get("MVP_INSESSION_SIGNUP", "1").strip().lower() not in {"0", "false", "no", "off"}
+
+
 def signup_block_label(reason: str) -> str:
     """Plain words for a live signup that did not finish."""
     low = (reason or "").lower()
@@ -2707,16 +2712,29 @@ async def signup_and_resume(
     on_step: Any | None = None,
     deadline: float | None = None,
     agent_id: str = "agent",
+    sess: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Compatibility for the signup branch's local harness: (signup_result, loop_outcome)."""
-    sess: dict[str, Any] = {}
+    """needs_account -> signup_in_session on this page -> resume signed_in=True.
+
+    Same contract as the signup-branch hook. Uses the richer study-path
+    ``_signup_then_resume`` (live progress, stagger, block labels).
+    """
+    row = sess if isinstance(sess, dict) else {}
     resumed = await _signup_then_resume(
-        page, outcome=outcome, url=url, task=task, persona=persona or {},
-        agent_id=agent_id, on_step=on_step, deadline=deadline, sess=sess,
+        page,
+        outcome=outcome,
+        url=url,
+        task=task,
+        persona=persona or {},
+        agent_id=agent_id,
+        on_step=on_step,
+        deadline=deadline,
+        sess=row,
     )
     if resumed is None:
-        return {"ok": False, "reason": "signup unavailable"}, outcome
-    return dict(sess.get("signup") or resumed.get("signup") or {}), resumed
+        return {"ok": False, "reason": "signup unavailable or study budget too short"}, outcome
+    su = resumed.get("signup") if isinstance(resumed.get("signup"), dict) else dict(row.get("signup") or {})
+    return su, resumed
 
 
 async def run_a11y_agent(
@@ -2859,20 +2877,22 @@ async def _run_a11y_agent_unlocked(
                 opening_nodes=opening_nodes,
                 initial_read=initial_read,
             )
-            if outcome.get("needs_account"):
-                signup = await _signup_then_resume(
+            if outcome.get("needs_account") and insession_signup_enabled():
+                sess["phase"] = "signing_up"
+                boot.study.live_sessions[agent_id] = sess
+                _su, outcome = await signup_and_resume(
                     page,
-                    outcome=outcome,
-                    url=url,
                     task=task_prompt,
+                    url=url,
                     persona=persona,
-                    agent_id=agent_id,
+                    outcome=outcome,
                     on_step=on_step,
                     deadline=deadline,
+                    agent_id=agent_id,
                     sess=sess,
                 )
-                if signup is not None:
-                    outcome = signup
+                sess["signup"] = outcome.get("signup") or {"ok": False, "reason": _su.get("reason")}
+                sess["phase"] = "acting"
             stop_reason = str(outcome.get("stop_reason") or "")
             outcome_flags = {"needs_account": outcome.get("needs_account"), "signup": outcome.get("signup")}
             failed = outcome.get("failed") if isinstance(outcome.get("failed"), dict) else failed
