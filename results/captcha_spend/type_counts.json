@@ -1,0 +1,31 @@
+{
+  "updated_at": "2026-09-26T06:14:30.167710+00:00",
+  "sites": 226,
+  "new_sites": 216,
+  "counts": {
+    "none": 119,
+    "recaptcha_v2": 26,
+    "turnstile": 25,
+    "recaptcha_v3_enterprise": 21,
+    "hcaptcha": 14,
+    "geetest": 5,
+    "datadome": 4,
+    "recaptcha": 4,
+    "image_text": 3,
+    "recaptcha_enterprise": 3,
+    "aws_waf": 2
+  },
+  "new_counts": {
+    "none": 117,
+    "recaptcha_v2": 25,
+    "turnstile": 23,
+    "recaptcha_v3_enterprise": 18,
+    "hcaptcha": 13,
+    "geetest": 5,
+    "recaptcha": 4,
+    "datadome": 3,
+    "image_text": 3,
+    "recaptcha_enterprise": 3,
+    "aws_waf": 2
+  }
+}

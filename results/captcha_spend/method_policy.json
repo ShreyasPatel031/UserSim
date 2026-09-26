@@ -1,0 +1,15 @@
+{
+  "apply_to_signup": true,
+  "updated_at": "2026-09-26T07:25:37.680991+00:00",
+  "types": {
+    "turnstile": {
+      "method": "capsolver",
+      "task": "AntiTurnstileTaskProxyLess",
+      "captcha_type": "turnstile",
+      "cleared": 1,
+      "n": 1,
+      "signup_ok": 0
+    }
+  },
+  "note": "Signup pays only for captcha types that cleared in a browser trial."
+}

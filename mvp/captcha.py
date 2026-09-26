@@ -122,6 +122,11 @@ _CAPSOLVER_TYPES = {
     "recaptcha_v3_enterprise": "ReCaptchaV3EnterpriseTaskProxyLess",
     "hcaptcha": "HCaptchaTaskProxyLess",
     "turnstile": "AntiTurnstileTaskProxyLess",
+    "cloudflare_challenge": "AntiCloudflareTask",
+    "geetest": "GeeTestTaskProxyLess",
+    "geetest_v4": "GeeTestTaskProxyLess",
+    "image_text": "ImageToTextTask",
+    "recaptcha_classification": "ReCaptchaV2Classification",
     "arkose": "FunCaptchaTaskProxyLess",
     "funcaptcha": "FunCaptchaTaskProxyLess",
     "arkoselabs": "FunCaptchaTaskProxyLess",
@@ -192,15 +197,33 @@ def _solver_task(
     sitekey: str,
     page_url: str,
     action: str | None,
+    extra: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     task: dict[str, Any] = {"type": task_type, "websiteURL": page_url}
+    fields = extra or {}
     if "FunCaptcha" in task_type:
         # CapSolver and Anti-Captcha both want the Arkose public key here.
-        task["websitePublicKey"] = sitekey
-    else:
+        if sitekey:
+            task["websitePublicKey"] = sitekey
+    elif "GeeTest" in task_type:
+        if fields.get("gt"):
+            task["gt"] = fields["gt"]
+        if fields.get("challenge"):
+            task["challenge"] = fields["challenge"]
+        captcha_id = fields.get("captchaId") or fields.get("captcha_id") or ""
+        if captcha_id:
+            task["captchaId"] = captcha_id
+        elif sitekey and not fields.get("gt"):
+            task["captchaId"] = sitekey
+    elif sitekey and "Image" not in task_type and "Classification" not in task_type:
         task["websiteKey"] = sitekey
     if action and "V3" in task_type:
         task["pageAction"] = action
+    for key, value in fields.items():
+        if value is None or key in {"type", "clientKey", "captcha_id"}:
+            continue
+        if key not in task:
+            task[key] = value
     return task
 
 
@@ -506,21 +529,32 @@ def solve_sitekey(
     captcha_type: str = "recaptcha",
     action: str | None = None,
     timeout_s: float = 180.0,
+    blocking: bool = False,
+    extra: dict[str, Any] | None = None,
+    task_type_override: str | None = None,
 ) -> str | None:
-    """Return a solver token for the given sitekey, or None on failure."""
-    key = _api_key()
-    if not key:
-        return None
+    """Return a solver token for the given sitekey, or None on failure.
+
+    CapSolver is research-only: ``blocking`` must be true (the page detector
+    already confirmed a captcha is in the way) and the spend gate must allow
+    the host. Other providers still require ``MVP_CAPTCHA_API_KEY``.
+    """
     api = _api_name()
     if api in {"capsolver", "cap-solver"}:
         return _capsolver_solve(
-            key,
+            "",
             sitekey=sitekey,
             page_url=page_url,
             captcha_type=captcha_type,
             action=action,
             timeout_s=timeout_s,
+            blocking=blocking,
+            extra=extra,
+            task_type_override=task_type_override,
         )
+    key = _api_key()
+    if not key:
+        return None
     if api in {"2captcha", "twocaptcha", "2-captcha"}:
         return _twocaptcha_solve(
             key,
@@ -542,6 +576,29 @@ def solve_sitekey(
     return None
 
 
+def _solution_value(sol: Any) -> str | None:
+    """Pull a token or recognition result out of a CapSolver solution object."""
+    if not isinstance(sol, dict):
+        return None
+    gee_keys = ("lot_number", "pass_token", "gen_time", "captcha_output", "captcha_id")
+    if any(sol.get(key) for key in gee_keys):
+        import json as _json
+
+        payload = {key: sol.get(key) for key in gee_keys if sol.get(key)}
+        if sol.get("token"):
+            payload["token"] = sol.get("token")
+        return _json.dumps(payload)
+    for key in ("gRecaptchaResponse", "token", "response", "text", "captcha_voucher"):
+        value = sol.get(key)
+        if value:
+            return str(value)
+    if any(sol.get(key) not in (None, "", [], {}) for key in ("objects", "answers", "type", "box")):
+        import json as _json
+
+        return _json.dumps({k: sol.get(k) for k in ("objects", "answers", "type", "box", "text") if k in sol})
+    return None
+
+
 def _capsolver_solve(
     key: str,
     *,
@@ -550,39 +607,184 @@ def _capsolver_solve(
     captcha_type: str,
     action: str | None,
     timeout_s: float,
+    blocking: bool = False,
+    extra: dict[str, Any] | None = None,
+    task_type_override: str | None = None,
 ) -> str | None:
-    task_type = capsolver_task_type(captcha_type)
-    if not task_type:
+    """One createTask, then poll that task. No retry loop.
+
+    ``key`` is ignored. The research token is read from ``CAPSOLVER_API_KEY``
+    inside the spend gate, and only after a blocking captcha and a priced task
+    type have both been confirmed. Image recognition tasks often return
+    ``status=ready`` on the create response and are not polled.
+    """
+    del key  # vault / caller keys must not reach CapSolver
+    from mvp import captcha_spend as spend
+
+    task_type = task_type_override or capsolver_task_type(captcha_type) or ""
+    site = spend.current_site() or ""
+    if not blocking:
+        spend.record_skip(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            reason="not_blocking",
+        )
         return None
-    task = _solver_task(task_type, sitekey=sitekey, page_url=page_url, action=action)
+    reason = spend.refusal_reason(task_type, site=site or None)
+    if reason:
+        spend.record_skip(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            reason=reason,
+        )
+        return None
+    token = spend.capsolver_key()
+    if not token:
+        spend.record_skip(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            reason="no_key",
+        )
+        return None
+
+    balance_before = spend.get_balance(token)
+    floor = spend.claim_spend(task_type, balance_before)
+    if floor:
+        spend.record_skip(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            reason=floor,
+        )
+        return None
+    task = _solver_task(
+        task_type, sitekey=sitekey, page_url=page_url, action=action, extra=extra
+    )
+    task_id = None
+    solved = False
+    solution: str | None = None
+    note = ""
     try:
-        create = httpx.post(
-            "https://api.capsolver.com/createTask",
-            json={"clientKey": key, "task": task},
-            timeout=30.0,
-        ).json()
-    except Exception:
-        return None
-    task_id = create.get("taskId")
-    if not task_id:
-        return None
-    deadline = time.time() + timeout_s
-    while time.time() < deadline:
-        time.sleep(3)
         try:
-            result = httpx.post(
-                "https://api.capsolver.com/getTaskResult",
-                json={"clientKey": key, "taskId": task_id},
+            create = httpx.post(
+                "https://api.capsolver.com/createTask",
+                json={"clientKey": token, "task": task},
                 timeout=30.0,
             ).json()
         except Exception:
-            continue
-        if result.get("status") == "ready":
-            sol = result.get("solution") or {}
-            return sol.get("gRecaptchaResponse") or sol.get("token") or sol.get("response")
-        if result.get("status") == "failed" or result.get("errorId"):
+            spend.record_task(
+                site=site,
+                captcha_type=captcha_type,
+                task_type=task_type,
+                task_id=None,
+                solved=False,
+                cost=0.0,
+                balance_before=balance_before,
+                balance_after=balance_before,
+                note="create_error",
+            )
             return None
-    return None
+        if not isinstance(create, dict):
+            create = {}
+        if create.get("errorId") and not create.get("taskId") and not create.get("solution"):
+            balance_after = spend.get_balance(token)
+            err = str(create.get("errorCode") or create.get("errorDescription") or "create_rejected")
+            spend.record_task(
+                site=site,
+                captcha_type=captcha_type,
+                task_type=task_type,
+                task_id=None,
+                solved=False,
+                cost=0.0,
+                balance_before=balance_before,
+                balance_after=balance_after,
+                note=err[:160],
+            )
+            return None
+        immediate = _solution_value(create.get("solution"))
+        if immediate and (create.get("status") in {None, "ready"} or create.get("solution")):
+            solution = immediate
+            solved = True
+            task_id = create.get("taskId") or "sync"
+            note = "sync_ready"
+        else:
+            task_id = create.get("taskId")
+            if not task_id:
+                balance_after = spend.get_balance(token)
+                spend.record_task(
+                    site=site,
+                    captcha_type=captcha_type,
+                    task_type=task_type,
+                    task_id=None,
+                    solved=False,
+                    cost=0.0,
+                    balance_before=balance_before,
+                    balance_after=balance_after,
+                    note="no_task_id",
+                )
+                return None
+
+            deadline = time.time() + timeout_s
+            while time.time() < deadline:
+                try:
+                    result = httpx.post(
+                        "https://api.capsolver.com/getTaskResult",
+                        json={"clientKey": token, "taskId": task_id},
+                        timeout=30.0,
+                    ).json()
+                except Exception:
+                    time.sleep(3)
+                    continue
+                if not isinstance(result, dict):
+                    time.sleep(3)
+                    continue
+                if result.get("status") == "ready":
+                    solution = _solution_value(result.get("solution") or {})
+                    solved = bool(solution)
+                    note = "" if solved else "ready_without_token"
+                    break
+                if result.get("status") == "failed" or result.get("errorId"):
+                    note = str(result.get("errorCode") or "task_failed")[:160]
+                    break
+                time.sleep(3)
+            else:
+                note = "poll_timeout"
+
+        balance_after = spend.get_balance(token)
+        list_price = spend.task_price(task_type) or spend.PRICED_TASKS_USD.get(task_type, 0.0)
+        if balance_before is not None and balance_after is not None:
+            delta = round(max(0.0, float(balance_before) - float(balance_after)), 6)
+        else:
+            delta = None
+        # Book the published price when the balance call hasn't moved yet so a
+        # burst of solves cannot walk past the cap. A rejected task with no
+        # debit stays at zero (recorded on the early-return paths above).
+        # Book the published price on a successful task. A shared balance
+        # delta across concurrent solves is not this task's cost. Unsolved
+        # tasks that were still charged book at most the list price.
+        if solved:
+            cost = list_price
+        elif delta is None or delta == 0:
+            cost = 0.0
+        else:
+            cost = min(list_price, delta)
+        spend.record_task(
+            site=site,
+            captcha_type=captcha_type,
+            task_type=task_type,
+            task_id=None if task_id is None else str(task_id),
+            solved=solved,
+            cost=cost,
+            balance_before=balance_before,
+            balance_after=balance_after,
+            note=note,
+        )
+        return solution if solved else None
+    finally:
+        spend.release_spend(task_type)
 
 
 def _twocaptcha_solve(
@@ -866,7 +1068,7 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
             await page.evaluate(
                 """() => {
                   const t = (document.body && document.body.innerText || '').toLowerCase();
-                  return /verify you are human|checking your browser|just a moment|complete the security check|press and hold|are you a robot|invalid or missing captcha|missing captcha token|captcha token|failed to sign up:.*captcha|hcaptcha|complete the captcha/.test(t);
+                  return /verify you are human|checking your browser|just a moment|complete the security check|press and hold|are you a robot|invalid or missing captcha|missing captcha token|captcha token|failed to sign up:.*captcha|hcaptcha|complete the captcha|trouble verifying recaptcha|recaptcha verification|slide right to secure/.test(t);
                 }"""
             )
         )
@@ -920,6 +1122,7 @@ async def page_looks_captcha_blocked(page: Any) -> dict[str, Any]:
         "challenge_visible": visible,
         "widget_present": widget,
         "submit_disabled": submit_disabled,
+        "text_block": text_block,
         "sitekey": (info or {}).get("sitekey"),
         "type": (info or {}).get("type"),
         "action": action,
@@ -1495,6 +1698,168 @@ async def _trigger_signup_submit(page: Any) -> bool:
         return False
 
 
+def _maybe_apply_signup_solver_policy() -> dict[str, Any]:
+    """Return the published per-type method, if signup should follow it.
+
+    The fresh-score runner unsets ``CAPSOLVER_API_KEY`` before it calls signup,
+    so a policy cannot spend during an honest rescore. Paid tasks still have
+    to be endorsed by the policy (or the host allowlist / experiment flag)
+    and the $1 balance floor still applies.
+    """
+    from mvp.captcha_spend import load_method_policy
+
+    policy = load_method_policy()
+    if not policy.get("apply_to_signup"):
+        return {}
+    return policy
+
+
+async def human_drag(page: Any) -> dict[str, Any]:
+    """Drag a slider handle with a short eased path. No paid API call."""
+    import random
+
+    found = None
+    try:
+        found = await page.evaluate(
+            """() => {
+              const sels = [
+                '.geetest_slider_button', '.geetest_btn',
+                '[class*="slider-button"]', '[class*="slide-btn"]',
+                '[class*="slider"] button', '[role="slider"]',
+                '.arrow-handle', '[class*="handle"]'
+              ];
+              for (const s of sels) {
+                const el = document.querySelector(s);
+                if (!el) continue;
+                const r = el.getBoundingClientRect();
+                if (r.width >= 8 && r.height >= 8 && r.width < 220 && r.bottom > 0) {
+                  return {x: r.x + r.width / 2, y: r.y + r.height / 2};
+                }
+              }
+              return null;
+            }"""
+        )
+    except Exception:
+        found = None
+    if not found:
+        return {"ok": False, "detail": "no_handle"}
+    x = float(found["x"])
+    y = float(found["y"])
+    distance = 160 + random.randint(-15, 50)
+    try:
+        await page.mouse.move(x, y)
+        await page.mouse.down()
+        steps = 22
+        for i in range(1, steps + 1):
+            t = i / steps
+            ease = t * t * (3 - 2 * t)
+            await page.mouse.move(x + distance * ease, y + random.uniform(-1.4, 1.4))
+            await page.wait_for_timeout(random.randint(10, 26))
+        await page.mouse.up()
+        await page.wait_for_timeout(1200)
+    except Exception:
+        return {"ok": False, "detail": "drag_error"}
+    cleared = not await _challenge_visible(page)
+    return {"ok": cleared, "detail": "dragged", "cleared": cleared}
+
+
+async def solve_image_challenge(page: Any, *, method: str = "image_to_text") -> dict[str, Any]:
+    """Send the visible challenge image to a priced recognition task.
+
+    ImageToText is the general fallback. ReCaptchaV2Classification is used
+    only when the on-page prompt matches CapSolver's question list.
+    """
+    import base64
+
+    selectors = (
+        "iframe[src*='hcaptcha']",
+        "iframe[src*='bframe']",
+        "img[src*='captcha' i]",
+        "img[alt*='captcha' i]",
+    )
+    png = b""
+    for sel in selectors:
+        try:
+            loc = page.locator(sel).first
+            if await loc.count() == 0:
+                continue
+            png = await loc.screenshot(type="png", timeout=4000)
+            if png:
+                break
+        except Exception:
+            continue
+    if not png:
+        try:
+            png = await page.screenshot(type="png")
+        except Exception:
+            png = b""
+    if not png:
+        return {"ok": False, "detail": "no_image"}
+    shot = base64.b64encode(png).decode()
+    page_url = getattr(page, "url", "") or ""
+    extra: dict[str, Any] = {"body": shot, "module": "common"}
+    task_type = "ImageToTextTask"
+    captcha_type = "image_text"
+    if method == "recaptcha_classification":
+        question = ""
+        try:
+            question = await page.evaluate(
+                "() => ((document.body && document.body.innerText) || '').slice(0, 400)"
+            )
+        except Exception:
+            question = ""
+        qid = None
+        low = (question or "").lower()
+        for needle, code in (
+            ("traffic light", "/m/015qff"),
+            ("crosswalk", "/m/014xcs"),
+            ("fire hydrant", "/m/01pns0"),
+            ("bicycle", "/m/0199g"),
+            ("bus", "/m/01bjv"),
+            ("car", "/m/0k4j"),
+            ("motorcycle", "/m/04_sv"),
+            ("stair", "/m/01lynh"),
+        ):
+            if needle in low:
+                qid = code
+                break
+        if not qid:
+            return {"ok": False, "detail": "question_unmapped"}
+        extra = {"image": shot, "question": qid}
+        task_type = "ReCaptchaV2Classification"
+        captcha_type = "recaptcha_classification"
+    token = await asyncio.to_thread(
+        _capsolver_solve,
+        "",
+        sitekey="",
+        page_url=page_url,
+        captcha_type=captcha_type,
+        action=None,
+        timeout_s=60,
+        blocking=True,
+        extra=extra,
+        task_type_override=task_type,
+    )
+    if not token:
+        return {"ok": False, "detail": "no_token"}
+    try:
+        await page.evaluate(
+            """(text) => {
+              const el = document.querySelector('input[name*=captcha i], input[id*=captcha i], input[type=text]');
+              if (!el || text.startsWith('{')) return false;
+              el.focus();
+              el.value = text;
+              el.dispatchEvent(new Event('input', {bubbles:true}));
+              return true;
+            }""",
+            token,
+        )
+    except Exception:
+        pass
+    cleared = not await _challenge_visible(page)
+    return {"ok": bool(token), "detail": task_type, "cleared": cleared, "token": True}
+
+
 async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
     """Full stack: settle → BB wait → click → OSS → solver API → human.
 
@@ -1604,23 +1969,82 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
 
     page_url = getattr(page, "url", "") or ""
     info = await detect_sitekey(page)
-    if info and info.get("sitekey"):
+    blocked_info = await page_looks_captcha_blocked(page)
+    policy = _maybe_apply_signup_solver_policy()
+    spec: dict[str, Any] = {}
+    if policy and info:
+        spec = ((policy.get("types") or {}).get(info.get("type") or "") or {})
+    # A sitekey or a disabled button alone is not enough. CapSolver runs only
+    # when a challenge, widget, or captcha error is actually on the page.
+    solver_key = ""
+    if info:
+        solver_key = str(info.get("sitekey") or info.get("captchaId") or info.get("gt") or "")
+    captcha_blocking = bool(solver_key) and not blocked_info.get("solved") and bool(
+        blocked_info.get("challenge_visible")
+        or blocked_info.get("widget_present")
+        or blocked_info.get("text_block")
+    )
+    # A published policy limits paid solves to types that actually cleared.
+    if policy:
+        if spec.get("method") not in {"capsolver", "capsolver_v2_enterprise"}:
+            captcha_blocking = False
+    # Paid CapSolver only after the detector says this page is actually stuck.
+    if info and solver_key and captcha_blocking:
+        extra = {
+            k: info.get(k)
+            for k in ("gt", "challenge", "captchaId")
+            if info.get(k)
+        }
+        captcha_type = spec.get("captcha_type") or info.get("type") or blocked_info.get("type") or "recaptcha"
         token = await asyncio.to_thread(
             solve_sitekey,
-            sitekey=info["sitekey"],
+            sitekey=solver_key,
             page_url=page_url,
-            captcha_type=info.get("type") or "recaptcha",
+            captcha_type=captcha_type,
             action=info.get("action"),
+            blocking=True,
+            extra=extra or None,
+            task_type_override=spec.get("task"),
         )
         if token:
             injected = await _inject_token(page, token, info.get("type") or "recaptcha")
             if injected:
-                if await wait_for_challenge_to_clear(page, timeout_s=15.0) or await _recaptcha_solved(
-                    page
+                cleared = await wait_for_challenge_to_clear(page, timeout_s=15.0)
+                still = await page_looks_captcha_blocked(page)
+                widget_gone = (
+                    cleared
+                    and not still.get("challenge_visible")
+                    and not still.get("text_block")
+                    and not still.get("widget_present")
+                )
+                if widget_gone or (
+                    await _recaptcha_solved(page) and not still.get("challenge_visible")
                 ):
                     return {"ok": True, "method": "solver_api", "detail": info.get("type")}
-                return {"ok": True, "method": "solver_api", "detail": f"{info.get('type')}_injected"}
+                return {
+                    "ok": False,
+                    "method": "solver_api",
+                    "detail": f"{info.get('type')}_token_widget_remained",
+                    "token": token,
+                }
             return {"ok": False, "method": "solver_api", "detail": "inject_failed", "token": token}
+
+    if spec.get("method") in {"image_to_text", "recaptcha_classification"}:
+        image_result = await solve_image_challenge(page, method=str(spec.get("method")))
+        if image_result.get("cleared") or (
+            image_result.get("ok") and not await _challenge_visible(page)
+        ):
+            return {"ok": True, "method": spec.get("method"), "detail": image_result.get("detail")}
+
+    drag_type = ((info or {}).get("type") or "")
+    want_drag = spec.get("method") == "mouse_drag" or (
+        not policy
+        and drag_type in {"arkose", "funcaptcha", "slider", "geetest", "geetest_v4", "datadome"}
+    )
+    if want_drag:
+        dragged = await human_drag(page)
+        if dragged.get("ok") and not await _challenge_visible(page):
+            return {"ok": True, "method": "mouse_drag", "detail": drag_type}
 
     # Human fallback — re-check first; Browserbase often finishes a few seconds late.
     if await _recaptcha_solved(page):
@@ -1685,14 +2109,38 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
 async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
     script = """
     (token) => {
+      let gee = null;
+      try { if (token && token.charAt(0) === '{') gee = JSON.parse(token); } catch (e) {}
+      if (gee && (gee.pass_token || gee.lot_number || gee.captcha_output)) {
+        const form = document.querySelector('form') || document.body;
+        for (const name of ['lot_number', 'pass_token', 'gen_time', 'captcha_output', 'captcha_id']) {
+          if (!gee[name]) continue;
+          let el = form.querySelector('input[name="' + name + '"]');
+          if (!el) {
+            el = document.createElement('input');
+            el.type = 'hidden';
+            el.name = name;
+            form.appendChild(el);
+          }
+          el.value = String(gee[name]);
+          el.dispatchEvent(new Event('input', {bubbles:true}));
+          el.dispatchEvent(new Event('change', {bubbles:true}));
+        }
+        for (const name of ['geetestCallback', 'captchaCallback', 'onGeetestSuccess']) {
+          if (typeof window[name] === 'function') {
+            try { window[name](gee); } catch (e) {}
+          }
+        }
+      }
+      const tokenValue = (gee && gee.token) ? String(gee.token) : token;
       const set = (sel) => {
         const nodes = document.querySelectorAll(sel);
         nodes.forEach((el) => {
           const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
           const desc = Object.getOwnPropertyDescriptor(proto, 'value');
-          if (desc && desc.set) desc.set.call(el, token);
-          else el.value = token;
-          el.innerHTML = token;
+          if (desc && desc.set) desc.set.call(el, tokenValue);
+          else el.value = tokenValue;
+          el.innerHTML = tokenValue;
           el.dispatchEvent(new Event('input', {bubbles:true}));
           el.dispatchEvent(new Event('change', {bubbles:true}));
         });
@@ -1707,7 +2155,7 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
       set('#captcha');
       const callNamed = (name) => {
         if (name && typeof window[name] === 'function') {
-          try { window[name](token); } catch (e) {}
+          try { window[name](tokenValue); } catch (e) {}
         }
       };
       document.querySelectorAll('[data-callback]').forEach((n) => callNamed(n.getAttribute('data-callback')));
@@ -1718,7 +2166,7 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
         if (!props) return false;
         for (const name of ['onSuccess', 'onVerify']) {
           if (typeof props[name] === 'function') {
-            try { props[name](token); return true; } catch (e) {}
+            try { props[name](tokenValue); return true; } catch (e) {}
           }
         }
         return false;
@@ -1739,16 +2187,22 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
         }
       }
       try {
-        if (window.grecaptcha && window.___grecaptcha_cfg) {
-          // best-effort callback fire
-          const clients = window.___grecaptcha_cfg.clients || {};
-          for (const c of Object.values(clients)) {
-            try {
-              const cb = c?.O?.O?.callback || c?.callback;
-              if (typeof cb === 'function') cb(token);
-              if (typeof cb === 'string' && typeof window[cb] === 'function') window[cb](token);
-            } catch (e) {}
-          }
+        if (window.___grecaptcha_cfg && window.___grecaptcha_cfg.clients) {
+          const seen = new Set();
+          const walk = (obj, depth) => {
+            if (!obj || depth > 6 || typeof obj !== 'object') return;
+            if (seen.has(obj)) return;
+            seen.add(obj);
+            if (typeof obj.callback === 'function') {
+              try { obj.callback(tokenValue); } catch (e) {}
+            }
+            let keys;
+            try { keys = Object.keys(obj); } catch (e) { return; }
+            for (const k of keys) {
+              try { walk(obj[k], depth + 1); } catch (e) {}
+            }
+          };
+          walk(window.___grecaptcha_cfg.clients, 0);
         }
       } catch (e) {}
       try {
@@ -1763,7 +2217,7 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
           for (const n of nodes) {
             const cbName = n.getAttribute('data-callback');
             if (cbName && typeof window[cbName] === 'function') {
-              try { window[cbName](token); } catch (e) {}
+              try { window[cbName](tokenValue); } catch (e) {}
             }
           }
           try {
