@@ -19,8 +19,10 @@ from mvp.a11y_agent import (
     goal_visible,
     note_progress,
     notes_from_trace,
+    offhost_excalidraw_tool,
     pick_action,
     progress_signature,
+    stamp_published_step,
     study_budget_s,
     would_repeat_action,
 )
@@ -42,6 +44,33 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(action["act"], "click")
         self.assertEqual(action["name"], "Pricing")
         self.assertTrue(action_label(action).startswith("click "))
+
+    def test_issue_task_skips_decorative_new_issue(self) -> None:
+        nodes = [
+            {"i": 0, "role": "button", "name": "New issue", "href": "", "inert": True},
+            {
+                "i": 1,
+                "role": "a",
+                "name": "Docs",
+                "href": "https://linear.app/docs/creating-issues",
+            },
+        ]
+        action = pick_action("Find how to create a new issue", nodes)
+        self.assertIn("creating-issues", action["href"])
+        self.assertNotIn("new issue", action["name"].lower())
+        self.assertTrue(offhost_excalidraw_tool({"act": "drag", "name": "canvas"}, "https://miro.com"))
+        self.assertFalse(
+            offhost_excalidraw_tool({"act": "drag", "name": "canvas"}, "https://excalidraw.com")
+        )
+        step = stamp_published_step(
+            {"step": 1, "action": "click Docs", "url": "https://linear.app/docs/creating-issues"},
+            task="Find how to create a new issue",
+            read={"url": "https://linear.app/docs/creating-issues", "text": "Create issues", "title": "Creating issues"},
+            screenshot_url="/api/studies/s/agents/a/screenshots/final.png",
+        )
+        self.assertTrue(step["final_screenshot_url"].endswith("final.png"))
+        self.assertTrue(step["goal_visible"])
+        self.assertIn("Create issues", step["state_sig"]["text"])
 
     def test_link_target_beats_skip_to_content(self) -> None:
         nodes = [

@@ -358,8 +358,50 @@ def format_ax(nodes: list[dict[str, Any]], *, limit: int = AX_CAP) -> str:
     return "\n".join(lines)
 
 
+def _preferred_control(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Real control for this task. Decorative marketing buttons are not it."""
+    kind = task_kind(task)
+    usable = [
+        node
+        for node in nodes or []
+        if isinstance(node, dict) and not node.get("inert")
+    ]
+    if kind == "issue":
+        for node in usable:
+            href = str(node.get("href") or "").lower()
+            if "creating-issues" in href or "create-issues" in href:
+                return node
+        for node in usable:
+            name = str(node.get("name") or "").strip().lower()
+            href = str(node.get("href") or "").lower().rstrip("/")
+            if name in {"docs", "documentation", "doc"} or href.endswith("/docs"):
+                return node
+        return None
+    if kind == "pricing":
+        for node in usable:
+            blob = f"{node.get('name') or ''} {node.get('href') or ''}".lower()
+            if "pricing" in blob:
+                return node
+    return None
+
+
+def _action_from_node(node: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "act": "click",
+        "i": int(node.get("i") or 0),
+        "x": int(node.get("x") or 0),
+        "y": int(node.get("y") or 0),
+        "name": str(node.get("name") or "")[:80],
+        "href": str(node.get("href") or "")[:180],
+        "role": str(node.get("role") or ""),
+    }
+
+
 def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
     """Deterministic first move from the shared tree. No model, no page read."""
+    preferred = _preferred_control(task, nodes)
+    if preferred is not None:
+        return _action_from_node(preferred)
     words = [
         w
         for w in re.findall(r"[a-z0-9]+", (task or "").lower())
@@ -367,6 +409,7 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
     ]
     best: dict[str, Any] | None = None
     best_score = 0
+    issue = task_kind(task) == "issue"
     for node in nodes or []:
         if not isinstance(node, dict):
             continue
@@ -378,6 +421,8 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
             continue
         if "skip to content" in name:
             continue
+        if issue and "new issue" in name and "creating-issues" not in href and "create-issues" not in href:
+            continue
         score = sum(3 for w in words if w in name or w in href)
         role = str(node.get("role") or "")
         if role in {"a", "button", "link", "menuitem", "tab"}:
@@ -387,9 +432,16 @@ def pick_action(task: str, nodes: list[dict[str, Any]]) -> dict[str, Any]:
             best_score = score
     if best is None:
         for node in nodes or []:
-            if isinstance(node, dict) and str(node.get("name") or "").strip():
-                best = node
-                break
+            if not isinstance(node, dict) or not str(node.get("name") or "").strip():
+                continue
+            if node.get("inert"):
+                continue
+            name = str(node.get("name") or "").lower()
+            href = str(node.get("href") or "").lower()
+            if issue and "new issue" in name and "creating-issues" not in href:
+                continue
+            best = node
+            break
     if best is None:
         return {"act": "scroll", "i": -1, "x": 0, "y": 400, "name": "page", "dy": 500}
     return {
@@ -687,6 +739,71 @@ def _ms(a: float | None, b: float | None) -> int | None:
     return max(0, int(round((b - a) * 1000)))
 
 
+def invented_excalidraw_action(
+    task: str,
+    read: dict[str, Any],
+    history: list[str] | None = None,
+    skip: set[str] | None = None,
+) -> dict[str, Any] | None:
+    """Rectangle drag and Export image exist only on excalidraw.com.
+
+    Competitors such as Miro do not have those controls. Inventing the click
+    there repeats until the harness aborts every agent in the study.
+    """
+    if _host(str((read or {}).get("url") or "")) != "excalidraw.com":
+        return None
+    kind = task_kind(task)
+    skipped = skip or set()
+    done = [item.lower() for item in (history or [])]
+    if kind == "draw":
+        selected = "selected shape" in str((read or {}).get("text") or "").lower() or any(
+            "rectangle" in item for item in done
+        )
+        if selected:
+            return {"act": "drag", "i": -1, "name": "canvas", "role": "canvas", "href": ""}
+        if "rectangle" in skipped:
+            return None
+        return {"act": "click", "i": -1, "name": "Rectangle", "role": "button", "href": ""}
+    if kind == "export":
+        if "export image" in str((read or {}).get("text") or "").lower():
+            if "export image" in skipped:
+                return None
+            return {
+                "act": "click",
+                "i": -1,
+                "name": "Export image",
+                "role": "menuitem",
+                "href": "",
+            }
+        if "menu" in skipped:
+            return None
+        return {"act": "click", "i": -1, "name": "Menu", "role": "button", "href": ""}
+    return None
+
+
+def offhost_excalidraw_tool(action: dict[str, Any], url: str) -> bool:
+    """True when this action is the Excalidraw rectangle/export shortcut elsewhere."""
+    if _host(url) == "excalidraw.com":
+        return False
+    act = str((action or {}).get("act") or "")
+    name = str((action or {}).get("name") or "").lower()
+    if act == "drag":
+        return True
+    if name in {"rectangle", "square", "canvas"}:
+        return True
+    return "export" in name
+
+
+def trace_canvas(previous: str, current: str, url: str, task: str) -> str:
+    """Canvas sample stored on a trace step.
+
+    Flicker on any site except an Excalidraw drawing is not a new page.
+    """
+    if _host(url) == "excalidraw.com" and task_kind(task) == "draw":
+        return current or ""
+    return previous or ""
+
+
 def apply_gate_fields(sess: dict[str, Any], **fields: Any) -> None:
     """Write every gate field. Missing values stay present as empty or null."""
     for key in GATE_FIELDS:
@@ -717,8 +834,70 @@ def apply_gate_fields(sess: dict[str, Any], **fields: Any) -> None:
     sess["final_screenshot"] = shot
 
 
-def _stamp_observation(trace: list[dict[str, Any]], read: dict[str, Any]) -> None:
-    """Write the live page onto the latest step.
+def stamp_published_step(
+    step: dict[str, Any],
+    *,
+    task: str = "",
+    read: dict[str, Any] | None = None,
+    screenshot_url: str = "",
+) -> dict[str, Any]:
+    """Write final_screenshot_url, state_sig.text, and goal_visible onto one step.
+
+    The study persists whatever is on the step at save time. Insights can cite
+    a past-homepage screenshot only when those three fields are already there.
+    Canvas flicker stays off the signature except for an Excalidraw drawing.
+    """
+    if not isinstance(step, dict):
+        return step
+    live = read if isinstance(read, dict) else {}
+    sig = step.get("state_sig") if isinstance(step.get("state_sig"), dict) else {}
+    text = str(live.get("text") or sig.get("text") or step.get("observation") or "")
+    url = str(live.get("url") or step.get("url") or "")
+    prior_canvas = str(sig.get("canvas") or "")
+    current_canvas = str(live.get("canvas") or prior_canvas)
+    if task:
+        canvas = trace_canvas(prior_canvas, current_canvas, url, task)
+    elif _host(url) != "excalidraw.com":
+        canvas = prior_canvas or current_canvas
+    else:
+        canvas = current_canvas or prior_canvas
+    step["url"] = url
+    step["state_sig"] = {"text": text[:1500], "canvas": canvas}
+    if text:
+        step["observation"] = text[:400]
+    visible_read = {
+        "url": url,
+        "text": text,
+        "title": str(live.get("title") or ""),
+        "canvas": str(live.get("canvas") or current_canvas),
+        "opened_canvas": str(live.get("opened_canvas") or ""),
+        "drew": bool(live.get("drew")),
+    }
+    if task:
+        step["goal_visible"] = bool(goal_visible(task, visible_read))
+    elif "goal_visible" not in step:
+        step["goal_visible"] = False
+    shot = str(
+        screenshot_url or step.get("final_screenshot_url") or step.get("screenshot_url") or ""
+    ).strip()
+    if shot:
+        step["screenshot_url"] = shot
+        step["final_screenshot_url"] = shot
+    nodes = live.get("nodes")
+    if nodes:
+        ax = format_ax(nodes)
+        if ax:
+            step["accessibility_tree"] = ax
+            step["ax_tree"] = ax
+    return step
+
+
+def _stamp_observation(
+    trace: list[dict[str, Any]],
+    read: dict[str, Any],
+    task: str = "",
+) -> None:
+    """Write the live page onto the latest step before the study saves it.
 
     Agents that find the goal already on screen never append a step. Without
     this, the trace keeps the opening title and the run looks like it never
@@ -732,15 +911,7 @@ def _stamp_observation(trace: list[dict[str, Any]], read: dict[str, Any]) -> Non
     if not steps:
         return
     last = max(steps, key=lambda step: int(step["step"]))
-    text = str(read.get("text") or "")
-    url = str(read.get("url") or last.get("url") or "")
-    ax = format_ax(read.get("nodes") or [])
-    last["url"] = url
-    last["observation"] = text[:400]
-    last["state_sig"] = {"text": text[:1500], "canvas": str(read.get("canvas") or "")}
-    if ax:
-        last["accessibility_tree"] = ax
-        last["ax_tree"] = ax
+    stamp_published_step(last, task=task, read=read)
 
 
 def _step_from_read(
@@ -1350,10 +1521,11 @@ async def _model_action(
         "A homepage preview of the product is not the real app. "
         "For how to create an issue, open Docs or Documentation, then the Issues section, then Create issues. "
         "For pricing or getting started, open Pricing. "
-        "To draw a box, click Rectangle, then the next action must be drag. "
+        "To draw a box on excalidraw.com, click Rectangle, then the next action must be drag. "
         "drag presses r and drags inside the canvas box from the tree. Selecting the tool is not done. "
         "done for a drawing only after the drag has changed the canvas. "
-        "Open Menu and Export image only when the task asks to export or share. "
+        "On excalidraw.com, open Menu and Export image only when the task asks to export or share. "
+        "Rectangle, drag, and Export image are excalidraw.com controls. Do not use them on any other site. "
         "done only when that outcome is already visible. "
         "friction is one sentence if a control was unclear, else empty. "
         "easy is one sentence naming a control that was obvious, else empty."
@@ -1502,6 +1674,9 @@ async def _act(page: Any, action: dict[str, Any]) -> str:
             await page.keyboard.type(text, delay=0)
         return "type"
     if act == "drag":
+        host = _host(getattr(page, "url", "") or "")
+        if host != "excalidraw.com":
+            return "miss"
         await _drag_on_canvas(page, action)
         return "drag"
     if act == "done":
@@ -1592,6 +1767,9 @@ def _observation_changed(
             return True
     if task_kind(task) != "draw":
         return False
+    host = _host(str(after.get("url") or before.get("url") or ""))
+    if host != "excalidraw.com":
+        return False
     before_dark = _canvas_dark(str(before.get("canvas") or ""))
     after_dark = _canvas_dark(str(after.get("canvas") or ""))
     if before_dark >= 0 and after_dark >= 0 and abs(after_dark - before_dark) >= 8:
@@ -1619,6 +1797,7 @@ async def complete_task_on_page(
     on_step: Any | None = None,
     deadline: float | None = None,
     agent_id: str = "agent",
+    opening_nodes: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Step until the live page shows the goal.
 
@@ -1640,7 +1819,9 @@ async def complete_task_on_page(
     saw_opening = False
     acted_once = False
     model_misses = 0
+    offhost_refusals = 0
     done_rejects = 0
+    opening = [node for node in (opening_nodes or []) if isinstance(node, dict)]
     try:
         await page.wait_for_selector("a, button, canvas", timeout=800)
     except Exception:
@@ -1656,7 +1837,28 @@ async def complete_task_on_page(
             _miss("study budget")
             failed = {"phase": "study_budget", "reason": "study budget", "step": step_no}
             break
-        fresh = await _fresh_read(page, str(read.get("url") or url))
+        if not acted_once and opening and not read.get("nodes"):
+            # Shared read is the initial observation only. Act on this agent's
+            # own page without waiting for another tree before the first click.
+            fresh = {
+                "url": url,
+                "text": "",
+                "canvas": "",
+                "nodes": opening,
+                "title": "",
+            }
+        else:
+            read_cap = 4 if not acted_once else 12
+            try:
+                fresh = await asyncio.wait_for(
+                    _fresh_read(page, str(read.get("url") or url)),
+                    timeout=read_cap,
+                )
+            except asyncio.TimeoutError:
+                fresh = {
+                    "error": "accessibility read timed out",
+                    "url": str(read.get("url") or url),
+                }
         if fresh.get("error") and browser_dead(str(fresh.get("error"))):
             print(f"[{agent_id}] session ended: {fresh.get('error')}", flush=True)
             _miss("session ended")
@@ -1693,29 +1895,58 @@ async def complete_task_on_page(
             _miss()
             break
         model_read = dict(read)
-        model_read["nodes"] = _nodes_for_model(list(read.get("nodes") or []), skip)
-        try:
-            action = await asyncio.wait_for(
-                _model_action(
-                    task=task,
-                    read=model_read,
-                    history=history,
-                    changed_nothing=changed_nothing,
-                ),
-                timeout=20,
-            )
-        except asyncio.TimeoutError:
-            print(f"[{agent_id}] model action timed out", flush=True)
-            action = None
+        live_nodes = list(read.get("nodes") or [])
+        if not acted_once and not live_nodes and opening:
+            live_nodes = opening
+        model_read["nodes"] = _nodes_for_model(live_nodes, skip)
+        action = None
         source = "model"
+        # The first click is chosen from the tree already in hand. Waiting on
+        # the model here is what pushed competitor first-action past 10s.
+        if not acted_once:
+            invented = invented_excalidraw_action(task, read, history, skip)
+            if invented is not None:
+                action = invented
+                source = "excalidraw"
+            else:
+                picked = pick_action(task, list(model_read.get("nodes") or []))
+                page_url = str(read.get("url") or url)
+                if offhost_excalidraw_tool(picked, page_url):
+                    picked = {"act": "scroll", "i": -1, "name": "page", "dy": 600}
+                if (
+                    task_kind(task) == "issue"
+                    and "new issue" in str(picked.get("name") or "").lower()
+                ):
+                    picked = {"act": "scroll", "i": -1, "name": "page", "dy": 700}
+                action = picked
+                source = "tree"
+        if action is None:
+            try:
+                action = await asyncio.wait_for(
+                    _model_action(
+                        task=task,
+                        read=model_read,
+                        history=history,
+                        changed_nothing=changed_nothing,
+                    ),
+                    timeout=7 if not acted_once else 20,
+                )
+            except asyncio.TimeoutError:
+                print(f"[{agent_id}] model action timed out", flush=True)
+                action = None
         if not isinstance(action, dict):
-            model_misses += 1
-            if model_misses >= 3:
-                _miss("model returned no action")
-                break
-            changed_nothing = True
-            history.append("model returned no action")
-            continue
+            invented = invented_excalidraw_action(task, read, history, skip)
+            if invented is not None:
+                action = invented
+                source = "excalidraw"
+            else:
+                model_misses += 1
+                if model_misses >= 3:
+                    _miss("model returned no action")
+                    break
+                changed_nothing = True
+                history.append("model returned no action")
+                continue
         model_misses = 0
         if str(action.get("act")) == "done":
             if goal_visible(task, read):
@@ -1731,11 +1962,26 @@ async def complete_task_on_page(
             stuck_streak = 0
             continue
         chosen = str(action.get("name") or "").strip().lower()
+        if offhost_excalidraw_tool(action, str(read.get("url") or url)):
+            # Do not invent Rectangle / Export image / canvas drag on Miro.
+            # Recording that click three times aborts the whole study.
+            skip.add(chosen or "export")
+            offhost_refusals += 1
+            if offhost_refusals >= 2 or would_repeat_action(trace, action_label(action), read):
+                _miss("excalidraw tool is not on this site")
+                break
+            changed_nothing = True
+            history.append(f"skipped off-host {chosen or action.get('act')}")
+            continue
         if chosen and chosen in skip and str(action.get("act")) == "click":
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
             continue
-        if task_kind(task) == "draw" and str(action.get("act")) != "drag":
+        if (
+            task_kind(task) == "draw"
+            and _host(str(read.get("url") or url)) == "excalidraw.com"
+            and str(action.get("act")) != "drag"
+        ):
             # The rectangle tool is selected. The next move is a canvas drag,
             # not the export menu.
             selected = "selected shape" in str(read.get("text") or "").lower() or any(
@@ -1847,7 +2093,7 @@ async def complete_task_on_page(
             changed_nothing = True
         if not after.get("error"):
             changed = _observation_changed(read, after, task=task)
-            if str(action.get("act")) == "drag":
+            if str(action.get("act")) == "drag" and _host(str(after.get("url") or "")) == "excalidraw.com":
                 before_dark = _canvas_dark(str(read.get("canvas") or ""))
                 after_dark = _canvas_dark(str(after.get("canvas") or ""))
                 canvas_moved = (
@@ -1871,12 +2117,27 @@ async def complete_task_on_page(
             after["drew"] = drew
             read = after
             row["url"] = str(read.get("url") or "")
+            previous_canvas = ""
+            if len(trace) >= 2 and isinstance(trace[-2], dict):
+                prior_step_sig = trace[-2].get("state_sig")
+                if isinstance(prior_step_sig, dict):
+                    previous_canvas = str(prior_step_sig.get("canvas") or "")
             row["state_sig"] = {
                 "text": str(read.get("text") or "")[:1500],
-                "canvas": str(read.get("canvas") or ""),
+                "canvas": trace_canvas(
+                    previous_canvas,
+                    str(read.get("canvas") or ""),
+                    str(read.get("url") or ""),
+                    task,
+                ),
             }
             row["accessibility_tree"] = format_ax(read.get("nodes") or [])
             row["ax_tree"] = row["accessibility_tree"]
+            stamp_published_step(row, task=task, read=read)
+            if on_step is not None:
+                maybe = on_step(row)
+                if asyncio.iscoroutine(maybe):
+                    await maybe
         logs.append(
             {
                 "step": step_no,
@@ -1897,7 +2158,7 @@ async def complete_task_on_page(
             break
 
     if stop_reason == "done" or goal_visible(task, read):
-        _stamp_observation(trace, read)
+        _stamp_observation(trace, read, task=task)
     if stop_reason:
         print(f"[{agent_id}] stop reason: {stop_reason}", flush=True)
     if not isinstance(failed, dict):
@@ -1928,7 +2189,7 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, 
     from capability.browserbase_client import create_session, study_session_owner
 
     last = "no browser session"
-    for attempt in (1, 2):
+    for attempt in range(1, 7):
         started = time.time()
         bb = None
         browser = None
@@ -1954,6 +2215,7 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, 
                 except Exception as exc:  # noqa: BLE001
                     last = repr(exc)
                     print(f"[a11y] agent create attempt {attempt} replaced: {exc!r}", flush=True)
+                    await asyncio.sleep(0.25)
                     continue
             pw = await boot._playwright()
             browser = await pw.chromium.connect_over_cdp(bb.connect_url)
@@ -2086,13 +2348,29 @@ async def _run_a11y_agent_unlocked(
             if trace and isinstance(trace[0], dict):
                 trace[0]["page_open_at_ts"] = opened_at
                 trace[0]["session_ready_at_ts"] = created_at
+            opening_nodes: list[dict[str, Any]] = []
+            for snap in boot.snapshots.values():
+                if _host(str(snap.get("url") or "")) == _host(url):
+                    opening_nodes = [
+                        node for node in (snap.get("nodes") or []) if isinstance(node, dict)
+                    ]
+                    break
             apply_gate_fields(
                 sess,
                 page_open_at_ts=opened_at,
                 session_ready_at_ts=created_at,
                 page_url=url,
                 accessibility_tree=str(sess.get("accessibility_tree") or "") or "0 document page",
+                phase_ms={
+                    "session_ready": 0,
+                    "page_open": _ms(created_at, opened_at) or 0,
+                    "first_action": 0,
+                    "final_screenshot": 0,
+                },
             )
+            # created_at is this attempt's start. page_open is navigation commit.
+            # first_action stays unset until a click, type, or scroll is saved.
+            sess.pop("first_action_at_ts", None)
             boot.study.live_sessions[agent_id] = sess
             boot._touch()
             phase = "act"
@@ -2107,6 +2385,7 @@ async def _run_a11y_agent_unlocked(
                 on_step=on_step,
                 deadline=deadline,
                 agent_id=agent_id,
+                opening_nodes=opening_nodes,
             )
             stop_reason = str(outcome.get("stop_reason") or "")
             failed = outcome.get("failed") if isinstance(outcome.get("failed"), dict) else failed
@@ -2147,7 +2426,7 @@ async def _run_a11y_agent_unlocked(
                 try:
                     from mvp.opening_shot import upload_screenshot
 
-                    asyncio.create_task(upload_screenshot(study_id, agent_id, path))
+                    await upload_screenshot(study_id, agent_id, path)
                 except Exception:
                     pass
             except Exception as exc:  # noqa: BLE001
@@ -2173,8 +2452,19 @@ async def _run_a11y_agent_unlocked(
             else:
                 failed = {"phase": "act", "reason": "page did not show the goal", "step": step_no}
         phase_ms = dict(sess.get("phase_ms") or {})
+        phase_ms["page_open"] = _ms(sess.get("created_at_ts"), sess.get("page_open_at_ts")) or int(
+            phase_ms.get("page_open") or 0
+        )
+        phase_ms["first_action"] = _ms(sess.get("page_open_at_ts"), sess.get("first_action_at_ts")) or 0
         phase_ms["final_screenshot"] = shot_ms
         phase_ms["final_screenshot_ms"] = shot_ms
+        if shot_url and trace:
+            stamp_published_step(
+                trace[-1],
+                task=task_prompt,
+                read=read,
+                screenshot_url=shot_url,
+            )
 
         result = {
             "agent_id": agent_id,
@@ -2210,6 +2500,16 @@ async def _run_a11y_agent_unlocked(
         }
         ensure_phase_ms(result)
         apply_gate_fields(result, **{k: result.get(k) for k in GATE_FIELDS})
+        # The harness reads the live row. Copy the gate fields onto it before
+        # this agent returns, including a failed open that never got a click.
+        if sess.get("created_at_ts") and sess.get("page_open_at_ts"):
+            apply_gate_fields(sess, **{k: result.get(k) for k in GATE_FIELDS})
+            sess["trace"] = trace
+            sess["final_screenshot_url"] = shot_url
+            sess["final_screenshot"] = shot_url
+            sess["failed_step"] = failed
+            boot.study.live_sessions[agent_id] = sess
+            boot._touch()
         return result
     finally:
         await _close_agent_session(browser, bb)

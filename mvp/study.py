@@ -3064,6 +3064,28 @@ async def run_study(
                                 step=step,
                             )
                     sess["status"] = "running"
+                    # Stamp the step before this trace is saved. Insights cite
+                    # final_screenshot_url, state_sig.text, and goal_visible.
+                    from mvp.a11y_agent import stamp_published_step
+
+                    stamp_published_step(
+                        step,
+                        task=str(sess.get("task_prompt") or ""),
+                        screenshot_url=str(
+                            step.get("final_screenshot_url")
+                            or step.get("screenshot_url")
+                            or sess.get("final_screenshot_url")
+                            or ""
+                        ),
+                    )
+                    if step.get("final_screenshot_url"):
+                        sess["final_screenshot_url"] = step["final_screenshot_url"]
+                        sess["final_screenshot"] = step["final_screenshot_url"]
+                    sig = step.get("state_sig") if isinstance(step.get("state_sig"), dict) else {}
+                    if sig.get("text"):
+                        sess["final_dom"] = str(sig.get("text") or "")[:1500]
+                    if "goal_visible" in step:
+                        sess["goal_visible"] = bool(step.get("goal_visible"))
                     sess["trace"] = list(sess.get("trace") or [])
                     existing = {s.get("step"): i for i, s in enumerate(sess["trace"])}
                     if step.get("step") in existing:
