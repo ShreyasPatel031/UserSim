@@ -1,9 +1,9 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T08:20:00Z",
+  "graded_at": "2026-09-26T08:22:00Z",
   "live_launches": "stopped",
-  "note": "Grade-only. Released 8 owner=gates sessions. owner=integration was not released. Integration tip is 7bfc147, which already contains b5b8e71. Task-completion tip is 4ff5738. #47 tip is c553e86. No head cleared every gate on both Linear and Excalidraw. Floor remains Linear 68af612b product 4/8 pricing only, new-issue 0/4.",
+  "note": "Rechecked 757461e7. GCS updated_at is still 2026-09-26T07:13:57Z. Their TTFV 23.88s is not on the study. Independent grade stands. No newer finished study after bdc1f5da and 49b52ebe. owner=gates running 0. Integration tip 7bfc147 is past e111295. Task-completion tip e82c73f only records bdc1f5da and says it is not a grade. #47 tip c553e86. No ALL_PASS.",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "9470be5",
@@ -205,6 +205,10 @@
     {
       "id": 19,
       "fact": "Linear bdc1f5da is product 2/8. The two YES are pricing pages. New-issue NO: t1__p1 is the login screen; t1__p2 and t1__p3 are workspace creation; t1__p4 is signup/workspace creation. TTFA median 34.687s max 51.193s. TTFV not recorded. total_time not ready. Linear 49b52ebe is one task (Create an issue), TTFA median 0.423s max 2.333s PASS, product 0/8. Dashboard runs did not create an issue. t1__p3 is viewing an existing issue. t1__p4 and t1__p7 Gemini text also describes an existing issue, and a model timeout overrides that YES. t1__p5 is missing final_screenshot_url. Top weakness on bdc1f5da is click Log in changed nothing. On 49b52ebe it is click Create workspace changed nothing."
+    },
+    {
+      "id": 20,
+      "fact": "757461e7 rechecked. Abandoned at 42.78s. page_opened 24/24. TTFA median 1.389s max 3.398s n=17/24. Seven competitors never clicked. TTFV is not recorded. Their 23.88s is not on the study. total_time is not ready. Official product 0/8. Diagnostic Gemini on three pricing PNGs is 3/3 YES. New-issue agents died on https://linear.app/ after click Documentation with no final PNG. Integration must parallelize connect_over_cdp, stamp time_to_first_value_s from URL submit, skip the await-all-sites barrier before step 0, and release Browserbase after abort."
     }
   ],
   "graded_from_gcs": {
@@ -501,28 +505,37 @@
   "gates_running": 0,
   "linear_757461e7": {
     "study_id": "757461e7-233e-47d9-8d3d-93031b70008d",
-    "url": "https://linear.app",
+    "path_they_cite": "results/tonight/linear-20260926T071313Z",
+    "their_tip": "e111295",
     "pass": false,
-    "wall_s": 42.78,
     "status": "abandoned",
+    "wall_s": 42.78,
+    "their_ttfv": "23.88s is their harness number. It is not on study.json.",
     "time_to_first_value": "not recorded FAIL",
     "total_time": "not ready FAIL",
     "report_ready": false,
     "page_opened": "24/24 PASS",
     "time_to_first_action": "median=1.389s max=3.398s n=17/24 FAIL",
-    "product_task_completion": "0/8 FAIL (study abandoned, official vision empty)",
-    "product_diagnostic": "3/3 finished, all pricing YES",
+    "no_first_action": [
+      "t1__p1__competitor_2",
+      "t2__p1__competitor_2",
+      "t1__p2__competitor_1",
+      "t1__p3__competitor_1",
+      "t1__p4__competitor_2",
+      "t2__p4__competitor_1",
+      "t2__p4__competitor_2"
+    ],
+    "product_task_completion": "0/8 FAIL. Study abandoned, official vision empty.",
+    "product_diagnostic": "3/3 finished, all pricing YES. Not a study pass.",
     "judge_reasons_no": [
-      "New-issue t1__p1 through t1__p4: killed on https://linear.app/ after click Documentation. No final PNG, so no Gemini YES.",
-      "Pricing t2__p2: killed after click Pricing. No final PNG."
+      "New-issue t1__p1 through t1__p4 killed on https://linear.app/ after click Documentation. No final PNG.",
+      "Pricing t2__p2 killed after click Pricing. No final PNG."
     ],
     "judge_reasons_yes_diagnostic": [
-      "t2__p1: The page displays pricing tiers and options for getting started with the service.",
-      "t2__p3: The page displays pricing tiers and options for getting started with the service.",
-      "t2__p4: The page displays pricing tiers for the product, including free and paid options with associated features and costs."
+      "t2__p1 and t2__p3: pricing tiers and getting started.",
+      "t2__p4: pricing tiers, free and paid."
     ],
-    "final_screenshot": "missing field final_screenshot_url",
-    "note": "Killed. Not a pass. Self-reported TTFV 23.88s is not this grade."
+    "png": "4 final.png objects. New-issue product agents have none."
   },
   "one_agent_not_matrix": [
     {
@@ -741,7 +754,7 @@
       "wall_s": 94.072
     }
   },
-  "session_count_freed": 8,
+  "session_count_freed": 0,
   "best_floor": {
     "study_id": "68af612b-e3ae-433a-9b5d-6022d604406d",
     "product": "4/8 pricing only; new-issue 0/4",
@@ -875,5 +888,30 @@
     ],
     "top_weakness": "FAIL. click Create workspace changed nothing on https://linear.app/",
     "run_issue_rate": "12/24 (50%) FAIL"
-  }
+  },
+  "owner_fixes": [
+    {
+      "owner": "cursor/tonight-integration",
+      "fix": [
+        "Parallelize connect_over_cdp. 757461e7 left 7 competitor agents with no click.",
+        "Stamp time_to_first_value_s as URL submit to the first click, type, or scroll. A harness-only 23.88s does not satisfy the gate.",
+        "Do not await every site before step 0.",
+        "Release Browserbase sessions after an abort. 757461e7 was killed at 42.78s with total_time not ready."
+      ]
+    },
+    {
+      "owner": "cursor/task-completion-fix",
+      "fix": [
+        "One browser per agent.",
+        "New-issue 0/4 is still login, workspace creation, the dashboard, or the docs page. An inert hash or a docs URL is not an issue in the app.",
+        "Stamp final.png, final text, and the goal on the run before save. e82c73f records bdc1f5da and is not a grade. That study is product 2/8 FAIL."
+      ]
+    },
+    {
+      "owner": "cursor/product-agent-full-model-76fc",
+      "fix": [
+        "Self ALL_PASS is rejected. A TTFA of 0.0s is the aligned page_open and first_action stamp. The clock is browser_ready_at_ts."
+      ]
+    }
+  ]
 }
