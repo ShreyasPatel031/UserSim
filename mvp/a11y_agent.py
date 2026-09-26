@@ -2180,14 +2180,57 @@ async def complete_task_on_page(
     }
 
 
+async def _create_session_or_close(study_id: str | None, timeout: float = 3.5) -> Any:
+    """Create one session. If it arrives after the cap, close it so the slot is free."""
+    import threading
+
+    from capability.browserbase_client import close_session, create_session, study_session_owner
+
+    loop = asyncio.get_running_loop()
+    fut: asyncio.Future[Any] = loop.create_future()
+
+    def _work() -> None:
+        try:
+            bb = create_session(
+                proxies=False,
+                keep_alive=True,
+                solve_captchas=False,
+                advanced_stealth=False,
+                owner=study_session_owner(),
+                study_id=study_id,
+            )
+        except Exception as exc:  # noqa: BLE001
+            def _fail() -> None:
+                if not fut.done():
+                    fut.set_exception(exc)
+
+            loop.call_soon_threadsafe(_fail)
+            return
+
+        def _deliver() -> None:
+            if fut.done():
+                sid = str(getattr(bb, "id", "") or "")
+                if sid:
+                    try:
+                        close_session(sid)
+                    except Exception:
+                        pass
+                return
+            fut.set_result(bb)
+
+        loop.call_soon_threadsafe(_deliver)
+
+    threading.Thread(target=_work, daemon=True).start()
+    return await asyncio.wait_for(fut, timeout)
+
+
 async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, float, float]:
     """A new Browserbase session for this agent only.
 
     Returns browser, page, the attempt start, and the navigation-commit time.
-    A slot that does not commit within 3.5s is closed and replaced once.
+    A slot that does not commit within 3.5s is closed and replaced. A create
+    that finishes after that cap is closed too, so it cannot hold a slot.
     """
-    from capability.browserbase_client import create_session, study_session_owner
-
     last = "no browser session"
     for attempt in range(1, 7):
         started = time.time()
@@ -2200,16 +2243,8 @@ async def _open_agent_session(boot: A11yBoot, url: str) -> tuple[Any, Any, Any, 
                 bb = None
             if bb is None:
                 try:
-                    bb = await asyncio.wait_for(
-                        asyncio.to_thread(
-                            create_session,
-                            proxies=False,
-                            keep_alive=True,
-                            solve_captchas=False,
-                            advanced_stealth=False,
-                            owner=study_session_owner(),
-                            study_id=getattr(boot.study, "id", None),
-                        ),
+                    bb = await _create_session_or_close(
+                        getattr(boot.study, "id", None),
                         timeout=3.5,
                     )
                 except Exception as exc:  # noqa: BLE001
