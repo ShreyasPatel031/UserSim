@@ -64,6 +64,7 @@ from mvp.e2e2_gates import (  # noqa: E402
     assess_page_opened,
     assess_stuck_abort,
     assess_time_to_first_action,
+    remember_earliest_clocks,
     build_early_failures,
     coerce_verdict,
     evaluate_strict_gates,
@@ -572,6 +573,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
         elapsed_at_abort: float | None = None
         ttfa_check: dict | None = None
         action_seen_at: dict[str, float] = {}
+        clock_latch: dict[str, dict[str, float]] = {}
         since_task_last: float | None = None
         action_clock_open = True
         page_open_check: dict | None = None
@@ -625,6 +627,7 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
             # Per-agent immediate start: creation → page open on the right site.
             now = time.time()
             if sessions:
+                remember_earliest_clocks(sessions, clock_latch)
                 page_open_check = assess_page_opened(
                     sessions, now=now, limit_s=args.first_shot_s
                 )

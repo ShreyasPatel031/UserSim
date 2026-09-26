@@ -16,6 +16,7 @@ from mvp.e2e2_gates import (
     assess_page_opened,
     assess_stuck_abort,
     assess_time_to_first_action,
+    remember_earliest_clocks,
     beyond_first_screen,
     build_early_failures,
     evaluate_strict_gates,
@@ -759,6 +760,25 @@ class EarlyFailureTests(unittest.TestCase):
         self.assertEqual(check["per_agent"][0]["start"], "page_open_at_ts")
         self.assertEqual(check["per_agent"][0]["latency_s"], 2.0)
         self.assertTrue(check["ok"])
+
+    def test_later_poll_cannot_move_page_open_forward(self) -> None:
+        shot = 1_000.0
+        first = _stamp_open(_acting("asana"), shot)
+        first["created_at_ts"] = shot - 1.0
+        latch: dict[str, dict[str, float]] = {}
+        remember_earliest_clocks([first], latch)
+        rewritten = _stamp_open(_acting("asana"), shot + 15.7)
+        rewritten["created_at_ts"] = shot + 15.7
+        rewritten["first_action_at_ts"] = shot + 15.7
+        remember_earliest_clocks([rewritten], latch)
+        self.assertEqual(rewritten["page_open_at_ts"], shot)
+        self.assertEqual(rewritten["created_at_ts"], shot - 1.0)
+        seen = {"asana": shot + 15.7}
+        check = assess_time_to_first_action(
+            [rewritten], now=shot + 16.0, action_seen_at=seen, expected=1
+        )
+        self.assertEqual(check["per_agent"][0]["latency_s"], 15.7)
+        self.assertFalse(check["ok"])
 
 
 def _opened_page(agent_id: str, **extra) -> dict:
