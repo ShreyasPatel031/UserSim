@@ -924,6 +924,7 @@ class A11yBoot:
         self.on_update = on_update
         self.pool: asyncio.Queue[Any] = asyncio.Queue()
         self.snapshots: dict[str, dict[str, Any]] = {}
+        self.opening: dict[str, dict[str, Any]] = {}
         self.handles: dict[str, dict[str, Any]] = {}
         self.contexts: dict[str, dict[str, Any]] = {}
         self._handles: list[dict[str, Any]] = []
@@ -1179,9 +1180,11 @@ class A11yBoot:
             agent_id = str(task.get("id") or "")
             if not agent_id:
                 continue
-            existing = self.study.live_sessions.get(agent_id) or {}
+            existing = self.opening.get(agent_id) or self.study.live_sessions.get(agent_id) or {}
             # A later republish must not wipe steps the agent already took.
             if existing.get("first_action_at_ts") or len(existing.get("trace") or []) > 2:
+                continue
+            if agent_id in self.study.live_sessions:
                 continue
             assigned = str(task.get("site_url") or "")
             if _host(url) != _host(assigned):
@@ -1242,7 +1245,9 @@ class A11yBoot:
                 },
             )
             ensure_phase_ms(sess)
-            self.study.live_sessions[agent_id] = sess
+            # Hold step 0 off the polled study until this agent's own goto
+            # commits. A visible session with no page_open_at_ts aborts the run.
+            self.opening[agent_id] = sess
         self._touch()
 
     async def _publish_all(self) -> None:
@@ -2346,7 +2351,11 @@ async def _run_a11y_agent_unlocked(
     """
     from mvp.paths import MVP_RUNS_DIR
 
-    sess = boot.study.live_sessions.get(agent_id) or {}
+    sess = (
+        boot.study.live_sessions.get(agent_id)
+        or boot.opening.get(agent_id)
+        or {}
+    )
     failed: dict[str, Any] | None = None
     stop_reason = ""
     page = None
@@ -2385,6 +2394,7 @@ async def _run_a11y_agent_unlocked(
             if trace and isinstance(trace[0], dict):
                 trace[0]["page_open_at_ts"] = opened_at
             boot.study.live_sessions[agent_id] = sess
+            boot.opening.pop(agent_id, None)
             try:
                 from mvp.study import persist_study
 

@@ -3237,6 +3237,8 @@ async def run_study(
                         )
                         while time.monotonic() < _wait_until:
                             existing = study.live_sessions.get(agent_id) or {}
+                            if not existing:
+                                existing = getattr(a11y_boot, "opening", {}).get(agent_id) or {}
                             trace = existing.get("trace") or []
                             opened = bool(existing.get("page_open_at_ts")) or any(
                                 isinstance(step, dict) and int(step.get("step") or -1) == 0
@@ -3245,7 +3247,9 @@ async def run_study(
                             if opened:
                                 break
                             await asyncio.sleep(0.05)
-                        sess = study.live_sessions.get(agent_id)
+                        sess = study.live_sessions.get(agent_id) or getattr(
+                            a11y_boot, "opening", {}
+                        ).get(agent_id)
                         trace = (sess or {}).get("trace") or []
                         opened = bool(sess and (
                             sess.get("page_open_at_ts")
