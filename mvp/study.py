@@ -3784,7 +3784,21 @@ async def run_study(
         try:
             from mvp.report_insights import apply_insights
 
-            apply_insights(study)
+            insights = apply_insights(study)
+            try:
+                from mvp.report_insights import write_verdict_summary
+
+                text = await asyncio.wait_for(
+                    write_verdict_summary(
+                        {"segment": getattr(study, "segment", "") or ""}, insights
+                    ),
+                    timeout=20,
+                )
+                if text:
+                    study.summary = {**(study.summary or {}), "verdict_summary": text}
+                    apply_insights(study)
+            except Exception as verdict_exc:  # noqa: BLE001
+                print(f"verdict summary skipped: {verdict_exc!r}", flush=True)
         except Exception as insight_exc:  # noqa: BLE001
             print(f"report insights failed: {insight_exc!r}", flush=True)
         finish_clocks(study)

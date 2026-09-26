@@ -250,6 +250,7 @@ function renderAnalytics() {
         )}
       </div>
     </div>
+    ${verdictHtml(insights)}
     <div class="chart-card">
       <h3>What the traces support</h3>
       <p class="sub">Each claim cites a real agent step and screenshot. Open the trace to see that step.</p>
@@ -607,3 +608,23 @@ async function loadReport() {
 }
 
 loadReport();
+
+function verdictHtml(insights) {
+  const v = (insights && insights.verdict) || {};
+  const good = v.good_for || [];
+  const trails = v.trails || [];
+  if (!good.length && !trails.length && !v.summary) return "";
+  const list = (items, empty) =>
+    items.length
+      ? `<ul class="verdict-list">${items.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}</ul>`
+      : `<p class="sub">${escapeHtml(empty)}</p>`;
+  return `<div class="chart-card verdict-card">
+      <h3>Verdict</h3>
+      <p class="sub">Per-task results against the competitors. Finished runs count first, then steps, then time.</p>
+      ${v.summary ? `<p class="verdict-summary">${escapeHtml(v.summary)}</p>` : ""}
+      <div class="split">
+        <div><h3>Good for</h3>${list(good, "No task where it led or matched the competitors.")}</div>
+        <div><h3>Trails competitors on</h3>${list(trails, "No task where a competitor did better.")}</div>
+      </div>
+    </div>`;
+}

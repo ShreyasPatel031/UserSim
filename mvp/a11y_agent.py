@@ -897,18 +897,27 @@ class A11yBoot:
         study.fast_brief = True
         want = max(1, int(os.environ.get("MVP_PERSONA_COUNT", "4") or "4"))
         segment = study.segment or "target customer"
-        study.personas = [
-            {
-                "id": f"p{i}",
-                "name": f"Simulated user {i}",
-                "bio": f"A {segment} evaluating the product on a real task.",
-                "age_range": "25–40",
-                "occupation": "Professional",
-                "location": "Remote",
-                "goals": ["Finish the task", "Notice what is confusing"],
-            }
-            for i in range(1, want + 1)
+        archetypes = [
+            ("Maya Chen", "first-time evaluator", "skims the page and clicks the most obvious call to action", "28–35", "Team lead"),
+            ("Dev Patel", "keyboard-first power user", "is impatient with marketing pages and wants the real product fast", "30–40", "Senior engineer"),
+            ("Priya Nair", "careful buyer", "reads plan limits and pricing before committing to anything", "35–45", "Operations manager"),
+            ("Sam Ortiz", "non-technical teammate", "needs clear labels and gives up on jargon", "25–32", "Coordinator"),
+            ("Lena Weber", "switcher from a competitor", "expects the same shortcuts and layout as the tool they use today", "30–40", "Product manager"),
         ]
+        study.personas = []
+        for i in range(1, want + 1):
+            name, kind, habit, age, job = archetypes[(i - 1) % len(archetypes)]
+            study.personas.append(
+                {
+                    "id": f"p{i}",
+                    "name": name,
+                    "bio": f"{name} is a {kind} from {segment.rstrip('.')}; {habit}.",
+                    "age_range": age,
+                    "occupation": job,
+                    "location": "Remote",
+                    "goals": ["Finish the task", "Notice what is confusing"],
+                }
+            )
         base = []
         for i, prompt in enumerate(study.tasks_override):
             persona = study.personas[i % len(study.personas)]

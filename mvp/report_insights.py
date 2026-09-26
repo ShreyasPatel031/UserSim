@@ -8,6 +8,8 @@ friction.
 
 from __future__ import annotations
 
+import json
+import os
 import re
 from datetime import datetime
 from urllib.parse import urlparse
@@ -376,6 +378,11 @@ def task_succeeded(run: dict[str, Any], start_url: str) -> bool:
     Describing the homepage, waiting, or writing a note is not success.
     Page state changes on a URL change or a meaningful DOM or canvas change.
     """
+    failed = run.get("failed_step")
+    if isinstance(failed, dict) and str(failed.get("phase") or "").strip():
+        # The step loop only writes phase "done" after the page itself showed
+        # the goal (never a docs page, never an account wall).
+        return str(failed.get("phase")) == "done"
     steps = [step for step in (run.get("trace") or []) if isinstance(step, dict)]
     names = [_action_name(step) for step in steps]
     interacted = any(name.startswith(_INTERACT) or name in _INTERACT for name in names)
@@ -472,6 +479,16 @@ def work_metrics(runs: list[dict[str, Any]], start_url: str) -> dict[str, Any]:
 def _durations(study: dict[str, Any]) -> dict[str, float]:
     starts: dict[str, float] = {}
     dones: dict[str, float] = {}
+    # Per-agent clocks first. The activity log is capped and drops early rows.
+    timed: dict[str, float] = {}
+    for run in study.get("agent_results") or []:
+        if not isinstance(run, dict):
+            continue
+        aid = str(run.get("agent_id") or "")
+        a = run.get("page_open_at_ts") or run.get("created_at_ts")
+        b = run.get("finished_at_ts")
+        if aid and isinstance(a, (int, float)) and isinstance(b, (int, float)) and b >= a:
+            timed[aid] = float(b) - float(a)
     for row in study.get("activity_log") or []:
         if not isinstance(row, dict):
             continue
@@ -491,6 +508,7 @@ def _durations(study: dict[str, Any]) -> dict[str, float]:
         start = starts.get(aid)
         if start is not None and done >= start:
             out[aid] = done - start
+    out.update(timed)
     return out
 
 
@@ -909,7 +927,13 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
     weaknesses = (t_weaknesses + [c for c in weaknesses if c["claim"] not in {t["claim"] for t in t_weaknesses}])[:3]
     del have
 
-    stuck = [r for r in product if _stuck_on_open(r, start_host)]
+    # Stuck means the run never left the page it opened on. A pricing page
+    # reached in one click is not stuck, even on the same host.
+    stuck = [
+        r for r in product
+        if not changed_page_state(r, str(r.get("site_url") or product_url or ""))
+        and _stuck_on_open(r, start_host)
+    ]
     stuck_ratio = (len(stuck) / len(product)) if product else 0.0
     if product and stuck_ratio >= 0.75:
         evs = []
@@ -978,7 +1002,7 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
     comparisons, tie_note = _comparisons(study, runs)
     product_metrics = work_metrics(product, product_url)
     layout = _layout(study, runs, comparisons, product_name, thin, run_issues)
-    return {
+    out = {
         "headline": headline[:240],
         "evidence_thin": bool(thin),
         "evidence_note": evidence_note,
@@ -991,6 +1015,11 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
         "product_name": product_name,
         **layout,
     }
+    out["verdict"] = verdict(out, study)
+    stored = (study.get("summary") or {}) if isinstance(study.get("summary"), dict) else {}
+    if stored.get("verdict_summary"):
+        out["verdict"]["summary"] = str(stored["verdict_summary"])
+    return out
 
 
 def _layout(
@@ -1172,8 +1201,8 @@ def _layout(
     n_goals = sum(len(p["goals"]) for p in by_persona)
     names = ", ".join(site["site_label"] for site in sites) or product_name
     metric = (
-        "Task success means the agent interacted and the page state changed "
-        "(a new URL, or a real canvas or text change). Steps and time come from the traces. "
+        "Task success means the page itself showed the finished goal (a docs or help page "
+        "about the task does not count, and a sign-up wall is a miss). Steps and time come from the traces. "
         "A site is a pick on a goal only when it is the only one that completed that goal."
     )
     if run_issues:
@@ -1265,6 +1294,8 @@ def apply_insights(study: Any) -> dict[str, Any]:
         "url": getattr(study, "url", None),
         "agent_results": getattr(study, "agent_results", None) or [],
         "activity_log": getattr(study, "activity_log", None) or [],
+        "summary": getattr(study, "summary", None) or {},
+        "segment": getattr(study, "segment", None) or getattr(study, "target_segment", None) or "",
     }
     insights = build_report_insights(payload)
     summary = dict(getattr(study, "summary", None) or {})
@@ -1273,3 +1304,107 @@ def apply_insights(study: Any) -> dict[str, Any]:
         summary["headline"] = insights["headline"]
     study.summary = summary
     return insights
+
+
+def _fmt_rate(ok: int, n: int) -> str:
+    return f"{ok}/{n}"
+
+
+def verdict(insights: dict[str, Any], study: dict[str, Any]) -> dict[str, Any]:
+    """What the product is good for and where it trails, from per-task numbers.
+
+    Each line compares the product with the competitors on one task: finished
+    runs first, then median steps, then median time. Account walls are named.
+    """
+    sites = insights.get("sites") or []
+    labels = {str(s.get("site_key")): str(s.get("site_label")) for s in sites}
+    product_label = labels.get("product") or _pretty_host(str(study.get("url") or ""))
+    good: list[str] = []
+    trails: list[str] = []
+    walls: dict[str, set[str]] = {}
+    for run in _runs(study):
+        stop = str(run.get("stop_reason") or "")
+        failed = run.get("failed_step") if isinstance(run.get("failed_step"), dict) else {}
+        if stop == "needs_account" or str(failed.get("phase") or "") == "needs_account":
+            walls.setdefault(_task_title(run) or "task", set()).add(str(run.get("site_key") or "product"))
+    for task in insights.get("by_task") or []:
+        title = str(task.get("title") or "task")
+        cells = task.get("sites") or {}
+        mine = cells.get("product") or {}
+        if not mine.get("n"):
+            continue
+        rate = (mine.get("ok") or 0) / max(1, mine.get("n") or 1)
+        others = {k: v for k, v in cells.items() if k != "product" and v.get("n")}
+        better = []
+        worse = []
+        for key, cell in others.items():
+            orate = (cell.get("ok") or 0) / max(1, cell.get("n") or 1)
+            name = labels.get(key) or key
+            if orate > rate:
+                better.append(f"{name} ({_fmt_rate(cell.get('ok') or 0, cell.get('n') or 0)} finished)")
+            elif orate < rate:
+                worse.append(f"{name} ({_fmt_rate(cell.get('ok') or 0, cell.get('n') or 0)} finished)")
+            elif rate > 0:
+                ms, os_ = mine.get("median_steps"), cell.get("median_steps")
+                mt, ot = mine.get("median_time_s"), cell.get("median_time_s")
+                if ms is not None and os_ is not None and os_ + 1 <= ms:
+                    better.append(f"{name} ({os_:.0f} steps vs {ms:.0f})")
+                elif ms is not None and os_ is not None and ms + 1 <= os_:
+                    worse.append(f"{name} ({os_:.0f} steps vs {ms:.0f})")
+                elif mt is not None and ot is not None and ot * 1.5 < mt:
+                    better.append(f"{name} ({ot:.0f}s vs {mt:.0f}s)")
+                elif mt is not None and ot is not None and mt * 1.5 < ot:
+                    worse.append(f"{name} ({ot:.0f}s vs {mt:.0f}s)")
+        mine_txt = _fmt_rate(mine.get("ok") or 0, mine.get("n") or 0)
+        steps = mine.get("median_steps")
+        how = f" in a median {steps:.0f} step{'s' if steps != 1 else ''}" if steps else ""
+        if rate > 0 and not better:
+            tail = f", ahead of {', '.join(worse)}" if worse else ", level with the competitors"
+            good.append(f"{title}: {mine_txt} runs finished on {product_label}{how}{tail}.")
+        elif better:
+            wall = " Agents hit a sign-up wall first." if "product" in walls.get(title, set()) else ""
+            trails.append(
+                f"{title}: {product_label} finished {mine_txt} runs; {', '.join(better)} did better.{wall}"
+            )
+        elif rate == 0:
+            wall = " because it needs an account" if "product" in walls.get(title, set()) else ""
+            trails.append(f"{title}: no {product_label} run finished{wall} (every site 0 as well)."
+                          if not others or all(not (c.get("ok")) for c in others.values())
+                          else f"{title}: no {product_label} run finished{wall}.")
+    return {"good_for": good[:4], "trails": trails[:4], "summary": None}
+
+
+async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any]) -> str:
+    """Three to five plain sentences from the report's own numbers and claims.
+
+    The model only rewrites facts given to it; it is told not to add any.
+    """
+    from capability.gemini_config import gemini_chat
+
+    facts = {
+        "product": insights.get("product_name"),
+        "segment": study.get("segment") or study.get("target_segment") or "",
+        "good_for": (insights.get("verdict") or {}).get("good_for") or [],
+        "trails": (insights.get("verdict") or {}).get("trails") or [],
+        "strengths": [c.get("claim") for c in insights.get("strengths") or []][:3],
+        "weaknesses": [c.get("claim") for c in insights.get("weaknesses") or []][:3],
+        "sites": [
+            {k: s.get(k) for k in ("site_label", "ok", "n", "median_steps", "median_time_s")}
+            for s in insights.get("sites") or []
+        ],
+    }
+    prompt = (
+        "Write a short verdict for a product team from a simulated user study. "
+        "Use only these facts; do not invent features, numbers, or sites. "
+        "3 to 5 plain sentences: what the product is good for, where it trails its competitors, "
+        "and the single most useful fix. No markdown, no bullet points.\n"
+        f"Facts: {json.dumps(facts, ensure_ascii=False)[:5000]}"
+    )
+    raw = await gemini_chat(
+        [{"role": "user", "content": prompt}],
+        model=os.environ.get("MVP_VERDICT_MODEL") or "gemini-2.5-flash",
+        temperature=0.2,
+        json_mode=False,
+        max_retries=2,
+    )
+    return " ".join(str(raw or "").split())[:1200]
