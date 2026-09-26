@@ -1,0 +1,50 @@
+{
+  "study_id": "94c2d4bd-ec9c-4022-a70f-c68546c99f52",
+  "product_url": "https://excalidraw.com",
+  "abort": "product",
+  "reason": "FAIL page_opened: 23/24 agents opened the assigned site within 5s (opened after 5s=1)",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 1,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "done",
+      "n": 1
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t2__p1__product",
+      "site_key": "product",
+      "task": "Find how to export or share",
+      "type": "product",
+      "judge_reason": "t2__p1__product phase=done error= last_action=view /",
+      "phase": "done",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=94c2d4bd-ec9c-4022-a70f-c68546c99f52&agent=t2__p1__product&step=2",
+      "failed_step_phase": "done",
+      "failed_step_reason": "task complete",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 418.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/94c2d4bd-ec9c-4022-a70f-c68546c99f52/agents/t2__p1__product/screenshots/final.png",
+      "final_url": "https://excalidraw.com/?export=image",
+      "step": 2
+    }
+  ]
+}

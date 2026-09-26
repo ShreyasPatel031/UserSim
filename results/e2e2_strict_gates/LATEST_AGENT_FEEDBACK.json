@@ -1,68 +1,71 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T04:57:00Z",
+  "graded_at": "2026-09-26T05:01:00Z",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
-      "sha": "125346b",
+      "sha": "01e0eea",
+      "note": "Open each agent's goal on a tab of the shared site browser. Newer head dd8cbe9 is not graded yet.",
       "linear": {
-        "study_id": "d47def0a-c4ea-4b12-beb7-b81a88e08812",
+        "study_id": "f6f0d46a-e2e0-4d49-9b3e-8a5e6e8fff47",
         "pass": false,
-        "elapsed_s": 76.4,
-        "time_to_first_value": "3.31s PASS",
-        "total_time": "75.969s PASS",
-        "time_to_first_action": "median=1.473s max=28.103s n=24/24 FAIL",
-        "ttfa_note": "created_at, page_open, and first_action were rewritten to one instant (1790398411.51). Session ready was not rewritten. Asana competitor_1 is 28.103s from browser_ready_at_ts to the poll that saw the click. The rewritten page-open gap was 0.146s and is not the clock.",
-        "page_opened": "24/24 within 5s PASS",
-        "final_screenshot": "24/24 PASS and the judge downloaded the PNG",
-        "product_task_completion": "0/8",
-        "product_note": "Gemini saw the pages. goal_reached false. All 8 product agents are first_screen_ids. Reasons include dashboard with no new-issue form, an existing issue, and the main product page instead of pricing.",
-        "phase_counts": [{"phase": "act", "n": 16}]
-      },
-      "excalidraw": {
-        "study_id": "cbdbe54e-7ff5-4d30-b409-3ffe8a3e9db0",
-        "pass": false,
-        "elapsed_s": 31.7,
-        "time_to_first_value": "2.91s PASS",
+        "elapsed_s": 43.0,
+        "time_to_first_value": "4.126s PASS",
         "total_time": "not ready FAIL",
-        "time_to_first_action": "median=1.151s max=22.942s n=24/24 FAIL",
-        "ttfa_max_who": "all 8 Miro competitor_2 agents, start=browser_ready_at_ts",
-        "page_opened": "21/24 FAIL slow=t2__p2__product t2__p3__product t2__p4__product",
-        "abort": "FAIL page_opened: 21/24 opened within 5s (3 after 5s)",
+        "time_to_first_action": "median=2.204s max=22.618s n=24/24 FAIL",
+        "ttfa_max_who": "Asana competitor_1, start=browser_ready_at_ts",
+        "page_opened": "23/24 FAIL slow=t1__p1__product",
+        "abort": "FAIL page_opened: 23/24 opened within 5s (1 after 5s)",
         "final_screenshot": "missing field final_screenshot_url",
         "product_task_completion": "0/8",
-        "phase_counts": [{"phase": "read", "n": 3}]
+        "product_note": "5 structural past first screen, 3 first screen. Aborted before Gemini.",
+        "phase_counts": [{"phase": "done", "n": 1}]
+      },
+      "excalidraw": {
+        "study_id": "94c2d4bd-ec9c-4022-a70f-c68546c99f52",
+        "pass": false,
+        "elapsed_s": 39.2,
+        "time_to_first_value": "3.314s PASS",
+        "total_time": "not ready FAIL",
+        "time_to_first_action": "median=1.416s max=20.197s n=24/24 FAIL",
+        "ttfa_max_who": "Miro competitor_2, start=browser_ready_at_ts",
+        "page_opened": "23/24 FAIL slow=t2__p1__product",
+        "abort": "FAIL page_opened: 23/24 opened within 5s (1 after 5s)",
+        "final_screenshot": "missing field final_screenshot_url",
+        "product_task_completion": "0/8",
+        "product_note": "5 structural past first screen, 3 first screen. Aborted before Gemini.",
+        "phase_counts": [{"phase": "done", "n": 1}]
       }
     },
     "cursor/tonight-integration": {
-      "sha": "8178b3d",
-      "note": "includes 125346b and is not graded yet. Previous graded integration tree was f044c45."
+      "sha": "7f06ef4",
+      "note": "contains dd8cbe9 plus a different a11y_agent.py and study.py. Not graded yet."
     }
   },
   "bugs": [
     {
       "id": 1,
-      "fact": "time_to_first_action max must be <=10s from session ready or a real page-open, not from a stamp rewritten to the poll. Linear d47def0a: Asana competitor_1 max 28.103s from browser_ready_at_ts. The saved created/page_open/first_action stamps are one instant. Excalidraw cbdbe54e: Miro competitor_2 max 22.942s from browser_ready_at_ts."
+      "fact": "time_to_first_action max must be <=10s from session ready. Linear f6f0d46a Asana competitor_1 max 22.618s. Excalidraw 94c2d4bd Miro competitor_2 max 20.197s. Both starts are browser_ready_at_ts."
     },
     {
       "id": 2,
-      "fact": "Do not write created_at_ts, page_open_at_ts, and first_action_at_ts to the same response time. On d47def0a all three are 1790398411.51 while browser_ready_at_ts is ~28s earlier on Asana. phase_ms.page_open and phase_ms.first_action are 0 even when page_open_ms is 1489."
+      "fact": "Page open within 5s missed one product agent on each site. Linear t1__p1__product (23/24). Excalidraw t2__p1__product (23/24). The abort left total_time not ready and final_screenshot_url missing, so there is no Gemini YES and no report."
     },
     {
       "id": 3,
-      "fact": "Page open within 5s failed on Excalidraw cbdbe54e for t2__p2__product, t2__p3__product, and t2__p4__product (21/24). The abort stopped the report, so total_time is not ready and final_screenshot_url is missing."
+      "fact": "Product is 0/8. The shared-tab head still aborted before a final screenshot. Five product runs were structurally past the first screen on each site and still did not finish a judged report."
     },
     {
       "id": 4,
-      "fact": "Product is still 0/8 Gemini YES. Linear d47def0a did serve final.png. The judge said the product agents were on the dashboard, an existing issue, or the main page, not a new-issue form and not pricing. All 8 stayed in the first-screen denominator. Excalidraw aborted before a judge YES."
+      "fact": "Strength and weakness are empty because the report never completed. The previous finished Linear report's weakness still does not qualify: 'The new issue form is hard to find because this page has no issue title field.'"
     },
     {
       "id": 5,
-      "fact": "Strength and weakness still do not cite a run past the first screen. Linear weakness 0/2: 'The new issue form is hard to find because this page has no issue title field.' Excalidraw had no report, so strength 0/0 and weakness 0/0."
+      "fact": "Do not set created_at_ts, page_open_at_ts, and first_action_at_ts to the same poll time. On 125346b study d47def0a those three stamps were one instant and the real Asana delay was 28.103s from browser_ready_at_ts. phase_ms.page_open and phase_ms.first_action were 0."
     },
     {
       "id": 6,
-      "fact": "The New-issue stuck loop from study 6e2acd43 is still unresolved until product is >=4/8. d47def0a did not repeat 'click New issue' three times, and the product agents still did not create an issue."
+      "fact": "The New-issue stuck loop from study 6e2acd43 is still open until a run shows it is gone and product is >=4/8."
     }
   ]
 }
