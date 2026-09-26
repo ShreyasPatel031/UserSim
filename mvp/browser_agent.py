@@ -187,7 +187,8 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
         error = None
         error_type = None
         try:
-            result = await orig_state(*args, **kwargs)
+            async with _CdpSlot():
+                result = await orig_state(*args, **kwargs)
             state_error = getattr(result, "state_error", None)
             if state_error:
                 error = str(state_error)[:400]
@@ -257,7 +258,8 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
             error = None
             error_type = None
             try:
-                return await orig_nav(*args, **kwargs)
+                async with _CdpSlot():
+                    return await orig_nav(*args, **kwargs)
             except Exception as exc:
                 error = f"{type(exc).__name__}: {exc}"[:400]
                 error_type = type(exc).__name__
@@ -275,7 +277,8 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
             error = None
             error_type = None
             try:
-                return await orig_take(*args, **kwargs)
+                async with _CdpSlot():
+                    return await orig_take(*args, **kwargs)
             except Exception as exc:
                 error = f"{type(exc).__name__}: {exc}"[:400]
                 error_type = type(exc).__name__
@@ -396,6 +399,79 @@ def _install_agent_probes(agent: Any, llm: Any, clock: _PhaseClock) -> None:
     _patch_method(agent, "_handle_step_error", handle_wrapped)
 
 
+def _cdp_failure_text(text: str) -> bool:
+    return bool(_CDP_ERROR_RE.search(text or ""))
+
+
+def _surface_swallowed_failure(
+    clock: _PhaseClock | None,
+    run_exc: BaseException | None,
+    trace: list[dict[str, Any]],
+) -> tuple[str, str]:
+    """Return (error, browser_error) for a run that never acted.
+
+    failures.json classifies browser_error as our infrastructure and a
+    timeout string on error as a model timeout. A finished run stays blank
+    so a recovered step is not relabeled.
+    """
+    acted = False
+    for step in trace:
+        if not isinstance(step, dict) or not isinstance(step.get("step"), int):
+            continue
+        if int(step["step"]) <= 0:
+            continue
+        action = str(step.get("action") or "")
+        if action and not action.lower().startswith("open") and not step.get("timing_only"):
+            acted = True
+            break
+    if run_exc is not None:
+        text = f"{type(run_exc).__name__}: {run_exc}"[:400]
+        if _cdp_failure_text(text):
+            return "", text
+        return text, ""
+    if acted or clock is None:
+        return "", ""
+    for ev in reversed(clock.events):
+        err = str(ev.get("error") or "").strip()
+        if not err or err == "null":
+            continue
+        kind = str(ev.get("error_type") or "Exception")
+        text = err if err.startswith(kind) else f"{kind}: {err}"
+        text = text[:400]
+        if kind == "CancelledError":
+            continue
+        if _cdp_failure_text(text):
+            return "", text
+        if kind == "state_error" or "timed out" in text.lower() or "timeout" in text.lower():
+            return text, ""
+        return text, ""
+    return "", ""
+
+
+def silent_failure_fields(trace: list[dict[str, Any]] | None) -> tuple[str, str]:
+    """(error, browser_error) when a budget kill hid a swallowed browser failure.
+
+    An agent that already acted keeps the plain study-budget error.
+    """
+    notes: list[str] = []
+    acted = False
+    for step in trace or []:
+        if not isinstance(step, dict):
+            continue
+        if step.get("swallowed_error"):
+            notes.append(str(step["swallowed_error"]))
+        if isinstance(step.get("step"), int) and int(step["step"]) > 0:
+            action = str(step.get("action") or "")
+            if action and not action.lower().startswith("open") and not step.get("timing_only"):
+                acted = True
+    if acted or not notes:
+        return "study budget", ""
+    text = notes[-1][:400]
+    if _cdp_failure_text(text):
+        return "", text
+    return text, ""
+
+
 def _stamp_phase_trace(
     trace: list[dict[str, Any]],
     clock: _PhaseClock | None,
@@ -488,6 +564,57 @@ def nav_concurrency() -> int:
 
 
 _NAV_SEMAPHORE: asyncio.Semaphore | None = None
+_CDP_SEMAPHORE: asyncio.Semaphore | None = None
+_CDP_DEPTH = contextvars.ContextVar("usersim_cdp_depth", default=0)
+_CDP_ERROR_RE = re.compile(
+    r"cdp|websocket|target closed|http 410|session (?:not running|closed|dropped)|"
+    r"browser closed|connection closed",
+    re.I,
+)
+
+
+def cdp_concurrency() -> int:
+    """How many DOM/screenshot/navigation CDP calls may run at once.
+
+    One agent captures state in about 1.6s. Six at once stretch that to about
+    7s. Twenty-four hit the 30s browser-state timeout (empty DOM, no click).
+    The LLM call stays near 2s with HTTP 200 at every level, so the cap is
+    only on the CDP phase.
+    """
+    raw = (os.environ.get("MVP_CDP_CONCURRENCY") or "4").strip()
+    try:
+        return max(1, int(raw))
+    except ValueError:
+        return 4
+
+
+def _cdp_semaphore() -> asyncio.Semaphore:
+    global _CDP_SEMAPHORE
+    if _CDP_SEMAPHORE is None:
+        _CDP_SEMAPHORE = asyncio.Semaphore(cdp_concurrency())
+    return _CDP_SEMAPHORE
+
+
+class _CdpSlot:
+    """One CDP slot. Nested calls from the same task do not take a second slot."""
+
+    def __init__(self) -> None:
+        self._held = False
+        self._token: contextvars.Token | None = None
+
+    async def __aenter__(self) -> None:
+        if _CDP_DEPTH.get() > 0:
+            self._token = _CDP_DEPTH.set(_CDP_DEPTH.get() + 1)
+            return
+        await _cdp_semaphore().acquire()
+        self._held = True
+        self._token = _CDP_DEPTH.set(1)
+
+    async def __aexit__(self, *_exc: object) -> None:
+        if self._token is not None:
+            _CDP_DEPTH.reset(self._token)
+        if self._held:
+            _cdp_semaphore().release()
 
 
 def _nav_semaphore() -> asyncio.Semaphore:
@@ -1835,6 +1962,7 @@ async def run_browser_agent(
     run_dir.mkdir(parents=True, exist_ok=True)
     screenshot_dir.mkdir(parents=True, exist_ok=True)
     phase_clock = _PhaseClock(agent_id, study_id)
+    run_failure: BaseException | None = None
 
     from mvp.profile_pool import clone_for_url, discard as discard_profile
 
@@ -2328,6 +2456,7 @@ async def run_browser_agent(
             flush=True,
         )
         history = None
+        run_failure: BaseException | None = None
         try:
             history = await agent.run(
                 max_steps=max_steps,
@@ -2338,6 +2467,9 @@ async def run_browser_agent(
             raise
         except Exception as run_exc:  # noqa: BLE001
             # Prefer partial opening frames over raising into study retry.
+            # The exception used to stop here, so failures.json never saw it.
+            run_failure = run_exc
+            phase_clock.note_exception("agent_run", run_exc, where="loop")
             print(f"[{agent_id}] agent.run failed: {run_exc!r} — returning partial", flush=True)
     finally:
         if browser_session is not None:
@@ -2422,6 +2554,9 @@ async def run_browser_agent(
         if isinstance(n, int) and n in sigs and not step.get("state_sig"):
             step["state_sig"] = sigs[n]
     _stamp_phase_trace(trace, phase_clock)
+    swallowed_error, swallowed_browser_error = _surface_swallowed_failure(
+        phase_clock, run_failure, trace
+    )
 
     visited_urls: list[str] = []
     for step in trace:
@@ -2453,6 +2588,8 @@ async def run_browser_agent(
                 "captcha": captcha,
                 "first_action_s": first_action_s,
                 "phase_events": phase_clock.events,
+                "error": swallowed_error,
+                "browser_error": swallowed_browser_error,
             },
             indent=2,
             default=str,
@@ -2476,6 +2613,8 @@ async def run_browser_agent(
         "captcha": captcha,
         "first_action_s": first_action_s,
         "phase_events": phase_clock.events,
+        "error": swallowed_error,
+        "browser_error": swallowed_browser_error,
         "run_dir": str(run_dir),
         "num_steps": len(trace),
     }

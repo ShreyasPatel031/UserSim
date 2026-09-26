@@ -3253,6 +3253,9 @@ async def run_study(
                                         flush=True,
                                     )
                                     existing = sess.get("trace") or []
+                                    from mvp.browser_agent import silent_failure_fields
+
+                                    _err, _browser_err = silent_failure_fields(existing)
                                     run = {
                                         "agent_id": agent_id,
                                         "completed": False,
@@ -3268,7 +3271,8 @@ async def run_study(
                                             "reason": "study budget",
                                             "step": len(existing),
                                         },
-                                        "error": "study budget",
+                                        "error": _err,
+                                        "browser_error": _browser_err,
                                     }
                                     _agent_task = None
                                 else:
@@ -3295,6 +3299,9 @@ async def run_study(
 
                                     asyncio.create_task(_drain(_agent_task))
                                     existing = sess.get("trace") or []
+                                    from mvp.browser_agent import silent_failure_fields
+
+                                    _err, _browser_err = silent_failure_fields(existing)
                                     run = {
                                         "agent_id": agent_id,
                                         "completed": False,
@@ -3310,7 +3317,8 @@ async def run_study(
                                             "reason": "study budget",
                                             "step": len(existing),
                                         },
-                                        "error": "study budget",
+                                        "error": _err,
+                                        "browser_error": _browser_err,
                                     }
                                 elif _agent_task is not None:
                                     run = _agent_task.result()
