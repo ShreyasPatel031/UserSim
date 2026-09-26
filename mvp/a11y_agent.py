@@ -826,26 +826,38 @@ class A11yBoot:
         self.install_fast_plan()
 
         async def _boot() -> None:
-            # One browser per site. Agents open their own tabs on it. A second
-            # CDP connection to the same Browserbase session returns 410.
-            bb = await self._create_one(0, enqueue=False)
-            if bb is not None:
+            # One browser per site. A primed session is often already closed
+            # (CDP 410). Retry with a new browser or every product agent waits
+            # out the study budget.
+            for attempt in range(4):
+                bb = await self._create_one(attempt, enqueue=False)
+                if bb is None:
+                    continue
                 try:
                     snap = await self._read_url(bb, self.study.url)
                 except Exception as exc:  # noqa: BLE001
-                    print(f"[a11y] product read failed: {exc!r}", flush=True)
-                    snap = None
-                if isinstance(snap, dict):
-                    handle = snap.pop("_handle", None)
-                    if isinstance(handle, dict):
-                        handle["site_key"] = "product"
-                        handle["read"] = snap
-                        async with self._handle_cv:
-                            self._handles.append(handle)
-                            self.contexts["product"] = handle
-                            self._handle_cv.notify_all()
-                    self.snapshots["product"] = snap
-                    self._publish_site("product", snap)
+                    print(f"[a11y] product read failed (retrying): {exc!r}", flush=True)
+                    continue
+                handle = snap.pop("_handle", None) if isinstance(snap, dict) else None
+                page = (handle or {}).get("page") if isinstance(handle, dict) else None
+                try:
+                    closed = page is None or page.is_closed()
+                except Exception:
+                    closed = True
+                if closed or not isinstance(handle, dict) or not isinstance(snap, dict):
+                    print("[a11y] product read had no live page (retrying)", flush=True)
+                    continue
+                handle["site_key"] = "product"
+                handle["read"] = snap
+                async with self._handle_cv:
+                    self._handles.append(handle)
+                    self.contexts["product"] = handle
+                    self._handle_cv.notify_all()
+                self.snapshots["product"] = snap
+                self._publish_site("product", snap)
+                break
+            else:
+                print("[a11y] no live product page", flush=True)
             extras = len([c for c in (self.study.competitors or []) if c])
             if extras:
                 self._tasks.append(asyncio.create_task(self._fill_pool(extras, offset=1)))
