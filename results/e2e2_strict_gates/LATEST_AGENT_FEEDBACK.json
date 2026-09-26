@@ -1,31 +1,30 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T05:08:00Z",
+  "graded_at": "2026-09-26T05:11:00Z",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
-      "sha": "dcef40e",
-      "note": "Replace a dead shared page before the final screenshot. Newer head 6b456af is not graded yet.",
+      "sha": "6b456af",
       "linear": {
-        "study_id": "802da79e-c68a-49f3-b8ef-6eef4f4a5e44",
+        "study_id": "6c020271-bb02-4d56-b7b1-80d65bb69676",
         "pass": false,
-        "elapsed_s": 34.0,
-        "time_to_first_value": "4.123s PASS",
+        "elapsed_s": 35.6,
+        "time_to_first_value": "4.112s PASS",
         "total_time": "not ready FAIL",
-        "time_to_first_action": "median=2.308s max=22.206s n=24/24 FAIL",
-        "ttfa_max_who": "Asana competitor_1, start=browser_ready_at_ts",
+        "time_to_first_action": "median=2.339s max=19.986s n=24/24 FAIL",
+        "ttfa_max_who": "all 8 Asana competitor_1 from browser_ready_at_ts",
         "page_opened": "23/24 FAIL slow=t1__p1__product",
         "product_task_completion": "0/8",
         "final_screenshot": "missing field final_screenshot_url"
       },
       "excalidraw": {
-        "study_id": "4c66ca2e-4a64-470c-aaac-5aa0fc7c904a",
+        "study_id": "976ff37c-561e-4a54-9884-b34f048995fb",
         "pass": false,
-        "elapsed_s": 34.0,
-        "time_to_first_value": "4.119s PASS",
+        "elapsed_s": 29.0,
+        "time_to_first_value": "2.89s PASS",
         "total_time": "not ready FAIL",
-        "time_to_first_action": "median=1.431s max=20.678s n=24/24 FAIL",
-        "ttfa_max_who": "all 8 Miro competitor_2, start=browser_ready_at_ts",
+        "time_to_first_action": "median=1.226s max=17.496s n=24/24 FAIL",
+        "ttfa_max_who": "all 8 Miro competitor_2 from browser_ready_at_ts",
         "page_opened": "22/24 FAIL slow=t1__p1__product and t1__p1__competitor_1",
         "product_task_completion": "0/8",
         "final_screenshot": "missing field final_screenshot_url"
@@ -33,33 +32,33 @@
     },
     "cursor/tonight-integration": {
       "sha": "fc0e689",
-      "note": "contains 6b456af plus a different a11y_agent.py and study.py. Not graded on that tree yet."
+      "note": "contains 6b456af plus a different a11y_agent.py and study.py. Live grade not started yet."
     }
   },
   "bugs": [
     {
       "id": 1,
-      "fact": "time_to_first_action max is still over 10s from browser_ready_at_ts. Linear 802da79e Asana competitor_1 max 22.206s. Excalidraw 4c66ca2e Miro competitor_2 max 20.678s (all 8)."
+      "fact": "Retrying a closed primed browser did not bring the first click under 10s. Linear 6c020271 Asana competitor_1 max 19.986s from browser_ready_at_ts. Excalidraw 976ff37c Miro competitor_2 max 17.496s from browser_ready_at_ts."
     },
     {
       "id": 2,
-      "fact": "Page open within 5s failed again. Linear 23/24, slow t1__p1__product. Excalidraw 22/24, slow t1__p1__product and t1__p1__competitor_1. Abort leaves total_time not ready and final_screenshot_url missing."
+      "fact": "Page open within 5s failed. Linear 23/24 slow t1__p1__product. Excalidraw 22/24 slow t1__p1__product and t1__p1__competitor_1. Abort means total_time is not ready and final_screenshot_url is missing."
     },
     {
       "id": 3,
-      "fact": "Product is 0/8. No Gemini YES because the final screenshot is missing. Replacing a dead shared page did not get a finished report."
+      "fact": "Product is 0/8. No final PNG, so no Gemini YES. Linear had 2 structural runs past the first screen. Excalidraw had 1."
     },
     {
       "id": 4,
-      "fact": "Strength and weakness are empty. A finished report still needs one of each from a run past the first screen, with agent, step, AX or URL, and the final screenshot."
+      "fact": "Strength and weakness are empty on the aborted report. A pass needs one of each from a run past the first screen with agent, step, AX or URL, and the final screenshot."
     },
     {
       "id": 5,
-      "fact": "Do not collapse created_at_ts, page_open_at_ts, and first_action_at_ts onto one poll. The harness uses browser_ready_at_ts when those three match."
+      "fact": "When created_at_ts, page_open_at_ts, and first_action_at_ts are the same instant, the harness clocks from browser_ready_at_ts. Do not rewrite those three to the poll."
     },
     {
       "id": 6,
-      "fact": "New-issue stuck loop from study 6e2acd43 stays open until product is >=4/8 on a finished report."
+      "fact": "New-issue stuck loop from study 6e2acd43 stays open until product is >=4/8 Gemini YES on a finished report."
     }
   ]
 }
