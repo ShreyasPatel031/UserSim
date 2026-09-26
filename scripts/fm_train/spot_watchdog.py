@@ -12,11 +12,11 @@ left alone.
 
 A start whose operation finishes while the VM is still TERMINATED is a
 stockout, not a success. Stockouts do not increment usersim-spot-restarts.
-That counter counts successful starts only. While usersim-train-state=running
-the watchdog backs off and tries again; it does not give up after repeated
-stockouts. A simulated stockout, or a cap of successful starts after a real
-preemption, starts the single instance named by usersim-failover-to and does
-not try any other machine.
+That counter counts successful starts only. A stockout, or the cap after a
+real preemption, starts the single on-demand instance named by
+usersim-failover-to and resumes there. It does not try any other machine.
+With no failover target, a stockout backs off and retries while
+usersim-train-state=running.
 """
 from __future__ import annotations
 
@@ -532,7 +532,15 @@ def tick() -> int:
             f"backoff_s={delay} detail={fail_detail} "
             "note=stockout_does_not_consume_cap"
         )
-        if failures >= 2 and stockout:
+        if stockout and inst["labels"].get(FAILOVER_LABEL):
+            log(
+                f"CAPACITY name={name} consecutive_failures={failures} restarts={restarts}/{MAX_RESTARTS} "
+                "note=stockout does not consume the cap; failing over to on-demand"
+            )
+            if do_failover(inst, "stockout"):
+                started += 1
+            continue
+        if stockout:
             log(
                 f"CAPACITY name={name} consecutive_failures={failures} restarts={restarts}/{MAX_RESTARTS} "
                 "note=Spot capacity failed; restart cap unchanged; will retry while train-state=running"
