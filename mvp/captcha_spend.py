@@ -19,6 +19,7 @@ from __future__ import annotations
 import json
 import os
 import threading
+import time
 from contextvars import ContextVar
 from datetime import datetime, timezone
 from pathlib import Path
@@ -142,6 +143,29 @@ def spent_usd(*, site: str | None = None) -> float:
         except (TypeError, ValueError):
             continue
     return round(total, 6)
+
+
+def bind_study_signup(site: str) -> int:
+    """Open a CapSolver attempt for one in-study signup.
+
+    Dollar caps and the three-solves-per-attempt cap still apply. The
+    two-attempt research cap stays on ``begin_signup_attempt`` so a 24-agent
+    study can sign up without turning that runner's limit off.
+    """
+    host = (site or "").strip().lower().removeprefix("www.")
+    if not host:
+        raise SpendCapError("signup attempt missing site")
+    attempt = int(time.time() * 1000) % 1_000_000_000
+    _append(
+        {
+            "event": "study_signup",
+            "site": host,
+            "attempt": attempt,
+            "ts": _now(),
+        }
+    )
+    bind_signup(host, attempt)
+    return attempt
 
 
 def begin_signup_attempt(site: str) -> int:

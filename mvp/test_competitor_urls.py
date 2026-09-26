@@ -9,6 +9,7 @@ from mvp.competitor_urls import (
     classify_run_issue,
     filter_live_competitor_urls,
     insight_view,
+    product_insight_results,
     looks_like_product_page,
     rewrite_competitor_task,
     same_site,
@@ -301,6 +302,27 @@ class RunIssueTests(unittest.TestCase):
         self.assertTrue(bad["exclude_from_insights"])
         self.assertEqual(bad["run_issue"]["persona_name"], "Agile Product Manager")
         self.assertNotIn("exclude_from_insights", good)
+
+    def test_signup_failure_stays_a_run_issue(self) -> None:
+        row = {
+            "agent_id": "t1",
+            "site_url": "https://linear.app/",
+            "final_url": "https://linear.app/signup",
+            "persona_name": "Simulated user 1",
+            "task_title": "Create an issue",
+            "task_prompt": "Create an issue",
+            "run_issue": {
+                "kind": "signup",
+                "reason": "Signup failed: captcha_unsolved",
+            },
+            "friction_points": ["Signup failed: captcha_unsolved"],
+        }
+        issues = annotate_run_issues([row])
+        self.assertEqual(len(issues), 1)
+        self.assertEqual(issues[0]["kind"], "signup")
+        self.assertIn("captcha_unsolved", issues[0]["reason"])
+        self.assertTrue(row["exclude_from_insights"])
+        self.assertEqual(product_insight_results([row]), [])
 
 
 if __name__ == "__main__":

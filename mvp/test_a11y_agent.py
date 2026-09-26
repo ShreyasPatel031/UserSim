@@ -15,6 +15,7 @@ from mvp.a11y_agent import (
     fast_action_model,
     _nodes_for_model,
     achievable_without_account,
+    task_needs_account,
     format_ax,
     goal_visible,
     note_progress,
@@ -273,18 +274,25 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(extract_json('{"act":"click","i":1}\n{"act":"done"}'), {"act": "click", "i": 1})
         self.assertEqual(extract_json('note {"act":"drag"} trailing'), {"act": "drag"})
 
-    def test_logged_out_tasks_do_not_require_an_account(self) -> None:
+    def test_account_tasks_are_kept(self) -> None:
         self.assertEqual(
             achievable_without_account("https://linear.app/", "Create a new issue in your workspace"),
-            "Find how to create a new issue",
+            "Create a new issue in your workspace",
         )
-        self.assertEqual(
-            achievable_without_account("https://linear.app/", "Find how to create a new issue"),
-            "Find how to create a new issue",
+        self.assertTrue(task_needs_account("Create an issue"))
+        self.assertTrue(task_needs_account("Make a board"))
+        self.assertFalse(task_needs_account("Find how to create a new issue"))
+        self.assertFalse(
+            goal_visible(
+                "Create an issue",
+                {"url": "https://linear.app/docs/creating-issues", "title": "Create issues – Linear Docs"},
+            )
         )
-        self.assertEqual(
-            achievable_without_account("https://linear.app/", "Look for pricing or how to get started"),
-            "Look for pricing or how to get started",
+        self.assertTrue(
+            goal_visible(
+                "Create an issue",
+                {"url": "https://linear.app/team/issue/new", "text": "Issue title\nDescription"},
+            )
         )
 
 
