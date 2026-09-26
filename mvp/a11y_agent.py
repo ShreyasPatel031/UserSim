@@ -485,9 +485,33 @@ def goal_visible(task: str, read: dict[str, Any]) -> bool:
         if canvas_inked(str(read.get("opened_canvas") or ""), str(read.get("canvas") or "")):
             return True
         return int(read.get("shapes") or 0) > int(read.get("opened_shapes") or 0)
-    if kind == "export" and read.get("downloaded"):
-        return True
-    # Export, help, create, and other outcomes cannot be decided from page
+    if kind == "export":
+        if read.get("downloaded"):
+            return True
+        # Shareable-link tasks: a live document / room URL, or a "copied"
+        # toast, is the goal. A file download is not required.
+        task_l = (task or "").lower()
+        if "share" in task_l or "shareable" in task_l or "link" in task_l:
+            if re.search(
+                r"/f/|#room=|/r/|/s/|live.?collab|share[/=]",
+                url,
+                re.I,
+            ):
+                return True
+            blob = " ".join(
+                [
+                    title,
+                    str(read.get("text") or ""),
+                    " ".join(
+                        str(n.get("name") or "")
+                        for n in (read.get("nodes") or [])[:40]
+                    ),
+                ]
+            ).lower()
+            if re.search(r"link copied|copied to clipboard|copied!", blob):
+                return True
+        return False
+    # Help, create, and other outcomes cannot be decided from page
     # text alone. The loop asks a separate screenshot check instead.
     return False
 

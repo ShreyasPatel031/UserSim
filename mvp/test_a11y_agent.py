@@ -290,6 +290,38 @@ class A11yAgentTest(unittest.TestCase):
             )
         )
 
+    def test_shareable_link_url_counts_as_done(self) -> None:
+        task = "Get a shareable link to the drawing"
+        self.assertEqual(task_kind(task), "export")
+        self.assertTrue(
+            goal_visible(
+                task,
+                {"url": "https://www.tldraw.com/f/T1WZkJ5GUTTXfHUOx_tQ1?d=v0", "title": "tldraw"},
+            )
+        )
+        self.assertFalse(
+            goal_visible(task, {"url": "https://www.tldraw.com/", "title": "tldraw"})
+        )
+        self.assertTrue(
+            goal_visible(
+                task,
+                {"url": "https://www.tldraw.com/", "title": "tldraw", "text": "Link copied"},
+            )
+        )
+        # A pure export still needs a download, not a document URL.
+        self.assertFalse(
+            goal_visible(
+                "Export the drawing as PNG",
+                {"url": "https://www.tldraw.com/f/abc", "downloaded": None},
+            )
+        )
+        self.assertTrue(
+            goal_visible(
+                "Export the drawing as PNG",
+                {"url": "https://www.tldraw.com/", "downloaded": "x.png"},
+            )
+        )
+
     def test_logged_out_tasks_do_not_require_an_account(self) -> None:
         self.assertEqual(
             achievable_without_account("https://linear.app/", "Create a new issue in your workspace"),
