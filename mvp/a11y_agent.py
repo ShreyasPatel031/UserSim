@@ -583,7 +583,11 @@ def would_repeat_action(trace: list[dict[str, Any]], label: str, read: dict[str,
             prev_key = ""
             continue
         progressed = False
-        if prev is not None:
+        if prev is not None and prev.get("changed") is True:
+            # The last click moved the view (a wizard's next "Skip"), so the
+            # same label again is on a new screen.
+            progressed = True
+        elif prev is not None:
             if _page_key(str(prev.get("url") or "")) != _page_key(str(step.get("url") or "")):
                 prev_key_ok = _page_key(str(prev.get("url") or "")) != ("", "", "")
                 cur_key_ok = _page_key(str(step.get("url") or "")) != ("", "", "")
@@ -1571,10 +1575,12 @@ async def _escape_to_app(page: Any, read: dict[str, Any], signed_in: bool, escap
         return False
     home = f"{parts.scheme}://{parts.netloc}/"
     escapes.append(home)
+    print(f"[a11y] stuck while signed in; reopening {home}", flush=True)
     try:
         await page.goto(home, wait_until="domcontentloaded", timeout=10000)
-    except Exception:
-        return False
+    except Exception as exc:  # noqa: BLE001
+        # SPA redirects often abort the first navigation; the page still moved.
+        print(f"[a11y] reopen {home}: {str(exc)[:120]}", flush=True)
     await _wait_for_page(page)
     return True
 
@@ -1820,6 +1826,12 @@ def _observation_changed(
     before_names = {str(n.get("name") or "") for n in before.get("nodes") or [] if isinstance(n, dict)}
     after_names = {str(n.get("name") or "") for n in after.get("nodes") or [] if isinstance(n, dict)}
     if len(after_names - before_names) >= 3:
+        return True
+    live_before = {str(n.get("name") or "") for n in before.get("nodes") or [] if isinstance(n, dict) and not n.get("inert")}
+    live_after = {str(n.get("name") or "") for n in after.get("nodes") or [] if isinstance(n, dict) and not n.get("inert")}
+    if (live_after - live_before) and before_text != after_text:
+        # A wizard step swaps its buttons and heading ("Connect GitHub" to
+        # "Connect Slack") without much change in length.
         return True
     before_on = {str(n.get("name") or "") for n in before.get("nodes") or [] if isinstance(n, dict) and n.get("on")}
     after_on = {str(n.get("name") or "") for n in after.get("nodes") or [] if isinstance(n, dict) and n.get("on")}
