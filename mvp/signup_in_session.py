@@ -78,7 +78,7 @@ _COOKIE = re.compile(
 
 _EMAIL_REJECT = re.compile(
     r"invalid email domain|email domain (is )?not (allowed|supported)|disposable|temporary email|"
-    r"couldn['’]t create your account|please try again later|use a (work|business|different) email|"
+    r"couldn['’]t create your account|please try again later|use a (work|business) email( address)? (to|instead)|"
     r"email (address )?(is )?not (valid|allowed|accepted)|we (can(no|')t|are unable to) accept",
     re.I,
 )
@@ -891,7 +891,11 @@ async def signup_in_session(
                 return _finish(False, reason)
 
             rej = _EMAIL_REJECT.search(body_low)
-            if email_submitted and rej:
+            email_box = any(
+                e.get("tag") == "input" and ("email" in f"{e.get('type')} {e.get('name')} {e.get('placeholder')} {e.get('field')}".lower())
+                for e in snap.get("elements") or []
+            )
+            if email_submitted and rej and email_box:
                 rejects += 1
                 if rejects >= 2:
                     steps.append(f"email rejected: {rej.group(0)} ({ident['email'].split('@')[1]})")
