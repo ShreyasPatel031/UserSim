@@ -325,7 +325,18 @@ _READ_JS = """() => {
   const email_input = Array.from(document.querySelectorAll('input[type="email"], input[autocomplete="email"], input[autocomplete="username"], input[name*="email" i]')).some(visible);
   const dialog = !!document.querySelector('[role="dialog"]:not([aria-hidden="true"]), dialog[open]');
   const shapes = document.querySelectorAll('svg path, svg rect, svg ellipse, [data-shape-type], .tl-shape').length;
-  return { url, title, text, canvas, nodes, password, email_input, dialog, shapes };
+  let focus = null;
+  const act = document.activeElement;
+  if (act && act !== document.body && act !== document.documentElement) {
+    const editable = act.isContentEditable || act.tagName === 'TEXTAREA' || act.tagName === 'INPUT';
+    focus = {
+      tag: act.tagName.toLowerCase(),
+      editable: editable,
+      name: (act.getAttribute('aria-label') || act.getAttribute('placeholder') || '').slice(0, 60),
+      value: String(act.value || (act.isContentEditable ? act.innerText : '') || '').slice(0, 120),
+    };
+  }
+  return { url, title, text, canvas, nodes, password, email_input, dialog, shapes, focus };
 }"""
 
 
@@ -399,8 +410,14 @@ def _origin(url: str) -> str:
 
 
 def task_kind(task: str) -> str:
-    """Which goal this task is asking the agent to reach."""
+    """Which goal this task is asking the agent to reach.
+
+    A compound task ("draw a box, then export it") is judged on its last step.
+    """
     text = (task or "").lower()
+    parts = re.split(r"\bthen\b|\band then\b", text)
+    if len(parts) > 1 and parts[-1].strip():
+        text = parts[-1]
     if re.search(r"\b(?:rectangle|draw|square|box|shape|sketch|diagram)\b", text):
         return "draw"
     if re.search(r"\bexport\b", text) or ("share" in text and "drawing" in text):
@@ -615,7 +632,15 @@ def action_label(action: dict[str, Any]) -> str:
     act = str(action.get("act") or "click")
     name = str(action.get("name") or action.get("text") or "").strip()
     if act == "type":
-        return f"type {name or action.get('text') or ''}".strip()
+        text = str(action.get("text") or "").strip()
+        field = str(action.get("name") or "").strip()
+        if text and field and field != text:
+            return f"type {text!r} into {field[:40]}"
+        return f"type {text or field}".strip()
+    if act == "press":
+        return f"press {action.get('key') or name or 'Enter'}".strip()
+    if act == "back":
+        return "go back"
     if act == "scroll":
         return "scroll down"
     if act == "drag":
@@ -1391,6 +1416,15 @@ def _nodes_for_model(
     return kept
 
 
+def _focus_text(focus: Any) -> str:
+    if not isinstance(focus, dict):
+        return "none"
+    kind = "editable " if focus.get("editable") else ""
+    value = str(focus.get("value") or "")
+    name = str(focus.get("name") or "")
+    return f"{kind}{focus.get('tag') or 'element'}{(' ' + repr(name)) if name else ''} containing {value!r}"
+
+
 _ACTS = ("click", "type", "press", "scroll", "back", "drag", "done")
 
 
@@ -1428,6 +1462,7 @@ async def _model_action(
         f"URL: {read.get('url') or ''}\n"
         f"Title: {read.get('title') or ''}\n"
         f"Dialog open: {'yes' if read.get('dialog') else 'no'}. Drawing canvas on page: {canvas}.\n"
+        f"Focused element: {_focus_text(read.get('focus'))}\n"
         f"Visible text: {str(read.get('text') or '')[:900]}\n"
         f"Interactive elements (i role name href):\n{ax}\n"
         f"Actions so far: {'; '.join(history[-8:]) or 'none'}\n"
@@ -1440,7 +1475,8 @@ async def _model_action(
         "does not do the task. "
         "Buttons inside a product screenshot or animated preview on a marketing page do nothing; do not click them. "
         "Elements marked (selected) are already on: a selected drawing tool means the next action is drag, not another click. "
-        "done only when the current page already shows the finished outcome the task asked for. "
+        "done as soon as the current page shows the finished outcome the task asked for "
+        "(for example the typed text is already in the note, or the item now exists); do not redo work. "
         "reason is a short phrase. friction is one sentence if something was confusing, else empty. "
         "easy is one sentence naming something that was obvious, else empty."
     )
@@ -1604,11 +1640,34 @@ async def _act(page: Any, action: dict[str, Any]) -> str:
         await page.mouse.wheel(0, int(action.get("dy") or 600))
         return "scroll"
     if act == "type":
-        how = await _click_named(page, action)
-        text = str(action.get("text") or "")
-        if text:
-            await page.keyboard.type(text, delay=0)
+        role = str(action.get("role") or "").lower()
+        field = role in {"input", "textarea", "textbox", "searchbox", "combobox"}
+        editing = False
+        if not field:
+            # A shape or note already in edit mode has focus. Clicking again
+            # would move the caret or deselect it, so type straight in.
+            try:
+                editing = bool(
+                    await page.evaluate(
+                        "() => { const a = document.activeElement; return !!a && a !== document.body && "
+                        "(a.isContentEditable || a.tagName === 'TEXTAREA' || (a.tagName === 'INPUT' && !['button','submit','checkbox','radio'].includes(a.type))); }"
+                    )
+                )
+            except Exception:
+                editing = False
+        if editing:
+            how = "focused"
+        else:
+            how = await _click_named(page, action)
+        if text_value := str(action.get("text") or ""):
+            # Replace what the field holds, the way a user retypes a value.
+            try:
+                await page.keyboard.press("Control+A")
+            except Exception:
+                pass
+            await page.keyboard.type(text_value, delay=0)
         return f"type/{how}"
+
     if act == "press":
         key = str(action.get("key") or action.get("text") or "").strip() or "Enter"
         await page.keyboard.press(key)
@@ -1829,6 +1888,7 @@ async def _verify_done(
         f"Current title: {read.get('title') or ''}\n"
         f"Current visible text: {str(read.get('text') or '')[:1200]}\n"
         f"File downloaded during the task: {read.get('downloaded') or 'none'}\n"
+        f"Focused element: {_focus_text(read.get('focus'))}\n"
         "finished=true only if this page itself shows the outcome the task asked for "
         "(the created item, the drawn shape, the requested page or dialog). "
         "A docs, help, blog or marketing page that explains how is not finished. "
@@ -1861,6 +1921,8 @@ async def _verify_done(
     except Exception as exc:  # noqa: BLE001
         print(f"[a11y] done check failed: {exc!r}", flush=True)
         return False
+    if os.environ.get("MVP_LOOP_DEBUG"):
+        print(f"[a11y] done check: {data!r}", flush=True)
     return bool(isinstance(data, dict) and data.get("finished") is True)
 
 
@@ -1910,6 +1972,7 @@ async def complete_task_on_page(
     done_rejects = 0
     acted = 0
     downloads: list[str] = []
+    repeats = 0
 
     def _on_download(download: Any) -> None:
         try:
@@ -2001,6 +2064,8 @@ async def complete_task_on_page(
             history.append("model returned no action")
             continue
         act = str(action.get("act") or "click")
+        if os.environ.get("MVP_LOOP_DEBUG"):
+            print(f"[{agent_id}] decide {act} {action.get('name')!r} text={action.get('text')!r} why={action.get('reason')!r}", flush=True)
         if act == "blocked":
             model_misses += 1
             if model_misses >= 4:
@@ -2045,8 +2110,13 @@ async def complete_task_on_page(
                 action["canvas_h"] = int(box.get("h") or 0)
         label = action_label(action)
         if would_repeat_action(trace, label, read):
-            _miss("repeated an action that changed nothing")
-            break
+            repeats += 1
+            if repeats >= 3:
+                _miss("repeated an action that changed nothing")
+                break
+            changed_nothing = True
+            history.append(f"{label} already changed nothing; do something else")
+            continue
         step_no += 1
         row = _step_from_read(step=step_no, action=label, read=read, thought=str(action.get("reason") or "")[:200])
         row["decision_source"] = "model"

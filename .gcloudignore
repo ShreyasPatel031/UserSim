@@ -1,0 +1,13 @@
+.git
+.venv
+**/__pycache__
+mvp/runs
+public
+data
+results
+third_party
+notebooks
+docs
+.env*
+secrets
+*.log

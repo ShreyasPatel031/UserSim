@@ -1,26 +1,98 @@
 {
-  "linear": {"url": "https://linear.app", "competitors": ["https://asana.com/", "https://trello.com/"],
-             "tasks": ["Create a new issue", "Look for pricing or how to get started"],
-             "segment": "Product managers comparing issue trackers"},
-  "excalidraw": {"url": "https://excalidraw.com", "competitors": ["https://www.tldraw.com/", "https://miro.com/"],
-             "tasks": ["Draw a rectangle on the canvas", "Draw a rectangle, then export the drawing as a PNG image"],
-             "segment": "Engineers sketching quick architecture diagrams"},
-  "tldraw": {"url": "https://www.tldraw.com", "competitors": ["https://excalidraw.com/", "https://miro.com/"],
-             "tasks": ["Draw a rectangle on the canvas", "Add a sticky note that says hello"],
-             "segment": "Designers who whiteboard ideas with a team"},
-  "trello": {"url": "https://trello.com", "competitors": ["https://asana.com/", "https://www.notion.so/"],
-             "tasks": ["Create a new board", "Look for pricing or how to get started"],
-             "segment": "Small-team leads picking a task board"},
-  "calendly": {"url": "https://calendly.com", "competitors": ["https://cal.com/", "https://www.doodle.com/"],
-             "tasks": ["Create a new event type", "Look for pricing or how to get started"],
-             "segment": "Consultants who book client calls"},
-  "asana": {"url": "https://asana.com", "competitors": ["https://trello.com/", "https://monday.com/"],
-             "tasks": ["Create a new project", "Look for pricing or how to get started"],
-             "segment": "Operations managers comparing work management tools"},
-  "notion": {"url": "https://www.notion.so", "competitors": ["https://coda.io/", "https://www.craft.do/"],
-             "tasks": ["Create a new page", "Look for pricing or how to get started"],
-             "segment": "Founders choosing a team wiki"},
-  "miro": {"url": "https://miro.com", "competitors": ["https://www.figma.com/figjam/", "https://excalidraw.com/"],
-             "tasks": ["Create a new board", "Look for pricing or how to get started"],
-             "segment": "Workshop facilitators choosing a whiteboard"}
+ "linear": {
+  "url": "https://linear.app",
+  "competitors": [
+   "https://asana.com/",
+   "https://trello.com/"
+  ],
+  "tasks": [
+   "Create a new issue",
+   "Look for pricing or how to get started"
+  ],
+  "segment": "Product managers comparing issue trackers"
+ },
+ "excalidraw": {
+  "url": "https://excalidraw.com",
+  "competitors": [
+   "https://www.tldraw.com/",
+   "https://miro.com/"
+  ],
+  "tasks": [
+   "Draw a rectangle on the canvas",
+   "Add a text label that says hello on the canvas"
+  ],
+  "segment": "Engineers sketching quick architecture diagrams"
+ },
+ "tldraw": {
+  "url": "https://www.tldraw.com",
+  "competitors": [
+   "https://excalidraw.com/",
+   "https://miro.com/"
+  ],
+  "tasks": [
+   "Draw a rectangle on the canvas",
+   "Add a sticky note that says hello"
+  ],
+  "segment": "Designers who whiteboard ideas with a team"
+ },
+ "trello": {
+  "url": "https://trello.com",
+  "competitors": [
+   "https://asana.com/",
+   "https://www.notion.so/"
+  ],
+  "tasks": [
+   "Create a new board",
+   "Look for pricing or how to get started"
+  ],
+  "segment": "Small-team leads picking a task board"
+ },
+ "calendly": {
+  "url": "https://calendly.com",
+  "competitors": [
+   "https://cal.com/",
+   "https://www.doodle.com/"
+  ],
+  "tasks": [
+   "Create a new event type",
+   "Look for pricing or how to get started"
+  ],
+  "segment": "Consultants who book client calls"
+ },
+ "asana": {
+  "url": "https://asana.com",
+  "competitors": [
+   "https://trello.com/",
+   "https://monday.com/"
+  ],
+  "tasks": [
+   "Create a new project",
+   "Look for pricing or how to get started"
+  ],
+  "segment": "Operations managers comparing work management tools"
+ },
+ "notion": {
+  "url": "https://www.notion.so",
+  "competitors": [
+   "https://coda.io/",
+   "https://www.craft.do/"
+  ],
+  "tasks": [
+   "Create a new page",
+   "Look for pricing or how to get started"
+  ],
+  "segment": "Founders choosing a team wiki"
+ },
+ "miro": {
+  "url": "https://miro.com",
+  "competitors": [
+   "https://www.figma.com/figjam/",
+   "https://excalidraw.com/"
+  ],
+  "tasks": [
+   "Create a new board",
+   "Look for pricing or how to get started"
+  ],
+  "segment": "Workshop facilitators choosing a whiteboard"
+ }
 }
