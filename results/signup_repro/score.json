@@ -1,13 +1,14 @@
 {
   "version": 1,
-  "metric": "reproducible_fresh_alias",
+  "metric": "fresh_this_run",
   "description": "A host is reproducible only when a signup with a never-before-used alias_tag succeeds (ok=true, reason signed_up|signed_in). One-time cookie jars on the seed do NOT count.",
   "hosts": {
     "trello.com": {
       "reproducible": false,
       "last_reason": "captcha_unsolved",
-      "last_detail": "Unable to proceed with sign-up due to persistent reCAPTCHA verification issues. The page displays an error: 'We are having trouble verifying reCAPTCHA for this request. Please try again. If the problem persists, try another browser/device or reach out to Atlassian Support.'",
-      "last_alias_tag": "trello8d12440",
+      "last_detail": "Unable to proceed with Trello signup due to persistent CAPTCHA issues on the Atlassian signup page. Multiple attempts to solve the CAPTCHA have failed.",
+      "last_alias_tag": "trellofullb10",
+      "last_ok": false,
       "attempts": [
         {
           "host": "trello.com",
@@ -23,12 +24,48 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/fda908dc-d0c0-45f0-a27b-a1ea9ca8dc4e",
           "at": "2026-09-25T10:36:28.067958+00:00"
+        },
+        {
+          "host": "trello.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 435.0,
+          "alias_tag": "trellotcap10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/3f08af3c-b1fe-4821-b2fa-8002001317a4",
+          "attempt": 1,
+          "balance_before": 20.0,
+          "balance_after": 19.994,
+          "at": "2026-09-25T22:02:32.662102+00:00"
+        },
+        {
+          "host": "trello.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "captcha_unsolved",
+          "detail": "Unable to proceed with Trello signup due to persistent CAPTCHA issues on the Atlassian signup page. Multiple attempts to solve the CAPTCHA have failed.",
+          "elapsed_s": 366.7,
+          "alias_tag": "trellofullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/509ac7ea-dc6a-48dd-b87f-c0020fdc2636",
+          "attempt": 2,
+          "balance_before": 19.994,
+          "balance_after": 19.991,
+          "at": "2026-09-25T22:10:31.386882+00:00"
         }
       ],
-      "updated_at": "2026-09-25T10:36:28.067958+00:00"
+      "updated_at": "2026-09-25T22:10:31.386882+00:00"
     },
     "hashnode.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "signed_up",
       "last_detail": "",
       "last_alias_tag": "hashnode8d12441",
@@ -52,7 +89,7 @@
       "updated_at": "2026-09-25T10:42:12.043004+00:00"
     },
     "stackblitz.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "signed_up",
       "last_detail": "",
       "last_alias_tag": "stackblitz8d12442",
@@ -79,7 +116,8 @@
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "wix8d12443",
+      "last_alias_tag": "wixfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "wix.com",
@@ -95,12 +133,30 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/d984e30e-066f-4fd5-89cc-c235c4ff347c",
           "at": "2026-09-25T10:52:01.113801+00:00"
+        },
+        {
+          "host": "wix.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 441.5,
+          "alias_tag": "wixfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/2684b388-be1e-4819-9859-045ffc459f75",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:42:05.724025+00:00"
         }
       ],
-      "updated_at": "2026-09-25T10:52:01.113801+00:00"
+      "updated_at": "2026-09-26T01:42:05.724025+00:00"
     },
     "codepen.io": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "signed_up",
       "last_detail": "",
       "last_alias_tag": "codepen8d12444",
@@ -127,7 +183,8 @@
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "zapier8d12445",
+      "last_alias_tag": "zapierfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "zapier.com",
@@ -143,15 +200,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/80cecfbc-382c-454f-b3e0-a3cdc07e1103",
           "at": "2026-09-25T10:56:24.939394+00:00"
+        },
+        {
+          "host": "zapier.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 178.4,
+          "alias_tag": "zapierfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/14376f64-8b0e-4fca-b588-eed2b9da68f5",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:58:31.702536+00:00"
         }
       ],
-      "updated_at": "2026-09-25T10:56:24.939394+00:00"
+      "updated_at": "2026-09-26T01:58:31.702536+00:00"
     },
     "make.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "make8d12446",
+      "last_alias_tag": "makefullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "make.com",
@@ -167,15 +243,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/e492e914-6c3b-46e7-9353-1b8d0b086870",
           "at": "2026-09-25T11:00:06.436801+00:00"
+        },
+        {
+          "host": "make.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 474.4,
+          "alias_tag": "makefullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/482e03d8-569b-4e3a-ad93-913e5b0f30f0",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T02:06:27.689895+00:00"
         }
       ],
-      "updated_at": "2026-09-25T11:00:06.436801+00:00"
+      "updated_at": "2026-09-26T02:06:27.689895+00:00"
     },
     "shopify.com": {
       "reproducible": false,
-      "last_reason": "unknown",
-      "last_detail": "Email verification link not received after multiple attempts.",
-      "last_alias_tag": "shopifyff2dac1",
+      "last_reason": "captcha_unsolved",
+      "last_detail": "need_solver_api:hcaptcha/recaptcha sitekey=e729087e-b0e0-4114-91b1-1041d3630195 type=hcaptcha \u2014 Browserbase+OSS could not produce a token; set MVP_CAPTCHA_API_KEY (CapSolver/2Captcha) or Browserbase Verified",
+      "last_alias_tag": "shopifyfullb10",
+      "last_ok": false,
       "attempts": [
         {
           "host": "shopify.com",
@@ -206,15 +301,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/2c0eb2fa-76a7-4545-b6da-404ee7c0e63d",
           "at": "2026-09-25T11:48:29.408955+00:00"
+        },
+        {
+          "host": "shopify.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "captcha_unsolved",
+          "detail": "need_solver_api:hcaptcha/recaptcha sitekey=e729087e-b0e0-4114-91b1-1041d3630195 type=hcaptcha \u2014 Browserbase+OSS could not produce a token; set MVP_CAPTCHA_API_KEY (CapSolver/2Captcha) or Browserbase Verified",
+          "elapsed_s": 521.6,
+          "alias_tag": "shopifyfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/04c3adf4-cc04-4a9c-bea3-48cceeb01e49",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T22:52:01.059933+00:00"
         }
       ],
-      "updated_at": "2026-09-25T11:48:29.408955+00:00"
+      "updated_at": "2026-09-25T22:52:01.059933+00:00"
     },
     "grammarly.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "grammarly8d12448",
+      "last_alias_tag": "grammarlyfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "grammarly.com",
@@ -230,15 +344,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/658726b1-8810-40a0-92ed-c07cc9597159",
           "at": "2026-09-25T11:05:44.366005+00:00"
+        },
+        {
+          "host": "grammarly.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 283.6,
+          "alias_tag": "grammarlyfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/80462d98-bf3b-4afa-8ad0-07afa7b06bd3",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T02:12:36.311749+00:00"
         }
       ],
-      "updated_at": "2026-09-25T11:05:44.366005+00:00"
+      "updated_at": "2026-09-26T02:12:36.311749+00:00"
     },
     "jotform.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "jotform8d1244a",
+      "last_alias_tag": "jotformfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "jotform.com",
@@ -254,15 +387,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/6c5d5701-74ee-4f1c-ba1c-dac8a89d3aaf",
           "at": "2026-09-25T11:07:53.027586+00:00"
+        },
+        {
+          "host": "jotform.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 381.0,
+          "alias_tag": "jotformfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "unknown",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/5f17046a-c2c1-469b-9938-e1bcff83d988",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T02:21:56.469934+00:00"
         }
       ],
-      "updated_at": "2026-09-25T11:07:53.027586+00:00"
+      "updated_at": "2026-09-26T02:21:56.469934+00:00"
     },
     "mixpanel.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "mixpanel8d1244b",
+      "last_alias_tag": "mixpanelfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "mixpanel.com",
@@ -278,15 +430,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/a2514ace-7a6e-4304-af67-104434af2660",
           "at": "2026-09-25T11:16:27.670554+00:00"
+        },
+        {
+          "host": "mixpanel.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 261.9,
+          "alias_tag": "mixpanelfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/b2d81fbf-847b-4c14-8de5-93c61a054bf2",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T02:26:19.872498+00:00"
         }
       ],
-      "updated_at": "2026-09-25T11:16:27.670554+00:00"
+      "updated_at": "2026-09-26T02:26:19.872498+00:00"
     },
     "intercom.com": {
-      "reproducible": false,
-      "last_reason": "unknown",
-      "last_detail": "Failed to receive email verification link after two attempts. Cannot proceed with account creation.",
-      "last_alias_tag": "intercomff2dac2",
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "intercomfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "intercom.com",
@@ -317,15 +488,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/3f72297b-4ac1-4de1-9858-211434fa9e99",
           "at": "2026-09-25T11:52:58.616876+00:00"
+        },
+        {
+          "host": "intercom.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 216.1,
+          "alias_tag": "intercomfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/4c1cd15a-015f-4a87-a422-94bca3f621b4",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:05:33.489100+00:00"
         }
       ],
-      "updated_at": "2026-09-25T11:52:58.616876+00:00"
+      "updated_at": "2026-09-25T23:05:33.489100+00:00"
     },
     "zendesk.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "zendesk8d1244d",
+      "last_alias_tag": "zendeskfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "zendesk.com",
@@ -341,15 +531,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/5febe9f7-7385-4295-882d-b6054073267c",
           "at": "2026-09-25T11:23:17.667285+00:00"
+        },
+        {
+          "host": "zendesk.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 147.6,
+          "alias_tag": "zendeskfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "unknown",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/741620f6-a706-40a9-a254-ae583e6abc49",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T02:28:48.905495+00:00"
         }
       ],
-      "updated_at": "2026-09-25T11:23:17.667285+00:00"
+      "updated_at": "2026-09-26T02:28:48.905495+00:00"
     },
     "cal.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "calff2dac0",
+      "last_alias_tag": "calfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "cal.com",
@@ -365,15 +574,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/1398a94a-6210-460b-a369-a0ccd8b0c9d2",
           "at": "2026-09-25T11:41:41.075550+00:00"
+        },
+        {
+          "host": "cal.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 176.2,
+          "alias_tag": "calfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/eb49e1c0-3c8e-43fd-9f2f-6fdd3e4fc482",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T02:15:34.181290+00:00"
         }
       ],
-      "updated_at": "2026-09-25T11:41:41.075550+00:00"
+      "updated_at": "2026-09-26T02:15:34.181290+00:00"
     },
     "linear.app": {
-      "reproducible": false,
-      "last_reason": "unknown",
-      "last_detail": "Failed to receive email verification code after multiple attempts.",
-      "last_alias_tag": "linearff2dac3",
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "linearfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "linear.app",
@@ -389,15 +617,49 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/603c7ab6-fb50-458b-a135-a5e747fb88cd",
           "at": "2026-09-25T11:57:54.962772+00:00"
+        },
+        {
+          "host": "linear.app",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 197.4,
+          "alias_tag": "linearcfbb20",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/ceca8189-7f90-40cd-ba34-9c217602aa13",
+          "at": "2026-09-25T21:00:27.200750+00:00"
+        },
+        {
+          "host": "linear.app",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 172.9,
+          "alias_tag": "linearfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/ef1aef77-aa32-4bf0-8768-ba97bfc28466",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:55:56.191384+00:00"
         }
       ],
-      "updated_at": "2026-09-25T11:57:54.962772+00:00"
+      "updated_at": "2026-09-25T23:55:56.191384+00:00"
     },
     "notion.so": {
-      "reproducible": true,
-      "last_reason": "signed_up",
-      "last_detail": "",
-      "last_alias_tag": "notionnfix399c0",
+      "reproducible": false,
+      "last_reason": "captcha_unsolved",
+      "last_detail": "need_solver_api:hcaptcha/recaptcha sitekey=b3fa1b6e-8d5c-4d16-b7ac-f3e6f162c01a type=hcaptcha \u2014 Browserbase+OSS could not produce a token; set MVP_CAPTCHA_API_KEY (CapSolver/2Captcha) or Browserbase Verified",
+      "last_alias_tag": "notionfullb10",
+      "last_ok": false,
       "attempts": [
         {
           "host": "notion.so",
@@ -443,15 +705,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/af9cc74e-be6a-44cb-aa13-31f9323ffab1",
           "at": "2026-09-25T20:26:10.568278+00:00"
+        },
+        {
+          "host": "notion.so",
+          "ok": false,
+          "reproducible": false,
+          "reason": "captcha_unsolved",
+          "detail": "need_solver_api:hcaptcha/recaptcha sitekey=b3fa1b6e-8d5c-4d16-b7ac-f3e6f162c01a type=hcaptcha \u2014 Browserbase+OSS could not produce a token; set MVP_CAPTCHA_API_KEY (CapSolver/2Captcha) or Browserbase Verified",
+          "elapsed_s": 455.8,
+          "alias_tag": "notionfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/e5866298-b312-49b7-8f94-feb04387fb4e",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:03:33.242040+00:00"
         }
       ],
-      "updated_at": "2026-09-25T20:26:10.568278+00:00"
+      "updated_at": "2026-09-26T00:03:33.242040+00:00"
     },
     "dropbox.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "dropboxff2dac5",
+      "last_alias_tag": "dropboxfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "dropbox.com",
@@ -467,15 +748,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/98f7dfa2-4f81-4118-a029-6d30b964e5ab",
           "at": "2026-09-25T12:07:56.006371+00:00"
+        },
+        {
+          "host": "dropbox.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 184.2,
+          "alias_tag": "dropboxfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/f4833e76-491b-4363-b3c9-30acb7ee0f1e",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:06:38.739017+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:07:56.006371+00:00"
+      "updated_at": "2026-09-26T00:06:38.739017+00:00"
     },
     "zoom.us": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "zoomff2dac6",
+      "last_alias_tag": "zoomfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "zoom.us",
@@ -491,15 +791,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/d544a84f-8831-47bc-a9df-a14fc83941a3",
           "at": "2026-09-25T12:14:48.488090+00:00"
+        },
+        {
+          "host": "zoom.us",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 457.3,
+          "alias_tag": "zoomfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/386767ee-5e86-4112-9b7a-f031136e0374",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:14:17.549682+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:14:48.488090+00:00"
+      "updated_at": "2026-09-26T00:14:17.549682+00:00"
     },
     "canva.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "canvaff2dac7",
+      "last_alias_tag": "canvafullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "canva.com",
@@ -515,15 +834,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/378a51fd-3be2-47bb-ae26-ddd6eb2c4782",
           "at": "2026-09-25T12:23:23.735038+00:00"
+        },
+        {
+          "host": "canva.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 458.3,
+          "alias_tag": "canvafullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/7b7071d7-caea-4223-852c-d0d5bd272678",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:22:59.210992+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:23:23.735038+00:00"
+      "updated_at": "2026-09-26T00:22:59.210992+00:00"
     },
     "reddit.com": {
       "reproducible": false,
       "last_reason": "unknown",
-      "last_detail": "Blocked by Reddit due to too many requests from the IP address, even after CAPTCHA was solved. The page suggests waiting a few minutes, which is not feasible for the agent.",
-      "last_alias_tag": "redditff2dac8",
+      "last_detail": "Blocked by Reddit due to too many requests from IP address. Cannot proceed with registration.",
+      "last_alias_tag": "redditfullb10",
+      "last_ok": false,
       "attempts": [
         {
           "host": "reddit.com",
@@ -539,15 +877,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/ccc9bfe6-2d49-475b-baa4-d0bd9a4eaf90",
           "at": "2026-09-25T12:24:21.681203+00:00"
+        },
+        {
+          "host": "reddit.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "unknown",
+          "detail": "Blocked by Reddit due to too many requests from IP address. Cannot proceed with registration.",
+          "elapsed_s": 64.9,
+          "alias_tag": "redditfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/4f216c9e-afad-4473-90a8-f3b8c22f4210",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T22:11:37.966467+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:24:21.681203+00:00"
+      "updated_at": "2026-09-25T22:11:37.966467+00:00"
     },
     "bitwarden.com": {
-      "reproducible": false,
-      "last_reason": "unknown",
-      "last_detail": "Email verification link not received after multiple attempts. Cannot proceed with registration.",
-      "last_alias_tag": "bitwardenff2dac9",
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "Saved storage_state shows an account the harness missed.",
+      "last_alias_tag": "bitwardenfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "bitwarden.com",
@@ -563,15 +920,35 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/557396f5-195f-48cc-9124-f3352eb51747",
           "at": "2026-09-25T12:29:13.467897+00:00"
+        },
+        {
+          "host": "bitwarden.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "Saved storage_state shows an account the harness missed.",
+          "elapsed_s": 161.7,
+          "alias_tag": "bitwardenfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_rejudge",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/83c4c16c-94c9-4fdb-86cc-a8e4ed0ddbd3",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T22:14:21.069566+00:00",
+          "harness_reason": "not_signed_in"
         }
       ],
-      "updated_at": "2026-09-25T12:29:13.467897+00:00"
+      "updated_at": "2026-09-25T22:14:21.069566+00:00"
     },
     "coda.io": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "codaff2daca",
+      "last_alias_tag": "codafullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "coda.io",
@@ -587,15 +964,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/f102e0b8-ba04-4e03-956e-c2137aab9d1b",
           "at": "2026-09-25T12:33:45.564622+00:00"
+        },
+        {
+          "host": "coda.io",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 167.1,
+          "alias_tag": "codafullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/a7c5e230-9a01-414f-a228-3e5709de3eee",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:27:35.377841+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:33:45.564622+00:00"
+      "updated_at": "2026-09-26T00:27:35.377841+00:00"
     },
     "medium.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "mediumff2dacb",
+      "last_alias_tag": "mediumfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "medium.com",
@@ -611,15 +1007,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/0d37c727-e19c-48dc-882d-70a04a035458",
           "at": "2026-09-25T12:35:40.026931+00:00"
+        },
+        {
+          "host": "medium.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 147.0,
+          "alias_tag": "mediumfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/d102a452-befe-4fb9-90b5-e9d4a8656ce5",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:30:03.761419+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:35:40.026931+00:00"
+      "updated_at": "2026-09-26T00:30:03.761419+00:00"
     },
     "airtable.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "airtableff2dacc",
+      "last_alias_tag": "airtablefullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "airtable.com",
@@ -635,15 +1050,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/ecb59b19-e692-4aab-93ee-001783ce0f9b",
           "at": "2026-09-25T12:42:57.039879+00:00"
+        },
+        {
+          "host": "airtable.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 259.1,
+          "alias_tag": "airtablefullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "sso_only",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/2cdc1a79-cebd-4621-966b-e9fe12ae6e4b",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:34:24.387168+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:42:57.039879+00:00"
+      "updated_at": "2026-09-26T00:34:24.387168+00:00"
     },
     "figma.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "figmaff2dacd",
+      "last_alias_tag": "figmafullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "figma.com",
@@ -659,15 +1093,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/6893ad83-ecf7-4a61-bba9-e1db20002e74",
           "at": "2026-09-25T12:47:09.977153+00:00"
+        },
+        {
+          "host": "figma.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 455.6,
+          "alias_tag": "figmafullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/dfca1935-5541-478b-958c-023129ae4f23",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:42:01.462805+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:47:09.977153+00:00"
+      "updated_at": "2026-09-26T00:42:01.462805+00:00"
     },
     "miro.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "miroff2dace",
+      "last_alias_tag": "mirofullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "miro.com",
@@ -683,15 +1136,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/2dd280ef-f0a9-4485-b5cf-14aa5858c3e0",
           "at": "2026-09-25T12:55:37.952863+00:00"
+        },
+        {
+          "host": "miro.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 395.6,
+          "alias_tag": "mirofullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "sso_only",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/bd5e0f3f-8634-4504-84ca-e338eab4f3e5",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:49:11.759163+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:55:37.952863+00:00"
+      "updated_at": "2026-09-26T00:49:11.759163+00:00"
     },
     "webflow.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "webflowff2dacf",
+      "last_alias_tag": "webflowfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "webflow.com",
@@ -707,15 +1179,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/a8b5e3ad-dd77-45ff-ba8b-77f696c04c4c",
           "at": "2026-09-25T13:02:49.429668+00:00"
+        },
+        {
+          "host": "webflow.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 486.6,
+          "alias_tag": "webflowfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/0a231a7c-160d-44dd-b3f2-e00a3cef0c45",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:57:19.916842+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:02:49.429668+00:00"
+      "updated_at": "2026-09-26T00:57:19.916842+00:00"
     },
     "github.com": {
       "reproducible": false,
       "last_reason": "captcha_unsolved",
-      "last_detail": "The 'Slide right to secure your access' verification challenge on GitHub signup page could not be bypassed after multiple attempts to solve the captcha.",
-      "last_alias_tag": "githube731c91",
+      "last_detail": "The 'Slide right to secure your access' verification on GitHub signup page could not be bypassed by the automated CAPTCHA solver.",
+      "last_alias_tag": "githubfullb10",
+      "last_ok": false,
       "attempts": [
         {
           "host": "github.com",
@@ -731,15 +1222,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/4beee18a-4420-4f65-bddf-613599bbbe89",
           "at": "2026-09-25T13:14:08.098901+00:00"
+        },
+        {
+          "host": "github.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "captcha_unsolved",
+          "detail": "The 'Slide right to secure your access' verification on GitHub signup page could not be bypassed by the automated CAPTCHA solver.",
+          "elapsed_s": 102.1,
+          "alias_tag": "githubfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/51ae2e1c-c855-4a5b-8f85-96db618a4c74",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T22:22:56.465052+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:14:08.098901+00:00"
+      "updated_at": "2026-09-25T22:22:56.465052+00:00"
     },
     "gitlab.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "gitlabe731c92",
+      "last_alias_tag": "gitlabfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "gitlab.com",
@@ -755,15 +1265,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/a3793328-1e63-4c5b-9b37-be220808aaf4",
           "at": "2026-09-25T13:17:28.647917+00:00"
+        },
+        {
+          "host": "gitlab.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 268.7,
+          "alias_tag": "gitlabfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/ea8cfd45-f96f-4de0-84ce-71a4819b2c96",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:09:13.739752+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:17:28.647917+00:00"
+      "updated_at": "2026-09-26T01:09:13.739752+00:00"
     },
     "todoist.com": {
-      "reproducible": false,
-      "last_reason": "unknown",
-      "last_detail": "Google account creation is blocked by a QR code verification step that requires scanning with a phone. This cannot be automated.",
-      "last_alias_tag": "todoiste731c93",
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "Saved storage_state shows an account the harness missed.",
+      "last_alias_tag": "todoistfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "todoist.com",
@@ -779,15 +1308,35 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/53dfbf56-ec1a-4e7b-863e-3ab019b5f26d",
           "at": "2026-09-25T13:24:31.637461+00:00"
+        },
+        {
+          "host": "todoist.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "Saved storage_state shows an account the harness missed.",
+          "elapsed_s": 322.4,
+          "alias_tag": "todoistfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_rejudge",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/53bb5a9b-9800-4333-8012-dd5bfcfc00c2",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T22:28:20.323085+00:00",
+          "harness_reason": "not_signed_in"
         }
       ],
-      "updated_at": "2026-09-25T13:24:31.637461+00:00"
+      "updated_at": "2026-09-25T22:28:20.323085+00:00"
     },
     "calendly.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "calendlye731c94",
+      "last_alias_tag": "calendlyfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "calendly.com",
@@ -803,15 +1352,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/3fe11c15-1932-40fb-9dfb-4e4102213014",
           "at": "2026-09-25T13:29:01.801485+00:00"
+        },
+        {
+          "host": "calendly.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 277.2,
+          "alias_tag": "calendlyfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/bd9d0f9c-4bfc-458a-9872-d26e2418fca6",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:13:52.428844+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:29:01.801485+00:00"
+      "updated_at": "2026-09-26T01:13:52.428844+00:00"
     },
     "buffer.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "buffere731c95",
+      "last_alias_tag": "bufferfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "buffer.com",
@@ -827,15 +1395,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/4f406e39-1591-4444-a218-a4c673923d3b",
           "at": "2026-09-25T13:37:38.735816+00:00"
+        },
+        {
+          "host": "buffer.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 459.0,
+          "alias_tag": "bufferfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/2bc0685e-d48c-402a-ad28-ab8ac4c1463c",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:21:32.957092+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:37:38.735816+00:00"
+      "updated_at": "2026-09-26T01:21:32.957092+00:00"
     },
     "asana.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
-      "last_alias_tag": "asanae731c96",
+      "last_alias_tag": "asanafullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "asana.com",
@@ -851,15 +1438,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/b7fb683b-1e0d-4d93-827e-c65b2e5de826",
           "at": "2026-09-25T13:37:45.773224+00:00"
+        },
+        {
+          "host": "asana.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "already_signed_in",
+          "detail": "",
+          "elapsed_s": 12.2,
+          "alias_tag": "asanafullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/ab3ed9f9-b7f4-43a6-9cc7-8b0f8a316b3c",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:21:46.767976+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:37:45.773224+00:00"
+      "updated_at": "2026-09-26T01:21:46.767976+00:00"
     },
     "monday.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
-      "last_alias_tag": "mondaye731c97",
+      "last_alias_tag": "mondayfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "monday.com",
@@ -875,15 +1481,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/88ebba3f-ffce-46b9-9444-2ae2348881d7",
           "at": "2026-09-25T13:37:52.366570+00:00"
+        },
+        {
+          "host": "monday.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "already_signed_in",
+          "detail": "",
+          "elapsed_s": 7.9,
+          "alias_tag": "mondayfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/2b650062-a8e3-4dd0-bed6-37671654dacf",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:21:55.723824+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:37:52.366570+00:00"
+      "updated_at": "2026-09-26T01:21:55.723824+00:00"
     },
     "mailchimp.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
-      "last_alias_tag": "mailchimpe731c98",
+      "last_alias_tag": "mailchimpfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "mailchimp.com",
@@ -899,15 +1524,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/5e2f4bca-b575-4dde-8ec7-d2656eb4964a",
           "at": "2026-09-25T13:37:57.439692+00:00"
+        },
+        {
+          "host": "mailchimp.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "already_signed_in",
+          "detail": "",
+          "elapsed_s": 6.4,
+          "alias_tag": "mailchimpfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/476ec633-f783-44cc-a4e1-f044e6d7f0e3",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:22:03.191792+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:37:57.439692+00:00"
+      "updated_at": "2026-09-26T01:22:03.191792+00:00"
     },
     "vercel.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "vercele731c99",
+      "last_alias_tag": "vercelfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "vercel.com",
@@ -923,15 +1567,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/d4d27f78-a599-4543-bce0-336c97df865f",
           "at": "2026-09-25T13:43:31.285366+00:00"
+        },
+        {
+          "host": "vercel.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 200.8,
+          "alias_tag": "vercelfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "unknown",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/5362fe91-9e2c-4c33-b4d6-97d4b6758830",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:25:25.125033+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:43:31.285366+00:00"
+      "updated_at": "2026-09-26T01:25:25.125033+00:00"
     },
     "netlify.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
-      "last_alias_tag": "netlifye731c9a",
+      "last_alias_tag": "netlifyfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "netlify.com",
@@ -947,15 +1610,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/c09c3b7a-d764-4965-9257-a3e290fae17c",
           "at": "2026-09-25T13:43:36.707796+00:00"
+        },
+        {
+          "host": "netlify.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "already_signed_in",
+          "detail": "",
+          "elapsed_s": 6.0,
+          "alias_tag": "netlifyfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/6d4d82d2-373d-4e5a-b8af-2e0422101fac",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:25:32.593436+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:43:36.707796+00:00"
+      "updated_at": "2026-09-26T01:25:32.593436+00:00"
     },
     "digitalocean.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "digitaloceane731c9b",
+      "last_alias_tag": "digitaloceanfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "digitalocean.com",
@@ -971,15 +1653,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/3c173b85-7113-4060-b5be-0c8c1e91170e",
           "at": "2026-09-25T13:49:40.525547+00:00"
+        },
+        {
+          "host": "digitalocean.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 385.4,
+          "alias_tag": "digitaloceanfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/234bf720-c257-4666-88ff-a7a08c1ba33a",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:31:59.131667+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:49:40.525547+00:00"
+      "updated_at": "2026-09-26T01:31:59.131667+00:00"
     },
     "wordpress.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "wordpresse731c9c",
+      "last_alias_tag": "wordpressfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "wordpress.com",
@@ -995,15 +1696,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/788ca54b-422a-46d3-a9f7-c25cf022a9bd",
           "at": "2026-09-25T13:57:05.176783+00:00"
+        },
+        {
+          "host": "wordpress.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 162.2,
+          "alias_tag": "wordpressfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/9b84cb0c-4faf-48ff-9680-d41cb9462afa",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:34:42.811064+00:00"
         }
       ],
-      "updated_at": "2026-09-25T13:57:05.176783+00:00"
+      "updated_at": "2026-09-26T01:34:42.811064+00:00"
     },
     "pinterest.com": {
-      "reproducible": true,
-      "last_reason": "signed_up",
+      "reproducible": false,
+      "last_reason": "already_signed_in",
       "last_detail": "",
-      "last_alias_tag": "pintereste731c9d",
+      "last_alias_tag": "pinterestfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "pinterest.com",
@@ -1019,15 +1739,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/fe0c80ac-a686-4ee4-89d9-190ee87821a1",
           "at": "2026-09-25T14:02:38.307560+00:00"
+        },
+        {
+          "host": "pinterest.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "already_signed_in",
+          "detail": "",
+          "elapsed_s": 4.4,
+          "alias_tag": "pinterestfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/3e20fb33-a76d-4838-8087-fb3332a42686",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:42:11.639370+00:00"
         }
       ],
-      "updated_at": "2026-09-25T14:02:38.307560+00:00"
+      "updated_at": "2026-09-26T01:42:11.639370+00:00"
     },
     "substack.com": {
-      "reproducible": true,
+      "reproducible": false,
       "last_reason": "already_signed_in",
       "last_detail": "",
-      "last_alias_tag": "substacke731c9e",
+      "last_alias_tag": "substackfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "substack.com",
@@ -1043,15 +1782,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/3d60a039-d35d-4170-9b80-4736440b6e5c",
           "at": "2026-09-25T14:02:43.529151+00:00"
+        },
+        {
+          "host": "substack.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "already_signed_in",
+          "detail": "",
+          "elapsed_s": 7.4,
+          "alias_tag": "substackfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/c393e4bd-5845-4464-9d62-688445da7281",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:42:20.097914+00:00"
         }
       ],
-      "updated_at": "2026-09-25T14:02:43.529151+00:00"
+      "updated_at": "2026-09-26T01:42:20.097914+00:00"
     },
     "hubspot.com": {
-      "reproducible": true,
-      "last_reason": "signed_up",
-      "last_detail": "",
-      "last_alias_tag": "hubspote731c9f",
+      "reproducible": false,
+      "last_reason": "captcha_unsolved",
+      "last_detail": "The CAPTCHA is persistently blocking progress despite multiple attempts to solve it using the `solve_captcha()` tool and clicking the 'Verify' button. The 'Continue' button remains disabled.",
+      "last_alias_tag": "hubspotfullb10",
+      "last_ok": false,
       "attempts": [
         {
           "host": "hubspot.com",
@@ -1067,15 +1825,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/f56ec286-f3c8-40d0-8698-db915ab893ed",
           "at": "2026-09-25T14:09:10.251384+00:00"
+        },
+        {
+          "host": "hubspot.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "captcha_unsolved",
+          "detail": "The CAPTCHA is persistently blocking progress despite multiple attempts to solve it using the `solve_captcha()` tool and clicking the 'Verify' button. The 'Continue' button remains disabled.",
+          "elapsed_s": 300.1,
+          "alias_tag": "hubspotfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/78b6ef3d-9d5b-4a32-baad-79f4f37142a2",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:47:21.211611+00:00"
         }
       ],
-      "updated_at": "2026-09-25T14:09:10.251384+00:00"
+      "updated_at": "2026-09-26T01:47:21.211611+00:00"
     },
     "smartsheet.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "smartsheete731c910",
+      "last_alias_tag": "smartsheetfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "smartsheet.com",
@@ -1091,15 +1868,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/972e7f21-8958-4327-bcd5-4952adf1b163",
           "at": "2026-09-25T14:12:49.467930+00:00"
+        },
+        {
+          "host": "smartsheet.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 489.0,
+          "alias_tag": "smartsheetfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "unknown",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/8ebd5764-2813-44a7-972b-a16cee619883",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T01:55:31.725973+00:00"
         }
       ],
-      "updated_at": "2026-09-25T14:12:49.467930+00:00"
+      "updated_at": "2026-09-26T01:55:31.725973+00:00"
     },
     "whimsical.com": {
       "reproducible": false,
       "last_reason": "unknown",
-      "last_detail": "The 'Continue' button on the email verification page is unresponsive after entering the code. Repeated clicks and 'Enter' key presses did not advance the page, and CAPTCHA detection/solving did not resolve the issue.",
-      "last_alias_tag": "whimsicalwhim1d9d0",
+      "last_detail": "The email verification step is blocked by a 'Sorry, there's a technical issue.' message, preventing further progress. Repeated attempts to submit the code and resend the email have failed.",
+      "last_alias_tag": "whimsicalfullb10",
+      "last_ok": false,
       "attempts": [
         {
           "host": "whimsical.com",
@@ -1115,60 +1911,471 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/59888835-9b59-44e2-816a-7201ba8e16a5",
           "at": "2026-09-25T14:25:11.670454+00:00"
+        },
+        {
+          "host": "whimsical.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "unknown",
+          "detail": "The email verification step is blocked by a 'Sorry, there's a technical issue.' message, preventing further progress. Repeated attempts to submit the code and resend the email have failed.",
+          "elapsed_s": 201.8,
+          "alias_tag": "whimsicalfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/7dd3ab58-94e0-4985-b3d7-5538f161ffed",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:40:53.243915+00:00"
         }
       ],
-      "updated_at": "2026-09-25T14:25:11.670454+00:00"
+      "updated_at": "2026-09-25T23:40:53.243915+00:00"
+    },
+    "loom.com": {
+      "reproducible": false,
+      "last_reason": "captcha_unsolved",
+      "last_detail": "need_solver_api:human_disabled;sitekey=unknown type=recaptcha",
+      "last_alias_tag": "loomloomcap10",
+      "last_ok": false,
+      "attempts": [
+        {
+          "host": "loom.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "captcha_unsolved",
+          "detail": "The signup process is blocked by a persistent CAPTCHA on the Atlassian signup page, which is used by Loom. Multiple attempts to solve it, both manual and automated, have failed.",
+          "elapsed_s": 410.2,
+          "alias_tag": "loomfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/fa8587e9-e733-48ea-9779-85c99e83a6f9",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T22:21:12.897370+00:00"
+        },
+        {
+          "host": "loom.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "captcha_unsolved",
+          "detail": "need_solver_api:human_disabled;sitekey=unknown type=recaptcha",
+          "elapsed_s": 456.2,
+          "alias_tag": "loomloomcap10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/818cc746-6531-495e-b19b-15db1133723a",
+          "attempt": 2,
+          "balance_before": 19.991,
+          "balance_after": 19.988,
+          "at": "2026-09-26T02:37:01.326197+00:00"
+        }
+      ],
+      "updated_at": "2026-09-26T02:37:01.326197+00:00"
+    },
+    "discord.com": {
+      "reproducible": false,
+      "last_reason": "timeout",
+      "last_detail": "",
+      "last_alias_tag": "discordfullb10",
+      "last_ok": false,
+      "attempts": [
+        {
+          "host": "discord.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "timeout",
+          "detail": "",
+          "elapsed_s": 537.7,
+          "alias_tag": "discordfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/eb416397-9226-475a-8d79-2e4351044d07",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T22:37:19.311623+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T22:37:19.311623+00:00"
+    },
+    "supabase.com": {
+      "reproducible": false,
+      "last_reason": "captcha_unsolved",
+      "last_detail": "The 'Sign up' button remains disabled even after entering email and password and attempting to solve a CAPTCHA. It is not possible to proceed with account creation.",
+      "last_alias_tag": "supabasefullb10",
+      "last_ok": false,
+      "attempts": [
+        {
+          "host": "supabase.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "captcha_unsolved",
+          "detail": "The 'Sign up' button remains disabled even after entering email and password and attempting to solve a CAPTCHA. It is not possible to proceed with account creation.",
+          "elapsed_s": 357.2,
+          "alias_tag": "supabasefullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/1a894f95-0006-42e2-9ff3-e96b5a64d8ca",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T22:43:17.827655+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T22:43:17.827655+00:00"
+    },
+    "hotjar.com": {
+      "reproducible": false,
+      "last_reason": "timeout",
+      "last_detail": "",
+      "last_alias_tag": "hotjarfullb10",
+      "last_ok": false,
+      "attempts": [
+        {
+          "host": "hotjar.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "timeout",
+          "detail": "",
+          "elapsed_s": 475.7,
+          "alias_tag": "hotjarfullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/8c80a4cd-01c5-4c07-9fa3-08cbb1ad693b",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T22:59:58.218165+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T22:59:58.218165+00:00"
+    },
+    "1password.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "1passwordfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "1password.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 255.1,
+          "alias_tag": "1passwordfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/d2bb0821-531b-4b19-9ae2-ef9bfd7ee2db",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:09:49.992785+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:09:49.992785+00:00"
+    },
+    "toggl.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "togglfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "toggl.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 110.3,
+          "alias_tag": "togglfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/400fd42f-487e-43af-acb3-d76a3fd22ece",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:11:41.911508+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:11:41.911508+00:00"
+    },
+    "render.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "renderfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "render.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 339.8,
+          "alias_tag": "renderfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/6d0d3438-ef5f-4d60-8713-7be908e7f5d0",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:17:23.786632+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:17:23.786632+00:00"
+    },
+    "cloudflare.com": {
+      "reproducible": false,
+      "last_reason": "unknown",
+      "last_detail": "The provided email address 'shreyashfs+cloudflarefullb10@gmail.com' is already taken or a variation of it is, preventing account creation.",
+      "last_alias_tag": "cloudflarefullb10",
+      "last_ok": false,
+      "attempts": [
+        {
+          "host": "cloudflare.com",
+          "ok": false,
+          "reproducible": false,
+          "reason": "unknown",
+          "detail": "The provided email address 'shreyashfs+cloudflarefullb10@gmail.com' is already taken or a variation of it is, preventing account creation.",
+          "elapsed_s": 85.7,
+          "alias_tag": "cloudflarefullb10",
+          "email_scheme": "plus",
+          "signed_via": null,
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/51571af6-9123-4890-aad3-ff3cee0abe00",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:18:50.938338+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:18:50.938338+00:00"
+    },
+    "twilio.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "twiliofullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "twilio.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 457.9,
+          "alias_tag": "twiliofullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/c5edf6a4-8494-47b6-a8a1-d68938037841",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:26:30.485708+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:26:30.485708+00:00"
+    },
+    "resend.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "resendfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "resend.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 405.6,
+          "alias_tag": "resendfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/152d49ae-5074-4018-a5e6-b68e3cf55c51",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:33:18.018728+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:33:18.018728+00:00"
+    },
+    "beehiiv.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "beehiivfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "beehiiv.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 250.5,
+          "alias_tag": "beehiivfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/1066ebe1-4da7-4c3c-ae28-4c2a612be09b",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:37:29.696087+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:37:29.696087+00:00"
+    },
+    "ticktick.com": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "Saved storage_state shows an account the harness missed.",
+      "last_alias_tag": "ticktickfullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "ticktick.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "Saved storage_state shows an account the harness missed.",
+          "elapsed_s": 259.0,
+          "alias_tag": "ticktickfullb10",
+          "email_scheme": "dotted",
+          "signed_via": "storage_rejudge",
+          "ignored_blocker": null,
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/f641d0c2-c1b7-4ce6-b89c-8aee3e0d2fd8",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:45:13.665376+00:00",
+          "harness_reason": "not_signed_in"
+        }
+      ],
+      "updated_at": "2026-09-25T23:45:13.665376+00:00"
+    },
+    "huggingface.co": {
+      "reproducible": true,
+      "last_reason": "signed_up",
+      "last_detail": "",
+      "last_alias_tag": "huggingfacefullb10",
+      "last_ok": true,
+      "attempts": [
+        {
+          "host": "huggingface.co",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 466.4,
+          "alias_tag": "huggingfacefullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/a2e35588-0f4f-46f1-a178-b8f22a1e11fd",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-25T23:53:01.580956+00:00"
+        }
+      ],
+      "updated_at": "2026-09-25T23:53:01.580956+00:00"
     }
   },
-  "updated_at": "2026-09-25T20:26:10.568844+00:00",
+  "updated_at": "2026-09-26T02:48:38.305339+00:00",
   "reproducible": [
-    "airtable.com",
-    "asana.com",
-    "buffer.com",
-    "cal.com",
-    "calendly.com",
-    "canva.com",
-    "coda.io",
-    "codepen.io",
-    "digitalocean.com",
+    "linear.app",
     "dropbox.com",
-    "figma.com",
-    "gitlab.com",
-    "grammarly.com",
-    "hashnode.com",
-    "hubspot.com",
-    "jotform.com",
-    "mailchimp.com",
-    "make.com",
+    "zoom.us",
+    "canva.com",
+    "bitwarden.com",
+    "coda.io",
     "medium.com",
+    "airtable.com",
+    "figma.com",
     "miro.com",
+    "webflow.com",
+    "gitlab.com",
+    "todoist.com",
+    "calendly.com",
+    "buffer.com",
+    "vercel.com",
+    "digitalocean.com",
+    "wordpress.com",
+    "wix.com",
+    "smartsheet.com",
+    "zapier.com",
+    "make.com",
+    "grammarly.com",
+    "cal.com",
+    "jotform.com",
     "mixpanel.com",
+    "intercom.com",
+    "zendesk.com",
+    "1password.com",
+    "toggl.com",
+    "render.com",
+    "twilio.com",
+    "resend.com",
+    "beehiiv.com",
+    "ticktick.com",
+    "huggingface.co"
+  ],
+  "failed": [
+    "asana.com",
+    "cloudflare.com",
+    "discord.com",
+    "github.com",
+    "hotjar.com",
+    "hubspot.com",
+    "loom.com",
+    "mailchimp.com",
     "monday.com",
     "netlify.com",
     "notion.so",
     "pinterest.com",
-    "smartsheet.com",
-    "stackblitz.com",
-    "substack.com",
-    "vercel.com",
-    "webflow.com",
-    "wix.com",
-    "wordpress.com",
-    "zapier.com",
-    "zendesk.com",
-    "zoom.us"
-  ],
-  "failed": [
-    "bitwarden.com",
-    "github.com",
-    "intercom.com",
-    "linear.app",
     "reddit.com",
     "shopify.com",
-    "todoist.com",
+    "substack.com",
+    "supabase.com",
     "trello.com",
     "whimsical.com"
   ],
-  "score": "35/60",
-  "reproducible_count": 35
+  "score": "36/60",
+  "reproducible_count": 36
 }
