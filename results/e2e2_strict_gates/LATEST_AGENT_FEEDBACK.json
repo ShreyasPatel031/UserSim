@@ -1,93 +1,63 @@
 {
   "pass": false,
   "startup_alone_is_not_a_pass": true,
-  "graded_at": "2026-09-26T04:25:00Z",
+  "graded_at": "2026-09-26T04:30:00Z",
   "heads": {
     "cursor/product-agent-full-model-76fc": {
       "sha": "2d536c7",
-      "linear": {
-        "study_id": "499c892a-c018-4b37-bb4f-7bf8b17eedaa",
-        "pass": false,
-        "elapsed_s": 26.0,
-        "time_to_first_value": "not recorded",
-        "product_task_completion": "0/8",
-        "abort": "missing field ax_tree on 8 Asana competitor_1 agents",
-        "phase_counts": [
-          {
-            "phase": "missing field failed_step_phase",
-            "n": 8
-          }
-        ]
-      },
-      "excalidraw": {
-        "study_id": "1e967417-f997-4e08-9fc8-ea228595625e",
-        "pass": false,
-        "elapsed_s": 6.6,
-        "time_to_first_value": "not recorded",
-        "product_task_completion": "0/2",
-        "abort": "missing field page_open_at_ts; missing field ax_tree: 0/6 agents",
-        "phase_counts": [
-          {
-            "phase": "missing field failed_step_phase",
-            "n": 6
-          }
-        ]
-      }
+      "note": "unchanged this cycle"
     },
     "cursor/tonight-integration": {
-      "sha": "5a63c36",
+      "sha": "f044c45",
       "linear": {
-        "study_id": "64cec553-8bf4-4d06-a194-fa7d8ed10dd2",
+        "study_id": "b0333cd1-fa1c-4ba3-a6bc-875cefd9e88b",
         "pass": false,
-        "elapsed_s": 4.0,
+        "elapsed_s": 23.4,
         "time_to_first_value": "not recorded",
-        "product_task_completion": "0/2",
-        "abort": "missing field page_open_at_ts: 6/6 agents have no page-open or session-ready stamp",
+        "product_task_completion": "0/8",
+        "abort": "missing field ax_tree",
+        "opened": 8,
+        "missing_ax": 16,
+        "missing_ax_who": "all product agents and all competitor_2 (trello)",
         "phase_counts": [
           {
             "phase": "missing field failed_step_phase",
-            "n": 6
+            "n": 16
           }
-        ],
-        "counts": {
-          "no_first_action": 6
-        }
+        ]
       },
       "excalidraw": {
-        "study_id": "845efca2-7138-4cf4-bc94-3031370087f2",
+        "study_id": "34e75538-b5ee-4e64-95cd-a313693c5014",
         "pass": false,
-        "elapsed_s": 3.6,
+        "elapsed_s": 3.7,
         "time_to_first_value": "not recorded",
         "product_task_completion": "0/2",
-        "abort": "missing field page_open_at_ts: 6/6 agents",
+        "abort": "missing field page_open_at_ts: 6/6",
         "phase_counts": [
           {
             "phase": "missing field failed_step_phase",
             "n": 6
           }
-        ],
-        "counts": {
-          "no_first_action": 6
-        }
+        ]
       }
     }
   },
   "bugs": [
     {
       "id": 1,
-      "fact": "#47 2d536c7 Linear 499c892a: 8 Asana competitor_1 agents had no ax_tree. page_opened FAIL missing field ax_tree. Also missing failed_step and final_screenshot_url (phase count x 8)."
+      "fact": "Integration f044c45 Linear b0333cd1: 16/24 agents missing ax_tree (every product agent and every Trello competitor_2). Only 8 opened. phase missing field failed_step_phase x 16. final_screenshot_url missing. Product 0/8. TTFV not recorded."
     },
     {
       "id": 2,
-      "fact": "#47 2d536c7 Excalidraw 1e967417: only 6 sessions, missing field page_open_at_ts and ax_tree, missing phase_ms and final_screenshot_url. Product 0/2."
+      "fact": "Integration f044c45 Excalidraw 34e75538: 6/6 missing page_open_at_ts. No ax_tree, no final_screenshot_url, no failed_step, no phase_ms. Product 0/2. Elapsed 3.7s."
     },
     {
       "id": 3,
-      "fact": "Integration 5a63c36 still does not put a page-open stamp on the polled session in time. Linear 64cec553 and Excalidraw 845efca2 both aborted missing field page_open_at_ts on 6/6 agents, with no ax_tree, no final_screenshot_url, and no failed_step."
+      "fact": "#47 2d536c7 is the same agent code and already failed Linear 499c892a (8 Asana agents missing ax_tree) and Excalidraw 1e967417 (missing page_open_at_ts and ax_tree)."
     },
     {
       "id": 4,
-      "fact": "New-issue stuck loop remains study 6e2acd43: t1__p1__product repeated click New issue 3 times with no URL/DOM change and no failed_step. None of these heads reached a Gemini judge. Product is not >=4/8. TTFV was not recorded. That is not a pass."
+      "fact": "New-issue stuck loop still open on study 6e2acd43: click New issue three times, no URL/DOM change, no failed_step. No run has reached >=4/8 Gemini YES or a finished report."
     }
   ]
 }
