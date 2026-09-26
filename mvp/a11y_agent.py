@@ -15,6 +15,7 @@ import os
 import re
 import time
 from typing import Any
+from urllib.parse import urlparse
 
 AX_CAP = 150
 
@@ -532,6 +533,12 @@ def goal_visible(task: str, read: dict[str, Any]) -> bool:
         return "pricing" in path or "pricing" in title
     if kind == "changelog":
         return "changelog" in path or "changelog" in title
+    if kind == "issue" and (read or {}).get("signed_in"):
+        # Signed in: the docs page is not the goal. The issue must exist: its
+        # own page (…/issue/KEY-1/…) or a "created" confirmation.
+        if re.search(r"/issues?/[a-z0-9]+-\d+", path, re.I):
+            return True
+        return bool(re.search(r"\b(issue created|created issue|[a-z]{2,6}-\d+ created)\b", text))
     if kind == "issue":
         # A logged-out visitor cannot open the workspace composer. The public
         # create-issues doc is the page that shows how. The marketing demo's
@@ -1520,6 +1527,82 @@ def _auth_href(href: str) -> bool:
     return "/login" in text or "/signup" in text or "plus.excalidraw.com" in text
 
 
+# ---- in-run signup hook (grokbot/signup-local) -----------------------------
+# Tasks that need an account stay as written. When such a task meets a
+# logged-out page (a login/signup wall, or a product site whose only way in is
+# Log in / Sign up), the loop returns stop_reason="needs_account" plus
+# signup_url, the runner calls mvp.signup_in_session.signup_in_session on the
+# SAME page, then resumes the task with signed_in=True.
+
+_ACCOUNT_VERBS = re.compile(
+    r"\b(create|add|make|new|start|build|write|draft|invite|assign|comment|upload|save|"
+    r"set up|organi[sz]e|plan|track|file|submit|open a|log)\b",
+    re.I,
+)
+_ACCOUNT_OBJECTS = re.compile(
+    r"\b(issues?|boards?|cards?|projects?|tasks?|pages?|docs?|documents?|notes?|workspaces?|"
+    r"teams?|lists?|tickets?|sprints?|cycles?|databases?|to-?dos?|roadmaps?|files?)\b",
+    re.I,
+)
+_LOGGED_OUT_NAMES = frozenset(
+    {"log in", "login", "sign in", "sign up", "signup", "get started", "open app",
+     "try for free", "try free", "start for free", "get started for free", "sign up for free",
+     "get started free", "start free"}
+)
+_SIGNUP_NAMES = ("sign up", "signup", "get started", "try for free", "try free", "start for free",
+                 "create account", "create an account", "register", "join")
+_AUTH_PATH_RE = re.compile(
+    r"/(log-?in|sign-?in|sign-?up|register|create-account|auth)(/|$|\?)", re.I
+)
+
+
+def insession_signup_enabled() -> bool:
+    return os.environ.get("MVP_INSESSION_SIGNUP", "1").strip().lower() not in {"0", "false", "no", "off"}
+
+
+def task_needs_account(task: str) -> bool:
+    """A task that only a signed-in user can finish ("create an issue", "make a board")."""
+    low = " ".join((task or "").lower().split())
+    if not low or any(w in low for w in ("pricing", "how to", "how do", "find how", "documentation",
+                                         " docs", "learn about", "read about", "changelog")):
+        return False
+    return bool(_ACCOUNT_VERBS.search(low) and _ACCOUNT_OBJECTS.search(low))
+
+
+def account_wall(task: str, read: dict[str, Any]) -> dict[str, Any] | None:
+    """Generic login/signup-wall check for the step loop.
+
+    Returns {"signup_url": str, "why": str} or None. Only fires for tasks that
+    need an account, so logged-out tasks (pricing, docs, drawing on a public
+    canvas) keep the old behavior.
+    """
+    if not task_needs_account(task):
+        return None
+    url = str((read or {}).get("url") or "")
+    nodes = [n for n in ((read or {}).get("nodes") or []) if isinstance(n, dict)]
+    text = str((read or {}).get("text") or "").lower()
+    signup_url = ""
+    logged_out = False
+    for node in nodes:
+        name = " ".join(str(node.get("name") or "").lower().split())
+        href = str(node.get("href") or "")
+        if name in _LOGGED_OUT_NAMES or (href and _auth_href(href) and name in _AUTH_NAMES):
+            logged_out = True
+        if not signup_url and href and any(name.startswith(w) for w in _SIGNUP_NAMES):
+            signup_url = href
+    path = urlparse(url).path if url else ""
+    if _AUTH_PATH_RE.search(path or ""):
+        return {"signup_url": url, "why": f"auth page {path}"}
+    login_form = ("password" in text or "email" in text) and any(
+        w in text for w in ("log in", "sign in", "sign up", "create your account", "create account")
+    ) and len(nodes) <= 25
+    if login_form:
+        return {"signup_url": signup_url or url, "why": "login form on page"}
+    if logged_out:
+        return {"signup_url": signup_url, "why": "logged-out product page for an account task"}
+    return None
+
+
 def _nodes_for_model(nodes: list[dict[str, Any]], skip: set[str]) -> list[dict[str, Any]]:
     """Drop inert controls, login walls, and controls already clicked with no change."""
     skipped = {str(item).lower() for item in skip if str(item).strip()}
@@ -1545,6 +1628,7 @@ async def _model_action(
     read: dict[str, Any],
     history: list[str],
     changed_nothing: bool = False,
+    signed_in: bool = False,
 ) -> dict[str, Any] | None:
     from capability.gemini_config import extract_json, gemini_chat
 
@@ -1556,8 +1640,14 @@ async def _model_action(
         if history
         else ""
     )
+    who = (
+        "You are a signed-in user inside this product's app, finishing a task for real "
+        "(create the actual item in the app; a docs page is not the goal). "
+        if signed_in
+        else "You are a logged-out visitor finishing a task in the browser. "
+    )
     prompt = (
-        "You are a logged-out visitor finishing a task in the browser. Reply with one JSON object only.\n"
+        f"{who}Reply with one JSON object only.\n"
         f"Task: {task[:400]}\n"
         f"URL: {read.get('url') or ''}\n"
         f"Title: {read.get('title') or ''}\n"
@@ -1567,8 +1657,12 @@ async def _model_action(
         f"{flag}"
         'JSON: {"act":"click|type|scroll|drag|done","i":0,"text":"","friction":"","easy":""}\n'
         "Use an element i from the list for click, type, and scroll. "
-        "Do not click Log in, Sign up, or Open app. Stay on the public site. "
-        "A homepage preview of the product is not the real app. "
+        + ("For a new issue/card/task: open the create control (e.g. a New issue / + button or the "
+           "c shortcut), type a short title into the title field, then submit with the "
+           "Create/Save/Add button. done only after the item is created and shown. "
+           if signed_in else
+           "Do not click Log in, Sign up, or Open app. Stay on the public site. ")
+        + "A homepage preview of the product is not the real app. "
         "For how to create an issue, open Docs or Documentation, then the Issues section, then Create issues. "
         "For pricing or getting started, open Pricing. "
         "To draw a box on excalidraw.com, click Rectangle, then the next action must be drag. "
@@ -1848,8 +1942,13 @@ async def complete_task_on_page(
     deadline: float | None = None,
     agent_id: str = "agent",
     opening_nodes: list[dict[str, Any]] | None = None,
+    signed_in: bool = False,
 ) -> dict[str, Any]:
     """Step until the live page shows the goal.
+
+    ``signed_in=False`` + a task that needs an account + a login/signup wall
+    returns ``stop_reason="needs_account"`` and ``signup_url`` so the runner can
+    sign up on this page and call again with ``signed_in=True``.
 
     Every step re-reads the page. The action is chosen from that read, executed
     with a role+name click, then checked against a new read. A control that
@@ -1871,6 +1970,8 @@ async def complete_task_on_page(
     model_misses = 0
     offhost_refusals = 0
     done_rejects = 0
+    signup_url = ""
+    wall_on = (not signed_in) and insession_signup_enabled() and task_needs_account(task)
     opening = [node for node in (opening_nodes or []) if isinstance(node, dict)]
     try:
         await page.wait_for_selector("a, button, canvas", timeout=800)
@@ -1926,11 +2027,20 @@ async def complete_task_on_page(
                 opened_canvas = str(read.get("canvas") or "")
         read["opened_canvas"] = opened_canvas
         read["drew"] = drew
+        read["signed_in"] = signed_in
         if goal_visible(task, read):
             stop_reason = "done"
             if task_kind(task) == "draw":
                 drew = True
                 read["drew"] = True
+            break
+        wall = account_wall(task, read) if wall_on else None
+        if wall is not None:
+            signup_url = str(wall.get("signup_url") or "")
+            print(f"[{agent_id}] needs_account: {wall.get('why')}", flush=True)
+            stop_reason = "needs_account"
+            failed = {"phase": "needs_account", "reason": "needs_account", "step": step_no,
+                      "signup_url": signup_url, "why": wall.get("why")}
             break
         signature = progress_signature(
             url=str(read.get("url") or ""),
@@ -1953,7 +2063,7 @@ async def complete_task_on_page(
         source = "model"
         # The first click is chosen from the tree already in hand. Waiting on
         # the model here is what pushed competitor first-action past 10s.
-        if not acted_once:
+        if not acted_once and not signed_in:
             invented = invented_excalidraw_action(task, read, history, skip)
             if invented is not None:
                 action = invented
@@ -1978,6 +2088,7 @@ async def complete_task_on_page(
                         read=model_read,
                         history=history,
                         changed_nothing=changed_nothing,
+                        signed_in=signed_in,
                     ),
                     timeout=7 if not acted_once else 20,
                 )
@@ -2127,6 +2238,15 @@ async def complete_task_on_page(
                 scrolled = await _fresh_read(page, str(read.get("url") or url))
                 if not scrolled.get("error"):
                     after = scrolled
+        if wall_on and not after.get("error") and _auth_href(str(after.get("url") or "")):
+            # The account task walked into a login/signup page: hand it to signup.
+            signup_url = str(after.get("url") or "")
+            read = after
+            stop_reason = "needs_account"
+            failed = {"phase": "needs_account", "reason": "needs_account", "step": step_no,
+                      "signup_url": signup_url, "why": "action opened an auth page"}
+            print(f"[{agent_id}] needs_account: action opened {signup_url[:80]}", flush=True)
+            break
         if not after.get("error") and _auth_href(str(after.get("url") or "")):
             skip.add(str(action.get("name") or "").lower())
             href = str(action.get("href") or "")
@@ -2227,7 +2347,85 @@ async def complete_task_on_page(
         "drew": drew,
         "opened_canvas": opened_canvas,
         "logs": logs,
+        "needs_account": stop_reason == "needs_account",
+        "signup_url": signup_url,
     }
+
+
+async def signup_and_resume(
+    page: Any,
+    *,
+    task: str,
+    url: str,
+    persona: dict[str, Any] | None,
+    outcome: dict[str, Any],
+    on_step: Any | None = None,
+    deadline: float | None = None,
+    agent_id: str = "agent",
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """needs_account -> signup_in_session on this page -> resume the same task signed in.
+
+    Returns (signup_result, loop_outcome). The loop outcome has the same shape
+    as complete_task_on_page's, with the signup step appended to the trace.
+    """
+    from mvp.signup_in_session import signup_in_session
+
+    trace = list(outcome.get("trace") or [])
+    history = list(outcome.get("history") or [])
+    step_no = int(outcome.get("step_no") or 0)
+    remaining = (deadline - time.monotonic()) if deadline is not None else 400.0
+    cap = float(os.environ.get("MVP_SIGNUP_IN_SESSION_TIMEOUT_S") or 240)
+    budget = max(30.0, min(cap, remaining - 45.0))
+    print(f"[{agent_id}] signup_in_session start (budget {budget:.0f}s)", flush=True)
+    try:
+        su = await signup_in_session(
+            page, url, persona or {}, signup_url=str(outcome.get("signup_url") or "") or None,
+            timeout_s=budget,
+        )
+    except Exception as exc:  # noqa: BLE001
+        su = {"ok": False, "reason": f"error: {type(exc).__name__}", "elapsed_s": 0.0}
+    print(f"[{agent_id}] signup_in_session ok={su.get('ok')} reason={su.get('reason')} {su.get('elapsed_s')}s", flush=True)
+    fresh = await _fresh_read(page, str(getattr(page, "url", "") or url))
+    step_no += 1
+    label = (
+        f"Signed up with a fresh email in {su.get('elapsed_s')}s"
+        if su.get("ok")
+        else f"Signup failed: {su.get('reason')}"
+    )
+    row = _step_from_read(step=step_no, action=label, read=fresh, thought=str(su.get("evidence") or ""))
+    row["decision_source"] = "signup"
+    row["signup"] = {
+        k: su.get(k)
+        for k in ("ok", "reason", "inbox", "elapsed_s", "final_url", "evidence", "capsolver_usd")
+    }
+    trace.append(row)
+    history.append(label)
+    if on_step is not None:
+        maybe = on_step(row)
+        if asyncio.iscoroutine(maybe):
+            await maybe
+    if not su.get("ok"):
+        out = dict(outcome)
+        out.update(
+            stop_reason="signup failed",
+            failed={"phase": "signup", "reason": str(su.get("reason") or "signup failed"), "step": step_no},
+            trace=trace, history=history, step_no=step_no, read=fresh,
+        )
+        return su, out
+    resumed = await complete_task_on_page(
+        page,
+        task=task,
+        url=str(getattr(page, "url", "") or url),
+        trace=trace,
+        history=history,
+        step_no=step_no,
+        on_step=on_step,
+        deadline=deadline,
+        agent_id=agent_id,
+        signed_in=True,
+    )
+    resumed["signup"] = row["signup"]
+    return su, resumed
 
 
 async def _create_session_or_close(study_id: str | None, timeout: float = 3.5) -> Any:
@@ -2491,6 +2689,21 @@ async def _run_a11y_agent_unlocked(
                 agent_id=agent_id,
                 opening_nodes=opening_nodes,
             )
+            if outcome.get("stop_reason") == "needs_account" and insession_signup_enabled():
+                sess["phase"] = "signing_up"
+                boot.study.live_sessions[agent_id] = sess
+                _su, outcome = await signup_and_resume(
+                    page,
+                    task=task_prompt,
+                    url=url,
+                    persona=persona,
+                    outcome=outcome,
+                    on_step=on_step,
+                    deadline=deadline,
+                    agent_id=agent_id,
+                )
+                sess["signup"] = outcome.get("signup") or {"ok": False, "reason": _su.get("reason")}
+                sess["phase"] = "acting"
             stop_reason = str(outcome.get("stop_reason") or "")
             failed = outcome.get("failed") if isinstance(outcome.get("failed"), dict) else failed
             trace = list(outcome.get("trace") or trace)
