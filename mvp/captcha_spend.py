@@ -363,13 +363,13 @@ def get_balance(key: str | None = None) -> float | None:
     now = time.time()
     with _LOCK:
         cached = _BALANCE_CACHE["value"]
-        fresh = now - _BALANCE_CACHE["ts"] < 0.8 and cached >= 1.3
+        fresh = cached >= 0 and now - _BALANCE_CACHE["ts"] < 1.0
     if fresh:
         return cached
-    # Do not hold the ledger lock across HTTP. Near the $1 floor, skip the
-    # cache so a burst cannot walk underneath it.
+    # Do not hold the ledger lock across HTTP. claim_spend still reserves
+    # list price against this snapshot, so a one-second cache cannot cross $1.
     value = _fetch_balance(token)
-    if value is not None and value >= 1.3:
+    if value is not None:
         with _LOCK:
             _BALANCE_CACHE["ts"] = time.time()
             _BALANCE_CACHE["value"] = value

@@ -273,6 +273,7 @@ def run_spend(*, workers: int) -> None:
                 break
             futures = {pool.submit(_solve_one, target): target for target in batch}
             hit_floor = False
+            logged_before = logged
             for fut in as_completed(futures):
                 target = futures[fut]
                 row = fut.result()
@@ -302,6 +303,8 @@ def run_spend(*, workers: int) -> None:
             if hit_floor:
                 print("spend stop balance_floor", flush=True)
                 break
+            if logged == logged_before:
+                time.sleep(2)
             if all(stats[t["id"]]["streak"] >= 4 for t in targets):
                 print("spend stop targets_uncharged", flush=True)
                 break
