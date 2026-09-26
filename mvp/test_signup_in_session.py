@@ -78,3 +78,11 @@ class SignupHopeless(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ApiRejectPatternTests(unittest.TestCase):
+    def test_clickup_domain_block_matches_email_reject(self) -> None:
+        from mvp.signup_in_session import _EMAIL_REJECT
+
+        body = '{"err":"Users from this domain are blocked.","ECODE":"DOM_001"}'
+        self.assertIsNotNone(_EMAIL_REJECT.search(body))

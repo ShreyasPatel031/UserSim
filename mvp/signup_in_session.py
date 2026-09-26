@@ -80,7 +80,8 @@ _EMAIL_REJECT = re.compile(
     r"invalid email domain|email domain (is )?not (allowed|supported)|disposable|temporary email|"
     r"couldn['’]t create your account|please try again later|use a (work|business|different) email( address)?( (to|instead))?|"
     r"email (address )?(is )?not (valid|allowed|accepted)|we (can(no|')t|are unable to) (accept|reach)|"
-    r"could not reach the email|try again with a different email",
+    r"could not reach the email|try again with a different email|"
+    r"users? from this domain (is |are )?(blocked|not allowed)|domain (is |are )?blocked",
     re.I,
 )
 
@@ -728,6 +729,36 @@ async def signup_in_session(
     except Exception:
         pass
 
+    # Some sites reject the address only in the API response and leave the form
+    # unchanged (ClickUp: 400 {"err":"Users from this domain are blocked."}).
+    # Without this the loop only sees "page stopped changing".
+    api_rejects: list[str] = []
+
+    async def _check_reject(resp: Any) -> None:
+        try:
+            req = resp.request
+            if req.method not in {"POST", "PUT"} or not (400 <= resp.status < 500):
+                return
+            if _site(resp.url) != site:
+                return
+            body = (await resp.text())[:400]
+        except Exception:
+            return
+        m = _EMAIL_REJECT.search(body)
+        if m:
+            api_rejects.append(m.group(0))
+
+    def _on_response(resp: Any) -> None:
+        try:
+            asyncio.ensure_future(_check_reject(resp))
+        except Exception:
+            pass
+
+    try:
+        page.on("response", _on_response)
+    except Exception:
+        pass
+
     try:
         start = signup_url or ""
         cur = str(getattr(page, "url", "") or "")
@@ -756,6 +787,10 @@ async def signup_in_session(
         note = ""
         email_waits = 0
         while time.time() < deadline:
+            if api_rejects:
+                dom = ident["email"].split("@")[1] if "@" in ident.get("email", "") else "?"
+                steps.append(f"email rejected by the site API: {api_rejects[0]} ({dom})")
+                return _finish(False, f"email_rejected: {api_rejects[0]} ({dom})")
             if popups:
                 pop = popups.pop(0)
                 try:
@@ -845,6 +880,8 @@ async def signup_in_session(
                         same = 0
                         continue
             if same >= 8:
+                if api_rejects:
+                    return _finish(False, f"email_rejected: {api_rejects[0]}")
                 return _finish(False, "stuck: page stopped changing")
 
             if snap.get("captcha") and same >= 1:
@@ -1115,5 +1152,9 @@ async def signup_in_session(
     finally:
         try:
             page.context.remove_listener("page", _on_popup)
+        except Exception:
+            pass
+        try:
+            page.remove_listener("response", _on_response)
         except Exception:
             pass

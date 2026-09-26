@@ -3023,6 +3023,7 @@ _THROWAYWAY_REJECT_HOSTS = (
     "notion.com",
     "miro.com",
     "calendly.com",
+    "clickup.com",  # API: "Users from this domain are blocked." (DOM_001) for mail.tm
 )
 # Hosts that need CapSolver for signup on Browserbase (checkbox/audio alone fails).
 _CAPTCHA_HARD_HOSTS = (
