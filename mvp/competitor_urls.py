@@ -385,7 +385,12 @@ def classify_run_issue(result: dict[str, Any]) -> dict[str, str] | None:
             "target_url": target,
             "final_url": final,
         }
-    if not same_site(final, target):
+    failed = result.get("failed_step") if isinstance(result.get("failed_step"), dict) else {}
+    walled = str(result.get("stop_reason") or "") == "needs_account" or str(failed.get("phase") or "") == "needs_account"
+    if not same_site(final, target) and not walled:
+        # A sign-up wall on the product's own identity host (id.atlassian.com
+        # for Trello) is where the product sent the agent: a product fact,
+        # not a harness failure.
         return {
             "kind": "navigation",
             "reason": f"Agent ended on {final} instead of task target {target}",
