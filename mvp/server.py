@@ -34,7 +34,14 @@ async def _prime_browser_sessions() -> None:
         return
     from mvp.a11y_agent import prime_sessions
 
-    prime_sessions(4)
+    # Idle primes sit inside the 25-session cap. A 24-agent study reuses any
+    # primed session as one of the 24, so the default is zero extra sessions.
+    raw = (os.environ.get("MVP_PRIME_SESSIONS") or "0").strip()
+    try:
+        prime_n = max(0, int(raw))
+    except ValueError:
+        prime_n = 0
+    prime_sessions(prime_n)
 
 if STATIC.is_dir():
     app.mount("/static", StaticFiles(directory=STATIC), name="static")

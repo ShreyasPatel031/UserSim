@@ -164,19 +164,27 @@ _PRIMED: asyncio.Queue | None = None
 _PRIME_STARTED = False
 
 
-def prime_sessions(n: int = 4) -> None:
-    """Start creating browsers before anyone clicks Run."""
-    global _PRIME_STARTED
+def prime_sessions(n: int = 0) -> None:
+    """Start creating browsers before anyone clicks Run.
+
+    ``n`` is how many idle sessions to hold. Zero holds none. A study reuses
+    whatever is already primed as part of its agent count, so primes are not
+    extra slots on top of the 24.
+    """
+    global _PRIME_STARTED, _PRIMED
     if _PRIME_STARTED:
         return
     _PRIME_STARTED = True
+    if n <= 0:
+        _PRIMED = asyncio.Queue()
+        return
 
     async def _fill() -> None:
         global _PRIMED
         from capability.browserbase_client import create_session, study_session_owner
 
         _PRIMED = asyncio.Queue()
-        for i in range(max(1, n)):
+        for i in range(n):
             try:
                 bb = await asyncio.to_thread(
                     create_session,
