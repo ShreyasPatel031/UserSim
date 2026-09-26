@@ -1656,6 +1656,13 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
             {k: s.get(k) for k in ("site_label", "ok", "n", "median_steps", "median_time_s")}
             for s in insights.get("sites") or []
         ],
+        "competitors_compared": [
+            s.get("site_label") for s in insights.get("sites") or []
+            if s.get("site_key") != "product" and int(s.get("n") or 0) > 0
+        ],
+        "runs_that_never_opened": sum(
+            1 for r in insights.get("run_issues") or [] if isinstance(r, dict) and r.get("kind") == "session"
+        ),
     }
     prompt = (
         "Write a short verdict for a product team from a simulated user study. "
@@ -1668,7 +1675,9 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
         "it. That a task needs an account at all is a product fact and may be mentioned, but never "
         "recommend removing sign-up or an account requirement. no_site_finished lists tasks no site "
         "finished: that is not a comparison, so never say the product trails a competitor there. "
-        "If trails is empty, say it matched or led every competitor on the tasks that finished. "
+        "If competitors_compared is empty, no competitor run opened: say there is no competitor "
+        "comparison in this run and compare with no one. Otherwise, if trails is empty, say it "
+        "matched or led every competitor on the tasks that finished. "
         "Name the specific competitor for every comparison. No opinions, industry norms, or "
         "claims about typical users that are not in the facts.\n"
         f"Facts: {json.dumps(facts, ensure_ascii=False)[:5000]}"

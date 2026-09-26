@@ -3221,7 +3221,7 @@ async def _run_a11y_agent_unlocked(
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] session ended: {exc!r}", flush=True)
             stop_reason = "session ended"
-            failed = {"phase": "session", "reason": "session ended", "step": 0}
+            failed = {"phase": "session", "reason": "session ended", "step": 0, "detail": repr(exc)[:200]}
         if page is not None and failed is None and opened_at is not None:
             # First time this agent is visible. created_at_ts is goto start
             # and page_open_at_ts is navigation commit on this agent's page.

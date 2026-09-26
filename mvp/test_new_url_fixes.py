@@ -57,3 +57,37 @@ class ThreePageLoopTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class VerdictWithoutRivalRunsTests(unittest.TestCase):
+    def test_prompt_says_there_is_no_competitor_comparison(self):
+        import asyncio
+        import sys
+        import types
+
+        from mvp import report_insights
+
+        seen = {}
+
+        async def fake_chat(messages, **kwargs):
+            seen["prompt"] = messages[0]["content"]
+            return "Figma is good for finding pricing."
+
+        mod = types.ModuleType("capability.gemini_config")
+        mod.gemini_chat = fake_chat
+        real = sys.modules.get("capability.gemini_config")
+        sys.modules["capability.gemini_config"] = mod
+        try:
+            insights = {
+                "product_name": "Figma",
+                "verdict": {"good_for": ["Pricing: 1/1"], "trails": [], "unfinished": []},
+                "sites": [{"site_key": "product", "site_label": "Figma", "n": 1, "ok": 1}],
+                "run_issues": [{"kind": "session"}] * 11,
+            }
+            asyncio.run(report_insights.write_verdict_summary({}, insights))
+        finally:
+            if real is not None:
+                sys.modules["capability.gemini_config"] = real
+        self.assertIn('"competitors_compared": []', seen["prompt"])
+        self.assertIn('"runs_that_never_opened": 11', seen["prompt"])
+        self.assertIn("compare with no one", seen["prompt"])
