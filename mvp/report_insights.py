@@ -1140,7 +1140,7 @@ def build_report_insights(study: dict[str, Any]) -> dict[str, Any]:
                 break
     stored = (study.get("summary") or {}) if isinstance(study.get("summary"), dict) else {}
     if stored.get("verdict_summary"):
-        out["verdict"]["summary"] = str(stored["verdict_summary"])
+        out["verdict"]["summary"] = drop_harness_sentences(str(stored["verdict_summary"]))
     return out
 
 
@@ -1539,7 +1539,20 @@ async def write_verdict_summary(study: dict[str, Any], insights: dict[str, Any])
         json_mode=False,
         max_retries=2,
     )
-    return " ".join(str(raw or "").split())[:1200]
+    return drop_harness_sentences(" ".join(str(raw or "").split())[:1200])
+
+
+_HARNESS_RE = re.compile(
+    r"throwaway|disposable|temporary e-?mail|captcha|verification (e-?mail|code)|test account|usersim",
+    re.I,
+)
+
+
+def drop_harness_sentences(text: str) -> str:
+    """Remove sentences about UserSim's own signup limits; they are not product findings."""
+    parts = re.split(r"(?<=[.!?])\s+", str(text or "").strip())
+    kept = [p for p in parts if p and not _HARNESS_RE.search(p)]
+    return " ".join(kept)
 
 
 def _signup_cause(label: str) -> str:
