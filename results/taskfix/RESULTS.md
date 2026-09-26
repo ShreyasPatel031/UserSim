@@ -1,3 +1,11 @@
+# Study 70557bae product PNGs are in GCS
+
+Local `mvp/runs/.../final.png` was not enough. Before this upload, GCS had no object for `t1__p1__product` `final.png` and no `study.json`, which is the `no downloadable PNG` failure.
+
+Re-uploaded the eight product finals. Checked `t1__p1__product`: GCS object `mvp_studies/70557bae-83af-4bf9-9bbb-3135046193cd/screenshots/t1__p1__product/final.png` is 212961 bytes and a PNG. The other seven product agents (`t1__p2`–`t1__p4`, `t2__p1`–`t2__p4`) uploaded the same way. `study.json` for `70557bae-83af-4bf9-9bbb-3135046193cd` is in GCS with status complete. This is not a pass. PR #46 should `--grade-study 70557bae-83af-4bf9-9bbb-3135046193cd`.
+
+`prime_sessions` stays 0. No 24-wide run. `origin/cursor/tonight-integration` (`7bfc147`) does not contain `a6995d3`. Its `mvp/a11y_agent.py` still chooses the first click with `invented_excalidraw_action` / `pick_action` before the model.
+
 # Docs page is not create-issue success
 
 `https://linear.app/docs/creating-issues` is not a finished "create a new issue" task. #46 already rejected that URL. Local 4/4 and any self-graded 8/8 do not count.

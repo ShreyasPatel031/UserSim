@@ -3039,12 +3039,17 @@ async def run_study(
                         name = _Path(shot.split("?", 1)[0]).name
                         local = MVP_RUNS_DIR / study.id / agent_id / "screenshots" / name
                         if local.is_file() and local.stat().st_size > 100:
-                            await attach_opening_pixels(
-                                study_id=study.id,
-                                agent_id=agent_id,
-                                local=local,
-                                step=step,
-                            )
+                            if name == "final.png":
+                                # Opening frames upload in the background. The judge
+                                # reads final.png from GCS, so this write has to finish.
+                                await asyncio.to_thread(upload_saved_final, study.id, agent_id)
+                            else:
+                                await attach_opening_pixels(
+                                    study_id=study.id,
+                                    agent_id=agent_id,
+                                    local=local,
+                                    step=step,
+                                )
                     sess["status"] = "running"
                     # Stamp the step before this trace is saved. Insights cite
                     # final_screenshot_url, state_sig.text, and goal_visible.
@@ -3636,6 +3641,11 @@ async def run_study(
                     sess["num_steps"] = len(sess["trace"])
                     _mark_first_screenshot(sess, study_id=study.id, agent_id=str(sess.get("agent_id") or ""))
                     done_count += 1
+                    await asyncio.to_thread(
+                        upload_saved_final,
+                        study.id,
+                        str(sess.get("agent_id") or agent_id or ""),
+                    )
                     study.agent_results.append(result)
                     refresh_agent_phase()
                     log_activity(
@@ -3900,6 +3910,54 @@ def _local_snapshot_path(study_id: str):
     return MVP_RUNS_DIR / "snapshots" / f"{study_id}.json"
 
 
+# Agents whose final.png bytes are already in the judge's GCS object.
+_UPLOADED_FINALS: set[tuple[str, str]] = set()
+
+
+def upload_saved_final(study_id: str, agent_id: str) -> bool:
+    """Put on-disk final.png into the GCS object behind final_screenshot_url.
+
+    The grade fetch raises 'no downloadable PNG' when only mvp/runs has the file.
+    """
+    key = (study_id, agent_id)
+    if not study_id or not agent_id or key in _UPLOADED_FINALS:
+        return key in _UPLOADED_FINALS
+    from mvp.gcs_store import gcs_upload_file, screenshot_gcs_uri
+    from mvp.paths import MVP_RUNS_DIR
+
+    local = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / "final.png"
+    if not local.is_file() or local.stat().st_size < 2000:
+        return False
+    try:
+        gcs_upload_file(
+            local,
+            screenshot_gcs_uri(study_id, agent_id, "final.png"),
+            content_type="image/png",
+        )
+    except Exception as exc:  # noqa: BLE001
+        print(f"final.png GCS upload failed {agent_id}: {exc!r}", flush=True)
+        return False
+    _UPLOADED_FINALS.add(key)
+    return True
+
+
+def _persist_final_pngs(study: StudyState) -> None:
+    seen: set[str] = set()
+    sessions: list[Any] = []
+    live = getattr(study, "live_sessions", None) or {}
+    if isinstance(live, dict):
+        sessions.extend(live.values())
+    sessions.extend(getattr(study, "agent_results", None) or [])
+    for sess in sessions:
+        if not isinstance(sess, dict):
+            continue
+        aid = str(sess.get("agent_id") or sess.get("task_id") or "")
+        if not aid or aid in seen:
+            continue
+        seen.add(aid)
+        upload_saved_final(study.id, aid)
+
+
 def persist_study(study: StudyState) -> None:
     """Best-effort write of study state so a restarted local server can still serve the report."""
     try:
@@ -3911,6 +3969,10 @@ def persist_study(study: StudyState) -> None:
         path.write_text(json.dumps(payload), encoding="utf-8")
     except Exception as exc:  # noqa: BLE001
         print(f"local persist_study failed for {study.id}: {exc!r}", flush=True)
+    try:
+        _persist_final_pngs(study)
+    except Exception as exc:  # noqa: BLE001
+        print(f"final.png persist failed for {study.id}: {exc!r}", flush=True)
     try:
         from mvp.gcs_store import write_study_state
         from mvp.opening_shot import drop_inline_shots
