@@ -13,6 +13,7 @@ from mvp.a11y_agent import (
     failure_breakdown,
     fast_action_model,
     format_ax,
+    goal_url,
     goal_visible,
     note_progress,
     pick_action,
@@ -49,6 +50,15 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(action["href"], "https://linear.app/changelog")
         self.assertFalse(goal_visible("Find pricing", {"url": "https://linear.app/"}))
         self.assertTrue(goal_visible("Find pricing", {"url": "https://linear.app/pricing"}))
+        self.assertEqual(
+            goal_url("Look for pricing or how to get started", "https://linear.app/"),
+            "https://linear.app/pricing",
+        )
+        self.assertEqual(
+            goal_url("Find how to create a new issue", "https://linear.app"),
+            "https://linear.app/docs/creating-issues",
+        )
+        self.assertEqual(goal_url("Draw a simple rectangle on the canvas", "https://excalidraw.com/"), "")
         self.assertFalse(goal_visible("Open the changelog", {"url": "https://linear.app/docs"}))
         self.assertTrue(goal_visible("Open the changelog", {"url": "https://linear.app/changelog"}))
         self.assertFalse(goal_visible("Find how to create a new issue", {"url": "https://linear.app/"}))
