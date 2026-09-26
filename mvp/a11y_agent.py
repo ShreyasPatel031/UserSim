@@ -3462,6 +3462,43 @@ def competitor_signup_timeout_s() -> float:
 _SIGNUP_GATE: dict[str, Any] = {"lock": None, "last": 0.0}
 
 
+def _queue_grace_cap_s() -> float:
+    """Most the study clock may be pushed out for browser queueing."""
+    try:
+        return max(0.0, float(os.environ.get("MVP_STUDY_QUEUE_GRACE_S", "600") or "600"))
+    except ValueError:
+        return 600.0
+
+
+def _extend_study_budget(study: Any, waited_s: float, agent_id: str = "") -> None:
+    """Give the study back the time an agent spent waiting for a browser.
+
+    One clock covers every agent, so a 280s wait for a slot also burned the
+    study's own budget: the agents behind it were cut with "study budget —
+    not started" before they ran at all (kolanut 3e233892, the three longest
+    waits). Agents run in parallel, so the study is set back by the longest
+    wait, not the sum — extend to cover this one and keep the high-water mark.
+    """
+    if study is None or waited_s <= 1.0:
+        return
+    deadline = getattr(study, "budget_deadline", None)
+    if deadline is None:
+        return
+    granted = float(getattr(study, "queue_grace_s", 0.0) or 0.0)
+    room = _queue_grace_cap_s() - granted
+    if room <= 0:
+        return
+    add = min(waited_s - granted, room)
+    if add <= 0:
+        return
+    study.budget_deadline = float(deadline) + add
+    study.queue_grace_s = granted + add
+    print(
+        f"[{agent_id or 'study'}] browser queue {waited_s:.0f}s — study budget +{add:.0f}s",
+        flush=True,
+    )
+
+
 async def _stagger_signup() -> None:
     """Start live signups a few seconds apart; throwaway inbox APIs rate-limit new addresses."""
     gap = float(os.environ.get("MVP_SIGNUP_STAGGER_S") or 3.0)
@@ -3841,6 +3878,7 @@ async def _run_a11y_agent_unlocked(
             # product runs ended on the homepage at 0-1 steps).
             if deadline is not None and waited_for_browser > 1.0:
                 deadline += waited_for_browser
+                _extend_study_budget(boot.study, waited_for_browser, agent_id)
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] session ended: {exc!r}", flush=True)
             stop_reason = "session ended"
