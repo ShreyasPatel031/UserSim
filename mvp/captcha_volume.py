@@ -191,26 +191,36 @@ def _solve_one(target: dict[str, Any]) -> dict[str, Any]:
     return base
 
 
+def _seed_stats(targets: list[dict[str, Any]], stats: dict[str, dict[str, int]]) -> None:
+    """Remember which site keys already returned a token so a restart spends there."""
+    known = {t["id"]: t for t in targets}
+    for row in _read_jsonl(EXPERIMENT_LOG):
+        if row.get("method") != "capsolver":
+            continue
+        tid = f"{row.get('site')}|{row.get('task_type')}"
+        if tid not in known:
+            continue
+        st = stats[tid]
+        st["n"] += 1
+        if row.get("solve_ok"):
+            st["ok"] += 1
+            st["streak"] = 0
+
+
 def _pick(targets: list[dict[str, Any]], stats: dict[str, dict[str, int]], n: int) -> list[dict[str, Any]]:
+    """Repeat the expensive targets that already return tokens."""
     alive = [t for t in targets if stats[t["id"]]["streak"] < 4]
-    under = [t for t in alive if stats[t["id"]]["n"] < 12]
-    pool = under or alive
 
-    def rank(target: dict[str, Any]) -> tuple[int, float, int]:
-        st = stats[target["id"]]
-        return (0 if st["ok"] else 1, -float(target["price"]), st["n"])
+    def rank(target: dict[str, Any]) -> tuple[float, int]:
+        return (-float(target["price"]), stats[target["id"]]["n"])
 
-    pool = sorted(pool, key=rank)
-    if not pool:
+    expensive = [t for t in alive if stats[t["id"]]["ok"] > 0 and float(t["price"]) >= 0.002]
+    good = [t for t in alive if stats[t["id"]]["ok"] > 0]
+    pool = sorted(expensive or good or alive, key=rank)
+    best = pool[:8]
+    if not best:
         return []
-    chosen: list[dict[str, Any]] = []
-    i = 0
-    while len(chosen) < n:
-        chosen.append(pool[i % len(pool)])
-        i += 1
-        if i > n * 4:
-            break
-    return chosen[:n]
+    return [best[i % len(best)] for i in range(n)]
 
 
 def run_spend(*, workers: int) -> None:
@@ -225,6 +235,11 @@ def run_spend(*, workers: int) -> None:
         print("spend no priced targets", flush=True)
         return
     stats: dict[str, dict[str, int]] = defaultdict(lambda: {"n": 0, "ok": 0, "streak": 0})
+    _seed_stats(targets, stats)
+    print(
+        f"spend seeded {sum(1 for t in targets if stats[t['id']]['ok'])} solving targets",
+        flush=True,
+    )
     logged = 0
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         while True:
