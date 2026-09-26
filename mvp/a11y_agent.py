@@ -732,6 +732,10 @@ def stamp_published_step(
         canvas = trace_canvas(prior_canvas, current_canvas, url, task)
     else:
         canvas = prior_canvas or current_canvas
+    screen = re.search(r"screen:dark=\d+/\d+;", prior_canvas)
+    if screen and screen.group(0) not in canvas:
+        # Ink measured under a drag stays on that step when it is re-stamped.
+        canvas += screen.group(0)
     step["url"] = url
     step["state_sig"] = {"text": text[:1500], "canvas": canvas, "shapes": int(live.get("shapes") or sig.get("shapes") or 0)}
     if text:
@@ -1770,6 +1774,8 @@ async def _drag_on_canvas(page: Any, action: dict[str, Any]) -> None:
         "height": abs(y1 - y0) + 2 * pad,
     }
     before = await _clip_png(page, clip)
+    if not before:
+        print("drag screen ink: no before shot", flush=True)
     await page.mouse.move(x0, y0)
     await page.mouse.down()
     segments = 6
@@ -1786,6 +1792,7 @@ async def _drag_on_canvas(page: Any, action: dict[str, Any]) -> None:
             pass
         after = await _clip_png(page, clip)
         ink = screen_ink_delta(before, after)
+        print(f"drag screen ink {ink}", flush=True)
         if ink is not None:
             action["_screen_ink"] = ink
 
