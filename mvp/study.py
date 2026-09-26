@@ -3221,6 +3221,10 @@ async def run_study(
                             step["outcome"] = outcomes.get(step.get("step")) or "neutral"
                         result = {**run, **feedback, "mode": "browser"}
                     except Exception as exc:  # noqa: BLE001
+                        # A harness abort already marked this study killed.
+                        # Opening another Browserbase session here is what left
+                        # agents running after the strict e2e had stopped.
+                        raise_if_killed(study)
                         sess["status"] = "error"
                         existing = sess.get("trace") or []
                         has_pixels = any(
@@ -3448,6 +3452,7 @@ async def run_study(
                     agent_id=issue.get("agent_id"),
                 )
 
+        raise_if_killed(study)
         touch("Writing executive summary")
         if study.summary and study.summary.get("headline"):
             # Already written by fleet finisher — still strip harness failures.

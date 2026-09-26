@@ -362,6 +362,19 @@ def runtime_status() -> dict[str, Any]:
     }
 
 
+def _kill_browser_owners() -> list[str]:
+    """Owners this process may release. Never signup or another harness's tag.
+
+    ``e2e`` stays first for older study sessions. The integration server also
+    releases its own ``MVP_BB_OWNER`` (testfix, gates, or integration).
+    """
+    owners = ["e2e"]
+    raw = (os.environ.get("MVP_BB_OWNER") or "").strip().lower()
+    if raw in {"testfix", "gates", "integration"} and raw not in owners:
+        owners.append(raw)
+    return owners
+
+
 def kill_now(
     *,
     agents: bool = True,
@@ -369,16 +382,23 @@ def kill_now(
     seeds: bool = False,
     study_id: str | None = None,
 ) -> dict[str, Any]:
-    """Kill immediately. Agents = our Browserbase sessions + abandon local studies.
+    """Kill immediately. Agents = abandon local studies, then release our sessions.
+
+    Abandon runs first. A slow Browserbase list must not leave the study task
+    alive long enough to open replacement sessions after the sockets die.
 
     Never releases Sign Up / untagged Browserbase sessions on the shared project.
     """
     result: dict[str, Any] = {"ok": True}
     if agents:
-        # Release all e2e-owned sessions (any study). Scoping BB release to
-        # study_id would leave orphaned e2e slots from prior abandoned runs.
-        result["browserbase"] = kill_all_browserbase(owner="e2e")
         result["studies"] = abandon_local_studies(study_id=study_id)
+        # Release this process's owners. Scoping to study_id would leave
+        # orphaned slots from the same owner when the caller omits an id;
+        # pass study_id through so a targeted kill still stays on that study.
+        released: dict[str, Any] = {}
+        for owner in _kill_browser_owners():
+            released[owner] = kill_all_browserbase(owner=owner, study_id=study_id)
+        result["browserbase"] = released
     if vms or seeds:
         result["vms"] = kill_usersim_vms(include_seeds=bool(seeds))
     result["status"] = runtime_status()

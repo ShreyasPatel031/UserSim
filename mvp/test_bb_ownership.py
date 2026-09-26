@@ -123,6 +123,39 @@ class KillFilterTests(unittest.TestCase):
 
         self.assertEqual(released, ["e2e-1"])
 
+    def test_kill_now_abandons_before_release_and_keeps_signup(self) -> None:
+        from mvp.kill_switch import kill_now
+
+        order: list[str] = []
+
+        def _abandon(*, study_id: str | None = None) -> dict:
+            order.append(f"abandon:{study_id}")
+            return {"abandoned": [study_id or ""]}
+
+        def _release(*, owner: str | None = "e2e", study_id: str | None = None) -> dict:
+            order.append(f"release:{owner}:{study_id}")
+            return {"released": 0, "owner": owner, "study_id": study_id}
+
+        with (
+            patch.dict("os.environ", {"MVP_BB_OWNER": "integration"}),
+            patch("mvp.kill_switch.abandon_local_studies", side_effect=_abandon),
+            patch("mvp.kill_switch.kill_all_browserbase", side_effect=_release),
+            patch("mvp.kill_switch.runtime_status", return_value={}),
+        ):
+            result = kill_now(study_id="study-a")
+
+        self.assertEqual(
+            order,
+            [
+                "abandon:study-a",
+                "release:e2e:study-a",
+                "release:integration:study-a",
+            ],
+        )
+        self.assertNotIn("signup", order)
+        self.assertIn("integration", result["browserbase"])
+        self.assertIn("e2e", result["browserbase"])
+
 
 if __name__ == "__main__":
     unittest.main()
