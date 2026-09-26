@@ -2228,14 +2228,16 @@ async def _emit_opening_frame(
             return False
 
     ok = False
-    deadline = time.monotonic() + 4.0
+    # A dark splash is not the screenshot we act on. Keep snapping until the
+    # page has texture, and cap the wait well under the old navigate timeout.
+    deadline = time.monotonic() + 8.0
     attempt = 0
     while time.monotonic() < deadline:
         attempt += 1
         if await _snap_once():
-            if isinstance(book, dict) and "screenshot_mono" not in book:
-                book["screenshot_mono"] = time.monotonic()
             if not _png_is_blankish(shot_path):
+                if isinstance(book, dict):
+                    book["screenshot_mono"] = time.monotonic()
                 ok = True
                 break
             print(
@@ -2245,6 +2247,8 @@ async def _emit_opening_frame(
         if time.monotonic() >= deadline:
             break
         await asyncio.sleep(0.25)
+    if isinstance(book, dict) and "screenshot_mono" not in book and shot_path.is_file():
+        book["screenshot_mono"] = time.monotonic()
 
     if not ok:
         if not shot_path.is_file() or shot_path.stat().st_size < 100:
