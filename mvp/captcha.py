@@ -580,6 +580,14 @@ def _solution_value(sol: Any) -> str | None:
     """Pull a token or recognition result out of a CapSolver solution object."""
     if not isinstance(sol, dict):
         return None
+    gee_keys = ("lot_number", "pass_token", "gen_time", "captcha_output", "captcha_id")
+    if any(sol.get(key) for key in gee_keys):
+        import json as _json
+
+        payload = {key: sol.get(key) for key in gee_keys if sol.get(key)}
+        if sol.get("token"):
+            payload["token"] = sol.get("token")
+        return _json.dumps(payload)
     for key in ("gRecaptchaResponse", "token", "response", "text", "captcha_voucher"):
         value = sol.get(key)
         if value:
@@ -754,12 +762,15 @@ def _capsolver_solve(
         # Book the published price when the balance call hasn't moved yet so a
         # burst of solves cannot walk past the cap. A rejected task with no
         # debit stays at zero (recorded on the early-return paths above).
-        if delta is None:
+        # Book the published price on a successful task. A shared balance
+        # delta across concurrent solves is not this task's cost. Unsolved
+        # tasks that were still charged book at most the list price.
+        if solved:
             cost = list_price
-        elif delta == 0 and not solved:
+        elif delta is None or delta == 0:
             cost = 0.0
         else:
-            cost = max(list_price, delta)
+            cost = min(list_price, delta)
         spend.record_task(
             site=site,
             captcha_type=captcha_type,
@@ -1998,11 +2009,24 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
         if token:
             injected = await _inject_token(page, token, info.get("type") or "recaptcha")
             if injected:
-                if await wait_for_challenge_to_clear(page, timeout_s=15.0) or await _recaptcha_solved(
-                    page
+                cleared = await wait_for_challenge_to_clear(page, timeout_s=15.0)
+                still = await page_looks_captcha_blocked(page)
+                widget_gone = (
+                    cleared
+                    and not still.get("challenge_visible")
+                    and not still.get("text_block")
+                    and not still.get("widget_present")
+                )
+                if widget_gone or (
+                    await _recaptcha_solved(page) and not still.get("challenge_visible")
                 ):
                     return {"ok": True, "method": "solver_api", "detail": info.get("type")}
-                return {"ok": True, "method": "solver_api", "detail": f"{info.get('type')}_injected"}
+                return {
+                    "ok": False,
+                    "method": "solver_api",
+                    "detail": f"{info.get('type')}_token_widget_remained",
+                    "token": token,
+                }
             return {"ok": False, "method": "solver_api", "detail": "inject_failed", "token": token}
 
     if spec.get("method") in {"image_to_text", "recaptcha_classification"}:
@@ -2085,14 +2109,38 @@ async def solve_captcha_on_page(page: Any) -> dict[str, Any]:
 async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
     script = """
     (token) => {
+      let gee = null;
+      try { if (token && token.charAt(0) === '{') gee = JSON.parse(token); } catch (e) {}
+      if (gee && (gee.pass_token || gee.lot_number || gee.captcha_output)) {
+        const form = document.querySelector('form') || document.body;
+        for (const name of ['lot_number', 'pass_token', 'gen_time', 'captcha_output', 'captcha_id']) {
+          if (!gee[name]) continue;
+          let el = form.querySelector('input[name="' + name + '"]');
+          if (!el) {
+            el = document.createElement('input');
+            el.type = 'hidden';
+            el.name = name;
+            form.appendChild(el);
+          }
+          el.value = String(gee[name]);
+          el.dispatchEvent(new Event('input', {bubbles:true}));
+          el.dispatchEvent(new Event('change', {bubbles:true}));
+        }
+        for (const name of ['geetestCallback', 'captchaCallback', 'onGeetestSuccess']) {
+          if (typeof window[name] === 'function') {
+            try { window[name](gee); } catch (e) {}
+          }
+        }
+      }
+      const tokenValue = (gee && gee.token) ? String(gee.token) : token;
       const set = (sel) => {
         const nodes = document.querySelectorAll(sel);
         nodes.forEach((el) => {
           const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
           const desc = Object.getOwnPropertyDescriptor(proto, 'value');
-          if (desc && desc.set) desc.set.call(el, token);
-          else el.value = token;
-          el.innerHTML = token;
+          if (desc && desc.set) desc.set.call(el, tokenValue);
+          else el.value = tokenValue;
+          el.innerHTML = tokenValue;
           el.dispatchEvent(new Event('input', {bubbles:true}));
           el.dispatchEvent(new Event('change', {bubbles:true}));
         });
@@ -2107,7 +2155,7 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
       set('#captcha');
       const callNamed = (name) => {
         if (name && typeof window[name] === 'function') {
-          try { window[name](token); } catch (e) {}
+          try { window[name](tokenValue); } catch (e) {}
         }
       };
       document.querySelectorAll('[data-callback]').forEach((n) => callNamed(n.getAttribute('data-callback')));
@@ -2118,7 +2166,7 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
         if (!props) return false;
         for (const name of ['onSuccess', 'onVerify']) {
           if (typeof props[name] === 'function') {
-            try { props[name](token); return true; } catch (e) {}
+            try { props[name](tokenValue); return true; } catch (e) {}
           }
         }
         return false;
@@ -2139,16 +2187,22 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
         }
       }
       try {
-        if (window.grecaptcha && window.___grecaptcha_cfg) {
-          // best-effort callback fire
-          const clients = window.___grecaptcha_cfg.clients || {};
-          for (const c of Object.values(clients)) {
-            try {
-              const cb = c?.O?.O?.callback || c?.callback;
-              if (typeof cb === 'function') cb(token);
-              if (typeof cb === 'string' && typeof window[cb] === 'function') window[cb](token);
-            } catch (e) {}
-          }
+        if (window.___grecaptcha_cfg && window.___grecaptcha_cfg.clients) {
+          const seen = new Set();
+          const walk = (obj, depth) => {
+            if (!obj || depth > 6 || typeof obj !== 'object') return;
+            if (seen.has(obj)) return;
+            seen.add(obj);
+            if (typeof obj.callback === 'function') {
+              try { obj.callback(tokenValue); } catch (e) {}
+            }
+            let keys;
+            try { keys = Object.keys(obj); } catch (e) { return; }
+            for (const k of keys) {
+              try { walk(obj[k], depth + 1); } catch (e) {}
+            }
+          };
+          walk(window.___grecaptcha_cfg.clients, 0);
         }
       } catch (e) {}
       try {
@@ -2163,7 +2217,7 @@ async def _inject_token(page: Any, token: str, captcha_type: str) -> bool:
           for (const n of nodes) {
             const cbName = n.getAttribute('data-callback');
             if (cbName && typeof window[cbName] === 'function') {
-              try { window[cbName](token); } catch (e) {}
+              try { window[cbName](tokenValue); } catch (e) {}
             }
           }
           try {

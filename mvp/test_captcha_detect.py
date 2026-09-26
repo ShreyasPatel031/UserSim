@@ -117,6 +117,16 @@ class SolverMapTests(unittest.TestCase):
         self.assertEqual(arkose["websitePublicKey"], "ARKOSE-PUBLIC-KEY-123")
         self.assertNotIn("websiteKey", arkose)
 
+    def test_geetest_solution_keeps_pass_token(self) -> None:
+        import json
+        from mvp.captcha import _solution_value
+
+        raw = _solution_value({"pass_token": "p", "lot_number": "l", "captcha_output": "o"})
+        self.assertIsNotNone(raw)
+        payload = json.loads(raw or "")
+        self.assertEqual(payload["pass_token"], "p")
+        self.assertEqual(payload["lot_number"], "l")
+
     def test_anticaptcha_is_not_sent_to_2captcha(self) -> None:
         from mvp.captcha import solve_sitekey
 

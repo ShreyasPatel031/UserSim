@@ -22,6 +22,7 @@ class SpendGateTests(unittest.TestCase):
                 "MVP_CAPTCHA_PAID_HOSTS": "trello.com",
                 "MVP_CAPTCHA_API": "capsolver",
                 "CAPTCHA_METHOD_POLICY": str(Path(self.tmp.name) / "no-policy.json"),
+                "MVP_CAPTCHA_EXPERIMENT": "",
             },
             clear=False,
         )
@@ -265,6 +266,26 @@ class SpendGateTests(unittest.TestCase):
             refusal_reason("HCaptchaTaskProxyLess", site="neon.tech", attempt=1),
             "unsupported_or_unpriced",
         )
+
+    def test_experiment_mode_does_not_stop_at_attempt_caps(self) -> None:
+        from mvp.captcha_spend import begin_signup_attempt, record_task, refusal_reason
+
+        os.environ["MVP_CAPTCHA_EXPERIMENT"] = "1"
+        begin_signup_attempt("neon.tech")
+        for i in range(5):
+            record_task(
+                site="neon.tech",
+                captcha_type="geetest",
+                task_type="GeeTestTaskProxyLess",
+                task_id=f"exp-{i}",
+                solved=True,
+                cost=0.0012,
+                balance_before=19.0,
+                balance_after=18.999,
+            )
+        self.assertIsNone(refusal_reason("GeeTestTaskProxyLess", site="neon.tech", attempt=1))
+        for _ in range(25):
+            begin_signup_attempt("neon.tech")
 
 
 if __name__ == "__main__":

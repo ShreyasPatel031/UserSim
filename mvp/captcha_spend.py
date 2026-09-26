@@ -5,14 +5,16 @@ The key is read only from ``CAPSOLVER_API_KEY``. This module never logs it.
 Hard stops, enforced before every ``createTask``:
 
 - live balance must stay at or above $1.00 (spend the rest of the balance)
-- $19 booked on the ledger (a second brake next to the live floor)
-- 3 solves per signup attempt
-- 20 signup attempts per site (paired trials, not an open loop)
+- outside experiment mode, $19 booked on the ledger is a second brake
+- outside experiment mode, 3 solves per signup attempt
+- outside experiment mode, 20 signup attempts per site
 
-The per-site dollar cap is lifted. Only task types on CapSolver's published
+``MVP_CAPTCHA_EXPERIMENT=1`` lifts the per-attempt, per-site, and ledger-total
+brakes so a type survey can run until the live balance would drop below $1.
+The per-site dollar cap stays lifted. Only task types on CapSolver's published
 price list (docs.capsolver.com/en/pricing/ and the task pages, 2026-09-26)
 are sent. hCaptcha and FunCaptcha are not on that list. FunCaptcha may be
-probed once when ``MVP_CAPTCHA_EXPERIMENT=1``; a rejected probe is not retried.
+probed once when experiment mode is on; a rejected probe is not retried.
 """
 
 from __future__ import annotations
@@ -61,6 +63,7 @@ _LOCK = threading.Lock()
 _INFLIGHT_USD = 0.0
 _SITE: ContextVar[str] = ContextVar("captcha_spend_site", default="")
 _ATTEMPT: ContextVar[int] = ContextVar("captcha_spend_attempt", default=0)
+_LAST = threading.local()
 
 
 class SpendCapError(RuntimeError):
@@ -184,6 +187,18 @@ def current_attempt() -> int:
     return int(_ATTEMPT.get() or 0)
 
 
+def remember_outcome(**fields: Any) -> None:
+    """Thread-local result of the solve that just finished. Never stores the key."""
+    _LAST.outcome = {
+        k: v for k, v in fields.items() if str(k).lower() not in {"clientkey", "api_key", "key"}
+    }
+
+
+def last_outcome() -> dict[str, Any]:
+    raw = getattr(_LAST, "outcome", None)
+    return dict(raw) if isinstance(raw, dict) else {}
+
+
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -250,12 +265,16 @@ def spent_usd(*, site: str | None = None) -> float:
 
 
 def begin_signup_attempt(site: str) -> int:
-    """Record one fresh-alias signup. Refuses a third attempt for this site."""
+    """Record one fresh-alias signup.
+
+    Outside experiment mode this refuses attempt 21. Experiment mode keeps
+    going until the live balance floor.
+    """
     host = (site or "").strip().lower().removeprefix("www.")
     if not host:
         raise SpendCapError("signup attempt missing site")
     n = signup_attempts(host)
-    if n >= MAX_SIGNUP_ATTEMPTS:
+    if n >= MAX_SIGNUP_ATTEMPTS and not experiment_mode():
         raise SpendCapError(
             f"signup cap: {host} already has {n} attempts (max {MAX_SIGNUP_ATTEMPTS})"
         )
@@ -263,6 +282,16 @@ def begin_signup_attempt(site: str) -> int:
     _append({"event": "signup_start", "site": host, "attempt": attempt, "ts": _now()})
     bind_signup(host, attempt)
     return attempt
+
+
+def ensure_attempt(site: str) -> int:
+    """Bind a signup attempt, reusing the latest one during the experiment."""
+    host = (site or "").strip().lower().removeprefix("www.")
+    n = signup_attempts(host)
+    if experiment_mode() and n >= 1:
+        bind_signup(host, n)
+        return n
+    return begin_signup_attempt(host)
 
 
 def refusal_reason(task_type: str, *, site: str | None = None, attempt: int | None = None) -> str | None:
@@ -280,6 +309,10 @@ def refusal_reason(task_type: str, *, site: str | None = None, attempt: int | No
     price = task_price(task_type)
     if price is None:
         return "unsupported_or_unpriced"
+    # Experiment mode spends until the live $1 floor. The attempt and ledger
+    # brakes stay on for ordinary signup so a bug cannot drain the balance.
+    if experiment_mode():
+        return None
     if solves_for_attempt(host, att) >= MAX_SOLVES_PER_ATTEMPT:
         return "solve_attempt_cap"
     if spent_usd() >= TOTAL_CAP_USD:
@@ -390,6 +423,15 @@ def record_task(
             "ts": _now(),
         }
     )
+    remember_outcome(
+        event="createTask",
+        site=site,
+        captcha_type=captcha_type,
+        task_type=task_type,
+        solved=bool(solved),
+        cost=None if cost is None else round(float(cost), 6),
+        note=note[:200],
+    )
 
 
 def record_skip(*, site: str, captcha_type: str, task_type: str, reason: str) -> None:
@@ -403,4 +445,14 @@ def record_skip(*, site: str, captcha_type: str, task_type: str, reason: str) ->
             "attempt": current_attempt(),
             "ts": _now(),
         }
+    )
+    remember_outcome(
+        event="skip",
+        site=site,
+        captcha_type=captcha_type,
+        task_type=task_type,
+        solved=False,
+        cost=0.0,
+        note=reason[:200],
+        reason=reason,
     )

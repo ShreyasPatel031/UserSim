@@ -37,6 +37,7 @@ DETECT_PATH = OUT_DIR / "detections.jsonl"
 TRIAL_PATH = OUT_DIR / "trials.jsonl"
 COUNTS_PATH = OUT_DIR / "type_counts.json"
 POLICY_PATH = OUT_DIR / "method_policy.json"
+EXPERIMENT_LOG = ROOT / "results" / "captcha_experiment.jsonl"
 
 # Prefer a visible checkbox / puzzle over an invisible script include.
 TYPE_PRIORITY = (
@@ -102,6 +103,19 @@ METHODS_FOR_TYPE = {
     "aws_waf": ["browserbase", "capsolver"],
 }
 
+# Paired arm: Browserbase solveCaptchas plus the closest priced CapSolver task.
+CLOSEST_PAID_METHOD = {
+    "hcaptcha": "image_to_text",
+    "image_text": "image_to_text",
+    "arkose": "funcaptcha_probe",
+    "funcaptcha": "funcaptcha_probe",
+    "slider": "mouse_drag",
+    "datadome": "mouse_drag",
+    "geetest": "capsolver",
+    "aws_waf": "capsolver",
+    "cloudflare_challenge": "capsolver",
+}
+
 
 def _experiment_env() -> None:
     os.environ["BROWSERBASE_THROTTLE"] = "1"
@@ -153,10 +167,33 @@ _JSONL_LOCK = threading.Lock()
 
 def _append_jsonl(path: Path, row: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    line = json.dumps(row, sort_keys=True) + "\n"
+    clean = {
+        k: v
+        for k, v in row.items()
+        if str(k).lower() not in {"clientkey", "api_key", "key", "password", "email"}
+    }
+    line = json.dumps(clean, sort_keys=True) + "\n"
     with _JSONL_LOCK:
         with path.open("a") as fh:
             fh.write(line)
+
+
+def log_experiment(row: dict[str, Any]) -> None:
+    """One row of results/captcha_experiment.jsonl. No secrets."""
+    _append_jsonl(
+        EXPERIMENT_LOG,
+        {
+            "site": row.get("site") or "",
+            "type": row.get("type") or "",
+            "method": row.get("method") or "",
+            "task_type": row.get("task_type") or "",
+            "cost": round(float(row.get("cost") or 0), 6),
+            "solve_ok": bool(row.get("solve_ok")),
+            "signup_ok": bool(row.get("signup_ok")),
+            "error": str(row.get("error") or "")[:300],
+            "ts": row.get("ts") or _now(),
+        },
+    )
 
 
 _DETECT_JS = r"""
@@ -642,7 +679,7 @@ def _trial_cost(site: str, started_ts: str) -> float:
 
 async def _paid_call(page: Any, *, site: str, method: str, info: dict[str, Any]) -> dict[str, Any]:
     from mvp.captcha import _capsolver_solve, _inject_token
-    from mvp.captcha_spend import SpendCapError, begin_signup_attempt, get_balance
+    from mvp.captcha_spend import SpendCapError, ensure_attempt, get_balance
 
     balance = get_balance()
     if balance is not None and balance < 1.05:
@@ -694,9 +731,9 @@ async def _paid_call(page: Any, *, site: str, method: str, info: dict[str, Any])
     if method == "capsolver" and captcha_type == "turnstile" and not sitekey:
         return {"token": "n", "cleared": "n", "note": "no_sitekey", "cost": 0.0}
     try:
-        begin_signup_attempt(site)
+        ensure_attempt(site)
     except SpendCapError as exc:
-        return {"token": "n", "cleared": "n", "note": str(exc)[:120], "cost": 0.0}
+        return {"token": "n", "cleared": "n", "note": str(exc)[:120], "cost": 0.0, "task_type": task_type or ""}
     started = _now()
     token = await asyncio.to_thread(
         _capsolver_solve,
@@ -725,7 +762,41 @@ async def _paid_call(page: Any, *, site: str, method: str, info: dict[str, Any])
         "cleared": _yn(bool(cleared)),
         "note": "" if token else "no_token",
         "cost": _trial_cost(site, started),
+        "task_type": task_type or "",
     }
+
+
+def _task_label(ctype: str, method: str) -> str:
+    from mvp.captcha import capsolver_task_type
+
+    if method == "browserbase":
+        return "Browserbase"
+    if method == "image_to_text":
+        return "ImageToTextTask"
+    if method == "recaptcha_classification":
+        return "ReCaptchaV2Classification"
+    if method == "funcaptcha_probe":
+        return "FunCaptchaTaskProxyLess"
+    if method == "mouse_drag":
+        return "computed_drag"
+    if method == "capsolver_v2_enterprise":
+        return "ReCaptchaV2EnterpriseTaskProxyLess"
+    if method in {"capsolver", "browserbase+capsolver"}:
+        if ctype == "aws_waf":
+            return "AntiAwsWafTaskProxyLess"
+        return capsolver_task_type(ctype) or ""
+    return ""
+
+
+def _closest_paid_method(ctype: str) -> str:
+    """CapSolver task closest to this captcha, including types it does not list."""
+    method = CLOSEST_PAID_METHOD.get(ctype, "capsolver")
+    if method == "funcaptcha_probe":
+        from mvp.captcha_spend import probe_count
+
+        if probe_count("FunCaptchaTaskProxyLess") >= 1:
+            return "mouse_drag"
+    return method
 
 
 async def trial_one(detection: dict[str, Any], method: str, repeat: int) -> dict[str, Any]:
@@ -734,7 +805,7 @@ async def trial_one(detection: dict[str, Any], method: str, repeat: int) -> dict
     started = time.time()
     host = detection["site"]
     ctype = detection.get("type") or "none"
-    solve_captchas = method == "browserbase"
+    solve_captchas = method in {"browserbase", "browserbase+capsolver"}
     base = {
         "site": host,
         "type": ctype,
@@ -768,6 +839,7 @@ async def trial_one(detection: dict[str, Any], method: str, repeat: int) -> dict
             info["sitekey"] = live_key
         if str(info.get("sitekey") or "").startswith("0x4"):
             info["type"] = "turnstile"
+            base["type"] = "turnstile"
         if err:
             return {**base, "token": "n", "cleared": "n", "signup": "n", "cost": 0.0, "seconds": round(time.time() - started, 2), "note": err}
         await _arm_form(page)
@@ -793,7 +865,55 @@ async def trial_one(detection: dict[str, Any], method: str, repeat: int) -> dict
                 "signup": signup,
                 "cost": 0.0,
                 "seconds": round(time.time() - started, 2),
-                "note": "bb_wait",
+                "note": "bb_wait" if not cleared else "bb_cleared",
+                "task_type": "Browserbase",
+            }
+        if method == "browserbase+capsolver":
+            # solveCaptchas is already on. Give Browserbase a head start, then
+            # pay CapSolver only if the widget is still there.
+            await page.wait_for_timeout(12000)
+            if not await _is_blocked(page):
+                signup = await _try_signup(page, host)
+                return {
+                    **base,
+                    "token": "n",
+                    "cleared": "y",
+                    "signup": signup,
+                    "cost": 0.0,
+                    "seconds": round(time.time() - started, 2),
+                    "note": "bb_cleared",
+                    "task_type": "Browserbase",
+                }
+            closest = _closest_paid_method(str(info.get("type") or ctype))
+            if closest == "mouse_drag":
+                dragged = await human_drag(page)
+                cleared = bool(dragged.get("ok")) and not await _is_blocked(page)
+                signup = await _try_signup(page, host) if cleared else "n"
+                return {
+                    **base,
+                    "token": "n",
+                    "cleared": _yn(cleared),
+                    "signup": signup,
+                    "cost": 0.0,
+                    "seconds": round(time.time() - started, 2),
+                    "note": dragged.get("detail") or "computed_drag",
+                    "task_type": "computed_drag",
+                }
+            paid = await _paid_call(page, site=host, method=closest, info=info)
+            cleared = paid.get("cleared") == "y" and not await _is_blocked(page)
+            signup = await _try_signup(page, host) if (cleared or paid.get("token") == "y") else "n"
+            note = paid.get("note") or ""
+            if paid.get("token") == "y" and not cleared:
+                note = "token_returned_widget_remained"
+            return {
+                **base,
+                "token": paid.get("token") or "n",
+                "cleared": _yn(cleared),
+                "signup": signup,
+                "cost": paid.get("cost") or 0.0,
+                "seconds": round(time.time() - started, 2),
+                "note": note,
+                "task_type": paid.get("task_type") or _task_label(str(info.get("type") or ctype), closest),
             }
         if method == "mouse_drag":
             dragged = await human_drag(page)
