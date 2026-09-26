@@ -12,6 +12,7 @@ from mvp.a11y_agent import (
     classify_failure,
     failure_breakdown,
     fast_action_model,
+    achievable_without_account,
     format_ax,
     goal_url,
     goal_visible,
@@ -62,13 +63,19 @@ class A11yAgentTest(unittest.TestCase):
         self.assertFalse(goal_visible("Open the changelog", {"url": "https://linear.app/docs"}))
         self.assertTrue(goal_visible("Open the changelog", {"url": "https://linear.app/changelog"}))
         self.assertFalse(goal_visible("Find how to create a new issue", {"url": "https://linear.app/"}))
+        self.assertTrue(
+            goal_visible(
+                "Find how to create a new issue",
+                {"url": "https://linear.app/docs/creating-issues", "title": "Create issues – Linear Docs"},
+            )
+        )
         self.assertFalse(
-            goal_visible("Draw a simple rectangle on the canvas", {"url": "https://excalidraw.com/", "canvas": "1x1:dark=0/1;"})
+            goal_visible("Draw a simple rectangle on the canvas", {"url": "https://excalidraw.com/", "canvas": "1x1:dark=0/1;", "drew": True})
         )
         self.assertTrue(
             goal_visible(
                 "Draw a simple rectangle on the canvas",
-                {"url": "https://excalidraw.com/?shape=rectangle", "drew": True},
+                {"url": "https://excalidraw.com/", "text": "Selected shape actions Stroke width"},
             )
         )
 
@@ -137,6 +144,15 @@ class A11yAgentTest(unittest.TestCase):
         ]
         action = planned_action("Look for pricing or how to get started", {"nodes": nodes})
         self.assertEqual(action["href"], "https://linear.app/pricing")
+        decorative = [
+            {"i": 0, "role": "button", "name": "New issue", "href": "", "inert": True, "x": 256, "y": 543},
+            {"i": 1, "role": "a", "name": "Docs", "href": "https://linear.app/docs", "x": 10, "y": 900},
+        ]
+        issue = planned_action("Find how to create a new issue", {"url": "https://linear.app/", "nodes": decorative})
+        self.assertEqual(issue["name"], "Docs")
+        self.assertNotIn("new issue", issue["name"].lower())
+        direct = planned_action("Find how to create a new issue", {"url": "https://linear.app/", "nodes": decorative[:1]})
+        self.assertIn("creating-issues", direct["href"])
 
     def test_stuck_after_three_identical_signatures(self) -> None:
         sig = progress_signature(
@@ -186,6 +202,20 @@ class A11yAgentTest(unittest.TestCase):
         self.assertEqual(table["counts"]["stuck"], 1)
         self.assertEqual(table["counts"]["product"], 1)
         self.assertEqual(table["counts"]["our infrastructure"], 1)
+
+    def test_logged_out_tasks_do_not_require_an_account(self) -> None:
+        self.assertEqual(
+            achievable_without_account("https://linear.app/", "Create a new issue in your workspace"),
+            "Find how to create a new issue",
+        )
+        self.assertEqual(
+            achievable_without_account("https://linear.app/", "Find how to create a new issue"),
+            "Find how to create a new issue",
+        )
+        self.assertEqual(
+            achievable_without_account("https://linear.app/", "Look for pricing or how to get started"),
+            "Look for pricing or how to get started",
+        )
 
 
 if __name__ == "__main__":
