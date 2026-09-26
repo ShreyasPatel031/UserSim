@@ -288,6 +288,14 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
             error_type = None
             try:
                 return await pending
+            except asyncio.CancelledError:
+                if _task_is_cancelling():
+                    error = "CancelledError: cancelled"
+                    error_type = "CancelledError"
+                    raise
+                error = "CancelledError: state capture interrupted"
+                error_type = "CancelledError"
+                raise RuntimeError(error)
             except Exception as exc:
                 error = f"{type(exc).__name__}: {exc}"[:400]
                 error_type = type(exc).__name__
@@ -306,9 +314,13 @@ def _install_session_probes(browser_session: Any, clock: _PhaseClock) -> None:
                 error_type = "state_error"
             return result
         except asyncio.CancelledError:
-            error = "CancelledError: cancelled"
+            if _task_is_cancelling():
+                error = "CancelledError: cancelled"
+                error_type = "CancelledError"
+                raise
+            error = "CancelledError: state capture interrupted"
             error_type = "CancelledError"
-            raise
+            raise RuntimeError(error)
         except Exception as exc:
             error = f"{type(exc).__name__}: {exc}"[:400]
             error_type = type(exc).__name__
@@ -550,6 +562,13 @@ def _install_agent_probes(agent: Any, llm: Any, clock: _PhaseClock) -> None:
         return await orig_handle(error)
 
     _patch_method(agent, "_handle_step_error", handle_wrapped)
+
+
+def _task_is_cancelling() -> bool:
+    """True when this task itself was cancelled, not a child event timeout."""
+    task = asyncio.current_task()
+    cancelling = getattr(task, "cancelling", None)
+    return bool(cancelling and cancelling())
 
 
 def _cdp_failure_text(text: str) -> bool:
@@ -3056,7 +3075,11 @@ async def run_browser_agent(
                 on_step_end=on_step_end,
             )
         except asyncio.CancelledError:
-            raise
+            if _task_is_cancelling():
+                raise
+            run_failure = RuntimeError("CancelledError: agent run interrupted")
+            phase_clock.note_exception("agent_run", run_failure, where="loop")
+            print(f"[{agent_id}] agent.run interrupted — returning partial", flush=True)
         except Exception as run_exc:  # noqa: BLE001
             # Prefer partial opening frames over raising into study retry.
             # The exception used to stop here, so failures.json never saw it.
