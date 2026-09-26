@@ -103,3 +103,9 @@
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "coda.io", "ts": "2026-09-26T00:27:35.151049+00:00", "when": "after"}
 {"attempt": 1, "event": "signup_start", "site": "medium.com", "ts": "2026-09-26T00:27:36.384763+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "medium.com", "ts": "2026-09-26T00:27:36.423604+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "medium.com", "ts": "2026-09-26T00:30:03.478914+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "airtable.com", "ts": "2026-09-26T00:30:04.975765+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "airtable.com", "ts": "2026-09-26T00:30:05.018083+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "airtable.com", "ts": "2026-09-26T00:34:24.131990+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "figma.com", "ts": "2026-09-26T00:34:25.503615+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "figma.com", "ts": "2026-09-26T00:34:25.539822+00:00", "when": "before"}

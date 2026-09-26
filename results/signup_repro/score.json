@@ -837,7 +837,8 @@
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "mediumff2dacb",
+      "last_alias_tag": "mediumfullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "medium.com",
@@ -853,15 +854,34 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/0d37c727-e19c-48dc-882d-70a04a035458",
           "at": "2026-09-25T12:35:40.026931+00:00"
+        },
+        {
+          "host": "medium.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 147.0,
+          "alias_tag": "mediumfullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "captcha_unsolved",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/d102a452-befe-4fb9-90b5-e9d4a8656ce5",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:30:03.761419+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:35:40.026931+00:00"
+      "updated_at": "2026-09-26T00:30:03.761419+00:00"
     },
     "airtable.com": {
       "reproducible": true,
       "last_reason": "signed_up",
       "last_detail": "",
-      "last_alias_tag": "airtableff2dacc",
+      "last_alias_tag": "airtablefullb10",
+      "last_ok": true,
       "attempts": [
         {
           "host": "airtable.com",
@@ -877,9 +897,27 @@
           "backend": "browserbase",
           "bb_session": "https://www.browserbase.com/sessions/ecb59b19-e692-4aab-93ee-001783ce0f9b",
           "at": "2026-09-25T12:42:57.039879+00:00"
+        },
+        {
+          "host": "airtable.com",
+          "ok": true,
+          "reproducible": true,
+          "reason": "signed_up",
+          "detail": "",
+          "elapsed_s": 259.1,
+          "alias_tag": "airtablefullb10",
+          "email_scheme": "plus",
+          "signed_via": "storage_state",
+          "ignored_blocker": "sso_only",
+          "backend": "browserbase",
+          "bb_session": "https://www.browserbase.com/sessions/2cdc1a79-cebd-4621-966b-e9fe12ae6e4b",
+          "attempt": 1,
+          "balance_before": 19.991,
+          "balance_after": 19.991,
+          "at": "2026-09-26T00:34:24.387168+00:00"
         }
       ],
-      "updated_at": "2026-09-25T12:42:57.039879+00:00"
+      "updated_at": "2026-09-26T00:34:24.387168+00:00"
     },
     "figma.com": {
       "reproducible": true,
@@ -1783,7 +1821,7 @@
       "updated_at": "2026-09-25T23:53:01.580956+00:00"
     }
   },
-  "updated_at": "2026-09-26T00:27:35.378303+00:00",
+  "updated_at": "2026-09-26T00:34:24.387774+00:00",
   "reproducible": [
     "1password.com",
     "airtable.com",
