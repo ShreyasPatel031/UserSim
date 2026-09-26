@@ -77,7 +77,7 @@ function renderCompareHtml(comp) {
       const step = run?.comparison_score?.evidence_step ?? 0;
       return `<li><strong>${cmpEsc(p.name)}</strong> <span class="muted">${cmpEsc(p.role)}</span> → ${p.pick ? `<span class="pill ${cmpCss(p.pick)}">${cmpEsc(p.pick_label)}</span>` : `<span class="pill mixed">${cmpEsc(p.pick_label)}</span>`}
         ${p.pick_why ? `<div class="muted small">“${cmpEsc(p.pick_why)}”</div>` : ""}
-        ${(p.pick_cites || []).map((c) => cmpCite(c, cmpRun(c)?.comparison_score?.evidence_step, "evidence")).join(" ")}</li>`;
+        ${(p.pick_cites || []).map((c, i) => cmpCite(c, cmpRun(c)?.comparison_score?.evidence_step, `evidence ${i + 1}`)).join(" ")}</li>`;
     })
     .join("");
 
@@ -123,7 +123,7 @@ function renderCompareHtml(comp) {
           <dt>Proof</dt><dd>${cmpEsc(f.proof)}</dd>
           <dt>Fastest way to try</dt><dd>${cmpEsc(f.fastest_path)} <span class="muted small">(${f.signups_ok}/${f.runs} self-serve signups worked)</span></dd>
         </dl>
-        ${(f.cites || []).slice(0, 2).map((c) => cmpCite(c, cmpRun(c)?.comparison_score?.evidence_step, "evidence")).join(" ")}
+        ${(f.cites || []).slice(0, 2).map((c, i) => cmpCite(c, cmpRun(c)?.comparison_score?.evidence_step, `evidence ${i + 1}`)).join(" ")}
       </div>`)
     .join("");
 
