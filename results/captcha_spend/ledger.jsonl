@@ -84,3 +84,11 @@
 {"attempt": 1, "event": "signup_start", "site": "notion.so", "ts": "2026-09-25T23:55:57.056426+00:00"}
 {"attempt": 1, "balance": 19.991, "event": "balance", "site": "notion.so", "ts": "2026-09-25T23:55:57.141490+00:00", "when": "before"}
 {"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "notion.so", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-25T23:58:39.507849+00:00"}
+{"attempt": 1, "captcha_type": "hcaptcha", "event": "skip", "reason": "host_not_paid", "site": "notion.so", "task_type": "HCaptchaTaskProxyLess", "ts": "2026-09-26T00:01:00.803976+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "notion.so", "ts": "2026-09-26T00:03:32.992008+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "dropbox.com", "ts": "2026-09-26T00:03:34.217944+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "dropbox.com", "ts": "2026-09-26T00:03:34.258204+00:00", "when": "before"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "dropbox.com", "ts": "2026-09-26T00:06:38.479451+00:00", "when": "after"}
+{"attempt": 1, "event": "signup_start", "site": "zoom.us", "ts": "2026-09-26T00:06:39.946797+00:00"}
+{"attempt": 1, "balance": 19.991, "event": "balance", "site": "zoom.us", "ts": "2026-09-26T00:06:39.982968+00:00", "when": "before"}
+{"attempt": 1, "captcha_type": "turnstile", "event": "skip", "reason": "host_not_paid", "site": "zoom.us", "task_type": "AntiTurnstileTaskProxyLess", "ts": "2026-09-26T00:08:10.929071+00:00"}
