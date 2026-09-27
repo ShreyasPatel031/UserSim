@@ -1,0 +1,62 @@
+{
+  "study_id": "c022e582-3826-4c8e-a2ce-f11271e23be7",
+  "product_url": "https://linear.app",
+  "abort": "stuck",
+  "reason": "FAIL stuck: 2 agent(s) repeated the same action 3 times with no URL/DOM change. t1__p1__product phase=acting error= last_action=click New issue; t1__p2__product phase=acting error= last_action=click New issue",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 2,
+    "product": 0,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "missing field failed_step_phase",
+      "n": 2
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t1__p1__product",
+      "site_key": "product",
+      "task": "Find how to create a new issue",
+      "type": "stuck",
+      "judge_reason": "t1__p1__product phase=acting error= last_action=click New issue",
+      "phase": "acting",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=c022e582-3826-4c8e-a2ce-f11271e23be7&agent=t1__p1__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms.final_screenshot",
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://linear.app/",
+      "step": null
+    },
+    {
+      "agent_id": "t1__p2__product",
+      "site_key": "product",
+      "task": "Find how to create a new issue",
+      "type": "stuck",
+      "judge_reason": "t1__p2__product phase=acting error= last_action=click New issue",
+      "phase": "acting",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=c022e582-3826-4c8e-a2ce-f11271e23be7&agent=t1__p2__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms.final_screenshot",
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://linear.app/",
+      "step": null
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "version": 2,
+  "description": "40-product signup benchmark (original 20 + scale wave). Score = cookie/localStorage-verified sessions on the seed. Skip hosts already servable; do not re-run wins.",
+  "skip_hosts": [
+    "linear.app",
+    "notion.so",
+    "dropbox.com",
+    "zoom.us",
+    "canva.com",
+    "reddit.com",
+    "bitwarden.com",
+    "coda.io",
+    "medium.com",
+    "airtable.com",
+    "figma.com",
+    "miro.com",
+    "webflow.com",
+    "github.com",
+    "gitlab.com",
+    "todoist.com",
+    "calendly.com",
+    "buffer.com",
+    "asana.com",
+    "monday.com",
+    "mailchimp.com",
+    "vercel.com",
+    "netlify.com",
+    "digitalocean.com",
+    "wordpress.com",
+    "wix.com",
+    "pinterest.com",
+    "substack.com",
+    "hubspot.com",
+    "smartsheet.com"
+  ],
+  "products": [
+    {
+      "host": "clickup.com",
+      "priority": 1,
+      "note": "Mac signed_up; good BB candidate"
+    },
+    {
+      "host": "linear.app",
+      "priority": 2,
+      "note": "Mac signed_up"
+    },
+    {
+      "host": "notion.so",
+      "priority": 3,
+      "note": "Mac signed_up"
+    },
+    {
+      "host": "dropbox.com",
+      "priority": 4,
+      "note": "Mac signed_up"
+    },
+    {
+      "host": "zoom.us",
+      "priority": 5,
+      "note": "Mac signed_up; may prompt SMS"
+    },
+    {
+      "host": "canva.com",
+      "priority": 6,
+      "note": "Mac signed_up"
+    },
+    {
+      "host": "reddit.com",
+      "priority": 7,
+      "note": "Mac signed_up"
+    },
+    {
+      "host": "bitwarden.com",
+      "priority": 8,
+      "note": "Email-link hang; non-captcha"
+    },
+    {
+      "host": "coda.io",
+      "priority": 9,
+      "note": "Prior unknown block"
+    },
+    {
+      "host": "medium.com",
+      "priority": 10,
+      "note": "Auth UX quirky"
+    },
+    {
+      "host": "airtable.com",
+      "priority": 11,
+      "note": "Prior captcha_unsolved"
+    },
+    {
+      "host": "figma.com",
+      "priority": 12,
+      "note": "Prior captcha_unsolved"
+    },
+    {
+      "host": "miro.com",
+      "priority": 13,
+      "note": "Prior captcha_unsolved"
+    },
+    {
+      "host": "loom.com",
+      "priority": 14,
+      "note": "Prior captcha_unsolved"
+    },
+    {
+      "host": "webflow.com",
+      "priority": 15,
+      "note": "Prior captcha_unsolved"
+    },
+    {
+      "host": "github.com",
+      "priority": 16,
+      "note": "Prior captcha_unsolved"
+    },
+    {
+      "host": "gitlab.com",
+      "priority": 17,
+      "note": "Prior captcha_unsolved"
+    },
+    {
+      "host": "todoist.com",
+      "priority": 90,
+      "note": "DONE on seed \u2014 skip"
+    },
+    {
+      "host": "calendly.com",
+      "priority": 91,
+      "note": "DONE on seed \u2014 skip"
+    },
+    {
+      "host": "buffer.com",
+      "priority": 92,
+      "note": "DONE on seed as login.buffer.com \u2014 skip"
+    },
+    {
+      "host": "asana.com",
+      "priority": 30,
+      "note": "Scale wave: Work management; email signup"
+    },
+    {
+      "host": "monday.com",
+      "priority": 31,
+      "note": "Scale wave: Work OS; email signup"
+    },
+    {
+      "host": "trello.com",
+      "priority": 32,
+      "note": "Scale wave: Boards; Atlassian email path"
+    },
+    {
+      "host": "box.com",
+      "priority": 33,
+      "note": "Scale wave: Cloud storage; email signup"
+    },
+    {
+      "host": "evernote.com",
+      "priority": 34,
+      "note": "Scale wave: Notes; email signup"
+    },
+    {
+      "host": "typeform.com",
+      "priority": 35,
+      "note": "Scale wave: Forms; email signup"
+    },
+    {
+      "host": "mailchimp.com",
+      "priority": 36,
+      "note": "Scale wave: Email marketing; email signup"
+    },
+    {
+      "host": "vercel.com",
+      "priority": 37,
+      "note": "Scale wave: Deploy; email/GitHub \u2014 prefer email"
+    },
+    {
+      "host": "netlify.com",
+      "priority": 38,
+      "note": "Scale wave: Deploy; email signup"
+    },
+    {
+      "host": "digitalocean.com",
+      "priority": 39,
+      "note": "Scale wave: Cloud; email signup"
+    },
+    {
+      "host": "replit.com",
+      "priority": 40,
+      "note": "Scale wave: IDE; email signup"
+    },
+    {
+      "host": "wordpress.com",
+      "priority": 41,
+      "note": "Scale wave: CMS; email signup"
+    },
+    {
+      "host": "wix.com",
+      "priority": 42,
+      "note": "Scale wave: Site builder; email signup"
+    },
+    {
+      "host": "pinterest.com",
+      "priority": 43,
+      "note": "Scale wave: Social; email signup"
+    },
+    {
+      "host": "discord.com",
+      "priority": 44,
+      "note": "Scale wave: Chat; email signup"
+    },
+    {
+      "host": "substack.com",
+      "priority": 45,
+      "note": "Scale wave: Publishing; email magic-link"
+    },
+    {
+      "host": "supabase.com",
+      "priority": 46,
+      "note": "Scale wave: Backend; email signup"
+    },
+    {
+      "host": "posthog.com",
+      "priority": 47,
+      "note": "Scale wave: Analytics; email signup"
+    },
+    {
+      "host": "hubspot.com",
+      "priority": 48,
+      "note": "Scale wave: CRM; email signup"
+    },
+    {
+      "host": "smartsheet.com",
+      "priority": 49,
+      "note": "Scale wave: Sheets; email signup"
+    }
+  ]
+}

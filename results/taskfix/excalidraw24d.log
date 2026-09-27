@@ -1,0 +1,133 @@
+released browserbase owner=taskfix study=* {'found': 4, 'released': 0, 'failed': [], 'session_ids': [], 'kept_prime': 4, 'owner': 'taskfix', 'study_id': None}
+→ open http://127.0.0.1:3000/?max_agents=24 url=https://excalidraw.com
+→ click Run (not Smoke)
+  [0s] status=None users=0 tasks=0 sites=1 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=
+  [0s] status=running users=5 tasks=2 sites=3 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  [1s] status=running users=5 tasks=2 sites=3 agents=0 acted=0/0 ttfa_median=None ttfa_max=None since_task= steps=0 done=0 page_open=/ phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  first_task_created +1.7s n=8
+  first_value +1.3s agent=t1__p1__product
+  [1s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.004 ttfa_max=0.004 since_task=0s steps=16 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  [2s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=16 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  [2s] status=running users=5 tasks=2 sites=3 agents=8 acted=8/8 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=16 done=0 page_open=8/8 phase=Live browser agents — 0/6 done · 6 active · 0 queu
+  all_tasks_created +3.0s n=24
+  [2s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.009 ttfa_max=0.009 since_task=0s steps=48 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 48 s
+  [3s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=49 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 49 s
+  [4s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=51 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 51 s
+  [5s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=52 done=0 page_open=24/24 phase=Live browser agents — 0/24 done · 24 active · 52 s
+  [6s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=52 done=1 page_open=24/24 phase=Live browser agents — 1/24 done · 23 active · 52 s
+  [8s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=53 done=1 page_open=24/24 phase=Live browser agents — 1/24 done · 23 active · 53 s
+  [9s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=53 done=2 page_open=24/24 phase=Live browser agents — 2/24 done · 22 active · 53 s
+  [10s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=56 done=4 page_open=24/24 phase=Live browser agents — 4/24 done · 20 active · 56 s
+  [11s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=57 done=7 page_open=24/24 phase=Live browser agents — 7/24 done · 17 active · 57 s
+  [12s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=59 done=7 page_open=24/24 phase=Live browser agents — 7/24 done · 17 active · 59 s
+  [13s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=59 done=7 page_open=24/24 phase=Live browser agents — 7/24 done · 17 active · 59 s
+  [14s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=61 done=11 page_open=24/24 phase=Live browser agents — 11/24 done · 13 active · 61 
+  [15s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=61 done=14 page_open=24/24 phase=Live browser agents — 14/24 done · 10 active · 61 
+  [16s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=63 done=14 page_open=24/24 phase=Live browser agents — 14/24 done · 10 active · 63 
+  [17s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=63 done=16 page_open=24/24 phase=Live browser agents — 16/24 done · 8 active · 63 s
+  [18s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=63 done=17 page_open=24/24 phase=Live browser agents — 17/24 done · 7 active · 63 s
+  [19s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=63 done=18 page_open=24/24 phase=Live browser agents — 18/24 done · 6 active · 63 s
+  [20s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=63 done=21 page_open=24/24 phase=Live browser agents — 21/24 done · 3 active · 63 s
+  [21s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=64 done=21 page_open=24/24 phase=Live browser agents — 21/24 done · 3 active · 64 s
+  [22s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=64 done=21 page_open=24/24 phase=Live browser agents — 21/24 done · 3 active · 64 s
+  [23s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=64 done=21 page_open=24/24 phase=Live browser agents — 21/24 done · 3 active · 64 s
+  [24s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=21 page_open=24/24 phase=Live browser agents — 21/24 done · 3 active · 65 s
+  [25s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=22 page_open=24/24 phase=Live browser agents — 22/24 done · 2 active · 65 s
+  [26s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=22 page_open=24/24 phase=Live browser agents — 22/24 done · 2 active · 65 s
+  [27s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=22 page_open=24/24 phase=Live browser agents — 22/24 done · 2 active · 65 s
+  [28s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=23 page_open=24/24 phase=Live browser agents — 23/24 done · 1 active · 65 s
+  [29s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=23 page_open=24/24 phase=Live browser agents — 23/24 done · 1 active · 65 s
+  [30s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=24 page_open=24/24 phase=Live browser agents — 24/24 done · 0 active · 65 s
+  [31s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=24 page_open=24/24 phase=Writing executive summary
+  [32s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=24 page_open=24/24 phase=Writing executive summary
+  [33s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=24 page_open=24/24 phase=Writing executive summary
+  [34s] status=running users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=0s steps=65 done=24 page_open=24/24 phase=Writing executive summary
+  report_ready +35.2s
+  [35s] status=complete users=5 tasks=2 sites=3 agents=24 acted=24/24 ttfa_median=0.0 ttfa_max=0.0 since_task=1s steps=65 done=24 page_open=24/24 phase=Complete
+  timing: run→first_task=34.567s run→all_tasks=34.567s REAL shot p50/p95/max=-19.993/-6.782/-4.544s missing_real=0 warm={}
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+  goal t1__p1__product reached=True opening=False url=https://excalidraw.com/ A rectangle with rounded corners has been drawn on the canvas.
+  goal t1__p1__competitor_1 reached=False opening=False url=https://www.tldraw.com/ The screenshot shows the drawing canvas, but no rectangle has been drawn on it yet.
+  goal t1__p1__competitor_2 reached=False opening=True url=https://miro.com/ The agent is still on the Miro homepage and has not interacted with the canvas to draw a rectangle.
+  goal t2__p1__product reached=True opening=False url=https://excalidraw.com/ The screenshot shows the export image dialog, which is a direct result of attempting to export or share the drawing.
+  goal t2__p1__competitor_1 reached=True opening=False url=https://www.tldraw.com/ The agent successfully navigated to the export menu and displayed the export options for the drawing.
+  goal t2__p1__competitor_2 reached=False opening=True url=https://miro.com/ The agent is still on the Miro Help Center landing page and has not navigated to a section or performed an action related to exporting or sharing a drawing.
+  goal t1__p2__product reached=True opening=False url=https://excalidraw.com/ A rectangle with rounded corners has been drawn on the canvas.
+  goal t1__p2__competitor_1 reached=True opening=False url=https://www.tldraw.com/ The agent successfully drew a rectangle on the canvas of the competitor website.
+  goal t1__p2__competitor_2 reached=False opening=True url=https://miro.com/ The agent is still on the Miro homepage and has not interacted with the canvas to draw a rectangle.
+  goal t2__p2__product reached=True opening=False url=https://excalidraw.com/ The agent successfully navigated to the export image dialog, which allows for sharing the drawing.
+  goal t2__p2__competitor_1 reached=True opening=False url=https://www.tldraw.com/ The agent successfully navigated to the export menu and displayed the export options, fulfilling the task goal.
+  goal t2__p2__competitor_2 reached=False opening=True url=https://miro.com/integrations/ The agent is still on the homepage and has not navigated to a page where export or share options can be found.
+  goal t1__p3__product reached=True opening=False url=https://excalidraw.com/ A rectangle has been drawn on the canvas.
+  goal t1__p3__competitor_1 reached=True opening=False url=https://www.tldraw.com/ A rectangle has been successfully drawn on the canvas.
+  goal t1__p3__competitor_2 reached=False opening=True url=https://miro.com/ The agent is still on the Miro homepage and has not interacted with the canvas to draw a rectangle.
+  goal t2__p3__product reached=True opening=False url=https://excalidraw.com/ The screenshot shows the export image dialog, which is a direct result of attempting to export or share the drawing.
+  goal t2__p3__competitor_1 reached=True opening=False url=https://www.tldraw.com/ The agent successfully navigated to the export menu and displayed the export options for the drawing.
+  goal t2__p3__competitor_2 reached=False opening=False url=https://miro.com/marketplace/ The agent is on the Miro marketplace page, which is not the correct page to find export or share options for a drawing. The task requires finding these options on the competitor website, but the current page is for discovering apps and integrations.
+  goal t1__p4__product reached=True opening=False url=https://excalidraw.com/ A rectangle has been drawn on the canvas.
+  goal t1__p4__competitor_1 reached=True opening=False url=https://www.tldraw.com/ The screenshot shows a rectangle drawn on the canvas, which fulfills the task goal.
+  goal t1__p4__competitor_2 reached=False opening=True url=https://miro.com/ The agent is still on the Miro homepage and has not interacted with the canvas to draw a rectangle.
+  goal t2__p4__product reached=True opening=False url=https://excalidraw.com/ The screenshot shows the export image dialog, which is a direct result of attempting to export or share the drawing.
+  goal t2__p4__competitor_1 reached=True opening=False url=https://www.tldraw.com/ The agent successfully navigated to the export menu and displayed the export options, fulfilling the task goal.
+  goal t2__p4__competitor_2 reached=False opening=False url=https://miro.com/marketplace/ The agent is on the Miro marketplace page, which is not the correct page to find export or share options for a drawing. The task requires finding these options within the Miro application itself, not on the marketplace.
+Wrote /tmp/usersim_e2e2_excalidraw24d/failures.json (9 failed runs)
+# Strict e2e gates
+
+## Headline
+
+- `time_to_first_value`: 1.28s (threshold <= 10s from URL submit until the first click, type, or scroll is visible in the live UI) PASS
+- `total_time`: 35.172s (threshold <= 480s from URL submit until the report is ready) PASS
+
+- study: 38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160
+- product: https://excalidraw.com
+- pass: true
+- failure file: /tmp/usersim_e2e2_excalidraw24d/failures.json
+- failed runs: our infrastructure=0, model timeout=0, stuck=0, product=9, no_first_action=0
+
+| Gate | Value | Threshold | Result |
+| --- | --- | --- | --- |
+| Time to first value (`time_to_first_value`) | 1.28s | <= 10s from URL submit until the first click, type, or scroll is visible in the live UI | PASS |
+| Total time (`total_time`) | 35.172s | <= 480s from URL submit until the report is ready | PASS |
+| Full 24-agent matrix (`full_matrix`) | 24 | >= 24 (smaller runs are smoke-only) | PASS |
+| Agent count (`agent_count`) | 24 | >= 24 | PASS |
+| Persona count (`persona_count`) | 5 | >= 4 | PASS |
+| Task count (`task_count`) | 2 | >= 2 | PASS |
+| Site count (`site_count`) | 3 | >= 3 | PASS |
+| Page opened on the assigned site (`page_opened`) | 24/24 within 5s | <= 5s from agent creation, URL host matches the assigned site, accessibility tree present | PASS |
+| Study completed with a summary (`study_complete`) | complete | status=complete, summary present, no harness abort | PASS |
+| Study budget (`study_budget`) | 35.6s | <= 480s for the whole study (observed max 408s) | PASS |
+| First real action (`first_action`) | not measured | live abort is time_to_first_action | PASS |
+| Time to first action (`time_to_first_action`) | median=0.0s max=0.0s n=24/24 | median <= 5s and max <= 10s at 24 agents | PASS |
+| Per-phase milliseconds (`phase_ms`) | 24/24 | each agent has phase_ms.session_ready, page_open, first_action, final_screenshot | PASS |
+| Final screenshot (`final_screenshot`) | 24/24 | each agent has final_screenshot_url (one async capture for the judge) | PASS |
+| Final URL and page text for the judge (`judge_inputs`) | 24/24 | final_url plus state_sig.text or ax_tree on every agent | PASS |
+| Failed-step phase and reason (`failed_step`) | 9 failed runs | every failed run has failed_step.phase and failed_step.reason | PASS |
+| Product task completion (`product_task_completion`) | 8/8 (100%) | >= 50% of product runs (>= 4/8) | PASS |
+| Bland-style report page (`report_page`) | http://127.0.0.1:3000/report?study=38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160 | /report?study=<id> shell with overview and trace tabs | PASS |
+| Every task has a completion rate (`task_completion_rates`) | 2 tasks | each task has a product ok/n rate | PASS |
+| Product strength from a run past the first screen (`product_strength`) | 2/2 | >= 1 strength with agent, step, AX or URL, and the final screenshot | PASS |
+| Product weakness from a run past the first screen (`product_weakness`) | 3/3 | >= 1 weakness with agent, step, AX or URL, and the final screenshot | PASS |
+| Top weakness is not only the homepage stall (`top_weakness_not_homepage_only`) | 6 of 8 product runs stopped on the first screen, so feature-level weaknesses are thin in these traces. | at least one weakness is a real product issue from a run past the first screen | PASS |
+| Run issues listed separately from product friction (`run_issues_separate`) | 0 listed | insights.run_issues is its own list; harness errors are not product weaknesses | PASS |
+| Run issue share (`run_issue_rate`) | 0/24 (0%) | <= 25% of runs | PASS |
+| Browserbase and concurrency losses count against the run (`infra_honesty`) | losses=0 silent=0 counted_as_success=0 | 0 silently excluded, 0 counted as task success | PASS |
+| First-screen and opening-frame runs stay in the product denominator (`first_screen_not_excluded`) | opening_or_first_screen=0 product_n=8 excluded=0 | excluded=0 (a stuck run is a failure, not a drop) | PASS |
+
+## Competitor task completion
+
+Reported separately. These runs do not count toward the product gate.
+
+- https://www.tldraw.com/ (competitor_1): 7/8
+- https://miro.com/ (competitor_2): 0/8
+
+## Product task completion
+
+- confirmed: 8/8
+- past the first screen (structural): 8
+- first screen or opening frame: 0
+
+Wrote /tmp/usersim_e2e2_excalidraw24d/result.json
+Wrote /tmp/usersim_e2e2_excalidraw24d/summary.md
+ALL_PASS study=38deb1cc-8bf3-4d6a-a5b4-ca147c8cf160 task_success=8/8 elapsed=35.6s url=https://excalidraw.com
+released browserbase owner=taskfix study=* {'found': 2, 'released': 1, 'failed': [], 'session_ids': ['4af1ede6-a5e2-4b3c-bc83-f4ac6b2577f2'], 'kept_prime': 1, 'owner': 'taskfix', 'study_id': None}
+EXIT:0

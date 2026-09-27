@@ -1,0 +1,50 @@
+{
+  "study_id": "f27bc4b7-196b-4c24-b533-734db02ecc35",
+  "product_url": "https://linear.app",
+  "abort": "product",
+  "reason": "FAIL page_opened: 23/24 agents opened the assigned site within 5s (opened after 5s=1)",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 1,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "navigate",
+      "n": 1
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t1__p1__product",
+      "site_key": "product",
+      "task": "Find how to create a new issue",
+      "type": "product",
+      "judge_reason": "t1__p1__product phase=act error= last_action=click New issue",
+      "phase": "act",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=f27bc4b7-196b-4c24-b533-734db02ecc35&agent=t1__p1__product&step=1",
+      "failed_step_phase": "navigate",
+      "failed_step_reason": "session ended",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 4691.0
+      },
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/f27bc4b7-196b-4c24-b533-734db02ecc35/agents/t1__p1__product/screenshots/final.png",
+      "final_url": "https://linear.app/",
+      "step": 1
+    }
+  ]
+}

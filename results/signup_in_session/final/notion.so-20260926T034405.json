@@ -1,0 +1,39 @@
+{
+  "ok": false,
+  "reason": "email_rejected",
+  "email": "notionbmxxrr@guerrillamailblock.com",
+  "inbox": "guerrilla",
+  "elapsed_s": 99.6,
+  "final_url": "https://app.notion.com/signup?from=marketing&pathname=%2F",
+  "evidence": "",
+  "steps": [
+    "start https://www.notion.com/",
+    "www.notion.com/ :: working :: Click 'Get Notion free' to start the signup process.",
+    "  click link 'Get Notion free'",
+    "app.notion.com/signup :: working :: Fill in the email and click continue to proceed with the signup process.",
+    "  fill Work email = {email}",
+    "  click button 'Continue'",
+    "app.notion.com/signup :: working :: The email has been filled, now I need to click the continue button.",
+    "  click button 'Continue'",
+    "app.notion.com/signup :: working :: The page did not change after the last actions, indicating the 'Continue' button might not have been the correct one or there was an issue w",
+    "email rejected: invalid email domain (uberip.com)",
+    "retrying with a new inbox on guerrillamailblock.com",
+    "app.notion.com/signup :: working :: The previous email was rejected, so I will use the new email provided and click continue.",
+    "  fill Work email = notionbmxxrr@guerrillamailbloc",
+    "  click button 'Continue'",
+    "app.notion.com/signup :: need_email :: The site is asking for a code that was sent to the email. I need to wait for the code to be provided.",
+    "waiting for email to guerrillamailblock.com (up to 75s)",
+    "app.notion.com/signup :: blocked :: The previous attempt to sign up failed because the email address was rejected. I need to try again with a different email address. Since I d"
+  ],
+  "captcha": [],
+  "capsolver_usd": 0.0,
+  "capsolver_calls": 0,
+  "last_page": {
+    "url": "https://app.notion.com/signup?from=marketing&pathname=%2F",
+    "title": "Notion - Sign up",
+    "body": "Skip to content \ud83c\udfe0 Notion: your AI workspace. Sign up with your work email Work email Tip: Use your work email (if you have one) so it\u2019s easier for your team to join you on Notion Continue We could not reach the email address you provided. Please try again with a different email. or continue with Google Microsoft ChatGPT Existing user? Log in By continuing, you acknowledge that you understand and agree to the Terms & Conditions and Privacy Policy",
+    "elements": "[0] link \"Skip to content\" href=\"#main\" offscreen\n[1] textbox type=email \"Work email\" placeholder=\"name@company.com\" field=\":r4: email\" filled=35\n[2] button \"Clear Input\"\n[3] button \"Continue\"\n[7] link \"Log in\" href=\"/login?from=marketing&pathname=%2F\" offscreen\n[8] link \"Terms & Conditions\" href=\"https://www.notion.so/notion/Terms-and-Privacy-28ffdd083dc3473e9c2da6ec011b58ac\" offscreen\n[9] link \"Privacy Policy\" href=\"https://www.notion.com/trust/privacy-policy\" offscreen\n[10] button \"Help\""
+  },
+  "site": "https://www.notion.so",
+  "headless": false
+}

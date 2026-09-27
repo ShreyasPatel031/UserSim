@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import random
 import threading
 import time
 from dataclasses import dataclass
@@ -11,6 +12,13 @@ from typing import Any
 from browserbase import Browserbase
 
 from config import ROOT
+
+from capability.bb_rate import (
+    BucketTimeout,
+    create_bucket,
+    is_burst_limit,
+    parse_retry_after,
+)
 
 
 class BrowserbaseConfigError(RuntimeError):
@@ -118,6 +126,43 @@ def browserbase_max_workers(requested: int) -> int:
 # create so leftover cleanup can release only ours (never signup / untagged).
 BB_OWNER_E2E = "e2e"
 BB_OWNER_SIGNUP = "signup"
+BB_OWNER_COMPETITOR = "competitor"
+# Strict e2e harness tag. Release only these sessions; do not touch signup,
+# report runs, or another agent's e2e sessions.
+BB_OWNER_TESTFIX = "testfix"
+# This harness's live baseline. Release only these sessions.
+BB_OWNER_GATES = "gates"
+# Task-completion harness. Release only these sessions.
+BB_OWNER_TASKFIX = "taskfix"
+# Public demo server (the sslip.io VM). No harness releases this tag, so a
+# harness on the same project that sweeps "integration"/"testfix" sessions
+# before its own run can no longer end the demo's live agents mid-signup.
+BB_OWNER_DEMO = "demo"
+
+
+def study_session_owner() -> str:
+    """Owner tag for study Browserbase sessions.
+
+    Defaults to ``e2e``. Set ``MVP_BB_OWNER=competitor`` for a competitor-pipeline
+    run, ``MVP_BB_OWNER=testfix`` or ``MVP_BB_OWNER=gates`` for the strict e2e
+    harness, or ``MVP_BB_OWNER=integration`` for the nightly integration runner, so those
+    sessions can be released without touching signup or other work. The signup
+    tag is never used here.
+    """
+    raw = (os.environ.get("MVP_BB_OWNER") or "").strip().lower()
+    # signup sessions are a different pipeline and must never be tagged here.
+    if raw in {
+        BB_OWNER_COMPETITOR,
+        "report",
+        BB_OWNER_E2E,
+        BB_OWNER_TESTFIX,
+        BB_OWNER_GATES,
+        BB_OWNER_TASKFIX,
+        BB_OWNER_DEMO,
+        "integration",
+    }:
+        return raw
+    return BB_OWNER_E2E
 
 
 @dataclass(frozen=True)
@@ -125,6 +170,7 @@ class BrowserbaseSession:
     id: str
     connect_url: str
     session_url: str
+    flags: dict[str, Any] | None = None
 
 
 def session_user_metadata(
@@ -145,6 +191,189 @@ def _is_rate_limit(exc: BaseException) -> bool:
     return "429" in msg or "too many requests" in msg or "rate limit" in msg
 
 
+def _is_concurrency_limit(exc: BaseException) -> bool:
+    """A 429 that means "all 25 session slots are in use", not "too many creates".
+
+    Both arrive as 429. The burst limit is a rolling-window problem and the
+    whole process must hold off; a full account is not — slots free one at a
+    time as other agents finish, so this create just waits and asks again.
+    Blocking every create for half a window here stalled all 24 agents at once.
+    """
+    msg = str(exc).lower()
+    return "concurrent session" in msg or "max concurrent" in msg
+
+
+def _is_retryable_create(exc: BaseException) -> bool:
+    """429s, hung creates, and transient gateway errors are worth another try.
+
+    Feature refusals (402/403) are not — the caller walks down flag sets.
+    """
+    if isinstance(exc, TimeoutError):
+        return True
+    msg = str(exc).lower()
+    if any(
+        s in msg
+        for s in (
+            "403",
+            "402",
+            "forbidden",
+            "payment required",
+            "verified mode",
+            "enterprise",
+            "not available",
+            "upgrade",
+        )
+    ):
+        return False
+    return _is_rate_limit(exc) or any(
+        s in msg
+        for s in (
+            "503",
+            "502",
+            "504",
+            "timeout",
+            "timed out",
+            "temporarily",
+            "connection reset",
+            "connection aborted",
+            "concurrency",
+        )
+    )
+
+
+def _create_backoff_s(attempt: int, exc: BaseException | None = None) -> float:
+    """Jittered backoff so a burst of creates does not hammer Browserbase.
+
+    Hung creates retry quickly (the call already burned its timeout). 429s
+    use exponential backoff capped by BROWSERBASE_429_BACKOFF_CAP_S (default
+    8s). A flat 45s sleep used to outlive the pre-clock warm window, so tasks
+    were created with no real frame and the strict 5s screenshot clock failed.
+    These retries still finish before that clock starts.
+    """
+    is_timeout = isinstance(exc, TimeoutError) or (
+        exc is not None and "timed out" in str(exc).lower() and not _is_rate_limit(exc)
+    )
+    if is_timeout:
+        return random.uniform(0.35, 1.25) * (1.0 + 0.3 * max(0, attempt))
+    try:
+        base = float(os.environ.get("BROWSERBASE_429_BACKOFF_S", "1.5") or "1.5")
+    except ValueError:
+        base = 1.5
+    try:
+        cap = float(os.environ.get("BROWSERBASE_429_BACKOFF_CAP_S", "8") or "8")
+    except ValueError:
+        cap = 8.0
+    base = max(0.4, base)
+    cap = max(base, cap) if cap > 0 else base
+    # Values above the cap (the old hard-coded 45s) stay inside the cap so
+    # one create_session returns while warm can still finish pre-clock.
+    delay = min(cap, base * (2 ** max(0, attempt)))
+    return delay + random.uniform(0.0, max(0.15, delay * 0.35))
+
+
+def _create_concurrency() -> int:
+    try:
+        n = int(os.environ.get("BROWSERBASE_CREATE_CONCURRENCY", "24") or "24")
+    except ValueError:
+        n = 24
+    return max(1, min(25, n))
+
+
+def _create_attempt_timeout_s() -> float:
+    try:
+        timeout_s = float(os.environ.get("BROWSERBASE_CREATE_TIMEOUT_S", "18") or "18")
+    except ValueError:
+        timeout_s = 18.0
+    return max(0.2, timeout_s)
+
+
+def _concurrency_poll_s() -> float:
+    """How long to wait before asking again when every session slot is in use."""
+    try:
+        return max(0.5, float(os.environ.get("BROWSERBASE_CONCURRENCY_POLL_S", "5") or "5"))
+    except ValueError:
+        return 5.0
+
+
+def _create_attempts() -> int:
+    try:
+        n = int(os.environ.get("BROWSERBASE_CREATE_ATTEMPTS", "4") or "4")
+    except ValueError:
+        n = 4
+    return max(1, min(6, n))
+
+
+# In-flight session-create cap. Session slots stay at project concurrency (25);
+# bursting 25 creates at once is what trips 429s. Not raised by full-parallel.
+_CREATE_SEM = threading.Semaphore(_create_concurrency())
+
+
+def _release_abandoned_session(session: Any) -> None:
+    """Close a session that landed after the caller already timed out."""
+    sid = getattr(session, "id", None)
+    if not sid:
+        return
+    try:
+        client = Browserbase(api_key=browserbase_api_key())
+        client.sessions.update(str(sid), status="REQUEST_RELEASE")
+        print(f"Browserbase released abandoned create {sid}", flush=True)
+    except Exception as exc:  # noqa: BLE001
+        print(f"Browserbase abandoned-session release failed: {exc!r}", flush=True)
+
+
+def session_flag_attempts(
+    *,
+    proxies: bool,
+    solve_captchas: bool,
+    advanced_stealth: bool,
+) -> list[dict[str, Any]]:
+    """Richest session first, then the signup ladder, then a bare session.
+
+    Signup tries proxies+solve, then solve without proxies, then bare.
+    ``advanced_stealth`` stays off on Hobby (403). A proxies-only attempt sits
+    ahead of bare so a plan that allows proxies but not captcha-solve still
+    gets the proxy.
+    """
+    attempts: list[dict[str, Any]] = []
+    if proxies or solve_captchas or advanced_stealth:
+        attempts.append(
+            {
+                "proxies": bool(proxies),
+                "solve_captchas": bool(solve_captchas),
+                "advanced_stealth": bool(advanced_stealth),
+            }
+        )
+    if proxies or solve_captchas:
+        attempts.append(
+            {
+                "proxies": bool(proxies),
+                "solve_captchas": bool(solve_captchas),
+                "advanced_stealth": False,
+            }
+        )
+    # Signup's middle rung: captcha solve on a non-proxy session after a 402.
+    if proxies and solve_captchas:
+        attempts.append(
+            {"proxies": False, "solve_captchas": True, "advanced_stealth": False}
+        )
+    if proxies:
+        attempts.append(
+            {"proxies": True, "solve_captchas": False, "advanced_stealth": False}
+        )
+    attempts.append(
+        {"proxies": False, "solve_captchas": False, "advanced_stealth": False}
+    )
+    seen: set[tuple[Any, ...]] = set()
+    unique: list[dict[str, Any]] = []
+    for attempt in attempts:
+        key = (attempt["proxies"], attempt["solve_captchas"], attempt["advanced_stealth"])
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(attempt)
+    return unique
+
+
 def create_session(
     *,
     proxies: bool = False,
@@ -154,6 +383,11 @@ def create_session(
     user_metadata: dict[str, Any] | None = None,
     owner: str | None = None,
     study_id: str | None = None,
+    priority: int = 1,
+    wait_s: float | None = None,
+    on_wait: Any | None = None,
+    attempt_timeout_s: float | None = None,
+    cancel: threading.Event | None = None,
 ) -> BrowserbaseSession:
     """Create a Browserbase session at full Developer concurrency.
 
@@ -164,6 +398,14 @@ def create_session(
     Pass ``user_metadata`` (or ``owner`` / ``study_id``) so shared-project
     cleanup can release only our sessions. Callers that omit metadata stay
     untagged — kill_all will leave those alone.
+
+    Every HTTP create first takes a token from the process-wide burst bucket
+    (``capability.bb_rate``: <= 22 creates per rolling 60s, served by
+    ``priority``: 0 product agents, 1 default, 2 rivals). A 429 ("try again in
+    N seconds") holds the bucket for N seconds plus jitter and the same create
+    is retried; it does not use up an attempt. ``wait_s`` bounds the whole
+    call (default BROWSERBASE_CREATE_WAIT_S, 150s). ``on_wait(seconds, reason)``
+    is called from this thread while the create waits for a token.
     """
     ensure_browserbase_full_parallel()
     try:
@@ -176,8 +418,21 @@ def create_session(
             "Browserbase local slot acquire timed out — creating anyway (stale slots)",
             flush=True,
         )
-    client = Browserbase(api_key=browserbase_api_key())
+    try:
+        # The SDK's own retries would each be another create request the
+        # bucket never saw (and it sleeps through 429s inside one attempt).
+        client = Browserbase(api_key=browserbase_api_key(), max_retries=0)
+    except TypeError:
+        client = Browserbase(api_key=browserbase_api_key())
     pid = browserbase_project_id()
+    bucket = create_bucket()
+    try:
+        total_wait = float(
+            wait_s if wait_s is not None else os.environ.get("BROWSERBASE_CREATE_WAIT_S", "150")
+        )
+    except ValueError:
+        total_wait = 150.0
+    call_deadline = time.monotonic() + max(1.0, total_wait)
 
     meta: dict[str, object] | None = None
     if user_metadata:
@@ -209,29 +464,11 @@ def create_session(
     want_solve = default_solve if solve_captchas is None else bool(solve_captchas)
     want_stealth = default_stealth if advanced_stealth is None else bool(advanced_stealth)
 
-    # Ordered attempts: richest → bare session. Enterprise flags first so paid
-    # plans keep them; Hobby gets a working basic session after 402/403.
-    attempts: list[dict[str, Any]] = []
-    if proxies or want_solve or want_stealth:
-        attempts.append(
-            {"proxies": bool(proxies), "solve_captchas": bool(want_solve), "advanced_stealth": bool(want_stealth)}
-        )
-    if proxies or want_solve:
-        attempts.append(
-            {"proxies": bool(proxies), "solve_captchas": bool(want_solve), "advanced_stealth": False}
-        )
-    if proxies:
-        attempts.append({"proxies": True, "solve_captchas": False, "advanced_stealth": False})
-    attempts.append({"proxies": False, "solve_captchas": False, "advanced_stealth": False})
-    # De-dupe while preserving order.
-    seen: set[tuple[Any, ...]] = set()
-    unique_attempts: list[dict[str, Any]] = []
-    for a in attempts:
-        key = (a["proxies"], a["solve_captchas"], a["advanced_stealth"])
-        if key in seen:
-            continue
-        seen.add(key)
-        unique_attempts.append(a)
+    unique_attempts = session_flag_attempts(
+        proxies=bool(proxies),
+        solve_captchas=bool(want_solve),
+        advanced_stealth=bool(want_stealth),
+    )
 
     def _build_kwargs(flags: dict[str, Any]) -> dict[str, Any]:
         # Project defaultTimeout is often 300s — parallel agents + LLM steps
@@ -302,53 +539,154 @@ def create_session(
                     return client.sessions.create(**bare)
 
     def _create_once_bounded(kwargs: dict[str, Any], *, timeout_s: float) -> Any:
-        """Don't let the Browserbase SDK retry loop block a study forever."""
+        """Don't let the Browserbase SDK retry loop block a study forever.
+
+        If the HTTP call lands a session after we have already given up, release
+        that session. An orphaned create is what fills the project and turns the
+        next warm into a 429.
+        """
         box: dict[str, Any] = {}
+        abandoned = threading.Event()
 
         def _run() -> None:
             try:
-                box["session"] = _create_once(kwargs)
+                session = _create_once(kwargs)
             except Exception as exc:  # noqa: BLE001
                 box["exc"] = exc
+                return
+            if abandoned.is_set():
+                _release_abandoned_session(session)
+                box["abandoned"] = True
+                return
+            box["session"] = session
 
         worker = threading.Thread(target=_run, daemon=True, name="bb-create")
         worker.start()
-        worker.join(max(5.0, timeout_s))
+        worker.join(timeout_s)
         if worker.is_alive():
-            raise TimeoutError(f"Browserbase session create timed out after {timeout_s:.0f}s")
+            abandoned.set()
+            raise TimeoutError(
+                f"Browserbase session create timed out after {timeout_s:.0f}s"
+            )
+        if box.get("abandoned"):
+            raise TimeoutError("Browserbase session create abandoned after timeout")
         if "exc" in box:
             raise box["exc"]
         return box["session"]
 
+    attempts_n = _create_attempts()
+    timeout_s = (
+        max(0.2, float(attempt_timeout_s))
+        if attempt_timeout_s is not None
+        else _create_attempt_timeout_s()
+    )
     last_exc: BaseException | None = None
     try:
         for flags in unique_attempts:
             kwargs = _build_kwargs(flags)
-            for attempt in range(3):
+            attempt = 0  # non-429 failures on this flag set
+            while attempt < attempts_n:
+                if cancel is not None and cancel.is_set():
+                    raise BrowserbaseRateLimitError("session create cancelled by caller")
+                # One token per HTTP create, before the in-flight cap.
+                try:
+                    waited = bucket.acquire(
+                        priority,
+                        deadline=call_deadline,
+                        cancel=cancel,
+                        on_wait=on_wait,
+                    )
+                except BucketTimeout as exc:
+                    last_exc = exc
+                    raise BrowserbaseRateLimitError(
+                        f"no Browserbase create token in time: {exc}"
+                    ) from exc
+                if waited >= 1.0:
+                    print(
+                        f"Browserbase create waited {waited:.1f}s for a burst token "
+                        f"(priority {priority}, {bucket.recent()} creates in the last "
+                        f"{int(bucket.window_s)}s)",
+                        flush=True,
+                    )
+                sem_held = _CREATE_SEM.acquire(timeout=max(1.0, timeout_s))
+                plan_refusal = False
+                retry_delay: float | None = None
+                if not sem_held:
+                    last_exc = TimeoutError(
+                        "Browserbase create concurrency cap busy"
+                    )
+                    attempt += 1
+                    if attempt < attempts_n:
+                        delay = _create_backoff_s(attempt - 1, last_exc)
+                        print(
+                            f"Browserbase create cap busy — backing off {delay:.1f}s "
+                            f"(attempt {attempt}/{attempts_n})",
+                            flush=True,
+                        )
+                        time.sleep(delay)
+                        continue
+                    break
                 try:
                     global _LAST_CREATE_MONO
                     with _CREATE_LOCK:
                         interval = _create_interval_s()
-                        if interval > 0:
-                            wait = interval - (time.monotonic() - _LAST_CREATE_MONO)
-                            if wait > 0:
-                                time.sleep(wait)
-                        session = _create_once_bounded(kwargs, timeout_s=25)
+                        wait = max(
+                            0.0, interval - (time.monotonic() - _LAST_CREATE_MONO)
+                        )
+                        if wait > 0:
+                            time.sleep(wait)
                         _LAST_CREATE_MONO = time.monotonic()
+                    session = _create_once_bounded(kwargs, timeout_s=timeout_s)
                     sid = session.id
                     if held:
                         with _SLOT_LOCK:
                             _HELD_IDS.add(sid)
+                    print(
+                        f"Browserbase session {sid} flags={flags}",
+                        flush=True,
+                    )
                     return BrowserbaseSession(
                         id=sid,
                         connect_url=session.connect_url,
                         session_url=f"https://www.browserbase.com/sessions/{sid}",
+                        flags=dict(flags),
                     )
                 except Exception as exc:  # noqa: BLE001
                     last_exc = exc
                     msg = str(exc).lower()
+                    if (
+                        _is_concurrency_limit(exc)
+                        and not isinstance(exc, TimeoutError)
+                    ):
+                        # Every slot is in use. Queue for one instead of failing:
+                        # poll until the deadline, without a token (the rejected
+                        # create never reached the burst window) and without
+                        # holding back the other agents' creates.
+                        left = call_deadline - time.monotonic()
+                        if left <= 0:
+                            raise BrowserbaseRateLimitError(str(exc)[:400]) from exc
+                        retry_delay = -1.0
+                        poll = min(_concurrency_poll_s(), max(0.5, left))
+                        print(
+                            "Browserbase create 429 all sessions busy — waiting "
+                            f"{poll:.1f}s for a free slot ({int(left)}s left to wait)",
+                            flush=True,
+                        )
+                        time.sleep(poll)
+                    elif is_burst_limit(exc) and not isinstance(exc, TimeoutError):
+                        # Burst window full: the server says when. Hold every
+                        # create in this process until then and retry this one.
+                        after = parse_retry_after(exc)
+                        resume = bucket.note_rate_limited(after)
+                        retry_delay = -1.0
+                        print(
+                            "Browserbase create 429 burst limit — retrying the same create in "
+                            f"{max(0.0, resume - time.monotonic()):.1f}s "
+                            f"(server said {after if after is not None else '?'}s)",
+                            flush=True,
+                        )
                     # Plan / feature refusal → try next (weaker) flag set.
-                    if any(
+                    elif any(
                         s in msg
                         for s in (
                             "403",
@@ -361,12 +699,36 @@ def create_session(
                             "upgrade",
                         )
                     ):
-                        break
-                    if _is_rate_limit(exc) and attempt < 2:
-                        time.sleep(min(8, 2 * (attempt + 1)))
+                        plan_refusal = True
+                    elif _is_retryable_create(exc) and attempt < attempts_n - 1:
+                        retry_delay = _create_backoff_s(attempt, exc)
+                        kind = (
+                            "timeout" if isinstance(exc, TimeoutError) else "transient"
+                        )
+                        print(
+                            f"Browserbase create {kind} — backing off {retry_delay:.1f}s "
+                            f"(attempt {attempt + 1}/{attempts_n})",
+                            flush=True,
+                        )
+                    else:
+                        raise BrowserbaseRateLimitError(str(exc)[:400]) from exc
+                finally:
+                    # Release the create slot before sleeping so other warms proceed.
+                    if sem_held:
+                        _CREATE_SEM.release()
+                if plan_refusal:
+                    break
+                if retry_delay is not None:
+                    if retry_delay < 0:
+                        # 429: not an attempt. The bucket itself waits out the block.
                         continue
-                    raise BrowserbaseRateLimitError(str(exc)[:400]) from exc
-        raise BrowserbaseRateLimitError(str(last_exc)[:400] if last_exc else "session create failed")
+                    attempt += 1
+                    time.sleep(retry_delay)
+                    continue
+                attempt += 1
+        raise BrowserbaseRateLimitError(
+            str(last_exc)[:400] if last_exc else "session create failed"
+        )
     except Exception:
         if held:
             _SLOT.release()

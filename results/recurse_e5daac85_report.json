@@ -1,0 +1,720 @@
+{
+  "status": "partial_complete",
+  "id": "e5daac85-b0f8-4425-a991-834d071ee823",
+  "url": "https://recurse.run/",
+  "n_results": 66,
+  "n_planned": 75,
+  "n_hung": 9,
+  "personas": [
+    "AI Solutions Architect",
+    "Lead AI Engineer",
+    "Product Manager, AI Platforms",
+    "Research Scientist, Machine Learning",
+    "Developer Advocate, AI Tools"
+  ],
+  "competitors": [
+    "https://www.langchain.com/",
+    "https://www.llamaindex.ai/"
+  ],
+  "convert_by_site": {
+    "product": {
+      "no": 1,
+      "maybe": 18,
+      "yes": 2
+    },
+    "competitor_1": {
+      "no": 3,
+      "maybe": 18
+    },
+    "competitor_2": {
+      "maybe": 18,
+      "no": 5,
+      "yes": 1
+    }
+  },
+  "summary": {
+    "headline": "Recurse intrigues AI builders (mostly \u201cmaybe\u201d) but private-alpha clarity and docs depth lag LangChain/LlamaIndex in this bakeoff.",
+    "top_friction": [
+      "Private alpha / waitlist uncertainty about when they can actually use it",
+      "Hard to find concrete use cases, agent.yaml / schema, and deep technical examples",
+      "Some pages feel empty until scroll; key content not above the fold",
+      "Value prop vs LangChain/LlamaIndex not immediately differentiated for specialized-agent builders"
+    ],
+    "top_strengths": [
+      "Clear, intriguing promise: serverless harness + specialized/composable agents",
+      "Easy first hit on homepage and paths into Examples / docs when pages load",
+      "CLI / quickstart-style cues feel actionable when visible"
+    ],
+    "conversion_outlook": "Across 66 finished sessions (9 hung): Recurse product was 2 yes / 18 maybe / 1 no; LangChain 0 yes / 18 maybe / 3 no; LlamaIndex 1 yes / 18 maybe / 5 no. Interest is real but commitment is soft\u2014users stay in maybe until access and docs feel production-ready.",
+    "recommendations": [
+      {
+        "priority": "high",
+        "action": "Publish a concrete public-access timeline (or guest sandbox) past private alpha/waitlist.",
+        "rationale": "The dominant soft-no is inability to try the product now."
+      },
+      {
+        "priority": "high",
+        "action": "Surface 2\u20133 end-to-end specialized-agent examples with agent.yaml / schema above the fold.",
+        "rationale": "Builders repeatedly struggled to find concrete technical proof."
+      },
+      {
+        "priority": "medium",
+        "action": "Sharpen differentiation vs LangChain and LlamaIndex in one homepage sentence.",
+        "rationale": "Bakeoff users compared stacks immediately; Recurse\u2019s unique harness story must land in seconds."
+      },
+      {
+        "priority": "medium",
+        "action": "Ensure Examples/docs paint meaningful content without requiring scroll or flaky loads.",
+        "rationale": "Empty-first-screen moments tank confidence for technical evaluators."
+      }
+    ],
+    "segment_fit_score": 6,
+    "segment_fit_rationale": "AI Solutions Architects, Lead AI Engineers, PMs, researchers, and DevRel personas map well to Recurse\u2019s agent-harness pitch. Fit is capped by alpha access friction and thinner proof versus mature competitor sites."
+  },
+  "results_brief": [
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Explore Recurse's Agentic Workload Harness",
+      "site": "product",
+      "convert": "no",
+      "friction": [],
+      "quote": "I couldn't get to the Recurse site to see how the serverless harness works."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Examine the 'How it works' Example in Detail",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "The examples page was initially empty and required scrolling to reveal content."
+      ],
+      "quote": "I was hoping to see the 'shopping specialist' example in action, but the page was initially blank and then I ran into a model output error."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Understand Agent Manifest and Capabilities (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "no",
+      "friction": [],
+      "quote": "I encountered an error about truncated output right at the start, which is concerning."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Investigate Use Cases for Specialized Agents (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "The page loaded fine, but I need to see more about how it handles complex AI agent infrastructure."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Explore Recurse's Agentic Workload Harness (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I opened the LlamaIndex site and the landing page loaded, but the agent encountered an error with truncated output."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Understand Agent Manifest and Capabilities (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "no",
+      "friction": [
+        "The element at index 3951 was not available on the first attempt, requiring a retry.",
+        "The agent struggled to locate the 'Recurse' page, as it was not directly visible or easily accessible through the 'Learn' dropdown."
+      ],
+      "quote": "I'm having trouble finding the specific documentation or examples I need on this site."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Learn about Deploying Agents as Tools or MCPs (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "no",
+      "friction": [],
+      "quote": "I couldn't get the full output, so I can't assess if this tool meets my needs for deploying custom agents."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Investigate Use Cases for Specialized Agents (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The agent repeatedly scrolled down the page without finding the 'Use Cases' section, suggesting it might be difficult to locate or not present in the expected format.",
+        "The agent navigated to the URL multiple times and also reloaded the page, indicating potential issues with content loading or discoverability."
+      ],
+      "quote": "I couldn't find the specific use cases I was looking for on the site."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Explore Recurse's Agentic Workload Harness (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I'm exploring how LlamaIndex can help with our AI agent infrastructure, but I need to see more direct connections to agentic workloads."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Examine the 'How it works' Example in Detail (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "no",
+      "friction": [
+        "The agent repeatedly navigated to the same page and waited for extended periods, indicating a struggle to load or interact with the content.",
+        "The navigation failed with an error message in step 5, suggesting a persistent issue with accessing the site."
+      ],
+      "quote": "I couldn't even get the main page to load properly to see what LlamaIndex offers."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Examine the 'How it works' Example in Detail",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I was able to navigate to the site and find the examples section, but the truncated output is concerning."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Investigate Use Cases for Specialized Agents (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I was able to quickly find the solutions section of the website."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Understand Agent Manifest and Capabilities",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "The agent repeatedly navigated back and forth between pages without successfully locating or interacting with the 'agent.yaml' example after the initial click.",
+        "The agent clicked on an element described as 'agent.yaml schema' but then immediately navigated back, suggesting it did not process or understand the content of the target page."
+      ],
+      "quote": "I clicked on the 'agent.yaml schema' but then immediately went back, so I didn't get to see if it explained the capabilities well."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Explore Recurse's Agentic Workload Harness (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I clicked on 'Build' to see how LangChain helps in creating agentic applications."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Explore Recurse's Agentic Workload Harness",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I found the 'Harness' section interesting, but the platform seems to have some issues with processing longer content."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Examine the 'How it works' Example in Detail (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I easily navigated to the Langchain site and found the 'Learn' section, but I haven't yet found the specific information I was looking for."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Learn about Deploying Agents as Tools or MCPs",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I clicked on 'Docs' to get more information on deploying custom agents."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Examine the 'How it works' Example in Detail (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I'm looking for more detailed examples of how to build and deploy specialized agents."
+    },
+    {
+      "persona": "AI Solutions Architect",
+      "task": "Understand Agent Manifest and Capabilities (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I found the documentation link easily and it led me right where I needed to go."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Explore Recurse's Agentic Workload Harness (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "no",
+      "friction": [],
+      "quote": "I couldn't even get to the site to see what it was about."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Explore Recurse's Agentic Workload Harness (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The agent was unable to find any mention of 'shopping specialist' on the page."
+      ],
+      "quote": "I found the 'How it works' section helpful, but I was looking for a specific example of an agentic workload like a shopping specialist that wasn't readily apparent."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Learn about Deploying Agents as Tools or MCPs (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The LLM call timed out after 75 seconds, preventing further analysis of the page content."
+      ],
+      "quote": "I need to understand how to integrate these custom agents as tools or bots, but the page content timed out."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Learn about Deploying Agents as Tools or MCPs",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "The LLM call timed out, preventing the agent from completing its final step and potentially extracting useful information."
+      ],
+      "quote": "I found the documentation clear, but the site timed out before I could fully explore the use cases."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Understand Agent Manifest and Capabilities",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "LLM call timed out after 75 seconds on the 'Key concepts' page, preventing full understanding of the material."
+      ],
+      "quote": "I was able to find the agent.yaml example easily, but the page timed out before I could understand the key concepts."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Examine the 'How it works' Example in Detail (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The LLM call timed out after 75 seconds, indicating potential performance issues or overly complex requests."
+      ],
+      "quote": "I was trying to understand the healthcare solutions, but the agent kept timing out and cutting off the information."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Explore Recurse's Agentic Workload Harness (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The search functionality in the docs returned a result that was not directly related to 'serverless harness agentic workloads', requiring the user to click into a sub-optimal result ('When to use LangGraph').",
+        "The LLM call timed out during the evaluation of the final page, preventing a complete analysis of the content."
+      ],
+      "quote": "I found the documentation, but the search results weren't as direct as I'd hoped."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Understand Agent Manifest and Capabilities",
+      "site": "product",
+      "convert": "yes",
+      "friction": [],
+      "quote": "I found the `agent.yaml` schema to be very clear and the 'Capability, not task' paradigm is well-demonstrated."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Learn about Deploying Agents as Tools or MCPs",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "Element index 1031 not available - page may have changed. Try refreshing browser state."
+      ],
+      "quote": "I found the information on deploying custom agents as tools and MCPs on the Recurse site to be quite clear and actionable."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Investigate Use Cases for Specialized Agents (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The 'Learn' dropdown was clicked twice without navigating to the desired section, indicating a potential issue with the navigation or the agent's interaction with it."
+      ],
+      "quote": "I'm trying to find the use cases to see how this platform can benefit developers, but the navigation is proving a bit tricky."
+    },
+    {
+      "persona": "Lead AI Engineer",
+      "task": "Learn about Deploying Agents as Tools or MCPs (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The navigation to the 'mcp' page failed with an error, preventing the user from accessing potentially relevant information."
+      ],
+      "quote": "I was trying to figure out how to deploy custom agents as tools or bots, but ran into a dead end trying to access the MCP documentation."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Investigate Use Cases for Specialized Agents",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I was able to quickly find the use cases and dive into the level designer example, but the information was incomplete."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Examine the 'How it works' Example in Detail",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "The agent navigated to a URL that resulted in an error: 'Navigation failed: Expected at least one handler to return a non-None result, but none did!'"
+      ],
+      "quote": "I was trying to find detailed examples of agent creation, but ran into a navigation error."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Understand Agent Manifest and Capabilities (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I clicked on Docs and then searched for 'Recurse', but I haven't found the agent.yaml example yet."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Learn about Deploying Agents as Tools or MCPs (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The agent scrolled multiple times without finding specific information related to deploying custom agents as 'tools, MCPs, or bots' or their integration implications.",
+        "The final observation indicated that the task could not be completed due to repeated failures and an inability to load page content, which is a significant friction point."
+      ],
+      "quote": "I found the navigation to the engineering solutions straightforward, but I couldn't locate the specific details I was looking for regarding agent deployment."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Investigate Use Cases for Specialized Agents (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I clicked on 'Solutions' and then 'Healthcare & Pharma', but I was actually looking for general use cases."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Learn about Deploying Agents as Tools or MCPs (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The user had to click through multiple links to find the specific documentation related to deploying agents as MCP tools.",
+        "The user had to manually scroll down the page multiple times to find relevant information, suggesting the key details might not be immediately visible."
+      ],
+      "quote": "I found the information about deploying agents as MCP tools, but it took a bit of digging through the documentation."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Examine the 'How it works' Example in Detail (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The search functionality did not yield relevant results, leading to a need to go back.",
+        "The initial navigation path to 'Skills and Plugins' felt indirect for finding specific examples."
+      ],
+      "quote": "I'm finding it a bit challenging to locate the specific agent example I was looking for within the documentation."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Understand Agent Manifest and Capabilities (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The agent clicked on 'LlamaAgents' but the subsequent search for 'agent.yaml' did not immediately yield a direct link to the example, requiring an additional click on a broader reference link."
+      ],
+      "quote": "I found the documentation for LlamaIndex to be quite detailed, though I had to dig a little to find the specific agent configuration example I was looking for."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Understand Agent Manifest and Capabilities (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The search functionality returned a result that was not directly related to 'Recurse' but rather 'Stream nested work', requiring further investigation.",
+        "The agent had to scroll multiple times and wait for 5 seconds, indicating potential issues with content loading or rendering on the 'Stream nested work' page."
+      ],
+      "quote": "I found the documentation helpful, but I had to spend extra time scrolling and searching to locate the specific configuration details I was looking for."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Explore Recurse's Agentic Workload Harness (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The agent encountered an error trying to click element index 7443 on the workflows page, indicating a potential issue with element availability or page changes.",
+        "The navigation to find specific information about agentic workloads and serverless harnesses was not immediately intuitive, requiring several clicks and exploration through different documentation sections."
+      ],
+      "quote": "I'm trying to understand how to set up specialized agents for complex tasks, and while LlamaIndex has many components, finding a direct example of a serverless harness for a shopping specialist took some digging."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Explore Recurse's Agentic Workload Harness",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "The 'Examples' page loaded empty, requiring the agent to navigate elsewhere to find relevant information.",
+        "The agent had to navigate through multiple documentation sections ('Docs', 'Key concepts', 'Use Cases') to find information related to the harness and examples, indicating a less direct path than expected."
+      ],
+      "quote": "I was looking for how the harness works for agentic workloads, but the examples section was empty and I had to dig through the docs."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Explore Recurse's Agentic Workload Harness",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "The navigation between 'Examples' and 'Docs' led to a loop, requiring multiple clicks to return to the 'Examples' page."
+      ],
+      "quote": "I was trying to understand the 'shopping specialist' example, but the documentation seems to be cut off."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Learn about Deploying Agents as Tools or MCPs",
+      "site": "product",
+      "convert": "yes",
+      "friction": [],
+      "quote": "I found the documentation on deploying custom agents to be very clear and directly applicable to my needs."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Investigate Use Cases for Specialized Agents (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The agent attempted to click on 'Solutions' but the observation doesn't confirm navigation to a new page or a list of use cases, suggesting the click might not have had the intended effect or the content wasn't as expected."
+      ],
+      "quote": "I was trying to understand the breadth of use cases, but the system seemed to struggle with displaying the full information."
+    },
+    {
+      "persona": "Product Manager, AI Platforms",
+      "task": "Understand Agent Manifest and Capabilities (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The agent navigated back to the root URL after clicking on 'LlamaIndex' under the 'Product' section, which was an unnecessary step.",
+        "The agent struggled to find the specific 'agent.yaml' example and related concepts, indicating a potential navigation or information architecture challenge for users looking for specific configuration details."
+      ],
+      "quote": "I found the agent and workflow documentation, but I couldn't locate the specific 'agent.yaml' example I was looking for."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Examine the 'How it works' Example in Detail",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "The agent clicked on 'Examples' multiple times and navigated between 'Examples' and 'Use Cases' pages without finding the specific 'shopping specialist' example as intended.",
+        "The agent attempted to click on 'Read the agent guidance' which did not directly lead to the desired example.",
+        "The task failed due to the agent not being able to locate the specific example within the allowed steps."
+      ],
+      "quote": "I navigated through the examples and use cases, but I couldn't pinpoint the specific shopping specialist example I was looking for."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Investigate Use Cases for Specialized Agents (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The agent struggled to locate the 'Use Cases' section, repeatedly clicking on 'Learn' and 'Products' menus without finding it directly. It also encountered an error when trying to click on an element that was no longer available.",
+        "The task was not completed because the 'Use Cases' section was not found on the visited pages."
+      ],
+      "quote": "I'm having trouble finding concrete examples of how specialists are used for specific tasks on this site."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Learn about Deploying Agents as Tools or MCPs (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The search input did not seem to update correctly after typing 'deploying custom agents', indicating a potential UI issue or confusion."
+      ],
+      "quote": "I found the documentation structure helpful, but the truncated output made it impossible to get the full picture on deploying custom agents."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Examine the 'How it works' Example in Detail (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "no",
+      "friction": [
+        "The agent clicked on 'Docs' multiple times and also clicked on 'For Agents' but did not seem to find the specific example requested in the task, indicating a potential difficulty in navigation or content discoverability for this specific task.",
+        "The agent failed to complete the task within the maximum allowed steps."
+      ],
+      "quote": "I couldn't even get past the documentation errors to see if the product could actually help me."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Explore Recurse's Agentic Workload Harness",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I found the information about the serverless harness and the shopping specialist example, but the repeated truncation errors made it hard to get the full picture."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Explore Recurse's Agentic Workload Harness (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I was able to quickly find documentation related to harnesses, which is a good starting point for understanding their agentic workloads."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Understand Agent Manifest and Capabilities (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The search input behavior was confusing, with a note about autocompletion and a different field value after typing."
+      ],
+      "quote": "I was trying to find the 'agent.yaml' example, but the search kept giving me truncation errors and confusing autocomplete hints."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Understand Agent Manifest and Capabilities (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "yes",
+      "friction": [
+        "The search functionality returned a result that was not directly what I was looking for initially, requiring an additional click to find the relevant section."
+      ],
+      "quote": "I was able to find the configuration reference for agent YAML files quite easily through the documentation."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Investigate Use Cases for Specialized Agents (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The agent clicked on a specific industry use case ('Healthcare & Pharma') and then navigated to a different use case ('Technical Document Search') before going to the main 'Use Cases' page.",
+        "The agent clicked on 'Privacy Notice' instead of a navigation element that would lead to the 'Use Cases' page.",
+        "The agent clicked on the LlamaIndex logo to return to the homepage, which is not the intended navigation for finding 'Use Cases'."
+      ],
+      "quote": "I found some interesting use cases, but navigating to the full list was a bit more convoluted than I expected."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Learn about Deploying Agents as Tools or MCPs (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The 'Workflows' page was empty and unusable, forcing a backtrack.",
+        "Difficulty finding direct information on deploying custom agents as 'tools, MCPs, or bots'."
+      ],
+      "quote": "I clicked on Workflows hoping to see examples of agent deployment, but the page was blank."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Learn about Deploying Agents as Tools or MCPs (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The search input field did not update with the typed text 'deploy agents', which could be confusing.",
+        "The agent had to navigate back due to unspecified content loading issues, indicating a potential stability problem.",
+        "The task was not completed within the maximum allowed steps, suggesting difficulty in finding the precise information or a complex site structure."
+      ],
+      "quote": "I found some relevant information about deploying agents as MCP tools, but navigating the documentation and ensuring all content loaded correctly was a bit of a process."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Investigate Use Cases for Specialized Agents (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The agent had to scroll multiple times on the documentation page before being able to search, suggesting the 'Use Cases' section was not immediately apparent or easily discoverable through initial scrolling."
+      ],
+      "quote": "I found the documentation to be quite deep, but locating the specific use cases I was looking for took more effort than I anticipated."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Understand Agent Manifest and Capabilities",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "The user clicked on 'agent.yaml schema' expecting to find an example, but landed on a JSON schema page and had to scroll multiple times to find an actual example.",
+        "The user had to go back to the examples page to find a direct link to an agent.yaml example after not finding it on the schema page."
+      ],
+      "quote": "I was hoping to quickly see a practical agent.yaml example to understand how these capabilities are defined, but I had to dig a bit."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Learn about Deploying Agents as Tools or MCPs (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "maybe",
+      "friction": [
+        "The initial search for 'deploy' on the workflows page returned a testimonial rather than direct instructions or information on deploying agents as tools, MCPs, or bots.",
+        "Searching for 'tools' on the workflows page yielded no results, indicating a lack of direct information on deploying agents in that capacity.",
+        "Navigating from the workflows page back to the homepage and then to 'Docs' was a multi-step process to find potentially relevant information."
+      ],
+      "quote": "I found the 'Workflows' page, but it didn't directly address deploying agents as tools, so I'm heading to the documentation to see if that's covered there."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Investigate Use Cases for Specialized Agents",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [],
+      "quote": "I'm intrigued by how specialists are using Recurse, but I need to be sure I can access all the information readily."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Learn about Deploying Agents as Tools or MCPs",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "The agent encountered an error when trying to click element index 32 on the homepage, indicating it might not be interactable or visible. It also encountered an error with element index 2409 on the docs page, suggesting the page had changed."
+      ],
+      "quote": "I was able to find the deployment information I needed, but had to work around a couple of element interaction issues."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Examine the 'How it works' Example in Detail (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "no",
+      "friction": [
+        "The agent struggled to find the specific example, repeatedly trying different search queries without success.",
+        "The search functionality did not yield the desired results for the detailed example requested, even after multiple attempts with refined keywords."
+      ],
+      "quote": "I couldn't find the detailed example of the shopping specialist agent and the agent-led design loop that I needed to analyze."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Examine the 'How it works' Example in Detail",
+      "site": "product",
+      "convert": "maybe",
+      "friction": [
+        "The agent repeatedly scrolled down the examples page without finding the specific example it was looking for, indicating the example might not be easily discoverable or prominently displayed.",
+        "The 'shopping specialist' example was not found through search on the 'Docs' page, suggesting a lack of clear indexing or content organization for specific examples."
+      ],
+      "quote": "I was hoping to dive into the 'shopping specialist' example, but I couldn't locate it even after exploring the examples and docs sections."
+    },
+    {
+      "persona": "Research Scientist, Machine Learning",
+      "task": "Examine the 'How it works' Example in Detail (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The agent was unable to find the specific 'shopping specialist' example on the Langchain site, and the search results led to a different example ('classify and act') that did not contain the required details.",
+        "The agent reported a 404 error when attempting to navigate to the 'Recurse' page, indicating a broken link or incorrect URL."
+      ],
+      "quote": "I'm concerned that the specific examples I need aren't readily available or are broken, which makes it difficult to evaluate the platform's capabilities for my research."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Explore Recurse's Agentic Workload Harness (vs https://www.llamaindex.ai/)",
+      "site": "competitor_2",
+      "convert": "no",
+      "friction": [
+        "Attempting to navigate to 'How it works' or 'Solutions' resulted in redirection to the login page or GitHub, preventing task completion.",
+        "The agent was repeatedly redirected to the GitHub repository when trying to access product information.",
+        "The website's navigation led to a login page when trying to access key sections like 'How it works'."
+      ],
+      "quote": "I couldn't even get to the 'How it works' section without being sent to a login page, which is a major roadblock for understanding the product."
+    },
+    {
+      "persona": "Developer Advocate, AI Tools",
+      "task": "Examine the 'How it works' Example in Detail (vs https://www.langchain.com/)",
+      "site": "competitor_1",
+      "convert": "maybe",
+      "friction": [
+        "The search functionality did not directly lead to the specific example of a 'shopping specialist' agent or mention of 'Recurse' in the context of agent creation, requiring multiple search attempts and navigation through general documentation.",
+        "The search autocomplete feature, while intended to be helpful, sometimes interfered with directly executing a search for specific terms like 'Recurse' or 'Codex' by suggesting alternatives or requiring a click on a suggestion instead of pressing Enter."
+      ],
+      "quote": "I found the documentation to be quite detailed, but I struggled to pinpoint the exact example I was looking for regarding agent creation and deployment with specific tools."
+    }
+  ]
+}

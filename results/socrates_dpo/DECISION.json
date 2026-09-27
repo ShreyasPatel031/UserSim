@@ -1,0 +1,38 @@
+{
+  "keep": false,
+  "kill": true,
+  "wasserstein_mean": 0.140223882928954,
+  "accuracy": 0.2678181091121558,
+  "accuracy_variants": {
+    "n": 482641,
+    "exact_round": 0.2678181091121558,
+    "clip_to_cell_range_then_round": 0.2797897402002731,
+    "round_within_1": 0.576960929552193,
+    "clip_round_within_1": 0.5990643148841478
+  },
+  "uniform_control": 0.19766254695217006,
+  "baseline_ckpt425": {
+    "wasserstein_mean": 0.1418,
+    "accuracy": 0.606
+  },
+  "rules": {
+    "acc_must_clearly_beat": 0.61,
+    "acc_definition": "exact_round",
+    "w_max": 0.16,
+    "w_definition": "paper [0,1] human-range standardize + clip"
+  },
+  "reasons": [
+    "Acc=0.2678181091121558 does not clearly beat 0.61 (ckpt-425 reported 0.606; exact-round on this dump)"
+  ],
+  "parse": {
+    "n": 482641,
+    "unparsed": 0,
+    "parse_rate": 1.0,
+    "n_with_raw": 482641,
+    "bare_numeric_rate": 1.0
+  },
+  "n_studies": 40,
+  "scorer": "socrates_metric.score",
+  "lora": "/opt/usersim_fm/adapters/ckpt425_dpo",
+  "finished_at": "2026-09-13T07:17:28Z"
+}

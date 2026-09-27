@@ -25,6 +25,77 @@ IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 
 app = FastAPI(title="UserSim MVP", version="0.1.0")
 
+
+@app.on_event("startup")
+async def _prime_browser_sessions() -> None:
+    """Have a Browserbase session ready before the Run click."""
+    if os.environ.get("MVP_A11Y_LOOP", "1").lower() in {"0", "false", "no"}:
+        return
+    from mvp.a11y_agent import prime_sessions
+
+    # Idle primes sit inside the 25-session cap. A 24-agent study reuses any
+    # primed session as one of the 24, so the default is zero extra sessions.
+    raw = (os.environ.get("MVP_PRIME_SESSIONS") or "0").strip()
+    try:
+        prime_n = max(0, int(raw))
+    except ValueError:
+        prime_n = 0
+    prime_sessions(prime_n)
+
+
+@app.on_event("startup")
+async def _check_signup_inbox() -> None:
+    """Signup uses Gmail plus-aliases only; say so loudly at boot if creds are missing."""
+    from mvp.signup_inbox import GMAIL_MISSING_MSG, gmail_available
+
+    if not gmail_available():
+        print(f"ERROR {GMAIL_MISSING_MSG}. Every in-run signup will fail with gmail_inbox_missing.", flush=True)
+
+
+@app.on_event("startup")
+async def _recover_interrupted() -> None:
+    """Studies a previous process left running are marked interrupted, and their browsers released."""
+    from mvp.study import recover_interrupted_studies
+
+    async def _run() -> None:
+        # Wait past the quiet window so a study still live in another process
+        # on this disk has rewritten its snapshot and is left alone.
+        await asyncio.sleep(float(os.environ.get("MVP_RECOVER_DELAY_S") or "100"))
+        try:
+            fixed = await asyncio.to_thread(recover_interrupted_studies)
+            if fixed:
+                print(f"marked {len(fixed)} interrupted studies: {', '.join(f[:8] for f in fixed)}", flush=True)
+        except Exception as exc:  # noqa: BLE001
+            print(f"interrupted-study recovery failed: {exc!r}", flush=True)
+
+    asyncio.get_running_loop().create_task(_run())
+
+@app.on_event("startup")
+async def _big_thread_pool() -> None:
+    """Size the default thread pool for 100+ agents (see mvp/executor.py)."""
+    from mvp.executor import ensure_default_executor
+
+    ensure_default_executor()
+
+
+@app.on_event("startup")
+async def _warm_study_list() -> None:
+    """Build the /live study list once in the background so the first list call is not a cold GCS pass."""
+    if os.environ.get("MVP_WARM_STUDY_LIST", "1").lower() in {"0", "false", "no"}:
+        return
+
+    async def _run() -> None:
+        await asyncio.sleep(2)
+        try:
+            from mvp.gcs_store import list_mvp_studies
+
+            await asyncio.to_thread(list_mvp_studies, limit=200)
+        except Exception as exc:  # noqa: BLE001
+            print(f"study list warm failed: {exc!r}", flush=True)
+
+    asyncio.get_running_loop().create_task(_run())
+
+
 if STATIC.is_dir():
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
 _TRACE_PUBLIC = ROOT / "public" / "bakeoff-traces"
@@ -64,6 +135,31 @@ def _normalize_url(raw: str) -> str:
     if not re.match(r"^https?://", url, flags=re.I):
         url = "https://" + url
     return url
+
+
+async def _landing_url(url: str) -> str:
+    """Where the product URL really lands (notion.so -> www.notion.com).
+
+    Agents end on the redirected host. Keeping the pre-redirect host made
+    every product run look like it had wandered to another site.
+    """
+    from urllib.parse import urlsplit
+
+    import httpx
+
+    try:
+        async with httpx.AsyncClient(timeout=3.0, follow_redirects=True, headers={"user-agent": "Mozilla/5.0"}) as client:
+            resp = await client.get(url)
+        final = str(resp.url)
+    except Exception:
+        return url
+    a = (urlsplit(url).hostname or "").removeprefix("www.")
+    b = (urlsplit(final).hostname or "").removeprefix("www.")
+    if not b or a == b:
+        return url
+    # Only follow a redirect to a different host, and keep the path the user typed.
+    parts = urlsplit(url)
+    return f"https://{urlsplit(final).hostname}{parts.path or '/'}"
 
 
 def _study_list_key(url: str | None, study_id: str | None = None) -> str:
@@ -140,102 +236,210 @@ def _escape_html(value: object) -> str:
     )
 
 
+def _trace_anchor(agent_id: object, step: object) -> str:
+    safe = re.sub(r"[^A-Za-z0-9_-]", "-", str(agent_id or "agent"))
+    return f"trace-{safe}-{step}"
+
+
+def _metrics_html(metrics: object) -> str:
+    if not isinstance(metrics, dict) or not metrics.get("n"):
+        return ""
+    steps = metrics.get("median_steps")
+    steps_txt = "—" if steps is None else f"{float(steps):.1f}"
+
+    def _sec(value: object) -> str:
+        if not isinstance(value, (int, float)):
+            return "—"
+        return f"{float(value):.1f}s"
+
+    model = metrics.get("model") or ""
+    provider = metrics.get("model_provider") or ""
+    model_txt = " ".join(part for part in (str(model), str(provider)) if part).strip()
+    model_html = f"<span>{_escape_html(model_txt)}</span>" if model_txt else ""
+    changed_n = metrics.get("changed_page_n", metrics.get("left_start_n", 0))
+    changed_pct = metrics.get("changed_page_pct", metrics.get("left_start_pct", 0))
+    return (
+        '<p class="stat-strip" id="work-metrics">'
+        f"<span><strong>{steps_txt}</strong> median steps</span>"
+        f"<span><strong>{changed_pct}%</strong> changed page state "
+        f"({changed_n}/{metrics.get('n')})</span>"
+        f"<span><strong>{metrics.get('task_success_rate', 0)}%</strong> task success on the final state "
+        f"({metrics.get('task_success_n', 0)}/{metrics.get('n')})</span>"
+        f"<span><strong>{_sec(metrics.get('step_latency_p50'))}</strong> step p50 / "
+        f"<strong>{_sec(metrics.get('step_latency_p95'))}</strong> p95</span>"
+        f"{model_html}"
+        "</p>"
+    )
+
+
 def _render_report_html(data: dict) -> str:
-    """Server-rendered report so /report?study= works even if JS fails."""
+    """Server-rendered report. Claims cite a real step screenshot and final URL."""
+    data = _with_report_insights(data)
     summary = data.get("summary") or {}
-    if not isinstance(summary, dict) or not (
-        summary.get("headline")
-        or summary.get("recommendations")
-        or summary.get("top_friction")
-        or summary.get("segment_fit_score") is not None
-    ):
+    insights = summary.get("insights") if isinstance(summary, dict) else None
+    if not isinstance(insights, dict) or not insights.get("headline"):
         study_id = _escape_html(data.get("id"))
         return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><title>UserSim — Report</title>
-<link rel="stylesheet" href="/static/styles.css?v=64" /></head><body>
+<link rel="stylesheet" href="/static/styles.css?v=65" /></head><body>
 <header class="site-header"><a class="logo" href="/">UserSim</a>
 <a class="header-back" href="/">← Back to simulation</a></header>
 <main class="main-url-first report-main"><p class="brief-empty">No summary on this study yet.
 <a href="/live?study={study_id}">Open live view</a></p></main></body></html>"""
 
-    def lis(items: object) -> str:
-        rows = items if isinstance(items, list) else []
+    runs = {
+        str(r.get("agent_id")): r
+        for r in (data.get("agent_results") or [])
+        if isinstance(r, dict) and r.get("agent_id")
+    }
+
+    def claim_cards(claims: object, kind: str) -> str:
+        rows = claims if isinstance(claims, list) else []
         if not rows:
-            return "<li>—</li>"
-        return "".join(f"<li>{_escape_html(x)}</li>" for x in rows)
+            label = "strength" if kind == "strength" else "weakness"
+            return f'<p class="empty-claim">None. The traces do not support a specific {label}.</p>'
+        cards = []
+        for claim in rows:
+            if not isinstance(claim, dict):
+                continue
+            cites = []
+            for ev in claim.get("evidence") or []:
+                if not isinstance(ev, dict):
+                    continue
+                anchor = _trace_anchor(ev.get("agent_id"), ev.get("step"))
+                shot = ev.get("screenshot_url") or ""
+                img = (
+                    f'<a class="shot" href="#{anchor}"><img src="{_escape_html(shot)}" alt="Step { _escape_html(ev.get("step")) } screenshot" /></a>'
+                    if shot
+                    else ""
+                )
+                final = ev.get("final_url") or ""
+                final_html = (
+                    f'<a href="{_escape_html(final)}" target="_blank" rel="noopener">final URL</a>'
+                    if final
+                    else ""
+                )
+                cites.append(
+                    '<div class="cite">'
+                    f"{img}<div>"
+                    f'<p class="who">{_escape_html(ev.get("persona_name"))} · {_escape_html(ev.get("task_title"))}</p>'
+                    f'<p class="detail">{_escape_html(ev.get("detail") or ev.get("action"))}</p>'
+                    f'<p class="links"><a href="#{anchor}">Open trace · step {_escape_html(ev.get("step"))}</a> {final_html}</p>'
+                    "</div></div>"
+                )
+            cards.append(
+                f'<article class="claim-card {kind}"><p>{_escape_html(claim.get("claim"))}</p>{"".join(cites)}</article>'
+            )
+        return "".join(cards)
 
-    recs = summary.get("recommendations") or []
-    rec_html = []
-    for rec in recs if isinstance(recs, list) else []:
-        if not isinstance(rec, dict):
+    rows = insights.get("comparisons") or []
+    body_rows = []
+    for row in rows if isinstance(rows, list) else []:
+        if not isinstance(row, dict):
             continue
-        rec_html.append(
-            '<div class="rec-card">'
-            f'<span class="priority {_escape_html(rec.get("priority") or "medium")}">'
-            f'{_escape_html(rec.get("priority") or "medium")}</span>'
-            "<div>"
-            f"<strong>{_escape_html(rec.get('action'))}</strong>"
-            f'<p style="margin:0.25rem 0 0;color:var(--text-muted);font-size:0.9rem">'
-            f"{_escape_html(rec.get('rationale'))}</p>"
-            "</div></div>"
+        time = "—" if row.get("median_time_s") is None else f'{row.get("median_time_s")}s'
+        steps = "—" if row.get("median_steps") is None else f'{float(row["median_steps"]):.1f}'
+        pct = int(round(float(row.get("success_rate") or 0) * 100))
+        p50 = "—" if row.get("step_latency_p50") is None else f'{row.get("step_latency_p50")}s'
+        p95 = "—" if row.get("step_latency_p95") is None else f'{row.get("step_latency_p95")}s'
+        changed = row.get("changed_page_pct", row.get("left_start_pct", 0))
+        body_rows.append(
+            "<tr>"
+            f"<td>{_escape_html(row.get('site_label') or row.get('site_key'))}</td>"
+            f"<td>{row.get('ok')}/{row.get('n')} ({pct}%)</td>"
+            f"<td>{changed}%</td>"
+            f"<td>{steps}</td><td>{p50}</td><td>{p95}</td><td>{time}</td>"
+            f"<td>{row.get('friction_n') or 0}</td></tr>"
+        )
+    if insights.get("tie_note"):
+        tie_html = f'<p id="tie-note" class="tie-note">{_escape_html(insights.get("tie_note"))}</p>'
+    elif body_rows:
+        tie_html = (
+            '<p id="tie-note" class="tie-note">Task-success rates differ, so steps, time, and friction '
+            "are listed beside the rates and are not used to break a tie.</p>"
+        )
+    else:
+        tie_html = '<p id="tie-note" class="tie-note">No site comparison — the study has no finished runs.</p>'
+    table = ""
+    if body_rows:
+        table = (
+            '<div class="compare-wrap"><table id="compare-table"><thead><tr>'
+            "<th>Site</th><th>Task success</th><th>Changed page</th><th>Median steps</th><th>Step p50</th><th>Step p95</th><th>Median time</th><th>Friction notes</th>"
+            f"</tr></thead><tbody>{''.join(body_rows)}</tbody></table></div>"
         )
 
-    agents = data.get("agent_results") or []
-    agent_html = []
-    for r in agents if isinstance(agents, list) else []:
-        if not isinstance(r, dict):
+    # One trace section per cited agent step that has a screenshot.
+    cited: list[tuple[str, int]] = []
+    for bucket in ("strengths", "weaknesses"):
+        for claim in insights.get(bucket) or []:
+            if not isinstance(claim, dict):
+                continue
+            for ev in claim.get("evidence") or []:
+                if isinstance(ev, dict) and ev.get("agent_id") is not None:
+                    cited.append((str(ev["agent_id"]), int(ev.get("step") or 0)))
+    traces = []
+    seen_agents: set[str] = set()
+    for agent_id, _step in cited:
+        if agent_id in seen_agents:
             continue
-        friction = "".join(
-            f"<li>{_escape_html(x)}</li>" for x in (r.get("friction_points") or [])
-        ) or "<li>—</li>"
-        easy = "".join(
-            f"<li>{_escape_html(x)}</li>" for x in (r.get("what_was_easy") or [])
-        ) or "<li>—</li>"
-        agent_html.append(
-            '<article class="agent-card">'
-            f"<h3>{_escape_html(r.get('persona_name') or 'Simulated user')} — "
-            f"{_escape_html(r.get('task_title') or 'Task')}</h3>"
-            f'<div class="meta"><span class="tag difficulty-{_escape_html(r.get("difficulty") or "medium")}">'
-            f'{_escape_html(r.get("difficulty") or "medium")}</span>'
-            f'<span class="tag">would convert: {_escape_html(r.get("would_convert") or "?")}</span>'
-            f'<span class="tag">{len(r.get("trace") or [])} steps</span></div>'
-            f'<p style="margin-top:0.75rem">{_escape_html(r.get("product_feedback"))}</p>'
-            f'<blockquote class="quote">"{_escape_html(r.get("quote"))}"</blockquote>'
-            f'<div class="agent-lists"><div><h4>Friction</h4><ul>{friction}</ul></div>'
-            f"<div><h4>Easy</h4><ul>{easy}</ul></div></div></article>"
+        seen_agents.add(agent_id)
+        run = runs.get(agent_id) or {}
+        shots = [
+            s
+            for s in (run.get("trace") or [])
+            if isinstance(s, dict) and s.get("screenshot_url") and isinstance(s.get("step"), int)
+        ]
+        if not shots:
+            continue
+        nav = " ".join(
+            f'<a href="#{_trace_anchor(agent_id, s.get("step"))}">step {s.get("step")}</a>'
+            for s in shots
         )
+        final = run.get("final_url") or ""
+        final_html = (
+            f' · <a href="{_escape_html(final)}" target="_blank" rel="noopener">{_escape_html(final)}</a>'
+            if final
+            else ""
+        )
+        for shot in shots:
+            anchor = _trace_anchor(agent_id, shot.get("step"))
+            traces.append(
+                f'<section id="{anchor}" class="panel trace-target">'
+                f"<h2>Trace</h2>"
+                f'<p class="section-sub">{_escape_html(run.get("persona_name"))} — '
+                f'{_escape_html(run.get("task_title"))}{final_html}</p>'
+                f'<p class="step-nav">{nav}</p>'
+                f'<figure class="trace-shot"><img src="{_escape_html(shot.get("screenshot_url"))}" '
+                f'alt="Step {shot.get("step")}" /></figure>'
+                f'<p class="trace-action"><strong>Step {shot.get("step")}.</strong> '
+                f'{_escape_html(shot.get("action"))}</p></section>'
+            )
 
-    title = (
-        f"Executive summary — {_escape_html(data.get('url'))}"
-        if data.get("url")
-        else "Executive summary"
-    )
-    fit = summary.get("segment_fit_score")
-    fit_txt = _escape_html(fit if fit is not None else "—")
+    note = insights.get("evidence_note") or ""
+    note_html = f'<p id="evidence-note" class="evidence-note">{_escape_html(note)}</p>' if note else ""
+    title = _escape_html(data.get("url") or "Study report")
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UserSim — Report</title>
-<link rel="stylesheet" href="/static/styles.css?v=64" />
+<link rel="stylesheet" href="/static/styles.css?v=65" />
+<style>.trace-target{{display:none}}.trace-target:target{{display:block}}.cite a.shot{{display:block;padding:0;border:1px solid var(--border);border-radius:6px;background:#111;overflow:hidden}}.cite a.shot img{{width:112px;height:72px;object-fit:cover;object-position:top;display:block}}</style>
 </head><body>
 <header class="site-header"><a class="logo" href="/">UserSim</a>
 <a class="header-back" href="/">← Back to simulation</a></header>
 <main class="main-url-first report-main">
 <section id="results" class="results">
 <section class="panel summary-panel">
-<h2>{title}</h2>
-<p id="headline" class="headline">{_escape_html(summary.get("headline"))}</p>
-<div class="summary-grid">
-<div><h4>Top friction</h4><ul>{lis(summary.get("top_friction"))}</ul></div>
-<div><h4>Top strengths</h4><ul>{lis(summary.get("top_strengths"))}</ul></div>
+<h2 id="report-title">{title}</h2>
+<p id="headline" class="headline">{_escape_html(insights.get("headline"))}</p>
+{note_html}
+{_metrics_html(insights.get("work_metrics"))}
+<div class="insight-grid">
+<div><h4>Strengths</h4>{claim_cards(insights.get("strengths"), "strength")}</div>
+<div><h4>Weaknesses</h4>{claim_cards(insights.get("weaknesses"), "weakness")}</div>
 </div>
-<div class="fit-score"><span id="fit-score">{fit_txt}</span>
-<div><strong>Segment fit</strong><p>{_escape_html(summary.get("segment_fit_rationale"))}</p></div></div>
-<div class="conversion"><h4>Conversion outlook</h4><p>{_escape_html(summary.get("conversion_outlook") or "—")}</p></div>
-<div class="recommendations"><h4>Recommendations</h4><div id="recommendations">{"".join(rec_html) or "—"}</div></div>
+<div id="compare-block"><h4>Site comparison</h4>{tie_html}{table}</div>
 </section>
-<section class="panel"><h2>Session recaps</h2>
-<div class="agents-grid">{"".join(agent_html) or "<p>—</p>"}</div>
-</section>
+{"".join(traces)}
 </section>
 </main>
 <footer><p>UserSim runs synthetic user simulations — a complement to, not a replacement for, real interviews.</p></footer>
@@ -244,23 +448,8 @@ def _render_report_html(data: dict) -> str:
 
 @app.get("/report")
 async def report_page(request: Request):
-    """Serve report UI. When ?study= is set, SSR from GCS so links work without sessionStorage."""
-    study_id = (request.query_params.get("study") or "").strip()
-    if study_id:
-        from mvp.study import STUDIES, load_study_from_gcs, study_to_dict
-
-        data = None
-        study = STUDIES.get(study_id)
-        if study:
-            data = study_to_dict(study)
-        if not data or not data.get("summary"):
-            remote = await asyncio.to_thread(load_study_from_gcs, study_id)
-            if remote:
-                data = remote
-        if not data:
-            raise HTTPException(status_code=404, detail="Study not found")
-        return HTMLResponse(_render_report_html(data))
-
+    """Generic study report. The page shell matches /blandai; data comes from the study API."""
+    del request
     path = STATIC / "report.html"
     if not path.is_file():
         raise HTTPException(status_code=503, detail="Report page not bundled")
@@ -271,22 +460,20 @@ async def report_page(request: Request):
 async def list_studies(limit: int = 40):
     """List recent studies (in-memory first, then GCS) for the live dashboard."""
     from mvp.gcs_store import list_mvp_studies
-    from mvp.study import STUDIES, study_to_dict
+    from mvp.study import STUDIES
 
     rows: list[dict] = []
     seen: set[str] = set()
     # Local / current process runs first — /live should show what's actually running.
     for study in sorted(
-        STUDIES.values(),
+        list(STUDIES.values()),
         key=lambda s: s.updated_at or s.created_at or "",
         reverse=True,
     ):
-        data = study_to_dict(study)
-        live = data.get("live_sessions") or []
-        if isinstance(live, dict):
-            live_items = list(live.values())
-        else:
-            live_items = list(live or [])
+        # Count straight off the in-memory rows. study_to_dict here copied every
+        # step's accessibility tree for every study this process ever ran.
+        live = study.live_sessions or {}
+        live_items = list(live.values()) if isinstance(live, dict) else list(live or [])
         rows.append(
             {
                 "id": study.id,
@@ -315,7 +502,7 @@ async def list_studies(limit: int = 40):
     try:
         remote = await asyncio.wait_for(
             asyncio.to_thread(list_mvp_studies, limit=max(limit * 5, 100)),
-            timeout=20.0,
+            timeout=8.0,
         )
     except Exception as exc:  # noqa: BLE001
         print(f"list_mvp_studies failed/timeout: {exc!r}", flush=True)
@@ -339,7 +526,7 @@ async def list_studies(limit: int = 40):
 async def start_study(body: StudyRequest, background: BackgroundTasks, request: Request):
     from mvp.study import STUDIES, create_study, run_study, study_to_dict
 
-    url = _normalize_url(body.url)
+    url = await _landing_url(_normalize_url(body.url))
     segment = (body.segment or body.customers or "").strip()
     if not segment:
         segment = (
@@ -350,6 +537,11 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
         segment = "Curious first-time visitor"
 
     study = create_study(url, segment)
+    # Count busy Browserbase sessions while the plan is written, so the
+    # queue check before agents start costs nothing on a free project.
+    from mvp.browser_slots import prefetch_count
+
+    prefetch_count()
     # Stash optional inputs for the upcoming agent-loop planner.
     study.email = body.email
     study.customers = body.customers
@@ -366,6 +558,63 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     study.tasks_override = [t.strip() for t in body.tasks if t and t.strip()]
     if study.test_mode and not study.tasks_override:
         study.tasks_override = ["Browse the homepage and try to find something interesting to watch or try"]
+    # Create and navigate the product agents' browsers while the plan is written.
+    try:
+        from mvp.preopen import start_preopen
+
+        start_preopen(study, url)
+    except Exception as exc:  # noqa: BLE001
+        print(f"preopen start failed: {exc!r}", flush=True)
+    if not study.tasks_override and os.environ.get("MVP_FAST_PLAN", "1") != "0":
+        # A bare URL: one quick model call picks the tasks, rivals, and segment
+        # so agents open pages within seconds instead of after ~20s of research.
+        from mvp.fast_plan import compare_mode, plan_from_url
+
+        plan_task = asyncio.create_task(plan_from_url(url))
+        starter = None
+        if compare_mode() and not study.test_mode:
+            from mvp import early_start
+
+            if early_start.enabled():
+                # The first buyer starts on the product while the full plan is written.
+                starter = await early_start.starter_plan(url)
+                if starter and not plan_task.done():
+                    try:
+                        early_start.start_early_agent(study, url, starter)
+                    except Exception as exc:  # noqa: BLE001
+                        print(f"[early] start failed: {exc!r}", flush=True)
+                        starter = None
+                else:
+                    starter = None
+        plan = await plan_task
+        if plan and starter and plan.get("mode") == "compare":
+            plan = early_start.splice_plan(plan, starter)
+        if plan and plan.get("mode") == "compare":
+            from mvp.fast_plan import competitor_cells
+
+            # The splice reorders buyers and jobs: recompute any rival slice ({} = full matrix) on the final order.
+            plan["competitor_cells"] = competitor_cells(
+                list(plan.get("personas") or []), list(plan.get("task_specs") or []), list(plan.get("competitors") or [])
+            )
+        elif starter and not (plan and plan.get("mode") == "compare"):
+            # No comparison plan: stop the early agent rather than run it outside the study.
+            for t in (getattr(study, "early_runs", None) or {}).values():
+                t.cancel()
+            study.early_runs = {}
+        if plan:
+            study.tasks_override = list(plan["tasks"])
+            if not study.competitors and not study.skip_competitors:
+                study.competitors = list(plan["competitors"])
+            if plan.get("mode") == "compare":
+                study.study_mode = "compare"
+                study.product_name = str(plan.get("product") or "")
+                study.competitor_names = dict(plan.get("competitor_names") or {})
+                study.task_specs = list(plan.get("task_specs") or [])
+                study.plan_personas = list(plan.get("personas") or [])
+                cells = dict(plan.get("competitor_cells") or {})
+                study.competitor_cells = [cells.get(c) or {} for c in (plan.get("competitors") or [])]
+            if not (body.segment or body.customers) and plan.get("segment"):
+                study.segment = plan["segment"]
 
     want_stream = "text/event-stream" in (request.headers.get("accept") or "") or (
         "application/x-ndjson" in (request.headers.get("accept") or "")
@@ -387,9 +636,9 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     # Serverless: stream NDJSON so the brief (competitors / users / tasks) arrives
     # before browser agents finish — cuts perceived time-to-first-content.
     if attach_stream and (IS_VERCEL or want_stream):
-        # Pro plan GA max is 800s — give studies ~13 min (8–12 min typical)
-        # with a little headroom for kill/persist cleanup.
-        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "780" if IS_VERCEL else "900"))
+        # One study budget. A full 24-agent Linear study finished in 128s.
+        # The cap is 8 minutes.
+        timeout_s = float(os.environ.get("MVP_STUDY_TIMEOUT_S", "480"))
         queue: asyncio.Queue[dict | None] = asyncio.Queue()
 
         def _push(study_obj, event: str = "progress") -> None:
@@ -551,6 +800,14 @@ async def runtime_status():
     return await asyncio.to_thread(_status)
 
 
+@app.get("/api/runtime/queue")
+async def runtime_queue():
+    """Studies holding or waiting for this server's Browserbase turn."""
+    from mvp.browser_slots import queue_snapshot
+
+    return queue_snapshot()
+
+
 @app.post("/api/runtime/kill")
 async def runtime_kill(body: KillRequest | None = None):
     """Kill Browserbase agents and/or UserSim VMs immediately."""
@@ -565,14 +822,42 @@ async def runtime_kill(body: KillRequest | None = None):
     )
 
 
+@app.get("/api/studies/{study_id}/live")
+async def get_study_live(study_id: str, since: int = 0):
+    """Cursor delta for the home-page poll: small fields plus only the agents changed after ``since``.
+
+    Studies not running in this process answer ``final: true`` and the client
+    reads the full ``/api/studies/<id>`` instead.
+    """
+    from mvp.live_delta import live_view
+    from mvp.study import STUDIES
+
+    study = STUDIES.get(study_id)
+    if study is None:
+        return JSONResponse(
+            {"id": study_id, "delta": True, "final": True, "missing": True},
+            headers={"Cache-Control": "no-store"},
+        )
+    return JSONResponse(live_view(study, since), headers={"Cache-Control": "no-store"})
+
+
 @app.get("/api/studies/{study_id}")
 async def get_study(study_id: str):
     from mvp.gcs_store import hydrate_live_sessions_from_gcs
-    from mvp.study import STUDIES, load_study_from_gcs, study_to_dict
+    from mvp.study import STUDIES, load_local_study, load_study_from_gcs, study_to_dict
 
     study = STUDIES.get(study_id)
     if study:
         data = study_to_dict(study)
+        # A running study is served from memory. A GCS hydrate here holds the
+        # request until the poll that should see the first click has already
+        # missed the 10s clock.
+        if data.get("status") in {"running", "pending", "starting"}:
+            # Serve the stamps recorded when the page opened. Rewriting them
+            # to this poll's time made page-open look ~10s after creation
+            # once a finished agent row was merged back onto the live session,
+            # and the harness aborted 23/24 studies that had already clicked.
+            return data
         # In-memory live studies: return immediately. Hydrating GCS on every UI
         # poll while 6 Browserbase agents are writing was starving the event
         # loop (study GET timeouts / list 503s under parallel load).
@@ -611,14 +896,58 @@ async def get_study(study_id: str):
         data["live_sessions"] = await asyncio.to_thread(
             hydrate_live_sessions_from_gcs, study_id, data.get("live_sessions")
         )
-        return data
+        return _with_report_insights(data)
     remote = await asyncio.to_thread(load_study_from_gcs, study_id)
+    if not remote:
+        remote = load_local_study(study_id)
+        if remote:
+            return _with_report_insights(_interrupted_if_stale(remote))
     if remote:
+        remote = _interrupted_if_stale(remote)
         remote["live_sessions"] = await asyncio.to_thread(
             hydrate_live_sessions_from_gcs, study_id, remote.get("live_sessions")
         )
-        return remote
+        return _with_report_insights(remote)
     raise HTTPException(status_code=404, detail="Study not found")
+
+
+def _interrupted_if_stale(data: dict) -> dict:
+    """A saved study still marked running that no process is updating is shown as interrupted."""
+    from mvp.study import looks_interrupted, mark_interrupted
+
+    if looks_interrupted(data):
+        return mark_interrupted(data)
+    return data
+
+
+def _with_report_insights(data: dict) -> dict:
+    """Attach trace-cited insights whenever the study has runs.
+
+    A finished study with no summary used to return one empty sentence.
+    Partial runs still draw completion, steps, and time.
+    """
+    runs = [r for r in (data.get("agent_results") or []) if isinstance(r, dict)]
+    if data.get("status") != "complete" and not runs:
+        return data
+    try:
+        from mvp.report_insights import build_report_insights
+
+        insights = build_report_insights(data)
+    except Exception:
+        return data
+    summary = dict(data.get("summary") or {})
+    summary["insights"] = insights
+    try:
+        from mvp.comparison import build_comparison
+
+        comparison = build_comparison(data)
+        if comparison:
+            summary["comparison"] = comparison
+    except Exception as exc:  # noqa: BLE001
+        print(f"comparison build failed: {exc!r}", flush=True)
+    if insights.get("headline"):
+        summary["headline"] = insights["headline"]
+    return {**data, "summary": summary}
 
 
 def _live_step_count(live_sessions: object) -> int:
@@ -637,8 +966,9 @@ def _live_step_count(live_sessions: object) -> int:
 
 @app.get("/api/studies/{study_id}/agents/{agent_id}/screenshots/{filename}")
 async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
-    if not re.fullmatch(r"(?:step|bbox)_\d+\.png", filename):
+    if not re.fullmatch(r"(?:step|bbox)_\d+\.png|final\.png|step_\d+(?:_signup)?\.jpg", filename):
         raise HTTPException(status_code=400, detail="Invalid screenshot name")
+    media = "image/jpeg" if filename.endswith(".jpg") else "image/png"
     names = [filename]
     m = re.fullmatch(r"(step|bbox)_(\d+)\.png", filename)
     if m:
@@ -651,7 +981,7 @@ async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
     for name in names:
         path = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / name
         if path.is_file() and path.stat().st_size > 200:
-            resp = FileResponse(path, media_type="image/png")
+            resp = FileResponse(path, media_type=media)
             resp.headers["Cache-Control"] = "public, max-age=3600"
             return resp
         try:
@@ -666,7 +996,7 @@ async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
                 pass
             return Response(
                 content=raw,
-                media_type="image/png",
+                media_type=media,
                 headers={"Cache-Control": "public, max-age=3600"},
             )
     raise HTTPException(status_code=404, detail="Screenshot not found")

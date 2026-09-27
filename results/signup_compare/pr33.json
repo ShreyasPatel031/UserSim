@@ -1,0 +1,103 @@
+{
+  "branch": "pr33",
+  "nonce_base": "33a",
+  "results": [
+    {
+      "site": "trello",
+      "url": "https://trello.com/",
+      "ok": false,
+      "reason": "unknown",
+      "detail": "Unable to bypass the onboarding flow after account creation, despite multiple attempts to click various buttons and navigate directly to the Trello dashboard. The account is created, but the agent cannot reach the dashboard.",
+      "elapsed_s": 435.2,
+      "alias_tag": "trello33a0",
+      "backend": "browserbase",
+      "bb_session": "https://www.browserbase.com/sessions/5ff67d54-3c47-4e64-b463-0a28c92fda2d",
+      "running_signup_before": 0,
+      "running_signup_after": 0,
+      "released_after": {
+        "found": 0,
+        "released": 0,
+        "failed": [],
+        "session_ids": []
+      }
+    },
+    {
+      "site": "hashnode",
+      "url": "https://hashnode.com/",
+      "ok": true,
+      "reason": "signed_up",
+      "detail": "",
+      "elapsed_s": 338.0,
+      "alias_tag": "hashnode33a1",
+      "backend": "browserbase",
+      "bb_session": "https://www.browserbase.com/sessions/a534daac-1816-4ec1-99c4-751407b21678",
+      "running_signup_before": 0,
+      "running_signup_after": 0,
+      "released_after": {
+        "found": 0,
+        "released": 0,
+        "failed": [],
+        "session_ids": []
+      }
+    },
+    {
+      "site": "stackblitz",
+      "url": "https://stackblitz.com/",
+      "ok": false,
+      "reason": "unknown",
+      "detail": "The provided email address 'shreyashfs+stackblitz33a2@gmail.com' is already registered, and the task requires using this exact identity. Cannot create a new account.",
+      "elapsed_s": 113.5,
+      "alias_tag": "stackblitz33a2",
+      "backend": "browserbase",
+      "bb_session": "https://www.browserbase.com/sessions/24f990ea-5093-49d9-a5c3-e5ad89809f12",
+      "running_signup_before": 0,
+      "running_signup_after": 0,
+      "released_after": {
+        "found": 0,
+        "released": 0,
+        "failed": [],
+        "session_ids": []
+      }
+    },
+    {
+      "site": "wix",
+      "url": "https://www.wix.com/",
+      "ok": false,
+      "reason": "captcha_unsolved",
+      "detail": "The reCAPTCHA image challenge could not be solved after multiple attempts, preventing signup completion.",
+      "elapsed_s": 404.0,
+      "alias_tag": "wix33a3",
+      "backend": "browserbase",
+      "bb_session": "https://www.browserbase.com/sessions/97a2b50d-b82a-476f-8888-fc1e4aa98d68",
+      "running_signup_before": 0,
+      "running_signup_after": 0,
+      "released_after": {
+        "found": 0,
+        "released": 0,
+        "failed": [],
+        "session_ids": []
+      }
+    },
+    {
+      "site": "codepen",
+      "url": "https://codepen.io/",
+      "ok": true,
+      "reason": "signed_up",
+      "detail": "",
+      "elapsed_s": 90.0,
+      "alias_tag": "codepen33a4",
+      "backend": "browserbase",
+      "bb_session": "https://www.browserbase.com/sessions/2960c150-f390-4b98-b644-969978a7b30d",
+      "running_signup_before": 0,
+      "running_signup_after": 0,
+      "released_after": {
+        "found": 0,
+        "released": 0,
+        "failed": [],
+        "session_ids": []
+      }
+    }
+  ],
+  "ok_count": 2,
+  "n": 5
+}

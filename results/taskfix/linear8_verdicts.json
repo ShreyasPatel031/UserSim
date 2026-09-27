@@ -1,0 +1,42 @@
+{
+  "t1__p1__product": {
+    "goal_reached": true,
+    "still_on_opening_screen": false,
+    "reason": "The page clearly explains and demonstrates multiple ways to create a new issue, fulfilling the task goal."
+  },
+  "t2__p1__product": {
+    "goal_reached": true,
+    "still_on_opening_screen": false,
+    "reason": "The page displays pricing information for different plans, including free and paid options, fulfilling the task goal."
+  },
+  "t1__p2__product": {
+    "goal_reached": true,
+    "still_on_opening_screen": false,
+    "reason": "The page provides clear instructions and visual examples on how to create new issues, fulfilling the task goal."
+  },
+  "t2__p2__product": {
+    "goal_reached": true,
+    "still_on_opening_screen": false,
+    "reason": "The agent successfully navigated to the pricing page, which displays different pricing tiers and features."
+  },
+  "t1__p3__product": {
+    "goal_reached": true,
+    "still_on_opening_screen": false,
+    "reason": "The page provides clear instructions and visual examples on how to create new issues, fulfilling the task goal."
+  },
+  "t2__p3__product": {
+    "goal_reached": true,
+    "still_on_opening_screen": false,
+    "reason": "The agent successfully navigated to the pricing page, which displays different pricing tiers and features."
+  },
+  "t1__p4__product": {
+    "goal_reached": false,
+    "still_on_opening_screen": true,
+    "reason": "missing field final_screenshot_url"
+  },
+  "t2__p4__product": {
+    "goal_reached": false,
+    "still_on_opening_screen": true,
+    "reason": "missing field final_screenshot_url"
+  }
+}

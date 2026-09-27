@@ -1,0 +1,36 @@
+{
+  "ok": true,
+  "reason": "signed_up",
+  "email": "tldrawdkoo0a@sharklasers.com",
+  "inbox": "guerrilla",
+  "elapsed_s": 32.3,
+  "final_url": "https://www.tldraw.com/f/qB1Jh3c6aJzj_jF0D8V0_?d=v0.0.782.632.page",
+  "evidence": "The page displays a collaborative whiteboarding application with a 'My workspace' button and a file named 'Sat 3:35 AM', indicating a logged-in user's active session.",
+  "steps": [
+    "start https://www.tldraw.com/",
+    "www.tldraw.com/ :: working :: The current page is the tldraw canvas. I need to find a way to sign up. The only visible sign-in related button is 'Sign in to share'. I wil",
+    "  click button 'Sign in to share'",
+    "www.tldraw.com/ :: working :: The page is asking for an email address to continue with the sign-up process. I will fill in the email and click 'Continue with email'.",
+    "  fill Email address = {email}",
+    "  click button 'Continue with email'",
+    "www.tldraw.com/ :: need_email :: The site is asking for a code sent to the email. I need to wait for the code to be provided.",
+    "waiting for email to sharklasers.com (up to 75s)",
+    "mail: '006744 is your verification code' code=yes links=0",
+    "  typed emailed code into the code box",
+    "www.tldraw.com/f/qB1Jh3c6aJzj_jF0D8V0_ :: working :: The emailed code was typed into the code box. Now I need to click the 'Accept and continue' button to proceed.",
+    "  click button 'Accept and continue'",
+    "www.tldraw.com/f/qB1Jh3c6aJzj_jF0D8V0_ :: signed_in :: I have successfully signed in and landed on the tldraw workspace. The page shows 'My workspace', 'New file', and 'Account' controls, indicat",
+    "verified after reload: The page displays a collaborative whiteboarding application with a 'My workspace' button and a file named 'Sat 3:35 AM', indicating a logged-in user's active session."
+  ],
+  "captcha": [],
+  "capsolver_usd": 0.0,
+  "capsolver_calls": 0,
+  "last_page": {
+    "url": "https://www.tldraw.com/f/qB1Jh3c6aJzj_jF0D8V0_",
+    "title": "Sat 3:35 AM",
+    "body": "tldraw - free and instant collaborative whiteboarding My workspace Search... New file Manage Sat 3:35 AM Build with the tldraw SDK Send feedback Account",
+    "elements": "[0] button \"Notifications\"\n[1] button \"Create file\"\n[2] button \"My workspace\"\n[3] button \"Search...\"\n[4] button \"New file\"\n[5] button \"Manage\"\n[6] link \"Sat 3:35 AM (selected)\" href=\"/f/qB1Jh3c6aJzj_jF0D8V0_\"\n[7] link \"Build with the tldraw SDK\" href=\"https://tldraw.dev?utm_source=dotcom&utm_medium=organic&utm_campaign=sidebar-link\"\n[8] button \"Send feedback\"\n[9] button \"User settings\"\n[10] button \"Toggle sidebar\""
+  },
+  "site": "https://www.tldraw.com",
+  "headless": false
+}

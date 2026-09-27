@@ -30,8 +30,8 @@ export MVP_MAX_STEPS="${MVP_MAX_STEPS:-8}"
 export MVP_PREFER_GCP_FLEET="${MVP_PREFER_GCP_FLEET:-0}"
 export MVP_GCP_FLEET="${MVP_GCP_FLEET:-0}"
 export MVP_GCP_ALLOW_SPOT="${MVP_GCP_ALLOW_SPOT:-0}"
-# 9 live agents need ~10–15 min locally; Vercel prod stays capped by maxDuration.
-export MVP_STUDY_TIMEOUT_S="${MVP_STUDY_TIMEOUT_S:-900}"
+# One study budget: 8 minutes. A 24-agent Linear study finished in 128s.
+export MVP_STUDY_TIMEOUT_S="${MVP_STUDY_TIMEOUT_S:-480}"
 # Force Developer-plan parallelism — secrets/env free-tier values must not win.
 export MVP_BROWSER_CONCURRENCY=25
 export BROWSERBASE_MAX_CONCURRENT=25

@@ -1,0 +1,882 @@
+{
+  "base": "http://127.0.0.1:3000",
+  "product_url": "https://linear.app",
+  "judge_model": "configured",
+  "expected": 24,
+  "pass": false,
+  "yeses": 0,
+  "judgements": [],
+  "study_id": "d91bbd66-5d5f-46ce-9a64-c8d873058bab",
+  "page_opened": {
+    "measured": true,
+    "ok": false,
+    "abort": true,
+    "opened": 0,
+    "agents": 24,
+    "slow": 0,
+    "wrong_site": 0,
+    "missing_ax": 6,
+    "waiting": 18,
+    "limit_s": 5.0,
+    "reason": "FAIL page_opened: 0/24 agents opened the assigned site within 5s (no accessibility tree=6)",
+    "detail": "FAIL page_opened: 0/24 agents opened the assigned site within 5s (no accessibility tree=6)",
+    "ids": [
+      "t1__p1__product",
+      "t2__p1__product",
+      "t1__p2__product",
+      "t2__p2__product",
+      "t1__p3__product",
+      "t2__p3__product"
+    ]
+  },
+  "agents": 24,
+  "personas": 5,
+  "task_bases": 2,
+  "sites": 3,
+  "elapsed_s": 42.9,
+  "since_first_task_s": 4.8,
+  "time_to_first_action": {
+    "measured": true,
+    "ok": false,
+    "abort": false,
+    "type": "",
+    "median_s": null,
+    "max_s": null,
+    "n": 0,
+    "agents": 24,
+    "expected": 24,
+    "acted": 0,
+    "median_limit_s": 5.0,
+    "max_limit_s": 10.0,
+    "abort_after_s": 10.0,
+    "missing_ids": [
+      "t1__p1__product",
+      "t2__p1__product",
+      "t1__p2__product",
+      "t2__p2__product",
+      "t1__p3__product",
+      "t2__p3__product",
+      "t1__p4__product",
+      "t2__p4__product",
+      "t1__p5__product",
+      "t2__p5__product",
+      "t1__p1__competitor_1",
+      "t1__p1__competitor_2",
+      "t2__p1__competitor_1",
+      "t2__p1__competitor_2",
+      "t1__p2__competitor_1",
+      "t1__p2__competitor_2",
+      "t2__p2__competitor_1",
+      "t2__p2__competitor_2",
+      "t1__p3__competitor_1",
+      "t1__p3__competitor_2",
+      "t2__p3__competitor_1",
+      "t2__p3__competitor_2",
+      "t1__p4__competitor_1",
+      "t1__p4__competitor_2"
+    ],
+    "ids": [],
+    "reason": "",
+    "detail": "",
+    "per_agent": [
+      {
+        "agent_id": "t1__p1__product",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p1__product",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p2__product",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p2__product",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p3__product",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p3__product",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p4__product",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p4__product",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p5__product",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p5__product",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p1__competitor_1",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p1__competitor_2",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p1__competitor_1",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p1__competitor_2",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p2__competitor_1",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p2__competitor_2",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p2__competitor_1",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p2__competitor_2",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p3__competitor_1",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p3__competitor_2",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p3__competitor_1",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t2__p3__competitor_2",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p4__competitor_1",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      },
+      {
+        "agent_id": "t1__p4__competitor_2",
+        "started_at": null,
+        "start": "",
+        "action_seen_at": null,
+        "latency_s": null,
+        "waited_s": null
+      }
+    ]
+  },
+  "time_to_first_value_s": null,
+  "total_time_s": null,
+  "report_ready": false,
+  "time_to_first_value_agent": "",
+  "early_abort": null,
+  "timing": {
+    "run_click_to_first_task_created_s": 37.703,
+    "run_click_to_all_tasks_created_s": 38.477,
+    "creation_to_first_shot_s": {
+      "p50": 0.031,
+      "p95": 0.04,
+      "max": 0.04,
+      "n": 24,
+      "missing_shot": 0,
+      "missing_created": 0
+    },
+    "per_agent": [
+      {
+        "agent_id": "t1__p1__product",
+        "created_at_ts": 1790392252.7745638,
+        "first_screenshot_at_ts": 1790392252.8147178,
+        "creation_to_first_shot_s": 0.04
+      },
+      {
+        "agent_id": "t2__p1__product",
+        "created_at_ts": 1790392252.8147364,
+        "first_screenshot_at_ts": 1790392252.8545923,
+        "creation_to_first_shot_s": 0.04
+      },
+      {
+        "agent_id": "t1__p2__product",
+        "created_at_ts": 1790392252.8546095,
+        "first_screenshot_at_ts": 1790392252.8941085,
+        "creation_to_first_shot_s": 0.039
+      },
+      {
+        "agent_id": "t2__p2__product",
+        "created_at_ts": 1790392252.8941252,
+        "first_screenshot_at_ts": 1790392252.9336185,
+        "creation_to_first_shot_s": 0.039
+      },
+      {
+        "agent_id": "t1__p3__product",
+        "created_at_ts": 1790392252.9336338,
+        "first_screenshot_at_ts": 1790392252.973077,
+        "creation_to_first_shot_s": 0.039
+      },
+      {
+        "agent_id": "t2__p3__product",
+        "created_at_ts": 1790392252.9730918,
+        "first_screenshot_at_ts": 1790392253.0124454,
+        "creation_to_first_shot_s": 0.039
+      },
+      {
+        "agent_id": "t1__p4__product",
+        "created_at_ts": 1790392253.01246,
+        "first_screenshot_at_ts": 1790392253.052219,
+        "creation_to_first_shot_s": 0.04
+      },
+      {
+        "agent_id": "t2__p4__product",
+        "created_at_ts": 1790392253.052232,
+        "first_screenshot_at_ts": 1790392253.0917492,
+        "creation_to_first_shot_s": 0.04
+      },
+      {
+        "agent_id": "t1__p5__product",
+        "created_at_ts": 1790392253.091765,
+        "first_screenshot_at_ts": 1790392253.131445,
+        "creation_to_first_shot_s": 0.04
+      },
+      {
+        "agent_id": "t2__p5__product",
+        "created_at_ts": 1790392253.1314607,
+        "first_screenshot_at_ts": 1790392253.1711574,
+        "creation_to_first_shot_s": 0.04
+      },
+      {
+        "agent_id": "t1__p1__competitor_1",
+        "created_at_ts": 1790392253.1711717,
+        "first_screenshot_at_ts": 1790392253.1986914,
+        "creation_to_first_shot_s": 0.028
+      },
+      {
+        "agent_id": "t1__p1__competitor_2",
+        "created_at_ts": 1790392253.1987038,
+        "first_screenshot_at_ts": 1790392253.2293782,
+        "creation_to_first_shot_s": 0.031
+      },
+      {
+        "agent_id": "t2__p1__competitor_1",
+        "created_at_ts": 1790392253.2293918,
+        "first_screenshot_at_ts": 1790392253.2568169,
+        "creation_to_first_shot_s": 0.027
+      },
+      {
+        "agent_id": "t2__p1__competitor_2",
+        "created_at_ts": 1790392253.25683,
+        "first_screenshot_at_ts": 1790392253.287572,
+        "creation_to_first_shot_s": 0.031
+      },
+      {
+        "agent_id": "t1__p2__competitor_1",
+        "created_at_ts": 1790392253.2875886,
+        "first_screenshot_at_ts": 1790392253.3151026,
+        "creation_to_first_shot_s": 0.028
+      },
+      {
+        "agent_id": "t1__p2__competitor_2",
+        "created_at_ts": 1790392253.3151178,
+        "first_screenshot_at_ts": 1790392253.3460262,
+        "creation_to_first_shot_s": 0.031
+      },
+      {
+        "agent_id": "t2__p2__competitor_1",
+        "created_at_ts": 1790392253.3460412,
+        "first_screenshot_at_ts": 1790392253.3735056,
+        "creation_to_first_shot_s": 0.027
+      },
+      {
+        "agent_id": "t2__p2__competitor_2",
+        "created_at_ts": 1790392253.3735206,
+        "first_screenshot_at_ts": 1790392253.4043903,
+        "creation_to_first_shot_s": 0.031
+      },
+      {
+        "agent_id": "t1__p3__competitor_1",
+        "created_at_ts": 1790392253.4044032,
+        "first_screenshot_at_ts": 1790392253.431914,
+        "creation_to_first_shot_s": 0.028
+      },
+      {
+        "agent_id": "t1__p3__competitor_2",
+        "created_at_ts": 1790392253.431927,
+        "first_screenshot_at_ts": 1790392253.4627688,
+        "creation_to_first_shot_s": 0.031
+      },
+      {
+        "agent_id": "t2__p3__competitor_1",
+        "created_at_ts": 1790392253.4627862,
+        "first_screenshot_at_ts": 1790392253.4901712,
+        "creation_to_first_shot_s": 0.027
+      },
+      {
+        "agent_id": "t2__p3__competitor_2",
+        "created_at_ts": 1790392253.4901874,
+        "first_screenshot_at_ts": 1790392253.5210426,
+        "creation_to_first_shot_s": 0.031
+      },
+      {
+        "agent_id": "t1__p4__competitor_1",
+        "created_at_ts": 1790392253.5210557,
+        "first_screenshot_at_ts": 1790392253.5486028,
+        "creation_to_first_shot_s": 0.028
+      },
+      {
+        "agent_id": "t1__p4__competitor_2",
+        "created_at_ts": 1790392253.548617,
+        "first_screenshot_at_ts": 1790392253.5794306,
+        "creation_to_first_shot_s": 0.031
+      }
+    ]
+  },
+  "t_first_task_created_s": 37.703,
+  "t_all_tasks_created_s": 38.477,
+  "creation_to_first_real_shot": {
+    "p50": 0.031,
+    "p95": 0.04,
+    "max": 0.04,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "creation_to_first_shot": {
+    "p50": 0.031,
+    "p95": 0.04,
+    "max": 0.04,
+    "n": 24,
+    "missing_shot": 0,
+    "missing_created": 0
+  },
+  "warm_timing": {
+    "product": {
+      "bb_create_s": 0.761,
+      "navigate_and_paint_s": 10.97,
+      "first_paint_total_s": 13.653,
+      "blankish": false,
+      "blocked": false,
+      "block_reason": null,
+      "proxies": false
+    },
+    "competitor_2": {
+      "bb_create_s": 0.389,
+      "navigate_and_paint_s": 27.845,
+      "first_paint_total_s": 31.885,
+      "blankish": false,
+      "blocked": false,
+      "block_reason": null,
+      "proxies": false
+    },
+    "competitor_1": {
+      "bb_create_s": 0.458,
+      "navigate_and_paint_s": 32.23,
+      "first_paint_total_s": 35.588,
+      "blankish": false,
+      "blocked": false,
+      "block_reason": null,
+      "proxies": false
+    }
+  },
+  "t_first_task_poll_s": 39.0,
+  "t_all_tasks_poll_s": 39.0,
+  "task_success_n": 0,
+  "task_success_of": 10,
+  "task_success_rate": 0,
+  "product_task_gate": {
+    "product_n": 10,
+    "success_n": 0,
+    "success_rate": 0,
+    "required_n": 5,
+    "required_rate": 0.5,
+    "first_screen_failures": [
+      "t1__p1__product",
+      "t2__p1__product",
+      "t1__p2__product",
+      "t2__p2__product",
+      "t1__p3__product",
+      "t2__p3__product",
+      "t1__p4__product",
+      "t2__p4__product",
+      "t1__p5__product",
+      "t2__p5__product"
+    ],
+    "passed_ids": [],
+    "pass": false
+  },
+  "product_task_success_n": 0,
+  "product_task_success_of": 10,
+  "product_task_success_rate": 0,
+  "product_first_screen_failures": [
+    "t1__p1__product",
+    "t2__p1__product",
+    "t1__p2__product",
+    "t2__p2__product",
+    "t1__p3__product",
+    "t2__p3__product",
+    "t1__p4__product",
+    "t2__p4__product",
+    "t1__p5__product",
+    "t2__p5__product"
+  ],
+  "goal_verdicts": {
+    "t1__p1__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "The agent is on the Linear app's main dashboard, but has not yet created a new issue or navigated to a screen where issues can be created."
+    },
+    "t2__p1__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "The page shows the product's main interface rather than pricing or getting started information."
+    },
+    "t1__p2__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "The agent is on the Linear app's main dashboard, but has not yet created a new issue or navigated to a screen where issues can be created."
+    },
+    "t2__p2__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The page is still the marketing homepage and does not show pricing or how to get started."
+    },
+    "t1__p3__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "The agent is on the Linear app's main dashboard, but has not yet created a new issue or navigated to a screen where issues can be created."
+    },
+    "t2__p3__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "The page shows the product's main interface rather than pricing or getting started information."
+    },
+    "t1__p4__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to a page where a new issue can be created."
+    },
+    "t2__p4__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The page is still the marketing homepage and does not show pricing or how to get started."
+    },
+    "t1__p5__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "The agent is on the Linear app's main dashboard, but has not yet created a new issue or navigated to a screen where issues can be created."
+    },
+    "t2__p5__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "The page shows the product's main interface rather than pricing or getting started information."
+    },
+    "t1__p1__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to find how to create a new issue."
+    },
+    "t1__p1__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to a page where a new issue can be created."
+    },
+    "t2__p1__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to pricing or a 'get started' section."
+    },
+    "t2__p1__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to pricing or a 'get started' section."
+    },
+    "t1__p2__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to find how to create a new issue."
+    },
+    "t1__p2__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to a page where a new issue can be created."
+    },
+    "t2__p2__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to pricing or a 'get started' section."
+    },
+    "t2__p2__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to pricing or a 'get started' section."
+    },
+    "t1__p3__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to find how to create a new issue."
+    },
+    "t1__p3__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to a page where a new issue can be created."
+    },
+    "t2__p3__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to pricing or a 'get started' section."
+    },
+    "t2__p3__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to pricing or a 'get started' section."
+    },
+    "t1__p4__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen and has not navigated to find how to create a new issue."
+    },
+    "t1__p4__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": true,
+      "reason": "The agent is still on the opening screen of the Trello website and has not navigated to a page where a new issue can be created."
+    }
+  },
+  "gates": [
+    {
+      "id": "time_to_first_value",
+      "name": "Time to first value",
+      "value": "not recorded",
+      "threshold": "<= 10s from URL submit until the first click, type, or scroll is visible in the live UI",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "total_time",
+      "name": "Total time",
+      "value": "not ready",
+      "threshold": "<= 480s from URL submit until the report is ready",
+      "pass": false,
+      "detail": "8-minute study budget."
+    },
+    {
+      "id": "full_matrix",
+      "name": "Full 24-agent matrix",
+      "value": 24,
+      "threshold": ">= 24 (smaller runs are smoke-only)",
+      "pass": true,
+      "detail": "agents=24"
+    },
+    {
+      "id": "agent_count",
+      "name": "Agent count",
+      "value": 24,
+      "threshold": ">= 24",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "persona_count",
+      "name": "Persona count",
+      "value": 5,
+      "threshold": ">= 4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "task_count",
+      "name": "Task count",
+      "value": 2,
+      "threshold": ">= 2",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "site_count",
+      "name": "Site count",
+      "value": 3,
+      "threshold": ">= 3",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "page_opened",
+      "name": "Page opened on the assigned site",
+      "value": "0/24 within 5s",
+      "threshold": "<= 5s from agent creation, URL host matches the assigned site, accessibility tree present",
+      "pass": false,
+      "detail": "FAIL page_opened: 0/24 agents opened the assigned site within 5s (no accessibility tree=6)"
+    },
+    {
+      "id": "study_complete",
+      "name": "Study completed with a summary",
+      "value": "running aborted",
+      "threshold": "status=complete, summary present, no harness abort",
+      "pass": false,
+      "detail": "FAIL page_opened: 0/24 agents opened the assigned site within 5s (no accessibility tree=6)"
+    },
+    {
+      "id": "study_budget",
+      "name": "Study budget",
+      "value": "42.9s",
+      "threshold": "<= 480s for the whole study (observed max 408s)",
+      "pass": true,
+      "detail": "No per-agent time limit. Stuck means the same action repeated 3 times with no URL or DOM change. Confirmed maxima: saved-study wall 358s, measured e2e2 elapsed 378s, YouTube baseline 408s."
+    },
+    {
+      "id": "first_action",
+      "name": "First real action",
+      "value": "not measured",
+      "threshold": "live abort is time_to_first_action",
+      "pass": true,
+      "detail": "The 60s/90s fleet check is not the live abort."
+    },
+    {
+      "id": "time_to_first_action",
+      "name": "Time to first action",
+      "value": "median=n/a max=n/a n=0/24",
+      "threshold": "median <= 5s and max <= 10s at 24 agents",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "product_task_completion",
+      "name": "Product task completion",
+      "value": "0/10 (0%)",
+      "threshold": ">= 50% of product runs (>= 5/10)",
+      "pass": false,
+      "detail": "judge_yes=0 structural_past_first_screen=0 first_screen_or_opening=10 opening_frame=10 stuck=0 bb_losses_in_product=0"
+    },
+    {
+      "id": "report_page",
+      "name": "Bland-style report page",
+      "value": "http://127.0.0.1:3000/report?study=d91bbd66-5d5f-46ce-9a64-c8d873058bab",
+      "threshold": "/report?study=<id> shell with overview and trace tabs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "task_completion_rates",
+      "name": "Every task has a completion rate",
+      "value": "missing no by_task rows; missing task Find how to create a new issue; missing task Look for pricing or how to get started",
+      "threshold": "each task has a product ok/n rate",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "product_strength",
+      "name": "Product strength from a run past the first screen",
+      "value": "0/0",
+      "threshold": ">= 1 strength with agent, step, AX or URL, and the final screenshot",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "product_weakness",
+      "name": "Product weakness from a run past the first screen",
+      "value": "0/0",
+      "threshold": ">= 1 weakness with agent, step, AX or URL, and the final screenshot",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "top_weakness_not_homepage_only",
+      "name": "Top weakness is not only the homepage stall",
+      "value": "(none)",
+      "threshold": "at least one weakness is a real product issue from a run past the first screen",
+      "pass": false,
+      "detail": "real_weaknesses=0"
+    },
+    {
+      "id": "run_issues_separate",
+      "name": "Run issues listed separately from product friction",
+      "value": "0 listed",
+      "threshold": "insights.run_issues is its own list; harness errors are not product weaknesses",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "run_issue_rate",
+      "name": "Run issue share",
+      "value": "0/24 (0%)",
+      "threshold": "<= 25% of runs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "infra_honesty",
+      "name": "Browserbase and concurrency losses count against the run",
+      "value": "losses=0 silent=0 counted_as_success=0",
+      "threshold": "0 silently excluded, 0 counted as task success",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "first_screen_not_excluded",
+      "name": "First-screen and opening-frame runs stay in the product denominator",
+      "value": "opening_or_first_screen=10 product_n=10 excluded=0",
+      "threshold": "excluded=0 (a stuck run is a failure, not a drop)",
+      "pass": true,
+      "detail": "excluded=0"
+    }
+  ],
+  "competitor_task_success": [
+    {
+      "site_key": "competitor_1",
+      "site_label": "https://asana.com/",
+      "success_n": 0,
+      "n": 7,
+      "value": "0/7"
+    },
+    {
+      "site_key": "competitor_2",
+      "site_label": "https://trello.com/",
+      "success_n": 0,
+      "n": 7,
+      "value": "0/7"
+    }
+  ],
+  "browserbase_concurrency_losses": [],
+  "product_task_success": {
+    "success_n": 0,
+    "n": 10,
+    "value": "0/10",
+    "success_ids": [],
+    "structural_ids": [],
+    "first_screen_ids": [
+      "t1__p1__product",
+      "t2__p1__product",
+      "t1__p2__product",
+      "t2__p2__product",
+      "t1__p3__product",
+      "t2__p3__product",
+      "t1__p4__product",
+      "t2__p4__product",
+      "t1__p5__product",
+      "t2__p5__product"
+    ]
+  },
+  "report_url": "http://127.0.0.1:3000/report?study=d91bbd66-5d5f-46ce-9a64-c8d873058bab",
+  "fail_reasons": [
+    "time_to_first_value: value=not recorded threshold=<= 10s from URL submit until the first click, type, or scroll is visible in the live UI",
+    "total_time: value=not ready threshold=<= 480s from URL submit until the report is ready (8-minute study budget.)",
+    "page_opened: value=0/24 within 5s threshold=<= 5s from agent creation, URL host matches the assigned site, accessibility tree present (FAIL page_opened: 0/24 agents opened the assigned site within 5s (no accessibility tree=6))",
+    "study_complete: value=running aborted threshold=status=complete, summary present, no harness abort (FAIL page_opened: 0/24 agents opened the assigned site within 5s (no accessibility tree=6))",
+    "time_to_first_action: value=median=n/a max=n/a n=0/24 threshold=median <= 5s and max <= 10s at 24 agents",
+    "product_task_completion: value=0/10 (0%) threshold=>= 50% of product runs (>= 5/10) (judge_yes=0 structural_past_first_screen=0 first_screen_or_opening=10 opening_frame=10 stuck=0 bb_losses_in_product=0)",
+    "task_completion_rates: value=missing no by_task rows; missing task Find how to create a new issue; missing task Look for pricing or how to get started threshold=each task has a product ok/n rate",
+    "product_strength: value=0/0 threshold=>= 1 strength with agent, step, AX or URL, and the final screenshot",
+    "product_weakness: value=0/0 threshold=>= 1 weakness with agent, step, AX or URL, and the final screenshot",
+    "top_weakness_not_homepage_only: value=(none) threshold=at least one weakness is a real product issue from a run past the first screen (real_weaknesses=0)",
+    "run_issues_separate: value=0 listed threshold=insights.run_issues is its own list; harness errors are not product weaknesses",
+    "product task success 0/10 want \u22655 (10 stayed on the first screen)"
+  ],
+  "failure_file": "/workspace/results/tonight/linear-2/failures.json",
+  "ready_after_complete": false,
+  "smoke_only": false,
+  "error": "e2e2 failed: time_to_first_value: value=not recorded threshold=<= 10s from URL submit until the first click, type, or scroll is visible in the live UI; total_time: value=not ready threshold=<= 480s from URL submit until the report is ready (8-minute study budget.); page_opened: value=0/24 within 5s threshold=<= 5s from agent creation, URL host matches the assigned site, accessibility tree present (FAIL page_opened: 0/24 agents opened the assigned site within 5s (no accessibility tree=6)); study_complete: value=running aborted threshold=status=complete, summary present, no harness abort (FAIL page_opened: 0/24 agents opened the assigned site within 5s (no accessibility tree=6)); time_to_first_action: value=median=n/a max=n/a n=0/24 threshold=median <= 5s and max <= 10s at 24 agents; product_task_completion: value=0/10 (0%) threshold=>= 50% of product runs (>= 5/10) (judge_yes=0 structural_past_first_screen=0 first_screen_or_opening=10 opening_frame=10 stuck=0 bb_losses_in_product=0); task_completion_rates: value=missing no by_task rows; missing task Find how to create a new issue; missing task Look for pricing or how to get started threshold=each task has a product ok/n rate; product_strength: value=0/0 threshold=>= 1 strength with agent, step, AX or URL, and the final screenshot; product_weakness: value=0/0 threshold=>= 1 weakness with agent, step, AX or URL, and the final screenshot; top_weakness_not_homepage_only: value=(none) threshold=at least one weakness is a real product issue from a run past the first screen (real_weaknesses=0); run_issues_separate: value=0 listed threshold=insights.run_issues is its own list; harness errors are not product weaknesses; product task success 0/10 want \u22655 (10 stayed on the first screen)"
+}

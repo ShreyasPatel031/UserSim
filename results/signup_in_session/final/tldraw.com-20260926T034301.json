@@ -1,0 +1,36 @@
+{
+  "ok": true,
+  "reason": "signed_up",
+  "email": "tldrawftz5ik@uberip.com",
+  "inbox": "mailtm",
+  "elapsed_s": 30.2,
+  "final_url": "https://www.tldraw.com/f/8-i8ERfRF2at_OrDL8kFP?d=v0.0.782.632.page",
+  "evidence": "The page displays a collaborative whiteboarding interface with options like 'My workspace', 'New file', and 'Account', indicating a logged-in user's product application.",
+  "steps": [
+    "start https://www.tldraw.com/",
+    "www.tldraw.com/ :: working :: The page is a whiteboard. I need to find a sign-up or sign-in button to create an account. Element 6 is 'Sign in to share', which seems like",
+    "  click button 'Sign in to share'",
+    "www.tldraw.com/ :: working :: The site is asking for an email address to continue. I will fill in the email and click continue.",
+    "  fill Email address = {email}",
+    "  click button 'Continue with email'",
+    "www.tldraw.com/ :: need_email :: The site is asking for a code sent to the email. I need to wait for the code to be provided.",
+    "waiting for email to uberip.com (up to 75s)",
+    "mail: '280260 is your verification code' code=yes links=0",
+    "  typed emailed code into the code box",
+    "www.tldraw.com/f/8-i8ERfRF2at_OrDL8kFP :: working :: The email code has been entered. Now I need to click the 'Accept and continue' button to proceed with the terms of use.",
+    "  click button 'Accept and continue'",
+    "www.tldraw.com/f/8-i8ERfRF2at_OrDL8kFP :: signed_in :: I am already signed in and in the product.",
+    "verified after reload: The page displays a collaborative whiteboarding interface with options like 'My workspace', 'New file', and 'Account', indicating a logged-in user's product application."
+  ],
+  "captcha": [],
+  "capsolver_usd": 0.0,
+  "capsolver_calls": 0,
+  "last_page": {
+    "url": "https://www.tldraw.com/f/8-i8ERfRF2at_OrDL8kFP?d=v0.0.782.632.page",
+    "title": "Sat 3:43 AM",
+    "body": "tldraw - free and instant collaborative whiteboarding My workspace Search... New file Manage Sat 3:43 AM Build with the tldraw SDK Send feedback Account Move focus to canvas Sat 3:43 AM / Page 1 Share 100%",
+    "elements": "[0] button \"Notifications\"\n[1] button \"Create file\"\n[2] button \"My workspace\"\n[3] button \"Search...\"\n[4] button \"New file\"\n[5] button \"Manage\"\n[6] link \"Sat 3:43 AM (selected)\" href=\"/f/8-i8ERfRF2at_OrDL8kFP\"\n[7] link \"Build with the tldraw SDK\" href=\"https://tldraw.dev?utm_source=dotcom&utm_medium=organic&utm_campaign=sidebar-link\"\n[8] button \"Send feedback\"\n[9] button \"User settings\"\n[10] button \"Move focus to canvas\"\n[11] button \"Sat 3:43 AM\"\n[12] button \"Page 1\"\n[13] button \"Page menu\"\n[14] button \"Comments\"\n[15] button \"Share\"\n[16] radio \"Color \\u2014 Black (selected)\" checked=True\n[17] radio \"Color \\u2014 Grey\" checked=False\n[18] radio \"Color \\u2014 Light violet\" checked=False\n[19] radio \"Color \\u2014 Violet\" checked=False\n[20] radio \"Color \\u2014 Blue\" checked=False\n[21] radio \"Color \\u2014 Light blue\" checked=False\n[22] radio \"Color \\u2014 Yellow\" checked=False\n[23] radio \"Color \\u2014 Orange\" checked=False\n[24] radio \"Color \\u2014 Green\" checked=False\n[25] radio \"Color \\u2014 Light green\" checked=False\n[26] radio \"Color \\u2014 Light red\" checked=False\n[27] radio \"Color \\u2014 Red\" checked=False\n[28] radio \"Fill \\u2014 None (selected)\" checked=True\n[29] radio \"Fill \\u2014 Semi\" checked=False\n[30] radio \"Fill \\u2014 Solid\" checked=False\n[31] button \"Fill\"\n[32] radio \"Dash \\u2014 Draw (selected)\" checked=True\n[33] radio \"Dash \\u2014 Dashed\" checked=False\n[34] radio \"Dash \\u2014 Dotted\" checked=False\n[35] radio \"Dash \\u2014 Solid\" checked=False\n[36] radio \"Size \\u2014 Small\" checked=False\n[37] radio \"Size \\u2014 Medium (selected)\" checked=True\n[38] radio \"Size \\u2014 Large\" checked=False\n[39] radio \"Size \\u2014 Extra large\" checked=False\n[40] button \"Zoom \\u2014 100%\"\n[41] button \"Undo \\u2014 Ctrl + Z\" disabled\n[42] button \"Redo \\u2014 Ctrl + \\u21e7 + Z\" disabled\n[43] button \"Delete \\u2014 \\u232b\" disabled\n[44] button \"Duplicate \\u2014 Ctrl + D\" disabled\n[45] button \"Comment \\u2014 C\"\n[46] button \"Actions\"\n[47] button \"Select \\u2014 V\"\n[48] button \"Hand \\u2014 H\"\n[49] button \"Draw \\u2014 D\"\n[50] button \"Eraser \\u2014 E\"\n[51] button \"Arrow \\u2014 A\"\n[52] button \"Text \\u2014 T\"\n[53] button \"Note \\u2014 N\"\n[54] button \"Media \\u2014 Ctrl + U\"\n[55] button \"Rectangle \\u2014 R\"\n[56] button \"More\"\n[57] button \"Build infinite canvas applications with the tldraw SDK. Learn more at https://tl\"\n[58] button \"Toggle sidebar\""
+  },
+  "site": "https://www.tldraw.com",
+  "headless": false
+}

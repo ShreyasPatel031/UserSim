@@ -1,0 +1,62 @@
+{
+  "study_id": "e5a35680-8866-4cc2-8081-2bcd84a3ee2c",
+  "product_url": "https://linear.app",
+  "abort": "product",
+  "reason": "FAIL page_opened: 14/18 agents opened the assigned site within 5s (wrong site=2)",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 2,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "missing field failed_step_phase",
+      "n": 2
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t1__p1__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nFind how to create a new issue\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "t1__p1__competitor_2 phase=acting error= last_action=click Sign up for Trello - it\u2019s free!",
+      "phase": "acting",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=e5a35680-8866-4cc2-8081-2bcd84a3ee2c&agent=t1__p1__competitor_2&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms.final_screenshot",
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://trello.com/",
+      "step": null
+    },
+    {
+      "agent_id": "t2__p1__competitor_2",
+      "site_key": "competitor_2",
+      "task": "Apply this task on the competitor website https://trello.com/, not on the original product.\nLook for pricing or how to get started\n\nYou are evaluating the competitor site https://trello.com/ only. Stay on that site \u2014 do not open the original product or other rivals. Opening https://trello.com/ is correct; do not treat that as a mistake.",
+      "type": "product",
+      "judge_reason": "t2__p1__competitor_2 phase=acting error= last_action=click Sign up for Trello - it\u2019s free!",
+      "phase": "acting",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=e5a35680-8866-4cc2-8081-2bcd84a3ee2c&agent=t2__p1__competitor_2&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms.final_screenshot",
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://trello.com/",
+      "step": null
+    }
+  ]
+}

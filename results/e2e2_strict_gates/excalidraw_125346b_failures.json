@@ -1,0 +1,94 @@
+{
+  "study_id": "cbdbe54e-7ff5-4d30-b409-3ffe8a3e9db0",
+  "product_url": "https://excalidraw.com",
+  "abort": "product",
+  "reason": "FAIL page_opened: 21/24 agents opened the assigned site within 5s (opened after 5s=3)",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 3,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "read",
+      "n": 3
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t2__p2__product",
+      "site_key": "product",
+      "task": "Find how to export or share",
+      "type": "product",
+      "judge_reason": "t2__p2__product phase=act error= last_action=scroll down",
+      "phase": "act",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=cbdbe54e-7ff5-4d30-b409-3ffe8a3e9db0&agent=t2__p2__product&step=0",
+      "failed_step_phase": "read",
+      "failed_step_reason": "session ended",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 0.0
+      },
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://excalidraw.com/",
+      "step": null
+    },
+    {
+      "agent_id": "t2__p3__product",
+      "site_key": "product",
+      "task": "Find how to export or share",
+      "type": "product",
+      "judge_reason": "t2__p3__product phase=act error= last_action=scroll down",
+      "phase": "act",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=cbdbe54e-7ff5-4d30-b409-3ffe8a3e9db0&agent=t2__p3__product&step=0",
+      "failed_step_phase": "read",
+      "failed_step_reason": "session ended",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 0.0
+      },
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://excalidraw.com/",
+      "step": null
+    },
+    {
+      "agent_id": "t2__p4__product",
+      "site_key": "product",
+      "task": "Find how to export or share",
+      "type": "product",
+      "judge_reason": "t2__p4__product phase=act error= last_action=scroll down",
+      "phase": "act",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=cbdbe54e-7ff5-4d30-b409-3ffe8a3e9db0&agent=t2__p4__product&step=0",
+      "failed_step_phase": "read",
+      "failed_step_reason": "session ended",
+      "phase_ms": {
+        "session_ready": 0.0,
+        "page_open": 0.0,
+        "first_action": 0.0,
+        "final_screenshot": 0.0
+      },
+      "final_screenshot": "missing field final_screenshot_url",
+      "final_url": "https://excalidraw.com/",
+      "step": null
+    }
+  ]
+}

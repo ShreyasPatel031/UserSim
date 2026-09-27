@@ -1,0 +1,1313 @@
+{
+ "product_label": "Kolanut",
+ "sites": [
+  {
+   "key": "product",
+   "label": "Kolanut",
+   "url": "https://kolanut.ai"
+  },
+  {
+   "key": "competitor_1",
+   "label": "Gainsight",
+   "url": "https://www.gainsight.com/"
+  },
+  {
+   "key": "competitor_2",
+   "label": "ChurnZero",
+   "url": "https://churnzero.com/"
+  },
+  {
+   "key": "competitor_3",
+   "label": "Catalyst",
+   "url": "https://www.catalyst.io/"
+  }
+ ],
+ "n_scored": 100,
+ "n_runs": 100,
+ "n_harness_excluded": 0,
+ "n_personas": 5,
+ "pick_counts": {
+  "product": 2,
+  "competitor_1": 0,
+  "competitor_2": 3,
+  "competitor_3": 0
+ },
+ "pick_ties": 0,
+ "headline_metric": "Kolanut: 2 of 5 buyers, Gainsight: 0, ChurnZero: 3, Catalyst: 0",
+ "headline_counts": "ChurnZero: 3, Kolanut: 2, Gainsight: 0, Catalyst: 0",
+ "headline": [
+  {
+   "text": "Kolanut excels at drafting outreach for inactive users and comparing pricing for 50 customer accounts.",
+   "cite": ""
+  },
+  {
+   "text": "Kolanut also performs well in setting up automated onboarding workflows, ranking second among competitors.",
+   "cite": "t4__p1__competitor_2"
+  },
+  {
+   "text": "However, Kolanut struggles to identify at-risk customer accounts, ranking third, and viewing overall customer health scores, also ranking third.",
+   "cite": ""
+  },
+  {
+   "text": "Competitors like ChurnZero and Gainsight significantly outperform Kolanut in identifying at-risk customer accounts and viewing overall customer health scores.",
+   "cite": ""
+  }
+ ],
+ "overall": {
+  "product": 5.2,
+  "competitor_1": 3.5,
+  "competitor_2": 5.0,
+  "competitor_3": 3.5
+ },
+ "by_task": [
+  {
+   "task": "Identify at-risk customer accounts",
+   "expected_favorite": "product",
+   "expected_why": "Wants to reduce churn and improve customer retention.",
+   "scores": {
+    "product": 4.6,
+    "competitor_1": 4.0,
+    "competitor_2": 6.0,
+    "competitor_3": 6.0
+   },
+   "levels": {
+    "product": "in_product",
+    "competitor_1": "clear_evidence",
+    "competitor_2": "clear_evidence",
+    "competitor_3": "clear_evidence"
+   },
+   "winner": "competitor_3",
+   "tied": [],
+   "winner_label": "Catalyst",
+   "product_rank": 3,
+   "n_sites": 4,
+   "why": "The help article clearly describes how Catalyst monitors customer health and provides health scores.",
+   "winner_evidence": {
+    "agent_id": "t1__p1__competitor_3",
+    "persona_id": "p1",
+    "site_key": "competitor_3",
+    "task": "Identify at-risk customer accounts",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 1,
+    "reason": "The help article clearly describes how Catalyst monitors customer health and provides health scores.",
+    "step": 5,
+    "quote": "Customer health gives you insight into how a customer is doing according to an \"ideal\" profile.",
+    "final_url": "https://help.catalyst.io/hc/en-us/articles/28924640472980-Monitor-customer-health",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t1__p1__competitor_3/screenshots/final.png"
+   },
+   "product_evidence": {
+    "agent_id": "t1__p3__product",
+    "persona_id": "p3",
+    "site_key": "product",
+    "task": "Identify at-risk customer accounts",
+    "score": 7.0,
+    "level": "in_product",
+    "friction": 1,
+    "reason": "The product's AI chat feature identified a potential at-risk segment and suggested an integration to address it.",
+    "step": 7,
+    "quote": "It appears that some of your users may be at risk because Firebase Auth is not connected.",
+    "final_url": "https://engagement.kolanut.ai/dashboard/settings/integrations?category=crm",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t1__p3__product/screenshots/final.png"
+   }
+  },
+  {
+   "task": "Draft outreach for inactive users",
+   "expected_favorite": "product",
+   "expected_why": "Automated drafting is a key feature",
+   "scores": {
+    "product": 7.8,
+    "competitor_1": 1.8,
+    "competitor_2": 6.0,
+    "competitor_3": 4.8
+   },
+   "levels": {
+    "product": "in_product",
+    "competitor_1": "wall_or_nothing",
+    "competitor_2": "clear_evidence",
+    "competitor_3": "clear_evidence"
+   },
+   "winner": "product",
+   "tied": [],
+   "winner_label": "Kolanut",
+   "product_rank": 1,
+   "n_sites": 4,
+   "why": "The agent successfully drafted an outreach email for inactive users within the product's campaign editor.",
+   "winner_evidence": {
+    "agent_id": "t2__p1__product",
+    "persona_id": "p1",
+    "site_key": "product",
+    "task": "Draft outreach for inactive users",
+    "score": 8.0,
+    "level": "in_product",
+    "friction": 1,
+    "reason": "The agent successfully drafted an outreach email for inactive users within the product's campaign editor.",
+    "step": 8,
+    "quote": "Hey there! We've missed you. It's been a while since you last logged in to Kolanut AI",
+    "final_url": "https://engagement.kolanut.ai/dashboard/campaigns/all/edit/zDVvSm0FPHDIXtjHcZy6",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t2__p1__product/screenshots/final.png"
+   },
+   "product_evidence": {
+    "agent_id": "t2__p1__product",
+    "persona_id": "p1",
+    "site_key": "product",
+    "task": "Draft outreach for inactive users",
+    "score": 8.0,
+    "level": "in_product",
+    "friction": 1,
+    "reason": "The agent successfully drafted an outreach email for inactive users within the product's campaign editor.",
+    "step": 8,
+    "quote": "Hey there! We've missed you. It's been a while since you last logged in to Kolanut AI",
+    "final_url": "https://engagement.kolanut.ai/dashboard/campaigns/all/edit/zDVvSm0FPHDIXtjHcZy6",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t2__p1__product/screenshots/final.png"
+   }
+  },
+  {
+   "task": "View overall customer health scores",
+   "expected_favorite": "competitor_1",
+   "expected_why": "Comprehensive health dashboards",
+   "scores": {
+    "product": 5.0,
+    "competitor_1": 6.0,
+    "competitor_2": 6.0,
+    "competitor_3": 4.0
+   },
+   "levels": {
+    "product": "in_product",
+    "competitor_1": "clear_evidence",
+    "competitor_2": "clear_evidence",
+    "competitor_3": "vague_marketing"
+   },
+   "winner": "competitor_1",
+   "tied": [],
+   "winner_label": "Gainsight",
+   "product_rank": 3,
+   "n_sites": 4,
+   "why": "The page describes how Gainsight provides customer health scores and dashboards, with a screenshot showing a 'Score History' bar chart.",
+   "winner_evidence": {
+    "agent_id": "t3__p4__competitor_1",
+    "persona_id": "p4",
+    "site_key": "competitor_1",
+    "task": "View overall customer health scores",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 0,
+    "reason": "The page describes how Gainsight provides customer health scores and dashboards, with a screenshot showing a 'Score History' bar chart.",
+    "step": 7,
+    "quote": "Spot risk and opportunities sooner with AI-optimized scorecards that deliver the most accurate and comprehensive health scoring",
+    "final_url": "https://www.gainsight.com/customer-success/customer-360-health/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t3__p4__competitor_1/screenshots/final.png"
+   },
+   "product_evidence": {
+    "agent_id": "t3__p1__product",
+    "persona_id": "p1",
+    "site_key": "product",
+    "task": "View overall customer health scores",
+    "score": 7.0,
+    "level": "in_product",
+    "friction": 1,
+    "reason": "The product allows filtering customers by activity, which can indicate health, but doesn't show overall health scores.",
+    "step": 19,
+    "quote": "Activity Any activity Signed in last 7 days Signed in last 30 days Quiet 30+ days Never signed in",
+    "final_url": "https://engagement.kolanut.ai/dashboard/workspace/contacts",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t3__p1__product/screenshots/final.png"
+   }
+  },
+  {
+   "task": "Set up automated onboarding workflows",
+   "expected_favorite": "competitor_2",
+   "expected_why": "Known for robust playbooks",
+   "scores": {
+    "product": 2.6,
+    "competitor_1": 1.0,
+    "competitor_2": 6.0,
+    "competitor_3": 2.0
+   },
+   "levels": {
+    "product": "wall_or_nothing",
+    "competitor_1": "wall_or_nothing",
+    "competitor_2": "clear_evidence",
+    "competitor_3": "wall_or_nothing"
+   },
+   "winner": "competitor_2",
+   "tied": [],
+   "winner_label": "ChurnZero",
+   "product_rank": 2,
+   "n_sites": 4,
+   "why": "The page clearly describes automated playbooks and workflows for customer success, which directly addresses the persona's need for automated onboarding workflows.",
+   "winner_evidence": {
+    "agent_id": "t4__p1__competitor_2",
+    "persona_id": "p1",
+    "site_key": "competitor_2",
+    "task": "Set up automated onboarding workflows",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 1,
+    "reason": "The page clearly describes automated playbooks and workflows for customer success, which directly addresses the persona's need for automated onboarding workflows.",
+    "step": 5,
+    "quote": "Playbooks (or plays) are automated workflows that give your customer success team the power to scale engagements",
+    "final_url": "https://churnzero.com/features/customer-playbooks/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p1__competitor_2/screenshots/final.png"
+   },
+   "product_evidence": {
+    "agent_id": "t4__p4__product",
+    "persona_id": "p4",
+    "site_key": "product",
+    "task": "Set up automated onboarding workflows",
+    "score": 7.0,
+    "level": "in_product",
+    "friction": 1,
+    "reason": "The AI chat feature provided a detailed, step-by-step guide on how to set up automated onboarding workflows.",
+    "step": 7,
+    "quote": "To set up automated onboarding workflows, you can consider the following steps:",
+    "final_url": "https://engagement.kolanut.ai/dashboard/workspace/home",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p4__product/screenshots/final.png"
+   }
+  },
+  {
+   "task": "Compare pricing for 50 customer accounts",
+   "expected_favorite": "competitor_1",
+   "expected_why": "Clear enterprise pricing options",
+   "scores": {
+    "product": 6.0,
+    "competitor_1": 4.8,
+    "competitor_2": 1.0,
+    "competitor_3": 0.8
+   },
+   "levels": {
+    "product": "clear_evidence",
+    "competitor_1": "clear_evidence",
+    "competitor_2": "wall_or_nothing",
+    "competitor_3": "wall_or_nothing"
+   },
+   "winner": "product",
+   "tied": [],
+   "winner_label": "Kolanut",
+   "product_rank": 1,
+   "n_sites": 4,
+   "why": "The pricing page clearly outlines different plans with user limits and features relevant to the persona's needs.",
+   "winner_evidence": {
+    "agent_id": "t5__p1__product",
+    "persona_id": "p1",
+    "site_key": "product",
+    "task": "Compare pricing for 50 customer accounts",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 0,
+    "reason": "The pricing page clearly outlines different plans with user limits and features relevant to the persona's needs.",
+    "step": 1,
+    "quote": "Auth sync (up to 100 users) ... Unlimited synced auth users",
+    "final_url": "https://www.kolanut.ai/pricing",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t5__p1__product/screenshots/final.png"
+   },
+   "product_evidence": {
+    "agent_id": "t5__p1__product",
+    "persona_id": "p1",
+    "site_key": "product",
+    "task": "Compare pricing for 50 customer accounts",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 0,
+    "reason": "The pricing page clearly outlines different plans with user limits and features relevant to the persona's needs.",
+    "step": 1,
+    "quote": "Auth sync (up to 100 users) ... Unlimited synced auth users",
+    "final_url": "https://www.kolanut.ai/pricing",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t5__p1__product/screenshots/final.png"
+   }
+  }
+ ],
+ "by_persona": [
+  {
+   "persona_id": "p1",
+   "name": "Sarah Chen",
+   "role": "Head of Customer Success at a SaaS startup",
+   "bio": "Struggles to proactively identify at-risk customers. Needs a tool to flag issues and draft outreach to retain users.",
+   "expected_favorite": "product",
+   "expected_why": "Wants to reduce churn and improve customer retention.",
+   "scores": {
+    "product": 6.2,
+    "competitor_1": 2.8,
+    "competitor_2": 5.0,
+    "competitor_3": 3.6
+   },
+   "score_pick": "product",
+   "score_tied": [],
+   "pick": "product",
+   "pick_label": "Kolanut",
+   "pick_source": "persona",
+   "pick_why": "Kolanut provided the clearest evidence for drafting outreach to inactive users and allowed me to explore its features directly within the product. While ChurnZero also performed well, Kolanut's in-product experience and clear pricing made it a more compelling choice for my needs.",
+   "pick_cites": [
+    "t2__p1__product",
+    "t5__p1__product",
+    "t3__p1__product"
+   ],
+   "product_wins": true,
+   "against_scores": false,
+   "product_rank": 1
+  },
+  {
+   "persona_id": "p2",
+   "name": "David Lee",
+   "role": "VP of Product at a mid-market software company",
+   "bio": "Focuses on product adoption and user engagement, needs data-driven insights to improve product stickiness.",
+   "expected_favorite": "product",
+   "expected_why": "Connects product data directly",
+   "scores": {
+    "product": 4.4,
+    "competitor_1": 3.4,
+    "competitor_2": 5.0,
+    "competitor_3": 3.2
+   },
+   "score_pick": "competitor_2",
+   "score_tied": [],
+   "pick": "competitor_2",
+   "pick_label": "ChurnZero",
+   "pick_source": "persona",
+   "pick_why": "ChurnZero consistently provided clear evidence for critical jobs like identifying at-risk accounts and setting up automated onboarding workflows. While Kolanut had some in-product experiences, its 'coming soon' feature for onboarding workflows was a significant drawback.",
+   "pick_cites": [
+    "t1__p2__competitor_2",
+    "t4__p2__competitor_2",
+    "t4__p2__product"
+   ],
+   "product_wins": false,
+   "against_scores": false,
+   "product_rank": 2
+  },
+  {
+   "persona_id": "p3",
+   "name": "Maria Rodriguez",
+   "role": "Chief Customer Officer at an enterprise software firm",
+   "bio": "Oversees large CS operations, requires comprehensive analytics, workflow automation, and scalability.",
+   "expected_favorite": "competitor_1",
+   "expected_why": "Enterprise features and integrations",
+   "scores": {
+    "product": 4.6,
+    "competitor_1": 3.4,
+    "competitor_2": 5.0,
+    "competitor_3": 3.2
+   },
+   "score_pick": "competitor_2",
+   "score_tied": [],
+   "pick": "competitor_2",
+   "pick_label": "ChurnZero",
+   "pick_source": "persona",
+   "pick_why": "ChurnZero consistently delivered clear evidence for critical jobs like setting up automated onboarding workflows and identifying at-risk accounts, scoring 6.0/10 on multiple occasions. While Kolanut showed promise with in-product capabilities, its 'Coming Soon' features and 'Get Started' page walls were significant drawbacks.",
+   "pick_cites": [
+    "t4__p3__competitor_2",
+    "t1__p3__competitor_2",
+    "t4__p3__product"
+   ],
+   "product_wins": false,
+   "against_scores": false,
+   "product_rank": 2
+  },
+  {
+   "persona_id": "p4",
+   "name": "James Wilson",
+   "role": "Customer Success Manager at a growing tech company",
+   "bio": "Needs to manage customer health, track engagement, and automate communications for a diverse portfolio.",
+   "expected_favorite": "competitor_2",
+   "expected_why": "Strong playbooks and automation",
+   "scores": {
+    "product": 7.0,
+    "competitor_1": 3.8,
+    "competitor_2": 5.0,
+    "competitor_3": 3.2
+   },
+   "score_pick": "product",
+   "score_tied": [],
+   "pick": "product",
+   "pick_label": "Kolanut",
+   "pick_source": "persona",
+   "pick_why": "Kolanut consistently provided in-product experiences or clear evidence for the jobs I needed, especially for drafting outreach and identifying at-risk accounts, without hitting any walls. While ChurnZero also performed well, Kolanut's direct in-product functionality gave it an edge.",
+   "pick_cites": [
+    "t2__p4__product",
+    "t1__p4__product",
+    "t4__p4__product"
+   ],
+   "product_wins": true,
+   "against_scores": false,
+   "product_rank": 1
+  },
+  {
+   "persona_id": "p5",
+   "name": "Emily White",
+   "role": "Director of Customer Experience at a scale-up",
+   "bio": "Aims to unify customer data and create personalized journeys, values flexibility and integration capabilities.",
+   "expected_favorite": "competitor_3",
+   "expected_why": "Unified view and customization",
+   "scores": {
+    "product": 3.8,
+    "competitor_1": 4.2,
+    "competitor_2": 5.0,
+    "competitor_3": 4.4
+   },
+   "score_pick": "competitor_2",
+   "score_tied": [],
+   "pick": "competitor_2",
+   "pick_label": "ChurnZero",
+   "pick_source": "persona",
+   "pick_why": "ChurnZero consistently provided clear evidence for critical jobs like drafting outreach, viewing health scores, and setting up automated onboarding, which are essential for unifying customer data and personalizing journeys. Although its pricing was not transparent, its strong performance in core functionalities outweighed this drawback.",
+   "pick_cites": [
+    "t2__p5__competitor_2",
+    "t3__p5__competitor_2",
+    "t4__p5__competitor_2"
+   ],
+   "product_wins": false,
+   "against_scores": false,
+   "product_rank": 4
+  }
+ ],
+ "wins": [
+  {
+   "competitor": "competitor_1",
+   "competitor_label": "Gainsight",
+   "persona_id": "p1",
+   "persona": "Sarah Chen",
+   "task": "Draft outreach for inactive users",
+   "product_score": 8.0,
+   "competitor_score": 1.0,
+   "gap": 7.0,
+   "reason": "The agent successfully drafted an outreach email for inactive users within the product's campaign editor.",
+   "product_evidence": {
+    "agent_id": "t2__p1__product",
+    "persona_id": "p1",
+    "site_key": "product",
+    "task": "Draft outreach for inactive users",
+    "score": 8.0,
+    "level": "in_product",
+    "friction": 1,
+    "reason": "The agent successfully drafted an outreach email for inactive users within the product's campaign editor.",
+    "step": 8,
+    "quote": "Hey there! We've missed you. It's been a while since you last logged in to Kolanut AI",
+    "final_url": "https://engagement.kolanut.ai/dashboard/campaigns/all/edit/zDVvSm0FPHDIXtjHcZy6",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t2__p1__product/screenshots/final.png"
+   },
+   "competitor_evidence": {
+    "agent_id": "t2__p1__competitor_1",
+    "persona_id": "p1",
+    "site_key": "competitor_1",
+    "task": "Draft outreach for inactive users",
+    "score": 1.0,
+    "level": "wall_or_nothing",
+    "friction": 2,
+    "reason": "The agent was blocked by a signup wall for a free trial and could not access any features related to drafting outreach for inactive users.",
+    "step": 7,
+    "quote": "Activate your free trial Answer a few questions and you’ll be on your way",
+    "final_url": "https://www.gainsight.com/resource/trial-px/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t2__p1__competitor_1/screenshots/final.png"
+   }
+  },
+  {
+   "competitor": "competitor_3",
+   "competitor_label": "Catalyst",
+   "persona_id": "p4",
+   "persona": "James Wilson",
+   "task": "Set up automated onboarding workflows",
+   "product_score": 7.0,
+   "competitor_score": 0.0,
+   "gap": 7.0,
+   "reason": "The AI chat feature provided a detailed, step-by-step guide on how to set up automated onboarding workflows.",
+   "product_evidence": {
+    "agent_id": "t4__p4__product",
+    "persona_id": "p4",
+    "site_key": "product",
+    "task": "Set up automated onboarding workflows",
+    "score": 7.0,
+    "level": "in_product",
+    "friction": 1,
+    "reason": "The AI chat feature provided a detailed, step-by-step guide on how to set up automated onboarding workflows.",
+    "step": 7,
+    "quote": "To set up automated onboarding workflows, you can consider the following steps:",
+    "final_url": "https://engagement.kolanut.ai/dashboard/workspace/home",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p4__product/screenshots/final.png"
+   },
+   "competitor_evidence": {
+    "agent_id": "t4__p4__competitor_3",
+    "persona_id": "p4",
+    "site_key": "competitor_3",
+    "task": "Set up automated onboarding workflows",
+    "score": 0.0,
+    "level": "wall_or_nothing",
+    "friction": 3,
+    "reason": "The agent was redirected to a different company's website (Totango, now Odie) and could not find information about Catalyst or automated onboarding workflows.",
+    "step": 9,
+    "quote": "Totango is now Odie: the Customer Knowledge Engine for post-sales teams.",
+    "final_url": "https://www.totango.com/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p4__competitor_3/screenshots/final.png"
+   }
+  },
+  {
+   "competitor": "competitor_1",
+   "competitor_label": "Gainsight",
+   "persona_id": "p1",
+   "persona": "Sarah Chen",
+   "task": "Identify at-risk customer accounts",
+   "product_score": 7.0,
+   "competitor_score": 1.0,
+   "gap": 6.0,
+   "reason": "The agent successfully searched for 'at-risk' customers within the product, but no contacts were found.",
+   "product_evidence": {
+    "agent_id": "t1__p1__product",
+    "persona_id": "p1",
+    "site_key": "product",
+    "task": "Identify at-risk customer accounts",
+    "score": 7.0,
+    "level": "in_product",
+    "friction": 2,
+    "reason": "The agent successfully searched for 'at-risk' customers within the product, but no contacts were found.",
+    "step": 32,
+    "quote": "No contacts found matching your filters",
+    "final_url": "https://engagement.kolanut.ai/dashboard/workspace/contacts",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t1__p1__product/screenshots/final.png"
+   },
+   "competitor_evidence": {
+    "agent_id": "t1__p1__competitor_1",
+    "persona_id": "p1",
+    "site_key": "competitor_1",
+    "task": "Identify at-risk customer accounts",
+    "score": 1.0,
+    "level": "wall_or_nothing",
+    "friction": 3,
+    "reason": "The agent was blocked by a demo request form, preventing access to product details.",
+    "step": 29,
+    "quote": "Please complete this required field.",
+    "final_url": "https://www.gainsight.com/resource/demo/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t1__p1__competitor_1/screenshots/final.png"
+   }
+  },
+  {
+   "competitor": "competitor_1",
+   "competitor_label": "Gainsight",
+   "persona_id": "p4",
+   "persona": "James Wilson",
+   "task": "Set up automated onboarding workflows",
+   "product_score": 7.0,
+   "competitor_score": 1.0,
+   "gap": 6.0,
+   "reason": "The AI chat feature provided a detailed, step-by-step guide on how to set up automated onboarding workflows.",
+   "product_evidence": {
+    "agent_id": "t4__p4__product",
+    "persona_id": "p4",
+    "site_key": "product",
+    "task": "Set up automated onboarding workflows",
+    "score": 7.0,
+    "level": "in_product",
+    "friction": 1,
+    "reason": "The AI chat feature provided a detailed, step-by-step guide on how to set up automated onboarding workflows.",
+    "step": 7,
+    "quote": "To set up automated onboarding workflows, you can consider the following steps:",
+    "final_url": "https://engagement.kolanut.ai/dashboard/workspace/home",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p4__product/screenshots/final.png"
+   },
+   "competitor_evidence": {
+    "agent_id": "t4__p4__competitor_1",
+    "persona_id": "p4",
+    "site_key": "competitor_1",
+    "task": "Set up automated onboarding workflows",
+    "score": 1.0,
+    "level": "wall_or_nothing",
+    "friction": 2,
+    "reason": "The agent landed on a demo request form, which is a wall to getting information about automated onboarding workflows.",
+    "step": 10,
+    "quote": "Get a Demo Schedule a Demo The platform CS, product, and marketing teams use to grow revenue from existing customers.",
+    "final_url": "https://www.gainsight.com/resource/demo/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p4__competitor_1/screenshots/final.png"
+   }
+  },
+  {
+   "competitor": "competitor_3",
+   "competitor_label": "Catalyst",
+   "persona_id": "p2",
+   "persona": "David Lee",
+   "task": "Compare pricing for 50 customer accounts",
+   "product_score": 6.0,
+   "competitor_score": 0.0,
+   "gap": 6.0,
+   "reason": "The pricing page clearly outlines different plans with varying features and user limits, allowing the persona to compare options for 50 customer accounts.",
+   "product_evidence": {
+    "agent_id": "t5__p2__product",
+    "persona_id": "p2",
+    "site_key": "product",
+    "task": "Compare pricing for 50 customer accounts",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 0,
+    "reason": "The pricing page clearly outlines different plans with varying features and user limits, allowing the persona to compare options for 50 customer accounts.",
+    "step": 1,
+    "quote": "Auth sync (up to 100 users) ... Unlimited synced auth users",
+    "final_url": "https://www.kolanut.ai/pricing",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t5__p2__product/screenshots/final.png"
+   },
+   "competitor_evidence": {
+    "agent_id": "t5__p2__competitor_3",
+    "persona_id": "p2",
+    "site_key": "competitor_3",
+    "task": "Compare pricing for 50 customer accounts",
+    "score": 0.0,
+    "level": "wall_or_nothing",
+    "friction": 3,
+    "reason": "The site is a redirect to Totango, and the agent was stuck in a loop trying to request a demo, never finding pricing information.",
+    "step": 1,
+    "quote": "Catalyst is now a Totango product",
+    "final_url": "https://www.catalyst.io/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t5__p2__competitor_3/screenshots/final.png"
+   }
+  }
+ ],
+ "losses": [
+  {
+   "competitor": "competitor_1",
+   "competitor_label": "Gainsight",
+   "persona_id": "p5",
+   "persona": "Emily White",
+   "task": "Identify at-risk customer accounts",
+   "product_score": 1.0,
+   "competitor_score": 6.0,
+   "gap": -5.0,
+   "reason": "The page clearly describes how Gainsight helps identify at-risk accounts using AI-powered forecasts and likelihood scores.",
+   "product_evidence": {
+    "agent_id": "t1__p5__product",
+    "persona_id": "p5",
+    "site_key": "product",
+    "task": "Identify at-risk customer accounts",
+    "score": 1.0,
+    "level": "wall_or_nothing",
+    "friction": 2,
+    "reason": "The agent signed up for a trial but the product only showed a demo contact and no actual functionality to identify at-risk accounts.",
+    "step": 12,
+    "quote": "Demo Contact demo@example.com JOINED Dec 31, 2023 LAST IN Never",
+    "final_url": "https://engagement.kolanut.ai/dashboard/workspace/contacts",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t1__p5__product/screenshots/final.png"
+   },
+   "competitor_evidence": {
+    "agent_id": "t1__p5__competitor_1",
+    "persona_id": "p5",
+    "site_key": "competitor_1",
+    "task": "Identify at-risk customer accounts",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 1,
+    "reason": "The page clearly describes how Gainsight helps identify at-risk accounts using AI-powered forecasts and likelihood scores.",
+    "step": 12,
+    "quote": "Examine ‘Likelihood’ scores powered by AI that forecast renewal probability for every customer",
+    "final_url": "https://www.gainsight.com/customer-success/revenue-optimization/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t1__p5__competitor_1/screenshots/final.png"
+   }
+  },
+  {
+   "competitor": "competitor_1",
+   "competitor_label": "Gainsight",
+   "persona_id": "p3",
+   "persona": "Maria Rodriguez",
+   "task": "View overall customer health scores",
+   "product_score": 1.0,
+   "competitor_score": 6.0,
+   "gap": -5.0,
+   "reason": "The page clearly describes how Gainsight provides customer health scores and 360-degree views, with a relevant screenshot.",
+   "product_evidence": {
+    "agent_id": "t3__p3__product",
+    "persona_id": "p3",
+    "site_key": "product",
+    "task": "View overall customer health scores",
+    "score": 1.0,
+    "level": "wall_or_nothing",
+    "friction": 2,
+    "reason": "The agent signed up for a trial but landed on a 'Get Started' page, not the product itself, and could not view customer health scores.",
+    "step": 2,
+    "quote": "Get Started",
+    "final_url": "https://engagement.kolanut.ai/dashboard/workspace/get-started",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t3__p3__product/screenshots/final.png"
+   },
+   "competitor_evidence": {
+    "agent_id": "t3__p3__competitor_1",
+    "persona_id": "p3",
+    "site_key": "competitor_1",
+    "task": "View overall customer health scores",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 1,
+    "reason": "The page clearly describes how Gainsight provides customer health scores and 360-degree views, with a relevant screenshot.",
+    "step": 13,
+    "quote": "Spot risk and opportunities sooner with AI-optimized scorecards that deliver the most accurate and comprehensive health scoring",
+    "final_url": "https://www.gainsight.com/customer-success/customer-360-health/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t3__p3__competitor_1/screenshots/final.png"
+   }
+  },
+  {
+   "competitor": "competitor_2",
+   "competitor_label": "ChurnZero",
+   "persona_id": "p2",
+   "persona": "David Lee",
+   "task": "Identify at-risk customer accounts",
+   "product_score": 1.0,
+   "competitor_score": 6.0,
+   "gap": -5.0,
+   "reason": "The page clearly explains how ChurnZero's health scores identify at-risk accounts using various data points.",
+   "product_evidence": {
+    "agent_id": "t1__p2__product",
+    "persona_id": "p2",
+    "site_key": "product",
+    "task": "Identify at-risk customer accounts",
+    "score": 1.0,
+    "level": "wall_or_nothing",
+    "friction": 2,
+    "reason": "The agent was blocked by an integration wall, requiring Firebase Auth to identify at-risk users.",
+    "step": 14,
+    "quote": "To re-engage at-risk users, we first need to connect Firebase Auth.",
+    "final_url": "https://engagement.kolanut.ai/dashboard/workspace/contacts",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t1__p2__product/screenshots/final.png"
+   },
+   "competitor_evidence": {
+    "agent_id": "t1__p2__competitor_2",
+    "persona_id": "p2",
+    "site_key": "competitor_2",
+    "task": "Identify at-risk customer accounts",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 1,
+    "reason": "The page clearly explains how ChurnZero's health scores identify at-risk accounts using various data points.",
+    "step": 7,
+    "quote": "You can score a customers’ likelihood to renew or churn based on their engagement level, behavior, risks and concerns",
+    "final_url": "https://churnzero.com/features/customer-health-scores/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t1__p2__competitor_2/screenshots/final.png"
+   }
+  },
+  {
+   "competitor": "competitor_2",
+   "competitor_label": "ChurnZero",
+   "persona_id": "p3",
+   "persona": "Maria Rodriguez",
+   "task": "View overall customer health scores",
+   "product_score": 1.0,
+   "competitor_score": 6.0,
+   "gap": -5.0,
+   "reason": "The page clearly describes how ChurnZero provides customer health scores, including the types of data used and benefits.",
+   "product_evidence": {
+    "agent_id": "t3__p3__product",
+    "persona_id": "p3",
+    "site_key": "product",
+    "task": "View overall customer health scores",
+    "score": 1.0,
+    "level": "wall_or_nothing",
+    "friction": 2,
+    "reason": "The agent signed up for a trial but landed on a 'Get Started' page, not the product itself, and could not view customer health scores.",
+    "step": 2,
+    "quote": "Get Started",
+    "final_url": "https://engagement.kolanut.ai/dashboard/workspace/get-started",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t3__p3__product/screenshots/final.png"
+   },
+   "competitor_evidence": {
+    "agent_id": "t3__p3__competitor_2",
+    "persona_id": "p3",
+    "site_key": "competitor_2",
+    "task": "View overall customer health scores",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 1,
+    "reason": "The page clearly describes how ChurnZero provides customer health scores, including the types of data used and benefits.",
+    "step": 6,
+    "quote": "ChurnZero’s health scores (ChurnScores) measure and monitor the health of your customer accounts using the metrics you choose.",
+    "final_url": "https://churnzero.com/features/customer-health-scores/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t3__p3__competitor_2/screenshots/final.png"
+   }
+  },
+  {
+   "competitor": "competitor_2",
+   "competitor_label": "ChurnZero",
+   "persona_id": "p2",
+   "persona": "David Lee",
+   "task": "Set up automated onboarding workflows",
+   "product_score": 1.0,
+   "competitor_score": 6.0,
+   "gap": -5.0,
+   "reason": "The page clearly describes automated playbooks and workflows for customer success, which aligns with setting up automated onboarding workflows.",
+   "product_evidence": {
+    "agent_id": "t4__p2__product",
+    "persona_id": "p2",
+    "site_key": "product",
+    "task": "Set up automated onboarding workflows",
+    "score": 1.0,
+    "level": "wall_or_nothing",
+    "friction": 2,
+    "reason": "The automation features for onboarding workflows are marked as 'Coming Soon', making them unavailable.",
+    "step": 14,
+    "quote": "Zapier Automate workflows between Kolanut and thousands of apps — trigger plays from external events. Coming Soon",
+    "final_url": "https://engagement.kolanut.ai/dashboard/settings/integrations?category=automation",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p2__product/screenshots/final.png"
+   },
+   "competitor_evidence": {
+    "agent_id": "t4__p2__competitor_2",
+    "persona_id": "p2",
+    "site_key": "competitor_2",
+    "task": "Set up automated onboarding workflows",
+    "score": 6.0,
+    "level": "clear_evidence",
+    "friction": 1,
+    "reason": "The page clearly describes automated playbooks and workflows for customer success, which aligns with setting up automated onboarding workflows.",
+    "step": 5,
+    "quote": "Playbooks (or plays) are automated workflows that give your customer success team the power to scale engagements and tasks",
+    "final_url": "https://churnzero.com/features/customer-playbooks/",
+    "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p2__competitor_2/screenshots/final.png"
+   }
+  }
+ ],
+ "versus": [
+  {
+   "competitor": "competitor_1",
+   "label": "Gainsight",
+   "url": "https://www.gainsight.com/",
+   "product_overall": 5.2,
+   "competitor_overall": 3.5,
+   "strengths": [
+    {
+     "task": "Draft outreach for inactive users",
+     "product_score": 7.8,
+     "competitor_score": 1.8,
+     "gap": 6.0,
+     "product_level": "in_product",
+     "competitor_level": "wall_or_nothing",
+     "product_evidence": {
+      "agent_id": "t2__p1__product",
+      "persona_id": "p1",
+      "site_key": "product",
+      "task": "Draft outreach for inactive users",
+      "score": 8.0,
+      "level": "in_product",
+      "friction": 1,
+      "reason": "The agent successfully drafted an outreach email for inactive users within the product's campaign editor.",
+      "step": 8,
+      "quote": "Hey there! We've missed you. It's been a while since you last logged in to Kolanut AI",
+      "final_url": "https://engagement.kolanut.ai/dashboard/campaigns/all/edit/zDVvSm0FPHDIXtjHcZy6",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t2__p1__product/screenshots/final.png"
+     },
+     "competitor_evidence": {
+      "agent_id": "t2__p2__competitor_1",
+      "persona_id": "p2",
+      "site_key": "competitor_1",
+      "task": "Draft outreach for inactive users",
+      "score": 3.0,
+      "level": "vague_marketing",
+      "friction": 2,
+      "reason": "The site mentions 'Native email campaigns to accelerate user activation' but provides no details on how to draft outreach for inactive users.",
+      "step": 18,
+      "quote": "Native email campaigns to accelerate user activation and increase release awareness",
+      "final_url": "https://www.gainsight.com/product-experience/",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t2__p2__competitor_1/screenshots/final.png"
+     }
+    },
+    {
+     "task": "Set up automated onboarding workflows",
+     "product_score": 2.6,
+     "competitor_score": 1.0,
+     "gap": 1.6,
+     "product_level": "wall_or_nothing",
+     "competitor_level": "wall_or_nothing",
+     "product_evidence": {
+      "agent_id": "t4__p4__product",
+      "persona_id": "p4",
+      "site_key": "product",
+      "task": "Set up automated onboarding workflows",
+      "score": 7.0,
+      "level": "in_product",
+      "friction": 1,
+      "reason": "The AI chat feature provided a detailed, step-by-step guide on how to set up automated onboarding workflows.",
+      "step": 7,
+      "quote": "To set up automated onboarding workflows, you can consider the following steps:",
+      "final_url": "https://engagement.kolanut.ai/dashboard/workspace/home",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p4__product/screenshots/final.png"
+     },
+     "competitor_evidence": {
+      "agent_id": "t4__p1__competitor_1",
+      "persona_id": "p1",
+      "site_key": "competitor_1",
+      "task": "Set up automated onboarding workflows",
+      "score": 1.0,
+      "level": "wall_or_nothing",
+      "friction": 2,
+      "reason": "The agent was blocked by a demo request form and could not access information about setting up automated onboarding workflows.",
+      "step": 14,
+      "quote": "Get a Demo Schedule a Demo",
+      "final_url": "https://www.gainsight.com/resource/demo/",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p1__competitor_1/screenshots/final.png"
+     }
+    }
+   ],
+   "weaknesses": []
+  },
+  {
+   "competitor": "competitor_2",
+   "label": "ChurnZero",
+   "url": "https://churnzero.com/",
+   "product_overall": 5.2,
+   "competitor_overall": 5.0,
+   "strengths": [
+    {
+     "task": "Compare pricing for 50 customer accounts",
+     "product_score": 6.0,
+     "competitor_score": 1.0,
+     "gap": 5.0,
+     "product_level": "clear_evidence",
+     "competitor_level": "wall_or_nothing",
+     "product_evidence": {
+      "agent_id": "t5__p1__product",
+      "persona_id": "p1",
+      "site_key": "product",
+      "task": "Compare pricing for 50 customer accounts",
+      "score": 6.0,
+      "level": "clear_evidence",
+      "friction": 0,
+      "reason": "The pricing page clearly outlines different plans with user limits and features relevant to the persona's needs.",
+      "step": 1,
+      "quote": "Auth sync (up to 100 users) ... Unlimited synced auth users",
+      "final_url": "https://www.kolanut.ai/pricing",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t5__p1__product/screenshots/final.png"
+     },
+     "competitor_evidence": {
+      "agent_id": "t5__p2__competitor_2",
+      "persona_id": "p2",
+      "site_key": "competitor_2",
+      "task": "Compare pricing for 50 customer accounts",
+      "score": 1.0,
+      "level": "wall_or_nothing",
+      "friction": 2,
+      "reason": "The agent was stuck in a loop of clicking 'BOOK A DEMO' and 'Solutions' without finding any pricing information.",
+      "step": 6,
+      "quote": "Software AI & AI Agents Solutions About Resources Blog  LOGIN BOOK A DEMO Software AI & AI Agents Solutions About Resources Blog  LOGIN BOOK A DEMO Fight Chur…",
+      "final_url": "https://churnzero.com/#0",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t5__p2__competitor_2/screenshots/final.png"
+     }
+    },
+    {
+     "task": "Draft outreach for inactive users",
+     "product_score": 7.8,
+     "competitor_score": 6.0,
+     "gap": 1.8,
+     "product_level": "in_product",
+     "competitor_level": "clear_evidence",
+     "product_evidence": {
+      "agent_id": "t2__p1__product",
+      "persona_id": "p1",
+      "site_key": "product",
+      "task": "Draft outreach for inactive users",
+      "score": 8.0,
+      "level": "in_product",
+      "friction": 1,
+      "reason": "The agent successfully drafted an outreach email for inactive users within the product's campaign editor.",
+      "step": 8,
+      "quote": "Hey there! We've missed you. It's been a while since you last logged in to Kolanut AI",
+      "final_url": "https://engagement.kolanut.ai/dashboard/campaigns/all/edit/zDVvSm0FPHDIXtjHcZy6",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t2__p1__product/screenshots/final.png"
+     },
+     "competitor_evidence": {
+      "agent_id": "t2__p1__competitor_2",
+      "persona_id": "p1",
+      "site_key": "competitor_2",
+      "task": "Draft outreach for inactive users",
+      "score": 6.0,
+      "level": "clear_evidence",
+      "friction": 1,
+      "reason": "The page clearly describes how the AI Email Reply Generator drafts smart, contextual replies for customer success teams.",
+      "step": 5,
+      "quote": "Scribe crafts thoughtful, context-aware replies that keep customer conversations moving without sacrificing clarity, professionalism, or empathy.",
+      "final_url": "https://churnzero.com/features/ai-agent-scribe/",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t2__p1__competitor_2/screenshots/final.png"
+     }
+    }
+   ],
+   "weaknesses": [
+    {
+     "task": "Set up automated onboarding workflows",
+     "product_score": 2.6,
+     "competitor_score": 6.0,
+     "gap": -3.4,
+     "product_level": "wall_or_nothing",
+     "competitor_level": "clear_evidence",
+     "product_evidence": {
+      "agent_id": "t4__p4__product",
+      "persona_id": "p4",
+      "site_key": "product",
+      "task": "Set up automated onboarding workflows",
+      "score": 7.0,
+      "level": "in_product",
+      "friction": 1,
+      "reason": "The AI chat feature provided a detailed, step-by-step guide on how to set up automated onboarding workflows.",
+      "step": 7,
+      "quote": "To set up automated onboarding workflows, you can consider the following steps:",
+      "final_url": "https://engagement.kolanut.ai/dashboard/workspace/home",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p4__product/screenshots/final.png"
+     },
+     "competitor_evidence": {
+      "agent_id": "t4__p1__competitor_2",
+      "persona_id": "p1",
+      "site_key": "competitor_2",
+      "task": "Set up automated onboarding workflows",
+      "score": 6.0,
+      "level": "clear_evidence",
+      "friction": 1,
+      "reason": "The page clearly describes automated playbooks and workflows for customer success, which directly addresses the persona's need for automated onboarding workflows.",
+      "step": 5,
+      "quote": "Playbooks (or plays) are automated workflows that give your customer success team the power to scale engagements",
+      "final_url": "https://churnzero.com/features/customer-playbooks/",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t4__p1__competitor_2/screenshots/final.png"
+     }
+    }
+   ]
+  },
+  {
+   "competitor": "competitor_3",
+   "label": "Catalyst",
+   "url": "https://www.catalyst.io/",
+   "product_overall": 5.2,
+   "competitor_overall": 3.5,
+   "strengths": [
+    {
+     "task": "Compare pricing for 50 customer accounts",
+     "product_score": 6.0,
+     "competitor_score": 0.8,
+     "gap": 5.2,
+     "product_level": "clear_evidence",
+     "competitor_level": "wall_or_nothing",
+     "product_evidence": {
+      "agent_id": "t5__p1__product",
+      "persona_id": "p1",
+      "site_key": "product",
+      "task": "Compare pricing for 50 customer accounts",
+      "score": 6.0,
+      "level": "clear_evidence",
+      "friction": 0,
+      "reason": "The pricing page clearly outlines different plans with user limits and features relevant to the persona's needs.",
+      "step": 1,
+      "quote": "Auth sync (up to 100 users) ... Unlimited synced auth users",
+      "final_url": "https://www.kolanut.ai/pricing",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t5__p1__product/screenshots/final.png"
+     },
+     "competitor_evidence": {
+      "agent_id": "t5__p1__competitor_3",
+      "persona_id": "p1",
+      "site_key": "competitor_3",
+      "task": "Compare pricing for 50 customer accounts",
+      "score": 1.0,
+      "level": "wall_or_nothing",
+      "friction": 2,
+      "reason": "The site is a redirect to Totango, and the agent did not find any pricing information for Catalyst or Totango.",
+      "step": 1,
+      "quote": "Catalyst Software merged with Totango, and together we are building the most powerful customer growth solutions",
+      "final_url": "https://www.catalyst.io/",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t5__p1__competitor_3/screenshots/final.png"
+     }
+    },
+    {
+     "task": "Draft outreach for inactive users",
+     "product_score": 7.8,
+     "competitor_score": 4.8,
+     "gap": 3.0,
+     "product_level": "in_product",
+     "competitor_level": "clear_evidence",
+     "product_evidence": {
+      "agent_id": "t2__p1__product",
+      "persona_id": "p1",
+      "site_key": "product",
+      "task": "Draft outreach for inactive users",
+      "score": 8.0,
+      "level": "in_product",
+      "friction": 1,
+      "reason": "The agent successfully drafted an outreach email for inactive users within the product's campaign editor.",
+      "step": 8,
+      "quote": "Hey there! We've missed you. It's been a while since you last logged in to Kolanut AI",
+      "final_url": "https://engagement.kolanut.ai/dashboard/campaigns/all/edit/zDVvSm0FPHDIXtjHcZy6",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t2__p1__product/screenshots/final.png"
+     },
+     "competitor_evidence": {
+      "agent_id": "t2__p2__competitor_3",
+      "persona_id": "p2",
+      "site_key": "competitor_3",
+      "task": "Draft outreach for inactive users",
+      "score": 6.0,
+      "level": "clear_evidence",
+      "friction": 1,
+      "reason": "The documentation clearly outlines how to add an email action to a workflow, including suggested uses for inactive users.",
+      "step": 5,
+      "quote": "Send inspirational tips to get users to log in when their usage drops",
+      "final_url": "https://help.catalyst.io/hc/en-us/articles/28924687162004-Add-an-email-action-to-a-workflow",
+      "screenshot": "/api/studies/27557f9c-babd-4387-832f-7bccdcedf31a/agents/t2__p2__competitor_3/screenshots/final.png"
+     }
+    }
+   ],
+   "weaknesses": []
+  }
+ ],
+ "first_impressions": [
+  {
+   "site": "product",
+   "label": "Kolanut",
+   "what_it_is": "AI engagement management for SaaS to identify at-risk accounts and draft outreach.",
+   "who_for": "SaaS teams, agencies, and large teams.",
+   "price": "Plans start at $199/month for Enterprise, with options for up to 100 users or unlimited.",
+   "proof": "none shown",
+   "fastest_path": "Get Started",
+   "clarity": 8,
+   "signups_ok": 20,
+   "runs": 25,
+   "cites": [
+    "t5__p1__product",
+    "t5__p2__product",
+    "t5__p3__product",
+    "t5__p4__product"
+   ]
+  },
+  {
+   "site": "competitor_1",
+   "label": "Gainsight",
+   "what_it_is": "A customer retention platform using AI to help teams retain and grow customers.",
+   "who_for": "Teams that take customer retention seriously.",
+   "price": "not shown",
+   "proof": "Trusted by teams that take retention seriously",
+   "fastest_path": "book a demo only",
+   "clarity": 6,
+   "signups_ok": 0,
+   "runs": 25,
+   "cites": [
+    "t3__p1__competitor_1",
+    "t3__p2__competitor_1"
+   ]
+  },
+  {
+   "site": "competitor_2",
+   "label": "ChurnZero",
+   "what_it_is": "AI-powered customer success software to fight churn and drive customer growth.",
+   "who_for": "Customer success teams looking to scale engagements and proactively manage customer health.",
+   "price": "not shown",
+   "proof": "none shown",
+   "fastest_path": "book a demo only",
+   "clarity": 7,
+   "signups_ok": 0,
+   "runs": 25,
+   "cites": [
+    "t1__p1__competitor_2",
+    "t2__p1__competitor_2",
+    "t3__p1__competitor_2",
+    "t4__p1__competitor_2"
+   ]
+  },
+  {
+   "site": "competitor_3",
+   "label": "Catalyst",
+   "what_it_is": "A customer growth solution that monitors customer health and automates outreach.",
+   "who_for": "CS and sales teams looking to drive positive business outcomes and revenue growth.",
+   "price": "not shown",
+   "proof": "none shown",
+   "fastest_path": "book a demo only",
+   "clarity": 6,
+   "signups_ok": 0,
+   "runs": 25,
+   "cites": [
+    "t1__p1__competitor_3",
+    "t2__p1__competitor_3",
+    "t3__p1__competitor_3",
+    "t1__p2__competitor_3"
+   ]
+  }
+ ],
+ "fixes": [
+  {
+   "issue": "'Coming Soon' features for automated onboarding workflows",
+   "fix": "Either remove 'Coming Soon' features or provide a clear timeline for their release.",
+   "personas": [
+    "p1",
+    "p2",
+    "p3",
+    "p5"
+   ],
+   "moments": [
+    {
+     "agent_id": "t4__p1__product",
+     "step": 14,
+     "what": "Zapier and Webhooks for automation are 'Coming Soon'."
+    },
+    {
+     "agent_id": "t4__p2__product",
+     "step": 14,
+     "what": "Automation features for onboarding workflows are 'Coming Soon'."
+    },
+    {
+     "agent_id": "t4__p3__product",
+     "step": 24,
+     "what": "Automation features for onboarding workflows are 'Coming Soon'."
+    }
+   ]
+  },
+  {
+   "issue": "Lack of real data or functionality for identifying at-risk accounts",
+   "fix": "Provide real data or clear instructions for importing data to identify at-risk accounts.",
+   "personas": [
+    "p1",
+    "p2",
+    "p5"
+   ],
+   "moments": [
+    {
+     "agent_id": "t1__p1__product",
+     "step": 32,
+     "what": "No contacts found after searching for 'at-risk' customers."
+    },
+    {
+     "agent_id": "t1__p2__product",
+     "step": 14,
+     "what": "Blocked by integration wall for identifying at-risk users."
+    },
+    {
+     "agent_id": "t1__p5__product",
+     "step": 12,
+     "what": "Only demo data available, no actual functionality for at-risk accounts."
+    }
+   ]
+  },
+  {
+   "issue": "Difficulty viewing overall customer health scores",
+   "fix": "Ensure customer health scores are visible and easily accessible within the product.",
+   "personas": [
+    "p3",
+    "p4",
+    "p5"
+   ],
+   "moments": [
+    {
+     "agent_id": "t3__p3__product",
+     "step": 2,
+     "what": "Landed on 'Get Started' page, could not view health scores."
+    },
+    {
+     "agent_id": "t3__p4__product",
+     "step": 11,
+     "what": "No health scores visible in 'Customers' section."
+    },
+    {
+     "agent_id": "t3__p5__product",
+     "step": 12,
+     "what": "Customer list shows no direct health scores."
+    }
+   ]
+  },
+  {
+   "issue": "Pricing page doesn't directly address pricing for 50 customer accounts",
+   "fix": "Clarify pricing for specific customer account numbers, like 50, on the pricing page.",
+   "personas": [
+    "p5"
+   ],
+   "moments": [
+    {
+     "agent_id": "t5__p5__product",
+     "step": 1,
+     "what": "Pricing page does not directly address pricing for 50 customer accounts."
+    }
+   ]
+  }
+ ],
+ "level_labels": {
+  "in_product": "done in product",
+  "clear_evidence": "clear on website",
+  "vague_marketing": "vague marketing",
+  "wall_or_nothing": "wall"
+ }
+}

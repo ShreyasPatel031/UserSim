@@ -1,0 +1,1 @@
+Linear run 1 crashed before gates: NameError judged is not defined after the screenshot-independent harness merge. Study ce17f714 was abandoned. Integration sessions released (14). Signup session left running. Not a gate result.

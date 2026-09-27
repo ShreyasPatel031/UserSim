@@ -1,0 +1,672 @@
+{
+  "base": "http://127.0.0.1:3000",
+  "product_url": "https://excalidraw.com",
+  "judge_model": "configured",
+  "expected": 24,
+  "pass": false,
+  "yeses": 0,
+  "judgements": [],
+  "study_id": "1f00daaf-b8b3-43fe-9f6a-e5afa7eded07",
+  "page_opened": {
+    "measured": true,
+    "ok": false,
+    "abort": true,
+    "opened": 0,
+    "agents": 24,
+    "slow": 24,
+    "wrong_site": 0,
+    "missing_ax": 0,
+    "waiting": 0,
+    "limit_s": 5.0,
+    "reason": "missing field page_open_at_ts; missing field ax_tree: 0/24 agents",
+    "detail": "missing field page_open_at_ts; missing field ax_tree: 0/24 agents",
+    "ids": [
+      "t1__p1__product",
+      "t1__p1__competitor_1",
+      "t1__p1__competitor_2",
+      "t2__p1__product",
+      "t2__p1__competitor_1",
+      "t2__p1__competitor_2",
+      "t1__p2__product",
+      "t1__p2__competitor_1",
+      "t1__p2__competitor_2",
+      "t2__p2__product",
+      "t2__p2__competitor_1",
+      "t2__p2__competitor_2",
+      "t1__p3__product",
+      "t1__p3__competitor_1",
+      "t1__p3__competitor_2",
+      "t2__p3__product",
+      "t2__p3__competitor_1",
+      "t2__p3__competitor_2",
+      "t1__p4__product",
+      "t1__p4__competitor_1",
+      "t1__p4__competitor_2",
+      "t2__p4__product",
+      "t2__p4__competitor_1",
+      "t2__p4__competitor_2"
+    ],
+    "missing_fields": [
+      "page_open_at_ts",
+      "ax_tree"
+    ]
+  },
+  "agents": 24,
+  "personas": 5,
+  "task_bases": 2,
+  "sites": 3,
+  "elapsed_s": 22.8,
+  "since_first_task_s": null,
+  "time_to_first_action": null,
+  "time_to_first_value_s": null,
+  "total_time_s": null,
+  "report_ready": false,
+  "time_to_first_value_agent": "",
+  "early_abort": {
+    "type": null,
+    "reason": "missing field page_open_at_ts; missing field ax_tree: 0/24 agents"
+  },
+  "timing": {
+    "run_click_to_first_task_created_s": 0.659,
+    "run_click_to_all_tasks_created_s": 0.659,
+    "creation_to_first_shot_s": {
+      "p50": null,
+      "p95": null,
+      "max": null,
+      "n": 0,
+      "missing_shot": 24,
+      "missing_created": 0
+    },
+    "per_agent": [
+      {
+        "agent_id": "t1__p1__product",
+        "created_at_ts": 1790394465.8610127,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p1__competitor_1",
+        "created_at_ts": 1790394465.8610198,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p1__competitor_2",
+        "created_at_ts": 1790394465.8610237,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p1__product",
+        "created_at_ts": 1790394465.8610258,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p1__competitor_1",
+        "created_at_ts": 1790394465.8610287,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p1__competitor_2",
+        "created_at_ts": 1790394465.861031,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p2__product",
+        "created_at_ts": 1790394465.8610332,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p2__competitor_1",
+        "created_at_ts": 1790394465.8610356,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p2__competitor_2",
+        "created_at_ts": 1790394465.8610373,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p2__product",
+        "created_at_ts": 1790394465.8610392,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p2__competitor_1",
+        "created_at_ts": 1790394465.861041,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p2__competitor_2",
+        "created_at_ts": 1790394465.8610435,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p3__product",
+        "created_at_ts": 1790394465.8610454,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p3__competitor_1",
+        "created_at_ts": 1790394465.8610473,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p3__competitor_2",
+        "created_at_ts": 1790394465.8610494,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p3__product",
+        "created_at_ts": 1790394465.8610508,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p3__competitor_1",
+        "created_at_ts": 1790394465.861053,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p3__competitor_2",
+        "created_at_ts": 1790394465.8610547,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p4__product",
+        "created_at_ts": 1790394465.8610568,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p4__competitor_1",
+        "created_at_ts": 1790394465.8610587,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t1__p4__competitor_2",
+        "created_at_ts": 1790394465.8610609,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p4__product",
+        "created_at_ts": 1790394465.8610628,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p4__competitor_1",
+        "created_at_ts": 1790394465.8610647,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      },
+      {
+        "agent_id": "t2__p4__competitor_2",
+        "created_at_ts": 1790394465.8610666,
+        "first_screenshot_at_ts": null,
+        "creation_to_first_shot_s": null
+      }
+    ]
+  },
+  "t_first_task_created_s": 0.659,
+  "t_all_tasks_created_s": 0.659,
+  "creation_to_first_real_shot": {
+    "p50": null,
+    "p95": null,
+    "max": null,
+    "n": 0,
+    "missing_shot": 24,
+    "missing_created": 0
+  },
+  "creation_to_first_shot": {
+    "p50": null,
+    "p95": null,
+    "max": null,
+    "n": 0,
+    "missing_shot": 24,
+    "missing_created": 0
+  },
+  "warm_timing": null,
+  "t_first_task_poll_s": 22.8,
+  "t_all_tasks_poll_s": 22.8,
+  "task_success_n": 0,
+  "task_success_of": 8,
+  "task_success_rate": 0,
+  "product_task_gate": {
+    "product_n": 8,
+    "success_n": 0,
+    "success_rate": 0,
+    "required_n": 4,
+    "required_rate": 0.5,
+    "first_screen_failures": [
+      "t1__p1__product",
+      "t2__p1__product",
+      "t1__p2__product",
+      "t2__p2__product",
+      "t1__p3__product",
+      "t2__p3__product",
+      "t1__p4__product",
+      "t2__p4__product"
+    ],
+    "passed_ids": [],
+    "pass": false
+  },
+  "product_task_success_n": 0,
+  "product_task_success_of": 8,
+  "product_task_success_rate": 0,
+  "product_first_screen_failures": [
+    "t1__p1__product",
+    "t2__p1__product",
+    "t1__p2__product",
+    "t2__p2__product",
+    "t1__p3__product",
+    "t2__p3__product",
+    "t1__p4__product",
+    "t2__p4__product"
+  ],
+  "goal_verdicts": {
+    "t1__p1__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p1__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p1__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p1__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p1__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p1__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p2__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p2__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p2__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p2__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p2__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p2__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p3__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p3__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p3__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p3__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p3__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p3__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p4__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p4__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t1__p4__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p4__product": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p4__competitor_1": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    },
+    "t2__p4__competitor_2": {
+      "goal_reached": false,
+      "still_on_opening_screen": false,
+      "reason": "No independent judge verdict."
+    }
+  },
+  "gates": [
+    {
+      "id": "time_to_first_value",
+      "name": "Time to first value",
+      "value": "not recorded",
+      "threshold": "<= 10s from URL submit until the first click, type, or scroll is visible in the live UI",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "total_time",
+      "name": "Total time",
+      "value": "not ready",
+      "threshold": "<= 480s from URL submit until the report is ready",
+      "pass": false,
+      "detail": "8-minute study budget."
+    },
+    {
+      "id": "full_matrix",
+      "name": "Full 24-agent matrix",
+      "value": 24,
+      "threshold": ">= 24 (smaller runs are smoke-only)",
+      "pass": true,
+      "detail": "agents=24"
+    },
+    {
+      "id": "agent_count",
+      "name": "Agent count",
+      "value": 24,
+      "threshold": ">= 24",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "persona_count",
+      "name": "Persona count",
+      "value": 5,
+      "threshold": ">= 4",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "task_count",
+      "name": "Task count",
+      "value": 2,
+      "threshold": ">= 2",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "site_count",
+      "name": "Site count",
+      "value": 3,
+      "threshold": ">= 3",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "page_opened",
+      "name": "Page opened on the assigned site",
+      "value": "missing field page_open_at_ts; missing field ax_tree",
+      "threshold": "<= 5s from agent creation, URL host matches the assigned site, accessibility tree present",
+      "pass": false,
+      "detail": "missing field page_open_at_ts; missing field ax_tree: 0/24 agents"
+    },
+    {
+      "id": "study_complete",
+      "name": "Study completed with a summary",
+      "value": "running aborted",
+      "threshold": "status=complete, summary present, no harness abort",
+      "pass": false,
+      "detail": "missing field page_open_at_ts; missing field ax_tree: 0/24 agents"
+    },
+    {
+      "id": "study_budget",
+      "name": "Study budget",
+      "value": "22.8s",
+      "threshold": "<= 480s for the whole study (observed max 408s)",
+      "pass": true,
+      "detail": "No per-agent time limit. Stuck means the same action repeated 3 times with no URL or DOM change. Confirmed maxima: saved-study wall 358s, measured e2e2 elapsed 378s, YouTube baseline 408s."
+    },
+    {
+      "id": "first_action",
+      "name": "First real action",
+      "value": "not measured",
+      "threshold": "live abort is time_to_first_action",
+      "pass": true,
+      "detail": "The 60s/90s fleet check is not the live abort."
+    },
+    {
+      "id": "time_to_first_action",
+      "name": "Time to first action",
+      "value": "missing field page_open_at_ts",
+      "threshold": "median <= 5s and max <= 10s at 24 agents",
+      "pass": false,
+      "detail": "missing field page_open_at_ts"
+    },
+    {
+      "id": "phase_ms",
+      "name": "Per-phase milliseconds",
+      "value": "missing field phase_ms",
+      "threshold": "each agent has phase_ms.session_ready, page_open, first_action, final_screenshot",
+      "pass": false,
+      "detail": "missing_agents=24"
+    },
+    {
+      "id": "final_screenshot",
+      "name": "Final screenshot",
+      "value": "missing field final_screenshot_url",
+      "threshold": "each agent has final_screenshot_url (one async capture for the judge)",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "judge_inputs",
+      "name": "Final URL and page text for the judge",
+      "value": "missing field final_url; missing field state_sig.text",
+      "threshold": "final_url plus state_sig.text or ax_tree on every agent",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "failed_step",
+      "name": "Failed-step phase and reason",
+      "value": "missing field failed_step_phase; missing field failed_step_reason",
+      "threshold": "every failed run has failed_step.phase and failed_step.reason",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "product_task_completion",
+      "name": "Product task completion",
+      "value": "0/8 (0%)",
+      "threshold": ">= 50% of product runs (>= 4/8)",
+      "pass": false,
+      "detail": "judge_yes=0 structural_past_first_screen=0 first_screen_or_opening=8 opening_frame=8 stuck=0 bb_losses_in_product=0"
+    },
+    {
+      "id": "report_page",
+      "name": "Bland-style report page",
+      "value": "missing",
+      "threshold": "/report?study=<id> shell with overview and trace tabs",
+      "pass": false,
+      "detail": "missing markers: data-tab=\"analytics\", data-tab=\"traces\", id=\"analytics-root\", id=\"tab-traces\", Overview, Trace drill-down"
+    },
+    {
+      "id": "task_completion_rates",
+      "name": "Every task has a completion rate",
+      "value": "missing no by_task rows; missing task Draw a simple rectangle on the canvas; missing task Find how to export or share the drawing",
+      "threshold": "each task has a product ok/n rate",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "product_strength",
+      "name": "Product strength from a run past the first screen",
+      "value": "0/0",
+      "threshold": ">= 1 strength with agent, step, AX or URL, and the final screenshot",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "product_weakness",
+      "name": "Product weakness from a run past the first screen",
+      "value": "0/0",
+      "threshold": ">= 1 weakness with agent, step, AX or URL, and the final screenshot",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "top_weakness_not_homepage_only",
+      "name": "Top weakness is not only the homepage stall",
+      "value": "(none)",
+      "threshold": "at least one weakness is a real product issue from a run past the first screen",
+      "pass": false,
+      "detail": "real_weaknesses=0"
+    },
+    {
+      "id": "run_issues_separate",
+      "name": "Run issues listed separately from product friction",
+      "value": "0 listed",
+      "threshold": "insights.run_issues is its own list; harness errors are not product weaknesses",
+      "pass": false,
+      "detail": ""
+    },
+    {
+      "id": "run_issue_rate",
+      "name": "Run issue share",
+      "value": "0/24 (0%)",
+      "threshold": "<= 25% of runs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "infra_honesty",
+      "name": "Browserbase and concurrency losses count against the run",
+      "value": "losses=0 silent=0 counted_as_success=0",
+      "threshold": "0 silently excluded, 0 counted as task success",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "first_screen_not_excluded",
+      "name": "First-screen and opening-frame runs stay in the product denominator",
+      "value": "opening_or_first_screen=8 product_n=8 excluded=0",
+      "threshold": "excluded=0 (a stuck run is a failure, not a drop)",
+      "pass": true,
+      "detail": "excluded=0"
+    }
+  ],
+  "competitor_task_success": [
+    {
+      "site_key": "competitor_1",
+      "site_label": "Product",
+      "success_n": 0,
+      "n": 8,
+      "value": "0/8"
+    },
+    {
+      "site_key": "competitor_2",
+      "site_label": "Product",
+      "success_n": 0,
+      "n": 8,
+      "value": "0/8"
+    }
+  ],
+  "browserbase_concurrency_losses": [],
+  "product_task_success": {
+    "success_n": 0,
+    "n": 8,
+    "value": "0/8",
+    "success_ids": [],
+    "structural_ids": [],
+    "first_screen_ids": [
+      "t1__p1__product",
+      "t2__p1__product",
+      "t1__p2__product",
+      "t2__p2__product",
+      "t1__p3__product",
+      "t2__p3__product",
+      "t1__p4__product",
+      "t2__p4__product"
+    ]
+  },
+  "report_url": "",
+  "fail_reasons": [
+    "time_to_first_value: value=not recorded threshold=<= 10s from URL submit until the first click, type, or scroll is visible in the live UI",
+    "total_time: value=not ready threshold=<= 480s from URL submit until the report is ready (8-minute study budget.)",
+    "page_opened: value=missing field page_open_at_ts; missing field ax_tree threshold=<= 5s from agent creation, URL host matches the assigned site, accessibility tree present (missing field page_open_at_ts; missing field ax_tree: 0/24 agents)",
+    "study_complete: value=running aborted threshold=status=complete, summary present, no harness abort (missing field page_open_at_ts; missing field ax_tree: 0/24 agents)",
+    "time_to_first_action: value=missing field page_open_at_ts threshold=median <= 5s and max <= 10s at 24 agents (missing field page_open_at_ts)",
+    "phase_ms: value=missing field phase_ms threshold=each agent has phase_ms.session_ready, page_open, first_action, final_screenshot (missing_agents=24)",
+    "final_screenshot: value=missing field final_screenshot_url threshold=each agent has final_screenshot_url (one async capture for the judge)",
+    "judge_inputs: value=missing field final_url; missing field state_sig.text threshold=final_url plus state_sig.text or ax_tree on every agent",
+    "failed_step: value=missing field failed_step_phase; missing field failed_step_reason threshold=every failed run has failed_step.phase and failed_step.reason",
+    "product_task_completion: value=0/8 (0%) threshold=>= 50% of product runs (>= 4/8) (judge_yes=0 structural_past_first_screen=0 first_screen_or_opening=8 opening_frame=8 stuck=0 bb_losses_in_product=0)",
+    "report_page: value=missing threshold=/report?study=<id> shell with overview and trace tabs (missing markers: data-tab=\"analytics\", data-tab=\"traces\", id=\"analytics-root\", id=\"tab-traces\", Overview, Trace drill-down)",
+    "task_completion_rates: value=missing no by_task rows; missing task Draw a simple rectangle on the canvas; missing task Find how to export or share the drawing threshold=each task has a product ok/n rate",
+    "product_strength: value=0/0 threshold=>= 1 strength with agent, step, AX or URL, and the final screenshot",
+    "product_weakness: value=0/0 threshold=>= 1 weakness with agent, step, AX or URL, and the final screenshot",
+    "top_weakness_not_homepage_only: value=(none) threshold=at least one weakness is a real product issue from a run past the first screen (real_weaknesses=0)",
+    "run_issues_separate: value=0 listed threshold=insights.run_issues is its own list; harness errors are not product weaknesses"
+  ],
+  "failure_file": "/workspace/results/tonight/excalidraw-20260926T034744Z/failures.json",
+  "ready_after_complete": false,
+  "smoke_only": false,
+  "error": "missing field page_open_at_ts; missing field ax_tree: 0/24 agents || e2e2 failed: time_to_first_value: value=not recorded threshold=<= 10s from URL submit until the first click, type, or scroll is visible in the live UI; total_time: value=not ready threshold=<= 480s from URL submit until the report is ready (8-minute study budget.); page_opened: value=missing field page_open_at_ts; missing field ax_tree threshold=<= 5s from agent creation, URL host matches the assigned site, accessibility tree present (missing field page_open_at_ts; missing field ax_tree: 0/24 agents); study_complete: value=running aborted threshold=status=complete, summary present, no harness abort (missing field page_open_at_ts; missing field ax_tree: 0/24 agents); time_to_first_action: value=missing field page_open_at_ts threshold=median <= 5s and max <= 10s at 24 agents (missing field page_open_at_ts); phase_ms: value=missing field phase_ms threshold=each agent has phase_ms.session_ready, page_open, first_action, final_screenshot (missing_agents=24); final_screenshot: value=missing field final_screenshot_url threshold=each agent has final_screenshot_url (one async capture for the judge); judge_inputs: value=missing field final_url; missing field state_sig.text threshold=final_url plus state_sig.text or ax_tree on every agent; failed_step: value=missing field failed_step_phase; missing field failed_step_reason threshold=every failed run has failed_step.phase and failed_step.reason; product_task_completion: value=0/8 (0%) threshold=>= 50% of product runs (>= 4/8) (judge_yes=0 structural_past_first_screen=0 first_screen_or_opening=8 opening_frame=8 stuck=0 bb_losses_in_product=0); report_page: value=missing threshold=/report?study=<id> shell with overview and trace tabs (missing markers: data-tab=\"analytics\", data-tab=\"traces\", id=\"analytics-root\", id=\"tab-traces\", Overview, Trace drill-down); task_completion_rates: value=missing no by_task rows; missing task Draw a simple rectangle on the canvas; missing task Find how to export or share the drawing threshold=each task has a product ok/n rate; product_strength: value=0/0 threshold=>= 1 strength with agent, step, AX or URL, and the final screenshot; product_weakness: value=0/0 threshold=>= 1 weakness with agent, step, AX or URL, and the final screenshot; top_weakness_not_homepage_only: value=(none) threshold=at least one weakness is a real product issue from a run past the first screen (real_weaknesses=0); run_issues_separate: value=0 listed threshold=insights.run_issues is its own list; harness errors are not product weaknesses"
+}

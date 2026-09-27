@@ -262,6 +262,8 @@ function hideError() {
 }
 
 function resetLiveUI() {
+  _liveDelta = null;
+  _lastRenderKey = "";
   _traceResults = [];
   _activeTraceIdx = 0;
   _userPickedTrace = false;
@@ -340,8 +342,16 @@ function updateProgressUI(data, startedAt) {
   // ETA — not "3/9 sessions finished"
   if (data.status === "complete" || phase === "Complete") {
     progressAgents.textContent = "Done";
+  } else if (data.status === "queued" && data.queue_eta_s) {
+    progressAgents.textContent = `Starts in ~${data.queue_eta_s}s`;
   } else {
     progressAgents.textContent = formatEta(left);
+  }
+  if (data.status === "queued") {
+    progressHint.textContent = "Queued: waiting for free browsers. It starts on its own.";
+    progressFill.style.width = "3%";
+    updateReportCta(data, startedAt);
+    return;
   }
 
   if (phase.startsWith("Preparing browser sessions")) {
@@ -625,6 +635,13 @@ function pickVisibleShot(session, sessionIdx) {
   return { shots, idx, step, src: src || "" };
 }
 
+/** A click, type, scroll, etc. — not the opening navigation or a browser-wait status. */
+function isRealAction(action) {
+  const t = String(action || "").trim().toLowerCase();
+  if (!t) return false;
+  return !/^(open|opening|opened|waiting|got a browser|preparing|browsing|starting|reading)\b/.test(t);
+}
+
 function renderFocusStage(session, sessionIdx) {
   const persona = session?._persona;
   const demos = demographicLine(persona);
@@ -633,6 +650,15 @@ function renderFocusStage(session, sessionIdx) {
   const { shots, idx, step, src: pickedSrc } = pickVisibleShot(session, sessionIdx);
   const key = String(sessionIdx ?? 0);
   const lastAction = session?.last_action || trace[trace.length - 1]?.action || "";
+  const latestStep = trace.length ? trace[trace.length - 1] : null;
+  const followingLatest = _shotFollowLatest[String(sessionIdx ?? 0)] !== false;
+  // Newest step text right away, even before its screenshot exists.
+  const nowDoing = followingLatest
+    ? (latestStep && isRealAction(latestStep.action) ? latestStep.action : "") ||
+      session?.last_action ||
+      step?.action ||
+      "Browsing"
+    : step?.action || session?.last_action || "Browsing";
   const lastObs = trace[trace.length - 1]?.observation || "";
   const siteName = prettySiteName(session?.site_url, session?.site_label);
   const agentId = String(session?.agent_id || "");
@@ -706,7 +732,10 @@ function renderFocusStage(session, sessionIdx) {
       session?.status === "summarizing"
         ? "Page captured — writing feedback…"
         : browsing
-          ? session?.last_action ||
+          ? (latestStep && isRealAction(latestStep.action)
+              ? `Step ${latestStep.step ?? trace.length - 1} — ${latestStep.action}`
+              : null) ||
+            session?.last_action ||
             (Array.isArray(session?.live_thoughts) && session.live_thoughts.length
               ? session.live_thoughts[session.live_thoughts.length - 1].text
               : null) ||
@@ -758,7 +787,8 @@ function renderFocusStage(session, sessionIdx) {
     : "";
 
   const latestThought =
-    thoughts.length ? thoughts[thoughts.length - 1]?.text : step?.thought || "";
+    (latestStep && isRealAction(latestStep.action) && followingLatest && latestStep.thought) ||
+    (thoughts.length ? thoughts[thoughts.length - 1]?.text : step?.thought || "");
 
   return `
     <div class="stage-card">
@@ -783,10 +813,8 @@ function renderFocusStage(session, sessionIdx) {
       ${shotNav}
       ${thoughtPanel}
       ${
-        step || latestThought
-          ? `<p class="step-shot-action"><strong>Now doing:</strong> ${escapeHtml(
-              step?.action || session?.last_action || "Browsing"
-            )}</p>
+        step || latestThought || latestStep
+          ? `<p class="step-shot-action"><strong>Now doing:</strong> ${escapeHtml(nowDoing)}</p>
              ${
                latestThought
                  ? `<p class="trace-step-observation"><strong>Thinking:</strong> ${escapeHtml(latestThought)}</p>`
@@ -980,7 +1008,7 @@ function renderBrief(data, sessions) {
             : "";
         const status =
           p.kind === "product" && searching
-            ? `<span class="product-search-label">Searching rivals…</span>`
+            ? `<span class="product-search-label">Searching competitors…</span>`
             : `<span>${escapeHtml(role)}</span>`;
         return `
           <a class="product-tile${p.kind === "product" ? " is-product" : ""}${
@@ -1096,6 +1124,8 @@ function renderStage(sessions) {
     Boolean(s?.live_view_url && s?.live_active) &&
     ["starting", "pending", "running"].includes(String(s?.status || ""));
   const hasRealShot = (s) => (s?.trace || []).some((t) => t && stepShotSrc(t));
+  const hasActed = (s) =>
+    Boolean(s?.first_action_at_ts) || (s?.trace || []).some((t) => t && isRealAction(t.action));
   const inFlight = (s) =>
     ["starting", "pending", "running", "summarizing"].includes(String(s?.status || ""));
   const tasksReady = ((_lastStudyData?.tasks || []).length > 0) || (sessions?.length > 0);
@@ -1124,10 +1154,21 @@ function renderStage(sessions) {
   scrollBriefTo("stage-section", "live");
 
   if (!_userPickedTrace) {
+    // Show the first agent that actually clicked/typed as soon as its step
+    // record lands; the step screenshot arrives ~4s later and fills in then.
+    const cur = sessions[_activeTraceIdx];
+    const firstActedShot = sessions.findIndex((s) => hasActed(s) && hasRealShot(s));
+    const firstActed = sessions.findIndex(hasActed);
     const firstWithShot = sessions.findIndex(hasRealShot);
     const firstLive = sessions.findIndex(hasLive);
     const firstInFlight = sessions.findIndex(inFlight);
-    if (firstWithShot >= 0) _activeTraceIdx = firstWithShot;
+    if (cur && hasActed(cur) && hasRealShot(cur)) {
+      /* keep the pane that already shows a real step */
+    } else if (firstActedShot >= 0) _activeTraceIdx = firstActedShot;
+    else if (cur && hasActed(cur) && inFlight(cur)) {
+      /* keep: acted, frame still uploading */
+    } else if (firstActed >= 0) _activeTraceIdx = firstActed;
+    else if (firstWithShot >= 0) _activeTraceIdx = firstWithShot;
     else if (firstLive >= 0) _activeTraceIdx = firstLive;
     else if (firstInFlight >= 0) _activeTraceIdx = firstInFlight;
     else _activeTraceIdx = 0;
@@ -1142,7 +1183,10 @@ function renderStage(sessions) {
       status: "starting",
       site_url: _lastStudyData?.url || "",
       site_label: "Product",
-      last_action: `Opening ${_lastStudyData?.url || "the page"}…`,
+      last_action:
+        _lastStudyData?.status === "queued"
+          ? `Queued: ${_lastStudyData?.queue_eta_s ? `starting in ~${_lastStudyData.queue_eta_s}s` : "waiting for free browsers"}…`
+          : `Opening ${_lastStudyData?.url || "the page"}…`,
       persona_name: (_lastStudyData?.personas || [])[0]?.name || "Simulated user",
       task_title: uniqueBriefTasks(_lastStudyData?.tasks || [])[0]?.title || "",
       trace: [],
@@ -1570,8 +1614,15 @@ function updateReportCta(data, startedAt) {
   const left = Math.max(20, estimateStudySeconds(data) - elapsedSec);
   const etaTitle = document.getElementById("report-eta-title");
   const etaSub = document.getElementById("report-eta-sub");
-  if (etaTitle) etaTitle.textContent = "Study in progress";
-  if (etaSub) etaSub.textContent = `${formatEta(left)} · not done yet`;
+  if (data.status === "queued") {
+    // Another study holds the browsers: say so, with the wait, instead of a stalled stage.
+    const eta = data.queue_eta_s ? `Starts in ~${data.queue_eta_s}s` : "Starts on its own";
+    if (etaTitle) etaTitle.textContent = "Queued: waiting for free browsers";
+    if (etaSub) etaSub.textContent = `${eta} · ${String(data.phase || "").replace(/^Queued:\s*/, "").replace(/\.\s*Starting in ~\d+s$/, "")}`;
+  } else {
+    if (etaTitle) etaTitle.textContent = "Study in progress";
+    if (etaSub) etaSub.textContent = `${formatEta(left)} · not done yet`;
+  }
 
   if (runningCard) {
     const progressOpen = progressPanel && !progressPanel.hidden;
@@ -1626,6 +1677,10 @@ function renderSummary(summary, accessBackend, browserbaseSessionUrl) {
   document.getElementById("fit-score").textContent = summary.segment_fit_score ?? "—";
   document.getElementById("fit-rationale").textContent = summary.segment_fit_rationale || "";
   document.getElementById("conversion-outlook").textContent = summary.conversion_outlook || "";
+  const runIssues = document.getElementById("run-issues");
+  if (runIssues) {
+    renderList(runIssues, summary.run_issues && summary.run_issues.length ? summary.run_issues : ["None"]);
+  }
 
   const recEl = document.getElementById("recommendations");
   recEl.innerHTML = "";
@@ -1665,10 +1720,115 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+// Expose the running study id (tests, the report link, and support) on every
+// path: the NDJSON stream (Vercel) and the JSON + poll path (VM / local uvicorn).
+function markStudyId(data) {
+  const id = data && (data.id || data.study_id);
+  if (id && document.body.dataset.studyId !== String(id)) {
+    document.body.dataset.studyId = String(id);
+    const link = document.getElementById("view-report-link");
+    if (link) link.href = `/report?study=${encodeURIComponent(id)}`;
+  }
+  return id || "";
+}
+
 async function pollStudy(studyId) {
+  markStudyId({ id: studyId });
   const res = await fetch(`/api/studies/${studyId}`);
   if (!res.ok) throw new Error("Failed to fetch study status");
   return res.json();
+}
+
+// Cursor delta poll (/api/studies/<id>/live?since=<rev>): small study fields
+// plus only the agents that changed since the last poll, without the
+// accessibility trees. The full study is ~2MB late in a run; this is a few KB,
+// so the UI can poll every ~350ms at startup and show the first click at once.
+let _liveDelta = null;
+
+function resetLiveDelta(studyId) {
+  _liveDelta = {
+    id: studyId,
+    rev: 0,
+    brief: null,
+    sessions: new Map(),
+    results: new Map(),
+    sessionOrder: [],
+    resultOrder: [],
+    supported: true,
+  };
+}
+
+async function pollLive(studyId) {
+  markStudyId({ id: studyId });
+  if (!_liveDelta || _liveDelta.id !== studyId) resetLiveDelta(studyId);
+  const d = _liveDelta;
+  if (!d.supported) return pollStudy(studyId);
+  const res = await fetch(
+    `/api/studies/${encodeURIComponent(studyId)}/live?since=${encodeURIComponent(d.rev)}`,
+    { cache: "no-store" }
+  );
+  if (res.status === 404 || res.status === 405) {
+    d.supported = false; // older server: full-study polling
+    return pollStudy(studyId);
+  }
+  if (!res.ok) throw new Error("Failed to fetch study status");
+  const j = await res.json();
+  if (!j || !j.delta || j.missing || j.final) return pollStudy(studyId);
+  if (!j.since) {
+    d.sessions.clear();
+    d.results.clear();
+  }
+  for (const s of j.live_sessions || []) {
+    if (s && s.agent_id) d.sessions.set(String(s.agent_id), s);
+  }
+  for (const r of j.agent_results || []) {
+    const k = String((r && (r.agent_id || r.task_id)) || "");
+    if (k) d.results.set(k, r);
+  }
+  if (j.brief) d.brief = j.brief;
+  if (Array.isArray(j.session_order)) d.sessionOrder = j.session_order;
+  if (Array.isArray(j.result_order)) d.resultOrder = j.result_order;
+  const changed =
+    Number(j.rev || 0) !== d.rev ||
+    (j.live_sessions || []).length > 0 ||
+    (j.agent_results || []).length > 0 ||
+    Boolean(j.brief);
+  d.rev = Number(j.rev || d.rev);
+  const {
+    delta: _delta,
+    rev: _rev,
+    since: _since,
+    session_order: _so,
+    result_order: _ro,
+    live_sessions: _ls,
+    agent_results: _ar,
+    final: _final,
+    brief: _brief,
+    ...top
+  } = j;
+  const data = {
+    ...top,
+    ...(d.brief || {}),
+    live_sessions: d.sessionOrder.map((id) => d.sessions.get(id)).filter(Boolean),
+    agent_results: d.resultOrder.map((id) => d.results.get(id)).filter(Boolean),
+  };
+  Object.defineProperty(data, "_changed", { value: changed, enumerable: false });
+  return data;
+}
+
+/** Poll fast while agents boot (first click must show within ~10s), then ease off. */
+function livePollDelay(startedAt) {
+  return Date.now() - startedAt < 30000 ? 350 : 1000;
+}
+
+/** Re-render only when the poll brought something new (fast polls would otherwise re-paint every frame). */
+let _lastRenderKey = "";
+function renderIfChanged(data, startedAt) {
+  updateProgressUI(data, startedAt);
+  const key = `${data.status}|${data.phase}`;
+  if (data._changed === false && key === _lastRenderKey) return;
+  _lastRenderKey = key;
+  renderLiveStudy(data);
 }
 
 function lines(value) {
@@ -1785,6 +1945,7 @@ form.addEventListener("submit", async (e) => {
             continue;
           }
           data = chunk;
+          markStudyId(data);
           updateProgressUI(data, startedAt);
           renderLiveStudy(data);
           if (
@@ -1815,35 +1976,38 @@ form.addEventListener("submit", async (e) => {
         const studyId = data.id || data.study_id;
         if (studyId && studyStillRunning(data)) {
           while (true) {
-            data = await pollStudy(studyId);
-            updateProgressUI(data, startedAt);
-            renderLiveStudy(data);
+            data = await pollLive(studyId);
+            renderIfChanged(data, startedAt);
             if (!studyStillRunning(data) && data.status === "complete") break;
             if (data.status === "error" || data.status === "abandoned") {
               throw new Error(data.error || data.phase || "Study failed");
             }
-            await new Promise((r) => setTimeout(r, 2000));
+            await new Promise((r) => setTimeout(r, livePollDelay(startedAt)));
           }
         }
       }
     } else {
       const raw = await startRes.text();
       const payload = JSON.parse(raw);
-      const studyId = payload.study_id || payload.id;
+      const studyId = markStudyId(payload);
       data = payload;
-      if (!data?.personas && studyId) {
-        data = await pollStudy(studyId);
+      if (studyId) {
+        // Paint the brief the POST already carries, then start the fast poll.
+        if (data?.personas || data?.tasks) {
+          updateProgressUI(data, startedAt);
+          renderLiveStudy(data);
+        }
+        if (!data?.personas) data = await pollLive(studyId);
       }
       if (studyId && studyStillRunning(data)) {
         while (true) {
-          data = await pollStudy(studyId);
-          updateProgressUI(data, startedAt);
-          renderLiveStudy(data);
+          data = await pollLive(studyId);
+          renderIfChanged(data, startedAt);
           if (!studyStillRunning(data) && data.status === "complete") break;
           if (data.status === "error" || data.status === "abandoned") {
             throw new Error(data.error || data.phase || "Study failed");
           }
-          await new Promise((r) => setTimeout(r, 1500));
+          await new Promise((r) => setTimeout(r, livePollDelay(startedAt)));
         }
       }
       if (data.status !== "complete") {

@@ -1,0 +1,36 @@
+{
+  "ok": false,
+  "reason": "email_rejected",
+  "email": "miro96vq9g@uberip.com",
+  "inbox": "mailtm",
+  "elapsed_s": 24.5,
+  "final_url": "https://miro.com/signup/?email=miro96vq9g%40uberip.com",
+  "evidence": "",
+  "steps": [
+    "start https://miro.com/",
+    "  dismissed cookie banner (Reject All)",
+    "miro.com/ :: working :: The page has a 'Get started free' button and an email input field. I will fill the email and click the button to proceed with the signup.",
+    "  fill Enter your work email = miro96vq9g@uberip.com",
+    "  click button 'Get started free'",
+    "miro.com/signup/ :: working :: The current page asks for my name. I will fill in the name and continue.",
+    "  fill Name = {full_name}",
+    "  click button 'Continue'",
+    "miro.com/signup/ :: working :: The current page requires setting a password. I will fill in the password field and click 'Continue'.",
+    "  fill Password = {password}",
+    "  click button 'Continue'",
+    "miro.com/signup/ :: working :: The email is already filled. I need to click the 'Take me to my board' button to proceed.",
+    "  click button 'Take me to my board'",
+    "miro.com/signup/ :: blocked :: The email field is already filled. The 'Take me to my board' button is disabled. The page says 'This email can not be registered, please try"
+  ],
+  "captcha": [],
+  "capsolver_usd": 0.0,
+  "capsolver_calls": 0,
+  "last_page": {
+    "url": "https://miro.com/signup/?email=miro96vq9g%40uberip.com",
+    "title": "Sign up | Miro | The Visual Workspace for Innovation",
+    "body": "Skip to main content Miro Logo EN Current language is: English Sign in Your board is ready Start building, collaborating and bringing your ideas to life. Enter your work email This email can not be registered, please try another domain No password required. You'll receive a sign-in link. Take me to my board OR Google Office365 Slack Sign up to a different region or a private organization By signing up, you agree with Miro's Terms & Conditions and Privacy Policy .",
+    "elements": "[0] link \"Go to Miro main page\" href=\"/index/\"\n[1] button \"Language\"\n[2] link \"Sign in\" href=\"https://miro.com/login/?email=miro96vq9g%40uberip.com\"\n[3] textbox \"Enter your work email\" placeholder=\"Enter your work email\" field=\"email email email\" filled=21\n[4] button \"Take me to my board\" disabled\n[8] button \"Sign up to a different region or a private organization\" offscreen\n[9] link \"Terms & Conditions\" href=\"https://miro.com/legal/terms-of-service/\" offscreen\n[10] link \"Privacy Policy\" href=\"https://miro.com/legal/privacy-policy/\" offscreen"
+  },
+  "site": "https://miro.com",
+  "headless": false
+}

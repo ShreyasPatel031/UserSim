@@ -79,6 +79,43 @@ async def upload_screenshot(study_id: str, agent_id: str, local: Path) -> bool:
         return False
 
 
+_PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
+
+
+def png_bytes_ok(raw: bytes | None) -> bool:
+    return bool(raw) and raw[:8] == _PNG_MAGIC and len(raw) > 2000
+
+
+def upload_final_verified(study_id: str, agent_id: str, local: Path | None = None) -> bool:
+    """Upload final.png bytes to GCS, then read them back (from 2e64b7d).
+
+    final_screenshot_url is only kept when this returns True. A local file
+    under mvp/runs alone is the grader's 'no downloadable PNG' failure.
+    """
+    if not study_id or not agent_id:
+        return False
+    from mvp.gcs_store import gcs_download_bytes, gcs_upload_bytes, screenshot_gcs_uri
+
+    if local is None:
+        from mvp.paths import MVP_RUNS_DIR
+
+        local = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / "final.png"
+    try:
+        data = Path(local).read_bytes() if Path(local).is_file() else b""
+    except OSError:
+        data = b""
+    if not png_bytes_ok(data):
+        return False
+    uri = screenshot_gcs_uri(study_id, agent_id, "final.png")
+    try:
+        gcs_upload_bytes(uri, data, content_type="image/png")
+        fetched = gcs_download_bytes(uri)
+    except Exception as exc:  # noqa: BLE001
+        print(f"final.png GCS upload failed {agent_id}: {exc!r}", flush=True)
+        return False
+    return png_bytes_ok(fetched) and fetched == data
+
+
 async def attach_opening_pixels(
     *,
     study_id: str,

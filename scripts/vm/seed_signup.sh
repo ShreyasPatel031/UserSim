@@ -11,7 +11,7 @@
 # so they outlive this VM.
 set -euo pipefail
 
-PARALLEL="${PARALLEL:-2}"
+PARALLEL="${PARALLEL:-1}"
 TIMEOUT_S="${TIMEOUT_S:-420}"
 MAX_STEPS="${MAX_STEPS:-30}"
 
@@ -33,9 +33,28 @@ set +a
 # even when the form itself was fine. Override with MVP_FORCE_LOCAL_BROWSER=1.
 export MVP_SIGNUP_BROWSERBASE="${MVP_SIGNUP_BROWSERBASE:-1}"
 export USE_BROWSERBASE="${USE_BROWSERBASE:-1}"
-export MVP_CAPTCHA_SOLVER="${MVP_CAPTCHA_SOLVER:-1}"
+# secrets/env may pin MVP_CAPTCHA_SOLVER=0; force-on for seed signup unless
+# the operator explicitly sets MVP_CAPTCHA_SOLVER_FORCE=0.
+if [[ "${MVP_CAPTCHA_SOLVER_FORCE:-1}" == "1" ]]; then
+  export MVP_CAPTCHA_SOLVER=1
+else
+  export MVP_CAPTCHA_SOLVER="${MVP_CAPTCHA_SOLVER:-1}"
+fi
+export MVP_CAPTCHA_OSS="${MVP_CAPTCHA_OSS:-1}"
+export MVP_CAPTCHA_AUDIO="${MVP_CAPTCHA_AUDIO:-1}"
 export MVP_CAPTCHA_ALLOW_HUMAN=0
 export MVP_SMS_BACKEND="${MVP_SMS_BACKEND:-ntfy}"
+# Browserbase project defaultTimeout is often 300s; signup agents overrun that
+# and CDP dies with HTTP 410 mid-onboarding. Keep sessions alive for the run.
+export BROWSERBASE_SESSION_TIMEOUT_S="${BROWSERBASE_SESSION_TIMEOUT_S:-1800}"
+# Tag every signup session so e2e cleanup can spare/own them separately.
+export BROWSERBASE_SESSION_OWNER="${BROWSERBASE_SESSION_OWNER:-signup}"
+# Shared BB project: never exceed 1 concurrent signup session.
+export PARALLEL="${PARALLEL:-1}"
+if [[ "${PARALLEL}" -gt 1 ]]; then
+  echo "==> WARNING: PARALLEL=${PARALLEL} forced down to 1 (e2e needs BB headroom)" >&2
+  PARALLEL=1
+fi
 # Only force local Chrome when explicitly requested — that path is the debug fallback.
 if [[ "${MVP_FORCE_LOCAL_BROWSER:-0}" == "1" ]]; then
   export MVP_BROWSER_HEADLESS="${MVP_BROWSER_HEADLESS:-0}"
@@ -58,6 +77,88 @@ fi
 echo "==> egress $(timeout 15 curl -sf https://api.ipify.org || echo unknown)"
 echo "==> signup backend: browserbase=$([[ "${MVP_SIGNUP_BROWSERBASE}" == "1" ]] && echo ON || echo OFF) sms=${MVP_SMS_BACKEND}"
 echo "==> signup: $* (parallel=${PARALLEL})"
+
+# Reclaim leaked Browserbase sessions before creating more (cap is easy to hit).
+# Only release sessions we tagged owner=signup — never touch e2e/demo sessions.
+if [[ "${MVP_SIGNUP_BROWSERBASE}" == "1" && "${MVP_BB_RELEASE_STALE:-1}" == "1" ]]; then
+  .venv/bin/python - <<'PY' || true
+import os, time
+try:
+    from browserbase import Browserbase
+    c = Browserbase(api_key=os.environ.get("BROWSERBASE_API_KEY", ""))
+    items = list(getattr(c.sessions.list(status="RUNNING"), "data", []) or [])
+    released = 0
+    for s in items:
+        meta = getattr(s, "user_metadata", None) or getattr(s, "userMetadata", None) or {}
+        if isinstance(meta, str):
+            try:
+                import json
+                meta = json.loads(meta)
+            except Exception:
+                meta = {}
+        if not isinstance(meta, dict):
+            meta = {}
+        if meta.get("owner") != "signup":
+            continue
+        try:
+            c.sessions.update(s.id, status="REQUEST_RELEASE")
+            released += 1
+        except Exception:
+            pass
+    if released:
+        print(f"==> released {released} stale signup Browserbase session(s)", flush=True)
+        time.sleep(1.5)
+except Exception as exc:
+    print(f"==> bb release skipped: {exc}", flush=True)
+PY
+fi
+
+# Wait for shared-project headroom: e2e may hold up to 24/25. Never create when
+# the pool is full — back off instead of fighting e2e for the last slot.
+if [[ "${MVP_SIGNUP_BROWSERBASE}" == "1" ]]; then
+  .venv/bin/python - <<'PY'
+import os, time, json
+from browserbase import Browserbase
+
+cap = int(os.environ.get("BROWSERBASE_MAX_CONCURRENT", "25") or "25")
+# Leave room for e2e (up to 24) + our single signup session.
+reserve_e2e = int(os.environ.get("BROWSERBASE_E2E_RESERVE", "24") or "24")
+max_wait = float(os.environ.get("BROWSERBASE_HEADROOM_WAIT_S", "900") or "900")
+c = Browserbase(api_key=os.environ.get("BROWSERBASE_API_KEY", ""))
+deadline = time.time() + max_wait
+while True:
+    running = list(c.sessions.list(status="RUNNING"))
+    owners = {}
+    for s in running:
+        md = getattr(s, "user_metadata", None) or {}
+        if isinstance(md, str):
+            try:
+                md = json.loads(md)
+            except Exception:
+                md = {}
+        o = (md or {}).get("owner", "?")
+        owners[o] = owners.get(o, 0) + 1
+    n = len(running)
+    # Free slot exists AND e2e is not already above its reserve with us adding one.
+    e2e_n = owners.get("e2e", 0)
+    if n < cap and e2e_n <= reserve_e2e and (n < cap):
+        # Our 1 session needs n+1 <= cap
+        if n + 1 <= cap:
+            print(f"==> bb headroom ok running={n}/{cap} owners={owners}", flush=True)
+            break
+    if time.time() >= deadline:
+        raise SystemExit(
+            f"FATAL: no Browserbase headroom after {max_wait:.0f}s "
+            f"(running={n}/{cap} owners={owners}); e2e reserve={reserve_e2e}"
+        )
+    print(
+        f"==> bb headroom wait running={n}/{cap} owners={owners} "
+        f"(need ≤{cap - 1}; e2e reserve {reserve_e2e})",
+        flush=True,
+    )
+    time.sleep(30)
+PY
+fi
 
 # Display only needed for local Chrome fallback.
 if [[ "${MVP_SIGNUP_BROWSERBASE}" != "1" ]]; then

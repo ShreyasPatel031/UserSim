@@ -60,19 +60,35 @@ NOISE = (
     # Consent / CMP (Usercentrics `_uc_current_session` contains "sess").
     "_uc_",
     "usercentrics",
+    # Bot / WAF tokens contain "token" but are not product sessions.
+    "aws-waf",
+    "waf-token",
+    "_grecaptcha",
+    "recaptcha",
+    # Consent / short marketing markers that contain auth substrings.
+    "atl-bsc-consent",
 )
 
 # Products that mint opaque httpOnly session cookies (no auth-hint substring).
 # Require ≥2 hits so a stray marketing cookie does not count.
 OPAQUE_AUTH_COOKIES: dict[str, frozenset[str]] = {
     "canva.com": frozenset({"CDI", "CAZ", "CID", "CUI", "CUL", "CB", "CAU", "CL", "CS"}),
+    # Atlassian Cloud session for Trello / Loom (via id.atlassian.com).
+    "trello.com": frozenset({"cloud.session.token", "tenant.session.token"}),
+    "loom.com": frozenset({"cloud.session.token", "tenant.session.token"}),
+    "shopify.com": frozenset({"_shopify_essential_", "_merchant_essential", "_merchant_analytics"}),
 }
 
 # Notion logs into app.notion.com and sets cookies on notion.com, while the
-# seed key / profile name stays notion.so.
+# seed key / profile name stays notion.so. Trello/Loom auth cookies land on
+# Atlassian account domains.
 COOKIE_HOST_ALIASES: dict[str, frozenset[str]] = {
     "notion.so": frozenset({"notion.so", "notion.com"}),
     "notion.com": frozenset({"notion.so", "notion.com"}),
+    "trello.com": frozenset({"trello.com", "atlassian.com", "atlassian.net"}),
+    "loom.com": frozenset({"loom.com", "atlassian.com", "atlassian.net"}),
+    "shopify.com": frozenset({"shopify.com", "myshopify.com", "shopifyadmin.com"}),
+    "make.com": frozenset({"make.com", "integromat.com"}),
 }
 
 
@@ -93,6 +109,9 @@ def _registrable(host: str) -> str:
 def _is_auth_cookie_name(name: str) -> bool:
     low = str(name or "").lower()
     if any(n in low for n in NOISE):
+        return False
+    # Short Atlassian marketing cookies contain "sess"/"token" but are not login.
+    if low in {"atl_session", "atl-bsc-consent-token"}:
         return False
     return any(h in low for h in AUTH_HINTS)
 
@@ -136,7 +155,9 @@ def _auth_names_from_storage(state: dict, host: str) -> list[str]:
         if name in opaque_want:
             opaque_hits.add(name)
 
-    if len(opaque_hits) >= 2:
+    # Canva needs a cluster; Atlassian cloud.session.token alone is enough.
+    need = 1 if want in {"trello.com", "loom.com"} else 2
+    if len(opaque_hits) >= need:
         found.update(opaque_hits)
 
     # SPA auth often lives in localStorage (Canva login_stamp, Bitwarden vault keys).

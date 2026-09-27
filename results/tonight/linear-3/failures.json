@@ -1,0 +1,130 @@
+{
+  "study_id": "9aeca3a8-1b63-4fae-abd5-9963124c0639",
+  "product_url": "https://linear.app",
+  "abort": "product",
+  "reason": "missing field ax_tree; missing field page_open_at_ts: 0/24 agents",
+  "types": [
+    "our infrastructure",
+    "model timeout",
+    "stuck",
+    "product",
+    "no_first_action"
+  ],
+  "counts": {
+    "our infrastructure": 0,
+    "model timeout": 0,
+    "stuck": 0,
+    "product": 6,
+    "no_first_action": 0
+  },
+  "phase_counts": [
+    {
+      "phase": "missing field failed_step_phase",
+      "n": 6
+    }
+  ],
+  "failed_runs": [
+    {
+      "agent_id": "t1__p1__product",
+      "site_key": "product",
+      "task": "Skim the homepage and note what stands out",
+      "type": "product",
+      "judge_reason": "t1__p1__product phase=running error= last_action=Page is open. Starting the simulated user\u2026",
+      "phase": "running",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=9aeca3a8-1b63-4fae-abd5-9963124c0639&agent=t1__p1__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/9aeca3a8-1b63-4fae-abd5-9963124c0639/agents/t1__p1__product/screenshots/bbox_0.png",
+      "final_url": "https://linear.app",
+      "step": 0
+    },
+    {
+      "agent_id": "t2__p1__product",
+      "site_key": "product",
+      "task": "Find something to open or watch and try it",
+      "type": "product",
+      "judge_reason": "t2__p1__product phase=running error= last_action=Opening https://linear.app\u2026",
+      "phase": "running",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=9aeca3a8-1b63-4fae-abd5-9963124c0639&agent=t2__p1__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/9aeca3a8-1b63-4fae-abd5-9963124c0639/agents/t2__p1__product/screenshots/bbox_0.png",
+      "final_url": "https://linear.app",
+      "step": 0
+    },
+    {
+      "agent_id": "t1__p2__product",
+      "site_key": "product",
+      "task": "Skim the homepage and note what stands out",
+      "type": "product",
+      "judge_reason": "t1__p2__product phase=running error= last_action=Opening https://linear.app\u2026",
+      "phase": "running",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=9aeca3a8-1b63-4fae-abd5-9963124c0639&agent=t1__p2__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/9aeca3a8-1b63-4fae-abd5-9963124c0639/agents/t1__p2__product/screenshots/bbox_0.png",
+      "final_url": "https://linear.app",
+      "step": 0
+    },
+    {
+      "agent_id": "t2__p2__product",
+      "site_key": "product",
+      "task": "Find something to open or watch and try it",
+      "type": "product",
+      "judge_reason": "t2__p2__product phase=running error= last_action=Opening https://linear.app\u2026",
+      "phase": "running",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=9aeca3a8-1b63-4fae-abd5-9963124c0639&agent=t2__p2__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/9aeca3a8-1b63-4fae-abd5-9963124c0639/agents/t2__p2__product/screenshots/bbox_0.png",
+      "final_url": "https://linear.app",
+      "step": 0
+    },
+    {
+      "agent_id": "t1__p3__product",
+      "site_key": "product",
+      "task": "Skim the homepage and note what stands out",
+      "type": "product",
+      "judge_reason": "t1__p3__product phase=running error= last_action=Opening https://linear.app\u2026",
+      "phase": "running",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=9aeca3a8-1b63-4fae-abd5-9963124c0639&agent=t1__p3__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/9aeca3a8-1b63-4fae-abd5-9963124c0639/agents/t1__p3__product/screenshots/bbox_0.png",
+      "final_url": "https://linear.app",
+      "step": 0
+    },
+    {
+      "agent_id": "t2__p3__product",
+      "site_key": "product",
+      "task": "Find something to open or watch and try it",
+      "type": "product",
+      "judge_reason": "t2__p3__product phase=running error= last_action=Opening https://linear.app\u2026",
+      "phase": "running",
+      "error": "",
+      "goal_reached": false,
+      "trace_link": "http://127.0.0.1:3000/report?study=9aeca3a8-1b63-4fae-abd5-9963124c0639&agent=t2__p3__product&step=0",
+      "failed_step_phase": "missing field failed_step_phase",
+      "failed_step_reason": "missing field failed_step_reason",
+      "phase_ms": "missing field phase_ms",
+      "final_screenshot": "http://127.0.0.1:3000/api/studies/9aeca3a8-1b63-4fae-abd5-9963124c0639/agents/t2__p3__product/screenshots/bbox_0.png",
+      "final_url": "https://linear.app",
+      "step": 0
+    }
+  ]
+}

@@ -16,7 +16,9 @@ from __future__ import annotations
 import email
 import email.utils
 import imaplib
+import os
 import re
+import threading
 from html import unescape
 import time
 from email.header import decode_header
@@ -84,11 +86,17 @@ def _body_text(msg: email.message.Message) -> str:
 _CODE_REJECT = re.compile(r"^(\d)\1+$|^(?:012345|123456|654321|999999|000000)\d*$")
 _CODE_NEAR = re.compile(
     r"(?is)(?:"
-    r"(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in)\s+code[^0-9]{0,40}(\d{4,8})"
-    r"|code\s*(?:is|:)\s*(\d{4,8})"
-    r"|(\d{4,8})\s*(?:is\s+your|is\s+the)\b"
-    r"|enter\s+(?:this\s+)?(?:code\s*)?[^0-9]{0,20}(\d{4,8})"
+    r"(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in)\s+code[^0-9A-Za-z]{0,40}([0-9A-Za-z]{4,8})"
+    r"|code\s*(?:is|:)\s*([0-9A-Za-z]{4,8})"
+    r"|([0-9A-Za-z]{4,8})\s*(?:is\s+your|is\s+the)\b"
+    r"|enter\s+(?:this\s+)?(?:code\s*)?[^0-9A-Za-z]{0,20}([0-9A-Za-z]{4,8})"
     r")"
+)
+# Atlassian (and a few others) put alphanumeric OTPs in the subject:
+# "EV7DUU is your verification code".
+_ALPHA_SUBJECT_CODE = re.compile(
+    r"(?i)\b([A-Z0-9]{6,8})\b(?=[^\n]{0,40}\b(?:verification|security|confirmation|one[- ]?time)?\s*code\b)"
+    r"|\b([A-Z0-9]{6,8})\s+is\s+your\s+(?:verification\s+)?code\b",
 )
 
 
@@ -97,6 +105,9 @@ def _find_code(subject: str, body: str) -> str | None:
 
     A bare "first 6-8 digits" scan picks up tracking ids and CSS values; loom
     signup failed on a code of "999999" lifted out of the HTML part.
+
+    Atlassian sends alphanumeric codes (``EV7DUU is your verification code``);
+    those must be accepted or id.atlassian.com signup dies despite mail landing.
     """
     subject = subject or ""
     body = body or ""
@@ -106,16 +117,37 @@ def _find_code(subject: str, body: str) -> str | None:
         return google.group(1)
 
     def _ok(value: str | None) -> str | None:
-        if value and not _CODE_REJECT.match(value):
+        if not value:
+            return None
+        # Prefer mostly-digit codes; allow alphanumeric when length 6-8 and
+        # not a pure reject pattern.
+        if _CODE_REJECT.match(value):
+            return None
+        if value.isdigit() and 4 <= len(value) <= 8:
             return value
+        # Alphanumeric OTPs (Atlassian EV7DUU) must contain a digit so product
+        # names in the subject ("Your Notion signup code") are not the code.
+        if (
+            re.fullmatch(r"[A-Za-z0-9]{6,8}", value)
+            and re.search(r"[A-Za-z]", value)
+            and re.search(r"\d", value)
+        ):
+            return value.upper()
         return None
+
+    # 0) Explicit alphanumeric subject forms (Atlassian).
+    m = _ALPHA_SUBJECT_CODE.search(subject)
+    if m:
+        got = _ok(next(g for g in m.groups() if g))
+        if got:
+            return got
 
     # 1) Subject lines usually read "123456 is your code".
     for cand in re.findall(r"\b(\d{4,8})\b", subject):
         if _ok(cand):
             return cand
 
-    # 2) Digits sitting next to code-ish wording.
+    # 2) Digits / alnum sitting next to code-ish wording.
     for match in _CODE_NEAR.finditer(f"{subject}\n{body}"):
         for group in match.groups():
             if _ok(group):
@@ -125,6 +157,8 @@ def _find_code(subject: str, body: str) -> str | None:
     for line in body.splitlines():
         stripped = line.strip()
         if re.fullmatch(r"\d{4,8}", stripped) and _ok(stripped):
+            return stripped
+        if re.fullmatch(r"[A-Za-z0-9]{6,8}", stripped) and _ok(stripped):
             return stripped
 
     # 4) Last resort: any standalone 6-8 digit run.
@@ -253,6 +287,14 @@ _SKIP_LINK_HINTS = (
     "twitter.com",
     "linkedin.com",
     "instagram.com",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".svg",
+    ".webp",
+    "atl-paas.net/assets/",
+    "post-office-rml-frontend",
 )
 
 
@@ -350,16 +392,174 @@ def _iter_recent_messages(
             pass
 
 
+_POLL_LOCK = threading.Lock()
+_POLL: dict[str, Any] = {"user": "", "ts": 0.0, "rows": [], "max_uid": 0}
+_BODIES: dict[bytes, email.message.Message] = {}
+_HEADER_FIELDS = "(TO CC DELIVERED-TO X-ORIGINAL-TO DATE MESSAGE-ID)"
+_UID_RE = re.compile(rb"UID (\d+)")
+
+
+def _poll_min_s() -> float:
+    try:
+        return max(0.5, float(os.environ.get("MVP_IMAP_POLL_S") or 2.0))
+    except ValueError:
+        return 2.0
+
+
+def _conn(username: str, app_password: str) -> imaplib.IMAP4_SSL:
+    """One persistent IMAP connection (INBOX selected), reopened on error. Caller holds _POLL_LOCK."""
+    con = _POLL.get("con")
+    if con is not None and _POLL.get("user") == username:
+        return con
+    _drop_conn()
+    con = imaplib.IMAP4_SSL(IMAP_HOST, timeout=30)
+    con.login(username, app_password.replace(" ", ""))
+    con.select("INBOX", readonly=True)
+    _POLL.update(con=con, user=username, rows=[], max_uid=0, ts=0.0)
+    return con
+
+
+def _drop_conn() -> None:
+    con = _POLL.pop("con", None)
+    if con is not None:
+        try:
+            con.logout()
+        except Exception:
+            pass
+
+
+def _header_rows(con: imaplib.IMAP4_SSL, uids: list[bytes]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    if not uids:
+        return rows
+    typ, raw = con.uid("fetch", b",".join(uids), f"(UID BODY.PEEK[HEADER.FIELDS {_HEADER_FIELDS}])")
+    for item in raw or []:
+        if not isinstance(item, tuple) or len(item) < 2:
+            continue
+        m = _UID_RE.search(item[0] or b"")
+        if not m:
+            continue
+        hdr = email.message_from_bytes(item[1] or b"")
+        rows.append(
+            {
+                "uid": m.group(1),
+                "recipients": _recipients(hdr),
+                "ts": _msg_timestamp(hdr),
+                "id": hdr.get("Message-ID") or "",
+            }
+        )
+    return rows
+
+
+def _recent_header_rows(username: str, app_password: str, lookback: int) -> list[dict[str, Any]]:
+    """Recipient headers of the newest ``lookback`` messages, shared by every waiter.
+
+    One persistent IMAP connection for the whole process, polled at most every
+    MVP_IMAP_POLL_S (2s) and only for new UIDs, headers only. The old loop
+    logged in every 2.5s per waiting agent and downloaded the last 30 full
+    messages each time: dozens of parallel signups hit Gmail's connection cap
+    (reads failed silently) and a burst of 40 n8n mails pushed other agents'
+    codes out of the 30-message window.
+    """
+    with _POLL_LOCK:
+        if _POLL.get("user") == username and time.time() - float(_POLL.get("ts") or 0) < _poll_min_s():
+            return list(_POLL["rows"])[:lookback]
+        for attempt in range(2):
+            try:
+                con = _conn(username, app_password)
+                max_uid = int(_POLL.get("max_uid") or 0)
+                if not max_uid:
+                    since = time.strftime("%d-%b-%Y", time.gmtime(time.time() - 2 * 86400))
+                    typ, data = con.uid("search", None, "SINCE", since)
+                    uids = data[0].split()[-max(lookback, 300):] if typ == "OK" and data and data[0] else []
+                else:
+                    # Gmail only reports new mail on a selected mailbox after a
+                    # NOOP: without it a smoke test missed two n8n codes.
+                    con.noop()
+                    typ, data = con.uid("search", None, "UID", f"{max_uid + 1}:*")
+                    uids = [u for u in (data[0].split() if typ == "OK" and data and data[0] else []) if int(u) > max_uid]
+                new_rows = _header_rows(con, uids)
+                rows = sorted(new_rows + list(_POLL.get("rows") or []), key=lambda r: int(r["uid"]), reverse=True)[:1000]
+                top = max([int(u) for u in uids] + [max_uid])
+                _POLL.update(rows=rows, max_uid=top, ts=time.time())
+                return rows[:lookback]
+            except Exception as exc:  # noqa: BLE001
+                _drop_conn()
+                if attempt:
+                    raise
+                print(f"[email_codes] imap poll retry after {exc!r}", flush=True)
+        return []
+
+
+def _fetch_bodies(username: str, app_password: str, uids: list[bytes]) -> None:
+    need = [u for u in uids if u not in _BODIES]
+    if not need:
+        return
+    with _POLL_LOCK:
+        need = [u for u in need if u not in _BODIES]
+        if not need:
+            return
+        for attempt in range(2):
+            try:
+                con = _conn(username, app_password)
+                typ, raw = con.uid("fetch", b",".join(need), "(UID BODY.PEEK[])")
+                for item in raw or []:
+                    if not isinstance(item, tuple) or len(item) < 2:
+                        continue
+                    m = _UID_RE.search(item[0] or b"")
+                    if m:
+                        _BODIES[m.group(1)] = email.message_from_bytes(item[1] or b"")
+                break
+            except Exception:  # noqa: BLE001
+                _drop_conn()
+                if attempt:
+                    raise
+        if len(_BODIES) > 2000:
+            for key in sorted(_BODIES, key=int)[:1000]:
+                _BODIES.pop(key, None)
+
+
+def messages_for_alias(
+    username: str,
+    app_password: str,
+    alias: str,
+    *,
+    newer_than: float | None = None,
+    lookback: int = 300,
+) -> list[email.message.Message]:
+    """Full messages addressed to ``alias``, newest first (header match, then bodies)."""
+    rows = _recent_header_rows(username, app_password, lookback)
+    hits = [
+        r["uid"]
+        for r in rows
+        if _alias_match(r["recipients"], alias)
+        and (newer_than is None or r["ts"] is None or r["ts"] >= newer_than - 30)
+    ]
+    if not hits:
+        return []
+    _fetch_bodies(username, app_password, hits)
+    return [_BODIES[u] for u in hits if u in _BODIES]
+
+
 def _alias_match(recipients: str, alias: str) -> bool:
     alias = (alias or "").strip().lower()
     if not alias:
         return False
-    if alias in recipients:
+    recipients_l = (recipients or "").lower()
+    if alias in recipients_l:
         return True
     # Gmail sometimes rewrites plus-aliases; also accept local+tag without domain.
-    if "+" in alias:
-        local = alias.split("@", 1)[0]
-        return local in recipients
+    local = alias.split("@", 1)[0]
+    if "+" in alias and local in recipients_l:
+        return True
+    # Dotted Gmail locals (ticktick.com rejects '+') — match with/without dots.
+    if "." in local:
+        nodot = local.replace(".", "")
+        bare = (os.environ.get("GMAIL_USER") or "").split("@", 1)[0].split("+", 1)[0].replace(".", "").lower()
+        # A dot variant of the bare account (s.hreyashfs@) would match every
+        # mail in the inbox this way: those need the exact address above.
+        if nodot and nodot != bare and nodot in recipients_l.replace(".", ""):
+            return True
     return False
 
 
@@ -379,6 +579,11 @@ def latest_signup_code(
     if host_l.startswith("www."):
         host_l = host_l[4:]
     host_token = host_l.split(".")[0] if host_l else ""
+    # id.atlassian.com → also match "atlassian" in From/body.
+    host_aliases = {host_token, host_l}
+    if "atlassian" in host_l:
+        host_aliases.add("atlassian")
+    host_aliases.discard("")
     for msg in _iter_recent_messages(username, app_password, lookback=lookback):
         if not _alias_match(_recipients(msg), alias):
             continue
@@ -390,10 +595,12 @@ def latest_signup_code(
         body = _body_text(msg)
         sender = _decode(msg.get("From"))
         low = f"{subject}\n{body}\n{sender}".lower()
-        if host_token and host_token not in low and host_l not in low:
+        if host_aliases and not any(tok in low for tok in host_aliases):
             continue
-        if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_RE.search(low):
-            continue
+        if not any(h in low for h in _SIGNUP_HINTS) and not _CODE_NEAR.search(low):
+            # Still allow alphanumeric subject codes without numeric _CODE_RE.
+            if not _ALPHA_SUBJECT_CODE.search(subject):
+                continue
         code = _find_code(subject, body)
         if code:
             return code
