@@ -126,6 +126,75 @@ run_training() {
     return $exit_code
 }
 
+start_checkpoint_uploader() {
+    echo "Starting background checkpoint uploader..."
+    cat > /tmp/checkpoint_uploader.sh << 'UPLOADER_EOF'
+#!/bin/bash
+ROOT=/opt/usersim_fm
+ADAPTERS=$ROOT/adapters/qwen3_14b_sft
+GCS_BUCKET=gs://ai-studio-bucket-347838016394-us-east1/usersim-models/qwen3_14b_sft
+UPLOAD_LOG=$ROOT/results/qwen3_14b_sft/checkpoint_upload.log
+INTERVAL_SECONDS=180
+
+mkdir -p "$(dirname "$UPLOAD_LOG")"
+exec >> "$UPLOAD_LOG" 2>&1
+echo "CHECKPOINT_UPLOADER_START $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+is_checkpoint_complete() {
+    local ckpt_dir="$1"
+    [ -f "$ckpt_dir/adapter_model.safetensors" ] && \
+    [ -f "$ckpt_dir/adapter_config.json" ] && \
+    [ -f "$ckpt_dir/trainer_state.json" ] && \
+    [ -s "$ckpt_dir/adapter_model.safetensors" ] && \
+    [ -s "$ckpt_dir/adapter_config.json" ]
+}
+
+gcs_checkpoint_exists() {
+    local step="$1"
+    gsutil -q stat "$GCS_BUCKET/checkpoint-$step/adapter_model.safetensors" 2>/dev/null
+}
+
+upload_checkpoint() {
+    local ckpt_dir="$1"
+    local step="$2"
+    echo "UPLOADING checkpoint-$step at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    local files_to_upload="adapter_model.safetensors adapter_config.json trainer_state.json optimizer.pt scheduler.pt rng_state.pth training_args.bin"
+    local success=true
+    for f in $files_to_upload; do
+        if [ -f "$ckpt_dir/$f" ]; then
+            if ! gsutil cp "$ckpt_dir/$f" "$GCS_BUCKET/checkpoint-$step/$f" 2>&1; then
+                echo "ERROR: Failed to upload $f"
+                success=false
+            fi
+        fi
+    done
+    if $success; then
+        echo "UPLOAD_OK checkpoint-$step"
+    else
+        echo "UPLOAD_PARTIAL checkpoint-$step"
+    fi
+}
+
+while true; do
+    if [ -d "$ADAPTERS" ]; then
+        for ckpt_dir in "$ADAPTERS"/checkpoint-*/; do
+            [ -d "$ckpt_dir" ] || continue
+            step=$(basename "$ckpt_dir" | sed 's/checkpoint-//')
+            [ "$step" -gt 0 ] 2>/dev/null || continue
+            is_checkpoint_complete "$ckpt_dir" || continue
+            gcs_checkpoint_exists "$step" && continue
+            upload_checkpoint "$ckpt_dir" "$step"
+        done
+    fi
+    sleep "$INTERVAL_SECONDS"
+done
+UPLOADER_EOF
+    chmod +x /tmp/checkpoint_uploader.sh
+    # Run as box user to avoid permission issues with trainer-owned files
+    sudo -u box nohup /tmp/checkpoint_uploader.sh &
+    echo "Checkpoint uploader started with PID $!"
+}
+
 start_completion_monitor() {
     echo "Starting completion monitor..."
     cat > /tmp/completion_monitor.sh << 'MONITOR_EOF'
@@ -227,7 +296,7 @@ upload_final_adapter() {
     fi
     
     echo "Uploading from $local_adapter..."
-    if gsutil cp "$local_adapter" "$final_gcs" 2>> $UPLOAD_ERROR_LOG; then
+    if sudo -u box gsutil cp "$local_adapter" "$final_gcs" 2>> $UPLOAD_ERROR_LOG; then
         echo "UPLOAD_OK: adapter_model.safetensors"
     else
         echo "UPLOAD_ERROR: failed to upload" >> $UPLOAD_ERROR_LOG
@@ -241,7 +310,7 @@ upload_final_adapter() {
     fi
     
     if [ -n "$local_config" ]; then
-        gsutil cp "$local_config" "$GCS_BUCKET/final/adapter_config.json" 2>> $UPLOAD_ERROR_LOG || true
+        sudo -u box gsutil cp "$local_config" "$GCS_BUCKET/final/adapter_config.json" 2>> $UPLOAD_ERROR_LOG || true
     fi
     
     for f in $RESULTS/*.json $RESULTS/*.log; do
@@ -253,17 +322,22 @@ find_trainer_pid() {
     pgrep -f "sft_qwen3_14b_qlora.py" 2>/dev/null | head -1
 }
 
-sleep 30
-
+# Wait up to 15 minutes for trainer to appear (allows for venv setup, checkpoint download, model load)
+MAX_WAIT_MINUTES=15
+wait_count=0
 trainer_pid=$(find_trainer_pid)
-if [ -z "$trainer_pid" ]; then
-    echo "WARN: No trainer found, waiting..."
-    sleep 120
+
+while [ -z "$trainer_pid" ] && [ $wait_count -lt $MAX_WAIT_MINUTES ]; do
+    wait_count=$((wait_count + 1))
+    echo "WAIT: No trainer yet, attempt $wait_count/$MAX_WAIT_MINUTES ($(date -u +%H:%M:%S))"
+    sleep 60
     trainer_pid=$(find_trainer_pid)
-fi
+done
 
 if [ -z "$trainer_pid" ]; then
-    echo "ERROR: No trainer after waiting"
+    echo "ERROR: No trainer after waiting ${MAX_WAIT_MINUTES} minutes"
+    update_label "usersim-train-state" "failed"
+    stop_vm
     exit 1
 fi
 
@@ -313,6 +387,7 @@ main() {
     update_label "usersim-train-state" "running"
     update_label "usersim-gate-state" "sft"
     
+    start_checkpoint_uploader
     start_completion_monitor
     
     run_training

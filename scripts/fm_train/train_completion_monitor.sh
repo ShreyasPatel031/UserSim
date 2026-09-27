@@ -138,14 +138,18 @@ wait_for_training_completion() {
     echo "WAIT_FOR_TRAINER $(date -u +%Y-%m-%dT%H:%M:%SZ)"
     
     local trainer_pid=$(find_trainer_pid)
-    if [ -z "$trainer_pid" ]; then
-        echo "WARN: No trainer process found at start"
+    local wait_count=0
+    local max_wait=15  # Wait up to 15 minutes for trainer to appear
+    
+    while [ -z "$trainer_pid" ] && [ $wait_count -lt $max_wait ]; do
+        wait_count=$((wait_count + 1))
+        echo "WAIT: No trainer yet, attempt $wait_count/$max_wait ($(date -u +%H:%M:%S))"
         sleep 60
         trainer_pid=$(find_trainer_pid)
-    fi
+    done
     
     if [ -z "$trainer_pid" ]; then
-        echo "ERROR: No trainer process found after waiting"
+        echo "ERROR: No trainer process found after waiting ${max_wait} minutes"
         return 1
     fi
     
