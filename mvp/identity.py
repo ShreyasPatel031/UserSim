@@ -93,6 +93,34 @@ def uses_dotted_alias(host: str) -> bool:
     return h in _NO_PLUS_ALIAS_HOSTS
 
 
+GMAIL_DOMAINS = frozenset({"gmail.com", "googlemail.com"})
+
+
+def gmail_dot_variant(local: str, *, seed: str | None = None, avoid: set[str] | None = None) -> str:
+    """``local`` with dots in a non-empty subset of its letter gaps.
+
+    Gmail delivers every dot placement to the same inbox (shreyashfs has 129
+    one-to-three-dot variants), but a site that only strips ``+tag`` sees a different address.
+    ``seed`` makes the choice repeatable; ``avoid`` skips variants already used.
+    """
+    import hashlib
+    import random as _random
+
+    base = (local or "").split("+", 1)[0].replace(".", "")
+    gaps = len(base) - 1
+    if gaps < 1:
+        return base
+    rng = _random.Random(hashlib.sha256(seed.encode()).digest()) if seed else _random.SystemRandom()
+    out = base
+    for _ in range(64):
+        # One to three dots: a plausible-looking address (129 variants for shreyashfs).
+        picks = set(rng.sample(range(gaps), min(gaps, rng.choice((1, 2, 3)))))
+        out = "".join(ch + ("." if i in picks else "") for i, ch in enumerate(base))
+        if not avoid or out not in avoid:
+            break
+    return out
+
+
 def email_for_host(
     base_username: str,
     host: str,
@@ -123,7 +151,11 @@ def email_for_host(
         else uses_dotted_alias(host)
     )
     if dotted:
-        # shreyashfs.stackblitz39b2@gmail.com — unique per tag, lands in inbox.
+        if domain.lower() in GMAIL_DOMAINS:
+            # Gmail ignores dots, so "shreyashfs.tag@gmail.com" was a different
+            # (someone else's) mailbox. Spread dots through the real local part
+            # instead: s.hrey.ashfs@gmail.com lands in the same inbox.
+            return f"{gmail_dot_variant(local_base, seed=tag)}@{domain}"
         return f"{local_base}.{tag}@{domain}"
     return f"{local_base}+{tag}@{domain}"
 

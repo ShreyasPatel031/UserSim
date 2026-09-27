@@ -8,12 +8,14 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import random
 import re
+import time
 from typing import Any
 
 import httpx
 
-from auth import invalidate_credentials, vertex_credentials
+from auth import cached_vertex_credentials, invalidate_credentials, vertex_credentials
 from config import GCP_LOCATION, GCP_PROJECT, MODEL
 
 
@@ -79,6 +81,43 @@ def _extract_text(data: dict[str, Any]) -> str:
     raise RuntimeError(f"Gemini returned no text: {json.dumps(data)[:400]}")
 
 
+THROTTLES: dict[str, int] = {}
+
+
+def _note_throttle(model: str, status: int, took_s: float) -> None:
+    key = f"{model}:{status}"
+    THROTTLES[key] = THROTTLES.get(key, 0) + 1
+    n = THROTTLES[key]
+    if n <= 5 or n % 25 == 0:
+        print(f"[gemini] {status} from {model} after {took_s:.1f}s (#{n})", flush=True)
+
+
+def retry_sleep_cap() -> float:
+    """Longest pause between retries (MVP_LLM_RETRY_MAX_S, default 3s).
+
+    Step calls run under a 4.5-20s timeout; the old 5s/10s back-off alone
+    outlived it.
+    """
+    try:
+        return max(0.1, float(os.environ.get("MVP_LLM_RETRY_MAX_S") or 3.0))
+    except ValueError:
+        return 3.0
+
+
+def fallback_model(model: str) -> str | None:
+    """Model to try after a 429 (separate quota). MVP_LLM_FALLBACK_MODEL; "0" disables."""
+    raw = (os.environ.get("MVP_LLM_FALLBACK_MODEL") or "").strip()
+    if raw.lower() in {"0", "none", "off"}:
+        return None
+    if raw:
+        return raw if raw != model else None
+    if model.endswith("-lite"):
+        return model[: -len("-lite")]
+    if model.startswith("gemini-2.5-flash"):
+        return "gemini-2.5-flash-lite"
+    return None
+
+
 async def gemini_chat(
     messages: list[dict[str, str]],
     *,
@@ -102,25 +141,35 @@ async def gemini_chat(
     if system:
         payload["systemInstruction"] = system
 
-    url = _endpoint(model)
+    fallback = fallback_model(model)
+    # Step calls (max_retries <= 2) run under a short timeout: retry fast.
+    # Report/judge calls keep the long back-off.
+    quick = max_retries <= 2
     async with httpx.AsyncClient(timeout=120.0) as client:
+        use = model
         for attempt in range(max_retries):
-            creds = await asyncio.to_thread(vertex_credentials)
+            url = _endpoint(use)
+            creds = cached_vertex_credentials() or await asyncio.to_thread(vertex_credentials)
             headers = {
                 "Authorization": f"Bearer {creds.token}",
                 "Content-Type": "application/json",
             }
+            t0 = time.perf_counter()
             resp = await client.post(url, headers=headers, json=payload)
             if resp.status_code == 401:
                 invalidate_credentials()
                 if attempt < max_retries - 1:
                     continue
             if resp.status_code in (429, 500, 503) and attempt < max_retries - 1:
+                _note_throttle(use, resp.status_code, time.perf_counter() - t0)
                 try:
                     delay = float(resp.headers.get("retry-after", ""))
                 except ValueError:
-                    delay = min(60.0, 5.0 * (2**attempt))
-                await asyncio.sleep(delay)
+                    delay = 0.5 * (2**attempt) + random.uniform(0, 0.5) if quick else 5.0 * (2**attempt)
+                await asyncio.sleep(min(delay, retry_sleep_cap() if quick else 60.0))
+                # A 429 is per-model quota: the next try goes to the fallback model.
+                if resp.status_code == 429 and fallback:
+                    use = fallback
                 continue
             resp.raise_for_status()
             return _extract_text(resp.json())

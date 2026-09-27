@@ -42,9 +42,9 @@ function issueFor(agentId) {
 }
 
 function shotsOf(run) {
-  // Every trace step is navigable. The a11y agent saves only the final screenshot, so
-  // steps without one show their action, URL and page text instead of being skipped
-  // (skipping them left one step and two disabled arrows).
+  // Every trace step is navigable. Agents save a JPEG per step (step_N.jpg) plus
+  // final.png; older studies saved only the final screenshot, so a step without
+  // one still shows its action, URL and page text instead of being skipped.
   const steps = (run?.trace || []).filter((s) => s && Number.isFinite(Number(s.step)));
   if (!steps.length) return steps;
   const finalShot = run.final_screenshot_url || run.final_screenshot || "";
@@ -375,9 +375,9 @@ function renderStepViewer(run) {
       ? `<figure class="step-shot">
       <a href="${escapeHtml(step.screenshot_url)}" target="_blank" rel="noopener">
         <img class="trace-screenshot" src="${escapeHtml(step.screenshot_url)}" alt="Step ${escapeHtml(step.step)}" />
-      </a>${step.final_shot ? `<figcaption class="muted small">Final page (the agent saves one screenshot per run)</figcaption>` : ""}
+      </a>${step.final_shot ? `<figcaption class="muted small">Final page (this older run saved one screenshot)</figcaption>` : ""}
     </figure>`
-      : `<div class="trace-placeholder"><p><strong>No screenshot for this step.</strong> The agent read the page as text.</p>
+      : `<div class="trace-placeholder"><p><strong>No screenshot was saved for this step.</strong></p>
       ${step.observation ? `<p class="muted small">${escapeHtml(String(step.observation).slice(0, 600))}</p>` : ""}</div>`}
     <div class="step-detail">
       <p class="step-action"><strong>${escapeHtml(step.step)}.</strong> ${escapeHtml(humanAction(step.action) || "Action")}</p>
