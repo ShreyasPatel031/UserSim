@@ -4074,6 +4074,16 @@ async def _run_study_body(
         touch("Complete", "complete")
         log_activity(study, "complete", "Study complete")
         persist_study(study)
+        if getattr(study, "email", ""):
+            # Off the loop: SMTP is a blocking socket and the report is ready.
+            try:
+                from mvp.report_email import send_report_email
+
+                sent = await asyncio.to_thread(send_report_email, study)
+                if sent:
+                    log_activity(study, "complete", f"Report emailed to {study.email}")
+            except Exception as exc:  # noqa: BLE001
+                print(f"report email failed: {exc!r}", flush=True)
     except SiteAccessBlockedError as exc:
         study.status = "error"
         study.error = (str(exc) or repr(exc))[:500]

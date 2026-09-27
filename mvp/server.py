@@ -936,6 +936,40 @@ async def get_study_live(study_id: str, since: int = 0):
     return JSONResponse(live_view(study, since), headers={"Cache-Control": "no-store"})
 
 
+class ReportEmailRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=200)
+
+
+@app.post("/api/studies/{study_id}/email")
+async def set_report_email(study_id: str, body: ReportEmailRequest):
+    """Register where to send the report when the study finishes.
+
+    The waiting screen captured an address but only kept it in the browser, so
+    the promised mail was never sent.
+    """
+    from mvp.report_email import email_configured
+    from mvp.study import STUDIES, persist_study
+
+    email = (body.email or "").strip()
+    if "@" not in email:
+        raise HTTPException(status_code=400, detail="A valid email is required")
+    study = STUDIES.get(study_id)
+    if study is None:
+        raise HTTPException(status_code=404, detail="Study not found")
+    study.email = email
+    try:
+        persist_study(study)
+    except Exception:
+        pass
+    # A finished study has nothing left to wait for: send it now.
+    sent = False
+    if str(getattr(study, "status", "")) == "complete":
+        from mvp.report_email import send_report_email
+
+        sent = await asyncio.to_thread(send_report_email, study)
+    return {"ok": True, "email": email, "sent": sent, "configured": email_configured()}
+
+
 @app.get("/api/studies/{study_id}/insight-layer")
 async def get_insight_layer(study_id: str):
     """Buyer and task groups, 3-line summary and 3 recommendations for a comparison study (cached)."""

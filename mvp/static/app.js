@@ -2163,6 +2163,16 @@ document.getElementById("report-email-form")?.addEventListener("submit", (e) => 
   if (!email) return;
   _notifyEmail = email;
   _emailCaptureSubmitted = true;
+  // Tell the server, or the promise on this card is never kept: the address
+  // used to live only in this page.
+  const sid = document.body.dataset.studyId || "";
+  if (sid) {
+    fetch(`/api/studies/${encodeURIComponent(sid)}/email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    }).catch(() => {});
+  }
   const formEl = document.getElementById("report-email-form");
   const done = document.getElementById("report-email-saved");
   if (formEl) formEl.hidden = true;
