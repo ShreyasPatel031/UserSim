@@ -313,11 +313,13 @@ function renderAnalytics() {
     node.addEventListener("click", () => { selectTab(node.dataset.tabJump); window.scrollTo({ top: 0, behavior: "smooth" }); });
   });
 
-  root.querySelectorAll("button[data-agent]").forEach((node) => {
+  // data-step marks trace links; step-viewer arrows also carry data-agent.
+  root.querySelectorAll("button[data-agent][data-step]").forEach((node) => {
     node.addEventListener("click", () => {
       openTrace(node.dataset.agent, Number(node.dataset.step));
     });
   });
+  if (comp && typeof wireCompare === "function") wireCompare(root, comp);
   root.querySelectorAll(".goal-row").forEach((row) => {
     row.addEventListener("click", () => openGoal(row.dataset.persona, row.dataset.goal));
   });
@@ -493,14 +495,14 @@ function goStep(agentId, idx) {
   const shots = shotsOf(run);
   if (!shots.length) return;
   _activeIdx[agentId] = Math.max(0, Math.min(shots.length - 1, idx));
-  const card = document.querySelector(`.platform-card[data-agent="${CSS.escape(agentId)}"]`);
-  if (!card) return;
-  const viewer = card.querySelector(".step-viewer");
-  if (!viewer) return;
-  const tmp = document.createElement("div");
-  tmp.innerHTML = renderStepViewer(run);
-  viewer.replaceWith(tmp.firstElementChild);
-  wireStepControls(card);
+  // The same run can be open in the traces tab and in a Task comparison card.
+  document.querySelectorAll(`.step-viewer[data-agent="${CSS.escape(agentId)}"]`).forEach((viewer) => {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = renderStepViewer(run);
+    const next = tmp.firstElementChild;
+    viewer.replaceWith(next);
+    wireStepControls(next);
+  });
 }
 
 function fillSelectors() {

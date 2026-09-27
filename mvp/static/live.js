@@ -17,6 +17,10 @@ let watchTimer = null;
 let runtimeTimer = null;
 let bootDone = false;
 let killing = false;
+/** Study whose cards are in the grid: agent ids (t1__p1__product) repeat across studies. */
+let renderedStudyId = "";
+/** Study ids with a fetch in flight, so 3s polls do not pile up behind a slow load. */
+const _inFlight = new Set();
 /** URLs that 404'd — keep the last real landing PNG instead of a broken img. */
 const _shotBad = {};
 
@@ -171,6 +175,12 @@ function latestShot(session) {
 }
 
 function renderWatch(data) {
+  const forId = data.id || selectedId || "";
+  if (forId !== renderedStudyId) {
+    // A new study: never reuse the previous study's cards.
+    agentGrid.innerHTML = "";
+    renderedStudyId = forId;
+  }
   emptyEl.hidden = true;
   watchEl.hidden = false;
   watchId.textContent = data.id || selectedId;
@@ -237,6 +247,13 @@ function renderWatch(data) {
       typeof shot?.screenshot_data_url === "string" && shot.screenshot_data_url.startsWith("data:image/")
         ? shot.screenshot_data_url
         : shot?.screenshot_url || "";
+    // Status and task change while the screenshot stays the same.
+    const oldHeader = card.querySelector("header");
+    if (oldHeader) {
+      oldHeader.remove();
+      card.querySelector(".live-agent-task")?.remove();
+      card.insertAdjacentHTML("afterbegin", header);
+    }
     if (shotSrc && shown.split("?")[0] === shotSrc) {
       const stepEl = card.querySelector(".live-agent-step");
       if (stepEl) stepEl.textContent = stepText;
@@ -309,6 +326,16 @@ function startWatchPolling() {
 async function selectStudy(id) {
   if (!id) return;
   rememberStudy(id);
+  // Show the switch at once; the study itself can take 15-30s to load from GCS.
+  listEl.querySelectorAll(".live-study-item").forEach((b) => b.classList.toggle("active", b.dataset.id === id));
+  if (renderedStudyId !== id) {
+    agentGrid.innerHTML = "";
+    renderedStudyId = id;
+    watchId.textContent = id;
+    watchUrl.textContent = "Loading study…";
+    watchPhase.textContent = "";
+    watchMeta.innerHTML = "";
+  }
   // Load frames immediately — do NOT wait on the slow study list.
   await refreshWatch();
   startWatchPolling();
@@ -343,14 +370,21 @@ async function refreshList() {
 }
 
 async function refreshWatch() {
-  if (!selectedId) return;
+  const id = selectedId;
+  if (!id || _inFlight.has(id)) return;
+  _inFlight.add(id);
   try {
-    const data = await fetchStudy(selectedId);
-    renderWatch(data);
+    const data = await fetchStudy(id);
+    // The user may have picked another study while this one was loading.
+    if (id !== selectedId) return;
+    renderWatch({ ...data, id: data.id || id });
   } catch (err) {
+    if (id !== selectedId) return;
     emptyEl.hidden = true;
     watchEl.hidden = false;
     watchPhase.textContent = err.message;
+  } finally {
+    _inFlight.delete(id);
   }
 }
 
