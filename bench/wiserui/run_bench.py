@@ -10,7 +10,10 @@ judgments.jsonl format (order wl = winner shown first as Version X), so score.py
 compare_pair output goes to pairs.jsonl for ablate.py.
 
 Every model call is cached in $OUT/calls.jsonl keyed by (index, call key), so runs resume and cost is metered from
-Vertex usage metadata. The dataset's ``rationale`` / ``ui_change`` are never shown to the model.
+Vertex usage metadata. ``--max-cost`` is a hard cap on the ledger total (cached spend included): every paid call first
+reserves its worst-case cost (``worst_call_cost``) and is refused if the reservation would cross the cap; short-pick
+pairs reserve all their uncached calls up front and wait for in-flight work to settle rather than start a pair that
+might not finish, so pairs are done in index order and a capped run stops on a clean prefix. The dataset's ``rationale`` / ``ui_change`` are never shown to the model.
 
 Personas: ``--personas-from results/full/calls.jsonl`` reuses the six visitors the old UserSim arm (A0) planned
 for each page (same planner prompt, now mvp.fast_plan._AB_PERSONAS), so arms differ only in the judge; otherwise
@@ -101,9 +104,26 @@ def a_is_win(idx: int) -> bool:
     return int(hashlib.sha256(f"wiserui|{idx}".encode()).hexdigest(), 16) % 2 == 0
 
 
+# Worst-case billed input per call: two screenshots fit into 1568 x 1568 (Claude/Gemini bill well under 3k tokens
+# each) plus the prompt. Output: max_tokens plus the thinking headroom llm_generate may add (8192 for Claude 5 /
+# Gemini 3 / reasoning models); added for every model so the bound holds whatever the provider.
+WORST_IN_TOKENS = 8000
+THINK_HEADROOM = 8192
+
+
+def worst_call_cost(model: str, max_tokens: int) -> float:
+    pin, pout = price_of(model)
+    return WORST_IN_TOKENS / 1e6 * pin + (max_tokens + THINK_HEADROOM) / 1e6 * pout
+
+
+class BudgetExhausted(RuntimeError):
+    pass
+
+
 class Ledger:
     def __init__(self, path: Path):
         self.path = path
+        self.reserved = 0.0  # worst-case cost of calls (or whole pairs) in flight
         self.cache: dict[str, dict] = {}
         if path.exists():
             for line in path.open():
@@ -128,7 +148,10 @@ def price_of(model: str) -> tuple[float, float]:
     return PRICE.get(model, PRICE["gemini-2.5-flash"])
 
 
-def make_call(ledger: Ledger, sem: asyncio.Semaphore, prefix: str):
+def make_call(ledger: Ledger, sem: asyncio.Semaphore, prefix: str, max_cost: float | None = None,
+              covered: bool = False):
+    """Cached, metered model call. With max_cost, an uncached call reserves worst_call_cost first and raises
+    BudgetExhausted if ledger.cost + reservations would exceed it (covered=True: the pair already reserved it)."""
     from mvp.pairwise import default_call
 
     async def call(key: str, contents: list, *, temperature: float, max_tokens: int, media_resolution=None,
@@ -137,15 +160,25 @@ def make_call(ledger: Ledger, sem: asyncio.Semaphore, prefix: str):
         hit = ledger.cache.get(k)
         if hit and not hit.get("error"):
             return hit["text"], hit["tokens_in"], hit["tokens_out"]
-        async with sem:
-            t0 = time.time()
-            try:
-                text, tin, tout = await default_call(key, contents, temperature=temperature, max_tokens=max_tokens,
-                                                     media_resolution=media_resolution, json_mode=json_mode,
-                                                     model=model)
-                err = None
-            except Exception as exc:  # noqa: BLE001
-                text, tin, tout, err = "", 0, 0, repr(exc)[:300]
+        w = 0.0
+        if max_cost is not None and not covered:
+            w = worst_call_cost(model or PAIRWISE_MODEL, max_tokens)
+            if ledger.cost + ledger.reserved + w > max_cost:
+                raise BudgetExhausted(f"{k}: ${ledger.cost:.3f} spent + ${ledger.reserved:.3f} reserved + "
+                                      f"${w:.3f} worst case > cap ${max_cost:.2f}")
+            ledger.reserved += w
+        try:
+            async with sem:
+                t0 = time.time()
+                try:
+                    text, tin, tout = await default_call(key, contents, temperature=temperature, max_tokens=max_tokens,
+                                                         media_resolution=media_resolution, json_mode=json_mode,
+                                                         model=model)
+                    err = None
+                except Exception as exc:  # noqa: BLE001
+                    text, tin, tout, err = "", 0, 0, repr(exc)[:300]
+        finally:
+            ledger.reserved -= w
         pin, pout = price_of(model or PAIRWISE_MODEL)
         ledger.put({"key": k, "model": model or PAIRWISE_MODEL, "text": text, "tokens_in": tin, "tokens_out": tout,
                     "cost_usd": tin / 1e6 * pin + tout / 1e6 * pout, "secs": round(time.time() - t0, 2),
@@ -185,7 +218,9 @@ async def main() -> None:
     ap.add_argument("--personas-from", default=str(BENCH / "results" / "full" / "calls.jsonl"))
     ap.add_argument("--concurrency", type=int, default=8)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--max-cost", type=float, default=15.0, help="stop scheduling new pairs above this spend")
+    ap.add_argument("--max-cost", type=float, default=15.0,
+                    help="hard cap on this ledger's total spend (cached calls included): no call starts unless its "
+                         "worst-case cost still fits")
     ap.add_argument("--aa", action="store_true", help="A/A check: the winner screenshot as both versions")
     ap.add_argument("--model", default="", help="model for the short-pick stream: base name or tuned endpoint resource")
     ap.add_argument("--argue-temperature", type=float, default=None, help="PairFlags.argue_temperature (G-FOCUS stages)")
@@ -253,16 +288,48 @@ async def main() -> None:
 
     results: dict[int, dict] = {}
     done = 0
+    skipped: list[int] = []
+    settle = asyncio.Condition()
+
+    async def admit(i: int) -> float | None:
+        """Short-pick streams: reserve the worst case of this pair's uncached calls, waiting while other pairs are in
+        flight; None = does not fit even with nothing in flight (budget exhausted)."""
+        orders = ("ab", "ba") if flags.both_orders else ("ab",)
+        tag = "vanilla" if flags.vanilla else "short"
+        w = worst_call_cost(flags.model or PAIRWISE_MODEL, flags.max_tokens)
+        need = sum(w for o in orders if (ledger.cache.get(f"{i}|{tag}|{o}") or {"error": 1}).get("error"))
+        async with settle:
+            while ledger.cost + ledger.reserved + need > args.max_cost:
+                if ledger.reserved <= 0:
+                    return None
+                await settle.wait()
+            ledger.reserved += need
+        return need
 
     async def pair(i: int) -> None:
         nonlocal done
-        if ledger.cost > args.max_cost:
-            return
+        need = 0.0
+        if flags.short_pick:
+            got = await admit(i)
+            if got is None:
+                skipped.append(i)
+                return
+            need = got
+        try:
+            await pair_body(i, covered=flags.short_pick)
+        finally:
+            if flags.short_pick:
+                async with settle:
+                    ledger.reserved -= need
+                    settle.notify_all()
+
+    async def pair_body(i: int, covered: bool) -> None:
+        nonlocal done
         item = data[i]
         ctx = ctx_of(item)
         if flags.gf_change:
             ctx["change"] = change_of(item)
-        call = make_call(ledger, sem, f"{i}")
+        call = make_call(ledger, sem, f"{i}", max_cost=args.max_cost, covered=covered)
         personas = ab_personas(a0[i], ctx) if i in a0 else None
         aw = a_is_win(i)
         if args.aa:
@@ -314,6 +381,8 @@ async def main() -> None:
         for r in sorted(rows, key=lambda r: (r["index"], r["order"])):
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     errs = sum(1 for r in ledger.cache.values() if r.get("error"))
+    if skipped:
+        print(f"[wiserui] budget cap ${args.max_cost:.2f}: skipped {len(skipped)} pairs (first {min(skipped)})", flush=True)
     print(f"[wiserui] wrote {len(results)} pairs; total spend ${ledger.cost:.3f}; call errors={errs}", flush=True)
 
 

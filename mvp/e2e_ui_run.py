@@ -255,8 +255,10 @@ def claude_vertex_generate(contents: list, *, model: str, temperature: float = 0
         loc = _CLAUDE_LOCATIONS[attempt % len(_CLAUDE_LOCATIONS)]
         try:
             if loc not in _CLAUDE_BY_LOC:
+                # Multi-region endpoints ("us", "eu") live on aiplatform.{loc}.rep.googleapis.com, not {loc}-aiplatform.
+                rep = {"base_url": f"https://aiplatform.{loc}.rep.googleapis.com/v1"} if loc in ("us", "eu") else {}
                 _CLAUDE_BY_LOC[loc] = AnthropicVertex(
-                    region=loc, project_id=os.environ.get("GCP_PROJECT") or GCP_PROJECT,
+                    **rep, region=loc, project_id=os.environ.get("GCP_PROJECT") or GCP_PROJECT,
                     credentials=vertex_credentials(), max_retries=0,
                     timeout=timeout_s or float(os.environ.get("MVP_GEMINI_TIMEOUT_S", "90")))
             resp = _CLAUDE_BY_LOC[loc].messages.create(model=model, **ckw,

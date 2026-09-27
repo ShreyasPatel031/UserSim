@@ -2,6 +2,64 @@
 
 **Current round (06:37 AM PT request):** redone with the newest frontier models only, as of 2026-09-27. Cap $20, no tuning,
 nothing enabled in GCP. The first round (06:28 AM PT) used older models; it is kept below under **Older models**.
+**Claude 5 addendum (07:14 AM PT):** Claude Opus 5.5 and Sonnet 5 became reachable, so both were run in full on the same
+252 pairs, with the same setup, under a separate cap ($25 total for the Claude round). See **Results: Claude 5 models** below.
+
+## Results: Claude 5 models (252 pairs) -- `fullset/vanilla_compare_claude5.md`
+| system | CA [95% CI] | OI | FA / SA | unparsed (of 504) | $/pair | total $ | wall (active) | dCA vs ours [95% CI] | McNemar p (ours-wrong-model-right / reverse) |
+|---|---|---|---|---|---|---|---|---|---|
+| **ours**: G-FOCUS single, T0, gemini-2.5-flash | 42.9 [36.5, 48.8] | 59.9 | 51.6 / 68.3 | 1 | 0.0110 | 2.77 | 89 s | (reference) | |
+| **Claude Opus 5.5 vanilla** (`claude-opus-5-5`) | **66.7 [60.7, 72.6]** | 75.4 | 67.9 / 82.9 | 0 | 0.0562 | 14.16 | 146 s | **+23.8 [+16.3, +31.3]** | **1.5e-08** (87/27) |
+| Claude Sonnet 5 vanilla (`claude-sonnet-5`) | 37.3 [31.3, 43.3] | 58.1 | 40.1 / 76.2 | 0 | 0.0258 | 6.50 | 149 s | -5.6 [-12.3, +1.2] | 0.14 (31/45) |
+
+The same Claude runs against the two plain Gemini 3.x baselines (paired on the same 252 pairs, model minus baseline):
+
+| Claude model | vs Gemini 3.1 Pro vanilla (57.9) | vs Gemini 3.8 Flash vanilla (54.4) |
+|---|---|---|
+| Opus 5.5 (66.7) | **+8.7 [+2.0, +15.1], p = 0.014** (48/26) | **+12.3 [+6.0, +18.7], p = 0.00024** (50/19) |
+| Sonnet 5 (37.3) | **-20.6 [-27.4, -14.3], p = 5e-9** (15/67) | **-17.1 [-23.4, -10.7], p = 6e-7** (16/59) |
+
+(Files: `fullset/vanilla_compare_claude5_vs_g31pro.md`, `fullset/vanilla_compare_claude5_vs_g38flash.md`.) Opus 5.5 vs Sonnet 5:
++29.4 [+21.8, +36.5], p = 2e-13.
+
+**Verdicts (Claude 5):**
+- **Claude Opus 5.5 is the best system measured: CA 66.7.** It beats ours by +23.8 points (p = 1.5e-8), and it significantly beats
+  the previous best, vanilla Gemini 3.1 Pro (+8.7, p = 0.014), and Gemini 3.8 Flash (+12.3, p = 0.0002).
+  The gain is not only position consistency: OI 75.4 (ours 59.9, 3.1 Pro 71.0), FA 67.9, SA 82.9.
+- **It is the most expensive per pair:** $0.056/pair, 5.1x ours, 2.9x Gemini 3.1 Pro, 7.8x Gemini 3.8 Flash.
+- **Claude Sonnet 5 is not better than ours:** 37.3 vs 42.9, -5.6 (not significant, p = 0.14), at 2.3x our cost. It has strong
+  second-position bias (FA 40.1 / SA 76.2), like Sonnet 4.6 in round 1 (36.5). Both Gemini 3.x vanilla models beat it significantly.
+- **Caveats:**
+  - Claude 5-generation models reject a non-default temperature and always think adaptively. They therefore ran at default
+    sampling with adaptive thinking (thinking tokens billed as output, max_tokens 2048 + 8192 headroom), not at T0. Results can
+    vary a little between runs; each order was called once.
+  - The contamination caveat below applies too: Opus 5.5's training data may include some of the public A/B write-ups.
+- **Details:**
+  - Model IDs that worked: `claude-opus-5-5` and `claude-sonnet-5` on Vertex AI (publisher `anthropic`) in
+    `project-amer-scs-sandbox`, `global` endpoint (the `us` multi-region endpoint also answered probes).
+    The earlier 429 (Opus, no quota) and 404 (Sonnet 5) had cleared by 07:08 PT. The code fix: `claude_vertex_generate` now
+    reaches the `us` / `eu` multi-region endpoints at `aiplatform.{us,eu}.rep.googleapis.com`.
+  - Tokens per call: about 2.3k in for both models, 945 out (Opus) / 830 out (Sonnet), including thinking. Measured cost
+    $0.0281/call (Opus) and $0.0129/call (Sonnet). Zero call errors and zero unparsed answers for both.
+  - The Opus run was killed at 07:13 PT after 284 of 504 calls. It was resumed from the call cache (`calls.jsonl`, keyed by
+    pair and order), so none of the 284 calls were re-paid; only the 220 missing calls ran. Wall time is the active call time:
+    the run spans 07:09-07:19 PT (Opus) and 07:09-07:21 PT (Sonnet), including a 3-pair pilot and the gap after the kill.
+  - **Hard budget cap:** `run_bench.py --max-cost` is now a hard cap on the ledger total. Every uncached call reserves its
+    worst-case cost (8k input tokens + max_tokens + 8192 thinking headroom, at list price) before it starts, and is refused if
+    the reservation would cross the cap. Short-pick pairs reserve both calls up front and wait for in-flight pairs, so a capped
+    run stops on whole pairs in index order. Caps used: Opus ledger $24.91, then Sonnet ledger $25 - Opus total = $10.83.
+    A separate watcher summed both ledgers every 5 s, with a kill at $24.99. Neither cap was reached.
+
+**Spend, Claude round (list price $4/$20 per 1M tokens for Opus 5.5, $2/$10 for Sonnet 5):**
+
+| item | $ |
+|---|---|
+| Opus 5.5: 3-pair pilot + 284 calls before the kill (07:09-07:13 PT) | 8.46 |
+| Opus 5.5: the remaining 220 calls (07:18-07:19 PT) | 5.70 |
+| Sonnet 5: 3-pair pilot | 0.09 |
+| Sonnet 5: the remaining 498 calls (07:19-07:21 PT) | 6.42 |
+| availability probes (4 x 16-token calls at 07:17 PT) | <0.01 |
+| **total, Claude round** | **20.66** (cap $25) |
 Set: the 252 clean pairs (`fullset/final_indices_main.txt`). Metric: strict CA, meaning right in both presentation orders
 (chance 25%).
 
@@ -17,8 +75,8 @@ Set: the 252 clean pairs (`fullset/final_indices_main.txt`). Metric: strict CA, 
 ## Model selection (newest per family, checked 2026-09-27)
 | family | newest model | source proving it is current | access in our accounts | run? |
 |---|---|---|---|---|
-| Claude Opus | **Claude Opus 5.5** (`claude-opus-5-5`, $4/$20) | platform.claude.com/docs/en/models/overview (current lineup: Fable 5.1, Opus 5.5, Sonnet 5, Haiku 4.5) | **Unavailable.** Every call returns 429 "Quota exceeded ... input_tokens_per_minute_per_base_model" on a 16-token call, in global, us-east5, us-central1, us-east1, europe-west1, europe-west4 and asia-southeast1, again 1 min later. The model exists (not a 404), but the project has no quota for it. Raising quota is a GCP change, so it was not requested. | no |
-| Claude Sonnet | **Claude Sonnet 5** (`claude-sonnet-5`, $2/$10, released 2026-06-30) | same Anthropic page | **Unavailable.** 404 "not found or your project does not have access" in all 12 regions tried plus global. Not enabled; nothing was enabled. | no |
+| Claude Opus | **Claude Opus 5.5** (`claude-opus-5-5`, $4/$20) | platform.claude.com/docs/en/models/overview (current lineup: Fable 5.1, Opus 5.5, Sonnet 5, Haiku 4.5) | **Available by 07:08 PT; run in the Claude 5 addendum.** At 06:40 PT it was unavailable: Every call returns 429 "Quota exceeded ... input_tokens_per_minute_per_base_model" on a 16-token call, in global, us-east5, us-central1, us-east1, europe-west1, europe-west4 and asia-southeast1, again 1 min later. The model exists (not a 404), but the project has no quota for it. Raising quota is a GCP change, so it was not requested. | addendum |
+| Claude Sonnet | **Claude Sonnet 5** (`claude-sonnet-5`, $2/$10, released 2026-06-30) | same Anthropic page | **Available by 07:08 PT; run in the Claude 5 addendum.** At 06:40 PT it was unavailable: 404 "not found or your project does not have access" in all 12 regions tried plus global. Not enabled; nothing was enabled. | addendum |
 | OpenAI | **GPT-6 Sol** (`gpt-6-sol`, $2/$10): the "balance intelligence and cost" flagship-tier model | developers.openai.com/api/docs/models ("use GPT-6 Astra, our flagship ... GPT-6 Sol to balance intelligence and cost, or GPT-6 Luna for cost-sensitive, high-volume workloads"). `models.list` on our key lists gpt-6-astra, gpt-6-sol, gpt-6-luna (plus the older gpt-5.6-sol/terra/luna). | yes (probe OK) | yes |
 | OpenAI (small) | **GPT-6 Luna** (`gpt-6-luna`, $0.10/$0.50) | same OpenAI page | yes | yes |
 | OpenAI (top) | GPT-6 Astra (`gpt-6-astra`, $10/$50, reasoning at least `low`) | same OpenAI page | listed on our key; not probed | **skipped**: estimated ~$32 for 252 pairs alone, over the $20 cap (and excluded as an expensive flagship in round 1) |
@@ -63,6 +121,7 @@ The runnable set came to ~$15.3, under the cap, so all four ran at once.
 - Wall = each run's span. All four ran at the same time (64 pairs in flight each), from 06:41:07 to 06:43:08 PT, 2 min total.
 
 **Verdicts:**
+- (Superseded by the Claude 5 addendum above: vanilla Opus 5.5 scores 66.7, above all of these.)
 - **Ours is no longer the best system.** Plain zero-shot Gemini 3.1 Pro (+15.1, p = 4e-5) and Gemini 3.8 Flash (+11.5,
   p = 0.002) are both significantly better than our G-FOCUS pipeline on 2.5 Flash.
 - **Gemini 3.8 Flash beats ours on cost too:** $0.0072/pair vs $0.0110 (0.65x), and higher CA. It is the new cost-efficiency
