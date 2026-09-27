@@ -127,3 +127,64 @@ def test_plan_personas_uses_product_prompt():
 
     ps = run(pairwise.plan_personas(CTX, call=call))
     assert len(ps) == 6 and len({p["name"] for p in ps}) == 6
+
+
+# ----------------------------------------------------------------- G-FOCUS (argue_both)
+
+def fake_gfocus(prefers=b"AAA", persona_conf="4"):
+    """Evaluator mock: picks whichever position holds ``prefers``; records keys, prompts and json_mode."""
+    calls = []
+
+    async def call(key, contents, *, temperature, max_tokens, media_resolution=None, json_mode=True):
+        calls.append((key, contents, temperature, json_mode))
+        imgs = [c for c in contents if isinstance(c, bytes)]
+        if key.startswith("v1goal"):
+            return "[Goal]\nSell more widgets", 10, 5
+        if key.startswith("v1diff"):
+            return ("[Design priorities]\n1. x\n[UI areas to focus]\n1. y\n[Key UI differences]\n"
+                    f"First UI button {imgs[0].decode()}, Second UI button {imgs[1].decode()}."), 10, 5
+        if "reason_" in key:
+            return "[Evaluation]\n1. because", 10, 5
+        pick = "First" if imgs[0] == prefers else "Second"
+        return (f"[Importance Ranking]\n1. {pick} 1 - key\n[Conclusion]\nBetter version: **{pick}**\n"
+                f"Confidence: {persona_conf}\nKey Rationale:\n* button: better"), 10, 5
+
+    return call, calls
+
+
+def test_gfocus_single_judge_strict_orders():
+    call, calls = fake_gfocus(prefers=b"BBB")
+    flags = PairFlags(goal_diffs=True, strict_orders=True, argue_both=True, v1_prompts=True, use_personas=False)
+    r = run(compare_pair(A, B, None, CTX, flags, call=call))
+    assert r["winner"] == "B" and r["orders"]["ab"]["pick_ab"] == "B" and r["orders"]["ba"]["pick_ab"] == "B"
+    assert len(r["judgments"]) == 2 and not r["failed_judgments"]
+    keys = [c[0] for c in calls]
+    assert not any(k.startswith("planner") for k in keys)  # no personas planned
+    assert sum(k.startswith("v1goal") for k in keys) == 2 and sum(k.startswith("v1diff") for k in keys) == 2
+    assert sum("reason_" in k for k in keys) == 4 and sum("evaluator" in k for k in keys) == 2
+    assert all(c[3] is False for c in calls) and all(c[2] == 1.0 for c in calls)  # text mode, paper temperature
+    # strict: order ba's reasoning sees only the diffs extracted in order ba (BBB shown first)
+    ba_reason = next(c for c in calls if c[0].startswith("argue|ba") and "reason_first" in c[0])[1][0]
+    assert "First UI button BBB, Second UI button AAA." in ba_reason and "Sell more widgets" in ba_reason
+    assert "assuming first version was more visually persuasive" in ba_reason
+
+
+def test_gfocus_personas_confidence_weighted():
+    call, calls = fake_gfocus(prefers=b"AAA", persona_conf="5")
+    flags = PairFlags(goal_diffs=True, strict_orders=True, argue_both=True, v1_prompts=True, use_personas=True)
+    r = run(compare_pair(A, B, PERSONAS, CTX, flags, call=call))
+    assert r["winner"] == "A" and r["votes"] == {"A": 6, "B": 0, "tie": 0} and len(r["judgments"]) == 12
+    ev = next(c for c in calls if "evaluator" in c[0])[1][0]
+    assert "Assume that the following user" in ev and "Confidence: <1-5" in ev
+
+
+def test_parse_v1_verdict():
+    assert pairwise.parse_v1_verdict("[Conclusion]\nBetter version: Second\nKey Rationale:") == ("Second", None)
+    assert pairwise.parse_v1_verdict("**Better version:** First\nConfidence: 3") == ("First", 3)
+    assert pairwise.parse_v1_verdict("Better version: None")[0] is None
+
+
+def test_default_flags_unchanged_by_gfocus():
+    f = PairFlags()
+    assert not f.argue_both and f.name() == "both+ratings"
+    assert PairFlags(goal_diffs=True, strict_orders=True).name() == "both+ratings+goal_diffs+strict"

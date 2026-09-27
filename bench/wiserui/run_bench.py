@@ -46,6 +46,12 @@ STREAMS = {
     "s3": PairFlags(both_orders=True, goal_diffs=True, debias=True),
     # S2 with per-order goal/diffs only (no merge across orders): each order's pick is independent, as in the paper.
     "s2strict": PairFlags(both_orders=True, goal_diffs=True, debias=False, strict_orders=True),
+    # Full G-FOCUS (arXiv 2505.05026v1 Appendix E prompts), strict per-order: goal, diffs, argue both sides, Evaluator.
+    "gfocus": PairFlags(both_orders=True, goal_diffs=True, strict_orders=True, argue_both=True, v1_prompts=True,
+                        use_personas=False),
+    # The same, but each of the 6 personas (same as S2-strict) argues both sides and evaluates as that visitor.
+    "gfocus_personas": PairFlags(both_orders=True, goal_diffs=True, strict_orders=True, argue_both=True,
+                                 v1_prompts=True, use_personas=True),
 }
 
 
@@ -88,7 +94,8 @@ class Ledger:
 def make_call(ledger: Ledger, sem: asyncio.Semaphore, prefix: str):
     from mvp.pairwise import default_call
 
-    async def call(key: str, contents: list, *, temperature: float, max_tokens: int, media_resolution=None):
+    async def call(key: str, contents: list, *, temperature: float, max_tokens: int, media_resolution=None,
+                   json_mode: bool = True):
         k = f"{prefix}|{key}"
         hit = ledger.cache.get(k)
         if hit and not hit.get("error"):
@@ -97,7 +104,7 @@ def make_call(ledger: Ledger, sem: asyncio.Semaphore, prefix: str):
             t0 = time.time()
             try:
                 text, tin, tout = await default_call(key, contents, temperature=temperature, max_tokens=max_tokens,
-                                                     media_resolution=media_resolution)
+                                                     media_resolution=media_resolution, json_mode=json_mode)
                 err = None
             except Exception as exc:  # noqa: BLE001
                 text, tin, tout, err = "", 0, 0, repr(exc)[:300]

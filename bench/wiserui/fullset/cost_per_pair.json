@@ -1,0 +1,123 @@
+{
+ "S2strict": {
+  "pairs": 252,
+  "calls_per_pair": 15.0,
+  "tin_per_pair": 12529.150793650793,
+  "tout_per_pair": 2029.9920634920634,
+  "usd_per_pair": {
+   "gemini-2.5-flash": 0.008833725396825396,
+   "gemini-2.5-pro": 0.03596135912698413,
+   "gemini-3.8-flash (intro to 2026-12-31, global)": 0.01700933333333333,
+   "gemini-3.8-flash (from 2027-01-01, global)": 0.03401866666666666,
+   "gemini-3.5-flash (global)": 0.03706365476190476,
+   "gemini-3.1-pro-preview (global)": 0.049418206349206344
+  },
+  "by_kind": {
+   "goal": {
+    "calls_per_pair": 2.0,
+    "in_per_call": 835.047619047619,
+    "out_per_call": 197.40277777777777
+   },
+   "planner": {
+    "calls_per_pair": 1.0,
+    "in_per_call": 180.26984126984127,
+    "out_per_call": 465.07142857142856
+   },
+   "judge": {
+    "calls_per_pair": 12.0,
+    "in_per_call": 889.8988095238095,
+    "out_per_call": 97.50958994708995
+   }
+  },
+  "pair_cost_p90_flash": 0.009836399999999999
+ },
+ "GFOCUS": {
+  "pairs": 252,
+  "calls_per_pair": 10.023809523809524,
+  "tin_per_pair": 10891.968253968254,
+  "tout_per_pair": 3205.4285714285716,
+  "usd_per_pair": {
+   "gemini-2.5-flash": 0.011281161904761906,
+   "gemini-2.5-pro": 0.04566924603174603,
+   "gemini-3.8-flash (intro to 2026-12-31, global)": 0.020189333333333337,
+   "gemini-3.8-flash (from 2027-01-01, global)": 0.040378666666666674,
+   "gemini-3.5-flash (global)": 0.04518680952380953,
+   "gemini-3.1-pro-preview (global)": 0.060249079365079374
+  },
+  "by_kind": {
+   "v1goal": {
+    "calls_per_pair": 2.0,
+    "in_per_call": 634.7619047619048,
+    "out_per_call": 61.78373015873016
+   },
+   "v1diff": {
+    "calls_per_pair": 2.0,
+    "in_per_call": 980.3928571428571,
+    "out_per_call": 364.43849206349205
+   },
+   "argue:reason_first": {
+    "calls_per_pair": 2.0,
+    "in_per_call": 976.1071428571429,
+    "out_per_call": 316.5257936507937
+   },
+   "argue:reason_second": {
+    "calls_per_pair": 2.0,
+    "in_per_call": 976.1071428571429,
+    "out_per_call": 306.8531746031746
+   },
+   "argue:evaluator": {
+    "calls_per_pair": 2.0238095238095237,
+    "in_per_call": 1856.513725490196,
+    "out_per_call": 546.6058823529412
+   }
+  },
+  "pair_cost_p90_flash": 0.013372100000000001
+ },
+ "GFOCUS_personas": {
+  "pairs": 252,
+  "calls_per_pair": 41.11904761904762,
+  "tin_per_pair": 52091.65476190476,
+  "tout_per_pair": 15929.218253968254,
+  "usd_per_pair": {
+   "gemini-2.5-flash": 0.055450542063492064,
+   "gemini-2.5-pro": 0.2244067509920635,
+   "gemini-3.8-flash (intro to 2026-12-31, global)": 0.09880330952380953,
+   "gemini-3.8-flash (from 2027-01-01, global)": 0.19760661904761906,
+   "gemini-3.5-flash (global)": 0.22150044642857145,
+   "gemini-3.1-pro-preview (global)": 0.2953339285714286
+  },
+  "by_kind": {
+   "planner": {
+    "calls_per_pair": 1.0,
+    "in_per_call": 180.26984126984127,
+    "out_per_call": 465.07142857142856
+   },
+   "v1goal": {
+    "calls_per_pair": 2.0,
+    "in_per_call": 634.7619047619048,
+    "out_per_call": 61.78373015873016
+   },
+   "v1diff": {
+    "calls_per_pair": 2.0,
+    "in_per_call": 980.3928571428571,
+    "out_per_call": 364.43849206349205
+   },
+   "argue:reason_first": {
+    "calls_per_pair": 12.0,
+    "in_per_call": 1029.388888888889,
+    "out_per_call": 336.859126984127
+   },
+   "argue:reason_second": {
+    "calls_per_pair": 12.0,
+    "in_per_call": 1029.388888888889,
+    "out_per_call": 329.3574735449736
+   },
+   "argue:evaluator": {
+    "calls_per_pair": 12.119047619047619,
+    "in_per_call": 1978.3519973804846,
+    "out_per_call": 546.0085134250164
+   }
+  },
+  "pair_cost_p90_flash": 0.06369330000000001
+ }
+}

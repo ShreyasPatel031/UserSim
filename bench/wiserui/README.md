@@ -45,3 +45,8 @@ paired bootstrap difference.
 
 Metrics: consistent accuracy (right in both orders; chance 25%), plain accuracy (chance 50%, pair bootstrap CI),
 first-position pick rate, by source and platform. For `usersim`, also a 12-vote pooled pick per pair.
+
+## G-FOCUS arms (GFOCUS_REPORT.md)
+`--stream gfocus`: the full G-FOCUS (arXiv 2505.05026v1 Appendix E prompts: goal, goal-conditioned diffs, argue both sides, Evaluator),
+per order (strict), one neutral judge, temperature 1. `--stream gfocus_personas`: the same, with each persona arguing and evaluating.
+`cost_per_pair.py` (tokens/cost per pair from ledgers) and `cost_project.py` (per-study and fine-tuning projections).

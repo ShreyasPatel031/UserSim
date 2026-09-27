@@ -9,6 +9,11 @@ so ablation arms differ only in flags:
   (G-FOCUS, arXiv 2505.05026v1 Appendix E), in both orders, merged; personas then judge only those differences.
 - ``debias``: SimAB-style instructions (more is better only if needed, simplicity under time/price pressure,
   choice overload, ignore goal-irrelevant factors).
+- ``argue_both``: the rest of G-FOCUS (Appendix E Parts 3-4): assume the first version is more persuasive for the
+  goal and give reasons; separately assume the second is; an evaluator ranks the contradicting reasons by importance
+  and names the better version. Replaces the 1-10 ratings. ``v1_prompts`` also swaps steps 1-2 for the paper's
+  Part 1 (goal) and Part 2 (difference localization) prompts, run per presentation order; ``use_personas=False``
+  runs one neutral evaluator (the paper), otherwise each persona argues and evaluates as that visitor.
 
 Versions are always shown under neutral labels "Version X" / "Version Y". Each persona writes its reasons first,
 then rates EACH version 1-10 on how likely it is to take the goal action. Ratings are averaged across orders per
@@ -57,6 +62,11 @@ class PairFlags:
     # strict_orders: with goal_diffs + both_orders, each presentation order uses ONLY the goal/diffs extracted in that
     # order (no merge across orders), so the two per-order picks are fully independent (paper-style per-order eval).
     strict_orders: bool = False
+    # G-FOCUS steps 3-4 (see module docstring). Only read when argue_both is set, so older arms are unchanged.
+    argue_both: bool = False
+    v1_prompts: bool = False  # steps 1-2 with the v1 Appendix E Part 1/2 prompts (per order, text output)
+    use_personas: bool = True  # False: a single neutral evaluator, as in the paper
+    argue_temperature: float = 1.0  # the paper ran every model at temperature 1 (Appendix F)
 
     def name(self) -> str:
         return "+".join(
@@ -64,6 +74,8 @@ class PairFlags:
             + (["goal_diffs"] if self.goal_diffs else [])
             + (["debias"] if self.debias else [])
             + (["strict"] if self.strict_orders else [])
+            + ((["argue_both"] + (["v1"] if self.v1_prompts else []) + ([] if self.use_personas else ["single"]))
+               if self.argue_both else [])
         )
 
 
@@ -73,12 +85,12 @@ ORDERS = ("ab", "ba")
 # ----------------------------------------------------------------- model access
 
 async def default_call(key: str, contents: list, *, temperature: float, max_tokens: int,
-                       media_resolution: str | None = None) -> tuple[str, int, int]:
+                       media_resolution: str | None = None, json_mode: bool = True) -> tuple[str, int, int]:
     from mvp.e2e_ui_run import gemini_generate
 
     return await asyncio.to_thread(
         gemini_generate, contents, model=PAIRWISE_MODEL, temperature=temperature, max_tokens=max_tokens,
-        json_mode=True, media_resolution=media_resolution,
+        json_mode=json_mode, media_resolution=media_resolution,
     )
 
 
@@ -305,11 +317,276 @@ def aggregate(judgments: list[dict[str, Any]], personas: list[dict[str, Any]]) -
             "orders": order_view, "n_personas": len(per)}
 
 
+# ----------------------------------------------------------------- G-FOCUS steps 1-4 (arXiv 2505.05026v1, Appendix E)
+# Prompts are the v1 appendix text; only the placeholders are filled. With a persona, the sentence "Assume that a user
+# is currently engaging with the page" names that visitor, and the evaluator also concludes from their point of view
+# and gives a 1-5 confidence (used to break ties between personas).
+
+_V1_HEAD = """The two screenshots show two different versions of the same page.
+FYI, the page is from the company called '{company}' whose industry domain is {industry}.
+The page type is {page_type} on {web_mobile} environment."""
+
+_V1_GOAL = """Your task is to think about the goal of the site operator for the given UIs.
+
+{head}
+
+Based on the two UIs and the industry and page type, what is the main goal of the site operator for this page?
+
+Answer strictly in the following format:
+[Goal]
+<goal of the site operator considering industry and page type>"""
+
+_V1_DIFFS = """You are an expert in designing UI/UX for web/apps.
+
+{head}
+
+Your task is to find the crucial and major UI differences between the two versions.
+
+To do that,
+(1) Reflect what would be the fundamental and crucial design priorities on the current page, if the goal of the site operator on the current page is as follows:
+{goal}
+(2) "See" the provided screenshots of the page, focusing on the key UI areas related to what you have reflected as your prioritized design principles.
+(3) For each key UI area, localize it by imagining patches and highlight main UI differences within the patches of the versions.
+
+Be aware:
+- Mention key differences in terms of the given goal and design priorities.
+- Do not mention differences in an abstract nor subjective way.
+(example to avoid: "First UI has more prominent visual clutter." -> "more prominent": subjective expression, "visual clutter": abstract expression)
+- Avoid mentioning differences which can be placeholders that can differ by example cases.
+(example to avoid: "First UI has product image of apple, Second UI has banana." -> product images can be just placeholders)
+- Prefer to infer comprehensive differences that can be inferred by combining multiple UI components from the images and given information.
+
+You must give the answer and give the answer strictly in the following format:
+[Design priorities]
+1. <Key priority>
+2. <Key priority>
+...
+[UI areas to focus]
+1. <Key UI area>
+2. <Key UI area>
+...
+[Key UI differences]
+First UI <Key UI difference>, Second UI <Key UI difference>.
+First UI <Key UI difference>, Second UI <Key UI difference>.
+..."""
+
+_V1_USER = "Assume that a user is currently engaging with the page shown in the screenshot."
+
+_V1_REASON = """You are an expert in designing UI/UX for web/apps.
+
+{head}
+
+{user}
+Inferred main goal of the site operator is as follows:
+{goal}
+
+Already found key UI differences between the two versions are as follows:
+{ui_diff}
+
+Then, assuming {which} version was more visually persuasive in terms of achieving the inferred goal, you should make reasonable reasons for such result.
+
+Your reply should strictly follow the format.:
+[Evaluation]
+1. <Rationale of the evaluation in sentences>
+2. <Rationale of the evaluation in sentences>
+..."""
+
+_V1_EVAL = """You are an expert in designing UI/UX for web/apps.
+
+{head}
+
+{user}
+Inferred main goal of the site operator is as follows:
+{goal}
+
+Already found key UI differences between the two versions are as follows:
+{ui_diff}
+
+Then, we have made possible reasons of why first version would have been more visually persuasive in terms of achieving the inferred goal:
+{first_reason}
+
+We also made possible reasons of why second version would have been more visually persuasive in terms of achieving the inferred goal:
+{second_reason}
+
+Considering all these possible reasons, your task is to conclude which version would be visually persuasive in terms of achieving the inferred goal.{pov}
+Reasons' decisions of first/second version are all different, so you should think carefully reminding:
+(1) Reasons may contradict each other, then you should decide which is more reasonable.
+(2) Then make your own rankings between the evaluations based on importance for making a final decision.
+(3) Based on the rankings, conclude which version would be visually persuasive in terms of achieving the inferred goal with a precise overall rationale that only contains key points that you think are crucial.
+
+Here, such precise overall rationale should be consisted of key points mentioning:
+(1) which UI difference was key to the winning version's success and
+(2) how each UI difference affected the winning version positively
+
+Your reply should strictly follow the format:
+[Importance Ranking]
+1. <First/Second + Reason # (e.g. First 2)> - <Why you think this reason is the most important>
+2. <First/Second + Reason # (e.g. Second 3)> - <Why you think this reason is the second important>
+...
+[Conclusion]
+Better version: <First/Second>{conf_fmt}
+Key Rationale:
+* <UI Difference>: <Positive effects>
+* ... (if multiple)"""
+
+GFOCUS_JUDGE = {"name": "G-FOCUS evaluator", "role": "", "bio": "", "goal": ""}
+
+
+def _v1_head(ctx: dict[str, Any]) -> str:
+    wm = ctx.get("web_mobile") or ("mobile" if "mobile" in str(ctx.get("platform") or "").lower() else "web")
+    return _V1_HEAD.format(company=ctx.get("company") or "", industry=ctx.get("industry") or "",
+                           page_type=ctx.get("page_type") or "page", web_mobile=wm)
+
+
+def _v1_user(persona: dict[str, Any] | None) -> str:
+    if not persona:
+        return _V1_USER
+    who = f"{persona.get('name') or 'a visitor'}, {persona.get('role') or ''}. {persona.get('bio') or ''}".strip()
+    return (f"Assume that the following user is currently engaging with the page shown in the screenshot: {who} "
+            f"They came to this page to: {persona.get('goal') or 'look around'}.")
+
+
+def _section(text: str, head: str, stop: tuple[str, ...] = ()) -> str:
+    """Text after ``[head]`` up to the next [Section] header (or one of ``stop``); the whole text if absent."""
+    t = (text or "").replace("**", "")
+    m = re.search(r"\[\s*" + re.escape(head) + r"\s*\]\s*:?", t, re.I)
+    if not m:
+        return t.strip()
+    rest = t[m.end():]
+    n = re.search(r"\n\s*\[[A-Z][^\]\n]{2,40}\]", rest)
+    return (rest[: n.start()] if n else rest).strip()
+
+
+def parse_v1_verdict(text: str) -> tuple[str | None, int | None]:
+    """(``"First"`` / ``"Second"`` / None, confidence 1-5 or None) from an Evaluator reply."""
+    t = (text or "").replace("**", "").replace("*", " ")
+    m = re.findall(r"Better\s+version\s*:?\s*(First|Second)", t, re.I)
+    pick = m[-1].capitalize() if m else None
+    if pick is None:
+        concl = _section(t, "Conclusion")
+        hits = re.findall(r"\b(First|Second)\b", concl[:200], re.I) if concl != t.strip() else []
+        pick = hits[0].capitalize() if hits and len({h.lower() for h in hits}) == 1 else None
+    c = re.search(r"Confidence\s*:?\s*([1-5])", t, re.I)
+    return pick, (int(c.group(1)) if c else None)
+
+
+def diffs_text(diffs: list[dict[str, str]] | None, order: str) -> str:
+    """Canonical a/b diffs rendered in the paper's "First UI ..., Second UI ..." lines for one presentation order."""
+    out = []
+    for d in diffs or []:
+        x, y = (d["a"], d["b"]) if order == "ab" else (d["b"], d["a"])
+        out.append(f"{d['element']}: First UI {x}, Second UI {y}.")
+    return "\n".join(out) or "(no clear differences found)"
+
+
+def _v1_images(first: PairEvidence, second: PairEvidence) -> list:
+    """As in the paper's inference code: the prompt, then the first and the second screenshot(s), unlabelled."""
+    return [*first.screenshots, *second.screenshots]
+
+
+async def v1_goal_and_diffs(first: PairEvidence, second: PairEvidence, ctx: dict[str, Any], order: str, *,
+                            call: Call, temperature: float = 1.0,
+                            media_resolution: str | None = None) -> dict[str, Any]:
+    """G-FOCUS Part 1 (goal) then Part 2 (goal-conditioned key UI differences) for ONE presentation order."""
+    head = _v1_head(ctx)
+    gtext, _, _ = await call(f"v1goal|{order}", [_V1_GOAL.format(head=head), *_v1_images(first, second)],
+                             temperature=temperature, max_tokens=600, media_resolution=media_resolution, json_mode=False)
+    goal = " ".join(_section(gtext, "Goal").split())[:600]
+    dtext, _, _ = await call(f"v1diff|{order}", [_V1_DIFFS.format(head=head, goal=goal), *_v1_images(first, second)],
+                             temperature=temperature, max_tokens=2048, media_resolution=media_resolution, json_mode=False)
+    return {"goal": goal, "diffs_text": _section(dtext, "Key UI differences")[:4000], "raw_diffs": dtext[:6000]}
+
+
+async def argue_and_evaluate(first: PairEvidence, second: PairEvidence, ctx: dict[str, Any], goal: str, ui_diff: str,
+                             order: str, *, persona: dict[str, Any] | None, call: Call, key: str,
+                             temperature: float = 1.0, media_resolution: str | None = None,
+                             retries: int = 2) -> dict[str, Any]:
+    """G-FOCUS Part 3 (reasons assuming first wins; separately, second wins) and Part 4 (Evaluator) for one order."""
+    head, user = _v1_head(ctx), _v1_user(persona)
+    imgs = _v1_images(first, second)
+
+    async def reason(which: str) -> str:
+        text, _, _ = await call(f"{key}|reason_{which}", [_V1_REASON.format(
+            head=head, user=user, goal=goal, ui_diff=ui_diff, which=which), *imgs],
+            temperature=temperature, max_tokens=1500, media_resolution=media_resolution, json_mode=False)
+        return _section(text, "Evaluation")[:4000]
+
+    r1, r2 = await asyncio.gather(reason("first"), reason("second"))
+    prompt = _V1_EVAL.format(
+        head=head, user=user, goal=goal, ui_diff=ui_diff, first_reason=r1, second_reason=r2,
+        pov=" Conclude from this user's point of view." if persona else "",
+        conf_fmt="\nConfidence: <1-5, how sure this user is>" if persona else "")
+    pick, conf, text = None, None, ""
+    for attempt in range(1 + max(0, retries)):  # the paper's code re-asks when the answer format is missing
+        text, _, _ = await call(f"{key}|evaluator" + (f"|r{attempt}" if attempt else ""), [prompt, *imgs],
+                                temperature=temperature, max_tokens=2048, media_resolution=media_resolution,
+                                json_mode=False)
+        pick, conf = parse_v1_verdict(text)
+        if pick:
+            break
+    w = float(conf or 1) if persona else 1.0
+    rx, ry = ((w, 0.0) if pick == "First" else (0.0, w) if pick == "Second" else (None, None))
+    ra, rb = (rx, ry) if order == "ab" else (ry, rx)
+    return {"order": order, "persona": (persona or GFOCUS_JUDGE).get("name"), "pick": pick, "confidence": conf,
+            "rating_x": rx, "rating_y": ry, "rating_a": ra, "rating_b": rb, "ok": pick is not None,
+            "reasons": " ".join(_section(text, "Conclusion").split())[:500],
+            "reasons_first": r1[:2000], "reasons_second": r2[:2000], "evaluator": text[:4000]}
+
+
+async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: list[dict[str, Any]] | None,
+                              ctx: dict[str, Any], flags: PairFlags, *, call: Call) -> dict[str, Any]:
+    """Full G-FOCUS: goal, goal-conditioned differences, argue both sides, Evaluator; per judge and order.
+
+    Each judge-order gives a pick (as rating_x/rating_y = weight/0, weight = persona confidence or 1), so
+    :func:`aggregate` yields per-order picks (confidence-weighted persona vote) and an order-free p(A>B).
+    With ``v1_prompts`` or ``strict_orders`` each order only sees the goal/differences extracted in that order.
+    """
+    orders = ORDERS if flags.both_orders else ORDERS[:1]
+    judges = [GFOCUS_JUDGE]
+    if flags.use_personas:
+        judges = personas or await plan_personas(ctx, call=call)
+    t = flags.argue_temperature
+    per_order: dict[str, dict[str, Any]] = {}
+    if flags.v1_prompts or not flags.goal_diffs:
+        got = await asyncio.gather(*(v1_goal_and_diffs(*_ordered(ev_a, ev_b, o), ctx, o, call=call, temperature=t,
+                                                       media_resolution=flags.media_resolution) for o in orders))
+        per_order = dict(zip(orders, got))
+    else:
+        gd = await extract_goal_and_diffs(ev_a, ev_b, ctx, call=call, both_orders=flags.both_orders,
+                                          media_resolution=flags.media_resolution)
+        for o in orders:
+            g, d = ((gd["by_order"].get(o, {}).get("goal", ""), gd["by_order"].get(o, {}).get("diffs"))
+                    if flags.strict_orders else (gd["goal"], gd["diffs"]))
+            per_order[o] = {"goal": g, "diffs_text": diffs_text(d, o), "diffs": d}
+    cells = [(o, k, p) for o in orders for k, p in enumerate(judges)]
+    judgments = await asyncio.gather(*(
+        argue_and_evaluate(*_ordered(ev_a, ev_b, o), ctx, per_order[o]["goal"], per_order[o]["diffs_text"], o,
+                           persona=p if flags.use_personas else None, call=call,
+                           key=f"argue|{o}|{k if flags.use_personas else 'single'}", temperature=t,
+                           media_resolution=flags.media_resolution)
+        for o, k, p in cells))
+    for (o, k, _), j in zip(cells, judgments):
+        j["k"] = k
+    agg = aggregate(list(judgments), judges)
+    w = agg["winner"]
+    backers = [j for j in judgments if j["ok"] and ((j["rating_a"] > j["rating_b"]) if w == "A" else
+                                                   (j["rating_a"] < j["rating_b"]) if w == "B" else False)]
+    return {
+        **agg,
+        "label_a": ev_a.label, "label_b": ev_b.label, "flags": flags.name(),
+        "goal": per_order[orders[0]]["goal"], "diffs": [], "goal_diffs_by_order": per_order,
+        "rationale": [f"{j['persona']}: {j['reasons']}" for j in backers[:3]], "judgments": list(judgments),
+        "failed_judgments": sum(not j["ok"] for j in judgments),
+    }
+
+
 async def compare_pair(ev_a: PairEvidence, ev_b: PairEvidence, personas: list[dict[str, Any]] | None,
                        ctx: dict[str, Any], flags: PairFlags | None = None, *, call: Call | None = None) -> dict[str, Any]:
     """Which version would these personas act on? Returns p(A>B), mean diff +- SE, votes, rationale, raw judgments."""
     flags = flags or PairFlags()
     call = call or default_call
+    if flags.argue_both:
+        return await compare_pair_gfocus(ev_a, ev_b, personas, ctx, flags, call=call)
     if not personas:
         personas = await plan_personas(ctx, call=call)
     goal, diffs, gd = "", None, None
