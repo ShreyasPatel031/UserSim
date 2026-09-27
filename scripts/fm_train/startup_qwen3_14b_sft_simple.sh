@@ -218,8 +218,8 @@ while true; do
 done
 UPLOADER_EOF
     chmod +x /tmp/checkpoint_uploader.sh
-    # Run as box user to avoid permission issues with trainer-owned files
-    sudo -u box nohup /tmp/checkpoint_uploader.sh &
+    # Run as root to be able to read all checkpoint files
+    nohup /tmp/checkpoint_uploader.sh &
     echo "Checkpoint uploader started with PID $!"
 }
 
