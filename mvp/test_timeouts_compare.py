@@ -200,3 +200,44 @@ class CompareShape(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ComparisonReport(unittest.TestCase):
+    def _study(self):
+        def run(aid, site, pid, task, score, signup=None):
+            return {
+                "agent_id": aid, "site_key": site, "site_url": "https://zo.computer/" if site == "product" else "https://zapier.com/",
+                "persona_id": pid, "task_title": task, "task_prompt": task,
+                "comparison_score": {"score": score, "level": "clear_on_website", "friction": 1, "reason": "r", "evidence_step": 1},
+                "signup": signup or {},
+                "trace": [{"step": 0}, {"step": 1}],
+            }
+
+        results = [
+            run("t1__p1__product", "product", "p1", "A", 8, {"ok": True}),
+            run("t1__p2__product", "product", "p2", "A", 5, {"ok": False, "reason": "email_timeout"}),
+            run("t2__p1__product", "product", "p1", "B", 7),
+            run("t2__p2__product", "product", "p2", "B", 6),
+            run("t1__p1__competitor_1", "competitor_1", "p1", "A", 6),
+        ]
+        return {
+            "url": "https://zo.computer/", "product_name": "Zo",
+            "personas": [{"id": "p1", "name": "Ann"}, {"id": "p2", "name": "Bo"}],
+            "agent_results": results, "summary": {"comparison_llm": {"first_impressions": [
+                {"site": "product"}, {"site": "competitor_1"}, {"site": "competitor_2"}, {"site": "competitor_3"}]}},
+        }
+
+    def test_not_run_and_summaries_and_signup_note(self) -> None:
+        from mvp.comparison import build_comparison
+
+        comp = build_comparison(self._study())
+        bo = next(p for p in comp["by_persona"] if p["persona_id"] == "p2")
+        self.assertEqual(bo["not_run"], ["competitor_1"])
+        self.assertIsNone(bo["scores"]["competitor_1"])
+        task_b = next(t for t in comp["by_task"] if t["task"] == "B")
+        self.assertEqual(task_b["not_run"], ["competitor_1"])
+        self.assertIn("ranks first", comp["persona_summary"])
+        self.assertIn("ran on Zo only", comp["task_summary"])
+        self.assertEqual(comp["signup_note"]["test_side"], 1)
+        self.assertLessEqual(len(comp["first_impressions"]), 3)
+        self.assertNotIn("competitor_3", [f["site"] for f in comp["first_impressions"]])

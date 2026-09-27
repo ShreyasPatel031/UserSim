@@ -310,6 +310,94 @@ def _strip_refs(text: Any) -> str:
     return re.sub(r"\s+([.,;])", r"\1", out).strip()
 
 
+
+_SIGNUP_FIX_RE = re.compile(r"sign[\s-]?up|sign[\s-]?in|log[\s-]?in|account creation|confirmation email|verification email", re.I)
+_EMAIL_WAIT_RE = re.compile(r"^email_timeout$|timeout", re.I)
+
+
+def test_side_signup_failures(study: dict[str, Any]) -> tuple[list[str], int, int]:
+    """Product runs whose signup died waiting for mail while other signups on the same site worked.
+
+    Study 7b5f0af9: Zo sent exactly 10 "Log in to Zo" emails for 20 product signups (all Gmail
+    plus-aliases of one account) and none to the other 10, which waited 214-272s. That is the
+    test hitting a per-account email limit, not a buyer's signup experience.
+    Returns (agent ids, signups ok, signups attempted).
+    """
+    rows = [
+        r for r in (study.get("agent_results") or [])
+        if isinstance(r, dict) and r.get("site_key") == "product" and isinstance(r.get("signup"), dict)
+        and str((r.get("signup") or {}).get("reason") or "") != "not_needed_public_task"
+    ]
+    ok = [r for r in rows if (r.get("signup") or {}).get("ok")]
+    if not ok:
+        return [], 0, len(rows)
+    waited = [
+        str(r.get("agent_id") or "") for r in rows
+        if not (r.get("signup") or {}).get("ok") and _EMAIL_WAIT_RE.search(str((r.get("signup") or {}).get("reason") or ""))
+    ]
+    return waited, len(ok), len(rows)
+
+
+def signup_summary(study: dict[str, Any]) -> dict[str, Any]:
+    ids, ok, tried = test_side_signup_failures(study)
+    if not ids:
+        return {"test_side": 0, "ok": ok, "tried": tried, "text": ""}
+    return {
+        "test_side": len(ids),
+        "ok": ok,
+        "tried": tried,
+        "agent_ids": ids,
+        "text": (
+            f"{ok} of {tried} product signups worked. The other {len(ids)} waited for a sign-in email that "
+            "never came while other signups on the same site got theirs: the test's shared inbox hit the "
+            "site's email limit. These runs are left out of the fixes; a real buyer signs up once."
+        ),
+    }
+
+
+def _names(rows: list[dict[str, Any]]) -> str:
+    return ", ".join(str(r.get("name") or r.get("task") or "") for r in rows)
+
+
+def _persona_summary(by_persona: list[dict[str, Any]], labels: dict[str, str]) -> str:
+    """Which kinds of buyer rank the product first, and which do not (from the averages)."""
+    if not by_persona:
+        return ""
+    prod = labels.get("product", "The product")
+    ahead = [p for p in by_persona if p.get("product_rank") == 1]
+    behind = [p for p in by_persona if (p.get("product_rank") or 1) > 1]
+    parts = [f"{prod} ranks first for {len(ahead)} of {len(by_persona)} buyers" + (f" ({_names(ahead)})" if ahead else "") + "."]
+    for p in behind:
+        scores = p.get("scores") or {}
+        lead = str(p.get("leader") or "")
+        fit = labels.get(str(p.get("expected_favorite") or ""), "")
+        if lead and lead != "product" and scores.get(lead) is not None:
+            tie = ", tie broken by level and friction" if scores.get(lead) == scores.get("product") else ""
+            parts.append(
+                f"Behind {labels.get(lead, lead)} for {p.get('name')} ({scores[lead]:.1f} vs {(scores.get('product') or 0):.1f}{tie}"
+                + (f"; planned to favor {fit}" if fit else "") + ")."
+            )
+    return " ".join(parts)
+
+
+def _task_summary(by_task: list[dict[str, Any]], labels: dict[str, str]) -> str:
+    if not by_task:
+        return ""
+    prod = labels.get("product", "The product")
+    compared = [t for t in by_task if len([k for k, v in (t.get("scores") or {}).items() if v is not None]) > 1]
+    solo = [t for t in by_task if t not in compared]
+    won = [t for t in compared if t.get("winner") == "product"]
+    lost = [t for t in compared if t.get("winner") and t.get("winner") != "product"]
+    parts = []
+    if compared:
+        parts.append(f"Head to head, {prod} wins {len(won)} of {len(compared)} tasks" + (f" ({_names(won)})" if won else "") + ".")
+    for t in lost:
+        parts.append(f"{t.get('winner_label')} wins {t.get('task')}.")
+    if solo:
+        parts.append(f"{len(solo)} task(s) ran on {prod} only: {_names(solo)}.")
+    return " ".join(parts)
+
+
 def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
     """Per-task winners, per-persona picks, wins/losses and strengths vs each rival. None without scores."""
     runs = [
@@ -399,6 +487,8 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
                 "why": _sc(win_run or {}).get("reason", "") if win_run else "",
                 "winner_evidence": _cite(win_run) if win_run else None,
                 "product_evidence": _cite(prod_run) if prod_run else None,
+                # Sites this task never ran on (a rival runs only its 2 x 2 slice): "not run", not 0.
+                "not_run": [s for s in sites if not cell(t, None, s)],
             }
         )
 
@@ -431,6 +521,8 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
                 # Picked a product its own averages did not rank first (shown on the page).
                 "against_scores": bool(pick) and pick not in tiers[0],
                 "product_rank": _rank_of(tiers, "product"),
+                "not_run": [s for s in sites if not cell(None, pid, s)],
+                "leader": tiers[0][0] if tiers and tiers[0] else "",
             }
         )
     pick_counts = {s: sum(1 for p in by_persona if p["pick"] == s) for s in sites}
@@ -514,10 +606,20 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
             }
         )
 
+    signup_note = signup_summary(study)
     fixes = sorted(
-        [f for f in (llm.get("fixes") or []) if isinstance(f, dict)],
+        [
+            f for f in (llm.get("fixes") or [])
+            if isinstance(f, dict)
+            # A sign-in email the test inbox never got is not a product fix (see signup_note).
+            and not (signup_note.get("test_side") and _SIGNUP_FIX_RE.search(str(f.get("issue") or "")))
+        ],
         key=lambda f: (-len(f.get("personas") or []), -len(f.get("moments") or [])),
     )
+    shown_sites = ["product"] + [s for s in sites if s != "product"][:2]
+    impressions = [
+        f for f in (llm.get("first_impressions") or []) if isinstance(f, dict) and f.get("site") in shown_sites
+    ][:3]
     headline_counts = ", ".join(
         f"{labels[s]}: {pick_counts[s]}" for s in sorted(sites, key=lambda k: (-pick_counts[k], k != "product", k))
     ) + (f", tie: {ties}" if ties else "")
@@ -543,9 +645,15 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
         "by_persona": by_persona,
         "wins": wins,
         "losses": losses,
+        # Every head-to-head loss (largest first), input for the fixes pass.
+        "all_losses": sorted([x for x in pairs if x["gap"] < 0], key=lambda x: x["gap"])[:20],
         "versus": versus,
-        "first_impressions": llm.get("first_impressions") or [],
+        "persona_summary": _persona_summary(by_persona, labels),
+        "task_summary": _task_summary(by_task, labels),
+        "first_impressions": impressions,
         "fixes": fixes,
+        "fixes_source": "losses" if llm.get("fixes_source") == "losses" else "weak_runs",
+        "signup_note": signup_note,
         "level_labels": LEVEL_LABEL,
     }
 
@@ -722,25 +830,67 @@ Return JSON only:
     }
 
 
-async def product_fixes(rows: list[dict[str, Any]], personas: dict[str, dict[str, Any]], label: str) -> list[dict[str, Any]]:
-    weak = [r for r in rows if float(_sc(r).get("score") or 0) < 7 or int(_sc(r).get("friction") or 0) >= 2]
-    if not weak:
+async def product_fixes(
+    rows: list[dict[str, Any]],
+    personas: dict[str, dict[str, Any]],
+    label: str,
+    *,
+    losses: list[dict[str, Any]] | None = None,
+    skip_ids: set[str] | None = None,
+) -> list[dict[str, Any]]:
+    """Fixes from where the product lost: each head-to-head loss (the rival's winning reason next to
+    the product run's own reason), then other weak product runs. Runs in ``skip_ids`` (test-side
+    signup failures) are left out so a test inbox limit does not become a product fix."""
+    by_id = {str(r.get("agent_id")): r for r in rows}
+    # Leave a test-side signup run out only when its weakness is the signup itself; its website
+    # visit afterwards is still what a buyer who did not sign up would see.
+    skip = {
+        a for a in (skip_ids or set())
+        if a in by_id and _SIGNUP_FIX_RE.search(f"{_sc(by_id[a]).get('reason') or ''} {_sc(by_id[a]).get('friction_note') or ''}")
+    }
+    loss_rows = []
+    for x in losses or []:
+        pid = str((x.get("product_evidence") or {}).get("agent_id") or "")
+        if pid and pid in by_id and pid not in skip:
+            loss_rows.append((x, by_id[pid]))
+    lost_ids = {str(r.get("agent_id")) for _, r in loss_rows}
+    weak = [
+        r for r in rows
+        if str(r.get("agent_id")) not in skip and str(r.get("agent_id")) not in lost_ids
+        and (float(_sc(r).get("score") or 0) < 7 or int(_sc(r).get("friction") or 0) >= 2)
+    ]
+    if not loss_rows and not weak:
         return []
-    refs = _refs(weak)
+    refs = _refs([r for _, r in loss_rows] + weak)
     back = {v: k for k, v in refs.items()}
-    lines = [
-        f"- [{back[str(r.get('agent_id'))]}] persona {r.get('persona_id')} ({(personas.get(str(r.get('persona_id'))) or {}).get('name', '')}) | "
-        f"{_base_task(r)} | {_sc(r).get('level')} {_sc(r).get('score')} friction {_sc(r).get('friction')} | "
-        f"step {_sc(r).get('evidence_step')}: {_sc(r).get('reason')} | {_sc(r).get('friction_note') or ''}"
+
+    def pname(r: dict[str, Any]) -> str:
+        return (personas.get(str(r.get("persona_id"))) or {}).get("name", "")
+
+    loss_lines = [
+        f"- [{back[str(r.get('agent_id'))]}] {x['task']} | {pname(r)} | {label} {x['product_score']} vs {x['competitor_label']} "
+        f"{x['competitor_score']} | why {x['competitor_label']} won: {x.get('reason') or ''} | "
+        f"{label} run, step {_sc(r).get('evidence_step')}: {_sc(r).get('reason')} | {_sc(r).get('friction_note') or ''}"
+        for x, r in loss_rows
+    ]
+    weak_lines = [
+        f"- [{back[str(r.get('agent_id'))]}] {pname(r)} | {_base_task(r)} | {_sc(r).get('level')} {_sc(r).get('score')} "
+        f"friction {_sc(r).get('friction')} | step {_sc(r).get('evidence_step')}: {_sc(r).get('reason')} | {_sc(r).get('friction_note') or ''}"
         for r in weak
     ]
-    prompt = f"""These are the weak runs on {label}, the product under study. Group them into distinct product problems a product team can fix (not problems with our test agents).
+    prompt = f"""{label} is the product under study. Below are the tasks where a competitor beat {label} for the same buyer, then other weak {label} runs.
+Group them into distinct product problems {label}'s team can fix, starting from the losses: what did the competitor do that {label} did not?
+Leave out problems with our test agents (captchas, test inbox or email delays, timeouts). Several {label} signups in this study
+never got their sign-in email because the test reused one inbox; do not report signup or email delivery as a product problem.
 
-{chr(10).join(lines)}
+Losses to a competitor:
+{chr(10).join(loss_lines) or '(none)'}
+Other weak {label} runs:
+{chr(10).join(weak_lines) or '(none)'}
 
 Return JSON only: {{"fixes": [{{"issue": "at most 14 words", "fix": "at most 16 words", "personas": ["persona ids hurt"],
   "moments": [{{"run": "run ref like R4", "step": step number, "what": "at most 12 words"}}]}}]}}
-At most 6 fixes, each with 1-3 moments. Use only run refs listed above."""
+At most 5 fixes, each with 1-3 moments. Use only run refs listed above."""
     data = await _json_call(prompt)
     out = []
     for f in (data or {}).get("fixes") or [] if isinstance(data, dict) else []:
@@ -750,11 +900,14 @@ At most 6 fixes, each with 1-3 moments. Use only run refs listed above."""
             {"agent_id": _resolve(m.get("run") or m.get("agent_id"), refs), "step": m.get("step"), "what": " ".join(str(m.get("what") or "").split())[:120]}
             for m in (f.get("moments") or []) if isinstance(m, dict) and _resolve(m.get("run") or m.get("agent_id"), refs)
         ][:3]
+        hurt = {str(p) for p in (f.get("personas") or []) if str(p) in personas}
+        # Persona ids from the cited runs too: the model often names people instead of ids.
+        hurt |= {str(by_id[m["agent_id"]].get("persona_id")) for m in moments if m["agent_id"] in by_id}
         out.append(
             {
                 "issue": " ".join(str(f["issue"]).split())[:160],
                 "fix": " ".join(str(f.get("fix") or "").split())[:180],
-                "personas": sorted({str(p) for p in (f.get("personas") or []) if str(p) in personas}),
+                "personas": sorted(p for p in hurt if p in personas),
                 "moments": moments,
             }
         )
@@ -836,22 +989,29 @@ async def apply_comparison_llm(study: Any) -> dict[str, Any]:
             print(f"[comparison] first impression {site} failed: {exc!r}"[:200], flush=True)
             return None
 
+    skip_ids = set(test_side_signup_failures(data)[0])
+
     async def fixes() -> list[dict[str, Any]]:
         try:
-            return await product_fixes([r for r in runs if r.get("site_key") == "product"], personas, labels["product"])
+            return await product_fixes(
+                [r for r in runs if r.get("site_key") == "product"], personas, labels["product"],
+                losses=comp.get("all_losses") or [], skip_ids=skip_ids,
+            )
         except Exception as exc:  # noqa: BLE001
             print(f"[comparison] fixes failed: {exc!r}"[:200], flush=True)
             return []
 
     results = await asyncio.gather(
         asyncio.gather(*(pick(pid) for pid in personas)),
-        asyncio.gather(*(impression(s) for s in labels)),
+        # The product and its first two rivals (an older 3-rival study drops the third).
+        asyncio.gather(*(impression(s) for s in ["product"] + [k for k in labels if k != "product"][:2])),
         fixes(),
     )
     llm = {
         "picks": [p for p in results[0] if p],
         "first_impressions": [f for f in results[1] if f],
         "fixes": results[2],
+        "fixes_source": "losses",
     }
     summary = dict(getattr(study, "summary", None) or data.get("summary") or {})
     summary["comparison_llm"] = llm
