@@ -1,42 +1,48 @@
 #!/usr/bin/env python3
-"""WiserUI-Bench Task 1 (which A/B variant won?) with UserSim's model stack.
+"""WiserUI-Bench Task 1 (which A/B variant won?) through UserSim's shared pairwise judge.
 
-Conditions (each pair judged in BOTH orders: (win, lose) and (lose, win)):
-  baseline      one gemini-2.5-flash call, the paper's zero_shot prompt verbatim + two screenshots
-  baseline_ctx  same, plus the page context the planner gets (company / page type / industry / platform)
-  usersim       UserSim-style: planner invents ~6 visitors for the page (context only, the
-                _CMP_PERSONAS shape from mvp/fast_plan.py), each persona views both screenshots and
-                says which it would act on; majority vote (tie -> summed confidence -> 'tie' = wrong)
+Thin loader: each pair becomes two ``mvp.pairwise.PairEvidence`` (win / lose screenshots), fed to
+``mvp.pairwise.compare_pair`` with the flags of one ablation arm. All prompts and aggregation live in product code.
 
-Model access goes through UserSim's own Vertex client (mvp.e2e_ui_run._gemini_client) with
-UserSim's call conventions (thinking_budget=0, JSON mime type for structured calls).
-The dataset's `rationale` and `ui_change` fields are never shown to any model (rationale names the
-winning side: "the right version ...").
+Side A is the winner for half the pairs (fixed by a hash of the index), so nothing in the call order encodes
+the answer. compare_pair judges both presentation orders; each order is written as a row in the old
+judgments.jsonl format (order wl = winner shown first as Version X), so score.py still works, and the full
+compare_pair output goes to pairs.jsonl for ablate.py.
 
-Every model call is cached in $OUT/calls.jsonl keyed by (condition, index, order, role, k), so runs resume.
+Every model call is cached in $OUT/calls.jsonl keyed by (index, call key), so runs resume and cost is metered from
+Vertex usage metadata. The dataset's ``rationale`` / ``ui_change`` are never shown to the model.
+
+Personas: ``--personas-from results/full/calls.jsonl`` reuses the six visitors the old UserSim arm (A0) planned
+for each page (same planner prompt, now mvp.fast_plan._AB_PERSONAS), so arms differ only in the judge; otherwise
+compare_pair plans them with mvp.fast_plan.ab_personas.
 """
 from __future__ import annotations
 
 import argparse
 import asyncio
+import hashlib
 import json
 import os
-import re
 import sys
 import time
 from pathlib import Path
-from typing import Any
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path[:0] = [str(ROOT), str(ROOT / "src")]
+
+from mvp.fast_plan import ab_personas  # noqa: E402
+from mvp.pairwise import PAIRWISE_MODEL, PairEvidence, PairFlags, compare_pair, parse_json  # noqa: E402
 
 BENCH = Path(os.environ.get("WISERUI_BENCH", "/workspace/bench/wiserui"))
 DATA = BENCH / "repo" / "WiserUI_Bench.json"
 IMAGES = BENCH / "images_clean"
-PROMPT_ZS = (BENCH / "repo" / "inference" / "prompts_task1" / "zero_shot.txt").read_text()
-
-MODEL = os.environ.get("WISERUI_MODEL", "gemini-2.5-flash")
-# Vertex list price, gemini-2.5-flash (USD / 1M tokens): input 0.30 (text/image), output 2.50.
+# Vertex list price (USD / 1M tokens): input, output.
 PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-2.5-flash-lite": (0.10, 0.40), "gemini-2.5-pro": (1.25, 10.0)}
-
-ORDERS = {"wl": ("win", "lose"), "lw": ("lose", "win")}
+STREAMS = {
+    "s1": PairFlags(both_orders=True, goal_diffs=False, debias=False),
+    "s2": PairFlags(both_orders=True, goal_diffs=True, debias=False),
+    "s3": PairFlags(both_orders=True, goal_diffs=True, debias=True),
+}
 
 
 def source_of(item: dict) -> str:
@@ -44,38 +50,14 @@ def source_of(item: dict) -> str:
     return "goodui" if "goodui" in s else "vwo" if "vwo" in s else "abtest"
 
 
-def context_line(item: dict) -> str:
-    return (f"{item['company']} {item['page_type']} ({item['industry_domain']}, "
-            f"{item['web_mobile']} {'app/site' if item['web_mobile'] == 'mobile' else 'site'})")
+def ctx_of(item: dict) -> dict:
+    return {"company": item["company"], "page_type": item["page_type"], "industry": item["industry_domain"],
+            "platform": "mobile app or mobile site" if item["web_mobile"] == "mobile" else "website"}
 
 
-# ----------------------------------------------------------------- prompts
+def a_is_win(idx: int) -> bool:
+    return int(hashlib.sha256(f"wiserui|{idx}".encode()).hexdigest(), 16) % 2 == 0
 
-PLANNER = """Invent six realistic visitors for a study of one page: the {page_type} of {company} ({industry}, {platform}). Reply with JSON only.
-
-Return {{"personas": [{{"name": "first and last name", "role": "who they are (job or life situation)",
-  "bio": "at most 25 words: situation, what they need from this page, how they judge it",
-  "goal": "what they came to this page to do, 3-10 words"}}]}}
-Rules: people who would really land on this page, spread evenly across intent: at least one ready to act now,
-at least one comparing options or hesitant, at least one first-time visitor who does not know {company} yet.
-Vary age, tech comfort and price sensitivity. Use the page's likely language market. No quotes."""
-
-PERSONA = """You are {name}, {role}. {bio}
-You came to {company}'s {page_type} ({platform}) to: {goal}.
-
-The two screenshots show two versions of this page: the first image is the First version, the second image is the Second version.
-Look at each one as if it were the page in front of you right now, as yourself (not as a designer).
-Then say which version you would be more likely to act on: take the page's main next step (click the main button, add to cart, sign up, search, continue).
-
-Return JSON only:
-{{"noticed_first": "what catches your eye first on the First version, at most 15 words",
-  "noticed_second": "what catches your eye first on the Second version, at most 15 words",
-  "choice": "First or Second",
-  "confidence": 1-5,
-  "reason": "one sentence in your own voice"}}"""
-
-
-# ----------------------------------------------------------------- model calls
 
 class Ledger:
     def __init__(self, path: Path):
@@ -86,231 +68,86 @@ class Ledger:
                 try:
                     rec = json.loads(line)
                     self.cache[rec["key"]] = rec
-                except Exception:
+                except Exception:  # noqa: BLE001
                     pass
-        self.lock = asyncio.Lock()
-        self.cost = 0.0
+        self.cost = sum(r.get("cost_usd", 0.0) for r in self.cache.values())
         self.new_cost = 0.0
-        for rec in self.cache.values():
-            self.cost += rec.get("cost_usd", 0.0)
 
-    async def put(self, rec: dict) -> None:
-        async with self.lock:
-            self.cache[rec["key"]] = rec
-            self.cost += rec.get("cost_usd", 0.0)
-            self.new_cost += rec.get("cost_usd", 0.0)
-            with self.path.open("a") as f:
-                f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    def put(self, rec: dict) -> None:
+        self.cache[rec["key"]] = rec
+        self.cost += rec.get("cost_usd", 0.0)
+        self.new_cost += rec.get("cost_usd", 0.0)
+        with self.path.open("a") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
-_CLIENT = None
+def make_call(ledger: Ledger, sem: asyncio.Semaphore, prefix: str):
+    from mvp.pairwise import default_call
+
+    async def call(key: str, contents: list, *, temperature: float, max_tokens: int, media_resolution=None):
+        k = f"{prefix}|{key}"
+        hit = ledger.cache.get(k)
+        if hit and not hit.get("error"):
+            return hit["text"], hit["tokens_in"], hit["tokens_out"]
+        async with sem:
+            t0 = time.time()
+            try:
+                text, tin, tout = await default_call(key, contents, temperature=temperature, max_tokens=max_tokens,
+                                                     media_resolution=media_resolution)
+                err = None
+            except Exception as exc:  # noqa: BLE001
+                text, tin, tout, err = "", 0, 0, repr(exc)[:300]
+        pin, pout = PRICE.get(PAIRWISE_MODEL, (0.30, 2.50))
+        ledger.put({"key": k, "model": PAIRWISE_MODEL, "text": text, "tokens_in": tin, "tokens_out": tout,
+                    "cost_usd": tin / 1e6 * pin + tout / 1e6 * pout, "secs": round(time.time() - t0, 2),
+                    "error": err, "ts": time.time()})
+        return text, tin, tout
+
+    return call
 
 
-def client():
-    global _CLIENT
-    if _CLIENT is None:
-        from mvp.e2e_ui_run import _gemini_client  # UserSim's Vertex client (auth.vertex_credentials)
-        _CLIENT = _gemini_client()
-    return _CLIENT
+def load_a0_personas(path: Path) -> dict[int, list[dict]]:
+    out: dict[int, list[dict]] = {}
+    for line in path.open():
+        rec = json.loads(line)
+        parts = rec["key"].split("|")
+        if len(parts) >= 4 and parts[0] == "usersim" and parts[3] == "planner" and not rec.get("error"):
+            out[int(parts[1])] = parse_json(rec["text"]) or {}
+    return out
 
 
-def _call(parts: list[Any], *, temperature: float, json_mode: bool, max_tokens: int) -> tuple[str, int, int]:
-    from google.genai import types
-
-    cfg = types.GenerateContentConfig(
-        temperature=temperature,
-        max_output_tokens=max_tokens,
-        thinking_config=types.ThinkingConfig(thinking_budget=0),  # UserSim convention (gemini_config.py)
-        response_mime_type="application/json" if json_mode else None,
-        # UserSim leaves media resolution at the API default (~258 tokens/image); WISERUI_MEDIA_RES=high overrides.
-        media_resolution=(types.MediaResolution.MEDIA_RESOLUTION_HIGH
-                          if os.environ.get("WISERUI_MEDIA_RES") == "high" else None),
-    )
-    last = None
-    for attempt in range(6):
-        try:
-            resp = client().models.generate_content(model=MODEL, contents=parts, config=cfg)
-            um = resp.usage_metadata
-            return (resp.text or "").strip(), int(um.prompt_token_count or 0), int(um.candidates_token_count or 0)
-        except Exception as exc:  # 429 / 5xx: back off
-            last = exc
-            code = getattr(exc, "code", None)
-            if isinstance(code, int) and 400 <= code < 500 and code != 429:
-                break
-            time.sleep(min(60, 3 * 2 ** attempt))
-    raise RuntimeError(f"model call failed: {last!r}")
-
-
-def img_part(idx: int, label: str):
-    from google.genai import types
-    return types.Part.from_bytes(data=(IMAGES / str(idx) / f"{label}.png").read_bytes(), mime_type="image/png")
-
-
-STITCH = os.environ.get("WISERUI_STITCH") == "1"
-
-
-def stitched_part(idx: int, a: str, b: str):
-    """One side-by-side image: 'First' (a) left, 'Second' (b) right, labelled on a header bar.
-
-    Vertex gemini-2.5-flash shrinks every image to ~258 tokens when a request carries 2+ images (HIGH media
-    resolution is refused for multi-image requests), so full-page screenshots lose small text. A single stitched
-    image is tiled at full detail instead.
-    """
-    import io
-
-    from google.genai import types
-    from PIL import Image, ImageDraw, ImageFont
-
-    ia = Image.open(IMAGES / str(idx) / f"{a}.png").convert("RGB")
-    ib = Image.open(IMAGES / str(idx) / f"{b}.png").convert("RGB")
-    head, gap = 90, 40
-    w, h = ia.width + gap + ib.width, max(ia.height, ib.height) + head
-    canvas = Image.new("RGB", (w, h), (255, 255, 255))
-    canvas.paste(ia, (0, head))
-    canvas.paste(ib, (ia.width + gap, head))
-    d = ImageDraw.Draw(canvas)
-    d.rectangle([ia.width, 0, ia.width + gap - 1, h], fill=(40, 40, 40))
-    font = ImageFont.load_default(size=60)
-    d.rectangle([0, 0, ia.width - 1, head - 1], fill=(225, 225, 225))
-    d.rectangle([ia.width + gap, 0, w - 1, head - 1], fill=(225, 225, 225))
-    d.text((20, 12), "First", fill=(0, 0, 0), font=font)
-    d.text((ia.width + gap + 20, 12), "Second", fill=(0, 0, 0), font=font)
-    buf = io.BytesIO()
-    canvas.save(buf, format="PNG")
-    return types.Part.from_bytes(data=buf.getvalue(), mime_type="image/png")
-
-
-def pair_parts(idx: int, a: str, b: str) -> list:
-    return [stitched_part(idx, a, b)] if STITCH else [img_part(idx, a), img_part(idx, b)]
-
-
-async def cached_call(ledger: Ledger, sem: asyncio.Semaphore, key: str, parts_fn, **kw) -> dict:
-    if key in ledger.cache and not ledger.cache[key].get("error"):
-        return ledger.cache[key]
-    async with sem:
-        t0 = time.time()
-        try:
-            text, tin, tout = await asyncio.to_thread(_call, parts_fn(), **kw)
-            err = None
-        except Exception as exc:  # noqa: BLE001
-            text, tin, tout, err = "", 0, 0, repr(exc)[:300]
-    pin, pout = PRICE.get(MODEL, (0.30, 2.50))
-    rec = {"key": key, "model": MODEL, "text": text, "tokens_in": tin, "tokens_out": tout,
-           "cost_usd": tin / 1e6 * pin + tout / 1e6 * pout, "secs": round(time.time() - t0, 2), "error": err,
-           "ts": time.time()}
-    await ledger.put(rec)
-    return rec
-
-
-def parse_first_second(text: str) -> str | None:
-    m = re.findall(r"More effective:\s*\**\s*<?\s*(First|Second)", text, re.I)
-    if m:
-        return m[-1].capitalize()
-    return None
-
-
-def parse_json(text: str) -> Any:
-    m = re.search(r"[\[{].*[\]}]", text or "", re.S)
-    try:
-        return json.loads(m.group(0) if m else text)
-    except Exception:
-        return None
-
-
-# ----------------------------------------------------------------- conditions
-
-async def run_baseline(item: dict, order: str, ledger, sem, *, with_ctx: bool) -> dict:
-    idx = item["index"]
-    a, b = ORDERS[order]
-    cond = "baseline_ctx" if with_ctx else "baseline"
-    prompt = PROMPT_ZS
-    if STITCH:
-        prompt = prompt.replace("The two screenshots show", "The screenshot shows, side by side (First on the left, Second on the right),")
-    if with_ctx:
-        prompt = f"Page: {context_line(item)}.\n\n" + PROMPT_ZS
-    rec = await cached_call(ledger, sem, f"{cond}|{idx}|{order}|judge|0",
-                            lambda: [prompt, *pair_parts(idx, a, b)],
-                            temperature=0.2, json_mode=False, max_tokens=2048)
-    pick = parse_first_second(rec["text"])
-    return {"condition": cond, "index": idx, "order": order, "pick": pick, "votes": None}
-
-
-async def plan_personas(item: dict, ledger, sem, n: int) -> list[dict]:
-    idx = item["index"]
-    prompt = PLANNER.format(page_type=item["page_type"], company=item["company"], industry=item["industry_domain"],
-                            platform=("mobile app or mobile site" if item["web_mobile"] == "mobile" else "website"))
-    rec = await cached_call(ledger, sem, f"usersim|{idx}|-|planner|0", lambda: [prompt],
-                            temperature=0.3, json_mode=True, max_tokens=2048)
-    data = parse_json(rec["text"]) or {}
-    personas = [p for p in (data.get("personas") or []) if isinstance(p, dict) and p.get("name")]
-    return personas[:n]
-
-
-async def run_usersim(item: dict, order: str, personas: list[dict], ledger, sem) -> dict:
-    idx = item["index"]
-    a, b = ORDERS[order]
-    platform = "mobile" if item["web_mobile"] == "mobile" else "website"
-
-    async def one(k: int, p: dict) -> dict:
-        prompt = PERSONA.format(name=p.get("name", ""), role=p.get("role", ""), bio=p.get("bio", ""),
-                                goal=p.get("goal", "look around"), company=item["company"],
-                                page_type=item["page_type"], platform=platform)
-        if STITCH:
-            prompt = prompt.replace(
-                "The two screenshots show two versions of this page: the first image is the First version, the second image is the Second version.",
-                "The screenshot shows two versions of this page side by side: First on the left, Second on the right (labelled at the top).")
-        rec = await cached_call(ledger, sem, f"usersim|{idx}|{order}|persona|{k}",
-                                lambda: [prompt, *pair_parts(idx, a, b)],
-                                temperature=0.4, json_mode=True, max_tokens=512)
-        j = parse_json(rec["text"]) or {}
-        ch = str(j.get("choice") or "").strip().capitalize()
-        try:
-            conf = float(j.get("confidence") or 0)
-        except (TypeError, ValueError):
-            conf = 0.0
-        return {"k": k, "persona": p.get("name"), "choice": ch if ch in ("First", "Second") else None,
-                "confidence": conf, "reason": j.get("reason")}
-
-    votes = await asyncio.gather(*(one(k, p) for k, p in enumerate(personas)))
-    nf = sum(v["choice"] == "First" for v in votes)
-    ns = sum(v["choice"] == "Second" for v in votes)
-    if nf != ns:
-        pick = "First" if nf > ns else "Second"
-    else:
-        cf = sum(v["confidence"] for v in votes if v["choice"] == "First")
-        cs = sum(v["confidence"] for v in votes if v["choice"] == "Second")
-        pick = "First" if cf > cs else "Second" if cs > cf else "tie"
-    return {"condition": "usersim", "index": idx, "order": order, "pick": pick, "votes": votes,
-            "n_first": nf, "n_second": ns, "tie_vote": nf == ns}
+def evidence(idx: int, label: str) -> PairEvidence:
+    return PairEvidence(label=label, screenshots=[(IMAGES / str(idx) / f"{label}.png").read_bytes()])
 
 
 async def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--indices", default="", help="comma list or @file; default all usable pairs with images")
-    ap.add_argument("--conditions", default="baseline,baseline_ctx,usersim")
-    ap.add_argument("--personas", type=int, default=6)
-    ap.add_argument("--concurrency", type=int, default=10)
-    ap.add_argument("--out", default=str(BENCH / "results" / "run1"))
-    ap.add_argument("--max-cost", type=float, default=40.0, help="stop scheduling new pairs above this spend")
+    ap.add_argument("--indices", default="", help="comma list or @file")
+    ap.add_argument("--stream", default="s1", choices=sorted(STREAMS), help="ablation arm (flags)")
+    ap.add_argument("--personas-from", default=str(BENCH / "results" / "full" / "calls.jsonl"))
+    ap.add_argument("--concurrency", type=int, default=8)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--max-cost", type=float, default=15.0, help="stop scheduling new pairs above this spend")
+    ap.add_argument("--aa", action="store_true", help="A/A check: the winner screenshot as both versions")
     args = ap.parse_args()
 
+    flags = STREAMS[args.stream]
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     data = {x["index"]: x for x in json.load(open(DATA))}
-    raw = args.indices
-    if raw.startswith("@"):
-        raw = Path(raw[1:]).read_text()
-    if raw.strip():
-        idxs = [int(i) for i in raw.replace("\n", ",").split(",") if i.strip()]
-    else:
-        idxs = sorted(data)
+    raw = Path(args.indices[1:]).read_text() if args.indices.startswith("@") else args.indices
+    idxs = [int(i) for i in raw.replace("\n", ",").split(",") if i.strip()]
     idxs = [i for i in idxs if (IMAGES / str(i) / "win.png").exists() and (IMAGES / str(i) / "lose.png").exists()]
-    conds = [c.strip() for c in args.conditions.split(",") if c.strip()]
+    a0 = load_a0_personas(Path(args.personas_from)) if args.personas_from and Path(args.personas_from).exists() else {}
     ledger = Ledger(out / "calls.jsonl")
     sem = asyncio.Semaphore(args.concurrency)
-    print(f"[wiserui] {len(idxs)} pairs x {conds} model={MODEL} prior_spend=${ledger.cost:.3f}", flush=True)
+    cond = f"pw_{args.stream}" + ("_aa" if args.aa else "")
+    print(f"[wiserui] {len(idxs)} pairs stream={args.stream} flags={flags} model={PAIRWISE_MODEL} "
+          f"a0_personas={len(a0)} prior_spend=${ledger.cost:.3f}", flush=True)
+    (out / "config.json").write_text(json.dumps({"stream": args.stream, "flags": flags.__dict__, "model": PAIRWISE_MODEL,
+                                                 "personas_from": args.personas_from, "aa": args.aa, "n": len(idxs)}, indent=1))
 
-    rows: list[dict] = []
+    results: dict[int, dict] = {}
     done = 0
 
     async def pair(i: int) -> None:
@@ -318,39 +155,56 @@ async def main() -> None:
         if ledger.cost > args.max_cost:
             return
         item = data[i]
-        jobs = []
-        for order in ORDERS:
-            if "baseline" in conds:
-                jobs.append(run_baseline(item, order, ledger, sem, with_ctx=False))
-            if "baseline_ctx" in conds:
-                jobs.append(run_baseline(item, order, ledger, sem, with_ctx=True))
-        if "usersim" in conds:
-            personas = await plan_personas(item, ledger, sem, args.personas)
-            for order in ORDERS:
-                jobs.append(run_usersim(item, order, personas, ledger, sem))
-        res = await asyncio.gather(*jobs)
-        for r in res:
-            r["source"] = source_of(item)
-            r["web_mobile"] = item["web_mobile"]
-        rows.extend(res)
+        ctx = ctx_of(item)
+        call = make_call(ledger, sem, f"{i}")
+        personas = ab_personas(a0[i], ctx) if i in a0 else None
+        aw = a_is_win(i)
+        if args.aa:
+            ev_a, ev_b = evidence(i, "win"), evidence(i, "win")
+            ev_b.label = "win_copy"
+        else:
+            ev_a, ev_b = (evidence(i, "win"), evidence(i, "lose")) if aw else (evidence(i, "lose"), evidence(i, "win"))
+        try:
+            res = await compare_pair(ev_a, ev_b, personas, ctx, flags, call=call)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[wiserui] pair {i} failed: {exc!r}"[:300], flush=True)
+            return
+        res.update({"index": i, "a_is_win": aw, "source": source_of(item), "web_mobile": item["web_mobile"],
+                    "personas_used": personas or []})
+        results[i] = res
         done += 1
         if done % 10 == 0 or done == len(idxs):
             print(f"[wiserui] {done}/{len(idxs)} pairs  spend=${ledger.cost:.3f} (this run ${ledger.new_cost:.3f})", flush=True)
 
-    # Bounded pair-level fan-out so partial results land early.
-    psem = asyncio.Semaphore(max(2, args.concurrency // 2))
+    psem = asyncio.Semaphore(max(2, args.concurrency))
 
-    async def guarded(i):
+    async def guarded(i: int) -> None:
         async with psem:
             await pair(i)
 
     await asyncio.gather(*(guarded(i) for i in idxs))
-    rows.sort(key=lambda r: (r["condition"], r["index"], r["order"]))
+
+    rows = []
+    with (out / "pairs.jsonl").open("w") as f:
+        for i in sorted(results):
+            res = results[i]
+            f.write(json.dumps(res, ensure_ascii=False) + "\n")
+            win_side = "A" if res["a_is_win"] else "B"
+            for o, ov in res["orders"].items():
+                # order ab shows A as Version X (first). wl = winner shown first.
+                winner_first = (o == "ab") == (win_side == "A")
+                pick = {"X": "First", "Y": "Second"}.get(ov["pick"], "tie")
+                votes = [{"choice": "First" if (j["rating_x"] > j["rating_y"]) else "Second" if j["rating_x"] < j["rating_y"] else None,
+                          "persona": j["persona"], "rating_x": j["rating_x"], "rating_y": j["rating_y"]}
+                         for j in res["judgments"] if j["order"] == o and j["ok"]]
+                rows.append({"condition": cond, "index": i, "order": "wl" if winner_first else "lw", "pick": pick,
+                             "votes": votes, "tie_vote": ov["pick"] == "tie", "x_minus_y": ov["x_minus_y"],
+                             "source": res["source"], "web_mobile": res["web_mobile"]})
     with (out / "judgments.jsonl").open("w") as f:
-        for r in rows:
+        for r in sorted(rows, key=lambda r: (r["index"], r["order"])):
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     errs = sum(1 for r in ledger.cache.values() if r.get("error"))
-    print(f"[wiserui] wrote {len(rows)} judgments; total spend ${ledger.cost:.3f}; call errors={errs}", flush=True)
+    print(f"[wiserui] wrote {len(results)} pairs; total spend ${ledger.cost:.3f}; call errors={errs}", flush=True)
 
 
 if __name__ == "__main__":

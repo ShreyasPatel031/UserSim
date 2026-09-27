@@ -132,6 +132,47 @@ Rules: realistic buyers in this category, spread evenly: at least one natural fi
 natural fit for each competitor (for example an enterprise CS leader fits an enterprise suite, a two-person startup
 fits a self-serve tool). No quotes."""
 
+# A/B page comparison (mvp.pairwise): visitors for one page, from page context only. Same six-persona shape as
+# _CMP_PERSONAS, spread across intent instead of across rival products.
+_AB_PERSONAS = """Invent six realistic visitors for a study of one page: the {page_type} of {company} ({industry}, {platform}). Reply with JSON only.
+
+Return {{"personas": [{{"name": "first and last name", "role": "who they are (job or life situation)",
+  "bio": "at most 25 words: situation, what they need from this page, how they judge it",
+  "goal": "what they came to this page to do, 3-10 words"}}]}}
+Rules: people who would really land on this page, spread evenly across intent: at least one ready to act now,
+at least one comparing options or hesitant, at least one first-time visitor who does not know {company} yet.
+Vary age, tech comfort and price sensitivity. Use the page's likely language market. No quotes."""
+
+
+def ab_personas_prompt(ctx: dict[str, Any]) -> str:
+    """Planner prompt for :func:`ab_personas`; ``ctx`` has company, page_type, industry, platform (any may be empty)."""
+    return _AB_PERSONAS.format(
+        page_type=ctx.get("page_type") or "main page",
+        company=ctx.get("company") or ctx.get("url") or "this site",
+        industry=ctx.get("industry") or "unknown industry",
+        platform=ctx.get("platform") or "website",
+    )
+
+
+def ab_personas(data: dict[str, Any], ctx: dict[str, Any] | None = None, n: int | None = None) -> list[dict[str, Any]]:
+    """Normalize planner JSON into ``n`` (default PERSONA_COUNT) A/B visitors (name, role, bio, goal), distinct names."""
+    n = PERSONA_COUNT if n is None else n
+    out: list[dict[str, Any]] = []
+    for item in (data or {}).get("personas") or []:
+        if not isinstance(item, dict) or not str(item.get("name") or "").strip():
+            continue
+        out.append(
+            {
+                "name": " ".join(str(item.get("name")).split())[:40],
+                "role": " ".join(str(item.get("role") or "").split())[:80],
+                "bio": " ".join(str(item.get("bio") or "").split())[:240],
+                "goal": " ".join(str(item.get("goal") or "look around").split())[:80],
+            }
+        )
+    seed = str((ctx or {}).get("company") or (ctx or {}).get("url") or "")
+    return unique_persona_names(out[:n], seed=seed)
+
+
 # Framing fix "position": one small call on the full page read decides what
 # category the product is in before rivals, buyers and tasks are picked.
 _POSITIONING = """Say what this product is. Reply with JSON only.
