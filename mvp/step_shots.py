@@ -15,12 +15,26 @@ from __future__ import annotations
 import asyncio
 import os
 import time
+import weakref
 from contextvars import ContextVar
 from typing import Any
 
 STUDY: ContextVar[str] = ContextVar("step_shot_study", default="")
 _PENDING: dict[str, set[asyncio.Task]] = {}
-STATS: dict[str, int] = {"captured": 0, "uploaded": 0, "failed": 0}
+STATS: dict[str, int] = {"captured": 0, "uploaded": 0, "failed": 0, "retried": 0}
+# One capture at a time per page: two overlapping page.screenshot calls (the
+# step-0 shot and the first model step's shot) made the second one fail.
+_LOCKS: "weakref.WeakKeyDictionary[Any, asyncio.Lock]" = weakref.WeakKeyDictionary()
+
+
+def _lock(page: Any) -> asyncio.Lock | None:
+    try:
+        lock = _LOCKS.get(page)
+        if lock is None:
+            lock = _LOCKS[page] = asyncio.Lock()
+        return lock
+    except TypeError:
+        return None
 
 
 def enabled() -> bool:
@@ -42,13 +56,22 @@ def shot_url(study_id: str, agent_id: str, step: int, suffix: str = "") -> str:
     return f"/api/studies/{study_id}/agents/{agent_id}/screenshots/{shot_name(step, suffix)}"
 
 
-async def capture(page: Any, timeout_s: float = 4.0) -> bytes | None:
+async def _shoot(page: Any, timeout_s: float) -> bytes | None:
     try:
-        blob = await page.screenshot(
+        return await page.screenshot(
             type="jpeg", quality=_quality(), full_page=False, scale="css", timeout=int(timeout_s * 1000)
         )
     except Exception:  # noqa: BLE001
         return None
+
+
+async def capture(page: Any, timeout_s: float = 4.0) -> bytes | None:
+    lock = _lock(page)
+    if lock is None:
+        blob = await _shoot(page, timeout_s)
+    else:
+        async with lock:
+            blob = await _shoot(page, timeout_s)
     if blob:
         STATS["captured"] += 1
     return blob or None
@@ -86,17 +109,37 @@ def _upload(study_id: str, agent_id: str, step: int, blob: bytes, suffix: str = 
     return False
 
 
-def attach(task: asyncio.Task | None, row: dict[str, Any], agent_id: str, step: int, suffix: str = "") -> None:
-    """When ``task`` has the JPEG, upload it and point ``row`` at it."""
+def attach(
+    task: asyncio.Task | None,
+    row: dict[str, Any],
+    agent_id: str,
+    step: int,
+    suffix: str = "",
+    page: Any = None,
+) -> None:
+    """When ``task`` has the JPEG, upload it and point ``row`` at it.
+
+    With ``page``, a failed capture (the step's click navigated away while the
+    shot was in flight) is retried once on the page as it is now, so every
+    step still gets an image; the row is marked ``screenshot_after_action``.
+    """
     study_id = STUDY.get()
-    if task is None or not study_id or not isinstance(row, dict):
+    if not study_id or not isinstance(row, dict) or (task is None and page is None):
         return
 
     async def _finish() -> None:
-        try:
-            blob = await task
-        except Exception:  # noqa: BLE001
-            blob = None
+        blob = None
+        if task is not None:
+            try:
+                blob = await task
+            except Exception:  # noqa: BLE001
+                blob = None
+        if not blob and page is not None and enabled():
+            await asyncio.sleep(0.4)
+            blob = await capture(page, timeout_s=8.0)
+            if blob:
+                STATS["retried"] += 1
+                row["screenshot_after_action"] = True
         if not blob:
             STATS["failed"] += 1
             return
@@ -121,7 +164,7 @@ def attach(task: asyncio.Task | None, row: dict[str, Any], agent_id: str, step: 
 
 
 def shot_now(page: Any, row: dict[str, Any], agent_id: str, step: int, suffix: str = "") -> None:
-    attach(start_capture(page), row, agent_id, step, suffix)
+    attach(start_capture(page), row, agent_id, step, suffix, page=page)
 
 
 async def drain(agent_id: str, timeout_s: float = 8.0) -> int:

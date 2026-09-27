@@ -111,9 +111,31 @@ def same_site(a: str, b: str) -> bool:
         return False
     if ha == hb or ha.endswith("." + hb) or hb.endswith("." + ha):
         return True
+    if _sibling(ha, hb) or _sibling(hb, ha):
+        return True
     # One brand under two TLDs (notion.so redirects to notion.com).
     ba, bb = _brand(ha), _brand(hb)
     return bool(ba) and ba == bb
+
+
+# A product's own app/workspace domain under a different name. The brand match
+# below needs a label of 4+ characters, so n8n.io -> <workspace>.app.n8n.cloud
+# (where every successful n8n signup lands) was flagged as "ended off-site":
+# 28/108 false run issues in study 51f4099c.
+_SIBLING_DOMAINS: dict[str, frozenset[str]] = {
+    "n8n.io": frozenset({"n8n.cloud"}),
+}
+
+
+def _under(host: str, domain: str) -> bool:
+    return host == domain or host.endswith("." + domain)
+
+
+def _sibling(ha: str, hb: str) -> bool:
+    for home, others in _SIBLING_DOMAINS.items():
+        if _under(ha, home) and any(_under(hb, o) for o in others):
+            return True
+    return False
 
 
 _SECOND_LEVEL = frozenset({"co", "com", "org", "net", "ac", "gov", "edu"})

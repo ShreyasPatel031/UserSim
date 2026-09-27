@@ -66,6 +66,12 @@ class CompetitorUrlTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(same_site("https://www.asana.com/", "https://asana.com/"))
         self.assertFalse(same_site("https://height.app/", "https://www.atlassian.com/software/jira"))
 
+    def test_same_site_product_app_domain(self) -> None:
+        # Every successful n8n signup lands on <workspace>.app.n8n.cloud.
+        self.assertTrue(same_site("https://riveralabs0456.app.n8n.cloud/", "https://n8n.io/"))
+        self.assertTrue(same_site("https://n8n.io/", "https://app.n8n.cloud/signin"))
+        self.assertFalse(same_site("https://n8n.cloud.evil.com/", "https://n8n.io/"))
+
     def test_unwraps_duckduckgo_redirects(self) -> None:
         raw = (
             "//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.tldraw.com%2F"
