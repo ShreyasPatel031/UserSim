@@ -85,7 +85,12 @@ class SignupHopeless(unittest.TestCase):
             a = si.create_inbox("clickup.com", "clickup")
             b = si.create_inbox("clickup.com", "clickup")
         self.assertEqual(a.backend, "gmail")
-        self.assertTrue(a.address.startswith("someone+clickup") and a.address.endswith("@gmail.com"), a.address)
+        # Dots spread through the real local part (same Gmail inbox) plus a fresh +tag.
+        local = a.address.split("@", 1)[0]
+        self.assertEqual(local.split("+", 1)[0].replace(".", ""), "someone", a.address)
+        self.assertIn(".", local.split("+", 1)[0])
+        self.assertIn("+clickup", local)
+        self.assertTrue(a.address.endswith("@gmail.com"), a.address)
         self.assertNotEqual(a.address, b.address)
 
     def test_miro_hopeless_without_capsolver(self) -> None:
@@ -106,7 +111,7 @@ class SignupHopeless(unittest.TestCase):
     def test_competitor_timeout_default(self) -> None:
         import os
         os.environ.pop("MVP_SIGNUP_COMPETITOR_TIMEOUT_S", None)
-        self.assertEqual(competitor_signup_timeout_s(), 90.0)
+        self.assertEqual(competitor_signup_timeout_s(), 150.0)
 
 class ClearCaptchaNoFalseOk(unittest.TestCase):
     """Calendly: reCAPTCHA Enterprise v2 image challenge open, stray token filled."""
@@ -229,3 +234,94 @@ def test_onboarding_path_only_blocks_leading_setup_steps():
     assert onboarding_blocks("/welcome")
     assert onboarding_blocks("/team/join")
     assert onboarding_blocks("/signup")
+
+
+class GmailVariantsAndGrace(unittest.TestCase):
+    def test_dot_variant_same_mailbox_and_varies(self) -> None:
+        from mvp.identity import email_for_host, gmail_dot_variant
+
+        seen = {gmail_dot_variant("shreyashfs") for _ in range(40)}
+        self.assertGreater(len(seen), 10)
+        for v in seen:
+            self.assertEqual(v.replace(".", ""), "shreyashfs")
+            self.assertFalse(v.startswith(".") or v.endswith(".") or ".." in v)
+            self.assertLessEqual(v.count("."), 3)
+        self.assertNotIn(gmail_dot_variant("shreyashfs", avoid=seen - {"s.hreyashfs"}) , seen - {"s.hreyashfs"})
+        # Dotted aliases stay in the same Gmail mailbox (no ".tag" suffix).
+        addr = email_for_host("shreyashfs@gmail.com", "ticktick.com", tag="x1", force_dotted=True)
+        self.assertEqual(addr.split("@")[0].replace(".", ""), "shreyashfs")
+
+    def test_alias_match_dot_variant_needs_exact_address(self) -> None:
+        import os
+        from unittest import mock
+
+        from mvp.email_codes import _alias_match
+
+        with mock.patch.dict(os.environ, {"GMAIL_USER": "shreyashfs@gmail.com"}):
+            self.assertTrue(_alias_match("s.hrey.ashfs+zo1a2b3c@gmail.com", "s.hrey.ashfs+zo1a2b3c@gmail.com"))
+            self.assertFalse(_alias_match("shreyashfs+n8n99@gmail.com", "s.hrey.ashfs+zo1a2b3c@gmail.com"))
+            self.assertFalse(_alias_match("shreyashfs@gmail.com", "s.hreyashfs@gmail.com"))
+            self.assertTrue(_alias_match("s.hreyashfs@gmail.com", "s.hreyashfs@gmail.com"))
+
+    def test_captcha_grace_extends_deadline_once(self) -> None:
+        import time
+
+        from mvp.signup_in_session import _grant_captcha_grace
+
+        spend = {"deadline": time.time() + 10, "site": "zapier.com", "grace_s": 60}
+        before = spend["deadline"]
+        _grant_captcha_grace(spend)
+        _grant_captcha_grace(spend)
+        self.assertAlmostEqual(spend["deadline"] - before, 60, delta=0.01)
+
+    def test_host_gap(self) -> None:
+        import os
+        from unittest import mock
+
+        from mvp.a11y_agent import signup_host_gap_s
+
+        self.assertEqual(signup_host_gap_s("zo.computer"), 6.0)
+        self.assertEqual(signup_host_gap_s("zapier.com"), 0.0)
+        with mock.patch.dict(os.environ, {"MVP_SIGNUP_HOST_GAP_S": "zapier.com=2,zo.computer=9"}):
+            self.assertEqual(signup_host_gap_s("www.zapier.com"), 2.0)
+            self.assertEqual(signup_host_gap_s("zo.computer"), 9.0)
+
+    def test_step_model_timeout(self) -> None:
+        from mvp.a11y_agent import _step_model_timeout
+
+        self.assertLess(_step_model_timeout(False, 0) * 2, 10.0)
+        self.assertEqual(_step_model_timeout(True, 0), 20.0)
+
+
+class SurveySkip(unittest.TestCase):
+    def test_n8n_survey_skip_found(self) -> None:
+        from mvp.signup_in_session import survey_skip_control
+
+        snap = {
+            "url": "https://app.n8n.cloud/account/setup",
+            "body": "Customize n8n to you. What best describes your company?",
+            "elements": [
+                {"i": 0, "role": "combobox", "name": "Company type"},
+                {"i": 1, "role": "button", "name": "Get started"},
+                {"i": 2, "role": "button", "name": "Skip"},
+            ],
+        }
+        self.assertEqual(survey_skip_control(snap)["i"], 2)
+
+    def test_no_skip_on_signup_form(self) -> None:
+        from mvp.signup_in_session import survey_skip_control
+
+        snap = {"url": "https://zapier.com/sign-up", "body": "Create your account",
+                "elements": [{"i": 0, "role": "button", "name": "Skip"}]}
+        self.assertIsNone(survey_skip_control(snap))
+
+
+class SitekeyFromFrames(unittest.TestCase):
+    def test_recaptcha_anchor(self) -> None:
+        from mvp.signup_in_session import sitekey_from_frames
+
+        got = sitekey_from_frames([
+            "https://www.google.com/recaptcha/api2/anchor?ar=1&k=6LdABC123&co=aHR0cHM6&size=normal",
+        ])
+        self.assertEqual(got, {"sitekey": "6LdABC123", "type": "recaptcha"})
+        self.assertIsNone(sitekey_from_frames(["https://www.google.com/recaptcha/api2/anchor?k=x&size=invisible"]))

@@ -71,6 +71,14 @@ async def _recover_interrupted() -> None:
     asyncio.get_running_loop().create_task(_run())
 
 @app.on_event("startup")
+async def _big_thread_pool() -> None:
+    """Size the default thread pool for 100+ agents (see mvp/executor.py)."""
+    from mvp.executor import ensure_default_executor
+
+    ensure_default_executor()
+
+
+@app.on_event("startup")
 async def _warm_study_list() -> None:
     """Build the /live study list once in the background so the first list call is not a cold GCS pass."""
     if os.environ.get("MVP_WARM_STUDY_LIST", "1").lower() in {"0", "false", "no"}:

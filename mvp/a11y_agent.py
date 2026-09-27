@@ -2864,10 +2864,10 @@ async def complete_task_on_page(
                         account_task=account_task,
                         all_nodes=list(read.get("nodes") or []),
                     ),
-                    timeout=10 if not acted else 20,
+                    timeout=_step_model_timeout(acted, attempt),
                 )
             except asyncio.TimeoutError:
-                print(f"[{agent_id}] model action timed out", flush=True)
+                print(f"[{agent_id}] model action timed out (attempt {attempt + 1}, acted={acted})", flush=True)
                 action = None
             if isinstance(action, dict):
                 break
@@ -3478,7 +3478,11 @@ def signup_hopeless_without_keys(url: str) -> str | None:
 
 
 def competitor_signup_timeout_s() -> float:
-    """Wall-clock cap for competitor in-session signup (default 90s).
+    """Wall-clock cap for competitor in-session signup (default 150s).
+
+    90s ended every n8n signup in study 390909cf after the account existed
+    (the welcome mail arrived) but before the onboarding survey and workspace
+    finished loading.
 
     40s ended 56 of 60 rival signups in study 7b5f0af9 (38 TimeoutError, 15 timeout,
     3 zapier reCAPTCHAs refused as no_time_left) before an email step or a captcha
@@ -3486,7 +3490,7 @@ def competitor_signup_timeout_s() -> float:
     only 8 rival agents, so the longer cap costs little wall time.
     """
     try:
-        return max(15.0, float(os.environ.get("MVP_SIGNUP_COMPETITOR_TIMEOUT_S") or 90))
+        return max(15.0, float(os.environ.get("MVP_SIGNUP_COMPETITOR_TIMEOUT_S") or 150))
     except (TypeError, ValueError):
         return 90.0
 
@@ -3531,16 +3535,57 @@ def _extend_study_budget(study: Any, waited_s: float, agent_id: str = "") -> Non
     )
 
 
-async def _stagger_signup() -> None:
-    """Start live signups a few seconds apart; throwaway inbox APIs rate-limit new addresses."""
+def _captcha_grace() -> float:
+    try:
+        from mvp.signup_in_session import captcha_grace_s
+
+        return captcha_grace_s()
+    except Exception:  # noqa: BLE001
+        return 0.0
+
+
+def signup_host_gap_s(site: str) -> float:
+    """Minimum seconds between two signups on one site.
+
+    MVP_SIGNUP_HOST_GAP_S is "host=seconds,host=seconds"; zo.computer defaults
+    to 6s because a burst of 18 signups in a few seconds got only 2 of its
+    sign-in mails (study 390909cf).
+    """
+    gaps = {"zo.computer": 6.0}
+    for part in (os.environ.get("MVP_SIGNUP_HOST_GAP_S") or "").split(","):
+        host, _, val = part.partition("=")
+        try:
+            gaps[host.strip().lower().removeprefix("www.")] = max(0.0, float(val))
+        except ValueError:
+            continue
+    return gaps.get((site or "").lower().removeprefix("www."), 0.0)
+
+
+async def _stagger_signup(site: str = "") -> float:
+    """Start live signups a few seconds apart (MVP_SIGNUP_STAGGER_S globally, plus a per-site gap).
+
+    Returns the seconds this signup waited.
+    """
     gap = float(os.environ.get("MVP_SIGNUP_STAGGER_S") or 3.0)
     if _SIGNUP_GATE["lock"] is None:
         _SIGNUP_GATE["lock"] = asyncio.Lock()
+    t0 = time.monotonic()
+    host_gap = signup_host_gap_s(site)
+    if host_gap > 0:
+        locks = _SIGNUP_GATE.setdefault("host_locks", {})
+        lock = locks.setdefault(site, asyncio.Lock())
+        async with lock:
+            last = _SIGNUP_GATE.setdefault("host_last", {}).get(site, 0.0)
+            wait = last + host_gap - time.monotonic()
+            if wait > 0:
+                await asyncio.sleep(wait)
+            _SIGNUP_GATE["host_last"][site] = time.monotonic()
     async with _SIGNUP_GATE["lock"]:
         wait = _SIGNUP_GATE["last"] + gap - time.monotonic()
         if wait > 0:
             await asyncio.sleep(wait)
         _SIGNUP_GATE["last"] = time.monotonic()
+    return time.monotonic() - t0
 
 
 async def _signup_then_resume(
@@ -3621,7 +3666,15 @@ async def _signup_then_resume(
     try:
         import inspect
 
-        await _stagger_signup()
+        try:
+            from mvp.signup_in_session import _site as _gap_site
+
+            gap_site = _gap_site(url)
+        except Exception:  # noqa: BLE001
+            gap_site = ""
+        waited = await _stagger_signup(gap_site)
+        if waited >= 1:
+            print(f"[{agent_id}] signup spacing on {gap_site}: waited {waited:.1f}s", flush=True)
         remaining = (deadline - time.monotonic()) if deadline is not None else 240.0
         cap = float(os.environ.get("MVP_SIGNUP_IN_SESSION_TIMEOUT_S") or 220)
         if competitor:
@@ -3631,6 +3684,9 @@ async def _signup_then_resume(
         params = inspect.signature(signup_in_session).parameters
         if "signup_url" in params:
             kwargs["signup_url"] = wall
+        if "captcha_grace" in params:
+            # Never let the captcha grace run the signup past the agent's own deadline.
+            kwargs["captcha_grace"] = max(0.0, min(_captcha_grace(), remaining - 30 - budget))
         if "share_key" in params and not competitor:
             kwargs["share_key"] = share_key
         if "on_step" in params and on_step is not None:
@@ -3650,7 +3706,8 @@ async def _signup_then_resume(
             kwargs["on_step"] = _progress
         result = await asyncio.wait_for(
             signup_in_session(page, url, persona, **kwargs),
-            timeout=budget + 10,
+            # A captcha extends the signup's own deadline once (captcha_grace_s).
+            timeout=budget + 10 + float(kwargs.get("captcha_grace", 0.0) or 0.0),
         )
     except Exception as exc:  # noqa: BLE001
         result = {"ok": False, "reason": repr(exc)[:160]}
@@ -3861,6 +3918,21 @@ async def website_eval(
     return merged
 
 
+def _step_model_timeout(acted: bool, attempt: int) -> float:
+    """Seconds one step-model call may take.
+
+    Before the first action the grader allows 10s from page open, so each of
+    the two tries gets MVP_FIRST_ACTION_MODEL_S (default 4.5s): a healthy
+    Gemini Flash call answers in about 1s. Later steps get MVP_STEP_MODEL_S
+    (default 20s).
+    """
+    name, default = ("MVP_STEP_MODEL_S", 20.0) if acted else ("MVP_FIRST_ACTION_MODEL_S", 4.5)
+    try:
+        return max(1.0, float(os.environ.get(name) or default))
+    except ValueError:
+        return default
+
+
 async def run_a11y_agent(
     *,
     boot: A11yBoot,
@@ -3874,6 +3946,9 @@ async def run_a11y_agent(
     deadline: float | None = None,
 ) -> dict[str, Any]:
     """One Browserbase session for this agent, step 0 from the site's shared read."""
+    from mvp.executor import ensure_default_executor
+
+    ensure_default_executor()
     return await _run_a11y_agent_unlocked(
         boot=boot,
         study_id=study_id,

@@ -32,6 +32,7 @@ import string
 import time
 from typing import Any
 from urllib.parse import urljoin, urlparse
+from mvp.executor import run_mail
 
 DEFAULT_TIMEOUT_S = 240.0
 
@@ -280,6 +281,38 @@ def _visible_elements(snap: dict[str, Any]) -> list[dict[str, Any]]:
     return out
 
 
+_SURVEY_PAGE = re.compile(
+    r"/(account/setup|onboarding|survey|questionnaire|personali[sz]e|welcome|setup)(\b|/|$)", re.I
+)
+_SURVEY_TEXT = re.compile(
+    r"tell us (a bit |more )?about|customi[sz]e (n8n|your)|help us (personali[sz]e|tailor)|"
+    r"what (best )?describes you|what('s| is) your role|how did you hear|survey",
+    re.I,
+)
+_SKIP_NAME = re.compile(
+    r"^\s*(skip( survey| for now| this( step)?| question| setup)?|i'?ll do (this|it) later|"
+    r"not now|maybe later|do this later|skip and continue)\s*$",
+    re.I,
+)
+
+
+def survey_skip_control(snap: dict[str, Any]) -> dict[str, Any] | None:
+    """The Skip control of an onboarding survey, or None.
+
+    n8n's app.n8n.cloud/account/setup survey ended signups in study 390909cf:
+    the model tried to answer custom dropdowns with select actions that failed
+    until the 90s cap. Skipping is what a hurried new user does too.
+    """
+    path = urlparse(str(snap.get("url") or "")).path or ""
+    body = str(snap.get("body") or "")[:3000]
+    if not (_SURVEY_PAGE.search(path) or _SURVEY_TEXT.search(body)):
+        return None
+    for el in _visible_elements(snap):
+        if el.get("role") in {"button", "link"} and _SKIP_NAME.match(str(el.get("name") or "")):
+            return el
+    return None
+
+
 def _fmt_elements(elements: list[dict[str, Any]]) -> str:
     lines = []
     for el in elements[:120]:
@@ -354,6 +387,11 @@ Rules:
 - status=need_email when the page says a code or link was emailed and waits for it
   (a code input is visible or "check your email"). Once the code is known it is
   given to you as {code}: fill it into the code box(es) and continue.
+- Onboarding survey (role, company size, use case, "how did you hear"): click
+  Skip / "I'll do this later" if there is one. Otherwise answer each question with
+  the first real option (a custom dropdown: click it, then click an option; a native
+  select: select) and click Continue/Get started. A "setting up your workspace" or
+  loading screen after a trial starts: status working, action wait.
 - Onboarding after the account exists: answer with short plausible values, choose
   the free plan/"skip"/"not now"/"continue" for invites, integrations, desktop apps,
   and upsells. Pick any template if forced. Keep going until the app itself loads.
@@ -366,6 +404,8 @@ Rules:
   continue by any control on the page. A visible captcha checkbox => reason captcha.
 - If the page shows an error such as "unable to verify", "try again", or "refresh",
   that is NOT need_email: reload by goto-ing the current URL once, then retry.
+- Only fill fields that are in the element list. A label in the page text with no
+  listed input (e.g. "Password *") is a hidden anti-bot field: leave it and submit.
 - Never type anything into search boxes. Never log in to an existing account."""
 
 
@@ -588,6 +628,14 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
     loc = page.locator(f"[data-sis-i='{idx}']").first if idx is not None else None
     if kind in {"click", "check", "fill", "select"} and el is None:
         return f"{kind} [{idx}] missing"
+    if loc is not None and kind in {"click", "check", "fill", "select"}:
+        try:
+            if await loc.count() == 0:
+                # The page re-rendered after the read (zapier's second signup
+                # step): waiting 10s per stale control burned the budget.
+                return f"{kind} [{idx}] stale (page changed)"
+        except Exception:
+            pass
     name = str((el or {}).get("name") or "")[:40]
     if kind in {"click", "check"} and el is not None and el.get("role") in {"button", "link"} and _OAUTH.search(name) and "email" not in name.lower():
         return f"refused oauth {name}"
@@ -751,8 +799,121 @@ async def _captcha_frame_visible(page: Any) -> bool:
         return False
 
 
+def _bind_spend(spend: dict[str, Any], out: dict[str, Any]) -> None:
+    """Bind this in-run signup to a ledger attempt so the spend gate allows a paid solve."""
+    site = str(spend.get("site") or "")
+    if not site:
+        return
+    try:
+        from mvp import captcha_spend as cs
+
+        if not spend.get("attempt"):
+            spend["attempt"] = cs.begin_inrun_attempt(site)
+        else:
+            cs.bind_signup(site, int(spend["attempt"]))
+    except Exception as exc:  # noqa: BLE001
+        out["spend_bind_error"] = repr(exc)[:120]
+
+
 async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any]) -> dict[str, Any]:
     """Free clicks first; CapSolver only with a key and only under the per-site cap."""
+    from mvp import captcha as cap
+
+    t0 = time.time()
+    _grant_captcha_grace(spend)
+    out = await _clear_captcha_inner(page, snap, spend)
+    out["seconds"] = round(time.time() - t0, 1)
+    print(
+        f"[signup] {spend.get('site')}: captcha {str(out.get('type') or '')[:50]} -> "
+        f"{out.get('method')} ok={out.get('ok')} in {out['seconds']}s "
+        f"detail={str(out.get('detail') or '')[:120]}",
+        flush=True,
+    )
+    return out
+
+
+def captcha_grace_s() -> float:
+    """Extra signup seconds granted once when a captcha shows up (MVP_SIGNUP_CAPTCHA_GRACE_S, default 75).
+
+    Zapier signups in study 390909cf reached the reCAPTCHA with 20-40s left of
+    the 90s cap: 2 "no_time_left" and 2 solver timeouts, none paid.
+    """
+    try:
+        return max(0.0, float(os.environ.get("MVP_SIGNUP_CAPTCHA_GRACE_S") or 75))
+    except ValueError:
+        return 75.0
+
+
+def _grant_captcha_grace(spend: dict[str, Any]) -> None:
+    if spend.get("graced"):
+        return
+    grace = float(spend.get("grace_s", captcha_grace_s()) or 0.0)
+    spend["graced"] = True
+    if grace <= 0:
+        return
+    old = float(spend.get("deadline") or time.time())
+    spend["deadline"] = old + grace
+    print(f"[signup] {spend.get('site')}: captcha seen, signup deadline +{grace:.0f}s", flush=True)
+
+
+def sitekey_from_frames(urls: list[str]) -> dict[str, Any] | None:
+    """Sitekey and type from a reCAPTCHA / hCaptcha / Turnstile iframe URL."""
+    from urllib.parse import parse_qs
+
+    for url in urls:
+        low = url.lower()
+        if "size=invisible" in low:
+            continue
+        parsed = urlparse(url)
+        qs = parse_qs(parsed.query)
+        frag = parse_qs(parsed.fragment)
+        if "recaptcha" in low and "anchor" in low and qs.get("k"):
+            kind = "recaptcha_enterprise" if "/enterprise/" in low else "recaptcha"
+            return {"sitekey": qs["k"][0], "type": kind}
+        if "hcaptcha" in low and (frag.get("sitekey") or qs.get("sitekey")):
+            return {"sitekey": (frag.get("sitekey") or qs.get("sitekey"))[0], "type": "hcaptcha"}
+        m = re.search(r"challenges\.cloudflare\.com/.*/(0x[0-9A-Za-z_-]{10,})/", url)
+        if m:
+            return {"sitekey": m.group(1), "type": "turnstile"}
+    return None
+
+
+async def _capsolver_direct(page: Any, spend: dict[str, Any], left_s: float) -> dict[str, Any] | None:
+    """Sitekey -> CapSolver -> inject, skipping the free OSS/audio stack.
+
+    The full ``solve_captcha_on_page`` tries audio and image solvers (up to
+    minutes) before CapSolver; in a 90-150s signup that meant CapSolver was
+    never reached. None when there is no sitekey to send.
+    """
+    from mvp import captcha as cap
+
+    info = await cap.detect_sitekey(page)
+    if not info or not info.get("sitekey"):
+        # zapier.com renders the widget from JS with no data-sitekey in the DOM
+        # ("need_solver_api ... sitekey=unknown"); the anchor iframe URL has it.
+        info = sitekey_from_frames([str(getattr(f, "url", "") or "") for f in getattr(page, "frames", []) or []])
+    if not info or not info.get("sitekey"):
+        return None
+    ctype = str(info.get("type") or "recaptcha")
+    token = await asyncio.wait_for(
+        asyncio.to_thread(
+            cap.solve_sitekey,
+            sitekey=str(info["sitekey"]),
+            page_url=str(getattr(page, "url", "") or ""),
+            captcha_type=ctype,
+            action=info.get("action"),
+            timeout_s=max(10.0, left_s - 5),
+            blocking=True,
+        ),
+        timeout=left_s,
+    )
+    if not token:
+        return {"ok": False, "method": "capsolver_refused", "detail": f"{ctype} no token (see captcha ledger)"}
+    injected = await cap._inject_token(page, token, ctype)
+    return {"ok": bool(injected), "method": "capsolver_api", "detail": f"{ctype}{'' if injected else ' inject_failed'}"}
+
+
+async def _clear_captcha_inner(page: Any, snap: dict[str, Any], spend: dict[str, Any]) -> dict[str, Any]:
     from mvp import captcha as cap
 
     out: dict[str, Any] = {"type": snap.get("captcha", "")[:80], "ok": False, "method": ""}
@@ -773,6 +934,26 @@ async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any])
             return out
     except Exception:
         pass
+    if (
+        _capsolver_key()
+        and ("recaptcha" in ctype or "hcaptcha" in ctype or "turnstile" in ctype or not ctype)
+        and os.environ.get("MVP_SIGNUP_CAPSOLVER_FIRST", "1") != "0"
+        and _left(150) >= 15
+    ):
+        _bind_spend(spend, out)
+        try:
+            direct = await _capsolver_direct(page, spend, _left(150))
+        except Exception as exc:  # noqa: BLE001
+            direct = {"ok": False, "method": "capsolver_error", "detail": repr(exc)[:120]}
+        if direct is not None:
+            if "capsolver_api" in str(direct.get("method")):
+                spend["usd"] = spend.get("usd", 0.0) + 0.001
+                spend["calls"] = spend.get("calls", 0) + 1
+            out["capsolver"] = direct
+            if direct.get("ok"):
+                await page.wait_for_timeout(1500)
+                out.update(ok=True, method=str(direct.get("method")), detail=str(direct.get("detail") or ""))
+                return out
     if "recaptcha" in str(snap.get("captcha") or "") and os.environ.get("MVP_SIGNUP_AUDIO_CAPTCHA", "1") != "0":
         from mvp.signup_captcha_audio import solve_recaptcha_audio
 
@@ -812,17 +993,7 @@ async def _clear_captcha(page: Any, snap: dict[str, Any], spend: dict[str, Any])
     # The CapSolver spend gate refuses any solve that is not bound to a site and
     # an attempt ("host_not_paid" / "no_signup_attempt"). Bind this in-run
     # signup so a blocking captcha on an allowlisted host can be paid for.
-    site = str(spend.get("site") or "")
-    if site:
-        try:
-            from mvp import captcha_spend as cs
-
-            if not spend.get("attempt"):
-                spend["attempt"] = cs.begin_inrun_attempt(site)
-            else:
-                cs.bind_signup(site, int(spend["attempt"]))
-        except Exception as exc:  # noqa: BLE001
-            out["spend_bind_error"] = repr(exc)[:120]
+    _bind_spend(spend, out)
     os.environ.setdefault("MVP_CAPTCHA_API_KEY", _capsolver_key())
     os.environ["MVP_CAPTCHA_BB_WAIT_S"] = "0"
     os.environ["MVP_CAPTCHA_HCAPTCHA_BB_WAIT_S"] = "0"
@@ -856,7 +1027,7 @@ async def _wait_mail_or_share(
     for 20 signups and the other 10 agents waited 214-272s for mail that never came.
     """
     if not share_key:
-        return await asyncio.to_thread(inbox.wait, site, since, left, seen)
+        return await run_mail(inbox.wait, site, since, left, seen)
     from mvp import signup_share
 
     cap = float(os.environ.get("MVP_SIGNUP_SHARED_EMAIL_WAIT_S", "40") or 40)
@@ -866,7 +1037,7 @@ async def _wait_mail_or_share(
         rest = left - waited
         if rest <= 0:
             return None
-        mail = await asyncio.to_thread(inbox.wait, site, since, min(15.0, rest), seen)
+        mail = await run_mail(inbox.wait, site, since, min(15.0, rest), seen)
         if mail:
             return mail
         if time.time() - start >= cap and signup_share.has(share_key, site):
@@ -883,8 +1054,12 @@ async def signup_in_session(
     tag: str | None = None,
     on_step: Any | None = None,
     share_key: str = "",
+    captcha_grace: float | None = None,
 ) -> dict[str, Any]:
     """Sign up on ``site_url`` in the caller's ``page`` and leave it signed in.
+
+    ``captcha_grace``: seconds added to the deadline, once, when a captcha
+    appears (default ``captcha_grace_s()``), so CapSolver has time to answer.
 
     ``share_key`` (the study id): when another agent of the study already signed in
     on this site, stop waiting for this signup's email after 40s so the caller can
@@ -904,6 +1079,8 @@ async def signup_in_session(
     history: list[str] = []
     captcha_log: list[dict[str, Any]] = []
     spend: dict[str, Any] = {"usd": 0.0, "calls": 0, "site": site, "deadline": deadline}
+    if captcha_grace is not None:
+        spend["grace_s"] = max(0.0, float(captcha_grace))
     ident: dict[str, str] = {}
     last_snap: dict[str, Any] = {}
     result: dict[str, Any] = {
@@ -999,6 +1176,7 @@ async def signup_in_session(
         dead_count: dict[str, int] = {}
         empty_waits = 0
         email_submitted = False
+        survey_skipped: set[str] = set()
         rejects = 0
         banner_clicks = 0
         verifying = 0
@@ -1010,7 +1188,8 @@ async def signup_in_session(
         email_waits = 0
         onboarding_verified: dict[str, int] = {}
         root_tried = False
-        while time.time() < deadline:
+        # spend["deadline"] moves once when a captcha appears (captcha grace).
+        while time.time() < float(spend["deadline"]):
             if api_rejects:
                 dom = ident["email"].split("@")[1] if "@" in ident.get("email", "") else "?"
                 steps.append(f"email rejected by the site API: {api_rejects[0]} ({dom})")
@@ -1050,6 +1229,18 @@ async def signup_in_session(
             sig = _page_sig(snap)
             same = same + 1 if sig == last_sig else 0
             last_sig = sig
+            if (email_submitted or ident.get("code")) and sig not in survey_skipped:
+                skip_el = survey_skip_control(snap)
+                if skip_el is not None:
+                    survey_skipped.add(sig)
+                    try:
+                        await page.locator(f"[data-sis-i='{skip_el.get('i')}']").first.click(timeout=5000)
+                        steps.append(f"  survey: clicked {str(skip_el.get('name'))[:40]!r} on {urlparse(str(snap.get('url'))).path[:50]}")
+                        history.append(f"skipped the onboarding survey ({skip_el.get('name')})")
+                        await _settle(page, 1500)
+                        continue
+                    except Exception as exc:  # noqa: BLE001
+                        steps.append(f"  survey skip click failed: {type(exc).__name__}")
             if same >= 3:
                 body_tour = str(snap.get("body") or "").lower()
                 # Trello's Atlassian pre-board tour freezes on "One last thing!" /
@@ -1284,7 +1475,7 @@ async def signup_in_session(
                 # The model wants to submit a form first (or no email was typed yet).
                 status = "working"
             if status == "need_email" and not ident.get("code"):
-                left = max(5.0, min(75.0, deadline - time.time() - 10))
+                left = max(5.0, min(75.0, float(spend["deadline"]) - time.time() - 10))
                 from mvp import signup_share
 
                 shared_ready = bool(share_key) and signup_share.has(share_key, site)
@@ -1371,6 +1562,20 @@ async def signup_in_session(
                     email_submitted = True
                 history.append(done)
                 steps.append("  " + done)
+                if str(act.get("do")) == "fill" and done.endswith("missing"):
+                    # zapier.com/sign-up has an off-screen tabindex=-1 "Password *"
+                    # input (a bot trap): it is not in the list, the model kept
+                    # asking for it and never submitted. Submit what is visible.
+                    note = (
+                        "A field you wanted is not in the element list: it is hidden on purpose "
+                        "(an anti-bot trap). Never fill hidden fields. Fill only the listed fields and "
+                        "click the form's submit button now."
+                    )
+                    continue
+                if done.endswith("stale (page changed)") or " failed: " in done:
+                    # A control from the read is gone or broken: re-read before
+                    # the rest of the batch (e.g. a submit with a field left empty).
+                    break
                 if str(act.get("do")) == "fill":
                     # Let invisible bot checks finish before the submit that follows.
                     gap = 2.5 - (time.time() - url_changed_at)

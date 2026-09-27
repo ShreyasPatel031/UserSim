@@ -139,6 +139,63 @@ class GmailInboxMissing(RuntimeError):
     """GMAIL_USER / GMAIL_APP_PASSWORD are required for every in-run signup."""
 
 
+_USED_LOCK = __import__("threading").Lock()
+_USED_FILE = os.path.expanduser(os.environ.get("MVP_GMAIL_VARIANTS_FILE") or "~/.cache/usersim/gmail_variants_used.txt")
+
+
+def _used_variants(host: str) -> set[str]:
+    try:
+        with open(_USED_FILE, encoding="utf-8") as fh:
+            return {line.split(" ", 1)[1].strip() for line in fh if line.startswith(host + " ")}
+    except OSError:
+        return set()
+
+
+def _remember_variant(host: str, local: str) -> None:
+    try:
+        os.makedirs(os.path.dirname(_USED_FILE), exist_ok=True)
+        with open(_USED_FILE, "a", encoding="utf-8") as fh:
+            fh.write(f"{host} {local}\n")
+    except OSError:
+        pass
+
+
+def _host_list(name: str) -> set[str]:
+    return {h.strip().lower().removeprefix("www.") for h in (os.environ.get(name) or "").split(",") if h.strip()}
+
+
+def fresh_gmail_address(username: str, host: str, tag: str, *, dotted: bool = False) -> str:
+    """A never-reused address that still lands in ``username``'s Gmail inbox.
+
+    ``shreyashfs+zo3fa9c1@gmail.com`` alone was not enough: zo.computer treats
+    every plus-alias as one address and throttled its mails (study 390909cf got
+    2 mails for 18 signups). Each signup now also gets its own dot placement
+    (``shr.eya.shfs+zo3fa9c1@gmail.com``) that this host has not seen before,
+    so a site that strips ``+tag`` still sees a different address. Hosts that
+    reject ``+`` (``dotted``) get the dot variant only. Hosts listed in
+    MVP_SIGNUP_GOOGLEMAIL_HOSTS get the @googlemail.com spelling as well.
+    MVP_SIGNUP_EMAIL_DOTS=0 turns the dots off.
+    """
+    from mvp.identity import GMAIL_DOMAINS, gmail_dot_variant
+
+    local, domain = username.rsplit("@", 1)
+    local = local.split("+", 1)[0]
+    site = (host or "").lower().removeprefix("www.")
+    base_tag = re.sub(r"[^a-z0-9]", "", (tag or site.split(".")[0]).lower())[:12] or "signup"
+    fresh = base_tag + secrets.token_hex(3)
+    dots = os.environ.get("MVP_SIGNUP_EMAIL_DOTS", "1").lower() not in {"0", "false", "no"}
+    if domain.lower() in GMAIL_DOMAINS and (dots or dotted):
+        with _USED_LOCK:
+            used = _used_variants(site)
+            local = gmail_dot_variant(local, avoid=used)
+            _remember_variant(site, local)
+        if site in _host_list("MVP_SIGNUP_GOOGLEMAIL_HOSTS"):
+            domain = "googlemail.com"
+    if dotted:
+        return f"{local}@{domain}"
+    return f"{local}+{fresh}@{domain}"
+
+
 class GmailAliasInbox(Inbox):
     """Plus/dotted alias of the vault Gmail, read over IMAP."""
 
@@ -146,34 +203,23 @@ class GmailAliasInbox(Inbox):
 
     def __init__(self, host: str, tag: str, dotted: bool = False) -> None:
         from mvp.email_codes import _imap_creds
-        from mvp.identity import email_for_host
 
         creds = _imap_creds()
         if not creds:
             raise GmailInboxMissing(GMAIL_MISSING_MSG)
         self.username, self.app_password = creds
-        # Never reuse an alias: parallel agents on one site all got
-        # shreyashfs+notion@ and collided (one account, the rest "try again
-        # later"). A random suffix makes each signup a fresh address; mail to
-        # it still lands in the same inbox and _alias_match finds it.
-        base_tag = re.sub(r"[^a-z0-9]", "", (tag or host.split(".")[0]).lower())[:12] or "signup"
-        fresh = base_tag + secrets.token_hex(3)
-        self.address = email_for_host(self.username, host, tag=fresh, force_dotted=dotted)
+        self.address = fresh_gmail_address(self.username, host, tag, dotted=dotted)
 
     def messages(self, newer_than: float) -> list[dict[str, Any]]:
-        from mvp.email_codes import (
-            _alias_match,
-            _body_text,
-            _decode,
-            _iter_recent_messages,
-            _msg_timestamp,
-            _recipients,
-        )
+        from mvp.email_codes import _body_text, _decode, _msg_timestamp, messages_for_alias
 
         out = []
-        for msg in _iter_recent_messages(self.username, self.app_password, lookback=30):
-            if not _alias_match(_recipients(msg), self.address):
-                continue
+        try:
+            found = messages_for_alias(self.username, self.app_password, self.address, newer_than=newer_than)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[signup_inbox] gmail poll failed: {exc!r}", flush=True)
+            found = []
+        for msg in found:
             ts = _msg_timestamp(msg)
             if ts is not None and ts < newer_than - 30:
                 continue

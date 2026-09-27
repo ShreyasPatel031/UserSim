@@ -184,6 +184,18 @@ def invalidate_credentials() -> None:
     _expires = None
 
 
+def cached_vertex_credentials() -> Credentials | None:
+    """The cached, unexpired credentials, or None. Never blocks.
+
+    Lets async callers skip a thread hop per request: a saturated default
+    thread pool made every Gemini call wait behind slow blocking work.
+    """
+    now = datetime.now(timezone.utc)
+    if _cached is not None and _expires is not None and now < _expires:
+        return _cached
+    return None
+
+
 def vertex_credentials() -> Credentials:
     global _cached, _expires
     now = datetime.now(timezone.utc)
