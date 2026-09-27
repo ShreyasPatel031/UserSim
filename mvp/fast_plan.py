@@ -745,7 +745,7 @@ Already chosen (do not repeat): {have}
 Needed: {need}
 Return {{"tasks": [{{"task": "3-8 word task", "favors": "product or one competitor url exactly as listed", "why": "at most 10 words"}}]}}
 Rules: an imperative verb and a concrete object; each must make sense on all three sites (done in the product where a
-trial allows, or judged from the website). Never a task needing the customer's own outside credentials or data
+trial allows, or judged from the website). Never use the words connect, integrate or sync. Never a task needing the customer's own outside credentials or data
 (connect or sync a data source, API keys, payment) and no pricing task. No quotes."""
 
 
@@ -1001,15 +1001,19 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
             return None
         comp_names = {remap.get(k, k): v for k, v in names.items() if k in remap}
         need = missing_task_slots(tasks, ["product"] + landed)
-        if need:
-            # One short call fills the sites the plan left short (credential or duplicate tasks were dropped).
+        for _attempt in range(2):
+            if not need:
+                break
+            # A short call fills the sites the plan left short (credential or duplicate tasks were dropped).
+            # It asks for spares, since the credential filter often drops the rival's obvious job
+            # ("Integrate with AWS services"); balance_tasks keeps two per site.
             try:
                 label = lambda s: str(data.get("product") or own) if s == "product" else f"{comp_names.get(s) or s} ({s})"
                 extra = await ask(_TASK_TOPUP.format(
                     product=str(data.get("product") or own), url=url,
                     rivals=", ".join(f"{comp_names.get(c) or c} ({c})" for c in landed),
                     have="; ".join(t["prompt"] for t in tasks),
-                    need="; ".join(f"{n} favoring {'product' if s == 'product' else s} ({label(s)})" for s, n in need.items()),
+                    need="; ".join(f"{n + 2} favoring {'product' if s == 'product' else s} ({label(s)})" for s, n in need.items()),
                 ))
                 more = compare_tasks(extra if isinstance(extra, dict) else {}, own, landed, comp_names)
                 seen = {t["prompt"].lower() for t in tasks}
@@ -1018,6 +1022,9 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
                 tasks = balance_tasks([t for t in tasks] + [m for m in more if m["favors"] in need])
             except Exception as exc:  # noqa: BLE001
                 print(f"[fast_plan] task top-up skipped: {exc!r}", flush=True)
+            need = missing_task_slots(tasks, ["product"] + landed)
+        if need:
+            print(f"[fast_plan] task top-up still short: {need}", flush=True)
         print(f"[fast_plan] compare {url} rivals={landed} tasks={[t['prompt'] for t in tasks]}", flush=True)
         return {
             "mode": "compare",
