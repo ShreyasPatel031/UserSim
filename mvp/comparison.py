@@ -487,7 +487,7 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
                 "why": _sc(win_run or {}).get("reason", "") if win_run else "",
                 "winner_evidence": _cite(win_run) if win_run else None,
                 "product_evidence": _cite(prod_run) if prod_run else None,
-                # Sites this task never ran on (a rival runs only its 2 x 2 slice): "not run", not 0.
+                # Sites this task never ran on (e.g. a rival slice, or excluded runs): "not run", not 0.
                 "not_run": [s for s in sites if not cell(t, None, s)],
             }
         )

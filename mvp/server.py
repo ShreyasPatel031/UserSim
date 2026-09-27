@@ -584,7 +584,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
         if plan and plan.get("mode") == "compare":
             from mvp.fast_plan import competitor_cells
 
-            # The splice reorders buyers and jobs: pick each rival's 2 x 2 slice on the final order.
+            # The splice reorders buyers and jobs: recompute any rival slice ({} = full matrix) on the final order.
             plan["competitor_cells"] = competitor_cells(
                 list(plan.get("personas") or []), list(plan.get("task_specs") or []), list(plan.get("competitors") or [])
             )

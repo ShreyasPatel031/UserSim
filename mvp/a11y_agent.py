@@ -42,7 +42,7 @@ def study_budget_s() -> float:
 def agent_budget_s() -> float:
     """Seconds one agent may run from its page opening to its finish. Default is 8 minutes.
 
-    The rule is 480s per agent, not for the whole study: a 44-agent study queues
+    The rule is 480s per agent, not for the whole study: a 108-agent study queues
     for browsers in waves, so its wall time is informational. The study clock
     (``study_budget_s`` x waves, capped by MVP_STUDY_BUDGET_MAX_S) stays only as a
     safety ceiling.
@@ -3661,7 +3661,8 @@ async def _signup_then_resume(
 
         share_key, share_site = str(share_key or ""), _signup_site(url)
         if result.get("ok") and share_key:
-            await signup_share.save_from_page(page, share_key, share_site, str(result.get("email") or ""))
+            saved = await signup_share.save_from_page(page, share_key, share_site, str(result.get("email") or ""))
+            print(f"[{agent_id}] signup ok on {share_site}: shared session {'saved' if saved else 'NOT saved'}", flush=True)
         elif (
             share_key
             and not competitor
@@ -3670,11 +3671,19 @@ async def _signup_then_resume(
         ):
             # This site stopped sending sign-in mail (zo: 10 emails for 20 signups) but another
             # agent of this study is signed in: continue in that session instead of the website.
+            first = str(result.get("reason") or "")[:120]
+            print(f"[{agent_id}] signup {first} on {share_site}: trying the study's shared session", flush=True)
             shared = await signup_share.reuse(page, share_key, share_site)
             if shared and shared.get("ok"):
-                result = {**shared, "first_attempt": str(result.get("reason") or "")[:120]}
-            elif shared:
-                result["shared_session"] = shared.get("reason")
+                print(f"[{agent_id}] shared session REUSE OK on {share_site} ({shared.get('elapsed_s')}s) url={shared.get('final_url')}", flush=True)
+                result = {**shared, "first_attempt": first}
+            else:
+                why = (shared or {}).get("reason") or "no shared session"
+                print(f"[{agent_id}] shared session REUSE FAILED on {share_site}: {why} evidence={str((shared or {}).get('evidence') or '')[:120]}", flush=True)
+                if shared:
+                    result["shared_session"] = shared.get("reason")
+        elif not result.get("ok") and not competitor and signup_share.retryable(str(result.get("reason") or "")):
+            print(f"[{agent_id}] signup {result.get('reason')} on {share_site}: no shared session to reuse (key={bool(share_key)})", flush=True)
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] shared signup session skipped: {exc!r}", flush=True)
     public = {

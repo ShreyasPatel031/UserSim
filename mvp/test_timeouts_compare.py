@@ -187,6 +187,24 @@ class CompareShape(unittest.TestCase):
         # Six personas survive (the old default trimmed to 4 and ran p5 as p1).
         self.assertEqual({r["persona_id"] for r in rows if r["site_key"] == "product"}, {f"p{i}" for i in range(1, 7)})
 
+    def test_default_shape_is_same_matrix_on_every_site_108(self) -> None:
+        from mvp.fast_plan import competitor_cells
+        from mvp.study import expand_full_matrix
+
+        cells = competitor_cells(self.personas, self.tasks, self.comps)
+        self.assertEqual(cells, {})
+        rows = expand_full_matrix(
+            [dict(t, title=t["id"], prompt=t["id"]) for t in self.tasks],
+            self.personas,
+            product_url="https://www.zo.computer/",
+            competitors=self.comps,
+            competitor_cells=[cells.get(c) or {} for c in self.comps],
+        )
+        by_site: dict[str, int] = {}
+        for r in rows:
+            by_site[r["site_key"]] = by_site.get(r["site_key"], 0) + 1
+        self.assertEqual(by_site, {"product": 36, "competitor_1": 36, "competitor_2": 36})
+
     def test_assistants_are_not_rivals(self) -> None:
         from mvp.fast_plan import is_general_assistant, pick_competitors
 

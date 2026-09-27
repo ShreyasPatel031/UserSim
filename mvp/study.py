@@ -1054,7 +1054,7 @@ def expand_full_matrix(
     """Every persona × every unique task on the product; on each rival, every cell or only its slice.
 
     ``competitor_cells[i]`` ({"personas": [idx], "tasks": [idx]}, 0-based in plan order) limits
-    competitor ``i+1`` to those personas and tasks (compare mode: 2 x 2 per rival). Missing = all.
+    competitor ``i+1`` to those personas and tasks (optional rival slice). Missing = all.
     """
     sites = _site_pairs(product_url, competitors)
     if not sites:

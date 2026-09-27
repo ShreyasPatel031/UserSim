@@ -31,7 +31,7 @@ function cmpLevel(level, comp) {
 }
 
 function cmpScoreCell(v, isPick, level, comp, notRun) {
-  // A rival runs only its 2 x 2 slice: an empty cell was never run, it is not a 0.
+  // An empty cell was never run (or the run was excluded), it is not a 0.
   if (v == null) return `<td class="num muted small">${notRun ? "not run" : "—"}</td>`;
   const shade = Math.max(0, Math.min(10, Number(v))) / 10;
   const bg = `rgba(15,122,76,${(0.08 + shade * 0.32).toFixed(2)})`;
@@ -157,7 +157,7 @@ function renderCompareHtml(comp) {
     </div>
     <div class="chart-card">
       <h3>Buyers × products</h3>
-      <p class="sub">Average score over the tasks each buyer ran. ★ marks the product each buyer picked; "not run" means that buyer did not try that site (each competitor runs 2 buyers × 2 tasks).</p>
+      <p class="sub">Average score over the tasks each buyer ran. ★ marks the product each buyer picked; "not run" means that buyer did not try that site.</p>
       ${comp.persona_summary ? `<p class="cmp-summary">${cmpEsc(comp.persona_summary)}</p>` : ""}
       <div style="overflow-x:auto"><table class="cmp-grid"><thead><tr><th>Buyer</th>${siteHead}<th>Expected favorite</th></tr></thead><tbody>${personaRows}</tbody></table></div>
     </div>

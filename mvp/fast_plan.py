@@ -58,7 +58,7 @@ Rules:
 # Comparison study (default): who each product is best for, not whether one
 # task finished. One call returns two rivals (plus one backup), six target
 # customers and seven tasks (six kept). The product runs every persona x task;
-# each rival runs only a 2 x 2 slice (see ``competitor_cells``).
+# every rival runs the same persona x task matrix (``competitor_cells`` can slice it if configured).
 _COMPARE_PROMPT = """You plan a head-to-head product comparison study. Reply with JSON only.
 Product URL: {url}
 Page title: {title}
@@ -496,8 +496,10 @@ def product_is_general_assistant(own: str, read: dict[str, Any] | None = None) -
 RIVAL_COUNT = int(os.environ.get("MVP_COMPARE_RIVALS", "2") or "2")
 PERSONA_COUNT = int(os.environ.get("MVP_COMPARE_PERSONAS", "6") or "6")
 TASK_COUNT = int(os.environ.get("MVP_COMPARE_TASKS", "6") or "6")
-RIVAL_PERSONAS = int(os.environ.get("MVP_COMPARE_RIVAL_PERSONAS", "2") or "2")
-RIVAL_TASKS = int(os.environ.get("MVP_COMPARE_RIVAL_TASKS", "2") or "2")
+# 0 = every persona / every task: each rival runs the same 6 x 6 as the product (Shreyas,
+# 2026-09-26: competitors must not get fewer runs). Set >0 for a smaller rival slice.
+RIVAL_PERSONAS = int(os.environ.get("MVP_COMPARE_RIVAL_PERSONAS", "0") or "0")
+RIVAL_TASKS = int(os.environ.get("MVP_COMPARE_RIVAL_TASKS", "0") or "0")
 
 
 def competitor_cells(
@@ -506,7 +508,8 @@ def competitor_cells(
 ) -> dict[str, dict[str, list[int]]]:
     """Which personas and tasks (0-based indexes) each rival runs: {rival_url: {"personas", "tasks"}}.
 
-    Per rival, 2 x 2 by default:
+    Default (MVP_COMPARE_RIVAL_PERSONAS/TASKS unset or 0): {} = every rival runs every persona x task,
+    the same 6 x 6 as the product (3 sites x 36 = 108 agents). With a slice size set, per rival:
     - personas: the rival's natural buyer (the first persona that favors it), then the product's own
       lead buyer (the first product-fit persona, usually the early-start buyer p1), so every rival cell
       has a same-buyer product cell to be compared with.
@@ -516,6 +519,11 @@ def competitor_cells(
     """
     n_p = RIVAL_PERSONAS if n_personas is None else n_personas
     n_t = RIVAL_TASKS if n_tasks is None else n_tasks
+    if n_p <= 0 and n_t <= 0:
+        # Same shape on every site: no slice, the matrix runs every persona x task on each rival.
+        return {}
+    n_p = n_p if n_p > 0 else len(personas)
+    n_t = n_t if n_t > 0 else len(tasks)
 
     def favors(row: dict[str, Any]) -> str:
         return str(row.get("favors") or "")
@@ -708,7 +716,7 @@ def compare_tasks(data: dict[str, Any], own: str, comps: list[str], names: dict[
 def compare_mode() -> bool:
     """Product: 6 personas x 6 tasks; each of 2 rivals: 2 personas x 2 tasks (MVP_STUDY_MODE=compare).
 
-    36 + 2 x 4 = 44 agents (was 5 x 5 x 4 sites = 100). Off by default.
+    3 sites x 6 x 6 = 108 agents (was 5 x 5 x 4 sites = 100). Off by default.
     """
     return os.environ.get("MVP_STUDY_MODE", "classic").strip().lower() == "compare"
 
@@ -839,7 +847,7 @@ async def _verify_plan(
 
 
 async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, Any] | None:
-    """Comparison plan: 2 rivals, 6 personas, 6 tasks; each rival gets a 2 x 2 slice (competitor_cells)."""
+    """Comparison plan: 2 rivals, 6 personas, 6 tasks; every site runs all 36 cells."""
     from capability.gemini_config import extract_json, gemini_chat
 
     modes = framing_modes()
