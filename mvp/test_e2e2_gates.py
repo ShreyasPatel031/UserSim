@@ -456,11 +456,32 @@ class SyntheticGateTests(unittest.TestCase):
         under = _evaluate(study, vision_goal=vision, startup={**_startup_that_used_to_pass(), "elapsed_s": 408})
         self.assertTrue(_gate(under, "study_budget")["pass"])
         self.assertIn("480", _gate(under, "study_budget")["threshold"])
-        self.assertIn("408", _gate(under, "study_budget")["threshold"])
+        self.assertIn("408", str(_gate(under, "study_budget")["value"]))
         over = _evaluate(study, vision_goal=vision, startup={**_startup_that_used_to_pass(), "elapsed_s": 481})
         self.assertFalse(_gate(over, "study_budget")["pass"])
         self.assertFalse(over["pass"])
         self.assertNotIn("elapsed", {g["id"] for g in over["gates"]})
+
+    def test_budget_is_per_agent_not_study_wall(self) -> None:
+        study = _matrix([True, True, False, False, True, True, False, False])
+        vision = {
+            r["agent_id"]: True
+            for r in study["agent_results"]
+            if r["site_key"] == "product" and r["num_steps"] == 4
+        }
+        for i, run in enumerate(study["agent_results"]):
+            run["page_open_at_ts"] = 1000.0 + 60 * i
+            run["finished_at_ts"] = run["page_open_at_ts"] + 100 + i
+        # 648s wall like study 7b5f0af9, every agent well under 480s: pass.
+        waves = _evaluate(study, vision_goal=vision, startup={**_startup_that_used_to_pass(), "elapsed_s": 648})
+        gate = _gate(waves, "study_budget")
+        self.assertTrue(gate["pass"], gate)
+        self.assertIn("0/", gate["value"])
+        self.assertIn("per agent", gate["threshold"])
+        study["agent_results"][0]["finished_at_ts"] = study["agent_results"][0]["page_open_at_ts"] + 481
+        slow = _evaluate(study, vision_goal=vision, startup={**_startup_that_used_to_pass(), "elapsed_s": 300})
+        self.assertFalse(_gate(slow, "study_budget")["pass"])
+        self.assertIn(study["agent_results"][0]["agent_id"], _gate(slow, "study_budget")["detail"])
 
 
 def _opened(agent_id: str, *, error: str = "", phase: str = "Live browser agents") -> dict:
@@ -1062,7 +1083,7 @@ class HeadlineMetricTests(unittest.TestCase):
         self.assertIn("URL submit", _gate(result, "time_to_first_value")["threshold"])
         self.assertTrue(_gate(result, "total_time")["pass"])
         self.assertIn("480.0s", str(_gate(result, "total_time")["value"]))
-        self.assertIn("<= 480s", _gate(result, "total_time")["threshold"])
+        self.assertIn("480", _gate(result, "total_time")["detail"])
         self.assertIn("report is ready", _gate(result, "total_time")["threshold"])
         self.assertTrue(result["pass"])
         text = render_markdown(result, study_id=study["id"], product_url=study["url"])
@@ -1084,8 +1105,9 @@ class HeadlineMetricTests(unittest.TestCase):
         startup["total_time_s"] = 481.0
         over = _evaluate(study, vision_goal=vision, startup=startup)
         self.assertTrue(_gate(over, "time_to_first_value")["pass"])
-        self.assertFalse(_gate(over, "total_time")["pass"])
-        self.assertFalse(over["pass"])
+        # Study wall time is informational now; the 480s rule is per agent.
+        self.assertTrue(_gate(over, "total_time")["pass"])
+        self.assertIn("informational", str(_gate(over, "total_time")["value"]))
         startup["total_time_s"] = 100.0
         startup["report_ready"] = False
         not_ready = _evaluate(study, vision_goal=vision, startup=startup)

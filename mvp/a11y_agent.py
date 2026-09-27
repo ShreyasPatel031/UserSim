@@ -28,12 +28,37 @@ FAILURE_TYPES = ("our infrastructure", "model timeout", "stuck", "product")
 
 
 def study_budget_s() -> float:
-    """Seconds the whole study may run. Default is 8 minutes."""
+    """Per-wave seconds for the study's safety ceiling (x waves, capped). Default is 8 minutes.
+
+    Not the agent limit: each agent gets ``agent_budget_s`` from its own page open.
+    """
     try:
         budget = float(os.environ.get("MVP_STUDY_BUDGET_S", "") or STUDY_BUDGET_S)
     except (TypeError, ValueError):
         budget = 480.0
     return max(30.0, budget)
+
+
+def agent_budget_s() -> float:
+    """Seconds one agent may run from its page opening to its finish. Default is 8 minutes.
+
+    The rule is 480s per agent, not for the whole study: a 44-agent study queues
+    for browsers in waves, so its wall time is informational. The study clock
+    (``study_budget_s`` x waves, capped by MVP_STUDY_BUDGET_MAX_S) stays only as a
+    safety ceiling.
+    """
+    try:
+        budget = float(os.environ.get("MVP_AGENT_BUDGET_S", "") or 480.0)
+    except (TypeError, ValueError):
+        budget = 480.0
+    return max(30.0, budget)
+
+
+def agent_deadline(opened_monotonic: float, study_deadline: float | None) -> float:
+    """This agent's deadline: its own 480s from page open (less the final-shot margin), inside the study ceiling."""
+    margin = float(os.environ.get("MVP_AGENT_FINISH_MARGIN_S", "30") or 30)
+    own = opened_monotonic + agent_budget_s() - margin
+    return own if study_deadline is None else min(own, float(study_deadline))
 
 
 def stuck_steps() -> int:
@@ -1149,6 +1174,7 @@ class A11yBoot:
             study.personas,
             product_url=study.url,
             competitors=list(study.competitors or []),
+            competitor_cells=list(getattr(study, "competitor_cells", None) or []) if planned else None,
         )
         cap = int(getattr(study, "max_agents", 0) or 0)
         if cap > 0 and len(study.tasks) > cap:
@@ -3452,11 +3478,17 @@ def signup_hopeless_without_keys(url: str) -> str | None:
 
 
 def competitor_signup_timeout_s() -> float:
-    """Wall-clock cap for competitor in-session signup (default 40s)."""
+    """Wall-clock cap for competitor in-session signup (default 90s).
+
+    40s ended 56 of 60 rival signups in study 7b5f0af9 (38 TimeoutError, 15 timeout,
+    3 zapier reCAPTCHAs refused as no_time_left) before an email step or a captcha
+    solve could finish; product signups there took 63-117s. A compare study now runs
+    only 8 rival agents, so the longer cap costs little wall time.
+    """
     try:
-        return max(15.0, float(os.environ.get("MVP_SIGNUP_COMPETITOR_TIMEOUT_S") or 40))
+        return max(15.0, float(os.environ.get("MVP_SIGNUP_COMPETITOR_TIMEOUT_S") or 90))
     except (TypeError, ValueError):
-        return 40.0
+        return 90.0
 
 
 _SIGNUP_GATE: dict[str, Any] = {"lock": None, "last": 0.0}
@@ -3522,6 +3554,7 @@ async def _signup_then_resume(
     on_step: Any | None,
     deadline: float | None,
     sess: dict[str, Any],
+    share_key: str = "",
 ) -> dict[str, Any] | None:
     """The task hit a login or signup wall. Sign up in this same browser, then resume.
 
@@ -3578,6 +3611,14 @@ async def _signup_then_resume(
     sess["signup_status"] = "signing up"
     started = time.time()
     try:
+        from mvp import captcha_spend as _cs
+        from mvp.signup_in_session import _site as _signup_site
+
+        # A study site's captcha may use CapSolver (still under the spend caps).
+        _cs.allow_study_host(_signup_site(url))
+    except Exception:  # noqa: BLE001
+        pass
+    try:
         import inspect
 
         await _stagger_signup()
@@ -3590,6 +3631,8 @@ async def _signup_then_resume(
         params = inspect.signature(signup_in_session).parameters
         if "signup_url" in params:
             kwargs["signup_url"] = wall
+        if "share_key" in params and not competitor:
+            kwargs["share_key"] = share_key
         if "on_step" in params and on_step is not None:
             async def _progress(event: Any) -> None:
                 # Show each signup move live on this agent's row.
@@ -3612,23 +3655,53 @@ async def _signup_then_resume(
     except Exception as exc:  # noqa: BLE001
         result = {"ok": False, "reason": repr(exc)[:160]}
     result = dict(result or {}) if isinstance(result, dict) else {"ok": bool(result)}
+    try:
+        from mvp import signup_share
+        from mvp.signup_in_session import _site as _signup_site
+
+        share_key, share_site = str(share_key or ""), _signup_site(url)
+        if result.get("ok") and share_key:
+            await signup_share.save_from_page(page, share_key, share_site, str(result.get("email") or ""))
+        elif (
+            share_key
+            and not competitor
+            and signup_share.retryable(str(result.get("reason") or ""))
+            and signup_share.has(share_key, share_site)
+        ):
+            # This site stopped sending sign-in mail (zo: 10 emails for 20 signups) but another
+            # agent of this study is signed in: continue in that session instead of the website.
+            shared = await signup_share.reuse(page, share_key, share_site)
+            if shared and shared.get("ok"):
+                result = {**shared, "first_attempt": str(result.get("reason") or "")[:120]}
+            elif shared:
+                result["shared_session"] = shared.get("reason")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] shared signup session skipped: {exc!r}", flush=True)
     public = {
         "ok": bool(result.get("ok")),
         "reason": str(result.get("reason") or "")[:200],
         "email": str(result.get("email") or "")[:120],
         "seconds": round(time.time() - started, 1),
     }
+    if result.get("first_attempt"):
+        public["first_attempt"] = str(result["first_attempt"])[:120]
     if not public["ok"] and isinstance(result.get("steps"), list):
         # The signup's own last steps (already redacted): why it stopped.
         public["steps"] = [str(x)[:200] for x in result["steps"][-15:]]
     sess["signup_status"] = "signed up" if public["ok"] else "signup failed"
     sess["signup"] = public
     row["signup"] = public
-    row["action"] = (
-        f"signed up as {public['email'] or 'a new user'} in {public['seconds']}s"
-        if public["ok"]
-        else signup_block_label(public["reason"])
-    )
+    if public["ok"] and public["reason"] == "shared_session":
+        row["action"] = (
+            f"signed in with this study's existing account after {public['seconds']}s "
+            f"(this signup's email did not arrive: {public.get('first_attempt') or 'timeout'})"
+        )
+    else:
+        row["action"] = (
+            f"signed up as {public['email'] or 'a new user'} in {public['seconds']}s"
+            if public["ok"]
+            else signup_block_label(public["reason"])
+        )
     try:
         row["url"] = str(page.url or wall)
     except Exception:
@@ -3677,6 +3750,7 @@ async def signup_and_resume(
     deadline: float | None = None,
     agent_id: str = "agent",
     sess: dict[str, Any] | None = None,
+    share_key: str = "",
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """needs_account -> signup_in_session on this page -> resume signed_in=True.
 
@@ -3694,6 +3768,7 @@ async def signup_and_resume(
         on_step=on_step,
         deadline=deadline,
         sess=row,
+        share_key=share_key,
     )
     if resumed is None:
         return {"ok": False, "reason": "signup unavailable or study budget too short"}, outcome
@@ -3879,6 +3954,8 @@ async def _run_a11y_agent_unlocked(
             if deadline is not None and waited_for_browser > 1.0:
                 deadline += waited_for_browser
                 _extend_study_budget(boot.study, waited_for_browser, agent_id)
+            # Per-agent cap: 480s from this agent's own page open, whatever the study clock says.
+            deadline = agent_deadline(time.monotonic(), deadline)
         except Exception as exc:  # noqa: BLE001
             print(f"[{agent_id}] session ended: {exc!r}", flush=True)
             stop_reason = "session ended"
@@ -3966,6 +4043,7 @@ async def _run_a11y_agent_unlocked(
                     deadline=deadline,
                     agent_id=agent_id,
                     sess=sess,
+                    share_key=str(getattr(boot.study, "id", "") or ""),
                 )
                 sess["signup"] = outcome.get("signup") or {"ok": False, "reason": _su.get("reason")}
                 sess["phase"] = "acting"

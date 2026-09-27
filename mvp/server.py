@@ -581,6 +581,13 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
         plan = await plan_task
         if plan and starter and plan.get("mode") == "compare":
             plan = early_start.splice_plan(plan, starter)
+        if plan and plan.get("mode") == "compare":
+            from mvp.fast_plan import competitor_cells
+
+            # The splice reorders buyers and jobs: pick each rival's 2 x 2 slice on the final order.
+            plan["competitor_cells"] = competitor_cells(
+                list(plan.get("personas") or []), list(plan.get("task_specs") or []), list(plan.get("competitors") or [])
+            )
         elif starter and not (plan and plan.get("mode") == "compare"):
             # No comparison plan: stop the early agent rather than run it outside the study.
             for t in (getattr(study, "early_runs", None) or {}).values():
@@ -596,6 +603,8 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 study.competitor_names = dict(plan.get("competitor_names") or {})
                 study.task_specs = list(plan.get("task_specs") or [])
                 study.plan_personas = list(plan.get("personas") or [])
+                cells = dict(plan.get("competitor_cells") or {})
+                study.competitor_cells = [cells.get(c) or {} for c in (plan.get("competitors") or [])]
             if not (body.segment or body.customers) and plan.get("segment"):
                 study.segment = plan["segment"]
 

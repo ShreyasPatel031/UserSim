@@ -106,7 +106,7 @@ class SignupHopeless(unittest.TestCase):
     def test_competitor_timeout_default(self) -> None:
         import os
         os.environ.pop("MVP_SIGNUP_COMPETITOR_TIMEOUT_S", None)
-        self.assertEqual(competitor_signup_timeout_s(), 40.0)
+        self.assertEqual(competitor_signup_timeout_s(), 90.0)
 
 class ClearCaptchaNoFalseOk(unittest.TestCase):
     """Calendly: reCAPTCHA Enterprise v2 image challenge open, stray token filled."""

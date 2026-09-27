@@ -845,6 +845,34 @@ def _looks_like_app(snap: dict[str, Any]) -> bool:
     return not _has_password_or_email_field(snap)
 
 
+async def _wait_mail_or_share(
+    inbox: Any, site: str, since: float, left: float, seen: Any, share_key: str = ""
+) -> dict[str, Any] | None:
+    """Poll the inbox for up to ``left`` seconds, in slices.
+
+    Without a share key this is one ``inbox.wait``. With one, stop early once another
+    agent of the study has signed in on this site and this agent has waited
+    MVP_SIGNUP_SHARED_EMAIL_WAIT_S (40s): in study 7b5f0af9 Zo sent 10 login emails
+    for 20 signups and the other 10 agents waited 214-272s for mail that never came.
+    """
+    if not share_key:
+        return await asyncio.to_thread(inbox.wait, site, since, left, seen)
+    from mvp import signup_share
+
+    cap = float(os.environ.get("MVP_SIGNUP_SHARED_EMAIL_WAIT_S", "40") or 40)
+    start = time.time()
+    while True:
+        waited = time.time() - start
+        rest = left - waited
+        if rest <= 0:
+            return None
+        mail = await asyncio.to_thread(inbox.wait, site, since, min(15.0, rest), seen)
+        if mail:
+            return mail
+        if time.time() - start >= cap and signup_share.has(share_key, site):
+            return None
+
+
 async def signup_in_session(
     page: Any,
     site_url: str,
@@ -854,8 +882,13 @@ async def signup_in_session(
     timeout_s: float | None = None,
     tag: str | None = None,
     on_step: Any | None = None,
+    share_key: str = "",
 ) -> dict[str, Any]:
     """Sign up on ``site_url`` in the caller's ``page`` and leave it signed in.
+
+    ``share_key`` (the study id): when another agent of the study already signed in
+    on this site, stop waiting for this signup's email after 40s so the caller can
+    continue in that agent's session (``mvp.signup_share``) instead of timing out.
 
     ``signup_url``: optional URL of the wall the task loop hit (used as the start
     page). The page is left on the signed-in workspace when ``ok`` is True.
@@ -1252,11 +1285,19 @@ async def signup_in_session(
                 status = "working"
             if status == "need_email" and not ident.get("code"):
                 left = max(5.0, min(75.0, deadline - time.time() - 10))
+                from mvp import signup_share
+
+                shared_ready = bool(share_key) and signup_share.has(share_key, site)
+                if shared_ready:
+                    # A study session exists on this site: a late email is not worth 150s.
+                    left = min(left, float(os.environ.get("MVP_SIGNUP_SHARED_EMAIL_WAIT_S", "40") or 40))
                 steps.append(f"waiting for email to {ident['email'].split('@')[1]} (up to {int(left)}s)")
-                mail = await asyncio.to_thread(inbox.wait, site, email_since, left, seen_mail)
+                mail = await _wait_mail_or_share(inbox, site, email_since, left, seen_mail, share_key)
+                if not shared_ready and share_key and signup_share.has(share_key, site):
+                    shared_ready = True
                 email_waits += 1
                 if not mail:
-                    if email_waits >= 2:
+                    if email_waits >= 2 or shared_ready:
                         return _finish(False, "email_timeout")
                     note = "No email arrived yet. If there is a resend control use it, else wait."
                     continue

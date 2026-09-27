@@ -247,6 +247,8 @@ class StudyState:
     competitor_names: dict[str, str] = field(default_factory=dict)
     task_specs: list[dict[str, Any]] = field(default_factory=list)
     plan_personas: list[dict[str, Any]] = field(default_factory=list)
+    # Compare mode: per rival (in competitor order) the persona/task indexes it runs; [] = full matrix.
+    competitor_cells: list[dict[str, Any]] = field(default_factory=list)
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -1047,8 +1049,13 @@ def expand_full_matrix(
     *,
     product_url: str,
     competitors: list[str],
+    competitor_cells: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
-    """Every persona × every unique task × every site (default 4×2×3 → 24)."""
+    """Every persona × every unique task on the product; on each rival, every cell or only its slice.
+
+    ``competitor_cells[i]`` ({"personas": [idx], "tasks": [idx]}, 0-based in plan order) limits
+    competitor ``i+1`` to those personas and tasks (compare mode: 2 x 2 per rival). Missing = all.
+    """
     sites = _site_pairs(product_url, competitors)
     if not sites:
         sites = [("product", product_url)]
@@ -1063,12 +1070,21 @@ def expand_full_matrix(
         unique_tasks.append({**task, "id": base})
     if not unique_tasks:
         return []
+    slices: dict[str, tuple[set[int], set[int]]] = {}
+    for i, cell in enumerate(competitor_cells or []):
+        if isinstance(cell, dict) and (cell.get("personas") or cell.get("tasks")):
+            slices[f"competitor_{i + 1}"] = (
+                {int(x) for x in cell.get("personas") or []},
+                {int(x) for x in cell.get("tasks") or []},
+            )
     expanded: list[dict[str, Any]] = []
-    for persona in people:
+    for p_idx, persona in enumerate(people):
         pid = str(persona.get("id"))
-        for task in unique_tasks:
+        for t_idx, task in enumerate(unique_tasks):
             base_id = str(task.get("id") or "t")
             for site_key, site_url in sites:
+                if site_key in slices and (p_idx not in slices[site_key][0] or t_idx not in slices[site_key][1]):
+                    continue
                 clone = dict(task)
                 clone["id"] = f"{base_id}__{pid}__{site_key}"
                 clone["persona_id"] = pid
@@ -1799,6 +1815,9 @@ async def _run_study_body(
         # Guarantee exact persona count — LLM under-delivery must not shrink the matrix.
         if not study.test_mode:
             want_p = max(1, int(os.environ.get("MVP_PERSONA_COUNT", "4") or "4"))
+            # A comparison plan names its own buyers (6). Cutting to MVP_PERSONA_COUNT (4)
+            # dropped p5 in study 7b5f0af9: its 20 runs fell back to p1 and ran as Alex Chen.
+            want_p = max(want_p, len(getattr(study, "plan_personas", None) or []))
             while len(study.personas) < want_p:
                 n = len(study.personas) + 1
                 study.personas.append(
@@ -1931,7 +1950,11 @@ async def _run_study_body(
             ordered = [p for p in study.personas if p.get("id") in used]
             extras = [p for p in study.personas if p.get("id") not in used]
             study.personas = (ordered + extras)[
-                    : max(len(ordered), int(os.environ.get("MVP_PERSONA_COUNT", "4")))
+                    : max(
+                        len(ordered),
+                        int(os.environ.get("MVP_PERSONA_COUNT", "4")),
+                        len(getattr(study, "plan_personas", None) or []),
+                    )
             ]
 
         # Full studies: every persona × every task × (product + each competitor).
@@ -4127,6 +4150,7 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "product_name": study.product_name,
             "competitor_names": study.competitor_names,
             "task_specs": study.task_specs,
+            "competitor_cells": getattr(study, "competitor_cells", None) or [],
             "skip_competitors": study.skip_competitors,
             "test_mode": study.test_mode,
             "backend": study.backend,
