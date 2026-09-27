@@ -188,3 +188,44 @@ def test_default_flags_unchanged_by_gfocus():
     f = PairFlags()
     assert not f.argue_both and f.name() == "both+ratings"
     assert PairFlags(goal_diffs=True, strict_orders=True).name() == "both+ratings+goal_diffs+strict"
+
+
+def _png(color_box=None, size=(400, 600)):
+    import io
+
+    from PIL import Image, ImageDraw
+
+    im = Image.new("RGB", size, "white")
+    d = ImageDraw.Draw(im)
+    d.rectangle((20, 20, 380, 60), fill="navy")
+    if color_box:
+        d.rectangle(color_box, fill="red")
+    buf = io.BytesIO()
+    im.save(buf, format="PNG")
+    return buf.getvalue()
+
+
+def test_diff_regions_finds_the_changed_box():
+    r = pairwise.diff_regions(_png(), _png((150, 300, 250, 340)))
+    assert len(r) == 1
+    x0, y0, x1, y1 = r[0]["box"]
+    assert x0 <= 150 / 400 <= x1 and y0 <= 300 / 600 <= y1 and (x1 - x0) * (y1 - y0) < 0.1
+    assert pairwise.diff_regions(_png(), _png()) == []
+
+
+def test_gfocus_extras_in_every_stage_and_order_mapped():
+    call, calls = fake_gfocus(prefers=b"AAA")
+    ev_a = PairEvidence(label="a", screenshots=[b"AAA"], summary="alpha text")
+    ev_b = PairEvidence(label="b", screenshots=[b"BBB"], summary="beta text")
+    ctx = dict(CTX, change="Button: Presence", task="start a trial")
+    flags = PairFlags(goal_diffs=True, strict_orders=True, argue_both=True, v1_prompts=True, use_personas=False,
+                      gf_goal=True, gf_page_text=True, gf_audience=True, gf_change=True)
+    assert flags.name().endswith("in_goal+in_page_text+in_audience+in_change")
+    r = run(compare_pair(ev_a, ev_b, PERSONAS, ctx, flags, call=call))
+    assert r["winner"] == "A"
+    for key, contents, _, _ in calls:
+        p = contents[0]
+        assert "Stated goal of the site operator for this page: start a trial" in p and "Button: Presence" in p
+        assert "P0 Q0, shopper: buy" in p
+        first = "alpha" if key.split("|")[1] == "ab" else "beta"  # v1goal|ab, argue|ab|single|...
+        assert f"Text on the first version (machine-read, may contain errors): {first} text" in p

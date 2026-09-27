@@ -50,3 +50,6 @@ first-position pick rate, by source and platform. For `usersim`, also a 12-vote 
 `--stream gfocus`: the full G-FOCUS (arXiv 2505.05026v1 Appendix E prompts: goal, goal-conditioned diffs, argue both sides, Evaluator),
 per order (strict), one neutral judge, temperature 1. `--stream gfocus_personas`: the same, with each persona arguing and evaluating.
 `cost_per_pair.py` (tokens/cost per pair from ledgers) and `cost_project.py` (per-study and fine-tuning projections).
+`--inputs goal,diff_list,page_text,crops,audience,change` adds extra inputs to the G-FOCUS arm (PairFlags.gf_*; FLASH_INPUTS_REPORT.md).
+`arm_compare.py` (baseline vs arms: CA, paired McNemar + bootstrap dCA, OI, $/pair) and `export_ft.py` (per-order pick +
+brief reasoning rows for a later fine-tune).

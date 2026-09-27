@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(ROOT / "src")]
 
 from mvp.fast_plan import ab_personas  # noqa: E402
-from mvp.pairwise import PAIRWISE_MODEL, PairEvidence, PairFlags, compare_pair, parse_json  # noqa: E402
+from mvp.pairwise import GF_INPUTS, PAIRWISE_MODEL, PairEvidence, PairFlags, compare_pair, parse_json  # noqa: E402
 
 BENCH = Path(os.environ.get("WISERUI_BENCH", "/workspace/bench/wiserui"))
 DATA = BENCH / "repo" / "WiserUI_Bench.json"
@@ -63,6 +63,26 @@ def source_of(item: dict) -> str:
 def ctx_of(item: dict) -> dict:
     return {"company": item["company"], "page_type": item["page_type"], "industry": item["industry_domain"],
             "platform": "mobile app or mobile site" if item["web_mobile"] == "mobile" else "website"}
+
+
+def change_of(item: dict) -> str:
+    """The dataset's ui_change ({element: [attributes]}) as text: what the test changed, never which side won."""
+    return "; ".join(f"{el}: {', '.join(attrs)}" for el, attrs in (item.get("ui_change") or {}).items())
+
+
+OCR = BENCH / "ocr"
+
+
+def page_text(idx: int, label: str) -> str:
+    """Tesseract OCR of the full-resolution screenshot (stand-in for the product's DOM/accessibility text), cached."""
+    f = OCR / f"{idx}_{label}.txt"
+    if not f.exists():
+        import subprocess
+
+        OCR.mkdir(parents=True, exist_ok=True)
+        subprocess.run(["tesseract", str(image_dir(idx) / f"{label}.png"), str(f)[:-4], "--psm", "3"],
+                       capture_output=True, check=False)
+    return f.read_text(errors="ignore") if f.exists() else ""
 
 
 def a_is_win(idx: int) -> bool:
@@ -132,8 +152,9 @@ def image_dir(idx: int) -> Path:
     return rec if (rec / "win.png").exists() and (rec / "lose.png").exists() else IMAGES / str(idx)
 
 
-def evidence(idx: int, label: str) -> PairEvidence:
-    return PairEvidence(label=label, screenshots=[(image_dir(idx) / f"{label}.png").read_bytes()])
+def evidence(idx: int, label: str, text: bool = False) -> PairEvidence:
+    return PairEvidence(label=label, screenshots=[(image_dir(idx) / f"{label}.png").read_bytes()],
+                        summary=page_text(idx, label) if text else "")
 
 
 async def main() -> None:
@@ -148,9 +169,17 @@ async def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--max-cost", type=float, default=15.0, help="stop scheduling new pairs above this spend")
     ap.add_argument("--aa", action="store_true", help="A/A check: the winner screenshot as both versions")
+    ap.add_argument("--inputs", default="", help=f"extra G-FOCUS inputs (PairFlags.gf_*), comma list of {','.join(GF_INPUTS)}")
     args = ap.parse_args()
 
+    import dataclasses
+
     flags = STREAMS[args.stream]
+    extra = [x.strip() for x in args.inputs.split(",") if x.strip()]
+    bad = [x for x in extra if x not in GF_INPUTS]
+    if bad:
+        raise SystemExit(f"unknown --inputs {bad}; choose from {GF_INPUTS}")
+    flags = dataclasses.replace(flags, **{f"gf_{x}": True for x in extra})
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     data = {x["index"]: x for x in json.load(open(DATA))}
@@ -163,7 +192,7 @@ async def main() -> None:
     cond = f"pw_{args.stream}" + ("_aa" if args.aa else "")
     print(f"[wiserui] {len(idxs)} pairs stream={args.stream} flags={flags} model={PAIRWISE_MODEL} "
           f"a0_personas={len(a0)} prior_spend=${ledger.cost:.3f}", flush=True)
-    (out / "config.json").write_text(json.dumps({"stream": args.stream, "flags": flags.__dict__, "model": PAIRWISE_MODEL,
+    (out / "config.json").write_text(json.dumps({"stream": args.stream, "inputs": extra, "flags": flags.__dict__, "model": PAIRWISE_MODEL,
                                                  "personas_from": args.personas_from, "aa": args.aa, "n": len(idxs)}, indent=1))
 
     results: dict[int, dict] = {}
@@ -175,6 +204,8 @@ async def main() -> None:
             return
         item = data[i]
         ctx = ctx_of(item)
+        if flags.gf_change:
+            ctx["change"] = change_of(item)
         call = make_call(ledger, sem, f"{i}")
         personas = ab_personas(a0[i], ctx) if i in a0 else None
         aw = a_is_win(i)
@@ -182,14 +213,18 @@ async def main() -> None:
             ev_a, ev_b = evidence(i, "win"), evidence(i, "win")
             ev_b.label = "win_copy"
         else:
-            ev_a, ev_b = (evidence(i, "win"), evidence(i, "lose")) if aw else (evidence(i, "lose"), evidence(i, "win"))
+            t = flags.gf_page_text
+            ev_a, ev_b = ((evidence(i, "win", t), evidence(i, "lose", t)) if aw else
+                          (evidence(i, "lose", t), evidence(i, "win", t)))
         try:
             res = await compare_pair(ev_a, ev_b, personas, ctx, flags, call=call)
         except Exception as exc:  # noqa: BLE001
             print(f"[wiserui] pair {i} failed: {exc!r}"[:300], flush=True)
             return
         res.update({"index": i, "a_is_win": aw, "source": source_of(item), "web_mobile": item["web_mobile"],
-                    "personas_used": personas or []})
+                    "personas_used": personas or [], "ctx": ctx,
+                    "images": {"a": str(image_dir(i) / f"{ev_a.label.replace('_copy', '')}.png"),
+                               "b": str(image_dir(i) / f"{ev_b.label.replace('_copy', '')}.png")}})
         results[i] = res
         done += 1
         if done % 10 == 0 or done == len(idxs):

@@ -67,6 +67,14 @@ class PairFlags:
     v1_prompts: bool = False  # steps 1-2 with the v1 Appendix E Part 1/2 prompts (per order, text output)
     use_personas: bool = True  # False: a single neutral evaluator, as in the paper
     argue_temperature: float = 1.0  # the paper ran every model at temperature 1 (Appendix F)
+    # Extra inputs for the G-FOCUS path (argue_both). Each adds one "Additional information" block (and, for crops, extra
+    # images) to EVERY G-FOCUS stage prompt, computed once per pair (order-free) and shown in each order's First/Second terms.
+    gf_goal: bool = False        # stated page goal: ctx["task"] / ctx["goal"], else one text-only call from page context
+    gf_diff_list: bool = False   # JSON difference list from extract_goal_and_diffs (both orders, merged)
+    gf_page_text: bool = False   # each version's page text (PairEvidence.summary: DOM/accessibility text, or OCR)
+    gf_crops: bool = False       # zoomed crops of the regions that differ (pixel-diff boxes, see diff_regions)
+    gf_audience: bool = False    # short target-user list (the page's personas: name, role, goal)
+    gf_change: bool = False      # experimenter's description of what the test changed: ctx["change"]
 
     def name(self) -> str:
         return "+".join(
@@ -74,12 +82,14 @@ class PairFlags:
             + (["goal_diffs"] if self.goal_diffs else [])
             + (["debias"] if self.debias else [])
             + (["strict"] if self.strict_orders else [])
-            + ((["argue_both"] + (["v1"] if self.v1_prompts else []) + ([] if self.use_personas else ["single"]))
+            + ((["argue_both"] + (["v1"] if self.v1_prompts else []) + ([] if self.use_personas else ["single"])
+                + [f"in_{k}" for k in GF_INPUTS if getattr(self, f"gf_{k}")])
                if self.argue_both else [])
         )
 
 
 ORDERS = ("ab", "ba")
+GF_INPUTS = ("goal", "diff_list", "page_text", "crops", "audience", "change")
 
 
 # ----------------------------------------------------------------- model access
@@ -486,13 +496,14 @@ def _v1_images(first: PairEvidence, second: PairEvidence) -> list:
 
 async def v1_goal_and_diffs(first: PairEvidence, second: PairEvidence, ctx: dict[str, Any], order: str, *,
                             call: Call, temperature: float = 1.0,
-                            media_resolution: str | None = None) -> dict[str, Any]:
+                            media_resolution: str | None = None, extra: dict[str, Any] | None = None) -> dict[str, Any]:
     """G-FOCUS Part 1 (goal) then Part 2 (goal-conditioned key UI differences) for ONE presentation order."""
-    head = _v1_head(ctx)
-    gtext, _, _ = await call(f"v1goal|{order}", [_V1_GOAL.format(head=head), *_v1_images(first, second)],
+    head = _v1_head(ctx) + (extra or {}).get("text", "")
+    imgs = [*_v1_images(first, second), *(extra or {}).get("images", [])]
+    gtext, _, _ = await call(f"v1goal|{order}", [_V1_GOAL.format(head=head), *imgs],
                              temperature=temperature, max_tokens=600, media_resolution=media_resolution, json_mode=False)
     goal = " ".join(_section(gtext, "Goal").split())[:600]
-    dtext, _, _ = await call(f"v1diff|{order}", [_V1_DIFFS.format(head=head, goal=goal), *_v1_images(first, second)],
+    dtext, _, _ = await call(f"v1diff|{order}", [_V1_DIFFS.format(head=head, goal=goal), *imgs],
                              temperature=temperature, max_tokens=2048, media_resolution=media_resolution, json_mode=False)
     return {"goal": goal, "diffs_text": _section(dtext, "Key UI differences")[:4000], "raw_diffs": dtext[:6000]}
 
@@ -500,10 +511,10 @@ async def v1_goal_and_diffs(first: PairEvidence, second: PairEvidence, ctx: dict
 async def argue_and_evaluate(first: PairEvidence, second: PairEvidence, ctx: dict[str, Any], goal: str, ui_diff: str,
                              order: str, *, persona: dict[str, Any] | None, call: Call, key: str,
                              temperature: float = 1.0, media_resolution: str | None = None,
-                             retries: int = 2) -> dict[str, Any]:
+                             retries: int = 2, extra: dict[str, Any] | None = None) -> dict[str, Any]:
     """G-FOCUS Part 3 (reasons assuming first wins; separately, second wins) and Part 4 (Evaluator) for one order."""
-    head, user = _v1_head(ctx), _v1_user(persona)
-    imgs = _v1_images(first, second)
+    head, user = _v1_head(ctx) + (extra or {}).get("text", ""), _v1_user(persona)
+    imgs = [*_v1_images(first, second), *(extra or {}).get("images", [])]
 
     async def reason(which: str) -> str:
         text, _, _ = await call(f"{key}|reason_{which}", [_V1_REASON.format(
@@ -533,6 +544,173 @@ async def argue_and_evaluate(first: PairEvidence, second: PairEvidence, ctx: dic
             "reasons_first": r1[:2000], "reasons_second": r2[:2000], "evaluator": text[:4000]}
 
 
+# ----------------------------------------------------------------- G-FOCUS extra inputs (PairFlags.gf_*)
+
+_STATED_GOAL = """A site operator runs an A/B test on this page: {ctx}.
+In one sentence (at most 25 words), state the operator's goal for the page: the action they want visitors to take.
+Answer with the sentence only."""
+
+
+def diff_regions(png_a: bytes, png_b: bytes, k: int = 3, cell: int = 16, width: int = 800,
+                 thresh: float = 18.0) -> list[dict[str, Any]]:
+    """Up to ``k`` regions where two screenshots of the same page differ, largest first, as matching crops.
+
+    Both images are scaled to ``width`` and compared top-aligned on a ``cell``-px grid (mean absolute gray difference
+    per cell > ``thresh``); changed cells are dilated by one cell and grouped into 8-connected boxes. Returns
+    ``[{"box": (x0, y0, x1, y1) as fractions of version a's width / height, "a": png, "b": png}]``. Boxes covering
+    over 35% of the page (content shifted) fall back to one full-width band between the first changed row from the
+    top and from the bottom. Returns [] when the images do not line up (more than 60% of cells changed, e.g. two
+    different sites), nothing differs, or the change spans most of the page.
+    """
+    import io
+
+    import numpy as np
+    from PIL import Image, ImageFilter
+
+    def load(b: bytes) -> Image.Image:
+        return Image.open(io.BytesIO(b)).convert("RGB")
+
+    ia, ib = load(png_a), load(png_b)
+
+    def gray(im: Image.Image) -> np.ndarray:
+        h = max(1, round(im.height * width / im.width))
+        return np.asarray(im.convert("L").resize((width, h)).filter(ImageFilter.GaussianBlur(1.5)), dtype=np.float32)
+
+    ga, gb = gray(ia), gray(ib)
+    h = min(ga.shape[0], gb.shape[0])
+    if h < cell * 2:
+        return []
+    d = np.abs(ga[:h] - gb[:h])
+    gh, gw = h // cell, width // cell
+    grid = d[: gh * cell, : gw * cell].reshape(gh, cell, gw, cell).mean(axis=(1, 3)) > thresh
+    if not grid.any() or grid.mean() > 0.6:
+        return []
+    dil = grid.copy()
+    for dy in (-1, 0, 1):
+        for dx in (-1, 0, 1):
+            dil |= np.roll(np.roll(grid, dy, 0), dx, 1)
+    seen = np.zeros_like(dil)
+    boxes = []
+    for y in range(gh):
+        for x in range(gw):
+            if not dil[y, x] or seen[y, x]:
+                continue
+            stack, cells = [(y, x)], []
+            seen[y, x] = True
+            while stack:
+                cy, cx = stack.pop()
+                cells.append((cy, cx))
+                for ny in (cy - 1, cy, cy + 1):
+                    for nx in (cx - 1, cx, cx + 1):
+                        if 0 <= ny < gh and 0 <= nx < gw and dil[ny, nx] and not seen[ny, nx]:
+                            seen[ny, nx] = True
+                            stack.append((ny, nx))
+            ys, xs = [c[0] for c in cells], [c[1] for c in cells]
+            changed = sum(bool(grid[c]) for c in cells)
+            if changed >= 2:
+                boxes.append((changed, min(xs), min(ys), max(xs) + 1, max(ys) + 1))
+    boxes.sort(reverse=True)
+    # A box covering much of the page usually means content shifted (an element added or removed). Then use the band
+    # between the first changed row from the top (top-aligned) and from the bottom (bottom-aligned) instead.
+    regions = []  # (frac box in version a, frac box in version b); fractions of each image's own scaled height
+    for _, x0, y0, x1, y1 in boxes:
+        if (x1 - x0) * (y1 - y0) <= 0.35 * gw * gh:
+            fa = (x0 * cell / width, y0 * cell / ga.shape[0], min(1.0, x1 * cell / width), min(1.0, y1 * cell / ga.shape[0]))
+            fb = (fa[0], y0 * cell / gb.shape[0], fa[2], min(1.0, y1 * cell / gb.shape[0]))
+            regions.append((fa, fb))
+    if not regions:
+        def first_changed(x: np.ndarray, y: np.ndarray) -> int:
+            n = min(x.shape[0], y.shape[0]) // cell
+            rows = np.abs(x[: n * cell] - y[: n * cell]).reshape(n, cell, width).mean(axis=(1, 2)) > thresh / 2
+            return int(np.argmax(rows)) * cell if rows.any() else -1
+        top = first_changed(ga, gb)
+        bot = first_changed(ga[::-1], gb[::-1])
+        if top >= 0 and bot >= 0:
+            ea, eb = max(top + cell, ga.shape[0] - bot), max(top + cell, gb.shape[0] - bot)
+            if (ea - top) <= 0.6 * ga.shape[0] and (eb - top) <= 0.6 * gb.shape[0]:
+                regions.append(((0.0, top / ga.shape[0], 1.0, min(1.0, ea / ga.shape[0])),
+                                (0.0, top / gb.shape[0], 1.0, min(1.0, eb / gb.shape[0]))))
+    out = []
+    for fa, fb in regions[:k]:
+        frac = fa
+        crops = {}
+        for name, im, f in (("a", ia, fa), ("b", ib, fb)):
+            box = (int(f[0] * im.width), int(f[1] * im.height), int(f[2] * im.width), int(f[3] * im.height))
+            c = im.crop(box)
+            if max(c.size) > 768:
+                c.thumbnail((768, 768))
+            buf = io.BytesIO()
+            c.save(buf, format="PNG")
+            crops[name] = buf.getvalue()
+        out.append({"box": tuple(round(v, 3) for v in frac), **crops})
+    return out
+
+
+async def gfocus_extras(ev_a: PairEvidence, ev_b: PairEvidence, ctx: dict[str, Any], personas: list[dict[str, Any]] | None,
+                        flags: PairFlags, *, call: Call) -> dict[str, Any]:
+    """The flagged extra inputs, computed once per pair in canonical a/b terms: {"parts": {...}, "crops": [...]}."""
+    parts: dict[str, Any] = {}
+    jobs = {}
+    if flags.gf_goal:
+        stated = str(ctx.get("task") or ctx.get("goal") or "").strip()
+        if stated:
+            parts["goal"] = stated
+        else:
+            jobs["goal"] = call("statedgoal", [_STATED_GOAL.format(ctx=_ctx_line(ctx))], temperature=0.0, max_tokens=120,
+                                json_mode=False)
+    if flags.gf_diff_list:
+        jobs["diff_list"] = extract_goal_and_diffs(ev_a, ev_b, ctx, call=call, both_orders=True,
+                                                   media_resolution=flags.media_resolution)
+    if flags.gf_audience and not personas:
+        jobs["audience"] = plan_personas(ctx, call=call)
+    got = dict(zip(jobs, await asyncio.gather(*jobs.values()))) if jobs else {}
+    if "goal" in got:
+        parts["goal"] = " ".join(str(got["goal"][0]).split())[:300]
+    if "diff_list" in got:
+        parts["diff_list"] = got["diff_list"]["diffs"]
+    if flags.gf_page_text:
+        parts["page_text"] = {"a": " ".join(ev_a.summary.split())[:2500], "b": " ".join(ev_b.summary.split())[:2500]}
+    if flags.gf_audience:
+        ps = personas or got.get("audience") or []
+        parts["audience"] = [f"{p.get('name')}, {p.get('role')}: {p.get('goal')}" for p in ps[:6]]
+    if flags.gf_change and str(ctx.get("change") or "").strip():
+        parts["change"] = " ".join(str(ctx["change"]).split())[:300]
+    crops = []
+    if flags.gf_crops and ev_a.screenshots and ev_b.screenshots:
+        try:
+            crops = await asyncio.to_thread(diff_regions, ev_a.screenshots[0], ev_b.screenshots[0])
+        except Exception:  # noqa: BLE001 - undecodable image: no crops
+            crops = []
+    return {"parts": parts, "crops": crops}
+
+
+def render_extras(ex: dict[str, Any], order: str) -> dict[str, Any]:
+    """One order's "Additional information" text block and extra images (First/Second = that order's positions)."""
+    p, first, second = ex.get("parts") or {}, *(("a", "b") if order == "ab" else ("b", "a"))
+    lines = []
+    if p.get("goal"):
+        lines.append(f"Stated goal of the site operator for this page: {p['goal']}")
+    if p.get("change"):
+        lines.append(f"What the A/B test changed (element: changed attributes): {p['change']}")
+    if p.get("audience"):
+        lines.append("Target users of this page:\n" + "\n".join(f"- {x}" for x in p["audience"]))
+    if p.get("diff_list") is not None:
+        lines.append("Differences listed by a separate automated check:\n" + diffs_text(p["diff_list"], order))
+    if p.get("page_text"):
+        t = p["page_text"]
+        lines.append(f"Text on the first version (machine-read, may contain errors): {t[first] or '(none)'}\n"
+                     f"Text on the second version (machine-read, may contain errors): {t[second] or '(none)'}")
+    imgs: list = []
+    if ex.get("crops"):
+        lines.append(f"After the two screenshots, {len(ex['crops'])} zoomed crop pair(s) of the regions where the versions "
+                     "differ are attached; each pair is the first version's crop, then the second version's crop.")
+        for i, c in enumerate(ex["crops"], 1):
+            imgs += [f"Region {i} (x {c['box'][0]:.2f}-{c['box'][2]:.2f}, y {c['box'][1]:.2f}-{c['box'][3]:.2f} of the page), "
+                     "first version:", c[first], f"Region {i}, second version:", c[second]]
+    text = ("\n\nAdditional information:\n" + "\n".join(lines)) if lines else ""
+    return {"text": text, "images": imgs}
+
+
 async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: list[dict[str, Any]] | None,
                               ctx: dict[str, Any], flags: PairFlags, *, call: Call) -> dict[str, Any]:
     """Full G-FOCUS: goal, goal-conditioned differences, argue both sides, Evaluator; per judge and order.
@@ -546,10 +724,13 @@ async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: 
     if flags.use_personas:
         judges = personas or await plan_personas(ctx, call=call)
     t = flags.argue_temperature
+    ex = await gfocus_extras(ev_a, ev_b, ctx, personas, flags, call=call)
+    rx = {o: render_extras(ex, o) for o in orders}
     per_order: dict[str, dict[str, Any]] = {}
     if flags.v1_prompts or not flags.goal_diffs:
         got = await asyncio.gather(*(v1_goal_and_diffs(*_ordered(ev_a, ev_b, o), ctx, o, call=call, temperature=t,
-                                                       media_resolution=flags.media_resolution) for o in orders))
+                                                       media_resolution=flags.media_resolution, extra=rx[o])
+                                     for o in orders))
         per_order = dict(zip(orders, got))
     else:
         gd = await extract_goal_and_diffs(ev_a, ev_b, ctx, call=call, both_orders=flags.both_orders,
@@ -563,8 +744,10 @@ async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: 
         argue_and_evaluate(*_ordered(ev_a, ev_b, o), ctx, per_order[o]["goal"], per_order[o]["diffs_text"], o,
                            persona=p if flags.use_personas else None, call=call,
                            key=f"argue|{o}|{k if flags.use_personas else 'single'}", temperature=t,
-                           media_resolution=flags.media_resolution)
+                           media_resolution=flags.media_resolution, extra=rx[o])
         for o, k, p in cells))
+    for o in orders:
+        per_order[o]["extra_text"] = rx[o]["text"]
     for (o, k, _), j in zip(cells, judgments):
         j["k"] = k
     agg = aggregate(list(judgments), judges)
@@ -577,6 +760,7 @@ async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: 
         "goal": per_order[orders[0]]["goal"], "diffs": [], "goal_diffs_by_order": per_order,
         "rationale": [f"{j['persona']}: {j['reasons']}" for j in backers[:3]], "judgments": list(judgments),
         "failed_judgments": sum(not j["ok"] for j in judgments),
+        "extras": {"parts": ex["parts"], "crop_boxes": [c["box"] for c in ex["crops"]]},
     }
 
 
