@@ -145,7 +145,7 @@ def fake_gfocus(prefers=b"AAA", persona_conf="4"):
                     f"First UI button {imgs[0].decode()}, Second UI button {imgs[1].decode()}."), 10, 5
         if "reason_" in key:
             return "[Evaluation]\n1. because", 10, 5
-        pick = "First" if imgs[0] == prefers else "Second"
+        pick = "First" if imgs[-2] == prefers else "Second"  # the judged pair is always the last two images
         return (f"[Importance Ranking]\n1. {pick} 1 - key\n[Conclusion]\nBetter version: **{pick}**\n"
                 f"Confidence: {persona_conf}\nKey Rationale:\n* button: better"), 10, 5
 
@@ -302,3 +302,37 @@ def test_majority_vote_per_order():
                                    "reasons_second": "", "evaluator": ""}], "ab", None)
     assert one["ok"] and one["pick"] == "tie" and one["rating_x"] == one["rating_y"]
     assert _gf().name() == "both+ratings+goal_diffs+strict+argue_both+v1+single"  # defaults: name unchanged
+
+
+def test_few_shot_evaluator_only_leave_one_out_balanced():
+    pool = [pairwise.FewShotExample(id=i, ctx={"company": f"C{i}", "page_type": "homepage" if i < 4 else "pricing",
+                                               "industry": "retail" if i % 2 else "saas"},
+                                    win=f"W{i}".encode(), lose=f"L{i}".encode()) for i in range(10)]
+    ex = pairwise.pick_examples(pool, {"page_type": "homepage", "industry": "retail"}, 3, exclude=1, seed=0)
+    assert len(ex) == 3 and all(e.id != 1 for e, _ in ex)
+    assert ex[0][0].id == 3  # the only other homepage+retail example ranks first
+    assert all(e.ctx["page_type"] == "homepage" for e, _ in ex)  # then same page type (0, 2)
+    assert sorted(p for _, p in ex) in (["First", "First", "Second"], ["First", "Second", "Second"])
+    assert ex == pairwise.pick_examples(pool, {"page_type": "homepage", "industry": "retail"}, 3, exclude=1, seed=0)
+    four = pairwise.pick_examples(pool, {"page_type": "x"}, 4, exclude=0, seed=5)
+    assert sorted(p for _, p in four) == ["First", "First", "Second", "Second"]
+
+    call, calls = fake_gfocus(prefers=b"AAA")
+    r = run(compare_pair(A, B, None, CTX, _gf(few_shot_k=3, argue_temperature=0.0), call=call, few_shot_pool=pool,
+                         pair_id=1))
+    assert r["winner"] == "A" and len(r["few_shot"]) == 3 and "fs3" in r["flags"]
+    for key, contents, _, _ in calls:
+        imgs = [c for c in contents if isinstance(c, bytes)]
+        if "evaluator" in key:
+            assert key.endswith("|evaluator|fs3") and len(imgs) == 8  # 3 examples x 2 + the pair
+            assert "solved examples" in contents[0] and imgs[-2:] in ([b"AAA", b"BBB"], [b"BBB", b"AAA"])
+            for e, pos in ex:
+                shown = [e.win, e.lose] if pos == "First" else [e.lose, e.win]
+                i = contents.index(shown[0])
+                assert contents[i + 2] == shown[1] and f"Better version: {pos}" in contents[i + 3]
+        else:
+            assert len(imgs) == 2 and "solved examples" not in contents[0]  # other stages unchanged
+    # no pool: the flag is inert and keys are the baseline's
+    call2, calls2 = fake_gfocus(prefers=b"AAA")
+    run(compare_pair(A, B, None, CTX, _gf(few_shot_k=3), call=call2))
+    assert all("fs3" not in c[0] for c in calls2)

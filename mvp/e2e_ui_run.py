@@ -167,6 +167,8 @@ def gemini_generate(
         thinking_config=types.ThinkingConfig(thinking_budget=0),
         response_mime_type="application/json" if json_mode else None,
         media_resolution=(types.MediaResolution.MEDIA_RESOLUTION_HIGH if media_resolution == "high" else None),
+        # Per-request timeout: a hung call raises (no status code) and is retried with backoff instead of stalling.
+        http_options=types.HttpOptions(timeout=int(float(os.environ.get("MVP_GEMINI_TIMEOUT_S", "90")) * 1000)),
     )
     last: Exception | None = None
     locs: list[str | None] = [None]

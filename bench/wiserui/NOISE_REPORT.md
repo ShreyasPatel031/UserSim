@@ -123,3 +123,58 @@ So crops are borderline against run 2 (p = 0.052 and the CI excludes 0), and not
   - I killed and resumed those runs from the cache. They finished at 05:38:22 (the resume took 15 s). Total wall time was 4 min 48 s.
 - Spend for step 3: goal $0.823, audience $0.923, page_text $0.907, crops $0.956, **total $3.61** (cap $4).
   Steps 1-3 together: $7.84.
+
+## Step 4: few-shot Evaluator (T0), 75 dev pairs -- `fullset/noise_fewshot_dev_vs_r1.md`, `..._vs_r2.md`
+Approved by Shreyas at 5:46 AM PT. Setup: the stable baseline (G-FOCUS single judge, strict, both orders, T0, no extra inputs)
+plus K solved examples.
+
+**How the examples are built and chosen.**
+- Each example has its page context (company, industry, page type), both screenshots, and the real winner as
+  "Better version: First/Second".
+- The pool is the 75 dev pairs, leave-one-out: the pair being judged is never its own example. `pick_examples` prefers the same
+  page type and industry, then the same page type, then the same industry, then random. Ties are broken by a shuffle seeded by
+  (seed 0, pair).
+  - K=3: of 225 example slots, 105 matched page type and industry, 114 page type only, 6 industry only.
+  - K=5: of 375 slots, 138 / 202 / 32 matched, and 3 matched nothing.
+- The winner's position is balanced within each pair's examples: k//2 winner-first, and the odd one out is a seeded coin flip.
+  Overall, K=3 had 109 First / 116 Second, and K=5 had 184 First / 191 Second.
+
+**Where the examples go.** They are added to the **Evaluator step only**. The earlier stages (goal, differences, both-side
+reasons) are the T0 run 1 calls, copied in with `--seed-ledger noise_t0_r1 --seed-match ...`. So against run 1, the only
+difference is the Evaluator prompt. Adding the examples to every stage was not cheap: it would re-run all 10 calls per pair with
+2K more images each.
+
+**Flags and code.**
+- `PairFlags.few_shot_k` / `few_shot_seed`; `compare_pair(..., few_shot_pool=[FewShotExample], pair_id=...)`.
+- `run_bench.py --few-shot-k K --few-shot-pool @dev_indices.txt`.
+- Evaluator input grew from about 1.9k tokens to 3.7k (K=3) and 4.9k (K=5).
+- Model calls now have a per-request timeout (`MVP_GEMINI_TIMEOUT_S`, default 90 s, via `HttpOptions`). A hung call raises and is
+  retried with backoff instead of stalling. No call hung in this run.
+
+| arm | CA [95% CI] | dCA vs T0 run 1 [95% CI] | McNemar p (improved/worse) | dCA vs T0 run 2 [95% CI] | McNemar p (improved/worse) | significant | OI | FA / SA | $/pair |
+|---|---|---|---|---|---|---|---|---|---|
+| base T0 run 1 | 53.3 [42.7, 64.0] | | | +1.3 | | | 68.0 | 61.3 / 74.7 | 0.0112 |
+| base T0 run 2 | 52.0 [41.3, 62.7] | | | | | | 66.7 | 64.0 / 69.3 | 0.0112 |
+| + few-shot K=3 | 50.7 [40.0, 61.3] | -2.7 [-8.0, +2.7] | 0.625 (1/3) | -1.3 [-5.3, +2.7] | 1.000 (1/2) | no | 64.7 | 58.7 / 70.7 | 0.0120 |
+| + few-shot K=5 | 46.7 [36.0, 57.3] | -6.7 [-13.3, -1.3] | 0.062 (0/5) | -5.3 [-10.7, -1.3] | 0.125 (0/4) | no | 62.0 | 57.3 / 66.7 | 0.0127 |
+
+FA = accuracy when the winner is shown first, SA = when it is shown second.
+$/pair is the full per-pair cost, including the copied upstream calls. The new spend per pair is only the Evaluator: about
+$0.0045 (K=3) and $0.0053 (K=5).
+
+- **Few-shot does not help.** K=3 changes the CA outcome of only 4 pairs (1 better, 3 worse).
+  K=5 changes 5 pairs, all for the worse. That is borderline (McNemar p = 0.062; the bootstrap CI excludes 0), and it also lowers
+  OI and AA.
+- Position bias is unchanged or slightly worse (FA 58.7 / 57.3 vs SA 70.7 / 66.7). So showing examples with balanced winner
+  positions does not teach the Evaluator to ignore position.
+- With only the winner label and no reasoning, the examples are mostly ignored. The Evaluator still follows its own reasons.
+- Timing:
+  - Both arms launched at 05:48:08 PT with all 75 pairs in flight.
+  - K=3 finished at 05:48:43 (35 s).
+  - The K=5 process ran out of memory at about 05:48:41: 150 requests with 12 full-size PNGs each at concurrency 96 reached 6.5 GB.
+    It had recorded no calls.
+  - Rerun at concurrency 32, it went from 05:48:57 to 05:49:31 (34 s).
+  - Total wall time was 83 s.
+- Spend recorded in the ledgers: K=3 $0.339 and K=5 $0.396, **total $0.735** (cap $3).
+  The Evaluator calls that were in flight when the K=5 process was killed may also have been billed by Vertex without being
+  recorded. The upper bound is about 150 x $0.0026 = $0.39. So the worst case is about $1.13.

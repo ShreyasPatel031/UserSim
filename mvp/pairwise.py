@@ -19,6 +19,10 @@ so ablation arms differ only in flags:
   goal, differences, both-side reasons, Evaluator), ``"argue"`` (one goal/difference extraction, then N x reasons +
   Evaluator) or ``"evaluator"`` (one chain up to the reasons, then N Evaluator calls). Sample 0 uses the same call
   keys as a single-sample run, so cached single runs are reusable as sample 0.
+  ``few_shot_k`` > 0 prepends that many solved A/B examples (both screenshots, page context, the real winner as
+  "Better version: First/Second") to the Evaluator call only. Examples come from a pool passed to :func:`compare_pair`
+  (``few_shot_pool``, never the pair itself: ``pair_id``), chosen by :func:`pick_examples` (same page type and/or
+  industry first, seeded) with the winner's position balanced across the examples.
 - ``short_pick``: one call per presentation order that only names the better version plus one or two sentences
   ("Better version: First/Second" / "Reason: ..."), temperature ``temperature``. This is the prompt a supervised
   fine-tune is trained on (bench/wiserui/sft_folds.py); ``model`` names the base model or a tuned Vertex endpoint
@@ -39,6 +43,7 @@ import asyncio
 import json
 import math
 import os
+import random
 import re
 import statistics
 from dataclasses import dataclass, field
@@ -62,6 +67,16 @@ class PairEvidence:
 
 
 @dataclass
+class FewShotExample:
+    """One solved A/B pair for few-shot prompting: page context, the winning and the losing screenshot."""
+
+    id: Any
+    ctx: dict[str, Any]
+    win: bytes
+    lose: bytes
+
+
+@dataclass
 class PairFlags:
     both_orders: bool = True
     goal_diffs: bool = False
@@ -80,6 +95,9 @@ class PairFlags:
     # Self-consistency for the G-FOCUS path: N judgments per judge and order, majority vote of their picks.
     samples_per_order: int = 1
     sample_stage: str = "all"  # where samples branch: "all" | "argue" | "evaluator" (see module docstring)
+    # Few-shot Evaluator: K solved examples from compare_pair(few_shot_pool=...), leave-one-out via pair_id.
+    few_shot_k: int = 0
+    few_shot_seed: int = 0
     # Extra inputs for the G-FOCUS path (argue_both). Each adds one "Additional information" block (and, for crops, extra
     # images) to EVERY G-FOCUS stage prompt, computed once per pair (order-free) and shown in each order's First/Second terms.
     gf_goal: bool = False        # stated page goal: ctx["task"] / ctx["goal"], else one text-only call from page context
@@ -108,6 +126,7 @@ class PairFlags:
                if self.argue_both else [])
             + (([f"t{self.argue_temperature:g}"] if self.argue_temperature != 1.0 else [])
                + ([f"vote{self.samples_per_order}_{self.sample_stage}"] if self.samples_per_order > 1 else [])
+               + ([f"fs{self.few_shot_k}"] if self.few_shot_k else [])
                if self.argue_both else [])
         )
 
@@ -540,9 +559,10 @@ async def argue_and_evaluate(first: PairEvidence, second: PairEvidence, ctx: dic
                              order: str, *, persona: dict[str, Any] | None, call: Call, key: str,
                              temperature: float = 1.0, media_resolution: str | None = None,
                              retries: int = 2, extra: dict[str, Any] | None = None,
-                             eval_samples: int = 1) -> dict[str, Any]:
+                             eval_samples: int = 1, shots: list | None = None, shot_tag: str = "") -> dict[str, Any]:
     """G-FOCUS Part 3 (reasons assuming first wins; separately, second wins) and Part 4 (Evaluator) for one order.
-    ``eval_samples`` > 1 runs the Evaluator that many times on the same reasons and returns their majority vote."""
+    ``eval_samples`` > 1 runs the Evaluator that many times on the same reasons and returns their majority vote.
+    ``shots`` (from :func:`few_shot_parts`) are prepended to the Evaluator call only; ``shot_tag`` goes into its key."""
     head, user = _v1_head(ctx) + (extra or {}).get("text", ""), _v1_user(persona)
     imgs = [*_v1_images(first, second), *(extra or {}).get("images", [])]
 
@@ -562,7 +582,8 @@ async def argue_and_evaluate(first: PairEvidence, second: PairEvidence, ctx: dic
         pick, conf, text = None, None, ""
         tag = f"|s{s}" if s else ""
         for attempt in range(1 + max(0, retries)):  # the paper's code re-asks when the answer format is missing
-            text, _, _ = await call(f"{key}|evaluator{tag}" + (f"|r{attempt}" if attempt else ""), [prompt, *imgs],
+            text, _, _ = await call(f"{key}|evaluator{shot_tag}{tag}" + (f"|r{attempt}" if attempt else ""),
+                                    [*(shots or []), prompt, *imgs],
                                     temperature=temperature, max_tokens=2048, media_resolution=media_resolution,
                                     json_mode=False)
             pick, conf = parse_v1_verdict(text)
@@ -777,8 +798,54 @@ def render_extras(ex: dict[str, Any], order: str) -> dict[str, Any]:
     return {"text": text, "images": imgs}
 
 
+_FS_INTRO = """Before the task, here are {k} solved examples from other A/B tests on other pages. In each example two \
+versions of a page were tested against each other; the first screenshot is the first version and the second screenshot \
+is the second version, and the answer is the real A/B test result."""
+
+_FS_OUTRO = """End of the examples. The task below is about a different page; its two screenshots are the last two images, \
+after the task text."""
+
+
+def pick_examples(pool: list[FewShotExample], ctx: dict[str, Any], k: int, exclude: Any = None,
+                  seed: int = 0) -> list[tuple[FewShotExample, str]]:
+    """``k`` examples from ``pool`` (never ``exclude``) as (example, winner position "First"/"Second").
+
+    Preference: same page type and industry, then same page type, then same industry, then the rest; ties in a
+    shuffle seeded by (seed, exclude), so a pair always gets the same examples. The winner is shown first in k//2 of
+    them and second in the rest (the odd one out is a seeded coin flip), in a seeded random order.
+    """
+    rng = random.Random(f"{seed}|{exclude}")
+    cands = [e for e in pool if e.id != exclude]
+    rng.shuffle(cands)
+    pt, ind = str(ctx.get("page_type") or "").lower(), str(ctx.get("industry") or "").lower()
+
+    def rank(e: FewShotExample) -> int:
+        same_pt = pt and str(e.ctx.get("page_type") or "").lower() == pt
+        same_ind = ind and str(e.ctx.get("industry") or "").lower() == ind
+        return 0 if same_pt and same_ind else 1 if same_pt else 2 if same_ind else 3
+
+    chosen = sorted(cands, key=rank)[:k]
+    n_first = len(chosen) // 2 + (rng.random() < 0.5 if len(chosen) % 2 else 0)
+    pos = ["First"] * n_first + ["Second"] * (len(chosen) - n_first)
+    rng.shuffle(pos)
+    return list(zip(chosen, pos))
+
+
+def few_shot_parts(examples: list[tuple[FewShotExample, str]]) -> list:
+    """Prompt parts for solved examples: intro, then per example its page context, both screenshots and the answer."""
+    if not examples:
+        return []
+    parts: list = [_FS_INTRO.format(k=len(examples))]
+    for i, (e, pos) in enumerate(examples, 1):
+        first, second = (e.win, e.lose) if pos == "First" else (e.lose, e.win)
+        parts += [f"Example {i}:\n{_v1_head(e.ctx)}\nFirst version:", first, "Second version:", second,
+                  f"Answer (real A/B test result): Better version: {pos}"]
+    return parts + [_FS_OUTRO]
+
+
 async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: list[dict[str, Any]] | None,
-                              ctx: dict[str, Any], flags: PairFlags, *, call: Call) -> dict[str, Any]:
+                              ctx: dict[str, Any], flags: PairFlags, *, call: Call,
+                              few_shot_pool: list[FewShotExample] | None = None, pair_id: Any = None) -> dict[str, Any]:
     """Full G-FOCUS: goal, goal-conditioned differences, argue both sides, Evaluator; per judge and order.
 
     Each judge-order gives a pick (as rating_x/rating_y = weight/0, weight = persona confidence or 1), so
@@ -790,6 +857,9 @@ async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: 
     if flags.use_personas:
         judges = personas or await plan_personas(ctx, call=call)
     t = flags.argue_temperature
+    shots_used = (pick_examples(few_shot_pool, ctx, flags.few_shot_k, exclude=pair_id, seed=flags.few_shot_seed)
+                  if flags.few_shot_k and few_shot_pool else [])
+    shots, shot_tag = few_shot_parts(shots_used), (f"|fs{flags.few_shot_k}" if shots_used else "")
     ex = await gfocus_extras(ev_a, ev_b, ctx, personas, flags, call=call)
     rx = {o: render_extras(ex, o) for o in orders}
     n = max(1, int(flags.samples_per_order))
@@ -830,7 +900,7 @@ async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: 
                                chains[o][s if stage == "all" else 0]["diffs_text"], o, persona=persona, call=call,
                                key=base + (f"|s{s}" if s else ""), temperature=t,
                                media_resolution=flags.media_resolution, extra=rx[o],
-                               eval_samples=n if stage == "evaluator" else 1)
+                               eval_samples=n if stage == "evaluator" else 1, shots=shots, shot_tag=shot_tag)
             for s in range(n_argue)))
         if n_argue == 1:
             return runs[0]
@@ -856,6 +926,8 @@ async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: 
         "rationale": [f"{j['persona']}: {j['reasons']}" for j in backers[:3]], "judgments": list(judgments),
         "failed_judgments": sum(not j["ok"] for j in judgments),
         "extras": {"parts": ex["parts"], "crop_boxes": [c["box"] for c in ex["crops"]]},
+        "few_shot": [{"id": e.id, "answer": pos, "page_type": e.ctx.get("page_type"), "industry": e.ctx.get("industry")}
+                     for e, pos in shots_used],
     }
 
 
@@ -929,14 +1001,16 @@ async def compare_pair_short(ev_a: PairEvidence, ev_b: PairEvidence, ctx: dict[s
 
 
 async def compare_pair(ev_a: PairEvidence, ev_b: PairEvidence, personas: list[dict[str, Any]] | None,
-                       ctx: dict[str, Any], flags: PairFlags | None = None, *, call: Call | None = None) -> dict[str, Any]:
+                       ctx: dict[str, Any], flags: PairFlags | None = None, *, call: Call | None = None,
+                       few_shot_pool: list[FewShotExample] | None = None, pair_id: Any = None) -> dict[str, Any]:
     """Which version would these personas act on? Returns p(A>B), mean diff +- SE, votes, rationale, raw judgments."""
     flags = flags or PairFlags()
     call = call or default_call
     if flags.short_pick:
         return await compare_pair_short(ev_a, ev_b, ctx, flags, call=call)
     if flags.argue_both:
-        return await compare_pair_gfocus(ev_a, ev_b, personas, ctx, flags, call=call)
+        return await compare_pair_gfocus(ev_a, ev_b, personas, ctx, flags, call=call, few_shot_pool=few_shot_pool,
+                                         pair_id=pair_id)
     if not personas:
         personas = await plan_personas(ctx, call=call)
     goal, diffs, gd = "", None, None

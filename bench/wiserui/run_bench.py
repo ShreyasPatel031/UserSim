@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(ROOT / "src")]
 
 from mvp.fast_plan import ab_personas  # noqa: E402
-from mvp.pairwise import GF_INPUTS, PAIRWISE_MODEL, SAMPLE_STAGES, PairEvidence, PairFlags, compare_pair, parse_json  # noqa: E402
+from mvp.pairwise import GF_INPUTS, PAIRWISE_MODEL, SAMPLE_STAGES, FewShotExample, PairEvidence, PairFlags, compare_pair, parse_json  # noqa: E402
 
 BENCH = Path(os.environ.get("WISERUI_BENCH", "/workspace/bench/wiserui"))
 DATA = BENCH / "repo" / "WiserUI_Bench.json"
@@ -183,6 +183,9 @@ async def main() -> None:
     ap.add_argument("--argue-temperature", type=float, default=None, help="PairFlags.argue_temperature (G-FOCUS stages)")
     ap.add_argument("--samples-per-order", type=int, default=None, help="PairFlags.samples_per_order (majority vote)")
     ap.add_argument("--sample-stage", default=None, choices=SAMPLE_STAGES, help="PairFlags.sample_stage")
+    ap.add_argument("--few-shot-k", type=int, default=0, help="PairFlags.few_shot_k: solved examples in the Evaluator")
+    ap.add_argument("--few-shot-pool", default="", help="indices (comma list or @file) of the example pool; the pair "
+                                                         "being judged is always left out")
     ap.add_argument("--seed-ledger", default="",
                     help="before a fresh run, copy this ledger's calls for the selected pairs in at $0 (e.g. an earlier "
                          "single-sample run whose calls are sample 0 of a vote run); new runs never share keys otherwise")
@@ -200,6 +203,8 @@ async def main() -> None:
     flags = dataclasses.replace(flags, **{f"gf_{x}": True for x in extra})
     if args.model:
         flags = dataclasses.replace(flags, model=args.model)
+    if args.few_shot_k:
+        flags = dataclasses.replace(flags, few_shot_k=args.few_shot_k)
     for opt in ("argue_temperature", "samples_per_order", "sample_stage"):
         if getattr(args, opt) is not None:
             flags = dataclasses.replace(flags, **{opt: getattr(args, opt)})
@@ -221,13 +226,22 @@ async def main() -> None:
                     n += 1
         print(f"[wiserui] seeded {n} calls from {args.seed_ledger} at $0", flush=True)
     ledger = Ledger(out / "calls.jsonl")
+    pool = None
+    if flags.few_shot_k:
+        praw = Path(args.few_shot_pool[1:]).read_text() if args.few_shot_pool.startswith("@") else args.few_shot_pool
+        pids = [int(x) for x in praw.replace("\n", ",").split(",") if x.strip()]
+        pool = [FewShotExample(id=j, ctx=ctx_of(data[j]), win=(image_dir(j) / "win.png").read_bytes(),
+                               lose=(image_dir(j) / "lose.png").read_bytes())
+                for j in pids if (image_dir(j) / "win.png").exists() and (image_dir(j) / "lose.png").exists()]
+        print(f"[wiserui] few-shot pool: {len(pool)} pairs, k={flags.few_shot_k}", flush=True)
     sem = asyncio.Semaphore(args.concurrency)
     cond = f"pw_{args.stream}" + ("_aa" if args.aa else "")
     print(f"[wiserui] {len(idxs)} pairs stream={args.stream} flags={flags} model={flags.model or PAIRWISE_MODEL} "
           f"a0_personas={len(a0)} prior_spend=${ledger.cost:.3f}", flush=True)
     (out / "config.json").write_text(json.dumps({"stream": args.stream, "inputs": extra, "flags": flags.__dict__, "model": flags.model or PAIRWISE_MODEL,
                                                  "personas_from": args.personas_from, "aa": args.aa, "n": len(idxs),
-                                                 "seed_ledger": args.seed_ledger, "seed_match": args.seed_match}, indent=1))
+                                                 "seed_ledger": args.seed_ledger, "seed_match": args.seed_match,
+                                                 "few_shot_pool": args.few_shot_pool}, indent=1))
 
     results: dict[int, dict] = {}
     done = 0
@@ -251,7 +265,7 @@ async def main() -> None:
             ev_a, ev_b = ((evidence(i, "win", t), evidence(i, "lose", t)) if aw else
                           (evidence(i, "lose", t), evidence(i, "win", t)))
         try:
-            res = await compare_pair(ev_a, ev_b, personas, ctx, flags, call=call)
+            res = await compare_pair(ev_a, ev_b, personas, ctx, flags, call=call, few_shot_pool=pool, pair_id=i)
         except Exception as exc:  # noqa: BLE001
             print(f"[wiserui] pair {i} failed: {exc!r}"[:300], flush=True)
             return
