@@ -259,6 +259,7 @@ def claude_vertex_generate(contents: list, *, model: str, temperature: float = 0
         else:
             content.append({"type": "text", "text": str(c)})
     last: Exception | None = None
+    not_found: set[str] = set()  # locations that answered 404 ("not found or your project does not have access")
     # Claude 5-generation models (Opus 5.x, Sonnet 5, Fable) always think adaptively and reject a non-default
     # temperature (400), so they run at default sampling with extra max_tokens headroom for thinking.
     if model.startswith(("claude-opus-5", "claude-sonnet-5", "claude-fable")):
@@ -281,7 +282,14 @@ def claude_vertex_generate(contents: list, *, model: str, temperature: float = 0
             return text.strip(), int(resp.usage.input_tokens or 0), int(resp.usage.output_tokens or 0)
         except Exception as exc:  # noqa: BLE001
             last = exc
-            if not _is_retryable(exc) and getattr(exc, "status_code", None) != 404:
+            if getattr(exc, "status_code", None) == 404:
+                not_found.add(loc)
+                if not_found >= set(_CLAUDE_LOCATIONS):
+                    # 404 in every location: the ID is wrong or the project has no Model Garden access to this model
+                    # (quota alone does not grant access). Retrying cannot help; see bench/wiserui/claude_access.py.
+                    raise RuntimeError(f"claude model {model!r} not found / no project access in any of "
+                                       f"{_CLAUDE_LOCATIONS}: {exc!r}"[:600]) from exc
+            elif not _is_retryable(exc):
                 break
             if attempt + 1 < retries:
                 _time.sleep(min(20, 1.0 * 2 ** (attempt // len(_CLAUDE_LOCATIONS))))

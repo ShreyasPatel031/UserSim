@@ -83,6 +83,7 @@ class FewShotExample:
     ctx: dict[str, Any]
     win: bytes
     lose: bytes
+    rationale: str = ""  # short, position-free reason the winner won (graded few-shot only)
 
 
 @dataclass
@@ -122,6 +123,13 @@ class PairFlags:
     # order-invariant answer (see module docstring). abstain_margin: pairs with |p(A) - 50| < margin (points) abstain.
     graded: bool = False
     abstain_margin: float = 0.0
+    # Graded-harness variants (bench/wiserui/HARNESS_CHEAP_REPORT.md step 3): a failure-modes preamble built from the
+    # benchmark error analysis, the answer scale (100 = "P(First): 0-100", 7 = "Rating 1-7", mapped to 0-100), and
+    # graded_shots solved examples (both screenshots + real answer + short rationale) from compare_pair(few_shot_pool=...).
+    failure_modes: bool = False
+    graded_scale: int = 100
+    graded_shots: int = 0
+    shot_max_px: int | None = 768
     model: str | None = None
     image_max_px: int | None = None
 
@@ -129,6 +137,9 @@ class PairFlags:
         if self.short_pick:
             return "+".join(["both" if self.both_orders else "one", "vanilla" if self.vanilla else "short_pick"]
                             + ((["graded"] + (["debias"] if self.debias else [])
+                                + (["failure_modes"] if self.failure_modes else [])
+                                + ([f"scale{self.graded_scale}"] if self.graded_scale != 100 else [])
+                                + ([f"shots{self.graded_shots}"] if self.graded_shots else [])
                                 + ([f"abstain{self.abstain_margin:g}"] if self.abstain_margin else []))
                                if self.graded else [])
                             + ([f"px{self.image_max_px}"] if self.image_max_px else [])
@@ -1002,13 +1013,40 @@ simplifying often wins.
 """
 
 
-def graded_prompt(debias: bool = False) -> str:
-    return GRADED_PROMPT.format(debias=GRADED_DEBIAS if debias else "")
+# Failure modes of current judges on real A/B outcomes (RESEARCH_HYPOTHESES.md sections 0 and 3.2), stated as facts.
+GRADED_FAILURE_MODES = """
+What real A/B test results show (use this; it corrects common judging mistakes):
+- The changed version does not always win: in many tests the original was kept because the change did not help.
+- Fewer choices and simpler pages often win (Hick's law): removing links, options, tiles or text frequently raises \
+conversion.
+- More content, features or information is not automatically better; it can distract from the main action.
+- The order of the two screenshots is random: the second one is not more likely to be the better one.
+- Judge only by the likely effect on real visitors taking the page's main action, not by visual polish.
+"""
+
+GRADED_SCALE7 = """Finally, rate from 1 to 7 how likely it is that the First version is the more effective one \
+(7 = surely First, 1 = surely Second, 4 = cannot tell).
+
+You should end your answer with following the format (No bold, etc):
+Rating (7 = First): <1-7>"""
 
 
-def parse_graded(text: str) -> float | None:
-    """P(First) in 0-100 from the LAST "P(First more effective): N" line (markdown, %, "N/100" tolerated), else None."""
+def graded_prompt(debias: bool = False, failure_modes: bool = False, scale: int = 100) -> str:
+    text = GRADED_PROMPT.format(debias=(GRADED_DEBIAS if debias else "") + (GRADED_FAILURE_MODES if failure_modes else ""))
+    if scale == 7:
+        text = text[:text.index("Finally, give the probability")] + GRADED_SCALE7
+    elif scale != 100:
+        raise ValueError("graded_scale must be 100 or 7")
+    return text
+
+
+def parse_graded(text: str, scale: int = 100) -> float | None:
+    """P(First) in 0-100 from the LAST "P(First more effective): N" line (markdown, %, "N/100" tolerated), else None.
+    scale=7: the LAST "Rating (7 = First): N" (1-7), mapped linearly to 0-100 (4 -> 50)."""
     t = (text or "").replace("**", "").replace("__", "").replace("`", "")
+    if scale == 7:
+        hits = re.findall(r"Rating\s*(?:\([^)\n]*\))?\s*[:=\-\u2013]\s*[\[<(]*\s*([1-7](?:\.\d+)?)\b", t, re.I)
+        return (float(hits[-1]) - 1.0) / 6.0 * 100.0 if hits and 1.0 <= float(hits[-1]) <= 7.0 else None
     hits = re.findall(r"P\s*\(\s*first[^)\n]*\)\s*[:=\-\u2013]?\s*[\[<(]*\s*(\d{1,3}(?:\.\d+)?)\s*%?", t, re.I)
     if not hits:
         return None
@@ -1017,10 +1055,53 @@ def parse_graded(text: str) -> float | None:
 
 
 def short_call_tag(flags: PairFlags) -> str:
-    """Cache-key prefix of a short-pick call: 'short', 'vanilla', 'graded' or 'graded_debias' (+ '|<order>')."""
+    """Cache-key prefix of a short-pick call: 'short', 'vanilla', 'graded[_debias][_fm][_s7][_fsK]' (+ '|<order>')."""
     if flags.vanilla and flags.graded:
-        return "graded_debias" if flags.debias else "graded"
+        return ("graded" + ("_debias" if flags.debias else "") + ("_fm" if flags.failure_modes else "")
+                + (f"_s{flags.graded_scale}" if flags.graded_scale != 100 else "")
+                + (f"_fs{flags.graded_shots}" if flags.graded_shots else ""))
     return "vanilla" if flags.vanilla else "short"
+
+
+def _clean_rationale(text: str) -> str:
+    """One short, position-free sentence from a solved example's rationale (dataset 'rationale' is a list of reasons
+    that may say 'right version' / '(B)' about the original page layout)."""
+    try:
+        import ast
+
+        items = ast.literal_eval(text) if isinstance(text, str) and text.strip().startswith("[") else text
+        reason = items[0]["reason"] if isinstance(items, list) and items else str(text or "")
+    except Exception:  # noqa: BLE001
+        reason = str(text or "")
+    reason = re.sub(r"\s*\((?:version\s*)?[AB]\)", "", reason)
+    reason = re.sub(r"\b(?:the\s+)?(?:right|left|top|bottom|first|second)\s+(version|variant|design|one)\b",
+                    r"the winning \1", reason, flags=re.I)
+    reason = re.sub(r"\b(?i:version|variant)\s+[AB]\b", "the winning version", reason)
+    reason = " ".join(reason.split())[:240]
+    return reason[:1].upper() + reason[1:]
+
+
+def pick_graded_shots(pool: list[FewShotExample], k: int, exclude: Any = None) -> list[tuple[FewShotExample, str]]:
+    """k solved examples in pool order (the pool is fixed, e.g. dev pairs only), skipping ``exclude`` (the pair being
+    judged), with the winner shown First / Second alternately (balanced position)."""
+    chosen = [e for e in pool if e.id != exclude][:k]
+    return [(e, "First" if n % 2 == 0 else "Second") for n, e in enumerate(chosen)]
+
+
+def graded_shot_parts(shots: list[tuple[FewShotExample, str]], scale: int, max_px: int | None) -> list:
+    if not shots:
+        return []
+    parts: list = [f"Here are {len(shots)} solved examples from real A/B tests (other pages), each with the real "
+                   "outcome, before the pair you must judge."]
+    for n, (e, pos) in enumerate(shots, 1):
+        first, second = (e.win, e.lose) if pos == "First" else (e.lose, e.win)
+        ans = (f"Rating (7 = First): {6 if pos == 'First' else 2}" if scale == 7 else
+               f"P(First more effective): {85 if pos == 'First' else 15}")
+        parts += [f"Example {n}, First version:", fit_image(first, max_px), f"Example {n}, Second version:",
+                  fit_image(second, max_px),
+                  f"Example {n} outcome: the {pos} version won the test. Why: {e.rationale or 'n/a'}\n{ans}"]
+    parts.append("Now the pair to judge. The next two screenshots are its First and Second versions.")
+    return parts
 
 
 def graded_answer(p_first: dict[str, float | None], abstain_margin: float = 0.0) -> dict[str, Any]:
@@ -1064,25 +1145,29 @@ def short_pick_contents(first: PairEvidence, second: PairEvidence, ctx: dict[str
 
 
 async def compare_pair_short(ev_a: PairEvidence, ev_b: PairEvidence, ctx: dict[str, Any], flags: PairFlags, *,
-                             call: Call) -> dict[str, Any]:
+                             call: Call, few_shot_pool: list[FewShotExample] | None = None,
+                             pair_id: Any = None) -> dict[str, Any]:
     """One short-pick call per presentation order; each order's pick becomes rating_x/rating_y = 1/0 (see aggregate)."""
     orders = ORDERS if flags.both_orders else ORDERS[:1]
     kw: dict[str, Any] = {"model": flags.model} if flags.model else {}
 
     graded = flags.vanilla and flags.graded
+    shots = (pick_graded_shots(few_shot_pool, flags.graded_shots, exclude=pair_id)
+             if graded and flags.graded_shots and few_shot_pool else [])
+    shot_parts = graded_shot_parts(shots, flags.graded_scale, flags.shot_max_px)
 
     async def one(o: str) -> dict[str, Any]:
         first, second = _ordered(ev_a, ev_b, o)
         if flags.vanilla:
-            prompt = graded_prompt(flags.debias) if graded else VANILLA_PROMPT
-            contents = [prompt, *(fit_image(b, flags.image_max_px) for b in first.screenshots),
+            prompt = graded_prompt(flags.debias, flags.failure_modes, flags.graded_scale) if graded else VANILLA_PROMPT
+            contents = [prompt, *shot_parts, *(fit_image(b, flags.image_max_px) for b in first.screenshots),
                         *(fit_image(b, flags.image_max_px) for b in second.screenshots)]
         else:
             contents = short_pick_contents(first, second, ctx, flags.image_max_px)
         text, _, _ = await call(f"{short_call_tag(flags)}|{o}", contents,
                                 temperature=flags.temperature, max_tokens=flags.max_tokens,
                                 media_resolution=flags.media_resolution, json_mode=False, **kw)
-        p_first = parse_graded(text) if graded else None
+        p_first = parse_graded(text, flags.graded_scale) if graded else None
         if graded:
             pick = None if p_first is None else "First" if p_first > 50 else "Second" if p_first < 50 else "tie"
         else:
@@ -1110,7 +1195,8 @@ async def compare_pair_short(ev_a: PairEvidence, ev_b: PairEvidence, ctx: dict[s
                "graded": ga, "confidence": ga["confidence"], "abstain": ga["abstain"]}
     return {**agg, "label_a": ev_a.label, "label_b": ev_b.label, "flags": flags.name(), "goal": "", "diffs": [],
             "rationale": [j["reasons"] for j in judgments if j["ok"]][:2], "judgments": judgments,
-            "failed_judgments": sum(not j["ok"] for j in judgments)}
+            "failed_judgments": sum(not j["ok"] for j in judgments),
+            **({"few_shot": [{"id": e.id, "answer": pos} for e, pos in shots]} if shots else {})}
 
 
 async def compare_pair(ev_a: PairEvidence, ev_b: PairEvidence, personas: list[dict[str, Any]] | None,
@@ -1120,7 +1206,7 @@ async def compare_pair(ev_a: PairEvidence, ev_b: PairEvidence, personas: list[di
     flags = flags or PairFlags()
     call = call or default_call
     if flags.short_pick:
-        return await compare_pair_short(ev_a, ev_b, ctx, flags, call=call)
+        return await compare_pair_short(ev_a, ev_b, ctx, flags, call=call, few_shot_pool=few_shot_pool, pair_id=pair_id)
     if flags.argue_both:
         return await compare_pair_gfocus(ev_a, ev_b, personas, ctx, flags, call=call, few_shot_pool=few_shot_pool,
                                          pair_id=pair_id)

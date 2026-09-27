@@ -1,4 +1,223 @@
-# Harness lift on the cheapest current model per frontier lab (WiserUI-Bench, 252 pairs), 2026-09-27, 7:50–8:15 AM PT
+# Harness lift on the cheapest current model per frontier lab (WiserUI-Bench, 252 pairs), 2026-09-27
+
+Two rounds against one hard $5 cap. Round 1 ran 7:50–8:15 AM PT and round 2 ran 8:23–8:50 AM PT.
+
+**Total spend: $3.03 of $5.** Round 1 cost $2.20 and round 2 $0.83. The remaining **$1.97 is reserved for Claude Haiku
+4.5**, which this project still cannot call (see "Round 2, step 1").
+
+## Round 2 (8:23 AM PT): Haiku access diagnosis, harness iterations, router proposal
+
+### Step 1. Haiku: root cause (free diagnosis; nothing enabled, no quota requested)
+
+Checked with `bench/wiserui/claude_access.py`, which is free to rerun.
+
+| check | finding |
+|---|---|
+| Model Garden listing (`v1beta1/publishers/anthropic/models`, listAllVersions) | `claude-haiku-4-5`, version **20251001**, GA. There is no newer Haiku. So the ID `claude-haiku-4-5@20251001` is correct (`claude-haiku-4-5` resolves to the same model). |
+| Cloud Quotas API (quotaInfos, aiplatform.googleapis.com) | Haiku 4.5 **has quota**: **global 10,000 rpm** (10M input / 1M output TPM), **us-east5 3,000 rpm**, **europe-west1 3,600 rpm**. The `us` and `eu` multi-region Haiku 4.5 quotas have **no value, i.e. 0**. |
+| rawPredict and streamRawPredict, `anthropic_version: vertex-2023-10-16`, v1 and v1beta1, SDK and REST; global, us-east5, europe-west1, us-east1, europe-west4, asia-southeast1, us-central1 | **404 "Publisher model … was not found or your project does not have access to it"** in every region, including the three that have quota. The same request to `claude-sonnet-5` returns 200 on global and on `us`. |
+| `us` / `eu` multi-region | 429 `us_multi_region_…requests_per_base_model` (base model anthropic-claude-haiku-4-5). This is **not burst**: it repeated at 0, 10 and 30 s, and that quota is 0. |
+| Last check, 08:41 PT | unchanged |
+
+**Root cause.** The endpoint, ID and region are all correct, and quota exists. What's missing is **project access to Haiku 4.5**:
+- In every region with quota, the API answers "your project does not have access".
+- The console shows default quotas for every published model whether or not it has been enabled, so seeing quota does
+  not prove access.
+- The most likely fix is the Model Garden **Enable** step (partner terms) for Claude Haiku 4.5 **in
+  project-amer-scs-sandbox**. Check the console project selector: the ADC account can see 20 projects, so it may have been
+  enabled in a different one.
+- The `us` / `eu` multi-region endpoints would also need their own Haiku quota. This is not needed if global works.
+
+**Code fix (`mvp/e2e_ui_run.py`).**
+- No ID or region change was needed. The default `CLAUDE_VERTEX_LOCATIONS` (global, us-east5, europe-west1) are exactly
+  where Haiku 4.5 has quota, so `llm_generate(model="claude-haiku-4-5@20251001")` works as soon as access is granted.
+- Changed: when a Claude model returns 404 in **every** location, the call now fails fast with a clear "not found / no
+  project access" error. Before, it retried 8 times with backoff.
+
+**Haiku runs (step 2): not run, $0.** The plan is ready at the end of this section.
+
+### Step 3. Harness iterations (cumulative, one variable at a time; tuned on dev, reported on 252)
+
+**Order.**
+- Luna first, because it is nearly free.
+- Haiku: unavailable.
+- Flash: only the single best variant, and only if it generalized. None did (below).
+
+**Keep rule, fixed before the runs:** keep a change if dev OI is at least +2 points over the current best.
+
+Luna, dev (75 pairs; dev is at chance for plain Luna, OI 50.0):
+
+| step | variant (cumulative on the current best) | dev OI | dev per-call flip rate | decision | $ spent |
+|---|---|---|---|---|---|
+| base | H1 graded both-order | 51.3 | 41.3% | — | (round 1) |
+| (a) | + failure-modes preamble (the change doesn't always win / original often kept; Hick's law; more content isn't better; order is random; judge conversion, not polish) | 49.3 | **25.3%** | drop (−2.0) | 0.051 |
+| (b) | + 2 dev-only solved examples (screenshots at 768 px, real outcome, 1-sentence position-free rationale, winner position balanced, leave-one-out) | 57.3 | 37.3% | (+6.0) | 0.086 |
+| (b) | + **4** dev-only solved examples | **62.0** | 41.3% | **keep** (+10.7) | 0.113 |
+| (c1) | fs4 + 1–7 scale instead of 0–100 | 57.3 | 36.0% | drop (−4.7) | 0.112 |
+| (c2) | fs4 + reasoning effort "low" (vs none) | 60.7 | 34.7% | drop (−1.3) | 0.131 |
+| (c3) | confidence threshold sweep | see H4 | | $0 | 0 |
+| (c) Flash | thinking level "minimal" (cheaper) | — | — | not supported: 400 "Thinking level is unsupported: THINKING_LEVEL_MINIMAL", $0. "low" is the floor. | 0 |
+
+**The dev winner does not generalize.** Luna H1 + 4 shots on all 252 ($0.37):
+
+| model | arm | n | CA | single-call CA | OI | dOI vs plain [95% CI] | McNemar p | dOI vs H1 [95% CI] | p | held-out (177) forced acc | $/pair |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Luna | plain | 252 | 36.5 | 36.5 | 55.6 | (ref) | | | | 57.9 | 0.0006 |
+| Luna | H1 | 252 | 57.1 | 42.9 | 57.1 | +1.6 [−2.6, +6.0] | 0.35 | (ref) | | 59.6 | 0.0006 |
+| Luna | H1 + debias (round 1) | 252 | 58.1 | 44.0 | 58.1 | +2.6 [−2.2, +7.5] | 0.29 | +1.0 [−4.2, +6.2] | 1.0 | 61.0 | 0.0006 |
+| Luna | **H1 + 4 dev shots** | 252 | 59.5 | 35.3 | 59.5 | +4.0 [−1.2, +9.3] | 0.31 | +2.4 [−3.0, +7.7] | 0.27 | **58.5 (< H1's 59.6)** | 0.0015 |
+
+- The whole +2.4 over H1 comes from dev, where the examples come from: +10.7 on dev, −1.1 on held-out.
+- This is the overfitting warned about in the brief. Dev examples share the dev distribution, and 75 dev pairs cannot
+  resolve a gain under ~15 points.
+- H4 on fs4 also fails. The dev-picked τ is 0, and at 45% held-out coverage the committed accuracy is 63.3.
+- Few-shot also costs 2.5× on Luna. On 3.8 Flash it would cost **$0.019/pair** (measured: 11.3k input tokens per call in
+  a 4-pair smoke test, $0.078), i.e. $4.8 on 252.
+- So it was **not run on Flash**. No other variant passed on Luna either, so no Flash iteration was paid for.
+
+**Best harness per model** (judged on OI over all 252 and on held-out):
+
+| model | best harness | OI (252) | dOI vs plain [95% CI], p | abstention (held-out) | $/pair |
+|---|---|---|---|---|---|
+| Gemini 3.8 Flash | **H1 graded both-order + H4 (τ = 20)** | 69.2 | +3.4 [−0.4, +7.1], p = 0.14 | **77.8% at 50.8% coverage** (forced 66.7) | 0.0075 |
+| GPT-6 Luna | **H1** (debias and few-shot not significant; few-shot fails held-out) | 57.1 | +1.6 [−2.6, +6.0], p = 0.35 | no useful gate (+2.2, fails) | 0.0006 |
+| Claude Haiku 4.5 | not measurable (no project access) | — | — | — | — |
+
+### Step 4. ROI router proposal (offline simulation, $0, no build)
+
+`router_sim.py` cascades the saved judgments. Stage models:
+- Luna H1 and 3.8 Flash H1, graded: they escalate when |p(A) − 50| < τ.
+- Plain runs of Luna, 3.8 Flash, Sol, 3.1 Pro, Sonnet 5 and Opus 5.5: they escalate on a flip.
+
+Accuracy is order-invariant (OI). Cost is the metered cost of every stage a pair visits. The plot is
+`fullset/router_frontier.png`.
+
+n = 252 pairs (dev 75, held-out 177); 530 cascades
+
+Single systems (order-invariant accuracy = OI):
+
+| system | acc all | acc held-out | $/pair |
+|---|---|---|---|
+| luna | 55.6 | 57.9 | 0.0006 |
+| luna_h1 | 57.1 | 59.6 | 0.0006 |
+| flash | 65.9 | 64.1 | 0.0072 |
+| flash_h1 | 69.2 | 66.7 | 0.0075 |
+| sol | 58.1 | 57.1 | 0.0115 |
+| pro | 70.8 | 68.1 | 0.0192 |
+| sonnet5 | 58.1 | 57.1 | 0.0258 |
+| opus | 75.4 | 74.9 | 0.0562 |
+
+In-sample Pareto frontier (all 252; taus chosen on the same pairs, optimistic):
+
+| cascade | acc all | $/pair | share reaching each stage |
+|---|---|---|---|
+| luna | 55.6 | 0.0006 | 100.0 |
+| luna_h1 | 57.1 | 0.0006 | 100.0 |
+| luna -> luna_h1 | 57.9 | 0.0008 | 100.0 / 38.1 |
+| luna -> luna_h1(tau5) -> flash_h1 | 59.3 | 0.0016 | 100.0 / 38.1 / 11.1 |
+| luna -> luna_h1(tau10) -> flash_h1 | 61.9 | 0.0021 | 100.0 / 38.1 / 17.5 |
+| luna_h1(tau10) -> flash_h1 | 62.3 | 0.0025 | 100.0 / 25.0 |
+| luna_h1(tau15) -> flash_h1 | 62.7 | 0.0032 | 100.0 / 34.9 |
+| luna_h1(tau20) -> flash_h1 | 63.5 | 0.0040 | 100.0 / 44.0 |
+| luna_h1(tau25) -> flash | 64.5 | 0.0049 | 100.0 / 59.5 |
+| luna_h1(tau25) -> flash_h1 | 66.3 | 0.0051 | 100.0 / 59.5 |
+| luna_h1(tau25) -> flash_h1(tau5) -> pro | 66.5 | 0.0067 | 100.0 / 59.5 / 8.3 |
+| luna_h1(tau25) -> flash_h1(tau10) -> pro | 67.1 | 0.0074 | 100.0 / 59.5 / 12.3 |
+| luna_h1(tau35) -> flash_h1 | 67.5 | 0.0075 | 100.0 / 91.3 |
+| flash_h1 | 69.2 | 0.0075 | 100.0 |
+| flash_h1(tau5) -> pro | 69.6 | 0.0104 | 100.0 / 13.1 |
+| flash_h1(tau10) -> pro | 70.0 | 0.0114 | 100.0 / 18.7 |
+| flash_h1(tau15) -> pro | 70.6 | 0.0131 | 100.0 / 27.8 |
+| flash_h1(tau20) -> pro | 71.0 | 0.0159 | 100.0 / 42.5 |
+| flash_h1(tau10) -> pro -> opus | 71.8 | 0.0164 | 100.0 / 18.7 / 9.1 |
+| flash_h1(tau10) -> opus | 72.2 | 0.0179 | 100.0 / 18.7 |
+| flash_h1(tau15) -> pro -> opus | 72.8 | 0.0203 | 100.0 / 27.8 / 12.7 |
+| flash_h1(tau20) -> pro -> opus | 74.4 | 0.0259 | 100.0 / 42.5 / 17.5 |
+| flash_h1(tau25) -> pro -> opus | 75.8 | 0.0306 | 100.0 / 57.1 / 20.6 |
+| flash_h1(tau30) -> pro -> opus | 76.0 | 0.0340 | 100.0 / 68.7 / 22.6 |
+
+Honest: cascade + taus picked on dev (max dev acc with dev $/pair <= budget), scored on held-out; vs the best single system under the same budget picked the same way:
+
+| budget $/pair | picked on dev | dev acc | held-out acc | held-out $/pair | best single (dev-picked) | its held-out acc | its $/pair |
+|---|---|---|---|---|---|---|---|
+| 0.001 | luna_h1 | 51.3 | 59.6 | 0.0006 | luna_h1 | 59.6 | 0.0006 |
+| 0.002 | luna_h1(tau5) -> flash_h1 | 54.0 | 61.3 | 0.0017 | luna_h1 | 59.6 | 0.0006 |
+| 0.004 | luna_h1(tau15) -> flash_h1 | 63.3 | 62.4 | 0.0029 | luna_h1 | 59.6 | 0.0006 |
+| 0.008 | flash_h1 | 75.3 | 66.7 | 0.0076 | flash_h1 | 66.7 | 0.0076 |
+| 0.012 | flash_h1(tau5) -> pro | 76.0 | 66.9 | 0.0106 | flash_h1 | 66.7 | 0.0076 |
+| 0.020 | flash_h1(tau10) -> opus | 78.7 | 69.5 | 0.0175 | pro | 68.1 | 0.0193 |
+| 0.030 | flash_h1(tau25) -> pro -> opus | 80.7 | 73.7 | 0.0317 | pro | 68.1 | 0.0193 |
+| 0.060 | flash_h1(tau25) -> pro -> opus | 80.7 | 73.7 | 0.0317 | pro | 68.1 | 0.0193 |
+
+
+**Recommended path (not built).**
+1. **Default: 3.8 Flash H1 plus the H4 gate.**
+   - 69.2 OI (66.7 on held-out) at $0.0075/pair.
+   - As a product, "confident call or abstain": 77.8% on held-out at 51% coverage.
+2. **Budget tier: Luna H1 → 3.8 Flash H1** when |p − 50| < 15 (dev-picked).
+   - 62.4 on held-out at $0.0029/pair: 38% of Flash's cost for −4.3 points.
+   - Worth it only where cost dominates (bulk screening).
+3. **Quality tier: 3.8 Flash H1 → 3.1 Pro → Opus 5.5** (τ = 25, dev-picked).
+   - **73.7 on held-out at $0.032/pair**, vs Opus alone at 74.9 for $0.056. That is 57% of the cost for −1.2 points.
+   - 3.8 Flash H1 (τ = 10) → Opus gives 69.5 at $0.0175, which beats 3.1 Pro alone (68.1 at $0.019).
+   - Escalation only works toward Opus. The cheap models' uncertain pairs are near-coin for Pro (RESEARCH_HYPOTHESES.md
+     §3.4).
+4. **Next paid step, when a router is worth building:** run H1 (graded) on Pro and Opus for the escalated pairs only.
+   Their plain flips are coin flips here, so the frontier above is a lower bound for those stages. Also run Haiku H1 to
+   see whether it can replace Luna as the cheap first stage.
+
+**Caveats.**
+- The frontier is in-sample: taus and chains are picked on the same 252 pairs. The dev-picked, held-out rows are the
+  honest numbers, and they are 2–7 points lower.
+- There are 530 configurations but only 75 dev pairs, so the choice itself is noisy.
+- Held-out and all-252 accuracies are on different pair sets. Luna does better on held-out than on dev, so at the cheapest
+  budget the held-out curve sits above the in-sample frontier.
+- Opus and Sonnet 5 ran without temperature control, so their rerun noise is unmeasured.
+- The same variant-prior and label-noise caveats as RESEARCH_HYPOTHESES.md apply.
+- Costs are list prices. Latency of sequential escalation is not modelled (about +1 call round-trip for 20–60% of pairs).
+
+**What a learned router would need.**
+- **Features that are available cheaply at stage 1:**
+  - the graded margin and the per-call flip;
+  - page type, platform and source;
+  - the kind of difference: element and attribute of the change. The product can get this from the difference list, and
+    it matters: Hick's-law / removal and multi-element changes are where the cheap models fail, RESEARCH_HYPOTHESES.md
+    §3.2.
+- **Validation:** grouped cross-validation by company or site, because the same company shows up in several pairs. It
+  should be pre-registered, with a held-out test set that is never used for thresholds.
+- **Data:** 252 labelled pairs support at most a 1–2-parameter threshold cascade. A router with 5+ features needs roughly
+  1–2k labelled A/B outcomes, preferably with:
+  - control-won and flat tests;
+  - per-arm counts;
+  - post-cutoff dates.
+
+  These are the evaluation-data needs already listed in RESEARCH_HYPOTHESES.md §4. Partner or customer A/B history is the
+  realistic source.
+
+### Haiku plan (ready; about $1.97 left)
+
+```bash
+python3 bench/wiserui/claude_access.py          # must show "claude-haiku-4-5@20251001 global: 200 OK"
+R=/workspace/bench/wiserui/results I=@bench/wiserui/fullset/anthropic_order.txt   # fixed random order, ~30% dev per prefix
+python3 bench/wiserui/run_bench.py --stream vanilla --model claude-haiku-4-5@20251001 --indices 102,258,156,42 --out $R/hc_haiku_plain --max-cost 0.1   # smoke: measure tokens
+# then both arms in parallel with equal caps (~$0.95 each => ~100 pairs at the estimated $0.018/pair for plain + H1):
+python3 bench/wiserui/run_bench.py --stream vanilla --model claude-haiku-4-5@20251001 --indices $I --out $R/hc_haiku_plain --concurrency 16 --max-cost 0.95 &
+python3 bench/wiserui/run_bench.py --stream h1      --model claude-haiku-4-5@20251001 --indices $I --out $R/hc_haiku_h1    --concurrency 16 --max-cost 0.95 &
+python3 bench/wiserui/harness_cheap.py haiku=$R/hc_haiku_plain,h1=$R/hc_haiku_h1
+```
+
+**Round 2 spend and time.**
+- Spend: $0.83 on Luna dev iterations, the Luna fs4 run on 252, and the Flash fs4 smoke test. The 3.8 Flash "minimal"
+  probe and the Haiku probes were free.
+- Paid calls ran 08:27:57–08:40:51 PT (13 min, mostly sequential dev steps).
+- Round 2 code: `claude_access.py`, `router_sim.py`, the step-3 flags, the e2e_ui_run fail-fast, and 2 new tests. 30 tests
+  pass.
+
+---
+
+# Round 1 (7:50 AM PT)
+
+## Round 1 report
 
 **Question.** How much does a *harness* lift the cheapest current SOTA model from each lab over its own plain baseline, when
 the model is held fixed? The arms come from `RESEARCH_HYPOTHESES.md` (commit 4d7d454) and are cumulative:

@@ -156,6 +156,10 @@ def main() -> None:
             # H4
             dv = [i for i in common if i in dev]
             ho = [i for i in common if i not in dev]
+            if not dv or not ho:  # dev-only (tuning) or held-out-only scoring: no H4 transfer check
+                rep[model]["arms"][name] = row
+                first_arm = first_arm or g
+                continue
             cdev, cho, call_ = curve(g, dv), curve(g, ho), curve(g, common)
             ok = [r for r in cdev if r["coverage"] >= 0.5 and r["n"] > 0]
             best = max(ok, key=lambda r: (round(r["acc"], 9), -r["tau"])) if ok else cdev[0]

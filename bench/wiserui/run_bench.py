@@ -244,6 +244,10 @@ async def main() -> None:
                     help="before a fresh run, copy this ledger's calls for the selected pairs in at $0 (e.g. an earlier "
                          "single-sample run whose calls are sample 0 of a vote run); new runs never share keys otherwise")
     ap.add_argument("--seed-match", default="", help="only seed calls whose key (after the pair index) matches this regex")
+    ap.add_argument("--failure-modes", action="store_true", help="graded streams: PairFlags.failure_modes preamble")
+    ap.add_argument("--graded-scale", type=int, default=None, choices=(100, 7), help="graded streams: answer scale")
+    ap.add_argument("--graded-shots", type=int, default=0,
+                    help="graded streams: solved examples per call from --few-shot-pool (use dev pairs only)")
     ap.add_argument("--inputs", default="", help=f"extra G-FOCUS inputs (PairFlags.gf_*), comma list of {','.join(GF_INPUTS)}")
     args = ap.parse_args()
 
@@ -259,6 +263,12 @@ async def main() -> None:
         flags = dataclasses.replace(flags, model=args.model)
     if args.few_shot_k:
         flags = dataclasses.replace(flags, few_shot_k=args.few_shot_k)
+    if args.failure_modes:
+        flags = dataclasses.replace(flags, failure_modes=True)
+    if args.graded_scale:
+        flags = dataclasses.replace(flags, graded_scale=args.graded_scale)
+    if args.graded_shots:
+        flags = dataclasses.replace(flags, graded_shots=args.graded_shots)
     for opt in ("argue_temperature", "samples_per_order", "sample_stage"):
         if getattr(args, opt) is not None:
             flags = dataclasses.replace(flags, **{opt: getattr(args, opt)})
@@ -281,13 +291,16 @@ async def main() -> None:
         print(f"[wiserui] seeded {n} calls from {args.seed_ledger} at $0", flush=True)
     ledger = Ledger(out / "calls.jsonl")
     pool = None
-    if flags.few_shot_k:
+    if flags.few_shot_k or flags.graded_shots:
+        from mvp.pairwise import _clean_rationale
+
         praw = Path(args.few_shot_pool[1:]).read_text() if args.few_shot_pool.startswith("@") else args.few_shot_pool
         pids = [int(x) for x in praw.replace("\n", ",").split(",") if x.strip()]
         pool = [FewShotExample(id=j, ctx=ctx_of(data[j]), win=(image_dir(j) / "win.png").read_bytes(),
-                               lose=(image_dir(j) / "lose.png").read_bytes())
+                               lose=(image_dir(j) / "lose.png").read_bytes(),
+                               rationale=_clean_rationale(data[j].get("rationale", "")))
                 for j in pids if (image_dir(j) / "win.png").exists() and (image_dir(j) / "lose.png").exists()]
-        print(f"[wiserui] few-shot pool: {len(pool)} pairs, k={flags.few_shot_k}", flush=True)
+        print(f"[wiserui] few-shot pool: {len(pool)} pairs, k={flags.few_shot_k or flags.graded_shots}", flush=True)
     sem = asyncio.Semaphore(args.concurrency)
     cond = f"pw_{args.stream}" + ("_aa" if args.aa else "")
     print(f"[wiserui] {len(idxs)} pairs stream={args.stream} flags={flags} model={flags.model or PAIRWISE_MODEL} "
@@ -295,7 +308,8 @@ async def main() -> None:
     (out / "config.json").write_text(json.dumps({"stream": args.stream, "inputs": extra, "flags": flags.__dict__, "model": flags.model or PAIRWISE_MODEL,
                                                  "personas_from": args.personas_from, "aa": args.aa, "n": len(idxs),
                                                  "seed_ledger": args.seed_ledger, "seed_match": args.seed_match,
-                                                 "few_shot_pool": args.few_shot_pool}, indent=1))
+                                                 "few_shot_pool": args.few_shot_pool,
+                                                 "env": {k: os.environ.get(k) for k in ("OPENAI_REASONING_EFFORT", "MVP_GEMINI3_THINKING")}}, indent=1))
 
     results: dict[int, dict] = {}
     done = 0

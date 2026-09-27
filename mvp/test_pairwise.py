@@ -428,3 +428,39 @@ def test_think_headroom_and_worst_case_reservation(monkeypatch):
     assert think_headroom("gemini-3.8-flash") == 8192 and think_headroom("gpt-6-luna") == 4096
     monkeypatch.setenv("MVP_CLAUDE5_THINK_HEADROOM", "2048")
     assert think_headroom("claude-sonnet-5") == 2048
+
+
+def test_graded_variants_prompt_scale_and_tags():
+    base = pairwise.graded_prompt()
+    fm = pairwise.graded_prompt(failure_modes=True)
+    s7 = pairwise.graded_prompt(scale=7)
+    assert "original was kept" in fm and "Hick" in fm and "original was kept" not in base
+    assert "Rating (7 = First): <1-7>" in s7 and "P(First" not in s7 and "Identify the key UI differences" in s7
+    pg = pairwise.parse_graded
+    assert pg("Rating (7 = First): 7", 7) == 100.0 and pg("Rating (7 = First): 4", 7) == 50.0
+    assert pg("**Rating (7 = First):** 1", 7) == 0.0 and pg("Rating (7 = First): 9", 7) is None
+    f = PairFlags(short_pick=True, vanilla=True, graded=True, failure_modes=True, graded_scale=7, graded_shots=2)
+    assert pairwise.short_call_tag(f) == "graded_fm_s7_fs2" and "scale7" in f.name() and "shots2" in f.name()
+
+
+def test_graded_few_shot_leave_one_out_balanced_and_clean_rationale():
+    from mvp.pairwise import FewShotExample
+    pool = [FewShotExample(id=j, ctx=CTX, win=f"W{j}".encode(), lose=f"L{j}".encode(), rationale=f"r{j}") for j in range(4)]
+    seen = []
+    flags = PairFlags(short_pick=True, vanilla=True, graded=True, graded_shots=2, shot_max_px=None)
+    r = run(compare_pair(A, B, None, CTX, flags, call=_graded_call(lambda f, s: 70, seen), few_shot_pool=pool, pair_id=0))
+    assert [x["id"] for x in r["few_shot"]] == [1, 2] and [x["answer"] for x in r["few_shot"]] == ["First", "Second"]
+    got = []
+
+    async def call(key, contents, **kw):
+        got.append(contents)
+        return "P(First more effective): 60", 1, 1
+
+    run(compare_pair(A, B, None, CTX, flags, call=call, few_shot_pool=pool, pair_id=0))
+    imgs = [c for c in got[0] if isinstance(c, bytes)]
+    # example 1 winner First (W1, L1), example 2 winner Second (L2, W2), then the judged pair last
+    assert imgs[:4] == [b"W1", b"L1", b"L2", b"W2"] and imgs[4:] in ([b"AAA", b"BBB"], [b"BBB", b"AAA"])
+    assert any("the First version won" in c for c in got[0] if isinstance(c, str))
+    cr = pairwise._clean_rationale
+    assert cr("[{'reason': 'The right version (B) removes clutter.', 'law': {}}]") == "The winning version removes clutter."
+    assert cr("[{'reason': 'Variant B has a bigger CTA.'}]") == "The winning version has a bigger CTA."
