@@ -194,7 +194,9 @@ function cmpWinLoss(comp) {
   const signed = (p) => p.gap || cmpLevelGap(p) * 0.001;
   const wins = pairs.filter((p) => signed(p) > 0).sort((a, b) => signed(b) - signed(a));
   const losses = pairs.filter((p) => signed(p) < 0).sort((a, b) => signed(a) - signed(b));
-  return { win: wins[0] || null, loss: losses[0] || null, n: pairs.length, nWins: wins.length, nLosses: losses.length };
+  // A tied score is still a matchup. Dropping it left the pane saying neither side won.
+  const ties = pairs.filter((p) => signed(p) === 0);
+  return { win: wins[0] || null, loss: losses[0] || null, ties, n: pairs.length, nWins: wins.length, nLosses: losses.length };
 }
 
 function cmpFilterBar(comp) {
@@ -216,6 +218,13 @@ function cmpTaskCompareBody(comp) {
   const r = cmpWinLoss(comp);
   if ("single" in r) {
     return `${cmpFilterBar(comp)}${r.single ? cmpPairCard(r.single, comp) : `<p class="empty-claim">No scored run pair for this buyer, task and competitor.</p>`}`;
+  }
+  const ties = r.ties || [];
+  if (!r.win && !r.loss && ties.length) {
+    return `${cmpFilterBar(comp)}
+      <h4 class="tc-sub">Tied with ${label}</h4>
+      <p class="muted small">Same score on ${ties.length === 1 ? "this matchup" : `these ${ties.length} matchups`}, so neither side won.</p>
+      <div class="wl-stack">${ties.map((p) => cmpPairCard(p, comp)).join("")}</div>`;
   }
   const count = (n, one, many) => (n ? ` <span class="muted small">(top of ${n} ${n === 1 ? one : many})</span>` : "");
   return `${cmpFilterBar(comp)}
@@ -351,7 +360,7 @@ function renderCompareHtml(comp) {
         <td>${cmpEsc(exp)}${p.expected_why ? `<div class="muted small">${cmpEsc(p.expected_why)}</div>` : ""}${hit ? `<div class="small ${hit === "as expected" ? "ok" : "warn"}">${hit}</div>` : ""}</td></tr>`;
     });
   const personaRows = layer?.buyers?.length
-    ? cmpGroupedRows(layer.buyers, personaRowOf, sites.length + 2, "scores best for", comp)
+    ? cmpGroupedRows(layer.buyers, personaRowOf, sites.length + 2, "is preferred by", comp)
     : Object.values(personaRowOf).join("");
 
   const taskRowOf = {};
@@ -396,7 +405,7 @@ function renderCompareHtml(comp) {
     </section>
     <div class="chart-card">
       <h3>Buyers × products</h3>
-      <p class="sub">Buyers grouped under the product that scored best for them. Average score over the tasks each buyer ran; ★ marks the product each buyer picked.</p>
+      <p class="sub">Each buyer is listed under the product they picked after trying them. They are not told which product they were expected to favor. Scores are the average over the tasks they ran; ★ marks that pick.</p>
       ${layer?.buyers?.length ? "" : cmpPendingNote("buyers")}
       <div style="overflow-x:auto"><table class="cmp-grid"><thead><tr><th>Buyer</th>${siteHead}<th>Expected favorite</th></tr></thead><tbody>${personaRows}</tbody></table></div>
     </div>

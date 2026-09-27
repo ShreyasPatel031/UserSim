@@ -1,7 +1,10 @@
 """Collective insights on top of summary['comparison']: buyer groups, task groups, a 3-line summary, 3 recommendations.
 
-Grouping is by the scores (a buyer or task goes under the product that scored best
-for it); Gemini only names each group, says why, and writes the summary and the
+Buyers are grouped under the product they picked after trying them. That
+pick is blind: the buyer is not told which product they were expected to
+favor, and a score tie is not awarded to the product under study. Tasks stay
+under the product that won them.
+Gemini only names each group, says why, and writes the summary and the
 recommendations from those groups. The report fetches this separately, so an old
 study gets it on first view; the result is cached per study under MVP_RUNS_DIR.
 """
@@ -13,7 +16,7 @@ import hashlib
 import json
 from typing import Any
 
-LAYER_VERSION = 1
+LAYER_VERSION = 3
 _MEM: dict[str, dict[str, Any]] = {}
 _LOCKS: dict[str, asyncio.Lock] = {}
 
@@ -24,14 +27,27 @@ def _best_site(scores: dict[str, Any], order: list[str], tied: list[str] | None 
         return None
     top = max(vals.values())
     leaders = [k for k in order if vals.get(k) == top] or [k for k, v in vals.items() if v == top]
-    # A tie that includes the product counts for the product: it holds its own there.
-    if "product" in leaders or "product" in (tied or []):
-        return "product"
+    # A tie is not a win. Awarding it to the product put other products' customers in its group.
+    if len(leaders) != 1 or (tied and len(tied) > 1):
+        return None
     return leaders[0]
 
 
+def _buyer_site(persona: dict[str, Any], order: list[str]) -> str | None:
+    """The product this buyer preferred.
+
+    The preference is the pick they made after the runs. The plan's hidden
+    expected favorite is not a preference they hold, so it never places them.
+    """
+    known = set(order)
+    pick = str(persona.get("pick") or "")
+    if pick in known:
+        return pick
+    return _best_site(persona.get("scores") or {}, order, tied=persona.get("score_tied"))
+
+
 def build_groups(comp: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
-    """Buyers under the product that scored best for them; tasks under the product that won them."""
+    """Buyers under the product they picked; tasks under the product that won them."""
     order = [str(s.get("key")) for s in comp.get("sites") or []]
     labels = {str(s.get("key")): str(s.get("label") or s.get("key")) for s in comp.get("sites") or []}
 
@@ -44,7 +60,7 @@ def build_groups(comp: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
 
     buyers = []
     for p in comp.get("by_persona") or []:
-        site = _best_site(p.get("scores") or {}, order)
+        site = _buyer_site(p, order)
         if site:
             buyers.append((site, str(p.get("persona_id"))))
     tasks = []
@@ -70,7 +86,7 @@ def _prompt(comp: dict[str, Any], groups: dict[str, list[dict[str, Any]]]) -> st
 
     buyer_lines = []
     for g in groups["buyers"]:
-        buyer_lines.append(f"[{g['site']}] {g['site_label']} scored best for:")
+        buyer_lines.append(f"[{g['site']}] buyers who preferred {g['site_label']}:")
         for pid in g["members"]:
             p = personas.get(pid) or {}
             buyer_lines.append(
@@ -98,7 +114,7 @@ def _prompt(comp: dict[str, Any], groups: dict[str, list[dict[str, Any]]]) -> st
 Sites (key: name):
 {sites}
 
-Buyers, grouped under the site that scored best for them:
+Buyers, grouped under the product each one picked:
 {chr(10).join(buyer_lines) or '  (none)'}
 
 Tasks, grouped under the site that won them:
@@ -111,7 +127,7 @@ Talk about groups, not individuals: name what the buyers in a group have in comm
 Ignore problems of the test itself: our agents getting stuck or looping, captchas, timeouts, and signups that failed because every agent shared one test inbox.
 
 Return JSON only:
-{{"buyer_groups": {{"<site key>": {{"label": "2-5 word collective name for these buyers", "why": "one sentence, at most 22 words: what they share and why this site suits them"}}}},
+{{"buyer_groups": {{"<site key>": {{"label": "2-5 word collective name for these buyers", "why": "one sentence, at most 22 words: what they share and why they preferred this product"}}}},
   "task_groups": {{"<site key>": {{"label": "2-5 word name for this kind of job", "why": "one sentence, at most 22 words: why this site wins these jobs"}}}},
   "summary": ["Buyers: which buyer groups {label} wins and loses, at most 28 words",
               "Tasks: which kinds of job {label} wins and loses, at most 28 words",
@@ -207,7 +223,7 @@ async def insight_layer_for(study_id: str, comp: dict[str, Any], *, status: str 
         from mvp.comparison import _json_call
 
         data = await _json_call(_prompt(comp, groups), timeout=90.0)
-        layer = {"key": key, "status": status, **_clean(data, comp, groups)}
+        layer = {"key": key, "version": LAYER_VERSION, "status": status, **_clean(data, comp, groups)}
         _MEM[study_id] = layer
         try:
             path.parent.mkdir(parents=True, exist_ok=True)

@@ -973,15 +973,16 @@ async def set_report_email(study_id: str, body: ReportEmailRequest):
 @app.get("/api/studies/{study_id}/insight-layer")
 async def get_insight_layer(study_id: str):
     """Buyer and task groups, 3-line summary and 3 recommendations for a comparison study (cached)."""
-    from mvp.insight_layer import cached_layer, insight_layer_for
+    from mvp.insight_layer import LAYER_VERSION, cached_layer, insight_layer_for
     from mvp.study import STUDIES
 
     # A finished study does not change: serve the saved layer without the ~20s
     # study load. Only a study running again in this process is rebuilt.
+    # An older layer version grouped buyers by score ties, so it is rebuilt.
     live = STUDIES.get(study_id)
     rerunning = bool(live) and str(getattr(live, "status", "")) in {"queued", "running", "pending", "starting"}
     saved = cached_layer(study_id)
-    if saved and saved.get("status") == "complete" and not rerunning:
+    if saved and saved.get("status") == "complete" and saved.get("version") == LAYER_VERSION and not rerunning:
         return saved
     data = await get_study(study_id)
     comp = ((data or {}).get("summary") or {}).get("comparison")
