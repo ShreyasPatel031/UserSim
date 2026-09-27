@@ -19,6 +19,7 @@ import json
 import os
 import re
 import sys
+import threading
 import time
 import urllib.request
 from pathlib import Path
@@ -57,6 +58,8 @@ def http_json(base: str, path: str, timeout: float = 60) -> dict:
 
 
 _GEMINI = None
+# Regional clients are created lazily from worker threads (mvp.pairwise runs calls on a thread pool).
+_GEMINI_LOCK = threading.Lock()
 
 
 def _gemini_client():
@@ -96,40 +99,46 @@ def _gemini_client_at(location: str | None):
         from auth import vertex_credentials
         from config import GCP_PROJECT
 
-        _GEMINI_BY_LOC[location] = genai.Client(
-            vertexai=True, project=os.environ.get("GCP_PROJECT") or GCP_PROJECT, location=location,
-            credentials=vertex_credentials(),
-        )
+        with _GEMINI_LOCK:
+            if location not in _GEMINI_BY_LOC:
+                _GEMINI_BY_LOC[location] = genai.Client(
+                    vertexai=True, project=os.environ.get("GCP_PROJECT") or GCP_PROJECT, location=location,
+                    credentials=vertex_credentials(),
+                )
     return _GEMINI_BY_LOC[location]
 
 
-def _gemini_json_config():
-    from google.genai import types
-
-    return types.GenerateContentConfig(
-        temperature=0,
-        max_output_tokens=512,
-        thinking_config=types.ThinkingConfig(thinking_budget=0),
-        response_mime_type="application/json",
-    )
+def _images(png: bytes | bytearray | list[bytes]) -> list[bytes]:
+    return [bytes(png)] if isinstance(png, (bytes, bytearray)) else [bytes(x) for x in png]
 
 
-def gemini_vision_json(prompt: str, png: bytes, *, model: str = JUDGE_MODEL) -> dict:
-    """Judge an image with Vertex gemini-2.5-flash-lite; return parsed JSON."""
-    from google.genai import types
-
-    client = _gemini_client()
-    resp = client.models.generate_content(
-        model=model,
-        contents=[
-            types.Part.from_text(text=prompt),
-            types.Part.from_bytes(data=png, mime_type="image/png"),
-        ],
-        config=_gemini_json_config(),
-    )
-    raw = (resp.text or "").strip()
+def _json_object(raw: str) -> dict:
     match = re.search(r"\{.*\}", raw, re.S)
     return json.loads(match.group(0) if match else raw)
+
+
+def gemini_vision_json(
+    prompt: str,
+    png: bytes | list[bytes],
+    *,
+    model: str = JUDGE_MODEL,
+    temperature: float = 0.0,
+    max_tokens: int = 512,
+    media_resolution: str | None = None,
+    retries: int = 1,
+) -> dict:
+    """Judge one image (or N screenshots, in order) in one call; return parsed JSON.
+
+    Defaults keep the original behaviour: flash-lite, temperature 0, 512 tokens, thinking off, JSON mode, one
+    attempt on the default region. ``retries`` > 1 adds the 429 / 5xx backoff and region fallback of
+    :func:`gemini_generate`.
+    """
+    raw, _, _ = gemini_generate(
+        [prompt, *_images(png)],
+        model=model, temperature=temperature, max_tokens=max_tokens, media_resolution=media_resolution,
+        retries=retries,
+    )
+    return _json_object(raw)
 
 
 def gemini_generate(
@@ -141,12 +150,15 @@ def gemini_generate(
     json_mode: bool = True,
     media_resolution: str | None = None,
     retries: int = 8,
+    seed: int | None = None,
+    max_backoff_s: float = 30.0,
 ) -> tuple[str, int, int]:
     """One Vertex call with any mix of text and image parts; returns (text, input tokens, output tokens).
 
     Strings in ``contents`` become text parts and ``bytes`` become PNG/JPEG image parts. Retries 429 / 5xx
-    with exponential backoff (other 4xx fail at once). ``media_resolution="high"`` asks for full-detail images
-    (Vertex refuses it when a request carries 2+ images).
+    with exponential backoff (other 4xx fail at once); after the first 429 the retries rotate through
+    VERTEX_FALLBACK_LOCATIONS. ``media_resolution="high"`` asks for full-detail images (Vertex refuses it when a
+    request carries 2+ images). ``seed`` makes sampling at temperature > 0 repeatable.
     """
     import time as _time
 
@@ -167,6 +179,7 @@ def gemini_generate(
         thinking_config=types.ThinkingConfig(thinking_budget=0),
         response_mime_type="application/json" if json_mode else None,
         media_resolution=(types.MediaResolution.MEDIA_RESOLUTION_HIGH if media_resolution == "high" else None),
+        seed=seed,
     )
     last: Exception | None = None
     locs: list[str | None] = [None]
@@ -188,7 +201,7 @@ def gemini_generate(
             if code == 429 and len(locs) == 1 and _FALLBACK_LOCATIONS:
                 locs = [None, *_FALLBACK_LOCATIONS]  # spread retries across regions
             if attempt + 1 < retries:
-                _time.sleep(min(30, 1.5 * 2 ** (attempt // max(1, len(locs)))))
+                _time.sleep(min(max_backoff_s, 1.5 * 2 ** (attempt // max(1, len(locs)))))
     raise RuntimeError(f"gemini call failed: {last!r}")
 
 
@@ -202,20 +215,20 @@ def gemini_vision_pair(
     max_tokens: int = 512,
     labels: tuple[str, str] = ("IMAGE 1 — PREVIOUS screen:", "IMAGE 2 — NEW screen after the claimed action:"),
     media_resolution: str | None = None,
+    retries: int = 1,
+    seed: int | None = None,
 ) -> dict:
     """Judge two screens (or two sets of N screenshots) in one call; return parsed JSON.
 
-    Defaults keep the original previous-vs-new behaviour (flash-lite, temperature 0, 512 tokens). Each side may
-    be one PNG or a list of screenshots; ``labels`` names the two sides.
+    Defaults keep the original previous-vs-new behaviour (flash-lite, temperature 0, 512 tokens, one attempt).
+    Each side may be one PNG or a list of screenshots; ``labels`` names the two sides.
     """
-    a = [prev_png] if isinstance(prev_png, (bytes, bytearray)) else list(prev_png)
-    b = [new_png] if isinstance(new_png, (bytes, bytearray)) else list(new_png)
     raw, _, _ = gemini_generate(
-        [prompt, labels[0], *a, labels[1], *b],
-        model=model, temperature=temperature, max_tokens=max_tokens, media_resolution=media_resolution, retries=1,
+        [prompt, labels[0], *_images(prev_png), labels[1], *_images(new_png)],
+        model=model, temperature=temperature, max_tokens=max_tokens, media_resolution=media_resolution,
+        retries=retries, seed=seed,
     )
-    match = re.search(r"\{.*\}", raw, re.S)
-    return json.loads(match.group(0) if match else raw)
+    return _json_object(raw)
 
 
 def _hostname(url: str) -> str:
