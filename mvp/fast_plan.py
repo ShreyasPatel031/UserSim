@@ -85,14 +85,14 @@ Rules:
   rebranded (its site redirects elsewhere). Never a general-purpose AI chatbot or assistant (ChatGPT, Claude,
   Gemini, Copilot, Perplexity, Grok and the like) unless the product itself is a general-purpose chatbot: a
   site calling itself a "ChatGPT alternative" in its keywords is not enough.
-- personas: exactly six realistic target customers of this category: at least two natural fits for the
-  product and at least one natural fit for each competitor (for example an enterprise CS leader fits an
+- personas: exactly six realistic target customers of this category: exactly two natural fits for the
+  product and exactly two natural fits for each competitor (for example an enterprise CS leader fits an
   enterprise suite, a two-person startup fits a self-serve tool). favors must be "product" or one of the
   competitor urls exactly as written above.
 - tasks: seven representative jobs a buyer in this category needs done, best first (the study keeps six), 3-8
   words each, an imperative verb and a concrete object (for example "Identify at-risk customer accounts",
-  "Compare plan prices for 20 seats"). Choose them so at least two favor the product and at least one favors
-  each competitor. Each task must make sense on all three sites: done in the product where a trial account
+  "Compare plan prices for 20 seats"). Choose the first six so exactly two favor the product and exactly two favor
+  each competitor; the seventh is a spare. Each task must make sense on all three sites: done in the product where a trial account
   allows, or judged from the website (feature pages, docs, pricing, proof) where the product is demo-only.
   Never a task that needs the customer's own outside credentials or data (connect or sync a data source,
   API keys, payment). At most one pricing task.
@@ -117,7 +117,7 @@ _CMP_TASKS = """Pick six tasks for a head-to-head comparison of {product} ({url}
 
 Return {{"tasks": [{{"task": "3-8 word task", "favors": "product or one competitor url exactly as listed", "why": "at most 12 words"}}]}}
 Rules: six representative jobs a buyer in this category needs done, an imperative verb and a concrete object
-(for example "Identify at-risk customer accounts"). At least one favors the product and at least one favors each
+(for example "Identify at-risk customer accounts"). Exactly two favor the product and exactly two favor each
 competitor. Each must make sense on all three sites: done in the product where a trial allows, or judged from the
 website (feature pages, docs, pricing, proof) where the product is demo-only. Never a task needing the customer's
 own outside credentials or data (connect or sync a data source, API keys, payment). At most one pricing task. No quotes."""
@@ -128,8 +128,8 @@ _CMP_PERSONAS = """Invent six target customers for a head-to-head comparison of 
 Return {{"personas": [{{"name": "first and last name", "role": "job title and company type",
   "bio": "at most 25 words: situation, what they need, how they judge a tool",
   "favors": "product or one competitor url exactly as listed", "why": "at most 12 words"}}]}}
-Rules: realistic buyers in this category, spread evenly: at least one natural fit for the product and at least one
-natural fit for each competitor (for example an enterprise CS leader fits an enterprise suite, a two-person startup
+Rules: realistic buyers in this category, spread evenly: exactly two natural fits for the product and exactly two
+natural fits for each competitor (for example an enterprise CS leader fits an enterprise suite, a two-person startup
 fits a self-serve tool). No quotes."""
 
 # Framing fix "position": one small call on the full page read decides what
@@ -559,7 +559,14 @@ def pick_competitors(items: list[Any], own: str, limit: int = 2, *, allow_assist
         if host in _SUITE_HOSTS and parts.path.strip("/") == "":
             continue
         if not allow_assistants and host in _ASSISTANT_HOSTS:
-            continue
+            # A chatbot vendor's product page (anthropic.com/api) is a real rival for a model platform and
+            # keeps its path; the bare homepage (the chatbot) is still skipped.
+            raw_path = urlsplit(str(item) if "://" in str(item) else "https://" + str(item)).path.strip("/")
+            if not raw_path or host in {"chatgpt.com", "chat.openai.com", "claude.ai", "gemini.google.com"}:
+                continue
+            clean = f"https://{parts.hostname}/{raw_path}/"
+            if clean in comps:
+                continue
         comps.append(clean)
         if len(comps) == limit:
             break
@@ -598,7 +605,7 @@ def resolve_favors(
 def compare_personas(
     data: dict[str, Any], own: str, comps: list[str], names: dict[str, str], read: dict[str, Any] | None = None
 ) -> list[dict[str, Any]]:
-    """Five personas with distinct names, each tagged with the product it is expected to favor and why."""
+    """Six personas with distinct names, each tagged with the product it is expected to favor and why."""
     out: list[dict[str, Any]] = []
     for item in data.get("personas") or []:
         if not isinstance(item, dict) or not str(item.get("name") or "").strip():
@@ -710,15 +717,44 @@ def compare_tasks(data: dict[str, Any], own: str, comps: list[str], names: dict[
                 "favors_why": " ".join(str(item.get("why") or "").split())[:120],
             }
         )
-    return out[:TASK_COUNT]
+    return balance_tasks(out)
+
+
+def balance_tasks(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Up to TASK_COUNT rows, two per favored site first (the spare or a top-up fills a gap), plan order kept."""
+    per_site = max(1, TASK_COUNT // (RIVAL_COUNT + 1))
+    counts: dict[str, int] = {}
+    keep: list[int] = []
+    for i, row in enumerate(rows):
+        if row["favors"] and counts.get(row["favors"], 0) < per_site:
+            counts[row["favors"]] = counts.get(row["favors"], 0) + 1
+            keep.append(i)
+    keep += [i for i in range(len(rows)) if i not in keep][: max(0, TASK_COUNT - len(keep))]
+    return [rows[i] for i in sorted(keep[:TASK_COUNT])]
+
+
+def missing_task_slots(rows: list[dict[str, Any]], sites: list[str]) -> dict[str, int]:
+    """How many more jobs each site ("product" or a rival URL) needs to reach its two."""
+    per_site = max(1, TASK_COUNT // (RIVAL_COUNT + 1))
+    return {s: per_site - sum(1 for r in rows if r["favors"] == s) for s in sites if sum(1 for r in rows if r["favors"] == s) < per_site}
+
+
+_TASK_TOPUP = """Add jobs to a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
+Already chosen (do not repeat): {have}
+Needed: {need}
+Return {{"tasks": [{{"task": "3-8 word task", "favors": "product or one competitor url exactly as listed", "why": "at most 10 words"}}]}}
+Rules: an imperative verb and a concrete object; each must make sense on all three sites (done in the product where a
+trial allows, or judged from the website). Never a task needing the customer's own outside credentials or data
+(connect or sync a data source, API keys, payment) and no pricing task. No quotes."""
 
 
 def compare_mode() -> bool:
     """Product: 6 personas x 6 tasks; each of 2 rivals: 2 personas x 2 tasks (MVP_STUDY_MODE=compare).
 
-    3 sites x 6 x 6 = 108 agents (was 5 x 5 x 4 sites = 100). Off by default.
+    3 sites x 6 x 6 = 108 agents. On by default (Shreyas, 2026-09-27: every study is 1 product, 2 rivals,
+    6 personas and 6 tasks, two of each aimed at each product); MVP_STUDY_MODE=classic turns it off.
     """
-    return os.environ.get("MVP_STUDY_MODE", "classic").strip().lower() == "compare"
+    return os.environ.get("MVP_STUDY_MODE", "compare").strip().lower() == "compare"
 
 
 async def plan_from_url(
@@ -945,15 +981,42 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
         from mvp.server import _landing_url
 
         landed = list(await asyncio.gather(*(_landing_url(c) for c in raw_comps)))
+        # A planned rival that was skipped hands its buyers and jobs to the backup that replaced it, so
+        # each site keeps its two personas and two tasks.
+        planned = [_clean_url(str(i.get("url") or "")) for i in (data.get("competitors") or [])[:RIVAL_COUNT] if isinstance(i, dict)]
+        dropped = [c for c in planned if c not in raw_comps]
+        added = [c for c in raw_comps if c not in planned]
         # Tags were written against the planner's URLs; map them to where the rival lands.
-        personas = compare_personas(data, own, raw_comps, names, read)
-        tasks = compare_tasks(data, own, raw_comps, names)
-        remap = dict(zip(raw_comps, landed))
+        personas = compare_personas(data, own, raw_comps + dropped, names, read)
+        tasks = compare_tasks(data, own, raw_comps + dropped, names)
+        remap = {d: landed[raw_comps.index(a)] for d, a in zip(dropped, added)}
+        remap.update(zip(raw_comps, landed))
+        for row in personas + tasks:
+            if row["favors"] in dropped and row["favors"] not in remap:
+                row["favors"] = ""
         for row in personas + tasks:
             row["favors"] = remap.get(row["favors"], row["favors"])
         if len(tasks) < 2 or len(personas) < 2:
             return None
         comp_names = {remap.get(k, k): v for k, v in names.items() if k in remap}
+        need = missing_task_slots(tasks, ["product"] + landed)
+        if need:
+            # One short call fills the sites the plan left short (credential or duplicate tasks were dropped).
+            try:
+                label = lambda s: str(data.get("product") or own) if s == "product" else f"{comp_names.get(s) or s} ({s})"
+                extra = await ask(_TASK_TOPUP.format(
+                    product=str(data.get("product") or own), url=url,
+                    rivals=", ".join(f"{comp_names.get(c) or c} ({c})" for c in landed),
+                    have="; ".join(t["prompt"] for t in tasks),
+                    need="; ".join(f"{n} favoring {'product' if s == 'product' else s} ({label(s)})" for s, n in need.items()),
+                ))
+                more = compare_tasks(extra if isinstance(extra, dict) else {}, own, landed, comp_names)
+                seen = {t["prompt"].lower() for t in tasks}
+                pricing = any(_PRICING_RE.search(t["prompt"]) for t in tasks)
+                more = [m for m in more if m["prompt"].lower() not in seen and not (pricing and _PRICING_RE.search(m["prompt"]))]
+                tasks = balance_tasks([t for t in tasks] + [m for m in more if m["favors"] in need])
+            except Exception as exc:  # noqa: BLE001
+                print(f"[fast_plan] task top-up skipped: {exc!r}", flush=True)
         print(f"[fast_plan] compare {url} rivals={landed} tasks={[t['prompt'] for t in tasks]}", flush=True)
         return {
             "mode": "compare",

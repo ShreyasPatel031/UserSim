@@ -403,7 +403,7 @@ def competitor_task_prompt(base_prompt: str, site_url: str) -> str:
     ).strip()
     import os
 
-    if os.environ.get("MVP_STUDY_MODE", "classic").strip().lower() == "compare":
+    if os.environ.get("MVP_STUDY_MODE", "compare").strip().lower() == "compare":
         # Comparison study: every site gets the same job in the same words.
         # "Competitor ... not the original product" made rival agents doubt
         # they were on the right site and click back out of it (b19ba88f).

@@ -130,9 +130,12 @@ def splice_plan(plan: dict[str, Any], starter: dict[str, Any]) -> dict[str, Any]
         best = next((i for i, t in enumerate(specs) if t.get("favors") == "product"), None)
     if best is None and specs:
         best = len(specs) - 1
+    favors, why = "product", persona.get("favors_why") or ""
     if best is not None:
-        specs.pop(best)
-    spec = {"prompt": task, "favors": "product", "favors_why": persona.get("favors_why") or ""}
+        # The starter job takes over the replaced job's tag, so each site keeps its two jobs.
+        gone = specs.pop(best)
+        favors, why = gone.get("favors") or favors, gone.get("favors_why") or why
+    spec = {"prompt": task, "favors": favors, "favors_why": why}
     plan["task_specs"] = [spec] + specs
     plan["tasks"] = [t["prompt"] for t in plan["task_specs"]]
     if not plan.get("product"):
