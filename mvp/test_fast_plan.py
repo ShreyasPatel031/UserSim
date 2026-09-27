@@ -131,3 +131,36 @@ def test_connect_data_source_core_task_swapped_for_app_task():
     tasks = choose_tasks(data, {"links": [], "title": "Kolanut"})
     assert tasks[0] == "See which accounts are at risk"
     assert all(not needs_customer_credentials(t) for t in tasks)
+
+
+def test_spliced_plan_never_repeats_a_persona_name():
+    # Study 50f0954c: the early buyer and the full plan both invented "Alex Chen".
+    from mvp.early_start import splice_plan
+
+    plan = {
+        "product": "Zo Computer",
+        "personas": [
+            {"name": "Joanna Lee", "favors": "product"},
+            {"name": "Alex Chen", "favors": "https://replit.com/"},
+            {"name": "Maria Rodriguez", "favors": "https://www.netlify.com/"},
+            {"name": "David Lee", "favors": "https://vercel.com/"},
+        ],
+        "task_specs": [{"prompt": "Build a site", "favors": "product"}],
+    }
+    starter = {"persona": {"name": "Alex Chen", "favors": "product"}, "task": "Build a site"}
+    names = [p["name"] for p in splice_plan(plan, starter)["personas"]]
+    assert names[0] == "Alex Chen"  # the running early buyer keeps its name
+    firsts = [n.split()[0] for n in names]
+    lasts = [n.split()[-1] for n in names]
+    assert len(set(firsts)) == len(names) and len(set(lasts)) == len(names), names
+
+
+def test_persona_named_after_a_page_testimonial_is_renamed():
+    from mvp.fast_plan import compare_personas
+
+    read = page_read_from_html(
+        '<html><body><a href="https://joannakurylo.zo.space/">joannakurylo.zo.space</a> Joanna says hi</body></html>'
+    )
+    data = {"personas": [{"name": "Joanna Kurylo", "favors": "product"}, {"name": "Sam Ortiz", "favors": "product"}]}
+    names = [p["name"] for p in compare_personas(data, "zo.computer", [], {}, read)]
+    assert "Joanna Kurylo" not in names and names[1] == "Sam Ortiz"

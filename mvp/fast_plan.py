@@ -351,8 +351,10 @@ def resolve_favors(
     return ""
 
 
-def compare_personas(data: dict[str, Any], own: str, comps: list[str], names: dict[str, str]) -> list[dict[str, Any]]:
-    """Five personas, each tagged with the product it is expected to favor and why."""
+def compare_personas(
+    data: dict[str, Any], own: str, comps: list[str], names: dict[str, str], read: dict[str, Any] | None = None
+) -> list[dict[str, Any]]:
+    """Five personas with distinct names, each tagged with the product it is expected to favor and why."""
     out: list[dict[str, Any]] = []
     for item in data.get("personas") or []:
         if not isinstance(item, dict) or not str(item.get("name") or "").strip():
@@ -366,7 +368,77 @@ def compare_personas(data: dict[str, Any], own: str, comps: list[str], names: di
                 "favors_why": " ".join(str(item.get("why") or "").split())[:120],
             }
         )
-    return out[:5]
+    return unique_persona_names(out[:5], seed=own, read=read)
+
+
+# Replacement names when the model repeats one. Two separate model calls (the
+# early-start buyer and the full plan) each default to the same few names
+# (Alex Chen, Sarah Chen, David Lee), so a spliced plan could list one twice.
+_FIRST_NAMES = (
+    "Priya", "Tomasz", "Amara", "Kenji", "Lucia", "Oluwaseun", "Ingrid", "Rafael", "Mei", "Dmitri",
+    "Fatima", "Mateo", "Hana", "Kwame", "Sofia", "Arjun", "Leila", "Bruno", "Yuki", "Nadia",
+    "Tobias", "Zanele", "Diego", "Aisha", "Henrik", "Camila", "Ravi", "Elif", "Marcus", "Noor",
+)
+_LAST_NAMES = (
+    "Okafor", "Lindqvist", "Nakamura", "Haddad", "Kowalski", "Mensah", "Varga", "Castillo", "Iyer",
+    "Petrov", "Duarte", "Brennan", "Sato", "Abara", "Moreau", "Novak", "Rahman", "Keller", "Osei",
+    "Tanaka", "Ferreira", "Quinn", "Adeyemi", "Horvath", "Bianchi", "Nair", "Jensen", "Alvarez", "Kaur", "Dubois",
+)
+
+
+def _name_parts(name: str) -> tuple[str, str]:
+    bits = str(name or "").lower().split()
+    return (bits[0] if bits else "", bits[-1] if len(bits) > 1 else "")
+
+
+def name_on_page(name: str, read: dict[str, Any] | None) -> bool:
+    """True when a persona name was lifted from the page (a testimonial author, a showcase site)."""
+    bits = [b for b in re.findall(r"[a-z]+", str(name or "").lower()) if len(b) > 1]
+    if len(bits) < 2 or not read:
+        return False
+    blob = " ".join(
+        [str(read.get("text") or ""), str(read.get("full_text") or "")]
+        + [f"{label} {href}" for label, href in (read.get("links") or [])]
+    ).lower()
+    return (" ".join(bits) in blob) or ("".join(bits) in blob.replace(" ", ""))
+
+
+def unique_persona_names(
+    personas: list[dict[str, Any]], *, seed: str = "", keep_first: int = 0, read: dict[str, Any] | None = None
+) -> list[dict[str, Any]]:
+    """Give every persona a distinct first and last name.
+
+    The first ``keep_first`` personas keep their names (the early buyer is
+    already running under its name). A later persona that repeats a first or
+    last name already used, or whose name was lifted from the page, gets a
+    replacement picked deterministically from a fixed pool (seeded by
+    ``seed``) that avoids every name already in the plan.
+    """
+    import zlib
+
+    out = [dict(p) for p in personas]
+    used_first: set[str] = set()
+    used_last: set[str] = set()
+    for p in out:
+        first, last = _name_parts(p.get("name") or "")
+        used_first.add(first)
+        used_last.add(last)
+    taken_first: set[str] = set()
+    taken_last: set[str] = set()
+    start = zlib.crc32(seed.encode()) if seed else 0
+    for i, p in enumerate(out):
+        first, last = _name_parts(p.get("name") or "")
+        clash = (first in taken_first) or (last and last in taken_last)
+        if i >= keep_first and (clash or not first or name_on_page(p.get("name") or "", read)):
+            k = start + i * 7
+            nf = next(f for j in range(len(_FIRST_NAMES)) if (f := _FIRST_NAMES[(k + j) % len(_FIRST_NAMES)]).lower() not in used_first | taken_first)
+            nl = next(n for j in range(len(_LAST_NAMES)) if (n := _LAST_NAMES[(k * 3 + j) % len(_LAST_NAMES)]).lower() not in used_last | taken_last)
+            p["name"] = f"{nf} {nl}"
+            first, last = nf.lower(), nl.lower()
+        taken_first.add(first)
+        if last:
+            taken_last.add(last)
+    return out
 
 
 def compare_tasks(data: dict[str, Any], own: str, comps: list[str], names: dict[str, str]) -> list[dict[str, Any]]:
@@ -458,7 +530,7 @@ async def _split_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, A
             landed_f,
         )
         landed = list(landed)
-        personas = compare_personas(personas_raw if isinstance(personas_raw, dict) else {}, own, raw_comps, names)
+        personas = compare_personas(personas_raw if isinstance(personas_raw, dict) else {}, own, raw_comps, names, read)
         tasks = compare_tasks(tasks_raw if isinstance(tasks_raw, dict) else {}, own, raw_comps, names)
         if len(tasks) < 2 or len(personas) < 2:
             return None
@@ -520,7 +592,7 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
 
         landed = list(await asyncio.gather(*(_landing_url(c) for c in raw_comps)))
         # Tags were written against the planner's URLs; map them to where the rival lands.
-        personas = compare_personas(data, own, raw_comps, names)
+        personas = compare_personas(data, own, raw_comps, names, read)
         tasks = compare_tasks(data, own, raw_comps, names)
         remap = dict(zip(raw_comps, landed))
         for row in personas + tasks:
