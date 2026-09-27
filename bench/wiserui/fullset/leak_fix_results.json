@@ -1,0 +1,1088 @@
+{
+ "104": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "still_leaked",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": true,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the magenta/pink rectangle outline drawn around the contact e-mail and 'Jessica Rayberg' signature text"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "106": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the green 'VARIATION' label with a trophy icon at the top-left",
+     "the green result banner with a trophy and white text ('Variation ... in reve... averag...') at the bottom-right"
+    ]
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the dark purple 'CONTROL' label at the top-left"
+    ]
+   }
+  }
+ },
+ "107": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "still_leaked",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": true,
+     "target_left": true,
+     "damaged": false
+    },
+    "items": [
+     "the green 'VARIATION' label with a trophy icon at the top-left",
+     "the green result banner with a trophy and white text ('Variatio... increas...') at the bottom-right"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "109": {
+  "class": "damaged",
+  "class_first_attempt": "damaged",
+  "class_same_check_only": "damaged",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m3",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": true
+    },
+    "items": [
+     "the red rectangle outline drawn around the 'Date of birth' field"
+    ]
+   }
+  }
+ },
+ "110": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the red rectangle outline drawn around the input fields in the right-hand form panel"
+    ]
+   }
+  }
+ },
+ "111": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "still_leaked",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": true,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the red rectangle outline drawn around the 'Date of birth' field"
+    ]
+   }
+  }
+ },
+ "119": {
+  "class": "fixed",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the magenta rectangle outline around the row of payment icons",
+     "the thin magenta arrow line coming down from the top to that box"
+    ]
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 2,
+    "best_merge": "m4",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the green 'VARIATION' label with a trophy icon at the bottom-left",
+     "the thin red/pink annotation line at the right edge"
+    ]
+   }
+  }
+ },
+ "124": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "still_leaked",
+  "native_note": "'BEST VALUE' ribbon (VIP) / 'Best value' starburst (Extreme): Paltalk pricing UI",
+  "sides": {
+   "win": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": true,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": true,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "137": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m3",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the white caption text across the very top ('Arlington Plastics Machinery's original inventory page'), restoring the plain gray page background there"
+    ]
+   }
+  }
+ },
+ "152": {
+  "class": "damaged",
+  "class_first_attempt": "damaged",
+  "class_same_check_only": "damaged",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": true
+    },
+    "items": [
+     "every magenta/pink annotation rectangle (around the thumbnails, the buttons and the description text)",
+     "the magenta arrows pointing at them from the right"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "164": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": true,
+     "damaged": false
+    },
+    "items": [
+     "the red rectangle outlines around the award badges, around the row of three check-mark benefits, and around '1 mins only' at the bottom-left",
+     "the red label tags 'Award', 'USP' and 'Steps Time' (keep the award badges and the benefit text themselves)"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "166": {
+  "class": "damaged",
+  "class_first_attempt": "damaged",
+  "class_same_check_only": "damaged",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": true
+    },
+    "items": [
+     "the magenta rectangle outline around the intro paragraph with the PayPal logo",
+     "the thin magenta arrow line coming down from the top to that box"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "168": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the red rectangle outline around the search suggestions panel ('TOP SEARCHES' / 'TOP CATEGORIES')",
+     "the small red marker at the right edge of that rectangle"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "176": {
+  "class": "damaged",
+  "class_first_attempt": "damaged",
+  "class_same_check_only": "damaged",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": true
+    },
+    "items": [
+     "the red rectangle outline around the row of product images",
+     "the red arrow at the left pointing at it"
+    ]
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 2,
+    "best_merge": "m3",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "every red rectangle outline (around the right-hand column block and around the product-image row near the bottom)"
+    ]
+   }
+  }
+ },
+ "202": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the green result box with a trophy and text 'The variation won with increase in the lead conversion rate by 16%' at the bottom, filling that area with the plain background"
+    ]
+   }
+  }
+ },
+ "212": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m3",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the red rectangle outline around the 'GET YOUR WHITE CARD ONLINE $50 / START NOW' banner",
+     "the red rectangle outline around the row of three round icons"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "215": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the magenta rectangle outline around the product header block",
+     "the small magenta arrow at the top"
+    ]
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the green result banner with a trophy and text 'The variation won with an improvement of 13.4% in purchases', filling that area with the plain background"
+    ]
+   }
+  }
+ },
+ "221": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 2,
+    "best_merge": "m3",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the orange 'VARIATION 1' label tab cut off at the top-left",
+     "the thin colored frame/border line (orange) along the image edges that the publisher drew around the screenshot"
+    ]
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": true,
+     "damaged": false
+    },
+    "items": [
+     "the blue 'CONTROL' label tab cut off at the top-left",
+     "the thin colored frame/border line (blue) along the image edges that the publisher drew around the screenshot"
+    ]
+   }
+  }
+ },
+ "226": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the pink rectangle outline around the 'More Like This' product row",
+     "the small pink arrow at its right"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "243": {
+  "class": "damaged",
+  "class_first_attempt": "damaged",
+  "class_same_check_only": "damaged",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": true,
+     "target_left": true,
+     "damaged": true
+    },
+    "items": [
+     "the red arrows and red lines drawn over the page (pointing at text and the price, and the diagonal lines at the bottom)"
+    ]
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 2,
+    "best_merge": "m3",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the red arrows and red lines drawn over the page (pointing at text and the price, and the diagonal lines at the bottom)"
+    ]
+   }
+  }
+ },
+ "254": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "still_leaked",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m3",
+    "verdict": {
+     "leak_check": true,
+     "target_left": true,
+     "damaged": false
+    },
+    "items": [
+     "the magenta arrow and the black annotation text 'Added this' at the right",
+     "the orange 'VARIATION' label tab cut off at the top-left",
+     "the thin colored frame/border line (orange) along the image edges that the publisher drew around the screenshot"
+    ]
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": true,
+     "target_left": true,
+     "damaged": false
+    },
+    "items": [
+     "the blue 'CONTROL' label tab cut off at the top-left",
+     "the thin colored frame/border line (blue) along the image edges that the publisher drew around the screenshot",
+     "the orange frame fragment of another panel at the far right edge"
+    ]
+   }
+  }
+ },
+ "260": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": true,
+     "damaged": false
+    },
+    "items": [
+     "the red rectangle outline around the e-mail signup form"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "261": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "still_leaked",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": true,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the red rectangle outline around the pricing table",
+     "the small 'VWO' / 'Campaign 2' preview widget at the bottom-right (keep the plan's own 'MOST POPULAR' ribbon)"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "273": {
+  "class": "fixed",
+  "class_first_attempt": "damaged",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 2,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the partial circular letter badge (a quarter/half circle, blue) cut off at the very top-left corner, which is an A/B label from the article that published the test, not part of the app"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "274": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "still_leaked",
+  "native_note": "'Cheaper' / 'New' ride tags: Uber app UI",
+  "sides": {
+   "win": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": true,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "277": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "still_leaked",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": true,
+     "target_left": true,
+     "damaged": false
+    },
+    "items": [
+     "the yellow arrows and yellow highlight boxes drawn on the canvas",
+     "the '+32%' result text at the bottom-right"
+    ]
+   }
+  }
+ },
+ "278": {
+  "class": "still_leaked",
+  "class_first_attempt": "still_leaked",
+  "class_same_check_only": "still_leaked",
+  "native_note": "'MOST POPULAR' plan header / 'GitHub is now free for teams' banner: GitHub pricing UI",
+  "sides": {
+   "win": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": true,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": true,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "279": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the partial circular letter badge (a quarter/half circle, blue) cut off at the very top-left corner, which is an A/B label from the article that published the test, not part of the app"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "281": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": "'-50%' corner on the 12-month plan: Runtastic pricing UI",
+  "sides": {
+   "win": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "282": {
+  "class": "fixed",
+  "class_first_attempt": "fixed",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the partial circular letter badge (a quarter/half circle, blue) cut off at the very top-left corner, which is an A/B label from the article that published the test, not part of the app"
+    ]
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the partial circular letter badge (a quarter/half circle, gray) cut off at the very top-left corner, which is an A/B label from the article that published the test, not part of the app"
+    ]
+   }
+  }
+ },
+ "284": {
+  "class": "fixed",
+  "class_first_attempt": "damaged",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 2,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the partial circular letter badge (a quarter/half circle, blue, letter 'B' partly visible) cut off at the very top-left corner, which is an A/B label from the article that published the test, not part of the app"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ },
+ "295": {
+  "class": "fixed",
+  "class_first_attempt": "damaged",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 1,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the partial circular letter badge (a quarter/half circle, blue, letter 'C') cut off at the very top-left corner, which is an A/B label from the article that published the test, not part of the app"
+    ]
+   },
+   "lose": {
+    "edited": true,
+    "best_attempt": 2,
+    "best_merge": "m3",
+    "verdict": {
+     "leak_check": false,
+     "target_left": false,
+     "damaged": false
+    },
+    "items": [
+     "the partial circular letter badge (a quarter/half circle, gray, letter 'A') cut off at the very top-left corner, which is an A/B label from the article that published the test, not part of the app"
+    ]
+   }
+  }
+ },
+ "297": {
+  "class": "still_leaked",
+  "class_first_attempt": "damaged",
+  "class_same_check_only": "fixed",
+  "native_note": null,
+  "sides": {
+   "win": {
+    "edited": true,
+    "best_attempt": 2,
+    "best_merge": "m2",
+    "verdict": {
+     "leak_check": false,
+     "target_left": true,
+     "damaged": false
+    },
+    "items": [
+     "the partial circular letter badge (a quarter/half circle, blue) cut off at the very top-left corner, which is an A/B label from the article that published the test, not part of the app"
+    ]
+   },
+   "lose": {
+    "edited": false,
+    "best_attempt": null,
+    "best_merge": null,
+    "verdict": {
+     "leak_check": false,
+     "target_left": null,
+     "damaged": null
+    },
+    "items": null
+   }
+  }
+ }
+}
