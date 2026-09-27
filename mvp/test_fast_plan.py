@@ -115,9 +115,9 @@ class DirectCompetitorTests(unittest.TestCase):
     def test_own_site_and_vendor_pages_are_not_rivals(self):
         from mvp.fast_plan import pick_competitors
 
-        # Rival URLs are cut to the homepage, so a vendor's product page is the vendor.
-        got = pick_competitors(["https://figma.com/", "https://www.microsoft.com/en-us/microsoft-teams/", "https://zoom.us/"], "figma.com")
-        self.assertEqual(got, ["https://zoom.us/"])
+        # A suite vendor's bare homepage is skipped; its product page keeps its path and is a candidate.
+        got = pick_competitors(["https://figma.com/", "https://www.microsoft.com/", "https://aws.amazon.com/bedrock/?x=1", "https://zoom.us/"], "figma.com")
+        self.assertEqual(got, ["https://aws.amazon.com/bedrock/", "https://zoom.us/"])
 
 
 def test_connect_data_source_core_task_swapped_for_app_task():

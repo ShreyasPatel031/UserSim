@@ -183,7 +183,12 @@ def _clean_url(raw: str) -> str:
     parts = urlsplit(text)
     if not parts.hostname or "." not in parts.hostname:
         return ""
-    return f"https://{parts.hostname}/"
+    # Keep the product path: cutting aws.amazon.com/bedrock/ or azure.microsoft.com/.../openai-service to the
+    # vendor homepage sent agents to a whole suite (aistudio 4571b633). Query and fragment are dropped.
+    path = parts.path.strip("/")
+    if path and "." not in path.rsplit("/", 1)[-1]:
+        path += "/"
+    return f"https://{parts.hostname}/{path}"
 
 
 def page_read_from_html(html: str) -> dict[str, Any]:
@@ -559,13 +564,9 @@ def pick_competitors(items: list[Any], own: str, limit: int = 2, *, allow_assist
         if host in _SUITE_HOSTS and parts.path.strip("/") == "":
             continue
         if not allow_assistants and host in _ASSISTANT_HOSTS:
-            # A chatbot vendor's product page (anthropic.com/api) is a real rival for a model platform and
-            # keeps its path; the bare homepage (the chatbot) is still skipped.
-            raw_path = urlsplit(str(item) if "://" in str(item) else "https://" + str(item)).path.strip("/")
-            if not raw_path or host in {"chatgpt.com", "chat.openai.com", "claude.ai", "gemini.google.com"}:
-                continue
-            clean = f"https://{parts.hostname}/{raw_path}/"
-            if clean in comps:
+            # A chatbot vendor's product page (anthropic.com/api) is a real rival for a model platform;
+            # the chatbot itself (a bare homepage or a chat app host) is still skipped.
+            if not parts.path.strip("/") or host in {"chatgpt.com", "chat.openai.com", "claude.ai", "gemini.google.com"}:
                 continue
         comps.append(clean)
         if len(comps) == limit:

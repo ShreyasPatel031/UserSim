@@ -150,16 +150,21 @@ async def _landing_url(url: str) -> str:
     try:
         async with httpx.AsyncClient(timeout=3.0, follow_redirects=True, headers={"user-agent": "Mozilla/5.0"}) as client:
             resp = await client.get(url)
-        final = str(resp.url)
+            final = str(resp.url)
+            # A "Redirecting..." page (drift.com) moves with a meta refresh that httpx does not follow.
+            m = re.search(r'http-equiv=["\']?refresh["\']?[^>]*url=([^"\'>\s]+)', resp.text[:4000], re.I)
+            if m and m.group(1).startswith("http"):
+                final = str((await client.get(m.group(1))).url)
     except Exception:
         return url
     a = (urlsplit(url).hostname or "").removeprefix("www.")
     b = (urlsplit(final).hostname or "").removeprefix("www.")
     if not b or a == b:
         return url
-    # Only follow a redirect to a different host, and keep the path the user typed.
-    parts = urlsplit(url)
-    return f"https://{urlsplit(final).hostname}{parts.path or '/'}"
+    # Follow a redirect to a different host to the page it lands on: keeping the typed path on the new
+    # host sent anthropic.com/api to claude.com/api (a 404) instead of claude.com/platform/api.
+    parts = urlsplit(final)
+    return f"https://{parts.hostname}{parts.path or '/'}"
 
 
 def _study_list_key(url: str | None, study_id: str | None = None) -> str:
