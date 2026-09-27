@@ -93,3 +93,91 @@ async def reuse(page: Any, key: str, site: str) -> dict[str, Any] | None:
         "elapsed_s": round(time.time() - started, 1),
         "final_url": str(getattr(page, "url", "") or ""),
     }
+
+
+# ---------------------------------------------------------------- one shared account
+
+_LEADING: dict[tuple[str, str], bool] = {}
+_DONE_EVENTS: dict[tuple[str, str], Any] = {}
+_FRESH: dict[tuple[str, str], int] = {}
+
+
+def shared_account_hosts() -> set[str]:
+    """Sites where every agent of a study uses ONE test account.
+
+    MVP_SIGNUP_SHARED_ACCOUNT_HOSTS, comma separated, default "zo.computer".
+    Zo treats every alias of the test Gmail inbox (plus tags, dots,
+    googlemail.com) as the same account and sends about 10 sign-in mails before
+    going quiet, so 18 parallel signups cannot each get an account. Set it to
+    "" once separate inboxes exist (e.g. a catch-all domain) to give each agent
+    its own account again.
+    """
+    raw = os.environ.get("MVP_SIGNUP_SHARED_ACCOUNT_HOSTS")
+    if raw is None:
+        raw = "zo.computer"
+    return {h.strip().lower().removeprefix("www.") for h in raw.split(",") if h.strip()}
+
+
+def shares_account(site: str) -> bool:
+    return enabled() and (site or "").lower().removeprefix("www.") in shared_account_hosts()
+
+
+def _max_fresh() -> int:
+    try:
+        return max(1, int(os.environ.get("MVP_SIGNUP_SHARED_MAX_FRESH") or 3))
+    except ValueError:
+        return 3
+
+
+async def signup_or_share(
+    page: Any,
+    key: str,
+    site: str,
+    run_signup: Any,
+    *,
+    wait_s: float,
+    log: Any = print,
+) -> dict[str, Any]:
+    """One agent signs up (gets the magic link); the rest wait and reuse its session.
+
+    ``run_signup`` is an async callable returning a signup result dict. If the
+    leading signup fails, the next waiting agent tries its own, up to
+    MVP_SIGNUP_SHARED_MAX_FRESH fresh signups per study and site. Results that
+    came from the shared session carry ``shared_account=True``.
+    """
+    import asyncio
+
+    k = (key, site)
+    started = time.time()
+    while True:
+        if has(key, site):
+            shared = await reuse(page, key, site)
+            if shared and shared.get("ok"):
+                log(f"[signup] {site}: signed in with the study's shared test account ({shared.get('elapsed_s')}s)")
+                return {**shared, "reason": "shared_account", "shared_account": True}
+            log(f"[signup] {site}: shared account reuse failed: {(shared or {}).get('reason')}")
+        if not _LEADING.get(k):
+            if _FRESH.get(k, 0) >= _max_fresh():
+                return {"ok": False, "reason": f"shared account signup failed after {_FRESH[k]} tries"}
+            _LEADING[k] = True
+            _FRESH[k] = _FRESH.get(k, 0) + 1
+            event = _DONE_EVENTS[k] = asyncio.Event()
+            log(f"[signup] {site}: fresh signup #{_FRESH[k]} for the study's shared test account")
+            result: dict[str, Any] = {"ok": False, "reason": "signup crashed"}
+            try:
+                result = dict(await run_signup() or {})
+                if result.get("ok"):
+                    saved = await save_from_page(page, key, site, str(result.get("email") or ""))
+                    log(f"[signup] {site}: shared test account {'saved' if saved else 'NOT saved'}")
+            finally:
+                _LEADING[k] = False
+                event.set()
+            result["shared_account_leader"] = True
+            return result
+        left = wait_s - (time.time() - started)
+        if left <= 1:
+            return {"ok": False, "reason": "timeout waiting for the shared account signup"}
+        try:
+            await asyncio.wait_for(_DONE_EVENTS[k].wait(), timeout=left)
+        except asyncio.TimeoutError:
+            return {"ok": False, "reason": "timeout waiting for the shared account signup"}

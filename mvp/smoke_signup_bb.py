@@ -56,10 +56,20 @@ async def one(url: str, idx: int, timeout_s: float, out: Path, study_id: str) ->
                 page = ctx.pages[0] if ctx.pages else await ctx.new_page()
                 await page.set_viewport_size({"width": 1440, "height": 900})
                 await page.goto(url, wait_until="domcontentloaded", timeout=45000)
-                waited = await _stagger_signup(site)
-                r = await signup_in_session(
-                    page, url, PERSONAS[idx % len(PERSONAS)], signup_url=url, timeout_s=timeout_s
-                )
+                from mvp import signup_share
+
+                async def _fresh() -> dict[str, Any]:
+                    return await signup_in_session(
+                        page, url, PERSONAS[idx % len(PERSONAS)], signup_url=url, timeout_s=timeout_s
+                    )
+
+                if signup_share.shares_account(site):
+                    # Same path as a study: one signup, the rest reuse its session.
+                    waited = await _stagger_signup("")
+                    r = await signup_share.signup_or_share(page, study_id, site, _fresh, wait_s=timeout_s + 90)
+                else:
+                    waited = await _stagger_signup(site)
+                    r = await _fresh()
                 res.update(
                     ok=r.get("ok"), reason=r.get("reason"), email=r.get("email"),
                     elapsed_s=r.get("elapsed_s"), final_url=r.get("final_url"),

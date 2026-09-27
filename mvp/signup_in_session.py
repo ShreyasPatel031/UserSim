@@ -296,6 +296,13 @@ _SKIP_NAME = re.compile(
 )
 
 
+_CODE_REJECTED = re.compile(
+    r"(code|otp|passcode)[^.\n]{0,40}\b(invalid|expired|incorrect|wrong)\b|"
+    r"\b(invalid|expired|incorrect|wrong)\b[^.\n]{0,30}\b(code|otp|passcode)\b",
+    re.I,
+)
+
+
 def survey_skip_control(snap: dict[str, Any]) -> dict[str, Any] | None:
     """The Skip control of an onboarding survey, or None.
 
@@ -637,8 +644,10 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
         except Exception:
             pass
     name = str((el or {}).get("name") or "")[:40]
-    if kind in {"click", "check"} and el is not None and el.get("role") in {"button", "link"} and _OAUTH.search(name) and "email" not in name.lower():
-        return f"refused oauth {name}"
+    if el is not None and _OAUTH.search(str(el.get("name") or "")) and "email" not in str(el.get("name") or "").lower():
+        # OAuth controls are hidden from the model, which then guessed their
+        # number for a missing field (zapier: "fill [5]" opened Google sign-in).
+        return f"{kind} [{idx}] missing (refused oauth {name})"
     if kind == "fill":
         if el.get("maxlength") == 1:
             # split OTP boxes: type the whole code starting at the first box
@@ -893,6 +902,8 @@ async def _capsolver_direct(page: Any, spend: dict[str, Any], left_s: float) -> 
         # ("need_solver_api ... sitekey=unknown"); the anchor iframe URL has it.
         info = sitekey_from_frames([str(getattr(f, "url", "") or "") for f in getattr(page, "frames", []) or []])
     if not info or not info.get("sitekey"):
+        frames = [str(getattr(f, "url", "") or "")[:90] for f in getattr(page, "frames", []) or []]
+        print(f"[signup] {spend.get('site')}: no captcha sitekey found; frames={[u for u in frames if 'captcha' in u or 'challenge' in u]}", flush=True)
         return None
     ctype = str(info.get("type") or "recaptcha")
     token = await asyncio.wait_for(
@@ -1229,6 +1240,14 @@ async def signup_in_session(
             sig = _page_sig(snap)
             same = same + 1 if sig == last_sig else 0
             last_sig = sig
+            if ident.get("code") and _CODE_REJECTED.search(str(snap.get("body") or "")[:3000]):
+                # n8n showed its code step again after the trial form and rejected
+                # the code already used; retyping it looped until the timeout.
+                steps.append(f"  emailed code {ident['code'][:2]}.... was rejected; asking for a new one")
+                ident.pop("code", None)
+                note = ("The code already entered was rejected (invalid or expired). Click the resend / "
+                        "send a new code control if there is one, then status need_email to wait for the new "
+                        "email. Do not type the old code again.")
             if (email_submitted or ident.get("code")) and sig not in survey_skipped:
                 skip_el = survey_skip_control(snap)
                 if skip_el is not None:
@@ -1562,7 +1581,7 @@ async def signup_in_session(
                     email_submitted = True
                 history.append(done)
                 steps.append("  " + done)
-                if str(act.get("do")) == "fill" and done.endswith("missing"):
+                if str(act.get("do")) == "fill" and (done.endswith("missing") or "missing (refused oauth" in done):
                     # zapier.com/sign-up has an off-screen tabindex=-1 "Password *"
                     # input (a bot trap): it is not in the list, the model kept
                     # asking for it and never submitted. Submit what is visible.

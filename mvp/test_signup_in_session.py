@@ -325,3 +325,54 @@ class SitekeyFromFrames(unittest.TestCase):
         ])
         self.assertEqual(got, {"sitekey": "6LdABC123", "type": "recaptcha"})
         self.assertIsNone(sitekey_from_frames(["https://www.google.com/recaptcha/api2/anchor?k=x&size=invisible"]))
+
+
+class SharedAccount(unittest.TestCase):
+    def test_one_signup_rest_reuse(self) -> None:
+        import asyncio
+        from unittest import mock
+
+        from mvp import signup_share as ss
+
+        calls = {"n": 0}
+
+        async def fake_save(page, key, site, email=""):
+            ss.remember(key, site, [{"name": "c", "domain": ".zo.computer"}], "https://x.zo.computer/", email)
+            return True
+
+        async def fake_reuse(page, key, site):
+            return {"ok": True, "reason": "shared_session", "email": "a@b", "elapsed_s": 1.0}
+
+        async def signup():
+            calls["n"] += 1
+            await asyncio.sleep(0.05)
+            return {"ok": True, "reason": "signed_up", "email": "a@b"}
+
+        async def main():
+            with mock.patch.object(ss, "save_from_page", fake_save), mock.patch.object(ss, "reuse", fake_reuse):
+                return await asyncio.gather(*[
+                    ss.signup_or_share(None, "study-x", "zo.computer", signup, wait_s=5, log=lambda m: None)
+                    for _ in range(5)
+                ])
+
+        res = asyncio.run(main())
+        self.assertEqual(calls["n"], 1)
+        self.assertTrue(all(r["ok"] for r in res))
+        self.assertEqual(sum(1 for r in res if r.get("shared_account")), 4)
+        self.assertEqual(sum(1 for r in res if r.get("shared_account_leader")), 1)
+
+    def test_hosts_setting_and_note(self) -> None:
+        import os
+        from unittest import mock
+
+        from mvp.comparison import shared_account_note
+        from mvp.signup_share import shares_account
+
+        self.assertTrue(shares_account("www.zo.computer"))
+        with mock.patch.dict(os.environ, {"MVP_SIGNUP_SHARED_ACCOUNT_HOSTS": ""}):
+            self.assertFalse(shares_account("zo.computer"))
+        study = {"product_name": "Zo Computer", "agent_results": [
+            {"site_key": "product", "signup": {"ok": True, "reason": "signed_up", "shared_account": True}},
+            {"site_key": "product", "signup": {"ok": True, "reason": "shared_account", "shared_account": True}},
+        ]}
+        self.assertIn("Zo Computer agents shared one test account", shared_account_note(study))

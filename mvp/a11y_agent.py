@@ -3672,7 +3672,12 @@ async def _signup_then_resume(
             gap_site = _gap_site(url)
         except Exception:  # noqa: BLE001
             gap_site = ""
-        waited = await _stagger_signup(gap_site)
+        from mvp import signup_share as _share
+
+        # One shared account (zo.computer): only the leading signup sends mail,
+        # so the per-site spacing would just queue the waiting agents.
+        shared_host = bool(share_key) and not competitor and _share.shares_account(gap_site)
+        waited = await _stagger_signup("" if shared_host else gap_site)
         if waited >= 1:
             print(f"[{agent_id}] signup spacing on {gap_site}: waited {waited:.1f}s", flush=True)
         remaining = (deadline - time.monotonic()) if deadline is not None else 240.0
@@ -3704,11 +3709,25 @@ async def _signup_then_resume(
                     await maybe
 
             kwargs["on_step"] = _progress
-        result = await asyncio.wait_for(
-            signup_in_session(page, url, persona, **kwargs),
-            # A captcha extends the signup's own deadline once (captcha_grace_s).
-            timeout=budget + 10 + float(kwargs.get("captcha_grace", 0.0) or 0.0),
-        )
+        limit_s = budget + 10 + float(kwargs.get("captcha_grace", 0.0) or 0.0)
+
+        async def _fresh_signup() -> dict[str, Any]:
+            try:
+                return await asyncio.wait_for(
+                    signup_in_session(page, url, persona, **kwargs),
+                    # A captcha extends the signup's own deadline once (captcha_grace_s).
+                    timeout=limit_s,
+                )
+            except Exception as exc:  # noqa: BLE001
+                return {"ok": False, "reason": repr(exc)[:160]}
+
+        if shared_host:
+            result = await _share.signup_or_share(
+                page, share_key, gap_site, _fresh_signup, wait_s=limit_s,
+                log=lambda m: print(f"[{agent_id}] {m}", flush=True),
+            )
+        else:
+            result = await _fresh_signup()
     except Exception as exc:  # noqa: BLE001
         result = {"ok": False, "reason": repr(exc)[:160]}
     result = dict(result or {}) if isinstance(result, dict) else {"ok": bool(result)}
@@ -3751,13 +3770,17 @@ async def _signup_then_resume(
     }
     if result.get("first_attempt"):
         public["first_attempt"] = str(result["first_attempt"])[:120]
+    if result.get("shared_account") or result.get("shared_account_leader"):
+        public["shared_account"] = True
     if not public["ok"] and isinstance(result.get("steps"), list):
         # The signup's own last steps (already redacted): why it stopped.
         public["steps"] = [str(x)[:200] for x in result["steps"][-15:]]
     sess["signup_status"] = "signed up" if public["ok"] else "signup failed"
     sess["signup"] = public
     row["signup"] = public
-    if public["ok"] and public["reason"] == "shared_session":
+    if public["ok"] and public["reason"] == "shared_account":
+        row["action"] = f"signed in with this study's shared test account after {public['seconds']}s"
+    elif public["ok"] and public["reason"] == "shared_session":
         row["action"] = (
             f"signed in with this study's existing account after {public['seconds']}s "
             f"(this signup's email did not arrive: {public.get('first_attempt') or 'timeout'})"

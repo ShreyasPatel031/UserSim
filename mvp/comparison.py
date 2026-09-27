@@ -348,7 +348,36 @@ def test_side_signup_failures(study: dict[str, Any]) -> tuple[list[str], int, in
     return waited, len(ok), len(rows)
 
 
+def shared_account_note(study: dict[str, Any]) -> str:
+    """Plain statement when the product's agents used one shared test account."""
+    rows = [
+        (r.get("signup") or {}) for r in (study.get("agent_results") or [])
+        if isinstance(r, dict) and r.get("site_key") == "product" and isinstance(r.get("signup"), dict)
+    ]
+    flagged = [s for s in rows if s.get("shared_account")]
+    if not flagged:
+        return ""
+    reused = sum(1 for s in flagged if s.get("ok") and s.get("reason") == "shared_account")
+    created = sum(1 for s in flagged if s.get("ok") and s.get("reason") != "shared_account")
+    name = str(study.get("product_name") or "The product")
+    return (
+        f"{name} agents shared one test account: {created} signup created it and {reused} agents signed in "
+        "with its saved session. The site treats every alias of the test inbox as the same account, so "
+        "these runs test the product after signup, not separate signups."
+    )
+
+
 def signup_summary(study: dict[str, Any]) -> dict[str, Any]:
+    out = _signup_summary_core(study)
+    note = shared_account_note(study)
+    if note:
+        out = dict(out)
+        out["shared_account"] = True
+        out["text"] = (note + " " + str(out.get("text") or "")).strip()
+    return out
+
+
+def _signup_summary_core(study: dict[str, Any]) -> dict[str, Any]:
     ids, ok, tried = test_side_signup_failures(study)
     if not ids and not ok and tried:
         # No product signup worked at all (study 390909cf: Zo sent 2 sign-in emails for 18 signups,
