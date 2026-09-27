@@ -63,6 +63,41 @@ function cmpPairCard(x, kind, comp) {
   </article>`;
 }
 
+function cmpHeadToHead(comp) {
+  // Pairwise judge: each buyer saw the product and one competitor side by side, in both orders.
+  const h = comp.head_to_head;
+  const vs = (h && h.matrix && h.matrix.product) || {};
+  if (!Object.keys(vs).length) return "";
+  const prod = cmpEsc(comp.product_label);
+  const rows = Object.entries(vs)
+    .map(([key, c]) => `<tr><td><span class="pill ${cmpCss(key)}">${cmpEsc(cmpLabel(comp, key))}</span></td>
+      <td class="num">${Number(c.wins) || 0}</td><td class="num">${Number(c.losses) || 0}</td><td class="num">${Number(c.ties) || 0}</td>
+      <td class="num">${Math.round(100 * (Number(c.p) || 0))}%</td>
+      <td class="num">${(Number(c.mean_diff) || 0) >= 0 ? "+" : ""}${(Number(c.mean_diff) || 0).toFixed(1)} ± ${(Number(c.se) || 0).toFixed(1)}</td></tr>`)
+    .join("");
+  const buyers = (comp.by_persona || [])
+    .filter((p) => p.head_to_head && Object.keys(p.head_to_head).length)
+    .map((p) => {
+      const lines = Object.entries(p.head_to_head)
+        .map(([key, x]) => {
+          const who = x.winner ? `<span class="pill ${cmpCss(x.winner)}">${cmpEsc(cmpLabel(comp, x.winner))}</span>` : `<span class="pill mixed">tie</span>`;
+          return `<div class="small">vs ${cmpEsc(cmpLabel(comp, key))}: ${who} <span class="muted">${Math.round(100 * (Number(x.p_product) || 0))}% for ${prod}</span>
+            ${x.why ? `<div class="muted">“${cmpEsc(x.why)}”</div>` : ""}
+            ${(x.cites || []).slice(0, 2).map((c, i) => cmpCite(c, 0, `evidence ${i + 1}`)).join(" ")}</div>`;
+        })
+        .join("");
+      return `<li><strong>${cmpEsc(p.name)}</strong> <span class="muted">${cmpEsc(p.role)}</span>${lines}</li>`;
+    })
+    .join("");
+  return `<div class="chart-card cmp-h2h">
+      <h3>Head to head</h3>
+      <p class="sub">Each buyer compared ${prod} with each competitor side by side (opening page, last pages and steps, product names hidden, shown in both orders) and rated both 1–10. p is the chance ${prod} is preferred.</p>
+      ${h.summary ? `<p class="cmp-summary">${cmpEsc(h.summary)}</p>` : ""}
+      <div style="overflow-x:auto"><table class="cmp-grid"><thead><tr><th>Against</th><th class="num">${prod} wins</th><th class="num">Competitor wins</th><th class="num">Ties</th><th class="num">p(${prod})</th><th class="num">Rating gap</th></tr></thead><tbody>${rows}</tbody></table></div>
+      ${buyers ? `<details class="pickers"><summary>Each buyer's head to head</summary><ul>${buyers}</ul></details>` : ""}
+    </div>`;
+}
+
 function renderCompareHtml(comp) {
   const sites = comp.sites || [];
   const counts = comp.pick_counts || {};
@@ -167,6 +202,7 @@ function renderCompareHtml(comp) {
       ${comp.task_summary ? `<p class="cmp-summary">${cmpEsc(comp.task_summary)}</p>` : ""}
       <div style="overflow-x:auto"><table class="cmp-grid"><thead><tr><th>Task</th>${siteHead}</tr></thead><tbody>${taskRows}</tbody></table></div>
     </div>
+    ${cmpHeadToHead(comp)}
     <div class="chart-card">
       <h3>First impression (about 30 seconds on the website)</h3>
       <div class="fi-grid">${impressions || `<p class="empty-claim">Not recorded.</p>`}</div>

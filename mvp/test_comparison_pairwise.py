@@ -263,3 +263,44 @@ def test_pair_persona_comes_from_product_personas_and_stays_blind():
     assert got == {"name": "Ana Li", "role": "CS lead", "bio": "Runs a team.", "goal": "Find risk; Score health"}
     assert pair_persona(p)["goal"] == "Decide which product fits"
     assert pair_persona({"name": "Bo", "role": "VP"})["role"] == "VP"
+
+
+def _render(comp):
+    import shutil
+    import subprocess
+    from pathlib import Path
+
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("node not installed")
+    js = (Path(__file__).resolve().parent / "static" / "report_compare.js").read_text()
+    prelude = ("function escapeHtml(s){return String(s==null?'':s).replace(/[&<>\"']/g,c=>'&#'+c.charCodeAt(0)+';');}"
+               "function runs(){return [];}")
+    src = prelude + js + "\nprocess.stdout.write(renderCompareHtml(JSON.parse(require('fs').readFileSync(0,'utf8'))));"
+    out = subprocess.run([node, "-e", src], input=json.dumps(comp), capture_output=True, text=True, timeout=30)
+    assert out.returncode == 0, out.stderr
+    return out.stdout
+
+
+def test_report_renders_head_to_head_after_the_existing_sections(study, text_llm):
+    order = ["Which product would each buyer pick?", "Where Kolanut wins", "Where Kolanut loses", "Buyers × products",
+             "Tasks × products"]
+    plain = _render(comparison.build_comparison(study))
+    assert [plain.index(x) for x in order] == sorted(plain.index(x) for x in order)
+    assert "<h3>Head to head</h3>" not in plain
+
+    asyncio.run(comparison.apply_comparison_llm(study, pair_call=pair_model(_prefers({"Ana Li": "product", "Bo Kim": "competitor_2"}))))
+    html = _render(comparison.build_comparison(study))
+    idx = [html.index(x) for x in order + ["<h3>Head to head</h3>", "First impression"]]
+    assert idx == sorted(idx)
+    assert "Kolanut beats Alpha for 1 of 2 buyers" in html and "Each buyer's head to head" in html
+
+
+def test_api_attaches_head_to_head_to_the_comparison(study, text_llm):
+    from mvp.server import _with_report_insights
+
+    asyncio.run(comparison.apply_comparison_llm(study, pair_call=pair_model(_prefers({"Ana Li": "product", "Bo Kim": "product"}))))
+    out = _with_report_insights({**study, "status": "complete"})
+    comp = json.loads(json.dumps(out))["summary"]["comparison"]
+    assert comp["head_to_head"]["matrix"]["product"]["competitor_1"]["wins"] == 2
+    assert comp["pick_counts"]["product"] == 2
