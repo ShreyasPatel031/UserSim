@@ -168,7 +168,10 @@ def _merged_runs(study: Any) -> tuple[list[dict[str, Any]], dict[str, dict[str, 
     return [r for r in (results or []) if isinstance(r, dict)], rows
 
 
-_INFRA_STOPS = {"session ended", "study budget", "browser lost", "no browser"}
+# "model returned no action": our step model timed out or answered with nothing usable 3 times
+# (study 390909cf: 13 Zo runs, 6 of them the pricing task stuck on the homepage after 1 step,
+# scored 0-1 and turned into a "pricing not discoverable" fix). That is the agent, not the site.
+_INFRA_STOPS = {"session ended", "study budget", "browser lost", "no browser", "model returned no action"}
 
 
 def infra_stop(run: dict[str, Any]) -> str:
@@ -332,6 +335,7 @@ def test_side_signup_failures(study: dict[str, Any]) -> tuple[list[str], int, in
     rows = [
         r for r in (study.get("agent_results") or [])
         if isinstance(r, dict) and r.get("site_key") == "product" and isinstance(r.get("signup"), dict)
+        and ((r.get("signup") or {}).get("ok") or (r.get("signup") or {}).get("reason"))
         and str((r.get("signup") or {}).get("reason") or "") != "not_needed_public_task"
     ]
     ok = [r for r in rows if (r.get("signup") or {}).get("ok")]
@@ -952,7 +956,9 @@ async def headline_sentences(comp: dict[str, Any]) -> list[dict[str, Any]]:
         )
 
     tasks = "\n".join(
-        f"- {t['task']}: winner {t['winner_label']}, {label} rank {t['product_rank']} of {t['n_sites']} | "
+        f"- {t['task']}: winner {t['winner_label']}, "
+        + (f"{label} rank {t['product_rank']} of {t['n_sites']}" if t.get("product_rank") else f"{label} not scored (its runs were cut short by our agent)")
+        + " | "
         f"cite {ref((t.get('winner_evidence') or {}).get('agent_id', ''))}"
         for t in comp["by_task"]
     )

@@ -194,6 +194,7 @@ def test_infra_stop_runs_are_left_out():
     assert infra_stop({"stop_reason": "session ended", "num_steps": 0}).startswith("agent never ran")
     assert "cut short" in infra_stop({"stop_reason": "study budget", "num_steps": 7})
     assert infra_stop({"stop_reason": "done", "num_steps": 4}) == ""
+    assert "cut short" in infra_stop({"stop_reason": "model returned no action", "num_steps": 1})
 
 
 def test_persona_pick_is_blind_and_maps_letters_back(monkeypatch):
