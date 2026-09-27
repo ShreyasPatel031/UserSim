@@ -229,3 +229,76 @@ def test_gfocus_extras_in_every_stage_and_order_mapped():
         assert "P0 Q0, shopper: buy" in p
         first = "alpha" if key.split("|")[1] == "ab" else "beta"  # v1goal|ab, argue|ab|single|...
         assert f"Text on the first version (machine-read, may contain errors): {first} text" in p
+
+
+def test_short_pick_one_call_per_order_and_model_forwarding():
+    seen = []
+
+    async def call(key, contents, *, temperature, max_tokens, media_resolution=None, json_mode=True, model=None):
+        seen.append((key, temperature, json_mode, model, contents[1]))
+        # always prefers the screenshot b"AAA", wherever it is shown
+        return (f"Better version: {'First' if contents[1] == b'AAA' else 'Second'}\nReason: clearer CTA.", 10, 5)
+
+    flags = PairFlags(short_pick=True, temperature=0.0, max_tokens=200, model="projects/p/locations/us-central1/endpoints/1")
+    r = run(compare_pair(A, B, None, CTX, flags, call=call))
+    assert r["winner"] == "A" and r["orders"]["ab"]["pick_ab"] == "A" and r["orders"]["ba"]["pick_ab"] == "A"
+    assert sorted(k for k, *_ in seen) == ["short|ab", "short|ba"]
+    assert all(t == 0.0 and not j and m.endswith("endpoints/1") for _, t, j, m, _ in seen)
+    assert r["judgments"][0]["reasons"] == "clearer CTA." and "short_pick" in r["flags"]
+    assert pairwise.parse_v1_verdict("Better version: Second")[0] == "Second"
+
+
+def _gf(**kw):
+    return PairFlags(goal_diffs=True, strict_orders=True, argue_both=True, v1_prompts=True, use_personas=False, **kw)
+
+
+def test_samples_per_order_keys_and_counts_per_stage():
+    single = fake_gfocus(prefers=b"AAA")
+    run(compare_pair(A, B, None, CTX, _gf(), call=single[0]))
+    base_keys = {c[0] for c in single[1]}
+    expect = {  # (goal, diff, reason, evaluator) calls per pair for 3 samples per order, both orders
+        "all": (6, 6, 12, 6), "argue": (2, 2, 12, 6), "evaluator": (2, 2, 4, 6)}
+    for stage, (ng, nd, nr, ne) in expect.items():
+        call, calls = fake_gfocus(prefers=b"AAA")
+        flags = _gf(samples_per_order=3, sample_stage=stage, argue_temperature=0.0)
+        r = run(compare_pair(A, B, None, CTX, flags, call=call))
+        keys = [c[0] for c in calls]
+        assert len(keys) == len(set(keys)), stage  # every sample has its own cache key
+        assert base_keys <= set(keys), stage  # sample 0 = the single-sample run's keys (cache reuse)
+        got = (sum(k.startswith("v1goal") for k in keys), sum(k.startswith("v1diff") for k in keys),
+               sum("reason_" in k for k in keys), sum("evaluator" in k for k in keys))
+        assert got == (ng, nd, nr, ne), (stage, got)
+        assert all(c[2] == 0.0 for c in calls)
+        assert r["winner"] == "A" and all(j["votes"] == {"First": 3 if j["order"] == "ab" else 0,
+                                                        "Second": 0 if j["order"] == "ab" else 3, "failed": 0}
+                                          for j in r["judgments"])
+        assert f"vote3_{stage}" in r["flags"] and "t0" in r["flags"]
+
+
+def test_majority_vote_per_order():
+    n = {"i": 0}
+
+    async def call(key, contents, *, temperature, max_tokens, media_resolution=None, json_mode=True):
+        if key.startswith("v1goal"):
+            return "[Goal]\ng", 1, 1
+        if key.startswith("v1diff"):
+            return "[Key UI differences]\nFirst UI a, Second UI b.", 1, 1
+        if "reason_" in key:
+            return "[Evaluation]\n1. r", 1, 1
+        # sample 1 of each order dissents; the others say First
+        pick = "Second" if "|evaluator|s1" in key else "First"
+        n["i"] += 1
+        return f"[Conclusion]\nBetter version: {pick}\nKey Rationale:\n* x", 1, 1
+
+    r = run(compare_pair(A, B, None, CTX, _gf(samples_per_order=3, sample_stage="evaluator"), call=call))
+    assert n["i"] == 6
+    assert r["orders"]["ab"]["pick_ab"] == "A" and r["orders"]["ba"]["pick_ab"] == "B"  # First wins 2-1 per order
+    assert r["judgments"][0]["votes"] == {"First": 2, "Second": 1, "failed": 0}
+    one = pairwise.vote_judgment([{"pick": "First", "confidence": None, "reasons": "", "reasons_first": "",
+                                   "reasons_second": "", "evaluator": ""},
+                                  {"pick": None, "confidence": None, "reasons": "", "reasons_first": "",
+                                   "reasons_second": "", "evaluator": ""},
+                                  {"pick": "Second", "confidence": None, "reasons": "", "reasons_first": "",
+                                   "reasons_second": "", "evaluator": ""}], "ab", None)
+    assert one["ok"] and one["pick"] == "tie" and one["rating_x"] == one["rating_y"]
+    assert _gf().name() == "both+ratings+goal_diffs+strict+argue_both+v1+single"  # defaults: name unchanged

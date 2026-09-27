@@ -170,6 +170,10 @@ def gemini_generate(
     )
     last: Exception | None = None
     locs: list[str | None] = [None]
+    # A tuned model's endpoint lives in one region: call that region and never fall back elsewhere.
+    pinned = re.search(r"/locations/([a-z0-9-]+)/", model or "")
+    if pinned:
+        locs = [pinned.group(1)]
     for attempt in range(max(1, retries)):
         loc = locs[attempt % len(locs)]
         try:
@@ -185,7 +189,7 @@ def gemini_generate(
             code = getattr(exc, "code", None)
             if isinstance(code, int) and 400 <= code < 500 and code != 429:
                 break
-            if code == 429 and len(locs) == 1 and _FALLBACK_LOCATIONS:
+            if code == 429 and len(locs) == 1 and _FALLBACK_LOCATIONS and not pinned:
                 locs = [None, *_FALLBACK_LOCATIONS]  # spread retries across regions
             if attempt + 1 < retries:
                 _time.sleep(min(30, 1.5 * 2 ** (attempt // max(1, len(locs)))))

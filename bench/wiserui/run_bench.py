@@ -23,6 +23,7 @@ import asyncio
 import hashlib
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -31,7 +32,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(ROOT / "src")]
 
 from mvp.fast_plan import ab_personas  # noqa: E402
-from mvp.pairwise import GF_INPUTS, PAIRWISE_MODEL, PairEvidence, PairFlags, compare_pair, parse_json  # noqa: E402
+from mvp.pairwise import GF_INPUTS, PAIRWISE_MODEL, SAMPLE_STAGES, PairEvidence, PairFlags, compare_pair, parse_json  # noqa: E402
 
 BENCH = Path(os.environ.get("WISERUI_BENCH", "/workspace/bench/wiserui"))
 DATA = BENCH / "repo" / "WiserUI_Bench.json"
@@ -52,6 +53,9 @@ STREAMS = {
     # The same, but each of the 6 personas (same as S2-strict) argues both sides and evaluates as that visitor.
     "gfocus_personas": PairFlags(both_orders=True, goal_diffs=True, strict_orders=True, argue_both=True,
                                  v1_prompts=True, use_personas=True),
+    # One call per order: "Better version: First/Second" + 1-2 sentence reason, temperature 0, screenshots fit in
+    # 768x768 (the SFT experiment's prompt; --model picks the base model or a tuned endpoint).
+    "shortpick": PairFlags(both_orders=True, short_pick=True, temperature=0.0, max_tokens=200, image_max_px=768),
 }
 
 
@@ -111,11 +115,16 @@ class Ledger:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
+def price_of(model: str) -> tuple[float, float]:
+    """List price per 1M tokens; a tuned endpoint of gemini-2.5-flash bills at the base model's price."""
+    return PRICE.get(model, PRICE["gemini-2.5-flash"])
+
+
 def make_call(ledger: Ledger, sem: asyncio.Semaphore, prefix: str):
     from mvp.pairwise import default_call
 
     async def call(key: str, contents: list, *, temperature: float, max_tokens: int, media_resolution=None,
-                   json_mode: bool = True):
+                   json_mode: bool = True, model: str | None = None):
         k = f"{prefix}|{key}"
         hit = ledger.cache.get(k)
         if hit and not hit.get("error"):
@@ -124,12 +133,13 @@ def make_call(ledger: Ledger, sem: asyncio.Semaphore, prefix: str):
             t0 = time.time()
             try:
                 text, tin, tout = await default_call(key, contents, temperature=temperature, max_tokens=max_tokens,
-                                                     media_resolution=media_resolution, json_mode=json_mode)
+                                                     media_resolution=media_resolution, json_mode=json_mode,
+                                                     model=model)
                 err = None
             except Exception as exc:  # noqa: BLE001
                 text, tin, tout, err = "", 0, 0, repr(exc)[:300]
-        pin, pout = PRICE.get(PAIRWISE_MODEL, (0.30, 2.50))
-        ledger.put({"key": k, "model": PAIRWISE_MODEL, "text": text, "tokens_in": tin, "tokens_out": tout,
+        pin, pout = price_of(model or PAIRWISE_MODEL)
+        ledger.put({"key": k, "model": model or PAIRWISE_MODEL, "text": text, "tokens_in": tin, "tokens_out": tout,
                     "cost_usd": tin / 1e6 * pin + tout / 1e6 * pout, "secs": round(time.time() - t0, 2),
                     "error": err, "ts": time.time()})
         return text, tin, tout
@@ -169,6 +179,14 @@ async def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--max-cost", type=float, default=15.0, help="stop scheduling new pairs above this spend")
     ap.add_argument("--aa", action="store_true", help="A/A check: the winner screenshot as both versions")
+    ap.add_argument("--model", default="", help="model for the short-pick stream: base name or tuned endpoint resource")
+    ap.add_argument("--argue-temperature", type=float, default=None, help="PairFlags.argue_temperature (G-FOCUS stages)")
+    ap.add_argument("--samples-per-order", type=int, default=None, help="PairFlags.samples_per_order (majority vote)")
+    ap.add_argument("--sample-stage", default=None, choices=SAMPLE_STAGES, help="PairFlags.sample_stage")
+    ap.add_argument("--seed-ledger", default="",
+                    help="before a fresh run, copy this ledger's calls for the selected pairs in at $0 (e.g. an earlier "
+                         "single-sample run whose calls are sample 0 of a vote run); new runs never share keys otherwise")
+    ap.add_argument("--seed-match", default="", help="only seed calls whose key (after the pair index) matches this regex")
     ap.add_argument("--inputs", default="", help=f"extra G-FOCUS inputs (PairFlags.gf_*), comma list of {','.join(GF_INPUTS)}")
     args = ap.parse_args()
 
@@ -180,6 +198,11 @@ async def main() -> None:
     if bad:
         raise SystemExit(f"unknown --inputs {bad}; choose from {GF_INPUTS}")
     flags = dataclasses.replace(flags, **{f"gf_{x}": True for x in extra})
+    if args.model:
+        flags = dataclasses.replace(flags, model=args.model)
+    for opt in ("argue_temperature", "samples_per_order", "sample_stage"):
+        if getattr(args, opt) is not None:
+            flags = dataclasses.replace(flags, **{opt: getattr(args, opt)})
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     data = {x["index"]: x for x in json.load(open(DATA))}
@@ -187,13 +210,24 @@ async def main() -> None:
     idxs = [int(i) for i in raw.replace("\n", ",").split(",") if i.strip()]
     idxs = [i for i in idxs if (image_dir(i) / "win.png").exists() and (image_dir(i) / "lose.png").exists()]
     a0 = load_a0_personas(Path(args.personas_from)) if args.personas_from and Path(args.personas_from).exists() else {}
+    if args.seed_ledger and not (out / "calls.jsonl").exists():
+        keep, n = {str(i) for i in idxs}, 0
+        with (out / "calls.jsonl").open("w") as f:
+            for line in Path(args.seed_ledger).open():
+                rec = json.loads(line)
+                idx, _, rest = rec["key"].partition("|")
+                if idx in keep and not rec.get("error") and (not args.seed_match or re.match(args.seed_match, rest)):
+                    f.write(json.dumps({**rec, "cost_usd": 0.0, "copied_from": args.seed_ledger}, ensure_ascii=False) + "\n")
+                    n += 1
+        print(f"[wiserui] seeded {n} calls from {args.seed_ledger} at $0", flush=True)
     ledger = Ledger(out / "calls.jsonl")
     sem = asyncio.Semaphore(args.concurrency)
     cond = f"pw_{args.stream}" + ("_aa" if args.aa else "")
-    print(f"[wiserui] {len(idxs)} pairs stream={args.stream} flags={flags} model={PAIRWISE_MODEL} "
+    print(f"[wiserui] {len(idxs)} pairs stream={args.stream} flags={flags} model={flags.model or PAIRWISE_MODEL} "
           f"a0_personas={len(a0)} prior_spend=${ledger.cost:.3f}", flush=True)
-    (out / "config.json").write_text(json.dumps({"stream": args.stream, "inputs": extra, "flags": flags.__dict__, "model": PAIRWISE_MODEL,
-                                                 "personas_from": args.personas_from, "aa": args.aa, "n": len(idxs)}, indent=1))
+    (out / "config.json").write_text(json.dumps({"stream": args.stream, "inputs": extra, "flags": flags.__dict__, "model": flags.model or PAIRWISE_MODEL,
+                                                 "personas_from": args.personas_from, "aa": args.aa, "n": len(idxs),
+                                                 "seed_ledger": args.seed_ledger, "seed_match": args.seed_match}, indent=1))
 
     results: dict[int, dict] = {}
     done = 0

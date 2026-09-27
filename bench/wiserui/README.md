@@ -53,3 +53,7 @@ per order (strict), one neutral judge, temperature 1. `--stream gfocus_personas`
 `--inputs goal,diff_list,page_text,crops,audience,change` adds extra inputs to the G-FOCUS arm (PairFlags.gf_*; FLASH_INPUTS_REPORT.md).
 `arm_compare.py` (baseline vs arms: CA, paired McNemar + bootstrap dCA, OI, $/pair) and `export_ft.py` (per-order pick +
 brief reasoning rows for a later fine-tune).
+`--argue-temperature 0` / `--samples-per-order N --sample-stage all|argue|evaluator` set the G-FOCUS judge's temperature and
+self-consistency vote (PairFlags.argue_temperature / samples_per_order / sample_stage); `--seed-ledger` (+ `--seed-match`)
+copies an earlier run's calls in at $0 (e.g. as sample 0). `noise_agree.py` measures run-to-run agreement of two runs
+(NOISE_REPORT.md: temperature 0 is the repeatable setup).

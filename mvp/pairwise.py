@@ -14,6 +14,16 @@ so ablation arms differ only in flags:
   and names the better version. Replaces the 1-10 ratings. ``v1_prompts`` also swaps steps 1-2 for the paper's
   Part 1 (goal) and Part 2 (difference localization) prompts, run per presentation order; ``use_personas=False``
   runs one neutral evaluator (the paper), otherwise each persona argues and evaluates as that visitor.
+  ``samples_per_order`` > 1 draws that many G-FOCUS judgments per judge and order and takes a majority vote of their
+  First/Second picks (self-consistency); ``sample_stage`` says where the samples branch: ``"all"`` (the whole chain:
+  goal, differences, both-side reasons, Evaluator), ``"argue"`` (one goal/difference extraction, then N x reasons +
+  Evaluator) or ``"evaluator"`` (one chain up to the reasons, then N Evaluator calls). Sample 0 uses the same call
+  keys as a single-sample run, so cached single runs are reusable as sample 0.
+- ``short_pick``: one call per presentation order that only names the better version plus one or two sentences
+  ("Better version: First/Second" / "Reason: ..."), temperature ``temperature``. This is the prompt a supervised
+  fine-tune is trained on (bench/wiserui/sft_folds.py); ``model`` names the base model or a tuned Vertex endpoint
+  (``projects/.../locations/<region>/endpoints/<id>``), and ``image_max_px`` downscales screenshots to fit that box
+  (the same bytes are used for training rows and inference).
 
 Versions are always shown under neutral labels "Version X" / "Version Y". Each persona writes its reasons first,
 then rates EACH version 1-10 on how likely it is to take the goal action. Ratings are averaged across orders per
@@ -67,6 +77,9 @@ class PairFlags:
     v1_prompts: bool = False  # steps 1-2 with the v1 Appendix E Part 1/2 prompts (per order, text output)
     use_personas: bool = True  # False: a single neutral evaluator, as in the paper
     argue_temperature: float = 1.0  # the paper ran every model at temperature 1 (Appendix F)
+    # Self-consistency for the G-FOCUS path: N judgments per judge and order, majority vote of their picks.
+    samples_per_order: int = 1
+    sample_stage: str = "all"  # where samples branch: "all" | "argue" | "evaluator" (see module docstring)
     # Extra inputs for the G-FOCUS path (argue_both). Each adds one "Additional information" block (and, for crops, extra
     # images) to EVERY G-FOCUS stage prompt, computed once per pair (order-free) and shown in each order's First/Second terms.
     gf_goal: bool = False        # stated page goal: ctx["task"] / ctx["goal"], else one text-only call from page context
@@ -75,8 +88,16 @@ class PairFlags:
     gf_crops: bool = False       # zoomed crops of the regions that differ (pixel-diff boxes, see diff_regions)
     gf_audience: bool = False    # short target-user list (the page's personas: name, role, goal)
     gf_change: bool = False      # experimenter's description of what the test changed: ctx["change"]
+    # One-call short pick (see module docstring). model=None uses PAIRWISE_MODEL.
+    short_pick: bool = False
+    model: str | None = None
+    image_max_px: int | None = None
 
     def name(self) -> str:
+        if self.short_pick:
+            return "+".join(["both" if self.both_orders else "one", "short_pick"]
+                            + ([f"px{self.image_max_px}"] if self.image_max_px else [])
+                            + ([f"model={self.model}"] if self.model else []))
         return "+".join(
             ["both" if self.both_orders else "one", "ratings"]
             + (["goal_diffs"] if self.goal_diffs else [])
@@ -85,21 +106,26 @@ class PairFlags:
             + ((["argue_both"] + (["v1"] if self.v1_prompts else []) + ([] if self.use_personas else ["single"])
                 + [f"in_{k}" for k in GF_INPUTS if getattr(self, f"gf_{k}")])
                if self.argue_both else [])
+            + (([f"t{self.argue_temperature:g}"] if self.argue_temperature != 1.0 else [])
+               + ([f"vote{self.samples_per_order}_{self.sample_stage}"] if self.samples_per_order > 1 else [])
+               if self.argue_both else [])
         )
 
 
 ORDERS = ("ab", "ba")
 GF_INPUTS = ("goal", "diff_list", "page_text", "crops", "audience", "change")
+SAMPLE_STAGES = ("all", "argue", "evaluator")
 
 
 # ----------------------------------------------------------------- model access
 
 async def default_call(key: str, contents: list, *, temperature: float, max_tokens: int,
-                       media_resolution: str | None = None, json_mode: bool = True) -> tuple[str, int, int]:
+                       media_resolution: str | None = None, json_mode: bool = True,
+                       model: str | None = None) -> tuple[str, int, int]:
     from mvp.e2e_ui_run import gemini_generate
 
     return await asyncio.to_thread(
-        gemini_generate, contents, model=PAIRWISE_MODEL, temperature=temperature, max_tokens=max_tokens,
+        gemini_generate, contents, model=model or PAIRWISE_MODEL, temperature=temperature, max_tokens=max_tokens,
         json_mode=json_mode, media_resolution=media_resolution,
     )
 
@@ -496,14 +522,16 @@ def _v1_images(first: PairEvidence, second: PairEvidence) -> list:
 
 async def v1_goal_and_diffs(first: PairEvidence, second: PairEvidence, ctx: dict[str, Any], order: str, *,
                             call: Call, temperature: float = 1.0,
-                            media_resolution: str | None = None, extra: dict[str, Any] | None = None) -> dict[str, Any]:
-    """G-FOCUS Part 1 (goal) then Part 2 (goal-conditioned key UI differences) for ONE presentation order."""
+                            media_resolution: str | None = None, extra: dict[str, Any] | None = None,
+                            tag: str = "") -> dict[str, Any]:
+    """G-FOCUS Part 1 (goal) then Part 2 (goal-conditioned key UI differences) for ONE presentation order.
+    ``tag`` is appended to the call keys (e.g. "|s1" for sample 1) so independent samples never share a cache entry."""
     head = _v1_head(ctx) + (extra or {}).get("text", "")
     imgs = [*_v1_images(first, second), *(extra or {}).get("images", [])]
-    gtext, _, _ = await call(f"v1goal|{order}", [_V1_GOAL.format(head=head), *imgs],
+    gtext, _, _ = await call(f"v1goal|{order}{tag}", [_V1_GOAL.format(head=head), *imgs],
                              temperature=temperature, max_tokens=600, media_resolution=media_resolution, json_mode=False)
     goal = " ".join(_section(gtext, "Goal").split())[:600]
-    dtext, _, _ = await call(f"v1diff|{order}", [_V1_DIFFS.format(head=head, goal=goal), *imgs],
+    dtext, _, _ = await call(f"v1diff|{order}{tag}", [_V1_DIFFS.format(head=head, goal=goal), *imgs],
                              temperature=temperature, max_tokens=2048, media_resolution=media_resolution, json_mode=False)
     return {"goal": goal, "diffs_text": _section(dtext, "Key UI differences")[:4000], "raw_diffs": dtext[:6000]}
 
@@ -511,8 +539,10 @@ async def v1_goal_and_diffs(first: PairEvidence, second: PairEvidence, ctx: dict
 async def argue_and_evaluate(first: PairEvidence, second: PairEvidence, ctx: dict[str, Any], goal: str, ui_diff: str,
                              order: str, *, persona: dict[str, Any] | None, call: Call, key: str,
                              temperature: float = 1.0, media_resolution: str | None = None,
-                             retries: int = 2, extra: dict[str, Any] | None = None) -> dict[str, Any]:
-    """G-FOCUS Part 3 (reasons assuming first wins; separately, second wins) and Part 4 (Evaluator) for one order."""
+                             retries: int = 2, extra: dict[str, Any] | None = None,
+                             eval_samples: int = 1) -> dict[str, Any]:
+    """G-FOCUS Part 3 (reasons assuming first wins; separately, second wins) and Part 4 (Evaluator) for one order.
+    ``eval_samples`` > 1 runs the Evaluator that many times on the same reasons and returns their majority vote."""
     head, user = _v1_head(ctx) + (extra or {}).get("text", ""), _v1_user(persona)
     imgs = [*_v1_images(first, second), *(extra or {}).get("images", [])]
 
@@ -527,21 +557,57 @@ async def argue_and_evaluate(first: PairEvidence, second: PairEvidence, ctx: dic
         head=head, user=user, goal=goal, ui_diff=ui_diff, first_reason=r1, second_reason=r2,
         pov=" Conclude from this user's point of view." if persona else "",
         conf_fmt="\nConfidence: <1-5, how sure this user is>" if persona else "")
-    pick, conf, text = None, None, ""
-    for attempt in range(1 + max(0, retries)):  # the paper's code re-asks when the answer format is missing
-        text, _, _ = await call(f"{key}|evaluator" + (f"|r{attempt}" if attempt else ""), [prompt, *imgs],
-                                temperature=temperature, max_tokens=2048, media_resolution=media_resolution,
-                                json_mode=False)
-        pick, conf = parse_v1_verdict(text)
-        if pick:
-            break
-    w = float(conf or 1) if persona else 1.0
-    rx, ry = ((w, 0.0) if pick == "First" else (0.0, w) if pick == "Second" else (None, None))
+
+    async def evaluate(s: int) -> dict[str, Any]:
+        pick, conf, text = None, None, ""
+        tag = f"|s{s}" if s else ""
+        for attempt in range(1 + max(0, retries)):  # the paper's code re-asks when the answer format is missing
+            text, _, _ = await call(f"{key}|evaluator{tag}" + (f"|r{attempt}" if attempt else ""), [prompt, *imgs],
+                                    temperature=temperature, max_tokens=2048, media_resolution=media_resolution,
+                                    json_mode=False)
+            pick, conf = parse_v1_verdict(text)
+            if pick:
+                break
+        return {"pick": pick, "confidence": conf, "reasons": " ".join(_section(text, "Conclusion").split())[:500],
+                "reasons_first": r1[:2000], "reasons_second": r2[:2000], "evaluator": text[:4000]}
+
+    samples = list(await asyncio.gather(*(evaluate(s) for s in range(max(1, eval_samples)))))
+    return vote_judgment(samples, order, persona)
+
+
+def vote_judgment(samples: list[dict[str, Any]], order: str, persona: dict[str, Any] | None) -> dict[str, Any]:
+    """One judge-order judgment from 1+ sampled G-FOCUS verdicts ({pick, confidence, reasons, ...}).
+
+    The pick is the majority of the parsed First/Second picks. A tie (possible only when a sample failed to parse or N
+    is even) gives rating_x = rating_y, i.e. a "tie" pick for that order. With a persona, the weight is the mean
+    confidence of the majority samples. A single sample reproduces the pre-vote judgment exactly.
+    """
+    ok = [s for s in samples if s["pick"] in ("First", "Second")]
+    n_f, n_s = sum(s["pick"] == "First" for s in ok), sum(s["pick"] == "Second" for s in ok)
+    pick = "First" if n_f > n_s else "Second" if n_s > n_f else None
+    rep = next((s for s in ok if s["pick"] == pick), ok[0] if ok else samples[0])
+    if persona:
+        confs = [float(s["confidence"] or 1) for s in ok if s["pick"] == pick]
+        w = statistics.fmean(confs) if confs else 1.0
+    else:
+        w = 1.0
+    if pick == "First":
+        rx, ry = w, 0.0
+    elif pick == "Second":
+        rx, ry = 0.0, w
+    elif ok:  # tied vote
+        rx, ry = 0.5, 0.5
+    else:
+        rx, ry = None, None
     ra, rb = (rx, ry) if order == "ab" else (ry, rx)
-    return {"order": order, "persona": (persona or GFOCUS_JUDGE).get("name"), "pick": pick, "confidence": conf,
-            "rating_x": rx, "rating_y": ry, "rating_a": ra, "rating_b": rb, "ok": pick is not None,
-            "reasons": " ".join(_section(text, "Conclusion").split())[:500],
-            "reasons_first": r1[:2000], "reasons_second": r2[:2000], "evaluator": text[:4000]}
+    out = {"order": order, "persona": (persona or GFOCUS_JUDGE).get("name"), "pick": pick or ("tie" if ok else None),
+           "confidence": rep["confidence"], "rating_x": rx, "rating_y": ry, "rating_a": ra, "rating_b": rb,
+           "ok": rx is not None, "reasons": rep["reasons"], "reasons_first": rep["reasons_first"],
+           "reasons_second": rep["reasons_second"], "evaluator": rep["evaluator"]}
+    if len(samples) > 1:
+        out["votes"] = {"First": n_f, "Second": n_s, "failed": len(samples) - len(ok)}
+        out["samples"] = [{k: s.get(k) for k in ("pick", "confidence", "reasons", "goal")} for s in samples]
+    return out
 
 
 # ----------------------------------------------------------------- G-FOCUS extra inputs (PairFlags.gf_*)
@@ -726,12 +792,25 @@ async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: 
     t = flags.argue_temperature
     ex = await gfocus_extras(ev_a, ev_b, ctx, personas, flags, call=call)
     rx = {o: render_extras(ex, o) for o in orders}
+    n = max(1, int(flags.samples_per_order))
+    if flags.sample_stage not in SAMPLE_STAGES:
+        raise ValueError(f"sample_stage must be one of {SAMPLE_STAGES}")
+    stage = flags.sample_stage if n > 1 else "evaluator"
+    n_chain = n if stage == "all" else 1  # independent goal/difference extractions per order
     per_order: dict[str, dict[str, Any]] = {}
+    chains: dict[str, list[dict[str, Any]]] = {}
     if flags.v1_prompts or not flags.goal_diffs:
+        oc = [(o, s) for o in orders for s in range(n_chain)]
         got = await asyncio.gather(*(v1_goal_and_diffs(*_ordered(ev_a, ev_b, o), ctx, o, call=call, temperature=t,
-                                                       media_resolution=flags.media_resolution, extra=rx[o])
-                                     for o in orders))
-        per_order = dict(zip(orders, got))
+                                                       media_resolution=flags.media_resolution, extra=rx[o],
+                                                       tag=f"|s{s}" if s else "")
+                                     for o, s in oc))
+        for (o, s), g in zip(oc, got):
+            chains.setdefault(o, []).append(g)
+        per_order = {o: dict(chains[o][0]) for o in orders}
+        if n_chain > 1:
+            for o in orders:
+                per_order[o]["samples"] = [{"goal": g["goal"], "diffs_text": g["diffs_text"]} for g in chains[o]]
     else:
         gd = await extract_goal_and_diffs(ev_a, ev_b, ctx, call=call, both_orders=flags.both_orders,
                                           media_resolution=flags.media_resolution)
@@ -739,13 +818,29 @@ async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: 
             g, d = ((gd["by_order"].get(o, {}).get("goal", ""), gd["by_order"].get(o, {}).get("diffs"))
                     if flags.strict_orders else (gd["goal"], gd["diffs"]))
             per_order[o] = {"goal": g, "diffs_text": diffs_text(d, o), "diffs": d}
+            chains[o] = [per_order[o]] * n_chain
     cells = [(o, k, p) for o in orders for k, p in enumerate(judges)]
-    judgments = await asyncio.gather(*(
-        argue_and_evaluate(*_ordered(ev_a, ev_b, o), ctx, per_order[o]["goal"], per_order[o]["diffs_text"], o,
-                           persona=p if flags.use_personas else None, call=call,
-                           key=f"argue|{o}|{k if flags.use_personas else 'single'}", temperature=t,
-                           media_resolution=flags.media_resolution, extra=rx[o])
-        for o, k, p in cells))
+    n_argue = 1 if stage == "evaluator" else n  # independent reason+Evaluator runs per judge-order
+
+    async def cell(o: str, k: int, p: dict[str, Any]) -> dict[str, Any]:
+        persona = p if flags.use_personas else None
+        base = f"argue|{o}|{k if flags.use_personas else 'single'}"
+        runs = await asyncio.gather(*(
+            argue_and_evaluate(*_ordered(ev_a, ev_b, o), ctx, chains[o][s if stage == "all" else 0]["goal"],
+                               chains[o][s if stage == "all" else 0]["diffs_text"], o, persona=persona, call=call,
+                               key=base + (f"|s{s}" if s else ""), temperature=t,
+                               media_resolution=flags.media_resolution, extra=rx[o],
+                               eval_samples=n if stage == "evaluator" else 1)
+            for s in range(n_argue)))
+        if n_argue == 1:
+            return runs[0]
+        samples = [{**{k2: r[k2] for k2 in ("pick", "confidence", "reasons", "reasons_first", "reasons_second",
+                                            "evaluator")},
+                    "pick": r["pick"] if r["ok"] else None,
+                    "goal": chains[o][s if stage == "all" else 0]["goal"]} for s, r in enumerate(runs)]
+        return vote_judgment(samples, o, persona)
+
+    judgments = await asyncio.gather(*(cell(o, k, p) for o, k, p in cells))
     for o in orders:
         per_order[o]["extra_text"] = rx[o]["text"]
     for (o, k, _), j in zip(cells, judgments):
@@ -764,11 +859,82 @@ async def compare_pair_gfocus(ev_a: PairEvidence, ev_b: PairEvidence, personas: 
     }
 
 
+# ----------------------------------------------------------------- one-call short pick (PairFlags.short_pick)
+
+SHORT_PICK_PROMPT = """{head}
+
+The two versions were run against each other in an A/B test. The first screenshot is the first version and the second \
+screenshot is the second version. Which version is more visually persuasive for the site operator's goal on this page, \
+that is, which version would win the A/B test?
+
+Answer in exactly this format:
+Better version: <First or Second>
+Reason: <one or two sentences>"""
+
+
+def short_pick_prompt(ctx: dict[str, Any]) -> str:
+    """The short-pick instruction for one page (same page context as the G-FOCUS judge: company, industry, page type)."""
+    return SHORT_PICK_PROMPT.format(head=_v1_head(ctx))
+
+
+def fit_image(data: bytes, max_px: int | None) -> bytes:
+    """PNG bytes scaled down (never up) to fit a max_px x max_px box; unchanged when max_px is falsy or it already fits."""
+    if not max_px:
+        return data
+    import io
+
+    from PIL import Image
+
+    im = Image.open(io.BytesIO(data))
+    if max(im.size) <= max_px:
+        return data
+    im = im.convert("RGB")
+    im.thumbnail((max_px, max_px), Image.LANCZOS)
+    buf = io.BytesIO()
+    im.save(buf, format="PNG", optimize=True)
+    return buf.getvalue()
+
+
+def short_pick_contents(first: PairEvidence, second: PairEvidence, ctx: dict[str, Any],
+                        max_px: int | None = None) -> list:
+    """[prompt, first screenshot(s), second screenshot(s)]: the exact user turn used for inference and for SFT rows."""
+    return [short_pick_prompt(ctx), *(fit_image(b, max_px) for b in first.screenshots),
+            *(fit_image(b, max_px) for b in second.screenshots)]
+
+
+async def compare_pair_short(ev_a: PairEvidence, ev_b: PairEvidence, ctx: dict[str, Any], flags: PairFlags, *,
+                             call: Call) -> dict[str, Any]:
+    """One short-pick call per presentation order; each order's pick becomes rating_x/rating_y = 1/0 (see aggregate)."""
+    orders = ORDERS if flags.both_orders else ORDERS[:1]
+    kw: dict[str, Any] = {"model": flags.model} if flags.model else {}
+
+    async def one(o: str) -> dict[str, Any]:
+        first, second = _ordered(ev_a, ev_b, o)
+        text, _, _ = await call(f"short|{o}", short_pick_contents(first, second, ctx, flags.image_max_px),
+                                temperature=flags.temperature, max_tokens=flags.max_tokens,
+                                media_resolution=flags.media_resolution, json_mode=False, **kw)
+        pick, _ = parse_v1_verdict(text)
+        rx, ry = (1.0, 0.0) if pick == "First" else (0.0, 1.0) if pick == "Second" else (None, None)
+        ra, rb = (rx, ry) if o == "ab" else (ry, rx)
+        m = re.search(r"Reason\s*:\s*(.+)", (text or "").replace("**", ""), re.I | re.S)
+        return {"order": o, "persona": "short-pick judge", "k": 0, "pick": pick, "rating_x": rx, "rating_y": ry,
+                "rating_a": ra, "rating_b": rb, "ok": pick is not None,
+                "reasons": " ".join((m.group(1) if m else "").split())[:500], "raw": (text or "")[:2000]}
+
+    judgments = list(await asyncio.gather(*(one(o) for o in orders)))
+    agg = aggregate(judgments, [{"name": "short-pick judge"}])
+    return {**agg, "label_a": ev_a.label, "label_b": ev_b.label, "flags": flags.name(), "goal": "", "diffs": [],
+            "rationale": [j["reasons"] for j in judgments if j["ok"]][:2], "judgments": judgments,
+            "failed_judgments": sum(not j["ok"] for j in judgments)}
+
+
 async def compare_pair(ev_a: PairEvidence, ev_b: PairEvidence, personas: list[dict[str, Any]] | None,
                        ctx: dict[str, Any], flags: PairFlags | None = None, *, call: Call | None = None) -> dict[str, Any]:
     """Which version would these personas act on? Returns p(A>B), mean diff +- SE, votes, rationale, raw judgments."""
     flags = flags or PairFlags()
     call = call or default_call
+    if flags.short_pick:
+        return await compare_pair_short(ev_a, ev_b, ctx, flags, call=call)
     if flags.argue_both:
         return await compare_pair_gfocus(ev_a, ev_b, personas, ctx, flags, call=call)
     if not personas:
