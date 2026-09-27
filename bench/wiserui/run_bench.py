@@ -35,7 +35,9 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(ROOT / "src")]
 
 from mvp.fast_plan import ab_personas  # noqa: E402
-from mvp.pairwise import GF_INPUTS, PAIRWISE_MODEL, SAMPLE_STAGES, FewShotExample, PairEvidence, PairFlags, compare_pair, parse_json  # noqa: E402
+from mvp.e2e_ui_run import think_headroom  # noqa: E402
+from mvp.pairwise import (GF_INPUTS, PAIRWISE_MODEL, SAMPLE_STAGES, FewShotExample, PairEvidence, PairFlags,  # noqa: E402
+                          compare_pair, parse_json, short_call_tag)
 
 BENCH = Path(os.environ.get("WISERUI_BENCH", "/workspace/bench/wiserui"))
 DATA = BENCH / "repo" / "WiserUI_Bench.json"
@@ -47,7 +49,7 @@ PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-3.1-pro-preview": (2.00, 12.0
          "claude-sonnet-4-6": (3.00, 15.00), "claude-haiku-4-5@20251001": (1.00, 5.00),
          "gpt-4o": (2.50, 10.00), "gpt-4.1-mini": (0.40, 1.60), "gpt-5-mini": (0.25, 2.00),
          "gpt-6-sol": (2.00, 10.00), "gpt-6-luna": (0.10, 0.50), "gpt-6-astra": (10.00, 50.00),
-         "gemini-3.8-flash": (0.75, 3.75), "claude-opus-5-5": (4.00, 20.00), "claude-sonnet-5": (2.00, 10.00), "gemini-2.5-flash-lite": (0.10, 0.40), "gemini-2.5-pro": (1.25, 10.0)}
+         "gemini-3.8-flash": (0.75, 3.75), "claude-haiku-4-5": (1.00, 5.00), "claude-opus-5-5": (4.00, 20.00), "claude-sonnet-5": (2.00, 10.00), "gemini-2.5-flash-lite": (0.10, 0.40), "gemini-2.5-pro": (1.25, 10.0)}
 STREAMS = {
     "s1": PairFlags(both_orders=True, goal_diffs=False, debias=False),
     "s2": PairFlags(both_orders=True, goal_diffs=True, debias=False),
@@ -67,6 +69,13 @@ STREAMS = {
     # 1568x1568 (Claude's own limit) so every model gets the same bytes.
     "vanilla": PairFlags(both_orders=True, short_pick=True, vanilla=True, temperature=0.0, max_tokens=2048,
                          image_max_px=1568),
+    # H1 (RESEARCH_HYPOTHESES.md): the vanilla prompt, but each call gives P(First more effective) 0-100 and the harness
+    # averages both orders into one order-invariant answer. Same model settings as "vanilla" (paired with it).
+    "h1": PairFlags(both_orders=True, short_pick=True, vanilla=True, graded=True, temperature=0.0, max_tokens=2048,
+                    image_max_px=1568),
+    # H1 + a short debiasing instruction (screenshot order is random; more content is not better; judge conversion).
+    "h1_debias": PairFlags(both_orders=True, short_pick=True, vanilla=True, graded=True, debias=True, temperature=0.0,
+                           max_tokens=2048, image_max_px=1568),
 }
 
 
@@ -105,15 +114,17 @@ def a_is_win(idx: int) -> bool:
 
 
 # Worst-case billed input per call: two screenshots fit into 1568 x 1568 (Claude/Gemini bill well under 3k tokens
-# each) plus the prompt. Output: max_tokens plus the thinking headroom llm_generate may add (8192 for Claude 5 /
-# Gemini 3 / reasoning models); added for every model so the bound holds whatever the provider.
+# each) plus the prompt. Output: max_tokens plus the thinking headroom llm_generate adds for that model
+# (mvp.e2e_ui_run.think_headroom, env-tunable); at least 8192 for unknown endpoints (tuned models etc.).
 WORST_IN_TOKENS = 8000
 THINK_HEADROOM = 8192
 
 
 def worst_call_cost(model: str, max_tokens: int) -> float:
     pin, pout = price_of(model)
-    return WORST_IN_TOKENS / 1e6 * pin + (max_tokens + THINK_HEADROOM) / 1e6 * pout
+    known = model in PRICE or str(model).startswith(("gemini-", "claude-", "gpt-"))
+    head = think_headroom(model) if known else THINK_HEADROOM
+    return WORST_IN_TOKENS / 1e6 * pin + (max_tokens + head) / 1e6 * pout
 
 
 class BudgetExhausted(RuntimeError):
@@ -295,7 +306,7 @@ async def main() -> None:
         """Short-pick streams: reserve the worst case of this pair's uncached calls, waiting while other pairs are in
         flight; None = does not fit even with nothing in flight (budget exhausted)."""
         orders = ("ab", "ba") if flags.both_orders else ("ab",)
-        tag = "vanilla" if flags.vanilla else "short"
+        tag = short_call_tag(flags)
         w = worst_call_cost(flags.model or PAIRWISE_MODEL, flags.max_tokens)
         need = sum(w for o in orders if (ledger.cache.get(f"{i}|{tag}|{o}") or {"error": 1}).get("error"))
         async with settle:
@@ -374,9 +385,13 @@ async def main() -> None:
                 votes = [{"choice": "First" if (j["rating_x"] > j["rating_y"]) else "Second" if j["rating_x"] < j["rating_y"] else None,
                           "persona": j["persona"], "rating_x": j["rating_x"], "rating_y": j["rating_y"]}
                          for j in res["judgments"] if j["order"] == o and j["ok"]]
-                rows.append({"condition": cond, "index": i, "order": "wl" if winner_first else "lw", "pick": pick,
-                             "votes": votes, "tie_vote": ov["pick"] == "tie", "x_minus_y": ov["x_minus_y"],
-                             "source": res["source"], "web_mobile": res["web_mobile"]})
+                row = {"condition": cond, "index": i, "order": "wl" if winner_first else "lw", "pick": pick,
+                   "votes": votes, "tie_vote": ov["pick"] == "tie", "x_minus_y": ov["x_minus_y"],
+                   "source": res["source"], "web_mobile": res["web_mobile"]}
+            if "graded" in res:  # graded harness: pick is the order-invariant answer; the call's own P(First) too
+                row.update({"p_a": res["p_a"], "confidence": res["confidence"],
+                            "call_p_first": next((j["p_first"] for j in res["judgments"] if j["order"] == o), None)})
+            rows.append(row)
     with (out / "judgments.jsonl").open("w") as f:
         for r in sorted(rows, key=lambda r: (r["index"], r["order"])):
             f.write(json.dumps(r, ensure_ascii=False) + "\n")

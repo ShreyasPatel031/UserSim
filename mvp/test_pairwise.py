@@ -354,3 +354,77 @@ def test_vanilla_prompt_and_parse():
     assert pv("More effective: [Second]\n") == "Second" and pv("More effective:\n\nFirst") == "First"
     assert pv("First is better. More effective: Second") == "Second" and pv("Both are fine") is None
     assert pv("More effective: First\n...\nMore effective: Second") == "Second"
+
+
+def test_graded_parse():
+    pg = pairwise.parse_graded
+    assert pg("... P(First more effective): 72") == 72.0 and pg("**P(First more effective):** 35%") == 35.0
+    assert pg("P(First more effective): <60>") == 60.0 and pg("p(first more effective) = 12.5") == 12.5
+    assert pg("P(First more effective): 90\n...\nP(First more effective): 40") == 40.0
+    assert pg("More effective: First") is None and pg("P(First more effective): 150") is None and pg("") is None
+
+
+def _graded_call(p_of, seen=None):
+    """Mock: p_of(first_bytes, second_bytes) -> P(First) 0-100."""
+    async def call(key, contents, *, temperature, max_tokens, media_resolution=None, json_mode=True, model=None):
+        if seen is not None:
+            seen.append((key, model, contents[0], json_mode))
+        imgs = [c for c in contents if isinstance(c, bytes)]
+        v = p_of(imgs[0], imgs[1])
+        return (f"Differences: ...\nP(First more effective): {v}" if v is not None else "no idea"), 10, 5
+    return call
+
+
+def test_graded_harness_one_answer_for_both_orders():
+    seen = []
+    flags = PairFlags(short_pick=True, vanilla=True, graded=True, temperature=0.0, max_tokens=2048, model="gpt-6-luna")
+    # prefers AAA mildly in the first slot, and a strong second-position bias: P(First)=60 when AAA first, 20 when second
+    r = run(compare_pair(A, B, None, CTX, flags, call=_graded_call(lambda f, s: 60 if f == b"AAA" else 20, seen)))
+    # p(A) = mean(0.60, 1 - 0.20) = 0.70 -> A, in BOTH orders, although the second call alone picked "Second" (= A)
+    assert abs(r["p_a"] - 0.70) < 1e-9 and r["winner"] == "A"
+    assert r["orders"]["ab"]["pick_ab"] == "A" and r["orders"]["ba"]["pick_ab"] == "A"
+    assert r["orders"]["ab"]["pick"] == "X" and r["orders"]["ba"]["pick"] == "Y"
+    assert r["call_orders"]["ab"]["pick_ab"] == "A" and abs(r["confidence"] - 0.4) < 1e-9 and not r["abstain"]
+    assert sorted(k for k, *_ in seen) == ["graded|ab", "graded|ba"]
+    assert all(m == "gpt-6-luna" and p == pairwise.graded_prompt() and not j for _, m, p, j in seen)
+    assert "Beware" not in pairwise.graded_prompt() and "graded" in r["flags"]
+
+
+def test_graded_pure_position_bias_is_a_tie_and_abstains():
+    flags = PairFlags(short_pick=True, vanilla=True, graded=True)
+    r = run(compare_pair(A, B, None, CTX, flags, call=_graded_call(lambda f, s: 35)))  # always "Second, 65%"
+    assert r["winner"] == "tie" and r["p_a"] == 0.5 and r["abstain"]
+    assert r["orders"]["ab"]["pick_ab"] == "tie" == r["orders"]["ba"]["pick_ab"]
+
+
+def test_graded_swap_symmetry_one_order_unparsed_and_abstain_margin():
+    flags = PairFlags(short_pick=True, vanilla=True, graded=True, abstain_margin=25)
+    p = lambda f, s: 70 if f == b"AAA" else 45  # noqa: E731
+    r1 = run(compare_pair(A, B, None, CTX, flags, call=_graded_call(p)))
+    r2 = run(compare_pair(B, A, None, CTX, flags, call=_graded_call(p)))
+    assert abs(r1["p_a"] - 0.625) < 1e-9 and abs(r2["p_a"] - 0.375) < 1e-9 and r1["winner"] == "A" == ("B" if r2["winner"] == "A" else "A")
+    assert r1["abstain"] and r1["graded"]["margin"] == 12.5  # 12.5 < 25 points
+    # only the (A first) order parses: that order alone decides
+    r3 = run(compare_pair(A, B, None, CTX, flags, call=_graded_call(lambda f, s: 90 if f == b"AAA" else None)))
+    assert r3["winner"] == "A" and abs(r3["p_a"] - 0.9) < 1e-9 and r3["graded"]["n_parsed"] == 1 and not r3["abstain"]
+    assert r3["failed_judgments"] == 1
+
+
+def test_graded_debias_prompt_and_cache_tag():
+    seen = []
+    flags = PairFlags(short_pick=True, vanilla=True, graded=True, debias=True)
+    run(compare_pair(A, B, None, CTX, flags, call=_graded_call(lambda f, s: 55, seen)))
+    assert sorted(k for k, *_ in seen) == ["graded_debias|ab", "graded_debias|ba"]
+    assert all("order of the two screenshots is random" in p for _, _, p, _ in seen)
+    assert pairwise.short_call_tag(PairFlags(short_pick=True, vanilla=True)) == "vanilla"
+    assert pairwise.short_call_tag(PairFlags(short_pick=True)) == "short"
+    # plain vanilla output is unchanged by the new fields
+    assert "graded" not in PairFlags(short_pick=True, vanilla=True).name()
+
+
+def test_think_headroom_and_worst_case_reservation(monkeypatch):
+    from mvp.e2e_ui_run import think_headroom
+    assert think_headroom("gemini-2.5-flash") == 0 and think_headroom("gpt-4o") == 0
+    assert think_headroom("gemini-3.8-flash") == 8192 and think_headroom("gpt-6-luna") == 4096
+    monkeypatch.setenv("MVP_CLAUDE5_THINK_HEADROOM", "2048")
+    assert think_headroom("claude-sonnet-5") == 2048

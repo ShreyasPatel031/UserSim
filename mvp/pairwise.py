@@ -26,6 +26,12 @@ so ablation arms differ only in flags:
 - ``vanilla`` (with ``short_pick``): the WiserUI paper's zero-shot baseline instead, verbatim
   (repo inference/prompts_task1/zero_shot.txt: find the key differences, then "More effective: <First/Second>"), no page
   context; ``model`` may be any provider (``claude-*`` on Vertex, ``gpt-*`` on OpenAI, Gemini), see llm_generate.
+- ``graded`` (with ``short_pick`` + ``vanilla``): the same zero-shot prompt, but each call ends with a 0-100 probability that
+  the First version is more effective ("P(First more effective): N") instead of a bare pick. The harness maps both orders
+  to p(A) (p_ab and 100 - p_ba), averages them into ONE answer used for both presentations (order-invariant, no coin
+  flips from position bias), and reports ``confidence`` = |p(A) - 0.5| * 2; ``abstain_margin`` (percentage points of
+  |p(A) - 50|) marks low-confidence pairs ``abstain`` (calibrated abstention: set it on held-in data). ``debias`` adds a short
+  debiasing instruction (screenshot order is random; more content is not better; judge the likely conversion effect).
 - ``short_pick``: one call per presentation order that only names the better version plus one or two sentences
   ("Better version: First/Second" / "Reason: ..."), temperature ``temperature``. This is the prompt a supervised
   fine-tune is trained on (bench/wiserui/sft_folds.py); ``model`` names the base model or a tuned Vertex endpoint
@@ -112,12 +118,19 @@ class PairFlags:
     # One-call short pick (see module docstring). model=None uses PAIRWISE_MODEL.
     short_pick: bool = False
     vanilla: bool = False  # with short_pick: the paper's zero-shot prompt ("More effective: First/Second")
+    # With short_pick + vanilla: each call returns P(First more effective) 0-100; both orders are averaged into one
+    # order-invariant answer (see module docstring). abstain_margin: pairs with |p(A) - 50| < margin (points) abstain.
+    graded: bool = False
+    abstain_margin: float = 0.0
     model: str | None = None
     image_max_px: int | None = None
 
     def name(self) -> str:
         if self.short_pick:
             return "+".join(["both" if self.both_orders else "one", "vanilla" if self.vanilla else "short_pick"]
+                            + ((["graded"] + (["debias"] if self.debias else [])
+                                + ([f"abstain{self.abstain_margin:g}"] if self.abstain_margin else []))
+                               if self.graded else [])
                             + ([f"px{self.image_max_px}"] if self.image_max_px else [])
                             + ([f"model={self.model}"] if self.model else []))
         return "+".join(
@@ -967,6 +980,59 @@ def parse_vanilla(text: str) -> str | None:
     return hits[-1].capitalize() if hits else None
 
 
+# H1 graded both-order harness: the vanilla prompt with a graded final line (bench/wiserui/RESEARCH_HYPOTHESES.md H1).
+GRADED_PROMPT = """You are an expert in designing UI/UX for web/apps.
+
+The two screenshots show two different versions of the same page.
+Identify the key UI differences between the two versions, and then evaluate which variant is more effective UI/UX design \
+that leads to better user experience and conversion.
+{debias}
+Finally, give the probability, from 0 to 100, that the First version is the more effective one \
+(100 = surely First, 0 = surely Second, 50 = cannot tell).
+
+You should end your answer with following the format (No bold, etc):
+P(First more effective): <0-100>"""
+
+GRADED_DEBIAS = """
+Beware of common judging biases:
+- The order of the two screenshots is random: do not favour a version because it is shown first or second.
+- More content, options or elements is not automatically better; removing distractions, reducing choices and \
+simplifying often wins.
+- Judge the likely effect on real visitors' conversion, not which design looks more polished or feature-rich.
+"""
+
+
+def graded_prompt(debias: bool = False) -> str:
+    return GRADED_PROMPT.format(debias=GRADED_DEBIAS if debias else "")
+
+
+def parse_graded(text: str) -> float | None:
+    """P(First) in 0-100 from the LAST "P(First more effective): N" line (markdown, %, "N/100" tolerated), else None."""
+    t = (text or "").replace("**", "").replace("__", "").replace("`", "")
+    hits = re.findall(r"P\s*\(\s*first[^)\n]*\)\s*[:=\-\u2013]?\s*[\[<(]*\s*(\d{1,3}(?:\.\d+)?)\s*%?", t, re.I)
+    if not hits:
+        return None
+    v = float(hits[-1])
+    return v if 0.0 <= v <= 100.0 else None
+
+
+def short_call_tag(flags: PairFlags) -> str:
+    """Cache-key prefix of a short-pick call: 'short', 'vanilla', 'graded' or 'graded_debias' (+ '|<order>')."""
+    if flags.vanilla and flags.graded:
+        return "graded_debias" if flags.debias else "graded"
+    return "vanilla" if flags.vanilla else "short"
+
+
+def graded_answer(p_first: dict[str, float | None], abstain_margin: float = 0.0) -> dict[str, Any]:
+    """Order-invariant answer from per-order P(First) (0-100): p(A) = mean(p_ab, 100 - p_ba) / 100 over parsed orders."""
+    pa = [(v if o == "ab" else 100.0 - v) / 100.0 for o, v in p_first.items() if v is not None]
+    p_a = statistics.fmean(pa) if pa else 0.5
+    winner = "A" if p_a > 0.5 + 1e-9 else "B" if p_a < 0.5 - 1e-9 else "tie"
+    margin = abs(p_a - 0.5) * 100.0
+    return {"p_a": p_a, "winner": winner, "confidence": margin / 50.0, "margin": margin, "n_parsed": len(pa),
+            "abstain": winner == "tie" or margin < abstain_margin}
+
+
 def short_pick_prompt(ctx: dict[str, Any]) -> str:
     """The short-pick instruction for one page (same page context as the G-FOCUS judge: company, industry, page type)."""
     return SHORT_PICK_PROMPT.format(head=_v1_head(ctx))
@@ -1003,26 +1069,45 @@ async def compare_pair_short(ev_a: PairEvidence, ev_b: PairEvidence, ctx: dict[s
     orders = ORDERS if flags.both_orders else ORDERS[:1]
     kw: dict[str, Any] = {"model": flags.model} if flags.model else {}
 
+    graded = flags.vanilla and flags.graded
+
     async def one(o: str) -> dict[str, Any]:
         first, second = _ordered(ev_a, ev_b, o)
         if flags.vanilla:
-            contents = [VANILLA_PROMPT, *(fit_image(b, flags.image_max_px) for b in first.screenshots),
+            prompt = graded_prompt(flags.debias) if graded else VANILLA_PROMPT
+            contents = [prompt, *(fit_image(b, flags.image_max_px) for b in first.screenshots),
                         *(fit_image(b, flags.image_max_px) for b in second.screenshots)]
         else:
             contents = short_pick_contents(first, second, ctx, flags.image_max_px)
-        text, _, _ = await call(f"{'vanilla' if flags.vanilla else 'short'}|{o}", contents,
+        text, _, _ = await call(f"{short_call_tag(flags)}|{o}", contents,
                                 temperature=flags.temperature, max_tokens=flags.max_tokens,
                                 media_resolution=flags.media_resolution, json_mode=False, **kw)
-        pick = parse_vanilla(text) if flags.vanilla else parse_v1_verdict(text)[0]
-        rx, ry = (1.0, 0.0) if pick == "First" else (0.0, 1.0) if pick == "Second" else (None, None)
+        p_first = parse_graded(text) if graded else None
+        if graded:
+            pick = None if p_first is None else "First" if p_first > 50 else "Second" if p_first < 50 else "tie"
+        else:
+            pick = parse_vanilla(text) if flags.vanilla else parse_v1_verdict(text)[0]
+        if graded and p_first is not None:
+            rx, ry = p_first / 100.0, 1.0 - p_first / 100.0
+        else:
+            rx, ry = (1.0, 0.0) if pick == "First" else (0.0, 1.0) if pick == "Second" else (None, None)
         ra, rb = (rx, ry) if o == "ab" else (ry, rx)
         m = re.search(r"Reason\s*:\s*(.+)", (text or "").replace("**", ""), re.I | re.S)
         return {"order": o, "persona": "vanilla judge" if flags.vanilla else "short-pick judge", "k": 0, "pick": pick, "rating_x": rx, "rating_y": ry,
-                "rating_a": ra, "rating_b": rb, "ok": pick is not None,
+                "rating_a": ra, "rating_b": rb, "ok": rx is not None, "p_first": p_first,
                 "reasons": " ".join((m.group(1) if m else "").split())[:500], "raw": (text or "")[:2000]}
 
     judgments = list(await asyncio.gather(*(one(o) for o in orders)))
     agg = aggregate(judgments, [{"name": "vanilla judge" if flags.vanilla else "short-pick judge"}])
+    if graded:
+        # One order-invariant answer for both presentations; the per-call view stays in call_orders.
+        ga = graded_answer({j["order"]: j["p_first"] for j in judgments}, flags.abstain_margin)
+        side = {"A": ("X", "Y"), "B": ("Y", "X")}
+        agg = {**agg, "p_a": ga["p_a"], "winner": ga["winner"], "call_orders": agg["orders"],
+               "orders": {o: {"n": ga["n_parsed"], "x_minus_y": (ga["p_a"] - 0.5) * (1 if o == "ab" else -1),
+                              "pick": side[ga["winner"]][0 if o == "ab" else 1] if ga["winner"] != "tie" else "tie",
+                              "pick_ab": ga["winner"]} for o in orders},
+               "graded": ga, "confidence": ga["confidence"], "abstain": ga["abstain"]}
     return {**agg, "label_a": ev_a.label, "label_b": ev_b.label, "flags": flags.name(), "goal": "", "diffs": [],
             "rationale": [j["reasons"] for j in judgments if j["ok"]][:2], "judgments": judgments,
             "failed_judgments": sum(not j["ok"] for j in judgments)}

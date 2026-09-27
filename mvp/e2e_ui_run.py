@@ -132,6 +132,20 @@ def gemini_vision_json(prompt: str, png: bytes, *, model: str = JUDGE_MODEL) -> 
     return json.loads(match.group(0) if match else raw)
 
 
+def think_headroom(model: str) -> int:
+    """Output tokens llm_generate adds on top of max_tokens for a model's thinking/reasoning (billed as output):
+    Gemini 3 MVP_GEMINI3_THINK_HEADROOM, Claude 5-generation MVP_CLAUDE5_THINK_HEADROOM, OpenAI reasoning models
+    MVP_OPENAI_REASONING_HEADROOM (defaults 8192 / 8192 / 4096), else 0. Budget caps reserve max_tokens + this."""
+    m = str(model or "")
+    if m.startswith("gemini-3"):
+        return int(os.environ.get("MVP_GEMINI3_THINK_HEADROOM", "8192"))
+    if m.startswith(("claude-opus-5", "claude-sonnet-5", "claude-fable")):
+        return int(os.environ.get("MVP_CLAUDE5_THINK_HEADROOM", "8192"))
+    if m.startswith(("gpt-5", "gpt-6", "o1", "o3", "o4")):
+        return int(os.environ.get("MVP_OPENAI_REASONING_HEADROOM", "4096"))
+    return 0
+
+
 def gemini_generate(
     contents: list,
     *,
@@ -167,7 +181,7 @@ def gemini_generate(
     gem3 = str(model).startswith("gemini-3")
     cfg = types.GenerateContentConfig(
         temperature=temperature,
-        max_output_tokens=max_tokens + (int(os.environ.get("MVP_GEMINI3_THINK_HEADROOM", "8192")) if gem3 else 0),
+        max_output_tokens=max_tokens + (think_headroom(model) if gem3 else 0),
         thinking_config=(types.ThinkingConfig(thinking_level=os.environ.get("MVP_GEMINI3_THINKING", "low")) if gem3
                          else types.ThinkingConfig(thinking_budget=0)),
         response_mime_type="application/json" if json_mode else None,
@@ -248,7 +262,7 @@ def claude_vertex_generate(contents: list, *, model: str, temperature: float = 0
     # Claude 5-generation models (Opus 5.x, Sonnet 5, Fable) always think adaptively and reject a non-default
     # temperature (400), so they run at default sampling with extra max_tokens headroom for thinking.
     if model.startswith(("claude-opus-5", "claude-sonnet-5", "claude-fable")):
-        ckw: dict = {"max_tokens": max_tokens + 8192}
+        ckw: dict = {"max_tokens": max_tokens + think_headroom(model)}
     else:
         ckw = {"max_tokens": max_tokens, "temperature": temperature}
     for attempt in range(max(1, retries)):
@@ -308,7 +322,7 @@ def openai_generate(contents: list, *, model: str, temperature: float = 0.0, max
         else:
             content.append({"type": "text", "text": str(c)})
     reasoning = model.startswith(("gpt-5", "gpt-6", "o1", "o3", "o4"))
-    kw: dict = {"max_completion_tokens": max_tokens + (4096 if reasoning else 0)}
+    kw: dict = {"max_completion_tokens": max_tokens + (think_headroom(model) if reasoning else 0)}
     if reasoning:
         effort = os.environ.get("OPENAI_REASONING_EFFORT", "minimal")
         kw["reasoning_effort"] = effort
