@@ -45,3 +45,16 @@ paired bootstrap difference.
 
 Metrics: consistent accuracy (right in both orders; chance 25%), plain accuracy (chance 50%, pair bootstrap CI),
 first-position pick rate, by source and platform. For `usersim`, also a 12-vote pooled pick per pair.
+
+## Pairwise judge arms (`mvp.pairwise`, shared with the product)
+`run_bench.py --stream s1|s2|s3` feeds each pair to `mvp.pairwise.compare_pair`, the same judge the product uses
+for buyer picks (`mvp.comparison.persona_pick`). Arms differ only in `PairFlags`:
+- `s1`: both orders, neutral Version X / Y labels, reasons first, 1-10 rating of EACH version, ratings averaged
+  across orders into p(A > B).
+- `s2`: s1 + G-FOCUS goal and localized differences (extracted in both orders, merged); personas judge only those.
+- `s3`: s2 + SimAB debias instructions.
+
+`--seed N` sends per-call Vertex seeds derived from (N, call key) and `--json-retries N` re-asks unparseable replies
+(keys `...|retryN`). Both are off by default, which reproduces the 372b405 arms and their cached `calls.jsonl`.
+`MVP_PAIRWISE_THREADS` (default 16) bounds concurrent model calls; `--concurrency` bounds them per run.
+`ablate.py` compares arms against A0 (the old persona vote) with paired bootstrap CIs.
