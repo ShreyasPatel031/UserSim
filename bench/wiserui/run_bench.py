@@ -134,6 +134,9 @@ def _call(parts: list[Any], *, temperature: float, json_mode: bool, max_tokens: 
             return (resp.text or "").strip(), int(um.prompt_token_count or 0), int(um.candidates_token_count or 0)
         except Exception as exc:  # 429 / 5xx: back off
             last = exc
+            code = getattr(exc, "code", None)
+            if isinstance(code, int) and 400 <= code < 500 and code != 429:
+                break
             time.sleep(min(60, 3 * 2 ** attempt))
     raise RuntimeError(f"model call failed: {last!r}")
 
@@ -141,6 +144,44 @@ def _call(parts: list[Any], *, temperature: float, json_mode: bool, max_tokens: 
 def img_part(idx: int, label: str):
     from google.genai import types
     return types.Part.from_bytes(data=(IMAGES / str(idx) / f"{label}.png").read_bytes(), mime_type="image/png")
+
+
+STITCH = os.environ.get("WISERUI_STITCH") == "1"
+
+
+def stitched_part(idx: int, a: str, b: str):
+    """One side-by-side image: 'First' (a) left, 'Second' (b) right, labelled on a header bar.
+
+    Vertex gemini-2.5-flash shrinks every image to ~258 tokens when a request carries 2+ images (HIGH media
+    resolution is refused for multi-image requests), so full-page screenshots lose small text. A single stitched
+    image is tiled at full detail instead.
+    """
+    import io
+
+    from google.genai import types
+    from PIL import Image, ImageDraw, ImageFont
+
+    ia = Image.open(IMAGES / str(idx) / f"{a}.png").convert("RGB")
+    ib = Image.open(IMAGES / str(idx) / f"{b}.png").convert("RGB")
+    head, gap = 90, 40
+    w, h = ia.width + gap + ib.width, max(ia.height, ib.height) + head
+    canvas = Image.new("RGB", (w, h), (255, 255, 255))
+    canvas.paste(ia, (0, head))
+    canvas.paste(ib, (ia.width + gap, head))
+    d = ImageDraw.Draw(canvas)
+    d.rectangle([ia.width, 0, ia.width + gap - 1, h], fill=(40, 40, 40))
+    font = ImageFont.load_default(size=60)
+    d.rectangle([0, 0, ia.width - 1, head - 1], fill=(225, 225, 225))
+    d.rectangle([ia.width + gap, 0, w - 1, head - 1], fill=(225, 225, 225))
+    d.text((20, 12), "First", fill=(0, 0, 0), font=font)
+    d.text((ia.width + gap + 20, 12), "Second", fill=(0, 0, 0), font=font)
+    buf = io.BytesIO()
+    canvas.save(buf, format="PNG")
+    return types.Part.from_bytes(data=buf.getvalue(), mime_type="image/png")
+
+
+def pair_parts(idx: int, a: str, b: str) -> list:
+    return [stitched_part(idx, a, b)] if STITCH else [img_part(idx, a), img_part(idx, b)]
 
 
 async def cached_call(ledger: Ledger, sem: asyncio.Semaphore, key: str, parts_fn, **kw) -> dict:
@@ -183,10 +224,12 @@ async def run_baseline(item: dict, order: str, ledger, sem, *, with_ctx: bool) -
     a, b = ORDERS[order]
     cond = "baseline_ctx" if with_ctx else "baseline"
     prompt = PROMPT_ZS
+    if STITCH:
+        prompt = prompt.replace("The two screenshots show", "The screenshot shows, side by side (First on the left, Second on the right),")
     if with_ctx:
         prompt = f"Page: {context_line(item)}.\n\n" + PROMPT_ZS
     rec = await cached_call(ledger, sem, f"{cond}|{idx}|{order}|judge|0",
-                            lambda: [prompt, img_part(idx, a), img_part(idx, b)],
+                            lambda: [prompt, *pair_parts(idx, a, b)],
                             temperature=0.2, json_mode=False, max_tokens=2048)
     pick = parse_first_second(rec["text"])
     return {"condition": cond, "index": idx, "order": order, "pick": pick, "votes": None}
@@ -212,8 +255,12 @@ async def run_usersim(item: dict, order: str, personas: list[dict], ledger, sem)
         prompt = PERSONA.format(name=p.get("name", ""), role=p.get("role", ""), bio=p.get("bio", ""),
                                 goal=p.get("goal", "look around"), company=item["company"],
                                 page_type=item["page_type"], platform=platform)
+        if STITCH:
+            prompt = prompt.replace(
+                "The two screenshots show two versions of this page: the first image is the First version, the second image is the Second version.",
+                "The screenshot shows two versions of this page side by side: First on the left, Second on the right (labelled at the top).")
         rec = await cached_call(ledger, sem, f"usersim|{idx}|{order}|persona|{k}",
-                                lambda: [prompt, img_part(idx, a), img_part(idx, b)],
+                                lambda: [prompt, *pair_parts(idx, a, b)],
                                 temperature=0.4, json_mode=True, max_tokens=512)
         j = parse_json(rec["text"]) or {}
         ch = str(j.get("choice") or "").strip().capitalize()

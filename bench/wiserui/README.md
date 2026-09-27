@@ -34,5 +34,14 @@ python bench/wiserui/score.py /workspace/bench/wiserui/results/full
   from context only; each persona sees both screenshots and says which version it would act on (JSON, temp 0.4);
   majority vote; a tie goes to summed confidence, and one still tied counts as wrong. Personas are shared across both orders.
 
+Input modes:
+- default: two separate images per call (the paper's format). On Vertex, gemini-2.5-flash shrinks each image to
+  about 258 tokens when a request has 2+ images (HIGH media resolution is refused for multi-image requests).
+- `WISERUI_STITCH=1`: one side-by-side image labelled First/Second. This is tiled at full detail (about 2.3k image
+  tokens vs 0.5k) and is otherwise the same prompt.
+
+`report.py label=run_dir ...` writes the markdown tables and example misses. `paired.py run_dir condA condB` gives the
+paired bootstrap difference.
+
 Metrics: consistent accuracy (right in both orders; chance 25%), plain accuracy (chance 50%, pair bootstrap CI),
 first-position pick rate, by source and platform. For `usersim`, also a 12-vote pooled pick per pair.
