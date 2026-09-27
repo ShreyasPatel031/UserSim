@@ -38,8 +38,10 @@ All checkpoints and predictions backed up to GCS bucket `gs://ai-studio-bucket-3
 - ✓ W <= 0.160 (0.143)
 - ✗ acc_raw >= 65.0% (57.1%)
 - ✗ acc_clipped >= 70.0% (64.6%)
-- ✓ beats mix on W
-- ✓ beats mix on acc_clipped
+- ~~✓ beats mix on W~~ ⚠️
+- ~~✓ beats mix on acc_clipped~~ ⚠️
+
+**Note on "beats mix" claims:** The mix metrics matching ckpt-425 exactly was due to a bug in `build_lookup()` - it keyed on nonexistent fields, so the mix fallback always used ckpt-425 predictions. In other words, mix == ckpt-425, making the "beats mix" comparison meaningless.
 
 **Conclusion:** Re-sorting maintains W quality but doesn't achieve accuracy bar.
 
@@ -51,25 +53,25 @@ All checkpoints and predictions backed up to GCS bucket `gs://ai-studio-bucket-3
 - **Model:** Qwen/Qwen3-14B
 - **Trainable params:** 64.2M (0.43% of 14.8B)
 
-### Hyperparameters
+### Hyperparameters (updated after OOM restart)
 | Parameter | Value |
 |-----------|-------|
 | r | 16 |
 | lr | 1e-4 |
 | MAX_SEQ | 768 |
-| micro_batch | 4 |
-| grad_accum | 8 |
+| micro_batch | 2 |
+| grad_accum | 16 |
 | effective_batch | 32 |
 | MAX_STEPS | 600 |
 | SAVE_STEPS | 20 |
 | bf16 | True |
 | enable_thinking | False |
+| PYTORCH_CUDA_ALLOC_CONF | expandable_segments:True |
 
-### Training Progress (verified at 10 minutes)
-- **Current step:** 10/600
-- **Loss:** 4.17 → 3.46 (decreasing)
-- **Step rate:** ~46.7s/step
-- **ETA:** ~7.8 hours (~3:15 AM PT if started at 7:30 PM PT)
+### Training Progress
+- **Relaunched:** 00:53 PT (2026-09-27) after CUDA OOM at step ~17
+- **Step rate:** ~43.5 s/step
+- **ETA:** ~8:15 AM PT
 
 ### Watchdog Labels
 ```
@@ -82,9 +84,10 @@ usersim-failover-to=fm-sft-socrates-l4-od
 All checkpoints uploaded to `gs://ai-studio-bucket-347838016394-us-east1/usersim-models/qwen3_14b_sft/`
 
 ### Screens Scheduled
-- Step 200: ~2.5 hours
-- Step 400: ~5 hours
-- Step 600: ~7.8 hours
+Screens now pause training, run evaluation, then resume (to avoid GPU OOM):
+- Step 200: ~2.5 hours after start (~3:15 AM PT)
+- Step 400: ~5 hours after start (~5:45 AM PT)
+- Step 600: ~7.5 hours after start (~8:15 AM PT)
 
 Screen pass bar: W <= 0.160, acc_raw >= 66.0%, acc_clipped >= 70.0%
 
@@ -92,5 +95,17 @@ Early stop trigger: W > 0.20 or clipped < 65% at step 200.
 
 ### Budget
 - Spot L4 rate: $0.512/h
-- Expected duration: ~7.8 hours
+- Expected duration: ~7.5 hours
 - Expected cost: ~$4.00 (well under $5.6 budget)
+
+### Monitor Script Fixes (2026-09-27)
+- Removed in-VM step-20 sanity check (runs on separate VM)
+- Screens now stop training → run eval → resume training (no GPU sharing)
+- Added trap to always reset gate-state on exit/failure
+- Clear stale train.exit_code at boot
+- Skip screens whose SUMMARY.json already exists in GCS
+- Stop VM after step-600 screen completes
+- Log upload errors to file instead of DEVNULL
+- Final upload copies only adapter files (not checkpoint subdirs)
+- Fixed left-truncation of prompts in sanity checks
+- Allow negative numbers in format check regex

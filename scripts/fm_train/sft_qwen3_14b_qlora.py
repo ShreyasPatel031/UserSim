@@ -132,18 +132,51 @@ def load_rows(path: str, limit: int) -> list[dict]:
     return rows
 
 
-def upload_checkpoint(local_path: Path, step: int) -> None:
-    """Upload checkpoint to GCS without blocking."""
-    gcs_path = f"{GCS_BUCKET}/checkpoint-{step}/"
-    try:
-        subprocess.Popen(
-            ["gsutil", "-m", "cp", "-r", f"{local_path}/*", gcs_path],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        print(f"GCS_UPLOAD_STARTED {gcs_path}", flush=True)
-    except Exception as exc:
-        print(f"GCS_UPLOAD_FAILED {exc}", flush=True)
+def upload_checkpoint(local_path: Path, step: int, is_final: bool = False) -> None:
+    """Upload checkpoint to GCS without blocking.
+    
+    Args:
+        local_path: Path to the checkpoint/adapter directory
+        step: The checkpoint step number
+        is_final: If True, upload only the final adapter files (not checkpoint subdirs)
+    """
+    upload_log = RESULTS / "upload_errors.log"
+    
+    if is_final:
+        gcs_path = f"{GCS_BUCKET}/final/"
+        files_to_upload = []
+        for pattern in ["*.json", "*.safetensors", "*.txt"]:
+            files_to_upload.extend(local_path.glob(pattern))
+        if not files_to_upload:
+            print(f"GCS_UPLOAD_SKIP no final adapter files found", flush=True)
+            return
+        try:
+            with open(upload_log, "a") as errlog:
+                for f in files_to_upload:
+                    subprocess.Popen(
+                        ["gsutil", "cp", str(f), gcs_path],
+                        stdout=subprocess.DEVNULL,
+                        stderr=errlog,
+                    )
+            print(f"GCS_UPLOAD_STARTED {gcs_path} ({len(files_to_upload)} files)", flush=True)
+        except Exception as exc:
+            with open(upload_log, "a") as errlog:
+                errlog.write(f"UPLOAD_FAILED final: {exc}\n")
+            print(f"GCS_UPLOAD_FAILED {exc}", flush=True)
+    else:
+        gcs_path = f"{GCS_BUCKET}/checkpoint-{step}/"
+        try:
+            with open(upload_log, "a") as errlog:
+                subprocess.Popen(
+                    ["gsutil", "-m", "cp", "-r", f"{local_path}/*", gcs_path],
+                    stdout=subprocess.DEVNULL,
+                    stderr=errlog,
+                )
+            print(f"GCS_UPLOAD_STARTED {gcs_path}", flush=True)
+        except Exception as exc:
+            with open(upload_log, "a") as errlog:
+                errlog.write(f"UPLOAD_FAILED checkpoint-{step}: {exc}\n")
+            print(f"GCS_UPLOAD_FAILED {exc}", flush=True)
 
 
 def delete_incomplete_checkpoint(out: Path) -> None:
@@ -200,7 +233,7 @@ def build_model(args: argparse.Namespace):
 def sanity_check_generation(model, tok, rows: list[dict], n_samples: int = 50) -> dict:
     """Check that >=95% of generations are bare numeric outputs."""
     model.eval()
-    bare_num = re.compile(r"^\s*\d+(?:\.\d+)?\s*$")
+    bare_num = re.compile(r"^\s*-?\d+(?:\.\d+)?\s*$")
     bare_count = 0
     total = 0
     samples = rows[:n_samples]
@@ -208,8 +241,13 @@ def sanity_check_generation(model, tok, rows: list[dict], n_samples: int = 50) -
     with torch.no_grad():
         for row in samples:
             prompt = render_prompt(tok, row)
-            inputs = tok(prompt, return_tensors="pt", truncation=True, max_length=512)
-            inputs = {k: v.to(model.device) for k, v in inputs.items()}
+            input_ids = tok(prompt, add_special_tokens=False)["input_ids"]
+            if len(input_ids) > 512:
+                input_ids = input_ids[-512:]
+            inputs = {
+                "input_ids": torch.tensor([input_ids], dtype=torch.long).to(model.device),
+                "attention_mask": torch.ones(1, len(input_ids), dtype=torch.long).to(model.device),
+            }
             outputs = model.generate(
                 **inputs,
                 max_new_tokens=16,
@@ -363,7 +401,7 @@ def main() -> None:
 
     trainer.model.save_pretrained(str(out))
     tok.save_pretrained(str(out))
-    upload_checkpoint(out, args.max_steps)
+    upload_checkpoint(out, args.max_steps, is_final=True)
 
     done = {
         "adapter": str(out),

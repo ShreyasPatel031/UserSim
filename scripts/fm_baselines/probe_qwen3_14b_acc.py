@@ -323,7 +323,7 @@ def main() -> None:
 def re_fullmatch_number(text: str) -> bool:
     import re
 
-    return bool(re.fullmatch(r"[-+]?\d+(?:\.\d+)?", text.strip()))
+    return bool(re.fullmatch(r"-?\d+(?:\.\d+)?", text.strip()))
 
 
 if __name__ == "__main__":
