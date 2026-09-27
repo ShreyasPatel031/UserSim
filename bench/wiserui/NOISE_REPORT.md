@@ -207,3 +207,60 @@ Setup: G-FOCUS single judge, strict, both orders, temperature 0, no extra inputs
 - **Wall time: 58 s** for all 75 pairs (05:58:46 to 05:59:44 PT, 750 calls in flight together).
   Before that, a 1-pair smoke run took 18 s; it was the same run, resumed from its cache.
 - **Spend: $5.27** (cap $15), including the $0.067 smoke pair.
+
+## Step 6: one supervised tune of gemini-2.5-flash on the short-pick prompt -- `fullset/sft_split_dev*.md`
+Approved by Shreyas at 5:57 AM PT: exactly one Vertex SFT job.
+
+**Training data.** `sft_folds.py build-split` builds 354 rows: the 177 non-dev clean pairs x 2 orders
+(`fullset/heldout177_indices.txt`).
+- The prompt is the short-pick prompt, with both screenshots fit to 768 px.
+- The target is "Better version: First/Second". In 215 rows it is followed by "Reason: ..." (a condensed Key Rationale from the
+  baseline G-FOCUS Evaluator where that Evaluator was right). The other 139 rows are pick-only.
+- The dataset's rationale is never used.
+- The winner is shown first in 177 rows and second in 177.
+- The rows and images are in the project GCS bucket and in `$WISERUI_BENCH/ft/sft/`. They are not committed.
+
+**The job.**
+- The token estimate before launch (`count --split`, 16 sampled rows) was 687 tokens/row, so 3 epochs came to 0.73M training
+  tokens, about $3.65.
+- Launched at 05:59:53 PT with `launch --split --epochs 3`, us-central1.
+- Job `tuningJobs/8131719039589285888`, SUCCEEDED at 06:18:14 PT (18 min).
+- Endpoint `endpoints/2462471189369454592`.
+- Vertex reports 241,479 billable dataset tokens (354 examples). Billed tokens = 3 epochs x 241,479 = **724k tokens, about $3.62**
+  at $5/1M.
+- The five fold jobs from the earlier aborted run (05:13 PT) were already CANCELLED at 05:17-05:18 PT. They were not touched.
+
+**Scoring.** On the 75 dev pairs, temperature 0, both orders, same prompt as the untuned run (`results/sft_untuned_shortpick`,
+gemini-2.5-flash). Dev pair 255 has only one parsed order in the untuned run.
+
+| arm | CA [95% CI] | dCA vs untuned [95% CI] | McNemar p (improved/worse) | significant | OI | FA / SA | $/pair |
+|---|---|---|---|---|---|---|---|
+| untuned 2.5 Flash, short pick | 34.7 [24.0, 45.3] | | | | 60.0 | 42.7 / 76.0 | 0.0006 |
+| **tuned 2.5 Flash, short pick** | 34.7 [24.0, 45.3] | +0.0 [-10.7, +10.7] | 1.000 (9/9) | no | 57.3 | 69.3 / 45.3 | 0.0005 |
+| G-FOCUS Flash T0 run 1 | 53.3 [42.7, 64.0] | +18.7 [+5.3, +32.0] | 0.013 (21/7) | yes | 68.0 | 61.3 / 74.7 | 0.0112 |
+| G-FOCUS Flash T0 run 2 | 52.0 [41.3, 62.7] | +17.3 [+4.0, +29.3] | 0.019 (20/7) | yes | 66.7 | 64.0 / 69.3 | 0.0112 |
+
+The tuned model against G-FOCUS T0:
+
+| comparison | dCA [95% CI] | McNemar p (improved/worse) | significant |
+|---|---|---|---|
+| vs run 1 | -18.7 [-30.7, -6.7] | 0.009 (6/20) | yes |
+| vs run 2 | -17.3 [-29.3, -5.3] | 0.015 (6/19) | yes |
+
+- **Tuning did not help.** Tuned CA equals untuned CA (34.7). 9 pairs got better and 9 got worse.
+- It mostly flipped the position bias. Untuned short-pick picks the second-shown version 99/148 times (FA 42.7 / SA 76.0).
+  The tuned model picks the first-shown version 93/150 times (FA 69.3 / SA 45.3).
+  With 177 train pairs, the model learned a position prior, not a UI judgement.
+- Both short-pick models are far below the G-FOCUS judge: about -18 CA, significant against both T0 runs.
+  One-call picking is about 20x cheaper per pair, but not usable at this accuracy.
+- Scoring wall time was 96 s (06:21:28 to 06:23:05 PT, 150 calls; the tuned endpoint is slower than base Flash).
+  Scoring cost $0.039 (billed at base Flash price).
+
+## Spend for steps 5-6 (approved 5:57 AM PT)
+| item | $ |
+|---|---|
+| 3.1 Pro G-FOCUS run (75 dev, including the smoke pair) | 5.27 (cap 15) |
+| SFT job: 724k billed training tokens | about 3.62 (cap 5) |
+| tuned endpoint scoring (75 dev) | 0.04 |
+| token counting (`count_tokens`) | 0 |
+| **total** | **about 8.93** |
