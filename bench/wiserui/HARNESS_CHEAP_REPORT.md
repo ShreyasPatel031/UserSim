@@ -1,6 +1,6 @@
 # Harness lift on the cheapest current model per frontier lab (WiserUI-Bench, 252 pairs), 2026-09-27
 
-Two rounds against one hard $5 cap. Round 1 ran 7:50–8:15 AM PT and round 2 ran 8:23–8:50 AM PT.
+Two rounds against one hard $5 cap. Round 1 ran 7:50–8:15 AM PT and round 2 ran 8:23–8:45 AM PT.
 
 **Total spend: $3.03 of $5.** Round 1 cost $2.20 and round 2 $0.83. The remaining **$1.97 is reserved for Claude Haiku
 4.5**, which this project still cannot call (see "Round 2, step 1").
