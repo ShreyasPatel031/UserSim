@@ -173,6 +173,21 @@ def ab_personas(data: dict[str, Any], ctx: dict[str, Any] | None = None, n: int 
     return unique_persona_names(out[:n], seed=seed)
 
 
+def pair_persona(persona: dict[str, Any], jobs: list[str] | None = None) -> dict[str, Any]:
+    """A study buyer (from :func:`compare_personas` or the study planner) as a :mod:`mvp.pairwise` judge persona.
+
+    Same shape as :func:`ab_personas` (name, role, bio, goal); the goal is the jobs this buyer ran. The planner's
+    ``favors`` tag is left out so the judge stays blind to which product the buyer was expected to prefer.
+    """
+    goal = "; ".join(j for j in (jobs or []) if j) or "; ".join(str(g) for g in persona.get("goals") or [] if g)
+    return {
+        "name": " ".join(str(persona.get("name") or "a buyer").split())[:40],
+        "role": " ".join(str(persona.get("role") or persona.get("occupation") or "").split())[:80],
+        "bio": " ".join(str(persona.get("bio") or "").split())[:240],
+        "goal": " ".join(goal.split())[:200],
+    }
+
+
 # Framing fix "position": one small call on the full page read decides what
 # category the product is in before rivals, buyers and tasks are picked.
 _POSITIONING = """Say what this product is. Reply with JSON only.
