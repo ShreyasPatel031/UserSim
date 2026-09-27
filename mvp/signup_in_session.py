@@ -1089,6 +1089,29 @@ def sitekey_from_frames(urls: list[str]) -> dict[str, Any] | None:
     return None
 
 
+async def _captcha_frame_urls(page: Any, wait_s: float = 4.0) -> list[str]:
+    """Frame URLs plus iframe ``src`` attributes, retried briefly.
+
+    On Browserbase the reCAPTCHA anchor is often an out-of-process frame that
+    is missing from ``page.frames`` (logged as ``frames=[]``) or the widget is
+    still rendering; the iframe's ``src`` attribute in the DOM carries ``k=``.
+    """
+    urls: list[str] = []
+    deadline = asyncio.get_running_loop().time() + max(0.0, wait_s)
+    while True:
+        urls = [str(getattr(f, "url", "") or "") for f in getattr(page, "frames", []) or []]
+        try:
+            srcs = await page.evaluate(
+                "() => Array.from(document.querySelectorAll('iframe')).map(f => f.src || f.getAttribute('src') || '')"
+            )
+            urls += [str(u) for u in (srcs or []) if u]
+        except Exception:
+            pass
+        if sitekey_from_frames(urls) or asyncio.get_running_loop().time() >= deadline:
+            return urls
+        await asyncio.sleep(1.0)
+
+
 async def _capsolver_direct(page: Any, spend: dict[str, Any], left_s: float) -> dict[str, Any] | None:
     """Sitekey -> CapSolver -> inject, skipping the free OSS/audio stack.
 
@@ -1102,9 +1125,9 @@ async def _capsolver_direct(page: Any, spend: dict[str, Any], left_s: float) -> 
     if not info or not info.get("sitekey"):
         # zapier.com renders the widget from JS with no data-sitekey in the DOM
         # ("need_solver_api ... sitekey=unknown"); the anchor iframe URL has it.
-        info = sitekey_from_frames([str(getattr(f, "url", "") or "") for f in getattr(page, "frames", []) or []])
+        info = sitekey_from_frames(await _captcha_frame_urls(page))
     if not info or not info.get("sitekey"):
-        frames = [str(getattr(f, "url", "") or "")[:90] for f in getattr(page, "frames", []) or []]
+        frames = [u[:90] for u in await _captcha_frame_urls(page, 0.0)]
         print(f"[signup] {spend.get('site')}: no captcha sitekey found; frames={[u for u in frames if 'captcha' in u or 'challenge' in u]}", flush=True)
         return None
     ctype = str(info.get("type") or "recaptcha")

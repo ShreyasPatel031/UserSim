@@ -2986,7 +2986,7 @@ async def complete_task_on_page(
             "friction": action.get("friction") or "",
         }
         trace.append(row)
-        step_shots.attach(pending_shot, row, agent_id or "agent", step_no)
+        step_shots.attach(pending_shot, row, agent_id or "agent", step_no, page=page)
         pending_shot = None
         history.append(label)
         if on_step is not None:
