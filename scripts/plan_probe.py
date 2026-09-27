@@ -61,6 +61,7 @@ async def probe(url: str) -> dict:
             "product": spliced.get("product"),
             "segment": spliced.get("segment"),
             "positioning": spliced.get("positioning"),
+            "verified": spliced.get("verified"),
             "competitors": spliced.get("competitors"),
             "competitor_names": spliced.get("competitor_names"),
             "persona_names": [p.get("name") for p in spliced.get("personas") or []],
@@ -83,7 +84,7 @@ def main() -> None:
     path.write_text(json.dumps(res, indent=1))
     f = res.get("final") or {}
     print(json.dumps({"file": str(path), "plan_wall_s": res["plan_wall_s"], "starter_wall_s": res["starter_wall_s"],
-                      "gemini_calls": res["gemini_calls"], **{k: f.get(k) for k in ("segment", "positioning", "competitors", "persona_names", "tasks")}}, indent=1))
+                      "gemini_calls": res["gemini_calls"], **{k: f.get(k) for k in ("segment", "positioning", "verified", "competitors", "persona_names", "tasks")}}, indent=1))
     sys.stdout.flush()
 
 

@@ -47,10 +47,12 @@ async def starter_plan(url: str, *, timeout: float = 6.0) -> dict[str, Any] | No
     async def _run() -> dict[str, Any] | None:
         t0 = time.monotonic()
         read = await _page_read(url)
+        from mvp.fast_plan import prompt_text, read_rule
+
         raw = await gemini_chat(
             [{"role": "user", "content": _STARTER.format(
-                url=url, title=read.get("title") or "", text=str(read.get("text") or "")[:900]
-            )}],
+                url=url, title=read.get("title") or "", text=prompt_text(read, 900)
+            ) + read_rule()}],
             model=os.environ.get("MVP_FAST_PLAN_MODEL") or "gemini-2.5-flash",
             temperature=0.3,
             json_mode=True,

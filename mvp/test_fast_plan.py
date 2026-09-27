@@ -164,3 +164,51 @@ def test_persona_named_after_a_page_testimonial_is_renamed():
     data = {"personas": [{"name": "Joanna Kurylo", "favors": "product"}, {"name": "Sam Ortiz", "favors": "product"}]}
     names = [p["name"] for p in compare_personas(data, "zo.computer", [], {}, read)]
     assert "Joanna Kurylo" not in names and names[1] == "Sam Ortiz"
+
+
+ZO_LIKE = """<html><head><title>Zo Computer | Build something seriously powerful</title>
+<meta name="description" content="Run your business and life on Zo with a cloud computer that works 24/7"/>
+<meta name="keywords" content="personal AI assistant,scheduled AI agents,Zapier alternative,n8n alternative"/>
+<script type="application/ld+json">{"@graph":[{"@type":"SoftwareApplication","applicationCategory":"DeveloperApplication",
+"description":"A personal cloud server with AI. Text it instructions, schedule agents, host sites."}]}</script></head>
+<body><h1>Build something seriously powerful</h1><p>John: Zo made it easy to build my own 3D portfolio world.</p>
+<p>Is Zo like OpenClaw or Hermes? Yes, and more.</p></body></html>"""
+
+
+def test_about_line_carries_the_sites_own_positioning():
+    # Study 50f0954c: the 800-char text was all website testimonials, so the plan
+    # compared Zo (a personal AI cloud computer) with Replit, Netlify and Vercel.
+    read = page_read_from_html(ZO_LIKE)
+    about = read["about"]
+    assert "A personal cloud server with AI" in about
+    assert "scheduled AI agents" in about
+    assert "The site compares itself with: Zapier, n8n, OpenClaw, Hermes" in about
+    assert "3D portfolio" in read["full_text"]
+
+
+def test_prompt_text_puts_about_first_only_with_the_read_fix(monkeypatch=None):
+    import os
+
+    from mvp.fast_plan import prompt_text, read_rule
+
+    read = page_read_from_html(ZO_LIKE)
+    old = os.environ.get("MVP_PLAN_FRAMING")
+    try:
+        os.environ["MVP_PLAN_FRAMING"] = "read"
+        assert prompt_text(read).startswith("About: ")
+        assert "showcase" in read_rule()
+        os.environ["MVP_PLAN_FRAMING"] = "off"
+        assert prompt_text(read) == read["text"][:800]
+        assert read_rule() == ""
+    finally:
+        if old is None:
+            os.environ.pop("MVP_PLAN_FRAMING", None)
+        else:
+            os.environ["MVP_PLAN_FRAMING"] = old
+
+
+def test_named_rivals_skip_pronouns_and_lowercase_mentions():
+    from mvp.fast_plan import _site_named_rivals
+
+    got = _site_named_rivals("", "Better than the rest. Unlike Notion or Coda. something I could never do on webflow or wordpress")
+    assert got == ["Notion", "Coda"]

@@ -127,6 +127,39 @@ Rules: realistic buyers in this category, spread evenly: at least one natural fi
 natural fit for each competitor (for example an enterprise CS leader fits an enterprise suite, a two-person startup
 fits a self-serve tool). No quotes."""
 
+# Framing fix "position": one small call on the full page read decides what
+# category the product is in before rivals, buyers and tasks are picked.
+_POSITIONING = """Say what this product is. Reply with JSON only.
+Product URL: {url}
+Page title: {title}
+Page text (the whole page, including customer quotes): {text}
+
+Return {{"product": "short product name", "category": "2-6 word product category, e.g. semantic search API",
+  "what_it_is": "one sentence: what the product itself does for its user",
+  "buyer": "who evaluates products in this category",
+  "compared_with": ["2-4 well-known products buyers compare it with"],
+  "not": "an adjacent category it could be mistaken for, and why not"}}
+Rules: judge from what the product does, not from what customers happened to build with it (quotes and showcases
+are examples). Use the site's own words where it names its category or alternatives. No quotes inside strings."""
+
+# Framing fix "verify": a self-check of the drafted plan against the full page.
+_VERIFY = """Check a drafted competitor list for a product comparison study. Reply with JSON only.
+Product URL: {url}
+Page title: {title}
+Page text (the whole page): {text}
+Drafted segment: {segment}
+Drafted competitors: {rivals}
+
+Return {{"category": "2-6 word category of this product, judged from what it does (customer showcases are examples, not the category)",
+  "segment": "one short phrase naming who evaluates products in this category",
+  "fits": [{{"url": "drafted competitor url", "same_job": true, "why": "at most 10 words"}}],
+  "replacements": [{{"url": "https://rival.com/", "name": "Rival"}}]}}
+Rules: same_job is true only if a buyer of this product would try that competitor side by side for the same job.
+If any same_job is false, replacements lists exactly three best-known direct competitors in the category, best first,
+homepage URLs of real public standalone products operating today (never a parent company, suite homepage or
+marketplace). If all fit, replacements is empty. No quotes inside strings."""
+
+
 _PRICING_TASK = "Look for pricing or how to get started"
 _PRICING_RE = re.compile(r"pric|\bplans?\b|upgrade|billing|subscri", re.I)
 _STOP = {
@@ -184,7 +217,122 @@ def page_read_from_html(html: str) -> dict[str, Any]:
         seen.add(key)
         links.append((label, href[:80]))
     text = _plain(re.sub(r"<[^>]+>", " ", body))
-    return {"title": title, "text": f"{desc} {text}".strip()[:800], "links": links[:300]}
+    return {
+        "title": title,
+        "text": f"{desc} {text}".strip()[:800],
+        "links": links[:300],
+        # What the site says it is (meta, og, JSON-LD, keywords, headings) and a
+        # longer body read. The 800-char text above can be all customer quotes.
+        "about": _site_about(html, desc, text),
+        "full_text": text[:4000],
+    }
+
+
+def _meta_tags(html: str) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for m in re.finditer(r"<meta\b([^>]*)>", html, re.I):
+        attrs = {k.lower(): (v1 if v1 is not None else v2) for k, v1, v2 in re.findall(r'([\w:-]+)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')', m.group(1))}
+        key = (attrs.get("name") or attrs.get("property") or "").lower()
+        if key and attrs.get("content") and key not in out:
+            out[key] = _plain(attrs["content"])
+    return out
+
+
+def _json_ld_about(html: str) -> list[str]:
+    import json
+
+    found: list[str] = []
+
+    def walk(node: Any) -> None:
+        if isinstance(node, list):
+            for n in node:
+                walk(n)
+        elif isinstance(node, dict):
+            kind = str(node.get("@type") or "")
+            if re.search(r"Application|Product|Service|Organization|WebSite", kind):
+                for key in ("applicationCategory", "category", "description", "slogan"):
+                    val = node.get(key)
+                    if isinstance(val, str) and val.strip():
+                        found.append(_plain(val))
+            for key in ("@graph", "mainEntity", "itemListElement"):
+                if key in node:
+                    walk(node[key])
+
+    for m in re.finditer(r'<script[^>]+application/ld\+json[^>]*>(.*?)</script>', html, re.I | re.S):
+        try:
+            walk(json.loads(m.group(1)))
+        except Exception:  # noqa: BLE001
+            continue
+    return found
+
+
+_NOT_A_NAME = {"the", "this", "that", "our", "your", "we", "you", "it", "a", "an", "me", "us", "them", "other", "any", "most"}
+
+
+def _site_named_rivals(keywords: str, text: str) -> list[str]:
+    """Products the site names itself against ("Zapier alternative", "Is Zo like OpenClaw or Hermes?")."""
+    found: list[str] = []
+    for m in re.finditer(r"([A-Za-z][\w.]*(?: [A-Z][\w.]*)?) alternative", keywords or ""):
+        found.append(m.group(1))
+    pat = r"\b(?:[Ll]ike|[Tt]han|[Uu]nlike|[Vv]s\.?|[Vv]ersus|[Cc]ompared to|[Ii]nstead of)\s+([A-Z][\w.-]+(?:,? (?:or|and) [A-Z][\w.-]+)*)"
+    for m in re.finditer(pat, text or ""):
+        found += re.split(r",? (?:or|and) ", m.group(1))
+    out: list[str] = []
+    for name in found:
+        name = name.strip(" .,")
+        if name and name.lower() not in _NOT_A_NAME and name.lower() not in {o.lower() for o in out}:
+            out.append(name)
+    return out[:8]
+
+
+def _site_about(html: str, desc: str = "", text: str = "") -> str:
+    """The site's own one-line positioning: descriptions, JSON-LD category, keywords, headings, named rivals."""
+    meta = _meta_tags(html)
+    parts: list[str] = [desc, meta.get("og:description", ""), meta.get("twitter:description", "")]
+    parts += _json_ld_about(html)
+    if meta.get("keywords"):
+        parts.append("Keywords: " + meta["keywords"][:300])
+    heads = [_plain(re.sub(r"<[^>]+>", " ", h)) for h in re.findall(r"<h[12][^>]*>(.*?)</h[12]>", html, re.I | re.S)]
+    heads = [h for h in heads if 3 <= len(h) <= 90][:6]
+    if heads:
+        parts.append("Headings: " + " / ".join(heads))
+    rivals = _site_named_rivals(meta.get("keywords", ""), text)
+    if rivals:
+        parts.insert(1, "The site compares itself with: " + ", ".join(rivals))
+    seen: set[str] = set()
+    out: list[str] = []
+    for part in parts:
+        key = part.lower().strip(" .")
+        if key and key not in seen:
+            seen.add(key)
+            out.append(part.strip())
+    return " | ".join(out)[:700]
+
+
+def framing_modes() -> set[str]:
+    """Which framing fixes run (MVP_PLAN_FRAMING, comma list): read, position, verify. "off" = none."""
+    raw = os.environ.get("MVP_PLAN_FRAMING", _DEFAULT_FRAMING)
+    return {m.strip().lower() for m in raw.split(",") if m.strip() and m.strip().lower() not in {"off", "none", "0"}}
+
+
+_DEFAULT_FRAMING = "off"
+
+_READ_RULE = (
+    "\nThe About line is the site's own description, category and keywords: judge the product category from it"
+    " first. Customer quotes and showcase examples on the page are use cases, not the category."
+)
+
+
+def prompt_text(read: dict[str, Any], limit: int = 800) -> str:
+    """Page text for a planner prompt. With the read fix: the site's About line first, then a longer body."""
+    if "read" in framing_modes() and (read.get("about") or read.get("full_text")):
+        body = str(read.get("full_text") or read.get("text") or "")
+        return f"About: {read.get('about') or ''}\nPage: {body}"[: max(limit, 1500)]
+    return str(read.get("text") or "")[:limit]
+
+
+def read_rule() -> str:
+    return _READ_RULE if "read" in framing_modes() else ""
 
 
 def _plain(text: str) -> str:
@@ -509,8 +657,8 @@ async def _split_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, A
     async def _run() -> dict[str, Any] | None:
         t0 = asyncio.get_running_loop().time()
         read = await _page_read(url)
-        text = str(read.get("text") or "")[:600]
-        head = await ask(_CMP_COMPETITORS.format(url=url, title=read.get("title") or "", text=text))
+        text = prompt_text(read, 600)
+        head = await ask(_CMP_COMPETITORS.format(url=url, title=read.get("title") or "", text=text) + read_rule())
         if not isinstance(head, dict):
             return None
         own = (urlsplit(url).hostname or "").removeprefix("www.")
@@ -559,15 +707,53 @@ async def _split_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, A
         return None
 
 
+def _positioning_note(pos: dict[str, Any]) -> str:
+    """Prompt addendum carrying the positioning call's answer (empty when it did not run)."""
+    if not pos or not str(pos.get("category") or "").strip():
+        return ""
+    alts = ", ".join(str(a) for a in (pos.get("compared_with") or []) if str(a).strip())[:200]
+    return (
+        f"\nPositioning, decided from the whole page (follow it): category: {pos.get('category')}. "
+        f"What it is: {pos.get('what_it_is') or ''} Buyer: {pos.get('buyer') or ''}. "
+        f"Buyers compare it with: {alts or 'unknown'}. It is not: {pos.get('not') or ''}\n"
+        "Competitors, personas and tasks must all be in that category; the segment names that buyer."
+    )
+
+
+async def _verify_plan(
+    url: str, title: str, full: str, data: dict[str, Any], prompt: str, ask: Any
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Self-check: do the drafted rivals do the same job? If not, redo the plan with the corrected rivals."""
+    items = [i for i in (data.get("competitors") or []) if isinstance(i, dict)]
+    rivals = "; ".join(f"{i.get('name') or ''} ({i.get('url') or ''})" for i in items)
+    check = await ask(_VERIFY.format(url=url, title=title, text=full, segment=data.get("segment") or "", rivals=rivals))
+    if not isinstance(check, dict):
+        return data, {}
+    fits = [f for f in (check.get("fits") or []) if isinstance(f, dict)]
+    bad = [f for f in fits if f.get("same_job") is False or str(f.get("same_job")).lower() == "false"]
+    repl = [r for r in (check.get("replacements") or []) if isinstance(r, dict) and r.get("url")]
+    verdict = {"category": check.get("category"), "rejected": [f.get("url") for f in bad], "replacements": repl[:3]}
+    if not bad or len(repl) < 2:
+        verdict["redo"] = False
+        return data, verdict
+    fixed = ", ".join(f"{r.get('name') or ''} ({r.get('url')})" for r in repl[:3])
+    redo = await ask(
+        prompt
+        + f"\nA check of the whole page found this product's category is: {check.get('category')}. "
+        f"Segment: {check.get('segment') or ''}. Use exactly these competitors, in this order: {fixed}. "
+        "Write personas and tasks for that category."
+    )
+    verdict["redo"] = isinstance(redo, dict)
+    return (redo if isinstance(redo, dict) else data), verdict
+
+
 async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, Any] | None:
     """Comparison plan: 3 rivals, 5 personas spread across all 4 products, 5 tasks favoring each."""
     from capability.gemini_config import extract_json, gemini_chat
 
-    async def _run() -> dict[str, Any] | None:
-        read = await _page_read(url)
-        prompt = _COMPARE_PROMPT.format(
-            url=url, title=read.get("title") or "", text=read.get("text") or "", links=_links_for_prompt(read)
-        )
+    modes = framing_modes()
+
+    async def ask(prompt: str) -> Any:
         raw = await gemini_chat(
             [{"role": "user", "content": prompt}],
             model=os.environ.get("MVP_FAST_PLAN_MODEL") or "gemini-2.5-flash",
@@ -575,9 +761,31 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
             json_mode=True,
             max_retries=2,
         )
-        data = extract_json(raw)
+        return extract_json(raw)
+
+    async def _run() -> dict[str, Any] | None:
+        read = await _page_read(url)
+        title = read.get("title") or ""
+        full = f"{read.get('text') or ''} {read.get('full_text') or ''}"[:3800]
+        base_prompt = _COMPARE_PROMPT.format(url=url, title=title, text=prompt_text(read), links=_links_for_prompt(read))
+        base_prompt += read_rule()
+        positioning: dict[str, Any] = {}
+        if "position" in modes:
+            try:
+                got = await ask(_POSITIONING.format(url=url, title=title, text=full))
+                positioning = got if isinstance(got, dict) else {}
+            except Exception as exc:  # noqa: BLE001
+                print(f"[fast_plan] positioning skipped: {exc!r}", flush=True)
+        prompt = base_prompt + _positioning_note(positioning)
+        data = await ask(prompt)
         if not isinstance(data, dict):
             return None
+        verified: dict[str, Any] = {}
+        if "verify" in modes:
+            try:
+                data, verified = await _verify_plan(url, title, full, data, prompt, ask)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[fast_plan] verify skipped: {exc!r}", flush=True)
         own = (urlsplit(url).hostname or "").removeprefix("www.")
         items = list(data.get("competitors") or [])
         names = {
@@ -610,6 +818,9 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
             "personas": personas,
             "task_specs": tasks,
             "tasks": [t["prompt"] for t in tasks],
+            "framing": sorted(modes),
+            "positioning": positioning or None,
+            "verified": verified or None,
         }
 
     try:
