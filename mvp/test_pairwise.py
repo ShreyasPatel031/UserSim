@@ -336,3 +336,21 @@ def test_few_shot_evaluator_only_leave_one_out_balanced():
     call2, calls2 = fake_gfocus(prefers=b"AAA")
     run(compare_pair(A, B, None, CTX, _gf(few_shot_k=3), call=call2))
     assert all("fs3" not in c[0] for c in calls2)
+
+
+def test_vanilla_prompt_and_parse():
+    seen = []
+
+    async def call(key, contents, *, temperature, max_tokens, media_resolution=None, json_mode=True, model=None):
+        seen.append((key, model, contents[0]))
+        return ("Differences: ...\n**More effective:** " + ("First" if contents[1] == b"AAA" else "Second")), 10, 5
+
+    flags = PairFlags(short_pick=True, vanilla=True, temperature=0.0, max_tokens=2048, model="gpt-4o")
+    r = run(compare_pair(A, B, None, CTX, flags, call=call))
+    assert r["winner"] == "A" and sorted(k for k, *_ in seen) == ["vanilla|ab", "vanilla|ba"]
+    assert all(m == "gpt-4o" and p == pairwise.VANILLA_PROMPT for _, m, p in seen) and "vanilla" in r["flags"]
+    pv = pairwise.parse_vanilla
+    assert pv("More effective: Second") == "Second" and pv("more effective: <first>") == "First"
+    assert pv("More effective: [Second]\n") == "Second" and pv("More effective:\n\nFirst") == "First"
+    assert pv("First is better. More effective: Second") == "Second" and pv("Both are fine") is None
+    assert pv("More effective: First\n...\nMore effective: Second") == "Second"

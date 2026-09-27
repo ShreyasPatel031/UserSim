@@ -206,6 +206,133 @@ def gemini_generate(
     raise RuntimeError(f"gemini call failed: {last!r}")
 
 
+# ----------------------------------------------------------------- other providers (provider-agnostic llm_generate)
+# Claude runs on Vertex AI (publisher "anthropic") in the GCP project, OpenAI through its API (OPENAI_API_KEY from the
+# environment or the file named by OPENAI_ENV_FILE; the key is never logged). Every client takes the same mixed
+# contents list (str / image bytes) and returns (text, tokens_in, tokens_out), tokens_out including any reasoning.
+
+_CLAUDE_LOCATIONS = [x.strip() for x in os.environ.get("CLAUDE_VERTEX_LOCATIONS", "global,us-east5,europe-west1").split(",")
+                     if x.strip()]
+_CLAUDE_BY_LOC: dict = {}
+_OPENAI = None
+
+
+def _mime(b: bytes) -> str:
+    return "image/jpeg" if bytes(b[:3]) == b"\xff\xd8\xff" else "image/png"
+
+
+def _is_retryable(exc: Exception) -> bool:
+    code = getattr(exc, "status_code", None) or getattr(exc, "code", None)
+    return not (isinstance(code, int) and 400 <= code < 500 and code not in (408, 409, 429))
+
+
+def claude_vertex_generate(contents: list, *, model: str, temperature: float = 0.0, max_tokens: int = 1024,
+                           retries: int = 8, timeout_s: float | None = None) -> tuple[str, int, int]:
+    """Claude on Vertex AI; on 429/5xx/timeouts, retries rotate across CLAUDE_VERTEX_LOCATIONS (global first)."""
+    import base64
+    import time as _time
+
+    from anthropic import AnthropicVertex
+
+    from auth import vertex_credentials
+    from config import GCP_PROJECT
+
+    content = []
+    for c in contents:
+        if isinstance(c, (bytes, bytearray)):
+            content.append({"type": "image", "source": {"type": "base64", "media_type": _mime(c),
+                                                         "data": base64.b64encode(bytes(c)).decode()}})
+        else:
+            content.append({"type": "text", "text": str(c)})
+    last: Exception | None = None
+    for attempt in range(max(1, retries)):
+        loc = _CLAUDE_LOCATIONS[attempt % len(_CLAUDE_LOCATIONS)]
+        try:
+            if loc not in _CLAUDE_BY_LOC:
+                _CLAUDE_BY_LOC[loc] = AnthropicVertex(
+                    region=loc, project_id=os.environ.get("GCP_PROJECT") or GCP_PROJECT,
+                    credentials=vertex_credentials(), max_retries=0,
+                    timeout=timeout_s or float(os.environ.get("MVP_GEMINI_TIMEOUT_S", "90")))
+            resp = _CLAUDE_BY_LOC[loc].messages.create(model=model, max_tokens=max_tokens, temperature=temperature,
+                                                       messages=[{"role": "user", "content": content}])
+            text = "".join(getattr(b, "text", "") for b in resp.content)
+            return text.strip(), int(resp.usage.input_tokens or 0), int(resp.usage.output_tokens or 0)
+        except Exception as exc:  # noqa: BLE001
+            last = exc
+            if not _is_retryable(exc) and getattr(exc, "status_code", None) != 404:
+                break
+            if attempt + 1 < retries:
+                _time.sleep(min(20, 1.0 * 2 ** (attempt // len(_CLAUDE_LOCATIONS))))
+    raise RuntimeError(f"claude call failed: {last!r}"[:500])
+
+
+def _openai_client():
+    global _OPENAI
+    if _OPENAI is None:
+        from openai import OpenAI
+
+        key = os.environ.get("OPENAI_API_KEY", "")
+        env_file = os.environ.get("OPENAI_ENV_FILE", "/workspace/.openai.env")
+        if not key and os.path.exists(env_file):
+            for line in open(env_file):
+                k, _, v = line.strip().partition("=")
+                if k.replace("export ", "").strip() == "OPENAI_API_KEY":
+                    key = v.strip().strip("'\"")
+        if not key:
+            raise RuntimeError("OPENAI_API_KEY not set")
+        _OPENAI = OpenAI(api_key=key, max_retries=0, timeout=float(os.environ.get("MVP_GEMINI_TIMEOUT_S", "90")))
+    return _OPENAI
+
+
+def openai_generate(contents: list, *, model: str, temperature: float = 0.0, max_tokens: int = 1024,
+                    retries: int = 8) -> tuple[str, int, int]:
+    """OpenAI Chat Completions with images as data URLs (detail "auto"). Reasoning models (gpt-5*, o*) take no
+    temperature and run at reasoning_effort OPENAI_REASONING_EFFORT (default "minimal"); their reasoning tokens are in
+    completion_tokens and get extra max_completion_tokens headroom."""
+    import base64
+    import time as _time
+
+    content = []
+    for c in contents:
+        if isinstance(c, (bytes, bytearray)):
+            content.append({"type": "image_url", "image_url": {
+                "url": f"data:{_mime(c)};base64,{base64.b64encode(bytes(c)).decode()}"}})
+        else:
+            content.append({"type": "text", "text": str(c)})
+    reasoning = model.startswith(("gpt-5", "o1", "o3", "o4"))
+    kw: dict = {"max_completion_tokens": max_tokens + (4096 if reasoning else 0)}
+    if reasoning:
+        kw["reasoning_effort"] = os.environ.get("OPENAI_REASONING_EFFORT", "minimal")
+    else:
+        kw["temperature"] = temperature
+    last: Exception | None = None
+    for attempt in range(max(1, retries)):
+        try:
+            resp = _openai_client().chat.completions.create(model=model, messages=[{"role": "user", "content": content}],
+                                                            **kw)
+            u = resp.usage
+            return ((resp.choices[0].message.content or "").strip(), int(u.prompt_tokens or 0),
+                    int(u.completion_tokens or 0))
+        except Exception as exc:  # noqa: BLE001
+            last = exc
+            if not _is_retryable(exc):
+                break
+            if attempt + 1 < retries:
+                _time.sleep(min(30, 1.5 * 2 ** attempt))
+    raise RuntimeError(f"openai call failed: {last!r}"[:500])
+
+
+def llm_generate(contents: list, *, model: str, temperature: float = 0.0, max_tokens: int = 1024,
+                 json_mode: bool = False, media_resolution: str | None = None) -> tuple[str, int, int]:
+    """Provider-agnostic call: claude-* -> Claude on Vertex, gpt-*/o1/o3/o4* -> OpenAI, anything else -> Gemini."""
+    if model.startswith("claude-"):
+        return claude_vertex_generate(contents, model=model, temperature=temperature, max_tokens=max_tokens)
+    if model.startswith(("gpt-", "o1", "o3", "o4")):
+        return openai_generate(contents, model=model, temperature=temperature, max_tokens=max_tokens)
+    return gemini_generate(contents, model=model, temperature=temperature, max_tokens=max_tokens, json_mode=json_mode,
+                           media_resolution=media_resolution)
+
+
 def gemini_vision_pair(
     prompt: str,
     prev_png: bytes | list[bytes],

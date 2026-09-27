@@ -40,7 +40,9 @@ IMAGES = BENCH / "images_clean"
 # Composite pairs split into panels by composites.py (win/lose crops); preferred over IMAGES when present.
 RECOVERED = BENCH / "images_recovered"
 # Vertex list price (USD / 1M tokens): input, output.
-PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-3.1-pro-preview": (2.00, 12.00), "gemini-2.5-flash-lite": (0.10, 0.40), "gemini-2.5-pro": (1.25, 10.0)}
+PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-3.1-pro-preview": (2.00, 12.00),
+         "claude-sonnet-4-6": (3.00, 15.00), "claude-haiku-4-5@20251001": (1.00, 5.00),
+         "gpt-4o": (2.50, 10.00), "gpt-4.1-mini": (0.40, 1.60), "gpt-5-mini": (0.25, 2.00), "gemini-2.5-flash-lite": (0.10, 0.40), "gemini-2.5-pro": (1.25, 10.0)}
 STREAMS = {
     "s1": PairFlags(both_orders=True, goal_diffs=False, debias=False),
     "s2": PairFlags(both_orders=True, goal_diffs=True, debias=False),
@@ -56,6 +58,10 @@ STREAMS = {
     # One call per order: "Better version: First/Second" + 1-2 sentence reason, temperature 0, screenshots fit in
     # 768x768 (the SFT experiment's prompt; --model picks the base model or a tuned endpoint).
     "shortpick": PairFlags(both_orders=True, short_pick=True, temperature=0.0, max_tokens=200, image_max_px=768),
+    # The WiserUI paper's vanilla zero-shot prompt, one call per order, any provider via --model; screenshots fit in
+    # 1568x1568 (Claude's own limit) so every model gets the same bytes.
+    "vanilla": PairFlags(both_orders=True, short_pick=True, vanilla=True, temperature=0.0, max_tokens=2048,
+                         image_max_px=1568),
 }
 
 

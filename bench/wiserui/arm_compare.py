@@ -21,7 +21,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from paper_metrics import boot, ids_of, load  # noqa: E402
 
 B = 10000
-PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-3.1-pro-preview": (2.00, 12.00)}  # list $/1M tokens (in, out)
+# list $/1M tokens (in, out); kept in sync with run_bench.PRICE
+PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-3.1-pro-preview": (2.00, 12.00),
+         "claude-sonnet-4-6": (3.00, 15.00), "claude-haiku-4-5@20251001": (1.00, 5.00),
+         "gpt-4o": (2.50, 10.00), "gpt-4.1-mini": (0.40, 1.60), "gpt-5-mini": (0.25, 2.00)}
 
 
 def pair_cost(run: Path, ids: set[int]) -> float:

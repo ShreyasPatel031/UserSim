@@ -23,6 +23,9 @@ so ablation arms differ only in flags:
   "Better version: First/Second") to the Evaluator call only. Examples come from a pool passed to :func:`compare_pair`
   (``few_shot_pool``, never the pair itself: ``pair_id``), chosen by :func:`pick_examples` (same page type and/or
   industry first, seeded) with the winner's position balanced across the examples.
+- ``vanilla`` (with ``short_pick``): the WiserUI paper's zero-shot baseline instead, verbatim
+  (repo inference/prompts_task1/zero_shot.txt: find the key differences, then "More effective: <First/Second>"), no page
+  context; ``model`` may be any provider (``claude-*`` on Vertex, ``gpt-*`` on OpenAI, Gemini), see llm_generate.
 - ``short_pick``: one call per presentation order that only names the better version plus one or two sentences
   ("Better version: First/Second" / "Reason: ..."), temperature ``temperature``. This is the prompt a supervised
   fine-tune is trained on (bench/wiserui/sft_folds.py); ``model`` names the base model or a tuned Vertex endpoint
@@ -108,12 +111,13 @@ class PairFlags:
     gf_change: bool = False      # experimenter's description of what the test changed: ctx["change"]
     # One-call short pick (see module docstring). model=None uses PAIRWISE_MODEL.
     short_pick: bool = False
+    vanilla: bool = False  # with short_pick: the paper's zero-shot prompt ("More effective: First/Second")
     model: str | None = None
     image_max_px: int | None = None
 
     def name(self) -> str:
         if self.short_pick:
-            return "+".join(["both" if self.both_orders else "one", "short_pick"]
+            return "+".join(["both" if self.both_orders else "one", "vanilla" if self.vanilla else "short_pick"]
                             + ([f"px{self.image_max_px}"] if self.image_max_px else [])
                             + ([f"model={self.model}"] if self.model else []))
         return "+".join(
@@ -141,10 +145,10 @@ SAMPLE_STAGES = ("all", "argue", "evaluator")
 async def default_call(key: str, contents: list, *, temperature: float, max_tokens: int,
                        media_resolution: str | None = None, json_mode: bool = True,
                        model: str | None = None) -> tuple[str, int, int]:
-    from mvp.e2e_ui_run import gemini_generate
+    from mvp.e2e_ui_run import llm_generate
 
     return await asyncio.to_thread(
-        gemini_generate, contents, model=model or PAIRWISE_MODEL, temperature=temperature, max_tokens=max_tokens,
+        llm_generate, contents, model=model or PAIRWISE_MODEL, temperature=temperature, max_tokens=max_tokens,
         json_mode=json_mode, media_resolution=media_resolution,
     )
 
@@ -944,6 +948,25 @@ Better version: <First or Second>
 Reason: <one or two sentences>"""
 
 
+# WiserUI-Bench repo, inference/prompts_task1/zero_shot.txt (the paper's vanilla single-call baseline), verbatim.
+VANILLA_PROMPT = """You are an expert in designing UI/UX for web/apps.
+
+The two screenshots show two different versions of the same page.
+Identify the key UI differences between the two versions, and then evaluate which variant is more effective UI/UX design \
+that leads to better user experience and conversion.
+
+You should end your answer with following the format (No bold, etc):
+More effective: <First/Second>"""
+
+
+def parse_vanilla(text: str) -> str | None:
+    """"First"/"Second" from the LAST "More effective: ..." line (markdown, brackets and case tolerated), else None."""
+    t = (text or "").replace("**", "").replace("__", "")
+    hits = re.findall(r"more\s+effective\s*(?:variant|version|design)?\s*[:\-\u2013]\s*[\s*_`\"'\[<(]*"
+                      r"(first|second)\b", t, re.I)
+    return hits[-1].capitalize() if hits else None
+
+
 def short_pick_prompt(ctx: dict[str, Any]) -> str:
     """The short-pick instruction for one page (same page context as the G-FOCUS judge: company, industry, page type)."""
     return SHORT_PICK_PROMPT.format(head=_v1_head(ctx))
@@ -982,19 +1005,24 @@ async def compare_pair_short(ev_a: PairEvidence, ev_b: PairEvidence, ctx: dict[s
 
     async def one(o: str) -> dict[str, Any]:
         first, second = _ordered(ev_a, ev_b, o)
-        text, _, _ = await call(f"short|{o}", short_pick_contents(first, second, ctx, flags.image_max_px),
+        if flags.vanilla:
+            contents = [VANILLA_PROMPT, *(fit_image(b, flags.image_max_px) for b in first.screenshots),
+                        *(fit_image(b, flags.image_max_px) for b in second.screenshots)]
+        else:
+            contents = short_pick_contents(first, second, ctx, flags.image_max_px)
+        text, _, _ = await call(f"{'vanilla' if flags.vanilla else 'short'}|{o}", contents,
                                 temperature=flags.temperature, max_tokens=flags.max_tokens,
                                 media_resolution=flags.media_resolution, json_mode=False, **kw)
-        pick, _ = parse_v1_verdict(text)
+        pick = parse_vanilla(text) if flags.vanilla else parse_v1_verdict(text)[0]
         rx, ry = (1.0, 0.0) if pick == "First" else (0.0, 1.0) if pick == "Second" else (None, None)
         ra, rb = (rx, ry) if o == "ab" else (ry, rx)
         m = re.search(r"Reason\s*:\s*(.+)", (text or "").replace("**", ""), re.I | re.S)
-        return {"order": o, "persona": "short-pick judge", "k": 0, "pick": pick, "rating_x": rx, "rating_y": ry,
+        return {"order": o, "persona": "vanilla judge" if flags.vanilla else "short-pick judge", "k": 0, "pick": pick, "rating_x": rx, "rating_y": ry,
                 "rating_a": ra, "rating_b": rb, "ok": pick is not None,
                 "reasons": " ".join((m.group(1) if m else "").split())[:500], "raw": (text or "")[:2000]}
 
     judgments = list(await asyncio.gather(*(one(o) for o in orders)))
-    agg = aggregate(judgments, [{"name": "short-pick judge"}])
+    agg = aggregate(judgments, [{"name": "vanilla judge" if flags.vanilla else "short-pick judge"}])
     return {**agg, "label_a": ev_a.label, "label_b": ev_b.label, "flags": flags.name(), "goal": "", "diffs": [],
             "rationale": [j["reasons"] for j in judgments if j["ok"]][:2], "judgments": judgments,
             "failed_judgments": sum(not j["ok"] for j in judgments)}
