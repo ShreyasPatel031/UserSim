@@ -12,6 +12,8 @@ compare_pair output goes to pairs.jsonl for ablate.py.
 Every model call is cached in $OUT/calls.jsonl keyed by (index, call key), so runs resume and cost is metered from
 Vertex usage metadata. The dataset's ``rationale`` / ``ui_change`` are never shown to the model.
 
+``--seed`` and ``--json-retries`` are off by default, which reproduces the 372b405 arms (and their cached calls).
+
 Personas: ``--personas-from results/full/calls.jsonl`` reuses the six visitors the old UserSim arm (A0) planned
 for each page (same planner prompt, now mvp.fast_plan._AB_PERSONAS), so arms differ only in the judge; otherwise
 compare_pair plans them with mvp.fast_plan.ab_personas.
@@ -20,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import dataclasses
 import hashlib
 import json
 import os
@@ -84,7 +87,7 @@ class Ledger:
 def make_call(ledger: Ledger, sem: asyncio.Semaphore, prefix: str):
     from mvp.pairwise import default_call
 
-    async def call(key: str, contents: list, *, temperature: float, max_tokens: int, media_resolution=None):
+    async def call(key: str, contents: list, *, temperature: float, max_tokens: int, media_resolution=None, **kw):
         k = f"{prefix}|{key}"
         hit = ledger.cache.get(k)
         if hit and not hit.get("error"):
@@ -93,7 +96,7 @@ def make_call(ledger: Ledger, sem: asyncio.Semaphore, prefix: str):
             t0 = time.time()
             try:
                 text, tin, tout = await default_call(key, contents, temperature=temperature, max_tokens=max_tokens,
-                                                     media_resolution=media_resolution)
+                                                     media_resolution=media_resolution, **kw)
                 err = None
             except Exception as exc:  # noqa: BLE001
                 text, tin, tout, err = "", 0, 0, repr(exc)[:300]
@@ -129,9 +132,11 @@ async def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--max-cost", type=float, default=15.0, help="stop scheduling new pairs above this spend")
     ap.add_argument("--aa", action="store_true", help="A/A check: the winner screenshot as both versions")
+    ap.add_argument("--seed", type=int, default=None, help="per-call Vertex seeds from (seed, call key); default: none")
+    ap.add_argument("--json-retries", type=int, default=0, help="re-ask unparseable replies (keys get |retryN)")
     args = ap.parse_args()
 
-    flags = STREAMS[args.stream]
+    flags = dataclasses.replace(STREAMS[args.stream], seed=args.seed, json_retries=args.json_retries)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     data = {x["index"]: x for x in json.load(open(DATA))}
