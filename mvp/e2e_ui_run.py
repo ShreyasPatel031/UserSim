@@ -245,6 +245,12 @@ def claude_vertex_generate(contents: list, *, model: str, temperature: float = 0
         else:
             content.append({"type": "text", "text": str(c)})
     last: Exception | None = None
+    # Claude 5-generation models (Opus 5.x, Sonnet 5, Fable) always think adaptively and reject a non-default
+    # temperature (400), so they run at default sampling with extra max_tokens headroom for thinking.
+    if model.startswith(("claude-opus-5", "claude-sonnet-5", "claude-fable")):
+        ckw: dict = {"max_tokens": max_tokens + 8192}
+    else:
+        ckw = {"max_tokens": max_tokens, "temperature": temperature}
     for attempt in range(max(1, retries)):
         loc = _CLAUDE_LOCATIONS[attempt % len(_CLAUDE_LOCATIONS)]
         try:
@@ -253,7 +259,7 @@ def claude_vertex_generate(contents: list, *, model: str, temperature: float = 0
                     region=loc, project_id=os.environ.get("GCP_PROJECT") or GCP_PROJECT,
                     credentials=vertex_credentials(), max_retries=0,
                     timeout=timeout_s or float(os.environ.get("MVP_GEMINI_TIMEOUT_S", "90")))
-            resp = _CLAUDE_BY_LOC[loc].messages.create(model=model, max_tokens=max_tokens, temperature=temperature,
+            resp = _CLAUDE_BY_LOC[loc].messages.create(model=model, **ckw,
                                                        messages=[{"role": "user", "content": content}])
             text = "".join(getattr(b, "text", "") for b in resp.content)
             return text.strip(), int(resp.usage.input_tokens or 0), int(resp.usage.output_tokens or 0)
@@ -287,8 +293,8 @@ def _openai_client():
 def openai_generate(contents: list, *, model: str, temperature: float = 0.0, max_tokens: int = 1024,
                     retries: int = 8) -> tuple[str, int, int]:
     """OpenAI Chat Completions with images as data URLs (detail "auto"). Reasoning models (gpt-5*, o*) take no
-    temperature and run at reasoning_effort OPENAI_REASONING_EFFORT (default "minimal"); their reasoning tokens are in
-    completion_tokens and get extra max_completion_tokens headroom."""
+    temperature and run at reasoning_effort OPENAI_REASONING_EFFORT (default "minimal"); with effort "none" (GPT-6 Sol/Luna) they also
+    take the temperature. Reasoning tokens are in completion_tokens and get extra max_completion_tokens headroom."""
     import base64
     import time as _time
 
@@ -299,10 +305,13 @@ def openai_generate(contents: list, *, model: str, temperature: float = 0.0, max
                 "url": f"data:{_mime(c)};base64,{base64.b64encode(bytes(c)).decode()}"}})
         else:
             content.append({"type": "text", "text": str(c)})
-    reasoning = model.startswith(("gpt-5", "o1", "o3", "o4"))
+    reasoning = model.startswith(("gpt-5", "gpt-6", "o1", "o3", "o4"))
     kw: dict = {"max_completion_tokens": max_tokens + (4096 if reasoning else 0)}
     if reasoning:
-        kw["reasoning_effort"] = os.environ.get("OPENAI_REASONING_EFFORT", "minimal")
+        effort = os.environ.get("OPENAI_REASONING_EFFORT", "minimal")
+        kw["reasoning_effort"] = effort
+        if effort == "none":  # GPT-5.x/6 with reasoning off accept a temperature
+            kw["temperature"] = temperature
     else:
         kw["temperature"] = temperature
     last: Exception | None = None

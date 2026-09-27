@@ -42,7 +42,9 @@ RECOVERED = BENCH / "images_recovered"
 # Vertex list price (USD / 1M tokens): input, output.
 PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-3.1-pro-preview": (2.00, 12.00),
          "claude-sonnet-4-6": (3.00, 15.00), "claude-haiku-4-5@20251001": (1.00, 5.00),
-         "gpt-4o": (2.50, 10.00), "gpt-4.1-mini": (0.40, 1.60), "gpt-5-mini": (0.25, 2.00), "gemini-2.5-flash-lite": (0.10, 0.40), "gemini-2.5-pro": (1.25, 10.0)}
+         "gpt-4o": (2.50, 10.00), "gpt-4.1-mini": (0.40, 1.60), "gpt-5-mini": (0.25, 2.00),
+         "gpt-6-sol": (2.00, 10.00), "gpt-6-luna": (0.10, 0.50), "gpt-6-astra": (10.00, 50.00),
+         "gemini-3.8-flash": (0.75, 3.75), "claude-opus-5-5": (4.00, 20.00), "claude-sonnet-5": (2.00, 10.00), "gemini-2.5-flash-lite": (0.10, 0.40), "gemini-2.5-pro": (1.25, 10.0)}
 STREAMS = {
     "s1": PairFlags(both_orders=True, goal_diffs=False, debias=False),
     "s2": PairFlags(both_orders=True, goal_diffs=True, debias=False),
