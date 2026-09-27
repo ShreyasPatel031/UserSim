@@ -1,10 +1,107 @@
 # Harness lift on the cheapest current model per frontier lab (WiserUI-Bench, 252 pairs), 2026-09-27
 
-Three rounds against one hard $5 cap. Round 1 ran 7:50–8:15 AM PT, round 2 ran 8:23–8:45, and round 3 (Sonnet 5)
-ran 8:49–8:57.
+Four rounds. Round 1 ran 7:50–8:15 AM PT, round 2 ran 8:23–8:45, round 3 (Sonnet 5) ran 8:49–8:57, and round 4
+(Haiku 4.5, all 252 pairs) ran 12:24–12:28 PM PT.
 
-**Total spend: $4.89 of $5.** Round 1 cost $2.20, round 2 $0.83 and round 3 $1.86. The remaining $0.11 is below one
-Sonnet pair's worst-case reservation, so the capped run stopped there.
+**Spend.**
+- **Rounds 1–3: $4.89 of the first $5 cap.** Round 1 cost $2.20, round 2 $0.83 and round 3 $1.86. The remaining $0.11 is
+  below one Sonnet pair's worst-case reservation, so the capped run stopped there.
+- **Round 4: $4.31 of a separate $5 cap** (Haiku plain $2.09 + H1 $2.22).
+
+## Round 4 (12:24 PM PT): Anthropic = Claude Haiku 4.5 on all 252 pairs (separate $5 cap)
+
+**Access now works.** Shreyas enabled `claude-haiku-4-5` in Model Garden. `claude_access.py` (free, 12:24:59 PT) returned 200
+on global, us-east5 and europe-west1. The `us` / `eu` multi-region endpoints still return 429 (quota 0), so they were not used.
+
+**Runs** (`claude-haiku-4-5@20251001`, `CLAUDE_VERTEX_LOCATIONS=global,us-east5,europe-west1`, concurrency 32 per arm):
+- **Settings match every other plain run:** the paper prompt, T = 0, max_tokens 2048, 1568 px.
+- **Smoke test** (12:25:23 PT; pairs 102, 258, 156, 42): plain $0.0085/pair, H1 $0.0089/pair. That projected $4.39 for all
+  252 × 2 arms, which fits under $5, so the full set ran.
+- **Full runs:** both arms went through `fullset/anthropic_order.txt` (the same fixed random order as Sonnet), each with a
+  `--max-cost` ledger cap. They wrote into the smoke-test directories, so the 4 smoke pairs were reused and are counted in
+  the totals below.
+  - Plain: `hc_haiku_plain`, 12:25:23–12:27:28 PT, **252 pairs, $2.089**, 504 calls, 0 errors (1 unparsed order).
+  - H1: `hc_haiku_h1`, 12:25:23–12:27:36 PT, **252 pairs, $2.218**, 504 calls, 0 errors, 0 unparsed.
+  - The largest H1 output was 688 tokens.
+- **Round-4 spend: $4.31 of the new $5 cap.** The round 1–3 cap is separate and stands at $4.89 of $5.
+
+| model | arm | n | CA | single-call CA | OI | dOI vs plain [95% CI] | McNemar p (up/down) | dCA vs plain [95% CI] | p | flip-pair acc (n) | ties | per-call flip rate | $/pair |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Haiku 4.5 | plain (paper prompt) | 252 | 27.4 | 27.4 | 55.6 | (ref) | | | | 50.4 (141) | | 56.0 | 0.0083 |
+| Haiku 4.5 | **H1** graded both-order | 252 | 56.5 | 28.2 | **56.5** | **+1.0 [−3.6, +5.6]** | 0.65 (63/57) | +29.2 [+23.4, +35.1] | 1.1e-18 | 55.0 (141) | 47 | 52.8 | **0.0088** |
+
+- **Plain Haiku has the strongest position bias measured so far.** It flips on 56% of pairs (141/252), so its CA is only
+  27.4 and its OI of 55.6 is close to Luna's.
+- **Same pattern as the other three models, but the most extreme:**
+  - The CA gain is the largest yet (+29.2, p ≈ 1e-18), because a single answer covers both orders.
+  - The OI gain is the smallest (+1.0, p = 0.65).
+- **The harness does not remove the underlying bias.** The per-call flip rate stays at 53%.
+  - 47 pairs (19%) come out as an exact 50 tie: Haiku gives the same P(first is better) in both orders.
+  - Its most common answers are 74 and 26 in mirrored pairs, i.e. the same preference for whichever screen comes first.
+- **Flip resolution is barely better than a coin:** 55.0% on plain Haiku's 141 flip pairs, vs 61.5% for Sonnet 5.
+- **H1 costs 6% more than plain** ($0.0088 vs $0.0083/pair).
+
+**H4 abstention on Haiku: fails the stated bar.** Committed accuracy is higher, but only at below 50% held-out coverage.
+
+| threshold | dev coverage / acc | held-out coverage / committed acc | held-out forced acc | committed − forced |
+|---|---|---|---|---|
+| τ = 15, picked on dev (max acc at ≥ 50% dev coverage) | 52.0% / 59.0 | 44.6% (79/177) / 62.0 | 57.1 | +4.9, **but coverage < 50%** |
+| τ = 20, the 3.8 Flash threshold | 42.7% / 65.6 | 39.5% (70/177) / 61.4 | 57.1 | +4.3, coverage < 50% |
+| τ = 5, the only τ with ≥ 50% held-out coverage | 61.3% / 58.7 | 54.8% / 60.8 | 57.1 | +3.7 |
+
+- **Held-out curve** (τ: coverage / committed accuracy): 0: 100% / 57.1; 5: 54.8% / 60.8; 10: 46.3% / 61.0;
+  15: 44.6% / 62.0; 20: 39.5% / 61.4; 25: 13.0% / 69.6.
+- **Haiku's confidence carries some signal, but much less than 3.8 Flash's.** Flash at τ = 20 reaches 77.8% at 51%
+  coverage, +11 over forced.
+- **It still beats the plain order-consistency gate:** 58.4% at 43.5% held-out coverage, vs 62.0% for H1 τ = 15 at 44.6%.
+- **Even at its best, committed Haiku (62.0) is below forced 3.8 Flash H1 (66.7) on held-out, at a higher price.**
+
+**Router value of Haiku behind 3.8 Flash H1: none.** Command: `router_sim.py --extra haiku=hc_haiku_plain:plain --extra
+haiku_h1=hc_haiku_h1:graded`, all 252 pairs. Output: `fullset/router_sim_haiku.json` and `fullset/router_frontier_haiku.png`.
+
+| cascade (held-out, n = 177) | acc | $/pair | escalated |
+|---|---|---|---|
+| 3.8 Flash H1 alone | 66.7 | 0.0076 | |
+| Flash H1 (τ 10) → Haiku H1 | 66.4 | 0.0091 | 18% |
+| Flash H1 (τ 15) → Haiku H1 (best fixed τ, not dev-picked) | 67.5 | 0.0098 | 26% |
+| Flash H1 (τ 20) → Haiku plain | 62.7 | 0.0111 | 44% |
+| Flash H1 (τ 5) → Haiku → Haiku H1 (**dev-picked** at ≤ $0.012) | 65.0 | 0.0093 | 12% |
+| Flash H1 (τ 10) → Opus 5.5 (round 2, for reference) | 69.5 | 0.0175 | 18% |
+
+- **Held-out accuracy on the 87 pairs where Flash H1's margin is below 20:**
+
+  | Flash H1 | Haiku H1 | Haiku plain | 3.1 Pro | Opus 5.5 |
+  |---|---|---|---|---|
+  | 55.2 | 58.0 | 48.3 | 60.9 | 71.8 |
+
+  Haiku barely knows more than Flash on Flash's hard pairs. Opus is still the only escalation target with real signal.
+- **Haiku H1 is not useful as a cheap first stage.** It costs more per pair than 3.8 Flash H1 and is less accurate.
+  - Haiku H1 (τ 15) → Flash H1: 63.6 at $0.0128.
+  - Luna H1 (τ 15) → Flash H1: 62.4 at $0.0029.
+  - Flash H1 alone: 66.7 at $0.0076.
+- **The honest dev-picked frontier is unchanged from round 2** apart from the $0.012 budget point: Luna H1 → Flash H1 up
+  to $0.004, Flash H1 at $0.008, and Flash H1 (τ 25) → Pro → Opus at 73.7 for $0.032. At $0.012 the dev-picked Haiku cascade
+  overfits (dev 77.3 → held-out 65.0).
+
+**Per-lab verdict (all labs, cheapest model each; Sonnet 5 kept for reference).**
+
+| lab / model | n | plain CA / OI | H1 CA / OI | dOI of H1 vs plain [95% CI], p | dCA, p | H4 abstention (held-out) | H1 $/pair |
+|---|---|---|---|---|---|---|---|
+| Google, Gemini 3.8 Flash | 252 | 54.4 / 65.9 | 69.2 / 69.2 | +3.4 [−0.4, +7.1], 0.14 | +14.9, 8e-10 | **passes**: 77.8% at 51% coverage (forced 66.7) | 0.0075 |
+| OpenAI, GPT-6 Luna | 252 | 36.5 / 55.6 | 57.1 / 57.1 | +1.6 [−2.6, +6.0], 0.35 | +20.6, 1e-13 | fails (+2.2) | 0.0006 |
+| **Anthropic, Claude Haiku 4.5** | **252** | 27.4 / 55.6 | 56.5 / 56.5 | +1.0 [−3.6, +5.6], 0.65 | +29.2, 1e-18 | fails at ≥ 50% coverage (+3.7 at 55%; +4.9 at 45%) | 0.0088 |
+| Anthropic, Claude Sonnet 5 (round 3) | 79 | 48.1 / 64.6 | 67.7 / 67.7 | +3.2 [−4.4, +10.8], 0.57 | +19.6, 0.0015 | fails (+1.4 / +2.3) | 0.0236 |
+
+- **Across all four models, the harness buys a large, certain CA gain** (+15 to +29). The gain is biggest for the most
+  position-biased models (Haiku, then Luna).
+- **The skill gain is +1.0 to +3.4 OI and not significant for any model.** Pooled over the three 252-pair models, the
+  point estimate is about +2.
+- **Only 3.8 Flash's graded confidence is good enough to abstain on.** It is still the right first or only stage.
+  Haiku 4.5 is priced near Flash but judges like Luna, so it earns no place in the router.
+
+Reproduce: `python3 claude_access.py claude-haiku-4-5@20251001`, then `run_bench.py --model claude-haiku-4-5@20251001
+--stream vanilla|h1 --indices @fullset/anthropic_order.txt --concurrency 32 --out $R/hc_haiku_<arm> --max-cost <cap>`. Score with
+`harness_cheap.py haiku=$R/hc_haiku_plain,h1=$R/hc_haiku_h1 --json fullset/harness_cheap_haiku.json`.
 
 ## Round 3 (8:49 AM PT): Anthropic = Claude Sonnet 5, H1 on a random subset
 
