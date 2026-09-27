@@ -259,3 +259,29 @@ class ComparisonReport(unittest.TestCase):
         self.assertEqual(comp["signup_note"]["test_side"], 1)
         self.assertLessEqual(len(comp["first_impressions"]), 3)
         self.assertNotIn("competitor_3", [f["site"] for f in comp["first_impressions"]])
+
+
+class SignupFailureWording(unittest.TestCase):
+    def test_failed_test_signup_is_not_called_no_self_serve(self) -> None:
+        from mvp.comparison import score_prompt
+
+        run = {
+            "agent_id": "t1__p1__product", "task_title": "Automate", "site_url": "https://zo.computer/",
+            "signup": {"ok": False, "reason": "email_timeout"},
+            "website_eval": {"wall_url": "https://zo.computer/signup"},
+            "trace": [], "final_url": "https://zo.computer/", "final_dom": "x",
+        }
+        text = score_prompt(run, {"name": "Ann"}, site_label="Zo", is_product=True)
+        self.assertNotIn("no self-serve account", text)
+        self.assertIn("test sign-up did not finish (email_timeout)", text)
+
+    def test_zero_ok_signups_get_a_note(self) -> None:
+        from mvp.comparison import signup_summary
+
+        runs = [
+            {"agent_id": f"t{i}__p1__product", "site_key": "product", "signup": {"ok": False, "reason": r}}
+            for i, r in enumerate(["email_timeout", "TimeoutError()", "TimeoutError()"])
+        ]
+        note = signup_summary({"agent_results": runs})
+        self.assertEqual(note["unverified"], 3)
+        self.assertIn("None of 3 product signups finished", note["text"])

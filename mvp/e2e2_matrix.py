@@ -973,6 +973,75 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
     return report
 
 
+def grade_recorded_study(args: argparse.Namespace) -> dict:
+    """Grade a finished study without clicking Run or opening a browser.
+
+    Uses the page verdict each run already recorded (mvp/page_verdict.py, the grader's prompt on
+    the final screenshot, URL and DOM); only runs without one are judged here. Loads the study
+    from ``--base`` (local server or Vercel).
+    """
+    import urllib.request
+
+    from mvp.e2e2_gates import assess_recorded_time_to_first_action
+
+    study_id = str(args.grade_study or "").strip()
+    with urllib.request.urlopen(f"{args.base.rstrip('/')}/api/studies/{study_id}", timeout=120) as resp:
+        study = json.loads(resp.read())
+    runs = _sessions(study)
+    remember_earliest_clocks(runs, {})
+    expected = int(args.expected)
+    missing = {"agent_results": [r for r in iter_runs(study) if not isinstance(r.get("page_verdict"), dict)]}
+    vision_goal = {
+        str(r.get("agent_id") or ""): coerce_verdict(r.get("page_verdict"))
+        for r in iter_runs(study) if isinstance(r.get("page_verdict"), dict)
+    }
+    if missing["agent_results"]:
+        vision_goal.update(_goal_verdicts({**study, **missing}, args.base))
+    status = str(study.get("status") or "")
+    complete = status == "complete" and bool(study.get("summary"))
+    created, done = study.get("created_at_ts"), study.get("completed_at_ts")
+    elapsed = round(float(done) - float(created), 1) if created and done else study.get("total_time_s")
+    report_html, report_url = _fetch_report_html(args.base, study_id)
+    personas = study.get("personas") or []
+    strict = evaluate_strict_gates(
+        study,
+        startup={
+            "expected": expected,
+            "pass_agent_bar": PASS_AGENT_BAR,
+            "elapsed_s": elapsed,
+            "page_open_check": assess_page_opened(runs, limit_s=float(args.first_shot_s)),
+            "personas": len(personas) if isinstance(personas, list) else 0,
+            "sites": len({str(r.get("site_key") or "product") for r in runs}),
+            "min_personas": int(args.min_personas),
+            "min_tasks": int(args.min_tasks),
+            "min_sites": int(args.min_sites),
+            "max_elapsed_s": args.max_elapsed_s,
+            "study_budget_s": args.max_elapsed_s,
+            "first_shot_s": args.first_shot_s,
+            "first_action_s": args.first_action_s,
+            "ttfa_median_s": DEFAULT_TTFA_MEDIAN_S,
+            "ttfa_max_s": DEFAULT_TTFA_MAX_S,
+            "time_to_first_action_check": assess_recorded_time_to_first_action(
+                runs, median_s=DEFAULT_TTFA_MEDIAN_S, max_s=DEFAULT_TTFA_MAX_S, expected=expected
+            ),
+            "time_to_first_value_s": study.get("time_to_first_value_s"),
+            "time_to_first_value_agent": str(study.get("time_to_first_value_agent") or ""),
+            "total_time_s": study.get("total_time_s"),
+            "report_ready": complete,
+            "status": status,
+            "has_summary": bool(study.get("summary")),
+        },
+        vision_goal=vision_goal,
+        screenshot_loads=_screenshot_loader(args.base, study_id),
+        report_html=report_html,
+        report_url=report_url,
+        abort_reason=None if complete else f"status={status or 'unknown'}",
+    )
+    strict["pass"] = bool(strict.get("pass")) and complete
+    print(render_markdown(strict, study_id=study_id, product_url=str(study.get("url") or "")), flush=True)
+    return strict
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", default=os.environ.get("E2E_BASE", "https://usersim.vercel.app"))
@@ -1065,7 +1134,23 @@ def main() -> int:
     )
     ap.add_argument("--headed", action="store_true", default=os.environ.get("E2E_HEADED") == "1")
     ap.add_argument("--study-id", default=os.environ.get("E2E2_STUDY_ID", ""))
+    ap.add_argument(
+        "--grade-study",
+        default=os.environ.get("E2E2_GRADE_STUDY", ""),
+        help="Grade an existing study id (no Run click, no Browserbase session).",
+    )
     args = ap.parse_args()
+    if str(args.grade_study or "").strip():
+        try:
+            result = grade_recorded_study(args)
+        except Exception as exc:  # noqa: BLE001
+            _log(f"FAIL: {exc!r}")
+            return 1
+        if not result.get("pass"):
+            _log("FAIL grade-study: " + "; ".join(result.get("fail_reasons") or ["unknown"]))
+            return 1
+        _log(f"ALL_PASS study={args.grade_study}")
+        return 0
     expected = int(args.expected)
     _release_testfix_sessions()
     code = 0

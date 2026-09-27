@@ -3822,9 +3822,18 @@ async def website_eval(
     except Exception as exc:  # noqa: BLE001
         print(f"[{agent_id}] website eval goto failed: {exc!r}", flush=True)
     history = list(outcome.get("history") or [])
-    history.append(
-        "this site has no self-serve account (only a demo or sales form); now judging it from its website"
-    )
+    su = outcome.get("signup") if isinstance(outcome.get("signup"), dict) else {}
+    if su and su.get("reason") and not su.get("ok"):
+        # Study 390909cf: every failed test signup (Zo email never came, rival 90s cap) was
+        # written as "no self-serve account", which the agent and the score judge then believed.
+        history.append(
+            f"our test sign-up did not finish ({str(su.get('reason'))[:60]}); that is a test limit, not the site's. "
+            "Now judging the site from its public website"
+        )
+    else:
+        history.append(
+            "this site has no self-serve account (only a demo or sales form); now judging it from its website"
+        )
     try:
         nxt = await complete_task_on_page(
             page,

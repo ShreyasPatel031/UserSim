@@ -1141,7 +1141,7 @@ async def signup_in_session(
             if snap.get("captcha") and same >= 1:
                 res = await _clear_captcha(page, snap, spend)
                 captcha_log.append(res)
-                steps.append(f"captcha {res.get('type','')[:40]} -> {res.get('method')} ok={res.get('ok')}")
+                steps.append(f"captcha {res.get('type','')[:40]} -> {res.get('method')} ok={res.get('ok')} {str(res.get('detail') or '')[:100]}")
                 if not res.get("ok"):
                     method = str(res.get("method") or "")
                     # Without CapSolver, a second attempt will not help — release the
@@ -1256,7 +1256,7 @@ async def signup_in_session(
                 if reason == "captcha":
                     res = await _clear_captcha(page, snap, spend)
                     captcha_log.append(res)
-                    steps.append(f"captcha -> {res.get('method')} ok={res.get('ok')}")
+                    steps.append(f"captcha -> {res.get('method')} ok={res.get('ok')} {str(res.get('detail') or '')[:100]}")
                     if res.get("ok"):
                         await _settle(page)
                         continue

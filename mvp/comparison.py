@@ -77,6 +77,12 @@ def score_prompt(run: dict[str, Any], persona: dict[str, Any], *, site_label: st
     signup = run.get("signup") if isinstance(run.get("signup"), dict) else {}
     if signup.get("ok"):
         access = "The agent created a trial account and worked inside the product."
+    elif run.get("website_eval") and signup.get("reason") and signup.get("reason") != "not_needed_public_task":
+        access = (
+            f"The site offers sign-up, but our test sign-up did not finish ({str(signup.get('reason'))[:60]}). "
+            "That is a limit of the test (inbox, time cap or captcha), not of the site: do not count it against "
+            "the site. The agent judged it from the public website."
+        )
     elif run.get("website_eval"):
         access = (
             "The site had no self-serve account (demo or sales wall at "
@@ -340,6 +346,20 @@ def test_side_signup_failures(study: dict[str, Any]) -> tuple[list[str], int, in
 
 def signup_summary(study: dict[str, Any]) -> dict[str, Any]:
     ids, ok, tried = test_side_signup_failures(study)
+    if not ids and not ok and tried:
+        # No product signup worked at all (study 390909cf: Zo sent 2 sign-in emails for 18 signups,
+        # right after an earlier run used up 10). Cannot tell a site limit from product friction.
+        waited = [
+            r for r in (study.get("agent_results") or [])
+            if isinstance(r, dict) and r.get("site_key") == "product"
+            and _EMAIL_WAIT_RE.search(str((r.get("signup") or {}).get("reason") or ""))
+        ]
+        text = (
+            f"None of {tried} product signups finished; {len(waited)} ran out of time waiting for the sign-in email "
+            "or the signup clock. Every signup uses one test inbox, so this may be the site's email limit rather than "
+            "what a buyer sees; these runs were judged from the public website."
+        ) if waited else ""
+        return {"test_side": 0, "ok": 0, "tried": tried, "unverified": len(waited), "text": text}
     if not ids:
         return {"test_side": 0, "ok": ok, "tried": tried, "text": ""}
     return {
