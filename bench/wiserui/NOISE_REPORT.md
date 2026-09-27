@@ -84,3 +84,42 @@ claiming an effect. Drop the difference list for now.
 `results/noise_t0_r1`, `noise_t0_r2`, `noise_v3e_r1`, `noise_v3e_r2`, `noise_t0_diff_list` (on the box, not committed);
 `fullset/noise_agreement_dev.{md,json}`, `fullset/noise_options_dev.{md,json}`,
 `fullset/noise_difflist_dev_vs_r1.{md,json}`, `fullset/noise_difflist_dev_vs_r2.md`; `noise_agree.py`.
+
+## Step 3: the other four inputs on the stable setup (T0), 75 dev pairs -- `fullset/noise_inputs_t0_dev_vs_r1.md`
+Approved by Shreyas at 5:32 AM PT. Setup: G-FOCUS single judge, strict, both orders, `argue_temperature=0`, 1 sample.
+Each input is added alone. The baseline is T0 run 1. The cross-check against T0 run 2 is `fullset/noise_inputs_t0_dev_vs_r2.md`.
+All four arms ran at once (4 x 75 pairs in flight, `--concurrency 96` each, 429 spillover across regions).
+The goal arm's stated-goal call (temperature 0) was copied from the earlier goal ledger. Everything else ran fresh.
+The diff_list row is repeated from step 2.
+
+| arm | CA [95% CI] | dCA vs base [95% CI] | McNemar p (improved/worse) | significant | OI | $/pair |
+|---|---|---|---|---|---|---|
+| base (T0 run 1) | 53.3 [42.7, 64.0] | | | | 68.0 | 0.0112 |
+| + goal | 53.3 [42.7, 64.0] | +0.0 [-12.0, +12.0] | 1.000 (11/11) | no | 66.7 | 0.0110 |
+| + audience | 50.7 [40.0, 61.3] | -2.7 [-13.3, +8.0] | 0.804 (7/9) | no | 65.3 | 0.0123 |
+| + page_text (OCR) | 45.3 [34.7, 57.3] | -8.0 [-20.0, +4.0] | 0.307 (9/15) | no | 66.7 | 0.0121 |
+| + crops | 38.7 [28.0, 49.3] | **-14.7 [-26.7, -4.0]** | **0.027 (5/16)** | **yes (hurts)** | 59.3 | 0.0127 |
+| + diff_list (step 2) | 45.3 [34.7, 56.0] | -8.0 [-18.7, +2.7] | 0.238 (6/12) | no | 62.7 | 0.0120 |
+
+Against T0 run 2 (CA 52.0), the changes are:
+
+| arm | dCA [95% CI] | McNemar p (improved/worse) |
+|---|---|---|
+| goal | +1.3 [-10.7, +14.7] | 1.000 (12/11) |
+| audience | -1.3 [-12.0, +9.3] | 1.000 (8/9) |
+| page_text | -6.7 [-20.0, +6.7] | 0.424 (10/15) |
+| crops | -13.3 [-25.3, -1.3] | 0.052 (6/16) |
+| diff_list | -6.7 [-17.3, +5.3] | 0.359 (7/12) |
+
+So crops are borderline against run 2 (p = 0.052 and the CI excludes 0), and nothing else is significant.
+
+- **No input helps.** goal and audience are neutral, at about +/-3 CA.
+- page_text and diff_list lean negative but are not significant. page_text again pushes toward the second version (FA 52.0 vs SA 81.3).
+- **The pixel-diff crops hurt.** CA drops by 14.7 against run 1 (significant) and by 13.3 against run 2 (p = 0.052). FA falls to 50.7.
+- Recommendation: keep the plain G-FOCUS judge at T0 with no extra inputs, and drop crops.
+- Timing: launched at 05:33:34 PT.
+  - The goal arm finished at 05:34:48 (74 s). The other three reached 70/75 pairs by about 05:35:15.
+  - 5 pairs then stalled on hung Vertex calls with no new calls for about 3 min. `gemini_generate` has no per-request timeout.
+  - I killed and resumed those runs from the cache. They finished at 05:38:22 (the resume took 15 s). Total wall time was 4 min 48 s.
+- Spend for step 3: goal $0.823, audience $0.923, page_text $0.907, crops $0.956, **total $3.61** (cap $4).
+  Steps 1-3 together: $7.84.
