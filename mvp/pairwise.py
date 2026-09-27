@@ -558,17 +558,19 @@ def aggregate(judgments: list[Judgment], personas: list[dict[str, Any]]) -> dict
             "pick_ab": ("A" if (mx > 0) == (o == "ab") else "B") if mx != 0 else "tie",
             "n_x": sum(j["rating_x"] > j["rating_y"] for j in oj), "n_y": sum(j["rating_x"] < j["rating_y"] for j in oj),
         }
-    if not per:
-        return {"p_a": 0.5, "mean_diff": 0.0, "se": 0.0, "winner": "tie", "votes": {"A": 0, "B": 0, "tie": 0},
-                "personas": [], "orders": order_view, "n_personas": 0}
-    diffs = [x["diff"] for x in per]
+    return {**soft_vote([x["diff"] for x in per]), "personas": per, "orders": order_view, "n_personas": len(per)}
+
+
+def soft_vote(diffs: list[float]) -> dict[str, Any]:
+    """p(A > B) = mean of sigmoid(d / SOFT_T) over per-persona rating differences d (a - b), plus mean, SE, votes."""
+    if not diffs:
+        return {"p_a": 0.5, "mean_diff": 0.0, "se": 0.0, "winner": "tie", "votes": {"A": 0, "B": 0, "tie": 0}}
     mean = statistics.fmean(diffs)
     se = statistics.stdev(diffs) / math.sqrt(len(diffs)) if len(diffs) > 1 else 0.0
-    p_a = statistics.fmean(x["p_a"] for x in per)
+    p_a = statistics.fmean(_sigmoid(d / SOFT_T) for d in diffs)
     votes = {"A": sum(d > 0 for d in diffs), "B": sum(d < 0 for d in diffs), "tie": sum(d == 0 for d in diffs)}
     winner = "A" if p_a > 0.5 + 1e-9 else "B" if p_a < 0.5 - 1e-9 else "tie"
-    return {"p_a": p_a, "mean_diff": mean, "se": se, "winner": winner, "votes": votes, "personas": per,
-            "orders": order_view, "n_personas": len(per)}
+    return {"p_a": p_a, "mean_diff": mean, "se": se, "winner": winner, "votes": votes}
 
 
 def _bounded(call: Call, limit: int | None) -> Call:
