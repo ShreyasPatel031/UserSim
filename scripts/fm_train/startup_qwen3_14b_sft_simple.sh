@@ -60,41 +60,69 @@ wait_for_gpu() {
 
 setup_train_venv() {
     TRAIN_VENV=$ROOT/venvs/train_qwen3_14b
+    REQUIRED_TORCH_VERSION="2.6.0"
+    
     if [ ! -d "$TRAIN_VENV" ]; then
         echo "Creating training venv..."
         python3 -m venv $TRAIN_VENV
         source $TRAIN_VENV/bin/activate
         pip install --upgrade pip
-        pip install torch==2.5.1+cu124 --index-url https://download.pytorch.org/whl/cu124
+        pip install torch==${REQUIRED_TORCH_VERSION}+cu124 --index-url https://download.pytorch.org/whl/cu124
         pip install transformers==4.47.0 datasets accelerate peft bitsandbytes scipy
         pip install huggingface_hub
     else
         source $TRAIN_VENV/bin/activate
+        # Check torch version and upgrade if needed
+        CURRENT_TORCH=$(python3 -c "import torch; print(torch.__version__.split('+')[0])" 2>/dev/null || echo "0.0.0")
+        if [ "$CURRENT_TORCH" != "$REQUIRED_TORCH_VERSION" ]; then
+            echo "Upgrading torch from $CURRENT_TORCH to ${REQUIRED_TORCH_VERSION}..."
+            pip install torch==${REQUIRED_TORCH_VERSION}+cu124 --index-url https://download.pytorch.org/whl/cu124
+        fi
     fi
 }
 
 download_latest_checkpoint() {
     echo "Checking for latest checkpoint in GCS..."
     local latest_step=0
+    local latest_local_complete=0
     
+    # Find latest complete local checkpoint
     for ckpt in $ADAPTERS/checkpoint-*/; do
         if [ -d "$ckpt" ]; then
             step=$(basename "$ckpt" | sed 's/checkpoint-//')
             if [ "$step" -gt "$latest_step" ] 2>/dev/null; then
                 latest_step=$step
             fi
+            # Check if checkpoint is complete
+            if [ -f "$ckpt/adapter_model.safetensors" ] && [ -s "$ckpt/adapter_model.safetensors" ] && \
+               [ -f "$ckpt/adapter_config.json" ] && [ -f "$ckpt/trainer_state.json" ]; then
+                if [ "$step" -gt "$latest_local_complete" ] 2>/dev/null; then
+                    latest_local_complete=$step
+                fi
+            fi
         fi
     done
-    echo "Latest local checkpoint: $latest_step"
+    echo "Latest local checkpoint: $latest_step (complete: $latest_local_complete)"
     
     local gcs_latest=$(gsutil ls $GCS_BUCKET/ 2>/dev/null | grep -oP 'checkpoint-\K\d+' | sort -rn | head -1)
     echo "Latest GCS checkpoint: ${gcs_latest:-none}"
     
-    if [ -n "$gcs_latest" ] && [ "$gcs_latest" -gt "$latest_step" ] 2>/dev/null; then
-        echo "Downloading checkpoint-$gcs_latest from GCS..."
-        mkdir -p $ADAPTERS/checkpoint-$gcs_latest
-        gsutil -m cp -r $GCS_BUCKET/checkpoint-$gcs_latest/* $ADAPTERS/checkpoint-$gcs_latest/ 2>>$UPLOAD_LOG || true
-        echo "Downloaded checkpoint-$gcs_latest"
+    # Download from GCS if it's newer or local is incomplete
+    if [ -n "$gcs_latest" ]; then
+        if [ "$gcs_latest" -gt "$latest_local_complete" ] 2>/dev/null; then
+            echo "Downloading checkpoint-$gcs_latest from GCS..."
+            rm -rf $ADAPTERS/checkpoint-$gcs_latest 2>/dev/null || true
+            mkdir -p $ADAPTERS/checkpoint-$gcs_latest
+            if gsutil -m cp -r $GCS_BUCKET/checkpoint-$gcs_latest/* $ADAPTERS/checkpoint-$gcs_latest/ 2>>$UPLOAD_LOG; then
+                echo "Downloaded checkpoint-$gcs_latest successfully"
+                # Verify download
+                if [ ! -f "$ADAPTERS/checkpoint-$gcs_latest/adapter_model.safetensors" ]; then
+                    echo "ERROR: Download incomplete - missing adapter_model.safetensors"
+                fi
+            else
+                echo "ERROR: Failed to download checkpoint-$gcs_latest from GCS"
+            fi
+        fi
     fi
 }
 
