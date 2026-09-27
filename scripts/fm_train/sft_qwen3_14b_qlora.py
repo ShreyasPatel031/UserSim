@@ -199,16 +199,21 @@ def build_model(args: argparse.Namespace):
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
+    
+    # T4 GPUs don't support bf16, use fp16 instead when USE_FP16=1
+    use_fp16 = os.environ.get("USE_FP16", "0") == "1"
+    compute_dtype = torch.float16 if use_fp16 else torch.bfloat16
+    
     quant = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
         bnb_4bit_use_double_quant=True,
-        bnb_4bit_compute_dtype=torch.bfloat16,
+        bnb_4bit_compute_dtype=compute_dtype,
     )
     model = AutoModelForCausalLM.from_pretrained(
         args.model,
         quantization_config=quant,
-        torch_dtype=torch.bfloat16,
+        torch_dtype=compute_dtype,
         device_map={"": 0},
         trust_remote_code=True,
     )
@@ -356,6 +361,12 @@ def main() -> None:
             if ckpt.exists():
                 upload_checkpoint(ckpt, step)
 
+    # T4 GPUs don't support bf16, use fp16 instead when USE_FP16=1
+    use_fp16 = os.environ.get("USE_FP16", "0") == "1"
+    
+    # Calculate warmup steps from ratio
+    warmup_steps = int(args.max_steps * args.warmup_ratio)
+    
     targs = TrainingArguments(
         output_dir=str(out),
         num_train_epochs=args.epochs,
@@ -364,13 +375,13 @@ def main() -> None:
         gradient_accumulation_steps=args.grad_accum,
         learning_rate=args.lr,
         weight_decay=args.wd,
-        warmup_ratio=args.warmup_ratio,
+        warmup_steps=warmup_steps,
         lr_scheduler_type="cosine",
         logging_steps=args.log_steps,
         save_steps=args.save_steps,
         save_total_limit=None,
-        fp16=False,
-        bf16=True,
+        fp16=use_fp16,
+        bf16=not use_fp16,
         optim="paged_adamw_8bit",
         gradient_checkpointing=True,
         report_to=[],
