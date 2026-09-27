@@ -30,8 +30,9 @@ function cmpLevel(level, comp) {
   return `<span class="lvl lvl-${cmpEsc(level)}">${cmpEsc(label)}</span>`;
 }
 
-function cmpScoreCell(v, isPick, level, comp) {
-  if (v == null) return `<td class="num muted">—</td>`;
+function cmpScoreCell(v, isPick, level, comp, notRun) {
+  // An empty cell was never run (or the run was excluded), it is not a 0.
+  if (v == null) return `<td class="num muted small">${notRun ? "not run" : "—"}</td>`;
   const shade = Math.max(0, Math.min(10, Number(v))) / 10;
   const bg = `rgba(15,122,76,${(0.08 + shade * 0.32).toFixed(2)})`;
   return `<td class="num${isPick ? " pick" : ""}" style="background:${bg}">${Number(v).toFixed(1)}${isPick ? ' <span class="pick-mark">★ pick</span>' : ""}${level ? `<div>${cmpLevel(level, comp)}</div>` : ""}</td>`;
@@ -95,7 +96,7 @@ function renderCompareHtml(comp) {
   const siteHead = sites.map((s) => `<th class="num">${cmpEsc(s.label)}</th>`).join("");
   const personaRows = (comp.by_persona || [])
     .map((p) => {
-      const cells = sites.map((s) => cmpScoreCell(p.scores?.[s.key], p.pick === s.key, null, comp)).join("");
+      const cells = sites.map((s) => cmpScoreCell(p.scores?.[s.key], p.pick === s.key, null, comp, (p.not_run || []).includes(s.key))).join("");
       const exp = p.expected_favorite ? cmpLabel(comp, p.expected_favorite) : "—";
       const hit = p.expected_favorite && p.pick ? (p.expected_favorite === p.pick ? "as expected" : "against expectation") : "";
       return `<tr><td><strong>${cmpEsc(p.name)}</strong><div class="muted small">${cmpEsc(p.role)}</div></td>${cells}
@@ -105,7 +106,7 @@ function renderCompareHtml(comp) {
 
   const taskRows = (comp.by_task || [])
     .map((t) => {
-      const cells = sites.map((s) => cmpScoreCell(t.scores?.[s.key], t.winner === s.key, t.levels?.[s.key], comp)).join("");
+      const cells = sites.map((s) => cmpScoreCell(t.scores?.[s.key], t.winner === s.key, t.levels?.[s.key], comp, (t.not_run || []).includes(s.key))).join("");
       const ev = t.winner_evidence;
       return `<tr><td><strong>${cmpEsc(t.task)}</strong>
           <div class="muted small">Winner: ${cmpEsc(t.winner_label)} · ${cmpEsc(comp.product_label)} rank ${t.product_rank ?? "—"} of ${t.n_sites}</div>
@@ -137,27 +138,33 @@ function renderCompareHtml(comp) {
       </li>`)
     .join("");
 
+  const signupNote = comp.signup_note && comp.signup_note.text
+    ? `<p class="small muted signup-note">Signup note: ${cmpEsc(comp.signup_note.text)}</p>` : "";
   return `
     <section class="cmp-hero">
       <p class="eyebrow">Which product would each buyer pick?</p>
+      ${headline ? `<p class="hl">${headline}</p>` : ""}
       <h2 class="pick-line">${cmpEsc(comp.headline_metric)}</h2>
       <div class="pick-chips">${pickChips}</div>
-      ${headline ? `<p class="hl">${headline}</p>` : ""}
       <details class="pickers"><summary>Each buyer's pick and why</summary><ul>${pickers}</ul></details>
     </section>
     <div class="chart-card">
-      <h3>Where ${cmpEsc(comp.product_label)} wins and loses</h3>
+      <h3>Where ${cmpEsc(comp.product_label)} wins</h3>
       <p class="sub">One buyer on one task, ${cmpEsc(comp.product_label)} against one competitor. Scores are 0–10 from the Gemini judge reading the trace, the final page and its screenshot.</p>
-      <div class="split"><div><h3 class="ok">Wins</h3>${wins}</div><div><h3 class="warn">Losses</h3>${losses}</div></div>
+      <div class="wl-stack">${wins}</div>
+      <h3 class="warn">Where ${cmpEsc(comp.product_label)} loses</h3>
+      <div class="wl-stack">${losses}</div>
     </div>
     <div class="chart-card">
       <h3>Buyers × products</h3>
-      <p class="sub">Average score over all tasks. ★ marks the product each buyer picked; the last column is who we expected them to favor.</p>
+      <p class="sub">Average score over the tasks each buyer ran. ★ marks the product each buyer picked; "not run" means that buyer did not try that site.</p>
+      ${comp.persona_summary ? `<p class="cmp-summary">${cmpEsc(comp.persona_summary)}</p>` : ""}
       <div style="overflow-x:auto"><table class="cmp-grid"><thead><tr><th>Buyer</th>${siteHead}<th>Expected favorite</th></tr></thead><tbody>${personaRows}</tbody></table></div>
     </div>
     <div class="chart-card">
       <h3>Tasks × products</h3>
       <p class="sub">Average score and how far buyers usually got: done in product › clear on website › vague marketing › wall.</p>
+      ${comp.task_summary ? `<p class="cmp-summary">${cmpEsc(comp.task_summary)}</p>` : ""}
       <div style="overflow-x:auto"><table class="cmp-grid"><thead><tr><th>Task</th>${siteHead}</tr></thead><tbody>${taskRows}</tbody></table></div>
     </div>
     <div class="chart-card">
@@ -166,8 +173,9 @@ function renderCompareHtml(comp) {
     </div>
     <div class="chart-card">
       <h3>Fixes to make in ${cmpEsc(comp.product_label)}</h3>
-      <p class="sub">Product problems from the weak runs, ranked by how many buyers they hurt.</p>
+      <p class="sub">${comp.fixes_source === "losses" ? `Drawn from the tasks ${cmpEsc(comp.product_label)} lost: what the competitor did that ${cmpEsc(comp.product_label)} did not.` : "Product problems from the weak runs"}, ranked by how many buyers they hurt.</p>
       ${fixes ? `<ol class="fix-list">${fixes}</ol>` : `<p class="empty-claim">No product problem found.</p>`}
+      ${signupNote}
     </div>
     <div class="chart-card">
       <h3>Trace drill-down</h3>

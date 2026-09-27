@@ -61,9 +61,26 @@ def capsolver_key() -> str:
     return (os.environ.get("CAPSOLVER_API_KEY") or "").strip()
 
 
+# Sites a running study signs up on (its product and rivals). A captcha on one of
+# them may be paid for like an allowlisted host: zapier.com's reCAPTCHA v2 in
+# study 7b5f0af9 was refused (not in MVP_CAPTCHA_PAID_HOSTS) even with $0.91 on
+# the account. The per-attempt, per-site ($1.50), total ($15) and balance-floor
+# caps still apply. MVP_CAPTCHA_PAY_STUDY_SITES=0 restores allowlist-only.
+_STUDY_HOSTS: set[str] = set()
+
+
+def allow_study_host(site: str) -> None:
+    host = (site or "").strip().lower().removeprefix("www.")
+    if host and os.environ.get("MVP_CAPTCHA_PAY_STUDY_SITES", "1").strip().lower() not in {"0", "false", "no"}:
+        _STUDY_HOSTS.add(host)
+
+
 def paid_hosts() -> set[str]:
     raw = os.environ.get("MVP_CAPTCHA_PAID_HOSTS") or ""
-    return {h.strip().lower().removeprefix("www.") for h in raw.split(",") if h.strip()}
+    listed = {h.strip().lower().removeprefix("www.") for h in raw.split(",") if h.strip()}
+    if os.environ.get("MVP_CAPTCHA_PAY_STUDY_SITES", "1").strip().lower() in {"0", "false", "no"}:
+        return listed
+    return listed | _STUDY_HOSTS
 
 
 def bind_signup(site: str, attempt: int) -> None:

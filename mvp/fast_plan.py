@@ -56,8 +56,9 @@ Rules:
 - No quotes inside tasks. No explanations."""
 
 # Comparison study (default): who each product is best for, not whether one
-# task finished. One call returns three rivals, five target customers spread
-# across all four products, and five tasks that between them favor each one.
+# task finished. One call returns two rivals (plus one backup), six target
+# customers and seven tasks (six kept). The product runs every persona x task;
+# every rival runs the same persona x task matrix (``competitor_cells`` can slice it if configured).
 _COMPARE_PROMPT = """You plan a head-to-head product comparison study. Reply with JSON only.
 Product URL: {url}
 Page title: {title}
@@ -67,7 +68,8 @@ Links and buttons on the page (label -> target): {links}
 Return:
 {{"product": "short product name",
   "segment": "one short phrase naming who evaluates products in this category",
-  "competitors": [{{"url": "https://rival-one.com/", "name": "Rival One"}}, {{"url": "...", "name": "..."}}, {{"url": "...", "name": "..."}}],
+  "competitors": [{{"url": "https://rival-one.com/", "name": "Rival One"}}, {{"url": "https://rival-two.com/", "name": "Rival Two"}}],
+  "backup_competitor": {{"url": "https://rival-three.com/", "name": "Rival Three"}},
   "personas": [{{"name": "first and last name", "role": "job title and company type",
                  "bio": "at most 20 words: situation, need, how they judge a tool",
                  "favors": "product or the competitor url this person is the natural fit for",
@@ -75,49 +77,52 @@ Return:
   "tasks": [{{"task": "3-8 word task", "favors": "product or a competitor url", "why": "at most 10 words"}}]}}
 
 Rules:
-- competitors: exactly three best-known direct competitors, best first, homepage URLs of real public
-  sites. A direct competitor is a standalone product in the same category that a buyer would compare
-  side by side. Never a parent company, multi-product suite homepage, marketplace or discontinued product.
-  Rivals may be sales-led (demo only); that is fine. Each rival must still be sold under its own name
-  at that domain today: never one that was acquired, merged or rebranded (its site redirects elsewhere).
-- personas: exactly five realistic target customers of this category. Spread them evenly across the four
-  products: at least one natural fit for the product and at least one natural fit for each competitor
-  (for example an enterprise CS leader fits an enterprise suite, a two-person startup fits a self-serve
-  tool). favors must be "product" or one of the competitor urls exactly as written above.
-- tasks: six representative jobs a buyer in this category needs done, best first (the study keeps five), 3-8 words each, an
-  imperative verb and a concrete object (for example "Identify at-risk customer accounts",
-  "Compare plan prices for 20 seats"). Choose them so at least one favors the product and at least one
-  favors each competitor. Each task must make sense on every one of the four sites: done in the product
-  where a trial account allows, or judged from the website (feature pages, docs, pricing, proof) where
-  the product is demo-only. Never a task that needs the customer's own outside credentials or data
-  (connect or sync a data source, API keys, payment). At most one pricing task.
+- competitors: exactly two best-known direct competitors, best first, homepage URLs of real public
+  sites; backup_competitor is the third. A direct competitor is a standalone product in the same category
+  that a buyer would compare side by side for the same job. Never a parent company, multi-product suite
+  homepage, marketplace or discontinued product. Rivals may be sales-led (demo only); that is fine. Each
+  rival must still be sold under its own name at that domain today: never one that was acquired, merged or
+  rebranded (its site redirects elsewhere). Never a general-purpose AI chatbot or assistant (ChatGPT, Claude,
+  Gemini, Copilot, Perplexity, Grok and the like) unless the product itself is a general-purpose chatbot: a
+  site calling itself a "ChatGPT alternative" in its keywords is not enough.
+- personas: exactly six realistic target customers of this category: at least two natural fits for the
+  product and at least one natural fit for each competitor (for example an enterprise CS leader fits an
+  enterprise suite, a two-person startup fits a self-serve tool). favors must be "product" or one of the
+  competitor urls exactly as written above.
+- tasks: seven representative jobs a buyer in this category needs done, best first (the study keeps six), 3-8
+  words each, an imperative verb and a concrete object (for example "Identify at-risk customer accounts",
+  "Compare plan prices for 20 seats"). Choose them so at least two favor the product and at least one favors
+  each competitor. Each task must make sense on all three sites: done in the product where a trial account
+  allows, or judged from the website (feature pages, docs, pricing, proof) where the product is demo-only.
+  Never a task that needs the customer's own outside credentials or data (connect or sync a data source,
+  API keys, payment). At most one pricing task.
 - No quotes inside strings. No explanations."""
 
 # Split plan (default): a tiny competitor call first, then tasks and personas
 # in parallel. One big call took 5-7s of model time on the first-action path.
-_CMP_COMPETITORS = """Name the three best-known direct competitors of this product. Reply with JSON only.
+_CMP_COMPETITORS = """Name the two best-known direct competitors of this product. Reply with JSON only.
 Product URL: {url}
 Page title: {title}
 Page text: {text}
 
 Return {{"product": "short product name", "segment": "one short phrase naming who evaluates products in this category",
-  "competitors": [{{"url": "https://rival.com/", "name": "Rival"}}, ...3 items]}}
+  "competitors": [{{"url": "https://rival.com/", "name": "Rival"}}, ...2 items]}}
 Rules: standalone products in the same category a buyer would compare side by side, best known first, homepage
 URLs of real public sites. Sales-led (demo only) rivals are fine. Never a parent company, multi-product suite
 homepage, marketplace or discontinued product, and never one that was acquired, merged or rebranded (its site
-redirects elsewhere)."""
+redirects elsewhere). Never a general-purpose AI chatbot (ChatGPT, Claude, Gemini, Copilot) unless the product is one."""
 
-_CMP_TASKS = """Pick five tasks for a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
+_CMP_TASKS = """Pick six tasks for a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
 {product} page text: {text}
 
 Return {{"tasks": [{{"task": "3-8 word task", "favors": "product or one competitor url exactly as listed", "why": "at most 12 words"}}]}}
-Rules: five representative jobs a buyer in this category needs done, an imperative verb and a concrete object
+Rules: six representative jobs a buyer in this category needs done, an imperative verb and a concrete object
 (for example "Identify at-risk customer accounts"). At least one favors the product and at least one favors each
-competitor. Each must make sense on all four sites: done in the product where a trial allows, or judged from the
+competitor. Each must make sense on all three sites: done in the product where a trial allows, or judged from the
 website (feature pages, docs, pricing, proof) where the product is demo-only. Never a task needing the customer's
 own outside credentials or data (connect or sync a data source, API keys, payment). At most one pricing task. No quotes."""
 
-_CMP_PERSONAS = """Invent five target customers for a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
+_CMP_PERSONAS = """Invent six target customers for a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
 {product} page text: {text}
 
 Return {{"personas": [{{"name": "first and last name", "role": "job title and company type",
@@ -126,6 +131,39 @@ Return {{"personas": [{{"name": "first and last name", "role": "job title and co
 Rules: realistic buyers in this category, spread evenly: at least one natural fit for the product and at least one
 natural fit for each competitor (for example an enterprise CS leader fits an enterprise suite, a two-person startup
 fits a self-serve tool). No quotes."""
+
+# Framing fix "position": one small call on the full page read decides what
+# category the product is in before rivals, buyers and tasks are picked.
+_POSITIONING = """Say what this product is. Reply with JSON only.
+Product URL: {url}
+Page title: {title}
+Page text (the whole page, including customer quotes): {text}
+
+Return {{"product": "short product name", "category": "2-6 word product category, e.g. semantic search API",
+  "what_it_is": "one sentence: what the product itself does for its user",
+  "buyer": "who evaluates products in this category",
+  "compared_with": ["2-4 well-known products buyers compare it with"],
+  "not": "an adjacent category it could be mistaken for, and why not"}}
+Rules: judge from what the product does, not from what customers happened to build with it (quotes and showcases
+are examples). Use the site's own words where it names its category or alternatives. No quotes inside strings."""
+
+# Framing fix "verify": a self-check of the drafted plan against the full page.
+_VERIFY = """Check a drafted competitor list for a product comparison study. Reply with JSON only.
+Product URL: {url}
+Page title: {title}
+Page text (the whole page): {text}
+Drafted segment: {segment}
+Drafted competitors: {rivals}
+
+Return {{"category": "2-6 word category of this product, judged from what it does (customer showcases are examples, not the category)",
+  "segment": "one short phrase naming who evaluates products in this category",
+  "fits": [{{"url": "drafted competitor url", "same_job": true, "why": "at most 10 words"}}],
+  "replacements": [{{"url": "https://rival.com/", "name": "Rival"}}]}}
+Rules: same_job is true only if a buyer of this product would try that competitor side by side for the same job.
+If any same_job is false, replacements lists exactly two best-known direct competitors in the category, best first,
+homepage URLs of real public standalone products operating today (never a parent company, suite homepage or
+marketplace). If all fit, replacements is empty. No quotes inside strings."""
+
 
 _PRICING_TASK = "Look for pricing or how to get started"
 _PRICING_RE = re.compile(r"pric|\bplans?\b|upgrade|billing|subscri", re.I)
@@ -184,7 +222,124 @@ def page_read_from_html(html: str) -> dict[str, Any]:
         seen.add(key)
         links.append((label, href[:80]))
     text = _plain(re.sub(r"<[^>]+>", " ", body))
-    return {"title": title, "text": f"{desc} {text}".strip()[:800], "links": links[:300]}
+    return {
+        "title": title,
+        "text": f"{desc} {text}".strip()[:800],
+        "links": links[:300],
+        # What the site says it is (meta, og, JSON-LD, keywords, headings) and a
+        # longer body read. The 800-char text above can be all customer quotes.
+        "about": _site_about(html, desc, text),
+        "full_text": text[:4000],
+    }
+
+
+def _meta_tags(html: str) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for m in re.finditer(r"<meta\b([^>]*)>", html, re.I):
+        attrs = {k.lower(): (v1 if v1 is not None else v2) for k, v1, v2 in re.findall(r'([\w:-]+)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')', m.group(1))}
+        key = (attrs.get("name") or attrs.get("property") or "").lower()
+        if key and attrs.get("content") and key not in out:
+            out[key] = _plain(attrs["content"])
+    return out
+
+
+def _json_ld_about(html: str) -> list[str]:
+    import json
+
+    found: list[str] = []
+
+    def walk(node: Any) -> None:
+        if isinstance(node, list):
+            for n in node:
+                walk(n)
+        elif isinstance(node, dict):
+            kind = str(node.get("@type") or "")
+            if re.search(r"Application|Product|Service|Organization|WebSite", kind):
+                for key in ("applicationCategory", "category", "description", "slogan"):
+                    val = node.get(key)
+                    if isinstance(val, str) and val.strip():
+                        found.append(_plain(val))
+            for key in ("@graph", "mainEntity", "itemListElement"):
+                if key in node:
+                    walk(node[key])
+
+    for m in re.finditer(r'<script[^>]+application/ld\+json[^>]*>(.*?)</script>', html, re.I | re.S):
+        try:
+            walk(json.loads(m.group(1)))
+        except Exception:  # noqa: BLE001
+            continue
+    return found
+
+
+_NOT_A_NAME = {"the", "this", "that", "our", "your", "we", "you", "it", "a", "an", "me", "us", "them", "other", "any", "most"}
+
+
+def _site_named_rivals(keywords: str, text: str) -> list[str]:
+    """Products the site names itself against ("Zapier alternative", "Is Zo like OpenClaw or Hermes?")."""
+    found: list[str] = []
+    for m in re.finditer(r"([A-Za-z][\w.]*(?: [A-Z][\w.]*)?) alternative", keywords or ""):
+        found.append(m.group(1))
+    pat = r"\b(?:[Ll]ike|[Tt]han|[Uu]nlike|[Vv]s\.?|[Vv]ersus|[Cc]ompared to|[Ii]nstead of)\s+([A-Z][\w.-]+(?:,? (?:or|and) [A-Z][\w.-]+)*)"
+    for m in re.finditer(pat, text or ""):
+        found += re.split(r",? (?:or|and) ", m.group(1))
+    out: list[str] = []
+    for name in found:
+        name = name.strip(" .,")
+        if name and name.lower() not in _NOT_A_NAME and name.lower() not in {o.lower() for o in out}:
+            out.append(name)
+    return out[:8]
+
+
+def _site_about(html: str, desc: str = "", text: str = "") -> str:
+    """The site's own one-line positioning: descriptions, JSON-LD category, keywords, headings, named rivals."""
+    meta = _meta_tags(html)
+    parts: list[str] = [desc, meta.get("og:description", ""), meta.get("twitter:description", "")]
+    parts += _json_ld_about(html)
+    if meta.get("keywords"):
+        parts.append("Keywords: " + meta["keywords"][:300])
+    heads = [_plain(re.sub(r"<[^>]+>", " ", h)) for h in re.findall(r"<h[12][^>]*>(.*?)</h[12]>", html, re.I | re.S)]
+    heads = [h for h in heads if 3 <= len(h) <= 90][:6]
+    if heads:
+        parts.append("Headings: " + " / ".join(heads))
+    # A general-purpose chatbot named in SEO keywords ("ChatGPT alternative") is
+    # not a side-by-side rival; leading with it made the planner pick chatgpt.com.
+    rivals = [r for r in _site_named_rivals(meta.get("keywords", ""), text) if not is_general_assistant(r)]
+    if rivals:
+        parts.insert(1, "The site compares itself with: " + ", ".join(rivals))
+    seen: set[str] = set()
+    out: list[str] = []
+    for part in parts:
+        key = part.lower().strip(" .")
+        if key and key not in seen:
+            seen.add(key)
+            out.append(part.strip())
+    return " | ".join(out)[:700]
+
+
+def framing_modes() -> set[str]:
+    """Which framing fixes run (MVP_PLAN_FRAMING, comma list): read (default), position, verify. "off" = none."""
+    raw = os.environ.get("MVP_PLAN_FRAMING", _DEFAULT_FRAMING)
+    return {m.strip().lower() for m in raw.split(",") if m.strip() and m.strip().lower() not in {"off", "none", "0"}}
+
+
+_DEFAULT_FRAMING = "read"  # the recommended fix; position and verify stay opt-in
+
+_READ_RULE = (
+    "\nThe About line is the site's own description, category and keywords: judge the product category from it"
+    " first. Customer quotes and showcase examples on the page are use cases, not the category."
+)
+
+
+def prompt_text(read: dict[str, Any], limit: int = 800) -> str:
+    """Page text for a planner prompt. With the read fix: the site's About line first, then a longer body."""
+    if "read" in framing_modes() and (read.get("about") or read.get("full_text")):
+        body = str(read.get("full_text") or read.get("text") or "")
+        return f"About: {read.get('about') or ''}\nPage: {body}"[: max(limit, 1500)]
+    return str(read.get("text") or "")[:limit]
+
+
+def read_rule() -> str:
+    return _READ_RULE if "read" in framing_modes() else ""
 
 
 def _plain(text: str) -> str:
@@ -303,8 +458,95 @@ _SUITE_HOSTS = {
 }
 
 
-def pick_competitors(items: list[Any], own: str, limit: int = 2) -> list[str]:
-    """Up to ``limit`` direct rivals: not this site, not a suite vendor's bare homepage."""
+# General-purpose AI chat assistants. Many sites name one in their SEO keywords
+# ("ChatGPT alternative": zo.computer), and the read fix put that line first, so
+# the planner picked chatgpt.com as a rival of an AI cloud computer (study
+# 7b5f0af9). They are rivals only of another general-purpose assistant.
+_ASSISTANT_HOSTS = {
+    "chatgpt.com", "chat.openai.com", "openai.com", "claude.ai", "claude.com", "anthropic.com",
+    "gemini.google.com", "gemini.google", "bard.google.com", "copilot.microsoft.com", "copilot.com",
+    "perplexity.ai", "grok.com", "x.ai", "meta.ai", "poe.com", "character.ai", "deepseek.com",
+    "chat.deepseek.com", "chat.mistral.ai", "pi.ai",
+}
+_ASSISTANT_NAMES = re.compile(
+    r"^(?:chat ?gpt|openai|claude|anthropic|gemini|bard|(?:microsoft )?copilot|perplexity|grok|meta ai|poe|"
+    r"character\.?ai|deepseek|le chat|mistral|pi)$",
+    re.I,
+)
+
+
+def is_general_assistant(url_or_name: str) -> bool:
+    text = str(url_or_name or "").strip()
+    if not text:
+        return False
+    if "." in text or "/" in text:
+        return _host_of(text) in _ASSISTANT_HOSTS
+    return bool(_ASSISTANT_NAMES.match(text))
+
+
+def product_is_general_assistant(own: str, read: dict[str, Any] | None = None) -> bool:
+    """True when the product itself is a general-purpose chatbot (then chatbots are its direct rivals)."""
+    if (own or "").lower().removeprefix("www.") in _ASSISTANT_HOSTS:
+        return True
+    title = str((read or {}).get("title") or "")
+    return bool(re.search(r"\b(?:ai )?chat ?bot\b|\bai chat\b|\bchat assistant\b", title, re.I))
+
+
+# Comparison shape: the product runs every persona x task; each rival a small slice.
+RIVAL_COUNT = int(os.environ.get("MVP_COMPARE_RIVALS", "2") or "2")
+PERSONA_COUNT = int(os.environ.get("MVP_COMPARE_PERSONAS", "6") or "6")
+TASK_COUNT = int(os.environ.get("MVP_COMPARE_TASKS", "6") or "6")
+# 0 = every persona / every task: each rival runs the same 6 x 6 as the product (Shreyas,
+# 2026-09-26: competitors must not get fewer runs). Set >0 for a smaller rival slice.
+RIVAL_PERSONAS = int(os.environ.get("MVP_COMPARE_RIVAL_PERSONAS", "0") or "0")
+RIVAL_TASKS = int(os.environ.get("MVP_COMPARE_RIVAL_TASKS", "0") or "0")
+
+
+def competitor_cells(
+    personas: list[dict[str, Any]], tasks: list[dict[str, Any]], competitors: list[str],
+    *, n_personas: int | None = None, n_tasks: int | None = None,
+) -> dict[str, dict[str, list[int]]]:
+    """Which personas and tasks (0-based indexes) each rival runs: {rival_url: {"personas", "tasks"}}.
+
+    Default (MVP_COMPARE_RIVAL_PERSONAS/TASKS unset or 0): {} = every rival runs every persona x task,
+    the same 6 x 6 as the product (3 sites x 36 = 108 agents). With a slice size set, per rival:
+    - personas: the rival's natural buyer (the first persona that favors it), then the product's own
+      lead buyer (the first product-fit persona, usually the early-start buyer p1), so every rival cell
+      has a same-buyer product cell to be compared with.
+    - tasks: the job that favors the rival, then the product's core job (the first product-favoring task,
+      usually t1) as the head-to-head.
+    Missing favorites fall back to the next unused persona/task in plan order.
+    """
+    n_p = RIVAL_PERSONAS if n_personas is None else n_personas
+    n_t = RIVAL_TASKS if n_tasks is None else n_tasks
+    if n_p <= 0 and n_t <= 0:
+        # Same shape on every site: no slice, the matrix runs every persona x task on each rival.
+        return {}
+    n_p = n_p if n_p > 0 else len(personas)
+    n_t = n_t if n_t > 0 else len(tasks)
+
+    def favors(row: dict[str, Any]) -> str:
+        return str(row.get("favors") or "")
+
+    def same(a: str, b: str) -> bool:
+        return bool(a) and bool(b) and (a == b or _host_of(a) == _host_of(b))
+
+    def pick(rows: list[dict[str, Any]], comp: str, n: int) -> list[int]:
+        order: list[int] = []
+        for want in (lambda r: same(favors(r), comp), lambda r: favors(r) == "product"):
+            idx = next((i for i, r in enumerate(rows) if want(r) and i not in order), None)
+            if idx is not None:
+                order.append(idx)
+        for i in range(len(rows)):
+            if i not in order:
+                order.append(i)
+        return sorted(order[: max(0, min(n, len(rows)))])
+
+    return {c: {"personas": pick(personas, c, n_p), "tasks": pick(tasks, c, n_t)} for c in competitors if c}
+
+
+def pick_competitors(items: list[Any], own: str, limit: int = 2, *, allow_assistants: bool = False) -> list[str]:
+    """Up to ``limit`` direct rivals: not this site, not a suite vendor's bare homepage, not a chatbot."""
     comps: list[str] = []
     for item in items:
         if isinstance(item, dict):
@@ -315,6 +557,8 @@ def pick_competitors(items: list[Any], own: str, limit: int = 2) -> list[str]:
         if not clean or not host or host == own or clean in comps:
             continue
         if host in _SUITE_HOSTS and parts.path.strip("/") == "":
+            continue
+        if not allow_assistants and host in _ASSISTANT_HOSTS:
             continue
         comps.append(clean)
         if len(comps) == limit:
@@ -351,8 +595,10 @@ def resolve_favors(
     return ""
 
 
-def compare_personas(data: dict[str, Any], own: str, comps: list[str], names: dict[str, str]) -> list[dict[str, Any]]:
-    """Five personas, each tagged with the product it is expected to favor and why."""
+def compare_personas(
+    data: dict[str, Any], own: str, comps: list[str], names: dict[str, str], read: dict[str, Any] | None = None
+) -> list[dict[str, Any]]:
+    """Five personas with distinct names, each tagged with the product it is expected to favor and why."""
     out: list[dict[str, Any]] = []
     for item in data.get("personas") or []:
         if not isinstance(item, dict) or not str(item.get("name") or "").strip():
@@ -366,11 +612,81 @@ def compare_personas(data: dict[str, Any], own: str, comps: list[str], names: di
                 "favors_why": " ".join(str(item.get("why") or "").split())[:120],
             }
         )
-    return out[:5]
+    return unique_persona_names(out[:PERSONA_COUNT], seed=own, read=read)
+
+
+# Replacement names when the model repeats one. Two separate model calls (the
+# early-start buyer and the full plan) each default to the same few names
+# (Alex Chen, Sarah Chen, David Lee), so a spliced plan could list one twice.
+_FIRST_NAMES = (
+    "Priya", "Tomasz", "Amara", "Kenji", "Lucia", "Oluwaseun", "Ingrid", "Rafael", "Mei", "Dmitri",
+    "Fatima", "Mateo", "Hana", "Kwame", "Sofia", "Arjun", "Leila", "Bruno", "Yuki", "Nadia",
+    "Tobias", "Zanele", "Diego", "Aisha", "Henrik", "Camila", "Ravi", "Elif", "Marcus", "Noor",
+)
+_LAST_NAMES = (
+    "Okafor", "Lindqvist", "Nakamura", "Haddad", "Kowalski", "Mensah", "Varga", "Castillo", "Iyer",
+    "Petrov", "Duarte", "Brennan", "Sato", "Abara", "Moreau", "Novak", "Rahman", "Keller", "Osei",
+    "Tanaka", "Ferreira", "Quinn", "Adeyemi", "Horvath", "Bianchi", "Nair", "Jensen", "Alvarez", "Kaur", "Dubois",
+)
+
+
+def _name_parts(name: str) -> tuple[str, str]:
+    bits = str(name or "").lower().split()
+    return (bits[0] if bits else "", bits[-1] if len(bits) > 1 else "")
+
+
+def name_on_page(name: str, read: dict[str, Any] | None) -> bool:
+    """True when a persona name was lifted from the page (a testimonial author, a showcase site)."""
+    bits = [b for b in re.findall(r"[a-z]+", str(name or "").lower()) if len(b) > 1]
+    if len(bits) < 2 or not read:
+        return False
+    blob = " ".join(
+        [str(read.get("text") or ""), str(read.get("full_text") or "")]
+        + [f"{label} {href}" for label, href in (read.get("links") or [])]
+    ).lower()
+    return (" ".join(bits) in blob) or ("".join(bits) in blob.replace(" ", ""))
+
+
+def unique_persona_names(
+    personas: list[dict[str, Any]], *, seed: str = "", keep_first: int = 0, read: dict[str, Any] | None = None
+) -> list[dict[str, Any]]:
+    """Give every persona a distinct first and last name.
+
+    The first ``keep_first`` personas keep their names (the early buyer is
+    already running under its name). A later persona that repeats a first or
+    last name already used, or whose name was lifted from the page, gets a
+    replacement picked deterministically from a fixed pool (seeded by
+    ``seed``) that avoids every name already in the plan.
+    """
+    import zlib
+
+    out = [dict(p) for p in personas]
+    used_first: set[str] = set()
+    used_last: set[str] = set()
+    for p in out:
+        first, last = _name_parts(p.get("name") or "")
+        used_first.add(first)
+        used_last.add(last)
+    taken_first: set[str] = set()
+    taken_last: set[str] = set()
+    start = zlib.crc32(seed.encode()) if seed else 0
+    for i, p in enumerate(out):
+        first, last = _name_parts(p.get("name") or "")
+        clash = (first in taken_first) or (last and last in taken_last)
+        if i >= keep_first and (clash or not first or name_on_page(p.get("name") or "", read)):
+            k = start + i * 7
+            nf = next(f for j in range(len(_FIRST_NAMES)) if (f := _FIRST_NAMES[(k + j) % len(_FIRST_NAMES)]).lower() not in used_first | taken_first)
+            nl = next(n for j in range(len(_LAST_NAMES)) if (n := _LAST_NAMES[(k * 3 + j) % len(_LAST_NAMES)]).lower() not in used_last | taken_last)
+            p["name"] = f"{nf} {nl}"
+            first, last = nf.lower(), nl.lower()
+        taken_first.add(first)
+        if last:
+            taken_last.add(last)
+    return out
 
 
 def compare_tasks(data: dict[str, Any], own: str, comps: list[str], names: dict[str, str]) -> list[dict[str, Any]]:
-    """Up to five tasks (no customer-credential tasks, one pricing task at most)."""
+    """Up to TASK_COUNT tasks (no customer-credential tasks, one pricing task at most)."""
     out: list[dict[str, Any]] = []
     seen: set[str] = set()
     pricing = 0
@@ -394,13 +710,13 @@ def compare_tasks(data: dict[str, Any], own: str, comps: list[str], names: dict[
                 "favors_why": " ".join(str(item.get("why") or "").split())[:120],
             }
         )
-    return out[:5]
+    return out[:TASK_COUNT]
 
 
 def compare_mode() -> bool:
-    """5 personas x 5 tasks x product + 3 rivals, scored head to head (MVP_STUDY_MODE=compare).
+    """Product: 6 personas x 6 tasks; each of 2 rivals: 2 personas x 2 tasks (MVP_STUDY_MODE=compare).
 
-    Off by default until the study output is agreed: a compare study is 100 agents.
+    3 sites x 6 x 6 = 108 agents (was 5 x 5 x 4 sites = 100). Off by default.
     """
     return os.environ.get("MVP_STUDY_MODE", "classic").strip().lower() == "compare"
 
@@ -437,14 +753,16 @@ async def _split_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, A
     async def _run() -> dict[str, Any] | None:
         t0 = asyncio.get_running_loop().time()
         read = await _page_read(url)
-        text = str(read.get("text") or "")[:600]
-        head = await ask(_CMP_COMPETITORS.format(url=url, title=read.get("title") or "", text=text))
+        text = prompt_text(read, 600)
+        head = await ask(_CMP_COMPETITORS.format(url=url, title=read.get("title") or "", text=text) + read_rule())
         if not isinstance(head, dict):
             return None
         own = (urlsplit(url).hostname or "").removeprefix("www.")
         items = list(head.get("competitors") or [])
         names = {_clean_url(str(i.get("url") or "")): str(i.get("name") or "") for i in items if isinstance(i, dict)}
-        raw_comps = pick_competitors(items, own, limit=3)
+        raw_comps = pick_competitors(
+            items, own, limit=RIVAL_COUNT, allow_assistants=product_is_general_assistant(own, read)
+        )
         if not raw_comps:
             return None
         product = str(head.get("product") or "")[:60] or own
@@ -458,7 +776,7 @@ async def _split_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, A
             landed_f,
         )
         landed = list(landed)
-        personas = compare_personas(personas_raw if isinstance(personas_raw, dict) else {}, own, raw_comps, names)
+        personas = compare_personas(personas_raw if isinstance(personas_raw, dict) else {}, own, raw_comps, names, read)
         tasks = compare_tasks(tasks_raw if isinstance(tasks_raw, dict) else {}, own, raw_comps, names)
         if len(tasks) < 2 or len(personas) < 2:
             return None
@@ -477,6 +795,7 @@ async def _split_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, A
             "personas": personas,
             "task_specs": tasks,
             "tasks": [t["prompt"] for t in tasks],
+            "competitor_cells": competitor_cells(personas, tasks, landed),
             "plan_s": took,
         }
 
@@ -487,15 +806,53 @@ async def _split_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, A
         return None
 
 
+def _positioning_note(pos: dict[str, Any]) -> str:
+    """Prompt addendum carrying the positioning call's answer (empty when it did not run)."""
+    if not pos or not str(pos.get("category") or "").strip():
+        return ""
+    alts = ", ".join(str(a) for a in (pos.get("compared_with") or []) if str(a).strip())[:200]
+    return (
+        f"\nPositioning, decided from the whole page (follow it): category: {pos.get('category')}. "
+        f"What it is: {pos.get('what_it_is') or ''} Buyer: {pos.get('buyer') or ''}. "
+        f"Buyers compare it with: {alts or 'unknown'}. It is not: {pos.get('not') or ''}\n"
+        "Competitors, personas and tasks must all be in that category; the segment names that buyer."
+    )
+
+
+async def _verify_plan(
+    url: str, title: str, full: str, data: dict[str, Any], prompt: str, ask: Any
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Self-check: do the drafted rivals do the same job? If not, redo the plan with the corrected rivals."""
+    items = [i for i in (data.get("competitors") or []) if isinstance(i, dict)]
+    rivals = "; ".join(f"{i.get('name') or ''} ({i.get('url') or ''})" for i in items)
+    check = await ask(_VERIFY.format(url=url, title=title, text=full, segment=data.get("segment") or "", rivals=rivals))
+    if not isinstance(check, dict):
+        return data, {}
+    fits = [f for f in (check.get("fits") or []) if isinstance(f, dict)]
+    bad = [f for f in fits if f.get("same_job") is False or str(f.get("same_job")).lower() == "false"]
+    repl = [r for r in (check.get("replacements") or []) if isinstance(r, dict) and r.get("url")]
+    verdict = {"category": check.get("category"), "rejected": [f.get("url") for f in bad], "replacements": repl[:2]}
+    if not bad or len(repl) < 2:
+        verdict["redo"] = False
+        return data, verdict
+    fixed = ", ".join(f"{r.get('name') or ''} ({r.get('url')})" for r in repl[:2])
+    redo = await ask(
+        prompt
+        + f"\nA check of the whole page found this product's category is: {check.get('category')}. "
+        f"Segment: {check.get('segment') or ''}. Use exactly these competitors, in this order: {fixed}. "
+        "Write personas and tasks for that category."
+    )
+    verdict["redo"] = isinstance(redo, dict)
+    return (redo if isinstance(redo, dict) else data), verdict
+
+
 async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, Any] | None:
-    """Comparison plan: 3 rivals, 5 personas spread across all 4 products, 5 tasks favoring each."""
+    """Comparison plan: 2 rivals, 6 personas, 6 tasks; every site runs all 36 cells."""
     from capability.gemini_config import extract_json, gemini_chat
 
-    async def _run() -> dict[str, Any] | None:
-        read = await _page_read(url)
-        prompt = _COMPARE_PROMPT.format(
-            url=url, title=read.get("title") or "", text=read.get("text") or "", links=_links_for_prompt(read)
-        )
+    modes = framing_modes()
+
+    async def ask(prompt: str) -> Any:
         raw = await gemini_chat(
             [{"role": "user", "content": prompt}],
             model=os.environ.get("MVP_FAST_PLAN_MODEL") or "gemini-2.5-flash",
@@ -503,9 +860,31 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
             json_mode=True,
             max_retries=2,
         )
-        data = extract_json(raw)
+        return extract_json(raw)
+
+    async def _run() -> dict[str, Any] | None:
+        read = await _page_read(url)
+        title = read.get("title") or ""
+        full = f"{read.get('text') or ''} {read.get('full_text') or ''}"[:3800]
+        base_prompt = _COMPARE_PROMPT.format(url=url, title=title, text=prompt_text(read), links=_links_for_prompt(read))
+        base_prompt += read_rule()
+        positioning: dict[str, Any] = {}
+        if "position" in modes:
+            try:
+                got = await ask(_POSITIONING.format(url=url, title=title, text=full))
+                positioning = got if isinstance(got, dict) else {}
+            except Exception as exc:  # noqa: BLE001
+                print(f"[fast_plan] positioning skipped: {exc!r}", flush=True)
+        prompt = base_prompt + _positioning_note(positioning)
+        data = await ask(prompt)
         if not isinstance(data, dict):
             return None
+        verified: dict[str, Any] = {}
+        if "verify" in modes:
+            try:
+                data, verified = await _verify_plan(url, title, full, data, prompt, ask)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[fast_plan] verify skipped: {exc!r}", flush=True)
         own = (urlsplit(url).hostname or "").removeprefix("www.")
         items = list(data.get("competitors") or [])
         names = {
@@ -513,14 +892,20 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
             for i in items
             if isinstance(i, dict)
         }
-        raw_comps = pick_competitors(items, own, limit=3)
+        backup = data.get("backup_competitor")
+        if isinstance(backup, dict) and backup.get("url"):
+            items.append(backup)
+            names.setdefault(_clean_url(str(backup.get("url") or "")), str(backup.get("name") or ""))
+        raw_comps = pick_competitors(
+            items, own, limit=RIVAL_COUNT, allow_assistants=product_is_general_assistant(own, read)
+        )
         if not raw_comps:
             return None
         from mvp.server import _landing_url
 
         landed = list(await asyncio.gather(*(_landing_url(c) for c in raw_comps)))
         # Tags were written against the planner's URLs; map them to where the rival lands.
-        personas = compare_personas(data, own, raw_comps, names)
+        personas = compare_personas(data, own, raw_comps, names, read)
         tasks = compare_tasks(data, own, raw_comps, names)
         remap = dict(zip(raw_comps, landed))
         for row in personas + tasks:
@@ -538,6 +923,10 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
             "personas": personas,
             "task_specs": tasks,
             "tasks": [t["prompt"] for t in tasks],
+            "competitor_cells": competitor_cells(personas, tasks, landed),
+            "framing": sorted(modes),
+            "positioning": positioning or None,
+            "verified": verified or None,
         }
 
     try:

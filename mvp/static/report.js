@@ -42,7 +42,17 @@ function issueFor(agentId) {
 }
 
 function shotsOf(run) {
-  return (run?.trace || []).filter((s) => s && s.screenshot_url && Number.isFinite(Number(s.step)));
+  // Every trace step is navigable. The a11y agent saves only the final screenshot, so
+  // steps without one show their action, URL and page text instead of being skipped
+  // (skipping them left one step and two disabled arrows).
+  const steps = (run?.trace || []).filter((s) => s && Number.isFinite(Number(s.step)));
+  if (!steps.length) return steps;
+  const finalShot = run.final_screenshot_url || run.final_screenshot || "";
+  const last = steps[steps.length - 1];
+  if (finalShot && !steps.some((s) => s.screenshot_url)) {
+    return [...steps.slice(0, -1), { ...last, screenshot_url: finalShot, final_shot: true }];
+  }
+  return steps;
 }
 
 function productNotes(list) {
@@ -342,7 +352,7 @@ function renderStepViewer(run) {
     const finalUrl = run.final_url
       ? `<a href="${escapeHtml(run.final_url)}" target="_blank" rel="noopener">${escapeHtml(run.final_url)}</a>`
       : "—";
-    return `<div class="step-viewer step-viewer-empty"><div class="screenshot-missing">No step screenshots yet.<br/>Final URL: ${finalUrl}</div></div>`;
+    return `<div class="step-viewer step-viewer-empty"><div class="screenshot-missing">No steps yet.<br/>Final URL: ${finalUrl}</div></div>`;
   }
   let idx = _activeIdx[run.agent_id] ?? 0;
   if (idx < 0 || idx >= shots.length) idx = 0;
@@ -361,17 +371,20 @@ function renderStepViewer(run) {
       </div>
       <button type="button" class="step-arrow" data-agent="${escapeHtml(run.agent_id)}" data-dir="1"${idx >= shots.length - 1 ? " disabled" : ""} aria-label="Next step">→</button>
     </div>
-    <figure class="step-shot">
+    ${step.screenshot_url
+      ? `<figure class="step-shot">
       <a href="${escapeHtml(step.screenshot_url)}" target="_blank" rel="noopener">
         <img class="trace-screenshot" src="${escapeHtml(step.screenshot_url)}" alt="Step ${escapeHtml(step.step)}" />
-      </a>
-    </figure>
+      </a>${step.final_shot ? `<figcaption class="muted small">Final page (the agent saves one screenshot per run)</figcaption>` : ""}
+    </figure>`
+      : `<div class="trace-placeholder"><p><strong>No screenshot for this step.</strong> The agent read the page as text.</p>
+      ${step.observation ? `<p class="muted small">${escapeHtml(String(step.observation).slice(0, 600))}</p>` : ""}</div>`}
     <div class="step-detail">
       <p class="step-action"><strong>${escapeHtml(step.step)}.</strong> ${escapeHtml(humanAction(step.action) || "Action")}</p>
       ${step.url ? `<p class="step-meta"><span>URL</span> <a href="${escapeHtml(step.url)}" target="_blank" rel="noopener">${escapeHtml(step.url)}</a></p>` : ""}
       ${thoughtHtml(step)}
     </div>
-    <p class="step-caption">${idx + 1} / ${shots.length} · <a href="${escapeHtml(step.screenshot_url)}" target="_blank" rel="noopener">open screenshot</a></p>
+    <p class="step-caption">${idx + 1} / ${shots.length}${step.screenshot_url ? ` · <a href="${escapeHtml(step.screenshot_url)}" target="_blank" rel="noopener">open screenshot</a>` : ""}</p>
   </div>`;
 }
 
@@ -545,8 +558,10 @@ function openTrace(agentId, step) {
   const run = runs().find((r) => r.agent_id === agentId);
   if (!run) return;
   const shots = shotsOf(run);
-  const idx = shots.findIndex((s) => Number(s.step) === Number(step));
-  _activeIdx[agentId] = idx >= 0 ? idx : 0;
+  // The cited step, else the nearest earlier one (several rows can share a step number).
+  let idx = shots.findIndex((s) => Number(s.step) === Number(step));
+  if (idx < 0) idx = shots.reduce((best, s, i) => (Number(s.step) <= Number(step) ? i : best), 0);
+  _activeIdx[agentId] = idx;
   const personaId = String(run.persona_id || run.persona_name || "persona");
   const taskId = taskKeyOf(run);
   openGoal(personaId, taskId);

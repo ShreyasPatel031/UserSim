@@ -612,6 +612,35 @@ def _failure_blob(result: dict[str, Any]) -> str:
     return " ".join(parts)
 
 
+_SIGNUP_WORD_RE = re.compile(r"\bsign[\s-]?up\b|\bsign[\s-]?in\b|\blog[\s-]?in\b|\baccount\b|\bemail\b", re.I)
+
+
+def _only_signup_timed_out(result: dict[str, Any], pattern: re.Pattern[str] | None = None) -> bool:
+    """True when the run's only timeout was its live signup and the run went on to a verdict.
+
+    Study 7b5f0af9 flagged 22 runs "Run timed out before a product conclusion": every one
+    was a signup that ran out of time (17 rival 40s caps, Zo login emails that never
+    came) after which the agent read the site and reached a website verdict (stop
+    'done' or the step cap). The signup row already reports that signup; the run
+    itself did conclude.
+    """
+    su = result.get("signup") if isinstance(result.get("signup"), dict) else {}
+    if not su or su.get("ok"):
+        return False
+    if not (result.get("website_eval") or str(result.get("stop_reason") or "") in {"done", "task_complete"}):
+        return False
+    texts = [str(result.get("browser_error") or "")]
+    texts += [str(x) for x in (result.get("friction_points") or [])]
+    for step in result.get("trace") or []:
+        if isinstance(step, dict):
+            texts += [str(step.get("action") or ""), str(step.get("observation") or "")]
+    for text in texts:
+        for sentence in re.split(r"(?<=[.!?;])\s+", text):
+            if (pattern or _TIMEOUT_RE).search(sentence) and not _SIGNUP_WORD_RE.search(sentence):
+                return False
+    return True
+
+
 def _usersim_failure(result: dict[str, Any], start_url: str) -> dict[str, str] | None:
     """Captcha and timeout stops are UserSim failures, even on the right site.
 
@@ -640,7 +669,7 @@ def _usersim_failure(result: dict[str, Any], start_url: str) -> dict[str, str] |
     final = str(result.get("final_url") or "")
     failed0 = result.get("failed_step") if isinstance(result.get("failed_step"), dict) else {}
     walled0 = str(result.get("stop_reason") or "") == "needs_account" or str(failed0.get("phase") or "") == "needs_account"
-    if _CAPTCHA_RE.search(blob) and not walled0:
+    if _CAPTCHA_RE.search(blob) and not walled0 and not _only_signup_timed_out(result, _CAPTCHA_RE):
         # A captcha behind an account wall is the wall's signup being blocked;
         # the wall row says "blocked at signup: captcha".
         return {
@@ -651,7 +680,7 @@ def _usersim_failure(result: dict[str, Any], start_url: str) -> dict[str, str] |
         }
     failed = result.get("failed_step") if isinstance(result.get("failed_step"), dict) else {}
     walled = str(result.get("stop_reason") or "") == "needs_account" or str(failed.get("phase") or "") == "needs_account"
-    if _TIMEOUT_RE.search(blob) and not walled:
+    if _TIMEOUT_RE.search(blob) and not walled and not _only_signup_timed_out(result):
         # An account wall is a product fact even when the live signup behind
         # it ran out of time; the report shows that signup on the wall row.
         return {

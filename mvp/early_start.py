@@ -47,10 +47,12 @@ async def starter_plan(url: str, *, timeout: float = 6.0) -> dict[str, Any] | No
     async def _run() -> dict[str, Any] | None:
         t0 = time.monotonic()
         read = await _page_read(url)
+        from mvp.fast_plan import prompt_text, read_rule
+
         raw = await gemini_chat(
             [{"role": "user", "content": _STARTER.format(
-                url=url, title=read.get("title") or "", text=str(read.get("text") or "")[:900]
-            )}],
+                url=url, title=read.get("title") or "", text=prompt_text(read, 900)
+            ) + read_rule()}],
             model=os.environ.get("MVP_FAST_PLAN_MODEL") or "gemini-2.5-flash",
             temperature=0.3,
             json_mode=True,
@@ -63,6 +65,10 @@ async def starter_plan(url: str, *, timeout: float = 6.0) -> dict[str, Any] | No
         task = " ".join(str(data.get("task") or "").replace('"', "").split())[:80]
         if not task or not p.get("name"):
             return None
+        from mvp.fast_plan import unique_persona_names
+
+        # A testimonial author on the page is a real customer, not an invented buyer.
+        p = unique_persona_names([dict(p)], seed=url, read=read)[0]
         took = round(time.monotonic() - t0, 2)
         print(f"[early] starter {took}s {p.get('name')!r} task={task!r}", flush=True)
         return {
@@ -105,7 +111,11 @@ def splice_plan(plan: dict[str, Any], starter: dict[str, Any]) -> dict[str, Any]
         drop = len(personas) - 1
     if drop is not None:
         personas.pop(drop)
-    plan["personas"] = [persona] + personas
+    from mvp.fast_plan import unique_persona_names
+
+    # Both calls tend to invent the same few names (Alex Chen twice in one study):
+    # the running early buyer keeps its name, a plan persona that repeats it is renamed.
+    plan["personas"] = unique_persona_names([persona] + personas, seed=str(plan.get("product") or ""), keep_first=1)
 
     task = starter["task"]
     specs = [dict(t) for t in plan.get("task_specs") or [] if isinstance(t, dict)]
