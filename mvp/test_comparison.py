@@ -217,7 +217,7 @@ def test_persona_pick_is_blind_and_maps_letters_back(monkeypatch):
         {"agent_id": "t1__p1__competitor_1", "site_key": "competitor_1", "persona_id": "p1", "task_prompt": "Do x",
          "comparison_score": {"level": "clear_evidence", "score": 6, "friction": 0, "reason": "ok"}},
     ]
-    got = asyncio.run(comparison.persona_pick({"id": "p1", "name": "P"}, rows, {"product": "Kolanut", "competitor_1": "ChurnZero"}))
+    got = asyncio.run(comparison.persona_pick_text({"id": "p1", "name": "P"}, rows, {"product": "Kolanut", "competitor_1": "ChurnZero"}))
     assert got["pick"] == "competitor_1"
     assert "product under study" not in seen["prompt"]
     assert "product: Kolanut" not in seen["prompt"]

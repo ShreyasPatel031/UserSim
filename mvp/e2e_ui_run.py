@@ -19,6 +19,7 @@ import json
 import os
 import re
 import sys
+import threading
 import time
 import urllib.request
 from pathlib import Path
@@ -57,6 +58,8 @@ def http_json(base: str, path: str, timeout: float = 60) -> dict:
 
 
 _GEMINI = None
+# Regional clients are created lazily from worker threads (mvp.pairwise runs calls on a thread pool).
+_GEMINI_LOCK = threading.Lock()
 
 
 def _gemini_client():
@@ -77,60 +80,155 @@ def _gemini_client():
     return _GEMINI
 
 
-def _gemini_json_config():
-    from google.genai import types
-
-    return types.GenerateContentConfig(
-        temperature=0,
-        max_output_tokens=512,
-        thinking_config=types.ThinkingConfig(thinking_budget=0),
-        response_mime_type="application/json",
-    )
+_GEMINI_BY_LOC: dict = {}
+# Regions tried in turn when a call gets 429 (RESOURCE_EXHAUSTED); override with VERTEX_FALLBACK_LOCATIONS.
+_FALLBACK_LOCATIONS = [
+    x.strip() for x in os.environ.get(
+        "VERTEX_FALLBACK_LOCATIONS", "us-east4,us-west1,europe-west4,asia-northeast1,global"
+    ).split(",") if x.strip()
+]
 
 
-def gemini_vision_json(prompt: str, png: bytes, *, model: str = JUDGE_MODEL) -> dict:
-    """Judge an image with Vertex gemini-2.5-flash-lite; return parsed JSON."""
-    from google.genai import types
+def _gemini_client_at(location: str | None):
+    """Vertex client for one region (None = the default client / VERTEX_LOCATION)."""
+    if not location:
+        return _gemini_client()
+    if location not in _GEMINI_BY_LOC:
+        from google import genai
 
-    client = _gemini_client()
-    resp = client.models.generate_content(
-        model=model,
-        contents=[
-            types.Part.from_text(text=prompt),
-            types.Part.from_bytes(data=png, mime_type="image/png"),
-        ],
-        config=_gemini_json_config(),
-    )
-    raw = (resp.text or "").strip()
+        from auth import vertex_credentials
+        from config import GCP_PROJECT
+
+        with _GEMINI_LOCK:
+            if location not in _GEMINI_BY_LOC:
+                _GEMINI_BY_LOC[location] = genai.Client(
+                    vertexai=True, project=os.environ.get("GCP_PROJECT") or GCP_PROJECT, location=location,
+                    credentials=vertex_credentials(),
+                )
+    return _GEMINI_BY_LOC[location]
+
+
+def _images(png: bytes | bytearray | list[bytes]) -> list[bytes]:
+    return [bytes(png)] if isinstance(png, (bytes, bytearray)) else [bytes(x) for x in png]
+
+
+def _json_object(raw: str) -> dict:
     match = re.search(r"\{.*\}", raw, re.S)
     return json.loads(match.group(0) if match else raw)
+
+
+def gemini_vision_json(
+    prompt: str,
+    png: bytes | list[bytes],
+    *,
+    model: str = JUDGE_MODEL,
+    temperature: float = 0.0,
+    max_tokens: int = 512,
+    media_resolution: str | None = None,
+    retries: int = 1,
+) -> dict:
+    """Judge one image (or N screenshots, in order) in one call; return parsed JSON.
+
+    Defaults keep the original behaviour: flash-lite, temperature 0, 512 tokens, thinking off, JSON mode, one
+    attempt on the default region. ``retries`` > 1 adds the 429 / 5xx backoff and region fallback of
+    :func:`gemini_generate`.
+    """
+    raw, _, _ = gemini_generate(
+        [prompt, *_images(png)],
+        model=model, temperature=temperature, max_tokens=max_tokens, media_resolution=media_resolution,
+        retries=retries,
+    )
+    return _json_object(raw)
+
+
+def gemini_generate(
+    contents: list,
+    *,
+    model: str = JUDGE_MODEL,
+    temperature: float = 0.0,
+    max_tokens: int = 512,
+    json_mode: bool = True,
+    media_resolution: str | None = None,
+    retries: int = 8,
+    seed: int | None = None,
+    max_backoff_s: float = 30.0,
+) -> tuple[str, int, int]:
+    """One Vertex call with any mix of text and image parts; returns (text, input tokens, output tokens).
+
+    Strings in ``contents`` become text parts and ``bytes`` become PNG/JPEG image parts. Retries 429 / 5xx
+    with exponential backoff (other 4xx fail at once); after the first 429 the retries rotate through
+    VERTEX_FALLBACK_LOCATIONS. ``media_resolution="high"`` asks for full-detail images (Vertex refuses it when a
+    request carries 2+ images). ``seed`` makes sampling at temperature > 0 repeatable.
+    """
+    import time as _time
+
+    from google.genai import types
+
+    parts = []
+    for c in contents:
+        if isinstance(c, (bytes, bytearray)):
+            mime = "image/jpeg" if bytes(c[:3]) == b"\xff\xd8\xff" else "image/png"
+            parts.append(types.Part.from_bytes(data=bytes(c), mime_type=mime))
+        elif isinstance(c, str):
+            parts.append(types.Part.from_text(text=c))
+        else:
+            parts.append(c)
+    cfg = types.GenerateContentConfig(
+        temperature=temperature,
+        max_output_tokens=max_tokens,
+        thinking_config=types.ThinkingConfig(thinking_budget=0),
+        response_mime_type="application/json" if json_mode else None,
+        media_resolution=(types.MediaResolution.MEDIA_RESOLUTION_HIGH if media_resolution == "high" else None),
+        seed=seed,
+    )
+    last: Exception | None = None
+    locs: list[str | None] = [None]
+    for attempt in range(max(1, retries)):
+        loc = locs[attempt % len(locs)]
+        try:
+            resp = _gemini_client_at(loc).models.generate_content(model=model, contents=parts, config=cfg)
+            um = getattr(resp, "usage_metadata", None)
+            return (
+                (resp.text or "").strip(),
+                int(getattr(um, "prompt_token_count", 0) or 0),
+                int(getattr(um, "candidates_token_count", 0) or 0),
+            )
+        except Exception as exc:  # noqa: BLE001 - 429 / 5xx back off
+            last = exc
+            code = getattr(exc, "code", None)
+            if isinstance(code, int) and 400 <= code < 500 and code != 429:
+                break
+            if code == 429 and len(locs) == 1 and _FALLBACK_LOCATIONS:
+                locs = [None, *_FALLBACK_LOCATIONS]  # spread retries across regions
+            if attempt + 1 < retries:
+                _time.sleep(min(max_backoff_s, 1.5 * 2 ** (attempt // max(1, len(locs)))))
+    raise RuntimeError(f"gemini call failed: {last!r}")
 
 
 def gemini_vision_pair(
     prompt: str,
-    prev_png: bytes,
-    new_png: bytes,
+    prev_png: bytes | list[bytes],
+    new_png: bytes | list[bytes],
     *,
     model: str = JUDGE_MODEL,
+    temperature: float = 0.0,
+    max_tokens: int = 512,
+    labels: tuple[str, str] = ("IMAGE 1 — PREVIOUS screen:", "IMAGE 2 — NEW screen after the claimed action:"),
+    media_resolution: str | None = None,
+    retries: int = 1,
+    seed: int | None = None,
 ) -> dict:
-    """Judge two images (previous vs new) with flash-lite."""
-    from google.genai import types
+    """Judge two screens (or two sets of N screenshots) in one call; return parsed JSON.
 
-    client = _gemini_client()
-    resp = client.models.generate_content(
-        model=model,
-        contents=[
-            types.Part.from_text(text=prompt),
-            types.Part.from_text(text="IMAGE 1 — PREVIOUS screen:"),
-            types.Part.from_bytes(data=prev_png, mime_type="image/png"),
-            types.Part.from_text(text="IMAGE 2 — NEW screen after the claimed action:"),
-            types.Part.from_bytes(data=new_png, mime_type="image/png"),
-        ],
-        config=_gemini_json_config(),
+    Defaults keep the original previous-vs-new behaviour (flash-lite, temperature 0, 512 tokens, one attempt).
+    Each side may be one PNG or a list of screenshots; ``labels`` names the two sides.
+    """
+    raw, _, _ = gemini_generate(
+        [prompt, labels[0], *_images(prev_png), labels[1], *_images(new_png)],
+        model=model, temperature=temperature, max_tokens=max_tokens, media_resolution=media_resolution,
+        retries=retries, seed=seed,
     )
-    raw = (resp.text or "").strip()
-    match = re.search(r"\{.*\}", raw, re.S)
-    return json.loads(match.group(0) if match else raw)
+    return _json_object(raw)
 
 
 def _hostname(url: str) -> str:

@@ -285,14 +285,19 @@ def _cite(run: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def rank_sites(rows_by_site: dict[str, list[dict[str, Any]]]) -> list[list[str]]:
-    """Sites best first as tiers. Mean score, then best level, then lower mean friction; equal = tie."""
+def rank_sites(
+    rows_by_site: dict[str, list[dict[str, Any]]], h2h: dict[str, float] | None = None
+) -> list[list[str]]:
+    """Sites best first as tiers. Mean score, then head-to-head net wins (when given), then best level, then lower
+    mean friction; equal = tie. Without ``h2h`` the order is the mean-score order it always was."""
 
-    def key(site: str) -> tuple[float, int, float]:
+    def key(site: str) -> tuple[float, ...]:
         rows = rows_by_site[site]
         mean = statistics.fmean(float(_sc(r)["score"]) for r in rows)
         best_level = max(LEVEL_RANK.get(str(_sc(r).get("level")), 0) for r in rows)
         friction = statistics.fmean(float(_sc(r).get("friction") or 0) for r in rows)
+        if h2h is not None:
+            return (round(mean, 1), float(h2h.get(site, 0)), best_level, -round(friction, 2))
         return (round(mean, 1), best_level, -round(friction, 2))
 
     present = [s for s, rows in rows_by_site.items() if rows]
@@ -546,9 +551,26 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
         )
 
     picks_llm = {str(p.get("persona_id")): p for p in (llm.get("picks") or []) if isinstance(p, dict)}
+    h2h_rows = [x for x in (llm.get("head_to_head") or []) if isinstance(x, dict) and x.get("competitor") in sites]
+    h2h = head_to_head_matrix(h2h_rows, sites) if "product" in sites else None
+
+    def persona_net(pid: str) -> dict[str, float] | None:
+        mine = [x for x in h2h_rows if str(x.get("persona_id")) == pid]
+        if not mine:
+            return None
+        net = {s: 0.0 for s in sites}
+        for x in mine:
+            if x.get("winner") == "product":
+                net["product"] += 1
+                net[x["competitor"]] -= 1
+            elif x.get("winner"):
+                net["product"] -= 1
+                net[x["competitor"]] += 1
+        return net
+
     by_persona = []
     for pid, p in personas.items():
-        tiers = rank_sites({s: cell(None, pid, s) for s in sites})
+        tiers = rank_sites({s: cell(None, pid, s) for s in sites}, persona_net(pid))
         if not tiers:
             continue
         score_pick = tiers[0][0] if len(tiers[0]) == 1 else ""
@@ -567,7 +589,7 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
                 "score_tied": tiers[0] if len(tiers[0]) > 1 else [],
                 "pick": pick or "",
                 "pick_label": labels.get(pick, "") if pick else "Tie: " + " = ".join(labels[k] for k in tiers[0]),
-                "pick_source": "persona" if chosen.get("pick") in sites else "scores",
+                "pick_source": (chosen.get("source") or "persona") if chosen.get("pick") in sites else "scores",
                 "pick_why": chosen.get("why") or "",
                 "pick_cites": [c for c in (chosen.get("cites") or []) if isinstance(c, str)],
                 "product_wins": pick == "product",
@@ -576,6 +598,12 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
                 "product_rank": _rank_of(tiers, "product"),
                 "not_run": [s for s in sites if not cell(None, pid, s)],
                 "leader": tiers[0][0] if tiers and tiers[0] else "",
+                "head_to_head": {
+                    x["competitor"]: {"p_product": x.get("p_product"), "mean_diff": x.get("mean_diff"),
+                                      "winner": x.get("winner") or "", "why": x.get("why") or "",
+                                      "cites": list(x.get("cites") or [])[:4]}
+                    for x in h2h_rows if str(x.get("persona_id")) == pid
+                },
             }
         )
     pick_counts = {s: sum(1 for p in by_persona if p["pick"] == s) for s in sites}
@@ -676,6 +704,15 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
     headline_counts = ", ".join(
         f"{labels[s]}: {pick_counts[s]}" for s in sorted(sites, key=lambda k: (-pick_counts[k], k != "product", k))
     ) + (f", tie: {ties}" if ties else "")
+    overall_rows = {s: cell(None, None, s) for s in sites}
+    if h2h:
+        h2h["labels"] = labels
+        h2h["summary"] = _h2h_summary(h2h, labels)
+        # Copeland order (net head-to-head wins), mean score breaking ties.
+        means = {s: score_of(overall_rows[s]) or 0.0 for s in sites}
+        order_h2h = sorted(sites, key=lambda s: (-h2h["net_wins"].get(s, 0), -means[s], s != "product", s))
+        h2h["ranking"] = order_h2h
+        h2h["meta"] = llm.get("head_to_head_meta") or {}
     return {
         "product_label": product_label,
         "sites": [{"key": s, "label": labels[s], "url": site_urls[s]} for s in sites],
@@ -708,7 +745,23 @@ def build_comparison(study: dict[str, Any]) -> dict[str, Any] | None:
         "fixes_source": "losses" if llm.get("fixes_source") == "losses" else "weak_runs",
         "signup_note": signup_note,
         "level_labels": LEVEL_LABEL,
+        # Mean score first, head-to-head net wins breaking ties (plain mean-score order without head to heads).
+        "ranking": rank_sites(overall_rows, (h2h or {}).get("net_wins")),
+        "head_to_head": h2h,
     }
+
+
+def _h2h_summary(h2h: dict[str, Any], labels: dict[str, str]) -> str:
+    prod = labels.get("product", "The product")
+    parts = []
+    for comp, c in (h2h.get("matrix", {}).get("product") or {}).items():
+        parts.append(
+            f"{prod} beats {labels.get(comp, comp)} for {c['wins']} of {c['n']} buyers"
+            + (f", loses for {c['losses']}" if c["losses"] else "")
+            + (f", ties {c['ties']}" if c["ties"] else "")
+            + f" (p = {c['p']:.2f}, rating gap {c['mean_diff']:+.1f} ± {c['se']:.1f})"
+        )
+    return ("Head to head: " + "; ".join(parts) + ".") if parts else ""
 
 
 # ---------------------------------------------------------------- model passes
@@ -767,13 +820,14 @@ def score_leader(rows: list[dict[str, Any]]) -> tuple[list[str], dict[str, float
     return (tiers[0] if tiers else []), means
 
 
-async def persona_pick(persona: dict[str, Any], rows: list[dict[str, Any]], labels: dict[str, str]) -> dict[str, Any] | None:
-    """One buyer picks a product from its own runs, blind to which one is under study.
+async def persona_pick_text(persona: dict[str, Any], rows: list[dict[str, Any]], labels: dict[str, str]) -> dict[str, Any] | None:
+    """Fallback pick: one buyer picks a product from its own scored runs (text only), blind to which is under study.
 
     Products are shown as neutral letters in a per-persona shuffled order, the
     runs are shuffled the same way, and nothing says which product commissioned
     the study (b19ba88f listed "product: Kolanut" first and told the buyer that
-    hands-on use beats the website, and 5 of 5 picked Kolanut).
+    hands-on use beats the website, and 5 of 5 picked Kolanut). Used when the
+    head-to-head judge (:func:`persona_pick`) is off, timed out or undecided.
     """
     seed = str(persona.get("id") or persona.get("name") or "")
     order = _blind_order(list(labels), seed)
@@ -840,6 +894,292 @@ Return JSON only: {{"pick": "one product letter", "runner_up": "product letter",
         # The buyer picked something its own scores did not rank first.
         "against_scores": bool(leaders) and pick not in leaders,
     }
+
+
+# ---------------------------------------------------------------- head to head (mvp.pairwise)
+#
+# The same judge as the WiserUI benchmark: for one buyer, the product and one rival are shown as neutral
+# "Product X" / "Product Y" (the opening page, the last page of each shared job, and the steps taken), in both
+# orders; the buyer rates each 1-10 and the ratings are averaged across orders into p(product beats rival).
+
+_OPENING_SHOTS = ("bbox_0.png", "step_0.png", "step_0.jpg")
+_MIN_SHOT_BYTES = 2000
+
+
+def pairwise_enabled() -> bool:
+    return os.environ.get("MVP_COMPARE_PAIRWISE", "1") != "0"
+
+
+def pair_flags() -> Any:
+    """Product settings: both orders, SimAB debias, product framing, seeded, one re-ask on a bad reply."""
+    from mvp.pairwise import PairFlags
+
+    return PairFlags(both_orders=True, debias=True, framing="products", seed=0, json_retries=1)
+
+
+def _pair_call() -> Any:
+    from mvp.pairwise import vertex_call
+
+    # Few retries: a call still running when the budget ends keeps its worker thread busy.
+    return vertex_call(retries=int(os.environ.get("MVP_COMPARE_PAIRWISE_RETRIES", "3")))
+
+
+def _shot(study_id: str, agent_id: str, names: tuple[str, ...]) -> bytes | None:
+    from mvp.paths import MVP_RUNS_DIR
+
+    base = MVP_RUNS_DIR / study_id / agent_id / "screenshots"
+    for name in names:
+        path = base / name
+        try:
+            if path.is_file() and path.stat().st_size >= _MIN_SHOT_BYTES:
+                return path.read_bytes()
+        except OSError:
+            continue
+    return None
+
+
+def _run_story(run: dict[str, Any], limit: int) -> str:
+    """What the buyer did on one run, in plain words, for the judge (no scores: the judge forms its own view)."""
+    signup = run.get("signup") if isinstance(run.get("signup"), dict) else {}
+    if signup.get("ok"):
+        access = "You signed up and worked inside the product."
+    elif run.get("website_eval"):
+        access = "There was no self-serve signup, so you judged it from the website."
+    else:
+        access = "You used the public website."
+    actions = [" ".join(str(s.get("action") or "").split())[:90] for s in run.get("trace") or [] if isinstance(s, dict)]
+    actions = [a for a in actions if a]
+    if len(actions) > 6:
+        actions = actions[:3] + ["..."] + actions[-3:]
+    text = f"{_base_task(run)}. {access} Steps: {'; '.join(actions) or 'none recorded'}. Last page: {run.get('final_url') or ''}."
+    dom = " ".join(str(run.get("final_dom") or "").split())
+    if dom and len(text) + 40 < limit:
+        text += f' It said: "{dom[: limit - len(text) - 14]}"'
+    return text[:limit]
+
+
+def site_evidence(study_id: str, site: str, runs: list[dict[str, Any]], *, max_finals: int = 2) -> tuple[Any, list[str]] | None:
+    """One buyer on one site as pairwise evidence: the opening page, the last page of up to ``max_finals`` jobs, and
+    what they did. Returns (PairEvidence, agent ids shown) or None without a usable final screenshot."""
+    from mvp.pairwise import SUMMARY_CHARS, PairEvidence
+
+    opening = next((b for r in runs if (b := _shot(study_id, str(r.get("agent_id") or ""), _OPENING_SHOTS))), None)
+    shown: list[tuple[dict[str, Any], bytes]] = []
+    for r in runs:
+        if len(shown) >= max_finals:
+            break
+        final = _shot(study_id, str(r.get("agent_id") or ""), ("final.png",))
+        if final:
+            shown.append((r, final))
+    if not shown:
+        return None
+    captions = (["the opening page"] if opening else []) + [f"the last page of job {i + 1}" for i in range(len(shown))]
+    head = f"Screenshots in order: {', '.join(captions)}."
+    per = max(200, (SUMMARY_CHARS - len(head) - 8) // len(shown) - 8)
+    story = " ".join(f"Job {i + 1}: {_run_story(r, per)}" for i, (r, _) in enumerate(shown))
+    ev = PairEvidence(label=site, screenshots=([opening] if opening else []) + [b for _, b in shown],
+                      url=str(shown[0][0].get("site_url") or ""), summary=f"{head} {story}")
+    return ev, [str(r.get("agent_id")) for r, _ in shown]
+
+
+def _named(text: str, order: str, name_a: str, name_b: str) -> str:
+    """Put product names back into a reason written against the neutral labels of one presentation order."""
+    x, y = (name_a, name_b) if order == "ab" else (name_b, name_a)
+    text = re.sub(r"\b(?:Product|Version)\s+X\b", x, text)
+    text = re.sub(r"\b(?:Product|Version)\s+Y\b", y, text)
+    return re.sub(r"\s*\(\s*[XY]\s*\)", "", text)
+
+
+def _task_order(rows: list[dict[str, Any]]) -> list[str]:
+    out: list[str] = []
+    for r in rows:
+        t = _base_task(r)
+        if t not in out:
+            out.append(t)
+    return out
+
+
+async def head_to_head_pair(
+    persona: dict[str, Any], rows: list[dict[str, Any]], competitor: str, labels: dict[str, str], *,
+    study_id: str, ctx: dict[str, Any], flags: Any = None, call: Any = None, max_finals: int = 2,
+) -> dict[str, Any] | None:
+    """compare_pair of the product against one rival for one buyer, from that buyer's own runs on the jobs both
+    sites ran (all of its runs when none are shared). None when a side has no usable screenshot."""
+    from mvp.fast_plan import pair_persona
+    from mvp.pairwise import compare_pair
+
+    order = _task_order(rows)
+    mine = sorted(rows, key=lambda r: (order.index(_base_task(r)), str(r.get("agent_id"))))
+    prod = [r for r in mine if r.get("site_key") == "product"]
+    comp = [r for r in mine if r.get("site_key") == competitor]
+    if not prod or not comp:
+        return None
+    shared = {_base_task(r) for r in prod} & {_base_task(r) for r in comp}
+    if shared:
+        prod = [r for r in prod if _base_task(r) in shared]
+        comp = [r for r in comp if _base_task(r) in shared]
+    ev_p = site_evidence(study_id, "product", prod, max_finals=max_finals)
+    ev_c = site_evidence(study_id, competitor, comp, max_finals=max_finals)
+    if not ev_p or not ev_c:
+        return None
+    judge = pair_persona(persona, [t for t in order if not shared or t in shared])
+    res = await compare_pair(ev_p[0], ev_c[0], [judge], ctx, flags or pair_flags(), call=call)
+    ok = [j for j in res["judgments"] if j.get("ok")]
+    name_p, name_c = labels.get("product", "product"), labels.get(competitor, competitor)
+    reasons = {j["order"]: _named(j["reasons"], j["order"], name_p, name_c) for j in ok if j.get("reasons")}
+    return {
+        "persona_id": str(persona.get("id") or ""),
+        "persona": persona.get("name") or "",
+        "competitor": competitor,
+        "p_product": round(res["p_a"], 3),
+        "mean_diff": round(res["mean_diff"], 2),
+        "winner": {"A": "product", "B": competitor}.get(res["winner"], ""),
+        "ratings": {j["order"]: {"product": j["rating_a"], "competitor": j["rating_b"]} for j in ok},
+        "why": reasons.get("ab") or next(iter(reasons.values()), ""),
+        "cites": ev_p[1] + ev_c[1],
+        "tasks": sorted(shared) if shared else [],
+        "failed_judgments": res["failed_judgments"],
+        "flags": res["flags"],
+    }
+
+
+def pick_from_head_to_head(
+    h2h: list[dict[str, Any]], rows: list[dict[str, Any]], labels: dict[str, str]
+) -> dict[str, Any] | None:
+    """A buyer's pick from its product-vs-rival results (same shape as :func:`persona_pick_text`).
+
+    The product is picked when it beats every rival; otherwise the rival that beat it most clearly. Ties with no
+    loss leave the buyer undecided (None) and the caller falls back.
+    """
+    if not h2h:
+        return None
+    lost = sorted((r for r in h2h if r["winner"] and r["winner"] != "product"), key=lambda r: (r["p_product"], r["competitor"]))
+    if lost:
+        top = lost[0]
+        pick, runner_up = top["competitor"], (lost[1]["competitor"] if len(lost) > 1 else "product")
+    elif all(r["winner"] == "product" for r in h2h):
+        top = min(h2h, key=lambda r: (-r["p_product"], r["competitor"]))
+        pick = "product"
+        runner_up = min(h2h, key=lambda r: (r["p_product"], r["competitor"]))["competitor"]
+    else:
+        return None
+    if pick not in labels:
+        return None
+    leaders, means = score_leader(rows)
+    return {
+        "pick": pick,
+        "runner_up": runner_up,
+        "why": top.get("why") or "",
+        "cites": list(top.get("cites") or [])[:3],
+        "score_leaders": leaders,
+        "site_means": means,
+        "against_scores": bool(leaders) and pick not in leaders,
+        "source": "pairwise",
+        "p_product": {r["competitor"]: r["p_product"] for r in h2h},
+    }
+
+
+async def persona_pick(
+    persona: dict[str, Any], rows: list[dict[str, Any]], labels: dict[str, str], *,
+    study_id: str = "", ctx: dict[str, Any] | None = None, flags: Any = None, call: Any = None,
+) -> dict[str, Any] | None:
+    """One buyer picks a product: the head-to-head judge against each rival, else the text pick."""
+    if pairwise_enabled() and study_id:
+        h2h = await asyncio.gather(*(
+            head_to_head_pair(persona, rows, comp, labels, study_id=study_id, ctx=ctx or {}, flags=flags,
+                              call=call or _pair_call())
+            for comp in labels if comp != "product"
+        ))
+        got = pick_from_head_to_head([r for r in h2h if r], rows, labels)
+        if got:
+            return got
+    return await persona_pick_text(persona, rows, labels)
+
+
+def _segment(data: dict[str, Any]) -> str:
+    seg = " ".join(str(data.get("segment") or "").split())
+    return "" if seg.lower().startswith("auto-research") else seg[:120]
+
+
+async def head_to_head_all(
+    data: dict[str, Any], runs: list[dict[str, Any]], personas: dict[str, dict[str, Any]], labels: dict[str, str], *,
+    budget_s: float, call: Any = None,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Every (buyer, rival) head to head in parallel within ``budget_s``; returns (finished rows, meta).
+
+    Comparisons still running at the deadline are cancelled and left out. Never raises.
+    """
+    from mvp.pairwise import PAIRWISE_MODEL
+
+    rivals = [k for k in labels if k != "product"]
+    meta: dict[str, Any] = {"planned": 0, "done": 0, "timed_out": 0, "failed": 0, "budget_s": budget_s,
+                            "model": PAIRWISE_MODEL}
+    if not rivals:
+        return [], meta
+    t0 = time.monotonic()
+    flags, call = pair_flags(), call or _pair_call()
+    meta["flags"] = flags.name()
+    ctx = {"segment": _segment(data)}
+    study_id = str(data.get("id") or "")
+    _, live = _merged_runs(data)
+
+    def with_trace(r: dict[str, Any]) -> dict[str, Any]:
+        lv = live.get(str(r.get("agent_id"))) or {}
+        return {**r, "trace": r.get("trace") or lv.get("trace") or [], "final_dom": r.get("final_dom") or lv.get("final_dom") or ""}
+
+    runs = [with_trace(r) for r in runs]
+    jobs = {
+        (pid, comp): asyncio.ensure_future(head_to_head_pair(
+            p, [r for r in runs if str(r.get("persona_id")) == pid], comp, labels,
+            study_id=study_id, ctx=ctx, flags=flags, call=call,
+        ))
+        for pid, p in personas.items() for comp in rivals
+    }
+    meta["planned"] = len(jobs)
+    if not jobs:
+        return [], meta
+    done, pending = await asyncio.wait(jobs.values(), timeout=max(0.0, budget_s))
+    for task in pending:
+        task.cancel()
+    if pending:
+        await asyncio.gather(*pending, return_exceptions=True)
+    out = []
+    for (pid, comp), task in jobs.items():
+        if task not in done:
+            meta["timed_out"] += 1
+        elif task.exception() is not None:
+            meta["failed"] += 1
+            print(f"[comparison] head to head {pid} vs {comp} failed: {task.exception()!r}"[:200], flush=True)
+        elif task.result():
+            out.append(task.result())
+    meta["done"] = len(out)
+    meta["secs"] = round(time.monotonic() - t0, 2)
+    return out, meta
+
+
+def head_to_head_matrix(h2h: list[dict[str, Any]], sites: list[str]) -> dict[str, Any] | None:
+    """Win matrix from the product-vs-rival head to heads: ``matrix[row][col]`` counts buyers for whom ``row`` beat
+    ``col``, with the soft-vote p(row beats col), mean rating gap and its SE. Rival-vs-rival cells are not judged."""
+    from mvp.pairwise import soft_vote
+
+    rows = [r for r in h2h if r.get("competitor") in sites and "product" in sites]
+    if not rows:
+        return None
+    matrix: dict[str, dict[str, Any]] = {s: {} for s in sites}
+    net = {s: 0 for s in sites}
+    for comp in [s for s in sites if s != "product"]:
+        mine = [r for r in rows if r["competitor"] == comp]
+        if not mine:
+            continue
+        v = soft_vote([float(r["mean_diff"]) for r in mine])
+        wins, losses, ties = v["votes"]["A"], v["votes"]["B"], v["votes"]["tie"]
+        cell = {"n": len(mine), "p": round(v["p_a"], 3), "mean_diff": round(v["mean_diff"], 2), "se": round(v["se"], 2)}
+        matrix["product"][comp] = {**cell, "wins": wins, "losses": losses, "ties": ties}
+        matrix[comp]["product"] = {**cell, "p": round(1 - v["p_a"], 3), "mean_diff": round(-v["mean_diff"], 2),
+                                   "wins": losses, "losses": wins, "ties": ties}
+        net["product"] += wins - losses
+        net[comp] += losses - wins
+    return {"sites": sites, "matrix": matrix, "net_wins": net, "n_personas": len({r["persona_id"] for r in rows})}
 
 
 def _opening_text(study: Any, site: str) -> str:
@@ -1011,8 +1351,21 @@ Return JSON only: {{"sentences": [{{"text": "sentence", "cite": "run ref"}}]}}""
     return out[:4]
 
 
-async def apply_comparison_llm(study: Any) -> dict[str, Any]:
-    """Persona picks, first impressions, fixes, then the headline; stored in summary['comparison_llm']."""
+def _store_summary(study: Any, summary: dict[str, Any]) -> None:
+    if isinstance(study, dict):
+        study["summary"] = summary
+    else:
+        study.summary = summary
+
+
+async def apply_comparison_llm(study: Any, *, pair_call: Any = None) -> dict[str, Any]:
+    """Head to heads and persona picks, first impressions, fixes, then the headline; in summary['comparison_llm'].
+
+    Each buyer's pick comes from the pairwise head-to-head judge (the product against each rival, both orders),
+    run in parallel within MVP_COMPARE_PAIRWISE_BUDGET_S (default 45s, inside the caller's 75s). The old text pick
+    runs alongside and is used for any buyer whose head to heads timed out, failed or tied. Results are stored
+    before the headline call, so a timeout there keeps the picks. ``pair_call`` overrides the pairwise model call.
+    """
     from mvp.study import study_to_dict
 
     data = study_to_dict(study) if not isinstance(study, dict) else study
@@ -1024,18 +1377,28 @@ async def apply_comparison_llm(study: Any) -> dict[str, Any]:
         r for r in data.get("agent_results") or []
         if isinstance(r, dict) and isinstance(_sc(r).get("score"), (int, float)) and not infra_stop(r)
     ]
-    personas = {str(p.get("id")): p for p in (data.get("personas") or []) if isinstance(p, dict)}
+    all_personas = {str(p.get("id")): p for p in (data.get("personas") or []) if isinstance(p, dict)}
+    personas = {pid: p for pid, p in all_personas.items() if any(str(r.get("persona_id")) == pid for r in runs)}
 
-    async def pick(pid: str) -> dict[str, Any] | None:
+    async def text_pick(pid: str) -> dict[str, Any] | None:
         rows = [r for r in runs if str(r.get("persona_id")) == pid]
-        if not rows:
-            return None
         try:
-            got = await persona_pick(personas[pid], rows, labels)
+            got = await persona_pick_text(personas[pid], rows, labels)
         except Exception as exc:  # noqa: BLE001
             print(f"[comparison] pick {pid} failed: {exc!r}"[:200], flush=True)
             return None
         return {"persona_id": pid, **got} if got else None
+
+    async def head_to_heads() -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        if not pairwise_enabled() or "product" not in labels:
+            return [], {"enabled": False}
+        try:
+            budget = float(os.environ.get("MVP_COMPARE_PAIRWISE_BUDGET_S", "45"))
+            rows, meta = await head_to_head_all(data, runs, personas, labels, budget_s=budget, call=pair_call)
+            return rows, {"enabled": True, **meta}
+        except Exception as exc:  # noqa: BLE001 - never fail a study on this step
+            print(f"[comparison] head to head skipped: {exc!r}"[:200], flush=True)
+            return [], {"enabled": True, "error": repr(exc)[:200]}
 
     async def impression(site: str) -> dict[str, Any] | None:
         try:
@@ -1049,36 +1412,52 @@ async def apply_comparison_llm(study: Any) -> dict[str, Any]:
     async def fixes() -> list[dict[str, Any]]:
         try:
             return await product_fixes(
-                [r for r in runs if r.get("site_key") == "product"], personas, labels["product"],
+                [r for r in runs if r.get("site_key") == "product"], all_personas, labels["product"],
                 losses=comp.get("all_losses") or [], skip_ids=skip_ids,
             )
         except Exception as exc:  # noqa: BLE001
             print(f"[comparison] fixes failed: {exc!r}"[:200], flush=True)
             return []
 
-    results = await asyncio.gather(
-        asyncio.gather(*(pick(pid) for pid in personas)),
+    text_picks, (h2h, h2h_meta), impressions, fix_rows = await asyncio.gather(
+        asyncio.gather(*(text_pick(pid) for pid in personas)),
+        head_to_heads(),
         # The product and its first two rivals (an older 3-rival study drops the third).
         asyncio.gather(*(impression(s) for s in ["product"] + [k for k in labels if k != "product"][:2])),
         fixes(),
     )
+    fallback = {p["persona_id"]: p for p in text_picks if p}
+    picks = []
+    for pid in personas:
+        mine = [x for x in h2h if x["persona_id"] == pid]
+        got = pick_from_head_to_head(mine, [r for r in runs if str(r.get("persona_id")) == pid], labels)
+        if got:
+            picks.append({"persona_id": pid, **got})
+        elif pid in fallback:
+            picks.append(fallback[pid])
+    h2h_meta["pairwise_picks"] = sum(1 for p in picks if p.get("source") == "pairwise")
     llm = {
-        "picks": [p for p in results[0] if p],
-        "first_impressions": [f for f in results[1] if f],
-        "fixes": results[2],
+        "picks": picks,
+        "head_to_head": h2h,
+        "head_to_head_meta": h2h_meta,
+        "first_impressions": [f for f in impressions if f],
+        "fixes": fix_rows,
         "fixes_source": "losses",
     }
     summary = dict(getattr(study, "summary", None) or data.get("summary") or {})
     summary["comparison_llm"] = llm
+    _store_summary(study, summary)
     data = {**data, "summary": summary}
     try:
         llm["headline"] = await headline_sentences(build_comparison(data))
     except Exception as exc:  # noqa: BLE001
         print(f"[comparison] headline failed: {exc!r}"[:200], flush=True)
     summary["comparison_llm"] = llm
-    if isinstance(study, dict):
-        study["summary"] = summary
-    else:
-        study.summary = summary
-    print(f"[comparison] picks={len(llm['picks'])} impressions={len(llm['first_impressions'])} fixes={len(llm['fixes'])} headline={len(llm.get('headline') or [])}", flush=True)
+    _store_summary(study, summary)
+    print(
+        f"[comparison] picks={len(llm['picks'])} (head to head {h2h_meta.get('pairwise_picks', 0)}, "
+        f"{h2h_meta.get('done', 0)}/{h2h_meta.get('planned', 0)} pairs, {h2h_meta.get('timed_out', 0)} timed out) "
+        f"impressions={len(llm['first_impressions'])} fixes={len(llm['fixes'])} headline={len(llm.get('headline') or [])}",
+        flush=True,
+    )
     return llm
