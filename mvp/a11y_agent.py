@@ -2742,6 +2742,9 @@ async def complete_task_on_page(
     moves and no scripted first click. A docs or help page never counts as
     done. A login or signup wall on an account task returns needs_account.
     """
+    from mvp import step_shots
+
+    pending_shot: Any = None
     trace = list(trace or [])
     history = list(history or [])
     cap = int(max_steps or os.environ.get("MVP_A11Y_MAX_STEPS", "30") or 30)
@@ -2842,6 +2845,10 @@ async def complete_task_on_page(
         if looping(trace):
             _miss("looping between the same pages")
             break
+        if pending_shot is not None and not pending_shot.done():
+            pending_shot.cancel()
+        # This step's screenshot, captured while the model decides (no added wait).
+        pending_shot = step_shots.start_capture(page)
         model_read = dict(read)
         model_read["nodes"] = _nodes_for_model(
             list(read.get("nodes") or []),
@@ -2989,6 +2996,8 @@ async def complete_task_on_page(
             "friction": action.get("friction") or "",
         }
         trace.append(row)
+        step_shots.attach(pending_shot, row, agent_id or "agent", step_no)
+        pending_shot = None
         history.append(label)
         if on_step is not None:
             maybe = on_step(row)
@@ -3632,6 +3641,9 @@ async def _signup_then_resume(
             "signup": public,
         }
         trace.append(row)
+        from mvp import step_shots
+
+        step_shots.shot_now(page, row, agent_id, step_no, "signup")
         if on_step is not None:
             maybe = on_step(row)
             if asyncio.iscoroutine(maybe):
@@ -3778,6 +3790,13 @@ async def _signup_then_resume(
     sess["signup_status"] = "signed up" if public["ok"] else "signup failed"
     sess["signup"] = public
     row["signup"] = public
+    try:
+        from mvp import step_shots
+
+        # Where the signup ended (the signed-in app, or the wall it stopped at).
+        step_shots.shot_now(page, row, agent_id, step_no, "signup")
+    except Exception:  # noqa: BLE001
+        pass
     if public["ok"] and public["reason"] == "shared_account":
         row["action"] = f"signed in with this study's shared test account after {public['seconds']}s"
     elif public["ok"] and public["reason"] == "shared_session":
@@ -3969,9 +3988,11 @@ async def run_a11y_agent(
     deadline: float | None = None,
 ) -> dict[str, Any]:
     """One Browserbase session for this agent, step 0 from the site's shared read."""
+    from mvp import step_shots
     from mvp.executor import ensure_default_executor
 
     ensure_default_executor()
+    step_shots.STUDY.set(study_id)
     return await _run_a11y_agent_unlocked(
         boot=boot,
         study_id=study_id,
@@ -4132,6 +4153,11 @@ async def _run_a11y_agent_unlocked(
             )
             sess["phase"] = "acting"
             boot.study.live_sessions[agent_id] = sess
+            if trace and isinstance(trace[0], dict):
+                from mvp import step_shots
+
+                # Step 0 on this agent's own page (the shared read has no pixels).
+                step_shots.shot_now(page, trace[0], agent_id, 0)
             outcome = await complete_task_on_page(
                 page,
                 task=task_prompt,
@@ -4204,6 +4230,14 @@ async def _run_a11y_agent_unlocked(
 
         shot_url = ""
         shot_ms = 0
+        try:
+            from mvp import step_shots
+
+            left_uploads = await step_shots.drain(agent_id, timeout_s=8.0)
+            if left_uploads:
+                print(f"[{agent_id}] {left_uploads} step screenshot uploads still pending", flush=True)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[{agent_id}] step screenshot drain failed: {exc!r}", flush=True)
         if page is not None:
             dest = MVP_RUNS_DIR / study_id / agent_id / "screenshots"
             dest.mkdir(parents=True, exist_ok=True)

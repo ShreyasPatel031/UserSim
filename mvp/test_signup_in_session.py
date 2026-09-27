@@ -376,3 +376,27 @@ class SharedAccount(unittest.TestCase):
             {"site_key": "product", "signup": {"ok": True, "reason": "shared_account", "shared_account": True}},
         ]}
         self.assertIn("Zo Computer agents shared one test account", shared_account_note(study))
+
+
+class StepShots(unittest.TestCase):
+    def test_attach_sets_url_after_upload(self) -> None:
+        import asyncio
+        from unittest import mock
+
+        from mvp import step_shots
+
+        class Page:
+            async def screenshot(self, **kw):
+                assert kw["type"] == "jpeg"
+                return b"\xff\xd8" + b"x" * 500
+
+        async def main():
+            step_shots.STUDY.set("sid1")
+            row: dict = {"step": 3}
+            with mock.patch.object(step_shots, "_upload", lambda *a, **k: True):
+                step_shots.shot_now(Page(), row, "t1__p1__product", 3)
+                await step_shots.drain("t1__p1__product", 5)
+            return row
+
+        row = asyncio.run(main())
+        self.assertEqual(row["screenshot_url"], "/api/studies/sid1/agents/t1__p1__product/screenshots/step_3.jpg")

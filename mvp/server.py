@@ -966,8 +966,9 @@ def _live_step_count(live_sessions: object) -> int:
 
 @app.get("/api/studies/{study_id}/agents/{agent_id}/screenshots/{filename}")
 async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
-    if not re.fullmatch(r"(?:step|bbox)_\d+\.png|final\.png", filename):
+    if not re.fullmatch(r"(?:step|bbox)_\d+\.png|final\.png|step_\d+(?:_signup)?\.jpg", filename):
         raise HTTPException(status_code=400, detail="Invalid screenshot name")
+    media = "image/jpeg" if filename.endswith(".jpg") else "image/png"
     names = [filename]
     m = re.fullmatch(r"(step|bbox)_(\d+)\.png", filename)
     if m:
@@ -980,7 +981,7 @@ async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
     for name in names:
         path = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / name
         if path.is_file() and path.stat().st_size > 200:
-            resp = FileResponse(path, media_type="image/png")
+            resp = FileResponse(path, media_type=media)
             resp.headers["Cache-Control"] = "public, max-age=3600"
             return resp
         try:
@@ -995,7 +996,7 @@ async def get_agent_screenshot(study_id: str, agent_id: str, filename: str):
                 pass
             return Response(
                 content=raw,
-                media_type="image/png",
+                media_type=media,
                 headers={"Cache-Control": "public, max-age=3600"},
             )
     raise HTTPException(status_code=404, detail="Screenshot not found")
