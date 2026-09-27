@@ -1,0 +1,290 @@
+{
+ "split_fail": [
+  62,
+  149,
+  174,
+  228,
+  269,
+  270
+ ],
+ "gemini_leaky": {
+  "104": [
+   "win: arrow_or_highlight '' @ around email and name"
+  ],
+  "106": [
+   "win: label 'VARIATION' @ top left",
+   "win: trophy '' @ top left",
+   "win: label 'VARIATION' @ bottom right",
+   "win: trophy '' @ bottom right",
+   "lose: label 'CONTROL' @ top left corner"
+  ],
+  "107": [
+   "win: label 'VARIATION' @ top left banner",
+   "win: trophy '' @ top left banner",
+   "win: label 'Variatic' @ bottom right banner",
+   "win: trophy '' @ bottom right banner"
+  ],
+  "109": [
+   "lose: other 'VWO' @ bottom right corner",
+   "lose: arrow_or_highlight '' @ red box around 'Date of birth' field"
+  ],
+  "110": [
+   "lose: arrow_or_highlight 'red box around input fields' @ right panel"
+  ],
+  "111": [
+   "lose: arrow_or_highlight '' @ red box around 'Date of birth' field"
+  ],
+  "119": [
+   "lose: label 'VARIATION' @ bottom left",
+   "lose: trophy '' @ bottom left"
+  ],
+  "124": [
+   "win: other 'BEST VALUE' @ top of VIP column",
+   "lose: other 'Best value' @ top right of 'Extreme' plan"
+  ],
+  "137": [
+   "lose: caption 'Arlington Plastics Machinery's original ' @ top of page"
+  ],
+  "152": [
+   "win: arrow_or_highlight '' @ multiple locations"
+  ],
+  "164": [
+   "win: trophy 'WINNER 2017' @ top right",
+   "win: trophy 'WINNER 2016' @ top right",
+   "win: caption 'Award' @ top right",
+   "win: caption 'USP' @ middle right",
+   "win: caption 'Steps Time' @ bottom left"
+  ],
+  "166": [
+   "win: arrow_or_highlight '' @ pink arrow pointing to text and pink hig"
+  ],
+  "176": [
+   "win: arrow_or_highlight '' @ red arrow pointing to a section",
+   "win: arrow_or_highlight '' @ red box around a section"
+  ],
+  "202": [
+   "lose: trophy '' @ bottom left green box",
+   "lose: result_text 'The variation won with increase in the l' @ bottom green box",
+   "lose: lift_percent '16%' @ bottom green box"
+  ],
+  "215": [
+   "win: arrow_or_highlight '' @ top banner",
+   "lose: result_text 'The variation won with an improvement of' @ bottom banner",
+   "lose: trophy '' @ bottom banner",
+   "lose: lift_percent '13.4%' @ bottom banner"
+  ],
+  "221": [
+   "win: label 'VARIATION 1' @ top left",
+   "lose: label 'CONTROL' @ top left corner"
+  ],
+  "243": [
+   "win: arrow_or_highlight '' @ pointing to text and price",
+   "win: arrow_or_highlight '' @ pointing to text and price",
+   "lose: arrow_or_highlight '' @ red arrows pointing to text and price"
+  ],
+  "254": [
+   "lose: label 'CONTROL' @ top left",
+   "lose: label 'VARIATION' @ top right",
+   "lose: arrow_or_highlight 'Added t' @ right side"
+  ],
+  "260": [
+   "win: arrow_or_highlight '' @ red box around the email signup form"
+  ],
+  "261": [
+   "win: other 'MOST POPULAR' @ top of the 'Standard' pricing plan",
+   "win: other 'VWO' @ bottom right corner",
+   "win: other 'Campaign 2' @ bottom right corner"
+  ],
+  "274": [
+   "lose: other 'New' @ Comfort ride option",
+   "lose: other 'Cheaper' @ UberX ride option"
+  ],
+  "277": [
+   "lose: arrow_or_highlight '' @ yellow arrows and highlight boxes on the",
+   "lose: lift_percent '+32%' @ bottom right corner"
+  ],
+  "278": [
+   "win: label 'MOST POPULAR' @ top of the 'Team' pricing plan",
+   "lose: label 'NEW' @ top banner"
+  ],
+  "281": [
+   "lose: lift_percent '-50%' @ bottom right of the green pricing box"
+  ]
+ },
+ "gemini_clean": [
+  103,
+  117,
+  150,
+  151,
+  157,
+  158,
+  159,
+  168,
+  181,
+  201,
+  203,
+  204,
+  212,
+  226,
+  232,
+  239,
+  240,
+  247,
+  271,
+  272,
+  273,
+  275,
+  276,
+  279,
+  280,
+  282,
+  283,
+  284,
+  285,
+  286,
+  287,
+  288,
+  289,
+  290,
+  291,
+  292,
+  293,
+  294,
+  295,
+  296,
+  297,
+  298,
+  299
+ ],
+ "manual_leak": {
+  "168": "publisher highlight box (red) around the search suggestions in the winner panel",
+  "212": "publisher highlight boxes (red) around the icon row / hero CTA in the winner panel",
+  "226": "publisher highlight box (pink) around the \"More Like This\" row in the winner panel",
+  "273": "abtest.design blue \"B\" badge fragment at top-left of the winner crop",
+  "279": "abtest.design blue \"B\" badge fragment at top-left of the winner crop",
+  "282": "abtest.design badge fragments: blue (B) on winner, gray (A) on loser",
+  "284": "abtest.design blue \"B\" badge fragment (part of the letter visible) on the winner crop",
+  "295": "abtest.design badge fragments: blue (C) on winner, gray (A) on loser",
+  "297": "abtest.design blue \"B\" badge fragment at top-left of the winner crop"
+ },
+ "frame_residue": {
+  "103": "orange frame edge on winner, blue on loser",
+  "117": "orange frame on winner, blue on loser",
+  "150": "orange frame edge on winner (top)",
+  "158": "purple (V2) / orange (V1) frame edges",
+  "159": "purple (V2) / pink (V3) frame edges",
+  "181": "orange frame edge on winner, blue on loser",
+  "232": "blue frame edge on loser (bottom)",
+  "239": "blue frame edge on loser (top)",
+  "240": "orange/blue frame edges"
+ },
+ "main_clean": [
+  151,
+  157,
+  201,
+  203,
+  204,
+  247,
+  271,
+  272,
+  275,
+  276,
+  280,
+  283,
+  285,
+  286,
+  287,
+  288,
+  289,
+  290,
+  291,
+  292,
+  293,
+  294,
+  296,
+  298,
+  299
+ ],
+ "not_full_ui": [
+  [
+   106,
+   "win"
+  ],
+  [
+   106,
+   "lose"
+  ],
+  [
+   107,
+   "win"
+  ],
+  [
+   107,
+   "lose"
+  ],
+  [
+   111,
+   "win"
+  ],
+  [
+   111,
+   "lose"
+  ],
+  [
+   159,
+   "win"
+  ],
+  [
+   159,
+   "lose"
+  ],
+  [
+   166,
+   "win"
+  ],
+  [
+   166,
+   "lose"
+  ],
+  [
+   221,
+   "win"
+  ],
+  [
+   243,
+   "win"
+  ],
+  [
+   243,
+   "lose"
+  ],
+  [
+   247,
+   "win"
+  ],
+  [
+   247,
+   "lose"
+  ],
+  [
+   254,
+   "win"
+  ],
+  [
+   254,
+   "lose"
+  ],
+  [
+   274,
+   "win"
+  ],
+  [
+   274,
+   "lose"
+  ],
+  [
+   291,
+   "lose"
+  ]
+ ]
+}

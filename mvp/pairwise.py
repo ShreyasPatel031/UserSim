@@ -54,12 +54,16 @@ class PairFlags:
     temperature: float = 0.4
     max_tokens: int = 700
     media_resolution: str | None = None  # "high" only works with one image per call
+    # strict_orders: with goal_diffs + both_orders, each presentation order uses ONLY the goal/diffs extracted in that
+    # order (no merge across orders), so the two per-order picks are fully independent (paper-style per-order eval).
+    strict_orders: bool = False
 
     def name(self) -> str:
         return "+".join(
             ["both" if self.both_orders else "one", "ratings"]
             + (["goal_diffs"] if self.goal_diffs else [])
             + (["debias"] if self.debias else [])
+            + (["strict"] if self.strict_orders else [])
         )
 
 
@@ -314,8 +318,12 @@ async def compare_pair(ev_a: PairEvidence, ev_b: PairEvidence, personas: list[di
                                           media_resolution=flags.media_resolution)
         goal, diffs = gd["goal"], gd["diffs"] or None
     orders = ORDERS if flags.both_orders else ORDERS[:1]
+    per_order = {o: (goal, diffs) for o in orders}
+    if gd and flags.strict_orders:
+        per_order = {o: (gd["by_order"].get(o, {}).get("goal", ""), gd["by_order"].get(o, {}).get("diffs") or None)
+                     for o in orders}
     judgments = await asyncio.gather(*(
-        judge_pair(p, ev_a, ev_b, goal, diffs, o, flags.temperature, flags.debias, ctx=ctx, call=call,
+        judge_pair(p, ev_a, ev_b, per_order[o][0], per_order[o][1], o, flags.temperature, flags.debias, ctx=ctx, call=call,
                    key=f"judge|{o}|{k}", max_tokens=flags.max_tokens, media_resolution=flags.media_resolution)
         for o in orders for k, p in enumerate(personas)
     ))

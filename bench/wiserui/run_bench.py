@@ -36,12 +36,16 @@ from mvp.pairwise import PAIRWISE_MODEL, PairEvidence, PairFlags, compare_pair, 
 BENCH = Path(os.environ.get("WISERUI_BENCH", "/workspace/bench/wiserui"))
 DATA = BENCH / "repo" / "WiserUI_Bench.json"
 IMAGES = BENCH / "images_clean"
+# Composite pairs split into panels by composites.py (win/lose crops); preferred over IMAGES when present.
+RECOVERED = BENCH / "images_recovered"
 # Vertex list price (USD / 1M tokens): input, output.
 PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-2.5-flash-lite": (0.10, 0.40), "gemini-2.5-pro": (1.25, 10.0)}
 STREAMS = {
     "s1": PairFlags(both_orders=True, goal_diffs=False, debias=False),
     "s2": PairFlags(both_orders=True, goal_diffs=True, debias=False),
     "s3": PairFlags(both_orders=True, goal_diffs=True, debias=True),
+    # S2 with per-order goal/diffs only (no merge across orders): each order's pick is independent, as in the paper.
+    "s2strict": PairFlags(both_orders=True, goal_diffs=True, debias=False, strict_orders=True),
 }
 
 
@@ -116,11 +120,19 @@ def load_a0_personas(path: Path) -> dict[int, list[dict]]:
     return out
 
 
+def image_dir(idx: int) -> Path:
+    rec = RECOVERED / str(idx)
+    return rec if (rec / "win.png").exists() and (rec / "lose.png").exists() else IMAGES / str(idx)
+
+
 def evidence(idx: int, label: str) -> PairEvidence:
-    return PairEvidence(label=label, screenshots=[(IMAGES / str(idx) / f"{label}.png").read_bytes()])
+    return PairEvidence(label=label, screenshots=[(image_dir(idx) / f"{label}.png").read_bytes()])
 
 
 async def main() -> None:
+    from concurrent.futures import ThreadPoolExecutor
+
+    asyncio.get_running_loop().set_default_executor(ThreadPoolExecutor(96))  # default pool (~12) caps concurrency
     ap = argparse.ArgumentParser()
     ap.add_argument("--indices", default="", help="comma list or @file")
     ap.add_argument("--stream", default="s1", choices=sorted(STREAMS), help="ablation arm (flags)")
@@ -137,7 +149,7 @@ async def main() -> None:
     data = {x["index"]: x for x in json.load(open(DATA))}
     raw = Path(args.indices[1:]).read_text() if args.indices.startswith("@") else args.indices
     idxs = [int(i) for i in raw.replace("\n", ",").split(",") if i.strip()]
-    idxs = [i for i in idxs if (IMAGES / str(i) / "win.png").exists() and (IMAGES / str(i) / "lose.png").exists()]
+    idxs = [i for i in idxs if (image_dir(i) / "win.png").exists() and (image_dir(i) / "lose.png").exists()]
     a0 = load_a0_personas(Path(args.personas_from)) if args.personas_from and Path(args.personas_from).exists() else {}
     ledger = Ledger(out / "calls.jsonl")
     sem = asyncio.Semaphore(args.concurrency)
