@@ -9,10 +9,20 @@ product friction.
 
 from __future__ import annotations
 
+import asyncio
+import os
 import re
 from dataclasses import dataclass
 from typing import Any, Awaitable, Callable
 from urllib.parse import urlparse
+
+
+def _probe_concurrency() -> int:
+    """Competitor URLs probed at once (MVP_COMPETITOR_PROBE_CONCURRENCY)."""
+    try:
+        return max(1, int(os.environ.get("MVP_COMPETITOR_PROBE_CONCURRENCY", "8") or "8"))
+    except ValueError:
+        return 8
 
 # Review roundups and search engines are not products an agent should open.
 _NON_PRODUCT_HOSTS = frozenset(
@@ -316,14 +326,36 @@ async def filter_live_competitor_urls(
     fetch: Fetcher | None = None,
     limit: int = 2,
 ) -> tuple[list[str], list[tuple[str, str]]]:
-    """Probe candidates. Return (live canonical URLs, dropped (url, reason))."""
+    """Probe candidates. Return (live canonical URLs, dropped (url, reason)).
+
+    Candidates are probed at the same time — one dead rival used to hold the
+    brief for its whole 12s timeout while the rest waited their turn — and the
+    results are then walked in the original order, so which URLs are kept and
+    which are dropped is exactly what probing them one by one would give.
+    """
     product_host = registrable_host(product_url)
     blocked = {product_host} | {h.lower().removeprefix("www.") for h in (exclude_hosts or set()) if h}
     live: list[str] = []
     dropped: list[tuple[str, str]] = []
     seen: set[str] = set()
-    for raw in urls:
-        url = (raw or "").strip()
+
+    candidates = [(raw or "").strip() for raw in urls]
+    gate = asyncio.Semaphore(max(1, _probe_concurrency()))
+
+    async def _probe(url: str) -> ProbeResult | None:
+        # Host checks are order-dependent (a host is blocked by whatever came
+        # before it), so they stay in the walk below; this only does the I/O.
+        if not url or not registrable_host(url):
+            return None
+        async with gate:
+            try:
+                return await probe_competitor_url(url, fetch=fetch)
+            except Exception as exc:  # noqa: BLE001
+                return ProbeResult(False, url, "", f"probe_error:{type(exc).__name__}")
+
+    probes = await asyncio.gather(*(_probe(u) for u in candidates))
+
+    for url, probe in zip(candidates, probes):
         if not url:
             continue
         host = registrable_host(url)
@@ -331,7 +363,8 @@ async def filter_live_competitor_urls(
             if url:
                 dropped.append((url, "duplicate_or_product_host"))
             continue
-        probe = await probe_competitor_url(url, fetch=fetch)
+        if probe is None:
+            continue
         if not probe.ok:
             dropped.append((url, probe.reason))
             blocked.add(host)

@@ -721,25 +721,45 @@ def compare_mode() -> bool:
     return os.environ.get("MVP_STUDY_MODE", "classic").strip().lower() == "compare"
 
 
-async def plan_from_url(url: str, *, timeout: float | None = None) -> dict[str, Any] | None:
+async def plan_from_url(
+    url: str, *, timeout: float | None = None, on_competitors: Any | None = None,
+    on_personas: Any | None = None,
+) -> dict[str, Any] | None:
     """{"segment", "competitors", "tasks"} for a bare URL, or None on any failure."""
     if compare_mode():
-        plan = await compare_plan_from_url(url, timeout=timeout or float(os.environ.get("MVP_COMPARE_PLAN_TIMEOUT_S", "25")))
+        plan = await compare_plan_from_url(
+            url,
+            timeout=timeout or float(os.environ.get("MVP_COMPARE_PLAN_TIMEOUT_S", "25")),
+            on_competitors=on_competitors,
+            on_personas=on_personas,
+        )
         if plan:
             return plan
     return await _classic_plan_from_url(url, timeout=timeout or 9.0)
 
 
-async def compare_plan_from_url(url: str, *, timeout: float = 25.0) -> dict[str, Any] | None:
-    """Split plan: competitors, then tasks and personas in parallel. Falls back to the single call."""
+async def compare_plan_from_url(
+    url: str, *, timeout: float = 25.0, on_competitors: Any | None = None,
+    on_personas: Any | None = None,
+) -> dict[str, Any] | None:
+    """Split plan: competitors, then tasks and personas in parallel. Falls back to the single call.
+
+    ``on_competitors(urls, names)`` fires as soon as the rivals are known, so the
+    page can show them while the tasks and personas call is still running.
+    """
     if os.environ.get("MVP_COMPARE_PLAN_SPLIT", "0") == "1":
-        plan = await _split_compare_plan(url, timeout=timeout)
+        plan = await _split_compare_plan(
+            url, timeout=timeout, on_competitors=on_competitors, on_personas=on_personas
+        )
         if plan:
             return plan
     return await _single_compare_plan(url, timeout=timeout)
 
 
-async def _split_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, Any] | None:
+async def _split_compare_plan(
+    url: str, *, timeout: float = 25.0, on_competitors: Any | None = None,
+    on_personas: Any | None = None,
+) -> dict[str, Any] | None:
     from capability.gemini_config import extract_json, gemini_chat
 
     model = os.environ.get("MVP_FAST_PLAN_MODEL") or "gemini-2.5-flash"
@@ -766,17 +786,38 @@ async def _split_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, A
         if not raw_comps:
             return None
         product = str(head.get("product") or "")[:60] or own
+        if on_competitors is not None:
+            try:
+                on_competitors(list(raw_comps), dict(names))
+            except Exception as exc:  # noqa: BLE001
+                print(f"[fast_plan] on_competitors failed: {exc!r}", flush=True)
         rivals = ", ".join(f"{names.get(c) or c} ({c})" for c in raw_comps)
         from mvp.server import _landing_url
 
         landed_f = asyncio.gather(*(_landing_url(c) for c in raw_comps))
-        tasks_raw, personas_raw, landed = await asyncio.gather(
-            ask(_CMP_TASKS.format(product=product, url=url, rivals=rivals, text=text)),
-            ask(_CMP_PERSONAS.format(product=product, url=url, rivals=rivals, text=text)),
-            landed_f,
-        )
-        landed = list(landed)
+        # Both calls still run at once, but the buyers are published the moment
+        # they land instead of waiting for the jobs call: gathering them meant
+        # the page always got users and tasks in the same frame (measured gap
+        # 0.0s), so the brief never revealed them one step at a time.
+        # Buyers first, then jobs. Run in parallel they finish within ~100ms of
+        # each other, so the page always drew users and tasks in one frame
+        # (measured gap 0.0s). Sequential costs the buyers call once and buys a
+        # real step between them; MVP_PLAN_PARALLEL=1 restores the old shape.
+        parallel = os.environ.get("MVP_PLAN_PARALLEL", "0") == "1"
+        tasks_prompt = _CMP_TASKS.format(product=product, url=url, rivals=rivals, text=text)
+        personas_prompt = _CMP_PERSONAS.format(product=product, url=url, rivals=rivals, text=text)
+        tasks_t = asyncio.ensure_future(ask(tasks_prompt)) if parallel else None
+        personas_raw = await ask(personas_prompt)
         personas = compare_personas(personas_raw if isinstance(personas_raw, dict) else {}, own, raw_comps, names, read)
+        if on_personas is not None and personas:
+            try:
+                on_personas([dict(row) for row in personas])
+            except Exception as exc:  # noqa: BLE001
+                print(f"[fast_plan] on_personas failed: {exc!r}", flush=True)
+        if tasks_t is None:
+            tasks_t = asyncio.ensure_future(ask(tasks_prompt))
+        tasks_raw, landed = await asyncio.gather(tasks_t, landed_f)
+        landed = list(landed)
         tasks = compare_tasks(tasks_raw if isinstance(tasks_raw, dict) else {}, own, raw_comps, names)
         if len(tasks) < 2 or len(personas) < 2:
             return None

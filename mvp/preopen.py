@@ -133,13 +133,23 @@ async def _start(study: Any, url: str, n: int) -> None:
     if counted is None:
         return
     free = browser_slots.session_cap() - int(counted.get("n") or 0)
-    burst = browser_slots.burst_state(need, counted)
-    if free < need or not burst.get("ok"):
-        print(f"[preopen] {study_id[:8]} skipped: free={free} need={need} burst_ok={burst.get('ok')}", flush=True)
+    # Two separate questions. Opening these few browsers only needs room for
+    # them; skipping the study queue needs room for the whole study. Asking for
+    # the full 24 to open 8 meant preopen was refused even with every session
+    # free ("skipped: free=25 need=24 burst_ok=False"), so the first screenshot
+    # waited on the normal agent path (measured 90.7s after Run).
+    burst_pre = browser_slots.burst_state(n, counted)
+    burst_full = browser_slots.burst_state(need, counted)
+    if free < n or not burst_pre.get("ok"):
+        print(
+            f"[preopen] {study_id[:8]} skipped: free={free} want={n} burst_ok={burst_pre.get('ok')}",
+            flush=True,
+        )
         return
     if browser_slots._ACTIVE or browser_slots._TICKETS or busy_elsewhere(study_id):
         return
-    _ADMITTED.add(study_id)
+    if free >= need and burst_full.get("ok"):
+        _ADMITTED.add(study_id)
     pool = {"q": asyncio.Queue(), "n": n, "claims": 0, "host": _host(url), "url": url, "closed": False, "t0": time.time()}
     _POOLS[study_id] = pool
     print(f"[preopen] {study_id[:8]} opening {n} product browsers on {url}", flush=True)

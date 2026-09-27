@@ -1106,6 +1106,27 @@ class A11yBoot:
         if not study.tasks_override or study.test_mode:
             return
         study.fast_brief = True
+
+        def _reveal() -> None:
+            """Publish the brief as each section is filled in.
+
+            The plan arrives in one model call, so the page otherwise gets
+            competitors, users and tasks in a single update at the end.
+            """
+            if self.on_update is None:
+                return
+            try:
+                self.on_update(study, event="brief")
+            except TypeError:
+                try:
+                    self.on_update(study)
+                except Exception:
+                    pass
+            except Exception:
+                pass
+
+        if study.competitors:
+            _reveal()
         want = max(1, int(os.environ.get("MVP_PERSONA_COUNT", "4") or "4"))
         segment = study.segment or "target customer"
         archetypes = [
@@ -1147,6 +1168,8 @@ class A11yBoot:
                     "goals": ["Finish the task", "Notice what is confusing"],
                 }
             )
+        if study.personas:
+            _reveal()
         base = []
         specs = {str(t.get("prompt") or ""): t for t in (getattr(study, "task_specs", None) or []) if isinstance(t, dict)}
         for i, prompt in enumerate(study.tasks_override):
@@ -1175,6 +1198,8 @@ class A11yBoot:
         cap = int(getattr(study, "max_agents", 0) or 0)
         if cap > 0 and len(study.tasks) > cap:
             study.tasks = study.tasks[:cap]
+        if study.tasks:
+            _reveal()
 
     async def start(self) -> None:
         """Install the plan and let agents start at once.
@@ -3364,6 +3389,7 @@ async def _open_agent_session_once(
                 page.set_default_navigation_timeout(8000)
             except Exception:
                 pass
+            await _load_saved_cookies(context, url, str(getattr(boot.study, "id", ""))[:8])
             # Creation for the 5s gate is this navigation, after the session exists.
             started = time.time()
             try:
@@ -3503,6 +3529,84 @@ def competitor_signup_timeout_s() -> float:
 
 
 _SIGNUP_GATE: dict[str, Any] = {"lock": None, "last": 0.0}
+
+
+async def _load_saved_cookies(context: Any, url: str, agent_id: str = "") -> int:
+    """Put this site's captured signed-in cookies on the session before it opens.
+
+    The old browser-use loop restored auth state; this loop never did, so every
+    agent arrived logged out and met a sign-up wall, and each then ran its own
+    in-session signup. Whatever capture exists for the site is used; nothing
+    here is per-product.
+    """
+    try:
+        from mvp.auth_state import storage_state_for_url
+
+        state = await asyncio.to_thread(storage_state_for_url, url)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] auth state lookup failed: {exc!r}", flush=True)
+        return 0
+    cookies = [c for c in ((state or {}).get("cookies") or []) if isinstance(c, dict)]
+    if not cookies:
+        return 0
+    try:
+        await asyncio.wait_for(context.add_cookies(cookies), timeout=5)
+    except Exception:
+        # One bad cookie rejects the whole batch; keep the good ones.
+        ok = 0
+        for c in cookies:
+            try:
+                await context.add_cookies([c])
+                ok += 1
+            except Exception:
+                continue
+        if ok:
+            print(f"[{agent_id}] restored {ok}/{len(cookies)} cookies for {url}", flush=True)
+        return ok
+    print(f"[{agent_id}] restored {len(cookies)} cookies for {url}", flush=True)
+    return len(cookies)
+
+
+async def _publish_live_view(bb: Any, agent_id: str, url: str, on_step: Any) -> None:
+    """Send Browserbase's live debugger URL to the stage as soon as it is known.
+
+    study.py latches live_view_url / live_active onto the session and the UI
+    mounts the iframe from that. This loop never published it, so the stage
+    showed screenshots for the whole run and the live view never appeared.
+    """
+    sid = str(getattr(bb, "id", "") or "")
+    if not sid:
+        return
+    try:
+        from capability.browserbase_client import session_live_view_url
+
+        live = await asyncio.wait_for(asyncio.to_thread(session_live_view_url, sid), timeout=15)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] live view lookup failed: {exc!r}", flush=True)
+        return
+    if not live:
+        return
+    step = {
+        "step": None,
+        "progress_only": True,
+        "live_active": True,
+        "live_view_url": live,
+        "browserbase_session_id": sid,
+        "action": "",
+        "thought": "",
+        "thought_detail": {},
+        "observation": "",
+        "url": url,
+        "screenshot_url": None,
+        "outcome": "neutral",
+    }
+    try:
+        maybe = on_step(step)
+        if asyncio.iscoroutine(maybe):
+            await maybe
+        print(f"[{agent_id}] live view published", flush=True)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[{agent_id}] live view publish failed: {exc!r}", flush=True)
 
 
 def _queue_grace_cap_s() -> float:
@@ -4089,6 +4193,12 @@ async def _run_a11y_agent_unlocked(
             if deadline is not None and waited_for_browser > 1.0:
                 deadline += waited_for_browser
                 _extend_study_budget(boot.study, waited_for_browser, agent_id)
+            # Browserbase can show this session live. The old browser-use loop
+            # published the debugger URL; this loop never did, so the stage only
+            # ever had screenshots. Fetch it off the loop and off the critical
+            # path so it cannot delay the first frame.
+            if on_step is not None and bb is not None:
+                asyncio.create_task(_publish_live_view(bb, agent_id, url, on_step))
             # Per-agent cap: 480s from this agent's own page open, whatever the study clock says.
             deadline = agent_deadline(time.monotonic(), deadline)
         except Exception as exc:  # noqa: BLE001

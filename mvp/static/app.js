@@ -85,6 +85,21 @@ function scrollBriefTo(elOrId, step) {
   const next = order.indexOf(step);
   const cur = order.indexOf(_briefScrollStep);
   if (next < 0 || (cur >= 0 && next <= cur)) return;
+  // The stage opens as soon as an agent acts, which can beat the planner's
+  // users and tasks. Advancing to "live" first used to lock this ratchet, so
+  // the users panel was never scrolled to and stayed above the viewport
+  // (measured: personas rendered with users-panel top=-561, inView=false).
+  // Let the brief finish its own steps before the stage takes over.
+  if (step === "live") {
+    // Users and tasks each get their own scroll first, and the stage only
+    // takes over once an agent has really acted. Letting "live" win early
+    // locked this ratchet and left the users panel above the viewport.
+    if (_briefScrollStep !== "tasks") return;
+    const acted = (_lastStudyData?.live_sessions || []).some(
+      (s) => s && (s.first_action_at_ts || Number(s.num_steps || 0) > 0)
+    );
+    if (!acted) return;
+  }
   _briefScrollStep = step;
   const el = typeof elOrId === "string" ? document.getElementById(elOrId) : elOrId;
   if (!el || el.hidden) return;
@@ -1157,11 +1172,20 @@ function renderStage(sessions) {
     // Show the first agent that actually clicked/typed as soon as its step
     // record lands; the step screenshot arrives ~4s later and fills in then.
     const cur = sessions[_activeTraceIdx];
-    const firstActedShot = sessions.findIndex((s) => hasActed(s) && hasRealShot(s));
-    const firstActed = sessions.findIndex(hasActed);
-    const firstWithShot = sessions.findIndex(hasRealShot);
-    const firstLive = sessions.findIndex(hasLive);
-    const firstInFlight = sessions.findIndex(inFlight);
+    // The study is about the product, so the opening frame should be a product
+    // agent. Picking by task order alone showed whichever agent happened to
+    // paint first, which was often a rival (the e2e judge read recurse.run
+    // when it expected the product host).
+    const isProduct = (s) => String(s?.site_key || "product") === "product";
+    const findPreferProduct = (pred) => {
+        const i = sessions.findIndex((s) => isProduct(s) && pred(s));
+        return i >= 0 ? i : sessions.findIndex(pred);
+    };
+    const firstActedShot = findPreferProduct((s) => hasActed(s) && hasRealShot(s));
+    const firstActed = findPreferProduct(hasActed);
+    const firstWithShot = findPreferProduct(hasRealShot);
+    const firstLive = findPreferProduct(hasLive);
+    const firstInFlight = findPreferProduct(inFlight);
     if (cur && hasActed(cur) && hasRealShot(cur)) {
       /* keep the pane that already shows a real step */
     } else if (firstActedShot >= 0) _activeTraceIdx = firstActedShot;
@@ -1287,7 +1311,15 @@ function renderStage(sessions) {
   );
 
   paintStageBody(body, session, idx);
-  if (!_stageScrolled) {
+  // Only take the scroll once an agent has really done something. The stage
+  // renders while the first agent is still "Queued · 0 steps · Opening the
+  // page…", and the starter's single T1 flips the brief ratchet to "tasks", so
+  // this used to drag the page down to an empty stage while the planner was
+  // still writing the users.
+  const acted =
+    Boolean(session?.first_action_at_ts) ||
+    (session?.trace || []).some((t) => t && (isRealAction(t.action) || stepShotSrc(t)));
+  if (!_stageScrolled && acted) {
     _stageScrolled = true;
     requestAnimationFrame(() => {
       section.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1881,7 +1913,9 @@ form.addEventListener("submit", async (e) => {
     },
     []
   );
-  livePanel.scrollIntoView({ behavior: "smooth" });
+  // Scrolling the whole live panel into view jumped past the brief (landing
+  // at y~1150 with the users panel off-screen). The brief is what fills in
+  // first, so start there and let scrollBriefTo walk the steps.
   scrollBriefTo("products-panel", "products");
   const startedAt = Date.now();
   updateProgressUI({ phase: "Understanding context of product", status: "running" }, startedAt);

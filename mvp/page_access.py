@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import re
 from dataclasses import dataclass
 
@@ -125,8 +127,11 @@ async def fetch_page_access(url: str) -> PageAccessResult:
 
     from capability.browserbase_client import study_session_owner
 
-    session = create_session(
-        proxies=False, owner=study_session_owner(), study_id="page_access"
+    # create_session blocks: it retries, backs off and waits for a free slot.
+    # Called straight from the loop it stalled every other request and agent
+    # on this server (a trivial endpoint measured 2.3s while a study ran).
+    session = await asyncio.to_thread(
+        create_session, proxies=False, owner=study_session_owner(), study_id="page_access"
     )
     try:
         body, final_url, title, blocked, reason = await _playwright_body(
@@ -142,4 +147,4 @@ async def fetch_page_access(url: str) -> PageAccessResult:
             session_url=session.session_url,
         )
     finally:
-        close_session(session.id)
+        await asyncio.to_thread(close_session, session.id)

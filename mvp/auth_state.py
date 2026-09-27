@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote_plus, urlparse
@@ -114,56 +115,49 @@ def youtube_auth_capture_ready() -> bool:
     )
 
 
-def storage_state_for_url(url: str) -> dict[str, Any] | None:
-    """Best-effort signed-in storage for the target host."""
+def _state_candidates(url: str) -> list[str]:
+    """File stems to look for, derived from the host alone.
+
+    e.g. https://www.example.com/x -> www.example.com, example.com, example
+    """
     host = (urlparse(url).hostname or "").lower()
+    bare = host[4:] if host.startswith("www.") else host
+    name = bare.split(".")[0] if bare else ""
+    out: list[str] = []
+    for h in (host, bare, f"www.{bare}" if bare else "", name):
+        safe = re.sub(r"[^a-z0-9.-]+", "_", h or "")
+        if safe and safe not in out:
+            out.append(safe)
+    return out
+
+
+def storage_state_for_url(url: str) -> dict[str, Any] | None:
+    """Best-effort signed-in storage for the target host.
+
+    Resolution is by host only, so every product is treated the same way: a
+    capture saved for a site is found for that site. Drop a state in
+    secrets/site_states/<host>.json (what mvp.auto_signin / mvp.auto_signup
+    write) or secrets/<name>_storage_state.json and it is picked up.
+    """
     states: list[dict[str, Any] | None] = []
-
-    # Prefer a dedicated YouTube/Google export when present.
-    if "youtube.com" in host or "google." in host:
-        # Only the interactive capture (mvp.refresh_youtube_auth) produces a
-        # storage_state that actually signs Playwright into YouTube.
-        states.append(_load_json(YOUTUBE_STATE_SIGNED))
-        states.append(_load_json(YOUTUBE_STATE))
-        if youtube_auth_capture_ready():
-            # A verified session is self-sufficient; stale Google cookies from other
-            # dumps only risk conflicting with it.
-            return _merge_states(*states)
-        # Voice-AI dumps: useful for some Google surfaces, not YouTube home auth.
-        for path in (VAPI_STATE, RETELL_STATE):
-            raw = _load_json(path)
-            if not raw:
-                continue
-            filtered = {
-                "cookies": [
-                    c
-                    for c in (raw.get("cookies") or [])
-                    if any(
-                        x in (c.get("domain") or "").lower()
-                        for x in ("google", "youtube", "gstatic", "ggpht")
-                    )
-                ],
-                "origins": [
-                    o
-                    for o in (raw.get("origins") or [])
-                    if any(x in (o.get("origin") or "").lower() for x in ("google", "youtube"))
-                ],
-            }
-            states.append(sanitize_storage_state_dict(filtered))
-    else:
-        bare = host[4:] if host.startswith("www.") else host
-        candidates = []
-        for h in (host, bare, f"www.{bare}"):
-            safe = re.sub(r"[^a-z0-9.-]+", "_", h)
-            if safe and safe not in candidates:
-                candidates.append(safe)
-        for safe in candidates:
-            # Sessions captured by mvp.auto_signin / mvp.auto_signup.
-            states.append(_load_json(SITE_STATES / f"{safe}.json"))
-            # Legacy/manual per-host dump.
-            states.append(_load_json(SECRETS / f"{safe}_storage_state.json"))
-
+    for safe in _state_candidates(url):
+        # Sessions captured by mvp.auto_signin / mvp.auto_signup.
+        states.append(_load_json(SITE_STATES / f"{safe}.json"))
+        # A verified interactive capture wins over an older dump of the same site.
+        states.append(_load_json(SECRETS / f"{safe}_storage_state.json.signed"))
+        states.append(_load_json(SECRETS / f"{safe}_storage_state.json"))
     return _merge_states(*states)
+
+
+@lru_cache(maxsize=256)
+def has_saved_auth(url: str) -> bool:
+    """True when a signed-in capture exists for this site.
+
+    Lets callers ask "do agents run signed in here?" without naming any
+    product. Cached: it is asked once per agent.
+    """
+    state = storage_state_for_url(url)
+    return bool((state or {}).get("cookies"))
 
 
 _AUTH_ATTEMPTED: set[str] = set()

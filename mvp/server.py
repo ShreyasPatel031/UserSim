@@ -565,56 +565,126 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
         start_preopen(study, url)
     except Exception as exc:  # noqa: BLE001
         print(f"preopen start failed: {exc!r}", flush=True)
+    pending_plan = None
     if not study.tasks_override and os.environ.get("MVP_FAST_PLAN", "1") != "0":
         # A bare URL: one quick model call picks the tasks, rivals, and segment
         # so agents open pages within seconds instead of after ~20s of research.
         from mvp.fast_plan import compare_mode, plan_from_url
 
-        plan_task = asyncio.create_task(plan_from_url(url))
-        starter = None
-        if compare_mode() and not study.test_mode:
-            from mvp import early_start
+        _push_ref: dict = {"fn": None}
 
-            if early_start.enabled():
-                # The first buyer starts on the product while the full plan is written.
-                starter = await early_start.starter_plan(url)
-                if starter and not plan_task.done():
-                    try:
-                        early_start.start_early_agent(study, url, starter)
-                    except Exception as exc:  # noqa: BLE001
-                        print(f"[early] start failed: {exc!r}", flush=True)
+        def _show_competitors(urls: list, names: dict) -> None:
+            """Put the rivals on the page as soon as the planner picks them.
+
+            The tasks/personas call runs for seconds after this, so without it
+            the products panel sits on "Searching competitors…" the whole time.
+            """
+            if not urls or study.competitors or study.skip_competitors:
+                return
+            study.competitors = list(urls)
+            try:
+                study.competitor_names = dict(names or {})
+            except Exception:
+                pass
+            # The stream is already open by the time the planner answers, so the
+            # rivals reach the page now instead of with the finished plan.
+            fn = _push_ref.get("fn")
+            if fn is not None:
+                try:
+                    fn(study, "brief")
+                except Exception:
+                    pass
+
+        def _show_personas(rows: list) -> None:
+            """Put the buyers on the page as soon as the planner writes them.
+
+            The jobs call is still running at this point, so the brief reveals
+            users and tasks as separate steps instead of one combined frame.
+            """
+            # The early-start agent seeds one buyer and one job so it can act
+            # immediately. The planner's full set must still replace it here,
+            # ahead of the jobs call, or users and tasks both jump from 1 to N
+            # in the same frame.
+            if not rows or len(study.personas or []) >= len(rows):
+                return
+            people = []
+            for i, row in enumerate(rows, start=1):
+                if not isinstance(row, dict):
+                    continue
+                people.append(
+                    {
+                        "id": f"p{i}",
+                        "name": str(row.get("name") or f"Persona {i}"),
+                        "bio": str(row.get("bio") or ""),
+                        "occupation": str(row.get("role") or ""),
+                        "age_range": "",
+                        "location": "Remote",
+                        "goals": ["Decide which product fits", "Notice what is confusing"],
+                    }
+                )
+            if not people:
+                return
+            study.plan_personas = [dict(r) for r in rows if isinstance(r, dict)]
+            study.personas = people
+            fn = _push_ref.get("fn")
+            if fn is not None:
+                try:
+                    fn(study, "brief")
+                except Exception:
+                    pass
+
+        plan_task = asyncio.create_task(
+            plan_from_url(url, on_competitors=_show_competitors, on_personas=_show_personas)
+        )
+
+        async def _finish_plan() -> None:
+            """Apply the plan. Runs after the stream opens so its frames reach the page."""
+            starter = None
+            if compare_mode() and not study.test_mode:
+                from mvp import early_start
+
+                if early_start.enabled():
+                    # The first buyer starts on the product while the full plan is written.
+                    starter = await early_start.starter_plan(url)
+                    if starter and not plan_task.done():
+                        try:
+                            early_start.start_early_agent(study, url, starter)
+                        except Exception as exc:  # noqa: BLE001
+                            print(f"[early] start failed: {exc!r}", flush=True)
+                            starter = None
+                    else:
                         starter = None
-                else:
-                    starter = None
-        plan = await plan_task
-        if plan and starter and plan.get("mode") == "compare":
-            plan = early_start.splice_plan(plan, starter)
-        if plan and plan.get("mode") == "compare":
-            from mvp.fast_plan import competitor_cells
+            plan = await plan_task
+            if plan and starter and plan.get("mode") == "compare":
+                plan = early_start.splice_plan(plan, starter)
+            if plan and plan.get("mode") == "compare":
+                from mvp.fast_plan import competitor_cells
 
-            # The splice reorders buyers and jobs: recompute any rival slice ({} = full matrix) on the final order.
-            plan["competitor_cells"] = competitor_cells(
-                list(plan.get("personas") or []), list(plan.get("task_specs") or []), list(plan.get("competitors") or [])
-            )
-        elif starter and not (plan and plan.get("mode") == "compare"):
-            # No comparison plan: stop the early agent rather than run it outside the study.
-            for t in (getattr(study, "early_runs", None) or {}).values():
-                t.cancel()
-            study.early_runs = {}
-        if plan:
-            study.tasks_override = list(plan["tasks"])
-            if not study.competitors and not study.skip_competitors:
-                study.competitors = list(plan["competitors"])
-            if plan.get("mode") == "compare":
-                study.study_mode = "compare"
-                study.product_name = str(plan.get("product") or "")
-                study.competitor_names = dict(plan.get("competitor_names") or {})
-                study.task_specs = list(plan.get("task_specs") or [])
-                study.plan_personas = list(plan.get("personas") or [])
-                cells = dict(plan.get("competitor_cells") or {})
-                study.competitor_cells = [cells.get(c) or {} for c in (plan.get("competitors") or [])]
-            if not (body.segment or body.customers) and plan.get("segment"):
-                study.segment = plan["segment"]
+                # The splice reorders buyers and jobs: recompute any rival slice ({} = full matrix) on the final order.
+                plan["competitor_cells"] = competitor_cells(
+                    list(plan.get("personas") or []), list(plan.get("task_specs") or []), list(plan.get("competitors") or [])
+                )
+            elif starter and not (plan and plan.get("mode") == "compare"):
+                # No comparison plan: stop the early agent rather than run it outside the study.
+                for t in (getattr(study, "early_runs", None) or {}).values():
+                    t.cancel()
+                study.early_runs = {}
+            if plan:
+                study.tasks_override = list(plan["tasks"])
+                if not study.competitors and not study.skip_competitors:
+                    study.competitors = list(plan["competitors"])
+                if plan.get("mode") == "compare":
+                    study.study_mode = "compare"
+                    study.product_name = str(plan.get("product") or "")
+                    study.competitor_names = dict(plan.get("competitor_names") or {})
+                    study.task_specs = list(plan.get("task_specs") or [])
+                    study.plan_personas = list(plan.get("personas") or [])
+                    cells = dict(plan.get("competitor_cells") or {})
+                    study.competitor_cells = [cells.get(c) or {} for c in (plan.get("competitors") or [])]
+                if not (body.segment or body.customers) and plan.get("segment"):
+                    study.segment = plan["segment"]
+
+        pending_plan = _finish_plan
 
     want_stream = "text/event-stream" in (request.headers.get("accept") or "") or (
         "application/x-ndjson" in (request.headers.get("accept") or "")
@@ -645,6 +715,14 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
             payload = study_to_dict(study_obj)
             payload["stream_event"] = event
             queue.put_nowait(payload)
+
+        # Planning now happens with the stream open, so the rivals the planner
+        # picks are pushed the moment they exist instead of arriving with the
+        # finished plan in one frame.
+        try:
+            _push_ref["fn"] = _push
+        except NameError:
+            pass
 
         async def _abandon_timeout(study_obj, timeout_s: float) -> dict:
             """Persist abandoned state, kill zombie Browserbase, clear live UI."""
@@ -700,10 +778,22 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
             payload["stream_event"] = "error"
             return payload
 
+        async def _plan_then_run(study_id: str, push) -> Any:
+            if pending_plan is not None:
+                try:
+                    await pending_plan()
+                except Exception as exc:  # noqa: BLE001
+                    print(f"plan failed: {exc!r}", flush=True)
+                try:
+                    push(study, "brief")
+                except Exception:
+                    pass
+            return await run_study(study_id, on_update=push)
+
         async def _runner() -> None:
             try:
                 await asyncio.wait_for(
-                    run_study(study.id, on_update=_push),
+                    _plan_then_run(study.id, _push),
                     timeout=timeout_s,
                 )
                 final = study_to_dict(STUDIES[study.id])
@@ -778,6 +868,11 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
 
     async def _bg() -> None:
         try:
+            if pending_plan is not None:
+                try:
+                    await pending_plan()
+                except Exception as exc:  # noqa: BLE001
+                    print(f"plan failed: {exc!r}", flush=True)
             await run_study(study.id)
         finally:
             STUDY_TASKS.pop(study.id, None)
@@ -839,6 +934,29 @@ async def get_study_live(study_id: str, since: int = 0):
             headers={"Cache-Control": "no-store"},
         )
     return JSONResponse(live_view(study, since), headers={"Cache-Control": "no-store"})
+
+
+@app.get("/api/studies/{study_id}/insight-layer")
+async def get_insight_layer(study_id: str):
+    """Buyer and task groups, 3-line summary and 3 recommendations for a comparison study (cached)."""
+    from mvp.insight_layer import cached_layer, insight_layer_for
+    from mvp.study import STUDIES
+
+    # A finished study does not change: serve the saved layer without the ~20s
+    # study load. Only a study running again in this process is rebuilt.
+    live = STUDIES.get(study_id)
+    rerunning = bool(live) and str(getattr(live, "status", "")) in {"queued", "running", "pending", "starting"}
+    saved = cached_layer(study_id)
+    if saved and saved.get("status") == "complete" and not rerunning:
+        return saved
+    data = await get_study(study_id)
+    comp = ((data or {}).get("summary") or {}).get("comparison")
+    if not comp:
+        raise HTTPException(status_code=404, detail="No comparison on this study")
+    try:
+        return await insight_layer_for(study_id, comp, status=str(data.get("status") or ""))
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=502, detail=f"Insight layer failed: {exc!r}"[:200]) from exc
 
 
 @app.get("/api/studies/{study_id}")

@@ -28,6 +28,13 @@ except Exception:
     os.environ.setdefault("MVP_BROWSER_CONCURRENCY", "25")
 
 IS_VERCEL_ENV = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
+# A real serverless invocation is frozen once it answers, so it has to write
+# through on every change. The local vercel-mode shim sets VERCEL=1 too but is
+# a long-lived uvicorn, where a write-through on every touch() stalls the loop.
+_FROZEN_AFTER_RESPONSE = bool(
+    os.environ.get("AWS_LAMBDA_FUNCTION_NAME")
+    or os.environ.get("MVP_WRITE_THROUGH_PERSIST") == "1"
+)
 USE_LIVE_BROWSER = os.environ.get("MVP_VERCEL_BROWSER", "").lower() in ("1", "true", "yes")
 QUICK_MODE = os.environ.get("MVP_QUICK", "").lower() in ("1", "true", "yes")
 SNAPSHOT_FORCE = os.environ.get("MVP_SNAPSHOT_ONLY", "").lower() in ("1", "true", "yes")
@@ -638,8 +645,16 @@ async def invent_competitors(
     ]
     search_hits: list[dict[str, str]] = []
     seen: set[str] = set()
-    for q in queries:
-        for hit in await _duckduckgo_search(q, limit=6):
+    # The three searches are independent: run them together and merge in the
+    # original query order, so the hit list is the same one at a time produced.
+    per_query = await asyncio.gather(
+        *(_duckduckgo_search(q, limit=6) for q in queries),
+        return_exceptions=True,
+    )
+    for hits in per_query:
+        if isinstance(hits, BaseException):
+            continue
+        for hit in hits:
             u = (hit.get("url") or "").rstrip("/")
             key = u.lower()
             if not u or key in seen:
@@ -1512,9 +1527,18 @@ async def _run_study_body(
                 pass
         # Serverless: persist often so GET /api/studies/{id} still works if this
         # invocation dies mid-run (Vercel freezes the process when the stream ends).
+        # On a long-lived server that write has to be deferred: persist_study
+        # serialises the whole study (~2MB at 108 agents) and uploads it to GCS
+        # synchronously, and touch() runs on every phase change, so doing it on
+        # the loop stalled every other request. Measured while a study ran, a
+        # trivial endpoint took up to 2.3s and POST /api/studies never answered,
+        # which left the page with no study id and no brief at all.
         if IS_VERCEL_ENV:
             try:
-                persist_study(study)
+                if _FROZEN_AFTER_RESPONSE:
+                    persist_study(study)
+                else:
+                    schedule_persist(study)
             except Exception:
                 pass
 
@@ -2674,13 +2698,16 @@ async def _run_study_body(
             from mvp.browser_agent import close_warm_opening
             from urllib.parse import urlparse as _urlparse
 
-            _prod_host = (_urlparse(study.url).hostname or "").lower()
-            _yt = "youtube.com" in _prod_host or "youtu.be" in _prod_host
+            from mvp.auth_state import has_saved_auth
+
+            # A site we hold a signed-in capture for runs its agents signed in,
+            # and a warm session opened without those cookies is no use to them.
+            _signed_in = has_saved_auth(study.url)
             for key, warm in list(warm_by_site.items()):
                 if key in pending_warm:
                     continue
-                if key == "product" and not _yt:
-                    continue  # may hand to one non-YouTube product agent
+                if key == "product" and not _signed_in:
+                    continue  # may hand to one product agent that starts logged out
                 try:
                     await close_warm_opening(warm)
                 except Exception:
@@ -3465,17 +3492,14 @@ async def _run_study_body(
                                     and warm_opening is not None
                                     and str(task.get("site_key") or "product") == "product"
                                 ):
-                                    # YouTube agents never consume warm sessions (signed-in
-                                    # path). Claiming warm anyway leaked the BB slot and
+                                    # Agents on a site we have a signed-in capture for
+                                    # never consume warm sessions: the warm one carries
+                                    # no cookies, and claiming it leaked the BB slot and
                                     # left DevTools URLs pointing at a zombie session.
-                                    _host = (
-                                        str(task.get("site_url") or study.url or "")
-                                        .lower()
-                                    )
-                                    if (
-                                        "youtube.com" not in _host
-                                        and "youtu.be" not in _host
-                                    ):
+                                    from mvp.auth_state import has_saved_auth
+
+                                    _site = str(task.get("site_url") or study.url or "")
+                                    if not has_saved_auth(_site):
                                         agent_warm = warm_opening
                                         warm_used = True
                                 run = None
