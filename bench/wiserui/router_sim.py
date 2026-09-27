@@ -105,7 +105,14 @@ def main() -> None:
     ap.add_argument("--md", default="")
     ap.add_argument("--json", default="")
     ap.add_argument("--png", default="")
+    ap.add_argument("--extra", action="append", default=[],
+                    help="name=run_dir:graded|plain, e.g. sonnet5_h1=hc_sonnet5_h1:graded (all systems are then scored on "
+                         "the pairs every run covers)")
     a = ap.parse_args()
+    for e in a.extra:
+        name, rest = e.split("=", 1)
+        d, kind = rest.rsplit(":", 1)
+        SYSTEMS[name] = (d, kind)
     main_ids = ids_of("@" + str(BENCH / "fullset" / "final_indices_main.txt"))
     dev = set(ids_of("@" + str(BENCH / "dev_indices.txt")))
     S = {n: load_system(n) for n in SYSTEMS}

@@ -1,9 +1,90 @@
 # Harness lift on the cheapest current model per frontier lab (WiserUI-Bench, 252 pairs), 2026-09-27
 
-Two rounds against one hard $5 cap. Round 1 ran 7:50–8:15 AM PT and round 2 ran 8:23–8:45 AM PT.
+Three rounds against one hard $5 cap. Round 1 ran 7:50–8:15 AM PT, round 2 ran 8:23–8:45, and round 3 (Sonnet 5)
+ran 8:49–8:57.
 
-**Total spend: $3.03 of $5.** Round 1 cost $2.20 and round 2 $0.83. The remaining **$1.97 is reserved for Claude Haiku
-4.5**, which this project still cannot call (see "Round 2, step 1").
+**Total spend: $4.89 of $5.** Round 1 cost $2.20, round 2 $0.83 and round 3 $1.86. The remaining $0.11 is below one
+Sonnet pair's worst-case reservation, so the capped run stopped there.
+
+## Round 3 (8:49 AM PT): Anthropic = Claude Sonnet 5, H1 on a random subset
+
+**Haiku: no Haiku ID works in this project.** All probes were free 5-token calls.
+
+| ID | Model Garden entry | rawPredict |
+|---|---|---|
+| `claude-haiku` | 404 | 404 |
+| `claude-3-haiku@20240307` | 404 | 404 |
+| `claude-3-5-haiku@20241022` | 404 | 404 |
+| `claude-haiku-4-5@20251001` (round 2) | GA, version 20251001 | 404 everywhere; `us` / `eu` 429 with quota 0 |
+
+rawPredict was tried in global, us, us-east5, us-central1, europe-west1, europe-west4 and asia-southeast1.
+
+- The `anthropic-claude-haiku` entry in Cloud Quotas (global 9,000 rpm; us / eu 4,500) is a **family-level quota
+  dimension**, not a callable model.
+- Model Garden publishes only `claude-haiku-4-5` for Haiku.
+- The project needs Model Garden access to `claude-haiku-4-5` (round 2, step 1). The quota is already there.
+
+**Sonnet 5 run** (`claude-sonnet-5`, global with spillover to us / us-east5 / europe-west1). Settings match the saved plain
+run: default sampling (Claude 5 has no temperature control), 1568 px, max_tokens 2048.
+
+The thinking headroom was set to 2048 (`MVP_CLAUDE5_THINK_HEADROOM`). That only changes the worst-case reservation:
+- the largest observed output was 1,928 tokens in 504 plain calls and 1,200 in the smoke test;
+- so the headroom never binds.
+
+- **Smoke test:** 4 pairs, $0.088, i.e. $0.022/pair.
+  - Every answer parsed.
+  - 3 of the 8 calls answered with only the probability line: 11 output tokens and no analysis.
+- **Run:** pairs in the fixed random order `fullset/anthropic_order.txt` (sha256 seed "hc-anthropic", ≈ 30% dev in every
+  prefix), capped at the budget.
+  - **n = 79 pairs**, an exact prefix of that order: **27 dev + 52 held-out**.
+  - $1.865, 0 errors, 08:50:47–08:54:59 PT.
+
+| model | arm | n | CA | single-call CA | OI | dOI vs plain [95% CI] | McNemar p (up/down) | dCA vs plain [95% CI] | p | flip-pair acc (n) | ties | per-call flip rate | $/pair |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Sonnet 5 | plain (saved `van_sonnet5`, same 79 pairs) | 79 | 48.1 | 48.1 | 64.6 | (ref) | | | | 50.0 (26) | | 32.9 | 0.0258 |
+| Sonnet 5 | **H1** graded both-order | 79 | 67.7 | 41.8 | **67.7** | **+3.2 [−4.4, +10.8]** | 0.57 (16/12) | +19.6 [+9.5, +29.7] | 0.0015 | 61.5 (26) | 7 | 39.2 | **0.0236** |
+
+- **This subset is easier than average for plain Sonnet** (OI 64.6 here vs 58.1 on all 252). Only the paired delta is
+  comparable across models.
+- **Same pattern as the other labs.** A large CA gain (+19.6, p = 0.0015) comes from answering once for both orders. The
+  OI lift is small and not significant (+3.2, p = 0.57, n = 79; a paired SE of ~4 points).
+- **The graded tie-break does resolve flips better than a coin:** 61.5% on plain Sonnet's 26 flip pairs.
+- **Per-call position bias did not drop** (flip rate 39% vs plain 33%). Sonnet often gives about 25–35 when the winner is
+  shown first and about 60–70 when it is shown second.
+- **H1 costs 9% less than plain.** Some answers are just the number, so there is less output.
+
+**H4 abstention on Sonnet: fails.**
+
+| threshold | dev coverage / acc | held-out coverage / committed acc | held-out forced acc | committed − forced |
+|---|---|---|---|---|
+| τ = 5, picked on the subset's 27 dev pairs | 63.0% / 82.4 | 73.1% (38/52) / 65.8 | 64.4 | +1.4 |
+| τ = 20, the 3.8 Flash-style threshold | 40.7% / 81.8 | 40.4% (21/52) / 66.7 | 64.4 | +2.3 |
+
+- Both fail the bar (≥ +3 at ≥ 50% coverage).
+- Sonnet's high-confidence calls are *less* accurate on held-out: 60.0 at τ = 25 and 50.0 at τ = 30, with small n.
+- The plain order-consistency gate does as well: 67.6% at 71% coverage.
+- Held-out curve (τ: coverage / committed accuracy): 0: 100% / 64.4; 10: 65.4% / 64.7; 15: 61.5% / 68.8; 20: 40.4% / 66.7.
+
+**Router with Sonnet 5 H1:** `router_sim.py --extra sonnet5_h1=hc_sonnet5_h1:graded`, scored on the same 79 pairs; output in
+`fullset/router_sim_sonnet5_subset.json`.
+- Sonnet 5 H1 appears only as a last-stage tie-breaker for 3.8 Flash H1's uncertain pairs (about 5–14% of pairs reach it).
+- On held-out it gives 75.0 at $0.0097/pair, but **3.8 Flash H1 alone is also 75.0 on these 52 held-out pairs**. So it adds
+  nothing measurable.
+- The dev-picked choices here are badly overfit: dev 81–89 vs held-out 70–75 on 27 / 52 pairs.
+- Conclusion: Sonnet 5 does not belong in the router at its price. Opus 5.5 remains the only escalation target with
+  signal on the cheap models' uncertain pairs.
+
+**Per-lab verdict (all three labs now measured).**
+
+| lab / model | n | dOI of H1 vs plain [95% CI], p | dCA, p | H4 abstention (held-out) | H1 $/pair |
+|---|---|---|---|---|---|
+| Google, Gemini 3.8 Flash | 252 | +3.4 [−0.4, +7.1], 0.14 | +14.9, 8e-10 | **passes**: 77.8% at 51% coverage (forced 66.7) | 0.0075 |
+| OpenAI, GPT-6 Luna | 252 | +1.6 [−2.6, +6.0], 0.35 | +20.6, 1e-13 | fails (+2.2) | 0.0006 |
+| Anthropic, Claude Sonnet 5 (Haiku not accessible) | 79 | +3.2 [−4.4, +10.8], 0.57 | +19.6, 0.0015 | fails (+1.4 / +2.3) | 0.0236 |
+
+- **Across all three labs, the harness buys a large, certain CA gain** by removing position flips.
+- **The skill gain is modest (+1.6 to +3.4 OI) and not significant for any model** at these n.
+- **Only 3.8 Flash's graded confidence is useful for abstaining.**
 
 ## Round 2 (8:23 AM PT): Haiku access diagnosis, harness iterations, router proposal
 
@@ -194,7 +275,7 @@ Honest: cascade + taus picked on dev (max dev acc with dev $/pair <= budget), sc
   These are the evaluation-data needs already listed in RESEARCH_HYPOTHESES.md §4. Partner or customer A/B history is the
   realistic source.
 
-### Haiku plan (ready; about $1.97 left)
+### Haiku plan (ready once access is granted; the $1.97 was spent on Sonnet 5 in round 3, so it needs new budget)
 
 ```bash
 python3 bench/wiserui/claude_access.py          # must show "claude-haiku-4-5@20251001 global: 200 OK"
