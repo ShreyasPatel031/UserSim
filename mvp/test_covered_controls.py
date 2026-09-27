@@ -50,8 +50,6 @@ class CoveredControlTest(unittest.TestCase):
         self.assertTrue(inert["Customers"])
         self.assertFalse(inert["Close"])
         self.assertIn("Close (x icon)", inert)  # icon-only X button gets a name
-        self.assertTrue(before["overlay"] and before["dialog"])
-        self.assertFalse(after["overlay"])
         self.assertFalse(inert["Play video"])
         self.assertFalse(inert["checkbox field"])  # styled checkbox under its label stays usable
         self.assertFalse(any(n["inert"] for n in after["nodes"]))

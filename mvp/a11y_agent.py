@@ -338,7 +338,6 @@ _READ_JS = """() => {
       w: Math.round(Math.max(r.width, 0)),
       h: Math.round(Math.max(r.height, 0)),
       inert: inert,
-      covered: under,
       value: ((el.tagName === 'INPUT' && !/password|hidden|checkbox|radio/i.test(el.type || '')) || el.tagName === 'TEXTAREA') ? String(el.value || '').slice(0, 60) : (el.isContentEditable ? String(el.innerText || '').replace(/\\s+/g, ' ').trim().slice(0, 60) : ''),
       on: el.getAttribute('aria-pressed') === 'true' || el.getAttribute('aria-checked') === 'true' || el.getAttribute('aria-selected') === 'true' || el.getAttribute('aria-expanded') === 'true' || !!el.checked,
     };
@@ -378,9 +377,6 @@ _READ_JS = """() => {
   const password = Array.from(document.querySelectorAll('input[type="password"]')).some(visible);
   const email_input = Array.from(document.querySelectorAll('input[type="email"], input[autocomplete="email"], input[autocomplete="username"], input[name*="email" i]')).some(visible);
   const dialog = !!document.querySelector('[role="dialog"]:not([aria-hidden="true"]), dialog[open]');
-  // A fixed pop-up (not role=dialog) that covers most of the page's controls.
-  const coveredCount = nodes.filter((n) => n.covered).length;
-  const overlay = coveredCount >= 3 && coveredCount >= nodes.length * 0.4;
   // Drawn shapes only: icons inside buttons, toolbars, menus and panels are UI, not ink.
   const ui = 'button, [role="button"], [role="radio"], [role="toolbar"], [role="menu"], [role="menuitem"], label, nav, header, [aria-hidden="true"]';
   const shapes = Array.from(document.querySelectorAll('svg path, svg rect, svg ellipse, [data-shape-type], .tl-shape'))
@@ -396,7 +392,7 @@ _READ_JS = """() => {
       value: String(act.value || (act.isContentEditable ? act.innerText : '') || '').slice(0, 120),
     };
   }
-  return { url, title, text, canvas, nodes, password, email_input, dialog: dialog || overlay, overlay, shapes, focus };
+  return { url, title, text, canvas, nodes, password, email_input, dialog, shapes, focus };
 }"""
 
 
@@ -1793,12 +1789,6 @@ async def _model_action(
         f"URL: {read.get('url') or ''}\n"
         f"Title: {read.get('title') or ''}\n"
         f"Dialog open: {'yes' if read.get('dialog') else 'no'}. Drawing canvas on page: {canvas}.\n"
-        + (
-            "A pop-up covers the page, so the controls behind it are not listed. Close it (its Close or x "
-            "button, or press Escape) unless the pop-up itself does the task.\n"
-            if read.get("overlay")
-            else ""
-        )
         + f"Focused element: {_focus_text(read.get('focus'))}\n"
         f"Visible text: {str(read.get('text') or '')[:900]}\n"
         f"Interactive elements (i role name href):\n{ax}\n"
