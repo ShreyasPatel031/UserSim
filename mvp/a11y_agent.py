@@ -3394,6 +3394,14 @@ def insession_signup_enabled() -> bool:
 def signup_block_label(reason: str) -> str:
     """Plain words for a live signup that did not finish."""
     low = (reason or "").lower()
+    if "sms_timeout" in low or "sms_error" in low:
+        return "blocked at signup: the SMS verification code never arrived"
+    if "sms_code_rejected" in low:
+        return "blocked at signup: the site did not accept the SMS code"
+    if "phone_rejected" in low:
+        return "blocked at signup: the site did not accept the owner's phone number"
+    if "phone_required" in low:
+        return "blocked at signup: phone verification needed and no phone configured"
     if "email_rejected" in low or "rejected" in low:
         return "blocked at signup: throwaway email rejected"
     if "email_timeout" in low:

@@ -9,8 +9,10 @@ generic, model-guided signup:
 
 using a fresh Gmail plus-alias inbox (``mvp.signup_inbox``; Gmail only, no
 throwaway inboxes, fails loudly without GMAIL_USER/GMAIL_APP_PASSWORD), reading the emailed code or
-magic link, clearing a captcha only when one actually blocks the form, and then
-walking onboarding until the signed-in product workspace loads. A reload must
+magic link, clearing a captcha only when one actually blocks the form, completing
+a phone/SMS verification step with the owner's phone from the vault (the code is
+read through ``mvp.sms_provider``, i.e. the phone -> ntfy relay on Linux), and
+then walking onboarding until the signed-in product workspace loads. A reload must
 still show the workspace before it counts as ``ok``.
 
 There are no per-site scripts. ``SITE_HINTS`` holds one-line hints at most.
@@ -136,6 +138,98 @@ def _identity(persona: dict[str, Any] | None, email: str) -> dict[str, str]:
         "role": role,
         "code": "",
     }
+
+
+# ---------------------------------------------------------------- phone / SMS
+
+def _sms_timeout_s() -> float:
+    try:
+        return max(15.0, float(os.environ.get("MVP_SIGNUP_SMS_TIMEOUT_S") or 90))
+    except ValueError:
+        return 90.0
+
+
+def _sms_poll_s() -> float:
+    """Seconds between SMS inbox polls.
+
+    Public ntfy.sh allows a burst of ~60 requests per IP, then one per ~5s;
+    polling faster (several agents or watchers at 3s) gets the IP refused
+    outright, which ended a live Moss run with every poll failing TLS.
+    """
+    try:
+        return max(2.0, float(os.environ.get("MVP_SIGNUP_SMS_POLL_S") or 6))
+    except ValueError:
+        return 6.0
+
+
+_COUNTRY_ISO = {"1": "US", "44": "GB", "91": "IN", "61": "AU", "49": "DE", "33": "FR", "81": "JP",
+                "86": "CN", "55": "BR"}
+_COUNTRY_NAMES = {"1": "United States", "44": "United Kingdom", "91": "India", "61": "Australia",
+                  "49": "Germany", "33": "France", "81": "Japan", "86": "China", "55": "Brazil"}
+
+
+def phone_forms(raw: str | None) -> dict[str, str]:
+    """The owner's phone in the shapes signup forms ask for.
+
+    The vault stores whatever the owner typed ("3175550123", "+1 317-555-0123").
+    Forms want either the national number next to a country picker / "+1"
+    prefix, or the full international number. A bare 10-digit number is taken
+    as North American (+1) unless MVP_PHONE_COUNTRY_CODE says otherwise.
+    Returns {} when there is no usable number.
+    """
+    raw = str(raw or "").strip()
+    digits = re.sub(r"\D", "", raw)
+    if len(digits) < 7:
+        return {}
+    cc_env = re.sub(r"\D", "", os.environ.get("MVP_PHONE_COUNTRY_CODE") or "")
+    if raw.startswith("+") or raw.startswith("00"):
+        if raw.startswith("00"):
+            digits = digits[2:]
+        if cc_env and digits.startswith(cc_env):
+            cc = cc_env
+        elif digits.startswith("1") and len(digits) == 11:
+            cc = "1"
+        else:
+            cc = next((c for c in sorted(_COUNTRY_NAMES, key=len, reverse=True) if digits.startswith(c)), digits[:2])
+        national = digits[len(cc):]
+    else:
+        cc = cc_env or "1"
+        if cc == "1" and len(digits) == 11 and digits.startswith("1"):
+            national = digits[1:]
+        else:
+            national = digits
+    country = (os.environ.get("MVP_PHONE_COUNTRY") or _COUNTRY_NAMES.get(cc) or "").strip()
+    return {
+        "phone": national,
+        "phone_e164": f"+{cc}{national}",
+        "phone_country_code": f"+{cc}",
+        "phone_country": country,
+        "phone_country_iso": (os.environ.get("MVP_PHONE_COUNTRY_ISO") or _COUNTRY_ISO.get(cc) or "").strip(),
+    }
+
+
+def _phone_pattern(national: str) -> re.Pattern[str] | None:
+    """Matches the phone however a page formats it: (317) 555-0123, +1 317 555 0123..."""
+    if len(national) < 7:
+        return None
+    sep = r"[\s\-.()]*"
+    return re.compile(r"(?:\+?\d{1,3}" + sep + r")?" + sep.join(re.escape(d) for d in national))
+
+
+def _phone_values(ident: dict[str, str]) -> set[str]:
+    return {ident.get(k) or "" for k in ("phone", "phone_e164")} - {""}
+
+
+def _mask_phone(phone: str) -> str:
+    digits = re.sub(r"\D", "", phone or "")
+    return f"***{digits[-2:]}" if digits else ""
+
+
+_SMS_PAGE = re.compile(
+    r"(text(ed)?|sms|phone|mobile)\W+(\w+\W+){0,8}(code|verification)|"
+    r"(code|verification)\W+(\w+\W+){0,8}(text(ed)?|sms|phone|mobile)",
+    re.I,
+)
 
 
 # ---------------------------------------------------------------- page read
@@ -336,7 +430,7 @@ def _model() -> str:
 _RULES = """You are signing up for a NEW account on a website, in a real browser, and must end
 inside the signed-in product (its app/workspace/dashboard/editor), ready to use it.
 Reply with ONE JSON object only:
-{"thought":"short","status":"working|need_email|signed_in|blocked","reason":"",
+{"thought":"short","status":"working|need_email|need_phone|need_sms|signed_in|blocked","reason":"",
  "actions":[{"do":"fill|click|check|select|press|goto|scroll|wait","i":0,"value":""}]}
 
 Rules:
@@ -361,9 +455,21 @@ Rules:
 - status=signed_in only when the logged-in app is on screen (workspace, dashboard,
   boards, issues, documents, canvas with an account/avatar control) and no more
   onboarding steps or forms are pending.
+- Phone / SMS verification: if a phone step offers Skip / Not now / Later, skip it.
+  If the page REQUIRES a phone number (2FA, "verify your phone", "enter your mobile
+  number") and {phone} is not in Identity yet, reply status=need_phone with no actions.
+  Once Identity has {phone}: fill the phone field with {phone} (the national number,
+  when a country picker / flag / "+1" prefix is shown, first pick {phone_country} in
+  that picker if it shows another country) or {phone_e164} (a single plain field
+  that wants the full international number with +), tick any consent box, then
+  click Send code / Continue / Verify. When the page says a code was texted/sent to
+  the phone and shows a code box, reply status=need_sms with no actions. Once the
+  texted code is known it is given to you as {sms_code}: fill it and continue.
 - status=blocked with reason in {phone_required, captcha, email_rejected,
   payment_required, account_exists, site_error, no_signup} only when you cannot
   continue by any control on the page. A visible captcha checkbox => reason captcha.
+  Use phone_required only if a required phone step appears and {phone} is not
+  offered (after need_phone was answered with no phone).
 - If the page shows an error such as "unable to verify", "try again", or "refresh",
   that is NOT need_email: reload by goto-ing the current URL once, then retry.
 - Never type anything into search boxes. Never log in to an existing account."""
@@ -379,7 +485,12 @@ async def _decide(
         e for e in _visible_elements(snap)
         if not (dead_names and e.get("role") in {"button", "link", "tab", "menuitem"} and str(e.get("name") or "")[:40] in dead_names)
     ]
-    known = {k: ("(type {password})" if k == "password" else v) for k, v in ident.items() if v}
+    known = {k: ("(type {password})" if k == "password" else v) for k, v in ident.items()
+             if v and k not in {"phone", "phone_e164"}}
+    if ident.get("phone"):
+        # The model only needs the shape, never the digits: they are substituted.
+        known["phone"] = f"(type {{phone}}: national number, {len(ident['phone'])} digits, no country code)"
+        known["phone_e164"] = f"(type {{phone_e164}}: {ident.get('phone_country_code', '')} followed by the national number)"
     prompt = (
         f"{_RULES}\n\nSite: {site_url}\n"
         + (f"Hint: {hint}\n" if hint else "")
@@ -445,7 +556,7 @@ _OTP_JS = r"""
   const inputs = [...document.querySelectorAll('input')].filter(ok).filter(el => {
     const t = (el.type || 'text').toLowerCase();
     const blob = [el.name, el.id, el.placeholder, el.autocomplete, el.getAttribute('aria-label')].join(' ').toLowerCase();
-    return ['text', 'tel', 'number', ''].includes(t) && !/email|search|name|phone/.test(blob);
+    return ['text', 'tel', 'number', ''].includes(t) && !/email|search|name|phone|mobile|^tel| tel/.test(blob);
   });
   const pick = inputs.find(el => (el.autocomplete || '').includes('one-time-code'))
     || inputs.find(el => /otp|code|verif|pin/.test([el.name, el.id, el.placeholder, el.getAttribute('aria-label')].join(' ').toLowerCase()))
@@ -513,7 +624,11 @@ def _subst(value: str, ident: dict[str, str]) -> str:
 
 def _redact(text: str, ident: dict[str, str]) -> str:
     pw = ident.get("password") or ""
-    return text.replace(pw, "<password>") if pw else text
+    text = text.replace(pw, "<password>") if pw else text
+    pat = _phone_pattern(ident.get("phone") or "")
+    if pat is not None:
+        text = pat.sub("<phone>", text)
+    return text
 
 
 def _act_timeout_ms() -> int:
@@ -577,6 +692,77 @@ def _match_option(want: str, options: list[dict[str, Any]]) -> int | None:
     return real[0][0] if real else None
 
 
+def country_option(options: list[dict[str, Any]], ident: dict[str, str]) -> int | None:
+    """The <option> for the phone's country in a picker ("US +1", "🇺🇸 +1", value "US")."""
+    cc = re.sub(r"\D", "", ident.get("phone_country_code") or "")
+    iso = (ident.get("phone_country_iso") or "").upper()
+    name = (ident.get("phone_country") or "").lower()
+    usable = [(i, str(o.get("text") or ""), str(o.get("value") or "")) for i, o in enumerate(options or [])
+              if isinstance(o, dict) and not o.get("disabled")]
+    # Country first: "+1" alone is shared by the US, Canada and the Caribbean.
+    for i, text, val in usable:
+        if iso and (val.upper() == iso or re.search(rf"\b{iso}\b", text)):
+            return i
+        if name and name in text.lower():
+            return i
+    for i, text, val in usable:
+        if cc and (re.search(rf"\+{cc}(?!\d)", text) or val in {cc, "+" + cc}):
+            return i
+    return None
+
+
+def phone_fill_ok(got: str, ident: dict[str, str]) -> bool:
+    """The phone field holds the owner's number (formatting and prefix aside).
+
+    Masked inputs reformat what is typed ("(317) 555-0123"), and some keep a
+    "+1" prefix in the value, so compare digits. A field that swallowed the
+    first digits as a country code ("+3 175...") does not end with the
+    national number and fails this.
+    """
+    nat = ident.get("phone") or ""
+    cc = re.sub(r"\D", "", ident.get("phone_country_code") or "")
+    digits = re.sub(r"\D", "", got or "")
+    if not nat or not digits.endswith(nat):
+        return False
+    if (got or "").strip().startswith("+"):
+        # A shown "+" prefix must be the right country code, not our first digit.
+        return digits == cc + nat
+    return digits in {nat, cc + nat}
+
+
+def phone_retry_values(got: str, ident: dict[str, str]) -> list[str]:
+    """What to type next when the first phone fill did not stick."""
+    nat = ident.get("phone") or ""
+    e164 = ident.get("phone_e164") or ""
+    cc = re.sub(r"\D", "", ident.get("phone_country_code") or "")
+    out: list[str] = []
+    left = (got or "").strip()
+    if left and re.sub(r"\D", "", left) == cc:
+        # Clearing left the "+1" prefix in place: type only the national part after it.
+        out.append(nat)
+    out += [v for v in (e164, nat) if v and v not in out]
+    return out
+
+
+async def _fix_phone_fill(page: Any, loc: Any, got: str, ident: dict[str, str]) -> None:
+    if phone_fill_ok(got, ident):
+        return
+    for val in phone_retry_values(got, ident):
+        try:
+            await loc.click(timeout=_act_timeout_ms())
+            await page.keyboard.press("Control+A")
+            await page.keyboard.press("Backspace")
+            cur = await loc.input_value(timeout=2000)
+            if cur and re.sub(r"\D", "", cur) and val == ident.get("phone_e164"):
+                # A prefix that will not clear: typing +1 again would double it.
+                val = ident.get("phone") or val
+            await page.keyboard.type(val, delay=30)
+            if phone_fill_ok(await loc.input_value(timeout=2000), ident):
+                return
+        except Exception:
+            continue
+
+
 async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: dict[int, dict[str, Any]], home_site: str = "") -> str:
     kind = str(act.get("do") or "").lower()
     value = _subst(str(act.get("value") or ""), ident)
@@ -613,7 +799,18 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
             await loc.fill(value, timeout=_act_timeout_ms())
         try:
             got = await loc.input_value(timeout=3000)
-            if got != value:
+            if value and value in _phone_values(ident):
+                await _fix_phone_fill(page, loc, got, ident)
+                try:
+                    now = await loc.input_value(timeout=2000)
+                except Exception:
+                    now = ""
+                ok = phone_fill_ok(now, ident)
+                digits = re.sub(r"\D", "", now)
+                prefix = "+" if now.strip().startswith("+") else ""
+                return (f"fill {name or 'phone'!s:.30} = {act.get('value')} (field holds {prefix}{len(digits)} digits "
+                        f"ending {digits[-2:]}, {'ok' if ok else 'MISMATCH'})")
+            elif got != value:
                 await loc.click(timeout=_act_timeout_ms())
                 await page.keyboard.press("Control+A")
                 await page.keyboard.press("Backspace")
@@ -643,7 +840,12 @@ async def _do(page: Any, act: dict[str, Any], ident: dict[str, str], elements: d
             )
         except Exception:
             options = []
-        pick = _match_option(value, options if isinstance(options, list) else [])
+        opts = options if isinstance(options, list) else []
+        pick = _match_option(value, opts)
+        if pick is None and ident.get("phone") and value in {
+            ident.get("phone_country"), ident.get("phone_country_code"), ident.get("phone_country_iso"),
+        }:
+            pick = country_option(opts, ident)
         if pick is not None:
             await loc.select_option(index=pick, timeout=_act_timeout_ms())
             return f"select {name} = {str(options[pick].get('text') or '')[:30]}"
@@ -873,6 +1075,10 @@ async def signup_in_session(
     spend: dict[str, Any] = {"usd": 0.0, "calls": 0, "site": site, "deadline": deadline}
     ident: dict[str, str] = {}
     last_snap: dict[str, Any] = {}
+    sms_state: dict[str, Any] = {
+        "phone_offered": False, "backend": "", "codes": 0, "waits": 0, "wait_s": 0.0,
+        "number": None, "since": None, "timeouts": 0, "asks": 0, "offered_at": 0.0,
+    }
     result: dict[str, Any] = {
         "ok": False, "reason": "", "email": "", "inbox": "", "elapsed_s": 0.0,
         "final_url": "", "evidence": "", "steps": steps, "captcha": captcha_log,
@@ -889,8 +1095,17 @@ async def signup_in_session(
         if last_snap:
             result["last_page"] = {
                 "url": last_snap.get("url"), "title": last_snap.get("title"),
-                "body": str(last_snap.get("body") or "")[:800],
-                "elements": _fmt_elements(_visible_elements(last_snap))[:4000],
+                "body": _redact(str(last_snap.get("body") or "")[:800], ident),
+                "elements": _redact(_fmt_elements(_visible_elements(last_snap))[:4000], ident),
+            }
+        if sms_state["phone_offered"]:
+            # Never the number itself: last two digits and how the code was read.
+            result["sms"] = {
+                "phone": _mask_phone(ident.get("phone") or ""),
+                "backend": sms_state["backend"],
+                "codes_received": sms_state["codes"],
+                "waits": sms_state["waits"],
+                "wait_s": round(sms_state["wait_s"], 1),
             }
         print(f"[signup] {site}: ok={ok} reason={reason} {result['elapsed_s']}s", flush=True)
         return result
@@ -1149,8 +1364,9 @@ async def signup_in_session(
                    and str(a.get("do")) in {"fill", "click", "check", "select"}
                    and (a.get("i") is None or str(a.get("i")).lstrip("-").isdigit() and int(a.get("i")) not in elements)]
             if decision and bad and len(bad) == len(decision.get("actions") or []):
-                if ident.get("code") and await _type_code(page, ident["code"]):
-                    steps.append("  typed emailed code (model could not find the box)")
+                known_code = ident.get("sms_code") or ident.get("code")
+                if known_code and await _type_code(page, known_code):
+                    steps.append("  typed the known code (model could not find the box)")
                     await _settle(page, 1500)
                     continue
                 note = ("Your last reply used element numbers that are not in the list. Only use i "
@@ -1179,7 +1395,7 @@ async def signup_in_session(
                 if errors_seen >= 3:
                     return _finish(False, f"site_error: {m.group(0)}")
                 continue
-            thought = str(decision.get("thought") or "")[:140]
+            thought = _redact(str(decision.get("thought") or "")[:140], ident)
             steps.append(f"{urlparse(str(snap.get('url'))).netloc}{urlparse(str(snap.get('url'))).path[:50]} :: {status} :: {thought}")
             if on_step is not None:
                 try:
@@ -1218,8 +1434,113 @@ async def signup_in_session(
                     note = f"Verifier says not yet in the signed-in app: {evidence}. Continue."
                 continue
 
+            acts_pending = [a for a in (decision.get("actions") or []) if isinstance(a, dict)
+                            and str(a.get("do")) not in {"wait"}]
+            reason_now = str(decision.get("reason") or "")
+            if status == "blocked" and reason_now.startswith("phone") and not ident.get("phone") and sms_state["asks"] == 0:
+                # The model gave up on a phone step before we offered the owner's number.
+                status = "need_phone"
+            if status == "need_sms" and not ident.get("phone"):
+                status = "need_phone"
+            if (
+                status == "need_email" and ident.get("phone") and sms_state["since"] is not None
+                and not acts_pending and _SMS_PAGE.search(body_low)
+                and not re.search(r"\b(e-?mail|inbox)\b", body_low)
+            ):
+                # Right after the phone was submitted, "enter the code we sent" is the SMS.
+                status = "need_sms"
+            if status == "need_phone":
+                sms_state["asks"] += 1
+                if ident.get("phone"):
+                    if sms_state["asks"] > 4:
+                        return _finish(False, "phone_rejected: the phone step did not accept the owner's number")
+                    note = ("The phone number IS available: fill the phone field with {phone} (or {phone_e164} "
+                            "for a plain international field), pick {phone_country} in a country picker if "
+                            "needed, then click the Send code / Continue button.")
+                    continue
+                from mvp.sms_provider import lease_number
+
+                try:
+                    number = await asyncio.to_thread(lease_number, site)
+                except Exception as exc:  # noqa: BLE001
+                    steps.append(f"phone step: no phone available ({str(exc)[:100]})")
+                    return _finish(False, "phone_required")
+                forms = phone_forms(getattr(number, "phone", ""))
+                if not forms:
+                    steps.append("phone step: vault phone is not a usable number")
+                    return _finish(False, "phone_required")
+                ident.update(forms)
+                sms_state.update(phone_offered=True, backend=str(getattr(number, "backend", "")),
+                                 number=number, since=time.time(), offered_at=time.time())
+                steps.append(f"phone step: using the owner's phone {_mask_phone(forms['phone'])} "
+                             f"(code via {sms_state['backend']})")
+                history.append("the owner's phone number is now available")
+                note = ("A phone number is now available as {phone} (national) / {phone_e164} (international). "
+                        "Fill it into the phone field, pick {phone_country} in a country picker if one is shown "
+                        "with another country, and click Send code / Continue. Then reply need_sms when the "
+                        "code box appears.")
+                continue
+            if status == "need_sms" and acts_pending:
+                status = "working"
+            if status == "need_sms" and not any(h.startswith("fill") and "{phone" in h for h in history) and sms_state["waits"] == 0:
+                # Waiting for a text that was never requested only burns the budget.
+                sms_state["asks"] += 1
+                if sms_state["asks"] > 4:
+                    return _finish(False, "phone_rejected: the phone number was never submitted")
+                note = ("No phone number has been submitted yet. Fill the phone field with {phone} (or "
+                        "{phone_e164}) and click Send code / Continue first.")
+                continue
+            if status == "need_sms":
+                from mvp.sms_provider import wait_for_sms
+
+                left = deadline - time.time() - 15
+                if left < 10:
+                    return _finish(False, "sms_timeout")
+                wait_s = min(_sms_timeout_s(), left)
+                steps.append(f"waiting for the SMS code to {_mask_phone(ident['phone'])} (up to {int(wait_s)}s, "
+                             f"from {time.strftime('%H:%M:%S')}, phone offered {int(time.time() - sms_state['offered_at'])}s ago)")
+                t0 = time.time()
+                try:
+                    code = await asyncio.to_thread(
+                        wait_for_sms, sms_state["number"], timeout_s=wait_s,
+                        newer_than=sms_state["since"], poll_s=_sms_poll_s(),
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    steps.append(f"SMS read failed: {str(exc)[:100]}")
+                    return _finish(False, "sms_error")
+                sms_state["waits"] += 1
+                sms_state["wait_s"] += time.time() - t0
+                if not code:
+                    sms_state["timeouts"] += 1
+                    steps.append(f"no SMS code arrived in {int(time.time() - t0)}s")
+                    if sms_state["timeouts"] >= 2 or deadline - time.time() < 40:
+                        return _finish(False, "sms_timeout")
+                    note = ("No text message arrived yet. If there is a Resend code / Send again / Call me "
+                            "instead control, click Resend; otherwise wait.")
+                    continue
+                sms_state["codes"] += 1
+                if sms_state["codes"] > 3:
+                    return _finish(False, "sms_code_rejected")
+                ident["sms_code"] = code
+                # A later wait (wrong code, resend) must not return this same code again.
+                sms_state["since"] = time.time()
+                steps.append(f"SMS code received at {time.strftime('%H:%M:%S')}, {int(time.time() - t0)}s into the wait")
+                if await _type_code(page, code):
+                    steps.append("  typed the SMS code into the code box")
+                    history.append("typed the texted verification code")
+                    await _settle(page, 1500)
+                    note = ("The texted code was typed into the code box. If a Verify/Continue button "
+                            "is enabled, click it; otherwise wait.")
+                else:
+                    note = ("The texted verification code is available as {sms_code}. Fill it into the "
+                            "code field and click Verify / Continue.")
+                continue
+
             if status == "blocked":
                 reason = str(decision.get("reason") or "blocked")
+                if reason.startswith("phone") and ident.get("phone"):
+                    # We did give it the owner's number; the site would not take it.
+                    reason = "phone_rejected"
                 if reason == "captcha":
                     res = await _clear_captcha(page, snap, spend)
                     captcha_log.append(res)
