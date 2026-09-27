@@ -310,12 +310,12 @@ def _site_about(html: str, desc: str = "", text: str = "") -> str:
 
 
 def framing_modes() -> set[str]:
-    """Which framing fixes run (MVP_PLAN_FRAMING, comma list): read, position, verify. "off" = none."""
+    """Which framing fixes run (MVP_PLAN_FRAMING, comma list): read (default), position, verify. "off" = none."""
     raw = os.environ.get("MVP_PLAN_FRAMING", _DEFAULT_FRAMING)
     return {m.strip().lower() for m in raw.split(",") if m.strip() and m.strip().lower() not in {"off", "none", "0"}}
 
 
-_DEFAULT_FRAMING = "off"
+_DEFAULT_FRAMING = "read"  # the recommended fix; position and verify stay opt-in
 
 _READ_RULE = (
     "\nThe About line is the site's own description, category and keywords: judge the product category from it"
