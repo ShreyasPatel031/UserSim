@@ -178,3 +178,32 @@ $0.0045 (K=3) and $0.0053 (K=5).
 - Spend recorded in the ledgers: K=3 $0.339 and K=5 $0.396, **total $0.735** (cap $3).
   The Evaluator calls that were in flight when the K=5 process was killed may also have been billed by Vertex without being
   recorded. The upper bound is about 150 x $0.0026 = $0.39. So the worst case is about $1.13.
+
+## Step 5: the stable G-FOCUS setup on Gemini 3.1 Pro (preview), 75 dev pairs -- `fullset/pro31_vs_flash_t0_r1.md`, `..._r2.md`
+Approved by Shreyas at 5:57 AM PT: one run. Model `gemini-3.1-pro-preview` on Vertex, called through the `global` endpoint, which
+is the only one that serves the 3.x previews and routes across regions itself.
+Setup: G-FOCUS single judge, strict, both orders, temperature 0, no extra inputs. The prompts are the same as the Flash runs.
+
+**Model-specific changes** (in `gemini_generate`, only for `gemini-3*`):
+- Gemini 3 cannot turn thinking off, so it runs at `thinking_level=low` (`MVP_GEMINI3_THINKING`).
+- Thinking gets 8k tokens of headroom on top of each stage's max_tokens.
+- Thinking tokens are counted as output, which is how they are billed.
+- `arm_compare.py` now prices each call at its own model's list price ($2 / $12 per 1M in/out for 3.1 Pro).
+- Selected with `MVP_PAIRWISE_MODEL=gemini-3.1-pro-preview`.
+
+| arm | CA [95% CI] | dCA vs Flash T0 run 1 [95% CI] | McNemar p (improved/worse) | dCA vs Flash T0 run 2 [95% CI] | McNemar p (improved/worse) | significant | OI | FA / SA | $/pair |
+|---|---|---|---|---|---|---|---|---|---|
+| Flash T0 run 1 | 53.3 [42.7, 64.0] | | | | | | 68.0 | 61.3 / 74.7 | 0.0112 |
+| Flash T0 run 2 | 52.0 [41.3, 62.7] | | | | | | 66.7 | 64.0 / 69.3 | 0.0112 |
+| **3.1 Pro T0** | 50.7 [40.0, 61.3] | -2.7 [-17.3, +12.0] | 0.856 (14/16) | -1.3 [-16.0, +13.3] | 1.000 (15/16) | no | 69.3 | 56.0 / 82.7 | 0.0703 |
+
+- **3.1 Pro is no better than Flash on this task.** CA is 50.7 vs 53.3 / 52.0, and OI 69.3 vs 68.0 / 66.7 is within noise. It
+  costs 6.3x as much per pair.
+- It disagrees with Flash on about 30 of 75 pairs (14 better, 16 worse against run 1), so it is a different judge but not a better one.
+- Its position bias is stronger. It favours the second-shown version (FA 56.0 vs SA 82.7). That is why its CA falls below its AA
+  (69.3).
+- Per pair: 25.5k input tokens (Gemini 3 images are larger) and 1.6k output tokens, including low thinking. No errors, no format
+  retries, 0 failed judgments.
+- **Wall time: 58 s** for all 75 pairs (05:58:46 to 05:59:44 PT, 750 calls in flight together).
+  Before that, a 1-pair smoke run took 18 s; it was the same run, resumed from its cache.
+- **Spend: $5.27** (cap $15), including the $0.067 smoke pair.

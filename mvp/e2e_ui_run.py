@@ -161,10 +161,15 @@ def gemini_generate(
             parts.append(types.Part.from_text(text=c))
         else:
             parts.append(c)
+    # Gemini 3 cannot turn thinking off: use the lowest level it allows (MVP_GEMINI3_THINKING, default "low"), give it
+    # headroom on top of max_tokens (thinking counts against the output limit), and call the global endpoint (the only
+    # one that serves the 3.x previews). Thinking tokens are billed as output and are added to tokens_out below.
+    gem3 = str(model).startswith("gemini-3")
     cfg = types.GenerateContentConfig(
         temperature=temperature,
-        max_output_tokens=max_tokens,
-        thinking_config=types.ThinkingConfig(thinking_budget=0),
+        max_output_tokens=max_tokens + (int(os.environ.get("MVP_GEMINI3_THINK_HEADROOM", "8192")) if gem3 else 0),
+        thinking_config=(types.ThinkingConfig(thinking_level=os.environ.get("MVP_GEMINI3_THINKING", "low")) if gem3
+                         else types.ThinkingConfig(thinking_budget=0)),
         response_mime_type="application/json" if json_mode else None,
         media_resolution=(types.MediaResolution.MEDIA_RESOLUTION_HIGH if media_resolution == "high" else None),
         # Per-request timeout: a hung call raises (no status code) and is retried with backoff instead of stalling.
@@ -176,6 +181,9 @@ def gemini_generate(
     pinned = re.search(r"/locations/([a-z0-9-]+)/", model or "")
     if pinned:
         locs = [pinned.group(1)]
+    elif gem3:
+        locs = ["global"]  # global endpoint only (it routes across regions itself): no regional fallback
+    no_fallback = bool(pinned) or gem3
     for attempt in range(max(1, retries)):
         loc = locs[attempt % len(locs)]
         try:
@@ -184,14 +192,14 @@ def gemini_generate(
             return (
                 (resp.text or "").strip(),
                 int(getattr(um, "prompt_token_count", 0) or 0),
-                int(getattr(um, "candidates_token_count", 0) or 0),
+                int(getattr(um, "candidates_token_count", 0) or 0) + int(getattr(um, "thoughts_token_count", 0) or 0),
             )
         except Exception as exc:  # noqa: BLE001 - 429 / 5xx back off
             last = exc
             code = getattr(exc, "code", None)
             if isinstance(code, int) and 400 <= code < 500 and code != 429:
                 break
-            if code == 429 and len(locs) == 1 and _FALLBACK_LOCATIONS and not pinned:
+            if code == 429 and len(locs) == 1 and _FALLBACK_LOCATIONS and not no_fallback:
                 locs = [None, *_FALLBACK_LOCATIONS]  # spread retries across regions
             if attempt + 1 < retries:
                 _time.sleep(min(30, 1.5 * 2 ** (attempt // max(1, len(locs)))))

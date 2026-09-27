@@ -40,7 +40,7 @@ IMAGES = BENCH / "images_clean"
 # Composite pairs split into panels by composites.py (win/lose crops); preferred over IMAGES when present.
 RECOVERED = BENCH / "images_recovered"
 # Vertex list price (USD / 1M tokens): input, output.
-PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-2.5-flash-lite": (0.10, 0.40), "gemini-2.5-pro": (1.25, 10.0)}
+PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-3.1-pro-preview": (2.00, 12.00), "gemini-2.5-flash-lite": (0.10, 0.40), "gemini-2.5-pro": (1.25, 10.0)}
 STREAMS = {
     "s1": PairFlags(both_orders=True, goal_diffs=False, debias=False),
     "s2": PairFlags(both_orders=True, goal_diffs=True, debias=False),

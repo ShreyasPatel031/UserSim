@@ -3,7 +3,8 @@
 
 usage: arm_compare.py base=results/run_a arm1=results/run_b ... --indices @file [--md out.md] [--json out.json]
 The first run is the baseline. Cost per pair = all of an arm's calls for the pair (including calls copied in from
-another ledger at $0), re-priced at gemini-2.5-flash list price ($0.30 / $2.50 per 1M in/out), so it is the arm's
+another ledger at $0), re-priced at the list price of the model that served it (gemini-2.5-flash $0.30 / $2.50 per 1M in/out,
+gemini-3.1-pro-preview $2 / $12; thinking tokens count as output), so it is the arm's
 true per-pair cost, not the incremental spend.
 """
 from __future__ import annotations
@@ -20,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from paper_metrics import boot, ids_of, load  # noqa: E402
 
 B = 10000
+PRICE = {"gemini-2.5-flash": (0.30, 2.50), "gemini-3.1-pro-preview": (2.00, 12.00)}  # list $/1M tokens (in, out)
 
 
 def pair_cost(run: Path, ids: set[int]) -> float:
@@ -31,7 +33,8 @@ def pair_cost(run: Path, ids: set[int]) -> float:
         except ValueError:
             continue
         if i in ids and not r["key"].split("|")[1] == "planner":
-            per[i] += r["tokens_in"] * 0.30e-6 + r["tokens_out"] * 2.50e-6
+            pin, pout = PRICE.get(r.get("model") or "", PRICE["gemini-2.5-flash"])  # tuned endpoints bill as base Flash
+            per[i] += r["tokens_in"] * pin * 1e-6 + r["tokens_out"] * pout * 1e-6
     return sum(per.values()) / max(1, len(per))
 
 
