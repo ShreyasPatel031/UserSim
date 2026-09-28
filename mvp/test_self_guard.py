@@ -500,25 +500,374 @@ class MarkerTests(unittest.TestCase):
             enable = [p for m, p in sent if m == "Fetch.enable"][0]
             urls = [p["urlPattern"] for p in enable["patterns"]]
             self.assertIn("*://usersim.vercel.app/*", urls)
-            self.assertTrue(all(any(h in u for h in sg.own_hosts()) for u in urls))
+            self.assertIn("*://usersim-*.vercel.app/*", urls)
+            self.assertIn("*://usersim.example.com/*", urls)
+            self.assertIn("*://35-202-98-224.nip.io/*", urls)
+            self.assertTrue(all(any(h in u for h in sg.pattern_hosts()) for u in urls))
             fire = handlers["Fetch.requestPaused"]
             fire({"requestId": "1", "request": {"method": "POST", "url": "https://usersim.vercel.app/api/studies", "headers": {}}})
             fire({"requestId": "2", "request": {"method": "GET", "url": "https://usersim.vercel.app/", "headers": {"Accept": "*/*"}}})
+            fire({"requestId": "3", "request": {"method": "POST", "url": "https://usersim-git-a.vercel.app/api/runtime/kill", "headers": {}}})
+            # The preview glob can over-match another site; it is passed through untouched.
+            fire({"requestId": "4", "request": {"method": "POST", "url": "https://usersim-a.evil.com/.vercel.app/api/studies", "headers": {}}})
             await _real_sleep(0.01)
 
-        asyncio.run(go())
+        with mock.patch.dict(os.environ, {"USERSIM_OWN_HOSTS": "usersim.example.com"}):
+            asyncio.run(go())
         by_id = {p.get("requestId"): (m, p) for m, p in sent if p.get("requestId")}
         self.assertEqual(by_id["1"][0], "Fetch.failRequest")
         method, params = by_id["2"]
         self.assertEqual(method, "Fetch.continueRequest")
         self.assertIn({"name": "X-UserSim-Agent", "value": "study-9"}, params["headers"])
         self.assertIn({"name": "Accept", "value": "*/*"}, params["headers"])
+        self.assertEqual(by_id["3"][0], "Fetch.failRequest")
+        self.assertEqual(by_id["4"], ("Fetch.continueRequest", {"requestId": "4"}))
 
     def test_marker_can_be_turned_off(self):
         ctx = mock.MagicMock()
         with mock.patch.dict(os.environ, {"USERSIM_AGENT_MARKER": "0"}):
             self.assertEqual(asyncio.run(sg.install_agent_marker(ctx, "s")), 0)
         ctx.new_cdp_session.assert_not_called()
+
+
+def _wait_until(pred, timeout=3.0):
+    import time as _t
+
+    end = _t.monotonic() + timeout
+    while _t.monotonic() < end:
+        if pred():
+            return True
+        _t.sleep(0.02)
+    return pred()
+
+
+class QueueStallTests(_Base):
+    """A study admitted at submit must free its turn on every exit path."""
+
+    def _admit_at_submit(self):
+        def fake_preopen(study, url):
+            self.assertTrue(bs.admit_now(study))
+
+        return mock.patch("mvp.preopen.start_preopen", side_effect=fake_preopen)
+
+    def _common(self):
+        from contextlib import ExitStack
+
+        stack = ExitStack()
+        stack.enter_context(self._landing())
+        stack.enter_context(self._admit_at_submit())
+        stack.enter_context(mock.patch.object(bs, "prefetch_count"))
+        stack.enter_context(mock.patch("mvp.study.persist_study"))
+        stack.enter_context(mock.patch("mvp.study.schedule_persist"))
+        stack.enter_context(mock.patch("mvp.fast_plan.compare_mode", return_value=False))
+        stack.enter_context(mock.patch.object(bs, "_enabled", return_value=True))
+        stack.enter_context(mock.patch("mvp.study.run_study", mock.AsyncMock()))
+        return stack
+
+    def test_planning_timeout_releases_the_turn(self):
+        async def hang(*a, **k):
+            await asyncio.sleep(3600)
+
+        async def fake_kill(**kw):
+            return {"ok": True}
+
+        run_study = mock.AsyncMock()
+        with self._common(), mock.patch.dict(os.environ, {"MVP_ATTACH_STREAM": "1", "MVP_STUDY_TIMEOUT_S": "0.3"}), mock.patch(
+            "mvp.fast_plan.plan_from_url", side_effect=hang
+        ), mock.patch("mvp.kill_switch.kill_now_async", side_effect=fake_kill) as kill, mock.patch(
+            "mvp.study.run_study", run_study
+        ):
+            res = self.client.post("/api/studies", json={"url": "https://maze.co"}, headers={"Accept": "application/x-ndjson"})
+        self.assertEqual(res.status_code, 200)
+        last = [line for line in res.text.splitlines() if line.strip()][-1]
+        self.assertIn('"abandoned"', last)
+        run_study.assert_not_called()
+        kill.assert_called_once()
+        self.assertEqual(dict(bs._ACTIVE), {})
+        self.assertEqual(dict(bs._PENDING), {})
+
+    def test_exception_before_the_runner_releases_the_turn(self):
+        client = TestClient(self.server.app, raise_server_exceptions=False)
+        # A plain Mock raises while the handler builds the plan task, before any runner exists.
+        broken = mock.Mock(side_effect=RuntimeError("planner import broke"))
+        with self._common(), mock.patch("mvp.fast_plan.plan_from_url", new=broken):
+            res = client.post("/api/studies", json={"url": "https://maze.co"})
+        self.assertEqual(res.status_code, 500)
+        broken.assert_called_once()
+        from mvp.study import STUDY_TASKS
+
+        self.assertEqual([t for t in STUDY_TASKS.values() if not t.done()], [])
+        self.assertEqual(dict(bs._ACTIVE), {})
+        self.assertEqual(dict(bs._PENDING), {})
+
+    def test_background_runner_releases_when_run_study_fails(self):
+        async def boom(study_id, **kw):
+            raise RuntimeError("run failed before acquire")
+
+        plan = mock.AsyncMock(return_value=None)
+        with self._common(), mock.patch.dict(os.environ, {"MVP_ATTACH_STREAM": "0"}), mock.patch(
+            "mvp.fast_plan.plan_from_url", plan
+        ), mock.patch("mvp.study.run_study", side_effect=boom):
+            res = self.client.post("/api/studies", json={"url": "https://maze.co"})
+            self.assertEqual(res.status_code, 200)
+            sid = res.json()["study_id"]
+            self.assertTrue(_wait_until(lambda: sid not in bs._ACTIVE and sid not in bs._PENDING))
+
+    def test_release_is_idempotent(self):
+        s = _study("twice")
+        bs.reserve(s)
+        bs._admit(s)
+        with mock.patch.object(bs, "release_study_sessions", return_value=0) as sweep:
+
+            async def go():
+                bs.release(s)
+                bs.release(s)
+                await _real_sleep(0.2)
+
+            with mock.patch.object(bs.asyncio, "sleep", new=_fast_sleep):
+                asyncio.run(go())
+        self.assertEqual(sweep.call_count, 1)
+
+    def test_two_leaked_entries_do_not_block_a_new_study(self):
+        import time as _t
+
+        from mvp import study as st
+
+        done = types.SimpleNamespace(id="leak1", status="abandoned")
+        st.STUDIES["leak1"] = done
+        bs._ACTIVE["leak1"] = _t.monotonic()
+        bs._ACTIVE["leak2"] = _t.monotonic() - 10_000
+        try:
+
+            async def go():
+                with mock.patch.dict(os.environ, {"MVP_MAX_CONCURRENT_STUDIES": "2"}), mock.patch.object(
+                    bs, "_enabled", return_value=True
+                ), mock.patch.object(bs, "_fetch_count", return_value={"n": 0, "median_age_s": None}), mock.patch.object(
+                    bs.asyncio, "sleep", new=_fast_sleep
+                ):
+                    fresh = _study("fresh1")
+                    bs.reserve(fresh)
+                    self.assertTrue(bs.admit_now(fresh))
+                    bs.release(fresh)
+                    bs._ACTIVE["leak3"] = _t.monotonic() - 10_000
+                    bs._ACTIVE["leak4"] = _t.monotonic() - 10_000
+                    await asyncio.wait_for(bs.acquire(_study("fresh2"), lambda *a, **k: None), 2)
+
+            asyncio.run(go())
+        finally:
+            st.STUDIES.pop("leak1", None)
+        self.assertEqual(set(bs._ACTIVE), {"fresh2"})
+
+    def test_finished_or_killed_studies_do_not_count(self):
+        from mvp import study as st
+
+        for sid, obj in {
+            "c1": types.SimpleNamespace(id="c1", status="complete"),
+            "k1": types.SimpleNamespace(id="k1", status="running", kill_requested=True),
+            "r1": types.SimpleNamespace(id="r1", status="running"),
+        }.items():
+            st.STUDIES[sid] = obj
+            bs._ACTIVE[sid] = __import__("time").monotonic()
+        try:
+            bs.drop_stale()
+            self.assertEqual(set(bs._ACTIVE), {"r1"})
+        finally:
+            for sid in ("c1", "k1", "r1"):
+                st.STUDIES.pop(sid, None)
+
+    def test_released_study_is_not_admitted_by_a_late_preopen(self):
+        s = _study("late")
+        bs.reserve(s)
+        bs.release(s)
+        self.assertFalse(bs.admit_now(s))
+        self.assertNotIn("late", bs._ACTIVE)
+
+
+class BrowserUseFallbackTests(unittest.TestCase):
+    def test_profiles_prohibit_usersim_hosts(self):
+        from mvp.browser_agent import _browserbase_profile, _local_browser_profile
+
+        bb = _browserbase_profile("ws://x", "https://maze.co")
+        local = _local_browser_profile(target_url="https://maze.co")
+        for prof in (bb, local):
+            banned = set(prof.prohibited_domains or [])
+            self.assertIn("usersim.vercel.app", banned)
+            self.assertIn("*.usersim.vercel.app", banned)
+            self.assertIn("usersim-*.vercel.app", banned)
+            self.assertIn("35-202-98-224.sslip.io", banned)
+
+    def test_admin_dogfood_target_is_not_prohibited(self):
+        from mvp.browser_agent import _browserbase_profile
+
+        self.assertFalse(_browserbase_profile("ws://x", "https://usersim.vercel.app/").prohibited_domains)
+
+    def test_security_watchdog_refuses_own_hosts(self):
+        from browser_use import BrowserSession
+        from browser_use.browser.watchdogs.security_watchdog import SecurityWatchdog
+
+        from mvp.browser_agent import _browserbase_profile
+
+        session = BrowserSession(browser_profile=_browserbase_profile("ws://x", "https://maze.co"))
+        watchdog = SecurityWatchdog.model_construct(browser_session=session)
+        self.assertFalse(watchdog._is_url_allowed("https://usersim.vercel.app/"))
+        self.assertFalse(watchdog._is_url_allowed("https://usersim-git-x.vercel.app/live"))
+        self.assertFalse(watchdog._is_url_allowed("https://35-202-98-224.sslip.io/api/runtime/kill"))
+        self.assertTrue(watchdog._is_url_allowed("https://maze.co/pricing"))
+
+    def test_marker_over_cdp_installs_on_every_context_and_only_disconnects(self):
+        ctx_a, ctx_b = object(), object()
+        browser = mock.MagicMock()
+        browser.contexts = [ctx_a, ctx_b]
+        browser.close = mock.AsyncMock()
+        pw = mock.MagicMock()
+        pw.chromium.connect_over_cdp = mock.AsyncMock(return_value=browser)
+        pw.stop = mock.AsyncMock()
+        starter = mock.MagicMock()
+        starter.start = mock.AsyncMock(return_value=pw)
+        installed = []
+
+        async def fake_install(ctx, sid, **kw):
+            installed.append((ctx, sid))
+            return 1
+
+        async def go():
+            with mock.patch("playwright.async_api.async_playwright", return_value=starter), mock.patch.object(
+                sg, "install_agent_marker", side_effect=fake_install
+            ):
+                marker = await sg.attach_marker_over_cdp("ws://bb/connect", "s7")
+                self.assertIsNotNone(marker)
+                await marker.close()
+
+        asyncio.run(go())
+        self.assertEqual(installed, [(ctx_a, "s7"), (ctx_b, "s7")])
+        pw.stop.assert_awaited_once()
+        browser.close.assert_not_called()
+
+    def test_marker_over_cdp_failure_is_quiet(self):
+        pw = mock.MagicMock()
+        pw.chromium.connect_over_cdp = mock.AsyncMock(side_effect=RuntimeError("410 gone"))
+        pw.stop = mock.AsyncMock()
+        starter = mock.MagicMock()
+        starter.start = mock.AsyncMock(return_value=pw)
+        with mock.patch("playwright.async_api.async_playwright", return_value=starter):
+            self.assertIsNone(asyncio.run(sg.attach_marker_over_cdp("ws://bb", "s")))
+        pw.stop.assert_awaited_once()
+        self.assertIsNone(asyncio.run(sg.attach_marker_over_cdp(None, "s")))
+
+
+class HarnessRetryTests(unittest.TestCase):
+    def _err(self, code, retry_after=None):
+        import email.message
+        import urllib.error
+
+        headers = email.message.Message()
+        if retry_after is not None:
+            headers["Retry-After"] = retry_after
+        return urllib.error.HTTPError("http://x/api/studies", code, "x", headers, None)
+
+    def test_retries_429_honoring_retry_after(self):
+        from mvp import harness_http as hh
+
+        slept = []
+        calls = [self._err(429, "7"), self._err(429, "3"), "ok"]
+
+        def fake_open(req, timeout):
+            item = calls.pop(0)
+            if isinstance(item, Exception):
+                raise item
+            return item
+
+        with mock.patch.object(hh.urllib.request, "urlopen", side_effect=fake_open):
+            self.assertEqual(hh.urlopen_submit(object(), timeout=5, sleep=slept.append), "ok")
+        self.assertEqual(slept, [7.0, 3.0])
+
+    def test_gives_up_past_the_budget_and_passes_other_errors(self):
+        import urllib.error
+
+        from mvp import harness_http as hh
+
+        slept = []
+        with mock.patch.object(hh.urllib.request, "urlopen", side_effect=self._err(429, "600")):
+            with self.assertRaises(urllib.error.HTTPError):
+                hh.urlopen_submit(object(), timeout=5, max_wait=100, sleep=slept.append)
+        self.assertEqual(slept, [])
+        with mock.patch.object(hh.urllib.request, "urlopen", side_effect=self._err(409)):
+            with self.assertRaises(urllib.error.HTTPError):
+                hh.urlopen_submit(object(), timeout=5, sleep=slept.append)
+        self.assertEqual(slept, [])
+
+    def test_retry_after_parsing(self):
+        from email.utils import formatdate
+
+        from mvp.harness_http import DEFAULT_WAIT_S, retry_after_s
+
+        self.assertEqual(retry_after_s({"Retry-After": "42"}), 42.0)
+        self.assertEqual(retry_after_s({}), DEFAULT_WAIT_S)
+        self.assertEqual(retry_after_s({"Retry-After": "soon"}), DEFAULT_WAIT_S)
+        import time as _t
+
+        self.assertAlmostEqual(retry_after_s({"Retry-After": formatdate(_t.time() + 60, usegmt=True)}), 60, delta=2)
+
+    def test_ui_click_retries_on_429(self):
+        from mvp import harness_http as hh
+
+        statuses = [429, 200]
+        clicks = []
+
+        class Info:
+            def __init__(self):
+                self.value = None
+
+        class Expect:
+            def __init__(self, info):
+                self.info = info
+
+            async def __aenter__(self):
+                return self.info
+
+            async def __aexit__(self, *exc):
+                fut = asyncio.get_running_loop().create_future()
+                fut.set_result(types.SimpleNamespace(status=statuses.pop(0), headers={"retry-after": "2"}))
+                self.info.value = fut
+                return False
+
+        class Page:
+            def expect_response(self, pred, timeout):
+                return Expect(Info())
+
+            async def click(self, sel):
+                clicks.append(sel)
+
+            async def wait_for_selector(self, sel, timeout):
+                return None
+
+        slept = []
+
+        async def fake_sleep(s):
+            slept.append(s)
+
+        async def go():
+            with mock.patch.object(hh.asyncio, "sleep", side_effect=fake_sleep):
+                return await hh.click_run(Page())
+
+        clicked_at = asyncio.run(go())
+        self.assertEqual(clicks, ["#submit-btn", "#submit-btn"])
+        self.assertEqual(slept, [2.0])
+        self.assertIsInstance(clicked_at, float)
+
+
+class StartOrderTests(_Base):
+    def test_dogfood_answers_before_the_start_cap(self):
+        with self._landing(), mock.patch.object(bs, "submit_retry_after", return_value=99):
+            res = self.client.post("/api/studies", json={"url": "usersim.vercel.app"})
+        self.assertEqual(res.status_code, 409)
+
+    def test_ui_links_the_sample_report(self):
+        from pathlib import Path
+
+        js = (Path(__file__).resolve().parent / "static" / "app.js").read_text()
+        self.assertIn("err.sample_report_url", js)
+        self.assertIn("showError(soft, err.link)", js)
 
 
 if __name__ == "__main__":
