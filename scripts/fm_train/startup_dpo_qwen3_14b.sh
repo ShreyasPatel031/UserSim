@@ -23,6 +23,19 @@ mkdir -p $RESULTS $ADAPTERS $(dirname $SFT_ADAPTER) $ROOT/data $SCRIPTS
 exec >> $RESULTS/boot.log 2>&1
 echo "BOOT $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
+download_scripts() {
+    echo "Downloading training scripts from GCS..."
+    gsutil -m cp $GCS_BUCKET/scripts/*.py $SCRIPTS/ 2>>$UPLOAD_LOG
+    if [ ! -f "$SCRIPTS/dpo_qwen3_14b_qlora.py" ] || [ ! -f "$SCRIPTS/build_socrates_dpo_pairs.py" ]; then
+        echo "ERROR: Failed to download training scripts"
+        return 1
+    fi
+    chmod +x $SCRIPTS/*.py
+    echo "Scripts downloaded successfully"
+}
+
+download_scripts || exit 1
+
 update_label() {
     local key=$1
     local value=$2
