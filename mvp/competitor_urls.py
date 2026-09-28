@@ -320,6 +320,11 @@ async def probe_competitor_url(
         return ProbeResult(False, requested, "", f"{kind}:{detail}")
     final_url = _normalize_final(final_url or requested)
     if status < 200 or status >= 400:
+        if status in (403, 429):
+            canonical = final_url or requested
+            if not canonical.endswith("/") and (urlparse(canonical).path in {"", "/"}):
+                canonical = canonical.rstrip("/") + "/"
+            return ProbeResult(True, canonical, final_url, f"blocked_{status}")
         return ProbeResult(False, requested, final_url, f"http_{status}")
     if not same_site(requested, final_url):
         return ProbeResult(
