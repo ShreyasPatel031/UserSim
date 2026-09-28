@@ -465,12 +465,19 @@ def reject_study_plan(study: Any, plan: dict[str, Any]) -> bool:
 
 
 def _keyword_only_name(name: str, read: dict[str, Any]) -> bool:
-    """An SEO "X alternative" the page does not itself compare with."""
+    """An SEO "X alternative" the page does not itself compare with.
+
+    Returns False (= keep the rival) when the page names no explicit comparisons:
+    a "Zapier alternative" product whose page only says "Zapier alternative" in
+    keywords has Zapier as its legitimate rival, not a marketing artifact.
+    """
     n = (name or "").strip().lower()
     if len(n) < 3:
         return False
     alts = {(a or "").strip().lower() for a in (read.get("keyword_alts") or [])}
     compared = {(c or "").strip().lower() for c in (read.get("compared_with") or [])}
+    if not compared:
+        return False
     return n in alts and n not in compared
 
 
@@ -589,12 +596,14 @@ async def settle_rival_urls(
         used.add(host)
     if len(names) < limit:
         found = [u for u in names][:limit]
+        drop_reasons = [f"{registrable_host(u)} ({r})" for u, r in dropped[:4]]
+        reason_summary = "; ".join(drop_reasons) if drop_reasons else "no usable URLs"
         return (
             found,
             {u: names.get(u, "") for u in found},
             remap,
-            "Refusing to start browsers: a rival URL was dead, parked, or a different site, "
-            f"and only {len(found)} live homepage(s) remained.",
+            f"Refusing to start browsers: {reason_summary}, "
+            f"and only {len(found)} live homepage(s) remained (need {limit}).",
         )
     # Follow the planned order, then any live backup that filled a hole.
     ordered_live: list[str] = []
