@@ -357,23 +357,39 @@ class IdentityVerificationTests(unittest.IsolatedAsyncioTestCase):
         # and the body is too short, so it's rejected as unverified.
         self.assertIn("blocked_403", result.reason)
 
-    async def test_glitch_farewell_journey_body_rejected(self):
-        """glitch.com redirecting to farewell page with 'incredible journey' is defunct."""
+    async def test_farewell_journey_body_rejected(self):
+        """A page with 'incredible journey' farewell message is defunct."""
         from mvp.competitor_urls import probe_competitor_url
 
-        async def fetch_glitch_farewell(url):
+        async def fetch_farewell(url):
             return (
                 200,
-                "https://blog.glitch.com/post/farewell-to-glitch",
-                "<html><head><title>Farewell to Glitch</title></head><body>"
-                "<h1>A heartfelt goodbye from the Glitch team</h1>"
-                "<p>It's been an incredible journey building Glitch with you.</p></body></html>",
+                "https://www.example-product.com/farewell",
+                "<html><head><title>Farewell to Example Product</title></head><body>"
+                "<h1>A heartfelt goodbye from the team</h1>"
+                "<p>It's been an incredible journey building this product with you.</p></body></html>",
             )
 
-        result = await probe_competitor_url("https://glitch.com/", fetch=fetch_glitch_farewell)
+        result = await probe_competitor_url("https://www.example-product.com/", fetch=fetch_farewell)
         self.assertFalse(result.ok)
         # Body contains "incredible journey" which matches _DEFUNCT_RE
         self.assertEqual(result.reason, "defunct_page")
+
+    async def test_blog_subdomain_redirect_rejected(self):
+        """A product that redirects to its blog subdomain is not a valid competitor."""
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_blog_redirect(url):
+            return (
+                200,
+                "https://blog.example-product.com/",
+                "<html><head><title>Example Product Blog</title></head><body>"
+                "<h1>Latest news and updates</h1><p>Welcome to our blog.</p></body></html>",
+            )
+
+        result = await probe_competitor_url("https://example-product.com/", fetch=fetch_blog_redirect)
+        self.assertFalse(result.ok)
+        self.assertEqual(result.reason, "not_a_product_site")
 
     async def test_cloud9_shutdown_notice_rejected(self):
         """Cloud9 showing 'we have shut down' is defunct."""
@@ -482,12 +498,12 @@ class IdentityVerificationTests(unittest.IsolatedAsyncioTestCase):
         async def fetch_farewell_path(url):
             return (
                 200,
-                "https://blog.example.com/announcements/farewell-and-thank-you",
+                "https://www.example-product.com/blog/announcements/farewell-and-thank-you",
                 "<html><head><title>Important Announcement</title></head><body>"
                 "<h1>An update from our team</h1><p>Read our latest news.</p></body></html>",
             )
 
-        result = await probe_competitor_url("https://example.com/", fetch=fetch_farewell_path)
+        result = await probe_competitor_url("https://www.example-product.com/", fetch=fetch_farewell_path)
         self.assertFalse(result.ok)
         self.assertEqual(result.reason, "farewell_redirect")
 

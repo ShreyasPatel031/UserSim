@@ -210,7 +210,12 @@ def is_non_product_host(url: str) -> bool:
     host = registrable_host(url)
     if not host:
         return True
-    return any(host == blocked or host.endswith("." + blocked) for blocked in _NON_PRODUCT_HOSTS)
+    if any(host == blocked or host.endswith("." + blocked) for blocked in _NON_PRODUCT_HOSTS):
+        return True
+    full_host = (urlparse(url).hostname or "").lower().rstrip(".")
+    if full_host.startswith("blog.") or full_host.startswith("news."):
+        return True
+    return False
 
 
 _ARTICLE_SEGMENTS = frozenset(
