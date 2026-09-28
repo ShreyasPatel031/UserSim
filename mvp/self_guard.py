@@ -139,10 +139,19 @@ def admin_token() -> str:
     return (os.environ.get("USERSIM_ADMIN_TOKEN") or "").strip()
 
 
+_WARNED_NO_TOKEN = False
+
+
 def admin_headers() -> dict[str, str]:
-    """For harnesses calling admin endpoints: the bearer header when USERSIM_ADMIN_TOKEN is set."""
+    """For harnesses calling admin endpoints: the bearer header from USERSIM_ADMIN_TOKEN."""
+    global _WARNED_NO_TOKEN
     token = admin_token()
-    return {"Authorization": f"Bearer {token}"} if token else {}
+    if token:
+        return {"Authorization": f"Bearer {token}"}
+    if not _WARNED_NO_TOKEN:
+        _WARNED_NO_TOKEN = True
+        print("WARNING USERSIM_ADMIN_TOKEN is not set: /api/runtime/kill will answer 401/403", flush=True)
+    return {}
 
 
 def admin_error(authorization: str | None) -> tuple[int, str] | None:
@@ -276,7 +285,7 @@ async def dogfood_refusal(urls: Iterable[str], admin_dogfood: bool, authorizatio
         {
             "detail": (
                 f"UserSim does not run studies of its own site ({', '.join(host_of(u) for u in hits)}): "
-                "its agents would be driving UserSim itself. See a sample report instead."
+                "its agents would be driving UserSim itself."
             ),
             "status": "dogfood_refused",
             "own_urls": hits,
@@ -345,12 +354,35 @@ def marker_enabled() -> bool:
     return (os.environ.get("USERSIM_AGENT_MARKER") or "1").strip().lower() not in {"0", "false", "no"}
 
 
+def pattern_hosts() -> list[str]:
+    """Every host form ``is_own_host`` accepts, as Fetch glob hosts (previews use a wildcard)."""
+    hosts = list(own_hosts())
+    for ip in own_ips():
+        dashed = ip.replace(".", "-")
+        hosts += [ip, f"{dashed}.sslip.io", f"{ip}.sslip.io", f"{dashed}.nip.io", f"{ip}.nip.io"]
+    hosts.append("usersim-*.vercel.app")
+    return list(dict.fromkeys(hosts))
+
+
 def fetch_patterns(hosts: Iterable[str] | None = None) -> list[dict[str, str]]:
     patterns: list[dict[str, str]] = []
-    for host in hosts if hosts is not None else own_hosts():
+    for host in hosts if hosts is not None else pattern_hosts():
         for p in (f"*://{host}/*", f"*://{host}:*/*", f"*://*.{host}/*"):
             patterns.append({"urlPattern": p, "requestStage": "Request"})
     return patterns
+
+
+def _matcher(hosts: Iterable[str] | None) -> Any:
+    """Exact check for a paused request: a Fetch glob such as ``usersim-*.vercel.app`` can over-match."""
+    if hosts is None:
+        return is_own_host
+    wanted = [h.lower() for h in hosts]
+
+    def _match(url: str) -> bool:
+        host = host_of(url)
+        return any(host == h or host.endswith("." + h) for h in wanted)
+
+    return _match
 
 
 def blocked_request(method: str, url: str) -> bool:
@@ -362,13 +394,16 @@ def blocked_request(method: str, url: str) -> bool:
     return guarded_request(method or "GET", path)
 
 
-async def _guard_page(context: Any, page: Any, marker: str, patterns: list[dict[str, str]]) -> None:
+async def _guard_page(context: Any, page: Any, marker: str, patterns: list[dict[str, str]], is_own: Any) -> None:
     cdp = await context.new_cdp_session(page)
 
     async def _on_paused(event: dict[str, Any]) -> None:
         rid = event.get("requestId")
         req = event.get("request") or {}
         try:
+            if not is_own(str(req.get("url") or "")):
+                await cdp.send("Fetch.continueRequest", {"requestId": rid})
+                return
             if blocked_request(str(req.get("method") or "GET"), str(req.get("url") or "")):
                 print(f"[self_guard] blocked {req.get('method')} {req.get('url')} from agent browser", flush=True)
                 await cdp.send("Fetch.failRequest", {"requestId": rid, "errorReason": "BlockedByClient"})
@@ -400,10 +435,11 @@ async def install_agent_marker(context: Any, study_id: str | None, *, hosts: Ite
         return 0
     marker = str(study_id or "agent")[:80]
     patterns = fetch_patterns(hosts)
+    is_own = _matcher(hosts)
 
     async def _one(page: Any) -> bool:
         try:
-            await _guard_page(context, page, marker, patterns)
+            await _guard_page(context, page, marker, patterns, is_own)
             return True
         except Exception as exc:  # noqa: BLE001
             print(f"[self_guard] marker install failed: {exc!r}", flush=True)
@@ -416,3 +452,48 @@ async def install_agent_marker(context: Any, study_id: str | None, *, hosts: Ite
         pass
     done = await asyncio.gather(*[_one(p) for p in list(getattr(context, "pages", []) or [])])
     return sum(1 for ok in done if ok)
+
+
+def prohibited_domains() -> list[str]:
+    """UserSim hosts as browser-use ``prohibited_domains`` globs: its navigation filter refuses them."""
+    out: list[str] = []
+    for host in pattern_hosts():
+        out += [host, f"*.{host}"]
+    return list(dict.fromkeys(out))
+
+
+class CdpMarker:
+    """The request marker on a browser another client drives (browser-use), over its own CDP connection."""
+
+    def __init__(self, pw: Any, browser: Any) -> None:
+        self._pw = pw
+        self._browser = browser
+
+    async def close(self) -> None:
+        # Stop the driver only, so no Browser.close is ever sent to the agent's browser.
+        try:
+            await self._pw.stop()
+        except Exception:
+            pass
+
+
+async def attach_marker_over_cdp(cdp_url: str | None, study_id: str | None) -> CdpMarker | None:
+    """Connect to ``cdp_url`` and install the marker on every context. None when off or on any failure."""
+    if not marker_enabled() or not cdp_url:
+        return None
+    pw = browser = None
+    try:
+        from playwright.async_api import async_playwright
+
+        pw = await async_playwright().start()
+        browser = await asyncio.wait_for(pw.chromium.connect_over_cdp(cdp_url), 15)
+        for context in list(browser.contexts):
+            await install_agent_marker(context, study_id)
+        return CdpMarker(pw, browser)
+    except BaseException as exc:  # noqa: BLE001
+        if pw is not None:
+            await CdpMarker(pw, browser).close()
+        if isinstance(exc, asyncio.CancelledError):
+            raise
+        print(f"[self_guard] marker over CDP failed: {exc!r}", flush=True)
+        return None
