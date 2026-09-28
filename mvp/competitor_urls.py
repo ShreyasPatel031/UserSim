@@ -218,6 +218,45 @@ def unwrap_search_url(url: str) -> str:
     return raw
 
 
+async def search_result_urls(query: str, *, limit: int = 6) -> list[tuple[str, str]]:
+    """(url, title) pairs from a public web search. Empty on any failure."""
+    from html import unescape
+    from urllib.parse import quote_plus
+
+    import httpx
+
+    url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
+    try:
+        async with httpx.AsyncClient(timeout=12.0, follow_redirects=True) as client:
+            resp = await client.get(
+                url,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                    )
+                },
+            )
+            html = resp.text or ""
+    except Exception:
+        return []
+    out: list[tuple[str, str]] = []
+    for match in re.finditer(
+        r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
+        html,
+        flags=re.I | re.S,
+    ):
+        href = unwrap_search_url(unescape(match.group(1).strip()))
+        title = re.sub(r"<[^>]+>", "", match.group(2))
+        title = " ".join(unescape(title).split())
+        if not href.startswith("http"):
+            continue
+        out.append((href, title[:160]))
+        if len(out) >= limit:
+            break
+    return out
+
+
 def looks_like_product_page(url: str) -> bool:
     """True for a short product URL, false for articles and review roundups."""
     raw = unwrap_search_url(url)
@@ -294,6 +333,13 @@ async def probe_competitor_url(
     snippet = (body or "")[:6000]
     if _DEFUNCT_RE.search(snippet):
         return ProbeResult(False, requested, final_url, "defunct_page")
+    # A document that only bounces with JavaScript (astrocade.xyz -> /lander) is
+    # not a product homepage. httpx does not follow that bounce.
+    visible = re.sub(r"<script.*?</script>|<style.*?</style>", " ", snippet, flags=re.S | re.I)
+    visible = " ".join(re.sub(r"<[^>]+>", " ", visible).split())
+    js_bounce = bool(re.search(r"window\.location|http-equiv\s*=\s*[\"']?refresh", snippet, re.I))
+    if len(visible) < 40 and (js_bounce or len(snippet) < 500):
+        return ProbeResult(False, requested, final_url, "thin_page")
     # Prefer the resolved URL so agents open the live origin, not a dead alias.
     canonical = final_url or requested
     if not canonical.endswith("/") and (urlparse(canonical).path in {"", "/"}):

@@ -178,11 +178,14 @@ ZO_LIKE = """<html><head><title>Zo Computer | Build something seriously powerful
 def test_about_line_carries_the_sites_own_positioning():
     # Study 50f0954c: the 800-char text was all website testimonials, so the plan
     # compared Zo (a personal AI cloud computer) with Replit, Netlify and Vercel.
+    # Keyword "Zapier alternative" is SEO. The page's own comparison is OpenClaw / Hermes.
     read = page_read_from_html(ZO_LIKE)
     about = read["about"]
     assert "A personal cloud server with AI" in about
     assert "scheduled AI agents" in about
-    assert "The site compares itself with: Zapier, n8n, OpenClaw, Hermes" in about
+    assert "The site compares itself with: OpenClaw, Hermes" in about
+    assert "compares itself with: Zapier" not in about
+    assert "Zapier alternative" in about
     assert "3D portfolio" in read["full_text"]
 
 
@@ -212,3 +215,258 @@ def test_named_rivals_skip_pronouns_and_lowercase_mentions():
 
     got = _site_named_rivals("", "Better than the rest. Unlike Notion or Coda. something I could never do on webflow or wordpress")
     assert got == ["Notion", "Coda"]
+
+
+class WrongCategoryTests(unittest.TestCase):
+    """A rival list drawn from SEO 'X alternative' keywords must not start browsers."""
+
+    def test_like_needs_two_names_and_keyword_alternatives_stay_out_of_the_comparison(self):
+        from mvp.fast_plan import _keyword_alternatives, _site_named_rivals
+
+        text = "You can connect providers like Codex. Is Zo like OpenClaw or Hermes? Traditional vector databases like Pinecone and Qdrant need a round trip."
+        self.assertEqual(_site_named_rivals("Zapier alternative", text), ["OpenClaw", "Hermes", "Pinecone", "Qdrant"])
+        self.assertEqual(
+            _keyword_alternatives("Zapier alternative,n8n alternative,ChatGPT alternative"),
+            ["Zapier", "n8n", "ChatGPT"],
+        )
+
+    def test_product_copy_reaches_the_planner_ahead_of_the_quote_wall(self):
+        # The 1500-char prompt used to be testimonials, so the FAQ never arrived.
+        from mvp.fast_plan import prompt_text
+
+        read = page_read_from_html(QUOTE_WALL)
+        text = prompt_text(read)
+        self.assertIn("always-on agent", text)
+        self.assertIn("Customer quotes", text)
+        self.assertLess(text.find("always-on agent"), text.find("Customer quotes"))
+        self.assertIn("compares itself with: OpenClaw, Hermes", text)
+        self.assertNotIn("compares itself with: Zapier", text)
+
+    def test_seo_alternative_rivals_fail_closed_before_browsers(self):
+        from mvp.fast_plan import category_conflict, plan_blocks_study, reject_study_plan
+
+        read = page_read_from_html(QUOTE_WALL)
+        names = {
+            "https://zapier.com/": "Zapier",
+            "https://n8n.io/": "n8n",
+            "https://openclaw.ai/": "OpenClaw",
+            "https://hermes-agent.nousresearch.com/": "Hermes",
+            "https://manus.im/": "Manus",
+        }
+        reason = category_conflict(read, ["https://zapier.com/", "https://n8n.io/"], names)
+        self.assertIn("OpenClaw", reason)
+        self.assertIn("Zapier", reason)
+        self.assertEqual(
+            category_conflict(read, ["https://openclaw.ai/", "https://hermes-agent.nousresearch.com/"], names), ""
+        )
+        # A same-job rival the page does not name is kept when it is not an SEO alternative.
+        self.assertEqual(category_conflict(read, ["https://openclaw.ai/", "https://manus.im/"], names), "")
+        plan = {"rejected": reason, "competitors": ["https://zapier.com/", "https://n8n.io/"]}
+        self.assertTrue(plan_blocks_study(plan))
+        self.assertFalse(plan_blocks_study({"competitors": ["https://openclaw.ai/"]}))
+        study = type("S", (), {"competitors": ["https://zapier.com/"], "early_runs": {}, "status": "queued", "error": None, "phase": ""})()
+        self.assertTrue(reject_study_plan(study, plan))
+        self.assertEqual(study.competitors, [])
+        self.assertTrue(study.plan_rejected)
+        self.assertEqual(study.status, "error")
+        self.assertIn("OpenClaw", study.error)
+
+    def test_javascript_bounce_is_not_a_homepage_and_the_brand_tld_is_recovered(self):
+        import asyncio
+
+        from mvp.competitor_urls import probe_competitor_url
+        from mvp.fast_plan import settle_rival_urls
+
+        async def fetch(url):
+            return (
+                200,
+                url,
+                "<!DOCTYPE html><html><head><script>window.onload=function(){window.location.href=\"/lander\"}</script></head></html>",
+            )
+
+        bounced = asyncio.run(probe_competitor_url("https://astrocade.xyz/", fetch=fetch))
+        self.assertFalse(bounced.ok)
+        self.assertEqual(bounced.reason, "thin_page")
+
+        queries: list[str] = []
+
+        async def probe(urls, product_url, exclude_hosts=None, limit=2):
+            del product_url
+            live, dropped = [], []
+            blocked = set(exclude_hosts or [])
+            for url in urls:
+                host = url.split("/")[2].removeprefix("www.")
+                if host in blocked:
+                    continue
+                if host in {"astrocade.xyz", "astrocade.ai"}:
+                    dropped.append((url, "thin_page" if host.endswith(".xyz") else "redirected_off_site:forsale.example"))
+                    continue
+                if host == "latentlabs.ai":
+                    dropped.append((url, "redirected_off_site:forsale.dynadot.com"))
+                    continue
+                live.append(url if url.endswith("/") else url + "/")
+                blocked.add(host)
+                if len(live) >= limit:
+                    break
+            return live, dropped
+
+        async def search(query):
+            queries.append(query)
+            if "astrocade" in query.lower():
+                return [("https://www.astrocade.com/", "Play Free Online Games or Create Your Own with AI | Astrocade")]
+            return [("https://www.latentlabs.com/", "Latent Labs")]
+
+        read = {"compared_with": [], "keyword_alts": []}
+        landed, names, _remap, reason = asyncio.run(
+            settle_rival_urls(
+                "https://chatforce.com/",
+                "Chatforce",
+                [("https://rosebud.ai/", "Rosebud AI"), ("https://astrocade.xyz/", "Astrocade")],
+                read,
+                limit=2,
+                probe=probe,
+                search=search,
+            )
+        )
+        self.assertEqual(reason, "")
+        self.assertEqual(landed, ["https://rosebud.ai/", "https://www.astrocade.com/"])
+        self.assertEqual(names["https://www.astrocade.com/"], "Astrocade")
+        # A for-sale redirect is not replaced with a different company that shares the name.
+        queries.clear()
+        landed, _names, _remap, reason = asyncio.run(
+            settle_rival_urls(
+                "https://chatforce.com/",
+                "Chatforce",
+                [("https://rosebud.ai/", "Rosebud"), ("https://latentlabs.ai/", "Latent Labs")],
+                read,
+                limit=2,
+                probe=probe,
+                search=search,
+            )
+        )
+        self.assertIn("only 1 live", reason)
+        self.assertEqual(queries, [])
+        # A dead guess's buyers follow the live backup that took its slot, not the dead URL.
+        landed, names, remap, reason = asyncio.run(
+            settle_rival_urls(
+                "https://chatforce.com/",
+                "Chatforce",
+                [
+                    ("https://rosebud.ai/", "Rosebud"),
+                    ("https://astrocade.ai/", "Astrocade"),
+                    ("https://ludo.ai/", "Ludo"),
+                ],
+                read,
+                limit=2,
+                probe=probe,
+                search=search,
+            )
+        )
+        self.assertEqual(reason, "")
+        self.assertEqual(landed, ["https://rosebud.ai/", "https://ludo.ai/"])
+        self.assertEqual(remap["https://astrocade.ai/"], "https://ludo.ai/")
+
+    def test_comparison_roundup_is_not_a_play_page_or_an_seo_alternative(self):
+        from mvp.fast_plan import comparison_article_url
+
+        locs = [
+            "https://chatforce.com/play/cats-vs-zombies",
+            "https://chatforce.com/alternative-to-cursor",
+            "https://chatforce.com/alternative-to-rosebud",
+            "https://chatforce.com/blog/best-ai-game-makers-compared",
+            "https://example.com/blog/best-compared",
+        ]
+        self.assertEqual(
+            comparison_article_url(locs, "chatforce.com"),
+            "https://chatforce.com/blog/best-ai-game-makers-compared",
+        )
+        self.assertEqual(comparison_article_url(["https://www.zo.computer/pricing"], "zo.computer"), "")
+
+    def test_dead_guess_resolves_to_the_page_named_homepage_and_skips_seo_alts(self):
+        from mvp.fast_plan import settle_rival_urls
+
+        read = page_read_from_html(QUOTE_WALL)
+        probed: list[str] = []
+
+        async def probe(urls, product_url, exclude_hosts=None, limit=2):
+            del product_url
+            probed.extend(urls)
+            dead = {"https://www.openclaw.com/", "https://hermes.ai/"}
+            live, dropped = [], []
+            blocked = set(exclude_hosts or [])
+            for url in urls:
+                host = url.split("/")[2].removeprefix("www.")
+                if url in dead:
+                    dropped.append((url, "redirected_off_site:domains.atom.com"))
+                    continue
+                if host in blocked:
+                    dropped.append((url, "duplicate_or_product_host"))
+                    continue
+                live.append(url if url.endswith("/") else url + "/")
+                blocked.add(host)
+                if len(live) >= limit:
+                    break
+            return live, dropped
+
+        async def search(query):
+            q = query.lower()
+            if q.startswith("openclaw"):
+                return [("https://openclaw.ai/", "OpenClaw — Open-Source AI Assistant")]
+            if "hermes" in q:
+                return [
+                    ("https://openclaw.ai/", "OpenClaw — Open-Source AI Assistant"),
+                    ("https://hermes-agent.nousresearch.com/", "Hermes Agent"),
+                ]
+            return []
+
+        import asyncio
+
+        landed, names, remap, reason = asyncio.run(
+            settle_rival_urls(
+                "https://www.zo.computer/",
+                "Zo Computer",
+                [
+                    ("https://www.openclaw.com/", "OpenClaw"),
+                    ("https://hermes.ai/", "Hermes"),
+                    ("https://zapier.com/", "Zapier"),
+                ],
+                read,
+                limit=2,
+                probe=probe,
+                search=search,
+            )
+        )
+        self.assertEqual(reason, "")
+        self.assertEqual(landed, ["https://openclaw.ai/", "https://hermes-agent.nousresearch.com/"])
+        self.assertEqual(names["https://openclaw.ai/"], "OpenClaw")
+        self.assertEqual(names["https://hermes-agent.nousresearch.com/"], "Hermes")
+        self.assertEqual(remap["https://www.openclaw.com/"], "https://openclaw.ai/")
+        self.assertNotIn("https://zapier.com/", probed)
+
+    def test_named_vector_databases_are_not_a_keyword_conflict(self):
+        from mvp.fast_plan import category_conflict
+
+        html = """<html><head><title>Moss</title>
+<meta name="keywords" content="semantic search, vector search"/></head>
+<body><p>Traditional vector databases like Pinecone and Qdrant require a cloud round trip.</p></body></html>"""
+        read = page_read_from_html(html)
+        self.assertEqual(read["compared_with"], ["Pinecone", "Qdrant"])
+        self.assertEqual(read["keyword_alts"], [])
+        self.assertEqual(
+            category_conflict(
+                read,
+                ["https://www.pinecone.io/", "https://qdrant.tech/"],
+                {"https://www.pinecone.io/": "Pinecone", "https://qdrant.tech/": "Qdrant"},
+            ),
+            "",
+        )
+
+
+QUOTE_WALL = """<html><head><title>Zo Computer</title>
+<meta name="description" content="A personal cloud computer that works 24/7"/>
+<meta name="keywords" content="Zapier alternative,n8n alternative,ChatGPT alternative"/>
+</head><body>
+<h1>Build something seriously powerful</h1>
+<p>“ """ + ("I built a 3D portfolio website on Zo and left Webflow behind for good. " * 40) + """”</p>
+<p>Is Zo like OpenClaw or Hermes? Unlike OpenClaw or Hermes, Zo is a personal cloud computer with an always-on agent. No terminal setup.</p>
+</body></html>"""

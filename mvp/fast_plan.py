@@ -79,8 +79,9 @@ Return:
 Rules:
 - competitors: exactly two best-known direct competitors, best first, homepage URLs of real public
   sites; backup_competitor is the third. A direct competitor is a standalone product in the same category
-  that a buyer would compare side by side for the same job. Never a parent company, multi-product suite
-  homepage, marketplace or discontinued product. Rivals may be sales-led (demo only); that is fine. Each
+  that a buyer would compare side by side for the same whole job, not one feature of it and not a tool for
+  a different buyer. Never a parent company, multi-product suite
+  homepage, marketplace, for-sale domain, or discontinued product. Rivals may be sales-led (demo only); that is fine. Each
   rival must still be sold under its own name at that domain today: never one that was acquired, merged or
   rebranded (its site redirects elsewhere). Never a general-purpose AI chatbot or assistant (ChatGPT, Claude,
   Gemini, Copilot, Perplexity, Grok and the like) unless the product itself is a general-purpose chatbot: a
@@ -227,14 +228,19 @@ def page_read_from_html(html: str) -> dict[str, Any]:
         seen.add(key)
         links.append((label, href[:80]))
     text = _plain(re.sub(r"<[^>]+>", " ", body))
+    meta = _meta_tags(html)
+    compared = [r for r in _site_named_rivals("", text) if not is_general_assistant(r)]
     return {
         "title": title,
         "text": f"{desc} {text}".strip()[:800],
         "links": links[:300],
-        # What the site says it is (meta, og, JSON-LD, keywords, headings) and a
-        # longer body read. The 800-char text above can be all customer quotes.
-        "about": _site_about(html, desc, text),
-        "full_text": text[:4000],
+        # What the site says it is (meta, og, JSON-LD, keywords, headings) and the
+        # body with product copy ahead of testimonials. The 800-char text above
+        # can be all customer quotes; the planner reads full_text instead.
+        "about": _site_about(html, desc, text, compared),
+        "full_text": _product_copy_first(text)[:8000],
+        "compared_with": compared,
+        "keyword_alts": _keyword_alternatives(meta.get("keywords", "")),
     }
 
 
@@ -279,14 +285,11 @@ def _json_ld_about(html: str) -> list[str]:
 _NOT_A_NAME = {"the", "this", "that", "our", "your", "we", "you", "it", "a", "an", "me", "us", "them", "other", "any", "most"}
 
 
-def _site_named_rivals(keywords: str, text: str) -> list[str]:
-    """Products the site names itself against ("Zapier alternative", "Is Zo like OpenClaw or Hermes?")."""
+def _keyword_alternatives(keywords: str) -> list[str]:
+    """Names from SEO phrases like "Zapier alternative". Marketing, not a same-job list."""
     found: list[str] = []
     for m in re.finditer(r"([A-Za-z][\w.]*(?: [A-Z][\w.]*)?) alternative", keywords or ""):
         found.append(m.group(1))
-    pat = r"\b(?:[Ll]ike|[Tt]han|[Uu]nlike|[Vv]s\.?|[Vv]ersus|[Cc]ompared to|[Ii]nstead of)\s+([A-Z][\w.-]+(?:,? (?:or|and) [A-Z][\w.-]+)*)"
-    for m in re.finditer(pat, text or ""):
-        found += re.split(r",? (?:or|and) ", m.group(1))
     out: list[str] = []
     for name in found:
         name = name.strip(" .,")
@@ -295,7 +298,50 @@ def _site_named_rivals(keywords: str, text: str) -> list[str]:
     return out[:8]
 
 
-def _site_about(html: str, desc: str = "", text: str = "") -> str:
+def _site_named_rivals(keywords: str, text: str) -> list[str]:
+    """Products the page itself sets beside this one ("Unlike Notion or Coda", "like Pinecone and Qdrant").
+
+    ``keywords`` is unused. "X alternative" in a meta keyword list is SEO, and a single
+    "like Codex" is an integration, not a rival. "like" counts only when it names two products.
+    """
+    del keywords  # kept so callers can pass the keyword string without a second signature
+    found: list[str] = []
+    patterns = (
+        # Two or more names: "like OpenClaw or Hermes", "like Pinecone and Qdrant".
+        r"\blike\s+([A-Z][\w.-]+(?:,? (?:or|and) [A-Z][\w.-]+)+)",
+        r"\b(?:[Tt]han|[Uu]nlike|[Vv]s\.?|[Vv]ersus|[Cc]ompared to|[Ii]nstead of)\s+([A-Z][\w.-]+(?:,? (?:or|and) [A-Z][\w.-]+)*)",
+    )
+    for pat in patterns:
+        for m in re.finditer(pat, text or ""):
+            found += re.split(r",? (?:or|and) ", m.group(1))
+    out: list[str] = []
+    for name in found:
+        name = name.strip(" .,")
+        if name and name.lower() not in _NOT_A_NAME and name.lower() not in {o.lower() for o in out}:
+            out.append(name)
+    return out[:8]
+
+
+_QUOTE_SPAN = re.compile(r"[“\"]([^”\"]{80,})[”\"]")
+
+
+def _product_copy_first(text: str) -> str:
+    """Unquoted product copy, then customer quotes.
+
+    A homepage often opens with a wall of testimonials. Cutting that text to the
+    first few hundred characters hid the product's own comparison (Zo's FAQ,
+    past the quotes) and the planner picked another category.
+    """
+    raw = text or ""
+    quotes = [" ".join(q.split()) for q in _QUOTE_SPAN.findall(raw)]
+    if not quotes:
+        return " ".join(raw.split())
+    rest = " ".join(_QUOTE_SPAN.sub(" ", raw).split())
+    tail = " ".join(f"“{q}”" for q in quotes)
+    return f"{rest}\nCustomer quotes (examples, not the category): {tail}"
+
+
+def _site_about(html: str, desc: str = "", text: str = "", compared: list[str] | None = None) -> str:
     """The site's own one-line positioning: descriptions, JSON-LD category, keywords, headings, named rivals."""
     meta = _meta_tags(html)
     parts: list[str] = [desc, meta.get("og:description", ""), meta.get("twitter:description", "")]
@@ -306,9 +352,11 @@ def _site_about(html: str, desc: str = "", text: str = "") -> str:
     heads = [h for h in heads if 3 <= len(h) <= 90][:6]
     if heads:
         parts.append("Headings: " + " / ".join(heads))
-    # A general-purpose chatbot named in SEO keywords ("ChatGPT alternative") is
-    # not a side-by-side rival; leading with it made the planner pick chatgpt.com.
-    rivals = [r for r in _site_named_rivals(meta.get("keywords", ""), text) if not is_general_assistant(r)]
+    # Body comparisons only. Keyword "X alternative" stays in the Keywords line;
+    # promoting it here made an AI cloud computer look like a Zapier rival.
+    rivals = list(compared) if compared is not None else [
+        r for r in _site_named_rivals("", text) if not is_general_assistant(r)
+    ]
     if rivals:
         parts.insert(1, "The site compares itself with: " + ", ".join(rivals))
     seen: set[str] = set()
@@ -330,16 +378,22 @@ def framing_modes() -> set[str]:
 _DEFAULT_FRAMING = "read"  # the recommended fix; position and verify stay opt-in
 
 _READ_RULE = (
-    "\nThe About line is the site's own description, category and keywords: judge the product category from it"
-    " first. Customer quotes and showcase examples on the page are use cases, not the category."
+    "\nJudge the category from what the product does and from products the page itself compares with"
+    " (like, unlike, vs). A keyword that only says \"X alternative\" is marketing, not the category."
+    " Customer quotes and showcase examples are use cases, not the category."
 )
 
 
+# The old floor (1500) was mostly the About line plus the opening testimonials,
+# so a comparison stated later on the page never reached the model.
+_PROMPT_FLOOR = 5000
+
+
 def prompt_text(read: dict[str, Any], limit: int = 800) -> str:
-    """Page text for a planner prompt. With the read fix: the site's About line first, then a longer body."""
+    """Page text for a planner prompt. With the read fix: the site's About line first, then product copy."""
     if "read" in framing_modes() and (read.get("about") or read.get("full_text")):
         body = str(read.get("full_text") or read.get("text") or "")
-        return f"About: {read.get('about') or ''}\nPage: {body}"[: max(limit, 1500)]
+        return f"About: {read.get('about') or ''}\nPage: {body}"[: max(limit, _PROMPT_FLOOR)]
     return str(read.get("text") or "")[:limit]
 
 
@@ -347,10 +401,290 @@ def read_rule() -> str:
     return _READ_RULE if "read" in framing_modes() else ""
 
 
+def _rival_blob(url: str, names: dict[str, str] | None) -> str:
+    clean = _clean_url(str(url))
+    label = ""
+    if names:
+        label = str(names.get(clean) or names.get(url) or "")
+    return f"{label} {clean} {_host_of(clean)}".lower()
+
+
+def _name_in(blob: str, needles: list[str]) -> bool:
+    for name in needles:
+        n = name.lower().strip()
+        if len(n) >= 3 and n in blob:
+            return True
+    return False
+
+
+def category_conflict(read: dict[str, Any], competitors: list[str], names: dict[str, str] | None = None) -> str:
+    """Why this rival list is the wrong category, or "" when it may stand.
+
+    Fires only when the page names same-job products in its own copy and every
+    chosen rival is instead an SEO "X alternative" keyword. A buyer-chosen
+    rival the page never names is left alone.
+    """
+    compared = [n for n in (read.get("compared_with") or []) if n and not is_general_assistant(n)]
+    alts = [n for n in (read.get("keyword_alts") or []) if n and not is_general_assistant(n)]
+    if not compared or not alts or not competitors:
+        return ""
+    blobs = [_rival_blob(c, names) for c in competitors]
+    if any(_name_in(blob, compared) for blob in blobs):
+        return ""
+    if not all(_name_in(blob, alts) for blob in blobs):
+        return ""
+    return (
+        "Wrong category: rivals "
+        + ", ".join(blobs)
+        + f" only match SEO alternatives ({', '.join(alts)}). "
+        + f"The page compares this product with {', '.join(compared)}."
+    )
+
+
+def plan_blocks_study(plan: dict[str, Any] | None) -> bool:
+    """True when the planner refused the rival list and browsers must not start."""
+    return bool(plan and str(plan.get("rejected") or "").strip())
+
+
+def reject_study_plan(study: Any, plan: dict[str, Any]) -> bool:
+    """Mark the study stopped and drop rivals. Returns True when browsers must not start."""
+    if not plan_blocks_study(plan):
+        return False
+    study.plan_rejected = True
+    study.status = "error"
+    study.phase = "Stopped"
+    study.error = str(plan.get("rejected") or "wrong competitor category")[:500]
+    study.competitors = []
+    for task in list((getattr(study, "early_runs", None) or {}).values()):
+        try:
+            task.cancel()
+        except Exception:
+            pass
+    study.early_runs = {}
+    return True
+
+
+def _keyword_only_name(name: str, read: dict[str, Any]) -> bool:
+    """An SEO "X alternative" the page does not itself compare with."""
+    n = (name or "").strip().lower()
+    if len(n) < 3:
+        return False
+    alts = {(a or "").strip().lower() for a in (read.get("keyword_alts") or [])}
+    compared = {(c or "").strip().lower() for c in (read.get("compared_with") or [])}
+    return n in alts and n not in compared
+
+
+def _brand_matches(url: str, name: str) -> bool:
+    from mvp.competitor_urls import _brand, registrable_host
+
+    brand = _brand(registrable_host(url))
+    needle = re.sub(r"[^a-z0-9]", "", (name or "").lower())
+    return bool(brand) and bool(needle) and (brand == needle or brand in needle or needle in brand)
+
+
+async def _homepage_for_name(name: str, hint: str, search: Any | None = None, *, require_brand: bool = False) -> str:
+    """Live-looking homepage for a named product, when the guessed domain was dead."""
+    from mvp.competitor_urls import looks_like_product_page, search_result_urls
+
+    query = " ".join(p for p in (name, hint, "official website") if p).strip()
+    finder = search or search_result_urls
+    needle = name.lower().strip()
+    if len(needle) < 3 or not query:
+        return ""
+    try:
+        hits = await finder(query)
+    except Exception:
+        return ""
+    for url, title in hits or []:
+        if needle not in f"{url} {title}".lower() or not looks_like_product_page(url):
+            continue
+        if require_brand and not _brand_matches(url, name):
+            continue
+        return _clean_url(url)
+    return ""
+
+
+async def settle_rival_urls(
+    product_url: str,
+    product_name: str,
+    ordered: list[tuple[str, str]],
+    read: dict[str, Any],
+    *,
+    limit: int,
+    probe: Any | None = None,
+    search: Any | None = None,
+) -> tuple[list[str], dict[str, str], dict[str, str], str]:
+    """Drop parked, for-sale, and off-site redirects. Resolve a page-named rival to its real homepage.
+
+    Returns (live urls, names by live url, remap from the planned url, reject reason).
+    A guessed domain that redirects to a marketplace must not become the site agents open.
+    SEO keyword alternatives are not used to fill a hole: that is a different job.
+    Names the page itself never compares with are not looked up (a guessed name can be a different company).
+    """
+    from mvp.competitor_urls import filter_live_competitor_urls, registrable_host, same_site
+
+    usable = [(u, n) for u, n in ordered if u and not _keyword_only_name(n, read)]
+    urls = [u for u, _ in usable]
+    prober = probe or filter_live_competitor_urls
+    live, dropped = await prober(urls, product_url=product_url, limit=limit)
+    dropped_hosts = {registrable_host(u) for u, _reason in dropped}
+    names: dict[str, str] = {}
+    remap: dict[str, str] = {}
+    used = {registrable_host(product_url)}
+
+    def _name_for(live_url: str) -> str:
+        for raw, name in usable:
+            if same_site(raw, live_url) and name:
+                return name
+        return ""
+
+    for live_url in live:
+        host = registrable_host(live_url)
+        if not host or host in used:
+            continue
+        names[live_url] = _name_for(live_url)
+        used.add(host)
+        for raw, _name in usable:
+            if same_site(raw, live_url):
+                remap[raw] = live_url
+    compared = [(c or "").strip() for c in (read.get("compared_with") or [])]
+    drop_reason = {u: reason for u, reason in dropped}
+    for raw, name in usable:
+        if len(names) >= limit:
+            break
+        if registrable_host(raw) not in dropped_hosts:
+            continue
+        named = name.strip().lower() in {c.lower() for c in compared}
+        # Wrong TLD of the right brand (astrocade.xyz is an empty bounce; astrocade.com is the product).
+        # An off-site redirect to a domain seller is not looked up: the name may be a different company.
+        reason = drop_reason.get(raw, "")
+        brand_miss = (
+            not named
+            and reason.startswith(("thin_page", "http_403", "http_404"))
+            and _brand_matches(raw, name)
+        )
+        if not named and not brand_miss:
+            continue
+        if named:
+            hint = " ".join(c for c in compared if c.lower() != name.strip().lower()) or product_name
+        else:
+            hint = ""
+        found = await _homepage_for_name(name, hint, search, require_brand=brand_miss)
+        if not found:
+            continue
+        more, _more_dropped = await prober(
+            [found],
+            product_url=product_url,
+            exclude_hosts=set(used),
+            limit=1,
+        )
+        if not more:
+            continue
+        live_url = more[0]
+        host = registrable_host(live_url)
+        if not host or host in used:
+            continue
+        names[live_url] = name
+        remap[raw] = live_url
+        used.add(host)
+    if len(names) < limit:
+        found = [u for u in names][:limit]
+        return (
+            found,
+            {u: names.get(u, "") for u in found},
+            remap,
+            "Refusing to start browsers: a rival URL was dead, parked, or a different site, "
+            f"and only {len(found)} live homepage(s) remained.",
+        )
+    # Follow the planned order, then any live backup that filled a hole.
+    ordered_live: list[str] = []
+    for raw, _name in usable:
+        dest = remap.get(raw)
+        if dest and dest in names and dest not in ordered_live:
+            ordered_live.append(dest)
+        if len(ordered_live) == limit:
+            break
+    for live_url in names:
+        if live_url not in ordered_live:
+            ordered_live.append(live_url)
+        if len(ordered_live) == limit:
+            break
+    live_urls = ordered_live[:limit]
+    # Buyers and jobs written for a dropped URL follow the rival that took its slot.
+    for src, dst in zip((u for u, _n in usable), live_urls):
+        remap.setdefault(src, dst)
+    return live_urls, {u: names.get(u, "") for u in live_urls}, remap, ""
+
+
+def _rejected_plan(url_product: str, segment: str, comps: list[str], names: dict[str, str], reason: str, modes: set[str]) -> dict[str, Any]:
+    return {
+        "mode": "compare",
+        "rejected": reason,
+        "product": url_product[:60],
+        "segment": " ".join(segment.split())[:140],
+        "competitors": comps,
+        "competitor_names": {c: names.get(c, "") for c in comps},
+        "framing": sorted(modes),
+    }
+
+
 def _plain(text: str) -> str:
     import html as _html
 
     return " ".join(_html.unescape(text or "").split())
+
+
+def comparison_article_url(locs: list[str], host: str) -> str:
+    """A same-host roundup ("best … compared"), not a game slug or an SEO alternative page."""
+    want = (host or "").lower().removeprefix("www.")
+    cands: list[str] = []
+    for raw in locs:
+        parts = urlsplit(str(raw or ""))
+        if (parts.hostname or "").lower().removeprefix("www.") != want:
+            continue
+        path = (parts.path or "").lower()
+        if "compar" not in path or "/play/" in path:
+            continue
+        cands.append(str(raw))
+    if not cands:
+        return ""
+    cands.sort(key=lambda u: (0 if "best" in u.lower() else 1, len(u)))
+    return cands[0]
+
+
+async def _same_host_comparison(url: str) -> str:
+    """Text of one comparison article on this host, when the homepage names no rivals.
+
+    Chatforce's homepage never says who it competes with; its roundup does, and it
+    separates whole-game tools from asset generators. One sitemap fetch plus one
+    article. Empty when the host has no such page.
+    """
+    import httpx
+
+    host = (urlsplit(url).hostname or "").removeprefix("www.")
+    if not host:
+        return ""
+    origin = f"https://{urlsplit(url).hostname}"
+    try:
+        async with httpx.AsyncClient(timeout=4.0, follow_redirects=True, headers={"user-agent": "Mozilla/5.0"}) as client:
+            site = await client.get(origin + "/sitemap.xml")
+            if site.status_code >= 400:
+                return ""
+            locs = re.findall(r"<loc>\s*([^<]+)\s*</loc>", site.text or "", flags=re.I)
+            article = comparison_article_url(locs, host)
+            if not article:
+                return ""
+            resp = await client.get(article)
+        if resp.status_code >= 400:
+            return ""
+    except Exception:
+        return ""
+    text = _plain(re.sub(r"<[^>]+>", " ", re.sub(
+        r"<script.*?</script>|<style.*?</style>", " ", resp.text or "", flags=re.S | re.I
+    )))
+    if len(text) < 200:
+        return ""
+    return f"Same-host comparison ({article}): {text}"[:1800]
 
 
 async def _page_read(url: str) -> dict[str, Any]:
@@ -362,9 +696,16 @@ async def _page_read(url: str) -> dict[str, Any]:
             resp = await client.get(url)
         if resp.status_code >= 400:
             return {"title": "", "text": "", "links": [], "failed": True}
-        return page_read_from_html(resp.text)
+        read = page_read_from_html(resp.text)
     except Exception:
         return {"title": "", "text": "", "links": [], "failed": True}
+    # A homepage that never names a rival still may publish a roundup. Pull that
+    # in so the planner is not left guessing a famous adjacent tool.
+    if not read.get("compared_with"):
+        extra = await _same_host_comparison(url)
+        if extra:
+            read["full_text"] = f"{extra}\n{read.get('full_text') or ''}"[:8000]
+    return read
 
 
 def _words(text: str) -> set[str]:
@@ -822,16 +1163,27 @@ async def _split_compare_plan(
         )
         if not raw_comps:
             return None
+        reason = category_conflict(read, raw_comps, names)
+        if reason:
+            print(f"[fast_plan] compare rejected {url}: {reason}", flush=True)
+            return _rejected_plan(str(head.get("product") or "") or own, str(head.get("segment") or ""), raw_comps, names, reason, framing_modes())
         product = str(head.get("product") or "")[:60] or own
+        landed, live_names, remap_live, dead = await settle_rival_urls(
+            url, product, [(c, names.get(c, "")) for c in raw_comps], read, limit=RIVAL_COUNT
+        )
+        if dead:
+            print(f"[fast_plan] compare rejected {url}: {dead}", flush=True)
+            return _rejected_plan(product, str(head.get("segment") or ""), landed or raw_comps, live_names or names, dead, framing_modes())
+        reason = category_conflict(read, landed, live_names)
+        if reason:
+            print(f"[fast_plan] compare rejected {url}: {reason}", flush=True)
+            return _rejected_plan(product, str(head.get("segment") or ""), landed, live_names, reason, framing_modes())
         if on_competitors is not None:
             try:
-                on_competitors(list(raw_comps), dict(names))
+                on_competitors(list(landed), dict(live_names))
             except Exception as exc:  # noqa: BLE001
                 print(f"[fast_plan] on_competitors failed: {exc!r}", flush=True)
-        rivals = ", ".join(f"{names.get(c) or c} ({c})" for c in raw_comps)
-        from mvp.server import _landing_url
-
-        landed_f = asyncio.gather(*(_landing_url(c) for c in raw_comps))
+        rivals = ", ".join(f"{live_names.get(c) or c} ({c})" for c in landed)
         # Both calls still run at once, but the buyers are published the moment
         # they land instead of waiting for the jobs call: gathering them meant
         # the page always got users and tasks in the same frame (measured gap
@@ -853,15 +1205,13 @@ async def _split_compare_plan(
                 print(f"[fast_plan] on_personas failed: {exc!r}", flush=True)
         if tasks_t is None:
             tasks_t = asyncio.ensure_future(ask(tasks_prompt))
-        tasks_raw, landed = await asyncio.gather(tasks_t, landed_f)
-        landed = list(landed)
+        tasks_raw = await tasks_t
         tasks = compare_tasks(tasks_raw if isinstance(tasks_raw, dict) else {}, own, raw_comps, names)
         if len(tasks) < 2 or len(personas) < 2:
             return None
-        remap = dict(zip(raw_comps, landed))
         for row in personas + tasks:
-            row["favors"] = remap.get(row["favors"], row["favors"])
-        comp_names = {remap.get(k, k): v for k, v in names.items() if k in remap}
+            row["favors"] = remap_live.get(row["favors"], row["favors"])
+        comp_names = {u: live_names.get(u) or names.get(u, "") for u in landed}
         took = round(asyncio.get_running_loop().time() - t0, 2)
         print(f"[fast_plan] compare(split {took}s) {url} rivals={landed} tasks={[t['prompt'] for t in tasks]}", flush=True)
         return {
@@ -979,19 +1329,43 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
         )
         if not raw_comps:
             return None
-        from mvp.server import _landing_url
-
-        landed = list(await asyncio.gather(*(_landing_url(c) for c in raw_comps)))
+        reason = category_conflict(read, raw_comps, names)
+        if reason:
+            print(f"[fast_plan] compare rejected {url}: {reason}", flush=True)
+            return _rejected_plan(
+                str(data.get("product") or ""), str(data.get("segment") or ""), raw_comps, names, reason, modes
+            )
+        preferred = [(c, names.get(c, "")) for c in raw_comps]
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            clean = _clean_url(str(item.get("url") or ""))
+            if clean and clean not in {u for u, _n in preferred}:
+                preferred.append((clean, str(item.get("name") or names.get(clean) or "")))
+        landed, live_names, remap_live, dead = await settle_rival_urls(
+            url, str(data.get("product") or own), preferred, read, limit=RIVAL_COUNT
+        )
+        if dead:
+            print(f"[fast_plan] compare rejected {url}: {dead}", flush=True)
+            return _rejected_plan(
+                str(data.get("product") or ""), str(data.get("segment") or ""), landed or raw_comps, live_names or names, dead, modes
+            )
+        reason = category_conflict(read, landed, live_names)
+        if reason:
+            print(f"[fast_plan] compare rejected {url}: {reason}", flush=True)
+            return _rejected_plan(
+                str(data.get("product") or ""), str(data.get("segment") or ""), landed, live_names, reason, modes
+            )
         # A planned rival that was skipped hands its buyers and jobs to the backup that replaced it, so
         # each site keeps its two personas and two tasks.
         planned = [_clean_url(str(i.get("url") or "")) for i in (data.get("competitors") or [])[:RIVAL_COUNT] if isinstance(i, dict)]
         dropped = [c for c in planned if c not in raw_comps]
         added = [c for c in raw_comps if c not in planned]
-        # Tags were written against the planner's URLs; map them to where the rival lands.
+        # Tags were written against the planner's URLs; map them to the live homepage.
         personas = compare_personas(data, own, raw_comps + dropped, names, read)
         tasks = compare_tasks(data, own, raw_comps + dropped, names)
-        remap = {d: landed[raw_comps.index(a)] for d, a in zip(dropped, added)}
-        remap.update(zip(raw_comps, landed))
+        remap = {d: remap_live.get(a, a) for d, a in zip(dropped, added)}
+        remap.update(remap_live)
         for row in personas + tasks:
             if row["favors"] in dropped and row["favors"] not in remap:
                 row["favors"] = ""
@@ -999,7 +1373,7 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
             row["favors"] = remap.get(row["favors"], row["favors"])
         if len(tasks) < 2 or len(personas) < 2:
             return None
-        comp_names = {remap.get(k, k): v for k, v in names.items() if k in remap}
+        comp_names = {u: live_names.get(u) or names.get(u, "") for u in landed}
         need = missing_task_slots(tasks, ["product"] + landed)
         for _attempt in range(2):
             if not need:
