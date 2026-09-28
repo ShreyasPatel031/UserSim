@@ -10,11 +10,19 @@ server has no other study running AND Browserbase has enough free sessions
 for its agents. Until then the study shows status "queued" with an estimate
 of when it will start. When the study ends, crashes, or is cancelled, the
 sessions tagged with its id are released.
+
+A study holds no browser until it is admitted (in ``_ACTIVE``): from submit
+(``reserve``) until admission it is pending, and ``may_open`` refuses session
+creates for it. Admissions are capped per rolling window
+(``MVP_MAX_STUDY_STARTS`` per ``MVP_STUDY_START_WINDOW_S``) and in number at
+once (``MVP_MAX_CONCURRENT_STUDIES``); a submit that would exceed the start
+cap gets ``submit_retry_after`` seconds to wait instead.
 """
 from __future__ import annotations
 
 import asyncio
 import collections
+import math
 import os
 import time
 from datetime import datetime, timezone
@@ -26,6 +34,102 @@ _COUNT_CACHE: dict[str, Any] = {"at": 0.0, "value": None}
 _COUNT_TASK: asyncio.Task | None = None
 _OBJS: dict[str, Any] = {}  # study id -> study, for progress-based estimates
 _RECENT_S: collections.deque[float] = collections.deque(maxlen=5)  # recent study durations here
+_PENDING: dict[str, float] = {}  # submitted, not yet admitted: study id -> monotonic submit time
+_STARTS: collections.deque[float] = collections.deque()  # monotonic admission times
+_PENDING_TTL_S = 900.0
+
+
+def _env_int(name: str, default: int) -> int:
+    try:
+        return int(os.environ.get(name) or default)
+    except ValueError:
+        return default
+
+
+def max_study_starts() -> int:
+    """Studies admitted per rolling window on this server; 0 turns the cap off."""
+    return max(0, _env_int("MVP_MAX_STUDY_STARTS", 6))
+
+
+def start_window_s() -> float:
+    try:
+        return max(1.0, float(os.environ.get("MVP_STUDY_START_WINDOW_S") or "600"))
+    except ValueError:
+        return 600.0
+
+
+def max_concurrent_studies() -> int:
+    """Hard cap on studies holding browsers at once, including ones started past the queue wait."""
+    return max(1, _env_int("MVP_MAX_CONCURRENT_STUDIES", 2))
+
+
+def _prune(now: float) -> None:
+    window = start_window_s()
+    while _STARTS and now - _STARTS[0] >= window:
+        _STARTS.popleft()
+    for sid, at in list(_PENDING.items()):
+        if now - at > _PENDING_TTL_S:
+            _PENDING.pop(sid, None)
+
+
+def start_room_s(*, extra: int = 0) -> float:
+    """Seconds until one more study may be admitted under the start cap (0 = now).
+
+    ``extra`` counts studies already promised a start (pending submits).
+    """
+    cap = max_study_starts()
+    if cap <= 0:
+        return 0.0
+    now = time.monotonic()
+    _prune(now)
+    used = len(_STARTS) + max(0, extra)
+    if used < cap:
+        return 0.0
+    idx = used - cap
+    if idx < len(_STARTS):
+        return max(0.0, start_window_s() - (now - _STARTS[idx]))
+    return typical_study_s()
+
+
+def submit_retry_after() -> int | None:
+    """Seconds a new submit should wait, or None when it may be accepted now."""
+    wait = start_room_s(extra=len(_PENDING))
+    return max(1, math.ceil(wait)) if wait > 0 else None
+
+
+def reserve(study: Any) -> None:
+    """A submitted study: counted against the start cap, and refused browsers until admitted."""
+    _PENDING[str(study.id)] = time.monotonic()
+
+
+def may_open(study_id: str | None) -> bool:
+    """False while this study waits to start: it must not hold a browser session."""
+    if not study_id:
+        return True
+    sid = str(study_id)
+    if sid in _ACTIVE:
+        return True
+    return sid not in _PENDING and sid not in _TICKETS
+
+
+def _admit(study: Any) -> None:
+    now = time.monotonic()
+    _PENDING.pop(str(study.id), None)
+    _STARTS.append(now)
+    _ACTIVE[study.id] = now
+    _OBJS[study.id] = study
+
+
+def admit_now(study: Any) -> bool:
+    """Admit at once when nothing else runs or waits here and the caps allow. Browsers may open after True."""
+    if study.id in _ACTIVE:
+        return True
+    if _ACTIVE or _TICKETS or len(_ACTIVE) >= max_concurrent_studies():
+        return False
+    if start_room_s() > 0:
+        return False
+    _admit(study)
+    return True
 
 
 def session_cap() -> int:
@@ -246,24 +350,17 @@ def queue_snapshot() -> dict[str, Any]:
 
 async def acquire(study: Any, touch: Callable[..., None]) -> None:
     """Wait for this server's turn and enough free Browserbase sessions, showing a queued state."""
-    if not _enabled():
-        _ACTIVE[study.id] = time.monotonic()
-        return
-    try:
-        from mvp.preopen import take_admission
-
-        preadmitted = take_admission(study.id)
-    except Exception:
-        preadmitted = False
-    if preadmitted:
+    if study.id in _ACTIVE:
         # Admitted at submit, when its product browsers were pre-opened; a
         # recount now would count those browsers as another run's.
         study.queue_eta_s = None
         study.queue_position = None
         study.queued_s = 0.0
-        _ACTIVE[study.id] = time.monotonic()
         _OBJS[study.id] = study
         _COUNT_CACHE["at"] = 0.0
+        return
+    if not _enabled():
+        _admit(study)
         return
     need = needed_sessions(study)
     _TICKETS.append(study.id)
@@ -275,7 +372,15 @@ async def acquire(study: Any, touch: Callable[..., None]) -> None:
             counted: dict[str, Any] | None = None
             reason = ""
             burst_eta: int | None = None
-            if ahead == 0 and not _ACTIVE:
+            rate_wait = start_room_s()
+            room = rate_wait <= 0 and len(_ACTIVE) < max_concurrent_studies()
+            if ahead == 0 and rate_wait > 0:
+                reason = (
+                    f"{max_study_starts()} studies started here in the last "
+                    f"{int(round(start_window_s() / 60))} minutes"
+                )
+                burst_eta = int(rate_wait) + 1
+            elif ahead == 0 and not _ACTIVE:
                 counted = await _count(max_age_s=5.0 if not shown else 0.0)
                 n = int(counted["n"]) if counted else 0
                 free = session_cap() - n
@@ -300,7 +405,7 @@ async def acquire(study: Any, touch: Callable[..., None]) -> None:
             else:
                 reason = f"{ahead} study ahead in the queue" if ahead == 1 else f"{ahead} studies ahead in the queue"
             waited = time.monotonic() - started
-            if waited > max_wait_s():
+            if waited > max_wait_s() and room:
                 print(f"study {study.id}: browsers still busy after {int(waited)}s; starting anyway", flush=True)
                 break
             if burst_eta is not None:
@@ -327,8 +432,7 @@ async def acquire(study: Any, touch: Callable[..., None]) -> None:
     study.queue_eta_s = None
     study.queue_position = None
     study.queued_s = round(time.monotonic() - started, 1) if shown else 0.0
-    _ACTIVE[study.id] = time.monotonic()
-    _OBJS[study.id] = study
+    _admit(study)
     # Sessions opened from here on count against the next caller's check.
     _COUNT_CACHE["at"] = 0.0
 
@@ -362,6 +466,7 @@ def release(study: Any) -> None:
         pass
     began = _ACTIVE.pop(study.id, None)
     _OBJS.pop(study.id, None)
+    _PENDING.pop(str(study.id), None)
     if began is not None and str(getattr(study, "status", "")) == "complete":
         _RECENT_S.append(time.monotonic() - began)
     _COUNT_CACHE["at"] = 0.0

@@ -1224,7 +1224,11 @@ class A11yBoot:
 
     async def _create_one(self, i: int, enqueue: bool = True) -> Any | None:
         from capability.browserbase_client import create_session, study_session_owner
+        from mvp import browser_slots
 
+        if browser_slots._enabled() and not browser_slots.may_open(self.study.id):
+            print(f"[a11y] session {i + 1} refused: study is queued", flush=True)
+            return None
         if _PRIMED is not None:
             try:
                 bb = _PRIMED.get_nowait()
@@ -3259,7 +3263,10 @@ async def _create_session_or_close(
     import threading
 
     from capability.browserbase_client import close_session, create_session, study_session_owner
+    from mvp import browser_slots
 
+    if browser_slots._enabled() and not browser_slots.may_open(study_id):
+        raise RuntimeError(f"study {str(study_id)[:8]} is queued: no browser until it starts")
     loop = asyncio.get_running_loop()
     fut: asyncio.Future[Any] = loop.create_future()
     cancel = threading.Event()

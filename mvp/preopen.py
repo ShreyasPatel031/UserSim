@@ -9,10 +9,12 @@ with the plan. When the agents start they take an already-open, already-rendered
 page (``claim``) instead of creating one; anything unclaimed is closed at the end
 of the study (``release``) or after ``MVP_PREOPEN_TTL_S``.
 
-Only runs when the browser queue would admit the study at once (no other study
-active or queued here, enough free sessions and create tokens), and then marks
-the study admitted so ``browser_slots.acquire`` does not re-count its own
-pre-opened sessions as someone else's. ``MVP_PREOPEN=0`` turns it off.
+Browsers open only after the study is admitted to the browser queue
+(``browser_slots.admit_now``): no other study active or queued here, the
+start-rate caps allow it, and enough free sessions and create tokens for the
+whole study. Otherwise nothing opens and the study waits in
+``browser_slots.acquire`` holding no browser. ``MVP_PREOPEN=0`` opens no
+browsers but still admits an idle study at submit.
 """
 from __future__ import annotations
 
@@ -23,7 +25,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 _POOLS: dict[str, dict[str, Any]] = {}
-_ADMITTED: set[str] = set()
+_DECISIONS: dict[str, asyncio.Future] = {}
 _PW: Any = None
 _PW_LOCK: asyncio.Lock | None = None
 
@@ -55,20 +57,27 @@ def preopen_count(study: Any) -> int:
     return max(0, n)
 
 
-def admitted(study_id: str | None) -> bool:
-    return bool(study_id) and study_id in _ADMITTED
+def _decide(study_id: str, admitted: bool) -> None:
+    fut = _DECISIONS.pop(study_id, None)
+    if fut is not None and not fut.done():
+        fut.set_result(admitted)
 
 
-def take_admission(study_id: str | None) -> bool:
-    """browser_slots.acquire: this study already passed the queue check when its browsers were pre-opened."""
-    if not study_id or study_id not in _ADMITTED:
+async def admitted(study_id: str | None, wait_s: float = 4.0) -> bool:
+    """True once the study may open browsers; waits up to ``wait_s`` for the submit-time decision."""
+    from mvp import browser_slots
+
+    if not study_id:
         return False
-    _ADMITTED.discard(study_id)
-    return True
-
-
-def busy_elsewhere(study_id: str) -> bool:
-    return any(sid != study_id for sid in _ADMITTED)
+    if study_id in browser_slots._ACTIVE:
+        return True
+    fut = _DECISIONS.get(study_id)
+    if fut is not None:
+        try:
+            await asyncio.wait_for(asyncio.shield(fut), wait_s)
+        except Exception:
+            pass
+    return study_id in browser_slots._ACTIVE
 
 
 async def _playwright() -> Any:
@@ -129,6 +138,16 @@ async def _start(study: Any, url: str, n: int) -> None:
 
     study_id = str(study.id)
     try:
+        await _admit_and_open(study, url, n)
+    finally:
+        _decide(study_id, study_id in browser_slots._ACTIVE)
+
+
+async def _admit_and_open(study: Any, url: str, n: int) -> None:
+    from mvp import browser_slots
+
+    study_id = str(study.id)
+    try:
         counted = await browser_slots._count(max_age_s=5.0)
     except Exception:
         counted = None
@@ -136,23 +155,20 @@ async def _start(study: Any, url: str, n: int) -> None:
     if counted is None:
         return
     free = browser_slots.session_cap() - int(counted.get("n") or 0)
-    # Two separate questions. Opening these few browsers only needs room for
-    # them; skipping the study queue needs room for the whole study. Asking for
-    # the full 24 to open 8 meant preopen was refused even with every session
-    # free ("skipped: free=25 need=24 burst_ok=False"), so the first screenshot
-    # waited on the normal agent path (measured 90.7s after Run).
-    burst_pre = browser_slots.burst_state(n, counted)
+    # The same room acquire() asks for. Pre-opening for a study that would then
+    # queue left it holding browsers while it waited.
+    enough = max(1, int(need * float(os.environ.get("MVP_QUEUE_MIN_FREE_FRAC", "0.75") or 0.75)))
     burst_full = browser_slots.burst_state(need, counted)
-    if free < n or not burst_pre.get("ok"):
+    if free < max(n, enough) or not burst_full.get("ok"):
         print(
-            f"[preopen] {study_id[:8]} skipped: free={free} want={n} burst_ok={burst_pre.get('ok')}",
+            f"[preopen] {study_id[:8]} not admitted: free={free} need={enough} burst_ok={burst_full.get('ok')}",
             flush=True,
         )
         return
-    if browser_slots._ACTIVE or browser_slots._TICKETS or busy_elsewhere(study_id):
+    if not browser_slots.admit_now(study):
         return
-    if free >= need and burst_full.get("ok"):
-        _ADMITTED.add(study_id)
+    if n <= 0:
+        return
     pool = {"q": asyncio.Queue(), "n": n, "claims": 0, "host": _host(url), "url": url, "closed": False, "t0": time.time()}
     _POOLS[study_id] = pool
     print(f"[preopen] {study_id[:8]} opening {n} product browsers on {url}", flush=True)
@@ -178,13 +194,15 @@ def start_preopen(study: Any, url: str) -> None:
         return
     if os.environ.get("MVP_A11Y_LOOP", "1").lower() in {"0", "false", "no"}:
         return
-    n = preopen_count(study)
-    if n <= 0 or browser_slots._ACTIVE or browser_slots._TICKETS or busy_elsewhere(str(study.id)):
+    if browser_slots._ACTIVE or browser_slots._TICKETS:
         return
+    n = preopen_count(study)
     try:
-        asyncio.get_running_loop().create_task(_start(study, url, n))
+        loop = asyncio.get_running_loop()
     except RuntimeError:
         return
+    _DECISIONS[str(study.id)] = loop.create_future()
+    loop.create_task(_start(study, url, n))
 
 
 async def claim(study_id: str | None, url: str, wait_s: float = 8.0) -> tuple[Any, Any, Any, float, float] | None:
@@ -217,12 +235,11 @@ async def claim(study_id: str | None, url: str, wait_s: float = 8.0) -> tuple[An
     return entry["bb"], browser, page, entry["started"], entry["opened"]
 
 
-async def release(study_id: str | None, *, reason: str = "end", keep_admitted: bool = False) -> int:
+async def release(study_id: str | None, *, reason: str = "end") -> int:
     """Close pre-opened pages nobody claimed. Returns how many were closed."""
     if not study_id:
         return 0
-    if not keep_admitted:
-        _ADMITTED.discard(study_id)
+    _decide(study_id, False)
     pool = _POOLS.pop(study_id, None)
     if not pool:
         return 0

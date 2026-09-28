@@ -535,6 +535,7 @@ async def list_studies(limit: int = 40):
 
 @app.post("/api/studies")
 async def start_study(body: StudyRequest, background: BackgroundTasks, request: Request):
+    from mvp import browser_slots
     from mvp.self_guard import dogfood_refusal
     from mvp.study import STUDIES, create_study, run_study, study_to_dict
 
@@ -544,6 +545,17 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     )
     if refused is not None:
         return refused
+    retry_after = browser_slots.submit_retry_after()
+    if retry_after:
+        return JSONResponse(
+            {
+                "detail": f"Too many studies started recently. Try again in {retry_after}s.",
+                "status": "rate_limited",
+                "retry_after_s": retry_after,
+            },
+            status_code=429,
+            headers={"Retry-After": str(retry_after)},
+        )
     segment = (body.segment or body.customers or "").strip()
     if not segment:
         segment = (
@@ -554,6 +566,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
         segment = "Curious first-time visitor"
 
     study = create_study(url, segment)
+    browser_slots.reserve(study)
     # Count busy Browserbase sessions while the plan is written, so the
     # queue check before agents start costs nothing on a free project.
     from mvp.browser_slots import prefetch_count
@@ -662,7 +675,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
 
                 if early_start.enabled():
                     # The first buyer starts on the product while the full plan is written.
-                    starter = await early_start.starter_plan(url)
+                    starter = await early_start.starter_plan(url, study=study)
                     if starter and not plan_task.done():
                         try:
                             early_start.start_early_agent(study, url, starter)
