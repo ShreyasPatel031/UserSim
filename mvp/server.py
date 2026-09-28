@@ -7,6 +7,7 @@ import os
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
@@ -533,11 +534,28 @@ async def list_studies(limit: int = 40):
     return {"studies": rows[: max(1, min(limit, 100))]}
 
 
+def _start_cap_refusal() -> JSONResponse | None:
+    from mvp import browser_slots
+
+    retry_after = browser_slots.submit_retry_after()
+    if not retry_after:
+        return None
+    return JSONResponse(
+        {
+            "detail": f"Too many studies started recently. Try again in {retry_after}s.",
+            "status": "rate_limited",
+            "retry_after_s": retry_after,
+        },
+        status_code=429,
+        headers={"Retry-After": str(retry_after)},
+    )
+
+
 @app.post("/api/studies")
 async def start_study(body: StudyRequest, background: BackgroundTasks, request: Request):
     from mvp import browser_slots
     from mvp.self_guard import dogfood_refusal
-    from mvp.study import STUDIES, create_study, run_study, study_to_dict
+    from mvp.study import create_study
 
     url = await _landing_url(_normalize_url(body.url))
     refused = await dogfood_refusal(
@@ -545,17 +563,12 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     )
     if refused is not None:
         return refused
-    retry_after = browser_slots.submit_retry_after()
-    if retry_after:
-        return JSONResponse(
-            {
-                "detail": f"Too many studies started recently. Try again in {retry_after}s.",
-                "status": "rate_limited",
-                "retry_after_s": retry_after,
-            },
-            status_code=429,
-            headers={"Retry-After": str(retry_after)},
-        )
+
+    # Anything that starts no study returns above this line, so it never gets a 429.
+    limited = _start_cap_refusal()
+    if limited is not None:
+        return limited
+
     segment = (body.segment or body.customers or "").strip()
     if not segment:
         segment = (
@@ -567,6 +580,18 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
 
     study = create_study(url, segment)
     browser_slots.reserve(study)
+    try:
+        return await _launch_study(study, url, body, request)
+    except BaseException:
+        # No runner owns the study yet, so nothing else would free its turn.
+        browser_slots.release(study)
+        raise
+
+
+async def _launch_study(study: Any, url: str, body: StudyRequest, request: Request):
+    from mvp import browser_slots
+    from mvp.study import STUDIES, run_study, study_to_dict
+
     # Count busy Browserbase sessions while the plan is written, so the
     # queue check before agents start costs nothing on a free project.
     from mvp.browser_slots import prefetch_count
@@ -799,6 +824,10 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 )
             except Exception as kill_exc:  # noqa: BLE001
                 print(f"timeout kill failed: {kill_exc!r}", flush=True)
+            # A timeout during planning never reaches run_study, whose finally frees the turn.
+            for early in (getattr(study_obj, "early_runs", None) or {}).values():
+                early.cancel()
+            browser_slots.release(study_obj)
             # Re-persist after kill so GCS shows abandoned, not running.
             try:
                 persist_study(study_obj)
@@ -856,6 +885,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 payload["stream_event"] = "error"
                 await queue.put(payload)
             finally:
+                browser_slots.release(study)
                 await queue.put(None)
                 STUDY_TASKS.pop(study.id, None)
 
@@ -905,6 +935,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                     print(f"plan failed: {exc!r}", flush=True)
             await run_study(study.id)
         finally:
+            browser_slots.release(study)
             STUDY_TASKS.pop(study.id, None)
 
     STUDY_TASKS[study.id] = asyncio.create_task(_bg())

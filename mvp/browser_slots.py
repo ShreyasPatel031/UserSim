@@ -17,6 +17,10 @@ creates for it. Admissions are capped per rolling window
 (``MVP_MAX_STUDY_STARTS`` per ``MVP_STUDY_START_WINDOW_S``) and in number at
 once (``MVP_MAX_CONCURRENT_STUDIES``); a submit that would exceed the start
 cap gets ``submit_retry_after`` seconds to wait instead.
+
+An admitted entry whose study has finished (complete, error, abandoned,
+killed) or is older than ``MVP_ADMITTED_MAX_AGE_S`` no longer holds a slot, so
+a study that exits without ``release`` cannot stall the queue.
 """
 from __future__ import annotations
 
@@ -24,6 +28,7 @@ import asyncio
 import collections
 import math
 import os
+import sys
 import time
 from datetime import datetime, timezone
 from typing import Any, Callable
@@ -112,6 +117,53 @@ def may_open(study_id: str | None) -> bool:
     return sid not in _PENDING and sid not in _TICKETS
 
 
+_FINISHED = {"complete", "done", "error", "failed", "abandoned", "killed", "interrupted", "timed_out", "cancelled"}
+
+
+def admitted_max_age_s() -> float:
+    """Backstop: an admitted entry this old stops counting, whatever its study reports."""
+    try:
+        return max(60.0, float(os.environ.get("MVP_ADMITTED_MAX_AGE_S") or "1800"))
+    except ValueError:
+        return 1800.0
+
+
+def _study_obj(sid: str) -> Any:
+    obj = _OBJS.get(sid)
+    if obj is None:
+        mod = sys.modules.get("mvp.study")
+        obj = (getattr(mod, "STUDIES", None) or {}).get(sid) if mod else None
+    return obj
+
+
+def finished(study: Any) -> bool:
+    if study is None:
+        return False
+    status = str(getattr(study, "status", "") or "").lower()
+    return status in _FINISHED or bool(getattr(study, "kill_requested", False))
+
+
+def drop_stale() -> None:
+    """Forget admitted and pending entries whose study already ended, and admitted ones past the max age."""
+    now = time.monotonic()
+    max_age = admitted_max_age_s()
+    for sid, began in list(_ACTIVE.items()):
+        why = "finished" if finished(_study_obj(sid)) else ("expired" if now - began > max_age else "")
+        if why:
+            _ACTIVE.pop(sid, None)
+            _OBJS.pop(sid, None)
+            print(f"study {sid}: dropped {why} browser-queue entry", flush=True)
+    for sid in list(_PENDING):
+        if finished(_study_obj(sid)):
+            _PENDING.pop(sid, None)
+
+
+def busy() -> bool:
+    """Another study holds or waits for this server's browsers."""
+    drop_stale()
+    return bool(_ACTIVE or _TICKETS)
+
+
 def _admit(study: Any) -> None:
     now = time.monotonic()
     _PENDING.pop(str(study.id), None)
@@ -121,10 +173,16 @@ def _admit(study: Any) -> None:
 
 
 def admit_now(study: Any) -> bool:
-    """Admit at once when nothing else runs or waits here and the caps allow. Browsers may open after True."""
+    """Admit a reserved study at once when nothing else runs or waits here and the caps allow.
+
+    Browsers may open after True. A study released before this runs (its
+    request failed or timed out) is no longer reserved and is not admitted.
+    """
     if study.id in _ACTIVE:
         return True
-    if _ACTIVE or _TICKETS or len(_ACTIVE) >= max_concurrent_studies():
+    if str(study.id) not in _PENDING or finished(study):
+        return False
+    if busy() or len(_ACTIVE) >= max_concurrent_studies():
         return False
     if start_room_s() > 0:
         return False
@@ -368,6 +426,7 @@ async def acquire(study: Any, touch: Callable[..., None]) -> None:
     shown = False
     try:
         while True:
+            drop_stale()
             ahead = list(_TICKETS).index(study.id)
             counted: dict[str, Any] | None = None
             reason = ""
@@ -457,7 +516,10 @@ def release_study_sessions(study_id: str) -> int:
 
 
 def release(study: Any) -> None:
-    """End of a study (finished, failed, or cancelled): free the turn and any leftover sessions."""
+    """End of a study (finished, failed, timed out, or cancelled): free the turn and any leftover sessions.
+
+    Safe to call more than once; only the call that frees an entry sweeps sessions.
+    """
     try:
         from mvp.preopen import release as _preopen_release
 
@@ -466,10 +528,12 @@ def release(study: Any) -> None:
         pass
     began = _ACTIVE.pop(study.id, None)
     _OBJS.pop(study.id, None)
-    _PENDING.pop(str(study.id), None)
+    pending = _PENDING.pop(str(study.id), None)
     if began is not None and str(getattr(study, "status", "")) == "complete":
         _RECENT_S.append(time.monotonic() - began)
     _COUNT_CACHE["at"] = 0.0
+    if began is None and pending is None:
+        return
 
     async def _later() -> None:
         # Agents close their own sessions; give them a moment, then sweep leftovers.

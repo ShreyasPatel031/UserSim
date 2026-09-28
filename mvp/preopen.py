@@ -194,7 +194,7 @@ def start_preopen(study: Any, url: str) -> None:
         return
     if os.environ.get("MVP_A11Y_LOOP", "1").lower() in {"0", "false", "no"}:
         return
-    if browser_slots._ACTIVE or browser_slots._TICKETS:
+    if browser_slots.busy():
         return
     n = preopen_count(study)
     try:
