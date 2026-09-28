@@ -331,19 +331,26 @@ class WrongCategoryTests(unittest.TestCase):
         self.assertEqual(reason, "")
         self.assertEqual(landed, ["https://rosebud.ai/", "https://www.astrocade.com/"])
         self.assertEqual(names["https://www.astrocade.com/"], "Astrocade")
-        # A for-sale redirect is not replaced with a different company that shares the name.
+        # A for-sale redirect is not replaced via brand search (the name may be a different company).
+        # But invent_competitors is called as a fallback to find more same-job rivals.
         queries.clear()
-        landed, _names, _remap, reason = asyncio.run(
-            settle_rival_urls(
-                "https://chatforce.com/",
-                "Chatforce",
-                [("https://rosebud.ai/", "Rosebud"), ("https://latentlabs.ai/", "Latent Labs")],
-                read,
-                limit=2,
-                probe=probe,
-                search=search,
+        from unittest import mock
+
+        async def mock_invent(*args, **kwargs):
+            return []
+
+        with mock.patch("mvp.study.invent_competitors", mock_invent):
+            landed, _names, _remap, reason = asyncio.run(
+                settle_rival_urls(
+                    "https://chatforce.com/",
+                    "Chatforce",
+                    [("https://rosebud.ai/", "Rosebud"), ("https://latentlabs.ai/", "Latent Labs")],
+                    read,
+                    limit=2,
+                    probe=probe,
+                    search=search,
+                )
             )
-        )
         self.assertIn("only 1 live", reason)
         self.assertEqual(queries, [])
         # A dead guess's buyers follow the live backup that took its slot, not the dead URL.
@@ -548,6 +555,19 @@ class BotBlockedTreatedAsLiveTests(unittest.TestCase):
         self.assertTrue(result.ok)
         self.assertEqual(result.reason, "blocked_429")
         self.assertEqual(result.url, "https://example.com/")
+
+    def test_403_with_offsite_redirect_is_rejected(self):
+        """A 403 that redirected off-site (e.g. to a domain seller) is NOT accepted."""
+        import asyncio
+
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_403_redirect(url):
+            return 403, "https://forsale.dynadot.com/", "Forbidden"
+
+        result = asyncio.run(probe_competitor_url("https://example.com/", fetch=fetch_403_redirect))
+        self.assertFalse(result.ok)
+        self.assertIn("redirected_off_site", result.reason)
 
     def test_blocked_rival_does_not_stop_the_study(self):
         import asyncio
