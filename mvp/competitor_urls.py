@@ -319,13 +319,10 @@ async def probe_competitor_url(
             kind = "timeout"
         return ProbeResult(False, requested, "", f"{kind}:{detail}")
     final_url = _normalize_final(final_url or requested)
+    is_blocked = status in (403, 429)
     if status < 200 or status >= 400:
-        if status in (403, 429):
-            canonical = final_url or requested
-            if not canonical.endswith("/") and (urlparse(canonical).path in {"", "/"}):
-                canonical = canonical.rstrip("/") + "/"
-            return ProbeResult(True, canonical, final_url, f"blocked_{status}")
-        return ProbeResult(False, requested, final_url, f"http_{status}")
+        if not is_blocked:
+            return ProbeResult(False, requested, final_url, f"http_{status}")
     if not same_site(requested, final_url):
         return ProbeResult(
             False,
@@ -336,19 +333,21 @@ async def probe_competitor_url(
     if is_non_product_host(final_url):
         return ProbeResult(False, requested, final_url, "not_a_product_site")
     snippet = (body or "")[:6000]
-    if _DEFUNCT_RE.search(snippet):
+    if not is_blocked and _DEFUNCT_RE.search(snippet):
         return ProbeResult(False, requested, final_url, "defunct_page")
     # A document that only bounces with JavaScript (astrocade.xyz -> /lander) is
     # not a product homepage. httpx does not follow that bounce.
     visible = re.sub(r"<script.*?</script>|<style.*?</style>", " ", snippet, flags=re.S | re.I)
     visible = " ".join(re.sub(r"<[^>]+>", " ", visible).split())
     js_bounce = bool(re.search(r"window\.location|http-equiv\s*=\s*[\"']?refresh", snippet, re.I))
-    if len(visible) < 40 and (js_bounce or len(snippet) < 500):
+    if not is_blocked and len(visible) < 40 and (js_bounce or len(snippet) < 500):
         return ProbeResult(False, requested, final_url, "thin_page")
     # Prefer the resolved URL so agents open the live origin, not a dead alias.
     canonical = final_url or requested
     if not canonical.endswith("/") and (urlparse(canonical).path in {"", "/"}):
         canonical = canonical.rstrip("/") + "/"
+    if is_blocked:
+        return ProbeResult(True, canonical, final_url, f"blocked_{status}")
     return ProbeResult(True, canonical, final_url, "ok")
 
 
