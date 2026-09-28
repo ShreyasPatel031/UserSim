@@ -26,10 +26,14 @@ BODY = dict(_SITES.get(sys.argv[1] if len(sys.argv) > 1 else "linear") or _LINEA
 BODY.setdefault("max_agents", 24)
 
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from mvp.harness_http import urlopen_submit  # noqa: E402
+
+
 def _req(method: str, path: str, body: dict | None = None) -> dict:
     data = json.dumps(body).encode() if body is not None else None
     req = urllib.request.Request(BASE + path, data=data, method=method, headers={"content-type": "application/json"})
-    with urllib.request.urlopen(req, timeout=60) as resp:
+    with urlopen_submit(req, timeout=60) as resp:
         return json.loads(resp.read())
 
 

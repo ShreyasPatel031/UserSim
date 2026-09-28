@@ -21,6 +21,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 DEFAULT_STUDY = "d7884443-203e-4080-9dda-4347346d86ef"  # langchain.com e2e
 ARTIFACT_DIR = Path(os.environ.get("CURSOR_ARTIFACTS_DIR", "/opt/cursor/artifacts"))
 DEFAULT_SMOKE_URL = os.environ.get("SMOKE_URL", "https://useagency.dev/")
@@ -45,7 +47,9 @@ def _post(url: str, payload: dict, timeout: float = 60) -> dict:
         },
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
+    from mvp.harness_http import urlopen_submit
+
+    with urlopen_submit(req, timeout=timeout) as resp:
         raw = resp.read().decode("utf-8").strip()
     if not raw:
         raise SystemExit("FAIL empty POST response")

@@ -266,9 +266,20 @@ function setLoading(loading) {
   btnLabel.textContent = loading ? "…" : "Run";
 }
 
-function showError(msg) {
+function showError(msg, link) {
   const text = String(msg || "Couldn’t finish this run. Try again in a moment.");
-  if (progressHint) progressHint.textContent = text;
+  if (progressHint) {
+    progressHint.textContent = text;
+    const href = String(link?.href || "");
+    // Only same-site paths from our own API are linked.
+    if (href.startsWith("/") && !href.startsWith("//")) {
+      const a = document.createElement("a");
+      a.href = href;
+      a.textContent = link.label || "Open it";
+      a.className = "error-link";
+      progressHint.append(" ", a);
+    }
+  }
   if (phaseLabel) phaseLabel.textContent = "Paused";
 }
 
@@ -1947,14 +1958,18 @@ form.addEventListener("submit", async (e) => {
     if (!startRes.ok) {
       const raw = await startRes.text();
       let detail = "Could not start study";
+      let link = null;
       try {
         const err = JSON.parse(raw);
         detail = err.detail || err.error || detail;
         if (typeof detail !== "string") detail = JSON.stringify(detail);
+        if (err.sample_report_url) link = { href: err.sample_report_url, label: "See a sample report →" };
       } catch {
         if (raw) detail = raw.slice(0, 300);
       }
-      throw new Error(detail);
+      const startErr = new Error(detail);
+      startErr.link = link;
+      throw startErr;
     }
 
     let data = null;
@@ -2071,7 +2086,7 @@ form.addEventListener("submit", async (e) => {
       /network|failed to fetch|load failed|aborted/i.test(raw)
         ? "Connection interrupted — refresh and try again."
         : raw;
-    showError(soft);
+    showError(soft, err.link);
   } finally {
     setLoading(false);
   }

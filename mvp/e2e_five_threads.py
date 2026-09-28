@@ -271,7 +271,9 @@ async def run(args: argparse.Namespace) -> dict:
         await page.fill('textarea[name="tasks"]', args.tasks)
 
         _log("→ click Run (not smoke), max_agents=5")
-        await page.click("#submit-btn")
+        from mvp.harness_http import click_run
+
+        await click_run(page, "#submit-btn")
 
         await page.wait_for_selector("#tasks-list li.task-row", timeout=args.brief_timeout_s * 1000)
         t_tasks = time.time()

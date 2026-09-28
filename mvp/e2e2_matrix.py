@@ -562,8 +562,9 @@ async def run_e2e2(args: argparse.Namespace) -> dict:
                 await page.fill('textarea[name="customers"]', args.segment)
 
             _log("→ click Run (not Smoke)")
-            t_submit = time.time()
-            await page.click("#submit-btn")
+            from mvp.harness_http import click_run
+
+            t_submit = await click_run(page, "#submit-btn")
         else:
             _log(f"→ attach study {study_id} (no new Run)")
         study: dict = {}

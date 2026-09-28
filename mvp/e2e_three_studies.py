@@ -9,6 +9,8 @@ import time
 import urllib.request
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:3000"
 OUT = Path("/tmp/usersim_e2e_three.json")
 
@@ -225,10 +227,12 @@ def run_study_stream(url: str, timeout_s: int) -> dict:
             "X-UserSim-Stream": "1",
         },
     )
+    from mvp.harness_http import urlopen_submit
+
     t0 = time.time()
     last: dict = {}
     study_id = ""
-    with urllib.request.urlopen(req, timeout=timeout_s + 120) as res:
+    with urlopen_submit(req, timeout=timeout_s + 120) as res:
         ctype = (res.headers.get("Content-Type") or "").lower()
         if "ndjson" in ctype or "stream" in ctype:
             while True:
