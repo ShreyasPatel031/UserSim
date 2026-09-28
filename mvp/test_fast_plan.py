@@ -470,3 +470,114 @@ QUOTE_WALL = """<html><head><title>Zo Computer</title>
 <p>“ """ + ("I built a 3D portfolio website on Zo and left Webflow behind for good. " * 40) + """”</p>
 <p>Is Zo like OpenClaw or Hermes? Unlike OpenClaw or Hermes, Zo is a personal cloud computer with an always-on agent. No terminal setup.</p>
 </body></html>"""
+
+
+class KeywordAlternativeKeptTests(unittest.TestCase):
+    """Keyword alternatives are kept when the page names no explicit rivals."""
+
+    def test_keyword_only_returns_false_when_compared_is_empty(self):
+        from mvp.fast_plan import _keyword_only_name
+
+        read_with_comparisons = {"compared_with": ["OpenClaw", "Hermes"], "keyword_alts": ["Zapier", "n8n"]}
+        self.assertTrue(_keyword_only_name("Zapier", read_with_comparisons))
+        self.assertFalse(_keyword_only_name("OpenClaw", read_with_comparisons))
+        read_no_comparisons = {"compared_with": [], "keyword_alts": ["Zapier", "n8n", "Make"]}
+        self.assertFalse(_keyword_only_name("Zapier", read_no_comparisons))
+        self.assertFalse(_keyword_only_name("n8n", read_no_comparisons))
+
+    def test_zapier_alternative_keeps_keyword_rivals_when_page_names_none(self):
+        import asyncio
+
+        from mvp.fast_plan import settle_rival_urls
+
+        async def probe(urls, product_url, exclude_hosts=None, limit=2):
+            del product_url
+            live, dropped = [], []
+            blocked = set(exclude_hosts or [])
+            for url in urls:
+                host = url.split("/")[2].removeprefix("www.")
+                if host in blocked:
+                    continue
+                live.append(url if url.endswith("/") else url + "/")
+                blocked.add(host)
+                if len(live) >= limit:
+                    break
+            return live, dropped
+
+        read = {"compared_with": [], "keyword_alts": ["Zapier", "n8n", "Make"]}
+        landed, names, _remap, reason = asyncio.run(
+            settle_rival_urls(
+                "https://www.activepieces.com/",
+                "Activepieces",
+                [("https://zapier.com/", "Zapier"), ("https://n8n.io/", "n8n"), ("https://make.com/", "Make")],
+                read,
+                limit=2,
+                probe=probe,
+            )
+        )
+        self.assertEqual(reason, "")
+        self.assertEqual(landed, ["https://zapier.com/", "https://n8n.io/"])
+        self.assertEqual(names["https://zapier.com/"], "Zapier")
+
+
+class BotBlockedTreatedAsLiveTests(unittest.TestCase):
+    """A 403 or 429 response means the site is alive but blocking the probe."""
+
+    def test_403_is_kept_as_live_but_blocked(self):
+        import asyncio
+
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_403(url):
+            return 403, url, "Forbidden"
+
+        result = asyncio.run(probe_competitor_url("https://replit.com/", fetch=fetch_403))
+        self.assertTrue(result.ok)
+        self.assertEqual(result.reason, "blocked_403")
+        self.assertEqual(result.url, "https://replit.com/")
+
+    def test_429_is_kept_as_live_but_blocked(self):
+        import asyncio
+
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_429(url):
+            return 429, url, "Too Many Requests"
+
+        result = asyncio.run(probe_competitor_url("https://example.com/", fetch=fetch_429))
+        self.assertTrue(result.ok)
+        self.assertEqual(result.reason, "blocked_429")
+        self.assertEqual(result.url, "https://example.com/")
+
+    def test_blocked_rival_does_not_stop_the_study(self):
+        import asyncio
+
+        from mvp.fast_plan import settle_rival_urls
+
+        async def probe(urls, product_url, exclude_hosts=None, limit=2):
+            del product_url
+            live, dropped = [], []
+            blocked = set(exclude_hosts or [])
+            for url in urls:
+                host = url.split("/")[2].removeprefix("www.")
+                if host in blocked:
+                    continue
+                live.append(url if url.endswith("/") else url + "/")
+                blocked.add(host)
+                if len(live) >= limit:
+                    break
+            return live, dropped
+
+        read = {"compared_with": [], "keyword_alts": []}
+        landed, names, _remap, reason = asyncio.run(
+            settle_rival_urls(
+                "https://www.cursor.com/",
+                "Cursor",
+                [("https://replit.com/", "Replit"), ("https://github.com/codespaces", "Codespaces")],
+                read,
+                limit=2,
+                probe=probe,
+            )
+        )
+        self.assertEqual(reason, "")
+        self.assertEqual(len(landed), 2)
