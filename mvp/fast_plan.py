@@ -491,11 +491,21 @@ def _brand_matches(url: str, name: str) -> bool:
     return bool(brand) and bool(needle) and (brand == needle or brand in needle or needle in brand)
 
 
-async def _homepage_for_name(name: str, hint: str, search: Any | None = None, *, require_brand: bool = False, category: str = "") -> str:
+async def _homepage_for_name(
+    name: str,
+    hint: str,
+    search: Any | None = None,
+    *,
+    require_brand: bool = False,
+    category: str = "",
+    timeout: float = 4.0,
+) -> str:
     """Live-looking homepage for a named product, when the guessed domain was dead.
     
     When category is provided, search for '<name> <category>' to find the right product
     (e.g., 'OpenClaw open-source AI agent' finds openclaw.ai, not a law firm).
+    
+    Has a per-call timeout to prevent individual searches from blocking recovery.
     """
     from mvp.competitor_urls import looks_like_product_page, search_result_urls
 
@@ -510,17 +520,24 @@ async def _homepage_for_name(name: str, hint: str, search: Any | None = None, *,
     needle = name.lower().strip()
     if len(needle) < 3 or not query:
         return ""
-    try:
-        hits = await finder(query)
-    except Exception:
+
+    async def _search() -> str:
+        try:
+            hits = await finder(query)
+        except Exception:
+            return ""
+        for url, title in hits or []:
+            if needle not in f"{url} {title}".lower() or not looks_like_product_page(url):
+                continue
+            if require_brand and not _brand_matches(url, name):
+                continue
+            return _clean_url(url)
         return ""
-    for url, title in hits or []:
-        if needle not in f"{url} {title}".lower() or not looks_like_product_page(url):
-            continue
-        if require_brand and not _brand_matches(url, name):
-            continue
-        return _clean_url(url)
-    return ""
+
+    try:
+        return await asyncio.wait_for(_search(), timeout=timeout)
+    except asyncio.TimeoutError:
+        return ""
 
 
 async def settle_rival_urls(
@@ -532,6 +549,7 @@ async def settle_rival_urls(
     limit: int,
     probe: Any | None = None,
     search: Any | None = None,
+    recovery_deadline: float = 12.0,
 ) -> tuple[list[str], dict[str, str], dict[str, str], str]:
     """Drop parked, for-sale, and off-site redirects. Resolve a page-named rival to its real homepage.
 
@@ -545,6 +563,10 @@ async def settle_rival_urls(
     Identity = name AND category: a page must match both the expected product name and its
     category. A law firm page fails for an AI-agent rival even if the name matches.
     On 403/429 with no usable body, go to recovery with '<name> <category>' search.
+    
+    Recovery runs concurrently with a deadline (default 12s). On deadline, returns whatever
+    rivals have passed so far. Never falls back to unrelated generic rivals when category-matched
+    recovery was attempted but didn't complete in time.
     """
     from mvp.competitor_urls import filter_live_competitor_urls, registrable_host, same_site
 
@@ -567,6 +589,7 @@ async def settle_rival_urls(
     names: dict[str, str] = {}
     remap: dict[str, str] = {}
     used = {registrable_host(product_url)}
+    probe_cache: dict[str, tuple[list[str], list[tuple[str, str]]]] = {}
 
     def _name_for(live_url: str) -> str:
         for raw, name, _ in usable:
@@ -583,6 +606,7 @@ async def settle_rival_urls(
         for raw, _name, _ in usable:
             if same_site(raw, live_url):
                 remap[raw] = live_url
+
     compared = [(c or "").strip() for c in (read.get("compared_with") or [])]
     drop_reason = {u: reason for u, reason in dropped}
     _RECOVERABLE_FAILURES = (
@@ -593,9 +617,10 @@ async def settle_rival_urls(
         "blocked_403_unverified", "blocked_429_unverified",
         "farewell_redirect",
     )
+
+    # Identify rivals needing recovery
+    recovery_candidates: list[tuple[str, str, str, bool, str]] = []
     for raw, name, category in usable:
-        if len(names) >= limit:
-            break
         if registrable_host(raw) not in dropped_hosts:
             continue
         named = name.strip().lower() in {c.lower() for c in compared}
@@ -608,29 +633,74 @@ async def settle_rival_urls(
             hint = " ".join(c for c in compared if c.lower() != name.strip().lower()) or product_name
         else:
             hint = product_name
-        # Search with '<name> <category>' to find the right product (e.g., openclaw.ai not a law firm)
-        found = await _homepage_for_name(name, hint, search, require_brand=brand_miss, category=category)
+        recovery_candidates.append((raw, name, category, brand_miss, hint))
+
+    # Run recovery concurrently with a deadline
+    recovery_attempted = bool(recovery_candidates)
+
+    async def _recover_one(raw: str, name: str, category: str, brand_miss: bool, hint: str) -> tuple[str, str | None]:
+        """Try to find and verify a replacement URL for one failed rival. Returns (raw, live_url or None)."""
+        found = await _homepage_for_name(name, hint, search, require_brand=brand_miss, category=category, timeout=4.0)
         if not found:
-            continue
-        # Probe the found URL with category verification
-        more, _more_dropped = await prober(
-            [found],
-            product_url=product_url,
-            exclude_hosts=set(used),
-            limit=1,
-            names={found: name},
-            categories={found: category},
-        )
+            return raw, None
+
+        # Check cache first
+        cache_key = found
+        if cache_key in probe_cache:
+            more, _ = probe_cache[cache_key]
+        else:
+            try:
+                more, more_dropped = await asyncio.wait_for(
+                    prober(
+                        [found],
+                        product_url=product_url,
+                        exclude_hosts=set(),
+                        limit=1,
+                        names={found: name},
+                        categories={found: category},
+                    ),
+                    timeout=4.0,
+                )
+                probe_cache[cache_key] = (more, more_dropped)
+            except asyncio.TimeoutError:
+                return raw, None
+
         if not more:
-            continue
-        live_url = more[0]
-        host = registrable_host(live_url)
-        if not host or host in used:
-            continue
-        names[live_url] = name
-        remap[raw] = live_url
-        used.add(host)
-    if len(names) < limit:
+            return raw, None
+        return raw, more[0]
+
+    if recovery_candidates:
+        recovery_tasks = [
+            asyncio.create_task(_recover_one(raw, name, cat, brand_miss, hint))
+            for raw, name, cat, brand_miss, hint in recovery_candidates
+        ]
+        try:
+            done, pending = await asyncio.wait(recovery_tasks, timeout=recovery_deadline)
+            for task in pending:
+                task.cancel()
+            for task in done:
+                try:
+                    raw, live_url = task.result()
+                    if live_url and len(names) < limit:
+                        host = registrable_host(live_url)
+                        if host and host not in used:
+                            # Find the name for this rival
+                            rival_name = ""
+                            for orig_raw, orig_name, _ in usable:
+                                if orig_raw == raw:
+                                    rival_name = orig_name
+                                    break
+                            names[live_url] = rival_name
+                            remap[raw] = live_url
+                            used.add(host)
+                except Exception:
+                    pass
+        except Exception as exc:
+            print(f"[settle_rival_urls] recovery failed: {exc!r}", flush=True)
+
+    # Only fall back to invent_competitors if no category-based recovery was attempted
+    # (e.g., all failures were non-recoverable like off-site redirects)
+    if len(names) < limit and not recovery_attempted:
         from mvp.study import invent_competitors
 
         page_text = str(read.get("full_text") or read.get("text") or "")
@@ -652,8 +722,16 @@ async def settle_rival_urls(
                     break
         except Exception as exc:  # noqa: BLE001
             print(f"[settle_rival_urls] invent_competitors failed: {exc!r}", flush=True)
-    if len(names) < limit:
-        found = [u for u in names][:limit]
+
+    # If recovery WAS attempted (category-matched search), return partial results as success
+    # Don't fall back to unrelated generic rivals in that case
+    if len(names) < limit and recovery_attempted and len(names) > 0:
+        print(f"[settle_rival_urls] partial recovery: {len(names)} of {limit} rivals found", flush=True)
+        # Continue to ordered_live below - this is a partial success, not a failure
+
+    # If no recovery was attempted (invent_competitors fallback path) and still short, reject
+    if len(names) < limit and not recovery_attempted:
+        found = list(names.keys())[:limit]
         drop_reasons = [f"{registrable_host(u)} ({r})" for u, r in dropped[:4]]
         reason_summary = "; ".join(drop_reasons) if drop_reasons else "no usable URLs"
         return (
@@ -663,6 +741,7 @@ async def settle_rival_urls(
             f"Refusing to start browsers: {reason_summary}, "
             f"and only {len(found)} live homepage(s) remained (need {limit}).",
         )
+
     # Follow the planned order, then any live backup that filled a hole.
     ordered_live: list[str] = []
     for raw, _name, _cat in usable:

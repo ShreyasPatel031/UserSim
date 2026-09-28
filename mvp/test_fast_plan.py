@@ -731,3 +731,163 @@ class PlannerTimeoutTests(unittest.TestCase):
         self.assertLess(elapsed, 5.0)
         # Should have at least attempted probing
         self.assertGreater(call_count, 0)
+
+
+class ZoRecoveryTests(unittest.TestCase):
+    """Test Zo-like scenario: wrong domain guesses recover to correct ones via category search."""
+
+    def test_zo_openclaw_hermes_recovery(self):
+        """openclaw.com (law firm) and hermes.com (403) recover to openclaw.ai and hermes-agent.nousresearch.com."""
+        import asyncio
+
+        from mvp.fast_plan import settle_rival_urls
+
+        # Simulate the Zo scenario where planner guesses wrong domains
+        probed_urls: list[str] = []
+
+        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None, categories=None):
+            """Probe that rejects wrong-category domains and accepts correct ones."""
+            probed_urls.extend(urls)
+            del product_url
+            live, dropped = [], []
+            blocked = set(exclude_hosts or [])
+            url_names = names or {}
+            url_cats = categories or {}
+
+            for url in urls:
+                host = url.split("/")[2].removeprefix("www.")
+                if host in blocked:
+                    dropped.append((url, "duplicate_or_product_host"))
+                    continue
+
+                # openclaw.com is a law firm - wrong category for AI agent
+                if host == "openclaw.com":
+                    dropped.append((url, "wrong_category"))
+                    continue
+
+                # hermes.com returns 403 - unverifiable as AI agent
+                if host == "hermes.com":
+                    dropped.append((url, "blocked_403_unverified"))
+                    continue
+
+                # The correct domains pass
+                if host in {"openclaw.ai", "hermes-agent.nousresearch.com"}:
+                    live.append(url if url.endswith("/") else url + "/")
+                    blocked.add(host)
+                    continue
+
+                # Default: accept other URLs
+                live.append(url if url.endswith("/") else url + "/")
+                blocked.add(host)
+                if len(live) >= limit:
+                    break
+
+            return live, dropped
+
+        search_queries: list[str] = []
+
+        async def search(query):
+            """Search that returns correct domains for AI agent products."""
+            search_queries.append(query)
+            q = query.lower()
+
+            if "openclaw" in q and ("ai" in q or "agent" in q):
+                return [("https://openclaw.ai/", "OpenClaw — Open-Source AI Assistant")]
+            if "hermes" in q and ("ai" in q or "agent" in q):
+                return [("https://hermes-agent.nousresearch.com/", "Hermes Agent by Nous Research")]
+            return []
+
+        # Zo's page mentions OpenClaw and Hermes as comparisons
+        read = {
+            "compared_with": ["OpenClaw", "Hermes"],
+            "keyword_alts": ["Zapier", "n8n"],  # SEO alternatives that should be skipped
+        }
+
+        landed, names, remap, reason = asyncio.run(
+            settle_rival_urls(
+                "https://www.zo.computer/",
+                "Zo",
+                [
+                    ("https://www.openclaw.com/", "OpenClaw", "open-source AI agent"),
+                    ("https://www.hermes.com/", "Hermes", "AI agent assistant"),
+                ],
+                read,
+                limit=2,
+                probe=probe,
+                search=search,
+            )
+        )
+
+        # Should recover both to correct domains
+        self.assertEqual(reason, "")
+        self.assertIn("https://openclaw.ai/", landed)
+        self.assertIn("https://hermes-agent.nousresearch.com/", landed)
+        self.assertEqual(len(landed), 2)
+        self.assertEqual(names["https://openclaw.ai/"], "OpenClaw")
+        self.assertEqual(names["https://hermes-agent.nousresearch.com/"], "Hermes")
+        self.assertEqual(remap["https://www.openclaw.com/"], "https://openclaw.ai/")
+        self.assertEqual(remap["https://www.hermes.com/"], "https://hermes-agent.nousresearch.com/")
+
+        # Search should have included category
+        self.assertTrue(any("openclaw" in q.lower() and "agent" in q.lower() for q in search_queries))
+        self.assertTrue(any("hermes" in q.lower() and "agent" in q.lower() for q in search_queries))
+
+    def test_split_path_returns_partial_plan_on_deadline(self):
+        """When recovery hits deadline, return whatever rivals passed."""
+        import asyncio
+
+        from mvp.fast_plan import settle_rival_urls
+
+        async def slow_probe(urls, product_url, exclude_hosts=None, limit=2, names=None, categories=None):
+            """First rival passes immediately, second hangs forever."""
+            del product_url, names, categories
+            live, dropped = [], []
+            blocked = set(exclude_hosts or [])
+
+            for i, url in enumerate(urls):
+                host = url.split("/")[2].removeprefix("www.")
+                if host in blocked:
+                    continue
+
+                if i == 0:
+                    # First rival passes
+                    live.append(url if url.endswith("/") else url + "/")
+                    blocked.add(host)
+                else:
+                    # Other rivals fail (need recovery)
+                    dropped.append((url, "wrong_category"))
+
+                if len(live) >= limit:
+                    break
+
+            return live, dropped
+
+        async def slow_search(query):
+            """Search that hangs forever (simulating deadline hit)."""
+            await asyncio.sleep(100)  # Will be cancelled by deadline
+            return []
+
+        read = {"compared_with": ["First", "Second"], "keyword_alts": []}
+
+        # Use a very short recovery deadline
+        landed, names, remap, reason = asyncio.run(
+            settle_rival_urls(
+                "https://product.com/",
+                "Product",
+                [
+                    ("https://first-rival.com/", "First", "software"),
+                    ("https://second-rival.com/", "Second", "software"),
+                ],
+                read,
+                limit=2,
+                probe=slow_probe,
+                search=slow_search,
+                recovery_deadline=0.1,  # Very short deadline
+            )
+        )
+
+        # Should return partial results: first rival passed, second recovery timed out
+        self.assertEqual(reason, "")  # Not an error - partial success
+        self.assertEqual(len(landed), 1)
+        self.assertIn("https://first-rival.com/", landed)
+        self.assertEqual(names["https://first-rival.com/"], "First")
