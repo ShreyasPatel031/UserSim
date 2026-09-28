@@ -64,9 +64,15 @@ _DEFUNCT_RE = re.compile(
     r"this product (?:has )?(?:shut|closed)|permanently closed|"
     r"domain (?:is )?for sale|buy this domain|parked (?:free|domain)|"
     r"this (?:site|page|domain) (?:can(?:no|')t be reached|is (?:unavailable|for sale))|"
-    r"website (?:has )?expired|account (?:has been )?suspended",
+    r"website (?:has )?expired|account (?:has been )?suspended|"
+    r"farewell|goodbye|sunsetting|sunsetted|discontinued|"
+    r"no longer available to new customers|service (?:has been |is being )?retired|"
+    r"we(?:'re| are) (?:shutting|closing)|end of (?:life|service)|"
+    r"thank you for (?:being part of|using)|it(?:'s| has) been (?:a )?(?:great |incredible )?journey",
     re.I,
 )
+
+_FAREWELL_PATH_RE = re.compile(r"/(?:blog|news|announcements?)/.*(?:farewell|goodbye|sunset|shutdown|closing)", re.I)
 
 # Phrases that describe our harness, not the product.
 _OUR_FAULT_RE = re.compile(
@@ -160,6 +166,44 @@ def _brand(host: str) -> str:
     else:
         label = parts[-2]
     return label if len(label) >= 4 else ""
+
+
+def brand_in_content(expected_name: str, url: str, body: str) -> bool:
+    """True when the page content confirms this is the expected product, not a different company with the same domain."""
+    if not expected_name or len(expected_name) < 3:
+        return True
+    name_lower = expected_name.lower().strip()
+    name_words = set(re.findall(r"[a-z0-9]+", name_lower))
+    host = registrable_host(url)
+    host_brand = _brand(host) if host else ""
+    if host_brand and host_brand.lower() == name_lower:
+        return True
+    body_lower = (body or "")[:15000].lower()
+    title_match = re.search(r"<title[^>]*>(.*?)</title>", body_lower, re.I | re.S)
+    title = title_match.group(1) if title_match else ""
+    meta_match = re.search(r'<meta[^>]+name=["\']description["\'][^>]+content=["\']([^"\']+)', body_lower, re.I)
+    meta_desc = meta_match.group(1) if meta_match else ""
+    check_text = f"{title} {meta_desc} {body_lower[:3000]}"
+    if name_lower in check_text:
+        return True
+    if len(name_words) >= 2 and all(w in check_text for w in name_words):
+        return True
+    return False
+
+
+def host_matches_brand(expected_name: str, url: str) -> bool:
+    """True when the URL's host matches the expected product/brand name (for 403/429 without body)."""
+    if not expected_name or len(expected_name) < 3:
+        return False
+    name_lower = re.sub(r"[^a-z0-9]", "", expected_name.lower())
+    host = registrable_host(url)
+    if not host:
+        return False
+    host_brand = _brand(host)
+    if not host_brand:
+        host_parts = host.replace(".", "").replace("-", "")
+        return name_lower in host_parts or host_parts in name_lower
+    return host_brand.lower() == name_lower or name_lower in host_brand.lower() or host_brand.lower() in name_lower
 
 
 def is_non_product_host(url: str) -> bool:
@@ -299,8 +343,13 @@ async def probe_competitor_url(
     url: str,
     *,
     fetch: Fetcher | None = None,
+    expected_name: str | None = None,
 ) -> ProbeResult:
-    """Follow redirects. Keep the URL only when the final host is the same product."""
+    """Follow redirects. Keep the URL only when the final host is the same product.
+
+    When ``expected_name`` is provided, verify the page content matches that product.
+    For 403/429 responses without body content, require the host to match the brand.
+    """
     requested = (url or "").strip()
     if not requested.startswith("http"):
         return ProbeResult(False, requested, "", "not_http")
@@ -332,22 +381,27 @@ async def probe_competitor_url(
         )
     if is_non_product_host(final_url):
         return ProbeResult(False, requested, final_url, "not_a_product_site")
+    if _FAREWELL_PATH_RE.search(final_url):
+        return ProbeResult(False, requested, final_url, "farewell_redirect")
     snippet = (body or "")[:6000]
-    if not is_blocked and _DEFUNCT_RE.search(snippet):
+    if _DEFUNCT_RE.search(snippet):
         return ProbeResult(False, requested, final_url, "defunct_page")
-    # A document that only bounces with JavaScript (astrocade.xyz -> /lander) is
-    # not a product homepage. httpx does not follow that bounce.
     visible = re.sub(r"<script.*?</script>|<style.*?</style>", " ", snippet, flags=re.S | re.I)
     visible = " ".join(re.sub(r"<[^>]+>", " ", visible).split())
     js_bounce = bool(re.search(r"window\.location|http-equiv\s*=\s*[\"']?refresh", snippet, re.I))
     if not is_blocked and len(visible) < 40 and (js_bounce or len(snippet) < 500):
         return ProbeResult(False, requested, final_url, "thin_page")
-    # Prefer the resolved URL so agents open the live origin, not a dead alias.
     canonical = final_url or requested
     if not canonical.endswith("/") and (urlparse(canonical).path in {"", "/"}):
         canonical = canonical.rstrip("/") + "/"
     if is_blocked:
+        if expected_name and not host_matches_brand(expected_name, canonical):
+            return ProbeResult(False, requested, final_url, f"blocked_{status}_wrong_brand")
+        if len(snippet) < 100:
+            return ProbeResult(False, requested, final_url, f"blocked_{status}_unverified")
         return ProbeResult(True, canonical, final_url, f"blocked_{status}")
+    if expected_name and not brand_in_content(expected_name, canonical, body):
+        return ProbeResult(False, requested, final_url, "wrong_company")
     return ProbeResult(True, canonical, final_url, "ok")
 
 
@@ -375,6 +429,7 @@ async def filter_live_competitor_urls(
     exclude_hosts: set[str] | None = None,
     fetch: Fetcher | None = None,
     limit: int = 2,
+    names: dict[str, str] | None = None,
 ) -> tuple[list[str], list[tuple[str, str]]]:
     """Probe candidates. Return (live canonical URLs, dropped (url, reason)).
 
@@ -382,24 +437,26 @@ async def filter_live_competitor_urls(
     brief for its whole 12s timeout while the rest waited their turn — and the
     results are then walked in the original order, so which URLs are kept and
     which are dropped is exactly what probing them one by one would give.
+
+    When ``names`` is provided, verify each URL's content matches the expected product.
     """
     product_host = registrable_host(product_url)
     blocked = {product_host} | {h.lower().removeprefix("www.") for h in (exclude_hosts or set()) if h}
     live: list[str] = []
     dropped: list[tuple[str, str]] = []
     seen: set[str] = set()
+    url_names = names or {}
 
     candidates = [(raw or "").strip() for raw in urls]
     gate = asyncio.Semaphore(max(1, _probe_concurrency()))
 
     async def _probe(url: str) -> ProbeResult | None:
-        # Host checks are order-dependent (a host is blocked by whatever came
-        # before it), so they stay in the walk below; this only does the I/O.
         if not url or not registrable_host(url):
             return None
+        expected = url_names.get(url, "")
         async with gate:
             try:
-                return await probe_competitor_url(url, fetch=fetch)
+                return await probe_competitor_url(url, fetch=fetch, expected_name=expected)
             except Exception as exc:  # noqa: BLE001
                 return ProbeResult(False, url, "", f"probe_error:{type(exc).__name__}")
 

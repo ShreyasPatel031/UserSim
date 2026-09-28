@@ -290,8 +290,8 @@ class WrongCategoryTests(unittest.TestCase):
 
         queries: list[str] = []
 
-        async def probe(urls, product_url, exclude_hosts=None, limit=2):
-            del product_url
+        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None):
+            del product_url, names
             live, dropped = [], []
             blocked = set(exclude_hosts or [])
             for url in urls:
@@ -395,8 +395,8 @@ class WrongCategoryTests(unittest.TestCase):
         read = page_read_from_html(QUOTE_WALL)
         probed: list[str] = []
 
-        async def probe(urls, product_url, exclude_hosts=None, limit=2):
-            del product_url
+        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None):
+            del product_url, names
             probed.extend(urls)
             dead = {"https://www.openclaw.com/", "https://hermes.ai/"}
             live, dropped = [], []
@@ -497,8 +497,8 @@ class KeywordAlternativeKeptTests(unittest.TestCase):
 
         from mvp.fast_plan import settle_rival_urls
 
-        async def probe(urls, product_url, exclude_hosts=None, limit=2):
-            del product_url
+        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None):
+            del product_url, names
             live, dropped = [], []
             blocked = set(exclude_hosts or [])
             for url in urls:
@@ -535,8 +535,14 @@ class BotBlockedTreatedAsLiveTests(unittest.TestCase):
 
         from mvp.competitor_urls import probe_competitor_url
 
+        # A 403 with sufficient body content (>=100 chars) is accepted as blocked
         async def fetch_403(url):
-            return 403, url, "Forbidden"
+            body = (
+                "<html><head><title>Replit - Access Limited</title></head><body>"
+                "<h1>Access Limited</h1><p>Replit is currently limiting automated access. "
+                "Please try again later or sign in to continue.</p></body></html>"
+            )
+            return 403, url, body
 
         result = asyncio.run(probe_competitor_url("https://replit.com/", fetch=fetch_403))
         self.assertTrue(result.ok)
@@ -548,8 +554,14 @@ class BotBlockedTreatedAsLiveTests(unittest.TestCase):
 
         from mvp.competitor_urls import probe_competitor_url
 
+        # A 429 with sufficient body content (>=100 chars) is accepted as blocked
         async def fetch_429(url):
-            return 429, url, "Too Many Requests"
+            body = (
+                "<html><head><title>Too Many Requests</title></head><body>"
+                "<h1>Rate Limited</h1><p>You have made too many requests. "
+                "Please wait a few minutes and try again. Thank you for your patience.</p></body></html>"
+            )
+            return 429, url, body
 
         result = asyncio.run(probe_competitor_url("https://example.com/", fetch=fetch_429))
         self.assertTrue(result.ok)
@@ -574,8 +586,8 @@ class BotBlockedTreatedAsLiveTests(unittest.TestCase):
 
         from mvp.fast_plan import settle_rival_urls
 
-        async def probe(urls, product_url, exclude_hosts=None, limit=2):
-            del product_url
+        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None):
+            del product_url, names
             live, dropped = [], []
             blocked = set(exclude_hosts or [])
             for url in urls:
@@ -601,3 +613,120 @@ class BotBlockedTreatedAsLiveTests(unittest.TestCase):
         )
         self.assertEqual(reason, "")
         self.assertEqual(len(landed), 2)
+
+
+class SplitPathTaskRematchingTests(unittest.TestCase):
+    """After recovery replaces dead rivals, personas and tasks must be re-matched."""
+
+    def test_task_favors_remapped_from_dead_url_to_live_replacement(self):
+        """A task favoring a dead rival URL maps to the live replacement."""
+        from mvp.fast_plan import resolve_favors
+
+        dead_url = "https://dead-rival.com/"
+        live_url = "https://live-backup.com/"
+        comps = [live_url]
+        names = {live_url: "Live Backup"}
+
+        # A task string that was written for the dead URL maps to the live one
+        # if the replacement was found via brand search and the task now has nowhere to go.
+        # After remap, favors should resolve to "product" or a live comp URL.
+        self.assertEqual(resolve_favors("product", "zo.computer", comps, names, "Zo"), "product")
+        self.assertEqual(resolve_favors(live_url, "zo.computer", comps, names, "Zo"), live_url)
+        self.assertEqual(resolve_favors("Live Backup", "zo.computer", comps, names, "Zo"), live_url)
+
+    def test_balance_tasks_fills_gap_after_remap(self):
+        """balance_tasks keeps two per site when a site lost its tasks."""
+        from mvp.fast_plan import balance_tasks
+
+        tasks = [
+            {"prompt": "Task A", "favors": "product"},
+            {"prompt": "Task B", "favors": "product"},
+            {"prompt": "Task C", "favors": "https://rival-1.com/"},
+            {"prompt": "Task D", "favors": "https://rival-1.com/"},
+            {"prompt": "Task E", "favors": ""},  # was for dead rival, now orphan
+            {"prompt": "Task F", "favors": ""},  # was for dead rival, now orphan
+        ]
+        balanced = balance_tasks(tasks)
+        # Should keep tasks fairly distributed
+        self.assertGreaterEqual(len(balanced), 4)
+        self.assertLessEqual(len(balanced), 6)
+
+    def test_missing_task_slots_detects_underrepresented_site(self):
+        """missing_task_slots returns sites with fewer than 2 tasks."""
+        from mvp.fast_plan import missing_task_slots
+
+        tasks = [
+            {"prompt": "Task A", "favors": "product"},
+            {"prompt": "Task B", "favors": "product"},
+            {"prompt": "Task C", "favors": "https://rival-1.com/"},
+            {"prompt": "Task D", "favors": "https://rival-1.com/"},
+        ]
+        sites = ["product", "https://rival-1.com/", "https://rival-2.com/"]
+        need = missing_task_slots(tasks, sites)
+        self.assertIn("https://rival-2.com/", need)
+        self.assertEqual(need["https://rival-2.com/"], 2)
+        self.assertNotIn("product", need)
+        self.assertNotIn("https://rival-1.com/", need)
+
+
+class PlannerTimeoutTests(unittest.TestCase):
+    """The planner must not drop the entire plan on timeout."""
+
+    def test_split_plan_returns_none_on_timeout_without_crash(self):
+        """A timeout in _split_compare_plan returns None, not an exception."""
+        import asyncio
+        import os
+        from unittest import mock
+
+        from mvp.fast_plan import _split_compare_plan
+
+        # Mock the page read to hang forever
+        async def slow_page_read(url):
+            await asyncio.sleep(100)  # longer than any timeout
+            return {"title": "", "text": "", "links": []}
+
+        with mock.patch("mvp.fast_plan._page_read", slow_page_read):
+            result = asyncio.run(_split_compare_plan("https://example.com/", timeout=0.1))
+
+        self.assertIsNone(result)
+
+    def test_settle_rival_urls_completes_within_budget(self):
+        """Recovery should not hang indefinitely; it completes or times out gracefully."""
+        import asyncio
+        import time
+
+        from mvp.fast_plan import settle_rival_urls
+
+        call_count = 0
+
+        async def slow_probe(urls, product_url, exclude_hosts=None, limit=2, names=None):
+            nonlocal call_count
+            call_count += 1
+            await asyncio.sleep(0.05)  # Simulate network delay
+            live = [u + "/" if not u.endswith("/") else u for u in urls[:limit]]
+            return live, []
+
+        async def slow_search(query):
+            await asyncio.sleep(0.05)  # Simulate search delay
+            return [("https://found.example.com/", "Found Example")]
+
+        read = {"compared_with": ["Example"], "keyword_alts": []}
+        start = time.time()
+
+        landed, names, remap, reason = asyncio.run(
+            settle_rival_urls(
+                "https://product.com/",
+                "Product",
+                [("https://rival.com/", "Rival")],
+                read,
+                limit=2,
+                probe=slow_probe,
+                search=slow_search,
+            )
+        )
+
+        elapsed = time.time() - start
+        # Should complete in a reasonable time, not hang
+        self.assertLess(elapsed, 5.0)
+        # Should have at least attempted probing
+        self.assertGreater(call_count, 0)

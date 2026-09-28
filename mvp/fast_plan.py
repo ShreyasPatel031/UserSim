@@ -532,8 +532,9 @@ async def settle_rival_urls(
 
     usable = [(u, n) for u, n in ordered if u and not _keyword_only_name(n, read)]
     urls = [u for u, _ in usable]
+    url_names = {u: n for u, n in usable}
     prober = probe or filter_live_competitor_urls
-    live, dropped = await prober(urls, product_url=product_url, limit=limit)
+    live, dropped = await prober(urls, product_url=product_url, limit=limit, names=url_names)
     dropped_hosts = {registrable_host(u) for u, _reason in dropped}
     names: dict[str, str] = {}
     remap: dict[str, str] = {}
@@ -556,7 +557,12 @@ async def settle_rival_urls(
                 remap[raw] = live_url
     compared = [(c or "").strip() for c in (read.get("compared_with") or [])]
     drop_reason = {u: reason for u, reason in dropped}
-    _RECOVERABLE_FAILURES = ("thin_page", "http_403", "http_404", "tls_error", "tls_or_connect_error", "timeout", "defunct_page")
+    _RECOVERABLE_FAILURES = (
+        "thin_page", "http_403", "http_404", "tls_error", "tls_or_connect_error",
+        "timeout", "defunct_page", "wrong_company", "blocked_403_wrong_brand",
+        "blocked_429_wrong_brand", "blocked_403_unverified", "blocked_429_unverified",
+        "farewell_redirect",
+    )
     for raw, name in usable:
         if len(names) >= limit:
             break
@@ -1237,8 +1243,29 @@ async def _split_compare_plan(
         if len(tasks) < 2 or len(personas) < 2:
             return None
         for row in personas + tasks:
-            row["favors"] = remap_live.get(row["favors"], row["favors"])
+            old_favors = row["favors"]
+            row["favors"] = remap_live.get(old_favors, old_favors)
+            if row["favors"] not in landed and row["favors"] != "product":
+                row["favors"] = ""
         comp_names = {u: live_names.get(u) or names.get(u, "") for u in landed}
+        tasks = balance_tasks(tasks)
+        need = missing_task_slots(tasks, ["product"] + landed)
+        if need:
+            try:
+                label = lambda s: product if s == "product" else f"{comp_names.get(s) or s} ({s})"
+                extra = await ask(_TASK_TOPUP.format(
+                    product=product, url=url,
+                    rivals=", ".join(f"{comp_names.get(c) or c} ({c})" for c in landed),
+                    have="; ".join(t["prompt"] for t in tasks),
+                    need="; ".join(f"{n + 2} favoring {'product' if s == 'product' else s} ({label(s)})" for s, n in need.items()),
+                ))
+                more = compare_tasks(extra if isinstance(extra, dict) else {}, own, landed, comp_names)
+                seen = {t["prompt"].lower() for t in tasks}
+                pricing = any(_PRICING_RE.search(t["prompt"]) for t in tasks)
+                more = [m for m in more if m["prompt"].lower() not in seen and not (pricing and _PRICING_RE.search(m["prompt"]))]
+                tasks = balance_tasks([t for t in tasks] + [m for m in more if m["favors"] in need])
+            except Exception as exc:  # noqa: BLE001
+                print(f"[fast_plan] split task top-up failed: {exc!r}", flush=True)
         took = round(asyncio.get_running_loop().time() - t0, 2)
         print(f"[fast_plan] compare(split {took}s) {url} rivals={landed} tasks={[t['prompt'] for t in tasks]}", flush=True)
         return {
@@ -1256,6 +1283,9 @@ async def _split_compare_plan(
 
     try:
         return await asyncio.wait_for(_run(), timeout=timeout)
+    except asyncio.TimeoutError:
+        print(f"[fast_plan] split compare plan timeout after {timeout}s", flush=True)
+        return None
     except Exception as exc:  # noqa: BLE001
         print(f"[fast_plan] split compare plan skipped: {exc!r}", flush=True)
         return None
