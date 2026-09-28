@@ -556,26 +556,22 @@ async def settle_rival_urls(
                 remap[raw] = live_url
     compared = [(c or "").strip() for c in (read.get("compared_with") or [])]
     drop_reason = {u: reason for u, reason in dropped}
+    _RECOVERABLE_FAILURES = ("thin_page", "http_403", "http_404", "tls_error", "tls_or_connect_error", "timeout", "defunct_page")
     for raw, name in usable:
         if len(names) >= limit:
             break
         if registrable_host(raw) not in dropped_hosts:
             continue
         named = name.strip().lower() in {c.lower() for c in compared}
-        # Wrong TLD of the right brand (astrocade.xyz is an empty bounce; astrocade.com is the product).
-        # An off-site redirect to a domain seller is not looked up: the name may be a different company.
         reason = drop_reason.get(raw, "")
-        brand_miss = (
-            not named
-            and reason.startswith(("thin_page", "http_403", "http_404"))
-            and _brand_matches(raw, name)
-        )
-        if not named and not brand_miss:
+        is_recoverable = reason.startswith(_RECOVERABLE_FAILURES)
+        brand_miss = not named and is_recoverable and _brand_matches(raw, name)
+        if not named and not brand_miss and not is_recoverable:
             continue
         if named:
             hint = " ".join(c for c in compared if c.lower() != name.strip().lower()) or product_name
         else:
-            hint = ""
+            hint = product_name
         found = await _homepage_for_name(name, hint, search, require_brand=brand_miss)
         if not found:
             continue
@@ -594,6 +590,28 @@ async def settle_rival_urls(
         names[live_url] = name
         remap[raw] = live_url
         used.add(host)
+    if len(names) < limit:
+        from mvp.study import invent_competitors
+
+        page_text = str(read.get("full_text") or read.get("text") or "")
+        try:
+            invented = await invent_competitors(
+                product_url,
+                product_name,
+                page_text,
+                exclude_hosts=set(used),
+                want=limit - len(names),
+            )
+            for inv_url in invented:
+                host = registrable_host(inv_url)
+                if not host or host in used:
+                    continue
+                names[inv_url] = ""
+                used.add(host)
+                if len(names) >= limit:
+                    break
+        except Exception as exc:  # noqa: BLE001
+            print(f"[settle_rival_urls] invent_competitors failed: {exc!r}", flush=True)
     if len(names) < limit:
         found = [u for u in names][:limit]
         drop_reasons = [f"{registrable_host(u)} ({r})" for u, r in dropped[:4]]
