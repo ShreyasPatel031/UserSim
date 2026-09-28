@@ -23,12 +23,14 @@ POLL_S = 5
 
 
 def http_json(method: str, path: str, body: dict | None = None, timeout: float = 60):
+    from mvp.self_guard import admin_headers
+
     data = None if body is None else json.dumps(body).encode()
     req = urllib.request.Request(
         f"{BASE}{path}",
         data=data,
         method=method,
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        headers={"Content-Type": "application/json", "Accept": "application/json", **admin_headers()},
     )
     with urllib.request.urlopen(req, timeout=timeout) as res:
         raw = res.read().decode()

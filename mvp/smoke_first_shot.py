@@ -171,12 +171,14 @@ def main() -> int:
 
     # Kill to save Browserbase $
     try:
+        from mvp.self_guard import admin_headers
+
         req = urllib.request.Request(
             f"{BASE}/api/runtime/kill",
             data=json.dumps(
                 {"study_id": sid, "agents": True, "vms": False, "seeds": False}
             ).encode(),
-            headers={"Content-Type": "application/json"},
+            headers={"Content-Type": "application/json", **admin_headers()},
             method="POST",
         )
         urllib.request.urlopen(req, timeout=30).read()

@@ -8,7 +8,7 @@ import re
 import sys
 from pathlib import Path
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -24,6 +24,10 @@ STATIC = Path(__file__).resolve().parent / "static"
 IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 
 app = FastAPI(title="UserSim MVP", version="0.1.0")
+
+from mvp.self_guard import AgentBrowserGuard, require_admin  # noqa: E402
+
+app.add_middleware(AgentBrowserGuard)
 
 
 @app.on_event("startup")
@@ -126,6 +130,8 @@ class StudyRequest(BaseModel):
     skip_competitors: bool = False
     max_agents: int | None = Field(default=None, ge=1, le=75)
     backend: str = Field(default="default", pattern="^(default)$")
+    # Studies of UserSim's own site also need the admin bearer token.
+    admin_dogfood: bool = False
 
 
 def _normalize_url(raw: str) -> str:
@@ -529,9 +535,15 @@ async def list_studies(limit: int = 40):
 
 @app.post("/api/studies")
 async def start_study(body: StudyRequest, background: BackgroundTasks, request: Request):
+    from mvp.self_guard import dogfood_refusal
     from mvp.study import STUDIES, create_study, run_study, study_to_dict
 
     url = await _landing_url(_normalize_url(body.url))
+    refused = await dogfood_refusal(
+        [body.url, url, *body.competitors], body.admin_dogfood, request.headers.get("authorization")
+    )
+    if refused is not None:
+        return refused
     segment = (body.segment or body.customers or "").strip()
     if not segment:
         segment = (
@@ -908,9 +920,9 @@ async def runtime_queue():
     return queue_snapshot()
 
 
-@app.post("/api/runtime/kill")
+@app.post("/api/runtime/kill", dependencies=[Depends(require_admin)])
 async def runtime_kill(body: KillRequest | None = None):
-    """Kill Browserbase agents and/or UserSim VMs immediately."""
+    """Kill Browserbase agents and/or UserSim VMs immediately. Needs the admin bearer token."""
     from mvp.kill_switch import kill_now_async
 
     req = body or KillRequest()

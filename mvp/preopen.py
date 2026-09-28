@@ -95,6 +95,9 @@ async def _open_one(study_id: str, url: str, pool: dict[str, Any]) -> None:
         browser = await pw.chromium.connect_over_cdp(bb.connect_url)
         context = browser.contexts[0] if browser.contexts else await browser.new_context()
         page = context.pages[0] if context.pages else await context.new_page()
+        from mvp.self_guard import install_agent_marker
+
+        await install_agent_marker(context, study_id)
         try:
             await page.set_viewport_size({"width": 1440, "height": 900})
         except Exception:

@@ -361,10 +361,12 @@ def _stop_study(base: str, study_id: str) -> None:
             "study_id": study_id,
         }
     ).encode()
+    from mvp.self_guard import admin_headers
+
     req = urllib.request.Request(
         base.rstrip("/") + "/api/runtime/kill",
         data=body,
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        headers={"Content-Type": "application/json", "Accept": "application/json", **admin_headers()},
         method="POST",
     )
     try:
