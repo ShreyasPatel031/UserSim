@@ -12,7 +12,7 @@
 ROOT=/opt/usersim_fm
 RESULTS=$ROOT/results/qwen3_14b_dpo
 ADAPTERS=$ROOT/adapters/qwen3_14b_sft_dpo
-SFT_ADAPTER=$ROOT/adapters/qwen3_14b_sft/checkpoint-400
+SFT_ADAPTER=$ROOT/checkpoints/qwen3_14b_sft/checkpoint-400
 GCS_BUCKET=gs://ai-studio-bucket-347838016394-us-east1/usersim-models/qwen3_14b_sft_dpo400
 GCS_SFT_CKPT=gs://ai-studio-bucket-347838016394-us-east1/usersim-models/qwen3_14b_sft/checkpoint-400
 GCS_SFT_CORPUS=gs://ai-studio-bucket-347838016394-us-east1/usersim-models/qwen3_14b_sft/data/socrates_sft.jsonl
@@ -99,19 +99,20 @@ setup_venv() {
     VENV=$ROOT/venvs/dpo
     TORCH_VERSION="2.6.0"
     
-    if [ ! -d "$VENV" ]; then
-        echo "Creating DPO training venv..."
-        python3 -m venv $VENV
-        source $VENV/bin/activate
-        pip install --upgrade pip wheel
-        pip install torch==${TORCH_VERSION}+cu124 --index-url https://download.pytorch.org/whl/cu124
-        pip install 'transformers>=4.51,<5' 'peft>=0.12' 'trl>=0.9,<1.0'
-        pip install datasets accelerate bitsandbytes scipy sentencepiece protobuf
-        pip install huggingface_hub
-    else
-        source $VENV/bin/activate
+    # Check if venv exists and has pip
+    if [ ! -f "$VENV/bin/pip" ]; then
+        echo "Creating DPO training venv with pip bootstrap..."
+        rm -rf $VENV
+        python3 -m venv $VENV --without-pip
+        # Bootstrap pip for Python 3.9 which doesn't include pip in venv by default
+        curl -sS https://bootstrap.pypa.io/pip/3.9/get-pip.py | $VENV/bin/python3
+        $VENV/bin/pip install --upgrade pip wheel setuptools
+        $VENV/bin/pip install torch==${TORCH_VERSION}+cu124 --index-url https://download.pytorch.org/whl/cu124
+        $VENV/bin/pip install 'transformers>=4.51,<4.52' 'peft>=0.12' 'trl>=0.9,<1.0'
+        $VENV/bin/pip install datasets accelerate bitsandbytes scipy sentencepiece protobuf
+        $VENV/bin/pip install huggingface_hub
     fi
-    echo "Venv ready: $(python3 --version), torch=$(python3 -c 'import torch; print(torch.__version__)')"
+    echo "Venv ready: $($VENV/bin/python3 --version), torch=$($VENV/bin/python3 -c 'import torch; print(torch.__version__)')"
 }
 
 download_sft_checkpoint() {
@@ -151,8 +152,7 @@ generate_dpo_pairs() {
         return 0
     fi
     echo "Generating DPO pairs from SFT corpus..."
-    source $ROOT/venvs/dpo/bin/activate
-    python3 $SCRIPTS/build_socrates_dpo_pairs.py \
+    $ROOT/venvs/dpo/bin/python3 $SCRIPTS/build_socrates_dpo_pairs.py \
         --sft-corpus $ROOT/data/socrates_sft.jsonl \
         --out $DPO_CORPUS \
         --seed 7
@@ -211,9 +211,8 @@ run_training() {
     export RESUME=1
     export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
     
-    source $ROOT/venvs/dpo/bin/activate
     cd $SCRIPTS
-    python3 -u dpo_qwen3_14b_qlora.py >> $RESULTS/train.log 2>&1
+    $ROOT/venvs/dpo/bin/python3 -u dpo_qwen3_14b_qlora.py >> $RESULTS/train.log 2>&1
     local exit_code=$?
     echo $exit_code > $RESULTS/train.exit_code
     return $exit_code
