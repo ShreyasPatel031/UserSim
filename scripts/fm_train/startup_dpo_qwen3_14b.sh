@@ -207,6 +207,8 @@ run_training() {
     export GRAD_ACCUM=32
     export SAVE_STEPS=10
     export LOG_STEPS=1
+    export MAX_STEPS=240
+    export WARMUP_RATIO=0.042
     export EPOCHS=1
     export RESUME=1
     export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
