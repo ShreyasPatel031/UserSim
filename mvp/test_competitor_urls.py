@@ -18,6 +18,15 @@ from mvp.competitor_urls import (
 from mvp.study import _summary_from_agent_results
 
 
+_PRODUCT_PAGE_BODY = (
+    "<html><head><title>{title}</title></head><body>"
+    "<h1>{title}</h1><p>Welcome to {title}. We help teams manage work efficiently. "
+    "Join thousands of companies that trust us to deliver great results. "
+    "Get started today and see why customers love our product.</p>"
+    "<a href='/pricing'>Pricing</a> <a href='/signup'>Sign up</a></body></html>"
+)
+
+
 async def _fake_fetch(url: str):
     if "height.app" in url:
         raise OSError("SSL_ERROR_SYSCALL in connection to height.app:443")
@@ -26,9 +35,9 @@ async def _fake_fetch(url: str):
     if "shutdown.example" in url:
         return 200, "https://shutdown.example/", "We have shut down. This product is no longer available."
     if "asana.com" in url:
-        return 200, "https://asana.com/", "Asana — work management"
+        return 200, "https://asana.com/", _PRODUCT_PAGE_BODY.format(title="Asana — work management")
     if "shortcut.com" in url:
-        return 200, "https://www.shortcut.com/", "Shortcut"
+        return 200, "https://www.shortcut.com/", _PRODUCT_PAGE_BODY.format(title="Shortcut")
     if "g2.com" in url:
         return 200, "https://www.g2.com/categories/project-management", "Best software"
     return 404, url, "missing"
