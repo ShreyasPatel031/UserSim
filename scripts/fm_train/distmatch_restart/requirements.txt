@@ -1,0 +1,4 @@
+functions-framework==3.8.2
+google-cloud-compute==1.30.0
+google-cloud-tasks==2.18.0
+cloudevents==1.11.0

@@ -1,0 +1,93 @@
+{
+  "screen_studies": [
+    "326nv",
+    "3muqx",
+    "3pcdm",
+    "3rvgz",
+    "53kjy"
+  ],
+  "screen_results": [
+    {
+      "name": "ckpt-425",
+      "W": 0.1431534374147884,
+      "acc_raw": 0.5557835831658812,
+      "acc_clipped": 0.6308205786613501,
+      "n_studies": 5,
+      "n_cells": 120,
+      "n_preds": 55128
+    },
+    {
+      "name": "Qwen3-14B",
+      "W": 0.25303590404774096,
+      "acc_raw": 0.6756622470778435,
+      "acc_clipped": 0.7277211832748233,
+      "n_studies": 5,
+      "n_cells": 120,
+      "n_preds": 55128
+    },
+    {
+      "name": "re-sorted",
+      "W": 0.1431534374147884,
+      "acc_raw": 0.5713710846623858,
+      "acc_clipped": 0.6464080801578548,
+      "n_studies": 5,
+      "n_cells": 120,
+      "n_preds": 55128
+    },
+    {
+      "name": "mix (p=0.29)",
+      "W": 0.1431534374147884,
+      "acc_raw": 0.5557835831658812,
+      "acc_clipped": 0.6308205786613501,
+      "n_studies": 5,
+      "n_cells": 120,
+      "n_preds": 55128
+    }
+  ],
+  "full_results": [
+    {
+      "name": "ckpt-425",
+      "W": 0.1418496098994107,
+      "acc_raw": 0.6057863951197795,
+      "acc_clipped": 0.6760980689362858,
+      "n_studies": 40,
+      "n_cells": 801,
+      "n_preds": 482642
+    },
+    {
+      "name": "Qwen3-14B",
+      "W": 0.2152827626453159,
+      "acc_raw": 0.6698255087223015,
+      "acc_clipped": 0.732075021263546,
+      "n_studies": 40,
+      "n_cells": 801,
+      "n_preds": 482642
+    },
+    {
+      "name": "re-sorted",
+      "W": 0.1418496098994107,
+      "acc_raw": 0.6090571733305976,
+      "acc_clipped": 0.6793688471471038,
+      "n_studies": 40,
+      "n_cells": 801,
+      "n_preds": 482642
+    },
+    {
+      "name": "mix (p=0.29)",
+      "W": 0.1418496098994107,
+      "acc_raw": 0.6057863951197795,
+      "acc_clipped": 0.6760980689362858,
+      "n_studies": 40,
+      "n_cells": 801,
+      "n_preds": 482642
+    }
+  ],
+  "pass_checks": {
+    "W <= 0.160": true,
+    "acc_raw >= 65.0%": false,
+    "acc_clipped >= 70.0%": false,
+    "beats mix on W": true,
+    "beats mix on acc_clipped": true
+  },
+  "overall_pass": false
+}
