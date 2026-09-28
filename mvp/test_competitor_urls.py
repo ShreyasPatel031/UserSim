@@ -319,43 +319,111 @@ class RunIssueTests(unittest.TestCase):
 
 
 class IdentityVerificationTests(unittest.IsolatedAsyncioTestCase):
-    """Verify page content matches the expected product name."""
+    """Verify page content matches the expected product name AND category."""
 
-    async def test_different_company_with_generic_domain_rejected(self):
-        """A page at a generic domain that doesn't mention the expected product is wrong_company."""
+    async def test_openclaw_law_firm_rejected_for_ai_agent_rival(self):
+        """openclaw.com is a Cairo law firm - rejected for an AI-agent rival due to wrong category."""
         from mvp.competitor_urls import probe_competitor_url
 
-        async def fetch_different_company(url):
+        async def fetch_law_firm(url):
             return (
                 200,
                 url,
-                "<html><head><title>ACME Software Solutions</title>"
-                '<meta name="description" content="ACME provides enterprise software solutions.">'
-                "</head><body><h1>Welcome to ACME</h1>"
-                "<p>Leading provider of business software since 2010.</p>"
-                "<a href='/products'>Products</a><a href='/contact'>Contact</a></body></html>",
+                "<html><head><title>OpenClaw Law Firm | Legal Services in Cairo</title>"
+                '<meta name="description" content="OpenClaw is a leading law firm in Cairo, Egypt, '
+                'specializing in corporate law, litigation, and intellectual property.">'
+                "</head><body><h1>Welcome to OpenClaw Law Firm</h1>"
+                "<p>Expert legal services for businesses in Egypt and the Middle East. "
+                "Our attorneys have decades of experience in international trade law.</p>"
+                "<a href='/services'>Our Services</a><a href='/contact'>Contact Us</a></body></html>",
             )
 
         result = await probe_competitor_url(
-            "https://www.acme-tools.com/", fetch=fetch_different_company, expected_name="OpenClaw"
+            "https://www.openclaw.com/",
+            fetch=fetch_law_firm,
+            expected_name="OpenClaw",
+            expected_category="open-source AI agent",
         )
         self.assertFalse(result.ok)
-        self.assertEqual(result.reason, "wrong_company")
+        self.assertEqual(result.reason, "wrong_category")
 
-    async def test_hermes_com_403_rejected_as_unverified(self):
-        """hermes.com returns 403 with minimal body - rejected as unverified."""
+    async def test_hermes_com_403_rejected_for_ai_agent_rival(self):
+        """hermes.com returns 403 - rejected for AI-agent rival (fashion brand, unverifiable)."""
         from mvp.competitor_urls import probe_competitor_url
 
         async def fetch_hermes_403(url):
             return 403, url, "Access Denied"
 
         result = await probe_competitor_url(
-            "https://www.hermes.com/", fetch=fetch_hermes_403, expected_name="Hermes Agent"
+            "https://www.hermes.com/",
+            fetch=fetch_hermes_403,
+            expected_name="Hermes",
+            expected_category="AI agent assistant",
         )
         self.assertFalse(result.ok)
-        # The host "hermes.com" brand is "hermes" which doesn't match "Hermes Agent",
-        # and the body is too short, so it's rejected as unverified.
+        # Body is too short to verify category, so rejected as unverified
         self.assertIn("blocked_403", result.reason)
+        self.assertIn("unverified", result.reason)
+
+    async def test_openclaw_ai_accepted_for_ai_agent_rival(self):
+        """openclaw.ai is the real OpenClaw AI assistant - accepted."""
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_openclaw_ai(url):
+            return (
+                200,
+                url,
+                "<html><head><title>OpenClaw — Open-Source AI Assistant</title>"
+                '<meta name="description" content="OpenClaw is an open-source AI assistant '
+                'and agent that helps you automate tasks and build intelligent workflows.">'
+                "</head><body><h1>OpenClaw AI</h1>"
+                "<p>Build intelligent workflows with OpenClaw's AI agents. "
+                "Connect to APIs, automate repetitive tasks, and deploy AI assistants.</p>"
+                "<a href='/docs'>Documentation</a><a href='/pricing'>Pricing</a></body></html>",
+            )
+
+        result = await probe_competitor_url(
+            "https://openclaw.ai/",
+            fetch=fetch_openclaw_ai,
+            expected_name="OpenClaw",
+            expected_category="open-source AI agent",
+        )
+        self.assertTrue(result.ok)
+        self.assertEqual(result.reason, "ok")
+
+    async def test_cloud9_shutdown_notice_rejected(self):
+        """Cloud9 showing 'we have shut down' is defunct."""
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_cloud9_shutdown(url):
+            return (
+                200,
+                url,
+                "<html><head><title>Cloud9 IDE</title></head><body>"
+                "<h1>Cloud9 IDE</h1><p>Thank you for being part of our journey. "
+                "We have shut down Cloud9 as a standalone service. "
+                "Your workspaces have been migrated to AWS Cloud9.</p></body></html>",
+            )
+
+        result = await probe_competitor_url("https://c9.io/", fetch=fetch_cloud9_shutdown)
+        self.assertFalse(result.ok)
+        self.assertEqual(result.reason, "defunct_page")
+
+    async def test_parked_403_rejected(self):
+        """A 403 with 'domain for sale' is parked, not blocked."""
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_parked_403(url):
+            return (
+                403,
+                url,
+                "<html><head><title>Domain For Sale</title></head><body>"
+                "<h1>This domain is for sale</h1><p>Buy this domain at GoDaddy auctions.</p></body></html>",
+            )
+
+        result = await probe_competitor_url("https://example-tool.com/", fetch=fetch_parked_403)
+        self.assertFalse(result.ok)
+        self.assertEqual(result.reason, "defunct_page")
 
     async def test_farewell_journey_body_rejected(self):
         """A page with 'incredible journey' farewell message is defunct."""
@@ -390,6 +458,87 @@ class IdentityVerificationTests(unittest.IsolatedAsyncioTestCase):
         result = await probe_competitor_url("https://example-product.com/", fetch=fetch_blog_redirect)
         self.assertFalse(result.ok)
         self.assertEqual(result.reason, "not_a_product_site")
+
+    async def test_different_company_with_generic_domain_rejected(self):
+        """A page at a generic domain that doesn't mention the expected product is wrong_company."""
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_different_company(url):
+            return (
+                200,
+                url,
+                "<html><head><title>ACME Software Solutions</title>"
+                '<meta name="description" content="ACME provides enterprise software solutions.">'
+                "</head><body><h1>Welcome to ACME</h1>"
+                "<p>Leading provider of business software since 2010.</p>"
+                "<a href='/products'>Products</a><a href='/contact'>Contact</a></body></html>",
+            )
+
+        result = await probe_competitor_url(
+            "https://www.acme-tools.com/", fetch=fetch_different_company, expected_name="OpenClaw"
+        )
+        self.assertFalse(result.ok)
+        self.assertEqual(result.reason, "wrong_company")
+
+    async def test_hermes_agent_nousresearch_accepted(self):
+        """hermes-agent.nousresearch.com is the real Hermes AI agent."""
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_hermes_agent(url):
+            return (
+                200,
+                url,
+                "<html><head><title>Hermes Agent by Nous Research</title>"
+                '<meta name="description" content="Hermes is an advanced AI agent from Nous Research '
+                'for task automation and intelligent assistance.">'
+                "</head><body><h1>Hermes Agent</h1>"
+                "<p>Hermes is Nous Research's flagship AI agent, designed for complex task automation. "
+                "Deploy intelligent agents that can browse the web, write code, and interact with APIs.</p>"
+                "<a href='/try'>Try Hermes</a><a href='/docs'>Documentation</a></body></html>",
+            )
+
+        result = await probe_competitor_url(
+            "https://hermes-agent.nousresearch.com/",
+            fetch=fetch_hermes_agent,
+            expected_name="Hermes",
+            expected_category="AI agent assistant",
+        )
+        self.assertTrue(result.ok)
+        self.assertEqual(result.reason, "ok")
+
+    async def test_farewell_in_path_not_in_body_still_detected(self):
+        """A redirect to a farewell URL path triggers rejection even if body is generic."""
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_farewell_path(url):
+            return (
+                200,
+                "https://www.example-product.com/blog/announcements/farewell-and-thank-you",
+                "<html><head><title>Important Announcement</title></head><body>"
+                "<h1>An update from our team</h1><p>Read our latest news.</p></body></html>",
+            )
+
+        result = await probe_competitor_url("https://www.example-product.com/", fetch=fetch_farewell_path)
+        self.assertFalse(result.ok)
+        self.assertEqual(result.reason, "farewell_redirect")
+
+    async def test_no_longer_available_to_new_customers_rejected(self):
+        """A page saying 'no longer available to new customers' is defunct."""
+        from mvp.competitor_urls import probe_competitor_url
+
+        async def fetch_retired_service(url):
+            return (
+                200,
+                url,
+                "<html><head><title>Legacy Service</title></head><body>"
+                "<h1>Service Update</h1>"
+                "<p>This service is no longer available to new customers. "
+                "Existing customers can continue to use their accounts until December 2026.</p></body></html>",
+            )
+
+        result = await probe_competitor_url("https://legacy.example.com/", fetch=fetch_retired_service)
+        self.assertFalse(result.ok)
+        self.assertEqual(result.reason, "defunct_page")
 
     async def test_cloud9_shutdown_notice_rejected(self):
         """Cloud9 showing 'we have shut down' is defunct."""

@@ -206,6 +206,81 @@ def host_matches_brand(expected_name: str, url: str) -> bool:
     return host_brand.lower() == name_lower or name_lower in host_brand.lower() or host_brand.lower() in name_lower
 
 
+_CATEGORY_STOP_WORDS = frozenset({
+    "a", "an", "the", "and", "or", "for", "to", "of", "in", "on", "with", "is", "are", "as", "by",
+    "that", "this", "it", "be", "was", "were", "been", "being", "have", "has", "had", "do", "does",
+    "did", "will", "would", "could", "should", "may", "might", "must", "shall", "can", "need",
+    "product", "service", "platform", "tool", "app", "application", "software", "solution",
+})
+
+
+def _category_keywords(category: str) -> set[str]:
+    """Extract meaningful keywords from a category description."""
+    words = set(re.findall(r"[a-z0-9]+", (category or "").lower()))
+    return {w for w in words if len(w) >= 2 and w not in _CATEGORY_STOP_WORDS}
+
+
+def category_matches_content(expected_category: str, body: str) -> bool:
+    """True when the page content matches the expected product category.
+    
+    Uses keyword overlap between the category description and the page's
+    title, meta description, and first ~2k chars of visible text.
+    """
+    if not expected_category or len(expected_category) < 3:
+        return True
+    keywords = _category_keywords(expected_category)
+    if not keywords:
+        return True
+    body_lower = (body or "")[:8000].lower()
+    title_match = re.search(r"<title[^>]*>(.*?)</title>", body_lower, re.I | re.S)
+    title = title_match.group(1) if title_match else ""
+    meta_match = re.search(r'<meta[^>]+name=["\']description["\'][^>]+content=["\']([^"\']+)', body_lower, re.I)
+    meta_desc = meta_match.group(1) if meta_match else ""
+    visible = re.sub(r"<script.*?</script>|<style.*?</style>", " ", body_lower[:4000], flags=re.S | re.I)
+    visible = " ".join(re.sub(r"<[^>]+>", " ", visible).split())[:2000]
+    check_text = f"{title} {meta_desc} {visible}"
+    check_words = set(re.findall(r"[a-z0-9]+", check_text))
+    overlap = keywords & check_words
+    required = max(1, len(keywords) // 2)
+    return len(overlap) >= required
+
+
+_CATEGORY_NEGATIVE_PATTERNS = {
+    "ai": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court|fashion|luxury|clothing|apparel|handbag|leather|silk|scarves?)\b", re.I),
+    "agent": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court|fashion|luxury|clothing|apparel|handbag|leather|silk|scarves?|real\s*estate|property|realtor)\b", re.I),
+    "automation": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court)\b", re.I),
+    "cloud": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court)\b", re.I),
+    "ide": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court)\b", re.I),
+    "developer": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court)\b", re.I),
+}
+
+
+def _has_category_negative(expected_category: str, body: str) -> bool:
+    """True if the page contains terms that contradict the expected category."""
+    if not expected_category or not body:
+        return False
+    cat_lower = expected_category.lower()
+    body_sample = (body or "")[:5000].lower()
+    for key, pattern in _CATEGORY_NEGATIVE_PATTERNS.items():
+        if key in cat_lower and pattern.search(body_sample):
+            return True
+    return False
+
+
+def identity_matches(expected_name: str, expected_category: str, url: str, body: str) -> tuple[bool, str]:
+    """Check if the page matches both the expected name AND category.
+    
+    Returns (matches, reason) where reason explains why it failed.
+    """
+    if _has_category_negative(expected_category, body):
+        return False, "wrong_category"
+    if not brand_in_content(expected_name, url, body):
+        return False, "wrong_company"
+    if expected_category and not category_matches_content(expected_category, body):
+        return False, "wrong_category"
+    return True, "ok"
+
+
 def is_non_product_host(url: str) -> bool:
     host = registrable_host(url)
     if not host:
@@ -349,11 +424,16 @@ async def probe_competitor_url(
     *,
     fetch: Fetcher | None = None,
     expected_name: str | None = None,
+    expected_category: str | None = None,
 ) -> ProbeResult:
     """Follow redirects. Keep the URL only when the final host is the same product.
 
-    When ``expected_name`` is provided, verify the page content matches that product.
-    For 403/429 responses without body content, require the host to match the brand.
+    When ``expected_name`` and ``expected_category`` are provided, verify the page
+    content matches both the product name AND category. A law firm page must fail
+    for an AI-agent rival even if the name matches.
+    
+    For 403/429 responses without usable body content, the URL is rejected as
+    unverified and should go to recovery (search lookup for '<name> <category>').
     """
     requested = (url or "").strip()
     if not requested.startswith("http"):
@@ -400,13 +480,21 @@ async def probe_competitor_url(
     if not canonical.endswith("/") and (urlparse(canonical).path in {"", "/"}):
         canonical = canonical.rstrip("/") + "/"
     if is_blocked:
-        if expected_name and not host_matches_brand(expected_name, canonical):
-            return ProbeResult(False, requested, final_url, f"blocked_{status}_wrong_brand")
+        # 403/429 with no usable body: cannot verify category, treat as unverified
+        # and go to recovery. Brand-matching host alone is not enough.
         if len(snippet) < 100:
             return ProbeResult(False, requested, final_url, f"blocked_{status}_unverified")
+        # If we have body content on a blocked page, verify identity
+        if expected_name or expected_category:
+            matches, reason = identity_matches(expected_name or "", expected_category or "", canonical, body)
+            if not matches:
+                return ProbeResult(False, requested, final_url, f"blocked_{status}_{reason}")
         return ProbeResult(True, canonical, final_url, f"blocked_{status}")
-    if expected_name and not brand_in_content(expected_name, canonical, body):
-        return ProbeResult(False, requested, final_url, "wrong_company")
+    # For 200 OK responses, verify both name and category
+    if expected_name or expected_category:
+        matches, reason = identity_matches(expected_name or "", expected_category or "", canonical, body)
+        if not matches:
+            return ProbeResult(False, requested, final_url, reason)
     return ProbeResult(True, canonical, final_url, "ok")
 
 
@@ -435,6 +523,7 @@ async def filter_live_competitor_urls(
     fetch: Fetcher | None = None,
     limit: int = 2,
     names: dict[str, str] | None = None,
+    categories: dict[str, str] | None = None,
 ) -> tuple[list[str], list[tuple[str, str]]]:
     """Probe candidates. Return (live canonical URLs, dropped (url, reason)).
 
@@ -443,7 +532,8 @@ async def filter_live_competitor_urls(
     results are then walked in the original order, so which URLs are kept and
     which are dropped is exactly what probing them one by one would give.
 
-    When ``names`` is provided, verify each URL's content matches the expected product.
+    When ``names`` and ``categories`` are provided, verify each URL's content
+    matches both the expected product name AND category.
     """
     product_host = registrable_host(product_url)
     blocked = {product_host} | {h.lower().removeprefix("www.") for h in (exclude_hosts or set()) if h}
@@ -451,6 +541,7 @@ async def filter_live_competitor_urls(
     dropped: list[tuple[str, str]] = []
     seen: set[str] = set()
     url_names = names or {}
+    url_categories = categories or {}
 
     candidates = [(raw or "").strip() for raw in urls]
     gate = asyncio.Semaphore(max(1, _probe_concurrency()))
@@ -458,10 +549,11 @@ async def filter_live_competitor_urls(
     async def _probe(url: str) -> ProbeResult | None:
         if not url or not registrable_host(url):
             return None
-        expected = url_names.get(url, "")
+        expected_name = url_names.get(url, "")
+        expected_cat = url_categories.get(url, "")
         async with gate:
             try:
-                return await probe_competitor_url(url, fetch=fetch, expected_name=expected)
+                return await probe_competitor_url(url, fetch=fetch, expected_name=expected_name, expected_category=expected_cat)
             except Exception as exc:  # noqa: BLE001
                 return ProbeResult(False, url, "", f"probe_error:{type(exc).__name__}")
 

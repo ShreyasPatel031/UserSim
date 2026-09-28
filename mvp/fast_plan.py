@@ -68,8 +68,8 @@ Links and buttons on the page (label -> target): {links}
 Return:
 {{"product": "short product name",
   "segment": "one short phrase naming who evaluates products in this category",
-  "competitors": [{{"url": "https://rival-one.com/", "name": "Rival One"}}, {{"url": "https://rival-two.com/", "name": "Rival Two"}}],
-  "backup_competitor": {{"url": "https://rival-three.com/", "name": "Rival Three"}},
+  "competitors": [{{"url": "https://rival-one.com/", "name": "Rival One", "what": "3-6 word product category"}}, {{"url": "https://rival-two.com/", "name": "Rival Two", "what": "3-6 word product category"}}],
+  "backup_competitor": {{"url": "https://rival-three.com/", "name": "Rival Three", "what": "3-6 word product category"}},
   "personas": [{{"name": "first and last name", "role": "job title and company type",
                  "bio": "at most 20 words: situation, need, how they judge a tool",
                  "favors": "product or the competitor url this person is the natural fit for",
@@ -107,11 +107,13 @@ Page title: {title}
 Page text: {text}
 
 Return {{"product": "short product name", "segment": "one short phrase naming who evaluates products in this category",
-  "competitors": [{{"url": "https://rival.com/", "name": "Rival"}}, ...2 items]}}
+  "competitors": [{{"url": "https://rival.com/", "name": "Rival", "what": "3-6 word product category"}}, ...2 items]}}
 Rules: standalone products in the same category a buyer would compare side by side, best known first, homepage
 URLs of real public sites. Sales-led (demo only) rivals are fine. Never a parent company, multi-product suite
 homepage, marketplace or discontinued product, and never one that was acquired, merged or rebranded (its site
-redirects elsewhere). Never a general-purpose AI chatbot (ChatGPT, Claude, Gemini, Copilot) unless the product is one."""
+redirects elsewhere). Never a general-purpose AI chatbot (ChatGPT, Claude, Gemini, Copilot) unless the product is one.
+The "what" field must describe the product category (e.g. "open-source AI agent", "workflow automation platform",
+"cloud IDE for developers"), not a company type."""
 
 _CMP_TASKS = """Pick six tasks for a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
 {product} page text: {text}
@@ -489,11 +491,21 @@ def _brand_matches(url: str, name: str) -> bool:
     return bool(brand) and bool(needle) and (brand == needle or brand in needle or needle in brand)
 
 
-async def _homepage_for_name(name: str, hint: str, search: Any | None = None, *, require_brand: bool = False) -> str:
-    """Live-looking homepage for a named product, when the guessed domain was dead."""
+async def _homepage_for_name(name: str, hint: str, search: Any | None = None, *, require_brand: bool = False, category: str = "") -> str:
+    """Live-looking homepage for a named product, when the guessed domain was dead.
+    
+    When category is provided, search for '<name> <category>' to find the right product
+    (e.g., 'OpenClaw open-source AI agent' finds openclaw.ai, not a law firm).
+    """
     from mvp.competitor_urls import looks_like_product_page, search_result_urls
 
-    query = " ".join(p for p in (name, hint, "official website") if p).strip()
+    # Include category in search query to find the right product type
+    parts = [name]
+    if category:
+        parts.append(category)
+    parts.append(hint if not category else "")
+    parts.append("official website")
+    query = " ".join(p for p in parts if p).strip()
     finder = search or search_result_urls
     needle = name.lower().strip()
     if len(needle) < 3 or not query:
@@ -514,7 +526,7 @@ async def _homepage_for_name(name: str, hint: str, search: Any | None = None, *,
 async def settle_rival_urls(
     product_url: str,
     product_name: str,
-    ordered: list[tuple[str, str]],
+    ordered: list[tuple[str, str, str]],
     read: dict[str, Any],
     *,
     limit: int,
@@ -523,25 +535,41 @@ async def settle_rival_urls(
 ) -> tuple[list[str], dict[str, str], dict[str, str], str]:
     """Drop parked, for-sale, and off-site redirects. Resolve a page-named rival to its real homepage.
 
+    ordered is a list of (url, name, category) tuples.
+    
     Returns (live urls, names by live url, remap from the planned url, reject reason).
     A guessed domain that redirects to a marketplace must not become the site agents open.
     SEO keyword alternatives are not used to fill a hole: that is a different job.
     Names the page itself never compares with are not looked up (a guessed name can be a different company).
+    
+    Identity = name AND category: a page must match both the expected product name and its
+    category. A law firm page fails for an AI-agent rival even if the name matches.
+    On 403/429 with no usable body, go to recovery with '<name> <category>' search.
     """
     from mvp.competitor_urls import filter_live_competitor_urls, registrable_host, same_site
 
-    usable = [(u, n) for u, n in ordered if u and not _keyword_only_name(n, read)]
-    urls = [u for u, _ in usable]
-    url_names = {u: n for u, n in usable}
+    # Handle both old (url, name) and new (url, name, category) tuple formats
+    usable: list[tuple[str, str, str]] = []
+    for item in ordered:
+        if len(item) == 2:
+            u, n = item
+            usable.append((u, n, ""))
+        else:
+            u, n, c = item
+            usable.append((u, n, c))
+    usable = [(u, n, c) for u, n, c in usable if u and not _keyword_only_name(n, read)]
+    urls = [u for u, _, _ in usable]
+    url_names = {u: n for u, n, _ in usable}
+    url_categories = {u: c for u, _, c in usable}
     prober = probe or filter_live_competitor_urls
-    live, dropped = await prober(urls, product_url=product_url, limit=limit, names=url_names)
+    live, dropped = await prober(urls, product_url=product_url, limit=limit, names=url_names, categories=url_categories)
     dropped_hosts = {registrable_host(u) for u, _reason in dropped}
     names: dict[str, str] = {}
     remap: dict[str, str] = {}
     used = {registrable_host(product_url)}
 
     def _name_for(live_url: str) -> str:
-        for raw, name in usable:
+        for raw, name, _ in usable:
             if same_site(raw, live_url) and name:
                 return name
         return ""
@@ -552,18 +580,20 @@ async def settle_rival_urls(
             continue
         names[live_url] = _name_for(live_url)
         used.add(host)
-        for raw, _name in usable:
+        for raw, _name, _ in usable:
             if same_site(raw, live_url):
                 remap[raw] = live_url
     compared = [(c or "").strip() for c in (read.get("compared_with") or [])]
     drop_reason = {u: reason for u, reason in dropped}
     _RECOVERABLE_FAILURES = (
         "thin_page", "http_403", "http_404", "tls_error", "tls_or_connect_error",
-        "timeout", "defunct_page", "wrong_company", "blocked_403_wrong_brand",
-        "blocked_429_wrong_brand", "blocked_403_unverified", "blocked_429_unverified",
+        "timeout", "defunct_page", "wrong_company", "wrong_category",
+        "blocked_403_wrong_brand", "blocked_403_wrong_company", "blocked_403_wrong_category",
+        "blocked_429_wrong_brand", "blocked_429_wrong_company", "blocked_429_wrong_category",
+        "blocked_403_unverified", "blocked_429_unverified",
         "farewell_redirect",
     )
-    for raw, name in usable:
+    for raw, name, category in usable:
         if len(names) >= limit:
             break
         if registrable_host(raw) not in dropped_hosts:
@@ -578,14 +608,18 @@ async def settle_rival_urls(
             hint = " ".join(c for c in compared if c.lower() != name.strip().lower()) or product_name
         else:
             hint = product_name
-        found = await _homepage_for_name(name, hint, search, require_brand=brand_miss)
+        # Search with '<name> <category>' to find the right product (e.g., openclaw.ai not a law firm)
+        found = await _homepage_for_name(name, hint, search, require_brand=brand_miss, category=category)
         if not found:
             continue
+        # Probe the found URL with category verification
         more, _more_dropped = await prober(
             [found],
             product_url=product_url,
             exclude_hosts=set(used),
             limit=1,
+            names={found: name},
+            categories={found: category},
         )
         if not more:
             continue
@@ -631,7 +665,7 @@ async def settle_rival_urls(
         )
     # Follow the planned order, then any live backup that filled a hole.
     ordered_live: list[str] = []
-    for raw, _name in usable:
+    for raw, _name, _cat in usable:
         dest = remap.get(raw)
         if dest and dest in names and dest not in ordered_live:
             ordered_live.append(dest)
@@ -644,7 +678,7 @@ async def settle_rival_urls(
             break
     live_urls = ordered_live[:limit]
     # Buyers and jobs written for a dropped URL follow the rival that took its slot.
-    for src, dst in zip((u for u, _n in usable), live_urls):
+    for src, dst in zip((u for u, _n, _c in usable), live_urls):
         remap.setdefault(src, dst)
     return live_urls, {u: names.get(u, "") for u in live_urls}, remap, ""
 
@@ -1191,6 +1225,7 @@ async def _split_compare_plan(
         own = (urlsplit(url).hostname or "").removeprefix("www.")
         items = list(head.get("competitors") or [])
         names = {_clean_url(str(i.get("url") or "")): str(i.get("name") or "") for i in items if isinstance(i, dict)}
+        categories = {_clean_url(str(i.get("url") or "")): str(i.get("what") or "") for i in items if isinstance(i, dict)}
         raw_comps = pick_competitors(
             items, own, limit=RIVAL_COUNT, allow_assistants=product_is_general_assistant(own, read)
         )
@@ -1202,7 +1237,7 @@ async def _split_compare_plan(
             return _rejected_plan(str(head.get("product") or "") or own, str(head.get("segment") or ""), raw_comps, names, reason, framing_modes())
         product = str(head.get("product") or "")[:60] or own
         landed, live_names, remap_live, dead = await settle_rival_urls(
-            url, product, [(c, names.get(c, "")) for c in raw_comps], read, limit=RIVAL_COUNT
+            url, product, [(c, names.get(c, ""), categories.get(c, "")) for c in raw_comps], read, limit=RIVAL_COUNT
         )
         if dead:
             print(f"[fast_plan] compare rejected {url}: {dead}", flush=True)
@@ -1377,10 +1412,16 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
             for i in items
             if isinstance(i, dict)
         }
+        categories = {
+            _clean_url(str(i.get("url") or "")): str(i.get("what") or "")
+            for i in items
+            if isinstance(i, dict)
+        }
         backup = data.get("backup_competitor")
         if isinstance(backup, dict) and backup.get("url"):
             items.append(backup)
             names.setdefault(_clean_url(str(backup.get("url") or "")), str(backup.get("name") or ""))
+            categories.setdefault(_clean_url(str(backup.get("url") or "")), str(backup.get("what") or ""))
         raw_comps = pick_competitors(
             items, own, limit=RIVAL_COUNT, allow_assistants=product_is_general_assistant(own, read)
         )
@@ -1392,13 +1433,13 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
             return _rejected_plan(
                 str(data.get("product") or ""), str(data.get("segment") or ""), raw_comps, names, reason, modes
             )
-        preferred = [(c, names.get(c, "")) for c in raw_comps]
+        preferred = [(c, names.get(c, ""), categories.get(c, "")) for c in raw_comps]
         for item in items:
             if not isinstance(item, dict):
                 continue
             clean = _clean_url(str(item.get("url") or ""))
-            if clean and clean not in {u for u, _n in preferred}:
-                preferred.append((clean, str(item.get("name") or names.get(clean) or "")))
+            if clean and clean not in {u for u, _n, _c in preferred}:
+                preferred.append((clean, str(item.get("name") or names.get(clean) or ""), str(item.get("what") or categories.get(clean) or "")))
         landed, live_names, remap_live, dead = await settle_rival_urls(
             url, str(data.get("product") or own), preferred, read, limit=RIVAL_COUNT
         )

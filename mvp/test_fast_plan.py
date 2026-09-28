@@ -290,8 +290,8 @@ class WrongCategoryTests(unittest.TestCase):
 
         queries: list[str] = []
 
-        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None):
-            del product_url, names
+        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None, categories=None):
+            del product_url, names, categories
             live, dropped = [], []
             blocked = set(exclude_hosts or [])
             for url in urls:
@@ -321,7 +321,7 @@ class WrongCategoryTests(unittest.TestCase):
             settle_rival_urls(
                 "https://chatforce.com/",
                 "Chatforce",
-                [("https://rosebud.ai/", "Rosebud AI"), ("https://astrocade.xyz/", "Astrocade")],
+                [("https://rosebud.ai/", "Rosebud AI", "AI game maker"), ("https://astrocade.xyz/", "Astrocade", "AI game maker")],
                 read,
                 limit=2,
                 probe=probe,
@@ -344,7 +344,7 @@ class WrongCategoryTests(unittest.TestCase):
                 settle_rival_urls(
                     "https://chatforce.com/",
                     "Chatforce",
-                    [("https://rosebud.ai/", "Rosebud"), ("https://latentlabs.ai/", "Latent Labs")],
+                    [("https://rosebud.ai/", "Rosebud", "AI game maker"), ("https://latentlabs.ai/", "Latent Labs", "AI game maker")],
                     read,
                     limit=2,
                     probe=probe,
@@ -359,9 +359,9 @@ class WrongCategoryTests(unittest.TestCase):
                 "https://chatforce.com/",
                 "Chatforce",
                 [
-                    ("https://rosebud.ai/", "Rosebud"),
-                    ("https://astrocade.ai/", "Astrocade"),
-                    ("https://ludo.ai/", "Ludo"),
+                    ("https://rosebud.ai/", "Rosebud", "AI game maker"),
+                    ("https://astrocade.ai/", "Astrocade", "AI game maker"),
+                    ("https://ludo.ai/", "Ludo", "AI game maker"),
                 ],
                 read,
                 limit=2,
@@ -395,8 +395,8 @@ class WrongCategoryTests(unittest.TestCase):
         read = page_read_from_html(QUOTE_WALL)
         probed: list[str] = []
 
-        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None):
-            del product_url, names
+        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None, categories=None):
+            del product_url, names, categories
             probed.extend(urls)
             dead = {"https://www.openclaw.com/", "https://hermes.ai/"}
             live, dropped = [], []
@@ -404,7 +404,7 @@ class WrongCategoryTests(unittest.TestCase):
             for url in urls:
                 host = url.split("/")[2].removeprefix("www.")
                 if url in dead:
-                    dropped.append((url, "redirected_off_site:domains.atom.com"))
+                    dropped.append((url, "wrong_category"))  # Law firm / fashion, not AI
                     continue
                 if host in blocked:
                     dropped.append((url, "duplicate_or_product_host"))
@@ -433,9 +433,9 @@ class WrongCategoryTests(unittest.TestCase):
                 "https://www.zo.computer/",
                 "Zo Computer",
                 [
-                    ("https://www.openclaw.com/", "OpenClaw"),
-                    ("https://hermes.ai/", "Hermes"),
-                    ("https://zapier.com/", "Zapier"),
+                    ("https://www.openclaw.com/", "OpenClaw", "open-source AI agent"),
+                    ("https://hermes.ai/", "Hermes", "AI agent assistant"),
+                    ("https://zapier.com/", "Zapier", "workflow automation"),
                 ],
                 read,
                 limit=2,
@@ -497,8 +497,8 @@ class KeywordAlternativeKeptTests(unittest.TestCase):
 
         from mvp.fast_plan import settle_rival_urls
 
-        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None):
-            del product_url, names
+        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None, categories=None):
+            del product_url, names, categories
             live, dropped = [], []
             blocked = set(exclude_hosts or [])
             for url in urls:
@@ -516,7 +516,7 @@ class KeywordAlternativeKeptTests(unittest.TestCase):
             settle_rival_urls(
                 "https://www.activepieces.com/",
                 "Activepieces",
-                [("https://zapier.com/", "Zapier"), ("https://n8n.io/", "n8n"), ("https://make.com/", "Make")],
+                [("https://zapier.com/", "Zapier", "workflow automation"), ("https://n8n.io/", "n8n", "workflow automation"), ("https://make.com/", "Make", "workflow automation")],
                 read,
                 limit=2,
                 probe=probe,
@@ -586,8 +586,8 @@ class BotBlockedTreatedAsLiveTests(unittest.TestCase):
 
         from mvp.fast_plan import settle_rival_urls
 
-        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None):
-            del product_url, names
+        async def probe(urls, product_url, exclude_hosts=None, limit=2, names=None, categories=None):
+            del product_url, names, categories
             live, dropped = [], []
             blocked = set(exclude_hosts or [])
             for url in urls:
@@ -605,7 +605,7 @@ class BotBlockedTreatedAsLiveTests(unittest.TestCase):
             settle_rival_urls(
                 "https://www.cursor.com/",
                 "Cursor",
-                [("https://replit.com/", "Replit"), ("https://github.com/codespaces", "Codespaces")],
+                [("https://replit.com/", "Replit", "cloud IDE"), ("https://github.com/codespaces", "Codespaces", "cloud IDE")],
                 read,
                 limit=2,
                 probe=probe,
@@ -699,7 +699,8 @@ class PlannerTimeoutTests(unittest.TestCase):
 
         call_count = 0
 
-        async def slow_probe(urls, product_url, exclude_hosts=None, limit=2, names=None):
+        async def slow_probe(urls, product_url, exclude_hosts=None, limit=2, names=None, categories=None):
+            del categories
             nonlocal call_count
             call_count += 1
             await asyncio.sleep(0.05)  # Simulate network delay
