@@ -1,0 +1,46 @@
+{
+  "evaluation": "Socrates SocSci210 Unseen-40",
+  "method": "probability-based (fast)",
+  "description": "Next-token logprobs over 803 unique (study, condition, task) cells, sampled to match participant counts",
+  "base_model": "Qwen/Qwen3-14B",
+  "quantization": "4-bit nf4 via bitsandbytes",
+  "date": "2026-09-28",
+  "results": {
+    "checkpoint-600": {
+      "wasserstein_mean": 0.1557,
+      "accuracy_raw": 0.5941,
+      "accuracy_clipped": 0.6293,
+      "n_studies": 40,
+      "n_cells": 803,
+      "elapsed_minutes": 6.7
+    },
+    "checkpoint-400": {
+      "wasserstein_mean": 0.1622,
+      "accuracy_raw": 0.5906,
+      "accuracy_clipped": 0.6261,
+      "n_studies": 40,
+      "n_cells": 803,
+      "elapsed_minutes": 6.7
+    },
+    "zero-shot": {
+      "wasserstein_mean": 0.2922,
+      "accuracy_raw": 0.6421,
+      "accuracy_clipped": 0.6740,
+      "n_studies": 40,
+      "n_cells": 803,
+      "elapsed_minutes": 6.0
+    }
+  },
+  "reference": {
+    "description": "Generation-based sampling (temp=0.6, top_p=0.9), one sample per participant",
+    "zero_shot_wasserstein": 0.215,
+    "zero_shot_accuracy_raw": 0.67,
+    "zero_shot_accuracy_clipped": 0.732
+  },
+  "notes": [
+    "The probability-based method differs from the reference generation-based method",
+    "W (Wasserstein) is lower-is-better; both checkpoints significantly beat zero-shot",
+    "Accuracy is measured as 1 - normalized MAE, higher-is-better",
+    "Results uploaded to gs://ai-studio-bucket-347838016394-us-east1/usersim-models/qwen3_14b_sft/evals_unseen40/"
+  ]
+}
