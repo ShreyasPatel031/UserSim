@@ -6,12 +6,14 @@ The single LLM provider for this repo. Every inference call goes through here.
 from __future__ import annotations
 
 import asyncio
+import contextlib
+import contextvars
 import json
 import os
 import random
 import re
 import time
-from typing import Any
+from typing import Any, Iterator
 
 import httpx
 
@@ -90,6 +92,64 @@ def _note_throttle(model: str, status: int, took_s: float) -> None:
     n = THROTTLES[key]
     if n <= 5 or n % 25 == 0:
         print(f"[gemini] {status} from {model} after {took_s:.1f}s (#{n})", flush=True)
+
+
+# Vertex list price, USD per 1M tokens (text, <=200k context). Longest prefix wins.
+PRICES_PER_M: dict[str, tuple[float, float]] = {
+    "gemini-2.5-pro": (1.25, 10.0),
+    "gemini-2.5-flash": (0.30, 2.50),  # pragma: allowlist secret
+    "gemini-2.5-flash-lite": (0.10, 0.40),  # pragma: allowlist secret
+    "gemini-2.0-flash": (0.15, 0.60),
+    "gemini-2.0-flash-lite": (0.075, 0.30),
+}
+
+_USAGE_SINK: contextvars.ContextVar[list[dict[str, Any]] | None] = contextvars.ContextVar(
+    "gemini_usage_sink", default=None
+)
+
+
+@contextlib.contextmanager
+def track_usage() -> Iterator[list[dict[str, Any]]]:
+    """Collect one usage row per gemini_chat call made inside the block (and tasks it starts)."""
+    rows: list[dict[str, Any]] = []
+    token = _USAGE_SINK.set(rows)
+    try:
+        yield rows
+    finally:
+        _USAGE_SINK.reset(token)
+
+
+def token_usage(data: dict[str, Any]) -> tuple[int, int]:
+    """(input, output) tokens from a generateContent reply. Output counts thinking tokens."""
+    meta = data.get("usageMetadata") or {}
+    try:
+        tokens_in = int(meta.get("promptTokenCount") or 0)
+        tokens_out = int(meta.get("candidatesTokenCount") or 0) + int(meta.get("thoughtsTokenCount") or 0)
+    except (TypeError, ValueError):
+        return 0, 0
+    return tokens_in, tokens_out
+
+
+def estimate_cost_usd(rows: list[dict[str, Any]]) -> float | None:
+    """List-price cost of usage rows; None when a row's model has no known price."""
+    total = 0.0
+    for row in rows:
+        model = str(row.get("model") or "")
+        key = max((k for k in PRICES_PER_M if model.startswith(k)), key=len, default=None)
+        if key is None:
+            return None
+        price_in, price_out = PRICES_PER_M[key]
+        total += (row.get("input_tokens") or 0) * price_in / 1e6 + (row.get("output_tokens") or 0) * price_out / 1e6
+    return round(total, 6)
+
+
+def _note_usage(model: str, data: dict[str, Any], took_s: float) -> None:
+    tokens_in, tokens_out = token_usage(data)
+    sink = _USAGE_SINK.get()
+    if sink is not None:
+        sink.append({"model": model, "input_tokens": tokens_in, "output_tokens": tokens_out, "s": round(took_s, 2)})
+    if os.environ.get("MVP_LLM_LOG_TOKENS", "1").strip().lower() not in {"0", "false", "no"}:
+        print(f"[gemini] tokens {model} in={tokens_in} out={tokens_out} after {took_s:.1f}s", flush=True)
 
 
 def retry_sleep_cap() -> float:
@@ -172,7 +232,9 @@ async def gemini_chat(
                     use = fallback
                 continue
             resp.raise_for_status()
-            return _extract_text(resp.json())
+            data = resp.json()
+            _note_usage(use, data, time.perf_counter() - t0)
+            return _extract_text(data)
     raise RuntimeError("Gemini request failed after retries")
 
 
