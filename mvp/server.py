@@ -126,6 +126,8 @@ class StudyRequest(BaseModel):
     skip_competitors: bool = False
     max_agents: int | None = Field(default=None, ge=1, le=75)
     backend: str = Field(default="default", pattern="^(default)$")
+    # Planner only: return the plan and its checks; no study, browsers, Browserbase or signup.
+    dry_run: bool = False
 
 
 def _normalize_url(raw: str) -> str:
@@ -532,6 +534,10 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
     from mvp.study import STUDIES, create_study, run_study, study_to_dict
 
     url = await _landing_url(_normalize_url(body.url))
+    if body.dry_run:
+        from mvp.plan_check import dry_run_plan
+
+        return await dry_run_plan(url)
     segment = (body.segment or body.customers or "").strip()
     if not segment:
         segment = (
