@@ -212,8 +212,6 @@ def main() -> None:
             continue
         h_s = (h - rmin) / (rmax - rmin)
         m_s = (m - rmin) / (rmax - rmin)
-        # clip model to scale (paper standardizes with human bounds)
-        m_s = np.clip(m_s, 0.0, 1.0)
         w = wasserstein_1d(h_s, m_s)
         study_scores[key[0]].append(w)
         cell_rows.append({"study_id": key[0], "condition": key[1], "task": key[2], "W": w, "n": len(h)})
