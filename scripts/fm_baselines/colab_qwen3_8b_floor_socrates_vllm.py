@@ -37,11 +37,16 @@ def sh(cmd: str) -> None:
 
 
 def parse_numeric(text: str) -> float | None:
-    m = re.search(r"[-+]?\d*\.?\d+", text.replace(",", ""))
-    if not m:
+    """Parse text only if it is a bare number (after stripping whitespace).
+
+    Returns None if the text contains anything other than an optional sign,
+    digits, and an optional decimal point. Does NOT extract numbers from prose.
+    """
+    t = text.strip()
+    if not re.fullmatch(r"[-+]?\d+(?:\.\d+)?", t):
         return None
     try:
-        return float(m.group(0))
+        return float(t)
     except ValueError:
         return None
 

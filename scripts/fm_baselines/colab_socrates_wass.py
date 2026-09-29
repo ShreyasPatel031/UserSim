@@ -46,15 +46,18 @@ def install() -> None:
 
 
 def parse_numeric(text: str) -> float | None:
+    """Parse text only if it is a bare number (after stripping whitespace).
+
+    Returns None if the text contains anything other than an optional sign,
+    digits, and an optional decimal point. Does NOT extract numbers from prose.
+    """
     if text is None:
         return None
     t = text.strip()
-    # common formats: "5", "5.", "Answer: 5", "I choose 2"
-    m = re.search(r"(?<![\d.])(-?\d+(?:\.\d+)?)(?![\d])", t)
-    if not m:
+    if not re.fullmatch(r"[-+]?\d+(?:\.\d+)?", t):
         return None
     try:
-        return float(m.group(1))
+        return float(t)
     except ValueError:
         return None
 
@@ -212,8 +215,6 @@ def main() -> None:
             continue
         h_s = (h - rmin) / (rmax - rmin)
         m_s = (m - rmin) / (rmax - rmin)
-        # clip model to scale (paper standardizes with human bounds)
-        m_s = np.clip(m_s, 0.0, 1.0)
         w = wasserstein_1d(h_s, m_s)
         study_scores[key[0]].append(w)
         cell_rows.append({"study_id": key[0], "condition": key[1], "task": key[2], "W": w, "n": len(h)})

@@ -14,7 +14,7 @@ from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "fm_baselines"))
-from socrates_metric import score  # noqa: E402
+from socrates_metric import score, _effective_pred  # noqa: E402
 
 ROOT = Path(os.environ.get("ROOT", "/opt/usersim_fm"))
 RESULTS = Path(
@@ -58,45 +58,27 @@ def load_preds(path: Path) -> list[dict]:
 
 
 def accuracies(preds: list[dict]) -> dict:
-    cells: dict[tuple, list[float]] = defaultdict(list)
-    for r in preds:
-        if r.get("human") is None:
-            continue
-        key = (r["study_id"], str(r["condition_num"]), str(r["task_num"]))
-        cells[key].append(float(r["human"]))
-    ranges = {k: (min(v), max(v)) for k, v in cells.items()}
-
     n = 0
     exact = 0
-    clip_round = 0
     within1 = 0
-    clip_within1 = 0
     for r in preds:
-        h, p = r.get("human"), r.get("pred")
+        h = r.get("human")
+        p = _effective_pred(r)
         if h is None or p is None:
             continue
         h = float(h)
         p = float(p)
-        key = (r["study_id"], str(r["condition_num"]), str(r["task_num"]))
-        rmin, rmax = ranges[key]
-        pc = min(max(p, rmin), rmax)
         n += 1
         if round(p) == round(h):
             exact += 1
-        if round(pc) == round(h):
-            clip_round += 1
         if abs(round(p) - round(h)) <= 1:
             within1 += 1
-        if abs(round(pc) - round(h)) <= 1:
-            clip_within1 += 1
     if not n:
         return {"n": 0}
     return {
         "n": n,
         "exact_round": exact / n,
-        "clip_to_cell_range_then_round": clip_round / n,
         "round_within_1": within1 / n,
-        "clip_round_within_1": clip_within1 / n,
     }
 
 
@@ -108,7 +90,7 @@ def main() -> None:
     agg = score(preds)
     acc = accuracies(preds)
     # Individual Acc = exact match after rounding (paper-style).
-    # Also report the ±1 / clip variants used in earlier ckpt-425 notes.
+    # Also report the ±1 variant.
     individual_acc = acc.get("exact_round")
     w = agg["wasserstein_mean"]
     w_ok = w is not None and float(w) <= W_MAX
@@ -119,7 +101,7 @@ def main() -> None:
         "model": "Qwen/Qwen3-8B-Base",
         "lora": LORA,
         "role": "dpo_adapter",
-        "scorer": "socrates_metric.score (paper [0,1] clip)",
+        "scorer": "socrates_metric.score (paper [0,1] no-clip)",
         "n_studies": agg["n_studies"],
         "n_cells": agg["n_cells"],
         "n_preds": agg["n_preds"],
@@ -152,7 +134,7 @@ def main() -> None:
             "acc_must_clearly_beat": ACC_MIN,
             "acc_definition": "exact_round",
             "w_max": W_MAX,
-            "w_definition": "paper [0,1] human-range standardize + clip",
+            "w_definition": "paper [0,1] human-range standardize (no clip)",
         },
         "reasons": [
             *([] if w_ok else [f"W={w} > {W_MAX} (ckpt-425 had {BASELINE_W})"]),
