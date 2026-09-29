@@ -46,15 +46,18 @@ def install() -> None:
 
 
 def parse_numeric(text: str) -> float | None:
+    """Parse text only if it is a bare number (after stripping whitespace).
+
+    Returns None if the text contains anything other than an optional sign,
+    digits, and an optional decimal point. Does NOT extract numbers from prose.
+    """
     if text is None:
         return None
     t = text.strip()
-    # common formats: "5", "5.", "Answer: 5", "I choose 2"
-    m = re.search(r"(?<![\d.])(-?\d+(?:\.\d+)?)(?![\d])", t)
-    if not m:
+    if not re.fullmatch(r"[-+]?\d+(?:\.\d+)?", t):
         return None
     try:
-        return float(m.group(1))
+        return float(t)
     except ValueError:
         return None
 
@@ -161,10 +164,8 @@ def main() -> None:
                 with torch.no_grad():
                     out = model.generate(
                         **inputs,
-                        max_new_tokens=32,
-                        do_sample=True,
-                        temperature=0.6,
-                        top_p=0.9,
+                        max_new_tokens=1,
+                        do_sample=False,
                         pad_token_id=tok.pad_token_id,
                     )
                 gen = tok.decode(out[0][inputs.input_ids.shape[1] :], skip_special_tokens=True)

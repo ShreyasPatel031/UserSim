@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Qwen3-8B-Base floor: SocSci210 unseen Wasserstein via vLLM (resume-capable).
 
-Same prompt/sampling contract as Socrates eval (temp=0.6, top_p=0.9, chat template).
+Greedy decoding (temp=0) with 1-token generation, chat template.
 Writes predictions.jsonl then SUMMARY.json.
 """
 from __future__ import annotations
@@ -37,11 +37,16 @@ def sh(cmd: str) -> None:
 
 
 def parse_numeric(text: str) -> float | None:
-    m = re.search(r"[-+]?\d*\.?\d+", text.replace(",", ""))
-    if not m:
+    """Parse text only if it is a bare number (after stripping whitespace).
+
+    Returns None if the text contains anything other than an optional sign,
+    digits, and an optional decimal point. Does NOT extract numbers from prose.
+    """
+    t = text.strip()
+    if not re.fullmatch(r"[-+]?\d+(?:\.\d+)?", t):
         return None
     try:
-        return float(m.group(0))
+        return float(t)
     except ValueError:
         return None
 
@@ -65,6 +70,7 @@ def sample_id(r: dict) -> str:
 
 
 def aggregate(preds: list[dict]) -> dict:
+    """Compute Wasserstein on [0,1] human-range-standardized values (no clipping)."""
     cells: dict[tuple, list] = defaultdict(list)
     for p in preds:
         if p.get("pred") is None:
@@ -77,10 +83,13 @@ def aggregate(preds: list[dict]) -> dict:
     for key, items in cells.items():
         h = np.array([x["human"] for x in items], dtype=float)
         m = np.array([x["pred"] for x in items], dtype=float)
-        if len(h) < 2 or (h.max() - h.min() == 0 and m.max() - m.min() == 0):
+        rmin, rmax = float(h.min()), float(h.max())
+        if len(h) < 2 or rmax <= rmin:
             skipped["cell_degenerate_range"] += 1
             continue
-        w = wasserstein_1d(h, m)
+        h_s = (h - rmin) / (rmax - rmin)
+        m_s = (m - rmin) / (rmax - rmin)
+        w = wasserstein_1d(h_s, m_s)
         per_study[key[0]].append(w)
         cell_rows.append({"study_id": key[0], "condition_num": key[1], "task_num": key[2], "w": w, "n": len(items)})
     study_means = {s: float(np.mean(ws)) for s, ws in per_study.items() if ws}
@@ -149,7 +158,7 @@ def main() -> None:
             max_num_seqs=MAX_NUM_SEQS,
             dtype="half",
         )
-        sampling = SamplingParams(temperature=0.6, top_p=0.9, max_tokens=32)
+        sampling = SamplingParams(temperature=0, max_tokens=1)
 
         with preds_path.open("a") as fout:
             for start in range(0, len(todo), CHUNK):

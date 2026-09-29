@@ -17,15 +17,18 @@ import numpy as np
 
 
 def parse_numeric(text: str | None) -> float | None:
-    """Extract first numeric value from text."""
+    """Parse text only if it is a bare number (after stripping whitespace).
+
+    Returns None if the text contains anything other than an optional sign,
+    digits, and an optional decimal point. Does NOT extract numbers from prose.
+    """
     if text is None:
         return None
     t = str(text).strip()
-    m = re.search(r"(?<![\d.])(-?\d+(?:\.\d+)?)(?![\d])", t)
-    if not m:
+    if not re.fullmatch(r"[-+]?\d+(?:\.\d+)?", t):
         return None
     try:
-        return float(m.group(1))
+        return float(t)
     except ValueError:
         return None
 
