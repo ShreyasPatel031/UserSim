@@ -5,7 +5,7 @@ Metric (paper): for each (condition, outcome) cell, standardize responses to
 [0,1] with human rmin/rmax, compute Wasserstein-1 between human and model
 response arrays, average over cells in a study, then average over studies.
 Target: W≈0.151 for socrates-qwen2.5-14b-sft on unseen studies.
-Inference: temperature=0.6, top_p=0.9.
+Inference: greedy decoding (do_sample=False), 1-token generation.
 """
 from __future__ import annotations
 
