@@ -5,7 +5,7 @@ Metric (paper): for each (condition, outcome) cell, standardize responses to
 [0,1] with human rmin/rmax, compute Wasserstein-1 between human and model
 response arrays, average over cells in a study, then average over studies.
 Target: W≈0.151 for socrates-qwen2.5-14b-sft on unseen studies.
-Inference: greedy decoding (do_sample=False), 1-token generation.
+Inference: temperature=0.6, top_p=0.9.
 """
 from __future__ import annotations
 
@@ -164,8 +164,10 @@ def main() -> None:
                 with torch.no_grad():
                     out = model.generate(
                         **inputs,
-                        max_new_tokens=1,
-                        do_sample=False,
+                        max_new_tokens=32,
+                        do_sample=True,
+                        temperature=0.6,
+                        top_p=0.9,
                         pad_token_id=tok.pad_token_id,
                     )
                 gen = tok.decode(out[0][inputs.input_ids.shape[1] :], skip_special_tokens=True)

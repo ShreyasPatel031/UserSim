@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Qwen3-8B-Base floor: SocSci210 unseen Wasserstein via vLLM (resume-capable).
 
-Greedy decoding (temp=0) with 1-token generation, chat template.
+Same prompt/sampling contract as Socrates eval (temp=0.6, top_p=0.9, chat template).
 Writes predictions.jsonl then SUMMARY.json.
 """
 from __future__ import annotations
@@ -158,7 +158,7 @@ def main() -> None:
             max_num_seqs=MAX_NUM_SEQS,
             dtype="half",
         )
-        sampling = SamplingParams(temperature=0, max_tokens=1)
+        sampling = SamplingParams(temperature=0.6, top_p=0.9, max_tokens=32)
 
         with preds_path.open("a") as fout:
             for start in range(0, len(todo), CHUNK):
