@@ -43,6 +43,21 @@ def wasserstein_1d(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.mean(np.abs(qa - qb)))
 
 
+def _effective_pred(row: dict) -> float | None:
+    """Return the effective prediction, or None if pred_raw is not a bare number.
+
+    If pred_raw is present and is not a bare number (after stripping whitespace),
+    return None so the row contributes no number to accuracy or Wasserstein.
+    If pred_raw is absent, return the stored pred value.
+    """
+    pred_raw = row.get("pred_raw")
+    if pred_raw is not None:
+        raw = str(pred_raw).strip()
+        if not re.fullmatch(r"[-+]?\d+(?:\.\d+)?", raw):
+            return None
+    return row.get("pred")
+
+
 def score(preds: list[dict]) -> dict:
     """Compute Socrates paper Wasserstein metric (no clipping).
 
@@ -62,12 +77,13 @@ def score(preds: list[dict]) -> dict:
         key = (p["study_id"], str(p["condition_num"]), str(p["task_num"]))
         cells[key].append(p)
         parse_stats["n"] += 1
-        if p.get("pred") is None:
+        eff_pred = _effective_pred(p)
+        if eff_pred is None:
             parse_stats["unparsed"] += 1
         if p.get("pred_raw") is not None:
             parse_stats["n_with_raw"] += 1
             raw = str(p["pred_raw"]).strip()
-            if re.fullmatch(r"-?\d+(?:\.\d+)?", raw):
+            if re.fullmatch(r"[-+]?\d+(?:\.\d+)?", raw):
                 parse_stats["bare_numeric"] += 1
 
     per_study: dict[str, list[float]] = defaultdict(list)
@@ -81,10 +97,11 @@ def score(preds: list[dict]) -> dict:
                 h = float(it["human"])
             except (TypeError, ValueError):
                 continue
-            if it.get("pred") is None:
+            eff_pred = _effective_pred(it)
+            if eff_pred is None:
                 continue
             humans.append(h)
-            models.append(float(it["pred"]))
+            models.append(float(eff_pred))
 
         if len(humans) < 2:
             skipped["too_few"] += 1

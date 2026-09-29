@@ -70,7 +70,6 @@ def sample_id(r: dict) -> str:
 
 
 def aggregate(preds: list[dict]) -> dict:
-    """Compute Wasserstein on [0,1] human-range-standardized values (no clipping)."""
     cells: dict[tuple, list] = defaultdict(list)
     for p in preds:
         if p.get("pred") is None:
@@ -83,13 +82,10 @@ def aggregate(preds: list[dict]) -> dict:
     for key, items in cells.items():
         h = np.array([x["human"] for x in items], dtype=float)
         m = np.array([x["pred"] for x in items], dtype=float)
-        rmin, rmax = float(h.min()), float(h.max())
-        if len(h) < 2 or rmax <= rmin:
+        if len(h) < 2 or (h.max() - h.min() == 0 and m.max() - m.min() == 0):
             skipped["cell_degenerate_range"] += 1
             continue
-        h_s = (h - rmin) / (rmax - rmin)
-        m_s = (m - rmin) / (rmax - rmin)
-        w = wasserstein_1d(h_s, m_s)
+        w = wasserstein_1d(h, m)
         per_study[key[0]].append(w)
         cell_rows.append({"study_id": key[0], "condition_num": key[1], "task_num": key[2], "w": w, "n": len(items)})
     study_means = {s: float(np.mean(ws)) for s, ws in per_study.items() if ws}

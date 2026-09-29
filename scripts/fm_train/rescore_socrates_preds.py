@@ -14,7 +14,7 @@ from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "fm_baselines"))
-from socrates_metric import score  # noqa: E402
+from socrates_metric import score, _effective_pred  # noqa: E402
 
 ROOT = Path(os.environ.get("ROOT", "/opt/usersim_fm"))
 RESULTS = Path(
@@ -62,7 +62,8 @@ def accuracies(preds: list[dict]) -> dict:
     exact = 0
     within1 = 0
     for r in preds:
-        h, p = r.get("human"), r.get("pred")
+        h = r.get("human")
+        p = _effective_pred(r)
         if h is None or p is None:
             continue
         h = float(h)
