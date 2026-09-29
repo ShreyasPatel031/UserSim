@@ -36,3 +36,14 @@ data/models/
 data/hackathon/
 .vercel
 .env*.local
+
+# SimBench data (NEVER commit to git - use GCS)
+data/simbench/*.csv
+data/simbench/*.json
+data/simbench/*.jsonl
+data/simbench/*.gz
+simbench_eval_kit/
+/tmp/simbench_train_data/
+**/armA_humandist/
+**/distill_pool.jsonl
+**/teacher_responses.jsonl
