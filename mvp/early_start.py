@@ -40,7 +40,33 @@ def enabled() -> bool:
     return os.environ.get("MVP_EARLY_START", "1").strip().lower() not in {"0", "false", "no"}
 
 
-async def starter_plan(url: str, *, timeout: float = 6.0) -> dict[str, Any] | None:
+def may_start(study: Any) -> bool:
+    """The early agent opens a browser, so only an admitted study may launch it."""
+    from mvp import browser_slots
+
+    return not browser_slots._enabled() or str(study.id) in browser_slots._ACTIVE
+
+
+async def _admitted(study: Any) -> bool:
+    from mvp import browser_slots, preopen
+
+    if not browser_slots._enabled():
+        return True
+    return await preopen.admitted(str(study.id))
+
+
+async def starter_plan(url: str, *, timeout: float = 6.0, study: Any | None = None) -> dict[str, Any] | None:
+    """The starter buyer and job; None when ``study`` is still queued (it would hold a browser)."""
+    if study is None:
+        return await _starter_plan(url, timeout=timeout)
+    plan, ok = await asyncio.gather(_starter_plan(url, timeout=timeout), _admitted(study))
+    if not ok:
+        print(f"[early] {str(study.id)[:8]} is queued; no early agent", flush=True)
+        return None
+    return plan
+
+
+async def _starter_plan(url: str, *, timeout: float = 6.0) -> dict[str, Any] | None:
     from capability.gemini_config import extract_json, gemini_chat
     from mvp.fast_plan import _page_read
 
@@ -193,6 +219,9 @@ class EarlySteps:
 def start_early_agent(study: Any, url: str, starter: dict[str, Any]) -> None:
     """Launch t1__p1__product now; the study picks the task up from study.early_runs."""
     from mvp.a11y_agent import A11yBoot, run_a11y_agent
+
+    if not may_start(study):
+        raise RuntimeError("study is queued: no browser until it starts")
 
     p = starter["persona"]
     persona = {

@@ -14,6 +14,8 @@ class BrowserSlotsTest(unittest.TestCase):
     def setUp(self):
         bs._TICKETS.clear()
         bs._ACTIVE.clear()
+        bs._PENDING.clear()
+        bs._STARTS.clear()
         bs._COUNT_CACHE.update({"at": 0.0, "value": None})
 
     def test_first_study_starts_at_once_and_second_is_queued_with_an_eta(self):

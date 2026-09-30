@@ -31,6 +31,8 @@ Open [http://127.0.0.1:8787](http://127.0.0.1:8787). Needs `BROWSERBASE_API_KEY`
 
 Blocked sites (403, WAF, empty JS shells) are retried via Browserbase. If still blocked, the study stops — no inferred fallback.
 
+Admin calls (`/api/runtime/kill`, studies of UserSim's own site) need `USERSIM_ADMIN_TOKEN`; see `deploy/README.md`.
+
 ## Signed-in / signed-up agents
 
 Every live study can provision a real product account first, then reuse that

@@ -11,6 +11,9 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:3000"
 URL = "https://useagency.dev/"
@@ -35,8 +38,10 @@ def post_start() -> str:
         },
         method="POST",
     )
+    from mvp.harness_http import urlopen_submit
+
     # Only need first NDJSON object with an id — don't wait for full stream.
-    with urllib.request.urlopen(req, timeout=120) as resp:
+    with urlopen_submit(req, timeout=120) as resp:
         buf = b""
         deadline = time.time() + 90
         while time.time() < deadline:
@@ -171,12 +176,14 @@ def main() -> int:
 
     # Kill to save Browserbase $
     try:
+        from mvp.self_guard import admin_headers
+
         req = urllib.request.Request(
             f"{BASE}/api/runtime/kill",
             data=json.dumps(
                 {"study_id": sid, "agents": True, "vms": False, "seeds": False}
             ).encode(),
-            headers={"Content-Type": "application/json"},
+            headers={"Content-Type": "application/json", **admin_headers()},
             method="POST",
         )
         urllib.request.urlopen(req, timeout=30).read()

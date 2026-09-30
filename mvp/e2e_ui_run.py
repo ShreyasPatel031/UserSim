@@ -604,8 +604,9 @@ async def run_e2e(args: argparse.Namespace) -> dict:
             await page.fill('textarea[name="customers"]', args.segment)
 
         _log("→ click Run")
-        await page.click("#submit-btn")
-        t_run = time.time()
+        from mvp.harness_http import click_run
+
+        t_run = await click_run(page, "#submit-btn")
 
         await page.wait_for_selector("#live-panel:not([hidden])", timeout=30_000)
         report["checks"]["live_panel_shown"] = True

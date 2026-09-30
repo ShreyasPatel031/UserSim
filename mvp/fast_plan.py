@@ -17,6 +17,8 @@ import re
 from typing import Any
 from urllib.parse import urlsplit
 
+from mvp.self_guard import is_own_host
+
 _PROMPT = """You plan a short usability study for a web product. Reply with JSON only.
 Product URL: {url}
 Page title: {title}
@@ -559,7 +561,7 @@ def pick_competitors(items: list[Any], own: str, limit: int = 2, *, allow_assist
         clean = _clean_url(str(item))
         parts = urlsplit(clean)
         host = (parts.hostname or "").removeprefix("www.")
-        if not clean or not host or host == own or clean in comps:
+        if not clean or not host or host == own or clean in comps or is_own_host(host):
             continue
         if host in _SUITE_HOSTS and parts.path.strip("/") == "":
             continue

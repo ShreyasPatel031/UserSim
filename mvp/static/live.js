@@ -16,7 +16,6 @@ let listTimer = null;
 let watchTimer = null;
 let runtimeTimer = null;
 let bootDone = false;
-let killing = false;
 /** Study whose cards are in the grid: agent ids (t1__p1__product) repeat across studies. */
 let renderedStudyId = "";
 /** Study ids with a fetch in flight, so 3s polls do not pile up behind a slow load. */
@@ -74,38 +73,6 @@ async function refreshRuntime() {
     renderRuntime(await fetchRuntime());
   } catch (err) {
     if (runtimeEl) runtimeEl.textContent = err.message || "runtime check failed";
-  }
-}
-
-async function killNow({ agents = true, vms = false, seeds = false } = {}) {
-  if (killing) return;
-  killing = true;
-  const buttons = ["kill-agents", "kill-agents-vms", "kill-everything"]
-    .map((id) => document.getElementById(id))
-    .filter(Boolean);
-  buttons.forEach((b) => {
-    b.disabled = true;
-  });
-  if (runtimeEl) runtimeEl.textContent = "Killing…";
-  try {
-    const res = await fetch("/api/runtime/kill", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ agents, vms, seeds }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.detail || "Kill failed");
-    if (data.status) renderRuntime(data.status);
-    else await refreshRuntime();
-    await refreshList();
-    if (selectedId) await refreshWatch();
-  } catch (err) {
-    if (runtimeEl) runtimeEl.textContent = err.message || "Kill failed";
-  } finally {
-    killing = false;
-    buttons.forEach((b) => {
-      b.disabled = false;
-    });
   }
 }
 
@@ -391,16 +358,6 @@ async function refreshWatch() {
 document.getElementById("refresh-list").addEventListener("click", () => {
   refreshList();
   refreshRuntime();
-});
-
-document.getElementById("kill-agents")?.addEventListener("click", () => {
-  killNow({ agents: true, vms: false, seeds: false });
-});
-document.getElementById("kill-agents-vms")?.addEventListener("click", () => {
-  killNow({ agents: true, vms: true, seeds: false });
-});
-document.getElementById("kill-everything")?.addEventListener("click", () => {
-  killNow({ agents: true, vms: true, seeds: true });
 });
 
 listEl.innerHTML = `<li class="live-study-empty">Loading studies…</li>`;

@@ -16,6 +16,8 @@ import re
 import time
 from typing import Any
 
+from mvp.self_guard import agent_action_block, install_agent_marker, node_blocked
+
 AX_CAP = 150
 
 # Full 24-agent Linear study 413e0cc0-f23b-45e5-9905-06f1c6d6d683 finished in
@@ -1222,7 +1224,11 @@ class A11yBoot:
 
     async def _create_one(self, i: int, enqueue: bool = True) -> Any | None:
         from capability.browserbase_client import create_session, study_session_owner
+        from mvp import browser_slots
 
+        if browser_slots._enabled() and not browser_slots.may_open(self.study.id):
+            print(f"[a11y] session {i + 1} refused: study is queued", flush=True)
+            return None
         if _PRIMED is not None:
             try:
                 bb = _PRIMED.get_nowait()
@@ -1266,6 +1272,7 @@ class A11yBoot:
         browser = await pw.chromium.connect_over_cdp(bb.connect_url)
         context = browser.contexts[0] if browser.contexts else await browser.new_context()
         page = context.pages[0] if context.pages else await context.new_page()
+        await install_agent_marker(context, getattr(self.study, "id", None))
         try:
             await page.set_viewport_size({"width": 1440, "height": 900})
         except Exception:
@@ -1776,6 +1783,8 @@ def _nodes_for_model(
         if signed_in and href and leaves_app(href, page_url):
             continue
         if purchase_control(name):
+            continue
+        if node_blocked(page_url, node):
             continue
         if name and name in skipped:
             continue
@@ -2787,6 +2796,7 @@ async def complete_task_on_page(
     acted = 0
     downloads: list[str] = []
     repeats = 0
+    self_blocks = 0
 
     def _on_download(download: Any) -> None:
         try:
@@ -2961,6 +2971,18 @@ async def complete_task_on_page(
         if act == "click" and chosen and chosen in skip:
             changed_nothing = True
             history.append(f"skipped repeat {chosen}")
+            continue
+        refused = agent_action_block(str(read.get("url") or url), action)
+        if refused:
+            self_blocks += 1
+            print(f"[{agent_id}] refused {act} {chosen!r} on {read.get('url')}: {refused}", flush=True)
+            if self_blocks >= 3:
+                _miss("stopped: UserSim's own controls are off limits to its agents", "self_guard")
+                break
+            changed_nothing = True
+            if chosen:
+                skip.add(chosen)
+            history.append(f"{action_label(action)} is not allowed: {refused}")
             continue
         if act == "drag":
             action["drag_index"] = sum(1 for t in trace if str(t.get("action") or "").startswith("drag"))
@@ -3241,7 +3263,10 @@ async def _create_session_or_close(
     import threading
 
     from capability.browserbase_client import close_session, create_session, study_session_owner
+    from mvp import browser_slots
 
+    if browser_slots._enabled() and not browser_slots.may_open(study_id):
+        raise RuntimeError(f"study {str(study_id)[:8]} is queued: no browser until it starts")
     loop = asyncio.get_running_loop()
     fut: asyncio.Future[Any] = loop.create_future()
     cancel = threading.Event()
@@ -3380,6 +3405,7 @@ async def _open_agent_session_once(
             browser = await pw.chromium.connect_over_cdp(bb.connect_url)
             context = browser.contexts[0] if browser.contexts else await browser.new_context()
             page = context.pages[0] if context.pages else await context.new_page()
+            await install_agent_marker(context, getattr(boot.study, "id", None))
             try:
                 await page.set_viewport_size({"width": 1440, "height": 900})
             except Exception:

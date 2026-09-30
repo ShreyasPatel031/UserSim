@@ -196,13 +196,21 @@ def _result_text(result: Any) -> str:
     return " | ".join(parts)
 
 
-def _browserbase_profile(cdp_url: str):
+def _own_site_prohibited(target_url: str) -> list[str] | None:
+    """UserSim's hosts, off limits to the agent unless the study's target is UserSim (admin dogfood)."""
+    from mvp.self_guard import is_own_host, prohibited_domains
+
+    return None if target_url and is_own_host(target_url) else prohibited_domains()
+
+
+def _browserbase_profile(cdp_url: str, target_url: str = ""):
     from browser_use.browser.profile import BrowserProfile
 
     from mvp.captcha import captcha_solver_enabled
 
     return BrowserProfile(
         cdp_url=cdp_url,
+        prohibited_domains=_own_site_prohibited(target_url),
         is_local=False,
         viewport=VIEWPORT,
         user_agent=USER_AGENT,
@@ -223,6 +231,7 @@ def _local_browser_profile(
     storage_state: Any | None = None,
     headless: bool | None = None,
     user_data_dir: str | None = None,
+    target_url: str = "",
 ):
     from browser_use.browser.profile import BrowserProfile
 
@@ -236,6 +245,7 @@ def _local_browser_profile(
         }
     kwargs: dict[str, Any] = {
         "is_local": True,
+        "prohibited_domains": _own_site_prohibited(target_url),
         "headless": headless,
         "viewport": VIEWPORT,
         "user_agent": USER_AGENT,
@@ -1200,7 +1210,7 @@ async def warm_opening_session(
         connect = getattr(bb_session, "connect_url", None)
         if not connect:
             raise RuntimeError("Browserbase session missing connect_url")
-        browser_session = BrowserSession(browser_profile=_browserbase_profile(connect))
+        browser_session = BrowserSession(browser_profile=_browserbase_profile(connect, url))
         await browser_session.start()
         t_nav0 = time.time()
         # YouTube signed-out home is often an empty splash in automation —
@@ -1570,6 +1580,7 @@ async def run_browser_agent(
                     if profile_clone
                     else (storage_state if isinstance(storage_state, str) else None),
                     user_data_dir=str(profile_clone) if profile_clone else None,
+                    target_url=url,
                 )
                 backend = "local_playwright"
             else:
@@ -1592,7 +1603,7 @@ async def run_browser_agent(
                 connect = getattr(bb_session, "connect_url", None)
                 if not connect:
                     raise RuntimeError("Browserbase session missing connect_url")
-                profile = _browserbase_profile(connect)
+                profile = _browserbase_profile(connect, url)
                 backend = "browserbase"
                 await _pulse("Browser ready — loading the page…")
 
@@ -1666,6 +1677,13 @@ async def run_browser_agent(
         "t0": None,
         "first_action_s": None,
     }
+    from mvp.self_guard import attach_marker_over_cdp
+
+    marker_task = asyncio.create_task(
+        attach_marker_over_cdp(
+            getattr(browser_session, "cdp_url", None) or getattr(bb_session, "connect_url", None), study_id
+        )
+    )
     try:
         # Auth/cookies after first pixels (non-YouTube, non-warm).
         # Warm sessions skip this — first click should not wait on vault I/O.
@@ -1872,6 +1890,13 @@ async def run_browser_agent(
             # Prefer partial opening frames over raising into study retry.
             print(f"[{agent_id}] agent.run failed: {run_exc!r} — returning partial", flush=True)
     finally:
+        try:
+            marker = await asyncio.wait_for(marker_task, timeout=5)
+        except BaseException:
+            marker_task.cancel()
+            marker = None
+        if marker is not None:
+            await marker.close()
         if browser_session is not None:
             try:
                 await asyncio.wait_for(browser_session.kill(), timeout=8)

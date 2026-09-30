@@ -7,8 +7,9 @@ import os
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -24,6 +25,10 @@ STATIC = Path(__file__).resolve().parent / "static"
 IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 
 app = FastAPI(title="UserSim MVP", version="0.1.0")
+
+from mvp.self_guard import AgentBrowserGuard, require_admin  # noqa: E402
+
+app.add_middleware(AgentBrowserGuard)
 
 
 @app.on_event("startup")
@@ -126,6 +131,8 @@ class StudyRequest(BaseModel):
     skip_competitors: bool = False
     max_agents: int | None = Field(default=None, ge=1, le=75)
     backend: str = Field(default="default", pattern="^(default)$")
+    # Studies of UserSim's own site also need the admin bearer token.
+    admin_dogfood: bool = False
 
 
 def _normalize_url(raw: str) -> str:
@@ -527,11 +534,41 @@ async def list_studies(limit: int = 40):
     return {"studies": rows[: max(1, min(limit, 100))]}
 
 
+def _start_cap_refusal() -> JSONResponse | None:
+    from mvp import browser_slots
+
+    retry_after = browser_slots.submit_retry_after()
+    if not retry_after:
+        return None
+    return JSONResponse(
+        {
+            "detail": f"Too many studies started recently. Try again in {retry_after}s.",
+            "status": "rate_limited",
+            "retry_after_s": retry_after,
+        },
+        status_code=429,
+        headers={"Retry-After": str(retry_after)},
+    )
+
+
 @app.post("/api/studies")
 async def start_study(body: StudyRequest, background: BackgroundTasks, request: Request):
-    from mvp.study import STUDIES, create_study, run_study, study_to_dict
+    from mvp import browser_slots
+    from mvp.self_guard import dogfood_refusal
+    from mvp.study import create_study
 
     url = await _landing_url(_normalize_url(body.url))
+    refused = await dogfood_refusal(
+        [body.url, url, *body.competitors], body.admin_dogfood, request.headers.get("authorization")
+    )
+    if refused is not None:
+        return refused
+
+    # Anything that starts no study returns above this line, so it never gets a 429.
+    limited = _start_cap_refusal()
+    if limited is not None:
+        return limited
+
     segment = (body.segment or body.customers or "").strip()
     if not segment:
         segment = (
@@ -542,6 +579,19 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
         segment = "Curious first-time visitor"
 
     study = create_study(url, segment)
+    browser_slots.reserve(study)
+    try:
+        return await _launch_study(study, url, body, request)
+    except BaseException:
+        # No runner owns the study yet, so nothing else would free its turn.
+        browser_slots.release(study)
+        raise
+
+
+async def _launch_study(study: Any, url: str, body: StudyRequest, request: Request):
+    from mvp import browser_slots
+    from mvp.study import STUDIES, run_study, study_to_dict
+
     # Count busy Browserbase sessions while the plan is written, so the
     # queue check before agents start costs nothing on a free project.
     from mvp.browser_slots import prefetch_count
@@ -650,7 +700,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
 
                 if early_start.enabled():
                     # The first buyer starts on the product while the full plan is written.
-                    starter = await early_start.starter_plan(url)
+                    starter = await early_start.starter_plan(url, study=study)
                     if starter and not plan_task.done():
                         try:
                             early_start.start_early_agent(study, url, starter)
@@ -774,6 +824,10 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 )
             except Exception as kill_exc:  # noqa: BLE001
                 print(f"timeout kill failed: {kill_exc!r}", flush=True)
+            # A timeout during planning never reaches run_study, whose finally frees the turn.
+            for early in (getattr(study_obj, "early_runs", None) or {}).values():
+                early.cancel()
+            browser_slots.release(study_obj)
             # Re-persist after kill so GCS shows abandoned, not running.
             try:
                 persist_study(study_obj)
@@ -831,6 +885,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 payload["stream_event"] = "error"
                 await queue.put(payload)
             finally:
+                browser_slots.release(study)
                 await queue.put(None)
                 STUDY_TASKS.pop(study.id, None)
 
@@ -880,6 +935,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                     print(f"plan failed: {exc!r}", flush=True)
             await run_study(study.id)
         finally:
+            browser_slots.release(study)
             STUDY_TASKS.pop(study.id, None)
 
     STUDY_TASKS[study.id] = asyncio.create_task(_bg())
@@ -908,9 +964,9 @@ async def runtime_queue():
     return queue_snapshot()
 
 
-@app.post("/api/runtime/kill")
+@app.post("/api/runtime/kill", dependencies=[Depends(require_admin)])
 async def runtime_kill(body: KillRequest | None = None):
-    """Kill Browserbase agents and/or UserSim VMs immediately."""
+    """Kill Browserbase agents and/or UserSim VMs immediately. Needs the admin bearer token."""
     from mvp.kill_switch import kill_now_async
 
     req = body or KillRequest()
