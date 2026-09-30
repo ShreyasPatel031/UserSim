@@ -660,6 +660,11 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                     else:
                         starter = None
             plan = await plan_task
+            if plan and plan.get("rejected"):
+                from mvp.fast_plan import reject_study_plan
+
+                reject_study_plan(study, plan)
+                return
             if plan and starter and plan.get("mode") == "compare":
                 plan = early_start.splice_plan(plan, starter)
             if plan and plan.get("mode") == "compare":
@@ -783,6 +788,14 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
             payload["stream_event"] = "error"
             return payload
 
+        async def _stop_if_wrong_category() -> None:
+            if not getattr(study, "plan_rejected", False):
+                return
+            from mvp.preopen import release
+
+            await release(study.id, reason="wrong-category")
+            raise RuntimeError(study.error or "wrong competitor category")
+
         async def _plan_then_run(study_id: str, push) -> Any:
             if pending_plan is not None:
                 try:
@@ -793,6 +806,7 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                     push(study, "brief")
                 except Exception:
                     pass
+            await _stop_if_wrong_category()
             return await run_study(study_id, on_update=push)
 
         async def _runner() -> None:
@@ -878,6 +892,11 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                     await pending_plan()
                 except Exception as exc:  # noqa: BLE001
                     print(f"plan failed: {exc!r}", flush=True)
+            if getattr(study, "plan_rejected", False):
+                from mvp.preopen import release
+
+                await release(study.id, reason="wrong-category")
+                return
             await run_study(study.id)
         finally:
             STUDY_TASKS.pop(study.id, None)
