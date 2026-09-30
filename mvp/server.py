@@ -638,8 +638,9 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 except Exception:
                     pass
 
+        pinned = [] if study.skip_competitors else list(study.competitors)
         plan_task = asyncio.create_task(
-            plan_from_url(url, on_competitors=_show_competitors, on_personas=_show_personas)
+            plan_from_url(url, on_competitors=_show_competitors, on_personas=_show_personas, competitors=pinned)
         )
 
         async def _finish_plan() -> None:
@@ -660,6 +661,16 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                     else:
                         starter = None
             plan = await plan_task
+            if plan and pinned and plan.get("mode") == "compare":
+                from urllib.parse import urlsplit
+
+                from mvp.fast_plan import pinned_rivals, plan_keeps_rivals
+
+                own = (urlsplit(url).hostname or "").removeprefix("www.")
+                if not plan_keeps_rivals(plan, pinned_rivals(pinned, own)):
+                    # Its buyers and jobs are tagged for rivals the request did not pass.
+                    print(f"[fast_plan] compare plan dropped: rivals {plan.get('competitors')} != {pinned}", flush=True)
+                    plan = None
             if plan and starter and plan.get("mode") == "compare":
                 plan = early_start.splice_plan(plan, starter)
             if plan and plan.get("mode") == "compare":
@@ -676,7 +687,9 @@ async def start_study(body: StudyRequest, background: BackgroundTasks, request: 
                 study.early_runs = {}
             if plan:
                 study.tasks_override = list(plan["tasks"])
-                if not study.competitors and not study.skip_competitors:
+                if plan.get("mode") == "compare" and pinned:
+                    study.competitors = list(plan["competitors"])
+                elif not study.competitors and not study.skip_competitors:
                     study.competitors = list(plan["competitors"])
                 if plan.get("mode") == "compare":
                     study.study_mode = "compare"
