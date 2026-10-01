@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import math
 import random
 import re
 import threading
@@ -254,6 +255,155 @@ def arm_ensemble(row, ctx) -> tuple[str, str, dict]:
     return system, user, {"samples": 5, "temperature": 1.0}
 
 
+# --------------------------------------------------------------------------- #
+# distribution-injection arms (entropy-aware demos)
+# --------------------------------------------------------------------------- #
+
+
+def _entropy(dist: dict) -> float:
+    total = sum(dist.values()) or 1.0
+    probs = [v / total for v in dist.values() if v > 0]
+    k = len(dist)
+    if k < 2:
+        return 0.0
+    return -sum(p * math.log(p) for p in probs) / math.log(k)
+
+
+def _spread_label(h: float) -> str:
+    if h < 0.55:
+        return "concentrated (most people agree)"
+    if h < 0.80:
+        return "moderately split"
+    return "widely spread (people disagree)"
+
+
+def _pool_key(row) -> str:
+    return f"{row['split']}|{row['dataset_name']}"
+
+
+def _demo_pool(row, ctx) -> list[dict]:
+    """Candidate demos for this row's dataset, never the same question text."""
+    own = row["input_template"]
+    return [d for d in ctx["ext_by_dataset"].get(_pool_key(row), []) if d["input_template"] != own]
+
+
+def _rank_by_similarity(row, pool: list[dict], ctx=None, max_per_question: int = 2) -> list[dict]:
+    """Same-group demos first, then by TF-IDF similarity to the question.
+
+    At most `max_per_question` demos share a question text (Grouped data repeats each
+    question across groups), so the demo set stays varied.
+    """
+    if len(pool) <= 1:
+        return pool
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    cache = ctx.setdefault("_tfidf", {}) if ctx is not None else {}
+    key = (_pool_key(row), len(pool), pool[0]["input_template"][:40])
+    if key not in cache:
+        vec = TfidfVectorizer(stop_words="english")
+        mat = vec.fit_transform([d["input_template"] for d in pool])
+        cache[key] = (vec, mat)
+    vec, mat = cache[key]
+    sims = (mat @ vec.transform([row["input_template"]]).T).toarray().ravel()
+    persona = _filled_persona(row)
+    order = sorted(
+        range(len(pool)),
+        key=lambda i: (-(pool[i].get("persona") == persona), -sims[i]),
+    )
+    seen: dict[str, int] = {}
+    ranked = []
+    for i in order:
+        q = pool[i]["input_template"]
+        if seen.get(q, 0) >= max_per_question:
+            continue
+        seen[q] = seen.get(q, 0) + 1
+        ranked.append(pool[i])
+    return ranked
+
+
+def _span_entropy(ranked: list[dict], k: int) -> list[dict]:
+    """k demos, most similar first within each entropy tercile of the pool."""
+    if len(ranked) <= k:
+        return ranked
+    by_h = sorted(ranked, key=lambda d: d["h"])
+    third = max(1, len(by_h) // 3)
+    bins = [by_h[:third], by_h[third : 2 * third], by_h[2 * third :]]
+    rank = {id(d): i for i, d in enumerate(ranked)}
+    picked: list[dict] = []
+    per = [k // 3 + (1 if i < k % 3 else 0) for i in range(3)]
+    for b, n in zip(bins, per):
+        picked += sorted(b, key=lambda d: rank[id(d)])[:n]
+    return sorted(picked, key=lambda d: rank[id(d)])
+
+
+def _demo_block(demos: list[dict], annotate: bool) -> str:
+    blocks = []
+    for d in demos:
+        total = sum(d["human_answer"].values()) or 1.0
+        pct = {k: round(100 * v / total) for k, v in d["human_answer"].items()}
+        note = f"\n(How spread out real answers were: {_spread_label(d['h'])})" if annotate else ""
+        blocks.append(f"**Question**: {d['input_template']}\n**Answer**: {json.dumps(pct)}{note}")
+    return "\n\n".join(blocks)
+
+
+def _inject(row, ctx, demos: list[dict], annotate: bool, hint: str = "") -> tuple[str, str, dict]:
+    keys = list(row["human_answer"].keys())
+    prefix = ""
+    if demos:
+        prefix = (
+            "Here are real response distributions previously measured for this group:\n\n"
+            + _demo_block(demos, annotate)
+            + "\n\n"
+            + hint
+            + "Now estimate the same for a new question.\n\n"
+        )
+    return (
+        SYSTEM_PREFIX + _filled_persona(row),
+        prefix + _official_user(row["input_template"], keys),
+        {},
+    )
+
+
+_SPREAD_HINT = (
+    "Note that how contested a question is varies a lot: for some questions nearly "
+    "everyone picks one option, for others answers are spread across several. "
+    "Judge how contested the new question is, and let your distribution be as "
+    "concentrated or as spread as real answers would be.\n\n"
+)
+
+
+def _fewshot_k(k: int):
+    def arm(row, ctx):
+        return _inject(row, ctx, _demo_pool(row, ctx)[:k], annotate=False)
+
+    return arm
+
+
+def arm_retr6(row, ctx):
+    """Question-similar demos from the dataset (TF-IDF), no annotations."""
+    demos = _rank_by_similarity(row, _demo_pool(row, ctx), ctx)[:6]
+    return _inject(row, ctx, demos, annotate=False)
+
+
+def arm_retr6_ent(row, ctx):
+    """Similar demos, each labelled with how spread out the real answers were."""
+    demos = _rank_by_similarity(row, _demo_pool(row, ctx), ctx)[:6]
+    return _inject(row, ctx, demos, annotate=True, hint=_SPREAD_HINT)
+
+
+def arm_span6_ent(row, ctx):
+    """Demos spanning low/mid/high-entropy questions, labelled, plus the spread hint."""
+    ranked = _rank_by_similarity(row, _demo_pool(row, ctx), ctx)
+    demos = _span_entropy(ranked, 6)
+    return _inject(row, ctx, demos, annotate=True, hint=_SPREAD_HINT)
+
+
+def arm_span6(row, ctx):
+    """Entropy-spanning demos with no labels (isolates selection from annotation)."""
+    ranked = _rank_by_similarity(row, _demo_pool(row, ctx), ctx)
+    return _inject(row, ctx, _span_entropy(ranked, 6), annotate=False)
+
+
 ARMS = {
     "base": arm_base,
     "no_persona": arm_no_persona,
@@ -264,6 +414,12 @@ ARMS = {
     "fewshot": arm_fewshot,
     "plural_fewshot": arm_plural_fewshot,
     "ensemble": arm_ensemble,
+    "fs_k6": _fewshot_k(6),
+    "fs_k12": _fewshot_k(12),
+    "retr6": arm_retr6,
+    "retr6_ent": arm_retr6_ent,
+    "span6": arm_span6,
+    "span6_ent": arm_span6_ent,
 }
 
 
@@ -308,7 +464,60 @@ def _parse_dist(raw: str, keys: list[str]) -> dict[str, float] | None:
     return None
 
 
+CLAUDE_REGION = "global"
+
+
+def _call_claude(model: str, system: str, user: str, opts: dict) -> tuple[str, int, int]:
+    """Claude on Vertex (rawPredict). Same auth as Gemini; JSON is requested in the prompt."""
+    import requests
+
+    host = (
+        "aiplatform.googleapis.com"
+        if CLAUDE_REGION == "global"
+        else f"{CLAUDE_REGION}-aiplatform.googleapis.com"
+    )
+    url = (
+        f"https://{host}/v1/projects/{GCP_PROJECT}/locations/{CLAUDE_REGION}"
+        f"/publishers/anthropic/models/{model}:rawPredict"
+    )
+    body = {
+        "anthropic_version": "vertex-2023-10-16",
+        "max_tokens": opts.get("max_output_tokens", 512),
+        "temperature": opts.get("temperature", 0.0),
+        "system": system,
+        "messages": [{"role": "user", "content": user}],
+    }
+    last: Exception | None = None
+    for attempt in range(8):
+        try:
+            token = vertex_credentials().token
+            resp = requests.post(
+                url, headers={"Authorization": f"Bearer {token}"}, json=body, timeout=120
+            )
+            if resp.status_code == 401 and attempt == 0:
+                invalidate_credentials()
+                continue
+            if resp.status_code in (429, 500, 503, 529):
+                time.sleep(min(60.0, (2**attempt) * 0.5))
+                continue
+            resp.raise_for_status()
+            data = resp.json()
+            text = "".join(b.get("text", "") for b in data.get("content", []))
+            usage = data.get("usage", {})
+            return text.strip(), int(usage.get("input_tokens", 0)), int(usage.get("output_tokens", 0))
+        except Exception as exc:  # noqa: BLE001
+            last = exc
+            if _is_throttle(exc):
+                time.sleep(min(60.0, (2**attempt) * 0.5))
+                continue
+            raise
+    assert last is not None
+    raise last
+
+
 def _call(model: str, system: str, user: str, opts: dict) -> tuple[str, int, int]:
+    if model.startswith("claude"):
+        return _call_claude(model, system, user, opts)
     last: Exception | None = None
     for attempt in range(8):
         try:
@@ -511,6 +720,15 @@ def score_arm(
 # --------------------------------------------------------------------------- #
 
 
+def extended_pool(df: pd.DataFrame, per_dataset: int, seed: int, reserve: int, n_ext: int) -> pd.DataFrame:
+    """Extra demo candidates drawn from rows outside the eval slice and reserve."""
+    out = []
+    for _, group in df.groupby("dataset_name"):
+        shuffled = group.sample(frac=1.0, random_state=seed)
+        out.append(shuffled.iloc[reserve + per_dataset : reserve + per_dataset + n_ext])
+    return pd.concat(out).reset_index(drop=True)
+
+
 def build_context(pop: pd.DataFrame, grouped: pd.DataFrame, pools: pd.DataFrame) -> dict:
     personas_by_dataset = defaultdict(set)
     for df in (pop, grouped):
@@ -542,6 +760,7 @@ def main() -> None:
     p.add_argument("--workers", type=int, default=64)
     p.add_argument("--seed", type=int, default=7)
     p.add_argument("--score-only", action="store_true")
+    p.add_argument("--limit", type=int, default=0, help="smoke test: random N cases, separate cache")
     p.add_argument("--shrink-sweep", action="store_true")
     args = p.parse_args()
 
@@ -553,22 +772,51 @@ def main() -> None:
     grp_eval, grp_pool = stratified_sample(grouped_full, args.grouped, args.seed, reserve=3)
     sample = pd.concat([pop_eval, grp_eval]).reset_index(drop=True)
     pools = pd.concat([pop_pool, grp_pool]).reset_index(drop=True)
+    if args.limit:
+        sample = sample.sample(n=args.limit, random_state=1)
     norms = dataset_norms(sample)
     ctx = build_context(pop_full, grouped_full, pools)
+    ext: dict[str, list[dict]] = defaultdict(list)
+    for df_full, per in ((pop_full, args.pop), (grouped_full, args.grouped)):
+        n_ext = 40 if df_full is pop_full else 10**6
+        for _, row in extended_pool(df_full, per, args.seed, 3, n_ext).iterrows():
+            ext[f"{row['split']}|{row['dataset_name']}"].append(
+                {
+                    "input_template": row["input_template"],
+                    "human_answer": row["human_answer"],
+                    "h": _entropy(row["human_answer"]),
+                    "persona": _filled_persona(row),
+                }
+            )
+    # datasets with no spare rows fall back to the 3 reserve demos
+    for pool_df in (pop_pool, grp_pool):
+        for _, row in pool_df.iterrows():
+            key = f"{row['split']}|{row['dataset_name']}"
+            if len(ext[key]) < 6:
+                ext[key].append(
+                    {
+                        "input_template": row["input_template"],
+                        "human_answer": row["human_answer"],
+                        "h": _entropy(row["human_answer"]),
+                        "persona": _filled_persona(row),
+                    }
+                )
+    ctx["ext_by_dataset"] = dict(ext)
 
     print(
         f"sample n={len(sample)} "
         f"(Pop {len(pop_eval)} / Grouped {len(grp_eval)}) "
         f"datasets={len(norms)}"
     )
-    (OUT_DIR / "dataset_norms.json").write_text(json.dumps(norms, indent=2))
+    if not args.limit:
+        (OUT_DIR / "dataset_norms.json").write_text(json.dumps(norms, indent=2))
 
     arms = [a for a in args.arms.split(",") if a]
     summaries = []
     for arm in arms:
         if arm not in ARMS:
             raise SystemExit(f"unknown arm {arm}; choose from {sorted(ARMS)}")
-        tag = f"p{args.pop}g{args.grouped}s{args.seed}"
+        tag = f"p{args.pop}g{args.grouped}s{args.seed}" + (f"lim{args.limit}" if args.limit else "")
         raw_path = OUT_DIR / f"{arm}_{args.model.replace('/', '_')}_{tag}.json"
         if args.score_only or raw_path.exists():
             if not raw_path.exists():
@@ -590,7 +838,8 @@ def main() -> None:
         print(json.dumps({k: v for k, v in summary.items() if k != "S_by_dataset"}, indent=2))
 
     if summaries:
-        (OUT_DIR / "summary.json").write_text(json.dumps(summaries, indent=2))
+        if not args.limit:
+            (OUT_DIR / "summary.json").write_text(json.dumps(summaries, indent=2))
         base = next((s for s in summaries if s["arm"] == "base"), None)
         print("\n=== SimBench S by arm ===")
         for s in sorted(summaries, key=lambda x: -(x["S"] or -999)):

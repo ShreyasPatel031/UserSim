@@ -20,6 +20,9 @@ DATA = ROOT / "data" / "simbench"
 PRICES = {
     "gemini-2.5-flash": {"in": 0.30, "out": 2.50},
     "gemini-2.5-flash-lite": {"in": 0.10, "out": 0.40},
+    "claude-haiku-4-5": {"in": 1.00, "out": 5.00},
+    "claude-sonnet-4-5": {"in": 3.00, "out": 15.00},
+    "claude-sonnet-4-6": {"in": 3.00, "out": 15.00},
 }
 
 
