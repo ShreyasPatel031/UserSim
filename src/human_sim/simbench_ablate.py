@@ -287,24 +287,62 @@ def _demo_pool(row, ctx) -> list[dict]:
     return [d for d in ctx["ext_by_dataset"].get(_pool_key(row), []) if d["input_template"] != own]
 
 
-def _rank_by_similarity(row, pool: list[dict], ctx=None, max_per_question: int = 2) -> list[dict]:
-    """Same-group demos first, then by TF-IDF similarity to the question.
+EMB_MODEL = "text-embedding-005"
+EMB_CACHE = DATA / "emb_cache.pkl"
+_emb_lock = threading.Lock()
+_emb_store: dict[str, list[float]] | None = None
+
+
+def _embed(texts: list[str]) -> list[list[float]]:
+    """Cached text embeddings (Vertex). Cache is a gitignored pickle next to the data."""
+    import pickle
+
+    global _emb_store
+    with _emb_lock:
+        if _emb_store is None:
+            _emb_store = pickle.loads(EMB_CACHE.read_bytes()) if EMB_CACHE.exists() else {}
+        missing = [t for t in dict.fromkeys(texts) if t not in _emb_store]
+        for i in range(0, len(missing), 50):
+            chunk = missing[i : i + 50]
+            resp = _client().models.embed_content(model=EMB_MODEL, contents=chunk)
+            for t, e in zip(chunk, resp.embeddings):
+                _emb_store[t] = list(e.values)
+        if missing:
+            EMB_CACHE.write_bytes(pickle.dumps(_emb_store))
+        return [_emb_store[t] for t in texts]
+
+
+def _similarities(row, pool: list[dict], ctx, method: str):
+    cache = ctx.setdefault("_sim", {})
+    key = (method, _pool_key(row), len(pool), pool[0]["input_template"][:40])
+    if method == "emb":
+        import numpy as np
+
+        if key not in cache:
+            mat = np.array(_embed([d["input_template"] for d in pool]))
+            cache[key] = mat / np.linalg.norm(mat, axis=1, keepdims=True)
+        q = np.array(_embed([row["input_template"]])[0])
+        return cache[key] @ (q / np.linalg.norm(q))
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    if key not in cache:
+        vec = TfidfVectorizer(stop_words="english")
+        cache[key] = (vec, vec.fit_transform([d["input_template"] for d in pool]))
+    vec, mat = cache[key]
+    return (mat @ vec.transform([row["input_template"]]).T).toarray().ravel()
+
+
+def _rank_by_similarity(
+    row, pool: list[dict], ctx=None, max_per_question: int = 2, method: str = "tfidf"
+) -> list[dict]:
+    """Same-group demos first, then by similarity to the question.
 
     At most `max_per_question` demos share a question text (Grouped data repeats each
     question across groups), so the demo set stays varied.
     """
     if len(pool) <= 1:
         return pool
-    from sklearn.feature_extraction.text import TfidfVectorizer
-
-    cache = ctx.setdefault("_tfidf", {}) if ctx is not None else {}
-    key = (_pool_key(row), len(pool), pool[0]["input_template"][:40])
-    if key not in cache:
-        vec = TfidfVectorizer(stop_words="english")
-        mat = vec.fit_transform([d["input_template"] for d in pool])
-        cache[key] = (vec, mat)
-    vec, mat = cache[key]
-    sims = (mat @ vec.transform([row["input_template"]]).T).toarray().ravel()
+    sims = _similarities(row, pool, ctx if ctx is not None else {}, method)
     persona = _filled_persona(row)
     order = sorted(
         range(len(pool)),
@@ -389,6 +427,37 @@ def arm_retr6_ent(row, ctx):
     """Similar demos, each labelled with how spread out the real answers were."""
     demos = _rank_by_similarity(row, _demo_pool(row, ctx), ctx)[:6]
     return _inject(row, ctx, demos, annotate=True, hint=_SPREAD_HINT)
+
+
+
+def arm_retr6_rev(row, ctx):
+    """retr6 with the most similar demo placed last (closest to the question)."""
+    demos = _rank_by_similarity(row, _demo_pool(row, ctx), ctx)[:6][::-1]
+    return _inject(row, ctx, demos, annotate=False)
+
+
+def arm_retr6_emb(row, ctx):
+    """retr6 with embedding (semantic) retrieval instead of TF-IDF."""
+    demos = _rank_by_similarity(row, _demo_pool(row, ctx), ctx, method="emb")[:6]
+    return _inject(row, ctx, demos, annotate=False)
+
+
+def _profile_distance(a: list[float], b: list[float], width: int = 4) -> float:
+    a = (a + [0.0] * width)[:width]
+    b = (b + [0.0] * width)[:width]
+    return sum(abs(x - y) for x, y in zip(a, b))
+
+
+def arm_retr6_shape(row, ctx, candidates: int = 30):
+    """Shape-conditioned retrieval: among the most similar candidates, keep the 6 whose
+    answer profile is closest to a first-pass (base prompt) prediction."""
+    ranked = _rank_by_similarity(row, _demo_pool(row, ctx), ctx)[:candidates]
+    first = ctx.get("first_pass", {}).get(int(row.name))
+    if first is None or len(ranked) <= 6:
+        return _inject(row, ctx, ranked[:6], annotate=False)
+    dist = {id(d): _profile_distance(first, _sorted_probs(d["human_answer"])) for d in ranked}
+    keep = set(map(id, sorted(ranked, key=lambda d: dist[id(d)])[:6]))
+    return _inject(row, ctx, [d for d in ranked if id(d) in keep], annotate=False)
 
 
 def arm_span6_ent(row, ctx):
@@ -502,6 +571,84 @@ def _segments_arm(n_seg: int, soft: bool):
     return arm
 
 
+
+def _soft_segments_arm(instruction: str, max_tokens: int = 1000):
+    """Segment prompt where the instruction text varies; segments always answer softly."""
+
+    def arm(row, ctx):
+        keys = list(row["human_answer"].keys())
+        user = (
+            f"**Question**: {row['input_template']}\n\n{instruction}\n"
+            'Output only valid JSON: {"segments": [{"share": X, "dist": '
+            + _fmt(keys)
+            + "}, ...]}\n**Answer**:"
+        )
+        return (
+            SYSTEM_PREFIX + _filled_persona(row),
+            user,
+            {"segments": "soft", "max_output_tokens": max_tokens},
+        )
+
+    return arm
+
+
+_ADAPTIVE = (
+    "Your group is made up of different kinds of people. First decide how contested this "
+    "question is within your group. If nearly everyone in the group would answer the same "
+    "way, use ONE segment (share 100) and just give that distribution. If views are mixed, "
+    "use 2-3 segments. If the group is deeply divided, use 4-5 segments. For each segment "
+    "give its share of the group (shares sum to 100) and the percentages of that segment "
+    "choosing each option (summing to 100)."
+)
+
+_RESPONSE_STYLE = (
+    "Your group is a mix of: (a) 2-3 opinion-driven segments that hold substantive, "
+    "differing views on this question; (b) one segment with no strong view (undecided, "
+    "does not know, or does not care) that would pick a neutral, middle or 'don't know' "
+    "style option if one exists; (c) one segment that answers casually and tends to agree "
+    "with whatever is stated. Give each segment's share of the group (shares sum to 100) "
+    "and the percentages of that segment choosing each option (summing to 100)."
+)
+
+
+def _archetypes_for(row, ctx) -> list[str]:
+    return ctx.get("archetypes", {}).get(_filled_persona(row), [])
+
+
+def arm_B_dict(row, ctx):
+    """Fixed archetype dictionary per group; the model sets shares and answers per archetype."""
+    arch = _archetypes_for(row, ctx)
+    if not arch:
+        return arm_B_n3_soft_fallback(row, ctx)
+    listing = "\n".join(f"{i + 1}. {a}" for i, a in enumerate(arch))
+    return _soft_segments_arm(
+        "Your group consists of these types of people:\n" + listing + "\n"
+        "For each type, give its share of the group on this question (shares sum to 100) and "
+        "the percentages of that type choosing each option (summing to 100). Use exactly one "
+        "segment per type, in the order listed.",
+        max_tokens=1200,
+    )(row, ctx)
+
+
+def arm_B_agents(row, ctx):
+    """One independent call per archetype; the answers are averaged with equal weight."""
+    arch = _archetypes_for(row, ctx)
+    keys = list(row["human_answer"].keys())
+    user = _official_user(row["input_template"], keys)
+    base_system = SYSTEM_PREFIX + _filled_persona(row)
+    prompts = [
+        (
+            base_system + "\n\nAnswer specifically for this type of person within the group: " + a,
+            user,
+        )
+        for a in arch
+    ] or [(base_system, user)]
+    return base_system, user, {"prompts": prompts}
+
+
+arm_B_n3_soft_fallback = _segments_arm(3, True)
+
+
 def _parse_segments(raw: str, keys: list[str], soft: bool) -> dict[str, float] | None:
     start, end = (raw or "").find("{"), (raw or "").rfind("}")
     if start < 0 or end <= start:
@@ -550,6 +697,13 @@ ARMS = {
 for _k in (6, 12):
     for _pool in (False, True):
         ARMS[f"A_k{_k}{'_pool' if _pool else ''}"] = _stats_arm(_k, _pool, False)
+ARMS["retr6_rev"] = arm_retr6_rev
+ARMS["retr6_emb"] = arm_retr6_emb
+ARMS["retr6_shape"] = arm_retr6_shape
+ARMS["B_adaptive"] = _soft_segments_arm(_ADAPTIVE)
+ARMS["B_dict"] = arm_B_dict
+ARMS["B_agents"] = arm_B_agents
+ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
 ARMS["A_k12_prof"] = _stats_arm(12, False, True)
 ARMS["A_k12_pool_prof"] = _stats_arm(12, True, True)
 for _n in (3, 5):
@@ -712,10 +866,11 @@ def run_arm(
         keys = list(row["human_answer"].keys())
         system, user, opts = build(row, ctx)
         n_samples = opts.get("samples", 1)
+        calls = opts.get("prompts") or [(system, user)] * n_samples
         dists, pt_sum, ot_sum = [], 0, 0
         raw_last = ""
-        for _ in range(n_samples):
-            raw, pt, ot = _call(model, system, user, opts)
+        for call_system, call_user in calls:
+            raw, pt, ot = _call(model, call_system, call_user, opts)
             pt_sum += pt
             ot_sum += ot
             raw_last = raw
@@ -938,6 +1093,42 @@ def build_env(pop_n: int, grouped_n: int, seed: int, which: str = "eval", limit:
     return sample, norms, ctx
 
 
+
+def build_archetypes(sample: pd.DataFrame, model: str, workers: int = 16) -> dict[str, list[str]]:
+    """Five archetypes per distinct group persona, generated once and cached on disk."""
+    path = OUT_DIR / f"archetypes_{model.replace('/', '_')}.json"
+    cache = json.loads(path.read_text()) if path.exists() else {}
+    personas = sorted({_filled_persona(r) for _, r in sample.iterrows()} - set(cache))
+    if personas:
+        print(f"[archetypes] generating for {len(personas)} personas")
+
+        def gen(persona: str):
+            user = (
+                f"Here is a group of survey respondents:\n{persona}\n\n"
+                "List 5 distinct archetypes of people within this group: types that would tend "
+                "to answer survey questions differently from each other (differing values, "
+                "knowledge, and response style such as engaged versus indifferent). Give each a "
+                'short name and a one-sentence description. Output only valid JSON: '
+                '{"archetypes": [{"name": "...", "description": "..."}, ...]}'
+            )
+            for _ in range(3):
+                raw, _, _ = _call(model, "You are a careful survey researcher.", user, {"max_output_tokens": 700})
+                try:
+                    items = json.loads(raw[raw.find("{") : raw.rfind("}") + 1])["archetypes"]
+                    out = [f"{i['name']}: {i['description']}" for i in items][:5]
+                    if len(out) >= 3:
+                        return persona, out
+                except (json.JSONDecodeError, KeyError, TypeError):
+                    continue
+            return persona, []
+
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            for persona, out in pool.map(gen, personas):
+                cache[persona] = out
+        path.write_text(json.dumps(cache, indent=1))
+    return cache
+
+
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--arms", default="base")
@@ -967,6 +1158,18 @@ def main() -> None:
         (OUT_DIR / "dataset_norms.json").write_text(json.dumps(norms, indent=2))
 
     arms = [a for a in args.arms.split(",") if a]
+    if any(a.startswith(("B_dict", "B_agents")) for a in arms):
+        ctx["archetypes"] = build_archetypes(sample, args.model, min(args.workers, 24))
+    if "retr6_shape" in arms:
+        tag0 = f"p{args.pop}g{args.grouped}s{args.seed}" + (
+            f"dev{DEV_POP}x{DEV_GROUPED}" if args.set == "dev" else ""
+        )
+        base_path = OUT_DIR / f"base_{args.model.replace('/', '_')}_{tag0}.json"
+        ctx["first_pass"] = {
+            r["i"]: sorted(r["llm_answer"].values(), reverse=True)
+            for r in json.loads(base_path.read_text())["rows"]
+            if r.get("ok")
+        }
     summaries = []
     for arm in arms:
         if arm not in ARMS:
