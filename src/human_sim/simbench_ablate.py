@@ -722,7 +722,12 @@ def _hybrid_arm(n_seg: int):
             if len(segs) < 2:
                 return None, pt, ot
             dists, pt2, ot2 = _segment_agent_calls(call, row, keys, [d for d, _ in segs], True)
-            return _weighted_merge(dists, [w for _, w in segs], keys), pt + pt2, ot + ot2
+            diag = [
+                {"desc": desc, "share": w, "dist": d}
+                for (desc, w), d in zip(segs, dists)
+                if d is not None
+            ]
+            return _weighted_merge(dists, [w for _, w in segs], keys), pt + pt2, ot + ot2, diag
 
         return "", "", {"pipeline": pipeline}
 
@@ -756,9 +761,29 @@ def arm_B_agents_w(row, ctx):
         except (TypeError, KeyError, ValueError):
             weights = [1.0] * len(arch)  # fall back to equal weights
         dists, pt2, ot2 = _segment_agent_calls(call, row, keys, arch, False)
-        return _weighted_merge(dists, weights, keys), pt + pt2, ot + ot2
+        diag = [
+            {"desc": a, "share": w, "dist": d}
+            for a, w, d in zip(arch, weights, dists)
+            if d is not None
+        ]
+        return _weighted_merge(dists, weights, keys), pt + pt2, ot + ot2, diag
 
     return "", "", {"pipeline": pipeline}
+
+
+def _segments_detail(raw: str, keys: list[str]) -> list[dict] | None:
+    """Per-segment shares and normalized distributions from a soft segment answer."""
+    obj = _parse_json_obj(raw)
+    try:
+        out = []
+        for seg in obj["segments"]:
+            d = {k: float(seg["dist"].get(k, 0.0)) for k in keys}
+            total = sum(d.values())
+            if total > 0:
+                out.append({"share": float(seg["share"]), "dist": {k: v / total for k, v in d.items()}})
+        return out or None
+    except (TypeError, KeyError, ValueError, AttributeError):
+        return None
 
 
 def _parse_segments(raw: str, keys: list[str], soft: bool) -> dict[str, float] | None:
@@ -818,6 +843,9 @@ ARMS["B_agents"] = arm_B_agents
 ARMS["B_hybrid3"] = _hybrid_arm(3)
 ARMS["B_hybrid5"] = _hybrid_arm(5)
 ARMS["B_agents_w"] = arm_B_agents_w
+ARMS["Bdiag_n3_soft"] = _segments_arm(3, True)
+ARMS["Bdiag_hybrid3"] = _hybrid_arm(3)
+ARMS["Bdiag_agents_w"] = arm_B_agents_w
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
 ARMS["A_k12_prof"] = _stats_arm(12, False, True)
 ARMS["A_k12_pool_prof"] = _stats_arm(12, True, True)
@@ -984,10 +1012,13 @@ def run_arm(
             def call(sys_p, usr_p, extra):
                 return _call(model, sys_p, usr_p, {**extra})
 
-            merged_p, pt_p, ot_p = opts["pipeline"](call)
+            out_p = opts["pipeline"](call)
+            merged_p, pt_p, ot_p = out_p[:3]
+            diag_p = out_p[3] if len(out_p) > 3 else None
             if merged_p is None:
                 return {"i": int(idx), "ok": False, "raw": "pipeline failed", "pt": pt_p, "ot": ot_p}
             return {
+                **({"segments": diag_p} if diag_p else {}),
                 "i": int(idx),
                 "ok": True,
                 "dataset_name": row["dataset_name"],
@@ -1002,12 +1033,15 @@ def run_arm(
         calls = opts.get("prompts") or [(system, user)] * n_samples
         dists, pt_sum, ot_sum = [], 0, 0
         raw_last = ""
+        seg_detail = None
         for call_system, call_user in calls:
             raw, pt, ot = _call(model, call_system, call_user, opts)
             pt_sum += pt
             ot_sum += ot
             raw_last = raw
             seg_mode = opts.get("segments")
+            if seg_mode == "soft":
+                seg_detail = _segments_detail(raw, keys)
             dist = (
                 _parse_segments(raw, keys, seg_mode == "soft")
                 if seg_mode
@@ -1024,7 +1058,10 @@ def run_arm(
                 "ot": ot_sum,
             }
         merged = {k: sum(d[k] for d in dists) / len(dists) for k in keys}
+        if opts.get("prompts") and len(dists) > 1:
+            seg_detail = [{"share": 1.0, "dist": d} for d in dists]
         return {
+            **({"segments": seg_detail} if seg_detail else {}),
             "i": int(idx),
             "ok": True,
             "dataset_name": row["dataset_name"],
@@ -1291,7 +1328,7 @@ def main() -> None:
         (OUT_DIR / "dataset_norms.json").write_text(json.dumps(norms, indent=2))
 
     arms = [a for a in args.arms.split(",") if a]
-    if any(a.startswith(("B_dict", "B_agents")) or a == "B_agents_w" for a in arms):
+    if any(a.startswith(("B_dict", "B_agents", "Bdiag_agents")) for a in arms):
         ctx["archetypes"] = build_archetypes(sample, args.model, min(args.workers, 24))
     if "retr6_shape" in arms:
         tag0 = f"p{args.pop}g{args.grouped}s{args.seed}" + (
