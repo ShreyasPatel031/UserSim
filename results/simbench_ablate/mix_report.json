@@ -1,0 +1,183 @@
+{
+ "eval_n": 981,
+ "single": {
+  "retr6": {
+   "all": 43.52,
+   "consensus": 52.18,
+   "mixed": 44.61,
+   "divided": 33.77
+  },
+  "retr6_rev2": {
+   "all": 43.56,
+   "consensus": 49.73,
+   "mixed": 45.57,
+   "divided": 35.39
+  },
+  "B_n3_soft": {
+   "all": 31.45,
+   "consensus": 28.79,
+   "mixed": 27.9,
+   "divided": 37.61
+  },
+  "B_rev2": {
+   "all": 31.58,
+   "consensus": 26.44,
+   "mixed": 29.66,
+   "divided": 38.64
+  },
+  "panel": {
+   "all": 41.65,
+   "consensus": 41.79,
+   "mixed": 43.05,
+   "divided": 40.12
+  },
+  "G_retr6": {
+   "all": 46.27,
+   "consensus": 57.55,
+   "mixed": 45.85,
+   "divided": 35.37
+  }
+ },
+ "mixes": {
+  "divided: panel+B_n3_soft": {
+   "fitted_on_dev": {
+    "weights": {
+     "panel": 0.4,
+     "B_n3_soft": 0.6
+    }
+   },
+   "eval": {
+    "all": 38.63,
+    "consensus": 35.09,
+    "mixed": 36.74,
+    "divided": 44.04
+   }
+  },
+  "divided: panel+B_rev2": {
+   "fitted_on_dev": {
+    "weights": {
+     "panel": 0.4,
+     "B_rev2": 0.6
+    }
+   },
+   "eval": {
+    "all": 38.75,
+    "consensus": 33.69,
+    "mixed": 37.65,
+    "divided": 44.92
+   }
+  },
+  "total: panel+retr6 (previous blend)": {
+   "fitted_on_dev": {
+    "nbr_entropy_edge": 0.755,
+    "weights_when_neighbours_agree": {
+     "panel": 0.4,
+     "retr6": 0.6
+    },
+    "weights_when_neighbours_split": {
+     "panel": 0.6,
+     "retr6": 0.4
+    }
+   },
+   "eval": {
+    "all": 44.71,
+    "consensus": 48.49,
+    "mixed": 45.86,
+    "divided": 39.77
+   }
+  },
+  "total: retr6_rev2+G_retr6": {
+   "fitted_on_dev": {
+    "weights": {
+     "retr6_rev2": 0.5,
+     "G_retr6": 0.5
+    }
+   },
+   "eval": {
+    "all": 48.31,
+    "consensus": 56.03,
+    "mixed": 48.89,
+    "divided": 39.98
+   }
+  },
+  "total: retr6_rev2+G_retr6+panel": {
+   "fitted_on_dev": {
+    "weights": {
+     "retr6_rev2": 0.2,
+     "G_retr6": 0.5,
+     "panel": 0.3
+    }
+   },
+   "eval": {
+    "all": 48.68,
+    "consensus": 54.35,
+    "mixed": 49.14,
+    "divided": 42.53
+   }
+  },
+  "total: retr6_rev2+G_retr6+panel+B_rev2": {
+   "fitted_on_dev": {
+    "weights": {
+     "retr6_rev2": 0.3,
+     "G_retr6": 0.4,
+     "panel": 0.2,
+     "B_rev2": 0.1
+    }
+   },
+   "eval": {
+    "all": 48.23,
+    "consensus": 52.18,
+    "mixed": 48.64,
+    "divided": 43.86
+   }
+  },
+  "total: G_retr6+panel+B_rev2 (by nbr)": {
+   "fitted_on_dev": {
+    "nbr_entropy_edge": 0.755,
+    "weights_when_neighbours_agree": {
+     "G_retr6": 0.6,
+     "panel": 0.4,
+     "B_rev2": 0.0
+    },
+    "weights_when_neighbours_split": {
+     "G_retr6": 0.4,
+     "panel": 0.3,
+     "B_rev2": 0.3
+    }
+   },
+   "eval": {
+    "all": 47.21,
+    "consensus": 51.12,
+    "mixed": 46.36,
+    "divided": 44.12
+   }
+  }
+ },
+ "paired_ci": {
+  "total: retr6_rev2+G_retr6+panel+B_rev2 vs previous blend": [
+   3.52,
+   2.39,
+   4.65
+  ],
+  "total: retr6_rev2+G_retr6+panel+B_rev2 vs G_retr6": [
+   1.96,
+   0.51,
+   3.43
+  ],
+  "divided: panel+B_rev2 vs panel (divided)": [
+   4.8,
+   2.22,
+   7.53
+  ],
+  "divided: panel+B_rev2 vs B_n3_soft (divided)": [
+   7.31,
+   5.18,
+   9.47
+  ],
+  "total: retr6_rev2+G_retr6+panel+B_rev2 vs panel (divided)": [
+   3.73,
+   1.06,
+   6.2
+  ]
+ }
+}

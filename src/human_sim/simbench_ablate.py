@@ -282,8 +282,11 @@ def _pool_key(row) -> str:
 
 
 def _demo_pool(row, ctx) -> list[dict]:
-    """Candidate demos for this row's dataset, never the same question text."""
-    own = row["input_template"]
+    """Candidate demos for this row's dataset, never the same question text.
+
+    A rewritten row (e.g. reversed options) carries its original text in `_orig_template`,
+    so the original question can never leak back in as a demo."""
+    own = row.get("_orig_template", row["input_template"])
     return [d for d in ctx["ext_by_dataset"].get(_pool_key(row), []) if d["input_template"] != own]
 
 
@@ -893,6 +896,111 @@ def _panel_arm(n: int, ground_planner: bool, ground_agents: bool, planner: str =
     return arm
 
 
+
+# --------------------------------------------------------------------------- #
+# option-order debiasing and multi-candidate answers
+# --------------------------------------------------------------------------- #
+
+
+def _reversed_row(row):
+    """Same question with the option texts in reverse order (letters stay A, B, ...).
+    Returns (row copy, mapping new_letter -> original_letter)."""
+    keys = list(row["human_answer"].keys())
+    head, opts = row["input_template"].rsplit("Options:", 1)
+    lines = [ln for ln in opts.strip().split("\n") if ln.strip()]
+    if any(not re.match(r"^\([A-Z]\): ", ln) for ln in lines):
+        return None, None  # multi-line options: keep the original order only
+    texts = dict(re.findall(r"^\(([A-Z])\): (.*)$", opts, re.M))
+    if [k for k in keys if k in texts] != keys:
+        return None, None
+    rev = keys[::-1]
+    r2 = row.copy()
+    r2["_orig_template"] = row["input_template"]
+    r2["input_template"] = head + "Options:\n" + "\n".join(
+        f"({k}): {texts[rev[j]]}" for j, k in enumerate(keys)
+    )
+    r2["human_answer"] = {k: row["human_answer"][rev[j]] for j, k in enumerate(keys)}
+    return r2, {k: rev[j] for j, k in enumerate(keys)}
+
+
+def _rev2(base):
+    """Run a single-call arm on the original and the reversed option order; average after
+    mapping the reversed answer back to the original options. Both orders are logged."""
+
+    def arm(row, ctx):
+        keys = list(row["human_answer"].keys())
+
+        def parse(raw, opts):
+            seg = opts.get("segments")
+            return _parse_segments(raw, keys, seg == "soft") if seg else _parse_dist(raw, keys)
+
+        def pipeline(call):
+            s1, u1, o1 = base(row, ctx)
+            raw1, pt, ot = call(s1, u1, {k: v for k, v in o1.items() if k != "segments"})
+            d1 = parse(raw1, o1)
+            r2, mp = _reversed_row(row)
+            d2 = None
+            if r2 is not None:
+                s2, u2, o2 = base(r2, ctx)
+                raw2, a, b = call(s2, u2, {k: v for k, v in o2.items() if k != "segments"})
+                pt, ot = pt + a, ot + b
+                d2r = parse(raw2, o2)
+                d2 = {mp[k]: v for k, v in d2r.items()} if d2r else None
+            diag = [
+                {"desc": "original order", "share": 1.0, "dist": d1},
+                {"desc": "reversed order (mapped back)", "share": 1.0, "dist": d2},
+            ]
+            diag = [x for x in diag if x["dist"] is not None]
+            return _weighted_merge([d1, d2], [1.0, 1.0], keys), pt, ot, diag
+
+        return "", "", {"pipeline": pipeline}
+
+    return arm
+
+
+def arm_retr6_vs3(row, ctx):
+    """retr6 demos; the model gives 3 candidate distributions with confidences, mixed."""
+    keys = list(row["human_answer"].keys())
+    demos = _rank_by_similarity(row, _demo_pool(row, ctx), ctx)[:6]
+    prefix = (
+        "Here are real response distributions previously measured for this group:\n\n"
+        + _demo_block(demos, False)
+        + "\n\nNow estimate the same for a new question.\n\n"
+        if demos
+        else ""
+    )
+    user = (
+        prefix
+        + f"**Question**: {row['input_template']}\n\n"
+        "You are unsure what your group's real answer distribution is. Give 3 different "
+        "plausible distributions (percentages over the options, each summing to 100), each "
+        "with your confidence that it is the closest to the truth (confidences sum to 100).\n"
+        'Output only valid JSON: {"candidates": [{"confidence": X, "dist": '
+        + _fmt(keys)
+        + "}, ...]}\n**Answer**:"
+    )
+    system = SYSTEM_PREFIX + _filled_persona(row)
+
+    def pipeline(call):
+        raw, pt, ot = call(system, user, {"max_output_tokens": 700})
+        obj = _parse_json_obj(raw)
+        try:
+            cands = []
+            for c in obj["candidates"]:
+                d = {k: float(c["dist"].get(k, 0.0)) for k in keys}
+                tot = sum(d.values())
+                if tot > 0:
+                    cands.append((float(c["confidence"]), {k: v / tot for k, v in d.items()}))
+        except (TypeError, KeyError, ValueError, AttributeError):
+            return None, pt, ot
+        if not cands:
+            return None, pt, ot
+        diag = [{"desc": f"candidate {i + 1}", "share": w, "dist": d} for i, (w, d) in enumerate(cands)]
+        return _weighted_merge([d for _, d in cands], [w for w, _ in cands], keys), pt, ot, diag
+
+    return "", "", {"pipeline": pipeline}
+
+
 def _parse_segments(raw: str, keys: list[str], soft: bool) -> dict[str, float] | None:
     start, end = (raw or "").find("{"), (raw or "").rfind("}")
     if start < 0 or end <= start:
@@ -956,6 +1064,9 @@ ARMS["Bdiag_agents_w"] = arm_B_agents_w
 ARMS["P_topic5"] = _panel_arm(5, False, False)
 ARMS["P_ground5"] = _panel_arm(5, True, False)
 ARMS["P_groundall5"] = _panel_arm(5, True, True)
+ARMS["retr6_rev2"] = _rev2(arm_retr6)
+ARMS["B_n3_soft_rev2"] = _rev2(_segments_arm(3, True))
+ARMS["retr6_vs3"] = arm_retr6_vs3
 ARMS["P_cons5"] = _panel_arm(5, True, True, "consensus")
 ARMS["P_adapt"] = _panel_arm(5, True, True, "adaptive")
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
