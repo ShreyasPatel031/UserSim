@@ -1,0 +1,209 @@
+{
+ "claude-haiku-4-5": {
+  "n": 378,
+  "harnesses": {
+   "persona prompt only": {
+    "all": 28.45,
+    "consensus": 51.18,
+    "mixed": 21.69,
+    "divided": 15.28
+   },
+   "C1 retr6": {
+    "all": 39.45,
+    "consensus": 56.63,
+    "mixed": 36.43,
+    "divided": 27.23
+   },
+   "C2 retr6_vs3": {
+    "all": 40.51,
+    "consensus": 53.96,
+    "mixed": 37.19,
+    "divided": 31.96
+   },
+   "C3 P_adapt": {
+    "all": 37.28,
+    "consensus": 52.1,
+    "mixed": 33.38,
+    "divided": 28.14
+   },
+   "D1 panel+segments (0.4/0.6)": {
+    "all": 38.57,
+    "consensus": 41.45,
+    "mixed": 31.41,
+    "divided": 43.81
+   },
+   "D2 P_groundall5": {
+    "all": 39.35,
+    "consensus": 46.62,
+    "mixed": 37.4,
+    "divided": 34.92
+   },
+   "D3 B_n3_soft_rev2": {
+    "all": 31.13,
+    "consensus": 34.68,
+    "mixed": 22.66,
+    "divided": 37.21
+   }
+  },
+  "paired": {
+   "D1 vs retr6 (divided)": [
+    16.58,
+    9.07,
+    24.57
+   ],
+   "D1 vs P_groundall5 (divided)": [
+    8.9,
+    4.21,
+    13.47
+   ],
+   "C2 vs retr6 (consensus)": [
+    -2.66,
+    -6.13,
+    0.78
+   ],
+   "C3 vs retr6 (consensus)": [
+    -4.52,
+    -10.06,
+    1.11
+   ]
+  }
+ },
+ "claude-sonnet-4-6": {
+  "n": 380,
+  "harnesses": {
+   "persona prompt only": {
+    "all": 39.56,
+    "consensus": 60.56,
+    "mixed": 31.55,
+    "divided": 29.5
+   },
+   "C1 retr6": {
+    "all": 48.47,
+    "consensus": 61.58,
+    "mixed": 44.92,
+    "divided": 40.57
+   },
+   "C2 retr6_vs3": {
+    "all": 46.73,
+    "consensus": 59.44,
+    "mixed": 42.65,
+    "divided": 39.79
+   },
+   "C3 P_adapt": {
+    "all": 44.84,
+    "consensus": 57.19,
+    "mixed": 41.45,
+    "divided": 37.48
+   },
+   "D1 panel+segments (0.4/0.6)": {
+    "all": 44.25,
+    "consensus": 52.41,
+    "mixed": 38.06,
+    "divided": 43.71
+   },
+   "D2 P_groundall5": {
+    "all": 44.89,
+    "consensus": 57.17,
+    "mixed": 42.18,
+    "divided": 36.83
+   },
+   "D3 B_n3_soft_rev2": {
+    "all": 39.2,
+    "consensus": 47.0,
+    "mixed": 31.19,
+    "divided": 40.96
+   }
+  },
+  "paired": {
+   "D1 vs retr6 (divided)": [
+    3.14,
+    -2.18,
+    8.99
+   ],
+   "D1 vs P_groundall5 (divided)": [
+    6.88,
+    2.31,
+    11.49
+   ],
+   "C2 vs retr6 (consensus)": [
+    -2.14,
+    -5.72,
+    0.7
+   ],
+   "C3 vs retr6 (consensus)": [
+    -4.39,
+    -8.1,
+    -1.01
+   ]
+  }
+ },
+ "gemini-2.5-flash": {
+  "n": 380,
+  "harnesses": {
+   "persona prompt only": {
+    "all": 23.04,
+    "consensus": 52.32,
+    "mixed": 8.37,
+    "divided": 12.82
+   },
+   "C1 retr6": {
+    "all": 40.71,
+    "consensus": 60.15,
+    "mixed": 36.64,
+    "divided": 27.7
+   },
+   "C2 retr6_vs3": {
+    "all": 42.61,
+    "consensus": 60.8,
+    "mixed": 36.54,
+    "divided": 32.93
+   },
+   "C3 P_adapt": {
+    "all": 33.05,
+    "consensus": 56.51,
+    "mixed": 20.41,
+    "divided": 25.82
+   },
+   "D1 panel+segments (0.4/0.6)": {
+    "all": 38.58,
+    "consensus": 46.41,
+    "mixed": 30.22,
+    "divided": 40.69
+   },
+   "D2 P_groundall5": {
+    "all": 35.35,
+    "consensus": 53.86,
+    "mixed": 29.87,
+    "divided": 24.74
+   },
+   "D3 B_n3_soft_rev2": {
+    "all": 31.88,
+    "consensus": 37.22,
+    "mixed": 23.97,
+    "divided": 35.75
+   }
+  },
+  "paired": {
+   "D1 vs retr6 (divided)": [
+    12.99,
+    5.8,
+    19.86
+   ],
+   "D1 vs P_groundall5 (divided)": [
+    15.95,
+    10.55,
+    21.47
+   ],
+   "C2 vs retr6 (consensus)": [
+    0.65,
+    -4.45,
+    7.56
+   ],
+   "C3 vs retr6 (consensus)": [
+    -3.64,
+    -10.09,
+    3.74
+   ]
+  }
+ }
+}
