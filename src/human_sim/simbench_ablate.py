@@ -786,6 +786,77 @@ def _segments_detail(raw: str, keys: list[str]) -> list[dict] | None:
         return None
 
 
+
+# --------------------------------------------------------------------------- #
+# persona panels (observable): planner writes question-specific personas + shares,
+# one independent call per persona, share-weighted merge. Every step is logged.
+# --------------------------------------------------------------------------- #
+
+_GROUND_NOTE = (
+    "Here are real response distributions previously measured for this group on similar "
+    "questions:\n\n{demos}\n\nUse them to judge which views are common in this group, which "
+    "way the group leans, and how divided it is.\n\n"
+)
+
+
+def _panel_arm(n: int, ground_planner: bool, ground_agents: bool):
+    def arm(row, ctx):
+        keys = list(row["human_answer"].keys())
+        demos = (
+            _rank_by_similarity(row, _demo_pool(row, ctx), ctx)[:6]
+            if (ground_planner or ground_agents)
+            else []
+        )
+        ground = _GROUND_NOTE.format(demos=_demo_block(demos, False)) if demos else ""
+        base_system = SYSTEM_PREFIX + _filled_persona(row)
+
+        def pipeline(call):
+            user1 = (
+                (ground if ground_planner else "")
+                + f"**Question**: {row['input_template']}\n\n"
+                f"Describe {n} types of people in your group that matter for THIS question. For "
+                "each, say who they are and how they see this issue (one or two sentences; do "
+                "not give percentages). Types may agree with each other: only make them differ "
+                "where real people in this group differ. Give each type's share of the group "
+                "(shares sum to 100). If most of the group thinks alike, give that type a large "
+                "share.\n"
+                'Output only valid JSON: {"types": [{"description": "...", "share": X}, ...]}'
+                "\n**Answer**:"
+            )
+            raw, pt, ot = call(base_system, user1, {"max_output_tokens": 900})
+            obj = _parse_json_obj(raw)
+            try:
+                types = [(str(x["description"]), float(x["share"])) for x in obj["types"]]
+            except (TypeError, KeyError, ValueError):
+                return None, pt, ot
+            if not types:
+                return None, pt, ot
+            agent_user = (ground if ground_agents else "") + _official_user(
+                row["input_template"], keys
+            ).replace("your group", "people of your type")
+            dists, pt2, ot2 = [], 0, 0
+            for desc, _ in types:
+                r2, a, b = call(
+                    base_system
+                    + "\n\nYou are answering as one specific type of person in this group: "
+                    + desc,
+                    agent_user,
+                    {},
+                )
+                pt2, ot2 = pt2 + a, ot2 + b
+                dists.append(_parse_dist(r2, keys))
+            diag = [
+                {"desc": d, "share": w, "dist": dist}
+                for (d, w), dist in zip(types, dists)
+                if dist is not None
+            ]
+            return _weighted_merge(dists, [w for _, w in types], keys), pt + pt2, ot + ot2, diag
+
+        return "", "", {"pipeline": pipeline}
+
+    return arm
+
+
 def _parse_segments(raw: str, keys: list[str], soft: bool) -> dict[str, float] | None:
     start, end = (raw or "").find("{"), (raw or "").rfind("}")
     if start < 0 or end <= start:
@@ -846,6 +917,9 @@ ARMS["B_agents_w"] = arm_B_agents_w
 ARMS["Bdiag_n3_soft"] = _segments_arm(3, True)
 ARMS["Bdiag_hybrid3"] = _hybrid_arm(3)
 ARMS["Bdiag_agents_w"] = arm_B_agents_w
+ARMS["P_topic5"] = _panel_arm(5, False, False)
+ARMS["P_ground5"] = _panel_arm(5, True, False)
+ARMS["P_groundall5"] = _panel_arm(5, True, True)
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
 ARMS["A_k12_prof"] = _stats_arm(12, False, True)
 ARMS["A_k12_pool_prof"] = _stats_arm(12, True, True)
