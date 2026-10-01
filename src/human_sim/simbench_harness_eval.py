@@ -18,7 +18,7 @@ import numpy as np
 
 from human_sim.simbench_ablate import OUT_DIR, build_env, dataset_norms
 
-MODELS = ["claude-haiku-4-5", "claude-sonnet-4-6", "gemini-2.5-flash"]
+MODELS = ["claude-haiku-4-5", "claude-sonnet-4-6", "claude-sonnet-5-5", "gemini-2.5-flash"]
 ARMS = ["base", "retr6", "retr6_vs3", "P_adapt", "P_groundall5", "B_n3_soft_rev2"]
 MIX = {"P_groundall5": 0.4, "B_n3_soft_rev2": 0.6}
 HARNESSES = {

@@ -1001,6 +1001,53 @@ def arm_retr6_vs3(row, ctx):
     return "", "", {"pipeline": pipeline}
 
 
+
+def _on_reversed(base):
+    """Run a pipeline arm on the reversed option order and map its answer (and every
+    logged component) back to the original options."""
+
+    def arm(row, ctx):
+        r2, mp = _reversed_row(row)
+        if r2 is None:
+            return base(row, ctx)
+        inner = base(r2, ctx)[2]["pipeline"]
+
+        def back(d):
+            return {mp[k]: v for k, v in d.items()} if d else d
+
+        def pipeline(call):
+            out = inner(call)
+            merged = back(out[0])
+            diag = [{**x, "dist": back(x["dist"])} for x in (out[3] if len(out) > 3 else [])]
+            return merged, out[1], out[2], diag
+
+        return "", "", {"pipeline": pipeline}
+
+    return arm
+
+
+def _grounded_segments_arm(n_seg: int):
+    """B_n3_soft with the 6 retrieved real distributions shown first."""
+    plain = _segments_arm(n_seg, True)
+
+    def arm(row, ctx):
+        system, user, opts = plain(row, ctx)
+        demos = _rank_by_similarity(row, _demo_pool(row, ctx), ctx)[:6]
+        if demos:
+            user = _GROUND_NOTE.format(demos=_demo_block(demos, False)) + user
+        return system, user, opts
+
+    return arm
+
+
+def _sampled(base, n: int, temperature: float):
+    def arm(row, ctx):
+        system, user, opts = base(row, ctx)
+        return system, user, {**opts, "samples": n, "temperature": temperature}
+
+    return arm
+
+
 def _parse_segments(raw: str, keys: list[str], soft: bool) -> dict[str, float] | None:
     start, end = (raw or "").find("{"), (raw or "").rfind("}")
     if start < 0 or end <= start:
@@ -1067,6 +1114,10 @@ ARMS["P_groundall5"] = _panel_arm(5, True, True)
 ARMS["retr6_rev2"] = _rev2(arm_retr6)
 ARMS["B_n3_soft_rev2"] = _rev2(_segments_arm(3, True))
 ARMS["retr6_vs3"] = arm_retr6_vs3
+ARMS["P_groundall5_R"] = _on_reversed(_panel_arm(5, True, True))
+ARMS["B_ground3"] = _grounded_segments_arm(3)
+ARMS["B_ground3_rev2"] = _rev2(_grounded_segments_arm(3))
+ARMS["B_n3_soft_t1x3"] = _sampled(_segments_arm(3, True), 3, 1.0)
 ARMS["P_cons5"] = _panel_arm(5, True, True, "consensus")
 ARMS["P_adapt"] = _panel_arm(5, True, True, "adaptive")
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
@@ -1119,6 +1170,7 @@ def _parse_dist(raw: str, keys: list[str]) -> dict[str, float] | None:
 
 
 CLAUDE_REGION = "global"
+NO_SAMPLING_PREFIXES = ("claude-sonnet-5", "claude-opus-5", "claude-opus-4-7", "claude-opus-4-8", "claude-fable")
 
 
 def _call_claude(model: str, system: str, user: str, opts: dict) -> tuple[str, int, int]:
@@ -1137,10 +1189,15 @@ def _call_claude(model: str, system: str, user: str, opts: dict) -> tuple[str, i
     body = {
         "anthropic_version": "vertex-2023-10-16",
         "max_tokens": opts.get("max_output_tokens", 512),
-        "temperature": opts.get("temperature", 0.0),
         "system": system,
         "messages": [{"role": "user", "content": user}],
     }
+    if model.startswith(NO_SAMPLING_PREFIXES):
+        # newer models reject sampling parameters; keep thinking off where allowed
+        if model.startswith("claude-sonnet-5-5"):
+            body["thinking"] = {"type": "between_tools"}
+    else:
+        body["temperature"] = opts.get("temperature", 0.0)
     last: Exception | None = None
     for attempt in range(8):
         try:

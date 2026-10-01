@@ -137,6 +137,36 @@
    ]
   }
  },
+ "claude-sonnet-5-5": {
+  "n": 380,
+  "harnesses": {
+   "persona prompt only": {
+    "all": 41.52,
+    "consensus": 63.86,
+    "mixed": 33.36,
+    "divided": 30.38
+   },
+   "C1 retr6": {
+    "all": 50.24,
+    "consensus": 66.24,
+    "mixed": 47.37,
+    "divided": 39.03
+   },
+   "C2 retr6_vs3": {
+    "all": 49.5,
+    "consensus": 67.65,
+    "mixed": 46.72,
+    "divided": 36.26
+   }
+  },
+  "paired": {
+   "C2 vs retr6 (consensus)": [
+    1.41,
+    -2.34,
+    7.29
+   ]
+  }
+ },
  "gemini-2.5-flash": {
   "n": 380,
   "harnesses": {
