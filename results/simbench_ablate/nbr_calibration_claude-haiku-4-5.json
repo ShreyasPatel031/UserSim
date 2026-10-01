@@ -1,0 +1,158 @@
+{
+ "arm": "retr6",
+ "model": "claude-haiku-4-5",
+ "dev_raw_S": 39.23,
+ "grid": [
+  {
+   "feature": "h",
+   "n_bins": 2,
+   "transform": "both",
+   "dev_cv_S": 39.79
+  },
+  {
+   "feature": "h",
+   "n_bins": 2,
+   "transform": "power",
+   "dev_cv_S": 39.76
+  },
+  {
+   "feature": "h",
+   "n_bins": 2,
+   "transform": "shrink",
+   "dev_cv_S": 39.71
+  },
+  {
+   "feature": "top1",
+   "n_bins": 2,
+   "transform": "power",
+   "dev_cv_S": 39.6
+  },
+  {
+   "feature": "top1",
+   "n_bins": 2,
+   "transform": "both",
+   "dev_cv_S": 39.6
+  },
+  {
+   "feature": "top1",
+   "n_bins": 2,
+   "transform": "shrink",
+   "dev_cv_S": 39.56
+  },
+  {
+   "feature": "h",
+   "n_bins": 1,
+   "transform": "power",
+   "dev_cv_S": 39.54
+  },
+  {
+   "feature": "h",
+   "n_bins": 1,
+   "transform": "both",
+   "dev_cv_S": 39.54
+  },
+  {
+   "feature": "top1",
+   "n_bins": 3,
+   "transform": "power",
+   "dev_cv_S": 39.5
+  },
+  {
+   "feature": "top1",
+   "n_bins": 3,
+   "transform": "shrink",
+   "dev_cv_S": 39.49
+  },
+  {
+   "feature": "top1",
+   "n_bins": 3,
+   "transform": "both",
+   "dev_cv_S": 39.48
+  },
+  {
+   "feature": "h",
+   "n_bins": 3,
+   "transform": "shrink",
+   "dev_cv_S": 39.45
+  },
+  {
+   "feature": "h",
+   "n_bins": 3,
+   "transform": "power",
+   "dev_cv_S": 39.42
+  },
+  {
+   "feature": "h",
+   "n_bins": 3,
+   "transform": "both",
+   "dev_cv_S": 39.42
+  },
+  {
+   "feature": "h",
+   "n_bins": 5,
+   "transform": "shrink",
+   "dev_cv_S": 39.26
+  },
+  {
+   "feature": "top1",
+   "n_bins": 5,
+   "transform": "shrink",
+   "dev_cv_S": 39.24
+  },
+  {
+   "feature": "h",
+   "n_bins": 5,
+   "transform": "both",
+   "dev_cv_S": 39.22
+  },
+  {
+   "feature": "top1",
+   "n_bins": 5,
+   "transform": "both",
+   "dev_cv_S": 39.22
+  },
+  {
+   "feature": "top1",
+   "n_bins": 5,
+   "transform": "power",
+   "dev_cv_S": 39.21
+  },
+  {
+   "feature": "h",
+   "n_bins": 5,
+   "transform": "power",
+   "dev_cv_S": 39.2
+  },
+  {
+   "feature": "h",
+   "n_bins": 1,
+   "transform": "shrink",
+   "dev_cv_S": 39.17
+  }
+ ],
+ "best": {
+  "feature": "h",
+  "n_bins": 2,
+  "transform": "both",
+  "dev_cv_S": 39.79
+ },
+ "fitted": {
+  "edges": [
+   0.754490465456548
+  ],
+  "params": [
+   [
+    1.0,
+    0.0
+   ],
+   [
+    0.8,
+    0.05
+   ]
+  ]
+ },
+ "eval_raw_S": 43.52,
+ "eval_calibrated_S_fit_on_dev": 43.61,
+ "eval_cv_S_inside_eval": 43.63,
+ "eval_global_shrink_cv_S_inside_eval": 43.52
+}

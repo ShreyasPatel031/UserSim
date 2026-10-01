@@ -404,6 +404,131 @@ def arm_span6(row, ctx):
     return _inject(row, ctx, _span_entropy(ranked, 6), annotate=False)
 
 
+
+# --------------------------------------------------------------------------- #
+# variant A: option-agnostic shape statistics (no example questions)
+# --------------------------------------------------------------------------- #
+
+
+def _sorted_probs(human_answer: dict) -> list[float]:
+    total = sum(human_answer.values()) or 1.0
+    return sorted((v / total for v in human_answer.values()), reverse=True)
+
+
+def _median(values: list[float]) -> float:
+    v = sorted(values)
+    n = len(v)
+    return v[n // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2
+
+
+def _stats_lines(demos: list[dict], label: str, profiles: bool) -> str:
+    profs = [_sorted_probs(d["human_answer"]) for d in demos]
+    top1 = [p[0] for p in profs]
+    top2 = [p[1] if len(p) > 1 else 0.0 for p in profs]
+    dominant = sum(1 for t in top1 if t > 0.7) / len(top1)
+    lines = [
+        f"{label} ({len(demos)} questions):",
+        f"- The most popular option received a median of {100 * _median(top1):.0f}% "
+        f"(range {100 * min(top1):.0f}-{100 * max(top1):.0f}%).",
+        f"- The second most popular option received a median of {100 * _median(top2):.0f}%.",
+        f"- In {100 * dominant:.0f}% of these questions a single option got more than 70% of answers.",
+        f"- Spread of answers (0 = everyone agrees, 1 = evenly split): median "
+        f"{_median([d['h'] for d in demos]):.2f}.",
+    ]
+    if profiles:
+        shown = "; ".join("/".join(f"{100 * x:.0f}" for x in p[:4]) for p in profs)
+        lines.append(f"- Sorted answer shares per question (top 4 options): {shown}.")
+    return "\n".join(lines)
+
+
+def _stats_arm(k: int, with_pool: bool, profiles: bool):
+    def arm(row, ctx):
+        keys = list(row["human_answer"].keys())
+        pool = _demo_pool(row, ctx)
+        ranked = _rank_by_similarity(row, pool, ctx)
+        nbrs = ranked[:k]
+        parts = []
+        if nbrs:
+            parts.append(_stats_lines(nbrs, "Summary of real answers to similar questions", profiles))
+        if with_pool and len(pool) >= 8:
+            parts.append(_stats_lines(pool, "Summary across all questions in this survey", False))
+        prefix = ""
+        if parts:
+            prefix = (
+                "\n\n".join(parts)
+                + "\n\nUse this only as a guide to how concentrated real answers tend to be; "
+                "decide for yourself which options get the share.\n\n"
+            )
+        return (
+            SYSTEM_PREFIX + _filled_persona(row),
+            prefix + _official_user(row["input_template"], keys),
+            {},
+        )
+
+    return arm
+
+
+# --------------------------------------------------------------------------- #
+# variant B: segment decomposition (reasoning structure, no gold data)
+# --------------------------------------------------------------------------- #
+
+
+def _segments_arm(n_seg: int, soft: bool):
+    def arm(row, ctx):
+        keys = list(row["human_answer"].keys())
+        seg_fmt = (
+            '{"share": X, "dist": ' + _fmt(keys) + "}"
+            if soft
+            else '{"share": X, "choice": "<one option letter>"}'
+        )
+        what = (
+            "the percentages of that segment choosing each option (summing to 100)"
+            if soft
+            else "the single option that segment would choose"
+        )
+        user = (
+            f"**Question**: {row['input_template']}\n\n"
+            f"Your group is made up of different kinds of people. Split it into {n_seg} "
+            "distinct segments that would tend to answer differently. For each segment give "
+            f"its share of the group (the shares sum to 100) and {what}.\n"
+            'Output only valid JSON: {"segments": [' + seg_fmt + ", ...]}\n**Answer**:"
+        )
+        return (
+            SYSTEM_PREFIX + _filled_persona(row),
+            user,
+            {"segments": "soft" if soft else "hard", "max_output_tokens": 900},
+        )
+
+    return arm
+
+
+def _parse_segments(raw: str, keys: list[str], soft: bool) -> dict[str, float] | None:
+    start, end = (raw or "").find("{"), (raw or "").rfind("}")
+    if start < 0 or end <= start:
+        return None
+    try:
+        segs = json.loads(raw[start : end + 1])["segments"]
+        out = {k: 0.0 for k in keys}
+        for seg in segs:
+            share = float(seg["share"])
+            if soft:
+                d = {k: float(seg["dist"].get(k, 0.0)) for k in keys}
+                total = sum(d.values())
+                if total <= 0:
+                    continue
+                for k in keys:
+                    out[k] += share * d[k] / total
+            else:
+                choice = str(seg["choice"]).strip().strip("()")
+                if choice not in out:
+                    continue
+                out[choice] += share
+    except (json.JSONDecodeError, KeyError, TypeError, ValueError, AttributeError):
+        return None
+    total = sum(out.values())
+    return {k: v / total for k, v in out.items()} if total > 0 else None
+
+
 ARMS = {
     "base": arm_base,
     "no_persona": arm_no_persona,
@@ -421,6 +546,15 @@ ARMS = {
     "span6": arm_span6,
     "span6_ent": arm_span6_ent,
 }
+# hyper-parameter grids for the variant search (names encode the config)
+for _k in (6, 12):
+    for _pool in (False, True):
+        ARMS[f"A_k{_k}{'_pool' if _pool else ''}"] = _stats_arm(_k, _pool, False)
+ARMS["A_k12_prof"] = _stats_arm(12, False, True)
+ARMS["A_k12_pool_prof"] = _stats_arm(12, True, True)
+for _n in (3, 5):
+    for _soft in (False, True):
+        ARMS[f"B_n{_n}_{'soft' if _soft else 'hard'}"] = _segments_arm(_n, _soft)
 
 
 # --------------------------------------------------------------------------- #
@@ -585,7 +719,12 @@ def run_arm(
             pt_sum += pt
             ot_sum += ot
             raw_last = raw
-            dist = _parse_dist(raw, keys)
+            seg_mode = opts.get("segments")
+            dist = (
+                _parse_segments(raw, keys, seg_mode == "soft")
+                if seg_mode
+                else _parse_dist(raw, keys)
+            )
             if dist is not None:
                 dists.append(dist)
         if not dists:
@@ -751,6 +890,54 @@ def build_context(pop: pd.DataFrame, grouped: pd.DataFrame, pools: pd.DataFrame)
     }
 
 
+DEV_POP, DEV_GROUPED = 10, 40  # cases per dataset in the held-out tuning set
+
+
+def _demo_entry(row) -> dict:
+    return {
+        "input_template": row["input_template"],
+        "human_answer": row["human_answer"],
+        "h": _entropy(row["human_answer"]),
+        "persona": _filled_persona(row),
+    }
+
+
+def build_env(pop_n: int, grouped_n: int, seed: int, which: str = "eval", limit: int = 0):
+    """(sample, norms, ctx). which='dev' is a tuning set disjoint from the eval sample."""
+    pop_full = load_split("Pop")
+    grouped_full = load_split("Grouped")
+    pop_eval, pop_pool = stratified_sample(pop_full, pop_n, seed, reserve=3)
+    grp_eval, grp_pool = stratified_sample(grouped_full, grouped_n, seed, reserve=3)
+    pools = pd.concat([pop_pool, grp_pool]).reset_index(drop=True)
+    if which == "dev":
+        parts = []
+        for df, n_eval, n_dev in ((pop_full, pop_n, DEV_POP), (grouped_full, grouped_n, DEV_GROUPED)):
+            for _, g in df.groupby("dataset_name"):
+                sh = g.sample(frac=1.0, random_state=seed)
+                parts.append(sh.iloc[3 + n_eval : 3 + n_eval + n_dev])
+        sample = pd.concat(parts)
+        sample = sample[sample["human_answer"].map(len) > 1].reset_index(drop=True)
+    else:
+        sample = pd.concat([pop_eval, grp_eval]).reset_index(drop=True)
+    if limit:
+        sample = sample.sample(n=limit, random_state=1)
+    norms = dataset_norms(sample)
+    ctx = build_context(pop_full, grouped_full, pools)
+    ext: dict[str, list[dict]] = defaultdict(list)
+    for df_full, per in ((pop_full, pop_n), (grouped_full, grouped_n)):
+        n_ext = 40 if df_full is pop_full else 10**6
+        for _, row in extended_pool(df_full, per, seed, 3, n_ext).iterrows():
+            ext[f"{row['split']}|{row['dataset_name']}"].append(_demo_entry(row))
+    # datasets with no spare rows fall back to the 3 reserve demos
+    for pool_df in (pop_pool, grp_pool):
+        for _, row in pool_df.iterrows():
+            key = f"{row['split']}|{row['dataset_name']}"
+            if len(ext[key]) < 6:
+                ext[key].append(_demo_entry(row))
+    ctx["ext_by_dataset"] = dict(ext)
+    return sample, norms, ctx
+
+
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--arms", default="base")
@@ -762,53 +949,21 @@ def main() -> None:
     p.add_argument("--score-only", action="store_true")
     p.add_argument("--limit", type=int, default=0, help="smoke test: random N cases, separate cache")
     p.add_argument("--shrink-sweep", action="store_true")
+    p.add_argument("--set", default="eval", choices=["eval", "dev"], help="dev = held-out tuning set")
     args = p.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    pop_full = load_split("Pop")
-    grouped_full = load_split("Grouped")
-    pop_eval, pop_pool = stratified_sample(pop_full, args.pop, args.seed, reserve=3)
-    grp_eval, grp_pool = stratified_sample(grouped_full, args.grouped, args.seed, reserve=3)
-    sample = pd.concat([pop_eval, grp_eval]).reset_index(drop=True)
-    pools = pd.concat([pop_pool, grp_pool]).reset_index(drop=True)
-    if args.limit:
-        sample = sample.sample(n=args.limit, random_state=1)
-    norms = dataset_norms(sample)
-    ctx = build_context(pop_full, grouped_full, pools)
-    ext: dict[str, list[dict]] = defaultdict(list)
-    for df_full, per in ((pop_full, args.pop), (grouped_full, args.grouped)):
-        n_ext = 40 if df_full is pop_full else 10**6
-        for _, row in extended_pool(df_full, per, args.seed, 3, n_ext).iterrows():
-            ext[f"{row['split']}|{row['dataset_name']}"].append(
-                {
-                    "input_template": row["input_template"],
-                    "human_answer": row["human_answer"],
-                    "h": _entropy(row["human_answer"]),
-                    "persona": _filled_persona(row),
-                }
-            )
-    # datasets with no spare rows fall back to the 3 reserve demos
-    for pool_df in (pop_pool, grp_pool):
-        for _, row in pool_df.iterrows():
-            key = f"{row['split']}|{row['dataset_name']}"
-            if len(ext[key]) < 6:
-                ext[key].append(
-                    {
-                        "input_template": row["input_template"],
-                        "human_answer": row["human_answer"],
-                        "h": _entropy(row["human_answer"]),
-                        "persona": _filled_persona(row),
-                    }
-                )
-    ctx["ext_by_dataset"] = dict(ext)
+    sample, norms, ctx = build_env(args.pop, args.grouped, args.seed, args.set, args.limit)
+    pop_eval = sample[sample["split"] == "Pop"]
+    grp_eval = sample[sample["split"] == "Grouped"]
 
     print(
         f"sample n={len(sample)} "
         f"(Pop {len(pop_eval)} / Grouped {len(grp_eval)}) "
         f"datasets={len(norms)}"
     )
-    if not args.limit:
+    if not args.limit and args.set == "eval":
         (OUT_DIR / "dataset_norms.json").write_text(json.dumps(norms, indent=2))
 
     arms = [a for a in args.arms.split(",") if a]
@@ -816,7 +971,7 @@ def main() -> None:
     for arm in arms:
         if arm not in ARMS:
             raise SystemExit(f"unknown arm {arm}; choose from {sorted(ARMS)}")
-        tag = f"p{args.pop}g{args.grouped}s{args.seed}" + (f"lim{args.limit}" if args.limit else "")
+        tag = f"p{args.pop}g{args.grouped}s{args.seed}" + (f"lim{args.limit}" if args.limit else "") + (f"dev{DEV_POP}x{DEV_GROUPED}" if args.set == "dev" else "")
         raw_path = OUT_DIR / f"{arm}_{args.model.replace('/', '_')}_{tag}.json"
         if args.score_only or raw_path.exists():
             if not raw_path.exists():
@@ -838,7 +993,7 @@ def main() -> None:
         print(json.dumps({k: v for k, v in summary.items() if k != "S_by_dataset"}, indent=2))
 
     if summaries:
-        if not args.limit:
+        if not args.limit and args.set == "eval":
             (OUT_DIR / "summary.json").write_text(json.dumps(summaries, indent=2))
         base = next((s for s in summaries if s["arm"] == "base"), None)
         print("\n=== SimBench S by arm ===")
