@@ -799,7 +799,48 @@ _GROUND_NOTE = (
 )
 
 
-def _panel_arm(n: int, ground_planner: bool, ground_agents: bool):
+_PLANNER_FREE = (
+    "Describe {n} types of people in your group that matter for THIS question. For "
+    "each, say who they are and how they see this issue (one or two sentences; do "
+    "not give percentages). Types may agree with each other: only make them differ "
+    "where real people in this group differ. Give each type's share of the group "
+    "(shares sum to 100). If most of the group thinks alike, give that type a large "
+    "share.\n"
+    'Output only valid JSON: {{"types": [{{"description": "...", "share": X}}, ...]}}'
+)
+
+_PLANNER_CONSENSUS = (
+    "First, using the real distributions above as evidence, estimate how much this group "
+    "agrees on THIS question: the percentage of the group that would pick the single most "
+    "common answer. Real survey groups often agree strongly (70-95%) on factual or "
+    "everyday questions and split on contested ones.\n"
+    "Then describe {n} types of people in your group that matter for this question: who "
+    "they are and how they see this issue (one or two sentences; no percentages). Several "
+    "types may give the same answer. The types who would pick the most common answer must "
+    "together make up about the agreement percentage you estimated; do not invent more "
+    "disagreement than the evidence shows. Give each type's share of the group (shares sum "
+    "to 100).\n"
+    'Output only valid JSON: {{"agreement": X, "types": [{{"description": "...", "share": X}}, ...]}}'
+)
+
+_PLANNER_ADAPTIVE = (
+    "First, using the real distributions above as evidence, estimate how much this group "
+    "agrees on THIS question: the percentage of the group that would pick the single most "
+    "common answer. Real survey groups often agree strongly (70-95%) on factual or "
+    "everyday questions and split on contested ones.\n"
+    "Then describe between 1 and 5 types of people in your group that matter for this "
+    "question: who they are and how they see this issue (one or two sentences; no "
+    "percentages). Use few types when the group mostly agrees and more when it is divided. "
+    "The types who would pick the most common answer must together make up about the "
+    "agreement percentage you estimated. Give each type's share of the group (shares sum "
+    "to 100).\n"
+    'Output only valid JSON: {{"agreement": X, "types": [{{"description": "...", "share": X}}, ...]}}'
+)
+
+
+def _panel_arm(n: int, ground_planner: bool, ground_agents: bool, planner: str = "free"):
+    template = {"free": _PLANNER_FREE, "consensus": _PLANNER_CONSENSUS, "adaptive": _PLANNER_ADAPTIVE}[planner]
+
     def arm(row, ctx):
         keys = list(row["human_answer"].keys())
         demos = (
@@ -814,14 +855,8 @@ def _panel_arm(n: int, ground_planner: bool, ground_agents: bool):
             user1 = (
                 (ground if ground_planner else "")
                 + f"**Question**: {row['input_template']}\n\n"
-                f"Describe {n} types of people in your group that matter for THIS question. For "
-                "each, say who they are and how they see this issue (one or two sentences; do "
-                "not give percentages). Types may agree with each other: only make them differ "
-                "where real people in this group differ. Give each type's share of the group "
-                "(shares sum to 100). If most of the group thinks alike, give that type a large "
-                "share.\n"
-                'Output only valid JSON: {"types": [{"description": "...", "share": X}, ...]}'
-                "\n**Answer**:"
+                + template.format(n=n)
+                + "\n**Answer**:"
             )
             raw, pt, ot = call(base_system, user1, {"max_output_tokens": 900})
             obj = _parse_json_obj(raw)
@@ -831,6 +866,7 @@ def _panel_arm(n: int, ground_planner: bool, ground_agents: bool):
                 return None, pt, ot
             if not types:
                 return None, pt, ot
+            agreement = obj.get("agreement") if isinstance(obj, dict) else None
             agent_user = (ground if ground_agents else "") + _official_user(
                 row["input_template"], keys
             ).replace("your group", "people of your type")
@@ -846,7 +882,7 @@ def _panel_arm(n: int, ground_planner: bool, ground_agents: bool):
                 pt2, ot2 = pt2 + a, ot2 + b
                 dists.append(_parse_dist(r2, keys))
             diag = [
-                {"desc": d, "share": w, "dist": dist}
+                {"desc": d, "share": w, "dist": dist, **({"agreement": agreement} if agreement is not None else {})}
                 for (d, w), dist in zip(types, dists)
                 if dist is not None
             ]
@@ -920,6 +956,8 @@ ARMS["Bdiag_agents_w"] = arm_B_agents_w
 ARMS["P_topic5"] = _panel_arm(5, False, False)
 ARMS["P_ground5"] = _panel_arm(5, True, False)
 ARMS["P_groundall5"] = _panel_arm(5, True, True)
+ARMS["P_cons5"] = _panel_arm(5, True, True, "consensus")
+ARMS["P_adapt"] = _panel_arm(5, True, True, "adaptive")
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
 ARMS["A_k12_prof"] = _stats_arm(12, False, True)
 ARMS["A_k12_pool_prof"] = _stats_arm(12, True, True)

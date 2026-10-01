@@ -1,0 +1,65 @@
+{
+ "fitted_on_dev": {
+  "route_threshold_nbr_entropy": 0.672,
+  "blend_nbr_entropy_edges": [
+   0.665,
+   0.814
+  ],
+  "blend_retr6_weight_by_nbr_third": [
+   0.7000000000000001,
+   0.4,
+   0.4
+  ]
+ },
+ "eval_n": 981,
+ "eval_route_share_P_adapt": 0.321,
+ "eval": {
+  "retr6": {
+   "all": 43.52,
+   "consensus": 52.18,
+   "mixed": 44.61,
+   "divided": 33.77
+  },
+  "P_groundall5": {
+   "all": 41.65,
+   "consensus": 41.79,
+   "mixed": 43.05,
+   "divided": 40.12
+  },
+  "P_adapt": {
+   "all": 40.18,
+   "consensus": 47.05,
+   "mixed": 39.22,
+   "divided": 34.24
+  },
+  "route": {
+   "all": 41.85,
+   "consensus": 44.06,
+   "mixed": 41.8,
+   "divided": 39.67
+  },
+  "blend": {
+   "all": 44.69,
+   "consensus": 48.43,
+   "mixed": 45.72,
+   "divided": 39.92
+  }
+ },
+ "eval_paired_ci": {
+  "blend_vs_retr6": [
+   1.17,
+   0.06,
+   2.28
+  ],
+  "blend_vs_P_groundall5": [
+   3.04,
+   2.14,
+   4.07
+  ],
+  "route_vs_P_groundall5": [
+   0.2,
+   -0.67,
+   1.08
+  ]
+ }
+}
