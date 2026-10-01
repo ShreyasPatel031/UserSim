@@ -649,6 +649,118 @@ def arm_B_agents(row, ctx):
 arm_B_n3_soft_fallback = _segments_arm(3, True)
 
 
+
+# --------------------------------------------------------------------------- #
+# hybrids: segments from a first call, one independent persona call per segment,
+# combined with the segments' shares (not equal weights)
+# --------------------------------------------------------------------------- #
+
+
+def _parse_json_obj(raw: str):
+    start, end = (raw or "").find("{"), (raw or "").rfind("}")
+    if start < 0 or end <= start:
+        return None
+    try:
+        return json.loads(raw[start : end + 1])
+    except json.JSONDecodeError:
+        return None
+
+
+def _weighted_merge(dists: list[dict], weights: list[float], keys: list[str]):
+    pairs = [(d, w) for d, w in zip(dists, weights) if d is not None and w > 0]
+    total = sum(w for _, w in pairs)
+    if not pairs or total <= 0:
+        return None
+    return {k: sum(d[k] * w for d, w in pairs) / total for k in keys}
+
+
+def _segment_agent_calls(call, row, keys, descriptions: list[str], rephrase: bool):
+    """One independent call per segment description; returns (dists, pt, ot)."""
+    user = _official_user(row["input_template"], keys)
+    if rephrase:
+        user = user.replace("your group", "your segment")
+    base_system = SYSTEM_PREFIX + _filled_persona(row)
+    dists, pt_sum, ot_sum = [], 0, 0
+    for desc in descriptions:
+        raw, pt, ot = call(
+            base_system
+            + "\n\nYou are answering as one specific segment of this group, not as the "
+            + f"whole group: {desc}\nGive the distribution for this segment only.",
+            user,
+            {},
+        )
+        pt_sum, ot_sum = pt_sum + pt, ot_sum + ot
+        dists.append(_parse_dist(raw, keys))
+    return dists, pt_sum, ot_sum
+
+
+def _hybrid_arm(n_seg: int):
+    """Stage 1: the model invents n segments that span the range of views and gives their
+    shares. Stage 2: one persona call per segment. Final: share-weighted average."""
+
+    def arm(row, ctx):
+        keys = list(row["human_answer"].keys())
+
+        def pipeline(call):
+            user1 = (
+                f"**Question**: {row['input_template']}\n\n"
+                f"Your group is made up of different kinds of people. Split it into {n_seg} "
+                "distinct segments that together cover the full range of views in the group on "
+                "this question, from the most common to the least common, including any "
+                "minority or outlier view. For each segment give a short description of who "
+                "they are and what shapes their view (one or two sentences; do not state their "
+                "answer yet) and its share of the group (the shares sum to 100).\n"
+                'Output only valid JSON: {"segments": [{"description": "...", "share": X}, ...]}'
+                "\n**Answer**:"
+            )
+            raw, pt, ot = call(SYSTEM_PREFIX + _filled_persona(row), user1, {"max_output_tokens": 900})
+            obj = _parse_json_obj(raw)
+            try:
+                segs = [(str(x["description"]), float(x["share"])) for x in obj["segments"]]
+            except (TypeError, KeyError, ValueError):
+                return None, pt, ot
+            if len(segs) < 2:
+                return None, pt, ot
+            dists, pt2, ot2 = _segment_agent_calls(call, row, keys, [d for d, _ in segs], True)
+            return _weighted_merge(dists, [w for _, w in segs], keys), pt + pt2, ot + ot2
+
+        return "", "", {"pipeline": pipeline}
+
+    return arm
+
+
+def arm_B_agents_w(row, ctx):
+    """B_agents with the cached archetypes, but weighted by model-estimated shares for this
+    question instead of equal weights."""
+    arch = _archetypes_for(row, ctx)
+    keys = list(row["human_answer"].keys())
+
+    def pipeline(call):
+        if not arch:
+            return None, 0, 0
+        listing = "\n".join(f"{i + 1}. {a}" for i, a in enumerate(arch))
+        user1 = (
+            f"**Question**: {row['input_template']}\n\n"
+            "Your group consists of these types of people:\n" + listing + "\n\n"
+            "For THIS question, estimate what share of the group each type makes up in terms of "
+            "how many people would answer this question substantively (the shares sum to 100). "
+            f'Output only valid JSON: {{"shares": [X, ...]}} with exactly {len(arch)} numbers in '
+            "the order listed.\n**Answer**:"
+        )
+        raw, pt, ot = call(SYSTEM_PREFIX + _filled_persona(row), user1, {"max_output_tokens": 200})
+        obj = _parse_json_obj(raw)
+        try:
+            weights = [float(x) for x in obj["shares"]]
+            if len(weights) != len(arch):
+                raise ValueError
+        except (TypeError, KeyError, ValueError):
+            weights = [1.0] * len(arch)  # fall back to equal weights
+        dists, pt2, ot2 = _segment_agent_calls(call, row, keys, arch, False)
+        return _weighted_merge(dists, weights, keys), pt + pt2, ot + ot2
+
+    return "", "", {"pipeline": pipeline}
+
+
 def _parse_segments(raw: str, keys: list[str], soft: bool) -> dict[str, float] | None:
     start, end = (raw or "").find("{"), (raw or "").rfind("}")
     if start < 0 or end <= start:
@@ -703,6 +815,9 @@ ARMS["retr6_shape"] = arm_retr6_shape
 ARMS["B_adaptive"] = _soft_segments_arm(_ADAPTIVE)
 ARMS["B_dict"] = arm_B_dict
 ARMS["B_agents"] = arm_B_agents
+ARMS["B_hybrid3"] = _hybrid_arm(3)
+ARMS["B_hybrid5"] = _hybrid_arm(5)
+ARMS["B_agents_w"] = arm_B_agents_w
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
 ARMS["A_k12_prof"] = _stats_arm(12, False, True)
 ARMS["A_k12_pool_prof"] = _stats_arm(12, True, True)
@@ -865,6 +980,24 @@ def run_arm(
         idx, row = item
         keys = list(row["human_answer"].keys())
         system, user, opts = build(row, ctx)
+        if opts.get("pipeline"):
+            def call(sys_p, usr_p, extra):
+                return _call(model, sys_p, usr_p, {**extra})
+
+            merged_p, pt_p, ot_p = opts["pipeline"](call)
+            if merged_p is None:
+                return {"i": int(idx), "ok": False, "raw": "pipeline failed", "pt": pt_p, "ot": ot_p}
+            return {
+                "i": int(idx),
+                "ok": True,
+                "dataset_name": row["dataset_name"],
+                "split": row["split"],
+                "llm_answer": merged_p,
+                "human_answer": dict(row["human_answer"]),
+                "n_samples_ok": 1,
+                "pt": pt_p,
+                "ot": ot_p,
+            }
         n_samples = opts.get("samples", 1)
         calls = opts.get("prompts") or [(system, user)] * n_samples
         dists, pt_sum, ot_sum = [], 0, 0
@@ -1158,7 +1291,7 @@ def main() -> None:
         (OUT_DIR / "dataset_norms.json").write_text(json.dumps(norms, indent=2))
 
     arms = [a for a in args.arms.split(",") if a]
-    if any(a.startswith(("B_dict", "B_agents")) for a in arms):
+    if any(a.startswith(("B_dict", "B_agents")) or a == "B_agents_w" for a in arms):
         ctx["archetypes"] = build_archetypes(sample, args.model, min(args.workers, 24))
     if "retr6_shape" in arms:
         tag0 = f"p{args.pop}g{args.grouped}s{args.seed}" + (
