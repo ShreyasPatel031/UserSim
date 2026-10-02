@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections import Counter, defaultdict
 
 import numpy as np
@@ -19,13 +20,32 @@ def _is_country(k):
     return "country" in k.lower() or "cntry" in k.lower()
 
 
+_COUNTRY_ALIAS = {"czechrep": "czechia", "czechrepublic": "czechia", "taiwanroc": "taiwan",
+                  "unitedstatesofamerica": "unitedstates", "usa": "unitedstates", "us": "unitedstates",
+                  "uk": "unitedkingdom", "greatbritain": "unitedkingdom"}
+
+
+def _canon(v):
+    """Spelling-insensitive form: lowercase letters/digits only, no '(... sample)' or 'i am/i have' wrappers."""
+    s = re.sub(r"\(.*?\)", "", str(v).lower())
+    s = re.sub(r"^\s*i (am|have)\s+", "", s)
+    s = re.sub(r"[^a-z0-9.]", "", s).rstrip(".")
+    return s
+
+
 def _country(vm):
-    return next((str(v) for k, v in vm.items() if _is_country(k)), "")
+    c = _canon(next((str(v) for k, v in vm.items() if _is_country(k)), ""))
+    return _COUNTRY_ALIAS.get(c, c)
 
 
 def _attrs(vm):
-    return tuple(sorted((k, str(v)) for k, v in vm.items()
+    return tuple(sorted((k, _canon(v)) for k, v in vm.items()
                         if not _is_country(k) and k.lower() not in ("year", "wave", "survey_year")))
+
+
+def _overlaps(a, b):
+    """Two values of one attribute may share respondents if one is spelled inside the other."""
+    return a == b or a in b or b in a
 
 
 def index(full):
@@ -47,8 +67,9 @@ def relation(t, s):
         return "same_group_other_wave"
     if not as_:
         return "country_total"
-    if at and [k for k, _ in at] == [k for k, _ in as_]:
-        return "disjoint_subgroup"  # same attribute, other value: no shared respondents
+    if at and [k for k, _ in at] == [k for k, _ in as_] and \
+            not any(_overlaps(x, y) for (_, x), (_, y) in zip(at, as_)):
+        return "disjoint_subgroup"  # same attribute, clearly other value: no shared respondents
     return "same_country_subgroups"
 
 

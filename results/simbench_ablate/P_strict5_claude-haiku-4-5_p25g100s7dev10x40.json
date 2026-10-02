@@ -6,7 +6,7 @@
   "fail": 102,
   "prompt_tokens": 2092893,
   "output_tokens": 122026,
-  "estimated_cost_usd": 2.703,
+  "estimated_cost_usd": 3.1066,
   "elapsed_s": 81.3,
   "rows": [
     {
@@ -7776,41 +7776,19 @@
     {
       "segments": [
         {
-          "desc": "Urban and peri-urban residents with better infrastructure access who have water sources inside their homes or compounds, reflecting modern water supply systems in more developed areas.",
-          "share": 45.0,
+          "desc": "Urban and peri-urban residents with improved infrastructure access who have water sources inside their compounds or houses, reflecting better service delivery in more developed areas.",
+          "share": 68.0,
           "dist": {
-            "A": 0.85,
-            "B": 0.12,
-            "C": 0.03,
+            "A": 0.75,
+            "B": 0.2,
+            "C": 0.04,
             "D": 0.0,
-            "E": 0.0
+            "E": 0.01
           }
         },
         {
-          "desc": "Rural and semi-rural residents who rely on water sources outside their compounds, such as communal boreholes, wells, or natural water points, which is common in less densely populated areas.",
-          "share": 40.0,
-          "dist": {
-            "A": 0.02,
-            "B": 0.08,
-            "C": 0.9,
-            "D": 0.0,
-            "E": 0.0
-          }
-        },
-        {
-          "desc": "Residents in transitional areas with mixed access who have water inside their compounds but not inside their houses, representing intermediate infrastructure development.",
-          "share": 12.0,
-          "dist": {
-            "A": 0.05,
-            "B": 0.75,
-            "C": 0.2,
-            "D": 0.0,
-            "E": 0.0
-          }
-        },
-        {
-          "desc": "Residents with very limited water access or those in remote areas where water availability is a significant challenge and sources are distant from their homes.",
-          "share": 2.0,
+          "desc": "Rural residents in areas with basic water infrastructure who rely on water sources located outside their compounds, such as communal boreholes or natural water points.",
+          "share": 26.0,
           "dist": {
             "A": 0.02,
             "B": 0.15,
@@ -7820,14 +7798,36 @@
           }
         },
         {
-          "desc": "A small segment unable or unwilling to provide clear information about their water source location.",
+          "desc": "Wealthier or better-positioned households in urban areas with piped water systems installed directly inside their houses, representing the most developed water access tier.",
+          "share": 4.0,
+          "dist": {
+            "A": 0.92,
+            "B": 0.06,
+            "C": 0.02,
+            "D": 0.0,
+            "E": 0.0
+          }
+        },
+        {
+          "desc": "Residents in remote or underserved areas who may lack reliable access to any formal water source and face significant challenges in water collection.",
           "share": 1.0,
           "dist": {
             "A": 0.05,
-            "B": 0.35,
-            "C": 0.6,
+            "B": 0.15,
+            "C": 0.8,
             "D": 0.0,
             "E": 0.0
+          }
+        },
+        {
+          "desc": "A small segment of respondents who are uncertain about or unwilling to categorize their water source location.",
+          "share": 1.0,
+          "dist": {
+            "A": 0.15,
+            "B": 0.65,
+            "C": 0.18,
+            "D": 0.01,
+            "E": 0.01
           }
         }
       ],
@@ -7836,11 +7836,11 @@
       "dataset_name": "Afrobarometer",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.3974,
-        "B": 0.18250000000000002,
-        "C": 0.4201,
-        "D": 0.0,
-        "E": 0.0
+        "A": 0.5539999999999999,
+        "B": 0.18539999999999995,
+        "C": 0.25359999999999994,
+        "D": 0.0001,
+        "E": 0.006900000000000001
       },
       "human_answer": {
         "A": 2.9867321356022396,
@@ -7850,8 +7850,8 @@
         "E": 0.0
       },
       "n_samples_ok": 1,
-      "pt": 8989,
-      "ot": 421
+      "pt": 8669,
+      "ot": 419
     },
     {
       "segments": [
@@ -8103,8 +8103,8 @@
     {
       "segments": [
         {
-          "desc": "Pessimists about national direction who believe the country is going in the wrong direction, likely influenced by concerns about corruption (which 40-36% view as being handled very badly) and general dissatisfaction with governance.",
-          "share": 43.0,
+          "desc": "Pessimistic citizens concerned about governance and corruption. They believe the country is heading in the wrong direction due to poor government performance on corruption and lack of faith in political institutions.",
+          "share": 48.0,
           "dist": {
             "A": 0.78,
             "B": 0.16,
@@ -8113,43 +8113,43 @@
           }
         },
         {
-          "desc": "Cautious optimists or those with mixed views who believe the country is going in the right direction, possibly seeing some government efforts or maintaining hope despite challenges.",
+          "desc": "Cautiously optimistic or uncertain citizens who see some positive direction despite concerns. They may acknowledge government efforts or believe change is possible, leaning toward the right direction.",
           "share": 28.0,
           "dist": {
-            "A": 0.35,
-            "B": 0.55,
+            "A": 0.45,
+            "B": 0.48,
             "C": 0.01,
-            "D": 0.09
+            "D": 0.06
           }
         },
         {
-          "desc": "Disengaged citizens who don't know or are uncertain about the country's direction, reflecting the pattern of high 'don't know' responses (42% on Japan assistance question) common in this group.",
-          "share": 22.0,
-          "dist": {
-            "A": 0.48,
-            "B": 0.28,
-            "C": 0.01,
-            "D": 0.23
-          }
-        },
-        {
-          "desc": "Politically engaged individuals who feel close to a party (38-74% range in previous data) and have formed opinions about national direction based on partisan perspectives.",
-          "share": 6.0,
+          "desc": "Disengaged or uninformed citizens without strong opinions on national direction. They lack sufficient information about government performance and international relations to form clear views.",
+          "share": 18.0,
           "dist": {
             "A": 0.68,
-            "B": 0.28,
-            "C": 0.01,
-            "D": 0.03
+            "B": 0.24,
+            "C": 0.0,
+            "D": 0.08
           }
         },
         {
-          "desc": "Those who refuse to answer or are unwilling to express views on the country's direction, though refusal rates are typically very low in this population.",
-          "share": 1.0,
+          "desc": "Politically engaged supporters who feel close to parties and believe the country is moving in the right direction. They have more optimistic assessments of government capacity and national trajectory.",
+          "share": 4.0,
           "dist": {
-            "A": 0.72,
-            "B": 0.24,
-            "C": 0.02,
-            "D": 0.02
+            "A": 0.25,
+            "B": 0.68,
+            "C": 0.01,
+            "D": 0.06
+          }
+        },
+        {
+          "desc": "Highly skeptical citizens who refuse to answer or are deeply uncertain about the country's direction. They may distrust the question itself or feel too disconnected to judge.",
+          "share": 2.0,
+          "dist": {
+            "A": 0.68,
+            "B": 0.18,
+            "C": 0.08,
+            "D": 0.06
           }
         }
       ],
@@ -8158,10 +8158,10 @@
       "dataset_name": "Afrobarometer",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.5869999999999999,
-        "B": 0.3036,
-        "C": 0.0101,
-        "D": 0.0993
+        "A": 0.6464,
+        "B": 0.28519999999999995,
+        "C": 0.009600000000000001,
+        "D": 0.0588
       },
       "human_answer": {
         "A": 81.85502634185472,
@@ -8170,8 +8170,8 @@
         "D": 0.5058276148060987
       },
       "n_samples_ok": 1,
-      "pt": 8310,
-      "ot": 433
+      "pt": 7989,
+      "ot": 418
     },
     {
       "segments": [
@@ -8343,8 +8343,8 @@
     {
       "segments": [
         {
-          "desc": "Highly trusting relatives-focused individuals who prioritize family bonds as their primary social safety net. They express strong trust in relatives, viewing family as the most reliable institution in an uncertain economic environment.",
-          "share": 45.0,
+          "desc": "Rural-based individuals with strong family ties and traditional values who trust relatives deeply and see family as the primary social safety net in their community.",
+          "share": 35.0,
           "dist": {
             "A": 0.01,
             "B": 0.02,
@@ -8355,8 +8355,32 @@
           }
         },
         {
-          "desc": "Moderately trusting individuals who value family relationships but maintain some caution based on personal experiences. They trust relatives substantially but acknowledge occasional disappointments or limitations in family support.",
-          "share": 35.0,
+          "desc": "Urban or semi-urban residents who maintain moderate to strong trust in relatives while also engaging with broader social networks and institutions beyond the family unit.",
+          "share": 30.0,
+          "dist": {
+            "A": 0.02,
+            "B": 0.05,
+            "C": 0.23,
+            "D": 0.7,
+            "E": 0.0,
+            "F": 0.0
+          }
+        },
+        {
+          "desc": "Individuals experiencing economic hardship or social vulnerability who rely heavily on relatives for survival and support, placing high trust in family members as essential to their wellbeing.",
+          "share": 20.0,
+          "dist": {
+            "A": 0.01,
+            "B": 0.02,
+            "C": 0.12,
+            "D": 0.85,
+            "E": 0.0,
+            "F": 0.0
+          }
+        },
+        {
+          "desc": "More skeptical or independent-minded individuals who trust relatives somewhat but maintain some caution based on personal experiences or exposure to broader social perspectives.",
+          "share": 12.0,
           "dist": {
             "A": 0.02,
             "B": 0.08,
@@ -8367,20 +8391,8 @@
           }
         },
         {
-          "desc": "Cautious individuals with mixed experiences in family relationships who express qualified trust in relatives. They trust some family members more than others and are aware of potential conflicts or unreliability within extended family networks.",
-          "share": 15.0,
-          "dist": {
-            "A": 0.08,
-            "B": 0.15,
-            "C": 0.42,
-            "D": 0.33,
-            "E": 0.01,
-            "F": 0.01
-          }
-        },
-        {
-          "desc": "Skeptical individuals with limited family support systems or difficult family histories who express minimal trust in relatives. They may have experienced family breakdown, migration, or economic strain that has eroded family bonds.",
-          "share": 4.0,
+          "desc": "Those with strained family relationships or limited family support systems who express lower or more conditional trust in relatives.",
+          "share": 3.0,
           "dist": {
             "A": 0.28,
             "B": 0.24,
@@ -8389,18 +8401,6 @@
             "E": 0.0,
             "F": 0.06
           }
-        },
-        {
-          "desc": "Non-responsive individuals who decline to answer or express uncertainty about their trust in relatives. They may be uncomfortable discussing family matters or lack clear family structures.",
-          "share": 1.0,
-          "dist": {
-            "A": 0.02,
-            "B": 0.08,
-            "C": 0.25,
-            "D": 0.6,
-            "E": 0.03,
-            "F": 0.02
-          }
         }
       ],
       "i": 194,
@@ -8408,12 +8408,12 @@
       "dataset_name": "Afrobarometer",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.0349,
-        "B": 0.0699,
-        "C": 0.2263,
-        "D": 0.6629999999999999,
-        "E": 0.0018,
-        "F": 0.0041
+        "A": 0.0223,
+        "B": 0.042800000000000005,
+        "C": 0.17520000000000002,
+        "D": 0.7578999999999999,
+        "E": 0.0,
+        "F": 0.0018
       },
       "human_answer": {
         "A": 1.929649704868632,
@@ -8424,8 +8424,8 @@
         "F": 0.0
       },
       "n_samples_ok": 1,
-      "pt": 9525,
-      "ot": 494
+      "pt": 9485,
+      "ot": 448
     },
     {
       "segments": [
@@ -8597,63 +8597,63 @@
     {
       "segments": [
         {
-          "desc": "Disengaged and uninformed citizens who rarely consume news (76% never watch TV) and haven't heard enough about government corruption efforts to form an opinion. They default to 'Don't Know' due to limited information exposure.",
-          "share": 45.0,
+          "desc": "Politically disengaged citizens who rarely discuss politics and have limited news consumption, viewing government corruption efforts with skepticism or indifference due to low information exposure.",
+          "share": 38.0,
           "dist": {
-            "A": 0.18,
-            "B": 0.15,
-            "C": 0.12,
-            "D": 0.05,
-            "E": 0.02,
-            "F": 0.48
-          }
-        },
-        {
-          "desc": "Skeptical critics who believe the government is handling corruption very badly, reflecting broader frustration with governance in Zimbabwe. They have some news exposure and hold strong negative views.",
-          "share": 28.0,
-          "dist": {
-            "A": 0.78,
+            "A": 0.28,
             "B": 0.18,
-            "C": 0.02,
-            "D": 0.01,
-            "E": 0.0,
-            "F": 0.01
-          }
-        },
-        {
-          "desc": "Moderately critical citizens who think the government is handling corruption fairly badly, representing those with some awareness but not extreme pessimism. They occupy a middle-ground skeptical position.",
-          "share": 18.0,
-          "dist": {
-            "A": 0.42,
-            "B": 0.35,
-            "C": 0.15,
+            "C": 0.12,
             "D": 0.03,
             "E": 0.01,
-            "F": 0.04
+            "F": 0.38
           }
         },
         {
-          "desc": "Cautious optimists or government supporters who believe the government is handling corruption fairly well or very well. This is a small minority, possibly reflecting either genuine belief in anti-corruption efforts or political alignment.",
-          "share": 7.0,
+          "desc": "Skeptical critics who actively avoid traditional media and political discussion, holding deeply negative views about government corruption-fighting efforts based on personal experience or distrust of institutions.",
+          "share": 28.0,
           "dist": {
-            "A": 0.08,
-            "B": 0.12,
-            "C": 0.55,
-            "D": 0.2,
+            "A": 0.72,
+            "B": 0.18,
+            "C": 0.05,
+            "D": 0.02,
+            "E": 0.01,
+            "F": 0.02
+          }
+        },
+        {
+          "desc": "Cautious moderates with some political awareness who acknowledge mixed results in anti-corruption efforts, neither strongly optimistic nor pessimistic, often uncertain due to limited reliable information.",
+          "share": 22.0,
+          "dist": {
+            "A": 0.28,
+            "B": 0.24,
+            "C": 0.18,
+            "D": 0.08,
+            "E": 0.01,
+            "F": 0.21
+          }
+        },
+        {
+          "desc": "Informed optimists who engage with news and political discussion, believing the government is making genuine efforts against corruption despite challenges, though this view is relatively uncommon.",
+          "share": 9.0,
+          "dist": {
+            "A": 0.25,
+            "B": 0.28,
+            "C": 0.32,
+            "D": 0.1,
             "E": 0.02,
             "F": 0.03
           }
         },
         {
-          "desc": "Refusers who decline to answer, potentially due to political sensitivity or fear of expressing criticism in Zimbabwe's context. This represents a small but notable segment.",
-          "share": 2.0,
+          "desc": "Those who refuse to answer or genuinely lack sufficient information about government corruption-fighting efforts, representing a small segment unable or unwilling to form opinions.",
+          "share": 3.0,
           "dist": {
-            "A": 0.45,
-            "B": 0.25,
-            "C": 0.08,
-            "D": 0.02,
-            "E": 0.15,
-            "F": 0.05
+            "A": 0.35,
+            "B": 0.2,
+            "C": 0.1,
+            "D": 0.03,
+            "E": 0.02,
+            "F": 0.3
           }
         }
       ],
@@ -8662,12 +8662,12 @@
       "dataset_name": "Afrobarometer",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.3896,
-        "B": 0.1943,
-        "C": 0.12669999999999998,
-        "D": 0.04510000000000001,
-        "E": 0.015200000000000002,
-        "F": 0.2291
+        "A": 0.40259999999999996,
+        "B": 0.20279999999999998,
+        "C": 0.131,
+        "D": 0.044500000000000005,
+        "E": 0.011200000000000002,
+        "F": 0.2079
       },
       "human_answer": {
         "A": 40.32147700759051,
@@ -8678,59 +8678,59 @@
         "F": 5.711312658702942
       },
       "n_samples_ok": 1,
-      "pt": 8681,
-      "ot": 502
+      "pt": 8275,
+      "ot": 474
     },
     {
       "segments": [
         {
-          "desc": "Urban residents with higher education and media exposure who are more aware of COVID-19 cases through television and news sources; they are more likely to have personally experienced or known someone affected by COVID-19.",
+          "desc": "Urban residents with higher media exposure and education who have had direct experience with COVID-19 illness or positive cases in their household, making them acutely aware of the pandemic's personal impact.",
           "share": 25.0,
           "dist": {
-            "A": 0.68,
-            "B": 0.31,
+            "A": 0.78,
+            "B": 0.22,
             "C": 0.0,
-            "D": 0.01
-          }
-        },
-        {
-          "desc": "Rural or semi-rural residents with limited media access who have had minimal direct contact with confirmed COVID-19 cases; they may be unaware of cases in their community despite potential exposure.",
-          "share": 35.0,
-          "dist": {
-            "A": 0.08,
-            "B": 0.91,
-            "C": 0.01,
             "D": 0.0
           }
         },
         {
-          "desc": "Individuals in informal employment or economic hardship who experienced COVID-19 illness but did not seek testing or formal diagnosis; they may not report it as a confirmed case.",
-          "share": 20.0,
+          "desc": "Rural or semi-rural residents with limited healthcare access and lower testing rates who have not personally experienced confirmed COVID-19 cases, though they may have had unexplained illnesses they attribute to other causes.",
+          "share": 45.0,
           "dist": {
-            "A": 0.42,
-            "B": 0.57,
-            "C": 0.0,
+            "A": 0.12,
+            "B": 0.86,
+            "C": 0.01,
             "D": 0.01
           }
         },
         {
-          "desc": "Health-conscious individuals who actively follow news and health information and are more likely to have sought testing if symptomatic; they have clearer awareness of their COVID-19 status.",
+          "desc": "Individuals with household members who work in formal sectors or have traveled, increasing their exposure to COVID-19 and likelihood of having experienced illness or positive cases within their family.",
           "share": 15.0,
           "dist": {
-            "A": 0.42,
-            "B": 0.57,
-            "C": 0.0,
+            "A": 0.78,
+            "B": 0.2,
+            "C": 0.01,
             "D": 0.01
           }
         },
         {
-          "desc": "Skeptical or mistrustful respondents who doubt COVID-19's severity or existence in their community and are unlikely to report illness as COVID-related even if symptomatic.",
-          "share": 5.0,
+          "desc": "Unemployed or economically vulnerable individuals who lack resources for testing and healthcare, making it unlikely they have confirmed COVID-19 cases despite potential exposure in their communities.",
+          "share": 12.0,
           "dist": {
-            "A": 0.25,
-            "B": 0.72,
-            "C": 0.02,
+            "A": 0.12,
+            "B": 0.86,
+            "C": 0.01,
             "D": 0.01
+          }
+        },
+        {
+          "desc": "Skeptical or hesitant respondents who question the reality of COVID-19 or refuse to acknowledge illness as pandemic-related, even if they experienced symptoms.",
+          "share": 3.0,
+          "dist": {
+            "A": 0.42,
+            "B": 0.52,
+            "C": 0.02,
+            "D": 0.04
           }
         }
       ],
@@ -8739,10 +8739,10 @@
       "dataset_name": "Afrobarometer",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.3575,
-        "B": 0.6315,
-        "C": 0.0045000000000000005,
-        "D": 0.006500000000000001
+        "A": 0.39299999999999996,
+        "B": 0.5908000000000001,
+        "C": 0.0078000000000000005,
+        "D": 0.0084
       },
       "human_answer": {
         "A": 6.117095319625931,
@@ -8751,8 +8751,8 @@
         "D": 0.0
       },
       "n_samples_ok": 1,
-      "pt": 8562,
-      "ot": 439
+      "pt": 8245,
+      "ot": 434
     },
     {
       "segments": [
@@ -8830,7 +8830,7 @@
     {
       "segments": [
         {
-          "desc": "Daily television news consumers who rely on TV as their primary news source, reflecting the traditional media consumption pattern still dominant in Zimbabwe despite internet growth.",
+          "desc": "Daily television news consumers who rely on TV as their primary news source, reflecting traditional media habits common in Zimbabwe where television remains widely accessible despite economic challenges.",
           "share": 45.0,
           "dist": {
             "A": 0.02,
@@ -8843,53 +8843,53 @@
           }
         },
         {
-          "desc": "Moderate television users who watch a few times a week, balancing traditional TV news with occasional internet use, representing those with some media diversification.",
+          "desc": "Moderate television users who watch a few times a week, balancing TV news with other sources like internet or radio, representing those with some media diversity.",
           "share": 25.0,
           "dist": {
             "A": 0.08,
             "B": 0.02,
-            "C": 0.05,
+            "C": 0.08,
             "D": 0.35,
-            "E": 0.48,
+            "E": 0.45,
             "F": 0.0,
             "G": 0.02
           }
         },
         {
-          "desc": "Infrequent television users who rarely engage with TV news, preferring internet-based news sources despite the digital divide, particularly among younger or more urban-oriented individuals.",
-          "share": 18.0,
+          "desc": "Infrequent television news consumers who rarely watch or never access TV news, skewing toward younger, more internet-connected individuals or those in areas with limited reliable electricity.",
+          "share": 20.0,
           "dist": {
-            "A": 0.68,
-            "B": 0.04,
-            "C": 0.06,
-            "D": 0.12,
+            "A": 0.72,
+            "B": 0.03,
+            "C": 0.05,
+            "D": 0.1,
             "E": 0.08,
             "F": 0.0,
             "G": 0.02
           }
         },
         {
-          "desc": "Non-television news consumers who never watch TV for news, relying entirely on internet or other alternative sources, a smaller but growing segment in the unemployed/job-seeking demographic.",
-          "share": 10.0,
+          "desc": "Occasional viewers watching a few times a month, typically older adults or those with inconsistent access to electricity and television services.",
+          "share": 8.0,
+          "dist": {
+            "A": 0.08,
+            "B": 0.02,
+            "C": 0.22,
+            "D": 0.28,
+            "E": 0.38,
+            "F": 0.0,
+            "G": 0.02
+          }
+        },
+        {
+          "desc": "Those who never watch television news, either due to lack of access, preference for digital sources, or deliberate avoidance of state-controlled media.",
+          "share": 2.0,
           "dist": {
             "A": 0.85,
             "B": 0.03,
             "C": 0.04,
             "D": 0.05,
             "E": 0.02,
-            "F": 0.0,
-            "G": 0.01
-          }
-        },
-        {
-          "desc": "Occasional or uncertain television users with sporadic engagement, including those with limited access or inconsistent viewing habits due to economic constraints.",
-          "share": 2.0,
-          "dist": {
-            "A": 0.48,
-            "B": 0.05,
-            "C": 0.08,
-            "D": 0.16,
-            "E": 0.22,
             "F": 0.0,
             "G": 0.01
           }
@@ -8900,13 +8900,13 @@
       "dataset_name": "Afrobarometer",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.24600000000000002,
-        "B": 0.0207,
-        "C": 0.0424,
-        "D": 0.17129999999999998,
-        "E": 0.5097999999999999,
+        "A": 0.19639999999999996,
+        "B": 0.017699999999999997,
+        "C": 0.0619,
+        "D": 0.1849,
+        "E": 0.5283,
         "F": 0.0,
-        "G": 0.0098
+        "G": 0.0108
       },
       "human_answer": {
         "A": 60.47493087878142,
@@ -8918,8 +8918,8 @@
         "G": 1.8497883627236849
       },
       "n_samples_ok": 1,
-      "pt": 9595,
-      "ot": 497
+      "pt": 9171,
+      "ot": 493
     },
     {
       "segments": [
@@ -9373,53 +9373,53 @@
     {
       "segments": [
         {
-          "desc": "Politically disengaged women with limited political discussion and awareness. They rarely discuss politics with others and have low knowledge of international relations, making them unlikely to feel close to any party.",
-          "share": 45.0,
+          "desc": "Politically engaged women who regularly discuss politics and follow current events through daily internet use; they tend to feel connected to a political party and have formed clear political preferences.",
+          "share": 22.0,
           "dist": {
-            "A": 0.72,
-            "B": 0.18,
+            "A": 0.28,
+            "B": 0.7,
+            "C": 0.01,
+            "D": 0.01
+          }
+        },
+        {
+          "desc": "Women with basic education and occasional political engagement who live in urban or semi-urban areas with electricity access; they generally feel some affinity toward a political party, though their connection may be less intense.",
+          "share": 28.0,
+          "dist": {
+            "A": 0.33,
+            "B": 0.66,
+            "C": 0.01,
+            "D": 0.0
+          }
+        },
+        {
+          "desc": "Women who rarely discuss politics and have limited political awareness despite having internet access; they are uncertain about their relationship to political parties and may lack sufficient information to feel close to any party.",
+          "share": 25.0,
+          "dist": {
+            "A": 0.62,
+            "B": 0.28,
             "C": 0.01,
             "D": 0.09
           }
         },
         {
-          "desc": "Women with regular internet access and occasional political engagement. They discuss politics occasionally and have moderate awareness of current affairs, but still maintain distance from formal party affiliation.",
-          "share": 25.0,
-          "dist": {
-            "A": 0.72,
-            "B": 0.23,
-            "C": 0.01,
-            "D": 0.04
-          }
-        },
-        {
-          "desc": "Politically active women who frequently discuss politics with friends and family. They are more informed and engaged, and are more likely to identify with a particular political party.",
+          "desc": "Women with minimal internet access and low political engagement who live in more isolated settings; they are unlikely to feel close to any political party due to limited exposure to political information and discourse.",
           "share": 18.0,
           "dist": {
-            "A": 0.45,
-            "B": 0.52,
+            "A": 0.68,
+            "B": 0.28,
             "C": 0.01,
-            "D": 0.02
+            "D": 0.03
           }
         },
         {
-          "desc": "Women uncertain about their political alignment or the political landscape. They lack clear knowledge about parties and their positions, leading them to express uncertainty rather than commitment.",
-          "share": 10.0,
+          "desc": "Women who actively refuse to answer or are genuinely uncertain about their political affiliations, representing those who either prefer privacy about their political views or have not formed clear party preferences.",
+          "share": 7.0,
           "dist": {
-            "A": 0.48,
-            "B": 0.35,
-            "C": 0.01,
-            "D": 0.16
-          }
-        },
-        {
-          "desc": "Women who actively refuse to disclose their political party affiliation due to privacy concerns or political sensitivity in their environment.",
-          "share": 2.0,
-          "dist": {
-            "A": 0.58,
-            "B": 0.32,
-            "C": 0.08,
-            "D": 0.02
+            "A": 0.34,
+            "B": 0.64,
+            "C": 0.02,
+            "D": 0.0
           }
         }
       ],
@@ -9428,10 +9428,10 @@
       "dataset_name": "Afrobarometer",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.6446,
-        "B": 0.2735,
-        "C": 0.011399999999999999,
-        "D": 0.0705
+        "A": 0.45520000000000005,
+        "B": 0.5039999999999999,
+        "C": 0.010699999999999998,
+        "D": 0.030100000000000002
       },
       "human_answer": {
         "A": 69.96277590823901,
@@ -9440,8 +9440,8 @@
         "D": 0.10561606749401763
       },
       "n_samples_ok": 1,
-      "pt": 7729,
-      "ot": 404
+      "pt": 7473,
+      "ot": 430
     },
     {
       "segments": [
@@ -9533,7 +9533,7 @@
     {
       "segments": [
         {
-          "desc": "Urban residents with regular internet access who are more aware of COVID-19 cases and health information, and more likely to have encountered the virus directly or know someone who did.",
+          "desc": "Urban residents with regular internet access who are more informed about COVID-19 and more likely to have sought testing or medical care, making them aware of infections in their household.",
           "share": 25.0,
           "dist": {
             "A": 0.68,
@@ -9543,43 +9543,43 @@
           }
         },
         {
-          "desc": "Rural or semi-rural residents with limited internet access who have had minimal direct exposure to COVID-19 cases and rely on local community knowledge, making them less likely to report personal or household illness.",
-          "share": 45.0,
-          "dist": {
-            "A": 0.08,
-            "B": 0.91,
-            "C": 0.01,
-            "D": 0.0
-          }
-        },
-        {
-          "desc": "Older adults or those in vulnerable health categories who may have experienced COVID-19 illness but may not have sought testing or formal diagnosis due to limited healthcare access.",
-          "share": 15.0,
-          "dist": {
-            "A": 0.78,
-            "B": 0.2,
-            "C": 0.01,
-            "D": 0.01
-          }
-        },
-        {
-          "desc": "Younger, more educated individuals in urban areas who are more likely to have been tested and confirmed positive, and therefore more aware of their COVID-19 status.",
-          "share": 12.0,
-          "dist": {
-            "A": 0.78,
-            "B": 0.21,
-            "C": 0.01,
-            "D": 0.0
-          }
-        },
-        {
-          "desc": "Individuals who are hesitant about COVID-19 or skeptical of the pandemic's severity, and therefore unlikely to report illness even if they experienced symptoms.",
-          "share": 3.0,
+          "desc": "Rural residents with limited healthcare access who may have experienced COVID-19 symptoms but never tested or sought formal diagnosis, so they don't report it as confirmed illness.",
+          "share": 40.0,
           "dist": {
             "A": 0.25,
-            "B": 0.72,
-            "C": 0.02,
+            "B": 0.73,
+            "C": 0.01,
             "D": 0.01
+          }
+        },
+        {
+          "desc": "Younger, more educated males in cities who are digitally connected and more likely to have been tested and to report positive cases accurately.",
+          "share": 15.0,
+          "dist": {
+            "A": 0.12,
+            "B": 0.87,
+            "C": 0.01,
+            "D": 0.0
+          }
+        },
+        {
+          "desc": "Older residents in both urban and rural areas who experienced illness during the pandemic but attribute it to other causes or lack access to testing and formal diagnosis.",
+          "share": 15.0,
+          "dist": {
+            "A": 0.25,
+            "B": 0.73,
+            "C": 0.01,
+            "D": 0.01
+          }
+        },
+        {
+          "desc": "A small segment of vaccine-hesitant or skeptical individuals who may deny or minimize COVID-19 illness even if experienced.",
+          "share": 5.0,
+          "dist": {
+            "A": 0.45,
+            "B": 0.54,
+            "C": 0.01,
+            "D": 0.0
           }
         }
       ],
@@ -9588,10 +9588,10 @@
       "dataset_name": "Afrobarometer",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.42410000000000003,
-        "B": 0.5638000000000001,
-        "C": 0.0103,
-        "D": 0.0018
+        "A": 0.348,
+        "B": 0.6365000000000001,
+        "C": 0.01,
+        "D": 0.0055000000000000005
       },
       "human_answer": {
         "A": 1.157081574424609,
@@ -9600,8 +9600,8 @@
         "D": 0.11913928794808658
       },
       "n_samples_ok": 1,
-      "pt": 8187,
-      "ot": 424
+      "pt": 7883,
+      "ot": 402
     },
     {
       "segments": [
@@ -10425,7 +10425,7 @@
       "segments": [
         {
           "desc": "Urban professionals and educated individuals with exposure to international news and development issues. They are aware of Japan's development assistance programs in Angola and can identify Japan as a donor country.",
-          "share": 28.0,
+          "share": 25.0,
           "dist": {
             "A": 0.15,
             "B": 0.72,
@@ -10434,41 +10434,41 @@
           }
         },
         {
-          "desc": "Rural and less-educated citizens with limited access to media and international information. They have not heard about Japanese development assistance and are genuinely uncertain about Japan's role in Angola.",
+          "desc": "Rural and less-educated populations with limited access to media and international information. They have not heard about Japanese development assistance and are uncertain about foreign aid relationships.",
           "share": 44.0,
           "dist": {
-            "A": 0.62,
-            "B": 0.12,
-            "C": 0.01,
-            "D": 0.25
+            "A": 0.28,
+            "B": 0.32,
+            "C": 0.0,
+            "D": 0.4
           }
         },
         {
-          "desc": "Politically engaged citizens who follow government and international affairs closely. They know about Japan's loans and development assistance to Angola through government announcements or news coverage.",
-          "share": 18.0,
+          "desc": "Government workers and civil servants engaged with development projects. They have direct or indirect knowledge of Japanese loans and assistance through their work in relevant sectors.",
+          "share": 15.0,
           "dist": {
             "A": 0.15,
-            "B": 0.62,
+            "B": 0.72,
+            "C": 0.01,
+            "D": 0.12
+          }
+        },
+        {
+          "desc": "Business owners and traders with international connections. They may be aware of Japanese investment and assistance through commercial networks and trade relationships.",
+          "share": 12.0,
+          "dist": {
+            "A": 0.25,
+            "B": 0.52,
             "C": 0.01,
             "D": 0.22
           }
         },
         {
-          "desc": "Younger, digitally-connected individuals in urban areas who may have some awareness of international development but are not deeply informed about specific donor countries' activities.",
-          "share": 7.0,
+          "desc": "Individuals who refuse to answer or are genuinely uncertain about Angola's international relationships. They either prefer not to engage with the question or lack sufficient information to form a response.",
+          "share": 4.0,
           "dist": {
             "A": 0.28,
-            "B": 0.32,
-            "C": 0.01,
-            "D": 0.39
-          }
-        },
-        {
-          "desc": "Citizens who are skeptical or disengaged from information about government and international relations. They either refuse to answer or are unwilling to engage with the question.",
-          "share": 3.0,
-          "dist": {
-            "A": 0.45,
-            "B": 0.18,
+            "B": 0.35,
             "C": 0.08,
             "D": 0.29
           }
@@ -10479,10 +10479,10 @@
       "dataset_name": "Afrobarometer",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.3749,
-        "B": 0.39379999999999993,
-        "C": 0.0121,
-        "D": 0.2192
+        "A": 0.22440000000000002,
+        "B": 0.5052,
+        "C": 0.008400000000000001,
+        "D": 0.262
       },
       "human_answer": {
         "A": 64.2862513727589,
@@ -10491,8 +10491,8 @@
         "D": 15.605862186695077
       },
       "n_samples_ok": 1,
-      "pt": 7738,
-      "ot": 413
+      "pt": 7445,
+      "ot": 402
     },
     {
       "segments": [
@@ -10921,43 +10921,43 @@
     {
       "segments": [
         {
-          "desc": "Secular progressives with strong liberal values who actively reject religious identification, viewing religion as incompatible with modern secular society.",
+          "desc": "Secular-minded progressives with liberal values on social issues. They reject religious affiliation and tend to support LGBTQ+ rights strongly, with low union membership rates.",
           "share": 28.0,
           "dist": {
-            "A": 0.08,
-            "B": 0.92
+            "A": 0.12,
+            "B": 0.88
           }
         },
         {
-          "desc": "Non-religious pragmatists who don't identify with religion but aren't ideologically opposed to it; they simply don't see it as relevant to their lives.",
-          "share": 24.0,
+          "desc": "Non-religious pragmatists who are culturally moderate and civically engaged. They may have union experience and hold centrist political views without strong religious conviction.",
+          "share": 22.0,
+          "dist": {
+            "A": 0.35,
+            "B": 0.65
+          }
+        },
+        {
+          "desc": "Catholic or Christian believers who maintain religious identity as part of their cultural heritage and personal values. They are generally tolerant on LGBTQ+ issues and moderately engaged in civic life.",
+          "share": 35.0,
+          "dist": {
+            "A": 0.78,
+            "B": 0.22
+          }
+        },
+        {
+          "desc": "Working-class union members with religious affiliation, often Catholic, who balance traditional faith with progressive labor politics and moderate social views.",
+          "share": 12.0,
+          "dist": {
+            "A": 0.78,
+            "B": 0.22
+          }
+        },
+        {
+          "desc": "Religiously unaffiliated individuals with conservative or traditional social leanings who may feel ambivalent about LGBTQ+ rights despite not identifying with organized religion.",
+          "share": 3.0,
           "dist": {
             "A": 0.25,
             "B": 0.75
-          }
-        },
-        {
-          "desc": "Cultural Catholics who maintain nominal religious identification as part of Belgian cultural heritage and family tradition, even if not actively practicing.",
-          "share": 32.0,
-          "dist": {
-            "A": 0.72,
-            "B": 0.28
-          }
-        },
-        {
-          "desc": "Committed religious believers (Catholic, Protestant, or other denominations) for whom faith is an important part of their identity and worldview.",
-          "share": 14.0,
-          "dist": {
-            "A": 0.92,
-            "B": 0.08
-          }
-        },
-        {
-          "desc": "Immigrants and religious minorities who identify strongly with their faith community as a source of cultural identity and social belonging.",
-          "share": 2.0,
-          "dist": {
-            "A": 0.92,
-            "B": 0.08
           }
         }
       ],
@@ -10966,16 +10966,16 @@
       "dataset_name": "ESS",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.4600000000000001,
-        "B": 0.54
+        "A": 0.48469999999999996,
+        "B": 0.5153
       },
       "human_answer": {
         "A": 42.13947209040419,
         "B": 57.8605279095958
       },
       "n_samples_ok": 1,
-      "pt": 6144,
-      "ot": 321
+      "pt": 5971,
+      "ot": 358
     },
     {
       "segments": [
@@ -11119,43 +11119,43 @@
     {
       "segments": [
         {
-          "desc": "Religiously engaged community members with limited formal education who view civic participation through traditional community and church networks rather than formal petition signing; they see petitions as less relevant to how they effect change.",
-          "share": 45.0,
+          "desc": "Religious, community-minded individuals who engage in civic activities. They see petition-signing as a legitimate way to express concerns within their faith-informed worldview and are moderately active in civic participation.",
+          "share": 28.0,
           "dist": {
-            "A": 0.12,
-            "B": 0.88
+            "A": 0.32,
+            "B": 0.68
           }
         },
         {
-          "desc": "Socially progressive individuals with less than lower secondary education who support LGBTQ+ rights and are more inclined toward modern forms of civic engagement like petition signing, seeing it as an accessible way to voice concerns.",
-          "share": 20.0,
+          "desc": "Socially progressive, engaged citizens with tolerant views on LGBTQ+ rights. They actively participate in civic causes including petitions as a means of advocating for social change.",
+          "share": 22.0,
+          "dist": {
+            "A": 0.38,
+            "B": 0.62
+          }
+        },
+        {
+          "desc": "Religiously observant but less civically active individuals. They hold traditional values and rarely engage in petition-signing or other forms of civic activism, preferring private or community-based approaches.",
+          "share": 35.0,
+          "dist": {
+            "A": 0.18,
+            "B": 0.82
+          }
+        },
+        {
+          "desc": "Disengaged or skeptical citizens with low participation in civic activities. They see little point in petition-signing and are unlikely to have signed one in the past year.",
+          "share": 12.0,
+          "dist": {
+            "A": 0.18,
+            "B": 0.82
+          }
+        },
+        {
+          "desc": "Occasional civic participants who may sign petitions on issues they feel strongly about, but are not consistently engaged in activism or civic organizations.",
+          "share": 3.0,
           "dist": {
             "A": 0.28,
             "B": 0.72
-          }
-        },
-        {
-          "desc": "Disengaged or skeptical citizens with minimal education who rarely participate in any civic activities, whether traditional or modern, and see petitions as ineffective or not relevant to their lives.",
-          "share": 22.0,
-          "dist": {
-            "A": 0.12,
-            "B": 0.88
-          }
-        },
-        {
-          "desc": "Pragmatic working-age individuals who occasionally engage in civic activities and might sign petitions on issues directly affecting them or their families, though such engagement is sporadic.",
-          "share": 10.0,
-          "dist": {
-            "A": 0.22,
-            "B": 0.78
-          }
-        },
-        {
-          "desc": "Marginally active community members who have engaged in some organizational work or boycotts but remain largely disconnected from formal petition-signing as a mode of civic participation.",
-          "share": 3.0,
-          "dist": {
-            "A": 0.14,
-            "B": 0.86
           }
         }
       ],
@@ -11164,16 +11164,16 @@
       "dataset_name": "ESS",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.16260000000000002,
-        "B": 0.8373999999999999
+        "A": 0.2662,
+        "B": 0.7338000000000001
       },
       "human_answer": {
         "A": 9.511750608585503,
         "B": 90.4882493914145
       },
       "n_samples_ok": 1,
-      "pt": 7624,
-      "ot": 379
+      "pt": 7326,
+      "ot": 369
     },
     {
       "segments": [
@@ -11720,43 +11720,43 @@
     {
       "segments": [
         {
-          "desc": "Secular progressives with strong liberal values who actively reject religious identification and embrace secular worldviews. They align with the group's strong support for LGBTQ+ rights and tend to be skeptical of organized religion.",
-          "share": 35.0,
+          "desc": "Secular progressives with strong liberal values who actively reject religious identification, viewing religion as incompatible with their worldview. They strongly support LGBTQ+ rights and are unlikely to feel close to traditional political parties.",
+          "share": 28.0,
           "dist": {
             "A": 0.08,
             "B": 0.92
           }
         },
         {
-          "desc": "Non-religious pragmatists who don't identify with religion but aren't ideologically opposed to it; they simply don't see it as relevant to their lives. They represent a secular but non-activist segment.",
-          "share": 25.0,
+          "desc": "Non-religious pragmatists who don't identify with religion but aren't ideologically opposed to it; they're simply indifferent or culturally secular. They tend toward moderate liberal positions on social issues.",
+          "share": 24.0,
           "dist": {
             "A": 0.35,
             "B": 0.65
           }
         },
         {
-          "desc": "Cultural Catholics or nominal believers who maintain some religious identification tied to Belgian cultural tradition and family heritage, even if they don't practice actively. They tend to hold moderate social views.",
-          "share": 25.0,
-          "dist": {
-            "A": 0.72,
-            "B": 0.28
-          }
-        },
-        {
-          "desc": "Committed religious believers who actively identify with their faith community and see religion as important to their identity and values. They represent a smaller but meaningful religious minority in the group.",
-          "share": 12.0,
-          "dist": {
-            "A": 0.95,
-            "B": 0.05
-          }
-        },
-        {
-          "desc": "Socially progressive believers who reconcile religious identity with liberal values on issues like LGBTQ+ rights, representing the intersection of faith and progressive politics.",
-          "share": 3.0,
+          "desc": "Catholic or Christian believers who maintain religious identification as part of their cultural and family identity, even if not deeply practicing. They generally support LGBTQ+ rights and hold moderate social views aligned with contemporary Belgian values.",
+          "share": 35.0,
           "dist": {
             "A": 0.78,
             "B": 0.22
+          }
+        },
+        {
+          "desc": "Religious traditionalists who identify strongly with their faith and hold more conservative views on social issues, though still generally accepting of LGBTQ+ people's right to live freely. They may feel closer to faith-based or conservative political parties.",
+          "share": 10.0,
+          "dist": {
+            "A": 0.85,
+            "B": 0.15
+          }
+        },
+        {
+          "desc": "Undecided or ambivalent individuals who struggle with religious identity questions, sometimes identifying with religion for cultural reasons while maintaining secular perspectives on most issues.",
+          "share": 3.0,
+          "dist": {
+            "A": 0.62,
+            "B": 0.38
           }
         }
       ],
@@ -11765,16 +11765,16 @@
       "dataset_name": "ESS",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.43290000000000006,
-        "B": 0.5671
+        "A": 0.483,
+        "B": 0.517
       },
       "human_answer": {
         "A": 49.27458412523612,
         "B": 50.72541587476388
       },
       "n_samples_ok": 1,
-      "pt": 6202,
-      "ot": 379
+      "pt": 6012,
+      "ot": 399
     },
     {
       "segments": [
@@ -11977,58 +11977,58 @@
     {
       "segments": [
         {
-          "desc": "Progressive urban women who strongly reject traditional stigma around homosexuality. They would strongly disagree with feeling ashamed of having a gay family member, viewing such shame as outdated and contrary to personal freedom.",
-          "share": 35.0,
+          "desc": "Progressive urban women who strongly reject traditional stigma around homosexuality. They would emphatically disagree with feeling ashamed of having a gay family member, viewing such shame as outdated and contrary to personal values of acceptance.",
+          "share": 38.0,
           "dist": {
             "A": 0.01,
             "B": 0.02,
             "C": 0.03,
-            "D": 0.12,
-            "E": 0.82
+            "D": 0.08,
+            "E": 0.86
           }
         },
         {
-          "desc": "Socially liberal women with modern values who disagree with the statement. They accept LGBTQ+ family members naturally, though they may not be as vocally activist as the first group.",
+          "desc": "Socially liberal women with moderate acceptance of LGBTQ+ people. They disagree with the shame statement but perhaps less intensely, reflecting genuine support while acknowledging some residual social discomfort.",
           "share": 28.0,
           "dist": {
-            "A": 0.01,
-            "B": 0.02,
-            "C": 0.03,
-            "D": 0.15,
-            "E": 0.79
+            "A": 0.02,
+            "B": 0.04,
+            "C": 0.08,
+            "D": 0.25,
+            "E": 0.61
           }
         },
         {
-          "desc": "Women with mixed or uncertain views who neither strongly agree nor disagree. They may feel some traditional social discomfort but recognize it as problematic, or they simply haven't formed strong opinions on the matter.",
-          "share": 18.0,
+          "desc": "Women with mixed or neutral views on this issue. They neither strongly agree nor disagree with feeling ashamed, possibly reflecting uncertainty about their own feelings or social pressures they experience.",
+          "share": 16.0,
           "dist": {
             "A": 0.03,
             "B": 0.06,
-            "C": 0.12,
+            "C": 0.18,
             "D": 0.28,
-            "E": 0.51
+            "E": 0.45
           }
         },
         {
-          "desc": "Conservative women influenced by traditional or religious values who would agree they might feel some shame. They hold more conventional views on family and sexuality, though this group is relatively small in Czech society.",
+          "desc": "Conservative women influenced by traditional or religious values who would disagree with the shame statement but hold reservations about LGBTQ+ lifestyles. Their disagreement is qualified rather than emphatic.",
           "share": 12.0,
           "dist": {
-            "A": 0.12,
-            "B": 0.18,
-            "C": 0.22,
-            "D": 0.28,
-            "E": 0.2
+            "A": 0.02,
+            "B": 0.03,
+            "C": 0.08,
+            "D": 0.25,
+            "E": 0.62
           }
         },
         {
-          "desc": "Women with strong traditional convictions who would strongly agree with feeling ashamed. They maintain conservative views on homosexuality and family honor, representing the smallest segment of this group.",
-          "share": 7.0,
+          "desc": "Women with traditional views who would agree that they would feel some shame about having a gay family member, reflecting conservative social or religious perspectives on homosexuality.",
+          "share": 6.0,
           "dist": {
-            "A": 0.45,
-            "B": 0.25,
-            "C": 0.12,
-            "D": 0.1,
-            "E": 0.08
+            "A": 0.08,
+            "B": 0.12,
+            "C": 0.15,
+            "D": 0.28,
+            "E": 0.37
           }
         }
       ],
@@ -12037,11 +12037,11 @@
       "dataset_name": "ESS",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.0576,
-        "B": 0.0625,
-        "C": 0.0753,
-        "D": 0.175,
-        "E": 0.6296
+        "A": 0.021399999999999995,
+        "B": 0.0392,
+        "C": 0.0812,
+        "D": 0.192,
+        "E": 0.6662
       },
       "human_answer": {
         "A": 5.87875905749883,
@@ -12051,7 +12051,7 @@
         "E": 21.45518403747364
       },
       "n_samples_ok": 1,
-      "pt": 8622,
+      "pt": 8298,
       "ot": 474
     },
     {
@@ -12349,43 +12349,43 @@
     {
       "segments": [
         {
-          "desc": "Socially engaged professionals and activists who are religiously affiliated, comfortable with their income, and actively participate in civic organizations and associations as part of their regular engagement with community life.",
-          "share": 28.0,
+          "desc": "Socially disengaged workers and non-participants. These men rarely participate in organized activities or associations, viewing civic engagement as outside their sphere of concern or lacking time/interest for such involvement.",
+          "share": 58.0,
           "dist": {
-            "A": 0.42,
-            "B": 0.58
+            "A": 0.12,
+            "B": 0.88
           }
         },
         {
-          "desc": "Regular internet users who are coping financially and maintain some community involvement through organizations, though their participation is moderate rather than intensive.",
-          "share": 24.0,
+          "desc": "Moderately active community members. These men occasionally participate in organizations or associations, balancing work and family commitments with selective civic engagement in causes that directly affect them.",
+          "share": 22.0,
           "dist": {
             "A": 0.28,
             "B": 0.72
           }
         },
         {
-          "desc": "Religiously observant individuals who are focused on family and personal responsibilities, with limited time or inclination for organizational work outside their immediate circles.",
-          "share": 22.0,
+          "desc": "Religiously-motivated volunteers. These men, reflecting Poland's 90% religious affiliation, are active in church-based organizations and faith-related associations, which constitute their primary form of organized participation.",
+          "share": 12.0,
           "dist": {
-            "A": 0.18,
-            "B": 0.82
+            "A": 0.52,
+            "B": 0.48
           }
         },
         {
-          "desc": "Secular or non-religious Poles who are economically stable and digitally active but prioritize individual pursuits and informal social connections over formal organizational membership.",
-          "share": 18.0,
+          "desc": "Professionally engaged networkers. These men participate in work-related organizations, professional associations, or unions as part of their employment or career development.",
+          "share": 5.0,
           "dist": {
-            "A": 0.18,
-            "B": 0.82
+            "A": 0.45,
+            "B": 0.55
           }
         },
         {
-          "desc": "Economically struggling individuals with limited resources and time, who rarely participate in formal organizations due to financial constraints and competing daily demands.",
-          "share": 8.0,
+          "desc": "Civically committed activists. These men are consistently involved in multiple organizations and associations beyond religious contexts, viewing such participation as important for social improvement.",
+          "share": 3.0,
           "dist": {
-            "A": 0.12,
-            "B": 0.88
+            "A": 0.65,
+            "B": 0.35
           }
         }
       ],
@@ -12394,16 +12394,16 @@
       "dataset_name": "ESS",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.2664,
-        "B": 0.7336
+        "A": 0.23559999999999998,
+        "B": 0.7644
       },
       "human_answer": {
         "A": 7.630199421508036,
         "B": 92.36980057849196
       },
       "n_samples_ok": 1,
-      "pt": 6617,
-      "ot": 338
+      "pt": 6517,
+      "ot": 364
     },
     {
       "segments": [
@@ -12686,38 +12686,38 @@
     {
       "segments": [
         {
-          "desc": "Women from working-class backgrounds whose mothers were employed as wage workers, reflecting the common pattern of maternal employment in post-communist Poland during their childhood in the early 2000s.",
-          "share": 45.0,
+          "desc": "Women from working-class backgrounds whose mothers were employed as wage workers, reflecting the common experience in post-communist Poland where maternal employment was normalized during the socialist era.",
+          "share": 62.0,
           "dist": {
             "A": 0.78,
-            "B": 0.08,
-            "C": 0.12,
-            "D": 0.02
-          }
-        },
-        {
-          "desc": "Women whose mothers were not working during their adolescence, either due to caregiving responsibilities, unemployment, or early retirement\u2014a significant minority experience in Poland.",
-          "share": 28.0,
-          "dist": {
-            "A": 0.35,
-            "B": 0.08,
-            "C": 0.52,
-            "D": 0.05
-          }
-        },
-        {
-          "desc": "Women whose mothers were self-employed or ran small businesses, representing the entrepreneurial segment of Polish society during that period.",
-          "share": 12.0,
-          "dist": {
-            "A": 0.45,
-            "B": 0.42,
-            "C": 0.1,
+            "B": 0.05,
+            "C": 0.14,
             "D": 0.03
           }
         },
         {
-          "desc": "Women who experienced the absence or death of their mother during adolescence, a smaller but meaningful group with distinct family circumstances.",
+          "desc": "Women whose mothers were not working when they were 14, either by choice or circumstance, representing families where single-income household models were practiced despite socialist-era employment norms.",
+          "share": 22.0,
+          "dist": {
+            "A": 0.25,
+            "B": 0.05,
+            "C": 0.68,
+            "D": 0.02
+          }
+        },
+        {
+          "desc": "Women whose mothers were self-employed or ran small businesses, a smaller but notable segment reflecting entrepreneurial activity in the transition period of 1990s Poland.",
           "share": 10.0,
+          "dist": {
+            "A": 0.34615384615384615,
+            "B": 0.5,
+            "C": 0.11538461538461539,
+            "D": 0.038461538461538464
+          }
+        },
+        {
+          "desc": "Women who experienced the absence or death of their mother during childhood, a minority group with distinct family circumstances.",
+          "share": 5.0,
           "dist": {
             "A": 0.45,
             "B": 0.08,
@@ -12726,13 +12726,13 @@
           }
         },
         {
-          "desc": "Women with uncertain or unclear memories of their mother's employment status during childhood, or those from complex family situations that don't fit neatly into standard categories.",
-          "share": 5.0,
+          "desc": "Women uncertain or unable to clearly categorize their mother's employment status due to complex family situations or unclear recollections from childhood.",
+          "share": 1.0,
           "dist": {
-            "A": 0.42,
+            "A": 0.62,
             "B": 0.08,
-            "C": 0.38,
-            "D": 0.12
+            "C": 0.25,
+            "D": 0.05
           }
         }
       ],
@@ -12741,10 +12741,10 @@
       "dataset_name": "ESS",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.569,
-        "B": 0.1208,
-        "C": 0.2626,
-        "D": 0.047599999999999996
+        "A": 0.6019153846153845,
+        "B": 0.0968,
+        "C": 0.26643846153846157,
+        "D": 0.03484615384615384
       },
       "human_answer": {
         "A": 44.157457074036,
@@ -12753,8 +12753,8 @@
         "D": 1.1605997822474918
       },
       "n_samples_ok": 1,
-      "pt": 7855,
-      "ot": 398
+      "pt": 7574,
+      "ot": 399
     },
     {
       "segments": [
@@ -12839,25 +12839,25 @@
     {
       "segments": [
         {
-          "desc": "Non-unionized workers with limited education who have never engaged with union membership, viewing it as irrelevant to their work situation or lacking awareness of union benefits.",
+          "desc": "Non-unionized workers with limited education who have never joined a trade union, reflecting the low civic participation patterns evident in the group's minimal engagement with organizations and associations.",
           "share": 72.0,
           "dist": {
-            "A": 0.05,
-            "B": 0.08,
-            "C": 0.87
+            "A": 0.03,
+            "B": 0.05,
+            "C": 0.92
           }
         },
         {
-          "desc": "Former union members from earlier in their careers who were previously organized but have since left the workforce or changed to non-union employment.",
+          "desc": "Former union members from earlier in their careers who were previously unionized but are no longer active members, representing those with some historical labor organization experience.",
           "share": 12.0,
           "dist": {
-            "A": 0.02,
-            "B": 0.85,
-            "C": 0.13
+            "A": 0.05,
+            "B": 0.65,
+            "C": 0.3
           }
         },
         {
-          "desc": "Currently active union members, primarily in traditional sectors or public employment, who maintain membership for workplace protection and collective bargaining.",
+          "desc": "Currently active trade union members, primarily from stable employment backgrounds, who maintain membership despite the group's generally low organizational participation rates.",
           "share": 10.0,
           "dist": {
             "A": 0.85,
@@ -12866,8 +12866,8 @@
           }
         },
         {
-          "desc": "Self-employed or informal workers with lower secondary education who operate outside formal employment structures where union membership would apply.",
-          "share": 4.0,
+          "desc": "Self-employed or informal workers with lower secondary education who have never had the opportunity or need to join formal trade unions due to their work arrangements.",
+          "share": 5.0,
           "dist": {
             "A": 0.03,
             "B": 0.05,
@@ -12875,12 +12875,12 @@
           }
         },
         {
-          "desc": "Young workers or those in precarious employment who are aware of unions but face barriers to membership due to job instability or employer resistance.",
-          "share": 2.0,
+          "desc": "Younger individuals with limited work experience who have not yet encountered union membership opportunities in their early career stages.",
+          "share": 1.0,
           "dist": {
-            "A": 0.06,
-            "B": 0.12,
-            "C": 0.82
+            "A": 0.05,
+            "B": 0.08,
+            "C": 0.87
           }
         }
       ],
@@ -12889,9 +12889,9 @@
       "dataset_name": "ESS",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.1258,
-        "B": 0.174,
-        "C": 0.7002000000000002
+        "A": 0.11460000000000001,
+        "B": 0.1273,
+        "C": 0.7581
       },
       "human_answer": {
         "A": 5.127140025881338,
@@ -12899,8 +12899,8 @@
         "C": 88.9775776454168
       },
       "n_samples_ok": 1,
-      "pt": 7070,
-      "ot": 352
+      "pt": 6740,
+      "ot": 358
     },
     {
       "segments": [
@@ -13802,43 +13802,43 @@
     {
       "segments": [
         {
-          "desc": "Environmentally committed recyclers and activists. These suburban residents actively sort recycling (60% always do), believe in taking environmental action, and have signed petitions about environmental issues as part of their broader civic engagement.",
-          "share": 35.0,
+          "desc": "Environmentally conscious recyclers and activists: These suburban residents actively sort recycling, believe in environmental responsibility, and have signed environmental petitions as part of their broader commitment to sustainability and climate action.",
+          "share": 42.0,
           "dist": {
-            "A": 0.68,
-            "B": 0.32
+            "A": 0.72,
+            "B": 0.28
           }
         },
         {
-          "desc": "Moderately engaged environmentalists. These people recycle regularly (often or sometimes) and care about environmental issues, but are less likely to take additional activist steps like signing petitions due to time constraints or lower salience of specific campaigns.",
+          "desc": "Moderately engaged environmentalists: These individuals recycle regularly and care about environmental issues, but haven't taken the additional step of signing petitions; they support environmental causes passively through daily habits rather than active advocacy.",
           "share": 28.0,
           "dist": {
-            "A": 0.32,
-            "B": 0.68
+            "A": 0.25,
+            "B": 0.75
           }
         },
         {
-          "desc": "Casual or inconsistent participants. These suburban residents recycle sometimes but don't prioritize environmental activism; they may sign a petition if it's convenient or high-profile, but environmental issues aren't a driving concern in their lives.",
-          "share": 20.0,
+          "desc": "Casual or inconsistent participants: These residents recycle sometimes and have mixed feelings about environmental activism; they may support environmental goals in principle but lack strong motivation to sign petitions or take direct action.",
+          "share": 18.0,
           "dist": {
-            "A": 0.24,
-            "B": 0.76
+            "A": 0.25,
+            "B": 0.75
           }
         },
         {
-          "desc": "Skeptical or disengaged individuals. These people rarely recycle (10% never do) and are unlikely to sign environmental petitions, either due to skepticism about environmental causes, competing priorities, or general disengagement from activism.",
-          "share": 12.0,
+          "desc": "Skeptical or disengaged individuals: These people rarely recycle and are unlikely to have signed environmental petitions, viewing such activism as ineffective or not personally relevant to their lives.",
+          "share": 10.0,
           "dist": {
             "A": 0.12,
             "B": 0.88
           }
         },
         {
-          "desc": "Selective issue-focused signers. These residents may not consistently recycle but will sign petitions on specific environmental issues that directly affect their suburban community, such as local pollution or water quality concerns.",
-          "share": 5.0,
+          "desc": "Ideologically driven activists: A smaller subset of highly motivated individuals who sign environmental petitions as part of broader political or social engagement, regardless of their personal recycling habits.",
+          "share": 2.0,
           "dist": {
-            "A": 0.68,
-            "B": 0.32
+            "A": 0.85,
+            "B": 0.15
           }
         }
       ],
@@ -13847,16 +13847,16 @@
       "dataset_name": "ISSP",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.424,
-        "B": 0.5760000000000001
+        "A": 0.4464,
+        "B": 0.5536
       },
       "human_answer": {
         "A": 22.558832785696456,
         "B": 77.44116721430355
       },
       "n_samples_ok": 1,
-      "pt": 6661,
-      "ot": 418
+      "pt": 6408,
+      "ot": 387
     },
     {
       "segments": [
@@ -13941,31 +13941,63 @@
     {
       "segments": [
         {
-          "desc": "Mainstream insured Germans with public coverage. These married individuals have national/public health insurance as their primary coverage, reflecting Germany's standard social insurance system. They are satisfied with the public system and see it as the appropriate way to ensure healthcare access.",
+          "desc": "Employed professionals with standard public health insurance coverage through their employer or the public system, representing the mainstream of German social insurance.",
           "share": 65.0,
           "dist": {
             "A": 0.01,
-            "B": 0.0,
-            "C": 0.95,
-            "D": 0.02,
+            "B": 0.01,
+            "C": 0.45,
+            "D": 0.08,
             "E": 0.0,
-            "F": 0.01,
-            "G": 0.01,
-            "H": 0.0,
+            "F": 0.05,
+            "G": 0.38,
+            "H": 0.02,
             "I": 0.0,
             "J": 0.0
           }
         },
         {
-          "desc": "Affluent Germans with supplementary private insurance. These married couples maintain public insurance but add private/complementary coverage to access better services and shorter waiting times, reflecting higher income and desire for enhanced care options.",
+          "desc": "Higher-income individuals with private supplementary or primary insurance coverage, either standalone or combined with public insurance for comprehensive protection.",
           "share": 20.0,
           "dist": {
             "A": 0.01,
             "B": 0.0,
             "C": 0.05,
-            "D": 0.02,
+            "D": 0.45,
+            "E": 0.02,
+            "F": 0.35,
+            "G": 0.03,
+            "H": 0.08,
+            "I": 0.01,
+            "J": 0.0
+          }
+        },
+        {
+          "desc": "Self-employed or freelance workers who maintain private insurance or public insurance with private complementary coverage to ensure adequate protection.",
+          "share": 10.0,
+          "dist": {
+            "A": 0.01,
+            "B": 0.01,
+            "C": 0.05,
+            "D": 0.25,
             "E": 0.0,
-            "F": 0.88,
+            "F": 0.65,
+            "G": 0.0,
+            "H": 0.03,
+            "I": 0.0,
+            "J": 0.0
+          }
+        },
+        {
+          "desc": "Retirees or those with complex insurance situations who may have multiple coverage types or are uncertain about their exact insurance arrangement.",
+          "share": 4.0,
+          "dist": {
+            "A": 0.02,
+            "B": 0.0,
+            "C": 0.72,
+            "D": 0.12,
+            "E": 0.0,
+            "F": 0.1,
             "G": 0.02,
             "H": 0.01,
             "I": 0.01,
@@ -13973,51 +14005,19 @@
           }
         },
         {
-          "desc": "Self-employed or high-income Germans with private insurance. These married individuals have opted out of the public system entirely for private insurance, typically due to self-employment status or income level, and prefer the flexibility and service model of private coverage.",
-          "share": 10.0,
-          "dist": {
-            "A": 0.01,
-            "B": 0.0,
-            "C": 0.0,
-            "D": 0.95,
-            "E": 0.0,
-            "F": 0.0,
-            "G": 0.0,
-            "H": 0.0,
-            "I": 0.0,
-            "J": 0.04
-          }
-        },
-        {
-          "desc": "Uncertain or uninformed Germans about their coverage. These married individuals are unclear about their exact insurance arrangement or have difficulty categorizing their coverage type, possibly due to complex employment situations or recent changes in their insurance status.",
-          "share": 4.0,
-          "dist": {
-            "A": 0.28,
-            "B": 0.01,
-            "C": 0.45,
-            "D": 0.08,
-            "E": 0.05,
-            "F": 0.08,
-            "G": 0.02,
-            "H": 0.01,
-            "I": 0.01,
-            "J": 0.01
-          }
-        },
-        {
-          "desc": "Uninsured or marginally insured Germans. These married individuals lack adequate health insurance coverage, either through gaps in the system or personal circumstances, representing a small vulnerable segment of the married population.",
+          "desc": "A small minority without health insurance or with unclear coverage status, representing those outside the standard German insurance system.",
           "share": 1.0,
           "dist": {
-            "A": 0.08,
-            "B": 0.12,
-            "C": 0.65,
-            "D": 0.03,
-            "E": 0.02,
-            "F": 0.05,
+            "A": 0.15,
+            "B": 0.45,
+            "C": 0.2,
+            "D": 0.08,
+            "E": 0.05,
+            "F": 0.03,
             "G": 0.02,
             "H": 0.01,
             "I": 0.01,
-            "J": 0.01
+            "J": 0.0
           }
         }
       ],
@@ -14026,16 +14026,16 @@
       "dataset_name": "ISSP",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.021500000000000005,
-        "B": 0.0016,
-        "C": 0.652,
-        "D": 0.11549999999999999,
-        "E": 0.0022,
-        "F": 0.1862,
-        "G": 0.011500000000000002,
-        "H": 0.0025,
+        "A": 0.0118,
+        "B": 0.012,
+        "C": 0.33830000000000005,
+        "D": 0.17259999999999998,
+        "E": 0.0045000000000000005,
+        "F": 0.1718,
+        "G": 0.254,
+        "H": 0.0325,
         "I": 0.0025,
-        "J": 0.0045000000000000005
+        "J": 0.0
       },
       "human_answer": {
         "A": 0.0,
@@ -14050,8 +14050,8 @@
         "J": 1.0428634201911609
       },
       "n_samples_ok": 1,
-      "pt": 11261,
-      "ot": 654
+      "pt": 11132,
+      "ot": 549
     },
     {
       "segments": [
@@ -14223,58 +14223,58 @@
     {
       "segments": [
         {
-          "desc": "Secular skeptics who reject religious concepts. They don't believe in hell and are firmly convinced that such religious ideas lack credibility.",
+          "desc": "Secular skeptics who reject religious concepts entirely. They see hell as a mythological construct with no basis in reality and are firmly convinced of its non-existence.",
           "share": 38.0,
           "dist": {
             "A": 0.02,
-            "B": 0.08,
-            "C": 0.22,
-            "D": 0.65,
-            "E": 0.03
+            "B": 0.03,
+            "C": 0.18,
+            "D": 0.75,
+            "E": 0.02
           }
         },
         {
-          "desc": "Agnostic doubters with religious uncertainty. They probably don't believe in hell but remain somewhat open to the possibility, reflecting broader uncertainty about religious matters.",
-          "share": 24.0,
+          "desc": "Agnostic pragmatists uncertain about supernatural claims. They acknowledge hell might exist but see insufficient evidence either way, preferring to remain undecided on the matter.",
+          "share": 28.0,
           "dist": {
-            "A": 0.08,
+            "A": 0.06,
             "B": 0.18,
             "C": 0.28,
             "D": 0.32,
-            "E": 0.14
+            "E": 0.16
           }
         },
         {
-          "desc": "Indecisive individuals unable to commit to a position. They genuinely cannot choose whether hell exists, reflecting the group's overall religious ambivalence.",
+          "desc": "Moderate believers with some religious inclination. They accept the possibility of hell as part of religious tradition but are not entirely certain, viewing it as probable rather than definite.",
           "share": 18.0,
           "dist": {
-            "A": 0.08,
-            "B": 0.12,
-            "C": 0.24,
-            "D": 0.38,
-            "E": 0.18
-          }
-        },
-        {
-          "desc": "Cautious believers who probably accept hell as part of religious tradition. They lean toward belief but without strong conviction, representing residual Catholic cultural influence in Slovakia.",
-          "share": 14.0,
-          "dist": {
-            "A": 0.18,
-            "B": 0.24,
+            "A": 0.12,
+            "B": 0.22,
             "C": 0.26,
-            "D": 0.22,
-            "E": 0.1
+            "D": 0.28,
+            "E": 0.12
           }
         },
         {
-          "desc": "Committed religious believers who definitely believe in hell. They maintain traditional religious convictions despite being single and from a secularizing society.",
-          "share": 6.0,
+          "desc": "Committed religious believers who accept hell as a real spiritual reality. They are fairly confident in hell's existence as part of their faith framework, though not absolutely certain.",
+          "share": 12.0,
           "dist": {
-            "A": 0.52,
-            "B": 0.24,
-            "C": 0.12,
-            "D": 0.08,
-            "E": 0.04
+            "A": 0.28,
+            "B": 0.32,
+            "C": 0.18,
+            "D": 0.15,
+            "E": 0.07
+          }
+        },
+        {
+          "desc": "Devout traditionalists with strong religious conviction. They are certain hell exists as a fundamental doctrine of their faith and view it as a definite spiritual reality.",
+          "share": 4.0,
+          "dist": {
+            "A": 0.72,
+            "B": 0.18,
+            "C": 0.05,
+            "D": 0.03,
+            "E": 0.02
           }
         }
       ],
@@ -14283,11 +14283,11 @@
       "dataset_name": "ISSP",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.09759999999999998,
-        "B": 0.1432,
-        "C": 0.23759999999999998,
-        "D": 0.42779999999999996,
-        "E": 0.09380000000000001
+        "A": 0.1084,
+        "B": 0.14700000000000002,
+        "C": 0.21719999999999998,
+        "D": 0.44419999999999993,
+        "E": 0.0832
       },
       "human_answer": {
         "A": 9.657150559354221,
@@ -14297,8 +14297,8 @@
         "E": 0.6911793196012868
       },
       "n_samples_ok": 1,
-      "pt": 8080,
-      "ot": 430
+      "pt": 7768,
+      "ot": 448
     },
     {
       "segments": [
@@ -14762,18 +14762,28 @@
     {
       "segments": [
         {
-          "desc": "Environmentally conscious recyclers who make consistent efforts to sort recyclables as part of their daily routine and view it as a personal responsibility.",
-          "share": 28.0,
+          "desc": "Environmentally conscious recyclers who consistently make special efforts to sort recyclables as part of their regular routine and lifestyle commitment.",
+          "share": 22.0,
           "dist": {
-            "A": 0.78,
-            "B": 0.16,
-            "C": 0.05,
+            "A": 0.86,
+            "B": 0.1,
+            "C": 0.03,
             "D": 0.01
           }
         },
         {
-          "desc": "Pragmatic occasional recyclers who sort recyclables when convenient or when facilities are readily available, but don't make special efforts.",
-          "share": 35.0,
+          "desc": "Pragmatic occasional recyclers who sort recyclables fairly often when convenient, but don't go out of their way or maintain strict consistency.",
+          "share": 28.0,
+          "dist": {
+            "A": 0.15,
+            "B": 0.25,
+            "C": 0.5,
+            "D": 0.1
+          }
+        },
+        {
+          "desc": "Inconsistent recyclers who sometimes participate in sorting recyclables depending on circumstances, convenience, or mood, without strong commitment either way.",
+          "share": 30.0,
           "dist": {
             "A": 0.08,
             "B": 0.18,
@@ -14782,33 +14792,13 @@
           }
         },
         {
-          "desc": "Indifferent non-recyclers who rarely or never make special efforts to sort recyclables, either due to lack of awareness, inconvenience, or low environmental concern.",
-          "share": 22.0,
+          "desc": "Non-recyclers who rarely or never make special efforts to sort recyclables, either due to lack of access, low priority, or skepticism about recycling effectiveness.",
+          "share": 20.0,
           "dist": {
             "A": 0.05,
-            "B": 0.12,
-            "C": 0.28,
-            "D": 0.55
-          }
-        },
-        {
-          "desc": "Conflicted moderates who recognize the importance of recycling but are inconsistent in their efforts due to competing priorities or skepticism about effectiveness.",
-          "share": 12.0,
-          "dist": {
-            "A": 0.18,
-            "B": 0.28,
-            "C": 0.42,
-            "D": 0.12
-          }
-        },
-        {
-          "desc": "Systematic recyclers who participate regularly through established community or building recycling programs without necessarily going beyond what's required.",
-          "share": 3.0,
-          "dist": {
-            "A": 0.68,
-            "B": 0.22,
-            "C": 0.09,
-            "D": 0.01
+            "B": 0.08,
+            "C": 0.15,
+            "D": 0.72
           }
         }
       ],
@@ -14817,10 +14807,10 @@
       "dataset_name": "ISSP",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.2994,
-        "B": 0.1744,
-        "C": 0.3107,
-        "D": 0.21550000000000005
+        "A": 0.26519999999999994,
+        "B": 0.162,
+        "C": 0.33260000000000006,
+        "D": 0.2402
       },
       "human_answer": {
         "A": 52.30654285237335,
@@ -14829,8 +14819,8 @@
         "D": 2.6494031297482836
       },
       "n_samples_ok": 1,
-      "pt": 8065,
-      "ot": 392
+      "pt": 5717,
+      "ot": 318
     },
     {
       "segments": [
@@ -15691,8 +15681,40 @@
     {
       "segments": [
         {
-          "desc": "Urban middle-class professionals with stable employment who rely on national public health insurance as their primary coverage, typical of Russia's mandatory health insurance system (COMPULSORY MEDICAL INSURANCE - CMI).",
-          "share": 55.0,
+          "desc": "Urban professionals with stable employment who rely on employer-based health insurance, typical of Russia's formal sector workers in major cities.",
+          "share": 35.0,
+          "dist": {
+            "A": 0.01,
+            "B": 0.02,
+            "C": 0.15,
+            "D": 0.08,
+            "E": 0.68,
+            "F": 0.02,
+            "G": 0.03,
+            "H": 0.01,
+            "I": 0.0,
+            "J": 0.0
+          }
+        },
+        {
+          "desc": "Middle-class Russians with sufficient means who combine national public health insurance with private supplementary coverage for better access and choice.",
+          "share": 28.0,
+          "dist": {
+            "A": 0.01,
+            "B": 0.02,
+            "C": 0.15,
+            "D": 0.08,
+            "E": 0.05,
+            "F": 0.65,
+            "G": 0.02,
+            "H": 0.01,
+            "I": 0.01,
+            "J": 0.0
+          }
+        },
+        {
+          "desc": "Working-class and lower-middle-income Russians who depend primarily on the national public health insurance system (mandatory for employed citizens), with limited private coverage.",
+          "share": 22.0,
           "dist": {
             "A": 0.02,
             "B": 0.01,
@@ -15707,66 +15729,34 @@
           }
         },
         {
-          "desc": "Employed individuals with employer-provided health insurance combined with national public coverage, representing those in larger organizations or state enterprises that offer supplementary benefits.",
-          "share": 25.0,
-          "dist": {
-            "A": 0.01,
-            "B": 0.01,
-            "C": 0.15,
-            "D": 0.05,
-            "E": 0.08,
-            "F": 0.1,
-            "G": 0.55,
-            "H": 0.03,
-            "I": 0.02,
-            "J": 0.0
-          }
-        },
-        {
-          "desc": "Wealthier Russians who maintain private insurance alongside mandatory public coverage to access better facilities and shorter wait times, addressing the healthcare access issues evident in the group's responses.",
+          "desc": "Self-employed and informal sector workers who maintain private insurance or rely solely on public insurance without employer-based coverage.",
           "share": 12.0,
           "dist": {
-            "A": 0.01,
-            "B": 0.0,
-            "C": 0.15,
-            "D": 0.45,
+            "A": 0.02,
+            "B": 0.05,
+            "C": 0.75,
+            "D": 0.12,
             "E": 0.0,
-            "F": 0.35,
+            "F": 0.03,
             "G": 0.0,
-            "H": 0.0,
-            "I": 0.04,
-            "J": 0.0
+            "H": 0.02,
+            "I": 0.0,
+            "J": 0.01
           }
         },
         {
-          "desc": "Individuals uncertain about their insurance status or unfamiliar with the technical distinctions between different coverage types, reflecting the complexity of Russia's multi-layered health system.",
-          "share": 5.0,
-          "dist": {
-            "A": 0.28,
-            "B": 0.02,
-            "C": 0.55,
-            "D": 0.03,
-            "E": 0.05,
-            "F": 0.02,
-            "G": 0.03,
-            "H": 0.01,
-            "I": 0.01,
-            "J": 0.0
-          }
-        },
-        {
-          "desc": "Those with minimal or no supplementary coverage beyond the mandatory national system, either by choice or financial constraint.",
+          "desc": "Older or economically vulnerable Russians with minimal insurance coverage, relying on basic public health services with gaps in protection.",
           "share": 3.0,
           "dist": {
             "A": 0.02,
-            "B": 0.01,
-            "C": 0.92,
-            "D": 0.01,
-            "E": 0.01,
+            "B": 0.08,
+            "C": 0.78,
+            "D": 0.02,
+            "E": 0.03,
             "F": 0.02,
-            "G": 0.01,
+            "G": 0.04,
             "H": 0.0,
-            "I": 0.0,
+            "I": 0.01,
             "J": 0.0
           }
         }
@@ -15776,16 +15766,16 @@
       "dataset_name": "ISSP",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.029300000000000003,
-        "B": 0.009300000000000001,
-        "C": 0.5781,
-        "D": 0.0848,
-        "E": 0.0338,
-        "F": 0.09059999999999999,
-        "G": 0.15030000000000002,
-        "H": 0.008,
-        "I": 0.0158,
-        "J": 0.0
+        "A": 0.0137,
+        "B": 0.023200000000000002,
+        "C": 0.3949,
+        "D": 0.07200000000000001,
+        "E": 0.25730000000000003,
+        "F": 0.20199999999999996,
+        "G": 0.021700000000000004,
+        "H": 0.008700000000000001,
+        "I": 0.0053,
+        "J": 0.0012
       },
       "human_answer": {
         "A": 0.0,
@@ -15800,8 +15790,8 @@
         "J": 0.0
       },
       "n_samples_ok": 1,
-      "pt": 11226,
-      "ot": 590
+      "pt": 11170,
+      "ot": 557
     },
     {
       "segments": [
@@ -15879,44 +15869,44 @@
     {
       "segments": [
         {
-          "desc": "Secular non-believers who reject religious claims about God's personal involvement in human affairs. They view the statement as unfounded and disagree strongly.",
+          "desc": "Secular non-believers who reject the concept of a personal God entirely. They view the idea of divine personal concern as incompatible with their worldview and are unlikely to agree with this statement.",
           "share": 28.0,
           "dist": {
             "A": 0.02,
-            "B": 0.05,
-            "C": 0.12,
-            "D": 0.25,
-            "E": 0.56,
+            "B": 0.03,
+            "C": 0.08,
+            "D": 0.15,
+            "E": 0.72,
             "F": 0.0
           }
         },
         {
-          "desc": "Agnostic or uncertain individuals who neither affirm nor deny God's personal concern, finding the question unanswerable or preferring to remain neutral on metaphysical claims.",
+          "desc": "Agnostic or uncertain individuals who neither strongly believe nor disbelieve in a personal God. They tend toward neutrality on this question, finding it difficult to commit to either agreement or disagreement.",
           "share": 24.0,
           "dist": {
             "A": 0.08,
-            "B": 0.12,
-            "C": 0.28,
-            "D": 0.26,
-            "E": 0.24,
-            "F": 0.02
-          }
-        },
-        {
-          "desc": "Moderate believers who accept God's existence but are uncertain whether God takes personal interest in individual lives, or who hold a more distant conception of divine involvement.",
-          "share": 20.0,
-          "dist": {
-            "A": 0.08,
-            "B": 0.15,
+            "B": 0.14,
             "C": 0.28,
             "D": 0.26,
             "E": 0.2,
-            "F": 0.03
+            "F": 0.04
           }
         },
         {
-          "desc": "Committed Christians and religious believers who affirm that God is personally concerned with each individual's life and wellbeing, viewing this as central to their faith.",
-          "share": 25.0,
+          "desc": "Moderate believers who accept God's existence but are uncertain whether God takes personal interest in individual human beings. They may agree somewhat but with reservations about the 'personally' aspect of the statement.",
+          "share": 22.0,
+          "dist": {
+            "A": 0.12,
+            "B": 0.18,
+            "C": 0.28,
+            "D": 0.22,
+            "E": 0.16,
+            "F": 0.04
+          }
+        },
+        {
+          "desc": "Committed theists who believe in a personal God actively concerned with individual lives. They strongly agree with this statement as it aligns with their faith in divine providence and personal relationship with God.",
+          "share": 20.0,
           "dist": {
             "A": 0.52,
             "B": 0.28,
@@ -15927,14 +15917,14 @@
           }
         },
         {
-          "desc": "Pragmatists and fence-sitters who find the question difficult to answer or prefer not to commit to a position on God's personal involvement.",
-          "share": 3.0,
+          "desc": "Skeptical believers who acknowledge God's existence but doubt the claim that God concerns Himself with every individual personally, viewing this as an overly optimistic or anthropomorphic conception of divinity.",
+          "share": 6.0,
           "dist": {
-            "A": 0.12,
-            "B": 0.16,
-            "C": 0.28,
-            "D": 0.24,
-            "E": 0.18,
+            "A": 0.08,
+            "B": 0.12,
+            "C": 0.18,
+            "D": 0.32,
+            "E": 0.28,
             "F": 0.02
           }
         }
@@ -15944,12 +15934,12 @@
       "dataset_name": "ISSP",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.17439999999999997,
-        "B": 0.1476,
-        "C": 0.19519999999999998,
-        "D": 0.2041,
-        "E": 0.2648,
-        "F": 0.013900000000000001
+        "A": 0.16,
+        "B": 0.1448,
+        "C": 0.18600000000000003,
+        "D": 0.18200000000000002,
+        "E": 0.3056,
+        "F": 0.0216
       },
       "human_answer": {
         "A": 9.750410858926637,
@@ -15960,8 +15950,8 @@
         "F": 8.336527625707033
       },
       "n_samples_ok": 1,
-      "pt": 9249,
-      "ot": 470
+      "pt": 8868,
+      "ot": 509
     },
     {
       "segments": [
@@ -16192,83 +16182,83 @@
     {
       "segments": [
         {
-          "desc": "Middle-of-the-road pragmatists who see themselves as solidly average in society's hierarchy. They place themselves around the middle of the scale (positions 05-06), reflecting a realistic assessment of their social position without strong conviction either way.",
-          "share": 38.0,
+          "desc": "Middle-class professionals and skilled workers who view themselves as solidly in the middle of society, neither privileged nor disadvantaged, reflecting a stable sense of social position.",
+          "share": 42.0,
           "dist": {
-            "A": 0.06,
-            "B": 0.07,
-            "C": 0.11,
-            "D": 0.12,
-            "E": 0.38,
-            "F": 0.12,
-            "G": 0.07,
-            "H": 0.04,
-            "I": 0.01,
-            "J": 0.02
-          }
-        },
-        {
-          "desc": "Uncertain and disengaged respondents who struggle to position themselves on social hierarchies and prefer not to answer. They select 'Can't choose' (E) due to genuine ambivalence about their social standing or reluctance to make such judgments.",
-          "share": 37.0,
-          "dist": {
-            "A": 0.058823529411764705,
-            "B": 0.06862745098039216,
-            "C": 0.10784313725490197,
-            "D": 0.11764705882352941,
-            "E": 0.38235294117647056,
-            "F": 0.11764705882352941,
-            "G": 0.06862745098039216,
-            "H": 0.0392156862745098,
-            "I": 0.00980392156862745,
-            "J": 0.029411764705882353
-          }
-        },
-        {
-          "desc": "Lower-middle positioned individuals who see themselves in the lower-to-middle range of society (positions 02-04). They acknowledge economic or social constraints but don't consider themselves at the very bottom.",
-          "share": 15.0,
-          "dist": {
-            "A": 0.03,
-            "B": 0.12,
-            "C": 0.18,
-            "D": 0.16,
+            "A": 0.02,
+            "B": 0.03,
+            "C": 0.05,
+            "D": 0.08,
             "E": 0.35,
-            "F": 0.1,
-            "G": 0.04,
-            "H": 0.01,
+            "F": 0.25,
+            "G": 0.15,
+            "H": 0.05,
+            "I": 0.01,
+            "J": 0.01
+          }
+        },
+        {
+          "desc": "Working-class and lower-middle-class Russians who place themselves slightly below the midpoint, acknowledging economic constraints and limited social mobility in contemporary Russia.",
+          "share": 28.0,
+          "dist": {
+            "A": 0.08,
+            "B": 0.09,
+            "C": 0.12,
+            "D": 0.13,
+            "E": 0.28,
+            "F": 0.15,
+            "G": 0.1,
+            "H": 0.04,
             "I": 0.01,
             "J": 0.0
           }
         },
         {
-          "desc": "Upper-middle positioned individuals who view themselves in the upper-to-middle range (positions 07-08). They feel relatively successful and secure in their social position compared to the average.",
-          "share": 8.0,
+          "desc": "Upper-middle-class and educated urbanites who position themselves in the upper-middle range, confident in their professional status and relative advantage compared to most of society.",
+          "share": 18.0,
           "dist": {
-            "A": 0.01,
+            "A": 0.0,
             "B": 0.01,
             "C": 0.02,
-            "D": 0.04,
-            "E": 0.12,
-            "F": 0.18,
+            "D": 0.05,
+            "E": 0.15,
+            "F": 0.25,
             "G": 0.28,
-            "H": 0.24,
-            "I": 0.08,
-            "J": 0.02
+            "H": 0.18,
+            "I": 0.05,
+            "J": 0.01
           }
         },
         {
-          "desc": "Extreme position holders who either identify as at the very bottom (01) or very top (09-10) of the social scale. These are relatively rare individuals with either strong grievance or strong confidence in their exceptional position.",
-          "share": 2.0,
+          "desc": "Rural and economically disadvantaged individuals who see themselves toward the bottom of the social hierarchy, experiencing genuine economic hardship and limited opportunities.",
+          "share": 9.0,
           "dist": {
-            "A": 0.35,
-            "B": 0.02,
-            "C": 0.01,
+            "A": 0.27450980392156865,
+            "B": 0.17647058823529413,
+            "C": 0.11764705882352941,
+            "D": 0.09803921568627451,
+            "E": 0.17647058823529413,
+            "F": 0.0784313725490196,
+            "G": 0.0392156862745098,
+            "H": 0.0196078431372549,
+            "I": 0.00980392156862745,
+            "J": 0.00980392156862745
+          }
+        },
+        {
+          "desc": "Wealthy business owners and elites who place themselves at the very top, representing a small privileged segment with significant economic and social advantages.",
+          "share": 3.0,
+          "dist": {
+            "A": 0.0,
+            "B": 0.0,
+            "C": 0.0,
             "D": 0.01,
             "E": 0.02,
-            "F": 0.02,
-            "G": 0.02,
-            "H": 0.03,
-            "I": 0.25,
-            "J": 0.27
+            "F": 0.05,
+            "G": 0.12,
+            "H": 0.25,
+            "I": 0.3,
+            "J": 0.25
           }
         }
       ],
@@ -16277,16 +16267,16 @@
       "dataset_name": "ISSP",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.05686470588235294,
-        "B": 0.0711921568627451,
-        "C": 0.11050196078431371,
-        "D": 0.11652941176470588,
-        "E": 0.3483705882352941,
-        "F": 0.11892941176470587,
-        "G": 0.08079215686274509,
-        "H": 0.051009803921568626,
-        "I": 0.020327450980392157,
-        "J": 0.02548235294117647
+        "A": 0.055505882352941176,
+        "B": 0.055482352941176476,
+        "C": 0.06878823529411765,
+        "D": 0.08812352941176471,
+        "E": 0.26888235294117646,
+        "F": 0.20055882352941176,
+        "G": 0.14852941176470588,
+        "H": 0.07386470588235294,
+        "I": 0.025882352941176467,
+        "J": 0.014382352941176471
       },
       "human_answer": {
         "A": 8.98078276761578,
@@ -16301,8 +16291,8 @@
         "J": 1.432694455302235
       },
       "n_samples_ok": 1,
-      "pt": 10535,
-      "ot": 660
+      "pt": 9318,
+      "ot": 583
     },
     {
       "segments": [
@@ -16804,8 +16794,8 @@
     {
       "segments": [
         {
-          "desc": "Pragmatic moderates who view Venezuela with cautious concern but maintain some openness to dialogue. They recognize serious problems but avoid extreme positions, reflecting the regional tendency toward measured skepticism.",
-          "share": 38.0,
+          "desc": "Pragmatic moderates who view Venezuela with cautious concern but maintain some openness to dialogue; they recognize serious problems but avoid extreme positions.",
+          "share": 35.0,
           "dist": {
             "A": 0.02,
             "B": 0.18,
@@ -16814,8 +16804,8 @@
           }
         },
         {
-          "desc": "Critical skeptics who hold somewhat unfavorable views of Venezuela, concerned about governance and regional stability issues. This reflects the plurality position seen across most Latin American countries surveyed.",
-          "share": 28.0,
+          "desc": "Critical skeptics who have somewhat unfavorable views of Venezuela due to concerns about governance, economic mismanagement, and regional stability, reflecting broader Latin American concerns.",
+          "share": 30.0,
           "dist": {
             "A": 0.02,
             "B": 0.12,
@@ -16824,8 +16814,8 @@
           }
         },
         {
-          "desc": "Strong opponents who are very unfavorable toward Venezuela, viewing it as a cautionary example of failed governance. This group aligns with the significant opposition seen in several comparable Latin American nations.",
-          "share": 22.0,
+          "desc": "Strong opponents who hold very unfavorable views of Venezuela, viewing it as a cautionary example of failed governance and authoritarian drift.",
+          "share": 25.0,
           "dist": {
             "A": 0.01,
             "B": 0.05,
@@ -16834,8 +16824,8 @@
           }
         },
         {
-          "desc": "Sympathetic observers who maintain somewhat favorable views, potentially influenced by anti-imperialist sentiment or solidarity perspectives common in some Paraguayan circles. They represent a minority position.",
-          "share": 9.0,
+          "desc": "Sympathetic observers who maintain somewhat favorable views, potentially influenced by anti-imperialist sentiment or focus on Venezuela's social programs despite acknowledged challenges.",
+          "share": 8.0,
           "dist": {
             "A": 0.08,
             "B": 0.28,
@@ -16844,8 +16834,8 @@
           }
         },
         {
-          "desc": "Highly engaged supporters with very favorable opinions of Venezuela, though this represents a small fringe within the group, consistent with the minimal support seen across regional comparisons.",
-          "share": 3.0,
+          "desc": "Ideological supporters with very favorable views of Venezuela, though this represents a small minority in Paraguay given regional political trends and the country's own democratic orientation.",
+          "share": 2.0,
           "dist": {
             "A": 0.35,
             "B": 0.45,
@@ -16859,10 +16849,10 @@
       "dataset_name": "LatinoBarometro",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.0331,
-        "B": 0.1517,
-        "C": 0.32199999999999995,
-        "D": 0.4932
+        "A": 0.028899999999999995,
+        "B": 0.1429,
+        "C": 0.321,
+        "D": 0.5072
       },
       "human_answer": {
         "A": 2.882483370288248,
@@ -16871,8 +16861,8 @@
         "D": 26.38580931263858
       },
       "n_samples_ok": 1,
-      "pt": 6705,
-      "ot": 430
+      "pt": 6393,
+      "ot": 400
     },
     {
       "segments": [
@@ -17610,53 +17600,53 @@
     {
       "segments": [
         {
-          "desc": "Skeptical progressives (open to diversity, low institutional trust): These individuals reject the stereotype that immigrants increase crime, viewing it as a xenophobic narrative. They are influenced by their general openness to diverse traditions and their deep distrust of political institutions that might promote such claims.",
-          "share": 28.0,
+          "desc": "Open-minded progressives (mostly younger, urban) who reject stereotypes about immigrants and believe crime is driven by socioeconomic factors, not immigration status. They strongly disagree with the statement.",
+          "share": 22.0,
           "dist": {
-            "A": 0.05,
-            "B": 0.15,
-            "C": 0.55,
-            "D": 0.25
+            "A": 0.02,
+            "B": 0.08,
+            "C": 0.45,
+            "D": 0.45
           }
         },
         {
-          "desc": "Pragmatic moderates (balanced perspective): These people are somewhat open to diversity but maintain some traditional values. They tend to disagree with the statement but without strong conviction, recognizing complexity in immigration issues while not fully dismissing concerns.",
-          "share": 24.0,
+          "desc": "Moderate skeptics who acknowledge immigration exists but don't believe the evidence supports a direct link between immigration and crime rates. They tend to disagree.",
+          "share": 31.0,
           "dist": {
-            "A": 0.18,
-            "B": 0.35,
-            "C": 0.38,
-            "D": 0.09
-          }
-        },
-        {
-          "desc": "Tradition-oriented skeptics (prefer traditional society, cautious about immigration): These individuals lean toward defending traditions and habits, and they are more likely to agree that immigrants increase crime rates. Their concern reflects preference for social stability and established norms.",
-          "share": 32.0,
-          "dist": {
-            "A": 0.28,
-            "B": 0.45,
-            "C": 0.22,
-            "D": 0.05
-          }
-        },
-        {
-          "desc": "Disengaged citizens (low political interest, uncertain views): These people are largely disconnected from political parties and institutions. They lack strong opinions on immigration and crime, often defaulting to vague agreement with negative stereotypes they encounter.",
-          "share": 12.0,
-          "dist": {
-            "A": 0.18,
-            "B": 0.42,
-            "C": 0.28,
+            "A": 0.08,
+            "B": 0.28,
+            "C": 0.52,
             "D": 0.12
           }
         },
         {
-          "desc": "Anxious traditionalists (strong preference for traditions, high concern about social change): These individuals strongly prefer traditional society and are most likely to strongly agree that immigrants increase crime. They view immigration as a threat to Peruvian social cohesion.",
-          "share": 4.0,
+          "desc": "Pragmatic centrists concerned about both immigration and crime but uncertain about causation. They see some connection but aren't strongly convinced either way, leaning slightly toward disagreement.",
+          "share": 24.0,
           "dist": {
-            "A": 0.52,
+            "A": 0.12,
             "B": 0.35,
-            "C": 0.1,
-            "D": 0.03
+            "C": 0.42,
+            "D": 0.11
+          }
+        },
+        {
+          "desc": "Concerned traditionalists who prefer established social order and believe immigrants do contribute to crime problems, though they express this as agreement rather than strong agreement.",
+          "share": 18.0,
+          "dist": {
+            "A": 0.12,
+            "B": 0.48,
+            "C": 0.32,
+            "D": 0.08
+          }
+        },
+        {
+          "desc": "Strongly worried citizens who view immigration as a significant threat to public safety and strongly agree that immigrants increase crime rates.",
+          "share": 5.0,
+          "dist": {
+            "A": 0.72,
+            "B": 0.22,
+            "C": 0.05,
+            "D": 0.01
           }
         }
       ],
@@ -17665,10 +17655,10 @@
       "dataset_name": "LatinoBarometro",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.1892,
-        "B": 0.3344,
-        "C": 0.3532,
-        "D": 0.12319999999999999
+        "A": 0.11559999999999998,
+        "B": 0.2858,
+        "C": 0.4211,
+        "D": 0.17750000000000005
       },
       "human_answer": {
         "A": 21.779859484777518,
@@ -17677,8 +17667,8 @@
         "D": 2.576112412177986
       },
       "n_samples_ok": 1,
-      "pt": 7038,
-      "ot": 505
+      "pt": 6624,
+      "ot": 409
     },
     {
       "segments": [
@@ -17829,31 +17819,31 @@
     {
       "segments": [
         {
-          "desc": "Disillusioned democrats with low institutional trust. These women have little to no trust in government and see the country in decline, making them vulnerable to authoritarian appeals during crises, though they remain skeptical of all institutions including the military.",
+          "desc": "Disillusioned pragmatists who have lost faith in democratic institutions. Given the pervasive distrust in government (65-66% have little to no trust), economic hardship, and the sense that the country is stagnating or declining, they see military intervention as a potential solution when things become desperate.",
+          "share": 28.0,
+          "dist": {
+            "A": 0.42,
+            "B": 0.58
+          }
+        },
+        {
+          "desc": "Democratic believers committed to institutional stability despite frustrations. Though skeptical of current government performance, they fundamentally reject military rule as incompatible with democratic principles and human rights, viewing it as a step backward regardless of circumstances.",
           "share": 38.0,
           "dist": {
-            "A": 0.28,
-            "B": 0.72
+            "A": 0.15,
+            "B": 0.85
           }
         },
         {
-          "desc": "Pragmatic crisis-responsive supporters. These women, facing economic hardship and digital payment barriers, might view a military government as a potential solution to restore order and security if conditions deteriorate significantly.",
-          "share": 22.0,
+          "desc": "Economically marginalized women with limited digital financial integration (69% have no digital payments). They are deeply pessimistic about the country's direction and may see military government as offering order and stability, particularly if they experience economic desperation.",
+          "share": 18.0,
           "dist": {
-            "A": 0.38,
-            "B": 0.62
+            "A": 0.42,
+            "B": 0.58
           }
         },
         {
-          "desc": "Democratic committed citizens. These women maintain some trust in democratic institutions despite frustrations, have political party affiliations, and would resist military intervention as a matter of principle regardless of circumstances.",
-          "share": 24.0,
-          "dist": {
-            "A": 0.08,
-            "B": 0.92
-          }
-        },
-        {
-          "desc": "Politically disengaged and uncertain. These women lack connection to political parties and have ambivalent views about the country's direction, making them uncertain about military government but not firmly opposed.",
+          "desc": "Politically disengaged citizens (71% feel close to no political party) who are ambivalent about governance forms. They lack strong ideological commitment to democracy or opposition to military rule, making them potentially persuadable depending on immediate circumstances and economic conditions.",
           "share": 12.0,
           "dist": {
             "A": 0.35,
@@ -17861,7 +17851,7 @@
           }
         },
         {
-          "desc": "Stable optimists. These women believe the country is progressing or at least stable, have some institutional trust, and see no justification for abandoning democratic governance.",
+          "desc": "Conditional democrats who support democratic governance in principle but would consider military intervention only under extreme circumstances. They represent a small but meaningful segment that distinguishes between normal difficulties and genuine state collapse.",
           "share": 4.0,
           "dist": {
             "A": 0.25,
@@ -17874,16 +17864,16 @@
       "dataset_name": "LatinoBarometro",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.2612,
-        "B": 0.7387999999999999
+        "A": 0.30219999999999997,
+        "B": 0.6977999999999999
       },
       "human_answer": {
         "A": 39.375,
         "B": 60.62499999999999
       },
       "n_samples_ok": 1,
-      "pt": 6152,
-      "ot": 389
+      "pt": 5994,
+      "ot": 441
     },
     {
       "segments": [
@@ -18246,53 +18236,53 @@
     {
       "segments": [
         {
-          "desc": "Moderate progressives with cautious optimism. These men are generally satisfied with life, open to diversity, and socially liberal on issues like same-sex marriage. They tend to have some trust in institutional leadership, viewing the president with measured confidence despite occasional reservations.",
+          "desc": "Moderate optimists with some presidential confidence. These are generally satisfied with life (51% quite satisfied) and open to diversity, maintaining cautious but real trust in institutions including the presidency.",
           "share": 28.0,
           "dist": {
+            "A": 0.28,
+            "B": 0.45,
+            "C": 0.18,
+            "D": 0.09
+          }
+        },
+        {
+          "desc": "Institutional skeptics with little trust. Despite being reasonably satisfied with life, they are skeptical of presidential authority and institutional leadership, reflecting the broader Latin American pattern of low executive trust.",
+          "share": 26.0,
+          "dist": {
+            "A": 0.08,
+            "B": 0.18,
+            "C": 0.28,
+            "D": 0.46
+          }
+        },
+        {
+          "desc": "Disillusioned citizens with no trust in the president. They may be satisfied personally but have lost confidence in presidential governance, aligning with the strong regional pattern of presidential distrust (49-64% in comparable groups).",
+          "share": 25.0,
+          "dist": {
+            "A": 0.03,
+            "B": 0.12,
+            "C": 0.28,
+            "D": 0.57
+          }
+        },
+        {
+          "desc": "Pragmatic centrists with some reservations. They see value in both tradition and diversity, and hold a middle position on presidential trust\u2014neither confident nor completely dismissive.",
+          "share": 15.0,
+          "dist": {
             "A": 0.18,
-            "B": 0.52,
-            "C": 0.22,
-            "D": 0.08
-          }
-        },
-        {
-          "desc": "Pragmatic centrists with selective trust. These men are satisfied with their lives and hold mixed views on social issues, neither strongly progressive nor traditional. They have some trust in the president but remain skeptical, taking a wait-and-see approach to leadership.",
-          "share": 24.0,
-          "dist": {
-            "A": 0.12,
-            "B": 0.48,
-            "C": 0.28,
-            "D": 0.12
-          }
-        },
-        {
-          "desc": "Skeptical critics with low institutional confidence. These men may be satisfied personally but are distrustful of political institutions and presidential authority. They see little reason to trust the president and view leadership with considerable doubt.",
-          "share": 22.0,
-          "dist": {
-            "A": 0.03,
-            "B": 0.12,
-            "C": 0.28,
-            "D": 0.57
-          }
-        },
-        {
-          "desc": "Traditional conservatives with limited trust. These men lean toward defending traditions and are more skeptical of progressive social changes. They have little to no trust in the current president, viewing executive leadership as misaligned with their values.",
-          "share": 18.0,
-          "dist": {
-            "A": 0.03,
-            "B": 0.12,
-            "C": 0.28,
-            "D": 0.57
-          }
-        },
-        {
-          "desc": "Disengaged or deeply disillusioned men. These individuals express low life satisfaction and fundamental distrust in political systems and leadership. They have no trust in the president and represent a segment alienated from institutional confidence.",
-          "share": 8.0,
-          "dist": {
-            "A": 0.02,
-            "B": 0.08,
+            "B": 0.42,
             "C": 0.25,
-            "D": 0.65
+            "D": 0.15
+          }
+        },
+        {
+          "desc": "Engaged progressives with conditional trust. Open to diversity and progressive on social issues (76% support same-sex marriage), they may extend modest trust to a president aligned with their values, though still cautious.",
+          "share": 6.0,
+          "dist": {
+            "A": 0.18,
+            "B": 0.42,
+            "C": 0.25,
+            "D": 0.15
           }
         }
       ],
@@ -18301,10 +18291,10 @@
       "dataset_name": "LatinoBarometro",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.09280000000000001,
-        "B": 0.3152,
-        "C": 0.2608,
-        "D": 0.33120000000000005
+        "A": 0.14450000000000002,
+        "B": 0.29100000000000004,
+        "C": 0.2457,
+        "D": 0.3188
       },
       "human_answer": {
         "A": 23.44322344322344,
@@ -18313,49 +18303,49 @@
         "D": 29.120879120879124
       },
       "n_samples_ok": 1,
-      "pt": 7455,
-      "ot": 490
+      "pt": 6911,
+      "ot": 451
     },
     {
       "segments": [
         {
-          "desc": "Politically engaged traditionalists with party affiliation who are cautious about public speech. They feel close to a political party (52% do) and strongly prefer traditional society, making them aware of potential political consequences for expressing dissenting views.",
-          "share": 28.0,
+          "desc": "Traditional, church-aligned citizens who value social stability and are cautious about public criticism of institutions. They worry that speaking freely about national problems could invite social or professional consequences, especially if their views challenge established powers.",
+          "share": 35.0,
           "dist": {
             "A": 0.58,
             "B": 0.42
           }
         },
         {
-          "desc": "Church-trusting conservatives who self-censor due to social pressure. With 55% having a lot of trust in the Church and 60% preferring traditional society, they worry that public criticism of national problems could damage their social standing in religious and traditional communities.",
-          "share": 22.0,
-          "dist": {
-            "A": 0.68,
-            "B": 0.32
-          }
-        },
-        {
-          "desc": "Pragmatic moderates with mixed political engagement who see real risks. They represent those without strong party affiliation (48%) but still recognize that speaking freely about national problems carries genuine professional or social consequences in Dominican society.",
+          "desc": "Politically engaged men with party affiliation who feel confident expressing their views as part of organized political discourse. They believe their political identity provides some protection and legitimacy for public opinion-sharing.",
           "share": 25.0,
-          "dist": {
-            "A": 0.62,
-            "B": 0.38
-          }
-        },
-        {
-          "desc": "Younger or more progressive men who believe in open expression. Though a minority (40% prefer diversity over tradition), they are confident that free speech about national problems should not have negative consequences and are willing to speak publicly.",
-          "share": 15.0,
           "dist": {
             "A": 0.35,
             "B": 0.65
           }
         },
         {
-          "desc": "Economically vulnerable workers concerned about retaliation. They worry that criticizing national problems could jeopardize their employment or economic security, particularly given the gender dynamics visible in their views on job competition.",
-          "share": 10.0,
+          "desc": "Socially conservative working-class men who depend on employers or community networks for their livelihoods. They fear that outspoken criticism of national problems could jeopardize their economic security or social standing.",
+          "share": 20.0,
           "dist": {
-            "A": 0.68,
-            "B": 0.32
+            "A": 0.72,
+            "B": 0.28
+          }
+        },
+        {
+          "desc": "More liberal-minded individuals who embrace diversity and openness to change. They are more willing to express opinions freely, believing in the importance of public discourse despite potential risks.",
+          "share": 15.0,
+          "dist": {
+            "A": 0.45,
+            "B": 0.55
+          }
+        },
+        {
+          "desc": "Disconnected or apolitical men with low party affiliation who feel marginalized from political processes. They see little point in speaking publicly about national problems since they doubt their voice matters anyway.",
+          "share": 5.0,
+          "dist": {
+            "A": 0.45,
+            "B": 0.55
           }
         }
       ],
@@ -18364,16 +18354,16 @@
       "dataset_name": "LatinoBarometro",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.5875,
-        "B": 0.4125
+        "A": 0.5245,
+        "B": 0.4755
       },
       "human_answer": {
         "A": 54.008438818565395,
         "B": 45.9915611814346
       },
       "n_samples_ok": 1,
-      "pt": 6216,
-      "ot": 423
+      "pt": 5971,
+      "ot": 388
     },
     {
       "segments": [
@@ -18451,43 +18441,43 @@
     {
       "segments": [
         {
-          "desc": "Progressive urban women who strongly value openness to diversity and see traditional gender roles as limiting; they align with Uruguay's relatively liberal social values on LGBTQ+ rights and gender equality.",
-          "share": 38.0,
+          "desc": "Progressive urban women who value openness and diversity. They see traditional gender roles as limiting and support same-sex marriage, making them strongly aligned with societal pluralism and cultural diversity.",
+          "share": 28.0,
           "dist": {
-            "A": 0.15,
-            "B": 0.85
+            "A": 0.18,
+            "B": 0.82
           }
         },
         {
-          "desc": "Moderate women who appreciate some traditions but are fundamentally open to diversity; they represent the pragmatic center that supports both cultural continuity and social progress.",
-          "share": 32.0,
+          "desc": "Modern pragmatists who appreciate some traditions but prioritize social progress and inclusion. They support gender equality and LGBTQ+ rights while maintaining selective respect for cultural heritage.",
+          "share": 24.0,
           "dist": {
-            "A": 0.38,
-            "B": 0.62
+            "A": 0.35,
+            "B": 0.65
           }
         },
         {
-          "desc": "Tradition-oriented women who prioritize preserving established customs and social structures; they are concerned about rapid cultural change but represent a minority view in this socially progressive group.",
-          "share": 18.0,
+          "desc": "Tradition-conscious moderates who value cultural continuity and family-centered values but are not rigid. They may have reservations about rapid social change while still accepting contemporary realities like women's workforce participation.",
+          "share": 25.0,
+          "dist": {
+            "A": 0.58,
+            "B": 0.42
+          }
+        },
+        {
+          "desc": "Conservative women who prioritize traditional family structures and cultural preservation. They are skeptical of rapid social change and prefer maintaining established social norms, though they represent a minority in this progressive group.",
+          "share": 15.0,
           "dist": {
             "A": 0.72,
             "B": 0.28
           }
         },
         {
-          "desc": "Women with mixed or ambivalent views who see value in both defending certain traditions and remaining open to diversity, reflecting uncertainty about how to balance these competing values.",
-          "share": 10.0,
+          "desc": "Ambivalent pragmatists who see merit in both tradition and diversity depending on context. They are uncertain about sweeping cultural changes and may view the question as presenting a false dichotomy.",
+          "share": 8.0,
           "dist": {
             "A": 0.48,
             "B": 0.52
-          }
-        },
-        {
-          "desc": "Socially conservative women who strongly prefer traditional society; they are a small minority in Uruguay's female population, which shows strong disagreement with traditional gender roles (92% disagree).",
-          "share": 2.0,
-          "dist": {
-            "A": 0.72,
-            "B": 0.28
           }
         }
       ],
@@ -18496,57 +18486,57 @@
       "dataset_name": "LatinoBarometro",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.37059999999999993,
-        "B": 0.6294000000000001
+        "A": 0.42579999999999996,
+        "B": 0.5742
       },
       "human_answer": {
         "A": 27.488151658767773,
         "B": 72.51184834123224
       },
       "n_samples_ok": 1,
-      "pt": 6714,
-      "ot": 364
+      "pt": 6523,
+      "ot": 382
     },
     {
       "segments": [
         {
-          "desc": "Disengaged and distrustful citizens who feel disconnected from political institutions. With 31% having no trust in the president and 68% fearing consequences for speaking freely, many Colombians have withdrawn from party politics entirely.",
-          "share": 45.0,
+          "desc": "Disengaged and distrustful citizens who see little value in political parties given widespread corruption and institutional weakness. They feel no connection to any party and view the political system as fundamentally broken.",
+          "share": 38.0,
           "dist": {
-            "A": 0.25,
-            "B": 0.75
+            "A": 0.12,
+            "B": 0.88
           }
         },
         {
-          "desc": "Pragmatic party supporters who maintain some connection to traditional political parties despite widespread institutional skepticism. They see party affiliation as useful for navigating the political system.",
+          "desc": "Pragmatic party supporters who identify with a specific political movement or candidate, typically based on perceived alignment with their economic interests or social values despite broader skepticism about institutions.",
           "share": 28.0,
           "dist": {
-            "A": 0.72,
-            "B": 0.28
+            "A": 0.68,
+            "B": 0.32
           }
         },
         {
-          "desc": "Ideologically-driven citizens with strong conservative views on immigration and gender roles who align with right-leaning parties. They tend to see immigrants as harmful (78% view) and maintain clearer political identities.",
-          "share": 18.0,
+          "desc": "Ideologically-driven progressives who feel close to left-leaning or reformist parties, motivated by concerns about inequality and social justice, though still harboring doubts about political effectiveness.",
+          "share": 16.0,
+          "dist": {
+            "A": 0.58,
+            "B": 0.42
+          }
+        },
+        {
+          "desc": "Conservative or traditional voters who identify with center-right or right-wing parties, often influenced by religious values and concerns about social order, maintaining stronger party loyalty than average.",
+          "share": 12.0,
           "dist": {
             "A": 0.72,
             "B": 0.28
           }
         },
         {
-          "desc": "Progressive-minded individuals who disagree with traditional gender hierarchies and are more open to immigration and LGBTQ+ rights. They are more likely to seek out left-leaning or progressive party alternatives.",
-          "share": 7.0,
+          "desc": "Volatile swing voters with weak party attachments who shift allegiances based on immediate circumstances, charismatic leaders, or specific policy promises rather than stable ideological commitment.",
+          "share": 6.0,
           "dist": {
-            "A": 0.62,
-            "B": 0.38
-          }
-        },
-        {
-          "desc": "Apathetic youth and marginalized groups who have never developed party attachments due to limited political efficacy or representation. They see little relevance in formal party politics to their lives.",
-          "share": 2.0,
-          "dist": {
-            "A": 0.15,
-            "B": 0.85
+            "A": 0.35,
+            "B": 0.65
           }
         }
       ],
@@ -18555,16 +18545,16 @@
       "dataset_name": "LatinoBarometro",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.4900999999999999,
-        "B": 0.5099000000000001
+        "A": 0.43620000000000003,
+        "B": 0.5638
       },
       "human_answer": {
         "A": 29.494222955425563,
         "B": 70.50577704457444
       },
       "n_samples_ok": 1,
-      "pt": 6520,
-      "ot": 397
+      "pt": 6285,
+      "ot": 372
     },
     {
       "segments": [
@@ -18767,53 +18757,53 @@
     {
       "segments": [
         {
-          "desc": "Conservative Catholics and traditionalists who oppose same-sex adoption based on religious beliefs and traditional family values. They view this as contrary to natural family structures.",
+          "desc": "Conservative Catholics and traditionalists who oppose same-sex adoption based on religious beliefs and traditional family values. They view the family structure as inherently tied to heterosexual marriage.",
           "share": 38.0,
           "dist": {
             "A": 0.03,
-            "B": 0.24,
+            "B": 0.25,
             "C": 0.48,
-            "D": 0.25
+            "D": 0.24
           }
         },
         {
-          "desc": "Moderate skeptics who have some reservations about same-sex adoption but aren't strongly opposed. They may worry about children's welfare or social acceptance rather than holding firm ideological positions.",
-          "share": 24.0,
+          "desc": "Moderate skeptics who have some reservations about same-sex adoption but are not strongly opposed. They may accept it in principle but have concerns about implementation or children's welfare.",
+          "share": 27.0,
           "dist": {
-            "A": 0.08,
+            "A": 0.06,
             "B": 0.31,
-            "C": 0.48,
-            "D": 0.13
+            "C": 0.44,
+            "D": 0.19
           }
         },
         {
-          "desc": "Pragmatic supporters who agree that same-sex couples can be good parents and should have adoption rights, though they may not feel strongly passionate about the issue.",
-          "share": 22.0,
+          "desc": "Progressive supporters who agree that same-sex couples should have adoption rights equal to heterosexual couples. They view sexual orientation as irrelevant to parenting capability.",
+          "share": 18.0,
           "dist": {
-            "A": 0.08,
-            "B": 0.38,
-            "C": 0.41,
-            "D": 0.13
+            "A": 0.18,
+            "B": 0.52,
+            "C": 0.22,
+            "D": 0.08
           }
         },
         {
-          "desc": "Progressive advocates who strongly support same-sex adoption as a matter of equality and human rights, believing sexual orientation is irrelevant to parenting ability.",
+          "desc": "Pragmatic centrists who are somewhat accepting of same-sex adoption rights, though not enthusiastically. They prioritize children's welfare over ideological positions.",
           "share": 12.0,
+          "dist": {
+            "A": 0.06,
+            "B": 0.35,
+            "C": 0.44,
+            "D": 0.15
+          }
+        },
+        {
+          "desc": "Strongly progressive advocates who strongly support same-sex adoption as a matter of equality and human rights. They actively reject traditional restrictions on LGBTQ+ families.",
+          "share": 5.0,
           "dist": {
             "A": 0.28,
             "B": 0.52,
             "C": 0.15,
             "D": 0.05
-          }
-        },
-        {
-          "desc": "Socially liberal but religiously observant women who experience tension between their faith and modern values on LGBTQ+ issues, leading to mixed or uncertain views.",
-          "share": 4.0,
-          "dist": {
-            "A": 0.04,
-            "B": 0.26,
-            "C": 0.48,
-            "D": 0.22
           }
         }
       ],
@@ -18822,10 +18812,10 @@
       "dataset_name": "LatinoBarometro",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.0834,
-        "B": 0.32199999999999995,
-        "C": 0.425,
-        "D": 0.1696
+        "A": 0.0812,
+        "B": 0.34029999999999994,
+        "C": 0.4011,
+        "D": 0.17739999999999997
       },
       "human_answer": {
         "A": 13.782654127481713,
@@ -18834,8 +18824,8 @@
         "D": 10.5408767477733
       },
       "n_samples_ok": 1,
-      "pt": 7655,
-      "ot": 414
+      "pt": 7379,
+      "ot": 420
     },
     {
       "segments": [
@@ -18986,17 +18976,17 @@
     {
       "segments": [
         {
-          "desc": "Disillusioned skeptics with low institutional trust. These men have experienced or witnessed corruption and political dysfunction, leading them to distrust the president regardless of who holds office. They represent a substantial portion of Colombian males shaped by decades of political instability.",
+          "desc": "Skeptical citizens with low institutional trust. These individuals express concern about expressing opinions freely (consistent with the 68% who fear negative consequences), distrust government institutions broadly, and see little reason to trust the president given broader governance concerns.",
           "share": 38.0,
           "dist": {
-            "A": 0.03,
-            "B": 0.12,
-            "C": 0.28,
-            "D": 0.57
+            "A": 0.02,
+            "B": 0.09,
+            "C": 0.25,
+            "D": 0.64
           }
         },
         {
-          "desc": "Cautiously moderate citizens with mixed views. They acknowledge some presidential efforts but remain uncertain about effectiveness and trustworthiness, reflecting the ambivalence of those trying to balance hope with realistic assessment of institutional limitations.",
+          "desc": "Moderately disengaged voters with some reservations. Weakly connected to political parties (71% feel no party affinity) and cautious about leadership, they hold a little trust in the president but aren't strongly opposed\u2014reflecting ambivalence rather than conviction.",
           "share": 28.0,
           "dist": {
             "A": 0.08,
@@ -19006,33 +18996,33 @@
           }
         },
         {
-          "desc": "Partisan supporters with conditional trust. These men feel close to a political party (roughly 29% of the group) and extend some trust to a president aligned with their political preferences, though even this trust is often qualified.",
+          "desc": "Conservative traditionalists with conditional support. These men align with the group's tendency toward traditional views (69% oppose same-sex adoption, 71% see immigrants as harmful) and may extend some trust to a president they perceive as defending their values, though trust remains guarded.",
           "share": 18.0,
           "dist": {
-            "A": 0.12,
-            "B": 0.38,
-            "C": 0.32,
-            "D": 0.18
-          }
-        },
-        {
-          "desc": "Optimistic believers in presidential leadership. A smaller segment who maintain genuine confidence in the president's ability to address national problems, despite the broader climate of skepticism in Colombian society.",
-          "share": 10.0,
-          "dist": {
-            "A": 0.28,
-            "B": 0.45,
-            "C": 0.2,
-            "D": 0.07
-          }
-        },
-        {
-          "desc": "Politically withdrawn and uncertain. Men who express little political engagement and struggle to form clear opinions about presidential trustworthiness, reflecting the 71% who feel distant from political parties.",
-          "share": 6.0,
-          "dist": {
-            "A": 0.05,
-            "B": 0.18,
+            "A": 0.18,
+            "B": 0.35,
             "C": 0.28,
-            "D": 0.49
+            "D": 0.19
+          }
+        },
+        {
+          "desc": "Progressive minorities with principled distrust. Representing the smaller segment favoring same-sex adoption rights and viewing immigrants positively, they likely distrust the president due to policy disagreements and perceive governance as unresponsive to their concerns.",
+          "share": 12.0,
+          "dist": {
+            "A": 0.02,
+            "B": 0.08,
+            "C": 0.28,
+            "D": 0.62
+          }
+        },
+        {
+          "desc": "Pragmatic evaluators focused on economic performance. These individuals base presidential trust primarily on perceived economic competence and personal circumstances rather than ideology, making their trust contingent on visible results.",
+          "share": 4.0,
+          "dist": {
+            "A": 0.08,
+            "B": 0.28,
+            "C": 0.35,
+            "D": 0.29
           }
         }
       ],
@@ -19041,10 +19031,10 @@
       "dataset_name": "LatinoBarometro",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.0864,
-        "B": 0.2482,
-        "C": 0.29879999999999995,
-        "D": 0.3666
+        "A": 0.068,
+        "B": 0.19640000000000005,
+        "C": 0.2909999999999999,
+        "D": 0.44459999999999994
       },
       "human_answer": {
         "A": 13.503858870238245,
@@ -19053,8 +19043,8 @@
         "D": 31.209599668003698
       },
       "n_samples_ok": 1,
-      "pt": 7110,
-      "ot": 463
+      "pt": 6863,
+      "ot": 498
     },
     {
       "segments": [
@@ -19330,8 +19320,8 @@
     {
       "segments": [
         {
-          "desc": "Moderate pragmatists who believe government has an important role in addressing social problems like poverty and housing, viewing public intervention as necessary for basic welfare. They represent married Americans who lean toward supporting government action on social issues.",
-          "share": 42.0,
+          "desc": "Moderate pragmatists who believe government has an important role in addressing social problems like poverty and housing, viewing public intervention as necessary for basic welfare. They represent the plurality of married Americans who lean toward active government but aren't ideologically rigid.",
+          "share": 38.0,
           "dist": {
             "A": 0.56,
             "B": 0.43,
@@ -19339,38 +19329,38 @@
           }
         },
         {
-          "desc": "Conservative skeptics who worry that government overreach and dependency are bigger problems than market failures, preferring private sector and individual solutions. They align with the roughly half of the group that opposes government aid expansion.",
-          "share": 38.0,
+          "desc": "Conservative skeptics who worry that government overreach and dependency undermine individual responsibility and free markets, preferring business and personal solutions. They form a substantial minority aligned with the 55% who oppose federal housing responsibility.",
+          "share": 35.0,
           "dist": {
-            "A": 0.28,
-            "B": 0.7,
-            "C": 0.02
-          }
-        },
-        {
-          "desc": "Civic-minded centrists who see merit in both government responsibility and concerns about government efficiency, holding nuanced views that don't strongly favor either position. They represent the swing voters within this married demographic.",
-          "share": 15.0,
-          "dist": {
-            "A": 0.48,
-            "B": 0.51,
+            "A": 0.38,
+            "B": 0.61,
             "C": 0.01
           }
         },
         {
-          "desc": "Progressive advocates who consistently support expanded government responsibility across housing, education, and poverty relief, viewing these as essential public goods. They represent the more liberal segment of married Americans.",
-          "share": 4.0,
-          "dist": {
-            "A": 0.72,
-            "B": 0.27,
-            "C": 0.01
-          }
-        },
-        {
-          "desc": "Disengaged respondents who decline to answer or express uncertainty about government's proper role. They represent the small portion of the group that refuses to choose.",
-          "share": 1.0,
+          "desc": "Centrists genuinely divided on the proper scope of government, sometimes supporting targeted aid for the poor while questioning whether housing or education are federal responsibilities. They reflect the narrow margins and internal tensions visible across the reference questions.",
+          "share": 18.0,
           "dist": {
             "A": 0.45,
             "B": 0.54,
+            "C": 0.01
+          }
+        },
+        {
+          "desc": "Progressive advocates who consistently support expanded government action across poverty relief, housing, and education as moral imperatives. They align with the 48-63% supporting government aid in the reference data.",
+          "share": 7.0,
+          "dist": {
+            "A": 0.68,
+            "B": 0.31,
+            "C": 0.01
+          }
+        },
+        {
+          "desc": "Disengaged or uncertain respondents who haven't formed strong views on the proper balance between government and market solutions. They account for the small refusal rate and those without clear ideological commitments.",
+          "share": 2.0,
+          "dist": {
+            "A": 0.5,
+            "B": 0.49,
             "C": 0.01
           }
         }
@@ -19380,9 +19370,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.4469000000000001,
-        "B": 0.5392999999999999,
-        "C": 0.0138
+        "A": 0.4844,
+        "B": 0.5055999999999999,
+        "C": 0.01
       },
       "human_answer": {
         "A": 48.69684520475913,
@@ -19390,8 +19380,8 @@
         "C": 1.478286450347686
       },
       "n_samples_ok": 1,
-      "pt": 6357,
-      "ot": 413
+      "pt": 6109,
+      "ot": 435
     },
     {
       "segments": [
@@ -19462,17 +19452,17 @@
     {
       "segments": [
         {
-          "desc": "Progressive Democrats who believe in international cooperation and fair trade relationships. They see the U.S. as a wealthy, powerful nation that should engage equitably with other countries rather than viewing international relations through a lens of victimhood.",
+          "desc": "Progressive-leaning individuals who believe in international cooperation and fair trade relationships; they tend to see the U.S. as a powerful nation that should treat others equitably and view claims of unfair advantage as exaggerated nationalism.",
           "share": 38.0,
           "dist": {
             "A": 0.68,
-            "B": 0.3,
-            "C": 0.02
+            "B": 0.29,
+            "C": 0.03
           }
         },
         {
-          "desc": "Moderate centrists who acknowledge both fair and unfair treatment in international relations depending on the specific country and context. They see this as a nuanced issue without a clear universal answer.",
-          "share": 24.0,
+          "desc": "Moderate pragmatists who acknowledge both fair and unfair elements in international relations; they see trade and diplomacy as generally balanced but recognize specific instances where other countries may gain advantages.",
+          "share": 28.0,
           "dist": {
             "A": 0.52,
             "B": 0.46,
@@ -19480,7 +19470,7 @@
           }
         },
         {
-          "desc": "Economic nationalists and populists concerned about trade deficits, outsourcing, and what they perceive as other nations exploiting American workers and businesses. They believe the U.S. gets the short end of the stick in many international dealings.",
+          "desc": "Skeptical nationalists who believe other countries frequently exploit U.S. economic and military power for their own benefit; they view international relationships through a lens of American interests being undervalued.",
           "share": 28.0,
           "dist": {
             "A": 0.28,
@@ -19489,21 +19479,21 @@
           }
         },
         {
-          "desc": "Pragmatic realists who think the U.S. generally holds its own in international relations given its economic and military power, and that complaints about unfair treatment are somewhat exaggerated.",
-          "share": 8.0,
+          "desc": "Economically anxious individuals who attribute job losses and economic struggles to unfair foreign competition and trade practices; they strongly believe other countries take advantage of the U.S.",
+          "share": 5.0,
           "dist": {
-            "A": 0.58,
-            "B": 0.4,
+            "A": 0.28,
+            "B": 0.7,
             "C": 0.02
           }
         },
         {
-          "desc": "Those uncertain or conflicted about international relations who haven't formed strong opinions on whether the U.S. is treated fairly by other nations.",
-          "share": 2.0,
+          "desc": "Disengaged or uncertain respondents who have not formed strong opinions on international fairness and may refuse to answer or express ambivalence.",
+          "share": 1.0,
           "dist": {
             "A": 0.48,
-            "B": 0.5,
-            "C": 0.02
+            "B": 0.49,
+            "C": 0.03
           }
         }
       ],
@@ -19512,9 +19502,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.5176000000000002,
-        "B": 0.46240000000000003,
-        "C": 0.02
+        "A": 0.5012000000000001,
+        "B": 0.47490000000000004,
+        "C": 0.023899999999999998
       },
       "human_answer": {
         "A": 57.435804926049194,
@@ -19522,8 +19512,8 @@
         "C": 0.8047110591535674
       },
       "n_samples_ok": 1,
-      "pt": 6089,
-      "ot": 421
+      "pt": 5811,
+      "ot": 407
     },
     {
       "segments": [
@@ -19594,7 +19584,7 @@
     {
       "segments": [
         {
-          "desc": "Secular progressives who view organized religion as a barrier to social progress, particularly on issues like LGBTQ+ rights, reproductive freedom, and science education. They see religious influence in politics as harmful to secular governance.",
+          "desc": "Secular progressives who view organized religion as a barrier to social progress, particularly on issues like LGBTQ+ rights, reproductive freedom, and separation of church and state. They see religious influence in politics as harmful.",
           "share": 45.0,
           "dist": {
             "A": 0.12,
@@ -19603,26 +19593,8 @@
           }
         },
         {
-          "desc": "Religious liberals who maintain personal faith but are critical of institutional religion's political conservatism and insufficient advocacy for social justice causes like racial equity and economic inequality.",
+          "desc": "Religious liberals who are themselves people of faith but believe churches should focus on social justice, poverty alleviation, and moral community rather than political power. They see potential for positive religious influence when aligned with progressive values.",
           "share": 25.0,
-          "dist": {
-            "A": 0.28,
-            "B": 0.7,
-            "C": 0.02
-          }
-        },
-        {
-          "desc": "Pragmatic centrists within the group who acknowledge both positive community work by religious organizations (food banks, homeless services) and negative effects (political obstruction on progressive causes), viewing the impact as mixed.",
-          "share": 20.0,
-          "dist": {
-            "A": 0.42,
-            "B": 0.55,
-            "C": 0.03
-          }
-        },
-        {
-          "desc": "Faith-forward progressives who see churches and religious organizations as important allies in social justice movements and community support, believing they have a net positive effect when aligned with progressive values.",
-          "share": 8.0,
           "dist": {
             "A": 0.72,
             "B": 0.24,
@@ -19630,12 +19602,30 @@
           }
         },
         {
-          "desc": "Those who refuse to answer or remain uncertain, either due to personal complexity around religion or reluctance to make broad generalizations.",
+          "desc": "Pragmatic progressives who acknowledge that some religious organizations do good community work (food banks, shelters, counseling) but are concerned about the political influence of conservative religious groups on abortion, contraception, and education policy.",
+          "share": 20.0,
+          "dist": {
+            "A": 0.28,
+            "B": 0.7,
+            "C": 0.02
+          }
+        },
+        {
+          "desc": "Nuanced observers who distinguish between different types of religious organizations, viewing mainline Protestant and progressive faith communities positively while criticizing evangelical and fundamentalist influence on politics.",
+          "share": 8.0,
+          "dist": {
+            "A": 0.42,
+            "B": 0.55,
+            "C": 0.03
+          }
+        },
+        {
+          "desc": "Those who refuse to answer or remain genuinely uncertain about how to characterize religion's overall effect given its mixed impacts.",
           "share": 2.0,
           "dist": {
             "A": 0.28,
-            "B": 0.6,
-            "C": 0.12
+            "B": 0.65,
+            "C": 0.07
           }
         }
       ],
@@ -19644,9 +19634,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.2712,
-        "B": 0.7032,
-        "C": 0.025599999999999998
+        "A": 0.3292,
+        "B": 0.644,
+        "C": 0.0268
       },
       "human_answer": {
         "A": 27.796506447694806,
@@ -19654,14 +19644,14 @@
         "C": 2.6586701548946037
       },
       "n_samples_ok": 1,
-      "pt": 6167,
-      "ot": 397
+      "pt": 5894,
+      "ot": 412
     },
     {
       "segments": [
         {
-          "desc": "Conservative traditionalists who prioritize religious values and cultural continuity. They view immigration and cultural change as threats to the American way of life they hold dear.",
-          "share": 42.0,
+          "desc": "Conservative evangelicals and traditionalists who view immigration through a cultural lens, believing that rapid demographic change threatens established American values and social cohesion. They tend to prioritize cultural preservation and see newcomers as a potential threat to traditional ways of life.",
+          "share": 52.0,
           "dist": {
             "A": 0.72,
             "B": 0.25,
@@ -19669,26 +19659,17 @@
           }
         },
         {
-          "desc": "Religious moderates with balanced perspectives on immigration. They appreciate both cultural preservation and the contributions immigrants make, seeing immigration as generally positive but with some legitimate concerns about integration.",
-          "share": 28.0,
+          "desc": "Religious moderates and civic-minded believers who see immigration as economically and culturally beneficial, viewing newcomers as contributors to American society who bring diversity and vitality. They emphasize Christian values of welcoming the stranger.",
+          "share": 35.0,
           "dist": {
-            "A": 0.45,
-            "B": 0.52,
+            "A": 0.25,
+            "B": 0.72,
             "C": 0.03
           }
         },
         {
-          "desc": "Progressive religious believers who emphasize Christian values of hospitality and inclusion. They see newcomers as strengthening American society and view concerns about cultural threats as overblown.",
-          "share": 22.0,
-          "dist": {
-            "A": 0.22,
-            "B": 0.76,
-            "C": 0.02
-          }
-        },
-        {
-          "desc": "Pragmatic conservatives focused on economic and practical concerns rather than cultural identity. They may worry about immigration's effects on jobs and resources but don't frame it primarily as a cultural threat.",
-          "share": 6.0,
+          "desc": "Pragmatic conservatives who are concerned about immigration's effects on jobs and resources but don't frame it primarily as a cultural threat. They focus on practical policy concerns rather than values erosion.",
+          "share": 10.0,
           "dist": {
             "A": 0.52,
             "B": 0.45,
@@ -19696,12 +19677,21 @@
           }
         },
         {
-          "desc": "Those who decline to answer or remain genuinely uncertain about how immigration affects American culture and values.",
+          "desc": "Progressive religious individuals who strongly embrace immigration as enriching American society and see opposition to it as contrary to their faith's teachings about hospitality and human dignity.",
           "share": 2.0,
           "dist": {
-            "A": 0.52,
-            "B": 0.4,
-            "C": 0.08
+            "A": 0.18,
+            "B": 0.79,
+            "C": 0.03
+          }
+        },
+        {
+          "desc": "Those who decline to answer or remain genuinely uncertain about how to weigh cultural concerns against appreciation for diversity and economic contributions.",
+          "share": 1.0,
+          "dist": {
+            "A": 0.56,
+            "B": 0.42,
+            "C": 0.02
           }
         }
       ],
@@ -19710,9 +19700,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.5183999999999999,
-        "B": 0.45280000000000004,
-        "C": 0.028800000000000003
+        "A": 0.5231,
+        "B": 0.447,
+        "C": 0.029900000000000003
       },
       "human_answer": {
         "A": 48.04672378997849,
@@ -19720,8 +19710,8 @@
         "C": 1.1726370337044378
       },
       "n_samples_ok": 1,
-      "pt": 6228,
-      "ot": 374
+      "pt": 5999,
+      "ot": 409
     },
     {
       "i": 347,
@@ -19733,8 +19723,8 @@
     {
       "segments": [
         {
-          "desc": "Conservative-leaning frequent churchgoers who emphasize American exceptionalism and national interest. They believe other countries frequently exploit U.S. generosity and take unfair advantage in trade and international relations.",
-          "share": 38.0,
+          "desc": "Conservative-leaning religious traditionalists who view American interests as frequently undermined by other nations and believe the U.S. should prioritize its own advantage in international dealings.",
+          "share": 48.0,
           "dist": {
             "A": 0.28,
             "B": 0.7,
@@ -19742,17 +19732,17 @@
           }
         },
         {
-          "desc": "Moderate religious conservatives who are somewhat skeptical of international fairness but acknowledge mutual benefits in global relationships. They see a mixed picture where some countries are fair partners while others may seek advantage.",
+          "desc": "Moderate religious practitioners who see international relations as generally balanced and reciprocal, believing most countries treat the U.S. with reasonable fairness.",
           "share": 28.0,
           "dist": {
-            "A": 0.38,
-            "B": 0.6,
-            "C": 0.02
+            "A": 0.52,
+            "B": 0.47,
+            "C": 0.01
           }
         },
         {
-          "desc": "Progressive-minded frequent churchgoers with internationalist perspectives who believe the U.S. and other countries generally treat each other reasonably fairly. They emphasize reciprocal relationships and shared global responsibility.",
-          "share": 22.0,
+          "desc": "Progressive-minded religious attendees who are skeptical of nationalist framings and believe the U.S. often acts unfairly toward other countries, making claims of being taken advantage of questionable.",
+          "share": 18.0,
           "dist": {
             "A": 0.58,
             "B": 0.4,
@@ -19760,21 +19750,21 @@
           }
         },
         {
-          "desc": "Pragmatic religious attendees focused on practical outcomes rather than ideological positions. They are uncertain or divided on whether international treatment is fair, seeing it as context-dependent by country and issue.",
-          "share": 10.0,
+          "desc": "Pragmatic religious voters who hold mixed views depending on specific countries and contexts, seeing some nations as fair partners while others may exploit trade or security arrangements.",
+          "share": 5.0,
           "dist": {
-            "A": 0.42,
-            "B": 0.56,
+            "A": 0.38,
+            "B": 0.6,
             "C": 0.02
           }
         },
         {
-          "desc": "Highly engaged religious individuals with nuanced views who recognize both instances where the U.S. has been treated unfairly and cases where American policies have been advantageous. They resist simple characterizations.",
-          "share": 2.0,
+          "desc": "Those uncertain or unwilling to choose between the two framings, preferring to avoid the question's binary structure.",
+          "share": 1.0,
           "dist": {
-            "A": 0.42,
-            "B": 0.56,
-            "C": 0.02
+            "A": 0.45,
+            "B": 0.54,
+            "C": 0.01
           }
         }
       ],
@@ -19783,9 +19773,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.39080000000000004,
-        "B": 0.5892000000000001,
-        "C": 0.02
+        "A": 0.4079,
+        "B": 0.575,
+        "C": 0.0171
       },
       "human_answer": {
         "A": 35.62185763356005,
@@ -19793,8 +19783,8 @@
         "C": 2.131879476026518
       },
       "n_samples_ok": 1,
-      "pt": 6660,
-      "ot": 422
+      "pt": 6347,
+      "ot": 379
     },
     {
       "segments": [
@@ -20011,7 +20001,7 @@
     {
       "segments": [
         {
-          "desc": "Limited government conservatives who believe education, like housing, is primarily a personal/family responsibility, not a federal obligation. They oppose government-funded college programs on principle.",
+          "desc": "Limited Government Conservatives (largest group): Believe the federal government should not provide college education, viewing it as an individual or family responsibility. This aligns with their broader skepticism of federal entitlements seen in the housing question.",
           "share": 68.0,
           "dist": {
             "A": 0.18,
@@ -20020,26 +20010,8 @@
           }
         },
         {
-          "desc": "Pragmatic conservatives with retirement savings who see value in education but worry about federal spending and debt, preferring market-based or state-level solutions over federal programs.",
+          "desc": "Pragmatic Conservatives with Education Investment View: Accept some federal role in college education as an investment in economic competitiveness and workforce development, distinguishing education from other social programs.",
           "share": 18.0,
-          "dist": {
-            "A": 0.24,
-            "B": 0.75,
-            "C": 0.01
-          }
-        },
-        {
-          "desc": "Social conservatives focused on traditional institutions who may support education access but are skeptical of federal government expansion and prefer private, religious, or community-based educational approaches.",
-          "share": 9.0,
-          "dist": {
-            "A": 0.25,
-            "B": 0.74,
-            "C": 0.01
-          }
-        },
-        {
-          "desc": "Moderate conservatives or those with personal experience of education costs who acknowledge federal responsibility for college access, viewing it as an investment in national competitiveness.",
-          "share": 4.0,
           "dist": {
             "A": 0.42,
             "B": 0.57,
@@ -20047,12 +20019,30 @@
           }
         },
         {
-          "desc": "Reluctant respondents who are uncertain about the proper role of government in education or prefer not to take a strong position on this divisive issue.",
-          "share": 1.0,
+          "desc": "Social Conservative Parents: Concerned about college costs and their children's futures, willing to support federal education assistance despite general conservative principles about limited government.",
+          "share": 8.0,
           "dist": {
-            "A": 0.25,
+            "A": 0.42,
+            "B": 0.57,
+            "C": 0.01
+          }
+        },
+        {
+          "desc": "Libertarian-Leaning Conservatives: Strongly oppose federal responsibility for college, viewing it as government overreach that should be handled entirely by private markets and individuals.",
+          "share": 4.0,
+          "dist": {
+            "A": 0.15,
+            "B": 0.84,
+            "C": 0.01
+          }
+        },
+        {
+          "desc": "Uncertain/Conflicted Conservatives: Torn between conservative fiscal principles and concern about college affordability, may refuse to answer or express ambivalence about federal responsibility.",
+          "share": 2.0,
+          "dist": {
+            "A": 0.22,
             "B": 0.72,
-            "C": 0.03
+            "C": 0.06
           }
         }
       ],
@@ -20061,9 +20051,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.20740000000000003,
-        "B": 0.7824000000000001,
-        "C": 0.0102
+        "A": 0.24200000000000002,
+        "B": 0.747,
+        "C": 0.011000000000000001
       },
       "human_answer": {
         "A": 16.48348088893538,
@@ -20071,54 +20061,54 @@
         "C": 0.08312096247992595
       },
       "n_samples_ok": 1,
-      "pt": 5903,
-      "ot": 379
+      "pt": 5639,
+      "ot": 403
     },
     {
       "segments": [
         {
-          "desc": "Limited Government Conservatives: Believe federal government should not be responsible for providing housing, consistent with their view that government shouldn't provide college education either. They prioritize individual responsibility and market solutions.",
+          "desc": "Limited Government Conservatives: Believe federal government should have minimal role in providing services, viewing housing as a personal responsibility. This group is ideologically consistent with their 68% opposition to federal college provision.",
           "share": 42.0,
           "dist": {
-            "A": 0.25,
-            "B": 0.74,
-            "C": 0.01
+            "A": 0.28,
+            "B": 0.7,
+            "C": 0.02
           }
         },
         {
-          "desc": "Government Responsibility Progressives: Think the federal government should ensure adequate housing for all Americans as a basic right, similar to their belief about college education access.",
-          "share": 35.0,
+          "desc": "Pragmatic Moderates: See housing as important but are uncertain whether federal government is the right provider, reflecting the divided nature of the group on similar social responsibility questions.",
+          "share": 18.0,
           "dist": {
-            "A": 0.72,
-            "B": 0.27,
+            "A": 0.42,
+            "B": 0.57,
             "C": 0.01
           }
         },
         {
-          "desc": "Pragmatic Moderates: See housing as a more fundamental need than college education and believe government has some responsibility, though perhaps not complete provision. They're divided between options A and B.",
-          "share": 20.0,
+          "desc": "Social Safety Net Supporters: Believe government has a responsibility to ensure basic needs like housing are met for all Americans, consistent with the 31% who support federal college provision.",
+          "share": 28.0,
           "dist": {
-            "A": 0.56,
-            "B": 0.43,
+            "A": 0.68,
+            "B": 0.31,
             "C": 0.01
           }
         },
         {
-          "desc": "Skeptical Centrists: Uncertain whether government can effectively provide housing and concerned about costs, but recognize housing as more essential than education. They lean slightly toward government responsibility but with reservations.",
-          "share": 2.0,
+          "desc": "Conditional Government Role Advocates: Think government should help with housing for vulnerable populations (elderly, disabled, very poor) but not provide universally for all Americans.",
+          "share": 11.0,
           "dist": {
-            "A": 0.45,
-            "B": 0.54,
+            "A": 0.42,
+            "B": 0.57,
             "C": 0.01
           }
         },
         {
-          "desc": "Non-responders: Decline to answer or are unsure about the proper role of government in housing provision.",
+          "desc": "Disengaged/Uncertain Respondents: Have not formed strong opinions on federal housing responsibility and may refuse to answer or express ambivalence.",
           "share": 1.0,
           "dist": {
-            "A": 0.38,
-            "B": 0.59,
-            "C": 0.03
+            "A": 0.45,
+            "B": 0.5,
+            "C": 0.05
           }
         }
       ],
@@ -20127,9 +20117,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.48180000000000006,
-        "B": 0.508,
-        "C": 0.0102
+        "A": 0.4343,
+        "B": 0.5511,
+        "C": 0.014600000000000002
       },
       "human_answer": {
         "A": 44.3447695326478,
@@ -20137,8 +20127,8 @@
         "C": 0.5141027856874014
       },
       "n_samples_ok": 1,
-      "pt": 5503,
-      "ot": 393
+      "pt": 5254,
+      "ot": 396
     },
     {
       "segments": [
@@ -20539,48 +20529,48 @@
     {
       "segments": [
         {
-          "desc": "Traditional conservatives who hold conventional views on gender and sex. They believe biological sex assigned at birth is the fundamental and unchangeable basis for gender identity, viewing this as aligned with natural law and traditional values.",
-          "share": 72.0,
+          "desc": "Traditional conservatives who believe gender is determined by biological sex assigned at birth and are uncomfortable with challenges to this view. They see this as a matter of biological fact and traditional values.",
+          "share": 62.0,
           "dist": {
-            "A": 0.89,
-            "B": 0.08,
-            "C": 0.03
-          }
-        },
-        {
-          "desc": "Libertarian-leaning conservatives who prioritize individual freedom and personal choice. While they may have traditional personal beliefs about sex and gender, they are more willing to acknowledge that others might hold different views and prefer limited government involvement in these matters.",
-          "share": 15.0,
-          "dist": {
-            "A": 0.62,
-            "B": 0.32,
-            "C": 0.06
-          }
-        },
-        {
-          "desc": "Religious conservatives with deep faith commitments who see gender identity through a theological lens. They firmly believe gender is determined by biological sex at birth based on their religious convictions, though some may express this with compassion for those struggling with these issues.",
-          "share": 8.0,
-          "dist": {
-            "A": 0.82,
+            "A": 0.78,
             "B": 0.15,
-            "C": 0.03
+            "C": 0.07
           }
         },
         {
-          "desc": "Younger or more socially progressive conservatives who have been exposed to different perspectives on gender identity. They may be uncertain or conflicted, recognizing arguments on both sides while still leaning toward traditional views.",
-          "share": 4.0,
+          "desc": "Pragmatic conservatives who acknowledge that some people experience gender differently from their birth sex but believe policy should still be based on biological categories. They may have personal sympathy but prioritize traditional frameworks.",
+          "share": 22.0,
           "dist": {
-            "A": 0.68,
-            "B": 0.28,
+            "A": 0.72,
+            "B": 0.24,
             "C": 0.04
           }
         },
         {
-          "desc": "Conservatives who refuse to answer or express uncertainty about this contentious issue. They may find the question divisive or prefer not to state a position publicly.",
-          "share": 1.0,
+          "desc": "Libertarian-leaning conservatives who believe individuals should be free to identify as they choose, even if they personally hold traditional views about gender. They prioritize personal freedom over enforcing traditional definitions.",
+          "share": 10.0,
           "dist": {
-            "A": 0.76,
+            "A": 0.38,
+            "B": 0.58,
+            "C": 0.04
+          }
+        },
+        {
+          "desc": "Religious conservatives who ground their belief that gender is determined by birth sex in faith-based convictions about God's design. They view this as a moral and spiritual issue, not just a factual one.",
+          "share": 4.0,
+          "dist": {
+            "A": 0.88,
+            "B": 0.09,
+            "C": 0.03
+          }
+        },
+        {
+          "desc": "Uncertain or conflicted conservatives who haven't fully formed their views on this emerging issue and may refuse to answer or express ambivalence.",
+          "share": 2.0,
+          "dist": {
+            "A": 0.72,
             "B": 0.18,
-            "C": 0.06
+            "C": 0.1
           }
         }
       ],
@@ -20589,9 +20579,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.8342,
-        "B": 0.1306,
-        "C": 0.0352
+        "A": 0.7295999999999999,
+        "B": 0.21099999999999997,
+        "C": 0.059400000000000015
       },
       "human_answer": {
         "A": 82.22531257648531,
@@ -20599,32 +20589,14 @@
         "C": 1.066265718279507
       },
       "n_samples_ok": 1,
-      "pt": 6218,
-      "ot": 430
+      "pt": 5903,
+      "ot": 403
     },
     {
       "segments": [
         {
-          "desc": "Strong government responsibility advocates: Believe the federal government has a clear duty to ensure all Americans have an adequate standard of living, viewing this as a fundamental right. This group strongly supports expansive social safety nets and government intervention in economic matters.",
-          "share": 72.0,
-          "dist": {
-            "A": 0.75,
-            "B": 0.24,
-            "C": 0.01
-          }
-        },
-        {
-          "desc": "Market-oriented skeptics: Believe that while an adequate standard of living is important, the federal government is not the appropriate mechanism to provide it, preferring private sector and local solutions. They worry about government overreach and inefficiency.",
-          "share": 26.0,
-          "dist": {
-            "A": 0.55,
-            "B": 0.44,
-            "C": 0.01
-          }
-        },
-        {
-          "desc": "Conditional supporters: Agree the government has some responsibility but with important caveats about implementation, means-testing, or the scope of what counts as 'adequate,' making them somewhat uncertain about the framing of this particular question.",
-          "share": 1.0,
+          "desc": "Strong social safety net advocates who believe government has a fundamental responsibility to ensure all Americans can meet basic needs like housing, healthcare, and living standards. They view adequate living standards as a human right and essential government function.",
+          "share": 58.0,
           "dist": {
             "A": 0.72,
             "B": 0.27,
@@ -20632,12 +20604,39 @@
           }
         },
         {
-          "desc": "Non-responders: Decline to answer or are genuinely uncertain about where federal responsibility should lie on this broad question.",
-          "share": 1.0,
+          "desc": "Pragmatic progressives who support government responsibility for basic living standards but have some concerns about implementation, costs, or whether this is the most efficient approach. They generally favor the goal but may have reservations about methods.",
+          "share": 12.0,
           "dist": {
             "A": 0.72,
-            "B": 0.25,
-            "C": 0.03
+            "B": 0.27,
+            "C": 0.01
+          }
+        },
+        {
+          "desc": "Market-oriented liberals who believe in addressing poverty and inequality but are skeptical that direct government provision is the best solution, preferring market mechanisms, tax policy, or targeted assistance over universal government responsibility.",
+          "share": 18.0,
+          "dist": {
+            "A": 0.72,
+            "B": 0.27,
+            "C": 0.01
+          }
+        },
+        {
+          "desc": "Libertarian-leaning individuals within the liberal group who oppose expanding federal government responsibility for living standards on principle, viewing this as overreach regardless of good intentions.",
+          "share": 10.0,
+          "dist": {
+            "A": 0.55,
+            "B": 0.44,
+            "C": 0.01
+          }
+        },
+        {
+          "desc": "Uncertain or conflicted respondents who struggle with the tension between wanting to help all Americans and concerns about government capacity or fiscal sustainability, or who refuse to answer.",
+          "share": 2.0,
+          "dist": {
+            "A": 0.72,
+            "B": 0.27,
+            "C": 0.01
           }
         }
       ],
@@ -20646,9 +20645,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.6973999999999999,
-        "B": 0.2924,
-        "C": 0.0102
+        "A": 0.703,
+        "B": 0.287,
+        "C": 0.009999999999999998
       },
       "human_answer": {
         "A": 74.87866154864841,
@@ -20656,8 +20655,8 @@
         "C": 0.28098540493859436
       },
       "n_samples_ok": 1,
-      "pt": 5147,
-      "ot": 349
+      "pt": 5883,
+      "ot": 413
     },
     {
       "segments": [
@@ -21190,35 +21189,17 @@
     {
       "segments": [
         {
-          "desc": "Traditional conservatives who prioritize religious and moral values, viewing abortion as a fundamental life issue where government should restrict access in most cases.",
+          "desc": "Traditional conservatives who prioritize religious and moral values, viewing abortion as a serious moral issue that should be restricted in most cases to protect what they see as unborn life.",
           "share": 45.0,
           "dist": {
             "A": 0.18,
-            "B": 0.8,
-            "C": 0.02
-          }
-        },
-        {
-          "desc": "Libertarian-leaning conservatives who believe government should stay out of personal decisions, including abortion, preferring to leave the choice to individuals and families.",
-          "share": 20.0,
-          "dist": {
-            "A": 0.72,
-            "B": 0.23,
-            "C": 0.05
-          }
-        },
-        {
-          "desc": "Moderate conservatives who accept abortion in limited circumstances (rape, incest, health of mother) but oppose it in most other cases.",
-          "share": 25.0,
-          "dist": {
-            "A": 0.45,
-            "B": 0.52,
+            "B": 0.79,
             "C": 0.03
           }
         },
         {
-          "desc": "Conservative-identifying individuals with more progressive views on social issues who believe abortion should remain legal in most cases, though they may support some restrictions.",
-          "share": 8.0,
+          "desc": "Libertarian-leaning conservatives who believe government should stay out of personal decisions, including abortion, and support legal access while personally opposing it on moral grounds.",
+          "share": 20.0,
           "dist": {
             "A": 0.72,
             "B": 0.24,
@@ -21226,12 +21207,30 @@
           }
         },
         {
-          "desc": "Those who decline to answer or express uncertainty about where government should draw the line on abortion policy.",
+          "desc": "Pragmatic conservatives who support legal abortion in limited circumstances (rape, incest, health of mother) but oppose it in most other cases as a compromise position.",
+          "share": 25.0,
+          "dist": {
+            "A": 0.35,
+            "B": 0.62,
+            "C": 0.03
+          }
+        },
+        {
+          "desc": "Socially moderate conservatives who lean toward supporting legal abortion access, viewing it as a complex issue where government shouldn't impose restrictions, though they may personally have reservations.",
+          "share": 8.0,
+          "dist": {
+            "A": 0.62,
+            "B": 0.32,
+            "C": 0.06
+          }
+        },
+        {
+          "desc": "Conservatives who refuse to answer or are genuinely uncertain about where they stand on this divisive issue.",
           "share": 2.0,
           "dist": {
             "A": 0.35,
-            "B": 0.58,
-            "C": 0.07
+            "B": 0.62,
+            "C": 0.03
           }
         }
       ],
@@ -21240,9 +21239,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.4021,
-        "B": 0.5668,
-        "C": 0.0311
+        "A": 0.36910000000000004,
+        "B": 0.5965,
+        "C": 0.0344
       },
       "human_answer": {
         "A": 29.766363080518303,
@@ -21250,8 +21249,8 @@
         "C": 1.6911641731363343
       },
       "n_samples_ok": 1,
-      "pt": 5947,
-      "ot": 351
+      "pt": 5682,
+      "ot": 374
     },
     {
       "segments": [
@@ -21732,43 +21731,43 @@
     {
       "segments": [
         {
-          "desc": "Progressive urbanites and younger adults who view immigration and cultural diversity as enriching to American society and economy. They strongly reject the idea that newcomers threaten traditional values.",
-          "share": 38.0,
+          "desc": "Progressive urbanites and younger adults who view immigration and cultural diversity as strengthening American society and reject nativist concerns about traditional values being threatened.",
+          "share": 45.0,
           "dist": {
-            "A": 0.12,
-            "B": 0.86,
-            "C": 0.02
-          }
-        },
-        {
-          "desc": "Moderate centrists who see both benefits and challenges in immigration, viewing newcomers as generally strengthening society while acknowledging some adjustment periods. They lean slightly toward the positive view.",
-          "share": 24.0,
-          "dist": {
-            "A": 0.35,
-            "B": 0.62,
+            "A": 0.15,
+            "B": 0.82,
             "C": 0.03
           }
         },
         {
-          "desc": "Conservative-leaning residents concerned about rapid cultural change and the pace of immigration, believing that traditional American customs and values are being diluted by newcomers.",
-          "share": 35.0,
+          "desc": "Conservative and moderate voters concerned about rapid demographic change who believe newcomers pose a genuine threat to established American customs and cultural continuity.",
+          "share": 42.0,
           "dist": {
             "A": 0.72,
-            "B": 0.26,
-            "C": 0.02
+            "B": 0.25,
+            "C": 0.03
           }
         },
         {
-          "desc": "Rural and exurban voters with strong concerns about immigration's impact on local communities, jobs, and cultural cohesion, viewing newcomers as a threat to the American way of life.",
+          "desc": "Pragmatic centrists who see both benefits and challenges in immigration, viewing the question as presenting a false choice between two extreme positions.",
+          "share": 10.0,
+          "dist": {
+            "A": 0.45,
+            "B": 0.52,
+            "C": 0.03
+          }
+        },
+        {
+          "desc": "Rural and working-class Americans who feel economically and culturally displaced by immigration and strongly agree that newcomers threaten traditional American values.",
           "share": 2.0,
           "dist": {
-            "A": 0.72,
-            "B": 0.26,
-            "C": 0.02
+            "A": 0.78,
+            "B": 0.19,
+            "C": 0.03
           }
         },
         {
-          "desc": "Disengaged or uncertain respondents who haven't formed strong opinions on immigration and cultural change, or who decline to answer.",
+          "desc": "Those who decline to answer or express genuine uncertainty about how to weigh cultural preservation against diversity and social dynamism.",
           "share": 1.0,
           "dist": {
             "A": 0.48,
@@ -21782,9 +21781,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.40079999999999993,
-        "B": 0.5768000000000001,
-        "C": 0.022400000000000003
+        "A": 0.43529999999999996,
+        "B": 0.5348,
+        "C": 0.029899999999999996
       },
       "human_answer": {
         "A": 37.60958988647795,
@@ -21792,13 +21791,13 @@
         "C": 1.0191698247622902
       },
       "n_samples_ok": 1,
-      "pt": 5651,
-      "ot": 385
+      "pt": 5367,
+      "ot": 353
     },
     {
       "segments": [
         {
-          "desc": "Strong government healthcare advocates. These liberals believe the federal government has a clear moral obligation to ensure universal healthcare coverage for all Americans, viewing it as a fundamental right rather than a market commodity.",
+          "desc": "Universal healthcare advocates who view healthcare as a fundamental right and believe the federal government has a moral obligation to ensure all Americans have coverage, similar to other developed nations.",
           "share": 72.0,
           "dist": {
             "A": 0.94,
@@ -21807,17 +21806,8 @@
           }
         },
         {
-          "desc": "Pragmatic skeptics with reservations. These liberals support the goal of universal coverage but worry about government efficiency, costs, or implementation challenges, making them hesitant about federal responsibility despite sympathizing with the objective.",
-          "share": 15.0,
-          "dist": {
-            "A": 0.72,
-            "B": 0.25,
-            "C": 0.03
-          }
-        },
-        {
-          "desc": "Market-oriented liberals. A small segment of this liberal group believes healthcare is better managed through private markets with targeted government assistance for the truly needy, rather than full federal responsibility.",
-          "share": 8.0,
+          "desc": "Market-oriented skeptics who believe healthcare is better managed through private markets and competition, and worry that federal government involvement would be inefficient or reduce quality.",
+          "share": 20.0,
           "dist": {
             "A": 0.72,
             "B": 0.26,
@@ -21825,21 +21815,21 @@
           }
         },
         {
-          "desc": "Undecided or conflicted. These individuals lean liberal on most issues but genuinely struggle with the healthcare question, uncertain whether federal government is the right mechanism despite wanting universal coverage.",
-          "share": 4.0,
+          "desc": "Pragmatic moderates within the liberal group who support federal government involvement in healthcare but may have concerns about implementation details, costs, or the best mechanism to achieve universal coverage.",
+          "share": 7.0,
           "dist": {
-            "A": 0.72,
-            "B": 0.25,
-            "C": 0.03
+            "A": 0.78,
+            "B": 0.2,
+            "C": 0.02
           }
         },
         {
-          "desc": "Non-responders. A small portion of the group declines to answer or expresses uncertainty about this specific question.",
+          "desc": "Libertarian-leaning liberals who oppose federal mandates on principle but may support targeted assistance for vulnerable populations through other means.",
           "share": 1.0,
           "dist": {
-            "A": 0.02,
-            "B": 0.97,
-            "C": 0.01
+            "A": 0.72,
+            "B": 0.26,
+            "C": 0.02
           }
         }
       ],
@@ -21848,9 +21838,9 @@
       "dataset_name": "OpinionQA",
       "split": "Grouped",
       "llm_answer": {
-        "A": 0.8713999999999998,
-        "B": 0.114,
-        "C": 0.014599999999999997
+        "A": 0.8825999999999997,
+        "B": 0.10460000000000001,
+        "C": 0.012800000000000002
       },
       "human_answer": {
         "A": 89.09617112377552,
@@ -21858,8 +21848,54 @@
         "C": 0.1564942941684698
       },
       "n_samples_ok": 1,
-      "pt": 6444,
-      "ot": 398
+      "pt": 5102,
+      "ot": 304
     }
+  ],
+  "leak_fix_rerun_rows": [
+    187,
+    191,
+    194,
+    197,
+    198,
+    200,
+    206,
+    208,
+    219,
+    226,
+    229,
+    238,
+    242,
+    247,
+    252,
+    254,
+    267,
+    269,
+    272,
+    279,
+    290,
+    292,
+    296,
+    304,
+    316,
+    319,
+    325,
+    326,
+    328,
+    329,
+    333,
+    336,
+    341,
+    343,
+    345,
+    346,
+    348,
+    352,
+    353,
+    360,
+    361,
+    370,
+    378,
+    379
   ]
 }

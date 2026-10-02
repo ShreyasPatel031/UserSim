@@ -2,15 +2,15 @@
   "coverage_best_relation": {
     "other_countries": 202,
     "none": 278,
-    "same_group_other_wave": 3,
-    "country_total": 469,
+    "same_group_other_wave": 13,
+    "country_total": 459,
     "same_country_subgroups": 29
   },
   "same_group_other_wave": {
-    "N": 3,
-    "S_data": 100.0,
-    "S_plain": 63.504700957180546,
-    "S_panel": 59.57611190479859
+    "N": 13,
+    "S_data": 91.3240367894185,
+    "S_plain": 58.3774725715183,
+    "S_panel": 44.073113457282986
   },
   "country_total": {
     "N": 469,
@@ -20,15 +20,15 @@
   },
   "same_country_subgroups": {
     "N": 501,
-    "S_data": 83.07830411109096,
+    "S_data": 82.98344237261611,
     "S_plain": 46.20451464742143,
     "S_panel": 42.7926923884802
   },
   "disjoint_subgroup": {
-    "N": 398,
-    "S_data": 70.99232775072295,
-    "S_plain": 48.934193295125354,
-    "S_panel": 45.041845685768244
+    "N": 319,
+    "S_data": 68.2582617746019,
+    "S_plain": 50.24448944793258,
+    "S_panel": 46.91352580632928
   },
   "other_countries": {
     "N": 602,
@@ -38,8 +38,8 @@
   },
   "overall": {
     "plain": 43.55914121719265,
-    "data_where_available_else_plain": 67.5024260844639,
-    "per_row_max(data,plain)": 70.62900357035261
+    "data_where_available_else_plain": 67.46488537489361,
+    "per_row_max(data,plain)": 70.60835427979542
   },
   "by_dataset": [
     {
@@ -47,7 +47,7 @@
       "N": 125,
       "covered": 122,
       "rel": "country_total",
-      "S_best": 81.97776122722806,
+      "S_best": 81.68314173852042,
       "S_plain": 52.29491451516617
     },
     {

@@ -1,11 +1,11 @@
 {
   "weights_pers": {
-    "disjoint_subgroup": 0.8500000000000001,
-    "other_countries": 0.7000000000000001
+    "other_countries": 0.75,
+    "disjoint_subgroup": 0.8500000000000001
   },
   "weights": {
-    "disjoint_subgroup": 0.75,
-    "other_countries": 0.45
+    "other_countries": 0.55,
+    "disjoint_subgroup": 0.65
   },
   "overall": {
     "plain": {
@@ -25,105 +25,105 @@
       ]
     },
     "data-only where available, else non-leak": {
-      "S": 57.89735093331641,
-      "vs_plain": 14.338209716123758,
+      "S": 55.19907655538116,
+      "vs_plain": 11.639935338188513,
       "ci": [
-        11.8,
-        17.0
-      ]
-    },
-    "leak harness where available, else non-leak": {
-      "S": 55.6526864992771,
-      "vs_plain": 12.093545282084445,
-      "ci": [
-        9.8,
+        9.1,
         14.3
       ]
     },
-    "leak harness + data blend (dev-tuned), else non-leak": {
-      "S": 59.20314196283413,
-      "vs_plain": 15.644000745641483,
+    "leak harness where available, else non-leak": {
+      "S": 54.87610266105398,
+      "vs_plain": 11.316961443861318,
       "ci": [
-        13.3,
-        18.1
+        9.1,
+        13.5
+      ]
+    },
+    "leak harness + data blend (dev-tuned), else non-leak": {
+      "S": 56.99984990925897,
+      "vs_plain": 13.440708692066318,
+      "ci": [
+        11.1,
+        15.8
       ]
     },
     "persona panel + evidence where available, else non-leak": {
-      "S": 48.45445008331133,
-      "vs_plain": 4.895308866118675,
+      "S": 48.260633903666736,
+      "vs_plain": 4.701492686474084,
       "ci": [
-        3.3,
-        6.6
+        3.1,
+        6.4
       ]
     },
     "persona panel + evidence + data blend (dev-tuned), else non-leak": {
-      "S": 58.9221574137105,
-      "vs_plain": 15.363016196517846,
+      "S": 56.3917597671792,
+      "vs_plain": 12.832618549986558,
       "ci": [
-        12.9,
-        17.8
+        10.5,
+        15.2
       ]
     }
   },
   "by_relation": {
     "disjoint_subgroup": {
-      "N": 398,
-      "plain": 48.934193295125354,
-      "data": 70.99232775072295,
-      "leak": 65.94803369482328,
-      "panel": 45.041845685768244,
-      "pers": 52.079300556776985,
-      "final": 73.66186670980242
+      "N": 319,
+      "plain": 50.24448944793258,
+      "data": 68.2582617746019,
+      "leak": 67.26843472463199,
+      "panel": 46.91352580632928,
+      "pers": 53.97111206965318,
+      "final": 72.42279867854008
     },
     "other_countries": {
-      "N": 303,
-      "plain": 33.292225358262606,
-      "data": 49.78775355181862,
-      "leak": 49.146213038470435,
-      "panel": 33.448259597133166,
-      "pers": 44.058047576028194,
-      "final": 50.50889049651584
+      "N": 378,
+      "plain": 34.94927574961929,
+      "data": 49.21792716428796,
+      "leak": 49.21506324525468,
+      "panel": 33.83826479456097,
+      "pers": 43.268161329755635,
+      "final": 50.37684617962618
     },
     "None": {
-      "N": 280,
-      "plain": 47.02915828233047,
+      "N": 284,
+      "plain": 47.509504108519025,
       "data": NaN,
       "leak": NaN,
-      "panel": 45.69887125994321,
+      "panel": 46.129867496789146,
       "pers": NaN,
-      "final": 48.059519623552234
+      "final": 48.49131030503546
     }
   },
   "by_dataset": {
     "Afrobarometer": {
       "N": 125,
       "plain": 52.29491451516617,
-      "final": 73.04853040418426,
+      "final": 69.26846494411213,
       "has_data": 122
     },
     "ESS": {
       "N": 125,
       "plain": 47.31569070951214,
-      "final": 63.75334715731621,
+      "final": 61.79767220578804,
       "has_data": 120
     },
     "ISSP": {
       "N": 125,
       "plain": 37.15447568502884,
-      "final": 55.51614591298355,
+      "final": 52.813907327696654,
       "has_data": 109
     },
     "LatinoBarometro": {
       "N": 125,
       "plain": 21.198026875244235,
-      "final": 52.557915608663976,
+      "final": 42.07556757965765,
       "has_data": 109
     },
     "OpinionQA": {
       "N": 125,
       "plain": 73.3841484167143,
-      "final": 71.45562594712375,
-      "has_data": 99
+      "final": 72.79028683050338,
+      "has_data": 95
     },
     "ChaosNLI": {
       "N": 25,
@@ -140,7 +140,7 @@
     "ConspiracyCorr": {
       "N": 25,
       "plain": 34.21361507060058,
-      "final": 39.71705205111246,
+      "final": 39.10154369784571,
       "has_data": 25
     },
     "DICES": {
@@ -152,7 +152,7 @@
     "GlobalOpinionQA": {
       "N": 25,
       "plain": 43.97062080816274,
-      "final": 44.33775061154698,
+      "final": 44.54992796510676,
       "has_data": 5
     },
     "Jester": {
@@ -164,7 +164,7 @@
     "MoralMachine": {
       "N": 25,
       "plain": 28.03586679455977,
-      "final": 43.01175509255316,
+      "final": 43.06051740098444,
       "has_data": 4
     },
     "NumberGame": {
@@ -176,25 +176,25 @@
     "OSPsychBig5": {
       "N": 25,
       "plain": 38.34491087130787,
-      "final": 71.41389075781095,
+      "final": 71.41929156324083,
       "has_data": 25
     },
     "OSPsychMACH": {
       "N": 25,
       "plain": -0.47422288578819916,
-      "final": 58.84351205842115,
+      "final": 58.93075294689554,
       "has_data": 25
     },
     "OSPsychMGKT": {
       "N": 25,
       "plain": 23.988185644720424,
-      "final": 63.293431243798175,
+      "final": 65.10518036320535,
       "has_data": 21
     },
     "TISP": {
       "N": 25,
       "plain": 36.326646062089566,
-      "final": 49.99827532128497,
+      "final": 49.949239373870235,
       "has_data": 25
     },
     "WisdomOfCrowds": {
@@ -212,7 +212,7 @@
     "MoralMachineClassic": {
       "N": 12,
       "plain": 58.86261953047174,
-      "final": 80.93093361873433,
+      "final": 80.86919269302372,
       "has_data": 12
     }
   }
