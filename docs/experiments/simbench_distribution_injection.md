@@ -1,6 +1,6 @@
 # SimBench: injecting human answer distributions — progress log
 
-Status as of 2026-10-02 (updated with §4.13). Branch `claude/blissful-pascal-0ldgye`. All numbers are SimBench scores (higher is better) unless stated.
+Status as of 2026-10-02 (updated with §4.14). Branch `claude/blissful-pascal-0ldgye`. All numbers are SimBench scores (higher is better) unless stated.
 
 ## 1. The problem
 
@@ -192,12 +192,21 @@ Full write-up: `simbench_divided_eda_results.md`.
   - Dev-fitted router: +3.2 on divided, −1.6 overall.
 - **Predictability:** bad questions weakly detectable (AUC 0.67 overall, 0.61 divided), mainly from model confidence and disagreement between harnesses or models. The direction of the error (toward the textbook answer) is not predictable (AUC 0.50–0.57).
 
+### 4.14 Divided questions: what is wrong with the mass, and which lever fixes which part? (no new calls)
+Full write-up: `simbench_mass_and_levers_results.md`.
+- **Decomposition** (Shapley over location / order / shape fixes): on divided shared-survey ordinal questions (eval, N 101), 13% of the error is location [10, 16], 40% is order beyond location [35, 45], 39% is shape [33, 45], and 8% is interaction. Dev replicates it. Location is the dominant part of only 4 of 328 divided questions.
+- **Spread is already right** (entropy gap ≈ 0). The mass sits on the wrong options (Spearman 0.3–0.6, top-1 right 48%, 16% mirrored), with the wrong heights.
+- **Selection artifact:** picking "divided" by the true entropy rewards flat predictions. A plain 50/50 guess beats every harness on binary divided questions (+26.6). Re-tested on predicted-divided questions (neighbour entropy) or on all questions, the gains from segments, the pull toward an even split and the mixes vanish or reverse. That includes the "+25.4 segments on task datasets" in §4.13 and the pull in the §4.10 pick.
+- **Only the model lever survives every selection** and only it fixes order: Gemini `retr6` +2.7 on all eval; Sonnet 5.5 `retr6` +14.3 on all dev shared-survey questions, Spearman +0.22, flips −27 pts.
+- **Panel on task datasets:** types collapse to the same answer (diversity 0.17–0.19 on Choices13k / NumberGame), and the planner's shares hurt (equal weights better on 3 of 4 datasets). There is no pull to the "expert" option. OSPsychMACH is the one real panel gain (+18.7 on all its questions).
+- **Routing:** neither the dev-fitted cell rule (−1.3 overall) nor the neighbour router (−1.7) beats always-`retr6_rev2`.
+
 ## 5. Current best picks
 
 | Question type | Model | Harness | Evidence |
 |---|---|---|---|
 | Consensus | **Sonnet 5.5** | `retr6` (or `retr6_vs3`, tied) | 66.2 / 67.7 on dev consensus |
-| Divided | **Haiku** | Panel in both option orders + grounded segments, pulled toward even split | 45.9 dev (CV); previous version 44.9 on full |
+| Divided | **Haiku** | Panel in both option orders + grounded segments, pulled toward even split | 45.9 dev (CV); previous version 44.9 on full. **Caveat (§4.14):** tuned on truth-selected divided questions; −5.9 on predicted-divided ones. Sonnet 5.5 `retr6` is the more robust divided pick for surveys. |
 | Which to use | – | Router on neighbour agreement | **Weak link** |
 
 Everything stays observable: personas, shares, each type's answer, both option orders and segments are logged per question.
@@ -215,6 +224,7 @@ Everything stays observable: personas, shares, each type's answer, both option o
 9. **Population composition (shares) adds nothing** where it can be derived. The Pop-vs-Grouped gap on divided questions comes from Pop-only task datasets (personality scales, gambles, number puzzles), not from population surveys.
 10. **Divided-ness lives inside every group, and the error is common to all groups** (§4.12). What fixes it is information about this specific question, not about demographics or demo topics.
 11. **The divided error cannot be predicted from question features** (§4.13). The big remaining gain needs question-level information. At prediction time, the usable levers are a bigger model for `retr6`, segments for task datasets, and disagreement as a warning flag.
+12. **The divided error is order and shape, not location or spread** (§4.14). Spread levers only look good when questions are selected by the truth. Only a better model fixes which option the crowd favours.
 
 ## 7. Open problems and next-step options (for discussion)
 
@@ -252,6 +262,7 @@ Roughly **$110 of Vertex usage** (incl. ~$2 failure-mode and ~$8 divided-anatomy
 | `docs/experiments/simbench_failure_mode_results.md` | Full failure-mode write-up |
 | `src/human_sim/simbench_divided_eda.py`, `docs/experiments/simbench_divided_eda_results.md` | Exploratory analysis: variance decomposition, slices, lever ceilings, predictability |
 | `src/human_sim/simbench_divided_anatomy.py`, `docs/experiments/simbench_divided_anatomy_results.md` | Within/between decomposition, error anatomy, common-mode test, demo-source test |
+| `src/human_sim/simbench_mass_levers.py`, `docs/experiments/simbench_mass_and_levers_results.md`, `results/simbench_ablate/mass_levers_report.json` | Mass anatomy (location / order / shape Shapley decomposition), lever × slice map, panel mechanism, routing rule |
 | `results/simbench_ablate/*.json` | Every run (per question, with segment traces) and reports: `mix_report.json`, `panel_blend_report.json`, `segment_diagnosis.json`, `harness_eval_dev.json`, `failure_mode_step0_crosstab.json`, `failure_mode_report.json` |
 
 Run any arm: `PYTHONPATH=src python -m human_sim.simbench_ablate --model claude-haiku-4-5 --set dev --arms retr6,P_groundall5`

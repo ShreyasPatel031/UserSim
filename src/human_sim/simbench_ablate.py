@@ -1424,6 +1424,21 @@ ARMS["B_hybrid3"] = _hybrid_arm(3)
 ARMS["B_hybrid5"] = _hybrid_arm(5)
 ARMS["B_agents_w"] = arm_B_agents_w
 ARMS["Bdiag_n3_soft"] = _segments_arm(3, True)
+
+
+def _only_datasets(base, datasets):
+    def arm(row, ctx):
+        if row["dataset_name"] not in datasets:
+            return "", "", {"pipeline": lambda call: (None, 0, 0)}
+        return base(row, ctx)
+
+    return arm
+
+
+# traced segments on the four Pop-only task datasets (mechanism check, eval)
+ARMS["Bdiag_n3_soft_tasks"] = _only_datasets(
+    _segments_arm(3, True), ("OSPsychMACH", "Choices13k", "NumberGame", "OSPsychMGKT")
+)
 ARMS["Bdiag_hybrid3"] = _hybrid_arm(3)
 ARMS["Bdiag_agents_w"] = arm_B_agents_w
 ARMS["P_topic5"] = _panel_arm(5, False, False)
