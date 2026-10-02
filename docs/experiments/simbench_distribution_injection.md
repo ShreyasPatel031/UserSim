@@ -1,6 +1,6 @@
 # SimBench: injecting human answer distributions — progress log
 
-Status as of 2026-10-02 (updated with §4.12). Branch `claude/blissful-pascal-0ldgye`. All numbers are SimBench scores (higher is better) unless stated.
+Status as of 2026-10-02 (updated with §4.13). Branch `claude/blissful-pascal-0ldgye`. All numbers are SimBench scores (higher is better) unless stated.
 
 ## 1. The problem
 
@@ -180,6 +180,18 @@ Full write-up: `simbench_divided_anatomy_results.md`.
 - **Demo source is not the lever** (Grouped divided, eval): same topic +1.7, same group +4.0, same group + topic +4.7, all n.s. Same-group demos give +2.6 across all Grouped questions. For Pop, same-topic demos (−14.0 on divided) and same-country demos hurt.
 - **A question-specific anchor is** (diagnostic only): other groups' real answers to the same question add +30.7 [+22.7, +39.2] on divided questions (+28.5 on dev). Top option right goes from 0.55 to 0.78.
 
+### 4.13 Divided questions: exploratory analysis of levers (no model calls)
+Full write-up: `simbench_divided_eda_results.md`.
+- **No question feature explains much of the error** on divided survey questions: best is topic at 6.8% of variance (adjusted). Country explains none once corrected for its 55 levels. No subgroup stands out after removing the shared error (permutation p = 0.48).
+- **Ceilings** (divided shared surveys, eval, baseline 43.0):
+  - Fix placement only: 64.8. Remove the shared error: 80.3 (cell set).
+  - Best harness per question: 67.6. Fix top option: 55.8. Fix entropy: 51.6. Fix order bias: 50.1.
+- **Realised at prediction time:**
+  - Sonnet 4.6 / 5.5 `retr6` vs Haiku: +11.9 / +11.2 (dev, N 69).
+  - Segments harness on Pop-only tasks: +25.4.
+  - Dev-fitted router: +3.2 on divided, −1.6 overall.
+- **Predictability:** bad questions weakly detectable (AUC 0.67 overall, 0.61 divided), mainly from model confidence and disagreement between harnesses or models. The direction of the error (toward the textbook answer) is not predictable (AUC 0.50–0.57).
+
 ## 5. Current best picks
 
 | Question type | Model | Harness | Evidence |
@@ -202,6 +214,7 @@ Everything stays observable: personas, shares, each type's answer, both option o
 8. **The divided-question error is placement, not spread** (§4.11). Entropy on divided questions is already right; the mass sits on the wrong options, in the same way for every subgroup.
 9. **Population composition (shares) adds nothing** where it can be derived. The Pop-vs-Grouped gap on divided questions comes from Pop-only task datasets (personality scales, gambles, number puzzles), not from population surveys.
 10. **Divided-ness lives inside every group, and the error is common to all groups** (§4.12). What fixes it is information about this specific question, not about demographics or demo topics.
+11. **The divided error cannot be predicted from question features** (§4.13). The big remaining gain needs question-level information. At prediction time, the usable levers are a bigger model for `retr6`, segments for task datasets, and disagreement as a warning flag.
 
 ## 7. Open problems and next-step options (for discussion)
 
@@ -237,6 +250,7 @@ Roughly **$110 of Vertex usage** (incl. ~$2 failure-mode and ~$8 divided-anatomy
 | `src/human_sim/simbench_nbr_calibrate.py` | Calibration keyed on neighbour entropy |
 | `src/human_sim/simbench_failure_mode.py` | Pop/Grouped × question-type diagnostics, composition arms, oracle |
 | `docs/experiments/simbench_failure_mode_results.md` | Full failure-mode write-up |
+| `src/human_sim/simbench_divided_eda.py`, `docs/experiments/simbench_divided_eda_results.md` | Exploratory analysis: variance decomposition, slices, lever ceilings, predictability |
 | `src/human_sim/simbench_divided_anatomy.py`, `docs/experiments/simbench_divided_anatomy_results.md` | Within/between decomposition, error anatomy, common-mode test, demo-source test |
 | `results/simbench_ablate/*.json` | Every run (per question, with segment traces) and reports: `mix_report.json`, `panel_blend_report.json`, `segment_diagnosis.json`, `harness_eval_dev.json`, `failure_mode_step0_crosstab.json`, `failure_mode_report.json` |
 

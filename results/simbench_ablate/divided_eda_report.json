@@ -1,0 +1,3719 @@
+{
+ "variance_decomposition": {
+  "eval/shared_survey/retr6_rev2": {
+   "n": 175,
+   "joint_R2": 0.718,
+   "joint_adjR2": 0.299,
+   "dims": {
+    "topic": {
+     "levels": 16,
+     "alone_R2": 0.148,
+     "alone_adjR2": 0.068,
+     "unique_adjR2": 0.042
+    },
+    "n_options": {
+     "levels": 9,
+     "alone_R2": 0.098,
+     "alone_adjR2": 0.054,
+     "unique_adjR2": 0.15
+    },
+    "sub_attribute": {
+     "levels": 21,
+     "alone_R2": 0.147,
+     "alone_adjR2": 0.036,
+     "unique_adjR2": 0.078
+    },
+    "scale_type": {
+     "levels": 3,
+     "alone_R2": 0.037,
+     "alone_adjR2": 0.026,
+     "unique_adjR2": 0.093
+    },
+    "value_laden": {
+     "levels": 2,
+     "alone_R2": 0.018,
+     "alone_adjR2": 0.012,
+     "unique_adjR2": -0.006
+    },
+    "dataset": {
+     "levels": 5,
+     "alone_R2": 0.034,
+     "alone_adjR2": 0.011,
+     "unique_adjR2": 0.0
+    },
+    "split": {
+     "levels": 2,
+     "alone_R2": 0.001,
+     "alone_adjR2": -0.005,
+     "unique_adjR2": 0.007
+    },
+    "year": {
+     "levels": 11,
+     "alone_R2": 0.052,
+     "alone_adjR2": -0.006,
+     "unique_adjR2": 0.021
+    },
+    "region": {
+     "levels": 5,
+     "alone_R2": 0.011,
+     "alone_adjR2": -0.013,
+     "unique_adjR2": 0.0
+    },
+    "country": {
+     "levels": 55,
+     "alone_R2": 0.288,
+     "alone_adjR2": -0.032,
+     "unique_adjR2": 0.175
+    }
+   }
+  },
+  "eval/shared_survey/P_groundall5": {
+   "n": 175,
+   "joint_R2": 0.721,
+   "joint_adjR2": 0.307,
+   "dims": {
+    "n_options": {
+     "levels": 9,
+     "alone_R2": 0.159,
+     "alone_adjR2": 0.118,
+     "unique_adjR2": 0.136
+    },
+    "scale_type": {
+     "levels": 3,
+     "alone_R2": 0.095,
+     "alone_adjR2": 0.084,
+     "unique_adjR2": 0.062
+    },
+    "dataset": {
+     "levels": 5,
+     "alone_R2": 0.057,
+     "alone_adjR2": 0.035,
+     "unique_adjR2": 0.0
+    },
+    "topic": {
+     "levels": 16,
+     "alone_R2": 0.11,
+     "alone_adjR2": 0.026,
+     "unique_adjR2": 0.104
+    },
+    "region": {
+     "levels": 5,
+     "alone_R2": 0.032,
+     "alone_adjR2": 0.009,
+     "unique_adjR2": 0.0
+    },
+    "sub_attribute": {
+     "levels": 21,
+     "alone_R2": 0.116,
+     "alone_adjR2": 0.001,
+     "unique_adjR2": 0.083
+    },
+    "year": {
+     "levels": 11,
+     "alone_R2": 0.056,
+     "alone_adjR2": -0.001,
+     "unique_adjR2": -0.02
+    },
+    "value_laden": {
+     "levels": 2,
+     "alone_R2": 0.005,
+     "alone_adjR2": -0.001,
+     "unique_adjR2": -0.009
+    },
+    "split": {
+     "levels": 2,
+     "alone_R2": 0.001,
+     "alone_adjR2": -0.005,
+     "unique_adjR2": 0.01
+    },
+    "country": {
+     "levels": 55,
+     "alone_R2": 0.297,
+     "alone_adjR2": -0.019,
+     "unique_adjR2": 0.228
+    }
+   }
+  },
+  "eval/pop_only_task/retr6_rev2": {
+   "n": 58,
+   "joint_R2": 0.679,
+   "joint_adjR2": 0.269,
+   "dims": {
+    "topic": {
+     "levels": 16,
+     "alone_R2": 0.495,
+     "alone_adjR2": 0.314,
+     "unique_adjR2": 0.089
+    },
+    "country": {
+     "levels": 19,
+     "alone_R2": 0.439,
+     "alone_adjR2": 0.181,
+     "unique_adjR2": 0.035
+    },
+    "dataset": {
+     "levels": 4,
+     "alone_R2": 0.195,
+     "alone_adjR2": 0.151,
+     "unique_adjR2": 0.0
+    },
+    "region": {
+     "levels": 6,
+     "alone_R2": 0.11,
+     "alone_adjR2": 0.025,
+     "unique_adjR2": 0.0
+    },
+    "scale_type": {
+     "levels": 2,
+     "alone_R2": 0.037,
+     "alone_adjR2": 0.02,
+     "unique_adjR2": 0.0
+    },
+    "n_options": {
+     "levels": 2,
+     "alone_R2": 0.037,
+     "alone_adjR2": 0.02,
+     "unique_adjR2": 0.0
+    },
+    "sub_attribute": {
+     "levels": 2,
+     "alone_R2": 0.003,
+     "alone_adjR2": -0.015,
+     "unique_adjR2": 0.0
+    }
+   }
+  },
+  "eval/pop_only_task/P_groundall5": {
+   "n": 58,
+   "joint_R2": 0.72,
+   "joint_adjR2": 0.361,
+   "dims": {
+    "topic": {
+     "levels": 16,
+     "alone_R2": 0.569,
+     "alone_adjR2": 0.415,
+     "unique_adjR2": 0.153
+    },
+    "dataset": {
+     "levels": 4,
+     "alone_R2": 0.28,
+     "alone_adjR2": 0.24,
+     "unique_adjR2": 0.0
+    },
+    "country": {
+     "levels": 19,
+     "alone_R2": 0.454,
+     "alone_adjR2": 0.202,
+     "unique_adjR2": 0.008
+    },
+    "region": {
+     "levels": 6,
+     "alone_R2": 0.144,
+     "alone_adjR2": 0.061,
+     "unique_adjR2": 0.0
+    },
+    "scale_type": {
+     "levels": 2,
+     "alone_R2": 0.036,
+     "alone_adjR2": 0.019,
+     "unique_adjR2": 0.0
+    },
+    "n_options": {
+     "levels": 2,
+     "alone_R2": 0.036,
+     "alone_adjR2": 0.019,
+     "unique_adjR2": 0.0
+    },
+    "sub_attribute": {
+     "levels": 2,
+     "alone_R2": 0.016,
+     "alone_adjR2": -0.002,
+     "unique_adjR2": 0.0
+    }
+   }
+  },
+  "eval/other_pop_only/retr6_rev2": {
+   "n": 95,
+   "joint_R2": 0.691,
+   "joint_adjR2": 0.12,
+   "dims": {
+    "value_laden": {
+     "levels": 2,
+     "alone_R2": 0.021,
+     "alone_adjR2": 0.01,
+     "unique_adjR2": 0.0
+    },
+    "n_options": {
+     "levels": 8,
+     "alone_R2": 0.082,
+     "alone_adjR2": 0.009,
+     "unique_adjR2": 0.0
+    },
+    "scale_type": {
+     "levels": 3,
+     "alone_R2": 0.017,
+     "alone_adjR2": -0.004,
+     "unique_adjR2": 0.0
+    },
+    "region": {
+     "levels": 6,
+     "alone_R2": 0.039,
+     "alone_adjR2": -0.015,
+     "unique_adjR2": 0.0
+    },
+    "year": {
+     "levels": 3,
+     "alone_R2": 0.004,
+     "alone_adjR2": -0.017,
+     "unique_adjR2": 0.0
+    },
+    "sub_attribute": {
+     "levels": 6,
+     "alone_R2": 0.036,
+     "alone_adjR2": -0.019,
+     "unique_adjR2": 0.0
+    },
+    "dataset": {
+     "levels": 10,
+     "alone_R2": 0.067,
+     "alone_adjR2": -0.032,
+     "unique_adjR2": -0.0
+    },
+    "topic": {
+     "levels": 30,
+     "alone_R2": 0.267,
+     "alone_adjR2": -0.059,
+     "unique_adjR2": 0.254
+    },
+    "country": {
+     "levels": 40,
+     "alone_R2": 0.355,
+     "alone_adjR2": -0.103,
+     "unique_adjR2": 0.152
+    }
+   }
+  },
+  "eval/other_pop_only/P_groundall5": {
+   "n": 95,
+   "joint_R2": 0.73,
+   "joint_adjR2": 0.23,
+   "dims": {
+    "country": {
+     "levels": 40,
+     "alone_R2": 0.538,
+     "alone_adjR2": 0.211,
+     "unique_adjR2": 0.253
+    },
+    "n_options": {
+     "levels": 8,
+     "alone_R2": 0.141,
+     "alone_adjR2": 0.072,
+     "unique_adjR2": 0.0
+    },
+    "year": {
+     "levels": 3,
+     "alone_R2": 0.069,
+     "alone_adjR2": 0.049,
+     "unique_adjR2": 0.0
+    },
+    "sub_attribute": {
+     "levels": 6,
+     "alone_R2": 0.079,
+     "alone_adjR2": 0.027,
+     "unique_adjR2": 0.0
+    },
+    "scale_type": {
+     "levels": 3,
+     "alone_R2": 0.045,
+     "alone_adjR2": 0.024,
+     "unique_adjR2": 0.0
+    },
+    "dataset": {
+     "levels": 10,
+     "alone_R2": 0.1,
+     "alone_adjR2": 0.005,
+     "unique_adjR2": 0.0
+    },
+    "value_laden": {
+     "levels": 2,
+     "alone_R2": 0.009,
+     "alone_adjR2": -0.002,
+     "unique_adjR2": 0.0
+    },
+    "region": {
+     "levels": 6,
+     "alone_R2": 0.042,
+     "alone_adjR2": -0.012,
+     "unique_adjR2": 0.0
+    },
+    "topic": {
+     "levels": 30,
+     "alone_R2": 0.275,
+     "alone_adjR2": -0.048,
+     "unique_adjR2": 0.037
+    }
+   }
+  },
+  "dev/shared_survey/retr6_rev2": {
+   "n": 69,
+   "joint_R2": 0.995,
+   "joint_adjR2": 0.895,
+   "dims": {
+    "n_options": {
+     "levels": 6,
+     "alone_R2": 0.252,
+     "alone_adjR2": 0.192,
+     "unique_adjR2": 0.0
+    },
+    "scale_type": {
+     "levels": 3,
+     "alone_R2": 0.185,
+     "alone_adjR2": 0.16,
+     "unique_adjR2": 0.0
+    },
+    "topic": {
+     "levels": 14,
+     "alone_R2": 0.269,
+     "alone_adjR2": 0.096,
+     "unique_adjR2": 0.378
+    },
+    "dataset": {
+     "levels": 4,
+     "alone_R2": 0.063,
+     "alone_adjR2": 0.019,
+     "unique_adjR2": 0.0
+    },
+    "country": {
+     "levels": 40,
+     "alone_R2": 0.581,
+     "alone_adjR2": 0.017,
+     "unique_adjR2": 0.442
+    },
+    "value_laden": {
+     "levels": 2,
+     "alone_R2": 0.031,
+     "alone_adjR2": 0.017,
+     "unique_adjR2": 0.0
+    },
+    "sub_attribute": {
+     "levels": 17,
+     "alone_R2": 0.247,
+     "alone_adjR2": 0.015,
+     "unique_adjR2": 0.18
+    },
+    "region": {
+     "levels": 4,
+     "alone_R2": 0.049,
+     "alone_adjR2": 0.005,
+     "unique_adjR2": 0.0
+    },
+    "split": {
+     "levels": 2,
+     "alone_R2": 0.003,
+     "alone_adjR2": -0.012,
+     "unique_adjR2": 0.096
+    },
+    "year": {
+     "levels": 9,
+     "alone_R2": 0.098,
+     "alone_adjR2": -0.022,
+     "unique_adjR2": 0.0
+    }
+   }
+  },
+  "dev/shared_survey/P_groundall5": {
+   "n": 69,
+   "joint_R2": 0.991,
+   "joint_adjR2": 0.807,
+   "dims": {
+    "scale_type": {
+     "levels": 3,
+     "alone_R2": 0.227,
+     "alone_adjR2": 0.204,
+     "unique_adjR2": 0.0
+    },
+    "n_options": {
+     "levels": 6,
+     "alone_R2": 0.253,
+     "alone_adjR2": 0.193,
+     "unique_adjR2": 0.0
+    },
+    "sub_attribute": {
+     "levels": 17,
+     "alone_R2": 0.3,
+     "alone_adjR2": 0.085,
+     "unique_adjR2": 0.048
+    },
+    "country": {
+     "levels": 40,
+     "alone_R2": 0.597,
+     "alone_adjR2": 0.055,
+     "unique_adjR2": 0.484
+    },
+    "region": {
+     "levels": 4,
+     "alone_R2": 0.044,
+     "alone_adjR2": -0.001,
+     "unique_adjR2": 0.0
+    },
+    "value_laden": {
+     "levels": 2,
+     "alone_R2": 0.007,
+     "alone_adjR2": -0.008,
+     "unique_adjR2": 0.0
+    },
+    "split": {
+     "levels": 2,
+     "alone_R2": 0.005,
+     "alone_adjR2": -0.01,
+     "unique_adjR2": 0.081
+    },
+    "topic": {
+     "levels": 14,
+     "alone_R2": 0.176,
+     "alone_adjR2": -0.019,
+     "unique_adjR2": 0.048
+    },
+    "dataset": {
+     "levels": 4,
+     "alone_R2": 0.017,
+     "alone_adjR2": -0.028,
+     "unique_adjR2": 0.0
+    },
+    "year": {
+     "levels": 9,
+     "alone_R2": 0.067,
+     "alone_adjR2": -0.058,
+     "unique_adjR2": 0.0
+    }
+   }
+  },
+  "dev/pop_only_task/retr6_rev2": {
+   "n": 22,
+   "joint_R2": 0.691,
+   "joint_adjR2": 0.072,
+   "dims": {
+    "dataset": {
+     "levels": 4,
+     "alone_R2": 0.47,
+     "alone_adjR2": 0.382,
+     "unique_adjR2": 0.0
+    },
+    "topic": {
+     "levels": 12,
+     "alone_R2": 0.68,
+     "alone_adjR2": 0.327,
+     "unique_adjR2": -0.105
+    },
+    "country": {
+     "levels": 8,
+     "alone_R2": 0.478,
+     "alone_adjR2": 0.218,
+     "unique_adjR2": -0.113
+    },
+    "region": {
+     "levels": 4,
+     "alone_R2": 0.257,
+     "alone_adjR2": 0.133,
+     "unique_adjR2": 0.0
+    },
+    "scale_type": {
+     "levels": 2,
+     "alone_R2": 0.076,
+     "alone_adjR2": 0.03,
+     "unique_adjR2": 0.0
+    },
+    "n_options": {
+     "levels": 2,
+     "alone_R2": 0.076,
+     "alone_adjR2": 0.03,
+     "unique_adjR2": 0.0
+    },
+    "sub_attribute": {
+     "levels": 2,
+     "alone_R2": 0.0,
+     "alone_adjR2": -0.05,
+     "unique_adjR2": 0.0
+    }
+   }
+  },
+  "dev/pop_only_task/P_groundall5": {
+   "n": 22,
+   "joint_R2": 0.903,
+   "joint_adjR2": 0.709,
+   "dims": {
+    "topic": {
+     "levels": 12,
+     "alone_R2": 0.899,
+     "alone_adjR2": 0.787,
+     "unique_adjR2": 0.354
+    },
+    "dataset": {
+     "levels": 4,
+     "alone_R2": 0.593,
+     "alone_adjR2": 0.525,
+     "unique_adjR2": 0.0
+    },
+    "country": {
+     "levels": 8,
+     "alone_R2": 0.575,
+     "alone_adjR2": 0.362,
+     "unique_adjR2": -0.034
+    },
+    "region": {
+     "levels": 4,
+     "alone_R2": 0.282,
+     "alone_adjR2": 0.162,
+     "unique_adjR2": 0.0
+    },
+    "scale_type": {
+     "levels": 2,
+     "alone_R2": 0.036,
+     "alone_adjR2": -0.013,
+     "unique_adjR2": 0.0
+    },
+    "n_options": {
+     "levels": 2,
+     "alone_R2": 0.036,
+     "alone_adjR2": -0.013,
+     "unique_adjR2": 0.0
+    },
+    "sub_attribute": {
+     "levels": 2,
+     "alone_R2": 0.018,
+     "alone_adjR2": -0.031,
+     "unique_adjR2": 0.0
+    }
+   }
+  },
+  "dev/other_pop_only/retr6_rev2": {
+   "n": 36,
+   "joint_R2": 0.999,
+   "joint_adjR2": 0.984,
+   "dims": {
+    "dataset": {
+     "levels": 7,
+     "alone_R2": 0.276,
+     "alone_adjR2": 0.126,
+     "unique_adjR2": 0.0
+    },
+    "region": {
+     "levels": 6,
+     "alone_R2": 0.24,
+     "alone_adjR2": 0.113,
+     "unique_adjR2": 0.0
+    },
+    "country": {
+     "levels": 22,
+     "alone_R2": 0.615,
+     "alone_adjR2": 0.037,
+     "unique_adjR2": 1.116
+    },
+    "sub_attribute": {
+     "levels": 5,
+     "alone_R2": 0.129,
+     "alone_adjR2": 0.016,
+     "unique_adjR2": 0.0
+    },
+    "topic": {
+     "levels": 18,
+     "alone_R2": 0.47,
+     "alone_adjR2": -0.03,
+     "unique_adjR2": 0.736
+    },
+    "year": {
+     "levels": 3,
+     "alone_R2": 0.018,
+     "alone_adjR2": -0.041,
+     "unique_adjR2": 0.0
+    },
+    "scale_type": {
+     "levels": 3,
+     "alone_R2": 0.007,
+     "alone_adjR2": -0.054,
+     "unique_adjR2": 0.0
+    },
+    "n_options": {
+     "levels": 5,
+     "alone_R2": 0.022,
+     "alone_adjR2": -0.104,
+     "unique_adjR2": 0.0
+    }
+   }
+  },
+  "dev/other_pop_only/P_groundall5": {
+   "n": 35,
+   "joint_R2": 0.999,
+   "joint_adjR2": 0.99,
+   "dims": {
+    "country": {
+     "levels": 22,
+     "alone_R2": 0.861,
+     "alone_adjR2": 0.636,
+     "unique_adjR2": 0.347
+    },
+    "topic": {
+     "levels": 17,
+     "alone_R2": 0.741,
+     "alone_adjR2": 0.511,
+     "unique_adjR2": 0.363
+    },
+    "sub_attribute": {
+     "levels": 5,
+     "alone_R2": 0.335,
+     "alone_adjR2": 0.246,
+     "unique_adjR2": 0.0
+    },
+    "dataset": {
+     "levels": 6,
+     "alone_R2": 0.335,
+     "alone_adjR2": 0.221,
+     "unique_adjR2": 0.0
+    },
+    "year": {
+     "levels": 3,
+     "alone_R2": 0.252,
+     "alone_adjR2": 0.205,
+     "unique_adjR2": 0.0
+    },
+    "scale_type": {
+     "levels": 3,
+     "alone_R2": 0.183,
+     "alone_adjR2": 0.132,
+     "unique_adjR2": 0.0
+    },
+    "region": {
+     "levels": 6,
+     "alone_R2": 0.238,
+     "alone_adjR2": 0.106,
+     "unique_adjR2": 0.0
+    },
+    "n_options": {
+     "levels": 5,
+     "alone_R2": 0.183,
+     "alone_adjR2": 0.074,
+     "unique_adjR2": 0.0
+    }
+   }
+  }
+ },
+ "slices": {
+  "shared_survey": {
+   "dataset": [
+    {
+     "level": "LatinoBarometro",
+     "n": 64,
+     "S": 32.31,
+     "S_ci": [
+      19.76,
+      44.07
+     ],
+     "flip_rate": 0.212,
+     "top_right": 0.562,
+     "small": false
+    },
+    {
+     "level": "ISSP",
+     "n": 46,
+     "S": 45.64,
+     "S_ci": [
+      39.31,
+      51.79
+     ],
+     "flip_rate": 0.129,
+     "top_right": 0.435,
+     "small": false
+    },
+    {
+     "level": "ESS",
+     "n": 56,
+     "S": 49.0,
+     "S_ci": [
+      40.17,
+      58.61
+     ],
+     "flip_rate": 0.062,
+     "top_right": 0.607,
+     "small": false
+    },
+    {
+     "level": "Afrobarometer",
+     "n": 3,
+     "S": 64.87,
+     "S_ci": [
+      32.03,
+      90.78
+     ],
+     "flip_rate": 0.5,
+     "top_right": 0.333,
+     "small": true
+    },
+    {
+     "level": "OpinionQA",
+     "n": 6,
+     "S": 69.64,
+     "S_ci": [
+      46.71,
+      83.8
+     ],
+     "flip_rate": 0.2,
+     "top_right": 0.5,
+     "small": true
+    }
+   ],
+   "country": [
+    {
+     "level": "Brazil",
+     "n": 1,
+     "S": -61.12,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "Venezuela",
+     "n": 6,
+     "S": -18.48,
+     "S_ci": [
+      -79.99,
+      40.13
+     ],
+     "flip_rate": 0.667,
+     "top_right": 0.333,
+     "small": true
+    },
+    {
+     "level": "Guatemala",
+     "n": 3,
+     "S": 4.68,
+     "S_ci": [
+      -23.18,
+      51.46
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.333,
+     "small": true
+    },
+    {
+     "level": "Portugal",
+     "n": 2,
+     "S": 6.13,
+     "S_ci": [
+      -1.15,
+      13.4
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "Peru",
+     "n": 3,
+     "S": 8.92,
+     "S_ci": [
+      -46.15,
+      68.07
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.333,
+     "small": true
+    },
+    {
+     "level": "Czechia",
+     "n": 4,
+     "S": 9.48,
+     "S_ci": [
+      -55.2,
+      74.15
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "Italy",
+     "n": 2,
+     "S": 11.18,
+     "S_ci": [
+      -47.69,
+      70.04
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "the United Kingdom",
+     "n": 1,
+     "S": 12.09,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "Paraguay",
+     "n": 2,
+     "S": 14.47,
+     "S_ci": [
+      -53.17,
+      82.11
+     ],
+     "flip_rate": null,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "Japan",
+     "n": 1,
+     "S": 18.73,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.0,
+     "small": true
+    }
+   ],
+   "region": [
+    {
+     "level": "Latin America",
+     "n": 64,
+     "S": 32.31,
+     "S_ci": [
+      19.76,
+      44.07
+     ],
+     "flip_rate": 0.212,
+     "top_right": 0.562,
+     "small": false
+    },
+    {
+     "level": "Asia/Oceania",
+     "n": 12,
+     "S": 42.08,
+     "S_ci": [
+      32.07,
+      51.29
+     ],
+     "flip_rate": 0.2,
+     "top_right": 0.25,
+     "small": true
+    },
+    {
+     "level": "Europe",
+     "n": 93,
+     "S": 49.1,
+     "S_ci": [
+      42.72,
+      54.97
+     ],
+     "flip_rate": 0.098,
+     "top_right": 0.559,
+     "small": false
+    },
+    {
+     "level": "unspecified",
+     "n": 1,
+     "S": 63.12,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "Africa",
+     "n": 5,
+     "S": 64.29,
+     "S_ci": [
+      45.29,
+      79.75
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.4,
+     "small": true
+    }
+   ],
+   "year": [
+    {
+     "level": "2021-2024",
+     "n": 1,
+     "S": 32.22,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "2018-2022",
+     "n": 2,
+     "S": 32.57,
+     "S_ci": [
+      25.87,
+      39.26
+     ],
+     "flip_rate": 0.5,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "2023",
+     "n": 67,
+     "S": 33.77,
+     "S_ci": [
+      22.42,
+      45.2
+     ],
+     "flip_rate": 0.229,
+     "top_right": 0.552,
+     "small": false
+    },
+    {
+     "level": "2019-2023",
+     "n": 6,
+     "S": 34.61,
+     "S_ci": [
+      14.89,
+      53.76
+     ],
+     "flip_rate": 0.25,
+     "top_right": 0.333,
+     "small": true
+    },
+    {
+     "level": "2019",
+     "n": 2,
+     "S": 47.84,
+     "S_ci": [
+      15.66,
+      80.02
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "2017-2020",
+     "n": 36,
+     "S": 48.34,
+     "S_ci": [
+      41.41,
+      55.17
+     ],
+     "flip_rate": 0.083,
+     "top_right": 0.5,
+     "small": false
+    },
+    {
+     "level": "2016",
+     "n": 38,
+     "S": 48.61,
+     "S_ci": [
+      34.17,
+      60.67
+     ],
+     "flip_rate": 0.1,
+     "top_right": 0.632,
+     "small": false
+    },
+    {
+     "level": "2018",
+     "n": 18,
+     "S": 49.97,
+     "S_ci": [
+      36.46,
+      61.09
+     ],
+     "flip_rate": 0.167,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "2017-2019",
+     "n": 1,
+     "S": 54.12,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "2020",
+     "n": 1,
+     "S": 70.25,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 0.0,
+     "top_right": 1.0,
+     "small": true
+    }
+   ],
+   "topic": [
+    {
+     "level": "ESS:0",
+     "n": 1,
+     "S": -23.06,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "LatinoBarometro:0",
+     "n": 10,
+     "S": 26.34,
+     "S_ci": [
+      -22.03,
+      62.59
+     ],
+     "flip_rate": 0.2,
+     "top_right": 0.7,
+     "small": true
+    },
+    {
+     "level": "LatinoBarometro:3",
+     "n": 23,
+     "S": 26.55,
+     "S_ci": [
+      10.3,
+      41.99
+     ],
+     "flip_rate": 0.2,
+     "top_right": 0.435,
+     "small": true
+    },
+    {
+     "level": "ESS:1",
+     "n": 22,
+     "S": 29.72,
+     "S_ci": [
+      12.07,
+      46.45
+     ],
+     "flip_rate": 0.083,
+     "top_right": 0.409,
+     "small": true
+    },
+    {
+     "level": "LatinoBarometro:1",
+     "n": 26,
+     "S": 36.94,
+     "S_ci": [
+      16.75,
+      55.72
+     ],
+     "flip_rate": 0.231,
+     "top_right": 0.577,
+     "small": true
+    },
+    {
+     "level": "ISSP:2",
+     "n": 10,
+     "S": 38.8,
+     "S_ci": [
+      24.72,
+      52.03
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.3,
+     "small": true
+    },
+    {
+     "level": "ISSP:1",
+     "n": 5,
+     "S": 41.73,
+     "S_ci": [
+      28.09,
+      55.37
+     ],
+     "flip_rate": null,
+     "top_right": 0.4,
+     "small": true
+    },
+    {
+     "level": "ISSP:0",
+     "n": 4,
+     "S": 42.7,
+     "S_ci": [
+      28.23,
+      57.17
+     ],
+     "flip_rate": 0.25,
+     "top_right": 0.25,
+     "small": true
+    },
+    {
+     "level": "LatinoBarometro:2",
+     "n": 5,
+     "S": 46.73,
+     "S_ci": [
+      11.08,
+      74.3
+     ],
+     "flip_rate": null,
+     "top_right": 0.8,
+     "small": true
+    },
+    {
+     "level": "ISSP:3",
+     "n": 27,
+     "S": 49.33,
+     "S_ci": [
+      40.83,
+      57.9
+     ],
+     "flip_rate": 0.048,
+     "top_right": 0.519,
+     "small": true
+    }
+   ],
+   "scale_type": [
+    {
+     "level": "ordinal",
+     "n": 101,
+     "S": 38.16,
+     "S_ci": [
+      29.8,
+      45.55
+     ],
+     "flip_rate": 0.161,
+     "top_right": 0.475,
+     "small": false
+    },
+    {
+     "level": "categorical",
+     "n": 23,
+     "S": 48.25,
+     "S_ci": [
+      35.47,
+      59.82
+     ],
+     "flip_rate": null,
+     "top_right": 0.522,
+     "small": true
+    },
+    {
+     "level": "binary",
+     "n": 51,
+     "S": 50.2,
+     "S_ci": [
+      40.02,
+      59.6
+     ],
+     "flip_rate": null,
+     "top_right": 0.667,
+     "small": false
+    }
+   ],
+   "n_options": [
+    {
+     "level": "3",
+     "n": 8,
+     "S": 8.57,
+     "S_ci": [
+      -14.49,
+      34.24
+     ],
+     "flip_rate": null,
+     "top_right": 0.25,
+     "small": true
+    },
+    {
+     "level": "11",
+     "n": 4,
+     "S": 13.33,
+     "S_ci": [
+      -17.02,
+      53.72
+     ],
+     "flip_rate": null,
+     "top_right": 0.25,
+     "small": true
+    },
+    {
+     "level": "10",
+     "n": 2,
+     "S": 32.57,
+     "S_ci": [
+      25.87,
+      39.26
+     ],
+     "flip_rate": 0.5,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "4",
+     "n": 40,
+     "S": 32.91,
+     "S_ci": [
+      15.6,
+      48.19
+     ],
+     "flip_rate": 0.176,
+     "top_right": 0.6,
+     "small": false
+    },
+    {
+     "level": "7",
+     "n": 5,
+     "S": 34.28,
+     "S_ci": [
+      10.97,
+      55.41
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.4,
+     "small": true
+    },
+    {
+     "level": "5",
+     "n": 50,
+     "S": 44.47,
+     "S_ci": [
+      34.29,
+      53.48
+     ],
+     "flip_rate": 0.079,
+     "top_right": 0.44,
+     "small": false
+    },
+    {
+     "level": "6",
+     "n": 18,
+     "S": 51.85,
+     "S_ci": [
+      41.85,
+      61.14
+     ],
+     "flip_rate": 0.25,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "12",
+     "n": 1,
+     "S": 54.12,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "2",
+     "n": 47,
+     "S": 56.13,
+     "S_ci": [
+      47.16,
+      64.61
+     ],
+     "flip_rate": null,
+     "top_right": 0.723,
+     "small": false
+    }
+   ],
+   "value_laden": [
+    {
+     "level": "True",
+     "n": 49,
+     "S": 35.48,
+     "S_ci": [
+      24.64,
+      46.33
+     ],
+     "flip_rate": 0.174,
+     "top_right": 0.469,
+     "small": false
+    },
+    {
+     "level": "False",
+     "n": 126,
+     "S": 45.91,
+     "S_ci": [
+      38.57,
+      52.61
+     ],
+     "flip_rate": 0.156,
+     "top_right": 0.563,
+     "small": false
+    }
+   ],
+   "sub_attribute": [
+    {
+     "level": "mnactic",
+     "n": 2,
+     "S": -23.47,
+     "S_ci": [
+      -67.36,
+      20.42
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "religiosity",
+     "n": 1,
+     "S": -8.71,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "topbot",
+     "n": 3,
+     "S": 10.97,
+     "S_ci": [
+      -7.95,
+      47.79
+     ],
+     "flip_rate": null,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "employment_status",
+     "n": 6,
+     "S": 18.62,
+     "S_ci": [
+      -27.67,
+      60.17
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.667,
+     "small": true
+    },
+    {
+     "level": "gender",
+     "n": 6,
+     "S": 26.64,
+     "S_ci": [
+      -13.94,
+      64.32
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "religion",
+     "n": 13,
+     "S": 32.81,
+     "S_ci": [
+      3.84,
+      55.11
+     ],
+     "flip_rate": 0.4,
+     "top_right": 0.385,
+     "small": true
+    },
+    {
+     "level": "household_income",
+     "n": 8,
+     "S": 33.04,
+     "S_ci": [
+      -11.55,
+      69.41
+     ],
+     "flip_rate": 0.2,
+     "top_right": 0.625,
+     "small": true
+    },
+    {
+     "level": "city_size",
+     "n": 5,
+     "S": 33.9,
+     "S_ci": [
+      -11.71,
+      72.22
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.6,
+     "small": true
+    },
+    {
+     "level": "maritalb",
+     "n": 6,
+     "S": 39.97,
+     "S_ci": [
+      0.36,
+      72.61
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "political_group",
+     "n": 4,
+     "S": 42.83,
+     "S_ci": [
+      11.82,
+      73.84
+     ],
+     "flip_rate": null,
+     "top_right": 0.5,
+     "small": true
+    }
+   ],
+   "split": [
+    {
+     "level": "Grouped",
+     "n": 133,
+     "S": 42.06,
+     "S_ci": [
+      34.82,
+      49.02
+     ],
+     "flip_rate": 0.133,
+     "top_right": 0.549,
+     "small": false
+    },
+    {
+     "level": "Pop",
+     "n": 42,
+     "S": 45.96,
+     "S_ci": [
+      35.71,
+      56.19
+     ],
+     "flip_rate": 0.222,
+     "top_right": 0.5,
+     "small": false
+    }
+   ]
+  },
+  "pop_only_task": {
+   "dataset": [
+    {
+     "level": "OSPsychMGKT",
+     "n": 6,
+     "S": -20.19,
+     "S_ci": [
+      -50.43,
+      14.18
+     ],
+     "flip_rate": null,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "NumberGame",
+     "n": 13,
+     "S": -10.04,
+     "S_ci": [
+      -45.72,
+      24.6
+     ],
+     "flip_rate": null,
+     "top_right": 0.385,
+     "small": true
+    },
+    {
+     "level": "OSPsychMACH",
+     "n": 24,
+     "S": 2.36,
+     "S_ci": [
+      -20.9,
+      21.32
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.542,
+     "small": true
+    },
+    {
+     "level": "Choices13k",
+     "n": 15,
+     "S": 8.57,
+     "S_ci": [
+      -17.56,
+      33.41
+     ],
+     "flip_rate": null,
+     "top_right": 0.533,
+     "small": true
+    }
+   ],
+   "country": [
+    {
+     "level": "India",
+     "n": 1,
+     "S": -78.8,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "Hungary",
+     "n": 1,
+     "S": -64.9,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "Germany",
+     "n": 4,
+     "S": -61.49,
+     "S_ci": [
+      -107.46,
+      -5.2
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.25,
+     "small": true
+    },
+    {
+     "level": "Canada",
+     "n": 3,
+     "S": -42.88,
+     "S_ci": [
+      -65.51,
+      -1.6
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.333,
+     "small": true
+    },
+    {
+     "level": "Netherlands",
+     "n": 2,
+     "S": -20.02,
+     "S_ci": [
+      -80.98,
+      40.93
+     ],
+     "flip_rate": 0.5,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "Romania",
+     "n": 1,
+     "S": -19.08,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 0.0,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "Philippines",
+     "n": 1,
+     "S": -16.1,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "Sweden",
+     "n": 2,
+     "S": -10.34,
+     "S_ci": [
+      -10.9,
+      -9.79
+     ],
+     "flip_rate": 0.0,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "unspecified",
+     "n": 28,
+     "S": -0.07,
+     "S_ci": [
+      -22.25,
+      21.99
+     ],
+     "flip_rate": null,
+     "top_right": 0.464,
+     "small": true
+    },
+    {
+     "level": "New Zealand",
+     "n": 1,
+     "S": 11.22,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 0.0,
+     "top_right": 1.0,
+     "small": true
+    }
+   ],
+   "region": [
+    {
+     "level": "North America",
+     "n": 3,
+     "S": -42.88,
+     "S_ci": [
+      -65.51,
+      -1.6
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.333,
+     "small": true
+    },
+    {
+     "level": "unspecified",
+     "n": 29,
+     "S": -0.72,
+     "S_ci": [
+      -22.7,
+      20.34
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.483,
+     "small": true
+    },
+    {
+     "level": "Europe",
+     "n": 17,
+     "S": -0.36,
+     "S_ci": [
+      -27.96,
+      26.84
+     ],
+     "flip_rate": 0.385,
+     "top_right": 0.588,
+     "small": true
+    },
+    {
+     "level": "Asia/Oceania",
+     "n": 7,
+     "S": 2.04,
+     "S_ci": [
+      -27.16,
+      26.39
+     ],
+     "flip_rate": 0.286,
+     "top_right": 0.429,
+     "small": true
+    },
+    {
+     "level": "Africa",
+     "n": 1,
+     "S": 17.84,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 0.0,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "Latin America",
+     "n": 1,
+     "S": 57.04,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.0,
+     "small": true
+    }
+   ],
+   "year": [
+    {
+     "level": "unspecified",
+     "n": 58,
+     "S": -1.15,
+     "S_ci": [
+      -15.54,
+      12.89
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.5,
+     "small": false
+    }
+   ],
+   "topic": [
+    {
+     "level": "NumberGame:3",
+     "n": 4,
+     "S": -63.75,
+     "S_ci": [
+      -127.46,
+      -10.67
+     ],
+     "flip_rate": null,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "OSPsychMGKT:0",
+     "n": 3,
+     "S": -58.03,
+     "S_ci": [
+      -65.4,
+      -47.16
+     ],
+     "flip_rate": null,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "OSPsychMACH:2",
+     "n": 4,
+     "S": -40.59,
+     "S_ci": [
+      -79.89,
+      27.49
+     ],
+     "flip_rate": 0.75,
+     "top_right": 0.25,
+     "small": true
+    },
+    {
+     "level": "Choices13k:3",
+     "n": 2,
+     "S": -34.55,
+     "S_ci": [
+      -83.2,
+      14.09
+     ],
+     "flip_rate": null,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "Choices13k:2",
+     "n": 4,
+     "S": -4.31,
+     "S_ci": [
+      -54.87,
+      39.66
+     ],
+     "flip_rate": null,
+     "top_right": 0.75,
+     "small": true
+    },
+    {
+     "level": "NumberGame:0",
+     "n": 6,
+     "S": -2.16,
+     "S_ci": [
+      -36.85,
+      34.15
+     ],
+     "flip_rate": null,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "OSPsychMGKT:3",
+     "n": 1,
+     "S": -1.6,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "OSPsychMACH:1",
+     "n": 14,
+     "S": -0.6,
+     "S_ci": [
+      -30.41,
+      24.31
+     ],
+     "flip_rate": 0.286,
+     "top_right": 0.643,
+     "small": true
+    },
+    {
+     "level": "Choices13k:0",
+     "n": 5,
+     "S": 9.35,
+     "S_ci": [
+      -32.56,
+      55.2
+     ],
+     "flip_rate": null,
+     "top_right": 0.4,
+     "small": true
+    },
+    {
+     "level": "OSPsychMGKT:1",
+     "n": 1,
+     "S": 14.86,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    }
+   ],
+   "scale_type": [
+    {
+     "level": "binary",
+     "n": 34,
+     "S": -3.62,
+     "S_ci": [
+      -23.8,
+      14.02
+     ],
+     "flip_rate": null,
+     "top_right": 0.471,
+     "small": false
+    },
+    {
+     "level": "ordinal",
+     "n": 24,
+     "S": 2.36,
+     "S_ci": [
+      -20.9,
+      21.32
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.542,
+     "small": true
+    }
+   ],
+   "n_options": [
+    {
+     "level": "2",
+     "n": 34,
+     "S": -3.62,
+     "S_ci": [
+      -23.8,
+      14.02
+     ],
+     "flip_rate": null,
+     "top_right": 0.471,
+     "small": false
+    },
+    {
+     "level": "5",
+     "n": 24,
+     "S": 2.36,
+     "S_ci": [
+      -20.9,
+      21.32
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.542,
+     "small": true
+    }
+   ],
+   "value_laden": [
+    {
+     "level": "False",
+     "n": 58,
+     "S": -1.15,
+     "S_ci": [
+      -15.54,
+      12.89
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.5,
+     "small": false
+    }
+   ],
+   "sub_attribute": [
+    {
+     "level": "country_name",
+     "n": 30,
+     "S": -2.15,
+     "S_ci": [
+      -20.22,
+      15.74
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.533,
+     "small": false
+    },
+    {
+     "level": "population",
+     "n": 28,
+     "S": -0.07,
+     "S_ci": [
+      -22.25,
+      21.99
+     ],
+     "flip_rate": null,
+     "top_right": 0.464,
+     "small": true
+    }
+   ],
+   "split": [
+    {
+     "level": "Pop",
+     "n": 58,
+     "S": -1.15,
+     "S_ci": [
+      -15.54,
+      12.89
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.5,
+     "small": false
+    }
+   ]
+  },
+  "other_pop_only": {
+   "dataset": [
+    {
+     "level": "MoralMachine",
+     "n": 10,
+     "S": 22.63,
+     "S_ci": [
+      -14.21,
+      54.76
+     ],
+     "flip_rate": null,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "MoralMachineClassic",
+     "n": 5,
+     "S": 28.06,
+     "S_ci": [
+      -2.85,
+      58.97
+     ],
+     "flip_rate": null,
+     "top_right": 0.8,
+     "small": true
+    },
+    {
+     "level": "ConspiracyCorr",
+     "n": 17,
+     "S": 32.59,
+     "S_ci": [
+      11.5,
+      52.63
+     ],
+     "flip_rate": 0.235,
+     "top_right": 0.529,
+     "small": true
+    },
+    {
+     "level": "ChaosNLI",
+     "n": 1,
+     "S": 36.7,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "OSPsychBig5",
+     "n": 19,
+     "S": 37.13,
+     "S_ci": [
+      25.05,
+      49.34
+     ],
+     "flip_rate": 0.2,
+     "top_right": 0.421,
+     "small": true
+    },
+    {
+     "level": "TISP",
+     "n": 13,
+     "S": 50.97,
+     "S_ci": [
+      40.18,
+      61.93
+     ],
+     "flip_rate": 0.25,
+     "top_right": 0.462,
+     "small": true
+    },
+    {
+     "level": "Jester",
+     "n": 15,
+     "S": 57.72,
+     "S_ci": [
+      48.37,
+      67.32
+     ],
+     "flip_rate": 0.0,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "GlobalOpinionQA",
+     "n": 8,
+     "S": 59.54,
+     "S_ci": [
+      37.91,
+      80.07
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.625,
+     "small": true
+    },
+    {
+     "level": "DICES",
+     "n": 2,
+     "S": 61.28,
+     "S_ci": [
+      45.04,
+      77.51
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "OSPsychRWAS",
+     "n": 5,
+     "S": 72.1,
+     "S_ci": [
+      62.92,
+      79.72
+     ],
+     "flip_rate": 0.0,
+     "top_right": 1.0,
+     "small": true
+    }
+   ],
+   "country": [
+    {
+     "level": "Turkey",
+     "n": 1,
+     "S": -9.14,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "South Africa",
+     "n": 2,
+     "S": 1.65,
+     "S_ci": [
+      -70.46,
+      73.75
+     ],
+     "flip_rate": 0.5,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "El Salvador",
+     "n": 1,
+     "S": 2.63,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "Mexico",
+     "n": 2,
+     "S": 13.03,
+     "S_ci": [
+      4.85,
+      21.22
+     ],
+     "flip_rate": 0.5,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "Italy",
+     "n": 3,
+     "S": 14.77,
+     "S_ci": [
+      -91.63,
+      71.02
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.667,
+     "small": true
+    },
+    {
+     "level": "Nigeria",
+     "n": 3,
+     "S": 15.13,
+     "S_ci": [
+      -44.89,
+      73.97
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "Greece",
+     "n": 1,
+     "S": 20.38,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "Colombia",
+     "n": 1,
+     "S": 20.84,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "Brazil",
+     "n": 4,
+     "S": 21.46,
+     "S_ci": [
+      -15.71,
+      58.63
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "United Kingdom",
+     "n": 7,
+     "S": 24.01,
+     "S_ci": [
+      -10.27,
+      54.62
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.714,
+     "small": true
+    }
+   ],
+   "region": [
+    {
+     "level": "Africa",
+     "n": 8,
+     "S": 28.43,
+     "S_ci": [
+      -9.71,
+      63.15
+     ],
+     "flip_rate": 0.286,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "Latin America",
+     "n": 10,
+     "S": 28.89,
+     "S_ci": [
+      8.75,
+      51.93
+     ],
+     "flip_rate": 0.25,
+     "top_right": 0.6,
+     "small": true
+    },
+    {
+     "level": "Asia/Oceania",
+     "n": 15,
+     "S": 31.5,
+     "S_ci": [
+      15.39,
+      47.21
+     ],
+     "flip_rate": 0.143,
+     "top_right": 0.4,
+     "small": true
+    },
+    {
+     "level": "North America",
+     "n": 6,
+     "S": 40.92,
+     "S_ci": [
+      26.14,
+      56.95
+     ],
+     "flip_rate": 0.2,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "Europe",
+     "n": 32,
+     "S": 46.44,
+     "S_ci": [
+      32.14,
+      59.65
+     ],
+     "flip_rate": 0.308,
+     "top_right": 0.562,
+     "small": false
+    },
+    {
+     "level": "unspecified",
+     "n": 24,
+     "S": 59.59,
+     "S_ci": [
+      51.92,
+      67.3
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.958,
+     "small": true
+    }
+   ],
+   "year": [
+    {
+     "level": "2020",
+     "n": 17,
+     "S": 32.59,
+     "S_ci": [
+      11.5,
+      52.63
+     ],
+     "flip_rate": 0.235,
+     "top_right": 0.529,
+     "small": true
+    },
+    {
+     "level": "unspecified",
+     "n": 65,
+     "S": 45.14,
+     "S_ci": [
+      35.92,
+      53.51
+     ],
+     "flip_rate": 0.097,
+     "top_right": 0.692,
+     "small": false
+    },
+    {
+     "level": "2023",
+     "n": 13,
+     "S": 50.97,
+     "S_ci": [
+      40.18,
+      61.93
+     ],
+     "flip_rate": 0.25,
+     "top_right": 0.462,
+     "small": true
+    }
+   ],
+   "topic": [
+    {
+     "level": "ConspiracyCorr:0",
+     "n": 5,
+     "S": 4.59,
+     "S_ci": [
+      -47.97,
+      57.15
+     ],
+     "flip_rate": 0.2,
+     "top_right": 0.4,
+     "small": true
+    },
+    {
+     "level": "MoralMachineClassic:1",
+     "n": 4,
+     "S": 14.96,
+     "S_ci": [
+      -13.05,
+      42.96
+     ],
+     "flip_rate": null,
+     "top_right": 0.75,
+     "small": true
+    },
+    {
+     "level": "OSPsychBig5:2",
+     "n": 4,
+     "S": 17.97,
+     "S_ci": [
+      -13.55,
+      57.27
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.25,
+     "small": true
+    },
+    {
+     "level": "MoralMachine:0",
+     "n": 10,
+     "S": 22.63,
+     "S_ci": [
+      -14.21,
+      54.76
+     ],
+     "flip_rate": null,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "OSPsychBig5:0",
+     "n": 3,
+     "S": 32.69,
+     "S_ci": [
+      14.27,
+      59.31
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.667,
+     "small": true
+    },
+    {
+     "level": "ConspiracyCorr:1",
+     "n": 4,
+     "S": 33.6,
+     "S_ci": [
+      5.3,
+      61.91
+     ],
+     "flip_rate": 0.25,
+     "top_right": 0.75,
+     "small": true
+    },
+    {
+     "level": "OSPsychBig5:3",
+     "n": 2,
+     "S": 33.73,
+     "S_ci": [
+      12.44,
+      55.01
+     ],
+     "flip_rate": 0.0,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "ChaosNLI:0",
+     "n": 1,
+     "S": 36.7,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "ConspiracyCorr:2",
+     "n": 3,
+     "S": 37.16,
+     "S_ci": [
+      16.3,
+      73.97
+     ],
+     "flip_rate": 0.667,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "TISP:1",
+     "n": 5,
+     "S": 38.96,
+     "S_ci": [
+      21.57,
+      56.35
+     ],
+     "flip_rate": 0.333,
+     "top_right": 0.2,
+     "small": true
+    }
+   ],
+   "scale_type": [
+    {
+     "level": "binary",
+     "n": 20,
+     "S": 35.62,
+     "S_ci": [
+      14.05,
+      55.99
+     ],
+     "flip_rate": null,
+     "top_right": 0.65,
+     "small": true
+    },
+    {
+     "level": "ordinal",
+     "n": 72,
+     "S": 45.37,
+     "S_ci": [
+      38.37,
+      52.92
+     ],
+     "flip_rate": 0.161,
+     "top_right": 0.611,
+     "small": false
+    },
+    {
+     "level": "categorical",
+     "n": 3,
+     "S": 57.27,
+     "S_ci": [
+      45.04,
+      77.51
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    }
+   ],
+   "n_options": [
+    {
+     "level": "11",
+     "n": 1,
+     "S": 2.63,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 0.0,
+     "small": true
+    },
+    {
+     "level": "2",
+     "n": 20,
+     "S": 35.62,
+     "S_ci": [
+      14.05,
+      55.99
+     ],
+     "flip_rate": null,
+     "top_right": 0.65,
+     "small": true
+    },
+    {
+     "level": "5",
+     "n": 47,
+     "S": 38.58,
+     "S_ci": [
+      28.69,
+      47.24
+     ],
+     "flip_rate": 0.212,
+     "top_right": 0.468,
+     "small": false
+    },
+    {
+     "level": "7",
+     "n": 2,
+     "S": 54.55,
+     "S_ci": [
+      49.37,
+      59.73
+     ],
+     "flip_rate": 0.5,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "4",
+     "n": 3,
+     "S": 54.87,
+     "S_ci": [
+      41.03,
+      74.33
+     ],
+     "flip_rate": 1.0,
+     "top_right": 0.667,
+     "small": true
+    },
+    {
+     "level": "10",
+     "n": 15,
+     "S": 57.72,
+     "S_ci": [
+      48.37,
+      67.32
+     ],
+     "flip_rate": 0.0,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "3",
+     "n": 2,
+     "S": 61.28,
+     "S_ci": [
+      45.04,
+      77.51
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    },
+    {
+     "level": "9",
+     "n": 5,
+     "S": 72.1,
+     "S_ci": [
+      62.92,
+      79.72
+     ],
+     "flip_rate": 0.0,
+     "top_right": 1.0,
+     "small": true
+    }
+   ],
+   "value_laden": [
+    {
+     "level": "False",
+     "n": 94,
+     "S": 43.19,
+     "S_ci": [
+      35.61,
+      50.22
+     ],
+     "flip_rate": 0.161,
+     "top_right": 0.628,
+     "small": false
+    },
+    {
+     "level": "True",
+     "n": 1,
+     "S": 90.81,
+     "S_ci": [
+      null,
+      null
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    }
+   ],
+   "sub_attribute": [
+    {
+     "level": "UserCountry3",
+     "n": 10,
+     "S": 22.63,
+     "S_ci": [
+      -14.21,
+      54.76
+     ],
+     "flip_rate": null,
+     "top_right": 0.5,
+     "small": true
+    },
+    {
+     "level": "Country",
+     "n": 17,
+     "S": 32.59,
+     "S_ci": [
+      11.5,
+      52.63
+     ],
+     "flip_rate": 0.235,
+     "top_right": 0.529,
+     "small": true
+    },
+    {
+     "level": "country_name",
+     "n": 19,
+     "S": 37.13,
+     "S_ci": [
+      25.05,
+      49.34
+     ],
+     "flip_rate": 0.2,
+     "top_right": 0.421,
+     "small": true
+    },
+    {
+     "level": "COUNTRY_NAME",
+     "n": 13,
+     "S": 50.97,
+     "S_ci": [
+      40.18,
+      61.93
+     ],
+     "flip_rate": 0.25,
+     "top_right": 0.462,
+     "small": true
+    },
+    {
+     "level": "population",
+     "n": 34,
+     "S": 55.28,
+     "S_ci": [
+      45.66,
+      64.02
+     ],
+     "flip_rate": 0.048,
+     "top_right": 0.882,
+     "small": false
+    },
+    {
+     "level": "rater_locale",
+     "n": 2,
+     "S": 61.28,
+     "S_ci": [
+      45.04,
+      77.51
+     ],
+     "flip_rate": null,
+     "top_right": 1.0,
+     "small": true
+    }
+   ],
+   "split": [
+    {
+     "level": "Pop",
+     "n": 95,
+     "S": 43.69,
+     "S_ci": [
+      36.89,
+      50.64
+     ],
+     "flip_rate": 0.161,
+     "top_right": 0.632,
+     "small": false
+    }
+   ]
+  }
+ },
+ "group_view": {
+  "cells": 430,
+  "questions": 52,
+  "mean_shared": 0.1773,
+  "mean_specific": 0.0647,
+  "top_groups_by_specific": [
+   {
+    "label": "ESS \u00b7 Germany \u00b7 age_group=65+",
+    "n": 3,
+    "tvd": 0.1999,
+    "shared": 0.1358,
+    "specific": 0.1276
+   },
+   {
+    "label": "ESS \u00b7 Germany \u00b7 eisced=higher tertiary education, master's degree or higher (ES-ISCED V2)",
+    "n": 3,
+    "tvd": 0.1169,
+    "shared": 0.1523,
+    "specific": 0.1228
+   },
+   {
+    "label": "ESS \u00b7 Germany \u00b7 age_group=18-29",
+    "n": 3,
+    "tvd": 0.1514,
+    "shared": 0.1358,
+    "specific": 0.1212
+   },
+   {
+    "label": "ESS \u00b7 Russia \u00b7 maritalb=never married or in legally registered civil union",
+    "n": 3,
+    "tvd": 0.3343,
+    "shared": 0.2712,
+    "specific": 0.1199
+   },
+   {
+    "label": "ESS \u00b7 Poland \u00b7 age_group=65+",
+    "n": 3,
+    "tvd": 0.2985,
+    "shared": 0.2402,
+    "specific": 0.1057
+   },
+   {
+    "label": "ESS \u00b7 Russia \u00b7 domicil=a country village",
+    "n": 3,
+    "tvd": 0.3755,
+    "shared": 0.3059,
+    "specific": 0.0931
+   },
+   {
+    "label": "ESS \u00b7 Poland \u00b7 age_group=30-49",
+    "n": 3,
+    "tvd": 0.2059,
+    "shared": 0.2402,
+    "specific": 0.0919
+   },
+   {
+    "label": "ESS \u00b7 Germany \u00b7 eisced=advanced vocational, sub-degree education (ES-ISCED IV)",
+    "n": 3,
+    "tvd": 0.2394,
+    "shared": 0.1523,
+    "specific": 0.0871
+   },
+   {
+    "label": "ESS \u00b7 Russia \u00b7 age_group=18-29",
+    "n": 3,
+    "tvd": 0.3179,
+    "shared": 0.2874,
+    "specific": 0.0823
+   },
+   {
+    "label": "ESS \u00b7 Russia \u00b7 maritalb=widowed/civil partner died",
+    "n": 3,
+    "tvd": 0.2754,
+    "shared": 0.2712,
+    "specific": 0.0805
+   }
+  ],
+  "max_group_specific_observed": 0.1276,
+  "max_group_specific_null_p95": 0.1446,
+  "max_group_specific_perm_p": 0.476,
+  "by_attribute": [
+   {
+    "attribute": "religion",
+    "n": 12,
+    "shared": 0.2198,
+    "specific": 0.1215
+   },
+   {
+    "attribute": "maritalb",
+    "n": 30,
+    "shared": 0.2281,
+    "specific": 0.079
+   },
+   {
+    "attribute": "age_group",
+    "n": 127,
+    "shared": 0.1733,
+    "specific": 0.067
+   },
+   {
+    "attribute": "eisced",
+    "n": 56,
+    "shared": 0.2216,
+    "specific": 0.0603
+   },
+   {
+    "attribute": "topbot",
+    "n": 16,
+    "shared": 0.1893,
+    "specific": 0.0498
+   },
+   {
+    "attribute": "domicil",
+    "n": 121,
+    "shared": 0.1797,
+    "specific": 0.0464
+   }
+  ]
+ },
+ "_scatter": [
+  {
+   "label": "ESS \u00b7 Germany \u00b7 age_group=65+",
+   "shared": 0.1357734390974064,
+   "specific": 0.12755746364090587,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 eisced=higher tertiary education, master's degree or higher (ES-ISCED V2)",
+   "shared": 0.15231128779664319,
+   "specific": 0.12279279986875276,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 age_group=18-29",
+   "shared": 0.1357734390974064,
+   "specific": 0.12122272182591966,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 maritalb=never married or in legally registered civil union",
+   "shared": 0.27122293491051713,
+   "specific": 0.11987010695532392,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Poland \u00b7 age_group=65+",
+   "shared": 0.24022397624754363,
+   "specific": 0.1057086451973246,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 domicil=a country village",
+   "shared": 0.30591290215044603,
+   "specific": 0.09311052312355683,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Poland \u00b7 age_group=30-49",
+   "shared": 0.24022397624754363,
+   "specific": 0.09192486287552,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 eisced=advanced vocational, sub-degree education (ES-ISCED IV)",
+   "shared": 0.15231128779664319,
+   "specific": 0.08708886615485177,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 age_group=18-29",
+   "shared": 0.28739348364227185,
+   "specific": 0.08227928133512875,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 maritalb=widowed/civil partner died",
+   "shared": 0.27122293491051713,
+   "specific": 0.08045256456949128,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 maritalb=legally married",
+   "shared": 0.27122293491051713,
+   "specific": 0.07812307128196587,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 lrscale=3.0",
+   "shared": 0.14235626672357593,
+   "specific": 0.07267860786915904,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 domicil=a big city",
+   "shared": 0.14375849392468837,
+   "specific": 0.06890248249993956,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 lrscale=4.0",
+   "shared": 0.14235626672357593,
+   "specific": 0.06816317979147031,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 maritalb=legally divorced/civil union dissolved",
+   "shared": 0.27122293491051713,
+   "specific": 0.06704725371110819,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Poland \u00b7 age_group=50-64",
+   "shared": 0.24022397624754363,
+   "specific": 0.061160637673529146,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 eisced=higher tertiary education, master's degree or higher (ES-ISCED V2)",
+   "shared": 0.2861053814421417,
+   "specific": 0.05777131822173257,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 France \u00b7 eisced=upper tier upper secondary education (ES-ISCED IIIa)",
+   "shared": 0.1790068317971252,
+   "specific": 0.05650310563854047,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 age_group=50-64",
+   "shared": 0.28739348364227185,
+   "specific": 0.05578464233070043,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 domicil=a country village",
+   "shared": 0.14375849392468837,
+   "specific": 0.05434484527887237,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 age_group=65+",
+   "shared": 0.28739348364227185,
+   "specific": 0.054224229274162185,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 domicil=a town or small city",
+   "shared": 0.30591290215044603,
+   "specific": 0.05363900313617128,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 age_group=30-49",
+   "shared": 0.1357734390974064,
+   "specific": 0.053054685732554924,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 eisced=upper tier upper secondary education (ES-ISCED IIIa)",
+   "shared": 0.2861053814421417,
+   "specific": 0.049396751785376024,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 France \u00b7 age_group=30-49",
+   "shared": 0.14909220409021678,
+   "specific": 0.049005130941191556,
+   "n": 4
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 domicil=a big city",
+   "shared": 0.30591290215044603,
+   "specific": 0.04877397687913037,
+   "n": 3
+  },
+  {
+   "label": "ISSP \u00b7 Germany \u00b7 topbot=6.0",
+   "shared": 0.23494856274440504,
+   "specific": 0.04768337918489137,
+   "n": 3
+  },
+  {
+   "label": "ISSP \u00b7 Germany \u00b7 domicil=a big city",
+   "shared": 0.20695521459926014,
+   "specific": 0.04686644997270258,
+   "n": 3
+  },
+  {
+   "label": "ISSP \u00b7 Germany \u00b7 topbot=7.0",
+   "shared": 0.23494856274440504,
+   "specific": 0.045661136274122494,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 lrscale=5.0",
+   "shared": 0.14235626672357593,
+   "specific": 0.045600372050765274,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 France \u00b7 age_group=65+",
+   "shared": 0.14909220409021678,
+   "specific": 0.04434066742387273,
+   "n": 4
+  },
+  {
+   "label": "ISSP \u00b7 Germany \u00b7 domicil=a country village",
+   "shared": 0.20695521459926014,
+   "specific": 0.04336326601700918,
+   "n": 3
+  },
+  {
+   "label": "ISSP \u00b7 Germany \u00b7 topbot=8.0",
+   "shared": 0.23494856274440504,
+   "specific": 0.04165926306489896,
+   "n": 3
+  },
+  {
+   "label": "ISSP \u00b7 Germany \u00b7 domicil=a town or a small city",
+   "shared": 0.20695521459926014,
+   "specific": 0.04110690545416995,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 France \u00b7 eisced=lower tier upper secondary education (ES-ISCED IIIb)",
+   "shared": 0.1790068317971252,
+   "specific": 0.03984593004984132,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 eisced=lower tier upper secondary education (ES-ISCED IIIb)",
+   "shared": 0.15231128779664319,
+   "specific": 0.03641168998445695,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 domicil=the suburbs or outskirts of a big city",
+   "shared": 0.14375849392468837,
+   "specific": 0.03622676040285432,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 age_group=50-64",
+   "shared": 0.1357734390974064,
+   "specific": 0.033222031964652364,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 France \u00b7 age_group=50-64",
+   "shared": 0.14909220409021678,
+   "specific": 0.031294063073368,
+   "n": 4
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 eisced=advanced vocational, sub-degree education (ES-ISCED IV)",
+   "shared": 0.2861053814421417,
+   "specific": 0.02851073877930078,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Germany \u00b7 domicil=a town or small city",
+   "shared": 0.14375849392468837,
+   "specific": 0.02535117402261525,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 Russia \u00b7 age_group=30-49",
+   "shared": 0.28739348364227185,
+   "specific": 0.019523089095421414,
+   "n": 3
+  },
+  {
+   "label": "ESS \u00b7 France \u00b7 domicil=a big city",
+   "shared": 0.11253385550287301,
+   "specific": 0.016602233566788378,
+   "n": 5
+  },
+  {
+   "label": "ESS \u00b7 France \u00b7 domicil=a country village",
+   "shared": 0.11253385550287301,
+   "specific": 0.013451189307379879,
+   "n": 5
+  },
+  {
+   "label": "ESS \u00b7 France \u00b7 domicil=a town or small city",
+   "shared": 0.11253385550287301,
+   "specific": 0.010191874774826295,
+   "n": 5
+  }
+ ],
+ "cross_model": {
+  "dev/divided": {
+   "n": 127,
+   "pearson": {
+    "retr6": {
+     "retr6": 1.0,
+     "sonnet46_retr6": 0.688,
+     "sonnet55_retr6": 0.62,
+     "gemini_retr6": 0.725
+    },
+    "sonnet46_retr6": {
+     "retr6": 0.688,
+     "sonnet46_retr6": 1.0,
+     "sonnet55_retr6": 0.682,
+     "gemini_retr6": 0.744
+    },
+    "sonnet55_retr6": {
+     "retr6": 0.62,
+     "sonnet46_retr6": 0.682,
+     "sonnet55_retr6": 1.0,
+     "gemini_retr6": 0.609
+    },
+    "gemini_retr6": {
+     "retr6": 0.725,
+     "sonnet46_retr6": 0.744,
+     "sonnet55_retr6": 0.609,
+     "gemini_retr6": 1.0
+    }
+   },
+   "spearman": {
+    "retr6": {
+     "retr6": 1.0,
+     "sonnet46_retr6": 0.62,
+     "sonnet55_retr6": 0.549,
+     "gemini_retr6": 0.63
+    },
+    "sonnet46_retr6": {
+     "retr6": 0.62,
+     "sonnet46_retr6": 1.0,
+     "sonnet55_retr6": 0.634,
+     "gemini_retr6": 0.69
+    },
+    "sonnet55_retr6": {
+     "retr6": 0.549,
+     "sonnet46_retr6": 0.634,
+     "sonnet55_retr6": 1.0,
+     "gemini_retr6": 0.515
+    },
+    "gemini_retr6": {
+     "retr6": 0.63,
+     "sonnet46_retr6": 0.69,
+     "sonnet55_retr6": 0.515,
+     "gemini_retr6": 1.0
+    }
+   },
+   "worst20_size": 25,
+   "worst20_shared_by_all": 7,
+   "worst20_share_of_first_model_worst_for_all": 0.28,
+   "worst20_union": 47
+  },
+  "dev/all": {
+   "n": 379,
+   "pearson": {
+    "retr6": {
+     "retr6": 1.0,
+     "sonnet46_retr6": 0.674,
+     "sonnet55_retr6": 0.558,
+     "gemini_retr6": 0.737
+    },
+    "sonnet46_retr6": {
+     "retr6": 0.674,
+     "sonnet46_retr6": 1.0,
+     "sonnet55_retr6": 0.635,
+     "gemini_retr6": 0.679
+    },
+    "sonnet55_retr6": {
+     "retr6": 0.558,
+     "sonnet46_retr6": 0.635,
+     "sonnet55_retr6": 1.0,
+     "gemini_retr6": 0.592
+    },
+    "gemini_retr6": {
+     "retr6": 0.737,
+     "sonnet46_retr6": 0.679,
+     "sonnet55_retr6": 0.592,
+     "gemini_retr6": 1.0
+    }
+   },
+   "spearman": {
+    "retr6": {
+     "retr6": 1.0,
+     "sonnet46_retr6": 0.66,
+     "sonnet55_retr6": 0.552,
+     "gemini_retr6": 0.707
+    },
+    "sonnet46_retr6": {
+     "retr6": 0.66,
+     "sonnet46_retr6": 1.0,
+     "sonnet55_retr6": 0.639,
+     "gemini_retr6": 0.711
+    },
+    "sonnet55_retr6": {
+     "retr6": 0.552,
+     "sonnet46_retr6": 0.639,
+     "sonnet55_retr6": 1.0,
+     "gemini_retr6": 0.555
+    },
+    "gemini_retr6": {
+     "retr6": 0.707,
+     "sonnet46_retr6": 0.711,
+     "sonnet55_retr6": 0.555,
+     "gemini_retr6": 1.0
+    }
+   },
+   "worst20_size": 75,
+   "worst20_shared_by_all": 22,
+   "worst20_share_of_first_model_worst_for_all": 0.293,
+   "worst20_union": 143
+  },
+  "eval/divided": {
+   "n": 328,
+   "pearson": {
+    "retr6": {
+     "retr6": 1.0,
+     "gemini_retr6": 0.604
+    },
+    "gemini_retr6": {
+     "retr6": 0.604,
+     "gemini_retr6": 1.0
+    }
+   },
+   "spearman": {
+    "retr6": {
+     "retr6": 1.0,
+     "gemini_retr6": 0.563
+    },
+    "gemini_retr6": {
+     "retr6": 0.563,
+     "gemini_retr6": 1.0
+    }
+   },
+   "worst20_size": 65,
+   "worst20_shared_by_all": 33,
+   "worst20_share_of_first_model_worst_for_all": 0.508,
+   "worst20_union": 97
+  },
+  "eval/all": {
+   "n": 981,
+   "pearson": {
+    "retr6": {
+     "retr6": 1.0,
+     "gemini_retr6": 0.639
+    },
+    "gemini_retr6": {
+     "retr6": 0.639,
+     "gemini_retr6": 1.0
+    }
+   },
+   "spearman": {
+    "retr6": {
+     "retr6": 1.0,
+     "gemini_retr6": 0.601
+    },
+    "gemini_retr6": {
+     "retr6": 0.601,
+     "gemini_retr6": 1.0
+    }
+   },
+   "worst20_size": 196,
+   "worst20_shared_by_all": 109,
+   "worst20_share_of_first_model_worst_for_all": 0.556,
+   "worst20_union": 283
+  }
+ },
+ "headroom": {
+  "shared_survey": {
+   "n": 175,
+   "retr6_rev2": 42.99,
+   "A_oracle_best_arm": 67.55,
+   "A_best_single_arm": {
+    "base": 36.99,
+    "retr6": 40.28,
+    "retr6_rev2": 42.99,
+    "P_groundall5": 45.43,
+    "P_adapt": 43.3,
+    "B_n3_soft": 45.78,
+    "B_n3_soft_rev2": 46.41
+   },
+   "C_fix_placement_only": 64.8,
+   "D_fix_top_option_only": 55.78,
+   "H_fix_entropy_only": 51.59,
+   "E_fix_order_bias_oracle": 50.09,
+   "G_gemini_retr6": 44.82,
+   "G_oracle_best_of_haiku_rev2_gemini": 55.37
+  },
+  "pop_only_task": {
+   "n": 58,
+   "retr6_rev2": -1.15,
+   "A_oracle_best_arm": 51.02,
+   "A_best_single_arm": {
+    "base": -10.94,
+    "retr6": -1.38,
+    "retr6_rev2": -1.15,
+    "P_groundall5": 13.58,
+    "P_adapt": -2.98,
+    "B_n3_soft": 24.27,
+    "B_n3_soft_rev2": 23.57
+   },
+   "C_fix_placement_only": 39.52,
+   "D_fix_top_option_only": 31.94,
+   "H_fix_entropy_only": 36.71,
+   "E_fix_order_bias_oracle": 13.48,
+   "G_gemini_retr6": -1.47,
+   "G_oracle_best_of_haiku_rev2_gemini": 15.88
+  },
+  "other_pop_only": {
+   "n": 95,
+   "retr6_rev2": 43.69,
+   "A_oracle_best_arm": 64.85,
+   "A_best_single_arm": {
+    "base": 17.04,
+    "retr6": 43.25,
+    "retr6_rev2": 43.69,
+    "P_groundall5": 46.55,
+    "P_adapt": 40.28,
+    "B_n3_soft": 30.7,
+    "B_n3_soft_rev2": 33.5
+   },
+   "C_fix_placement_only": 65.14,
+   "D_fix_top_option_only": 54.78,
+   "H_fix_entropy_only": 56.6,
+   "E_fix_order_bias_oracle": 49.8,
+   "G_gemini_retr6": 40.47,
+   "G_oracle_best_of_haiku_rev2_gemini": 55.56
+  },
+  "A_router_dev_fitted": {
+   "choice_counts": {
+    "P_adapt": 227,
+    "retr6": 215,
+    "retr6_rev2": 154,
+    "P_groundall5": 146,
+    "base": 93,
+    "B_n3_soft_rev2": 86,
+    "B_n3_soft": 60
+   },
+   "divided_shared": {
+    "n": 175,
+    "router_S": 46.21,
+    "retr6_rev2_S": 42.99,
+    "oracle_S": 67.55
+   },
+   "divided_all": {
+    "n": 328,
+    "router_S": 36.71,
+    "retr6_rev2_S": 35.39,
+    "oracle_S": 63.85
+   },
+   "all": {
+    "n": 981,
+    "router_S": 41.97,
+    "retr6_rev2_S": 43.56,
+    "oracle_S": 65.21
+   }
+  },
+  "B_demo_average": {
+   "shared_survey": {
+    "n_divided": 175,
+    "share_with_aligned_pool": 0.691,
+    "own_avg_n": 114,
+    "own_demo_avg_S": 27.65,
+    "model_S_same_q": 46.2,
+    "oracle_n": 121,
+    "oracle_best_avg_S": 80.2,
+    "model_S_same_q_oracle": 46.51,
+    "model_moves_away_from_demo_avg": 0.912,
+    "when_moving_model_beats_avg": 0.654
+   },
+   "pop_only_task": {
+    "n_divided": 58,
+    "share_with_aligned_pool": 1.0,
+    "own_avg_n": 58,
+    "own_demo_avg_S": 23.31,
+    "model_S_same_q": -1.15,
+    "oracle_n": 58,
+    "oracle_best_avg_S": 90.8,
+    "model_S_same_q_oracle": -1.15,
+    "model_moves_away_from_demo_avg": 0.914,
+    "when_moving_model_beats_avg": 0.358
+   },
+   "other_pop_only": {
+    "n_divided": 95,
+    "share_with_aligned_pool": 0.758,
+    "own_avg_n": 70,
+    "own_demo_avg_S": 32.75,
+    "model_S_same_q": 46.5,
+    "oracle_n": 72,
+    "oracle_best_avg_S": 73.36,
+    "model_S_same_q_oracle": 46.06,
+    "model_moves_away_from_demo_avg": 0.814,
+    "when_moving_model_beats_avg": 0.596
+   }
+  },
+  "F_fix_shared_error": {
+   "cells": 430,
+   "S_model": 41.02,
+   "S_shared_error_removed": 80.27,
+   "note": "Step C cell set (Grouped subgroup cells of divided questions), not the eval sample"
+  },
+  "G_dev_shared_divided": {
+   "n": 69,
+   "retr6": 36.82,
+   "retr6_rev2": 37.81,
+   "P_groundall5": 38.14,
+   "sonnet46_retr6": 49.7,
+   "sonnet55_retr6": 49.01,
+   "gemini_retr6": 37.09,
+   "oracle_best_of_haiku_and_larger": 62.28,
+   "best_divided_mix_4.10": {
+    "consensus/other_pop_only": {
+     "n": 25,
+     "mix_S": 33.09,
+     "retr6_rev2_S": 59.42
+    },
+    "consensus/pop_only_task": {
+     "n": 10,
+     "mix_S": 23.3,
+     "retr6_rev2_S": 63.45
+    },
+    "consensus/shared_survey": {
+     "n": 79,
+     "mix_S": 25.5,
+     "retr6_rev2_S": 53.73
+    },
+    "divided/other_pop_only": {
+     "n": 35,
+     "mix_S": 46.12,
+     "retr6_rev2_S": 33.07
+    },
+    "divided/pop_only_task": {
+     "n": 22,
+     "mix_S": 47.6,
+     "retr6_rev2_S": 12.78
+    },
+    "divided/shared_survey": {
+     "n": 69,
+     "mix_S": 46.05,
+     "retr6_rev2_S": 37.81
+    },
+    "mixed/other_pop_only": {
+     "n": 29,
+     "mix_S": 34.63,
+     "retr6_rev2_S": 57.46
+    },
+    "mixed/pop_only_task": {
+     "n": 8,
+     "mix_S": -41.4,
+     "retr6_rev2_S": -35.23
+    },
+    "mixed/shared_survey": {
+     "n": 102,
+     "mix_S": 30.38,
+     "retr6_rev2_S": 36.78
+    }
+   }
+  }
+ },
+ "predictability": {
+  "polarity_flip": {
+   "train": "dev, all question types",
+   "n_train": 148,
+   "pos_rate_train": 0.257,
+   "eval_divided/logistic": {
+    "n": 167,
+    "pos_rate": 0.186,
+    "AUC": 0.609,
+    "ci95": [
+     0.483,
+     0.739
+    ]
+   },
+   "eval_divided/gbm": {
+    "n": 167,
+    "pos_rate": 0.186,
+    "AUC": 0.587,
+    "ci95": [
+     0.47,
+     0.704
+    ]
+   },
+   "eval_all/logistic": {
+    "n": 393,
+    "pos_rate": 0.158,
+    "AUC": 0.622,
+    "ci95": [
+     0.549,
+     0.694
+    ]
+   },
+   "eval_all/gbm": {
+    "n": 393,
+    "pos_rate": 0.158,
+    "AUC": 0.636,
+    "ci95": [
+     0.564,
+     0.718
+    ]
+   },
+   "top_features_logistic": {
+    "n_options": -0.667,
+    "dataset_TISP": -0.603,
+    "dataset_Jester": 0.564,
+    "aligned_demo_avg_entropy": -0.555,
+    "pred_entropy_rev2": 0.516,
+    "region_Asia/Oceania": -0.456
+   },
+   "top_features_gbm": {
+    "pred_entropy_rev2": 0.195,
+    "aligned_demo_avg_entropy": 0.142,
+    "demo_mean_entropy": 0.129,
+    "q_len": 0.127,
+    "harness_disagreement": 0.084,
+    "model_disagreement": 0.07
+   }
+  },
+  "bad_question_TVD_gt_0.30": {
+   "train": "dev, all question types",
+   "n_train": 380,
+   "pos_rate_train": 0.161,
+   "eval_divided/logistic": {
+    "n": 328,
+    "pos_rate": 0.131,
+    "AUC": 0.605,
+    "ci95": [
+     0.521,
+     0.691
+    ]
+   },
+   "eval_divided/gbm": {
+    "n": 328,
+    "pos_rate": 0.131,
+    "AUC": 0.585,
+    "ci95": [
+     0.485,
+     0.674
+    ]
+   },
+   "eval_all/logistic": {
+    "n": 981,
+    "pos_rate": 0.169,
+    "AUC": 0.63,
+    "ci95": [
+     0.589,
+     0.675
+    ]
+   },
+   "eval_all/gbm": {
+    "n": 981,
+    "pos_rate": 0.169,
+    "AUC": 0.673,
+    "ci95": [
+     0.629,
+     0.713
+    ]
+   },
+   "top_features_logistic": {
+    "n_options": 0.554,
+    "demo_mean_entropy": -0.535,
+    "pred_top_mass_rev2": 0.511,
+    "dataset_OpinionQA": -0.453,
+    "aligned_demo_avg_entropy": 0.442,
+    "region_Africa": 0.422
+   },
+   "top_features_gbm": {
+    "pred_top_mass_rev2": 0.177,
+    "model_disagreement": 0.118,
+    "harness_disagreement": 0.1,
+    "aligned_demo_avg_entropy": 0.097,
+    "demo_mean_sim": 0.088,
+    "pred_entropy_rev2": 0.083
+   }
+  },
+  "error_toward_textbook": {
+   "train": "dev, all question types",
+   "n_train": 37,
+   "pos_rate_train": 0.568,
+   "eval_divided/logistic": {
+    "n": 50,
+    "pos_rate": 0.54,
+    "AUC": 0.568,
+    "ci95": [
+     0.392,
+     0.745
+    ]
+   },
+   "eval_divided/gbm": {
+    "n": 50,
+    "pos_rate": 0.54,
+    "AUC": 0.523,
+    "ci95": [
+     0.359,
+     0.676
+    ]
+   },
+   "eval_all/logistic": {
+    "n": 108,
+    "pos_rate": 0.583,
+    "AUC": 0.553,
+    "ci95": [
+     0.456,
+     0.667
+    ]
+   },
+   "eval_all/gbm": {
+    "n": 108,
+    "pos_rate": 0.583,
+    "AUC": 0.501,
+    "ci95": [
+     0.381,
+     0.598
+    ]
+   },
+   "top_features_logistic": {
+    "pred_entropy_rev2": -0.616,
+    "demo_mean_sim": -0.601,
+    "q_len": -0.48,
+    "pred_top_mass_rev2": 0.458,
+    "aligned_demo_avg_entropy": 0.302,
+    "dataset_OpinionQA": 0.281
+   },
+   "top_features_gbm": {
+    "order_sensitivity": 0.374,
+    "pred_entropy_rev2": 0.206,
+    "demo_mean_sim": 0.14,
+    "model_disagreement": 0.083,
+    "pred_top_mass_rev2": 0.072,
+    "demo_mean_entropy": 0.035
+   }
+  }
+ },
+ "extra_cis": {
+  "eval_shared: B_n3_soft_rev2 vs retr6_rev2": [
+   3.42,
+   -1.32,
+   8.1,
+   175
+  ],
+  "eval_shared: panel vs retr6_rev2": [
+   2.44,
+   -1.56,
+   6.54,
+   175
+  ],
+  "eval_shared: gemini_retr6 vs retr6_rev2": [
+   1.82,
+   -2.74,
+   6.45,
+   175
+  ],
+  "eval_pop_tasks: B_n3_soft vs retr6_rev2": [
+   25.42,
+   11.67,
+   39.13,
+   58
+  ],
+  "dev_shared: sonnet46_retr6 vs haiku retr6_rev2": [
+   11.89,
+   3.3,
+   20.33,
+   69
+  ],
+  "dev_shared: sonnet55_retr6 vs haiku retr6_rev2": [
+   11.2,
+   2.79,
+   20.14,
+   69
+  ],
+  "dev_shared: sonnet46_retr6 vs haiku retr6": [
+   12.88,
+   6.38,
+   19.91,
+   69
+  ],
+  "dev_shared_ceilings": {
+   "n": 69,
+   "retr6_rev2": 37.81,
+   "C_fix_placement": 65.84,
+   "D_fix_top": 56.81,
+   "H_fix_entropy": 47.87,
+   "A_oracle_best_haiku_arm": 62.42
+  }
+ },
+ "value_laden_rule": "Keyword rule, question stem and option texts only (never answers).\nValue-laden topics (stem regex): sexual minorities (gay|lesbian|homosexual|same-sex|sex change|transgender),\ngender roles (husband|wife|housewife|a woman should|men make better), immigration (immigra|foreigner|refugee|\npeople from (the )?poorer countries|allow people), democracy vs authoritarian rule (democra|military government|\nstrong leader), civic participation (petition|demonstration|boycott|contacted a politician|discuss politics|\ntalk about politics), racial justice (slavery|black people|racial), secular morality (believe in god in order to be),\nreproductive / family autonomy (abortion|never to have children|not married|divorce), environment (protected nature|\nprotect the environment|climate).\nTextbook option(s): the tolerant / egalitarian / pro-democracy / civic / secular / pro-environment side, chosen from\noption text: agree-side (agree, not disagree) unless the statement is negatively framed (ashamed|job is to earn|look\nafter the home|men make better|wrong|military government|prefer a society that defends), then disagree-side;\napprove-side; 'yes' for participation; beneficial / allow many / allow some for immigration; 'under no circumstance'\nand 'democracy' for regime questions; not-wrong for abortion; unwilling for reducing protected areas; 'great deal' /\n'fair amount' for the slavery legacy; 'not important' for belief-in-god-to-be-moral; 'open' for the\ntraditional-vs-open society item. Everything else: not value-laden."
+}
