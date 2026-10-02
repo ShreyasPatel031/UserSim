@@ -1,0 +1,193 @@
+{
+  "weights": {
+    "other_countries": 0.45,
+    "disjoint_subgroup": 0.75
+  },
+  "overall": {
+    "plain": {
+      "S": 43.55914121719265,
+      "vs_plain": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "best non-leak (50/50 plain+panel)": {
+      "S": 44.63375924158126,
+      "vs_plain": 1.074618024388606,
+      "ci": [
+        0.1,
+        2.0
+      ]
+    },
+    "data-only where available, else non-leak": {
+      "S": 57.89735093331641,
+      "vs_plain": 14.338209716123758,
+      "ci": [
+        11.8,
+        17.0
+      ]
+    },
+    "leak harness where available, else non-leak": {
+      "S": 55.6526864992771,
+      "vs_plain": 12.093545282084445,
+      "ci": [
+        9.8,
+        14.3
+      ]
+    },
+    "leak harness + data blend (dev-tuned), else non-leak": {
+      "S": 59.20314196283413,
+      "vs_plain": 15.644000745641483,
+      "ci": [
+        13.3,
+        18.1
+      ]
+    }
+  },
+  "by_relation": {
+    "disjoint_subgroup": {
+      "N": 398,
+      "plain": 48.934193295125354,
+      "data": 70.99232775072295,
+      "leak": 65.94803369482328,
+      "final": 73.66186670980242
+    },
+    "other_countries": {
+      "N": 303,
+      "plain": 33.292225358262606,
+      "data": 49.78775355181862,
+      "leak": 49.146213038470435,
+      "final": 50.50889049651584
+    },
+    "None": {
+      "N": 280,
+      "plain": 47.02915828233047,
+      "data": NaN,
+      "leak": NaN,
+      "final": 48.059519623552234
+    }
+  },
+  "by_dataset": {
+    "Afrobarometer": {
+      "N": 125,
+      "plain": 52.29491451516617,
+      "final": 73.04853040418426,
+      "has_data": 122
+    },
+    "ESS": {
+      "N": 125,
+      "plain": 47.31569070951214,
+      "final": 63.75334715731621,
+      "has_data": 120
+    },
+    "ISSP": {
+      "N": 125,
+      "plain": 37.15447568502884,
+      "final": 55.51614591298355,
+      "has_data": 109
+    },
+    "LatinoBarometro": {
+      "N": 125,
+      "plain": 21.198026875244235,
+      "final": 52.557915608663976,
+      "has_data": 109
+    },
+    "OpinionQA": {
+      "N": 125,
+      "plain": 73.3841484167143,
+      "final": 71.45562594712375,
+      "has_data": 99
+    },
+    "ChaosNLI": {
+      "N": 25,
+      "plain": 63.23851203501094,
+      "final": 55.4590497030322,
+      "has_data": 0
+    },
+    "Choices13k": {
+      "N": 25,
+      "plain": 11.131112522224766,
+      "final": 18.47891219712483,
+      "has_data": 0
+    },
+    "ConspiracyCorr": {
+      "N": 25,
+      "plain": 34.21361507060058,
+      "final": 39.71705205111246,
+      "has_data": 25
+    },
+    "DICES": {
+      "N": 25,
+      "plain": 83.94845127611171,
+      "final": 84.32241743176533,
+      "has_data": 0
+    },
+    "GlobalOpinionQA": {
+      "N": 25,
+      "plain": 43.97062080816274,
+      "final": 44.33775061154698,
+      "has_data": 5
+    },
+    "Jester": {
+      "N": 25,
+      "plain": 50.67183928964455,
+      "final": 57.64596374270601,
+      "has_data": 0
+    },
+    "MoralMachine": {
+      "N": 25,
+      "plain": 28.03586679455977,
+      "final": 43.01175509255316,
+      "has_data": 4
+    },
+    "NumberGame": {
+      "N": 25,
+      "plain": 2.3332336615581837,
+      "final": 6.3127401623790504,
+      "has_data": 0
+    },
+    "OSPsychBig5": {
+      "N": 25,
+      "plain": 38.34491087130787,
+      "final": 71.41389075781095,
+      "has_data": 25
+    },
+    "OSPsychMACH": {
+      "N": 25,
+      "plain": -0.47422288578819916,
+      "final": 58.84351205842115,
+      "has_data": 25
+    },
+    "OSPsychMGKT": {
+      "N": 25,
+      "plain": 23.988185644720424,
+      "final": 63.293431243798175,
+      "has_data": 21
+    },
+    "TISP": {
+      "N": 25,
+      "plain": 36.326646062089566,
+      "final": 49.99827532128497,
+      "has_data": 25
+    },
+    "WisdomOfCrowds": {
+      "N": 25,
+      "plain": 54.32687120044821,
+      "final": 53.4723429264508,
+      "has_data": 0
+    },
+    "OSPsychRWAS": {
+      "N": 19,
+      "plain": 71.3351587224127,
+      "final": 74.10463688588699,
+      "has_data": 0
+    },
+    "MoralMachineClassic": {
+      "N": 12,
+      "plain": 58.86261953047174,
+      "final": 80.93093361873433,
+      "has_data": 12
+    }
+  }
+}
