@@ -303,3 +303,30 @@ Neither router beats always-`retr6_rev2` over all questions. The dev-fitted rule
 2. **The error to attack is order** (≈ 45%): which option the crowd favours. The only lever that moves it is the model (Sonnet 5.5 `retr6`: +14.3 on all dev shared-survey questions, +15.0 on predicted-divided). Run the panel with Sonnet 5.5 as a next step.
 3. **For the panel**, fix type collapse and the planner's weights (forced-diverse types, equal or fitted weights) before adding more machinery.
 4. **Pop-only task datasets** stay unsolved. The apparent segments win is flattening; only OSPsychMACH has a real panel gain (+18.7 on all its questions, N 25).
+
+## 5. Follow-up: a bigger model inside the segments harness (dev)
+
+Question: Haiku's best divided harness and Sonnet's simple harness score about the same on divided questions, but Sonnet picks the right side more often while Haiku hedges. Does putting Sonnet 5.5 *inside* the segments harness get both?
+
+New runs: Sonnet 5.5 × `B_n3_soft_rev2`, `B_n3_soft`, `B_ground3_rev2` on dev (380 questions, $2.86). The Sonnet 4.6 × `B_n3_soft_rev2` run was already logged. Code: `src/human_sim/simbench_sonnet_segments.py`. Numbers: `results/simbench_ablate/sonnet_segments_report.json`. ΔS is paired against Haiku grounded segments (`B_ground3_rev2`), Haiku's best divided harness. Flip = wrong side of the scale (ordinal questions only).
+
+| Arm | Divided, by truth (127) | Divided shared (69) | Divided tasks (22*) | Predicted divided (81) | All questions (380) | Flip, divided |
+|---|---|---|---|---|---|---|
+| Haiku grounded segments (reference) | 38.1 | 41.9 | 29.6 | 21.8 | 37.2 | 0.39 |
+| Haiku segments | 37.3 | 42.0 | 29.0 | 15.6 | 31.1 | 0.30 |
+| Sonnet 5.5 simple (`retr6`) | 39.0 (+0.9) | 49.0 (+7.1) | 8.4 (−21.2) | 39.0 (**+17.3** [+7, +28]) | 50.2 (**+13.0** [+8, +18]) | 0.19 |
+| Sonnet 5.5 segments | 36.4 (−1.7) | 47.1 (+5.2) | 7.8 (−21.7) | 27.4 (+5.7) | 42.3 (+5.1) | 0.20 |
+| **Sonnet 5.5 grounded segments** | **45.4 (+7.3 [+1.2, +13.0])** | 48.6 (+6.7) | **34.2 (+4.7)** | 38.3 (**+16.5** [+10, +24]) | **50.4 (+13.2** [+9, +17]) | 0.26 |
+| Sonnet 4.6 segments | 41.0 (+2.8) | 47.9 (+6.0) | 25.6 (−4.0) | 23.1 (+1.3) | 39.2 (+2.0) | 0.24 |
+
+Sonnet 5.5 grounded segments vs Sonnet 5.5 simple, paired: all divided +6.4 [+0.3, +12.6]; divided shared −0.4 [−5.6, +5.0]; divided tasks +25.9 [+6, +43] (N 22); predicted divided −0.8; all questions +0.2 [−2.9, +3.2].
+
+Reading:
+
+- **Sonnet 5.5 grounded segments is the only arm that is good on every view**: the best on truth-divided questions, and tied for best on predicted-divided and all questions. It is the first divided lever that does not lose when re-tested without the truth.
+- **On shared surveys the harness adds nothing over Sonnet alone.** Sonnet already gets the spread right there and gets the side right more often; the segments add no information.
+- **Its whole divided gain over Sonnet simple comes from the task datasets.** There Sonnet alone is too confident (entropy gap −0.08) and the grounded segments restore the spread. N 22, so the CI is wide.
+- **Plain (ungrounded) segments do not combine with Sonnet**: worse than Sonnet simple everywhere.
+- Answer to the question: yes, partly. With a bigger model, the side comes from the model and the spread from the grounded segments, but the spread only matters where the model is over-confident.
+
+Next: confirm on eval before switching (Sonnet 5.5 `retr6` and `B_ground3_rev2` on the 981 eval questions, est. ~$8). A cheaper option is to route Sonnet grounded segments to the Pop-only task datasets and Sonnet simple elsewhere.
