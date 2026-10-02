@@ -1,6 +1,6 @@
 # SimBench: injecting human answer distributions — progress log
 
-Status as of 2026-10-01. Branch `claude/blissful-pascal-0ldgye`. All numbers are SimBench scores (higher is better) unless stated.
+Status as of 2026-10-02. Branch `claude/blissful-pascal-0ldgye`. All numbers are SimBench scores (higher is better) unless stated.
 
 ## 1. The problem
 
@@ -143,6 +143,35 @@ Cross-validated mixes on divided questions:
 | Panel both orders 0.6 + reversed segments 0.4 | 44.4 |
 | **Panel both orders 0.75 + grounded segments 0.25, pulled 29% toward even split** | **45.9** |
 
+### 4.11 Failure mode: Pop vs Grouped, or consensus vs divided? (Haiku)
+Full write-up: `simbench_failure_mode_results.md`. Spec: `simbench_failure_mode_spec.md`.
+
+**Step 0 — existing full-benchmark runs split by Pop/Grouped and question type:**
+| Arm | Divided: Pop − Grouped | Same, only the 5 datasets in both splits |
+|---|---|---|
+| base | −23.4 [−33.4, −13.5] | +1.4 [−12.5, +14.7] |
+| retr6 | −11.1 [−20.5, −1.5] | −0.3 [−11.4, +10.7] |
+| panel | −9.6 [−17.8, −0.8] | −1.8 [−12.4, +9.6] |
+
+On consensus and mixed questions the gap is noise once real data is in the prompt. On divided questions the gap comes from Pop-only task datasets: `retr6` scores OSPsychMACH −1.1, Choices13k −1.9, NumberGame 1.5, OSPsychMGKT −7.2. Inside the same surveys, Pop and Grouped score the same.
+
+**Step 1 — composition data:** derivable only for country-level questions in the 5 shared surveys (Grouped subgroup respondent counts). That is 145 / 981 eval (15%) and 66 dev. Pop-only datasets have none.
+
+**Composition arms (eval, 145 questions; both option orders, `retr6` demos):**
+| Arm | All | Pop divided (38) |
+|---|---|---|
+| C0 `retr6_rev2` | 46.8 | 47.5 |
+| C1 + composition table | 46.5 | 44.4 |
+| C2 one call per group, real shares | 47.9 | 49.4 (+1.9, n.s.; dev −3.1) |
+| C3 same, equal weights | 48.0 | 49.6 |
+
+- **Real shares = equal shares:** −0.1 [−0.7, +0.4], even where shares differ by ≥ 10 points.
+- **No collapse on divided questions:** predicted minus true entropy is about 0. The top option is right only 53–58% of the time.
+- **Oracle (diagnostic only):** true subgroup answers mixed with true shares give S ≈ 97. The information is in subgroup answers, not shares.
+- **The same error in every group:** Haiku's groups differ by 0.054 TVD (real subgroups 0.089), and each group is 0.18 TVD from its own truth. The shared error is 2–4× the real between-group differences.
+
+**Verdict:** neither H1 (composition missing) nor H2 (collapse) as stated. The model spreads about the right amount but puts mass on the wrong options, the same way for every group. The remaining hole is the Pop-only task datasets. Counter-reading: composition could only be tested where Pop already matched Grouped, it was coarse (often a 50/50 gender split), and the divided cells are small.
+
 ## 5. Current best picks
 
 | Question type | Model | Harness | Evidence |
@@ -162,6 +191,8 @@ Everything stays observable: personas, shares, each type's answer, both option o
 5. **Option order bias is real for the panel** (+6 on divided from averaging both orders), much less for single-call `retr6`.
 6. **Larger models fix consensus, not disagreement.**
 7. **Routing now decides the total score.**
+8. **The divided-question error is placement, not spread** (§4.11). Entropy on divided questions is already right; the mass sits on the wrong options, in the same way for every subgroup.
+9. **Population composition (shares) adds nothing** where it can be derived. The Pop-vs-Grouped gap on divided questions comes from Pop-only task datasets (personality scales, gambles, number puzzles), not from population surveys.
 
 ## 7. Open problems and next-step options (for discussion)
 
@@ -169,11 +200,13 @@ Everything stays observable: personas, shares, each type's answer, both option o
 2. **Confirm the picks on the full benchmark.** Sonnet 5.5 `retr6` ~$3; new Haiku divided harness ~$13 (weights fitted on dev).
 3. **More divided-question ideas.** Panel types that carry views on the topic; more types for contested questions; reversal + more orders (cyclic) for the panel; dataset-aware choice between panel and segments (they win on different datasets).
 4. **Fit weights instead of asking for shares** (mixture-of-personas style), now that we know model shares are uninformative.
-5. **Bring it back to UserSim.** The panel design maps directly onto the Vercel persona-agent flow: question-specific types, grounded on real answers, asked in both option orders, weighted.
+5. **Pop-only task datasets** (OSPsychMACH, Choices13k, NumberGame, OSPsychMGKT score near or below 0): task-specific handling, e.g. demos matched within the same scale or game.
+6. **Predict subgroup answers better** (e.g. demos from the same subgroup cell) rather than adding shares; the oracle shows subgroup answers carry the signal.
+7. **Bring it back to UserSim.** The panel design maps directly onto the Vercel persona-agent flow: question-specific types, grounded on real answers, asked in both option orders, weighted.
 
 ## 8. Cost
 
-Roughly **$100 of Vertex usage** over the whole session (list prices; estimated from token counts). Largest items: Sonnet 4.6 dev harnesses ~$23, full-benchmark Haiku panel runs ~$14, cross-model / reversal round ~$10. Typical full-benchmark runs: Haiku `retr6` ~$1, Haiku panel ~$8, Sonnet 5.5 `retr6` ~$3.
+Roughly **$102 of Vertex usage** (incl. ~$2 for the failure-mode experiment) over the whole session (list prices; estimated from token counts). Largest items: Sonnet 4.6 dev harnesses ~$23, full-benchmark Haiku panel runs ~$14, cross-model / reversal round ~$10. Typical full-benchmark runs: Haiku `retr6` ~$1, Haiku panel ~$8, Sonnet 5.5 `retr6` ~$3.
 
 ## 9. Caveats
 
@@ -192,6 +225,8 @@ Roughly **$100 of Vertex usage** over the whole session (list prices; estimated 
 | `src/human_sim/simbench_mix.py` | Mixes of logged arms, dev-fitted, eval-scored |
 | `src/human_sim/simbench_harness_eval.py` | Per-model harness comparison on dev |
 | `src/human_sim/simbench_nbr_calibrate.py` | Calibration keyed on neighbour entropy |
-| `results/simbench_ablate/*.json` | Every run (per question, with segment traces) and reports: `mix_report.json`, `panel_blend_report.json`, `segment_diagnosis.json`, `harness_eval_dev.json` |
+| `src/human_sim/simbench_failure_mode.py` | Pop/Grouped × question-type diagnostics, composition arms, oracle |
+| `docs/experiments/simbench_failure_mode_results.md` | Full failure-mode write-up |
+| `results/simbench_ablate/*.json` | Every run (per question, with segment traces) and reports: `mix_report.json`, `panel_blend_report.json`, `segment_diagnosis.json`, `harness_eval_dev.json`, `failure_mode_step0_crosstab.json`, `failure_mode_report.json` |
 
 Run any arm: `PYTHONPATH=src python -m human_sim.simbench_ablate --model claude-haiku-4-5 --set dev --arms retr6,P_groundall5`
