@@ -1,70 +1,40 @@
 [
   {
-    "arm": "retr6_rev2",
-    "n_scored": 981,
-    "S": 43.56,
-    "mean_TVD": 0.1837,
+    "arm": "C1_comp_direct",
+    "n_scored": 145,
+    "S": 46.45,
+    "mean_TVD": 0.1803,
     "S_by_split": {
-      "Grouped": 46.12,
-      "Pop": 40.9
+      "Grouped": 43.76,
+      "Pop": 47.04
     },
     "S_by_dataset": {
-      "Afrobarometer": 52.29,
-      "ChaosNLI": 63.24,
-      "Choices13k": 11.13,
-      "ConspiracyCorr": 34.21,
-      "DICES": 83.95,
-      "ESS": 47.32,
-      "GlobalOpinionQA": 43.97,
-      "ISSP": 37.15,
-      "Jester": 50.67,
-      "LatinoBarometro": 21.2,
-      "MoralMachine": 28.04,
-      "MoralMachineClassic": 58.86,
-      "NumberGame": 2.33,
-      "OSPsychBig5": 38.34,
-      "OSPsychMACH": -0.47,
-      "OSPsychMGKT": 23.99,
-      "OSPsychRWAS": 71.34,
-      "OpinionQA": 73.38,
-      "TISP": 36.33,
-      "WisdomOfCrowds": 54.33
+      "Afrobarometer": 62.82,
+      "ESS": 38.38,
+      "ISSP": 46.87,
+      "LatinoBarometro": 25.28,
+      "OpinionQA": 63.8
     },
-    "cost_usd": 2.0861,
-    "fail": 0
+    "cost_usd": 0.3409,
+    "fail": 836
   },
   {
-    "arm": "B_n3_soft_rev2",
-    "n_scored": 981,
-    "S": 31.58,
-    "mean_TVD": 0.226,
+    "arm": "C2_comp_personas",
+    "n_scored": 145,
+    "S": 47.91,
+    "mean_TVD": 0.1771,
     "S_by_split": {
-      "Grouped": 40.02,
-      "Pop": 22.81
+      "Grouped": 48.34,
+      "Pop": 47.81
     },
     "S_by_dataset": {
-      "Afrobarometer": 44.23,
-      "ChaosNLI": 38.6,
-      "Choices13k": 1.27,
-      "ConspiracyCorr": 16.03,
-      "DICES": 55.91,
-      "ESS": 34.27,
-      "GlobalOpinionQA": 29.44,
-      "ISSP": 40.42,
-      "Jester": -12.75,
-      "LatinoBarometro": 11.03,
-      "MoralMachine": 3.39,
-      "MoralMachineClassic": 13.32,
-      "NumberGame": 7.75,
-      "OSPsychBig5": 37.11,
-      "OSPsychMACH": -17.63,
-      "OSPsychMGKT": 23.65,
-      "OSPsychRWAS": 10.67,
-      "OpinionQA": 64.72,
-      "TISP": 27.55,
-      "WisdomOfCrowds": 41.14
+      "Afrobarometer": 59.47,
+      "ESS": 40.28,
+      "ISSP": 49.39,
+      "LatinoBarometro": 28.84,
+      "OpinionQA": 66.65
     },
-    "cost_usd": 2.9363,
-    "fail": 0
+    "cost_usd": 0.9997,
+    "fail": 836
   }
 ]

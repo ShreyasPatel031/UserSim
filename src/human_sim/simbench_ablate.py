@@ -28,6 +28,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from google import genai
 from google.genai import types
@@ -1048,6 +1049,144 @@ def _sampled(base, n: int, temperature: float):
     return arm
 
 
+
+# --------------------------------------------------------------------------- #
+# population composition (shares and attributes only, never answers)
+# --------------------------------------------------------------------------- #
+
+_COUNTRY_KEYS = ("country", "cntry")
+_CONTEXT_SENTENCE = re.compile(r"(the year is|the timeframe is|you are from)", re.I)
+
+
+def _country_of(vm: dict) -> str:
+    for k in _COUNTRY_KEYS:
+        if k in vm:
+            return str(vm[k])
+    return ""
+
+
+def _group_sentence(persona: str) -> str:
+    parts = re.split(r"(?<=\.)\s+", persona.strip())
+    return " ".join(p for p in parts if not _CONTEXT_SENTENCE.search(p)).strip()
+
+
+def _composition_index(grouped: pd.DataFrame) -> dict:
+    """(dataset, country) -> attribute -> value -> [(group_size, question_text, sentence)].
+    Built from single-attribute Grouped cells. Only sizes are kept, never answers."""
+    idx: dict = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+    for _, r in grouped.iterrows():
+        vm = r["group_prompt_variable_map"]
+        other = [k for k in vm if k not in _COUNTRY_KEYS]
+        if len(other) != 1 or not r["group_size"] or r["group_size"] <= 0:
+            continue
+        sentence = _group_sentence(_filled_persona(r))
+        idx[(r["dataset_name"], _country_of(vm))][other[0]][vm[other[0]]].append(
+            (float(r["group_size"]), r["input_template"], sentence)
+        )
+    return idx
+
+
+def _composition(row, ctx, min_coverage: float = 0.8, max_cells: int = 5) -> list[dict]:
+    """Attributes whose cells cover the target population, each as cells with real shares.
+    Sizes from the same question as the target are excluded."""
+    vm = row["group_prompt_variable_map"]
+    if any(k not in _COUNTRY_KEYS for k in vm):
+        return []  # the target is already a subgroup
+    dims = ctx.get("comp_index", {}).get((row["dataset_name"], _country_of(vm)), {})
+    own = row.get("_orig_template", row["input_template"])
+    raw = {}
+    for dim, cells in dims.items():
+        sized = {}
+        for value, obs in cells.items():
+            sizes = [sz for sz, q, _ in obs if q != own]
+            if sizes:
+                sized[value] = (float(np.median(sizes)), obs[0][2])
+        if len(sized) >= 2:
+            raw[dim] = sized
+    if not raw:
+        return []
+    total = float(row["group_size"]) if row.get("group_size", -1) and row["group_size"] > 0 else 0.0
+    total = total or max(sum(v[0] for v in c.values()) for c in raw.values())
+    out = []
+    for dim, sized in raw.items():
+        coverage = sum(v[0] for v in sized.values()) / total
+        if coverage < min_coverage:
+            continue
+        top = sorted(sized.items(), key=lambda kv: -kv[1][0])[:max_cells]
+        tot = sum(v[0] for _, v in top)
+        out.append(
+            {
+                "attribute": dim,
+                "coverage": round(min(coverage, 9.99), 3),
+                "cells": [
+                    {"value": str(val), "share": v[0] / tot, "sentence": v[1]} for val, v in top
+                ],
+            }
+        )
+    # deterministic preference: more groups (so real vs equal weights can differ), then
+    # coverage; no answer information is used
+    out.sort(key=lambda d: (-len(d["cells"]), -min(d["coverage"], 1.0), d["attribute"]))
+    return out
+
+
+def _composition_text(comp: list[dict], max_attrs: int = 3) -> str:
+    lines = ["Who makes up this population (share of respondents):"]
+    for d in comp[:max_attrs]:
+        cells = ", ".join(f"{c['value']} {round(100 * c['share'])}%" for c in d["cells"])
+        lines.append(f"- {d['attribute']}: {cells}")
+    return "\n".join(lines) + "\n\n"
+
+
+def arm_C1_comp_direct(row, ctx):
+    """retr6 + a short composition table; direct prediction. Uncovered targets are skipped."""
+    comp = _composition(row, ctx)
+    if not comp:
+        return "", "", {"pipeline": lambda call: (None, 0, 0)}
+    system, user, opts = arm_retr6(row, ctx)
+    return system, _composition_text(comp) + user, opts
+
+
+def arm_C2_comp_personas(row, ctx):
+    """One call per top group of the preferred attribute (both option orders), with retr6
+    demos; mixed with the groups' REAL shares. Equal-weight mix (C3) is computed offline
+    from the logged per-group answers."""
+    comp = _composition(row, ctx)
+    if not comp:
+        return "", "", {"pipeline": lambda call: (None, 0, 0)}
+    dim = comp[0]
+    keys = list(row["human_answer"].keys())
+
+    def group_arm(sentence):
+        def arm(r, c):
+            system, user, opts = arm_retr6(r, c)
+            return system + " " + sentence, user, opts
+
+        return arm
+
+    def pipeline(call):
+        dists, diag, pt, ot = [], [], 0, 0
+        for cell in dim["cells"]:
+            inner = _rev2(group_arm(cell["sentence"]))(row, ctx)[2]["pipeline"]
+            merged, a, b, both = inner(call)
+            pt, ot = pt + a, ot + b
+            dists.append(merged)
+            diag.append(
+                {
+                    "desc": f"{dim['attribute']} = {cell['value']}",
+                    "share": cell["share"],
+                    "dist": merged,
+                    "orders": both,
+                }
+            )
+        diag = [x for x in diag if x["dist"] is not None]
+        merged = _weighted_merge(dists, [c["share"] for c in dim["cells"]], keys)
+        for x in diag:
+            x["attribute_coverage"] = dim["coverage"]
+        return merged, pt, ot, diag
+
+    return "", "", {"pipeline": pipeline}
+
+
 def _parse_segments(raw: str, keys: list[str], soft: bool) -> dict[str, float] | None:
     start, end = (raw or "").find("{"), (raw or "").rfind("}")
     if start < 0 or end <= start:
@@ -1118,6 +1257,14 @@ ARMS["P_groundall5_R"] = _on_reversed(_panel_arm(5, True, True))
 ARMS["B_ground3"] = _grounded_segments_arm(3)
 ARMS["B_ground3_rev2"] = _rev2(_grounded_segments_arm(3))
 ARMS["B_n3_soft_t1x3"] = _sampled(_segments_arm(3, True), 3, 1.0)
+def arm_C1_rev2(row, ctx):
+    if not _composition(row, ctx):
+        return "", "", {"pipeline": lambda call: (None, 0, 0)}
+    return _rev2(arm_C1_comp_direct)(row, ctx)
+
+
+ARMS["C1_comp_direct"] = arm_C1_rev2
+ARMS["C2_comp_personas"] = arm_C2_comp_personas
 ARMS["P_cons5"] = _panel_arm(5, True, True, "consensus")
 ARMS["P_adapt"] = _panel_arm(5, True, True, "adaptive")
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
@@ -1540,6 +1687,7 @@ def build_env(pop_n: int, grouped_n: int, seed: int, which: str = "eval", limit:
             if len(ext[key]) < 6:
                 ext[key].append(_demo_entry(row))
     ctx["ext_by_dataset"] = dict(ext)
+    ctx["comp_index"] = _composition_index(grouped_full)
     return sample, norms, ctx
 
 
