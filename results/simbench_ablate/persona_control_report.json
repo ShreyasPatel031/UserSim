@@ -1,0 +1,862 @@
+{
+  "valid": {
+    "N_dev": 379,
+    "N_eval": 981,
+    "arms": {
+      "personas, global control (dev in-sample)": 43.01209145966625,
+      "personas, dyn control (dev in-sample)": 45.714171330499845,
+      "plain (no personas)": {
+        "S": 43.559124523293576,
+        "vs_plain": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "by_band": {
+          "consensus": 0.0,
+          "mixed": 0.0,
+          "divided": 0.0
+        }
+      },
+      "anchor alone (no personas)": {
+        "S": 43.559124523293576,
+        "vs_plain": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "by_band": {
+          "consensus": 0.0,
+          "mixed": 0.0,
+          "divided": 0.0
+        }
+      },
+      "50/50 plain+panel": {
+        "S": 44.633689579925516,
+        "vs_plain": 1.0745650566319487,
+        "ci": [
+          0.1,
+          2.0
+        ],
+        "by_band": {
+          "consensus": -2.957872344311357,
+          "mixed": 0.9214430370865417,
+          "divided": 5.270551151885179
+        }
+      },
+      "personas, raw control": {
+        "S": 41.648423314434865,
+        "vs_plain": -1.9107012088587059,
+        "ci": [
+          -3.7,
+          -0.0
+        ],
+        "by_band": {
+          "consensus": -7.93378846840976,
+          "mixed": -2.519555413431937,
+          "divided": 4.732178274903562
+        }
+      },
+      "personas, global control": {
+        "S": 44.60082041701075,
+        "vs_plain": 1.0416958937171799,
+        "ci": [
+          0.2,
+          1.9
+        ],
+        "by_band": {
+          "consensus": -1.3333094246391626,
+          "mixed": 0.8973017217625382,
+          "divided": 3.566575349365169
+        }
+      },
+      "personas, dyn control": {
+        "S": 45.00560806164836,
+        "vs_plain": 1.4464835383547856,
+        "ci": [
+          0.4,
+          2.5
+        ],
+        "by_band": {
+          "consensus": -1.8735327518295983,
+          "mixed": 0.27939056786505706,
+          "divided": 5.929481958810074
+        }
+      }
+    },
+    "dyn_controls_by_band": {
+      "consensus": {
+        "pull_to_anchor": 0.36736354119441744,
+        "sharpen_t": 1.1385188910820778,
+        "spread_raw_personas": 0.6838073735619025,
+        "spread_controlled": 0.630884623694579,
+        "spread_true": 0.4420640469823206
+      },
+      "mixed": {
+        "pull_to_anchor": 0.4585501614739973,
+        "sharpen_t": 1.0522922537927155,
+        "spread_raw_personas": 0.835459384891452,
+        "spread_controlled": 0.8167041954606066,
+        "spread_true": 0.7465037640822494
+      },
+      "divided": {
+        "pull_to_anchor": 0.5670676767343197,
+        "sharpen_t": 0.9551636454654405,
+        "spread_raw_personas": 0.9168230438966106,
+        "spread_controlled": 0.9141551810399344,
+        "spread_true": 0.91871069515891
+      }
+    },
+    "share_exponent": 1.1777461207444833,
+    "coefs": {
+      "pull": {
+        "icpt": -0.1671567657642323,
+        "h_plain": 0.5311503083895366,
+        "maxp_plain": -0.011905263361762434,
+        "h_anchor": 0.24513129837951683,
+        "h_panel": -0.11065216201155222,
+        "persona_spread": 0.614626724714059,
+        "persona_to_anchor": -0.1716844293881185,
+        "top_share": -0.011764608541165043,
+        "nbr_h": -0.07742799814298659,
+        "nbr_missing": -2.263353605768895e-09,
+        "has_evidence": 3.062637114872847e-09,
+        "rel_disjoint": -2.0549334461450488e-08,
+        "rel_country": 4.3452178142182125e-10,
+        "log_k": -1.2140022678920475,
+        "ordinal": 0.0158537230216048,
+        "binary": -0.8800780809069021,
+        "task": 0.41030155134768764,
+        "other_pop": -0.19824253112555393
+      },
+      "log_t": {
+        "icpt": 0.013835147544915426,
+        "h_plain": -0.1283308561505038,
+        "maxp_plain": -0.10963883574307287,
+        "h_anchor": -0.08355516443495102,
+        "h_panel": 0.1930909656825536,
+        "persona_spread": 0.026858594778393627,
+        "persona_to_anchor": -0.04720992710707025,
+        "top_share": 0.0814818506908661,
+        "nbr_h": -0.026824907019960632,
+        "nbr_missing": -1.7617438365289929e-09,
+        "has_evidence": 2.8707217539430405e-09,
+        "rel_disjoint": -6.559251378529698e-10,
+        "rel_country": 1.3036702735034284e-10,
+        "log_k": 0.05531071405372517,
+        "ordinal": -0.1367853359068079,
+        "binary": 0.09107217197390934,
+        "task": -0.19435087825345831,
+        "other_pop": 9.741703225253156e-05
+      }
+    },
+    "examples": {
+      "consensus": {
+        "dataset": "Afrobarometer",
+        "question": "Please tell me whether you agree or disagree with the following statement: I feel strong ties with other your countryns]\n\nOptions:\n(A): Strongly disagree\n(B): Disagree\n(C): Neither agree nor disagree\n(D): Agree\n(E): Strongly agree\n(F): Refused\n(G): Don\u2019t know",
+        "truth": [
+          0.038,
+          0.036,
+          0.01,
+          0.629,
+          0.287,
+          0.0,
+          0.0
+        ],
+        "final": [
+          0.065,
+          0.078,
+          0.083,
+          0.397,
+          0.364,
+          0.0,
+          0.013
+        ],
+        "pull": 0.19418775732152121,
+        "t": 1.1240893239901213,
+        "personas": [
+          {
+            "desc": "Nationally-minded citizens with strong community bonds. These individuals feel deeply connected to their fellow Guineans and believe in national unity and colle",
+            "share_raw": 0.42,
+            "share_used": 0.45588844190617994,
+            "dist_raw": [
+              0.02,
+              0.03,
+              0.05,
+              0.35,
+              0.55,
+              0.0,
+              0.0
+            ],
+            "dist_used": [
+              0.024,
+              0.037,
+              0.055,
+              0.363,
+              0.521,
+              0.0,
+              0.001
+            ]
+          },
+          {
+            "desc": "Moderately patriotic residents who agree they have ties to other Guineans but without intense emotional attachment. They see themselves as part of the national ",
+            "share_raw": 0.28,
+            "share_used": 0.282792433065331,
+            "dist_raw": [
+              0.05,
+              0.08,
+              0.12,
+              0.52,
+              0.2,
+              0.0,
+              0.03
+            ],
+            "dist_used": [
+              0.048,
+              0.077,
+              0.111,
+              0.5,
+              0.239,
+              0.0,
+              0.025
+            ]
+          },
+          {
+            "desc": "Skeptical or disconnected individuals who question whether strong national ties actually exist in Guinea. They may feel isolated or doubt the reality of nationa",
+            "share_raw": 0.18,
+            "share_used": 0.16806425330876198,
+            "dist_raw": [
+              0.28,
+              0.24,
+              0.12,
+              0.22,
+              0.1,
+              0.0,
+              0.04
+            ],
+            "dist_used": [
+              0.233,
+              0.206,
+              0.111,
+              0.258,
+              0.158,
+              0.0,
+              0.033
+            ]
+          },
+          {
+            "desc": "Cautious respondents who neither strongly affirm nor deny feeling ties to other Guineans. They are uncertain about the strength of national bonds or prefer not ",
+            "share_raw": 0.08,
+            "share_used": 0.06466864418525091,
+            "dist_raw": [
+              0.12,
+              0.18,
+              0.28,
+              0.25,
+              0.12,
+              0.01,
+              0.04
+            ],
+            "dist_used": [
+              0.104,
+              0.158,
+              0.24,
+              0.282,
+              0.174,
+              0.008,
+              0.033
+            ]
+          },
+          {
+            "desc": "Non-respondents and those uncertain about the question. These individuals either lack clear views on national ties or decline to express their position.",
+            "share_raw": 0.04,
+            "share_used": 0.028586227534476275,
+            "dist_raw": [
+              0.18,
+              0.2,
+              0.12,
+              0.25,
+              0.15,
+              0.0,
+              0.1
+            ],
+            "dist_used": [
+              0.153,
+              0.174,
+              0.111,
+              0.282,
+              0.199,
+              0.0,
+              0.082
+            ]
+          }
+        ]
+      },
+      "divided": {
+        "dataset": "Afrobarometer",
+        "question": "Natural resource extraction, such as mining, oil drilling, or wood harvesting, can have benefits, such as jobs and revenue. But it can also pose problems for nearby communities, such as pollution or deforestation. Please tell me whether you agree or disagree with each of the following statements: lo",
+        "truth": [
+          0.169,
+          0.201,
+          0.126,
+          0.211,
+          0.092,
+          0.01,
+          0.191
+        ],
+        "final": [
+          0.415,
+          0.287,
+          0.078,
+          0.142,
+          0.036,
+          0.008,
+          0.034
+        ],
+        "pull": 0.22358636567848086,
+        "t": 1.0410366661430175,
+        "personas": [
+          {
+            "desc": "Skeptical about fair revenue sharing. These individuals, making up about 45% of the group, strongly disagree that local communities receive a fair share from na",
+            "share_raw": 0.45,
+            "share_used": 0.4979140704956961,
+            "dist_raw": [
+              0.58,
+              0.28,
+              0.05,
+              0.06,
+              0.01,
+              0.02,
+              0.0
+            ],
+            "dist_used": [
+              0.539,
+              0.288,
+              0.051,
+              0.077,
+              0.017,
+              0.016,
+              0.013
+            ]
+          },
+          {
+            "desc": "Moderately critical but less certain. Comprising roughly 20% of the group, these people disagree that communities receive fair revenue but with less intensity, ",
+            "share_raw": 0.2,
+            "share_used": 0.1915899855310719,
+            "dist_raw": [
+              0.28,
+              0.35,
+              0.12,
+              0.15,
+              0.03,
+              0.0,
+              0.07
+            ],
+            "dist_used": [
+              0.306,
+              0.342,
+              0.105,
+              0.147,
+              0.032,
+              0.0,
+              0.068
+            ]
+          },
+          {
+            "desc": "Cautiously optimistic or neutral. About 15% of the group neither agrees nor disagrees, either lacking sufficient information about revenue distribution or holdi",
+            "share_raw": 0.15,
+            "share_used": 0.1365295605178941,
+            "dist_raw": [
+              0.28,
+              0.24,
+              0.15,
+              0.18,
+              0.08,
+              0.0,
+              0.07
+            ],
+            "dist_used": [
+              0.306,
+              0.257,
+              0.129,
+              0.17,
+              0.071,
+              0.0,
+              0.068
+            ]
+          },
+          {
+            "desc": "Accepting of current arrangements. Roughly 15% agree that local communities do receive a fair share, possibly reflecting either direct beneficiaries of extracti",
+            "share_raw": 0.15,
+            "share_used": 0.1365295605178941,
+            "dist_raw": [
+              0.18,
+              0.22,
+              0.12,
+              0.35,
+              0.08,
+              0.01,
+              0.04
+            ],
+            "dist_used": [
+              0.228,
+              0.241,
+              0.105,
+              0.302,
+              0.071,
+              0.008,
+              0.044
+            ]
+          },
+          {
+            "desc": "Strongly convinced of fairness. About 5% of the group strongly agree that communities receive fair revenue, representing a small minority who either have positi",
+            "share_raw": 0.05,
+            "share_used": 0.03743682293744387,
+            "dist_raw": [
+              0.08,
+              0.15,
+              0.12,
+              0.45,
+              0.15,
+              0.02,
+              0.03
+            ],
+            "dist_used": [
+              0.15,
+              0.187,
+              0.105,
+              0.38,
+              0.125,
+              0.016,
+              0.037
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "evidence": {
+    "N_dev": 379,
+    "N_eval": 981,
+    "arms": {
+      "personas, global control (dev in-sample)": 54.27381759412199,
+      "personas, dyn control (dev in-sample)": 57.374224235445936,
+      "plain (no personas)": {
+        "S": 43.559124523293576,
+        "vs_plain": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "by_band": {
+          "consensus": 0.0,
+          "mixed": 0.0,
+          "divided": 0.0
+        }
+      },
+      "anchor alone (no personas)": {
+        "S": 54.914844375722105,
+        "vs_plain": 11.355719852428535,
+        "ci": [
+          8.9,
+          13.9
+        ],
+        "by_band": {
+          "consensus": 8.596728774825511,
+          "mixed": 11.175936809446274,
+          "divided": 14.30071305504331
+        }
+      },
+      "50/50 plain+panel": {
+        "S": 47.648288282910954,
+        "vs_plain": 4.089163759617385,
+        "ci": [
+          3.1,
+          5.1
+        ],
+        "by_band": {
+          "consensus": 1.3820261938721294,
+          "mixed": 3.5750681541128184,
+          "divided": 7.31238094045174
+        }
+      },
+      "personas, raw control": {
+        "S": 47.57694506363062,
+        "vs_plain": 4.017820540337046,
+        "ci": [
+          2.1,
+          6.1
+        ],
+        "by_band": {
+          "consensus": 0.8771537901692054,
+          "mixed": 2.6019403582862197,
+          "divided": 8.566675844573897
+        }
+      },
+      "personas, global control": {
+        "S": 56.69683677211553,
+        "vs_plain": 13.137712248821959,
+        "ci": [
+          11.0,
+          15.3
+        ],
+        "by_band": {
+          "consensus": 9.839817023501974,
+          "mixed": 12.987789267376959,
+          "divided": 16.593756685158706
+        }
+      },
+      "personas, dyn control": {
+        "S": 57.051258794484454,
+        "vs_plain": 13.492134271190881,
+        "ci": [
+          11.2,
+          15.9
+        ],
+        "by_band": {
+          "consensus": 10.736501606037082,
+          "mixed": 12.64219891196477,
+          "divided": 17.095738549315456
+        }
+      }
+    },
+    "dyn_controls_by_band": {
+      "consensus": {
+        "pull_to_anchor": 0.6114662821850939,
+        "sharpen_t": 1.1130301913105498,
+        "spread_raw_personas": 0.6382476411618195,
+        "spread_controlled": 0.569534828128348,
+        "spread_true": 0.4420640469823206
+      },
+      "mixed": {
+        "pull_to_anchor": 0.685373118524838,
+        "sharpen_t": 1.080173324575082,
+        "spread_raw_personas": 0.8143075414771975,
+        "spread_controlled": 0.7830633859663366,
+        "spread_true": 0.7465037640822494
+      },
+      "divided": {
+        "pull_to_anchor": 0.7445138681860718,
+        "sharpen_t": 1.036029403354869,
+        "spread_raw_personas": 0.9133271328161044,
+        "spread_controlled": 0.9048563545181711,
+        "spread_true": 0.91871069515891
+      }
+    },
+    "share_exponent": 1.1948420844565246,
+    "coefs": {
+      "pull": {
+        "icpt": 0.9488190261232818,
+        "h_plain": 0.2147580330190875,
+        "maxp_plain": 0.21999673835859088,
+        "h_anchor": 0.06450764315809253,
+        "h_panel": -0.13420573928886192,
+        "persona_spread": 0.2846734968782607,
+        "persona_to_anchor": -0.3124357207466899,
+        "top_share": -0.5198192471914046,
+        "nbr_h": -0.27049850437776085,
+        "nbr_missing": -3.621314922199342e-07,
+        "has_evidence": 0.4375165534735187,
+        "rel_disjoint": -0.03229749271460129,
+        "rel_country": 0.03316704104166137,
+        "log_k": -0.5802413806311634,
+        "ordinal": 0.1414798029484621,
+        "binary": -0.9126946146659978,
+        "task": 0.4316439919444266,
+        "other_pop": 0.04461400979345042
+      },
+      "log_t": {
+        "icpt": 0.059279859845356525,
+        "h_plain": 0.00496919373406522,
+        "maxp_plain": 0.05289631693790229,
+        "h_anchor": 0.004413304605762818,
+        "h_panel": 0.0255085365703091,
+        "persona_spread": -0.005859281167087977,
+        "persona_to_anchor": 0.09431967403919708,
+        "top_share": 0.051784040968312794,
+        "nbr_h": 0.015799855901594426,
+        "nbr_missing": 2.376902727879165e-11,
+        "has_evidence": 0.027346235757033807,
+        "rel_disjoint": -0.0025712547563169464,
+        "rel_country": -0.0008628145875525686,
+        "log_k": 0.022867717245255874,
+        "ordinal": 0.020812233536311456,
+        "binary": 0.08207007762007887,
+        "task": -0.11065152306078993,
+        "other_pop": 0.02572756844523856
+      }
+    },
+    "examples": {
+      "consensus": {
+        "dataset": "Afrobarometer",
+        "question": "Please tell me whether you agree or disagree with the following statement: I feel strong ties with other your countryns]\n\nOptions:\n(A): Strongly disagree\n(B): Disagree\n(C): Neither agree nor disagree\n(D): Agree\n(E): Strongly agree\n(F): Refused\n(G): Don\u2019t know",
+        "truth": [
+          0.038,
+          0.036,
+          0.01,
+          0.629,
+          0.287,
+          0.0,
+          0.0
+        ],
+        "final": [
+          0.045,
+          0.088,
+          0.05,
+          0.562,
+          0.243,
+          0.001,
+          0.013
+        ],
+        "pull": 0.8174429274967319,
+        "t": 0.9507488677842847,
+        "personas": [
+          {
+            "desc": "Civic-minded nationalists who strongly identify with their country and fellow citizens, viewing national unity and collective welfare as important. They see str",
+            "share_raw": 0.28,
+            "share_used": 0.289892798725271,
+            "dist_raw": [
+              0.01,
+              0.02,
+              0.02,
+              0.6,
+              0.34,
+              0.0,
+              0.01
+            ],
+            "dist_used": [
+              0.03,
+              0.071,
+              0.038,
+              0.593,
+              0.258,
+              0.0,
+              0.011
+            ]
+          },
+          {
+            "desc": "Pragmatic citizens who agree they have ties to their countrymen, viewing this as a natural part of living in a shared community, though without intense emotiona",
+            "share_raw": 0.35,
+            "share_used": 0.3784683693876149,
+            "dist_raw": [
+              0.02,
+              0.05,
+              0.04,
+              0.62,
+              0.27,
+              0.0,
+              0.0
+            ],
+            "dist_used": [
+              0.032,
+              0.076,
+              0.042,
+              0.596,
+              0.245,
+              0.0,
+              0.009
+            ]
+          },
+          {
+            "desc": "Skeptical or ambivalent individuals who question whether strong national ties actually exist given economic disparities, regional divisions, or ethnic differenc",
+            "share_raw": 0.12,
+            "share_used": 0.10533271486965501,
+            "dist_raw": [
+              0.08,
+              0.12,
+              0.18,
+              0.45,
+              0.12,
+              0.0,
+              0.05
+            ],
+            "dist_used": [
+              0.043,
+              0.089,
+              0.067,
+              0.565,
+              0.218,
+              0.0,
+              0.018
+            ]
+          },
+          {
+            "desc": "Marginalized or disconnected citizens who feel weak ties to their country due to poverty, exclusion, or lack of government responsiveness. They struggle to feel",
+            "share_raw": 0.18,
+            "share_used": 0.1709875639393743,
+            "dist_raw": [
+              0.28,
+              0.24,
+              0.08,
+              0.28,
+              0.12,
+              0.0,
+              0.0
+            ],
+            "dist_used": [
+              0.079,
+              0.111,
+              0.049,
+              0.534,
+              0.218,
+              0.0,
+              0.009
+            ]
+          },
+          {
+            "desc": "Uncertain respondents who lack a clear position on national identity or are unfamiliar with the concept of national ties in abstract terms.",
+            "share_raw": 0.07,
+            "share_used": 0.055318553078084934,
+            "dist_raw": [
+              0.05,
+              0.08,
+              0.12,
+              0.55,
+              0.18,
+              0.0,
+              0.02
+            ],
+            "dist_used": [
+              0.037,
+              0.082,
+              0.056,
+              0.584,
+              0.228,
+              0.0,
+              0.013
+            ]
+          }
+        ]
+      },
+      "divided": {
+        "dataset": "Afrobarometer",
+        "question": "Considering all of the funds and resources that were available to the government for combating and responding to the COVID-19 pandemic, how much do you think was lost or stolen due to corruption?\n\nOptions:\n(A): A lot\n(B): Some\n(C): A little\n(D): None\n(E): Refused\n(F): Don't know",
+        "truth": [
+          0.185,
+          0.258,
+          0.191,
+          0.208,
+          0.0,
+          0.158
+        ],
+        "final": [
+          0.409,
+          0.197,
+          0.115,
+          0.078,
+          0.005,
+          0.197
+        ],
+        "pull": 0.8164978643396218,
+        "t": 1.0393752286231293,
+        "personas": [
+          {
+            "desc": "Skeptical corruption believers: Urban, educated Ethiopians who follow government accountability issues closely and believe significant COVID funds were lost to ",
+            "share_raw": 0.28,
+            "share_used": 0.29140531358342925,
+            "dist_raw": [
+              0.52,
+              0.28,
+              0.12,
+              0.03,
+              0.0,
+              0.05
+            ],
+            "dist_used": [
+              0.44,
+              0.197,
+              0.107,
+              0.065,
+              0.005,
+              0.186
+            ]
+          },
+          {
+            "desc": "Moderate skeptics: Middle-ground Ethiopians who acknowledge some corruption occurred during COVID response but believe it was limited in scale, balancing awaren",
+            "share_raw": 0.26,
+            "share_used": 0.26671156787154854,
+            "dist_raw": [
+              0.28,
+              0.35,
+              0.18,
+              0.12,
+              0.0,
+              0.07
+            ],
+            "dist_used": [
+              0.396,
+              0.21,
+              0.119,
+              0.081,
+              0.005,
+              0.19
+            ]
+          },
+          {
+            "desc": "Cautious optimists: Ethiopians who trust government institutions more than average and believe corruption was minimal during COVID, similar to those expressing ",
+            "share_raw": 0.22,
+            "share_used": 0.21845161614506758,
+            "dist_raw": [
+              0.18,
+              0.28,
+              0.24,
+              0.22,
+              0.0,
+              0.08
+            ],
+            "dist_used": [
+              0.378,
+              0.197,
+              0.13,
+              0.099,
+              0.005,
+              0.192
+            ]
+          },
+          {
+            "desc": "Uncertain and disengaged: Ethiopians with limited information about COVID fund management who cannot assess corruption levels, reflecting the substantial 'don't",
+            "share_raw": 0.2,
+            "share_used": 0.19493846403316187,
+            "dist_raw": [
+              0.18,
+              0.24,
+              0.19,
+              0.08,
+              0.0,
+              0.31
+            ],
+            "dist_used": [
+              0.378,
+              0.189,
+              0.12,
+              0.074,
+              0.005,
+              0.234
+            ]
+          },
+          {
+            "desc": "Firm deniers: Ethiopians who believe no meaningful corruption occurred in COVID spending, representing a small but consistent segment that maintains confidence ",
+            "share_raw": 0.04,
+            "share_used": 0.028493038366792782,
+            "dist_raw": [
+              0.08,
+              0.12,
+              0.15,
+              0.58,
+              0.0,
+              0.07
+            ],
+            "dist_used": [
+              0.359,
+              0.167,
+              0.113,
+              0.165,
+              0.005,
+              0.19
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
