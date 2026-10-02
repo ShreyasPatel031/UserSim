@@ -1559,6 +1559,194 @@ def arm_L_leak(row, ctx, allowed: tuple | None = None):
     return SYSTEM_PREFIX + _filled_persona(row), prefix + _official_user(row["input_template"], keys), {}
 
 
+# --------------------------------------------------------------------------- #
+# Demographic persona mixture (benchmark-valid): personas are real demographic cells of the
+# target's country, weighted by real cell sizes; each persona sees its OWN cell's real answers
+# to similar questions. The target question is never shown for any group, and held-out
+# eval/dev rows are never used as examples.
+# --------------------------------------------------------------------------- #
+
+_CELLPOOL: dict | None = None
+_cellpool_lock = threading.Lock()
+
+
+def _heldout_keys(df: pd.DataFrame, n_eval: int, n_dev: int, seed: int = 7) -> set:
+    out = set()
+    for _, g in df.groupby("dataset_name"):
+        sh = g.sample(frac=1.0, random_state=seed)
+        for _, r in sh.iloc[3 : 3 + n_eval + n_dev].iterrows():
+            out.add((r["dataset_name"], _filled_persona(r), r["input_template"]))
+    return out
+
+
+def _cellpool() -> dict:
+    """(dataset, country, attribute) -> value -> [entry]; single-attribute Grouped cells only."""
+    global _CELLPOOL
+    with _cellpool_lock:
+        if _CELLPOOL is None:
+            grouped = load_split("Grouped")
+            held = _heldout_keys(grouped, 100, DEV_GROUPED)
+            idx: dict = defaultdict(lambda: defaultdict(list))
+            for _, r in grouped.iterrows():
+                if r["dataset_name"] not in D_DATASETS:
+                    continue
+                vm = r["group_prompt_variable_map"]
+                other = [k for k in vm if k not in _COUNTRY_KEYS]
+                if len(other) != 1:
+                    continue
+                persona = _filled_persona(r)
+                if (r["dataset_name"], persona, r["input_template"]) in held:
+                    continue
+                e = _demo_entry(r)
+                e.update(stem=_stem(r["input_template"]), size=float(r.get("group_size", 0) or 0),
+                         sentence=_group_sentence(persona))
+                idx[(r["dataset_name"], _country_of(vm), other[0])][str(vm[other[0]])].append(e)
+            _CELLPOOL = {k: dict(v) for k, v in idx.items()}
+    return _CELLPOOL
+
+
+def _tfidf_rank(question: str, pool: list[dict]) -> list[dict]:
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    if len(pool) <= 1:
+        return list(pool)
+    vec = TfidfVectorizer(stop_words="english")
+    mat = vec.fit_transform([d["input_template"] for d in pool])
+    sims = (mat @ vec.transform([question]).T).toarray().ravel()
+    return [pool[i] for i in np.argsort(-sims, kind="stable")]
+
+
+def _own_examples(entries: list[dict], question: str, own_stem: str, k: int = 6) -> list[dict]:
+    pool = [e for e in entries if e["stem"] != own_stem]
+    out, seen = [], set()
+    for e in _tfidf_rank(question, pool):
+        if e["stem"] not in seen:
+            seen.add(e["stem"])
+            out.append(e)
+        if len(out) == k:
+            break
+    return out
+
+
+def _attr_split(row, max_cells: int = 5, n_stems: int = 10) -> dict | None:
+    """Pick the attribute whose cells differ most on questions similar to the target (never the
+    target itself). Returns cells with real shares, or None."""
+    vm = row["group_prompt_variable_map"]
+    ds, country = row["dataset_name"], _country_of(vm)
+    tgt_attrs = [k for k in vm if k not in _COUNTRY_KEYS]
+    question = row.get("_orig_template", row["input_template"])
+    own = _stem(question)
+    pool = _cellpool()
+    best = None
+    for (d, c, attr), cells in pool.items():
+        if d != ds or c != country or attr in tgt_attrs:
+            continue
+        sized = {v: float(np.median([e["size"] for e in es if e["stem"] != own] or [0])) for v, es in cells.items()}
+        top = [v for v, sz in sorted(sized.items(), key=lambda kv: -kv[1]) if sz > 0 and
+               sum(e["stem"] != own for e in cells[v]) >= 3][:max_cells]
+        if len(top) < 2:
+            continue
+        by_stem = defaultdict(dict)
+        for v in top:
+            for e in cells[v]:
+                if e["stem"] != own:
+                    by_stem[e["stem"]][v] = e
+        shared = [st for st, m in by_stem.items() if len(m) >= 2]
+        if len(shared) < 3:
+            continue
+        reps = [next(iter(by_stem[st].values())) for st in shared]
+        ranked = _tfidf_rank(question, reps)[:n_stems]
+        w = np.array([sized[v] for v in top])
+        spreads = []
+        for e in ranked:
+            m = by_stem[e["stem"]]
+            ks = list(e["human_answer"])
+            D, ww = [], []
+            for v in top:
+                if v in m and set(m[v]["human_answer"]) == set(ks):
+                    x = np.array([m[v]["human_answer"][kk] for kk in ks], float)
+                    D.append(x / x.sum())
+                    ww.append(sized[v])
+            if len(D) >= 2:
+                D, ww = np.array(D), np.array(ww) / sum(ww)
+                mean = ww @ D
+                spreads.append(float(ww @ (np.abs(D - mean).sum(1) / 2)))
+        if not spreads:
+            continue
+        score = float(np.mean(spreads))
+        if best is None or score > best["between_group_tvd"]:
+            best = {"attribute": attr, "between_group_tvd": score,
+                    "cells": [{"value": v, "share": sized[v] / w.sum(), "sentence": cells[v][0]["sentence"],
+                               "entries": cells[v]} for v in top]}
+    return best
+
+
+_OWN_NOTE = "Real answer distributions to similar questions from people like you ({who}):\n\n{demos}\n\n"
+_TGT_NOTE = "Real answer distributions to similar questions from your whole group ({who}):\n\n{demos}\n\n"
+
+
+def _demo_mix_arm(mode: str):
+    """mode 'mix': demographic personas (+ target group's own examples for subgroup targets);
+    mode 'own': one persona = the subgroup target itself with its own examples."""
+
+    def arm(row, ctx):
+        if row["dataset_name"] not in D_DATASETS:
+            return "", "", {"pipeline": lambda call: (None, 0, 0)}
+        vm = row["group_prompt_variable_map"]
+        tgt_attrs = [k for k in vm if k not in _COUNTRY_KEYS]
+        question = row.get("_orig_template", row["input_template"])
+        own = _stem(question)
+        keys = list(row["human_answer"].keys())
+        target_examples, target_who = [], _group_sentence(_filled_persona(row))
+        if tgt_attrs:
+            if len(tgt_attrs) != 1:
+                return "", "", {"pipeline": lambda call: (None, 0, 0)}
+            entries = _cellpool().get((row["dataset_name"], _country_of(vm), tgt_attrs[0]), {}).get(str(vm[tgt_attrs[0]]), [])
+            target_examples = _own_examples(entries, question, own)
+        if mode == "own":
+            if not tgt_attrs or len(target_examples) < 3:
+                return "", "", {"pipeline": lambda call: (None, 0, 0)}
+            personas = [{"desc": f"own group: {target_who}", "share": 1.0, "sentence": "", "examples": []}]
+            split = {"attribute": "(target group)", "between_group_tvd": 0.0}
+        else:
+            split = _attr_split(row)
+            if split is None:
+                return "", "", {"pipeline": lambda call: (None, 0, 0)}
+            personas = [{"desc": f"{split['attribute']} = {c['value']}", "share": c["share"], "sentence": c["sentence"],
+                         "examples": _own_examples(c["entries"], question, own)} for c in split["cells"]]
+
+        def persona_arm(p):
+            def build(r, c):
+                pre = ""
+                if p["examples"]:
+                    pre += _OWN_NOTE.format(who=p["sentence"] or target_who, demos=_demo_block(p["examples"], False))
+                if target_examples:
+                    pre += _TGT_NOTE.format(who=target_who, demos=_demo_block(target_examples, False))
+                system = SYSTEM_PREFIX + _filled_persona(r) + (" " + p["sentence"] if p["sentence"] else "")
+                return system, pre + "Now estimate the same for a new question.\n\n" + _official_user(r["input_template"], keys), {}
+
+            return build
+
+        def pipeline(call):
+            dists, diag, pt, ot = [], [], 0, 0
+            for p in personas:
+                inner = _rev2(persona_arm(p))(row, ctx)[2]["pipeline"]
+                merged, a, b, both = inner(call)
+                pt, ot = pt + a, ot + b
+                dists.append(merged)
+                diag.append({"desc": p["desc"], "share": p["share"], "dist": merged, "orders": both,
+                             "own_examples": len(p["examples"]), "target_examples": len(target_examples),
+                             "attribute": split["attribute"], "between_group_tvd": split["between_group_tvd"]})
+            diag = [x for x in diag if x["dist"] is not None]
+            return _weighted_merge(dists, [p["share"] for p in personas], keys), pt, ot, diag
+
+        return "", "", {"pipeline": pipeline}
+
+    return arm
+
+
+ARMS["C5_demo_mix"] = _demo_mix_arm("mix")
+ARMS["C5_own"] = _demo_mix_arm("own")
 ARMS["L_leak"] = _rev2(arm_L_leak)
 # same question, but only populations that share no respondents with the target
 ARMS["L_strict"] = _rev2(lambda row, ctx: arm_L_leak(row, ctx, _NO_OVERLAP))
