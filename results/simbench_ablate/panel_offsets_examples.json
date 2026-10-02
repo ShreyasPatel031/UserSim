@@ -1,0 +1,203 @@
+[
+ {
+  "dataset": "Afrobarometer",
+  "question": "In this country, how free are you: to say what you think?\n\nOptions:\n(A): Not at all free\n(B): Not very free\n(C): Somewhat free\n(D): Completely free\n(E): Refused\n(F): Don\u2019t know",
+  "truth": [
+   0.098,
+   0.315,
+   0.393,
+   0.172,
+   0.0,
+   0.021
+  ],
+  "pred": [
+   0.118,
+   0.197,
+   0.374,
+   0.288,
+   0.001,
+   0.021
+  ],
+  "base_weights": {
+   "retr6": 0.18,
+   "plain (retr6_rev2)": 0.01,
+   "same-group data (D3)": 0.8,
+   "C5b_demo_mix": 0.01
+  },
+  "sharpen": 0.98,
+  "personas": [
+   {
+    "who": "discuss_politics = never",
+    "share": 0.54,
+    "opinion": [
+     0.109,
+     0.179,
+     0.373,
+     0.318,
+     0.0,
+     0.021
+    ],
+    "offset_vs_population": [
+     -0.009,
+     -0.018,
+     -0.0,
+     0.029,
+     -0.001,
+     -0.0
+    ]
+   },
+   {
+    "who": "discuss_politics = occasionally",
+    "share": 0.46,
+    "opinion": [
+     0.129,
+     0.219,
+     0.374,
+     0.254,
+     0.003,
+     0.021
+    ],
+    "offset_vs_population": [
+     0.011,
+     0.022,
+     0.0,
+     -0.035,
+     0.002,
+     0.0
+    ]
+   }
+  ]
+ },
+ {
+  "dataset": "Afrobarometer",
+  "question": "Which of these things do you personally own? Does anyone else in your household own one: television?\n\nOptions:\n(A): No, no one in the household owns\n(B): Someone else in household owns\n(C): Yes (perso",
+  "truth": [
+   0.684,
+   0.09,
+   0.225,
+   0.0,
+   0.0
+  ],
+  "pred": [
+   0.373,
+   0.247,
+   0.35,
+   0.006,
+   0.024
+  ],
+  "base_weights": {
+   "retr6": 0.27,
+   "plain (retr6_rev2)": 0.06,
+   "same-group data (D3)": 0.65,
+   "C5b_demo_mix": 0.01
+  },
+  "sharpen": 1.03,
+  "personas": [
+   {
+    "who": "discuss_politics = occasionally",
+    "share": 0.61,
+    "opinion": [
+     0.361,
+     0.247,
+     0.362,
+     0.006,
+     0.024
+    ],
+    "offset_vs_population": [
+     -0.012,
+     0.0,
+     0.012,
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "who": "discuss_politics = never",
+    "share": 0.39,
+    "opinion": [
+     0.391,
+     0.247,
+     0.332,
+     0.006,
+     0.024
+    ],
+    "offset_vs_population": [
+     0.018,
+     0.0,
+     -0.018,
+     0.0,
+     0.0
+    ]
+   }
+  ]
+ },
+ {
+  "dataset": "Afrobarometer",
+  "question": "On the whole, how would you rate the freeness and fairness of the last national election? Was it:\n\nOptions:\n(A): Not free and fair\n(B): Free and fair, with major problems\n(C): Free and fair, but with ",
+  "truth": [
+   0.216,
+   0.066,
+   0.151,
+   0.518,
+   0.006,
+   0.043
+  ],
+  "pred": [
+   0.197,
+   0.225,
+   0.245,
+   0.19,
+   0.022,
+   0.122
+  ],
+  "base_weights": {
+   "retr6": 0.44,
+   "plain (retr6_rev2)": 0.01,
+   "same-group data (D3)": 0.47,
+   "C5b_demo_mix": 0.08
+  },
+  "sharpen": 0.96,
+  "personas": [
+   {
+    "who": "age_group = 30-49",
+    "share": 0.51,
+    "opinion": [
+     0.194,
+     0.229,
+     0.245,
+     0.19,
+     0.024,
+     0.117
+    ],
+    "offset_vs_population": [
+     -0.002,
+     0.005,
+     0.0,
+     0.0,
+     0.002,
+     -0.005
+    ]
+   },
+   {
+    "who": "age_group = 18-29",
+    "share": 0.49,
+    "opinion": [
+     0.199,
+     0.219,
+     0.245,
+     0.19,
+     0.019,
+     0.127
+    ],
+    "offset_vs_population": [
+     0.003,
+     -0.005,
+     0.0,
+     0.0,
+     -0.003,
+     0.005
+    ]
+   }
+  ]
+ }
+]
