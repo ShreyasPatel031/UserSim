@@ -1,0 +1,108 @@
+{
+  "dev": {
+    "N": 166,
+    "bands": {
+      "consensus": {
+        "N": 52,
+        "best_competitor": "plain (retr6_rev2)",
+        "best_S": 61.853735493465145,
+        "panels": {
+          "C5b_demo_mix": {
+            "S": 57.83406130677978,
+            "vs_best": -4.019674186685361,
+            "ci": [
+              -9.7,
+              1.2
+            ],
+            "beats": false
+          }
+        }
+      },
+      "mixed": {
+        "N": 68,
+        "best_competitor": "same-group data (D3)",
+        "best_S": 41.283287974398085,
+        "panels": {
+          "C5b_demo_mix": {
+            "S": 42.45284713904326,
+            "vs_best": 1.1695591646451726,
+            "ci": [
+              -5.2,
+              7.4
+            ],
+            "beats": true
+          }
+        }
+      },
+      "divided": {
+        "N": 46,
+        "best_competitor": "same-group data (D3)",
+        "best_S": 40.133331068790156,
+        "panels": {
+          "C5b_demo_mix": {
+            "S": 39.25200123132404,
+            "vs_best": -0.8813298374661279,
+            "ci": [
+              -8.8,
+              7.7
+            ],
+            "beats": false
+          }
+        }
+      }
+    }
+  },
+  "eval": {
+    "N": 411,
+    "bands": {
+      "consensus": {
+        "N": 125,
+        "best_competitor": "retr6",
+        "best_S": 56.15896711541035,
+        "panels": {
+          "C5b_demo_mix": {
+            "S": 50.65344599339086,
+            "vs_best": -5.50552112201949,
+            "ci": [
+              -10.1,
+              -1.0
+            ],
+            "beats": false
+          }
+        }
+      },
+      "mixed": {
+        "N": 160,
+        "best_competitor": "plain (retr6_rev2)",
+        "best_S": 51.99597523770167,
+        "panels": {
+          "C5b_demo_mix": {
+            "S": 53.813003178614466,
+            "vs_best": 1.8170279409127947,
+            "ci": [
+              -1.1,
+              4.7
+            ],
+            "beats": true
+          }
+        }
+      },
+      "divided": {
+        "N": 126,
+        "best_competitor": "same-group data (D3)",
+        "best_S": 46.499269037858035,
+        "panels": {
+          "C5b_demo_mix": {
+            "S": 44.92565252228746,
+            "vs_best": -1.5736165155705635,
+            "ci": [
+              -6.5,
+              3.4
+            ],
+            "beats": false
+          }
+        }
+      }
+    }
+  }
+}

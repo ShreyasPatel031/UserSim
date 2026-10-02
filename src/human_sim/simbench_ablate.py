@@ -1683,11 +1683,27 @@ def _attr_split(row, max_cells: int = 5, n_stems: int = 10, min_coverage: float 
     return best
 
 
+_STYLE_SUFFIX = {
+    "dist": "",
+    "agree": (
+        "\n\nBefore the JSON, look at how concentrated the real answers above were: on some questions nearly "
+        "everyone picks one option, on others answers split. Write one line 'Most common answer share: X%' with "
+        "your estimate for THIS question for people like you, then give the JSON so that the most common option "
+        "gets about that share."
+    ),
+    "individuals": (
+        "\n\nInstead of guessing percentages directly, imagine 20 different real people like you answering this "
+        "question. List them one per line as '<a few words about the person>: <option letter>'. Real people "
+        "commit to one answer; let them agree when people like you would agree and split when they would split, "
+        "in line with the real answers above. Then give the counts out of 20 as JSON {fmt}."
+    ),
+}
+
 _OWN_NOTE = "Real answer distributions to similar questions from people like you ({who}):\n\n{demos}\n\n"
 _TGT_NOTE = "Real answer distributions to similar questions from your whole group ({who}):\n\n{demos}\n\n"
 
 
-def _demo_mix_arm(mode: str, anchor_country: bool = False):
+def _demo_mix_arm(mode: str, anchor_country: bool = False, style: str = "dist"):
     """mode 'mix': demographic personas (+ target group's own examples for subgroup targets);
     mode 'own': one persona = the subgroup target itself with its own examples."""
 
@@ -1729,7 +1745,8 @@ def _demo_mix_arm(mode: str, anchor_country: bool = False):
                 if target_examples:
                     pre += _TGT_NOTE.format(who=target_who, demos=_demo_block(target_examples, False))
                 system = SYSTEM_PREFIX + _filled_persona(r) + (" " + p["sentence"] if p["sentence"] else "")
-                return system, pre + "Now estimate the same for a new question.\n\n" + _official_user(r["input_template"], keys), {}
+                user = pre + "Now estimate the same for a new question.\n\n" + _official_user(r["input_template"], keys)
+                return system, user + _STYLE_SUFFIX[style].format(fmt=_fmt(keys)), ({} if style == "dist" else {"max_output_tokens": 900})
 
             return build
 
@@ -1754,6 +1771,8 @@ def _demo_mix_arm(mode: str, anchor_country: bool = False):
 ARMS["C5_demo_mix"] = _demo_mix_arm("mix")
 ARMS["C5_own"] = _demo_mix_arm("own")
 ARMS["C5b_demo_mix"] = _demo_mix_arm("mix", anchor_country=True)
+ARMS["C6a_demo_agree"] = _demo_mix_arm("mix", anchor_country=True, style="agree")
+ARMS["C6b_demo_individuals"] = _demo_mix_arm("mix", anchor_country=True, style="individuals")
 ARMS["L_leak"] = _rev2(arm_L_leak)
 # same question, but only populations that share no respondents with the target
 ARMS["L_strict"] = _rev2(lambda row, ctx: arm_L_leak(row, ctx, _NO_OVERLAP))
