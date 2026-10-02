@@ -308,6 +308,8 @@ Neither router beats always-`retr6_rev2` over all questions. The dev-fitted rule
 
 Question: Haiku's best divided harness and Sonnet's simple harness score about the same on divided questions, but Sonnet picks the right side more often while Haiku hedges. Does putting Sonnet 5.5 *inside* the segments harness get both?
 
+Definitions (from `simbench_ablate.py`): **segments** (`B_n3_soft`) asks the model to split the population into 3 segments and predict each one. **Grounded segments** (`B_ground3_rev2`) is the same prompt with the 6 most similar retrieved real distributions shown first (the same demos `retr6` uses). `_rev2` means it is averaged over both option orders.
+
 New runs: Sonnet 5.5 × `B_n3_soft_rev2`, `B_n3_soft`, `B_ground3_rev2` on dev (380 questions, $2.86). The Sonnet 4.6 × `B_n3_soft_rev2` run was already logged. Code: `src/human_sim/simbench_sonnet_segments.py`. Numbers: `results/simbench_ablate/sonnet_segments_report.json`. ΔS is paired against Haiku grounded segments (`B_ground3_rev2`), Haiku's best divided harness. Flip = wrong side of the scale (ordinal questions only).
 
 | Arm | Divided, by truth (127) | Divided shared (69) | Divided tasks (22*) | Predicted divided (81) | All questions (380) | Flip, divided |
@@ -330,3 +332,5 @@ Reading:
 - Answer to the question: yes, partly. With a bigger model, the side comes from the model and the spread from the grounded segments, but the spread only matters where the model is over-confident.
 
 Next: confirm on eval before switching (Sonnet 5.5 `retr6` and `B_ground3_rev2` on the 981 eval questions, est. ~$8). A cheaper option is to route Sonnet grounded segments to the Pop-only task datasets and Sonnet simple elsewhere.
+
+*Untested:* why grounding helps on the task datasets. The data show Sonnet is over-confident there (entropy gap −0.08) and grounded segments fixes it; whether the demos or the segmentation causes that was not isolated.
