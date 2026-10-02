@@ -10,7 +10,7 @@ import numpy as np
 from human_sim import simbench_mass_levers as M
 
 ARMS = {"plain": ("retr6_rev2", M.HAIKU), "invented": ("P_groundall5", M.HAIKU),
-        "demo_mix": ("C5_demo_mix", M.HAIKU), "own": ("C5_own", M.HAIKU), "D3": ("D3_same_group_same_topic", M.HAIKU)}
+        "demo_mix": ("C5_demo_mix", M.HAIKU), "demo_mix_v2": ("C5b_demo_mix", M.HAIKU), "own": ("C5_own", M.HAIKU), "D3": ("D3_same_group_same_topic", M.HAIKU)}
 
 
 def ci(d):
@@ -46,9 +46,9 @@ def main():
             label = "country-level questions" if split == "Pop" else "subgroup questions"
             print(f"-- {label} (N {len(qq)})")
             rows = {}
-            for arm in ("plain", "invented", "demo_mix", "own", "D3"):
+            for arm in ("plain", "invented", "demo_mix", "demo_mix_v2", "own", "D3"):
                 sub = [(i, q) for i, q in enumerate(qq) if arm in q["preds"]]
-                if len(sub) < 0.9 * len(qq):
+                if len(sub) < 0.85 * len(qq):
                     continue
                 s = np.array([S(q, q["preds"][arm]) for _, q in sub])
                 d = s - b[[i for i, _ in sub]]
@@ -60,7 +60,7 @@ def main():
             true_cons = [q["Hn"] for q in qq if q["Hn"] < 0.65]
             if true_cons:
                 print(f"   (true consensus spread {np.mean(true_cons):.2f})")
-            div = [persona_diversity(q, "demo_mix") for q in qq if "demo_mix" in q.get("traces", {})]
+            div = [persona_diversity(q, "demo_mix_v2") for q in qq if "demo_mix_v2" in q.get("traces", {})]
             inv = [persona_diversity(q, "invented") for q in qq if "invented" in q.get("traces", {})]
             print(f"   how different personas' answers are (TVD to their average): demographic {np.mean(div):.3f}, invented {np.mean(inv):.3f}")
             rows["persona_diversity"] = {"demographic": float(np.mean(div)), "invented": float(np.mean(inv))}

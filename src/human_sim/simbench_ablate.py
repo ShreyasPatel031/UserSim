@@ -1628,7 +1628,7 @@ def _own_examples(entries: list[dict], question: str, own_stem: str, k: int = 6)
     return out
 
 
-def _attr_split(row, max_cells: int = 5, n_stems: int = 10) -> dict | None:
+def _attr_split(row, max_cells: int = 5, n_stems: int = 10, min_coverage: float = 0.8) -> dict | None:
     """Pick the attribute whose cells differ most on questions similar to the target (never the
     target itself). Returns cells with real shares, or None."""
     vm = row["group_prompt_variable_map"]
@@ -1644,8 +1644,10 @@ def _attr_split(row, max_cells: int = 5, n_stems: int = 10) -> dict | None:
         sized = {v: float(np.median([e["size"] for e in es if e["stem"] != own] or [0])) for v, es in cells.items()}
         top = [v for v, sz in sorted(sized.items(), key=lambda kv: -kv[1]) if sz > 0 and
                sum(e["stem"] != own for e in cells[v]) >= 3][:max_cells]
-        if len(top) < 2:
-            continue
+        total = sum(sz for sz in sized.values() if sz > 0)
+        coverage = sum(sized[v] for v in top) / total if total else 0.0
+        if len(top) < 2 or coverage < min_coverage:
+            continue  # the personas must make up most of the population, not a slice of it
         by_stem = defaultdict(dict)
         for v in top:
             for e in cells[v]:
@@ -1675,7 +1677,7 @@ def _attr_split(row, max_cells: int = 5, n_stems: int = 10) -> dict | None:
             continue
         score = float(np.mean(spreads))
         if best is None or score > best["between_group_tvd"]:
-            best = {"attribute": attr, "between_group_tvd": score,
+            best = {"attribute": attr, "between_group_tvd": score, "coverage": coverage,
                     "cells": [{"value": v, "share": sized[v] / w.sum(), "sentence": cells[v][0]["sentence"],
                                "entries": cells[v]} for v in top]}
     return best
@@ -1685,7 +1687,7 @@ _OWN_NOTE = "Real answer distributions to similar questions from people like you
 _TGT_NOTE = "Real answer distributions to similar questions from your whole group ({who}):\n\n{demos}\n\n"
 
 
-def _demo_mix_arm(mode: str):
+def _demo_mix_arm(mode: str, anchor_country: bool = False):
     """mode 'mix': demographic personas (+ target group's own examples for subgroup targets);
     mode 'own': one persona = the subgroup target itself with its own examples."""
 
@@ -1703,6 +1705,10 @@ def _demo_mix_arm(mode: str):
                 return "", "", {"pipeline": lambda call: (None, 0, 0)}
             entries = _cellpool().get((row["dataset_name"], _country_of(vm), tgt_attrs[0]), {}).get(str(vm[tgt_attrs[0]]), [])
             target_examples = _own_examples(entries, question, own)
+        if not tgt_attrs and anchor_country:
+            # country-level target: also show the country's own answers to similar questions
+            target_examples = _rank_by_similarity(row, _demo_pool(row, ctx), ctx)[:6]
+            target_who = "your country as a whole"
         if mode == "own":
             if not tgt_attrs or len(target_examples) < 3:
                 return "", "", {"pipeline": lambda call: (None, 0, 0)}
@@ -1747,6 +1753,7 @@ def _demo_mix_arm(mode: str):
 
 ARMS["C5_demo_mix"] = _demo_mix_arm("mix")
 ARMS["C5_own"] = _demo_mix_arm("own")
+ARMS["C5b_demo_mix"] = _demo_mix_arm("mix", anchor_country=True)
 ARMS["L_leak"] = _rev2(arm_L_leak)
 # same question, but only populations that share no respondents with the target
 ARMS["L_strict"] = _rev2(lambda row, ctx: arm_L_leak(row, ctx, _NO_OVERLAP))
