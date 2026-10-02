@@ -12,7 +12,7 @@ from human_sim import simbench_ablate as A
 from human_sim import simbench_mass_levers as M
 
 M.EVAL_ARMS = {"plain": ("retr6_rev2", M.HAIKU), "panel": ("P_groundall5", M.HAIKU)}
-REL = ["same_group_other_wave", "country_total", "same_country_subgroups", "other_countries", "other_dataset"]
+REL = ["same_group_other_wave", "country_total", "same_country_subgroups", "disjoint_subgroup", "other_countries", "other_dataset"]
 
 
 def _is_country(k):
@@ -47,6 +47,8 @@ def relation(t, s):
         return "same_group_other_wave"
     if not as_:
         return "country_total"
+    if at and [k for k, _ in at] == [k for k, _ in as_]:
+        return "disjoint_subgroup"  # same attribute, other value: no shared respondents
     return "same_country_subgroups"
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from collections import Counter
 
 import numpy as np
@@ -10,12 +11,15 @@ import numpy as np
 from human_sim import simbench_ablate as A
 from human_sim import simbench_mass_levers as M
 
-ARMS = {"plain": ("retr6_rev2", M.HAIKU), "panel": ("P_groundall5", M.HAIKU), "leak": ("L_leak", M.HAIKU)}
+STRICT = "--strict" in sys.argv
+ARMS = {"plain": ("retr6_rev2", M.HAIKU), "panel": ("P_groundall5", M.HAIKU),
+        "leak": ("L_strict" if STRICT else "L_leak", M.HAIKU)}
+ALLOWED = A._NO_OVERLAP if STRICT else None
 
 
 def data_estimate(row, keys):
     """Size-weighted mean of the closest relation's rows (no model)."""
-    src = A._leak_sources(row)
+    src = A._leak_sources(row, ALLOWED)
     if not src:
         return None, None
     rel = src[0][0]
@@ -84,7 +88,7 @@ def main():
         print(f"{nm:55s}{s.mean():6.1f}{(s - base).mean():+7.1f} {str(ci(s - base)):>10s}")
     final = pick["leak harness + data blend (dev-tuned), else non-leak"]
     print(f"\n{'by closest relation':26s}{'N':>5s}{'plain':>7s}{'data':>7s}{'leak':>7s}{'final':>7s}")
-    for rel in ["same_group_other_wave", "country_total", "same_country_subgroups", "other_countries", None]:
+    for rel in ["same_group_other_wave", "country_total", "same_country_subgroups", "disjoint_subgroup", "other_countries", None]:
         qq = [q for q in ev if q["rel"] == rel]
         if not qq:
             continue
@@ -100,7 +104,7 @@ def main():
         f, p = np.mean([S(q, final(q)) for q in qq]), np.mean([S(q, q["preds"]["plain"]) for q in qq])
         out["by_dataset"][ds] = {"N": n, "plain": p, "final": f, "has_data": sum(q["rel"] is not None for q in qq)}
         print(f"  {ds:22s} N {n:3d} with data {out['by_dataset'][ds]['has_data']:3d}  plain {p:6.1f}  final {f:6.1f}")
-    (M.OUT / "leak_combine_report.json").write_text(json.dumps(out, indent=2, default=float))
+    (M.OUT / ("leak_strict_combine_report.json" if STRICT else "leak_combine_report.json")).write_text(json.dumps(out, indent=2, default=float))
 
 
 if __name__ == "__main__":

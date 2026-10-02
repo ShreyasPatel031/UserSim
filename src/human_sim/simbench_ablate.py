@@ -1489,7 +1489,7 @@ def _leak_index() -> dict:
     return _LEAK_IDX
 
 
-def _leak_sources(row) -> list[tuple[str, str, float, dict]]:
+def _leak_sources(row, allowed: tuple | None = None) -> list[tuple[str, str, float, dict]]:
     from human_sim.simbench_leak_ceiling import relation
 
     own_q = row.get("_orig_template", row["input_template"])
@@ -1500,10 +1500,14 @@ def _leak_sources(row) -> list[tuple[str, str, float, dict]]:
             continue
         if set(s["human_answer"]) != keys:
             continue
+        if allowed is not None and relation(row, s) not in allowed:
+            continue
         out.append((relation(row, s), _group_sentence(_filled_persona(s)) or s["dataset_name"],
                     float(s.get("group_size", 0) or 0), s["human_answer"]))
-    order = {"same_group_other_wave": 0, "country_total": 1, "same_country_subgroups": 2, "other_countries": 3, "other_dataset": 4}
-    caps = {"same_group_other_wave": 2, "country_total": 2, "same_country_subgroups": 10, "other_countries": 8, "other_dataset": 3}
+    order = {"same_group_other_wave": 0, "country_total": 1, "same_country_subgroups": 2, "disjoint_subgroup": 2,
+             "other_countries": 3, "other_dataset": 4}
+    caps = {"same_group_other_wave": 2, "country_total": 2, "same_country_subgroups": 10, "disjoint_subgroup": 10,
+            "other_countries": 8, "other_dataset": 3}
     out.sort(key=lambda x: (order[x[0]], -x[2]))
     kept, seen = [], Counter()
     for x in out:
@@ -1514,12 +1518,16 @@ def _leak_sources(row) -> list[tuple[str, str, float, dict]]:
 
 
 _LEAK_LABEL = {"same_group_other_wave": "your own group, another survey wave", "country_total": "your whole country",
-               "same_country_subgroups": "another group in your country", "other_countries": "another country",
+               "same_country_subgroups": "another group in your country",
+               "disjoint_subgroup": "another group in your country (no overlap with yours)", "other_countries": "another country",
                "other_dataset": "another survey"}
 
 
-def arm_L_leak(row, ctx):
-    src = _leak_sources(row)
+_NO_OVERLAP = ("disjoint_subgroup", "other_countries")
+
+
+def arm_L_leak(row, ctx, allowed: tuple | None = None):
+    src = _leak_sources(row, allowed)
     if not src:
         return "", "", {"pipeline": lambda call: (None, 0, 0)}
     keys = list(row["human_answer"].keys())
@@ -1540,6 +1548,8 @@ def arm_L_leak(row, ctx):
 
 
 ARMS["L_leak"] = _rev2(arm_L_leak)
+# same question, but only populations that share no respondents with the target
+ARMS["L_strict"] = _rev2(lambda row, ctx: arm_L_leak(row, ctx, _NO_OVERLAP))
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
 ARMS["A_k12_prof"] = _stats_arm(12, False, True)
 ARMS["A_k12_pool_prof"] = _stats_arm(12, True, True)
