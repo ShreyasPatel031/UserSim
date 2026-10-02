@@ -384,3 +384,17 @@ Part of the order row is regression to the mean, since these questions were pick
 - **Not model-fixable:** the roughly equal order and shape errors that remain (.060 each on divided shared), the shape-dominated questions (+5.7 only), and the task datasets.
 - **Segments, panel and grounding add nothing on top of Sonnet.** The Haiku-era spread levers were compensating for a weaker model.
 - Next: look at the questions Sonnet still gets badly wrong on order and shape (worst 10 per group) to see what information would fix them.
+
+## 7. Haiku on the entire benchmark (13,510 questions)
+
+Run: Haiku 4.5 `retr6_rev2` (best Haiku arm overall on eval) on every row of the Pop (7,167) and Grouped (6,343) splits, with the same demo pool as eval (a test question's own text is never used as a demo). New mode `--set full` in `simbench_ablate.py`; result `results/simbench_ablate/retr6_rev2_claude-haiku-4-5_p25g100s7full.json`. Cost $28.74. Norms are recomputed on all rows.
+
+| | S | N |
+|---|---|---|
+| **Entire benchmark** | **41.46** (mean TVD 0.191) | 13,510 |
+| Pop / Grouped | 40.44 / 42.61 | |
+| The 981-question eval sample's rows, inside this run | 43.5 | 986 |
+| All other rows | 41.3 | 12,524 |
+| Consensus (< 0.65) / mixed / divided (≥ 0.84) | 47.0 / 41.3 / **35.9** | 4,621 / 4,437 / 4,452 |
+
+The eval sample reads about 2 points higher than the entire benchmark (43.5 vs 41.3 on the rest). The entropy bands agree with the sample within one point (divided 35.4 on eval vs 35.9 here; consensus 47.7 vs 47.0), so the divided-question findings do not depend on the sample. Eval scores for other arms should be read as roughly 2 points optimistic. Sonnet 5.5 was not run on the entire benchmark (est. $75); its eval score of 56.1 would be expected to land around 54.
