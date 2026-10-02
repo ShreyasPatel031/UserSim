@@ -1899,6 +1899,9 @@ def build_env(pop_n: int, grouped_n: int, seed: int, which: str = "eval", limit:
                 parts.append(sh.iloc[3 + n_eval : 3 + n_eval + n_dev])
         sample = pd.concat(parts)
         sample = sample[sample["human_answer"].map(len) > 1].reset_index(drop=True)
+    elif which == "full":
+        sample = pd.concat([pop_full, grouped_full])
+        sample = sample[sample["human_answer"].map(len) > 1].reset_index(drop=True)
     else:
         sample = pd.concat([pop_eval, grp_eval]).reset_index(drop=True)
     if limit:
@@ -1968,7 +1971,7 @@ def main() -> None:
     p.add_argument("--score-only", action="store_true")
     p.add_argument("--limit", type=int, default=0, help="smoke test: random N cases, separate cache")
     p.add_argument("--shrink-sweep", action="store_true")
-    p.add_argument("--set", default="eval", choices=["eval", "dev", "stepc"], help="dev = held-out tuning set")
+    p.add_argument("--set", default="eval", choices=["eval", "dev", "stepc", "full"], help="dev = held-out tuning set")
     args = p.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -2007,7 +2010,7 @@ def main() -> None:
     for arm in arms:
         if arm not in ARMS:
             raise SystemExit(f"unknown arm {arm}; choose from {sorted(ARMS)}")
-        tag = f"p{args.pop}g{args.grouped}s{args.seed}" + (f"lim{args.limit}" if args.limit else "") + ({"dev": f"dev{DEV_POP}x{DEV_GROUPED}", "stepc": "stepc"}.get(args.set, ""))
+        tag = f"p{args.pop}g{args.grouped}s{args.seed}" + (f"lim{args.limit}" if args.limit else "") + ({"dev": f"dev{DEV_POP}x{DEV_GROUPED}", "stepc": "stepc", "full": "full"}.get(args.set, ""))
         raw_path = OUT_DIR / f"{arm}_{args.model.replace('/', '_')}_{tag}.json"
         if args.score_only or raw_path.exists():
             if not raw_path.exists():
