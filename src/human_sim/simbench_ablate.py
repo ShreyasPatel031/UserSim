@@ -1466,6 +1466,80 @@ ARMS["D3_same_group_same_topic"] = _rev2(_d_arm("D3"))
 ARMS["D4_other_groups_same_question"] = _rev2(arm_D4)
 ARMS["P_cons5"] = _panel_arm(5, True, True, "consensus")
 ARMS["P_adapt"] = _panel_arm(5, True, True, "adaptive")
+
+
+# --------------------------------------------------------------------------- #
+# LEAK CEILING (not a valid benchmark score): every other SimBench row that asks this
+# identical question (country total, other subgroups, other countries) is shown.
+# --------------------------------------------------------------------------- #
+
+_LEAK_IDX: dict | None = None
+_leak_lock = threading.Lock()
+
+
+def _leak_index() -> dict:
+    global _LEAK_IDX
+    with _leak_lock:
+        if _LEAK_IDX is None:
+            idx = defaultdict(list)
+            for split in ("Pop", "Grouped"):
+                for _, r in load_split(split).iterrows():
+                    idx[r["input_template"]].append(r)
+            _LEAK_IDX = dict(idx)
+    return _LEAK_IDX
+
+
+def _leak_sources(row) -> list[tuple[str, str, float, dict]]:
+    from human_sim.simbench_leak_ceiling import relation
+
+    own_q = row.get("_orig_template", row["input_template"])
+    own_persona, keys = _filled_persona(row), set(row.get("_orig_keys", row["human_answer"].keys()))
+    out = []
+    for s in _leak_index().get(own_q, []):
+        if s["split"] == row["split"] and _filled_persona(s) == own_persona:
+            continue
+        if set(s["human_answer"]) != keys:
+            continue
+        out.append((relation(row, s), _group_sentence(_filled_persona(s)) or s["dataset_name"],
+                    float(s.get("group_size", 0) or 0), s["human_answer"]))
+    order = {"same_group_other_wave": 0, "country_total": 1, "same_country_subgroups": 2, "other_countries": 3, "other_dataset": 4}
+    caps = {"same_group_other_wave": 2, "country_total": 2, "same_country_subgroups": 10, "other_countries": 8, "other_dataset": 3}
+    out.sort(key=lambda x: (order[x[0]], -x[2]))
+    kept, seen = [], Counter()
+    for x in out:
+        if seen[x[0]] < caps[x[0]]:
+            seen[x[0]] += 1
+            kept.append(x)
+    return kept
+
+
+_LEAK_LABEL = {"same_group_other_wave": "your own group, another survey wave", "country_total": "your whole country",
+               "same_country_subgroups": "another group in your country", "other_countries": "another country",
+               "other_dataset": "another survey"}
+
+
+def arm_L_leak(row, ctx):
+    src = _leak_sources(row)
+    if not src:
+        return "", "", {"pipeline": lambda call: (None, 0, 0)}
+    keys = list(row["human_answer"].keys())
+    mp = row.get("_rev_map")
+    lines = []
+    for rel, sentence, size, ans in src:
+        tot = sum(ans.values()) or 1.0
+        dist = {kk: round(100 * ans.get(mp[kk] if mp else kk, 0.0) / tot) for kk in keys}
+        n = f", n={int(size)}" if size else ""
+        lines.append(f"- [{_LEAK_LABEL[rel]}{n}] {sentence}: {json.dumps(dist)}")
+    prefix = (
+        "Real measured answer distributions to THIS exact question from related groups:\n"
+        + "\n".join(lines)
+        + "\n\nUse them as strong evidence. Your group may differ from these groups; adjust for how "
+        "your group differs, but do not invent differences the evidence does not support.\n\n"
+    )
+    return SYSTEM_PREFIX + _filled_persona(row), prefix + _official_user(row["input_template"], keys), {}
+
+
+ARMS["L_leak"] = _rev2(arm_L_leak)
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
 ARMS["A_k12_prof"] = _stats_arm(12, False, True)
 ARMS["A_k12_pool_prof"] = _stats_arm(12, True, True)

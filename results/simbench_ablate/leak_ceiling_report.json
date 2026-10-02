@@ -1,0 +1,200 @@
+{
+  "coverage_best_relation": {
+    "other_countries": 202,
+    "none": 278,
+    "same_group_other_wave": 3,
+    "country_total": 469,
+    "same_country_subgroups": 29
+  },
+  "same_group_other_wave": {
+    "N": 3,
+    "S_data": 100.0,
+    "S_plain": 63.504700957180546,
+    "S_panel": 59.57611190479859
+  },
+  "country_total": {
+    "N": 469,
+    "S_data": 82.3812877007399,
+    "S_plain": 46.279852914907835,
+    "S_panel": 42.63133339217121
+  },
+  "same_country_subgroups": {
+    "N": 501,
+    "S_data": 82.40916128443305,
+    "S_plain": 46.20451464742143,
+    "S_panel": 42.7926923884802
+  },
+  "other_countries": {
+    "N": 602,
+    "S_data": 47.21375795131856,
+    "S_plain": 36.69583589371127,
+    "S_panel": 34.3201288335285
+  },
+  "overall": {
+    "plain": 43.55914121719265,
+    "data_where_available_else_plain": 67.5024260844639,
+    "per_row_max(data,plain)": 70.62900357035261
+  },
+  "by_dataset": [
+    {
+      "dataset": "Afrobarometer",
+      "N": 125,
+      "covered": 122,
+      "rel": "country_total",
+      "S_best": 81.97776122722806,
+      "S_plain": 52.29491451516617
+    },
+    {
+      "dataset": "ChaosNLI",
+      "N": 25,
+      "covered": 0,
+      "rel": "-",
+      "S_best": 63.23851203501094,
+      "S_plain": 63.23851203501094
+    },
+    {
+      "dataset": "Choices13k",
+      "N": 25,
+      "covered": 0,
+      "rel": "-",
+      "S_best": 11.131112522224766,
+      "S_plain": 11.131112522224766
+    },
+    {
+      "dataset": "ConspiracyCorr",
+      "N": 25,
+      "covered": 25,
+      "rel": "other_countries",
+      "S_best": 33.14109988271377,
+      "S_plain": 34.21361507060058
+    },
+    {
+      "dataset": "DICES",
+      "N": 25,
+      "covered": 0,
+      "rel": "-",
+      "S_best": 83.94845127611171,
+      "S_plain": 83.94845127611171
+    },
+    {
+      "dataset": "ESS",
+      "N": 125,
+      "covered": 120,
+      "rel": "country_total",
+      "S_best": 76.04984076800602,
+      "S_plain": 47.31569070951215
+    },
+    {
+      "dataset": "GlobalOpinionQA",
+      "N": 25,
+      "covered": 5,
+      "rel": "other_countries",
+      "S_best": 44.47301266498905,
+      "S_plain": 43.97062080816274
+    },
+    {
+      "dataset": "ISSP",
+      "N": 125,
+      "covered": 109,
+      "rel": "country_total",
+      "S_best": 74.63223218709354,
+      "S_plain": 37.154475685028835
+    },
+    {
+      "dataset": "Jester",
+      "N": 25,
+      "covered": 0,
+      "rel": "-",
+      "S_best": 50.67183928964455,
+      "S_plain": 50.67183928964455
+    },
+    {
+      "dataset": "LatinoBarometro",
+      "N": 125,
+      "covered": 109,
+      "rel": "country_total",
+      "S_best": 78.73408570607391,
+      "S_plain": 21.198026875244235
+    },
+    {
+      "dataset": "MoralMachine",
+      "N": 25,
+      "covered": 4,
+      "rel": "other_countries",
+      "S_best": 39.355014567897925,
+      "S_plain": 28.03586679455977
+    },
+    {
+      "dataset": "MoralMachineClassic",
+      "N": 12,
+      "covered": 12,
+      "rel": "other_countries",
+      "S_best": 80.53978255258232,
+      "S_plain": 58.862619530471754
+    },
+    {
+      "dataset": "NumberGame",
+      "N": 25,
+      "covered": 0,
+      "rel": "-",
+      "S_best": 2.333233661558184,
+      "S_plain": 2.333233661558184
+    },
+    {
+      "dataset": "OSPsychBig5",
+      "N": 25,
+      "covered": 25,
+      "rel": "other_countries",
+      "S_best": 71.00985377981021,
+      "S_plain": 38.34491087130787
+    },
+    {
+      "dataset": "OSPsychMACH",
+      "N": 25,
+      "covered": 25,
+      "rel": "other_countries",
+      "S_best": 58.74163532278344,
+      "S_plain": -0.47422288578819805
+    },
+    {
+      "dataset": "OSPsychMGKT",
+      "N": 25,
+      "covered": 21,
+      "rel": "other_countries",
+      "S_best": 72.58494235826112,
+      "S_plain": 23.988185644720424
+    },
+    {
+      "dataset": "OSPsychRWAS",
+      "N": 19,
+      "covered": 0,
+      "rel": "-",
+      "S_best": 71.3351587224127,
+      "S_plain": 71.3351587224127
+    },
+    {
+      "dataset": "OpinionQA",
+      "N": 125,
+      "covered": 101,
+      "rel": "country_total",
+      "S_best": 72.99417418901629,
+      "S_plain": 73.3841484167143
+    },
+    {
+      "dataset": "TISP",
+      "N": 25,
+      "covered": 25,
+      "rel": "other_countries",
+      "S_best": 49.02533435154748,
+      "S_plain": 36.32664606208956
+    },
+    {
+      "dataset": "WisdomOfCrowds",
+      "N": 25,
+      "covered": 0,
+      "rel": "-",
+      "S_best": 54.32687120044821,
+      "S_plain": 54.32687120044821
+    }
+  ]
+}
