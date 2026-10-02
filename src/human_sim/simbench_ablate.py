@@ -842,7 +842,7 @@ _PLANNER_ADAPTIVE = (
 )
 
 
-def _panel_arm(n: int, ground_planner: bool, ground_agents: bool, planner: str = "free"):
+def _panel_arm(n: int, ground_planner: bool, ground_agents: bool, planner: str = "free", evidence: tuple | None = None):
     template = {"free": _PLANNER_FREE, "consensus": _PLANNER_CONSENSUS, "adaptive": _PLANNER_ADAPTIVE}[planner]
 
     def arm(row, ctx):
@@ -853,6 +853,11 @@ def _panel_arm(n: int, ground_planner: bool, ground_agents: bool, planner: str =
             else []
         )
         ground = _GROUND_NOTE.format(demos=_demo_block(demos, False)) if demos else ""
+        if evidence is not None:
+            ev = _leak_block(row, evidence)
+            if not ev:
+                return "", "", {"pipeline": lambda call: (None, 0, 0)}
+            ground = ground + ev
         base_system = SYSTEM_PREFIX + _filled_persona(row)
 
         def pipeline(call):
@@ -1526,10 +1531,10 @@ _LEAK_LABEL = {"same_group_other_wave": "your own group, another survey wave", "
 _NO_OVERLAP = ("disjoint_subgroup", "other_countries")
 
 
-def arm_L_leak(row, ctx, allowed: tuple | None = None):
+def _leak_block(row, allowed: tuple | None = None) -> str:
     src = _leak_sources(row, allowed)
     if not src:
-        return "", "", {"pipeline": lambda call: (None, 0, 0)}
+        return ""
     keys = list(row["human_answer"].keys())
     mp = row.get("_rev_map")
     lines = []
@@ -1538,18 +1543,26 @@ def arm_L_leak(row, ctx, allowed: tuple | None = None):
         dist = {kk: round(100 * ans.get(mp[kk] if mp else kk, 0.0) / tot) for kk in keys}
         n = f", n={int(size)}" if size else ""
         lines.append(f"- [{_LEAK_LABEL[rel]}{n}] {sentence}: {json.dumps(dist)}")
-    prefix = (
+    return (
         "Real measured answer distributions to THIS exact question from related groups:\n"
         + "\n".join(lines)
         + "\n\nUse them as strong evidence. Your group may differ from these groups; adjust for how "
         "your group differs, but do not invent differences the evidence does not support.\n\n"
     )
+
+
+def arm_L_leak(row, ctx, allowed: tuple | None = None):
+    prefix = _leak_block(row, allowed)
+    if not prefix:
+        return "", "", {"pipeline": lambda call: (None, 0, 0)}
+    keys = list(row["human_answer"].keys())
     return SYSTEM_PREFIX + _filled_persona(row), prefix + _official_user(row["input_template"], keys), {}
 
 
 ARMS["L_leak"] = _rev2(arm_L_leak)
 # same question, but only populations that share no respondents with the target
 ARMS["L_strict"] = _rev2(lambda row, ctx: arm_L_leak(row, ctx, _NO_OVERLAP))
+ARMS["P_strict5"] = _panel_arm(5, True, True, evidence=_NO_OVERLAP)
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
 ARMS["A_k12_prof"] = _stats_arm(12, False, True)
 ARMS["A_k12_pool_prof"] = _stats_arm(12, True, True)

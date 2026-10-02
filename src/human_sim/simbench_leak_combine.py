@@ -15,6 +15,8 @@ STRICT = "--strict" in sys.argv
 ARMS = {"plain": ("retr6_rev2", M.HAIKU), "panel": ("P_groundall5", M.HAIKU),
         "leak": ("L_strict" if STRICT else "L_leak", M.HAIKU)}
 ALLOWED = A._NO_OVERLAP if STRICT else None
+if STRICT:
+    ARMS["pers"] = ("P_strict5", M.HAIKU)
 
 
 def data_estimate(row, keys):
@@ -68,6 +70,13 @@ def main():
         if len(qq) >= 10:
             wbest[rel] = float(max(ws, key=lambda w: np.mean([S(q, w * q["data"] + (1 - w) * q["preds"]["leak"]) for q in qq])))
     print("dev-tuned weight on data-only estimate, per relation:", wbest)
+    wpers = {}
+    for rel in {q["rel"] for q in dev if q["rel"]}:
+        qq = [q for q in dev if q["rel"] == rel and "pers" in q["preds"]]
+        if len(qq) >= 10:
+            wpers[rel] = float(max(ws, key=lambda w: np.mean([S(q, w * q["data"] + (1 - w) * q["preds"]["pers"]) for q in qq])))
+    if wpers:
+        print("dev-tuned weight on data-only estimate vs persona panel, per relation:", wpers)
 
     ev = [q for q in ev if "plain" in q["preds"]]
     pick = {
@@ -79,15 +88,21 @@ def main():
             wbest.get(q["rel"], 0) * q["data"] + (1 - wbest.get(q["rel"], 0)) * q["preds"]["leak"]
             if "leak" in q["preds"] and q["data"] is not None else nonleak(q)),
     }
+    if wpers:
+        pick["persona panel + evidence where available, else non-leak"] = (
+            lambda q: q["preds"]["pers"] if "pers" in q["preds"] else nonleak(q))
+        pick["persona panel + evidence + data blend (dev-tuned), else non-leak"] = lambda q: (
+            wpers.get(q["rel"], 0) * q["data"] + (1 - wpers.get(q["rel"], 0)) * q["preds"]["pers"]
+            if "pers" in q["preds"] and q["data"] is not None else nonleak(q))
     base = np.array([S(q, pick["plain"](q)) for q in ev])
-    out = {"weights": wbest, "overall": {}, "by_relation": {}, "by_dataset": {}}
+    out = {"weights_pers": wpers, "weights": wbest, "overall": {}, "by_relation": {}, "by_dataset": {}}
     print(f"\n{'eval, all 981':55s}{'S':>6s}{'vs plain':>18s}")
     for nm, f in pick.items():
         s = np.array([S(q, f(q)) for q in ev])
         out["overall"][nm] = {"S": float(s.mean()), "vs_plain": float((s - base).mean()), "ci": ci(s - base)}
         print(f"{nm:55s}{s.mean():6.1f}{(s - base).mean():+7.1f} {str(ci(s - base)):>10s}")
     final = pick["leak harness + data blend (dev-tuned), else non-leak"]
-    print(f"\n{'by closest relation':26s}{'N':>5s}{'plain':>7s}{'data':>7s}{'leak':>7s}{'final':>7s}")
+    print(f"\n{'by closest relation':26s}{'N':>5s}{'plain':>7s}{'panel':>7s}{'data':>7s}{'leak':>7s}{'pers':>7s}{'final':>7s}")
     for rel in ["same_group_other_wave", "country_total", "same_country_subgroups", "disjoint_subgroup", "other_countries", None]:
         qq = [q for q in ev if q["rel"] == rel]
         if not qq:
@@ -95,9 +110,11 @@ def main():
         r = {"N": len(qq), "plain": np.mean([S(q, q["preds"]["plain"]) for q in qq]),
              "data": np.mean([S(q, q["data"]) for q in qq]) if rel else float("nan"),
              "leak": np.mean([S(q, q["preds"]["leak"]) for q in qq if "leak" in q["preds"]]) if rel else float("nan"),
+             "panel": np.mean([S(q, q["preds"]["panel"]) for q in qq if "panel" in q["preds"]]),
+             "pers": np.mean([S(q, q["preds"]["pers"]) for q in qq if "pers" in q["preds"]]) if rel and STRICT else float("nan"),
              "final": np.mean([S(q, final(q)) for q in qq])}
         out["by_relation"][str(rel)] = r
-        print(f"{str(rel or 'no same-question data'):26s}{r['N']:5d}{r['plain']:7.1f}{r['data']:7.1f}{r['leak']:7.1f}{r['final']:7.1f}")
+        print(f"{str(rel or 'no same-question data'):26s}{r['N']:5d}{r['plain']:7.1f}{r['panel']:7.1f}{r['data']:7.1f}{r['leak']:7.1f}{r['pers']:7.1f}{r['final']:7.1f}")
     print("\nby dataset (final vs plain):")
     for ds, n in Counter(q["dataset"] for q in ev).most_common():
         qq = [q for q in ev if q["dataset"] == ds]
