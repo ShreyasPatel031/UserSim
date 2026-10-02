@@ -1,7 +1,11 @@
 {
+  "weights_pers": {
+    "disjoint_subgroup": 0.8500000000000001,
+    "other_countries": 0.7000000000000001
+  },
   "weights": {
-    "other_countries": 0.45,
-    "disjoint_subgroup": 0.75
+    "disjoint_subgroup": 0.75,
+    "other_countries": 0.45
   },
   "overall": {
     "plain": {
@@ -43,6 +47,22 @@
         13.3,
         18.1
       ]
+    },
+    "persona panel + evidence where available, else non-leak": {
+      "S": 48.45445008331133,
+      "vs_plain": 4.895308866118675,
+      "ci": [
+        3.3,
+        6.6
+      ]
+    },
+    "persona panel + evidence + data blend (dev-tuned), else non-leak": {
+      "S": 58.9221574137105,
+      "vs_plain": 15.363016196517846,
+      "ci": [
+        12.9,
+        17.8
+      ]
     }
   },
   "by_relation": {
@@ -51,6 +71,8 @@
       "plain": 48.934193295125354,
       "data": 70.99232775072295,
       "leak": 65.94803369482328,
+      "panel": 45.041845685768244,
+      "pers": 52.079300556776985,
       "final": 73.66186670980242
     },
     "other_countries": {
@@ -58,6 +80,8 @@
       "plain": 33.292225358262606,
       "data": 49.78775355181862,
       "leak": 49.146213038470435,
+      "panel": 33.448259597133166,
+      "pers": 44.058047576028194,
       "final": 50.50889049651584
     },
     "None": {
@@ -65,6 +89,8 @@
       "plain": 47.02915828233047,
       "data": NaN,
       "leak": NaN,
+      "panel": 45.69887125994321,
+      "pers": NaN,
       "final": 48.059519623552234
     }
   },
