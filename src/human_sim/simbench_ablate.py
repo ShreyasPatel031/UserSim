@@ -1703,7 +1703,7 @@ _OWN_NOTE = "Real answer distributions to similar questions from people like you
 _TGT_NOTE = "Real answer distributions to similar questions from your whole group ({who}):\n\n{demos}\n\n"
 
 
-def _demo_mix_arm(mode: str, anchor_country: bool = False, style: str = "dist"):
+def _demo_mix_arm(mode: str, anchor_country: bool = False, style: str = "dist", shared_block: bool = True):
     """mode 'mix': demographic personas (+ target group's own examples for subgroup targets);
     mode 'own': one persona = the subgroup target itself with its own examples."""
 
@@ -1742,7 +1742,7 @@ def _demo_mix_arm(mode: str, anchor_country: bool = False, style: str = "dist"):
                 pre = ""
                 if p["examples"]:
                     pre += _OWN_NOTE.format(who=p["sentence"] or target_who, demos=_demo_block(p["examples"], False))
-                if target_examples:
+                if target_examples and shared_block:
                     pre += _TGT_NOTE.format(who=target_who, demos=_demo_block(target_examples, False))
                 system = SYSTEM_PREFIX + _filled_persona(r) + (" " + p["sentence"] if p["sentence"] else "")
                 user = pre + "Now estimate the same for a new question.\n\n" + _official_user(r["input_template"], keys)
@@ -1758,7 +1758,7 @@ def _demo_mix_arm(mode: str, anchor_country: bool = False, style: str = "dist"):
                 pt, ot = pt + a, ot + b
                 dists.append(merged)
                 diag.append({"desc": p["desc"], "share": p["share"], "dist": merged, "orders": both,
-                             "own_examples": len(p["examples"]), "target_examples": len(target_examples),
+                             "own_examples": len(p["examples"]), "target_examples": len(target_examples) if shared_block else 0,
                              "attribute": split["attribute"], "between_group_tvd": split["between_group_tvd"]})
             diag = [x for x in diag if x["dist"] is not None]
             return _weighted_merge(dists, [p["share"] for p in personas], keys), pt, ot, diag
@@ -1771,6 +1771,8 @@ def _demo_mix_arm(mode: str, anchor_country: bool = False, style: str = "dist"):
 ARMS["C5_demo_mix"] = _demo_mix_arm("mix")
 ARMS["C5_own"] = _demo_mix_arm("own")
 ARMS["C5b_demo_mix"] = _demo_mix_arm("mix", anchor_country=True)
+# each persona sees ONLY its own demographic's examples: no block shared across personas
+ARMS["C7_split_own"] = _demo_mix_arm("mix", shared_block=False)
 ARMS["C6a_demo_agree"] = _demo_mix_arm("mix", anchor_country=True, style="agree")
 ARMS["C6b_demo_individuals"] = _demo_mix_arm("mix", anchor_country=True, style="individuals")
 ARMS["L_leak"] = _rev2(arm_L_leak)

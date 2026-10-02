@@ -30,9 +30,9 @@ def ci(d):
     return round(float(b[50]), 1), round(float(b[1949]), 1)
 
 
-def scoreboard(which, panels, extra=None):
+def scoreboard(which, panels, extra=None, also=()):
     arms = {**COMPETITORS, **{p: (p, H) for p in panels}}
-    M.EVAL_ARMS, M.DEV_ARMS = arms, arms
+    M.EVAL_ARMS = M.DEV_ARMS = {**arms, **{a: (a, H) for a in also}}
     qs = [q for q in M.load(which) if all(a in q["preds"] for a in arms)]
     for q in qs:
         q["preds"]["50/50 plain+invented"] = (q["preds"]["plain (retr6_rev2)"] + q["preds"]["invented personas"]) / 2
