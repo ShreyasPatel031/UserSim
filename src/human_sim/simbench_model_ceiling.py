@@ -79,7 +79,7 @@ def main():
     print("\n== ΔS (Sonnet − Haiku) by Haiku's dominant error component, divided questions")
     dom = df[df.arm == "haiku"].set_index("qid").dominant
     ss = {a: df[df.arm == a].set_index("qid").S for a in ("haiku", "son", "son_ground")}
-    for comp in ["order", "shape", "peaks", "location"]:
+    for comp in ["assignment", "profile", "peaks", "location"]:
         ids = dom[dom == comp].index
         ids = [i for i in ids if i in ss["son"].index]
         if not ids:

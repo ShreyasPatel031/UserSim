@@ -304,7 +304,7 @@ Neither router beats always-`retr6_rev2` over all questions. The dev-fitted rule
 3. **For the panel**, fix type collapse and the planner's weights (forced-diverse types, equal or fitted weights) before adding more machinery.
 4. **Pop-only task datasets** stay unsolved. The apparent segments win is flattening; only OSPsychMACH has a real panel gain (+18.7 on all its questions, N 25).
 
-## 5. Follow-up: a bigger model inside the segments harness (dev)
+## 5. Follow-up: a bigger model inside the segments harness (dev) — **did not replicate on eval, see §6**
 
 Question: Haiku's best divided harness and Sonnet's simple harness score about the same on divided questions, but Sonnet picks the right side more often while Haiku hedges. Does putting Sonnet 5.5 *inside* the segments harness get both?
 
@@ -334,3 +334,53 @@ Reading:
 Next: confirm on eval before switching (Sonnet 5.5 `retr6` and `B_ground3_rev2` on the 981 eval questions, est. ~$8). A cheaper option is to route Sonnet grounded segments to the Pop-only task datasets and Sonnet simple elsewhere.
 
 *Untested:* why grounding helps on the task datasets. The data show Sonnet is over-confident there (entropy gap −0.08) and grounded segments fixes it; whether the demos or the segmentation causes that was not isolated.
+
+
+## 6. Eval confirmation: Sonnet 5.5 on the full benchmark (981 questions)
+
+Runs: Sonnet 5.5 × `retr6_rev2` and × `B_ground3_rev2` on eval ($12.6). Code: `src/human_sim/simbench_model_ceiling.py`. Numbers: `results/simbench_ablate/model_ceiling_report.json`. Baseline = Haiku `retr6_rev2`; ΔS is paired, 95% bootstrap CI. Pop-only task datasets are reported separately.
+
+**1. The belief "bigger models help on consensus questions but not divided ones" is wrong on eval.** Sonnet 5.5 `retr6_rev2` minus Haiku `retr6_rev2`:
+
+| Slice | N | Haiku S | Sonnet S | ΔS [CI] |
+|---|---|---|---|---|
+| Consensus + mixed | 653 | 47.7 | 60.2 | +12.5 [+9.2, +15.7] |
+| **Divided (truth)** | 328 | 35.4 | 47.9 | **+12.5 [+8.8, +16.4]** |
+| Divided shared surveys | 175 | 43.0 | 54.5 | +11.5 [+7.5, +15.5] |
+| Divided Pop-only tasks | 58 | −1.1 | 17.5 | +18.7 [+5.9, +31.5] |
+| Divided other Pop-only | 95 | 43.7 | 54.4 | +10.7 [+4.0, +17.8] |
+| Predicted divided (no truth) | 258 | 30.8 | 43.5 | +12.7 [+8.2, +17.2] |
+| All | 981 | 43.6 | 56.1 | +12.5 [+10.1, +15.1] |
+
+The gain is the same on divided and non-divided questions. Divided questions are still harder for everyone (Sonnet 47.9 vs 60.2).
+
+**2. The dev result that grounded segments add to Sonnet did not replicate.** Sonnet `B_ground3_rev2` minus Sonnet `retr6_rev2`: divided +0.3 [−2.1, +2.5]; divided shared +0.7; divided tasks +4.3 [−3.1, +12.5] (dev said +25.9); predicted divided −1.1; consensus −4.1 [−6.1, −2.1]; all −2.6 [−4.2, −1.1]. Putting a segments harness on top of Sonnet adds nothing on divided questions and costs a little elsewhere. The dev gain (N 22 on tasks) was noise.
+
+**3. What the bigger model removes (divided, absolute TVD, Shapley parts, Haiku → Sonnet):**
+
+| Group | N | TVD | Order | Shape | Location | Top-1 right | Wrong side (flip) | Entropy gap |
+|---|---|---|---|---|---|---|---|---|
+| Shared | 175 | .174 → .138 (−21%) | .075 → .060 (−19%) | .073 → .060 (−17%) | .015 → .011 | .54 → .61 | .16 → .17 | −.006 → +.003 |
+| Pop-only tasks | 58 | .231 → .189 (−18%) | .105 → .083 (−21%) | .110 → .099 (−10%) | ~0 | .50 → .52 | .33 → .25 | −.095 → −.069 |
+| Other Pop-only | 95 | .154 → .126 (−18%) | .067 → .053 (−22%) | .074 → .067 (−11%) | ~0 | .63 → .65 | .16 → .13 | −.028 → −.011 |
+
+The model removes roughly a fifth of both the order error and the shape error. It does not fix either. What is left on divided shared questions is order .060 and shape .060 in equal parts (87% of the remaining TVD together). Correction to §5 and the earlier chat summary: the dev claim that Sonnet halves the wrong-side rate does not hold on eval. On shared surveys the flip rate is unchanged (.16 → .17); it falls only on the task and other Pop-only groups.
+
+**4. Where the model helps most, split by Haiku's dominant error on each divided question (Sonnet minus Haiku):**
+
+| Haiku's dominant error | N | ΔS [CI] |
+|---|---|---|
+| Order (wrong option gets the mass) | 109 | **+23.2 [+15.8, +31.0]** |
+| Two peaks | 40 | +12.0 [+2.7, +21.7] |
+| Shape (wrong heights) | 175 | +5.7 [+1.5, +9.9] |
+| Location | 4* | +23.4 |
+
+Part of the order row is regression to the mean, since these questions were picked for being bad on order under Haiku. But the shape row is picked the same way and gains far less, so the contrast stands.
+
+**5. Pop-only task datasets stay unsolved.** Sonnet scores 17.5 on divided task questions against about 54 on the other divided groups. It is still over-confident there (entropy gap −.069), and neither harness closes that: grounded segments +4.3 (CI includes 0). Haiku plain segments does remove the shape error there (.039) but gets the order worst (flip .62).
+
+**What this says for the plan**
+- **Model-fixable:** questions where the problem is *which option gets the mass*. Use the bigger model; no harness needed.
+- **Not model-fixable:** the roughly equal order and shape errors that remain (.060 each on divided shared), the shape-dominated questions (+5.7 only), and the task datasets.
+- **Segments, panel and grounding add nothing on top of Sonnet.** The Haiku-era spread levers were compensating for a weaker model.
+- Next: look at the questions Sonnet still gets badly wrong on order and shape (worst 10 per group) to see what information would fix them.
