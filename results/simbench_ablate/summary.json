@@ -1,40 +1,96 @@
 [
   {
-    "arm": "C1_comp_direct",
-    "n_scored": 145,
-    "S": 46.45,
-    "mean_TVD": 0.1803,
+    "arm": "D0_retr6",
+    "n_scored": 625,
+    "S": 46.25,
+    "mean_TVD": 0.1875,
     "S_by_split": {
-      "Grouped": 43.76,
-      "Pop": 47.04
+      "Grouped": 45.38,
+      "Pop": 49.7
     },
     "S_by_dataset": {
-      "Afrobarometer": 62.82,
-      "ESS": 38.38,
-      "ISSP": 46.87,
-      "LatinoBarometro": 25.28,
-      "OpinionQA": 63.8
+      "Afrobarometer": 50.02,
+      "ESS": 46.04,
+      "ISSP": 38.1,
+      "LatinoBarometro": 24.48,
+      "OpinionQA": 72.59
     },
-    "cost_usd": 0.3409,
-    "fail": 836
+    "cost_usd": 1.2397,
+    "fail": 356
   },
   {
-    "arm": "C2_comp_personas",
-    "n_scored": 145,
-    "S": 47.91,
-    "mean_TVD": 0.1771,
+    "arm": "D1_same_topic",
+    "n_scored": 625,
+    "S": 44.05,
+    "mean_TVD": 0.1942,
     "S_by_split": {
-      "Grouped": 48.34,
-      "Pop": 47.81
+      "Grouped": 43.75,
+      "Pop": 45.24
     },
     "S_by_dataset": {
-      "Afrobarometer": 59.47,
-      "ESS": 40.28,
-      "ISSP": 49.39,
-      "LatinoBarometro": 28.84,
-      "OpinionQA": 66.65
+      "Afrobarometer": 50.38,
+      "ESS": 47.35,
+      "ISSP": 36.27,
+      "LatinoBarometro": 19.47,
+      "OpinionQA": 66.77
     },
-    "cost_usd": 0.9997,
-    "fail": 836
+    "cost_usd": 1.1719,
+    "fail": 356
+  },
+  {
+    "arm": "D2_same_group",
+    "n_scored": 625,
+    "S": 46.58,
+    "mean_TVD": 0.1849,
+    "S_by_split": {
+      "Grouped": 48.02,
+      "Pop": 40.81
+    },
+    "S_by_dataset": {
+      "Afrobarometer": 52.58,
+      "ESS": 42.39,
+      "ISSP": 43.56,
+      "LatinoBarometro": 24.16,
+      "OpinionQA": 70.19
+    },
+    "cost_usd": 1.0051,
+    "fail": 356
+  },
+  {
+    "arm": "D3_same_group_same_topic",
+    "n_scored": 625,
+    "S": 47.65,
+    "mean_TVD": 0.182,
+    "S_by_split": {
+      "Grouped": 48.11,
+      "Pop": 45.85
+    },
+    "S_by_dataset": {
+      "Afrobarometer": 51.45,
+      "ESS": 44.82,
+      "ISSP": 42.98,
+      "LatinoBarometro": 25.55,
+      "OpinionQA": 73.47
+    },
+    "cost_usd": 1.0058,
+    "fail": 356
+  },
+  {
+    "arm": "D4_other_groups_same_question",
+    "n_scored": 469,
+    "S": 76.68,
+    "mean_TVD": 0.0799,
+    "S_by_split": {
+      "Grouped": 76.68
+    },
+    "S_by_dataset": {
+      "Afrobarometer": 86.48,
+      "ESS": 74.85,
+      "ISSP": 71.9,
+      "LatinoBarometro": 73.3,
+      "OpinionQA": 76.65
+    },
+    "cost_usd": 0.5748,
+    "fail": 512
   }
 ]

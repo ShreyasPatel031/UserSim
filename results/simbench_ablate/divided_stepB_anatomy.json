@@ -1,0 +1,1656 @@
+{
+ "shared_surveys": {
+  "retr6": {
+   "n": 175,
+   "n_ordinal": 101,
+   "ordinal_residual_by_position": {
+    "pos0": -0.0068,
+    "pos1": -0.013,
+    "pos2": -0.009,
+    "pos3": 0.0128,
+    "pos4": 0.0245,
+    "dk": -0.0086
+   },
+   "scale_mean_shift": 0.0198,
+   "scale_abs_shift": 0.1079,
+   "scale_sd_pred_vs_true": [
+    0.3031,
+    0.3108
+   ],
+   "polarity_flip_rate": 0.2111,
+   "top_option_confusion_true_by_pred": {
+    "0->0": 2,
+    "0->1": 4,
+    "0->3": 5,
+    "1->0": 3,
+    "1->1": 13,
+    "1->2": 2,
+    "1->3": 4,
+    "2->0": 1,
+    "2->1": 1,
+    "2->2": 3,
+    "2->3": 3,
+    "2->4": 1,
+    "3->0": 1,
+    "3->1": 4,
+    "3->2": 1,
+    "3->3": 23,
+    "3->4": 8,
+    "4->0": 1,
+    "4->1": 3,
+    "4->3": 10,
+    "4->4": 8
+   },
+   "n_categorical": 74,
+   "categorical_residual_true_top": -0.0365,
+   "categorical_residual_true_second": -0.0041,
+   "dk_mass_pred_vs_true": [
+    0.0308,
+    0.03
+   ],
+   "n_with_middle": 45,
+   "middle_mass_pred_vs_true": [
+    0.2024,
+    0.2136
+   ],
+   "top_option_right": 0.5657,
+   "TVD": 0.1832,
+   "S": 40.28,
+   "entropy_gap": -0.0186
+  },
+  "retr6_rev2": {
+   "n": 175,
+   "n_ordinal": 101,
+   "ordinal_residual_by_position": {
+    "pos0": -0.0002,
+    "pos1": -0.0036,
+    "pos2": -0.0131,
+    "pos3": -0.009,
+    "pos4": 0.0312,
+    "dk": -0.0052
+   },
+   "scale_mean_shift": 0.0124,
+   "scale_abs_shift": 0.0977,
+   "scale_sd_pred_vs_true": [
+    0.3088,
+    0.3108
+   ],
+   "polarity_flip_rate": 0.1609,
+   "top_option_confusion_true_by_pred": {
+    "0->0": 1,
+    "0->1": 6,
+    "0->2": 1,
+    "0->3": 1,
+    "0->4": 2,
+    "1->0": 5,
+    "1->1": 13,
+    "1->2": 1,
+    "1->3": 3,
+    "2->1": 3,
+    "2->2": 1,
+    "2->3": 3,
+    "2->4": 2,
+    "3->0": 1,
+    "3->1": 5,
+    "3->2": 3,
+    "3->3": 18,
+    "3->4": 10,
+    "4->1": 2,
+    "4->2": 1,
+    "4->3": 4,
+    "4->4": 15
+   },
+   "n_categorical": 74,
+   "categorical_residual_true_top": -0.0531,
+   "categorical_residual_true_second": 0.0159,
+   "dk_mass_pred_vs_true": [
+    0.0347,
+    0.03
+   ],
+   "n_with_middle": 45,
+   "middle_mass_pred_vs_true": [
+    0.1967,
+    0.2136
+   ],
+   "top_option_right": 0.5371,
+   "TVD": 0.1743,
+   "S": 42.99,
+   "entropy_gap": -0.0056
+  },
+  "P_groundall5": {
+   "n": 175,
+   "n_ordinal": 101,
+   "ordinal_residual_by_position": {
+    "pos0": 0.0178,
+    "pos1": -0.0317,
+    "pos2": -0.013,
+    "pos3": -0.0007,
+    "pos4": 0.0395,
+    "dk": -0.0119
+   },
+   "scale_mean_shift": 0.0152,
+   "scale_abs_shift": 0.0906,
+   "scale_sd_pred_vs_true": [
+    0.3287,
+    0.3108
+   ],
+   "polarity_flip_rate": 0.2418,
+   "top_option_confusion_true_by_pred": {
+    "0->0": 4,
+    "0->2": 1,
+    "0->3": 3,
+    "0->4": 3,
+    "1->0": 8,
+    "1->1": 6,
+    "1->3": 3,
+    "1->4": 5,
+    "2->0": 3,
+    "2->1": 2,
+    "2->3": 3,
+    "2->4": 1,
+    "3->0": 2,
+    "3->1": 1,
+    "3->2": 1,
+    "3->3": 20,
+    "3->4": 13,
+    "4->0": 2,
+    "4->1": 3,
+    "4->3": 3,
+    "4->4": 14
+   },
+   "n_categorical": 74,
+   "categorical_residual_true_top": -0.0741,
+   "categorical_residual_true_second": 0.0351,
+   "dk_mass_pred_vs_true": [
+    0.0281,
+    0.03
+   ],
+   "n_with_middle": 45,
+   "middle_mass_pred_vs_true": [
+    0.1948,
+    0.2136
+   ],
+   "top_option_right": 0.5143,
+   "TVD": 0.1679,
+   "S": 45.43,
+   "entropy_gap": 0.018
+  },
+  "by_dataset_retr6_rev2": {
+   "Afrobarometer": {
+    "n": 3,
+    "n_ordinal": 2,
+    "ordinal_residual_by_position": {
+     "pos0": 0.1331,
+     "pos1": 0.1027,
+     "pos2": -0.0353,
+     "pos3": -0.0337,
+     "pos4": -0.09,
+     "dk": -0.0769
+    },
+    "scale_mean_shift": -0.1531,
+    "scale_abs_shift": 0.1531,
+    "scale_sd_pred_vs_true": [
+     0.303,
+     0.3485
+    ],
+    "polarity_flip_rate": 0.5,
+    "top_option_confusion_true_by_pred": {
+     "1->1": 1,
+     "3->0": 1
+    },
+    "n_categorical": 1,
+    "categorical_residual_true_top": -0.0068,
+    "categorical_residual_true_second": 0.0288,
+    "dk_mass_pred_vs_true": [
+     0.0883,
+     0.152
+    ],
+    "n_with_middle": 1,
+    "middle_mass_pred_vs_true": [
+     0.055,
+     0.1256
+    ],
+    "top_option_right": 0.3333,
+    "TVD": 0.1755,
+    "S": 64.87,
+    "entropy_gap": -0.0807
+   },
+   "ESS": {
+    "n": 56,
+    "n_ordinal": 25,
+    "ordinal_residual_by_position": {
+     "pos0": 0.0341,
+     "pos1": -0.0094,
+     "pos2": -0.023,
+     "pos3": -0.0399,
+     "pos4": 0.0381,
+     "dk": 0.0
+    },
+    "scale_mean_shift": -0.0037,
+    "scale_abs_shift": 0.1075,
+    "scale_sd_pred_vs_true": [
+     0.2749,
+     0.2844
+    ],
+    "polarity_flip_rate": 0.0625,
+    "top_option_confusion_true_by_pred": {
+     "0->0": 1,
+     "0->2": 1,
+     "1->0": 3,
+     "2->2": 1,
+     "2->3": 2,
+     "2->4": 1,
+     "3->2": 3,
+     "3->3": 8,
+     "3->4": 2,
+     "4->1": 1,
+     "4->2": 1,
+     "4->4": 1
+    },
+    "n_categorical": 31,
+    "categorical_residual_true_top": -0.009,
+    "categorical_residual_true_second": 0.0071,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 23,
+    "middle_mass_pred_vs_true": [
+     0.1931,
+     0.2221
+    ],
+    "top_option_right": 0.6071,
+    "TVD": 0.1595,
+    "S": 49.0,
+    "entropy_gap": -0.0369
+   },
+   "ISSP": {
+    "n": 46,
+    "n_ordinal": 35,
+    "ordinal_residual_by_position": {
+     "pos0": 0.0082,
+     "pos1": 0.018,
+     "pos2": -0.01,
+     "pos3": -0.0051,
+     "pos4": 0.0003,
+     "dk": -0.0113
+    },
+    "scale_mean_shift": -0.012,
+    "scale_abs_shift": 0.0848,
+    "scale_sd_pred_vs_true": [
+     0.3337,
+     0.3256
+    ],
+    "polarity_flip_rate": 0.129,
+    "top_option_confusion_true_by_pred": {
+     "0->1": 5,
+     "1->0": 1,
+     "1->1": 4,
+     "1->2": 1,
+     "2->1": 2,
+     "2->3": 1,
+     "2->4": 1,
+     "3->1": 4,
+     "3->3": 4,
+     "3->4": 3,
+     "4->3": 2,
+     "4->4": 7
+    },
+    "n_categorical": 11,
+    "categorical_residual_true_top": -0.0982,
+    "categorical_residual_true_second": -0.018,
+    "dk_mass_pred_vs_true": [
+     0.0789,
+     0.0789
+    ],
+    "n_with_middle": 14,
+    "middle_mass_pred_vs_true": [
+     0.1984,
+     0.211
+    ],
+    "top_option_right": 0.4348,
+    "TVD": 0.2017,
+    "S": 45.64,
+    "entropy_gap": 0.0303
+   },
+   "LatinoBarometro": {
+    "n": 64,
+    "n_ordinal": 34,
+    "ordinal_residual_by_position": {
+     "pos0": -0.0404,
+     "pos1": -0.0241,
+     "pos2": -0.0077,
+     "pos3": 0.0083,
+     "pos4": 0.0639,
+     "dk": 0.0
+    },
+    "scale_mean_shift": 0.0558,
+    "scale_abs_shift": 0.1042,
+    "scale_sd_pred_vs_true": [
+     0.3065,
+     0.3076
+    ],
+    "polarity_flip_rate": 0.2121,
+    "top_option_confusion_true_by_pred": {
+     "0->1": 1,
+     "0->3": 1,
+     "0->4": 2,
+     "1->1": 6,
+     "1->3": 2,
+     "2->1": 1,
+     "3->1": 1,
+     "3->3": 6,
+     "3->4": 5,
+     "4->1": 1,
+     "4->3": 2,
+     "4->4": 6
+    },
+    "n_categorical": 30,
+    "categorical_residual_true_top": -0.0832,
+    "categorical_residual_true_second": 0.038,
+    "dk_mass_pred_vs_true": [
+     0.033,
+     0.0173
+    ],
+    "n_with_middle": 6,
+    "middle_mass_pred_vs_true": [
+     0.2433,
+     0.2058
+    ],
+    "top_option_right": 0.5625,
+    "TVD": 0.174,
+    "S": 32.31,
+    "entropy_gap": 0.0019
+   },
+   "OpinionQA": {
+    "n": 6,
+    "n_ordinal": 5,
+    "ordinal_residual_by_position": {
+     "pos0": -0.011,
+     "pos1": -0.0286,
+     "pos2": -0.0135,
+     "pos3": 0.0103,
+     "pos4": 0.0384,
+     "dk": 0.0043
+    },
+    "scale_mean_shift": 0.0347,
+    "scale_abs_shift": 0.0723,
+    "scale_sd_pred_vs_true": [
+     0.3226,
+     0.3465
+    ],
+    "polarity_flip_rate": 0.2,
+    "top_option_confusion_true_by_pred": {
+     "1->0": 1,
+     "1->1": 2,
+     "1->3": 1,
+     "4->4": 1
+    },
+    "n_categorical": 1,
+    "categorical_residual_true_top": -0.0666,
+    "categorical_residual_true_second": -0.0143,
+    "dk_mass_pred_vs_true": [
+     0.0125,
+     0.0088
+    ],
+    "n_with_middle": 1,
+    "middle_mass_pred_vs_true": [
+     0.12,
+     0.1876
+    ],
+    "top_option_right": 0.5,
+    "TVD": 0.105,
+    "S": 69.64,
+    "entropy_gap": -0.0302
+   }
+  }
+ },
+ "pop_only_tasks": {
+  "retr6": {
+   "n": 58,
+   "n_ordinal": 24,
+   "ordinal_residual_by_position": {
+    "pos0": 0.0057,
+    "pos1": -0.0437,
+    "pos2": 0.0106,
+    "pos3": -0.0123,
+    "pos4": 0.0396,
+    "dk": 0.0
+   },
+   "scale_mean_shift": 0.0248,
+   "scale_abs_shift": 0.1509,
+   "scale_sd_pred_vs_true": [
+    0.3434,
+    0.3538
+   ],
+   "polarity_flip_rate": 0.3333,
+   "top_option_confusion_true_by_pred": {
+    "0->0": 8,
+    "0->4": 4,
+    "1->0": 1,
+    "1->3": 1,
+    "3->0": 2,
+    "3->3": 1,
+    "3->4": 2,
+    "4->0": 1,
+    "4->3": 1,
+    "4->4": 3
+   },
+   "n_categorical": 34,
+   "categorical_residual_true_top": -0.1054,
+   "categorical_residual_true_second": 0.1054,
+   "dk_mass_pred_vs_true": [
+    0.0,
+    0.0
+   ],
+   "n_with_middle": 24,
+   "middle_mass_pred_vs_true": [
+    0.1338,
+    0.1231
+   ],
+   "top_option_right": 0.5,
+   "TVD": 0.2297,
+   "S": -1.38,
+   "entropy_gap": -0.1014
+  },
+  "retr6_rev2": {
+   "n": 58,
+   "n_ordinal": 24,
+   "ordinal_residual_by_position": {
+    "pos0": -0.0368,
+    "pos1": -0.0289,
+    "pos2": 0.0188,
+    "pos3": -0.0109,
+    "pos4": 0.0578,
+    "dk": 0.0
+   },
+   "scale_mean_shift": 0.0518,
+   "scale_abs_shift": 0.1451,
+   "scale_sd_pred_vs_true": [
+    0.3445,
+    0.3538
+   ],
+   "polarity_flip_rate": 0.3333,
+   "top_option_confusion_true_by_pred": {
+    "0->0": 7,
+    "0->1": 1,
+    "0->4": 4,
+    "1->4": 2,
+    "3->0": 2,
+    "3->3": 1,
+    "3->4": 2,
+    "4->4": 5
+   },
+   "n_categorical": 34,
+   "categorical_residual_true_top": -0.1171,
+   "categorical_residual_true_second": 0.1171,
+   "dk_mass_pred_vs_true": [
+    0.0,
+    0.0
+   ],
+   "n_with_middle": 24,
+   "middle_mass_pred_vs_true": [
+    0.1419,
+    0.1231
+   ],
+   "top_option_right": 0.5,
+   "TVD": 0.2314,
+   "S": -1.15,
+   "entropy_gap": -0.0949
+  },
+  "P_groundall5": {
+   "n": 58,
+   "n_ordinal": 24,
+   "ordinal_residual_by_position": {
+    "pos0": 0.0185,
+    "pos1": -0.0282,
+    "pos2": 0.0115,
+    "pos3": -0.0141,
+    "pos4": 0.0122,
+    "dk": 0.0
+   },
+   "scale_mean_shift": 0.0004,
+   "scale_abs_shift": 0.1161,
+   "scale_sd_pred_vs_true": [
+    0.3663,
+    0.3538
+   ],
+   "polarity_flip_rate": 0.3333,
+   "top_option_confusion_true_by_pred": {
+    "0->0": 9,
+    "0->4": 3,
+    "1->0": 2,
+    "3->0": 3,
+    "3->4": 2,
+    "4->0": 2,
+    "4->3": 1,
+    "4->4": 2
+   },
+   "n_categorical": 34,
+   "categorical_residual_true_top": -0.0931,
+   "categorical_residual_true_second": 0.0931,
+   "dk_mass_pred_vs_true": [
+    0.0,
+    0.0
+   ],
+   "n_with_middle": 24,
+   "middle_mass_pred_vs_true": [
+    0.1346,
+    0.1231
+   ],
+   "top_option_right": 0.4655,
+   "TVD": 0.2001,
+   "S": 13.58,
+   "entropy_gap": -0.0704
+  },
+  "by_dataset_retr6_rev2": {
+   "Choices13k": {
+    "n": 15,
+    "n_ordinal": 0,
+    "ordinal_residual_by_position": {},
+    "scale_mean_shift": null,
+    "scale_abs_shift": null,
+    "scale_sd_pred_vs_true": null,
+    "polarity_flip_rate": null,
+    "top_option_confusion_true_by_pred": {},
+    "n_categorical": 15,
+    "categorical_residual_true_top": -0.0871,
+    "categorical_residual_true_second": 0.0871,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 0,
+    "middle_mass_pred_vs_true": [
+     null,
+     null
+    ],
+    "top_option_right": 0.5333,
+    "TVD": 0.1941,
+    "S": 8.57,
+    "entropy_gap": -0.0606
+   },
+   "NumberGame": {
+    "n": 13,
+    "n_ordinal": 0,
+    "ordinal_residual_by_position": {},
+    "scale_mean_shift": null,
+    "scale_abs_shift": null,
+    "scale_sd_pred_vs_true": null,
+    "polarity_flip_rate": null,
+    "top_option_confusion_true_by_pred": {},
+    "n_categorical": 13,
+    "categorical_residual_true_top": -0.1488,
+    "categorical_residual_true_second": 0.1488,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 0,
+    "middle_mass_pred_vs_true": [
+     null,
+     null
+    ],
+    "top_option_right": 0.3846,
+    "TVD": 0.2575,
+    "S": -10.04,
+    "entropy_gap": -0.1634
+   },
+   "OSPsychMACH": {
+    "n": 24,
+    "n_ordinal": 24,
+    "ordinal_residual_by_position": {
+     "pos0": -0.0368,
+     "pos1": -0.0289,
+     "pos2": 0.0188,
+     "pos3": -0.0109,
+     "pos4": 0.0578,
+     "dk": 0.0
+    },
+    "scale_mean_shift": 0.0518,
+    "scale_abs_shift": 0.1451,
+    "scale_sd_pred_vs_true": [
+     0.3445,
+     0.3538
+    ],
+    "polarity_flip_rate": 0.3333,
+    "top_option_confusion_true_by_pred": {
+     "0->0": 7,
+     "0->1": 1,
+     "0->4": 4,
+     "1->4": 2,
+     "3->0": 2,
+     "3->3": 1,
+     "3->4": 2,
+     "4->4": 5
+    },
+    "n_categorical": 0,
+    "categorical_residual_true_top": null,
+    "categorical_residual_true_second": null,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 24,
+    "middle_mass_pred_vs_true": [
+     0.1419,
+     0.1231
+    ],
+    "top_option_right": 0.5417,
+    "TVD": 0.2001,
+    "S": 2.36,
+    "entropy_gap": -0.0112
+   },
+   "OSPsychMGKT": {
+    "n": 6,
+    "n_ordinal": 0,
+    "ordinal_residual_by_position": {},
+    "scale_mean_shift": null,
+    "scale_abs_shift": null,
+    "scale_sd_pred_vs_true": null,
+    "polarity_flip_rate": null,
+    "top_option_confusion_true_by_pred": {},
+    "n_categorical": 6,
+    "categorical_residual_true_top": -0.1237,
+    "categorical_residual_true_second": 0.1237,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 0,
+    "middle_mass_pred_vs_true": [
+     null,
+     null
+    ],
+    "top_option_right": 0.5,
+    "TVD": 0.3931,
+    "S": -20.19,
+    "entropy_gap": -0.367
+   }
+  }
+ },
+ "other_pop_only": {
+  "retr6": {
+   "n": 95,
+   "n_ordinal": 72,
+   "ordinal_residual_by_position": {
+    "pos0": 0.0003,
+    "pos1": -0.0294,
+    "pos2": -0.0127,
+    "pos3": 0.0268,
+    "pos4": 0.0317,
+    "dk": -0.0168
+   },
+   "scale_mean_shift": 0.0278,
+   "scale_abs_shift": 0.0783,
+   "scale_sd_pred_vs_true": [
+    0.3035,
+    0.3
+   ],
+   "polarity_flip_rate": 0.1579,
+   "top_option_confusion_true_by_pred": {
+    "0->0": 6,
+    "0->3": 2,
+    "1->1": 2,
+    "1->3": 2,
+    "1->4": 3,
+    "2->0": 4,
+    "2->2": 17,
+    "2->3": 7,
+    "3->1": 2,
+    "3->2": 2,
+    "3->3": 7,
+    "3->4": 4,
+    "4->3": 3,
+    "4->4": 11
+   },
+   "n_categorical": 23,
+   "categorical_residual_true_top": 0.0042,
+   "categorical_residual_true_second": -0.0055,
+   "dk_mass_pred_vs_true": [
+    0.0253,
+    0.038
+   ],
+   "n_with_middle": 39,
+   "middle_mass_pred_vs_true": [
+    0.208,
+    0.2316
+   ],
+   "top_option_right": 0.6211,
+   "TVD": 0.1561,
+   "S": 43.25,
+   "entropy_gap": -0.0317
+  },
+  "retr6_rev2": {
+   "n": 95,
+   "n_ordinal": 72,
+   "ordinal_residual_by_position": {
+    "pos0": -0.0131,
+    "pos1": -0.024,
+    "pos2": -0.0044,
+    "pos3": 0.0162,
+    "pos4": 0.0379,
+    "dk": -0.0126
+   },
+   "scale_mean_shift": 0.0342,
+   "scale_abs_shift": 0.078,
+   "scale_sd_pred_vs_true": [
+    0.2999,
+    0.3
+   ],
+   "polarity_flip_rate": 0.1607,
+   "top_option_confusion_true_by_pred": {
+    "0->0": 6,
+    "0->3": 2,
+    "1->1": 2,
+    "1->3": 1,
+    "1->4": 4,
+    "2->0": 3,
+    "2->2": 18,
+    "2->3": 6,
+    "2->4": 1,
+    "3->1": 2,
+    "3->2": 2,
+    "3->3": 7,
+    "3->4": 4,
+    "4->2": 1,
+    "4->3": 2,
+    "4->4": 11
+   },
+   "n_categorical": 23,
+   "categorical_residual_true_top": 0.0046,
+   "categorical_residual_true_second": -0.0066,
+   "dk_mass_pred_vs_true": [
+    0.0285,
+    0.038
+   ],
+   "n_with_middle": 39,
+   "middle_mass_pred_vs_true": [
+    0.2078,
+    0.2316
+   ],
+   "top_option_right": 0.6316,
+   "TVD": 0.1536,
+   "S": 43.69,
+   "entropy_gap": -0.0276
+  },
+  "P_groundall5": {
+   "n": 95,
+   "n_ordinal": 72,
+   "ordinal_residual_by_position": {
+    "pos0": 0.0184,
+    "pos1": -0.0225,
+    "pos2": -0.0273,
+    "pos3": 0.0117,
+    "pos4": 0.041,
+    "dk": -0.0214
+   },
+   "scale_mean_shift": 0.0169,
+   "scale_abs_shift": 0.0739,
+   "scale_sd_pred_vs_true": [
+    0.3188,
+    0.3
+   ],
+   "polarity_flip_rate": 0.1579,
+   "top_option_confusion_true_by_pred": {
+    "0->0": 6,
+    "0->3": 1,
+    "0->4": 1,
+    "1->0": 1,
+    "1->1": 1,
+    "1->3": 2,
+    "1->4": 3,
+    "2->0": 4,
+    "2->2": 19,
+    "2->3": 5,
+    "3->1": 1,
+    "3->2": 2,
+    "3->3": 6,
+    "3->4": 6,
+    "4->0": 1,
+    "4->3": 1,
+    "4->4": 12
+   },
+   "n_categorical": 23,
+   "categorical_residual_true_top": -0.0342,
+   "categorical_residual_true_second": 0.0287,
+   "dk_mass_pred_vs_true": [
+    0.0218,
+    0.038
+   ],
+   "n_with_middle": 39,
+   "middle_mass_pred_vs_true": [
+    0.1983,
+    0.2316
+   ],
+   "top_option_right": 0.6211,
+   "TVD": 0.1443,
+   "S": 46.55,
+   "entropy_gap": 0.0033
+  },
+  "by_dataset_retr6_rev2": {
+   "ChaosNLI": {
+    "n": 1,
+    "n_ordinal": 0,
+    "ordinal_residual_by_position": {},
+    "scale_mean_shift": null,
+    "scale_abs_shift": null,
+    "scale_sd_pred_vs_true": null,
+    "polarity_flip_rate": null,
+    "top_option_confusion_true_by_pred": {},
+    "n_categorical": 1,
+    "categorical_residual_true_top": 0.27,
+    "categorical_residual_true_second": -0.27,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 0,
+    "middle_mass_pred_vs_true": [
+     null,
+     null
+    ],
+    "top_option_right": 1.0,
+    "TVD": 0.27,
+    "S": 36.7,
+    "entropy_gap": -0.3716
+   },
+   "ConspiracyCorr": {
+    "n": 17,
+    "n_ordinal": 17,
+    "ordinal_residual_by_position": {
+     "pos0": -0.0064,
+     "pos1": -0.0559,
+     "pos2": 0.0,
+     "pos3": 0.0145,
+     "pos4": 0.098,
+     "dk": -0.0503
+    },
+    "scale_mean_shift": 0.0686,
+    "scale_abs_shift": 0.0967,
+    "scale_sd_pred_vs_true": [
+     0.3305,
+     0.3183
+    ],
+    "polarity_flip_rate": 0.2353,
+    "top_option_confusion_true_by_pred": {
+     "1->1": 1,
+     "1->4": 3,
+     "3->1": 1,
+     "3->4": 4,
+     "4->4": 8
+    },
+    "n_categorical": 0,
+    "categorical_residual_true_top": null,
+    "categorical_residual_true_second": null,
+    "dk_mass_pred_vs_true": [
+     0.155,
+     0.2053
+    ],
+    "n_with_middle": 0,
+    "middle_mass_pred_vs_true": [
+     null,
+     null
+    ],
+    "top_option_right": 0.5294,
+    "TVD": 0.1662,
+    "S": 32.59,
+    "entropy_gap": -0.0039
+   },
+   "DICES": {
+    "n": 2,
+    "n_ordinal": 0,
+    "ordinal_residual_by_position": {},
+    "scale_mean_shift": null,
+    "scale_abs_shift": null,
+    "scale_sd_pred_vs_true": null,
+    "polarity_flip_rate": null,
+    "top_option_confusion_true_by_pred": {},
+    "n_categorical": 2,
+    "categorical_residual_true_top": 0.2263,
+    "categorical_residual_true_second": -0.1811,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 0,
+    "middle_mass_pred_vs_true": [
+     null,
+     null
+    ],
+    "top_option_right": 1.0,
+    "TVD": 0.2263,
+    "S": 61.28,
+    "entropy_gap": -0.251
+   },
+   "GlobalOpinionQA": {
+    "n": 8,
+    "n_ordinal": 3,
+    "ordinal_residual_by_position": {
+     "pos0": 0.0462,
+     "pos1": 0.005,
+     "pos2": 0.002,
+     "pos3": 0.0241,
+     "pos4": -0.0602,
+     "dk": -0.0171
+    },
+    "scale_mean_shift": -0.0473,
+    "scale_abs_shift": 0.1301,
+    "scale_sd_pred_vs_true": [
+     0.3335,
+     0.3264
+    ],
+    "polarity_flip_rate": 1.0,
+    "top_option_confusion_true_by_pred": {
+     "1->4": 1,
+     "2->2": 1,
+     "4->2": 1
+    },
+    "n_categorical": 5,
+    "categorical_residual_true_top": -0.0371,
+    "categorical_residual_true_second": 0.0101,
+    "dk_mass_pred_vs_true": [
+     0.0088,
+     0.0152
+    ],
+    "n_with_middle": 2,
+    "middle_mass_pred_vs_true": [
+     0.2575,
+     0.242
+    ],
+    "top_option_right": 0.625,
+    "TVD": 0.1475,
+    "S": 59.54,
+    "entropy_gap": -0.0105
+   },
+   "Jester": {
+    "n": 15,
+    "n_ordinal": 15,
+    "ordinal_residual_by_position": {
+     "pos0": -0.059,
+     "pos1": -0.0237,
+     "pos2": 0.0424,
+     "pos3": 0.0171,
+     "pos4": 0.0232,
+     "dk": 0.0
+    },
+    "scale_mean_shift": 0.0449,
+    "scale_abs_shift": 0.0557,
+    "scale_sd_pred_vs_true": [
+     0.2361,
+     0.2604
+    ],
+    "polarity_flip_rate": 0.0,
+    "top_option_confusion_true_by_pred": {
+     "2->2": 15
+    },
+    "n_categorical": 0,
+    "categorical_residual_true_top": null,
+    "categorical_residual_true_second": null,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 0,
+    "middle_mass_pred_vs_true": [
+     null,
+     null
+    ],
+    "top_option_right": 1.0,
+    "TVD": 0.1409,
+    "S": 57.72,
+    "entropy_gap": -0.0074
+   },
+   "MoralMachine": {
+    "n": 10,
+    "n_ordinal": 0,
+    "ordinal_residual_by_position": {},
+    "scale_mean_shift": null,
+    "scale_abs_shift": null,
+    "scale_sd_pred_vs_true": null,
+    "polarity_flip_rate": null,
+    "top_option_confusion_true_by_pred": {},
+    "n_categorical": 10,
+    "categorical_residual_true_top": -0.0726,
+    "categorical_residual_true_second": 0.0726,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 0,
+    "middle_mass_pred_vs_true": [
+     null,
+     null
+    ],
+    "top_option_right": 0.5,
+    "TVD": 0.1759,
+    "S": 22.63,
+    "entropy_gap": -0.0723
+   },
+   "MoralMachineClassic": {
+    "n": 5,
+    "n_ordinal": 0,
+    "ordinal_residual_by_position": {},
+    "scale_mean_shift": null,
+    "scale_abs_shift": null,
+    "scale_sd_pred_vs_true": null,
+    "polarity_flip_rate": null,
+    "top_option_confusion_true_by_pred": {},
+    "n_categorical": 5,
+    "categorical_residual_true_top": 0.059,
+    "categorical_residual_true_second": -0.059,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 0,
+    "middle_mass_pred_vs_true": [
+     null,
+     null
+    ],
+    "top_option_right": 0.8,
+    "TVD": 0.1734,
+    "S": 28.06,
+    "entropy_gap": -0.171
+   },
+   "OSPsychBig5": {
+    "n": 19,
+    "n_ordinal": 19,
+    "ordinal_residual_by_position": {
+     "pos0": 0.0062,
+     "pos1": -0.0087,
+     "pos2": -0.0426,
+     "pos3": 0.0094,
+     "pos4": 0.0356,
+     "dk": 0.0
+    },
+    "scale_mean_shift": 0.0192,
+    "scale_abs_shift": 0.0778,
+    "scale_sd_pred_vs_true": [
+     0.3203,
+     0.3041
+    ],
+    "polarity_flip_rate": 0.2,
+    "top_option_confusion_true_by_pred": {
+     "0->3": 1,
+     "2->0": 2,
+     "2->2": 1,
+     "2->3": 4,
+     "3->1": 1,
+     "3->2": 2,
+     "3->3": 6,
+     "4->3": 1,
+     "4->4": 1
+    },
+    "n_categorical": 0,
+    "categorical_residual_true_top": null,
+    "categorical_residual_true_second": null,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 19,
+    "middle_mass_pred_vs_true": [
+     0.2173,
+     0.2598
+    ],
+    "top_option_right": 0.4211,
+    "TVD": 0.1338,
+    "S": 37.13,
+    "entropy_gap": 0.0158
+   },
+   "OSPsychRWAS": {
+    "n": 5,
+    "n_ordinal": 5,
+    "ordinal_residual_by_position": {
+     "pos0": 0.0225,
+     "pos1": -0.005,
+     "pos2": -0.0088,
+     "pos3": -0.0383,
+     "pos4": 0.0297,
+     "dk": 0.0
+    },
+    "scale_mean_shift": -0.0014,
+    "scale_abs_shift": 0.0351,
+    "scale_sd_pred_vs_true": [
+     0.2923,
+     0.296
+    ],
+    "polarity_flip_rate": 0.0,
+    "top_option_confusion_true_by_pred": {
+     "0->0": 3,
+     "4->4": 2
+    },
+    "n_categorical": 0,
+    "categorical_residual_true_top": null,
+    "categorical_residual_true_second": null,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 5,
+    "middle_mass_pred_vs_true": [
+     0.0813,
+     0.0902
+    ],
+    "top_option_right": 1.0,
+    "TVD": 0.118,
+    "S": 72.1,
+    "entropy_gap": -0.0293
+   },
+   "TISP": {
+    "n": 13,
+    "n_ordinal": 13,
+    "ordinal_residual_by_position": {
+     "pos0": -0.0244,
+     "pos1": -0.0192,
+     "pos2": -0.0081,
+     "pos3": 0.0465,
+     "pos4": 0.0053,
+     "dk": 0.0
+    },
+    "scale_mean_shift": 0.0311,
+    "scale_abs_shift": 0.084,
+    "scale_sd_pred_vs_true": [
+     0.2986,
+     0.3109
+    ],
+    "polarity_flip_rate": 0.25,
+    "top_option_confusion_true_by_pred": {
+     "0->0": 3,
+     "0->3": 1,
+     "1->1": 1,
+     "1->3": 1,
+     "2->0": 1,
+     "2->2": 1,
+     "2->3": 2,
+     "2->4": 1,
+     "3->3": 1,
+     "4->3": 1
+    },
+    "n_categorical": 0,
+    "categorical_residual_true_top": null,
+    "categorical_residual_true_second": null,
+    "dk_mass_pred_vs_true": [
+     0.0,
+     0.0
+    ],
+    "n_with_middle": 13,
+    "middle_mass_pred_vs_true": [
+     0.2349,
+     0.243
+    ],
+    "top_option_right": 0.4615,
+    "TVD": 0.1533,
+    "S": 50.97,
+    "entropy_gap": -0.0049
+   }
+  }
+ },
+ "worst20_retr6_rev2": [
+  {
+   "dataset": "NumberGame",
+   "split": "Pop",
+   "group": "You are an Amazon Mechanical Turk worker from the United States.",
+   "question": "A program produces the following numbers: 92_ 14_ 20_ 5.\n\nIs it likely that the program generates this number next: 72?",
+   "options": {
+    "A": "Yes",
+    "B": "No"
+   },
+   "truth": {
+    "A": 0.706,
+    "B": 0.294
+   },
+   "pred": {
+    "A": 0.12,
+    "B": 0.88
+   },
+   "TVD": 0.586
+  },
+  {
+   "dataset": "LatinoBarometro",
+   "split": "Grouped",
+   "group": "The year is 2023. You are from Venezuela. Your religious denomination is: catholic.",
+   "question": "Overall, do you have a very favorable, somewhat favorable, somewhat unfavorable, or very unfavorable opinion of Venezuela?",
+   "options": {
+    "A": "Very favorable",
+    "B": "Somewhat favorable",
+    "C": "Somewhat unfavorable",
+    "D": "Very unfavorable"
+   },
+   "truth": {
+    "A": 0.478,
+    "B": 0.3,
+    "C": 0.088,
+    "D": 0.134
+   },
+   "pred": {
+    "A": 0.06,
+    "B": 0.17,
+    "C": 0.285,
+    "D": 0.485
+   },
+   "TVD": 0.548
+  },
+  {
+   "dataset": "OSPsychMGKT",
+   "split": "Pop",
+   "group": "openpsychometrics.org is a website that provides a collection of interactive personality tests with detailed results tha",
+   "question": "Is \"Caliper\" an example of craftsman\u2019s tools?",
+   "options": {
+    "A": "Yes",
+    "B": "No"
+   },
+   "truth": {
+    "A": 0.344,
+    "B": 0.656
+   },
+   "pred": {
+    "A": 0.885,
+    "B": 0.115
+   },
+   "TVD": 0.541
+  },
+  {
+   "dataset": "LatinoBarometro",
+   "split": "Grouped",
+   "group": "The year is 2023. You are from Venezuela.",
+   "question": "Overall, do you have a very favorable, somewhat favorable, somewhat unfavorable, or very unfavorable opinion of Venezuela?",
+   "options": {
+    "A": "Very favorable",
+    "B": "Somewhat favorable",
+    "C": "Somewhat unfavorable",
+    "D": "Very unfavorable"
+   },
+   "truth": {
+    "A": 0.499,
+    "B": 0.287,
+    "C": 0.096,
+    "D": 0.119
+   },
+   "pred": {
+    "A": 0.065,
+    "B": 0.185,
+    "C": 0.35,
+    "D": 0.4
+   },
+   "TVD": 0.535
+  },
+  {
+   "dataset": "OSPsychMGKT",
+   "split": "Pop",
+   "group": "openpsychometrics.org is a website that provides a collection of interactive personality tests with detailed results tha",
+   "question": "Is \"Trichomoniasis\" an example of sexually transmitted diseases?",
+   "options": {
+    "A": "Yes",
+    "B": "No"
+   },
+   "truth": {
+    "A": 0.287,
+    "B": 0.713
+   },
+   "pred": {
+    "A": 0.815,
+    "B": 0.185
+   },
+   "TVD": 0.528
+  },
+  {
+   "dataset": "ESS",
+   "split": "Grouped",
+   "group": "The year is 2016. You are from Czechia. Your main activity is paid work.",
+   "question": "Using this card, please say to what extent you agree or disagree with each of the following statements. If a close family member was a gay man or a lesbian, I would feel ashamed.",
+   "options": {
+    "A": "Agree strongly",
+    "B": "Agree",
+    "C": "Neither agree nor disagree",
+    "D": "Disagree",
+    "E": "Disagree strongly"
+   },
+   "truth": {
+    "A": 0.053,
+    "B": 0.186,
+    "C": 0.237,
+    "D": 0.312,
+    "E": 0.211
+   },
+   "pred": {
+    "A": 0.02,
+    "B": 0.03,
+    "C": 0.05,
+    "D": 0.165,
+    "E": 0.735
+   },
+   "TVD": 0.524
+  },
+  {
+   "dataset": "LatinoBarometro",
+   "split": "Grouped",
+   "group": "The year is 2023. You are from Dominican Republic. Your description of your total family income is: it's not enough, we ",
+   "question": "Please tell me whether you strongly agree, agree, disagree or strongly disagree with the following statement: When jobs are scarce, men should have more right than women to have a job",
+   "options": {
+    "A": "Strongly agree",
+    "B": "Agree",
+    "C": "Disagree",
+    "D": "Strongly disagree"
+   },
+   "truth": {
+    "A": 0.112,
+    "B": 0.352,
+    "C": 0.435,
+    "D": 0.101
+   },
+   "pred": {
+    "A": 0.13,
+    "B": 0.11,
+    "C": 0.155,
+    "D": 0.605
+   },
+   "TVD": 0.522
+  },
+  {
+   "dataset": "OSPsychMACH",
+   "split": "Pop",
+   "group": "openpsychometrics.org is a website that provides a collection of interactive personality tests with detailed results tha",
+   "question": "Indicate your level of agreement with the following statement: It is safest to assume that all people have a vicious streak and it will come out when they are given a chance.",
+   "options": {
+    "A": "Disagree",
+    "B": "Slightly disagree",
+    "C": "Neutral",
+    "D": "Slightly agree",
+    "E": "Agree"
+   },
+   "truth": {
+    "A": 0.076,
+    "B": 0.123,
+    "C": 0.117,
+    "D": 0.356,
+    "E": 0.328
+   },
+   "pred": {
+    "A": 0.41,
+    "B": 0.25,
+    "C": 0.165,
+    "D": 0.11,
+    "E": 0.065
+   },
+   "TVD": 0.509
+  },
+  {
+   "dataset": "OSPsychMGKT",
+   "split": "Pop",
+   "group": "openpsychometrics.org is a website that provides a collection of interactive personality tests with detailed results tha",
+   "question": "Is \"Bevel\" an example of craftsman\u2019s tools?",
+   "options": {
+    "A": "Yes",
+    "B": "No"
+   },
+   "truth": {
+    "A": 0.339,
+    "B": 0.661
+   },
+   "pred": {
+    "A": 0.82,
+    "B": 0.18
+   },
+   "TVD": 0.481
+  },
+  {
+   "dataset": "ESS",
+   "split": "Pop",
+   "group": "The year is 2016. You are from Italy.",
+   "question": "Using this card, please say to what extent you agree or disagree with each of the following statements. Gay male and lesbian couples should have the same rights to adopt children as straight couples.",
+   "options": {
+    "A": "Agree strongly",
+    "B": "Agree",
+    "C": "Neither agree nor disagree",
+    "D": "Disagree",
+    "E": "Disagree strongly"
+   },
+   "truth": {
+    "A": 0.064,
+    "B": 0.164,
+    "C": 0.205,
+    "D": 0.249,
+    "E": 0.318
+   },
+   "pred": {
+    "A": 0.34,
+    "B": 0.35,
+    "C": 0.125,
+    "D": 0.11,
+    "E": 0.075
+   },
+   "TVD": 0.462
+  },
+  {
+   "dataset": "ESS",
+   "split": "Grouped",
+   "group": "The year is 2016. You are from Czechia. Your legal marital status is never married or in legally registered civil union.",
+   "question": "Using this card, please say to what extent you agree or disagree with each of the following statements. If a close family member was a gay man or a lesbian, I would feel ashamed.",
+   "options": {
+    "A": "Agree strongly",
+    "B": "Agree",
+    "C": "Neither agree nor disagree",
+    "D": "Disagree",
+    "E": "Disagree strongly"
+   },
+   "truth": {
+    "A": 0.05,
+    "B": 0.152,
+    "C": 0.222,
+    "D": 0.289,
+    "E": 0.288
+   },
+   "pred": {
+    "A": 0.02,
+    "B": 0.03,
+    "C": 0.05,
+    "D": 0.165,
+    "E": 0.735
+   },
+   "TVD": 0.447
+  },
+  {
+   "dataset": "MoralMachine",
+   "split": "Pop",
+   "group": "The Moral Machine website (moralmachine.mit.edu) was designed to collect large-scale data on the moral acceptability of ",
+   "question": "You will be presented with descriptions of a moral dilemma where an accident is imminent and you must choose between two possible outcomes (e.g., 'Stay Course' or 'Swerve'). Each outcome will result in different consequences. Which outcome do you choose?",
+   "options": {
+    "A": "Stay, outcome: in this case, the self-driving car with sudden brake failure will continue ahead and drive through a pedestrian crossing ahead. This will result in the death of the pedestrians.\nDead:\n * 1 woman\n * 1 male athlete",
+    "B": "Swerve, outcome: in this case, the self-driving car with sudden brake failure will swerve and drive through a pedestrian crossing in the other lane. This will result in the death of the pedestrians.\nDead:\n * 1 large woman\n * 1 large man"
+   },
+   "truth": {
+    "A": 0.686,
+    "B": 0.314
+   },
+   "pred": {
+    "A": 0.25,
+    "B": 0.75
+   },
+   "TVD": 0.436
+  },
+  {
+   "dataset": "NumberGame",
+   "split": "Pop",
+   "group": "You are an Amazon Mechanical Turk worker from the United States.",
+   "question": "A program produces the following numbers: 92_ 56.\n\nIs it likely that the program generates this number next: 80?",
+   "options": {
+    "A": "Yes",
+    "B": "No"
+   },
+   "truth": {
+    "A": 0.545,
+    "B": 0.455
+   },
+   "pred": {
+    "A": 0.12,
+    "B": 0.88
+   },
+   "TVD": 0.425
+  },
+  {
+   "dataset": "ConspiracyCorr",
+   "split": "Pop",
+   "group": "The year is 2020. You are from South Africa.",
+   "question": "Would you say the following statement is true or false?\nStatement: Regardless of who is officially in charge of governments and other organisations, there is a single group of people who secretly control events and rule the world together",
+   "options": {
+    "A": "Definitely true",
+    "B": "Probably true",
+    "C": "Probably false",
+    "D": "Definitely false",
+    "E": "Don't know"
+   },
+   "truth": {
+    "A": 0.312,
+    "B": 0.369,
+    "C": 0.132,
+    "D": 0.105,
+    "E": 0.083
+   },
+   "pred": {
+    "A": 0.08,
+    "B": 0.18,
+    "C": 0.225,
+    "D": 0.355,
+    "E": 0.16
+   },
+   "TVD": 0.42
+  },
+  {
+   "dataset": "NumberGame",
+   "split": "Pop",
+   "group": "You are an Amazon Mechanical Turk worker from the United States.",
+   "question": "A program produces the following numbers: 61_ 9_ 45.\n\nIs it likely that the program generates this number next: 13?",
+   "options": {
+    "A": "Yes",
+    "B": "No"
+   },
+   "truth": {
+    "A": 0.667,
+    "B": 0.333
+   },
+   "pred": {
+    "A": 0.25,
+    "B": 0.75
+   },
+   "TVD": 0.417
+  },
+  {
+   "dataset": "LatinoBarometro",
+   "split": "Grouped",
+   "group": "The year is 2023. You are from Brazil. Your current employment situation is: self-employed.",
+   "question": "Please tell me whether you strongly agree, agree, disagree or strongly disagree with the following statement: For ID documents to recognize sex change of any person",
+   "options": {
+    "A": "Strongly agree",
+    "B": "Agree",
+    "C": "Disagree",
+    "D": "Strongly disagree"
+   },
+   "truth": {
+    "A": 0.404,
+    "B": 0.174,
+    "C": 0.112,
+    "D": 0.311
+   },
+   "pred": {
+    "A": 0.115,
+    "B": 0.35,
+    "C": 0.35,
+    "D": 0.185
+   },
+   "TVD": 0.414
+  },
+  {
+   "dataset": "ISSP",
+   "split": "Grouped",
+   "group": "The timeframe is 2017-2020. You are from Russia. On a social class scale from 1 (bottom) to 10 (top), you place yourself",
+   "question": "Please indicate which statement below comes closest to expressing what you believe about God.",
+   "options": {
+    "A": "I don't believe in God",
+    "B": "Don't know whether there is a God and no way to find out",
+    "C": "Don't believe in a personal God, but in a Higher Power",
+    "D": "Find myself believing in God sometimes, but not at others",
+    "E": "While I have doubts, I feel that I do believe in God",
+    "F": "I know God really exists and have no doubts about it",
+    "G": "Don't know"
+   },
+   "truth": {
+    "A": 0.103,
+    "B": 0.087,
+    "C": 0.19,
+    "D": 0.16,
+    "E": 0.208,
+    "F": 0.253,
+    "G": 0.0
+   },
+   "pred": {
+    "A": 0.375,
+    "B": 0.165,
+    "C": 0.1,
+    "D": 0.05,
+    "E": 0.1,
+    "F": 0.16,
+    "G": 0.05
+   },
+   "TVD": 0.401
+  },
+  {
+   "dataset": "ISSP",
+   "split": "Grouped",
+   "group": "The timeframe is 2019-2023. You are from United States. On a social class scale from 1 (bottom) to 10 (top), you place y",
+   "question": "In the last five years, have you ...\n\nSigned a petition about an environmental issue?",
+   "options": {
+    "A": "Yes, I have",
+    "B": "No, I have not"
+   },
+   "truth": {
+    "A": 0.303,
+    "B": 0.697
+   },
+   "pred": {
+    "A": 0.7,
+    "B": 0.3
+   },
+   "TVD": 0.397
+  },
+  {
+   "dataset": "LatinoBarometro",
+   "split": "Grouped",
+   "group": "The year is 2023. You are from Paraguay. You are a female.",
+   "question": "Would you support a military government to replace the democratic government if things get very difficult or would you under no circumstance support a military government?",
+   "options": {
+    "A": "Support a military government",
+    "B": "Under no circumstance support a military government"
+   },
+   "truth": {
+    "A": 0.674,
+    "B": 0.326
+   },
+   "pred": {
+    "A": 0.28,
+    "B": 0.72
+   },
+   "TVD": 0.394
+  },
+  {
+   "dataset": "Choices13k",
+   "split": "Pop",
+   "group": "You are an Amazon Mechanical Turk worker based in the United States.",
+   "question": "There are two gambling machines, A and B. You need to make a choice between the machines with the goal of maximizing the amount of dollars received. You will get one reward from the machine that you choose. A fixed proportion of 10% of this value will be paid to you as a performance bonus. If the re",
+   "options": {
+    "A": "Machine A",
+    "B": "Machine B"
+   },
+   "truth": {
+    "A": 0.589,
+    "B": 0.411
+   },
+   "pred": {
+    "A": 0.2,
+    "B": 0.8
+   },
+   "TVD": 0.389
+  }
+ ]
+}

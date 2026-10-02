@@ -1,0 +1,82 @@
+{
+ "stepc_cells_retr6_rev2": {
+  "questions": 129,
+  "group_pairs": 526,
+  "error_corr_across_groups": 0.6556,
+  "real_deviation_corr_across_groups": -0.3064,
+  "group_specific_error_share": 0.2794,
+  "between_group_TVD_pred": 0.0936,
+  "between_group_TVD_true": 0.1394,
+  "each_group_TVD_to_own_truth": 0.1898,
+  "direction_pairs_with_real_gap_ge_0.10": 266,
+  "direction_sign_agreement": 0.7669,
+  "direction_gap_corr": 0.6405
+ },
+ "stepc_by_dataset": {
+  "ESS": {
+   "questions": 98,
+   "group_pairs": 363,
+   "error_corr_across_groups": 0.6866,
+   "real_deviation_corr_across_groups": -0.3319,
+   "group_specific_error_share": 0.2671,
+   "between_group_TVD_pred": 0.08,
+   "between_group_TVD_true": 0.1241,
+   "each_group_TVD_to_own_truth": 0.1959,
+   "direction_pairs_with_real_gap_ge_0.10": 171,
+   "direction_sign_agreement": 0.7368,
+   "direction_gap_corr": 0.6394
+  },
+  "ISSP": {
+   "questions": 19,
+   "group_pairs": 63,
+   "error_corr_across_groups": 0.741,
+   "real_deviation_corr_across_groups": -0.3753,
+   "group_specific_error_share": 0.2151,
+   "between_group_TVD_pred": 0.0863,
+   "between_group_TVD_true": 0.1147,
+   "each_group_TVD_to_own_truth": 0.2059,
+   "direction_pairs_with_real_gap_ge_0.10": 23,
+   "direction_sign_agreement": 0.7391,
+   "direction_gap_corr": 0.5353
+  },
+  "LatinoBarometro": {
+   "questions": 2,
+   "group_pairs": 6,
+   "error_corr_across_groups": 0.6554,
+   "real_deviation_corr_across_groups": -0.3717,
+   "group_specific_error_share": 0.3231,
+   "between_group_TVD_pred": 0.0761,
+   "between_group_TVD_true": 0.1168,
+   "each_group_TVD_to_own_truth": 0.1682,
+   "direction_pairs_with_real_gap_ge_0.10": 3,
+   "direction_sign_agreement": 0.3333,
+   "direction_gap_corr": -0.4292
+  },
+  "OpinionQA": {
+   "questions": 10,
+   "group_pairs": 94,
+   "error_corr_across_groups": 0.4787,
+   "real_deviation_corr_across_groups": -0.1577,
+   "group_specific_error_share": 0.5138,
+   "between_group_TVD_pred": 0.152,
+   "between_group_TVD_true": 0.2168,
+   "each_group_TVD_to_own_truth": 0.1325,
+   "direction_pairs_with_real_gap_ge_0.10": 69,
+   "direction_sign_agreement": 0.8696,
+   "direction_gap_corr": 0.7242
+  }
+ },
+ "c2_country_level_groups": {
+  "questions": 45,
+  "group_pairs": 115,
+  "error_corr_across_groups": 0.6631,
+  "real_deviation_corr_across_groups": -0.4441,
+  "group_specific_error_share": 0.1961,
+  "between_group_TVD_pred": 0.0572,
+  "between_group_TVD_true": 0.0861,
+  "each_group_TVD_to_own_truth": 0.1872,
+  "direction_pairs_with_real_gap_ge_0.10": 39,
+  "direction_sign_agreement": 0.7436,
+  "direction_gap_corr": 0.6226
+ }
+}

@@ -24,7 +24,7 @@ import random
 import re
 import threading
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -917,6 +917,7 @@ def _reversed_row(row):
     rev = keys[::-1]
     r2 = row.copy()
     r2["_orig_template"] = row["input_template"]
+    r2["_rev_map"] = {k: rev[j] for j, k in enumerate(keys)}
     r2["input_template"] = head + "Options:\n" + "\n".join(
         f"({k}): {texts[rev[j]]}" for j, k in enumerate(keys)
     )
@@ -930,6 +931,9 @@ def _rev2(base):
 
     def arm(row, ctx):
         keys = list(row["human_answer"].keys())
+        probe = base(row, ctx)[2]
+        if "pipeline" in probe:  # base skips this row (out of scope)
+            return "", "", probe
 
         def parse(raw, opts):
             seg = opts.get("segments")
@@ -1187,6 +1191,181 @@ def arm_C2_comp_personas(row, ctx):
     return "", "", {"pipeline": pipeline}
 
 
+
+# --------------------------------------------------------------------------- #
+# demo-source test (D0-D4): shared surveys only, both option orders
+# --------------------------------------------------------------------------- #
+
+D_DATASETS = ("Afrobarometer", "ESS", "ISSP", "LatinoBarometro", "OpinionQA")
+
+
+def _stem(template: str) -> str:
+    return re.sub(r"\s+", " ", template.split("Options:")[0]).strip().lower()
+
+
+def _dpool(row, ctx) -> list[dict]:
+    """Demo candidates for the D arms: spare rows of the same split and dataset (Pop uses all
+    spare rows, not just 40), never a row whose question stem equals the target's."""
+    key = f"{row['split']}|{row['dataset_name']}"
+    own = _stem(row.get("_orig_template", row["input_template"]))
+    return [d for d in ctx["dpool"].get(key, []) if d["stem"] != own]
+
+
+def _build_dpool(pop_full, grouped_full, pop_n, grouped_n, seed) -> dict:
+    out = defaultdict(list)
+    for df, per in ((pop_full, pop_n), (grouped_full, grouped_n)):
+        for _, row in extended_pool(df, per, seed, 3, 10**6).iterrows():
+            if row["dataset_name"] not in D_DATASETS:
+                continue
+            e = _demo_entry(row)
+            e["stem"] = _stem(row["input_template"])
+            e["cell"] = _cell_key(row)
+            out[f"{row['split']}|{row['dataset_name']}"].append(e)
+    return dict(out)
+
+
+def _topics(ctx) -> dict:
+    """stem -> topic id, from k-means on question-stem embeddings per dataset (cached)."""
+    if "_topics" in ctx:
+        return ctx["_topics"]
+    from sklearn.cluster import KMeans
+
+    stems_by_ds = defaultdict(set)
+    for key, pool in ctx["dpool"].items():
+        ds = key.split("|", 1)[1]
+        for d in pool:
+            stems_by_ds[ds].add(d["stem"])
+    for t in ctx.get("_target_stems", []):
+        if t[0] in D_DATASETS:
+            stems_by_ds[t[0]].add(t[1])
+    topics = {}
+    for ds, stems in stems_by_ds.items():
+        stems = sorted(stems)
+        X = np.array(_embed(stems))
+        k = min(len(stems), max(6, round(len(stems) / 30)))
+        labels = KMeans(n_clusters=k, n_init=10, random_state=0).fit_predict(X)
+        for st, lab in zip(stems, labels):
+            topics[(ds, st)] = int(lab)
+    ctx["_topics"] = topics
+    return topics
+
+
+def _cap_per_stem(items: list[dict], n: int, cap: int = 2) -> list[dict]:
+    seen, out = Counter(), []
+    for d in items:
+        if seen[d["stem"]] < cap:
+            seen[d["stem"]] += 1
+            out.append(d)
+        if len(out) == n:
+            break
+    return out
+
+
+def _shuffled(items: list[dict], row) -> list[dict]:
+    items = list(items)
+    random.Random(f"{row['dataset_name']}|{row.get('_orig_template', row['input_template'])}|{_filled_persona(row)}").shuffle(items)
+    return items
+
+
+def _cell_key(row) -> tuple:
+    """Subgroup identity independent of survey wave: dataset, country, other attributes."""
+    vm = row["group_prompt_variable_map"]
+    return (
+        row["dataset_name"],
+        _country_of(vm),
+        tuple(sorted((k, str(v)) for k, v in vm.items() if k not in _COUNTRY_KEYS)),
+    )
+
+
+def _d_demos(row, ctx, mode: str) -> list[dict]:
+    pool = _dpool(row, ctx)
+    if not pool:
+        return []
+    persona = _filled_persona(row)
+    if mode == "D0":
+        return _cap_per_stem(_rank_by_similarity(row, pool, ctx, max_per_question=10**6), 6)
+    topics = _topics(ctx)
+    tgt_topic = topics.get((row["dataset_name"], _stem(row.get("_orig_template", row["input_template"]))))
+    same_topic = [d for d in pool if topics.get((row["dataset_name"], d["stem"])) == tgt_topic]
+    cell = _cell_key(row)
+    same_group = [d for d in pool if d["cell"] == cell]
+    if mode == "D1":
+        return _cap_per_stem(_shuffled(same_topic, row), 6)
+    if mode == "D2":
+        return _cap_per_stem(_shuffled(same_group, row), 6)
+    if mode == "D3":
+        both = [d for d in same_group if topics.get((row["dataset_name"], d["stem"])) == tgt_topic]
+        picked = _cap_per_stem(_shuffled(both, row), 6)
+        if len(picked) < 6:  # fill with same group, other topics
+            rest = [d for d in _shuffled(same_group, row) if d not in picked]
+            picked += _cap_per_stem(rest, 6 - len(picked))
+        return picked
+    raise ValueError(mode)
+
+
+def _d_arm(mode: str):
+    def arm(row, ctx):
+        if row["dataset_name"] not in D_DATASETS:
+            return "", "", {"pipeline": lambda call: (None, 0, 0)}
+        return _inject(row, ctx, _d_demos(row, ctx, mode), annotate=False)
+
+    return arm
+
+
+def _same_question_other_groups(row, ctx, k: int = 6) -> list[tuple[str, dict]]:
+    """DIAGNOSTIC ONLY. Other single-attribute groups' real answers to this same question
+    in the same country; never the target's own cell, never the country total."""
+    own_q = row.get("_orig_template", row["input_template"])
+    vm = row["group_prompt_variable_map"]
+    if not any(kk not in _COUNTRY_KEYS for kk in vm):
+        return []
+    own_sentence = _group_sentence(_filled_persona(row))
+    cand = []
+    for r in ctx["_grouped_by_q"].get((row["dataset_name"], _country_of(vm), own_q), []):
+        if r["sentence"] == own_sentence:  # the target's own subgroup, any wave
+            continue
+        cand.append(r)
+    cand.sort(key=lambda r: -r["size"])
+    return [(r["sentence"], r["answer"]) for r in cand[:k]]
+
+
+def arm_D4(row, ctx):
+    if row["dataset_name"] not in D_DATASETS or row["split"] != "Grouped":
+        return "", "", {"pipeline": lambda call: (None, 0, 0)}
+    others = _same_question_other_groups(row, ctx)
+    if not others:
+        return "", "", {"pipeline": lambda call: (None, 0, 0)}
+    keys = list(row["human_answer"].keys())
+    mp = row.get("_rev_map")  # reversed-order run: show the other groups in the same letters
+    lines = []
+    for sentence, ans in others:
+        tot = sum(ans.values()) or 1.0
+        dist = {kk: round(100 * ans.get(mp[kk] if mp else kk, 0.0) / tot) for kk in keys}
+        lines.append(f"- {sentence or 'Another group'}: {json.dumps(dist)}")
+    prefix = (
+        "Real answer distributions to THIS question from other groups in the same country "
+        "(not your group):\n" + "\n".join(lines) + "\n\n"
+    )
+    return (
+        SYSTEM_PREFIX + _filled_persona(row),
+        prefix + _official_user(row["input_template"], keys),
+        {},
+    )
+
+
+def _index_grouped_by_question(grouped: pd.DataFrame) -> dict:
+    idx = defaultdict(list)
+    for _, r in grouped.iterrows():
+        vm = r["group_prompt_variable_map"]
+        other = [k for k in vm if k not in _COUNTRY_KEYS]
+        if len(other) == 1 and r["dataset_name"] in D_DATASETS:
+            p = _filled_persona(r)
+            idx[(r["dataset_name"], _country_of(vm), r["input_template"])].append(
+                {"persona": p, "sentence": _group_sentence(p), "size": float(r["group_size"]), "answer": r["human_answer"]}
+            )
+    return idx
+
+
 def _parse_segments(raw: str, keys: list[str], soft: bool) -> dict[str, float] | None:
     start, end = (raw or "").find("{"), (raw or "").rfind("}")
     if start < 0 or end <= start:
@@ -1265,6 +1444,11 @@ def arm_C1_rev2(row, ctx):
 
 ARMS["C1_comp_direct"] = arm_C1_rev2
 ARMS["C2_comp_personas"] = arm_C2_comp_personas
+ARMS["D0_retr6"] = _rev2(_d_arm("D0"))
+ARMS["D1_same_topic"] = _rev2(_d_arm("D1"))
+ARMS["D2_same_group"] = _rev2(_d_arm("D2"))
+ARMS["D3_same_group_same_topic"] = _rev2(_d_arm("D3"))
+ARMS["D4_other_groups_same_question"] = _rev2(arm_D4)
 ARMS["P_cons5"] = _panel_arm(5, True, True, "consensus")
 ARMS["P_adapt"] = _panel_arm(5, True, True, "adaptive")
 ARMS["B_style"] = _soft_segments_arm(_RESPONSE_STYLE)
@@ -1654,6 +1838,35 @@ def _demo_entry(row) -> dict:
     }
 
 
+def _stepc_cells(grouped: pd.DataFrame, seed: int, n_groups: int = 150) -> pd.DataFrame:
+    """Subgroup cells of divided questions (shared surveys) for the common-mode test:
+    every single-attribute cell (>= 100 respondents) of up to n_groups question x country x
+    attribute groups that have >= 3 cells and a divided size-weighted mixture."""
+    keyed = defaultdict(list)
+    for idx, r in grouped.iterrows():
+        vm = r["group_prompt_variable_map"]
+        other = [k for k in vm if k not in ("country", "cntry")]
+        if len(other) == 1 and r["group_size"] >= 100 and len(r["human_answer"]) > 1:
+            ck = next((str(vm[k]) for k in ("country", "cntry") if k in vm), "")
+            keyed[(r["dataset_name"], ck, r["input_template"], other[0])].append(idx)
+    groups = []
+    for key, idxs in keyed.items():
+        if len(idxs) < 3:
+            continue
+        rows = grouped.loc[idxs]
+        keys = list(rows.iloc[0]["human_answer"].keys())
+        P = np.array([[ha.get(k, 0.0) for k in keys] for ha in rows["human_answer"]], float)
+        P = P / P.sum(axis=1, keepdims=True)
+        w = rows["group_size"].to_numpy(float)
+        mix = (w / w.sum()) @ P
+        q = mix[mix > 0]
+        if len(keys) > 1 and -(q * np.log(q)).sum() / np.log(len(keys)) >= 0.84:
+            groups.append(key)
+    random.Random(seed).shuffle(groups)
+    chosen = [i for key in sorted(groups[:n_groups]) for i in keyed[key]]
+    return grouped.loc[chosen].reset_index(drop=True)
+
+
 def build_env(pop_n: int, grouped_n: int, seed: int, which: str = "eval", limit: int = 0):
     """(sample, norms, ctx). which='dev' is a tuning set disjoint from the eval sample."""
     pop_full = load_split("Pop")
@@ -1661,7 +1874,9 @@ def build_env(pop_n: int, grouped_n: int, seed: int, which: str = "eval", limit:
     pop_eval, pop_pool = stratified_sample(pop_full, pop_n, seed, reserve=3)
     grp_eval, grp_pool = stratified_sample(grouped_full, grouped_n, seed, reserve=3)
     pools = pd.concat([pop_pool, grp_pool]).reset_index(drop=True)
-    if which == "dev":
+    if which == "stepc":
+        sample = _stepc_cells(grouped_full, seed)
+    elif which == "dev":
         parts = []
         for df, n_eval, n_dev in ((pop_full, pop_n, DEV_POP), (grouped_full, grouped_n, DEV_GROUPED)):
             for _, g in df.groupby("dataset_name"):
@@ -1738,7 +1953,7 @@ def main() -> None:
     p.add_argument("--score-only", action="store_true")
     p.add_argument("--limit", type=int, default=0, help="smoke test: random N cases, separate cache")
     p.add_argument("--shrink-sweep", action="store_true")
-    p.add_argument("--set", default="eval", choices=["eval", "dev"], help="dev = held-out tuning set")
+    p.add_argument("--set", default="eval", choices=["eval", "dev", "stepc"], help="dev = held-out tuning set")
     args = p.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1758,6 +1973,11 @@ def main() -> None:
     arms = [a for a in args.arms.split(",") if a]
     if any(a.startswith(("B_dict", "B_agents", "Bdiag_agents")) for a in arms):
         ctx["archetypes"] = build_archetypes(sample, args.model, min(args.workers, 24))
+    if any(a.startswith("D") and a[1:2].isdigit() for a in arms):
+        pop_full_d, grouped_full_d = load_split("Pop"), load_split("Grouped")
+        ctx["dpool"] = _build_dpool(pop_full_d, grouped_full_d, args.pop, args.grouped, args.seed)
+        ctx["_grouped_by_q"] = _index_grouped_by_question(grouped_full_d)
+        ctx["_target_stems"] = [(r["dataset_name"], _stem(r["input_template"])) for _, r in sample.iterrows()]
     if "retr6_shape" in arms:
         tag0 = f"p{args.pop}g{args.grouped}s{args.seed}" + (
             f"dev{DEV_POP}x{DEV_GROUPED}" if args.set == "dev" else ""
@@ -1772,7 +1992,7 @@ def main() -> None:
     for arm in arms:
         if arm not in ARMS:
             raise SystemExit(f"unknown arm {arm}; choose from {sorted(ARMS)}")
-        tag = f"p{args.pop}g{args.grouped}s{args.seed}" + (f"lim{args.limit}" if args.limit else "") + (f"dev{DEV_POP}x{DEV_GROUPED}" if args.set == "dev" else "")
+        tag = f"p{args.pop}g{args.grouped}s{args.seed}" + (f"lim{args.limit}" if args.limit else "") + ({"dev": f"dev{DEV_POP}x{DEV_GROUPED}", "stepc": "stepc"}.get(args.set, ""))
         raw_path = OUT_DIR / f"{arm}_{args.model.replace('/', '_')}_{tag}.json"
         if args.score_only or raw_path.exists():
             if not raw_path.exists():

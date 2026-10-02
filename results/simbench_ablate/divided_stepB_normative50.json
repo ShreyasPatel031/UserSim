@@ -1,0 +1,57 @@
+{
+ "rule": "Value-laden if one answer matches the textbook liberal-democratic / civic norm (pro-democracy, tolerance of minorities and immigrants, gender egalitarianism, civic participation, secular morality, pro-environment); coded from question and options only, before looking at predictions or truth, by Claude. Perception, frequency, religious-belief and self-description questions coded 'none'.",
+ "n_sample": 50,
+ "n_value_laden": 23,
+ "codes": {
+  "860": "A",
+  "649": "A",
+  "611": "A",
+  "818": "A",
+  "226": "AB",
+  "838": "AB",
+  "737": "DE",
+  "605": "DE",
+  "878": "B",
+  "824": "A",
+  "865": "AB",
+  "732": "CD",
+  "607": "AB",
+  "752": "DE",
+  "427": "DE",
+  "978": "CD",
+  "833": "B",
+  "426": "AB",
+  "680": "AB",
+  "705": "A",
+  "146": "AB",
+  "195": "EF",
+  "668": "DE"
+ },
+ "retr6": {
+  "mean_residual_on_desirable": 0.0265,
+  "ci95": [
+   -0.0483,
+   0.1019
+  ],
+  "share_positive": 0.478,
+  "mean_true_mass_on_desirable": 0.414
+ },
+ "retr6_rev2": {
+  "mean_residual_on_desirable": 0.0382,
+  "ci95": [
+   -0.0282,
+   0.1102
+  ],
+  "share_positive": 0.522,
+  "mean_true_mass_on_desirable": 0.414
+ },
+ "P_groundall5": {
+  "mean_residual_on_desirable": 0.0355,
+  "ci95": [
+   -0.024,
+   0.1001
+  ],
+  "share_positive": 0.522,
+  "mean_true_mass_on_desirable": 0.414
+ }
+}

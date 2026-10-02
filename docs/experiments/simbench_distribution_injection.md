@@ -1,6 +1,6 @@
 # SimBench: injecting human answer distributions — progress log
 
-Status as of 2026-10-02. Branch `claude/blissful-pascal-0ldgye`. All numbers are SimBench scores (higher is better) unless stated.
+Status as of 2026-10-02 (updated with §4.12). Branch `claude/blissful-pascal-0ldgye`. All numbers are SimBench scores (higher is better) unless stated.
 
 ## 1. The problem
 
@@ -172,6 +172,14 @@ On consensus and mixed questions the gap is noise once real data is in the promp
 
 **Verdict:** neither H1 (composition missing) nor H2 (collapse) as stated. The model spreads about the right amount but puts mass on the wrong options, the same way for every group. The remaining hole is the Pop-only task datasets. Counter-reading: composition could only be tested where Pop already matched Grouped, it was coarse (often a 50/50 gender split), and the divided cells are small.
 
+### 4.12 Divided questions: within or across demographics? (Haiku)
+Full write-up: `simbench_divided_anatomy_results.md`.
+- **Within, not across.** Only 1.4% of the real disagreement on divided questions is between demographic subgroups (596 question × country × attribute groups); 98.6% is inside each group.
+- **Common-mode error.** Errors of different groups on the same question correlate +0.66, and 72–80% of the error is shared. The direction of group differences is right (sign 74–77%, gap correlation 0.64), but their size is about two thirds of real.
+- **Placement, not spread.** Spread is right (SD 0.309 vs 0.311), with no shift toward the middle or "don't know". 16% of predictions put the top answer on the wrong side of the scale. The worst cases are flips toward a "textbook" answer (correct, rational, liberal, civic). The average normative lean on a 50-question hand-coded sample is small and not significant (+3.8 points).
+- **Demo source is not the lever** (Grouped divided, eval): same topic +1.7, same group +4.0, same group + topic +4.7, all n.s. Same-group demos give +2.6 across all Grouped questions. For Pop, same-topic demos (−14.0 on divided) and same-country demos hurt.
+- **A question-specific anchor is** (diagnostic only): other groups' real answers to the same question add +30.7 [+22.7, +39.2] on divided questions (+28.5 on dev). Top option right goes from 0.55 to 0.78.
+
 ## 5. Current best picks
 
 | Question type | Model | Harness | Evidence |
@@ -192,6 +200,7 @@ Everything stays observable: personas, shares, each type's answer, both option o
 6. **Larger models fix consensus, not disagreement.**
 7. **Routing now decides the total score.**
 8. **The divided-question error is placement, not spread** (§4.11). Entropy on divided questions is already right; the mass sits on the wrong options, in the same way for every subgroup.
+10. **Divided-ness lives inside every group, and the error is common to all groups** (§4.12). What fixes it is information about this specific question, not about demographics or demo topics.
 9. **Population composition (shares) adds nothing** where it can be derived. The Pop-vs-Grouped gap on divided questions comes from Pop-only task datasets (personality scales, gambles, number puzzles), not from population surveys.
 
 ## 7. Open problems and next-step options (for discussion)
@@ -201,12 +210,13 @@ Everything stays observable: personas, shares, each type's answer, both option o
 3. **More divided-question ideas.** Panel types that carry views on the topic; more types for contested questions; reversal + more orders (cyclic) for the panel; dataset-aware choice between panel and segments (they win on different datasets).
 4. **Fit weights instead of asking for shares** (mixture-of-personas style), now that we know model shares are uninformative.
 5. **Pop-only task datasets** (OSPsychMACH, Choices13k, NumberGame, OSPsychMGKT score near or below 0): task-specific handling, e.g. demos matched within the same scale or game.
-6. **Predict subgroup answers better** (e.g. demos from the same subgroup cell) rather than adding shares; the oracle shows subgroup answers carry the signal.
-7. **Bring it back to UserSim.** The panel design maps directly onto the Vercel persona-agent flow: question-specific types, grounded on real answers, asked in both option orders, weighted.
+6. **Find legitimate question-level anchors** (same question in another wave, a neighbouring country or a related segment). This is the only lever with a large measured effect so far, as a diagnostic (§4.12).
+7. **Predict subgroup answers better** (e.g. demos from the same subgroup cell) rather than adding shares; the oracle shows subgroup answers carry the signal.
+8. **Bring it back to UserSim.** The panel design maps directly onto the Vercel persona-agent flow: question-specific types, grounded on real answers, asked in both option orders, weighted.
 
 ## 8. Cost
 
-Roughly **$102 of Vertex usage** (incl. ~$2 for the failure-mode experiment) over the whole session (list prices; estimated from token counts). Largest items: Sonnet 4.6 dev harnesses ~$23, full-benchmark Haiku panel runs ~$14, cross-model / reversal round ~$10. Typical full-benchmark runs: Haiku `retr6` ~$1, Haiku panel ~$8, Sonnet 5.5 `retr6` ~$3.
+Roughly **$110 of Vertex usage** (incl. ~$2 failure-mode and ~$8 divided-anatomy experiments) over the whole session (list prices; estimated from token counts). Largest items: Sonnet 4.6 dev harnesses ~$23, full-benchmark Haiku panel runs ~$14, cross-model / reversal round ~$10. Typical full-benchmark runs: Haiku `retr6` ~$1, Haiku panel ~$8, Sonnet 5.5 `retr6` ~$3.
 
 ## 9. Caveats
 
@@ -227,6 +237,7 @@ Roughly **$102 of Vertex usage** (incl. ~$2 for the failure-mode experiment) ove
 | `src/human_sim/simbench_nbr_calibrate.py` | Calibration keyed on neighbour entropy |
 | `src/human_sim/simbench_failure_mode.py` | Pop/Grouped × question-type diagnostics, composition arms, oracle |
 | `docs/experiments/simbench_failure_mode_results.md` | Full failure-mode write-up |
+| `src/human_sim/simbench_divided_anatomy.py`, `docs/experiments/simbench_divided_anatomy_results.md` | Within/between decomposition, error anatomy, common-mode test, demo-source test |
 | `results/simbench_ablate/*.json` | Every run (per question, with segment traces) and reports: `mix_report.json`, `panel_blend_report.json`, `segment_diagnosis.json`, `harness_eval_dev.json`, `failure_mode_step0_crosstab.json`, `failure_mode_report.json` |
 
 Run any arm: `PYTHONPATH=src python -m human_sim.simbench_ablate --model claude-haiku-4-5 --set dev --arms retr6,P_groundall5`
