@@ -200,8 +200,8 @@ Everything stays observable: personas, shares, each type's answer, both option o
 6. **Larger models fix consensus, not disagreement.**
 7. **Routing now decides the total score.**
 8. **The divided-question error is placement, not spread** (§4.11). Entropy on divided questions is already right; the mass sits on the wrong options, in the same way for every subgroup.
-10. **Divided-ness lives inside every group, and the error is common to all groups** (§4.12). What fixes it is information about this specific question, not about demographics or demo topics.
 9. **Population composition (shares) adds nothing** where it can be derived. The Pop-vs-Grouped gap on divided questions comes from Pop-only task datasets (personality scales, gambles, number puzzles), not from population surveys.
+10. **Divided-ness lives inside every group, and the error is common to all groups** (§4.12). What fixes it is information about this specific question, not about demographics or demo topics.
 
 ## 7. Open problems and next-step options (for discussion)
 
