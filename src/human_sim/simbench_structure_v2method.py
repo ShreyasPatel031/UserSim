@@ -170,9 +170,11 @@ def main():
 
     no_gate = np.array([c[2] == 0.0 for c in sharp_cfgs])
     no_cl = np.array([c[0][SHALLOW_MEMBERS.index("cl")] == 0 for c in shallow_cfgs])
+    no_kc2 = np.array([c[0][SHARP_MEMBERS.index("KC2")] == 0 for c in sharp_cfgs])
     variants = {"v2 (new router, gated sharp side, clustering in shallow side)": ("new router (+ prediction features)", None, None),
                 "ablation: no component gate on sharp side": ("new router (+ prediction features)", no_gate, None),
                 "ablation: no clustering tool in shallow side": ("new router (+ prediction features)", None, no_cl),
+                "ablation: no component retrieval (KC2) on sharp side": ("new router (+ prediction features)", no_kc2, None),
                 "ablation: old router": ("old router (metadata + demos only)", None, None)}
     plain_ev = np.array([S(q, q["mem"]["plain"]) for q in ev])
     res = {}

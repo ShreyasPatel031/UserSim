@@ -1,0 +1,147 @@
+{
+  "v2 (new router, gated sharp side, clustering in shallow side)": {
+    "config": {
+      "cut": 0.5,
+      "sharp_weights": {
+        "plain": 0.0,
+        "retr6": 0.0,
+        "D3": 0.25,
+        "KC2": 0.75
+      },
+      "sharp_exponent": 1.25,
+      "component_gate_boost": 0.25,
+      "shallow_weights": {
+        "plain": 0.0,
+        "retr6": 0.25,
+        "D3": 0.5,
+        "KC2": 0.0,
+        "cl": 0.25
+      },
+      "shallow_exponent": 1.1
+    },
+    "eval_S": 49.8662961055116,
+    "vs_plain": 3.5968448651784697,
+    "ci": [
+      1.9,
+      5.3
+    ],
+    "routing_truly_sharp_to_sharp": 0.4732824427480916,
+    "routing_truly_shallow_to_shallow": 0.9331983805668016
+  },
+  "ablation: no component gate on sharp side": {
+    "config": {
+      "cut": 0.5,
+      "sharp_weights": {
+        "plain": 0.0,
+        "retr6": 0.0,
+        "D3": 0.5,
+        "KC2": 0.5
+      },
+      "sharp_exponent": 1.5,
+      "component_gate_boost": 0.0,
+      "shallow_weights": {
+        "plain": 0.0,
+        "retr6": 0.25,
+        "D3": 0.5,
+        "KC2": 0.0,
+        "cl": 0.25
+      },
+      "shallow_exponent": 1.1
+    },
+    "eval_S": 50.11109089847455,
+    "vs_plain": 3.841639658141415,
+    "ci": [
+      2.1,
+      5.6
+    ],
+    "routing_truly_sharp_to_sharp": 0.4732824427480916,
+    "routing_truly_shallow_to_shallow": 0.9331983805668016
+  },
+  "ablation: no clustering tool in shallow side": {
+    "config": {
+      "cut": 0.5,
+      "sharp_weights": {
+        "plain": 0.0,
+        "retr6": 0.0,
+        "D3": 0.25,
+        "KC2": 0.75
+      },
+      "sharp_exponent": 1.25,
+      "component_gate_boost": 0.25,
+      "shallow_weights": {
+        "plain": 0.0,
+        "retr6": 0.25,
+        "D3": 0.75,
+        "KC2": 0.0,
+        "cl": 0.0
+      },
+      "shallow_exponent": 1.0
+    },
+    "eval_S": 48.56070128669542,
+    "vs_plain": 2.291250046362284,
+    "ci": [
+      0.7,
+      3.9
+    ],
+    "routing_truly_sharp_to_sharp": 0.4732824427480916,
+    "routing_truly_shallow_to_shallow": 0.9331983805668016
+  },
+  "ablation: no component retrieval (KC2) on sharp side": {
+    "config": {
+      "cut": 0.5,
+      "sharp_weights": {
+        "plain": 0.25,
+        "retr6": 0.0,
+        "D3": 0.75,
+        "KC2": 0.0
+      },
+      "sharp_exponent": 1.25,
+      "component_gate_boost": 0.25,
+      "shallow_weights": {
+        "plain": 0.0,
+        "retr6": 0.25,
+        "D3": 0.5,
+        "KC2": 0.0,
+        "cl": 0.25
+      },
+      "shallow_exponent": 1.1
+    },
+    "eval_S": 50.69657042366616,
+    "vs_plain": 4.4271191833330255,
+    "ci": [
+      2.8,
+      6.1
+    ],
+    "routing_truly_sharp_to_sharp": 0.4732824427480916,
+    "routing_truly_shallow_to_shallow": 0.9331983805668016
+  },
+  "ablation: old router": {
+    "config": {
+      "cut": 0.2,
+      "sharp_weights": {
+        "plain": 0.25,
+        "retr6": 0.25,
+        "D3": 0.25,
+        "KC2": 0.25
+      },
+      "sharp_exponent": 1.25,
+      "component_gate_boost": 0.0,
+      "shallow_weights": {
+        "plain": 0.0,
+        "retr6": 0.25,
+        "D3": 0.5,
+        "KC2": 0.0,
+        "cl": 0.25
+      },
+      "shallow_exponent": 1.1
+    },
+    "eval_S": 50.49687514674674,
+    "vs_plain": 4.227423906413603,
+    "ci": [
+      2.7,
+      5.8
+    ],
+    "routing_truly_sharp_to_sharp": 0.8015267175572519,
+    "routing_truly_shallow_to_shallow": 0.6680161943319838
+  }
+}
