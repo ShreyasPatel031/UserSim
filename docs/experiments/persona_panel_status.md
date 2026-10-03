@@ -35,8 +35,8 @@ Eval, 411 covered questions. The best competitor is 56.2 on consensus (`retr6`) 
 | Invented personas (original panel) | 46.2 | 44.0 | 46.1 | no |
 | Demographic personas, shared retrieval block (`C5b`) | 50.7 | 44.9 | 50.1 | no |
 | v1: sharpen each persona per question | 53.2 | 44.3 | 50.2 | no |
-| v2a: "estimate agreement first" prompt (dev only) | dev −6.3 vs plain | dev −3.4 | | no |
-| v2b: 20 imagined individuals per persona (dev only) | dev −20.3 | dev −3.4 | | no |
+| v2a: "estimate agreement first" prompt (dev only) | dev: 6.3 below best | dev: 3.4 below best | | no |
+| v2b: 20 imagined individuals per persona (dev only) | dev: 20.3 below best | dev: 3.4 below best | | no |
 | v4: personas as offsets around a per-question population level | **56.9** | 45.9 | **52.0** | consensus met (+0.8, CI −2.6 to +4.2), divided not |
 | v5: demographic split, own retrieval only (`C7`) | 45.3 | 41.6 | 46.1 | no |
 | v5: persona count per question (hard or soft) | 54.4 / 54.1 | 44.3 | 50.5 | no |
@@ -66,7 +66,7 @@ On consensus questions the predicted spread is 0.64 (plain) and 0.68 (invented p
 
 **d. Weighting the personas is not the problem.** Equal weights scored 35.9 against 41.6 for the planner's weights.
 
-**e. A model-capability ceiling shows up elsewhere.** Earlier runs: Sonnet 5.5 with the plain harness scored 56.1 on eval vs 43.6 for Haiku, mostly by removing order and shape error. The demographic panel has not been tried with Sonnet.
+**e. A model-capability ceiling shows up elsewhere.** Earlier runs: Sonnet 5.5 with the plain harness scored 56.1 on the 981 eval vs 43.6 for Haiku, removing about 20% of the order and shape error. The demographic panel has not been tried with Sonnet.
 
 ## 6. What does work
 
