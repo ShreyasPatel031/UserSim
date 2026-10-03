@@ -1,0 +1,26 @@
+{
+  "config": {
+    "sharp_weights": {
+      "plain": 0.31,
+      "fa": 0.07,
+      "xn": 0.62,
+      "plf": 0.0
+    },
+    "shallow_weights": {
+      "plain": 0.21,
+      "fa": 0.0,
+      "xn": 0.0,
+      "plf": 0.79
+    },
+    "sharpen_exp": 1.129,
+    "shallow_tau": 1.343,
+    "route_a": 0.08,
+    "route_b": 2.048
+  },
+  "eval_S": 50.88471710169989,
+  "vs_plain": 4.615265861366755,
+  "ci": [
+    2.8,
+    6.4
+  ]
+}

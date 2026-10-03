@@ -52,9 +52,25 @@ def neighbours_tn(sv, t, K):
     return [(sv["stems"][i], float(sims[i])) for i in order[:K]]
 
 
+def neighbours_tp(sv, t, K):
+    """D3's retrieved set: questions the target group answered in the target question's own topic, most similar first;
+    topped up with the group's other answered questions if the topic has fewer than 5."""
+    by_cell, by_country = answered_index(sv)
+    mine = by_country[t["country"]] if t["split"] == "Pop" else by_cell.get(t["cell"], set())
+    tm, ds = t["topic_map"], t["q"]["dataset"]
+    tgt_topic = tm.get((ds, t["stem"]))
+    sims = (sv["S_mat"] @ sv["vec"].transform([t["text"]]).T).toarray().ravel()
+    order = [i for i in np.argsort(-sims) if sv["stems"][i] != t["stem"] and sv["stems"][i] in mine]
+    same = [i for i in order if tgt_topic is not None and tm.get((ds, sv["stems"][i])) == tgt_topic]
+    pick = same[:K]
+    if len(pick) < 5:
+        pick += [i for i in order if i not in pick][:K - len(pick)]
+    return [(sv["stems"][i], float(sims[i])) for i in pick]
+
+
 def parse_tool(tool):
     """'segsoft_tn' -> ('segsoft', True); 'seg:0.01:2.0:1.0' -> ('seg', False, scale, prior, temp)."""
-    tn = tool.endswith("_tn")
+    tn = "tp" if tool.endswith("_tp") else tool.endswith("_tn")
     base = tool[:-3] if tn else tool
     parts = base.split(":")
     return parts[0], tn, [float(x) for x in parts[1:]]
@@ -92,7 +108,7 @@ def complete(sv, t, tool, K, r):
         return None, "question not in training pool"
     country = t["country"]
     tool, tn, params = parse_tool(tool)
-    nb = (neighbours_tn(sv, t, K) if tn else L.neighbours(sv, t["text"], st, K)) if K else []
+    nb = ((neighbours_tp(sv, t, K) if tn == "tp" else neighbours_tn(sv, t, K)) if tn else L.neighbours(sv, t["text"], st, K)) if K else []
     X, rows, cols = L.local_matrix(sv, [s for s, _ in nb], (st,))
     sl = cols[st]
     same = np.array([c[1] == country for c in rows])
@@ -151,6 +167,15 @@ def complete(sv, t, tool, K, r):
 def main():
     sv = L.build_surveys(L.held_rows())
     sets = {w: L.targets(w) for w in ("dev", "eval")}
+    if any(c[0].endswith("_tp") for c in ONLY):
+        from human_sim import simbench_ablate as A
+        for w in sets:
+            sample, _, ctx = A.build_env(25, 100, 7, w)
+            ctx["dpool"] = A._build_dpool(A.load_split("Pop"), A.load_split("Grouped"), 25, 100, 7)
+            ctx["_target_stems"] = [(r["dataset_name"], A._stem(r["input_template"])) for _, r in sample.iterrows()]
+            tm = A._topics(ctx)  # the same topic clusters D3 retrieves from (cached embeddings)
+            for t in sets[w]:
+                t["topic_map"] = tm
     out = pd.read_pickle(OUT) if (OUT.exists() and ("--cl" in sys.argv or "--seg" in sys.argv or EXTRA)) else {"why": {}}
     for cfg in ONLY:
         res = {}
