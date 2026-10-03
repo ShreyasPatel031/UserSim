@@ -1493,6 +1493,44 @@ def _d3_variant(n: int, dyn: bool = False):
     return _rev2(arm)
 
 
+_SEGPROMPT: dict = {}
+
+
+def _d3dyn_seg(row, ctx):
+    """D3dyn demos + cross-national segment block: how groups like this one in OTHER countries answered this question
+    (segment estimate) and the closest such groups by name. Target country never contributes. From
+    structure_segprompt.pkl (built by simbench_structure_segprompt)."""
+    if row["dataset_name"] not in D_DATASETS:
+        return "", "", {"pipeline": lambda call: (None, 0, 0)}
+    if not _SEGPROMPT:
+        import pickle
+        _SEGPROMPT.update(pickle.loads((OUT_DIR / "structure_segprompt.pkl").read_bytes()))
+    pool = _dpool(row, ctx)
+    topics = _topics(ctx)
+    tgt_topic = topics.get((row["dataset_name"], _stem(row.get("_orig_template", row["input_template"]))))
+    cell = _cell_key(row)
+    same_group = [d for d in pool if d["cell"] == cell]
+    both = [d for d in same_group if topics.get((row["dataset_name"], d["stem"])) == tgt_topic]
+    picked = _cap_per_stem(_shuffled(both, row), 12)
+    if len(picked) < 3:
+        picked += _cap_per_stem([d for d in _shuffled(same_group, row) if d not in picked], 3 - len(picked))
+    info = _SEGPROMPT.get((row["dataset_name"], _filled_persona(row), row.get("_orig_template", row["input_template"])))
+    hint = ""
+    if info:
+        keys = list(row["human_answer"].keys())
+        mp = row.get("_rev_map")
+        fmt = lambda d: json.dumps({k: round(100 * d.get(mp[k] if mp else k, 0.0)) for k in keys})  # noqa: E731
+        what = "this same question" if info["exact"] else "the most similar question with the same answer options"
+        hint = (f"Groups that answer like this group in other countries (this group's own country excluded) answered "
+                f"{what} like this: {fmt(info['seg'])}\n")
+        if info.get("near"):
+            hint += "Closest such groups:\n" + "".join(f"- {lab}: {fmt(d)}\n" for lab, d in info["near"])
+        hint += "\n"
+    return _inject(row, ctx, picked, annotate=False, hint=hint)
+
+
+ARMS["D3dynseg"] = _rev2(_d3dyn_seg)
+
 for _n in (4, 8, 12):
     ARMS[f"D3n{_n}"] = _d3_variant(_n)
 ARMS["D3dyn"] = _d3_variant(12, dyn=True)

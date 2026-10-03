@@ -130,6 +130,27 @@ def complete(sv, t, tool, K, r):
             pick = [i for i in range(len(rows)) if not same[i] and not np.isnan(X[i, sl.start])]
         fitted = np.full_like(X, np.nan)
         fitted[tgt] = np.nanmean(X[pick], axis=0)
+    elif tool == "knn":
+        # nearest groups: the r other-country groups whose answers on the neighbour questions are closest to the target
+        # group's; their answers to the target question, distance-weighted, shrunk toward the other-country mean
+        others = [i for i in range(len(rows)) if not same[i] and not np.isnan(X[i, sl.start])]
+        nb_sl = [c for st2, c in cols.items() if c != sl]
+        g = np.nanmean(X[others][:, sl], axis=0)
+        fitted = np.full_like(X, np.nan)
+        for ti in tgt:
+            ds_ = []
+            for i in others:
+                d = [0.5 * np.abs(X[ti, c] - X[i, c]).sum() for c in nb_sl if not np.isnan(X[ti, c.start]) and not np.isnan(X[i, c.start])]
+                if len(d) >= 2:
+                    ds_.append((float(np.mean(d)), i))
+            if not ds_:
+                fitted[ti, sl] = g
+                continue
+            ds_.sort()
+            near = ds_[:max(1, r)]
+            tau = np.median([d for d, _ in near]) + 1e-6
+            w = np.array([np.exp(-d / tau) for d, _ in near])
+            fitted[ti, sl] = (sum(wi * X[i, sl] for wi, (_, i) in zip(w, near)) + 0.5 * g) / (w.sum() + 0.5)
     elif tool.startswith("seg"):
         counts = np.array([min(max(sv["size"].get(c, 100), 30), 1000) for c in rows], float)
         if params:  # seg:scale:prior:temp, averaged over 3 seeds
@@ -164,6 +185,37 @@ def complete(sv, t, tool, K, r):
     return p / p.sum(), "ok"
 
 
+def complete_px(sv, t, tool, K, r, n_proxy=3):
+    """complete(); if the target question has no cross-national answers, use up to n_proxy most similar questions with
+    the same answer options that other countries were asked (target-question answers are never involved)."""
+    p, why = complete(sv, t, tool, K, r)
+    if p is not None or why not in ("question not in training pool", "fewer than 3 other-country groups answered the question"):
+        return p, why
+    lab = t.get("labels") or []
+    if not lab or not all(lab):
+        return None, why + " (no labels for proxy)"
+    sims = (sv["S_mat"] @ sv["vec"].transform([t["text"]]).T).toarray().ravel()
+    got = []
+    for i in np.argsort(-sims):
+        s2 = sv["stems"][i]
+        if s2 == t["stem"]:
+            continue
+        l2 = sv["labels"].get(s2, [])
+        if len(l2) != len(lab) or not all(x in l2 for x in lab):
+            continue
+        t2 = dict(t, stem=s2, text=s2, q=dict(t["q"], keys=sv["keys"][s2]))
+        p2, w2 = complete(sv, t2, tool, K, r)
+        if p2 is None:
+            continue
+        got.append((max(float(sims[i]), 0.01), p2[[l2.index(x) for x in lab]]))
+        if len(got) >= n_proxy:
+            break
+    if not got:
+        return None, why + " (no proxy question)"
+    p = sum(w * v for w, v in got) / sum(w for w, _ in got)
+    return p / p.sum(), "proxy"
+
+
 def main():
     sv = L.build_surveys(L.held_rows())
     sets = {w: L.targets(w) for w in ("dev", "eval")}
@@ -181,7 +233,10 @@ def main():
         res = {}
         for w in sets:
             for t in sets[w]:
-                p, why = complete(sv[t["q"]["dataset"]], t, *cfg)
+                if cfg[0].endswith("+px"):
+                    p, why = complete_px(sv[t["q"]["dataset"]], t, cfg[0][:-3], cfg[1], cfg[2])
+                else:
+                    p, why = complete(sv[t["q"]["dataset"]], t, *cfg)
                 res[t["q"]["qid"]] = p
                 out.setdefault(("why", cfg), {})[t["q"]["qid"]] = why
                 if cfg == CFGS[0] and len(ONLY) == len(CFGS):

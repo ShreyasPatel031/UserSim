@@ -28,6 +28,13 @@ from human_sim.simbench_routing_audit import ci
 from human_sim.simbench_structure_sharp import CACHE
 
 XN_CFG, XS_CFG = ("fa", 10, 2), ("segsoft", 19, 8)
+for _a in sys.argv:
+    if _a.startswith("--xs=") or _a.startswith("--xn="):
+        _n, _k, _r = _a[5:].split(",")
+        if _a.startswith("--xs="):
+            XS_CFG = (_n, int(_k), int(_r))
+        else:
+            XN_CFG = (_n, int(_k), int(_r))
 A_GRID = (0.0, 0.25, 0.5, 0.75, 1.0)
 T_GRID = (1.0, 1.25, 1.5, 1.75, 2.0)
 TU_GRID = (1.0, 1.1, 1.25, 1.5)  # sharpening on the sharp side when no factor completion exists
@@ -114,11 +121,35 @@ def run(base):
     for q, w in zip(ev, pi):
         sh, ot = sides(q, a, t, b, tu)
         preds[q["qid"]] = w * sh + (1 - w) * ot
-    cfg = {"base": base, "factor_weight_sharp": a, "sharpen": t, "sharpen_without_factor": tu, "segment_weight_other": b, "router": (ra, rb)}
+    cfg = {"base": base, "factor_weight_sharp": a, "sharpen": t, "sharpen_without_factor": tu, "segment_weight_other": b, "router": (ra, rb), "dev_S": best[0]}
     return preds, cfg, ev
 
 
+def select():
+    """Plug each segmentation tool into the method, fit on dev, report dev score (selection) and eval vs D3dyn."""
+    global XS_CFG
+    x = pd.read_pickle(M.OUT / "structure_xnat_preds.pkl")
+    cands = [c for c in x if isinstance(c, tuple) and len(c) == 3 and not (isinstance(c[0], str) and c[0] == "why")]
+    rows = []
+    for c in cands:
+        if c[0].split(":")[0].split("_")[0].split("+")[0] not in ("segsoft", "seg", "knn", "hier", "kmeans", "gmm", "mean", "dmm"):
+            continue
+        XS_CFG = c
+        preds, cfg, ev = run("D3dyn")
+        dev = load("dev", "D3dyn")
+        # dev score of the fitted config (in-sample selection score)
+        evs = {}
+        for nm, sel in (("shallow", lambda q: q["top_share"] < 0.7), ("no majority", lambda q: q["top_share"] < 0.5), ("all", lambda q: True)):
+            qs = [q for q in ev if sel(q)]
+            o = np.array([V2.S(q, preds[q["qid"]]) for q in qs]); d = np.array([V2.S(q, q["d3dyn"]) for q in qs])
+            evs[nm] = (o.mean(), (o - d).mean(), ci(o - d))
+        rows.append((c, cfg["dev_S"], evs))
+        print(f"{str(c):32s} dev {cfg['dev_S']:.2f} | eval " + " | ".join(f"{k} {v[0]:.1f} vs D3dyn {v[1]:+.1f} {v[2]}" for k, v in evs.items()), flush=True)
+
+
 def main():
+    if "--select" in sys.argv:
+        return select()
     out = {}
     allp = {}
     for base in ("D3dyn", "plain"):
