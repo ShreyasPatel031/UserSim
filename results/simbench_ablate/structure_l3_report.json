@@ -1,0 +1,192 @@
+{
+  "rule": "row-level holdout: target question never in any fit; eval/dev rows never in any matrix",
+  "fill": {
+    "Afrobarometer": 0.1205372616984402,
+    "ESS": 0.15526859504132232,
+    "ISSP": 0.10899182561307902,
+    "LatinoBarometro": 0.25460829493087556,
+    "OpinionQA": 0.8465974625144176
+  },
+  "cells": {
+    "Afrobarometer": 577,
+    "ESS": 484,
+    "ISSP": 367,
+    "LatinoBarometro": 217,
+    "OpinionQA": 51
+  },
+  "questions": {
+    "Afrobarometer": 20,
+    "ESS": 20,
+    "ISSP": 20,
+    "LatinoBarometro": 20,
+    "OpinionQA": 17
+  },
+  "dev_choice": {
+    "dimension-reduction | raw": [
+      "raw",
+      19,
+      0
+    ],
+    "dimension-reduction | DR": [
+      "fa",
+      19,
+      2
+    ],
+    "dimension-reduction | CL": [
+      "gmm",
+      19,
+      8
+    ],
+    "clustering | raw": [
+      "raw",
+      19,
+      0
+    ],
+    "clustering | DR": [
+      "nmf",
+      10,
+      3
+    ],
+    "clustering | CL": [
+      "dmm",
+      5,
+      4
+    ]
+  },
+  "eval": {
+    "dimension-reduction": {
+      "N_bucket": 589,
+      "N_covered_all_tools": 353,
+      "by_split": {
+        "Grouped": {
+          "N": 284,
+          "raw": 23.22330469602551,
+          "DR": 36.70824800393024,
+          "CL": 35.59664934115154,
+          "chance": 0.03261037863257649,
+          "retr6_rev2 (model)": 49.34924848775975,
+          "D3 (model)": 51.684649388037315,
+          "DR_vs_raw": 13.484943307904725,
+          "DR_vs_raw_ci": [
+            8.6,
+            18.7
+          ],
+          "CL_vs_raw": 12.373344645126028,
+          "CL_vs_raw_ci": [
+            7.4,
+            17.7
+          ]
+        },
+        "Pop": {
+          "N": 69,
+          "raw": 3.718646618003531,
+          "DR": 20.46946408714376,
+          "CL": 21.627783582472738,
+          "chance": 3.7765072342540367,
+          "retr6_rev2 (model)": 52.36159917546753,
+          "D3 (model)": 53.515906532685925,
+          "DR_vs_raw": 16.750817469140223,
+          "DR_vs_raw_ci": [
+            7.7,
+            26.5
+          ],
+          "CL_vs_raw": 17.90913696446921,
+          "CL_vs_raw_ci": [
+            9.6,
+            26.7
+          ]
+        },
+        "all": {
+          "N": 353,
+          "raw": 19.410779462644445,
+          "DR": 33.53409477373685,
+          "CL": 32.86619116169308,
+          "chance": 0.7644202455954117,
+          "retr6_rev2 (model)": 49.93806491113605,
+          "D3 (model)": 52.042600501297244,
+          "DR_vs_raw": 14.123315311092398,
+          "DR_vs_raw_ci": [
+            9.8,
+            18.6
+          ],
+          "CL_vs_raw": 13.455411699048632,
+          "CL_vs_raw_ci": [
+            9.2,
+            18.0
+          ]
+        }
+      },
+      "seen_question_ceiling_DR": {
+        "N": 444,
+        "S": 69.921082480116
+      }
+    },
+    "clustering": {
+      "N_bucket": 36,
+      "N_covered_all_tools": 10,
+      "by_split": {
+        "Grouped": {
+          "N": 9,
+          "raw": 28.742378233149843,
+          "DR": 28.03907195470309,
+          "CL": 29.88586777098935,
+          "chance": 18.73354210978833,
+          "retr6_rev2 (model)": 31.279182856297616,
+          "D3 (model)": 45.85604269761009,
+          "DR_vs_raw": -0.7033062784467492,
+          "DR_vs_raw_ci": [
+            -28.4,
+            30.8
+          ],
+          "CL_vs_raw": 1.1434895378395202,
+          "CL_vs_raw_ci": [
+            -38.4,
+            43.6
+          ]
+        },
+        "Pop": {
+          "N": 1,
+          "raw": 14.476346977929422,
+          "DR": 22.729492433258457,
+          "CL": 20.157440768418798,
+          "chance": 59.71417833703121,
+          "retr6_rev2 (model)": 32.03086216707056,
+          "D3 (model)": 50.069962764785636,
+          "DR_vs_raw": 8.253145455329035,
+          "DR_vs_raw_ci": [
+            null,
+            null
+          ],
+          "CL_vs_raw": 5.681093790489376,
+          "CL_vs_raw_ci": [
+            null,
+            null
+          ]
+        },
+        "all": {
+          "N": 10,
+          "raw": 27.315775107627797,
+          "DR": 27.508114002558624,
+          "CL": 28.9130250707323,
+          "chance": 22.83160573251262,
+          "retr6_rev2 (model)": 31.35435078737491,
+          "D3 (model)": 46.27743470432764,
+          "DR_vs_raw": 0.19233889493082756,
+          "DR_vs_raw_ci": [
+            -24.8,
+            27.0
+          ],
+          "CL_vs_raw": 1.5972499631045054,
+          "CL_vs_raw_ci": [
+            -32.6,
+            37.2
+          ]
+        }
+      },
+      "seen_question_ceiling_DR": {
+        "N": 19,
+        "S": 65.53933149636006
+      }
+    }
+  }
+}
