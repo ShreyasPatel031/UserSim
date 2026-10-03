@@ -30,6 +30,7 @@ from human_sim.simbench_structure_sharp import CACHE
 XN_CFG, XS_CFG = ("fa", 10, 2), ("segsoft", 19, 8)
 A_GRID = (0.0, 0.25, 0.5, 0.75, 1.0)
 T_GRID = (1.0, 1.25, 1.5, 1.75, 2.0)
+TU_GRID = (1.0, 1.1, 1.25, 1.5)  # sharpening on the sharp side when no factor completion exists
 B_GRID = (0.0, 0.2, 0.35, 0.5, 0.65, 0.8)
 R_GRID = [(a, b) for a in (0.5, 1.0, 2.0, 4.0) for b in (-1.0, -0.5, 0.0, 0.5, 1.0)]
 
@@ -75,8 +76,8 @@ def router_X(qs, l1, ds, means):
     return np.array(rows, float)
 
 
-def sides(q, a, t, b):
-    sh = temper(a * q["xn"] + (1 - a) * q["base"], t) if q["xn"] is not None else temper(q["base"], t)
+def sides(q, a, t, b, tu=None):
+    sh = temper(a * q["xn"] + (1 - a) * q["base"], t) if q["xn"] is not None else temper(q["base"], t if tu is None else tu)
     ot = b * q["xs"] + (1 - b) * q["base"] if q["xs"] is not None else q["base"]
     return sh, ot
 
@@ -96,25 +97,24 @@ def run(base):
     ps_e = clf.predict_proba(sc.transform(Xe))[:, 1]
 
     # precompute side scores per (a,t) and b on dev
-    def side_scores(qs):
-        SH = {(a, t): np.array([sides(q, a, t, 0)[0] for q in qs], dtype=object) for a in A_GRID for t in T_GRID}
-        OT = {b: np.array([sides(q, 0, 1, b)[1] for q in qs], dtype=object) for b in B_GRID}
-        return SH, OT
-
-    SHd, OTd = side_scores(dev)
+    split_t = "--split-t" in sys.argv
+    tus = TU_GRID if split_t else (None,)
+    SHd = {(a, t, tu): [sides(q, a, t, 0, tu)[0] for q in dev] for a in A_GRID for t in T_GRID for tu in tus}
+    OTd = {b: [sides(q, 0, 1, b)[1] for q in dev] for b in B_GRID}
+    Sd = {}
     best = None
-    for (a, t), (b,), (ra, rb) in itertools.product(SHd, [(b,) for b in B_GRID], R_GRID):
+    for key, b, (ra, rb) in itertools.product(SHd, B_GRID, R_GRID):
         pi = 1 / (1 + np.exp(-(ra * logit(ps_d) + rb)))
-        s = np.mean([V2.S(q, w * sh + (1 - w) * ot) for q, w, sh, ot in zip(dev, pi, SHd[(a, t)], OTd[b])])
+        s = np.mean([V2.S(q, w * sh + (1 - w) * ot) for q, w, sh, ot in zip(dev, pi, SHd[key], OTd[b])])
         if best is None or s > best[0]:
-            best = (s, a, t, b, ra, rb)
-    _, a, t, b, ra, rb = best
+            best = (s, key, b, ra, rb)
+    _, (a, t, tu), b, ra, rb = best
     pi = 1 / (1 + np.exp(-(ra * logit(ps_e) + rb)))
     preds = {}
     for q, w in zip(ev, pi):
-        sh, ot = sides(q, a, t, b)
+        sh, ot = sides(q, a, t, b, tu)
         preds[q["qid"]] = w * sh + (1 - w) * ot
-    cfg = {"base": base, "factor_weight_sharp": a, "sharpen": t, "segment_weight_other": b, "router": (ra, rb)}
+    cfg = {"base": base, "factor_weight_sharp": a, "sharpen": t, "sharpen_without_factor": tu, "segment_weight_other": b, "router": (ra, rb)}
     return preds, cfg, ev
 
 
@@ -126,14 +126,15 @@ def main():
         allp[base] = preds
         out[base] = cfg
         print(f"fitted on dev: {cfg}", flush=True)
-    pd.to_pickle(allp["D3dyn"], M.OUT / "structure_seg_eval_preds.pkl")
+    pd.to_pickle(allp["D3dyn"], M.OUT / ("structure_seg2_eval_preds.pkl" if "--split-t" in sys.argv else "structure_seg_eval_preds.pkl"))
     shape = lambda q: "sharp (top>=70%)" if q["top_share"] >= 0.7 else ("moderate (50-70%)" if q["top_share"] >= 0.5 else "no majority (<50%)")  # noqa: E731
+    split = "--split-t" in sys.argv
     sys.argv = ["x"]
     from human_sim import simbench_panel_offsets as V  # noqa: E402  (fits v4 on dev)
     v4 = {q["qid"]: V.predict(q, V.th, V.mu, V.sd) for q in V.ev}
     rep = {"config": out, "slices": {}}
     for nm, sel, only411 in [(s, (lambda s: lambda q: shape(q) == s)(s), o) for s in ("sharp (top>=70%)", "moderate (50-70%)", "no majority (<50%)") for o in (False, True)] + \
-                            [("all", lambda q: True, False), ("all", lambda q: True, True)]:
+                            [("SHALLOW (top<70%)", lambda q: q["top_share"] < 0.7, True), ("all", lambda q: True, False), ("all", lambda q: True, True)]:
         qs = [q for q in ev if sel(q) and (not only411 or q["qid"] in v4)]
         S = lambda f: np.array([V2.S(q, f(q)) for q in qs])  # noqa: E731
         ours = S(lambda q: allp["D3dyn"][q["qid"]])
@@ -145,7 +146,7 @@ def main():
         line = f"{tag:38s} N {len(qs):3d}  ours {ours.mean():5.1f} | " + " | ".join(f"{k} {v.mean():.1f} ({(ours - v).mean():+.1f} {ci(ours - v)})" for k, v in meths.items() if v is not None)
         print(line)
         rep["slices"][tag] = {"N": len(qs), "ours": float(ours.mean()), **{k: {"S": float(v.mean()), "diff": float((ours - v).mean()), "ci": ci(ours - v)} for k, v in meths.items() if v is not None}}
-    (M.OUT / "structure_seg_report.json").write_text(json.dumps(rep, indent=2, default=float))
+    (M.OUT / ("structure_seg2_report.json" if split else "structure_seg_report.json")).write_text(json.dumps(rep, indent=2, default=float))
 
 
 if __name__ == "__main__":
