@@ -216,7 +216,7 @@ def load(which: str):
     sample, norms, ctx = A.build_env(25, 100, 7, which)
     if which == "eval":
         norms = json.loads((OUT / "dataset_norms.json").read_text())
-    suffix = "" if which == "eval" else "dev10x40"
+    suffix = {"eval": "", "full": "full"}.get(which, "dev10x40")
     arms = EVAL_ARMS if which == "eval" else DEV_ARMS
     raw = {k: _load(a, m, suffix) for k, (a, m) in arms.items()}
     eda = pd.read_pickle(OUT / "divided_eda_table.pkl")

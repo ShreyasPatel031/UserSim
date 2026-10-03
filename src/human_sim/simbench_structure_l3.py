@@ -320,7 +320,7 @@ def targets(which):
         if q["dataset"] not in A.D_DATASETS:
             continue
         r = sample.loc[q["i"]]
-        lab = l1.loc[q["qid"], "label"]
+        lab = l1["label"].get(q["qid"], "unknown")
         out.append({"q": q, "split": q["split"], "cell": A._cell_key(r), "country": A._country_of(r.group_prompt_variable_map),
                     "stem": A._stem(r.input_template), "text": A._stem(r.input_template), "n_opt": len(q["keys"]),
                     "labels": [norm_label(q["texts"].get(k, "")) for k in q["keys"]],
