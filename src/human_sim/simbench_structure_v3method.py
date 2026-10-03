@@ -29,7 +29,8 @@ from human_sim import simbench_structure_v2method as V2
 from human_sim.simbench_structure_sharp import CACHE
 
 FA_FEATS = ["fa_fit_top", "fa_obs_top", "fa_cons_frac", "fa_between", "fa_resid", "fa_ev1", "fa_ev3", "fa_own_rows", "fa_nb_sim"]
-MEMBERS = ("plain", "retr6", "D3", "KC2", "cl", "fa", "v4")
+MEMBERS = ("plain", "retr6", "D3", "KC2", "cl", "fa", "v4", "xn")
+XN_CFG = ("fa", 10, 2)
 OMAX = 12
 
 
@@ -91,7 +92,7 @@ class Model:
     def sharp(self, D, th, chat):
         ls, b0, b1, *_ = self.unpack(th)
         e = softmax_mix(D, ls)
-        z = b0 + (b1 * (logit(chat) - logit(e.max(1))) if self.use_conc else 0.0)
+        z = b0 + (b1 * (logit(chat) - logit(e.max(1))) if self.use_conc else np.zeros(len(e)))
         return temper(e, np.exp(np.clip(z, -1.5, 1.5)), D.opt)
 
     def shallow(self, D, th):
@@ -134,9 +135,12 @@ def main():
     fa = pd.read_pickle(M.OUT / "structure_fafeat.pkl")
     v4 = pd.read_pickle(M.OUT / "v4_crossfit_preds.pkl")
     dev, ev = V2.load("dev", tools), V2.load("eval", tools)
+    xn = pd.read_pickle(M.OUT / "structure_xnat_preds.pkl")[XN_CFG]
     for q in dev + ev:
         if q["qid"] in v4:
             q["mem"]["v4"] = np.asarray(v4[q["qid"]])
+        if xn.get(q["qid"]) is not None:
+            q["mem"]["xn"] = np.asarray(xn[q["qid"]])
     l1 = pd.read_pickle(M.OUT / "structure_l1_rows.pkl").set_index("qid")
     ds = sorted(l1.dataset.unique())
     means = l1[V2.NUM].mean()
@@ -150,6 +154,10 @@ def main():
         if use_fa:
             f = fa.get(q["qid"])
             x += [(f or {}).get(k, fa_mean[k]) for k in FA_FEATS] + [float(f is not None)]
+            m = q["mem"]
+            hx = "xn" in m
+            x += [float(hx), m["xn"].max() if hx else m["plain"].max(), float(np.argmax(m["xn"]) == np.argmax(m["plain"])) if hx else 1.0,
+                  M.tvd(m["xn"], m["plain"]) if hx else 0.0]
         return x
 
     y_sharp_dev = np.array([q["top_share"] >= 0.7 for q in dev], int)
@@ -187,13 +195,14 @@ def main():
     ens_ev = np.array([np.mean([q['mem'][k] for k in ('plain', 'retr6', 'D3') if k in q['mem']], axis=0).max() for q in ev])
     print(f"baseline (ensemble's own top share): eval MAE {np.abs(ens_ev - top_ev).mean():.3f}; corr {np.corrcoef(ens_ev, top_ev)[0, 1]:.3f}")
 
-    variants = {"v3 (factor concentration matching + soft routing + v4 member)": (MEMBERS, "with factor profile", True, True),
-                "ablation: concentration model without factor profile": (MEMBERS, "without factor profile", True, True),
-                "ablation: concentration from factor profile only": (MEMBERS, "factor profile only", True, True),
-                "ablation: no concentration matching (fixed sharpening)": (MEMBERS, "with factor profile", False, True),
-                "ablation: no v4 member": (tuple(m for m in MEMBERS if m != "v4"), "with factor profile", True, True),
-                "ablation: no factor-analysis tool as member": (tuple(m for m in MEMBERS if m != "fa"), "with factor profile", True, True),
-                "ablation: hard routing": (MEMBERS, "with factor profile", True, False)}
+    base = tuple(m for m in MEMBERS if m != "v4")
+    variants = {"v3 (cross-national factor completion + soft routing, no v4 inside)": (base, "with factor profile", False, True),
+                "ablation: no cross-national factor completion member": (tuple(m for m in base if m != "xn"), "with factor profile", False, True),
+                "ablation: no factor-analysis neighbour tool as member": (tuple(m for m in base if m != "fa"), "with factor profile", False, True),
+                "ablation: no clustering tool as member": (tuple(m for m in base if m != "cl"), "with factor profile", False, True),
+                "ablation: hard routing": (base, "with factor profile", False, False),
+                "addition: + factor concentration matching": (base, "with factor profile", True, True),
+                "addition: + v4 member": (MEMBERS, "with factor profile", False, True)}
     plain_ev = np.array([V2.S(q, q["mem"]["plain"]) for q in ev])
     res, preds_out = {}, {}
     for nm, (mem, cname, use_conc, soft) in variants.items():
