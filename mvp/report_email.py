@@ -17,6 +17,8 @@ from email.message import EmailMessage
 from typing import Any
 from urllib.parse import urlsplit
 
+PROD_BASE_URL = "https://usersim.vercel.app"
+
 _SENT: set[str] = set()
 
 
@@ -33,12 +35,14 @@ def email_configured() -> bool:
 
 
 def report_base_url() -> str:
-    """Where the recipient can open the report (MVP_PUBLIC_BASE_URL, else local)."""
-    return (
-        os.environ.get("MVP_PUBLIC_BASE_URL")
-        or os.environ.get("MVP_REPORT_BASE_URL")
-        or "http://127.0.0.1:3000"
-    ).rstrip("/")
+    """Where the recipient can open the report: a public URL, never localhost."""
+    explicit = os.environ.get("MVP_PUBLIC_BASE_URL") or os.environ.get("MVP_REPORT_BASE_URL")
+    if explicit:
+        return explicit.rstrip("/")
+    vercel_host = os.environ.get("VERCEL_PROJECT_PRODUCTION_URL")
+    if vercel_host:
+        return f"https://{vercel_host}".rstrip("/")
+    return PROD_BASE_URL
 
 
 def _product_name(url: str) -> str:
