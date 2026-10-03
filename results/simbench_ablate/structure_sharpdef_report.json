@@ -1,0 +1,397 @@
+{
+  "method": [
+    {
+      "definition": "top share >= 50%",
+      "kind": "top",
+      "threshold": 0.5,
+      "share_sharp_eval": 0.6384,
+      "classifier_auc_eval": 0.845914565173997,
+      "dev_gain": 1.6429483342963778,
+      "eval_gain": 0.05351464000232263,
+      "eval_ci": [
+        -0.8,
+        0.9
+      ],
+      "eval_gain_true_sharp": -0.719132201976785,
+      "eval_gain_true_shallow": 1.417612383142428,
+      "routing": {
+        "prob_cutoff": 0.6,
+        "shallow_tool": [
+          "dmm",
+          10,
+          3
+        ],
+        "weight": 0.35
+      }
+    },
+    {
+      "definition": "top share >= 55%",
+      "kind": "top",
+      "threshold": 0.55,
+      "share_sharp_eval": 0.512,
+      "classifier_auc_eval": 0.7757530737704917,
+      "dev_gain": 1.7247546951605628,
+      "eval_gain": 0.8956434734366588,
+      "eval_ci": [
+        -0.0,
+        1.9
+      ],
+      "eval_gain_true_sharp": -0.16453254560307173,
+      "eval_gain_true_shallow": 2.007959296691458,
+      "routing": {
+        "prob_cutoff": 0.7,
+        "shallow_tool": [
+          "dmm",
+          10,
+          3
+        ],
+        "weight": 0.3
+      }
+    },
+    {
+      "definition": "top share >= 60%",
+      "kind": "top",
+      "threshold": 0.6,
+      "share_sharp_eval": 0.3984,
+      "classifier_auc_eval": 0.7808307698880628,
+      "dev_gain": 1.5546719933927449,
+      "eval_gain": 0.4287422363200083,
+      "eval_ci": [
+        -0.3,
+        1.2
+      ],
+      "eval_gain_true_sharp": -1.3405290973435615,
+      "eval_gain_true_shallow": 1.6004139439855107,
+      "routing": {
+        "prob_cutoff": 0.4,
+        "shallow_tool": [
+          "dmm",
+          10,
+          3
+        ],
+        "weight": 0.3
+      }
+    },
+    {
+      "definition": "top share >= 65%",
+      "kind": "top",
+      "threshold": 0.65,
+      "share_sharp_eval": 0.3104,
+      "classifier_auc_eval": 0.7915839452723228,
+      "dev_gain": 1.5987672526906849,
+      "eval_gain": 0.3961377217533493,
+      "eval_ci": [
+        -0.5,
+        1.3
+      ],
+      "eval_gain_true_sharp": -0.7893369292296635,
+      "eval_gain_true_shallow": 0.9297388407573043,
+      "routing": {
+        "prob_cutoff": 0.3,
+        "shallow_tool": [
+          "dmm",
+          19,
+          4
+        ],
+        "weight": 0.24999999999999997
+      }
+    },
+    {
+      "definition": "top share >= 70%",
+      "kind": "top",
+      "threshold": 0.7,
+      "share_sharp_eval": 0.2096,
+      "classifier_auc_eval": 0.7977949130018234,
+      "dev_gain": 1.3484926042125238,
+      "eval_gain": 1.0139884435845719,
+      "eval_ci": [
+        0.2,
+        1.9
+      ],
+      "eval_gain_true_sharp": 0.0763652713866995,
+      "eval_gain_true_shallow": 1.2626294062524286,
+      "routing": {
+        "prob_cutoff": 0.3,
+        "shallow_tool": [
+          "dmm",
+          10,
+          3
+        ],
+        "weight": 0.24999999999999997
+      }
+    },
+    {
+      "definition": "top share >= 75%",
+      "kind": "top",
+      "threshold": 0.75,
+      "share_sharp_eval": 0.16,
+      "classifier_auc_eval": 0.7742285714285714,
+      "dev_gain": 0.9522255015825181,
+      "eval_gain": 0.9412525481657554,
+      "eval_ci": [
+        0.1,
+        1.8
+      ],
+      "eval_gain_true_sharp": -1.6736292273866418,
+      "eval_gain_true_shallow": 1.4393252673185928,
+      "routing": {
+        "prob_cutoff": 0.6,
+        "shallow_tool": [
+          "dmm",
+          10,
+          3
+        ],
+        "weight": 0.19999999999999998
+      }
+    },
+    {
+      "definition": "top share >= 80%",
+      "kind": "top",
+      "threshold": 0.8,
+      "share_sharp_eval": 0.1152,
+      "classifier_auc_eval": 0.766463230861965,
+      "dev_gain": 0.9612556278378719,
+      "eval_gain": 1.004018097737697,
+      "eval_ci": [
+        0.2,
+        1.8
+      ],
+      "eval_gain_true_sharp": -2.5111880034530496,
+      "eval_gain_true_shallow": 1.4616941181458951,
+      "routing": {
+        "prob_cutoff": 0.4,
+        "shallow_tool": [
+          "dmm",
+          10,
+          3
+        ],
+        "weight": 0.19999999999999998
+      }
+    },
+    {
+      "definition": "lead over runner-up >= 10%",
+      "kind": "lead",
+      "threshold": 0.1,
+      "share_sharp_eval": 0.7376,
+      "classifier_auc_eval": 0.606740384106661,
+      "dev_gain": 0.9977112595069926,
+      "eval_gain": -0.16633372459694168,
+      "eval_ci": [
+        -0.7,
+        0.4
+      ],
+      "eval_gain_true_sharp": -0.5239962215241475,
+      "eval_gain_true_shallow": 0.839046830789899,
+      "routing": {
+        "prob_cutoff": 0.6,
+        "shallow_tool": [
+          "dmm",
+          10,
+          3
+        ],
+        "weight": 0.39999999999999997
+      }
+    },
+    {
+      "definition": "lead over runner-up >= 20%",
+      "kind": "lead",
+      "threshold": 0.2,
+      "share_sharp_eval": 0.5392,
+      "classifier_auc_eval": 0.6786751978239366,
+      "dev_gain": 1.6946729655113444,
+      "eval_gain": -0.22851005036923652,
+      "eval_ci": [
+        -1.2,
+        0.7
+      ],
+      "eval_gain_true_sharp": -2.1621892065106287,
+      "eval_gain_true_shallow": 2.0341631288656563,
+      "routing": {
+        "prob_cutoff": 0.7,
+        "shallow_tool": [
+          "dmm",
+          19,
+          4
+        ],
+        "weight": 0.24999999999999997
+      }
+    },
+    {
+      "definition": "lead over runner-up >= 30%",
+      "kind": "lead",
+      "threshold": 0.3,
+      "share_sharp_eval": 0.3904,
+      "classifier_auc_eval": 0.7210802030893679,
+      "dev_gain": 1.5791783109622202,
+      "eval_gain": 0.7135889087691123,
+      "eval_ci": [
+        -0.1,
+        1.6
+      ],
+      "eval_gain_true_sharp": -1.2566309502531634,
+      "eval_gain_true_shallow": 1.9753570074605438,
+      "routing": {
+        "prob_cutoff": 0.5,
+        "shallow_tool": [
+          "dmm",
+          19,
+          4
+        ],
+        "weight": 0.19999999999999998
+      }
+    },
+    {
+      "definition": "lead over runner-up >= 40%",
+      "kind": "lead",
+      "threshold": 0.4,
+      "share_sharp_eval": 0.2768,
+      "classifier_auc_eval": 0.7557164049311985,
+      "dev_gain": 1.3983161496837724,
+      "eval_gain": 0.7821697959462781,
+      "eval_ci": [
+        -0.1,
+        1.6
+      ],
+      "eval_gain_true_sharp": -1.2464494503119554,
+      "eval_gain_true_shallow": 1.5586103481645843,
+      "routing": {
+        "prob_cutoff": 0.3,
+        "shallow_tool": [
+          "dmm",
+          10,
+          3
+        ],
+        "weight": 0.3
+      }
+    },
+    {
+      "definition": "lead over runner-up >= 50%",
+      "kind": "lead",
+      "threshold": 0.5,
+      "share_sharp_eval": 0.1856,
+      "classifier_auc_eval": 0.7358071946345098,
+      "dev_gain": 0.9867476088582734,
+      "eval_gain": 0.962086187827045,
+      "eval_ci": [
+        0.2,
+        1.7
+      ],
+      "eval_gain_true_sharp": -1.0806161979873778,
+      "eval_gain_true_shallow": 1.4276136470696246,
+      "routing": {
+        "prob_cutoff": 0.4,
+        "shallow_tool": [
+          "dmm",
+          10,
+          3
+        ],
+        "weight": 0.19999999999999998
+      }
+    }
+  ],
+  "chosen_on_dev": "top share >= 55%",
+  "general": {
+    "top_share_histogram": {
+      "0.20-0.25": 174,
+      "0.25-0.30": 493,
+      "0.30-0.35": 875,
+      "0.35-0.40": 1088,
+      "0.40-0.45": 1052,
+      "0.45-0.50": 1017,
+      "0.50-0.55": 1412,
+      "0.55-0.60": 1308,
+      "0.60-0.65": 1102,
+      "0.65-0.70": 912,
+      "0.70-0.75": 740,
+      "0.75-0.80": 574,
+      "0.80-0.85": 668,
+      "0.85-0.90": 593,
+      "0.90-0.95": 598,
+      "0.95-1.00": 808
+    },
+    "otsu_threshold_top_share": 0.63,
+    "N_rows": 13510,
+    "groups_by_top_share": {
+      "0.3-0.5": {
+        "N": 612,
+        "between_tvd": 0.06796173514555975,
+        "all_agree": 0.6421568627450981
+      },
+      "0.5-0.6": {
+        "N": 513,
+        "between_tvd": 0.065898287331306,
+        "all_agree": 0.6530214424951267
+      },
+      "0.6-0.7": {
+        "N": 376,
+        "between_tvd": 0.05466961992319429,
+        "all_agree": 0.901595744680851
+      },
+      "0.7-0.8": {
+        "N": 161,
+        "between_tvd": 0.04455293950650962,
+        "all_agree": 0.9937888198757764
+      },
+      "0.8-0.9": {
+        "N": 139,
+        "between_tvd": 0.02691180203724602,
+        "all_agree": 1.0
+      },
+      "0.9-1.0": {
+        "N": 109,
+        "between_tvd": 0.013197203437978493,
+        "all_agree": 1.0
+      }
+    },
+    "tool_gain_by_top_share": {
+      "0.3-0.5": {
+        "N": 184,
+        "gain": 4.0451490229231215,
+        "ci": [
+          2.2,
+          6.0
+        ]
+      },
+      "0.5-0.6": {
+        "N": 177,
+        "gain": 3.611732643662704,
+        "ci": [
+          1.5,
+          5.8
+        ]
+      },
+      "0.6-0.7": {
+        "N": 113,
+        "gain": -1.0359144713712314,
+        "ci": [
+          -3.6,
+          1.6
+        ]
+      },
+      "0.7-0.8": {
+        "N": 56,
+        "gain": -3.8668800786199564,
+        "ci": [
+          -7.4,
+          -0.2
+        ]
+      },
+      "0.8-0.9": {
+        "N": 34,
+        "gain": -7.167427687165,
+        "ci": [
+          -15.7,
+          2.5
+        ]
+      },
+      "0.9-1.0": {
+        "N": 24,
+        "gain": -10.127574280390428,
+        "ci": [
+          -15.6,
+          -5.1
+        ]
+      }
+    }
+  }
+}
