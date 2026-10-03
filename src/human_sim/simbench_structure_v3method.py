@@ -29,8 +29,9 @@ from human_sim import simbench_structure_v2method as V2
 from human_sim.simbench_structure_sharp import CACHE
 
 FA_FEATS = ["fa_fit_top", "fa_obs_top", "fa_cons_frac", "fa_between", "fa_resid", "fa_ev1", "fa_ev3", "fa_own_rows", "fa_nb_sim"]
-MEMBERS = ("plain", "retr6", "D3", "KC2", "cl", "fa", "v4", "xn")
+MEMBERS = ("plain", "retr6", "D3", "KC2", "cl", "fa", "v4", "xn", "xs")
 XN_CFG = ("fa", 10, 2)
+XS_CFG = ("segsoft", 19, 8)  # cross-national opinion segments, picked on dev
 OMAX = 12
 
 
@@ -63,9 +64,12 @@ class Data:
                     self.has[i, j] = True
 
 
-def softmax_mix(D, logits_):
+def softmax_mix(D, logits_, allow=None):
     w = np.exp(logits_ - logits_.max())
+    if allow is not None:
+        w = w * allow
     W = D.has * w[None, :]
+    W = W + (W.sum(1, keepdims=True) == 0) * D.has * (np.array(D.members) == "plain")[None, :]
     W = W / W.sum(1, keepdims=True)
     return np.einsum("qm,qmo->qo", W, D.P)
 
@@ -82,8 +86,9 @@ def scores(D, p):
 class Model:
     """theta = [sharp logits (m), b0, b1, shallow logits (m), log tau, a, b]."""
 
-    def __init__(self, m, use_conc=True, soft=True):
+    def __init__(self, m, use_conc=True, soft=True, sharp_allow=None, shallow_allow=None):
         self.m, self.use_conc, self.soft = m, use_conc, soft
+        self.sa, self.ha = sharp_allow, shallow_allow
 
     def unpack(self, th):
         m = self.m
@@ -91,13 +96,13 @@ class Model:
 
     def sharp(self, D, th, chat):
         ls, b0, b1, *_ = self.unpack(th)
-        e = softmax_mix(D, ls)
+        e = softmax_mix(D, ls, self.sa)
         z = b0 + (b1 * (logit(chat) - logit(e.max(1))) if self.use_conc else np.zeros(len(e)))
         return temper(e, np.exp(np.clip(z, -1.5, 1.5)), D.opt)
 
     def shallow(self, D, th):
         *_, lh, lt, _, _ = self.unpack(th)
-        return temper(softmax_mix(D, lh), np.full(len(D.h), np.exp(np.clip(lt, -1, 1))), D.opt)
+        return temper(softmax_mix(D, lh, self.ha), np.full(len(D.h), np.exp(np.clip(lt, -1, 1))), D.opt)
 
     def pi(self, th, psharp, cut):
         *_, a, b = self.unpack(th)
@@ -130,17 +135,23 @@ def fit_model(mod, D, chat, psharp):
     return best[1], best[2]
 
 
+SHIP = "v3 specialised"
+
+
 def main():
     tools = pd.read_pickle(CACHE)
     fa = pd.read_pickle(M.OUT / "structure_fafeat.pkl")
     v4 = pd.read_pickle(M.OUT / "v4_crossfit_preds.pkl")
     dev, ev = V2.load("dev", tools), V2.load("eval", tools)
-    xn = pd.read_pickle(M.OUT / "structure_xnat_preds.pkl")[XN_CFG]
+    xall = pd.read_pickle(M.OUT / "structure_xnat_preds.pkl")
+    xn, xs = xall[XN_CFG], xall[XS_CFG]
     for q in dev + ev:
         if q["qid"] in v4:
             q["mem"]["v4"] = np.asarray(v4[q["qid"]])
         if xn.get(q["qid"]) is not None:
             q["mem"]["xn"] = np.asarray(xn[q["qid"]])
+        if xs.get(q["qid"]) is not None:
+            q["mem"]["xs"] = np.asarray(xs[q["qid"]])
     l1 = pd.read_pickle(M.OUT / "structure_l1_rows.pkl").set_index("qid")
     ds = sorted(l1.dataset.unique())
     means = l1[V2.NUM].mean()
@@ -196,25 +207,35 @@ def main():
     print(f"baseline (ensemble's own top share): eval MAE {np.abs(ens_ev - top_ev).mean():.3f}; corr {np.corrcoef(ens_ev, top_ev)[0, 1]:.3f}")
 
     base = tuple(m for m in MEMBERS if m != "v4")
-    variants = {"v3 (cross-national factor completion + soft routing, no v4 inside)": (base, "with factor profile", False, True),
+    variants = {"v3 specialised (sharp side: factor tools only; shallow side: clustering tools only)": (base, "with factor profile", False, True, True),
+                "specialised, ablation: no cross-national factor completion on sharp side": (tuple(m for m in base if m != "xn"), "with factor profile", False, True, True),
+                "specialised, ablation: no cross-national segments on shallow side": (tuple(m for m in base if m != "xs"), "with factor profile", False, True, True),
+                "specialised, ablation: no clustering at all on shallow side": (tuple(m for m in base if m not in ("xs", "cl")), "with factor profile", False, True, True),
+                "unconstrained (any member on either side)": (base, "with factor profile", False, True),
                 "ablation: no cross-national factor completion member": (tuple(m for m in base if m != "xn"), "with factor profile", False, True),
                 "ablation: no factor-analysis neighbour tool as member": (tuple(m for m in base if m != "fa"), "with factor profile", False, True),
-                "ablation: no clustering tool as member": (tuple(m for m in base if m != "cl"), "with factor profile", False, True),
+                "ablation: no clustering at all (neither segment tool)": (tuple(m for m in base if m not in ("cl", "xs")), "with factor profile", False, True),
+                "ablation: no cross-national segments": (tuple(m for m in base if m != "xs"), "with factor profile", False, True),
                 "ablation: hard routing": (base, "with factor profile", False, False),
-                "addition: + factor concentration matching": (base, "with factor profile", True, True),
                 "addition: + v4 member": (MEMBERS, "with factor profile", False, True)}
     plain_ev = np.array([V2.S(q, q["mem"]["plain"]) for q in ev])
     res, preds_out = {}, {}
-    for nm, (mem, cname, use_conc, soft) in variants.items():
+    SHARP_ONLY_NOT = {"xs", "cl"}   # specialised design: no clustering tools on the sharp side
+    SHALLOW_NOT = {"xn", "fa"}       # and no factor tools on the shallow side
+    for nm, spec in variants.items():
+        mem, cname, use_conc, soft = spec[:4]
+        special = len(spec) > 4 and spec[4]
         Dd, De = Data(dev, mem), Data(ev, mem)
-        mod = Model(len(mem), use_conc, soft)
+        sa = np.array([m not in SHARP_ONLY_NOT for m in mem], float) if special else None
+        ha = np.array([m not in SHALLOW_NOT for m in mem], float) if special else None
+        mod = Model(len(mem), use_conc, soft, sa, ha)
         th, cut = fit_model(mod, Dd, conc[cname][0], rd)
         pe = mod.predict(De, th, conc[cname][1], re_, cut)
         s = scores(De, pe)
         d = s - plain_ev
         ls, b0, b1, lh, lt, a, b = mod.unpack(th)
-        wsh = np.exp(ls - ls.max()); wsh /= wsh.sum()
-        whl = np.exp(lh - lh.max()); whl /= whl.sum()
+        wsh = np.exp(ls - ls.max()) * (sa if sa is not None else 1); wsh /= wsh.sum()
+        whl = np.exp(lh - lh.max()) * (ha if ha is not None else 1); whl /= whl.sum()
         cfg = {"sharp_weights": dict(zip(mem, wsh.round(2))), "sharpen_b0": round(float(b0), 3), "conc_b1": round(float(b1), 3),
                "shallow_weights": dict(zip(mem, whl.round(2))), "shallow_tau": round(float(np.exp(np.clip(lt, -1, 1))), 3),
                "route_a": round(float(a), 3), "route_b": round(float(b), 3), "hard_cut": cut if not soft else None}
@@ -223,7 +244,7 @@ def main():
                    "truly_sharp_S": float(s[ts].mean()), "truly_shallow_S": float(s[~ts].mean())}
         print(f"\n== {nm}\n   config: {cfg}\n   eval N {len(ev)}: plain {plain_ev.mean():.1f} -> {s.mean():.1f} ({d.mean():+.1f} {ci(d)}); "
               f"truly sharp {s[ts].mean():.1f}, truly shallow {s[~ts].mean():.1f}", flush=True)
-        if nm.startswith("v3"):
+        if nm.startswith(SHIP):
             for q, p in zip(ev, pe):
                 preds_out[q["qid"]] = p[:len(q["h"])]
     pd.to_pickle(preds_out, M.OUT / "structure_v3_eval_preds.pkl")

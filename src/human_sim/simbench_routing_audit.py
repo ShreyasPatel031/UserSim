@@ -58,13 +58,13 @@ def main():
         return 0.25 * tool[q["qid"]] + 0.75 * p if routed_shallow(q) else p
 
     ev = V.ev
-    ver = next((a[2:] for a in sys.argv if a in ("--v2", "--v3")), None)
+    ver = next((a[2:] for a in sys.argv if a in ("--v2", "--v3", "--v3lite", "--v3d3")), None)
     if ver:
         vp = pd.read_pickle(M.OUT / f"structure_{ver}_eval_preds.pkl")
         ref = (f"ROUTED {ver}", lambda q: vp.get(q["qid"]))
     else:
         ref = ("ROUTED (principled sharp/shallow)", routed)
-    methods = {ref[0]: ref[1], **({"ROUTED v2 (previous)": (lambda v: lambda q: v.get(q["qid"]))(pd.read_pickle(M.OUT / "structure_v2_eval_preds.pkl"))} if ver == "v3" else {}),
+    methods = {ref[0]: ref[1], **({"ROUTED v2 (previous)": (lambda v: lambda q: v.get(q["qid"]))(pd.read_pickle(M.OUT / "structure_v2_eval_preds.pkl"))} if ver in ("v3", "v3lite", "v3d3") else {}),
                "routed v1 (principled sharp/shallow)": routed,
                "plain (retr6_rev2)": lambda q: q["preds"]["plain (retr6_rev2)"], "retr6 (similar questions)": lambda q: q["preds"]["retr6"],
                "D3 (same group, same topic)": lambda q: q["preds"]["same-group data (D3)"],

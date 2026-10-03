@@ -1,5 +1,293 @@
 {
-  "v3 (cross-national factor completion + soft routing, no v4 inside)": {
+  "v3 specialised (sharp side: factor tools only; shallow side: clustering tools only)": {
+    "config": {
+      "sharp_weights": {
+        "plain": 0.1,
+        "retr6": 0.03,
+        "D3": 0.23,
+        "KC2": 0.08,
+        "cl": 0.0,
+        "fa": 0.07,
+        "xn": 0.49,
+        "xs": 0.0
+      },
+      "sharpen_b0": 0.587,
+      "conc_b1": -0.0,
+      "shallow_weights": {
+        "plain": 0.05,
+        "retr6": 0.05,
+        "D3": 0.28,
+        "KC2": 0.01,
+        "cl": 0.05,
+        "fa": 0.0,
+        "xn": 0.0,
+        "xs": 0.57
+      },
+      "shallow_tau": 1.131,
+      "route_a": 1.275,
+      "route_b": -0.238,
+      "hard_cut": null
+    },
+    "eval_S": 54.52848368241893,
+    "vs_plain": 8.259032442085795,
+    "ci": [
+      6.1,
+      10.4
+    ],
+    "truly_sharp_S": 60.85711381471883,
+    "truly_shallow_S": 52.85024370806409
+  },
+  "specialised, ablation: no cross-national factor completion on sharp side": {
+    "config": {
+      "sharp_weights": {
+        "plain": 0.18,
+        "retr6": 0.07,
+        "D3": 0.14,
+        "KC2": 0.55,
+        "cl": 0.0,
+        "fa": 0.06,
+        "xs": 0.0
+      },
+      "sharpen_b0": 0.527,
+      "conc_b1": 0.0,
+      "shallow_weights": {
+        "plain": 0.04,
+        "retr6": 0.05,
+        "D3": 0.29,
+        "KC2": 0.01,
+        "cl": 0.04,
+        "fa": 0.0,
+        "xs": 0.57
+      },
+      "shallow_tau": 1.174,
+      "route_a": 2.043,
+      "route_b": -1.466,
+      "hard_cut": null
+    },
+    "eval_S": 54.1756108113742,
+    "vs_plain": 7.906159571041065,
+    "ci": [
+      5.7,
+      10.1
+    ],
+    "truly_sharp_S": 59.00317164534757,
+    "truly_shallow_S": 52.89542767523956
+  },
+  "specialised, ablation: no cross-national segments on shallow side": {
+    "config": {
+      "sharp_weights": {
+        "plain": 0.04,
+        "retr6": 0.1,
+        "D3": 0.09,
+        "KC2": 0.01,
+        "cl": 0.0,
+        "fa": 0.02,
+        "xn": 0.75
+      },
+      "sharpen_b0": 0.301,
+      "conc_b1": -0.0,
+      "shallow_weights": {
+        "plain": 0.04,
+        "retr6": 0.03,
+        "D3": 0.67,
+        "KC2": 0.04,
+        "cl": 0.22,
+        "fa": 0.0,
+        "xn": 0.0
+      },
+      "shallow_tau": 1.05,
+      "route_a": 0.122,
+      "route_b": 0.48,
+      "hard_cut": null
+    },
+    "eval_S": 54.28858483848293,
+    "vs_plain": 8.019133598149807,
+    "ci": [
+      6.0,
+      10.0
+    ],
+    "truly_sharp_S": 58.055000037805364,
+    "truly_shallow_S": 53.289798621658576
+  },
+  "specialised, ablation: no clustering at all on shallow side": {
+    "config": {
+      "sharp_weights": {
+        "plain": 0.03,
+        "retr6": 0.12,
+        "D3": 0.09,
+        "KC2": 0.01,
+        "fa": 0.07,
+        "xn": 0.67
+      },
+      "sharpen_b0": 0.363,
+      "conc_b1": -0.0,
+      "shallow_weights": {
+        "plain": 0.04,
+        "retr6": 0.03,
+        "D3": 0.88,
+        "KC2": 0.05,
+        "fa": 0.0,
+        "xn": 0.0
+      },
+      "shallow_tau": 0.923,
+      "route_a": 0.144,
+      "route_b": 0.518,
+      "hard_cut": null
+    },
+    "eval_S": 53.86789870336857,
+    "vs_plain": 7.598447463035441,
+    "ci": [
+      5.6,
+      9.5
+    ],
+    "truly_sharp_S": 57.474894621617295,
+    "truly_shallow_S": 52.911387640027314
+  },
+  "unconstrained (any member on either side)": {
+    "config": {
+      "sharp_weights": {
+        "plain": 0.25,
+        "retr6": 0.03,
+        "D3": 0.12,
+        "KC2": 0.21,
+        "cl": 0.04,
+        "fa": 0.05,
+        "xn": 0.05,
+        "xs": 0.26
+      },
+      "sharpen_b0": 0.583,
+      "conc_b1": -0.0,
+      "shallow_weights": {
+        "plain": 0.05,
+        "retr6": 0.03,
+        "D3": 0.28,
+        "KC2": 0.01,
+        "cl": 0.03,
+        "fa": 0.02,
+        "xn": 0.23,
+        "xs": 0.34
+      },
+      "shallow_tau": 1.154,
+      "route_a": 2.489,
+      "route_b": -0.991,
+      "hard_cut": null
+    },
+    "eval_S": 54.56024798532507,
+    "vs_plain": 8.290796744991935,
+    "ci": [
+      5.9,
+      10.6
+    ],
+    "truly_sharp_S": 60.369011263360036,
+    "truly_shallow_S": 53.019867439935226
+  },
+  "ablation: no cross-national factor completion member": {
+    "config": {
+      "sharp_weights": {
+        "plain": 0.05,
+        "retr6": 0.04,
+        "D3": 0.37,
+        "KC2": 0.13,
+        "cl": 0.02,
+        "fa": 0.06,
+        "xs": 0.34
+      },
+      "sharpen_b0": 0.613,
+      "conc_b1": 0.0,
+      "shallow_weights": {
+        "plain": 0.03,
+        "retr6": 0.04,
+        "D3": 0.33,
+        "KC2": 0.01,
+        "cl": 0.02,
+        "fa": 0.03,
+        "xs": 0.53
+      },
+      "shallow_tau": 1.166,
+      "route_a": 2.868,
+      "route_b": -0.944,
+      "hard_cut": null
+    },
+    "eval_S": 54.49517060798737,
+    "vs_plain": 8.225719367654234,
+    "ci": [
+      5.9,
+      10.5
+    ],
+    "truly_sharp_S": 60.380347098174774,
+    "truly_shallow_S": 52.93452663994173
+  },
+  "ablation: no factor-analysis neighbour tool as member": {
+    "config": {
+      "sharp_weights": {
+        "plain": 0.23,
+        "retr6": 0.02,
+        "D3": 0.26,
+        "KC2": 0.07,
+        "cl": 0.06,
+        "xn": 0.07,
+        "xs": 0.28
+      },
+      "sharpen_b0": 0.537,
+      "conc_b1": -0.0,
+      "shallow_weights": {
+        "plain": 0.04,
+        "retr6": 0.04,
+        "D3": 0.27,
+        "KC2": 0.01,
+        "cl": 0.05,
+        "xn": 0.25,
+        "xs": 0.34
+      },
+      "shallow_tau": 1.143,
+      "route_a": 2.837,
+      "route_b": -0.489,
+      "hard_cut": null
+    },
+    "eval_S": 54.665436040789025,
+    "vs_plain": 8.395984800455889,
+    "ci": [
+      6.1,
+      10.7
+    ],
+    "truly_sharp_S": 60.77869605413915,
+    "truly_shallow_S": 53.044308385426945
+  },
+  "ablation: no clustering at all (neither segment tool)": {
+    "config": {
+      "sharp_weights": {
+        "plain": 0.42,
+        "retr6": 0.02,
+        "D3": 0.07,
+        "KC2": 0.03,
+        "fa": 0.05,
+        "xn": 0.41
+      },
+      "sharpen_b0": 0.499,
+      "conc_b1": -0.0,
+      "shallow_weights": {
+        "plain": 0.05,
+        "retr6": 0.06,
+        "D3": 0.32,
+        "KC2": 0.02,
+        "fa": 0.09,
+        "xn": 0.45
+      },
+      "shallow_tau": 1.08,
+      "route_a": 2.712,
+      "route_b": -0.158,
+      "hard_cut": null
+    },
+    "eval_S": 52.839654685012135,
+    "vs_plain": 6.570203444678997,
+    "ci": [
+      4.4,
+      8.6
+    ],
+    "truly_sharp_S": 56.824346603025816,
+    "truly_shallow_S": 51.78298537072105
+  },
+  "ablation: no cross-national segments": {
     "config": {
       "sharp_weights": {
         "plain": 0.39,
@@ -35,216 +323,82 @@
     "truly_sharp_S": 57.04578652633964,
     "truly_shallow_S": 51.876846032559186
   },
-  "ablation: no cross-national factor completion member": {
-    "config": {
-      "sharp_weights": {
-        "plain": 0.43,
-        "retr6": 0.04,
-        "D3": 0.21,
-        "KC2": 0.26,
-        "cl": 0.04,
-        "fa": 0.03
-      },
-      "sharpen_b0": 0.381,
-      "conc_b1": -0.0,
-      "shallow_weights": {
-        "plain": 0.03,
-        "retr6": 0.12,
-        "D3": 0.57,
-        "KC2": 0.02,
-        "cl": 0.12,
-        "fa": 0.13
-      },
-      "shallow_tau": 1.057,
-      "route_a": 3.183,
-      "route_b": 0.126,
-      "hard_cut": null
-    },
-    "eval_S": 50.322234336237365,
-    "vs_plain": 4.052783095904232,
-    "ci": [
-      2.3,
-      5.8
-    ],
-    "truly_sharp_S": 51.191895334518605,
-    "truly_shallow_S": 50.09161573143
-  },
-  "ablation: no factor-analysis neighbour tool as member": {
-    "config": {
-      "sharp_weights": {
-        "plain": 0.39,
-        "retr6": 0.02,
-        "D3": 0.07,
-        "KC2": 0.05,
-        "cl": 0.05,
-        "xn": 0.43
-      },
-      "sharpen_b0": 0.516,
-      "conc_b1": -0.0,
-      "shallow_weights": {
-        "plain": 0.04,
-        "retr6": 0.07,
-        "D3": 0.33,
-        "KC2": 0.02,
-        "cl": 0.09,
-        "xn": 0.45
-      },
-      "shallow_tau": 1.087,
-      "route_a": 2.578,
-      "route_b": -0.285,
-      "hard_cut": null
-    },
-    "eval_S": 53.01113146293345,
-    "vs_plain": 6.741680222600313,
-    "ci": [
-      4.6,
-      8.8
-    ],
-    "truly_sharp_S": 56.912178768707584,
-    "truly_shallow_S": 51.976643209782814
-  },
-  "ablation: no clustering tool as member": {
-    "config": {
-      "sharp_weights": {
-        "plain": 0.42,
-        "retr6": 0.02,
-        "D3": 0.07,
-        "KC2": 0.03,
-        "fa": 0.05,
-        "xn": 0.41
-      },
-      "sharpen_b0": 0.499,
-      "conc_b1": -0.0,
-      "shallow_weights": {
-        "plain": 0.05,
-        "retr6": 0.06,
-        "D3": 0.32,
-        "KC2": 0.02,
-        "fa": 0.09,
-        "xn": 0.45
-      },
-      "shallow_tau": 1.08,
-      "route_a": 2.712,
-      "route_b": -0.158,
-      "hard_cut": null
-    },
-    "eval_S": 52.839654685012135,
-    "vs_plain": 6.570203444678997,
-    "ci": [
-      4.4,
-      8.6
-    ],
-    "truly_sharp_S": 56.824346603025816,
-    "truly_shallow_S": 51.78298537072105
-  },
   "ablation: hard routing": {
     "config": {
       "sharp_weights": {
-        "plain": 0.13,
-        "retr6": 0.01,
-        "D3": 0.24,
-        "KC2": 0.2,
-        "cl": 0.03,
-        "fa": 0.01,
-        "xn": 0.38
-      },
-      "sharpen_b0": 0.43,
-      "conc_b1": -0.0,
-      "shallow_weights": {
-        "plain": 0.04,
-        "retr6": 0.06,
-        "D3": 0.32,
-        "KC2": 0.01,
-        "cl": 0.03,
-        "fa": 0.07,
-        "xn": 0.46
-      },
-      "shallow_tau": 1.098,
-      "route_a": 0.0,
-      "route_b": -0.0,
-      "hard_cut": 0.4
-    },
-    "eval_S": 52.6543326238335,
-    "vs_plain": 6.384881383500365,
-    "ci": [
-      4.1,
-      8.5
-    ],
-    "truly_sharp_S": 57.24829746649777,
-    "truly_shallow_S": 51.4360949833699
-  },
-  "addition: + factor concentration matching": {
-    "config": {
-      "sharp_weights": {
-        "plain": 0.41,
+        "plain": 0.05,
         "retr6": 0.04,
-        "D3": 0.07,
-        "KC2": 0.07,
+        "D3": 0.43,
+        "KC2": 0.08,
         "cl": 0.03,
         "fa": 0.03,
-        "xn": 0.35
+        "xn": 0.03,
+        "xs": 0.32
       },
-      "sharpen_b0": 0.425,
-      "conc_b1": 0.128,
+      "sharpen_b0": 0.548,
+      "conc_b1": -0.0,
       "shallow_weights": {
-        "plain": 0.04,
-        "retr6": 0.06,
-        "D3": 0.3,
-        "KC2": 0.02,
-        "cl": 0.05,
-        "fa": 0.06,
-        "xn": 0.48
+        "plain": 0.05,
+        "retr6": 0.04,
+        "D3": 0.25,
+        "KC2": 0.01,
+        "cl": 0.03,
+        "fa": 0.03,
+        "xn": 0.28,
+        "xs": 0.31
       },
-      "shallow_tau": 1.095,
-      "route_a": 2.826,
-      "route_b": -0.177,
-      "hard_cut": null
+      "shallow_tau": 1.148,
+      "route_a": -0.0,
+      "route_b": -0.0,
+      "hard_cut": 0.6
     },
-    "eval_S": 52.89724415966184,
-    "vs_plain": 6.627792919328707,
+    "eval_S": 54.541445505174806,
+    "vs_plain": 8.271994264841666,
     "ci": [
-      4.4,
-      8.8
+      6.0,
+      10.5
     ],
-    "truly_sharp_S": 57.04199728594828,
-    "truly_shallow_S": 51.79812946422962
+    "truly_sharp_S": 60.49744977289086,
+    "truly_shallow_S": 52.96201927223795
   },
   "addition: + v4 member": {
     "config": {
       "sharp_weights": {
-        "plain": 0.48,
+        "plain": 0.14,
         "retr6": 0.01,
-        "D3": 0.01,
+        "D3": 0.39,
         "KC2": 0.02,
-        "cl": 0.01,
-        "fa": 0.01,
+        "cl": 0.05,
+        "fa": 0.02,
         "v4": 0.01,
-        "xn": 0.43
+        "xn": 0.01,
+        "xs": 0.34
       },
-      "sharpen_b0": 0.465,
+      "sharpen_b0": 0.609,
       "conc_b1": 0.0,
       "shallow_weights": {
-        "plain": 0.04,
-        "retr6": 0.06,
-        "D3": 0.33,
-        "KC2": 0.02,
+        "plain": 0.05,
+        "retr6": 0.03,
+        "D3": 0.26,
+        "KC2": 0.01,
         "cl": 0.03,
-        "fa": 0.08,
-        "v4": 0.03,
-        "xn": 0.42
+        "fa": 0.03,
+        "v4": 0.01,
+        "xn": 0.25,
+        "xs": 0.32
       },
-      "shallow_tau": 1.107,
-      "route_a": 2.479,
-      "route_b": -0.388,
+      "shallow_tau": 1.147,
+      "route_a": 2.78,
+      "route_b": -0.731,
       "hard_cut": null
     },
-    "eval_S": 53.04598152970846,
-    "vs_plain": 6.7765302893753265,
+    "eval_S": 54.6630252292003,
+    "vs_plain": 8.393573988867173,
     "ci": [
-      4.6,
-      8.8
+      6.1,
+      10.6
     ],
-    "truly_sharp_S": 57.05959726406195,
-    "truly_shallow_S": 51.98164213456614
+    "truly_sharp_S": 60.5055076941633,
+    "truly_shallow_S": 53.11370295610284
   }
 }

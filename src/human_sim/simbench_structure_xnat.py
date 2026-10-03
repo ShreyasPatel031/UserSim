@@ -21,7 +21,33 @@ from human_sim import simbench_mass_levers as M
 from human_sim import simbench_structure_l3 as L
 
 OUT = M.OUT / "structure_xnat_preds.pkl"
-CFGS = [("fa", 10, 2), ("fa", 10, 3), ("pca", 10, 2), ("pca", 10, 3), ("ppca", 10, 3), ("fa", 5, 2), ("mean", 0, 0)]
+CFGS = [("fa", 10, 2), ("fa", 10, 3), ("pca", 10, 2), ("pca", 10, 3), ("ppca", 10, 3), ("fa", 5, 2),
+        ("dmm", 10, 3), ("dmm", 10, 5), ("dmm", 10, 8), ("dmm", 19, 5), ("dmm", 19, 8), ("gmm", 10, 4), ("kmeans", 10, 4),
+        ("seg", 10, 3), ("seg", 10, 5), ("seg", 10, 8), ("seg", 19, 5), ("segsoft", 10, 5), ("segsoft", 19, 8)]
+ONLY = [c for c in CFGS if c[0].startswith("seg")] if "--seg" in sys.argv else ([c for c in CFGS if c[0] in L.CL_TOOLS] if "--cl" in sys.argv else CFGS)
+PRIOR = 2.0  # pseudo-rows of the other-country average added to each segment's profile on the target question
+
+
+def segments(X, cols, counts, k, tgt_sl, scale):
+    """Soft opinion segments (multinomial mixture over cells' answers on the neighbour questions, target column excluded
+    from the memberships); each segment's answer to the target question = membership-weighted mean of the other-country
+    cells that answered it, shrunk toward their overall mean. Returns completed target-column values for every row."""
+    nb_cols = {st: sl for st, sl in cols.items() if sl != tgt_sl}
+    Xn = np.concatenate([X[:, sl] for sl in nb_cols.values()], axis=1)
+    sub, start = {}, 0
+    for st, sl in nb_cols.items():
+        n = sl.stop - sl.start
+        sub[st] = slice(start, start + n)
+        start += n
+    R, _ = L.dmm(Xn, sub, counts * scale, max(1, min(k, X.shape[0])))
+    T = X[:, tgt_sl]
+    obs = ~np.isnan(T[:, 0])
+    g = np.nanmean(T[obs], axis=0)
+    W = R[obs]
+    prof = (W.T @ T[obs] + PRIOR * g) / (W.sum(0)[:, None] + PRIOR)
+    out = np.full_like(X, np.nan)
+    out[:, tgt_sl] = R @ prof
+    return out
 
 
 def complete(sv, t, tool, K, r):
@@ -51,6 +77,13 @@ def complete(sv, t, tool, K, r):
             pick = [i for i in range(len(rows)) if not same[i] and not np.isnan(X[i, sl.start])]
         fitted = np.full_like(X, np.nan)
         fitted[tgt] = np.nanmean(X[pick], axis=0)
+    elif tool.startswith("seg"):
+        counts = np.array([min(max(sv["size"].get(c, 100), 30), 1000) for c in rows], float)
+        fitted = segments(X, cols, counts, r, sl, 0.01 if tool == "segsoft" else 0.05)
+    elif tool in L.CL_TOOLS:
+        # segments: mixture over cells' answer profiles; target question's per-segment profile from other countries only
+        counts = np.array([min(max(sv["size"].get(c, 100), 30), 1000) for c in rows])
+        fitted = L.fit_cl(X, cols, counts, tool, r)[0]
     else:
         fitted = L.fit_dr(X, tool, r)[0]
     keys = sv["keys"][st]
@@ -77,22 +110,24 @@ def complete(sv, t, tool, K, r):
 def main():
     sv = L.build_surveys(L.held_rows())
     sets = {w: L.targets(w) for w in ("dev", "eval")}
-    out = {"why": {}}
-    for cfg in CFGS:
+    out = pd.read_pickle(OUT) if (OUT.exists() and ("--cl" in sys.argv or "--seg" in sys.argv)) else {"why": {}}
+    for cfg in ONLY:
         res = {}
         for w in sets:
             for t in sets[w]:
                 p, why = complete(sv[t["q"]["dataset"]], t, *cfg)
                 res[t["q"]["qid"]] = p
-                if cfg == CFGS[0]:
+                if cfg == CFGS[0] and len(ONLY) == len(CFGS):
                     out["why"][t["q"]["qid"]] = why
         out[cfg] = res
         ev = [t for t in sets["eval"] if res[t["q"]["qid"]] is not None]
         dv = [t for t in sets["dev"] if res[t["q"]["qid"]] is not None]
         sharp = lambda t: t["q"]["h"].max() >= 0.7  # noqa: E731  (diagnostic split only)
+        div = lambda t: t["q"]["Hn"] >= 0.84  # noqa: E731
         s = lambda ts: np.mean([L.S(t["q"], res[t["q"]["qid"]]) for t in ts]) if ts else float("nan")  # noqa: E731
         print(f"{str(cfg):18s} coverage dev {len(dv)}/{len(sets['dev'])} eval {len(ev)}/{len(sets['eval'])}; "
-              f"dev S {s(dv):.1f} (sharp {s([t for t in dv if sharp(t)]):.1f}); eval S {s(ev):.1f} (sharp {s([t for t in ev if sharp(t)]):.1f})", flush=True)
+              f"dev S {s(dv):.1f} (sharp {s([t for t in dv if sharp(t)]):.1f}); eval S {s(ev):.1f} (sharp {s([t for t in ev if sharp(t)]):.1f})"
+              f" | divided: dev {s([t for t in dv if div(t)]):.1f} eval {s([t for t in ev if div(t)]):.1f}", flush=True)
     pd.to_pickle(out, OUT)
     print(pd.Series(out["why"]).value_counts())
 
