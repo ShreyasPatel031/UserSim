@@ -47,8 +47,8 @@ def held_rows():
     return {(r.dataset_name, A._filled_persona(r), r.input_template) for _, r in pd.concat([ev, dv]).iterrows()}
 
 
-def build_surveys(held):
-    g = A.load_split("Grouped")
+def build_surveys(held, split="Grouped"):
+    g = A.load_split(split)
     out = {}
     for ds in A.D_DATASETS:
         d = g[g.dataset_name == ds]

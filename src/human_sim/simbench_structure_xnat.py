@@ -185,10 +185,32 @@ def complete(sv, t, tool, K, r):
     return p / p.sum(), "ok"
 
 
+_POP_SV: dict = {}
+
+
+def complete_pop(t, tool, K, r, held=None):
+    """Country-level (Pop) target: the same cross-national completion on the matrix of countries' population answers
+    (Pop split training rows). The target country's answer to the target question is never in it."""
+    if t["split"] != "Pop":
+        return None, "not a Pop target"
+    if not _POP_SV:
+        _POP_SV.update(L.build_surveys(L.held_rows() if held is None else held, split="Pop"))
+    sv = _POP_SV[t["q"]["dataset"]]
+    cell = next((c for c in sv["cells"] if c[1] == t["country"] and not c[2]), None)
+    if cell is None:
+        return None, "country has no population answers on other questions"
+    t2 = dict(t, split="Grouped", cell=cell)
+    return complete(sv, t2, tool, K, r)
+
+
 def complete_px(sv, t, tool, K, r, n_proxy=3):
     """complete(); if the target question has no cross-national answers, use up to n_proxy most similar questions with
     the same answer options that other countries were asked (target-question answers are never involved)."""
     p, why = complete(sv, t, tool, K, r)
+    if p is None and t["split"] == "Pop":
+        p2, w2 = complete_pop(t, tool, K, r)
+        if p2 is not None:
+            return p2, "ok (country-level matrix)"
     if p is not None or why not in ("question not in training pool", "fewer than 3 other-country groups answered the question"):
         return p, why
     lab = t.get("labels") or []
