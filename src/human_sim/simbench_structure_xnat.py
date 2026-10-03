@@ -12,6 +12,7 @@ Output: structure_xnat_preds.pkl {(tool, K, r): {qid: prediction or None}} + cov
 from __future__ import annotations
 
 import os
+import re
 import sys
 from collections import defaultdict
 
@@ -29,6 +30,52 @@ EXTRA = [tuple([a.split("=")[1].split(",")[0], int(a.split(",")[1]), int(a.split
 ONLY = EXTRA if EXTRA else [c for c in CFGS if c[0].startswith("seg")] if "--seg" in sys.argv else ([c for c in CFGS if c[0] in L.CL_TOOLS] if "--cl" in sys.argv else CFGS)
 MIN_OTHER = int(os.environ.get("XN_MIN_OTHER", 3))  # other-country groups that must have answered the target question
 PRIOR = 2.0  # pseudo-rows of the other-country average added to each segment's profile on the target question
+
+
+_DISTINCT = ("fe", "very", "never", "peri", "not", "non", "un", "in", "some", "less", "more", "no", "semi", "sub", "post", "pre")
+_NESTED = {"christian": {"catholic", "protestant", "orthodox", "otherchristian", "evangelicalnospecific"}}
+
+
+def _norm_val(v):
+    v = re.sub(r"[^a-z0-9]", "", str(v).lower())
+    for pre in ("iam", "ihave"):
+        if v.startswith(pre) and len(v) > len(pre) + 6:
+            v = v[len(pre):]
+            break
+    return v
+
+
+def values_overlap(a, b):
+    """Same respondents possible? Same / near-duplicate labels or nested categories -> True."""
+    x, y = _norm_val(a), _norm_val(b)
+    if x == y:
+        return True
+    if x in y or y in x:
+        short, long_ = (x, y) if len(x) < len(y) else (y, x)
+        extra = long_.replace(short, "", 1)
+        # a distinguishing qualifier makes them different categories (female/male, very conservative, never married,
+        # peri-urban, incomplete); any other extra text (", single", trailing punctuation) = same category
+        if not any(extra.startswith(m) or extra.endswith(m) or extra == m for m in _DISTINCT):
+            return True
+    if y in _NESTED.get(x, set()) or x in _NESTED.get(y, set()):
+        return True
+    tx, ty = set(re.findall(r"[a-z]+", str(a).lower())), set(re.findall(r"[a-z]+", str(b).lower()))
+    return bool(tx and ty) and len(tx & ty) / len(tx | ty) >= 0.6
+
+
+def overlaps_target(t, cell):
+    """True if `cell` may contain any of the target population's respondents (then its answer to the target question
+    must not be used). Different country: disjoint. Same country: a Pop target overlaps every cell; a subgroup target
+    overlaps the country total, every cell of another attribute, and same-attribute cells with an overlapping value."""
+    if cell[1] != t["country"]:
+        return False
+    if t["split"] == "Pop":
+        return True
+    tc = t["cell"]
+    if not cell[2] or not tc[2] or len(cell[2]) != 1 or len(tc[2]) != 1:
+        return True
+    (a1, v1), (a2, v2) = tc[2][0], cell[2][0]
+    return a1 != a2 or values_overlap(v1, v2)
 
 
 def answered_index(sv):
@@ -70,6 +117,7 @@ def neighbours_tp(sv, t, K):
 
 def parse_tool(tool):
     """'segsoft_tn' -> ('segsoft', True); 'seg:0.01:2.0:1.0' -> ('seg', False, scale, prior, temp)."""
+    tool = tool.replace("@sib", "")
     tn = "tp" if tool.endswith("_tp") else tool.endswith("_tn")
     base = tool[:-3] if tn else tool
     parts = base.split(":")
@@ -107,12 +155,13 @@ def complete(sv, t, tool, K, r):
     if st not in sv["keys"]:
         return None, "question not in training pool"
     country = t["country"]
+    sib_mode = "@sib" in tool
     tool, tn, params = parse_tool(tool)
     nb = ((neighbours_tp(sv, t, K) if tn == "tp" else neighbours_tn(sv, t, K)) if tn else L.neighbours(sv, t["text"], st, K)) if K else []
     X, rows, cols = L.local_matrix(sv, [s for s, _ in nb], (st,))
     sl = cols[st]
-    same = np.array([c[1] == country for c in rows])
-    X[same, sl] = np.nan  # no answers to the target question from the target's own country
+    same = np.array([overlaps_target(t, c) if sib_mode else c[1] == country for c in rows])
+    X[same, sl] = np.nan  # no answer to the target question from any group that may contain the target's respondents
     other_obs = (~np.isnan(X[:, sl.start])).sum()
     if other_obs < MIN_OTHER:
         return None, "fewer than 3 other-country groups answered the question"
@@ -122,7 +171,29 @@ def complete(sv, t, tool, K, r):
         tgt = [i for i, c in enumerate(rows) if c == t["cell"]]
     if not tgt:
         return None, "target group has no answers on neighbour questions"
-    if tool == "mean":
+    if tool == "sib":
+        # sibling contrast: disjoint same-country groups' answer to the target question + the target's offset from those
+        # groups on the neighbour questions (same option count); other countries are not used here
+        sibs = [i for i, c in enumerate(rows) if c[1] == country and not same[i] and not np.isnan(X[i, sl.start])]
+        if not sibs or t["split"] == "Pop":
+            return None, "no disjoint same-country group answered"
+        ti = tgt[0]
+        w = np.array([max(sv["size"].get(rows[i], 1.0) or 1.0, 1.0) for i in sibs])
+        base = (w[:, None] * X[sibs][:, sl]).sum(0) / w.sum()
+        offs = []
+        for st2, sim in nb:
+            c2 = cols[st2]
+            if np.isnan(X[ti, c2.start]) or (c2.stop - c2.start) != (sl.stop - sl.start):
+                continue
+            ok = [i for i in sibs if not np.isnan(X[i, c2.start])]
+            if not ok:
+                continue
+            w2 = np.array([max(sv["size"].get(rows[i], 1.0) or 1.0, 1.0) for i in ok])
+            offs.append((max(sim, 0.01), X[ti, c2] - (w2[:, None] * X[ok][:, c2]).sum(0) / w2.sum()))
+        off = sum(a * o for a, o in offs) / sum(a for a, _ in offs) if offs else 0.0
+        fitted = np.full_like(X, np.nan)
+        fitted[ti, sl] = np.clip(base + (params[0] if params else 1.0) * off, 1e-4, None)
+    elif tool == "mean":
         # baseline: same attribute cell in other countries (Grouped) / all other-country cells (Pop), no factors
         attrs = rows[tgt[0]][2] if t["split"] != "Pop" else None
         pick = [i for i, c in enumerate(rows) if not same[i] and not np.isnan(X[i, sl.start]) and (attrs is None or c[2] == attrs)]
