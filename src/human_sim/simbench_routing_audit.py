@@ -1,4 +1,4 @@
-"""Routing audit on eval (411 shared-survey questions covered by every method; no model calls).
+"""Routing audit on eval (also used for v2: pass --v2 to make the v2 method the reference) (411 shared-survey questions covered by every method; no model calls).
 
 Router = the principled one: sharpness classifier trained on dev with label 'top substantive answer >= 70%'; predicted
 shallow (P(sharp) < 0.3 and a tool answer exists) -> 75% retr6_rev2 + 25% clustering tool, else retr6_rev2 unchanged.
@@ -7,6 +7,7 @@ For each slice, the routed method is compared with every other method on the sam
 from __future__ import annotations
 
 import json
+import sys
 
 import numpy as np
 import pandas as pd
@@ -57,7 +58,12 @@ def main():
         return 0.25 * tool[q["qid"]] + 0.75 * p if routed_shallow(q) else p
 
     ev = V.ev
-    methods = {"ROUTED (principled sharp/shallow)": routed,
+    if "--v2" in sys.argv:
+        v2 = pd.read_pickle(M.OUT / "structure_v2_eval_preds.pkl")
+        ref = ("ROUTED v2", lambda q: v2.get(q["qid"]))
+    else:
+        ref = ("ROUTED (principled sharp/shallow)", routed)
+    methods = {ref[0]: ref[1], "routed v1 (principled sharp/shallow)": routed,
                "plain (retr6_rev2)": lambda q: q["preds"]["plain (retr6_rev2)"], "retr6 (similar questions)": lambda q: q["preds"]["retr6"],
                "D3 (same group, same topic)": lambda q: q["preds"]["same-group data (D3)"],
                "invented personas": lambda q: q["preds"]["invented personas"], "adaptive personas": lambda q: q["preds"]["adaptive personas"],
@@ -81,10 +87,10 @@ def main():
     for name, m in slices.items():
         if m.sum() < 8:
             continue
-        r = scores["ROUTED (principled sharp/shallow)"]
+        r = scores[ref[0]]
         rows = []
         for mn, s in scores.items():
-            if mn.startswith("ROUTED"):
+            if mn == ref[0]:
                 continue
             ok = m & ~np.isnan(s)
             if ok.sum() < 8 or ok.sum() < 0.8 * m.sum():
@@ -104,7 +110,7 @@ def main():
               f"best other = {best['method']} ({best['S']:.1f}); routed is {best['S'] - r[m & ~np.isnan(scores[best['method']])].mean():+.1f} behind it")
         for x in rows:
             print(f"   {x['method']:34s} N {x['N']:3d}  {x['S']:5.1f}   routed - method {x['routed_minus_method']:+5.1f} {x['ci']}  {x['verdict']}")
-    (M.OUT / "routing_audit_report.json").write_text(json.dumps(out, indent=2, default=float))
+    (M.OUT / ("routing_audit_v2_report.json" if "--v2" in sys.argv else "routing_audit_report.json")).write_text(json.dumps(out, indent=2, default=float))
 
 
 if __name__ == "__main__":
