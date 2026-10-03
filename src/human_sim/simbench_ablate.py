@@ -1468,6 +1468,34 @@ ARMS["D0_retr6"] = _rev2(_d_arm("D0"))
 ARMS["D1_same_topic"] = _rev2(_d_arm("D1"))
 ARMS["D2_same_group"] = _rev2(_d_arm("D2"))
 ARMS["D3_same_group_same_topic"] = _rev2(_d_arm("D3"))
+
+
+def _d3_variant(n: int, dyn: bool = False):
+    """D3 hyperparameter variants (same group, same topic). n = number of demos. dyn = use every same-group same-topic
+    demo available (up to n) and only top up with same-group other-topic demos when fewer than 3 exist."""
+
+    def arm(row, ctx):
+        if row["dataset_name"] not in D_DATASETS:
+            return "", "", {"pipeline": lambda call: (None, 0, 0)}
+        pool = _dpool(row, ctx)
+        topics = _topics(ctx)
+        tgt_topic = topics.get((row["dataset_name"], _stem(row.get("_orig_template", row["input_template"]))))
+        cell = _cell_key(row)
+        same_group = [d for d in pool if d["cell"] == cell]
+        both = [d for d in same_group if topics.get((row["dataset_name"], d["stem"])) == tgt_topic]
+        picked = _cap_per_stem(_shuffled(both, row), n)
+        need = (3 if dyn else n) - len(picked)
+        if need > 0:
+            rest = [d for d in _shuffled(same_group, row) if d not in picked]
+            picked += _cap_per_stem(rest, need)
+        return _inject(row, ctx, picked, annotate=False)
+
+    return _rev2(arm)
+
+
+for _n in (4, 8, 12):
+    ARMS[f"D3n{_n}"] = _d3_variant(_n)
+ARMS["D3dyn"] = _d3_variant(12, dyn=True)
 ARMS["D4_other_groups_same_question"] = _rev2(arm_D4)
 ARMS["P_cons5"] = _panel_arm(5, True, True, "consensus")
 ARMS["P_adapt"] = _panel_arm(5, True, True, "adaptive")
