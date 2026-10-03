@@ -264,6 +264,7 @@ def main():
                 if cfg == CFGS[0] and len(ONLY) == len(CFGS):
                     out["why"][t["q"]["qid"]] = why
         out[cfg] = res
+        pd.to_pickle(out, OUT)  # save after every config
         ev = [t for t in sets["eval"] if res[t["q"]["qid"]] is not None]
         dv = [t for t in sets["dev"] if res[t["q"]["qid"]] is not None]
         sharp = lambda t: t["q"]["h"].max() >= 0.7  # noqa: E731  (diagnostic split only)
