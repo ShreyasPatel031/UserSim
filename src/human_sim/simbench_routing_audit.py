@@ -58,12 +58,14 @@ def main():
         return 0.25 * tool[q["qid"]] + 0.75 * p if routed_shallow(q) else p
 
     ev = V.ev
-    if "--v2" in sys.argv:
-        v2 = pd.read_pickle(M.OUT / "structure_v2_eval_preds.pkl")
-        ref = ("ROUTED v2", lambda q: v2.get(q["qid"]))
+    ver = next((a[2:] for a in sys.argv if a in ("--v2", "--v3")), None)
+    if ver:
+        vp = pd.read_pickle(M.OUT / f"structure_{ver}_eval_preds.pkl")
+        ref = (f"ROUTED {ver}", lambda q: vp.get(q["qid"]))
     else:
         ref = ("ROUTED (principled sharp/shallow)", routed)
-    methods = {ref[0]: ref[1], "routed v1 (principled sharp/shallow)": routed,
+    methods = {ref[0]: ref[1], **({"ROUTED v2 (previous)": (lambda v: lambda q: v.get(q["qid"]))(pd.read_pickle(M.OUT / "structure_v2_eval_preds.pkl"))} if ver == "v3" else {}),
+               "routed v1 (principled sharp/shallow)": routed,
                "plain (retr6_rev2)": lambda q: q["preds"]["plain (retr6_rev2)"], "retr6 (similar questions)": lambda q: q["preds"]["retr6"],
                "D3 (same group, same topic)": lambda q: q["preds"]["same-group data (D3)"],
                "invented personas": lambda q: q["preds"]["invented personas"], "adaptive personas": lambda q: q["preds"]["adaptive personas"],
@@ -110,7 +112,7 @@ def main():
               f"best other = {best['method']} ({best['S']:.1f}); routed is {best['S'] - r[m & ~np.isnan(scores[best['method']])].mean():+.1f} behind it")
         for x in rows:
             print(f"   {x['method']:34s} N {x['N']:3d}  {x['S']:5.1f}   routed - method {x['routed_minus_method']:+5.1f} {x['ci']}  {x['verdict']}")
-    (M.OUT / ("routing_audit_v2_report.json" if "--v2" in sys.argv else "routing_audit_report.json")).write_text(json.dumps(out, indent=2, default=float))
+    (M.OUT / (f"routing_audit_{ver}_report.json" if ver else "routing_audit_report.json")).write_text(json.dumps(out, indent=2, default=float))
 
 
 if __name__ == "__main__":
