@@ -13,8 +13,8 @@ import numpy as np
 from human_sim import simbench_mass_levers as M
 from human_sim import simbench_structure_l3 as L
 
-CL_CFG = ("gmm", 19, 8)
-DR_CFG = ("fa", 19, 2)
+CL_CFG = ("dmm", 10, 3)
+DR_CFG = ("fa", 10, 3)
 
 
 def pct(v):
@@ -44,7 +44,7 @@ def segments(F, t, keys):
         who = "all cells in the survey"
     w = (R[scope] * sizes[scope, None]).sum(0)
     share = w / w.sum()
-    lines = [f"Segments found by the clustering tool (Gaussian mixture, {CL_CFG[2]} clusters, on {who}; share = respondent-weighted):", "",
+    lines = [f"Segments found by the clustering tool (Dirichlet-multinomial mixture, {CL_CFG[2]} clusters, {CL_CFG[1]} most similar other questions, on {who}; share = respondent-weighted):", "",
              "| Segment | Share | Who is in it (most typical cells) | Composition (attribute values) | Its predicted answer to this question |",
              "| --- | --- | --- | --- | --- |"]
     order = np.argsort(-share)
@@ -77,7 +77,7 @@ def factors(F, t, keys):
     sv = F.sv[ds]
     X = f["X"]
     tot = float(np.nansum(np.nanvar(X, axis=0))) or 1.0
-    lines = [f"Factors found by the component tool (factor analysis, {comp.shape[0]} factors, varimax, on the 19 most similar other questions):", ""]
+    lines = [f"Factors found by the component tool (factor analysis, {comp.shape[0]} factors, varimax, on the {DR_CFG[1]} most similar other questions):", ""]
     for j in range(comp.shape[0]):
         load = {st: float(np.abs(comp[j, sl]).sum()) for st, sl in f["cols"].items()}
         top = sorted(load, key=lambda s: -load[s])[:3]
