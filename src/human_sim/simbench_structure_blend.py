@@ -13,7 +13,7 @@ import pandas as pd
 from human_sim import simbench_mass_levers as M
 from human_sim import simbench_structure_l3 as L
 
-MODEL = "retr6_rev2"
+MODEL = "plain"  # retr6_rev2, as loaded by simbench_structure_l3.targets
 WS = np.linspace(0, 1, 21)
 
 
