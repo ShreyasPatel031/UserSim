@@ -1628,18 +1628,19 @@ def _own_examples(entries: list[dict], question: str, own_stem: str, k: int = 6)
     return out
 
 
-def _attr_split(row, max_cells: int = 5, n_stems: int = 10, min_coverage: float = 0.8) -> dict | None:
-    """Pick the attribute whose cells differ most on questions similar to the target (never the
-    target itself). Returns cells with real shares, or None."""
+def _attr_splits(row, max_cells: int = 5, n_stems: int = 10, min_coverage: float = 0.8,
+                 include_target_attr: bool = False) -> list[dict]:
+    """Attributes ranked by how much their cells differ on questions similar to the target (never the
+    target itself), each with cells, real shares and the shared similar questions."""
     vm = row["group_prompt_variable_map"]
     ds, country = row["dataset_name"], _country_of(vm)
     tgt_attrs = [k for k in vm if k not in _COUNTRY_KEYS]
     question = row.get("_orig_template", row["input_template"])
     own = _stem(question)
     pool = _cellpool()
-    best = None
+    found = []
     for (d, c, attr), cells in pool.items():
-        if d != ds or c != country or attr in tgt_attrs:
+        if d != ds or c != country or (attr in tgt_attrs and not include_target_attr):
             continue
         sized = {v: float(np.median([e["size"] for e in es if e["stem"] != own] or [0])) for v, es in cells.items()}
         top = [v for v, sz in sorted(sized.items(), key=lambda kv: -kv[1]) if sz > 0 and
@@ -1675,12 +1676,79 @@ def _attr_split(row, max_cells: int = 5, n_stems: int = 10, min_coverage: float 
                 spreads.append(float(ww @ (np.abs(D - mean).sum(1) / 2)))
         if not spreads:
             continue
-        score = float(np.mean(spreads))
-        if best is None or score > best["between_group_tvd"]:
-            best = {"attribute": attr, "between_group_tvd": score, "coverage": coverage,
-                    "cells": [{"value": v, "share": sized[v] / w.sum(), "sentence": cells[v][0]["sentence"],
-                               "entries": cells[v]} for v in top]}
-    return best
+        found.append({"attribute": attr, "between_group_tvd": float(np.mean(spreads)), "coverage": coverage,
+                      "cells": [{"value": v, "share": sized[v] / w.sum(), "sentence": cells[v][0]["sentence"],
+                                 "entries": cells[v]} for v in top],
+                      "ranked": ranked, "by_stem": by_stem})
+    return sorted(found, key=lambda x: -x["between_group_tvd"])
+
+
+def _attr_split(row, max_cells: int = 5, n_stems: int = 10, min_coverage: float = 0.8) -> dict | None:
+    """The attribute whose cells differ most on questions similar to the target (never the target itself)."""
+    found = _attr_splits(row, max_cells, n_stems, min_coverage)
+    return found[0] if found else None
+
+
+def _contrast_arm(n_attrs: int, n_q: int):
+    """Group-distribution retrieval: the attributes whose groups differ most on similar questions, each group's
+    real answers to the n_q most similar questions and its share of the population. Never the target question."""
+
+    def arm(row, ctx):
+        if row["dataset_name"] not in D_DATASETS:
+            return "", "", {"pipeline": lambda call: (None, 0, 0)}
+        splits = _attr_splits(row, include_target_attr=True)[:n_attrs]
+        if not splits:
+            return "", "", {"pipeline": lambda call: (None, 0, 0)}
+        vm = row["group_prompt_variable_map"]
+        own = {(k, str(v)) for k, v in vm.items() if k not in _COUNTRY_KEYS}
+        blocks = []
+        for sp in splits:
+            for e in sp["ranked"][:n_q]:
+                m = sp["by_stem"][e["stem"]]
+                lines = []
+                for c in sp["cells"]:
+                    if c["value"] not in m:
+                        continue
+                    ans = m[c["value"]]["human_answer"]
+                    tot = sum(ans.values()) or 1.0
+                    pct = {k: round(100 * x / tot) for k, x in ans.items()}
+                    mark = " (your group)" if (sp["attribute"], c["value"]) in own else ""
+                    lines.append(f"- {c['sentence']}{mark} [{round(100 * c['share'])}% of the population]: {json.dumps(pct)}")
+                blocks.append(f"**Question**: {e['input_template']}\n**Answers by group**:\n" + "\n".join(lines))
+        prefix = ("Real answers to similar questions, broken down by the groups that differ most from each other in "
+                  "your population (each group's share of the population in brackets):\n\n" + "\n\n".join(blocks)
+                  + "\n\nUse how these groups split and how large each group is. Now estimate the answer for a new "
+                    "question.\n\n")
+        keys = list(row["human_answer"].keys())
+        return SYSTEM_PREFIX + _filled_persona(row), prefix + _official_user(row["input_template"], keys), {}
+
+    return arm
+
+
+def _component_arm(n_comp: int, pool_size: int = 24):
+    """Component retrieval: among the most similar questions, the most similar one plus the two extremes on each of
+    the top n_comp directions of variation in their answers (level, spread, concentration). Never the target."""
+
+    def arm(row, ctx):
+        from human_sim import simbench_structure_l2 as L2
+
+        own = _stem(row.get("_orig_template", row["input_template"]))
+        pool = [d for d in _demo_pool(row, ctx) if _stem(d["input_template"]) != own]
+        ranked = _rank_by_similarity(row, pool, ctx)[:pool_size] if pool else []
+        if len(ranked) <= 2 * n_comp + 1:
+            return _inject(row, ctx, ranked, annotate=False)
+        R = np.array([L2.rep(d) for d in ranked])
+        Z = (R - R.mean(0)) / (R.std(0) + 1e-9)
+        _, _, vt = np.linalg.svd(Z, full_matrices=False)
+        picks = [0]
+        for j in range(min(n_comp, len(vt))):
+            sc = Z @ vt[j]
+            for i in (int(np.argmax(sc)), int(np.argmin(sc))):
+                if i not in picks:
+                    picks.append(i)
+        return _inject(row, ctx, [ranked[i] for i in sorted(picks)], annotate=False)
+
+    return arm
 
 
 _STYLE_SUFFIX = {
@@ -1811,6 +1879,10 @@ def arm_D3_tuned(row, ctx):
 
 
 ARMS["D3t_rev2"] = _rev2(arm_D3_tuned)
+ARMS["G1_contrast_rev2"] = _rev2(_contrast_arm(1, 3))
+ARMS["G2_contrast_rev2"] = _rev2(_contrast_arm(2, 3))
+ARMS["K2_cover_rev2"] = _rev2(_component_arm(2))
+ARMS["K3_cover_rev2"] = _rev2(_component_arm(3))
 ARMS["retrk3_rev2"] = _rev2(_retr_k_arm(3))
 ARMS["retrk12_rev2"] = _rev2(_retr_k_arm(12))
 ARMS["retrdyn_rev2"] = _rev2(arm_retr_dyn)
