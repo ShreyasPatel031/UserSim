@@ -54,7 +54,7 @@ def segments(F, t, keys):
         mem = [i for i in scope if R[i, j] == R[i].max()]
         top = sorted(mem, key=lambda i: -R[i, j])[:3]
         comp = Counter(f"{a}={b}" for i in mem for a, b in f["rows"][i][2]).most_common(3)
-        p = L.aligned_mix(prof[j], f["cols"], f["nb"], len(keys))
+        p = L.aligned_mix(prof[j], f["cols"], f["nb"], len(keys), t.get("labels"), sv["labels"])
         lines.append(f"| {j + 1} | {round(100 * share[j])}% | {'; '.join(sv['label'][f['rows'][i]] for i in top)} | "
                      f"{', '.join(f'{k} ({n})' for k, n in comp) or '-'} | {dist(keys, p) if p is not None else 'no aligned neighbour'} |")
     if t["split"] == "Grouped" and t["cell"] in f["ridx"]:

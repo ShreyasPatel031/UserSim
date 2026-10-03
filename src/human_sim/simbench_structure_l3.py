@@ -12,6 +12,7 @@ Seen-question setting (diagnostic ceiling): other cells' answers to the target q
 from __future__ import annotations
 
 import json
+import re
 import sys
 from collections import defaultdict
 
@@ -24,12 +25,17 @@ from sklearn.mixture import GaussianMixture
 
 from human_sim import simbench_ablate as A
 from human_sim import simbench_mass_levers as M
+from human_sim.simbench_divided_anatomy import parse_options
 
 DR_TOOLS = ("pca", "ppca", "fa", "nmf")
 CL_TOOLS = ("kmeans", "gmm", "hier", "dmm")
 KS = (5, 10, 19)
 RANKS = (1, 2, 3, 4, 6, 8)
 EPS = 1e-9
+
+
+def norm_label(t):
+    return re.sub(r"[^a-z0-9]", "", str(t).lower())
 
 
 # ------------------------------------------------------------------ data
@@ -46,12 +52,15 @@ def build_surveys(held):
     out = {}
     for ds in A.D_DATASETS:
         d = g[g.dataset_name == ds]
-        keys, obs, size, label = {}, defaultdict(list), defaultdict(list), {}
+        keys, obs, size, label, labels = {}, defaultdict(list), defaultdict(list), {}, {}
         for _, r in d.iterrows():
             if (ds, A._filled_persona(r), r.input_template) in held:
                 continue
             st = A._stem(r.input_template)
             k = list(r.human_answer)
+            if st not in keys:
+                texts = parse_options(r.input_template)
+                labels[st] = [norm_label(texts.get(x, "")) for x in k]
             keys.setdefault(st, k)
             if set(k) != set(keys[st]):
                 continue
@@ -67,7 +76,7 @@ def build_surveys(held):
         vec = TfidfVectorizer(stop_words="english").fit(stems)
         out[ds] = {"cells": cells, "cidx": {c: i for i, c in enumerate(cells)}, "stems": stems, "keys": keys,
                    "obs": {k: np.mean(v, axis=0) for k, v in obs.items()},
-                   "size": {c: float(np.median(v)) if v else 0.0 for c, v in size.items()}, "label": label,
+                   "size": {c: float(np.median(v)) if v else 0.0 for c, v in size.items()}, "label": label, "labels": labels,
                    "vec": vec, "S_mat": vec.transform(stems)}
     return out
 
@@ -200,22 +209,37 @@ def fit_cl(X, cols, counts, tool, k):
 # ------------------------------------------------------------------ prediction
 
 
-def aligned_mix(rowvals, cols, nbrs, n_opt):
-    """Similarity-weighted average of a row's values on neighbours with the target's option count."""
-    num, den = np.zeros(n_opt), 0.0
-    for st, sim in nbrs:
-        sl = cols.get(st)
-        if sl is None or (sl.stop - sl.start) != n_opt:
+def aligned_mix(rowvals, cols, nbrs, n_opt, tgt_labels=None, nb_labels=None, info=None):
+    """Similarity-weighted average of a row's values on neighbour questions mapped onto the target's options.
+
+    First choice: neighbours whose option labels contain every target label (columns reordered by label). Only if no
+    neighbour matches by label: neighbours with the same option count, matched by position."""
+    for tier in ("label", "position"):
+        if tier == "label" and not (tgt_labels and nb_labels and all(tgt_labels)):
             continue
-        v = rowvals[sl]
-        if np.any(np.isnan(v)):
-            continue
-        w = max(sim, 0.01)
-        num += w * np.clip(v, 0, None)
-        den += w
-    if den == 0 or num.sum() <= 0:
-        return None
-    return num / num.sum()
+        num, den = np.zeros(n_opt), 0.0
+        for st, sim in nbrs:
+            sl = cols.get(st)
+            if sl is None:
+                continue
+            v = rowvals[sl]
+            if tier == "label":
+                lab = nb_labels.get(st, [])
+                if not all(x in lab for x in tgt_labels):
+                    continue
+                v = v[[lab.index(x) for x in tgt_labels]]
+            elif (sl.stop - sl.start) != n_opt:
+                continue
+            if np.any(np.isnan(v)):
+                continue
+            w = max(sim, 0.01)
+            num += w * np.clip(v, 0, None)
+            den += w
+        if den > 0 and num.sum() > 0:
+            if info is not None:
+                info["tier"] = tier
+            return num / num.sum()
+    return None
 
 
 class Fitter:
@@ -253,7 +277,7 @@ class Fitter:
         self.cache[key] = res
         return res
 
-    def predict_cell(self, ds, text, own_stem, cell, n_opt, K, tool, r, seen=False):
+    def predict_cell(self, ds, text, own_stem, cell, n_opt, K, tool, r, seen=False, labels=None):
         f = self.get(ds, text, own_stem, K, tool, r, seen)
         if f is None or cell not in f["ridx"]:
             return None
@@ -264,9 +288,9 @@ class Fitter:
                 return None
             v = np.clip(row[sl], 0, None)
             return v / v.sum() if v.sum() > 0 else None
-        return aligned_mix(row, f["cols"], f["nb"], n_opt)
+        return aligned_mix(row, f["cols"], f["nb"], n_opt, labels, self.sv[ds]["labels"])
 
-    def predict_pop(self, ds, text, own_stem, country, n_opt, K, tool, r):
+    def predict_pop(self, ds, text, own_stem, country, n_opt, K, tool, r, labels=None):
         """Population of a country: size-weighted mean over each attribute's cells, averaged across attributes."""
         f = self.get(ds, text, own_stem, K, tool, r)
         if f is None:
@@ -274,7 +298,7 @@ class Fitter:
         by_attr = defaultdict(list)
         for c in f["rows"]:
             if c[1] == country and c[2]:
-                p = aligned_mix(f["fit"][f["ridx"][c]], f["cols"], f["nb"], n_opt)
+                p = aligned_mix(f["fit"][f["ridx"][c]], f["cols"], f["nb"], n_opt, labels, self.sv[ds]["labels"])
                 if p is not None:
                     by_attr[c[2][0][0]].append((self.sv[ds]["size"].get(c, 1.0) or 1.0, p))
         if not by_attr:
@@ -299,6 +323,7 @@ def targets(which):
         lab = l1.loc[q["qid"], "label"]
         out.append({"q": q, "split": q["split"], "cell": A._cell_key(r), "country": A._country_of(r.group_prompt_variable_map),
                     "stem": A._stem(r.input_template), "text": A._stem(r.input_template), "n_opt": len(q["keys"]),
+                    "labels": [norm_label(q["texts"].get(k, "")) for k in q["keys"]],
                     "bucket": "clustering" if lab == "multimodal" else "dimension-reduction", "l1": lab})
     return out
 
@@ -312,8 +337,8 @@ def predict(F, t, tool, K, r, seen=False):
     if t["split"] == "Pop":
         if seen:
             return None
-        return F.predict_pop(ds, t["text"], t["stem"], t["country"], t["n_opt"], K, tool, r)
-    return F.predict_cell(ds, t["text"], t["stem"], t["cell"], t["n_opt"], K, tool, r, seen)
+        return F.predict_pop(ds, t["text"], t["stem"], t["country"], t["n_opt"], K, tool, r, t.get("labels"))
+    return F.predict_cell(ds, t["text"], t["stem"], t["cell"], t["n_opt"], K, tool, r, seen, t.get("labels"))
 
 
 def ci(d):
