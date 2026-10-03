@@ -1515,6 +1515,8 @@ def _d3dyn_seg(row, ctx):
     if len(picked) < 3:
         picked += _cap_per_stem([d for d in _shuffled(same_group, row) if d not in picked], 3 - len(picked))
     info = _SEGPROMPT.get((row["dataset_name"], _filled_persona(row), row.get("_orig_template", row["input_template"])))
+    if not info:  # no cross-national answers: identical to D3dyn, so do not spend a call
+        return "", "", {"pipeline": lambda call: (None, 0, 0)}
     hint = ""
     if info:
         keys = list(row["human_answer"].keys())
@@ -1526,7 +1528,15 @@ def _d3dyn_seg(row, ctx):
         if info.get("near"):
             hint += "Closest such groups:\n" + "".join(f"- {lab}: {fmt(d)}\n" for lab, d in info["near"])
         hint += "\n"
-    return _inject(row, ctx, picked, annotate=False, hint=hint)
+    sysm, user, o = _inject(row, ctx, picked, annotate=False)
+    if hint:
+        marker = "Estimate what percentage"
+        i = user.rfind(marker)
+        block = hint.replace("answered this same question like this", "answered the question above like this").replace(
+            "answered the most similar question with the same answer options like this",
+            "answered a closely related question with the same answer options like this")
+        user = user[:i] + block + user[i:] if i >= 0 else user + "\n\n" + block
+    return sysm, user, o
 
 
 ARMS["D3dynseg"] = _rev2(_d3dyn_seg)

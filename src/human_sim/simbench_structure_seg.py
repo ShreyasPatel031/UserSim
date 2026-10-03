@@ -53,14 +53,16 @@ def logit(p):
 
 
 def load(which, base):
-    M.EVAL_ARMS = M.DEV_ARMS = {"D3dyn": ("D3dyn", M.HAIKU)}
-    dyn = {q["qid"]: np.asarray(q["preds"]["D3dyn"]) for q in M.load(which) if "D3dyn" in q["preds"]}
+    M.EVAL_ARMS = M.DEV_ARMS = {"D3dyn": ("D3dyn", M.HAIKU), "seg": ("D3dynseg", M.HAIKU)}
+    loaded = M.load(which)
+    dyn = {q["qid"]: np.asarray(q["preds"]["D3dyn"]) for q in loaded if "D3dyn" in q["preds"]}
+    sgp = {q["qid"]: np.asarray(q["preds"]["seg"]) for q in loaded if "seg" in q["preds"]}
     x = pd.read_pickle(M.OUT / "structure_xnat_preds.pkl")
     qs = []
     for q in V2.load(which, pd.read_pickle(CACHE)):
         if q["qid"] not in dyn:
             continue
-        q["base"] = dyn[q["qid"]] if base == "D3dyn" else np.asarray(q["mem"]["plain"])
+        q["base"] = (sgp.get(q["qid"], dyn[q["qid"]]) if base == "D3dynseg" else dyn[q["qid"]] if base == "D3dyn" else np.asarray(q["mem"]["plain"]))
         q["xn"] = None if x[XN_CFG].get(q["qid"]) is None else np.asarray(x[XN_CFG][q["qid"]])
         q["xs"] = None if x[XS_CFG].get(q["qid"]) is None else np.asarray(x[XS_CFG][q["qid"]])
         q["d3dyn"] = dyn[q["qid"]]
@@ -152,12 +154,13 @@ def main():
         return select()
     out = {}
     allp = {}
-    for base in ("D3dyn", "plain"):
+    for base in ("D3dyn", "plain", "D3dynseg"):
         preds, cfg, ev = run(base)
         allp[base] = preds
         out[base] = cfg
         print(f"fitted on dev: {cfg}", flush=True)
     pd.to_pickle(allp["D3dyn"], M.OUT / ("structure_seg2_eval_preds.pkl" if "--split-t" in sys.argv else "structure_seg_eval_preds.pkl"))
+    pd.to_pickle(allp["D3dynseg"], M.OUT / "structure_seg3_eval_preds.pkl")
     shape = lambda q: "sharp (top>=70%)" if q["top_share"] >= 0.7 else ("moderate (50-70%)" if q["top_share"] >= 0.5 else "no majority (<50%)")  # noqa: E731
     split = "--split-t" in sys.argv
     sys.argv = ["x"]
@@ -170,7 +173,8 @@ def main():
         S = lambda f: np.array([V2.S(q, f(q)) for q in qs])  # noqa: E731
         ours = S(lambda q: allp["D3dyn"][q["qid"]])
         meths = {"D3dyn": S(lambda q: q["d3dyn"]), "D3": S(lambda q: q["mem"]["D3"]) if all("D3" in q["mem"] for q in qs) else None,
-                 "plain": S(lambda q: q["mem"]["plain"]), "same layers on plain base": S(lambda q: allp["plain"][q["qid"]])}
+                 "plain": S(lambda q: q["mem"]["plain"]), "same layers on plain base": S(lambda q: allp["plain"][q["qid"]]),
+                 "ours + segments in prompt": S(lambda q: allp["D3dynseg"][q["qid"]])}
         if only411:
             meths["v4"] = S(lambda q: v4[q["qid"]])
         tag = f"{nm} [{'411 with v4' if only411 else '625'}]"
