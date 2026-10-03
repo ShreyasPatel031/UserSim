@@ -1,0 +1,1461 @@
+{
+  "N": 411,
+  "slices": {
+    "ROUTED TO SHALLOW (tool applied)": {
+      "N": 224,
+      "routed_S": 52.584445810597806,
+      "best_other": "ROUTED v2 (previous)",
+      "best_other_S": 49.774842726009034,
+      "gap_to_best": -2.8096030845887725,
+      "rows": [
+        {
+          "method": "ROUTED v2 (previous)",
+          "N": 224,
+          "S": 49.774842726009034,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 2.8096030845887654,
+          "ci": [
+            0.2,
+            5.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "routed v1 (principled sharp/shallow)",
+          "N": 224,
+          "S": 48.37163901943029,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 4.21280679116751,
+          "ci": [
+            1.7,
+            6.8
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "v4 persona offsets",
+          "N": 224,
+          "S": 48.07514787868141,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 4.509297931916395,
+          "ci": [
+            1.5,
+            7.8
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "demographic panel (C5b)",
+          "N": 224,
+          "S": 46.88508741150328,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 5.699358399094526,
+          "ci": [
+            3.0,
+            8.4
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "D3 (same group, same topic)",
+          "N": 224,
+          "S": 46.72267314598374,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 5.861772664614056,
+          "ci": [
+            2.3,
+            9.7
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "50/50 plain+invented",
+          "N": 224,
+          "S": 46.265905619064405,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 6.318540191533406,
+          "ci": [
+            3.7,
+            9.2
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "plain (retr6_rev2)",
+          "N": 224,
+          "S": 45.42469338899603,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 7.159752421601773,
+          "ci": [
+            4.2,
+            10.3
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "KC2 component retrieval",
+          "N": 224,
+          "S": 45.23693979202555,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 7.3475060185722585,
+          "ci": [
+            4.7,
+            10.3
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "G1 group retrieval",
+          "N": 224,
+          "S": 43.786943482670885,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 8.797502327926923,
+          "ci": [
+            4.9,
+            12.7
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "invented personas",
+          "N": 224,
+          "S": 43.11786059745551,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 9.466585213142295,
+          "ci": [
+            6.1,
+            13.0
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "retr6 (similar questions)",
+          "N": 224,
+          "S": 42.443902338120026,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 10.140543472477786,
+          "ci": [
+            6.8,
+            13.4
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "adaptive personas",
+          "N": 224,
+          "S": 40.53928196231044,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 12.045163848287363,
+          "ci": [
+            7.8,
+            16.4
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "segments",
+          "N": 224,
+          "S": 35.56697725715247,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 17.017468553445333,
+          "ci": [
+            13.2,
+            20.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "agents",
+          "N": 224,
+          "S": 27.61544627733096,
+          "routed_S": 52.584445810597806,
+          "routed_minus_method": 24.968999533266842,
+          "ci": [
+            20.1,
+            29.8
+          ],
+          "verdict": "routed better"
+        }
+      ],
+      "counts": {
+        "routed better": 14,
+        "tie": 0,
+        "routed worse": 0
+      }
+    },
+    "ROUTED TO SHARP (model answer only)": {
+      "N": 187,
+      "routed_S": 58.33648508230801,
+      "best_other": "ROUTED v2 (previous)",
+      "best_other_S": 56.86724892141872,
+      "gap_to_best": -1.469236160889288,
+      "rows": [
+        {
+          "method": "ROUTED v2 (previous)",
+          "N": 187,
+          "S": 56.86724892141872,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 1.4692361608892952,
+          "ci": [
+            -2.2,
+            5.3
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "v4 persona offsets",
+          "N": 187,
+          "S": 56.79180031148718,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 1.5446847708208276,
+          "ci": [
+            -1.6,
+            4.8
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "retr6 (similar questions)",
+          "N": 187,
+          "S": 55.33998628537019,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 2.996498796937828,
+          "ci": [
+            -0.9,
+            7.0
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "routed v1 (principled sharp/shallow)",
+          "N": 187,
+          "S": 54.03665172993876,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 4.299833352369247,
+          "ci": [
+            0.4,
+            8.1
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "plain (retr6_rev2)",
+          "N": 187,
+          "S": 54.03665172993876,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 4.299833352369247,
+          "ci": [
+            0.4,
+            8.1
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "demographic panel (C5b)",
+          "N": 187,
+          "S": 54.0114112052602,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 4.325073877047807,
+          "ci": [
+            0.9,
+            7.7
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "50/50 plain+invented",
+          "N": 187,
+          "S": 53.96175059360987,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 4.374734488698139,
+          "ci": [
+            0.4,
+            8.4
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "D3 (same group, same topic)",
+          "N": 187,
+          "S": 53.3528076447676,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 4.983677437540405,
+          "ci": [
+            0.6,
+            9.3
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "KC2 component retrieval",
+          "N": 187,
+          "S": 52.74389725303295,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 5.592587829275057,
+          "ci": [
+            2.1,
+            9.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "G1 group retrieval",
+          "N": 187,
+          "S": 52.73237383903146,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 5.604111243276543,
+          "ci": [
+            0.8,
+            10.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "invented personas",
+          "N": 187,
+          "S": 49.595578523023164,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 8.740906559284852,
+          "ci": [
+            4.2,
+            13.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "adaptive personas",
+          "N": 187,
+          "S": 49.45431354756751,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 8.8821715347405,
+          "ci": [
+            4.5,
+            13.8
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "segments",
+          "N": 187,
+          "S": 43.59958320898545,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 14.736901873322562,
+          "ci": [
+            9.7,
+            19.6
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "agents",
+          "N": 187,
+          "S": 43.5024105228646,
+          "routed_S": 58.33648508230801,
+          "routed_minus_method": 14.83407455944341,
+          "ci": [
+            9.5,
+            20.0
+          ],
+          "verdict": "routed better"
+        }
+      ],
+      "counts": {
+        "routed better": 11,
+        "tie": 3,
+        "routed worse": 0
+      }
+    },
+    "truly shallow (top answer < 70%)": {
+      "N": 332,
+      "routed_S": 54.68886382007256,
+      "best_other": "ROUTED v2 (previous)",
+      "best_other_S": 53.427897881755214,
+      "gap_to_best": -1.260965938317348,
+      "rows": [
+        {
+          "method": "ROUTED v2 (previous)",
+          "N": 332,
+          "S": 53.427897881755214,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 1.2609659383173444,
+          "ci": [
+            -1.3,
+            3.7
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "v4 persona offsets",
+          "N": 332,
+          "S": 51.74736868965622,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 2.9414951304163415,
+          "ci": [
+            0.5,
+            5.3
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "demographic panel (C5b)",
+          "N": 332,
+          "S": 51.63264583189408,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 3.0562179881784703,
+          "ci": [
+            1.0,
+            5.1
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "routed v1 (principled sharp/shallow)",
+          "N": 332,
+          "S": 51.02279077409669,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 3.6660730459758715,
+          "ci": [
+            1.4,
+            5.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "50/50 plain+invented",
+          "N": 332,
+          "S": 50.72549272608764,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 3.963371093984921,
+          "ci": [
+            1.5,
+            6.4
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "D3 (same group, same topic)",
+          "N": 332,
+          "S": 50.55671241574655,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 4.132151404326011,
+          "ci": [
+            1.0,
+            7.1
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "KC2 component retrieval",
+          "N": 332,
+          "S": 49.62863777455117,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 5.060226045521394,
+          "ci": [
+            2.7,
+            7.3
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "plain (retr6_rev2)",
+          "N": 332,
+          "S": 49.3040933844391,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 5.38477043563346,
+          "ci": [
+            2.8,
+            7.8
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "retr6 (similar questions)",
+          "N": 332,
+          "S": 48.062219913646686,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 6.626643906425878,
+          "ci": [
+            3.8,
+            9.3
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "G1 group retrieval",
+          "N": 332,
+          "S": 47.828369440269526,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 6.860494379803034,
+          "ci": [
+            3.7,
+            10.1
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "invented personas",
+          "N": 332,
+          "S": 47.45272900886668,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 7.236134811205882,
+          "ci": [
+            4.3,
+            10.2
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "adaptive personas",
+          "N": 332,
+          "S": 45.05250329171428,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 9.636360528358278,
+          "ci": [
+            6.5,
+            12.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "segments",
+          "N": 332,
+          "S": 42.29263582646131,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 12.396227993611253,
+          "ci": [
+            9.2,
+            15.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "agents",
+          "N": 332,
+          "S": 35.51716910933707,
+          "routed_S": 54.68886382007256,
+          "routed_minus_method": 19.171694710735494,
+          "ci": [
+            15.2,
+            23.1
+          ],
+          "verdict": "routed better"
+        }
+      ],
+      "counts": {
+        "routed better": 13,
+        "tie": 1,
+        "routed worse": 0
+      }
+    },
+    "truly sharp (top answer >= 70%)": {
+      "N": 79,
+      "routed_S": 57.35614916077743,
+      "best_other": "v4 persona offsets",
+      "best_other_S": 53.27561238109969,
+      "gap_to_best": -4.080536779677736,
+      "rows": [
+        {
+          "method": "v4 persona offsets",
+          "N": 79,
+          "S": 53.27561238109969,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 4.080536779677743,
+          "ci": [
+            -2.0,
+            10.3
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "ROUTED v2 (previous)",
+          "N": 79,
+          "S": 51.21111673656446,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 6.145032424212951,
+          "ci": [
+            0.9,
+            11.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "routed v1 (principled sharp/shallow)",
+          "N": 79,
+          "S": 50.63967692216245,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 6.716472238614962,
+          "ci": [
+            0.5,
+            13.4
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "plain (retr6_rev2)",
+          "N": 79,
+          "S": 49.50666062025163,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 7.8494885405257895,
+          "ci": [
+            1.1,
+            14.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "retr6 (similar questions)",
+          "N": 79,
+          "S": 49.35891832623303,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 7.997230834544384,
+          "ci": [
+            1.5,
+            15.2
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "G1 group retrieval",
+          "N": 79,
+          "S": 47.97734928921113,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 9.378799871566292,
+          "ci": [
+            2.2,
+            16.8
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "D3 (same group, same topic)",
+          "N": 79,
+          "S": 46.30411762334238,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 11.052031537435047,
+          "ci": [
+            4.5,
+            17.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "50/50 plain+invented",
+          "N": 79,
+          "S": 45.7410966406883,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 11.615052520089124,
+          "ci": [
+            5.0,
+            18.3
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "KC2 component retrieval",
+          "N": 79,
+          "S": 44.55032352632781,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 12.805825634449603,
+          "ci": [
+            6.6,
+            19.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "demographic panel (C5b)",
+          "N": 79,
+          "S": 43.80196277685512,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 13.554186383922302,
+          "ci": [
+            7.4,
+            19.8
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "adaptive personas",
+          "N": 79,
+          "S": 42.67499620384204,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 14.68115295693538,
+          "ci": [
+            6.6,
+            23.2
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "invented personas",
+          "N": 79,
+          "S": 40.23377122394465,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 17.122377936832773,
+          "ci": [
+            9.2,
+            24.7
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "agents",
+          "N": 79,
+          "S": 32.01405809617608,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 25.34209106460135,
+          "ci": [
+            16.4,
+            33.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "segments",
+          "N": 79,
+          "S": 26.316074320218704,
+          "routed_S": 57.35614916077743,
+          "routed_minus_method": 31.040074840558727,
+          "ci": [
+            23.6,
+            38.2
+          ],
+          "verdict": "routed better"
+        }
+      ],
+      "counts": {
+        "routed better": 13,
+        "tie": 1,
+        "routed worse": 0
+      }
+    },
+    "truly sharp AND routed to sharp": {
+      "N": 62,
+      "routed_S": 62.08121324887651,
+      "best_other": "v4 persona offsets",
+      "best_other_S": 58.073939735116696,
+      "gap_to_best": -4.007273513759813,
+      "rows": [
+        {
+          "method": "v4 persona offsets",
+          "N": 62,
+          "S": 58.073939735116696,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 4.0072735137598166,
+          "ci": [
+            -2.0,
+            10.0
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "ROUTED v2 (previous)",
+          "N": 62,
+          "S": 57.413818363161894,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 4.667394885714615,
+          "ci": [
+            -1.3,
+            11.3
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "routed v1 (principled sharp/shallow)",
+          "N": 62,
+          "S": 54.24104171347354,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 7.840171535402957,
+          "ci": [
+            0.2,
+            15.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "plain (retr6_rev2)",
+          "N": 62,
+          "S": 54.24104171347354,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 7.840171535402957,
+          "ci": [
+            0.2,
+            15.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "retr6 (similar questions)",
+          "N": 62,
+          "S": 54.23398989971129,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 7.8472233491652075,
+          "ci": [
+            0.4,
+            15.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "G1 group retrieval",
+          "N": 62,
+          "S": 52.63722120258947,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 9.443992046287034,
+          "ci": [
+            1.3,
+            18.4
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "KC2 component retrieval",
+          "N": 62,
+          "S": 50.99468411625873,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 11.086529132617763,
+          "ci": [
+            4.2,
+            17.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "D3 (same group, same topic)",
+          "N": 62,
+          "S": 50.16255192597031,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 11.918661322906198,
+          "ci": [
+            4.0,
+            20.0
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "50/50 plain+invented",
+          "N": 62,
+          "S": 49.7349430864845,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 12.346270162392,
+          "ci": [
+            4.4,
+            20.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "demographic panel (C5b)",
+          "N": 62,
+          "S": 46.691751089406154,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 15.389462159470348,
+          "ci": [
+            8.6,
+            21.8
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "adaptive personas",
+          "N": 62,
+          "S": 46.14996750425079,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 15.931245744625713,
+          "ci": [
+            6.6,
+            26.2
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "invented personas",
+          "N": 62,
+          "S": 43.38374296980664,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 18.69747027906987,
+          "ci": [
+            9.5,
+            27.7
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "agents",
+          "N": 62,
+          "S": 35.27889843602753,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 26.802314812848973,
+          "ci": [
+            16.6,
+            36.6
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "segments",
+          "N": 62,
+          "S": 29.156065950829984,
+          "routed_S": 62.08121324887651,
+          "routed_minus_method": 32.925147298046525,
+          "ci": [
+            24.1,
+            41.9
+          ],
+          "verdict": "routed better"
+        }
+      ],
+      "counts": {
+        "routed better": 12,
+        "tie": 2,
+        "routed worse": 0
+      }
+    },
+    "truly sharp BUT routed to shallow": {
+      "N": 17,
+      "routed_S": 40.12356248653371,
+      "best_other": "routed v1 (principled sharp/shallow)",
+      "best_other_S": 37.5052876832632,
+      "gap_to_best": -2.618274803270509,
+      "rows": [
+        {
+          "method": "routed v1 (principled sharp/shallow)",
+          "N": 17,
+          "S": 37.5052876832632,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 2.618274803270508,
+          "ci": [
+            -7.7,
+            14.7
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "v4 persona offsets",
+          "N": 17,
+          "S": 35.775830266449404,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 4.347732220084306,
+          "ci": [
+            -10.6,
+            20.9
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "demographic panel (C5b)",
+          "N": 17,
+          "S": 33.262734813433696,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 6.8608276731000135,
+          "ci": [
+            -7.5,
+            21.8
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "plain (retr6_rev2)",
+          "N": 17,
+          "S": 32.240094280265836,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 7.883468206267882,
+          "ci": [
+            -7.0,
+            24.3
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "D3 (same group, same topic)",
+          "N": 17,
+          "S": 32.23218075493463,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 7.8913817315990835,
+          "ci": [
+            -5.4,
+            22.5
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "retr6 (similar questions)",
+          "N": 17,
+          "S": 31.57924552884174,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 8.54431695769197,
+          "ci": [
+            -7.0,
+            26.6
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "50/50 plain+invented",
+          "N": 17,
+          "S": 31.175303720725672,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 8.948258765808037,
+          "ci": [
+            -3.3,
+            22.7
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "G1 group retrieval",
+          "N": 17,
+          "S": 30.982522311007777,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 9.141040175525928,
+          "ci": [
+            -2.7,
+            21.7
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "adaptive personas",
+          "N": 17,
+          "S": 30.001571461174837,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 10.12199102535887,
+          "ci": [
+            -6.1,
+            26.9
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "invented personas",
+          "N": 17,
+          "S": 28.745638974330333,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 11.377923512203374,
+          "ci": [
+            -1.8,
+            25.7
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "ROUTED v2 (previous)",
+          "N": 17,
+          "S": 28.58949903956212,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 11.534063446971587,
+          "ci": [
+            -0.1,
+            24.5
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "KC2 component retrieval",
+          "N": 17,
+          "S": 21.047361374815036,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 19.076201111718678,
+          "ci": [
+            2.9,
+            36.3
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "agents",
+          "N": 17,
+          "S": 20.106993327306043,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 20.01656915922766,
+          "ci": [
+            3.5,
+            37.6
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "segments",
+          "N": 17,
+          "S": 15.95845778504815,
+          "routed_S": 40.12356248653371,
+          "routed_minus_method": 24.16510470148556,
+          "ci": [
+            12.9,
+            35.7
+          ],
+          "verdict": "routed better"
+        }
+      ],
+      "counts": {
+        "routed better": 3,
+        "tie": 11,
+        "routed worse": 0
+      }
+    },
+    "entropy consensus (< 0.65)": {
+      "N": 125,
+      "routed_S": 59.319465251513435,
+      "best_other": "ROUTED v2 (previous)",
+      "best_other_S": 57.44533697985655,
+      "gap_to_best": -1.8741282716568861,
+      "rows": [
+        {
+          "method": "ROUTED v2 (previous)",
+          "N": 125,
+          "S": 57.44533697985655,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 1.8741282716569003,
+          "ci": [
+            -1.5,
+            5.2
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "v4 persona offsets",
+          "N": 125,
+          "S": 56.929142882491476,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 2.3903223690219697,
+          "ci": [
+            -0.8,
+            5.6
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "retr6 (similar questions)",
+          "N": 125,
+          "S": 56.15896711541035,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 3.160498136103095,
+          "ci": [
+            -1.2,
+            7.9
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "plain (retr6_rev2)",
+          "N": 125,
+          "S": 54.509820132012926,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 4.809645119500521,
+          "ci": [
+            1.0,
+            8.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "KC2 component retrieval",
+          "N": 125,
+          "S": 53.08990811940197,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 6.229557132111473,
+          "ci": [
+            1.9,
+            10.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "routed v1 (principled sharp/shallow)",
+          "N": 125,
+          "S": 52.98095910392782,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 6.338506147585616,
+          "ci": [
+            2.8,
+            10.2
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "D3 (same group, same topic)",
+          "N": 125,
+          "S": 52.73962742532449,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 6.5798378261889425,
+          "ci": [
+            2.5,
+            11.1
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "G1 group retrieval",
+          "N": 125,
+          "S": 52.36025540348162,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 6.959209848031832,
+          "ci": [
+            2.2,
+            11.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "50/50 plain+invented",
+          "N": 125,
+          "S": 52.09418600546537,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 7.225279246048058,
+          "ci": [
+            3.1,
+            11.6
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "demographic panel (C5b)",
+          "N": 125,
+          "S": 50.65344599339086,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 8.666019258122587,
+          "ci": [
+            5.0,
+            12.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "adaptive personas",
+          "N": 125,
+          "S": 49.56131007919956,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 9.758155172313884,
+          "ci": [
+            4.9,
+            15.0
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "invented personas",
+          "N": 125,
+          "S": 46.2428368375586,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 13.076628413954834,
+          "ci": [
+            8.4,
+            18.1
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "agents",
+          "N": 125,
+          "S": 38.80528190795511,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 20.51418334355832,
+          "ci": [
+            15.2,
+            25.9
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "segments",
+          "N": 125,
+          "S": 36.59562169464213,
+          "routed_S": 59.319465251513435,
+          "routed_minus_method": 22.723843556871294,
+          "ci": [
+            18.0,
+            27.8
+          ],
+          "verdict": "routed better"
+        }
+      ],
+      "counts": {
+        "routed better": 11,
+        "tie": 3,
+        "routed worse": 0
+      }
+    },
+    "entropy divided (>= 0.84)": {
+      "N": 126,
+      "routed_S": 47.96636903937444,
+      "best_other": "ROUTED v2 (previous)",
+      "best_other_S": 50.524690600640284,
+      "gap_to_best": 2.558321561265842,
+      "rows": [
+        {
+          "method": "ROUTED v2 (previous)",
+          "N": 126,
+          "S": 50.524690600640284,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": -2.5583215612658488,
+          "ci": [
+            -7.6,
+            2.8
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "routed v1 (principled sharp/shallow)",
+          "N": 126,
+          "S": 46.655679671474104,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 1.310689367900328,
+          "ci": [
+            -3.5,
+            6.5
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "D3 (same group, same topic)",
+          "N": 126,
+          "S": 46.499269037858035,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 1.4671000015164064,
+          "ci": [
+            -5.1,
+            8.4
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "v4 persona offsets",
+          "N": 126,
+          "S": 45.92147250010702,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 2.044896539267405,
+          "ci": [
+            -3.2,
+            7.4
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "demographic panel (C5b)",
+          "N": 126,
+          "S": 44.92565252228746,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 3.04071651708697,
+          "ci": [
+            -1.5,
+            7.6
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "50/50 plain+invented",
+          "N": 126,
+          "S": 44.64686287919579,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 3.3195061601786557,
+          "ci": [
+            -1.4,
+            8.4
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "invented personas",
+          "N": 126,
+          "S": 43.961126113336924,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 4.0052429260375115,
+          "ci": [
+            -1.5,
+            9.5
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "segments",
+          "N": 126,
+          "S": 42.73490150658491,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 5.231467532789531,
+          "ci": [
+            -0.6,
+            11.2
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "G1 group retrieval",
+          "N": 126,
+          "S": 41.08475433118213,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 6.881614708192304,
+          "ci": [
+            -0.4,
+            13.7
+          ],
+          "verdict": "tie"
+        },
+        {
+          "method": "adaptive personas",
+          "N": 126,
+          "S": 40.938300641959756,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 7.028068397414673,
+          "ci": [
+            1.4,
+            12.6
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "plain (retr6_rev2)",
+          "N": 126,
+          "S": 40.84842569920458,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 7.117943340169855,
+          "ci": [
+            1.6,
+            12.8
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "KC2 component retrieval",
+          "N": 126,
+          "S": 39.91480591341501,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 8.051563125959426,
+          "ci": [
+            3.0,
+            13.1
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "retr6 (similar questions)",
+          "N": 126,
+          "S": 38.48815679772076,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 9.478212241653686,
+          "ci": [
+            3.8,
+            15.5
+          ],
+          "verdict": "routed better"
+        },
+        {
+          "method": "agents",
+          "N": 126,
+          "S": 35.748217433280125,
+          "routed_S": 47.96636903937444,
+          "routed_minus_method": 12.218151606094313,
+          "ci": [
+            5.0,
+            19.5
+          ],
+          "verdict": "routed better"
+        }
+      ],
+      "counts": {
+        "routed better": 5,
+        "tie": 9,
+        "routed worse": 0
+      }
+    }
+  }
+}

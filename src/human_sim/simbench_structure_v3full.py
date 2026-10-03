@@ -35,6 +35,8 @@ from human_sim.simbench_structure_sharpdef import sub_shares
 
 LITE = ("plain", "D3", "cl", "fa", "xn", "xs") if "--d3" in sys.argv else ("plain", "cl", "fa", "xn", "xs")
 TAG = "v3d3" if "--d3" in sys.argv else "v3lite"
+if "--c5b" in sys.argv:  # demographic persona panel (observable segments) as a shallow-side member
+    LITE, TAG = LITE + ("c5b",), TAG + "c5b"
 TOOLS = {"cl": ("dmm", 10, 3), "fa": ("fa", 10, 3)}
 FULL_CACHE = M.OUT / "structure_v3full_members.pkl"
 NUM = V2.NUM
@@ -60,6 +62,12 @@ def fit_on_dev():
     tools = pd.read_pickle(CACHE)
     xall = pd.read_pickle(XN.OUT)
     dev, ev = V2.load("dev", tools), V2.load("eval", tools)
+    if "c5b" in LITE:
+        M.EVAL_ARMS = M.DEV_ARMS = {"c5b": ("C5b_demo_mix", M.HAIKU)}
+        c5 = {q["qid"]: q["preds"]["c5b"] for w in ("dev", "eval") for q in M.load(w) if "c5b" in q["preds"]}
+        for q in dev + ev:
+            if q["qid"] in c5:
+                q["mem"]["c5b"] = np.asarray(c5[q["qid"]])
     for q in dev + ev:
         for k, cfg in (("xn", V3.XN_CFG), ("xs", V3.XS_CFG)):
             if xall[cfg].get(q["qid"]) is not None:
@@ -80,7 +88,7 @@ def fit_on_dev():
         cv[te] = LogisticRegression(C=0.3, max_iter=5000).fit(s2.transform(Xd[tr]), yd[tr]).predict_proba(s2.transform(Xd[te]))[:, 1]
     pe = clf.predict_proba(sc.transform(Xe))[:, 1]
     print(f"v3-lite router AUC: dev cross-fitted {roc_auc_score(yd, cv):.3f}, eval {roc_auc_score(ye, pe):.3f}")
-    sa = np.array([m not in ("cl", "xs") for m in LITE], float)
+    sa = np.array([m not in ("cl", "xs", "c5b") for m in LITE], float)
     ha = np.array([m not in ("fa", "xn") for m in LITE], float)
     mod = V3.Model(len(LITE), use_conc=False, soft=True, sharp_allow=sa, shallow_allow=ha)
     Dd = V3.Data(dev, LITE)
