@@ -307,7 +307,7 @@ def S(q, p):
     return 100 * (1 - M.tvd(p, q["h"]) / q["norm"])
 
 
-def predict(F, t, K, tool, r, seen=False):
+def predict(F, t, tool, K, r, seen=False):
     ds = t["q"]["dataset"]
     if t["split"] == "Pop":
         if seen:

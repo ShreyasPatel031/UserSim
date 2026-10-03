@@ -1879,6 +1879,31 @@ def arm_D3_tuned(row, ctx):
 
 
 ARMS["D3t_rev2"] = _rev2(arm_D3_tuned)
+def _component_keep_arm(n_keep: int, window: int):
+    """Component retrieval that keeps the closest examples: the n_keep most similar questions, plus the two extremes
+    on the main direction of variation (level, spread, concentration) among ranks n_keep+1..window. Never the target."""
+
+    def arm(row, ctx):
+        from human_sim import simbench_structure_l2 as L2
+
+        own = _stem(row.get("_orig_template", row["input_template"]))
+        pool = [d for d in _demo_pool(row, ctx) if _stem(d["input_template"]) != own]
+        ranked = _rank_by_similarity(row, pool, ctx)[:24] if pool else []
+        keep, rest = ranked[:n_keep], ranked[n_keep:window]
+        if len(rest) < 3:
+            return _inject(row, ctx, ranked[:n_keep + 2], annotate=False)
+        R = np.array([L2.rep(d) for d in ranked[:window]])
+        Z = (R - R.mean(0)) / (R.std(0) + 1e-9)
+        _, _, vt = np.linalg.svd(Z, full_matrices=False)
+        sc = (Z @ vt[0])[n_keep:]
+        ext = sorted({int(np.argmax(sc)), int(np.argmin(sc))})
+        return _inject(row, ctx, keep + [rest[i] for i in ext], annotate=False)
+
+    return arm
+
+
+ARMS["KC1_rev2"] = _rev2(_component_keep_arm(6, 24))
+ARMS["KC2_rev2"] = _rev2(_component_keep_arm(4, 10))
 ARMS["G1_contrast_rev2"] = _rev2(_contrast_arm(1, 3))
 ARMS["G2_contrast_rev2"] = _rev2(_contrast_arm(2, 3))
 ARMS["K2_cover_rev2"] = _rev2(_component_arm(2))

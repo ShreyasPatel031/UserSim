@@ -12,7 +12,7 @@ import pandas as pd
 
 from human_sim import simbench_mass_levers as M
 
-NEW = ("G1_contrast_rev2", "G2_contrast_rev2", "K2_cover_rev2", "K3_cover_rev2")
+NEW = ("G1_contrast_rev2", "G2_contrast_rev2", "K2_cover_rev2", "K3_cover_rev2", "KC1_rev2", "KC2_rev2")
 BASE = ("retr6_rev2", "D3_same_group_same_topic")
 
 
