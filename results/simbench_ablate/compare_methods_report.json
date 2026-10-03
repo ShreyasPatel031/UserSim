@@ -1,0 +1,138 @@
+{
+  "dev (in-sample for all)": {
+    "N": 166,
+    "methods": {
+      "plain (retr6_rev2)": {
+        "S": 42.403370015276266,
+        "vs_plain": 0.0,
+        "ci": null,
+        "bands": {
+          "consensus": 0.0,
+          "mixed": 0.0,
+          "divided": 0.0
+        }
+      },
+      "earlier routed (entropy labels, shallow if P(sharp) < 0.6)": {
+        "S": 43.896362983312564,
+        "vs_plain": 1.4929929680362932,
+        "ci": [
+          -0.9,
+          3.7
+        ],
+        "bands": {
+          "consensus": -2.937760374551399,
+          "mixed": 2.5870316840821777,
+          "divided": 4.884396035937159
+        }
+      },
+      "principled routed (top share >= 70%, shallow if P(sharp) < 0.3)": {
+        "S": 44.01147598531449,
+        "vs_plain": 1.6081059700382319,
+        "ci": [
+          -0.6,
+          3.7
+        ],
+        "bands": {
+          "consensus": -2.288803626674574,
+          "mixed": 2.4160021852393245,
+          "divided": 4.819026761242397
+        }
+      },
+      "v4 persona offsets": {
+        "S": 50.760760968328725,
+        "vs_plain": 8.357390953052462,
+        "ci": [
+          4.7,
+          12.0
+        ],
+        "bands": {
+          "consensus": 5.530360035107776,
+          "mixed": 8.788020924229652,
+          "divided": 10.916581598554089
+        }
+      }
+    },
+    "v4_minus_principled": {
+      "diff": 6.74928498301423,
+      "ci": [
+        3.3,
+        10.0
+      ]
+    },
+    "earlier_minus_principled": {
+      "diff": -0.11511300200193864,
+      "ci": [
+        -1.4,
+        1.1
+      ]
+    }
+  },
+  "eval (fair)": {
+    "N": 411,
+    "methods": {
+      "plain (retr6_rev2)": {
+        "S": 49.34302966577533,
+        "vs_plain": 0.0,
+        "ci": null,
+        "bands": {
+          "consensus": 0.0,
+          "mixed": 0.0,
+          "divided": 0.0
+        }
+      },
+      "earlier routed (entropy labels, shallow if P(sharp) < 0.6)": {
+        "S": 51.26664210225655,
+        "vs_plain": 1.9236124364812202,
+        "ci": [
+          0.7,
+          3.2
+        ],
+        "bands": {
+          "consensus": -1.7745375771890952,
+          "mixed": 0.7199307912604693,
+          "divided": 7.1208966820693895
+        }
+      },
+      "principled routed (top share >= 70%, shallow if P(sharp) < 0.3)": {
+        "S": 50.94915088528209,
+        "vs_plain": 1.6061212195067511,
+        "ci": [
+          0.5,
+          2.6
+        ],
+        "bands": {
+          "consensus": -1.528861028085096,
+          "mixed": 0.7469340576371966,
+          "divided": 5.807253972269525
+        }
+      },
+      "v4 persona offsets": {
+        "S": 52.045845771363695,
+        "vs_plain": 2.7028161055883713,
+        "ci": [
+          0.6,
+          4.7
+        ],
+        "bands": {
+          "consensus": 2.410574147283016,
+          "mixed": 1.0493493853264901,
+          "divided": 5.09237896296988
+        }
+      }
+    },
+    "v4_minus_principled": {
+      "diff": 1.09669488608162,
+      "ci": [
+        -1.1,
+        3.3
+      ]
+    },
+    "earlier_minus_principled": {
+      "diff": 0.31749121697446897,
+      "ci": [
+        -0.4,
+        1.0
+      ]
+    }
+  }
+}
