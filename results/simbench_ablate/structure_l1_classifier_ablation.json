@@ -1,0 +1,65 @@
+{
+ "all ordinal>=4 | dataset only": [
+  0.7764487870619946,
+  [
+   0.724,
+   0.829
+  ]
+ ],
+ "all ordinal>=4 | demo features only": [
+  0.7993839045051984,
+  [
+   0.733,
+   0.858
+  ]
+ ],
+ "all ordinal>=4 | question metadata only (options, value-laden, topic)": [
+  0.6689208702348863,
+  [
+   0.595,
+   0.741
+  ]
+ ],
+ "shared surveys only | dataset only": [
+  0.787878787878788,
+  [
+   0.714,
+   0.856
+  ]
+ ],
+ "shared surveys only | demo features only": [
+  0.8123852157943068,
+  [
+   0.716,
+   0.899
+  ]
+ ],
+ "shared surveys only | question metadata only (options, value-laden, topic)": [
+  0.7738751147842058,
+  [
+   0.698,
+   0.844
+  ]
+ ],
+ "excluding Pop-only tasks | dataset only": [
+  0.8001230809095031,
+  [
+   0.733,
+   0.862
+  ]
+ ],
+ "excluding Pop-only tasks | demo features only": [
+  0.8134028632506316,
+  [
+   0.733,
+   0.885
+  ]
+ ],
+ "excluding Pop-only tasks | question metadata only (options, value-laden, topic)": [
+  0.7666321176394376,
+  [
+   0.698,
+   0.831
+  ]
+ ]
+}

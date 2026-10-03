@@ -1,0 +1,644 @@
+{
+  "rule": {
+    "prominence": 0.05,
+    "dip_alpha": 0.05,
+    "narrow_sd": 0.2,
+    "N_cap": 5000,
+    "multimodal": "peaks >= 2 AND dip p < 0.05",
+    "ordinal": ">= 4 substantive options, DK excluded"
+  },
+  "crosstab_eval": {
+    "all": {
+      "consensus": {
+        "unimodal-narrow": {
+          "N": 18,
+          "pct": 5.5
+        },
+        "unimodal-wide": {
+          "N": 36,
+          "pct": 10.9
+        },
+        "multimodal": {
+          "N": 10,
+          "pct": 3.0
+        },
+        "binary/3-option": {
+          "N": 217,
+          "pct": 66.0
+        },
+        "categorical": {
+          "N": 48,
+          "pct": 14.6
+        },
+        "N_total": 329
+      },
+      "mixed": {
+        "unimodal-narrow": {
+          "N": 6,
+          "pct": 1.9
+        },
+        "unimodal-wide": {
+          "N": 144,
+          "pct": 44.4
+        },
+        "multimodal": {
+          "N": 17,
+          "pct": 5.2
+        },
+        "binary/3-option": {
+          "N": 119,
+          "pct": 36.7
+        },
+        "categorical": {
+          "N": 38,
+          "pct": 11.7
+        },
+        "N_total": 324
+      },
+      "divided": {
+        "unimodal-narrow": {
+          "N": 1,
+          "pct": 0.3
+        },
+        "unimodal-wide": {
+          "N": 166,
+          "pct": 50.6
+        },
+        "multimodal": {
+          "N": 29,
+          "pct": 8.8
+        },
+        "binary/3-option": {
+          "N": 112,
+          "pct": 34.1
+        },
+        "categorical": {
+          "N": 20,
+          "pct": 6.1
+        },
+        "N_total": 328
+      }
+    },
+    "shared_survey": {
+      "consensus": {
+        "unimodal-narrow": {
+          "N": 12,
+          "pct": 5.7
+        },
+        "unimodal-wide": {
+          "N": 30,
+          "pct": 14.2
+        },
+        "multimodal": {
+          "N": 10,
+          "pct": 4.7
+        },
+        "binary/3-option": {
+          "N": 132,
+          "pct": 62.6
+        },
+        "categorical": {
+          "N": 27,
+          "pct": 12.8
+        },
+        "N_total": 211
+      },
+      "mixed": {
+        "unimodal-narrow": {
+          "N": 6,
+          "pct": 2.5
+        },
+        "unimodal-wide": {
+          "N": 105,
+          "pct": 43.9
+        },
+        "multimodal": {
+          "N": 14,
+          "pct": 5.9
+        },
+        "binary/3-option": {
+          "N": 86,
+          "pct": 36.0
+        },
+        "categorical": {
+          "N": 28,
+          "pct": 11.7
+        },
+        "N_total": 239
+      },
+      "divided": {
+        "unimodal-narrow": {
+          "N": 1,
+          "pct": 0.6
+        },
+        "unimodal-wide": {
+          "N": 88,
+          "pct": 50.3
+        },
+        "multimodal": {
+          "N": 12,
+          "pct": 6.9
+        },
+        "binary/3-option": {
+          "N": 55,
+          "pct": 31.4
+        },
+        "categorical": {
+          "N": 19,
+          "pct": 10.9
+        },
+        "N_total": 175
+      }
+    },
+    "other_pop_only": {
+      "consensus": {
+        "unimodal-narrow": {
+          "N": 6,
+          "pct": 6.7
+        },
+        "unimodal-wide": {
+          "N": 6,
+          "pct": 6.7
+        },
+        "multimodal": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "binary/3-option": {
+          "N": 57,
+          "pct": 63.3
+        },
+        "categorical": {
+          "N": 21,
+          "pct": 23.3
+        },
+        "N_total": 90
+      },
+      "mixed": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 38,
+          "pct": 53.5
+        },
+        "multimodal": {
+          "N": 3,
+          "pct": 4.2
+        },
+        "binary/3-option": {
+          "N": 20,
+          "pct": 28.2
+        },
+        "categorical": {
+          "N": 10,
+          "pct": 14.1
+        },
+        "N_total": 71
+      },
+      "divided": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 67,
+          "pct": 70.5
+        },
+        "multimodal": {
+          "N": 4,
+          "pct": 4.2
+        },
+        "binary/3-option": {
+          "N": 23,
+          "pct": 24.2
+        },
+        "categorical": {
+          "N": 1,
+          "pct": 1.1
+        },
+        "N_total": 95
+      }
+    },
+    "pop_only_task": {
+      "consensus": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "multimodal": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "binary/3-option": {
+          "N": 28,
+          "pct": 100.0
+        },
+        "categorical": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "N_total": 28
+      },
+      "mixed": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 1,
+          "pct": 7.1
+        },
+        "multimodal": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "binary/3-option": {
+          "N": 13,
+          "pct": 92.9
+        },
+        "categorical": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "N_total": 14
+      },
+      "divided": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 11,
+          "pct": 19.0
+        },
+        "multimodal": {
+          "N": 13,
+          "pct": 22.4
+        },
+        "binary/3-option": {
+          "N": 34,
+          "pct": 58.6
+        },
+        "categorical": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "N_total": 58
+      }
+    }
+  },
+  "crosstab_dev": {
+    "all": {
+      "consensus": {
+        "unimodal-narrow": {
+          "N": 5,
+          "pct": 4.4
+        },
+        "unimodal-wide": {
+          "N": 11,
+          "pct": 9.6
+        },
+        "multimodal": {
+          "N": 1,
+          "pct": 0.9
+        },
+        "binary/3-option": {
+          "N": 80,
+          "pct": 70.2
+        },
+        "categorical": {
+          "N": 17,
+          "pct": 14.9
+        },
+        "N_total": 114
+      },
+      "mixed": {
+        "unimodal-narrow": {
+          "N": 3,
+          "pct": 2.2
+        },
+        "unimodal-wide": {
+          "N": 60,
+          "pct": 43.2
+        },
+        "multimodal": {
+          "N": 13,
+          "pct": 9.4
+        },
+        "binary/3-option": {
+          "N": 51,
+          "pct": 36.7
+        },
+        "categorical": {
+          "N": 12,
+          "pct": 8.6
+        },
+        "N_total": 139
+      },
+      "divided": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 67,
+          "pct": 52.8
+        },
+        "multimodal": {
+          "N": 6,
+          "pct": 4.7
+        },
+        "binary/3-option": {
+          "N": 45,
+          "pct": 35.4
+        },
+        "categorical": {
+          "N": 9,
+          "pct": 7.1
+        },
+        "N_total": 127
+      }
+    },
+    "shared_survey": {
+      "consensus": {
+        "unimodal-narrow": {
+          "N": 5,
+          "pct": 6.3
+        },
+        "unimodal-wide": {
+          "N": 9,
+          "pct": 11.4
+        },
+        "multimodal": {
+          "N": 1,
+          "pct": 1.3
+        },
+        "binary/3-option": {
+          "N": 55,
+          "pct": 69.6
+        },
+        "categorical": {
+          "N": 9,
+          "pct": 11.4
+        },
+        "N_total": 79
+      },
+      "mixed": {
+        "unimodal-narrow": {
+          "N": 3,
+          "pct": 2.9
+        },
+        "unimodal-wide": {
+          "N": 47,
+          "pct": 46.1
+        },
+        "multimodal": {
+          "N": 12,
+          "pct": 11.8
+        },
+        "binary/3-option": {
+          "N": 34,
+          "pct": 33.3
+        },
+        "categorical": {
+          "N": 6,
+          "pct": 5.9
+        },
+        "N_total": 102
+      },
+      "divided": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 35,
+          "pct": 50.7
+        },
+        "multimodal": {
+          "N": 3,
+          "pct": 4.3
+        },
+        "binary/3-option": {
+          "N": 24,
+          "pct": 34.8
+        },
+        "categorical": {
+          "N": 7,
+          "pct": 10.1
+        },
+        "N_total": 69
+      }
+    },
+    "other_pop_only": {
+      "consensus": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 2,
+          "pct": 8.0
+        },
+        "multimodal": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "binary/3-option": {
+          "N": 15,
+          "pct": 60.0
+        },
+        "categorical": {
+          "N": 8,
+          "pct": 32.0
+        },
+        "N_total": 25
+      },
+      "mixed": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 11,
+          "pct": 37.9
+        },
+        "multimodal": {
+          "N": 1,
+          "pct": 3.4
+        },
+        "binary/3-option": {
+          "N": 11,
+          "pct": 37.9
+        },
+        "categorical": {
+          "N": 6,
+          "pct": 20.7
+        },
+        "N_total": 29
+      },
+      "divided": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 25,
+          "pct": 69.4
+        },
+        "multimodal": {
+          "N": 2,
+          "pct": 5.6
+        },
+        "binary/3-option": {
+          "N": 7,
+          "pct": 19.4
+        },
+        "categorical": {
+          "N": 2,
+          "pct": 5.6
+        },
+        "N_total": 36
+      }
+    },
+    "pop_only_task": {
+      "consensus": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "multimodal": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "binary/3-option": {
+          "N": 10,
+          "pct": 100.0
+        },
+        "categorical": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "N_total": 10
+      },
+      "mixed": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 2,
+          "pct": 25.0
+        },
+        "multimodal": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "binary/3-option": {
+          "N": 6,
+          "pct": 75.0
+        },
+        "categorical": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "N_total": 8
+      },
+      "divided": {
+        "unimodal-narrow": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "unimodal-wide": {
+          "N": 7,
+          "pct": 31.8
+        },
+        "multimodal": {
+          "N": 1,
+          "pct": 4.5
+        },
+        "binary/3-option": {
+          "N": 14,
+          "pct": 63.6
+        },
+        "categorical": {
+          "N": 0,
+          "pct": 0.0
+        },
+        "N_total": 22
+      }
+    }
+  },
+  "hypothesis": {
+    "divided_ordinal_N": 269,
+    "divided_multimodal_share": 0.13011152416356878,
+    "divided_unimodal_wide_share": 0.8661710037174721,
+    "consensus_ordinal_N": 81,
+    "consensus_unimodal_narrow_share": 0.2839506172839506
+  },
+  "sensitivity": {
+    "narrow_sd<0.15": {
+      "consensus_narrow_share": 0.037037037037037035,
+      "divided_wide_share": 0.8698884758364313
+    },
+    "narrow_sd<0.2": {
+      "consensus_narrow_share": 0.2839506172839506,
+      "divided_wide_share": 0.8661710037174721
+    },
+    "narrow_sd<0.25": {
+      "consensus_narrow_share": 0.5679012345679012,
+      "divided_wide_share": 0.8215613382899628
+    },
+    "divided_multimodal_share_peaks_only": 0.1895910780669145,
+    "divided_multimodal_share_bc>0.555": 0.3271375464684015,
+    "divided_multimodal_share_dip_only": 0.14869888475836432
+  },
+  "classifier": {
+    "clustering_vs_dimred (ordinal>=4)": {
+      "N_dev": 166,
+      "N_eval": 427,
+      "positives_eval": 56,
+      "AUC_eval": 0.7955573738929534,
+      "CI": [
+        0.737,
+        0.851
+      ]
+    },
+    "consensus_vs_rest (all, context)": {
+      "N_dev": 380,
+      "N_eval": 981,
+      "positives_eval": 329,
+      "AUC_eval": 0.8040073097506851,
+      "CI": [
+        0.776,
+        0.831
+      ]
+    }
+  },
+  "counts": {
+    "eval": {
+      "unimodal-wide": 346,
+      "binary/3-option": 448,
+      "categorical": 106,
+      "multimodal": 56,
+      "unimodal-narrow": 25
+    },
+    "dev": {
+      "binary/3-option": 176,
+      "unimodal-wide": 138,
+      "multimodal": 20,
+      "unimodal-narrow": 8,
+      "categorical": 38
+    }
+  }
+}
