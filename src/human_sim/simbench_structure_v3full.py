@@ -251,6 +251,10 @@ def eval4_main():
     Xd, Xe = X(dev), X(ev)
     ps_cv, ps_e, _, _ = crossfit_clf(Xd, Xe, np.array([q["top_share"] >= 0.7 for q in dev], int))
     pd_cv, pd_e, _, _ = crossfit_clf(Xd, Xe, np.array([q["Hn"] >= 0.84 for q in dev], int))
+    if "--segrouter" in sys.argv:  # average with the router trained on training-pool pseudo-targets (segment features)
+        sr = pd.read_pickle(M.OUT / "structure_divrouter.pkl")
+        mix = lambda qs, p0: np.array([1 / (1 + np.exp(-(V3.logit(a) + V3.logit(sr[q["qid"]])) / 2)) if q["qid"] in sr else a for q, a in zip(qs, p0)])  # noqa: E731
+        pd_cv, pd_e = mix(dev, pd_cv), mix(ev, pd_e)
     mod, th = F["mod"], F["th"]
     Dd, De = V3.Data(dev, LITE), V3.Data(ev, LITE)
 
