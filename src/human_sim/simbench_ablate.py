@@ -1768,6 +1768,33 @@ def _demo_mix_arm(mode: str, anchor_country: bool = False, style: str = "dist", 
     return arm
 
 
+def _retr_k_arm(k):
+    def arm(row, ctx):
+        return _inject(row, ctx, _rank_by_similarity(row, _demo_pool(row, ctx), ctx)[:k], annotate=False)
+
+    return arm
+
+
+_RETR_RULE: dict | None = None
+
+
+def arm_retr_dyn(row, ctx):
+    """retr with the number of demos set per question by the dev-fitted stopping rule (structure layer 2)."""
+    global _RETR_RULE
+    from human_sim import simbench_structure_l2 as L2
+
+    if _RETR_RULE is None:
+        _RETR_RULE = pd.read_pickle(OUT_DIR / "structure_l2_retr_rule.pkl")
+    ranked, sims = L2.ranked_pool(row, ctx)
+    if not ranked:
+        return _inject(row, ctx, [], annotate=False)
+    sig = L2.signals({"R": np.array([L2.rep(d) for d in ranked]), "sims": sims}, _RETR_RULE["scale"])
+    return _inject(row, ctx, ranked[: L2.pick_k(sig, _RETR_RULE["rule"])], annotate=False)
+
+
+ARMS["retrk3_rev2"] = _rev2(_retr_k_arm(3))
+ARMS["retrk12_rev2"] = _rev2(_retr_k_arm(12))
+ARMS["retrdyn_rev2"] = _rev2(arm_retr_dyn)
 ARMS["C5_demo_mix"] = _demo_mix_arm("mix")
 ARMS["C5_own"] = _demo_mix_arm("own")
 ARMS["C5b_demo_mix"] = _demo_mix_arm("mix", anchor_country=True)

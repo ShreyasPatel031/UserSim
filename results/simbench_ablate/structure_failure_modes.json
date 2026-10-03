@@ -1,0 +1,566 @@
+{
+  "eval": {
+    "retr6_rev2": {
+      "all": {
+        "N": 981,
+        "S": 43.55914121719265,
+        "any_single_demo_close": 0.4425287356321839,
+        "cells": {
+          "demos close / pred close": {
+            "N": 110,
+            "mean_S": 83.40214756736256,
+            "share_of_S_lost": 0.03297478432271353
+          },
+          "demos close / pred far": {
+            "N": 75,
+            "mean_S": 34.5239408723738,
+            "share_of_S_lost": 0.08869133152770305
+          },
+          "demos far / pred close": {
+            "N": 181,
+            "mean_S": 80.20636540294313,
+            "share_of_S_lost": 0.06470554551086984
+          },
+          "demos far / pred far": {
+            "N": 504,
+            "mean_S": 25.26693472637318,
+            "share_of_S_lost": 0.6802690487513715
+          },
+          "no aligned demo": {
+            "N": 111,
+            "share_of_S_lost": 0.1333592898873422
+          }
+        }
+      },
+      "band=consensus": {
+        "N": 329,
+        "S": 49.727105830160134,
+        "any_single_demo_close": 0.4645390070921986,
+        "cells": {
+          "demos close / pred close": {
+            "N": 29,
+            "mean_S": 90.0031768572154,
+            "share_of_S_lost": 0.017527913484762018
+          },
+          "demos close / pred far": {
+            "N": 16,
+            "mean_S": 42.82456314826656,
+            "share_of_S_lost": 0.05530949437956272
+          },
+          "demos far / pred close": {
+            "N": 72,
+            "mean_S": 84.64189623513526,
+            "share_of_S_lost": 0.06685598751607935
+          },
+          "demos far / pred far": {
+            "N": 165,
+            "mean_S": 31.750805362368656,
+            "share_of_S_lost": 0.6808503879542022
+          },
+          "no aligned demo": {
+            "N": 47,
+            "share_of_S_lost": 0.17945621666539363
+          }
+        }
+      },
+      "band=mixed": {
+        "N": 324,
+        "S": 45.56595229240183,
+        "any_single_demo_close": 0.43157894736842106,
+        "cells": {
+          "demos close / pred close": {
+            "N": 46,
+            "mean_S": 84.10919851138924,
+            "share_of_S_lost": 0.041446512631816576
+          },
+          "demos close / pred far": {
+            "N": 17,
+            "mean_S": 46.2556183559391,
+            "share_of_S_lost": 0.05180436469192319
+          },
+          "demos far / pred close": {
+            "N": 52,
+            "mean_S": 80.7751984701199,
+            "share_of_S_lost": 0.05668257467284927
+          },
+          "demos far / pred far": {
+            "N": 170,
+            "mean_S": 28.224427634085707,
+            "share_of_S_lost": 0.6918468150663416
+          },
+          "no aligned demo": {
+            "N": 39,
+            "share_of_S_lost": 0.15821973293706942
+          }
+        }
+      },
+      "band=divided": {
+        "N": 328,
+        "S": 35.39003406464972,
+        "any_single_demo_close": 0.43234323432343236,
+        "cells": {
+          "demos close / pred close": {
+            "N": 35,
+            "mean_S": 77.00345634362083,
+            "share_of_S_lost": 0.03798020073224732
+          },
+          "demos close / pred far": {
+            "N": 42,
+            "mean_S": 26.61326292868583,
+            "share_of_S_lost": 0.14544323077594293
+          },
+          "demos far / pred close": {
+            "N": 57,
+            "mean_S": 74.08465418520588,
+            "share_of_S_lost": 0.06970412957396357
+          },
+          "demos far / pred far": {
+            "N": 169,
+            "mean_S": 15.961535618382745,
+            "share_of_S_lost": 0.6701799902865508
+          },
+          "no aligned demo": {
+            "N": 25,
+            "share_of_S_lost": 0.0766924486312954
+          }
+        }
+      },
+      "bucket=unimodal-narrow": {
+        "N": 25,
+        "S": 15.707228745571449,
+        "any_single_demo_close": 0.05555555555555555,
+        "cells": {
+          "demos close / pred close": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos close / pred far": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos far / pred close": {
+            "N": 2,
+            "mean_S": 87.27984408651332,
+            "share_of_S_lost": 0.012072357545433907
+          },
+          "demos far / pred far": {
+            "N": 16,
+            "mean_S": 12.71881466942293,
+            "share_of_S_lost": 0.6626897868022648
+          },
+          "no aligned demo": {
+            "N": 7,
+            "share_of_S_lost": 0.32523785565230123
+          }
+        }
+      },
+      "bucket=unimodal-wide": {
+        "N": 346,
+        "S": 40.21577524724025,
+        "any_single_demo_close": 0.35514018691588783,
+        "cells": {
+          "demos close / pred close": {
+            "N": 25,
+            "mean_S": 77.42019221099767,
+            "share_of_S_lost": 0.02728962379026636
+          },
+          "demos close / pred far": {
+            "N": 23,
+            "mean_S": 39.76235360065989,
+            "share_of_S_lost": 0.06697814727748753
+          },
+          "demos far / pred close": {
+            "N": 55,
+            "mean_S": 74.6152788025875,
+            "share_of_S_lost": 0.06749512199294723
+          },
+          "demos far / pred far": {
+            "N": 218,
+            "mean_S": 28.20622933157624,
+            "share_of_S_lost": 0.7566247724565377
+          },
+          "no aligned demo": {
+            "N": 25,
+            "share_of_S_lost": 0.08161233448276131
+          }
+        }
+      },
+      "bucket=multimodal": {
+        "N": 56,
+        "S": 28.94476431406894,
+        "any_single_demo_close": 0.25925925925925924,
+        "cells": {
+          "demos close / pred close": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos close / pred far": {
+            "N": 7,
+            "mean_S": 4.233192889808418,
+            "share_of_S_lost": 0.1684724675558873
+          },
+          "demos far / pred close": {
+            "N": 6,
+            "mean_S": 75.71524929354912,
+            "share_of_S_lost": 0.03661852009318363
+          },
+          "demos far / pred far": {
+            "N": 41,
+            "mean_S": 26.391848932909884,
+            "share_of_S_lost": 0.7584477274759496
+          },
+          "no aligned demo": {
+            "N": 2,
+            "share_of_S_lost": 0.03646128487497949
+          }
+        }
+      },
+      "bucket=binary/3-option": {
+        "N": 448,
+        "S": 51.42212277810255,
+        "any_single_demo_close": 0.5951219512195122,
+        "cells": {
+          "demos close / pred close": {
+            "N": 82,
+            "mean_S": 85.46426730695538,
+            "share_of_S_lost": 0.05476892709791637
+          },
+          "demos close / pred far": {
+            "N": 43,
+            "mean_S": 36.106455007455544,
+            "share_of_S_lost": 0.12624346130051306
+          },
+          "demos far / pred close": {
+            "N": 107,
+            "mean_S": 82.66398957423885,
+            "share_of_S_lost": 0.08523469085136917
+          },
+          "demos far / pred far": {
+            "N": 178,
+            "mean_S": 23.180750753003736,
+            "share_of_S_lost": 0.6283093374620087
+          },
+          "no aligned demo": {
+            "N": 38,
+            "share_of_S_lost": 0.10544358328819281
+          }
+        }
+      },
+      "bucket=categorical": {
+        "N": 106,
+        "S": 35.52981861984696,
+        "any_single_demo_close": 0.1791044776119403,
+        "cells": {
+          "demos close / pred close": {
+            "N": 3,
+            "mean_S": 76.88716932153268,
+            "share_of_S_lost": 0.010146345229866014
+          },
+          "demos close / pred far": {
+            "N": 2,
+            "mean_S": 46.27575853180488,
+            "share_of_S_lost": 0.015723004211590844
+          },
+          "demos far / pred close": {
+            "N": 11,
+            "mean_S": 85.41943049204687,
+            "share_of_S_lost": 0.023469423156799955
+          },
+          "demos far / pred far": {
+            "N": 51,
+            "mean_S": 23.016404564975034,
+            "share_of_S_lost": 0.5745179594039352
+          },
+          "no aligned demo": {
+            "N": 39,
+            "share_of_S_lost": 0.376143267997808
+          }
+        }
+      }
+    },
+    "D3_same_group_same_topic": {
+      "all": {
+        "N": 625,
+        "S": 47.6545621874509,
+        "any_single_demo_close": 0.45901639344262296,
+        "cells": {
+          "demos close / pred close": {
+            "N": 63,
+            "mean_S": 84.07091093306059,
+            "share_of_S_lost": 0.03067415700480706
+          },
+          "demos close / pred far": {
+            "N": 26,
+            "mean_S": 50.73833829707837,
+            "share_of_S_lost": 0.03914925946708295
+          },
+          "demos far / pred close": {
+            "N": 51,
+            "mean_S": 81.1324566916397,
+            "share_of_S_lost": 0.029412143604100376
+          },
+          "demos far / pred far": {
+            "N": 165,
+            "mean_S": 29.515475809333,
+            "share_of_S_lost": 0.3554830213278891
+          },
+          "no aligned demo": {
+            "N": 320,
+            "share_of_S_lost": 0.5452814185961203
+          }
+        }
+      },
+      "band=consensus": {
+        "N": 211,
+        "S": 50.25030362152521,
+        "any_single_demo_close": 0.49019607843137253,
+        "cells": {
+          "demos close / pred close": {
+            "N": 19,
+            "mean_S": 84.61740776413137,
+            "share_of_S_lost": 0.02784262889762842
+          },
+          "demos close / pred far": {
+            "N": 8,
+            "mean_S": 58.40449620525583,
+            "share_of_S_lost": 0.03170030829131434
+          },
+          "demos far / pred close": {
+            "N": 20,
+            "mean_S": 85.00750855412785,
+            "share_of_S_lost": 0.02856478209966366
+          },
+          "demos far / pred far": {
+            "N": 55,
+            "mean_S": 43.88221277926592,
+            "share_of_S_lost": 0.29402911561250195
+          },
+          "no aligned demo": {
+            "N": 109,
+            "share_of_S_lost": 0.6178631650988915
+          }
+        }
+      },
+      "band=mixed": {
+        "N": 239,
+        "S": 45.483764736635926,
+        "any_single_demo_close": 0.5118110236220472,
+        "cells": {
+          "demos close / pred close": {
+            "N": 36,
+            "mean_S": 84.53287449083503,
+            "share_of_S_lost": 0.042735456989407554
+          },
+          "demos close / pred far": {
+            "N": 9,
+            "mean_S": 57.59299185961272,
+            "share_of_S_lost": 0.029292496387889246
+          },
+          "demos far / pred close": {
+            "N": 16,
+            "mean_S": 76.94159538495218,
+            "share_of_S_lost": 0.028315581200824447
+          },
+          "demos far / pred far": {
+            "N": 66,
+            "mean_S": 22.155069282973173,
+            "share_of_S_lost": 0.39432155155813503
+          },
+          "no aligned demo": {
+            "N": 112,
+            "share_of_S_lost": 0.5053349138637436
+          }
+        }
+      },
+      "band=divided": {
+        "N": 175,
+        "S": 47.48952874833718,
+        "any_single_demo_close": 0.32894736842105265,
+        "cells": {
+          "demos close / pred close": {
+            "N": 8,
+            "mean_S": 80.6941449492822,
+            "share_of_S_lost": 0.016807188218086157
+          },
+          "demos close / pred far": {
+            "N": 9,
+            "mean_S": 37.069322149497395,
+            "share_of_S_lost": 0.061634085235533
+          },
+          "demos far / pred close": {
+            "N": 15,
+            "mean_S": 80.43597293545552,
+            "share_of_S_lost": 0.03193489918411808
+          },
+          "demos far / pred far": {
+            "N": 44,
+            "mean_S": 22.5976643864566,
+            "share_of_S_lost": 0.37061481652446204
+          },
+          "no aligned demo": {
+            "N": 99,
+            "share_of_S_lost": 0.5190090108378008
+          }
+        }
+      },
+      "bucket=unimodal-narrow": {
+        "N": 19,
+        "S": 11.40010891381946,
+        "any_single_demo_close": 0.0,
+        "cells": {
+          "demos close / pred close": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos close / pred far": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos far / pred close": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos far / pred far": {
+            "N": 7,
+            "mean_S": -2.5590184632617112,
+            "share_of_S_lost": 0.4264666815712369
+          },
+          "no aligned demo": {
+            "N": 12,
+            "share_of_S_lost": 0.5735333184287632
+          }
+        }
+      },
+      "bucket=unimodal-wide": {
+        "N": 223,
+        "S": 43.10526123069737,
+        "any_single_demo_close": 0.28431372549019607,
+        "cells": {
+          "demos close / pred close": {
+            "N": 8,
+            "mean_S": 84.2186136421557,
+            "share_of_S_lost": 0.009950803919053086
+          },
+          "demos close / pred far": {
+            "N": 4,
+            "mean_S": 55.33095334637839,
+            "share_of_S_lost": 0.014082822460026883
+          },
+          "demos far / pred close": {
+            "N": 16,
+            "mean_S": 73.00271514492289,
+            "share_of_S_lost": 0.03404576528932913
+          },
+          "demos far / pred far": {
+            "N": 74,
+            "mean_S": 18.29000906623206,
+            "share_of_S_lost": 0.4765735237734527
+          },
+          "no aligned demo": {
+            "N": 121,
+            "share_of_S_lost": 0.4653470845581382
+          }
+        }
+      },
+      "bucket=multimodal": {
+        "N": 36,
+        "S": 40.444636543823144,
+        "any_single_demo_close": 0.0,
+        "cells": {
+          "demos close / pred close": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos close / pred far": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos far / pred close": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos far / pred far": {
+            "N": 17,
+            "mean_S": 47.99701996278566,
+            "share_of_S_lost": 0.4123383918800392
+          },
+          "no aligned demo": {
+            "N": 19,
+            "share_of_S_lost": 0.5876616081199608
+          }
+        }
+      },
+      "bucket=binary/3-option": {
+        "N": 273,
+        "S": 59.09055668769405,
+        "any_single_demo_close": 0.6586826347305389,
+        "cells": {
+          "demos close / pred close": {
+            "N": 55,
+            "mean_S": 84.04942690264674,
+            "share_of_S_lost": 0.07855118922082847
+          },
+          "demos close / pred far": {
+            "N": 22,
+            "mean_S": 49.90331737902382,
+            "share_of_S_lost": 0.09868370175486822
+          },
+          "demos far / pred close": {
+            "N": 35,
+            "mean_S": 84.84890997013882,
+            "share_of_S_lost": 0.04748163950550471
+          },
+          "demos far / pred far": {
+            "N": 55,
+            "mean_S": 42.48464493172205,
+            "share_of_S_lost": 0.28324371240435897
+          },
+          "no aligned demo": {
+            "N": 106,
+            "share_of_S_lost": 0.4920397571144396
+          }
+        }
+      },
+      "bucket=categorical": {
+        "N": 74,
+        "S": 31.99050205446785,
+        "any_single_demo_close": 0.08333333333333333,
+        "cells": {
+          "demos close / pred close": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos close / pred far": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos far / pred close": {
+            "N": 0,
+            "mean_S": null,
+            "share_of_S_lost": 0.0
+          },
+          "demos far / pred far": {
+            "N": 12,
+            "mean_S": 31.825096355794674,
+            "share_of_S_lost": 0.1625565562768234
+          },
+          "no aligned demo": {
+            "N": 62,
+            "share_of_S_lost": 0.8374434437231766
+          }
+        }
+      }
+    }
+  }
+}
