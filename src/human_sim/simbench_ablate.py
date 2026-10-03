@@ -1792,6 +1792,25 @@ def arm_retr_dyn(row, ctx):
     return _inject(row, ctx, ranked[: L2.pick_k(sig, _RETR_RULE["rule"])], annotate=False)
 
 
+_D3T: dict = {}
+_d3t_lock = threading.Lock()
+
+
+def arm_D3_tuned(row, ctx):
+    """D3 with the dev-tuned settings from structure layer 2 (Grouped targets in the shared surveys only):
+    12 demos, same-topic same-cell demos from cells of >= 500 respondents (any wave), topped up with retr6 neighbours."""
+    if row["dataset_name"] not in D_DATASETS or row["split"] != "Grouped":
+        return "", "", {"pipeline": lambda call: (None, 0, 0)}
+    from human_sim import simbench_structure_l2_d3 as L2D
+
+    with _d3t_lock:
+        if not _D3T:
+            _D3T["pool"], _D3T["topics"] = L2D.pool_and_topics()
+    demos, _ = L2D.candidates(row, None, _D3T["pool"], _D3T["topics"], ctx, "same", "retr6", 500, "any")
+    return _inject(row, ctx, demos[:12], annotate=False)
+
+
+ARMS["D3t_rev2"] = _rev2(arm_D3_tuned)
 ARMS["retrk3_rev2"] = _rev2(_retr_k_arm(3))
 ARMS["retrk12_rev2"] = _rev2(_retr_k_arm(12))
 ARMS["retrdyn_rev2"] = _rev2(arm_retr_dyn)
