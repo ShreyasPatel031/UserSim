@@ -1,0 +1,262 @@
+{
+  "SHARP": {
+    "N": 79,
+    "FINAL": 66.32594976938978,
+    "v4 refit (same data)": {
+      "S": 70.7504398523137,
+      "diff": -4.424490082923935,
+      "ci": [
+        -9.9,
+        0.6
+      ]
+    },
+    "B raw blend (same data)": {
+      "S": 62.56501932345132,
+      "diff": 3.760930445938448,
+      "ci": [
+        -0.1,
+        7.8
+      ]
+    },
+    "ablate sharp: no decomposition (no twoway, no fa)": {
+      "S": 67.01056920284734,
+      "diff": -0.6846194334575791,
+      "ci": [
+        -2.8,
+        1.3
+      ]
+    },
+    "ablate shallow: no clustering (no seg)": {
+      "S": 65.94821234399087,
+      "diff": 0.3777374253988796,
+      "ci": [
+        -1.0,
+        1.8
+      ]
+    },
+    "ablate shallow: no two-way decomposition": {
+      "S": 66.2303377798927,
+      "diff": 0.0956119894970833,
+      "ci": [
+        -1.2,
+        1.2
+      ]
+    },
+    "ablate shallow: raw only (sibraw + d3dyn)": {
+      "S": 65.8776952983437,
+      "diff": 0.44825447104607946,
+      "ci": [
+        -1.5,
+        2.2
+      ]
+    }
+  },
+  "SHALLOW": {
+    "N": 332,
+    "FINAL": 62.33790439852734,
+    "v4 refit (same data)": {
+      "S": 58.62465558588184,
+      "diff": 3.7132488126454883,
+      "ci": [
+        1.5,
+        6.1
+      ]
+    },
+    "B raw blend (same data)": {
+      "S": 61.686010921509464,
+      "diff": 0.6518934770178719,
+      "ci": [
+        -0.6,
+        2.0
+      ]
+    },
+    "ablate sharp: no decomposition (no twoway, no fa)": {
+      "S": 62.67362150261166,
+      "diff": -0.3357171040843158,
+      "ci": [
+        -0.8,
+        0.1
+      ]
+    },
+    "ablate shallow: no clustering (no seg)": {
+      "S": 61.770926070170496,
+      "diff": 0.5669783283568426,
+      "ci": [
+        -0.7,
+        1.8
+      ]
+    },
+    "ablate shallow: no two-way decomposition": {
+      "S": 61.491874808700935,
+      "diff": 0.8460295898263969,
+      "ci": [
+        0.0,
+        1.8
+      ]
+    },
+    "ablate shallow: raw only (sibraw + d3dyn)": {
+      "S": 60.851828637966456,
+      "diff": 1.4860757605608772,
+      "ci": [
+        -0.0,
+        3.0
+      ]
+    }
+  },
+  "  moderate": {
+    "N": 193,
+    "FINAL": 65.609022018973,
+    "v4 refit (same data)": {
+      "S": 63.69770654961008,
+      "diff": 1.9113154693629064,
+      "ci": [
+        -0.9,
+        4.9
+      ]
+    },
+    "B raw blend (same data)": {
+      "S": 65.43985131029928,
+      "diff": 0.1691707086737184,
+      "ci": [
+        -1.6,
+        2.0
+      ]
+    },
+    "ablate sharp: no decomposition (no twoway, no fa)": {
+      "S": 66.04929127972012,
+      "diff": -0.4402692607471252,
+      "ci": [
+        -1.2,
+        0.3
+      ]
+    },
+    "ablate shallow: no clustering (no seg)": {
+      "S": 65.58173667466218,
+      "diff": 0.027285344310804982,
+      "ci": [
+        -1.3,
+        1.4
+      ]
+    },
+    "ablate shallow: no two-way decomposition": {
+      "S": 64.45789787328034,
+      "diff": 1.1511241456926578,
+      "ci": [
+        -0.0,
+        2.5
+      ]
+    },
+    "ablate shallow: raw only (sibraw + d3dyn)": {
+      "S": 64.40548889491714,
+      "diff": 1.203533124055858,
+      "ci": [
+        -0.7,
+        3.1
+      ]
+    }
+  },
+  "  no majority": {
+    "N": 139,
+    "FINAL": 57.79599288236898,
+    "v4 refit (same data)": {
+      "S": 51.580779067899485,
+      "diff": 6.215213814469504,
+      "ci": [
+        2.6,
+        10.1
+      ]
+    },
+    "B raw blend (same data)": {
+      "S": 56.47384405074376,
+      "diff": 1.322148831625222,
+      "ci": [
+        -0.3,
+        2.9
+      ]
+    },
+    "ablate sharp: no decomposition (no twoway, no fa)": {
+      "S": 57.986540445187664,
+      "diff": -0.19054756281868848,
+      "ci": [
+        -0.5,
+        0.0
+      ]
+    },
+    "ablate shallow: no clustering (no seg)": {
+      "S": 56.47965666968922,
+      "diff": 1.316336212679758,
+      "ci": [
+        -0.8,
+        3.4
+      ]
+    },
+    "ablate shallow: no two-way decomposition": {
+      "S": 57.37358379097559,
+      "diff": 0.4224090913933869,
+      "ci": [
+        -0.6,
+        1.4
+      ]
+    },
+    "ablate shallow: raw only (sibraw + d3dyn)": {
+      "S": 55.91760972004213,
+      "diff": 1.8783831623268397,
+      "ci": [
+        -0.5,
+        4.3
+      ]
+    }
+  },
+  "ALL": {
+    "N": 411,
+    "FINAL": 63.104462997792865,
+    "v4 refit (same data)": {
+      "S": 60.95540244001352,
+      "diff": 2.1490605577793453,
+      "ci": [
+        -0.0,
+        4.3
+      ]
+    },
+    "B raw blend (same data)": {
+      "S": 61.85496874086082,
+      "diff": 1.2494942569320457,
+      "ci": [
+        -0.0,
+        2.5
+      ]
+    },
+    "ablate sharp: no decomposition (no twoway, no fa)": {
+      "S": 63.50724405326523,
+      "diff": -0.4027810554723639,
+      "ci": [
+        -1.0,
+        0.1
+      ]
+    },
+    "ablate shallow: no clustering (no seg)": {
+      "S": 62.57385944153744,
+      "diff": 0.5306035562554335,
+      "ci": [
+        -0.5,
+        1.5
+      ]
+    },
+    "ablate shallow: no two-way decomposition": {
+      "S": 62.40267426058451,
+      "diff": 0.7017887372083536,
+      "ci": [
+        0.0,
+        1.4
+      ]
+    },
+    "ablate shallow: raw only (sibraw + d3dyn)": {
+      "S": 61.81787113472996,
+      "diff": 1.286591863062899,
+      "ci": [
+        -0.0,
+        2.6
+      ]
+    }
+  }
+}

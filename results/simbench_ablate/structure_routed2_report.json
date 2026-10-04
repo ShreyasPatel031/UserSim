@@ -1,0 +1,423 @@
+{
+  "configs": {
+    "ROUTED (DR sharp, clustering shallow)": {
+      "sharp": [
+        {
+          "d3dyn": 0.4,
+          "sibraw": 0.0,
+          "ocraw": 0.1,
+          "fa": 0.1,
+          "twoway": 0.4
+        },
+        1.75
+      ],
+      "shallow": [
+        {
+          "sibraw": 0.8,
+          "seg": 0.1,
+          "d3dyn": 0.1
+        },
+        1.0
+      ],
+      "router": [
+        0.5,
+        0.0
+      ]
+    },
+    "ablation: no decomposition at all on sharp": {
+      "sharp": [
+        {
+          "d3dyn": 0.4,
+          "sibraw": 0.3,
+          "ocraw": 0.3
+        },
+        1.75
+      ],
+      "shallow": [
+        {
+          "sibraw": 0.8,
+          "seg": 0.1,
+          "d3dyn": 0.1
+        },
+        1.0
+      ],
+      "router": [
+        1.0,
+        1.0
+      ]
+    },
+    "ablation: no two-way decomposition on sharp": {
+      "sharp": [
+        {
+          "d3dyn": 0.4,
+          "sibraw": 0.3,
+          "ocraw": 0.3,
+          "fa": 0.0
+        },
+        1.75
+      ],
+      "shallow": [
+        {
+          "sibraw": 0.8,
+          "seg": 0.1,
+          "d3dyn": 0.1
+        },
+        1.0
+      ],
+      "router": [
+        1.0,
+        1.0
+      ]
+    },
+    "variant: two-way decomposition also on shallow": {
+      "sharp": [
+        {
+          "d3dyn": 0.4,
+          "sibraw": 0.0,
+          "ocraw": 0.1,
+          "fa": 0.1,
+          "twoway": 0.4
+        },
+        1.75
+      ],
+      "shallow": [
+        {
+          "sibraw": 0.1,
+          "seg": 0.1,
+          "d3dyn": 0.1,
+          "twoway": 0.7
+        },
+        1.0
+      ],
+      "router": [
+        0.5,
+        -0.5
+      ]
+    },
+    "ablation: no clustering on shallow": {
+      "sharp": [
+        {
+          "d3dyn": 0.4,
+          "sibraw": 0.0,
+          "ocraw": 0.1,
+          "fa": 0.1,
+          "twoway": 0.4
+        },
+        1.75
+      ],
+      "shallow": [
+        {
+          "sibraw": 0.9,
+          "d3dyn": 0.1
+        },
+        1.0
+      ],
+      "router": [
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "slices": {
+    "SHARP (top>=70%)": {
+      "N": 79,
+      "routed": 65.34820477043212,
+      "v4 refit (same data)": {
+        "S": 70.7504398523137,
+        "diff": -5.402235081881594,
+        "ci": [
+          -11.4,
+          -0.0
+        ]
+      },
+      "B raw blend": {
+        "S": 62.56501932345132,
+        "diff": 2.783185446980789,
+        "ci": [
+          -0.0,
+          5.7
+        ]
+      },
+      "D3dyn": {
+        "S": 47.174337538573575,
+        "diff": 18.173867231858537,
+        "ci": [
+          9.1,
+          27.5
+        ]
+      },
+      "ablation: no decomposition at all on sharp": {
+        "S": 66.81459675056507,
+        "diff": -1.4663919801329548,
+        "ci": [
+          -4.5,
+          1.4
+        ]
+      },
+      "ablation: no two-way decomposition on sharp": {
+        "S": 66.81459675056507,
+        "diff": -1.4663919801329548,
+        "ci": [
+          -4.5,
+          1.4
+        ]
+      },
+      "variant: two-way decomposition also on shallow": {
+        "S": 64.20584931810599,
+        "diff": 1.1423554523261246,
+        "ci": [
+          -0.4,
+          2.7
+        ]
+      },
+      "ablation: no clustering on shallow": {
+        "S": 65.68674279101019,
+        "diff": -0.3385380205780684,
+        "ci": [
+          -2.4,
+          1.7
+        ]
+      }
+    },
+    "SHALLOW (top<70%)": {
+      "N": 332,
+      "routed": 62.2842999246516,
+      "v4 refit (same data)": {
+        "S": 58.62465558588184,
+        "diff": 3.6596443387697533,
+        "ci": [
+          1.6,
+          6.0
+        ]
+      },
+      "B raw blend": {
+        "S": 61.686010921509464,
+        "diff": 0.5982890031421372,
+        "ci": [
+          -0.1,
+          1.3
+        ]
+      },
+      "D3dyn": {
+        "S": 52.166809201849176,
+        "diff": 10.117490722802426,
+        "ci": [
+          7.2,
+          13.3
+        ]
+      },
+      "ablation: no decomposition at all on sharp": {
+        "S": 60.86314490725296,
+        "diff": 1.4211550173986365,
+        "ci": [
+          0.9,
+          2.0
+        ]
+      },
+      "ablation: no two-way decomposition on sharp": {
+        "S": 60.86314490725296,
+        "diff": 1.4211550173986365,
+        "ci": [
+          0.9,
+          2.0
+        ]
+      },
+      "variant: two-way decomposition also on shallow": {
+        "S": 63.068106926676144,
+        "diff": -0.7838070020245457,
+        "ci": [
+          -1.6,
+          -0.0
+        ]
+      },
+      "ablation: no clustering on shallow": {
+        "S": 60.72246580217271,
+        "diff": 1.5618341224788959,
+        "ci": [
+          0.4,
+          2.7
+        ]
+      }
+    },
+    "  moderate": {
+      "N": 193,
+      "routed": 65.83370368850365,
+      "v4 refit (same data)": {
+        "S": 63.69770654961008,
+        "diff": 2.13599713889356,
+        "ci": [
+          -0.4,
+          4.9
+        ]
+      },
+      "B raw blend": {
+        "S": 65.43985131029928,
+        "diff": 0.3938523782043728,
+        "ci": [
+          -0.6,
+          1.3
+        ]
+      },
+      "D3dyn": {
+        "S": 55.03636333413214,
+        "diff": 10.797340354371505,
+        "ci": [
+          7.2,
+          14.6
+        ]
+      },
+      "ablation: no decomposition at all on sharp": {
+        "S": 63.71351833569712,
+        "diff": 2.120185352806534,
+        "ci": [
+          1.4,
+          2.9
+        ]
+      },
+      "ablation: no two-way decomposition on sharp": {
+        "S": 63.71351833569712,
+        "diff": 2.120185352806534,
+        "ci": [
+          1.4,
+          2.9
+        ]
+      },
+      "variant: two-way decomposition also on shallow": {
+        "S": 66.80021989137963,
+        "diff": -0.9665162028759887,
+        "ci": [
+          -2.2,
+          0.2
+        ]
+      },
+      "ablation: no clustering on shallow": {
+        "S": 64.25353332959955,
+        "diff": 1.5801703589041005,
+        "ci": [
+          0.4,
+          2.9
+        ]
+      }
+    },
+    "  no majority": {
+      "N": 139,
+      "routed": 57.35599110146135,
+      "v4 refit (same data)": {
+        "S": 51.580779067899485,
+        "diff": 5.775212033561877,
+        "ci": [
+          2.3,
+          9.7
+        ]
+      },
+      "B raw blend": {
+        "S": 56.47384405074376,
+        "diff": 0.882147050717594,
+        "ci": [
+          -0.2,
+          1.9
+        ]
+      },
+      "D3dyn": {
+        "S": 48.18246425558577,
+        "diff": 9.173526845875575,
+        "ci": [
+          4.5,
+          14.4
+        ]
+      },
+      "ablation: no decomposition at all on sharp": {
+        "S": 56.905432161283755,
+        "diff": 0.4505589401775987,
+        "ci": [
+          0.0,
+          0.9
+        ]
+      },
+      "ablation: no two-way decomposition on sharp": {
+        "S": 56.905432161283755,
+        "diff": 0.4505589401775987,
+        "ci": [
+          0.0,
+          0.9
+        ]
+      },
+      "variant: two-way decomposition also on shallow": {
+        "S": 57.886108349785694,
+        "diff": -0.5301172483243408,
+        "ci": [
+          -1.5,
+          0.5
+        ]
+      },
+      "ablation: no clustering on shallow": {
+        "S": 55.81961664538579,
+        "diff": 1.536374456075554,
+        "ci": [
+          -0.5,
+          3.6
+        ]
+      }
+    },
+    "ALL": {
+      "N": 411,
+      "routed": 62.87322567359725,
+      "v4 refit (same data)": {
+        "S": 60.95540244001352,
+        "diff": 1.9178232335837275,
+        "ci": [
+          -0.2,
+          3.9
+        ]
+      },
+      "B raw blend": {
+        "S": 61.85496874086082,
+        "diff": 1.0182569327364281,
+        "ci": [
+          0.2,
+          1.9
+        ]
+      },
+      "D3dyn": {
+        "S": 51.2071856947962,
+        "diff": 11.666039978801045,
+        "ci": [
+          8.7,
+          14.6
+        ]
+      },
+      "ablation: no decomposition at all on sharp": {
+        "S": 62.00709793796259,
+        "diff": 0.8661277356346565,
+        "ci": [
+          0.1,
+          1.6
+        ]
+      },
+      "ablation: no two-way decomposition on sharp": {
+        "S": 62.00709793796259,
+        "diff": 0.8661277356346565,
+        "ci": [
+          0.1,
+          1.6
+        ]
+      },
+      "variant: two-way decomposition also on shallow": {
+        "S": 63.28679707004101,
+        "diff": -0.4135713964437599,
+        "ci": [
+          -1.1,
+          0.3
+        ]
+      },
+      "ablation: no clustering on shallow": {
+        "S": 61.676669894917616,
+        "diff": 1.1965557786796253,
+        "ci": [
+          0.2,
+          2.2
+        ]
+      }
+    }
+  }
+}
