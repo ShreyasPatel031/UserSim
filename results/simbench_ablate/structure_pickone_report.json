@@ -1,0 +1,52 @@
+{
+  "SHARP": {
+    "order": [
+      "twoway3",
+      "d3dyn"
+    ],
+    "temp": {
+      "twoway3": 1.1,
+      "d3dyn": 1.75
+    },
+    "eval": 69.63329106000701,
+    "ref": "v4 refit",
+    "ref_S": 70.7504398523137,
+    "diff": -1.1171487923067036,
+    "ci": [
+      -7.6,
+      4.8
+    ],
+    "used": {
+      "d3dyn": 47,
+      "twoway3": 32
+    }
+  },
+  "SHALLOW": {
+    "order": [
+      "twoway3",
+      "sibraw",
+      "d3dynseg",
+      "d3dyn"
+    ],
+    "temp": {
+      "twoway3": 0.9,
+      "sibraw": 0.9,
+      "d3dynseg": 1.1,
+      "d3dyn": 1.0
+    },
+    "eval": 60.03477438659811,
+    "ref": "raw blend B",
+    "ref_S": 61.686010921509464,
+    "diff": -1.6512365349113522,
+    "ci": [
+      -3.6,
+      0.3
+    ],
+    "used": {
+      "d3dyn": 89,
+      "d3dynseg": 88,
+      "sibraw": 79,
+      "twoway3": 76
+    }
+  }
+}

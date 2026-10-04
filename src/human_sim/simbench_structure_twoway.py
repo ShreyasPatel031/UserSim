@@ -41,7 +41,28 @@ def country_dist(prof, a, b, skip):
     return float(np.mean([0.5 * np.abs(prof[a][st] - prof[b][st]).sum() for st in common]))
 
 
-def predict(sv, prof, t, lam, k=None):
+def within_gap(sv, t, sib_vals, a, v, K=19):
+    """Target's gap from its disjoint same-country groups, averaged over similar OTHER questions both answered
+    (same option count), similarity-weighted. None if no such question."""
+    C = t["cell"][1]
+    w = lambda c: max(sv["size"].get(c, 1.0) or 1.0, 1.0)  # noqa: E731
+    sib_cells = [c for c in sv["cells"] if c[1] == C and len(c[2]) == 1 and c[2][0][0] == a and c[2][0][1] in sib_vals]
+    gaps = []
+    for st2, sim in L.neighbours(sv, t["text"], t["stem"], K):
+        tv = sv["obs"].get((t["cell"], st2))
+        if tv is None:
+            continue
+        have = [c for c in sib_cells if (c, st2) in sv["obs"] and len(sv["obs"][(c, st2)]) == len(tv)]
+        if not have:
+            continue
+        m = sum(sv["obs"][(c, st2)] * w(c) for c in have) / sum(w(c) for c in have)
+        gaps.append((max(sim, 0.01), tv, m))
+    if not gaps:
+        return None
+    return gaps
+
+
+def predict(sv, prof, t, lam, k=None, require_gap=False, cross_only=False):
     if t["split"] == "Pop" or t["stem"] not in sv["keys"] or len(t["cell"][2]) != 1:
         return None
     st, (ds, C, ((a, v),)) = t["stem"], t["cell"]
@@ -65,7 +86,21 @@ def predict(sv, prof, t, lam, k=None):
         L2 = sum(vals[s][0] * vals[s][1] for s in sibs) / sum(vals[s][1] for s in sibs)
         gaps.append((C2, vals[own[0]][0] - L2))
     G = np.zeros_like(Lc)
-    if gaps:
+    if not gaps and cross_only:
+        return None  # the group gap can only be trusted when other countries show it on this very question
+    if not gaps and require_gap:
+        # no other country to estimate the group gap: use the within-country gap on similar questions, mapped to the
+        # target question as a shift of the target's TOP-option share relative to its siblings (option counts differ)
+        wg = within_gap(sv, t, sib_vals, a, v)
+        if wg is None:
+            return None
+        # per-option gap only where the similar question has the same options count as the target question
+        same = [(s_, tv - m) for s_, tv, m in wg if len(tv) == len(Lc)]
+        if not same:
+            return None
+        G = sum(s_ * g for s_, g in same) / sum(s_ for s_, _ in same)
+        gaps = [("within", G)]
+    if gaps and not (require_gap and gaps[0][0] == "within"):
         if k is None:
             G = np.mean([g for _, g in gaps], axis=0)
         else:
@@ -83,6 +118,39 @@ def predict(sv, prof, t, lam, k=None):
         return None
     p = p[[keys.index(x) for x in t["q"]["keys"]]]
     return p / p.sum()
+
+
+def main_cross():
+    """('dd3', 1.0, 0): two-way decomposition only when other countries give the group gap on the target question."""
+    held = L.held_rows()
+    sv = L.build_surveys(held)
+    out = pd.read_pickle(XN.OUT)
+    res = {}
+    for w in ("dev", "eval"):
+        ts = L.targets(w)
+        for t in ts:
+            res[t["q"]["qid"]] = predict(sv[t["q"]["dataset"]], {}, t, 1.0, None, cross_only=True)
+        ok = [t for t in ts if res[t["q"]["qid"]] is not None]
+        print(f"('dd3', 1.0, 0) {w}: coverage {len(ok)}/{len(ts)} S {np.mean([L.S(t['q'], res[t['q']['qid']]) for t in ok]):.1f} | by dataset "
+              f"{pd.Series([t['q']['dataset'] for t in ok]).value_counts().to_dict()}", flush=True)
+    out[("dd3", 1.0, 0)] = res
+    pd.to_pickle(out, XN.OUT)
+
+
+def main_gap():
+    """('dd2', 1.0, 0): two-way decomposition that never uses raw siblings without an estimated group gap."""
+    held = L.held_rows()
+    sv = L.build_surveys(held)
+    out = pd.read_pickle(XN.OUT)
+    res = {}
+    for w in ("dev", "eval"):
+        ts = L.targets(w)
+        for t in ts:
+            res[t["q"]["qid"]] = predict(sv[t["q"]["dataset"]], {}, t, 1.0, None, require_gap=True)
+        ok = [t for t in ts if res[t["q"]["qid"]] is not None]
+        print(f"('dd2', 1.0, 0) {w}: coverage {len(ok)}/{len(ts)} S {np.mean([L.S(t['q'], res[t['q']['qid']]) for t in ok]):.1f}", flush=True)
+    out[("dd2", 1.0, 0)] = res
+    pd.to_pickle(out, XN.OUT)
 
 
 def main():
@@ -109,4 +177,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main_cross() if "--cross" in sys.argv else main_gap() if "--gap" in sys.argv else main()

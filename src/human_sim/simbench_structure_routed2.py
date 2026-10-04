@@ -30,7 +30,7 @@ from human_sim.simbench_routing_audit import ci
 from human_sim.simbench_structure_seg import load
 
 TOOLS = {"sibraw": ("sib:0@sib", 19, 0), "ocraw": ("mean", 19, 0), "fa": ("fa@sib", 10, 2), "seg": ("segsoft@sib", 19, 8),
-         "twoway": ("dd", 1.0, 0)}
+         "twoway": ("dd", 1.0, 0), "twoway2": ("dd2", 1.0, 0), "twoway3": ("dd3", 1.0, 0)}
 SHARP = ["d3dyn", "sibraw", "ocraw", "fa", "twoway"]
 SHALLOW = ["sibraw", "seg", "d3dyn"]
 T_SHARP = (1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0)
