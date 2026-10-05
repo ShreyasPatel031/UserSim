@@ -351,9 +351,18 @@ def _recipients(msg: email.message.Message) -> str:
         _decode(msg.get("To")),
         _decode(msg.get("Delivered-To")),
         _decode(msg.get("X-Original-To")),
+        _decode(msg.get("X-Google-Original-To")),
+        _decode(msg.get("Envelope-To")),
+        _decode(msg.get("X-Envelope-To")),
         _decode(msg.get("Cc")),
     ]
     return " ".join(p for p in parts if p).lower()
+
+
+def _imap_rate_limited(exc: BaseException) -> bool:
+    """True when Gmail is refusing reads (not when a mailbox is simply empty)."""
+    msg = str(exc or "").lower()
+    return any(s in msg for s in ("too many", "rate limit", "bandwidth", "overquota", "limit exceeded"))
 
 
 def _msg_timestamp(msg: email.message.Message) -> float | None:
@@ -395,7 +404,7 @@ def _iter_recent_messages(
 _POLL_LOCK = threading.Lock()
 _POLL: dict[str, Any] = {"user": "", "ts": 0.0, "rows": [], "max_uid": 0}
 _BODIES: dict[bytes, email.message.Message] = {}
-_HEADER_FIELDS = "(TO CC DELIVERED-TO X-ORIGINAL-TO DATE MESSAGE-ID)"
+_HEADER_FIELDS = "(TO CC DELIVERED-TO X-ORIGINAL-TO X-GOOGLE-ORIGINAL-TO ENVELOPE-TO X-ENVELOPE-TO DATE MESSAGE-ID)"
 _UID_RE = re.compile(rb"UID (\d+)")
 
 
@@ -487,6 +496,10 @@ def _recent_header_rows(username: str, app_password: str, lookback: int) -> list
                 _drop_conn()
                 if attempt:
                     raise
+                # A second immediate login makes Gmail's limit worse and every
+                # waiter then sees an empty inbox ("no verification email").
+                if _imap_rate_limited(exc):
+                    time.sleep(5.0)
                 print(f"[email_codes] imap poll retry after {exc!r}", flush=True)
         return []
 

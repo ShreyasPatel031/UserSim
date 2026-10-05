@@ -38,6 +38,38 @@ from mvp.executor import run_mail
 
 DEFAULT_TIMEOUT_S = 240.0
 
+
+def email_poll_slice_s(deadline: float, *, now: float | None = None) -> float | None:
+    """How long to poll now, or None when the signup deadline is too close.
+
+    The previous wait was ``max(5, min(75, deadline-now-10))`` and then gave up
+    after two tries. A short or already-expired budget still blocked for 5s, and
+    the Gemini call between tries overran the caller's wait_for (bare TimeoutError)
+    instead of reporting email_timeout.
+    """
+    left = float(deadline) - (time.time() if now is None else now) - 12.0
+    if left < 8.0:
+        return None
+    return min(90.0, left)
+
+
+def model_call_timeout_s(deadline: float | None, *, cap: float = 40.0, now: float | None = None) -> float | None:
+    """Seconds for one signup model call. None means the deadline is too close to call."""
+    if deadline is None:
+        return cap
+    left = float(deadline) - (time.time() if now is None else now) - 5.0
+    if left < 5.0:
+        return None
+    return min(cap, left)
+
+
+def nav_timeout_ms(deadline: float | None, *, cap_ms: int = 60000, now: float | None = None) -> int:
+    """Page-load timeout. Signup navigation used a fixed 30s and died on slow apps."""
+    if deadline is None:
+        return cap_ms
+    left_ms = int((float(deadline) - (time.time() if now is None else now)) * 1000) - 5000
+    return max(10000, min(cap_ms, left_ms))
+
 # Small, optional hints only. No selectors, no scripted moves.
 SITE_HINTS: dict[str, str] = {}
 
@@ -86,6 +118,38 @@ _ERROR_TEXT = re.compile(
     r"disposable|use a (work|different) email",
     re.I,
 )
+# A verify step that says this may already have sent the mail. Do not treat it
+# as "no email was sent" (that path never reads the inbox).
+_RATE_LIMIT = re.compile(
+    r"too many (requests|attempts)|rate limit|too fast|temporarily blocked",
+    re.I,
+)
+# Statable's verify step: a static passcode page. Past tense / explicit "enter
+# the code" only, so a signup form that says "we'll send you a code" is not it.
+_VERIFY_PATH = re.compile(r"/(verify|verification|otp|passcode)(\b|[-_/]|$)", re.I)
+_AWAIT_CODE_COPY = re.compile(
+    r"enter (the |your )?(\d-digit |\w+ )?(code|passcode|otp|one-time)|passcode|"
+    r"code (we|that was|was) (just )?sent|we(['’]ve| have| just)? sent (you )?(a|an|the|your)? ?"
+    r"(code|passcode|verification|email|link|magic)|check your (inbox|e-?mail)",
+    re.I,
+)
+
+
+def awaiting_email_code(url: str, body: str, *, email_submitted: bool) -> bool:
+    """True on a verify / check-your-inbox step after the email was submitted.
+
+    Such a page is static while the mail is in flight. The loop then reads the
+    inbox (until the signup deadline) instead of counting the page as "stopped
+    changing" or clicking resend, which made Statable say "too many requests".
+    """
+    if not email_submitted:
+        return False
+    text = str(body or "")[:3000]
+    if _SMS_PAGE.search(text) and not re.search(r"\b(e-?mail|inbox)\b", text, re.I):
+        return False  # the SMS step has its own wait
+    if _VERIFY_PATH.search(urlparse(str(url or "")).path or ""):
+        return True
+    return bool(_AWAIT_CODE_COPY.search(text) or _RATE_LIMIT.search(text))
 
 
 _COOKIE = re.compile(
@@ -525,6 +589,7 @@ Rules:
 async def _decide(
     *, snap: dict[str, Any], ident: dict[str, str], site_url: str, history: list[str],
     note: str, hint: str, dead_names: set[str] | None = None,
+    deadline: float | None = None,
 ) -> dict[str, Any] | None:
     from capability.gemini_config import extract_json, gemini_chat
 
@@ -550,11 +615,15 @@ async def _decide(
         f"{note}\n"
     )
     for attempt in range(3):
+        timeout = model_call_timeout_s(deadline)
+        if timeout is None:
+            print("[signup] model call skipped: signup deadline", flush=True)
+            return None
         try:
             raw = await asyncio.wait_for(
                 gemini_chat([{"role": "user", "content": prompt}], model=_model(), temperature=0.4 * attempt,
                             json_mode=True, max_retries=2),
-                timeout=40,
+                timeout=timeout,
             )
             data = extract_json(raw)
             if isinstance(data, dict):
@@ -574,7 +643,7 @@ workspace menu, is on the page) IS signed_in: the account exists and the app is 
 "evidence":"one sentence naming what on the page shows it"}."""
 
 
-async def _verify_signed_in(snap: dict[str, Any]) -> tuple[bool, str]:
+async def _verify_signed_in(snap: dict[str, Any], *, deadline: float | None = None) -> tuple[bool, str]:
     from capability.gemini_config import extract_json, gemini_chat
 
     url = str(snap.get("url") or "")
@@ -584,11 +653,14 @@ async def _verify_signed_in(snap: dict[str, Any]) -> tuple[bool, str]:
         f"Visible text: {str(snap.get('body') or '')[:1800]}\n"
         f"Elements:\n{_fmt_elements(elements[:80])}\n"
     )
+    timeout = model_call_timeout_s(deadline)
+    if timeout is None:
+        return False, "verify skipped: signup deadline"
     try:
         raw = await asyncio.wait_for(
             gemini_chat([{"role": "user", "content": prompt}], model=_model(), temperature=0,
                         json_mode=True, max_retries=2),
-            timeout=40,
+            timeout=timeout,
         )
         data = extract_json(raw)
     except Exception as exc:  # noqa: BLE001
@@ -1411,10 +1483,26 @@ async def signup_in_session(
     try:
         start = signup_url or ""
         cur = str(getattr(page, "url", "") or "")
+
+        async def _open(url: str) -> None:
+            ms = nav_timeout_ms(float(spend["deadline"]))
+            try:
+                await page.goto(url, wait_until="domcontentloaded", timeout=ms)
+            except Exception as exc:  # noqa: BLE001
+                if "timeout" not in type(exc).__name__.lower():
+                    raise
+                # app.flat.social/sign-up (and similar) missed a fixed 30s load.
+                # One longer try, still inside the signup deadline.
+                retry_ms = nav_timeout_ms(float(spend["deadline"]))
+                if retry_ms < 15000:
+                    raise
+                steps.append(f"navigation timed out; retrying once ({retry_ms}ms)")
+                await page.goto(url, wait_until="domcontentloaded", timeout=retry_ms)
+
         if start:
-            await page.goto(start, wait_until="domcontentloaded", timeout=30000)
+            await _open(start)
         elif _site(cur) != site or cur.startswith("about:"):
-            await page.goto(site_url, wait_until="domcontentloaded", timeout=30000)
+            await _open(site_url)
         await _settle(page, 1200)
         steps.append(f"start {page.url[:100]}")
 
@@ -1437,9 +1525,59 @@ async def signup_in_session(
         email_waits = 0
         onboarding_verified: dict[str, int] = {}
         root_tried = False
+        alias_retries = 0
+        just_rotated = False
+        # False after a rotation until the new address is actually submitted,
+        # so a stale "plus address" banner cannot burn the remaining retries.
+        alias_armed = True
+        # Set once a verification mail was read; after that (e.g. the code was
+        # rejected) the model may resend as before.
+        mail_used = False
+        verify_hold = False
+        from mvp.signup_inbox import can_rotate_alias, classify_alias_block, fresh_gmail_address
+
+        def _rotate_alias(kind: str | None) -> bool:
+            nonlocal alias_retries, email_since, email_submitted, rejects, same, last_sig, note, just_rotated, alias_armed
+            if not alias_armed or not can_rotate_alias(kind, alias_retries):
+                return False
+            username = getattr(inbox, "username", "") or ""
+            if "@" not in username:
+                return False
+            alias_retries += 1
+            # Dotted local, no plus-tag. PostHog rejects any '+'; sites that
+            # strip '+' still see a new address as long as they keep dots.
+            fresh = fresh_gmail_address(username, site, tag, dotted=True)
+            inbox.address = fresh
+            ident["email"] = fresh
+            ident.pop("code", None)
+            result["email"] = fresh
+            email_since = time.time()
+            email_submitted = False
+            rejects = 0
+            same = 0
+            last_sig = ""
+            api_rejects.clear()
+            just_rotated = True
+            alias_armed = False
+            steps.append(
+                f"alias rejected ({kind}); trying a dotted address with no plus-tag ({alias_retries}/2)"
+            )
+            # steps line shouldn't reveal the address. The model gets {email}.
+            note = (
+                "The site rejected the previous email (" + str(kind) + "). "
+                "A new email is in {email}. Fill that address and submit again. "
+                "Do not reuse the previous address."
+            )
+            return True
+
         # spend["deadline"] moves once when a captcha appears (captcha grace).
         while time.time() < float(spend["deadline"]):
-            if api_rejects:
+            skip_alias = just_rotated
+            just_rotated = False
+            if api_rejects and not skip_alias:
+                kind = classify_alias_block(" ".join(api_rejects))
+                if _rotate_alias(kind):
+                    continue
                 dom = ident["email"].split("@")[1] if "@" in ident.get("email", "") else "?"
                 steps.append(f"email rejected by the site API: {api_rejects[0]} ({dom})")
                 return _finish(False, f"email_rejected: {api_rejects[0]} ({dom})")
@@ -1478,6 +1616,18 @@ async def signup_in_session(
             sig = _page_sig(snap)
             same = same + 1 if sig == last_sig else 0
             last_sig = sig
+            email_in_page = bool(ident.get("email")) and ident["email"].lower() in (
+                str(snap.get("body")) + " " + str(snap.get("url"))
+            ).lower().replace("%40", "@")
+            verify_hold = (
+                not mail_used and not ident.get("code")
+                and not (ident.get("phone") and sms_state["since"] is not None)
+                and awaiting_email_code(str(snap.get("url") or ""), str(snap.get("body") or ""),
+                                        email_submitted=email_submitted or email_in_page)
+            )
+            if verify_hold:
+                # A static verify page is waiting on mail, not stuck.
+                same = 0
             if ident.get("code") and _CODE_REJECTED.search(str(snap.get("body") or "")[:3000]):
                 # n8n showed its code step again after the trial form and rejected
                 # the code already used; retyping it looped until the timeout.
@@ -1580,7 +1730,7 @@ async def signup_in_session(
                     and not onboarding_blocks(path_now)
                     and _site(str(snap.get("url") or "")) == site
                 ):
-                    ok_now, evidence_now = await _verify_signed_in(snap)
+                    ok_now, evidence_now = await _verify_signed_in(snap, deadline=float(spend["deadline"]))
                     if ok_now:
                         steps.append(f"page stopped changing but it is the signed-in app: {evidence_now}")
                         return _finish(True, "signed_up", evidence_now)
@@ -1613,18 +1763,23 @@ async def signup_in_session(
                     continue
                 except Exception:
                     pass
-            decision = await _decide(
-                snap=snap, ident=ident, site_url=site_url, history=history,
-                note=note + (
-                    "\nThe page did not change after your last actions. Do not repeat them; "
-                    f"these had no effect: {'; '.join(dead[-5:])}. Try a different control "
-                    "(a primary button, Continue/Next/Skip/Done, Close, or press Escape). Controls "
-                    "that failed twice are removed from the list."
-                    if same else ""
-                ),
-                hint=SITE_HINTS.get(site, ""),
-                dead_names={n for n, c in dead_count.items() if c >= 2},
-            )
+            if verify_hold:
+                # Read the inbox; no model step, so no resend click.
+                decision = {"status": "need_email", "actions": [], "thought": "inbox polled on the verify step"}
+            else:
+                decision = await _decide(
+                    snap=snap, ident=ident, site_url=site_url, history=history,
+                    note=note + (
+                        "\nThe page did not change after your last actions. Do not repeat them; "
+                        f"these had no effect: {'; '.join(dead[-5:])}. Try a different control "
+                        "(a primary button, Continue/Next/Skip/Done, Close, or press Escape). Controls "
+                        "that failed twice are removed from the list."
+                        if same else ""
+                    ),
+                    hint=SITE_HINTS.get(site, ""),
+                    dead_names={n for n, c in dead_count.items() if c >= 2},
+                    deadline=float(spend["deadline"]),
+                )
             note = ""
             bad = [a for a in (decision or {}).get("actions") or [] if isinstance(a, dict)
                    and str(a.get("do")) in {"fill", "click", "check", "select"}
@@ -1652,7 +1807,11 @@ async def signup_in_session(
                 steps.append("site is running a bot check; waiting")
                 await page.wait_for_timeout(4000)
                 continue
-            if status == "need_email" and _ERROR_TEXT.search(body_low) and not ident.get("code"):
+            if (
+                status == "need_email" and _ERROR_TEXT.search(body_low) and not ident.get("code")
+                and not (email_submitted and _RATE_LIMIT.search(body_low))
+                and not verify_hold
+            ):
                 m = _ERROR_TEXT.search(body_low)
                 note = (f"The page shows an error ({m.group(0)!r}); no email was sent. Reload the "
                         "page (goto the current URL), wait, then fill and submit the form again.")
@@ -1660,6 +1819,9 @@ async def signup_in_session(
                 errors_seen += 1
                 if errors_seen >= 3:
                     return _finish(False, f"site_error: {m.group(0)}")
+                if _RATE_LIMIT.search(body_low):
+                    # Hammering the form is what made the site say too many requests.
+                    await page.wait_for_timeout(8000)
                 continue
             thought = _redact(str(decision.get("thought") or "")[:140], ident)
             steps.append(f"{urlparse(str(snap.get('url'))).netloc}{urlparse(str(snap.get('url'))).path[:50]} :: {status} :: {thought}")
@@ -1672,7 +1834,7 @@ async def signup_in_session(
                     pass
 
             if status == "signed_in":
-                ok, evidence = await _verify_signed_in(snap)
+                ok, evidence = await _verify_signed_in(snap, deadline=float(spend["deadline"]))
                 if ok:
                     # A reload must still show the workspace (cookie/session really set).
                     try:
@@ -1681,7 +1843,7 @@ async def signup_in_session(
                         pass
                     await _settle(page, 2500)
                     snap2 = await _snapshot(page)
-                    ok2, evidence2 = await _verify_signed_in(snap2)
+                    ok2, evidence2 = await _verify_signed_in(snap2, deadline=float(spend["deadline"]))
                     path2 = urlparse(str(snap2.get("url"))).path or ""
                     onboarding = onboarding_blocks(path2)
                     if ok2 and not _has_password_or_email_field(snap2) and onboarding:
@@ -1807,7 +1969,21 @@ async def signup_in_session(
                 if reason.startswith("phone") and ident.get("phone"):
                     # We did give it the owner's number; the site would not take it.
                     reason = "phone_rejected"
-                if reason == "captcha":
+                if (
+                    email_submitted and not ident.get("code") and _RATE_LIMIT.search(body_low)
+                    and reason in {"site_error", "email_rejected", "blocked"}
+                ):
+                    # Statable: "too many requests" on the verify step. The mail
+                    # may already be in the inbox; read it before failing.
+                    status = "need_email"
+                elif not skip_alias and reason in {"account_exists", "email_rejected"}:
+                    # Body text only. The reason token "account_exists" must not
+                    # rotate by itself: signup pages say "already have an account?"
+                    # as a log-in link, and the model repeats that.
+                    kind = classify_alias_block(body_low)
+                    if _rotate_alias(kind):
+                        continue
+                if status == "blocked" and reason == "captcha":
                     res = await _clear_captcha(page, snap, spend)
                     captcha_log.append(res)
                     steps.append(f"captcha -> {res.get('method')} ok={res.get('ok')} {str(res.get('detail') or '')[:100]}")
@@ -1815,17 +1991,22 @@ async def signup_in_session(
                         await _settle(page)
                         continue
                     return _finish(False, f"captcha_unsolved ({res.get('method')})")
-                return _finish(False, reason)
+                if status == "blocked":
+                    return _finish(False, reason)
 
             rej = _EMAIL_REJECT.search(body_low)
             email_box = any(
                 e.get("tag") == "input" and ("email" in f"{e.get('type')} {e.get('name')} {e.get('placeholder')} {e.get('field')}".lower())
                 for e in snap.get("elements") or []
             )
+            if not skip_alias and email_submitted and email_box:
+                kind = classify_alias_block(body_low)
+                if _rotate_alias(kind):
+                    continue
             if email_submitted and rej and email_box:
                 rejects += 1
-                # Gmail is the only inbox; there is nothing to swap to. Two
-                # clear rejections of the same Gmail alias end the attempt.
+                # Domain / "try again later" / work-email walls are not fixed by
+                # another alias. Two clear rejections of that kind end the attempt.
                 if rejects >= 2:
                     dom = ident["email"].split("@")[1]
                     steps.append(f"email rejected: {rej.group(0)} ({dom})")
@@ -1838,7 +2019,9 @@ async def signup_in_session(
                 # The model wants to submit a form first (or no email was typed yet).
                 status = "working"
             if status == "need_email" and not ident.get("code"):
-                left = max(5.0, min(75.0, float(spend["deadline"]) - time.time() - 10))
+                left = email_poll_slice_s(float(spend["deadline"]))
+                if left is None:
+                    return _finish(False, "email_timeout")
                 from mvp import signup_share
 
                 shared_ready = bool(share_key) and signup_share.has(share_key, site)
@@ -1851,10 +2034,14 @@ async def signup_in_session(
                     shared_ready = True
                 email_waits += 1
                 if not mail:
-                    if email_waits >= 2 or shared_ready:
+                    # Keep polling until the deadline. Two short waits used to
+                    # become email_timeout while the budget (and the mail) remained.
+                    if shared_ready or email_poll_slice_s(float(spend["deadline"])) is None:
                         return _finish(False, "email_timeout")
-                    note = "No email arrived yet. If there is a resend control use it, else wait."
+                    if not verify_hold:
+                        note = "No email arrived yet. If there is a resend control use it, else wait."
                     continue
+                mail_used = True
                 steps.append(f"mail: {mail['subject'][:60]!r} code={'yes' if mail.get('code') else 'no'} links={len(mail.get('links') or [])}")
                 code_box = any(
                     e.get("tag") in {"input", "textarea"} and e.get("type") not in {"checkbox", "radio", "password"}
@@ -1923,6 +2110,8 @@ async def signup_in_session(
                     str(act.get("do")) == "fill" and ident.get("email") and ident["email"] in str(act.get("value") or "")
                 ):
                     email_submitted = True
+                if str(act.get("do")) in {"click", "press"} and email_submitted:
+                    alias_armed = True
                 history.append(done)
                 steps.append("  " + done)
                 if str(act.get("do")) == "fill" and (done.endswith("missing") or "missing (refused oauth" in done):
