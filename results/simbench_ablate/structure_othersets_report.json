@@ -1,0 +1,108 @@
+{
+  "datasets": {
+    "TISP": {
+      "N": 485,
+      "with_anchor": 485,
+      "S_plain_all": 34.894013984680875,
+      "S_new_all": 44.62743612778921,
+      "S_plain_anchored": 34.894013984680875,
+      "S_anchor_anchored": 44.62743612778921,
+      "diff_anchored": 9.733422143108339,
+      "ci": [
+        6.8,
+        12.8
+      ]
+    },
+    "MoralMachine": {
+      "N": 500,
+      "with_anchor": 84,
+      "S_plain_all": 15.877494109345088,
+      "S_new_all": 26.157677894649222,
+      "S_plain_anchored": 10.430041633449065,
+      "S_anchor_anchored": 71.62161178406892,
+      "diff_anchored": 61.19157015061986,
+      "ci": [
+        43.1,
+        81.0
+      ]
+    },
+    "MoralMachineClassic": {
+      "N": 15,
+      "with_anchor": 15,
+      "S_plain_all": 62.79319433975659,
+      "S_new_all": 79.66354745498641,
+      "S_plain_anchored": 62.79319433975659,
+      "S_anchor_anchored": 79.66354745498641,
+      "diff_anchored": 16.870353115229825,
+      "ci": [
+        4.6,
+        30.3
+      ]
+    },
+    "OSPsychBig5": {
+      "N": 250,
+      "with_anchor": 250,
+      "S_plain_all": 44.96509399862504,
+      "S_new_all": 68.38409840893375,
+      "S_plain_anchored": 44.96509399862504,
+      "S_anchor_anchored": 68.38409840893375,
+      "diff_anchored": 23.41900441030872,
+      "ci": [
+        19.4,
+        27.5
+      ]
+    },
+    "OSPsychMACH": {
+      "N": 100,
+      "with_anchor": 100,
+      "S_plain_all": 8.553937601652189,
+      "S_new_all": 62.90780986487983,
+      "S_plain_anchored": 8.553937601652189,
+      "S_anchor_anchored": 62.90780986487983,
+      "diff_anchored": 54.35387226322763,
+      "ci": [
+        43.5,
+        65.0
+      ]
+    },
+    "OSPsychMGKT": {
+      "N": 500,
+      "with_anchor": 391,
+      "S_plain_all": 51.542338304129615,
+      "S_new_all": 79.04919336893249,
+      "S_plain_anchored": 50.679592775417724,
+      "S_anchor_anchored": 85.85459925214775,
+      "diff_anchored": 35.17500647673001,
+      "ci": [
+        30.2,
+        40.5
+      ]
+    },
+    "ConspiracyCorr": {
+      "N": 45,
+      "with_anchor": 45,
+      "S_plain_all": 36.42193002902707,
+      "S_new_all": 37.265396219804245,
+      "S_plain_anchored": 36.42193002902707,
+      "S_anchor_anchored": 37.265396219804245,
+      "diff_anchored": 0.843466190777193,
+      "ci": [
+        -12.3,
+        13.6
+      ]
+    },
+    "GlobalOpinionQA": {
+      "N": 500,
+      "with_anchor": 82,
+      "S_plain_all": 41.80889921495812,
+      "S_new_all": 40.180073074857745,
+      "S_plain_anchored": 39.887322362009556,
+      "S_anchor_anchored": 29.95545565408049,
+      "diff_anchored": -9.931866707929062,
+      "ci": [
+        -20.7,
+        1.1
+      ]
+    }
+  }
+}
