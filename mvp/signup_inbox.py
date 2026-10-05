@@ -103,12 +103,14 @@ class Inbox:
         """Wait for the next unseen message. Returns {subject, code, links, text}."""
         seen = seen if seen is not None else set()
         deadline = time.time() + max(1.0, timeout_s)
+        misses = 0
         while time.time() < deadline:
             try:
                 msgs = self.messages(newer_than)
             except Exception as exc:  # noqa: BLE001
                 print(f"[signup_inbox] {self.backend} read failed: {exc!r}", flush=True)
                 msgs = []
+                self.last_error = exc
             for msg in msgs:
                 key = str(msg.get("id") or msg.get("subject"))
                 if key in seen:
@@ -125,7 +127,8 @@ class Inbox:
                     "link_texts": [anchors.get(u, "") for u in ranked],
                     "text": (msg.get("text") or "")[:3000],
                 }
-            time.sleep(2.5)
+            misses += 1
+            time.sleep(poll_sleep_s(getattr(self, "last_error", None), misses))
         return None
 
 
@@ -196,6 +199,79 @@ def fresh_gmail_address(username: str, host: str, tag: str, *, dotted: bool = Fa
     return f"{local}+{fresh}@{domain}"
 
 
+def alias_retry_limit() -> int:
+    """Fresh dotted aliases after a plus-reject or account-exists, hard-capped at 2.
+
+    Three addresses total (the first plus-alias, then at most two dotted ones).
+    A site that folds every Gmail spelling into one mailbox still fails; more
+    aliases would only repeat that collision.
+    """
+    raw = (os.environ.get("MVP_SIGNUP_ALIAS_RETRIES") or "").strip()
+    if not raw:
+        return 2
+    try:
+        return max(0, min(2, int(raw)))
+    except ValueError:
+        return 2
+
+
+_PLUS_ADDRESS_REJECT = re.compile(
+    r"plus[_\- ]address|sub-?address(?:ing)?|"
+    r"\+\s*alias|aliases? (?:are |is )?not allowed|"
+    r"(?:do not|don't|does not|doesn't|cannot|can't) allow \+|"
+    r"cannot contain (?:a )?\+|remove the \+|"
+    r"no \+ (?:signs|aliases)|plus_addressing_not_allowed|"
+    r"plus addressing (?:is )?not|"
+    # PostHog: Email addresses with a "+" aren't supported.
+    # A plus-sign or the words plus-sign are required, so a bare
+    # "not supported" does not match. Apostrophes: straight and curly.
+    r"with a " + '[\'‘’"]' + r"?\+" + '[\'‘’"]' + r"?\s*(?:aren" + "['’]" + r"t|isn" + "['’]" + r"t|is not|are not|not) supported|"
+    r"\+\s+is(?: not|n" + "['’]" + r"t) supported|"
+    r"plus signs?(?: are| is)? (?:not |aren" + "['’]" + r"t |isn" + "['’]" + r"t )supported",
+    re.I,
+)
+_ACCOUNT_EXISTS = re.compile(
+    r"account[_\- ]exists|"
+    r"there is already an account|"
+    r"an account with this email|"
+    r"already (?:been )?registered|"
+    r"already (?:exists|in use|taken)|"
+    r"email (?:address )?already (?:exists|registered|in use|taken)",
+    re.I,
+)
+
+
+def classify_alias_block(text: str) -> str | None:
+    """'plus' or 'exists' when one more dotted alias (no +) can be tried.
+
+    A domain block, 'please try again later', or 'use a work email' is the
+    site's wall: another alias of the same Gmail inbox will not pass.
+    """
+    if not text:
+        return None
+    if _PLUS_ADDRESS_REJECT.search(text):
+        return "plus"
+    if _ACCOUNT_EXISTS.search(text):
+        return "exists"
+    return None
+
+
+def can_rotate_alias(kind: str | None, used: int) -> bool:
+    """True when this rejection should spend one of the bounded alias retries."""
+    return kind in {"plus", "exists"} and used < alias_retry_limit()
+
+
+def poll_sleep_s(exc: BaseException | None, misses: int = 0) -> float:
+    """Seconds before the next inbox read. Back off when Gmail rate-limits us."""
+    msg = str(exc or "").lower()
+    limited = exc is not None and any(
+        s in msg for s in ("too many", "rate limit", "bandwidth", "overquota", "limit exceeded")
+    )
+    if limited:
+        return min(20.0, 5.0 * (max(0, misses) + 1))
+    return 2.5
+
+
 class GmailAliasInbox(Inbox):
     """Plus/dotted alias of the vault Gmail, read over IMAP."""
 
@@ -209,14 +285,17 @@ class GmailAliasInbox(Inbox):
             raise GmailInboxMissing(GMAIL_MISSING_MSG)
         self.username, self.app_password = creds
         self.address = fresh_gmail_address(self.username, host, tag, dotted=dotted)
+        self.last_error: BaseException | None = None
 
     def messages(self, newer_than: float) -> list[dict[str, Any]]:
         from mvp.email_codes import _body_text, _decode, _msg_timestamp, messages_for_alias
 
         out = []
+        self.last_error = None
         try:
             found = messages_for_alias(self.username, self.app_password, self.address, newer_than=newer_than)
         except Exception as exc:  # noqa: BLE001
+            self.last_error = exc
             print(f"[signup_inbox] gmail poll failed: {exc!r}", flush=True)
             found = []
         for msg in found:
