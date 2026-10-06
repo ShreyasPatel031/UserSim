@@ -1,0 +1,56 @@
+{
+  "others_dd TISP": {
+    "N": 485,
+    "with_offset": 266,
+    "S": 46.664363520109404
+  },
+  "others_dd MoralMachine": {
+    "N": 84,
+    "with_offset": 0,
+    "S": 71.62161178406892
+  },
+  "others_dd MoralMachineClassic": {
+    "N": 15,
+    "with_offset": 4,
+    "S": 79.9197504361591
+  },
+  "others_dd OSPsychBig5": {
+    "N": 250,
+    "with_offset": 250,
+    "S": 70.57826825937667
+  },
+  "others_dd OSPsychMACH": {
+    "N": 100,
+    "with_offset": 97,
+    "S": 62.59562769935564
+  },
+  "others_dd OSPsychMGKT": {
+    "N": 391,
+    "with_offset": 391,
+    "S": 85.31572405109934
+  },
+  "others_dd ConspiracyCorr": {
+    "N": 45,
+    "with_offset": 39,
+    "S": 46.79628562559622
+  },
+  "others_dd GlobalOpinionQA": {
+    "N": 82,
+    "with_offset": 0,
+    "S": 29.95631679116054
+  },
+  "ng_sib": 45.81600726953878,
+  "ng_sib_gbm": 40.69385707822417,
+  "c13_v2": 44.727066735978035,
+  "c13_v2_gbm": 41.70390596115036,
+  "goqa_knn": {
+    "N": 341,
+    "S": 29.043277007333558,
+    "near_duplicates_sim_gt_0.9": 47
+  },
+  "chaos_lr": {
+    "N": 325,
+    "S": 43.10273983158592
+  },
+  "ng_sib2": 47.32651237525707
+}

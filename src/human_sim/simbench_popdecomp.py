@@ -80,6 +80,71 @@ def predict_group(sv, t, lam, dd2):
     return p / p.sum(), f"{len(oth)} countries, {len(gaps)} related questions"
 
 
+def _same_scale(s, st, st2, labs):
+    """related question uses the same answer labels as the target (so an offset on option j means the same thing)."""
+    return s["labels"].get(st2) == labs and all(labs)
+
+
+def predict_v2(svp, t, lam, K2=60):
+    """predict() with the country offset taken only from related questions with the SAME answer labels."""
+    s = svp.get(t["q"]["dataset"])
+    if s is None or t["stem"] not in s["keys"]:
+        return None, "n/a"
+    C, st = t["country"], t["stem"]
+    keys = s["keys"][st]
+    if set(keys) != set(t["q"]["keys"]):
+        return None, "keys differ"
+    oth = [s["obs"][(c, st)] for c in s["cells"] if c[1] != C and not c[2] and (c, st) in s["obs"]]
+    if not oth:
+        return None, "no other country"
+    Q = np.mean(oth, axis=0)
+    labs = s["labels"][st]
+    cell = next((c for c in s["cells"] if c[1] == C and not c[2]), None)
+    gaps = []
+    if cell is not None:
+        for st2, sim in L.neighbours(s, t["text"], st, K2):
+            own = s["obs"].get((cell, st2))
+            if own is None or not _same_scale(s, st, st2, labs):
+                continue
+            o2 = [s["obs"][(c, st2)] for c in s["cells"] if c[1] != C and not c[2] and (c, st2) in s["obs"]]
+            if o2:
+                gaps.append((max(sim, 0.01), own - np.mean(o2, axis=0)))
+    G = sum(w * g for w, g in gaps) / sum(w for w, _ in gaps) if gaps else np.zeros_like(Q)
+    p = np.clip(Q + lam * G, 1e-4, None)
+    p = p[[keys.index(k) for k in t["q"]["keys"]]]
+    return p / p.sum(), f"{len(oth)} other countries, {len(gaps)} same-scale related questions"
+
+
+def predict_group_v2(sv, t, lam, dd2, K2=60):
+    """predict_group() with the offset taken only from related questions with the SAME answer labels."""
+    from human_sim import simbench_structure_xnat as XN
+    if t["split"] == "Pop" or dd2.get(t["q"]["qid"]) is not None or len(t["cell"][2]) != 1:
+        return None, "n/a"
+    s = sv[t["q"]["dataset"]]
+    st, C, ((a, v),) = t["stem"], t["cell"][1], t["cell"][2]
+    if st not in s["keys"] or set(s["keys"][st]) != set(t["q"]["keys"]):
+        return None, "question not in pool"
+    keys = s["keys"][st]
+    same_abroad = lambda st_: [s["obs"][(c, st_)] for c in s["cells"] if c[1] != C and len(c[2]) == 1 and c[2][0][0] == a and XN.values_overlap(c[2][0][1], v) and (c, st_) in s["obs"]]  # noqa: E731
+    oth = same_abroad(st)
+    if not oth:
+        return None, "group not asked abroad"
+    Q = np.mean(oth, axis=0)
+    labs = s["labels"][st]
+    gaps = []
+    for st2, sim in L.neighbours(s, t["text"], st, K2):
+        own = s["obs"].get((t["cell"], st2))
+        if own is None or not _same_scale(s, st, st2, labs):
+            continue
+        o2 = same_abroad(st2)
+        if o2:
+            gaps.append((max(sim, 0.01), own - np.mean(o2, axis=0)))
+    G = sum(w * g for w, g in gaps) / sum(w for w, _ in gaps) if gaps else np.zeros_like(Q)
+    p = np.clip(Q + lam * G, 1e-4, None)
+    p = p[[keys.index(k) for k in t["q"]["keys"]]]
+    return p / p.sum(), f"{len(oth)} countries, {len(gaps)} same-scale related questions"
+
+
 def main():
     svp = L.build_surveys(L.held_rows(), split="Pop")
     S = lambda q, p: 100 * (1 - M.tvd(np.asarray(p), q["h"]) / q["norm"])  # noqa: E731

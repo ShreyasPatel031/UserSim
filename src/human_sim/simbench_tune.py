@@ -52,10 +52,34 @@ def cv_tune(cs, fn, grid, k=5):
     return preds, chosen
 
 
+def cv_fit(cs, base, fitter, k=5):
+    """5-fold CV for fitted corrections: fitter(train questions, their current predictions) -> predictor(c, p)."""
+    preds, chosen = [None] * len(cs), []
+    for tr, te in KFold(k, shuffle=True, random_state=0).split(np.arange(len(cs))):
+        f, info = fitter([cs[i] for i in tr], [base[i] for i in tr])
+        chosen.append(info)
+        for i in te:
+            preds[i] = f(cs[i], base[i])
+    return preds, chosen
+
+
+def fit_pos_bias(tr, base):
+    """per option position and option count: p' ~ p * exp(s * beta_pos), beta_pos = log(mean real share / mean predicted
+    share) on the training folds; strength s chosen on the training folds."""
+    beta = {}
+    for n in {len(c["h"]) for c in tr}:
+        H = np.array([c["h"] for c in tr if len(c["h"]) == n]); P = np.array([norm(b) for c, b in zip(tr, base) if len(c["h"]) == n])
+        if len(H) >= 10:
+            beta[n] = np.log(np.clip(H.mean(0), 1e-3, None) / np.clip(P.mean(0), 1e-3, None))
+    app = lambda c, p, s: norm(norm(p) * np.exp(s * beta[len(c["h"])])) if len(c["h"]) in beta else norm(p)  # noqa: E731
+    s = max((0.0, 0.25, 0.5, 0.75, 1.0, 1.25), key=lambda s_: np.mean([S(c, app(c, b, s_)) for c, b in zip(tr, base)]))
+    return (lambda c, p: app(c, p, s)), s
+
+
 # ---------------------------------------------------------------- candidate families
-def fam_decomp_blend(key):
+def fam_decomp_blend(key, xks=("xd", "xd0")):
     """w * decomposition (offset weight via key 'xd' or 'xd0') + (1 - w) * model, optional label prior v, exponent t."""
-    grid = [(xk, w, v, t) for xk in ("xd", "xd0") for w in (0.0, 0.2, 0.35, 0.5, 0.65, 0.8, 1.0) for v in (0.0, 0.2, 0.4) for t in (0.8, 0.9, 1.0, 1.15)]
+    grid = [(xk, w, v, t) for xk in xks for w in (0.0, 0.2, 0.35, 0.5, 0.65, 0.8, 1.0) for v in (0.0, 0.2, 0.4) for t in (0.8, 0.9, 1.0, 1.15)]
 
     def fn(c, g):
         xk, w, v, t = g
@@ -144,6 +168,20 @@ def fam_prior_wide():
     return fn, grid
 
 
+def fam_mix2(k1, k2):
+    """a * source1 + b * source2 + (1 - a - b) * model, exponent t (a missing source falls back to the model)."""
+    W = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
+    grid = [(a, b, t) for a in W for b in W if a + b <= 1.0 + 1e-9 for t in (0.8, 0.9, 1.0, 1.15, 1.3)]
+
+    def fn(c, g):
+        a, b, t = g
+        p = norm(c["plain"])
+        x1 = norm(c[k1]) if c.get(k1) is not None else p
+        x2 = norm(c[k2]) if c.get(k2) is not None else p
+        return temper(norm(a * x1 + b * x2 + (1 - a - b) * p), t)
+    return fn, grid
+
+
 SHARED = ("ESS", "ISSP", "Afrobarometer", "LatinoBarometro", "OpinionQA")
 
 ROUNDS = {
@@ -168,6 +206,24 @@ ROUNDS = {
         ("cognitive model (Choices13k)", None, fam_source_prior("cog_gbm")),
         *[("plain (other datasets)", ds, fam_prior_wide()) for ds in ("ChaosNLI", "GlobalOpinionQA")],
         *[("plain + label prior (no decomposition)", ds, fam_prior_wide()) for ds in ("ESS", "ISSP", "LatinoBarometro")]],
+    4: [("cognitive model (Choices13k)", None, fam_mix2("c13_v2", "cog_gbm")),
+        ("cognitive model (NumberGame)", None, fam_mix2("ng_sib", "cog")),
+        *[("other countries, identical question", ds, fam_mix2("others_dd", "others")) for ds in ("TISP", "ConspiracyCorr", "OSPsychBig5", "OSPsychMACH", "OSPsychMGKT", "MoralMachineClassic")]],
+    5: [(src, ds, "pos_bias") for src, ds in (
+        ("same-group-abroad decomposition + model", "LatinoBarometro"), ("plain + label prior (no decomposition)", "ESS"),
+        ("same-group-abroad decomposition + model", "ISSP"), ("other countries, identical question", "GlobalOpinionQA"),
+        ("plain (other datasets)", "GlobalOpinionQA"), ("plain (no decomposition)", "LatinoBarometro"),
+        ("plain + label prior (no decomposition)", "ISSP"), ("country-level decomposition + model", "LatinoBarometro"),
+        ("plain + label prior (no decomposition)", "LatinoBarometro"), ("plain (other datasets)", "ChaosNLI"),
+        ("country-level decomposition + model", "ISSP"), ("same-group-abroad decomposition + model", "ESS"),
+        ("country-level decomposition + model", "ESS"), ("plain + label prior (no decomposition)", "Afrobarometer"),
+        ("plain (no decomposition)", "ISSP"), ("plain (no decomposition)", "ESS"))],
+    7: [("plain (other datasets)", "ChaosNLI", fam_mix2("chaos_lr", "prior")),
+        ("plain (other datasets)", "GlobalOpinionQA", fam_mix2("goqa_knn", "prior")),
+        ("other countries, identical question", "GlobalOpinionQA", fam_mix2("others", "goqa_knn"))],
+    8: [("cognitive model (NumberGame)", None, fam_mix2("ng_sib2", "cog")),
+        *[(src, ds, fam_mix2("q_abroad", "prior")) for src in ("plain + label prior (no decomposition)", "plain (no decomposition)") for ds in ("Afrobarometer", "LatinoBarometro", "ESS", "ISSP")]],
+    6: [(src, ds, fam_decomp_blend("xd", ("xd", "xd0", "xd2h", "xd2"))) for src in ("same-group-abroad decomposition + model", "country-level decomposition + model") for ds in ("LatinoBarometro", "ISSP", "ESS", "Afrobarometer")],
 }
 
 
@@ -180,18 +236,27 @@ def main():
         for c in comps:
             if c["qid"] in g:
                 c["cog_gbm"] = g[c["qid"]] if c["keys"] == ["A", "B"] else g[c["qid"]][::-1]
+    new = M.OUT / "newsources_full.pkl"
+    if new.exists():
+        ns = pd.read_pickle(new)
+        for c in comps:
+            c.update(ns.get(c["qid"], {}))
     tuned = pd.read_pickle(TUNED) if TUNED.exists() else {}
     cur = {c["qid"]: tuned.get(c["qid"], c["final"]) for c in comps}
     N = len(comps)
     base_total = np.mean([S(c, cur[c["qid"]]) for c in comps])
     print(f"round {rnd}: starting full score {base_total:.2f}")
     report = []
-    for src, ds, (fn, grid) in ROUNDS[rnd]:
+    for src, ds, fam in ROUNDS[rnd]:
+        fn, grid = fam if fam != "pos_bias" else (fam, None)
         cs = [c for c in comps if c["source"] == src and (ds is None or c["dataset"] == ds)]
         if not cs:
             continue
         before = np.array([S(c, cur[c["qid"]]) for c in cs])
-        preds, chosen = cv_tune(cs, fn, grid)
+        if fn == "pos_bias":
+            preds, chosen = cv_fit(cs, [cur[c["qid"]] for c in cs], fit_pos_bias)
+        else:
+            preds, chosen = cv_tune(cs, fn, grid)
         after = np.array([S(c, p) for c, p in zip(cs, preds)])
         d = after - before
         lo = ci(d)[0] if len(d) >= 5 else None
@@ -199,6 +264,7 @@ def main():
         if keep:
             for c, p in zip(cs, preds):
                 tuned[c["qid"]] = p
+        chosen = [g if isinstance(g, tuple) else (g,) for g in chosen]
         mode = max(set(map(tuple, chosen)), key=list(map(tuple, chosen)).count) if chosen else None
         name = src + (f" [{ds}]" if ds else "")
         print(f"   {name:58s} N {len(cs):5d}  {before.mean():5.1f} -> {after.mean():5.1f}  {d.mean():+5.2f} {ci(d)}  {'KEPT' if keep else 'not kept'}  typical params {mode}  full +{d.sum() / N if keep else 0:.2f}")
