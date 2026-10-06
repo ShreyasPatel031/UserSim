@@ -1,0 +1,306 @@
+{
+  "N": 13510,
+  "S_plain_retr6_rev2": 41.45988888174663,
+  "S_rule": 57.56582942428355,
+  "diff": 16.10594054253693,
+  "ci": [
+    15.4,
+    16.8
+  ],
+  "previous_best_full_routed_v1": 41.99015049217071,
+  "exponents": {
+    "dd3": 1.1,
+    "dd2": 0.9,
+    "plain_sharp": 1.75,
+    "plain_shallow": 0.8
+  },
+  "router_cut": 0.20000000000000004,
+  "slices": {
+    "excluding dev rows (dev was used for fitting)": {
+      "N": 13126,
+      "share_of_full": 0.9715766099185789,
+      "S_plain": 41.45350208177492,
+      "S_rule": 57.51559971650915,
+      "diff": 16.062097634734226,
+      "ci": [
+        15.4,
+        16.8
+      ]
+    },
+    "5 shared surveys": {
+      "N": 8843,
+      "share_of_full": 0.6545521835677276,
+      "S_plain": 43.73539482655135,
+      "S_rule": 60.9326626261799,
+      "diff": 17.197267799628534,
+      "ci": [
+        16.5,
+        17.9
+      ]
+    },
+    "other datasets": {
+      "N": 4667,
+      "share_of_full": 0.3454478164322724,
+      "S_plain": 37.14827562485607,
+      "S_rule": 51.18637666997259,
+      "diff": 14.038101045116521,
+      "ci": [
+        12.8,
+        15.3
+      ]
+    },
+    "shared, true sharp": {
+      "N": 1781,
+      "share_of_full": 0.13182827535159142,
+      "S_plain": 39.24161131201137,
+      "S_rule": 59.995974889239605,
+      "diff": 20.754363577228236,
+      "ci": [
+        18.4,
+        23.0
+      ]
+    },
+    "shared, true shallow": {
+      "N": 7062,
+      "share_of_full": 0.5227239082161362,
+      "S_plain": 44.868703866397816,
+      "S_rule": 61.168890445422406,
+      "diff": 16.300186579024594,
+      "ci": [
+        15.5,
+        17.1
+      ]
+    },
+    "shared, decomposition used": {
+      "N": 3730,
+      "share_of_full": 0.27609178386380456,
+      "S_plain": 39.96840143092068,
+      "S_rule": 75.17515352034394,
+      "diff": 35.20675208942327,
+      "ci": [
+        33.8,
+        36.7
+      ]
+    },
+    "shared, no decomposition (plain + label prior)": {
+      "N": 5113,
+      "share_of_full": 0.37846039970392303,
+      "S_plain": 46.48346550241726,
+      "S_rule": 50.542580280153686,
+      "diff": 4.059114777736432,
+      "ci": [
+        3.5,
+        4.6
+      ]
+    },
+    "other datasets: other countries, identical question": {
+      "N": 1452,
+      "share_of_full": 0.1074759437453738,
+      "S_plain": 38.26704787525971,
+      "S_rule": 61.94539890737008,
+      "diff": 23.67835103211035,
+      "ci": [
+        21.1,
+        26.2
+      ]
+    },
+    "other datasets: cognitive models": {
+      "N": 1000,
+      "share_of_full": 0.07401924500370097,
+      "S_plain": 7.79643982263202,
+      "S_rule": 38.931291701566586,
+      "diff": 31.134851878934562,
+      "ci": [
+        26.6,
+        35.7
+      ]
+    },
+    "other datasets: plain": {
+      "N": 2215,
+      "share_of_full": 0.16395262768319763,
+      "S_plain": 49.666279459907074,
+      "S_rule": 49.666279459907074,
+      "diff": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "shared, true sharp, decomposition used": {
+      "N": 924,
+      "share_of_full": 0.06839378238341969,
+      "S_plain": 33.72717115240062,
+      "S_rule": 79.05985220289647,
+      "diff": 45.33268105049584,
+      "ci": [
+        41.9,
+        48.8
+      ]
+    },
+    "shared, true sharp, no decomposition": {
+      "N": 857,
+      "share_of_full": 0.06343449296817172,
+      "S_plain": 45.18716873030813,
+      "S_rule": 39.44168943087443,
+      "diff": -5.745479299433692,
+      "ci": [
+        -7.3,
+        -4.2
+      ]
+    },
+    "shared, true shallow, decomposition used": {
+      "N": 2806,
+      "share_of_full": 0.2076980014803849,
+      "S_plain": 42.023603418573046,
+      "S_rule": 73.89594411810641,
+      "diff": 31.872340699533364,
+      "ci": [
+        30.3,
+        33.3
+      ]
+    },
+    "shared, true shallow, no decomposition": {
+      "N": 4256,
+      "share_of_full": 0.3150259067357513,
+      "S_plain": 46.74449142668829,
+      "S_rule": 52.777886543742106,
+      "diff": 6.033395117053817,
+      "ci": [
+        5.5,
+        6.6
+      ]
+    },
+    "shared, country-level (Pop)": {
+      "N": 2500,
+      "share_of_full": 0.1850481125092524,
+      "S_plain": 46.59498541344102,
+      "S_rule": 48.74593896128739,
+      "diff": 2.1509535478463744,
+      "ci": [
+        1.4,
+        2.9
+      ]
+    },
+    "shared, subgroup (Grouped)": {
+      "N": 6343,
+      "share_of_full": 0.4695040710584752,
+      "S_plain": 42.60832932643718,
+      "S_rule": 65.73588021442382,
+      "diff": 23.127550887986636,
+      "ci": [
+        22.1,
+        24.1
+      ]
+    }
+  },
+  "by_dataset": {
+    "Afrobarometer": {
+      "N": 2031,
+      "S_plain": 47.79361876441188,
+      "S_rule": 68.68518833169087
+    },
+    "ChaosNLI": {
+      "N": 500,
+      "S_plain": 45.26668427624119,
+      "S_rule": 45.26668427624119
+    },
+    "Choices13k": {
+      "N": 500,
+      "S_plain": -3.731813688952461,
+      "S_rule": 32.53564802400408
+    },
+    "ConspiracyCorr": {
+      "N": 45,
+      "S_plain": 36.421930029027074,
+      "S_rule": 37.26539621980426
+    },
+    "DICES": {
+      "N": 500,
+      "S_plain": 84.91530745220776,
+      "S_rule": 84.91530745220776
+    },
+    "ESS": {
+      "N": 2143,
+      "S_plain": 41.22580873648589,
+      "S_rule": 62.76090788854603
+    },
+    "GlobalOpinionQA": {
+      "N": 500,
+      "S_plain": 41.80889921495812,
+      "S_rule": 40.180073074857745
+    },
+    "ISSP": {
+      "N": 1440,
+      "S_plain": 36.16481331559728,
+      "S_rule": 52.684993475572234
+    },
+    "Jester": {
+      "N": 136,
+      "S_plain": 44.364348023681245,
+      "S_rule": 44.364348023681245
+    },
+    "LatinoBarometro": {
+      "N": 1745,
+      "S_plain": 25.14594156037052,
+      "S_rule": 50.342818322215344
+    },
+    "MoralMachine": {
+      "N": 500,
+      "S_plain": 15.877494109345088,
+      "S_rule": 26.157677894649222
+    },
+    "MoralMachineClassic": {
+      "N": 15,
+      "S_plain": 62.79319433975659,
+      "S_rule": 79.66354745498641
+    },
+    "NumberGame": {
+      "N": 500,
+      "S_plain": 19.3246933342165,
+      "S_rule": 45.326935379129075
+    },
+    "OSPsychBig5": {
+      "N": 250,
+      "S_plain": 44.96509399862504,
+      "S_rule": 68.38409840893375
+    },
+    "OSPsychMACH": {
+      "N": 100,
+      "S_plain": 8.553937601652189,
+      "S_rule": 62.90780986487983
+    },
+    "OSPsychMGKT": {
+      "N": 500,
+      "S_plain": 51.542338304129615,
+      "S_rule": 79.04919336893249
+    },
+    "OSPsychRWAS": {
+      "N": 22,
+      "S_plain": 70.16649438527946,
+      "S_rule": 70.16649438527946
+    },
+    "OpinionQA": {
+      "N": 1484,
+      "S_plain": 71.01034327565847,
+      "S_rule": 68.13792716940746
+    },
+    "TISP": {
+      "N": 485,
+      "S_plain": 34.89401398468089,
+      "S_rule": 44.627436127789224
+    },
+    "WisdomOfCrowds": {
+      "N": 114,
+      "S_plain": 58.69155985648528,
+      "S_rule": 58.69155985648528
+    }
+  },
+  "sources": {
+    "plain + label prior (no decomposition)": 5113,
+    "decomposition": 3730,
+    "plain (other datasets)": 2215,
+    "other countries, identical question": 1452,
+    "cognitive model (Choices13k)": 500,
+    "cognitive model (NumberGame)": 500
+  }
+}
