@@ -43,6 +43,7 @@
     "MVP_BROWSER_MODEL": "gemini-2.5-flash-lite",
     "MVP_LLM_MODEL": "gemini-2.5-flash-lite",
     "MVP_SIGNUP_MODEL": "gemini-2.5-flash-lite",
-    "GEMINI_MODEL": "gemini-2.5-flash-lite"
+    "GEMINI_MODEL": "gemini-2.5-flash-lite",
+    "MVP_PUBLIC_BASE_URL": "https://usersim.vercel.app"
   }
 }
