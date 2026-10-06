@@ -10,3 +10,4 @@ google-auth>=2.48
 google-cloud-storage>=2.14.0
 mcp>=1.26.0
 pillow>=10.0
+google-genai>=1.0
