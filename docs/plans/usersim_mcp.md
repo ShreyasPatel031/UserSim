@@ -1,6 +1,7 @@
 # UserSim MCP — plan
 
-Status: plan, agreed in chat 2026-10-06. MVP scope = **one simulated user on one product**.
+Status: MVP built (`mvp/sim_mcp/`), e2e green locally against real Browserbase, incl. a real
+Claude Code (Haiku) run. Not yet deployed to the VM. MVP scope = **one simulated user on one product**.
 
 ## 1. What we are building
 
@@ -32,8 +33,9 @@ User's Claude Code (the brain)
 |---|---|
 | Brain | User's Claude Code. Driver is a field (`driver: "claude_code"`) so other models (Codex, our Gemini a11y agent) can plug in later. Not built now. |
 | Browser | Browserbase only, our key, server-side. No local Chromium, no user key. |
-| Keys on the client | None. Client holds only a UserSim API token we issue. |
-| Transport | Remote MCP (streamable HTTP) on our API, `claude mcp add --transport http usersim <url> --header "Authorization: Bearer …"`. Tool list is served by the server, so there is no client package to drift. Optional stdio shim later only if a client needs one. |
+| Keys on the client | None, and no token either: the user only provides a public URL, same as the website. Abuse is bounded server-side (see Server rules). |
+| Transport | Remote MCP (streamable HTTP) at `/mcp` on the same server as the website (the GCP VM behind the usersim.vercel.app proxy): `claude mcp add --transport http usersim https://usersim.vercel.app/mcp`. Tool list is served by the server, so there is no client package to drift. |
+| Simulated-user model | **Haiku by default.** The main agent runs the simulated user as a Claude Code subagent with `model: haiku` (server instructions + `driver_model` in the start response say so). Human can ask for another model. |
 | Product reachability | Public URLs only (Browserbase can't reach `localhost`). Preview deploys work. Tunnels later. |
 | Perception | Pluggable. Final product offers three tiers (low / medium / high) that bundle perception mode, screenshot resolution, step cap, number of users. **MVP ships `vision` only.** |
 | Persona fidelity / stopping science | Out of scope. Keep a clean seam (`BehaviorPolicy`), ship a minimal placeholder. Server-side safety caps are infra, not science, and stay. |
@@ -111,7 +113,8 @@ Vision actions: `click{x,y}`, `double_click{x,y}`, `type{text}`, `key{keys}`,
 - `max_steps` 40, `budget_s` 15 min, idle timeout 5 min → session closed and the study marked abandoned.
 - `navigate` limited to the product's registrable domain + common auth providers
   (stops our Browserbase account being used as a general browsing proxy).
-- One active session per token (MVP), per-token daily cap.
+- No auth (matches the website). Caps instead: `MVP_MCP_MAX_SESSIONS` (5) open sessions server-wide,
+  `MVP_MCP_MAX_PER_CLIENT` (2) per client IP.
 - Every `act` is executed on the real Browserbase page via Playwright `connect_over_cdp`;
   screenshot after each action is stored like `step_shots.py` does today.
 
@@ -168,6 +171,31 @@ From `mvp/e2e2_gates.py` / `mvp/e2e_smoke_local.py`, parameterised for 1 agent:
 
 ## 6. Open questions
 
-1. Hostname for the MCP endpoint: the VM's own domain, or through the usersim.vercel.app proxy?
-2. Token issuance for MVP: one hand-issued token per tester, or self-serve?
-3. Stable public site for the E2E test (ideally one we control).
+Resolved: endpoint on the existing VM via the usersim.vercel.app proxy; no tokens; Haiku default;
+E2E uses books.toscrape.com (a public scraping sandbox).
+
+Still open:
+1. Deploy: the VM is set up by hand (no script in the repo). Someone with VM access pulls this
+   branch, runs `pip install -r requirements-vercel.txt` (adds `mcp`, `pillow`) and restarts uvicorn.
+2. Vercel proxy timeouts on long tool calls (start ≈ 5–20 s) — verify after deploy with
+   `python -m mvp.e2e_mcp --base https://usersim.vercel.app`.
+
+## 7. What was built (MVP)
+
+| File | What |
+|---|---|
+| `mvp/sim_mcp/sessions.py` | Browserbase session per simulated user, URL guard, vision action executor, recorder into a normal `StudyState`, idle/budget reaper |
+| `mvp/sim_mcp/report.py` | independent judge (`e2e2_gates.judge_goal_screenshot`), proof checks (e2e2 gate functions), report JSON + markdown |
+| `mvp/sim_mcp/server.py` | MCP tools + `usersim_simulate_user` prompt, mounted at `/mcp` in `mvp/server.py` |
+| `mvp/version.py` | `engine_version` + `config_hash`, on `/health`, every study, every report |
+| `mvp/static/app.js` | `/?study=<id>` opens any study on the same live stage a Run shows (the MCP `watch_url`) |
+| `mvp/test_sim_mcp.py` | offline unit tests |
+| `mvp/e2e_mcp.py` | live e2e: scripted MCP client + Chromium check that watch_url mounts the live iframe + proof.pass |
+
+Add to Claude Code:
+
+```
+claude mcp add --transport http usersim https://usersim.vercel.app/mcp
+```
+
+Then ask: "Run a UserSim test of https://my-preview.vercel.app — new user trying to create a project."

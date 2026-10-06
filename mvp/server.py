@@ -25,6 +25,12 @@ IS_VERCEL = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 
 app = FastAPI(title="UserSim MVP", version="0.1.0")
 
+# MCP endpoint (/mcp): a coding agent drives one simulated user on our Browserbase.
+if os.environ.get("MVP_MCP", "1").lower() not in {"0", "false", "no"}:
+    from mvp.sim_mcp.server import mount as _mount_mcp
+
+    _mount_mcp(app)
+
 
 @app.on_event("startup")
 async def _prime_browser_sessions() -> None:
@@ -1204,7 +1210,9 @@ async def post_live_frame(request: Request):
 
 @app.get("/health")
 async def health():
-    return {"ok": True}
+    from mvp.version import stamp
+
+    return {"ok": True, **stamp()}
 
 
 @app.get("/recurse-study")

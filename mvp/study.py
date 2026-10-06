@@ -256,6 +256,11 @@ class StudyState:
     plan_personas: list[dict[str, Any]] = field(default_factory=list)
     # Compare mode: per rival (in competitor order) the persona/task indexes it runs; [] = full matrix.
     competitor_cells: list[dict[str, Any]] = field(default_factory=list)
+    # Who decided each action ("" = the server's own agent; "claude_code" = an MCP client),
+    # and which engine build + config produced this study (mvp.version).
+    driver: str = ""
+    engine_version: str = ""
+    config_hash: str = ""
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -4131,6 +4136,10 @@ async def _run_study_body(
 def create_study(url: str, segment: str) -> StudyState:
     study_id = str(uuid.uuid4())
     study = StudyState(id=study_id, url=url.strip(), segment=segment.strip())
+    from mvp.version import stamp
+
+    for key, value in stamp().items():
+        setattr(study, key, value)
     STUDIES[study_id] = study
     return study
 
@@ -4198,6 +4207,9 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "queue_eta_s": study.queue_eta_s,
             "queue_position": study.queue_position,
             "queued_s": study.queued_s,
+            "driver": study.driver,
+            "engine_version": study.engine_version,
+            "config_hash": study.config_hash,
         }
     )
 
