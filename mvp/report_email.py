@@ -32,27 +32,48 @@ def email_configured() -> bool:
     return bool(user and password)
 
 
-# Public site recipients open in email (never localhost — mail clients can't reach it).
-_DEFAULT_PUBLIC_BASE_URL = "https://usersim.vercel.app"
+_PUBLIC_FALLBACK = "https://usersim.vercel.app"
+_LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "0.0.0.0", "::1", "host.docker.internal"}
+
+
+def _usable_public_origin(raw: str | None) -> str | None:
+    """https origin a recipient can open. Rejects loopback and non-https."""
+    text = (raw or "").strip()
+    if not text:
+        return None
+    if "://" not in text:
+        text = "https://" + text.lstrip("/")
+    parts = urlsplit(text)
+    host = (parts.hostname or "").lower().strip("[]")
+    if parts.scheme != "https" or not host:
+        return None
+    if host in _LOOPBACK_HOSTS or host.endswith(".localhost") or host.startswith("127."):
+        return None
+    # A port-3000 loopback is never a public report link.
+    if parts.port == 3000 and (host in _LOOPBACK_HOSTS or host.startswith("127.")):
+        return None
+    return f"https://{parts.netloc}".rstrip("/")
 
 
 def report_base_url() -> str:
-    """Where the recipient can open the report.
+    """Public https origin for the report link.
 
-    Prefer MVP_PUBLIC_BASE_URL / MVP_REPORT_BASE_URL. Otherwise use the production
-    site — localhost links in email are useless to anyone reading mail elsewhere.
+    Prefers the deploy's public-origin env (MVP_PUBLIC_BASE_URL, then
+    MVP_REPORT_BASE_URL, PUBLIC_URL, APP_ORIGIN, VERCEL_PROJECT_PRODUCTION_URL).
+    Loopback, plain http, and anything else unusable fall through to the
+    production origin. Never returns localhost or 127.0.0.1.
     """
-    for key in ("MVP_PUBLIC_BASE_URL", "MVP_REPORT_BASE_URL"):
-        value = (os.environ.get(key) or "").strip().rstrip("/")
-        if value:
-            return value
-    # Vercel preview / production sets VERCEL_URL without a scheme.
-    vercel = (os.environ.get("VERCEL_URL") or "").strip().rstrip("/")
-    if vercel:
-        if vercel.startswith("http://") or vercel.startswith("https://"):
-            return vercel
-        return f"https://{vercel}"
-    return _DEFAULT_PUBLIC_BASE_URL
+    for key in (
+        "MVP_PUBLIC_BASE_URL",
+        "MVP_REPORT_BASE_URL",
+        "PUBLIC_URL",
+        "APP_ORIGIN",
+        "VERCEL_PROJECT_PRODUCTION_URL",
+    ):
+        origin = _usable_public_origin(os.environ.get(key))
+        if origin:
+            return origin
+    return _PUBLIC_FALLBACK
 
 
 def _product_name(url: str) -> str:

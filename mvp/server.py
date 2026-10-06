@@ -952,41 +952,26 @@ async def set_report_email(study_id: str, body: ReportEmailRequest):
     The waiting screen captured an address but only kept it in the browser, so
     the promised mail was never sent.
     """
-    from types import SimpleNamespace
-
-    from mvp.report_email import email_configured, send_report_email
-    from mvp.study import STUDIES, load_local_study, load_study_from_gcs, persist_study
+    from mvp.report_email import email_configured
+    from mvp.study import STUDIES, persist_study
 
     email = (body.email or "").strip()
     if "@" not in email:
         raise HTTPException(status_code=400, detail="A valid email is required")
     study = STUDIES.get(study_id)
-    if study is not None:
-        study.email = email
-        try:
-            persist_study(study)
-        except Exception:
-            pass
-        # A finished study has nothing left to wait for: send it now.
-        sent = False
-        if str(getattr(study, "status", "")) == "complete":
-            sent = await asyncio.to_thread(send_report_email, study)
-        return {"ok": True, "email": email, "sent": sent, "configured": email_configured()}
-
-    # After a restart the study may only live in GCS / local snapshots.
-    saved = load_local_study(study_id) or await asyncio.to_thread(load_study_from_gcs, study_id)
-    if not isinstance(saved, dict):
+    if study is None:
         raise HTTPException(status_code=404, detail="Study not found")
-    status = str(saved.get("status") or "")
+    study.email = email
+    try:
+        persist_study(study)
+    except Exception:
+        pass
+    # A finished study has nothing left to wait for: send it now.
     sent = False
-    if status == "complete":
-        proxy = SimpleNamespace(
-            id=saved.get("id") or study_id,
-            url=saved.get("url") or "",
-            summary=saved.get("summary"),
-            email=email,
-        )
-        sent = await asyncio.to_thread(send_report_email, proxy, email)
+    if str(getattr(study, "status", "")) == "complete":
+        from mvp.report_email import send_report_email
+
+        sent = await asyncio.to_thread(send_report_email, study)
     return {"ok": True, "email": email, "sent": sent, "configured": email_configured()}
 
 
