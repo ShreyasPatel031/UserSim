@@ -162,16 +162,19 @@ def main():
             if routed == "sharp":
                 src, p = ("decomposition", temper(d["dd3"], T["dd3"])) if d["dd3"] is not None else ("plain (no decomposition)", temper(p0, T["plain_sharp"]))
             else:
-                src, p = ("decomposition", temper(d["dd2"], T["dd2"])) if d["dd2"] is not None else ("plain (no decomposition)", p0)
+                use_dd2 = d["dd2"] is not None and (q["dataset"] != "OpinionQA" or d["dd3"] is not None)
+                src, p = ("decomposition", temper(d["dd2"], T["dd2"])) if use_dd2 else ("plain (no decomposition)", p0)
             if src == "plain (no decomposition)":
                 t = tmap[q["qid"]]
                 xd, _ = PD.predict(svp_full, t, 1.0) if t["split"] == "Pop" else PD.predict_group(sv_full, t, 1.0, dd2_full)
                 if xd is not None and len(xd) == len(p0):
                     p, src = 0.5 * np.asarray(xd) + 0.5 * p0, ("country-level decomposition + model" if t["split"] == "Pop" else "same-group-abroad decomposition + model")
-            if src == "plain (no decomposition)":
+            if src == "plain (no decomposition)" and routed == "shallow":
                 pr = prior_loo(q["i"], lab, pos, own)
                 p = (1 - W_PRIOR) * p0 + W_PRIOR * pr if pr is not None and len(pr) == len(p0) else p0
                 src = "plain + label prior (no decomposition)"
+            elif src == "plain (no decomposition)":
+                p = temper(p0, T["plain_sharp"]) if False else p0
         elif q["dataset"] in OTHS:
             rr = sample.loc[q["i"]]
             c = ctry(rr.group_prompt_variable_map)
@@ -180,6 +183,9 @@ def main():
                 p = np.mean([[a.get(k, 0.0) for k in q["keys"]] for a in others], axis=0)
                 p = p / p.sum()
                 src = "other countries, identical question"
+            elif q["qid"] in cog:
+                p = cog[q["qid"]] if q["keys"] == ["A", "B"] else cog[q["qid"]][::-1]
+                src = "cognitive model (" + q["dataset"] + ")"
             else:
                 src = "plain (other datasets)"
         elif q["qid"] in cog:
@@ -204,7 +210,8 @@ def main():
           ("shared, true sharp", df.shared & (df.true_shape == "sharp")), ("shared, true shallow", df.shared & (df.true_shape == "shallow")),
           ("shared, decomposition used", df.source == "decomposition"),
           ("shared, country-level decomposition + model", df.source == "country-level decomposition + model"),
-          ("shared, same-group-abroad decomposition + model", df.source == "same-group-abroad decomposition + model"), ("shared, no decomposition (plain + label prior)", df.source == "plain + label prior (no decomposition)"),
+          ("shared, same-group-abroad decomposition + model", df.source == "same-group-abroad decomposition + model"), ("shared, no decomposition (plain + label prior, shallow-routed)", df.source == "plain + label prior (no decomposition)"),
+          ("shared, no decomposition (plain, sharp-routed)", df.source == "plain (no decomposition)"),
           ("other datasets: other countries, identical question", df.source == "other countries, identical question"),
           ("other datasets: cognitive models", df.source.str.startswith("cognitive")),
           ("other datasets: plain", df.source == "plain (other datasets)"),
@@ -221,7 +228,7 @@ def main():
         print(f"   {name:46s} N {v['N']:5d} ({v['share_of_full']:4.0%})  plain {v['S_plain']:.1f} -> rule {v['S_rule']:.1f}  {v['diff']:+.2f} {v['ci']}")
     out["by_dataset"] = {k: {"N": int(len(g)), "S_plain": float(g.S_plain.mean()), "S_rule": float(g.S_rule.mean())} for k, g in df.groupby("dataset")}
     out["sources"] = df.source.value_counts().to_dict()
-    (M.OUT / "structure_fullrule_v3_report.json").write_text(json.dumps(out, indent=2, default=float))
+    (M.OUT / "structure_fullrule_v4_report.json").write_text(json.dumps(out, indent=2, default=float))
 
 
 if __name__ == "__main__":

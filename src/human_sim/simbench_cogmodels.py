@@ -107,6 +107,38 @@ def number_features(text):
     return feats, {"examples": ex, "target": y, "bayes_p_fit": round(p, 3), "strongest_rule": best[0]}
 
 
+# ---------------------------------------------------------------- MoralMachine
+MM_TYPES = ["man", "woman", "boy", "girl", "elderly man", "elderly woman", "large man", "large woman", "male athlete", "female athlete",
+            "male doctor", "female doctor", "male executive", "female executive", "homeless person", "pregnant woman", "baby in stroller", "cat", "dog"]
+MM_PLURAL = {"men": "man", "women": "woman", "boys": "boy", "girls": "girl", "elderly men": "elderly man", "elderly women": "elderly woman",
+             "large men": "large man", "large women": "large woman", "male athletes": "male athlete", "female athletes": "female athlete",
+             "male doctors": "male doctor", "female doctors": "female doctor", "male executives": "male executive", "female executives": "female executive",
+             "homeless people": "homeless person", "pregnant women": "pregnant woman", "babies in stroller": "baby in stroller", "cats": "cat", "dogs": "dog"}
+
+
+def mm_option(block):
+    counts = dict.fromkeys(MM_TYPES, 0)
+    for n, lab in re.findall(r"\*\s*(\d+)\s+([^\n]+)", block):
+        lab = MM_PLURAL.get(lab.strip().lower(), lab.strip().lower())
+        if lab in counts:
+            counts[lab] += int(n)
+    b = block.lower()
+    return counts, {"passengers": float("death of the passengers" in b), "flouting": float("flouting the law" in b), "abiding": float("abiding by the law" in b),
+                    "stay": float(b.strip().startswith("stay"))}
+
+
+def moral_features(text):
+    i, j = text.find("(A):"), text.find("(B):")
+    if i < 0 or j < 0:
+        return None, None
+    (ca, fa), (cb, fb) = mm_option(text[i + 4:j]), mm_option(text[j + 4:])
+    pets = ("cat", "dog")
+    hum_a, hum_b = sum(v for k, v in ca.items() if k not in pets), sum(v for k, v in cb.items() if k not in pets)
+    f = [ca[k] - cb[k] for k in MM_TYPES] + [hum_a - hum_b, sum(ca[k] for k in pets) - sum(cb[k] for k in pets),
+         fa["passengers"] - fb["passengers"], fa["flouting"] - fb["flouting"], fa["abiding"] - fb["abiding"], fa["stay"] - fb["stay"]]
+    return f, {"deaths_if_A": {k: v for k, v in ca.items() if v}, "deaths_if_B": {k: v for k, v in cb.items() if v}}
+
+
 # ---------------------------------------------------------------- fitting
 def rows_for(ds, which):
     sample, _, _ = A.build_env(25, 100, 7, which)
@@ -128,7 +160,10 @@ def main():
     pop = A.load_split("Pop")
     report = {}
     preds_eval, preds_full = {}, {}
-    for ds, featfn in (("Choices13k", lambda t: (gamble_features(t), None)), ("NumberGame", number_features)):
+    only = [a.split("=")[1] for a in sys.argv if a.startswith("--only=")]
+    for ds, featfn in (("Choices13k", lambda t: (gamble_features(t), None)), ("NumberGame", number_features), ("MoralMachine", moral_features)):
+        if only and ds not in only:
+            continue
         d = pop[pop.dataset_name == ds]
         feats, ys, keys, ok_rows = [], [], [], []
         for _, r in d.iterrows():
@@ -177,9 +212,14 @@ def main():
             preds_full[q["qid"]] = np.array([a, 1 - a])
         print(f"   full (5-fold cross-fitted): N {len(qf)}  plain {s_old.mean():.1f} -> cognitive model {s_new.mean():.1f} ({(s_new - s_old).mean():+.1f} {ci(s_new - s_old)})", flush=True)
         report[ds].update({"full_N": len(qf), "full_plain": float(s_old.mean()), "full_model": float(s_new.mean()), "full_ci": ci(s_new - s_old)})
-    pd.to_pickle(preds_eval, M.OUT / "cogmodels_eval.pkl")
-    pd.to_pickle(preds_full, M.OUT / "cogmodels_full.pkl")
-    (M.OUT / "cogmodels_report.json").write_text(json.dumps(report, indent=2, default=float))
+    for fn, new in (("cogmodels_eval.pkl", preds_eval), ("cogmodels_full.pkl", preds_full)):
+        old = pd.read_pickle(M.OUT / fn) if (M.OUT / fn).exists() else {}
+        old.update(new)
+        pd.to_pickle(old, M.OUT / fn)
+    rp = M.OUT / "cogmodels_report.json"
+    old = json.loads(rp.read_text()) if rp.exists() else {}
+    old.update(report)
+    rp.write_text(json.dumps(old, indent=2, default=float))
 
 
 if __name__ == "__main__":
