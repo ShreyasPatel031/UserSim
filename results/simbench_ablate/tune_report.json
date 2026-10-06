@@ -1,0 +1,831 @@
+{
+  "1": {
+    "start": 60.013416654053216,
+    "end": 60.472964039022344,
+    "brackets": [
+      {
+        "bracket": "same-group-abroad decomposition + model",
+        "N": 1161,
+        "before": 43.8883188080146,
+        "after": 46.74893366784751,
+        "diff": 2.860614859832907,
+        "ci": [
+          1.7,
+          4.0
+        ],
+        "kept": true,
+        "typical": [
+          "xd",
+          0.35,
+          0.4,
+          1.15
+        ]
+      },
+      {
+        "bracket": "country-level decomposition + model",
+        "N": 1283,
+        "before": 53.082559717427316,
+        "after": 54.13911633860008,
+        "diff": 1.056556621172761,
+        "ci": [
+          0.5,
+          1.6
+        ],
+        "kept": true,
+        "typical": [
+          "xd",
+          0.5,
+          0.2,
+          1.15
+        ]
+      },
+      {
+        "bracket": "cognitive model (Choices13k)",
+        "N": 500,
+        "before": 32.53564802400408,
+        "after": 33.05309917285986,
+        "diff": 0.5174511488557777,
+        "ci": [
+          -0.5,
+          1.4
+        ],
+        "kept": false,
+        "typical": [
+          0.9,
+          1.15
+        ]
+      },
+      {
+        "bracket": "cognitive model (NumberGame)",
+        "N": 500,
+        "before": 45.326935379129075,
+        "after": 45.966922778079486,
+        "diff": 0.6399873989503948,
+        "ci": [
+          -0.6,
+          1.8
+        ],
+        "kept": false,
+        "typical": [
+          0.9,
+          1.3
+        ]
+      },
+      {
+        "bracket": "cognitive model (MoralMachine)",
+        "N": 416,
+        "before": 68.11590289461834,
+        "after": 67.58569373260109,
+        "diff": -0.5302091620172569,
+        "ci": [
+          -1.5,
+          0.4
+        ],
+        "kept": false,
+        "typical": [
+          1.0,
+          1.15
+        ]
+      },
+      {
+        "bracket": "other countries, identical question [GlobalOpinionQA]",
+        "N": 82,
+        "before": 29.95545565408049,
+        "after": 40.90815392278996,
+        "diff": 10.952698268709465,
+        "ci": [
+          2.4,
+          19.2
+        ],
+        "kept": true,
+        "typical": [
+          0.2,
+          1.15
+        ]
+      },
+      {
+        "bracket": "other countries, identical question [TISP]",
+        "N": 485,
+        "before": 44.62743612778921,
+        "after": 45.93388543844541,
+        "diff": 1.306449310656187,
+        "ci": [
+          0.4,
+          2.2
+        ],
+        "kept": true,
+        "typical": [
+          0.8,
+          1.0
+        ]
+      },
+      {
+        "bracket": "other countries, identical question [ConspiracyCorr]",
+        "N": 45,
+        "before": 37.265396219804245,
+        "after": 39.52800479271797,
+        "diff": 2.262608572913707,
+        "ci": [
+          -4.4,
+          9.0
+        ],
+        "kept": false,
+        "typical": [
+          0.65,
+          1.15
+        ]
+      }
+    ]
+  },
+  "2": {
+    "start": 60.472964039022344,
+    "end": 61.77108406194948,
+    "brackets": [
+      {
+        "bracket": "cognitive model (Choices13k)",
+        "N": 500,
+        "before": 32.53564802400408,
+        "after": 39.172402336523696,
+        "diff": 6.636754312519609,
+        "ci": [
+          2.1,
+          11.0
+        ],
+        "kept": true,
+        "typical": [
+          "cog_gbm",
+          1.0,
+          0.9
+        ]
+      },
+      {
+        "bracket": "cognitive model (NumberGame)",
+        "N": 500,
+        "before": 45.326935379129075,
+        "after": 45.966922778079486,
+        "diff": 0.6399873989503948,
+        "ci": [
+          -0.6,
+          1.8
+        ],
+        "kept": false,
+        "typical": [
+          "cog",
+          0.9,
+          1.3
+        ]
+      },
+      {
+        "bracket": "plain (other datasets) [ChaosNLI]",
+        "N": 500,
+        "before": 45.26668427624119,
+        "after": 45.551333051613014,
+        "diff": 0.28464877537182987,
+        "ci": [
+          -0.7,
+          1.4
+        ],
+        "kept": false,
+        "typical": [
+          0.2,
+          1.75
+        ]
+      },
+      {
+        "bracket": "plain (other datasets) [Jester]",
+        "N": 136,
+        "before": 44.36434802368126,
+        "after": 59.83293352135355,
+        "diff": 15.468585497672294,
+        "ci": [
+          13.4,
+          17.5
+        ],
+        "kept": true,
+        "typical": [
+          0.5,
+          1.0
+        ]
+      },
+      {
+        "bracket": "plain (other datasets) [DICES]",
+        "N": 500,
+        "before": 84.91530745220776,
+        "after": 88.87074383486909,
+        "diff": 3.9554363826613397,
+        "ci": [
+          2.6,
+          5.4
+        ],
+        "kept": true,
+        "typical": [
+          0.5,
+          1.3
+        ]
+      },
+      {
+        "bracket": "plain (other datasets) [WisdomOfCrowds]",
+        "N": 114,
+        "before": 58.69155985648528,
+        "after": 61.388410438202826,
+        "diff": 2.6968505817175568,
+        "ci": [
+          0.8,
+          4.7
+        ],
+        "kept": true,
+        "typical": [
+          0.1,
+          1.5
+        ]
+      },
+      {
+        "bracket": "plain (other datasets) [OSPsychRWAS]",
+        "N": 22,
+        "before": 70.16649438527946,
+        "after": 68.71947640377677,
+        "diff": -1.4470179815027107,
+        "ci": [
+          -3.8,
+          0.9
+        ],
+        "kept": false,
+        "typical": [
+          0.1,
+          1.15
+        ]
+      },
+      {
+        "bracket": "plain (other datasets) [GlobalOpinionQA]",
+        "N": 418,
+        "before": 42.18585926745041,
+        "after": 41.896485476913966,
+        "diff": -0.28937379053644824,
+        "ci": [
+          -0.7,
+          0.1
+        ],
+        "kept": false,
+        "typical": [
+          0.0,
+          1.0
+        ]
+      },
+      {
+        "bracket": "plain (other datasets) [OSPsychMGKT]",
+        "N": 109,
+        "before": 54.6371410722613,
+        "after": 59.07857326589013,
+        "diff": 4.441432193628828,
+        "ci": [
+          1.0,
+          8.1
+        ],
+        "kept": true,
+        "typical": [
+          0.4,
+          1.75
+        ]
+      },
+      {
+        "bracket": "plain + label prior (no decomposition) [ESS]",
+        "N": 110,
+        "before": 37.22373785799645,
+        "after": 36.96745533319418,
+        "diff": -0.25628252480227676,
+        "ci": [
+          -2.0,
+          1.3
+        ],
+        "kept": false,
+        "typical": [
+          0.5,
+          1.15
+        ]
+      },
+      {
+        "bracket": "plain + label prior (no decomposition) [ISSP]",
+        "N": 479,
+        "before": 42.175301545500716,
+        "after": 42.920946784828864,
+        "diff": 0.7456452393281375,
+        "ci": [
+          0.1,
+          1.4
+        ],
+        "kept": true,
+        "typical": [
+          0.4,
+          1.15
+        ]
+      },
+      {
+        "bracket": "plain + label prior (no decomposition) [Afrobarometer]",
+        "N": 89,
+        "before": 54.57271875055465,
+        "after": 56.46750017387599,
+        "diff": 1.89478142332135,
+        "ci": [
+          0.0,
+          3.9
+        ],
+        "kept": false,
+        "typical": [
+          0.5,
+          1.3
+        ]
+      },
+      {
+        "bracket": "plain + label prior (no decomposition) [LatinoBarometro]",
+        "N": 365,
+        "before": 44.215817250476434,
+        "after": 44.42037075187709,
+        "diff": 0.20455350140065304,
+        "ci": [
+          -0.5,
+          1.0
+        ],
+        "kept": false,
+        "typical": [
+          0.5,
+          1.15
+        ]
+      },
+      {
+        "bracket": "plain + label prior (no decomposition) [OpinionQA]",
+        "N": 736,
+        "before": 71.12456300055157,
+        "after": 72.38815056879884,
+        "diff": 1.2635875682472624,
+        "ci": [
+          0.7,
+          1.8
+        ],
+        "kept": true,
+        "typical": [
+          0.4,
+          1.3
+        ]
+      },
+      {
+        "bracket": "plain (no decomposition) [ESS]",
+        "N": 181,
+        "before": 51.13995687631253,
+        "after": 61.737926616621245,
+        "diff": 10.597969740308718,
+        "ci": [
+          6.1,
+          14.7
+        ],
+        "kept": true,
+        "typical": [
+          0.4,
+          1.5
+        ]
+      },
+      {
+        "bracket": "plain (no decomposition) [ISSP]",
+        "N": 38,
+        "before": 37.109667447960376,
+        "after": 67.0621218811313,
+        "diff": 29.952454433170917,
+        "ci": [
+          17.3,
+          42.0
+        ],
+        "kept": true,
+        "typical": [
+          0.5,
+          1.75
+        ]
+      },
+      {
+        "bracket": "plain (no decomposition) [Afrobarometer]",
+        "N": 206,
+        "before": 47.86750162190193,
+        "after": 59.886056238993014,
+        "diff": 12.01855461709109,
+        "ci": [
+          9.3,
+          15.1
+        ],
+        "kept": true,
+        "typical": [
+          0.5,
+          1.5
+        ]
+      },
+      {
+        "bracket": "plain (no decomposition) [LatinoBarometro]",
+        "N": 85,
+        "before": 37.45483087047274,
+        "after": 42.32313353974403,
+        "diff": 4.868302669271294,
+        "ci": [
+          0.3,
+          9.4
+        ],
+        "kept": true,
+        "typical": [
+          0.4,
+          1.75
+        ]
+      },
+      {
+        "bracket": "plain (no decomposition) [OpinionQA]",
+        "N": 748,
+        "before": 72.16626724527606,
+        "after": 74.99113779302589,
+        "diff": 2.824870547749822,
+        "ci": [
+          2.1,
+          3.6
+        ],
+        "kept": true,
+        "typical": [
+          0.4,
+          1.5
+        ]
+      }
+    ]
+  },
+  "3": {
+    "start": 61.77108406194948,
+    "end": 62.03023633971119,
+    "brackets": [
+      {
+        "bracket": "same-group-abroad decomposition + model [ESS]",
+        "N": 228,
+        "before": 52.97060128095134,
+        "after": 53.56843229918343,
+        "diff": 0.5978310182320776,
+        "ci": [
+          -0.7,
+          2.0
+        ],
+        "kept": false,
+        "typical": [
+          "xd0",
+          0.5,
+          0.2,
+          1.15
+        ]
+      },
+      {
+        "bracket": "same-group-abroad decomposition + model [ISSP]",
+        "N": 185,
+        "before": 40.27195091828784,
+        "after": 41.368567100462975,
+        "diff": 1.09661618217513,
+        "ci": [
+          -0.3,
+          2.6
+        ],
+        "kept": false,
+        "typical": [
+          "xd",
+          0.35,
+          0.4,
+          1.15
+        ]
+      },
+      {
+        "bracket": "same-group-abroad decomposition + model [Afrobarometer]",
+        "N": 334,
+        "before": 59.13780479795742,
+        "after": 60.22262209469331,
+        "diff": 1.084817296735874,
+        "ci": [
+          -0.3,
+          2.6
+        ],
+        "kept": false,
+        "typical": [
+          "xd0",
+          0.65,
+          0.2,
+          1.15
+        ]
+      },
+      {
+        "bracket": "same-group-abroad decomposition + model [LatinoBarometro]",
+        "N": 414,
+        "before": 36.22192554085271,
+        "after": 37.23353663157943,
+        "diff": 1.0116110907267266,
+        "ci": [
+          0.0,
+          1.9
+        ],
+        "kept": false,
+        "typical": [
+          "xd0",
+          0.35,
+          0.4,
+          1.15
+        ]
+      },
+      {
+        "bracket": "country-level decomposition + model [ESS]",
+        "N": 443,
+        "before": 54.43558943792057,
+        "after": 54.76702880016148,
+        "diff": 0.3314393622409024,
+        "ci": [
+          -0.1,
+          0.7
+        ],
+        "kept": false,
+        "typical": [
+          "xd",
+          0.5,
+          0.2,
+          1.15
+        ]
+      },
+      {
+        "bracket": "country-level decomposition + model [ISSP]",
+        "N": 148,
+        "before": 45.59270577305292,
+        "after": 45.081003813803704,
+        "diff": -0.5117019592492246,
+        "ci": [
+          -2.0,
+          0.9
+        ],
+        "kept": false,
+        "typical": [
+          "xd",
+          0.35,
+          0.2,
+          1.15
+        ]
+      },
+      {
+        "bracket": "country-level decomposition + model [Afrobarometer]",
+        "N": 460,
+        "before": 62.24178805863778,
+        "after": 62.47666379698027,
+        "diff": 0.2348757383424881,
+        "ci": [
+          -0.3,
+          0.8
+        ],
+        "kept": false,
+        "typical": [
+          "xd",
+          0.65,
+          0.2,
+          1.0
+        ]
+      },
+      {
+        "bracket": "country-level decomposition + model [LatinoBarometro]",
+        "N": 232,
+        "before": 42.959384396723635,
+        "after": 43.359022434677556,
+        "diff": 0.3996380379539232,
+        "ci": [
+          -2.0,
+          2.7
+        ],
+        "kept": false,
+        "typical": [
+          "xd0",
+          0.65,
+          0.2,
+          1.15
+        ]
+      },
+      {
+        "bracket": "decomposition [ESS]",
+        "N": 1181,
+        "before": 75.47463022941733,
+        "after": 76.87689923081714,
+        "diff": 1.4022690013998096,
+        "ci": [
+          1.0,
+          1.8
+        ],
+        "kept": true,
+        "typical": [
+          0.9,
+          1.1
+        ]
+      },
+      {
+        "bracket": "decomposition [ISSP]",
+        "N": 590,
+        "before": 68.61233335046704,
+        "after": 69.8621547591394,
+        "diff": 1.2498214086723562,
+        "ci": [
+          0.8,
+          1.7
+        ],
+        "kept": true,
+        "typical": [
+          0.9,
+          1.0
+        ]
+      },
+      {
+        "bracket": "decomposition [Afrobarometer]",
+        "N": 942,
+        "before": 83.98126329636288,
+        "after": 84.72394754109825,
+        "diff": 0.7426842447353764,
+        "ci": [
+          0.5,
+          1.0
+        ],
+        "kept": true,
+        "typical": [
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "bracket": "decomposition [LatinoBarometro]",
+        "N": 649,
+        "before": 73.19442545583317,
+        "after": 73.8231841495928,
+        "diff": 0.6287586937596318,
+        "ci": [
+          0.1,
+          1.2
+        ],
+        "kept": true,
+        "typical": [
+          0.9,
+          1.0
+        ]
+      },
+      {
+        "bracket": "other countries, identical question [ConspiracyCorr]",
+        "N": 45,
+        "before": 37.265396219804245,
+        "after": 38.44273963528178,
+        "diff": 1.1773434154775304,
+        "ci": [
+          -5.9,
+          8.2
+        ],
+        "kept": false,
+        "typical": [
+          0.4,
+          0.0,
+          1.15
+        ]
+      },
+      {
+        "bracket": "other countries, identical question [GlobalOpinionQA]",
+        "N": 82,
+        "before": 40.90815392278996,
+        "after": 41.15195336649397,
+        "diff": 0.24379944370401319,
+        "ci": [
+          -2.2,
+          2.7
+        ],
+        "kept": false,
+        "typical": [
+          0.2,
+          0.2,
+          1.3
+        ]
+      },
+      {
+        "bracket": "other countries, identical question [TISP]",
+        "N": 485,
+        "before": 45.93388543844541,
+        "after": 45.932447138838405,
+        "diff": -0.001438299606987307,
+        "ci": [
+          -0.3,
+          0.3
+        ],
+        "kept": false,
+        "typical": [
+          0.8,
+          0.0,
+          1.0
+        ]
+      },
+      {
+        "bracket": "cognitive model (NumberGame)",
+        "N": 500,
+        "before": 45.326935379129075,
+        "after": 45.5079675163216,
+        "diff": 0.18103213719251157,
+        "ci": [
+          -0.9,
+          1.3
+        ],
+        "kept": false,
+        "typical": [
+          1.0,
+          0.0,
+          1.15
+        ]
+      },
+      {
+        "bracket": "cognitive model (Choices13k)",
+        "N": 500,
+        "before": 39.172402336523696,
+        "after": 39.172402336523696,
+        "diff": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "kept": false,
+        "typical": [
+          1.0,
+          0.0,
+          0.9
+        ]
+      },
+      {
+        "bracket": "plain (other datasets) [ChaosNLI]",
+        "N": 500,
+        "before": 45.26668427624119,
+        "after": 45.56007045125647,
+        "diff": 0.2933861750152863,
+        "ci": [
+          -0.5,
+          1.1
+        ],
+        "kept": false,
+        "typical": [
+          0.2,
+          1.5
+        ]
+      },
+      {
+        "bracket": "plain (other datasets) [GlobalOpinionQA]",
+        "N": 418,
+        "before": 42.18585926745041,
+        "after": 41.628230390026985,
+        "diff": -0.5576288774234293,
+        "ci": [
+          -1.0,
+          -0.1
+        ],
+        "kept": false,
+        "typical": [
+          0.0,
+          1.0
+        ]
+      },
+      {
+        "bracket": "plain + label prior (no decomposition) [ESS]",
+        "N": 110,
+        "before": 37.22373785799645,
+        "after": 35.95641572711749,
+        "diff": -1.2673221308789746,
+        "ci": [
+          -3.3,
+          0.7
+        ],
+        "kept": false,
+        "typical": [
+          0.6,
+          1.15
+        ]
+      },
+      {
+        "bracket": "plain + label prior (no decomposition) [ISSP]",
+        "N": 479,
+        "before": 42.920946784828864,
+        "after": 43.15915755532113,
+        "diff": 0.23821077049226638,
+        "ci": [
+          -0.1,
+          0.6
+        ],
+        "kept": false,
+        "typical": [
+          0.4,
+          1.15
+        ]
+      },
+      {
+        "bracket": "plain + label prior (no decomposition) [LatinoBarometro]",
+        "N": 365,
+        "before": 44.215817250476434,
+        "after": 44.42037075187709,
+        "diff": 0.20455350140065304,
+        "ci": [
+          -0.5,
+          1.0
+        ],
+        "kept": false,
+        "typical": [
+          0.5,
+          1.15
+        ]
+      }
+    ]
+  }
+}

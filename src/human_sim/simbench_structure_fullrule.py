@@ -152,6 +152,7 @@ def main():
             idx[(rr.dataset_name, rr.input_template)].append((ctry(rr.group_prompt_variable_map), {k: v / tt for k, v in rr.human_answer.items()}))
     dev_keys = {(r.dataset_name, A._filled_persona(r), r.input_template) for _, r in A.build_env(25, 100, 7, "dev")[0].iterrows()}
     recs = []
+    comps = []
     for q in qs:
         p0 = np.asarray(q["preds"]["plain"])
         src, p = "outside shared surveys (plain)", p0
@@ -195,9 +196,27 @@ def main():
             src = "plain (other datasets)"
         r = sample.loc[q["i"]]
         top = sub_shares(q["keys"], q["roles"], q["h"])[0]
+        comp = {"qid": q["qid"], "dataset": q["dataset"], "split": q["split"], "routed": routed, "source": src, "h": q["h"], "norm": q["norm"],
+                "keys": q["keys"], "plain": p0, "final": p, "top": top, "Hn": q["Hn"]}
+        if q["qid"] in shared:
+            d = dec[q["qid"]]
+            comp["dd3"], comp["dd2"] = d["dd3"], d["dd2"]
+            t = tmap[q["qid"]]
+            comp["xd"] = (PD.predict(svp_full, t, 1.0) if t["split"] == "Pop" else PD.predict_group(sv_full, t, 1.0, dd2_full))[0]
+            comp["xd0"] = (PD.predict(svp_full, t, 0.0) if t["split"] == "Pop" else PD.predict_group(sv_full, t, 0.0, dd2_full))[0]
+        pr = prior_loo(q["i"], lab, pos, own)
+        comp["prior"] = pr if pr is not None and len(pr) == len(p0) else None
+        if q["dataset"] in OTHS:
+            rr = sample.loc[q["i"]]
+            others = [a for cc, a in idx[(q["dataset"], rr.input_template)] if cc != ctry(rr.group_prompt_variable_map)]
+            comp["others"] = (lambda v: v / v.sum())(np.mean([[a.get(k, 0.0) for k in q["keys"]] for a in others], axis=0)) if others else None
+        if q["qid"] in cog:
+            comp["cog"] = cog[q["qid"]] if q["keys"] == ["A", "B"] else cog[q["qid"]][::-1]
+        comps.append(comp)
         recs.append({"dataset": q["dataset"], "shared": q["qid"] in shared, "split": q["split"], "source": src, "routed": routed,
                      "true_shape": "sharp" if top >= 0.7 else "shallow", "S_plain": S(q, p0), "S_rule": S(q, p),
                      "in_dev": (r.dataset_name, A._filled_persona(r), r.input_template) in dev_keys})
+    pd.to_pickle(comps, M.OUT / "fullrule_components.pkl")
     df = pd.DataFrame(recs)
     d = (df.S_rule - df.S_plain).values
     prev = json.loads((M.OUT / "structure_full_report.json").read_text())

@@ -66,8 +66,16 @@ def hypotheses():
           "squares": {x * x for x in range(1, 11)}, "cubes": {x ** 3 for x in range(1, 5)},
           "powers of 2": {2 ** k for k in range(0, 7)}, "powers of 3": {3 ** k for k in range(0, 5)},
           "primes": {x for x in U if x > 1 and all(x % d for d in range(2, int(x ** 0.5) + 1))}}
-    for k in range(3, 13):
+    for k in range(3, 26):
         hs[f"multiples of {k}"] = {x for x in U if x % k == 0}
+    for k in range(3, 11):
+        for r in range(1, k):
+            hs[f"{r} mod {k}"] = {x for x in U if x % k == r}
+    for d in range(10):
+        hs[f"contains digit {d}"] = {x for x in U if str(d) in str(x)}
+    hs["two digits"] = set(range(10, 100))
+    hs["one digit"] = set(range(1, 10))
+    hs["repeated digits"] = {11 * k for k in range(1, 10)}
     for d in range(10):
         hs[f"ends in {d}"] = {x for x in U if x % 10 == d}
     for t in range(10):
@@ -145,7 +153,16 @@ def rows_for(ds, which):
     return sample[sample.dataset_name == ds]
 
 
+GBM = "--gbm" in sys.argv
+
+
 def fit_predict(Xtr, ytr, Xte):
+    if GBM:
+        from sklearn.ensemble import HistGradientBoostingRegressor
+        y = np.log(np.clip(ytr, 0.01, 0.99) / (1 - np.clip(ytr, 0.01, 0.99)))
+        m = HistGradientBoostingRegressor(max_iter=300, learning_rate=0.05, max_leaf_nodes=15, min_samples_leaf=10, l2_regularization=1.0, random_state=0)
+        m.fit(np.array(Xtr, float), y)
+        return 1 / (1 + np.exp(-m.predict(np.array(Xte, float)))), np.zeros(1)
     Xtr, Xte = np.array(Xtr, float), np.array(Xte, float)
     sc = StandardScaler().fit(Xtr)
     X2 = np.vstack([sc.transform(Xtr)] * 2)
@@ -212,11 +229,12 @@ def main():
             preds_full[q["qid"]] = np.array([a, 1 - a])
         print(f"   full (5-fold cross-fitted): N {len(qf)}  plain {s_old.mean():.1f} -> cognitive model {s_new.mean():.1f} ({(s_new - s_old).mean():+.1f} {ci(s_new - s_old)})", flush=True)
         report[ds].update({"full_N": len(qf), "full_plain": float(s_old.mean()), "full_model": float(s_new.mean()), "full_ci": ci(s_new - s_old)})
-    for fn, new in (("cogmodels_eval.pkl", preds_eval), ("cogmodels_full.pkl", preds_full)):
+    sfx = "_gbm" if GBM else ""
+    for fn, new in ((f"cogmodels_eval{sfx}.pkl", preds_eval), (f"cogmodels_full{sfx}.pkl", preds_full)):
         old = pd.read_pickle(M.OUT / fn) if (M.OUT / fn).exists() else {}
         old.update(new)
         pd.to_pickle(old, M.OUT / fn)
-    rp = M.OUT / "cogmodels_report.json"
+    rp = M.OUT / f"cogmodels_report{sfx}.json"
     old = json.loads(rp.read_text()) if rp.exists() else {}
     old.update(report)
     rp.write_text(json.dumps(old, indent=2, default=float))
