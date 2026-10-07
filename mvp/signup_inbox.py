@@ -76,7 +76,7 @@ def anchors_from_html(html: str) -> dict[str, str]:
     return out
 
 
-def rank_links(links: list[str], host: str) -> list[str]:
+def rank_links(links: list[str], host: str, anchors: dict[str, str] | None = None) -> list[str]:
     """Verification-looking links first, product-domain links next, junk dropped."""
     host_tok = (host or "").lower().removeprefix("www.").split(".")[0]
     seen: set[str] = set()
@@ -90,6 +90,8 @@ def rank_links(links: list[str], host: str) -> list[str]:
         score = 0
         if any(k in low for k in _GOOD_LINK):
             score += 3
+        if anchors and re.search(r"verif|confirm|activat|validat|magic link", anchors.get(url, "") or anchors.get(clean, ""), re.I):
+            score += 4  # "Confirm my email" button behind a click-tracking redirect
         if host_tok and host_tok in low:
             score += 2
         if len(clean) > 60:  # tokens are long
@@ -105,16 +107,111 @@ _VERIFY_SUBJECT_RE = re.compile(
     r"verif|confirm|activat|one click away|magic|sign.?in|log.?in|code|validate|complete your", re.I)
 
 
-def verification_link(url: str) -> bool:
-    """A link that plausibly verifies the account (not a help / welcome / tracking link)."""
-    return bool(_VERIFY_LINK_RE.search(url or ""))
+# Anchor text of the button in the mail ("Confirm my email", "Verify account", "Activate").
+_VERIFY_TEXT_RE = re.compile(r"verif|confirm|activat|validat|magic link", re.I)
+# Click-tracking redirectors (Brevo/Sendinblue, SendGrid, Mailchimp, Mailgun, Mailjet, SES, Postmark,
+# Customer.io, HubSpot, Mandrill...). Their URLs say nothing about where they lead.
+_TRACKER_HOST_RE = re.compile(
+    r"(^|\.)(sendibt\d*\.com|sendibm\d*\.com|sendinblue\.com|brevo\.com|r\.mail\.|sendgrid\.net|list-manage\.com|"
+    r"mailchi\.mp|mandrillapp\.com|mailgun\.org|mjt\.lu|awstrack\.me|pstmrk\.it|customeriomail\.com|"
+    r"hubspotlinks\.com|hs-sites\.com|mailerlite\.com|mlsend\.com|convertkit-mail\d*\.com|ck\.page|"
+    r"rs6\.net|klclick\d*\.com|emltrk\.com|links\.[a-z0-9-]+\.[a-z]+|click\.[a-z0-9-]+\.[a-z]+|"
+    r"email\.[a-z0-9-]+\.[a-z]+|track\.[a-z0-9-]+\.[a-z]+)$", re.I)
+_TRACKER_PATH_RE = re.compile(r"/tr/cl/|/ls/click|/track/click|/wf/click|/CL0/|/c/[A-Za-z0-9_-]{12,}|/e/c/|/ss/c/", re.I)
+
+
+def is_tracking_link(url: str) -> bool:
+    from urllib.parse import urlsplit
+
+    try:
+        parts = urlsplit(url or "")
+    except ValueError:
+        return False
+    return bool(_TRACKER_HOST_RE.search(parts.hostname or "") or _TRACKER_PATH_RE.search(parts.path or ""))
+
+
+def _public_host(host: str) -> bool:
+    """Only follow redirects to hosts that resolve to public addresses (no SSRF into the box/VPC)."""
+    import ipaddress
+    import socket
+
+    try:
+        infos = socket.getaddrinfo(host, None)
+    except OSError:
+        return False
+    for info in infos:
+        try:
+            if not ipaddress.ip_address(info[4][0]).is_global:
+                return False
+        except ValueError:
+            return False
+    return bool(infos)
+
+
+def resolve_redirects(url: str, *, max_hops: int = 5, timeout_s: float = 5.0) -> list[str]:
+    """Redirect chain of a click-tracking link, read from Location headers only.
+
+    Safe by construction: http(s) only, public hosts only, no cookies, bodies never read, and we stop
+    BEFORE requesting a hop that already looks like the verify link (so checking never verifies).
+    """
+    import urllib.error
+    import urllib.request
+    from urllib.parse import urljoin, urlsplit
+
+    class _NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, *a, **k):  # noqa: ANN002, ANN003
+            return None
+
+    opener = urllib.request.build_opener(_NoRedirect)
+    chain = [url]
+    cur = url
+    for _ in range(max_hops):
+        if cur != url and _VERIFY_LINK_RE.search(cur):
+            break
+        parts = urlsplit(cur)
+        if parts.scheme not in ("http", "https") or not parts.hostname or not _public_host(parts.hostname):
+            break
+        req = urllib.request.Request(cur, method="GET", headers={"User-Agent": "Mozilla/5.0 (UserSim link check)"})
+        loc = ""
+        try:
+            resp = opener.open(req, timeout=timeout_s)
+            loc = resp.headers.get("Location") or ""
+            resp.close()
+        except urllib.error.HTTPError as exc:
+            loc = exc.headers.get("Location") or "" if 300 <= exc.code < 400 else ""
+        except Exception:  # noqa: BLE001
+            break
+        if not loc:
+            break
+        cur = urljoin(cur, loc)
+        chain.append(cur)
+    return chain
+
+
+def verification_link(url: str, text: str = "", *, chain: list[str] | None = None, resolve: bool = False) -> bool:
+    """A link that plausibly verifies the account (not a help / welcome link).
+
+    Accepted when the URL looks like verify/confirm/sign-in, when the mail's anchor text says
+    confirm/verify/activate, or (for click-tracking redirects) when a hop of its redirect chain does.
+    `chain` is the browser's observed redirect chain; `resolve=True` follows a tracker's Location headers.
+    """
+    if _VERIFY_LINK_RE.search(url or ""):
+        return True
+    if text and _VERIFY_TEXT_RE.search(text):
+        return True
+    if chain and any(_VERIFY_LINK_RE.search(u or "") for u in chain[1:]):
+        return True
+    if resolve and is_tracking_link(url):
+        return any(_VERIFY_LINK_RE.search(u) for u in resolve_redirects(url)[1:])
+    return False
 
 
 def _verify_score(msg: dict[str, Any], host: str) -> int:
     score = 0
     if find_code(msg.get("subject", ""), msg.get("text", "")):
         score += 2
-    if any(verification_link(u) for u in rank_links(msg.get("links") or [], host)[:8]):
+    anchors = msg.get("anchors") or {}
+    if any(verification_link(u, anchors.get(u, "")) for u in rank_links(msg.get("links") or [], host, anchors)[:8]):
         score += 2
     if _VERIFY_SUBJECT_RE.search(msg.get("subject") or ""):
         score += 1
@@ -157,7 +254,7 @@ class Inbox:
                 seen.add(str(msg.get("id") or msg.get("subject")))
                 code = find_code(msg.get("subject", ""), msg.get("text", ""))
                 anchors = msg.get("anchors") or {}
-                ranked = rank_links(msg.get("links") or [], host)[:8]
+                ranked = rank_links(msg.get("links") or [], host, anchors)[:8]
                 return {
                     "subject": msg.get("subject", ""),
                     "sender": msg.get("sender", ""),
