@@ -8,6 +8,7 @@ and report can't drift between clients.
 from __future__ import annotations
 
 import json
+import os
 from contextlib import AsyncExitStack
 from typing import Any
 
@@ -246,8 +247,11 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
     """
     try:
         sim = S.get_session(session_id)
+        extra = None
+        if str((action or {}).get("type")) in {"click", "key"}:
+            extra = await _maybe_paid_presolve(sim)
         obs = await S.act(sim, action, thought)
-        return _obs_content(sim, obs)
+        return _obs_content(sim, obs, {"captcha_presolve": extra} if extra else None)
     except S.SessionError as exc:
         return _fail(exc)
 
@@ -488,14 +492,111 @@ async def usersim_solve_captcha(session_id: str) -> list[Any] | str:
                     result["audio"] = await solve_recaptcha_audio(sim.page)
                 except Exception as exc:  # noqa: BLE001
                     result["audio_error"] = repr(exc)[:200]
-            if os.environ.get("MVP_MCP_PAID_CAPTCHA") == "1" and info:
-                result["solver"] = await cap.solve_captcha_on_page(sim.page)
+            state = await S.captcha_state(sim.page) or {}
+            if os.environ.get("MVP_MCP_PAID_CAPTCHA") == "1" and state and not state.get("token_ready"):
+                result["paid"] = await _paid_token(sim, state.get("kind") or "", info or {})
             await S._settle(sim.page)
             obs = await S.record_step(sim, kind="captcha", action_text="captcha attempt",
                                       args={}, thought="I try to get past the captcha.", error="")
         return _obs_content(sim, obs, {"captcha": json.loads(json.dumps(result, default=str))})
     except Exception as exc:  # noqa: BLE001
         return _fail(exc)
+
+
+_PAID_JS = """([kind, token]) => {
+  const set = (sel) => document.querySelectorAll(sel).forEach(t => {
+    const d = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(t), 'value');
+    d && d.set ? d.set.call(t, token) : (t.value = token);
+    t.dispatchEvent(new Event('input', {bubbles: true})); t.dispatchEvent(new Event('change', {bubbles: true}));
+  });
+  if (kind === 'turnstile') {
+    set('input[name="captcha"], [name="cf-turnstile-response"]');
+    if (window.turnstile) {
+      window.turnstile.getResponse = () => token;
+      window.turnstile.execute = (el, o) => { o && o.callback && o.callback(token); };
+      const r = window.turnstile.render;
+      window.turnstile.render = (el, o) => { setTimeout(() => o && o.callback && o.callback(token), 50); return 'usersim'; };
+    }
+  } else {
+    set('textarea[name="g-recaptcha-response"], input[name="g-recaptcha-response"]');
+    if (window.grecaptcha) {
+      const g = window.grecaptcha;
+      g.execute = () => Promise.resolve(token);
+      if (g.enterprise) g.enterprise.execute = () => Promise.resolve(token);
+      g.getResponse = () => token;
+    }
+  }
+  return true;
+}"""
+
+_SITEKEY_JS = """(kind) => {
+  const html = document.documentElement.outerHTML;
+  if (kind === 'turnstile') {
+    const el = document.querySelector('[data-sitekey]'); if (el) return el.getAttribute('data-sitekey');
+    const m = html.match(/0x4[A-Za-z0-9_-]{18,}/); return m ? m[0] : '';
+  }
+  const s = [...document.scripts].map(x => x.src).find(u => /recaptcha.*render=/.test(u));
+  if (s) { const k = new URL(s).searchParams.get('render'); if (k && k !== 'explicit') return k; }
+  const f = [...document.querySelectorAll('iframe')].map(i => i.src).find(u => u.includes('/recaptcha/'));
+  if (f) { const k = new URL(f).searchParams.get('k'); if (k) return k; }
+  const m = html.match(/6L[A-Za-z0-9_-]{38}/); return m ? m[0] : '';
+}"""
+
+
+async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
+    """Before a click on an approved paid host, if an invisible captcha has no token yet, get one first."""
+    from urllib.parse import urlsplit
+
+    from mvp import captcha_spend as cs
+
+    if os.environ.get("MVP_MCP_PAID_CAPTCHA") != "1":
+        return None
+    host = (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
+    if host not in cs.paid_hosts() or int(sim.row.get("capsolver_tries") or 0) >= 2:
+        return None
+    if not sim.row.get("signup_email"):
+        return None  # only once the signup form is being filled
+    state = await S.captcha_state(sim.page) or {}
+    if not state or state.get("token_ready"):
+        return None
+    sim.row["capsolver_tries"] = int(sim.row.get("capsolver_tries") or 0) + 1
+    from mvp import captcha as cap
+
+    try:
+        return await _paid_token(sim, state.get("kind") or "", await cap.detect_sitekey(sim.page) or {})
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "detail": repr(exc)[:200]}
+
+
+async def _paid_token(sim: S.SimSession, kind: str, info: dict) -> dict:
+    """Approved paid path (MVP_MCP_PAID_CAPTCHA=1): one CapSolver token through the metered ledger, injected
+    the way the site's own widget would deliver it. Spend caps live in mvp.captcha_spend."""
+    import asyncio
+    from urllib.parse import urlsplit
+
+    from mvp import captcha as cap
+    from mvp import captcha_spend as cs
+
+    host = (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
+    if not sim.row.get("capsolver_attempt"):
+        sim.row["capsolver_attempt"] = cs.begin_inrun_attempt(host)
+    cs.bind_signup(host, sim.row["capsolver_attempt"])
+    sitekey = info.get("sitekey") or await sim.page.evaluate(_SITEKEY_JS, kind)
+    if kind == "turnstile":
+        ctype = "turnstile"
+    else:  # invisible / score reCAPTCHA defaults to v3; a visible v2 widget keeps its detected type
+        ctype = str(info.get("type") or "") if "v2" in str(info.get("type") or "") else (os.environ.get("MVP_MCP_RECAPTCHA_KIND") or "recaptcha_v3")
+    if not sitekey:
+        return {"ok": False, "detail": "no sitekey found"}
+    before = cs.spent_usd()
+    token = await asyncio.to_thread(cap.solve_sitekey, sitekey=sitekey, page_url=sim.page.url, captcha_type=ctype,
+                                    action=os.environ.get("MVP_MCP_RECAPTCHA_ACTION") or None, timeout_s=120, blocking=True)
+    cost = round(cs.spent_usd() - before, 5)
+    sim.row["capsolver_usd"] = round(float(sim.row.get("capsolver_usd") or 0) + cost, 5)
+    if not token:
+        return {"ok": False, "type": ctype, "cost_usd": cost, "detail": "solver returned no token (see ledger)"}
+    await sim.page.evaluate(_PAID_JS, [kind, token])
+    return {"ok": True, "type": ctype, "cost_usd": cost, "detail": "token injected; submit the form now"}
 
 
 @mcp.prompt()
