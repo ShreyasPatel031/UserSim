@@ -675,6 +675,12 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
     elif kind == "hover":
         await page.mouse.move(*_xy(action))
     elif kind == "type":
+        if "x" in action and "y" in action:
+            await page.mouse.click(*_xy(action))
+            await asyncio.sleep(0.15)
+            if action.get("clear", True):
+                await page.keyboard.press("Control+A")
+                await page.keyboard.press("Backspace")
         await page.keyboard.type(action["text"], delay=15)
         if action.get("submit"):
             await page.keyboard.press("Enter")
@@ -812,8 +818,41 @@ def jpeg(png: bytes, quality: int = 75) -> bytes:
     return out.getvalue()
 
 
+_FIELDS_JS = """() => {
+  const out = [];
+  const els = document.querySelectorAll('input:not([type=hidden]), textarea, select, button, [role=button], [role=checkbox], a[href]');
+  for (const el of els) {
+    const r = el.getBoundingClientRect();
+    if (r.width < 4 || r.height < 4 || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
+    const st = getComputedStyle(el);
+    if (st.visibility === 'hidden' || st.display === 'none' || +st.opacity === 0) continue;
+    let label = el.getAttribute('aria-label') || el.placeholder || '';
+    if (!label && el.id) { const l = document.querySelector('label[for="' + el.id + '"]'); if (l) label = l.innerText; }
+    if (!label) { const l = el.closest('label'); if (l) label = l.innerText; }
+    if (!label) label = (el.innerText || el.value || el.name || '').trim();
+    const tag = el.tagName.toLowerCase();
+    const kind = tag === 'input' ? (el.type || 'text') : tag;
+    const row = {kind, label: label.trim().slice(0, 60), x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2)};
+    if (tag === 'input' && !['checkbox','radio','submit','button'].includes(el.type)) row.filled = !!el.value;
+    if (el.type === 'checkbox' || el.type === 'radio') row.checked = el.checked;
+    out.push(row);
+    if (out.length >= 40) break;
+  }
+  return out;
+}"""
+
+
+async def _fields(page: Any) -> list[dict[str, Any]]:
+    """Visible controls with their exact centre (the website driver's element list, for the MCP client)."""
+    try:
+        return await asyncio.wait_for(page.evaluate(_FIELDS_JS), timeout=4)
+    except Exception:  # noqa: BLE001
+        return []
+
+
 async def _observation(sim: SimSession, png: bytes, error: str = "") -> dict[str, Any]:
     return {
+        "fields": await _fields(sim.page),
         "png": png,
         "url": sim.page.url,
         "title": await _title(sim.page),

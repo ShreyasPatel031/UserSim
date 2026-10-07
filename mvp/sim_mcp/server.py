@@ -94,6 +94,8 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
         "steps_left": obs["steps_left"],
         "seconds_left": obs["seconds_left"],
     }
+    if obs.get("fields"):
+        meta["fields"] = obs["fields"]
     if obs.get("error"):
         meta["action_error"] = obs["error"]
     if extra:
@@ -224,7 +226,8 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
 
     action (pixel coordinates in the screenshot):
       {"type":"click","x":..,"y":..} · {"type":"double_click","x":..,"y":..} · {"type":"right_click","x":..,"y":..}
-      {"type":"hover","x":..,"y":..} · {"type":"type","text":"...","submit":false} (types into the focused field; click it first)
+      {"type":"hover","x":..,"y":..} · {"type":"type","text":"...","x":..,"y":..,"submit":false} (clicks the field at x,y, clears it, types; omit x,y to type into the focused field)
+    Each observation lists visible `fields` (kind, label, exact x,y, filled/checked): use those coordinates for form fields.
       {"type":"key","keys":"Enter"|"Tab"|"Escape"|"Control+A"} · {"type":"scroll","dy":600,"x":..,"y":..} (dy>0 = down)
       {"type":"back"} · {"type":"wait","ms":1000} · {"type":"navigate","url":"..."} (same site only)
       {"type":"press_and_hold","x":..,"y":..,"ms":4000} (press-and-hold human checks)
