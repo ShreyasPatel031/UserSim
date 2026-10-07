@@ -120,7 +120,7 @@ def signup_verified(row: dict[str, Any]) -> bool:
 
 async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any], str]:
     """(verdict, status). status is 'ok', 'no_screenshot', or 'error: …' — never a silent pass."""
-    from mvp.e2e2_gates import coerce_verdict, judge_goal_screenshot
+    from mvp.e2e2_gates import coerce_verdict, judge_goal_screenshot, judge_signed_in
 
     path = MVP_RUNS_DIR / study_id / str(row.get("agent_id") or AGENT_ID) / "screenshots" / "final.png"
     if not path.is_file():
@@ -143,7 +143,24 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
         verdict = coerce_verdict({"goal_reached": False, "reason": reason})
         verdict["unverified"] = True
         return verdict, f"error: {reason}"
-    verdict = apply_hard_rules(row, coerce_verdict(raw), raw, path.read_bytes())
+    png = path.read_bytes()
+    if (isinstance(raw, dict) and not raw.get("goal_reached") and not raw.get("signed_in_app_page")
+            and not raw.get("page_loading") and not frame_unrendered(png)
+            and is_signup_goal(row) and signup_verified(row)):
+        # The goal judge ties signed_in_app_page to the task wording; ask the signed-in question on its own.
+        try:
+            second = await asyncio.wait_for(
+                asyncio.to_thread(judge_signed_in, png, final_url=str(row.get("final_url") or ""),
+                                  account_email=str(row.get("signup_email") or "")),
+                timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
+            )
+        except Exception as exc:  # noqa: BLE001
+            second = {"signed_in": False, "evidence": f"second look failed: {exc!r}"[:120]}
+        raw = dict(raw, signed_in_app_page=bool(second.get("signed_in")))
+        raw["signed_in_check"] = second
+    verdict = apply_hard_rules(row, coerce_verdict(raw), raw, png)
+    if isinstance(raw, dict) and raw.get("signed_in_check"):
+        verdict["signed_in_check"] = raw["signed_in_check"]
     verdict["checked_at_ts"] = time.time()
     return verdict, "ok"
 

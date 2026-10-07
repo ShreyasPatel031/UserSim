@@ -1441,6 +1441,36 @@ Return JSON only:
     return out
 
 
+def judge_signed_in(png: bytes, *, final_url: str = "", account_email: str = "") -> dict[str, Any]:
+    """Task-independent second look: is this a signed-in page of the product's app?
+
+    The goal judge couples this flag to the task wording ("dashboard"), so a signed-in
+    onboarding page (Litlyx 'Install Litlyx' with the account menu showing the signup
+    email) came back signed_in_app_page=false. This prompt never sees the task.
+    """
+    from mvp.e2e_ui_run import gemini_vision_json
+
+    if len(png) < 2000:
+        return {"signed_in": False, "evidence": "no screenshot"}
+    prompt = f"""Look at this screenshot of a web page. Ignore what anyone wanted to do on it.
+Final URL: {final_url or "unknown"}
+{("The account that was just created uses the email: " + account_email) if account_email else ""}
+
+Question: is a user currently SIGNED IN to this product's web app on this page?
+Signed in = app chrome such as an account menu / avatar / the account email in the header or sidebar, a workspace or project
+switcher, app navigation, or an onboarding / setup screen inside the app (create a project, install a tracking snippet,
+company details, invite teammates, choose a plan inside the app).
+Not signed in = a marketing / landing page, a login or signup form, a "check your inbox / verify your email" screen,
+an error page, a blank or loading page.
+
+Return JSON only: {{"signed_in": true/false, "evidence": "the visible element(s) that decided it"}}
+"""
+    result = gemini_vision_json(prompt, png)
+    if not isinstance(result, dict):
+        return {"signed_in": False, "evidence": "no verdict"}
+    return {"signed_in": _as_bool(result.get("signed_in")), "evidence": str(result.get("evidence") or "")[:200]}
+
+
 def _headline_gates(startup: dict[str, Any]) -> list[dict[str, Any]]:
     """The two clocks the summary leads with. Per-agent time_to_first_action stays separate."""
     value_limit = float(

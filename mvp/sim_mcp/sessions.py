@@ -576,6 +576,10 @@ def _follow_new_tab(sim: SimSession) -> None:
     if page is not None and not page.is_closed():
         sim.page = page
         _watch_page(sim, page)
+        try:
+            page.set_default_timeout(10000)
+        except Exception:  # noqa: BLE001
+            pass
     sim.new_page = None
 
 
@@ -787,12 +791,9 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         await page.mouse.move(*_xy(action))
     elif kind == "type":
         if "x" in action and "y" in action:
-            await page.mouse.click(*_xy(action))
-            await asyncio.sleep(0.15)
-            if action.get("clear", True):
-                await page.keyboard.press("Control+A")
-                await page.keyboard.press("Backspace")
-        await page.keyboard.type(action["text"], delay=15)
+            await _ready_for_input(page)
+            await _focus_and_clear(page, action)
+        await _type_checked(page, action)
         if action.get("submit"):
             await page.keyboard.press("Enter")
     elif kind == "key":
@@ -834,16 +835,80 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
 NAVIGATING_ACTIONS = {"click", "double_click", "key", "select"}
 
 
-async def _await_navigation(page: Any, url_before: str) -> None:
-    """A click that navigates used to return the pre-navigation frame: give it ~1.2 s to start, then let it load."""
-    for _ in range(6):
+_ACTIVE_VALUE_JS = """([x, y]) => {
+  let e = document.activeElement;
+  if (!e || e === document.body || !(('value' in e) || e.isContentEditable)) {
+    // a re-render that wiped the field usually also dropped focus: read the field under the click point
+    const t = document.elementFromPoint(x, y);
+    e = t && (t.closest('input, textarea, [contenteditable=""], [contenteditable=true]') || (t.querySelector && t.querySelector('input, textarea')));
+  }
+  if (!e) return null;
+  if (e.isContentEditable) return e.innerText || '';
+  if (e.tagName === 'INPUT' && !['text', 'email', 'password', 'search', 'tel', 'url'].includes((e.type || 'text').toLowerCase())) return null;
+  if (e.tagName !== 'INPUT' && e.tagName !== 'TEXTAREA') return null;
+  return ('value' in e && typeof e.value === 'string') ? e.value : null; }"""
+
+
+async def _ready_for_input(page: Any) -> None:
+    """Typing into a page that is still loading/hydrating gets wiped when the SPA mounts (Loop 6:
+    formbold/fabform/litlyx lost the first field typed after a navigation)."""
+    try:
+        await page.wait_for_load_state("load", timeout=10000)
+    except Exception:  # noqa: BLE001
+        pass
+
+
+async def _focus_and_clear(page: Any, action: dict[str, Any]) -> None:
+    await page.mouse.click(*_xy(action))
+    await asyncio.sleep(0.15)
+    if action.get("clear", True):
+        await page.keyboard.press("Control+A")
+        await page.keyboard.press("Backspace")
+
+
+async def _type_checked(page: Any, action: dict[str, Any]) -> None:
+    """Type, then confirm the focused field kept the text; retype once if a late re-render wiped it."""
+    text = action["text"]
+    await page.keyboard.type(text, delay=15)
+    if "x" not in action or "y" not in action:
+        return
+    for attempt in range(2):
+        await asyncio.sleep(0.8)
+        try:
+            value = await page.evaluate(_ACTIVE_VALUE_JS, list(_xy(action)))
+        except Exception:  # noqa: BLE001
+            return
+        if value is None or text in value or attempt == 1:
+            return
+        if value and not action.get("clear", True):
+            return  # appended into existing content we cannot compare reliably
+        await asyncio.sleep(1.5)
+        await _focus_and_clear(page, action)
+        await page.keyboard.type(text, delay=15)
+
+
+async def _await_navigation(page: Any, url_before: str, nav_started: list | None = None,
+                            sim: SimSession | None = None) -> None:
+    """A click that navigates used to return the pre-navigation frame: give it up to ~3 s to commit
+    (proxied sessions are slow to commit), then let it load. A click that opens a new tab
+    (target=_blank, e.g. Litlyx 'Start Free') switches the session to that newest tab."""
+    new_tab = False
+    for _ in range(15):
+        if sim is not None and sim.new_page is not None:
+            _follow_new_tab(sim)
+            page, new_tab = sim.page, True
+            break
         if page.url != url_before:
             break
+        if not nav_started and _ >= 5:
+            break  # no main-frame navigation request / new tab after 1.2 s: this click did not navigate
         await asyncio.sleep(0.2)
-    if page.url == url_before:
+    if page.url == url_before and not nav_started and not new_tab:
         return
+    if new_tab:
+        await ensure_viewport(page)
     try:
-        await page.wait_for_load_state("load", timeout=8000)
+        await page.wait_for_load_state("load", timeout=12000)
     except Exception:  # noqa: BLE001
         pass
     try:
@@ -889,6 +954,20 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
         sim.last_used = time.time()
         error = ""
         url_before = sim.page.url
+        nav_started: list = []
+
+        def _on_request(req: Any) -> None:
+            try:
+                if req.is_navigation_request() and req.frame == sim.page.main_frame:
+                    nav_started.append(req.url)
+            except Exception:  # noqa: BLE001
+                pass
+
+        watched = sim.page
+        try:
+            watched.on("request", _on_request)
+        except Exception:  # noqa: BLE001
+            watched = None
         try:
             await _execute(sim.page, action)
         except SessionError:
@@ -900,7 +979,12 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
         _follow_new_tab(sim)
         await _settle(sim.page)
         if action["type"] in NAVIGATING_ACTIONS or action.get("submit"):
-            await _await_navigation(sim.page, url_before)
+            await _await_navigation(sim.page, url_before, nav_started, sim=sim)
+        if watched is not None:
+            try:
+                watched.remove_listener("request", _on_request)
+            except Exception:  # noqa: BLE001
+                pass
         if blocked_signin(sim.page.url):
             error = "Google/GitHub sign-in is not allowed; use the email signup (went back)"
             try:
@@ -924,6 +1008,9 @@ async def observe(sim: SimSession) -> dict[str, Any]:
         if sim.closed:
             raise SessionError(f"session is closed ({sim.close_reason or 'finished'})")
         sim.last_used = time.time()
+        if sim.new_page is not None:  # a tab opened after the last action returned
+            _follow_new_tab(sim)
+            await _settle(sim.page)
         await ensure_viewport(sim.page)
         png = fit_frame(await _screenshot(sim.page, timeout_ms=10000))
         return await _observation(sim, png)
@@ -1001,25 +1088,57 @@ _SELECT_JS = """([x, y, want]) => {
 
 
 _FIELDS_JS = """() => {
-  const out = [];
+  const out = [], hidden = [];
   const els = document.querySelectorAll('input:not([type=hidden]), textarea, select, button, [role=button], [role=checkbox], a[href]');
+  // Loop 6 (Databuddy): an invisible checkbox (bot trap?) and a field below the fold were listed as clickable.
+  // A control is listed only if it is painted, inside the 1280x800 frame at its centre, and is what a click there hits.
+  const transparent = (e) => { for (let n = e; n && n.nodeType === 1; n = n.parentElement) {
+      const st = getComputedStyle(n);
+      if (+st.opacity < 0.05 || st.visibility === 'hidden' || st.display === 'none') return true;
+      if (n.getAttribute('aria-hidden') === 'true' && n !== e) return true;
+    } return false; };
   const shown = (e) => {
     const r = e.getBoundingClientRect();
-    if (r.width < 4 || r.height < 4 || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) return null;
+    if (r.width < 4 || r.height < 4) return null;
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    if (cx < 0 || cy < 0 || cx > innerWidth || cy > innerHeight) return null;
+    if (transparent(e)) return null;
     const st = getComputedStyle(e);
-    if (st.visibility === 'hidden' || st.display === 'none' || +st.opacity === 0) return null;
+    if (st.clipPath && st.clipPath.startsWith('inset(50%')) return null;
+    if (/rect\\(0(px)?,? 0(px)?,? 0(px)?,? 0(px)?\\)/.test(st.clip || '')) return null;
     return r;
   };
+  const hits = (e, r, alsoOk) => {  // the topmost element at the centre must be the control (or its own label/contents)
+    const t = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    if (!t) return false;
+    return t === e || e.contains(t) || t.contains(e) || (alsoOk && (alsoOk === t || alsoOk.contains(t) || t.contains(alsoOk)));
+  };
   const labelOf = (e) => (e.id && document.querySelector('label[for="' + CSS.escape(e.id) + '"]')) || e.closest('label');
+  const trapName = (e) => /honeypot|hpot|(^|[^a-z0-9])hp([^a-z0-9]|$)|bot[_-]?(field|check|trap)|leave.?(this|it)?.?blank|do.?not.?fill/i.test(
+    [e.name, e.id, e.className && e.className.baseVal === undefined ? e.className : '', e.getAttribute('autocomplete')].join(' '));
   for (const el of els) {
     let r = shown(el);
     const box = el.type === 'checkbox' || el.type === 'radio' || el.getAttribute('role') === 'checkbox';
-    if (!r && box) {  // custom-styled checkbox: the real input is hidden, its label/wrapper is what people click
-      const l = labelOf(el) || el.parentElement;
-      const lr = l && shown(l);
-      if (lr) r = {left: lr.left, top: lr.top, width: Math.min(lr.width, 24), height: lr.height};
+    let label0 = null;
+    if (!r && box) {  // custom-styled checkbox: the real input is hidden, its visible text label is what people click
+      const l = labelOf(el);
+      const lr = l && (l.innerText || '').trim() && shown(l);
+      if (lr && hits(l, lr, null)) { r = {left: lr.left, top: lr.top, width: Math.min(lr.width, 24), height: lr.height}; label0 = l; }
+    } else if (r && !hits(el, r, labelOf(el))) {
+      r = null;  // covered by another element (modal, overlay) or a decoy stacked underneath
     }
-    if (!r) continue;
+    const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName);
+    if (r && isInput && trapName(el)) r = null;
+    if (!r) {
+      if (isInput && hidden.length < 6) {
+        const br = el.getBoundingClientRect();
+        hidden.push({kind: el.tagName === 'INPUT' ? (el.type || 'text') : el.tagName.toLowerCase(), hidden: true,
+                     label: (el.getAttribute('aria-label') || el.placeholder || el.name || el.id || '').slice(0, 40),
+                     reason: trapName(el) ? 'looks like a bot trap' : (br.top + br.height / 2 > innerHeight ? 'below the fold: scroll first'
+                       : 'not visible / not clickable')});
+      }
+      continue;
+    }
     let label = el.getAttribute('aria-label') || el.placeholder || '';
     if (!label) { const l = labelOf(el); if (l) label = l.innerText; }
     // never echo what was typed: a password field's value used to show up as its label
@@ -1043,7 +1162,7 @@ _FIELDS_JS = """() => {
     out.push(row);
     if (out.length >= 40) break;
   }
-  return out;
+  return out.concat(hidden);
 }"""
 
 
@@ -1054,9 +1173,22 @@ _ERRORS_JS = """() => {
     return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && st.visibility !== 'hidden' && st.display !== 'none'; };
   const sel = '[role=alert], [aria-live=assertive], .error, .errors, .invalid-feedback, .field-error, .form-error, .help-block.error, '
     + '[class*="error" i]:not(html):not(body), [class*="invalid" i]:not(input), [data-error], [id*="error" i]';
+  // Loop 6 (Litlyx): utility classes such as "aria-invalid:ring-destructive" or "hover:text-error" on ordinary
+  // buttons/menu items are not errors. Only plain class/id tokens that name an error count, and never controls.
+  const errTok = (t) => !t.includes(':') && /(^|[-_])(error|errors|invalid|danger)([-_]|$)/i.test(t)
+    && !/(^|[-_])(no|without|hide|hidden)[-_]/i.test(t) && !/boundary/i.test(t);
+  const controls = 'button, a, input, select, textarea, option, label, nav, menu, [role=button], [role=menu], [role=menuitem], '
+    + '[role=menubar], [role=tab], [role=link], [role=option], [role=navigation], [role=listbox]';
   for (const e of document.querySelectorAll(sel)) {
     if (out.length >= 6) break;
-    if (e.children.length <= 3 && vis(e)) push(e.innerText);
+    if (e.matches(controls) || e.closest(controls) || e.querySelector('button, a, input, select, textarea')) continue;
+    if (/route-announcer/i.test(e.id || '')) continue;
+    const strong = e.matches('[role=alert], [aria-live=assertive], [data-error]');
+    const named = [...e.classList].some(errTok) || (e.id && errTok(e.id));
+    if (!strong && !named) continue;
+    const text = (e.innerText || '').trim();
+    if (text.length < 3) continue;
+    if (e.children.length <= 3 && vis(e)) push(text);
   }
   for (const e of document.querySelectorAll('input, textarea, select')) {
     let bad = e.getAttribute('aria-invalid') === 'true';
@@ -1109,6 +1241,16 @@ async def _fields(page: Any) -> list[dict[str, Any]]:
         return []
 
 
+def _split_fields(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Clickable controls go in `fields`; hidden/off-screen/trap inputs are named apart, without coordinates."""
+    rows = rows or []
+    out: dict[str, Any] = {"fields": [r for r in rows if not r.get("hidden")]}
+    hidden = [r for r in rows if r.get("hidden")]
+    if hidden:
+        out["hidden_fields"] = hidden
+    return out
+
+
 async def _inline_errors(page: Any) -> list[str]:
     try:
         return await asyncio.wait_for(page.evaluate(_ERRORS_JS), timeout=3)
@@ -1121,7 +1263,7 @@ async def _observation(sim: SimSession, png: bytes, error: str = "") -> dict[str
     sim.page_errors.clear()
     return scrub(sim, {
         "page_errors": errors if (errors["inline"] or errors["console"]) else None,
-        "fields": await _fields(sim.page),
+        **_split_fields(await _fields(sim.page)),
         "captcha": await captcha_state(sim.page),
         "alias_rejected": await _alias_rejected(sim.page),
         "png": png,

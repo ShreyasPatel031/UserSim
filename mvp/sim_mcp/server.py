@@ -101,6 +101,8 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
     }
     if obs.get("fields"):
         meta["fields"] = obs["fields"]
+    if obs.get("hidden_fields"):
+        meta["hidden_fields"] = obs["hidden_fields"]  # not clickable: invisible, covered, off-screen or a bot trap
     if obs.get("page_errors"):
         meta["page_errors"] = obs["page_errors"]
     if obs.get("alias_rejected"):
