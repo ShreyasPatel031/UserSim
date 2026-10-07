@@ -1,0 +1,393 @@
+<title>SimBench Strategy Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one reading column; charts are HTML rows with absolutely placed marks so they reflow at phone width.
+   Color: one blue ramp carries "our result", orange carries the evidence tool, gray carries the plain model, ink carries the real answer. */
+:root {
+  --bg: #f4f4f1; --card: #fcfcfb; --ink: #14140f; --ink2: #52514e; --muted: #77766f; --line: #e1e0d9; --grid: #ecebe5;
+  --blue: #2a78d6; --blue-lt: #86b6ef; --orange: #eb6834; --gray: #a3a29b; --real: #14140f;
+  --font-d: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
+  --font-b: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-m: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111110; --card: #1a1a19; --ink: #f2f1ea; --ink2: #c3c2b7; --muted: #8c8b83; --line: #2e2e2b; --grid: #262624;
+    --blue: #3987e5; --blue-lt: #256abf; --orange: #d95926; --gray: #6f6e68; --real: #f2f1ea; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111110; --card: #1a1a19; --ink: #f2f1ea; --ink2: #c3c2b7; --muted: #8c8b83; --line: #2e2e2b; --grid: #262624;
+  --blue: #3987e5; --blue-lt: #256abf; --orange: #d95926; --gray: #6f6e68; --real: #f2f1ea; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-b); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 28px 64px; }
+.wrap { max-width: 1040px; margin-inline: auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { font-family: var(--font-d); text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: clamp(34px, 6vw, 56px); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: clamp(24px, 3.4vw, 32px); font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 17px; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.lede { font-size: 18px; color: var(--ink2); max-width: 62ch; }
+.eyebrow { font-family: var(--font-m); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--font-m); font-variant-numeric: tabular-nums; }
+section { display: flex; flex-direction: column; gap: 18px; }
+.head { display: flex; flex-direction: column; gap: 8px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+.note { font-size: 13px; color: var(--muted); max-width: 80ch; }
+
+/* KPI row */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.kpi { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
+.kpi b { font-family: var(--font-d); font-size: 40px; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.kpi.hero b { color: var(--blue); }
+.kpi span { font-size: 13px; color: var(--ink2); }
+.score-key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink2); }
+.score-key code { font-family: var(--font-m); color: var(--ink); }
+
+/* legends */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink2); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend i.ring { background: transparent; border: 2px solid var(--gray); border-radius: 50%; width: 12px; height: 12px; }
+.legend i.dot { border-radius: 50%; }
+
+/* generic chart rows */
+.rows { display: flex; flex-direction: column; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) 92px; gap: 6px 14px; align-items: center; padding-block: 7px; border-top: 1px solid var(--grid); }
+.row:first-child { border-top: 0; }
+.row .lab { min-width: 0; font-size: 14px; }
+.row .lab small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; }
+.row .val { font-family: var(--font-m); font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
+.plot { position: relative; height: 22px; min-width: 0; background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px); background-size: var(--tick, 25%) 100%; }
+.group-h { font-family: var(--font-m); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-block: 14px 6px; border-top: 1px solid var(--line); }
+.group-h:first-child { border-top: 0; padding-top: 0; }
+.axis { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) 92px; gap: 14px; font-family: var(--font-m); font-size: 11px; color: var(--muted); padding-bottom: 4px; }
+.axis .ticks { position: relative; height: 14px; }
+.axis .ticks span { position: absolute; transform: translateX(-50%); }
+.bar { position: absolute; top: 3px; height: 16px; border-radius: 3px; min-width: 2px; outline-offset: 2px; }
+.bar.cap { border-top-right-radius: 4px; border-bottom-right-radius: 4px; }
+.dot { position: absolute; top: 4px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; outline-offset: 2px; }
+.dot.plain { background: var(--card); border: 2px solid var(--gray); }
+.dot.now { background: var(--blue); border: 2px solid var(--card); }
+.link { position: absolute; top: 10px; height: 2px; background: var(--blue-lt); border-radius: 1px; }
+.zero { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--muted); opacity: .7; }
+@media (max-width: 640px) {
+  .row, .axis { grid-template-columns: minmax(0, 1fr) auto; }
+  .row .plot { grid-column: 1 / -1; order: 3; }
+  .axis .ticks { grid-column: 1 / -1; }
+  .axis > :first-child, .axis > :last-child { display: none; }
+}
+
+/* table */
+.tw { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 14px; }
+th { font-family: var(--font-m); font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-align: right; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+td { padding: 10px 12px; border-top: 1px solid var(--grid); text-align: right; vertical-align: top; font-variant-numeric: tabular-nums; }
+tr:first-child td { border-top: 0; }
+td:first-child { max-width: 420px; }
+td small { display: block; color: var(--muted); font-size: 12px; line-height: 1.4; margin-top: 2px; }
+td.pts { min-width: 170px; }
+.pbar { display: flex; gap: 2px; height: 10px; align-items: center; margin-bottom: 4px; justify-content: flex-start; }
+.pbar i { display: block; height: 10px; border-radius: 2px; min-width: 1px; }
+.pbar .s { background: var(--blue); } .pbar .t { background: var(--blue-lt); }
+.num-note { font-family: var(--font-m); font-size: 12px; }
+
+/* paired charts */
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 14px; }
+.cols { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 14px; height: 200px; align-items: end; border-bottom: 1px solid var(--muted); background-image: linear-gradient(to top, var(--grid) 1px, transparent 1px); background-size: 100% 50%; padding-top: 8px; }
+.cg { display: flex; gap: 3px; align-items: flex-end; height: 100%; justify-content: center; min-width: 0; }
+.cb { flex: 1 1 0; max-width: 34px; min-width: 8px; border-radius: 3px 3px 0 0; position: relative; outline-offset: 2px; }
+.cb b { position: absolute; top: -17px; left: 50%; transform: translateX(-50%); font-family: var(--font-m); font-weight: 400; font-size: 11px; color: var(--ink2); white-space: nowrap; }
+.clab { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 14px; margin-top: 6px; font-size: 12px; color: var(--ink2); text-align: center; }
+.clab small { display: block; color: var(--muted); font-size: 11px; }
+.card h3 + p { color: var(--ink2); font-size: 13px; margin-top: 2px; margin-bottom: 14px; }
+
+/* anatomy */
+.anat { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 14px; align-items: start; }
+.q { display: flex; flex-direction: column; gap: 10px; }
+.q .tag { font-family: var(--font-m); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.q .pop { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-family: var(--font-m); font-size: 12px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink2); background: var(--bg); }
+.q blockquote { margin: 0; font-size: 15px; padding-left: 12px; border-left: 3px solid var(--blue-lt); }
+.mx { display: grid; grid-template-columns: 112px repeat(3, minmax(0, 1fr)); gap: 4px; font-size: 12px; }
+.mx > div { padding: 7px 6px; border-radius: 5px; text-align: center; min-height: 32px; display: flex; align-items: center; justify-content: center; line-height: 1.25; }
+.mx .rh { justify-content: flex-start; text-align: left; color: var(--ink2); }
+.mx .ch { color: var(--muted); font-family: var(--font-m); font-size: 11px; }
+.mx .ok { background: color-mix(in srgb, var(--blue) 18%, var(--card)); color: var(--ink); }
+.mx .tg { background: var(--blue); color: #fff; font-weight: 600; }
+.mx .no { background: repeating-linear-gradient(135deg, transparent 0 5px, var(--grid) 5px 7px); color: var(--muted); border: 1px dashed var(--line); }
+.mx .na { background: var(--bg); color: var(--muted); }
+.rules { display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.rules li { margin-left: 18px; }
+.rules ul { margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+
+/* example cards */
+.ex-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 470px), 1fr)); gap: 14px; }
+.ex { display: flex; flex-direction: column; gap: 12px; }
+.ex header { display: flex; flex-direction: column; gap: 6px; }
+.ex .kind { font-family: var(--font-m); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ex .qt { font-size: 14px; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.badge { display: inline-flex; gap: 8px; align-items: baseline; font-family: var(--font-m); font-size: 13px; }
+.badge b { font-family: var(--font-d); font-size: 22px; }
+.opt { display: grid; grid-template-columns: minmax(0, 128px) minmax(0, 1fr); gap: 4px 10px; align-items: center; padding-block: 6px; border-top: 1px solid var(--grid); }
+.opt:first-of-type { border-top: 0; }
+.opt .ol { font-size: 12px; color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.opt .bars { display: flex; flex-direction: column; gap: 2px; }
+.opt .b { height: 6px; border-radius: 2px; min-width: 1px; }
+.opt .nums { grid-column: 1 / -1; font-family: var(--font-m); font-size: 11px; color: var(--muted); }
+.opt .nums em { font-style: normal; }
+.facts { margin: 0; padding-left: 18px; font-size: 13px; color: var(--ink2); display: flex; flex-direction: column; gap: 4px; }
+
+#tip { position: fixed; z-index: 10; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 12px; line-height: 1.4; padding: 6px 9px; border-radius: 6px; max-width: 280px; opacity: 0; transition: opacity .08s; }
+a { color: var(--blue); }
+code { font-family: var(--font-m); font-size: .92em; }
+footer { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+</style>
+
+<div class="wrap">
+
+<header class="head" style="gap:14px">
+  <div class="eyebrow">UserSim · SimBench full benchmark · 13,510 questions</div>
+  <h1>SimBench Strategy Map</h1>
+  <p class="lede">A language model asked to answer like a population scores 41.5. Adding evidence the benchmark already contains, with no new model calls, lifts that to <span class="mono" id="now-s"></span>. This page shows what the data is, which strategies moved the score, where they stop working, and what each prediction lets us inspect.</p>
+  <div class="kpis" id="kpis"></div>
+  <div class="score-key"><span><b>Score S</b> = 100 × (1 − TVD ÷ norm)</span><span><code>0</code> = guessing uniformly</span><span><code>100</code> = exact match</span><span>TVD = total variation distance between predicted and real answer shares</span></div>
+</header>
+
+<section id="data">
+  <div class="head"><div class="eyebrow">The data</div><h2>Every row is one population answering one question</h2>
+  <p>SimBench pairs a population description with a multiple-choice question and the real share of that population choosing each option. The model predicts the shares. Two row types matter for strategy: whole-country rows (<span class="mono" id="n-pop"></span>) and subgroup rows (<span class="mono" id="n-grp"></span>) such as one age band inside one country.</p></div>
+  <div class="anat">
+    <div class="card q">
+      <span class="tag">One row, as the model sees it</span>
+      <div class="pop"><span class="chip">cntry = Poland</span><span class="chip">age_group = 30–49</span></div>
+      <blockquote>During the last 12 months, have you signed a petition?</blockquote>
+      <div class="mono" style="font-size:13px;color:var(--ink2)">Options: Yes · No</div>
+      <div class="mono" style="font-size:13px">Real answer (hidden): Yes 15.8% · No 84.2%</div>
+      <p class="note">From the full benchmark, ESS. The model's plain guess was Yes 28% · No 72% (S 62.4).</p>
+    </div>
+    <div class="card q">
+      <span class="tag">The overlap rule: which evidence may be used for that row</span>
+      <div class="mx" role="img" aria-label="Grid of groups by countries showing which cells are allowed evidence, which is the target and which are excluded">
+        <div></div><div class="ch">Poland</div><div class="ch">Germany</div><div class="ch">Spain</div>
+        <div class="rh">All people</div><div class="no">excluded<br>contains target</div><div class="ok">allowed</div><div class="ok">allowed</div>
+        <div class="rh">Age 18–29</div><div class="ok">allowed<br>disjoint</div><div class="ok">allowed</div><div class="ok">allowed</div>
+        <div class="rh">Age 30–49</div><div class="tg">target</div><div class="ok">allowed</div><div class="ok">allowed</div>
+        <div class="rh">Age 50+</div><div class="ok">allowed<br>disjoint</div><div class="ok">allowed</div><div class="ok">allowed</div>
+        <div class="rh">Employed</div><div class="no">excluded<br>overlaps</div><div class="ok">allowed</div><div class="ok">allowed</div>
+      </div>
+      <p class="note">Layout is illustrative; the rule is the real one. No answer to the target question may come from any group that could contain the target's respondents. Other countries and disjoint groups in the same country are fine, and so are answers to <em>other</em> questions.</p>
+    </div>
+  </div>
+  <div class="card" style="display:flex;flex-direction:column;gap:12px">
+    <h3>Twenty datasets, two kinds</h3>
+    <p style="color:var(--ink2);font-size:14px">Five surveys (<span class="mono" id="n-shared"></span> questions, <span class="mono" id="p-shared"></span> of the benchmark) ask many groups in many countries the same questions, so there is a lot of neighboring evidence. The other fifteen datasets are mostly one-off experiments with a single country or no population at all.</p>
+    <div class="legend"><span><i class="ring"></i>Plain model</span><span><i class="dot" style="background:var(--blue)"></i>After the strategies on this page</span></div>
+    <div id="dumb"></div>
+    <p class="note">Gray ring: the model with retrieval of similar solved questions (Haiku 4.5, one earlier cached run). Blue dot: the current rule plus tuning. Axis runs from −10 to 100 and the vertical line marks 0, the uniform guess. Choices13k starts below zero: the model does worse than guessing.</p>
+  </div>
+</section>
+
+<section id="climb">
+  <div class="head"><div class="eyebrow">What helped, in order</div><h2>From 41.5 to <span id="now-s2"></span> in fourteen steps</h2>
+  <p>Each bar spans the points one step added to the full-benchmark score. One idea, a two-way decomposition from other groups and countries, accounts for 8.7 of the 21.4 points. Eight tuning rounds on top added 2.9.</p></div>
+  <div class="card">
+    <div class="legend" style="margin-bottom:12px"><span><i style="background:var(--gray)"></i>Starting model</span><span><i style="background:var(--blue)"></i>New evidence or model</span><span><i style="background:var(--blue-lt)"></i>Cross-validated tuning round</span></div>
+    <div class="axis"><span></span><div class="ticks" id="ax-climb"></div><span></span></div>
+    <div class="rows" id="climb-rows"></div>
+    <p class="note" style="margin-top:12px">Axis starts at 0, so the late rounds look small because they are small. Tuning rounds choose settings on four folds and score the fifth; a change is kept only if its 95% interval sits above zero.</p>
+  </div>
+</section>
+
+<section id="strat">
+  <div class="head"><div class="eyebrow">Strategies</div><h2>Ten ways a question gets answered</h2>
+  <p>Each question is served by exactly one source, chosen by what evidence exists for it. The table reads left to right: what it uses, how many questions it serves, and what it changed against the plain model.</p></div>
+  <div class="legend"><span><i style="background:var(--blue)"></i>Points from the rule</span><span><i style="background:var(--blue-lt)"></i>Points from tuning</span></div>
+  <div class="tw"><table id="strat-t"><thead><tr><th>Source and evidence</th><th>Questions</th><th>Plain</th><th>Now</th><th>Full-score points</th><th>Beats plain</th><th>Worse by 10+</th></tr></thead><tbody></tbody></table></div>
+  <p class="note">"Beats plain" and "Worse by 10+" are the share of that source's questions where the final prediction scores higher than, or more than 10 points below, the plain model. Points = (now − plain) × questions ÷ 13,510.</p>
+</section>
+
+<section id="when">
+  <div class="head"><div class="eyebrow">When the model is wrong</div><h2>The model is weakest where people agree most, and the evidence knows it</h2>
+  <p>Two views of the same 13,510 predictions. The left groups questions by how concentrated the real answer turned out to be. The right groups the 8,335 questions with an evidence source by how far that evidence sits from the model's answer, a number we can compute without the real answer.</p></div>
+  <div class="pair">
+    <div class="card"><h3>By how concentrated the real answer is</h3><p>Known only after the fact. Share of the top option in the real answer.</p>
+      <div class="legend" style="margin-bottom:14px"><span><i style="background:var(--gray)"></i>Plain model</span><span><i style="background:var(--blue)"></i>Now</span></div>
+      <div class="cols" id="bins"></div><div class="clab" id="bins-l"></div></div>
+    <div class="card"><h3>By model–evidence disagreement</h3><p>Quartiles of TVD between the model's answer and the evidence source's answer. Usable at prediction time.</p>
+      <div class="legend" style="margin-bottom:14px"><span><i style="background:var(--gray)"></i>Model</span><span><i style="background:var(--orange)"></i>Evidence alone</span><span><i style="background:var(--blue)"></i>Final</span></div>
+      <div class="cols" id="dis"></div><div class="clab" id="dis-l"></div></div>
+  </div>
+  <p class="note">Right panel: when the two disagree most, the model scores 6.8 and the evidence alone 50.3, so the blend lands at 62.2. When they agree, both score in the 70s. This was read off the full benchmark and has not been tuned or cross-validated; it is a lead, not a result.</p>
+</section>
+
+<section id="weak">
+  <div class="head"><div class="eyebrow">Where it stops</div><h2>The lowest brackets are limited by the data and the rule, not by tuning</h2>
+  <p>Brackets are groups of questions served by one source within one dataset. These are the lowest by score after eight rounds. The oracle numbers use the real answer to choose evidence in hindsight, so they bound what any honest method could reach.</p></div>
+  <div class="tw"><table id="weak-t" style="min-width:760px"><thead><tr><th>Bracket</th><th>Questions</th><th>Score</th><th style="text-align:left">What we found</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="obs">
+  <div class="head"><div class="eyebrow">What this opens up</div><h2>Every prediction can show its work</h2>
+  <p>Because each answer is built from named evidence, a bad score points at a cause. Four real records from the full benchmark follow. They were picked by rule, not for looks: three are the median-gain question in their bracket, one is the single worst regression.</p></div>
+  <div class="legend"><span><i style="background:var(--real)"></i>Real answer</span><span><i style="background:var(--gray)"></i>Model</span><span><i style="background:var(--orange)"></i>Evidence tool</span><span><i style="background:var(--blue)"></i>Final</span></div>
+  <div class="ex-grid" id="ex"></div>
+  <h3 style="margin-top:12px">Signals we can now read, and what each lets us iterate</h3>
+  <div class="tw"><table id="sig-t" style="min-width:820px"><thead><tr><th>Signal</th><th style="text-align:left">Example from this run</th><th style="text-align:left">Next iteration it enables</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<footer>
+  <p>Method notes. Plain predictions come from one cached run of Haiku 4.5 with retrieval; everything after it is arithmetic on SimBench answers, with no new model calls. Tuning scores are out of sample (5-fold). Structural choices before tuning were made on small dev and eval samples drawn from the same benchmark, so the full score includes some questions that informed those choices. The signals table and the right panel in "When the model is wrong" are descriptive.</p>
+  <p>Reproduce: <code>src/human_sim/simbench_report_page.py</code> rebuilds this page from <code>results/simbench_ablate/</code>.</p>
+</footer>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const D = {"N": 13510, "plain": 41.45988888174663, "tuned": 62.86494391393778, "split": {"Pop": 7167, "Grouped": 6343}, "byds": [{"ds": "ESS", "n": 2143, "plain": 41.22580873648589, "tuned": 66.38033461812357}, {"ds": "Afrobarometer", "n": 2031, "plain": 47.79361876441188, "tuned": 71.96007331981829}, {"ds": "LatinoBarometro", "n": 1745, "plain": 25.14594156037052, "tuned": 53.466700469898335}, {"ds": "OpinionQA", "n": 1484, "plain": 71.01034327565847, "tuned": 73.7001683880184}, {"ds": "ISSP", "n": 1440, "plain": 36.16481331559727, "tuned": 54.53069223861343}, {"ds": "OSPsychMGKT", "n": 500, "plain": 51.542338304129615, "tuned": 80.01742558714358}, {"ds": "ChaosNLI", "n": 500, "plain": 45.26668427624119, "tuned": 48.7130009150674}, {"ds": "Choices13k", "n": 500, "plain": -3.7318136889524616, "tuned": 45.536324982127226}, {"ds": "GlobalOpinionQA", "n": 500, "plain": 41.80889921495811, "tuned": 41.9763155909261}, {"ds": "MoralMachine", "n": 500, "plain": 15.877494109345086, "tuned": 68.70486198804605}, {"ds": "NumberGame", "n": 500, "plain": 19.3246933342165, "tuned": 48.99907595218935}, {"ds": "DICES", "n": 500, "plain": 84.91530745220776, "tuned": 88.87074383486909}, {"ds": "TISP", "n": 485, "plain": 34.894013984680875, "tuned": 50.371910514536786}, {"ds": "OSPsychBig5", "n": 250, "plain": 44.96509399862504, "tuned": 69.96722741002664}, {"ds": "Jester", "n": 136, "plain": 44.36434802368125, "tuned": 59.832933521353546}, {"ds": "WisdomOfCrowds", "n": 114, "plain": 58.69155985648528, "tuned": 61.38841043820283}, {"ds": "OSPsychMACH", "n": 100, "plain": 8.553937601652187, "tuned": 62.90780986487983}, {"ds": "ConspiracyCorr", "n": 45, "plain": 36.42193002902706, "tuned": 49.128323240555545}, {"ds": "OSPsychRWAS", "n": 22, "plain": 70.16649438527948, "tuned": 70.16649438527948}, {"ds": "MoralMachineClassic", "n": 15, "plain": 62.79319433975659, "tuned": 79.66354745498641}], "bysrc": [{"src": "decomposition", "n": 3362, "plain": 35.961721394092926, "tuned": 77.25505484720034, "win": 0.8774538964901845, "harm10": 0.059785841760856634, "rule": 76.21366660432093, "pts_rule": 10.016805314343936, "pts_tune": 0.25915227776169986}, {"src": "other countries, identical question", "n": 1452, "plain": 38.26704787525971, "tuned": 65.12295076812335, "win": 0.7555096418732782, "harm10": 0.13016528925619836, "rule": 61.94539890737006, "pts_rule": 2.5448531235103053, "pts_tune": 0.3415103850343277}, {"src": "cognitive model (MoralMachine)", "n": 416, "plain": 16.977460474670245, "tuned": 68.11590289461834, "win": 0.7091346153846154, "harm10": 0.1971153846153846, "rule": 68.11590289461834, "pts_rule": 1.5746552218133538, "pts_tune": 0.0}, {"src": "cognitive model (Choices13k)", "n": 500, "plain": -3.7318136889524616, "tuned": 45.536324982127226, "win": 0.712, "harm10": 0.25, "rule": 32.53564802400408, "pts_rule": 1.3422450670968373, "pts_tune": 0.48115014648864335}, {"src": "country-level decomposition + model", "n": 1283, "plain": 41.991819268458684, "tuned": 54.6764910896771, "win": 0.6936866718628215, "harm10": 0.186282151208106, "rule": 53.082559717427316, "pts_rule": 1.0532509249464659, "pts_tune": 0.15137038864518676}, {"src": "cognitive model (NumberGame)", "n": 500, "plain": 19.3246933342165, "tuned": 48.99907595218935, "win": 0.698, "harm10": 0.24, "rule": 45.32693537912908, "pts_rule": 0.9623331622839594, "pts_tune": 0.13590453638268943}, {"src": "same-group-abroad decomposition + model", "n": 1161, "plain": 36.46171354483237, "tuned": 47.407160597488605, "win": 0.652885443583118, "harm10": 0.22911283376399655, "rule": 43.8883188080146, "pts_rule": 0.6382153005591836, "pts_tune": 0.3023963965639761}, {"src": "plain + label prior (no decomposition)", "n": 1779, "plain": 51.68634185613646, "tuned": 55.60830171903982, "win": 0.6166385609893198, "harm10": 0.1433389544688027, "rule": 54.88476910528593, "pts_rule": 0.42116965775254744, "pts_tune": 0.0952749459561931}, {"src": "plain (other datasets)", "n": 1799, "plain": 57.225228152435434, "tuned": 60.89179914401328, "win": 0.462479155086159, "harm10": 0.1000555864369094, "rule": 57.225228152435434, "pts_rule": 0.0, "pts_tune": 0.48824287297176444}, {"src": "plain (no decomposition)", "n": 1258, "plain": 61.757737213993266, "tuned": 68.16398279362926, "win": 0.6216216216216216, "harm10": 0.14069952305246422, "rule": 61.757737213993266, "pts_rule": 0.0, "pts_tune": 0.5965253100800947}], "srcinfo": {"decomposition": {"name": "Two-way decomposition", "evidence": "Shared surveys. The same question answered by other countries and by non-overlapping groups, plus how the target group usually differs from average."}, "other countries, identical question": {"name": "Other countries, same question", "evidence": "Single-country datasets (TISP, GlobalOpinionQA, OSPsych, ConspiracyCorr, MoralMachine). Other countries' answers to the identical question plus this country's usual offset."}, "country-level decomposition + model": {"name": "Country level + model", "evidence": "Whole-country question with no sibling groups. Other countries' answer plus the country's offset on related questions, blended with the model."}, "same-group-abroad decomposition + model": {"name": "Same group abroad + model", "evidence": "Subgroup with no disjoint group at home. The same group in other countries plus its offset on related questions, blended with the model."}, "plain (no decomposition)": {"name": "Model, calibrated", "evidence": "Sharp questions with no evidence to borrow. The model's answer with a per-dataset exponent and calibration."}, "plain + label prior (no decomposition)": {"name": "Model + answer-label base rates", "evidence": "Shallow questions with no evidence to borrow. The model's answer mixed with base rates of the same answer labels from other questions."}, "plain (other datasets)": {"name": "Model, calibrated (other datasets)", "evidence": "ChaosNLI, DICES, Jester, WisdomOfCrowds and others. The model's answer with per-dataset calibration and, for ChaosNLI, text cues."}, "cognitive model (Choices13k)": {"name": "Gamble model", "evidence": "Prospect-theory features of the two gambles in a cross-fitted logistic model, blended with boosted trees."}, "cognitive model (NumberGame)": {"name": "Number-game model", "evidence": "Bayesian size-principle concept learning plus ratings of other targets shown with the same numbers."}, "cognitive model (MoralMachine)": {"name": "Moral scenario model", "evidence": "Counts of each character type that dies under each option, in a cross-fitted logistic model."}}, "steps": [{"name": "Plain model", "detail": "Haiku 4.5 with retrieval of similar solved questions", "score": 41.46, "kind": "start"}, {"name": "Two-way decomposition", "detail": "Other groups and countries, shared surveys", "score": 50.15, "kind": "new"}, {"name": "Other-country answers", "detail": "Single-country datasets (TISP, OSPsych, GlobalOpinionQA...)", "score": 52.69, "kind": "new"}, {"name": "Base rates and cognitive models", "detail": "Answer-label prior; prospect theory; Bayesian number game", "score": 57.57, "kind": "new"}, {"name": "Country total and same group abroad", "detail": "Decomposition for rows with no sibling groups", "score": 58.29, "kind": "new"}, {"name": "Moral scenario model", "detail": "Also: no within-country gap in OpinionQA", "score": 60.01, "kind": "new"}, {"name": "Round 1", "detail": "Same group abroad, country level, GlobalOpinionQA, TISP", "score": 60.47, "kind": "tune"}, {"name": "Round 2", "detail": "Boosted gamble model, Jester, DICES, per-dataset calibration", "score": 61.77, "kind": "tune"}, {"name": "Round 3", "detail": "Decomposition exponent and weight, per survey", "score": 62.03, "kind": "tune"}, {"name": "Round 4", "detail": "Country offsets for single-country sets, richer gamble and number features", "score": 62.57, "kind": "tune"}, {"name": "Round 5", "detail": "Answer-position correction (kept for ChaosNLI only)", "score": 62.62, "kind": "tune"}, {"name": "Round 6", "detail": "Offsets from same-scale related questions", "score": 62.73, "kind": "tune"}, {"name": "Round 7", "detail": "ChaosNLI text cues", "score": 62.8, "kind": "tune"}, {"name": "Round 8", "detail": "Number game: rule versus interval generalization", "score": 62.86, "kind": "tune"}], "bins": [{"bin": "<40%", "n": 2888, "plain": 41.14493959357654, "tuned": 57.7669767074879}, {"bin": "40\u201355%", "n": 3526, "plain": 42.66991014326765, "tuned": 60.23514150148723}, {"bin": "55\u201370%", "n": 3285, "plain": 39.426274553810394, "tuned": 62.99759601283001}, {"bin": "70\u201385%", "n": 1846, "plain": 34.06661657606011, "tuned": 61.14336280530033}, {"bin": ">85%", "n": 1965, "plain": 50.09675520219439, "tuned": 76.47201219903285}], "dis": [{"bin": "agree most", "n": 2084, "dis": 0.06165039386675873, "plain": 69.59118456584129, "tool": 75.10322464865872, "final": 75.4730187874066}, {"bin": "agree", "n": 2084, "dis": 0.13903394534255714, "plain": 53.98643206456907, "tool": 66.66019853952369, "final": 68.0839283182151}, {"bin": "disagree", "n": 2083, "dis": 0.22590784643881215, "plain": 37.615859500448586, "tool": 59.34097503977441, "final": 63.8821323394473}, {"bin": "disagree most", "n": 2084, "dis": 0.40400109401610745, "plain": 6.773358039464191, "tool": 50.3336828125377, "final": 62.17263204838127}], "weak": [{"name": "LatinoBarometro \u00b7 same group abroad", "n": 414, "score": "36.2", "why": "Only 14 distinct questions. The best single other country, chosen with hindsight, reaches 46.6. El Salvador alone scores \u221220.7 because it answers unlike its neighbors, and the strongest evidence, other El Salvador subgroups, is excluded by the overlap rule."}, {"name": "ESS \u00b7 answer-label base rates", "n": 110, "score": "37.2", "why": "42 questions were never asked in another country. For the other 68, a plain average of other countries scores 28.9 against the current 35.7; the best group abroad would reach 74.5, but only with hindsight."}, {"name": "ISSP \u00b7 same group abroad", "n": 185, "score": "40.3", "why": "The best of five offset variants gained +1.4 with an interval touching zero (0.0 to 2.9), so it was not kept."}, {"name": "GlobalOpinionQA \u00b7 model", "n": 418, "score": "42.2", "why": "Each question was asked in about three countries. Averages over the ten most similar questions scored 29.0 against the model's 45.2 on the 341 questions they covered."}, {"name": "ISSP \u00b7 answer-label base rates", "n": 479, "score": "42.9", "why": "Base rates and position corrections each moved it by less than 1 point, below the keep bar."}, {"name": "Choices13k \u00b7 gamble model", "n": 500, "score": "45.5", "why": "Rose from 39.2 over four rounds. Probability weighting variants and context effects between the two gambles are untested."}], "examples": [{"label": "Median gain \u00b7 ESS \u00b7 two-way decomposition", "group": {"cntry": "Poland", "age_group": "30-49"}, "question": "There are different ways of trying to improve things in your country or help prevent things from going wrong. During the last 12 months, have you done any of the following? Have you... ...signed a petition?", "options": ["Yes", "No"], "real": [0.1576, 0.8424], "plain": [0.28, 0.72], "tool": [0.1371, 0.8629], "final": [0.1305, 0.8695], "S_plain": 62.4, "S_final": 91.7, "facts": ["Evidence: the same question in other countries, shifted by how this age band differs from average.", "Distance to the real answer (TVD): model 0.12, decomposition 0.02, final 0.03.", "Model and decomposition disagree by 0.14 TVD."]}, {"label": "Median gain \u00b7 TISP \u00b7 other countries plus offset", "group": {"COUNTRY_NAME": "Finland"}, "question": "Over the past 12 months, how often have you come across information about science in the following places? - In conversations with friends or family (i.e., outside the Internet and messaging apps)", "options": ["never", "once or twice during the year", "several times during the year", "once or twice a month", "once or twice a week", "almost every day", "once or more per day"], "real": [0.1355, 0.2069, 0.2254, 0.2177, 0.1472, 0.0562, 0.011], "plain": [0.065, 0.135, 0.21, 0.23, 0.21, 0.1, 0.05], "tool": [0.2612, 0.2315, 0.1421, 0.1906, 0.1547, 0.0001, 0.0198], "final": [0.2137, 0.2002, 0.1618, 0.193, 0.1613, 0.0377, 0.0325], "S_plain": 47.8, "S_final": 62.4, "facts": ["Evidence: other countries' answers to the identical question, then this country's usual gap on related questions.", "Distance to the real answer (TVD): model 0.16, offset tool 0.17, final 0.11.", "Model and offset tool disagree by 0.29 TVD."]}, {"label": "Median gain \u00b7 Choices13k \u00b7 gamble model", "group": {}, "question": "he goal of maximizing the amount of dollars received. You will get one reward from the machine that you choose. A fixed proportion of 10% of this value will be paid to you as a performance bonus. If the reward is negative, your bonus is set to $0.\n\nMachine A: $26.0 with 0.0% chance, $26.0 with 100.0% chance.\nMachine B: $10.0 with 75.0% chance, $89.0 with 25.0% chance.\n\nWhich machine do you choose?", "options": ["Machine A", "Machine B"], "real": [0.44, 0.56], "plain": [0.55, 0.45], "tool": [0.4742, 0.5258], "final": [0.4829, 0.5171], "S_plain": 37.1, "S_final": 75.5, "facts": ["Evidence: payoffs and probabilities of the two machines. Machine A pays $26 for sure; Machine B is a 75/25 gamble.", "Distance to the real answer (TVD): model 0.11, gamble model 0.03, final 0.04.", "Model and gamble model disagree by 0.08 TVD."]}, {"label": "Worst regression \u00b7 LatinoBarometro \u00b7 same group abroad", "group": {"country": "Chile", "age_group": "30-49"}, "question": "Thinking in your payments, purchases. How many are digital with credit card, debit, QR codes?", "options": ["None", "Less than half", "Half", "More than half", "All"], "real": [0.0597, 0.1207, 0.2177, 0.3964, 0.2055], "plain": [0.065, 0.175, 0.15, 0.4, 0.21], "tool": [0.4381, 0.1836, 0.1522, 0.1186, 0.1075], "final": [0.3063, 0.174, 0.1461, 0.2374, 0.1362], "S_plain": 73.5, "S_final": -17.5, "facts": ["Evidence: the same age band in other countries, plus its offset. It was far from the real answer, and the model had been close.", "Distance to the real answer (TVD): model 0.07, same-group tool 0.44, final 0.30.", "Model and same-group tool disagree by 0.38 TVD.", "Across this source's high-disagreement half the model scores 25.6, the evidence alone 20.5 and the final 41.5, so this is a source where the blend, not either part, carries the score."]}], "signals": [["Which source served each question", "Ten sources serve the 13,510 questions. The gamble, number-game and moral models and same-group-abroad each score 10+ points below the plain model on 20\u201325% of their questions; two-way decomposition does so on 6%.", "Gate or replace the risky sources one bracket at a time, as the tuning rounds did, and spend the next effort where the loss rate is highest."], ["Model\u2013evidence disagreement", "Across 8,335 questions with an evidence source, the model scores 69.6 where the two agree most and 6.8 where they disagree most. The evidence alone holds at 75.1 and 50.3.", "Route by disagreement per source, tested out of sample, and send only the high-disagreement questions to a stronger model run."], ["Segments with named members", "Botswana job-seekers on internet use: three clusters, the rural one (37% of respondents) predicts 79% never online, the city one 37% every day. Real answer for the target group: 49% never.", "Check whether clusters line up with real attributes, then use segment membership to pick persona text or retrieved examples."], ["Country and group offsets", "One Afrobarometer record lists the country's gap to other countries on related questions: \u22127 points on one option, \u22126 on another, mean \u22126.", "Learn offsets per question family, flag countries whose offsets swing between related questions, and pass stable ones into the prompt."], ["Hindsight bounds", "LatinoBarometro same-group-abroad: the best single other country reaches 46.6 against the current 36.2, and El Salvador scores \u221220.7 even with that choice.", "Know when to stop tuning. Past a bound, only new data or a changed rule can move the bracket."], ["Readable model weights", "The Choices13k logistic model puts its largest weights on the expected-value gap and the chance-of-loss gap.", "Add the feature humans plausibly use next (probability weighting, regret between gambles) and read whether its weight moves."]]};
+const $ = (s) => document.querySelector(s);
+const f1 = (x) => x.toFixed(1);
+const pc = (x) => Math.round(x * 100);
+const mk = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const tip = $('#tip');
+function tipOn(el, text) {
+  el.setAttribute('data-tip', text); el.setAttribute('tabindex', '0'); el.setAttribute('aria-label', text);
+}
+function showTip(t, x, y) {
+  tip.textContent = t; tip.style.opacity = 1;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.max(8, Math.min(innerWidth - w - 8, x + 12)) + 'px';
+  tip.style.top = Math.max(8, y - h - 12 < 8 ? y + 16 : y - h - 12) + 'px';
+}
+document.addEventListener('mouseover', (e) => { const t = e.target.closest('[data-tip]'); if (t) showTip(t.dataset.tip, e.clientX, e.clientY); });
+document.addEventListener('mousemove', (e) => { const t = e.target.closest('[data-tip]'); if (t) showTip(t.dataset.tip, e.clientX, e.clientY); else tip.style.opacity = 0; });
+document.addEventListener('focusin', (e) => { const t = e.target.closest('[data-tip]'); if (t) { const r = t.getBoundingClientRect(); showTip(t.dataset.tip, r.left + r.width / 2, r.top); } });
+document.addEventListener('focusout', () => { tip.style.opacity = 0; });
+
+// header
+$('#now-s').textContent = f1(D.tuned); $('#now-s2').textContent = f1(D.tuned);
+const kp = [
+  ['hero', f1(D.tuned), 'full-benchmark score now'],
+  ['', f1(D.plain), 'plain model, same questions'],
+  ['', '+' + f1(D.tuned - D.plain), 'points, no new model calls'],
+  ['', D.N.toLocaleString('en-US'), 'questions across 20 datasets']
+];
+kp.forEach(([c, v, l]) => $('#kpis').append(mk('div', 'kpi ' + c, `<b>${v}</b><span>${l}</span>`)));
+$('#n-pop').textContent = D.split.Pop.toLocaleString('en-US'); $('#n-grp').textContent = D.split.Grouped.toLocaleString('en-US');
+
+// dumbbell
+const SHARED = ['ESS', 'Afrobarometer', 'LatinoBarometro', 'OpinionQA', 'ISSP'];
+const sharedN = D.byds.filter((d) => SHARED.includes(d.ds)).reduce((a, d) => a + d.n, 0);
+$('#n-shared').textContent = sharedN.toLocaleString('en-US'); $('#p-shared').textContent = Math.round(100 * sharedN / D.N) + '%';
+const LO = -10, HI = 100, pos = (v) => ((v - LO) / (HI - LO)) * 100;
+const dumb = $('#dumb');
+const axis = mk('div', 'axis');
+axis.append(mk('span'), (() => { const t = mk('div', 'ticks'); [0, 25, 50, 75, 100].forEach((v) => { const s = mk('span', null, v); s.style.left = pos(v) + '%'; t.append(s); }); return t; })(), mk('span'));
+dumb.append(axis);
+const rows = mk('div', 'rows'); dumb.append(rows);
+[['Five shared surveys', (d) => SHARED.includes(d.ds)], ['Fifteen other datasets', (d) => !SHARED.includes(d.ds)]].forEach(([title, fn]) => {
+  rows.append(mk('div', 'group-h', title));
+  D.byds.filter(fn).forEach((d) => {
+    const r = mk('div', 'row');
+    r.append(mk('div', 'lab', `${d.ds}<small>${d.n.toLocaleString('en-US')} questions</small>`));
+    const p = mk('div', 'plot'); p.style.backgroundImage = 'none';
+    [25, 50, 75, 100].forEach((v) => { const g = mk('div', 'zero'); g.style.left = pos(v) + '%'; g.style.background = 'var(--grid)'; g.style.opacity = 1; p.append(g); });
+    const z = mk('div', 'zero'); z.style.left = pos(0) + '%'; p.append(z);
+    const a = Math.min(d.plain, d.tuned), b = Math.max(d.plain, d.tuned);
+    const l = mk('div', 'link'); l.style.left = pos(a) + '%'; l.style.width = (pos(b) - pos(a)) + '%'; p.append(l);
+    const d1 = mk('div', 'dot plain'); d1.style.left = pos(d.plain) + '%'; tipOn(d1, `${d.ds}: plain model ${f1(d.plain)}`);
+    const d2 = mk('div', 'dot now'); d2.style.left = pos(d.tuned) + '%'; tipOn(d2, `${d.ds}: now ${f1(d.tuned)} (${d.tuned >= d.plain ? '+' : ''}${f1(d.tuned - d.plain)})`);
+    p.append(d1, d2); r.append(p);
+    r.append(mk('div', 'val', `${f1(d.plain)}→${f1(d.tuned)}`));
+    rows.append(r);
+  });
+});
+
+// waterfall
+const CAP = 65, wp = (v) => (v / CAP) * 100;
+const ax = $('#ax-climb'); [0, 10, 20, 30, 40, 50, 60].forEach((v) => { const s = mk('span', null, v); s.style.left = wp(v) + '%'; ax.append(s); });
+const cr = $('#climb-rows'); let prev = 0;
+D.steps.forEach((s, i) => {
+  if (i === 1) cr.append(mk('div', 'group-h', 'New evidence and models'));
+  if (s.kind === 'tune' && D.steps[i - 1].kind !== 'tune') cr.append(mk('div', 'group-h', 'Cross-validated tuning rounds'));
+  const r = mk('div', 'row');
+  r.append(mk('div', 'lab', `${s.name}<small>${s.detail}</small>`));
+  const p = mk('div', 'plot'); p.style.setProperty('--tick', (10 / CAP * 100) + '%');
+  p.style.backgroundSize = (10 / CAP * 100) + '% 100%';
+  const b = mk('div', 'bar' + (i === 0 ? ' cap' : ''));
+  const from = i === 0 ? 0 : prev; b.style.left = wp(from) + '%'; b.style.width = Math.max(wp(s.score - from), 0.3) + '%';
+  b.style.background = s.kind === 'start' ? 'var(--gray)' : s.kind === 'tune' ? 'var(--blue-lt)' : 'var(--blue)';
+  tipOn(b, i === 0 ? `${s.name}: ${s.score.toFixed(2)}` : `${s.name}: +${(s.score - prev).toFixed(2)} points, to ${s.score.toFixed(2)}`);
+  p.append(b); r.append(p);
+  r.append(mk('div', 'val', i === 0 ? s.score.toFixed(2) : `+${(s.score - prev).toFixed(2)}<br><span style="color:var(--muted)">${s.score.toFixed(2)}</span>`));
+  cr.append(r); prev = s.score;
+});
+
+// strategy table
+const maxPts = Math.max(...D.bysrc.map((s) => s.pts_rule + s.pts_tune));
+const tb = $('#strat-t tbody');
+D.bysrc.forEach((s) => {
+  const info = D.srcinfo[s.src] || { name: s.src, evidence: '' };
+  const tr = mk('tr');
+  tr.append(mk('td', null, `<b style="font-weight:500">${info.name}</b><small>${info.evidence}</small>`));
+  tr.append(mk('td', null, s.n.toLocaleString('en-US')));
+  tr.append(mk('td', null, f1(s.plain)));
+  tr.append(mk('td', null, `<b style="font-weight:600">${f1(s.tuned)}</b>`));
+  const pt = mk('td', 'pts');
+  const bar = mk('div', 'pbar'); const w1 = (s.pts_rule / maxPts) * 150, w2 = (s.pts_tune / maxPts) * 150;
+  bar.append(Object.assign(mk('i', 's'), { style: `width:${Math.max(w1, 0)}px` }), Object.assign(mk('i', 't'), { style: `width:${Math.max(w2, 0)}px` }));
+  tipOn(bar, `${info.name}: ${s.pts_rule.toFixed(2)} points from the rule, ${s.pts_tune.toFixed(2)} from tuning`);
+  pt.append(bar, mk('span', 'num-note', `${(s.pts_rule + s.pts_tune).toFixed(2)}`));
+  tr.append(pt);
+  tr.append(mk('td', null, pc(s.win) + '%')); tr.append(mk('td', null, pc(s.harm10) + '%'));
+  tb.append(tr);
+});
+
+// grouped columns
+function cols(id, labId, groups, series) {
+  const host = $(id), lab = $(labId);
+  groups.forEach((g) => {
+    const cg = mk('div', 'cg');
+    series.forEach((s) => {
+      const v = g[s.key]; const c = mk('div', 'cb'); c.style.height = Math.max(0, v) + '%'; c.style.background = s.color;
+      c.append(mk('b', null, Math.round(v))); tipOn(c, `${g.name}: ${s.name} ${f1(v)}`); cg.append(c);
+    });
+    host.append(cg); lab.append(mk('div', null, `${g.name}<small>${g.sub}</small>`));
+  });
+}
+cols('#bins', '#bins-l', D.bins.map((b) => ({ name: b.bin, sub: b.n.toLocaleString('en-US') + ' q', plain: b.plain, tuned: b.tuned })),
+  [{ key: 'plain', name: 'plain model', color: 'var(--gray)' }, { key: 'tuned', name: 'now', color: 'var(--blue)' }]);
+cols('#dis', '#dis-l', D.dis.map((b) => ({ name: b.bin, sub: 'TVD ' + b.dis.toFixed(2), plain: b.plain, tool: b.tool, final: b.final })),
+  [{ key: 'plain', name: 'model', color: 'var(--gray)' }, { key: 'tool', name: 'evidence alone', color: 'var(--orange)' }, { key: 'final', name: 'final', color: 'var(--blue)' }]);
+
+// weak table
+D.weak.forEach((w) => { const tr = mk('tr'); tr.append(mk('td', null, `<b style="font-weight:500">${w.name}</b>`), mk('td', null, w.n), mk('td', null, w.score), mk('td', null, w.why)); tr.lastChild.style.textAlign = 'left'; $('#weak-t tbody').append(tr); });
+
+// examples
+const SERIES = [['real', 'Real', 'var(--real)'], ['plain', 'Model', 'var(--gray)'], ['tool', 'Tool', 'var(--orange)'], ['final', 'Final', 'var(--blue)']];
+D.examples.forEach((e) => {
+  const c = mk('article', 'card ex');
+  const grp = Object.entries(e.group).map(([k, v]) => `<span class="chip">${k} = ${v}</span>`).join('') || '<span class="chip">no population attributes</span>';
+  c.innerHTML = `<header><span class="kind">${e.label}</span><div style="display:flex;flex-wrap:wrap;gap:6px">${grp}</div><div class="qt">${e.question.replace(/</g, '&lt;')}</div>
+    <span class="badge"><span style="color:var(--muted)">score</span> <b>${f1(e.S_plain)}</b> <span style="color:var(--muted)">→</span> <b style="color:var(--${e.S_final >= e.S_plain ? 'blue' : 'ink'})">${f1(e.S_final)}</b></span></header>`;
+  const mx = Math.max(...SERIES.flatMap(([k]) => e[k]));
+  const top = Math.min(1, Math.ceil(mx * 20) / 20);
+  e.options.forEach((o, i) => {
+    const r = mk('div', 'opt'); r.append(mk('div', 'ol', o));
+    r.firstChild.title = o;
+    const bars = mk('div', 'bars');
+    SERIES.forEach(([k, n, col]) => { const b = mk('div', 'b'); b.style.width = (e[k][i] / top * 100) + '%'; b.style.background = col; tipOn(b, `${o}: ${n} ${pc(e[k][i])}%`); bars.append(b); });
+    r.append(bars);
+    r.append(mk('div', 'nums', SERIES.map(([k, n]) => `${n.toLowerCase()} <em>${pc(e[k][i])}</em>`).join(' · ')));
+    c.append(r);
+  });
+  const ul = mk('ul', 'facts'); e.facts.forEach((f) => ul.append(mk('li', null, f))); c.append(ul);
+  $('#ex').append(c);
+});
+
+// signals
+D.signals.forEach((s) => { const tr = mk('tr'); tr.append(mk('td', null, `<b style="font-weight:500">${s[0]}</b>`), mk('td', null, s[1]), mk('td', null, s[2])); tr.children[1].style.textAlign = 'left'; tr.children[2].style.textAlign = 'left'; $('#sig-t tbody').append(tr); });
+</script>
