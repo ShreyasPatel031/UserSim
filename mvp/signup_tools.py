@@ -79,12 +79,15 @@ def identity_fields(persona: dict[str, Any] | None, email: str) -> dict[str, str
     }
 
 
-def new_signup(site_host: str, tag: str, persona: dict[str, Any] | None = None) -> tuple[Any, dict[str, str]]:
-    """(inbox, identity) for one brand-new signup attempt on ``site_host``."""
+def new_signup(site_host: str, tag: str, persona: dict[str, Any] | None = None, *, dotted: bool = False) -> tuple[Any, dict[str, str]]:
+    """(inbox, identity) for one brand-new signup attempt on ``site_host``.
+
+    ``dotted``: for sites that reject ``+`` aliases, a never-used Gmail dot variant of the same inbox.
+    """
     from mvp.signup_inbox import create_inbox
 
     assert_signup_inbox()
-    inbox = create_inbox(site_host, tag)
+    inbox = create_inbox(site_host, tag, dotted=dotted)
     if not inbox_allowed(inbox.address):
         raise RuntimeError("signup alias is not on the dedicated signup inbox")
     return inbox, identity_fields(persona, inbox.address)

@@ -43,6 +43,8 @@ def signup_evidence(row: dict[str, Any]) -> str:
     trace = row.get("trace") or []
     if any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace):
         lines.append("- The verification link from that email was opened in the browser")
+    if row.get("signup_code_used"):
+        lines.append("- The verification code from that email was handed to the agent to enter")
     urls = []
     for t in trace:
         u = str(t.get("url") or "")
@@ -109,6 +111,18 @@ def _shot_ok(study_id: str, agent_id: str, step: dict[str, Any]) -> bool:
     return png_bytes_ok(raw) and not _looks_blank(raw)
 
 
+def _same_registrable(row: dict[str, Any]) -> bool:
+    """talk.example.com redirecting to example.com is still the assigned product."""
+    from urllib.parse import urlsplit
+
+    from mvp.e2e2_gates import opened_url_of
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    a = urlsplit(str(row.get("site_url") or "")).hostname or ""
+    b = urlsplit(str(opened_url_of(row) or "")).hostname or ""
+    return bool(a and b) and registrable_domain(a) == registrable_domain(b)
+
+
 def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) -> dict[str, Any]:
     """Did a real browser on the real product do real actions that a person could watch?
 
@@ -120,7 +134,7 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
     aid = str(row.get("agent_id") or AGENT_ID)
     bad_shots = [s["step"] for s in steps if not _shot_ok(str(study.get("id")), aid, s)]
     checks = [
-        ("opened_on_product", opened_on_assigned_site(row), f"opened {row.get('page_url') or '?'} for {row.get('site_url')}"),
+        ("opened_on_product", opened_on_assigned_site(row) or _same_registrable(row), f"opened {row.get('page_url') or '?'} for {row.get('site_url')}"),
         ("real_action", has_click_type_scroll(row), "at least one click, type, or scroll ran on the page"),
         ("screenshots_real", bool(steps) and not bad_shots, f"{len(steps)} steps; blank or missing: {bad_shots or 'none'}"),
         ("beyond_first_screen", beyond_first_screen(row, str(row.get("site_url") or "")), "URL or page content changed from the opening page"),

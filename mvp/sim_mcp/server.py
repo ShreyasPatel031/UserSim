@@ -307,10 +307,12 @@ def _host(sim: S.SimSession) -> str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_signup_identity(session_id: str) -> str:
-    """Fresh, never-used email alias (a real inbox UserSim reads) plus password and name for signing up.
+async def usersim_signup_identity(session_id: str, no_plus: bool = False) -> str:
+    """Fresh, never-used email alias (a real inbox UserSim reads) plus password, name and username for signing up.
 
     Same alias for the whole session. Sign up with this email only; never Google or GitHub sign-in.
+    no_plus=true: the site rejected a "+" address; returns a fresh dot-variant address of the same inbox instead
+    (replaces the earlier alias for this session).
     """
     import asyncio
     import re
@@ -320,9 +322,11 @@ async def usersim_signup_identity(session_id: str) -> str:
 
     try:
         sim = S.get_session(session_id)
+        if no_plus and sim.inbox is not None and "+" in sim.inbox.address:
+            sim.inbox = None
         if sim.inbox is None:
             tag = re.sub(r"[^a-z0-9]", "", _host(sim).split(".")[0])[:10] or "site"
-            sim.inbox, sim.identity = await asyncio.to_thread(new_signup, _host(sim), tag, None)
+            sim.inbox, sim.identity = await asyncio.to_thread(new_signup, _host(sim), tag, None, dotted=bool(no_plus))
             sim.mail_since = time.time() - 30
             sim.row["signup_email"] = sim.inbox.address
         ident = {k: v for k, v in sim.identity.items() if k != "code"}
@@ -346,7 +350,7 @@ async def _wait(session_id: str, timeout_s: int, want: str) -> str:
         if not msg:
             return json.dumps({"found": False, "note": f"no verification mail with a {want} in {t}s; check the form was submitted, or resend"})
         sim.mail_links = list(msg.get("links") or [])
-        if want == "code" and msg.get("code"):
+        if msg.get("code"):
             sim.row["signup_code_used"] = True
         sim.row.setdefault("signup_mail", []).append({"subject": msg.get("subject"), "sender": msg.get("sender")})
         return json.dumps({"found": True, "subject": msg.get("subject"), "sender": msg.get("sender"),
@@ -374,6 +378,10 @@ async def usersim_open_verification_link(session_id: str, url: str, thought: str
         sim = S.get_session(session_id)
         if url not in sim.mail_links:
             raise S.SessionError("only links returned by usersim_wait_for_verification_link can be opened")
+        opened = sim.row.setdefault("opened_links", [])
+        if url in opened:
+            raise S.SessionError("this link was already opened; continue on the page (it is the current page)")
+        opened.append(url)
         async with sim.lock:
             S._check_open(sim)
             err = ""
