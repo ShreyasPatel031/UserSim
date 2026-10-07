@@ -98,6 +98,12 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
     }
     if obs.get("fields"):
         meta["fields"] = obs["fields"]
+    if obs.get("alias_rejected"):
+        meta["email_hint"] = "this site rejects '+' email aliases: call usersim_signup_identity with no_plus=true and use that address"
+    if obs.get("captcha"):
+        c = obs["captcha"]
+        meta["captcha"] = {**c, "hint": "captcha token ready; submit" if c.get("token_ready") else
+                           "captcha not passed yet: submitting now will fail silently. Click its checkbox if visible, or call usersim_solve_captcha, then submit"}
     if obs.get("error"):
         meta["action_error"] = obs["error"]
     if extra:
@@ -451,7 +457,30 @@ async def usersim_solve_captcha(session_id: str) -> list[Any] | str:
             S._check_open(sim)
             info = await cap.detect_sitekey(sim.page)
             result: dict[str, Any] = {"detected": info or None}
-            if info and "recaptcha" in str(info.get("type") or info).lower():
+            state = await S.captcha_state(sim.page) or {}
+            if state.get("kind") == "turnstile" and not state.get("token_ready"):
+                # Turnstile: click the widget's checkbox like a person if it is visible, then wait for the token
+                # (Browserbase's built-in solver also works on it while we wait).
+                import asyncio as _a
+
+                try:
+                    fr = sim.page.locator('iframe[src*="challenges.cloudflare.com"]')
+                    for i in range(await fr.count()):
+                        box = await fr.nth(i).bounding_box()
+                        if box and box["width"] > 40 and box["height"] > 20:
+                            await sim.page.mouse.move(box["x"] + 30, box["y"] + box["height"] / 2, steps=12)
+                            await sim.page.mouse.click(box["x"] + 30, box["y"] + box["height"] / 2)
+                            result["turnstile_clicked"] = True
+                            break
+                except Exception as exc:  # noqa: BLE001
+                    result["turnstile_click_error"] = repr(exc)[:120]
+                for _ in range(20):
+                    st = await S.captcha_state(sim.page) or {}
+                    if st.get("token_ready"):
+                        break
+                    await _a.sleep(1.5)
+                result["turnstile_token_ready"] = bool((await S.captcha_state(sim.page) or {}).get("token_ready"))
+            if info and "recaptcha" in str(info.get("type") or info).lower() and state.get("kind") != "turnstile":
                 try:
                     from mvp.signup_captcha_audio import solve_recaptcha_audio
 

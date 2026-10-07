@@ -848,6 +848,36 @@ _FIELDS_JS = """() => {
 }"""
 
 
+_CAPTCHA_JS = """() => {
+  const f = [...document.querySelectorAll('iframe')].map(i => i.src || '');
+  const kind = f.some(u => u.includes('challenges.cloudflare.com')) || document.querySelector('.cf-turnstile, [name="cf-turnstile-response"]') ? 'turnstile'
+    : f.some(u => u.includes('hcaptcha.com')) ? 'hcaptcha'
+    : f.some(u => u.includes('/recaptcha/')) ? 'recaptcha' : '';
+  if (!kind) return null;
+  const tokens = [...document.querySelectorAll('[name="cf-turnstile-response"], [name="captcha"], [name="g-recaptcha-response"], [name="h-captcha-response"]')];
+  const ready = tokens.some(t => (t.value || '').length > 20);
+  return {kind, token_ready: ready};
+}"""
+
+
+_ALIAS_RE = __import__("re").compile(r"(?i)(alias|\+|plus)[^.]{0,60}(not allowed|not supported|isn.t allowed|invalid)|(not allowed|cannot)[^.]{0,40}(alias|\+)")
+
+
+async def _alias_rejected(page: Any) -> bool:
+    try:
+        text = await asyncio.wait_for(page.inner_text("body"), timeout=3)
+    except Exception:  # noqa: BLE001
+        return False
+    return bool(_ALIAS_RE.search(text or ""))
+
+
+async def captcha_state(page: Any) -> dict[str, Any] | None:
+    try:
+        return await asyncio.wait_for(page.evaluate(_CAPTCHA_JS), timeout=3)
+    except Exception:  # noqa: BLE001
+        return None
+
+
 async def _fields(page: Any) -> list[dict[str, Any]]:
     """Visible controls with their exact centre (the website driver's element list, for the MCP client)."""
     try:
@@ -859,6 +889,8 @@ async def _fields(page: Any) -> list[dict[str, Any]]:
 async def _observation(sim: SimSession, png: bytes, error: str = "") -> dict[str, Any]:
     return {
         "fields": await _fields(sim.page),
+        "captcha": await captcha_state(sim.page),
+        "alias_rejected": await _alias_rejected(sim.page),
         "png": png,
         "url": sim.page.url,
         "title": await _title(sim.page),
