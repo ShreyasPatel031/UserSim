@@ -222,6 +222,59 @@ class IdentityLoopTests(unittest.TestCase):
         self.assertEqual(outs[2]["email"], "usersimsig.nups@gmail.com")
 
 
+class SettleFinalTests(unittest.TestCase):
+    """FormBold: the client finished right after 'Go to dashboard'; final.png was the loading spinner."""
+
+    def _run(self, frames):
+        from types import SimpleNamespace
+
+        from mvp.sim_mcp import sessions as S
+        from mvp.test_sim_mcp_loop5 import spinner_frame
+
+        it = iter(frames)
+
+        async def shot(page, timeout_ms=0):
+            return next(it)
+
+        async def noop(*a, **k):
+            return None
+
+        async def text(page):
+            return "Dashboard Forms"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            shots = Path(tmp) / "st" / "a1" / "screenshots"
+            shots.mkdir(parents=True)
+            (shots / "final.png").write_bytes(spinner_frame())
+            page = SimpleNamespace(url="https://formbold.com/dashboard")
+            sim = SimpleNamespace(closed=False, page=page, study=SimpleNamespace(id="st"), agent_id="a1", row={}, new_page=None)
+            with mock.patch.object(S, "MVP_RUNS_DIR", Path(tmp)), mock.patch.object(S, "_screenshot", shot), \
+                 mock.patch.object(S, "ensure_viewport", noop), mock.patch.object(S, "_page_text", text), \
+                 mock.patch("mvp.opening_shot.upload_screenshot", noop), mock.patch.object(S.asyncio, "sleep", noop):
+                replaced = asyncio.run(S.settle_final(sim, max_s=5))
+                final = (shots / "final.png").read_bytes()
+        return replaced, final, sim.row
+
+    def test_spinner_replaced_once_page_paints(self):
+        from mvp.sim_mcp.report import frame_unrendered
+        from mvp.test_sim_mcp_loop5 import spinner_frame
+
+        replaced, final, row = self._run([spinner_frame(), page_frame()])
+        self.assertTrue(replaced)
+        self.assertFalse(frame_unrendered(final))
+        self.assertEqual(row["final_dom"], "Dashboard Forms")
+
+    def test_stuck_spinner_stays_and_is_noted(self):
+        from mvp.sim_mcp.report import frame_unrendered
+        from mvp.test_sim_mcp_loop5 import spinner_frame
+
+        with mock.patch("time.time", side_effect=[0, 1, 2, 3, 4, 9, 9, 9, 9, 9]):
+            replaced, final, row = self._run([spinner_frame()] * 10)
+        self.assertFalse(replaced)
+        self.assertTrue(frame_unrendered(final))
+        self.assertIn("still blank", row["final_settle"])
+
+
 class EngineVersionTests(unittest.TestCase):
     def test_engine_version_carries_content_id(self):
         from mvp import version

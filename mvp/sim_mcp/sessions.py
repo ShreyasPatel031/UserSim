@@ -1371,6 +1371,46 @@ async def record_step(
 # ---------------------------------------------------------------- end
 
 
+async def settle_final(sim: SimSession, max_s: float = 12.0) -> bool:
+    """Before judging: if the last frame is a blank/spinner page (the client finished right after a click,
+    e.g. FormBold 'Go to dashboard'), give the page up to max_s to paint and use that as final.png.
+    A page still unrendered after that really is stuck, and the judge's hard rule fails it. Returns True if replaced."""
+    from mvp.opening_shot import upload_screenshot
+    from mvp.sim_mcp.report import frame_unrendered
+
+    if sim.closed or sim.page is None or sim.study is None:
+        return False
+    shots = MVP_RUNS_DIR / sim.study.id / sim.agent_id / "screenshots"
+    try:
+        last = (shots / "final.png").read_bytes()
+    except OSError:
+        return False
+    if not frame_unrendered(last):
+        return False
+    deadline = time.time() + max_s
+    png = last
+    while time.time() < deadline:
+        await asyncio.sleep(1.5)
+        try:
+            if sim.new_page is not None:
+                _follow_new_tab(sim)
+            await ensure_viewport(sim.page)
+            png = fit_frame(await _screenshot(sim.page, timeout_ms=8000))
+        except Exception:  # noqa: BLE001
+            continue
+        if not frame_unrendered(png):
+            break
+    if png is last or frame_unrendered(png):
+        sim.row["final_settle"] = f"still blank/spinner after {max_s:.0f}s"
+        return False
+    (shots / "final.png").write_bytes(png)
+    asyncio.get_running_loop().create_task(upload_screenshot(sim.study.id, sim.agent_id, shots / "final.png"))
+    sim.row["final_url"] = sim.page.url
+    sim.row["final_dom"] = (await _page_text(sim.page))[:1500]
+    sim.row["final_settle"] = "final frame re-taken after the page finished loading"
+    return True
+
+
 async def close(sim: SimSession, *, reason: str, status: str = "") -> None:
     """Release the browser. status='' leaves the study state to the caller."""
     if sim.closed:

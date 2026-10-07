@@ -275,6 +275,12 @@ async def finalize(sim: SimSession, *, outcome: str, notes: str) -> dict[str, An
     outcome = outcome if outcome in OUTCOMES else "gave_up"
     study = sim.study
     study.phase = "Judging the run"
+    try:
+        from mvp.sim_mcp.sessions import settle_final
+
+        await settle_final(sim)
+    except Exception:  # noqa: BLE001
+        pass
     await close(sim, reason=f"finished: {outcome}")
     row = sim.row
     row["status"] = "complete"
