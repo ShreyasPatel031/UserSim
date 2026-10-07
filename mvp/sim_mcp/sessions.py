@@ -1124,18 +1124,31 @@ _FIELDS_JS = """() => {
       const l = labelOf(el);
       const lr = l && (l.innerText || '').trim() && shown(l);
       if (lr && hits(l, lr, null)) { r = {left: lr.left, top: lr.top, width: Math.min(lr.width, 24), height: lr.height}; label0 = l; }
-    } else if (r && !hits(el, r, labelOf(el))) {
-      r = null;  // covered by another element (modal, overlay) or a decoy stacked underneath
+    }
+    let coveredBy = '';
+    if (r && !label0 && !hits(el, r, labelOf(el))) {
+      // covered by another element (chat widget, cookie banner, modal) or a decoy stacked underneath
+      const t = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      let sig = '';
+      for (let n = t; n && n !== document.body; n = n.parentElement) sig += ' ' + (n.id || '') + ' ' + (typeof n.className === 'string' ? n.className : '');
+      sig = sig.toLowerCase();
+      coveredBy = /crisp|intercom|drift|tawk|hubspot|zendesk|chat|messenger|livechat/.test(sig) ? 'a chat widget'
+        : /cookie|consent|gdpr|onetrust|cky/.test(sig) ? 'a cookie banner' : 'another element (modal/overlay)';
+      r = null;
     }
     const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName);
     if (r && isInput && trapName(el)) r = null;
     if (!r) {
-      if (isInput && hidden.length < 6) {
+      const text = (el.getAttribute('aria-label') || el.innerText || el.value || '').trim();
+      if (coveredBy && !isInput && text && hidden.length < 6) {
+        hidden.push({kind: el.tagName.toLowerCase(), hidden: true, label: text.slice(0, 40),
+                     reason: 'covered by ' + coveredBy + ': close or scroll it away first'});
+      } else if (isInput && hidden.length < 6) {
         const br = el.getBoundingClientRect();
         hidden.push({kind: el.tagName === 'INPUT' ? (el.type || 'text') : el.tagName.toLowerCase(), hidden: true,
                      label: (el.getAttribute('aria-label') || el.placeholder || el.name || el.id || '').slice(0, 40),
-                     reason: trapName(el) ? 'looks like a bot trap' : (br.top + br.height / 2 > innerHeight ? 'below the fold: scroll first'
-                       : 'not visible / not clickable')});
+                     reason: trapName(el) ? 'looks like a bot trap' : coveredBy ? 'covered by ' + coveredBy + ': close it first'
+                       : (br.top + br.height / 2 > innerHeight ? 'below the fold: scroll first' : 'not visible / not clickable')});
       }
       continue;
     }

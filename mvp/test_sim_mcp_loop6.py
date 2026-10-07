@@ -18,7 +18,7 @@ FORM = """<html><body style="margin:0;font:16px sans-serif">
  <input name=website_hp id=hp placeholder="Website" style="width:200px;height:30px">
  <input name=company placeholder="Company" style="position:absolute;top:900px;width:200px;height:30px">
  <button id=covered style="position:absolute;left:600px;top:300px;width:120px;height:40px">Hidden submit</button>
- <div style="position:absolute;left:580px;top:280px;width:200px;height:90px;background:#fff"></div>
+ <div id="crisp-chatbox" style="position:absolute;left:580px;top:280px;width:200px;height:90px;background:#fff"></div>
  <!-- real terms checkbox: hidden input, visible text label -->
  <label><input type=checkbox id=tos name=terms style="position:absolute;opacity:0;width:1px;height:1px"><span>I agree to the Terms</span></label><br><br>
  <!-- utility classes that are not errors -->
@@ -125,6 +125,7 @@ class Loop6BrowserTests(unittest.TestCase):
         self.assertIn("bot trap", hidden.get("Website", ""))
         self.assertIn("below the fold", hidden.get("Company", ""))
         self.assertIn("agree_hidden", hidden)
+        self.assertIn("chat widget", hidden.get("Hidden submit", ""))  # Formester: Crisp chat covered "Sign up"
         self.assertTrue(all("x" not in h for h in out["hidden_fields"]))
 
 
