@@ -240,16 +240,16 @@ class GmailVariantsAndGrace(unittest.TestCase):
     def test_dot_variant_same_mailbox_and_varies(self) -> None:
         from mvp.identity import email_for_host, gmail_dot_variant
 
-        seen = {gmail_dot_variant("shreyashfs") for _ in range(40)}
+        seen = {gmail_dot_variant("usersimsignups") for _ in range(40)}
         self.assertGreater(len(seen), 10)
         for v in seen:
-            self.assertEqual(v.replace(".", ""), "shreyashfs")
+            self.assertEqual(v.replace(".", ""), "usersimsignups")
             self.assertFalse(v.startswith(".") or v.endswith(".") or ".." in v)
             self.assertLessEqual(v.count("."), 3)
-        self.assertNotIn(gmail_dot_variant("shreyashfs", avoid=seen - {"s.hreyashfs"}) , seen - {"s.hreyashfs"})
+        self.assertNotIn(gmail_dot_variant("usersimsignups", avoid=seen - {"u.sersimsignups"}) , seen - {"u.sersimsignups"})
         # Dotted aliases stay in the same Gmail mailbox (no ".tag" suffix).
-        addr = email_for_host("shreyashfs@gmail.com", "ticktick.com", tag="x1", force_dotted=True)
-        self.assertEqual(addr.split("@")[0].replace(".", ""), "shreyashfs")
+        addr = email_for_host("usersimsignups@gmail.com", "ticktick.com", tag="x1", force_dotted=True)
+        self.assertEqual(addr.split("@")[0].replace(".", ""), "usersimsignups")
 
     def test_alias_match_dot_variant_needs_exact_address(self) -> None:
         import os
@@ -257,11 +257,11 @@ class GmailVariantsAndGrace(unittest.TestCase):
 
         from mvp.email_codes import _alias_match
 
-        with mock.patch.dict(os.environ, {"GMAIL_USER": "shreyashfs@gmail.com"}):
-            self.assertTrue(_alias_match("s.hrey.ashfs+zo1a2b3c@gmail.com", "s.hrey.ashfs+zo1a2b3c@gmail.com"))
-            self.assertFalse(_alias_match("shreyashfs+n8n99@gmail.com", "s.hrey.ashfs+zo1a2b3c@gmail.com"))
-            self.assertFalse(_alias_match("shreyashfs@gmail.com", "s.hreyashfs@gmail.com"))
-            self.assertTrue(_alias_match("s.hreyashfs@gmail.com", "s.hreyashfs@gmail.com"))
+        with mock.patch.dict(os.environ, {"GMAIL_USER": "usersimsignups@gmail.com"}):
+            self.assertTrue(_alias_match("u.sersim.signups+zo1a2b3c@gmail.com", "u.sersim.signups+zo1a2b3c@gmail.com"))
+            self.assertFalse(_alias_match("usersimsignups+n8n99@gmail.com", "u.sersim.signups+zo1a2b3c@gmail.com"))
+            self.assertFalse(_alias_match("usersimsignups@gmail.com", "u.sersimsignups@gmail.com"))
+            self.assertTrue(_alias_match("u.sersimsignups@gmail.com", "u.sersimsignups@gmail.com"))
 
     def test_captcha_grace_extends_deadline_once(self) -> None:
         import time

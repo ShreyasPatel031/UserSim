@@ -20,7 +20,8 @@ from urllib.parse import urlsplit
 from mvp.paths import MVP_RUNS_DIR
 
 VIEWPORT = {"width": 1280, "height": 800}
-DRIVER = "claude_code"
+# Whatever MCP client drives the session; no model is hardcoded.
+DRIVER = os.environ.get("MVP_MCP_DRIVER", "mcp_client")
 AGENT_ID = "t1__p1__product"
 SITE_KEY = "product"
 
@@ -58,11 +59,18 @@ class SessionError(Exception):
 
 # ---------------------------------------------------------------- URL guard
 
+# Social sign-in the simulated user must never use (signups are email only).
+BLOCKED_SIGNIN_HOSTS = ("accounts.google.com", "github.com")
+
+
+def blocked_signin(url: str) -> bool:
+    host = (urlsplit(url or "").hostname or "").lower()
+    return any(host == h or host.endswith("." + h) for h in BLOCKED_SIGNIN_HOSTS)
+
+
 # Sign-in providers a product may hand the user to mid-task.
 AUTH_HOSTS = (
-    "accounts.google.com",
     "login.microsoftonline.com",
-    "github.com",
     "appleid.apple.com",
     "auth0.com",
     "okta.com",
@@ -147,6 +155,13 @@ class SimSession:
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
     # One cell (persona x task x site) of a multi-run study; "" = the one-run study.
     cell_id: str = ""
+    # Signup state: one fresh alias inbox per session (mvp.signup_tools).
+    inbox: Any = None
+    identity: dict = field(default_factory=dict)
+    mail_since: float = 0.0
+    mail_seen: set = field(default_factory=set)
+    mail_links: list = field(default_factory=list)
+    sms_number: Any = None
 
     @property
     def agent_id(self) -> str:
@@ -560,7 +575,8 @@ def _follow_new_tab(sim: SimSession) -> None:
 
 # ---------------------------------------------------------------- actions
 
-ACTION_TYPES = ("click", "double_click", "right_click", "hover", "type", "key", "scroll", "back", "wait", "navigate")
+ACTION_TYPES = ("click", "double_click", "right_click", "hover", "type", "key", "scroll", "back", "wait", "navigate",
+                "press_and_hold", "drag")
 
 
 def _xy(action: dict[str, Any]) -> tuple[int, int]:
@@ -621,8 +637,20 @@ def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
         action.setdefault("x", VIEWPORT["width"] // 2)
         action.setdefault("y", VIEWPORT["height"] // 2)
         _xy(action)
+    elif kind == "press_and_hold":
+        _xy(action)
+        action["ms"] = max(500, min(int(action.get("ms") or 4000), 15000))
+    elif kind == "drag":
+        _xy(action)
+        for k in ("to_x", "to_y"):
+            try:
+                int(action[k])
+            except (KeyError, TypeError, ValueError):
+                raise SessionError("drag needs x, y, to_x, to_y") from None
     elif kind == "navigate":
         target = str(action.get("url") or "")
+        if blocked_signin(target):
+            raise SessionError("Google/GitHub sign-in is not allowed; use the email signup")
         if not target.startswith(("http://", "https://")) or not same_site(target, product_url):
             raise SessionError("navigate is limited to the product's own site (and sign-in providers)")
     elif kind == "wait":
@@ -662,6 +690,26 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             pass
     elif kind == "wait":
         await asyncio.sleep(int(action["ms"]) / 1000)
+    elif kind == "press_and_hold":
+        await page.mouse.move(*_xy(action))
+        await page.mouse.down()
+        await asyncio.sleep(int(action["ms"]) / 1000)
+        await page.mouse.up()
+    elif kind == "drag":
+        import random
+
+        x, y = _xy(action)
+        tx, ty = int(action["to_x"]), int(action["to_y"])
+        await page.mouse.move(x, y)
+        await page.mouse.down()
+        n = 18
+        for i in range(1, n + 1):  # eased, slightly jittered, like a hand
+            t = i / n
+            e = t * t * (3 - 2 * t)
+            await page.mouse.move(x + (tx - x) * e, y + (ty - y) * e + random.uniform(-1.5, 1.5))
+            await asyncio.sleep(random.uniform(0.015, 0.05))
+        await page.mouse.move(tx, ty)
+        await page.mouse.up()
     elif kind == "navigate":
         await page.goto(action["url"], wait_until="domcontentloaded", timeout=20000)
 
@@ -691,6 +739,13 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
             error = str(exc).splitlines()[0][:200]
         _follow_new_tab(sim)
         await _settle(sim.page)
+        if blocked_signin(sim.page.url):
+            error = "Google/GitHub sign-in is not allowed; use the email signup (went back)"
+            try:
+                await sim.page.go_back(timeout=10000)
+            except Exception:  # noqa: BLE001
+                await sim.page.goto(sim.product_url, timeout=20000)
+            await _settle(sim.page)
         return await record_step(
             sim,
             kind=action["type"],

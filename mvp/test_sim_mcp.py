@@ -38,7 +38,9 @@ class UrlGuardTests(unittest.TestCase):
     def test_same_site(self):
         product = "https://app.linear.app/team"
         self.assertTrue(S.same_site("https://linear.app/pricing", product))
-        self.assertTrue(S.same_site("https://accounts.google.com/o/oauth2", product))
+        self.assertFalse(S.same_site("https://accounts.google.com/o/oauth2", product))
+        self.assertTrue(S.blocked_signin("https://accounts.google.com/o/oauth2"))
+        self.assertTrue(S.same_site("https://login.microsoftonline.com/x", product))
         self.assertFalse(S.same_site("https://evil.com/", product))
         self.assertTrue(S.same_site("https://foo.vercel.app/x", "https://foo.vercel.app/"))
         self.assertFalse(S.same_site("https://bar.vercel.app/x", "https://foo.vercel.app/"))
@@ -255,3 +257,17 @@ class MatrixStudyTests(unittest.TestCase):
         rep = build_study_report(data)
         self.assertEqual(len(rep["cells"]), 12)
         self.assertIn("/report?study=", study_report_markdown(rep))
+
+
+class SignupToolsTests(unittest.TestCase):
+    def test_only_signup_inbox_allowed(self):
+        from mvp.signup_tools import inbox_allowed
+
+        self.assertTrue(inbox_allowed("usersim.signups+abc@gmail.com"))
+        self.assertFalse(inbox_allowed("someone.else+abc@gmail.com"))
+
+    def test_drag_and_hold_validate(self):
+        a = S.validate_action({"type": "drag", "x": 1, "y": 2, "to_x": 50, "to_y": 2}, "https://ex.com")
+        self.assertEqual(a["to_x"], 50)
+        h = S.validate_action({"type": "press_and_hold", "x": 1, "y": 2}, "https://ex.com")
+        self.assertEqual(h["ms"], 4000)

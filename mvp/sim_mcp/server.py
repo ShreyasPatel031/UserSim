@@ -59,6 +59,9 @@ Rules:
 - Every usersim_act call needs a short first-person `thought`: what you see, what you expect, what confuses you. These thoughts are the research data — be honest about friction.
 - Don't navigate by guessing URLs; use the page like a person would. `navigate` exists for typing an address a person would actually know.
 - Stop when the task is done, when you're stuck, or when a real person in this persona would give up. Then call usersim_finish with outcome completed / gave_up / blocked and notes on what was hard or easy.
+- Need an account? Call usersim_signup_identity for a fresh email alias + password and sign up with EMAIL only (never Google/GitHub).
+  Then usersim_wait_for_verification_code or usersim_wait_for_verification_link (+ usersim_open_verification_link). Captcha in the way: solve it like a person (click the checkbox, drag the slider, press_and_hold), or call usersim_solve_captcha.
+- Finish as soon as the task is done; do not spend remaining steps.
 - Limits: {max_steps} steps, {budget_min} minutes. The server enforces them.
 """
 
@@ -224,6 +227,9 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
       {"type":"hover","x":..,"y":..} · {"type":"type","text":"...","submit":false} (types into the focused field; click it first)
       {"type":"key","keys":"Enter"|"Tab"|"Escape"|"Control+A"} · {"type":"scroll","dy":600,"x":..,"y":..} (dy>0 = down)
       {"type":"back"} · {"type":"wait","ms":1000} · {"type":"navigate","url":"..."} (same site only)
+      {"type":"press_and_hold","x":..,"y":..,"ms":4000} (press-and-hold human checks)
+      {"type":"drag","x":..,"y":..,"to_x":..,"to_y":..} (slider / puzzle captchas)
+    Google / GitHub sign-in is blocked: always use the email signup.
     thought: first-person, what you see / expect / find confusing. Recorded as research data.
     """
     try:
@@ -286,6 +292,165 @@ async def usersim_get_report(study_id: str, format: str = "markdown") -> str:
     if data.get("status") != "complete":
         rep["note"] = "Study is not finished yet; call usersim_finish first."
     return json.dumps(rep, indent=1) if format == "json" else report_markdown(rep)
+
+
+# ---------------------------------------------------------------- signup tools (shared core: mvp.signup_tools)
+
+
+def _host(sim: S.SimSession) -> str:
+    from urllib.parse import urlsplit
+
+    return (urlsplit(sim.product_url).hostname or "").removeprefix("www.")
+
+
+@mcp.tool(structured_output=False)
+async def usersim_signup_identity(session_id: str) -> str:
+    """Fresh, never-used email alias (a real inbox UserSim reads) plus password and name for signing up.
+
+    Same alias for the whole session. Sign up with this email only; never Google or GitHub sign-in.
+    """
+    import asyncio
+    import re
+    import time
+
+    from mvp.signup_tools import new_signup
+
+    try:
+        sim = S.get_session(session_id)
+        if sim.inbox is None:
+            tag = re.sub(r"[^a-z0-9]", "", _host(sim).split(".")[0])[:10] or "site"
+            sim.inbox, sim.identity = await asyncio.to_thread(new_signup, _host(sim), tag, None)
+            sim.mail_since = time.time() - 30
+            sim.row["signup_email"] = sim.inbox.address
+        ident = {k: v for k, v in sim.identity.items() if k != "code"}
+        return json.dumps({**ident, "next": "Type these into the signup form, submit, then wait for the verification mail."})
+    except Exception as exc:  # noqa: BLE001
+        return _fail(exc)
+
+
+async def _wait(session_id: str, timeout_s: int, want: str) -> str:
+    import asyncio
+
+    from mvp.signup_tools import wait_mail
+
+    try:
+        sim = S.get_session(session_id)
+        if sim.inbox is None:
+            raise S.SessionError("call usersim_signup_identity and submit the signup form first")
+        t = max(10, min(int(timeout_s or 120), 240))
+        msg = await asyncio.to_thread(wait_mail, sim.inbox, _host(sim), since=sim.mail_since, timeout_s=t, seen=sim.mail_seen, want=want)
+        sim.last_used = __import__("time").time()
+        if not msg:
+            return json.dumps({"found": False, "note": f"no verification mail with a {want} in {t}s; check the form was submitted, or resend"})
+        sim.mail_links = list(msg.get("links") or [])
+        sim.row.setdefault("signup_mail", []).append({"subject": msg.get("subject"), "sender": msg.get("sender")})
+        return json.dumps({"found": True, "subject": msg.get("subject"), "sender": msg.get("sender"),
+                           "code": msg.get("code"), "links": sim.mail_links[:5], "link_texts": (msg.get("link_texts") or [])[:5]})
+    except Exception as exc:  # noqa: BLE001
+        return _fail(exc)
+
+
+@mcp.tool(structured_output=False)
+async def usersim_wait_for_verification_code(session_id: str, timeout_s: int = 120) -> str:
+    """Wait for the signup email for this session's alias and return the verification code in it."""
+    return await _wait(session_id, timeout_s, "code")
+
+
+@mcp.tool(structured_output=False)
+async def usersim_wait_for_verification_link(session_id: str, timeout_s: int = 120) -> str:
+    """Wait for the signup email for this session's alias and return its verification links (best first)."""
+    return await _wait(session_id, timeout_s, "link")
+
+
+@mcp.tool(structured_output=False)
+async def usersim_open_verification_link(session_id: str, url: str, thought: str = "I click the link in the email.") -> list[Any] | str:
+    """Open a link returned by usersim_wait_for_verification_link in the browser (like clicking it in the email)."""
+    try:
+        sim = S.get_session(session_id)
+        if url not in sim.mail_links:
+            raise S.SessionError("only links returned by usersim_wait_for_verification_link can be opened")
+        async with sim.lock:
+            S._check_open(sim)
+            err = ""
+            try:
+                await sim.page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            except Exception as exc:  # noqa: BLE001
+                err = str(exc).splitlines()[0][:200]
+            await S._settle(sim.page)
+            obs = await S.record_step(sim, kind="navigate", action_text="open verification link from email",
+                                      args={"url": url[:200]}, thought=thought, error=err)
+        return _obs_content(sim, obs)
+    except Exception as exc:  # noqa: BLE001
+        return _fail(exc)
+
+
+@mcp.tool(structured_output=False)
+async def usersim_signup_phone(session_id: str) -> str:
+    """Phone number for an SMS step (only if the site insists on one). Then call usersim_wait_for_sms_code."""
+    import asyncio
+    import time
+
+    try:
+        sim = S.get_session(session_id)
+        from mvp.sms_provider import lease_number
+
+        sim.sms_number = await asyncio.to_thread(lease_number, _host(sim))
+        sim.row["sms_since"] = time.time()
+        return json.dumps({"phone": sim.sms_number.phone})
+    except Exception as exc:  # noqa: BLE001
+        return _fail(RuntimeError(f"no SMS number available: {exc}"))
+
+
+@mcp.tool(structured_output=False)
+async def usersim_wait_for_sms_code(session_id: str, timeout_s: int = 90) -> str:
+    """Wait for the SMS verification code sent to the number from usersim_signup_phone."""
+    import asyncio
+
+    try:
+        sim = S.get_session(session_id)
+        if sim.sms_number is None:
+            raise S.SessionError("call usersim_signup_phone first")
+        from mvp.sms_provider import wait_for_sms
+
+        code = await asyncio.to_thread(wait_for_sms, sim.sms_number, timeout_s=max(15, min(int(timeout_s), 180)),
+                                       newer_than=sim.row.get("sms_since"))
+        return json.dumps({"found": bool(code), "code": code})
+    except Exception as exc:  # noqa: BLE001
+        return _fail(exc)
+
+
+@mcp.tool(structured_output=False)
+async def usersim_solve_captcha(session_id: str) -> list[Any] | str:
+    """Try to get past a captcha on the current page (the same solver path the website driver uses).
+
+    Prefer solving it yourself first like a person (checkbox click, drag, press_and_hold). This tries the free
+    audio route for reCAPTCHA; a paid solver only runs when the server enables it (MVP_MCP_PAID_CAPTCHA=1).
+    """
+    import os
+
+    try:
+        sim = S.get_session(session_id)
+        from mvp import captcha as cap
+
+        async with sim.lock:
+            S._check_open(sim)
+            info = await cap.detect_sitekey(sim.page)
+            result: dict[str, Any] = {"detected": info or None}
+            if info and "recaptcha" in str(info.get("type") or info).lower():
+                try:
+                    from mvp.signup_captcha_audio import solve_recaptcha_audio
+
+                    result["audio"] = await solve_recaptcha_audio(sim.page)
+                except Exception as exc:  # noqa: BLE001
+                    result["audio_error"] = repr(exc)[:200]
+            if os.environ.get("MVP_MCP_PAID_CAPTCHA") == "1" and info:
+                result["solver"] = await cap.solve_captcha_on_page(sim.page)
+            await S._settle(sim.page)
+            obs = await S.record_step(sim, kind="captcha", action_text="captcha attempt",
+                                      args={}, thought="I try to get past the captcha.", error="")
+        return _obs_content(sim, obs, {"captcha": json.loads(json.dumps(result, default=str))})
+    except Exception as exc:  # noqa: BLE001
+        return _fail(exc)
 
 
 @mcp.prompt()

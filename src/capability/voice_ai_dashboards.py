@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -10,7 +11,7 @@ from config import ROOT
 
 SESSION_DIR = ROOT / "secrets" / "voice_ai_sessions"
 PROFILE_DIR = ROOT / "secrets" / "voice_ai_browser_profile"
-DEFAULT_EMAIL = "shreyashfs@gmail.com"
+DEFAULT_EMAIL = os.environ.get("GMAIL_USER", "usersim.signups@gmail.com")
 
 
 @dataclass(frozen=True)

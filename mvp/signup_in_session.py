@@ -120,25 +120,7 @@ def _gen_password() -> str:
     return f"Us{core}!7q"
 
 
-def _identity(persona: dict[str, Any] | None, email: str) -> dict[str, str]:
-    persona = persona or {}
-    raw = str(persona.get("full_name") or persona.get("name") or "").strip()
-    if not re.fullmatch(r"[A-Za-z][A-Za-z'\-]+ [A-Za-z][A-Za-z'\-]+", raw):
-        raw = "Sam Rivera"
-    first, last = raw.split(" ", 1)
-    role = str(persona.get("role") or persona.get("job") or "Product manager")[:40]
-    company = str(persona.get("company") or "Rivera Labs")[:40]
-    return {
-        "email": email,
-        "password": _gen_password(),
-        "full_name": raw,
-        "first_name": first,
-        "last_name": last,
-        "company": company,
-        "workspace": re.sub(r"[^a-z0-9]", "", company.lower())[:12] + secrets.token_hex(2),
-        "role": role,
-        "code": "",
-    }
+from mvp.signup_tools import identity_fields as _identity  # shared with the MCP server
 
 
 # ---------------------------------------------------------------- phone / SMS
@@ -1355,7 +1337,9 @@ async def signup_in_session(
         return result
 
     try:
-        inbox = await asyncio.to_thread(create_inbox, site, tag)
+        from mvp.signup_tools import new_signup
+
+        inbox, _ = await asyncio.to_thread(new_signup, site, tag)
     except GmailInboxMissing as exc:
         print(f"[signup] ERROR {site}: {exc}", flush=True)
         return _finish(False, "gmail_inbox_missing: set GMAIL_USER and GMAIL_APP_PASSWORD")
