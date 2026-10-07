@@ -691,15 +691,17 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         )
     elif kind == "select":
         x, y = _xy(action)
-        handle = await page.evaluate_handle("([x, y]) => document.elementFromPoint(x, y)", [x, y])
-        el = handle.as_element()
-        tag = (await el.evaluate("e => e.tagName")) if el else ""
-        if tag == "SELECT":
-            await el.select_option(label=str(action["option"]))
+        want = str(action["option"]).strip()
+        # the <select> at (x, y), or the nearest one within 80px (styled selects often sit under an overlay)
+        res = await page.evaluate(_SELECT_JS, [x, y, want])
+        if res.get("ok"):
+            pass
+        elif res.get("options") is not None:
+            raise SessionError(f"no option matching {want!r}; options: {res['options'][:40]}")
         else:  # custom dropdown: open it, then click the option text
             await page.mouse.click(x, y)
             await asyncio.sleep(0.4)
-            await page.get_by_text(str(action["option"]), exact=False).first.click(timeout=5000)
+            await page.get_by_text(want, exact=False).first.click(timeout=5000)
     elif kind == "reload":
         await page.reload(wait_until="domcontentloaded", timeout=20000)
     elif kind == "triple_click":
@@ -851,6 +853,30 @@ def jpeg(png: bytes, quality: int = 75) -> bytes:
     return out.getvalue()
 
 
+_SELECT_JS = """([x, y, want]) => {
+  let el = document.elementFromPoint(x, y);
+  if (el && el.tagName !== 'SELECT') el = el.closest('select') || el.querySelector?.('select') || null;
+  if (!el) {
+    let best = null, bd = 1e9;
+    for (const s of document.querySelectorAll('select')) {
+      const r = s.getBoundingClientRect(); if (!r.width && !r.height) continue;
+      const d = Math.hypot(Math.max(r.left - x, 0, x - r.right), Math.max(r.top - y, 0, y - r.bottom));
+      if (d < bd) { bd = d; best = s; }
+    }
+    if (best && bd <= 80) el = best;
+  }
+  if (!el || el.tagName !== 'SELECT') return {ok: false};
+  const norm = t => (t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const w = norm(want), opts = [...el.options];
+  const hit = opts.find(o => norm(o.text) === w || norm(o.value) === w) || opts.find(o => o.index > 0 && (norm(o.text).includes(w) || (w && w.includes(norm(o.text)) && norm(o.text))))
+    || opts.find(o => o.index > 0 && w.split(' ').some(p => p.length > 3 && norm(o.text).includes(p)));
+  if (!hit) return {ok: false, options: opts.map(o => o.text.trim()).filter(Boolean)};
+  el.value = hit.value;
+  el.dispatchEvent(new Event('input', {bubbles: true})); el.dispatchEvent(new Event('change', {bubbles: true}));
+  return {ok: true, chosen: hit.text.trim()};
+}"""
+
+
 _FIELDS_JS = """() => {
   const out = [];
   const els = document.querySelectorAll('input:not([type=hidden]), textarea, select, button, [role=button], [role=checkbox], a[href]');
@@ -868,6 +894,13 @@ _FIELDS_JS = """() => {
     const row = {kind, label: label.trim().slice(0, 60), x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2)};
     if (tag === 'input' && !['checkbox','radio','submit','button'].includes(el.type)) row.filled = !!el.value;
     if (el.type === 'checkbox' || el.type === 'radio') row.checked = el.checked;
+    if (tag === 'select') {  // native popups never show in screenshots: list the options so the client can use select
+      const opts = [...el.options].filter(o => o.value !== '' || o.index > 0).map(o => o.text.trim()).filter(Boolean);
+      row.label = (el.getAttribute('aria-label') || (el.id && document.querySelector('label[for="' + el.id + '"]') || {}).innerText || el.name || 'select').trim().slice(0, 60);
+      row.options = opts.slice(0, 40); row.selected = el.selectedIndex > 0 ? (el.options[el.selectedIndex].text || '').trim() : '';
+    } else if (tag === 'input' && el.list) {
+      row.options = [...el.list.options].map(o => (o.value || o.text || '').trim()).filter(Boolean).slice(0, 40);
+    }
     if (el.disabled || el.getAttribute('aria-disabled') === 'true' || el.getAttribute('aria-busy') === 'true') row.disabled = true;
     out.push(row);
     if (out.length >= 40) break;
