@@ -695,7 +695,8 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         # the <select> at (x, y), or the nearest one within 80px (styled selects often sit under an overlay)
         res = await page.evaluate(_SELECT_JS, [x, y, want])
         if res.get("ok"):
-            pass
+            # Playwright's select_option fires the events React/Vue-controlled selects listen for
+            await page.locator('[data-usersim-select="1"]').first.select_option(index=int(res["index"]), timeout=5000)
         elif res.get("options") is not None:
             raise SessionError(f"no option matching {want!r}; options: {res['options'][:40]}")
         else:  # custom dropdown: open it, then click the option text
@@ -871,9 +872,9 @@ _SELECT_JS = """([x, y, want]) => {
   const hit = opts.find(o => norm(o.text) === w || norm(o.value) === w) || opts.find(o => o.index > 0 && (norm(o.text).includes(w) || (w && w.includes(norm(o.text)) && norm(o.text))))
     || opts.find(o => o.index > 0 && w.split(' ').some(p => p.length > 3 && norm(o.text).includes(p)));
   if (!hit) return {ok: false, options: opts.map(o => o.text.trim()).filter(Boolean)};
-  el.value = hit.value;
-  el.dispatchEvent(new Event('input', {bubbles: true})); el.dispatchEvent(new Event('change', {bubbles: true}));
-  return {ok: true, chosen: hit.text.trim()};
+  document.querySelectorAll('[data-usersim-select]').forEach(e => e.removeAttribute('data-usersim-select'));
+  el.setAttribute('data-usersim-select', '1');
+  return {ok: true, index: hit.index, chosen: hit.text.trim()};
 }"""
 
 
