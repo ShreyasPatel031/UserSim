@@ -1378,6 +1378,7 @@ def judge_goal_screenshot(
     start_url: str,
     final_url: str = "",
     dom: str = "",
+    evidence: str = "",
 ) -> dict[str, Any]:
     """Independent vision judge.
 
@@ -1396,6 +1397,9 @@ Page the run opened on: {start_url or "unknown"}
 Final URL: {final_url or "unknown"}
 Final DOM text (may be truncated):
 {dom_text or "(no DOM text recorded)"}
+{("Facts recorded by the UserSim server itself (not the agent's claims):" + chr(10) + evidence) if evidence else ""}
+
+For signup tasks: an empty signed-in workspace or onboarding screen (logged-in app chrome, account menu, "add your first ...") counts as reaching a signed-in dashboard; the task does not require further setup unless it says so.
 
 PASS goal_reached=true only when the screenshot and the final URL/DOM together show the goal was actually reached (for example the requested issue form or created issue, a drawing on the canvas, an export/share dialog, or the specific destination the task asked for).
 

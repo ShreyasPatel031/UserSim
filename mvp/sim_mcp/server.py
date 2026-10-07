@@ -346,6 +346,8 @@ async def _wait(session_id: str, timeout_s: int, want: str) -> str:
         if not msg:
             return json.dumps({"found": False, "note": f"no verification mail with a {want} in {t}s; check the form was submitted, or resend"})
         sim.mail_links = list(msg.get("links") or [])
+        if want == "code" and msg.get("code"):
+            sim.row["signup_code_used"] = True
         sim.row.setdefault("signup_mail", []).append({"subject": msg.get("subject"), "sender": msg.get("sender")})
         return json.dumps({"found": True, "subject": msg.get("subject"), "sender": msg.get("sender"),
                            "code": msg.get("code"), "links": sim.mail_links[:5], "link_texts": (msg.get("link_texts") or [])[:5]})

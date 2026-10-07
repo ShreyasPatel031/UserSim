@@ -33,6 +33,34 @@ def report_url(study_id: str) -> str:
 # ---------------------------------------------------------------- judge
 
 
+def signup_evidence(row: dict[str, Any]) -> str:
+    """Server-observed signup facts for the judge and proof (inbox reads, links opened, URL path)."""
+    lines = []
+    if row.get("signup_email"):
+        lines.append(f"- Fresh signup alias issued by the server: {row['signup_email']}")
+    for m in row.get("signup_mail") or []:
+        lines.append(f"- Verification email received at that alias: subject {m.get('subject')!r} from {m.get('sender')!r}")
+    trace = row.get("trace") or []
+    if any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace):
+        lines.append("- The verification link from that email was opened in the browser")
+    urls = []
+    for t in trace:
+        u = str(t.get("url") or "")
+        if u and (not urls or urls[-1] != u):
+            urls.append(u.split("?")[0])
+    if urls:
+        lines.append("- URL path of the run (query strings removed): " + " -> ".join(urls[-8:]))
+    return "\n".join(lines)
+
+
+def signup_verified(row: dict[str, Any]) -> bool:
+    trace = row.get("trace") or []
+    mail = bool(row.get("signup_mail"))
+    opened = any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace)
+    typed_code = bool(row.get("signup_code_used"))
+    return bool(row.get("signup_email")) and mail and (opened or typed_code)
+
+
 async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any], str]:
     """(verdict, status). status is 'ok', 'no_screenshot', or 'error: …' — never a silent pass."""
     from mvp.e2e2_gates import coerce_verdict, judge_goal_screenshot
@@ -49,6 +77,7 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
                 start_url=str(row.get("site_url") or ""),
                 final_url=str(row.get("final_url") or ""),
                 dom=str(row.get("final_dom") or ""),
+                evidence=signup_evidence(row),
             ),
             timeout=float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45")),
         )
@@ -99,6 +128,9 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
         ("judge_ran", judge_status == "ok", f"independent judge: {judge_status}"),
         ("not_degraded", not study.get("test_mode") and study.get("driver") == DRIVER, "real browser run, not snapshot / test mode"),
     ]
+    if row.get("signup_email"):
+        checks.append(("signup_verified", signup_verified(row),
+                       "server saw the verification email for the fresh alias and the link/code was used"))
     out = [{"name": n, "pass": bool(ok), "detail": d} for n, ok, d in checks]
     return {"pass": all(c["pass"] for c in out), "checks": out}
 
