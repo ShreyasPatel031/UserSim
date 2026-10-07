@@ -37,7 +37,7 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
     """(verdict, status). status is 'ok', 'no_screenshot', or 'error: …' — never a silent pass."""
     from mvp.e2e2_gates import coerce_verdict, judge_goal_screenshot
 
-    path = MVP_RUNS_DIR / study_id / AGENT_ID / "screenshots" / "final.png"
+    path = MVP_RUNS_DIR / study_id / str(row.get("agent_id") or AGENT_ID) / "screenshots" / "final.png"
     if not path.is_file():
         return coerce_verdict({"goal_reached": False, "reason": "no final screenshot"}), "no_screenshot"
     try:
@@ -65,14 +65,14 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
 # ---------------------------------------------------------------- proof
 
 
-def _shot_ok(study_id: str, step: dict[str, Any]) -> bool:
+def _shot_ok(study_id: str, agent_id: str, step: dict[str, Any]) -> bool:
     from mvp.e2e_smoke_local import _looks_blank
     from mvp.opening_shot import png_bytes_ok
 
     name = str(step.get("screenshot_url") or "").rsplit("/", 1)[-1]
     if not name:
         return False
-    path = MVP_RUNS_DIR / study_id / AGENT_ID / "screenshots" / name
+    path = MVP_RUNS_DIR / study_id / agent_id / "screenshots" / name
     try:
         raw = path.read_bytes()
     except OSError:
@@ -88,7 +88,8 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
     from mvp.e2e2_gates import beyond_first_screen, has_click_type_scroll, opened_on_assigned_site
 
     steps = [s for s in row.get("trace") or [] if isinstance(s, dict) and isinstance(s.get("step"), int)]
-    bad_shots = [s["step"] for s in steps if not _shot_ok(str(study.get("id")), s)]
+    aid = str(row.get("agent_id") or AGENT_ID)
+    bad_shots = [s["step"] for s in steps if not _shot_ok(str(study.get("id")), aid, s)]
     checks = [
         ("opened_on_product", opened_on_assigned_site(row), f"opened {row.get('page_url') or '?'} for {row.get('site_url')}"),
         ("real_action", has_click_type_scroll(row), "at least one click, type, or scroll ran on the page"),
@@ -109,7 +110,7 @@ async def finalize(sim: SimSession, *, outcome: str, notes: str) -> dict[str, An
     """Close the browser, judge, run proof, write the study as complete. Caller holds sim.lock."""
     from mvp.study import finish_clocks, log_activity, persist_study, study_to_dict
 
-    if sim.closed and sim.study.status in {"complete", "error"}:
+    if sim.closed and (sim.study.status in {"complete", "error"} or (sim.matrix and sim.row.get("status") in {"complete", "error"})):
         return study_to_dict(sim.study)
     outcome = outcome if outcome in OUTCOMES else "gave_up"
     study = sim.study
@@ -142,6 +143,19 @@ async def finalize(sim: SimSession, *, outcome: str, notes: str) -> dict[str, An
             "trace": row.get("trace") or [],
         }
     )
+    if sim.matrix:
+        payload = study_to_dict(study)
+        proof = proof_checks(payload, row, judge_status)
+        result["mcp_proof"] = proof
+        result["judge_status"] = judge_status
+        row["mcp_proof"] = proof
+        study.agent_results = [r for r in study.agent_results if r.get("agent_id") != sim.agent_id] + [result]
+        from mvp.sim_mcp.sessions import matrix_phase
+
+        study.phase = matrix_phase(study)
+        log_activity(study, "agents", f"{row.get('persona_name')} on {row.get('site_label')}: {outcome}; judge {judge_status}; proof pass={proof['pass']}", agent_id=sim.agent_id)
+        await maybe_finish_study(study)
+        return study_to_dict(study)
     study.agent_results = [result]
     payload = study_to_dict(study)
     proof = proof_checks(payload, row, judge_status)
@@ -259,3 +273,122 @@ def report_markdown(rep: dict[str, Any]) -> str:
         f"Engine: {rep.get('engine_version')} · config {rep.get('config_hash')}",
     ]
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------- multi-run studies
+
+_TERMINAL_ROWS = {"complete", "done", "error", "skipped"}
+_FINISHING: set[str] = set()
+
+
+async def maybe_finish_study(study: Any, *, force: bool = False) -> bool:
+    """When every cell has ended (or force), run the website's end-of-study pipeline once.
+
+    Runs in the background so the last simulated user's usersim_finish returns at once.
+    Cells never started are marked skipped. Returns True if the finish was started.
+    """
+    rows = list(study.live_sessions.values())
+    if study.id in _FINISHING or study.status != "running":
+        return False
+    if not force and any(r.get("status") not in _TERMINAL_ROWS for r in rows):
+        return False
+    from mvp.sim_mcp.sessions import SESSIONS
+
+    if force and any(s.study is study and not s.closed for s in SESSIONS.values()):
+        raise RuntimeError("some simulated users are still running; finish them first")
+    _FINISHING.add(study.id)
+    for r in rows:
+        if r.get("status") not in _TERMINAL_ROWS:
+            r["status"] = "skipped"
+            r["live_active"] = False
+    study.phase = "Writing the report"
+    asyncio.get_running_loop().create_task(_finish_matrix(study))
+    return True
+
+
+async def _finish_matrix(study: Any) -> None:
+    from mvp.study import finish_study, log_activity, persist_study
+
+    try:
+        await finish_study(study)
+        proofs = [r.get("mcp_proof") or {} for r in study.agent_results]
+        study.summary = {
+            **(study.summary or {}),
+            "driver": DRIVER,
+            "mcp_proof": {
+                "runs": len(proofs),
+                "passed": sum(1 for p in proofs if p.get("pass")),
+                "failed_runs": [r.get("agent_id") for r in study.agent_results if not (r.get("mcp_proof") or {}).get("pass")],
+            },
+        }
+        await asyncio.to_thread(persist_study, study)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[mcp] finishing study {study.id} failed: {exc!r}", flush=True)
+        study.status = "error"
+        study.error = f"report failed: {exc!r}"[:500]
+        log_activity(study, "error", study.error)
+        await asyncio.to_thread(persist_study, study)
+    finally:
+        _FINISHING.discard(study.id)
+
+
+def build_study_report(study: dict[str, Any]) -> dict[str, Any]:
+    """Multi-run study: the website report's headline plus one line per cell."""
+    sid = str(study.get("id") or "")
+    summary = study.get("summary") or {}
+    by_id = {r.get("agent_id"): r for r in study.get("agent_results") or [] if isinstance(r, dict)}
+    rows = [s for s in study.get("live_sessions") or [] if isinstance(s, dict)]
+    cells = []
+    for row in rows:
+        res = by_id.get(row.get("agent_id")) or {}
+        verdict = res.get("page_verdict") or row.get("page_verdict") or {}
+        cells.append(
+            {
+                "cell_id": row.get("agent_id"),
+                "site": row.get("site_label"),
+                "persona": row.get("persona_name"),
+                "task": row.get("task_prompt"),
+                "status": row.get("status"),
+                "goal_reached": bool(verdict.get("goal_reached")) if verdict else None,
+                "judge_reason": verdict.get("reason") or "",
+                "proof_pass": (res.get("mcp_proof") or {}).get("pass"),
+                "steps": row.get("num_steps") or 0,
+                "driver_outcome": res.get("driver_outcome"),
+            }
+        )
+    return {
+        "study_id": sid,
+        "status": study.get("status"),
+        "phase": study.get("phase"),
+        "headline": summary.get("verdict_summary") or summary.get("headline") or study.get("phase"),
+        "product_url": study.get("url"),
+        "competitors": study.get("competitors") or [],
+        "summary": {k: summary.get(k) for k in ("headline", "verdict_summary", "recommendations", "strengths", "weaknesses") if summary.get(k)},
+        "proof": summary.get("mcp_proof") or {},
+        "cells": cells,
+        "links": {"watch": watch_url(sid), "report": report_url(sid)},
+        "engine_version": study.get("engine_version"),
+        "config_hash": study.get("config_hash"),
+    }
+
+
+def study_report_markdown(rep: dict[str, Any]) -> str:
+    lines = [f"# UserSim study — {rep.get('product_url')}", "", f"**{rep.get('headline')}**", ""]
+    if rep["status"] != "complete":
+        lines += [f"Status: {rep['status']} — {rep.get('phase')}", ""]
+    proof = rep.get("proof") or {}
+    if proof:
+        lines.append(f"Proof: {proof.get('passed')}/{proof.get('runs')} runs passed")
+    lines += ["", "| Site | Persona | Task | Judge | Proof | Steps |", "|---|---|---|---|---|---|"]
+    for c in rep["cells"]:
+        judge = "—" if c["goal_reached"] is None else ("reached" if c["goal_reached"] else "NOT reached")
+        pr = "—" if c["proof_pass"] is None else ("pass" if c["proof_pass"] else "FAIL")
+        lines.append(f"| {c['site']} | {c['persona']} | {c['task']} | {judge} | {pr} | {c['steps']} |")
+    lines += ["", f"Full report (same page as a website study): {rep['links']['report']}", f"Watch / replay: {rep['links']['watch']}"]
+    return "\n".join(lines)
+
+
+def is_matrix(study: dict[str, Any]) -> bool:
+    rows = study.get("live_sessions") or []
+    # A 1x1x1 study is shaped exactly like the one-run report, so either reader works for it.
+    return study.get("backend") == "mcp" and (len(rows) > 1 or any(r.get("agent_id") != AGENT_ID for r in rows if isinstance(r, dict)))

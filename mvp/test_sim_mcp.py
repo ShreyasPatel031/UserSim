@@ -181,3 +181,77 @@ class ProofAndReportTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MatrixStudyTests(unittest.TestCase):
+    """A study built over MCP has the same shape the website report reads."""
+
+    def _study(self):
+        return S.create_matrix_study(
+            product_url="notion.com",
+            competitors=["https://coda.io", "clickup.com"],
+            personas=[
+                {"name": "Maya", "bio": "Freelance writer", "favors": "notion"},
+                {"name": "Raj", "bio": "Ops analyst", "favors": "https://coda.io"},
+            ],
+            tasks=[{"prompt": "Find the free plan limits"}, {"prompt": "Price a team of 8", "favors": "clickup.com"}],
+        )
+
+    def test_every_persona_task_site_is_a_queued_cell(self):
+        from mvp.study import STUDIES
+
+        study = self._study()
+        self.assertIs(STUDIES[study.id], study)
+        self.assertEqual(len(study.tasks), 2 * 2 * 3)
+        self.assertEqual(set(study.live_sessions), {t["id"] for t in study.tasks})
+        self.assertIn("t1__p1__product", study.live_sessions)
+        self.assertIn("t2__p2__competitor_2", study.live_sessions)
+        self.assertTrue(all(r["status"] == "queued" for r in study.live_sessions.values()))
+        self.assertEqual(study.study_mode, "compare")
+        self.assertEqual(study.backend, "mcp")
+        self.assertEqual(study.competitor_names, {"https://coda.io": "Coda", "https://clickup.com": "Clickup"})
+
+    def test_favors_resolve_to_a_site_url(self):
+        study = self._study()
+        self.assertEqual([p["favors"] for p in study.personas], ["https://notion.com", "https://coda.io"])
+        self.assertEqual([t["favors"] for t in study.task_specs], ["", "https://clickup.com"])
+
+    def test_competitor_cells_run_on_the_competitor(self):
+        study = self._study()
+        cell = study.live_sessions["t1__p1__competitor_1"]
+        self.assertEqual(cell["site_url"], "https://coda.io")
+        self.assertEqual(cell["site_label"], "Coda")
+
+    def test_cell_starts_once_and_rejects_unknown_ids(self):
+        study = self._study()
+        sim = S._cell_session(study.id, "t1__p2__competitor_1", "")
+        self.assertEqual(sim.agent_id, "t1__p2__competitor_1")
+        self.assertTrue(sim.matrix)
+        self.assertEqual(sim.product_url, "https://coda.io")
+        self.assertIn("Raj", sim.persona)
+        with self.assertRaises(S.SessionError):
+            S._cell_session(study.id, "t1__p2__competitor_1", "")  # already starting
+        with self.assertRaises(S.SessionError):
+            S._cell_session(study.id, "t9__p9__product", "")
+        with self.assertRaises(S.SessionError):
+            S._cell_session("nope", "t1__p1__product", "")
+
+    def test_bad_inputs(self):
+        with self.assertRaises(S.SessionError):
+            S.create_matrix_study(product_url="https://notion.com", competitors=["notion.com/pricing"], personas=[{"bio": "x"}], tasks=["y"])
+        with self.assertRaises(S.SessionError):
+            S.create_matrix_study(product_url="https://notion.com", competitors=[], personas=[], tasks=["y"])
+        many = [{"bio": f"p{i}"} for i in range(8)]
+        with self.assertRaises(S.SessionError):
+            S.create_matrix_study(product_url="https://a.com", competitors=["https://b.com", "https://c.com"], personas=many, tasks=["1", "2", "3"])
+
+    def test_study_report_lists_every_cell(self):
+        from mvp.sim_mcp.report import build_study_report, is_matrix, study_report_markdown
+        from mvp.study import study_to_dict
+
+        study = self._study()
+        data = study_to_dict(study)
+        self.assertTrue(is_matrix(data))
+        rep = build_study_report(data)
+        self.assertEqual(len(rep["cells"]), 12)
+        self.assertIn("/report?study=", study_report_markdown(rep))

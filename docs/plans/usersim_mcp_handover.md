@@ -4,13 +4,13 @@ Branch: `claude/clever-goodall-1r9iqq` (based on `main` @ 3d69a76). Plan: `docs/
 
 ## 1. What exists
 
-A coding agent (Claude Code; Haiku by default) **is** the simulated user. UserSim runs the browser on
+A coding agent **is** the simulated user. UserSim does not name a model: if the human asked for one, use that, otherwise use the model already running. UserSim runs the browser on
 **our Browserbase account**, executes each action on the real page, records an ordinary Study,
 judges the outcome independently, and returns the report over MCP. The user provides only a public URL.
 
 | File | What |
 |---|---|
-| `mvp/sim_mcp/server.py` | MCP endpoint at `/mcp` (streamable HTTP, stateless, JSON). Tools: `usersim_start_session`, `usersim_observe`, `usersim_act`, `usersim_finish`, `usersim_get_report`. Prompt: `usersim_simulate_user`. Server `instructions` describe the flow (approve persona+task → start → open `watch_url` → run user as a `haiku` subagent → report). |
+| `mvp/sim_mcp/server.py` | MCP endpoint at `/mcp` (streamable HTTP, stateless, JSON). Tools: `usersim_start_session`, `usersim_observe`, `usersim_act`, `usersim_finish`, `usersim_get_report`. Prompt: `usersim_simulate_user`. Server `instructions` describe the flow (approve persona+task → start → open `watch_url` → run the user as a subagent on whatever model the caller is using → report). |
 | `mvp/sim_mcp/sessions.py` | One Browserbase session per simulated user (`capability.browserbase_client.create_session` + Playwright `connect_over_cdp`), 1280×800 viewport. URL guard (public only), same-site `navigate`, vision actions (`click/double_click/right_click/hover/type/key/scroll/back/wait/navigate`), recorder → `StudyState.live_sessions["t1__p1__product"]`, idle/budget reaper. |
 | `mvp/sim_mcp/report.py` | Judge (`e2e2_gates.judge_goal_screenshot`, Vertex Gemini); judge error ⇒ `unverified`, never a pass. Proof checks (e2e2 gate functions). Report JSON + markdown. |
 | `mvp/version.py` | `engine_version` (git SHA, or `USERSIM_ENGINE_VERSION`) + `config_hash` (MVP_*/model env). On `/health`, every study, every report. |
@@ -51,7 +51,20 @@ website's old fallback agent / GCP fleet path (to be retired in the consolidatio
   home → Travel → "It's Only the Himalayas" (£45.17), finish → judge "goal reached", proof PASS.
 - A deliberately wrong click was judged "goal NOT reached" (judge doesn't follow the driver's claim).
 
-**Not tested:** the deployed VM / `usersim.vercel.app` proxy; a non-toy product; Codex or other clients.
+- 2026-10-06, local server on this branch, Composer (`composer-2.5`) as the driver, no model named by the server: books.toscrape.com, persona a retired teacher, task "find a travel book and open its page to see the price." 19 `usersim_act` calls. Book: It's Only the Himalayas, £45.17. Judge `goal_reached: true`, `proof.pass: true`. Session `03054811024148249caae50cd0ca5ee5`, study `9255c41e-ee78-4152-ba27-3907ef1b1360`. Start response had no `driver_model`. An earlier same-day smoke test on example.com finished with 0 actions and correctly failed proof (`real_action`, `beyond_first_screen`).
+
+**Not tested:** `usersim_start_study` with parallel cells (persona × task × site) driven by real subagents; `usersim_finish_study` when some cells are skipped; the deployed VM / `usersim.vercel.app` proxy; a non-toy product.
+
+## 2b. What the next agent should test
+
+Checkout `claude/clever-goodall-1r9iqq` after this push. Do not commit `secrets/` or `MATRIX_RESULTS.md`. Report/insight edits in the same working tree (buyer grouping by pick, tie matchups) are **not** in this push.
+
+1. `PYTHONPATH=src:. .venv/bin/pytest mvp/test_sim_mcp.py -q` — includes `MatrixStudyTests` (cells, favors, one-start, bad input, study report).
+2. MCP `initialize` instructions must not name a model. `usersim_start_session` must not return `driver_model`. `mvp/e2e_mcp.py` asserts the second.
+3. `PYTHONPATH=src:. .venv/bin/python -m mvp.e2e_mcp --base http://127.0.0.1:8787` — scripted client, real Browserbase. Needs the env in section 3. Expect proof pass and goal reached on the travel-book script.
+4. One non-scripted session on a model other than Haiku (Composer already passed once; a second model, or a re-run, is the point). Persona and task must be approved by the human first. The agent must click, not finish on the first screenshot.
+5. One small matrix: `usersim_start_study` with 2 personas × 1 task × the product and 1 competitor (4 cells). Drive each cell with `usersim_start_session(study_id, cell_id)` in parallel, up to `max_parallel`. When the last cell finishes, `usersim_get_report` should be the website study report. If you skip a cell, call `usersim_finish_study` and confirm the skipped cell is marked skipped.
+6. After deploy only: `python -m mvp.e2e_mcp --base https://usersim.vercel.app`.
 
 ## 3. Run it locally
 
@@ -88,8 +101,8 @@ claude mcp add --transport http usersim http://127.0.0.1:8787/mcp      # local
 ```
 
 Then: *"Use UserSim to test https://<public or preview URL> — a new user trying to <goal>."*
-Claude drafts persona + task, asks you to approve, starts the session, opens the watch URL, runs the
-simulated user as a Haiku subagent, and prints the report.
+The caller drafts persona + task, asks you to approve, starts the session, opens the watch URL, runs the
+simulated user as a subagent on whatever model it is already using (or the model you named), and prints the report.
 
 Note: the browser runs in Browserbase's cloud, so the product URL must be public (preview deploys fine;
 `localhost` is rejected).
@@ -118,7 +131,7 @@ Nothing in the repo provisions that VM; its env lives in `/workspace/usersim-env
 
 1. Deploy + verify (section 4). Add a checked-in VM deploy script pinned to a tag (version drift).
 2. Perception modes `a11y` and `marks` behind the same action schema; tiers low/medium/high.
-3. Multiple simulated users (parallel Haiku subagents), competitors, product sign-in.
+3. Matrix studies are in the server (`usersim_start_study` / `usersim_finish_study`) but not yet driven end to end by parallel subagents. Product sign-in is still open.
 4. Consolidation: website's Gemini a11y agent onto the same core as the MCP path; retire the browser-use GCP fleet path; single engine config; prompts out of inline strings.
 5. Behaviour science (`BehaviorPolicy`): persona fidelity, when real users quit — separate track.
 
@@ -126,7 +139,7 @@ Nothing in the repo provisions that VM; its env lives in `/workspace/usersim-env
 
 - Users bring only their coding agent + a public URL. No tokens, no Browserbase key, no LLM key.
 - Browsers: our Browserbase only. Never local Chromium on the user's machine.
-- Simulated user = Claude Code (Haiku default); keep a `driver` field for other models later, don't build now.
+- Simulated user = whoever calls the tools. The server names no model and returns no `driver_model`.
 - MVP: one simulated user, one product, vision perception (screenshot + pixel coordinates).
 - Judge + proof are server-side and never trust the driver's own "done".
 - Hosting: same VM as the website, behind the usersim.vercel.app proxy.

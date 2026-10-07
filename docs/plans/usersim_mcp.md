@@ -35,7 +35,7 @@ User's Claude Code (the brain)
 | Browser | Browserbase only, our key, server-side. No local Chromium, no user key. |
 | Keys on the client | None, and no token either: the user only provides a public URL, same as the website. Abuse is bounded server-side (see Server rules). |
 | Transport | Remote MCP (streamable HTTP) at `/mcp` on the same server as the website (the GCP VM behind the usersim.vercel.app proxy): `claude mcp add --transport http usersim https://usersim.vercel.app/mcp`. Tool list is served by the server, so there is no client package to drift. |
-| Simulated-user model | **Haiku by default.** The main agent runs the simulated user as a Claude Code subagent with `model: haiku` (server instructions + `driver_model` in the start response say so). Human can ask for another model. |
+| Simulated-user model | Model-agnostic. The caller is the simulated user. Server instructions name no model and the start response has no `driver_model`. If the human asked for a model, the caller uses that; otherwise it uses the model it is already running as. |
 | Product reachability | Public URLs only (Browserbase can't reach `localhost`). Preview deploys work. Tunnels later. |
 | Perception | Pluggable. Final product offers three tiers (low / medium / high) that bundle perception mode, screenshot resolution, step cap, number of users. **MVP ships `vision` only.** |
 | Persona fidelity / stopping science | Out of scope. Keep a clean seam (`BehaviorPolicy`), ship a minimal placeholder. Server-side safety caps are infra, not science, and stay. |

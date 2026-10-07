@@ -104,8 +104,8 @@ async def run(base: str, watch: bool) -> dict[str, Any]:
             out.update(study_id=study_id, watch_url=meta.get("watch_url"), engine_version=meta.get("engine_version"))
             if not _has_image(start):
                 fails.append("start returned no screenshot")
-            if meta.get("driver_model") != "haiku":
-                fails.append(f"driver_model is {meta.get('driver_model')!r}, want haiku")
+            if meta.get("driver_model"):
+                fails.append(f"start response names a driver model: {meta.get('driver_model')!r}")
 
             try:
                 await _drive(mcp, sid, study_id, meta, watch, fails, out)

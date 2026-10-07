@@ -15,18 +15,36 @@ from mcp.server.fastmcp import Context, FastMCP, Image
 from mcp.server.transport_security import TransportSecuritySettings
 
 from mvp.sim_mcp import sessions as S
-from mvp.sim_mcp.report import build_report, finalize, report_markdown, watch_url
+from mvp.sim_mcp.report import (
+    build_report,
+    build_study_report,
+    finalize,
+    is_matrix,
+    maybe_finish_study,
+    report_markdown,
+    report_url,
+    study_report_markdown,
+    watch_url,
+)
 
-DEFAULT_DRIVER_MODEL = "haiku"
+INSTRUCTIONS = """UserSim lets you act as a simulated user of a real web product, in a real cloud browser that UserSim runs and records.
 
-INSTRUCTIONS = f"""UserSim lets you act as a simulated user of a real web product, in a real cloud browser that UserSim runs and records.
+The simulated user is whatever model is calling these tools. UserSim does not name or require a model. If the human asked for a specific model, use that. Otherwise use the model you are already running as.
 
 Flow:
 1. Get a PUBLIC product URL from the human (localhost won't work; a preview/staging deploy is fine). That is the only thing they must provide.
 2. Draft a realistic persona (one or two sentences: who they are, what they know, why they are here) and ONE task, using the codebase / recent changes if helpful. Show both to the human and wait for approval.
 3. Call usersim_start_session. Open the returned watch_url for the human (e.g. `open <url>` on macOS, `xdg-open <url>` on Linux) so they can watch the browser live.
-4. Run the simulated user as a subagent with model "{DEFAULT_DRIVER_MODEL}" unless the human asked for another model. Give it the session_id, persona, task and the usersim_simulate_user prompt. It loops usersim_act until done, then calls usersim_finish.
+4. Run the simulated user as a subagent on the model chosen above. Give it the session_id, persona, task and the usersim_simulate_user prompt. It loops usersim_act until done, then calls usersim_finish.
 5. Call usersim_get_report and summarise it for the human. The judge verdict and proof checks come from UserSim, not from the simulated user.
+
+Several users, tasks or competitors (a study, like the UserSim website runs):
+1. Draft the personas and tasks (each can name the site it `favors`), show them with the competitor URLs, wait for approval.
+2. Call usersim_start_study once. It returns study_id, watch_url, report_url and one cell per persona x task x site.
+3. For every cell, run one subagent in parallel on that same model: it calls usersim_start_session with study_id + cell_id (nothing else), then plays that cell's persona and task with usersim_act and ends with usersim_finish.
+   If a start says UserSim is at its limit, wait for running cells to finish and start the rest then.
+4. When the last cell finishes, UserSim writes the full study report (same page as a website study). Call usersim_get_report with the study_id; if it says the report is still being written, wait ~30 s and call again.
+   If some cells will never run, call usersim_finish_study to write the report from the cells that did.
 """
 
 SIMULATE_USER_PROMPT = """You are a simulated user testing a web product. You are NOT a coding assistant right now.
@@ -85,30 +103,102 @@ def _fail(exc: Exception) -> str:
 
 
 @mcp.tool(structured_output=False)
-async def usersim_start_session(product_url: str, task: str, persona: str, ctx: Context) -> list[Any] | str:
+async def usersim_start_study(
+    product_url: str,
+    personas: list[dict[str, Any]],
+    tasks: list[dict[str, Any]],
+    competitors: list[str] | None = None,
+) -> str:
+    """Create a study: every persona tries every task on the product and on each competitor.
+
+    product_url: public URL of the product.
+    competitors: public URLs of competing products (optional, up to 4).
+    personas: [{"name": "Maya Ortiz", "bio": "who they are, what they know, why they're here", "favors": "<site URL or name it is aimed at, optional>"}]
+    tasks: [{"prompt": "one goal, in the user's words", "favors": "<site URL or name, optional>"}]
+    Ask the human to approve personas, tasks and competitors first.
+    Returns study_id, watch_url, report_url and cells. Run each cell with usersim_start_session(study_id=..., cell_id=...).
+    """
+    comps = list(competitors or [])
+    if len(comps) > 4:
+        return _fail(S.SessionError("at most 4 competitors"))
+    try:
+        study = S.create_matrix_study(product_url=product_url, competitors=comps, personas=personas, tasks=tasks)
+    except S.SessionError as exc:
+        return _fail(exc)
+    return json.dumps(
+        {
+            "study_id": study.id,
+            "watch_url": watch_url(study.id),
+            "report_url": report_url(study.id),
+            "runs": len(study.tasks),
+            "cells": S.cells_of(study),
+            "rules": {"max_steps": S.max_steps(), "budget_s": S.budget_s(), "idle_timeout_s": S.idle_s(), "max_parallel": S.max_per_client()},
+            "next": "Open watch_url for the human, then start one simulated-user subagent per cell (usersim_start_session with study_id + cell_id).",
+        },
+        indent=1,
+    )
+
+
+@mcp.tool(structured_output=False)
+async def usersim_finish_study(study_id: str) -> str:
+    """Write the study report now from the cells that ran; cells never started are marked skipped.
+
+    Only needed if some cells will not be run. Running cells must be finished first.
+    """
+    from mvp.study import STUDIES
+
+    study = STUDIES.get(study_id)
+    if study is None or getattr(study, "backend", "") != "mcp":
+        return _fail(S.SessionError(f"unknown study_id {study_id!r}"))
+    try:
+        started = await maybe_finish_study(study, force=True)
+    except RuntimeError as exc:
+        return _fail(exc)
+    return json.dumps({"study_id": study_id, "started": started, "status": study.status, "phase": study.phase, "next": "Call usersim_get_report in ~30 s."})
+
+
+@mcp.tool(structured_output=False)
+async def usersim_start_session(
+    ctx: Context,
+    product_url: str = "",
+    task: str = "",
+    persona: str = "",
+    study_id: str = "",
+    cell_id: str = "",
+) -> list[Any] | str:
     """Open a real cloud browser on the product and start one simulated user.
 
-    product_url: public URL (preview/staging deploys are fine; localhost is not reachable).
-    task: one goal the persona is trying to achieve, in their words.
-    persona: one or two sentences — who they are, what they know, why they're here.
-    Ask the human to approve the persona and task before calling this.
-    Returns session_id, watch_url (open it for the human), the rules, and the first screenshot.
+    In a study: pass only study_id and cell_id (from usersim_start_study); the site, persona and task come from the cell.
+    On its own: pass product_url (public; preview/staging deploys are fine, localhost is not reachable),
+    task (one goal the persona is trying to achieve, in their words) and persona (one or two sentences — who
+    they are, what they know, why they're here). Ask the human to approve the persona and task first.
+    Returns session_id, watch_url (open it for the human), the persona, task, rules, and the first screenshot.
     """
     try:
-        sim = await S.start_session(product_url=product_url, task=task, persona=persona, client=_client_id(ctx))
+        sim = await S.start_session(
+            product_url=product_url, task=task, persona=persona, client=_client_id(ctx), study_id=study_id, cell_id=cell_id
+        )
     except S.SessionError as exc:
         return _fail(exc)
     except Exception as exc:  # noqa: BLE001
         return _fail(RuntimeError(f"could not open the browser: {exc}"))
-    obs = await S.observe(sim)
+    try:
+        obs = await S.observe(sim)
+    except Exception as exc:  # noqa: BLE001
+        # The caller never gets this session_id, so nothing else would free the seat.
+        await S.close(sim, reason=f"First screenshot failed: {exc!r}"[:300], status="error")
+        return _fail(RuntimeError(f"could not open the browser: {exc}"))
     return _obs_content(
         sim,
         obs,
         {
             "study_id": sim.study.id,
+            "cell_id": sim.agent_id,
+            "persona": sim.persona,
+            "task": sim.task,
+            "site": sim.product_url,
             "watch_url": watch_url(sim.study.id),
             "rules": sim.rules(),
-            "driver_model": DEFAULT_DRIVER_MODEL,
             "engine_version": sim.study.engine_version,
             "next": "Open watch_url for the human, then run the simulated user (usersim_simulate_user prompt) with usersim_act.",
         },
@@ -157,6 +247,18 @@ async def usersim_finish(session_id: str, outcome: str, notes: str) -> str:
         return _fail(exc)
     async with sim.lock:
         study = await finalize(sim, outcome=outcome, notes=notes)
+    if sim.matrix:
+        row = sim.row
+        return json.dumps(
+            {
+                "study_id": sim.study.id,
+                "cell_id": sim.agent_id,
+                "goal_reached": bool((row.get("page_verdict") or {}).get("goal_reached")),
+                "proof_pass": (row.get("mcp_proof") or {}).get("pass"),
+                "study_phase": sim.study.phase,
+                "next": "Done with this cell. The study report is written when the last cell finishes.",
+            }
+        )
     rep = build_report(study)
     return json.dumps(
         {"study_id": rep["study_id"], "headline": rep["headline"], "proof_pass": rep["proof"].get("pass"), "next": "Call usersim_get_report."}
@@ -175,6 +277,11 @@ async def usersim_get_report(study_id: str, format: str = "markdown") -> str:
     data = study_to_dict(live) if live is not None else (load_local_study(study_id) or load_study_from_gcs(study_id))
     if not data:
         return _fail(S.SessionError(f"unknown study_id {study_id!r}"))
+    if is_matrix(data):
+        srep = build_study_report(data)
+        if data.get("status") != "complete":
+            srep["note"] = f"Study not finished yet ({data.get('phase')}). Call again in ~30 s."
+        return json.dumps(srep, indent=1) if format == "json" else study_report_markdown(srep)
     rep = build_report(data)
     if data.get("status") != "complete":
         rep["note"] = "Study is not finished yet; call usersim_finish first."
