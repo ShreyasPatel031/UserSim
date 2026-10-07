@@ -53,13 +53,18 @@ async def solve_recaptcha_audio(page: Any, tries: int = 3) -> dict[str, Any]:
         return _frame(page, "recaptcha/api2/bframe") or _frame(page, "recaptcha/enterprise/bframe")
 
     async def _challenge_open() -> bool:
-        bf = _open_bframe()
-        if bf is None:
-            return False
+        # The challenge iframe stays in the DOM after use; what matters is whether it is on screen.
         try:
-            return bool(await bf.locator("#rc-imageselect, #rc-audio, .rc-imageselect-challenge").count())
+            loc = page.locator('iframe[src*="recaptcha/api2/bframe"], iframe[src*="recaptcha/enterprise/bframe"]')
+            for i in range(await loc.count()):
+                el = loc.nth(i)
+                if await el.is_visible():
+                    box = await el.bounding_box()
+                    if box and box["width"] > 100 and box["height"] > 100:
+                        return True
         except Exception:
-            return False
+            pass
+        return False
 
     # Invisible / already-open challenge: the anchor is covered or hidden, so go straight to the bframe.
     if not await _challenge_open():
@@ -82,7 +87,7 @@ async def solve_recaptcha_audio(page: Any, tries: int = 3) -> dict[str, Any]:
         except Exception:
             return False
 
-    if await checked():
+    if await checked() and not await _challenge_open():
         return {"ok": True, "method": "checkbox", "detail": "no challenge"}
     for attempt in range(tries):
         bframe = _frame(page, "recaptcha/api2/bframe") or _frame(page, "recaptcha/enterprise/bframe")
@@ -125,7 +130,7 @@ async def solve_recaptcha_audio(page: Any, tries: int = 3) -> dict[str, Any]:
         except Exception as exc:  # noqa: BLE001
             return {"ok": False, "method": "audio", "detail": f"submit: {type(exc).__name__}"}
         await page.wait_for_timeout(3000)
-        if await checked():
+        if await checked() and not await _challenge_open():
             return {"ok": True, "method": "gemini_audio", "detail": f"attempt {attempt + 1}"}
         try:
             await bframe.click("#recaptcha-reload-button", timeout=3000)
