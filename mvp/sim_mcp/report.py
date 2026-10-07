@@ -43,9 +43,10 @@ def signup_evidence(row: dict[str, Any]) -> str:
     trace = row.get("trace") or []
 
     for u in row.get("opened_links") or []:
-        kind = ("a verification / sign-in link" if _opened_verifies(row, u)
-                else "a NON-verification link (help/welcome/tracking)")
-        lines.append(f"- Link opened from that email ({kind}): {u.split('?')[0][:80]}")
+        if _opened_verifies(row, u):
+            lines.append("- The verification link from that email was opened in the browser, so the email address is verified")
+        else:
+            lines.append(f"- A NON-verification link (help / welcome / tracking) from that email was opened: {u.split('?')[0][:80]}")
     if row.get("opened_links") is None and any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace):
         lines.append("- The verification link from that email was opened in the browser")
     if row.get("signup_code_used"):

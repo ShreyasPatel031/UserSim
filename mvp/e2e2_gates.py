@@ -1411,9 +1411,7 @@ FAIL goal_reached=false when:
 
 page_loading = true when the screenshot is blank, mostly empty, a loading spinner / skeleton, or a dark overlay with nothing readable. A loading page never reaches the goal (goal_reached=false).
 
-For signup / create-account tasks with NO server fact that the verification link or code was used: goal_reached=false, even on a signed-in page.
-
-signed_in_app_page = true when the screenshot shows the product's app while signed in (app chrome, account menu/avatar, workspace, onboarding inside the app), false for marketing pages, login/signup forms, "check your inbox" screens or errors.
+signed_in_app_page = true when the screenshot shows the product's app while signed in (app chrome, account menu/avatar, workspace, onboarding or setup steps inside the app such as company details, "create your first workspace/project", "install the tracking snippet"), false for marketing pages, login/signup forms, "check your inbox" screens or errors.
 
 Return JSON only:
 {{
