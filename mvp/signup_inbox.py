@@ -99,6 +99,28 @@ def rank_links(links: list[str], host: str) -> list[str]:
     return [u for _, _, u in scored]
 
 
+_VERIFY_LINK_RE = re.compile(
+    r"verif|confirm|activat|magic|oobcode|/auth|token=|sign-?in|log-?in|validate|callback|/v/|otp", re.I)
+_VERIFY_SUBJECT_RE = re.compile(
+    r"verif|confirm|activat|one click away|magic|sign.?in|log.?in|code|validate|complete your", re.I)
+
+
+def verification_link(url: str) -> bool:
+    """A link that plausibly verifies the account (not a help / welcome / tracking link)."""
+    return bool(_VERIFY_LINK_RE.search(url or ""))
+
+
+def _verify_score(msg: dict[str, Any], host: str) -> int:
+    score = 0
+    if find_code(msg.get("subject", ""), msg.get("text", "")):
+        score += 2
+    if any(verification_link(u) for u in rank_links(msg.get("links") or [], host)[:8]):
+        score += 2
+    if _VERIFY_SUBJECT_RE.search(msg.get("subject") or ""):
+        score += 1
+    return score
+
+
 def find_code(subject: str, body: str) -> str | None:
     from mvp.email_codes import _find_code
 
@@ -127,11 +149,12 @@ class Inbox:
             except Exception as exc:  # noqa: BLE001
                 print(f"[signup_inbox] {self.backend} read failed: {exc!r}", flush=True)
                 msgs = []
-            for msg in msgs:
-                key = str(msg.get("id") or msg.get("subject"))
-                if key in seen:
-                    continue
-                seen.add(key)
+            fresh = [m for m in msgs if str(m.get("id") or m.get("subject")) not in seen]
+            if fresh:
+                # the verification mail first (a welcome mail often lands right after it), then the oldest
+                fresh.sort(key=lambda m: (-_verify_score(m, host), m.get("ts") or 0))
+                msg = fresh[0]
+                seen.add(str(msg.get("id") or msg.get("subject")))
                 code = find_code(msg.get("subject", ""), msg.get("text", ""))
                 anchors = msg.get("anchors") or {}
                 ranked = rank_links(msg.get("links") or [], host)[:8]

@@ -321,3 +321,24 @@ class RankLinksTests(unittest.TestCase):
         self.assertEqual(ranked[0], "https://sendfox.com/account/verify-email/abc123def456")
         self.assertNotIn("https://x.com/sendfox", ranked)
         self.assertNotIn("https://www.facebook.com/sendfox", ranked)
+
+
+class VerifiedSignupTests(unittest.TestCase):
+    def test_help_link_is_not_verification(self):
+        from mvp.sim_mcp.report import signup_verified
+
+        base = {"signup_email": "usersim.signups+a@gmail.com", "signup_mail": [{"subject": "Yay"}]}
+        self.assertFalse(signup_verified({**base, "opened_links": ["https://help.sendfox.com/?utm_source=x"]}))
+        self.assertFalse(signup_verified({**base, "opened_links": ["https://sendfox.com"]}))
+        self.assertTrue(signup_verified({**base, "opened_links": ["https://sendfox.com/account/verify-email/abc"]}))
+
+    def test_wait_prefers_verify_mail_over_newer_welcome(self):
+        from mvp.signup_inbox import Inbox
+
+        class Fake(Inbox):
+            def messages(self, newer_than):
+                return [{"id": "2", "subject": "Yay, welcome", "links": ["https://sendfox.com/trk/click/a/b"], "text": "", "ts": 2},
+                        {"id": "1", "subject": "You're one click away", "links": ["https://sendfox.com/account/verify-email/abc"], "text": "", "ts": 1}]
+
+        got = Fake().wait("sendfox.com", 0, 2, set())
+        self.assertEqual(got["links"][0], "https://sendfox.com/account/verify-email/abc")

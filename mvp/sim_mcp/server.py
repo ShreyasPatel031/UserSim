@@ -366,7 +366,8 @@ async def _wait(session_id: str, timeout_s: int, want: str) -> str:
         sim.last_used = __import__("time").time()
         if not msg:
             return json.dumps({"found": False, "note": f"no verification mail with a {want} in {t}s; check the form was submitted, or resend"})
-        sim.mail_links = list(msg.get("links") or [])
+        # keep links from earlier mails openable too (the verify mail and a welcome mail can arrive together)
+        sim.mail_links = list(msg.get("links") or []) + [u for u in sim.mail_links if u not in (msg.get("links") or [])]
         if msg.get("code"):
             sim.row["signup_code_used"] = True
         sim.row.setdefault("signup_mail", []).append({"subject": msg.get("subject"), "sender": msg.get("sender")})

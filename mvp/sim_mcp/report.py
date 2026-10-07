@@ -41,7 +41,12 @@ def signup_evidence(row: dict[str, Any]) -> str:
     for m in row.get("signup_mail") or []:
         lines.append(f"- Verification email received at that alias: subject {m.get('subject')!r} from {m.get('sender')!r}")
     trace = row.get("trace") or []
-    if any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace):
+    from mvp.signup_inbox import verification_link
+
+    for u in row.get("opened_links") or []:
+        kind = "a verification / sign-in link" if verification_link(u) else "a NON-verification link (help/welcome/tracking)"
+        lines.append(f"- Link opened from that email ({kind}): {u.split('?')[0][:80]}")
+    if row.get("opened_links") is None and any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace):
         lines.append("- The verification link from that email was opened in the browser")
     if row.get("signup_code_used"):
         lines.append("- The verification code from that email was handed to the agent to enter")
@@ -58,7 +63,13 @@ def signup_evidence(row: dict[str, Any]) -> str:
 def signup_verified(row: dict[str, Any]) -> bool:
     trace = row.get("trace") or []
     mail = bool(row.get("signup_mail"))
-    opened = any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace)
+    from mvp.signup_inbox import verification_link
+
+    links = row.get("opened_links")
+    if links is None:  # older rows: fall back to the trace
+        opened = any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace)
+    else:  # the opened link itself has to look like a verify / sign-in link (not a help or welcome link)
+        opened = any(verification_link(u) for u in links)
     typed_code = bool(row.get("signup_code_used"))
     return bool(row.get("signup_email")) and mail and (opened or typed_code)
 
