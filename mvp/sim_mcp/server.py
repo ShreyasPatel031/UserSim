@@ -106,7 +106,14 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
     if obs.get("page_errors"):
         meta["page_errors"] = obs["page_errors"]
     if obs.get("alias_rejected"):
-        meta["email_hint"] = "this site rejects '+' email aliases: call usersim_signup_identity with no_plus=true and use that address"
+        current = sim.inbox.address if sim.inbox is not None else ""
+        if current and "+" not in current:
+            # Loop 6 (FormBold): the old rejection text stays on the page after switching; the hint used to keep
+            # saying "call no_plus" and Gemini called usersim_signup_identity 30 times in a row.
+            meta["email_hint"] = (f"you already have the no-plus address {current}: clear the email field, type exactly that "
+                                  "address, and submit again (the old rejection message may still be showing)")
+        else:
+            meta["email_hint"] = "this site rejects '+' email aliases: call usersim_signup_identity with no_plus=true and use that address"
     if obs.get("captcha"):
         c = obs["captcha"]
         meta["captcha"] = {**c, "hint": "captcha token ready; submit" if c.get("token_ready") else
@@ -345,12 +352,23 @@ async def usersim_signup_identity(session_id: str, no_plus: bool = False) -> str
         sim = S.get_session(session_id)
         if no_plus and sim.inbox is not None and "+" in sim.inbox.address:
             sim.inbox = None
+        issued_now = sim.inbox is None
         if sim.inbox is None:
             tag = re.sub(r"[^a-z0-9]", "", _host(sim).split(".")[0])[:10] or "site"
             sim.inbox, sim.identity = await asyncio.to_thread(new_signup, _host(sim), tag, None, dotted=bool(no_plus))
             sim.mail_since = time.time() - 30
             sim.row["signup_email"] = sim.inbox.address
         ident = {k: v for k, v in sim.identity.items() if k != "code"}
+        repeats = int(sim.row.get("identity_repeat_calls") or 0)
+        if not issued_now:
+            repeats += 1
+            sim.row["identity_repeat_calls"] = repeats
+            if repeats >= 3:
+                return json.dumps({**ident, "error": f"identity already issued ({sim.inbox.address}); calling again changes nothing. "
+                                            "Act on the page: type that email into the form and submit."})
+            return json.dumps({**ident, "next": "Same identity as before (already issued). Type it into the form now; "
+                                                "do not call usersim_signup_identity again."})
+        sim.row["identity_repeat_calls"] = 0
         return json.dumps({**ident, "next": "Type these into the signup form, submit, then wait for the verification mail."})
     except Exception as exc:  # noqa: BLE001
         return _fail(exc)
