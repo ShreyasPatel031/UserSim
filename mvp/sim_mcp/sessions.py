@@ -885,7 +885,10 @@ _CAPTCHA_JS = """() => {
   if (!kind) return null;
   const tokens = [...document.querySelectorAll('[name="cf-turnstile-response"], [name="captcha"], [name="g-recaptcha-response"], [name="h-captcha-response"]')];
   const ready = tokens.some(t => (t.value || '').length > 20);
-  return {kind, token_ready: ready};
+  // invisible / score reCAPTCHA (v3 badge, size=invisible) has nothing to click: it runs on submit
+  const invisible = kind === 'recaptcha' && !f.some(u => u.includes('/recaptcha/') && !u.includes('size=invisible') && !u.includes('/bframe'))
+    && ![...document.querySelectorAll('iframe[src*="/recaptcha/"][src*="bframe"]')].some(i => { const r = i.getBoundingClientRect(); return r.width > 100 && r.height > 100 && r.top < innerHeight && r.bottom > 0; });
+  return invisible ? {kind, token_ready: ready, invisible: true} : {kind, token_ready: ready};
 }"""
 
 

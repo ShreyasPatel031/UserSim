@@ -106,6 +106,8 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
     if obs.get("captcha"):
         c = obs["captcha"]
         meta["captcha"] = {**c, "hint": "captcha token ready; submit" if c.get("token_ready") else
+                           "invisible captcha: nothing to click or solve, it runs when you submit. If submitting does nothing, "
+                           "look for an empty required field (filled:false) or an error message instead" if c.get("invisible") else
                            "captcha not passed yet: submitting now will fail silently. Click its checkbox if visible, or call usersim_solve_captcha, then submit"}
     if obs.get("error"):
         meta["action_error"] = obs["error"]
@@ -495,6 +497,9 @@ async def usersim_solve_captcha(session_id: str) -> list[Any] | str:
                 except Exception as exc:  # noqa: BLE001
                     result["audio_error"] = repr(exc)[:200]
             state = await S.captcha_state(sim.page) or {}
+            if state.get("invisible") and not state.get("token_ready"):
+                result["note"] = ("invisible reCAPTCHA with no challenge on screen: there is nothing to solve. Do not call this "
+                                  "again; fill any field with filled:false and submit")
             if os.environ.get("MVP_MCP_PAID_CAPTCHA") == "1" and state and not state.get("token_ready"):
                 result["paid"] = await _paid_token(sim, state.get("kind") or "", info or {})
             await S._settle(sim.page)
