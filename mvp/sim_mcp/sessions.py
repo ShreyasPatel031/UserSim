@@ -162,7 +162,10 @@ class SimSession:
     mail_since: float = 0.0
     mail_seen: set = field(default_factory=set)
     mail_links: list = field(default_factory=list)
+    mail_link_texts: dict = field(default_factory=dict)  # link -> anchor text in the mail
     sms_number: Any = None
+    page_errors: list = field(default_factory=list)  # uncaught JS errors / console errors, newest last
+    watched_pages: set = field(default_factory=set)
 
     @property
     def agent_id(self) -> str:
@@ -518,10 +521,8 @@ async def _open_browser(sim: SimSession) -> None:
     sim.context = sim.browser.contexts[0] if sim.browser.contexts else await sim.browser.new_context()
     sim.page = sim.context.pages[0] if sim.context.pages else await sim.context.new_page()
     sim.context.on("page", lambda p: setattr(sim, "new_page", p))
-    try:
-        await sim.page.set_viewport_size(VIEWPORT)
-    except Exception:  # noqa: BLE001
-        pass
+    _watch_page(sim, sim.page)
+    await ensure_viewport(sim.page)
     sim.page.set_default_timeout(10000)
     await _publish_live_view(sim)
     try:
@@ -574,13 +575,80 @@ def _follow_new_tab(sim: SimSession) -> None:
     page = sim.new_page
     if page is not None and not page.is_closed():
         sim.page = page
+        _watch_page(sim, page)
     sim.new_page = None
+
+
+def _watch_page(sim: SimSession, page: Any) -> None:
+    """Collect uncaught JS errors and console errors (a stuck SPA usually logs why)."""
+    if page is None or id(page) in sim.watched_pages:
+        return
+    sim.watched_pages.add(id(page))
+
+    def note(text: str) -> None:
+        text = " ".join(str(text).split())[:200]
+        if text and (not sim.page_errors or sim.page_errors[-1] != text):
+            sim.page_errors.append(text)
+            del sim.page_errors[:-8]
+
+    try:
+        page.on("pageerror", lambda exc: note(f"uncaught: {exc}"))
+        page.on("console", lambda msg: note(f"console.error: {msg.text}") if msg.type == "error" else None)
+    except Exception:  # noqa: BLE001
+        pass
+
+
+async def ensure_viewport(page: Any) -> None:
+    """Keep every page at 1280x800 CSS px (app subdomains / new tabs came up at 2560x1440)."""
+    try:
+        size = await asyncio.wait_for(page.evaluate("() => [innerWidth, innerHeight]"), timeout=3)
+    except Exception:  # noqa: BLE001
+        size = None
+    if size == [VIEWPORT["width"], VIEWPORT["height"]]:
+        return
+    try:
+        await page.set_viewport_size(VIEWPORT)
+        size = await asyncio.wait_for(page.evaluate("() => [innerWidth, innerHeight]"), timeout=3)
+    except Exception:  # noqa: BLE001
+        pass
+    if size != [VIEWPORT["width"], VIEWPORT["height"]]:
+        try:  # the CDP override wins over whatever the remote browser window imposes
+            cdp = await page.context.new_cdp_session(page)
+            await cdp.send("Emulation.setDeviceMetricsOverride", {"width": VIEWPORT["width"], "height": VIEWPORT["height"],
+                                                                   "deviceScaleFactor": 1, "mobile": False})
+            await cdp.detach()
+        except Exception:  # noqa: BLE001
+            pass
+
+
+def fit_frame(png: bytes) -> bytes:
+    """Last line of defence: the screenshot handed to clients and judge is always 1280x800."""
+    from PIL import Image
+
+    try:
+        im = Image.open(io.BytesIO(png))
+    except Exception:  # noqa: BLE001
+        return png
+    w, h = VIEWPORT["width"], VIEWPORT["height"]
+    if im.size == (w, h):
+        return png
+    sw, sh = im.size
+    scale = sw / w  # device-pixel ratio, or a wider-than-asked viewport
+    crop_h = min(sh, int(round(h * scale)))
+    im = im.crop((0, 0, sw, crop_h)).resize((w, int(round(crop_h / scale))) if scale else (w, h))
+    if im.size != (w, h):
+        canvas = Image.new("RGB", (w, h), "white")
+        canvas.paste(im.convert("RGB"), (0, 0))
+        im = canvas
+    out = io.BytesIO()
+    im.save(out, format="PNG")
+    return out.getvalue()
 
 
 # ---------------------------------------------------------------- actions
 
 ACTION_TYPES = ("click", "double_click", "right_click", "hover", "type", "key", "scroll", "back", "wait", "navigate",
-                "press_and_hold", "drag", "triple_click", "select", "reload")
+                "press_and_hold", "drag", "triple_click", "select", "reload", "clear_cookies")
 
 
 def _xy(action: dict[str, Any]) -> tuple[int, int]:
@@ -705,6 +773,13 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             await page.get_by_text(want, exact=False).first.click(timeout=5000)
     elif kind == "reload":
         await page.reload(wait_until="domcontentloaded", timeout=20000)
+    elif kind == "clear_cookies":  # log out the hard way: cookies + this origin's storage, then reload
+        await page.context.clear_cookies()
+        try:
+            await page.evaluate("() => { try { localStorage.clear(); sessionStorage.clear(); } catch (e) {} }")
+        except Exception:  # noqa: BLE001
+            pass
+        await page.reload(wait_until="domcontentloaded", timeout=20000)
     elif kind == "triple_click":
         x, y = _xy(action)
         await page.mouse.click(x, y, click_count=3)
@@ -756,6 +831,48 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
         await page.goto(action["url"], wait_until="domcontentloaded", timeout=20000)
 
 
+NAVIGATING_ACTIONS = {"click", "double_click", "key", "select"}
+
+
+async def _await_navigation(page: Any, url_before: str) -> None:
+    """A click that navigates used to return the pre-navigation frame: give it ~1.2 s to start, then let it load."""
+    for _ in range(6):
+        if page.url != url_before:
+            break
+        await asyncio.sleep(0.2)
+    if page.url == url_before:
+        return
+    try:
+        await page.wait_for_load_state("load", timeout=8000)
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        await page.wait_for_load_state("networkidle", timeout=2500)
+    except Exception:  # noqa: BLE001
+        pass
+
+
+def mask_secrets(sim: SimSession, action: dict[str, Any]) -> dict[str, Any]:
+    """Never write the signup password into traces, reports or observations."""
+    pw = str((sim.identity or {}).get("password") or "")
+    if pw and isinstance(action.get("text"), str) and pw in action["text"]:
+        action["text"] = action["text"].replace(pw, "•" * 8)
+    return action
+
+
+def scrub(sim: SimSession, value: Any) -> Any:
+    pw = str((sim.identity or {}).get("password") or "")
+    if not pw:
+        return value
+    if isinstance(value, str):
+        return value.replace(pw, "•" * 8)
+    if isinstance(value, list):
+        return [scrub(sim, v) for v in value]
+    if isinstance(value, dict):
+        return {k: scrub(sim, v) for k, v in value.items()}
+    return value
+
+
 def _check_open(sim: SimSession) -> None:
     if sim.closed:
         raise SessionError(f"session is closed ({sim.close_reason or 'finished'}); call usersim_get_report")
@@ -771,6 +888,7 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
         action = validate_action(dict(action or {}), sim.product_url)
         sim.last_used = time.time()
         error = ""
+        url_before = sim.page.url
         try:
             await _execute(sim.page, action)
         except SessionError:
@@ -781,6 +899,8 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
             error = str(exc).splitlines()[0][:200]
         _follow_new_tab(sim)
         await _settle(sim.page)
+        if action["type"] in NAVIGATING_ACTIONS or action.get("submit"):
+            await _await_navigation(sim.page, url_before)
         if blocked_signin(sim.page.url):
             error = "Google/GitHub sign-in is not allowed; use the email signup (went back)"
             try:
@@ -788,11 +908,12 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
             except Exception:  # noqa: BLE001
                 await sim.page.goto(sim.product_url, timeout=20000)
             await _settle(sim.page)
+        shown = mask_secrets(sim, dict(action))
         return await record_step(
             sim,
             kind=action["type"],
-            action_text=describe_action(action),
-            args={k: v for k, v in action.items() if k != "type"},
+            action_text=describe_action(shown),
+            args={k: v for k, v in shown.items() if k != "type"},
             thought=thought,
             error=error,
         )
@@ -803,7 +924,8 @@ async def observe(sim: SimSession) -> dict[str, Any]:
         if sim.closed:
             raise SessionError(f"session is closed ({sim.close_reason or 'finished'})")
         sim.last_used = time.time()
-        png = await _screenshot(sim.page, timeout_ms=10000)
+        await ensure_viewport(sim.page)
+        png = fit_frame(await _screenshot(sim.page, timeout_ms=10000))
         return await _observation(sim, png)
 
 
@@ -881,15 +1003,30 @@ _SELECT_JS = """([x, y, want]) => {
 _FIELDS_JS = """() => {
   const out = [];
   const els = document.querySelectorAll('input:not([type=hidden]), textarea, select, button, [role=button], [role=checkbox], a[href]');
+  const shown = (e) => {
+    const r = e.getBoundingClientRect();
+    if (r.width < 4 || r.height < 4 || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) return null;
+    const st = getComputedStyle(e);
+    if (st.visibility === 'hidden' || st.display === 'none' || +st.opacity === 0) return null;
+    return r;
+  };
+  const labelOf = (e) => (e.id && document.querySelector('label[for="' + CSS.escape(e.id) + '"]')) || e.closest('label');
   for (const el of els) {
-    const r = el.getBoundingClientRect();
-    if (r.width < 4 || r.height < 4 || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
-    const st = getComputedStyle(el);
-    if (st.visibility === 'hidden' || st.display === 'none' || +st.opacity === 0) continue;
+    let r = shown(el);
+    const box = el.type === 'checkbox' || el.type === 'radio' || el.getAttribute('role') === 'checkbox';
+    if (!r && box) {  // custom-styled checkbox: the real input is hidden, its label/wrapper is what people click
+      const l = labelOf(el) || el.parentElement;
+      const lr = l && shown(l);
+      if (lr) r = {left: lr.left, top: lr.top, width: Math.min(lr.width, 24), height: lr.height};
+    }
+    if (!r) continue;
     let label = el.getAttribute('aria-label') || el.placeholder || '';
-    if (!label && el.id) { const l = document.querySelector('label[for="' + el.id + '"]'); if (l) label = l.innerText; }
-    if (!label) { const l = el.closest('label'); if (l) label = l.innerText; }
-    if (!label) label = (el.innerText || el.value || el.name || '').trim();
+    if (!label) { const l = labelOf(el); if (l) label = l.innerText; }
+    // never echo what was typed: a password field's value used to show up as its label
+    const valueOk = el.tagName === 'BUTTON' || ['submit', 'button', 'reset'].includes(el.type);
+    if (!label) label = ((el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') ? (valueOk ? el.value : '') || el.name || el.type || ''
+                         : (el.innerText || el.name || '')).trim();
+    if (el.type === 'password') label = (el.getAttribute('aria-label') || el.placeholder || (labelOf(el) || {}).innerText || el.name || 'password').trim();
     const tag = el.tagName.toLowerCase();
     const kind = tag === 'input' ? (el.type || 'text') : tag;
     const row = {kind, label: label.trim().slice(0, 60), x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2)};
@@ -905,6 +1042,26 @@ _FIELDS_JS = """() => {
     if (el.disabled || el.getAttribute('aria-disabled') === 'true' || el.getAttribute('aria-busy') === 'true') row.disabled = true;
     out.push(row);
     if (out.length >= 40) break;
+  }
+  return out;
+}"""
+
+
+_ERRORS_JS = """() => {
+  const out = [], seen = new Set();
+  const push = (t) => { t = (t || '').replace(/\\s+/g, ' ').trim(); if (t && t.length <= 200 && !seen.has(t)) { seen.add(t); out.push(t); } };
+  const vis = (e) => { const r = e.getBoundingClientRect(), st = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && st.visibility !== 'hidden' && st.display !== 'none'; };
+  const sel = '[role=alert], [aria-live=assertive], .error, .errors, .invalid-feedback, .field-error, .form-error, .help-block.error, '
+    + '[class*="error" i]:not(html):not(body), [class*="invalid" i]:not(input), [data-error], [id*="error" i]';
+  for (const e of document.querySelectorAll(sel)) {
+    if (out.length >= 6) break;
+    if (e.children.length <= 3 && vis(e)) push(e.innerText);
+  }
+  for (const e of document.querySelectorAll('input, textarea, select')) {
+    let bad = e.getAttribute('aria-invalid') === 'true';
+    try { bad = bad || e.matches(':user-invalid'); } catch (x) {}
+    if (bad && e.validationMessage && out.length < 8) push((e.getAttribute('aria-label') || e.name || e.type) + ': ' + e.validationMessage);
   }
   return out;
 }"""
@@ -952,8 +1109,18 @@ async def _fields(page: Any) -> list[dict[str, Any]]:
         return []
 
 
+async def _inline_errors(page: Any) -> list[str]:
+    try:
+        return await asyncio.wait_for(page.evaluate(_ERRORS_JS), timeout=3)
+    except Exception:  # noqa: BLE001
+        return []
+
+
 async def _observation(sim: SimSession, png: bytes, error: str = "") -> dict[str, Any]:
-    return {
+    errors = {"inline": await _inline_errors(sim.page), "console": list(sim.page_errors[-4:])}
+    sim.page_errors.clear()
+    return scrub(sim, {
+        "page_errors": errors if (errors["inline"] or errors["console"]) else None,
         "fields": await _fields(sim.page),
         "captcha": await captcha_state(sim.page),
         "alias_rejected": await _alias_rejected(sim.page),
@@ -964,7 +1131,7 @@ async def _observation(sim: SimSession, png: bytes, error: str = "") -> dict[str
         "steps_left": sim.steps_left(),
         "seconds_left": sim.seconds_left(),
         "error": error,
-    }
+    })
 
 
 async def record_step(
@@ -980,15 +1147,16 @@ async def record_step(
     from mvp.opening_shot import upload_screenshot
     from mvp.study import note_first_value, schedule_persist
 
-    from mvp.e2e_smoke_local import _looks_blank
-
     page = sim.page
-    png = await _screenshot(page, timeout_ms=15000)
-    for _ in range(3):  # a click that navigates often lands on the white frame before the next page paints
-        if not _looks_blank(png):
+    await ensure_viewport(page)
+    png = fit_frame(await _screenshot(page, timeout_ms=15000))
+    from mvp.sim_mcp.report import frame_unrendered
+
+    for _ in range(3):  # a click that navigates often lands on the white frame / spinner before the next page paints
+        if not frame_unrendered(png):
             break
         await asyncio.sleep(1.0)
-        png = await _screenshot(page, timeout_ms=15000)
+        png = fit_frame(await _screenshot(page, timeout_ms=15000))
     n = sim.step
     sim.step += 1
     study = sim.study

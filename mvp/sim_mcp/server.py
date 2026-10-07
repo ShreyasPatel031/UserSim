@@ -101,6 +101,8 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
     }
     if obs.get("fields"):
         meta["fields"] = obs["fields"]
+    if obs.get("page_errors"):
+        meta["page_errors"] = obs["page_errors"]
     if obs.get("alias_rejected"):
         meta["email_hint"] = "this site rejects '+' email aliases: call usersim_signup_identity with no_plus=true and use that address"
     if obs.get("captcha"):
@@ -240,9 +242,9 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
     action (pixel coordinates in the screenshot):
       {"type":"click","x":..,"y":..} · {"type":"double_click","x":..,"y":..} · {"type":"triple_click","x":..,"y":..} (select a field's text) · {"type":"right_click","x":..,"y":..}
       {"type":"hover","x":..,"y":..} · {"type":"type","text":"...","x":..,"y":..,"submit":false} (clicks the field at x,y, clears it, types; omit x,y to type into the focused field)
-    Each observation lists visible `fields` (kind, label, exact x,y, filled/checked): use those coordinates for form fields.
+    Each observation lists visible `fields` (kind, label, exact x,y, filled/checked) and `page_errors` (inline form errors, JS errors): use those coordinates for form fields and read the errors before retrying.
       {"type":"key","keys":"Enter"|"Tab"|"Escape"|"Control+A"} · {"type":"scroll","dy":600,"x":..,"y":..} (dy>0 = down)
-      {"type":"back"} · {"type":"reload"} · {"type":"wait","ms":1000} · {"type":"navigate","url":"..."} (same site only)
+      {"type":"back"} · {"type":"reload"} · {"type":"clear_cookies"} (log out: clears cookies + site storage, reloads) · {"type":"wait","ms":1000} · {"type":"navigate","url":"..."} (same site only)
       {"type":"select","x":..,"y":..,"option":"visible option text"} (dropdowns, native or custom; native popups never appear in screenshots, so pick from the `options` listed for that field in `fields`)
       {"type":"press_and_hold","x":..,"y":..,"ms":4000} (press-and-hold human checks)
       {"type":"drag","x":..,"y":..,"to_x":..,"to_y":..} (slider / puzzle captchas)
@@ -368,6 +370,9 @@ async def _wait(session_id: str, timeout_s: int, want: str) -> str:
             return json.dumps({"found": False, "note": f"no verification mail with a {want} in {t}s; check the form was submitted, or resend"})
         # keep links from earlier mails openable too (the verify mail and a welcome mail can arrive together)
         sim.mail_links = list(msg.get("links") or []) + [u for u in sim.mail_links if u not in (msg.get("links") or [])]
+        for u, t in zip(msg.get("links") or [], msg.get("link_texts") or []):
+            if t:
+                sim.mail_link_texts[u] = t
         if msg.get("code"):
             sim.row["signup_code_used"] = True
         sim.row.setdefault("signup_mail", []).append({"subject": msg.get("subject"), "sender": msg.get("sender")})
@@ -403,10 +408,23 @@ async def usersim_open_verification_link(session_id: str, url: str, thought: str
         async with sim.lock:
             S._check_open(sim)
             err = ""
+            chain = [url]
             try:
-                await sim.page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                resp = await sim.page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                # the redirect chain the browser followed (click-tracking link -> real verify URL -> app)
+                req = resp.request if resp is not None else None
+                hops = []
+                while req is not None:
+                    hops.append(req.url)
+                    req = req.redirected_from
+                chain = [url] + [h for h in reversed(hops) if h != url]
             except Exception as exc:  # noqa: BLE001
                 err = str(exc).splitlines()[0][:200]
+            if sim.page.url and sim.page.url not in chain:
+                chain.append(sim.page.url)
+            sim.row.setdefault("opened_link_chains", {})[url] = [c[:300] for c in chain[:8]]
+            if sim.mail_link_texts.get(url):
+                sim.row.setdefault("opened_link_texts", {})[url] = sim.mail_link_texts[url][:80]
             await S._settle(sim.page)
             obs = await S.record_step(sim, kind="navigate", action_text="open verification link from email",
                                       args={"url": url[:200]}, thought=thought, error=err)
