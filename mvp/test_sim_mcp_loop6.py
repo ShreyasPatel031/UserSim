@@ -197,6 +197,18 @@ class IdentityLoopTests(unittest.TestCase):
         self.assertIn("already have the no-plus address", text)
         self.assertNotIn("call usersim_signup_identity with no_plus=true", text)
 
+    def test_half_filled_form_names_empty_boxes(self):
+        from mvp.sim_mcp import server
+
+        obs = dict(self._obs(), alias_rejected=False, fields=[
+            {"kind": "email", "label": "Email", "filled": True, "x": 1, "y": 1},
+            {"kind": "password", "label": "Password", "filled": True, "x": 1, "y": 2},
+            {"kind": "password", "label": "Confirm Password", "filled": False, "x": 1, "y": 3},
+            {"kind": "button", "label": "Sign up", "x": 1, "y": 4}])
+        text = str(server._obs_content(self._sim("usersim.signups+a@gmail.com"), obs))
+        self.assertIn("unfilled_fields", text)
+        self.assertIn("Confirm Password", text)
+
     def test_repeat_identity_calls_are_refused_after_three(self):
         import json
 

@@ -101,6 +101,12 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
     }
     if obs.get("fields"):
         meta["fields"] = obs["fields"]
+    unfilled = [f.get("label") or f.get("kind") for f in (obs.get("fields") or [])
+                if f.get("filled") is False and f.get("kind") in ("text", "email", "password", "tel", "textarea", "number", "url")
+                and not f.get("disabled")]
+    if unfilled and any(f.get("filled") for f in (obs.get("fields") or [])):
+        # a half-filled form: name the empty boxes (Formester: "Confirm Password" stayed empty, Sign up did nothing)
+        meta["unfilled_fields"] = unfilled[:6]
     if obs.get("hidden_fields"):
         meta["hidden_fields"] = obs["hidden_fields"]  # not clickable: invisible, covered, off-screen or a bot trap
     if obs.get("page_errors"):
