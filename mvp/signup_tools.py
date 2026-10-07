@@ -73,6 +73,8 @@ def identity_fields(persona: dict[str, Any] | None, email: str) -> dict[str, str
         "company": company,
         "workspace": re.sub(r"[^a-z0-9]", "", company.lower())[:12] + secrets.token_hex(2),
         "role": role,
+        # Letters+digits only, unique per signup: many sites reject spaces or taken names.
+        "username": (first + last).lower()[:14] + secrets.token_hex(2),
         "code": "",
     }
 

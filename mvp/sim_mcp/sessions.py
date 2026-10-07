@@ -576,7 +576,7 @@ def _follow_new_tab(sim: SimSession) -> None:
 # ---------------------------------------------------------------- actions
 
 ACTION_TYPES = ("click", "double_click", "right_click", "hover", "type", "key", "scroll", "back", "wait", "navigate",
-                "press_and_hold", "drag")
+                "press_and_hold", "drag", "triple_click")
 
 
 def _xy(action: dict[str, Any]) -> tuple[int, int]:
@@ -618,7 +618,7 @@ def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
     kind = str(action.get("type") or "")
     if kind not in ACTION_TYPES:
         raise SessionError(f"action.type must be one of {', '.join(ACTION_TYPES)}")
-    if kind in {"click", "double_click", "right_click", "hover"}:
+    if kind in {"click", "double_click", "right_click", "hover", "triple_click"}:
         _xy(action)
     elif kind == "type":
         if not isinstance(action.get("text"), str) or not action["text"]:
@@ -672,6 +672,9 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             button="right" if kind == "right_click" else "left",
             click_count=2 if kind == "double_click" else 1,
         )
+    elif kind == "triple_click":
+        x, y = _xy(action)
+        await page.mouse.click(x, y, click_count=3)
     elif kind == "hover":
         await page.mouse.move(*_xy(action))
     elif kind == "type":

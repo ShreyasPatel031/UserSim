@@ -225,7 +225,7 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
     """Do ONE thing on the page, the way the persona would, and get the new screenshot.
 
     action (pixel coordinates in the screenshot):
-      {"type":"click","x":..,"y":..} · {"type":"double_click","x":..,"y":..} · {"type":"right_click","x":..,"y":..}
+      {"type":"click","x":..,"y":..} · {"type":"double_click","x":..,"y":..} · {"type":"triple_click","x":..,"y":..} (select a field's text) · {"type":"right_click","x":..,"y":..}
       {"type":"hover","x":..,"y":..} · {"type":"type","text":"...","x":..,"y":..,"submit":false} (clicks the field at x,y, clears it, types; omit x,y to type into the focused field)
     Each observation lists visible `fields` (kind, label, exact x,y, filled/checked): use those coordinates for form fields.
       {"type":"key","keys":"Enter"|"Tab"|"Escape"|"Control+A"} · {"type":"scroll","dy":600,"x":..,"y":..} (dy>0 = down)
