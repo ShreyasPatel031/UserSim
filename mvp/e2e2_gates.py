@@ -1409,6 +1409,10 @@ FAIL goal_reached=false when:
 - The agent only scrolled or hovered the page it opened on
 - You cannot tell the goal was reached
 
+page_loading = true when the screenshot is blank, mostly empty, a loading spinner / skeleton, or a dark overlay with nothing readable. A loading page never reaches the goal (goal_reached=false).
+
+For signup / create-account tasks with NO server fact that the verification link or code was used: goal_reached=false, even on a signed-in page.
+
 signed_in_app_page = true when the screenshot shows the product's app while signed in (app chrome, account menu/avatar, workspace, onboarding inside the app), false for marketing pages, login/signup forms, "check your inbox" screens or errors.
 
 Return JSON only:
@@ -1416,6 +1420,7 @@ Return JSON only:
   "goal_reached": true/false,
   "still_on_opening_screen": true/false,
   "signed_in_app_page": true/false,
+  "page_loading": true/false,
   "reason": "one short sentence"
 }}
 """
@@ -1431,6 +1436,10 @@ Return JSON only:
     out = coerce_verdict(result)
     if isinstance(result, dict) and "signed_in_app_page" in result:
         out["signed_in_app_page"] = _as_bool(result.get("signed_in_app_page"))
+    if isinstance(result, dict) and "page_loading" in result:
+        out["page_loading"] = _as_bool(result.get("page_loading"))
+        if out["page_loading"]:
+            out["goal_reached"] = False
     return out
 
 

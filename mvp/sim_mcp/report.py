@@ -41,10 +41,10 @@ def signup_evidence(row: dict[str, Any]) -> str:
     for m in row.get("signup_mail") or []:
         lines.append(f"- Verification email received at that alias: subject {m.get('subject')!r} from {m.get('sender')!r}")
     trace = row.get("trace") or []
-    from mvp.signup_inbox import verification_link
 
     for u in row.get("opened_links") or []:
-        kind = "a verification / sign-in link" if verification_link(u) else "a NON-verification link (help/welcome/tracking)"
+        kind = ("a verification / sign-in link" if _opened_verifies(row, u)
+                else "a NON-verification link (help/welcome/tracking)")
         lines.append(f"- Link opened from that email ({kind}): {u.split('?')[0][:80]}")
     if row.get("opened_links") is None and any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace):
         lines.append("- The verification link from that email was opened in the browser")
@@ -60,16 +60,59 @@ def signup_evidence(row: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+_SIGNUP_TASK_RE = __import__("re").compile(
+    r"sign ?up|create (?:a |an |your |a new )?(?:new )?account|register|registration|verify your email", __import__("re").I)
+
+
+def is_signup_goal(row: dict[str, Any]) -> bool:
+    """The run was a signup: the server issued a signup alias, or the task asks for an account."""
+    if row.get("signup_email"):
+        return True
+    task = str(row.get("task_prompt") or "")
+    if __import__("re").search(r"without (?:creating|signing|making|registering|an account|a signup|sign)", task, __import__("re").I):
+        return False
+    return bool(_SIGNUP_TASK_RE.search(task))
+
+
+def frame_unrendered(png: bytes) -> bool:
+    """Nothing usable painted: a flat frame, or a blank page with only a spinner / one short line.
+
+    Measures the share of pixels that differ from the dominant colour. A leftover dim modal backdrop
+    over real content keeps that share well above the bar (Litlyx: 0.5-1.3%); a white page with a
+    spinner does not (FormBold: 0.02-0.03%). Size-independent (frames are compared at 1280x800).
+    """
+    import io
+
+    from PIL import Image
+
+    try:
+        im = Image.open(io.BytesIO(png)).convert("L")
+    except Exception:  # noqa: BLE001
+        return True
+    if im.size != (1280, 800):
+        im = im.resize((1280, 800))
+    hist = im.histogram()
+    mode = max(range(256), key=lambda i: hist[i])
+    off = sum(c for v, c in enumerate(hist) if abs(v - mode) >= 4)
+    return off / (1280 * 800) < 0.0015
+
+
+def _opened_verifies(row: dict[str, Any], url: str) -> bool:
+    from mvp.signup_inbox import verification_link
+
+    return verification_link(url, (row.get("opened_link_texts") or {}).get(url, ""),
+                             chain=(row.get("opened_link_chains") or {}).get(url))
+
+
 def signup_verified(row: dict[str, Any]) -> bool:
     trace = row.get("trace") or []
     mail = bool(row.get("signup_mail"))
-    from mvp.signup_inbox import verification_link
 
     links = row.get("opened_links")
     if links is None:  # older rows: fall back to the trace
         opened = any("verification link" in str(t.get("action") or t.get("action_text") or "") for t in trace)
-    else:  # the opened link itself has to look like a verify / sign-in link (not a help or welcome link)
-        opened = any(verification_link(u) for u in links)
+    else:  # the opened link has to verify: its URL, its anchor text in the mail, or its redirect chain
+        opened = any(_opened_verifies(row, u) for u in links)
     typed_code = bool(row.get("signup_code_used"))
     return bool(row.get("signup_email")) and mail and (opened or typed_code)
 
@@ -99,22 +142,50 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
         verdict = coerce_verdict({"goal_reached": False, "reason": reason})
         verdict["unverified"] = True
         return verdict, f"error: {reason}"
-    verdict = coerce_verdict(raw)
-    signed_in = isinstance(raw, dict) and bool(raw.get("signed_in_app_page"))
-    verdict["signed_in_app_page"] = signed_in
-    if not verdict["goal_reached"] and signed_in and row.get("signup_email") and signup_verified(row):
-        # Signup goal: the server saw the verification mail used, and the judge sees a signed-in app page.
-        verdict["goal_reached"] = True
-        verdict["reason"] = "Signed-in app page after server-observed email verification. Judge note: " + verdict["reason"]
+    verdict = apply_hard_rules(row, coerce_verdict(raw), raw, path.read_bytes())
     verdict["checked_at_ts"] = time.time()
     return verdict, "ok"
+
+
+def apply_hard_rules(row: dict[str, Any], verdict: dict[str, Any], raw: Any, png: bytes) -> dict[str, Any]:
+    """Server-side rules the vision judge cannot overrule.
+
+    1. A final page that is blank, loading or only a spinner never reaches a goal.
+    2. A signup goal never passes unless signup_verified (the verify mail's link/code was really used).
+    3. Otherwise a signed-in app page after a verified signup counts (the judge is often too literal).
+    """
+    signed_in = isinstance(raw, dict) and bool(raw.get("signed_in_app_page"))
+    loading = isinstance(raw, dict) and bool(raw.get("page_loading"))
+    verdict["signed_in_app_page"] = signed_in
+    signup = is_signup_goal(row)
+    verified = signup and signup_verified(row)
+    unrendered = frame_unrendered(png)
+    if unrendered or loading:
+        verdict["page_unrendered"] = True
+        if verdict.get("goal_reached"):
+            verdict["goal_reached"] = False
+            verdict["reason"] = ("Final page is blank / still loading (spinner), so the goal is not shown. Judge note: "
+                                 + str(verdict.get("reason") or ""))
+        return verdict
+    if signup and not verified:
+        if verdict.get("goal_reached"):
+            verdict["goal_reached"] = False
+            verdict["reason"] = ("Signup not email-verified: the server never saw the verification link or code used. "
+                                 "Judge note: " + str(verdict.get("reason") or ""))
+        verdict["signup_verified"] = False
+        return verdict
+    if signup:
+        verdict["signup_verified"] = True
+    if not verdict.get("goal_reached") and signed_in and verified:
+        verdict["goal_reached"] = True
+        verdict["reason"] = "Signed-in app page after server-observed email verification. Judge note: " + str(verdict.get("reason") or "")
+    return verdict
 
 
 # ---------------------------------------------------------------- proof
 
 
 def _shot_ok(study_id: str, agent_id: str, step: dict[str, Any]) -> bool:
-    from mvp.e2e_smoke_local import _looks_blank
     from mvp.opening_shot import png_bytes_ok
 
     name = str(step.get("screenshot_url") or "").rsplit("/", 1)[-1]
@@ -125,7 +196,7 @@ def _shot_ok(study_id: str, agent_id: str, step: dict[str, Any]) -> bool:
         raw = path.read_bytes()
     except OSError:
         return False
-    return png_bytes_ok(raw) and not _looks_blank(raw)
+    return png_bytes_ok(raw) and not frame_unrendered(raw)
 
 
 def _same_registrable(row: dict[str, Any]) -> bool:
@@ -150,19 +221,27 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
     steps = [s for s in row.get("trace") or [] if isinstance(s, dict) and isinstance(s.get("step"), int)]
     aid = str(row.get("agent_id") or AGENT_ID)
     bad_shots = [s["step"] for s in steps if not _shot_ok(str(study.get("id")), aid, s)]
+    site = row.get("site_url")
     checks = [
-        ("opened_on_product", opened_on_assigned_site(row) or _same_registrable(row), f"opened {row.get('page_url') or '?'} for {row.get('site_url')}"),
-        ("real_action", has_click_type_scroll(row), "at least one click, type, or scroll ran on the page"),
-        ("screenshots_real", bool(steps) and not bad_shots, f"{len(steps)} steps; blank or missing: {bad_shots or 'none'}"),
-        ("beyond_first_screen", beyond_first_screen(row, str(row.get("site_url") or "")), "URL or page content changed from the opening page"),
-        ("live_view_offered", bool(row.get("live_view_url")), "Browserbase live view was available to watch"),
-        ("judge_ran", judge_status == "ok", f"independent judge: {judge_status}"),
-        ("not_degraded", not study.get("test_mode") and study.get("driver") == DRIVER, "real browser run, not snapshot / test mode"),
+        ("opened_on_product", opened_on_assigned_site(row) or _same_registrable(row),
+         f"opened {row.get('page_url') or '?'} for {site}", f"opened {row.get('page_url') or '?'}, which is NOT the product {site}"),
+        ("real_action", has_click_type_scroll(row), "at least one click, type, or scroll ran on the page",
+         "no click, type, or scroll ever ran on the page"),
+        ("screenshots_real", bool(steps) and not bad_shots, f"{len(steps)} steps, every screenshot shows a rendered page",
+         f"{len(steps)} steps; blank, spinner-only or missing screenshots at steps {bad_shots or 'all (no steps)'}"),
+        ("beyond_first_screen", beyond_first_screen(row, str(site or "")), "URL or page content changed from the opening page",
+         "URL and page content never changed from the opening page"),
+        ("live_view_offered", bool(row.get("live_view_url")), "Browserbase live view was available to watch",
+         "no Browserbase live view URL was recorded"),
+        ("judge_ran", judge_status == "ok", "independent judge ran: ok", f"independent judge did not run cleanly: {judge_status}"),
+        ("not_degraded", not study.get("test_mode") and study.get("driver") == DRIVER, "real browser run, not snapshot / test mode",
+         f"degraded run (test_mode={bool(study.get('test_mode'))}, driver={study.get('driver')!r})"),
     ]
-    if row.get("signup_email"):
+    if row.get("signup_email") or is_signup_goal(row):
         checks.append(("signup_verified", signup_verified(row),
-                       "server saw the verification email for the fresh alias and the link/code was used"))
-    out = [{"name": n, "pass": bool(ok), "detail": d} for n, ok, d in checks]
+                       "server saw the verification email for the fresh alias and its verify link/code was used",
+                       "NOT verified: no verification email was seen, or no verify link/code from it was used"))
+    out = [{"name": n, "pass": bool(ok), "detail": dp if ok else df} for n, ok, dp, df in checks]
     return {"pass": all(c["pass"] for c in out), "checks": out}
 
 
