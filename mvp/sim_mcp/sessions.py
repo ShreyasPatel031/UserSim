@@ -865,7 +865,8 @@ _FIELDS_JS = """() => {
 
 _CAPTCHA_JS = """() => {
   const f = [...document.querySelectorAll('iframe')].map(i => i.src || '');
-  const kind = f.some(u => u.includes('challenges.cloudflare.com')) || document.querySelector('.cf-turnstile, [name="cf-turnstile-response"]') ? 'turnstile'
+  const scripts = [...document.scripts].map(x => x.src || '');
+  const kind = f.some(u => u.includes('challenges.cloudflare.com')) || scripts.some(u => u.includes('turnstile')) || document.querySelector('.cf-turnstile, [name="cf-turnstile-response"]') ? 'turnstile'
     : f.some(u => u.includes('hcaptcha.com')) ? 'hcaptcha'
     : f.some(u => u.includes('/recaptcha/')) ? 'recaptcha' : '';
   if (!kind) return null;
