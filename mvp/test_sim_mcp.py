@@ -271,3 +271,29 @@ class SignupToolsTests(unittest.TestCase):
         self.assertEqual(a["to_x"], 50)
         h = S.validate_action({"type": "press_and_hold", "x": 1, "y": 2}, "https://ex.com")
         self.assertEqual(h["ms"], 4000)
+
+
+class BearerTests(unittest.TestCase):
+    def test_bearer_guard(self):
+        import asyncio
+
+        from mvp.sim_mcp.server import _require_bearer
+
+        hits = []
+
+        async def inner(scope, receive, send):
+            hits.append(1)
+
+        sent = []
+
+        async def send(msg):
+            sent.append(msg)
+
+        async def receive():
+            return {"type": "http.request"}
+
+        app = _require_bearer(inner, "s3cret")
+        asyncio.run(app({"type": "http", "headers": []}, receive, send))
+        self.assertEqual(sent[0]["status"], 401)
+        asyncio.run(app({"type": "http", "headers": [(b"authorization", b"Bearer s3cret")]}, receive, send))
+        self.assertEqual(hits, [1])

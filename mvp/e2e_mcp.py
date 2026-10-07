@@ -79,7 +79,11 @@ async def run(base: str, watch: bool) -> dict[str, Any]:
 
     fails: list[str] = []
     out: dict[str, Any] = {"base": base}
-    async with streamablehttp_client(f"{base.rstrip('/')}/mcp") as (read, write, _):
+    import os
+
+    tok = (os.environ.get("MCP_CLIENT_TOKEN") or os.environ.get("MVP_MCP_TOKEN") or "").strip()
+    headers = {"Authorization": f"Bearer {tok}"} if tok else None
+    async with streamablehttp_client(f"{base.rstrip('/')}/mcp", headers=headers) as (read, write, _):
         async with ClientSession(read, write) as mcp:
             await mcp.initialize()
             tools = {t.name for t in (await mcp.list_tools()).tools}

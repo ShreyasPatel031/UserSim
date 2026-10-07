@@ -618,13 +618,53 @@ def usersim_simulate_user(session_id: str, persona: str, task: str) -> str:
 _STACK: AsyncExitStack | None = None
 
 
+def _client_token() -> str:
+    """Bearer token clients must send on /mcp. MVP_MCP_TOKEN, or the file at MVP_MCP_TOKEN_FILE. Empty = open."""
+    tok = (os.environ.get("MVP_MCP_TOKEN") or "").strip()
+    path = (os.environ.get("MVP_MCP_TOKEN_FILE") or "").strip()
+    if not tok and path:
+        try:
+            with open(path) as fh:
+                tok = fh.read().strip()
+        except OSError:
+            raise RuntimeError(f"MVP_MCP_TOKEN_FILE set but unreadable: {path}") from None
+    return tok
+
+
+def _require_bearer(endpoint: Any, token: str) -> Any:
+    """ASGI wrapper: 401 unless 'Authorization: Bearer <token>' matches (constant-time)."""
+    import hmac
+
+    from starlette.responses import JSONResponse
+
+    class Guarded:  # a class instance, so Starlette's Route treats it as a raw ASGI app
+        async def __call__(self, scope: Any, receive: Any, send: Any) -> None:
+            await guarded(scope, receive, send)
+
+    async def guarded(scope: Any, receive: Any, send: Any) -> None:
+        if scope.get("type") == "http":
+            headers = {k.decode().lower(): v.decode() for k, v in scope.get("headers") or []}
+            got = headers.get("authorization", "")
+            if not (got.startswith("Bearer ") and hmac.compare_digest(got[7:].strip(), token)):
+                await JSONResponse({"error": "missing or wrong bearer token"}, status_code=401,
+                                   headers={"WWW-Authenticate": "Bearer"})(scope, receive, send)
+                return
+        await endpoint(scope, receive, send)
+
+    return Guarded()
+
+
 def mount(app: Any) -> None:
     """Serve POST/GET /mcp from the FastAPI app and run the MCP session manager with it."""
     from starlette.routing import Route
 
     inner = mcp.streamable_http_app()
     route = next(r for r in inner.routes if getattr(r, "path", "") == "/mcp")
-    app.router.routes.insert(0, Route("/mcp", endpoint=route.endpoint, methods=["GET", "POST", "DELETE"]))
+    endpoint = route.endpoint
+    token = _client_token()
+    if token:
+        endpoint = _require_bearer(endpoint, token)
+    app.router.routes.insert(0, Route("/mcp", endpoint=endpoint, methods=["GET", "POST", "DELETE"]))
 
     @app.on_event("startup")
     async def _start_mcp() -> None:
