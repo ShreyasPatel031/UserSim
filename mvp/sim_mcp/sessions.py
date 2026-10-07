@@ -579,7 +579,7 @@ def _follow_new_tab(sim: SimSession) -> None:
 # ---------------------------------------------------------------- actions
 
 ACTION_TYPES = ("click", "double_click", "right_click", "hover", "type", "key", "scroll", "back", "wait", "navigate",
-                "press_and_hold", "drag", "triple_click", "select")
+                "press_and_hold", "drag", "triple_click", "select", "reload")
 
 
 def _xy(action: dict[str, Any]) -> tuple[int, int]:
@@ -690,6 +690,8 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             await page.mouse.click(x, y)
             await asyncio.sleep(0.4)
             await page.get_by_text(str(action["option"]), exact=False).first.click(timeout=5000)
+    elif kind == "reload":
+        await page.reload(wait_until="domcontentloaded", timeout=20000)
     elif kind == "triple_click":
         x, y = _xy(action)
         await page.mouse.click(x, y, click_count=3)
@@ -856,6 +858,7 @@ _FIELDS_JS = """() => {
     const row = {kind, label: label.trim().slice(0, 60), x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2)};
     if (tag === 'input' && !['checkbox','radio','submit','button'].includes(el.type)) row.filled = !!el.value;
     if (el.type === 'checkbox' || el.type === 'radio') row.checked = el.checked;
+    if (el.disabled || el.getAttribute('aria-disabled') === 'true' || el.getAttribute('aria-busy') === 'true') row.disabled = true;
     out.push(row);
     if (out.length >= 40) break;
   }

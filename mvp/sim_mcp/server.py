@@ -63,6 +63,8 @@ Rules:
 - Need an account? Call usersim_signup_identity for a fresh email alias + password and sign up with EMAIL only (never Google/GitHub).
   Then usersim_wait_for_verification_code or usersim_wait_for_verification_link (+ usersim_open_verification_link). Captcha in the way: solve it like a person (click the checkbox, drag the slider, press_and_hold), or call usersim_solve_captcha.
   If verifying sends you to a login page, sign in with the SAME email and password from usersim_signup_identity; that is still your new account.
+  If the app still says "verify your email" after you opened the link, reload the page (or sign out and sign in again) so it picks up the verified state.
+  After clicking a submit button, wait for it to finish (a spinner / disabled button in `fields`) instead of clicking again; double submits cause errors.
   Verification mail can take a few minutes: call the wait tool again (or use the site's "resend") before giving up.
 - Finish as soon as the task is done; do not spend remaining steps.
 - Limits: {max_steps} steps, {budget_min} minutes. The server enforces them.
@@ -238,7 +240,7 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
       {"type":"hover","x":..,"y":..} · {"type":"type","text":"...","x":..,"y":..,"submit":false} (clicks the field at x,y, clears it, types; omit x,y to type into the focused field)
     Each observation lists visible `fields` (kind, label, exact x,y, filled/checked): use those coordinates for form fields.
       {"type":"key","keys":"Enter"|"Tab"|"Escape"|"Control+A"} · {"type":"scroll","dy":600,"x":..,"y":..} (dy>0 = down)
-      {"type":"back"} · {"type":"wait","ms":1000} · {"type":"navigate","url":"..."} (same site only)
+      {"type":"back"} · {"type":"reload"} · {"type":"wait","ms":1000} · {"type":"navigate","url":"..."} (same site only)
       {"type":"select","x":..,"y":..,"option":"visible option text"} (dropdowns, native or custom)
       {"type":"press_and_hold","x":..,"y":..,"ms":4000} (press-and-hold human checks)
       {"type":"drag","x":..,"y":..,"to_x":..,"to_y":..} (slider / puzzle captchas)
