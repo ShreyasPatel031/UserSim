@@ -419,10 +419,13 @@ def cells_of(study: Any) -> list[dict[str, Any]]:
 def _create_bb(study_id: str) -> Any:
     from capability.browserbase_client import create_session, study_session_owner
 
+    # Same Browserbase flags as the website's signup sessions (browser_agent._product_session_call_kwargs):
+    # residential proxies + Browserbase's built-in captcha solving. create_session walks down the ladder.
+    on = os.environ.get("MVP_MCP_BB_PROXIES", "1").lower() not in {"0", "false", "no"}
     return create_session(
-        proxies=False,
+        proxies=on,
         keep_alive=False,
-        solve_captchas=False,
+        solve_captchas=on,
         advanced_stealth=False,
         owner=study_session_owner(),
         study_id=study_id,
