@@ -8,6 +8,7 @@ the website's live page, report, and e2e2 gates read it unchanged.
 from __future__ import annotations
 
 import asyncio
+import re
 import io
 import ipaddress
 import os
@@ -628,6 +629,15 @@ def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
             raise SessionError("type needs non-empty 'text'")
         if len(action["text"]) > 2000:
             raise SessionError("type text is limited to 2000 characters")
+        from mvp.signup_tools import inbox_allowed
+
+        for addr in re.findall(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", action["text"]):
+            if not inbox_allowed(addr):
+                raise SessionError(
+                    "refused: only the email from usersim_signup_identity may be typed "
+                    "(a made-up or third-party address creates an account nobody can verify). "
+                    "Call usersim_signup_identity and type its email."
+                )
     elif kind == "key":
         keys = str(action.get("keys") or "")
         if not keys or len(keys) > 40:

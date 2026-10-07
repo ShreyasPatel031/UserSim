@@ -297,3 +297,15 @@ class BearerTests(unittest.TestCase):
         self.assertEqual(sent[0]["status"], 401)
         asyncio.run(app({"type": "http", "headers": [(b"authorization", b"Bearer s3cret")]}, receive, send))
         self.assertEqual(hits, [1])
+
+
+class TypeEmailGuardTests(unittest.TestCase):
+    def test_made_up_email_refused_signup_inbox_ok(self):
+        import os
+        from mvp.sim_mcp.sessions import SessionError, validate_action
+
+        os.environ.setdefault("MVP_SIGNUP_ALLOWED_LOCAL", "usersimsignups")
+        with self.assertRaises(SessionError):
+            validate_action({"type": "type", "text": "ben.podcaster@example.com"}, "https://example.org")
+        validate_action({"type": "type", "text": "usersim.signups+x1@gmail.com"}, "https://example.org")
+        validate_action({"type": "type", "text": "hello world"}, "https://example.org")
