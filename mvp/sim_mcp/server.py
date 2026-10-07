@@ -464,6 +464,29 @@ async def usersim_solve_captcha(session_id: str) -> list[Any] | str:
 
         async with sim.lock:
             S._check_open(sim)
+            calls = sim.row.setdefault("captcha_calls", {})
+            calls[sim.page.url] = int(calls.get(sim.page.url) or 0) + 1
+            if calls[sim.page.url] > 3:
+                obs = await S.record_step(sim, kind="captcha", action_text="captcha attempt (refused: repeated)",
+                                          args={}, thought="I try to get past the captcha again.", error="")
+                return _obs_content(sim, obs, {"captcha": {"note": "already tried 3 times on this page; calling again will not "
+                                               "help. Wait, go back and retry the flow once, or finish with outcome 'blocked'."}})
+            title = ""
+            try:
+                title = (await sim.page.title()) or ""
+            except Exception:  # noqa: BLE001
+                pass
+            if "just a moment" in title.lower() or "attention required" in title.lower():
+                # Cloudflare interstitial: it verifies on its own; clicking mid-"Verifying..." restarts it. Wait first.
+                import asyncio as _a0
+
+                for _ in range(20):
+                    await _a0.sleep(1.5)
+                    try:
+                        if "just a moment" not in ((await sim.page.title()) or "").lower():
+                            break
+                    except Exception:  # noqa: BLE001
+                        break
             info = await cap.detect_sitekey(sim.page)
             result: dict[str, Any] = {"detected": info or None}
             state = await S.captcha_state(sim.page) or {}
