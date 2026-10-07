@@ -25,11 +25,29 @@ from typing import Any
 
 _URL_RE = re.compile(r"https?://[^\s<>\"')\]]+", re.I)
 _SKIP_LINK = (
-    "unsubscribe", "privacy", "terms", "help", "support", "facebook.com", "twitter.com",
-    "x.com/", "linkedin.com", "instagram.com", "youtube.com", "apps.apple.com",
-    "play.google.com", "/legal", "preferences", "cdn.", ".png", ".jpg", ".gif", "mailto:",
-    "tiktok.com", "status.", "/blog", "careers",
+    "unsubscribe", "privacy", "terms", "help", "support",
+    "/legal", "preferences", ".png", ".jpg", ".gif", "mailto:", "/blog", "careers",
 )
+# Matched against the link's host only: as substrings they also hit real product links
+# ("x.com/" is inside "sendfox.com/...", which dropped SendFox's verify link).
+_SKIP_HOSTS = (
+    "facebook.com", "twitter.com", "x.com", "linkedin.com", "instagram.com", "youtube.com",
+    "apps.apple.com", "play.google.com", "tiktok.com",
+)
+_SKIP_HOST_PREFIX = ("cdn.", "status.")
+
+
+def _skip_link(url: str) -> bool:
+    from urllib.parse import urlsplit
+
+    low = url.lower()
+    try:
+        host = (urlsplit(low).hostname or "").removeprefix("www.")
+    except ValueError:
+        return True
+    if any(host == d or host.endswith("." + d) for d in _SKIP_HOSTS) or host.startswith(_SKIP_HOST_PREFIX):
+        return True
+    return any(s in low for s in _SKIP_LINK)
 _GOOD_LINK = ("verify", "confirm", "activate", "magic", "token", "login", "signin", "sign-in",
               "auth", "invite", "validate", "email", "onboard", "code", "welcome", "callback")
 
@@ -66,7 +84,7 @@ def rank_links(links: list[str], host: str) -> list[str]:
     for idx, url in enumerate(links):
         clean = url.rstrip(").,;\"'>]")
         low = clean.lower()
-        if clean in seen or any(s in low for s in _SKIP_LINK):
+        if clean in seen or _skip_link(clean):
             continue
         seen.add(clean)
         score = 0

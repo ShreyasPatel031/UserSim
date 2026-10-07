@@ -309,3 +309,15 @@ class TypeEmailGuardTests(unittest.TestCase):
             validate_action({"type": "type", "text": "ben.podcaster@example.com"}, "https://example.org")
         validate_action({"type": "type", "text": "usersim.signups+x1@gmail.com"}, "https://example.org")
         validate_action({"type": "type", "text": "hello world"}, "https://example.org")
+
+
+class RankLinksTests(unittest.TestCase):
+    def test_host_ending_in_x_keeps_verify_link(self):
+        from mvp.signup_inbox import rank_links
+
+        links = ["https://sendfox.com", "https://sendfox.com/account/verify-email/abc123def456",
+                 "https://x.com/sendfox", "https://www.facebook.com/sendfox", "https://cdn.sendfox.com/logo.png"]
+        ranked = rank_links(links, "sendfox.com")
+        self.assertEqual(ranked[0], "https://sendfox.com/account/verify-email/abc123def456")
+        self.assertNotIn("https://x.com/sendfox", ranked)
+        self.assertNotIn("https://www.facebook.com/sendfox", ranked)
