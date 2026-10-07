@@ -1461,7 +1461,7 @@ Signed in = app chrome such as an account menu / avatar / the account email in t
 switcher, app navigation, or an onboarding / setup screen inside the app (create a project, install a tracking snippet,
 company details, invite teammates, choose a plan inside the app).
 Not signed in = a marketing / landing page, a login or signup form, a "check your inbox / verify your email" screen,
-an error page, a blank or loading page.
+an "account under review / pending approval / suspended / blocked" screen, an error page, a blank or loading page.
 
 Return JSON only: {{"signed_in": true/false, "evidence": "the visible element(s) that decided it"}}
 """
