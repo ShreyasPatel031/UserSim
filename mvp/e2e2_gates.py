@@ -1409,10 +1409,13 @@ FAIL goal_reached=false when:
 - The agent only scrolled or hovered the page it opened on
 - You cannot tell the goal was reached
 
+signed_in_app_page = true when the screenshot shows the product's app while signed in (app chrome, account menu/avatar, workspace, onboarding inside the app), false for marketing pages, login/signup forms, "check your inbox" screens or errors.
+
 Return JSON only:
 {{
   "goal_reached": true/false,
   "still_on_opening_screen": true/false,
+  "signed_in_app_page": true/false,
   "reason": "one short sentence"
 }}
 """
@@ -1425,7 +1428,10 @@ Return JSON only:
             }
         )
     result = gemini_vision_json(prompt, png)
-    return coerce_verdict(result)
+    out = coerce_verdict(result)
+    if isinstance(result, dict) and "signed_in_app_page" in result:
+        out["signed_in_app_page"] = _as_bool(result.get("signed_in_app_page"))
+    return out
 
 
 def _headline_gates(startup: dict[str, Any]) -> list[dict[str, Any]]:

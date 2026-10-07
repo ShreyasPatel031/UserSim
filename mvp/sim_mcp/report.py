@@ -89,6 +89,12 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
         verdict["unverified"] = True
         return verdict, f"error: {reason}"
     verdict = coerce_verdict(raw)
+    signed_in = isinstance(raw, dict) and bool(raw.get("signed_in_app_page"))
+    verdict["signed_in_app_page"] = signed_in
+    if not verdict["goal_reached"] and signed_in and row.get("signup_email") and signup_verified(row):
+        # Signup goal: the server saw the verification mail used, and the judge sees a signed-in app page.
+        verdict["goal_reached"] = True
+        verdict["reason"] = "Signed-in app page after server-observed email verification. Judge note: " + verdict["reason"]
     verdict["checked_at_ts"] = time.time()
     return verdict, "ok"
 
