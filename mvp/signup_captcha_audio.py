@@ -48,15 +48,37 @@ async def solve_recaptcha_audio(page: Any, tries: int = 3) -> dict[str, Any]:
     anchor = _frame(page, "recaptcha/api2/anchor") or _frame(page, "recaptcha/enterprise/anchor")
     if anchor is None:
         return {"ok": False, "method": "audio", "detail": "no recaptcha anchor frame"}
-    try:
-        await anchor.click("#recaptcha-anchor", timeout=5000)
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "method": "audio", "detail": f"anchor click: {type(exc).__name__}"}
-    await page.wait_for_timeout(2500)
+
+    def _open_bframe() -> Any:
+        return _frame(page, "recaptcha/api2/bframe") or _frame(page, "recaptcha/enterprise/bframe")
+
+    async def _challenge_open() -> bool:
+        bf = _open_bframe()
+        if bf is None:
+            return False
+        try:
+            return bool(await bf.locator("#rc-imageselect, #rc-audio, .rc-imageselect-challenge").count())
+        except Exception:
+            return False
+
+    # Invisible / already-open challenge: the anchor is covered or hidden, so go straight to the bframe.
+    if not await _challenge_open():
+        try:
+            await anchor.click("#recaptcha-anchor", timeout=5000)
+        except Exception as exc:  # noqa: BLE001
+            if not await _challenge_open():
+                return {"ok": False, "method": "audio", "detail": f"anchor click: {type(exc).__name__}"}
+        await page.wait_for_timeout(2500)
 
     async def checked() -> bool:
         try:
-            return (await anchor.get_attribute("#recaptcha-anchor", "aria-checked", timeout=2000)) == "true"
+            if (await anchor.get_attribute("#recaptcha-anchor", "aria-checked", timeout=2000)) == "true":
+                return True
+        except Exception:
+            pass
+        try:  # invisible reCAPTCHA: the token lands in the page's response field
+            tok = await page.evaluate("() => [...document.querySelectorAll('textarea[name=\"g-recaptcha-response\"]')].some(t => t.value.length > 20)")
+            return bool(tok)
         except Exception:
             return False
 
