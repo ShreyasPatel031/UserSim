@@ -238,6 +238,7 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
     Each observation lists visible `fields` (kind, label, exact x,y, filled/checked): use those coordinates for form fields.
       {"type":"key","keys":"Enter"|"Tab"|"Escape"|"Control+A"} · {"type":"scroll","dy":600,"x":..,"y":..} (dy>0 = down)
       {"type":"back"} · {"type":"wait","ms":1000} · {"type":"navigate","url":"..."} (same site only)
+      {"type":"select","x":..,"y":..,"option":"visible option text"} (dropdowns, native or custom)
       {"type":"press_and_hold","x":..,"y":..,"ms":4000} (press-and-hold human checks)
       {"type":"drag","x":..,"y":..,"to_x":..,"to_y":..} (slider / puzzle captchas)
     Google / GitHub sign-in is blocked: always use the email signup.

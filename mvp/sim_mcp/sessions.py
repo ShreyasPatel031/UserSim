@@ -579,7 +579,7 @@ def _follow_new_tab(sim: SimSession) -> None:
 # ---------------------------------------------------------------- actions
 
 ACTION_TYPES = ("click", "double_click", "right_click", "hover", "type", "key", "scroll", "back", "wait", "navigate",
-                "press_and_hold", "drag", "triple_click")
+                "press_and_hold", "drag", "triple_click", "select")
 
 
 def _xy(action: dict[str, Any]) -> tuple[int, int]:
@@ -640,6 +640,10 @@ def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
         action.setdefault("x", VIEWPORT["width"] // 2)
         action.setdefault("y", VIEWPORT["height"] // 2)
         _xy(action)
+    elif kind == "select":
+        _xy(action)
+        if not str(action.get("option") or ""):
+            raise SessionError("select needs x, y of the dropdown and 'option' (visible text)")
     elif kind == "press_and_hold":
         _xy(action)
         action["ms"] = max(500, min(int(action.get("ms") or 4000), 15000))
@@ -675,6 +679,17 @@ async def _execute(page: Any, action: dict[str, Any]) -> None:
             button="right" if kind == "right_click" else "left",
             click_count=2 if kind == "double_click" else 1,
         )
+    elif kind == "select":
+        x, y = _xy(action)
+        handle = await page.evaluate_handle("([x, y]) => document.elementFromPoint(x, y)", [x, y])
+        el = handle.as_element()
+        tag = (await el.evaluate("e => e.tagName")) if el else ""
+        if tag == "SELECT":
+            await el.select_option(label=str(action["option"]))
+        else:  # custom dropdown: open it, then click the option text
+            await page.mouse.click(x, y)
+            await asyncio.sleep(0.4)
+            await page.get_by_text(str(action["option"]), exact=False).first.click(timeout=5000)
     elif kind == "triple_click":
         x, y = _xy(action)
         await page.mouse.click(x, y, click_count=3)
