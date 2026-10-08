@@ -45,11 +45,13 @@ def S(q, p):
 
 def loo_priors(sample):
     """Label prior sums over every full-benchmark row (by dataset + normalised answer labels, else dataset + option
-    count). The target's OWN row is subtracted when used (leave-one-out), so its answer never enters its prior."""
+    count). When used for a target, its own row AND every row of the same question whose population may overlap the
+    target's (overlap rule of simbench_structure_xnat.overlaps_target) are subtracted, so no answer to the target
+    question from the target's respondents enters its prior."""
     from collections import defaultdict
     from human_sim.simbench_divided_anatomy import parse_options
     lab, pos = defaultdict(lambda: [0.0, 0]), defaultdict(lambda: [0.0, 0])
-    own = {}
+    own, by_q = {}, defaultdict(list)
     for i, r in sample.iterrows():
         keys = list(r.human_answer)
         tot = sum(r.human_answer.values()) or 1.0
@@ -62,15 +64,25 @@ def loo_priors(sample):
             if key is not None:
                 store[key][0] = store[key][0] + v
                 store[key][1] += 1
-        own[i] = (kl, kp, v)
+        cell = A._cell_key(r)
+        own[i] = (kl, kp, v, {"country": cell[1], "split": "Pop" if not cell[2] else "Grouped", "cell": cell})
+        by_q[(r.dataset_name, A._stem(r.input_template))].append(i)
+    for ix in by_q.values():
+        for i in ix:
+            own[i] = own[i] + (ix,)
     return lab, pos, own
 
 
 def prior_loo(i, lab, pos, own):
-    kl, kp, v = own[i]
-    for key, store in ((kl, lab), (kp, pos)):
-        if key is not None and store[key][1] - 1 >= 5:
-            return (store[key][0] - v) / (store[key][1] - 1)
+    from human_sim import simbench_structure_xnat as XN
+    kl, kp, v, t, same_q = own[i]
+    excl = [j for j in same_q if j == i or XN.overlaps_target(t, own[j][3]["cell"])]
+    for key, store, slot in ((kl, lab, 0), (kp, pos, 1)):
+        if key is None:
+            continue
+        drop = [own[j][2] for j in excl if own[j][slot] == key]
+        if store[key][1] - len(drop) >= 5:
+            return (store[key][0] - np.sum(drop, axis=0)) / (store[key][1] - len(drop))
     return None
 
 
