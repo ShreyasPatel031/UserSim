@@ -257,11 +257,11 @@ class GmailVariantsAndGrace(unittest.TestCase):
 
         from mvp.email_codes import _alias_match
 
-        with mock.patch.dict(os.environ, {"GMAIL_USER": "usersimsignups@gmail.com"}):
-            self.assertTrue(_alias_match("u.sersim.signups+zo1a2b3c@gmail.com", "u.sersim.signups+zo1a2b3c@gmail.com"))
-            self.assertFalse(_alias_match("usersimsignups+n8n99@gmail.com", "u.sersim.signups+zo1a2b3c@gmail.com"))
-            self.assertFalse(_alias_match("usersimsignups@gmail.com", "u.sersimsignups@gmail.com"))
-            self.assertTrue(_alias_match("u.sersimsignups@gmail.com", "u.sersimsignups@gmail.com"))
+        with mock.patch.dict(os.environ, {"GMAIL_USER": "testinbox@gmail.com"}):
+            self.assertTrue(_alias_match("t.estin.box+zo1a2b3c@gmail.com", "t.estin.box+zo1a2b3c@gmail.com"))
+            self.assertFalse(_alias_match("testinbox+n8n99@gmail.com", "t.estin.box+zo1a2b3c@gmail.com"))
+            self.assertFalse(_alias_match("testinbox@gmail.com", "t.estinbox@gmail.com"))
+            self.assertTrue(_alias_match("t.estinbox@gmail.com", "t.estinbox@gmail.com"))
 
     def test_captcha_grace_extends_deadline_once(self) -> None:
         import time

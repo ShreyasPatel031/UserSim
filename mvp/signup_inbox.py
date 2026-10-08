@@ -4,7 +4,7 @@ Each signup gets a never-reused address and a way to read the verification
 code or magic link sent to it.
 
 The only backend is ``gmail``: a Gmail plus-alias of GMAIL_USER with a random
-suffix per signup (``usersim.signups+notion3fa9c1@gmail.com``), read over IMAP with
+suffix per signup (``usersim.signups+notion<6 hex>@gmail.com``), read over IMAP with
 GMAIL_APP_PASSWORD (same scheme as ``mvp.identity`` / ``mvp.email_codes``).
 
 Throwaway inboxes (mail.tm, mail.gw, Guerrilla Mail) are not used: most
@@ -305,7 +305,7 @@ def _host_list(name: str) -> set[str]:
 def fresh_gmail_address(username: str, host: str, tag: str, *, dotted: bool = False) -> str:
     """A never-reused address that still lands in ``username``'s Gmail inbox.
 
-    ``usersim.signups+zo3fa9c1@gmail.com`` alone was not enough: zo.computer treats
+    ``usersim.signups+zo<6 hex>@gmail.com`` alone was not enough: zo.computer treats
     every plus-alias as one address and throttled its mails (study 390909cf got
     2 mails for 18 signups). Each signup now also gets its own dot placement
     (``shr.eya.shfs+zo3fa9c1@gmail.com``) that this host has not seen before,

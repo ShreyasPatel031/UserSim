@@ -192,7 +192,7 @@ class IdentityLoopTests(unittest.TestCase):
     def test_hint_after_switching_to_no_plus_says_retype(self):
         from mvp.sim_mcp import server
 
-        content = server._obs_content(self._sim("usersimsig.nups@gmail.com"), self._obs())
+        content = server._obs_content(self._sim("testin.box@gmail.com"), self._obs())
         text = str(content)
         self.assertIn("already have the no-plus address", text)
         self.assertNotIn("call usersim_signup_identity with no_plus=true", text)
@@ -214,12 +214,12 @@ class IdentityLoopTests(unittest.TestCase):
 
         from mvp.sim_mcp import server
 
-        sim = self._sim("usersimsig.nups@gmail.com")
+        sim = self._sim("testin.box@gmail.com")
         with mock.patch.object(server.S, "get_session", lambda sid: sim):
             outs = [json.loads(asyncio.run(server.usersim_signup_identity("s1", no_plus=True))) for _ in range(3)]
         self.assertIn("do not call", outs[0]["next"])
         self.assertIn("error", outs[2])
-        self.assertEqual(outs[2]["email"], "usersimsig.nups@gmail.com")
+        self.assertEqual(outs[2]["email"], "testin.box@gmail.com")
 
 
 class SettleFinalTests(unittest.TestCase):

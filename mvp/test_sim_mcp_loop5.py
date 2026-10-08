@@ -11,6 +11,13 @@ from unittest import mock
 from PIL import Image, ImageDraw
 
 
+def fake_password() -> str:
+    """A throwaway test password made at runtime (TEST-PASSWORD-NOT-REAL-<random>)."""
+    import secrets
+
+    return "TEST-PASSWORD-NOT-REAL-" + secrets.token_urlsafe(12)
+
+
 def _png(im: Image.Image) -> bytes:
     out = io.BytesIO()
     im.save(out, format="PNG")
@@ -189,12 +196,13 @@ class FrameAndSecretTests(unittest.TestCase):
     def test_password_masked_in_trace_and_observation(self):
         from mvp.sim_mcp.sessions import SimSession, describe_action, mask_secrets, scrub
 
+        pw = fake_password()  # generated at runtime: never paste a real run's password into a test
         sim = SimSession(id="t", study=None, product_url="https://x.io", task="", persona="")
-        sim.identity = {"password": "Kl0NC4JWTF5er8!58Aa"}
-        a = mask_secrets(sim, {"type": "type", "text": "Kl0NC4JWTF5er8!58Aa", "x": 1, "y": 2})
-        self.assertNotIn("Kl0NC4", describe_action(a))
-        obs = scrub(sim, {"fields": [{"kind": "password", "label": "Kl0NC4JWTF5er8!58Aa"}], "png": b"\x89PNG"})
-        self.assertNotIn("Kl0NC4", str(obs["fields"]))
+        sim.identity = {"password": pw}
+        a = mask_secrets(sim, {"type": "type", "text": pw, "x": 1, "y": 2})
+        self.assertNotIn(pw, describe_action(a))
+        obs = scrub(sim, {"fields": [{"kind": "password", "label": pw}], "png": b"\x89PNG"})
+        self.assertNotIn(pw, str(obs["fields"]))
         self.assertEqual(obs["png"], b"\x89PNG")
 
     def test_clear_cookies_is_a_valid_action(self):
@@ -270,14 +278,16 @@ class BrowserTests(unittest.TestCase):
     def test_fields_mask_password_list_terms_checkbox_and_errors(self):
         from mvp.sim_mcp.sessions import _ERRORS_JS, _FIELDS_JS
 
+        pw = fake_password()
+
         async def fn(page):
             await page.goto("http://usersim.test/")
-            await page.fill("#p", "SuperSecret!99Aa")
+            await page.fill("#p", pw)
             await asyncio.sleep(0.1)
             return await page.evaluate(_FIELDS_JS), await page.evaluate(_ERRORS_JS)
 
         fields, errors = self._run(fn)
-        self.assertNotIn("SuperSecret", str(fields))
+        self.assertNotIn(pw, str(fields))
         boxes = [f for f in fields if f["kind"] == "checkbox"]
         self.assertTrue(boxes and "Terms" in boxes[0]["label"], fields)
         self.assertIn("Email aliases not allowed", errors)
