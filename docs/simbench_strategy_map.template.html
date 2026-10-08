@@ -192,10 +192,10 @@ footer { font-size: 13px; color: var(--muted); display: flex; flex-direction: co
 </section>
 
 <section id="climb">
-  <div class="head"><div class="eyebrow">What helped, in order</div><h2>From 41.5 to <span id="now-s2"></span> in fourteen steps</h2>
-  <p>Each bar spans the points one step added to the full-benchmark score. One idea, a two-way decomposition from other groups and countries, accounts for 8.7 of the 21.4 points. Eight tuning rounds on top added 2.9.</p></div>
+  <div class="head"><div class="eyebrow">What helped, in order</div><h2>From 41.5 to <span id="now-s2"></span> in fifteen steps</h2>
+  <p>Each bar spans the points one step added to the full-benchmark score. One idea, a two-way decomposition from other groups and countries, accounts for 8.7 of the <span id="tot-gain"></span> points. Fixing a leak in the label prior cost 0.12, and eight tuning rounds on top added <span id="tune-gain"></span>.</p></div>
   <div class="card">
-    <div class="legend" style="margin-bottom:12px"><span><i style="background:var(--gray)"></i>Starting model</span><span><i style="background:var(--blue)"></i>New evidence or model</span><span><i style="background:var(--blue-lt)"></i>Cross-validated tuning round</span></div>
+    <div class="legend" style="margin-bottom:12px"><span><i style="background:var(--gray)"></i>Starting model</span><span><i style="background:var(--blue)"></i>New evidence or model</span><span><i style="background:var(--blue-lt)"></i>Cross-validated tuning round</span><span><i style="background:var(--orange)"></i>Correction</span></div>
     <div class="axis"><span></span><div class="ticks" id="ax-climb"></div><span></span></div>
     <div class="rows" id="climb-rows"></div>
     <p class="note" style="margin-top:12px">Axis starts at 0, so the late rounds look small because they are small. Tuning rounds choose settings on four folds and score the fifth; a change is kept only if its 95% interval sits above zero.</p>
@@ -269,6 +269,8 @@ document.addEventListener('focusout', () => { tip.style.opacity = 0; });
 
 // header
 $('#now-s').textContent = f1(D.tuned); $('#now-s2').textContent = f1(D.tuned);
+const fixStep = D.steps.find((s) => s.kind === 'fix');
+$('#tot-gain').textContent = f1(D.tuned - D.plain); $('#tune-gain').textContent = (D.tuned - (fixStep ? fixStep.score : D.steps[5].score)).toFixed(1);
 const kp = [
   ['hero', f1(D.tuned), 'full-benchmark score now'],
   ['', f1(D.plain), 'plain model, same questions'],
@@ -312,17 +314,20 @@ const ax = $('#ax-climb'); [0, 10, 20, 30, 40, 50, 60].forEach((v) => { const s 
 const cr = $('#climb-rows'); let prev = 0;
 D.steps.forEach((s, i) => {
   if (i === 1) cr.append(mk('div', 'group-h', 'New evidence and models'));
+  if (s.kind === 'fix') cr.append(mk('div', 'group-h', 'Correction'));
   if (s.kind === 'tune' && D.steps[i - 1].kind !== 'tune') cr.append(mk('div', 'group-h', 'Cross-validated tuning rounds'));
   const r = mk('div', 'row');
   r.append(mk('div', 'lab', `${s.name}<small>${s.detail}</small>`));
   const p = mk('div', 'plot'); p.style.setProperty('--tick', (10 / CAP * 100) + '%');
   p.style.backgroundSize = (10 / CAP * 100) + '% 100%';
   const b = mk('div', 'bar' + (i === 0 ? ' cap' : ''));
-  const from = i === 0 ? 0 : prev; b.style.left = wp(from) + '%'; b.style.width = Math.max(wp(s.score - from), 0.3) + '%';
-  b.style.background = s.kind === 'start' ? 'var(--gray)' : s.kind === 'tune' ? 'var(--blue-lt)' : 'var(--blue)';
-  tipOn(b, i === 0 ? `${s.name}: ${s.score.toFixed(2)}` : `${s.name}: +${(s.score - prev).toFixed(2)} points, to ${s.score.toFixed(2)}`);
+  const from = i === 0 ? 0 : prev, lo = Math.min(from, s.score), hi = Math.max(from, s.score);
+  b.style.left = wp(lo) + '%'; b.style.width = Math.max(wp(hi - lo), 0.3) + '%';
+  b.style.background = s.kind === 'start' ? 'var(--gray)' : s.kind === 'tune' ? 'var(--blue-lt)' : s.kind === 'fix' ? 'var(--orange)' : 'var(--blue)';
+  const dl = s.score - prev, sg = (dl >= 0 ? '+' : '−') + Math.abs(dl).toFixed(2);
+  tipOn(b, i === 0 ? `${s.name}: ${s.score.toFixed(2)}` : `${s.name}: ${sg} points, to ${s.score.toFixed(2)}`);
   p.append(b); r.append(p);
-  r.append(mk('div', 'val', i === 0 ? s.score.toFixed(2) : `+${(s.score - prev).toFixed(2)}<br><span style="color:var(--muted)">${s.score.toFixed(2)}</span>`));
+  r.append(mk('div', 'val', i === 0 ? s.score.toFixed(2) : `${sg}<br><span style="color:var(--muted)">${s.score.toFixed(2)}</span>`));
   cr.append(r); prev = s.score;
 });
 

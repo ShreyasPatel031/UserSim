@@ -38,22 +38,23 @@ STEPS = [
     ("Base rates and cognitive models", "Answer-label prior; prospect theory; Bayesian number game", 57.57, "new"),
     ("Country total and same group abroad", "Decomposition for rows with no sibling groups", 58.29, "new"),
     ("Moral scenario model", "Also: no within-country gap in OpinionQA", 60.01, "new"),
-    ("Round 1", "Same group abroad, country level, GlobalOpinionQA, TISP", 60.47, "tune"),
-    ("Round 2", "Boosted gamble model, Jester, DICES, per-dataset calibration", 61.77, "tune"),
-    ("Round 3", "Decomposition exponent and weight, per survey", 62.03, "tune"),
-    ("Round 4", "Country offsets for single-country sets, richer gamble and number features", 62.57, "tune"),
-    ("Round 5", "Answer-position correction (kept for ChaosNLI only)", 62.62, "tune"),
-    ("Round 6", "Offsets from same-scale related questions", 62.73, "tune"),
-    ("Round 7", "ChaosNLI text cues", 62.80, "tune"),
-    ("Round 8", "Number game: rule versus interval generalization", 62.86, "tune"),
+    ("Label-prior leak fix", "Prior no longer sees the same question from overlapping groups", 59.89, "fix"),
+    ("Round 1", "Same group abroad, country level, GlobalOpinionQA, TISP", 60.30, "tune"),
+    ("Round 2", "Boosted gamble model, Jester, DICES, per-dataset calibration", 61.36, "tune"),
+    ("Round 3", "Decomposition exponent and weight, per survey", 61.62, "tune"),
+    ("Round 4", "Country offsets for single-country sets, richer gamble and number features", 62.16, "tune"),
+    ("Round 5", "Answer-position correction", 62.27, "tune"),
+    ("Round 6", "Offsets from same-scale related questions", 62.32, "tune"),
+    ("Round 7", "ChaosNLI text cues", 62.40, "tune"),
+    ("Round 8", "Number game: rule versus interval generalization", 62.49, "tune"),
 ]
 
 WEAK = [
-    ("LatinoBarometro · same group abroad", 414, "36.2", "Only 14 distinct questions. The best single other country, chosen with hindsight, reaches 46.6. El Salvador alone scores −20.7 because it answers unlike its neighbors, and the strongest evidence, other El Salvador subgroups, is excluded by the overlap rule."),
-    ("ESS · answer-label base rates", 110, "37.2", "42 questions were never asked in another country. For the other 68, a plain average of other countries scores 28.9 against the current 35.7; the best group abroad would reach 74.5, but only with hindsight."),
-    ("ISSP · same group abroad", 185, "40.3", "The best of five offset variants gained +1.4 with an interval touching zero (0.0 to 2.9), so it was not kept."),
+    ("LatinoBarometro · same group abroad", 414, "35.6", "Only 14 distinct questions. The best single other country, chosen with hindsight, reaches 46.6. El Salvador alone scores −20.7 because it answers unlike its neighbors, and the strongest evidence, other El Salvador subgroups, is excluded by the overlap rule."),
+    ("ESS · answer-label base rates", 110, "36.3", "42 questions were never asked in another country. For the other 68, a plain average of other countries scores 28.9 against 35.7 before the leak fix; the best group abroad would reach 74.5, but only with hindsight."),
+    ("ISSP · same group abroad", 185, "38.0", "The best of five offset variants gained +1.4 with an interval touching zero (0.0 to 2.9), so it was not kept."),
     ("GlobalOpinionQA · model", 418, "42.2", "Each question was asked in about three countries. Averages over the ten most similar questions scored 29.0 against the model's 45.2 on the 341 questions they covered."),
-    ("ISSP · answer-label base rates", 479, "42.9", "Base rates and position corrections each moved it by less than 1 point, below the keep bar."),
+    ("ISSP · answer-label base rates", 479, "43.5", "Base rates and position corrections each moved it by less than 1 point, below the keep bar."),
     ("Choices13k · gamble model", 500, "45.5", "Rose from 39.2 over four rounds. Probability weighting variants and context effects between the two gambles are untested."),
 ]
 
@@ -136,10 +137,10 @@ def build():
 
     signals = [
         ("Which source served each question", "Ten sources serve the 13,510 questions. The gamble, number-game and moral models and same-group-abroad each score 10+ points below the plain model on 20–25% of their questions; two-way decomposition does so on 6%.", "Gate or replace the risky sources one bracket at a time, as the tuning rounds did, and spend the next effort where the loss rate is highest."),
-        ("Model–evidence disagreement", "Across 8,335 questions with an evidence source, the model scores 69.6 where the two agree most and 6.8 where they disagree most. The evidence alone holds at 75.1 and 50.3.", "Route by disagreement per source, tested out of sample, and send only the high-disagreement questions to a stronger model run."),
+        ("Model–evidence disagreement", f"Across {int(dis.n.sum()):,} questions with an evidence source, the model scores {dis.plain.iloc[0]:.1f} where the two agree most and {dis.plain.iloc[-1]:.1f} where they disagree most. The evidence alone holds at {dis.tool.iloc[0]:.1f} and {dis.tool.iloc[-1]:.1f}.", "Route by disagreement per source, tested out of sample, and send only the high-disagreement questions to a stronger model run."),
         ("Segments with named members", "Botswana job-seekers on internet use: three clusters, the rural one (37% of respondents) predicts 79% never online, the city one 37% every day. Real answer for the target group: 49% never.", "Check whether clusters line up with real attributes, then use segment membership to pick persona text or retrieved examples."),
         ("Country and group offsets", "One Afrobarometer record lists the country's gap to other countries on related questions: −7 points on one option, −6 on another, mean −6.", "Learn offsets per question family, flag countries whose offsets swing between related questions, and pass stable ones into the prompt."),
-        ("Hindsight bounds", "LatinoBarometro same-group-abroad: the best single other country reaches 46.6 against the current 36.2, and El Salvador scores −20.7 even with that choice.", "Know when to stop tuning. Past a bound, only new data or a changed rule can move the bracket."),
+        ("Hindsight bounds", "LatinoBarometro same-group-abroad: the best single other country reaches 46.6 against 36.2 for our prediction (before the leak fix), and El Salvador's best is −1.9 even with that choice.", "Know when to stop tuning. Past a bound, only new data or a changed rule can move the bracket."),
         ("Readable model weights", f"The Choices13k logistic model puts its largest weights on the {topf[0]} and the {topf[1]}.", "Add the feature humans plausibly use next (probability weighting, regret between gambles) and read whether its weight moves.")]
 
     data = dict(

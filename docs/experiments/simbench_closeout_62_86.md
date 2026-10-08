@@ -1,5 +1,8 @@
 # Close-out: full SimBench 62.86
 
+> **Correction (2026-10-08).** The label prior used in this close-out leaked answers to the same question from populations that overlap the target (country totals and other cuts of the same country), which breaks the overlap rule. Fixed in `d104bc8`. With the fix, the rule scores 59.89 (was 60.01) and the same 8 tuning rounds reach **62.49** (was 62.86). Numbers below are the pre-fix record. Current per-round scores: `results/simbench_ablate/tune_report.json`. Direction and the honest score tiers (55.80 with no target-dataset labels, 59.68 with cross-fitted cognitive models, 62.49 tuned on the benchmark): `docs/plans/usersim_direction_2026-10.md`.
+
+
 Branch `claude/blissful-pascal-0ldgye` at `e2c61d9`. Nothing from the LatinoBarómetro / ESS follow-up was kept, so the full score stays **62.86** on 13,510 questions.
 
 The session that produced this stopped while renaming a scratch script called `dis.py` (that name shadows Python’s `dis` module). The rename never landed, and no visualization script was committed. This note is the record of where that run ended.

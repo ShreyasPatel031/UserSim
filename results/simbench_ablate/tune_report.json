@@ -1,23 +1,23 @@
 {
   "1": {
-    "start": 60.013416654053216,
-    "end": 60.472964039022344,
+    "start": 59.888726204694784,
+    "end": 60.302366539418266,
     "brackets": [
       {
         "bracket": "same-group-abroad decomposition + model",
         "N": 1161,
         "before": 43.8883188080146,
-        "after": 46.74893366784751,
-        "diff": 2.860614859832907,
+        "after": 46.22573242438054,
+        "diff": 2.337413616365943,
         "ci": [
-          1.7,
-          4.0
+          1.3,
+          3.4
         ],
         "kept": true,
         "typical": [
-          "xd",
-          0.35,
-          0.4,
+          "xd0",
+          0.5,
+          0.2,
           1.15
         ]
       },
@@ -25,8 +25,8 @@
         "bracket": "country-level decomposition + model",
         "N": 1283,
         "before": 53.082559717427316,
-        "after": 54.13911633860008,
-        "diff": 1.056556621172761,
+        "after": 54.129164970592555,
+        "diff": 1.0466052531652317,
         "ci": [
           0.5,
           1.6
@@ -138,8 +138,8 @@
     ]
   },
   "2": {
-    "start": 60.472964039022344,
-    "end": 61.77108406194948,
+    "start": 60.302366539418266,
+    "end": 61.36230698192917,
     "brackets": [
       {
         "bracket": "cognitive model (Choices13k)",
@@ -194,8 +194,8 @@
       {
         "bracket": "plain (other datasets) [Jester]",
         "N": 136,
-        "before": 44.36434802368126,
-        "after": 59.83293352135355,
+        "before": 44.364348023681245,
+        "after": 59.83293352135354,
         "diff": 15.468585497672294,
         "ci": [
           13.4,
@@ -227,8 +227,8 @@
         "bracket": "plain (other datasets) [WisdomOfCrowds]",
         "N": 114,
         "before": 58.69155985648528,
-        "after": 61.388410438202826,
-        "diff": 2.6968505817175568,
+        "after": 61.3990652201349,
+        "diff": 2.7075053636496373,
         "ci": [
           0.8,
           4.7
@@ -290,12 +290,12 @@
       {
         "bracket": "plain + label prior (no decomposition) [ESS]",
         "N": 110,
-        "before": 37.22373785799645,
-        "after": 36.96745533319418,
-        "diff": -0.25628252480227676,
+        "before": 36.32200107342996,
+        "after": 34.80365779120824,
+        "diff": -1.5183432822217235,
         "ci": [
-          -2.0,
-          1.3
+          -3.7,
+          0.5
         ],
         "kept": false,
         "typical": [
@@ -306,28 +306,28 @@
       {
         "bracket": "plain + label prior (no decomposition) [ISSP]",
         "N": 479,
-        "before": 42.175301545500716,
-        "after": 42.920946784828864,
-        "diff": 0.7456452393281375,
+        "before": 41.48264953783557,
+        "after": 42.72827184707831,
+        "diff": 1.2456223092427394,
         "ci": [
-          0.1,
-          1.4
+          0.4,
+          2.1
         ],
         "kept": true,
         "typical": [
-          0.4,
+          0.3,
           1.15
         ]
       },
       {
         "bracket": "plain + label prior (no decomposition) [Afrobarometer]",
         "N": 89,
-        "before": 54.57271875055465,
-        "after": 56.46750017387599,
-        "diff": 1.89478142332135,
+        "before": 53.60816631694077,
+        "after": 54.78397245407499,
+        "diff": 1.1758061371342292,
         "ci": [
-          0.0,
-          3.9
+          -0.7,
+          3.2
         ],
         "kept": false,
         "typical": [
@@ -338,44 +338,44 @@
       {
         "bracket": "plain + label prior (no decomposition) [LatinoBarometro]",
         "N": 365,
-        "before": 44.215817250476434,
-        "after": 44.42037075187709,
-        "diff": 0.20455350140065304,
+        "before": 43.63373690428414,
+        "after": 43.481998171491995,
+        "diff": -0.15173873279214348,
         "ci": [
           -0.5,
-          1.0
+          0.2
         ],
         "kept": false,
         "typical": [
-          0.5,
-          1.15
+          0.4,
+          1.0
         ]
       },
       {
         "bracket": "plain + label prior (no decomposition) [OpinionQA]",
         "N": 736,
-        "before": 71.12456300055157,
-        "after": 72.38815056879884,
-        "diff": 1.2635875682472624,
+        "before": 69.8266117506785,
+        "after": 71.19701727384488,
+        "diff": 1.3704055231663839,
         "ci": [
           0.7,
-          1.8
+          2.0
         ],
         "kept": true,
         "typical": [
-          0.4,
-          1.3
+          0.3,
+          1.15
         ]
       },
       {
         "bracket": "plain (no decomposition) [ESS]",
         "N": 181,
         "before": 51.13995687631253,
-        "after": 61.737926616621245,
-        "diff": 10.597969740308718,
+        "after": 59.901024198914826,
+        "diff": 8.761067322602297,
         "ci": [
-          6.1,
-          14.7
+          4.2,
+          13.1
         ],
         "kept": true,
         "typical": [
@@ -387,15 +387,15 @@
         "bracket": "plain (no decomposition) [ISSP]",
         "N": 38,
         "before": 37.109667447960376,
-        "after": 67.0621218811313,
-        "diff": 29.952454433170917,
+        "after": 60.66484877393458,
+        "diff": 23.555181325974203,
         "ci": [
-          17.3,
-          42.0
+          12.5,
+          33.7
         ],
         "kept": true,
         "typical": [
-          0.5,
+          0.4,
           1.75
         ]
       },
@@ -403,11 +403,11 @@
         "bracket": "plain (no decomposition) [Afrobarometer]",
         "N": 206,
         "before": 47.86750162190193,
-        "after": 59.886056238993014,
-        "diff": 12.01855461709109,
+        "after": 56.36434295505848,
+        "diff": 8.496841333156546,
         "ci": [
-          9.3,
-          15.1
+          5.6,
+          11.7
         ],
         "kept": true,
         "typical": [
@@ -419,49 +419,49 @@
         "bracket": "plain (no decomposition) [LatinoBarometro]",
         "N": 85,
         "before": 37.45483087047274,
-        "after": 42.32313353974403,
-        "diff": 4.868302669271294,
+        "after": 34.397221697339226,
+        "diff": -3.057609173133508,
         "ci": [
-          0.3,
-          9.4
+          -6.3,
+          0.3
         ],
-        "kept": true,
+        "kept": false,
         "typical": [
-          0.4,
-          1.75
+          0.3,
+          1.5
         ]
       },
       {
         "bracket": "plain (no decomposition) [OpinionQA]",
         "N": 748,
         "before": 72.16626724527606,
-        "after": 74.99113779302589,
-        "diff": 2.824870547749822,
+        "after": 72.55494336947488,
+        "diff": 0.3886761241988124,
         "ci": [
-          2.1,
-          3.6
+          0.2,
+          0.6
         ],
         "kept": true,
         "typical": [
-          0.4,
-          1.5
+          0.1,
+          1.15
         ]
       }
     ]
   },
   "3": {
-    "start": 61.77108406194948,
-    "end": 62.03023633971119,
+    "start": 61.36230698192917,
+    "end": 61.62145925969088,
     "brackets": [
       {
         "bracket": "same-group-abroad decomposition + model [ESS]",
         "N": 228,
-        "before": 52.97060128095134,
-        "after": 53.56843229918343,
-        "diff": 0.5978310182320776,
+        "before": 53.15747317339549,
+        "after": 52.22853747303278,
+        "diff": -0.9289357003627071,
         "ci": [
-          -0.7,
-          2.0
+          -1.7,
+          -0.2
         ],
         "kept": false,
         "typical": [
@@ -474,63 +474,63 @@
       {
         "bracket": "same-group-abroad decomposition + model [ISSP]",
         "N": 185,
-        "before": 40.27195091828784,
-        "after": 41.368567100462975,
-        "diff": 1.09661618217513,
+        "before": 37.95047042168229,
+        "after": 39.390325767260926,
+        "diff": 1.4398553455786347,
         "ci": [
-          -0.3,
-          2.6
+          -0.8,
+          3.8
         ],
         "kept": false,
         "typical": [
           "xd",
           0.35,
-          0.4,
+          0.2,
           1.15
         ]
       },
       {
         "bracket": "same-group-abroad decomposition + model [Afrobarometer]",
         "N": 334,
-        "before": 59.13780479795742,
-        "after": 60.22262209469331,
-        "diff": 1.084817296735874,
+        "before": 59.27530633053945,
+        "after": 60.3011084159545,
+        "diff": 1.0258020854150476,
         "ci": [
-          -0.3,
-          2.6
+          -0.0,
+          2.2
         ],
         "kept": false,
         "typical": [
           "xd0",
           0.65,
-          0.2,
+          0.0,
           1.15
         ]
       },
       {
         "bracket": "same-group-abroad decomposition + model [LatinoBarometro]",
         "N": 414,
-        "before": 36.22192554085271,
-        "after": 37.23353663157943,
-        "diff": 1.0116110907267266,
+        "before": 35.57821767816483,
+        "after": 35.09959097754851,
+        "diff": -0.4786267006163244,
         "ci": [
-          0.0,
-          1.9
+          -1.1,
+          0.1
         ],
         "kept": false,
         "typical": [
           "xd0",
           0.35,
-          0.4,
+          0.2,
           1.15
         ]
       },
       {
         "bracket": "country-level decomposition + model [ESS]",
         "N": 443,
-        "before": 54.43558943792057,
-        "after": 54.76702880016148,
-        "diff": 0.3314393622409024,
+        "before": 54.43196382049743,
+        "after": 54.76339702806266,
+        "diff": 0.33143320756523165,
         "ci": [
           -0.1,
           0.7
@@ -546,9 +546,9 @@
       {
         "bracket": "country-level decomposition + model [ISSP]",
         "N": 148,
-        "before": 45.59270577305292,
-        "after": 45.081003813803704,
-        "diff": -0.5117019592492246,
+        "before": 45.57302619161774,
+        "after": 45.05422908353606,
+        "diff": -0.5187971080816889,
         "ci": [
           -2.0,
           0.9
@@ -564,9 +564,9 @@
       {
         "bracket": "country-level decomposition + model [Afrobarometer]",
         "N": 460,
-        "before": 62.24178805863778,
-        "after": 62.47666379698027,
-        "diff": 0.2348757383424881,
+        "before": 62.23651959327395,
+        "after": 62.47141452913985,
+        "diff": 0.2348949358659069,
         "ci": [
           -0.3,
           0.8
@@ -582,16 +582,16 @@
       {
         "bracket": "country-level decomposition + model [LatinoBarometro]",
         "N": 232,
-        "before": 42.959384396723635,
-        "after": 43.359022434677556,
-        "diff": 0.3996380379539232,
+        "before": 42.9342749807088,
+        "after": 43.319673350763175,
+        "diff": 0.3853983700543752,
         "ci": [
           -2.0,
           2.7
         ],
         "kept": false,
         "typical": [
-          "xd0",
+          "xd",
           0.65,
           0.2,
           1.15
@@ -781,28 +781,28 @@
       {
         "bracket": "plain + label prior (no decomposition) [ESS]",
         "N": 110,
-        "before": 37.22373785799645,
-        "after": 35.95641572711749,
-        "diff": -1.2673221308789746,
+        "before": 36.32200107342996,
+        "after": 34.482409140414184,
+        "diff": -1.8395919330157817,
         "ci": [
-          -3.3,
-          0.7
+          -3.9,
+          0.2
         ],
         "kept": false,
         "typical": [
-          0.6,
+          0.5,
           1.15
         ]
       },
       {
         "bracket": "plain + label prior (no decomposition) [ISSP]",
         "N": 479,
-        "before": 42.920946784828864,
-        "after": 43.15915755532113,
-        "diff": 0.23821077049226638,
+        "before": 42.72827184707831,
+        "after": 41.79791448207333,
+        "diff": -0.9303573650049839,
         "ci": [
-          -0.1,
-          0.6
+          -1.4,
+          -0.5
         ],
         "kept": false,
         "typical": [
@@ -813,24 +813,24 @@
       {
         "bracket": "plain + label prior (no decomposition) [LatinoBarometro]",
         "N": 365,
-        "before": 44.215817250476434,
-        "after": 44.42037075187709,
-        "diff": 0.20455350140065304,
+        "before": 43.63373690428414,
+        "after": 43.481998171491995,
+        "diff": -0.15173873279214348,
         "ci": [
           -0.5,
-          1.0
+          0.2
         ],
         "kept": false,
         "typical": [
-          0.5,
-          1.15
+          0.4,
+          1.0
         ]
       }
     ]
   },
   "4": {
-    "start": 62.03023633971119,
-    "end": 62.56780012567503,
+    "start": 61.62145925969088,
+    "end": 62.15902304565472,
     "brackets": [
       {
         "bracket": "cognitive model (Choices13k)",
@@ -971,33 +971,33 @@
     ]
   },
   "5": {
-    "start": 62.56780012567503,
-    "end": 62.61963435037237,
+    "start": 62.15902304565472,
+    "end": 62.26942871372688,
     "brackets": [
       {
         "bracket": "same-group-abroad decomposition + model [LatinoBarometro]",
         "N": 414,
-        "before": 36.22192554085271,
-        "after": 36.20306355253297,
-        "diff": -0.01886198831974685,
+        "before": 35.57821767816483,
+        "after": 35.45037695602244,
+        "diff": -0.12784072214239323,
         "ci": [
-          -1.0,
+          -1.2,
           0.9
         ],
         "kept": false,
         "typical": [
-          1.0
+          1.25
         ]
       },
       {
         "bracket": "plain + label prior (no decomposition) [ESS]",
         "N": 110,
-        "before": 37.22373785799645,
-        "after": 38.890519191544605,
-        "diff": 1.6667813335481407,
+        "before": 36.32200107342996,
+        "after": 38.04966325465725,
+        "diff": 1.7276621812272845,
         "ci": [
-          -1.3,
-          4.7
+          -1.2,
+          4.8
         ],
         "kept": false,
         "typical": [
@@ -1007,12 +1007,12 @@
       {
         "bracket": "same-group-abroad decomposition + model [ISSP]",
         "N": 185,
-        "before": 40.27195091828784,
-        "after": 40.208050313712235,
-        "diff": -0.06390060457560834,
+        "before": 37.95047042168229,
+        "after": 37.74214293754411,
+        "diff": -0.20832748413817992,
         "ci": [
-          -1.8,
-          1.7
+          -1.9,
+          1.5
         ],
         "kept": false,
         "typical": [
@@ -1052,29 +1052,29 @@
       {
         "bracket": "plain (no decomposition) [LatinoBarometro]",
         "N": 85,
-        "before": 42.32313353974403,
-        "after": 42.394896472778065,
-        "diff": 0.07176293303402655,
+        "before": 37.45483087047274,
+        "after": 42.23267194522681,
+        "diff": 4.777841074754065,
         "ci": [
-          -2.0,
-          2.2
+          0.3,
+          9.8
         ],
-        "kept": false,
+        "kept": true,
         "typical": [
-          0.75
+          1.25
         ]
       },
       {
         "bracket": "plain + label prior (no decomposition) [ISSP]",
         "N": 479,
-        "before": 42.920946784828864,
-        "after": 43.60207195700525,
-        "diff": 0.6811251721763917,
+        "before": 42.72827184707831,
+        "after": 43.53241320123228,
+        "diff": 0.8041413541539686,
         "ci": [
-          -0.0,
-          1.4
+          0.1,
+          1.5
         ],
-        "kept": false,
+        "kept": true,
         "typical": [
           1.0
         ]
@@ -1082,9 +1082,9 @@
       {
         "bracket": "country-level decomposition + model [LatinoBarometro]",
         "N": 232,
-        "before": 42.959384396723635,
-        "after": 43.0733768320405,
-        "diff": 0.11399243531686379,
+        "before": 42.9342749807088,
+        "after": 43.033625742931996,
+        "diff": 0.09935076222319197,
         "ci": [
           -0.7,
           0.9
@@ -1097,12 +1097,12 @@
       {
         "bracket": "plain + label prior (no decomposition) [LatinoBarometro]",
         "N": 365,
-        "before": 44.215817250476434,
-        "after": 44.45992313512932,
-        "diff": 0.2441058846528928,
+        "before": 43.63373690428414,
+        "after": 43.7946444947988,
+        "diff": 0.16090759051466474,
         "ci": [
-          -0.5,
-          1.0
+          -0.6,
+          0.9
         ],
         "kept": false,
         "typical": [
@@ -1127,9 +1127,9 @@
       {
         "bracket": "country-level decomposition + model [ISSP]",
         "N": 148,
-        "before": 45.59270577305292,
-        "after": 44.45607616535373,
-        "diff": -1.1366296076992064,
+        "before": 45.57302619161774,
+        "after": 44.43609835537798,
+        "diff": -1.1369278362397741,
         "ci": [
           -2.1,
           -0.3
@@ -1142,12 +1142,12 @@
       {
         "bracket": "same-group-abroad decomposition + model [ESS]",
         "N": 228,
-        "before": 52.97060128095134,
-        "after": 53.788543802952425,
-        "diff": 0.8179425220010714,
+        "before": 53.15747317339549,
+        "after": 54.1166825371235,
+        "diff": 0.9592093637280127,
         "ci": [
           -0.4,
-          2.2
+          2.3
         ],
         "kept": false,
         "typical": [
@@ -1157,9 +1157,9 @@
       {
         "bracket": "country-level decomposition + model [ESS]",
         "N": 443,
-        "before": 54.43558943792057,
-        "after": 54.25521725133839,
-        "diff": -0.18037218658218113,
+        "before": 54.43196382049743,
+        "after": 54.25003668252947,
+        "diff": -0.18192713796796853,
         "ci": [
           -0.6,
           0.2
@@ -1172,12 +1172,12 @@
       {
         "bracket": "plain + label prior (no decomposition) [Afrobarometer]",
         "N": 89,
-        "before": 54.57271875055465,
-        "after": 54.64383715429426,
-        "diff": 0.07111840373961155,
+        "before": 53.60816631694077,
+        "after": 53.781740469879836,
+        "diff": 0.17357415293907424,
         "ci": [
           -2.4,
-          2.7
+          2.9
         ],
         "kept": false,
         "typical": [
@@ -1187,27 +1187,27 @@
       {
         "bracket": "plain (no decomposition) [ISSP]",
         "N": 38,
-        "before": 67.0621218811313,
-        "after": 67.14150351648183,
-        "diff": 0.07938163535054886,
+        "before": 60.66484877393458,
+        "after": 59.03281011488677,
+        "diff": -1.632038659047803,
         "ci": [
-          -2.3,
-          2.3
+          -5.1,
+          1.4
         ],
         "kept": false,
         "typical": [
-          0.75
+          1.25
         ]
       },
       {
         "bracket": "plain (no decomposition) [ESS]",
         "N": 181,
-        "before": 61.737926616621245,
-        "after": 63.02580559143098,
-        "diff": 1.2878789748097357,
+        "before": 59.901024198914826,
+        "after": 61.06538055062295,
+        "diff": 1.1643563517081355,
         "ci": [
-          -0.9,
-          3.6
+          -1.0,
+          3.4
         ],
         "kept": false,
         "typical": [
@@ -1217,54 +1217,54 @@
     ]
   },
   "6": {
-    "start": 62.61963435037237,
-    "end": 62.72723266798489,
+    "start": 62.26942871372688,
+    "end": 62.32022377663948,
     "brackets": [
       {
         "bracket": "same-group-abroad decomposition + model [LatinoBarometro]",
         "N": 414,
-        "before": 36.22192554085271,
-        "after": 37.23353663157943,
-        "diff": 1.0116110907267266,
+        "before": 35.57821767816483,
+        "after": 34.75437730103375,
+        "diff": -0.8238403771310852,
         "ci": [
-          0.0,
-          1.9
+          -1.5,
+          -0.2
         ],
         "kept": false,
         "typical": [
           "xd0",
           0.35,
-          0.4,
+          0.2,
           1.15
         ]
       },
       {
         "bracket": "same-group-abroad decomposition + model [ISSP]",
         "N": 185,
-        "before": 40.27195091828784,
-        "after": 41.65242903993631,
-        "diff": 1.380478121648464,
+        "before": 37.95047042168229,
+        "after": 39.40505908448825,
+        "diff": 1.454588662805958,
         "ci": [
-          0.0,
-          2.9
+          -0.3,
+          3.5
         ],
         "kept": false,
         "typical": [
           "xd2",
           0.35,
-          0.4,
+          0.2,
           1.15
         ]
       },
       {
         "bracket": "same-group-abroad decomposition + model [ESS]",
         "N": 228,
-        "before": 52.97060128095134,
-        "after": 53.02846871118676,
-        "diff": 0.057867430235407705,
+        "before": 53.15747317339549,
+        "after": 52.15934460009264,
+        "diff": -0.9981285733028442,
         "ci": [
-          -1.4,
-          1.5
+          -1.9,
+          -0.2
         ],
         "kept": false,
         "typical": [
@@ -1277,30 +1277,30 @@
       {
         "bracket": "same-group-abroad decomposition + model [Afrobarometer]",
         "N": 334,
-        "before": 59.13780479795742,
-        "after": 61.425833137218845,
-        "diff": 2.2880283392614253,
+        "before": 59.27530633053945,
+        "after": 60.28382719860113,
+        "diff": 1.008520868061671,
         "ci": [
-          0.8,
-          3.8
+          -0.4,
+          2.3
         ],
-        "kept": true,
+        "kept": false,
         "typical": [
-          "xd2",
-          0.8,
-          0.2,
+          "xd2h",
+          0.65,
+          0.0,
           1.15
         ]
       },
       {
         "bracket": "country-level decomposition + model [LatinoBarometro]",
         "N": 232,
-        "before": 42.959384396723635,
-        "after": 45.93115942099872,
-        "diff": 2.971775024275082,
+        "before": 42.9342749807088,
+        "after": 45.892211618420724,
+        "diff": 2.9579366377119234,
         "ci": [
           1.2,
-          4.8
+          4.7
         ],
         "kept": true,
         "typical": [
@@ -1313,9 +1313,9 @@
       {
         "bracket": "country-level decomposition + model [ISSP]",
         "N": 148,
-        "before": 45.59270577305292,
-        "after": 44.82582368735321,
-        "diff": -0.7668820856997277,
+        "before": 45.57302619161774,
+        "after": 44.79903601387126,
+        "diff": -0.7739901777464856,
         "ci": [
           -2.3,
           0.6
@@ -1331,9 +1331,9 @@
       {
         "bracket": "country-level decomposition + model [ESS]",
         "N": 443,
-        "before": 54.43558943792057,
-        "after": 54.79733412810502,
-        "diff": 0.36174469018446004,
+        "before": 54.43196382049743,
+        "after": 54.79196274927815,
+        "diff": 0.3599989287807228,
         "ci": [
           -0.4,
           1.1
@@ -1349,9 +1349,9 @@
       {
         "bracket": "country-level decomposition + model [Afrobarometer]",
         "N": 460,
-        "before": 62.24178805863778,
-        "after": 63.02957464786503,
-        "diff": 0.7877865892272543,
+        "before": 62.23651959327395,
+        "after": 63.02514533418599,
+        "diff": 0.7886257409120428,
         "ci": [
           -0.1,
           1.7
@@ -1367,8 +1367,8 @@
     ]
   },
   "7": {
-    "start": 62.72723266798489,
-    "end": 62.80294532111235,
+    "start": 62.32022377663948,
+    "end": 62.395936429766934,
     "brackets": [
       {
         "bracket": "plain (other datasets) [ChaosNLI]",
@@ -1424,8 +1424,8 @@
     ]
   },
   "8": {
-    "start": 62.80294532111235,
-    "end": 62.86494391393778,
+    "start": 62.395936429766934,
+    "end": 62.493219650319126,
     "brackets": [
       {
         "bracket": "cognitive model (NumberGame)",
@@ -1447,12 +1447,12 @@
       {
         "bracket": "plain + label prior (no decomposition) [Afrobarometer]",
         "N": 89,
-        "before": 54.57271875055465,
-        "after": 56.92244192880757,
-        "diff": 2.3497231782529187,
+        "before": 53.60816631694077,
+        "after": 57.18903441078478,
+        "diff": 3.580868093844022,
         "ci": [
-          -1.1,
-          6.0
+          -0.2,
+          7.9
         ],
         "kept": false,
         "typical": [
@@ -1464,97 +1464,97 @@
       {
         "bracket": "plain + label prior (no decomposition) [LatinoBarometro]",
         "N": 365,
-        "before": 44.215817250476434,
-        "after": 44.46154733382362,
-        "diff": 0.24573008334717747,
+        "before": 43.63373690428414,
+        "after": 43.46847476356581,
+        "diff": -0.16526214071833503,
         "ci": [
-          -0.7,
-          1.2
+          -0.9,
+          0.5
         ],
         "kept": false,
         "typical": [
           0.2,
           0.4,
-          1.15
+          1.0
         ]
       },
       {
         "bracket": "plain + label prior (no decomposition) [ESS]",
         "N": 110,
-        "before": 37.22373785799645,
-        "after": 35.63146795988144,
-        "diff": -1.5922698981150172,
+        "before": 36.32200107342996,
+        "after": 34.28964881448073,
+        "diff": -2.03235225894923,
         "ci": [
-          -3.7,
-          0.6
+          -4.1,
+          0.1
         ],
         "kept": false,
         "typical": [
           0.0,
           0.4,
-          1.3
+          1.15
         ]
       },
       {
         "bracket": "plain + label prior (no decomposition) [ISSP]",
         "N": 479,
-        "before": 42.920946784828864,
-        "after": 42.738210685793774,
-        "diff": -0.18273609903508709,
+        "before": 43.53241320123228,
+        "after": 42.08264047853351,
+        "diff": -1.449772722698766,
         "ci": [
-          -0.5,
-          0.2
+          -2.3,
+          -0.6
         ],
         "kept": false,
         "typical": [
-          0.0,
-          0.4,
+          0.2,
+          0.2,
           1.15
         ]
       },
       {
         "bracket": "plain (no decomposition) [Afrobarometer]",
         "N": 206,
-        "before": 59.886056238993014,
-        "after": 59.67024312469768,
-        "diff": -0.2158131142953458,
+        "before": 56.36434295505848,
+        "after": 58.678397909371554,
+        "diff": 2.3140549543130797,
         "ci": [
-          -1.9,
-          1.4
+          0.5,
+          4.1
         ],
-        "kept": false,
+        "kept": true,
         "typical": [
-          0.2,
-          0.4,
+          0.6,
+          0.0,
           1.3
         ]
       },
       {
         "bracket": "plain (no decomposition) [LatinoBarometro]",
         "N": 85,
-        "before": 42.32313353974403,
-        "after": 41.27106555269053,
-        "diff": -1.052067987053512,
+        "before": 42.23267194522681,
+        "after": 38.11837173009677,
+        "diff": -4.114300215130039,
         "ci": [
-          -4.1,
-          2.1
+          -8.4,
+          0.2
         ],
         "kept": false,
         "typical": [
-          0.2,
-          0.2,
-          1.3
+          0.4,
+          0.0,
+          1.15
         ]
       },
       {
         "bracket": "plain (no decomposition) [ESS]",
         "N": 181,
-        "before": 61.737926616621245,
-        "after": 61.97287875806315,
-        "diff": 0.23495214144190832,
+        "before": 59.901024198914826,
+        "after": 60.360381484697434,
+        "diff": 0.45935728578262264,
         "ci": [
           -2.0,
-          2.6
+          3.0
         ],
         "kept": false,
         "typical": [
@@ -1566,17 +1566,17 @@
       {
         "bracket": "plain (no decomposition) [ISSP]",
         "N": 38,
-        "before": 67.0621218811313,
-        "after": 58.33687511983703,
-        "diff": -8.725246761294267,
+        "before": 60.66484877393458,
+        "after": 55.15365670344619,
+        "diff": -5.511192070488389,
         "ci": [
-          -12.1,
-          -5.2
+          -10.4,
+          -0.6
         ],
         "kept": false,
         "typical": [
-          0.0,
-          0.6,
+          0.4,
+          0.2,
           1.3
         ]
       }
