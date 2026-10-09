@@ -123,8 +123,9 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
     if obs.get("captcha"):
         c = obs["captcha"]
         meta["captcha"] = {**c, "hint": "captcha token ready; submit" if c.get("token_ready") else
-                           "invisible captcha: nothing to click or solve, it runs when you submit. If submitting does nothing, "
-                           "look for an empty required field (filled:false) or an error message instead" if c.get("invisible") else
+                           "invisible captcha: it runs when you submit. If you already submitted and the button shows a spinner, "
+                           "do not click submit again (that restarts it): call usersim_solve_captcha, which waits for it. If "
+                           "nothing happens at all, look for an empty required field (filled:false) or an error message" if c.get("invisible") else
                            "a captcha challenge is open on screen: call usersim_solve_captcha (it may take ~20 s), then look at the page" if c.get("challenge_open") else
                            "captcha not passed yet: submitting now will fail silently. Click its checkbox if visible, or call usersim_solve_captcha, then submit"}
     if obs.get("error"):
