@@ -92,6 +92,12 @@ _CODE_NEAR = re.compile(
     r"|enter\s+(?:this\s+)?(?:code\s*)?[^0-9A-Za-z]{0,20}([0-9A-Za-z]{4,8})"
     r")"
 )
+# Letters-only OTPs (Frill: "Your email verification code is: <six letters>").
+# Only after explicit code wording and a colon, so ordinary words never match.
+_LETTER_CODE = re.compile(
+    r"(?i)\b(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in)\s+code\s*(?:is)?\s*:\s*([A-Za-z]{5,8})\b"
+)
+_LETTER_CODE_STOP = {"please", "below", "here", "enter", "valid", "expires", "click", "simply", "required"}
 # Atlassian (and a few others) put alphanumeric OTPs in the subject:
 # "EV7DUU is your verification code".
 _ALPHA_SUBJECT_CODE = re.compile(
@@ -152,6 +158,11 @@ def _find_code(subject: str, body: str) -> str | None:
         for group in match.groups():
             if _ok(group):
                 return group
+
+    # 2b) Letters-only code right after "verification code is:" (Frill).
+    m = _LETTER_CODE.search(f"{subject}\n{body}")
+    if m and m.group(1).lower() not in _LETTER_CODE_STOP:
+        return m.group(1)
 
     # 3) A line that is nothing but the code.
     for line in body.splitlines():

@@ -290,3 +290,21 @@ class EngineVersionTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LetterOnlyCodeTests(unittest.TestCase):
+    """Loop 12 (Frill): the code is six lowercase letters after 'verification code is:'."""
+
+    def test_letters_only_code_after_explicit_wording(self):
+        from mvp.email_codes import _find_code
+        body = "Hey! Your email verification code is: qwzvbk This code will expire in 15 minutes."
+        self.assertEqual(_find_code("Email Verification Code", body), "qwzvbk")
+
+    def test_plain_words_are_not_codes(self):
+        from mvp.email_codes import _find_code
+        self.assertIsNone(_find_code("Welcome", "Your verification code is: below. Thanks for joining"))
+        self.assertIsNone(_find_code("Confirm your account", "Click the button to confirm your email address."))
+
+    def test_digit_codes_still_win(self):
+        from mvp.email_codes import _find_code
+        self.assertEqual(_find_code("Your code", "Your verification code is: 482913"), "482913")
