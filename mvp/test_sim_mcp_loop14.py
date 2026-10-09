@@ -104,3 +104,44 @@ def test_no_wait_without_recaptcha():
     page = _FakePage([None])
     asyncio.run(_await_recaptcha_challenge(page, page.url, budget_s=5))
     assert page.calls == 1
+
+
+async def _active_value(html: str, js_focus: str, xy: tuple[int, int]):
+    from playwright.async_api import async_playwright
+
+    from mvp.sim_mcp.sessions import _ACTIVE_VALUE_JS
+
+    async with async_playwright() as p:
+        kw = {"executable_path": _chrome()} if _chrome() else {}
+        try:
+            b = await p.chromium.launch(headless=True, **kw)
+        except Exception as exc:  # noqa: BLE001
+            pytest.skip(f"no local browser: {exc!r}"[:120])
+        try:
+            page = await b.new_page(viewport={"width": 1280, "height": 800})
+            await page.set_content(html)
+            await page.evaluate(js_focus)
+            return await page.evaluate(_ACTIVE_VALUE_JS, list(xy))
+        finally:
+            await b.close()
+
+
+BOXES = "".join(f'<input id="b{i}" maxlength="1" style="position:absolute;left:{40 + 50 * i}px;top:20px;width:40px">' for i in range(6))
+PLAIN_BOXES = BOXES.replace(' maxlength="1"', "")
+
+
+def test_split_code_boxes_skip_the_wipe_check():
+    pytest.importorskip("playwright.async_api")
+    # focus advanced from box 0 (clicked) to box 5: no wipe check (would retype and garble the code)
+    v = asyncio.run(_active_value(PLAIN_BOXES, "document.getElementById('b0').value='1';document.getElementById('b5').focus()", (60, 30)))
+    assert v is None
+    v = asyncio.run(_active_value(BOXES, "const e=document.getElementById('b0');e.value='1';e.focus()", (60, 30)))
+    assert v is None
+
+
+def test_plain_field_still_checked():
+    pytest.importorskip("playwright.async_api")
+    html = '<input id="e" style="position:absolute;left:40px;top:20px;width:300px">'
+    v = asyncio.run(_active_value(html, "const e=document.getElementById('e');e.value='abc';e.focus()", (100, 30)))
+    assert v == "abc"
+

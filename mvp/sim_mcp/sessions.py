@@ -857,6 +857,12 @@ NAVIGATING_ACTIONS = {"click", "double_click", "key", "select"}
 
 _ACTIVE_VALUE_JS = """([x, y]) => {
   let e = document.activeElement;
+  // Split one-character code boxes (Loop 14 Featurebase): typing auto-advanced focus to another box, so the
+  // focused box holds one character. That is not a wiped field; retyping from the first box garbles the code.
+  const hit = document.elementFromPoint(x, y);
+  const under = hit && hit.closest && hit.closest('input, textarea');
+  if (e && under && e !== under && e.tagName === 'INPUT' && under.tagName === 'INPUT') return null;
+  if (e && e.tagName === 'INPUT' && e.maxLength > 0 && e.maxLength <= 2) return null;
   if (!e || e === document.body || !(('value' in e) || e.isContentEditable)) {
     // a re-render that wiped the field usually also dropped focus: read the field under the click point
     const t = document.elementFromPoint(x, y);
