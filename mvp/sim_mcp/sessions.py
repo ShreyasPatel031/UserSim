@@ -1362,7 +1362,9 @@ async def record_step(
     png = fit_frame(await _screenshot(page, timeout_ms=15000))
     from mvp.sim_mcp.report import frame_unrendered
 
-    for _ in range(3):  # a click that navigates often lands on the white frame / spinner before the next page paints
+    # A click that navigates often lands on the white frame / spinner before the next page paints.
+    # Loop 13 Fider: 3 s was not enough for one mid-run navigation (blank step 8); allow up to 8 s.
+    for _ in range(8):
         if not frame_unrendered(png):
             break
         await asyncio.sleep(1.0)
