@@ -37,3 +37,6 @@ data/models/
 data/hackathon/
 .vercel
 .env*.local
+
+# Twin-2K-500 (CC BY 4.0) is downloaded locally, not committed: see src/human_sim/popadapt/adapters.py
+data/twin2k/
