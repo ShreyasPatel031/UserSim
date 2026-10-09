@@ -125,6 +125,7 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
         meta["captcha"] = {**c, "hint": "captcha token ready; submit" if c.get("token_ready") else
                            "invisible captcha: nothing to click or solve, it runs when you submit. If submitting does nothing, "
                            "look for an empty required field (filled:false) or an error message instead" if c.get("invisible") else
+                           "a captcha challenge is open on screen: call usersim_solve_captcha (it may take ~20 s), then look at the page" if c.get("challenge_open") else
                            "captcha not passed yet: submitting now will fail silently. Click its checkbox if visible, or call usersim_solve_captcha, then submit"}
     if obs.get("error"):
         meta["action_error"] = obs["error"]
@@ -564,8 +565,21 @@ async def usersim_solve_captcha(session_id: str) -> list[Any] | str:
                     result["audio"] = await solve_recaptcha_audio(sim.page)
                 except Exception as exc:  # noqa: BLE001
                     result["audio_error"] = repr(exc)[:200]
+                if not (result.get("audio") or {}).get("ok"):
+                    # Loop 14 Featurebase: the audio route found no audio, but Browserbase's built-in solver cleared the
+                    # image challenge a few seconds later and the site moved on. Wait for that before reporting.
+                    import asyncio as _a2
+
+                    for _ in range(16):
+                        if not await S.recaptcha_challenge_open(sim.page):
+                            break
+                        await _a2.sleep(1.5)
+                    result["challenge_cleared"] = not await S.recaptcha_challenge_open(sim.page)
             state = await S.captcha_state(sim.page) or {}
-            if state.get("invisible") and not state.get("token_ready"):
+            if result.get("challenge_cleared") and not state.get("challenge_open"):
+                result["note"] = ("the challenge is gone; look at the page: it may already have moved on (e.g. a "
+                                  "code screen). Submit again only if the form is still showing")
+            elif state.get("invisible") and not state.get("token_ready"):
                 result["note"] = ("invisible reCAPTCHA with no challenge on screen: there is nothing to solve. Do not call this "
                                   "again; fill any field with filled:false and submit")
             if os.environ.get("MVP_MCP_PAID_CAPTCHA") == "1" and state and not state.get("token_ready"):

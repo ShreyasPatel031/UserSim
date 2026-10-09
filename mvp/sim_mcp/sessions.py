@@ -1277,10 +1277,29 @@ _CAPTCHA_JS = """() => {
   const tokens = [...document.querySelectorAll('[name="cf-turnstile-response"], [name="captcha"], [name="g-recaptcha-response"], [name="h-captcha-response"]')];
   const ready = tokens.some(t => (t.value || '').length > 20);
   // invisible / score reCAPTCHA (v3 badge, size=invisible) has nothing to click: it runs on submit
+  // reCAPTCHA keeps its challenge iframe full-size in the DOM and hides it with visibility:hidden on a wrapper,
+  // so a bounding box alone says "open" before the first submit and after the challenge is passed.
+  const shown = el => {
+    if (el.checkVisibility) return el.checkVisibility({opacityProperty: true, visibilityProperty: true});
+    for (let e = el; e; e = e.parentElement) {
+      const s = getComputedStyle(e);
+      if (s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0) return false;
+    }
+    return true;
+  };
+  const challenge = kind === 'recaptcha' && [...document.querySelectorAll('iframe[src*="/recaptcha/"][src*="bframe"]')].some(i => {
+    const r = i.getBoundingClientRect(); return r.width > 100 && r.height > 100 && r.top < innerHeight && r.bottom > 0 && shown(i); });
   const invisible = kind === 'recaptcha' && !f.some(u => u.includes('/recaptcha/') && !u.includes('size=invisible') && !u.includes('/bframe'))
-    && ![...document.querySelectorAll('iframe[src*="/recaptcha/"][src*="bframe"]')].some(i => { const r = i.getBoundingClientRect(); return r.width > 100 && r.height > 100 && r.top < innerHeight && r.bottom > 0; });
-  return invisible ? {kind, token_ready: ready, invisible: true} : {kind, token_ready: ready};
+    && !challenge;
+  if (invisible) return {kind, token_ready: ready, invisible: true};
+  return challenge ? {kind, token_ready: ready, challenge_open: true} : {kind, token_ready: ready};
 }"""
+
+
+async def recaptcha_challenge_open(page: Any) -> bool:
+    """True while a reCAPTCHA image/audio challenge is actually on screen."""
+    st = await captcha_state(page) or {}
+    return bool(st.get("challenge_open"))
 
 
 _ALIAS_RE = __import__("re").compile(r"(?i)(alias|\+|plus)[^.]{0,60}(not allowed|not supported|isn.t allowed|invalid)|(not allowed|cannot)[^.]{0,40}(alias|\+)")
