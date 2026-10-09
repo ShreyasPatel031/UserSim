@@ -308,3 +308,20 @@ class LetterOnlyCodeTests(unittest.TestCase):
     def test_digit_codes_still_win(self):
         from mvp.email_codes import _find_code
         self.assertEqual(_find_code("Your code", "Your verification code is: 482913"), "482913")
+
+
+class CodeIsColonTests(unittest.TestCase):
+    """Loop 12 (Frill, 2nd mail): 'verification code is: 5ab12c' was missed because 'is:' broke _CODE_NEAR."""
+
+    def test_mixed_code_after_is_colon_keeps_case(self):
+        from mvp.email_codes import _find_code
+        body = "Hey! Your email verification code is: 7xq21z \n\r\n This code will expire in 15 minutes."
+        self.assertEqual(_find_code("Email Verification Code", body), "7xq21z")
+
+    def test_atlassian_subject_code_still_found(self):
+        from mvp.email_codes import _find_code
+        self.assertEqual(_find_code("EV7DUU is your verification code", ""), "EV7DUU")
+
+    def test_code_is_valid_is_not_a_code(self):
+        from mvp.email_codes import _find_code
+        self.assertIsNone(_find_code("Welcome", "This code is valid for ten minutes."))

@@ -87,7 +87,7 @@ _CODE_REJECT = re.compile(r"^(\d)\1+$|^(?:012345|123456|654321|999999|000000)\d*
 _CODE_NEAR = re.compile(
     r"(?is)(?:"
     r"(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in)\s+code[^0-9A-Za-z]{0,40}([0-9A-Za-z]{4,8})"
-    r"|code\s*(?:is|:)\s*([0-9A-Za-z]{4,8})"
+    r"|code\s*(?:is\s*:?|:)\s*([0-9A-Za-z]{4,8})"
     r"|([0-9A-Za-z]{4,8})\s*(?:is\s+your|is\s+the)\b"
     r"|enter\s+(?:this\s+)?(?:code\s*)?[^0-9A-Za-z]{0,20}([0-9A-Za-z]{4,8})"
     r")"
@@ -138,7 +138,9 @@ def _find_code(subject: str, body: str) -> str | None:
             and re.search(r"[A-Za-z]", value)
             and re.search(r"\d", value)
         ):
-            return value.upper()
+            # Keep the mail's case: Frill sends lowercase mixed codes and may
+            # compare case-sensitively; Atlassian already sends uppercase.
+            return value
         return None
 
     # 0) Explicit alphanumeric subject forms (Atlassian).
