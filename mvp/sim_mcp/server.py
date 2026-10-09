@@ -533,6 +533,18 @@ async def usersim_solve_captcha(session_id: str) -> list[Any] | str:
                             break
                     except Exception:  # noqa: BLE001
                         break
+            pre = await S.captcha_state(sim.page) or {}
+            if pre.get("kind") == "recaptcha" and pre.get("invisible") and not pre.get("token_ready"):
+                # Loop 14 Featurebase: after a submit the invisible reCAPTCHA can take >6 s to show its grid. Wait for it
+                # here (or for a token / navigation) instead of reporting "nothing to solve" while it is still coming.
+                import asyncio as _a1
+
+                url0 = sim.page.url
+                for _ in range(24):
+                    await _a1.sleep(0.5)
+                    st0 = await S.captcha_state(sim.page) or {}
+                    if st0.get("challenge_open") or st0.get("token_ready") or sim.page.url != url0 or not st0:
+                        break
             info = await cap.detect_sitekey(sim.page)
             result: dict[str, Any] = {"detected": info or None}
             state = await S.captcha_state(sim.page) or {}

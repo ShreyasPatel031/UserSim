@@ -1312,7 +1312,7 @@ _FOCUS_IS_TEXT_JS = """() => {
 }"""
 
 
-async def _await_recaptcha_challenge(page: Any, url_before: str, budget_s: float = 6.0) -> None:
+async def _await_recaptcha_challenge(page: Any, url_before: str, budget_s: float = 10.0) -> None:
     """After a submit on a page with invisible reCAPTCHA, wait for its challenge before the screenshot.
 
     Loop 14 Featurebase: Continue runs grecaptcha.execute(); the image grid opens a few seconds later. The
