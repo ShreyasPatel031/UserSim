@@ -1,0 +1,938 @@
+{
+ "simbench_Afrobarometer": {
+  "dataset": "SimBench:Afrobarometer",
+  "level": "group",
+  "coverage": {
+   "units": 590,
+   "items": 206,
+   "observed_cells": 2023,
+   "density": 0.0166,
+   "median_units_per_item": 2.0,
+   "median_items_per_unit": 3.0
+  },
+  "test_items": 25,
+  "axes_segments_supported": false,
+  "why_not": "median 2 units per item and 590 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "attribute_choice": {
+   "discuss_politics": 0.2057,
+   "country": 0.2063,
+   "gender": 0.2063,
+   "age_group": 0.2063,
+   "subjective_income": 0.2064,
+   "religion": 0.2064
+  },
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": "discuss_politics"
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.4331,
+    "anchor_mean": 0.2502,
+    "axes": 0.2502,
+    "segment": 0.2502,
+    "attribute": 0.2504,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": -0.0002,
+    "attribute_gain_ci": [
+     -0.0005,
+     0.0
+    ],
+    "n_item_reps": 75
+   },
+   "0.5": {
+    "uniform": 0.4369,
+    "anchor_mean": 0.2215,
+    "axes": 0.2215,
+    "segment": 0.2215,
+    "attribute": 0.2217,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": -0.0002,
+    "attribute_gain_ci": [
+     -0.0003,
+     -0.0001
+    ],
+    "n_item_reps": 75
+   }
+  }
+ },
+ "simbench_ChaosNLI": {
+  "dataset": "SimBench:ChaosNLI",
+  "coverage": {
+   "units": 1,
+   "items": 500,
+   "observed_cells": 500,
+   "density": 1.0,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 500.0
+  },
+  "testable": false,
+  "why_not": "no item answered by 3 or more units: only one population per item, nothing to predict across units"
+ },
+ "simbench_Choices13k": {
+  "dataset": "SimBench:Choices13k",
+  "coverage": {
+   "units": 1,
+   "items": 500,
+   "observed_cells": 500,
+   "density": 1.0,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 500.0
+  },
+  "testable": false,
+  "why_not": "no item answered by 3 or more units: only one population per item, nothing to predict across units"
+ },
+ "simbench_ConspiracyCorr": {
+  "dataset": "SimBench:ConspiracyCorr",
+  "level": "group",
+  "coverage": {
+   "units": 18,
+   "items": 9,
+   "observed_cells": 45,
+   "density": 0.2778,
+   "median_units_per_item": 5.0,
+   "median_items_per_unit": 2.0
+  },
+  "test_items": 2,
+  "axes_segments_supported": false,
+  "why_not": "median 5 units per item and 18 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": null
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.3052,
+    "anchor_mean": 0.2294,
+    "axes": 0.2294,
+    "segment": 0.2294,
+    "attribute": 0.2294,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "n_item_reps": 6
+   },
+   "0.5": {
+    "uniform": 0.2989,
+    "anchor_mean": 0.1846,
+    "axes": 0.1846,
+    "segment": 0.1846,
+    "attribute": 0.1846,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "n_item_reps": 6
+   }
+  }
+ },
+ "simbench_DICES": {
+  "dataset": "SimBench:DICES",
+  "coverage": {
+   "units": 2,
+   "items": 498,
+   "observed_cells": 500,
+   "density": 0.502,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 250.0
+  },
+  "testable": false,
+  "why_not": "no item answered by 3 or more units: only one population per item, nothing to predict across units"
+ },
+ "simbench_ESS": {
+  "dataset": "SimBench:ESS",
+  "level": "group",
+  "coverage": {
+   "units": 496,
+   "items": 222,
+   "observed_cells": 2135,
+   "density": 0.0194,
+   "median_units_per_item": 2.0,
+   "median_items_per_unit": 4.0
+  },
+  "test_items": 25,
+  "axes_segments_supported": false,
+  "why_not": "median 2 units per item and 496 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "attribute_choice": {
+   "domicil": 0.2172,
+   "mnactic": 0.2175,
+   "cntry": 0.2175,
+   "eisced": 0.2178,
+   "rlgdgr": 0.2178,
+   "maritalb": 0.2178
+  },
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": "domicil"
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.337,
+    "anchor_mean": 0.1733,
+    "axes": 0.1733,
+    "segment": 0.1733,
+    "attribute": 0.1734,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": -0.0002,
+    "attribute_gain_ci": [
+     -0.0003,
+     -0.0
+    ],
+    "n_item_reps": 75
+   },
+   "0.5": {
+    "uniform": 0.3362,
+    "anchor_mean": 0.1603,
+    "axes": 0.1603,
+    "segment": 0.1603,
+    "attribute": 0.1605,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": -0.0002,
+    "attribute_gain_ci": [
+     -0.0004,
+     -0.0
+    ],
+    "n_item_reps": 75
+   }
+  }
+ },
+ "simbench_GlobalOpinionQA": {
+  "dataset": "SimBench:GlobalOpinionQA",
+  "coverage": {
+   "units": 104,
+   "items": 458,
+   "observed_cells": 500,
+   "density": 0.0105,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 3.0
+  },
+  "testable": false,
+  "why_not": "no item answered by 3 or more units: only one population per item, nothing to predict across units"
+ },
+ "simbench_ISSP": {
+  "dataset": "SimBench:ISSP",
+  "level": "group",
+  "coverage": {
+   "units": 392,
+   "items": 422,
+   "observed_cells": 1433,
+   "density": 0.0087,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 2.0
+  },
+  "test_items": 9,
+  "axes_segments_supported": false,
+  "why_not": "median 1 units per item and 392 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "attribute_choice": {
+   "topbot": 0.222,
+   "domicil": 0.2227,
+   "country": 0.2239,
+   "marital_status": 0.2249,
+   "work_status": 0.2252,
+   "religion": 0.2255
+  },
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": "topbot"
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.3346,
+    "anchor_mean": 0.2584,
+    "axes": 0.2584,
+    "segment": 0.2584,
+    "attribute": 0.2562,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0022,
+    "attribute_gain_ci": [
+     0.0009,
+     0.0036
+    ],
+    "n_item_reps": 27
+   },
+   "0.5": {
+    "uniform": 0.3319,
+    "anchor_mean": 0.2485,
+    "axes": 0.2485,
+    "segment": 0.2485,
+    "attribute": 0.2471,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0014,
+    "attribute_gain_ci": [
+     -0.0001,
+     0.003
+    ],
+    "n_item_reps": 27
+   }
+  }
+ },
+ "simbench_Jester": {
+  "dataset": "SimBench:Jester",
+  "coverage": {
+   "units": 1,
+   "items": 136,
+   "observed_cells": 136,
+   "density": 1.0,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 136.0
+  },
+  "testable": false,
+  "why_not": "no item answered by 3 or more units: only one population per item, nothing to predict across units"
+ },
+ "simbench_LatinoBarometro": {
+  "dataset": "SimBench:LatinoBarometro",
+  "level": "group",
+  "coverage": {
+   "units": 218,
+   "items": 357,
+   "observed_cells": 1735,
+   "density": 0.0223,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 6.0
+  },
+  "test_items": 13,
+  "axes_segments_supported": false,
+  "why_not": "median 1 units per item and 218 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "attribute_choice": {
+   "age_group": 0.1404,
+   "religion": 0.1409,
+   "country": 0.141,
+   "city_size": 0.1411,
+   "employment_status": 0.1412,
+   "political_group": 0.1412
+  },
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": "age_group"
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.2982,
+    "anchor_mean": 0.1899,
+    "axes": 0.1899,
+    "segment": 0.1899,
+    "attribute": 0.19,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": -0.0,
+    "attribute_gain_ci": [
+     -0.0006,
+     0.0005
+    ],
+    "n_item_reps": 39
+   },
+   "0.5": {
+    "uniform": 0.2997,
+    "anchor_mean": 0.1639,
+    "axes": 0.1639,
+    "segment": 0.1639,
+    "attribute": 0.1637,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0002,
+    "attribute_gain_ci": [
+     -0.0002,
+     0.0008
+    ],
+    "n_item_reps": 39
+   }
+  }
+ },
+ "simbench_MoralMachine": {
+  "dataset": "SimBench:MoralMachine",
+  "level": "group",
+  "coverage": {
+   "units": 26,
+   "items": 1,
+   "observed_cells": 26,
+   "density": 1.0,
+   "median_units_per_item": 26.0,
+   "median_items_per_unit": 1.0
+  },
+  "test_items": 1,
+  "axes_segments_supported": false,
+  "why_not": "median 26 units per item and 26 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": null
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.1062,
+    "anchor_mean": 0.1016,
+    "axes": 0.1016,
+    "segment": 0.1016,
+    "attribute": 0.1016,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": null,
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": null,
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": null,
+    "n_item_reps": 3
+   },
+   "0.5": {
+    "uniform": 0.0909,
+    "anchor_mean": 0.0975,
+    "axes": 0.0975,
+    "segment": 0.0975,
+    "attribute": 0.0975,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": null,
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": null,
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": null,
+    "n_item_reps": 3
+   }
+  }
+ },
+ "simbench_MoralMachineClassic": {
+  "dataset": "SimBench:MoralMachineClassic",
+  "level": "group",
+  "coverage": {
+   "units": 13,
+   "items": 3,
+   "observed_cells": 15,
+   "density": 0.3846,
+   "median_units_per_item": 5.0,
+   "median_items_per_unit": 1.0
+  },
+  "test_items": 1,
+  "axes_segments_supported": false,
+  "why_not": "median 5 units per item and 13 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": null
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.107,
+    "anchor_mean": 0.1087,
+    "axes": 0.1087,
+    "segment": 0.1087,
+    "attribute": 0.1087,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": null,
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": null,
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": null,
+    "n_item_reps": 3
+   },
+   "0.5": {
+    "uniform": 0.1015,
+    "anchor_mean": 0.0715,
+    "axes": 0.0715,
+    "segment": 0.0715,
+    "attribute": 0.0715,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": null,
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": null,
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": null,
+    "n_item_reps": 3
+   }
+  }
+ },
+ "simbench_NumberGame": {
+  "dataset": "SimBench:NumberGame",
+  "coverage": {
+   "units": 1,
+   "items": 500,
+   "observed_cells": 500,
+   "density": 1.0,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 500.0
+  },
+  "testable": false,
+  "why_not": "no item answered by 3 or more units: only one population per item, nothing to predict across units"
+ },
+ "simbench_OSPsychBig5": {
+  "dataset": "SimBench:OSPsychBig5",
+  "level": "group",
+  "coverage": {
+   "units": 6,
+   "items": 50,
+   "observed_cells": 250,
+   "density": 0.8333,
+   "median_units_per_item": 5.0,
+   "median_items_per_unit": 40.0
+  },
+  "test_items": 12,
+  "axes_segments_supported": false,
+  "why_not": "median 5 units per item and 6 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "attribute_choice": {
+   "country_name": 0.0828
+  },
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": "country_name"
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.2302,
+    "anchor_mean": 0.0726,
+    "axes": 0.0726,
+    "segment": 0.0726,
+    "attribute": 0.0726,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": -0.0,
+    "attribute_gain_ci": [
+     -0.0,
+     0.0
+    ],
+    "n_item_reps": 36
+   },
+   "0.5": {
+    "uniform": 0.2258,
+    "anchor_mean": 0.0643,
+    "axes": 0.0643,
+    "segment": 0.0643,
+    "attribute": 0.0643,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": [
+     -0.0,
+     0.0
+    ],
+    "n_item_reps": 36
+   }
+  }
+ },
+ "simbench_OSPsychMACH": {
+  "dataset": "SimBench:OSPsychMACH",
+  "level": "group",
+  "coverage": {
+   "units": 25,
+   "items": 20,
+   "observed_cells": 100,
+   "density": 0.2,
+   "median_units_per_item": 5.0,
+   "median_items_per_unit": 3.0
+  },
+  "test_items": 5,
+  "axes_segments_supported": false,
+  "why_not": "median 5 units per item and 25 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "attribute_choice": {
+   "country_name": 0.0958
+  },
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": "country_name"
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.2217,
+    "anchor_mean": 0.1225,
+    "axes": 0.1225,
+    "segment": 0.1225,
+    "attribute": 0.1225,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": [
+     -0.0,
+     0.0
+    ],
+    "n_item_reps": 15
+   },
+   "0.5": {
+    "uniform": 0.2055,
+    "anchor_mean": 0.1082,
+    "axes": 0.1082,
+    "segment": 0.1082,
+    "attribute": 0.1082,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": [
+     -0.0,
+     0.0
+    ],
+    "n_item_reps": 15
+   }
+  }
+ },
+ "simbench_OSPsychMGKT": {
+  "dataset": "SimBench:OSPsychMGKT",
+  "level": "group",
+  "coverage": {
+   "units": 5,
+   "items": 268,
+   "observed_cells": 500,
+   "density": 0.3731,
+   "median_units_per_item": 2.0,
+   "median_items_per_unit": 99.0
+  },
+  "test_items": 15,
+  "axes_segments_supported": false,
+  "why_not": "median 2 units per item and 5 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "attribute_choice": {
+   "country_name": 0.0269
+  },
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": "country_name"
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.3163,
+    "anchor_mean": 0.071,
+    "axes": 0.071,
+    "segment": 0.071,
+    "attribute": 0.071,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": [
+     -0.0,
+     0.0
+    ],
+    "n_item_reps": 45
+   },
+   "0.5": {
+    "uniform": 0.3292,
+    "anchor_mean": 0.064,
+    "axes": 0.064,
+    "segment": 0.064,
+    "attribute": 0.064,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": [
+     -0.0,
+     0.0
+    ],
+    "n_item_reps": 45
+   }
+  }
+ },
+ "simbench_OSPsychRWAS": {
+  "dataset": "SimBench:OSPsychRWAS",
+  "coverage": {
+   "units": 1,
+   "items": 22,
+   "observed_cells": 22,
+   "density": 1.0,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 22.0
+  },
+  "testable": false,
+  "why_not": "no item answered by 3 or more units: only one population per item, nothing to predict across units"
+ },
+ "simbench_OpinionQA": {
+  "dataset": "SimBench:OpinionQA",
+  "level": "group",
+  "coverage": {
+   "units": 51,
+   "items": 484,
+   "observed_cells": 1302,
+   "density": 0.0527,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 17.0
+  },
+  "test_items": 4,
+  "axes_segments_supported": false,
+  "why_not": "median 1 units per item and 51 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "attribute_choice": {
+   "CREGION": 0.0653,
+   "AGE": 0.0653,
+   "SEX": 0.0653,
+   "EDUCATION": 0.0653,
+   "MARITAL": 0.0653,
+   "RELIG": 0.0653
+  },
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": "CREGION"
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.3441,
+    "anchor_mean": 0.1336,
+    "axes": 0.1336,
+    "segment": 0.1336,
+    "attribute": 0.1336,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "n_item_reps": 12
+   },
+   "0.5": {
+    "uniform": 0.3475,
+    "anchor_mean": 0.1155,
+    "axes": 0.1155,
+    "segment": 0.1155,
+    "attribute": 0.1155,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": -0.0,
+    "attribute_gain_ci": [
+     -0.0,
+     0.0
+    ],
+    "n_item_reps": 12
+   }
+  }
+ },
+ "simbench_TISP": {
+  "dataset": "SimBench:TISP",
+  "level": "group",
+  "coverage": {
+   "units": 68,
+   "items": 97,
+   "observed_cells": 485,
+   "density": 0.0735,
+   "median_units_per_item": 5.0,
+   "median_items_per_unit": 7.0
+  },
+  "test_items": 24,
+  "axes_segments_supported": false,
+  "why_not": "median 5 units per item and 68 units: axes and segments need at least 20 units answering each item. Only anchor_mean and attribute predictions are evaluated.",
+  "attribute_choice": {
+   "COUNTRY_NAME": 0.2215
+  },
+  "chosen": {
+   "rank": 0,
+   "segments": 1,
+   "attribute": "COUNTRY_NAME"
+  },
+  "test_tvd": {
+   "0.25": {
+    "uniform": 0.3274,
+    "anchor_mean": 0.1958,
+    "axes": 0.1958,
+    "segment": 0.1958,
+    "attribute": 0.1958,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": [
+     -0.0,
+     0.0
+    ],
+    "n_item_reps": 72
+   },
+   "0.5": {
+    "uniform": 0.3211,
+    "anchor_mean": 0.1727,
+    "axes": 0.1727,
+    "segment": 0.1727,
+    "attribute": 0.1727,
+    "axes_gain_vs_anchor": 0.0,
+    "axes_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "segment_gain_vs_anchor": 0.0,
+    "segment_gain_ci": [
+     0.0,
+     0.0
+    ],
+    "attribute_gain_vs_anchor": 0.0,
+    "attribute_gain_ci": [
+     -0.0,
+     0.0
+    ],
+    "n_item_reps": 72
+   }
+  }
+ },
+ "simbench_WisdomOfCrowds": {
+  "dataset": "SimBench:WisdomOfCrowds",
+  "coverage": {
+   "units": 1,
+   "items": 113,
+   "observed_cells": 113,
+   "density": 1.0,
+   "median_units_per_item": 1.0,
+   "median_items_per_unit": 113.0
+  },
+  "testable": false,
+  "why_not": "no item answered by 3 or more units: only one population per item, nothing to predict across units"
+ }
+}
