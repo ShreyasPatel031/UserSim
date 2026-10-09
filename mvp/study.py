@@ -256,6 +256,11 @@ class StudyState:
     plan_personas: list[dict[str, Any]] = field(default_factory=list)
     # Compare mode: per rival (in competitor order) the persona/task indexes it runs; [] = full matrix.
     competitor_cells: list[dict[str, Any]] = field(default_factory=list)
+    # Who decided each action ("" = the server's own agent; "claude_code" = an MCP client),
+    # and which engine build + config produced this study (mvp.version).
+    driver: str = ""
+    engine_version: str = ""
+    config_hash: str = ""
 
 
 def log_activity(study: StudyState, kind: str, message: str, **extra: Any) -> None:
@@ -3953,137 +3958,7 @@ async def _run_study_body(
                             pass
                     warm_by_site = {}
 
-        order = {t.get("id"): i for i, t in enumerate(study.tasks)}
-        study.agent_results.sort(key=lambda r: order.get(r.get("task_id"), 99))
-
-        # NOTE: do not early-return while status=="running". That aborted every
-        # successful local/Browserbase study before the executive summary and
-        # left the UI stuck at "N/N done" forever. GCP fleet detach returns
-        # earlier in the fleet branch.
-
-        try:
-            await backfill_site_opening_shots(study)
-            await backfill_final_screenshots(study)
-        except Exception as bf_exc:  # noqa: BLE001
-            print(f"backfill_site_opening_shots failed: {bf_exc!r}", flush=True)
-
-        # One success number: the report counts what each final page proves,
-        # judged with the grader's own prompt (see mvp/page_verdict.py).
-        try:
-            from mvp.page_verdict import apply_page_verdicts
-
-            from mvp.comparison import apply_comparison_scores
-
-            touch("Scoring each run against the rivals")
-            # Task completion (debug) and the head-to-head scores are judged in parallel.
-            outcomes = await asyncio.gather(
-                apply_page_verdicts(study), apply_comparison_scores(study), return_exceptions=True
-            )
-            for item in outcomes:
-                if isinstance(item, Exception):
-                    print(f"final-page judging failed: {item!r}", flush=True)
-        except Exception as pv_exc:  # noqa: BLE001
-            print(f"page verdicts skipped: {pv_exc!r}", flush=True)
-
-        from mvp.competitor_urls import annotate_run_issues, run_issue_lines, scrub_product_summary
-
-        run_issues = annotate_run_issues(study.agent_results)
-        if run_issues:
-            log_activity(
-                study,
-                "run_issue",
-                f"{len(run_issues)} run issue(s) excluded from product insights",
-            )
-            for issue in run_issues:
-                log_activity(
-                    study,
-                    "run_issue",
-                    f"{issue.get('persona_name') or issue.get('agent_id')}: "
-                    f"{issue.get('kind')} — {issue.get('reason')}",
-                    agent_id=issue.get("agent_id"),
-                )
-
-        touch("Writing executive summary")
-        if study.summary and study.summary.get("headline"):
-            # Already written by fleet finisher — still strip harness failures.
-            study.summary = scrub_product_summary(study.summary)
-            study.summary["run_issues"] = run_issue_lines(
-                [r.get("run_issue") for r in study.agent_results if isinstance(r, dict) and r.get("run_issue")]
-            )
-        else:
-            log_activity(study, "summary", "Synthesizing executive summary from all sessions")
-            try:
-                study.summary = await synthesize_summary(
-                    url=study.url,
-                    segment=study.segment,
-                    site_summary=site_summary,
-                    agent_results=study.agent_results,
-                )
-            except Exception as summary_exc:  # noqa: BLE001
-                print(f"synthesize_summary failed: {summary_exc!r}", flush=True)
-                study.summary = None
-            # Fallback if the LLM summary is missing — still fill from agent recaps.
-            if not (study.summary and study.summary.get("headline")):
-                study.summary = _summary_from_agent_results(study.agent_results)
-        if not study.summary:
-            study.summary = {}
-        try:
-            from mvp.a11y_agent import failure_breakdown
-
-            study.summary["failure_breakdown"] = failure_breakdown(study.agent_results)
-        except Exception as breakdown_exc:  # noqa: BLE001
-            print(f"failure breakdown skipped: {breakdown_exc!r}", flush=True)
-        study.summary["site_summary"] = site_summary
-        if study.access_backend:
-            study.summary["access_backend"] = study.access_backend
-        if study.browserbase_session_url:
-            study.summary["browserbase_session_url"] = study.browserbase_session_url
-        if study.auth_status:
-            study.summary["auth_status"] = study.auth_status
-        if study.auth_blocker:
-            study.summary["auth_blocker"] = study.auth_blocker
-        try:
-            from mvp.report_insights import apply_insights
-
-            insights = apply_insights(study)
-            try:
-                from mvp.report_insights import write_verdict_summary
-
-                text = await asyncio.wait_for(
-                    write_verdict_summary(
-                        {"segment": getattr(study, "segment", "") or ""}, insights
-                    ),
-                    timeout=20,
-                )
-                if text:
-                    study.summary = {**(study.summary or {}), "verdict_summary": text}
-                    apply_insights(study)
-            except Exception as verdict_exc:  # noqa: BLE001
-                print(f"verdict summary skipped: {verdict_exc!r}", flush=True)
-        except Exception as insight_exc:  # noqa: BLE001
-            print(f"report insights failed: {insight_exc!r}", flush=True)
-        if any(isinstance((r or {}).get("comparison_score"), dict) for r in study.agent_results or []):
-            try:
-                from mvp.comparison import apply_comparison_llm
-
-                touch("Each buyer picks a product")
-                await asyncio.wait_for(apply_comparison_llm(study), timeout=75)
-            except Exception as cmp_exc:  # noqa: BLE001
-                print(f"comparison picks skipped: {cmp_exc!r}", flush=True)
-        finish_clocks(study)
-        touch("Complete", "complete")
-        log_activity(study, "complete", "Study complete")
-        persist_study(study)
-        if getattr(study, "email", ""):
-            # Off the loop: SMTP is a blocking socket and the report is ready.
-            try:
-                from mvp.report_email import send_report_email
-
-                sent = await asyncio.to_thread(send_report_email, study)
-                if sent:
-                    log_activity(study, "complete", f"Report emailed to {study.email}")
-            except Exception as exc:  # noqa: BLE001
-                print(f"report email failed: {exc!r}", flush=True)
+        await finish_study(study, site_summary=site_summary, touch=touch)
     except SiteAccessBlockedError as exc:
         study.status = "error"
         study.error = (str(exc) or repr(exc))[:500]
@@ -4131,6 +4006,10 @@ async def _run_study_body(
 def create_study(url: str, segment: str) -> StudyState:
     study_id = str(uuid.uuid4())
     study = StudyState(id=study_id, url=url.strip(), segment=segment.strip())
+    from mvp.version import stamp
+
+    for key, value in stamp().items():
+        setattr(study, key, value)
     STUDIES[study_id] = study
     return study
 
@@ -4198,6 +4077,9 @@ def study_to_dict(study: StudyState) -> dict[str, Any]:
             "queue_eta_s": study.queue_eta_s,
             "queue_position": study.queue_position,
             "queued_s": study.queued_s,
+            "driver": study.driver,
+            "engine_version": study.engine_version,
+            "config_hash": study.config_hash,
         }
     )
 
@@ -4229,6 +4111,154 @@ def note_first_value(study: StudyState, sess: dict[str, Any] | None = None) -> N
     if study.time_to_first_value_s is None or value < study.time_to_first_value_s:
         study.time_to_first_value_s = value
         study.time_to_first_value_agent = best[1]
+
+
+
+async def finish_study(study: StudyState, *, site_summary: str = "", touch: Any = None) -> None:
+    """Everything after the agents stop: judge each final page, head-to-head scores,
+    run issues, executive summary, insights, buyer picks, then mark complete and persist.
+
+    Shared by the website run and the MCP path so their reports can't drift.
+    """
+    if touch is None:
+        def touch(phase: str, status: str | None = None) -> None:
+            study.phase = phase
+            if status:
+                study.status = status
+            study.updated_at = _now()
+
+
+    order = {t.get("id"): i for i, t in enumerate(study.tasks)}
+    study.agent_results.sort(key=lambda r: order.get(r.get("task_id"), 99))
+
+    # NOTE: do not early-return while status=="running". That aborted every
+    # successful local/Browserbase study before the executive summary and
+    # left the UI stuck at "N/N done" forever. GCP fleet detach returns
+    # earlier in the fleet branch.
+
+    try:
+        await backfill_site_opening_shots(study)
+        await backfill_final_screenshots(study)
+    except Exception as bf_exc:  # noqa: BLE001
+        print(f"backfill_site_opening_shots failed: {bf_exc!r}", flush=True)
+
+    # One success number: the report counts what each final page proves,
+    # judged with the grader's own prompt (see mvp/page_verdict.py).
+    try:
+        from mvp.page_verdict import apply_page_verdicts
+
+        from mvp.comparison import apply_comparison_scores
+
+        touch("Scoring each run against the rivals")
+        # Task completion (debug) and the head-to-head scores are judged in parallel.
+        outcomes = await asyncio.gather(
+            apply_page_verdicts(study), apply_comparison_scores(study), return_exceptions=True
+        )
+        for item in outcomes:
+            if isinstance(item, Exception):
+                print(f"final-page judging failed: {item!r}", flush=True)
+    except Exception as pv_exc:  # noqa: BLE001
+        print(f"page verdicts skipped: {pv_exc!r}", flush=True)
+
+    from mvp.competitor_urls import annotate_run_issues, run_issue_lines, scrub_product_summary
+
+    run_issues = annotate_run_issues(study.agent_results)
+    if run_issues:
+        log_activity(
+            study,
+            "run_issue",
+            f"{len(run_issues)} run issue(s) excluded from product insights",
+        )
+        for issue in run_issues:
+            log_activity(
+                study,
+                "run_issue",
+                f"{issue.get('persona_name') or issue.get('agent_id')}: "
+                f"{issue.get('kind')} — {issue.get('reason')}",
+                agent_id=issue.get("agent_id"),
+            )
+
+    touch("Writing executive summary")
+    if study.summary and study.summary.get("headline"):
+        # Already written by fleet finisher — still strip harness failures.
+        study.summary = scrub_product_summary(study.summary)
+        study.summary["run_issues"] = run_issue_lines(
+            [r.get("run_issue") for r in study.agent_results if isinstance(r, dict) and r.get("run_issue")]
+        )
+    else:
+        log_activity(study, "summary", "Synthesizing executive summary from all sessions")
+        try:
+            study.summary = await synthesize_summary(
+                url=study.url,
+                segment=study.segment,
+                site_summary=site_summary,
+                agent_results=study.agent_results,
+            )
+        except Exception as summary_exc:  # noqa: BLE001
+            print(f"synthesize_summary failed: {summary_exc!r}", flush=True)
+            study.summary = None
+        # Fallback if the LLM summary is missing — still fill from agent recaps.
+        if not (study.summary and study.summary.get("headline")):
+            study.summary = _summary_from_agent_results(study.agent_results)
+    if not study.summary:
+        study.summary = {}
+    try:
+        from mvp.a11y_agent import failure_breakdown
+
+        study.summary["failure_breakdown"] = failure_breakdown(study.agent_results)
+    except Exception as breakdown_exc:  # noqa: BLE001
+        print(f"failure breakdown skipped: {breakdown_exc!r}", flush=True)
+    study.summary["site_summary"] = site_summary
+    if study.access_backend:
+        study.summary["access_backend"] = study.access_backend
+    if study.browserbase_session_url:
+        study.summary["browserbase_session_url"] = study.browserbase_session_url
+    if study.auth_status:
+        study.summary["auth_status"] = study.auth_status
+    if study.auth_blocker:
+        study.summary["auth_blocker"] = study.auth_blocker
+    try:
+        from mvp.report_insights import apply_insights
+
+        insights = apply_insights(study)
+        try:
+            from mvp.report_insights import write_verdict_summary
+
+            text = await asyncio.wait_for(
+                write_verdict_summary(
+                    {"segment": getattr(study, "segment", "") or ""}, insights
+                ),
+                timeout=20,
+            )
+            if text:
+                study.summary = {**(study.summary or {}), "verdict_summary": text}
+                apply_insights(study)
+        except Exception as verdict_exc:  # noqa: BLE001
+            print(f"verdict summary skipped: {verdict_exc!r}", flush=True)
+    except Exception as insight_exc:  # noqa: BLE001
+        print(f"report insights failed: {insight_exc!r}", flush=True)
+    if any(isinstance((r or {}).get("comparison_score"), dict) for r in study.agent_results or []):
+        try:
+            from mvp.comparison import apply_comparison_llm
+
+            touch("Each buyer picks a product")
+            await asyncio.wait_for(apply_comparison_llm(study), timeout=75)
+        except Exception as cmp_exc:  # noqa: BLE001
+            print(f"comparison picks skipped: {cmp_exc!r}", flush=True)
+    finish_clocks(study)
+    touch("Complete", "complete")
+    log_activity(study, "complete", "Study complete")
+    persist_study(study)
+    if getattr(study, "email", ""):
+        # Off the loop: SMTP is a blocking socket and the report is ready.
+        try:
+            from mvp.report_email import send_report_email
+
+            sent = await asyncio.to_thread(send_report_email, study)
+            if sent:
+                log_activity(study, "complete", f"Report emailed to {study.email}")
+        except Exception as exc:  # noqa: BLE001
+            print(f"report email failed: {exc!r}", flush=True)
 
 
 def finish_clocks(study: StudyState) -> None:

@@ -87,11 +87,17 @@ _CODE_REJECT = re.compile(r"^(\d)\1+$|^(?:012345|123456|654321|999999|000000)\d*
 _CODE_NEAR = re.compile(
     r"(?is)(?:"
     r"(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in)\s+code[^0-9A-Za-z]{0,40}([0-9A-Za-z]{4,8})"
-    r"|code\s*(?:is|:)\s*([0-9A-Za-z]{4,8})"
+    r"|code\s*(?:is\s*:?|:)\s*([0-9A-Za-z]{4,8})"
     r"|([0-9A-Za-z]{4,8})\s*(?:is\s+your|is\s+the)\b"
     r"|enter\s+(?:this\s+)?(?:code\s*)?[^0-9A-Za-z]{0,20}([0-9A-Za-z]{4,8})"
     r")"
 )
+# Letters-only OTPs (Frill: "Your email verification code is: <six letters>").
+# Only after explicit code wording and a colon, so ordinary words never match.
+_LETTER_CODE = re.compile(
+    r"(?i)\b(?:verification|security|confirmation|one[- ]time|login|sign[- ]?in)\s+code\s*(?:is)?\s*:\s*([A-Za-z]{5,8})\b"
+)
+_LETTER_CODE_STOP = {"please", "below", "here", "enter", "valid", "expires", "click", "simply", "required"}
 # Atlassian (and a few others) put alphanumeric OTPs in the subject:
 # "EV7DUU is your verification code".
 _ALPHA_SUBJECT_CODE = re.compile(
@@ -132,7 +138,9 @@ def _find_code(subject: str, body: str) -> str | None:
             and re.search(r"[A-Za-z]", value)
             and re.search(r"\d", value)
         ):
-            return value.upper()
+            # Keep the mail's case: Frill sends lowercase mixed codes and may
+            # compare case-sensitively; Atlassian already sends uppercase.
+            return value
         return None
 
     # 0) Explicit alphanumeric subject forms (Atlassian).
@@ -152,6 +160,11 @@ def _find_code(subject: str, body: str) -> str | None:
         for group in match.groups():
             if _ok(group):
                 return group
+
+    # 2b) Letters-only code right after "verification code is:" (Frill).
+    m = _LETTER_CODE.search(f"{subject}\n{body}")
+    if m and m.group(1).lower() not in _LETTER_CODE_STOP:
+        return m.group(1)
 
     # 3) A line that is nothing but the code.
     for line in body.splitlines():
@@ -581,6 +594,11 @@ def latest_signup_code(
     host_token = host_l.split(".")[0] if host_l else ""
     # id.atlassian.com → also match "atlassian" in From/body.
     host_aliases = {host_token, host_l}
+    # app.frill.co -> also "frill": a product subdomain ("app", "account",
+    # "platform") rarely appears in the mail, the brand label does (Loop 12 Frill).
+    labels = host_l.split(".") if host_l else []
+    if len(labels) >= 3 and len(labels[-2]) >= 3:
+        host_aliases.add(labels[-2])
     if "atlassian" in host_l:
         host_aliases.add("atlassian")
     host_aliases.discard("")

@@ -48,19 +48,46 @@ async def solve_recaptcha_audio(page: Any, tries: int = 3) -> dict[str, Any]:
     anchor = _frame(page, "recaptcha/api2/anchor") or _frame(page, "recaptcha/enterprise/anchor")
     if anchor is None:
         return {"ok": False, "method": "audio", "detail": "no recaptcha anchor frame"}
-    try:
-        await anchor.click("#recaptcha-anchor", timeout=5000)
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "method": "audio", "detail": f"anchor click: {type(exc).__name__}"}
-    await page.wait_for_timeout(2500)
+
+    def _open_bframe() -> Any:
+        return _frame(page, "recaptcha/api2/bframe") or _frame(page, "recaptcha/enterprise/bframe")
+
+    async def _challenge_open() -> bool:
+        # The challenge iframe stays in the DOM after use; what matters is whether it is on screen.
+        try:
+            loc = page.locator('iframe[src*="recaptcha/api2/bframe"], iframe[src*="recaptcha/enterprise/bframe"]')
+            for i in range(await loc.count()):
+                el = loc.nth(i)
+                if await el.is_visible():
+                    box = await el.bounding_box()
+                    if box and box["width"] > 100 and box["height"] > 100:
+                        return True
+        except Exception:
+            pass
+        return False
+
+    # Invisible / already-open challenge: the anchor is covered or hidden, so go straight to the bframe.
+    if not await _challenge_open():
+        try:
+            await anchor.click("#recaptcha-anchor", timeout=5000)
+        except Exception as exc:  # noqa: BLE001
+            if not await _challenge_open():
+                return {"ok": False, "method": "audio", "detail": f"anchor click: {type(exc).__name__}"}
+        await page.wait_for_timeout(2500)
 
     async def checked() -> bool:
         try:
-            return (await anchor.get_attribute("#recaptcha-anchor", "aria-checked", timeout=2000)) == "true"
+            if (await anchor.get_attribute("#recaptcha-anchor", "aria-checked", timeout=2000)) == "true":
+                return True
+        except Exception:
+            pass
+        try:  # invisible reCAPTCHA: the token lands in the page's response field
+            tok = await page.evaluate("() => [...document.querySelectorAll('textarea[name=\"g-recaptcha-response\"]')].some(t => t.value.length > 20)")
+            return bool(tok)
         except Exception:
             return False
 
-    if await checked():
+    if await checked() and not await _challenge_open():
         return {"ok": True, "method": "checkbox", "detail": "no challenge"}
     for attempt in range(tries):
         bframe = _frame(page, "recaptcha/api2/bframe") or _frame(page, "recaptcha/enterprise/bframe")
@@ -103,7 +130,7 @@ async def solve_recaptcha_audio(page: Any, tries: int = 3) -> dict[str, Any]:
         except Exception as exc:  # noqa: BLE001
             return {"ok": False, "method": "audio", "detail": f"submit: {type(exc).__name__}"}
         await page.wait_for_timeout(3000)
-        if await checked():
+        if await checked() and not await _challenge_open():
             return {"ok": True, "method": "gemini_audio", "detail": f"attempt {attempt + 1}"}
         try:
             await bframe.click("#recaptcha-reload-button", timeout=3000)

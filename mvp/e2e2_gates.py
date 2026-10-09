@@ -1378,6 +1378,7 @@ def judge_goal_screenshot(
     start_url: str,
     final_url: str = "",
     dom: str = "",
+    evidence: str = "",
 ) -> dict[str, Any]:
     """Independent vision judge.
 
@@ -1396,6 +1397,9 @@ Page the run opened on: {start_url or "unknown"}
 Final URL: {final_url or "unknown"}
 Final DOM text (may be truncated):
 {dom_text or "(no DOM text recorded)"}
+{("Facts recorded by the UserSim server itself (not the agent's claims):" + chr(10) + evidence) if evidence else ""}
+
+For signup / create-account tasks: if the server facts show the verification email was received and its link or code was used, and the final page is ANY signed-in page of the product's app (an empty dashboard, a workspace, onboarding, a "create your first ..." or new-item page such as /app/forms/new, a settings page; logged-in app chrome or account menu visible), then goal_reached=true. Do not require the page to be literally titled "dashboard", and do not require further setup the task did not ask for. A post-signup welcome / onboarding form inside the signed-in app (e.g. "set your username / newsletter name", "create new website") also counts: the user is signed in. Still FAIL if the final page is a login form, a pre-account signup form, a "check your inbox" screen, an error, or an "account under review / suspended" block.
 
 PASS goal_reached=true only when the screenshot and the final URL/DOM together show the goal was actually reached (for example the requested issue form or created issue, a drawing on the canvas, an export/share dialog, or the specific destination the task asked for).
 
@@ -1405,10 +1409,16 @@ FAIL goal_reached=false when:
 - The agent only scrolled or hovered the page it opened on
 - You cannot tell the goal was reached
 
+page_loading = true when the screenshot is blank, mostly empty, a loading spinner / skeleton, or a dark overlay with nothing readable. A loading page never reaches the goal (goal_reached=false).
+
+signed_in_app_page = true when the screenshot shows the product's app while signed in (app chrome, account menu/avatar, workspace, onboarding or setup steps inside the app such as company details, "create your first workspace/project", "install the tracking snippet"), false for marketing pages, login/signup forms, "check your inbox" screens or errors.
+
 Return JSON only:
 {{
   "goal_reached": true/false,
   "still_on_opening_screen": true/false,
+  "signed_in_app_page": true/false,
+  "page_loading": true/false,
   "reason": "one short sentence"
 }}
 """
@@ -1421,7 +1431,44 @@ Return JSON only:
             }
         )
     result = gemini_vision_json(prompt, png)
-    return coerce_verdict(result)
+    out = coerce_verdict(result)
+    if isinstance(result, dict) and "signed_in_app_page" in result:
+        out["signed_in_app_page"] = _as_bool(result.get("signed_in_app_page"))
+    if isinstance(result, dict) and "page_loading" in result:
+        out["page_loading"] = _as_bool(result.get("page_loading"))
+        if out["page_loading"]:
+            out["goal_reached"] = False
+    return out
+
+
+def judge_signed_in(png: bytes, *, final_url: str = "", account_email: str = "") -> dict[str, Any]:
+    """Task-independent second look: is this a signed-in page of the product's app?
+
+    The goal judge couples this flag to the task wording ("dashboard"), so a signed-in
+    onboarding page (Litlyx 'Install Litlyx' with the account menu showing the signup
+    email) came back signed_in_app_page=false. This prompt never sees the task.
+    """
+    from mvp.e2e_ui_run import gemini_vision_json
+
+    if len(png) < 2000:
+        return {"signed_in": False, "evidence": "no screenshot"}
+    prompt = f"""Look at this screenshot of a web page. Ignore what anyone wanted to do on it.
+Final URL: {final_url or "unknown"}
+{("The account that was just created uses the email: " + account_email) if account_email else ""}
+
+Question: is a user currently SIGNED IN to this product's web app on this page?
+Signed in = app chrome such as an account menu / avatar / the account email in the header or sidebar, a workspace or project
+switcher, app navigation, or an onboarding / setup screen inside the app (create a project, install a tracking snippet,
+company details, invite teammates, choose a plan inside the app).
+Not signed in = a marketing / landing page, a login or signup form, a "check your inbox / verify your email" screen,
+an "account under review / pending approval / suspended / blocked" screen, an error page, a blank or loading page.
+
+Return JSON only: {{"signed_in": true/false, "evidence": "the visible element(s) that decided it"}}
+"""
+    result = gemini_vision_json(prompt, png)
+    if not isinstance(result, dict):
+        return {"signed_in": False, "evidence": "no verdict"}
+    return {"signed_in": _as_bool(result.get("signed_in")), "evidence": str(result.get("evidence") or "")[:200]}
 
 
 def _headline_gates(startup: dict[str, Any]) -> list[dict[str, Any]]:
