@@ -594,6 +594,11 @@ def latest_signup_code(
     host_token = host_l.split(".")[0] if host_l else ""
     # id.atlassian.com → also match "atlassian" in From/body.
     host_aliases = {host_token, host_l}
+    # app.frill.co -> also "frill": a product subdomain ("app", "account",
+    # "platform") rarely appears in the mail, the brand label does (Loop 12 Frill).
+    labels = host_l.split(".") if host_l else []
+    if len(labels) >= 3 and len(labels[-2]) >= 3:
+        host_aliases.add(labels[-2])
     if "atlassian" in host_l:
         host_aliases.add("atlassian")
     host_aliases.discard("")

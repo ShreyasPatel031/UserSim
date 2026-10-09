@@ -325,3 +325,19 @@ class CodeIsColonTests(unittest.TestCase):
     def test_code_is_valid_is_not_a_code(self):
         from mvp.email_codes import _find_code
         self.assertIsNone(_find_code("Welcome", "This code is valid for ten minutes."))
+
+
+class HostBrandLabelTests(unittest.TestCase):
+    """Loop 12 (Frill): host app.frill.co gave token 'app', which the Frill mail never contains."""
+
+    def test_code_found_for_app_subdomain_host(self):
+        import email
+        from unittest import mock
+        from mvp import email_codes as ec
+        msg = email.message_from_string(
+            "From: Notifications <noreply@frill.co>\nTo: usersim.signups+t1@gmail.com\n"
+            "Subject: Email Verification Code\n\nYour email verification code is: 7xq21z\n"
+        )
+        with mock.patch.object(ec, "_imap_creds", return_value=("usersim.signups@gmail.com", "x")), \
+                mock.patch.object(ec, "_iter_recent_messages", return_value=iter([msg])):
+            self.assertEqual(ec.latest_signup_code("usersim.signups+t1@gmail.com", host="app.frill.co"), "7xq21z")
