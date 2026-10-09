@@ -61,3 +61,46 @@ def test_zero_opacity_wrapper_is_not_open():
 
 def test_no_captcha():
     assert _run("<p>hello</p>") is None
+
+
+class _FakePage:
+    """Minimal page for _await_recaptcha_challenge: scripted captcha states, fixed URL."""
+
+    def __init__(self, states, focus_text=False):
+        self.states = list(states)
+        self.focus_text = focus_text
+        self.url = "https://example.test/register"
+        self.calls = 0
+
+    async def evaluate(self, js, *a):
+        from mvp.sim_mcp import sessions as S
+
+        if js == S._FOCUS_IS_TEXT_JS:
+            return self.focus_text
+        self.calls += 1
+        return self.states.pop(0) if len(self.states) > 1 else self.states[0]
+
+
+def test_waits_for_challenge_after_submit():
+    from mvp.sim_mcp.sessions import _await_recaptcha_challenge
+
+    inv = {"kind": "recaptcha", "token_ready": False, "invisible": True}
+    page = _FakePage([inv, inv, inv, {"kind": "recaptcha", "token_ready": False, "challenge_open": True}])
+    asyncio.run(_await_recaptcha_challenge(page, page.url, budget_s=5))
+    assert page.calls == 4  # stopped as soon as the grid opened
+
+
+def test_no_wait_when_click_focused_a_text_field():
+    from mvp.sim_mcp.sessions import _await_recaptcha_challenge
+
+    page = _FakePage([{"kind": "recaptcha", "token_ready": False, "invisible": True}], focus_text=True)
+    asyncio.run(_await_recaptcha_challenge(page, page.url, budget_s=5))
+    assert page.calls == 1
+
+
+def test_no_wait_without_recaptcha():
+    from mvp.sim_mcp.sessions import _await_recaptcha_challenge
+
+    page = _FakePage([None])
+    asyncio.run(_await_recaptcha_challenge(page, page.url, budget_s=5))
+    assert page.calls == 1

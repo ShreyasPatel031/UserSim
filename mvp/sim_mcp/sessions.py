@@ -1006,6 +1006,8 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
         await _settle(sim.page)
         if action["type"] in NAVIGATING_ACTIONS or action.get("submit"):
             await _await_navigation(sim.page, url_before, nav_started, sim=sim)
+        if action["type"] in {"click", "key"} or action.get("submit"):
+            await _await_recaptcha_challenge(sim.page, url_before)
         if watched is not None:
             try:
                 watched.remove_listener("request", _on_request)
@@ -1294,6 +1296,43 @@ _CAPTCHA_JS = """() => {
   if (invisible) return {kind, token_ready: ready, invisible: true};
   return challenge ? {kind, token_ready: ready, challenge_open: true} : {kind, token_ready: ready};
 }"""
+
+
+_FOCUS_IS_TEXT_JS = """() => {
+  const a = document.activeElement;
+  if (!a) return false;
+  if (a.isContentEditable || a.tagName === 'TEXTAREA' || a.tagName === 'SELECT') return true;
+  return a.tagName === 'INPUT' && !['submit', 'button', 'checkbox', 'radio', 'image'].includes((a.type || '').toLowerCase());
+}"""
+
+
+async def _await_recaptcha_challenge(page: Any, url_before: str, budget_s: float = 6.0) -> None:
+    """After a submit on a page with invisible reCAPTCHA, wait for its challenge before the screenshot.
+
+    Loop 14 Featurebase: Continue runs grecaptcha.execute(); the image grid opens a few seconds later. The
+    screenshot was taken first (spinner only), so the model clicked Continue again, which landed outside the grid,
+    dismissed the challenge, and left the button spinning for the rest of the run.
+    """
+    st = await captcha_state(page) or {}
+    if st.get("kind") != "recaptcha" or not st.get("invisible") or st.get("token_ready"):
+        return
+    try:  # a click that only focused a text field is not a submit
+        typing = await page.evaluate(_FOCUS_IS_TEXT_JS)
+    except Exception:  # noqa: BLE001
+        typing = False
+    if typing:
+        return
+    deadline = time.monotonic() + budget_s
+    while time.monotonic() < deadline:
+        await asyncio.sleep(0.5)
+        try:
+            if page.url != url_before:
+                return
+        except Exception:  # noqa: BLE001
+            return
+        st = await captcha_state(page) or {}
+        if st.get("challenge_open") or st.get("token_ready") or not st:
+            return
 
 
 async def recaptcha_challenge_open(page: Any) -> bool:
