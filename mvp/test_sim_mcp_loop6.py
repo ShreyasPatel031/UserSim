@@ -363,3 +363,48 @@ class BlockedOffsiteTests(unittest.TestCase):
     def test_product_that_is_itself_listed_is_not_blocked(self):
         from mvp.sim_mcp import sessions as S
         self.assertFalse(S.blocked_offsite("https://www.linkedin.com/signup", "https://www.linkedin.com/"))
+
+
+class WaitRenderedTests(unittest.TestCase):
+    """Loop 13 (LogSnag): step 0 was captured while the SPA was still a white frame."""
+
+    @staticmethod
+    def _png(blank: bool) -> bytes:
+        import io
+        from PIL import Image, ImageDraw
+        im = Image.new("RGB", (1280, 800), "white")
+        if not blank:
+            d = ImageDraw.Draw(im)
+            for i in range(0, 800, 20):
+                d.rectangle([100, i, 1100, i + 8], fill="black")
+        buf = io.BytesIO(); im.save(buf, "PNG"); return buf.getvalue()
+
+    def test_waits_until_painted(self):
+        from mvp.sim_mcp import sessions as S
+        shots = [self._png(True), self._png(True), self._png(False)]
+        calls = []
+
+        class Page:
+            async def screenshot(self, **kw):
+                calls.append(1)
+                return shots[min(len(calls) - 1, 2)]
+
+        orig = S.asyncio.sleep
+        async def fast(_s):
+            return None
+        S.asyncio.sleep = fast
+        try:
+            asyncio.run(S._wait_rendered(Page(), budget_s=5))
+        finally:
+            S.asyncio.sleep = orig
+        self.assertEqual(len(calls), 3)
+
+    def test_gives_up_after_budget(self):
+        from mvp.sim_mcp import sessions as S
+        blank = self._png(True)
+
+        class Page:
+            async def screenshot(self, **kw):
+                return blank
+
+        asyncio.run(S._wait_rendered(Page(), budget_s=0.01))

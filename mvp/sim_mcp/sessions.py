@@ -521,6 +521,7 @@ async def start_session(
     SESSIONS[sim.id] = sim
     try:
         await _open_browser(sim)
+        await _wait_rendered(sim.page)
         await record_step(sim, kind="open", action_text=f"Opened {url}", args={"url": url}, thought="")
     except Exception as exc:
         await close(sim, reason=f"Browser failed to open: {exc!r}"[:300], status="error")
@@ -1049,6 +1050,25 @@ async def observe(sim: SimSession) -> dict[str, Any]:
         await ensure_viewport(sim.page)
         png = fit_frame(await _screenshot(sim.page, timeout_ms=10000))
         return await _observation(sim, png)
+
+
+async def _wait_rendered(page: Any, *, budget_s: float = 10.0) -> None:
+    """Give a client-rendered app time to paint before the opening screenshot.
+
+    Loop 13 LogSnag: app.logsnag.com was still a white frame when step 0 was
+    captured, so proof failed screenshots_real at step 0 although every later
+    step rendered. Polls until the frame is no longer blank (or the budget runs out).
+    """
+    from mvp.sim_mcp.report import frame_unrendered
+
+    deadline = time.time() + budget_s
+    while time.time() < deadline:
+        try:
+            if not frame_unrendered(fit_frame(await _screenshot(page, timeout_ms=5000))):
+                return
+        except Exception:  # noqa: BLE001
+            return
+        await asyncio.sleep(1.0)
 
 
 async def _screenshot(page: Any, *, timeout_ms: int) -> bytes:
