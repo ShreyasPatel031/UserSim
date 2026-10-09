@@ -341,3 +341,25 @@ class HostBrandLabelTests(unittest.TestCase):
         with mock.patch.object(ec, "_imap_creds", return_value=("usersim.signups@gmail.com", "x")), \
                 mock.patch.object(ec, "_iter_recent_messages", return_value=iter([msg])):
             self.assertEqual(ec.latest_signup_code("usersim.signups+t1@gmail.com", host="app.frill.co"), "7xq21z")
+
+
+class BlockedOffsiteTests(unittest.TestCase):
+    """Loop 13 (UptimeRobot): an 'Open Yahoo Mail' button led into Yahoo's signup form."""
+
+    def test_webmail_and_social_hosts_are_blocked(self):
+        from mvp.sim_mcp import sessions as S
+        p = "https://dashboard.uptimerobot.com/sign-up/"
+        for u in ("https://mail.yahoo.com/", "https://login.yahoo.com/account/create?x=1",
+                  "https://outlook.live.com/mail/", "https://mail.google.com/mail/u/0/", "https://x.com/i/flow/signup"):
+            self.assertTrue(S.blocked_offsite(u, p), u)
+
+    def test_product_and_its_auth_hosts_are_not_blocked(self):
+        from mvp.sim_mcp import sessions as S
+        p = "https://dashboard.uptimerobot.com/sign-up/"
+        for u in ("https://uptimerobot.com/dashboard", "https://dashboard.uptimerobot.com/monitors",
+                  "https://foo.clerk.accounts.dev/sign-up", "https://box.com/", "https://max.com/"):
+            self.assertFalse(S.blocked_offsite(u, p), u)
+
+    def test_product_that_is_itself_listed_is_not_blocked(self):
+        from mvp.sim_mcp import sessions as S
+        self.assertFalse(S.blocked_offsite("https://www.linkedin.com/signup", "https://www.linkedin.com/"))

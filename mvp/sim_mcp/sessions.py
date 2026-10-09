@@ -69,6 +69,25 @@ def blocked_signin(url: str) -> bool:
     return any(host == h or host.endswith("." + h) for h in BLOCKED_SIGNIN_HOSTS)
 
 
+# Webmail and third-party account sites a product's "open your inbox" buttons
+# lead to. The simulated user must never sign in or create accounts there
+# (Loop 12/13: UptimeRobot's "Open Yahoo Mail" button led the driver into
+# Yahoo's account-creation form, typing the signup password).
+BLOCKED_OFFSITE_HOSTS = (
+    "mail.yahoo.com", "login.yahoo.com", "mail.google.com", "outlook.live.com",
+    "login.live.com", "outlook.office.com", "outlook.office365.com", "mail.proton.me",
+    "account.proton.me", "icloud.com", "mail.aol.com", "login.aol.com", "mail.zoho.com",
+    "facebook.com", "twitter.com", "x.com", "linkedin.com",
+)
+
+
+def blocked_offsite(url: str, product_url: str = "") -> bool:
+    host = (urlsplit(url or "").hostname or "").lower()
+    if not host or (product_url and same_site(url, product_url)):
+        return False
+    return any(host == h or host.endswith("." + h) for h in BLOCKED_OFFSITE_HOSTS)
+
+
 # Sign-in providers a product may hand the user to mid-task.
 AUTH_HOSTS = (
     "login.microsoftonline.com",
@@ -968,6 +987,12 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
             watched.on("request", _on_request)
         except Exception:  # noqa: BLE001
             watched = None
+        if blocked_offsite(sim.page.url, sim.product_url):
+            # Already on a webmail / third-party account page: do not type there.
+            await sim.page.goto(sim.product_url, timeout=20000)
+            await _settle(sim.page)
+            action = {"type": "wait", "ms": 0}
+            error = "Was on a mail provider / third-party account site; went back to the product instead of acting there"
         try:
             await _execute(sim.page, action)
         except SessionError:
@@ -989,6 +1014,16 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
             error = "Google/GitHub sign-in is not allowed; use the email signup (went back)"
             try:
                 await sim.page.go_back(timeout=10000)
+            except Exception:  # noqa: BLE001
+                await sim.page.goto(sim.product_url, timeout=20000)
+            await _settle(sim.page)
+        elif blocked_offsite(sim.page.url, sim.product_url):
+            error = (
+                "That opened a mail provider / third-party account site, not the product. "
+                "Never sign in or create accounts there; use usersim_wait_for_verification_link/_code (went back)"
+            )
+            try:
+                await sim.page.goto(url_before if not blocked_offsite(url_before, sim.product_url) else sim.product_url, timeout=20000)
             except Exception:  # noqa: BLE001
                 await sim.page.goto(sim.product_url, timeout=20000)
             await _settle(sim.page)
