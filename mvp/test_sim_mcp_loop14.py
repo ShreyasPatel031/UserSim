@@ -145,3 +145,11 @@ def test_plain_field_still_checked():
     v = asyncio.run(_active_value(html, "const e=document.getElementById('e');e.value='abc';e.focus()", (100, 30)))
     assert v == "abc"
 
+
+def test_alias_rejection_canonical_wording():
+    from mvp.sim_mcp.sessions import _ALIAS_RE
+
+    assert _ALIAS_RE.search("Invalid `email` param: Value must be a valid email address in its canonical form")
+    assert _ALIAS_RE.search("Please use a canonical email address")
+    assert not _ALIAS_RE.search("Canonical URL for this page")
+    assert _ALIAS_RE.search("Email aliases (+) are not allowed")

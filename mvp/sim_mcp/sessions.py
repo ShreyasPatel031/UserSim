@@ -1347,7 +1347,9 @@ async def recaptcha_challenge_open(page: Any) -> bool:
     return bool(st.get("challenge_open"))
 
 
-_ALIAS_RE = __import__("re").compile(r"(?i)(alias|\+|plus)[^.]{0,60}(not allowed|not supported|isn.t allowed|invalid)|(not allowed|cannot)[^.]{0,40}(alias|\+)")
+# Loop 14 Appwrite: "... email address ... in its canonical form" (a toast) also means '+' aliases are refused.
+_ALIAS_RE = __import__("re").compile(r"(?i)(alias|\+|plus)[^.]{0,60}(not allowed|not supported|isn.t allowed|invalid)|(not allowed|cannot)[^.]{0,40}(alias|\+)"
+                                     r"|(e-?mail|address)[^.]{0,60}canonical|canonical (form|e-?mail|address)")
 
 
 async def _alias_rejected(page: Any) -> bool:
