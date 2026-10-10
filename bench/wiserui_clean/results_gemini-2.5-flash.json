@@ -1,0 +1,97 @@
+{
+ "model": "gemini-2.5-flash",
+ "image_set": "bench/wiserui_clean (300 pairs)",
+ "arms": {
+  "zero_shot": {
+   "n_pairs": 300,
+   "CA": 29.3,
+   "AA": 57.2,
+   "FA": 31.3,
+   "SA": 83.0,
+   "pick_first_pct": 23.7,
+   "unparsed": 6,
+   "CA_95ci": [
+    24.3,
+    34.7
+   ],
+   "errors": 0,
+   "by_source": {
+    "abtest.design": {
+     "n_pairs": 29,
+     "CA": 31.0,
+     "AA": 55.2,
+     "FA": 31.0,
+     "SA": 79.3,
+     "pick_first_pct": 25.9,
+     "unparsed": 0
+    },
+    "goodui.org": {
+     "n_pairs": 103,
+     "CA": 21.4,
+     "AA": 49.0,
+     "FA": 25.2,
+     "SA": 72.8,
+     "pick_first_pct": 25.7,
+     "unparsed": 3
+    },
+    "vwo.com": {
+     "n_pairs": 168,
+     "CA": 33.9,
+     "AA": 62.5,
+     "FA": 35.1,
+     "SA": 89.9,
+     "pick_first_pct": 22.0,
+     "unparsed": 3
+    }
+   },
+   "cost_usd": 0.972,
+   "calls": 617
+  },
+  "gfocus": {
+   "n_pairs": 300,
+   "CA": 52.3,
+   "AA": 66.7,
+   "FA": 61.3,
+   "SA": 72.0,
+   "pick_first_pct": 44.7,
+   "unparsed": 1,
+   "CA_95ci": [
+    46.7,
+    58.0
+   ],
+   "errors": 0,
+   "by_source": {
+    "abtest.design": {
+     "n_pairs": 29,
+     "CA": 69.0,
+     "AA": 82.8,
+     "FA": 75.9,
+     "SA": 89.7,
+     "pick_first_pct": 43.1,
+     "unparsed": 0
+    },
+    "goodui.org": {
+     "n_pairs": 103,
+     "CA": 35.9,
+     "AA": 56.3,
+     "FA": 46.6,
+     "SA": 66.0,
+     "pick_first_pct": 40.3,
+     "unparsed": 1
+    },
+    "vwo.com": {
+     "n_pairs": 168,
+     "CA": 59.5,
+     "AA": 70.2,
+     "FA": 67.9,
+     "SA": 72.6,
+     "pick_first_pct": 47.6,
+     "unparsed": 0
+    }
+   },
+   "cost_usd": 3.277,
+   "calls": 3002
+  }
+ },
+ "new_spend_usd": 4.191
+}
