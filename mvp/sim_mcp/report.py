@@ -229,6 +229,29 @@ def _same_registrable(row: dict[str, Any]) -> bool:
     return bool(a and b) and registrable_domain(a) == registrable_domain(b)
 
 
+# A product whose own signup is hosted by its parent company's identity service. Strict: the product's registrable
+# domain maps to the exact parent registrable domains allowed; nothing else is ever accepted.
+PARENT_AUTH_DOMAINS: dict[str, frozenset[str]] = {
+    "bugsnag.com": frozenset({"smartbear.com"}),  # SmartBear owns Bugsnag; signup runs on auth.id.smartbear.com
+}
+
+
+def _parent_auth_opened(row: dict[str, Any]) -> bool:
+    """The run opened on the product's parent-company auth domain AND ended signed in on the product itself."""
+    from urllib.parse import urlsplit
+
+    from mvp.e2e2_gates import opened_url_of
+    from mvp.sim_mcp.sessions import registrable_domain
+
+    site = registrable_domain(urlsplit(str(row.get("site_url") or "")).hostname or "")
+    opened = registrable_domain(urlsplit(str(opened_url_of(row) or "")).hostname or "")
+    final = registrable_domain(urlsplit(str(row.get("final_url") or "")).hostname or "")
+    if not site or opened not in PARENT_AUTH_DOMAINS.get(site, frozenset()):
+        return False
+    verdict = row.get("page_verdict") if isinstance(row.get("page_verdict"), dict) else {}
+    return final == site and bool(verdict.get("signed_in_app_page"))
+
+
 def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) -> dict[str, Any]:
     """Did a real browser on the real product do real actions that a person could watch?
 
@@ -241,7 +264,7 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
     bad_shots = [s["step"] for s in steps if not _shot_ok(str(study.get("id")), aid, s)]
     site = row.get("site_url")
     checks = [
-        ("opened_on_product", opened_on_assigned_site(row) or _same_registrable(row),
+        ("opened_on_product", opened_on_assigned_site(row) or _same_registrable(row) or _parent_auth_opened(row),
          f"opened {row.get('page_url') or '?'} for {site}", f"opened {row.get('page_url') or '?'}, which is NOT the product {site}"),
         ("real_action", has_click_type_scroll(row), "at least one click, type, or scroll ran on the page",
          "no click, type, or scroll ever ran on the page"),
