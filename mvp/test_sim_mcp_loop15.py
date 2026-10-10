@@ -106,3 +106,42 @@ def test_paid_js_calls_v2_render_callback():
             "window.grecaptcha={execute:function(){},getResponse:function(){return ''}};</script>")
     out, got = asyncio.run(_eval(html, _PAID_JS, ["recaptcha", "TOKEN"]))
     assert out == {"callbacks": 1} and got == "TOKEN"
+
+
+async def _turnstile_key() -> str:
+    from playwright.async_api import async_playwright
+
+    from mvp.sim_mcp.server import _SITEKEY_JS
+
+    async with async_playwright() as p:
+        kw = {"executable_path": _chrome()} if _chrome() else {}
+        try:
+            b = await p.chromium.launch(headless=True, **kw)
+        except Exception as exc:  # noqa: BLE001
+            pytest.skip(f"no browser: {exc!r}")
+        page = await b.new_page()
+
+        async def route(r):
+            if "challenges.cloudflare.com" in r.request.url:
+                await r.fulfill(status=200, body="<html></html>", content_type="text/html")
+            elif r.request.url.startswith("https://site.test/"):
+                await r.fulfill(status=200, content_type="text/html", body=(
+                    "<div id=w></div><script>const f=document.createElement('iframe');"
+                    "f.src='https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/x/"
+                    "0x4AAAAAAAtestKeyTestKey/auto/fbE/new/normal';"
+                    "document.getElementById('w').attachShadow({mode:'closed'}).appendChild(f);</script>"))
+            else:
+                await r.abort()
+
+        await page.route("**/*", route)
+        await page.goto("https://site.test/")
+        await page.wait_for_timeout(500)
+        key = await page.evaluate(_SITEKEY_JS, "turnstile")
+        await b.close()
+        return key
+
+
+def test_turnstile_sitekey_from_resource_timing():
+    # Loop 15 Typefully: explicit render in a closed shadow root; no data-sitekey and no key in the HTML
+    pytest.importorskip("playwright.async_api")
+    assert asyncio.run(_turnstile_key()) == "0x4AAAAAAAtestKeyTestKey"

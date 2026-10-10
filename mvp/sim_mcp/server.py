@@ -685,7 +685,12 @@ _SITEKEY_JS = """(kind) => {
   const html = document.documentElement.outerHTML;
   if (kind === 'turnstile') {
     const el = document.querySelector('[data-sitekey]'); if (el) return el.getAttribute('data-sitekey');
-    const m = html.match(/0x4[A-Za-z0-9_-]{18,}/); return m ? m[0] : '';
+    const m = html.match(/0x4[A-Za-z0-9_-]{18,}/); if (m) return m[0];
+    // explicit render from JS: the widget lives in a closed shadow root, but its challenge-platform request
+    // URL (.../turnstile/.../0x4.../...) is in the page's resource timing even when that request failed
+    const urls = performance.getEntriesByType('resource').map(e => e.name).filter(u => u.includes('challenges.cloudflare.com'));
+    for (const u of urls.reverse()) { const k = u.match(/[/](0x4[A-Za-z0-9_-]{18,})(?:[/]|$)/); if (k) return k[1]; }
+    return '';
   }
   const s = [...document.scripts].map(x => x.src).find(u => /recaptcha.*render=/.test(u));
   if (s) { const k = new URL(s).searchParams.get('render'); if (k && k !== 'explicit') return k; }
