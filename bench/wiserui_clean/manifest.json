@@ -1,0 +1,6241 @@
+{
+ "0": {
+  "index": 0,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/10198/leak083_bfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/10197/leak083_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1073
+  ],
+  "lose_size": [
+   1200,
+   1073
+  ],
+  "audit_flag": null
+ },
+ "1": {
+  "index": 1,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4229/leak023_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4230/leak022_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   800,
+   917
+  ],
+  "lose_size": [
+   800,
+   917
+  ],
+  "audit_flag": null
+ },
+ "2": {
+  "index": 2,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4229/leak023_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4231/leak022_cfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   800,
+   917
+  ],
+  "lose_size": [
+   800,
+   917
+  ],
+  "audit_flag": null
+ },
+ "3": {
+  "index": 3,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/12451/leak0101_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/12452/leak101_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1100
+  ],
+  "lose_size": [
+   1200,
+   1100
+  ],
+  "audit_flag": null
+ },
+ "4": {
+  "index": 4,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4510/leak031_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4512/leak031_cfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1200
+  ],
+  "lose_size": [
+   1200,
+   1200
+  ],
+  "audit_flag": null
+ },
+ "5": {
+  "index": 5,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5936/leak060_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5937/leak060_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1240,
+   1288
+  ],
+  "lose_size": [
+   1240,
+   1288
+  ],
+  "audit_flag": null
+ },
+ "6": {
+  "index": 6,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/7705/leak066_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/7706/leak066_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1140
+  ],
+  "lose_size": [
+   1200,
+   1140
+  ],
+  "audit_flag": null
+ },
+ "7": {
+  "index": 7,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5087/leak045_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5086/leak045_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)",
+   "win: removed 1 leftover GoodUI marker(s)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1180,
+   2593
+  ],
+  "lose_size": [
+   1180,
+   2593
+  ],
+  "audit_flag": null
+ },
+ "8": {
+  "index": 8,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5016/leak044_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5014/leak044_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1170,
+   1500
+  ],
+  "lose_size": [
+   1170,
+   1500
+  ],
+  "audit_flag": null
+ },
+ "9": {
+  "index": 9,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/13510/leak111_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/13509/leak111_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1093
+  ],
+  "lose_size": [
+   1200,
+   1093
+  ],
+  "audit_flag": null
+ },
+ "10": {
+  "index": 10,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/12884/leak105_cfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/12882/leak105_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   680,
+   1565
+  ],
+  "lose_size": [
+   680,
+   1565
+  ],
+  "audit_flag": null
+ },
+ "11": {
+  "index": 11,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/12884/leak105_cfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/12883/leak105_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   680,
+   1565
+  ],
+  "lose_size": [
+   680,
+   1565
+  ],
+  "audit_flag": null
+ },
+ "12": {
+  "index": 12,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/12884/leak105_cfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/12885/leak105_dfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   680,
+   1565
+  ],
+  "lose_size": [
+   920,
+   1565
+  ],
+  "audit_flag": null
+ },
+ "13": {
+  "index": 13,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3628/leak005_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3635/leak005_efull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1188,
+   1445
+  ],
+  "lose_size": [
+   1188,
+   2981
+  ],
+  "audit_flag": null
+ },
+ "14": {
+  "index": 14,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5856/leak058_bfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5855/leak058_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1400,
+   1308
+  ],
+  "lose_size": [
+   1400,
+   1308
+  ],
+  "audit_flag": null
+ },
+ "15": {
+  "index": 15,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/6008/leak063_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/6006/leak063_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   800,
+   820
+  ],
+  "lose_size": [
+   800,
+   820
+  ],
+  "audit_flag": null
+ },
+ "16": {
+  "index": 16,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/6092/leak064_bfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/6091/leak064_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1380,
+   944
+  ],
+  "lose_size": [
+   1380,
+   944
+  ],
+  "audit_flag": null
+ },
+ "17": {
+  "index": 17,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5006/leak047_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5004/leak047_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   300,
+   500
+  ],
+  "lose_size": [
+   300,
+   500
+  ],
+  "audit_flag": null
+ },
+ "18": {
+  "index": 18,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5006/leak047_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5005/leak047_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   300,
+   500
+  ],
+  "lose_size": [
+   300,
+   500
+  ],
+  "audit_flag": null
+ },
+ "19": {
+  "index": 19,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5006/leak047_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5007/leak047_dfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   300,
+   500
+  ],
+  "lose_size": [
+   300,
+   500
+  ],
+  "audit_flag": null
+ },
+ "20": {
+  "index": 20,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5006/leak047_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5009/leak047_ffull.jpg",
+  "url_override": true,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   300,
+   500
+  ],
+  "lose_size": [
+   300,
+   500
+  ],
+  "audit_flag": null
+ },
+ "21": {
+  "index": 21,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5006/leak047_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5097/leak047_hfull.jpg",
+  "url_override": true,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   300,
+   500
+  ],
+  "lose_size": [
+   300,
+   500
+  ],
+  "audit_flag": null
+ },
+ "22": {
+  "index": 22,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5752/leak055_bfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5751/leak055_afull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   781
+  ],
+  "lose_size": [
+   1200,
+   781
+  ],
+  "audit_flag": null
+ },
+ "23": {
+  "index": 23,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4493/leak030_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4494/leak030_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1280
+  ],
+  "lose_size": [
+   1200,
+   1280
+  ],
+  "audit_flag": null
+ },
+ "24": {
+  "index": 24,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/9241/leak075_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/9240/leak075_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   865
+  ],
+  "lose_size": [
+   1200,
+   865
+  ],
+  "audit_flag": null
+ },
+ "25": {
+  "index": 25,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5901/leak059_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5900/leak059_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1400,
+   1288
+  ],
+  "lose_size": [
+   1400,
+   1288
+  ],
+  "audit_flag": null
+ },
+ "26": {
+  "index": 26,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3693/leak006_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3692/leak006_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   951
+  ],
+  "lose_size": [
+   1200,
+   951
+  ],
+  "audit_flag": null
+ },
+ "27": {
+  "index": 27,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/12181/leak099_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/12182/leak099_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1240,
+   1288
+  ],
+  "lose_size": [
+   1240,
+   1288
+  ],
+  "audit_flag": null
+ },
+ "28": {
+  "index": 28,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/11558/leak094_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/11559/leak094_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   900,
+   550
+  ],
+  "lose_size": [
+   900,
+   550
+  ],
+  "audit_flag": null
+ },
+ "29": {
+  "index": 29,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/11558/leak094_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/11561/leak094_dfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   900,
+   550
+  ],
+  "lose_size": [
+   900,
+   550
+  ],
+  "audit_flag": null
+ },
+ "30": {
+  "index": 30,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/9718/leak078_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/9716/leak078_afull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1060,
+   1490
+  ],
+  "lose_size": [
+   1060,
+   1490
+  ],
+  "audit_flag": null
+ },
+ "31": {
+  "index": 31,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/9718/leak078_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/9717/leak078_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1060,
+   1490
+  ],
+  "lose_size": [
+   1060,
+   1490
+  ],
+  "audit_flag": {
+   "lose": [
+    "Etsy's Pick"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "32": {
+  "index": 32,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/13053/leak107_bfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/13052/leak107_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   823
+  ],
+  "lose_size": [
+   1200,
+   823
+  ],
+  "audit_flag": null
+ },
+ "33": {
+  "index": 33,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/10740/leak08b_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/10741/leak08b_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1000
+  ],
+  "lose_size": [
+   1200,
+   1000
+  ],
+  "audit_flag": null
+ },
+ "34": {
+  "index": 34,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/11658/leak095_dfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/11654/leak095_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   700,
+   1239
+  ],
+  "lose_size": [
+   700,
+   1239
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight"
+   ],
+   "lose": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "35": {
+  "index": 35,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/7841/leak067_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/7840/leak067_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   800
+  ],
+  "lose_size": [
+   1200,
+   800
+  ],
+  "audit_flag": {
+   "win": [
+    "Amazon's Choice"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "36": {
+  "index": 36,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5549/leak053_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5550/leak053_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)",
+   "lose: removed 1 leftover GoodUI marker(s)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   781
+  ],
+  "lose_size": [
+   1200,
+   781
+  ],
+  "audit_flag": null
+ },
+ "37": {
+  "index": 37,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4467/leak029_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4468/leak029_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   981
+  ],
+  "lose_size": [
+   1200,
+   981
+  ],
+  "audit_flag": null
+ },
+ "38": {
+  "index": 38,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4109/leak019_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4110/leak019_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   800,
+   817
+  ],
+  "lose_size": [
+   800,
+   817
+  ],
+  "audit_flag": null
+ },
+ "39": {
+  "index": 39,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4109/leak019_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4111/leak019_cfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   800,
+   817
+  ],
+  "lose_size": [
+   800,
+   817
+  ],
+  "audit_flag": null
+ },
+ "40": {
+  "index": 40,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4109/leak019_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4112/leak019_dfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   800,
+   817
+  ],
+  "lose_size": [
+   800,
+   817
+  ],
+  "audit_flag": null
+ },
+ "41": {
+  "index": 41,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4544/leak032_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4545/leak032_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   720,
+   1059
+  ],
+  "lose_size": [
+   720,
+   1059
+  ],
+  "audit_flag": null
+ },
+ "42": {
+  "index": 42,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4544/leak032_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4546/leak032_cfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   720,
+   1059
+  ],
+  "lose_size": [
+   720,
+   1059
+  ],
+  "audit_flag": null
+ },
+ "43": {
+  "index": 43,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/8856/leak072_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/8857/leak072_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   865
+  ],
+  "lose_size": [
+   1200,
+   865
+  ],
+  "audit_flag": {
+   "lose": [
+    "Bestseller"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "44": {
+  "index": 44,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/13363/leak110_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/13364/leak110_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1080
+  ],
+  "lose_size": [
+   1200,
+   1080
+  ],
+  "audit_flag": null
+ },
+ "45": {
+  "index": 45,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/10056/leak081_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/10055/leak081_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   868
+  ],
+  "lose_size": [
+   1200,
+   869
+  ],
+  "audit_flag": null
+ },
+ "46": {
+  "index": 46,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3581/leak004_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3582/leak004_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   884
+  ],
+  "lose_size": [
+   1200,
+   884
+  ],
+  "audit_flag": null
+ },
+ "47": {
+  "index": 47,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4388/leak026_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4387/leak026_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   981
+  ],
+  "lose_size": [
+   1200,
+   981
+  ],
+  "audit_flag": null
+ },
+ "48": {
+  "index": 48,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/13268/leak109_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/13269/leak109_cfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   685
+  ],
+  "lose_size": [
+   1200,
+   685
+  ],
+  "audit_flag": null
+ },
+ "49": {
+  "index": 49,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5787/leak056_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5786/leak056_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1000,
+   1074
+  ],
+  "lose_size": [
+   1000,
+   1074
+  ],
+  "audit_flag": null
+ },
+ "50": {
+  "index": 50,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3928/leak013_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3927/leak013_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   921
+  ],
+  "lose_size": [
+   1199,
+   921
+  ],
+  "audit_flag": null
+ },
+ "51": {
+  "index": 51,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/10165/leak082_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/10164/leak082_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1073
+  ],
+  "lose_size": [
+   1200,
+   1073
+  ],
+  "audit_flag": {
+   "win": [
+    "Popular pick",
+    "Best seller"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "52": {
+  "index": 52,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4271/leak024_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4272/leak024_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1501
+  ],
+  "lose_size": [
+   1200,
+   1749
+  ],
+  "audit_flag": null
+ },
+ "53": {
+  "index": 53,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5982/leak062_ffull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5977/leak062_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)",
+   "win: removed 2 leftover GoodUI marker(s)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1184,
+   1000
+  ],
+  "lose_size": [
+   1184,
+   1000
+  ],
+  "audit_flag": null
+ },
+ "54": {
+  "index": 54,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5982/leak062_ffull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5978/leak062_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)",
+   "win: removed 2 leftover GoodUI marker(s)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1184,
+   1000
+  ],
+  "lose_size": [
+   1184,
+   1000
+  ],
+  "audit_flag": null
+ },
+ "55": {
+  "index": 55,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5982/leak062_ffull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5979/leak062_cfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)",
+   "win: removed 2 leftover GoodUI marker(s)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1184,
+   1000
+  ],
+  "lose_size": [
+   1184,
+   1000
+  ],
+  "audit_flag": null
+ },
+ "56": {
+  "index": 56,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4061/leak017_bfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4060/leak017_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1000,
+   992
+  ],
+  "lose_size": [
+   1000,
+   992
+  ],
+  "audit_flag": null
+ },
+ "57": {
+  "index": 57,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4602/leak034_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4601/leak034_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1800
+  ],
+  "lose_size": [
+   1200,
+   1800
+  ],
+  "audit_flag": null
+ },
+ "58": {
+  "index": 58,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/10539/leak086_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/10540/leak086_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1200
+  ],
+  "lose_size": [
+   1200,
+   1200
+  ],
+  "audit_flag": null
+ },
+ "59": {
+  "index": 59,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5961/leak061_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5960/leak061_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1201,
+   869
+  ],
+  "lose_size": [
+   1200,
+   869
+  ],
+  "audit_flag": null
+ },
+ "60": {
+  "index": 60,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/10610/leak087_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/10611/leak087_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   900
+  ],
+  "lose_size": [
+   1200,
+   900
+  ],
+  "audit_flag": null
+ },
+ "61": {
+  "index": 61,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4826/leak040_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4827/leak040_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1145
+  ],
+  "lose_size": [
+   1200,
+   1145
+  ],
+  "audit_flag": null
+ },
+ "62": {
+  "index": 62,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4418/leak027_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4419/leak027_bfull.jpg",
+  "url_override": true,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   981
+  ],
+  "lose_size": [
+   1200,
+   981
+  ],
+  "label_note": "GoodUI leak #27 later added: 'the outcome of the experiment was flipped with black being the eventual implementation'. The dataset (and this set) keeps orange as the winner.",
+  "audit_flag": null
+ },
+ "63": {
+  "index": 63,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4211/leak022_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4212/leak022_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   900,
+   750
+  ],
+  "lose_size": [
+   900,
+   750
+  ],
+  "audit_flag": null
+ },
+ "64": {
+  "index": 64,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4211/leak022_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4213/leak022_cfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   900,
+   750
+  ],
+  "lose_size": [
+   900,
+   750
+  ],
+  "audit_flag": null
+ },
+ "65": {
+  "index": 65,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5181/leak048_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5180/leak048_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1000,
+   817
+  ],
+  "lose_size": [
+   1000,
+   817
+  ],
+  "audit_flag": null
+ },
+ "66": {
+  "index": 66,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/7957/leak068_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/7958/leak068_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)",
+   "lose: removed 1 leftover GoodUI marker(s)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   800
+  ],
+  "lose_size": [
+   1200,
+   800
+  ],
+  "audit_flag": null
+ },
+ "67": {
+  "index": 67,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/8661/leak070_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/8662/leak070_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   800
+  ],
+  "lose_size": [
+   1200,
+   800
+  ],
+  "audit_flag": null
+ },
+ "68": {
+  "index": 68,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/11879/leak096_cfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/11877/leak096_afull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   600,
+   1293
+  ],
+  "lose_size": [
+   600,
+   1293
+  ],
+  "audit_flag": {
+   "win": [
+    "Amazon's Choice",
+    "Best Seller"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "69": {
+  "index": 69,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/11879/leak096_cfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/11880/leak096_dfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   600,
+   1293
+  ],
+  "lose_size": [
+   600,
+   1293
+  ],
+  "audit_flag": {
+   "win": [
+    "Amazon's Choice",
+    "Best Seller"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "70": {
+  "index": 70,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/9337/leak076_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/9336/leak076_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   865
+  ],
+  "lose_size": [
+   1200,
+   865
+  ],
+  "audit_flag": null
+ },
+ "71": {
+  "index": 71,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5378/leak052_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5379/leak052_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   900,
+   781
+  ],
+  "lose_size": [
+   900,
+   781
+  ],
+  "audit_flag": {
+   "win": [
+    "Amazon's Choice"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "72": {
+  "index": 72,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/13189/leak108_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/13190/leak108_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   740
+  ],
+  "lose_size": [
+   1200,
+   740
+  ],
+  "audit_flag": {
+   "win": [
+    "DEFAULT STATE",
+    "HOVER STATE"
+   ],
+   "lose": [
+    "DEFAULT STATE",
+    "HOVER STATE"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "73": {
+  "index": 73,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/6280/leak065_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/6279/leak065_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1140
+  ],
+  "lose_size": [
+   1200,
+   1140
+  ],
+  "audit_flag": null
+ },
+ "74": {
+  "index": 74,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5808/leak057_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5807/leak057_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1400,
+   885
+  ],
+  "lose_size": [
+   1400,
+   885
+  ],
+  "audit_flag": null
+ },
+ "75": {
+  "index": 75,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4574/leak033_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4573/leak033_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1800
+  ],
+  "lose_size": [
+   1200,
+   1800
+  ],
+  "audit_flag": null
+ },
+ "76": {
+  "index": 76,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/11052/leak089_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/11053/leak089_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   781
+  ],
+  "lose_size": [
+   1200,
+   781
+  ],
+  "audit_flag": null
+ },
+ "77": {
+  "index": 77,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3710/leak007_cfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3708/leak007_afull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1100,
+   1687
+  ],
+  "lose_size": [
+   1100,
+   1688
+  ],
+  "audit_flag": null
+ },
+ "78": {
+  "index": 78,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3710/leak007_cfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3709/leak007_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1100,
+   1687
+  ],
+  "lose_size": [
+   1100,
+   1688
+  ],
+  "audit_flag": null
+ },
+ "79": {
+  "index": 79,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3710/leak007_cfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3711/leak007_dfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1100,
+   1687
+  ],
+  "lose_size": [
+   1100,
+   1686
+  ],
+  "audit_flag": null
+ },
+ "80": {
+  "index": 80,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/9193/leak074_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/9194/leak074_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   865
+  ],
+  "lose_size": [
+   1200,
+   865
+  ],
+  "audit_flag": {
+   "win": [
+    "Bestseller"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "81": {
+  "index": 81,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4731/leak037_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4730/leak037_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1000
+  ],
+  "lose_size": [
+   1200,
+   1000
+  ],
+  "audit_flag": null
+ },
+ "82": {
+  "index": 82,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/9437/leak077_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/9436/leak077_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   865
+  ],
+  "lose_size": [
+   1200,
+   865
+  ],
+  "audit_flag": null
+ },
+ "83": {
+  "index": 83,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/10454/leak085_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/10453/leak085_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   977
+  ],
+  "lose_size": [
+   1200,
+   977
+  ],
+  "audit_flag": null
+ },
+ "84": {
+  "index": 84,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3296/leak001_bfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3295/leak001_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1274
+  ],
+  "lose_size": [
+   1200,
+   1274
+  ],
+  "audit_flag": null
+ },
+ "85": {
+  "index": 85,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/11231/leak091_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/11230/leak091_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   800
+  ],
+  "lose_size": [
+   1200,
+   800
+  ],
+  "audit_flag": null
+ },
+ "86": {
+  "index": 86,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4798/leak039_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4799/leak039_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1079
+  ],
+  "lose_size": [
+   1200,
+   1079
+  ],
+  "audit_flag": {
+   "lose": [
+    "B"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "87": {
+  "index": 87,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4080/leak018_dfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4079/leak018_cfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1000,
+   992
+  ],
+  "lose_size": [
+   1000,
+   992
+  ],
+  "audit_flag": null
+ },
+ "88": {
+  "index": 88,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3869/leak011_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3870/leak011_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1100,
+   911
+  ],
+  "lose_size": [
+   1100,
+   911
+  ],
+  "audit_flag": null
+ },
+ "89": {
+  "index": 89,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/12940/leak106_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/12939/leak106_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   748
+  ],
+  "lose_size": [
+   1200,
+   748
+  ],
+  "audit_flag": null
+ },
+ "90": {
+  "index": 90,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/4959/leak043_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/4958/leak043_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   917
+  ],
+  "lose_size": [
+   1200,
+   917
+  ],
+  "audit_flag": null
+ },
+ "91": {
+  "index": 91,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3945/leak014_bfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3944/leak014_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1000,
+   1140
+  ],
+  "lose_size": [
+   1000,
+   1140
+  ],
+  "audit_flag": null
+ },
+ "92": {
+  "index": 92,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5117/leak046_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5118/leak046_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1000,
+   817
+  ],
+  "lose_size": [
+   1000,
+   817
+  ],
+  "audit_flag": null
+ },
+ "93": {
+  "index": 93,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5729/leak054_cfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5727/leak054_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1000,
+   1074
+  ],
+  "lose_size": [
+   1000,
+   1074
+  ],
+  "audit_flag": null
+ },
+ "94": {
+  "index": 94,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5729/leak054_cfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5728/leak054_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1000,
+   1074
+  ],
+  "lose_size": [
+   1000,
+   1074
+  ],
+  "audit_flag": null
+ },
+ "95": {
+  "index": 95,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/11189/leak090_afull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/11190/leak090_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   800
+  ],
+  "lose_size": [
+   1200,
+   800
+  ],
+  "audit_flag": null
+ },
+ "96": {
+  "index": 96,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/5220/leak050_afull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/5221/leak050_bfull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   900,
+   781
+  ],
+  "lose_size": [
+   900,
+   781
+  ],
+  "audit_flag": null
+ },
+ "97": {
+  "index": 97,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/12628/leak103_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/12627/leak103_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1073
+  ],
+  "lose_size": [
+   1200,
+   1073
+  ],
+  "audit_flag": null
+ },
+ "98": {
+  "index": 98,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3756/leak008_bfull-1.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3755/leak008_afull-1.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)",
+   "win: removed 1 leftover GoodUI marker(s)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1583,
+   2539
+  ],
+  "lose_size": [
+   1583,
+   2539
+  ],
+  "audit_flag": null
+ },
+ "99": {
+  "index": 99,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3484/leak002_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3388/leak002_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   920,
+   1630
+  ],
+  "lose_size": [
+   920,
+   1630
+  ],
+  "audit_flag": {
+   "lose": [
+    "New",
+    "New",
+    "New",
+    "New"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "100": {
+  "index": 100,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3796/leak009_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3794/leak009_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1274
+  ],
+  "lose_size": [
+   1200,
+   1274
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "101": {
+  "index": 101,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/3796/leak009_cfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/3795/leak009_bfull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   1274
+  ],
+  "lose_size": [
+   1200,
+   1274
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "102": {
+  "index": 102,
+  "source_site": "goodui.org",
+  "win_url": "https://goodui.org/site/assets/files/11447/leak093_bfull.jpg",
+  "lose_url": "https://goodui.org/site/assets/files/11446/leak093_afull.jpg",
+  "url_override": false,
+  "steps": [
+   "repo process_image (GoodUI marker inpainting)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1240,
+   1074
+  ],
+  "lose_size": [
+   1240,
+   1074
+  ],
+  "audit_flag": null
+ },
+ "103": {
+  "index": 103,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2022/12/Human-Interest-2.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2022/12/Human-Interest-2.png",
+  "url_override": true,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: trim frame lines -> (2, 7, 1012, 381)",
+   "lose: trim frame lines -> (2, 4, 1018, 372)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1010,
+   374
+  ],
+  "lose_size": [
+   1016,
+   368
+  ],
+  "audit_flag": null
+ },
+ "104": {
+  "index": 104,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2024/10/EnergySage-Case-Study-1.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2024/10/EnergySage-Case-Study-1.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in (40, 930, 540, 1150) (27845 px)",
+   "win: crop to (9, 0, 1360, 1487)",
+   "lose: crop to (0, 11, 909, 987)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1351,
+   1487
+  ],
+  "lose_size": [
+   909,
+   976
+  ],
+  "audit_flag": null
+ },
+ "105": {
+  "index": 105,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/42_BaseKit_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/42_BaseKit_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   630,
+   959
+  ],
+  "lose_size": [
+   630,
+   942
+  ],
+  "audit_flag": {
+   "win": [
+    "MOST POPULAR",
+    "WINNER 2008",
+    "Editors Choice"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "106": {
+  "index": 106,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2023/07/Planoly-case-study-1-scaled.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2023/07/Planoly-case-study-1-scaled.jpg",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: crop (1219, 478, 1482, 1110) from the composite image",
+   "lose: crop (82, 476, 348, 1110) from the composite image"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   263,
+   632
+  ],
+  "lose_size": [
+   266,
+   634
+  ],
+  "audit_flag": {
+   "win": [
+    "NEW!"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "107": {
+  "index": 107,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2023/07/Planoly-case-study-1-1-scaled.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2023/07/Planoly-case-study-1-1-scaled.jpg",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: crop (1321, 519, 1608, 1140) from the composite image",
+   "lose: crop (87, 516, 375, 1157) from the composite image"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   287,
+   621
+  ],
+  "lose_size": [
+   288,
+   641
+  ],
+  "audit_flag": null
+ },
+ "108": {
+  "index": 108,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/2pluimen_challenger-e1404989852651.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/1pluimen_original-e1404988012211.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   634,
+   537
+  ],
+  "lose_size": [
+   634,
+   615
+  ],
+  "audit_flag": null
+ },
+ "109": {
+  "index": 109,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2020/11/Qualicorp-Test1@1x.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2020/11/Qualicorp-Test1@1x.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "lose: remove strokes rgb(245, 15, 15) tol 8 in image (16940 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   608,
+   988
+  ],
+  "lose_size": [
+   608,
+   990
+  ],
+  "audit_flag": {
+   "lose": [
+    "VWO"
+   ]
+  },
+  "review": "kept: VWO watermark / preview widget on both versions"
+ },
+ "110": {
+  "index": 110,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2020/11/Qualicorp-Test2@1x.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2020/11/Qualicorp-Test2@1x.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1248,
+   532
+  ],
+  "lose_size": [
+   1248,
+   532
+  ],
+  "audit_flag": null
+ },
+ "111": {
+  "index": 111,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2020/11/Qualicorp-Test1@1x.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2020/11/Qualicorp-Test1@1x.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "lose: remove strokes rgb(245, 15, 15) tol 8 in image (15106 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1075,
+   976
+  ],
+  "lose_size": [
+   1075,
+   972
+  ],
+  "audit_flag": {
+   "lose": [
+    "VWO"
+   ]
+  },
+  "review": "kept: VWO watermark / preview widget on both versions"
+ },
+ "112": {
+  "index": 112,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/35_Ez-Texting_Variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/35_Ez-Texting_Control.png",
+  "url_override": false,
+  "steps": [
+   "win: fill [(382, 344, 500, 395), (410, 395, 453, 447)] with (255, 255, 255)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   500,
+   462
+  ],
+  "lose_size": [
+   450,
+   524
+  ],
+  "audit_flag": null
+ },
+ "113": {
+  "index": 113,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/36_ArtsyEditor_Variation_1.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/36_ArtsyEditor_Variation_2.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   630,
+   313
+  ],
+  "lose_size": [
+   630,
+   318
+  ],
+  "audit_flag": null
+ },
+ "114": {
+  "index": 114,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/36_ArtsyEditor_Variation_1.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/36_ArtsyEditor_Variation_3.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   630,
+   313
+  ],
+  "lose_size": [
+   630,
+   314
+  ],
+  "audit_flag": null
+ },
+ "115": {
+  "index": 115,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/36_ArtsyEditor_Variation_2.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/36_ArtsyEditor_Variation_3.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   630,
+   318
+  ],
+  "lose_size": [
+   630,
+   314
+  ],
+  "audit_flag": null
+ },
+ "116": {
+  "index": 116,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/01/2variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2019/01/1muc-off_control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1229,
+   1585
+  ],
+  "lose_size": [
+   1217,
+   1589
+  ],
+  "audit_flag": null
+ },
+ "117": {
+  "index": 117,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2022/09/Kommunicate-Case-study-2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2022/09/Kommunicate-Case-study-2.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: trim frame lines -> (10, 21, 2051, 1069)",
+   "lose: trim frame lines -> (10, 22, 2051, 1075)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   2041,
+   1048
+  ],
+  "lose_size": [
+   2041,
+   1053
+  ],
+  "audit_flag": null
+ },
+ "118": {
+  "index": 118,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2020/06/logo-with-text.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2020/06/Utsav-2-1.png",
+  "url_override": false,
+  "steps": [
+   "win: crop (670, 50, 1160, 1072) from the lose image",
+   "lose: crop (130, 50, 620, 1072) from the lose image",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in image (20407 px)",
+   "win: inpaint [(242, 640, 332, 678)]"
+  ],
+  "kind": "separate",
+  "win_size": [
+   490,
+   1022
+  ],
+  "lose_size": [
+   490,
+   1022
+  ],
+  "audit_flag": null
+ },
+ "119": {
+  "index": 119,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2024/02/Serpent-case-study-1-scaled.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2024/02/Serpent-case-study-1-scaled.jpg",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: crop (205, 1040, 2235, 2140) from the composite image",
+   "lose: crop (110, 400, 1690, 930) from the composite image",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in image (31117 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   2030,
+   1100
+  ],
+  "lose_size": [
+   1580,
+   530
+  ],
+  "audit_flag": null
+ },
+ "120": {
+  "index": 120,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2thomas_pink_ab_testing_variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1thomas_pink_ab_testing_control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1275,
+   1317
+  ],
+  "lose_size": [
+   1276,
+   1564
+  ],
+  "audit_flag": null
+ },
+ "121": {
+  "index": 121,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/76_2_JellyTelly_comparison.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/76_JellyTelly_control.jpg",
+  "url_override": false,
+  "steps": [
+   "win: crop (322, 46, 613, 386) from the win image",
+   "lose: resize to width 291 (match win)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   291,
+   340
+  ],
+  "lose_size": [
+   291,
+   286
+  ],
+  "audit_flag": null
+ },
+ "122": {
+  "index": 122,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2Winning-Variation1.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1Control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1230,
+   655
+  ],
+  "lose_size": [
+   948,
+   593
+  ],
+  "audit_flag": null
+ },
+ "123": {
+  "index": 123,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/28_Buyakilt_Variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/28_Buyakilt_Control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   963,
+   918
+  ],
+  "lose_size": [
+   966,
+   718
+  ],
+  "audit_flag": null
+ },
+ "124": {
+  "index": 124,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/09/PalTalk-1@2x-3-scaled.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/09/PalTalk-1@2x-3-scaled.jpg",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1192,
+   1083
+  ],
+  "lose_size": [
+   1192,
+   940
+  ],
+  "audit_flag": {
+   "win": [
+    "BEST VALUE"
+   ],
+   "lose": [
+    "Best value"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "125": {
+  "index": 125,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   988,
+   778
+  ],
+  "lose_size": [
+   984,
+   788
+  ],
+  "audit_flag": null
+ },
+ "126": {
+  "index": 126,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/01/3ab_testing_v2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1ab_testing_control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   999,
+   619
+  ],
+  "lose_size": [
+   1005,
+   623
+  ],
+  "audit_flag": {
+   "lose": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "127": {
+  "index": 127,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/01/3ab_testing_v2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2ab_testing_v1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   999,
+   619
+  ],
+  "lose_size": [
+   1001,
+   627
+  ],
+  "audit_flag": {
+   "lose": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "128": {
+  "index": 128,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2ab_testing_v1.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1ab_testing_control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1001,
+   627
+  ],
+  "lose_size": [
+   1005,
+   623
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight"
+   ],
+   "lose": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "129": {
+  "index": 129,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/2variant.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/1control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   545,
+   404
+  ],
+  "lose_size": [
+   572,
+   403
+  ],
+  "audit_flag": null
+ },
+ "130": {
+  "index": 130,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/2mediarich-winner-1.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1mediarich-original-1.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   613,
+   555
+  ],
+  "lose_size": [
+   713,
+   519
+  ],
+  "audit_flag": null
+ },
+ "131": {
+  "index": 131,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/CompareCourses-Variation_600x11781_2.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/CompareCourses-Control_600x1359_1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   600,
+   1178
+  ],
+  "lose_size": [
+   600,
+   1359
+  ],
+  "audit_flag": null
+ },
+ "132": {
+  "index": 132,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/03/14_LKR-Variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/03/14_LKR-Control1.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   705,
+   515
+  ],
+  "lose_size": [
+   705,
+   515
+  ],
+  "audit_flag": {
+   "lose": [
+    "MORE THAN 10,000 SUBSCRIBERS"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "133": {
+  "index": 133,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/2variation-bakker-1.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1control-bakker-1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   783,
+   935
+  ],
+  "lose_size": [
+   797,
+   789
+  ],
+  "audit_flag": null
+ },
+ "134": {
+  "index": 134,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/05/55_SlideShop_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/05/55_SlideShop_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   640,
+   404
+  ],
+  "lose_size": [
+   640,
+   408
+  ],
+  "audit_flag": null
+ },
+ "135": {
+  "index": 135,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/47_WikiJob_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/47_WikiJob_Control.png",
+  "url_override": false,
+  "steps": [
+   "win: undim /0.624 outside (152, 588, 479, 672)",
+   "win: fill [(480, 556, 625, 650)] with (241, 241, 241)",
+   "win: fill [(625, 556, 627, 614)] with (241, 241, 241)",
+   "win: fill [(472, 626, 480, 645)] with (255, 255, 255)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   630,
+   876
+  ],
+  "lose_size": [
+   630,
+   810
+  ],
+  "audit_flag": null
+ },
+ "136": {
+  "index": 136,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/01/3Kaya-Variation2.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2Kaya-Variation.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   697,
+   432
+  ],
+  "lose_size": [
+   758,
+   456
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight"
+   ],
+   "lose": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "137": {
+  "index": 137,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/aarlington-comparison.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/aarlington-comparison.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "lose: crop to (0, 20, 954, 605)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   954,
+   605
+  ],
+  "lose_size": [
+   954,
+   585
+  ],
+  "audit_flag": null
+ },
+ "138": {
+  "index": 138,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2ab_testing_variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1get-a-demo1.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   989,
+   465
+  ],
+  "lose_size": [
+   1104,
+   416
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "139": {
+  "index": 139,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/09/test-1.2.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/09/test-1.1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   416,
+   692
+  ],
+  "lose_size": [
+   434,
+   716
+  ],
+  "audit_flag": {
+   "win": [
+    "VWO"
+   ]
+  },
+  "review": "kept: VWO watermark / preview widget on both versions"
+ },
+ "140": {
+  "index": 140,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/09/test-2.2.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2019/09/test-2.1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1437,
+   788
+  ],
+  "lose_size": [
+   1440,
+   788
+  ],
+  "audit_flag": null
+ },
+ "141": {
+  "index": 141,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/09/test-3.2.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2019/09/test-3.1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1440,
+   789
+  ],
+  "lose_size": [
+   1440,
+   791
+  ],
+  "audit_flag": {
+   "lose": [
+    "VWO"
+   ]
+  },
+  "review": "kept: VWO watermark / preview widget on both versions"
+ },
+ "142": {
+  "index": 142,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/03/11_Product-Image-Variation2.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/03/11_Product-Image-Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   727,
+   573
+  ],
+  "lose_size": [
+   727,
+   661
+  ],
+  "audit_flag": null
+ },
+ "143": {
+  "index": 143,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/02/Article_Blue_Links.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/02/Article_Red_Links.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1893,
+   807
+  ],
+  "lose_size": [
+   1904,
+   799
+  ],
+  "audit_flag": null
+ },
+ "144": {
+  "index": 144,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2020/02/Article_Blue_Links.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/02/Britannica_Subscribe_Copy_2.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1893,
+   807
+  ],
+  "lose_size": [
+   1278,
+   729
+  ],
+  "audit_flag": null
+ },
+ "145": {
+  "index": 145,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/2variation_drop_down_search_box1.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/1control_standard_search_box.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   967,
+   574
+  ],
+  "lose_size": [
+   976,
+   492
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight"
+   ],
+   "lose": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "146": {
+  "index": 146,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/43_Trinity-Insight_Taylor-Gifts_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/43_Trinity-Insight_Taylor-Gifts_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   630,
+   316
+  ],
+  "lose_size": [
+   630,
+   323
+  ],
+  "audit_flag": null
+ },
+ "147": {
+  "index": 147,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/8.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1-3.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   468,
+   361
+  ],
+  "lose_size": [
+   452,
+   569
+  ],
+  "audit_flag": {
+   "win": [
+    "+10%"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "148": {
+  "index": 148,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/10.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1-3.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   467,
+   291
+  ],
+  "lose_size": [
+   452,
+   569
+  ],
+  "audit_flag": null
+ },
+ "149": {
+  "index": 149,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/01/10.jpg",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2019/01/8.jpg",
+  "url_override": true,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   467,
+   291
+  ],
+  "lose_size": [
+   468,
+   361
+  ],
+  "audit_flag": {
+   "lose": [
+    "+10%"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "150": {
+  "index": 150,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2024/10/Case-Study.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2024/10/Case-Study.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1037,
+   2374
+  ],
+  "lose_size": [
+   971,
+   1937
+  ],
+  "audit_flag": null
+ },
+ "151": {
+  "index": 151,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2024/10/Case-Study-1.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2024/10/Case-Study-1.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1022,
+   2371
+  ],
+  "lose_size": [
+   1019,
+   1949
+  ],
+  "audit_flag": null
+ },
+ "152": {
+  "index": 152,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2022/11/Media-contour-lifepro-fitness-3.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2022/11/Media-contour-lifepro-fitness-3.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in image (67101 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1443,
+   894
+  ],
+  "lose_size": [
+   1443,
+   969
+  ],
+  "audit_flag": null
+ },
+ "153": {
+  "index": 153,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   953,
+   861
+  ],
+  "lose_size": [
+   952,
+   929
+  ],
+  "audit_flag": null
+ },
+ "154": {
+  "index": 154,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/payu-casestudy-2-1.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/payu-casestudy-1-1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   946,
+   607
+  ],
+  "lose_size": [
+   889,
+   578
+  ],
+  "audit_flag": null
+ },
+ "155": {
+  "index": 155,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/06/Variation.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/06/Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   999,
+   911
+  ],
+  "lose_size": [
+   992,
+   901
+  ],
+  "audit_flag": {
+   "lose": [
+    "MOST CHOSEN"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "156": {
+  "index": 156,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/03/12_Flying_Scot_Attacat-variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/03/12_Flying_Scot_Attacat-control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   890,
+   709
+  ],
+  "lose_size": [
+   866,
+   611
+  ],
+  "audit_flag": null
+ },
+ "157": {
+  "index": 157,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2023/03/Trent-Drains-Case-study-4.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2023/03/Trent-Drains-Case-study-4.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   584,
+   907
+  ],
+  "lose_size": [
+   585,
+   907
+  ],
+  "audit_flag": null
+ },
+ "158": {
+  "index": 158,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2023/03/Trent-Drains-Case-study-4.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2023/03/Trent-Drains-Case-study-4.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: crop to (33, 0, 542, 902)",
+   "lose: crop to (39, 0, 547, 907)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   509,
+   902
+  ],
+  "lose_size": [
+   508,
+   907
+  ],
+  "audit_flag": null
+ },
+ "159": {
+  "index": 159,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2023/03/Trent-Drains-Case-study-4.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2023/03/Trent-Drains-Case-study-4.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: crop to (21, 0, 530, 883)",
+   "lose: crop to (10, 0, 524, 880)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   509,
+   883
+  ],
+  "lose_size": [
+   514,
+   880
+  ],
+  "audit_flag": null
+ },
+ "160": {
+  "index": 160,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/Vineyard-Variation2.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/Vineyard-Control_1.jpg",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(30, 150, 210) tol 8 in (135, 625, 645, 1115) (14720 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1008,
+   1173
+  ],
+  "lose_size": [
+   1008,
+   1173
+  ],
+  "audit_flag": null
+ },
+ "161": {
+  "index": 161,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/variation1-1.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/control1.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   694,
+   338
+  ],
+  "lose_size": [
+   730,
+   319
+  ],
+  "audit_flag": null
+ },
+ "162": {
+  "index": 162,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/11/P03.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/11/P01.png",
+  "url_override": false,
+  "steps": [
+   "win: fill [(1288, 726, 1348, 766)] with (255, 255, 255)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1348,
+   766
+  ],
+  "lose_size": [
+   1173,
+   773
+  ],
+  "audit_flag": null
+ },
+ "163": {
+  "index": 163,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/12/Group-2-Copy.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2019/11/P03.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   807,
+   669
+  ],
+  "lose_size": [
+   1348,
+   766
+  ],
+  "audit_flag": {
+   "lose": [
+    "VWO"
+   ]
+  },
+  "review": "kept: VWO watermark / preview widget on both versions"
+ },
+ "164": {
+  "index": 164,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/12/imb-bank-success-story-vwo.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/12/imb-bank-success-story-vwo.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in (405, 0, 795, 135) (13667 px)",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in (215, 193, 1155, 260) (26808 px)",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in (36, 690, 180, 735) (4817 px)",
+   "win: inpaint [(763, 105, 865, 151), (1126, 236, 1197, 278), (158, 708, 293, 752)]",
+   "win: crop to (0, 9, 1197, 804)",
+   "lose: crop to (0, 9, 1197, 804)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1197,
+   795
+  ],
+  "lose_size": [
+   1197,
+   795
+  ],
+  "audit_flag": {
+   "win": [
+    "WINNER 2017",
+    "WINNER 2016",
+    "Best Secured Personal Lender 2016 & 2017 Australian Lending Awards"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "165": {
+  "index": 165,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/Imsider-variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/Imsider-control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   640,
+   554
+  ],
+  "lose_size": [
+   640,
+   554
+  ],
+  "audit_flag": {
+   "win": [
+    "OPEN YOUR INTERNET STORE IN ONE EVENING"
+   ],
+   "lose": [
+    "A",
+    "STEP BY STEP PLAN FOR OPENING YOUR INTERNET STORE"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "166": {
+  "index": 166,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2023/12/Critiquejeu.info-case-study-1-scaled.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2023/12/Critiquejeu.info-case-study-1-scaled.jpg",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: crop (1124, 260, 2482, 998) from the composite image",
+   "lose: crop (72, 260, 1078, 798) from the composite image",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in image (49915 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1358,
+   738
+  ],
+  "lose_size": [
+   1006,
+   538
+  ],
+  "audit_flag": null
+ },
+ "167": {
+  "index": 167,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/06/Safety-Gear-Pro-Control-Variation-Test-1.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/06/Test-1-control.png",
+  "url_override": false,
+  "steps": [
+   "win: crop (40, 862, 1249, 1449) from the win image",
+   "lose: crop (40, 41, 1249, 628) from the win image",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in image (46412 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1209,
+   587
+  ],
+  "lose_size": [
+   1209,
+   587
+  ],
+  "audit_flag": null
+ },
+ "168": {
+  "index": 168,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/06/Safety-Gear-2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/06/Safety-Gear-2.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in image (24417 px)",
+   "win: crop to (2, 8, 482, 1017)",
+   "lose: crop to (2, 8, 482, 1017)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   480,
+   1009
+  ],
+  "lose_size": [
+   480,
+   1009
+  ],
+  "audit_flag": null
+ },
+ "169": {
+  "index": 169,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/2empire-flippers-test-variation-1024x487.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/1empire-flippers-test-control-1024x484.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1024,
+   487
+  ],
+  "lose_size": [
+   1024,
+   484
+  ],
+  "audit_flag": null
+ },
+ "170": {
+  "index": 170,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/08/teamleader-casestudy-2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/08/teamleader-casestudy-1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1378,
+   795
+  ],
+  "lose_size": [
+   1600,
+   818
+  ],
+  "audit_flag": null
+ },
+ "171": {
+  "index": 171,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/08/teamleader-casestudy-2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/08/teamleader-casestudy-4.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1378,
+   795
+  ],
+  "lose_size": [
+   1536,
+   887
+  ],
+  "audit_flag": null
+ },
+ "172": {
+  "index": 172,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/08/teamleader-casestudy-5.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/08/teamleader-casestudy-2.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1487,
+   918
+  ],
+  "lose_size": [
+   1378,
+   795
+  ],
+  "audit_flag": null
+ },
+ "173": {
+  "index": 173,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/08/teamleader-casestudy-5.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2018/08/teamleader-casestudy-7.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1487,
+   918
+  ],
+  "lose_size": [
+   1387,
+   879
+  ],
+  "audit_flag": null
+ },
+ "174": {
+  "index": 174,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2018/08/teamleader-casestudy-12.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2018/08/teamleader-casestudy-11.png",
+  "url_override": true,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1278,
+   899
+  ],
+  "lose_size": [
+   1245,
+   906
+  ],
+  "audit_flag": null
+ },
+ "175": {
+  "index": 175,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2020/10/Test1-V@1x-1.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2020/10/Test1-C@1x.png",
+  "url_override": false,
+  "steps": [
+   "win: crop (36, 1068, 1250, 1948) from the win image",
+   "lose: crop (30, 35, 1260, 922) from the lose image",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in (0, 30, 1214, 52) (16996 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1214,
+   880
+  ],
+  "lose_size": [
+   1230,
+   887
+  ],
+  "audit_flag": null
+ },
+ "176": {
+  "index": 176,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2020/10/Test2@1x.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2020/10/Test2@1x.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(200, 45, 40) tol 8 in image (15696 px)",
+   "lose: remove strokes rgb(200, 45, 40) tol 8 in image (34379 px)",
+   "win: remove strokes rgb(200, 45, 40) tol 8 in (0, 300, 70, 400) (938 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   586,
+   1078
+  ],
+  "lose_size": [
+   586,
+   1078
+  ],
+  "audit_flag": null
+ },
+ "177": {
+  "index": 177,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/05/57_Vendio_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/05/57_Vendio_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   420,
+   590
+  ],
+  "lose_size": [
+   630,
+   427
+  ],
+  "audit_flag": null
+ },
+ "178": {
+  "index": 178,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/01/2ab_testing_variation4.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2019/01/1ab_testing_control1.png",
+  "url_override": false,
+  "steps": [
+   "lose: remove strokes rgb(228, 36, 36) tol 8 in image (16991 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1232,
+   875
+  ],
+  "lose_size": [
+   1228,
+   863
+  ],
+  "audit_flag": null
+ },
+ "179": {
+  "index": 179,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/11/Screen-Shot-2018-11-12-at-5.37.16-PM.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/11/Screen-Shot-2018-11-12-at-5.34.53-PM.png",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(228, 60, 60) tol 8 in (585, 365, 925, 460) (9643 px)",
+   "lose: remove strokes rgb(228, 60, 60) tol 8 in image (8189 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1037,
+   708
+  ],
+  "lose_size": [
+   913,
+   676
+  ],
+  "audit_flag": null
+ },
+ "180": {
+  "index": 180,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/2aat-Challenger1.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1Control-1.jpg",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(245, 15, 15) tol 8 in (730, 25, 915, 110) (2887 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   995,
+   587
+  ],
+  "lose_size": [
+   1015,
+   605
+  ],
+  "audit_flag": null
+ },
+ "181": {
+  "index": 181,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2021/08/eastpak-filter-control-and-variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2021/08/eastpak-filter-control-and-variation.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: trim frame lines -> (16, 4, 204, 342)",
+   "lose: trim frame lines -> (3, 4, 191, 342)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   188,
+   338
+  ],
+  "lose_size": [
+   188,
+   338
+  ],
+  "audit_flag": {
+   "win": [
+    "VWO"
+   ]
+  },
+  "review": "kept: VWO watermark / preview widget on both versions"
+ },
+ "182": {
+  "index": 182,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/31_Springest_Eduhub_variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/31_Springest_Eduhub_control.png",
+  "url_override": false,
+  "steps": [
+   "win: inpaint [(24, 121, 144, 161), (279, 137, 371, 181), (290, 174, 316, 196), (273, 189, 293, 205), (482, 190, 603, 236), (536, 228, 559, 279), (482, 451, 505, 489), (418, 487, 533, 529)]"
+  ],
+  "kind": "separate",
+  "win_size": [
+   640,
+   533
+  ],
+  "lose_size": [
+   640,
+   631
+  ],
+  "audit_flag": null
+ },
+ "183": {
+  "index": 183,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2021/09/Hubstaff-variation.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2021/09/Hubstaff-control.png",
+  "url_override": false,
+  "steps": [
+   "win: crop to (150, 392, 2412, 1808)",
+   "lose: crop to (150, 397, 2412, 1610)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   2262,
+   1416
+  ],
+  "lose_size": [
+   2262,
+   1213
+  ],
+  "audit_flag": null
+ },
+ "184": {
+  "index": 184,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2variation1.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1Control1.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1279,
+   459
+  ],
+  "lose_size": [
+   1278,
+   462
+  ],
+  "audit_flag": null
+ },
+ "185": {
+  "index": 185,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/12/Screen-Shot-2018-12-21-at-5.09.05-PM.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/12/Screen-Shot-2018-12-21-at-5.07.20-PM.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1131,
+   896
+  ],
+  "lose_size": [
+   713,
+   888
+  ],
+  "audit_flag": null
+ },
+ "186": {
+  "index": 186,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/12/Screen-Shot-2018-12-21-at-5.11.43-PM.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2018/12/Screen-Shot-2018-12-21-at-5.10.38-PM.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1149,
+   848
+  ],
+  "lose_size": [
+   1027,
+   841
+  ],
+  "audit_flag": null
+ },
+ "187": {
+  "index": 187,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/12/Screen-Shot-2018-12-21-at-5.11.43-PM.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2018/12/Screen-Shot-2018-12-21-at-5.13.09-PM.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1149,
+   848
+  ],
+  "lose_size": [
+   1211,
+   838
+  ],
+  "audit_flag": null
+ },
+ "188": {
+  "index": 188,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2018/12/57a-Free-Shipping-strip-on-Product-Pages-Mobile-Global-New-Variation2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/12/Screen-Shot-2018-12-21-at-5.11.43-PM.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   617,
+   815
+  ],
+  "lose_size": [
+   1149,
+   848
+  ],
+  "audit_flag": null
+ },
+ "189": {
+  "index": 189,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/03/9_HM_SpInc_Variation_two_versions_new.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/03/9_HM_SpInc_control_new.png",
+  "url_override": false,
+  "steps": [
+   "win: crop (23, 108, 743, 755) from the win image",
+   "lose: resize to width 720 (match win)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   720,
+   647
+  ],
+  "lose_size": [
+   720,
+   637
+  ],
+  "audit_flag": null
+ },
+ "190": {
+  "index": 190,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/03/9_HM_SpInc_Variation_two_versions_new.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/03/9_HM_SpInc_control_new.png",
+  "url_override": false,
+  "steps": [
+   "win: crop (766, 108, 1486, 755) from the win image",
+   "lose: resize to width 720 (match win)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   720,
+   647
+  ],
+  "lose_size": [
+   720,
+   637
+  ],
+  "audit_flag": null
+ },
+ "191": {
+  "index": 191,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2Nuface-Variation-Final.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1NuFace-Control-Final.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1003,
+   460
+  ],
+  "lose_size": [
+   1002,
+   456
+  ],
+  "audit_flag": null
+ },
+ "192": {
+  "index": 192,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2PriceCharting-Variation-1.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1PriceCharting-Control-1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1166,
+   403
+  ],
+  "lose_size": [
+   1165,
+   400
+  ],
+  "audit_flag": {
+   "win": [
+    "New Feature: Lot Value Calculator is Free for All Users"
+   ],
+   "lose": [
+    "New Feature: Lot Value Calculator is Free for All Users"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "193": {
+  "index": 193,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/2-2.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1-2.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   487,
+   220
+  ],
+  "lose_size": [
+   492,
+   217
+  ],
+  "audit_flag": null
+ },
+ "194": {
+  "index": 194,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/1-1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1336,
+   892
+  ],
+  "lose_size": [
+   1366,
+   877
+  ],
+  "audit_flag": null
+ },
+ "195": {
+  "index": 195,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2018/09/posist-casestudy-4.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/2.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1237,
+   673
+  ],
+  "lose_size": [
+   1336,
+   892
+  ],
+  "audit_flag": null
+ },
+ "196": {
+  "index": 196,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/26_Device-Magic_Variation_home_page.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/26_Device-Magic_control_home_page.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   630,
+   351
+  ],
+  "lose_size": [
+   630,
+   389
+  ],
+  "audit_flag": null
+ },
+ "197": {
+  "index": 197,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/77obj.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/77sol.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   634,
+   750
+  ],
+  "lose_size": [
+   963,
+   914
+  ],
+  "audit_flag": {
+   "lose": [
+    "<< Back to Monster Energy Test"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "198": {
+  "index": 198,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/51_Optimeria_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/51_Optimeria_Control.png",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(245, 15, 15) tol 8 in (14, 276, 62, 318) (1292 px)",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in (193, 276, 241, 318) (1293 px)",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in (20, 195, 72, 224) (1091 px)",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in (0, 388, 37, 418) (802 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   630,
+   531
+  ],
+  "lose_size": [
+   630,
+   531
+  ],
+  "audit_flag": null
+ },
+ "199": {
+  "index": 199,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2024/01/MIC-Variation.jpeg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2024/01/MIC-Control.jpeg",
+  "url_override": false,
+  "steps": [
+   "win: crop to (30, 56, 486, 336)",
+   "lose: crop to (30, 56, 486, 336)",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in image (10784 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   456,
+   280
+  ],
+  "lose_size": [
+   456,
+   280
+  ],
+  "audit_flag": null
+ },
+ "200": {
+  "index": 200,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/09/Screen-Shot-2019-09-10-at-12.07.02-PM.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/09/Screen-Shot-2019-09-10-at-12.07.08-PM.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   653,
+   381
+  ],
+  "lose_size": [
+   680,
+   384
+  ],
+  "audit_flag": {
+   "win": [
+    "VWO",
+    "HEATMAP",
+    "CLICKMAP",
+    "Currently showing 2450 clicks"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "201": {
+  "index": 201,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2024/09/Car-insurance-paid-campaign-page-Case-Study.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2024/09/Car-insurance-paid-campaign-page-Case-Study.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1039,
+   2510
+  ],
+  "lose_size": [
+   806,
+   1847
+  ],
+  "audit_flag": null
+ },
+ "202": {
+  "index": 202,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2024/09/Health-insurance-paid-campaign-page-Case-Study.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2024/09/Health-insurance-paid-campaign-page-Case-Study.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: crop (1278, 494, 2411, 2908) from the composite image",
+   "lose: crop (150, 494, 1018, 2334) from the composite image"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1133,
+   2414
+  ],
+  "lose_size": [
+   868,
+   1840
+  ],
+  "audit_flag": null
+ },
+ "203": {
+  "index": 203,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2024/09/Car-insurance-SEO-page-Case-Study.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2024/09/Car-insurance-SEO-page-Case-Study.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   989,
+   2423
+  ],
+  "lose_size": [
+   812,
+   1920
+  ],
+  "audit_flag": null
+ },
+ "204": {
+  "index": 204,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2024/09/Health-insurance-SEO-page-Case-Study.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2024/09/Health-insurance-SEO-page-Case-Study.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   922,
+   2456
+  ],
+  "lose_size": [
+   743,
+   1905
+  ],
+  "audit_flag": null
+ },
+ "205": {
+  "index": 205,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2022/01/Variation-view-1.jpg",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2022/01/Variation-view-2.jpg",
+  "url_override": false,
+  "steps": [
+   "win: crop to (23, 119, 1498, 694)",
+   "lose: crop to (23, 119, 1498, 694)",
+   "lose: remove strokes rgb(226, 12, 110) tol 8 in (1420, 265, 1475, 385) (2496 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1475,
+   575
+  ],
+  "lose_size": [
+   1475,
+   575
+  ],
+  "audit_flag": null
+ },
+ "206": {
+  "index": 206,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2Variation-2-Winner.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1Control-new.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1322,
+   677
+  ],
+  "lose_size": [
+   1266,
+   752
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight",
+    "arrow_or_highlight"
+   ],
+   "lose": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "207": {
+  "index": 207,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/2Variation21.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1Overtoom-Control1.png",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(245, 15, 15) tol 8 in image (12660 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   345,
+   580
+  ],
+  "lose_size": [
+   301,
+   378
+  ],
+  "audit_flag": null
+ },
+ "208": {
+  "index": 208,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/Challenger1.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/VWO_case_control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1253,
+   725
+  ],
+  "lose_size": [
+   1253,
+   725
+  ],
+  "audit_flag": null
+ },
+ "209": {
+  "index": 209,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/84sol.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/84obj.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   634,
+   559
+  ],
+  "lose_size": [
+   634,
+   559
+  ],
+  "audit_flag": null
+ },
+ "210": {
+  "index": 210,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/2variation1-1.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1control1-1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   918,
+   1375
+  ],
+  "lose_size": [
+   930,
+   1356
+  ],
+  "audit_flag": null
+ },
+ "211": {
+  "index": 211,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/29_AwayFind_homepage_Variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/29_AwayFind_homepage_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   550,
+   433
+  ],
+  "lose_size": [
+   550,
+   433
+  ],
+  "audit_flag": null
+ },
+ "212": {
+  "index": 212,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/1Comparison-1024x566.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1Comparison-1024x566.jpg",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(245, 15, 15) tol 4 in (185, 130, 485, 276) (3919 px)",
+   "win: remove strokes rgb(245, 15, 15) tol 4 in (100, 335, 402, 447) (7681 px)",
+   "win: inpaint [(187, 178, 197, 256), (187, 178, 482, 188), (187, 246, 452, 256)]"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   510,
+   501
+  ],
+  "lose_size": [
+   510,
+   501
+  ],
+  "audit_flag": null
+ },
+ "213": {
+  "index": 213,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/01/treasure-4.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/Treasure-1.jpeg",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(252, 60, 60) tol 8 in (20, 570, 1080, 930) (49204 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1101,
+   1232
+  ],
+  "lose_size": [
+   1349,
+   1600
+  ],
+  "audit_flag": null
+ },
+ "214": {
+  "index": 214,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/03/4_Corgi_Variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/03/4_Corgi_Original_Home_Page.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1680,
+   486
+  ],
+  "lose_size": [
+   1680,
+   480
+  ],
+  "audit_flag": null
+ },
+ "215": {
+  "index": 215,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2023/10/SelectHub-case-study-2-scaled.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2023/10/SelectHub-case-study-2-scaled.jpg",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: crop (1124, 260, 2482, 998) from the composite image",
+   "lose: crop (72, 260, 1070, 798) from the composite image",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in (90, 0, 1358, 198) (52077 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1358,
+   738
+  ],
+  "lose_size": [
+   998,
+   538
+  ],
+  "audit_flag": null
+ },
+ "216": {
+  "index": 216,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/3Challenger.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1FiestPunt-Original.jpg",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(245, 15, 15) tol 8 in (712, 704, 875, 853) (5221 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1068,
+   1522
+  ],
+  "lose_size": [
+   1068,
+   1522
+  ],
+  "audit_flag": null
+ },
+ "217": {
+  "index": 217,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2v1.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1original.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1020,
+   772
+  ],
+  "lose_size": [
+   1015,
+   877
+  ],
+  "audit_flag": null
+ },
+ "218": {
+  "index": 218,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2v1.jpg",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2019/01/3v2.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1020,
+   772
+  ],
+  "lose_size": [
+   1024,
+   776
+  ],
+  "audit_flag": null
+ },
+ "219": {
+  "index": 219,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/04/34_Consolidated_Label_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/04/34_Consolidated_Label_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1267,
+   694
+  ],
+  "lose_size": [
+   1267,
+   660
+  ],
+  "audit_flag": null
+ },
+ "220": {
+  "index": 220,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/23_SafeSoft_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/23_SafeSoft_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   582,
+   264
+  ],
+  "lose_size": [
+   581,
+   269
+  ],
+  "audit_flag": null
+ },
+ "221": {
+  "index": 221,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2022/08/Morningstar-Properties-case-study@2x-1.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2022/08/Morningstar-Properties-case-study@2x-1.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: crop (905, 314, 1649, 982) from the composite image",
+   "lose: crop (108, 314, 835, 982) from the composite image"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   744,
+   668
+  ],
+  "lose_size": [
+   727,
+   668
+  ],
+  "audit_flag": null
+ },
+ "222": {
+  "index": 222,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/46_Beamax_Variation_RedLink.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/46_Beamax_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   630,
+   248
+  ],
+  "lose_size": [
+   630,
+   242
+  ],
+  "audit_flag": null
+ },
+ "223": {
+  "index": 223,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/46_Beamax_Variation_RedBanner.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/46_Beamax_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   630,
+   253
+  ],
+  "lose_size": [
+   630,
+   242
+  ],
+  "audit_flag": null
+ },
+ "224": {
+  "index": 224,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/2Bionic-AB-Variation.jpeg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1Bionic-AB-Control.jpeg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   817,
+   528
+  ],
+  "lose_size": [
+   817,
+   658
+  ],
+  "audit_flag": null
+ },
+ "225": {
+  "index": 225,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/66_2_Quran_Variation1.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/66_1_Control.jpg",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(252, 12, 84) tol 8 in (640, 131, 719, 189) (1989 px)",
+   "win: remove strokes rgb(252, 12, 84) tol 8 in (837, 139, 896, 193) (1450 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1017,
+   514
+  ],
+  "lose_size": [
+   1146,
+   587
+  ],
+  "audit_flag": null
+ },
+ "226": {
+  "index": 226,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2023/11/GoodwillFinds-Case-Study-4-scaled.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2023/11/GoodwillFinds-Case-Study-4-scaled.jpg",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in (40, 1062, 1037, 1445) (52186 px)",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in (975, 1100, 1037, 1135) (0 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1037,
+   1883
+  ],
+  "lose_size": [
+   720,
+   1478
+  ],
+  "audit_flag": null
+ },
+ "227": {
+  "index": 227,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/08/Readers-Geo-based-Messaging-VARIANT.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/08/Readers-Geo-based-Messaging-CONTROL.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   664,
+   555
+  ],
+  "lose_size": [
+   671,
+   557
+  ],
+  "audit_flag": null
+ },
+ "228": {
+  "index": 228,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/08/Readers-Product-Videos-VARIANT.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2019/08/Readers-Product-Videos-CONTROL.png",
+  "url_override": true,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1218,
+   1052
+  ],
+  "lose_size": [
+   1208,
+   1051
+  ],
+  "audit_flag": null
+ },
+ "229": {
+  "index": 229,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/74_2_Blivakker_nofb.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/74_1_Blivakker_fb_connect.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1057,
+   625
+  ],
+  "lose_size": [
+   1049,
+   637
+  ],
+  "audit_flag": null
+ },
+ "230": {
+  "index": 230,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2019/01/3paperstone-variation21.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1paperstone-control.jpg",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(245, 15, 15) tol 8 in image (1984 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1005,
+   923
+  ],
+  "lose_size": [
+   1007,
+   923
+  ],
+  "audit_flag": null
+ },
+ "231": {
+  "index": 231,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/78conc.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/78sol.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   634,
+   457
+  ],
+  "lose_size": [
+   633,
+   456
+  ],
+  "audit_flag": {
+   "lose": [
+    "(Most Popular)"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "232": {
+  "index": 232,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2022/11/perfect-plants-control-variations.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2022/11/perfect-plants-control-variations.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: trim frame lines -> (10, 5, 712, 1196)",
+   "lose: trim frame lines -> (11, 5, 712, 1612)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   702,
+   1191
+  ],
+  "lose_size": [
+   701,
+   1607
+  ],
+  "audit_flag": null
+ },
+ "233": {
+  "index": 233,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2020/05/Variation_1st.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2020/05/Control_1st.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   294,
+   512
+  ],
+  "lose_size": [
+   354,
+   624
+  ],
+  "audit_flag": null
+ },
+ "234": {
+  "index": 234,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2variation.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1control_1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   255,
+   507
+  ],
+  "lose_size": [
+   990,
+   160
+  ],
+  "audit_flag": null
+ },
+ "235": {
+  "index": 235,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/Meebox-Variation_2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/Meebox-Original-1.png",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(245, 15, 15) tol 8 in image (17042 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1000,
+   614
+  ],
+  "lose_size": [
+   992,
+   577
+  ],
+  "audit_flag": null
+ },
+ "236": {
+  "index": 236,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/03/8-Buildium-Variation-Testimonials.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/03/8-Buildium-Control-Testimonials.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   795,
+   571
+  ],
+  "lose_size": [
+   900,
+   562
+  ],
+  "audit_flag": null
+ },
+ "237": {
+  "index": 237,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/03/19_Veeam_Software_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/03/19_Veeam_Software_Control.png",
+  "url_override": false,
+  "steps": [
+   "win: remove strokes rgb(245, 15, 15) tol 8 in image (3328 px)",
+   "lose: remove strokes rgb(245, 15, 15) tol 8 in image (8678 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   938,
+   314
+  ],
+  "lose_size": [
+   934,
+   323
+  ],
+  "audit_flag": {
+   "win": [
+    "NEW: Version 6 is now available!"
+   ],
+   "lose": [
+    "NEW: Version 6 is now available!"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "238": {
+  "index": 238,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2tomsplanner_variation.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1tomsplanner_control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1274,
+   800
+  ],
+  "lose_size": [
+   1177,
+   849
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight"
+   ],
+   "lose": [
+    "Tens of Thousands"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "239": {
+  "index": 239,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2022/03/IDEAL-OF-SWEDEN-1-5.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2022/03/IDEAL-OF-SWEDEN-1-5.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in (0, 0, 1903, 70) (46555 px)",
+   "win: crop to (16, 0, 1895, 892)",
+   "lose: crop to (13, 9, 1898, 898)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1879,
+   892
+  ],
+  "lose_size": [
+   1885,
+   889
+  ],
+  "audit_flag": null
+ },
+ "240": {
+  "index": 240,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2022/03/IDEAL-OF-SWEDEN-2-1-1.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2022/03/IDEAL-OF-SWEDEN-2-1-1.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in (0, 0, 1838, 66) (72345 px)",
+   "win: crop to (8, 0, 1834, 876)",
+   "lose: crop to (7, 6, 1833, 870)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1826,
+   876
+  ],
+  "lose_size": [
+   1826,
+   864
+  ],
+  "audit_flag": null
+ },
+ "241": {
+  "index": 241,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/05/74_MedaliaArt_Control.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/05/74_MedaliaArt_Variation2.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   500,
+   264
+  ],
+  "lose_size": [
+   500,
+   271
+  ],
+  "audit_flag": null
+ },
+ "242": {
+  "index": 242,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/GAranti-V1.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/garanti-control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   482,
+   240
+  ],
+  "lose_size": [
+   482,
+   333
+  ],
+  "audit_flag": null
+ },
+ "243": {
+  "index": 243,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2020/05/control-vs-variation-of-test-on-Josera-website.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2020/05/control-vs-variation-of-test-on-Josera-website.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   629,
+   324
+  ],
+  "lose_size": [
+   626,
+   324
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight"
+   ],
+   "lose": [
+    "arrow_or_highlight",
+    "VWO"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "244": {
+  "index": 244,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/bagservant-variation_2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/02/bagservant-control_1.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1349,
+   992
+  ],
+  "lose_size": [
+   1349,
+   988
+  ],
+  "audit_flag": {
+   "win": [
+    "#WOW WINNER"
+   ],
+   "lose": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: publisher mark present on BOTH versions: does not point at the winner"
+ },
+ "245": {
+  "index": 245,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/22_UKTOOLCENTRE_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/22_UKTOOLCENTRE_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1025,
+   724
+  ],
+  "lose_size": [
+   1069,
+   823
+  ],
+  "audit_flag": null
+ },
+ "246": {
+  "index": 246,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/32_GetResponse_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/32_GetResponse_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   630,
+   749
+  ],
+  "lose_size": [
+   630,
+   740
+  ],
+  "audit_flag": null
+ },
+ "247": {
+  "index": 247,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2020/05/Sid-case-study-2-compressor.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2020/05/Sid-case-study-2-compressor.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   481,
+   931
+  ],
+  "lose_size": [
+   482,
+   1007
+  ],
+  "audit_flag": null
+ },
+ "248": {
+  "index": 248,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/85sol.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/85obj.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   634,
+   415
+  ],
+  "lose_size": [
+   634,
+   415
+  ],
+  "audit_flag": {
+   "lose": [
+    "The Scanitto Pro PDF scanner will change your life and once you start using it, nothing will compare!"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "249": {
+  "index": 249,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/Royal_challenger.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/Royal_original.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   759,
+   781
+  ],
+  "lose_size": [
+   759,
+   781
+  ],
+  "audit_flag": null
+ },
+ "250": {
+  "index": 250,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2Lyyti-Variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1Lyyti-Control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1275,
+   1413
+  ],
+  "lose_size": [
+   1277,
+   903
+  ],
+  "audit_flag": null
+ },
+ "251": {
+  "index": 251,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/challenger.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/original.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   640,
+   782
+  ],
+  "lose_size": [
+   640,
+   782
+  ],
+  "audit_flag": null
+ },
+ "252": {
+  "index": 252,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/elegant2.jpg",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/elegant1.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   576,
+   1024
+  ],
+  "lose_size": [
+   576,
+   1024
+  ],
+  "audit_flag": null
+ },
+ "253": {
+  "index": 253,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/02/67_5nameOn-variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/02/67_3nameOn-control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   655,
+   502
+  ],
+  "lose_size": [
+   663,
+   541
+  ],
+  "audit_flag": null
+ },
+ "254": {
+  "index": 254,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2021/12/Gruum-2-scaled.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2021/12/Gruum-2-scaled.jpg",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: crop (1142, 322, 2062, 922) from the composite image",
+   "lose: crop (124, 322, 1008, 838) from the composite image",
+   "win: remove strokes rgb(226, 12, 110) tol 8 in image (3877 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   920,
+   600
+  ],
+  "lose_size": [
+   884,
+   516
+  ],
+  "audit_flag": null
+ },
+ "255": {
+  "index": 255,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2022/03/logoidealsquare.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2026/04/Shockbyte_logo_600x400.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1076,
+   240
+  ],
+  "lose_size": [
+   600,
+   400
+  ],
+  "audit_flag": null
+ },
+ "256": {
+  "index": 256,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/2him_variation.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/01/1him_control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   711,
+   814
+  ],
+  "lose_size": [
+   721,
+   821
+  ],
+  "audit_flag": null
+ },
+ "257": {
+  "index": 257,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/01/2WorkZoneVariation.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/01/1WorkZone-Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   981,
+   721
+  ],
+  "lose_size": [
+   987,
+   679
+  ],
+  "audit_flag": null
+ },
+ "258": {
+  "index": 258,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/03/2_Uptowork_Variation.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2019/03/2_Uptowork_Control.png",
+  "url_override": false,
+  "steps": [
+   "win: crop to (0, 55, 1200, 686)",
+   "lose: crop to (0, 55, 1200, 686)",
+   "win: inpaint [(35, 345, 150, 460)]",
+   "win: remove strokes rgb(245, 15, 15) tol 10 in (85, 455, 255, 562) (3735 px)"
+  ],
+  "kind": "separate",
+  "win_size": [
+   1200,
+   631
+  ],
+  "lose_size": [
+   1200,
+   631
+  ],
+  "audit_flag": null
+ },
+ "259": {
+  "index": 259,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/04/40_Mobal-3-Option_Variation.jpg",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/04/40_Mobal-Control.jpg",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   630,
+   777
+  ],
+  "lose_size": [
+   630,
+   737
+  ],
+  "audit_flag": {
+   "win": [
+    "Best Seller"
+   ],
+   "lose": [
+    "Best Seller"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "260": {
+  "index": 260,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/11/ArchiveSocial-Test1@1x.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/11/ArchiveSocial-Test1@1x.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in image (23617 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1222,
+   570
+  ],
+  "lose_size": [
+   1222,
+   570
+  ],
+  "audit_flag": {
+   "win": [
+    "arrow_or_highlight"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "261": {
+  "index": 261,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/11/ArchiveSocial-Test2@1x.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2020/11/ArchiveSocial-Test2@1x.png",
+  "url_override": false,
+  "steps": [
+   "crop panels (composite_split.jsonl)",
+   "win: remove strokes rgb(245, 15, 15) tol 8 in image (42080 px)",
+   "win: crop to (0, 0, 1204, 660)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1204,
+   660
+  ],
+  "lose_size": [
+   1034,
+   857
+  ],
+  "audit_flag": {
+   "win": [
+    "MOST POPULAR"
+   ],
+   "lose": [
+    "Full coverage for 90% of agencies"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "262": {
+  "index": 262,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/05/63_GSM_NL_Variation_Red.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/05/63_GSM_NL_Variation_Text.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   249,
+   278
+  ],
+  "lose_size": [
+   233,
+   278
+  ],
+  "audit_flag": null
+ },
+ "263": {
+  "index": 263,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/05/71_RIPT_Apparel_VariationA.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/05/71_RIPT_Apparel_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   624,
+   305
+  ],
+  "lose_size": [
+   578,
+   306
+  ],
+  "audit_flag": null
+ },
+ "264": {
+  "index": 264,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp//uploads/2019/05/71_RIPT_Apparel_VariationB.png",
+  "lose_url": "https://static.wingify.com/gcp//uploads/2019/05/71_RIPT_Apparel_Control.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   650,
+   325
+  ],
+  "lose_size": [
+   578,
+   306
+  ],
+  "audit_flag": null
+ },
+ "265": {
+  "index": 265,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/flos-casestudy-2-2.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/flos-casestudy-1-2.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1003,
+   818
+  ],
+  "lose_size": [
+   887,
+   812
+  ],
+  "audit_flag": null
+ },
+ "266": {
+  "index": 266,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/flos-casestudy-5.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2018/09/flos-casestudy-3.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1268,
+   552
+  ],
+  "lose_size": [
+   1220,
+   434
+  ],
+  "audit_flag": null
+ },
+ "267": {
+  "index": 267,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/flos-casestudy-5.png",
+  "lose_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/flos-casestudy-4.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1268,
+   552
+  ],
+  "lose_size": [
+   1261,
+   489
+  ],
+  "audit_flag": null
+ },
+ "268": {
+  "index": 268,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/tr:h-0.5,w-0.5/uploads/2018/09/flos-casestudy-5.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2018/09/flos-casestudy-6.png",
+  "url_override": false,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1268,
+   552
+  ],
+  "lose_size": [
+   1216,
+   475
+  ],
+  "audit_flag": null
+ },
+ "269": {
+  "index": 269,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2018/09/flos-casestudy-9.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2018/09/flos-casestudy-7.png",
+  "url_override": true,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1015,
+   663
+  ],
+  "lose_size": [
+   977,
+   627
+  ],
+  "audit_flag": null
+ },
+ "270": {
+  "index": 270,
+  "source_site": "vwo.com",
+  "win_url": "https://static.wingify.com/gcp/uploads/2018/09/flos-casestudy-9.png",
+  "lose_url": "https://static.wingify.com/gcp/uploads/2018/09/flos-casestudy-8.png",
+  "url_override": true,
+  "steps": [],
+  "kind": "separate",
+  "win_size": [
+   1015,
+   663
+  ],
+  "lose_size": [
+   988,
+   644
+  ],
+  "audit_flag": null
+ },
+ "271": {
+  "index": 271,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/NjUNdNGo4VO9chz7ZdRIxic1ec.png",
+  "lose_url": "https://framerusercontent.com/images/NjUNdNGo4VO9chz7ZdRIxic1ec.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1325,
+   691
+  ],
+  "lose_size": [
+   1324,
+   691
+  ],
+  "audit_flag": null
+ },
+ "272": {
+  "index": 272,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/FCQfn6viJ1LveFgrj7gF2p9RqI.png",
+  "lose_url": "https://framerusercontent.com/images/FCQfn6viJ1LveFgrj7gF2p9RqI.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   737,
+   524
+  ],
+  "lose_size": [
+   738,
+   394
+  ],
+  "audit_flag": null
+ },
+ "273": {
+  "index": 273,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/EFimIIc3oTuIvhYDV1TgeR29p4.png",
+  "lose_url": "https://framerusercontent.com/images/EFimIIc3oTuIvhYDV1TgeR29p4.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1097,
+   1410
+  ],
+  "lose_size": [
+   1097,
+   1410
+  ],
+  "audit_flag": null
+ },
+ "274": {
+  "index": 274,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/Z5lAa1wk7OiqsxRYK3cd5GxSQXE.png",
+  "lose_url": "https://framerusercontent.com/images/Z5lAa1wk7OiqsxRYK3cd5GxSQXE.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1134,
+   1424
+  ],
+  "lose_size": [
+   1134,
+   1424
+  ],
+  "audit_flag": {
+   "lose": [
+    "New"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "275": {
+  "index": 275,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/83AhFK22cY1yXl49MNkloUoHbMM.png",
+  "lose_url": "https://framerusercontent.com/images/83AhFK22cY1yXl49MNkloUoHbMM.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   739,
+   417
+  ],
+  "lose_size": [
+   740,
+   417
+  ],
+  "audit_flag": null
+ },
+ "276": {
+  "index": 276,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/qK70ZqXE7VK3P1mfYi0hNCu00.png",
+  "lose_url": "https://framerusercontent.com/images/qK70ZqXE7VK3P1mfYi0hNCu00.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   654,
+   742
+  ],
+  "lose_size": [
+   655,
+   742
+  ],
+  "audit_flag": null
+ },
+ "277": {
+  "index": 277,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/Qo73cvH9u4jZ0hQCHF4aVM7PDPw.png",
+  "lose_url": "https://framerusercontent.com/images/Qo73cvH9u4jZ0hQCHF4aVM7PDPw.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)",
+   "lose: remove blob rgb(250, 230, 20) tol 10 in (1065, 305, 1125, 390) (2878 px)",
+   "lose: remove blob rgb(250, 230, 20) tol 10 in (1175, 385, 1228, 460) (1988 px)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1371,
+   940
+  ],
+  "lose_size": [
+   1371,
+   940
+  ],
+  "audit_flag": null
+ },
+ "278": {
+  "index": 278,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/ebOnSgq2y5pYO8LdNjNpd2LEzk.png",
+  "lose_url": "https://framerusercontent.com/images/ebOnSgq2y5pYO8LdNjNpd2LEzk.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1229,
+   1222
+  ],
+  "lose_size": [
+   1218,
+   841
+  ],
+  "audit_flag": {
+   "win": [
+    "MOST POPULAR"
+   ],
+   "lose": [
+    "NEW"
+   ]
+  },
+  "review": "kept: page's own UI (badge / label / banner), not a publisher cue"
+ },
+ "279": {
+  "index": 279,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/C8Syz47qn2AP3LkhxqHhKblAfc.png",
+  "lose_url": "https://framerusercontent.com/images/C8Syz47qn2AP3LkhxqHhKblAfc.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   699,
+   672
+  ],
+  "lose_size": [
+   699,
+   672
+  ],
+  "audit_flag": null
+ },
+ "280": {
+  "index": 280,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/abdyjrkN7aconWQHeWilBH97YEs.png",
+  "lose_url": "https://framerusercontent.com/images/abdyjrkN7aconWQHeWilBH97YEs.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1127,
+   723
+  ],
+  "lose_size": [
+   1128,
+   723
+  ],
+  "audit_flag": null
+ },
+ "281": {
+  "index": 281,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/T06v6hoXvMWHqPwBrUUJw2sGLUM.png",
+  "lose_url": "https://framerusercontent.com/images/T06v6hoXvMWHqPwBrUUJw2sGLUM.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   592,
+   784
+  ],
+  "lose_size": [
+   592,
+   784
+  ],
+  "audit_flag": null
+ },
+ "282": {
+  "index": 282,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/MfOg2mBWL4N79KfVwGLsqFxeTWE.png",
+  "lose_url": "https://framerusercontent.com/images/MfOg2mBWL4N79KfVwGLsqFxeTWE.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1220,
+   1453
+  ],
+  "lose_size": [
+   1220,
+   1453
+  ],
+  "audit_flag": null
+ },
+ "283": {
+  "index": 283,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/5IR4z5xVhublN5adffMWSmhAVb4.png",
+  "lose_url": "https://framerusercontent.com/images/5IR4z5xVhublN5adffMWSmhAVb4.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   666,
+   897
+  ],
+  "lose_size": [
+   666,
+   897
+  ],
+  "audit_flag": null
+ },
+ "284": {
+  "index": 284,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/x4ikuFtTRAoWIovx8qvBuLrmfzk.png",
+  "lose_url": "https://framerusercontent.com/images/x4ikuFtTRAoWIovx8qvBuLrmfzk.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   664,
+   900
+  ],
+  "lose_size": [
+   664,
+   900
+  ],
+  "audit_flag": null
+ },
+ "285": {
+  "index": 285,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/JvfOFm4hNAJeEUkgm3b2BKlM1M.png",
+  "lose_url": "https://framerusercontent.com/images/JvfOFm4hNAJeEUkgm3b2BKlM1M.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   819,
+   368
+  ],
+  "lose_size": [
+   819,
+   368
+  ],
+  "audit_flag": null
+ },
+ "286": {
+  "index": 286,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/QvUCMcczBrdlDsRQVrGhPvTVnI8.png",
+  "lose_url": "https://framerusercontent.com/images/QvUCMcczBrdlDsRQVrGhPvTVnI8.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   516,
+   726
+  ],
+  "lose_size": [
+   518,
+   726
+  ],
+  "audit_flag": null
+ },
+ "287": {
+  "index": 287,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/jXUJgDDPZUQRoZmeukw6YUNqg.png",
+  "lose_url": "https://framerusercontent.com/images/jXUJgDDPZUQRoZmeukw6YUNqg.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   668,
+   895
+  ],
+  "lose_size": [
+   668,
+   895
+  ],
+  "audit_flag": null
+ },
+ "288": {
+  "index": 288,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/AE5vb98hfExEzDYmZEBxmip7yL0.png",
+  "lose_url": "https://framerusercontent.com/images/AE5vb98hfExEzDYmZEBxmip7yL0.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   655,
+   679
+  ],
+  "lose_size": [
+   654,
+   773
+  ],
+  "audit_flag": null
+ },
+ "289": {
+  "index": 289,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/M20WJW80xVdmdYe3lmAIuT83e4.png",
+  "lose_url": "https://framerusercontent.com/images/M20WJW80xVdmdYe3lmAIuT83e4.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   620,
+   824
+  ],
+  "lose_size": [
+   610,
+   725
+  ],
+  "audit_flag": null
+ },
+ "290": {
+  "index": 290,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/PRMGgdoe0yVzCzbuki9omN6Qg.png",
+  "lose_url": "https://framerusercontent.com/images/PRMGgdoe0yVzCzbuki9omN6Qg.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   758,
+   422
+  ],
+  "lose_size": [
+   758,
+   422
+  ],
+  "audit_flag": null
+ },
+ "291": {
+  "index": 291,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/WzRGrjRDv3E7B2RSV3iDQCbUs.png",
+  "lose_url": "https://framerusercontent.com/images/WzRGrjRDv3E7B2RSV3iDQCbUs.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   655,
+   786
+  ],
+  "lose_size": [
+   654,
+   786
+  ],
+  "audit_flag": null
+ },
+ "292": {
+  "index": 292,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/gH9NNVHHKs350TmqpxbUg05cI.png",
+  "lose_url": "https://framerusercontent.com/images/gH9NNVHHKs350TmqpxbUg05cI.png",
+  "url_override": false,
+  "steps": [
+   "removed 3 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   426,
+   321
+  ],
+  "lose_size": [
+   425,
+   321
+  ],
+  "audit_flag": null
+ },
+ "293": {
+  "index": 293,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/gH9NNVHHKs350TmqpxbUg05cI.png",
+  "lose_url": "https://framerusercontent.com/images/gH9NNVHHKs350TmqpxbUg05cI.png",
+  "url_override": false,
+  "steps": [
+   "removed 3 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   577,
+   908
+  ],
+  "lose_size": [
+   577,
+   908
+  ],
+  "audit_flag": null
+ },
+ "294": {
+  "index": 294,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/gH9NNVHHKs350TmqpxbUg05cI.png",
+  "lose_url": "https://framerusercontent.com/images/gH9NNVHHKs350TmqpxbUg05cI.png",
+  "url_override": false,
+  "steps": [
+   "removed 3 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   412,
+   343
+  ],
+  "lose_size": [
+   410,
+   349
+  ],
+  "audit_flag": null
+ },
+ "295": {
+  "index": 295,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/jQiIkBVd6hNZBgrI8Twz5Z2W0.png",
+  "lose_url": "https://framerusercontent.com/images/jQiIkBVd6hNZBgrI8Twz5Z2W0.png",
+  "url_override": false,
+  "steps": [
+   "removed 3 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   866,
+   1444
+  ],
+  "lose_size": [
+   866,
+   1444
+  ],
+  "audit_flag": null
+ },
+ "296": {
+  "index": 296,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/jQiIkBVd6hNZBgrI8Twz5Z2W0.png",
+  "lose_url": "https://framerusercontent.com/images/jQiIkBVd6hNZBgrI8Twz5Z2W0.png",
+  "url_override": false,
+  "steps": [
+   "removed 3 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   730,
+   1254
+  ],
+  "lose_size": [
+   727,
+   1254
+  ],
+  "audit_flag": null
+ },
+ "297": {
+  "index": 297,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/8OFdbicOK4AaxDG89UUyVriXeJ0.png",
+  "lose_url": "https://framerusercontent.com/images/8OFdbicOK4AaxDG89UUyVriXeJ0.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   1140,
+   1442
+  ],
+  "lose_size": [
+   1140,
+   1442
+  ],
+  "audit_flag": null
+ },
+ "298": {
+  "index": 298,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/CrGZr7gugcVIQRRfZzgLCRmpQs.png",
+  "lose_url": "https://framerusercontent.com/images/CrGZr7gugcVIQRRfZzgLCRmpQs.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   797,
+   752
+  ],
+  "lose_size": [
+   797,
+   752
+  ],
+  "audit_flag": null
+ },
+ "299": {
+  "index": 299,
+  "source_site": "abtest.design",
+  "win_url": "https://framerusercontent.com/images/3K6AekDKIHrj0xMIrlHcIRhcHfg.png",
+  "lose_url": "https://framerusercontent.com/images/3K6AekDKIHrj0xMIrlHcIRhcHfg.png",
+  "url_override": false,
+  "steps": [
+   "removed 2 A/B badge(s) from the composite (gray = control, blue = variant)",
+   "crop panels (composite_split.jsonl)"
+  ],
+  "kind": "composite_crop",
+  "win_size": [
+   647,
+   729
+  ],
+  "lose_size": [
+   647,
+   729
+  ],
+  "audit_flag": null
+ }
+}

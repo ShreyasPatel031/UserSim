@@ -1,0 +1,4688 @@
+{
+ "0": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy search results page for 'personalized gift'."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy search results page for 'personalized gift'."
+  }
+ },
+ "1": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Zalando. It shows a wallet, its price, and options to add to cart or wishlist. The top and bottom parts of the page are visible, indicating it's not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Zalando."
+  }
+ },
+ "2": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Zalando. It shows a wallet, its price, and options to add to cart or wishlist. The top and bottom parts of the page are visible, indicating it's not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Zalando. It shows a wallet with its price, description, and options to add to cart or wishlist. The top banner has a cookie consent message and navigation links. The bottom part of the image is cut off, but the main UI elements of the product page are visible and usable."
+  }
+ },
+ "3": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page on Amazon. It is not cut off and displays a single version of the page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page for Duracell batteries."
+  }
+ },
+ "4": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix landing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix landing page, showing a hero section and a section about watching on TV."
+  }
+ },
+ "5": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb listing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb listing page."
+  }
+ },
+ "6": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single Airbnb listing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb listing page."
+  }
+ },
+ "7": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a Netflix landing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a Netflix landing page."
+  }
+ },
+ "8": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is a composite of two screenshots, one full and one partial, with the partial one overlapping the bottom of the full one. The full screenshot is usable, but the composite is not a single, full UI."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is a composite of two screenshots, one showing a search bar with a dropdown menu partially obscuring the main content. The bottom part of the image is cut off."
+  }
+ },
+ "9": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page on Walmart.com."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Walmart.com."
+  }
+ },
+ "10": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single Etsy page."
+  }
+ },
+ "11": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete, usable screenshot of a single page version. The OCR is very poor, making many words unreadable, but the overall layout and content appear intact."
+  }
+ },
+ "12": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing various sections like blog posts, information about Etsy, and a footer. Some text is slightly cut off at the edges, but the overall UI is usable."
+  }
+ },
+ "13": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of the Netflix landing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete, usable screenshot of a Netflix page offering a free 30-day trial. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "14": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb listing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single Airbnb listing page."
+  }
+ },
+ "15": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on bol.com. The product title is partially obscured, but the rest of the page is clear."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on bol.com. The top part of the image is slightly cut off, but it does not affect the usability or understanding of the page content."
+  }
+ },
+ "16": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon search results page. There are no cues indicating an A/B test."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon search results page for 'tools for mechanics'. The bottom section with 'Amazon's Choice' is slightly cut off at the very bottom, but the main content is fully visible."
+  }
+ },
+ "17": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a partial screenshot of a product page, but it is a usable and coherent part of a single page version. The bottom part is cut off, but it doesn't hinder understanding of the visible content."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is cut off at the bottom and the right side. Some text is blurred out."
+  }
+ },
+ "18": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a partial screenshot of a product page, but it is a usable and coherent part of a single page version. The bottom part is cut off, but it doesn't hinder understanding of the visible content."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is cut off at the top and bottom, and some text is partially visible or cut off."
+  }
+ },
+ "19": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a partial screenshot of a product page, but it is a usable and coherent part of a single page version. The bottom part is cut off, but it doesn't hinder understanding of the visible content."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a single, usable screenshot of a product page, though it is cropped at the bottom. The text 'Translation: Add To' is an overlay added by the benchmark publisher, not part of the original UI."
+  }
+ },
+ "20": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a partial screenshot of a product page, but it is a usable and coherent part of a single page version. The bottom part is cut off, but it doesn't hinder understanding of the visible content."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is a partial screenshot, cut off at the top and bottom, and some text is partially visible or cut off."
+  }
+ },
+ "21": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a partial screenshot of a product page, but it is a usable and coherent part of a single page version. The bottom part is cut off, but it doesn't hinder understanding of the visible content."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a partial screenshot of a product page, but it is a usable and coherent section of a single page version."
+  }
+ },
+ "22": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb search results page with a map view. No parts are cut off badly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb search results page with a map view. No parts are cut off badly."
+  }
+ },
+ "23": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The bottom part of the page is cut off, specifically the text 'Millions of homes, big or small' and the following line are incomplete."
+  }
+ },
+ "24": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page. There are no cues indicating it's part of an A/B test."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single product page on Amazon. It is not cut off and displays all relevant information."
+  }
+ },
+ "25": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single product page on Amazon."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single product page on Amazon."
+  }
+ },
+ "26": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com page. The calendar overlay is partially cut off at the bottom, but it's a common UI element and doesn't make the screenshot unusable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com page. The text 'Apartments' and 'A home from home; choose the apartment that appeals to you most.' is slightly cut off on the left side, but the overall UI is usable."
+  }
+ },
+ "27": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com page. It is not cut off and displays a single version of the UI."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com homepage."
+  }
+ },
+ "28": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page for Duracell batteries."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page, showing product details, pricing, and purchase options. Nothing is cut off badly."
+  }
+ },
+ "29": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page for Duracell batteries."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page, showing a single version of the UI."
+  }
+ },
+ "30": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy search results page for 'Furniture'."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy furniture page. Some text is slightly blurry but readable."
+  }
+ },
+ "31": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy search results page for 'Furniture'."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Etsy's Pick",
+     "where": "multiple product listings"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product listing page on Etsy. It contains 'Etsy's Pick' labels on several products, which could be interpreted as a cue indicating a winning or favored item."
+  }
+ },
+ "32": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Walmart.com."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Walmart.com. It shows a pillow with a seashell design and product details."
+  }
+ },
+ "33": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy product page for a rug. It is not cut off and shows a single version of the page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Etsy, showing a rug with details, price, and reviews. No significant cut-offs or missing elements."
+  }
+ },
+ "34": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "red arrow pointing to 'I'm flexible' tab"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a full screenshot of a Booking.com search page with a calendar and 'I'm flexible' date selection overlay. A red arrow has been added to highlight the 'I'm flexible' tab."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "red arrow pointing to the calendar"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a full screenshot of a Booking.com search results page with a calendar and date selection pop-up open. There is a red arrow drawn on the image."
+  }
+ },
+ "35": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "label",
+     "text": "Amazon's Choice",
+     "where": "product details"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Amazon.ca."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page."
+  }
+ },
+ "36": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of the Netflix landing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of the Netflix landing page, showing the sign-up/login form over a background of movie/show covers."
+  }
+ },
+ "37": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page. The bottom part of the page is slightly cut off, but it doesn't hinder the usability or understanding of the page content."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page. It shows product details, pricing, shipping information, and related items. There are no external cues indicating an A/B test winner or version."
+  }
+ },
+ "38": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a screenshot of a single page version, showing a listing for 'Retro Airstream'. The bottom part of the page is slightly cut off, but it is mostly complete and usable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing a listing for 'Retro Airstream' with booking details."
+  }
+ },
+ "39": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a screenshot of a single page version, showing a listing for 'Retro Airstream'. The bottom part of the page is slightly cut off, but it is mostly complete and usable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is cut off at the bottom, showing only part of the page content."
+  }
+ },
+ "40": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a screenshot of a single page version, showing a listing for 'Retro Airstream'. The bottom part of the page is slightly cut off, but it is mostly complete and usable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete Airbnb-like listing page for 'Retro Airstream'. The top part of the image is a collage of photos of the property, and the bottom part shows the listing details, price, booking options, and host information. The page is not cut off and appears to be a single, usable screenshot."
+  }
+ },
+ "41": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version, not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The screenshot is mostly complete, showing the top and middle sections of a page. The very bottom is cut off, but it doesn't hinder understanding of the main UI."
+  }
+ },
+ "42": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version, not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing an Airbnb host signup page. It is not cut off badly and does not contain multiple versions."
+  }
+ },
+ "43": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy product page. Some text is slightly cut off on the left side of the page, but it does not affect the overall usability or understanding of the page content."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Bestseller",
+     "where": "product title area"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single product page on Etsy."
+  }
+ },
+ "44": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Etsy. It shows product images, details, pricing, and reviews. There are no cues indicating an A/B test outcome."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Etsy. It shows product images, details, pricing, and reviews. There are no cues indicating an A/B test."
+  }
+ },
+ "45": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page. No parts are cut off badly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page."
+  }
+ },
+ "46": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com page. The text is slightly garbled in places, but the UI elements are clear."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com page for apartments. There is a pop-up for signing in, which is part of the UI."
+  }
+ },
+ "47": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb listing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb listing page."
+  }
+ },
+ "48": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product page on Etsy. A dropdown menu for categories is open, partially obscuring the main content. The page is not cut off in a way that makes it unusable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Etsy. It shows product details, pricing, and options for personalization."
+  }
+ },
+ "49": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page on bol.com."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page on bol.com."
+  }
+ },
+ "50": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single Airbnb host page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version for Airbnb hosting."
+  }
+ },
+ "51": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Popular pick",
+     "where": "product description area"
+    },
+    {
+     "type": "other",
+     "text": "Best seller",
+     "where": "below 'Popular items in this category'"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Walmart.com."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Walmart product page."
+  }
+ },
+ "52": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single Airbnb hosting page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  }
+ },
+ "53": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb homepage."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single Airbnb page. Some text is slightly blurry or cut off at the edges, but the overall UI is clear and usable."
+  }
+ },
+ "54": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb homepage."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version. The top banner is slightly cut off, but the main content is fully visible."
+  }
+ },
+ "55": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb homepage."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of the Airbnb homepage."
+  }
+ },
+ "56": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com page, showing search functionality and destination suggestions."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version. No cues indicating A/B test results are present."
+  }
+ },
+ "57": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Google Shopping results page for 'flowers'. All elements are visible and not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Google Shopping results page for 'flowers'."
+  }
+ },
+ "58": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Walmart product page. It contains product listings with 'Rollback' and 'Best seller' badges, which are part of the ordinary UI content and not A/B test cues."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Walmart product page. It contains 'Best seller' and 'Rollback' badges which are part of the ordinary UI content and do not indicate A/B test results."
+  }
+ },
+ "59": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Etsy."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy product page. Some text is slightly cut off on the right side, but it does not affect the overall usability or understanding of the page content."
+  }
+ },
+ "60": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page for a gaming keyboard. It is not cut off and displays a single version of the page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page for a gaming keyboard. All elements are visible and not cut off."
+  }
+ },
+ "61": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix plan selection page. It shows three different plans (Basic, Standard, Premium) with their features and prices. There are no external cues indicating an A/B test winner or version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix subscription plan selection page. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "62": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Zalando."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Zalando. It shows product details, images, pricing, and delivery information."
+  }
+ },
+ "63": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of the Netflix homepage, showing various movie/show covers and a 'Try it now' button. Nothing is cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of the Netflix landing page."
+  }
+ },
+ "64": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of the Netflix homepage, showing various movie/show covers and a 'Try it now' button. Nothing is cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of the Netflix landing page."
+  }
+ },
+ "65": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing Airbnb listings and a map. Some text is slightly blurry or cut off at the edges, but the overall UI is usable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single Airbnb search results page with a map."
+  }
+ },
+ "66": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version. There is a slight cut-off on the right side, but it does not affect the usability or understanding of the page content."
+  }
+ },
+ "67": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb search results page with a map view. Some text is slightly cut off or obscured by the mouse cursor."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb search results page for Seattle, showing listings and a map."
+  }
+ },
+ "68": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Amazon's Choice",
+     "where": "top of first product card"
+    },
+    {
+     "type": "other",
+     "text": "Best Seller",
+     "where": "top of second product card"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon search results page. It contains 'Amazon's Choice' and 'Best Seller' badges which could be interpreted as cues."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon search results page for 'batteries'. It shows various product listings, filters, and navigation elements. There are no cues indicating an A/B test winner or version."
+  }
+ },
+ "69": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Amazon's Choice",
+     "where": "top of first product card"
+    },
+    {
+     "type": "other",
+     "text": "Best Seller",
+     "where": "top of second product card"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon search results page. It contains 'Amazon's Choice' and 'Best Seller' badges which could be interpreted as cues."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon search results page for 'batteries'. It shows product listings, filters, and navigation elements. The 'Best Seller' badge is part of the ordinary UI content and not a cue related to an A/B test."
+  }
+ },
+ "70": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page. It shows product details, price, and purchase options."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on bol.com, showing Apple AirPods 2. There are no visible cues indicating an A/B test result or version."
+  }
+ },
+ "71": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Amazon's Choice",
+     "where": "product details"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Amazon."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page. The 'Amazon's Choice' badge is part of the standard UI and does not indicate an A/B test winner."
+  }
+ },
+ "72": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "label",
+     "text": "DEFAULT STATE",
+     "where": "top right of the first UI"
+    },
+    {
+     "type": "label",
+     "text": "HOVER STATE",
+     "where": "top right of the second UI"
+    }
+   ],
+   "single_full_ui": false,
+   "ui_notes": "The image shows two different states of the same UI (default and hover state), not two different versions for an A/B test. The bottom UI is also cut off."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "label",
+     "text": "DEFAULT STATE",
+     "where": "top right of the first UI"
+    },
+    {
+     "type": "label",
+     "text": "HOVER STATE",
+     "where": "top right of the second UI"
+    }
+   ],
+   "single_full_ui": false,
+   "ui_notes": "The image shows two different states (default and hover) of the same UI element, not two distinct versions for an A/B test. The bottom UI is also cut off."
+  }
+ },
+ "73": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy product page. Some text is slightly cut off at the edges but the main content is visible and usable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Etsy. The text is slightly cut off at the bottom right, but it does not affect the overall usability of the screenshot."
+  }
+ },
+ "74": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page for the book 'Educated: A Memoir'."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page for the book 'Educated: A Memoir'."
+  }
+ },
+ "75": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product listing page for red wine."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single page version. No cues indicating A/B test results are present."
+  }
+ },
+ "76": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on an e-commerce website."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on bol.com. It shows a 'Combi Deal' for a duvet and pillows. The UI is fully visible and not cut off."
+  }
+ },
+ "77": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix landing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a Netflix landing page."
+  }
+ },
+ "78": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix landing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix landing page."
+  }
+ },
+ "79": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix landing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix landing page."
+  }
+ },
+ "80": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Bestseller",
+     "where": "product details"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page on Etsy."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy product page."
+  }
+ },
+ "81": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product listing page for red wine on bol.com. It shows filters on the left, a banner for Starbucks coffee, and a main content area with a 'perfect gift' banner and product listings below. The page is fully visible and not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product category page on bol.com, showing filters, a banner, and product listings."
+  }
+ },
+ "82": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page for Duracell batteries. It is not cut off and displays all typical elements of such a page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page for Duracell batteries. It is not cut off and displays a single version of the page."
+  }
+ },
+ "83": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy product page. It is not cut off and displays all elements clearly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy product page."
+  }
+ },
+ "84": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com homepage. The dropdown for selecting rooms, adults, and children is open."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com page. The text 'From cozy country homes to funky city' is slightly cut off on the left, but it does not affect the usability of the screenshot."
+  }
+ },
+ "85": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Etsy. It shows product details, images, pricing, and reviews. No parts are cut off badly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy product page. The top navigation bar is slightly cut off on the left side, but the main content of the page is fully visible and usable."
+  }
+ },
+ "86": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a search results page on Booking.com for 'Rio de Janeiro'."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "ab_badge",
+     "text": "B",
+     "where": "bottom left of the first property listing"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a search results page on Booking.com."
+  }
+ },
+ "87": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix landing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Netflix landing page."
+  }
+ },
+ "88": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing policies and similar listings. Some text is slightly blurry but readable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a single, full screenshot of a web page, though some text is slightly blurry or cut off at the bottom."
+  }
+ },
+ "89": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Etsy. It is not cut off and displays a single version of the UI."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page on Etsy."
+  }
+ },
+ "90": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing a booking interface with calendar, pricing, and reviews. Some text is slightly blurred but readable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version, showing a calendar and booking details for a listing. Some text is slightly blurry but readable."
+  }
+ },
+ "91": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Google search results page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "This is a complete screenshot of a Google search results page."
+  }
+ },
+ "92": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com homepage."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a Booking.com homepage. There are no visible cues indicating an A/B test result or version."
+  }
+ },
+ "93": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single page version. No cut-off issues or multiple versions present."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  }
+ },
+ "94": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single page version. No cut-off issues or multiple versions present."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product listing page on bol.com. It shows product filters on the left and product listings on the right. No part of the UI is cut off in a way that would hinder understanding or use."
+  }
+ },
+ "95": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page on Etsy."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Etsy product page."
+  }
+ },
+ "96": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page. Some text and parts of the UI are slightly blurred or cut off at the edges, but it is generally usable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Amazon product page. Some text is slightly blurry or cut off at the edges, but the overall UI is intact and usable."
+  }
+ },
+ "97": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb search results page, showing listings and a map. No part of the UI is cut off in a way that makes it unusable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb search results page, including a map on the right side. No parts are cut off badly."
+  }
+ },
+ "98": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb listing page. The OCR is a bit messy but the UI is clear."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version, showing a listing on a platform similar to Airbnb. The content is fully visible and not cut off."
+  }
+ },
+ "99": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an Airbnb listing page. Some text is slightly cut off or obscured, but the overall UI is intact and usable."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "ab_badge",
+     "text": "New",
+     "where": "footer"
+    },
+    {
+     "type": "ab_badge",
+     "text": "New",
+     "where": "footer"
+    },
+    {
+     "type": "ab_badge",
+     "text": "New",
+     "where": "footer"
+    },
+    {
+     "type": "ab_badge",
+     "text": "New",
+     "where": "footer"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version. The 'New' badges in the footer are the only cues."
+  }
+ },
+ "100": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "search bar"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com page. Some text is slightly cut off at the top left and bottom right, but it does not affect the overall usability or understanding of the page content."
+  }
+ },
+ "101": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "search bar"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Booking.com page. Some text is slightly blurry or cut off at the edges, but the overall UI is intact and usable."
+  }
+ },
+ "102": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a Walmart product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on Walmart's website."
+  }
+ },
+ "103": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete web page section with a form and a headline. It is not cut off and appears to be a single version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "104": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an email asking to verify an email address."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of an email verification page."
+  }
+ },
+ "105": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "MOST POPULAR",
+     "where": "badge on 'Business' plan"
+    },
+    {
+     "type": "other",
+     "text": "WINNER 2008",
+     "where": "under 'seedcamp' logo"
+    },
+    {
+     "type": "other",
+     "text": "Editors Choice",
+     "where": "next to 'MacWorld 5*'"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a pricing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a pricing page with different plans. It includes a 'MOST POPULAR' badge on one of the plans, but this is part of the UI content and not a cue related to A/B testing results."
+  }
+ },
+ "106": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "label",
+     "text": "NEW!",
+     "where": "next to 'Auto-Post TikToks, Reels & More'"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a pricing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a pricing plan page. It shows a 'Starter' plan with a monthly price, an annual billing toggle, and a 'Start 7-Day Free Trial' button."
+  }
+ },
+ "107": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a sign-up page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete sign-up form for PLANOLY. It is not cut off and displays all necessary elements for user interaction."
+  }
+ },
+ "108": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version. No parts are cut off badly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "109": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a form page for Qualicorp, asking for personal information to find a plan. It is not cut off and displays a single version of the UI."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "VWO",
+     "where": "bottom right corner"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete form for finding a plan. The VWO logo is present in the bottom right corner."
+  }
+ },
+ "110": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version. The red box is an annotation added by the test publisher, but it does not reveal any information about A/B test results or versions. It simply highlights a part of the UI."
+  }
+ },
+ "111": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows two distinct mobile screens side-by-side, not a single full UI. The left screen is cut off at the bottom, and the right screen is cut off at the top and bottom."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "VWO",
+     "where": "bottom right corner of both images"
+    }
+   ],
+   "single_full_ui": false,
+   "ui_notes": "The image shows two different versions of a page side-by-side. The left version is mostly complete, but the right version is cut off at the bottom."
+  }
+ },
+ "112": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version, showing a signup form and pricing plans."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": ""
+  }
+ },
+ "113": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows multiple overlapping browser windows, not a single, complete UI. The main content is a screenshot of a WordPress editor, but it's partially obscured by other windows and the overall image is a promotional graphic, not a direct screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows multiple overlapping browser windows, making it difficult to discern a single, complete UI. It appears to be a carousel or gallery of screenshots rather than a single page version."
+  }
+ },
+ "114": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows multiple overlapping browser windows, not a single, complete UI. The main content is a screenshot of a WordPress editor, but it's partially obscured by other windows and the overall image is a promotional graphic, not a direct screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows a carousel of three different screenshots of a WordPress editor, not a single, full UI. The main screenshot is partially obscured by the other two, and the other two are also partially obscured."
+  }
+ },
+ "115": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows multiple overlapping browser windows, making it difficult to discern a single, complete UI. It appears to be a carousel or gallery of screenshots rather than a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows a carousel of three different screenshots of a WordPress editor, not a single, full UI. The main screenshot is partially obscured by the other two, and the other two are also partially obscured."
+  }
+ },
+ "116": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page, displaying various cleaning products for bikes. The layout is clean and all elements are visible."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "117": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing the header, a main content section with a call to action, and a footer with company logos."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing the header, a main content section with a form and call to action, and a footer with company logos."
+  }
+ },
+ "118": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows a partial view of a mobile app's side menu, with the right side of the screen cut off. It is not a complete, usable screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows a partial view of a mobile menu overlaying another page. The right side of the image is cut off, showing only a sliver of the underlying page content."
+  }
+ },
+ "119": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page for a ring."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product page for a 'QUETZALCOATL SKULL' item. It includes navigation, product image, title, rating, and product details. The screenshot is complete and usable."
+  }
+ },
+ "120": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single page version. It is not cut off and displays the full content."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version, not cut off."
+  }
+ },
+ "121": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  }
+ },
+ "122": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a webpage, showing the full content without being cut off."
+  }
+ },
+ "123": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product listing page for kilts."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  }
+ },
+ "124": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "BEST VALUE",
+     "where": "VIP plan badge"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a pricing page."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Best value",
+     "where": "top right of 'Extreme' plan"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a pricing page with multiple plans."
+  }
+ },
+ "125": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version, featuring a form and testimonials."
+  }
+ },
+ "126": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "blue box around 'W\u00e4hlen Sie Ihren Dachfensterhersteller aus'"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version. There is a blue box highlighting a section of the page."
+  }
+ },
+ "127": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "blue rectangle around product list"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  }
+ },
+ "128": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "blue rectangle around product list"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "blue box around 'W\u00e4hlen Sie Ihren Dachfensterhersteller aus'"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version. There is a blue box highlighting a section of the page."
+  }
+ },
+ "129": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version, showing a loan application form."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, not cut off."
+  }
+ },
+ "130": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "131": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page for 'CompareCourses' displaying information about a 'Bachelor of Accounting' course. It includes navigation, course details, inquiry forms, related courses, and testimonials. The page is fully visible without significant cut-offs."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  }
+ },
+ "132": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": ""
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "MORE THAN 10,000 SUBSCRIBERS",
+     "where": "bottom right of the main content area"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version. The 'MORE THAN 10,000 SUBSCRIBERS' badge could be interpreted as a cue indicating success or popularity, which might hint at a winning version."
+  }
+ },
+ "133": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing a gardening calendar entry for January. The content is fully visible and not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  }
+ },
+ "134": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing product listings."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": ""
+  }
+ },
+ "135": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a WikiJob page, showing information about practice tests and a partial view of a verbal reasoning practice test."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page. It is not cut off and displays all content clearly."
+  }
+ },
+ "136": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "blue circle around facebook like count and call to action"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version. The blue circle is an annotation added by the test publisher."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "blue oval around 'I want an expert opinion, Sign me up!'"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  }
+ },
+ "137": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing the header, navigation, main content area, and a partial footer. No significant cut-offs."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version. No parts are cut off badly."
+  }
+ },
+ "138": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "red box around 'Free Demo' button"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version. The red box around the button is an annotation, but it does not reveal A/B test information."
+  }
+ },
+ "139": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "VWO",
+     "where": "bottom right corner"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete, usable screenshot of a single page version. The 'VWO' logo in the bottom right corner indicates it's part of an A/B testing platform."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page. The VWO badge is part of the testing tool, but it does not reveal which version won or is the control/variation."
+  }
+ },
+ "140": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete, usable screenshot of a single page version. The VWO logo at the bottom right is a tool used for A/B testing, but it does not reveal which version won or is the control/variation. It's part of the page's UI, not an annotation added by the test publisher."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "141": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product page with a shopping cart overlay. The overlay partially obscures the product details, but the overall page structure is visible. The VWO badge is present at the bottom right, which is a common A/B testing tool, but it doesn't explicitly reveal which version won or is the control."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "VWO",
+     "where": "bottom right"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page with a shopping cart overlay. The VWO logo is visible at the bottom right, which is a tool used for A/B testing."
+  }
+ },
+ "142": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a grid of product listings, which appears to be a complete and usable screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays a grid of product listings, each with an 'Akce!' (Sale!) badge or 'Doprava zdarma' (Free shipping) badge. These are ordinary UI elements for e-commerce and do not indicate an A/B test outcome."
+  }
+ },
+ "143": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing an article about the London 2012 Olympic Games. There are no cues indicating an A/B test."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, displaying an article about the London 2012 Olympic Games. It includes navigation, article content, and advertisements."
+  }
+ },
+ "144": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing an article about the London 2012 Olympic Games. There are no cues indicating an A/B test."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing the header, a search bar, and several content cards."
+  }
+ },
+ "145": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "top left, pointing to 'Tipo' dropdown"
+    }
+   ],
+   "single_full_ui": false,
+   "ui_notes": "The bottom part of the page is cut off, and the dropdown menu is open, obscuring part of the UI."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "pointing from 'Encontre agora seu novo im\u00f3vel...' to the search input field"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "146": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page. The content is typical for an e-commerce product listing, showing product image, title, price, description, and add-to-cart button."
+  }
+ },
+ "147": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "lift_percent",
+     "text": "+10%",
+     "where": "bottom of yellow 'Contact info' bar"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a single page version, but it is slightly cut off at the bottom."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  }
+ },
+ "148": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a form for 'Contact Info' and 'Passport data'. It appears to be a complete and usable screenshot of a single page version, although the very top and bottom are slightly cut off, it doesn't hinder understanding of the UI."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  }
+ },
+ "149": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a form for 'Contact Info' and 'Passport data'. It appears to be a complete and usable screenshot of a single page version, although the very top and bottom are slightly cut off, it doesn't hinder understanding of the UI."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "lift_percent",
+     "text": "+10%",
+     "where": "bottom of yellow 'Contact info' bar"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a single page version, but it is slightly cut off at the bottom."
+  }
+ },
+ "150": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a mobile application page for health insurance. It displays a form to get a quote."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile application page. It shows a form for entering details like number of adults/kids, mobile number, email, pincode, and name. There are no visible cues indicating an A/B test outcome."
+  }
+ },
+ "151": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The top part of the image is slightly cut off, but the main content of the page is visible and usable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile application page, showing content related to health insurance policies. There is a small 'Ask Ria Live Chat' bubble at the bottom right, which is part of the UI."
+  }
+ },
+ "152": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page. It shows the product, its description, price, and options to add to cart or buy now."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page."
+  }
+ },
+ "153": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product comparison page, showing two different waterproof headphones side-by-side with their features."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays a comparison table of two different headphone products, along with descriptive text for each. It is a complete and usable screenshot of a single page."
+  }
+ },
+ "154": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a payment page with options for mobile number input and card details. It is a complete and usable screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a payment page."
+  }
+ },
+ "155": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single page version. It shows a product page for an iPhone with subscription options."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "MOST CHOSEN",
+     "where": "subscription option"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The page is a complete screenshot of a product configuration page for a mobile phone plan."
+  }
+ },
+ "156": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a booking page, showing user details and vehicle details input fields, along with a summary of the booking on the right side."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page for booking airport parking. It shows forms for contact, address, flight, and vehicle details, along with a summary of the booking."
+  }
+ },
+ "157": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete contact form page, not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a contact us page, including a form and social media links. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "158": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a contact page with a form."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a contact form page."
+  }
+ },
+ "159": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a contact form page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete contact form page, with no significant cut-offs."
+  }
+ },
+ "160": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a hotel website page, displaying information about rooms. The text is slightly blurry in some areas, but generally readable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a hotel website page, displaying information about different room types. The content is fully visible and not cut off."
+  }
+ },
+ "161": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page. The OCR is a bit messy but the content is readable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete webpage for a product called MOVEXA. The content is fully visible and not cut off."
+  }
+ },
+ "162": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product listing page. The left sidebar with filters is partially open, showing sorting options and product categories."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product listing page. The 'GREAT DEAL' badges are part of the UI content and not a cue related to A/B testing."
+  }
+ },
+ "163": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows two different page versions side-by-side, not a single full UI. The left side shows a product listing page, and the right side shows a search results/discovery page. Both are cut off vertically."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "VWO",
+     "where": "bottom right corner"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product listing page."
+  }
+ },
+ "164": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "trophy",
+     "text": "WINNER 2017",
+     "where": "top banner"
+    },
+    {
+     "type": "trophy",
+     "text": "WINNER 2016",
+     "where": "top banner"
+    },
+    {
+     "type": "trophy",
+     "text": "Best Secured Personal Lender 2016 & 2017 Australian Lending Awards",
+     "where": "top banner"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete loan application form page without any cut-off elements."
+  }
+ },
+ "165": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "OPEN YOUR INTERNET STORE IN ONE EVENING",
+     "where": "bottom of the image, in a dashed box with a translation icon"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version. The 'OPEN YOUR INTERNET STORE IN ONE EVENING' text with a translation icon and dashed box is an annotation, not part of the original UI."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "A",
+     "where": "bottom left, next to a translation icon"
+    },
+    {
+     "type": "other",
+     "text": "STEP BY STEP PLAN FOR OPENING YOUR INTERNET STORE",
+     "where": "bottom of the image, in a dashed box, likely a translation or annotation"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete landing page. The 'A' badge and the English text in a dashed box at the bottom are likely annotations added by the test publisher, not part of the original UI."
+  }
+ },
+ "166": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, displaying an article about PayPal casinos. The content is fully visible and not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, not cut off."
+  }
+ },
+ "167": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "168": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page with a search overlay open."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page. The 'Sale!' badge is part of the UI content and not a cue related to A/B testing."
+  }
+ },
+ "169": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete webpage layout with a sidebar and a main content area. No parts are cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows two distinct sections, a 'Sidebar' and a promotional banner, both with 'Join Us' buttons. It appears to be a complete screenshot of a single page layout."
+  }
+ },
+ "170": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete sign-up form for Teamleader, with no visible cut-offs or missing elements."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete web page with a form for a 14-day free trial. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "171": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete sign-up form for Teamleader, with no visible cut-offs or missing elements."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a sign-up form for 'Teamleader'. It is not cut off and displays all elements clearly."
+  }
+ },
+ "172": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a sign-up form."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete sign-up form for Teamleader, with no visible cut-offs or missing elements."
+  }
+ },
+ "173": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a sign-up form."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a sign-up form page."
+  }
+ },
+ "174": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete sign-up form for Teamleader."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a signup page."
+  }
+ },
+ "175": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page with a modal pop-up for VAT selection."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete webpage with a pop-up asking about VAT preferences. No parts are cut off."
+  }
+ },
+ "176": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page. It is not cut off and displays a single version of the page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page."
+  }
+ },
+ "177": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version, showing a signup form and information about Vendio Store."
+  }
+ },
+ "178": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  }
+ },
+ "179": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page, showing product details, images, and delivery information."
+  }
+ },
+ "180": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing a banner for 'Les Mis\u00e9rables' on the Aarhus Teater website. It is not cut off and displays a single version of the page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, featuring a banner for 'Les Mis\u00e9rables' at 'Aarhus Teater'."
+  }
+ },
+ "181": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "VWO",
+     "where": "bottom right corner"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete mobile web page for Eastpak, displaying a list of 'Online Exclusive Backpacks'. The page is fully visible and not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a single, full screenshot of a product listing page. The bottom right corner has a watermark that slightly obscures the price of the second item, but the price is still readable."
+  }
+ },
+ "182": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a form page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a form page."
+  }
+ },
+ "183": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version. It is not cut off and displays all elements clearly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a landing page for Hubstaff, featuring a sign-up form and a video player."
+  }
+ },
+ "184": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version. The red box is an annotation added by the test publisher, but it does not reveal any information about A/B test results or versions."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The bottom of the page is slightly cut off, but the main UI elements are visible and usable."
+  }
+ },
+ "185": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image contains three distinct versions of a web page, not a single one. Each version is a complete screenshot."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page, showing product details, pricing, color and size options, and 'add to bag' functionality. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "186": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete sign-up form with fields for name, email, password, reCAPTCHA, and a submit button. It is not cut off and displays a single version of the page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete sign-up form with input fields, a reCAPTCHA checkbox, a newsletter opt-in, and a submit button. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "187": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete sign-up form with fields for name, email, password, reCAPTCHA, and a submit button. It is not cut off and displays a single version of the page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete sign-up form without any cut-off elements."
+  }
+ },
+ "188": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product page with a pop-up confirmation for adding an item to the bag. The page is not cut off and appears to be a complete, usable screenshot of one page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete sign-up form with fields for name, email, password, reCAPTCHA, and a submit button. It is not cut off and displays a single version of the page."
+  }
+ },
+ "189": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  }
+ },
+ "190": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  }
+ },
+ "191": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a webpage, showing the header, navigation, a main promotional banner, and two side banners."
+  }
+ },
+ "192": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "New Feature: Lot Value Calculator is Free for All Users",
+     "where": "top banner"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "New Feature: Lot Value Calculator is Free for All Users",
+     "where": "top banner"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page. The 'New Feature' text is a cue."
+  }
+ },
+ "193": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing a banner for 'Connections 2013' with a 'Register Now' button. No cues indicating A/B test results are present."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing a banner for 'Connections 2013' and a laptop displaying a related page."
+  }
+ },
+ "194": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page. It features a hero section with a call to action, and a form at the bottom. There are no cues indicating an A/B test."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a webpage. It features a hero section with text overlaying an image of a person holding tablets, and a form section at the bottom."
+  }
+ },
+ "195": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a marketing page for 'POSist' with a mobile app screenshot embedded. The mobile app screenshot is clear and usable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page. It features a hero section with a call to action, and a form at the bottom. There are no cues indicating an A/B test."
+  }
+ },
+ "196": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  }
+ },
+ "197": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "<< Back to Monster Energy Test",
+     "where": "above product title"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The page is a complete product detail page. The 'Back to Monster Energy Test' link is a cue."
+  }
+ },
+ "198": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a checkout page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a checkout page, showing user information input, cart content, benefits, and last-minute deals."
+  }
+ },
+ "199": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing the top navigation bar and a hero section with text and an image. No parts are cut off badly."
+  }
+ },
+ "200": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "VWO",
+     "where": "bottom left corner"
+    },
+    {
+     "type": "other",
+     "text": "HEATMAP",
+     "where": "bottom bar"
+    },
+    {
+     "type": "other",
+     "text": "CLICKMAP",
+     "where": "bottom bar"
+    },
+    {
+     "type": "other",
+     "text": "Currently showing 2450 clicks",
+     "where": "bottom bar"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a full screenshot of a mobile website within a testing tool interface."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a mobile phone screen displaying a webpage. There are UI elements around the phone screen that appear to be part of a testing or development tool (e.g., 'Mobile Device', 'Orientation', 'VWO', 'HEATMAP', 'CLICKMAP', 'Currently showing 2664 clicks', 'INTENSITY'). However, these are external to the webpage content itself and do not reveal A/B test results or versions."
+  }
+ },
+ "201": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single page version, showing a mobile application interface for car insurance."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile application page for car insurance. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "202": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile application page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile application page."
+  }
+ },
+ "203": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile web page for HDFC ERGO car insurance. It shows a banner with a person and car, a form to enter vehicle registration, and buttons for quotes and policy renewal. Below that, there's a section titled 'Why choose HDFC ERGO CAR INSURANCE' with icons and text."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single page version. It is not cut off and displays all elements clearly."
+  }
+ },
+ "204": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile application page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile application page, showing a health insurance offering. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "205": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a full, usable screenshot of a web page with text content and a 'Stay Connected' pop-up."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a single page version, not cut off, with text content and a small icon on the right side."
+  }
+ },
+ "206": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "red arrow pointing to 'GET A FREE QUOTE' button"
+    },
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "red box highlighting 'GET A FREE QUOTE' button"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "red arrow pointing to 'BOOK A FREE SURVEY' button"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  }
+ },
+ "207": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product detail section, including price, quantity selector, add to cart button, reviews, shipping information, payment options, and contact details. It is a complete and usable screenshot of one page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product detail section, including price, shipping info, quantity selector, add to cart button, and contact information. It appears to be a complete and usable screenshot of a single page version."
+  }
+ },
+ "208": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a webpage, showing the header, a main content area with text and an image, and two call-to-action sections on the right side."
+  }
+ },
+ "209": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page for 'Underwater Audio' headphones and related products. It is not cut off and displays a single version of the page."
+  }
+ },
+ "210": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on an e-commerce website."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on an e-commerce website."
+  }
+ },
+ "211": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": ""
+  }
+ },
+ "212": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing the header, a hero section with a call to action, and several content blocks below."
+  }
+ },
+ "213": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a game's 'Treasure Hunter' page, showing options to buy keys and hearts of ice, and a 'How do I play?' section."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  }
+ },
+ "214": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is cut off at the bottom, not showing the full page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing the header, navigation, and a section of the main content. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "215": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on SelectHub.com. It shows product details, features, and a chat widget."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page. There is a chat pop-up at the bottom right."
+  }
+ },
+ "216": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page."
+  }
+ },
+ "217": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version. No obvious cut-offs or missing elements."
+  }
+ },
+ "218": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version. No cut-off elements or multiple versions are present."
+  }
+ },
+ "219": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "220": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version, not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "221": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a menu overlay on a yellow background. Some text is very faint and hard to read, but it appears to be a complete UI element."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a full-screen menu overlay with navigation links and a 'Contact Us' button. The background content is visible but faded."
+  }
+ },
+ "222": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a full web page with a title, some text links, and product images. It is not cut off and appears to be a complete single version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing text and product images. It is not cut off badly."
+  }
+ },
+ "223": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing a header, some text links, a prominent red button, and several product images. It is not cut off and displays a single version of the page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing text and product images. It is not cut off badly."
+  }
+ },
+ "224": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a shopping cart page. It is not cut off and displays all elements clearly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a shopping cart page. No parts are cut off badly, and it displays a single version of the UI."
+  }
+ },
+ "225": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "226": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on GoodwillFinds.com."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page on GoodwillFinds.com."
+  }
+ },
+ "227": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is cut off at the top and bottom, showing only parts of the header and product details."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is a partial screenshot, cut off at the top and bottom, and also on the left and right sides."
+  }
+ },
+ "228": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page."
+  }
+ },
+ "229": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing an email input form."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single page version. It shows a login/registration page with an email input and a Facebook login option."
+  }
+ },
+ "230": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page. It shows product details, pricing, and related items. No part of the UI is cut off badly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page on an e-commerce website."
+  }
+ },
+ "231": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": ""
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "(Most Popular)",
+     "where": "breadcrumb and product title"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page."
+  }
+ },
+ "232": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page, showing product details, pricing, size selection, and an add to cart button. It is not cut off and displays a single version of the UI."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page for an 'Arbequina Olive Tree'. It shows product details, price, size options, and an 'Add to cart' button. There are no visible cues indicating an A/B test."
+  }
+ },
+ "233": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete cart page, not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a cart page, which is a common UI element. The left side of the image is cut off, but the cart content itself is fully visible and usable."
+  }
+ },
+ "234": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows a dropdown menu for 'tickets' but the rest of the page is cut off, making it an incomplete screenshot."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is cut off at the bottom, showing only the top portion of the page."
+  }
+ },
+ "235": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows three different web hosting plans, which is a common UI pattern for displaying options, not necessarily an A/B test. There are no explicit cues indicating an A/B test winner or version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows three different webhotel packages, which is a common UI pattern for displaying options, not necessarily an A/B test variation cue."
+  }
+ },
+ "236": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a webpage section displaying customer testimonials."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a webpage section featuring customer testimonials."
+  }
+ },
+ "237": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "label",
+     "text": "NEW: Version 6 is now available!",
+     "where": "right of the video thumbnail"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "NEW: Version 6 is now available!",
+     "where": "middle right of the page"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  }
+ },
+ "238": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "around 'Tens of Thousands' text"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version. There is an orange circle highlighting 'Tens of Thousands' in the text below the main hero section."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": "Tens of Thousands",
+     "where": "text below the main hero section"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "239": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version. It features a 'Pre Black Week' banner, a countdown timer, and a 'USE CODE: VIP' call to action. There are no cues indicating it's part of an A/B test or which version won."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing a promotional banner for 'Pre Black Week' and a 'Use Code: VIP' call to action."
+  }
+ },
+ "240": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete, usable screenshot of a single page version. It features a promotional banner with text 'Find the one Gift the one' and a '2 For 1 Limited time only' badge, along with product images and navigation elements. There are no cues indicating it's part of an A/B test."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page. It features a product (phone case) with a '2 for 1 Limited time only' badge and a 'Find the one' button."
+  }
+ },
+ "241": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a webpage, showing the header, navigation, a holiday sale banner, and product categories with thumbnails. Nothing is cut off badly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version. The bottom right is slightly cut off, but it does not affect the overall usability or understanding of the page content."
+  }
+ },
+ "242": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": ""
+  }
+ },
+ "243": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "red arrows pointing to text and price"
+    }
+   ],
+   "single_full_ui": false,
+   "ui_notes": "The image is cut off at the bottom, and there are red arrows pointing to specific elements on the page, which are annotations added by the test publisher."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "red arrows pointing to product description and price"
+    },
+    {
+     "type": "other",
+     "text": "VWO",
+     "where": "watermark at the bottom"
+    }
+   ],
+   "single_full_ui": false,
+   "ui_notes": "The image is cut off at the bottom, and contains red arrows and a VWO watermark, which are not part of the original UI."
+  }
+ },
+ "244": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "trophy",
+     "text": "#WOW WINNER",
+     "where": "top right of logo"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "around 'Follow @bagservant 4,384 followers'"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  }
+ },
+ "245": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product listing page. The 'FEATURED' labels are part of the UI content and not A/B test cues."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product listing page. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "246": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version. There are no cues indicating it's part of an A/B test."
+  }
+ },
+ "247": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page, showing product details, a quantity selector, and a call to action button. There is a faint watermark in the middle of the image, but it does not obscure the content significantly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image is cut off at the top and bottom, showing only a partial view of the page. There is also a watermark 'VWO' in the middle of the image."
+  }
+ },
+ "248": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The page is a complete, usable screenshot of a single web page version. There are no cues indicating it's part of an A/B test."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "The Scanitto Pro PDF scanner will change your life and once you start using it, nothing will compare!",
+     "where": "green highlighted box"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The page is a complete and usable screenshot of a single web page version. The green highlighted box with a checkmark and enthusiastic text acts as a cue."
+  }
+ },
+ "249": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page."
+  }
+ },
+ "250": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a pricing page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a pricing page."
+  }
+ },
+ "251": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page, showing options for customization and pricing details. It is not cut off and displays a single version of the page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  }
+ },
+ "252": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile web page, showing the header, a main promotional banner, and a 'Why Shop With Us' section. Nothing is cut off badly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile web page, showing the header, a main banner, and part of a product display below it. Nothing is cut off in a way that makes it unusable."
+  }
+ },
+ "253": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a shopping cart page. It shows product details, pricing, and a call to action to proceed to checkout. There's also a banner indicating a bonus gift."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a shopping cart page. There are no visible cues indicating an A/B test winner or version."
+  }
+ },
+ "254": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a single page version, not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays a full promotional message without any cut-off elements."
+  }
+ },
+ "255": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays the text 'IDEAL OF SWEDEN' on a white background. It is a complete image, not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a logo and text 'SHOCKBYTE' on a white background. It is a complete image of a logo, not a web page."
+  }
+ },
+ "256": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a form to request a brochure."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays a complete form for requesting a brochure, with no cut-off elements."
+  }
+ },
+ "257": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing a form to request a demo and customer testimonials."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing a form to request a demo and customer testimonials."
+  }
+ },
+ "258": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version. It shows a checkout page for a 'Start Plan' on 'uptowork'."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a checkout page for a 'Start Plan'."
+  }
+ },
+ "259": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Best Seller",
+     "where": "product b badge"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product selection page, showing three different phone options."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Best Seller",
+     "where": "badge on phone image b)"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image shows three different phone options, each with its own price and description. It is a complete screenshot."
+  }
+ },
+ "260": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "arrow_or_highlight",
+     "text": null,
+     "where": "bottom left of the form"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete, usable screenshot of one page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "261": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "MOST POPULAR",
+     "where": "Standard plan badge"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a pricing page."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "other",
+     "text": "Full coverage for 90% of agencies",
+     "where": "under 'Standard' plan title"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image displays three pricing plans side-by-side, which is a common UI pattern for a single page. The 'Standard' plan has a badge/text indicating 'Full coverage for 90% of agencies', which could be interpreted as a cue highlighting this plan as a popular or recommended option, potentially influencing user choice in an A/B test."
+  }
+ },
+ "262": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image displays two distinct product listings side-by-side, not a single version of a page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image displays two distinct product listings side-by-side, each representing a different phone and internet plan. This is not a single version of a page, but rather two versions presented together."
+  }
+ },
+ "263": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image shows two t-shirts, which might represent two versions, but there are no explicit cues indicating an A/B test or winner. The image is also cut off at the bottom."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays two identical t-shirts, which might be confusing, but it's a common way to show a product. It also includes a price and a 'buy now' button, making it a usable product display."
+  }
+ },
+ "264": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays two t-shirts, one green and one olive, with the same design. This could be interpreted as two versions of a product, but there are no explicit A/B test cues. The UI elements like price and 'ADD TO CART' button are present and not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays two identical t-shirts, which might be confusing, but it's a common way to show a product. It also includes a price and a 'buy now' button, making it a usable product display."
+  }
+ },
+ "265": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a web page, showing various lighting categories and products."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version, showing the homepage of an e-commerce site."
+  }
+ },
+ "266": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays three product listings side-by-side, which is a common UI pattern for e-commerce sites. It is a complete and usable screenshot."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": false,
+   "ui_notes": "The image displays three separate product images side-by-side, each with a product name below it. This is not a single, complete screenshot of one page version, but rather a composite of multiple product listings or a gallery view."
+  }
+ },
+ "267": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays three product listings side-by-side, which is a common UI pattern for e-commerce sites. It is a complete and usable screenshot."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays three product cards, each with an image, product name, and a 'VIEW PRODUCT DETAILS' button. The layout is clean and complete."
+  }
+ },
+ "268": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays three product listings side-by-side, which is a common UI pattern for e-commerce sites. It is a complete and usable screenshot."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image displays three product listings side-by-side, each with an image, product name, price, and a 'VIEW PRODUCT DETAILS' button. This appears to be a standard product display page, not a single version of an A/B test. However, it is a complete and usable screenshot of a page."
+  }
+ },
+ "269": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page."
+  }
+ },
+ "270": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page, showing a chandelier and product details, options, price, and an add to cart button. Nothing is cut off."
+  }
+ },
+ "271": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single page version."
+  }
+ },
+ "272": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a product page."
+  }
+ },
+ "273": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile application interface, showing a lesson progression with some locked content and a premium trial offer."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile application page showing a chapter with lessons and a checkpoint. There are no visible cut-offs or missing parts of the UI."
+  }
+ },
+ "274": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete Uber app screen for choosing a ride, including a map and ride options. It is not cut off and displays a single version of the UI."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "label",
+     "text": "New",
+     "where": "Comfort ride option"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a ride-sharing app interface."
+  }
+ },
+ "275": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version. It is not cut off and displays all elements clearly."
+  }
+ },
+ "276": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing a product selection interface."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing a product selection interface."
+  }
+ },
+ "277": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete UI of a web application, likely a collaborative whiteboard tool. There are no cut-off elements or missing parts."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete UI of a Mural board with various elements like sticky notes, a 'Wall of Work' section, and navigation settings. It is not cut off and displays a single version of the page."
+  }
+ },
+ "278": {
+  "win": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "label",
+     "text": "MOST POPULAR",
+     "where": "Team pricing plan"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a pricing page with three different plans."
+  },
+  "lose": {
+   "leak": true,
+   "cues": [
+    {
+     "type": "label",
+     "text": "NEW",
+     "where": "top banner"
+    }
+   ],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  }
+ },
+ "279": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile app interface, showing a 'Manage Auto-Stash' screen with details about repeating transfers, next transfer date, deposits, and investments."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile app screen."
+  }
+ },
+ "280": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a pricing page with three plans and options for yearly/monthly billing."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a pricing page."
+  }
+ },
+ "281": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete mobile app screen. The bottom navigation bar is slightly cut off on the left side, but it is still usable."
+  }
+ },
+ "282": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete mobile app screen with a selection of options and a 'Continue' button. No parts are cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile app screen. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "283": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile app page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version."
+  }
+ },
+ "284": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete, usable screenshot of a single page version, likely a modal or pop-up."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete pop-up for a 'TRY PRO FOR FREE' offer with subscription details."
+  }
+ },
+ "285": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a full webpage with a pop-up. The pop-up is a common UI element and does not indicate a leak."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single web page version."
+  }
+ },
+ "286": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile app's 'My Order' page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile order page."
+  }
+ },
+ "287": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product page for shoes, including product name, price, description, image, and customer reviews. It is a complete and usable screenshot of one page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product page for shoes. It is a complete and usable screenshot of one page version."
+  }
+ },
+ "288": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product page with pricing, reviews, a 'buy now' button, and additional options. It appears to be a complete and usable screenshot of a single page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product listing with price, discount, call to action, location information, and an upgrade option. It is a complete and usable screenshot of one page version."
+  }
+ },
+ "289": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product page."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a product page for a 'Cake Explosion Box with Flying Butterflies'. It is a complete screenshot of one page version, not cut off."
+  }
+ },
+ "290": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete and usable screenshot of a single web page version."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a product listing page. The 'BEST SELLER' badges are part of the ordinary UI content and not a cue related to A/B testing."
+  }
+ },
+ "291": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete payment details page for a '30 Day FREE Trial' offer. It is not cut off and displays a single version of the UI."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a payment details page, which is a complete and usable screenshot of one page version."
+  }
+ },
+ "292": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing a live class interface."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing a live class interface."
+  }
+ },
+ "293": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete, usable screenshot of a single page version. It is not cut off and displays all elements clearly."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete view of a mobile app screen, displaying a live class session."
+  }
+ },
+ "294": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing a live class interface."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single page version, showing a live class interface."
+  }
+ },
+ "295": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a mobile app screen, showing a PDF creation/sharing feature with a subscription offer."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete mobile app screen, likely an onboarding or subscription prompt. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "296": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete mobile app screen, not cut off."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete mobile app screen for creating and sharing PDF files, with a subscription offer."
+  }
+ },
+ "297": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The bottom of the screen is slightly cut off, but the main content is visible and usable."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a single app page, showing a subscription offer."
+  }
+ },
+ "298": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete subscription page for 'Neos Kosmos'. The left side has a black and white image of people on a ship, and the right side has the subscription offer with a 'Become a subscriber' button and 'Login'/'Not now' options. The page is not cut off and appears to be a single, usable screenshot."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image shows a complete pop-up or section of a webpage for subscribing to a digital newspaper. It is not cut off and displays a single version of the UI."
+  }
+ },
+ "299": {
+  "win": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a subscription page. It shows different subscription plans and features. There are no cues indicating an A/B test result."
+  },
+  "lose": {
+   "leak": false,
+   "cues": [],
+   "single_full_ui": true,
+   "ui_notes": "The image is a complete screenshot of a subscription page. It shows different subscription plans and their prices. There are no cues indicating an A/B test winner or version."
+  }
+ }
+}
