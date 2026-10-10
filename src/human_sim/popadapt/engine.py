@@ -31,27 +31,39 @@ class Matrix:
         for u, it, d in zip(r.unit, r.item, r.dist):
             X[self.uidx[u], self.cols[it]] = d
         self.X = X
+        # each survey question counts once: a question split into m rows gets weight 1/sqrt(m) per row
+        grp = table.items["group"] if "group" in table.items.columns else pd.Series(table.items.index, index=table.items.index)
+        size = grp.loc[self.items].value_counts()
+        self.w = np.ones(c)
+        for it in self.items:
+            self.w[self.cols[it]] = 1.0 / np.sqrt(size[grp.at[it]])
 
     def observed(self, it):
         return ~np.isnan(self.X[:, self.cols[it].start])
 
 
-def fit_axes(X, rank, iters=40, seed=0):
+def fit_axes(X, rank, iters=25, seed=0, w=None):
     """EM-PCA with missing values. Returns (column means, unit scores U [n x r], loadings V [cols x r], share of
     variance of the filled matrix per axis)."""
+    from sklearn.utils.extmath import randomized_svd
+    w = np.ones(X.shape[1]) if w is None else w
     mask = ~np.isnan(X)
     mu = np.nanmean(X, axis=0)
     mu = np.where(np.isnan(mu), 0.0, mu)
-    Z = np.where(mask, X, mu) - mu
+    Z = (np.where(mask, X, mu) - mu) * w
+    total = (Z ** 2).sum()
     if rank == 0:
         return mu, np.zeros((X.shape[0], 0)), np.zeros((X.shape[1], 0)), np.zeros(0)
-    for _ in range(iters):
-        U, s, Vt = np.linalg.svd(Z, full_matrices=False)
-        R = (U[:, :rank] * s[:rank]) @ Vt[:rank]
-        Z = np.where(mask, X - mu, R)
-    U, s, Vt = np.linalg.svd(Z, full_matrices=False)
-    var = s ** 2 / (s ** 2).sum()
-    return mu, U[:, :rank] * s[:rank], Vt[:rank].T, var[:rank]
+    full_obs = mask.all()
+    for _ in range(1 if full_obs else iters):
+        U, s, Vt = randomized_svd(Z, rank, n_iter=4, random_state=seed)
+        if full_obs:
+            break
+        R = (U * s) @ Vt
+        Z = np.where(mask, (X - mu) * w, R)
+    U, s, Vt = randomized_svd(Z, rank, n_iter=6, random_state=seed)
+    var = s ** 2 / max(total, 1e-12)
+    return mu, U * s, (Vt / w).T, var
 
 
 def segments(scores, k, seed=0):
@@ -137,7 +149,7 @@ def describe_axes(table, M, V, var, top=4):
     lab = []
     for it in M.items:
         for j, o in enumerate(table.items.at[it, "options"]):
-            lab.append((it, str(table.items.at[it, "text"])[:110], str(o)[:40]))
+            lab.append((it, str(table.items.at[it, "text"])[:140], str(o)[:40]))
     out = []
     for a in range(V.shape[1]):
         order = np.argsort(V[:, a])

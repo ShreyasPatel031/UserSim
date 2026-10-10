@@ -41,7 +41,7 @@ def tvd(p, q):
 class Setup:
     def __init__(self, t, rank, k, attr, train_items, seed=0):
         self.M = E.Matrix(t, train_items)
-        self.mu, self.S, self.V, self.var = E.fit_axes(self.M.X, rank, seed=seed)
+        self.mu, self.S, self.V, self.var = E.fit_axes(self.M.X, rank, seed=seed, w=self.M.w)
         self.seg, self.km = E.segments(self.S, k, seed) if rank else (np.zeros(len(self.M.units), int), None)
         self.attr = attr
         self.groups = t.units.loc[self.M.units, attr].to_numpy() if attr else None
@@ -129,15 +129,35 @@ def evaluate(t, test_items, fracs=(0.05, 0.10, 0.25), reps=3, ranks=(0, 1, 2, 3,
 
     # ---- held-out test
     results = {}
+    GROUP_ATTRS = [c for c in ("sex", "age", "income", "party", "education", "race", "region") if c in t.units.columns]
     for f in fracs:
         per = {m: [] for m in ("uniform", "anchor_mean", "axes", "segment", "attribute")}
+        gshare = {m: [] for m in ("anchor_mean", "axes", "segment", "attribute")}
+        ggap = {m: [] for m in ("anchor_mean", "axes", "segment", "attribute")}
         for rep in range(reps):
             r2 = np.random.default_rng(seed + 100 + rep)
             for it in test_items:
-                r = run_item(t, st, it, f, r2, overlap)
+                r = run_item(t, st, it, f, r2, overlap, max_targets=100000)
                 if r:
                     for m in per:
                         per[m].append(r[0][m].mean())
+                    if t.level == "person" and GROUP_ATTRS:
+                        _, tg, pr, y = r
+                        U = t.units.loc[[st.M.units[i] for i in tg]]
+                        real_all = y[tg].mean(0)
+                        for m in gshare:
+                            errs, rg, pg = [], [], []
+                            for col in GROUP_ATTRS:
+                                for v in U[col].unique():
+                                    msk = (U[col] == v).to_numpy()
+                                    if msk.sum() < 40:
+                                        continue
+                                    real = y[tg][msk].mean(0)
+                                    pred = pr[m][msk].mean(0)
+                                    errs.append(0.5 * np.abs(real - pred).sum())
+                                    rg.append(real[0] - real_all[0]); pg.append(pred[0] - pr[m].mean(0)[0])
+                            gshare[m].append(np.mean(errs))
+                            ggap[m].append(np.corrcoef(rg, pg)[0, 1] if np.std(pg) > 1e-9 else 0.0)
         row = {m: round(float(np.mean(v)), 4) for m, v in per.items() if v}
         base = np.array(per["anchor_mean"])
         for m in ("axes", "segment", "attribute"):
@@ -145,6 +165,11 @@ def evaluate(t, test_items, fracs=(0.05, 0.10, 0.25), reps=3, ranks=(0, 1, 2, 3,
             row[f"{m}_gain_vs_anchor"] = round(float(d.mean()), 4)
             row[f"{m}_gain_ci"] = ci(d)
         row["n_item_reps"] = len(base)
+        if any(gshare.values()):
+            row["group_share_error"] = {m: round(float(np.mean(v)), 4) for m, v in gshare.items()}
+            row["group_gap_correlation"] = {m: round(float(np.nanmean(v)), 3) for m, v in ggap.items()}
+            b = np.array(gshare["anchor_mean"])
+            row["group_share_gain_ci"] = {m: ci(b - np.array(gshare[m])) for m in ("axes", "segment", "attribute")}
         results[str(f)] = row
     card["test_tvd"] = results
 
@@ -155,11 +180,11 @@ def evaluate(t, test_items, fracs=(0.05, 0.10, 0.25), reps=3, ranks=(0, 1, 2, 3,
         for b in range(3):
             idx = np.random.default_rng(seed + 200 + b).choice(len(st.M.units), len(st.M.units), replace=True)
             Xb = st.M.X[idx]
-            _, Sb, Vb, _ = E.fit_axes(Xb, best_rank, seed=b)
+            _, Sb, Vb, _ = E.fit_axes(Xb, best_rank, seed=b, w=st.M.w)
             C = np.abs(np.corrcoef(st.V.T, Vb.T)[:best_rank, best_rank:])
             cong.append(float(np.mean(C.max(1))))
             # project all units onto bootstrap axes, recluster, compare with full-data segments
-            Xf = np.where(np.isnan(st.M.X), st.mu, st.M.X) - st.mu
+            Xf = (np.where(np.isnan(st.M.X), st.mu, st.M.X) - st.mu) * st.M.w ** 2
             lb, _ = E.segments(Xf @ Vb, best_k, b)
             aris.append(adjusted_rand_score(st.seg, lb))
         card["stability"] = {"axis_congruence_mean": round(float(np.mean(cong)), 3), "segment_ARI_mean": round(float(np.mean(aris)), 3)}
@@ -216,9 +241,11 @@ def main():
         rng = np.random.default_rng(0)
         pricing = [i for i in t.items.index if "Pricing" in t.items.at[i, "block"]]
         other = [i for i in t.items.index if i not in pricing]
-        test = pricing + list(rng.choice(other, 60, replace=False))
+        groups = sorted({t.items.at[i, "group"] for i in other})
+        held_groups = set(rng.choice(groups, max(1, len(groups) // 8), replace=False))  # whole questions held out
+        other_test = [i for i in other if t.items.at[i, "group"] in held_groups]
         cards["twin_pricing"] = evaluate(t, pricing, retest=AD.twin2k_retest(), example_item=pricing[0])
-        cards["twin_other"] = evaluate(t, [i for i in test if i not in pricing], retest=AD.twin2k_retest())
+        cards["twin_other_blocks"] = evaluate(t, other_test, retest=AD.twin2k_retest())
     if which in ("all", "simbench"):
         from human_sim import simbench_ablate as A
         dss = sorted(set(A.load_split("Pop").dataset_name) | set(A.load_split("Grouped").dataset_name))
@@ -234,6 +261,8 @@ def main():
             test = list(rng.choice(cand, max(1, len(cand) // 4), replace=False))  # representative 25% of testable items
             cards[f"simbench_{d}"] = evaluate(t, test, fracs=(0.25, 0.5), reps=3)
     fn = OUT / f"cards_{which}.json"
+    if which == "twin" and (OUT / "cards.json").exists():
+        (OUT / "cards.json").unlink()  # superseded first run (unweighted, sibling rows in training)
     old = json.loads(fn.read_text()) if fn.exists() else {}
     old.update(cards)
     fn.write_text(json.dumps(old, indent=1, default=str))

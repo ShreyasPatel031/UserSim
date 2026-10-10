@@ -53,7 +53,7 @@ def simbench(dataset):
         keys = list(r.human_answer)
         if st not in items:
             labels = parse_options(r.input_template)
-            items[st] = {"text": st, "options": [labels.get(k, k) for k in keys], "keys": keys, "block": dataset}
+            items[st] = {"text": st, "options": [labels.get(k, k) for k in keys], "keys": keys, "block": dataset, "group": st}
         if set(keys) != set(items[st]["keys"]):
             continue
         v = np.array([r.human_answer[k] for k in items[st]["keys"]], float)
@@ -93,7 +93,7 @@ def twin2k(path=ROOT / "data" / "twin2k"):
         if q["QuestionType"] == "MC" and sel in ("SAVR", "SAHR") and q.get("Options"):
             cols = [(q["csv_columns"][0], q["QuestionText"], q["Options"])] if q.get("csv_columns") else []
         elif q["QuestionType"] == "Matrix" and q.get("Columns"):
-            cols = [(c, f'{q["QuestionText"]} | {row}', q["Columns"]) for c, row in zip(q.get("csv_columns", []), q.get("Rows", []))]
+            cols = [(c, f'{row} || {q["QuestionText"]}', q["Columns"]) for c, row in zip(q.get("csv_columns", []), q.get("Rows", []))]
         else:
             continue
         for col, text, opts in cols:
@@ -103,7 +103,7 @@ def twin2k(path=ROOT / "data" / "twin2k"):
             ok = x.notna() & (x >= 1) & (x <= len(opts))
             if ok.sum() < 50:
                 continue
-            items[col] = {"text": " ".join(str(text).split())[:300], "options": list(opts), "block": block}
+            items[col] = {"text": " ".join(str(text).split())[:300], "options": list(opts), "block": block, "group": q["QuestionID"].split("_")[0] if q["QuestionType"] == "Matrix" else col}
             k = len(opts)
             recs += [{"unit": str(pid), "item": col, "dist": one_hot(k, int(v) - 1), "n": 1.0} for pid, v in x[ok].items()]
     itm = pd.DataFrame.from_dict(items, orient="index")
