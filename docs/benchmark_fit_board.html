@@ -1,0 +1,253 @@
+<title>Benchmark Fit Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: controls panel on the left (stacks on narrow screens), sortable leaderboard on the right; one color per prediction stage P1-P4. */
+:root {
+  --bg: #f4f6f5; --surface: #ffffff; --ink: #15191a; --ink2: #4f585b; --muted: #727b7e; --line: #dbe1df; --soft: #eef2f0;
+  --accent: #1f6fcf; --p1: #2a78d6; --p2: #e0602d; --p3: #17a170; --p4: #4a3aa7;
+  --ok: #1d7a4c; --warn: #9a6400; --font-d: "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
+  --font-b: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --font-m: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111414; --surface: #191d1d; --ink: #eef2f0; --ink2: #b8c1c0; --muted: #8e9898; --line: #2b3131; --soft: #202626;
+  --accent: #5a9ff0; --p1: #3987e5; --p2: #e8763f; --p3: #2bb583; --p4: #9085e9; --ok: #5cc28d; --warn: #e0a940; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111414; --surface: #191d1d; --ink: #eef2f0; --ink2: #b8c1c0; --muted: #8e9898; --line: #2b3131; --soft: #202626;
+  --accent: #5a9ff0; --p1: #3987e5; --p2: #e8763f; --p3: #2bb583; --p4: #9085e9; --ok: #5cc28d; --warn: #e0a940; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-b); font-size: 14px; line-height: 1.5; padding-inline: 16px; padding-block: 24px 48px; }
+.wrap { max-width: 1280px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
+h1 { font-family: var(--font-d); font-size: clamp(26px, 4vw, 38px); margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-family: var(--font-d); font-size: 15px; margin: 0; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink2); }
+p { margin: 0; }
+.lede { color: var(--ink2); max-width: 78ch; }
+.mono { font-family: var(--font-m); font-variant-numeric: tabular-nums; }
+.stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: flex; gap: 10px; min-width: 0; }
+.stage b { font-family: var(--font-m); font-size: 13px; padding: 1px 6px; border-radius: 4px; color: #fff; height: fit-content; }
+.stage span { font-size: 13px; color: var(--ink2); }
+.sw-P1 { background: var(--p1); } .sw-P2 { background: var(--p2); } .sw-P3 { background: var(--p3); } .sw-P4 { background: var(--p4); }
+.layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: env(safe-area-inset-top, 0px); }
+@media (max-width: 900px) { .panel { position: static; } }
+.group { display: flex; flex-direction: column; gap: 8px; }
+.slider { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; }
+.slider label { font-size: 13px; color: var(--ink); display: flex; gap: 6px; align-items: center; }
+.slider output { font-family: var(--font-m); font-size: 12px; color: var(--ink2); min-width: 2.5em; text-align: right; }
+.slider input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+.dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+.presets, .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+button, select { font: inherit; color: var(--ink); }
+.btn { background: var(--soft); border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; font-size: 12px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible, .chip:focus-visible, th button:focus-visible, select:focus-visible, input:focus-visible, tr.row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.chip[aria-pressed="false"] { opacity: 0.5; text-decoration: line-through; }
+details summary { cursor: pointer; font-size: 13px; color: var(--ink2); }
+details[open] summary { margin-bottom: 8px; }
+.hint { font-size: 12px; color: var(--muted); }
+.board { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.board-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.board-head select { background: var(--soft); border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; }
+.tw { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 760px; }
+th { text-align: right; font-weight: 500; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding: 8px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:nth-child(1), th:nth-child(2) { text-align: left; }
+th button { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; }
+th button[aria-sort] { color: var(--ink); }
+td { padding: 8px 8px; border-top: 1px solid var(--line); vertical-align: middle; text-align: right; }
+tr.row { cursor: pointer; }
+tr.row:hover td { background: var(--soft); }
+.rank { font-family: var(--font-m); color: var(--muted); text-align: left; width: 34px; }
+.name { text-align: left; min-width: 170px; max-width: 240px; }
+.name b { font-weight: 600; }
+.name small { display: block; color: var(--muted); font-size: 12px; }
+.status { font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); margin-left: 6px; white-space: nowrap; vertical-align: 1px; }
+.status.available { color: var(--ok); border-color: var(--ok); }
+.status.restricted { color: var(--warn); border-color: var(--warn); }
+.status.proposed { color: var(--ink2); border-style: dashed; }
+.flag { font-family: var(--font-m); font-size: 11px; color: var(--warn); margin-left: 4px; }
+.cell { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.bar { width: 40px; height: 8px; background: var(--soft); border-radius: 2px; overflow: hidden; flex: none; }
+.bar i { display: block; height: 100%; border-radius: 2px; }
+.num { font-family: var(--font-m); font-size: 12px; min-width: 2.2em; }
+.overall .num { font-size: 14px; font-weight: 500; color: var(--ink); }
+.overall .bar { width: 56px; height: 10px; }
+.sorted { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+tr.detail td { background: var(--soft); text-align: left; padding: 14px 16px; }
+.dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.dcard { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.dcard h3 { margin: 0; font-size: 13px; display: flex; gap: 6px; align-items: center; }
+.dcard p { font-size: 12.5px; color: var(--ink2); }
+.qlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 4px 14px; margin-top: 10px; font-size: 12.5px; }
+.qlist div { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dashed var(--line); padding-block: 2px; }
+.pips { font-family: var(--font-m); letter-spacing: 1px; color: var(--accent); }
+.meta { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--ink2); }
+.meta a { color: var(--accent); }
+footer { font-size: 12.5px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; max-width: 90ch; }
+.empty { padding: 30px; text-align: center; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .2s ease; } }
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <h1>Benchmark Fit Board</h1>
+    <p class="lede">How well each public dataset measures what UserSim predicts. Scores are fit to our problem, not model results. Adjust the weights to change the ranking, rank by any stage, and include or exclude benchmarks that still need data collection.</p>
+    <div class="stages" id="stages"></div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel" aria-label="Weights and filters">
+      <div class="group">
+        <h2>Stage weights</h2>
+        <div class="presets" id="presets"></div>
+        <div id="stageSliders"></div>
+      </div>
+      <div class="group">
+        <h2>Blend</h2>
+        <div class="slider"><label for="alpha">Quality share of overall</label><output id="alphaOut"></output><input type="range" id="alpha" min="0" max="100" step="5"></div>
+        <p class="hint">0% ranks purely by stage fit; higher values reward licence, realism, demographics and the other quality criteria.</p>
+      </div>
+      <div class="group">
+        <h2>Show</h2>
+        <div class="chips" id="statusChips"></div>
+      </div>
+      <details class="group">
+        <summary>Quality criterion weights</summary>
+        <div id="qualitySliders"></div>
+      </details>
+      <button class="btn" id="reset" type="button">Reset to defaults</button>
+    </aside>
+
+    <section class="board" aria-label="Leaderboard">
+      <div class="board-head">
+        <span id="summary" class="hint"></span>
+        <label class="hint" for="rankBy">Rank by
+          <select id="rankBy"></select>
+        </label>
+      </div>
+      <div class="tw"><table>
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table></div>
+    </section>
+  </div>
+
+  <footer>
+    <p><b>Stage fit</b> is scored 0–3 per benchmark: 0 none, 1 weak proxy, 2 partial, 3 a direct measurement of that stage, shown here as 0–100. <b>Quality</b> criteria are scored 0–2. <b>Overall</b> = (1 − quality share) × weighted stage fit + quality share × weighted quality.</p>
+    <p>A <span class="flag">?</span> marks scores taken from papers or summaries that have not yet been checked against the data itself. Click a row for the reasoning behind every score. Source of truth: <span class="mono">docs/plans/eval/benchmark_board.py</span>.</p>
+  </footer>
+</div>
+
+<script>
+const D = {"stages": {"P1": "Population answer distributions: what real people (and which segments) say about a product or category", "P2": "Initial perception and preference on first exposure, before use, across product and competitors", "P3": "Task outcomes and preference after attempting given tasks on the product and competitors", "P4": "Overall choice: which product people pick (primary target; brand and network effects excluded)"}, "quality": {"competing_alts": {"label": "Competing alternatives", "desc": "People choose between real competing products or variants", "weight": 2}, "brand_neutral": {"label": "Brand-neutral", "desc": "Blind comparison, unknown makers, or variants of one brand", "weight": 2}, "who_attrs": {"label": "Who they are", "desc": "Person-level attributes with enough people per segment", "weight": 2}, "startup_realism": {"label": "Startup realism", "desc": "Products are digital products comparable to a startup's", "weight": 2}, "no_contam": {"label": "Not memorized", "desc": "A language model cannot already know the outcome", "weight": 1.5}, "why": {"label": "Reasons", "desc": "Multi-dimension ratings, rationales or free text", "weight": 1}, "evaluable": {"label": "Evaluable", "desc": "Held-out splits, sample size, measurable noise ceiling", "weight": 1}, "license": {"label": "Publishable", "desc": "Public and publishable licence or terms", "weight": 1}, "mcp_arm": {"label": "Fair MCP arm", "desc": "Non-target evidence exists that a tool-augmented model may use without leaking the answer", "weight": 1}}, "status": {"available": "Available now: public download", "restricted": "Restricted: on request, data deal, or non-commercial terms", "proposed": "Proposed: needs a pipeline or new data collection"}, "benchmarks": [{"name": "HUMAINE", "org": "Prolific, 2026", "status": "available", "url": "https://huggingface.co/datasets/ProlificAI/humaine-evaluation-dataset", "license": "MIT", "adapter": false, "P": {"P1": {"score": 1, "why": "Rating distributions (goal achievement, engagement 1-5) by demographic group; not questionnaire answers"}, "P2": {"score": 0, "why": "No pre-use exposure is recorded"}, "P3": {"score": 3, "why": "People do their own tasks with two AI assistants; goal achievement scored per conversation, then they compare"}, "P4": {"score": 3, "why": "Overall winner between competing products, per person, with age, ethnicity, politics, country"}}, "Q": {"competing_alts": 2, "brand_neutral": 1, "who_attrs": 2, "startup_realism": 1, "no_contam": 1, "why": 2, "evaluable": 2, "license": 2, "mcp_arm": 2}, "unverified": ["brand_neutral: whether models were anonymous to participants"], "note": "23k+ people, 22 demographic groups, US/UK. Products are AI assistants, not startup apps; models' reputations are known to LLMs."}, {"name": "PRISM", "org": "Kirk et al., NeurIPS 2024", "status": "available", "url": "https://huggingface.co/datasets/HannahRoseKirk/prism-alignment", "license": "CC (variant to verify)", "adapter": false, "P": {"P1": {"score": 2, "why": "Profile survey of 1,500 people (75 countries) with stated preferences about AI: category-level answer distributions by segment"}, "P2": {"score": 3, "why": "First-turn ratings of several models before choosing which to continue with"}, "P3": {"score": 1, "why": "Multi-turn conversations, but no task-completion score"}, "P4": {"score": 1, "why": "Per-conversation choice; no overall adoption decision"}}, "Q": {"competing_alts": 2, "brand_neutral": 1, "who_attrs": 2, "startup_realism": 1, "no_contam": 1, "why": 2, "evaluable": 2, "license": 1, "mcp_arm": 2}, "unverified": ["brand_neutral: anonymity of models", "license: exact CC variant"], "note": "8,011 conversations with 21 LLMs; rich individual profiles; skews young, white, educated."}, {"name": "Chatbot Arena votes", "org": "LMArena", "status": "available", "url": "https://huggingface.co/lmarena-ai", "license": "varies by release (verify)", "adapter": false, "P": {"P1": {"score": 0, "why": "No questionnaire"}, "P2": {"score": 0, "why": "No pre-use stage"}, "P3": {"score": 1, "why": "Own prompts, usually single turn; no completion score"}, "P4": {"score": 2, "why": "Blind pairwise votes between competing products"}}, "Q": {"competing_alts": 2, "brand_neutral": 2, "who_attrs": 0, "startup_realism": 1, "no_contam": 0, "why": 0, "evaluable": 2, "license": 1, "mcp_arm": 1}, "unverified": ["license per release"], "note": "Huge volume, no demographics; leaderboard widely published, so outcomes are known to LLMs."}, {"name": "Twin-2K-500", "org": "Toubia et al., 2025", "status": "available", "url": "https://huggingface.co/datasets/LLM-Digital-Twin/Twin-2K-500", "license": "CC BY 4.0", "adapter": true, "P": {"P1": {"score": 3, "why": "500 questions per person, 2,058 people, retest wave: person-level answer distributions"}, "P2": {"score": 1, "why": "Product description plus price, then buy or not"}, "P3": {"score": 0, "why": "No tasks"}, "P4": {"score": 1, "why": "Buy yes/no at a price; no choice against a competitor"}}, "Q": {"competing_alts": 0, "brand_neutral": 0, "who_attrs": 2, "startup_realism": 0, "no_contam": 1, "why": 0, "evaluable": 2, "license": 2, "mcp_arm": 2}, "unverified": [], "note": "Products are branded groceries (Land O Lakes, Tylenol). Adapter run: reasons pass, segments fail stability."}, {"name": "SimBench", "org": "Hu et al., ICLR 2026", "status": "available", "url": "https://arxiv.org/abs/2510.17516", "license": "CC BY-NC-SA", "adapter": true, "P": {"P1": {"score": 3, "why": "20 datasets of real group answer distributions"}, "P2": {"score": 0, "why": ""}, "P3": {"score": 0, "why": ""}, "P4": {"score": 0, "why": ""}}, "Q": {"competing_alts": 0, "brand_neutral": 1, "who_attrs": 1, "startup_realism": 0, "no_contam": 1, "why": 0, "evaluable": 2, "license": 1, "mcp_arm": 2}, "unverified": [], "note": "Group level only; median 1-5 groups per question, so reasons and segments cannot be estimated. Our harness: 41.5 plain vs 55.8 with no target labels."}, {"name": "Pew ATP tech adoption", "org": "Pew Research Center", "status": "restricted", "url": "https://www.pewresearch.org/american-trends-panel-datasets/", "license": "Free account; no resale or redistribution", "adapter": false, "P": {"P1": {"score": 3, "why": "Person-level survey answers with full demographics, ~10k per wave"}, "P2": {"score": 0, "why": ""}, "P3": {"score": 0, "why": ""}, "P4": {"score": 1, "why": "Which platforms people actually use (big brands)"}}, "Q": {"competing_alts": 1, "brand_neutral": 0, "who_attrs": 2, "startup_realism": 1, "no_contam": 1, "why": 1, "evaluable": 2, "license": 1, "mcp_arm": 2}, "unverified": ["which waves carry product-adoption items"], "note": "Download requires a Pew account."}, {"name": "OPeRA", "org": "Wang et al., ACL 2026", "status": "available", "url": "https://huggingface.co/datasets/NEU-HAI/OPeRA", "license": "CC BY 4.0", "adapter": false, "P": {"P1": {"score": 1, "why": "Persona surveys of 51 shoppers"}, "P2": {"score": 1, "why": "Search results seen before choosing"}, "P3": {"score": 3, "why": "Real shopping sessions: every action, purchase or abandon, with a rationale per step"}, "P4": {"score": 1, "why": "Purchase among products found"}}, "Q": {"competing_alts": 1, "brand_neutral": 0, "who_attrs": 2, "startup_realism": 1, "no_contam": 2, "why": 2, "evaluable": 1, "license": 2, "mcp_arm": 1}, "unverified": [], "note": "Small (51 people, 692 sessions). Branded Amazon products."}, {"name": "ShopCART", "org": "Lu et al., ACL 2026", "status": "restricted", "url": "https://huggingface.co/datasets/NEU-HAI/ShopCART", "license": "none stated", "adapter": false, "P": {"P1": {"score": 0, "why": ""}, "P2": {"score": 0, "why": ""}, "P3": {"score": 2, "why": "31,865 Amazon sessions with actions and outcomes"}, "P4": {"score": 1, "why": "Purchase or not"}}, "Q": {"competing_alts": 1, "brand_neutral": 0, "who_attrs": 1, "startup_realism": 1, "no_contam": 2, "why": 0, "evaluable": 2, "license": 0, "mcp_arm": 1}, "unverified": [], "note": "No licence tag, so treat as restricted."}, {"name": "Online-Mind2Web", "org": "OSU, 2025", "status": "available", "url": "https://huggingface.co/datasets/osunlp/Online-Mind2Web", "license": "research", "adapter": false, "P": {"P1": {"score": 0, "why": ""}, "P2": {"score": 0, "why": ""}, "P3": {"score": 2, "why": "Human task completion paths on real websites; no preference"}, "P4": {"score": 0, "why": ""}}, "Q": {"competing_alts": 0, "brand_neutral": 1, "who_attrs": 0, "startup_realism": 2, "no_contam": 1, "why": 0, "evaluable": 2, "license": 1, "mcp_arm": 1}, "unverified": [], "note": "Useful for task mechanics (branch 3), not for preference."}, {"name": "Upworthy A/B archive", "org": "Matias et al., 2021", "status": "available", "url": "https://osf.io/jd64p/", "license": "CC BY 4.0", "adapter": false, "P": {"P1": {"score": 0, "why": ""}, "P2": {"score": 2, "why": "Headline variant clicks: first impression of a message"}, "P3": {"score": 0, "why": ""}, "P4": {"score": 1, "why": "A click is a micro-choice"}}, "Q": {"competing_alts": 2, "brand_neutral": 2, "who_attrs": 0, "startup_realism": 0, "no_contam": 1, "why": 0, "evaluable": 2, "license": 2, "mcp_arm": 2}, "unverified": [], "note": "32,487 randomized tests, aggregate clicks, news headlines 2013-15."}, {"name": "WiserUI-Bench", "org": "Jeon et al., ACL 2026", "status": "restricted", "url": "https://github.com/jeochris/wiserui-bench", "license": "CC BY-NC-SA", "adapter": false, "P": {"P1": {"score": 0, "why": ""}, "P2": {"score": 3, "why": "Real UI A/B pairs with the winning variant from live tests"}, "P3": {"score": 1, "why": "Conversions involve interacting"}, "P4": {"score": 1, "why": "Variant that converted better"}}, "Q": {"competing_alts": 2, "brand_neutral": 2, "who_attrs": 0, "startup_realism": 2, "no_contam": 1, "why": 1, "evaluable": 1, "license": 1, "mcp_arm": 1}, "unverified": [], "note": "300 pairs; non-commercial licence; expert rationales."}, {"name": "Show HN (live)", "org": "Hacker News API", "status": "proposed", "url": "https://github.com/HackerNews/API", "license": "public API", "adapter": false, "P": {"P1": {"score": 0, "why": ""}, "P2": {"score": 3, "why": "Landing page first impression, captured at submission"}, "P3": {"score": 1, "why": "Some comments come from people who tried the product"}, "P4": {"score": 1, "why": "Upvotes measure interest, not adoption"}}, "Q": {"competing_alts": 1, "brand_neutral": 2, "who_attrs": 0, "startup_realism": 2, "no_contam": 2, "why": 2, "evaluable": 1, "license": 2, "mcp_arm": 2}, "unverified": [], "note": "Real startups, live so nothing to memorize; one audience, aggregate only. Needs the forecasting pipeline."}, {"name": "Product Hunt (live)", "org": "Product Hunt API", "status": "restricted", "url": "https://api.producthunt.com/v2/docs", "license": "non-commercial by default", "adapter": false, "P": {"P1": {"score": 0, "why": ""}, "P2": {"score": 2, "why": "Launch page"}, "P3": {"score": 1, "why": "Reviews from users"}, "P4": {"score": 2, "why": "Daily ranking among the day's launches"}}, "Q": {"competing_alts": 2, "brand_neutral": 1, "who_attrs": 0, "startup_realism": 2, "no_contam": 2, "why": 1, "evaluable": 1, "license": 0, "mcp_arm": 2}, "unverified": [], "note": "Needs permission; rankings carry campaign noise."}, {"name": "Kickstarter", "org": "ICPSR 38050 / webrobots", "status": "restricted", "url": "https://www.icpsr.umich.edu/web/ICPSR/studies/38050", "license": "public file lacks page text; text file restricted", "adapter": false, "P": {"P1": {"score": 0, "why": ""}, "P2": {"score": 2, "why": "Campaign page"}, "P3": {"score": 0, "why": ""}, "P4": {"score": 3, "why": "Backing with real money, among new unknown products"}}, "Q": {"competing_alts": 1, "brand_neutral": 2, "who_attrs": 0, "startup_realism": 1, "no_contam": 1, "why": 0, "evaluable": 2, "license": 1, "mcp_arm": 2}, "unverified": ["text access terms"], "note": "610k projects 2009-2023; mostly physical and creative products."}, {"name": "LabInTheWild web appeal", "org": "Reinecke & Gajos", "status": "restricted", "url": "https://www.www1.labinthewild.org/data/index.php", "license": "data on request", "adapter": false, "P": {"P1": {"score": 2, "why": "Appeal rating distributions by demographic and country"}, "P2": {"score": 3, "why": "First impression of website screenshots"}, "P3": {"score": 0, "why": ""}, "P4": {"score": 0, "why": ""}}, "Q": {"competing_alts": 1, "brand_neutral": 1, "who_attrs": 2, "startup_realism": 2, "no_contam": 2, "why": 0, "evaluable": 2, "license": 0, "mcp_arm": 2}, "unverified": ["dataset contents and terms"], "note": "40k+ people rated website screenshots 1-9."}, {"name": "G2 / Capterra reviews", "org": "Review platforms", "status": "restricted", "url": "https://www.g2.com/", "license": "no scraping; needs a data deal", "adapter": false, "P": {"P1": {"score": 1, "why": "Rating distributions"}, "P2": {"score": 0, "why": ""}, "P3": {"score": 2, "why": "Post-use ease of use, setup, support"}, "P4": {"score": 3, "why": "Alternatives considered and switched from, ratings against competitors"}}, "Q": {"competing_alts": 2, "brand_neutral": 1, "who_attrs": 1, "startup_realism": 2, "no_contam": 1, "why": 2, "evaluable": 1, "license": 0, "mcp_arm": 1}, "unverified": [], "note": "Closest to B2B software competitor choice, but not usable without a licence."}, {"name": "App store reviews", "org": "Google Play / App Store", "status": "restricted", "url": "https://www.kaggle.com/search?q=app+reviews", "license": "varies", "adapter": false, "P": {"P1": {"score": 1, "why": "Star distributions"}, "P2": {"score": 0, "why": ""}, "P3": {"score": 2, "why": "Complaints about using the app"}, "P4": {"score": 1, "why": "Rating as a weak proxy for choice"}}, "Q": {"competing_alts": 1, "brand_neutral": 1, "who_attrs": 0, "startup_realism": 2, "no_contam": 1, "why": 2, "evaluable": 1, "license": 1, "mcp_arm": 1}, "unverified": [], "note": "No demographics."}, {"name": "UserSim own panel (target design)", "org": "Prolific panel + live products", "status": "proposed", "url": "", "license": "ours", "adapter": false, "P": {"P1": {"score": 3, "why": "Profile survey of the same people"}, "P2": {"score": 3, "why": "First impression of product and competitors' pages"}, "P3": {"score": 3, "why": "The same people attempt the same tasks on each product"}, "P4": {"score": 3, "why": "Then choose"}}, "Q": {"competing_alts": 2, "brand_neutral": 2, "who_attrs": 2, "startup_realism": 2, "no_contam": 2, "why": 2, "evaluable": 2, "license": 2, "mcp_arm": 2}, "unverified": [], "note": "Not collected. Shown as the reference: the only design that links P1-P4 for the same people. Cost about $3-4k for 1,000 profiles plus each study."}]};
+const STAGES = Object.keys(D.stages);
+const QK = Object.keys(D.quality);
+const DEF = { wP: { P1: 1, P2: 1, P3: 1, P4: 2 }, alpha: 35, wQ: Object.fromEntries(QK.map((k) => [k, D.quality[k].weight])),
+  status: { available: true, restricted: true, proposed: true }, sort: "overall", open: [] };
+const PRESETS = [["Overall choice first", { P1: 1, P2: 1, P3: 1, P4: 3 }], ["Balanced", { P1: 1, P2: 1, P3: 1, P4: 1 }],
+  ["P1 only", { P1: 1, P2: 0, P3: 0, P4: 0 }], ["P2 only", { P1: 0, P2: 1, P3: 0, P4: 0 }], ["P3 only", { P1: 0, P2: 0, P3: 1, P4: 0 }], ["P4 only", { P1: 0, P2: 0, P3: 0, P4: 1 }]];
+const STATUS_LABEL = { available: "Available", restricted: "Restricted", proposed: "Proposed" };
+const KEY = "benchmark-fit-board-v1";
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { S = null; }
+if (!S || !S.wP || !S.wQ) S = JSON.parse(JSON.stringify(DEF));
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// header strip
+$("stages").innerHTML = STAGES.map((k) => `<div class="stage"><b class="sw-${k}">${k}</b><span>${esc(D.stages[k])}</span></div>`).join("");
+
+function slider(id, label, value, min, max, step, dotClass, fmt) {
+  return `<div class="slider"><label for="${id}">${dotClass ? `<i class="dot ${dotClass}"></i>` : ""}${esc(label)}</label><output id="${id}Out">${fmt(value)}</output>
+    <input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}"></div>`;
+}
+function buildControls() {
+  $("stageSliders").innerHTML = STAGES.map((k) => slider("w" + k, k, S.wP[k], 0, 5, 0.5, "sw-" + k, (v) => (+v).toFixed(1))).join("");
+  $("qualitySliders").innerHTML = QK.map((k) => slider("q_" + k, D.quality[k].label, S.wQ[k], 0, 3, 0.5, "", (v) => (+v).toFixed(1))).join("") +
+    `<p class="hint">The gate criterion (outcomes come from real people) is not weighted: every benchmark here passes it.</p>`;
+  $("presets").innerHTML = PRESETS.map(([n], i) => `<button class="btn" type="button" data-preset="${i}">${esc(n)}</button>`).join("");
+  $("statusChips").innerHTML = Object.keys(STATUS_LABEL).map((k) => `<button class="chip" type="button" data-status="${k}" aria-pressed="${S.status[k]}" title="${esc(D.status[k])}"><span class="status ${k}" style="margin:0">${STATUS_LABEL[k]}</span></button>`).join("");
+  $("alpha").value = S.alpha; $("alphaOut").textContent = S.alpha + "%";
+  const opts = [["overall", "Overall"], ...STAGES.map((k) => [k, k + " fit"]), ["stagefit", "Weighted stage fit"], ["quality", "Quality"]];
+  $("rankBy").innerHTML = opts.map(([v, n]) => `<option value="${v}">${n}</option>`).join("");
+  $("rankBy").value = S.sort;
+}
+buildControls();
+
+document.addEventListener("input", (e) => {
+  const id = e.target.id;
+  if (id === "alpha") { S.alpha = +e.target.value; $("alphaOut").textContent = S.alpha + "%"; }
+  else if (id.startsWith("w") && STAGES.includes(id.slice(1))) { S.wP[id.slice(1)] = +e.target.value; $(id + "Out").textContent = (+e.target.value).toFixed(1); }
+  else if (id.startsWith("q_")) { S.wQ[id.slice(2)] = +e.target.value; $(id + "Out").textContent = (+e.target.value).toFixed(1); }
+  else return;
+  save(); render();
+});
+document.addEventListener("click", (e) => {
+  const p = e.target.closest("[data-preset]");
+  if (p) { S.wP = { ...PRESETS[+p.dataset.preset][1] }; buildControls(); save(); render(); return; }
+  const c = e.target.closest("[data-status]");
+  if (c) { const k = c.dataset.status; S.status[k] = !S.status[k]; c.setAttribute("aria-pressed", S.status[k]); save(); render(); return; }
+  const h = e.target.closest("[data-sort]");
+  if (h) { S.sort = h.dataset.sort; $("rankBy").value = S.sort; save(); render(); return; }
+  const r = e.target.closest("tr.row");
+  if (r) { toggle(r.dataset.name); }
+});
+document.addEventListener("keydown", (e) => {
+  const r = e.target.closest && e.target.closest("tr.row");
+  if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); toggle(r.dataset.name); }
+});
+$("rankBy").addEventListener("change", (e) => { S.sort = e.target.value; save(); render(); });
+$("reset").addEventListener("click", () => { S = JSON.parse(JSON.stringify(DEF)); buildControls(); save(); render(); });
+function toggle(n) { const i = S.open.indexOf(n); i >= 0 ? S.open.splice(i, 1) : S.open.push(n); save(); render(); }
+
+function score(b) {
+  const st = Object.fromEntries(STAGES.map((k) => [k, (100 * b.P[k].score) / 3]));
+  const wp = STAGES.reduce((a, k) => a + S.wP[k], 0);
+  const stagefit = wp ? STAGES.reduce((a, k) => a + S.wP[k] * st[k], 0) / wp : 0;
+  const wq = QK.reduce((a, k) => a + S.wQ[k], 0);
+  const quality = wq ? QK.reduce((a, k) => a + S.wQ[k] * (100 * b.Q[k]) / 2, 0) / wq : 0;
+  const al = S.alpha / 100;
+  return { ...st, stagefit, quality, overall: (1 - al) * stagefit + al * quality };
+}
+const COLOR = { P1: "var(--p1)", P2: "var(--p2)", P3: "var(--p3)", P4: "var(--p4)", stagefit: "var(--ink2)", quality: "var(--muted)", overall: "var(--accent)" };
+const cell = (v, key, cls = "") => `<td class="${cls}${S.sort === key ? " sorted" : ""}"><div class="cell"><span class="num">${Math.round(v)}</span><span class="bar"><i style="width:${v.toFixed(1)}%;background:${COLOR[key]}"></i></span></div></td>`;
+
+function render() {
+  const cols = [["rank", "#"], ["name", "Benchmark"], ["overall", "Overall"], ...STAGES.map((k) => [k, k]), ["stagefit", "Stage fit"], ["quality", "Quality"]];
+  $("thead").innerHTML = cols.map(([k, n]) => {
+    if (k === "rank" || k === "name") return `<th scope="col">${n}</th>`;
+    const dot = STAGES.includes(k) ? `<i class="dot sw-${k}"></i>` : "";
+    return `<th scope="col"><button type="button" data-sort="${k}" ${S.sort === k ? 'aria-sort="descending"' : ""}>${dot}${n}${S.sort === k ? " ▾" : ""}</button></th>`;
+  }).join("");
+  const rows = D.benchmarks.filter((b) => S.status[b.status]).map((b) => ({ b, s: score(b) }));
+  rows.sort((x, y) => y.s[S.sort] - x.s[S.sort] || y.s.overall - x.s.overall);
+  const shown = rows.length, total = D.benchmarks.length;
+  const wtxt = STAGES.map((k) => `${k} ${S.wP[k]}`).join(" · ");
+  $("summary").textContent = `${shown} of ${total} benchmarks · weights ${wtxt} · quality ${S.alpha}%`;
+  if (!rows.length) { $("tbody").innerHTML = `<tr><td colspan="${cols.length}" class="empty">No benchmarks match. Turn on a status above.</td></tr>`; return; }
+  $("tbody").innerHTML = rows.map(({ b, s }, i) => {
+    const open = S.open.includes(b.name);
+    const flags = b.unverified.length ? `<span class="flag" title="${esc(b.unverified.join("; "))}">?${b.unverified.length}</span>` : "";
+    const adapter = b.adapter ? ` · adapter run` : "";
+    let html = `<tr class="row" tabindex="0" data-name="${esc(b.name)}" aria-expanded="${open}">
+      <td class="rank">${i + 1}</td>
+      <td class="name"><b>${esc(b.name)}</b><span class="status ${b.status}">${STATUS_LABEL[b.status]}</span>${flags}<small>${esc(b.org)}${adapter}</small></td>
+      ${cell(s.overall, "overall", "overall")}${STAGES.map((k) => cell(s[k], k)).join("")}${cell(s.stagefit, "stagefit")}${cell(s.quality, "quality")}</tr>`;
+    if (open) {
+      const pc = STAGES.map((k) => `<div class="dcard"><h3><i class="dot sw-${k}"></i>${k} · ${b.P[k].score}/3</h3><p>${esc(b.P[k].why || "Not measured.")}</p></div>`).join("");
+      const ql = QK.map((k) => `<div><span>${esc(D.quality[k].label)}</span><span class="pips" aria-label="${b.Q[k]} of 2">${"●".repeat(b.Q[k])}${"○".repeat(2 - b.Q[k])}</span></div>`).join("");
+      const unv = b.unverified.length ? `<span>Unverified: ${esc(b.unverified.join("; "))}</span>` : "";
+      const link = b.url ? `<a href="${esc(b.url)}" target="_blank" rel="noopener">Source</a>` : "";
+      html += `<tr class="detail"><td colspan="${cols.length}"><div class="dgrid">${pc}</div><div class="qlist">${ql}</div>
+        <div class="meta"><span>${esc(b.note)}</span><span>Licence: ${esc(b.license)}</span>${unv}${link}</div></td></tr>`;
+    }
+    return html;
+  }).join("");
+}
+render();
+</script>

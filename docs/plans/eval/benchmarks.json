@@ -1,0 +1,777 @@
+{
+ "stages": {
+  "P1": "Population answer distributions: what real people (and which segments) say about a product or category",
+  "P2": "Initial perception and preference on first exposure, before use, across product and competitors",
+  "P3": "Task outcomes and preference after attempting given tasks on the product and competitors",
+  "P4": "Overall choice: which product people pick (primary target; brand and network effects excluded)"
+ },
+ "quality": {
+  "competing_alts": {
+   "label": "Competing alternatives",
+   "desc": "People choose between real competing products or variants",
+   "weight": 2
+  },
+  "brand_neutral": {
+   "label": "Brand-neutral",
+   "desc": "Blind comparison, unknown makers, or variants of one brand",
+   "weight": 2
+  },
+  "who_attrs": {
+   "label": "Who they are",
+   "desc": "Person-level attributes with enough people per segment",
+   "weight": 2
+  },
+  "startup_realism": {
+   "label": "Startup realism",
+   "desc": "Products are digital products comparable to a startup's",
+   "weight": 2
+  },
+  "no_contam": {
+   "label": "Not memorized",
+   "desc": "A language model cannot already know the outcome",
+   "weight": 1.5
+  },
+  "why": {
+   "label": "Reasons",
+   "desc": "Multi-dimension ratings, rationales or free text",
+   "weight": 1
+  },
+  "evaluable": {
+   "label": "Evaluable",
+   "desc": "Held-out splits, sample size, measurable noise ceiling",
+   "weight": 1
+  },
+  "license": {
+   "label": "Publishable",
+   "desc": "Public and publishable licence or terms",
+   "weight": 1
+  },
+  "mcp_arm": {
+   "label": "Fair MCP arm",
+   "desc": "Non-target evidence exists that a tool-augmented model may use without leaking the answer",
+   "weight": 1
+  }
+ },
+ "status": {
+  "available": "Available now: public download",
+  "restricted": "Restricted: on request, data deal, or non-commercial terms",
+  "proposed": "Proposed: needs a pipeline or new data collection"
+ },
+ "benchmarks": [
+  {
+   "name": "HUMAINE",
+   "org": "Prolific, 2026",
+   "status": "available",
+   "url": "https://huggingface.co/datasets/ProlificAI/humaine-evaluation-dataset",
+   "license": "MIT",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 1,
+     "why": "Rating distributions (goal achievement, engagement 1-5) by demographic group; not questionnaire answers"
+    },
+    "P2": {
+     "score": 0,
+     "why": "No pre-use exposure is recorded"
+    },
+    "P3": {
+     "score": 3,
+     "why": "People do their own tasks with two AI assistants; goal achievement scored per conversation, then they compare"
+    },
+    "P4": {
+     "score": 3,
+     "why": "Overall winner between competing products, per person, with age, ethnicity, politics, country"
+    }
+   },
+   "Q": {
+    "competing_alts": 2,
+    "brand_neutral": 1,
+    "who_attrs": 2,
+    "startup_realism": 1,
+    "no_contam": 1,
+    "why": 2,
+    "evaluable": 2,
+    "license": 2,
+    "mcp_arm": 2
+   },
+   "unverified": [
+    "brand_neutral: whether models were anonymous to participants"
+   ],
+   "note": "23k+ people, 22 demographic groups, US/UK. Products are AI assistants, not startup apps; models' reputations are known to LLMs."
+  },
+  {
+   "name": "PRISM",
+   "org": "Kirk et al., NeurIPS 2024",
+   "status": "available",
+   "url": "https://huggingface.co/datasets/HannahRoseKirk/prism-alignment",
+   "license": "CC (variant to verify)",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 2,
+     "why": "Profile survey of 1,500 people (75 countries) with stated preferences about AI: category-level answer distributions by segment"
+    },
+    "P2": {
+     "score": 3,
+     "why": "First-turn ratings of several models before choosing which to continue with"
+    },
+    "P3": {
+     "score": 1,
+     "why": "Multi-turn conversations, but no task-completion score"
+    },
+    "P4": {
+     "score": 1,
+     "why": "Per-conversation choice; no overall adoption decision"
+    }
+   },
+   "Q": {
+    "competing_alts": 2,
+    "brand_neutral": 1,
+    "who_attrs": 2,
+    "startup_realism": 1,
+    "no_contam": 1,
+    "why": 2,
+    "evaluable": 2,
+    "license": 1,
+    "mcp_arm": 2
+   },
+   "unverified": [
+    "brand_neutral: anonymity of models",
+    "license: exact CC variant"
+   ],
+   "note": "8,011 conversations with 21 LLMs; rich individual profiles; skews young, white, educated."
+  },
+  {
+   "name": "Chatbot Arena votes",
+   "org": "LMArena",
+   "status": "available",
+   "url": "https://huggingface.co/lmarena-ai",
+   "license": "varies by release (verify)",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 0,
+     "why": "No questionnaire"
+    },
+    "P2": {
+     "score": 0,
+     "why": "No pre-use stage"
+    },
+    "P3": {
+     "score": 1,
+     "why": "Own prompts, usually single turn; no completion score"
+    },
+    "P4": {
+     "score": 2,
+     "why": "Blind pairwise votes between competing products"
+    }
+   },
+   "Q": {
+    "competing_alts": 2,
+    "brand_neutral": 2,
+    "who_attrs": 0,
+    "startup_realism": 1,
+    "no_contam": 0,
+    "why": 0,
+    "evaluable": 2,
+    "license": 1,
+    "mcp_arm": 1
+   },
+   "unverified": [
+    "license per release"
+   ],
+   "note": "Huge volume, no demographics; leaderboard widely published, so outcomes are known to LLMs."
+  },
+  {
+   "name": "Twin-2K-500",
+   "org": "Toubia et al., 2025",
+   "status": "available",
+   "url": "https://huggingface.co/datasets/LLM-Digital-Twin/Twin-2K-500",
+   "license": "CC BY 4.0",
+   "adapter": true,
+   "P": {
+    "P1": {
+     "score": 3,
+     "why": "500 questions per person, 2,058 people, retest wave: person-level answer distributions"
+    },
+    "P2": {
+     "score": 1,
+     "why": "Product description plus price, then buy or not"
+    },
+    "P3": {
+     "score": 0,
+     "why": "No tasks"
+    },
+    "P4": {
+     "score": 1,
+     "why": "Buy yes/no at a price; no choice against a competitor"
+    }
+   },
+   "Q": {
+    "competing_alts": 0,
+    "brand_neutral": 0,
+    "who_attrs": 2,
+    "startup_realism": 0,
+    "no_contam": 1,
+    "why": 0,
+    "evaluable": 2,
+    "license": 2,
+    "mcp_arm": 2
+   },
+   "unverified": [],
+   "note": "Products are branded groceries (Land O Lakes, Tylenol). Adapter run: reasons pass, segments fail stability."
+  },
+  {
+   "name": "SimBench",
+   "org": "Hu et al., ICLR 2026",
+   "status": "available",
+   "url": "https://arxiv.org/abs/2510.17516",
+   "license": "CC BY-NC-SA",
+   "adapter": true,
+   "P": {
+    "P1": {
+     "score": 3,
+     "why": "20 datasets of real group answer distributions"
+    },
+    "P2": {
+     "score": 0,
+     "why": ""
+    },
+    "P3": {
+     "score": 0,
+     "why": ""
+    },
+    "P4": {
+     "score": 0,
+     "why": ""
+    }
+   },
+   "Q": {
+    "competing_alts": 0,
+    "brand_neutral": 1,
+    "who_attrs": 1,
+    "startup_realism": 0,
+    "no_contam": 1,
+    "why": 0,
+    "evaluable": 2,
+    "license": 1,
+    "mcp_arm": 2
+   },
+   "unverified": [],
+   "note": "Group level only; median 1-5 groups per question, so reasons and segments cannot be estimated. Our harness: 41.5 plain vs 55.8 with no target labels."
+  },
+  {
+   "name": "Pew ATP tech adoption",
+   "org": "Pew Research Center",
+   "status": "restricted",
+   "url": "https://www.pewresearch.org/american-trends-panel-datasets/",
+   "license": "Free account; no resale or redistribution",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 3,
+     "why": "Person-level survey answers with full demographics, ~10k per wave"
+    },
+    "P2": {
+     "score": 0,
+     "why": ""
+    },
+    "P3": {
+     "score": 0,
+     "why": ""
+    },
+    "P4": {
+     "score": 1,
+     "why": "Which platforms people actually use (big brands)"
+    }
+   },
+   "Q": {
+    "competing_alts": 1,
+    "brand_neutral": 0,
+    "who_attrs": 2,
+    "startup_realism": 1,
+    "no_contam": 1,
+    "why": 1,
+    "evaluable": 2,
+    "license": 1,
+    "mcp_arm": 2
+   },
+   "unverified": [
+    "which waves carry product-adoption items"
+   ],
+   "note": "Download requires a Pew account."
+  },
+  {
+   "name": "OPeRA",
+   "org": "Wang et al., ACL 2026",
+   "status": "available",
+   "url": "https://huggingface.co/datasets/NEU-HAI/OPeRA",
+   "license": "CC BY 4.0",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 1,
+     "why": "Persona surveys of 51 shoppers"
+    },
+    "P2": {
+     "score": 1,
+     "why": "Search results seen before choosing"
+    },
+    "P3": {
+     "score": 3,
+     "why": "Real shopping sessions: every action, purchase or abandon, with a rationale per step"
+    },
+    "P4": {
+     "score": 1,
+     "why": "Purchase among products found"
+    }
+   },
+   "Q": {
+    "competing_alts": 1,
+    "brand_neutral": 0,
+    "who_attrs": 2,
+    "startup_realism": 1,
+    "no_contam": 2,
+    "why": 2,
+    "evaluable": 1,
+    "license": 2,
+    "mcp_arm": 1
+   },
+   "unverified": [],
+   "note": "Small (51 people, 692 sessions). Branded Amazon products."
+  },
+  {
+   "name": "ShopCART",
+   "org": "Lu et al., ACL 2026",
+   "status": "restricted",
+   "url": "https://huggingface.co/datasets/NEU-HAI/ShopCART",
+   "license": "none stated",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 0,
+     "why": ""
+    },
+    "P2": {
+     "score": 0,
+     "why": ""
+    },
+    "P3": {
+     "score": 2,
+     "why": "31,865 Amazon sessions with actions and outcomes"
+    },
+    "P4": {
+     "score": 1,
+     "why": "Purchase or not"
+    }
+   },
+   "Q": {
+    "competing_alts": 1,
+    "brand_neutral": 0,
+    "who_attrs": 1,
+    "startup_realism": 1,
+    "no_contam": 2,
+    "why": 0,
+    "evaluable": 2,
+    "license": 0,
+    "mcp_arm": 1
+   },
+   "unverified": [],
+   "note": "No licence tag, so treat as restricted."
+  },
+  {
+   "name": "Online-Mind2Web",
+   "org": "OSU, 2025",
+   "status": "available",
+   "url": "https://huggingface.co/datasets/osunlp/Online-Mind2Web",
+   "license": "research",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 0,
+     "why": ""
+    },
+    "P2": {
+     "score": 0,
+     "why": ""
+    },
+    "P3": {
+     "score": 2,
+     "why": "Human task completion paths on real websites; no preference"
+    },
+    "P4": {
+     "score": 0,
+     "why": ""
+    }
+   },
+   "Q": {
+    "competing_alts": 0,
+    "brand_neutral": 1,
+    "who_attrs": 0,
+    "startup_realism": 2,
+    "no_contam": 1,
+    "why": 0,
+    "evaluable": 2,
+    "license": 1,
+    "mcp_arm": 1
+   },
+   "unverified": [],
+   "note": "Useful for task mechanics (branch 3), not for preference."
+  },
+  {
+   "name": "Upworthy A/B archive",
+   "org": "Matias et al., 2021",
+   "status": "available",
+   "url": "https://osf.io/jd64p/",
+   "license": "CC BY 4.0",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 0,
+     "why": ""
+    },
+    "P2": {
+     "score": 2,
+     "why": "Headline variant clicks: first impression of a message"
+    },
+    "P3": {
+     "score": 0,
+     "why": ""
+    },
+    "P4": {
+     "score": 1,
+     "why": "A click is a micro-choice"
+    }
+   },
+   "Q": {
+    "competing_alts": 2,
+    "brand_neutral": 2,
+    "who_attrs": 0,
+    "startup_realism": 0,
+    "no_contam": 1,
+    "why": 0,
+    "evaluable": 2,
+    "license": 2,
+    "mcp_arm": 2
+   },
+   "unverified": [],
+   "note": "32,487 randomized tests, aggregate clicks, news headlines 2013-15."
+  },
+  {
+   "name": "WiserUI-Bench",
+   "org": "Jeon et al., ACL 2026",
+   "status": "restricted",
+   "url": "https://github.com/jeochris/wiserui-bench",
+   "license": "CC BY-NC-SA",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 0,
+     "why": ""
+    },
+    "P2": {
+     "score": 3,
+     "why": "Real UI A/B pairs with the winning variant from live tests"
+    },
+    "P3": {
+     "score": 1,
+     "why": "Conversions involve interacting"
+    },
+    "P4": {
+     "score": 1,
+     "why": "Variant that converted better"
+    }
+   },
+   "Q": {
+    "competing_alts": 2,
+    "brand_neutral": 2,
+    "who_attrs": 0,
+    "startup_realism": 2,
+    "no_contam": 1,
+    "why": 1,
+    "evaluable": 1,
+    "license": 1,
+    "mcp_arm": 1
+   },
+   "unverified": [],
+   "note": "300 pairs; non-commercial licence; expert rationales."
+  },
+  {
+   "name": "Show HN (live)",
+   "org": "Hacker News API",
+   "status": "proposed",
+   "url": "https://github.com/HackerNews/API",
+   "license": "public API",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 0,
+     "why": ""
+    },
+    "P2": {
+     "score": 3,
+     "why": "Landing page first impression, captured at submission"
+    },
+    "P3": {
+     "score": 1,
+     "why": "Some comments come from people who tried the product"
+    },
+    "P4": {
+     "score": 1,
+     "why": "Upvotes measure interest, not adoption"
+    }
+   },
+   "Q": {
+    "competing_alts": 1,
+    "brand_neutral": 2,
+    "who_attrs": 0,
+    "startup_realism": 2,
+    "no_contam": 2,
+    "why": 2,
+    "evaluable": 1,
+    "license": 2,
+    "mcp_arm": 2
+   },
+   "unverified": [],
+   "note": "Real startups, live so nothing to memorize; one audience, aggregate only. Needs the forecasting pipeline."
+  },
+  {
+   "name": "Product Hunt (live)",
+   "org": "Product Hunt API",
+   "status": "restricted",
+   "url": "https://api.producthunt.com/v2/docs",
+   "license": "non-commercial by default",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 0,
+     "why": ""
+    },
+    "P2": {
+     "score": 2,
+     "why": "Launch page"
+    },
+    "P3": {
+     "score": 1,
+     "why": "Reviews from users"
+    },
+    "P4": {
+     "score": 2,
+     "why": "Daily ranking among the day's launches"
+    }
+   },
+   "Q": {
+    "competing_alts": 2,
+    "brand_neutral": 1,
+    "who_attrs": 0,
+    "startup_realism": 2,
+    "no_contam": 2,
+    "why": 1,
+    "evaluable": 1,
+    "license": 0,
+    "mcp_arm": 2
+   },
+   "unverified": [],
+   "note": "Needs permission; rankings carry campaign noise."
+  },
+  {
+   "name": "Kickstarter",
+   "org": "ICPSR 38050 / webrobots",
+   "status": "restricted",
+   "url": "https://www.icpsr.umich.edu/web/ICPSR/studies/38050",
+   "license": "public file lacks page text; text file restricted",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 0,
+     "why": ""
+    },
+    "P2": {
+     "score": 2,
+     "why": "Campaign page"
+    },
+    "P3": {
+     "score": 0,
+     "why": ""
+    },
+    "P4": {
+     "score": 3,
+     "why": "Backing with real money, among new unknown products"
+    }
+   },
+   "Q": {
+    "competing_alts": 1,
+    "brand_neutral": 2,
+    "who_attrs": 0,
+    "startup_realism": 1,
+    "no_contam": 1,
+    "why": 0,
+    "evaluable": 2,
+    "license": 1,
+    "mcp_arm": 2
+   },
+   "unverified": [
+    "text access terms"
+   ],
+   "note": "610k projects 2009-2023; mostly physical and creative products."
+  },
+  {
+   "name": "LabInTheWild web appeal",
+   "org": "Reinecke & Gajos",
+   "status": "restricted",
+   "url": "https://www.www1.labinthewild.org/data/index.php",
+   "license": "data on request",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 2,
+     "why": "Appeal rating distributions by demographic and country"
+    },
+    "P2": {
+     "score": 3,
+     "why": "First impression of website screenshots"
+    },
+    "P3": {
+     "score": 0,
+     "why": ""
+    },
+    "P4": {
+     "score": 0,
+     "why": ""
+    }
+   },
+   "Q": {
+    "competing_alts": 1,
+    "brand_neutral": 1,
+    "who_attrs": 2,
+    "startup_realism": 2,
+    "no_contam": 2,
+    "why": 0,
+    "evaluable": 2,
+    "license": 0,
+    "mcp_arm": 2
+   },
+   "unverified": [
+    "dataset contents and terms"
+   ],
+   "note": "40k+ people rated website screenshots 1-9."
+  },
+  {
+   "name": "G2 / Capterra reviews",
+   "org": "Review platforms",
+   "status": "restricted",
+   "url": "https://www.g2.com/",
+   "license": "no scraping; needs a data deal",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 1,
+     "why": "Rating distributions"
+    },
+    "P2": {
+     "score": 0,
+     "why": ""
+    },
+    "P3": {
+     "score": 2,
+     "why": "Post-use ease of use, setup, support"
+    },
+    "P4": {
+     "score": 3,
+     "why": "Alternatives considered and switched from, ratings against competitors"
+    }
+   },
+   "Q": {
+    "competing_alts": 2,
+    "brand_neutral": 1,
+    "who_attrs": 1,
+    "startup_realism": 2,
+    "no_contam": 1,
+    "why": 2,
+    "evaluable": 1,
+    "license": 0,
+    "mcp_arm": 1
+   },
+   "unverified": [],
+   "note": "Closest to B2B software competitor choice, but not usable without a licence."
+  },
+  {
+   "name": "App store reviews",
+   "org": "Google Play / App Store",
+   "status": "restricted",
+   "url": "https://www.kaggle.com/search?q=app+reviews",
+   "license": "varies",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 1,
+     "why": "Star distributions"
+    },
+    "P2": {
+     "score": 0,
+     "why": ""
+    },
+    "P3": {
+     "score": 2,
+     "why": "Complaints about using the app"
+    },
+    "P4": {
+     "score": 1,
+     "why": "Rating as a weak proxy for choice"
+    }
+   },
+   "Q": {
+    "competing_alts": 1,
+    "brand_neutral": 1,
+    "who_attrs": 0,
+    "startup_realism": 2,
+    "no_contam": 1,
+    "why": 2,
+    "evaluable": 1,
+    "license": 1,
+    "mcp_arm": 1
+   },
+   "unverified": [],
+   "note": "No demographics."
+  },
+  {
+   "name": "UserSim own panel (target design)",
+   "org": "Prolific panel + live products",
+   "status": "proposed",
+   "url": "",
+   "license": "ours",
+   "adapter": false,
+   "P": {
+    "P1": {
+     "score": 3,
+     "why": "Profile survey of the same people"
+    },
+    "P2": {
+     "score": 3,
+     "why": "First impression of product and competitors' pages"
+    },
+    "P3": {
+     "score": 3,
+     "why": "The same people attempt the same tasks on each product"
+    },
+    "P4": {
+     "score": 3,
+     "why": "Then choose"
+    }
+   },
+   "Q": {
+    "competing_alts": 2,
+    "brand_neutral": 2,
+    "who_attrs": 2,
+    "startup_realism": 2,
+    "no_contam": 2,
+    "why": 2,
+    "evaluable": 2,
+    "license": 2,
+    "mcp_arm": 2
+   },
+   "unverified": [],
+   "note": "Not collected. Shown as the reference: the only design that links P1-P4 for the same people. Cost about $3-4k for 1,000 profiles plus each study."
+  }
+ ]
+}
