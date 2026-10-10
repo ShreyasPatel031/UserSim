@@ -272,6 +272,7 @@ async def usersim_act(session_id: str, action: dict[str, Any], thought: str) -> 
         sim = S.get_session(session_id)
         extra = None
         if str((action or {}).get("type")) in {"click", "key"}:
+            await _refresh_v3_token(sim)
             extra = await _maybe_paid_presolve(sim)
         obs = await S.act(sim, action, thought)
         return _obs_content(sim, obs, {"captcha_presolve": extra} if extra else None)
@@ -651,7 +652,9 @@ _PAID_JS = """([kind, token]) => {
 # Which reCAPTCHA this is: v3 loads api.js?render=<sitekey> and never opens a bframe challenge; v2 (checkbox or
 # invisible) renders explicitly / via .g-recaptcha and may open a bframe. Enterprise loads enterprise.js.
 _RECAPTCHA_KIND_JS = """() => {
-  const srcs = [...document.scripts].map(s => s.src || '').filter(u => /recaptcha\\/(api|enterprise)\\.js/.test(u));
+  // api.js is often injected by script and only shows up in resource timing
+  const srcs = [...document.scripts].map(s => s.src || '').concat(performance.getEntriesByType('resource').map(e => e.name))
+    .filter(u => /recaptcha\\/(api|enterprise)\\.js/.test(u));
   let v3 = false;
   for (const u of srcs) { try { const k = new URL(u).searchParams.get('render'); if (k && k !== 'explicit' && k !== 'onload') v3 = true; } catch (e) {} }
   const fr = [...document.querySelectorAll('iframe')].map(i => i.src || '').filter(u => u.includes('/recaptcha/'));
@@ -700,6 +703,63 @@ _SITEKEY_JS = """(kind) => {
 }"""
 
 
+# reCAPTCHA v3 sites often run grecaptcha.execute() once on page load and keep the token in a hidden field. v3 tokens
+# expire after 2 minutes, so a form that takes longer to fill posts a dead token (Loop 16 FeedBear: "reCAPTCHA
+# verification failed"). The field is non-empty, so captcha_state said token_ready and nothing ever refreshed it.
+_V3_ACTION_JS = """() => {
+  if (window.__usersimV3Action) return window.__usersimV3Action;  // recorded by sessions.V3_ACTION_HOOK
+  for (const s of document.scripts) {
+    if (s.src) continue;
+    const m = s.textContent.match(/execute\\(\\s*['"][^'"]+['"]\\s*,\\s*\\{\\s*action\\s*:\\s*['"]([A-Za-z0-9_/]+)['"]/);
+    if (m) return m[1];
+  }
+  return '';
+}"""
+
+_V3_REFRESH_JS = """async (action) => {
+  const g = window.grecaptcha;
+  const src = [...document.scripts].map(s => s.src || '').concat(performance.getEntriesByType('resource').map(e => e.name))
+    .find(u => /recaptcha\\/api\\.js\\?[^#]*render=/.test(u));
+  if (!g || !g.execute || !src) return {refreshed: false};
+  const key = new URL(src).searchParams.get('render');
+  if (!key || key === 'explicit' || key === 'onload') return {refreshed: false};
+  const fields = [...document.querySelectorAll('input[name="g-recaptcha-response"], textarea[name="g-recaptcha-response"], input[name^="g-recaptcha-response-data"]')];
+  if (!fields.length) return {refreshed: false};
+  try {
+    const token = await new Promise((res, rej) => { g.ready(() => g.execute(key, {action: action || 'submit'}).then(res, rej)); setTimeout(() => rej('timeout'), 8000); });
+    fields.forEach(f => { f.value = token; });
+    return {refreshed: true, len: String(token).length};
+  } catch (e) { return {refreshed: false, error: String(e).slice(0, 80)}; }
+}"""
+
+_CAPTCHA_FAILED_RE = __import__("re").compile(
+    r"(?i)re-?captcha[^.\n]{0,40}(fail|invalid|expired|could not|couldn.t|try again)|captcha (verification )?(failed|invalid|expired)")
+
+
+async def _refresh_v3_token(sim: S.SimSession) -> None:
+    """Free: before a click on a reCAPTCHA v3 page that keeps a token field, mint a fresh token with the page's own
+    grecaptcha and action (no solver, no cost)."""
+    try:
+        probe = await sim.page.evaluate(_RECAPTCHA_KIND_JS) or {}
+        if not probe.get("v3"):
+            return
+        action = await sim.page.evaluate(_V3_ACTION_JS) or ""
+        out = await sim.page.evaluate(_V3_REFRESH_JS, action)
+        if isinstance(out, dict) and out.get("refreshed"):
+            sim.row["v3_refreshes"] = int(sim.row.get("v3_refreshes") or 0) + 1
+            sim.row["v3_action"] = action
+    except Exception:  # noqa: BLE001
+        return
+
+
+async def _captcha_rejected(page) -> bool:
+    try:
+        text = await page.evaluate("() => (document.body && document.body.innerText || '').slice(0, 20000)")
+    except Exception:  # noqa: BLE001
+        return False
+    return bool(_CAPTCHA_FAILED_RE.search(text or ""))
+
+
 async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
     """Before a click on an approved paid host, if an invisible captcha has no token yet, get one first."""
     from urllib.parse import urlsplit
@@ -714,7 +774,11 @@ async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
     if not sim.row.get("signup_email"):
         return None  # only once the signup form is being filled
     state = await S.captcha_state(sim.page) or {}
-    if not state or state.get("token_ready"):
+    if not state:
+        return None
+    # a token in the field is not proof it works: the site may have just said the captcha failed (expired v3 token,
+    # low score). Then pay for one even though the field is filled.
+    if state.get("token_ready") and not await _captcha_rejected(sim.page):
         return None
     sim.row["capsolver_tries"] = int(sim.row.get("capsolver_tries") or 0) + 1
     from mvp import captcha as cap
@@ -747,11 +811,17 @@ async def _paid_token(sim: S.SimSession, kind: str, info: dict) -> dict:
             probe = {}
     ctype, invisible = _paid_captcha_type(kind, str(info.get("type") or ""), probe,
                                           os.environ.get("MVP_MCP_RECAPTCHA_KIND") or "")
+    v3_action = os.environ.get("MVP_MCP_RECAPTCHA_ACTION") or None
+    if "v3" in ctype and not v3_action:
+        try:  # the action the page itself passes to grecaptcha.execute (a mismatched action fails server-side)
+            v3_action = await sim.page.evaluate(_V3_ACTION_JS) or "submit"
+        except Exception:  # noqa: BLE001
+            v3_action = "submit"
     if not sitekey:
         return {"ok": False, "detail": "no sitekey found"}
     before = cs.spent_usd()
     token = await asyncio.to_thread(cap.solve_sitekey, sitekey=sitekey, page_url=sim.page.url, captcha_type=ctype,
-                                    action=os.environ.get("MVP_MCP_RECAPTCHA_ACTION") or None, timeout_s=120, blocking=True,
+                                    action=v3_action, timeout_s=120, blocking=True,
                                     invisible=invisible)
     cost = round(cs.spent_usd() - before, 5)
     sim.row["capsolver_usd"] = round(float(sim.row.get("capsolver_usd") or 0) + cost, 5)

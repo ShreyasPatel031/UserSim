@@ -530,6 +530,31 @@ async def start_session(
     return sim
 
 
+V3_ACTION_HOOK = """(() => {
+  if (window.top !== window) return;
+  const seen = (o) => { try { if (o && o.action) Object.defineProperty(window, '__usersimV3Action', {value: String(o.action), configurable: true}); } catch (e) {} };
+  const wrapExec = (g) => {
+    for (const t of [g, g && g.enterprise]) {
+      if (t && typeof t.execute === 'function' && !t.execute.__usersim) {
+        const e = t.execute; const w = function (k, o) { seen(o); return e.apply(this, arguments); }; w.__usersim = true; t.execute = w;
+      }
+    }
+  };
+  const wrapReady = (g) => {
+    if (!g || typeof g.ready !== 'function' || g.ready.__usersim) return;
+    const r = g.ready; const w = function (fn) { return r.call(this, function () { wrapExec(window.grecaptcha); return fn.apply(this, arguments); }); };
+    w.__usersim = true; g.ready = w;
+  };
+  let cur;
+  try {
+    Object.defineProperty(window, 'grecaptcha', {configurable: true, enumerable: true,
+      get() { return cur; }, set(v) { cur = v; wrapReady(v); wrapExec(v); }});
+  } catch (e) {}
+  const t = setInterval(() => { if (cur) { wrapReady(cur); wrapExec(cur); } }, 25);
+  setTimeout(() => clearInterval(t), 30000);
+})();"""
+
+
 async def _open_browser(sim: SimSession) -> None:
     from mvp.a11y_agent import apply_gate_fields
 
@@ -542,6 +567,10 @@ async def _open_browser(sim: SimSession) -> None:
     sim.page = sim.context.pages[0] if sim.context.pages else await sim.context.new_page()
     sim.context.on("page", lambda p: setattr(sim, "new_page", p))
     _watch_page(sim, sim.page)
+    try:  # record the action a reCAPTCHA v3 site passes to grecaptcha.execute (its inline script is gone afterwards)
+        await sim.context.add_init_script(V3_ACTION_HOOK)
+    except Exception:  # noqa: BLE001
+        pass
     await ensure_viewport(sim.page)
     sim.page.set_default_timeout(10000)
     await _publish_live_view(sim)
