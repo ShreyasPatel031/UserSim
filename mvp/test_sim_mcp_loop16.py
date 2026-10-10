@@ -1,8 +1,9 @@
 """Loop 16: reCAPTCHA v3 token refresh, v3 action capture, paid solve after a visible captcha rejection (FeedBear).
 
-FeedBear (reCAPTCHA v3) is meant to mint its token once on page load from an inline script; that script is blocked by
-the page's own CSP, so the hidden g-recaptcha-response field stays empty (or a token would expire after 2 minutes)
-and Register says "reCAPTCHA verification failed".
+FeedBear (reCAPTCHA v3) mints its token in onSubmit() when Register is clicked and posts it; in plain Chrome that
+works. From the Browserbase browser the site answers ?captcha_failed=true, and it refused a standard paid v3 token too
+(the token was posted, checked with an intercepted POST): the site wants a higher score. The guards below stop paying
+twice on one page and stop paying for v3 again after a paid token was refused.
 """
 from __future__ import annotations
 
@@ -94,3 +95,100 @@ def test_hook_records_site_action():
             "grecaptcha.ready(function(){grecaptcha.execute('K',{action:'signup_form'})});</script>")
     out, _ = asyncio.run(_page_eval(body, _V3_ACTION_JS, hook=True))
     assert out == "signup_form"
+
+
+class _Page:
+    def __init__(self, marker=False):
+        self.marker = marker
+
+    async def evaluate(self, js, *a):
+        if "__usersimPaidAt = Date.now()" in js:
+            self.marker = True
+            return None
+        if "__usersimPaidAt" in js:
+            return self.marker
+        return None
+
+
+class _Sim:
+    def __init__(self, page, **row):
+        self.page = page
+        self.product_url = "https://feedbear.com/"
+        self.row = {"signup_email": "x@example.invalid", **row}
+
+
+def _patch(monkeypatch, kind="recaptcha_v3", rejected=True, token_ready=True):
+    from mvp import captcha as cap
+    from mvp import captcha_spend as cs
+    from mvp.sim_mcp import server as SV
+    from mvp.sim_mcp import sessions as S
+
+    bought = []
+
+    async def state(page):
+        return {"kind": kind, "token_ready": token_ready}
+
+    async def rej(page):
+        return rejected
+
+    async def paid(sim, k, info):
+        bought.append(k)
+        return {"ok": True}
+
+    async def sk(page):
+        return {}
+
+    monkeypatch.setenv("MVP_MCP_PAID_CAPTCHA", "1")
+    monkeypatch.setattr(cs, "paid_hosts", lambda: {"feedbear.com"})
+    monkeypatch.setattr(S, "captcha_state", state)
+    monkeypatch.setattr(SV, "_captcha_rejected", rej)
+    monkeypatch.setattr(SV, "_paid_token", paid)
+    monkeypatch.setattr(cap, "detect_sitekey", sk)
+    return SV, bought
+
+
+def test_one_paid_token_per_page_load(monkeypatch):
+    SV, bought = _patch(monkeypatch, kind="recaptcha_v2")
+    sim = _Sim(_Page())
+    assert asyncio.run(SV._maybe_paid_presolve(sim))["ok"]
+    assert asyncio.run(SV._maybe_paid_presolve(sim)) is None  # same page, banner still showing: no second token
+    sim.page.marker = False  # navigation
+    assert asyncio.run(SV._maybe_paid_presolve(sim))["ok"]
+    assert bought == ["recaptcha_v2", "recaptcha_v2"]
+
+
+def test_no_second_v3_token_after_refusal(monkeypatch):
+    SV, bought = _patch(monkeypatch)
+    sim = _Sim(_Page(), capsolver_v3_paid=1, capsolver_tries=1)
+    out = asyncio.run(SV._maybe_paid_presolve(sim))
+    assert out["ok"] is False and "score" in out["detail"]
+    assert bought == [] and sim.row["v3_paid_rejected"] is True
+
+
+def test_paid_v3_token_is_posted():
+    """The page's own onSubmit calls grecaptcha.execute and overwrites the field; the paid override must win."""
+    if not _chrome():
+        pytest.skip("no chrome")
+    from mvp.sim_mcp.server import _PAID_JS
+
+    body = ("<form id=f action='/x'><input type=hidden name=g-recaptcha-response id=g></form><script>" + STUB +
+            "window.sub=function(){grecaptcha.ready(function(){grecaptcha.execute('k',{action:'submit'})"
+            ".then(function(t){document.getElementById('g').value=t;window.__posted=t;});});};</script>")
+
+    async def run():
+        from playwright.async_api import async_playwright
+
+        async with async_playwright() as p:
+            b = await p.chromium.launch(headless=True, executable_path=_chrome())
+            ctx = await b.new_context()
+            await ctx.add_init_script(V3_ACTION_HOOK)
+            pg = await ctx.new_page()
+            await pg.set_content(body)
+            await pg.evaluate(_PAID_JS, ["recaptcha_v3", "PAIDTOKEN"])
+            await pg.evaluate("window.sub()")
+            await pg.wait_for_timeout(200)
+            out = await pg.evaluate("window.__posted")
+            await b.close()
+            return out
+
+    assert asyncio.run(run()) == "PAIDTOKEN"

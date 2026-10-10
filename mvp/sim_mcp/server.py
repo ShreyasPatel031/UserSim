@@ -780,11 +780,32 @@ async def _maybe_paid_presolve(sim: S.SimSession) -> dict | None:
     # low score). Then pay for one even though the field is filled.
     if state.get("token_ready") and not await _captcha_rejected(sim.page):
         return None
+    # Loop 16 FeedBear: the rejection banner stays on ?captcha_failed=true, so the click on the agree checkbox and the
+    # click on Register each bought a token on the same page. One paid token per page load: the marker dies on navigation.
+    try:
+        if await sim.page.evaluate("() => !!window.__usersimPaidAt"):
+            return None
+    except Exception:  # noqa: BLE001
+        pass
+    kind = state.get("kind") or ""
+    if "v3" in kind and int(sim.row.get("capsolver_v3_paid") or 0) >= 1 and await _captcha_rejected(sim.page):
+        # a paid v3 token reached the server (it is posted, see test_paid_v3_token_is_posted) and was still
+        # refused: the site wants a higher score than a standard token gives. Paying again buys the same refusal.
+        sim.row["v3_paid_rejected"] = True
+        return {"ok": False, "detail": "site refused a paid reCAPTCHA v3 token (score); not paying again"}
     sim.row["capsolver_tries"] = int(sim.row.get("capsolver_tries") or 0) + 1
+    if "v3" in kind:
+        sim.row["capsolver_v3_paid"] = int(sim.row.get("capsolver_v3_paid") or 0) + 1
     from mvp import captcha as cap
 
     try:
-        return await _paid_token(sim, state.get("kind") or "", await cap.detect_sitekey(sim.page) or {})
+        out = await _paid_token(sim, kind, await cap.detect_sitekey(sim.page) or {})
+        if isinstance(out, dict) and out.get("ok"):
+            try:
+                await sim.page.evaluate("() => { window.__usersimPaidAt = Date.now(); }")
+            except Exception:  # noqa: BLE001
+                pass
+        return out
     except Exception as exc:  # noqa: BLE001
         return {"ok": False, "detail": repr(exc)[:200]}
 
