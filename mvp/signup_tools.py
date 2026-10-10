@@ -30,6 +30,13 @@ def inbox_allowed(addr: str) -> bool:
     local = _local(addr)
     if hashlib.sha256(local.encode()).hexdigest() in _FORBIDDEN_LOCAL_SHA256:
         return False
+    # The local part alone is not enough: usersim.signups+x@some-company.com is somebody else's mailbox
+    # (Loop 15 AnnounceKit: the model invented a "work" address on a real-looking company domain).
+    from mvp.identity import GMAIL_DOMAINS
+
+    domain = (addr or "").rsplit("@", 1)[-1].strip().lower() if "@" in (addr or "") else ""
+    if domain not in GMAIL_DOMAINS:
+        return False
     import os
 
     allowed = (os.environ.get("MVP_SIGNUP_ALLOWED_LOCAL") or ALLOWED_SIGNUP_LOCAL).replace(".", "").lower()

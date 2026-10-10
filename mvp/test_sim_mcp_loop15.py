@@ -145,3 +145,14 @@ def test_turnstile_sitekey_from_resource_timing():
     # Loop 15 Typefully: explicit render in a closed shadow root; no data-sitekey and no key in the HTML
     pytest.importorskip("playwright.async_api")
     assert asyncio.run(_turnstile_key()) == "0x4AAAAAAAtestKeyTestKey"
+
+
+def test_inbox_allowed_requires_gmail_domain():
+    # Loop 15 AnnounceKit: the signup inbox's local part on a company domain was let through
+    from mvp.signup_tools import inbox_allowed
+
+    assert inbox_allowed("usersim.signups+abc@gmail.com")
+    assert inbox_allowed("u.sersimsignups@googlemail.com")
+    assert not inbox_allowed("usersim.signups+announcekit@riveralabs.com")
+    assert not inbox_allowed("usersimsignups@example.com")
+    assert not inbox_allowed("usersimsignups")
