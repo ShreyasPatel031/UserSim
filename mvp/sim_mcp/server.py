@@ -621,15 +621,65 @@ _PAID_JS = """([kind, token]) => {
     }
   } else {
     set('textarea[name="g-recaptcha-response"], input[name="g-recaptcha-response"]');
+    // v2 (checkbox or invisible, explicit render) hands the token to the widget's callback, not to execute()'s
+    // return value: find the callbacks the site registered in ___grecaptcha_cfg and call them with the token.
+    const cbs = [];
+    const walk = (o, d) => {
+      if (!o || typeof o !== 'object' || d > 5) return;
+      for (const k of Object.keys(o)) {
+        let v; try { v = o[k]; } catch (e) { continue; }
+        if (k === 'callback' && typeof v === 'function') cbs.push(v);
+        else if (k === 'callback' && typeof v === 'string' && typeof window[v] === 'function') cbs.push(window[v]);
+        else if (v && typeof v === 'object' && !(v instanceof Node) && v !== window) walk(v, d + 1);
+      }
+    };
+    try { walk((window.___grecaptcha_cfg || {}).clients, 0); } catch (e) {}
+    const fire = () => { cbs.forEach(cb => { try { cb(token); } catch (e) {} }); };
     if (window.grecaptcha) {
       const g = window.grecaptcha;
-      g.execute = () => Promise.resolve(token);
-      if (g.enterprise) g.enterprise.execute = () => Promise.resolve(token);
+      g.execute = () => { setTimeout(fire, 0); return Promise.resolve(token); };
+      if (g.enterprise) g.enterprise.execute = () => { setTimeout(fire, 0); return Promise.resolve(token); };
       g.getResponse = () => token;
+      if (g.enterprise) g.enterprise.getResponse = () => token;
     }
+    fire();
+    return {callbacks: cbs.length};
   }
   return true;
 }"""
+
+# Which reCAPTCHA this is: v3 loads api.js?render=<sitekey> and never opens a bframe challenge; v2 (checkbox or
+# invisible) renders explicitly / via .g-recaptcha and may open a bframe. Enterprise loads enterprise.js.
+_RECAPTCHA_KIND_JS = """() => {
+  const srcs = [...document.scripts].map(s => s.src || '').filter(u => /recaptcha\\/(api|enterprise)\\.js/.test(u));
+  let v3 = false;
+  for (const u of srcs) { try { const k = new URL(u).searchParams.get('render'); if (k && k !== 'explicit' && k !== 'onload') v3 = true; } catch (e) {} }
+  const fr = [...document.querySelectorAll('iframe')].map(i => i.src || '').filter(u => u.includes('/recaptcha/'));
+  const bframe = fr.some(u => u.includes('/bframe'));
+  const invisible = fr.some(u => /[?&]size=invisible/.test(u)) || !!document.querySelector('[data-size="invisible"]');
+  const enterprise = srcs.some(u => /enterprise\\.js/.test(u)) || fr.some(u => u.includes('/enterprise/'));
+  return {v3: v3 && !bframe, invisible, enterprise, bframe};
+}"""
+
+
+def _paid_captcha_type(kind: str, detected: str, probe: dict | None, override: str = "") -> tuple[str, bool]:
+    """(CapSolver captcha_type, isInvisible) for the paid path. A plain 'recaptcha' from detect_sitekey means
+    'not known to be v3', so it is solved as v2 unless the page loads api.js?render=<sitekey> (v3)."""
+    if kind == "turnstile":
+        return "turnstile", False
+    probe = probe or {}
+    invisible = bool(probe.get("invisible"))
+    d = (detected or "").lower()
+    if override:
+        return override, invisible and "v2" in override
+    if "v3" in d:
+        return d, False
+    if "v2" in d:
+        return d, invisible
+    v3 = bool(probe.get("v3"))
+    if probe.get("enterprise") or "enterprise" in d:
+        return ("recaptcha_v3_enterprise" if v3 else "recaptcha_v2_enterprise"), (invisible and not v3)
+    return ("recaptcha_v3" if v3 else "recaptcha_v2"), (invisible and not v3)
 
 _SITEKEY_JS = """(kind) => {
   const html = document.documentElement.outerHTML;
@@ -684,21 +734,28 @@ async def _paid_token(sim: S.SimSession, kind: str, info: dict) -> dict:
         sim.row["capsolver_attempt"] = cs.begin_inrun_attempt(host)
     cs.bind_signup(host, sim.row["capsolver_attempt"])
     sitekey = info.get("sitekey") or await sim.page.evaluate(_SITEKEY_JS, kind)
-    if kind == "turnstile":
-        ctype = "turnstile"
-    else:  # invisible / score reCAPTCHA defaults to v3; a visible v2 widget keeps its detected type
-        ctype = str(info.get("type") or "") if "v2" in str(info.get("type") or "") else (os.environ.get("MVP_MCP_RECAPTCHA_KIND") or "recaptcha_v3")
+    probe: dict = {}
+    if kind != "turnstile":
+        try:
+            probe = await sim.page.evaluate(_RECAPTCHA_KIND_JS) or {}
+        except Exception:  # noqa: BLE001
+            probe = {}
+    ctype, invisible = _paid_captcha_type(kind, str(info.get("type") or ""), probe,
+                                          os.environ.get("MVP_MCP_RECAPTCHA_KIND") or "")
     if not sitekey:
         return {"ok": False, "detail": "no sitekey found"}
     before = cs.spent_usd()
     token = await asyncio.to_thread(cap.solve_sitekey, sitekey=sitekey, page_url=sim.page.url, captcha_type=ctype,
-                                    action=os.environ.get("MVP_MCP_RECAPTCHA_ACTION") or None, timeout_s=120, blocking=True)
+                                    action=os.environ.get("MVP_MCP_RECAPTCHA_ACTION") or None, timeout_s=120, blocking=True,
+                                    invisible=invisible)
     cost = round(cs.spent_usd() - before, 5)
     sim.row["capsolver_usd"] = round(float(sim.row.get("capsolver_usd") or 0) + cost, 5)
     if not token:
         return {"ok": False, "type": ctype, "cost_usd": cost, "detail": "solver returned no token (see ledger)"}
-    await sim.page.evaluate(_PAID_JS, [kind, token])
-    return {"ok": True, "type": ctype, "cost_usd": cost, "detail": "token injected; submit the form now"}
+    injected = await sim.page.evaluate(_PAID_JS, [kind, token])
+    cbs = injected.get("callbacks") if isinstance(injected, dict) else None
+    return {"ok": True, "type": ctype, "invisible": invisible, "cost_usd": cost, "callbacks": cbs,
+            "detail": "token injected; submit the form now"}
 
 
 @mcp.prompt()
